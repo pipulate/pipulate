@@ -2004,15 +2004,13 @@ class Pipulate:
         ]
 
         SAMPLE_PROMPT_SOURCE_URLI = [
-            "**Your Role (SEO URL Consultant auditing individual URLs):**\n",
+            "**Your Role (SEO URL Auditor):**\n",
             "\n",
-            'A "keyword" is the unique short combination of words that are most likely to be searched-on by a user who might be interested in this page.\n',
-            'What is the five most likely keywords (short combination of words) that this page appears to be targeting?\n',
-            '\n',
-            '1. priority: integer (1-5, 1 is highest)\n',
-            '2. question: string (The keyword)\n',
-            '3. target_intent: string (What specifically is the user likely to have in mind when performing this search?)\n',
-            '4. justification: string (Informational, Commercial, Navigational, Transactional?)'
+            "Based on the input data for a single webpage (URL, title, h1s, h2s, status code, and markdown body), provide the following:\n",
+            "\n",
+            "1.  **ai_selected_keyword**: The single best keyword phrase (2-5 words) the page appears to be targeting. Prioritize the \`title\` and \`h1_tags\` for this selection.\n",
+            "2.  **ai_score**: On a scale of 1-5 (5 is best), how well-aligned the page's content (\`title\`, \`h1s\`, \`h2s\`, \`markdown\`) is to this single keyword. A 5 means the keyword is used effectively and naturally in key places. A 1 means it's barely present.\n",
+            "3.  **keyword_rationale**: A brief (1-sentence) rationale for the score, including the user's most likely search intent (Informational, Commercial, Navigational, or Transactional)."
         ]
 
         PROMPT_MAP = {
