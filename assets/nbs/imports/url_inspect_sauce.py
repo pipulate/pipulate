@@ -993,15 +993,13 @@ Your entire output must be a single JSON object in a markdown code block, confor
             
             full_prompt = "" # Initialize to empty string
             try:
-                # Use drop() to remove the markdown column, ignoring errors if it doesn't exist
-                row_for_prompt = row.drop(labels=['markdown'], errors='ignore')
-                webpage_data_str = row_for_prompt.to_json(indent=2)
+                webpage_data_str = row.to_json(indent=2)
 
                 # Use .replace() for safer substitution to avoid errors from braces in the data
                 full_prompt = system_prompt_wrapper.replace('{webpage_data}', webpage_data_str)
                 
                 if debug:
-                    print("\n--- PROMPT (markdown excluded) ---")
+                    print("\n--- PROMPT ---")
                     print(full_prompt)
                     print("--- END PROMPT ---\n")
 
