@@ -1,9 +1,8 @@
 AI_PHOOEY_CHOP = """\
+/home/mike/repos/pipulate/Notebooks/FAQuilizer.ipynb
+/home/mike/repos/pipulate/Notebooks/imports/faq_writer_sauce.py
 /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
 /home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
-/home/mike/repos/pipulate/tools/__init__.py 
-/home/mike/repos/pipulate/tools/scraper_tools.py
-/home/mike/repos/pipulate/Notebooks/imports/seo_gadget.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
