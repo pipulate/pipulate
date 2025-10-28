@@ -593,6 +593,118 @@ def _open_folder(path_str: str = "."):
         print(f"❌ Failed to open folder. Please navigate to it manually. Error: {e}")
 
 
+import time
+import random
+
+
+async def fetch_http_info(job: str, delay_range: tuple = (2, 5)):
+    """
+    Fetches HTTP status, redirect chain, and final headers for each URL using requests.
+    Saves the info to http_info.json in the respective browser_cache directory.
+    Runs requests calls in a thread executor to avoid blocking the main asyncio loop.
+    """
+    print("🔗 Fetching HTTP redirect and header info...")
+    urls_to_process = pip.get(job, URL_LIST_STEP, [])
+    if not urls_to_process:
+        print("❌ No URLs found in the job state.")
+        return
+
+    # --- Path Setup ---
+    script_location = Path(__file__).resolve().parent
+    project_root = _find_project_root(script_location)
+    if not project_root:
+        print("❌ Error: Could not find project root. Cannot locate browser_cache.")
+        return
+    base_dir = project_root / "Notebooks" / "browser_cache"
+    print(f"🔍 Using absolute browser_cache path for HTTP info: {base_dir}")
+    # --- End Path Setup ---
+
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
+    }
+    success_count = 0
+    fail_count = 0
+
+    # Get the current asyncio event loop
+    loop = asyncio.get_running_loop()
+
+    for i, url in enumerate(urls_to_process):
+        # --- Fuzzed Delay ---
+        if i > 0 and delay_range and isinstance(delay_range, (tuple, list)) and len(delay_range) == 2:
+             min_delay, max_delay = delay_range
+             if isinstance(min_delay, (int, float)) and isinstance(max_delay, (int, float)) and min_delay <= max_delay:
+                 delay = random.uniform(min_delay, max_delay)
+                 print(f"  -> ⏳ Waiting {delay:.2f}s before fetching {url}")
+                 await asyncio.sleep(delay) # Use asyncio.sleep for async compatibility
+        # --- End Delay ---
+
+        http_info = {
+            "original_url": url,
+            "final_url": None,
+            "status_code": None,
+            "redirect_chain": [],
+            "final_headers": None,
+            "error": None
+        }
+
+        try:
+            print(f"  -> 🔗 Fetching [{i+1}/{len(urls_to_process)}] {url}")
+
+            # Run synchronous requests.get in a thread executor
+            response = await loop.run_in_executor(
+                None, # Use default executor
+                lambda u=url: requests.get(u, headers=headers, allow_redirects=True, timeout=20)
+            )
+            # No need to manually raise_for_status, check status code directly
+
+            http_info["final_url"] = response.url
+            http_info["status_code"] = response.status_code
+            http_info["final_headers"] = dict(response.headers) # Convert CaseInsensitiveDict
+
+            # Extract redirect chain (if any)
+            if response.history:
+                for resp_hist in response.history:
+                    # Check if status code indicates a redirect before adding
+                    if 300 <= resp_hist.status_code < 400:
+                         http_info["redirect_chain"].append({
+                            "url": resp_hist.url,
+                            "status_code": resp_hist.status_code,
+                            # Optional: "headers": dict(resp_hist.headers)
+                         })
+            success_count += 1
+
+        except requests.exceptions.RequestException as e:
+            print(f"  -> ❌ Request failed for {url}: {e}")
+            http_info["error"] = str(e)
+            if hasattr(e, 'response') and e.response is not None:
+                http_info["status_code"] = e.response.status_code
+                http_info["final_url"] = e.response.url # Url that caused the error
+                http_info["final_headers"] = dict(e.response.headers)
+            fail_count += 1
+        except Exception as e:
+            print(f"  -> ❌ Unexpected error for {url}: {e}")
+            http_info["error"] = f"Unexpected error: {str(e)}"
+            fail_count += 1
+
+        # --- Save results ---
+        try:
+            domain, url_path_slug = get_safe_path_component(url) # Use original URL for path consistency
+            output_path = base_dir / domain / url_path_slug / "http_info.json"
+            output_path.parent.mkdir(parents=True, exist_ok=True) # Ensure directory exists
+            with open(output_path, 'w', encoding='utf-8') as f:
+                json.dump(http_info, f, indent=2, ensure_ascii=False) # Use ensure_ascii=False
+            if http_info["error"] is None:
+                 print(f"  -> ✅ Saved HTTP info for {url}")
+        except Exception as e:
+            print(f"  -> ❌ Error saving http_info.json for {url}: {e}")
+            # Don't increment fail_count again if request already failed
+            if http_info["error"] is None:
+                fail_count += 1
+                success_count -=1 # Decrement success if save failed
+
+    print(f"✅ HTTP info fetching complete. Success: {success_count}, Failures: {fail_count}")
+
+
 import yaml
 
 
