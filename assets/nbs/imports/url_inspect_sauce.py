@@ -23,12 +23,32 @@ from IPython.display import display
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font, Alignment
 from openpyxl.worksheet.table import Table, TableStyleInfo
+from tools.scraper_tools import get_safe_path_component
+
+
+# --- Add Root Finding Helper ---
+def _find_project_root(start_path):
+    """Walks up from a starting path to find the project root (marked by 'flake.nix')."""
+    current_path = Path(start_path).resolve()
+    # Check current dir first
+    if (current_path / 'flake.nix').exists():
+        return current_path
+    # Then walk up
+    while current_path != current_path.parent:
+        if (current_path / 'flake.nix').exists():
+            return current_path
+        current_path = current_path.parent
+    # Check parent one last time if loop finishes at root
+    if (current_path / 'flake.nix').exists():
+        return current_path
+    return None # Return None if not found
 
 
 # --- CONFIGURATION ---
 CACHE_DB_FILE = "url_cache.sqlite"
 EXTRACTED_DATA_CSV = "_step_extract_output.csv"
 AI_LOG_CSV = "_step_ai_log_output.csv" # NEW: Filename for the AI output log
+
 
 # Pipulate step names
 API_KEY_STEP = "api_key"
@@ -587,16 +607,25 @@ def stack_seo_data(job: str) -> pd.DataFrame:
         return pd.DataFrame()
 
     all_seo_data = []
-    # Assumes running from Notebooks/ so we go up one level
-    base_dir = Path("../browser_cache/") 
+
+    # --- Start Path Fix ---
+    # Find project root based on this script's location
+    script_location = Path(__file__).resolve().parent # Notebooks/imports
+    project_root = _find_project_root(script_location)
+
+    if not project_root:
+        print("❌ Error: Could not find project root (containing flake.nix). Cannot locate browser_cache.")
+        return pd.DataFrame()
+
+    base_dir = project_root / "browser_cache" # Use absolute path
+    print(f"🔍 Using absolute browser_cache path: {base_dir}")
+    # --- End Path Fix ---
 
     # Regex to capture YAML front matter
     yaml_pattern = re.compile(r'^---\s*$(.*?)^---\s*$', re.MULTILINE | re.DOTALL)
 
     for i, url in enumerate(urls_processed):
         try:
-            # We need to import this function here if it's not globally available
-            from tools.scraper_tools import get_safe_path_component
             domain, url_path_slug = get_safe_path_component(url)
             seo_md_path = base_dir / domain / url_path_slug / "seo.md"
 
@@ -610,7 +639,7 @@ def stack_seo_data(job: str) -> pd.DataFrame:
                         if isinstance(data, dict):
                             data['url'] = url # Add the source URL back
                             all_seo_data.append(data)
-                            print(f"  -> ✅ Parsed [{i+1}/{len(urls_processed)}] {url}")
+                            # print(f"  -> ✅ Parsed [{i+1}/{len(urls_processed)}] {url}")
                         else:
                             print(f"  -> ⚠️ YAML content is not a dictionary for {url}")
                     except yaml.YAMLError as e:
@@ -618,7 +647,7 @@ def stack_seo_data(job: str) -> pd.DataFrame:
                 else:
                     print(f"  -> ⚠️ No YAML front matter found in {seo_md_path}")
             else:
-                print(f"  -> ⚠️ seo.md not found for {url} at {seo_md_path}")
+                 print(f"  -> ⚠️ seo.md not found for {url} at {seo_md_path}") # Keep this warning
         except Exception as e:
             print(f"  -> ❌ Error processing {url}: {e}")
 
