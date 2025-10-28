@@ -989,19 +989,33 @@ Your entire output must be a single JSON object in a markdown code block, confor
                 print(f"\n🏁 Reached processing limit of {limit} rows.")
                 break
                 
-            print(f"  -> 🤖 AI Call [{processed_count+1}/{limit or 'all' new}]: Processing {url}")
+            print(f"  -> 🤖 AI Call [{processed_count+1}/{limit or 'all new'}]: Processing {url}")
             
             try:
-                webpage_data_str = row.to_json(indent=2)
+                # --- Create prompt (with markdown removed for now for debugging) ---
+                row_for_prompt = row.copy()
+                row_for_prompt.pop('markdown', None)
+                webpage_data_str = row_for_prompt.to_json(indent=2)
                 full_prompt = system_prompt_wrapper.format(webpage_data=webpage_data_str)
                 
                 if debug:
-                    print("\n--- PROMPT ---")
+                    print("\n--- PROMPT (markdown excluded) ---")
                     print(full_prompt)
                     print("--- END PROMPT ---\n")
 
                 ai_response = model.generate_content(full_prompt)
+
+                # --- Start Robust Response Handling ---
+                if not ai_response.parts:
+                    # This indicates the response was empty, likely blocked.
+                    block_reason = ai_response.prompt_feedback.block_reason if ai_response.prompt_feedback else "Unknown"
+                    safety_ratings = ai_response.prompt_feedback.safety_ratings if ai_response.prompt_feedback else "N/A"
+                    print(f"  -> ❌ AI call blocked for {url}. Reason: {block_reason}")
+                    print(f"  -> Safety Ratings: {safety_ratings}")
+                    continue # Skip to the next URL
+
                 response_text = ai_response.text.strip()
+                # --- End Robust Response Handling ---
                 
                 # Robust JSON cleaning
                 clean_json = response_text
@@ -1029,7 +1043,7 @@ Your entire output must be a single JSON object in a markdown code block, confor
                 print(f"  -> Raw AI Response:\n---\n{response_text}\n---")
                 continue
             except Exception as e:
-                print(f"  -> ❌ AI call failed for {url}: {e}")
+                print(f"  -> ❌ An unexpected error occurred for {url}: {e}")
                 # Optional: Add partial failure to cache to avoid retries? For now, we skip.
                 continue
 
