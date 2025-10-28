@@ -59,16 +59,22 @@ FINAL_DATAFRAME_STEP = "final_dataframe"
 EXPORT_FILE_STEP = "export_file_path"
 
 
-def _get_prompt_from_notebook(notebook_filename="FAQuilizer.ipynb"):
+def _get_prompt_from_notebook(notebook_filename="URLinspector.ipynb"):
     """Parses a notebook file to extract the prompt from the 'prompt-input' tagged cell."""
     try:
+        # This path assumes the script is in 'Notebooks/imports/'
         notebook_path = Path(__file__).parent.parent / notebook_filename
+        if not notebook_path.exists():
+             # Fallback if running from a different context
+             notebook_path = Path.cwd() / notebook_filename
+        
         with open(notebook_path, 'r', encoding='utf-8') as f:
             nb = nbformat.read(f, as_version=4)
         
         for cell in nb.cells:
             if "prompt-input" in cell.metadata.get("tags", []):
                 return cell.source
+        print(f"⚠️ Could not find 'prompt-input' tag in {notebook_filename}")
         return None # Return None if the tag isn't found
     except Exception as e:
         print(f"⚠️ Could not read prompt from notebook: {e}")
@@ -902,3 +908,152 @@ async def generate_extractions_post_scrape(job: str, verbose: bool = False):
          logger.info("No visualizations needed or possible.")
 
     logger.success(f"✅ Visualization generation complete. Success: {success_count}, Failed/Skipped: {fail_count}") # Use logger
+
+
+async def ai_audit_em(job: str, seo_df: pd.DataFrame, debug: bool = False, limit: int = None) -> pd.DataFrame:
+    """
+    Enriches the DataFrame with AI-generated SEO audits, row by row.
+    This step is idempotent and can be limited to a number of new rows.
+    """
+    import time
+    
+    # --- 1. Define Cache Path ---
+    cache_dir = Path("data")
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    cache_file = cache_dir / f"audit_cache_{job}.json"
+
+    # --- 2. Load Cached Data ---
+    audit_data = []
+    if cache_file.exists():
+        try:
+            raw_content = cache_file.read_text(encoding='utf-8')
+            if raw_content.strip():
+                audit_data = json.loads(raw_content)
+                print(f"✅ Loaded {len(audit_data)} audited rows from cache.")
+        except (json.JSONDecodeError, IOError) as e:
+            print(f"⚠️ Could not load audit cache. Starting fresh. Error: {e}")
+    
+    processed_urls = {item.get('url') for item in audit_data}
+    print(f"🧠 Auditing {len(seo_df)} pages... ({len(processed_urls)} already cached)")
+
+    # --- 3. Get Prompt & Configure AI ---
+    user_prompt_instructions = _get_prompt_from_notebook("URLinspector.ipynb")
+    if not user_prompt_instructions:
+        print("❌ Error: Prompt not found in 'prompt-input' cell of URLinspector.ipynb.")
+        return seo_df # Return original df
+        
+    system_prompt_wrapper = f'''
+Your task is to analyze webpage data and generate a structured JSON object based on the user's instructions.
+Your output must be **only a single, valid JSON object inside a markdown code block** and nothing else. Adherence to the schema is critical.
+
+--- START USER INSTRUCTIONS ---
+
+{user_prompt_instructions}
+
+--- END USER INSTRUCTIONS ---
+
+**Input Data:**
+
+--- WEBPAGE DATA BEGIN ---
+{{webpage_data}}
+--- WEBPAGE DATA END ---
+
+**Final Instructions:**
+
+Based *only* on the provided webpage data and the user instructions, generate the requested data.
+Your entire output must be a single JSON object in a markdown code block, conforming to this exact schema:
+
+{{
+  "ai_selected_keyword": "string",
+  "ai_score": "integer (1-5)",
+  "keyword_rationale": "string (rationale + intent)"
+}}
+'''
+    
+    try:
+        model = genai.GenerativeModel('models/gemini-2.5-flash')
+    except Exception as e:
+        print(f"❌ Error configuring AI model: {e}")
+        print("   Did you forget to run pip.api_key(job)?")
+        return seo_df
+
+    # --- 4. Process Loop ---
+    processed_count = 0
+    try:
+        for index, row in seo_df.iterrows():
+            url = row.get('url')
+            if url in processed_urls:
+                continue # Skip already processed rows
+
+            if limit is not None and processed_count >= limit:
+                print(f"\n🏁 Reached processing limit of {limit} rows.")
+                break
+                
+            print(f"  -> 🤖 AI Call [{processed_count+1}/{limit or 'all' new}]: Processing {url}")
+            
+            try:
+                webpage_data_str = row.to_json(indent=2)
+                full_prompt = system_prompt_wrapper.format(webpage_data=webpage_data_str)
+                
+                if debug:
+                    print("\n--- PROMPT ---")
+                    print(full_prompt)
+                    print("--- END PROMPT ---\n")
+
+                ai_response = model.generate_content(full_prompt)
+                response_text = ai_response.text.strip()
+                
+                # Robust JSON cleaning
+                clean_json = response_text
+                if clean_json.startswith("```json"):
+                    clean_json = clean_json[7:]
+                if clean_json.startswith("```"):
+                    clean_json = clean_json[3:]
+                if clean_json.endswith("```"):
+                    clean_json = clean_json[:-3]
+                clean_json = clean_json.strip()
+
+                ai_json_result = json.loads(clean_json)
+                
+                # Add the URL for merging
+                ai_json_result['url'] = url
+                audit_data.append(ai_json_result)
+                processed_urls.add(url)
+                processed_count += 1
+                
+                # Give a small delay to respect API rate limits
+                time.sleep(1) 
+
+            except json.JSONDecodeError as e:
+                print(f"  -> ❌ JSON Decode Error for {url}: {e}")
+                print(f"  -> Raw AI Response:\n---\n{response_text}\n---")
+                continue
+            except Exception as e:
+                print(f"  -> ❌ AI call failed for {url}: {e}")
+                # Optional: Add partial failure to cache to avoid retries? For now, we skip.
+                continue
+
+    except KeyboardInterrupt:
+        print("\n🛑 Execution interrupted by user.")
+    finally:
+        print("\n💾 Saving progress to audit cache...")
+        try:
+            with open(cache_file, 'w', encoding='utf-8') as f:
+                json.dump(audit_data, f, indent=2)
+            print(f"✅ Save complete. {len(audit_data)} total audited rows in cache.")
+        except Exception as e:
+            print(f"❌ Error saving cache in `finally` block: {e}")
+
+    # --- 5. Merge and Return ---
+    if not audit_data:
+        print("ℹ️ No new data to merge.")
+        return seo_df # Return original DataFrame
+        
+    ai_df = pd.DataFrame(audit_data)
+    
+    # Merge AI data back into the original seo_df
+    # 'how=left' keeps all original rows and adds AI data where it exists
+    merged_df = seo_df.merge(ai_df, on='url', how='left')
+    
+    print("✅ AI audit complete. Merged results into DataFrame.")
+    return merged_df
