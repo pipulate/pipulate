@@ -20,6 +20,10 @@ import subprocess
 import ipywidgets as widgets
 from IPython.display import display
 
+from urllib.parse import urlparse
+import openpyxl
+from openpyxl.formatting.rule import ColorScaleRule
+
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font, Alignment
 from openpyxl.worksheet.table import Table, TableStyleInfo
@@ -1075,5 +1079,103 @@ Your entire output must be a single JSON object in a markdown code block, confor
     # 'how=left' keeps all original rows and adds AI data where it exists
     merged_df = seo_df.merge(ai_df, on='url', how='left')
     
-    print("✅ AI audit complete. Merged results into DataFrame.")
+    # --- Reorder columns to bring AI fields to the front ---
+    if 'ai_selected_keyword' in merged_df.columns:
+        core_cols = ['url', 'title']
+        ai_cols = ['ai_selected_keyword', 'ai_score', 'keyword_rationale']
+        
+        # Get all other existing columns
+        other_cols = [col for col in merged_df.columns if col not in core_cols + ai_cols]
+        
+        # Combine and apply the new order
+        new_order = core_cols + ai_cols + other_cols
+        merged_df = merged_df[new_order]
+        print("✅ AI audit complete. Reordered columns and merged results.")
+    else:
+        print("✅ AI audit complete. Merged results into DataFrame.")
+
     return merged_df
+
+def export_audits_to_excel(job: str, df: pd.DataFrame):
+    """
+    Exports the audited DataFrame to a formatted Excel file with:
+    - One tab per host.
+    - 'markdown' column dropped.
+    - Red-to-Green (1-5) conditional formatting on the 'ai_score' column.
+    """
+    print("📊 Exporting final audit to Excel...")
+
+    # --- 1. Prepare DataFrame ---
+    if df.empty:
+        print("⚠️ DataFrame is empty. Nothing to export.")
+        return None
+    
+    # Drop markdown column as requested
+    df_to_export = df.drop(columns=['markdown'], errors='ignore')
+    
+    # Extract host to be used for sheet names
+    try:
+        df_to_export['host'] = df_to_export['url'].apply(lambda x: urlparse(x).netloc)
+    except Exception as e:
+        print(f"❌ Error parsing URLs to get hosts: {e}")
+        return None
+        
+    unique_hosts = df_to_export['host'].unique()
+    
+    # --- 2. Define Paths ---
+    output_dir = Path("output") / job
+    output_dir.mkdir(parents=True, exist_ok=True)
+    excel_path = output_dir / f"URLinspector_Audit_{job}.xlsx"
+
+    # --- 3. Write Data to Tabs ---
+    try:
+        with pd.ExcelWriter(excel_path, engine='xlsxwriter') as writer:
+            for host in unique_hosts:
+                df_host = df_to_export[df_to_export['host'] == host].drop(columns=['host'], errors='ignore')
+                
+                # Clean host name for sheet title (max 31 chars, no invalid chars)
+                safe_sheet_name = re.sub(r'[\\\[\]\\*:\\?\\/\\ ]', '_', host)[:31]
+                
+                df_host.to_excel(writer, sheet_name=safe_sheet_name, index=False)
+        print(f"✅ Initial Excel file written to {excel_path}")
+    except Exception as e:
+        print(f"❌ Error writing to Excel file: {e}")
+        return None
+
+    # --- 4. Apply Formatting ---
+    try:
+        print("🎨 Applying conditional formatting...")
+        wb = openpyxl.load_workbook(excel_path)
+        
+        # Define the Red-Yellow-Green color scale rule
+        # Red (1) -> Yellow (3) -> Green (5)
+        color_scale_rule = ColorScaleRule(
+            start_type='num', start_value=1, start_color='F8696B',
+            mid_type='num', mid_value=3, mid_color='FFEB84',
+            end_type='num', end_value=5, end_color='63BE7B'
+        )
+            
+        for host in unique_hosts:
+            safe_sheet_name = re.sub(r'[\\\[\]\\*:\\?\\/\\ ]', '_', host)[:31]
+            if safe_sheet_name in wb.sheetnames:
+                sheet = wb[safe_sheet_name]
+                
+                # Find the 'ai_score' column
+                column_mapping = {cell.value: get_column_letter(cell.column) for cell in sheet[1]}
+                ai_score_col = column_mapping.get('ai_score')
+                
+                if ai_score_col:
+                    last_row = sheet.max_row
+                    if last_row > 1:
+                        range_string = f"{ai_score_col}2:{ai_score_col}{last_row}"
+                        sheet.conditional_formatting.add(range_string, color_scale_rule)
+                else:
+                    print(f"  -> ⚠️ Could not find 'ai_score' column in sheet '{safe_sheet_name}'")
+
+        wb.save(excel_path)
+        print("✅ Formatting applied successfully.")
+        return str(excel_path)
+        
+    except Exception as e:
+        print(f"❌ Error applying formatting to Excel file: {e}")
+        return str(excel_path) # Return path even if formatting fails
