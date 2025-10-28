@@ -147,10 +147,10 @@ title: {json.dumps(page_title)}
 meta_description: {json.dumps(meta_description)}
 h1_tags: {json.dumps(h1_tags)}
 h2_tags: {json.dumps(h2_tags)}
-canonical_tag: {json.dumps(str(canonical_tag))}
+#canonical_tag: {json.dumps(str(canonical_tag))}
 canonical_url: {json.dumps(canonical_url)}
-meta_robots_tag: {json.dumps(str(meta_robots_tag))}
-meta_robots_content: {json.dumps(meta_robots_content)}
+#meta_robots_tag: {json.dumps(str(meta_robots_tag))}
+#meta_robots_content: {json.dumps(meta_robots_content)}
 ---
 
 {markdown_content}

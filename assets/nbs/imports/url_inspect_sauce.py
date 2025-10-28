@@ -756,6 +756,30 @@ def stack_seo_data(job: str) -> pd.DataFrame:
                         data = yaml.safe_load(yaml_content)
                         if isinstance(data, dict):
                             data['url'] = url # Add the source URL back
+
+                            # --- Start HTTP Info Integration ---
+                            http_info_path = seo_md_path.parent / "http_info.json"
+                            if http_info_path.exists():
+                                try:
+                                    with open(http_info_path, 'r', encoding='utf-8') as f_http:
+                                        http_data = json.load(f_http)
+                                    data['status_code'] = http_data.get('status_code')
+                                    # Store redirect count for simplicity
+                                    data['redirect_count'] = len(http_data.get('redirect_chain', []))
+                                    # Store final URL from HTTP check
+                                    data['final_url_http'] = http_data.get('final_url')
+                                except Exception as http_e:
+                                    print(f"  -> ⚠️ Error reading/parsing http_info.json for {url}: {http_e}")
+                                    data['status_code'] = None
+                                    data['redirect_count'] = None
+                                    data['final_url_http'] = None
+                            else:
+                                print(f"  -> ⚠️ http_info.json not found for {url}")
+                                data['status_code'] = None
+                                data['redirect_count'] = None
+                                data['final_url_http'] = None
+                            # --- End HTTP Info Integration ---
+
                             all_seo_data.append(data)
                             # print(f"  -> ✅ Parsed [{i+1}/{len(urls_processed)}] {url}")
                         else:
@@ -776,10 +800,13 @@ def stack_seo_data(job: str) -> pd.DataFrame:
     df = pd.DataFrame(all_seo_data)
     # Optional: Reorder columns if desired, e.g., put 'url' first
     if 'url' in df.columns:
-         cols = ['url'] + [col for col in df.columns if col != 'url']
-         df = df[cols]
+         existing_cols = [col for col in df.columns if col not in ['url', 'title', 'status_code', 'redirect_count', 'final_url_http']]
+         new_cols_order = ['url', 'title', 'status_code', 'redirect_count', 'final_url_http'] + existing_cols
+         # Filter to only include columns that actually exist in the df
+         final_cols_order = [col for col in new_cols_order if col in df.columns]
+         df = df[final_cols_order]
 
-    print(f"✅ Stacked SEO data for {len(df)} pages into DataFrame.")
+    print(f"✅ Stacked SEO & HTTP data for {len(df)} pages into DataFrame.")
     return df
 
 
