@@ -1124,7 +1124,13 @@ def export_audits_to_excel(job: str, df: pd.DataFrame):
     unique_hosts = df_to_export['host'].unique()
     
     # --- 2. Define Paths ---
-    output_dir = Path("output") / job
+    script_location = Path(__file__).resolve().parent # Notebooks/imports
+    project_root = _find_project_root(script_location)
+    if not project_root:
+        print("❌ Error: Could not find project root. Cannot create deliverables path.")
+        return None
+        
+    output_dir = project_root / "Notebooks" / "deliverables" / job
     output_dir.mkdir(parents=True, exist_ok=True)
     excel_path = output_dir / f"URLinspector_Audit_{job}.xlsx"
 
