@@ -1102,6 +1102,7 @@ def export_audits_to_excel(job: str, df: pd.DataFrame):
     - One tab per host.
     - 'markdown' column dropped.
     - Red-to-Green (1-5) conditional formatting on the 'ai_score' column.
+    - Professional styling (column widths, alignment, table styles).
     """
     print("📊 Exporting final audit to Excel...")
 
@@ -1134,7 +1135,7 @@ def export_audits_to_excel(job: str, df: pd.DataFrame):
                 df_host = df_to_export[df_to_export['host'] == host].drop(columns=['host'], errors='ignore')
                 
                 # Clean host name for sheet title (max 31 chars, no invalid chars)
-                safe_sheet_name = re.sub(r'[\\\[\]\\*:\\?\\/\\ ]', '_', host)[:31]
+                safe_sheet_name = re.sub(r'[\\[\\]\\*:?\\/\\ ]', '_', host)[:31]
                 
                 df_host.to_excel(writer, sheet_name=safe_sheet_name, index=False)
         print(f"✅ Initial Excel file written to {excel_path}")
@@ -1142,35 +1143,89 @@ def export_audits_to_excel(job: str, df: pd.DataFrame):
         print(f"❌ Error writing to Excel file: {e}")
         return None
 
-    # --- 4. Apply Formatting ---
+    # --- 4. Apply Formatting (The "Painterly" Pass) ---
     try:
-        print("🎨 Applying conditional formatting...")
+        print("🎨 Applying professional formatting...")
         wb = openpyxl.load_workbook(excel_path)
         
-        # Define the Red-Yellow-Green color scale rule
-        # Red (1) -> Yellow (3) -> Green (5)
+        # --- Define Formatting Rules ---
         color_scale_rule = ColorScaleRule(
-            start_type='num', start_value=1, start_color='F8696B',
-            mid_type='num', mid_value=3, mid_color='FFEB84',
-            end_type='num', end_value=5, end_color='63BE7B'
+            start_type='num', start_value=1, start_color='F8696B', # Red
+            mid_type='num', mid_value=3, mid_color='FFEB84',   # Yellow
+            end_type='num', end_value=5, end_color='63BE7B'    # Green
         )
-            
+        
+        # Define custom widths
+        width_map = {
+            "url": 70,
+            "title": 50,
+            "ai_selected_keyword": 30,
+            "ai_score": 10,
+            "keyword_rationale": 60,
+            "status_code": 12,
+            "redirect_count": 12,
+            "canonical_url": 60,
+            "h1_tags": 50,
+            "h2_tags": 50,
+            "meta_description": 50,
+        }
+        default_width = 18
+
+        header_font = Font(bold=True)
+        header_align = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        data_align = Alignment(vertical='top', wrap_text=True)
+        # --- End Formatting Rules ---
+
         for host in unique_hosts:
-            safe_sheet_name = re.sub(r'[\\\[\]\\*:\\?\\/\\ ]', '_', host)[:31]
+            safe_sheet_name = re.sub(r'[\\[\\]\\*:?\\/\\ ]', '_', host)[:31]
             if safe_sheet_name in wb.sheetnames:
                 sheet = wb[safe_sheet_name]
-                
-                # Find the 'ai_score' column
                 column_mapping = {cell.value: get_column_letter(cell.column) for cell in sheet[1]}
                 ai_score_col = column_mapping.get('ai_score')
-                
+                last_row = sheet.max_row
+                max_col_letter = get_column_letter(sheet.max_column)
+
+                if last_row <= 1: # Skip empty sheets
+                    continue
+                    
+                # 1. Apply Column Widths, Header Font/Alignment
+                for header_text, col_letter in column_mapping.items():
+                    # Set width
+                    width = width_map.get(header_text, default_width)
+                    sheet.column_dimensions[col_letter].width = width
+                    
+                    # Set header style
+                    cell = sheet[f"{col_letter}1"]
+                    cell.font = header_font
+                    cell.alignment = header_align
+
+                # 2. Apply Data Cell Alignment (Wrap Text, Top Align)
+                for row in sheet.iter_rows(min_row=2, max_row=last_row):
+                    for cell in row:
+                        cell.alignment = data_align
+
+                # 3. Apply Conditional Formatting
                 if ai_score_col:
-                    last_row = sheet.max_row
-                    if last_row > 1:
-                        range_string = f"{ai_score_col}2:{ai_score_col}{last_row}"
-                        sheet.conditional_formatting.add(range_string, color_scale_rule)
+                    range_string = f"{ai_score_col}2:{ai_score_col}{last_row}"
+                    sheet.conditional_formatting.add(range_string, color_scale_rule)
                 else:
                     print(f"  -> ⚠️ Could not find 'ai_score' column in sheet '{safe_sheet_name}'")
+
+                # 4. Apply Table Style (Banded Rows)
+                table_range = f"A1:{max_col_letter}{last_row}"
+                table_name = f"AuditTable_{safe_sheet_name}"
+                tab = Table(displayName=table_name, ref=table_range)
+                style = TableStyleInfo(name="TableStyleMedium9", showFirstColumn=False,
+                                       showLastColumn=False, showRowStripes=True, showColumnStripes=False)
+                tab.tableStyleInfo = style
+                if table_name not in [t.name for t in sheet._tables]:
+                     sheet.add_table(tab)
+                     
+                # 5. Apply AutoFilter
+                sheet.auto_filter.ref = table_range
+                
+                # 6. Freeze Panes (Freeze top row)
+                sheet.freeze_panes = 'A2'
 
         wb.save(excel_path)
         print("✅ Formatting applied successfully.")
