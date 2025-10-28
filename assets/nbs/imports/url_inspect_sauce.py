@@ -661,6 +661,12 @@ async def fetch_http_info(job: str, delay_range: tuple = (2, 5)):
             http_info["status_code"] = response.status_code
             http_info["final_headers"] = dict(response.headers) # Convert CaseInsensitiveDict
 
+            # Save the raw HTML source from requests
+            domain, url_path_slug = get_safe_path_component(url)
+            output_dir = base_dir / domain / url_path_slug
+            source_html_path = output_dir / "source.html"
+            source_html_path.write_text(response.text, encoding='utf-8')
+
             # Extract redirect chain (if any)
             if response.history:
                 for resp_hist in response.history:

@@ -199,9 +199,11 @@ async def selenium_automation(params: dict) -> dict:
         dom_path.write_text(driver.execute_script("return document.documentElement.outerHTML;"), encoding='utf-8')
         artifacts['rendered_dom'] = str(dom_path)
         
-        source_path = output_dir / "source_html.txt"
-        source_path.write_text(driver.page_source, encoding='utf-8')
-        artifacts['source_html'] = str(source_path)
+        # Re-use the rendered DOM content already captured
+        rendered_dom_content = (output_dir / "rendered_dom.html").read_text(encoding='utf-8')
+        source_html_path = output_dir / "source.html" # New filename
+        source_html_path.write_text(rendered_dom_content, encoding='utf-8')
+        artifacts['source_html'] = str(source_html_path) # Update artifact key
 
         if take_screenshot:
             screenshot_path = output_dir / "screenshot.png"
