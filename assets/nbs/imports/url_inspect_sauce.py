@@ -993,8 +993,8 @@ Your entire output must be a single JSON object in a markdown code block, confor
             
             try:
                 # --- Create prompt (with markdown removed for now for debugging) ---
-                row_for_prompt = row.copy()
-                row_for_prompt.pop('markdown', None)
+                # Use drop() to remove the markdown column, ignoring errors if it doesn't exist
+                row_for_prompt = row.drop(labels=['markdown'], errors='ignore')
                 webpage_data_str = row_for_prompt.to_json(indent=2)
                 full_prompt = system_prompt_wrapper.format(webpage_data=webpage_data_str)
                 
@@ -1044,8 +1044,11 @@ Your entire output must be a single JSON object in a markdown code block, confor
                 continue
             except Exception as e:
                 print(f"  -> ❌ An unexpected error occurred for {url}: {e}")
-                # Optional: Add partial failure to cache to avoid retries? For now, we skip.
-                continue
+                print("\n--- FAILED PROMPT ---")
+                print(full_prompt)
+                print("--- END FAILED PROMPT ---\n")
+                print("🛑 Halting execution due to error.")
+                break # Stop the loop on the first error
 
     except KeyboardInterrupt:
         print("\n🛑 Execution interrupted by user.")
