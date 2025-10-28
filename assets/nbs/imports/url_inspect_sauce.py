@@ -573,6 +573,69 @@ def _open_folder(path_str: str = "."):
         print(f"❌ Failed to open folder. Please navigate to it manually. Error: {e}")
 
 
+import yaml
+
+
+def stack_seo_data(job: str) -> pd.DataFrame:
+    """
+    Loads scraped SEO data from YAML front matter in seo.md files into a DataFrame.
+    """
+    print("📊 Stacking SEO data from seo.md files...")
+    urls_processed = pip.get(job, URL_LIST_STEP, []) # Get URLs from the initial list
+    if not urls_processed:
+        print("❌ No URLs found in the job state. Cannot stack data.")
+        return pd.DataFrame()
+
+    all_seo_data = []
+    # Assumes running from Notebooks/ so we go up one level
+    base_dir = Path("../browser_cache/") 
+
+    # Regex to capture YAML front matter
+    yaml_pattern = re.compile(r'^---\s*$(.*?)^---\s*$', re.MULTILINE | re.DOTALL)
+
+    for i, url in enumerate(urls_processed):
+        try:
+            # We need to import this function here if it's not globally available
+            from tools.scraper_tools import get_safe_path_component
+            domain, url_path_slug = get_safe_path_component(url)
+            seo_md_path = base_dir / domain / url_path_slug / "seo.md"
+
+            if seo_md_path.exists():
+                content = seo_md_path.read_text(encoding='utf-8')
+                match = yaml_pattern.search(content)
+                if match:
+                    yaml_content = match.group(1)
+                    try:
+                        data = yaml.safe_load(yaml_content)
+                        if isinstance(data, dict):
+                            data['url'] = url # Add the source URL back
+                            all_seo_data.append(data)
+                            print(f"  -> ✅ Parsed [{i+1}/{len(urls_processed)}] {url}")
+                        else:
+                            print(f"  -> ⚠️ YAML content is not a dictionary for {url}")
+                    except yaml.YAMLError as e:
+                        print(f"  -> ❌ Error parsing YAML for {url}: {e}")
+                else:
+                    print(f"  -> ⚠️ No YAML front matter found in {seo_md_path}")
+            else:
+                print(f"  -> ⚠️ seo.md not found for {url} at {seo_md_path}")
+        except Exception as e:
+            print(f"  -> ❌ Error processing {url}: {e}")
+
+    if not all_seo_data:
+        print("❌ No SEO data could be extracted from any seo.md files.")
+        return pd.DataFrame()
+
+    df = pd.DataFrame(all_seo_data)
+    # Optional: Reorder columns if desired, e.g., put 'url' first
+    if 'url' in df.columns:
+         cols = ['url'] + [col for col in df.columns if col != 'url']
+         df = df[cols]
+
+    print(f"✅ Stacked SEO data for {len(df)} pages into DataFrame.")
+    return df
+
+
 # Replacement function for Notebooks/secretsauce.py
 
 async def generate_extractions_post_scrape(job: str, verbose: bool = False):
