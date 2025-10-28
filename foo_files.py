@@ -1,13 +1,22 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/AI_RUNME.py
+/home/mike/repos/pipulate/.gitignore
+/home/mike/repos/pipulate/Notebooks/FAQuilizer.ipynb
 /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
-/home/mike/repos/pipulate/flake.nix
-/home/mike/repos/pipulate/pipulate/__init__.py
-/home/mike/repos/pipulate/pipulate/pipulate.py
-/home/mike/repos/pipulate/pipulate/core.py
+/home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
+/home/mike/repos/pipulate/tools/__init__.py 
+/home/mike/repos/pipulate/tools/scraper_tools.py
+/home/mike/repos/pipulate/Notebooks/imports/seo_gadget.py
+/home/mike/repos/pipulate/Notebooks/browser_cache/www.client-k.com/%2Fcollections%2Fski-lodge-style/seo.md
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/pipulate/AI_RUNME.py
+# /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
+# /home/mike/repos/pipulate/flake.nix
+# /home/mike/repos/pipulate/pipulate/__init__.py
+# /home/mike/repos/pipulate/pipulate/pipulate.py
+# /home/mike/repos/pipulate/pipulate/core.py
 
 # /home/mike/repos/pipulate/Notebooks/imports/seo_gadget.py
 # /home/mike/repos/pipulate/tools/__init__.py 
