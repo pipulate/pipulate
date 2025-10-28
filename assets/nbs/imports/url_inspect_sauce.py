@@ -617,7 +617,7 @@ def stack_seo_data(job: str) -> pd.DataFrame:
         print("❌ Error: Could not find project root (containing flake.nix). Cannot locate browser_cache.")
         return pd.DataFrame()
 
-    base_dir = project_root / "browser_cache" # Use absolute path
+    base_dir = project_root / "Notebooks" / "browser_cache" # Use absolute path *including Notebooks*
     print(f"🔍 Using absolute browser_cache path: {base_dir}")
     # --- End Path Fix ---
 
