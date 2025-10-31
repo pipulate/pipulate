@@ -1,9 +1,17 @@
 AI_PHOOEY_CHOP = """\
+/home/mike/repos/pipulate/flake.nix
+/home/mike/repos/pipulate/requirements.in
 /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
 /home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
-/home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
-/home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
+/home/mike/repos/pipulate/Notebooks/imports/seo_gadget.py
 """
+
+# /home/mike/repos/pipulate/prompt_foo.py
+
+# /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
+# /home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
+# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
+# /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
 

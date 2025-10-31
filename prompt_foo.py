@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 # prompt_foo.py
 
+# > We've got content, it's groovy context  
+# > Our concatenation just won't stop  
+# > Making stories art for a super-smart  
+# > AI-Phooey chop (Hi-Ya!)
+
 import os
 import re
 import sys

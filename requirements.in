@@ -1,7 +1,13 @@
 # Top-level dependencies for Pipulate
 # This file is used by pip-compile to generate requirements.txt
 # pip-compile requirements.in -o requirements.txt --upgrade
+# Note: pip-compiling right now requires downgrading:
+# pip install --upgrade pip==25.2
+# then re-install pip-tools then do the compile command.
 
+# NEW stuff
+moviepy
+requests-toolbelt
 markdownify
 pip-tools
 
