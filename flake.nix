@@ -139,6 +139,16 @@
             dest = "Notebooks/imports/url_inspect_sauce.py";
             desc = "a local 'url_inspect_sauce.py' source of secret sauce";
           }
+          {
+            source = "assets/nbs/VIDeditor.ipynb";
+            dest = "Notebooks/VIDeditor.ipynb";
+            desc = "a local 'NoGooey Video Editor.'";
+          }
+          {
+            source = "assets/nbs/imports/videditor_sauce.py.py";
+            dest = "Notebooks/imports/videditor_sauce.py";
+            desc = "a local 'videditor_sauce.py' source of secret sauce";
+          }
 #           {
 #             source = "assets/nbs/imports/seo_gadget.py";
 #             dest = "Notebooks/imports/seo_gadget.py";
