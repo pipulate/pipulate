@@ -1,10 +1,26 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/flake.nix
-/home/mike/repos/pipulate/requirements.in
 /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
+/home/mike/repos/pipulate/assets/nbs/URLinspector.ipynb
 /home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
-/home/mike/repos/pipulate/Notebooks/imports/seo_gadget.py
+/home/mike/repos/pipulate/assets/nbs/url_inspect_sauce.py
+/home/mike/repos/pipulate/pipulate/__init__.py
+/home/mike/repos/pipulate/pipulate/pipulate.py
+/home/mike/repos/pipulate/pipulate/core.py
+/home/mike/repos/pipulate/flake.nix
 """
+
+# HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
+# /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
+
+# /home/mike/repos/MikeLev.in/_posts/2025-10-08-python-mac-segfault-faulthandler-revelation.md
+
+# /home/mike/repos/pipulate/flake.nix
+# /home/mike/repos/pipulate/requirements.in
+# /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
+# /home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
+# /home/mike/repos/pipulate/Notebooks/imports/seo_gadget.py
 
 # /home/mike/repos/pipulate/prompt_foo.py
 
@@ -12,8 +28,6 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
 # /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
 # /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
-
-# HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
 
 # /home/mike/repos/pipulate/Notebooks/FAQuilizer.ipynb
 # /home/mike/repos/pipulate/Notebooks/imports/faq_writer_sauce.py

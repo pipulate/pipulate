@@ -47,9 +47,11 @@ Notebooks/AI_Scrape.ipynb
 Notebooks/FAQuilizer.ipynb
 Notebooks/GAPalyzer.ipynb
 Notebooks/URLinspector.ipynb
+Notebooks/VIDeditor.ipynb
 Notebooks/imports/gap_analyzer_sauce.py
 Notebooks/imports/faq_writer_sauce.py
 Notebooks/imports/url_inspect_sauce.py
+Notebooks/imports/videditor_sauce.py
 
 # Python packaging and build artifacts
 build/
