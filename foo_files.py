@@ -1,15 +1,36 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
-/home/mike/repos/pipulate/assets/nbs/URLinspector.ipynb
-/home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
-/home/mike/repos/pipulate/assets/nbs/url_inspect_sauce.py
-/home/mike/repos/pipulate/pipulate/__init__.py
-/home/mike/repos/pipulate/pipulate/pipulate.py
-/home/mike/repos/pipulate/pipulate/core.py
-/home/mike/repos/pipulate/flake.nix
+/home/mike/repos/pipulate/scripts/articles/articleizer.py
+/home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/MikeLev.in/flake.nix
+# /home/mike/repos/MikeLev.in/_config.yml
+
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/hardware-configuration.nix
+
+# /home/mike/repos/MikeLev.in/_posts/2025-11-01-jiu-jitsu-keyboard-flow-ai.md
+# /home/mike/repos/MikeLev.in/_posts/2025-11-01-no-gooey-video-tech-gnosis-craftsmanship.md
+
+# /home/mike/repos/pipulate/scripts/articles/articleizer.py
+# /home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
+
+# /home/mike/repos/pipulate/prompt_foo.py
+# /home/mike/repos/nixos/init.lua
+
+# /home/mike/repos/MikeLev.in/_posts/2025-11-01-articulate-ape-blueprint-scaffolding-no-gooey-video-editing-nix.md
+# /home/mike/repos/MikeLev.in/_posts/2025-11-01-the-no-gooey-way-sirens-song-articulate-ape.md
+
+# /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
+# /home/mike/repos/pipulate/assets/nbs/URLinspector.ipynb
+# /home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
+# /home/mike/repos/pipulate/assets/nbs/url_inspect_sauce.py
+# /home/mike/repos/pipulate/pipulate/__init__.py
+# /home/mike/repos/pipulate/pipulate/pipulate.py
+# /home/mike/repos/pipulate/pipulate/core.py
+# /home/mike/repos/pipulate/flake.nix
 
 # /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
 # /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
