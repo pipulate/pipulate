@@ -11,7 +11,16 @@ import argparse
 import time # NEW: Import time for the retry delay
 
 # --- CONFIGURATION ---
-OUTPUT_DIR = "/home/mike/repos/MikeLev.in/_posts"
+PROJECT_TARGETS = {
+    "1": {
+        "name": "MikeLev.in (Public)",
+        "path": "/home/mike/repos/MikeLev.in/_posts"
+    },
+    "2": {
+        "name": "Grimoire (Private)",
+        "path": "/home/mike/repos/grimoire/_posts"
+    }
+}
 ARTICLE_FILENAME = "article.txt"
 PROMPT_FILENAME = "editing_prompt.txt"
 PROMPT_PLACEHOLDER = "[INSERT FULL ARTICLE]"
@@ -44,7 +53,7 @@ def get_api_key():
             print(f"⚠️ Could not save API key. Error: {e}")
     return key
 
-def create_jekyll_post(article_content, instructions):
+def create_jekyll_post(article_content, instructions, output_dir):
     """
     Assembles and writes a Jekyll post file from the article content and
     structured AI-generated instructions.
@@ -134,8 +143,8 @@ def create_jekyll_post(article_content, instructions):
         slug = os.path.splitext(title_brainstorm[0]["filename"])[0]
 
     output_filename = f"{current_date}-{slug}.md"
-    output_path = os.path.join(OUTPUT_DIR, output_filename)
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    output_path = os.path.join(output_dir, output_filename)
+    os.makedirs(output_dir, exist_ok=True)
 
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write(final_content)
@@ -150,6 +159,22 @@ def main():
         help=f"Use local '{INSTRUCTIONS_CACHE_FILE}' cache instead of calling the API."
     )
     args = parser.parse_args()
+
+    # --- NEW: INTERACTIVE TARGET SELECTION ---
+    print("Please select a publishing target:")
+    for key, target in PROJECT_TARGETS.items():
+        print(f"  [{key}] {target['name']}")
+
+    choice = input("Enter choice (1 or 2): ").strip()
+
+    if choice not in PROJECT_TARGETS:
+        print("Invalid choice. Exiting to prevent mis-publishing.")
+        return
+
+    selected_target = PROJECT_TARGETS[choice]
+    output_dir = selected_target['path']
+    print(f"✅ Publishing to: {selected_target['name']} ({output_dir})\n")
+    # --- END NEW SECTION ---
 
     if not os.path.exists(ARTICLE_FILENAME):
         print(f"Error: Article file '{ARTICLE_FILENAME}' not found.")
@@ -230,7 +255,7 @@ def main():
             return
 
     if instructions:
-        create_jekyll_post(article_text, instructions)
+        create_jekyll_post(article_text, instructions, output_dir)
 
 if __name__ == '__main__':
     main()
