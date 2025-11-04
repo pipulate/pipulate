@@ -1,9 +1,18 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/scripts/articles/articleizer.py
-/home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
+/home/mike/repos/MikeLev.in/_posts/2025-11-01-browser-acetate-no-gooey-9x16-screen-recording.md
+/home/mike/repos/pipulate/config.py
+/home/mike/repos/pipulate/server.py
+/home/mike/repos/pipulate/apps/220_roadmap.py
+/home/mike/repos/pipulate/apps/050_documentation.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/autognome.py
+
+# /home/mike/repos/pipulate/scripts/articles/articleizer.py
+# /home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
 
 # /home/mike/repos/MikeLev.in/flake.nix
 # /home/mike/repos/MikeLev.in/_config.yml
