@@ -1,12 +1,48 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/MikeLev.in/_posts/2025-11-01-browser-acetate-no-gooey-9x16-screen-recording.md
-/home/mike/repos/pipulate/config.py
-/home/mike/repos/pipulate/server.py
-/home/mike/repos/pipulate/apps/220_roadmap.py
-/home/mike/repos/pipulate/apps/050_documentation.py
+/home/mike/repos/pipulate/prompt_foo.py
+/home/mike/repos/pipulate/scripts/articles/articleizer.py
+/home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/pipulate/assets/installer/install.sh
+# /home/mike/repos/pipulate/flake.nix
+# /home/mike/repos/pipulate/AI_RUNME.py
+# /home/mike/repos/pipulate/README.md
+# /home/mike/repos/pipulate/config.py
+# /home/mike/repos/pipulate/server.py
+# /home/mike/repos/pipulate/pipulate/__init__.py
+# /home/mike/repos/pipulate/pipulate/pipulate.py
+# /home/mike/repos/pipulate/pipulate/core.py
+# /home/mike/repos/pipulate/cli.py
+
+# /home/mike/repos/nixos/configuration.nix
+
+# /home/mike/repos/pipulate/assets/installer/install.sh
+# /home/mike/repos/pipulate/flake.nix
+# /home/mike/repos/pipulate/AI_RUNME.py
+# /home/mike/repos/pipulate/README.md
+# /home/mike/repos/pipulate/config.py
+# /home/mike/repos/pipulate/server.py
+# /home/mike/repos/pipulate/pipulate/__init__.py
+# /home/mike/repos/pipulate/pipulate/pipulate.py
+# /home/mike/repos/pipulate/pipulate/core.py
+# /home/mike/repos/pipulate/cli.py
+
+# /home/mike/repos/pipulate/scripts/articles/articleizer.py
+# /home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
+# /home/mike/repos/pipulate/flake.nix
+
+# /home/mike/repos/nixos/init.lua
+# /home/mike/repos/nixos/autognome.py
+# /home/mike/repos/grimoire/flake.nix
+
+# /home/mike/repos/MikeLev.in/_posts/2025-11-01-browser-acetate-no-gooey-9x16-screen-recording.md
+# /home/mike/repos/pipulate/config.py
+# /home/mike/repos/pipulate/server.py
+# /home/mike/repos/pipulate/apps/220_roadmap.py
+# /home/mike/repos/pipulate/apps/050_documentation.py
 
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/autognome.py
