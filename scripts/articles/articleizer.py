@@ -11,22 +11,34 @@ import argparse
 import time # NEW: Import time for the retry delay
 
 # --- CONFIGURATION ---
-PROJECT_TARGETS = {
-    "1": {
-        "name": "MikeLev.in (Public)",
-        "path": "/home/mike/repos/MikeLev.in/_posts"
-    },
-    "2": {
-        "name": "Grimoire (Private)",
-        "path": "/home/mike/repos/grimoire/_posts"
-    }
-}
+CONFIG_DIR = Path.home() / ".config" / "articleizer"
+API_KEY_FILE = CONFIG_DIR / "api_key.txt"
+TARGETS_FILE = CONFIG_DIR / "targets.json"
+
 ARTICLE_FILENAME = "article.txt"
 PROMPT_FILENAME = "editing_prompt.txt"
 PROMPT_PLACEHOLDER = "[INSERT FULL ARTICLE]"
 INSTRUCTIONS_CACHE_FILE = "instructions.json"
-CONFIG_DIR = Path.home() / ".config" / "articleizer"
-API_KEY_FILE = CONFIG_DIR / "api_key.txt"
+
+# Safe default if config is missing (keeps the public repo functional but private)
+DEFAULT_TARGETS = {
+    "1": {
+        "name": "Local Project (Default)",
+        "path": "./_posts"
+    }
+}
+
+def load_targets():
+    """Loads publishing targets from external config or falls back to default."""
+    if TARGETS_FILE.exists():
+        try:
+            with open(TARGETS_FILE, 'r') as f:
+                return json.load(f)
+        except json.JSONDecodeError:
+            print(f"⚠️ Warning: {TARGETS_FILE} is corrupt. Using defaults.")
+    return DEFAULT_TARGETS
+
+PROJECT_TARGETS = load_targets()
 # --------------------------------
 
 def get_api_key():
