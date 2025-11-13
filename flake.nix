@@ -571,6 +571,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
         '';
         # Miscellaneous setup logic for aliases, CUDA, SSH, etc.
         miscSetupLogic = ''
+          export PIPULATE_ROOT="$(pwd)" # Capture the absolute path to the project root
           # Set up nbstripout git filter
           if [ ! -f .gitattributes ]; then
             echo "*.ipynb filter=nbstripout" > .gitattributes
@@ -587,11 +588,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias gdiff='git --no-pager diff --no-textconv'
           
           # --- THE CHISEL-STRIKE ---
-          # This spell automatically:
-          # 1. Enters the correct directory
-          # 2. Dumps the clipboard into the "lizard tail" file (article.txt)
-          # 3. Runs the *unchanged* Python script to process it
-          alias articleizer='(cd scripts/articles && echo "Dumping clipboard to article.txt..." && xclip -selection clipboard -o > article.txt && echo "Running articleizer..." && python articleizer.py)'
+          # This spell now uses an absolute path to work from ANYWHERE
+          alias articleizer='(cd "$PIPULATE_ROOT/scripts/articles" && echo "Dumping clipboard to article.txt..." && xclip -selection clipboard -o > article.txt && echo "Running articleizer..." && python articleizer.py)'
           # --- END ---
           
           # Update remote URL to use SSH if we have a key
