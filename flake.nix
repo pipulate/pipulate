@@ -586,13 +586,6 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias release='.venv/bin/python helpers/release/publish.py'
           alias mcp='.venv/bin/python cli.py call'
           alias gdiff='git --no-pager diff --no-textconv'
-          
-          # --- THE CHISEL-STRIKE ---
-          # This spell now uses an absolute path to work from ANYWHERE
-          # AND correctly grabs from the 'PRIMARY' (mouse-select / yank) buffer!
-          alias articleizer='(cd "$PIPULATE_ROOT/scripts/articles" && echo "Dumping PRIMARY buffer to article.txt..." && xclip -selection primary -o > article.txt && echo "Running articleizer..." && python articleizer.py)'
-          # --- END ---
-          
           # Update remote URL to use SSH if we have a key
           if [ -d .git ] && [ -f ~/.ssh/id_rsa ]; then
             REMOTE_URL=$(git remote get-url origin 2>/dev/null || echo "")
