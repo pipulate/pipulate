@@ -589,7 +589,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           
           # --- THE CHISEL-STRIKE ---
           # This spell now uses an absolute path to work from ANYWHERE
-          alias articleizer='(cd "$PIPULATE_ROOT/scripts/articles" && echo "Dumping clipboard to article.txt..." && xclip -selection clipboard -o > article.txt && echo "Running articleizer..." && python articleizer.py)'
+          # AND correctly grabs from the 'PRIMARY' (mouse-select / yank) buffer!
+          alias articleizer='(cd "$PIPULATE_ROOT/scripts/articles" && echo "Dumping PRIMARY buffer to article.txt..." && xclip -selection primary -o > article.txt && echo "Running articleizer..." && python articleizer.py)'
           # --- END ---
           
           # Update remote URL to use SSH if we have a key
