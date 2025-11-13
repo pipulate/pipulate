@@ -1,7 +1,5 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/flake.nix
-/home/mike/repos/pipulate/scripts/articles/articleizer.py
-/home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
+/home/mike/repos/nixos/autognome.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)

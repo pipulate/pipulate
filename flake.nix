@@ -189,6 +189,7 @@
           stdenv.cc.cc.lib             # Standard C library for Linux systems
           chromium                     # Chromium browser for Selenium automation
           undetected-chromedriver
+          xclip
         ]);
         # This script sets up our Python environment and project
 runScript = pkgs.writeShellScriptBin "run-script" ''
@@ -584,6 +585,15 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias release='.venv/bin/python helpers/release/publish.py'
           alias mcp='.venv/bin/python cli.py call'
           alias gdiff='git --no-pager diff --no-textconv'
+          
+          # --- THE CHISEL-STRIKE ---
+          # This spell automatically:
+          # 1. Enters the correct directory
+          # 2. Dumps the clipboard into the "lizard tail" file (article.txt)
+          # 3. Runs the *unchanged* Python script to process it
+          alias articleizer='(cd scripts/articles && echo "Dumping clipboard to article.txt..." && xclip -selection clipboard -o > article.txt && echo "Running articleizer..." && python articleizer.py)'
+          # --- END ---
+          
           # Update remote URL to use SSH if we have a key
           if [ -d .git ] && [ -f ~/.ssh/id_rsa ]; then
             REMOTE_URL=$(git remote get-url origin 2>/dev/null || echo "")
