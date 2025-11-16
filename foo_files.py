@@ -1,18 +1,31 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/config.py
+/home/mike/repos/pipulate/.gitignore
 /home/mike/repos/pipulate/Notebooks/_config.py
 /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
 /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
-/home/mike/repos/pipulate/pipulate/__init__.py
-/home/mike/repos/pipulate/pipulate/pipulate.py
-/home/mike/repos/pipulate/pipulate/core.py
-/home/mike/repos/pipulate/imports/server_logging.py
-/home/mike/repos/pipulate/imports/botify_code_generation.py
-/home/mike/repos/pipulate/imports/stream_orchestrator.py
-/home/mike/repos/pipulate/imports/mcp_orchestrator.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/pipulate/assets/installer/install.sh
+# /home/mike/repos/pipulate/flake.nix
+# /home/mike/repos/pipulate/prompt_foo.py
+# /home/mike/repos/pipulate/config.py
+# /home/mike/repos/pipulate/pipulate/__init__.py
+# /home/mike/repos/pipulate/pipulate/pipulate.py
+# /home/mike/repos/pipulate/pipulate/core.py
+
+# /home/mike/repos/pipulate/config.py
+# /home/mike/repos/pipulate/Notebooks/_config.py
+# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
+# /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
+# /home/mike/repos/pipulate/pipulate/__init__.py
+# /home/mike/repos/pipulate/pipulate/pipulate.py
+# /home/mike/repos/pipulate/pipulate/core.py
+# /home/mike/repos/pipulate/imports/server_logging.py
+# /home/mike/repos/pipulate/imports/botify_code_generation.py
+# /home/mike/repos/pipulate/imports/stream_orchestrator.py
+# /home/mike/repos/pipulate/imports/mcp_orchestrator.py
 
 # /home/mike/repos/pipulate/flake.nix
 # /home/mike/repos/pipulate/scripts/articles/articleizer.py
