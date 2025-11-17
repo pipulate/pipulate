@@ -2103,14 +2103,15 @@ def create_deliverables_excel_and_button(job: str, df: pd.DataFrame, client_doma
 
 
 def add_filtered_excel_tabs(
-    job: str, 
-    df: pd.DataFrame, 
-    semrush_lookup: str, 
-    has_botify: bool, 
-    competitors: list, 
+    job: str,
+    df: pd.DataFrame,
+    semrush_lookup: str,
+    has_botify: bool,
+    competitors: list,
     xl_file: Path,
     TARGET_COMPETITOR_COL: str,
-    button: widgets.Button
+    button: widgets.Button,
+    custom_filters: list = None
 ):
     """
     Appends multiple filtered and formatted tabs to the existing Excel workbook.
@@ -2207,13 +2208,13 @@ def add_filtered_excel_tabs(
 
         # --- 4. Loop: Targeted Keyword Filters ---
         print("  - Writing targeted filter tabs (Gifts, Questions, etc.)...")
-        targeted_filters = [
-            ("Gifts", ['gift', 'gifts', 'idea', 'ideas', 'present', 'presents', 'give', 'giving', 'black friday', 'cyber monday', 'cyber week', 'bfcm', 'bf', 'cm', 'holiday', 'deals', 'sales', 'offer', 'discount', 'shopping']),
-            ("Broad Questions", '''am are can could did do does for from had has have how i is may might must shall should was were what when where which who whom whose why will with would'''.split()),
-            ("Narrow Questions", '''who whom whose what which where when why how'''.split()),
-            ("Popular Modifiers", ['how to', 'best', 'review', 'reviews']),
-            ("Near Me", ['near me', 'for sale', 'nearby', 'closest', 'near you', 'local'])
-        ]
+        # 1. Load filters
+        if custom_filters is not None:
+            targeted_filters = custom_filters
+            print(f"  - Applying {len(targeted_filters)} custom filters passed from notebook.")
+        else:
+            targeted_filters = DEFAULT_TARGETED_FILTERS
+            print("  - No custom filters passed. Using default filter list.")
 
         for filter_name, keywords in targeted_filters:
             print(f"    - Writing '{filter_name}' tab...")
