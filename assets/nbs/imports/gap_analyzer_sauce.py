@@ -467,7 +467,6 @@ def pivot_semrush_data(job: str, df2: pd.DataFrame, client_domain_from_keys: str
     cdict = pip.get(job, 'competitors_dict_json', {})
     if not isinstance(cdict, dict): # Handle potential JSON string load
         try:
-             import json
              cdict = json.loads(cdict) if isinstance(cdict, str) else {}
         except:
              cdict = {}
@@ -496,6 +495,8 @@ def pivot_semrush_data(job: str, df2: pd.DataFrame, client_domain_from_keys: str
             print(f"❌ Critical Warning: Client domain '{semrush_lookup}' (or variant) not found in pivot table columns. Cannot reorder.")
 
         competitors = list(pivot_df.columns) # Get competitors AFTER potential reorder
+        pip.set(job, 'competitors_list_json', json.dumps(competitors))
+        print(f"  💾 Stored canonical competitor list ({len(competitors)} competitors) to pip state.")
         pivot_df['Competitors Positioning'] = pivot_df.iloc[:, 1:].notna().sum(axis=1)
 
         # Load or initialize df_competitors
@@ -2011,17 +2012,15 @@ def create_deliverables_excel_and_button(job: str, df: pd.DataFrame, client_doma
         # 1. Get semrush_lookup
         semrush_lookup = _extract_registered_domain(client_domain_from_keys)
 
-        # 2. Get competitors list from pip state
-        competitors_dict_json = pip.get(job, 'competitors_dict_json', '{}')
-        competitors_dict = json.loads(competitors_dict_json)
-        # We need the *column names* from the df, which are the *values* in cdict
-        competitors = list(competitors_dict.values())
+        # 2. Get canonical competitors list from pip state
+        competitors_list_json = pip.get(job, 'competitors_list_json', '[]')
+        competitors = json.loads(competitors_list_json)
         if not competitors:
-             # Fallback: try to infer from df columns (less reliable)
-             print("  ⚠️ Warning: competitors_dict_json was empty. Inferring competitors from DataFrame columns.")
-             # This is a bit fragile, but a necessary fallback
-             non_metric_cols = set(df.select_dtypes(exclude=[np.number]).columns)
-             competitors = [col for col in df.columns if '/' in col or col == semrush_lookup or '.com' in col]
+            # This should NOT happen, but it's a safe fallback.
+            print(f"  ❌ CRITICAL WARNING: 'competitors_list_json' not found in pip state. Inferring from DataFrame columns.")
+            competitors = [col for col in df.columns if col == semrush_lookup or '/' in col or '.com' in col]
+        else:
+            print(f"  ✅ Loaded canonical list of {len(competitors)} competitors from pip state.")
 
 
         # 3. Find the canonical client column name (TARGET_COMPETITOR_COL)
