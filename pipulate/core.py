@@ -1990,6 +1990,21 @@ class Pipulate:
         ### NEW LOGIC ENDS HERE ###
 
         # --- Define Sample Data for Scrubbing ---
+        SAMPLE_FILTERS_SOURCE = [
+            "# --- Define Custom Excel Tab Filters --- \n",
+            "# (This list is scrubbed by pip.nbup() and returned to this default)\n",
+            "\n",
+            "targeted_filters = [\n",
+            "    (\"Gifts\", ['gift', 'gifts', 'idea', 'ideas', 'present', 'presents', 'give', 'giving', 'black friday', 'cyber monday', 'cyber week', 'bfcm', 'bf', 'cm', 'holiday', 'deals', 'sales', 'offer', 'discount', 'shopping']),\n",
+            "    (\"Broad Questions\", '''am are can could did do does for from had has have how i is may might must shall should was were what when where which who whom whose why will with would'''.split()),\n",
+            "    (\"Narrow Questions\", '''who whom whose what which where when why how'''.split()),\n",
+            "    (\"Popular Modifiers\", ['how to', 'best', 'review', 'reviews']),\n",
+            "    (\"Near Me\", ['near me', 'for sale', 'nearby', 'closest', 'near you', 'local'])\n",
+            "]\n",
+            "\n",
+            "pip.set(job, 'targeted_filters', targeted_filters)\n",
+            "print(f\"✅ Stored {len(targeted_filters)} custom filter sets in pip state.\")"
+        ]
         SAMPLE_PROMPT_SOURCE_FAQ = [
             "**Your Role (AI Content Strategist):**\n",
             "\n",
@@ -2058,6 +2073,9 @@ class Pipulate:
                     elif "url-list-input" in tags:
                         cell.source = SAMPLE_URL_LIST_SOURCE
                         print("    ✓ Scrubbed and replaced 'url-list-input' cell.")
+                    elif "custom-filters-input" in tags:
+                        cell.source = SAMPLE_FILTERS_SOURCE
+                        print("    ✓ Scrubbed and replaced 'custom-filters-input' cell.")
                     ### NEW LOGIC STARTS HERE ###
                     elif "secrets" in tags and cell.cell_type == 'code':
                         try:
