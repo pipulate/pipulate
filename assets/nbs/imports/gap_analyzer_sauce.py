@@ -2265,9 +2265,11 @@ def _find_last_data_row(sheet, keyword_column_letter):
         last_row -= 1
     return last_row
 
-def _apply_conditional_formatting(sheet, column_mapping, last_row, conditionals_descending, conditionals_ascending, rule_desc, rule_asc):
+def _apply_conditional_formatting(sheet, column_mapping, last_row, conditionals_descending, conditionals_ascending, rule_desc, rule_asc, competitors):
     """Applies color scale conditional formatting to specified columns."""
     for label in conditionals_descending + conditionals_ascending:
+        if label in competitors:
+            continue # Explicitly skip any column that is a competitor
         column_letter = column_mapping.get(label)
         if column_letter and last_row > 1: # Ensure there is data to format
             range_string = f'{column_letter}2:{column_letter}{last_row}'
@@ -2375,7 +2377,7 @@ def apply_excel_formatting(
     }
 
     conditionals_descending = ['Search Volume', 'CPC', 'Competition', 'Avg. URL CTR excluding anonymized queries', 'No. of Missed Clicks excluding anonymized queries', 'Combined Score', 'No. of Unique Inlinks']
-    conditionals_ascending = ['Keyword Difficulty', 'Raw Internal Pagerank', 'Internal Pagerank', 'Internal Pagerank Position', 'Avg. URL Position excluding anonymized queries', 'Depth', TARGET_COMPETITOR_COL] + [col for col in competitors if col != TARGET_COMPETITOR_COL]
+    conditionals_ascending = ['Keyword Difficulty', 'Raw Internal Pagerank', 'Internal Pagerank', 'Internal Pagerank Position', 'Avg. URL Position excluding anonymized queries', 'Depth']
     semrush_columns = ['Keyword', 'Search Volume', 'CPC', 'Keyword Difficulty', 'Competition', 'SERP Features by Keyword', 'Keyword Intents', 'Position Type', 'Number of Results', 'Timestamp', 'Competitor URL', 'Client URL']
     botify_columns = ['Depth', 'No. of Keywords', 'No. of Impressions excluding anonymized queries', 'No. of Clicks excluding anonymized queries', 'No. of Missed Clicks excluding anonymized queries', 'Avg. URL CTR excluding anonymized queries', 'Avg. URL Position excluding anonymized queries', 'No. of Keywords for the URL To Achieve 90% Audience', 'Raw Internal Pagerank', 'Internal Pagerank', 'Internal Pagerank Position', 'No. of Unique Inlinks', 'Title', 'Meta Description']
     bigger_font_headers = ["Keyword", "Search Volume", "Title", "Meta Description", "Competitor URL", "Client URL", "SERP Features by Keyword"]
@@ -2490,7 +2492,7 @@ def apply_excel_formatting(
                             cell.number_format = format_code
 
             # 8. Apply Conditional Formatting
-            _apply_conditional_formatting(sheet, column_mapping, last_row, conditionals_descending, conditionals_ascending, color_scale_rule_desc, color_scale_rule_asc)
+            _apply_conditional_formatting(sheet, column_mapping, last_row, conditionals_descending, conditionals_ascending, color_scale_rule_desc, color_scale_rule_asc, competitors)
 
             # 9. Rename 'Client URL' Header
             client_url_column_letter = column_mapping.get("Client URL")
