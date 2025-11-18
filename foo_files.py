@@ -1,6 +1,7 @@
 AI_PHOOEY_CHOP = """\
+/home/mike/repos/pipulate/prompt_foo.py
 /home/mike/repos/nixos/configuration.nix
-/home/mike/repos/pipulate/flake.nix
+/home/mike/repos/nixos/configuration.nix.old_big_pile
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
