@@ -1,9 +1,18 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/Notebooks/VIDeditor.ipynb
-/home/mike/repos/pipulate/Notebooks/imports/videditor_sauce.py
+/home/mike/repos/pipulate/prompt_foo.py
+/home/mike/repos/pipulate/foo_files.py
+/home/mike/repos/pipulate/scripts/articles/list_articles.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/packages.nix
+# /home/mike/repos/pipulate/assets/installer/install.sh
+# /home/mike/repos/pipulate/flake.nix
+
+# /home/mike/repos/pipulate/Notebooks/VIDeditor.ipynb
+# /home/mike/repos/pipulate/Notebooks/imports/videditor_sauce.py
 
 # /home/mike/repos/pipulate/prompt_foo.py
 # /home/mike/repos/pipulate/foo_files.py

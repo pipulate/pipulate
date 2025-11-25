@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from moviepy import VideoFileClip, concatenate_videoclips
+from moviepy.video.fx import Crop
 
 def concatenate_videos(source_directory: str, output_filename: str = "output.mp4") -> str:
     """
@@ -72,7 +73,38 @@ def concatenate_videos(source_directory: str, output_filename: str = "output.mp4
         )
         
         print("✅ Done!")
-        return str(output_path)
+
+        # --- Vertical 9:16 Crop ---
+        print("📱 Generating Vertical (9:16) Crop...")
+        w, h = final_clip.size
+        target_w = int(h * (9 / 16))
+        
+        if w > target_w: # Only crop if it makes sense
+            x_center = int((w / 2) - (target_w / 2))
+            vertical_clip = final_clip.with_effects([
+                Crop(
+                    x1=x_center, 
+                    y1=0, 
+                    width=target_w, 
+                    height=h
+                )
+            ])
+            
+            vert_filename = f"vertical_{output_filename}"
+            vert_path = Path.cwd() / vert_filename
+            print(f"💾 Writing Vertical to: {vert_path}")
+            
+            vertical_clip.write_videofile(
+                str(vert_path), 
+                codec="libx264", 
+                audio_codec="aac", 
+                fps=30,
+                # resize to 1080x1920 if needed, but raw crop is usually fine for shorts
+            )
+            return [str(output_path), str(vert_path)]
+        else:
+            print("⚠️ Video is already too narrow for 9:16 crop.")
+            return [str(output_path)]
 
     except Exception as e:
         print(f"❌ Error during concatenation: {e}")
