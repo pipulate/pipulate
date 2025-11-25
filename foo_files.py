@@ -1,4 +1,10 @@
 AI_PHOOEY_CHOP = """\
+/home/mike/repos/nixos/configuration.nix.old_big_pile
+/home/mike/repos/nixos/configuration.nix
+/home/mike/repos/nixos/packages.nix
+/home/mike/repos/pipulate/assets/installer/install.sh
+/home/mike/repos/pipulate/flake.nix
+/home/mike/repos/nixos/services.nix
 /home/mike/repos/pipulate/pipulate/__init__.py
 /home/mike/repos/pipulate/pipulate/pipulate.py
 /home/mike/repos/pipulate/pipulate/core.py

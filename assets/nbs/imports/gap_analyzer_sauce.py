@@ -1727,9 +1727,9 @@ def name_keyword_clusters(df, keyword_column, cluster_column):
     return df
 
 
-def cluster_and_finalize_dataframe(job: str, df: pd.DataFrame, has_botify: bool):
+def cluster_and_finalize_dataframe(job: str, df: pd.DataFrame, has_botify: bool, enable_clustering: bool = True):
     """
-    Performs keyword clustering, names clusters, reorders columns,
+    Performs keyword clustering (optional), names clusters, reorders columns,
     saves the unformatted CSV, stores the final DataFrame in pip state,
     and returns the final DataFrame for display.
 
@@ -1737,6 +1737,7 @@ def cluster_and_finalize_dataframe(job: str, df: pd.DataFrame, has_botify: bool)
         job (str): The current Pipulate job ID.
         df (pd.DataFrame): The truncated DataFrame from the previous step.
         has_botify (bool): Flag indicating if Botify data is present.
+        enable_clustering (bool): Whether to perform ML clustering. Defaults to True.
 
     Returns:
         pd.DataFrame: The final, clustered, and arranged DataFrame.
@@ -1744,8 +1745,6 @@ def cluster_and_finalize_dataframe(job: str, df: pd.DataFrame, has_botify: bool)
     if df.empty:
         print("⚠️ Input DataFrame (df) is empty. Cannot perform clustering.")
         return pd.DataFrame()
-
-    print("🤖 Grouping Keywords (Clustering)...")
 
     # --- CORE LOGIC (Moved from Notebook) ---
     try:
@@ -1755,77 +1754,90 @@ def cluster_and_finalize_dataframe(job: str, df: pd.DataFrame, has_botify: bool)
         keyword_cluster_params = temp_dir / "keyword_cluster_params.json"
         unformatted_csv = temp_dir / "unformatted.csv"
 
-        # Download necessary nltk components
-        nltk.download('punkt_tab', quiet=True)
+        if enable_clustering:
+            print("🤖 Grouping Keywords (Clustering)...")
 
-        # Configuration for iterative testing
-        target_silhouette_score = 0.6
-        n_clusters_options = range(15, 26)
-        n_components_options = [10, 15, 20]
-        max_features_options = [50, 100, 150]
-        total_tests = len(list(itertools.product(n_clusters_options, n_components_options, max_features_options)))
+            # Download necessary nltk components
+            nltk.download('punkt_tab', quiet=True)
 
-        best_score = -1.0 # Initialize
-        best_params = {}
+            # Configuration for iterative testing
+            target_silhouette_score = 0.6
+            n_clusters_options = range(15, 26)
+            n_components_options = [10, 15, 20]
+            max_features_options = [50, 100, 150]
+            total_tests = len(list(itertools.product(n_clusters_options, n_components_options, max_features_options)))
 
-        # 1. Check for Cached Parameters
-        if keyword_cluster_params.exists():
-            try:
-                with keyword_cluster_params.open('r') as file:
-                    best_params = json.load(file)
-                print(f"  Loaded initial parameters: {best_params}")
-                # Test with loaded parameters
-                # We call the helper functions that are already in this file
-                df, score, _ = keyword_clustering(df, 'Keyword', **best_params)
-                best_score = score
-                print(f"  Initial test with loaded parameters: Score = {score:.3f}")
-            except (json.JSONDecodeError, FileNotFoundError, TypeError, ValueError) as e:
-                print(f"  ⚠️ Failed to load/use cached parameters. Starting full search. Error: {e}")
-                best_params = {}
+            best_score = -1.0 # Initialize
+            best_params = {}
 
-        # 2. Iterative Search
-        if best_score < target_silhouette_score:
-            print(f"  Refining best keyword clustering fit... Total tests: {total_tests}")
-            for n_clusters, n_components, max_features in itertools.product(n_clusters_options, n_components_options, max_features_options):
-                if (n_clusters == best_params.get('n_clusters') and
-                    n_components == best_params.get('n_components') and
-                    max_features == best_params.get('max_features')):
-                    continue # Skip already-tested params
-
-                df_temp, score, params = keyword_clustering(df.copy(), 'Keyword', n_clusters, n_components, max_features)
-                print(f'  Testing params: {params}, Score: {score:.3f}')
-
-                if score > best_score:
+            # 1. Check for Cached Parameters
+            if keyword_cluster_params.exists():
+                try:
+                    with keyword_cluster_params.open('r') as file:
+                        best_params = json.load(file)
+                    print(f"  Loaded initial parameters: {best_params}")
+                    # Test with loaded parameters
+                    # We call the helper functions that are already in this file
+                    df, score, _ = keyword_clustering(df, 'Keyword', **best_params)
                     best_score = score
-                    best_params = params
-                    df = df_temp.copy() # Keep the DF with the better cluster labels
+                    print(f"  Initial test with loaded parameters: Score = {score:.3f}")
+                except (json.JSONDecodeError, FileNotFoundError, TypeError, ValueError) as e:
+                    print(f"  ⚠️ Failed to load/use cached parameters. Starting full search. Error: {e}")
+                    best_params = {}
 
-                    if best_score >= target_silhouette_score:
-                        print(f'  ✅ Good enough score found: {best_score:.3f} with params {best_params}')
-                        with keyword_cluster_params.open('w') as file:
-                            json.dump(best_params, file)
-                        print(f'  Saved best parameters: {best_params}')
-                        break
-            
-            if best_score < target_silhouette_score and best_params:
-                print(f'  Highest score reached: {best_score:.3f}. Saving best parameters found.')
-                with keyword_cluster_params.open('w') as file:
-                    json.dump(best_params, file)
+            # 2. Iterative Search
+            if best_score < target_silhouette_score:
+                print(f"  Refining best keyword clustering fit... Total tests: {total_tests}")
+                for n_clusters, n_components, max_features in itertools.product(n_clusters_options, n_components_options, max_features_options):
+                    if (n_clusters == best_params.get('n_clusters') and
+                        n_components == best_params.get('n_components') and
+                        max_features == best_params.get('max_features')):
+                        continue # Skip already-tested params
 
-        # 3. Finalize Clustering
-        if 'Keyword Cluster' not in df.columns: # If clustering didn't run or was skipped
-            print("  Finalizing clustering with best parameters...")
-            df, _, _ = keyword_clustering(df, 'Keyword', **best_params)
+                    df_temp, score, params = keyword_clustering(df.copy(), 'Keyword', n_clusters, n_components, max_features)
+                    print(f'  Testing params: {params}, Score: {score:.3f}')
 
-        # 4. Naming clusters
-        print("\n🏷️  Naming clusters...")
-        df = name_keyword_clusters(df, 'Keyword', 'Keyword Cluster') # Call helper
+                    if score > best_score:
+                        best_score = score
+                        best_params = params
+                        df = df_temp.copy() # Keep the DF with the better cluster labels
+
+                        if best_score >= target_silhouette_score:
+                            print(f'  ✅ Good enough score found: {best_score:.3f} with params {best_params}')
+                            with keyword_cluster_params.open('w') as file:
+                                json.dump(best_params, file)
+                            print(f'  Saved best parameters: {best_params}')
+                            break
+                
+                if best_score < target_silhouette_score and best_params:
+                    print(f'  Highest score reached: {best_score:.3f}. Saving best parameters found.')
+                    with keyword_cluster_params.open('w') as file:
+                        json.dump(best_params, file)
+
+            # 3. Finalize Clustering
+            if 'Keyword Cluster' not in df.columns: # If clustering didn't run or was skipped
+                print("  Finalizing clustering with best parameters...")
+                df, _, _ = keyword_clustering(df, 'Keyword', **best_params)
+
+            # 4. Naming clusters
+            print("\n🏷️  Naming clusters...")
+            df = name_keyword_clusters(df, 'Keyword', 'Keyword Cluster') # Call helper
+
+        else:
+            print("⏩ Clustering skipped via configuration.")
+            # Clean up the column if it exists from a previous run
+            if 'Keyword Group (Experimental)' in df.columns:
+                df.drop(columns=['Keyword Group (Experimental)'], inplace=True)
 
         # --- FINAL REORDERING ---
         # We call the helper function _reorder_columns_surgical
         print("  Reordering columns...")
         df = _reorder_columns_surgical(df, 'CPC', after_column='Keyword Difficulty')
-        df = _reorder_columns_surgical(df, 'Keyword Group (Experimental)', after_column='Number of Words')
+        
+        # Only attempt to reorder the group column if clustering was enabled/exists
+        if 'Keyword Group (Experimental)' in df.columns:
+            df = _reorder_columns_surgical(df, 'Keyword Group (Experimental)', after_column='Number of Words')
+            
         df = _reorder_columns_surgical(df, 'CPC', after_column='Number of Words') # Verbatim duplicate reorder
 
         # Conditional reordering
@@ -1843,17 +1855,20 @@ def cluster_and_finalize_dataframe(job: str, df: pd.DataFrame, has_botify: bool)
 
         # --- DISPLAY FINAL CLUSTER COUNTS ---
         print("\n--- Final Keyword Group Counts ---")
-        value_counts = df["Keyword Group (Experimental)"].value_counts()
-        if not value_counts.empty:
-            max_digits = len(str(len(value_counts)))
-            max_index_width = max(len(str(index)) for index in value_counts.index)
-            max_count_width = max(len(f"{count:,}") for count in value_counts)
-            for i, (index, count) in enumerate(value_counts.items(), start=1):
-                counter_str = str(i).zfill(max_digits)
-                count_str = f"{count:,}"
-                print(f"  {counter_str}: {index:<{max_index_width}} - {count_str:>{max_count_width}}")
+        if 'Keyword Group (Experimental)' in df.columns:
+            value_counts = df["Keyword Group (Experimental)"].value_counts()
+            if not value_counts.empty:
+                max_digits = len(str(len(value_counts)))
+                max_index_width = max(len(str(index)) for index in value_counts.index)
+                max_count_width = max(len(f"{count:,}") for count in value_counts)
+                for i, (index, count) in enumerate(value_counts.items(), start=1):
+                    counter_str = str(i).zfill(max_digits)
+                    count_str = f"{count:,}"
+                    print(f"  {counter_str}: {index:<{max_index_width}} - {count_str:>{max_count_width}}")
+            else:
+                print("  ❌ No keyword groups were created.")
         else:
-            print("  ❌ No keyword groups were created.")
+            print("  (Clustering disabled)")
         print("----------------------------------")
 
         # --- OUTPUT (to pip state) ---
@@ -2462,7 +2477,7 @@ def apply_excel_formatting(
                             cell.alignment = Alignment(vertical='top', wrap_text=False)
 
             # 5. Rotate Competitor Headers
-            competitor_header_align = Alignment(vertical='bottom', textRotation=90, horizontal='center')
+            competitor_header_align = Alignment(vertical='top', textRotation=90, horizontal='center')
             for competitor_col_name in competitors:
                 col_letter = column_mapping.get(competitor_col_name)
                 if col_letter:
