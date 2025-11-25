@@ -1,8 +1,52 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/README.md
+/home/mike/repos/pipulate/pipulate/__init__.py
+/home/mike/repos/pipulate/pipulate/pipulate.py
+/home/mike/repos/pipulate/pipulate/core.py
+/home/mike/repos/pipulate/Notebooks/_config.py
+/home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
+/home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/nixos/configuration.nix.old_big_pile
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/packages.nix
+# /home/mike/repos/pipulate/assets/installer/install.sh
+# /home/mike/repos/pipulate/flake.nix
+# /home/mike/repos/nixos/services.nix
+
+# /home/mike/repos/MikeLev.in/_posts/2025-10-29-ai-first-web-invisible-fubar-pipulate.md
+# /home/mike/repos/MikeLev.in/_posts/2025-10-29-aie-python-video-orchestrating-creativity.md
+# /home/mike/repos/MikeLev.in/_posts/2025-10-30-fractal-unfurling-ai-video-workflows.md
+# /home/mike/repos/MikeLev.in/_posts/2025-10-30-python-dependency-dilemma-pip-compile-fix.md
+# /home/mike/repos/MikeLev.in/_posts/2025-10-31-mastering-the-tricks-novideo-ai-multiplatform-fluency.md
+# /home/mike/repos/MikeLev.in/_posts/2025-10-31-novideo-pandas-post-analog-video-age-40-year-cycle.md
+# /home/mike/repos/MikeLev.in/_posts/2025-11-01-browser-acetate-no-gooey-9x16-screen-recording.md
+# /home/mike/repos/MikeLev.in/_posts/2025-11-01-no-gooey-video-tech-gnosis-craftsmanship.md
+# /home/mike/repos/MikeLev.in/_posts/2025-11-01-the-no-gooey-way-sirens-song-articulate-ape.md
+# /home/mike/repos/MikeLev.in/_posts/2025-11-04-architects-edge-renormalizing-ai-workflow-observable-wins.md
+# /home/mike/repos/pipulate/Notebooks/VIDeditor.ipynb
+# /home/mike/repos/pipulate/Notebooks/imports/videditor_sauce.py
+
+# /home/mike/repos/pipulate/assets/installer/install.sh
+# /home/mike/repos/pipulate/flake.nix
+# /home/mike/repos/pipulate/AI_RUNME.py
+# /home/mike/repos/pipulate/README.md
+# /home/mike/repos/pipulate/config.py
+# /home/mike/repos/pipulate/server.py
+# /home/mike/repos/pipulate/pipulate/__init__.py
+# /home/mike/repos/pipulate/pipulate/pipulate.py
+# /home/mike/repos/pipulate/pipulate/core.py
+# /home/mike/repos/pipulate/cli.py
+# /home/mike/repos/pipulate/imports/server_logging.py
+# /home/mike/repos/pipulate/imports/botify_code_generation.py
+# /home/mike/repos/pipulate/imports/stream_orchestrator.py
+# /home/mike/repos/pipulate/imports/mcp_orchestrator.py
+
+# /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
+# /home/mike/repos/pipulate/assets/nbs/imports/url_inspect_sauce.py
+# /home/mike/repos/pipulate/Notebooks/imports/seo_gadget.py
 
 # /home/mike/repos/pipulate/assets/installer/install.sh
 # /home/mike/repos/pipulate/flake.nix
