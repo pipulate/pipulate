@@ -28,6 +28,7 @@ def concatenate_videos(video_paths: list, output_filename: str = "output.mp4") -
         try:
             print(f"  -> Loading: {path_obj.name}")
             clip = VideoFileClip(str(path_obj))
+            print(f"    -> Resolution: {clip.size}")
             loaded_objects.append(clip)
             valid_clips.append(clip)
         except Exception as e:
@@ -40,7 +41,7 @@ def concatenate_videos(video_paths: list, output_filename: str = "output.mp4") -
     # 2. Concatenation
     try:
         print(f"🔗 Concatenating {len(valid_clips)} clips...")
-        final_clip = concatenate_videoclips(valid_clips)
+        final_clip = concatenate_videoclips(valid_clips, method="compose")
         
         output_path = Path.cwd() / output_filename
         print(f"💾 Writing to: {output_path}")
