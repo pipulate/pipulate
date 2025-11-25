@@ -2128,129 +2128,96 @@ def add_filtered_excel_tabs(
     custom_filters: list = None
 ):
     """
-    Appends multiple filtered and formatted tabs to the existing Excel workbook.
-    This is the "second pass" of writing.
-
-    Args:
-        job (str): The current Pipulate job ID.
-        df (pd.DataFrame): The final clustered/arranged DataFrame.
-        semrush_lookup (str): The client's clean domain (e.g., 'example.com').
-        has_botify (bool): Flag indicating if Botify data is present.
-        competitors (list): The list of competitor column names.
-        xl_file (Path): The Path object for the Excel file.
-        TARGET_COMPETITOR_COL (str): The canonical client column name (e.g., 'example.com/').
-        button (widgets.Button): The "Open Folder" button object.
-
-    Returns:
-        widgets.Button: The same button object, for re-display.
+    Generates all filter tabs in memory and writes the entire Excel workbook in a single pass.
+    This replaces the slow append-mode approach with a fast batch-write approach.
     """
-    print(f"- Adding filter tabs to {xl_file.name} (second pass)...")
+    print(f"⚡ Batch-processing filters and writing {xl_file.name} (Single Pass)...")
 
     # --- Helper functions local to this step ---
     def read_keywords(file_path):
-        """Function to read keywords from a file."""
         if not file_path.exists():
-            print(f"  ⚠️ Warning: Keywords file not found at {file_path}. Skipping file-based filter.")
             return []
         with open(file_path, 'r') as file:
-            important_keywords_list = [line.strip() for line in file.readlines()]
-        return important_keywords_list
+            return [line.strip() for line in file.readlines()]
 
     def filter_df_by_keywords(df, keywords):
-        """Function to filter dataframe based on an exact list of keywords."""
         return df[df["Keyword"].isin(keywords)]
-    # --- End Helpers ---
+    
+    # --- 1. PREPARE DATA IN MEMORY ---
+    # Dictionary to hold {SheetName: DataFrame}
+    tabs_to_write = {}
 
+    # A. Re-add the Main "Gap Analysis" Tab (So we can write everything in one go)
+    # We effectively re-do the logic from create_deliverables here to ensure it's in the final file
+    print("  - Preparing 'Gap Analysis' tab...")
+    last_competitor = competitors[-1] if competitors else None
+    df_main = normalize_and_score_surgical(df.copy(), semrush_lookup, has_botify, last_competitor, False)
+    tabs_to_write["Gap Analysis"] = df_main
 
-    # --- CORE LOGIC (Moved from Notebook) ---
-    try:
-        # --- PATH DEFINITION ---
-        important_keywords_file = Path("data") / f"{job}_important_keywords.txt"
+    # B. Filter: Important Keywords
+    important_keywords_file = Path("data") / f"{job}_important_keywords.txt"
+    if important_keywords_file.exists():
+        important_keywords_list = read_keywords(important_keywords_file)
+        if important_keywords_list:
+            print("  - Preparing 'Important Keywords' tab...")
+            df_filtered = filter_df_by_keywords(df.copy(), important_keywords_list)
+            df_filtered = normalize_and_score_surgical(df_filtered, semrush_lookup, has_botify, competitors[-1], True)
+            df_filtered.sort_values(by='Combined Score', ascending=False, inplace=True)
+            tabs_to_write["Important Keywords"] = df_filtered
 
-        # (The CRITICAL FIX block is no longer needed here, as TARGET_COMPETITOR_COL is passed in)
-        print(f"  ✅ Canonical Competitor Column Identified: '{TARGET_COMPETITOR_COL}'")
+    # C. Filter: Best Opportunities
+    print("  - Preparing 'Best Opportunities' tab...")
+    striking_lower = 100
+    df_opps = df.copy()
+    if has_botify:
+        try:
+            df_opps = df_opps[(df_opps["No. of Impressions excluding anonymized queries"] > 0) & (df_opps[TARGET_COMPETITOR_COL] > 3)].copy()
+        except KeyError:
+            df_opps = df_opps[(df_opps[TARGET_COMPETITOR_COL] >= 4) & (df_opps[TARGET_COMPETITOR_COL] <= striking_lower)].copy()
+    else:
+        df_opps = df_opps[(df_opps[TARGET_COMPETITOR_COL] >= 4) & (df_opps[TARGET_COMPETITOR_COL] <= striking_lower)].copy()
+    
+    df_opps = normalize_and_score_surgical(df_opps, semrush_lookup, has_botify, competitors[-1], True)
+    df_opps.sort_values(by='Combined Score', ascending=False, inplace=True)
+    tabs_to_write["Best Opportunities"] = df_opps
 
-        # --- MAIN TAB GENERATION LOGIC ---
-        print("  Starting subsequent Excel tab generation (Appending via openpyxl)...")
+    # D. Filter: Client Rank Sort
+    print("  - Preparing 'Important Keywords disable' tab...")
+    df_rank = df[df[TARGET_COMPETITOR_COL].notnull()].sort_values(by=[TARGET_COMPETITOR_COL, 'Search Volume'], ascending=[True, False]).copy()
+    tabs_to_write["Important Keywords disable"] = df_rank
 
-        # --- 1. Filter: Important Keywords ---
-        filter_name = "Important Keywords"
-        if important_keywords_file.exists():
-            important_keywords_list = read_keywords(important_keywords_file)
-            if important_keywords_list:
-                print(f"  - Writing {filter_name} tab (via file list)...")
-                df_filtered = filter_df_by_keywords(df.copy(), important_keywords_list)
-                df_filtered = normalize_and_score_surgical(df_filtered, semrush_lookup, has_botify, competitors[-1], True)
-                df_filtered.sort_values(by='Combined Score', ascending=False, inplace=True)
-                with pd.ExcelWriter(xl_file, engine="openpyxl", mode='a', if_sheet_exists='replace') as writer:
-                    df_filtered.to_excel(writer, sheet_name=filter_name, index=False)
-            else:
-                print(f"  ☑️ Skipping '{filter_name}': Keyword file is empty.")
-        else:
-            print(f"  ☑️ Skipping '{filter_name}': Keywords file does not exist.")
-
-        # --- 2. Filter: Best Opportunities / Striking Distance ---
-        filter_name = "Best Opportunities"
-        striking_lower = 100
-        df_tab = df.copy()
-
-        if has_botify:
-            try:
-                # Use TARGET_COMPETITOR_COL
-                df_tab = df_tab[(df_tab["No. of Impressions excluding anonymized queries"] > 0) & (df_tab[TARGET_COMPETITOR_COL] > 3)].copy()
-                print(f"  - Writing {filter_name} tab (Botify/GSC Striking Distance)...")
-            except KeyError:
-                # Fallback uses TARGET_COMPETITOR_COL
-                df_tab = df[(df[TARGET_COMPETITOR_COL] >= 4) & (df[TARGET_COMPETITOR_COL] <= striking_lower)].copy()
-                print(f"  - Writing {filter_name} tab (SEMRush Striking Distance fallback)...")
-        else:
-            # SEMRush-only logic uses TARGET_COMPETITOR_COL
-            df_tab = df[(df[TARGET_COMPETITOR_COL] >= 4) & (df[TARGET_COMPETITOR_COL] <= striking_lower)].copy()
-            print(f"  - Writing {filter_name} tab (SEMRush Striking Distance)...")
+    # E. Loop: Targeted Keyword Filters
+    if custom_filters is None:
+        custom_filters = [] # Handle None case
         
-        df_tab = normalize_and_score_surgical(df_tab.copy(), semrush_lookup, has_botify, competitors[-1], True)
-        df_tab.sort_values(by='Combined Score', ascending=False, inplace=True)
-        with pd.ExcelWriter(xl_file, engine="openpyxl", mode='a', if_sheet_exists='replace') as writer:
-            df_tab.to_excel(writer, sheet_name=filter_name, index=False)
-
-        # --- 3. Filter: Client Ranking Sort ---
-        filter_name = "Important Keywords disable" # This name is from the original
-        df_tab = df[df[TARGET_COMPETITOR_COL].notnull()].sort_values(by=[TARGET_COMPETITOR_COL, 'Search Volume'], ascending=[True, False]).copy()
-        print(f"  - Writing {filter_name} tab (Client Rank Sort)...")
-        with pd.ExcelWriter(xl_file, engine="openpyxl", mode='a', if_sheet_exists='replace') as writer:
-            df_tab.to_excel(writer, sheet_name=filter_name, index=False)
-
-        # --- 4. Loop: Targeted Keyword Filters ---
-        print("  - Writing targeted filter tabs (Gifts, Questions, etc.)...")
-        # 1. Load filters
-        if custom_filters is not None:
-            targeted_filters = custom_filters
-            print(f"  - Applying {len(targeted_filters)} custom filters passed from notebook.")
-        else:
-            targeted_filters = DEFAULT_TARGETED_FILTERS
-            print("  - No custom filters passed. Using default filter list.")
-
-        for filter_name, keywords in targeted_filters:
-            print(f"    - Writing '{filter_name}' tab...")
-            pattern = r'\b(?:' + '|'.join([re.escape(k) for k in keywords]) + r')\b'
-            df_tab = df[df["Keyword"].str.contains(pattern, case=False, na=False)].copy()
-            
-            # Apply scoring and sorting
-            df_tab = normalize_and_score_surgical(df_tab.copy(), semrush_lookup, has_botify, competitors[-1], True)
+    print(f"  - Preparing {len(custom_filters)} targeted filter tabs...")
+    for filter_name, keywords in custom_filters:
+        pattern = r'\b(?:' + '|'.join([re.escape(k) for k in keywords]) + r')\b'
+        df_tab = df[df["Keyword"].str.contains(pattern, case=False, na=False)].copy()
+        if not df_tab.empty:
+            df_tab = normalize_and_score_surgical(df_tab, semrush_lookup, has_botify, competitors[-1], True)
             df_tab.sort_values(by='Combined Score', ascending=False, inplace=True)
-            
-            with pd.ExcelWriter(xl_file, engine="openpyxl", mode='a', if_sheet_exists='replace') as writer:
-                df_tab.to_excel(writer, sheet_name=filter_name, index=False)
+            tabs_to_write[filter_name] = df_tab
 
-        print("✅ Done writing all supplementary Excel tabs.")
+    # --- 2. WRITE FILE IN ONE PASS (Jugular Move) ---
+    # We use xlsxwriter engine here for speed. 
+    # This overwrites the file created in the previous step, which is cleaner than appending.
+    print(f"💾 Writing all {len(tabs_to_write)} tabs to disk...")
+    
+    try:
+        # options={'strings_to_urls': False} prevents xlsxwriter from checking every string for URL format (speedup)
+        with pd.ExcelWriter(xl_file, engine="xlsxwriter", engine_kwargs={'options': {'strings_to_urls': False}}) as writer:
+            for sheet_name, df_sheet in tabs_to_write.items():
+                df_sheet.to_excel(writer, sheet_name=sheet_name, index=False)
         
-        # --- RETURN VALUE ---
-        # Return the button so it can be re-displayed
-        return button
-
+        print("✅ Excel write complete.")
+        
     except Exception as e:
-        print(f"❌ An error occurred during supplementary tab generation: {e}")
+        print(f"❌ Error writing Excel file: {e}")
         return widgets.Button(description=f"Error: {e}", disabled=True)
+
+    return button
+
 
 # --- Private Helper Functions for Excel Formatting ---
 

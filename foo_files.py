@@ -1,13 +1,13 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/nixos/configuration.nix.old_big_pile
-/home/mike/repos/nixos/configuration.nix
-/home/mike/repos/nixos/packages.nix
-/home/mike/repos/pipulate/assets/installer/install.sh
-/home/mike/repos/pipulate/flake.nix
-/home/mike/repos/nixos/services.nix
-/home/mike/repos/pipulate/pipulate/__init__.py
-/home/mike/repos/pipulate/pipulate/pipulate.py
-/home/mike/repos/pipulate/pipulate/core.py
+# /home/mike/repos/nixos/configuration.nix.old_big_pile
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/packages.nix
+# /home/mike/repos/pipulate/assets/installer/install.sh
+# /home/mike/repos/pipulate/flake.nix
+# /home/mike/repos/nixos/services.nix
+# /home/mike/repos/pipulate/pipulate/__init__.py
+# /home/mike/repos/pipulate/pipulate/pipulate.py
+# /home/mike/repos/pipulate/pipulate/core.py
 /home/mike/repos/pipulate/Notebooks/_config.py
 /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
 /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
