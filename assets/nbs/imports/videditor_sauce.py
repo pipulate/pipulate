@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from moviepy.editor import VideoFileClip, concatenate_videoclips
+from moviepy import VideoFileClip, concatenate_videoclips
 
 def concatenate_videos(video_paths: list, output_filename: str = "output.mp4") -> str:
     """

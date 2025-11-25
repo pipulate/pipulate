@@ -1,16 +1,4 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/MikeLev.in/_posts/2025-10-29-ai-first-web-invisible-fubar-pipulate.md
-/home/mike/repos/MikeLev.in/_posts/2025-10-29-aie-python-video-orchestrating-creativity.md
-/home/mike/repos/MikeLev.in/_posts/2025-10-30-fractal-unfurling-ai-video-workflows.md
-/home/mike/repos/MikeLev.in/_posts/2025-10-30-python-dependency-dilemma-pip-compile-fix.md
-/home/mike/repos/MikeLev.in/_posts/2025-10-31-mastering-the-tricks-novideo-ai-multiplatform-fluency.md
-/home/mike/repos/MikeLev.in/_posts/2025-10-31-novideo-pandas-post-analog-video-age-40-year-cycle.md
-/home/mike/repos/MikeLev.in/_posts/2025-11-01-browser-acetate-no-gooey-9x16-screen-recording.md
-/home/mike/repos/MikeLev.in/_posts/2025-11-01-no-gooey-video-tech-gnosis-craftsmanship.md
-/home/mike/repos/MikeLev.in/_posts/2025-11-01-the-no-gooey-way-sirens-song-articulate-ape.md
-/home/mike/repos/MikeLev.in/_posts/2025-11-04-architects-edge-renormalizing-ai-workflow-observable-wins.md
-/home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
-/home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
 /home/mike/repos/pipulate/Notebooks/VIDeditor.ipynb
 /home/mike/repos/pipulate/Notebooks/imports/videditor_sauce.py
 """
