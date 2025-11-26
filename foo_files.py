@@ -1,10 +1,13 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/prompt_foo.py
-/home/mike/repos/pipulate/foo_files.py
-/home/mike/repos/pipulate/scripts/articles/list_articles.py
+/home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
+/home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/pipulate/prompt_foo.py
+# /home/mike/repos/pipulate/foo_files.py
+# /home/mike/repos/pipulate/scripts/articles/list_articles.py
 
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix

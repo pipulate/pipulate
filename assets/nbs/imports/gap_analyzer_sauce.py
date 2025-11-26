@@ -2231,14 +2231,20 @@ def add_filtered_excel_tabs(
             workbook = writer.book
             
             # Define Formats
-            header_fmt = workbook.add_format({'bold': True, 'align': 'center', 'valign': 'vcenter', 'border': 1})
+            # UPDATED: Text Wrap turned ON for standard headers
+            header_fmt = workbook.add_format({'bold': True, 'align': 'center', 'valign': 'vcenter', 'border': 1, 'text_wrap': True})
+            
             client_col_fmt = workbook.add_format({'bg_color': colors['client']})
+            
             # Rotated Header: Align to 'top' (left) as requested
             rot_fmt = workbook.add_format({'bold': True, 'align': 'center', 'valign': 'top', 'rotation': 90, 'border': 1, 'bg_color': colors['competitor']})
             
-            # Color Formats
-            fmt_semrush = workbook.add_format({'bg_color': colors['semrush'], 'bold': True, 'align': 'center', 'border': 1})
-            fmt_botify = workbook.add_format({'bg_color': colors['botify'], 'bold': True, 'align': 'center', 'border': 1})
+            # UPDATED: Client Header now rotates 90 deg and aligns top (left), with yellow background
+            client_rot_fmt = workbook.add_format({'bold': True, 'align': 'center', 'valign': 'top', 'rotation': 90, 'border': 1, 'bg_color': colors['client']})
+            
+            # Color Formats (Standard headers with colors)
+            fmt_semrush = workbook.add_format({'bg_color': colors['semrush'], 'bold': True, 'align': 'center', 'border': 1, 'text_wrap': True})
+            fmt_botify = workbook.add_format({'bg_color': colors['botify'], 'bold': True, 'align': 'center', 'border': 1, 'text_wrap': True})
             
             for sheet_name, df_sheet in tabs_to_write.items():
                 # Write Data
@@ -2261,12 +2267,9 @@ def add_filtered_excel_tabs(
                     n_fmt = workbook.add_format({'num_format': num_fmts.get(col_name, '')})
                     
                     # B. Client Column Highlight (Apply to whole column)
-                    # We have to be careful not to overwrite the number format.
                     if col_name == TARGET_COMPETITOR_COL:
-                         # Create a combined format for client col if needed, or just set bg
-                         # xlsxwriter column styles are defaults, cell styles override. 
-                         # For simplicity/speed, we rely on the Table style for body, but we can try setting column bg.
-                         pass # Table style usually wins for body background
+                         # Table style usually wins for body background, but we set width below.
+                         pass 
 
                     worksheet.set_column(i, i, width, n_fmt)
 
@@ -2278,9 +2281,9 @@ def add_filtered_excel_tabs(
                         current_header_fmt = rot_fmt
                         worksheet.set_column(i, i, 5) # Narrow width for rotated cols
                     elif col_name == TARGET_COMPETITOR_COL:
-                        # Create a specific yellow header format
-                        y_fmt = workbook.add_format({'bold': True, 'align': 'center', 'valign': 'vcenter', 'border': 1, 'bg_color': colors['client']})
-                        current_header_fmt = y_fmt
+                        # UPDATED: Use the rotated yellow format and force narrow width
+                        current_header_fmt = client_rot_fmt
+                        worksheet.set_column(i, i, 5) 
                     elif col_name in ['Keyword', 'Search Volume', 'CPC', 'Keyword Difficulty', 'Competition']:
                          current_header_fmt = fmt_semrush
                     elif col_name in ['Internal Pagerank', 'Depth', 'Title']:
@@ -2297,8 +2300,6 @@ def add_filtered_excel_tabs(
 
                     # E. Hyperlinks (Simple blue underline for URLs)
                     if "URL" in col_name:
-                        # We just let them be strings, but maybe set color?
-                        # For speed, we skip converting every cell to a hyperlink object
                         pass
 
         print("✅ Excel write and format complete.")
