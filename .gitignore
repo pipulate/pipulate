@@ -6,6 +6,8 @@ article.txt
 combined_prompt.txt
 
 # File-types that should never get into repo
+*.mp4
+*.mov
 *.csv
 *.gz
 *.json

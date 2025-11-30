@@ -28,7 +28,7 @@ except ImportError:
 
 def load_url_map():
     """Loads the URL mapping configuration from .config/url_map.json"""
-    config_path = "~/.config/articleizer/url_map.json"
+    config_path = os.path.expanduser("~/.config/articleizer/url_map.json")
     if os.path.exists(config_path):
         try:
             with open(config_path, 'r') as f:
