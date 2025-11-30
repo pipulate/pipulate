@@ -1,9 +1,95 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
-/home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
+/home/mike/repos/MikeLev.in/_config.yml
+/home/mike/repos/MikeLev.in/flake.nix
+/home/mike/repos/pipulate/scripts/articles/list_articles.py
+/home/mike/repos/pipulate/scripts/articles/articleizer.py
+/home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
+/home/mike/repos/pipulate/prompt_foo.py
+/home/mike/repos/pipulate/foo_files.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/packages.nix
+# /home/mike/repos/nixos/services.nix
+# /home/mike/repos/nixos/ai-acceleration.nix
+# /home/mike/repos/nixos/scripts/backup-essential.py
+# /home/mike/repos/nixos/scripts/backup-home.py
+# /home/mike/repos/nixos/scripts/backup-nix.sh
+# /home/mike/repos/nixos/scripts/backup-things.sh
+# /home/mike/repos/nixos/scripts/backup-things.py
+
+# /home/mike/repos/nixos/configuration.nix.old_big_pile
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/packages.nix
+# /home/mike/repos/nixos/services.nix
+# /home/mike/repos/nixos/ai-acceleration.nix
+
+# /home/mike/repos/pipulate/assets/installer/install.sh
+# /home/mike/repos/pipulate/flake.nix
+# /home/mike/repos/pipulate/config.py
+# /home/mike/repos/pipulate/server.py
+# /home/mike/repos/pipulate/assets/pipulate-init.js
+# /home/mike/repos/pipulate/assets/tests/demo.json
+
+# /home/mike/repos/pipulate/AI_RUNME.py
+# /home/mike/repos/pipulate/README.md
+# /home/mike/repos/pipulate/assets/installer/install.sh
+# /home/mike/repos/pipulate/flake.nix
+# /home/mike/repos/pipulate/config.py
+# /home/mike/repos/pipulate/server.py
+# /home/mike/repos/pipulate/assets/pipulate-init.js
+# /home/mike/repos/pipulate/assets/tests/demo.json
+# /home/mike/repos/pipulate/pipulate/__init__.py
+# /home/mike/repos/pipulate/pipulate/pipulate.py
+# /home/mike/repos/pipulate/pipulate/core.py
+# /home/mike/repos/pipulate/tools/__init__.py 
+# /home/mike/repos/pipulate/tools/keychain_tools.py
+# /home/mike/repos/pipulate/imports/ai_dictdb.py
+# /home/mike/repos/pipulate/imports/voice_synthesis.py
+# /home/mike/repos/pipulate/imports/durable_backup_system.py
+
+# /home/mike/repos/MikeLev.in/_posts/2025-11-27-demo-json-codex-pipulate-atomic-proof.md
+# /home/mike/repos/MikeLev.in/_posts/2025-10-08-ai-assisted-debugging-git-archeology.md
+# /home/mike/repos/pipulate/flake.nix
+# /home/mike/repos/pipulate/server.py
+# /home/mike/repos/pipulate/apps/010_introduction.py
+# /home/mike/repos/pipulate/assets/pipulate-init.js
+# /home/mike/repos/pipulate/assets/tests/demo.json
+
+# /home/mike/repos/MikeLev.in/_posts/2025-10-08-ai-assisted-debugging-git-archeology.md
+# /home/mike/repos/MikeLev.in/_posts/2025-10-10-ai-ergonomics-browser-cache-refactor.md
+# /home/mike/repos/MikeLev.in/_posts/2025-10-10-forging-ais-eyes-collaborative-debugging-saga.md
+# /home/mike/repos/MikeLev.in/_posts/2025-10-21-pipulate-aie-multi-platform-validation.md
+# /home/mike/repos/MikeLev.in/_posts/2025-10-22-pipulates-client-side-wisdom-cross-platform-ai-polish.md
+# /home/mike/repos/MikeLev.in/_posts/2025-10-24-master-prompt-chip-otheseus-ai-persistence.md
+# /home/mike/repos/MikeLev.in/_posts/2025-10-25-aie-mike-levin-blueprint-durable-computing-sovereignty.md
+# /home/mike/repos/MikeLev.in/_posts/2025-10-25-pipulates-inflection-point-cathedral-of-one-ai.md
+# /home/mike/repos/MikeLev.in/_posts/2025-11-14-cured-meat-pre-agriculture-gobekli-tepe-forced-agriculture.md
+# /home/mike/repos/MikeLev.in/_posts/2025-11-14-wizarding-tiers-tech-philosophy-editors-languages-sovereignty.md
+# /home/mike/repos/MikeLev.in/_posts/2025-11-25-no-gooey-video-pythonic-victory.md
+# /home/mike/repos/MikeLev.in/_posts/2025-11-27-demo-json-codex-pipulate-atomic-proof.md
+
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/packages.nix
+# /home/mike/repos/pipulate/assets/installer/install.sh
+# /home/mike/repos/pipulate/flake.nix
+# /home/mike/repos/pipulate/AI_RUNME.py
+# /home/mike/repos/pipulate/README.md
+# /home/mike/repos/pipulate/config.py
+# /home/mike/repos/pipulate/server.py
+# /home/mike/repos/pipulate/pipulate/__init__.py
+# /home/mike/repos/pipulate/pipulate/pipulate.py
+# /home/mike/repos/pipulate/pipulate/core.py
+# /home/mike/repos/pipulate/cli.py
+# /home/mike/repos/pipulate/imports/server_logging.py
+# /home/mike/repos/pipulate/imports/botify_code_generation.py
+# /home/mike/repos/pipulate/imports/stream_orchestrator.py
+# /home/mike/repos/pipulate/imports/mcp_orchestrator.py
+
+# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
+# /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
 
 # /home/mike/repos/pipulate/prompt_foo.py
 # /home/mike/repos/pipulate/foo_files.py
@@ -404,7 +490,6 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/pipulate/assets/installer/install.sh
 # /home/mike/repos/pipulate/flake.nix
 
-#LATEST
 # /home/mike/repos/pipulate/flake.nix
 # /home/mike/repos/pipulate/server.py
 # /home/mike/repos/pipulate/apps/010_introduction.py

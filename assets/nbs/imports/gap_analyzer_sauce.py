@@ -2178,11 +2178,6 @@ def add_filtered_excel_tabs(
     df_opps.sort_values(by='Combined Score', ascending=False, inplace=True)
     tabs_to_write["Best Opportunities"] = df_opps
 
-    # D. Client Rank Sort
-    print("  - Preparing 'Important Keywords disable' tab...")
-    df_rank = df[df[TARGET_COMPETITOR_COL].notnull()].sort_values(by=[TARGET_COMPETITOR_COL, 'Search Volume'], ascending=[True, False]).copy()
-    tabs_to_write["Important Keywords disable"] = df_rank
-
     # E. Targeted Filters
     if custom_filters:
         print(f"  - Preparing {len(custom_filters)} targeted filter tabs...")
