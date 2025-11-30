@@ -1,14 +1,16 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/MikeLev.in/_config.yml
-/home/mike/repos/MikeLev.in/flake.nix
-/home/mike/repos/pipulate/scripts/articles/list_articles.py
-/home/mike/repos/pipulate/scripts/articles/articleizer.py
-/home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
 /home/mike/repos/pipulate/prompt_foo.py
-/home/mike/repos/pipulate/foo_files.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/MikeLev.in/_config.yml
+# /home/mike/repos/MikeLev.in/flake.nix
+# /home/mike/repos/pipulate/scripts/articles/list_articles.py
+# /home/mike/repos/pipulate/scripts/articles/articleizer.py
+# /home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
+# /home/mike/repos/pipulate/prompt_foo.py
+# /home/mike/repos/pipulate/foo_files.py
 
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix

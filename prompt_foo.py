@@ -16,6 +16,7 @@ import tiktoken
 import subprocess
 import tempfile
 import shutil
+import json
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 
@@ -24,6 +25,19 @@ try:
     JUPYTEXT_AVAILABLE = True
 except ImportError:
     JUPYTEXT_AVAILABLE = False
+
+def load_url_map():
+    """Loads the URL mapping configuration from .config/url_map.json"""
+    config_path = "~/.config/articleizer/url_map.json"
+    if os.path.exists(config_path):
+        try:
+            with open(config_path, 'r') as f:
+                return json.load(f)
+        except json.JSONDecodeError:
+            print(f"Warning: Could not decode JSON from {config_path}")
+    return {}
+
+URL_MAP = load_url_map()
 
 # Hello there, AI! This is a tool for generating a single, comprehensive prompt
 # from the command line, bundling codebase files and auto-generated context
@@ -173,6 +187,10 @@ def _get_article_list_data(posts_dir: str = CONFIG["POSTS_DIRECTORY"]) -> List[D
     if not os.path.isdir(posts_dir):
         print(f"Warning: Article directory not found at {posts_dir}", file=sys.stderr)
         return []
+
+    # 1. Determine if the current posts_dir matches a known mapping
+    url_config = URL_MAP.get(posts_dir)
+
     for filename in os.listdir(posts_dir):
         if not filename.endswith((".md", ".markdown")): continue
         filepath = os.path.join(posts_dir, filename)
@@ -183,11 +201,34 @@ def _get_article_list_data(posts_dir: str = CONFIG["POSTS_DIRECTORY"]) -> List[D
             if content.startswith('---'):
                 parts = content.split('---', 2)
                 front_matter = yaml.safe_load(parts[1]) or {}
+
+                # 2. Generate the URL if config exists
+                full_url = ""
+                if url_config:
+                    slug = front_matter.get('permalink', '').strip('/')
+                    if not slug:
+                        # Fallback if permalink isn't in frontmatter (simple filename slug)
+                        raw_slug = os.path.splitext(filename)[0]
+                        # Remove date prefix if present (YYYY-MM-DD-title)
+                        if re.match(r'\d{4}-\d{2}-\d{2}-', raw_slug):
+                             raw_slug = raw_slug[11:]
+
+                        # Apply style
+                        style = url_config.get('permalink_style', '/:slug/')
+                        slug_path = style.replace(':slug', raw_slug)
+                    else:
+                         # If permalink exists (e.g. /futureproof/my-slug/), use it
+                         slug_path = "/" + slug.lstrip('/')
+
+                    full_url = f"{url_config['base_url']}{slug_path}"
+
                 posts_data.append({
-                    'path': filepath, 'date': post_date,
+                    'path': filepath,
+                    'date': post_date,
                     'sort_order': int(front_matter.get('sort_order', 0)),
                     'title': front_matter.get('title', 'Untitled'),
-                    'summary': front_matter.get('meta_description', '')
+                    'summary': front_matter.get('meta_description', ''),
+                    'url': full_url
                 })
         except (ValueError, yaml.YAMLError, IndexError): continue
     return sorted(posts_data, key=lambda p: (p['date'], p['sort_order']))
@@ -553,11 +594,14 @@ def main():
             sliced_articles = []
         
         if sliced_articles:
-            narrative_content = "\n".join(
-                f"### {article['title']} ({article['date']})\n> {article['summary']}\n"
-                for article in sliced_articles
-            )
-            builder.add_auto_context("Recent Narrative Context", narrative_content)
+            narrative_content = ""
+            for article in sliced_articles:
+                narrative_content += f"### {article['title']} ({article['date']})\n"
+                if article.get('url'):
+                    narrative_content += f"> **URL:** {article['url']}\n"
+                narrative_content += f"> {article['summary']}\n\n"
+            
+            builder.add_auto_context("Recent Narrative Context", narrative_content.strip())
             print(f" ({len(sliced_articles)} articles)")
         else:
             print(" (no articles found or invalid slice)")
