@@ -1,6 +1,8 @@
 # ripgrep filters for good search & replaces with `rg | xargs sed` pattern
 assets/js/
 
+_config*.py
+
 prompt.md
 article.txt
 combined_prompt.txt

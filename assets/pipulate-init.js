@@ -2353,13 +2353,13 @@ async function resumeDemoFromBookmark(bookmark) {
         
         // Reload the full demo script config to get branches
         console.log('📖 Reloading full demo script config to get branches...');
-        const response = await fetch('/assets/tests/demo.json');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
         
-        const config = await response.json();
-        const demoScript = config.demo_script;
+        // Use the helper that knows about assets/scenarios/
+        const demoScript = await loadDemoScriptConfig('introduction.json');
+        
+        if (!demoScript) {
+            throw new Error('Failed to load demo script config via loadDemoScriptConfig');
+        }
         
         console.log('📖 Full demo script reloaded:', demoScript.name);
         console.log('📖 Available branches:', Object.keys(demoScript.branches || {}));
