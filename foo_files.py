@@ -1,8 +1,38 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/prompt_foo.py
+/home/mike/repos/pipulate/assets/installer/install.sh
+/home/mike/repos/pipulate/flake.nix
+/home/mike/repos/pipulate/config.py
+/home/mike/repos/pipulate/server.py
+/home/mike/repos/pipulate/assets/pipulate-init.js
+/home/mike/repos/pipulate/assets/tests/demo.json
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/packages.nix
+# /home/mike/repos/nixos/services.nix
+# /home/mike/repos/nixos/ai-acceleration.nix
+# /home/mike/repos/nixos/scripts/backup-essential.py
+# /home/mike/repos/nixos/scripts/backup-force.py
+# /home/mike/repos/nixos/scripts/backup-home.py
+# /home/mike/repos/nixos/scripts/backup-nix.sh
+# /home/mike/repos/nixos/scripts/backup-things.py
+# /home/mike/repos/nixos/scripts/backup-things.sh
+
+# /home/mike/repos/pipulate/.gitignore
+# /home/mike/repos/pipulate/assets/installer/install.sh
+# /home/mike/repos/pipulate/flake.nix
+# /home/mike/repos/pipulate/requirements.in
+# /home/mike/repos/MikeLev.in/flake.nix
+
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/hardware-configuration.nix
+# /home/mike/repos/nixos/packages.nix
+# /home/mike/repos/nixos/services.nix
+# /home/mike/repos/nixos/ai-acceleration.nix
+# /home/mike/repos/pipulate/assets/installer/install.sh
+# /home/mike/repos/pipulate/flake.nix
 
 # /home/mike/repos/MikeLev.in/_config.yml
 # /home/mike/repos/MikeLev.in/flake.nix

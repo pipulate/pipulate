@@ -1561,12 +1561,12 @@ function displayPhantomUserMessage(message) {
 }
 
 // Interactive demo script implementation with keyboard input and branching
-async function loadAndExecuteCleanDemoScript() {
+async function loadAndExecuteCleanDemoScript(scriptName = 'introduction.json') {
     try {
-        console.log('🎯 Loading interactive demo script configuration...');
+        console.log(`🎯 Loading interactive scenario: ${scriptName}...`);
         
-        // Load the demo script configuration
-        const response = await fetch('/assets/tests/demo.json');
+        // Load the demo script configuration from the new scenarios endpoint
+        const response = await fetch(`/assets/scenarios/${scriptName}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -2562,11 +2562,11 @@ async function checkDemoComeback() {
 }
 
 // Load demo script config without executing (for continuation)
-async function loadDemoScriptConfig() {
+async function loadDemoScriptConfig(scriptName = 'introduction.json') {
     try {
-        console.log('🎭 Loading demo script config only...');
+        console.log(`🎭 Loading demo script config only: ${scriptName}...`);
         
-        const response = await fetch('/assets/tests/demo.json');
+        const response = await fetch(`/assets/scenarios/${scriptName}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

@@ -4092,13 +4092,19 @@ async def check_demo_comeback(request):
         })
 
 
-@rt('/assets/tests/demo.json', methods=['GET'])
-async def serve_demo_script_config(request):
-    """Serve the demo script configuration file with dynamic Ollama messages"""
+@rt('/assets/scenarios/{filename}', methods=['GET'])
+async def serve_scenario_config(request):
+    """Serve scenario script configs dynamically with Ollama messages"""
+    filename = request.path_params['filename']
+    
+    # Security check: Prevent directory traversal
+    if '..' in filename or '/' in filename or '\\' in filename:
+        return JSONResponse({'error': 'Invalid filename'}, status_code=400)
+
     try:
-        demo_config_path = Path('assets/tests/demo.json')
-        if demo_config_path.exists():
-            with open(demo_config_path, 'r') as f:
+        scenario_path = Path('assets/scenarios') / filename
+        if scenario_path.exists():
+            with open(scenario_path, 'r') as f:
                 config_data = json.load(f)
 
             # Check Ollama availability for dynamic messages
@@ -4110,10 +4116,10 @@ async def serve_demo_script_config(request):
                 if isinstance(obj, dict):
                     for key, value in obj.items():
                         if isinstance(value, str):
-                            # First pass: Replace {app_name} placeholder with actual app name
+                            # First pass: Replace {app_name} placeholder
                             if "{app_name}" in value:
                                 obj[key] = value.replace("{app_name}", APP_NAME)
-                                value = obj[key]  # Update value for potential dynamic message processing
+                                value = obj[key]
                             
                             # Second pass: Replace dynamic ollama messages
                             if value == "{dynamic_ollama_message}" and "ollama_messages" in obj:
@@ -4134,11 +4140,11 @@ async def serve_demo_script_config(request):
 
             return JSONResponse(config_data)
         else:
-            logger.error('🎯 Demo script config file not found')
-            return JSONResponse({'error': 'Demo script config file not found'}, status_code=404)
+            logger.error(f'🎯 Scenario file not found: {filename}')
+            return JSONResponse({'error': 'Scenario file not found'}, status_code=404)
     except Exception as e:
-        logger.error(f'🎯 Error serving demo script config: {str(e)}')
-        return JSONResponse({'error': 'Failed to load demo script config'}, status_code=500)
+        logger.error(f'🎯 Error serving scenario config: {str(e)}')
+        return JSONResponse({'error': 'Failed to load scenario config'}, status_code=500)
 
 
 @rt('/download_file', methods=['GET', 'OPTIONS'])
