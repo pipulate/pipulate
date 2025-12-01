@@ -750,6 +750,31 @@ document.addEventListener('keydown', function(event) {
         // Music will play during the Oz door transition, not here
         loadAndExecuteCleanDemoScript();
     }
+
+    // NEW: Ctrl+Alt+Shift+T: Context-Sensitive Test/Train
+    // Mac: Control+Option+Shift+T
+    if (event.ctrlKey && event.altKey && event.shiftKey && event.code === 'KeyT') {
+        event.preventDefault();
+        console.log('🎯 Context-sensitive Test/Train triggered via Ctrl+Alt+Shift+T');
+        
+        // 1. Detect current app/context
+        // Logic: Look at the URL. If /redirect/app_name, use app_name.
+        // If /, use 'introduction' or 'roles' (homepage).
+        let currentApp = 'introduction'; // Default
+        const path = window.location.pathname;
+        
+        if (path.includes('/redirect/')) {
+            currentApp = path.split('/redirect/')[1];
+        } else if (path === '/' || path === '') {
+            currentApp = 'introduction';
+        }
+        
+        const scriptName = `${currentApp}_test.json`;
+        console.log(`🎯 Context detected: ${currentApp}. Loading ${scriptName}...`);
+        
+        loadAndExecuteCleanDemoScript(scriptName);
+    }
+
     
     // Ctrl+Alt+V: Test voice synthesis (Mac: Control+Option+V)
     if (event.ctrlKey && event.altKey && event.code === 'KeyV') {
@@ -1565,15 +1590,23 @@ async function loadAndExecuteCleanDemoScript(scriptName = 'introduction.json') {
     try {
         console.log(`🎯 Loading interactive scenario: ${scriptName}...`);
         
-        // Load the demo script configuration from the new scenarios endpoint
         const response = await fetch(`/assets/scenarios/${scriptName}`);
+        
         if (!response.ok) {
+            console.error(`🎯 HTTP Error loading scenario: ${response.status}`);
+            if (response.status === 404) {
+                 displayPhantomSystemMessage(`❌ No test script found for this context (${scriptName}).`);
+            }
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const config = await response.json();
         const demoScript = config.demo_script;
         
+        if (!demoScript) {
+             throw new Error("Invalid JSON: missing 'demo_script' property");
+        }
+
         console.log('🎯 Interactive demo script loaded:', demoScript.name);
         
         // Execute the interactive demo sequence with branching
@@ -1582,12 +1615,13 @@ async function loadAndExecuteCleanDemoScript(scriptName = 'introduction.json') {
     } catch (error) {
         console.error('🎯 Error loading demo script:', error);
         
-        // Fallback to simple phantom message
-        displayPhantomUserMessage('What is this?');
-        setTimeout(() => {
-            const appName = window.APP_NAME || 'Pipulate';
-            displayPhantomLLMMessage(`This is ${appName}, local first AI SEO automation software.`);
-        }, 1500);
+        // Fallback to simple phantom message if it wasn't a 404 handled above
+        if (!error.message.includes('HTTP error')) {
+             displayPhantomUserMessage('Error loading script');
+             setTimeout(() => {
+                 displayPhantomLLMMessage(`Failed to load scenario: ${error.message}`);
+             }, 1000);
+        }
     }
 }
 
@@ -2900,6 +2934,18 @@ async function showDemoComebackMessage(message, subtitle) {
         
     } catch (error) {
         console.error('🎭 Error showing demo comeback message:', error);
+    }
+}
+
+// Helper to display system messages (phantom) without user attribution
+function displayPhantomSystemMessage(message) {
+     const msgList = document.getElementById('msg-list');
+    if (msgList) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message system'; // Ensure you have CSS for this or reuse 'assistant'
+        messageDiv.innerHTML = `<div class="message-container"><div class="message-content" style="color: #666; font-style: italic;"><p>${message}</p></div></div>`;
+        msgList.appendChild(messageDiv);
+        msgList.scrollTop = msgList.scrollHeight;
     }
 }
 
