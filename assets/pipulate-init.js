@@ -707,7 +707,7 @@ function showContextTriggerHUD(appName, scriptName) {
         top: 0; left: 0; width: 100%; height: 100%;
         display: flex; flex-direction: column;
         justify-content: center; align-items: center;
-        z-index: 10000;
+        z-index: 2147483647; /* Max 32-bit integer - stay on top of EVERYTHING */
         pointer-events: none; /* Let clicks pass through */
         background-color: rgba(0, 0, 0, 0.0); /* Start transparent */
         transition: background-color 0.3s ease;
@@ -760,8 +760,19 @@ function showContextTriggerHUD(appName, scriptName) {
 
 // Global keyboard shortcuts
 document.addEventListener('keydown', function(event) {
-    // ... [Existing debug logs can stay] ...
-    
+    // 🔧 RESTORED DEBUGGING: Log modifier keys to troubleshoot OS collisions
+    if (event.ctrlKey || event.altKey || event.metaKey) {
+        console.log('🔧 KEYBOARD DEBUG:', {
+            code: event.code,
+            key: event.key,
+            ctrl: event.ctrlKey,
+            alt: event.altKey,
+            shift: event.shiftKey,
+            meta: event.metaKey,
+            isMac: isMac
+        });
+    }
+
     // Ctrl+Alt+R: Restart server (Mac: Control+Option+R)
     if (event.ctrlKey && event.altKey && event.code === 'KeyR') {
         event.preventDefault();
@@ -774,19 +785,22 @@ document.addEventListener('keydown', function(event) {
     if (event.ctrlKey && event.altKey && event.code === 'KeyD') {
         event.preventDefault();
         console.log('🎯 BIG DEMO triggered via Ctrl+Alt+D');
-        // Explicitly load the introduction/main demo
         loadAndExecuteCleanDemoScript('introduction.json'); 
     }
 
     // 🎯 NEW: Context-Sensitive Test/Train
-    // Windows/Linux: Ctrl+Alt+Shift+T
-    // Mac: Ctrl+Option+T (Simpler!)
-    const isMacT = isMac && event.ctrlKey && event.altKey && !event.shiftKey && event.code === 'KeyT';
-    const isWinT = !isMac && event.ctrlKey && event.altKey && event.shiftKey && event.code === 'KeyT';
+    // Windows/Linux: Ctrl+Alt+Shift+S (Changed from T to avoid Terminal collision)
+    // Mac: Ctrl+Option+T (Kept T for Mac as requested)
+    
+    // Check for 'T' (Mac preference) or 'S' (Windows/Linux safety fallback)
+    const isKeyTrigger = event.code === 'KeyT' || event.code === 'KeyS';
+    
+    const isMacTrigger = isMac && event.ctrlKey && event.altKey && !event.shiftKey && isKeyTrigger;
+    const isWinTrigger = !isMac && event.ctrlKey && event.altKey && event.shiftKey && isKeyTrigger;
 
-    if (isMacT || isWinT) {
+    if (isMacTrigger || isWinTrigger) {
         event.preventDefault();
-        console.log('🎯 Context-sensitive Test/Train triggered');
+        console.log(`🎯 Context-sensitive Test/Train triggered via ${event.code}`);
         
         // 1. Detect current app/context
         let currentApp = 'introduction'; // Default
@@ -796,14 +810,13 @@ document.addEventListener('keydown', function(event) {
         if (path.includes('/redirect/')) {
             currentApp = path.split('/redirect/')[1];
         } else if (path !== '/' && path !== '') {
-            // Handle cases like /my_app/view
             const parts = path.split('/').filter(p => p);
             if (parts.length > 0) currentApp = parts[0];
         }
         
         const scriptName = `${currentApp}_test.json`;
         
-        // 2. TRIGGER THE HUD (The Wind Tunnel Moment)
+        // 2. TRIGGER THE HUD
         showContextTriggerHUD(currentApp, scriptName);
         
         console.log(`🎯 Context detected: ${currentApp}. Loading ${scriptName}...`);
