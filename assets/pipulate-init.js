@@ -691,91 +691,127 @@ function executeFullRestartSequence(message = "Restarting server...", restartTyp
     sendRestartCommand(restartType);
 }
 
+/**
+ * 🎯 HEADS-UP DISPLAY (HUD) for Test Mode
+ * Visual confirmation that the wind tunnel is active and context is acquired.
+ */
+function showContextTriggerHUD(appName, scriptName) {
+    // Remove any existing overlay
+    const existingOverlay = document.getElementById('test-hud-overlay');
+    if (existingOverlay) existingOverlay.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'test-hud-overlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        display: flex; flex-direction: column;
+        justify-content: center; align-items: center;
+        z-index: 10000;
+        pointer-events: none; /* Let clicks pass through */
+        background-color: rgba(0, 0, 0, 0.0); /* Start transparent */
+        transition: background-color 0.3s ease;
+    `;
+
+    overlay.innerHTML = `
+        <div style="
+            background-color: rgba(16, 185, 129, 0.95); /* Emerald Green */
+            color: white;
+            padding: 2rem 3rem;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            text-align: center;
+            transform: scale(0.8);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid #a7f3d0;
+        ">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🎯</div>
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: 800; letter-spacing: -0.025em;">TEST MODE ENGAGED</h2>
+            <div style="margin-top: 1rem; font-family: monospace; font-size: 1.2rem; opacity: 0.9;">
+                Context: <span style="font-weight: bold; color: #fff;">${appName}</span>
+            </div>
+            <div style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">
+                Loading: ${scriptName}
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    // Animate In
+    requestAnimationFrame(() => {
+        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.2)'; // Slight dim
+        const card = overlay.firstElementChild;
+        card.style.transform = 'scale(1)';
+        card.style.opacity = '1';
+    });
+
+    // Remove after delay
+    setTimeout(() => {
+        const card = overlay.firstElementChild;
+        card.style.transform = 'scale(1.1)'; // Pump before vanishing
+        card.style.opacity = '0';
+        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+        
+        setTimeout(() => overlay.remove(), 300);
+    }, 1500);
+}
+
 // Global keyboard shortcuts
 document.addEventListener('keydown', function(event) {
-    // 🔍 MAC DEBUG: Comprehensive keyboard event logging for Mac debugging
-    if (event.ctrlKey || event.altKey || event.metaKey) {
-        console.log('🔧 KEYBOARD DEBUG - Full event details:', {
-            key: event.key,
-            code: event.code,
-            ctrlKey: event.ctrlKey,
-            altKey: event.altKey,
-            metaKey: event.metaKey,
-            shiftKey: event.shiftKey,
-            platform: navigator.platform,
-            userAgent: navigator.userAgent.substring(0, 50) + '...',
-            isMac: navigator.platform.toLowerCase().includes('mac'),
-            eventType: event.type,
-            target: event.target.tagName
-        });
-    }
-    
-    // 🍎 MAC SPECIFIC: Also log ANY keydown when D is pressed (for debugging)
-    if (event.key === 'D' || event.key === 'd') {
-        console.log('🍎 MAC DEBUG - D key pressed with modifiers:', {
-            key: event.key,
-            ctrlKey: event.ctrlKey,
-            altKey: event.altKey,
-            metaKey: event.metaKey,
-            shiftKey: event.shiftKey,
-            description: 'This should show when Control+Option+D is pressed on Mac'
-        });
-        
-        // 🔍 MAC DEBUG: Test different combinations that might work on Mac
-        if (event.ctrlKey && event.metaKey) {
-            console.log('🍎 MAC DEBUG - Control+Cmd+D detected (might be Mac equivalent)');
-        }
-        if (event.metaKey && event.altKey) {
-            console.log('🍎 MAC DEBUG - Cmd+Option+D detected (might be Mac equivalent)');
-        }
-        if (event.ctrlKey && !event.altKey && !event.metaKey) {
-            console.log('🍎 MAC DEBUG - Control+D only (no Option/Alt detected)');
-        }
-    }
+    // ... [Existing debug logs can stay] ...
     
     // Ctrl+Alt+R: Restart server (Mac: Control+Option+R)
     if (event.ctrlKey && event.altKey && event.code === 'KeyR') {
         event.preventDefault();
-        console.log('🔄 Restart triggered - Mac Compatible using event.code!');
+        console.log('🔄 Restart triggered');
         executeFullRestartSequence("Restarting server...", "KEYBOARD_SHORTCUT");
     }
     
-    // Ctrl+Alt+D: Start demo/regression prevention sequence (Mac: Control+Option+D)
+    // Ctrl+Alt+D: Start THE BIG DEMO (Legacy/Regression)
+    // Mac: Control+Option+D
     if (event.ctrlKey && event.altKey && event.code === 'KeyD') {
         event.preventDefault();
-        console.log('🎯 Demo sequence triggered via Ctrl+Alt+D');
-        console.log('🍎 MAC FIX - Ctrl+Alt+D detection successful using event.code!');
-        
-        // Load and execute the demo script sequence
-        // Music will play during the Oz door transition, not here
-        loadAndExecuteCleanDemoScript();
+        console.log('🎯 BIG DEMO triggered via Ctrl+Alt+D');
+        // Explicitly load the introduction/main demo
+        loadAndExecuteCleanDemoScript('introduction.json'); 
     }
 
-    // NEW: Ctrl+Alt+Shift+T: Context-Sensitive Test/Train
-    // Mac: Control+Option+Shift+T
-    if (event.ctrlKey && event.altKey && event.shiftKey && event.code === 'KeyT') {
+    // 🎯 NEW: Context-Sensitive Test/Train
+    // Windows/Linux: Ctrl+Alt+Shift+T
+    // Mac: Ctrl+Option+T (Simpler!)
+    const isMacT = isMac && event.ctrlKey && event.altKey && !event.shiftKey && event.code === 'KeyT';
+    const isWinT = !isMac && event.ctrlKey && event.altKey && event.shiftKey && event.code === 'KeyT';
+
+    if (isMacT || isWinT) {
         event.preventDefault();
-        console.log('🎯 Context-sensitive Test/Train triggered via Ctrl+Alt+Shift+T');
+        console.log('🎯 Context-sensitive Test/Train triggered');
         
         // 1. Detect current app/context
-        // Logic: Look at the URL. If /redirect/app_name, use app_name.
-        // If /, use 'introduction' or 'roles' (homepage).
         let currentApp = 'introduction'; // Default
         const path = window.location.pathname;
         
+        // Extract app name from URL logic
         if (path.includes('/redirect/')) {
             currentApp = path.split('/redirect/')[1];
-        } else if (path === '/' || path === '') {
-            currentApp = 'introduction';
+        } else if (path !== '/' && path !== '') {
+            // Handle cases like /my_app/view
+            const parts = path.split('/').filter(p => p);
+            if (parts.length > 0) currentApp = parts[0];
         }
         
         const scriptName = `${currentApp}_test.json`;
+        
+        // 2. TRIGGER THE HUD (The Wind Tunnel Moment)
+        showContextTriggerHUD(currentApp, scriptName);
+        
         console.log(`🎯 Context detected: ${currentApp}. Loading ${scriptName}...`);
         
+        // 3. Load the specific test script
         loadAndExecuteCleanDemoScript(scriptName);
     }
 
-    
     // Ctrl+Alt+V: Test voice synthesis (Mac: Control+Option+V)
     if (event.ctrlKey && event.altKey && event.code === 'KeyV') {
         event.preventDefault();

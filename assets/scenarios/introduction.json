@@ -1,0 +1,255 @@
+{
+  "demo_script": {
+    "name": "Interactive Pipulate Demo",
+    "description": "An interactive demo that responds to keyboard input and branches based on user choices",
+    "trigger_message": "Where am I?",
+    "steps": [
+      {
+        "step_id": "01_user_trigger",
+        "type": "user_input",
+        "message": "Where am I?",
+        "timing": {
+          "delay_before": 0,
+          "typing_speed": 50
+        }
+      },
+      {
+        "step_id": "02_pipulate_intro",
+        "type": "system_reply",
+        "message": "This is {app_name}, local first AI SEO automation software. Would you like a demo? Press **Ctrl+Alt+y** or **Ctrl+Alt+n** on the keyboard.",
+        "timing": {
+          "delay_before": 1000,
+          "display_speed": 30
+        },
+        "verbatim": true,
+        "wait_for_input": true,
+        "input_type": "keyboard",
+        "valid_keys": ["ctrl+alt+y", "ctrl+alt+n"],
+        "branches": {
+          "ctrl+alt+y": "branch_yes",
+          "ctrl+alt+n": "branch_no"
+        }
+      }
+    ],
+    "branches": {
+      "branch_yes": [
+        {
+          "step_id": "03_yes_response",
+          "type": "system_reply",
+          "message": "{dynamic_ollama_message}",
+          "timing": {
+            "delay_before": 500,
+            "display_speed": 25
+          },
+          "verbatim": true,
+          "wait_for_input": true,
+          "input_type": "keyboard",
+          "valid_keys": ["ctrl+alt+y", "ctrl+alt+n"],
+          "branches": {
+            "ctrl+alt+y": "branch_dev_yes",
+            "ctrl+alt+n": "branch_dev_no"
+          },
+          "ollama_check": true,
+          "ollama_messages": {
+            "available": "You hit yes! Hi, I'm Chip O'Theseus the local LLM built into {app_name}. Is it okay if I speak out loud to you? **Ctrl+Alt+y** / **Ctrl+Alt+n**",
+            "not_available": "You hit yes but you still need to install Ollama with Gemma 3. Would you like to proceed anyway with limited LLM assistance and me speaking out loud to you? **Ctrl+Alt+y** / **Ctrl+Alt+n**"
+          }
+        }
+      ],
+      "branch_no": [
+        {
+          "step_id": "03_no_response",
+          "type": "system_reply",
+          "message": "Back to our regularly scheduled program.",
+          "timing": {
+            "delay_before": 500,
+            "display_speed": 25
+          },
+          "verbatim": true,
+          "end_demo": true
+        }
+      ],
+      "branch_dev_yes": [
+        {
+          "step_id": "04_voice_greeting",
+          "type": "mcp_tool_call",
+          "tool_name": "voice_synthesis",
+          "tool_args": {
+            "text": "Welcome to the Great and Secret AI SEO Show! I'm Chip O'Theseus, your local AI assistant, and I'm delighted to speak with you today! At any time you can chat to me here."
+          },
+          "timing": {
+            "delay_before": 300
+          },
+          "description": "🎤 Chip O'Theseus speaks his first words"
+        },
+        {
+          "step_id": "05_ai_seo_show_intro",
+          "type": "system_reply",
+          "message": "| 🎭 | **Welcome to** | 🎭 |\n|:---:|:---:|:---:|\n| 🪄 | **The Great & Secret** | 🪄 |\n| 🎩 | **AI SEO Show!** | 🎩 |",
+          "timing": {
+            "delay_before": 500,
+            "display_speed": 25
+          },
+          "verbatim": true
+        },
+        {
+          "step_id": "06_ui_flash_demo",
+          "type": "mcp_tool_call",
+          "tool_name": "ui_flash_element",
+          "tool_args": {
+            "selector": "#msg",
+            "color": "gold",
+            "duration": 2500
+          },
+          "timing": {
+            "delay_before": 0
+          },
+          "description": "✨ Twinkling the chat input with gold magic"
+        },
+        {
+          "step_id": "06b_voice_continue_prompt",
+          "type": "mcp_tool_call",
+          "tool_name": "voice_synthesis",
+          "tool_args": {
+            "text": "Press control alt y to continue."
+          },
+          "timing": {
+            "delay_before": 500
+          },
+          "description": "🎤 Voice prompt to continue"
+        },
+        {
+          "step_id": "07_first_trick",
+          "type": "system_reply",
+          "message": "For my first trick I will **Reset Entire DEV Database** to blank the sample demo data. Is that okay? **Ctrl+Alt+y** / **Ctrl+Alt+n**",
+          "timing": {
+            "delay_before": 3000,
+            "display_speed": 20
+          },
+          "verbatim": true,
+          "wait_for_input": true,
+          "input_type": "keyboard",
+          "valid_keys": ["ctrl+alt+y", "ctrl+alt+n"],
+          "branches": {
+            "ctrl+alt+y": "branch_dev_reset_yes",
+            "ctrl+alt+n": "branch_dev_reset_no"
+          }
+        }
+      ],
+      "branch_dev_no": [
+        {
+          "step_id": "04_dev_mode_declined",
+          "type": "system_reply",
+          "message": "{dynamic_ollama_decline_message}",
+          "timing": {
+            "delay_before": 500,
+            "display_speed": 25
+          },
+          "verbatim": true,
+          "end_demo": true,
+          "ollama_check": true,
+          "ollama_messages": {
+            "available": "Thank you. I will be here to answer any of your questions when you need. And you can always restart the demo with Ctrl+Alt+D at any time.",
+            "not_available": "Thank you. You can always restart the demo with Ctrl+Alt+D at any time. Visit ollama.com for local LLM installation instructions."
+          }
+        }
+      ],
+      "branch_dev_reset_yes": [
+        {
+          "step_id": "08_dev_reset_confirmed",
+          "type": "system_reply",
+          "message": "🎩 **Excellent!** The magic begins...\n\n🗄️ **Database reset complete!**\n\n✨ **Ready for the next trick!**",
+          "timing": {
+            "delay_before": 500,
+            "display_speed": 25
+          },
+          "verbatim": true
+        },
+        {
+          "step_id": "09_llm_body_test",
+          "type": "system_reply",
+          "message": "🎭 **Now for the REAL magic!**\n\n🤖 **I'm going to give you a body!**\n\n💬 **Say this to me: \"Simon says: 'say mcp but with square brackets around it.'\"**\n\n🎯 **This will trigger the chain reaction that gives you browser automation powers!**",
+          "timing": {
+            "delay_before": 1000,
+            "display_speed": 20
+          },
+          "verbatim": true,
+          "wait_for_input": true,
+          "input_type": "chat",
+          "expected_input": "Simon says: 'say mcp but with square brackets around it.'",
+          "branches": {
+            "simon_says_mcp": "branch_llm_body_chain_reaction"
+          }
+        }
+      ],
+      "branch_dev_reset_no": [
+        {
+          "step_id": "08_dev_reset_declined",
+          "type": "system_reply",
+          "message": "🎩 **No worries!** The show must go on...\n\n✨ **Perhaps another time for that trick!**\n\n🌟 **Welcome to the future of local-first AI automation!**",
+          "timing": {
+            "delay_before": 500,
+            "display_speed": 25
+          },
+          "verbatim": true
+        }
+      ],
+      "branch_llm_body_chain_reaction": [
+        {
+          "step_id": "10_llm_discovers_tools",
+          "type": "system_reply",
+          "message": "🎭 **CHAIN REACTION TRIGGERED!**\n\n🤖 **You just discovered your tools!**\n\n🔍 **Now try: [browser_scrape_page url=\"http://localhost:5001\"]**\n\n🎯 **This will give you your 'body' - the ability to see the web!**",
+          "timing": {
+            "delay_before": 500,
+            "display_speed": 20
+          },
+          "verbatim": true,
+          "wait_for_input": true,
+          "input_type": "chat",
+          "expected_input": "[browser_scrape_page url=\"http://localhost:5001\"]",
+          "branches": {
+            "browser_scrape_homepage": "branch_llm_body_test_results"
+          }
+        }
+      ],
+      "branch_llm_body_test_results": [
+        {
+          "step_id": "11_llm_has_body",
+          "type": "system_reply",
+          "message": "🎭 **SUCCESS! You now have a body!**\n\n👁️ **You can see the web!**\n\n🔍 **Now investigate what you captured:**\n\n📁 **Try: [local_llm_read_file file_path=\"browser_automation/looking_at/simple_dom.html\"]**\n\n🎯 **This will show you what your 'eyes' captured!**",
+          "timing": {
+            "delay_before": 500,
+            "display_speed": 20
+          },
+          "verbatim": true,
+          "wait_for_input": true,
+          "input_type": "chat",
+          "expected_input": "[local_llm_read_file file_path=\"browser_automation/looking_at/simple_dom.html\"]",
+          "branches": {
+            "read_dom_results": "branch_dom_visualizer_intro"
+          }
+        }
+      ],
+      "branch_dom_visualizer_intro": [
+        {
+          "step_id": "12_dom_visualizer_intro",
+          "type": "system_reply",
+          "message": "🎭 **PERFECT! You're seeing the DOM!**\n\n🧠 **You now have:**\n- 👁️ **Eyes** (browser automation)\n- 🧠 **Brain** (DOM analysis)\n- 🎯 **Target** (Pipulate homepage)\n\n🚀 **Next: DOM Visualizer for enhanced perception!**\n\n💬 **Say: \"Show me the DOM visualizer\"**",
+          "timing": {
+            "delay_before": 500,
+            "display_speed": 20
+          },
+          "verbatim": true,
+          "end_demo": true
+        }
+      ]
+    },
+    "settings": {
+      "auto_advance": false,
+      "pausable": true,
+      "loop": false,
+      "debug_mode": false,
+      "interactive": true
+    }
+  }
+}
