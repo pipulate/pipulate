@@ -1,13 +1,17 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/assets/installer/install.sh
-/home/mike/repos/pipulate/flake.nix
-/home/mike/repos/pipulate/config.py
-/home/mike/repos/pipulate/server.py
 /home/mike/repos/pipulate/assets/pipulate-init.js
 /home/mike/repos/pipulate/assets/tests/demo.json
+/home/mike/repos/pipulate/assets/scenarios/introduction.json
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/pipulate/assets/installer/install.sh
+# /home/mike/repos/pipulate/flake.nix
+# /home/mike/repos/pipulate/config.py
+# /home/mike/repos/pipulate/server.py
+# /home/mike/repos/pipulate/assets/pipulate-init.js
+# /home/mike/repos/pipulate/assets/tests/demo.json
 
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
