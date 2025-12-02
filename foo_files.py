@@ -1,4 +1,5 @@
 AI_PHOOEY_CHOP = """\
+/home/mike/repos/pipulate/.gitignore
 /home/mike/repos/pipulate/assets/pipulate-init.js
 /home/mike/repos/pipulate/assets/tests/demo.json
 /home/mike/repos/pipulate/assets/scenarios/introduction.json
