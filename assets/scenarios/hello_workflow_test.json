@@ -1,0 +1,20 @@
+{
+  "demo_script": {
+    "name": "Hello Workflow Context Test",
+    "description": "Verifies that the context-sensitive trigger correctly loads this specific file.",
+    "trigger_message": "Test Sequence Initiated",
+    "steps": [
+      {
+        "step_id": "01_context_verification",
+        "type": "system_reply",
+        "message": "🎯 **TARGET ACQUIRED**\n\n✅ Context: `040_hello_workflow`\n✅ Mechanism: `Ctrl+Alt+Shift+S`\n✅ Payload: `040_hello_workflow_test.json`\n\nThe wind tunnel is operational.",
+        "timing": {
+          "delay_before": 500,
+          "display_speed": 20
+        },
+        "verbatim": true,
+        "end_demo": true
+      }
+    ]
+  }
+}

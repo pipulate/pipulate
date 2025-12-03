@@ -12,7 +12,6 @@ combined_prompt.txt
 *.mov
 *.csv
 *.gz
-*.json
 *.pkl
 *.xlsx
 *.sqlite
