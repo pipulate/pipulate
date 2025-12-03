@@ -22,6 +22,7 @@ combined_prompt.txt
 data/
 downloads/
 logs/
+temp/
 .ssh/key
 *kungfu_*.py
 botify_token.txt
