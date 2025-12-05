@@ -1,108 +1,43 @@
 {
   "demo_script": {
-    "name": "Hello Workflow Voice Test",
-    "description": "A self-narrating test of the Hello World workflow using TTS and browser automation.",
-    "trigger_message": "Initiating Voice-Guided Test...",
+    "name": "Hello Workflow Init Test",
+    "description": "A focused test verifying the Ghost Driver's ability to read and submit the initial Pipeline ID.",
+    "trigger_message": "Testing Init...",
     "steps": [
       {
-        "step_id": "00_voice_intro_pipeline",
+        "step_id": "00_voice_intro",
         "type": "mcp_tool_call",
         "tool_name": "voice_synthesis",
         "tool_args": {
-          "text": "I am about to initialize the workflow by submitting a pipeline ID."
+          "text": "I am about to initialize the workflow by submitting the pipeline ID."
         },
         "timing": {
           "delay_before": 500
         },
-        "description": "🎤 Announcing pipeline ID submission"
+        "description": "\ud83c\udfa4 Announcing intent"
       },
       {
-        "step_id": "00_submit_pipeline_key",
+        "step_id": "01_submit_key",
         "type": "dom_action",
         "action": "submit_form",
         "selector": "form[hx-post='/hello/init']",
         "read_value_from": "input[name='pipeline_id']",
-        "message_template": "✅ **Ghost Driver:** I just submitted Pipeline ID: `{value}`",
+        "message_template": "\u2705 Verified: Initialized workflow with Key: ",
         "timing": {
           "delay_before": 1000
         }
       },
       {
-        "step_id": "01_announce_test",
+        "step_id": "02_voice_confirm",
         "type": "mcp_tool_call",
         "tool_name": "voice_synthesis",
         "tool_args": {
-          "text": "Initiating self-diagnostic sequence. I am checking the Hello World workflow."
+          "text": "I have successfully initialized the workflow with the detected key."
         },
         "timing": {
           "delay_before": 500
         },
-        "description": "🎤 Announcing test start"
-      },
-      {
-        "step_id": "02_explain_input",
-        "type": "system_reply",
-        "message": "🤖 **System:** Verifying input field accessibility...",
-        "timing": {
-          "delay_before": 1000,
-          "display_speed": 40
-        },
-        "verbatim": true
-      },
-      {
-        "step_id": "03_voice_input",
-        "type": "mcp_tool_call",
-        "tool_name": "voice_synthesis",
-        "tool_args": {
-          "text": "I will now attempt to enter a value into the name field."
-        },
-        "timing": {
-          "delay_before": 200
-        },
-        "description": "🎤 Explaining input action"
-      },
-      {
-        "step_id": "04_perform_input",
-        "type": "user_input",
-        "message": "Chip O'Theseus",
-        "timing": {
-          "delay_before": 500,
-          "typing_speed": 80
-        }
-      },
-      {
-        "step_id": "05_voice_submit",
-        "type": "mcp_tool_call",
-        "tool_name": "voice_synthesis",
-        "tool_args": {
-          "text": "Input complete. Submitting form to test chain reaction."
-        },
-        "timing": {
-          "delay_before": 500
-        },
-        "description": "🎤 Announcing submission"
-      },
-      {
-        "step_id": "06_verify_result",
-        "type": "system_reply",
-        "message": "✅ **Success:** Chain reaction triggered. Greeting generated.",
-        "timing": {
-          "delay_before": 2000,
-          "display_speed": 40
-        },
-        "verbatim": true
-      },
-      {
-        "step_id": "07_voice_success",
-        "type": "mcp_tool_call",
-        "tool_name": "voice_synthesis",
-        "tool_args": {
-          "text": "Test successful. The workflow is operating within normal parameters."
-        },
-        "timing": {
-          "delay_before": 500
-        },
-        "description": "🎤 Confirming success",
+        "description": "\ud83c\udfa4 Confirming success",
         "end_demo": true
       }
     ]
