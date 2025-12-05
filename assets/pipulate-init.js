@@ -1947,6 +1947,16 @@ async function executeDomActionStep(step) {
                 console.error('🎯 DOM Action Error: No form found for submit_form');
             }
         }
+        } else if (step.action === 'set_value') {
+            if ('value' in target && typeof step.value !== 'undefined') {
+                target.value = step.value;
+                // Trigger input event so frameworks like HTMX/React verify the change if needed
+                target.dispatchEvent(new Event('input', { bubbles: true }));
+                target.dispatchEvent(new Event('change', { bubbles: true }));
+                console.log();
+            } else {
+                console.error('🎯 DOM Action Error: Target cannot have value set or step.value is undefined', step.selector);
+            }
         console.log('🎯 DOM Action performed:', step.action);
     } catch (e) {
         console.error('🎯 DOM Action failed:', e);

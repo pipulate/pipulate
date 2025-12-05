@@ -1,8 +1,8 @@
 {
   "demo_script": {
-    "name": "Hello Workflow Init Test",
-    "description": "A focused test verifying the Ghost Driver's ability to read and submit the initial Pipeline ID.",
-    "trigger_message": "Testing Init...",
+    "name": "Hello Workflow Full Test",
+    "description": "A comprehensive test verifying Ghost Driver ability to read pipeline ID, fill name, and submit.",
+    "trigger_message": "Testing Full Workflow...",
     "steps": [
       {
         "step_id": "00_voice_intro",
@@ -22,22 +22,68 @@
         "action": "submit_form",
         "selector": "form[hx-post='/hello/init']",
         "read_value_from": "input[name='pipeline_id']",
-        "message_template": "\u2705 Verified: Initialized workflow with Key: ",
+        "message_template": "\u2705 **Verified:** Initialized workflow with Key: {value}",
         "timing": {
           "delay_before": 1000
-        }
+        },
+        "description": "Ghost Driver submits pipeline ID"
       },
       {
-        "step_id": "02_voice_confirm",
+        "step_id": "02_voice_key_confirm",
         "type": "mcp_tool_call",
         "tool_name": "voice_synthesis",
         "tool_args": {
-          "text": "I have successfully initialized the workflow with the detected key."
+          "text": "I have successfully initialized the workflow. Waiting for the name field to appear."
         },
         "timing": {
           "delay_before": 500
         },
-        "description": "\ud83c\udfa4 Confirming success",
+        "description": "\ud83c\udfa4 Confirming pipeline ID submission"
+      },
+      {
+        "step_id": "03_fill_name",
+        "type": "dom_action",
+        "action": "set_value",
+        "selector": "#hello-step01-name-input",
+        "value": "Chip O'Theseus",
+        "message_template": "\u270d\ufe0f **Ghost Driver:** Filled name field with: {value}",
+        "timing": {
+          "delay_before": 1000
+        },
+        "description": "Ghost Driver fills the name input field"
+      },
+      {
+        "step_id": "04_submit_name",
+        "type": "dom_action",
+        "action": "submit_form",
+        "selector": "#hello-step01-form",
+        "timing": {
+          "delay_before": 500
+        },
+        "description": "Submitting name form"
+      },
+      {
+        "step_id": "05_verify_greeting",
+        "type": "dom_action",
+        "action": "click",
+        "selector": "#hello-step02-greeting-input",
+        "read_value_from": "#hello-step02-greeting-input",
+        "message_template": "\u2705 **Verified:** Resulting Greeting: {value}",
+        "timing": {
+          "delay_before": 2000
+        }
+      },
+      {
+        "step_id": "06_voice_final",
+        "type": "mcp_tool_call",
+        "tool_name": "voice_synthesis",
+        "tool_args": {
+          "text": "The name has been submitted, and the greeting has been generated successfully."
+        },
+        "timing": {
+          "delay_before": 500
+        },
+        "description": "\ud83c\udfa4 Final confirmation",
         "end_demo": true
       }
     ]
