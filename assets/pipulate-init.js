@@ -1683,6 +1683,13 @@ async function executeInteractiveDemoSequence(demoScript) {
     await addToConversationHistory('system', `[DEMO SCRIPT STARTED: ${demoScript.name}] An automated interactive demo is now running. All following messages are part of the scripted demo sequence. The user triggered this demo and is interacting with it via keyboard input (Ctrl+Alt+y/Ctrl+Alt+n). Continue to respond naturally if asked about the demo.`);
     
     // Store demo bookmark before navigation - survives page reload and server restart
+    // CONDITIONAL: Only perform Oz transition (reload) for the main intro demo
+    if (demoScript.name !== 'Interactive Pipulate Demo') {
+        console.log('🎯 Generic test detected - running in-place without reload');
+        await executeStepsWithBranching(demoScript.steps, demoScript);
+        return;
+    }
+
     console.log('📖 Storing demo bookmark before navigation...');
     
     try {
