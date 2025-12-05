@@ -1120,7 +1120,7 @@ async function executeDemoSequence(demoScript) {
                 await executeSystemReplyStep(step);
                 break;
                 
-            "            case 'dom_action':
+                        case 'dom_action':
                 await executeDomActionStep(step);
                 break;
                 
@@ -1562,7 +1562,7 @@ async function executeIndividualDemoStep(step) {
             await executePhantomLLMResponse(step);
             break;
             
-        "            case 'dom_action':
+                    case 'dom_action':
                 await executeDomActionStep(step);
                 break;
                 
@@ -1762,7 +1762,7 @@ async function executeStepsWithBranching(steps, demoScript) {
                 await executeCleanSystemReplyStep(step);
                 break;
                 
-            "            case 'dom_action':
+                        case 'dom_action':
                 await executeDomActionStep(step);
                 break;
                 
@@ -2839,7 +2839,7 @@ async function continueDemoFromState(demoState) {
                             }
                             break;
                             
-                        "            case 'dom_action':
+                                    case 'dom_action':
                 await executeDomActionStep(step);
                 break;
                 
