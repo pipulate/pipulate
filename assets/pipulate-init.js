@@ -1120,6 +1120,10 @@ async function executeDemoSequence(demoScript) {
                 await executeSystemReplyStep(step);
                 break;
                 
+            "            case 'dom_action':
+                await executeDomActionStep(step);
+                break;
+                
             case 'mcp_tool_call':
                 await executeMcpToolCallStep(step);
                 break;
@@ -1558,7 +1562,11 @@ async function executeIndividualDemoStep(step) {
             await executePhantomLLMResponse(step);
             break;
             
-        case 'mcp_tool_call':
+        "            case 'dom_action':
+                await executeDomActionStep(step);
+                break;
+                
+            case 'mcp_tool_call':
             await executeMcpToolCallStep(step);
             break;
             
@@ -1754,6 +1762,10 @@ async function executeStepsWithBranching(steps, demoScript) {
                 await executeCleanSystemReplyStep(step);
                 break;
                 
+            "            case 'dom_action':
+                await executeDomActionStep(step);
+                break;
+                
             case 'mcp_tool_call':
                 await executeMcpToolCallStep(step);
                 break;
@@ -1894,6 +1906,60 @@ async function executeStepsWithBranching(steps, demoScript) {
         // Small delay between steps for natural flow
         await new Promise(resolve => setTimeout(resolve, 500));
     }
+}
+
+// Execute DOM action step - Ghost Driver capability
+async function executeDomActionStep(step) {
+    console.log('🎯 Executing DOM action:', step.action);
+    
+    // Wait for delay before step
+    if (step.timing && step.timing.delay_before) {
+        await new Promise(resolve => setTimeout(resolve, step.timing.delay_before));
+    }
+
+    const target = document.querySelector(step.selector);
+    if (!target) {
+        console.error('🎯 DOM Action Error: Target not found', step.selector);
+        await addDemoMessage('system', '❌ **Error:** Could not find UI element: ' + step.selector);
+        return;
+    }
+
+    // Read value if requested
+    let capturedValue = '';
+    if (step.read_value_from) {
+        const valueSource = document.querySelector(step.read_value_from);
+        if (valueSource && 'value' in valueSource) {
+            capturedValue = valueSource.value;
+        } else if (valueSource) {
+            capturedValue = valueSource.innerText;
+        }
+    }
+
+    // Perform Action
+    try {
+        if (step.action === 'click') {
+            target.click();
+        } else if (step.action === 'submit_form') {
+            const form = target.tagName === 'FORM' ? target : target.closest('form');
+            if (form) {
+                form.requestSubmit ? form.requestSubmit() : form.submit();
+            } else {
+                console.error('🎯 DOM Action Error: No form found for submit_form');
+            }
+        }
+        console.log('🎯 DOM Action performed:', step.action);
+    } catch (e) {
+        console.error('🎯 DOM Action failed:', e);
+    }
+
+    // Report back to chat
+    if (step.message_template) {
+        const message = step.message_template.replace('{value}', capturedValue || 'UNKNOWN');
+        await addDemoMessage('assistant', message);
+    }
+    
+    // Wait for UI update
+    await new Promise(resolve => setTimeout(resolve, 1000));
 }
 
 // Execute user input step - pure UI manipulation, no form submission
@@ -2773,7 +2839,11 @@ async function continueDemoFromState(demoState) {
                             }
                             break;
                             
-                        case 'mcp_tool_call':
+                        "            case 'dom_action':
+                await executeDomActionStep(step);
+                break;
+                
+            case 'mcp_tool_call':
                             if (typeof executeMcpToolCallStep === 'function') {
                                 await executeMcpToolCallStep(step);
                             } else {

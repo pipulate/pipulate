@@ -1,9 +1,6 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/server.py
 /home/mike/repos/pipulate/apps/040_hello_workflow.py
 /home/mike/repos/pipulate/assets/pipulate-init.js
-/home/mike/repos/pipulate/assets/tests/demo.json
-/home/mike/repos/pipulate/assets/scenarios/introduction.json
 /home/mike/repos/pipulate/assets/scenarios/hello_workflow_test.json
 """
 

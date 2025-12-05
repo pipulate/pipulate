@@ -5,6 +5,29 @@
     "trigger_message": "Initiating Voice-Guided Test...",
     "steps": [
       {
+        "step_id": "00_voice_intro_pipeline",
+        "type": "mcp_tool_call",
+        "tool_name": "voice_synthesis",
+        "tool_args": {
+          "text": "I am about to initialize the workflow by submitting a pipeline ID."
+        },
+        "timing": {
+          "delay_before": 500
+        },
+        "description": "🎤 Announcing pipeline ID submission"
+      },
+      {
+        "step_id": "00_submit_pipeline_key",
+        "type": "dom_action",
+        "action": "submit_form",
+        "selector": "form[hx-post='/hello/init']",
+        "read_value_from": "input[name='pipeline_id']",
+        "message_template": "✅ **Ghost Driver:** I just submitted Pipeline ID: `{value}`",
+        "timing": {
+          "delay_before": 1000
+        }
+      },
+      {
         "step_id": "01_announce_test",
         "type": "mcp_tool_call",
         "tool_name": "voice_synthesis",
