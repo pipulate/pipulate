@@ -812,6 +812,7 @@ document.addEventListener('keydown', function(event) {
         } else if (path !== '/' && path !== '') {
             const parts = path.split('/').filter(p => p);
             if (parts.length > 0) currentApp = parts[0];
+            currentApp = currentApp.replace(/^\d+_/, ''); // Strip numeric prefix
         }
         
         const scriptName = `${currentApp}_test.json`;

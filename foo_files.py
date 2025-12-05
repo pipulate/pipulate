@@ -1,7 +1,4 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/MikeLev.in/_posts/2025-11-25-infinite-combo-engineering-forever-ai-age.md
-/home/mike/repos/MikeLev.in/_posts/2025-11-27-demo-json-codex-pipulate-atomic-proof.md
-/home/mike/repos/MikeLev.in/_posts/2025-11-28-optimists-algorithm-sovereignty-symbiosis-scenario-engine.md
 /home/mike/repos/pipulate/assets/pipulate-init.js
 /home/mike/repos/pipulate/assets/scenarios/hello_workflow_test.json
 /home/mike/repos/pipulate/assets/scenarios/introduction.json
