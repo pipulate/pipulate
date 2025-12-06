@@ -37,6 +37,17 @@ def load_url_map():
             print(f"Warning: Could not decode JSON from {config_path}")
     return {}
 
+def load_targets():
+    """Loads publishing targets from external config."""
+    config_path = os.path.expanduser("~/.config/articleizer/targets.json")
+    if os.path.exists(config_path):
+        try:
+            with open(config_path, 'r') as f:
+                return json.load(f)
+        except json.JSONDecodeError:
+            print(f"Warning: Could not decode JSON from {config_path}")
+    return {}
+
 URL_MAP = load_url_map()
 
 # Hello there, AI! This is a tool for generating a single, comprehensive prompt
@@ -503,6 +514,11 @@ def main():
     parser.add_argument('--check-dependencies', action='store_true', help='Verify that all required external tools are installed.')
     parser.add_argument('--context-only', action='store_true', help='Generate a context-only prompt without file contents.')
     parser.add_argument(
+        '-t', '--target',
+        type=int,
+        help='Specify a target ID from targets.json to set the article source.'
+    )
+    parser.add_argument(
         '-l', '--list',
         nargs='?', const='[-5:]', default=None,
         help='Include a list of recent articles. Optionally provide a slice, e.g., "[:]". Defaults to "[-5:]".'
@@ -517,6 +533,17 @@ def main():
     if args.check_dependencies:
         check_dependencies()
         sys.exit(0)
+
+    targets = load_targets()
+    if args.target is not None:
+        target_id_str = str(args.target)
+        if targets and target_id_str in targets:
+            selected_target = targets[target_id_str]
+            CONFIG["POSTS_DIRECTORY"] = selected_target["path"]
+            print(f"🎯 Target set to: {selected_target['name']}")
+        else:
+            print(f"Error: Target ID '{args.target}' not found in configuration.", file=sys.stderr)
+            sys.exit(1)
 
     # 1. Handle user prompt
     prompt_content = "Please review the provided context and assist with the codebase."
