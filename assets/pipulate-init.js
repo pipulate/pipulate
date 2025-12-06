@@ -1917,9 +1917,17 @@ async function executeDomActionStep(step) {
         await new Promise(resolve => setTimeout(resolve, step.timing.delay_before));
     }
 
-    const target = document.querySelector(step.selector);
+    // Polling wait for element
+    let target = document.querySelector(step.selector);
+    let attempts = 0;
+    while (!target && attempts < 50) { // Wait up to 5 seconds
+        await new Promise(resolve => setTimeout(resolve, 100));
+        target = document.querySelector(step.selector);
+        attempts++;
+    }
+
     if (!target) {
-        console.error('🎯 DOM Action Error: Target not found', step.selector);
+        console.error('🎯 DOM Action Error: Target not found after waiting', step.selector);
         await addDemoMessage('system', '❌ **Error:** Could not find UI element: ' + step.selector);
         return;
     }
@@ -1946,17 +1954,14 @@ async function executeDomActionStep(step) {
             } else {
                 console.error('🎯 DOM Action Error: No form found for submit_form');
             }
-        }
         } else if (step.action === 'set_value') {
-            if ('value' in target && typeof step.value !== 'undefined') {
-                target.value = step.value;
-                // Trigger input event so frameworks like HTMX/React verify the change if needed
+             if ('value' in target) {
+                target.value = step.value || '';
                 target.dispatchEvent(new Event('input', { bubbles: true }));
                 target.dispatchEvent(new Event('change', { bubbles: true }));
-                console.log();
-            } else {
-                console.error('🎯 DOM Action Error: Target cannot have value set or step.value is undefined', step.selector);
+                console.log(`🎯 DOM Action: Set value to "${step.value}"`);
             }
+        }
         console.log('🎯 DOM Action performed:', step.action);
     } catch (e) {
         console.error('🎯 DOM Action failed:', e);
