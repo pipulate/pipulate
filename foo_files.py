@@ -11,6 +11,10 @@ AI_PHOOEY_CHOP = """\
 /home/mike/repos/MikeLev.in/_posts/2025-12-05-pipulate-dayton-moment-context-aware-ai-demo-test-automation.md
 /home/mike/repos/MikeLev.in/_posts/2025-12-05-pipulates-ghost-driver-ui-automation-beyond-chat-simulation.md
 /home/mike/repos/MikeLev.in/_posts/2025-12-05-building-the-ghost-driver-automated-self-testing-for-agentic-ai.md
+/home/mike/repos/pipulate/apps/040_hello_workflow.py
+/home/mike/repos/pipulate/assets/pipulate-init.js
+/home/mike/repos/pipulate/assets/scenarios/introduction.json
+/home/mike/repos/pipulate/assets/scenarios/hello_workflow_test.json
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
