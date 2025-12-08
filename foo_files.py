@@ -1,25 +1,12 @@
 AI_PHOOEY_CHOP = """\
-# /home/mike/repos/pipulate/foo_files.py
-# /home/mike/repos/MikeLev.in/_posts/2025-12-08-context-telemetry-mastering-ai-prompt-size-limits.md
-/home/mike/repos/pipulate/assets/installer/install.sh
-/home/mike/repos/pipulate/flake.nix
-/home/mike/repos/pipulate/.gitignore
-/home/mike/repos/pipulate/requirements.in
-/home/mike/repos/pipulate/config.py
-/home/mike/repos/pipulate/server.py
-/home/mike/repos/pipulate/pipulate/__init__.py
-/home/mike/repos/pipulate/pipulate/pipulate.py
-/home/mike/repos/pipulate/pipulate/core.py
-/home/mike/repos/MikeLev.in/_posts/2025-12-05-pipulate-dayton-moment-context-aware-ai-demo-test-automation.md
-/home/mike/repos/MikeLev.in/_posts/2025-12-05-pipulates-ghost-driver-ui-automation-beyond-chat-simulation.md
-/home/mike/repos/MikeLev.in/_posts/2025-12-05-building-the-ghost-driver-automated-self-testing-for-agentic-ai.md
-/home/mike/repos/pipulate/apps/040_hello_workflow.py
 /home/mike/repos/pipulate/assets/pipulate-init.js
 /home/mike/repos/pipulate/assets/scenarios/introduction.json
-/home/mike/repos/pipulate/assets/scenarios/hello_workflow_test.json
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/pipulate/foo_files.py
+# /home/mike/repos/MikeLev.in/_posts/2025-12-08-context-telemetry-mastering-ai-prompt-size-limits.md
 
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix

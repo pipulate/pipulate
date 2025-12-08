@@ -2910,6 +2910,28 @@ async def sse_endpoint(request):
     return EventStream(broadcaster.generator())
 
 
+
+@rt('/log-demo-message', methods=['POST'])
+async def log_demo_message_endpoint(request):
+    """
+    Ingest logs from the client-side Ghost Driver and feed them into the 
+    central message queue. This ensures global ordering and persistence.
+    """
+    try:
+        form = await request.form()
+        role = form.get('role', 'assistant')
+        content = form.get('content', '')
+
+        if content:
+            # Route through the canonical message queue
+            await pipulate.message_queue.add(pipulate, content, role=role, verbatim=True)
+
+        return ''
+    except Exception as e:
+        logger.error(f'Error logging demo message: {e}')
+        return JSONResponse({'error': str(e)}, status_code=500)
+
+
 @app.post('/chat')
 async def chat_endpoint(request, message: str):
     await pipulate.stream(f'Let the user know {limiter} {message}')
