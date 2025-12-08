@@ -1933,7 +1933,7 @@ async function executeDomActionStep(step) {
     }
 
     // Read value if requested
-    let capturedValue = '';
+    let capturedValue = step.value || '';
     if (step.read_value_from) {
         const valueSource = document.querySelector(step.read_value_from);
         if (valueSource && 'value' in valueSource) {
