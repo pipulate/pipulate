@@ -1,6 +1,7 @@
 AI_PHOOEY_CHOP = """\
 /home/mike/repos/pipulate/assets/pipulate-init.js
 /home/mike/repos/pipulate/assets/scenarios/introduction.json
+/home/mike/repos/pipulate/assets/scenarios/hello_workflow_test.json
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
