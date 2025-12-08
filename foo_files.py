@@ -1,10 +1,12 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/assets/pipulate-init.js
-/home/mike/repos/pipulate/assets/scenarios/introduction.json
-/home/mike/repos/pipulate/assets/scenarios/hello_workflow_test.json
+/home/mike/repos/pipulate/prompt_foo.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/pipulate/assets/pipulate-init.js
+# /home/mike/repos/pipulate/assets/scenarios/introduction.json
+# /home/mike/repos/pipulate/assets/scenarios/hello_workflow_test.json
 
 # /home/mike/repos/pipulate/foo_files.py
 # /home/mike/repos/MikeLev.in/_posts/2025-12-08-context-telemetry-mastering-ai-prompt-size-limits.md

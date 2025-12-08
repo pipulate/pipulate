@@ -648,8 +648,8 @@ def main():
                 narrative_content += f"### {article['title']} ({article['date']})\n"
                 if article.get('url'):
                     narrative_content += f"> **URL:** {article['url']}\n"
-                else:
-                    narrative_content += f"> **Path:** {article['path']}\n"
+                # Always show path for context painting utility
+                narrative_content += f"> **Path:** {article['path']}\n"
                 narrative_content += f"> {article['summary']}\n\n"
             
             title = "Recent Narrative Context"
