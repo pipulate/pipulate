@@ -22,7 +22,7 @@
         "action": "submit_form",
         "selector": "form[hx-post='/hello/init']",
         "read_value_from": "input[name='pipeline_id']",
-        "message_template": "\u2705 **Verified:** Initialized workflow with Key: {value}",
+        "message_template": "\u2705 Verified: Initialized workflow with Key: {value}",
         "timing": {
           "delay_before": 1000
         },
@@ -46,7 +46,7 @@
         "action": "set_value",
         "selector": "#hello-step01-name-input",
         "value": "Chip O'Theseus",
-        "message_template": "\u270d\ufe0f **Ghost Driver:** Filled name field with: {value}",
+        "message_template": "\u270d\ufe0f Ghost Driver: Filled name field with: {value}",
         "timing": {
           "delay_before": 1000
         },
@@ -68,7 +68,7 @@
         "action": "click",
         "selector": "#hello-step02-greeting-input",
         "read_value_from": "#hello-step02-greeting-input",
-        "message_template": "\u2705 **Verified:** Resulting Greeting: {value}",
+        "message_template": "\u2705 Verified: Resulting Greeting: {value}",
         "timing": {
           "delay_before": 2000
         }
