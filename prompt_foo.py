@@ -427,7 +427,7 @@ Before addressing the user's prompt, perform the following verification steps:
             "UML Diagrams": "# No Python files with classes were included, or UML generation failed.",
             "Articles": "# No full articles requested. Use the -a or --article flag to include full article content.",
             "Codebase": ("# No files were specified for inclusion in the codebase." if not self.processed_files 
-                        else "# Running in --context-only mode. File contents are omitted."),
+                         else "# Running in --context-only mode. File contents are omitted."),
         }
 
         # Store final content and tokens for the manifest calculation
@@ -459,7 +459,6 @@ Before addressing the user's prompt, perform the following verification steps:
 
         return "\n\n".join(parts)
 
-    ### MODIFIED ###
     def print_summary(self, verified_token_count: int):
         """Calculates and prints an accurate, comprehensive summary to the console."""
         print("--- Files Included ---")
@@ -484,16 +483,31 @@ Before addressing the user's prompt, perform the following verification steps:
         # We need a word count for the literary perspective.
         # We'll base it on the "real" content, not including the prompt/checklist
         total_words = 0
+        final_content = ""
+        
+        # Reconstruct content for char/byte counting
+        # (We could pass this in, but accessing the dict is cleaner here)
         for section, data in self.all_sections.items():
+            content_part = data.get('content', '')
+            final_content += content_part
             if section != "Prompt": # Don't count the prompt/checklist in word count
-                total_words += count_words(data.get('content', ''))
+                total_words += count_words(content_part)
+
+        # METRICS CALCULATIONS
+        char_count = len(final_content)
+        byte_count = len(final_content.encode('utf-8'))
 
         print(f"Summed Tokens:   {total_tokens:,} (from section parts)")
         print(f"Verified Tokens: {verified_token_count:,} (from final output)")
         if total_tokens != verified_token_count:
             diff = verified_token_count - total_tokens
             print(f"  (Difference: {diff:+,})")
+            
         print(f"Total Words:     {total_words:,} (content only)")
+        
+        # NEW: Physical size metrics
+        print(f"Total Chars:     {char_count:,}")
+        print(f"Total Bytes:     {byte_count:,} (UTF-8)")
         
         # Use the VERIFIED token count for the most accurate ratio
         ratio = verified_token_count / total_words if total_words > 0 else 0
@@ -690,13 +704,11 @@ def main():
     # 4. Generate final output and print summary
     final_output = builder.build_final_prompt()
     
-    ### MODIFIED ###
     # Get the "ground truth" token count from the final, fully-formed string
     verified_token_count = count_tokens(final_output)
     
     # Pass this verified count to the summary printer for comparison
     builder.print_summary(verified_token_count)
-    ### END MODIFIED ###
 
     # 5. Handle output
     if args.output:
