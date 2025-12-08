@@ -610,7 +610,8 @@ def main():
 
     if args.list is not None:
         print("Adding narrative context from articles...", end='', flush=True)
-        all_articles = _get_article_list_data()
+        # Fix: Explicitly pass the updated directory from CONFIG
+        all_articles = _get_article_list_data(CONFIG["POSTS_DIRECTORY"])
         sliced_articles = []
         try:
             slice_or_index = parse_slice_arg(args.list)
@@ -637,7 +638,8 @@ def main():
     
     if args.article is not None:
         print("Adding full article content...", end='', flush=True)
-        all_articles = _get_article_list_data()
+        # Fix: Explicitly pass the updated directory from CONFIG
+        all_articles = _get_article_list_data(CONFIG["POSTS_DIRECTORY"])
         sliced_articles = []
         try:
             slice_or_index = parse_slice_arg(args.article)
