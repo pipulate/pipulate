@@ -2977,7 +2977,7 @@ function setupDemoContinuationKeyboardHandler(demoState) {
 // Add demo message via Server Message Queue (Ensures correct ordering)
 async function addDemoMessage(role, content) {
     try {
-        console.log(, content.substring(0, 50) + '...');
+        console.log(`🎭 Sending demo message to server (${role}):`, content.substring(0, 50) + '...');
         
         const formData = new FormData();
         formData.append('role', role);
