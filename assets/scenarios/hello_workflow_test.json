@@ -1,7 +1,7 @@
 {
   "demo_script": {
     "name": "Hello Workflow Full Test",
-    "description": "A comprehensive test verifying Ghost Driver ability to read pipeline ID, fill name, and submit.",
+    "description": "A comprehensive test verifying Ghost Driver ability with visual attention guidance.",
     "trigger_message": "Testing Full Workflow...",
     "steps": [
       {
@@ -17,12 +17,26 @@
         "description": "\ud83c\udfa4 Announcing intent"
       },
       {
+        "step_id": "00b_flash_key",
+        "type": "mcp_tool_call",
+        "tool_name": "ui_flash_element",
+        "tool_args": {
+          "selector": "input[name='pipeline_id']",
+          "color": "gold",
+          "duration": 1000
+        },
+        "timing": {
+          "delay_before": 200
+        },
+        "description": "\u2728 Guide eye to key input"
+      },
+      {
         "step_id": "01_submit_key",
         "type": "dom_action",
         "action": "submit_form",
         "selector": "form[hx-post='/hello/init']",
         "read_value_from": "input[name='pipeline_id']",
-        "message_template": "\u2705 Verified: Initialized workflow with Key: {value}",
+        "message_template": "\u2705 **Verified:** Initialized workflow with Key: {value}",
         "timing": {
           "delay_before": 1000
         },
@@ -41,19 +55,45 @@
         "description": "\ud83c\udfa4 Confirming pipeline ID submission"
       },
       {
-        "step_id": "03_fill_name",
+        "step_id": "03_voice_name_intro",
+        "type": "mcp_tool_call",
+        "tool_name": "voice_synthesis",
+        "tool_args": {
+          "text": "Now, I will fill in the name field with Chip O'Theseus."
+        },
+        "timing": {
+          "delay_before": 1000
+        },
+        "description": "\ud83c\udfa4 Announcing name fill"
+      },
+      {
+        "step_id": "03b_flash_name",
+        "type": "mcp_tool_call",
+        "tool_name": "ui_flash_element",
+        "tool_args": {
+          "selector": "#hello-step01-name-input",
+          "color": "gold",
+          "duration": 1000
+        },
+        "timing": {
+          "delay_before": 100
+        },
+        "description": "\u2728 Guide eye to name input"
+      },
+      {
+        "step_id": "04_fill_name",
         "type": "dom_action",
         "action": "set_value",
         "selector": "#hello-step01-name-input",
         "value": "Chip O'Theseus",
-        "message_template": "\u270d\ufe0f Ghost Driver: Filled name field with: {value}",
+        "message_template": "\u270d\ufe0f **Ghost Driver:** Filled name field with: ",
         "timing": {
-          "delay_before": 1000
+          "delay_before": 800
         },
         "description": "Ghost Driver fills the name input field"
       },
       {
-        "step_id": "04_submit_name",
+        "step_id": "05_submit_name",
         "type": "dom_action",
         "action": "submit_form",
         "selector": "#hello-step01-form",
@@ -63,18 +103,32 @@
         "description": "Submitting name form"
       },
       {
-        "step_id": "05_verify_greeting",
+        "step_id": "05b_flash_result",
+        "type": "mcp_tool_call",
+        "tool_name": "ui_flash_element",
+        "tool_args": {
+          "selector": "#hello-step02-greeting-input",
+          "color": "gold",
+          "duration": 1500
+        },
+        "timing": {
+          "delay_before": 1500
+        },
+        "description": "\u2728 Guide eye to result"
+      },
+      {
+        "step_id": "06_verify_greeting",
         "type": "dom_action",
         "action": "click",
         "selector": "#hello-step02-greeting-input",
         "read_value_from": "#hello-step02-greeting-input",
-        "message_template": "\u2705 Verified: Resulting Greeting: {value}",
+        "message_template": "\u2705 **Verified:** Resulting Greeting: {value}",
         "timing": {
-          "delay_before": 2000
+          "delay_before": 500
         }
       },
       {
-        "step_id": "06_voice_final",
+        "step_id": "07_voice_final",
         "type": "mcp_tool_call",
         "tool_name": "voice_synthesis",
         "tool_args": {
