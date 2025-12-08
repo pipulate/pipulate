@@ -1,5 +1,4 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/prompt_foo.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
