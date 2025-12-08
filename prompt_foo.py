@@ -466,12 +466,14 @@ Before addressing the user's prompt, perform the following verification steps:
             if self.context_only:
                 print(f"• {f['path']} (content omitted)")
             else:
-                print(f"• {f['path']} ({f['tokens']:,} tokens)")
+                byte_len = len(f['content'].encode('utf-8'))
+                print(f"• {f['path']} ({f['tokens']:,} tokens | {byte_len:,} bytes)")
         
         if self.auto_context:
             print("\n--- Auto-Context Included ---")
             for title, data in self.auto_context.items():
-                print(f"• {title} ({data['tokens']:,} tokens)")
+                byte_len = len(data['content'].encode('utf-8'))
+                print(f"• {title} ({data['tokens']:,} tokens | {byte_len:,} bytes)")
         
         print("\n--- Prompt Summary ---")
         if self.context_only:
