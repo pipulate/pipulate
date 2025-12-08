@@ -620,7 +620,12 @@ def main():
         tree_output = run_tree_command()
         title = "Codebase Structure (eza --tree)"
         builder.add_auto_context(title, tree_output)
-        print(f" ({builder.auto_context.get(title, {}).get('tokens', 0):,} tokens)")
+        
+        # Calculate sizes for live display
+        tree_data = builder.auto_context.get(title, {})
+        t_count = tree_data.get('tokens', 0)
+        b_count = len(tree_data.get('content', '').encode('utf-8'))
+        print(f" ({t_count:,} tokens | {b_count:,} bytes)")
     else:
         print("Skipping codebase tree (no .py files included).")
 
@@ -647,8 +652,14 @@ def main():
                     narrative_content += f"> **Path:** {article['path']}\n"
                 narrative_content += f"> {article['summary']}\n\n"
             
-            builder.add_auto_context("Recent Narrative Context", narrative_content.strip())
-            print(f" ({len(sliced_articles)} articles)")
+            title = "Recent Narrative Context"
+            builder.add_auto_context(title, narrative_content.strip())
+            
+            # Calculate sizes for live display
+            narrative_data = builder.auto_context.get(title, {})
+            t_count = narrative_data.get('tokens', 0)
+            b_count = len(narrative_data.get('content', '').encode('utf-8'))
+            print(f" ({len(sliced_articles)} articles | {t_count:,} tokens | {b_count:,} bytes)")
         else:
             print(" (no articles found or invalid slice)")
     
@@ -679,8 +690,14 @@ def main():
             
             if full_content_parts:
                 full_article_content = "\n".join(full_content_parts)
-                builder.add_auto_context("Full Article Content", full_article_content)
-                print(f" ({len(sliced_articles)} full articles)")
+                title = "Full Article Content"
+                builder.add_auto_context(title, full_article_content)
+                
+                # Calculate sizes for live display
+                article_data = builder.auto_context.get(title, {})
+                t_count = article_data.get('tokens', 0)
+                b_count = len(article_data.get('content', '').encode('utf-8'))
+                print(f" ({len(sliced_articles)} full articles | {t_count:,} tokens | {b_count:,} bytes)")
         else:
             print(" (no articles found or invalid slice)")
 
@@ -696,7 +713,9 @@ def main():
             builder.add_auto_context(title, uml_content)
             
             if title in builder.auto_context:
-                print(f" ({builder.auto_context[title]['tokens']:,} tokens)")
+                uml_data = builder.auto_context[title]
+                b_count = len(uml_data['content'].encode('utf-8'))
+                print(f" ({uml_data['tokens']:,} tokens | {b_count:,} bytes)")
             elif uml_content and "note: no classes" in uml_content.lower():
                 print(" (skipped, no classes)")
             else:
