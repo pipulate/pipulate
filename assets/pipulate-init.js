@@ -125,7 +125,7 @@ sidebarWs.onmessage = function(event) {
     // Handle UI control messages first
     if (event.data === '%%STREAM_START%%') {
         updateStreamingUI(true);
-        return; // Do not display this message
+        return false; // Do not display this message
     }
     if (event.data === '%%STREAM_END%%') {
         updateStreamingUI(false);
@@ -145,7 +145,7 @@ sidebarWs.onmessage = function(event) {
         // Reset message buffer for next stream
         sidebarCurrentMessage = document.createElement('div');
         sidebarCurrentMessage.className = 'message assistant';
-        return; // Do not display this message
+        return false; // Do not display this message
     }
 
     console.log('Sidebar received:', event.data);
@@ -159,7 +159,7 @@ sidebarWs.onmessage = function(event) {
         } catch (e) {
             console.error('Error executing script:', e);
         }
-        return;
+        return false;
     }
     
     // Check if the response contains a plugin list item
@@ -186,7 +186,7 @@ sidebarWs.onmessage = function(event) {
                 }
             }
         }
-        return;
+        return false;
     }
     
     // Handle regular chat messages
@@ -316,7 +316,7 @@ function updateStreamingUI(streaming) {
     const stopBtn = document.getElementById('stop-btn');
     const input = document.getElementById('msg');
     
-    if (!sendBtn || !stopBtn || !input) return;
+    if (!sendBtn || !stopBtn || !input) return false;
     
     if (isStreaming) {
         sendBtn.style.display = 'none';
@@ -405,13 +405,13 @@ function showClipboardError(button) {
 function addClipboardToAssistantMessage(messageElement) {
     // Check if clipboard button already exists
     if (messageElement.querySelector('.clipboard-button')) {
-        return;
+        return false;
     }
     
     // Only add clipboard if message has content
     const messageText = messageElement.dataset.rawText;
     if (!messageText || messageText.trim() === '') {
-        return;
+        return false;
     }
     
     // Create message container structure
@@ -524,7 +524,7 @@ function initializeScrollObserver() {
 
 // Function to send temp message when WebSocket is ready
 function sendTempMessageWhenReady() {
-    if (!tempMessage || tempMessageSent) return;
+    if (!tempMessage || tempMessageSent) return false;
     
     if (sidebarWs.readyState === WebSocket.OPEN) {
         console.log('Sidebar sending verbatim:', tempMessage);
@@ -1049,7 +1049,7 @@ function simulateUserInput(message) {
     const msgTextarea = document.getElementById('msg');
     if (!msgTextarea) {
         console.error('🎯 Could not find message input textarea');
-        return;
+        return false;
     }
     
     // Set the message text
@@ -1121,7 +1121,7 @@ async function executeDemoSequence(demoScript) {
                 break;
                 
                         case 'dom_action':
-                await executeDomActionStep(step);
+                const success = await executeDomActionStep(step); if (success === false) { console.error('❌ Step failed, stopping demo'); await addDemoMessage('system', '❌ **Test Stopped:** Step failed.'); break; }
                 break;
                 
             case 'mcp_tool_call':
@@ -1146,7 +1146,7 @@ async function executeUserInputStep(step) {
     const msgTextarea = document.getElementById('msg');
     if (!msgTextarea) {
         console.error('🎯 Could not find message input textarea');
-        return;
+        return false;
     }
     
     // Simulate typing if typing_speed is specified
@@ -1325,7 +1325,7 @@ async function attemptWebSocketReconnection() {
             // Handle UI control messages first
             if (event.data === '%%STREAM_START%%') {
                 updateStreamingUI(true);
-                return; // Do not display this message
+                return false; // Do not display this message
             }
             if (event.data === '%%STREAM_END%%') {
                 updateStreamingUI(false);
@@ -1345,7 +1345,7 @@ async function attemptWebSocketReconnection() {
                 // Reset message buffer for next stream
                 sidebarCurrentMessage = document.createElement('div');
                 sidebarCurrentMessage.className = 'message assistant';
-                return; // Do not display this message
+                return false; // Do not display this message
             }
 
             console.log('Sidebar received:', event.data);
@@ -1359,7 +1359,7 @@ async function attemptWebSocketReconnection() {
                 } catch (e) {
                     console.error('Error executing script:', e);
                 }
-                return;
+                return false;
             }
             
             // Check if the response contains a plugin list item
@@ -1386,7 +1386,7 @@ async function attemptWebSocketReconnection() {
                         }
                     }
                 }
-                return;
+                return false;
             }
             
             // Handle regular chat messages
@@ -1529,7 +1529,7 @@ function interceptFormSubmission() {
 function triggerNextDemoStep() {
     if (!demoModeActive || !currentDemoScript) {
         console.log('🎯 No demo script active, cannot trigger next step');
-        return;
+        return false;
     }
     
     // Find the next step that should be executed as a response
@@ -1539,7 +1539,7 @@ function triggerNextDemoStep() {
         demoModeActive = false;
         currentDemoScript = null;
         currentDemoStepIndex = 0;
-        return;
+        return false;
     }
     
     const nextStep = currentDemoScript.steps[nextStepIndex];
@@ -1563,7 +1563,7 @@ async function executeIndividualDemoStep(step) {
             break;
             
                     case 'dom_action':
-                await executeDomActionStep(step);
+                const success = await executeDomActionStep(step); if (success === false) { console.error('❌ Step failed, stopping demo'); await addDemoMessage('system', '❌ **Test Stopped:** Step failed.'); break; }
                 break;
                 
             case 'mcp_tool_call':
@@ -1695,7 +1695,7 @@ async function executeInteractiveDemoSequence(demoScript) {
     if (demoScript.name !== 'Interactive Pipulate Demo') {
         console.log('🎯 Generic test detected - running in-place without reload');
         await executeStepsWithBranching(demoScript.steps, demoScript);
-        return;
+        return false;
     }
 
     console.log('📖 Storing demo bookmark before navigation...');
@@ -1763,7 +1763,7 @@ async function executeStepsWithBranching(steps, demoScript) {
                 break;
                 
                         case 'dom_action':
-                await executeDomActionStep(step);
+                const success = await executeDomActionStep(step); if (success === false) { console.error('❌ Step failed, stopping demo'); await addDemoMessage('system', '❌ **Test Stopped:** Step failed.'); break; }
                 break;
                 
             case 'mcp_tool_call':
@@ -1839,16 +1839,16 @@ async function executeStepsWithBranching(steps, demoScript) {
                         console.log('🎭 Environment switch initiated - server will restart in DEV mode');
                         // The server will restart and the demo will continue from stored state
                         // The database clear will happen after restart when in DEV mode
-                        return;
+                        return false;
                     } else {
                         console.error('🎭 Failed to switch environment');
                         hideRestartSpinner();
-                        return;
+                        return false;
                     }
                 } catch (error) {
                     console.error('🎭 Error switching environment:', error);
                     hideRestartSpinner();
-                    return;
+                    return false;
                 }
                 
                 // NOTE: This code below should never execute due to the return above,
@@ -1862,7 +1862,7 @@ async function executeStepsWithBranching(steps, demoScript) {
                     if (resetResponse.ok) {
                         console.log('🎭 Database reset initiated successfully');
                         // The server will restart and the demo will resume from the stored state
-                        return; // Exit the demo execution - server restart will handle continuation
+                        return false; // Exit the demo execution - server restart will handle continuation
                     } else {
                         console.error('🎭 Failed to reset database');
                         // Hide the spinner if there's an error
@@ -1929,7 +1929,7 @@ async function executeDomActionStep(step) {
     if (!target) {
         console.error('🎯 DOM Action Error: Target not found after waiting', step.selector);
         await addDemoMessage('system', '❌ **Error:** Could not find UI element: ' + step.selector);
-        return;
+        return false;
     }
 
     // Read value if requested
@@ -1975,6 +1975,7 @@ async function executeDomActionStep(step) {
     
     // Wait for UI update
     await new Promise(resolve => setTimeout(resolve, 1000));
+    return true;
 }
 
 // Execute user input step - pure UI manipulation, no form submission
@@ -1984,7 +1985,7 @@ async function executeCleanUserInputStep(step) {
     const msgTextarea = document.getElementById('msg');
     if (!msgTextarea) {
         console.error('🎯 Could not find message input textarea');
-        return;
+        return false;
     }
     
     // Simulate typing if typing_speed is specified
@@ -2017,7 +2018,7 @@ async function executeCleanSystemReplyStep(step) {
     const msgList = document.getElementById('msg-list');
     if (!msgList) {
         console.error('🎯 Could not find message list container');
-        return;
+        return false;
     }
     
     const messageDiv = document.createElement('div');
@@ -2152,7 +2153,7 @@ function flashElementWithGoldEffect(elementId) {
                 element.style.border = '';
                 element.style.transform = '';
                 element.style.opacity = '1';
-                return;
+                return false;
             }
             
             element.style.opacity = twinkleCount % 2 === 0 ? '0.7' : '1';
@@ -2486,7 +2487,7 @@ async function resumeDemoFromBookmark(bookmark) {
             console.error('📖 Debug - bookmark exists:', !!bookmark);
             console.error('📖 Debug - bookmark.steps exists:', !!bookmark.steps);
             console.error('📖 Debug - bookmark.steps is array:', Array.isArray(bookmark.steps));
-            return;
+            return false;
         }
         
         // Reload the full demo script config to get branches
@@ -2763,7 +2764,7 @@ async function resumeDemoFromState(demoState) {
         setupDemoContinuationKeyboardHandler(demoState);
         
         // Wait for user response before proceeding
-        return; // Let the keyboard handler take over
+        return false; // Let the keyboard handler take over
         
     } catch (error) {
         console.error('🎭 Error resuming demo from state:', error);
@@ -2779,7 +2780,7 @@ async function continueDemoFromState(demoState) {
         const demoScript = await loadDemoScriptConfig();
         if (!demoScript) {
             console.error('🎭 Could not load demo script for continuation');
-            return;
+            return false;
         }
         
         // Find the next step based on the stored state
@@ -2855,7 +2856,7 @@ async function continueDemoFromState(demoState) {
                             break;
                             
                                     case 'dom_action':
-                await executeDomActionStep(step);
+                const success = await executeDomActionStep(step); if (success === false) { console.error('❌ Step failed, stopping demo'); await addDemoMessage('system', '❌ **Test Stopped:** Step failed.'); break; }
                 break;
                 
             case 'mcp_tool_call':
@@ -2973,32 +2974,23 @@ function setupDemoContinuationKeyboardHandler(demoState) {
     console.log('🎭 Keyboard handler active - waiting for Ctrl+Alt+Y or Ctrl+Alt+N');
 }
 
-// Add demo message to chat
+// Add demo message via Server Message Queue (Ensures correct ordering)
 async function addDemoMessage(role, content) {
     try {
-        console.log(`🎭 Adding demo message (${role}):`, content.substring(0, 50) + '...');
+        console.log(, content.substring(0, 50) + '...');
         
-        const msgList = document.querySelector('#msg-list');
-        if (!msgList) {
-            console.warn('🎭 Chat container #msg-list not found for demo message');
-            return;
-        }
+        const formData = new FormData();
+        formData.append('role', role);
+        formData.append('content', content);
         
-        // 🎭 RUBY SLIPPERS: Apply platform-aware keyboard shortcut adaptation
-        const adaptedContent = window.adaptMessageForPlatform(content);
+        await fetch('/log-demo-message', {
+            method: 'POST',
+            body: formData
+        });
         
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${role} demo-message`;
-        messageDiv.innerHTML = `<p>${adaptedContent.replace(/\n/g, '<br>')}</p>`;
-        
-        msgList.appendChild(messageDiv);
-        
-        // Scroll to the new message
-        msgList.scrollTop = msgList.scrollHeight;
-        
-        console.log('🎭 Demo message added successfully');
+        // We do NOT append to DOM here. We wait for the server to broadcast it back via WebSocket.
     } catch (error) {
-        console.error('🎭 Error adding demo message:', error);
+        console.error('🎭 Error sending demo message:', error);
     }
 }
 
@@ -3011,7 +3003,7 @@ async function showDemoComebackMessage(message, subtitle) {
         const msgList = document.querySelector('#msg-list') || document.querySelector('.messages-list') || document.querySelector('#chat-messages');
         if (!msgList) {
             console.warn('🎭 Messages container not found - checked #msg-list, .messages-list, #chat-messages');
-            return;
+            return false;
         }
         
         // Strip extra line breaks and whitespace that cause spacing issues
