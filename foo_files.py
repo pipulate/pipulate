@@ -1,4 +1,6 @@
 AI_PHOOEY_CHOP = """\
+/home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
+/home/mike/repos/pipulate/scripts/articles/articleizer.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
@@ -1028,4 +1030,64 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/pipulate/Notebooks/faq_writer_sauce.py
 # /home/mike/repos/pipulate/tools/scraper_tools.py
 # /home/mike/repos/pipulate/tools/dom_tools.py
+
+# THE CONSISTENT STORY (Story Chunks)
+#  ____  _                      ____ _                 _        
+# / ___|| |_ ___  _ __ _   _   / ___| |__  _   _ _ __ | | _____ 
+# \___ \| __/ _ \| '__| | | | | |   | '_ \| | | | '_ \| |/ / __|
+#  ___) | || (_) | |  | |_| | | |___| | | | |_| | | | |   <\__ \
+# |____/ \__\___/|_|   \__, |  \____|_| |_|\__,_|_| |_|_|\_\___/
+#                      |___/                                    
+
+# CHAPTER 1: BOOTSTRAPPING
+# /home/mike/repos/pipulate/assets/installer/install.sh
+# /home/mike/repos/pipulate/flake.nix
+# /home/mike/repos/pipulate/.gitignore
+# /home/mike/repos/pipulate/.gitignore
+# /home/mike/repos/pipulate/server.py
+# /home/mike/repos/pipulate/AI_RUNME.py
+# /home/mike/repos/pipulate/README.md
+
+# CHAPTER 2: THE WIZARD & THE WAND
+# /home/mike/repos/pipulate/pipulate/__init__.py
+# /home/mike/repos/pipulate/pipulate/pipulate.py
+# /home/mike/repos/pipulate/pipulate/core.py
+# /home/mike/repos/pipulate/cli.py
+# /home/mike/repos/pipulate/prompt_foo.py
+# /home/mike/repos/pipulate/foo_files.py
+# /home/mike/repos/pipulate/scripts/articles/articleizer.py
+# /home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
+# /home/mike/repos/MikeLev.in/flake.nix
+
+# CHAPTER 3: SPELL-CASTING, NOTEBOOKS & MEMORY
+# /home/mike/repos/pipulate/tools/__init__.py 
+# /home/mike/repos/pipulate/tools/keychain_tools.py
+# /home/mike/repos/pipulate/imports/__init__.py
+# /home/mike/repos/pipulate/imports/ai_dictdb.py
+# /home/mike/repos/pipulate/imports/durable_backup_system.py
+# /home/mike/repos/pipulate/imports/server_logging.py
+# /home/mike/repos/pipulate/imports/stream_orchestrator.py
+# /home/mike/repos/pipulate/imports/mcp_orchestrator.py
+# /home/mike/repos/pipulate/assets/nbs/URLinspector.ipynb
+# /home/mike/repos/pipulate/assets/nbs/imports/url_inspect_sauce.py
+# /home/mike/repos/pipulate/Notebooks/imports/seo_gadget.py
+# /home/mike/repos/pipulate/tools/scraper_tools.py
+
+# CHAPTER 4: HELLO WORLD, TESTS, DEMOS & VIDEO (Oh My!)
+# /home/mike/repos/pipulate/assets/init.js
+# /home/mike/repos/pipulate/assets/pipulate.js
+# /home/mike/repos/pipulate/assets/styles.css
+# /home/mike/repos/pipulate/assets/theme.js
+# /home/mike/repos/pipulate/assets/utils.js
+# /home/mike/repos/pipulate/imports/crud.py
+# /home/mike/repos/pipulate/apps/060_tasks.py
+# /home/mike/repos/pipulate/apps/030_roles.py
+# /home/mike/repos/pipulate/apps/020_profiles.py
+# /home/mike/repos/pipulate/apps/040_hello_workflow.py
+# /home/mike/repos/pipulate/imports/voice_synthesis.py
+# /home/mike/repos/pipulate/assets/pipulate-init.js
+# /home/mike/repos/pipulate/assets/scenarios/hello_workflow_test.json
+# /home/mike/repos/pipulate/assets/scenarios/introduction.json
+# /home/mike/repos/pipulate/Notebooks/VIDeditor.ipynb
+# /home/mike/repos/pipulate/Notebooks/imports/videditor_sauce.py
 
