@@ -2389,3 +2389,77 @@ def apply_excel_formatting(
     print("⏩ Formatting already applied during write. Skipping legacy formatting step.")
     return button
 
+
+def create_final_deliverable(
+    job: str,
+    df: pd.DataFrame,
+    client_domain: str,
+    has_botify: bool,
+    custom_filters: list = None,
+    width_adjustment: float = 1.5
+):
+    """
+    Orchestrates the creation of the final Excel deliverable.
+    Handles path setup, column resolution, widget creation, and file generation.
+    
+    Args:
+        job: The pipulate job ID
+        df: The final processed DataFrame
+        client_domain: The client's domain string (from keys)
+        has_botify: Boolean flag for Botify data presence
+        custom_filters: List of custom filter tuples
+        width_adjustment: Multiplier for column widths
+        
+    Returns:
+        tuple: (button_widget, xl_file_path)
+    """
+    print("🚀 Starting Final Deliverable Creation...")
+
+    # 1. Define Output Path
+    deliverables_dir = Path("deliverables") / job
+    deliverables_dir.mkdir(parents=True, exist_ok=True)
+    semrush_lookup = _extract_registered_domain(client_domain)
+    xl_filename = f"{semrush_lookup.replace('.', '_').rstrip('_')}_GAPalyzer_{job}_V1.xlsx"
+    xl_file = deliverables_dir / xl_filename
+
+    # 2. Get Canonical Competitors and Target Column
+    clean_lookup_key = semrush_lookup.rstrip('/')
+    target_competitor_col = None
+    for col in df.columns:
+        if col.rstrip('/') == clean_lookup_key:
+            target_competitor_col = col
+            break
+    if target_competitor_col is None:
+        print(f"⚠️ Warning: Could not find canonical column for '{semrush_lookup}'. Using default.")
+        target_competitor_col = semrush_lookup
+
+    competitors_list_json = pip.get(job, 'competitors_list_json', '[]')
+    competitors = json.loads(competitors_list_json)
+    if not competitors:
+        competitors = [col for col in df.columns if col == semrush_lookup or '/' in col or '.com' in col]
+
+    # 3. Create Button Widget
+    button = widgets.Button(
+        description=f"📂 Open Deliverables Folder ({job})",
+        tooltip=f"Open {deliverables_dir.resolve()}",
+        button_style='success'
+    )
+    def on_open_folder_click(b):
+        _open_folder(str(deliverables_dir))
+    button.on_click(on_open_folder_click)
+
+    # 4. Execute Batch Write
+    final_button = add_filtered_excel_tabs(
+        job,
+        df,
+        semrush_lookup,
+        has_botify,
+        competitors,
+        xl_file,
+        target_competitor_col,
+        button,
+        custom_filters=custom_filters,
+        width_adjustment=width_adjustment
+    )
+
+    return final_button, xl_file
