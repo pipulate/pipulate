@@ -1,9 +1,7 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-forever-machine-digital-sovereignty-ai.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-pipulate-forever-machine-sovereignty-stack.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-the-technomancers-console-pipulate-and-the-art-of-digital-sovereignty.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-05-building-the-ghost-driver-automated-self-testing-for-agentic-ai.json
-/home/mike/repos/pipulate/prompt_foo.py
+/home/mike/repos/MikeLev.in/_posts/2025-12-10-context-saturation-semantic-compression-fractal-blog-navigation.md
+/home/mike/repos/pipulate/scripts/articles/articleizer.py
+/home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
