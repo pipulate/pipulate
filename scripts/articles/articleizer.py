@@ -69,9 +69,51 @@ def create_jekyll_post(article_content, instructions, output_dir):
     """
     Assembles and writes a Jekyll post file from the article content and
     structured AI-generated instructions.
+    
+    Auto-increments 'sort_order' based on existing posts for the current date.
     """
     print("Formatting final Jekyll post...")
 
+    # 1. Determine Date and Auto-Increment Sort Order
+    current_date = datetime.now().strftime('%Y-%m-%d')
+    next_sort_order = 1
+    
+    try:
+        target_path = Path(output_dir)
+        if target_path.exists():
+            # Find all markdown files for today
+            todays_posts = list(target_path.glob(f"{current_date}-*.md"))
+            
+            max_order = 0
+            for post_file in todays_posts:
+                try:
+                    # Read content to parse front matter
+                    content = post_file.read_text(encoding='utf-8')
+                    if content.startswith('---'):
+                        # Split to isolate YAML block (between first two ---)
+                        parts = content.split('---', 2)
+                        if len(parts) >= 3:
+                            front_matter = yaml.safe_load(parts[1])
+                            if front_matter and 'sort_order' in front_matter:
+                                try:
+                                    order = int(front_matter['sort_order'])
+                                    if order > max_order:
+                                        max_order = order
+                                except (ValueError, TypeError):
+                                    continue
+                except Exception as e:
+                    print(f"Warning checking sort_order in {post_file.name}: {e}")
+            
+            if max_order > 0:
+                next_sort_order = max_order + 1
+                print(f"📅 Found {len(todays_posts)} posts for today. Auto-incrementing sort_order to {next_sort_order}.")
+            else:
+                print(f"📅 First post of the day. sort_order set to 1.")
+                
+    except Exception as e:
+        print(f"⚠️ Could not calculate auto-increment sort_order: {e}. Defaulting to 1.")
+
+    # 2. Prepare Data
     editing_instr = instructions.get("editing_instructions", {})
     analysis_content = instructions.get("book_analysis_content", {})
     yaml_updates = editing_instr.get("yaml_updates", {})
@@ -83,8 +125,10 @@ def create_jekyll_post(article_content, instructions, output_dir):
         'meta_description': yaml_updates.get("description"),
         'meta_keywords': yaml_updates.get("keywords"),
         'layout': 'post',
-        'sort_order': 1
+        'sort_order': next_sort_order  # <--- Now uses the dynamic value
     }
+    
+    # 3. Assemble Content
     final_yaml_block = f"---\n{yaml.dump(new_yaml_data, Dumper=yaml.SafeDumper, sort_keys=False, default_flow_style=False)}---"
 
     article_body = article_content.strip()
@@ -148,7 +192,7 @@ def create_jekyll_post(article_content, instructions, output_dir):
 
     final_content = f"{final_yaml_block}\n\n{article_body}\n\n---\n{analysis_markdown}"
 
-    current_date = datetime.now().strftime('%Y-%m-%d')
+    # 4. Generate Filename
     slug = "untitled-article"
     title_brainstorm = analysis_content.get("title_brainstorm", [])
     if title_brainstorm and title_brainstorm[0].get("filename"):

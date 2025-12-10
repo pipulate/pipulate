@@ -1,16 +1,12 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
-/home/mike/repos/pipulate/scripts/articles/articleizer.py
+/home/mike/repos/pipulate/pipulate/core.py
+/home/mike/repos/pipulate/assets/nbs/GAPalyzer.ipynb
+/home/mike/repos/pipulate/assets/nbs/imports/gap_analyzer_sauce.py
+/home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
+/home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
-
-# /home/mike/repos/pipulate/assets/pipulate-init.js
-# /home/mike/repos/pipulate/assets/scenarios/introduction.json
-# /home/mike/repos/pipulate/assets/scenarios/hello_workflow_test.json
-
-# /home/mike/repos/pipulate/foo_files.py
-# /home/mike/repos/MikeLev.in/_posts/2025-12-08-context-telemetry-mastering-ai-prompt-size-limits.md
 
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
@@ -1090,4 +1086,14 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/pipulate/assets/scenarios/introduction.json
 # /home/mike/repos/pipulate/Notebooks/VIDeditor.ipynb
 # /home/mike/repos/pipulate/Notebooks/imports/videditor_sauce.py
+
+# CHAPTER 5: BIG WORKFLOWS (Refine this)
+# /home/mike/repos/pipulate/apps/240_simon_mcp.py
+# /home/mike/repos/pipulate/apps/400_botify_trifecta.py
+# /home/mike/repos/pipulate/imports/botify_code_generation.py
+# /home/mike/repos/pipulate/apps/110_parameter_buster.py
+
+# CHAPTER 6: BIG NOTEBOOKS
+
+
 
