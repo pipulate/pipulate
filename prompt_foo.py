@@ -233,13 +233,17 @@ def _get_article_list_data(posts_dir: str = CONFIG["POSTS_DIRECTORY"]) -> List[D
 
                     full_url = f"{url_config['base_url']}{slug_path}"
 
+                article_tokens = count_tokens(content)
+                article_bytes = len(content.encode('utf-8'))
                 posts_data.append({
                     'path': filepath,
                     'date': post_date,
                     'sort_order': int(front_matter.get('sort_order', 0)),
                     'title': front_matter.get('title', 'Untitled'),
                     'summary': front_matter.get('meta_description', ''),
-                    'url': full_url
+                    'url': full_url,
+                    'tokens': article_tokens,
+                    'bytes': article_bytes
                 })
         except (ValueError, yaml.YAMLError, IndexError): continue
     return sorted(posts_data, key=lambda p: (p['date'], p['sort_order']))
@@ -645,7 +649,7 @@ def main():
         if sliced_articles:
             narrative_content = ""
             for article in sliced_articles:
-                narrative_content += f"### {article['title']} ({article['date']})\n"
+                narrative_content += f"### {article['title']} ({article['date']}, tokens: {article['tokens']:,}, bytes: {article['bytes']:,})\n"
                 if article.get('url'):
                     narrative_content += f"> **URL:** {article['url']}\n"
                 # Always show path for context painting utility

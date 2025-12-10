@@ -1,6 +1,14 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/prompt_foo.py
-/home/mike/repos/pipulate/foo_files.py
+/home/mike/repos/MikeLev.in/_posts/2025-12-05-pipulate-dayton-moment-context-aware-ai-demo-test-automation.md
+/home/mike/repos/MikeLev.in/_posts/2025-12-04-pipulate-forever-machine-sovereignty-stack.md
+/home/mike/repos/MikeLev.in/_posts/2025-12-04-the-technomancers-console-pipulate-and-the-art-of-digital-sovereignty.md
+/home/mike/repos/pipulate/pipulate/__init__.py
+/home/mike/repos/pipulate/pipulate/pipulate.py
+/home/mike/repos/pipulate/pipulate/core.py
+/home/mike/repos/pipulate/assets/nbs/FAQuilizer.ipynb
+/home/mike/repos/pipulate/assets/nbs/imports/faq_writer_sauce.py
+/home/mike/repos/pipulate/scripts/articles/articleizer.py
+/home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
