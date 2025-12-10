@@ -1338,6 +1338,15 @@ def fetch_botify_data_and_save(job: str, botify_token: str, botify_project_url: 
     Orchestrates fetching data from the Botify API using pre-defined helpers,
     handling slug detection, API calls with fallbacks, downloading, decompression,
     and storing the final DataFrame in pip state.
+
+    Args:
+        job (str): The current Pipulate job ID.
+        botify_token (str): The Botify API token.
+        botify_project_url (str): The Botify project URL to parse for org/project slugs.
+
+    Returns:
+        tuple: (botify_df: pd.DataFrame, has_botify: bool, report_path: Path or None, csv_dir_path: Path or None)
+               Returns the fetched DataFrame, a boolean indicating success, and the report/directory paths.
     """
     print("🤖 Fetching data from Botify API...")
     report_name = None # Initialize report_name
@@ -1346,9 +1355,10 @@ def fetch_botify_data_and_save(job: str, botify_token: str, botify_project_url: 
 
     # --- 1. Parse URL and get latest analysis slug ---
     try:
+        # Strip trailing slash FIRST for reliable parsing
         cleaned_url = botify_project_url.rstrip('/')
         url_parts = cleaned_url.split('/')
-        if len(url_parts) < 2:
+        if len(url_parts) < 2: # Basic validation
              raise ValueError(f"Could not parse org/project from URL: {botify_project_url}")
 
         org = url_parts[-2]
@@ -1361,14 +1371,14 @@ def fetch_botify_data_and_save(job: str, botify_token: str, botify_project_url: 
         analysis = slugs[0] # Use the most recent analysis
         print(f"  ✅ Found latest Analysis Slug: {analysis}")
 
-    except (IndexError, ValueError, Exception) as e: 
+    except (IndexError, ValueError, Exception) as e: # Catch broader exceptions during setup
         print(f"  ❌ Critical Error during Botify setup: {e}")
-        # pip.set(job, 'botify_export_df_json', pd.DataFrame().to_json(orient='records')) # Avoid storing empty JSON if possible to save space
-        return pd.DataFrame(), False, None, None 
+        pip.set(job, 'botify_export_df_json', pd.DataFrame().to_json(orient='records'))
+        return pd.DataFrame(), False, None, None # Return empty DF, False, and None paths
 
     # --- 2. Define Paths and Payloads ---
     try:
-        csv_dir = Path("data") / f"{job}_botify"
+        csv_dir = Path("temp") / job # Pointing to the consolidated temp/job_name dir
         csv_dir.mkdir(parents=True, exist_ok=True)
         report_name = csv_dir / "botify_export.csv"
 
@@ -1382,50 +1392,55 @@ def fetch_botify_data_and_save(job: str, botify_token: str, botify_project_url: 
         }
     except Exception as e:
         print(f"  ❌ Error defining paths/payloads: {e}")
-        return pd.DataFrame(), False, None, csv_dir 
+        pip.set(job, 'botify_export_df_json', pd.DataFrame().to_json(orient='records'))
+        return pd.DataFrame(), False, None, csv_dir # Return csv_dir if it was created
 
     # --- 3. Main Logic: Check existing, call API with fallback ---
     loaded_from_existing = False
     if report_name.exists():
         print(f"  ☑️ Botify export file already exists at '{report_name}'. Reading from disk.")
         try:
+            # Skip header row which often contains metadata from Botify exports
             botify_export_df = pd.read_csv(report_name, skiprows=1)
-            loaded_from_existing = True 
+            loaded_from_existing = True # Flag success
         except Exception as e:
             print(f"  ⚠️ Could not read existing CSV file '{report_name}', will attempt to re-download. Error: {e}")
-            botify_export_df = pd.DataFrame() 
+            botify_export_df = pd.DataFrame() # Reset DF if read fails
 
+    # Only attempt download if not loaded from existing file
     if not loaded_from_existing:
         print("  Attempting download with Full GSC Payload...")
+        # Pass botify_token to the helper
         status_code, _ = _export_data('v1', org, project, payload_full, report_name, analysis=analysis)
 
-        if status_code not in [200, 201]: 
+        if status_code not in [200, 201]: # Check includes 201 for job creation success
             print("    -> Full Payload failed. Attempting Fallback Payload (no GSC data)...")
             status_code, _ = _export_data('v1', org, project, payload_fallback, report_name, analysis=analysis)
 
+        # After attempts, check if the file exists and try to read it
         if report_name.exists():
              try:
                   botify_export_df = pd.read_csv(report_name, skiprows=1)
                   print("  ✅ Successfully downloaded and/or loaded Botify data.")
              except Exception as e:
                   print(f"  ❌ Download/decompression seemed successful, but failed to read the final CSV file '{report_name}'. Error: {e}")
-                  botify_export_df = pd.DataFrame() 
+                  botify_export_df = pd.DataFrame() # Ensure empty DF on read failure
         else:
+             # Only print this if we didn't load from an existing file initially
              print("  ❌ Botify export failed critically after both attempts, and no file exists.")
              botify_export_df = pd.DataFrame()
 
     # --- 4. Store State and Return ---
     has_botify = not botify_export_df.empty
-    
+    pip.set(job, 'botify_export_df_json', botify_export_df.to_json(orient='records'))
     if has_botify:
-        pip.set(job, 'botify_export_csv_path', str(report_name.resolve()))
-        print(f"💾 Stored Botify CSV path in pip state for job '{job}': {report_name.resolve()}")
+        print(f"💾 Stored Botify DataFrame ({len(botify_export_df)} rows) in pip state for job '{job}'.")
     else:
-        pip.set(job, 'botify_export_csv_path', None)
-        print("🤷 No Botify data loaded. Stored 'None' for path in pip state.")
+        print("🤷 No Botify data loaded or available. Stored empty DataFrame in pip state.")
 
     # Return necessary info for display logic in notebook
     return botify_export_df, has_botify, report_name, csv_dir
+
 
 def _insert_columns_after_surgical(df, column_names, after_column):
     """
