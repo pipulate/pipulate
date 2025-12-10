@@ -118,10 +118,11 @@ def generate_context_json(article_data):
             
         return json.loads(text.strip())
     except Exception as e:
-        # Check if it's a Rate Limit error (429)
-        if "429" in str(e):
-            print(f"  🛑 Rate Limit Hit. Cooling down for 30 seconds...")
-            time.sleep(30) 
+        error_msg = str(e)
+        # Check for Rate Limit (429) or ResourceExhausted errors
+        if "429" in error_msg or "ResourceExhausted" in error_msg:
+            print(f"\n🛑 Quota Limit Reached (API 429). Exiting script immediately.")
+            sys.exit(0) # HARD EXIT
         else:
             print(f"  ⚠️ AI Generation failed: {e}")
         return None
