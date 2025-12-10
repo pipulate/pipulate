@@ -118,7 +118,12 @@ def generate_context_json(article_data):
             
         return json.loads(text.strip())
     except Exception as e:
-        print(f"  ⚠️ AI Generation failed: {e}")
+        # Check if it's a Rate Limit error (429)
+        if "429" in str(e):
+            print(f"  🛑 Rate Limit Hit. Cooling down for 30 seconds...")
+            time.sleep(30) 
+        else:
+            print(f"  ⚠️ AI Generation failed: {e}")
         return None
 
 def main():
@@ -204,10 +209,13 @@ def main():
             
             print(f"  ✅ Saved {json_path.name}")
             
-            # Rate limiting / Politeness (2 seconds sleep)
-            time.sleep(2)
+            # Rate limiting: Flash Free Tier is ~15 RPM. 
+            # 60s / 15 = 4s. We use 5s to be safe.
+            time.sleep(5)
         else:
             print("  ❌ Failed to generate context.")
+            # Even on failure, sleep a bit to avoid hammering
+            time.sleep(2)
 
     print("\n✨ Batch complete.")
 
