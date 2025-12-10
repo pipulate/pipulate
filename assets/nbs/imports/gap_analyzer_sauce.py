@@ -60,10 +60,25 @@ nltk.download('stopwords', quiet=True)
 nltk.download('punkt', quiet=True)
 nltk.download('punkt_tab', quiet=True) # Added from a later cell for consolidation
 
-# In Notebooks/gap_analyzer_sauce.py
-
 # ... (keep existing imports like Path, nbformat, pip, keys, etc.) ...
 import urllib.parse # Need this for correctly encoding the domain/path
+
+try:
+    from imports.voice_synthesis import chip_voice_system
+    VOICE_AVAILABLE = True
+except ImportError:
+    VOICE_AVAILABLE = False
+
+
+def speak(text):
+    """Safe wrapper for voice synthesis."""
+    if VOICE_AVAILABLE:
+        # Fire and forget - don't block the data processing
+        try:
+            chip_voice_system.speak_text(text)
+        except Exception as e:
+            print(f"🔇 Voice error: {e}")
+
 
 def extract_domains_and_print_urls(job: str, notebook_filename: str = "GAPalyzer.ipynb"):
     """
@@ -1623,6 +1638,8 @@ def truncate_dataframe_by_volume(job: str, final_df: pd.DataFrame, row_limit: in
         # --- Final Output and Persistence ---
         rows, cols = truncated_df.shape
         print(f"✅ Final truncation floor: Search Volume >{try_fit:,} resulting in {rows:,} rows.")
+
+        speak(f"Data truncation complete. Retained {rows} rows with search volume above {try_fit}.")
 
         df_to_store = truncated_df.copy()
 

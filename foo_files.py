@@ -1,9 +1,9 @@
 AI_PHOOEY_CHOP = """\
 /home/mike/repos/pipulate/pipulate/core.py
-/home/mike/repos/pipulate/assets/nbs/GAPalyzer.ipynb
-/home/mike/repos/pipulate/assets/nbs/imports/gap_analyzer_sauce.py
 /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
-/home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
+# /home/mike/repos/pipulate/assets/nbs/GAPalyzer.ipynb
+# /home/mike/repos/pipulate/assets/nbs/imports/gap_analyzer_sauce.py
+# /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
