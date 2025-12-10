@@ -2109,10 +2109,15 @@ class Pipulate:
 
                 for cell in nb.cells:
                     if cell.cell_type == 'code':
+                        # Normalize cell source to string if it's a list
+                        source_text = cell.source
+                        if isinstance(source_text, list):
+                            source_text = "".join(source_text)
+                        
                         # This regex is still needed for calls not in a 'secrets' cell
                         if "secrets" not in cell.metadata.get("tags", []):
-                            cell.source = re.sub(r'(key\s*=\s*)["\'].*?["\']', r'\1None', cell.source)
-                        
+                            cell.source = re.sub(r'(key\s*=\s*)["\'].*?["\']', r'\1None', source_text)
+
                         # Clear outputs and execution counts
                         cell.outputs.clear()
                         cell.execution_count = None
