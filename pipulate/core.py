@@ -2073,6 +2073,9 @@ class Pipulate:
                     elif "url-list-input" in tags:
                         cell.source = SAMPLE_URL_LIST_SOURCE
                         print("    ✓ Scrubbed and replaced 'url-list-input' cell.")
+                    elif "custom-filters-input" in tags:
+                        cell.source = SAMPLE_FILTERS_SOURCE
+                        print("    ✓ Scrubbed and replaced 'custom-filters-input' cell.")
 
                     ### NEW LOGIC STARTS HERE ###
                     elif "secrets" in tags and cell.cell_type == 'code':
