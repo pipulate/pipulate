@@ -1,17 +1,41 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/MikeLev.in/_posts/2025-12-05-pipulate-dayton-moment-context-aware-ai-demo-test-automation.md
-/home/mike/repos/MikeLev.in/_posts/2025-12-04-pipulate-forever-machine-sovereignty-stack.md
-/home/mike/repos/MikeLev.in/_posts/2025-12-04-the-technomancers-console-pipulate-and-the-art-of-digital-sovereignty.md
-/home/mike/repos/pipulate/pipulate/__init__.py
-/home/mike/repos/pipulate/pipulate/pipulate.py
-/home/mike/repos/pipulate/pipulate/core.py
-/home/mike/repos/pipulate/assets/nbs/FAQuilizer.ipynb
-/home/mike/repos/pipulate/assets/nbs/imports/faq_writer_sauce.py
-/home/mike/repos/pipulate/scripts/articles/articleizer.py
-/home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
+/home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-forever-machine-digital-sovereignty-ai.json
+/home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-pipulate-forever-machine-sovereignty-stack.json
+/home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-the-technomancers-console-pipulate-and-the-art-of-digital-sovereignty.json
+/home/mike/repos/MikeLev.in/_posts/_context/2025-12-05-building-the-ghost-driver-automated-self-testing-for-agentic-ai.json
+/home/mike/repos/pipulate/prompt_foo.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-forever-machine-digital-sovereignty-ai.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-pipulate-forever-machine-sovereignty-stack.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-the-technomancers-console-pipulate-and-the-art-of-digital-sovereignty.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-05-building-the-ghost-driver-automated-self-testing-for-agentic-ai.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-05-pipulate-dayton-moment-context-aware-ai-demo-test-automation.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-05-pipulates-ghost-driver-ui-automation-beyond-chat-simulation.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-06-the-lisp-philosophy-computings-foundational-divide.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-07-forever-machine-sovereign-computing-ai-age.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-08-context-telemetry-mastering-ai-prompt-size-limits.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-08-pipulates-ghost-driver-causal-fidelity-ai-test-automation.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-09-context-king-blueprint-local-ai-operating-system.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-09-the-codebase-as-a-book-architecting-ai-ready-narrative-context.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-10-externalizing-notebook-logic-the-chisel-the-sauce-and-ai-context.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-10-zero-sum-attention-sovereign-tools-gapalyzer-hardening.json
+# /home/mike/repos/MikeLev.in/_posts/2025-12-09-the-codebase-as-a-book-architecting-ai-ready-narrative-context.json
+# /home/mike/repos/MikeLev.in/_posts/2025-12-10-externalizing-notebook-logic-the-chisel-the-sauce-and-ai-context.json
+# /home/mike/repos/MikeLev.in/_posts/2025-12-10-zero-sum-attention-sovereign-tools-gapalyzer-hardening.json
+
+# /home/mike/repos/MikeLev.in/_posts/2025-12-05-pipulate-dayton-moment-context-aware-ai-demo-test-automation.md
+# /home/mike/repos/MikeLev.in/_posts/2025-12-04-pipulate-forever-machine-sovereignty-stack.md
+# /home/mike/repos/MikeLev.in/_posts/2025-12-04-the-technomancers-console-pipulate-and-the-art-of-digital-sovereignty.md
+# /home/mike/repos/pipulate/pipulate/__init__.py
+# /home/mike/repos/pipulate/pipulate/pipulate.py
+# /home/mike/repos/pipulate/pipulate/core.py
+# /home/mike/repos/pipulate/assets/nbs/FAQuilizer.ipynb
+# /home/mike/repos/pipulate/assets/nbs/imports/faq_writer_sauce.py
+# /home/mike/repos/pipulate/scripts/articles/articleizer.py
+# /home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
 
 # /home/mike/repos/pipulate/foo_files.py
 # /home/mike/repos/pipulate/Notebook/AI_HelloWorld.ipynb

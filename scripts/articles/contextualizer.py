@@ -16,7 +16,7 @@ API_KEY_FILE = CONFIG_DIR / "api_key.txt"
 TARGETS_FILE = CONFIG_DIR / "targets.json"
 
 # Model to use (Flash is best for high-volume, low-cost processing)
-MODEL_NAME = 'gemini-2.5-flash' 
+MODEL_NAME = 'gemini-2.5-flash-lite' 
 
 # Safe default
 DEFAULT_TARGETS = {
