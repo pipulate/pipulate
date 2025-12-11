@@ -1577,7 +1577,6 @@ def merge_and_finalize_data(job: str, arranged_df: pd.DataFrame, botify_export_d
         # Return empty/default values
         return pd.DataFrame(), {"rows": 0, "cols": 0, "has_botify": False, "pagerank_counts": None}
 
-
 def truncate_dataframe_by_volume(job: str, final_df: pd.DataFrame, row_limit: int):
     """
     Truncates the DataFrame to be under a specific row limit by iterating
@@ -1597,7 +1596,6 @@ def truncate_dataframe_by_volume(job: str, final_df: pd.DataFrame, row_limit: in
 
     print(f"✂️ Truncating data to fit under {row_limit:,} rows for clustering...")
 
-    # --- CORE LOGIC (Moved from Notebook) ---
     try:
         # Define the Search Volume Cut-off Increments
         volume_cutoffs = [49, 99, 199, 299, 499, 999, 1499, 1999, 2499, 2999, 3499, 3999, 5000, 7500, 10000, 20000, 30000]
@@ -1605,8 +1603,12 @@ def truncate_dataframe_by_volume(job: str, final_df: pd.DataFrame, row_limit: in
         # Ensure 'Search Volume' column exists and is numeric
         if 'Search Volume' not in final_df.columns:
             print("  ❌ 'Search Volume' column not found. Cannot truncate by volume.")
-            # Store and return the original df as-is
-            pip.set(job, 'truncated_df_for_clustering_json', final_df.to_json(orient='records'))
+            # Store path to original file if truncation fails
+            temp_dir = Path("temp") / job
+            temp_dir.mkdir(parents=True, exist_ok=True)
+            fallback_csv = temp_dir / "truncated_df_fallback.csv"
+            final_df.to_csv(fallback_csv, index=False)
+            pip.set(job, 'truncated_df_for_clustering_csv_path', str(fallback_csv.resolve()))
             return final_df
         
         # Ensure 'Search Volume' is numeric, coercing errors to NaN and filling with 0
@@ -1627,7 +1629,6 @@ def truncate_dataframe_by_volume(job: str, final_df: pd.DataFrame, row_limit: in
                 break
         
         # Handle edge case where loop finishes but DF is still too large
-        # (i.e., even >30000 volume is more rows than ROW_LIMIT)
         if truncated_df.shape[0] > row_limit:
              print(f"  ⚠️ Could not get under {row_limit} rows. Using last valid cutoff >{try_fit:,} ({truncated_df.shape[0]} rows).")
         
@@ -1644,18 +1645,24 @@ def truncate_dataframe_by_volume(job: str, final_df: pd.DataFrame, row_limit: in
         df_to_store = truncated_df.copy()
 
         # --- OUTPUT (to pip state) ---
-        pip.set(job, 'truncated_df_for_clustering_json', df_to_store.to_json(orient='records'))
-        print(f"💾 Stored truncated DataFrame ({len(df_to_store)} rows) in pip state for job '{job}'.")
+        # FIX: Save to disk instead of DB to avoid "string or blob too big" error
+        temp_dir = Path("temp") / job
+        temp_dir.mkdir(parents=True, exist_ok=True)
+        truncated_csv_path = temp_dir / "truncated_df_for_clustering.csv"
+        
+        df_to_store.to_csv(truncated_csv_path, index=False)
+        
+        pip.set(job, 'truncated_df_for_clustering_csv_path', str(truncated_csv_path.resolve()))
+        print(f"💾 Stored truncated DataFrame ({len(df_to_store)} rows) to CSV: {truncated_csv_path.name}")
         # ---------------------------
 
         # --- RETURN VALUE ---
-        # Return the truncated DataFrame, which will be aliased as 'df' in the notebook
         return df_to_store
 
     except Exception as e:
         print(f"❌ An error occurred during truncation: {e}")
-        pip.set(job, 'truncated_df_for_clustering_json', pd.DataFrame().to_json(orient='records'))
-        return pd.DataFrame() # Return empty DataFrame
+        # Safe fallback: don't try to store massive error objects in DB
+        return pd.DataFrame()
 
 
 # --- 1. CORE ML UTILITIES ---
@@ -1742,7 +1749,6 @@ def name_keyword_clusters(df, keyword_column, cluster_column):
     df.drop(columns=['Keyword Cluster'], inplace=True)
 
     return df
-
 
 def cluster_and_finalize_dataframe(job: str, df: pd.DataFrame, has_botify: bool, enable_clustering: bool = True):
     """
@@ -1889,8 +1895,12 @@ def cluster_and_finalize_dataframe(job: str, df: pd.DataFrame, has_botify: bool,
         print("----------------------------------")
 
         # --- OUTPUT (to pip state) ---
-        pip.set(job, 'final_clustered_df_json', df.to_json(orient='records'))
-        print(f"💾 Stored final clustered DataFrame in pip state for job '{job}'.")
+        # FIX: Save to disk instead of DB to avoid "string or blob too big" error
+        clustered_csv_path = temp_dir / "final_clustered_df.csv"
+        df.to_csv(clustered_csv_path, index=False)
+        
+        pip.set(job, 'final_clustered_df_csv_path', str(clustered_csv_path.resolve()))
+        print(f"💾 Stored final clustered DataFrame ({len(df)} rows) to CSV: {clustered_csv_path.name}")
         # ---------------------------
 
         # --- RETURN VALUE ---
@@ -1898,7 +1908,8 @@ def cluster_and_finalize_dataframe(job: str, df: pd.DataFrame, has_botify: bool,
 
     except Exception as e:
         print(f"❌ An error occurred during clustering and finalization: {e}")
-        pip.set(job, 'final_clustered_df_json', pd.DataFrame().to_json(orient='records'))
+        # Store None on error instead of massive empty DF
+        pip.set(job, 'final_clustered_df_csv_path', None)
         return pd.DataFrame() # Return empty DataFrame
 
 
