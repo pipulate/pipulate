@@ -1,7 +1,6 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/MikeLev.in/_posts/2025-12-10-context-saturation-semantic-compression-fractal-blog-navigation.md
-/home/mike/repos/pipulate/scripts/articles/articleizer.py
-/home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
+# /home/mike/repos/MikeLev.in/_posts/2025-12-10-externalizing-notebook-logic-the-chisel-the-sauce-and-ai-context.md
+/home/mike/repos/pipulate/scripts/articles/diagramizer.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
