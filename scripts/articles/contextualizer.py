@@ -15,10 +15,13 @@ CONFIG_DIR = Path.home() / ".config" / "articleizer"
 API_KEY_FILE = CONFIG_DIR / "api_key.txt"
 TARGETS_FILE = CONFIG_DIR / "targets.json"
 
-# Model to use (Flash is best for high-volume, low-cost processing)
-MODEL_NAME = 'gemini-2.5-flash' 
+# CRITICAL: Using 1.5-flash gives 1,500 RPD (Requests Per Day) vs ~500 for 2.5
+MODEL_NAME = 'gemini-2.5-flash-lite' 
 
-# Safe default
+# Timing: 60s / 15 requests = 4s minimum.
+# We use 5s sleep + execution time to stay safely around ~8-10 RPM.
+SAFETY_SLEEP_SECONDS = 5
+
 DEFAULT_TARGETS = {
     "1": {
         "name": "Local Project (Default)",
@@ -67,34 +70,33 @@ def extract_metadata_and_content(file_path):
         return None
 
 def generate_context_json(article_data):
-    """Calls Gemini to compress the article into a context JSON object."""
+    """Calls Gemini to compress the article, with retry logic."""
     
-    # Construct the Prompt
     prompt = f"""
     You are a Knowledge Graph Architect. Your goal is to compress the provided technical article into a 'Holographic Shard'—a minimal JSON object that acts as a context pointer for a Retrieval Augmented Generation system.
 
-    **Goal:** Fit maximum semantic meaning into approximately 200 tokens (800 bytes).
+    **Goal:** Fit maximum semantic meaning into approximately 200 tokens.
 
     **Input Data:**
     - Title: {article_data['frontmatter'].get('title', 'Unknown')}
     - Date: {article_data['frontmatter'].get('date', 'Unknown')}
     - Filename: {article_data['filename']}
     - Content: 
-    {article_data['content'][:15000]}  # Truncate to avoid context limit issues, usually enough
+    {article_data['content'][:15000]} 
 
     **Instructions:**
-    1. **Analyze:** Read the content. Look past the title. Find specific technologies, concepts, or "aha!" moments buried in the text.
-    2. **Extract Sub-topics ('sub'):** Identify 3-5 distinct, specific sub-topics or "juicy" details that are NOT just the title re-worded. (e.g., "Fixing Pandas int/str errors", "The 'Chisel Strike' method").
+    1. **Analyze:** Read the content. Look past the title. Find specific technologies, concepts, or "aha!" moments.
+    2. **Extract Sub-topics ('sub'):** Identify 3-5 distinct, specific sub-topics.
     3. **Summarize ('s'):** Write a concise 1-2 sentence summary of the core thesis.
-    4. **Keywords ('kw'):** Extract 3-5 high-value technical keywords (e.g., "NixOS", "HTMX", "Sovereignty").
+    4. **Keywords ('kw'):** Extract 3-5 high-value technical keywords.
 
     **Output Format:**
-    Provide ONLY a valid JSON object. No markdown formatting around it if possible, but I will parse it out.
+    Provide ONLY a valid JSON object.
     
     Schema:
     {{
       "id": "{article_data['filename']}",
-      "d": "YYYY-MM-DD",  // Extract from filename or frontmatter
+      "d": "YYYY-MM-DD", 
       "t": "Article Title",
       "s": "Concise Summary",
       "sub": ["Subtopic 1", "Subtopic 2", "Subtopic 3"],
@@ -104,32 +106,51 @@ def generate_context_json(article_data):
 
     model = genai.GenerativeModel(MODEL_NAME)
     
-    try:
-        response = model.generate_content(prompt)
-        text = response.text.strip()
-        
-        # Clean up Markdown code blocks if present
-        if text.startswith("```json"):
-            text = text[7:]
-        if text.startswith("```"):
-            text = text[3:]
-        if text.endswith("```"):
-            text = text[:-3]
+    max_retries = 3
+    attempt = 0
+
+    while attempt < max_retries:
+        try:
+            response = model.generate_content(prompt)
+            text = response.text.strip()
             
-        return json.loads(text.strip())
-    except Exception as e:
-        error_msg = str(e)
-        # Check for Rate Limit (429) or ResourceExhausted errors
-        if "429" in error_msg or "ResourceExhausted" in error_msg:
-            print(f"\n🛑 Quota Limit Reached (API 429). Exiting script immediately.")
-            sys.exit(0) # HARD EXIT
-        else:
-            print(f"  ⚠️ AI Generation failed: {e}")
-        return None
+            # Clean up Markdown code blocks
+            if text.startswith("```json"): text = text[7:]
+            if text.startswith("```"): text = text[3:]
+            if text.endswith("```"): text = text[:-3]
+            
+            return json.loads(text.strip())
+
+        except Exception as e:
+            error_msg = str(e)
+            attempt += 1
+
+            # 1. CRITICAL: Daily Quota Exceeded (ResourceExhausted)
+            # No point retrying. Stop the script to protect account status.
+            if "ResourceExhausted" in error_msg:
+                print(f"\n🛑 Daily Quota (1,500 RPD) Exceeded. Script stopping safely.")
+                sys.exit(0)
+
+            # 2. Rate Limit (429) or Server Error (500/503)
+            # We wait and retry.
+            if "429" in error_msg or "500" in error_msg or "503" in error_msg:
+                if attempt < max_retries:
+                    wait_time = 30 * attempt # Linear backoff: 30s, 60s, 90s
+                    print(f"  ⚠️ Transient error ({e}). Retrying in {wait_time}s...")
+                    time.sleep(wait_time)
+                else:
+                    print(f"  ❌ Failed after {max_retries} attempts.")
+                    return None
+            else:
+                # Other errors (syntax, etc) - Don't retry
+                print(f"  ⚠️ Non-retriable error: {e}")
+                return None
+    return None
 
 def main():
     parser = argparse.ArgumentParser(description="Generate AI context JSONs for markdown articles.")
-    parser.add_argument('--limit', type=int, default=50, help="Max number of articles to process this run (default: 50)")
+    # Default limit set to 1000 to match your batch size
+    parser.add_argument('--limit', type=int, default=1000, help="Max number of articles to process this run")
     parser.add_argument('--force', action='store_true', help="Overwrite existing context files")
     parser.add_argument('--dry-run', action='store_true', help="Show what would happen without calling API")
     args = parser.parse_args()
@@ -151,18 +172,15 @@ def main():
         print(f"❌ Error: Directory {posts_dir} does not exist.")
         return
 
-    # Ensure context directory exists
     if not args.dry_run:
         context_dir.mkdir(exist_ok=True)
 
-    # 1. API Setup
     if not args.dry_run:
         api_key = get_api_key()
         if not api_key: return
         genai.configure(api_key=api_key)
 
-    # 2. File Discovery & Filtering
-    all_posts = sorted(list(posts_dir.glob("*.md")), reverse=True) # Newest first
+    all_posts = sorted(list(posts_dir.glob("*.md")), reverse=True)
     to_process = []
 
     print(f"\n🔍 Scanning {posts_dir}...")
@@ -184,13 +202,21 @@ def main():
         print("✅ All caught up! No new context to generate.")
         return
 
-    # 3. Processing Loop
-    print("\n🚀 Starting Contextualization...")
+    print(f"\n🚀 Starting Contextualization using {MODEL_NAME}...")
+    print(f"ℹ️  Pacing: ~{SAFETY_SLEEP_SECONDS}s per item to stay under 15 RPM limit.")
     
     count = 0
+    start_time = time.time()
+
     for post in to_process:
         count += 1
-        print(f"[{count}/{len(to_process)}] Processing: {post.name}...")
+        elapsed = time.time() - start_time
+        # Simple ETA calculation
+        avg_time = elapsed / count
+        remaining = (len(to_process) - count) * avg_time
+        eta_min = int(remaining // 60)
+        
+        print(f"[{count}/{len(to_process)}] (ETA: {eta_min}m) Processing: {post.name}...")
         
         if args.dry_run:
             continue
@@ -198,24 +224,21 @@ def main():
         data = extract_metadata_and_content(post)
         if not data: continue
 
-        # Generate JSON
         context_json = generate_context_json(data)
         
         if context_json:
-            # Save
             json_path = context_dir / f"{post.stem}.json"
             with open(json_path, 'w', encoding='utf-8') as f:
-                # Minify JSON to save bytes (separators removes whitespace)
                 json.dump(context_json, f, separators=(',', ':'))
             
             print(f"  ✅ Saved {json_path.name}")
             
-            # Rate limiting: Flash Free Tier is ~15 RPM. 
-            # 60s / 15 = 4s. We use 5s to be safe.
-            time.sleep(5)
+            # THE SAFETY SLEEP
+            # We sleep unconditionally on success to enforce the rate limit pace.
+            time.sleep(SAFETY_SLEEP_SECONDS)
         else:
             print("  ❌ Failed to generate context.")
-            # Even on failure, sleep a bit to avoid hammering
+            # Even on failure, sleep briefly to avoid hammering if it's a tight loop failure
             time.sleep(2)
 
     print("\n✨ Batch complete.")
