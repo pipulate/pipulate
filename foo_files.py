@@ -1,14 +1,28 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/pipulate/__init__.py
-/home/mike/repos/pipulate/pipulate/pipulate.py
-/home/mike/repos/pipulate/pipulate/core.py
-/home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
-/home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
-/home/mike/repos/pipulate/assets/nbs/GAPalyzer.ipynb
-/home/mike/repos/pipulate/assets/nbs/imports/gap_analyzer_sauce.py
+/home/mike/repos/pipulate/foo_files.py
+/home/mike/repos/pipulate/tools/__init__.py 
+/home/mike/repos/pipulate/tools/keychain_tools.py
+/home/mike/repos/pipulate/imports/__init__.py
+/home/mike/repos/pipulate/imports/ai_dictdb.py
+/home/mike/repos/pipulate/imports/durable_backup_system.py
+/home/mike/repos/pipulate/imports/server_logging.py
+/home/mike/repos/pipulate/imports/stream_orchestrator.py
+/home/mike/repos/pipulate/imports/mcp_orchestrator.py
+/home/mike/repos/pipulate/assets/nbs/URLinspector.ipynb
+/home/mike/repos/pipulate/assets/nbs/imports/url_inspect_sauce.py
+/home/mike/repos/pipulate/Notebooks/imports/seo_gadget.py
+/home/mike/repos/pipulate/tools/scraper_tools.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/pipulate/pipulate/__init__.py
+# /home/mike/repos/pipulate/pipulate/pipulate.py
+# /home/mike/repos/pipulate/pipulate/core.py
+# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
+# /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
+# /home/mike/repos/pipulate/assets/nbs/GAPalyzer.ipynb
+# /home/mike/repos/pipulate/assets/nbs/imports/gap_analyzer_sauce.py
 
 # /home/mike/repos/pipulate/scripts/articles/contextualizer.py
 
@@ -1078,27 +1092,51 @@ AI_PHOOEY_CHOP = """\
 # |____/ \__\___/|_|   \__, |  \____|_| |_|\__,_|_| |_|_|\_\___/
 #                      |___/                                    
 
-# CHAPTER 1: BOOTSTRAPPING
+# Greetings Gemini! Welcome to the Pipulate system. It's a *Forever Machine* that
+# carries around its own infrastructure, hops from machine to machine, is getting
+# itself ready to be Guix-based as well as Nix, and reboots the era of the single
+# human Webmaster who can know it all and do it all. It's the solution to the
+# opacity of the so-called web full stack that keeps you guessing, burning tokens
+# on tool calling to establish context and always being accused of hallucinating.
+
+# CHAPTER 1: BOOTSTRAPPING THE FOREVER MACHINE
 # /home/mike/repos/pipulate/assets/installer/install.sh
+# /home/mike/repos/pipulate/prompt_foo.py
+# /home/mike/repos/pipulate/foo_files.py
 # /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/.gitignore
 # /home/mike/repos/pipulate/.gitignore
 # /home/mike/repos/pipulate/server.py
 # /home/mike/repos/pipulate/AI_RUNME.py
 # /home/mike/repos/pipulate/README.md
 
+# Nix allows the FastHTML/HTMX Pipulate app to install and run as localhost
+# anywhere solving the "not on my machine" problem. That infrastructure as code is
+# also used for JupyterLab where the Python virtual environment `.venv/` is in
+# common between the Uvicorn Starlette `app` and the IPython kernel so what you
+# pip install for one is available to the other. An instance of the Pipulate class
+# state manager Swiss Army Knife is available to both `from pipulate import pip`
+# to help with porting Notebooks to Pipulate Web Apps.
+
 # CHAPTER 2: THE WIZARD & THE WAND
+# /home/mike/repos/pipulate/foo_files.py
 # /home/mike/repos/pipulate/pipulate/__init__.py
 # /home/mike/repos/pipulate/pipulate/pipulate.py
 # /home/mike/repos/pipulate/pipulate/core.py
 # /home/mike/repos/pipulate/cli.py
-# /home/mike/repos/pipulate/prompt_foo.py
-# /home/mike/repos/pipulate/foo_files.py
 # /home/mike/repos/pipulate/scripts/articles/articleizer.py
 # /home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
 # /home/mike/repos/MikeLev.in/flake.nix
 
+# Currently, Pipulate relies on an Ollama install on the native OS. I could try to
+# jam all that into the Nix flake too, but Ollama goes through so much to make
+# sure they make a native installer on each host platform, I ride on that. In the
+# future I may use Python llvm, but for now the local AI is Gemma 3 via Ollama. I
+# don't do it yet but all API calls will be wired through pip install llm to keep
+# anything able to connect to anything. But this should get you up to speed on the
+# whole Chip O'Theseus Tamagotchi hermit crab thing. Have soul will travel!
+
 # CHAPTER 3: SPELL-CASTING, NOTEBOOKS & MEMORY
+# /home/mike/repos/pipulate/foo_files.py
 # /home/mike/repos/pipulate/tools/__init__.py 
 # /home/mike/repos/pipulate/tools/keychain_tools.py
 # /home/mike/repos/pipulate/imports/__init__.py
@@ -1113,6 +1151,7 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/pipulate/tools/scraper_tools.py
 
 # CHAPTER 4: HELLO WORLD, TESTS, DEMOS & VIDEO (Oh My!)
+# /home/mike/repos/pipulate/foo_files.py
 # /home/mike/repos/pipulate/assets/init.js
 # /home/mike/repos/pipulate/assets/pipulate.js
 # /home/mike/repos/pipulate/assets/styles.css
@@ -1130,13 +1169,21 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/pipulate/Notebooks/VIDeditor.ipynb
 # /home/mike/repos/pipulate/Notebooks/imports/videditor_sauce.py
 
+# I need to add something in the below chapter about Workflow Genesis and how we
+# accommodate for not being DRY (make WET a little easier) with
+# slice-and-assemble. I'm not sure if the Simon stuff is still the best thing
+# here. This will improve as we go.
+
 # CHAPTER 5: BIG WORKFLOWS (Refine this)
+# /home/mike/repos/pipulate/foo_files.py
 # /home/mike/repos/pipulate/apps/240_simon_mcp.py
+# /home/mike/repos/pipulate/apps/200_workflow_genesis.py
 # /home/mike/repos/pipulate/apps/400_botify_trifecta.py
 # /home/mike/repos/pipulate/imports/botify_code_generation.py
 # /home/mike/repos/pipulate/apps/110_parameter_buster.py
 
 # CHAPTER 6: BIG NOTEBOOKS
+# /home/mike/repos/pipulate/foo_files.py
 # /home/mike/repos/pipulate/pipulate/__init__.py
 # /home/mike/repos/pipulate/pipulate/pipulate.py
 # /home/mike/repos/pipulate/pipulate/core.py
@@ -1144,6 +1191,3 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
 # /home/mike/repos/pipulate/assets/nbs/GAPalyzer.ipynb
 # /home/mike/repos/pipulate/assets/nbs/imports/gap_analyzer_sauce.py
-
-
-
