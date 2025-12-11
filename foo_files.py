@@ -1,5 +1,4 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/prompt_foo.py
 /home/mike/repos/pipulate/scripts/articles/contextualizer.py
 """
 

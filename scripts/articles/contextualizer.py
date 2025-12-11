@@ -5,8 +5,10 @@ import time
 import argparse
 import getpass
 from pathlib import Path
+from datetime import datetime
 import google.generativeai as genai
-import frontmatter  # Requires: pip install python-frontmatter
+import frontmatter
+import tiktoken  # Requires: pip install tiktoken
 
 # --- CONFIGURATION ---
 CONFIG_DIR = Path.home() / ".config" / "articleizer"
@@ -14,6 +16,8 @@ KEYS_FILE = CONFIG_DIR / "keys.json"
 TARGETS_FILE = CONFIG_DIR / "targets.json"
 
 # MODEL CONFIGURATION
+# Note: 2.5-flash-lite appears to have a 20 RPD limit in preview.
+# You may need to switch back to 'gemini-2.0-flash-exp' or similar if available.
 MODEL_NAME = 'gemini-2.5-flash-lite' 
 SAFETY_SLEEP_SECONDS = 5
 
@@ -36,10 +40,17 @@ def load_targets():
 
 PROJECT_TARGETS = load_targets()
 
+def count_tokens(text: str, model: str = "gpt-4o") -> int:
+    """Estimates token count using tiktoken (consistent with prompt_foo.py)."""
+    try:
+        encoding = tiktoken.encoding_for_model(model)
+        return len(encoding.encode(text))
+    except Exception:
+        # Fallback if specific model encoding not found
+        return len(text.split())
+
 def get_api_key(key_name="default"):
     """Gets a specific named API key from keys.json."""
-    
-    # 1. Load existing keys
     keys = {}
     if KEYS_FILE.exists():
         try:
@@ -49,11 +60,9 @@ def get_api_key(key_name="default"):
             print(f"❌ Error: {KEYS_FILE} is corrupt.")
             sys.exit(1)
 
-    # 2. Check if requested key exists
     if key_name in keys:
         return keys[key_name]
     
-    # 3. If not found, prompt to add it
     print(f"⚠️ API Key '{key_name}' not found in {KEYS_FILE}.")
     new_key = getpass.getpass(f"Enter Google API Key for '{key_name}': ").strip()
     
@@ -84,7 +93,7 @@ def extract_metadata_and_content(file_path):
         print(f"❌ Error reading {file_path.name}: {e}")
         return None
 
-def generate_context_json(article_data):
+def generate_context_json(article_data, token_count):
     """Calls Gemini to compress the article, with strict quota checking."""
     
     prompt = f"""
@@ -126,7 +135,11 @@ def generate_context_json(article_data):
 
     while attempt < max_retries:
         try:
+            req_start = time.time()
             response = model.generate_content(prompt)
+            req_end = time.time()
+            duration = req_end - req_start
+
             text = response.text.strip()
             
             # Clean up Markdown code blocks
@@ -134,44 +147,43 @@ def generate_context_json(article_data):
             if text.startswith("```"): text = text[3:]
             if text.endswith("```"): text = text[:-3]
             
-            return json.loads(text.strip())
+            return json.loads(text.strip()), duration
 
         except Exception as e:
             error_msg = str(e)
             attempt += 1
             
-            # --- INTELLIGENT ERROR HANDLING ---
-
             # Case A: DAILY QUOTA (RPD) - Hard Stop
-            # 429 often serves both, so we look for specific text or assume worst case if persistent
             if "ResourceExhausted" in error_msg or "quota" in error_msg.lower():
                 print(f"\n🛑 HARD STOP: Quota Exceeded.")
                 print(f"   Model: {MODEL_NAME}")
-                print(f"   Error: {error_msg.split('Violations')[0] if 'Violations' in error_msg else error_msg[:200]}...")
-                sys.exit(0) # Exit immediately, do not retry.
+                print(f"   Input Tokens: {token_count}")
+                # Try to extract helpful info from the error message
+                if "quota_metric" in error_msg:
+                    print(f"   Details: {error_msg.split('violations')[0][:300]}...") 
+                else:
+                    print(f"   Error: {error_msg[:200]}...")
+                sys.exit(0) 
 
             # Case B: RATE LIMIT (RPM) or SERVER ERROR - Soft Retry
             if "429" in error_msg or "500" in error_msg or "503" in error_msg:
                 if attempt < max_retries:
-                    wait_time = 10 * attempt # Short backoff: 10s, 20s, 30s
-                    print(f"  ⚠️ Transient error (RPM/Server). Retrying in {wait_time}s...")
+                    wait_time = 10 * attempt 
+                    print(f"  ⚠️ Transient error ({e}). Retrying in {wait_time}s...")
                     time.sleep(wait_time)
                 else:
                     print(f"  ❌ Failed after {max_retries} attempts.")
-                    return None
+                    return None, 0
             else:
-                # Case C: Other Errors (Syntax, Auth, etc)
                 print(f"  ⚠️ Non-retriable error: {e}")
-                return None
-    return None
+                return None, 0
+    return None, 0
 
 def main():
     parser = argparse.ArgumentParser(description="Generate AI context JSONs for markdown articles.")
     parser.add_argument('--limit', type=int, default=1000, help="Max number of articles to process this run")
     parser.add_argument('--force', action='store_true', help="Overwrite existing context files")
     parser.add_argument('--dry-run', action='store_true', help="Show what would happen without calling API")
-    
-    # NEW ARGUMENT: Key Selection
     parser.add_argument('-k', '--key', type=str, default="default", help="Name of the API key to use from keys.json (default: 'default')")
     
     args = parser.parse_args()
@@ -197,7 +209,6 @@ def main():
         context_dir.mkdir(exist_ok=True)
 
     if not args.dry_run:
-        # Load the specific key requested via CLI
         api_key = get_api_key(args.key)
         if not api_key: return
         genai.configure(api_key=api_key)
@@ -229,37 +240,38 @@ def main():
     print(f"ℹ️  Pacing: ~{SAFETY_SLEEP_SECONDS}s per item to stay under RPM limit.")
     
     count = 0
-    start_time = time.time()
+    batch_start_time = time.time()
 
     for post in to_process:
         count += 1
-        elapsed = time.time() - start_time
-        # Simple ETA calculation
-        avg_time = elapsed / count
-        remaining = (len(to_process) - count) * avg_time
-        eta_min = int(remaining // 60)
-        
-        print(f"[{count}/{len(to_process)}] (ETA: {eta_min}m) Processing: {post.name}...")
+        elapsed = time.time() - batch_start_time
         
         if args.dry_run:
+            print(f"[{count}] Dry run: {post.name}")
             continue
 
         data = extract_metadata_and_content(post)
         if not data: continue
 
-        context_json = generate_context_json(data)
+        # Calculate Tokens BEFORE sending
+        input_tokens = count_tokens(data['content'][:15000])
+        
+        # Log Start
+        print(f"[{count}/{len(to_process)}] Processing: {post.name}")
+        print(f"  ↳ Input Tokens: {input_tokens} ... ", end='', flush=True)
+
+        context_json, duration = generate_context_json(data, input_tokens)
         
         if context_json:
             json_path = context_dir / f"{post.stem}.json"
             with open(json_path, 'w', encoding='utf-8') as f:
                 json.dump(context_json, f, separators=(',', ':'))
             
-            print(f"  ✅ Saved {json_path.name}")
+            print(f"✅ Saved ({duration:.2f}s)")
             
-            # THE SAFETY SLEEP
             time.sleep(SAFETY_SLEEP_SECONDS)
         else:
-            print("  ❌ Failed to generate context.")
+            print(f"❌ Failed.")
             time.sleep(2)
 
     print("\n✨ Batch complete.")
