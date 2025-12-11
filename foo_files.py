@@ -1,8 +1,16 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/scripts/articles/contextualizer.py
+/home/mike/repos/pipulate/pipulate/__init__.py
+/home/mike/repos/pipulate/pipulate/pipulate.py
+/home/mike/repos/pipulate/pipulate/core.py
+/home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
+/home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
+/home/mike/repos/pipulate/assets/nbs/GAPalyzer.ipynb
+/home/mike/repos/pipulate/assets/nbs/imports/gap_analyzer_sauce.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/pipulate/scripts/articles/contextualizer.py
 
 # /home/mike/repos/pipulate/scripts/articles/diagramizer.py
 
@@ -1129,6 +1137,13 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/pipulate/apps/110_parameter_buster.py
 
 # CHAPTER 6: BIG NOTEBOOKS
+# /home/mike/repos/pipulate/pipulate/__init__.py
+# /home/mike/repos/pipulate/pipulate/pipulate.py
+# /home/mike/repos/pipulate/pipulate/core.py
+# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
+# /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
+# /home/mike/repos/pipulate/assets/nbs/GAPalyzer.ipynb
+# /home/mike/repos/pipulate/assets/nbs/imports/gap_analyzer_sauce.py
 
 
 

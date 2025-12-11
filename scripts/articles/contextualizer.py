@@ -153,28 +153,28 @@ def generate_context_json(article_data, token_count):
             error_msg = str(e)
             attempt += 1
             
+            # --- INTELLIGENT ERROR HANDLING ---
+
             # Case A: DAILY QUOTA (RPD) - Hard Stop
+            # 429 often serves both, so we look for specific text or assume worst case if persistent
             if "ResourceExhausted" in error_msg or "quota" in error_msg.lower():
                 print(f"\n🛑 HARD STOP: Quota Exceeded.")
                 print(f"   Model: {MODEL_NAME}")
                 print(f"   Input Tokens: {token_count}")
-                # Try to extract helpful info from the error message
-                if "quota_metric" in error_msg:
-                    print(f"   Details: {error_msg.split('violations')[0][:300]}...") 
-                else:
-                    print(f"   Error: {error_msg[:200]}...")
-                sys.exit(0) 
+                print(f"   Full Error Details:\n{error_msg}") # No truncation!
+                sys.exit(0) # Exit immediately, do not retry.
 
             # Case B: RATE LIMIT (RPM) or SERVER ERROR - Soft Retry
             if "429" in error_msg or "500" in error_msg or "503" in error_msg:
                 if attempt < max_retries:
-                    wait_time = 10 * attempt 
-                    print(f"  ⚠️ Transient error ({e}). Retrying in {wait_time}s...")
+                    wait_time = 10 * attempt # Short backoff: 10s, 20s, 30s
+                    print(f"  ⚠️ Transient error (RPM/Server). Retrying in {wait_time}s...")
                     time.sleep(wait_time)
                 else:
                     print(f"  ❌ Failed after {max_retries} attempts.")
                     return None, 0
             else:
+                # Case C: Other Errors (Syntax, Auth, etc)
                 print(f"  ⚠️ Non-retriable error: {e}")
                 return None, 0
     return None, 0
@@ -184,6 +184,8 @@ def main():
     parser.add_argument('--limit', type=int, default=1000, help="Max number of articles to process this run")
     parser.add_argument('--force', action='store_true', help="Overwrite existing context files")
     parser.add_argument('--dry-run', action='store_true', help="Show what would happen without calling API")
+    
+    # NEW ARGUMENT: Key Selection
     parser.add_argument('-k', '--key', type=str, default="default", help="Name of the API key to use from keys.json (default: 'default')")
     
     args = parser.parse_args()
@@ -209,6 +211,7 @@ def main():
         context_dir.mkdir(exist_ok=True)
 
     if not args.dry_run:
+        # Load the specific key requested via CLI
         api_key = get_api_key(args.key)
         if not api_key: return
         genai.configure(api_key=api_key)
@@ -245,9 +248,14 @@ def main():
     for post in to_process:
         count += 1
         elapsed = time.time() - batch_start_time
+        # Simple ETA calculation
+        avg_time = elapsed / count
+        remaining = (len(to_process) - count) * avg_time
+        eta_min = int(remaining // 60)
+        
+        print(f"[{count}/{len(to_process)}] (ETA: {eta_min}m) Processing: {post.name}...")
         
         if args.dry_run:
-            print(f"[{count}] Dry run: {post.name}")
             continue
 
         data = extract_metadata_and_content(post)
@@ -257,7 +265,6 @@ def main():
         input_tokens = count_tokens(data['content'][:15000])
         
         # Log Start
-        print(f"[{count}/{len(to_process)}] Processing: {post.name}")
         print(f"  ↳ Input Tokens: {input_tokens} ... ", end='', flush=True)
 
         context_json, duration = generate_context_json(data, input_tokens)
@@ -269,9 +276,10 @@ def main():
             
             print(f"✅ Saved ({duration:.2f}s)")
             
+            # THE SAFETY SLEEP
             time.sleep(SAFETY_SLEEP_SECONDS)
         else:
-            print(f"❌ Failed.")
+            print("  ❌ Failed.")
             time.sleep(2)
 
     print("\n✨ Batch complete.")
