@@ -1,9 +1,11 @@
 AI_PHOOEY_CHOP = """\
-# /home/mike/repos/MikeLev.in/_posts/2025-12-10-externalizing-notebook-logic-the-chisel-the-sauce-and-ai-context.md
-/home/mike/repos/pipulate/scripts/articles/diagramizer.py
+/home/mike/repos/pipulate/prompt_foo.py
+/home/mike/repos/pipulate/scripts/articles/contextualizer.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/pipulate/scripts/articles/diagramizer.py
 
 # /home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-forever-machine-digital-sovereignty-ai.json
 # /home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-pipulate-forever-machine-sovereignty-stack.json

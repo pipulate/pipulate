@@ -1,25 +1,20 @@
 import os
 import sys
 import json
-import re
 import time
 import argparse
 import getpass
 from pathlib import Path
-from datetime import datetime
 import google.generativeai as genai
 import frontmatter  # Requires: pip install python-frontmatter
 
 # --- CONFIGURATION ---
 CONFIG_DIR = Path.home() / ".config" / "articleizer"
-API_KEY_FILE = CONFIG_DIR / "api_key.txt"
+KEYS_FILE = CONFIG_DIR / "keys.json"
 TARGETS_FILE = CONFIG_DIR / "targets.json"
 
-# CRITICAL: Using 1.5-flash gives 1,500 RPD (Requests Per Day) vs ~500 for 2.5
+# MODEL CONFIGURATION
 MODEL_NAME = 'gemini-2.5-flash-lite' 
-
-# Timing: 60s / 15 requests = 4s minimum.
-# We use 5s sleep + execution time to stay safely around ~8-10 RPM.
 SAFETY_SLEEP_SECONDS = 5
 
 DEFAULT_TARGETS = {
@@ -41,20 +36,40 @@ def load_targets():
 
 PROJECT_TARGETS = load_targets()
 
-def get_api_key():
-    """Gets API key from config or prompts user."""
-    if API_KEY_FILE.is_file():
-        return API_KEY_FILE.read_text().strip()
+def get_api_key(key_name="default"):
+    """Gets a specific named API key from keys.json."""
     
-    print("Google API Key not found in config.")
-    key = getpass.getpass("Enter your Google API Key: ")
-    if key.strip():
-        save = input("Save key? (y/n): ").lower()
+    # 1. Load existing keys
+    keys = {}
+    if KEYS_FILE.exists():
+        try:
+            with open(KEYS_FILE, 'r') as f:
+                keys = json.load(f)
+        except json.JSONDecodeError:
+            print(f"❌ Error: {KEYS_FILE} is corrupt.")
+            sys.exit(1)
+
+    # 2. Check if requested key exists
+    if key_name in keys:
+        return keys[key_name]
+    
+    # 3. If not found, prompt to add it
+    print(f"⚠️ API Key '{key_name}' not found in {KEYS_FILE}.")
+    new_key = getpass.getpass(f"Enter Google API Key for '{key_name}': ").strip()
+    
+    if new_key:
+        save = input(f"Save key '{key_name}' to config? (y/n): ").lower()
         if save == 'y':
+            keys[key_name] = new_key
             CONFIG_DIR.mkdir(parents=True, exist_ok=True)
-            API_KEY_FILE.write_text(key.strip())
-            API_KEY_FILE.chmod(0o600)
-    return key.strip()
+            with open(KEYS_FILE, 'w') as f:
+                json.dump(keys, f, indent=2)
+            KEYS_FILE.chmod(0o600)
+            print(f"✅ Key '{key_name}' saved.")
+        return new_key
+    else:
+        print("❌ No key provided. Exiting.")
+        sys.exit(1)
 
 def extract_metadata_and_content(file_path):
     """Reads markdown file, extracts YAML frontmatter and body."""
@@ -70,7 +85,7 @@ def extract_metadata_and_content(file_path):
         return None
 
 def generate_context_json(article_data):
-    """Calls Gemini to compress the article, with retry logic."""
+    """Calls Gemini to compress the article, with strict quota checking."""
     
     prompt = f"""
     You are a Knowledge Graph Architect. Your goal is to compress the provided technical article into a 'Holographic Shard'—a minimal JSON object that acts as a context pointer for a Retrieval Augmented Generation system.
@@ -124,35 +139,41 @@ def generate_context_json(article_data):
         except Exception as e:
             error_msg = str(e)
             attempt += 1
+            
+            # --- INTELLIGENT ERROR HANDLING ---
 
-            # 1. CRITICAL: Daily Quota Exceeded (ResourceExhausted)
-            # No point retrying. Stop the script to protect account status.
-            if "ResourceExhausted" in error_msg:
-                print(f"\n🛑 Daily Quota (1,500 RPD) Exceeded. Script stopping safely.")
-                sys.exit(0)
+            # Case A: DAILY QUOTA (RPD) - Hard Stop
+            # 429 often serves both, so we look for specific text or assume worst case if persistent
+            if "ResourceExhausted" in error_msg or "quota" in error_msg.lower():
+                print(f"\n🛑 HARD STOP: Quota Exceeded.")
+                print(f"   Model: {MODEL_NAME}")
+                print(f"   Error: {error_msg.split('Violations')[0] if 'Violations' in error_msg else error_msg[:200]}...")
+                sys.exit(0) # Exit immediately, do not retry.
 
-            # 2. Rate Limit (429) or Server Error (500/503)
-            # We wait and retry.
+            # Case B: RATE LIMIT (RPM) or SERVER ERROR - Soft Retry
             if "429" in error_msg or "500" in error_msg or "503" in error_msg:
                 if attempt < max_retries:
-                    wait_time = 30 * attempt # Linear backoff: 30s, 60s, 90s
-                    print(f"  ⚠️ Transient error ({e}). Retrying in {wait_time}s...")
+                    wait_time = 10 * attempt # Short backoff: 10s, 20s, 30s
+                    print(f"  ⚠️ Transient error (RPM/Server). Retrying in {wait_time}s...")
                     time.sleep(wait_time)
                 else:
                     print(f"  ❌ Failed after {max_retries} attempts.")
                     return None
             else:
-                # Other errors (syntax, etc) - Don't retry
+                # Case C: Other Errors (Syntax, Auth, etc)
                 print(f"  ⚠️ Non-retriable error: {e}")
                 return None
     return None
 
 def main():
     parser = argparse.ArgumentParser(description="Generate AI context JSONs for markdown articles.")
-    # Default limit set to 1000 to match your batch size
     parser.add_argument('--limit', type=int, default=1000, help="Max number of articles to process this run")
     parser.add_argument('--force', action='store_true', help="Overwrite existing context files")
     parser.add_argument('--dry-run', action='store_true', help="Show what would happen without calling API")
+    
+    # NEW ARGUMENT: Key Selection
+    parser.add_argument('-k', '--key', type=str, default="default", help="Name of the API key to use from keys.json (default: 'default')")
+    
     args = parser.parse_args()
 
     # Target Selection
@@ -176,9 +197,11 @@ def main():
         context_dir.mkdir(exist_ok=True)
 
     if not args.dry_run:
-        api_key = get_api_key()
+        # Load the specific key requested via CLI
+        api_key = get_api_key(args.key)
         if not api_key: return
         genai.configure(api_key=api_key)
+        print(f"🔑 Using API Key: '{args.key}'")
 
     all_posts = sorted(list(posts_dir.glob("*.md")), reverse=True)
     to_process = []
@@ -203,7 +226,7 @@ def main():
         return
 
     print(f"\n🚀 Starting Contextualization using {MODEL_NAME}...")
-    print(f"ℹ️  Pacing: ~{SAFETY_SLEEP_SECONDS}s per item to stay under 15 RPM limit.")
+    print(f"ℹ️  Pacing: ~{SAFETY_SLEEP_SECONDS}s per item to stay under RPM limit.")
     
     count = 0
     start_time = time.time()
@@ -234,11 +257,9 @@ def main():
             print(f"  ✅ Saved {json_path.name}")
             
             # THE SAFETY SLEEP
-            # We sleep unconditionally on success to enforce the rate limit pace.
             time.sleep(SAFETY_SLEEP_SECONDS)
         else:
             print("  ❌ Failed to generate context.")
-            # Even on failure, sleep briefly to avoid hammering if it's a tight loop failure
             time.sleep(2)
 
     print("\n✨ Batch complete.")
