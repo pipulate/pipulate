@@ -1,9 +1,14 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/apps/015_backup_introduction.py
+/home/mike/repos/pipulate/pipulate/__init__.py
+/home/mike/repos/pipulate/pipulate/pipulate.py
+/home/mike/repos/pipulate/pipulate/core.py
+/home/mike/repos/pipulate/imports/voice_synthesis.py
 /home/mike/repos/pipulate/apps/010_introduction.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/pipulate/apps/015_backup_introduction.py
 
 # /home/mike/repos/pipulate/pipulate/__init__.py
 # /home/mike/repos/pipulate/pipulate/pipulate.py
