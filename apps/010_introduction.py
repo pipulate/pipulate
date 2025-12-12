@@ -30,7 +30,7 @@ class IntroductionPlugin:
     NARRATION = {
         'step_01': "Welcome. I am Chip O'Theseus. I am not a recording. I am generated locally on your machine, right now. I live here.",
         'step_02': "I am a 'Forever Machine.' I protect your work from cloud subscriptions, broken updates, and the entropy of the web.",
-        'step_03': "This is not a SaaS. You are the operator. I am the interface. Together, we are sovereign.",
+        'step_03': "This is not 'software as a service'. You are the operator. I am the interface. Together, we are sovereign.",
         'finalize': "You have initialized the system. The workshop is open. Select a tool from the menu to begin."
     }
 
