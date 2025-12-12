@@ -11,6 +11,7 @@ import os
 import wave
 import subprocess
 import tempfile
+import signal
 from pathlib import Path
 from typing import Optional, Dict, Any
 import logging
@@ -45,6 +46,7 @@ class ChipVoiceSystem:
         self.config_path = None
         self.voice = None
         self.voice_ready = False
+        self.current_process = None  # Track the running audio process
         
         if VOICE_SYNTHESIS_AVAILABLE:
             self.setup_voice_model()
@@ -91,7 +93,26 @@ class ChipVoiceSystem:
         except Exception as e:
             logger.error(f"🎤 Failed to setup voice model: {e}")
             self.voice_ready = False
-    
+
+    def stop_speaking(self):
+        """
+        Silence! Kill the current audio process if it exists.
+        """
+        if self.current_process:
+            try:
+                # Check if process is still running
+                if self.current_process.poll() is None:
+                    logger.info("🎤 Shhh! Stopping current audio playback.")
+                    self.current_process.terminate()  # Polite kill
+                    try:
+                        self.current_process.wait(timeout=0.2)
+                    except subprocess.TimeoutExpired:
+                        self.current_process.kill()   # Force kill
+            except Exception as e:
+                logger.warning(f"🎤 Error stopping audio: {e}")
+            finally:
+                self.current_process = None
+
     def synthesize_and_play(self, text: str) -> bool:
         """
         Synthesize text and play audio (Mike's tested approach)
@@ -105,6 +126,9 @@ class ChipVoiceSystem:
         if not self.voice_ready:
             logger.warning("🎤 Voice synthesis not ready")
             return False
+        
+        # STOP any existing audio before starting new one
+        self.stop_speaking()
         
         try:
             # Use temporary file for audio output
@@ -125,28 +149,34 @@ class ChipVoiceSystem:
                 play_cmd = ["play", output_path]
 
             try:
-                subprocess.run(
+                # Use Popen instead of run to allow interruption
+                self.current_process = subprocess.Popen(
                     play_cmd, 
-                    check=True, 
                     stderr=subprocess.DEVNULL,
                     stdout=subprocess.DEVNULL
                 )
-                logger.info(f"🎤 Successfully spoke: {text[:50]}...")
+                
+                logger.info(f"🎤 Speaking (PID {self.current_process.pid}): {text[:50]}...")
+                
+                # Wait for the process to finish naturally
+                self.current_process.wait()
+                
                 return True
+
             except (subprocess.CalledProcessError, FileNotFoundError) as e:
                 # On Linux, if 'play' is not in the path, try the nix-shell fallback
                 if system == "Linux":
                     try:
-                        subprocess.run(
+                        self.current_process = subprocess.Popen(
                             ["nix-shell", "-p", "sox", "--run", f"play {output_path}"], 
-                            check=True, 
                             stderr=subprocess.DEVNULL, 
                             stdout=subprocess.DEVNULL
                         )
-                        logger.info(f"🎤 Successfully spoke (via nix-shell): {text[:50]}...")
+                        logger.info(f"🎤 Speaking via nix-shell (PID {self.current_process.pid}): {text[:50]}...")
+                        self.current_process.wait()
                         return True
-                    except (subprocess.CalledProcessError, FileNotFoundError):
-                        logger.error("🎤 'play' command not found. Sox package may not be properly installed.")
+                    except Exception as nix_e:
+                        logger.error(f"🎤 Audio playback failed on {system} (nix fallback): {nix_e}")
                         return False
                 else:
                     logger.error(f"🎤 Audio playback failed on {system}: {e}")
@@ -158,10 +188,13 @@ class ChipVoiceSystem:
         finally:
             # Clean up temporary file
             try:
-                os.unlink(output_path)
+                if os.path.exists(output_path):
+                    os.unlink(output_path)
             except:
                 pass
-    
+            # Clear process reference
+            self.current_process = None
+
     def speak_text(self, text: str) -> Dict[str, Any]:
         """
         Speak text and return result information
@@ -376,4 +409,4 @@ if __name__ == "__main__":
     if voice_test and memory_test:
         print("\n🎉 All tests passed! Chip O'Theseus is ready to speak about its memories.")
     else:
-        print("\n⚠️  Some tests failed. Check the logs for details.") 
+        print("\n⚠️  Some tests failed. Check the logs for details.")
