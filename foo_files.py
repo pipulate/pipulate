@@ -1,17 +1,6 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/foo_files.py
-/home/mike/repos/pipulate/tools/__init__.py 
-/home/mike/repos/pipulate/tools/keychain_tools.py
-/home/mike/repos/pipulate/imports/__init__.py
-/home/mike/repos/pipulate/imports/ai_dictdb.py
-/home/mike/repos/pipulate/imports/durable_backup_system.py
-/home/mike/repos/pipulate/imports/server_logging.py
-/home/mike/repos/pipulate/imports/stream_orchestrator.py
-/home/mike/repos/pipulate/imports/mcp_orchestrator.py
-/home/mike/repos/pipulate/assets/nbs/URLinspector.ipynb
-/home/mike/repos/pipulate/assets/nbs/imports/url_inspect_sauce.py
-/home/mike/repos/pipulate/Notebooks/imports/seo_gadget.py
-/home/mike/repos/pipulate/tools/scraper_tools.py
+/home/mike/repos/pipulate/apps/015_backup_introduction.py
+/home/mike/repos/pipulate/apps/010_introduction.py
 """
 
 # HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
@@ -1161,6 +1150,7 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/pipulate/apps/060_tasks.py
 # /home/mike/repos/pipulate/apps/030_roles.py
 # /home/mike/repos/pipulate/apps/020_profiles.py
+# /home/mike/repos/pipulate/apps/010_introduction.py
 # /home/mike/repos/pipulate/apps/040_hello_workflow.py
 # /home/mike/repos/pipulate/imports/voice_synthesis.py
 # /home/mike/repos/pipulate/assets/pipulate-init.js
