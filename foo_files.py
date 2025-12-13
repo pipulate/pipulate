@@ -1,4 +1,5 @@
 AI_PHOOEY_CHOP = """\
+foo_files.py
 """
 
 ## > We've got content, it's groovy context  
@@ -814,29 +815,29 @@ AI_PHOOEY_CHOP = """\
 # Notebooks/prompt.txt
 # tools/__init__.py 
 
-# README.md
+## README.md
 # /home/mike/repos/mikelev.in/_posts/2025-10-12-chisel-strike-nix-flake-jupyter-ai-collaboration.md
 # /home/mike/repos/MikeLev.in/_posts/2025-10-12-surgical-ai-context-narrative-time-machine.md
 # assets/installer/install.sh
 # flake.nix
 
-# RELEASE SYSTEM
+## RELEASE SYSTEM
 # release.py
 
-# MAIN BACKUP
+## MAIN BACKUP
 # imports/durable_backup_system.py
 
-# GRATUITOUS EVANGELIZING (AVOID)
+## GRATUITOUS EVANGELIZING (AVOID)
 # README.md
 
-# PROMPT FU
+## PROMPT FU
 # prompt_foo.py
 # foo_files.py
 # scripts/articles/list_articles.py
 # scripts/articles/instructions.json
 # scripts/articles/articleizer.py
 
-# INSTALL & INFRASTRUCTURE AS CODE
+## INSTALL & INFRASTRUCTURE AS CODE
 # __init__.py
 # assets/installer/install.sh
 # pyproject.toml
@@ -844,26 +845,26 @@ AI_PHOOEY_CHOP = """\
 # requirements.in
 # requirements.txt
 
-# THE CORE APP
+## THE CORE APP
 # server.py
 # config.py
 # assets/styles.css
 # imports/__init__.py
 
-# PIPULATE STATE MANAGER (The Magic Wand)
+## PIPULATE STATE MANAGER (The Magic Wand)
 # pipulate/__init__.py
 # pipulate/core.py
 # pipulate/pipulate.py
 # apps/040_hello_workflow.py
 # assets/nbs/A_Hi_2_AI.ipynb
 
-# DRY OO APP PLUGINS
+## DRY OO APP PLUGINS
 # imports/crud.py
 # apps/060_tasks.py
 # apps/030_roles.py
 # apps/020_profiles.py
 
-# AI ERGONOMICS & TOOL CALLING CORE
+## AI ERGONOMICS & TOOL CALLING CORE
 # AI_RUNME.py
 # cli.py
 # tools/__init__.py 
@@ -872,23 +873,23 @@ AI_PHOOEY_CHOP = """\
 # imports/ai_tool_discovery_simple_parser.py
 # imports/mcp_orchestrator.py
 
-# CHIP O'THESEUS
+## CHIP O'THESEUS
 # imports/ai_dictdb.py
 # imports/append_only_conversation.py
 # imports/voice_synthesis.py
 # ai_edit.py
 
-# RADICAL TRANSPARENCY
+## RADICAL TRANSPARENCY
 # imports/server_logging.py
 # logs/server.log
 
-# ADVANCED TOOL CALLING
+## ADVANCED TOOL CALLING
 # tools/conversation_tools.py
 # tools/keychain_tools.py
 # tools/mcp_tools.py
 # tools/botify_tools.py
 
-# ALL CUSTOM JAVASCRIPT
+## ALL CUSTOM JAVASCRIPT
 # assets/init.js
 # assets/pipulate-init.js
 # assets/pipulate.js
@@ -896,14 +897,14 @@ AI_PHOOEY_CHOP = """\
 # assets/utils.js
 # assets/tests/demo.json
 
-# OTHER IMPORTS (SORT)
+## OTHER IMPORTS (SORT)
 # imports/ascii_displays.py
 # imports/botify_code_generation.py
 # imports/__init__.py
 # imports/stream_orchestrator.py
 # imports/voice_synthesis.py
 
-# OTHER PLUGIN APPS
+## OTHER PLUGIN APPS
 # apps/001_dom_visualizer.py
 # apps/010_introduction.py
 # apps/050_documentation.py
@@ -938,12 +939,12 @@ AI_PHOOEY_CHOP = """\
 # apps/730_matplotlib.py
 # apps/810_webbrowser.py
 
-# CONFIGURATION.NIX
+## CONFIGURATION.NIX
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/hardware-configuration.nix
 # /home/mike/repos/nixos/autognome.py
 
-# PREVIOUS CONTEXT DUMPS (PROBABLY DELETE BELOW THIS POINT)
+## PREVIOUS CONTEXT DUMPS (PROBABLY DELETE BELOW THIS POINT)
 # requirements.in
 # requirements.txt
 # /home/mike/repos/MikeLev.in/_posts/2025-09-09-pip-freeze-nix-dependency-hell.md
@@ -953,7 +954,7 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/MikeLev.in/_posts/2025-10-08-forging-jupyter-master-template-dependency-hell.md
 # /home/mike/repos/MikeLev.in/_posts/2025-10-08-ai-vs-ai-debugging-saga.md
 
-# FINDING EYES
+## FINDING EYES
 # tools/mcp_tools.py
 # imports/dom_processing/ai_dom_beautifier.py
 # README.md
@@ -974,7 +975,7 @@ AI_PHOOEY_CHOP = """\
 # imports/ai_tool_discovery_simple_parser.py
 # imports/mcp_orchestrator.py
 
-# THE WHOLE SHEBANG TEST FOR --context-only UML TOKEN COUNTS
+## THE WHOLE SHEBANG TEST FOR --context-only UML TOKEN COUNTS
 # __init__.py
 # assets/installer/install.sh
 # pyproject.toml
@@ -1012,7 +1013,7 @@ AI_PHOOEY_CHOP = """\
 # tools/mcp_tools.py
 # tools/botify_tools.py
 
-# FIXING BROWSER AUTOMATION
+## FIXING BROWSER AUTOMATION
 # apps/820_selenium.py
 # apps/440_browser_automation.py
 # Notebooks/Client_Work/faquilizer2/secretsauce.py
@@ -1026,7 +1027,7 @@ AI_PHOOEY_CHOP = """\
 # tools/system_tools.py
 # imports/stream_orchestrator.py
 
-# FINDING THE DOM VISUALIZERS
+## FINDING THE DOM VISUALIZERS
 # apps/820_selenium.py
 # apps/440_browser_automation.py
 # Notebooks/Client_Work/faquilizer2/secretsauce.py
@@ -1044,27 +1045,27 @@ AI_PHOOEY_CHOP = """\
 # /imports/dom_processing/ai_dom_beautifier.py
 # apps/001_dom_visualizer.py
 
-# THE CONTINUING EYES SAGA
+## THE CONTINUING EYES SAGA
 # pipulate/core.py
 # tools/scraper_tools.py
 # tools/dom_tools.py
 # Notebooks/Client_Work/faquilizer2/workflow_test.ipynb
 
-# EXPLORING __INIT__'s
+## EXPLORING __INIT__'s
 # imports/database_safety_wrapper.py
 # release.py
 # __init__.py
 # imports/__init__.py
 # pipulate/__init__.py
 
-# GOT HIERARCHY DOM WORKING
+## GOT HIERARCHY DOM WORKING
 # pipulate/core.py
 # tools/scraper_tools.py
 # tools/dom_tools.py
 # Notebooks/open_eyes.ipynb
 # Notebooks/Client_Work/faquilizer2/workflow_test.ipynb
 
-# NOTEBOOK EXPERIENCE
+## NOTEBOOK EXPERIENCE
 # assets/installer/install.sh
 # flake.nix
 # __init__.py
@@ -1087,7 +1088,7 @@ AI_PHOOEY_CHOP = """\
 # Notebooks/Client_Work/faquilizer2/secretsauce.py
 # Notebooks/Client_Work/faquilizer2/workflow_test.ipynb
 
-# STEALTH
+## STEALTH
 # README.md
 # assets/installer/install.sh
 # requirements.in
@@ -1193,10 +1194,10 @@ AI_PHOOEY_CHOP = """\
 # Notebooks/VIDeditor.ipynb
 # Notebooks/imports/videditor_sauce.py
 
-# I need to add something in the below chapter about Workflow Genesis and how we
-# accommodate for not being DRY (make WET a little easier) with
-# slice-and-assemble. I'm not sure if the Simon stuff is still the best thing
-# here. This will improve as we go.
+## I need to add something in the below chapter about Workflow Genesis and how we
+## accommodate for not being DRY (make WET a little easier) with
+## slice-and-assemble. I'm not sure if the Simon stuff is still the best thing
+## here. This will improve as we go.
 
 ## CHAPTER 5: BIG WORKFLOWS (Refine this)
 # foo_files.py
