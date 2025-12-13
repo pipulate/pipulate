@@ -1,5 +1,5 @@
 AI_PHOOEY_CHOP = """\
-prompt_foo.py
+scripts/articles/contextualizer.py
 """
 
 ## > We've got content, it's groovy context  
@@ -13,6 +13,10 @@ prompt_foo.py
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+## Just made a Jekyll bare minimum Minima site
+# /home/mike/repos/trimnoir/_config.yml
+# /home/mike/repos/trimnoir/flake.nix
 
 ## Showing the AI the "outer" NixOS hosting environment of the Pipulate author
 # /home/mike/repos/nixos/configuration.nix

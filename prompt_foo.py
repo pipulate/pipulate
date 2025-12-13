@@ -277,8 +277,9 @@ def run_tree_command() -> str:
     eza_exec = shutil.which("eza")
     if not eza_exec: return "Skipping: `eza` command not found."
     try:
+        # Added --level 3 to keep the tree from exploding if the repo grows deeper
         result = subprocess.run(
-            [eza_exec, '--tree', '--git-ignore', '--color=never'],
+            [eza_exec, '--tree', '--level', '3', '--git-ignore', '--color=never'],
             capture_output=True, text=True, cwd=REPO_ROOT, check=True
         )
         return result.stdout
@@ -701,11 +702,12 @@ def main():
         if sliced_articles:
             narrative_content = ""
             for article in sliced_articles:
-                narrative_content += f"### {article['title']} ({article['date']}, tokens: {article['tokens']:,}, bytes: {article['bytes']:,})\n"
+                # COMPRESSED FORMAT
+                narrative_content += f"### {article['title']} ({article['date']} | {article['tokens']:,} tok)\n"
                 if article.get('url'):
-                    narrative_content += f"> **URL:** {article['url']}\n"
-                narrative_content += f"> **Path:** {article['path']}\n"
-                narrative_content += f"> {article['summary']}\n\n"
+                    narrative_content += f"URL: {article['url']}\n"
+                narrative_content += f"Path: {article['path']}\n"
+                narrative_content += f"Sum: {article['summary']}\n\n"
             
             title = "Recent Narrative Context"
             builder.add_auto_context(title, narrative_content.strip())
