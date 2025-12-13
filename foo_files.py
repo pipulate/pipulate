@@ -1,15 +1,19 @@
 AI_PHOOEY_CHOP = """\
 """
 
-# > We've got content, it's groovy context  
-# > Our concatenation just won't stop  
-# > Making stories art for a super-smart  
-# > AI-Phooey chop (Hi-Ya!)
+## > We've got content, it's groovy context  
+## > Our concatenation just won't stop  
+## > Making stories art for a super-smart  
+## > AI-Phooey chop (Hi-Ya!)
 
-# HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
-# Sometimes I label the context-bundles for what I was trying to do. Sometimes I don't.
+## Sometimes I label the context-bundles for what I was trying to do. Sometimes I don't.
+## Everything starting with a double-hash are comments. Everything with just 1 hash is to be "edited in" as part of Python code.
+## Blank lines are the break between different "bundles of context" that have been used in the `AI_PHOOEY_CHOP` above.
+## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
-# Showing the AI the "outer" NixOS hosting environment of the Pipulate author
+## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+## Showing the AI the "outer" NixOS hosting environment of the Pipulate author
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
 # /home/mike/repos/nixos/services.nix
@@ -17,30 +21,30 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/nixos/init.lua
 # /home/mike/repos/nixos/autognome.py
 
-# Implementing voice interruption
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/imports/voice_synthesis.py
-# /home/mike/repos/pipulate/apps/010_introduction.py
+## Implementing voice interruption
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# imports/voice_synthesis.py
+# apps/010_introduction.py
 
-# Adding voice to homepage
-# /home/mike/repos/pipulate/apps/015_backup_introduction.py
+## Adding voice to homepage
+# apps/015_backup_introduction.py
 
-# Working on one of the larger and more complex Notebook workflows still in the sausage factory
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
-# /home/mike/repos/pipulate/assets/nbs/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/assets/nbs/imports/gap_analyzer_sauce.py
+## Working on one of the larger and more complex Notebook workflows still in the sausage factory
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# Notebooks/GAPalyzer.ipynb
+# Notebooks/imports/gap_analyzer_sauce.py
+# assets/nbs/GAPalyzer.ipynb
+# assets/nbs/imports/gap_analyzer_sauce.py
 
-# Extending the articleizer methodology to a per-article summarizer and automatic mermaid diagram inserter
-# /home/mike/repos/pipulate/scripts/articles/contextualizer.py
-# /home/mike/repos/pipulate/scripts/articles/diagramizer.py
+## Extending the articleizer methodology to a per-article summarizer and automatic mermaid diagram inserter
+# scripts/articles/contextualizer.py
+# scripts/articles/diagramizer.py
 
-# Using a selection of articles to check how well I'm doing with contextualizer
+## Using a selection of articles to check how well I'm doing with contextualizer
 # /home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-forever-machine-digital-sovereignty-ai.json
 # /home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-pipulate-forever-machine-sovereignty-stack.json
 # /home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-the-technomancers-console-pipulate-and-the-art-of-digital-sovereignty.json
@@ -59,164 +63,164 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/MikeLev.in/_posts/2025-12-10-externalizing-notebook-logic-the-chisel-the-sauce-and-ai-context.json
 # /home/mike/repos/MikeLev.in/_posts/2025-12-10-zero-sum-attention-sovereign-tools-gapalyzer-hardening.json
 
-# Giving an example of how articleizer works to set context for AI help in writing contextualizer
+## Giving an example of how articleizer works to set context for AI help in writing contextualizer
 # /home/mike/repos/MikeLev.in/_posts/2025-12-05-pipulate-dayton-moment-context-aware-ai-demo-test-automation.md
 # /home/mike/repos/MikeLev.in/_posts/2025-12-04-pipulate-forever-machine-sovereignty-stack.md
 # /home/mike/repos/MikeLev.in/_posts/2025-12-04-the-technomancers-console-pipulate-and-the-art-of-digital-sovereignty.md
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/assets/nbs/FAQuilizer.ipynb
-# /home/mike/repos/pipulate/assets/nbs/imports/faq_writer_sauce.py
-# /home/mike/repos/pipulate/scripts/articles/articleizer.py
-# /home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# assets/nbs/FAQuilizer.ipynb
+# assets/nbs/imports/faq_writer_sauce.py
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
 
-# /home/mike/repos/pipulate/foo_files.py
-# /home/mike/repos/pipulate/Notebook/AI_HelloWorld.ipynb
-# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/assets/nbs/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/assets/nbs/imports/gap_analyzer_sauce.py
+# foo_files.py
+# Notebook/AI_HelloWorld.ipynb
+# Notebooks/GAPalyzer.ipynb
+# Notebooks/imports/gap_analyzer_sauce.py
+# pipulate/core.py
+# assets/nbs/GAPalyzer.ipynb
+# assets/nbs/imports/gap_analyzer_sauce.py
 
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
 # /home/mike/repos/nixos/services.nix
 # /home/mike/repos/nixos/ai-acceleration.nix
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/prompt_foo.py
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/AI_RUNME.py
-# /home/mike/repos/pipulate/tools/__init__.py 
-# /home/mike/repos/pipulate/tools/keychain_tools.py
-# /home/mike/repos/pipulate/imports/ai_dictdb.py
-# /home/mike/repos/pipulate/imports/durable_backup_system.py
+# assets/installer/install.sh
+# flake.nix
+# prompt_foo.py
+# config.py
+# server.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# AI_RUNME.py
+# tools/__init__.py 
+# tools/keychain_tools.py
+# imports/ai_dictdb.py
+# imports/durable_backup_system.py
 
-# /home/mike/repos/pipulate/scripts/articles/articleizer.py
-# /home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
 
-# /home/mike/repos/pipulate/apps/040_hello_workflow.py
-# /home/mike/repos/pipulate/assets/pipulate-init.js
-# /home/mike/repos/pipulate/assets/scenarios/hello_workflow_test.json
+# apps/040_hello_workflow.py
+# assets/pipulate-init.js
+# assets/scenarios/hello_workflow_test.json
 
-# /home/mike/repos/pipulate/scripts/articles/articleizer.py
-# /home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
 # /home/mike/repos/MikeLev.in/_posts/2025-12-05-pipulate-dayton-moment-context-aware-ai-demo-test-automation.md
 
-# /home/mike/repos/pipulate/assets/pipulate-init.js
-# /home/mike/repos/pipulate/assets/scenarios/hello_workflow_test.json
-# /home/mike/repos/pipulate/assets/scenarios/introduction.json
+# assets/pipulate-init.js
+# assets/scenarios/hello_workflow_test.json
+# assets/scenarios/introduction.json
 
-# /home/mike/repos/pipulate/prompt_foo.py
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/AI_RUNME.py
+# prompt_foo.py
+# assets/installer/install.sh
+# flake.nix
+# config.py
+# server.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# AI_RUNME.py
 
-# /home/mike/repos/pipulate/prompt_foo.py
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/assets/pipulate-init.js
-# /home/mike/repos/pipulate/assets/tests/demo.json
-# /home/mike/repos/pipulate/assets/scenarios/introduction.json
-# /home/mike/repos/pipulate/imports/voice_synthesis.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/tools/__init__.py 
-# /home/mike/repos/pipulate/tools/keychain_tools.py
-# /home/mike/repos/pipulate/imports/ai_dictdb.py
-# /home/mike/repos/pipulate/imports/durable_backup_system.py
+# prompt_foo.py
+# server.py
+# assets/pipulate-init.js
+# assets/tests/demo.json
+# assets/scenarios/introduction.json
+# imports/voice_synthesis.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# tools/__init__.py 
+# tools/keychain_tools.py
+# imports/ai_dictdb.py
+# imports/durable_backup_system.py
 
-# /home/mike/repos/pipulate/requirements.in
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
-# /home/mike/repos/pipulate/assets/nbs/imports/url_inspect_sauce.py
-# /home/mike/repos/pipulate/Notebooks/imports/seo_gadget.py
+# requirements.in
+# config.py
+# server.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# Notebooks/URLinspector.ipynb
+# assets/nbs/imports/url_inspect_sauce.py
+# Notebooks/imports/seo_gadget.py
 
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/AI_RUNME.py
-# /home/mike/repos/pipulate/README.md
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/imports/__init__.py
-# /home/mike/repos/pipulate/imports/crud.py
-# /home/mike/repos/pipulate/apps/060_tasks.py
-# /home/mike/repos/pipulate/apps/040_hello_workflow.py
+# assets/installer/install.sh
+# flake.nix
+# config.py
+# server.py
+# AI_RUNME.py
+# README.md
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# imports/__init__.py
+# imports/crud.py
+# apps/060_tasks.py
+# apps/040_hello_workflow.py
 
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/imports/__init__.py
-# /home/mike/repos/pipulate/imports/crud.py
-# /home/mike/repos/pipulate/apps/060_tasks.py
-# /home/mike/repos/pipulate/apps/040_hello_workflow.py
-# /home/mike/repos/pipulate/apps/050_documentation.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# imports/__init__.py
+# imports/crud.py
+# apps/060_tasks.py
+# apps/040_hello_workflow.py
+# apps/050_documentation.py
 
-# /home/mike/repos/pipulate/apps/040_hello_workflow.py
-# /home/mike/repos/pipulate/assets/pipulate-init.js
-# /home/mike/repos/pipulate/assets/tests/demo.json
-# /home/mike/repos/pipulate/assets/scenarios/introduction.json
+# apps/040_hello_workflow.py
+# assets/pipulate-init.js
+# assets/tests/demo.json
+# assets/scenarios/introduction.json
 
-# /home/mike/repos/pipulate/apps/040_hello_workflow.py
-# /home/mike/repos/pipulate/assets/pipulate-init.js
-# /home/mike/repos/pipulate/assets/tests/demo.json
-# /home/mike/repos/pipulate/assets/scenarios/introduction.json
-# /home/mike/repos/pipulate/assets/scenarios/hello_workflow_test.json
-# /home/mike/repos/pipulate/imports/voice_synthesis.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/tools/__init__.py 
-# /home/mike/repos/pipulate/tools/keychain_tools.py
-# /home/mike/repos/pipulate/imports/ai_dictdb.py
-# /home/mike/repos/pipulate/imports/durable_backup_system.py
+# apps/040_hello_workflow.py
+# assets/pipulate-init.js
+# assets/tests/demo.json
+# assets/scenarios/introduction.json
+# assets/scenarios/hello_workflow_test.json
+# imports/voice_synthesis.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# tools/__init__.py 
+# tools/keychain_tools.py
+# imports/ai_dictdb.py
+# imports/durable_backup_system.py
 
-# /home/mike/repos/pipulate/.gitignore
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/apps/040_hello_workflow.py
-# /home/mike/repos/pipulate/assets/pipulate-init.js
-# /home/mike/repos/pipulate/assets/tests/demo.json
-# /home/mike/repos/pipulate/assets/scenarios/introduction.json
+# .gitignore
+# server.py
+# apps/040_hello_workflow.py
+# assets/pipulate-init.js
+# assets/tests/demo.json
+# assets/scenarios/introduction.json
 
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/AI_RUNME.py
-# /home/mike/repos/pipulate/README.md
+# assets/installer/install.sh
+# flake.nix
+# config.py
+# server.py
+# AI_RUNME.py
+# README.md
 
-# /home/mike/repos/pipulate/Notebooks/VIDeditor.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/videditor_sauce.py
-# /home/mike/repos/pipulate/imports/voice_synthesis.py
+# Notebooks/VIDeditor.ipynb
+# Notebooks/imports/videditor_sauce.py
+# imports/voice_synthesis.py
 
-# /home/mike/repos/pipulate/.gitignore
-# /home/mike/repos/pipulate/assets/pipulate-init.js
-# /home/mike/repos/pipulate/assets/tests/demo.json
-# /home/mike/repos/pipulate/assets/scenarios/introduction.json
+# .gitignore
+# assets/pipulate-init.js
+# assets/tests/demo.json
+# assets/scenarios/introduction.json
 
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/assets/pipulate-init.js
-# /home/mike/repos/pipulate/assets/tests/demo.json
+# assets/installer/install.sh
+# flake.nix
+# config.py
+# server.py
+# assets/pipulate-init.js
+# assets/tests/demo.json
 
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
@@ -229,10 +233,10 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/nixos/scripts/backup-things.py
 # /home/mike/repos/nixos/scripts/backup-things.sh
 
-# /home/mike/repos/pipulate/.gitignore
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/requirements.in
+# .gitignore
+# assets/installer/install.sh
+# flake.nix
+# requirements.in
 # /home/mike/repos/MikeLev.in/flake.nix
 
 # /home/mike/repos/nixos/configuration.nix
@@ -240,16 +244,16 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/nixos/packages.nix
 # /home/mike/repos/nixos/services.nix
 # /home/mike/repos/nixos/ai-acceleration.nix
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
+# assets/installer/install.sh
+# flake.nix
 
 # /home/mike/repos/MikeLev.in/_config.yml
 # /home/mike/repos/MikeLev.in/flake.nix
-# /home/mike/repos/pipulate/scripts/articles/list_articles.py
-# /home/mike/repos/pipulate/scripts/articles/articleizer.py
-# /home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
-# /home/mike/repos/pipulate/prompt_foo.py
-# /home/mike/repos/pipulate/foo_files.py
+# scripts/articles/list_articles.py
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
+# prompt_foo.py
+# foo_files.py
 
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
@@ -267,37 +271,37 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/nixos/services.nix
 # /home/mike/repos/nixos/ai-acceleration.nix
 
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/assets/pipulate-init.js
-# /home/mike/repos/pipulate/assets/tests/demo.json
+# assets/installer/install.sh
+# flake.nix
+# config.py
+# server.py
+# assets/pipulate-init.js
+# assets/tests/demo.json
 
-# /home/mike/repos/pipulate/AI_RUNME.py
-# /home/mike/repos/pipulate/README.md
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/assets/pipulate-init.js
-# /home/mike/repos/pipulate/assets/tests/demo.json
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/tools/__init__.py 
-# /home/mike/repos/pipulate/tools/keychain_tools.py
-# /home/mike/repos/pipulate/imports/ai_dictdb.py
-# /home/mike/repos/pipulate/imports/voice_synthesis.py
-# /home/mike/repos/pipulate/imports/durable_backup_system.py
+# AI_RUNME.py
+# README.md
+# assets/installer/install.sh
+# flake.nix
+# config.py
+# server.py
+# assets/pipulate-init.js
+# assets/tests/demo.json
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# tools/__init__.py 
+# tools/keychain_tools.py
+# imports/ai_dictdb.py
+# imports/voice_synthesis.py
+# imports/durable_backup_system.py
 
 # /home/mike/repos/MikeLev.in/_posts/2025-11-27-demo-json-codex-pipulate-atomic-proof.md
 # /home/mike/repos/MikeLev.in/_posts/2025-10-08-ai-assisted-debugging-git-archeology.md
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/apps/010_introduction.py
-# /home/mike/repos/pipulate/assets/pipulate-init.js
-# /home/mike/repos/pipulate/assets/tests/demo.json
+# flake.nix
+# server.py
+# apps/010_introduction.py
+# assets/pipulate-init.js
+# assets/tests/demo.json
 
 # /home/mike/repos/MikeLev.in/_posts/2025-10-08-ai-assisted-debugging-git-archeology.md
 # /home/mike/repos/MikeLev.in/_posts/2025-10-10-ai-ergonomics-browser-cache-refactor.md
@@ -314,57 +318,57 @@ AI_PHOOEY_CHOP = """\
 
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/AI_RUNME.py
-# /home/mike/repos/pipulate/README.md
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/cli.py
-# /home/mike/repos/pipulate/imports/server_logging.py
-# /home/mike/repos/pipulate/imports/botify_code_generation.py
-# /home/mike/repos/pipulate/imports/stream_orchestrator.py
-# /home/mike/repos/pipulate/imports/mcp_orchestrator.py
+# assets/installer/install.sh
+# flake.nix
+# AI_RUNME.py
+# README.md
+# config.py
+# server.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# cli.py
+# imports/server_logging.py
+# imports/botify_code_generation.py
+# imports/stream_orchestrator.py
+# imports/mcp_orchestrator.py
 
-# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
+# Notebooks/GAPalyzer.ipynb
+# Notebooks/imports/gap_analyzer_sauce.py
 
-# /home/mike/repos/pipulate/prompt_foo.py
-# /home/mike/repos/pipulate/foo_files.py
-# /home/mike/repos/pipulate/scripts/articles/list_articles.py
+# prompt_foo.py
+# foo_files.py
+# scripts/articles/list_articles.py
 
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
+# assets/installer/install.sh
+# flake.nix
 
-# /home/mike/repos/pipulate/Notebooks/VIDeditor.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/videditor_sauce.py
+# Notebooks/VIDeditor.ipynb
+# Notebooks/imports/videditor_sauce.py
 
-# /home/mike/repos/pipulate/prompt_foo.py
-# /home/mike/repos/pipulate/foo_files.py
+# prompt_foo.py
+# foo_files.py
 
 # /home/mike/repos/nixos/configuration.nix.old_big_pile
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
+# assets/installer/install.sh
+# flake.nix
 # /home/mike/repos/nixos/services.nix
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/Notebooks/_config.py
-# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# Notebooks/_config.py
+# Notebooks/GAPalyzer.ipynb
+# Notebooks/imports/gap_analyzer_sauce.py
 
 # /home/mike/repos/nixos/configuration.nix.old_big_pile
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
+# assets/installer/install.sh
+# flake.nix
 # /home/mike/repos/nixos/services.nix
 
 # /home/mike/repos/MikeLev.in/_posts/2025-10-29-ai-first-web-invisible-fubar-pipulate.md
@@ -377,115 +381,115 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/MikeLev.in/_posts/2025-11-01-no-gooey-video-tech-gnosis-craftsmanship.md
 # /home/mike/repos/MikeLev.in/_posts/2025-11-01-the-no-gooey-way-sirens-song-articulate-ape.md
 # /home/mike/repos/MikeLev.in/_posts/2025-11-04-architects-edge-renormalizing-ai-workflow-observable-wins.md
-# /home/mike/repos/pipulate/Notebooks/VIDeditor.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/videditor_sauce.py
+# Notebooks/VIDeditor.ipynb
+# Notebooks/imports/videditor_sauce.py
 
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/AI_RUNME.py
-# /home/mike/repos/pipulate/README.md
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/cli.py
-# /home/mike/repos/pipulate/imports/server_logging.py
-# /home/mike/repos/pipulate/imports/botify_code_generation.py
-# /home/mike/repos/pipulate/imports/stream_orchestrator.py
-# /home/mike/repos/pipulate/imports/mcp_orchestrator.py
+# assets/installer/install.sh
+# flake.nix
+# AI_RUNME.py
+# README.md
+# config.py
+# server.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# cli.py
+# imports/server_logging.py
+# imports/botify_code_generation.py
+# imports/stream_orchestrator.py
+# imports/mcp_orchestrator.py
 
-# /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
-# /home/mike/repos/pipulate/assets/nbs/imports/url_inspect_sauce.py
-# /home/mike/repos/pipulate/Notebooks/imports/seo_gadget.py
+# Notebooks/URLinspector.ipynb
+# assets/nbs/imports/url_inspect_sauce.py
+# Notebooks/imports/seo_gadget.py
 
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/.gitignore
+# assets/installer/install.sh
+# flake.nix
+# .gitignore
 
 # /home/mike/repos/nixos/configuration.nix.old_big_pile
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
 # /home/mike/repos/nixos/services.nix
 
-# /home/mike/repos/pipulate/Notebooks/_config.py
-# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
-# /home/mike/repos/pipulate/assets/nbs/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/assets/nbs/imports/gap_analyzer_sauce.py
+# Notebooks/_config.py
+# Notebooks/GAPalyzer.ipynb
+# Notebooks/imports/gap_analyzer_sauce.py
+# assets/nbs/GAPalyzer.ipynb
+# assets/nbs/imports/gap_analyzer_sauce.py
 
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/prompt_foo.py
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
+# assets/installer/install.sh
+# flake.nix
+# prompt_foo.py
+# config.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
 
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/Notebooks/_config.py
-# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/imports/server_logging.py
-# /home/mike/repos/pipulate/imports/botify_code_generation.py
-# /home/mike/repos/pipulate/imports/stream_orchestrator.py
-# /home/mike/repos/pipulate/imports/mcp_orchestrator.py
+# config.py
+# Notebooks/_config.py
+# Notebooks/GAPalyzer.ipynb
+# Notebooks/imports/gap_analyzer_sauce.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# imports/server_logging.py
+# imports/botify_code_generation.py
+# imports/stream_orchestrator.py
+# imports/mcp_orchestrator.py
 
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/scripts/articles/articleizer.py
-# /home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
-
-# /home/mike/repos/nixos/configuration.nix
-
-# /home/mike/repos/pipulate/prompt_foo.py
-# /home/mike/repos/pipulate/scripts/articles/articleizer.py
-# /home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
-
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/AI_RUNME.py
-# /home/mike/repos/pipulate/README.md
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/cli.py
+# flake.nix
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
 
 # /home/mike/repos/nixos/configuration.nix
 
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/AI_RUNME.py
-# /home/mike/repos/pipulate/README.md
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/cli.py
+# prompt_foo.py
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
 
-# /home/mike/repos/pipulate/scripts/articles/articleizer.py
-# /home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
-# /home/mike/repos/pipulate/flake.nix
+# assets/installer/install.sh
+# flake.nix
+# AI_RUNME.py
+# README.md
+# config.py
+# server.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# cli.py
+
+# /home/mike/repos/nixos/configuration.nix
+
+# assets/installer/install.sh
+# flake.nix
+# AI_RUNME.py
+# README.md
+# config.py
+# server.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# cli.py
+
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
+# flake.nix
 
 # /home/mike/repos/nixos/init.lua
 # /home/mike/repos/nixos/autognome.py
 
 # /home/mike/repos/MikeLev.in/_posts/2025-11-01-browser-acetate-no-gooey-9x16-screen-recording.md
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/apps/220_roadmap.py
-# /home/mike/repos/pipulate/apps/050_documentation.py
+# config.py
+# server.py
+# apps/220_roadmap.py
+# apps/050_documentation.py
 
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/autognome.py
 
-# /home/mike/repos/pipulate/scripts/articles/articleizer.py
-# /home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
 
 # /home/mike/repos/MikeLev.in/flake.nix
 # /home/mike/repos/MikeLev.in/_config.yml
@@ -496,443 +500,443 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/MikeLev.in/_posts/2025-11-01-jiu-jitsu-keyboard-flow-ai.md
 # /home/mike/repos/MikeLev.in/_posts/2025-11-01-no-gooey-video-tech-gnosis-craftsmanship.md
 
-# /home/mike/repos/pipulate/scripts/articles/articleizer.py
-# /home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
 
-# /home/mike/repos/pipulate/prompt_foo.py
+# prompt_foo.py
 # /home/mike/repos/nixos/init.lua
 
 # /home/mike/repos/MikeLev.in/_posts/2025-11-01-articulate-ape-blueprint-scaffolding-no-gooey-video-editing-nix.md
 # /home/mike/repos/MikeLev.in/_posts/2025-11-01-the-no-gooey-way-sirens-song-articulate-ape.md
 
-# /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
-# /home/mike/repos/pipulate/assets/nbs/URLinspector.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
-# /home/mike/repos/pipulate/assets/nbs/url_inspect_sauce.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/flake.nix
+# Notebooks/URLinspector.ipynb
+# assets/nbs/URLinspector.ipynb
+# Notebooks/imports/url_inspect_sauce.py
+# assets/nbs/url_inspect_sauce.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# flake.nix
 
-# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
+# Notebooks/GAPalyzer.ipynb
+# Notebooks/imports/gap_analyzer_sauce.py
 
 # /home/mike/repos/MikeLev.in/_posts/2025-10-08-python-mac-segfault-faulthandler-revelation.md
 
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/requirements.in
-# /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
-# /home/mike/repos/pipulate/Notebooks/imports/seo_gadget.py
+# flake.nix
+# requirements.in
+# Notebooks/URLinspector.ipynb
+# Notebooks/imports/url_inspect_sauce.py
+# Notebooks/imports/seo_gadget.py
 
-# /home/mike/repos/pipulate/prompt_foo.py
+# prompt_foo.py
 
-# /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
-# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
+# Notebooks/URLinspector.ipynb
+# Notebooks/imports/url_inspect_sauce.py
+# Notebooks/GAPalyzer.ipynb
+# Notebooks/imports/gap_analyzer_sauce.py
 
-# /home/mike/repos/pipulate/Notebooks/FAQuilizer.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/faq_writer_sauce.py
-# /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
+# Notebooks/FAQuilizer.ipynb
+# Notebooks/imports/faq_writer_sauce.py
+# Notebooks/URLinspector.ipynb
+# Notebooks/imports/url_inspect_sauce.py
 
-# /home/mike/repos/pipulate/.gitignore
-# /home/mike/repos/pipulate/requirements.in
-# /home/mike/repos/pipulate/requirements.txt
-# /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
-# /home/mike/repos/pipulate/tools/__init__.py 
-# /home/mike/repos/pipulate/tools/scraper_tools.py
-# /home/mike/repos/pipulate/Notebooks/imports/seo_gadget.py
+# .gitignore
+# requirements.in
+# requirements.txt
+# Notebooks/URLinspector.ipynb
+# Notebooks/imports/url_inspect_sauce.py
+# tools/__init__.py 
+# tools/scraper_tools.py
+# Notebooks/imports/seo_gadget.py
 
-# /home/mike/repos/pipulate/.gitignore
-# /home/mike/repos/pipulate/Notebooks/FAQuilizer.ipynb
-# /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
-# /home/mike/repos/pipulate/tools/__init__.py 
-# /home/mike/repos/pipulate/tools/scraper_tools.py
-# /home/mike/repos/pipulate/Notebooks/imports/seo_gadget.py
-# /home/mike/repos/pipulate/Notebooks/browser_cache/www.client-k.com/%2Fcollections%2Fski-lodge-style/seo.md
+# .gitignore
+# Notebooks/FAQuilizer.ipynb
+# Notebooks/URLinspector.ipynb
+# Notebooks/imports/url_inspect_sauce.py
+# tools/__init__.py 
+# tools/scraper_tools.py
+# Notebooks/imports/seo_gadget.py
+# Notebooks/browser_cache/www.client-k.com/%2Fcollections%2Fski-lodge-style/seo.md
 
-# /home/mike/repos/pipulate/AI_RUNME.py
-# /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
+# AI_RUNME.py
+# Notebooks/URLinspector.ipynb
+# flake.nix
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
 
-# /home/mike/repos/pipulate/Notebooks/imports/seo_gadget.py
-# /home/mike/repos/pipulate/tools/__init__.py 
-# /home/mike/repos/pipulate/tools/scraper_tools.py
-# /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
+# Notebooks/imports/seo_gadget.py
+# tools/__init__.py 
+# tools/scraper_tools.py
+# Notebooks/URLinspector.ipynb
+# pipulate/__init__.py
+# pipulate/pipulate.py
 
-# /home/mike/repos/pipulate/Notebooks/imports/faq_writer_sauce.py
-# /home/mike/repos/pipulate/requirements.in
-# /home/mike/repos/pipulate/requirements.txt
-# /home/mike/repos/pipulate/Notebooks/imports/seo_gadget.py
+# Notebooks/imports/faq_writer_sauce.py
+# requirements.in
+# requirements.txt
+# Notebooks/imports/seo_gadget.py
 
-# /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
-# /home/mike/repos/pipulate/Notebooks/imports/faq_writer_sauce.py
-# /home/mike/repos/pipulate/Notebooks/imports/seo_gadget.py
-# /home/mike/repos/pipulate/.gitignore
-# /home/mike/repos/pipulate/flake.nix
+# Notebooks/URLinspector.ipynb
+# Notebooks/imports/url_inspect_sauce.py
+# Notebooks/imports/faq_writer_sauce.py
+# Notebooks/imports/seo_gadget.py
+# .gitignore
+# flake.nix
 
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/tools/__init__.py 
-# /home/mike/repos/pipulate/tools/scraper_tools.py
-# /home/mike/repos/pipulate/tools/dom_tools.py
-# /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
-# /home/mike/repos/pipulate/Notebooks/imports/visualize_dom.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# tools/__init__.py 
+# tools/scraper_tools.py
+# tools/dom_tools.py
+# Notebooks/URLinspector.ipynb
+# Notebooks/imports/url_inspect_sauce.py
+# Notebooks/imports/visualize_dom.py
 
-# /home/mike/repos/pipulate/Notebooks/imports/faq_writer_sauce.py
-# /home/mike/repos/pipulate/assets/nbs/URLinspector.ipynb
+# Notebooks/imports/faq_writer_sauce.py
+# assets/nbs/URLinspector.ipynb
 
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/requirements.in
-# /home/mike/repos/pipulate/requirements.txt
+# assets/installer/install.sh
+# flake.nix
+# requirements.in
+# requirements.txt
 
-# /home/mike/repos/pipulate/.gitignore
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/Notebooks/FAQuilizer.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/faq_writer_sauce.py
+# .gitignore
+# flake.nix
+# Notebooks/FAQuilizer.ipynb
+# Notebooks/imports/faq_writer_sauce.py
 
-# /home/mike/repos/pipulate/Notebook/AI_HelloWorld.ipynb
+# Notebook/AI_HelloWorld.ipynb
 
-# /home/mike/repos/pipulate/prompt_foo.py
+# prompt_foo.py
 
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/Notebook/AI_HelloWorld.ipynb
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# Notebook/AI_HelloWorld.ipynb
 
-# /home/mike/repos/pipulate/AI_RUNME.py
+# AI_RUNME.py
 
-# /home/mike/repos/pipulate/.gitignore
-# /home/mike/repos/pipulate/Notebooks/imports/visualize_dom.py
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/Notebooks/FAQuilizer.ipynb
-# /home/mike/repos/pipulate/assets/nbs/FAQuilizer.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/faq_writer_sauce.py
-# /home/mike/repos/pipulate/assets/nbs/faq_writer_sauce.py
+# .gitignore
+# Notebooks/imports/visualize_dom.py
+# flake.nix
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# Notebooks/FAQuilizer.ipynb
+# assets/nbs/FAQuilizer.ipynb
+# Notebooks/imports/faq_writer_sauce.py
+# assets/nbs/faq_writer_sauce.py
 
 # /home/mike/repos/MikeLev.in/_posts/2025-10-25-beyond-hello-world-future-proof-python-nix-pipulate.md
 
-# /home/mike/repos/pipulate/AI_RUNME.py
-# /home/mike/repos/pipulate/README.md
+# AI_RUNME.py
+# README.md
 
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/Notebooks/FAQuilizer.ipynb
-# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/faq_writer_sauce.py
-# /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
+# flake.nix
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# Notebooks/FAQuilizer.ipynb
+# Notebooks/GAPalyzer.ipynb
+# Notebooks/imports/faq_writer_sauce.py
+# Notebooks/imports/gap_analyzer_sauce.py
 
-# /home/mike/repos/pipulate/README.md
+# README.md
 
-# /home/mike/repos/pipulate/tools/mcp_tools.py
-# /home/mike/repos/pipulate/tools/conversation_tools.py
-# /home/mike/repos/pipulate/tools/keychain_tools.py
-# /home/mike/repos/pipulate/tools/mcp_tools.py
-# /home/mike/repos/pipulate/tools/botify_tools.py
-# /home/mike/repos/pipulate/imports/ai_dictdb.py
-# /home/mike/repos/pipulate/imports/voice_synthesis.py
-# /home/mike/repos/pipulate/imports/durable_backup_system.py
-# /home/mike/repos/pipulate/apps/010_introduction.py
-# /home/mike/repos/pipulate/assets/pipulate-init.js
-# /home/mike/repos/pipulate/assets/tests/demo.json
+# tools/mcp_tools.py
+# tools/conversation_tools.py
+# tools/keychain_tools.py
+# tools/mcp_tools.py
+# tools/botify_tools.py
+# imports/ai_dictdb.py
+# imports/voice_synthesis.py
+# imports/durable_backup_system.py
+# apps/010_introduction.py
+# assets/pipulate-init.js
+# assets/tests/demo.json
 
-# /home/mike/repos/pipulate/imports/__init__.py
-# /home/mike/repos/pipulate/imports/stream_orchestrator.py
-# /home/mike/repos/pipulate/imports/mcp_orchestrator.py
-# /home/mike/repos/pipulate/imports/ai_tool_discovery_simple_parser.py
-# /home/mike/repos/pipulate/tools/__init__.py 
-# /home/mike/repos/pipulate/tools/system_tools.py
-# /home/mike/repos/pipulate/tools/scraper_tools.py
-# /home/mike/repos/pipulate/tools/dom_tools.py
-# /home/mike/repos/pipulate/Notebooks/FAQuilizer.ipynb
-# /home/mike/repos/pipulate/Notebooks/faq_writer_sauce.py
-# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/Notebooks/gap_analyzer_sauce.py
+# imports/__init__.py
+# imports/stream_orchestrator.py
+# imports/mcp_orchestrator.py
+# imports/ai_tool_discovery_simple_parser.py
+# tools/__init__.py 
+# tools/system_tools.py
+# tools/scraper_tools.py
+# tools/dom_tools.py
+# Notebooks/FAQuilizer.ipynb
+# Notebooks/faq_writer_sauce.py
+# Notebooks/GAPalyzer.ipynb
+# Notebooks/gap_analyzer_sauce.py
 
-# /home/mike/repos/pipulate/apps/040_hello_workflow.py
-# /home/mike/repos/pipulate/apps/210_widget_examples.py
-# /home/mike/repos/pipulate/apps/300_blank_placeholder.py
+# apps/040_hello_workflow.py
+# apps/210_widget_examples.py
+# apps/300_blank_placeholder.py
 
-# /home/mike/repos/pipulate/foo_files.py
-# /home/mike/repos/pipulate/imports/__init__.py
-# /home/mike/repos/pipulate/imports/crud.py
-# /home/mike/repos/pipulate/apps/060_tasks.py
-# /home/mike/repos/pipulate/apps/030_roles.py
-# /home/mike/repos/pipulate/apps/020_profiles.py
+# foo_files.py
+# imports/__init__.py
+# imports/crud.py
+# apps/060_tasks.py
+# apps/030_roles.py
+# apps/020_profiles.py
 
-# /home/mike/repos/pipulate/AI_RUNME.py
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/cli.py
+# AI_RUNME.py
+# config.py
+# server.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# cli.py
 
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
+# assets/installer/install.sh
+# flake.nix
 
-# /home/mike/repos/pipulate/prompt_foo.py
+# prompt_foo.py
 
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/hardware-configuration.nix
 # /home/mike/repos/nixos/autognome.py
 
-# /home/mike/repos/pipulate/scripts/articles/articleizer.py
-# /home/mike/repos/pipulate/scripts/articles/instructions.json
+# scripts/articles/articleizer.py
+# scripts/articles/instructions.json
 
-# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/Notebooks/faq_writer_sauce.py
-# /home/mike/repos/pipulate/Notebooks/gap_analyzer_sauce.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
+# Notebooks/GAPalyzer.ipynb
+# Notebooks/faq_writer_sauce.py
+# Notebooks/gap_analyzer_sauce.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
 
 # /home/mike/repos/MikeLev.in/_posts/2025-10-23-pipulates-blueprint-for-ai-collaboration.md
 
-# /home/mike/repos/pipulate/assets/nbs/AI_HelloWorld.ipynb
-# /home/mike/repos/pipulate/apps/040_hello_workflow.py
-# /home/mike/repos/pipulate/assets/nbs/FAQuilizer.ipynb
-# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/assets/nbs/gap_analyzer_sauce.py
-# /home/mike/repos/pipulate/assets/nbs/faq_writer_sauce.py
+# assets/nbs/AI_HelloWorld.ipynb
+# apps/040_hello_workflow.py
+# assets/nbs/FAQuilizer.ipynb
+# Notebooks/GAPalyzer.ipynb
+# assets/nbs/gap_analyzer_sauce.py
+# assets/nbs/faq_writer_sauce.py
 
-# /home/mike/repos/pipulate/cli.py
-# /home/mike/repos/pipulate/tools/__init__.py 
-# /home/mike/repos/pipulate/tools/system_tools.py
-# /home/mike/repos/pipulate/imports/__init__.py
-# /home/mike/repos/pipulate/imports/stream_orchestrator.py
-# /home/mike/repos/pipulate/imports/ai_tool_discovery_simple_parser.py
-# /home/mike/repos/pipulate/imports/mcp_orchestrator.py
+# cli.py
+# tools/__init__.py 
+# tools/system_tools.py
+# imports/__init__.py
+# imports/stream_orchestrator.py
+# imports/ai_tool_discovery_simple_parser.py
+# imports/mcp_orchestrator.py
 
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
+# config.py
+# server.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
 
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
+# assets/installer/install.sh
+# flake.nix
 
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/apps/010_introduction.py
-# /home/mike/repos/pipulate/assets/pipulate-init.js
-# /home/mike/repos/pipulate/assets/tests/demo.json
+# flake.nix
+# server.py
+# apps/010_introduction.py
+# assets/pipulate-init.js
+# assets/tests/demo.json
 
-# /home/mike/repos/pipulate/README.md
-# /home/mike/repos/pipulate/assets/tests/demo.json
-# /home/mike/repos/pipulate/imports/voice_synthesis.py
-# /home/mike/repos/pipulate/imports/ai_dictdb.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/tools/scraper_tools.py
-# /home/mike/repos/pipulate/tools/dom_tools.py
+# README.md
+# assets/tests/demo.json
+# imports/voice_synthesis.py
+# imports/ai_dictdb.py
+# pipulate/pipulate.py
+# tools/scraper_tools.py
+# tools/dom_tools.py
 # /home/mike/repos/MikeLev.in/_posts/2025-10-21-stealth-automation-jupyter-rich-debugging.md
-# /home/mike/repos/pipulate/Notebooks/FAQuilizer.ipynb
-# /home/mike/repos/pipulate/Notebooks/faq_writer_sauce.py
-# /home/mike/repos/pipulate/tools/scraper_tools.py
-# /home/mike/repos/pipulate/tools/dom_tools.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
+# Notebooks/FAQuilizer.ipynb
+# Notebooks/faq_writer_sauce.py
+# tools/scraper_tools.py
+# tools/dom_tools.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
 
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/Notebooks/FAQuilizer.ipynb
-# /home/mike/repos/pipulate/tools/scraper_tools.py
-# /home/mike/repos/pipulate/Notebooks/faq_writer_sauce.py
+# flake.nix
+# Notebooks/FAQuilizer.ipynb
+# tools/scraper_tools.py
+# Notebooks/faq_writer_sauce.py
 
-# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/README.md
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/prompt_foo.py
-# /home/mike/repos/pipulate/.gitignore
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/Notebooks/faq_writer_sauce.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/Notebooks/A_Hi_2_AI.ipynb
-# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/assets/nbs/A_Hi_2_AI.ipynb
-# /home/mike/repos/pipulate/assets/nbs/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/assets/nbs/FAQuilizer.ipynb
+# Notebooks/GAPalyzer.ipynb
+# README.md
+# assets/installer/install.sh
+# prompt_foo.py
+# .gitignore
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# Notebooks/faq_writer_sauce.py
+# pipulate/core.py
+# Notebooks/A_Hi_2_AI.ipynb
+# Notebooks/GAPalyzer.ipynb
+# assets/nbs/A_Hi_2_AI.ipynb
+# assets/nbs/GAPalyzer.ipynb
+# assets/nbs/FAQuilizer.ipynb
 # /home/mike/repos/MikeLev.in/_posts/2025-10-18-gapalyzer-mvp-excel-automation-ai-precision.md
 
-# /home/mike/repos/pipulate/.gitignore
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/Notebooks/FAQuilizer.ipynb
-# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
+# .gitignore
+# pipulate/__init__.py
+# pipulate/core.py
+# pipulate/pipulate.py
+# Notebooks/FAQuilizer.ipynb
+# Notebooks/GAPalyzer.ipynb
 
-# /home/mike/repos/pipulate/README.md
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/assets/styles.css
-# /home/mike/repos/pipulate/imports/__init__.py
-# /home/mike/repos/pipulate/Notebooks/FAQuilizer.ipynb
-# /home/mike/repos/pipulate/Notebooks/faq_writer_sauce.py
-# /home/mike/repos/pipulate/tools/scraper_tools.py
-# /home/mike/repos/pipulate/tools/dom_tools.py
+# README.md
+# server.py
+# config.py
+# assets/styles.css
+# imports/__init__.py
+# Notebooks/FAQuilizer.ipynb
+# Notebooks/faq_writer_sauce.py
+# tools/scraper_tools.py
+# tools/dom_tools.py
 
-# /home/mike/repos/pipulate/prompt_foo.py
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/pyproject.toml
-# /home/mike/repos/pipulate/requirements.in
-# /home/mike/repos/pipulate/AI_RUNME.py
-# /home/mike/repos/pipulate/cli.py
-# /home/mike/repos/pipulate/foo_files.py
+# prompt_foo.py
+# flake.nix
+# assets/installer/install.sh
+# pyproject.toml
+# requirements.in
+# AI_RUNME.py
+# cli.py
+# foo_files.py
 
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/requirements.in
-# /home/mike/repos/pipulate/requirements.txt
-# /home/mike/repos/pipulate/pyproject.toml
+# assets/installer/install.sh
+# requirements.in
+# requirements.txt
+# pyproject.toml
 
-# /home/mike/repos/pipulate/Notebooks/AI_Scrape.ipynb
-# /home/mike/repos/pipulate/assets/nbs/A_Hi_2_AI.ipynb
-# /home/mike/repos/pipulate/Notebooks/prompt.txt
-# /home/mike/repos/pipulate/tools/__init__.py 
+# Notebooks/AI_Scrape.ipynb
+# assets/nbs/A_Hi_2_AI.ipynb
+# Notebooks/prompt.txt
+# tools/__init__.py 
 
-# /home/mike/repos/pipulate/README.md
+# README.md
 # /home/mike/repos/mikelev.in/_posts/2025-10-12-chisel-strike-nix-flake-jupyter-ai-collaboration.md
 # /home/mike/repos/MikeLev.in/_posts/2025-10-12-surgical-ai-context-narrative-time-machine.md
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
+# assets/installer/install.sh
+# flake.nix
 
 # RELEASE SYSTEM
-# /home/mike/repos/pipulate/release.py
+# release.py
 
 # MAIN BACKUP
-# /home/mike/repos/pipulate/imports/durable_backup_system.py
+# imports/durable_backup_system.py
 
 # GRATUITOUS EVANGELIZING (AVOID)
-# /home/mike/repos/pipulate/README.md
+# README.md
 
 # PROMPT FU
-# /home/mike/repos/pipulate/prompt_foo.py
-# /home/mike/repos/pipulate/foo_files.py
-# /home/mike/repos/pipulate/scripts/articles/list_articles.py
-# /home/mike/repos/pipulate/scripts/articles/instructions.json
-# /home/mike/repos/pipulate/scripts/articles/articleizer.py
+# prompt_foo.py
+# foo_files.py
+# scripts/articles/list_articles.py
+# scripts/articles/instructions.json
+# scripts/articles/articleizer.py
 
 # INSTALL & INFRASTRUCTURE AS CODE
-# /home/mike/repos/pipulate/__init__.py
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/pyproject.toml
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/requirements.in
-# /home/mike/repos/pipulate/requirements.txt
+# __init__.py
+# assets/installer/install.sh
+# pyproject.toml
+# flake.nix
+# requirements.in
+# requirements.txt
 
 # THE CORE APP
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/assets/styles.css
-# /home/mike/repos/pipulate/imports/__init__.py
+# server.py
+# config.py
+# assets/styles.css
+# imports/__init__.py
 
 # PIPULATE STATE MANAGER (The Magic Wand)
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/apps/040_hello_workflow.py
-# /home/mike/repos/pipulate/assets/nbs/A_Hi_2_AI.ipynb
+# pipulate/__init__.py
+# pipulate/core.py
+# pipulate/pipulate.py
+# apps/040_hello_workflow.py
+# assets/nbs/A_Hi_2_AI.ipynb
 
 # DRY OO APP PLUGINS
-# /home/mike/repos/pipulate/imports/crud.py
-# /home/mike/repos/pipulate/apps/060_tasks.py
-# /home/mike/repos/pipulate/apps/030_roles.py
-# /home/mike/repos/pipulate/apps/020_profiles.py
+# imports/crud.py
+# apps/060_tasks.py
+# apps/030_roles.py
+# apps/020_profiles.py
 
 # AI ERGONOMICS & TOOL CALLING CORE
-# /home/mike/repos/pipulate/AI_RUNME.py
-# /home/mike/repos/pipulate/cli.py
-# /home/mike/repos/pipulate/tools/__init__.py 
-# /home/mike/repos/pipulate/tools/system_tools.py
-# /home/mike/repos/pipulate/imports/stream_orchestrator.py
-# /home/mike/repos/pipulate/imports/ai_tool_discovery_simple_parser.py
-# /home/mike/repos/pipulate/imports/mcp_orchestrator.py
+# AI_RUNME.py
+# cli.py
+# tools/__init__.py 
+# tools/system_tools.py
+# imports/stream_orchestrator.py
+# imports/ai_tool_discovery_simple_parser.py
+# imports/mcp_orchestrator.py
 
 # CHIP O'THESEUS
-# /home/mike/repos/pipulate/imports/ai_dictdb.py
-# /home/mike/repos/pipulate/imports/append_only_conversation.py
-# /home/mike/repos/pipulate/imports/voice_synthesis.py
-# /home/mike/repos/pipulate/ai_edit.py
+# imports/ai_dictdb.py
+# imports/append_only_conversation.py
+# imports/voice_synthesis.py
+# ai_edit.py
 
 # RADICAL TRANSPARENCY
-# /home/mike/repos/pipulate/imports/server_logging.py
-# /home/mike/repos/pipulate/logs/server.log
+# imports/server_logging.py
+# logs/server.log
 
 # ADVANCED TOOL CALLING
-# /home/mike/repos/pipulate/tools/conversation_tools.py
-# /home/mike/repos/pipulate/tools/keychain_tools.py
-# /home/mike/repos/pipulate/tools/mcp_tools.py
-# /home/mike/repos/pipulate/tools/botify_tools.py
+# tools/conversation_tools.py
+# tools/keychain_tools.py
+# tools/mcp_tools.py
+# tools/botify_tools.py
 
 # ALL CUSTOM JAVASCRIPT
-# /home/mike/repos/pipulate/assets/init.js
-# /home/mike/repos/pipulate/assets/pipulate-init.js
-# /home/mike/repos/pipulate/assets/pipulate.js
-# /home/mike/repos/pipulate/assets/theme.js
-# /home/mike/repos/pipulate/assets/utils.js
-# /home/mike/repos/pipulate/assets/tests/demo.json
+# assets/init.js
+# assets/pipulate-init.js
+# assets/pipulate.js
+# assets/theme.js
+# assets/utils.js
+# assets/tests/demo.json
 
 # OTHER IMPORTS (SORT)
-# /home/mike/repos/pipulate/imports/ascii_displays.py
-# /home/mike/repos/pipulate/imports/botify_code_generation.py
-# /home/mike/repos/pipulate/imports/__init__.py
-# /home/mike/repos/pipulate/imports/stream_orchestrator.py
-# /home/mike/repos/pipulate/imports/voice_synthesis.py
+# imports/ascii_displays.py
+# imports/botify_code_generation.py
+# imports/__init__.py
+# imports/stream_orchestrator.py
+# imports/voice_synthesis.py
 
 # OTHER PLUGIN APPS
-# /home/mike/repos/pipulate/apps/001_dom_visualizer.py
-# /home/mike/repos/pipulate/apps/010_introduction.py
-# /home/mike/repos/pipulate/apps/050_documentation.py
-# /home/mike/repos/pipulate/apps/070_history.py
-# /home/mike/repos/pipulate/apps/100_connect_with_botify.py
-# /home/mike/repos/pipulate/apps/110_parameter_buster.py
-# /home/mike/repos/pipulate/apps/120_link_graph.py
-# /home/mike/repos/pipulate/apps/130_gap_analysis.py
-# /home/mike/repos/pipulate/apps/200_workflow_genesis.py
-# /home/mike/repos/pipulate/apps/210_widget_examples.py
-# /home/mike/repos/pipulate/apps/220_roadmap.py
-# /home/mike/repos/pipulate/apps/230_dev_assistant.py
-# /home/mike/repos/pipulate/apps/240_simon_mcp.py
-# /home/mike/repos/pipulate/apps/300_blank_placeholder.py
-# /home/mike/repos/pipulate/apps/400_botify_trifecta.py
-# /home/mike/repos/pipulate/apps/430_tab_opener.py
-# /home/mike/repos/pipulate/apps/450_stream_simulator.py
-# /home/mike/repos/pipulate/apps/510_text_field.py
-# /home/mike/repos/pipulate/apps/520_text_area.py
-# /home/mike/repos/pipulate/apps/530_dropdown.py
-# /home/mike/repos/pipulate/apps/540_checkboxes.py
-# /home/mike/repos/pipulate/apps/550_radios.py
-# /home/mike/repos/pipulate/apps/560_range.py
-# /home/mike/repos/pipulate/apps/570_switch.py
-# /home/mike/repos/pipulate/apps/580_upload.py
-# /home/mike/repos/pipulate/apps/610_markdown.py
-# /home/mike/repos/pipulate/apps/620_mermaid.py
-# /home/mike/repos/pipulate/apps/630_prism.py
-# /home/mike/repos/pipulate/apps/640_javascript.py
-# /home/mike/repos/pipulate/apps/710_pandas.py
-# /home/mike/repos/pipulate/apps/720_rich.py
-# /home/mike/repos/pipulate/apps/730_matplotlib.py
-# /home/mike/repos/pipulate/apps/810_webbrowser.py
+# apps/001_dom_visualizer.py
+# apps/010_introduction.py
+# apps/050_documentation.py
+# apps/070_history.py
+# apps/100_connect_with_botify.py
+# apps/110_parameter_buster.py
+# apps/120_link_graph.py
+# apps/130_gap_analysis.py
+# apps/200_workflow_genesis.py
+# apps/210_widget_examples.py
+# apps/220_roadmap.py
+# apps/230_dev_assistant.py
+# apps/240_simon_mcp.py
+# apps/300_blank_placeholder.py
+# apps/400_botify_trifecta.py
+# apps/430_tab_opener.py
+# apps/450_stream_simulator.py
+# apps/510_text_field.py
+# apps/520_text_area.py
+# apps/530_dropdown.py
+# apps/540_checkboxes.py
+# apps/550_radios.py
+# apps/560_range.py
+# apps/570_switch.py
+# apps/580_upload.py
+# apps/610_markdown.py
+# apps/620_mermaid.py
+# apps/630_prism.py
+# apps/640_javascript.py
+# apps/710_pandas.py
+# apps/720_rich.py
+# apps/730_matplotlib.py
+# apps/810_webbrowser.py
 
 # CONFIGURATION.NIX
 # /home/mike/repos/nixos/configuration.nix
@@ -940,8 +944,8 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/nixos/autognome.py
 
 # PREVIOUS CONTEXT DUMPS (PROBABLY DELETE BELOW THIS POINT)
-# /home/mike/repos/pipulate/requirements.in
-# /home/mike/repos/pipulate/requirements.txt
+# requirements.in
+# requirements.txt
 # /home/mike/repos/MikeLev.in/_posts/2025-09-09-pip-freeze-nix-dependency-hell.md
 # /home/mike/repos/MikeLev.in/_posts/2025-09-09-debugging-nix-dev-environment-segfault.md
 # /home/mike/repos/MikeLev.in/_posts/2025-10-07-macos-nix-debugging-segfault-to-afplay.md
@@ -952,257 +956,262 @@ AI_PHOOEY_CHOP = """\
 # FINDING EYES
 # tools/mcp_tools.py
 # imports/dom_processing/ai_dom_beautifier.py
-# /home/mike/repos/pipulate/README.md
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/Notebooks/Client_Work/faquilizer2/prompt.txt
-# /home/mike/repos/pipulate/Notebooks/Client_Work/faquilizer2/AI_Scrape.ipynb
-# /home/mike/repos/pipulate/Notebooks/Client_Work/faquilizer2/secretsauce.py
-# /home/mike/repos/pipulate/browser_automation/dom_schema_visualizer.py
-# /home/mike/repos/pipulate/browser_automation/recipe_executor.py
-# /home/mike/repos/pipulate/browser_automation/review_perception_history.py
-# /home/mike/repos/pipulate/AI_RUNME.py
-# /home/mike/repos/pipulate/cli.py
-# /home/mike/repos/pipulate/tools/__init__.py 
-# /home/mike/repos/pipulate/tools/system_tools.py
-# /home/mike/repos/pipulate/imports/__init__.py
-# /home/mike/repos/pipulate/imports/stream_orchestrator.py
-# /home/mike/repos/pipulate/imports/ai_tool_discovery_simple_parser.py
-# /home/mike/repos/pipulate/imports/mcp_orchestrator.py
+# README.md
+# server.py
+# config.py
+# Notebooks/Client_Work/faquilizer2/prompt.txt
+# Notebooks/Client_Work/faquilizer2/AI_Scrape.ipynb
+# Notebooks/Client_Work/faquilizer2/secretsauce.py
+# browser_automation/dom_schema_visualizer.py
+# browser_automation/recipe_executor.py
+# browser_automation/review_perception_history.py
+# AI_RUNME.py
+# cli.py
+# tools/__init__.py 
+# tools/system_tools.py
+# imports/__init__.py
+# imports/stream_orchestrator.py
+# imports/ai_tool_discovery_simple_parser.py
+# imports/mcp_orchestrator.py
 
 # THE WHOLE SHEBANG TEST FOR --context-only UML TOKEN COUNTS
-# /home/mike/repos/pipulate/__init__.py
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/pyproject.toml
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/requirements.in
-# /home/mike/repos/pipulate/requirements.txt
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/config.py
-# /home/mike/repos/pipulate/assets/styles.css
-# /home/mike/repos/pipulate/imports/__init__.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/apps/040_hello_workflow.py
-# /home/mike/repos/pipulate/assets/nbs/A_Hi_2_AI.ipynb
-# /home/mike/repos/pipulate/imports/crud.py
-# /home/mike/repos/pipulate/apps/060_tasks.py
-# /home/mike/repos/pipulate/apps/030_roles.py
-# /home/mike/repos/pipulate/apps/020_profiles.py
-# /home/mike/repos/pipulate/AI_RUNME.py
-# /home/mike/repos/pipulate/cli.py
-# /home/mike/repos/pipulate/imports/stream_orchestrator.py
-# /home/mike/repos/pipulate/imports/ai_tool_discovery_simple_parser.py
-# /home/mike/repos/pipulate/imports/mcp_orchestrator.py
-# /home/mike/repos/pipulate/tools/__init__.py 
-# /home/mike/repos/pipulate/tools/system_tools.py
-# /home/mike/repos/pipulate/imports/ai_dictdb.py
-# /home/mike/repos/pipulate/imports/append_only_conversation.py
-# /home/mike/repos/pipulate/imports/voice_synthesis.py
-# /home/mike/repos/pipulate/ai_edit.py
-# /home/mike/repos/pipulate/imports/server_logging.py
-# /home/mike/repos/pipulate/logs/server.log
-# /home/mike/repos/pipulate/tools/conversation_tools.py
-# /home/mike/repos/pipulate/tools/keychain_tools.py
-# /home/mike/repos/pipulate/tools/mcp_tools.py
-# /home/mike/repos/pipulate/tools/botify_tools.py
+# __init__.py
+# assets/installer/install.sh
+# pyproject.toml
+# flake.nix
+# requirements.in
+# requirements.txt
+# server.py
+# config.py
+# assets/styles.css
+# imports/__init__.py
+# pipulate/__init__.py
+# pipulate/core.py
+# pipulate/pipulate.py
+# apps/040_hello_workflow.py
+# assets/nbs/A_Hi_2_AI.ipynb
+# imports/crud.py
+# apps/060_tasks.py
+# apps/030_roles.py
+# apps/020_profiles.py
+# AI_RUNME.py
+# cli.py
+# imports/stream_orchestrator.py
+# imports/ai_tool_discovery_simple_parser.py
+# imports/mcp_orchestrator.py
+# tools/__init__.py 
+# tools/system_tools.py
+# imports/ai_dictdb.py
+# imports/append_only_conversation.py
+# imports/voice_synthesis.py
+# ai_edit.py
+# imports/server_logging.py
+# logs/server.log
+# tools/conversation_tools.py
+# tools/keychain_tools.py
+# tools/mcp_tools.py
+# tools/botify_tools.py
 
 # FIXING BROWSER AUTOMATION
-# /home/mike/repos/pipulate/apps/820_selenium.py
-# /home/mike/repos/pipulate/apps/440_browser_automation.py
-# /home/mike/repos/pipulate/Notebooks/Client_Work/faquilizer2/secretsauce.py
-# /home/mike/repos/pipulate/Notebooks/Client_Work/faquilizer2/AI_Scrape.ipynb
-# /home/mike/repos/pipulate/Notebooks/Client_Work/faquilizer2/workflow_test.ipynb
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/cli.py
-# /home/mike/repos/pipulate/tools/__init__.py 
-# /home/mike/repos/pipulate/tools/system_tools.py
-# /home/mike/repos/pipulate/imports/stream_orchestrator.py
+# apps/820_selenium.py
+# apps/440_browser_automation.py
+# Notebooks/Client_Work/faquilizer2/secretsauce.py
+# Notebooks/Client_Work/faquilizer2/AI_Scrape.ipynb
+# Notebooks/Client_Work/faquilizer2/workflow_test.ipynb
+# pipulate/__init__.py
+# pipulate/core.py
+# pipulate/pipulate.py
+# cli.py
+# tools/__init__.py 
+# tools/system_tools.py
+# imports/stream_orchestrator.py
 
 # FINDING THE DOM VISUALIZERS
-# /home/mike/repos/pipulate/apps/820_selenium.py
-# /home/mike/repos/pipulate/apps/440_browser_automation.py
-# /home/mike/repos/pipulate/Notebooks/Client_Work/faquilizer2/secretsauce.py
-# /home/mike/repos/pipulate/Notebooks/Client_Work/faquilizer2/workflow_test.ipynb
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/cli.py
-# /home/mike/repos/pipulate/tools/__init__.py 
-# /home/mike/repos/pipulate/tools/system_tools.py
-# /home/mike/repos/pipulate/imports/stream_orchestrator.py
-# /home/mike/repos/pipulate/tools/scraper_tools.py
+# apps/820_selenium.py
+# apps/440_browser_automation.py
+# Notebooks/Client_Work/faquilizer2/secretsauce.py
+# Notebooks/Client_Work/faquilizer2/workflow_test.ipynb
+# pipulate/__init__.py
+# pipulate/core.py
+# pipulate/pipulate.py
+# cli.py
+# tools/__init__.py 
+# tools/system_tools.py
+# imports/stream_orchestrator.py
+# tools/scraper_tools.py
 # browser_cache/dom_processing/dom_hierarchy_visualizer.py
 # browser_cache/dom_processing/dom_box_visualizer.py
 # /imports/dom_processing/ai_dom_beautifier.py
-# /home/mike/repos/pipulate/apps/001_dom_visualizer.py
+# apps/001_dom_visualizer.py
 
 # THE CONTINUING EYES SAGA
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/tools/scraper_tools.py
-# /home/mike/repos/pipulate/tools/dom_tools.py
-# /home/mike/repos/pipulate/Notebooks/Client_Work/faquilizer2/workflow_test.ipynb
+# pipulate/core.py
+# tools/scraper_tools.py
+# tools/dom_tools.py
+# Notebooks/Client_Work/faquilizer2/workflow_test.ipynb
 
 # EXPLORING __INIT__'s
-# /home/mike/repos/pipulate/imports/database_safety_wrapper.py
-# /home/mike/repos/pipulate/release.py
-# /home/mike/repos/pipulate/__init__.py
-# /home/mike/repos/pipulate/imports/__init__.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
+# imports/database_safety_wrapper.py
+# release.py
+# __init__.py
+# imports/__init__.py
+# pipulate/__init__.py
 
 # GOT HIERARCHY DOM WORKING
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/tools/scraper_tools.py
-# /home/mike/repos/pipulate/tools/dom_tools.py
-# /home/mike/repos/pipulate/Notebooks/open_eyes.ipynb
-# /home/mike/repos/pipulate/Notebooks/Client_Work/faquilizer2/workflow_test.ipynb
+# pipulate/core.py
+# tools/scraper_tools.py
+# tools/dom_tools.py
+# Notebooks/open_eyes.ipynb
+# Notebooks/Client_Work/faquilizer2/workflow_test.ipynb
 
 # NOTEBOOK EXPERIENCE
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/__init__.py
-# /home/mike/repos/pipulate/pyproject.toml
-# /home/mike/repos/pipulate/AI_RUNME.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/tools/__init__.py 
-# /home/mike/repos/pipulate/tools/scraper_tools.py
-# /home/mike/repos/pipulate/tools/system_tools.py
-# /home/mike/repos/pipulate/cli.py
-# /home/mike/repos/pipulate/imports/stream_orchestrator.py
-# /home/mike/repos/pipulate/assets/nbs/A_Hi_2_AI.ipynb
-# /home/mike/repos/pipulate/assets/nbs/faq_writer_sauce.py
-# /home/mike/repos/pipulate/assets/nbs/AI_Scrape.ipynb
-# /home/mike/repos/pipulate/Notebooks/open_eyes.ipynb
-# /home/mike/repos/pipulate/Notebooks/faq_writer_sauce.py
-# /home/mike/repos/pipulate/Notebooks/AI_Scrape.ipynb
-# /home/mike/repos/pipulate/Notebooks/Client_Work/faquilizer2/secretsauce.py
-# /home/mike/repos/pipulate/Notebooks/Client_Work/faquilizer2/workflow_test.ipynb
+# assets/installer/install.sh
+# flake.nix
+# __init__.py
+# pyproject.toml
+# AI_RUNME.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# tools/__init__.py 
+# tools/scraper_tools.py
+# tools/system_tools.py
+# cli.py
+# imports/stream_orchestrator.py
+# assets/nbs/A_Hi_2_AI.ipynb
+# assets/nbs/faq_writer_sauce.py
+# assets/nbs/AI_Scrape.ipynb
+# Notebooks/open_eyes.ipynb
+# Notebooks/faq_writer_sauce.py
+# Notebooks/AI_Scrape.ipynb
+# Notebooks/Client_Work/faquilizer2/secretsauce.py
+# Notebooks/Client_Work/faquilizer2/workflow_test.ipynb
 
 # STEALTH
-# /home/mike/repos/pipulate/README.md
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/requirements.in
-# /home/mike/repos/pipulate/requirements.txt
-# /home/mike/repos/pipulate/pyproject.toml
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/Notebooks/AI_Scrape.ipynb
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/Notebooks/prompt.txt
-# /home/mike/repos/pipulate/Notebooks/FAQuilizer.ipynb
-# /home/mike/repos/pipulate/Notebooks/faq_writer_sauce.py
-# /home/mike/repos/pipulate/tools/scraper_tools.py
-# /home/mike/repos/pipulate/tools/dom_tools.py
+# README.md
+# assets/installer/install.sh
+# requirements.in
+# requirements.txt
+# pyproject.toml
+# flake.nix
+# Notebooks/AI_Scrape.ipynb
+# pipulate/core.py
+# Notebooks/prompt.txt
+# Notebooks/FAQuilizer.ipynb
+# Notebooks/faq_writer_sauce.py
+# tools/scraper_tools.py
+# tools/dom_tools.py
 
-# THE CONSISTENT STORY (Story Chunks)
-#  ____  _                      ____ _                 _        
-# / ___|| |_ ___  _ __ _   _   / ___| |__  _   _ _ __ | | _____ 
-# \___ \| __/ _ \| '__| | | | | |   | '_ \| | | | '_ \| |/ / __|
-#  ___) | || (_) | |  | |_| | | |___| | | | |_| | | | |   <\__ \
-# |____/ \__\___/|_|   \__, |  \____|_| |_|\__,_|_| |_|_|\_\___/
-#                      |___/                                    
+## From this point down, it's no longer a reverse chronological record of the
+## context bundles I've painted but rather the grand unified "build it up from
+## scratch" story I initialize new amnesiac genie coding assistance help sessions
+## with.
 
-# Greetings Gemini! Welcome to the Pipulate system. It's a *Forever Machine* that
-# carries around its own infrastructure, hops from machine to machine, is getting
-# itself ready to be Guix-based as well as Nix, and reboots the era of the single
-# human Webmaster who can know it all and do it all. It's the solution to the
-# opacity of the so-called web full stack that keeps you guessing, burning tokens
-# on tool calling to establish context and always being accused of hallucinating.
+## THE CONSISTENT STORY (Story Chunks)
+##  ____  _                      ____ _                 _        
+## / ___|| |_ ___  _ __ _   _   / ___| |__  _   _ _ __ | | _____ 
+## \___ \| __/ _ \| '__| | | | | |   | '_ \| | | | '_ \| |/ / __|
+##  ___) | || (_) | |  | |_| | | |___| | | | |_| | | | |   <\__ \
+## |____/ \__\___/|_|   \__, |  \____|_| |_|\__,_|_| |_|_|\_\___/
+##                      |___/                                    
 
-# CHAPTER 1: BOOTSTRAPPING THE FOREVER MACHINE
-# /home/mike/repos/pipulate/assets/installer/install.sh
-# /home/mike/repos/pipulate/prompt_foo.py
-# /home/mike/repos/pipulate/foo_files.py
-# /home/mike/repos/pipulate/flake.nix
-# /home/mike/repos/pipulate/.gitignore
-# /home/mike/repos/pipulate/server.py
-# /home/mike/repos/pipulate/AI_RUNME.py
-# /home/mike/repos/pipulate/README.md
+## Greetings Gemini! Welcome to the Pipulate system. It's a *Forever Machine* that
+## carries around its own infrastructure, hops from machine to machine, is getting
+## itself ready to be Guix-based as well as Nix, and reboots the era of the single
+## human Webmaster who can know it all and do it all. It's the solution to the
+## opacity of the so-called web full stack that keeps you guessing, burning tokens
+## on tool calling to establish context and always being accused of hallucinating.
 
-# Nix allows the FastHTML/HTMX Pipulate app to install and run as localhost
-# anywhere solving the "not on my machine" problem. That infrastructure as code is
-# also used for JupyterLab where the Python virtual environment `.venv/` is in
-# common between the Uvicorn Starlette `app` and the IPython kernel so what you
-# pip install for one is available to the other. An instance of the Pipulate class
-# state manager Swiss Army Knife is available to both `from pipulate import pip`
-# to help with porting Notebooks to Pipulate Web Apps.
+## CHAPTER 1: BOOTSTRAPPING THE FOREVER MACHINE
+# assets/installer/install.sh
+# prompt_foo.py
+# foo_files.py
+# flake.nix
+# .gitignore
+# server.py
+# AI_RUNME.py
+# README.md
 
-# CHAPTER 2: THE WIZARD & THE WAND
-# /home/mike/repos/pipulate/foo_files.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/cli.py
-# /home/mike/repos/pipulate/scripts/articles/articleizer.py
-# /home/mike/repos/pipulate/scripts/articles/editing_prompt.txt
+## Nix allows the FastHTML/HTMX Pipulate app to install and run as localhost
+## anywhere solving the "not on my machine" problem. That infrastructure as code is
+## also used for JupyterLab where the Python virtual environment `.venv/` is in
+## common between the Uvicorn Starlette `app` and the IPython kernel so what you
+## pip install for one is available to the other. An instance of the Pipulate class
+## state manager Swiss Army Knife is available to both `from pipulate import pip`
+## to help with porting Notebooks to Pipulate Web Apps.
+
+## CHAPTER 2: THE WIZARD & THE WAND
+# foo_files.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# cli.py
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
 # /home/mike/repos/MikeLev.in/flake.nix
 
-# Currently, Pipulate relies on an Ollama install on the native OS. I could try to
-# jam all that into the Nix flake too, but Ollama goes through so much to make
-# sure they make a native installer on each host platform, I ride on that. In the
-# future I may use Python llvm, but for now the local AI is Gemma 3 via Ollama. I
-# don't do it yet but all API calls will be wired through pip install llm to keep
-# anything able to connect to anything. But this should get you up to speed on the
-# whole Chip O'Theseus Tamagotchi hermit crab thing. Have soul will travel!
+## Currently, Pipulate relies on an Ollama install on the native OS. I could try to
+## jam all that into the Nix flake too, but Ollama goes through so much to make
+## sure they make a native installer on each host platform, I ride on that. In the
+## future I may use Python llvm, but for now the local AI is Gemma 3 via Ollama. I
+## don't do it yet but all API calls will be wired through pip install llm to keep
+## anything able to connect to anything. But this should get you up to speed on the
+## whole Chip O'Theseus Tamagotchi hermit crab thing. Have soul will travel!
 
-# CHAPTER 3: SPELL-CASTING, NOTEBOOKS & MEMORY
-# /home/mike/repos/pipulate/foo_files.py
-# /home/mike/repos/pipulate/tools/__init__.py 
-# /home/mike/repos/pipulate/tools/keychain_tools.py
-# /home/mike/repos/pipulate/imports/__init__.py
-# /home/mike/repos/pipulate/imports/ai_dictdb.py
-# /home/mike/repos/pipulate/imports/durable_backup_system.py
-# /home/mike/repos/pipulate/imports/server_logging.py
-# /home/mike/repos/pipulate/imports/stream_orchestrator.py
-# /home/mike/repos/pipulate/imports/mcp_orchestrator.py
-# /home/mike/repos/pipulate/assets/nbs/URLinspector.ipynb
-# /home/mike/repos/pipulate/assets/nbs/imports/url_inspect_sauce.py
-# /home/mike/repos/pipulate/Notebooks/imports/seo_gadget.py
-# /home/mike/repos/pipulate/tools/scraper_tools.py
+## CHAPTER 3: SPELL-CASTING, NOTEBOOKS & MEMORY
+# foo_files.py
+# tools/__init__.py 
+# tools/keychain_tools.py
+# imports/__init__.py
+# imports/ai_dictdb.py
+# imports/durable_backup_system.py
+# imports/server_logging.py
+# imports/stream_orchestrator.py
+# imports/mcp_orchestrator.py
+# assets/nbs/URLinspector.ipynb
+# assets/nbs/imports/url_inspect_sauce.py
+# Notebooks/imports/seo_gadget.py
+# tools/scraper_tools.py
 
-# CHAPTER 4: HELLO WORLD, TESTS, DEMOS & VIDEO (Oh My!)
-# /home/mike/repos/pipulate/foo_files.py
-# /home/mike/repos/pipulate/assets/init.js
-# /home/mike/repos/pipulate/assets/pipulate.js
-# /home/mike/repos/pipulate/assets/styles.css
-# /home/mike/repos/pipulate/assets/theme.js
-# /home/mike/repos/pipulate/assets/utils.js
-# /home/mike/repos/pipulate/imports/crud.py
-# /home/mike/repos/pipulate/apps/060_tasks.py
-# /home/mike/repos/pipulate/apps/030_roles.py
-# /home/mike/repos/pipulate/apps/020_profiles.py
-# /home/mike/repos/pipulate/apps/010_introduction.py
-# /home/mike/repos/pipulate/apps/040_hello_workflow.py
-# /home/mike/repos/pipulate/imports/voice_synthesis.py
-# /home/mike/repos/pipulate/assets/pipulate-init.js
-# /home/mike/repos/pipulate/assets/scenarios/hello_workflow_test.json
-# /home/mike/repos/pipulate/assets/scenarios/introduction.json
-# /home/mike/repos/pipulate/Notebooks/VIDeditor.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/videditor_sauce.py
+## CHAPTER 4: HELLO WORLD, TESTS, DEMOS & VIDEO (Oh My!)
+# foo_files.py
+# assets/init.js
+# assets/pipulate.js
+# assets/styles.css
+# assets/theme.js
+# assets/utils.js
+# imports/crud.py
+# apps/060_tasks.py
+# apps/030_roles.py
+# apps/020_profiles.py
+# apps/010_introduction.py
+# apps/040_hello_workflow.py
+# imports/voice_synthesis.py
+# assets/pipulate-init.js
+# assets/scenarios/hello_workflow_test.json
+# assets/scenarios/introduction.json
+# Notebooks/VIDeditor.ipynb
+# Notebooks/imports/videditor_sauce.py
 
 # I need to add something in the below chapter about Workflow Genesis and how we
 # accommodate for not being DRY (make WET a little easier) with
 # slice-and-assemble. I'm not sure if the Simon stuff is still the best thing
 # here. This will improve as we go.
 
-# CHAPTER 5: BIG WORKFLOWS (Refine this)
-# /home/mike/repos/pipulate/foo_files.py
-# /home/mike/repos/pipulate/apps/240_simon_mcp.py
-# /home/mike/repos/pipulate/apps/200_workflow_genesis.py
-# /home/mike/repos/pipulate/apps/400_botify_trifecta.py
-# /home/mike/repos/pipulate/imports/botify_code_generation.py
-# /home/mike/repos/pipulate/apps/110_parameter_buster.py
+## CHAPTER 5: BIG WORKFLOWS (Refine this)
+# foo_files.py
+# apps/240_simon_mcp.py
+# apps/200_workflow_genesis.py
+# apps/400_botify_trifecta.py
+# imports/botify_code_generation.py
+# apps/110_parameter_buster.py
 
-# CHAPTER 6: BIG NOTEBOOKS
-# /home/mike/repos/pipulate/foo_files.py
-# /home/mike/repos/pipulate/pipulate/__init__.py
-# /home/mike/repos/pipulate/pipulate/pipulate.py
-# /home/mike/repos/pipulate/pipulate/core.py
-# /home/mike/repos/pipulate/Notebooks/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/Notebooks/imports/gap_analyzer_sauce.py
-# /home/mike/repos/pipulate/assets/nbs/GAPalyzer.ipynb
-# /home/mike/repos/pipulate/assets/nbs/imports/gap_analyzer_sauce.py
+## CHAPTER 6: BIG NOTEBOOKS
+# foo_files.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# Notebooks/GAPalyzer.ipynb
+# Notebooks/imports/gap_analyzer_sauce.py
+# assets/nbs/GAPalyzer.ipynb
+# assets/nbs/imports/gap_analyzer_sauce.py
