@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # prompt_foo.py
 
-# > We've got content, it's groovy context  
-# > Our concatenation just won't stop  
-# > Making stories art for a super-smart  
+# > We've got content, it's groovy context
+# > Our concatenation just won't stop
+# > Making stories art for a super-smart
 # > AI-Phooey chop (Hi-Ya!)
 
 import os
@@ -26,6 +26,32 @@ try:
 except ImportError:
     JUPYTEXT_AVAILABLE = False
 
+# ============================================================================
+# --- Logging & Capture ---
+# ============================================================================
+class Logger:
+    """Captures stdout for inclusion in the generated prompt."""
+    def __init__(self):
+        self.logs = []
+
+    def print(self, *args, **kwargs):
+        # Construct the string exactly as print would
+        sep = kwargs.get('sep', ' ')
+        end = kwargs.get('end', '\n')
+        text = sep.join(map(str, args)) + end
+        
+        # Capture it
+        self.logs.append(text)
+        
+        # Actually print it to stdout
+        print(*args, **kwargs)
+
+    def get_captured_text(self):
+        return "".join(self.logs)
+
+# Global logger instance
+logger = Logger()
+
 def load_url_map():
     """Loads the URL mapping configuration from .config/url_map.json"""
     config_path = os.path.expanduser("~/.config/articleizer/url_map.json")
@@ -34,7 +60,7 @@ def load_url_map():
             with open(config_path, 'r') as f:
                 return json.load(f)
         except json.JSONDecodeError:
-            print(f"Warning: Could not decode JSON from {config_path}")
+            logger.print(f"Warning: Could not decode JSON from {config_path}")
     return {}
 
 def load_targets():
@@ -45,14 +71,10 @@ def load_targets():
             with open(config_path, 'r') as f:
                 return json.load(f)
         except json.JSONDecodeError:
-            print(f"Warning: Could not decode JSON from {config_path}")
+            logger.print(f"Warning: Could not decode JSON from {config_path}")
     return {}
 
 URL_MAP = load_url_map()
-
-# Hello there, AI! This is a tool for generating a single, comprehensive prompt
-# from the command line, bundling codebase files and auto-generated context
-# into a structured Markdown format for effective AI assistance.
 
 # ============================================================================
 # --- Configuration ---
@@ -112,7 +134,6 @@ def count_words(text: str) -> int:
 # --- Auto-Context Generation (UML, Tree, Narrative) ---
 # ============================================================================
 def generate_uml_and_dot(target_file: str, project_name: str) -> Dict:
-    # This function remains unchanged.
     pyreverse_exec = shutil.which("pyreverse")
     plantuml_exec = shutil.which("plantuml")
     if not pyreverse_exec or not plantuml_exec:
@@ -196,10 +217,9 @@ def generate_uml_and_dot(target_file: str, project_name: str) -> Dict:
 def _get_article_list_data(posts_dir: str = CONFIG["POSTS_DIRECTORY"]) -> List[Dict]:
     posts_data = []
     if not os.path.isdir(posts_dir):
-        print(f"Warning: Article directory not found at {posts_dir}", file=sys.stderr)
+        logger.print(f"Warning: Article directory not found at {posts_dir}", file=sys.stderr)
         return []
 
-    # 1. Determine if the current posts_dir matches a known mapping
     url_config = URL_MAP.get(posts_dir)
 
     for filename in os.listdir(posts_dir):
@@ -213,22 +233,16 @@ def _get_article_list_data(posts_dir: str = CONFIG["POSTS_DIRECTORY"]) -> List[D
                 parts = content.split('---', 2)
                 front_matter = yaml.safe_load(parts[1]) or {}
 
-                # 2. Generate the URL if config exists
                 full_url = ""
                 if url_config:
                     slug = front_matter.get('permalink', '').strip('/')
                     if not slug:
-                        # Fallback if permalink isn't in frontmatter (simple filename slug)
                         raw_slug = os.path.splitext(filename)[0]
-                        # Remove date prefix if present (YYYY-MM-DD-title)
                         if re.match(r'\d{4}-\d{2}-\d{2}-', raw_slug):
                              raw_slug = raw_slug[11:]
-
-                        # Apply style
                         style = url_config.get('permalink_style', '/:slug/')
                         slug_path = style.replace(':slug', raw_slug)
                     else:
-                         # If permalink exists (e.g. /futureproof/my-slug/), use it
                          slug_path = "/" + slug.lstrip('/')
 
                     full_url = f"{url_config['base_url']}{slug_path}"
@@ -278,7 +292,7 @@ def parse_file_list_from_config() -> List[Tuple[str, str]]:
         import foo_files
         files_raw = foo_files.AI_PHOOEY_CHOP
     except (ImportError, AttributeError):
-        print("ERROR: foo_files.py not found or doesn't contain AI_PHOOEY_CHOP.")
+        logger.print("ERROR: foo_files.py not found or doesn't contain AI_PHOOEY_CHOP.")
         sys.exit(1)
     lines = files_raw.strip().splitlines()
     seen_files, parsed_files = set(), []
@@ -295,17 +309,16 @@ def parse_file_list_from_config() -> List[Tuple[str, str]]:
 
 def copy_to_clipboard(text: str):
     if not shutil.which('xclip'):
-        print("\nWarning: 'xclip' not found. Cannot copy to clipboard.")
+        logger.print("\nWarning: 'xclip' not found. Cannot copy to clipboard.")
         return
     try:
         subprocess.run(['xclip', '-selection', 'clipboard'], input=text.encode('utf-8'), check=True)
-        print("Markdown output copied to clipboard")
+        logger.print("Markdown output copied to clipboard")
     except Exception as e:
-        print(f"\nWarning: Could not copy to clipboard: {e}")
+        logger.print(f"\nWarning: Could not copy to clipboard: {e}")
 
 def check_dependencies():
-    """Verifies that all required external command-line tools are installed."""
-    print("Checking for required external dependencies...")
+    logger.print("Checking for required external dependencies...")
     dependencies = {
         "pyreverse": "Provided by `pylint`. Install with: pip install pylint",
         "plantuml": "A Java-based tool. See https://plantuml.com/starting",
@@ -318,13 +331,13 @@ def check_dependencies():
             missing.append((tool, instructions))
     
     if not missing:
-        print("✅ All dependencies found.")
+        logger.print("✅ All dependencies found.")
     else:
-        print("\n❌ Missing dependencies detected:")
+        logger.print("\n❌ Missing dependencies detected:")
         for tool, instructions in missing:
-            print(f"  - Command not found: `{tool}`")
-            print(f"    ↳ {instructions}")
-        print("\nPlease install the missing tools and ensure they are in your system's PATH.")
+            logger.print(f"  - Command not found: `{tool}`")
+            logger.print(f"    ↳ {instructions}")
+        logger.print("\nPlease install the missing tools and ensure they are in your system's PATH.")
         sys.exit(1)
 
 # ============================================================================
@@ -332,8 +345,8 @@ def check_dependencies():
 # ============================================================================
 class PromptBuilder:
     """
-    Builds a complete, structured Markdown prompt with consistent START/END markers
-    for each section, including Manifest, Story, File Tree, UMLs, Codebase, and Prompt.
+    Builds a complete, structured Markdown prompt with consistent START/END markers.
+    Includes a convergence loop to ensure the Summary section reflects the final token count.
     """
     def __init__(self, processed_files: List[Dict], prompt_text: str, context_only: bool = False, list_arg: Optional[str] = None):
         self.processed_files = processed_files
@@ -342,6 +355,7 @@ class PromptBuilder:
         self.list_arg = list_arg
         self.auto_context = {}
         self.all_sections = {}
+        self.command_line = " ".join(sys.argv)
 
     def add_auto_context(self, title: str, content: str):
         is_narrative = (title == "Recent Narrative Context")
@@ -356,7 +370,8 @@ class PromptBuilder:
 
     def _build_manifest_content(self) -> str:
         lines = []
-        section_order = ["Story", "File Tree", "UML Diagrams", "Articles", "Codebase", "Prompt"]
+        # Added Summary to section order
+        section_order = ["Story", "File Tree", "UML Diagrams", "Articles", "Codebase", "Summary", "Prompt"]
         for section_name in section_order:
             if section_name in self.all_sections:
                 data = self.all_sections[section_name]
@@ -414,9 +429,76 @@ Before addressing the user's prompt, perform the following verification steps:
 4.  **Confirm Understanding:** If the context appears complete, state "Context verified." and then proceed with the user's request.
 5.  **Descriptions:** When describing the passion represented here, you may refer to it as a blueprint, treatise, soliloquy, methodology, philosophy or way. NEVER refer to it as a manifesto which has a negative connotation.
 '''
+
+    def _generate_summary_content(self, verified_token_count: int) -> str:
+        """Generates the content for the Summary section."""
+        lines = []
+        
+        # Command Line
+        lines.append(f"**Command:** `{self.command_line}`\n")
+
+        # Execution Log (Captured from Logger)
+        logs = logger.get_captured_text().strip()
+        if logs:
+            lines.append("--- Processing Log ---")
+            lines.append(f"```\n{logs}\n```\n")
+
+        # Files Included
+        lines.append("--- Files Included ---")
+        for f in self.processed_files:
+            if self.context_only:
+                lines.append(f"• {f['path']} (content omitted)")
+            else:
+                byte_len = len(f['content'].encode('utf-8'))
+                lines.append(f"• {f['path']} ({f['tokens']:,} tokens | {byte_len:,} bytes)")
+        
+        if self.auto_context:
+            lines.append("\n--- Auto-Context Included ---")
+            for title, data in self.auto_context.items():
+                byte_len = len(data['content'].encode('utf-8'))
+                lines.append(f"• {title} ({data['tokens']:,} tokens | {byte_len:,} bytes)")
+
+        # Metrics
+        total_tokens = sum(v.get('tokens', 0) for k, v in self.all_sections.items() if k != "Manifest")
+        
+        total_words = 0
+        final_content_for_metrics = ""
+        for section, data in self.all_sections.items():
+            content_part = data.get('content', '')
+            final_content_for_metrics += content_part
+            if section != "Prompt":
+                total_words += count_words(content_part)
+
+        char_count = len(final_content_for_metrics)
+        byte_count = len(final_content_for_metrics.encode('utf-8'))
+
+        lines.append("\n--- Prompt Summary ---")
+        if self.context_only:
+            lines.append("NOTE: Running in --context-only mode. File contents are excluded.")
+        
+        lines.append(f"Summed Tokens:   {total_tokens:,} (from section parts)")
+        lines.append(f"Verified Tokens: {verified_token_count:,} (from final output)")
+        
+        if total_tokens != verified_token_count:
+            diff = verified_token_count - total_tokens
+            lines.append(f"  (Difference: {diff:+,})")
+            
+        lines.append(f"Total Words:     {total_words:,} (content only)")
+        lines.append(f"Total Chars:     {char_count:,}")
+        lines.append(f"Total Bytes:     {byte_count:,} (UTF-8)")
+
+        # Literary Perspective
+        ratio = verified_token_count / total_words if total_words > 0 else 0
+        perspective = get_literary_perspective(total_words, ratio)
+        lines.append("\n--- Size Perspective ---")
+        lines.append(perspective)
+
+        return "\n".join(lines)
+
     def build_final_prompt(self) -> str:
-        """Assembles all parts into the final, structured Markdown string."""
-        # Prepare content for all sections
+        """Assembles all parts into the final Markdown string with convergence loop for accuracy."""
+        
+        # 1. Build static sections
         story_content = self._build_story_content()
         tree_content = self._build_tree_content()
         uml_content = self._build_uml_content()
@@ -424,7 +506,7 @@ Before addressing the user's prompt, perform the following verification steps:
         codebase_content = self._build_codebase_content()
         prompt_content = self._build_prompt_content()
 
-        # Define placeholder messages
+        # Placeholders
         placeholders = {
             "Story": f"# Narrative context not requested. Use the -l or --list flag to include recent articles.",
             "File Tree": "# File tree generation failed or was skipped.",
@@ -434,93 +516,64 @@ Before addressing the user's prompt, perform the following verification steps:
                          else "# Running in --context-only mode. File contents are omitted."),
         }
 
-        # Store final content and tokens for the manifest calculation
+        # Store basic sections
         self.all_sections["Story"] = {'content': story_content, 'tokens': count_tokens(story_content)}
         self.all_sections["File Tree"] = {'content': tree_content, 'tokens': count_tokens(tree_content)}
         self.all_sections["UML Diagrams"] = {'content': uml_content, 'tokens': count_tokens(uml_content)}
         self.all_sections["Articles"] = {'content': articles_content, 'tokens': count_tokens(articles_content)}
         self.all_sections["Codebase"] = {'content': codebase_content, 'tokens': sum(f['tokens'] for f in self.processed_files) if not self.context_only else 0}
         self.all_sections["Prompt"] = {'content': prompt_content, 'tokens': count_tokens(prompt_content)}
-        
-        manifest_content = self._build_manifest_content()
-        self.all_sections["Manifest"] = {'content': manifest_content, 'tokens': count_tokens(manifest_content)}
 
-        # Assemble the final output string with START/END markers for all sections
-        parts = ["# KUNG FU PROMPT CONTEXT\n\nWhat you will find below is:\n\n- Manifest\n- Story\n- File Tree\n- UML Diagrams\n- Articles\n- Codebase\n- Prompt"]
-
-        def add_section(name, content, placeholder):
-            final_content = content.strip() if content and content.strip() else placeholder
-            parts.append(f"--- START: {name} ---\n{final_content}\n--- END: {name} ---")
-
-        add_section("Manifest", manifest_content, "# Manifest generation failed.")
-        story_placeholder = placeholders["Story"] if self.list_arg is None else "# No articles found for the specified slice."
-        add_section("Story", story_content, story_placeholder)
-        add_section("File Tree", tree_content, placeholders["File Tree"])
-        add_section("UML Diagrams", uml_content, placeholders["UML Diagrams"])
-        add_section("Articles", articles_content, placeholders["Articles"])
-        add_section("Codebase", codebase_content, placeholders["Codebase"])
-        add_section("Prompt", prompt_content, "# No prompt was provided.")
-
-        return "\n\n".join(parts)
-
-    def print_summary(self, verified_token_count: int):
-        """Calculates and prints an accurate, comprehensive summary to the console."""
-        print("--- Files Included ---")
-        for f in self.processed_files:
-            if self.context_only:
-                print(f"• {f['path']} (content omitted)")
-            else:
-                byte_len = len(f['content'].encode('utf-8'))
-                print(f"• {f['path']} ({f['tokens']:,} tokens | {byte_len:,} bytes)")
-        
-        if self.auto_context:
-            print("\n--- Auto-Context Included ---")
-            for title, data in self.auto_context.items():
-                byte_len = len(data['content'].encode('utf-8'))
-                print(f"• {title} ({data['tokens']:,} tokens | {byte_len:,} bytes)")
-        
-        print("\n--- Prompt Summary ---")
-        if self.context_only:
-            print("NOTE: Running in --context-only mode. File contents are excluded.")
-        
-        # This is the original sum of all the individual parts
-        total_tokens = sum(v.get('tokens', 0) for v in self.all_sections.values())
-        
-        # We need a word count for the literary perspective.
-        # We'll base it on the "real" content, not including the prompt/checklist
-        total_words = 0
-        final_content = ""
-        
-        # Reconstruct content for char/byte counting
-        # (We could pass this in, but accessing the dict is cleaner here)
-        for section, data in self.all_sections.items():
-            content_part = data.get('content', '')
-            final_content += content_part
-            if section != "Prompt": # Don't count the prompt/checklist in word count
-                total_words += count_words(content_part)
-
-        # METRICS CALCULATIONS
-        char_count = len(final_content)
-        byte_count = len(final_content.encode('utf-8'))
-
-        print(f"Summed Tokens:   {total_tokens:,} (from section parts)")
-        print(f"Verified Tokens: {verified_token_count:,} (from final output)")
-        if total_tokens != verified_token_count:
-            diff = verified_token_count - total_tokens
-            print(f"  (Difference: {diff:+,})")
+        # Helper to assemble text
+        def assemble_text(manifest_txt, summary_txt):
+            parts = ["# KUNG FU PROMPT CONTEXT\n\nWhat you will find below is:\n\n- Manifest\n- Story\n- File Tree\n- UML Diagrams\n- Articles\n- Codebase\n- Summary\n- Prompt"]
             
-        print(f"Total Words:     {total_words:,} (content only)")
+            def add(name, content, placeholder):
+                final = content.strip() if content and content.strip() else placeholder
+                parts.append(f"--- START: {name} ---\n{final}\n--- END: {name} ---")
+
+            add("Manifest", manifest_txt, "# Manifest generation failed.")
+            add("Story", story_content, placeholders["Story"] if self.list_arg is None else "# No articles found for the specified slice.")
+            add("File Tree", tree_content, placeholders["File Tree"])
+            add("UML Diagrams", uml_content, placeholders["UML Diagrams"])
+            add("Articles", articles_content, placeholders["Articles"])
+            add("Codebase", codebase_content, placeholders["Codebase"])
+            add("Summary", summary_txt, "# Summary generation failed.")
+            add("Prompt", prompt_content, "# No prompt was provided.")
+            
+            return "\n\n".join(parts)
+
+        # 2. Convergence Loop
+        # We need the Summary to contain the final token count, but the Summary is part of the text.
+        # We iterate to allow the numbers to stabilize.
         
-        # NEW: Physical size metrics
-        print(f"Total Chars:     {char_count:,}")
-        print(f"Total Bytes:     {byte_count:,} (UTF-8)")
+        current_token_count = 0
+        final_output_text = ""
         
-        # Use the VERIFIED token count for the most accurate ratio
-        ratio = verified_token_count / total_words if total_words > 0 else 0
-        perspective = get_literary_perspective(total_words, ratio)
-        print("\n--- Size Perspective ---")
-        print(perspective)
-        print()
+        # Initial estimate (sum of static parts)
+        current_token_count = sum(v['tokens'] for v in self.all_sections.values())
+        
+        for _ in range(3): # Max 3 iterations, usually converges in 2
+            # Generate Summary with current count
+            summary_content = self._generate_summary_content(current_token_count)
+            self.all_sections["Summary"] = {'content': summary_content, 'tokens': count_tokens(summary_content)}
+            
+            # Generate Manifest (might change if Summary token count changes length like 999->1000)
+            manifest_content = self._build_manifest_content()
+            self.all_sections["Manifest"] = {'content': manifest_content, 'tokens': count_tokens(manifest_content)}
+            
+            # Assemble full text
+            final_output_text = assemble_text(manifest_content, summary_content)
+            
+            # Verify count
+            new_token_count = count_tokens(final_output_text)
+            
+            if new_token_count == current_token_count:
+                break # Converged
+            
+            current_token_count = new_token_count
+
+        return final_output_text
 
 # ============================================================================
 # --- Main Execution Logic ---
@@ -560,9 +613,9 @@ def main():
         if targets and target_id_str in targets:
             selected_target = targets[target_id_str]
             CONFIG["POSTS_DIRECTORY"] = selected_target["path"]
-            print(f"🎯 Target set to: {selected_target['name']}")
+            logger.print(f"🎯 Target set to: {selected_target['name']}")
         else:
-            print(f"Error: Target ID '{args.target}' not found in configuration.", file=sys.stderr)
+            logger.print(f"Error: Target ID '{args.target}' not found in configuration.", file=sys.stderr)
             sys.exit(1)
 
     # 1. Handle user prompt
@@ -578,34 +631,34 @@ def main():
     # 2. Process all specified files
     files_to_process = parse_file_list_from_config()
     processed_files_data = []
-    print("--- Processing Files ---")
+    logger.print("--- Processing Files ---")
     for path, comment in files_to_process:
         full_path = os.path.join(REPO_ROOT, path) if not os.path.isabs(path) else path
         if not os.path.exists(full_path):
-            print(f"Warning: File not found and will be skipped: {full_path}")
+            logger.print(f"Warning: File not found and will be skipped: {full_path}")
             continue
         content, lang = "", "text"
         ext = os.path.splitext(path)[1].lower()
         if ext == '.ipynb':
             if JUPYTEXT_AVAILABLE:
-                print(f"   -> Converting notebook: {path}")
+                logger.print(f"   -> Converting notebook: {path}")
                 try:
                     notebook = jupytext.read(full_path)
                     content = jupytext.writes(notebook, fmt='py:percent')
                     lang = 'python'
                 except Exception as e:
                     content = f"# FAILED TO CONVERT NOTEBOOK: {path}\n# ERROR: {e}"
-                    print(f"Warning: Failed to convert {path}: {e}")
+                    logger.print(f"Warning: Failed to convert {path}: {e}")
             else:
                 content = f"# SKIPPING NOTEBOOK CONVERSION: jupytext not installed for {path}"
-                print(f"Warning: `jupytext` library not found. Skipping conversion for {path}.")
+                logger.print(f"Warning: `jupytext` library not found. Skipping conversion for {path}.")
         else:
             try:
                 with open(full_path, 'r', encoding='utf-8') as f: content = f.read()
                 lang_map = {'.py': 'python', '.js': 'javascript', '.html': 'html', '.css': 'css', '.md': 'markdown', '.json': 'json', '.nix': 'nix', '.sh': 'bash'}
                 lang = lang_map.get(ext, 'text')
             except Exception as e:
-                print(f"ERROR: Could not read or process {full_path}: {e}")
+                logger.print(f"ERROR: Could not read or process {full_path}: {e}")
                 sys.exit(1)
         processed_files_data.append({
             "path": path, "comment": comment, "content": content,
@@ -620,7 +673,7 @@ def main():
     include_tree = any(f['path'].endswith('.py') for f in processed_files_data)
     
     if include_tree:
-        print("Python file(s) detected. Generating codebase tree diagram...", end='', flush=True)
+        logger.print("Python file(s) detected. Generating codebase tree diagram...", end='', flush=True)
         tree_output = run_tree_command()
         title = "Codebase Structure (eza --tree)"
         builder.add_auto_context(title, tree_output)
@@ -629,13 +682,12 @@ def main():
         tree_data = builder.auto_context.get(title, {})
         t_count = tree_data.get('tokens', 0)
         b_count = len(tree_data.get('content', '').encode('utf-8'))
-        print(f" ({t_count:,} tokens | {b_count:,} bytes)")
+        logger.print(f" ({t_count:,} tokens | {b_count:,} bytes)")
     else:
-        print("Skipping codebase tree (no .py files included).")
+        logger.print("Skipping codebase tree (no .py files included).")
 
     if args.list is not None:
-        print("Adding narrative context from articles...", end='', flush=True)
-        # Fix: Explicitly pass the updated directory from CONFIG
+        logger.print("Adding narrative context from articles...", end='', flush=True)
         all_articles = _get_article_list_data(CONFIG["POSTS_DIRECTORY"])
         sliced_articles = []
         try:
@@ -643,7 +695,7 @@ def main():
             if isinstance(slice_or_index, int): sliced_articles = [all_articles[slice_or_index]]
             elif isinstance(slice_or_index, slice): sliced_articles = all_articles[slice_or_index]
         except (ValueError, IndexError):
-            print(f" (invalid slice '{args.list}')")
+            logger.print(f" (invalid slice '{args.list}')")
             sliced_articles = []
         
         if sliced_articles:
@@ -652,7 +704,6 @@ def main():
                 narrative_content += f"### {article['title']} ({article['date']}, tokens: {article['tokens']:,}, bytes: {article['bytes']:,})\n"
                 if article.get('url'):
                     narrative_content += f"> **URL:** {article['url']}\n"
-                # Always show path for context painting utility
                 narrative_content += f"> **Path:** {article['path']}\n"
                 narrative_content += f"> {article['summary']}\n\n"
             
@@ -663,13 +714,12 @@ def main():
             narrative_data = builder.auto_context.get(title, {})
             t_count = narrative_data.get('tokens', 0)
             b_count = len(narrative_data.get('content', '').encode('utf-8'))
-            print(f" ({len(sliced_articles)} articles | {t_count:,} tokens | {b_count:,} bytes)")
+            logger.print(f" ({len(sliced_articles)} articles | {t_count:,} tokens | {b_count:,} bytes)")
         else:
-            print(" (no articles found or invalid slice)")
+            logger.print(" (no articles found or invalid slice)")
     
     if args.article is not None:
-        print("Adding full article content...", end='', flush=True)
-        # Fix: Explicitly pass the updated directory from CONFIG
+        logger.print("Adding full article content...", end='', flush=True)
         all_articles = _get_article_list_data(CONFIG["POSTS_DIRECTORY"])
         sliced_articles = []
         try:
@@ -679,7 +729,7 @@ def main():
             elif isinstance(slice_or_index, slice):
                 sliced_articles = all_articles[slice_or_index]
         except (ValueError, IndexError):
-            print(f" (invalid slice '{args.article}')")
+            logger.print(f" (invalid slice '{args.article}')")
 
         if sliced_articles:
             full_content_parts = []
@@ -687,10 +737,9 @@ def main():
                 try:
                     with open(article['path'], 'r', encoding='utf-8') as f:
                         content = f.read()
-                    # Add a header for each article to separate them clearly
                     full_content_parts.append(f"--- START: Article: {os.path.basename(article['path'])} ---\n{content.strip()}\n--- END: Article ---\n")
                 except Exception as e:
-                    print(f"\nWarning: Could not read article {article['path']}: {e}")
+                    logger.print(f"\nWarning: Could not read article {article['path']}: {e}")
             
             if full_content_parts:
                 full_article_content = "\n".join(full_content_parts)
@@ -701,16 +750,16 @@ def main():
                 article_data = builder.auto_context.get(title, {})
                 t_count = article_data.get('tokens', 0)
                 b_count = len(article_data.get('content', '').encode('utf-8'))
-                print(f" ({len(sliced_articles)} full articles | {t_count:,} tokens | {b_count:,} bytes)")
+                logger.print(f" ({len(sliced_articles)} full articles | {t_count:,} tokens | {b_count:,} bytes)")
         else:
-            print(" (no articles found or invalid slice)")
+            logger.print(" (no articles found or invalid slice)")
 
 
     python_files_to_diagram = [f['path'] for f in processed_files_data if f['path'].endswith('.py')]
     if python_files_to_diagram:
-        print("Python file(s) detected. Generating UML diagrams...")
+        logger.print("Python file(s) detected. Generating UML diagrams...")
         for py_file_path in python_files_to_diagram:
-            print(f"   -> Generating for {py_file_path}...", end='', flush=True)
+            logger.print(f"   -> Generating for {py_file_path}...", end='', flush=True)
             uml_context = generate_uml_and_dot(py_file_path, CONFIG["PROJECT_NAME"])
             uml_content = uml_context.get("ascii_uml")
             title = f"UML Class Diagram (ASCII for {py_file_path})"
@@ -719,26 +768,24 @@ def main():
             if title in builder.auto_context:
                 uml_data = builder.auto_context[title]
                 b_count = len(uml_data['content'].encode('utf-8'))
-                print(f" ({uml_data['tokens']:,} tokens | {b_count:,} bytes)")
+                logger.print(f" ({uml_data['tokens']:,} tokens | {b_count:,} bytes)")
             elif uml_content and "note: no classes" in uml_content.lower():
-                print(" (skipped, no classes)")
+                logger.print(" (skipped, no classes)")
             else:
-                print(" (skipped)")
-        print("...UML generation complete.\n")
+                logger.print(" (skipped)")
+        logger.print("...UML generation complete.\n")
     
-    # 4. Generate final output and print summary
+    # 4. Generate final output with convergence loop
     final_output = builder.build_final_prompt()
     
-    # Get the "ground truth" token count from the final, fully-formed string
-    verified_token_count = count_tokens(final_output)
+    # 5. Print the Summary section to console for immediate feedback
+    if "Summary" in builder.all_sections:
+        print(builder.all_sections["Summary"]["content"])
     
-    # Pass this verified count to the summary printer for comparison
-    builder.print_summary(verified_token_count)
-
-    # 5. Handle output
+    # 6. Handle output
     if args.output:
         with open(args.output, 'w', encoding='utf-8') as f: f.write(final_output)
-        print(f"Output written to '{args.output}'")
+        print(f"\nOutput written to '{args.output}'")
     if not args.no_clipboard:
         copy_to_clipboard(final_output)
 
