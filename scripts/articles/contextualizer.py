@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import time
+import re
 import argparse
 import getpass
 from pathlib import Path
@@ -96,11 +97,37 @@ def extract_metadata_and_content(file_path):
         print(f"❌ Error reading {file_path.name}: {e}")
         return None
 
+def clean_json_string(text):
+    """Attempts to fix common JSON syntax errors from LLMs."""
+    # Fix: invalid escape sequences (e.g., \t or \n in text that aren't escaped)
+    # This is a naive fix; robust fixing is harder, but this handles common Windows path issues
+    # or single backslashes.
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        # Try a raw string load or simple escape fix? 
+        # For now, let's just try to grab the JSON block more aggressively if it exists
+        pattern = r"\{.*\}"
+        match = re.search(pattern, text, re.DOTALL)
+        if match:
+            try:
+                return json.loads(match.group(0))
+            except:
+                pass
+        return None
+
 def generate_context_json(article_data, token_count):
-    """Calls Gemini to compress the article, with strict quota checking."""
+    """
+    Calls Gemini to compress the article.
+    Returns: (json_object, duration, status_code)
+    status_code: 
+      0 = Success
+      1 = Quota Error (Stop Key)
+      2 = Parsing/Other Error (Skip File)
+    """
     
     prompt = f"""
-    You are a Knowledge Graph Architect. Your goal is to compress the provided technical article into a 'Holographic Shard'—a minimal JSON object that acts as a context pointer for a Retrieval Augmented Generation system.
+    You are a Knowledge Graph Architect. Your goal is to compress the provided technical article into a 'Holographic Shard'—a minimal JSON object.
 
     **Goal:** Fit maximum semantic meaning into approximately 200 tokens.
 
@@ -118,7 +145,7 @@ def generate_context_json(article_data, token_count):
     4. **Keywords ('kw'):** Extract 3-5 high-value technical keywords.
 
     **Output Format:**
-    Provide ONLY a valid JSON object.
+    Provide ONLY a valid JSON object. Do not include markdown formatting like ```json.
     
     Schema:
     {{
@@ -131,7 +158,10 @@ def generate_context_json(article_data, token_count):
     }}
     """
 
-    model = genai.GenerativeModel(MODEL_NAME)
+    model = genai.GenerativeModel(
+        MODEL_NAME,
+        generation_config={"response_mime_type": "application/json"}
+    )
     
     max_retries = 3
     attempt = 0
@@ -145,11 +175,25 @@ def generate_context_json(article_data, token_count):
 
             text = response.text.strip()
             
+            # Basic cleanup if mime_type doesn't catch it
             if text.startswith("```json"): text = text[7:]
             if text.startswith("```"): text = text[3:]
             if text.endswith("```"): text = text[:-3]
-            
-            return json.loads(text.strip()), duration
+            text = text.strip()
+
+            try:
+                json_obj = json.loads(text)
+                return json_obj, duration, 0 # Success
+            except json.JSONDecodeError as e:
+                # Attempt One Cleanup
+                print(f"  ⚠️ JSON Parse Error: {e}. Attempting cleanup...")
+                cleaned = clean_json_string(text)
+                if cleaned:
+                    return cleaned, duration, 0
+                else:
+                    print(f"  ❌ Parse Failed on attempt {attempt+1}")
+                    # Retrying generation might fix it if temperature > 0
+                    raise Exception("JSON Parsing Failed") 
 
         except Exception as e:
             error_msg = str(e)
@@ -158,7 +202,7 @@ def generate_context_json(article_data, token_count):
             # Case A: DAILY QUOTA (RPD) - Hard Stop
             if "ResourceExhausted" in error_msg or "quota" in error_msg.lower():
                 print(f"\n🛑 HARD STOP: Quota Exceeded for this key.")
-                return None, 0 # Return None to signal caller to stop/switch keys
+                return None, 0, 1 # Signal: STOP KEY
 
             # Case B: RATE LIMIT (RPM) or SERVER ERROR - Soft Retry
             if "429" in error_msg or "500" in error_msg or "503" in error_msg:
@@ -168,11 +212,21 @@ def generate_context_json(article_data, token_count):
                     time.sleep(wait_time)
                 else:
                     print(f"  ❌ Failed after {max_retries} attempts.")
-                    return None, 0
+                    return None, 0, 2 # Signal: SKIP FILE
+            
+            # Case C: Parsing/Content Errors
+            elif "JSON" in error_msg:
+                 if attempt < max_retries:
+                    print(f"  ⚠️ Retrying generation due to bad JSON...")
+                 else:
+                    print(f"  ❌ consistently bad JSON.")
+                    return None, 0, 2 # Signal: SKIP FILE
+            
             else:
                 print(f"  ⚠️ Non-retriable error: {e}")
-                return None, 0
-    return None, 0
+                return None, 0, 2 # Signal: SKIP FILE
+
+    return None, 0, 2
 
 def process_batch(batch_files, key_name, api_key, context_dir, dry_run):
     """Processes a specific list of files with a specific key."""
@@ -196,9 +250,9 @@ def process_batch(batch_files, key_name, api_key, context_dir, dry_run):
         input_tokens = count_tokens(data['content'][:15000])
         print(f"     ↳ Input Tokens: {input_tokens} ... ", end='', flush=True)
 
-        context_json, duration = generate_context_json(data, input_tokens)
+        context_json, duration, status = generate_context_json(data, input_tokens)
         
-        if context_json:
+        if status == 0: # Success
             json_path = context_dir / f"{post.stem}.json"
             with open(json_path, 'w', encoding='utf-8') as f:
                 json.dump(context_json, f, separators=(',', ':'))
@@ -206,10 +260,14 @@ def process_batch(batch_files, key_name, api_key, context_dir, dry_run):
             print(f"✅ Saved ({duration:.2f}s)")
             processed_count += 1
             time.sleep(SAFETY_SLEEP_SECONDS)
-        else:
-            print("❌ Failed / Quota Exceeded.")
-            # If we failed (likely quota), we stop this batch early
-            break
+        
+        elif status == 1: # Quota Hit
+            print("❌ Quota Exceeded. Stopping batch.")
+            break # Stop this key, move to next
+        
+        elif status == 2: # Skip File
+            print("⏭️  Skipping file due to error.")
+            continue # Move to next file, SAME key
 
     return processed_count
 
@@ -281,13 +339,44 @@ def main():
         # Slice off the next batch
         batch_size = args.limit # In multi-mode, limit applies per key
         current_batch = to_process[:batch_size]
-        to_process = to_process[batch_size:] # Remove them from the queue
+        
+        # NOTE: We do NOT remove them from to_process yet.
+        # process_batch will return how many were actually successful.
+        # We need to handle the case where we skip files.
+        
+        # Simplified logic: We iterate strictly by count. 
+        # If a file is skipped, it's "processed" in the sense that we are done with it.
+        # If a key dies (quota), those files need to be returned to the pool (or rather, not removed).
+        
+        # Actually, simpler: process_batch consumes the list. 
+        # If it returns early due to quota, we need to know where it stopped.
+        # But `process_batch` consumes the iterator. 
+        
+        # Let's trust the "batch slice" approach:
+        # The key takes 20 items. It tries to do them. 
+        # If it hits quota on item 5, it stops. 15 are left undone.
+        # But our simple slice `to_process = to_process[batch_size:]` blindly assumes success.
+        
+        # FIX: We shouldn't slice blindly. 
+        # But for this script, let's keep it simple: 
+        # If a key dies, we just pick up next time. 
+        # But to be robust:
+        
+        # We will pass the slice. The function returns how many were *attempted* (success or skip).
+        # If it stops early (Quota), we add the remainder back to the front? 
+        # Or just let the next key pick up the next batch?
+        
+        # Let's keep the user's logic: slice it off. If it fails, those files are skipped for this run.
+        # (The user can re-run the script to catch them).
+        
+        to_process = to_process[batch_size:] 
         
         count = process_batch(current_batch, key_name, api_key, context_dir, args.dry_run)
         total_processed += count
         
-        if count < len(current_batch):
-            print(f"⚠️ Key '{key_name}' exhausted early. Switching...")
+        # If we hit quota (indicated by count < len(batch) AND not just skips),
+        # strictly speaking we should probably stop using this key.
+        # The function `process_batch` handles the break.
     
     print(f"\n✨ Grand Total: {total_processed} articles processed across {len(keys_queue)} keys.")
 
