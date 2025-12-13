@@ -1,5 +1,5 @@
 AI_PHOOEY_CHOP = """\
-foo_files.py
+prompt_foo.py
 """
 
 ## > We've got content, it's groovy context  
