@@ -16,8 +16,6 @@ KEYS_FILE = CONFIG_DIR / "keys.json"
 TARGETS_FILE = CONFIG_DIR / "targets.json"
 
 # MODEL CONFIGURATION
-# Note: 2.5-flash-lite appears to have a 20 RPD limit in preview.
-# You may need to switch back to 'gemini-2.0-flash-exp' or similar if available.
 MODEL_NAME = 'gemini-2.5-flash-lite' 
 SAFETY_SLEEP_SECONDS = 5
 
@@ -41,38 +39,43 @@ def load_targets():
 PROJECT_TARGETS = load_targets()
 
 def count_tokens(text: str, model: str = "gpt-4o") -> int:
-    """Estimates token count using tiktoken (consistent with prompt_foo.py)."""
+    """Estimates token count using tiktoken."""
     try:
         encoding = tiktoken.encoding_for_model(model)
         return len(encoding.encode(text))
     except Exception:
-        # Fallback if specific model encoding not found
         return len(text.split())
 
-def get_api_key(key_name="default"):
-    """Gets a specific named API key from keys.json."""
-    keys = {}
+def load_keys_dict():
+    """Loads the entire keys dictionary."""
     if KEYS_FILE.exists():
         try:
             with open(KEYS_FILE, 'r') as f:
-                keys = json.load(f)
+                return json.load(f)
         except json.JSONDecodeError:
             print(f"❌ Error: {KEYS_FILE} is corrupt.")
             sys.exit(1)
+    return {}
 
-    if key_name in keys:
-        return keys[key_name]
+def get_api_key(key_name="default", keys_dict=None):
+    """Gets a specific named API key."""
+    if keys_dict is None:
+        keys_dict = load_keys_dict()
+
+    if key_name in keys_dict:
+        return keys_dict[key_name]
     
+    # Interactive fallback
     print(f"⚠️ API Key '{key_name}' not found in {KEYS_FILE}.")
     new_key = getpass.getpass(f"Enter Google API Key for '{key_name}': ").strip()
     
     if new_key:
         save = input(f"Save key '{key_name}' to config? (y/n): ").lower()
         if save == 'y':
-            keys[key_name] = new_key
+            keys_dict[key_name] = new_key
             CONFIG_DIR.mkdir(parents=True, exist_ok=True)
             with open(KEYS_FILE, 'w') as f:
-                json.dump(keys, f, indent=2)
+                json.dump(keys_dict, f, indent=2)
             KEYS_FILE.chmod(0o600)
             print(f"✅ Key '{key_name}' saved.")
         return new_key
@@ -142,7 +145,6 @@ def generate_context_json(article_data, token_count):
 
             text = response.text.strip()
             
-            # Clean up Markdown code blocks
             if text.startswith("```json"): text = text[7:]
             if text.startswith("```"): text = text[3:]
             if text.endswith("```"): text = text[:-3]
@@ -153,40 +155,71 @@ def generate_context_json(article_data, token_count):
             error_msg = str(e)
             attempt += 1
             
-            # --- INTELLIGENT ERROR HANDLING ---
-
             # Case A: DAILY QUOTA (RPD) - Hard Stop
-            # 429 often serves both, so we look for specific text or assume worst case if persistent
             if "ResourceExhausted" in error_msg or "quota" in error_msg.lower():
-                print(f"\n🛑 HARD STOP: Quota Exceeded.")
-                print(f"   Model: {MODEL_NAME}")
-                print(f"   Input Tokens: {token_count}")
-                print(f"   Full Error Details:\n{error_msg}") # No truncation!
-                sys.exit(0) # Exit immediately, do not retry.
+                print(f"\n🛑 HARD STOP: Quota Exceeded for this key.")
+                return None, 0 # Return None to signal caller to stop/switch keys
 
             # Case B: RATE LIMIT (RPM) or SERVER ERROR - Soft Retry
             if "429" in error_msg or "500" in error_msg or "503" in error_msg:
                 if attempt < max_retries:
-                    wait_time = 10 * attempt # Short backoff: 10s, 20s, 30s
+                    wait_time = 10 * attempt
                     print(f"  ⚠️ Transient error (RPM/Server). Retrying in {wait_time}s...")
                     time.sleep(wait_time)
                 else:
                     print(f"  ❌ Failed after {max_retries} attempts.")
                     return None, 0
             else:
-                # Case C: Other Errors (Syntax, Auth, etc)
                 print(f"  ⚠️ Non-retriable error: {e}")
                 return None, 0
     return None, 0
 
-def main():
-    parser = argparse.ArgumentParser(description="Generate AI context JSONs for markdown articles.")
-    parser.add_argument('--limit', type=int, default=1000, help="Max number of articles to process this run")
-    parser.add_argument('--force', action='store_true', help="Overwrite existing context files")
-    parser.add_argument('--dry-run', action='store_true', help="Show what would happen without calling API")
+def process_batch(batch_files, key_name, api_key, context_dir, dry_run):
+    """Processes a specific list of files with a specific key."""
     
-    # NEW ARGUMENT: Key Selection
-    parser.add_argument('-k', '--key', type=str, default="default", help="Name of the API key to use from keys.json (default: 'default')")
+    print(f"\n🔑 Switch-on: '{key_name}' | Batch Size: {len(batch_files)}")
+    
+    if not dry_run:
+        genai.configure(api_key=api_key)
+
+    processed_count = 0
+    
+    for i, post in enumerate(batch_files):
+        print(f"   [{i+1}/{len(batch_files)}] Processing: {post.name}...")
+        
+        if dry_run:
+            continue
+
+        data = extract_metadata_and_content(post)
+        if not data: continue
+
+        input_tokens = count_tokens(data['content'][:15000])
+        print(f"     ↳ Input Tokens: {input_tokens} ... ", end='', flush=True)
+
+        context_json, duration = generate_context_json(data, input_tokens)
+        
+        if context_json:
+            json_path = context_dir / f"{post.stem}.json"
+            with open(json_path, 'w', encoding='utf-8') as f:
+                json.dump(context_json, f, separators=(',', ':'))
+            
+            print(f"✅ Saved ({duration:.2f}s)")
+            processed_count += 1
+            time.sleep(SAFETY_SLEEP_SECONDS)
+        else:
+            print("❌ Failed / Quota Exceeded.")
+            # If we failed (likely quota), we stop this batch early
+            break
+
+    return processed_count
+
+def main():
+    parser = argparse.ArgumentParser(description="Generate AI context JSONs with multi-key rotation.")
+    parser.add_argument('--limit', type=int, default=20, help="Max items per key batch")
+    parser.add_argument('--force', action='store_true', help="Overwrite existing context files")
+    parser.add_argument('--dry-run', action='store_true', help="Show what would happen")
+    parser.add_argument('-k', '--key', type=str, default="default", help="Single key mode (default: 'default')")
+    parser.add_argument('-m', '--keys', type=str, help="Multi-key mode: Comma-separated list of keys (e.g., 'c1,c2,c3')")
     
     args = parser.parse_args()
 
@@ -210,79 +243,53 @@ def main():
     if not args.dry_run:
         context_dir.mkdir(exist_ok=True)
 
-    if not args.dry_run:
-        # Load the specific key requested via CLI
-        api_key = get_api_key(args.key)
-        if not api_key: return
-        genai.configure(api_key=api_key)
-        print(f"🔑 Using API Key: '{args.key}'")
+    # Key Strategy Selection
+    keys_queue = []
+    keys_dict = load_keys_dict()
 
+    if args.keys:
+        # Multi-key Mode
+        requested_keys = [k.strip() for k in args.keys.split(',')]
+        for k in requested_keys:
+            val = get_api_key(k, keys_dict) # Ensures interactive prompt if missing
+            keys_queue.append((k, val))
+        print(f"🔄 Multi-Key Rotation Enabled: {len(keys_queue)} keys loaded.")
+    else:
+        # Single Key Mode
+        val = get_api_key(args.key, keys_dict)
+        keys_queue.append((args.key, val))
+
+    # File Discovery
     all_posts = sorted(list(posts_dir.glob("*.md")), reverse=True)
     to_process = []
 
     print(f"\n🔍 Scanning {posts_dir}...")
-    
     for post in all_posts:
         json_path = context_dir / f"{post.stem}.json"
-        
         if not json_path.exists() or args.force:
             to_process.append(post)
 
-    print(f"Found {len(all_posts)} articles.")
-    print(f"📝 {len(to_process)} articles need context generation.")
+    print(f"📝 {len(to_process)} articles need context.")
     
-    if args.limit and len(to_process) > args.limit:
-        print(f"⚠️ Limiting processing to first {args.limit} items.")
-        to_process = to_process[:args.limit]
-
-    if not to_process:
-        print("✅ All caught up! No new context to generate.")
-        return
-
-    print(f"\n🚀 Starting Contextualization using {MODEL_NAME}...")
-    print(f"ℹ️  Pacing: ~{SAFETY_SLEEP_SECONDS}s per item to stay under RPM limit.")
+    total_processed = 0
     
-    count = 0
-    batch_start_time = time.time()
-
-    for post in to_process:
-        count += 1
-        elapsed = time.time() - batch_start_time
-        # Simple ETA calculation
-        avg_time = elapsed / count
-        remaining = (len(to_process) - count) * avg_time
-        eta_min = int(remaining // 60)
-        
-        print(f"[{count}/{len(to_process)}] (ETA: {eta_min}m) Processing: {post.name}...")
-        
-        if args.dry_run:
-            continue
-
-        data = extract_metadata_and_content(post)
-        if not data: continue
-
-        # Calculate Tokens BEFORE sending
-        input_tokens = count_tokens(data['content'][:15000])
-        
-        # Log Start
-        print(f"  ↳ Input Tokens: {input_tokens} ... ", end='', flush=True)
-
-        context_json, duration = generate_context_json(data, input_tokens)
-        
-        if context_json:
-            json_path = context_dir / f"{post.stem}.json"
-            with open(json_path, 'w', encoding='utf-8') as f:
-                json.dump(context_json, f, separators=(',', ':'))
+    # --- OUTER LOOP: KEY ROTATION ---
+    for key_name, api_key in keys_queue:
+        if not to_process:
+            break
             
-            print(f"✅ Saved ({duration:.2f}s)")
-            
-            # THE SAFETY SLEEP
-            time.sleep(SAFETY_SLEEP_SECONDS)
-        else:
-            print("  ❌ Failed.")
-            time.sleep(2)
-
-    print("\n✨ Batch complete.")
+        # Slice off the next batch
+        batch_size = args.limit # In multi-mode, limit applies per key
+        current_batch = to_process[:batch_size]
+        to_process = to_process[batch_size:] # Remove them from the queue
+        
+        count = process_batch(current_batch, key_name, api_key, context_dir, args.dry_run)
+        total_processed += count
+        
+        if count < len(current_batch):
+            print(f"⚠️ Key '{key_name}' exhausted early. Switching...")
+    
+    print(f"\n✨ Grand Total: {total_processed} articles processed across {len(keys_queue)} keys.")
 
 if __name__ == "__main__":
     main()
