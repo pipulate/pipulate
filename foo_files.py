@@ -1,7 +1,15 @@
 AI_PHOOEY_CHOP = """\
-# Planning the SEMRush export to help with hierarchy
-scripts/d3js/web-scraping_ai_seo_bulk_us_2025-12-14_10-55-37.csv
 scripts/d3js/build_hierarchy.py
+scripts/d3js/generate_semrush_candidates.py
+scripts/d3js/ideal_hierarchy_master_real.html
+scripts/d3js/semrush_candidates.txt
+scripts/d3js/web-scraping_ai_seo_bulk_us_2025-12-14_10-55-37.csv
+scripts/d3js/graph.json
+scripts/gsc/generate_categories.py
+scripts/gsc/gsc_category_analysis.py
+scripts/gsc/gsc_keyworder.py
+scripts/gsc/gsc_page_query.ipynb
+scripts/gsc/gsc_top_movers.py
 """
 
 ## > We've got content, it's groovy context  
@@ -16,7 +24,11 @@ scripts/d3js/build_hierarchy.py
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
 
-## Showing AI about existing Jekyll site
+# # Planning the SEMRush export to help with hierarchy
+# scripts/d3js/web-scraping_ai_seo_bulk_us_2025-12-14_10-55-37.csv
+# scripts/d3js/build_hierarchy.py
+
+# # Showing AI about existing Jekyll site
 # /home/mike/repos/pipulate/scripts/d3js/build_hierarchy.py
 # /home/mike/repos/MikeLev.in/_config.yml
 # /home/mike/repos/MikeLev.in/flake.nix
@@ -26,7 +38,7 @@ scripts/d3js/build_hierarchy.py
 
 # /home/mike/repos/pipulate/scripts/d3js/graph.json
 # /home/mike/repos/pipulate/scripts/d3js/ideal_hierarchy_master_real.html
-## Holographic Article Shards For Paintbrush
+# # Holographic Article Shards For Paintbrush
 # /home/mike/repos/MikeLev.in/_posts/_context/2025-12-01-the-vibrating-edge-singleton-to-sovereign.json
 # /home/mike/repos/MikeLev.in/_posts/_context/2025-12-02-wright-brothers-ai-on-rails.json
 # /home/mike/repos/MikeLev.in/_posts/_context/2025-12-03-behavioral-moat-vibe-to-verification.json
@@ -58,7 +70,7 @@ scripts/d3js/build_hierarchy.py
 # /home/mike/repos/MikeLev.in/_posts/_context/2025-12-13-gemini-api-key-rotation-scalable-ai-web-navigation.json
 # /home/mike/repos/MikeLev.in/_posts/_context/2025-12-13-the-stateless-blueprint-architecting-your-forever-machine-with-nix-and-jekyll.json
 
-## Painting the picture of how I paint pictures
+# # Painting the picture of how I paint pictures
 # scripts/articles/articleizer.py
 # scripts/articles/editing_prompt.txt
 # scripts/articles/contextualizer.py
@@ -67,11 +79,11 @@ scripts/d3js/build_hierarchy.py
 # assets/nbs/GAPalyzer.ipynb
 # assets/nbs/imports/gap_analyzer_sauce.py
 
-## Just made a Jekyll bare minimum Minima site
+# # Just made a Jekyll bare minimum Minima site
 # /home/mike/repos/trimnoir/_config.yml
 # /home/mike/repos/trimnoir/flake.nix
 
-## Showing the AI the "outer" NixOS hosting environment of the Pipulate author
+# # Showing the AI the "outer" NixOS hosting environment of the Pipulate author
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
 # /home/mike/repos/nixos/services.nix
@@ -79,17 +91,17 @@ scripts/d3js/build_hierarchy.py
 # /home/mike/repos/nixos/init.lua
 # /home/mike/repos/nixos/autognome.py
 
-## Implementing voice interruption
+# # Implementing voice interruption
 # pipulate/__init__.py
 # pipulate/pipulate.py
 # pipulate/core.py
 # imports/voice_synthesis.py
 # apps/010_introduction.py
 
-## Adding voice to homepage
+# # Adding voice to homepage
 # apps/015_backup_introduction.py
 
-## Working on one of the larger and more complex Notebook workflows still in the sausage factory
+# # Working on one of the larger and more complex Notebook workflows still in the sausage factory
 # pipulate/__init__.py
 # pipulate/pipulate.py
 # pipulate/core.py
@@ -98,11 +110,11 @@ scripts/d3js/build_hierarchy.py
 # assets/nbs/GAPalyzer.ipynb
 # assets/nbs/imports/gap_analyzer_sauce.py
 
-## Extending the articleizer methodology to a per-article summarizer and automatic mermaid diagram inserter
+# # Extending the articleizer methodology to a per-article summarizer and automatic mermaid diagram inserter
 # scripts/articles/contextualizer.py
 # scripts/articles/diagramizer.py
 
-## Using a selection of articles to check how well I'm doing with contextualizer
+# # Using a selection of articles to check how well I'm doing with contextualizer
 # /home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-forever-machine-digital-sovereignty-ai.json
 # /home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-pipulate-forever-machine-sovereignty-stack.json
 # /home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-the-technomancers-console-pipulate-and-the-art-of-digital-sovereignty.json
@@ -121,7 +133,7 @@ scripts/d3js/build_hierarchy.py
 # /home/mike/repos/MikeLev.in/_posts/2025-12-10-externalizing-notebook-logic-the-chisel-the-sauce-and-ai-context.json
 # /home/mike/repos/MikeLev.in/_posts/2025-12-10-zero-sum-attention-sovereign-tools-gapalyzer-hardening.json
 
-## Giving an example of how articleizer works to set context for AI help in writing contextualizer
+# # Giving an example of how articleizer works to set context for AI help in writing contextualizer
 # /home/mike/repos/MikeLev.in/_posts/2025-12-05-pipulate-dayton-moment-context-aware-ai-demo-test-automation.md
 # /home/mike/repos/MikeLev.in/_posts/2025-12-04-pipulate-forever-machine-sovereignty-stack.md
 # /home/mike/repos/MikeLev.in/_posts/2025-12-04-the-technomancers-console-pipulate-and-the-art-of-digital-sovereignty.md
@@ -872,29 +884,29 @@ scripts/d3js/build_hierarchy.py
 # Notebooks/prompt.txt
 # tools/__init__.py 
 
-## README.md
+# # README.md
 # /home/mike/repos/mikelev.in/_posts/2025-10-12-chisel-strike-nix-flake-jupyter-ai-collaboration.md
 # /home/mike/repos/MikeLev.in/_posts/2025-10-12-surgical-ai-context-narrative-time-machine.md
 # assets/installer/install.sh
 # flake.nix
 
-## RELEASE SYSTEM
+# # RELEASE SYSTEM
 # release.py
 
-## MAIN BACKUP
+# # MAIN BACKUP
 # imports/durable_backup_system.py
 
-## GRATUITOUS EVANGELIZING (AVOID)
+# # GRATUITOUS EVANGELIZING (AVOID)
 # README.md
 
-## PROMPT FU
+# # PROMPT FU
 # prompt_foo.py
 # foo_files.py
 # scripts/articles/list_articles.py
 # scripts/articles/instructions.json
 # scripts/articles/articleizer.py
 
-## INSTALL & INFRASTRUCTURE AS CODE
+# # INSTALL & INFRASTRUCTURE AS CODE
 # __init__.py
 # assets/installer/install.sh
 # pyproject.toml
@@ -902,26 +914,26 @@ scripts/d3js/build_hierarchy.py
 # requirements.in
 # requirements.txt
 
-## THE CORE APP
+# # THE CORE APP
 # server.py
 # config.py
 # assets/styles.css
 # imports/__init__.py
 
-## PIPULATE STATE MANAGER (The Magic Wand)
+# # PIPULATE STATE MANAGER (The Magic Wand)
 # pipulate/__init__.py
 # pipulate/core.py
 # pipulate/pipulate.py
 # apps/040_hello_workflow.py
 # assets/nbs/A_Hi_2_AI.ipynb
 
-## DRY OO APP PLUGINS
+# # DRY OO APP PLUGINS
 # imports/crud.py
 # apps/060_tasks.py
 # apps/030_roles.py
 # apps/020_profiles.py
 
-## AI ERGONOMICS & TOOL CALLING CORE
+# # AI ERGONOMICS & TOOL CALLING CORE
 # AI_RUNME.py
 # cli.py
 # tools/__init__.py 
@@ -930,23 +942,23 @@ scripts/d3js/build_hierarchy.py
 # imports/ai_tool_discovery_simple_parser.py
 # imports/mcp_orchestrator.py
 
-## CHIP O'THESEUS
+# # CHIP O'THESEUS
 # imports/ai_dictdb.py
 # imports/append_only_conversation.py
 # imports/voice_synthesis.py
 # ai_edit.py
 
-## RADICAL TRANSPARENCY
+# # RADICAL TRANSPARENCY
 # imports/server_logging.py
 # logs/server.log
 
-## ADVANCED TOOL CALLING
+# # ADVANCED TOOL CALLING
 # tools/conversation_tools.py
 # tools/keychain_tools.py
 # tools/mcp_tools.py
 # tools/botify_tools.py
 
-## ALL CUSTOM JAVASCRIPT
+# # ALL CUSTOM JAVASCRIPT
 # assets/init.js
 # assets/pipulate-init.js
 # assets/pipulate.js
@@ -954,14 +966,14 @@ scripts/d3js/build_hierarchy.py
 # assets/utils.js
 # assets/tests/demo.json
 
-## OTHER IMPORTS (SORT)
+# # OTHER IMPORTS (SORT)
 # imports/ascii_displays.py
 # imports/botify_code_generation.py
 # imports/__init__.py
 # imports/stream_orchestrator.py
 # imports/voice_synthesis.py
 
-## OTHER PLUGIN APPS
+# # OTHER PLUGIN APPS
 # apps/001_dom_visualizer.py
 # apps/010_introduction.py
 # apps/050_documentation.py
@@ -996,12 +1008,12 @@ scripts/d3js/build_hierarchy.py
 # apps/730_matplotlib.py
 # apps/810_webbrowser.py
 
-## CONFIGURATION.NIX
+# # CONFIGURATION.NIX
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/hardware-configuration.nix
 # /home/mike/repos/nixos/autognome.py
 
-## PREVIOUS CONTEXT DUMPS (PROBABLY DELETE BELOW THIS POINT)
+# # PREVIOUS CONTEXT DUMPS (PROBABLY DELETE BELOW THIS POINT)
 # requirements.in
 # requirements.txt
 # /home/mike/repos/MikeLev.in/_posts/2025-09-09-pip-freeze-nix-dependency-hell.md
@@ -1011,7 +1023,7 @@ scripts/d3js/build_hierarchy.py
 # /home/mike/repos/MikeLev.in/_posts/2025-10-08-forging-jupyter-master-template-dependency-hell.md
 # /home/mike/repos/MikeLev.in/_posts/2025-10-08-ai-vs-ai-debugging-saga.md
 
-## FINDING EYES
+# # FINDING EYES
 # tools/mcp_tools.py
 # imports/dom_processing/ai_dom_beautifier.py
 # README.md
@@ -1032,7 +1044,7 @@ scripts/d3js/build_hierarchy.py
 # imports/ai_tool_discovery_simple_parser.py
 # imports/mcp_orchestrator.py
 
-## THE WHOLE SHEBANG TEST FOR --context-only UML TOKEN COUNTS
+# # THE WHOLE SHEBANG TEST FOR --context-only UML TOKEN COUNTS
 # __init__.py
 # assets/installer/install.sh
 # pyproject.toml
@@ -1070,7 +1082,7 @@ scripts/d3js/build_hierarchy.py
 # tools/mcp_tools.py
 # tools/botify_tools.py
 
-## FIXING BROWSER AUTOMATION
+# # FIXING BROWSER AUTOMATION
 # apps/820_selenium.py
 # apps/440_browser_automation.py
 # Notebooks/Client_Work/faquilizer2/secretsauce.py
@@ -1084,7 +1096,7 @@ scripts/d3js/build_hierarchy.py
 # tools/system_tools.py
 # imports/stream_orchestrator.py
 
-## FINDING THE DOM VISUALIZERS
+# # FINDING THE DOM VISUALIZERS
 # apps/820_selenium.py
 # apps/440_browser_automation.py
 # Notebooks/Client_Work/faquilizer2/secretsauce.py
@@ -1102,27 +1114,27 @@ scripts/d3js/build_hierarchy.py
 # /imports/dom_processing/ai_dom_beautifier.py
 # apps/001_dom_visualizer.py
 
-## THE CONTINUING EYES SAGA
+# # THE CONTINUING EYES SAGA
 # pipulate/core.py
 # tools/scraper_tools.py
 # tools/dom_tools.py
 # Notebooks/Client_Work/faquilizer2/workflow_test.ipynb
 
-## EXPLORING __INIT__'s
+# # EXPLORING __INIT__'s
 # imports/database_safety_wrapper.py
 # release.py
 # __init__.py
 # imports/__init__.py
 # pipulate/__init__.py
 
-## GOT HIERARCHY DOM WORKING
+# # GOT HIERARCHY DOM WORKING
 # pipulate/core.py
 # tools/scraper_tools.py
 # tools/dom_tools.py
 # Notebooks/open_eyes.ipynb
 # Notebooks/Client_Work/faquilizer2/workflow_test.ipynb
 
-## NOTEBOOK EXPERIENCE
+# # NOTEBOOK EXPERIENCE
 # assets/installer/install.sh
 # flake.nix
 # __init__.py
@@ -1145,7 +1157,7 @@ scripts/d3js/build_hierarchy.py
 # Notebooks/Client_Work/faquilizer2/secretsauce.py
 # Notebooks/Client_Work/faquilizer2/workflow_test.ipynb
 
-## STEALTH
+# # STEALTH
 # README.md
 # assets/installer/install.sh
 # requirements.in
@@ -1180,7 +1192,7 @@ scripts/d3js/build_hierarchy.py
 ## opacity of the so-called web full stack that keeps you guessing, burning tokens
 ## on tool calling to establish context and always being accused of hallucinating.
 
-## CHAPTER 1: BOOTSTRAPPING THE FOREVER MACHINE
+# # CHAPTER 1: BOOTSTRAPPING THE FOREVER MACHINE
 # assets/installer/install.sh
 # prompt_foo.py
 # foo_files.py
@@ -1198,7 +1210,7 @@ scripts/d3js/build_hierarchy.py
 ## state manager Swiss Army Knife is available to both `from pipulate import pip`
 ## to help with porting Notebooks to Pipulate Web Apps.
 
-## CHAPTER 2: THE WIZARD & THE WAND
+# # CHAPTER 2: THE WIZARD & THE WAND
 # foo_files.py
 # pipulate/__init__.py
 # pipulate/pipulate.py
@@ -1216,7 +1228,7 @@ scripts/d3js/build_hierarchy.py
 ## anything able to connect to anything. But this should get you up to speed on the
 ## whole Chip O'Theseus Tamagotchi hermit crab thing. Have soul will travel!
 
-## CHAPTER 3: SPELL-CASTING, NOTEBOOKS & MEMORY
+# # CHAPTER 3: SPELL-CASTING, NOTEBOOKS & MEMORY
 # foo_files.py
 # tools/__init__.py 
 # tools/keychain_tools.py
@@ -1231,7 +1243,7 @@ scripts/d3js/build_hierarchy.py
 # Notebooks/imports/seo_gadget.py
 # tools/scraper_tools.py
 
-## CHAPTER 4: HELLO WORLD, TESTS, DEMOS & VIDEO (Oh My!)
+# # CHAPTER 4: HELLO WORLD, TESTS, DEMOS & VIDEO (Oh My!)
 # foo_files.py
 # assets/init.js
 # assets/pipulate.js
@@ -1256,7 +1268,7 @@ scripts/d3js/build_hierarchy.py
 ## slice-and-assemble. I'm not sure if the Simon stuff is still the best thing
 ## here. This will improve as we go.
 
-## CHAPTER 5: BIG WORKFLOWS (Refine this)
+# # CHAPTER 5: BIG WORKFLOWS (Refine this)
 # foo_files.py
 # apps/240_simon_mcp.py
 # apps/200_workflow_genesis.py
@@ -1264,7 +1276,7 @@ scripts/d3js/build_hierarchy.py
 # imports/botify_code_generation.py
 # apps/110_parameter_buster.py
 
-## CHAPTER 6: BIG NOTEBOOKS
+# # CHAPTER 6: BIG NOTEBOOKS
 # foo_files.py
 # pipulate/__init__.py
 # pipulate/pipulate.py
