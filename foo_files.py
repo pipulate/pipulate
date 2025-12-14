@@ -1,6 +1,6 @@
 AI_PHOOEY_CHOP = """\
 # Planning the SEMRush export to help with hierarchy
-scripts/d3js/python_linux_git_bulk_us_2025-12-14_10-21-26.csv
+scripts/d3js/web-scraping_ai_seo_bulk_us_2025-12-14_10-55-37.csv
 scripts/d3js/build_hierarchy.py
 """
 
