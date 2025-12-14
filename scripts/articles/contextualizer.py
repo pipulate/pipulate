@@ -158,10 +158,8 @@ def generate_context_json(article_data, token_count):
     }}
     """
 
-    model = genai.GenerativeModel(
-        MODEL_NAME,
-        generation_config={"response_mime_type": "application/json"}
-    )
+    # REVERT: Removed generation_config for compatibility with older SDKs
+    model = genai.GenerativeModel(MODEL_NAME)
     
     max_retries = 3
     attempt = 0
@@ -339,44 +337,13 @@ def main():
         # Slice off the next batch
         batch_size = args.limit # In multi-mode, limit applies per key
         current_batch = to_process[:batch_size]
-        
-        # NOTE: We do NOT remove them from to_process yet.
-        # process_batch will return how many were actually successful.
-        # We need to handle the case where we skip files.
-        
-        # Simplified logic: We iterate strictly by count. 
-        # If a file is skipped, it's "processed" in the sense that we are done with it.
-        # If a key dies (quota), those files need to be returned to the pool (or rather, not removed).
-        
-        # Actually, simpler: process_batch consumes the list. 
-        # If it returns early due to quota, we need to know where it stopped.
-        # But `process_batch` consumes the iterator. 
-        
-        # Let's trust the "batch slice" approach:
-        # The key takes 20 items. It tries to do them. 
-        # If it hits quota on item 5, it stops. 15 are left undone.
-        # But our simple slice `to_process = to_process[batch_size:]` blindly assumes success.
-        
-        # FIX: We shouldn't slice blindly. 
-        # But for this script, let's keep it simple: 
-        # If a key dies, we just pick up next time. 
-        # But to be robust:
-        
-        # We will pass the slice. The function returns how many were *attempted* (success or skip).
-        # If it stops early (Quota), we add the remainder back to the front? 
-        # Or just let the next key pick up the next batch?
-        
-        # Let's keep the user's logic: slice it off. If it fails, those files are skipped for this run.
-        # (The user can re-run the script to catch them).
-        
-        to_process = to_process[batch_size:] 
+        to_process = to_process[batch_size:] # Remove them from the queue
         
         count = process_batch(current_batch, key_name, api_key, context_dir, args.dry_run)
         total_processed += count
         
-        # If we hit quota (indicated by count < len(batch) AND not just skips),
-        # strictly speaking we should probably stop using this key.
-        # The function `process_batch` handles the break.
+        if count < len(current_batch):
+            print(f"⚠️ Key '{key_name}' exhausted early. Switching...")
     
     print(f"\n✨ Grand Total: {total_processed} articles processed across {len(keys_queue)} keys.")
 

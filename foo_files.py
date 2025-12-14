@@ -1,5 +1,16 @@
 AI_PHOOEY_CHOP = """\
+foo_files.py
+prompt_foo.py
 scripts/articles/contextualizer.py
+/home/mike/repos/MikeLev.in/_posts/_context/2025-12-11-the-ai-blueprint-intelligence-architecture-and-practical-application.json
+/home/mike/repos/MikeLev.in/_posts/_context/2025-12-11-the-forever-machine-reclaiming-digital-sovereignty-local-ai.json
+/home/mike/repos/MikeLev.in/_posts/_context/2025-12-12-chip-otheseus-digital-sovereignty-forever-machine-voice.json
+/home/mike/repos/MikeLev.in/_posts/_context/2025-12-12-the-center-holds-forever-actualizer-machine.json
+/home/mike/repos/MikeLev.in/_posts/_context/2025-12-13-automating-content-hierarchy-visualization-ai-d3js.json
+/home/mike/repos/MikeLev.in/_posts/_context/2025-12-13-crafting-ai-driven-web-hierarchy-d3-rule-of-7.json
+/home/mike/repos/MikeLev.in/_posts/_context/2025-12-13-forever-actualizer-machine-sovereign-ai-llm-self-aware-prompts.json
+/home/mike/repos/MikeLev.in/_posts/_context/2025-12-13-gemini-api-key-rotation-scalable-ai-web-navigation.json
+/home/mike/repos/MikeLev.in/_posts/_context/2025-12-13-the-stateless-blueprint-architecting-your-forever-machine-with-nix-and-jekyll.json
 """
 
 ## > We've got content, it's groovy context  
