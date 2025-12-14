@@ -7,6 +7,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import MiniBatchKMeans
 from sklearn.decomposition import TruncatedSVD
 from collections import Counter
+import warnings
+
+# Silence the specific warning if copy usage is correct logic-wise
+warnings.filterwarnings('ignore', category=pd.errors.SettingWithCopyWarning)
 
 # --- CONFIGURATION ---
 CONTEXT_DIR = Path("/home/mike/repos/MikeLev.in/_posts/_context")  # Adjust path to your context folder
@@ -58,10 +62,12 @@ def get_cluster_label(df_cluster):
     counts = Counter(all_keywords)
     return counts.most_common(1)[0][0]
 
-def recursive_cluster(df, parent_id, current_depth, nodes, links, vectorizer=None):
+def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, vectorizer=None):
     """
     The Recursive Mitosis engine. Splits groups until they fit the Rule of 7.
     """
+    # Explicit copy to avoid SettingWithCopyWarning
+    df = df_slice.copy()
     
     # --- STOP CONDITION ---
     # If the group is small enough, these are just articles on a page.
@@ -110,7 +116,7 @@ def recursive_cluster(df, parent_id, current_depth, nodes, links, vectorizer=Non
             batch_size=256
         )
         clusters = kmeans.fit_predict(matrix)
-        df['cluster'] = clusters
+        df.loc[:, 'cluster'] = clusters # Safe assignment
         
         # --- RECURSION ---
         for cluster_id in range(TARGET_BRANCHING_FACTOR):
@@ -202,9 +208,7 @@ def main():
     print(f"✅ Hierarchy generated: {len(nodes)} nodes, {len(links)} links.")
     print(f"💾 Saved to {OUTPUT_FILE}")
     
-    # 5. Inject into HTML (Optional utility)
-    # This reads your existing ideal_hierarchy_master.html and replaces the 
-    # rawGraph variable with the real data.
+    # 5. Inject into HTML (Safe Replacement Method)
     try:
         html_path = Path("ideal_hierarchy_master.html")
         if html_path.exists():
@@ -212,20 +216,26 @@ def main():
             with open(html_path, 'r', encoding='utf-8') as f:
                 content = f.read()
             
-            # Regex replacement for the const rawGraph = {...}; line
-            # This assumes the format used in your ideal.py output
+            # Find the placeholder using regex, but perform replacement using string slicing
+            # or simple string replacement if unique enough.
+            # Here we use regex to FIND the span, but manual string reconstruction
+            # to avoid regex substitution issues with backslashes.
             import re
             json_str = json.dumps(output_data)
-            new_content = re.sub(
-                r'const rawGraph = \{.*?\};', 
-                f'const rawGraph = {json_str};', 
-                content, 
-                flags=re.DOTALL
-            )
             
-            with open("ideal_hierarchy_master_real.html", 'w', encoding='utf-8') as f:
-                f.write(new_content)
-            print("✅ Created 'ideal_hierarchy_master_real.html' with live data.")
+            # Look for: const rawGraph = { ... };
+            match = re.search(r'const rawGraph = \{.*?\};', content, flags=re.DOTALL)
+            
+            if match:
+                start, end = match.span()
+                new_content = content[:start] + f'const rawGraph = {json_str};' + content[end:]
+                
+                with open("ideal_hierarchy_master_real.html", 'w', encoding='utf-8') as f:
+                    f.write(new_content)
+                print("✅ Created 'ideal_hierarchy_master_real.html' with live data.")
+            else:
+                print("⚠️ Could not find 'const rawGraph = {...};' placeholder in HTML file.")
+                
     except Exception as e:
         print(f"⚠️ HTML Injection failed: {e}")
 

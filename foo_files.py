@@ -1,34 +1,7 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-01-the-vibrating-edge-singleton-to-sovereign.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-02-wright-brothers-ai-on-rails.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-03-behavioral-moat-vibe-to-verification.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-forever-machine-digital-sovereignty-ai.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-pipulate-forever-machine-sovereignty-stack.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-the-technomancers-console-pipulate-and-the-art-of-digital-sovereignty.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-05-building-the-ghost-driver-automated-self-testing-for-agentic-ai.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-05-pipulate-dayton-moment-context-aware-ai-demo-test-automation.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-05-pipulates-ghost-driver-ui-automation-beyond-chat-simulation.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-06-the-lisp-philosophy-computings-foundational-divide.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-07-forever-machine-sovereign-computing-ai-age.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-08-context-telemetry-mastering-ai-prompt-size-limits.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-08-pipulates-ghost-driver-causal-fidelity-ai-test-automation.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-09-context-king-blueprint-local-ai-operating-system.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-09-the-codebase-as-a-book-architecting-ai-ready-narrative-context.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-10-context-saturation-semantic-compression-fractal-blog-navigation.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-10-externalizing-notebook-logic-the-chisel-the-sauce-and-ai-context.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-10-the-ai-ready-web-building-landing-strips-for-intelligent-agents.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-10-zero-sum-attention-sovereign-tools-gapalyzer-hardening.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-11-architects-pivot-file-backed-state-scalable-data-analysis.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-11-cracking-google-gemini-hidden-20-rpd-free-tier-limit-python.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-11-the-ai-blueprint-intelligence-architecture-and-practical-application.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-11-the-forever-machine-reclaiming-digital-sovereignty-local-ai.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-12-chip-otheseus-digital-sovereignty-forever-machine-voice.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-12-the-center-holds-forever-actualizer-machine.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-13-automating-content-hierarchy-visualization-ai-d3js.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-13-crafting-ai-driven-web-hierarchy-d3-rule-of-7.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-13-forever-actualizer-machine-sovereign-ai-llm-self-aware-prompts.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-13-gemini-api-key-rotation-scalable-ai-web-navigation.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-13-the-stateless-blueprint-architecting-your-forever-machine-with-nix-and-jekyll.json
+# Planning the SEMRush export to help with hierarchy
+scripts/d3js/python_linux_git_bulk_us_2025-12-14_10-21-26.csv
+scripts/d3js/build_hierarchy.py
 """
 
 ## > We've got content, it's groovy context  
@@ -42,6 +15,48 @@ AI_PHOOEY_CHOP = """\
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+## Showing AI about existing Jekyll site
+# /home/mike/repos/pipulate/scripts/d3js/build_hierarchy.py
+# /home/mike/repos/MikeLev.in/_config.yml
+# /home/mike/repos/MikeLev.in/flake.nix
+# /home/mike/repos/MikeLev.in/index.md
+# /home/mike/repos/MikeLev.in/_layouts/default.html
+# /home/mike/repos/MikeLev.in/_layouts/post.html
+
+# /home/mike/repos/pipulate/scripts/d3js/graph.json
+# /home/mike/repos/pipulate/scripts/d3js/ideal_hierarchy_master_real.html
+## Holographic Article Shards For Paintbrush
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-01-the-vibrating-edge-singleton-to-sovereign.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-02-wright-brothers-ai-on-rails.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-03-behavioral-moat-vibe-to-verification.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-forever-machine-digital-sovereignty-ai.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-pipulate-forever-machine-sovereignty-stack.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-04-the-technomancers-console-pipulate-and-the-art-of-digital-sovereignty.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-05-building-the-ghost-driver-automated-self-testing-for-agentic-ai.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-05-pipulate-dayton-moment-context-aware-ai-demo-test-automation.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-05-pipulates-ghost-driver-ui-automation-beyond-chat-simulation.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-06-the-lisp-philosophy-computings-foundational-divide.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-07-forever-machine-sovereign-computing-ai-age.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-08-context-telemetry-mastering-ai-prompt-size-limits.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-08-pipulates-ghost-driver-causal-fidelity-ai-test-automation.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-09-context-king-blueprint-local-ai-operating-system.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-09-the-codebase-as-a-book-architecting-ai-ready-narrative-context.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-10-context-saturation-semantic-compression-fractal-blog-navigation.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-10-externalizing-notebook-logic-the-chisel-the-sauce-and-ai-context.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-10-the-ai-ready-web-building-landing-strips-for-intelligent-agents.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-10-zero-sum-attention-sovereign-tools-gapalyzer-hardening.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-11-architects-pivot-file-backed-state-scalable-data-analysis.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-11-cracking-google-gemini-hidden-20-rpd-free-tier-limit-python.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-11-the-ai-blueprint-intelligence-architecture-and-practical-application.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-11-the-forever-machine-reclaiming-digital-sovereignty-local-ai.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-12-chip-otheseus-digital-sovereignty-forever-machine-voice.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-12-the-center-holds-forever-actualizer-machine.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-13-automating-content-hierarchy-visualization-ai-d3js.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-13-crafting-ai-driven-web-hierarchy-d3-rule-of-7.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-13-forever-actualizer-machine-sovereign-ai-llm-self-aware-prompts.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-13-gemini-api-key-rotation-scalable-ai-web-navigation.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-13-the-stateless-blueprint-architecting-your-forever-machine-with-nix-and-jekyll.json
 
 ## Painting the picture of how I paint pictures
 # scripts/articles/articleizer.py
