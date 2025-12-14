@@ -19,7 +19,7 @@ from googleapiclient.discovery import build
 # --- CONFIGURATION ---
 SITE_URL = "sc-domain:mikelev.in" # Update if needed
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-SERVICE_ACCOUNT_KEY_FILE = os.path.join(SCRIPT_DIR, 'service-account-key.json')
+SERVICE_ACCOUNT_KEY_FILE = os.path.join('/home/mike/.config/articleizer/service-account-key.json')
 OUTPUT_FILE = os.path.join(SCRIPT_DIR, '../d3js/gsc_velocity.json')
 
 # The date of the "Crash" to pivot analysis around

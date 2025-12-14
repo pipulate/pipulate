@@ -57,8 +57,6 @@ def load_shards(directory):
 
 def load_market_data(directory=Path(".")):
     """Loads SEMRush/GSC CSV data for gravity weighting."""
-    # Look for files matching the pattern in the current directory
-    # This handles both relative execution and direct script location if needed
     if not directory.exists():
         directory = Path(__file__).parent
 
@@ -67,7 +65,6 @@ def load_market_data(directory=Path(".")):
         print("ℹ️ No market data (CSV) found. Graph will be unweighted.")
         return {}
     
-    # Pick the newest file
     latest_file = max(files, key=lambda f: f.stat().st_mtime)
     print(f"💰 Loading market gravity from: {latest_file.name}")
     
@@ -75,9 +72,7 @@ def load_market_data(directory=Path(".")):
         df = pd.read_csv(latest_file)
         market_map = {}
         for _, row in df.iterrows():
-            # Clean keyword: lowercase, strip
             kw = str(row['Keyword']).lower().strip()
-            # Handle volume being a string with commas? Usually pandas handles int, but careful
             try:
                 vol = int(row['Volume'])
             except:
@@ -88,31 +83,50 @@ def load_market_data(directory=Path(".")):
         print(f"⚠️ Error loading market data: {e}")
         return {}
 
+def load_velocity_data(directory=Path(".")):
+    """Loads GSC velocity/health data."""
+    if not directory.exists():
+        directory = Path(__file__).parent
+        
+    velocity_file = directory / "gsc_velocity.json"
+    if not velocity_file.exists():
+        print("ℹ️ No GSC velocity data found. Graph will not show health status.")
+        return {}
+        
+    print(f"❤️ Loading health velocity from: {velocity_file.name}")
+    
+    try:
+        with open(velocity_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            
+        # Create a map of slug -> health_data
+        # GSC URLs might be "https://mikelev.in/foo/bar/" -> slug "bar"
+        # Shard IDs might be "2025-10-10-bar" -> slug "bar"
+        slug_map = {}
+        for url, metrics in data.items():
+            # Strip trailing slash and get last segment
+            slug = url.strip('/').split('/')[-1]
+            slug_map[slug] = metrics
+            
+        return slug_map
+    except Exception as e:
+        print(f"⚠️ Error loading velocity data: {e}")
+        return {}
+
 def get_cluster_label(df_cluster, market_data=None):
-    """
-    Determines the name of a Hub.
-    Uses frequency count, but breaks ties with Market Volume if available.
-    """
+    """Determines the name of a Hub."""
     all_keywords = [kw for sublist in df_cluster['keywords'] for kw in sublist]
     if not all_keywords:
         return "Misc"
     
-    # Count frequency
     counts = Counter(all_keywords)
-    
-    # Get top 5 candidates by internal frequency
     candidates = counts.most_common(5)
     
-    # If we have market data, weigh the candidates by volume
-    # This ensures we pick "Python" (High Vol) over "MyScript" (Low Vol) 
-    # even if "MyScript" appears slightly more often in the cluster.
     if market_data:
         best_kw = candidates[0][0]
         best_score = -1
         
         for kw, freq in candidates:
-            # Score = Frequency * log(Volume + 1)
-            # This favors high volume but requires the word to actually appear often
             vol = market_data.get(kw.lower().strip(), 0)
             score = freq * np.log1p(vol)
             
@@ -136,34 +150,37 @@ def calculate_gravity(keywords, market_data):
             max_vol = vol
             
     if max_vol > 0:
-        # Logarithmic scale: 
-        # 100 search vol -> +4.6 px
-        # 1000 search vol -> +6.9 px
-        # 100k search vol -> +11.5 px
         return np.log1p(max_vol)
     return 0
 
-def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, market_data, vectorizer=None):
-    """
-    The Recursive Mitosis engine. Splits groups until they fit the Rule of 7.
-    """
-    # Explicit copy to avoid SettingWithCopyWarning
+def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, market_data, velocity_data, vectorizer=None):
+    """The Recursive Mitosis engine."""
     df = df_slice.copy()
     
     # --- STOP CONDITION ---
-    if len(df) <= TARGET_BRANCHING_FACTOR + 2: # Fuzzy tolerance
+    if len(df) <= TARGET_BRANCHING_FACTOR + 2:
         for _, row in df.iterrows():
-            # Calculate Article Gravity
+            # Gravity
             gravity_boost = calculate_gravity(row['keywords'], market_data)
             
-            nodes.append({
+            # Health/Velocity
+            # Extract slug from ID (remove YYYY-MM-DD- prefix)
+            slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', row['id'])
+            health = velocity_data.get(slug, {})
+            
+            node = {
                 "id": row['id'],
                 "group": "article",
                 "depth": current_depth,
                 "label": row['label'],
-                "val": 5 + gravity_boost, # Base size 5 + market boost
-                "parentId": parent_id
-            })
+                "val": 5 + gravity_boost,
+                "parentId": parent_id,
+                # Inject Health Data
+                "status": health.get("status", "unknown"),
+                "velocity": health.get("velocity", 0),
+                "clicks": health.get("total_clicks", 0)
+            }
+            nodes.append(node)
             links.append({
                 "source": parent_id,
                 "target": row['id'],
@@ -171,14 +188,13 @@ def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, market_d
             })
         return
 
-    # --- VECTORIZATION ---
+    # --- VECTORIZATION & CLUSTERING ---
     if vectorizer is None:
         vectorizer = TfidfVectorizer(stop_words='english', max_features=1000)
     
     try:
         tfidf_matrix = vectorizer.fit_transform(df['soup'])
         
-        # SVD for dimensionality reduction
         n_components = min(5, len(df) - 1) 
         if n_components > 1:
             svd = TruncatedSVD(n_components=n_components)
@@ -186,7 +202,6 @@ def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, market_d
         else:
             matrix = tfidf_matrix
 
-        # --- CLUSTERING ---
         kmeans = MiniBatchKMeans(
             n_clusters=TARGET_BRANCHING_FACTOR,
             random_state=42,
@@ -203,17 +218,15 @@ def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, market_d
             if len(cluster_data) == 0:
                 continue
             
-            # Label the Hub
             hub_label = get_cluster_label(cluster_data, market_data)
             new_hub_id = f"{parent_id}_{cluster_id}"
             
-            # Calculate Hub Gravity (Boost if label is high volume)
             hub_base_val = max(10, 40 - (current_depth * 10))
             hub_gravity = 0
             if market_data:
                  vol = market_data.get(hub_label.lower().strip(), 0)
                  if vol > 0:
-                     hub_gravity = np.log1p(vol) * 1.5 # Slight multiplier for hubs
+                     hub_gravity = np.log1p(vol) * 1.5
             
             nodes.append({
                 "id": new_hub_id,
@@ -221,7 +234,8 @@ def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, market_d
                 "depth": current_depth + 1,
                 "label": hub_label,
                 "val": hub_base_val + hub_gravity,
-                "parentId": parent_id
+                "parentId": parent_id,
+                "status": "hub" # Hubs are neutral
             })
             
             links.append({
@@ -230,28 +244,33 @@ def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, market_d
                 "type": "hub_link"
             })
             
-            # Recurse
             recursive_cluster(
                 cluster_data, 
                 new_hub_id, 
                 current_depth + 1, 
                 nodes, 
                 links,
-                market_data
+                market_data,
+                velocity_data
             )
             
     except ValueError as e:
         print(f"⚠️ Clustering fallback at depth {current_depth}: {e}")
-        # Fallback: Just dump as articles
         for _, row in df.iterrows():
             gravity_boost = calculate_gravity(row['keywords'], market_data)
+            slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', row['id'])
+            health = velocity_data.get(slug, {})
+            
             nodes.append({
                 "id": row['id'],
                 "group": "article",
                 "depth": current_depth,
                 "label": row['label'],
                 "val": 5 + gravity_boost,
-                "parentId": parent_id
+                "parentId": parent_id,
+                "status": health.get("status", "unknown"),
+                "velocity": health.get("velocity", 0),
+                "clicks": health.get("total_clicks", 0)
             })
             links.append({
                 "source": parent_id,
@@ -262,40 +281,37 @@ def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, market_d
 def main():
     print("🚀 Initializing Hierarchy Builder...")
     
-    # 1. Load Data
     df = load_shards(CONTEXT_DIR)
     if df.empty:
         print("❌ No data found. Check CONTEXT_DIR path.")
         return
         
-    # 2. Load Market Data (Optional)
     market_data = load_market_data()
+    velocity_data = load_velocity_data() # Load GSC Velocity
 
-    # 3. Prepare Root
     nodes = [{
         "id": "hub_0",
         "group": "root",
         "depth": 0,
         "label": "HOME",
         "val": 50,
-        "parentId": None 
+        "parentId": None,
+        "status": "root"
     }]
     links = []
 
-    # 4. Start Recursive Cloning
     print(f"🧠 Clustering {len(df)} articles using Rule of {TARGET_BRANCHING_FACTOR}...")
-    recursive_cluster(df, "hub_0", 0, nodes, links, market_data)
+    recursive_cluster(df, "hub_0", 0, nodes, links, market_data, velocity_data)
 
-    # 5. Export
     output_data = {"nodes": nodes, "links": links}
     
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-        json.dump(output_data, f, indent=None) # Compact JSON
+        json.dump(output_data, f, indent=None)
         
     print(f"✅ Hierarchy generated: {len(nodes)} nodes, {len(links)} links.")
     print(f"💾 Saved to {OUTPUT_FILE}")
     
-    # 6. Inject into HTML 
+    # Inject into HTML
     try:
         html_path = Path("ideal_hierarchy_master.html")
         if html_path.exists():
@@ -303,9 +319,7 @@ def main():
             with open(html_path, 'r', encoding='utf-8') as f:
                 content = f.read()
             
-            import re
             json_str = json.dumps(output_data)
-            
             match = re.search(r'const rawGraph = \{.*?\};', content, flags=re.DOTALL)
             
             if match:

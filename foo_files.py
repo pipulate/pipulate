@@ -1,15 +1,25 @@
 AI_PHOOEY_CHOP = """\
-scripts/d3js/build_hierarchy.py
-scripts/d3js/generate_semrush_candidates.py
-scripts/d3js/ideal_hierarchy_master_real.html
-scripts/d3js/semrush_candidates.txt
-scripts/d3js/web-scraping_ai_seo_bulk_us_2025-12-14_10-55-37.csv
-scripts/d3js/graph.json
-scripts/gsc/generate_categories.py
-scripts/gsc/gsc_category_analysis.py
-scripts/gsc/gsc_keyworder.py
-scripts/gsc/gsc_page_query.ipynb
-scripts/gsc/gsc_top_movers.py
+# CHAPTER 2: THE WIZARD & THE WAND
+foo_files.py
+pipulate/__init__.py
+pipulate/pipulate.py
+pipulate/core.py
+cli.py
+scripts/articles/articleizer.py
+scripts/articles/editing_prompt.txt
+/home/mike/repos/MikeLev.in/flake.nix
+tools/__init__.py 
+tools/keychain_tools.py
+imports/__init__.py
+imports/ai_dictdb.py
+imports/durable_backup_system.py
+imports/server_logging.py
+imports/stream_orchestrator.py
+imports/mcp_orchestrator.py
+assets/nbs/URLinspector.ipynb
+assets/nbs/imports/url_inspect_sauce.py
+Notebooks/imports/seo_gadget.py
+tools/scraper_tools.py
 """
 
 ## > We've got content, it's groovy context  
@@ -23,6 +33,24 @@ scripts/gsc/gsc_top_movers.py
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# # GSC incorporated into link graph project
+# scripts/d3js/build_hierarchy.py
+# scripts/gsc/gsc_historical_fetch.py
+# scripts/d3js/gsc_velocity.json
+
+# # Finding my GSC API legs again
+# scripts/d3js/build_hierarchy.py
+# scripts/d3js/generate_semrush_candidates.py
+# scripts/d3js/ideal_hierarchy_master_real.html
+# scripts/d3js/semrush_candidates.txt
+# scripts/d3js/web-scraping_ai_seo_bulk_us_2025-12-14_10-55-37.csv
+# scripts/d3js/graph.json
+# scripts/gsc/generate_categories.py
+# scripts/gsc/gsc_category_analysis.py
+# scripts/gsc/gsc_keyworder.py
+# scripts/gsc/gsc_page_query.ipynb
+# scripts/gsc/gsc_top_movers.py
 
 # # Planning the SEMRush export to help with hierarchy
 # scripts/d3js/web-scraping_ai_seo_bulk_us_2025-12-14_10-55-37.csv
@@ -1198,6 +1226,7 @@ scripts/gsc/gsc_top_movers.py
 # foo_files.py
 # flake.nix
 # .gitignore
+# config.py
 # server.py
 # AI_RUNME.py
 # README.md
