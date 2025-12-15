@@ -4,13 +4,11 @@ from pathlib import Path
 import shutil
 
 # --- CONFIGURATION ---
-# Source Data (The Blueprint)
 NAVGRAPH_FILE = Path("navgraph.json")
-
-# Target Sandbox (The Construction Site)
-# We use _hubs to keep it organized, but Jekyll will treat them as pages
 TARGET_REPO = Path("/home/mike/repos/trimnoir")
-HUBS_DIR = TARGET_REPO / "_hubs"
+
+# 1. Change _hubs to pages so Jekyll sees them automatically
+HUBS_DIR = TARGET_REPO / "pages" 
 
 def clean_and_prep_dirs():
     """Ensures the target directory exists and is empty."""
@@ -24,14 +22,20 @@ def generate_hub_file(node):
     Creates a markdown file for a single hub node.
     Recurses to create children.
     """
-    # 1. Determine Filename (Flat structure on disk)
-    # e.g., hub_python.md or hub_root.md
     safe_id = node['id']
-    filename = f"{safe_id}.md"
-    filepath = HUBS_DIR / filename
+    
+    # --- SPECIAL HANDLING FOR ROOT ---
+    # If this is the root node, we overwrite the main index.md
+    if node.get('id') == 'root' or node.get('permalink') == '/':
+        filename = "index.md"
+        filepath = TARGET_REPO / filename
+        print(f"🏠 Overwriting Homepage: {filepath}")
+    else:
+        # Standard Hubs go into /pages/
+        filename = f"{safe_id}.md"
+        filepath = HUBS_DIR / filename
     
     # 2. Build Frontmatter
-    # We use the permalink from the JSON to define the URL structure
     frontmatter = f"""---
 layout: page
 title: "{node['title']}"
@@ -39,52 +43,63 @@ permalink: {node['permalink']}
 ---
 """
 
-    # 3. Build Body Content (The Drill-Down)
-    # Phase 1: Only links to Sub-Hubs
+    # 3. Build Body (The Drill-Down)
     body = f"# {node['title']}\n\n"
     
+    # Add Description/Blurb if available (from your articles)
+    if node.get('blurb'):
+        body += f"_{node['blurb']}_\n\n"
+    
+    # Render Sub-Hubs
     if node.get('children_hubs'):
         body += "## Explore Topics\n"
         for child in node['children_hubs']:
-            # Create a simple markdown link: [Title](Permalink)
             body += f"* [{child['title']}]({child['permalink']})\n"
-    else:
-        body += "*No sub-topics found.*\n"
+    
+    # Render Articles (The "Gold Pan" items)
+    if node.get('children_articles'):
+        body += "\n## Top Articles\n"
+        for article in node['children_articles']:
+            # Use the article's own permalink
+            body += f"* [{article['title']}]({article['permalink']})\n"
+            if 'date' in article:
+                body += f"  <small>{article['date']}</small>\n"
 
-    # (Placeholder for Articles - Phase 2)
-    # body += "\n## Articles\n..."
+    if not node.get('children_hubs') and not node.get('children_articles'):
+        body += "*No sub-topics found.*\n"
 
     # 4. Write File
     with open(filepath, 'w', encoding='utf-8') as f:
         f.write(frontmatter + body)
         
-    print(f"✅ Created: {filename} -> {node['permalink']}")
-
-    # 5. Recurse (Depth-First Creation)
+    # 5. Recurse
     for child in node.get('children_hubs', []):
         generate_hub_file(child)
 
 def main():
-    print("🚀 Starting Hub Generation...")
+    print("🚀 Starting Hub Generation v2...")
     
     if not NAVGRAPH_FILE.exists():
-        print(f"❌ Error: {NAVGRAPH_FILE} not found. Run build_navgraph.py first.")
+        print(f"❌ Error: {NAVGRAPH_FILE} not found.")
         return
 
-    # Load the blueprint
     with open(NAVGRAPH_FILE, 'r', encoding='utf-8') as f:
         nav_tree = json.load(f)
 
-    # Prepare the site
+    # Clean the pages directory
     clean_and_prep_dirs()
+    
+    # Nuke the old default index if it exists (Jekyll defaults to index.markdown sometimes)
+    old_index = TARGET_REPO / "index.markdown"
+    if old_index.exists():
+        os.remove(old_index)
+        print("🗑️  Removed default index.markdown")
 
-    # Start the recursive build from the root
-    # Note: 'nav_tree' is the root node itself in our JSON structure
     generate_hub_file(nav_tree)
 
     print(f"\n🎉 Generation Complete.")
-    print(f"📂 Check {HUBS_DIR} for your new hub pages.")
-    print("👉 Next Step: Run 'jes' (or 'jekyll serve') in the trimnoir repo.")
+    print(f"📂 Hubs are in {HUBS_DIR}")
+    print(f"🏠 Homepage is at {TARGET_REPO}/index.md")
 
 if __name__ == "__main__":
     main()
