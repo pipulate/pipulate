@@ -60,14 +60,17 @@ def load_enriched_shards():
                 (" ".join(data.get('kw', [])) + " ") * 2 + 
                 " ".join(data.get('sub', []))
             )
-            
+
             # 4. Build the Object
+            # FIX: Ensure date is a string (YAML parser might return datetime object)
+            date_val = post.metadata.get('date', data.get('d', ''))
+            
             shards.append({
                 "id": f.stem,
                 "title": post.metadata.get('title', data.get('t', 'Untitled')),
                 "permalink": post.metadata.get('permalink', f"/{f.stem}/"),
                 "description": post.metadata.get('description', data.get('s', '')),
-                "date": post.metadata.get('date', str(data.get('d', ''))),
+                "date": str(date_val), 
                 "soup": soup,
                 "keywords": data.get('kw', []) + data.get('sub', [])
             })
@@ -156,7 +159,8 @@ def calculate_gravity(row, market_data, velocity_data):
         gsc_clicks = velocity_data.get(slug, {}).get('total_clicks', 0)
 
     # Composite Score
-    return (np.log1p(max_vol) * 1.0) + (np.log1p(gsc_clicks) * 5.0)
+    # FIX: Cast to native float for JSON serialization
+    return float((np.log1p(max_vol) * 1.0) + (np.log1p(gsc_clicks) * 5.0))
 
 def build_tree_recursive(df_slice, current_depth, market_data, velocity_data, vectorizer=None, used_slugs=None):
     """
