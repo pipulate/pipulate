@@ -1,9 +1,5 @@
 AI_PHOOEY_CHOP = """\
-scripts/articles/article.txt
-scripts/articles/articleizer.py
-scripts/articles/editing_prompt.txt
-/home/mike/repos/MikeLev.in/_posts/2025-12-15-navigable-state-ai-intelligence.md
-scripts/articles/instructions.json
+/home/mike/repos/MikeLev.in/_posts/2025-12-15-ai-ready-web-navigation-caching.md
 """
 
 ## > We've got content, it's groovy context  
@@ -17,6 +13,13 @@ scripts/articles/instructions.json
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# # Fixing headline insertion logic
+# scripts/articles/article.txt
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
+# /home/mike/repos/MikeLev.in/_posts/2025-12-15-navigable-state-ai-intelligence.md
+# scripts/articles/instructions.json
 
 # # Refining link graph with Gold Pan plan
 # scripts/d3js/web-scraping_ai_seo_bulk_us_2025-12-14_10-55-37.csv

@@ -66,10 +66,13 @@ The JSON object must conform to the following schema:
     * keywords: Populate with the comma-separated meta_keywords string.  
   * **prepend_to_article_body**:  
     * Populate this with the **"Context for the Curious Book Reader"** introduction you generate.  
-  * **insert_subheadings**: This will be an array of objects.  
-    * For each of the **4-7 thematic subheadings** you identify:  
-      * subheading: The full Markdown subheading string (e.g., ## A Breakthrough with AI Collaboration).  
-      * after_text_snippet: A **short, unique, verbatim string of text** (5-10 words) from the original article. This snippet **must be an exact, character-for-character copy** of the text that immediately precedes where the subheading should be inserted. It should typically be the **end of a sentence or paragraph**. Do not add quotes, ellipses, or any other characters unless they are part of the original source text. This is critical for accuracy.  
+  * insert_subheadings: This will be an array of objects.
+      * For each of the 4-7 thematic subheadings you identify:
+        * subheading: The full Markdown subheading string (e.g., ## A Breakthrough with AI Collaboration).
+        * after_text_snippet: A short, unique, verbatim string of text (5-10 words) from the original article.
+          * CRITICAL PLACEMENT RULE: The headline will be inserted AFTER the paragraph containing this snippet.
+          * SELECTION RULE: Therefore, you must select words from the VERY END of the paragraph that precedes your desired headline location.
+          * VALIDATION: Ensure the snippet is followed by a double line-break (blank line) in the source text. Do NOT select words from the middle of a sentence or paragraph.
 * **book_analysis_content**: This top-level key contains all the valuable analysis that doesn't get edited into the file directly but is used for the book-writing process.  
   * authors_imprint: Populate with the first-person summary.  
   * title_brainstorm: Populate with the full list of your 3-5 title ideas, including rationales and filenames. Ensure the first entry is your preferred choice. Do not prepend the date on the filename (that happens automatically).  

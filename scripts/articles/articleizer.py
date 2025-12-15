@@ -147,9 +147,20 @@ def create_jekyll_post(article_content, instructions, output_dir):
 
         match = re.search(pattern_text, article_body, re.IGNORECASE | re.DOTALL)
         if match:
-            insertion_point = article_body.find('\n', match.end())
+            # SAFETY FIX: Force insertion to the nearest paragraph break (double newline).
+            # This prevents headlines from splitting sentences or paragraphs mid-stream.
+            match_end = match.end()
+            
+            # Find the next double newline starting from the end of the match
+            insertion_point = article_body.find('\n\n', match_end)
+            
+            # If no paragraph break is found (end of document), append to the very end.
             if insertion_point == -1:
                 insertion_point = len(article_body)
+            
+            # Insert the subheading surrounded by newlines.
+            # If insertion_point finds an existing '\n\n', this logic adds another '\n\n'
+            # effectively creating: [End of Para]\n\n[Subheading]\n\n[Start of Next Para]
             article_body = (
                 article_body[:insertion_point] +
                 f"\n\n{subheading}" +
