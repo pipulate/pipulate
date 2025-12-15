@@ -19,11 +19,14 @@ CONTEXT_DIR = Path("/home/mike/repos/MikeLev.in/_posts/_context")
 OUTPUT_FILE = "graph.json"
 TARGET_BRANCHING_FACTOR = 7  # The "Rule of 7" (Clusters)
 GOLD_PAN_SIZE = 5            # Number of "Top Articles" to keep at the Hub level
+MIN_CLUSTER_SIZE = 5         # Don't split if smaller than this (Restored!)
 
 def load_shards(directory):
     """Ingests the Holographic Shards (JSON context files)."""
     shards = []
+    # Handle relative path resolution if run from different dir
     if not directory.exists():
+         # Fallback try relative to this file
          directory = Path(__file__).parent / directory
     
     files = list(directory.glob("*.json"))
@@ -33,6 +36,8 @@ def load_shards(directory):
         try:
             with open(f, 'r', encoding='utf-8') as file:
                 data = json.load(file)
+                # Create a rich semantic soup for vectorization
+                # Weighting: Title (3x), Keywords (2x), Subtopics (1x)
                 soup = (
                     (data.get('t', '') + " ") * 3 + 
                     (" ".join(data.get('kw', [])) + " ") * 2 + 
@@ -43,7 +48,7 @@ def load_shards(directory):
                     "id": data.get('id', f.stem),
                     "label": data.get('t', 'Untitled'),
                     "soup": soup,
-                    "keywords": data.get('kw', []) + data.get('sub', []), 
+                    "keywords": data.get('kw', []) + data.get('sub', []), # For labeling
                     "type": "article"
                 })
         except Exception as e:
@@ -201,7 +206,6 @@ def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, market_d
 
     # --- 2. STOP CONDITION (Small Cluster) ---
     # If the group is small enough, dump everything as articles.
-    # We increase tolerance slightly to avoid creating a hub for just 8 items.
     if len(df) <= TARGET_BRANCHING_FACTOR + GOLD_PAN_SIZE: 
         append_article_nodes(df, parent_id, current_depth, nodes, links, market_data, velocity_data)
         return

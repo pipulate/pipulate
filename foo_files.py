@@ -1,5 +1,9 @@
 AI_PHOOEY_CHOP = """\
-scripts/d3js/build_hierarchy.py
+scripts/articles/article.txt
+scripts/articles/articleizer.py
+scripts/articles/editing_prompt.txt
+/home/mike/repos/MikeLev.in/_posts/2025-12-15-navigable-state-ai-intelligence.md
+scripts/articles/instructions.json
 """
 
 ## > We've got content, it's groovy context  
