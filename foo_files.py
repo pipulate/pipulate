@@ -1,25 +1,8 @@
 AI_PHOOEY_CHOP = """\
-# CHAPTER 2: THE WIZARD & THE WAND
-foo_files.py
-pipulate/__init__.py
-pipulate/pipulate.py
-pipulate/core.py
-cli.py
-scripts/articles/articleizer.py
-scripts/articles/editing_prompt.txt
-/home/mike/repos/MikeLev.in/flake.nix
-tools/__init__.py 
-tools/keychain_tools.py
-imports/__init__.py
-imports/ai_dictdb.py
-imports/durable_backup_system.py
-imports/server_logging.py
-imports/stream_orchestrator.py
-imports/mcp_orchestrator.py
-assets/nbs/URLinspector.ipynb
-assets/nbs/imports/url_inspect_sauce.py
-Notebooks/imports/seo_gadget.py
-tools/scraper_tools.py
+scripts/d3js/web-scraping_ai_seo_bulk_us_2025-12-14_10-55-37.csv
+scripts/d3js/gsc_velocity.json
+scripts/d3js/ideal_hierarchy_master_real.html
+scripts/d3js/build_hierarchy.py
 """
 
 ## > We've got content, it's groovy context  
@@ -1219,6 +1202,10 @@ tools/scraper_tools.py
 ## human Webmaster who can know it all and do it all. It's the solution to the
 ## opacity of the so-called web full stack that keeps you guessing, burning tokens
 ## on tool calling to establish context and always being accused of hallucinating.
+
+# # PREFACE: SOMETIMES JUST SHOWING HOW WE PAINT CONTEXT IS ENOUGH
+# prompt_foo.py
+# foo_files.py
 
 # # CHAPTER 1: BOOTSTRAPPING THE FOREVER MACHINE
 # assets/installer/install.sh
