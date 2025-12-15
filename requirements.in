@@ -12,6 +12,7 @@ requests-toolbelt
 markdownify
 pip-tools
 python-frontmatter
+google-api-python-client
 
 # GAPalyzer
 nltk

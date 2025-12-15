@@ -1,17 +1,5 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/trimnoir/_config.yml
-/home/mike/repos/trimnoir/flake.nix
-scripts/articles/contextualizer.py
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-14-semantic-clustering-rule-of-7-ai-friendly-site-hierarchy.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-15-ai-ready-web-navigation-caching.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-15-industrializing-intelligence-ai-content-pipelines.json
-/home/mike/repos/MikeLev.in/_posts/_context/2025-12-15-the-gold-pan-hybrid-hierarchies-ai.json
-scripts/d3js/build_hierarchy.py
-scripts/d3js/graph.json
-scripts/d3js/ideal_hierarchy_master_real.html
-scripts/d3js/generate_semrush_candidates.py
-scripts/d3js/web-scraping_ai_seo_bulk_us_2025-12-14_10-55-37.csv
-scripts/gsc/gsc_historical_fetch.py
+/home/mike/repos/MikeLev.in/_posts/2025-12-15-ai-ready-web-navigation-caching.md
 """
 
 ## > We've got content, it's groovy context  
@@ -25,6 +13,21 @@ scripts/gsc/gsc_historical_fetch.py
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# # Getting rid of gray boxes on link graph
+# /home/mike/repos/trimnoir/_config.yml
+# /home/mike/repos/trimnoir/flake.nix
+# scripts/articles/contextualizer.py
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-14-semantic-clustering-rule-of-7-ai-friendly-site-hierarchy.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-15-ai-ready-web-navigation-caching.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-15-industrializing-intelligence-ai-content-pipelines.json
+# /home/mike/repos/MikeLev.in/_posts/_context/2025-12-15-the-gold-pan-hybrid-hierarchies-ai.json
+# scripts/d3js/build_hierarchy.py
+# scripts/d3js/graph.json
+# scripts/d3js/ideal_hierarchy_master_real.html
+# scripts/d3js/generate_semrush_candidates.py
+# scripts/d3js/web-scraping_ai_seo_bulk_us_2025-12-14_10-55-37.csv
+# scripts/gsc/gsc_historical_fetch.py
 
 # # Fixing headline insertion logic
 # scripts/articles/article.txt
