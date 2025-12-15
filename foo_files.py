@@ -1,7 +1,4 @@
 AI_PHOOEY_CHOP = """\
-scripts/d3js/web-scraping_ai_seo_bulk_us_2025-12-14_10-55-37.csv
-scripts/d3js/gsc_velocity.json
-scripts/d3js/ideal_hierarchy_master_real.html
 scripts/d3js/build_hierarchy.py
 """
 
@@ -16,6 +13,12 @@ scripts/d3js/build_hierarchy.py
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# # Refining link graph with Gold Pan plan
+# scripts/d3js/web-scraping_ai_seo_bulk_us_2025-12-14_10-55-37.csv
+# scripts/d3js/gsc_velocity.json
+# scripts/d3js/ideal_hierarchy_master_real.html
+# scripts/d3js/build_hierarchy.py
 
 # # GSC incorporated into link graph project
 # scripts/d3js/build_hierarchy.py

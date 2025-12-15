@@ -17,15 +17,13 @@ warnings.filterwarnings('ignore', category=pd.errors.SettingWithCopyWarning)
 # Adjust path to your context folder relative to script execution location
 CONTEXT_DIR = Path("/home/mike/repos/MikeLev.in/_posts/_context") 
 OUTPUT_FILE = "graph.json"
-TARGET_BRANCHING_FACTOR = 7  # The "Rule of 7"
-MIN_CLUSTER_SIZE = 5         # Don't split if smaller than this
+TARGET_BRANCHING_FACTOR = 7  # The "Rule of 7" (Clusters)
+GOLD_PAN_SIZE = 5            # Number of "Top Articles" to keep at the Hub level
 
 def load_shards(directory):
     """Ingests the Holographic Shards (JSON context files)."""
     shards = []
-    # Handle relative path resolution if run from different dir
     if not directory.exists():
-         # Fallback try relative to this file
          directory = Path(__file__).parent / directory
     
     files = list(directory.glob("*.json"))
@@ -35,8 +33,6 @@ def load_shards(directory):
         try:
             with open(f, 'r', encoding='utf-8') as file:
                 data = json.load(file)
-                # Create a rich semantic soup for vectorization
-                # Weighting: Title (3x), Keywords (2x), Subtopics (1x)
                 soup = (
                     (data.get('t', '') + " ") * 3 + 
                     (" ".join(data.get('kw', [])) + " ") * 2 + 
@@ -47,7 +43,7 @@ def load_shards(directory):
                     "id": data.get('id', f.stem),
                     "label": data.get('t', 'Untitled'),
                     "soup": soup,
-                    "keywords": data.get('kw', []) + data.get('sub', []), # For labeling
+                    "keywords": data.get('kw', []) + data.get('sub', []), 
                     "type": "article"
                 })
         except Exception as e:
@@ -99,12 +95,8 @@ def load_velocity_data(directory=Path(".")):
         with open(velocity_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
             
-        # Create a map of slug -> health_data
-        # GSC URLs might be "https://mikelev.in/foo/bar/" -> slug "bar"
-        # Shard IDs might be "2025-10-10-bar" -> slug "bar"
         slug_map = {}
         for url, metrics in data.items():
-            # Strip trailing slash and get last segment
             slug = url.strip('/').split('/')[-1]
             slug_map[slug] = metrics
             
@@ -137,65 +129,104 @@ def get_cluster_label(df_cluster, market_data=None):
         
     return candidates[0][0]
 
-def calculate_gravity(keywords, market_data):
-    """Calculates additional node radius based on max keyword volume."""
-    if not market_data or not keywords:
-        return 0
-    
+def calculate_composite_score(row, market_data, velocity_data):
+    """
+    Calculates the 'Gold Score' for an article.
+    Combines SEMRush Volume (Potential) and GSC Clicks (Kinetic).
+    """
+    # 1. Potential Energy (SEMRush)
     max_vol = 0
-    for kw in keywords:
-        k_clean = kw.lower().strip()
-        vol = market_data.get(k_clean, 0)
-        if vol > max_vol:
-            max_vol = vol
+    if market_data:
+        for kw in row['keywords']:
+            vol = market_data.get(kw.lower().strip(), 0)
+            if vol > max_vol: max_vol = vol
             
-    if max_vol > 0:
-        return np.log1p(max_vol)
-    return 0
+    # 2. Kinetic Energy (GSC)
+    gsc_clicks = 0
+    if velocity_data:
+        slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', row['id'])
+        gsc_clicks = velocity_data.get(slug, {}).get('total_clicks', 0)
+
+    # 3. Composite Formula
+    # We weight actual clicks heavily, but use volume to surface new/high-potential content
+    # log1p creates a smooth curve so one viral hit doesn't break the scale
+    score = (np.log1p(max_vol) * 1.0) + (np.log1p(gsc_clicks) * 5.0) 
+    return score
+
+def append_article_nodes(df_articles, parent_id, current_depth, nodes, links, market_data, velocity_data):
+    """Helper to append article nodes to the list."""
+    for _, row in df_articles.iterrows():
+        # Visual Size Calculation
+        max_vol = 0
+        if market_data:
+            for kw in row['keywords']:
+                vol = market_data.get(kw.lower().strip(), 0)
+                if vol > max_vol: max_vol = vol
+        
+        gravity_boost = np.log1p(max_vol) if max_vol > 0 else 0
+        
+        # Health Data
+        slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', row['id'])
+        health = velocity_data.get(slug, {}) if velocity_data else {}
+        
+        nodes.append({
+            "id": row['id'],
+            "group": "article",
+            "depth": current_depth,
+            "label": row['label'],
+            "val": 5 + gravity_boost,
+            "parentId": parent_id,
+            "status": health.get("status", "unknown"),
+            "velocity": health.get("velocity", 0),
+            "clicks": health.get("total_clicks", 0)
+        })
+        links.append({
+            "source": parent_id,
+            "target": row['id'],
+            "type": "article_link"
+        })
 
 def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, market_data, velocity_data, vectorizer=None):
-    """The Recursive Mitosis engine."""
+    """
+    The Gold Panning Recursive Engine.
+    """
     df = df_slice.copy()
     
-    # --- STOP CONDITION ---
-    if len(df) <= TARGET_BRANCHING_FACTOR + 2:
-        for _, row in df.iterrows():
-            # Gravity
-            gravity_boost = calculate_gravity(row['keywords'], market_data)
-            
-            # Health/Velocity
-            # Extract slug from ID (remove YYYY-MM-DD- prefix)
-            slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', row['id'])
-            health = velocity_data.get(slug, {})
-            
-            node = {
-                "id": row['id'],
-                "group": "article",
-                "depth": current_depth,
-                "label": row['label'],
-                "val": 5 + gravity_boost,
-                "parentId": parent_id,
-                # Inject Health Data
-                "status": health.get("status", "unknown"),
-                "velocity": health.get("velocity", 0),
-                "clicks": health.get("total_clicks", 0)
-            }
-            nodes.append(node)
-            links.append({
-                "source": parent_id,
-                "target": row['id'],
-                "type": "article_link"
-            })
+    # --- 1. CALCULATE SCORES ---
+    # We score everything upfront so we can find the Gold
+    df['score'] = df.apply(lambda row: calculate_composite_score(row, market_data, velocity_data), axis=1)
+    
+    # Sort by Score Descending
+    df = df.sort_values('score', ascending=False)
+
+    # --- 2. STOP CONDITION (Small Cluster) ---
+    # If the group is small enough, dump everything as articles.
+    # We increase tolerance slightly to avoid creating a hub for just 8 items.
+    if len(df) <= TARGET_BRANCHING_FACTOR + GOLD_PAN_SIZE: 
+        append_article_nodes(df, parent_id, current_depth, nodes, links, market_data, velocity_data)
         return
 
-    # --- VECTORIZATION & CLUSTERING ---
+    # --- 3. GOLD PANNING (The Hybrid Hub) ---
+    # Extract the top N high-value articles
+    gold_df = df.head(GOLD_PAN_SIZE)
+    append_article_nodes(gold_df, parent_id, current_depth, nodes, links, market_data, velocity_data)
+    
+    # --- 4. CLUSTER THE REST ---
+    remainder_df = df.iloc[GOLD_PAN_SIZE:].copy()
+    
+    # If remainder is trivial, just dump them too
+    if len(remainder_df) <= MIN_CLUSTER_SIZE:
+        append_article_nodes(remainder_df, parent_id, current_depth, nodes, links, market_data, velocity_data)
+        return
+
+    # Prepare for Clustering
     if vectorizer is None:
         vectorizer = TfidfVectorizer(stop_words='english', max_features=1000)
     
     try:
-        tfidf_matrix = vectorizer.fit_transform(df['soup'])
+        tfidf_matrix = vectorizer.fit_transform(remainder_df['soup'])
         
-        n_components = min(5, len(df) - 1) 
+        n_components = min(5, len(remainder_df) - 1) 
         if n_components > 1:
             svd = TruncatedSVD(n_components=n_components)
             matrix = svd.fit_transform(tfidf_matrix)
@@ -209,11 +240,11 @@ def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, market_d
             batch_size=256
         )
         clusters = kmeans.fit_predict(matrix)
-        df.loc[:, 'cluster'] = clusters 
+        remainder_df.loc[:, 'cluster'] = clusters 
         
         # --- RECURSION ---
         for cluster_id in range(TARGET_BRANCHING_FACTOR):
-            cluster_data = df[df['cluster'] == cluster_id]
+            cluster_data = remainder_df[remainder_df['cluster'] == cluster_id]
             
             if len(cluster_data) == 0:
                 continue
@@ -221,6 +252,7 @@ def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, market_d
             hub_label = get_cluster_label(cluster_data, market_data)
             new_hub_id = f"{parent_id}_{cluster_id}"
             
+            # Hub Gravity
             hub_base_val = max(10, 40 - (current_depth * 10))
             hub_gravity = 0
             if market_data:
@@ -235,7 +267,7 @@ def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, market_d
                 "label": hub_label,
                 "val": hub_base_val + hub_gravity,
                 "parentId": parent_id,
-                "status": "hub" # Hubs are neutral
+                "status": "hub"
             })
             
             links.append({
@@ -256,30 +288,10 @@ def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, market_d
             
     except ValueError as e:
         print(f"⚠️ Clustering fallback at depth {current_depth}: {e}")
-        for _, row in df.iterrows():
-            gravity_boost = calculate_gravity(row['keywords'], market_data)
-            slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', row['id'])
-            health = velocity_data.get(slug, {})
-            
-            nodes.append({
-                "id": row['id'],
-                "group": "article",
-                "depth": current_depth,
-                "label": row['label'],
-                "val": 5 + gravity_boost,
-                "parentId": parent_id,
-                "status": health.get("status", "unknown"),
-                "velocity": health.get("velocity", 0),
-                "clicks": health.get("total_clicks", 0)
-            })
-            links.append({
-                "source": parent_id,
-                "target": row['id'],
-                "type": "article_link"
-            })
+        append_article_nodes(remainder_df, parent_id, current_depth, nodes, links, market_data, velocity_data)
 
 def main():
-    print("🚀 Initializing Hierarchy Builder...")
+    print("🚀 Initializing Hybrid Hierarchy Builder (Gold Pan Edition)...")
     
     df = load_shards(CONTEXT_DIR)
     if df.empty:
@@ -287,7 +299,7 @@ def main():
         return
         
     market_data = load_market_data()
-    velocity_data = load_velocity_data() # Load GSC Velocity
+    velocity_data = load_velocity_data()
 
     nodes = [{
         "id": "hub_0",
@@ -300,7 +312,7 @@ def main():
     }]
     links = []
 
-    print(f"🧠 Clustering {len(df)} articles using Rule of {TARGET_BRANCHING_FACTOR}...")
+    print(f"🧠 Clustering {len(df)} articles using Hybrid Rule of {TARGET_BRANCHING_FACTOR} with Gold Pan {GOLD_PAN_SIZE}...")
     recursive_cluster(df, "hub_0", 0, nodes, links, market_data, velocity_data)
 
     output_data = {"nodes": nodes, "links": links}
