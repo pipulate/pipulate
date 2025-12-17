@@ -13,6 +13,7 @@ import time # NEW: Import time for the retry delay
 # --- CONFIGURATION ---
 CONFIG_DIR = Path.home() / ".config" / "articleizer"
 API_KEY_FILE = CONFIG_DIR / "api_key.txt"
+KEYS_JSON_FILE = CONFIG_DIR / "keys.json"
 TARGETS_FILE = CONFIG_DIR / "targets.json"
 
 ARTICLE_FILENAME = "article.txt"
@@ -38,18 +39,50 @@ def load_targets():
             print(f"⚠️ Warning: {TARGETS_FILE} is corrupt. Using defaults.")
     return DEFAULT_TARGETS
 
+def load_keys():
+    """Loads API keys from keys.json if it exists."""
+    if KEYS_JSON_FILE.exists():
+        try:
+            with open(KEYS_JSON_FILE, 'r') as f:
+                return json.load(f)
+        except json.JSONDecodeError:
+            print(f"⚠️ Warning: {KEYS_JSON_FILE} is corrupt.")
+    return {}
+
 PROJECT_TARGETS = load_targets()
+AVAILABLE_KEYS = load_keys()
 # --------------------------------
 
-def get_api_key():
+def get_api_key(key_arg=None):
     """
-    Gets the API key by first checking a local config file, and if not found,
-    securely prompting the user and offering to save it.
+    Resolves the API key based on arguments, config files, or user input.
+    Hierarchy:
+    1. CLI Argument (mapped name or raw key)
+    2. 'default' key in keys.json
+    3. content of api_key.txt
+    4. Interactive Prompt
     """
+    # 1. Check CLI Argument
+    if key_arg:
+        # Check if it's a key name in our config
+        if key_arg in AVAILABLE_KEYS:
+            print(f"🔑 Using API key: '{key_arg}' from keys.json")
+            return AVAILABLE_KEYS[key_arg]
+        # Assume it's a raw key
+        print("🔑 Using API key provided via argument.")
+        return key_arg
+
+    # 2. Check keys.json for 'default'
+    if 'default' in AVAILABLE_KEYS:
+        print("🔑 Using 'default' API key from keys.json")
+        return AVAILABLE_KEYS['default']
+
+    # 3. Check legacy api_key.txt
     if API_KEY_FILE.is_file():
-        print(f"Reading API key from {API_KEY_FILE}...")
+        print(f"🔑 Reading API key from {API_KEY_FILE}...")
         return API_KEY_FILE.read_text().strip()
 
+    # 4. Interactive Prompt
     print("Google API Key not found.")
     print("Please go to https://aistudio.google.com/app/apikey to get one.")
     key = getpass.getpass("Enter your Google API Key: ")
@@ -233,6 +266,12 @@ def main():
         action='store_true',
         help=f"Use local '{INSTRUCTIONS_CACHE_FILE}' cache instead of calling the API."
     )
+    parser.add_argument(
+        '-k', '--key',
+        type=str,
+        default=None,
+        help="Specify which API key to use (name from keys.json or raw key string). Defaults to 'default' in keys.json."
+    )
     args = parser.parse_args()
 
     # --- NEW: INTERACTIVE TARGET SELECTION ---
@@ -272,7 +311,7 @@ def main():
             print("Error: Could not parse the local instructions cache file. It may be corrupt.")
             return
     else:
-        api_key = get_api_key()
+        api_key = get_api_key(args.key)
         if not api_key:
             print("API Key not provided. Exiting.")
             return
