@@ -1,6 +1,5 @@
 AI_PHOOEY_CHOP = """\
-prompt_foo.py
-foo_files.py
+scripts/articles/articleizer.py
 """
 
 ## > We've got content, it's groovy context  
@@ -14,6 +13,23 @@ foo_files.py
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# # PURPOSE OF CONTEXT: Scrub and Wrap Jekyll Liquid Tags
+# AI_PHOOEY_CHOP = """\
+# /home/mike/repos/pipulate/scripts/articles/article.txt.bak
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
+# /home/mike/repos/MikeLev.in/_posts/2025-12-17-context-recapture-saving-ais-cognitive-state.md.bak
+# /home/mike/repos/MikeLev.in/_posts/2025-12-17-context-recapture-saving-ais-cognitive-state.md
+# scripts/articles/scrub_tags.py
+# scripts/articles/wrap_tags.py
+# """
+
+# # PURPOSE OF CONTEXT: To improve the Prompt Fu process.
+# AI_PHOOEY_CHOP = """\
+# prompt_foo.py
+# foo_files.py
+# """
 
 ## Showing how we build hub pages
 # /home/mike/repos/trimnoir/_layouts/default.html
