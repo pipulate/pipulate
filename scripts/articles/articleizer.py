@@ -8,7 +8,7 @@ import getpass
 from pathlib import Path
 import google.generativeai as genai
 import argparse
-import time # NEW: Import time for the retry delay
+import time
 
 # --- CONFIGURATION ---
 CONFIG_DIR = Path.home() / ".config" / "articleizer"
@@ -20,6 +20,9 @@ ARTICLE_FILENAME = "article.txt"
 PROMPT_FILENAME = "editing_prompt.txt"
 PROMPT_PLACEHOLDER = "[INSERT FULL ARTICLE]"
 INSTRUCTIONS_CACHE_FILE = "instructions.json"
+
+# Model Selection - Use a stable model to avoid low quotas
+DEFAULT_MODEL = 'gemini-2.5-flash' 
 
 # Safe default if config is missing (keeps the public repo functional but private)
 DEFAULT_TARGETS = {
@@ -66,10 +69,10 @@ def get_api_key(key_arg=None):
     if key_arg:
         # Check if it's a key name in our config
         if key_arg in AVAILABLE_KEYS:
-            print(f"🔑 Using API key: '{key_arg}' from keys.json")
+            print(f"🔑 Using API key alias: '{key_arg}'")
             return AVAILABLE_KEYS[key_arg]
         # Assume it's a raw key
-        print("🔑 Using API key provided via argument.")
+        print("🔑 Using raw API key provided via argument.")
         return key_arg
 
     # 2. Check keys.json for 'default'
@@ -325,13 +328,13 @@ def main():
 
         full_prompt = prompt_template.replace(PROMPT_PLACEHOLDER, article_text)
 
-        print("Calling the Gemini API directly...")
+        print(f"Calling the Gemini API directly (using {DEFAULT_MODEL})...")
         max_retries = 5
         retry_delay = 2
         for attempt in range(max_retries):
             try:
                 # Use a free-tier compatible model.
-                model = genai.GenerativeModel('gemini-2.5-flash')
+                model = genai.GenerativeModel(DEFAULT_MODEL)
                 response = model.generate_content(full_prompt)
                 gemini_output = response.text
                 print("Successfully received response from API.")
