@@ -142,7 +142,7 @@ def generate_uml_and_dot(target_file: str, project_name: str) -> Dict:
         if not plantuml_exec: msg.append("`plantuml`")
         return {"ascii_uml": f"Skipping: Required command(s) not found: {', '.join(msg)}."}
 
-    target_path = os.path.join(REPO_ROOT, target_file)
+    target_path = target_file if os.path.isabs(target_file) else os.path.join(REPO_ROOT, target_file)
     if not os.path.exists(target_path):
         return {"ascii_uml": f"Skipping: Target file for UML generation not found: {target_path}"}
 
@@ -243,7 +243,7 @@ def _get_article_list_data(posts_dir: str = CONFIG["POSTS_DIRECTORY"]) -> List[D
                         style = url_config.get('permalink_style', '/:slug/')
                         slug_path = style.replace(':slug', raw_slug)
                     else:
-                         slug_path = "/" + slug.lstrip('/')
+                          slug_path = "/" + slug.lstrip('/')
 
                     full_url = f"{url_config['base_url']}{slug_path}"
 
@@ -357,6 +357,7 @@ class PromptBuilder:
         self.auto_context = {}
         self.all_sections = {}
         self.command_line = " ".join(sys.argv)
+        self.manifest_key = "Manifest (Table of Contents)"
 
     def add_auto_context(self, title: str, content: str):
         is_narrative = (title == "Recent Narrative Context")
@@ -378,6 +379,13 @@ class PromptBuilder:
                 data = self.all_sections[section_name]
                 token_str = f"({data['tokens']:,} tokens)" if data['tokens'] > 0 else ""
                 lines.append(f"- {section_name} {token_str}")
+                
+                # Detailed list for Codebase for searching (absolute paths)
+                if section_name == "Codebase" and not self.context_only and self.processed_files:
+                     for f in self.processed_files:
+                         byte_len = len(f['content'].encode('utf-8'))
+                         lines.append(f"  - {f['path']} ({f['tokens']:,} tokens | {byte_len:,} bytes)")
+                         
         return "\n".join(lines)
 
     def _build_story_content(self) -> str:
@@ -408,6 +416,7 @@ class PromptBuilder:
         
         lines = []
         for f in self.processed_files:
+            # Using Absolute Paths in markers
             lines.append(f"--- START: {f['path']} ({f['tokens']:,} tokens) ---")
             lines.append(f"```{f['lang']}:{f['path']}")
             lines.append(f['content'])
@@ -460,7 +469,7 @@ Before addressing the user's prompt, perform the following verification steps:
                 lines.append(f"• {title} ({data['tokens']:,} tokens | {byte_len:,} bytes)")
 
         # Metrics
-        total_tokens = sum(v.get('tokens', 0) for k, v in self.all_sections.items() if k != "Manifest")
+        total_tokens = sum(v.get('tokens', 0) for k, v in self.all_sections.items() if k != self.manifest_key)
         
         total_words = 0
         final_content_for_metrics = ""
@@ -477,16 +486,16 @@ Before addressing the user's prompt, perform the following verification steps:
         if self.context_only:
             lines.append("NOTE: Running in --context-only mode. File contents are excluded.")
         
-        lines.append(f"Summed Tokens:   {total_tokens:,} (from section parts)")
+        lines.append(f"Summed Tokens:    {total_tokens:,} (from section parts)")
         lines.append(f"Verified Tokens: {verified_token_count:,} (from final output)")
         
         if total_tokens != verified_token_count:
             diff = verified_token_count - total_tokens
             lines.append(f"  (Difference: {diff:+,})")
             
-        lines.append(f"Total Words:     {total_words:,} (content only)")
-        lines.append(f"Total Chars:     {char_count:,}")
-        lines.append(f"Total Bytes:     {byte_count:,} (UTF-8)")
+        lines.append(f"Total Words:      {total_words:,} (content only)")
+        lines.append(f"Total Chars:      {char_count:,}")
+        lines.append(f"Total Bytes:      {byte_count:,} (UTF-8)")
 
         # Literary Perspective
         ratio = verified_token_count / total_words if total_words > 0 else 0
@@ -527,13 +536,13 @@ Before addressing the user's prompt, perform the following verification steps:
 
         # Helper to assemble text
         def assemble_text(manifest_txt, summary_txt):
-            parts = ["# KUNG FU PROMPT CONTEXT\n\nWhat you will find below is:\n\n- Manifest\n- Story\n- File Tree\n- UML Diagrams\n- Articles\n- Codebase\n- Summary\n- Prompt"]
+            parts = [f"# KUNG FU PROMPT CONTEXT\n\nWhat you will find below is:\n\n- {self.manifest_key}\n- Story\n- File Tree\n- UML Diagrams\n- Articles\n- Codebase\n- Summary\n- Prompt"]
             
             def add(name, content, placeholder):
                 final = content.strip() if content and content.strip() else placeholder
                 parts.append(f"--- START: {name} ---\n{final}\n--- END: {name} ---")
 
-            add("Manifest", manifest_txt, "# Manifest generation failed.")
+            add(self.manifest_key, manifest_txt, "# Manifest generation failed.")
             add("Story", story_content, placeholders["Story"] if self.list_arg is None else "# No articles found for the specified slice.")
             add("File Tree", tree_content, placeholders["File Tree"])
             add("UML Diagrams", uml_content, placeholders["UML Diagrams"])
@@ -561,7 +570,7 @@ Before addressing the user's prompt, perform the following verification steps:
             
             # Generate Manifest (might change if Summary token count changes length like 999->1000)
             manifest_content = self._build_manifest_content()
-            self.all_sections["Manifest"] = {'content': manifest_content, 'tokens': count_tokens(manifest_content)}
+            self.all_sections[self.manifest_key] = {'content': manifest_content, 'tokens': count_tokens(manifest_content)}
             
             # Assemble full text
             final_output_text = assemble_text(manifest_content, summary_content)
@@ -634,25 +643,27 @@ def main():
     processed_files_data = []
     logger.print("--- Processing Files ---")
     for path, comment in files_to_process:
+        # ABSOLUTE PATH CERTAINTY: Resolve to absolute path immediately
         full_path = os.path.join(REPO_ROOT, path) if not os.path.isabs(path) else path
+        
         if not os.path.exists(full_path):
             logger.print(f"Warning: File not found and will be skipped: {full_path}")
             continue
         content, lang = "", "text"
-        ext = os.path.splitext(path)[1].lower()
+        ext = os.path.splitext(full_path)[1].lower()
         if ext == '.ipynb':
             if JUPYTEXT_AVAILABLE:
-                logger.print(f"   -> Converting notebook: {path}")
+                logger.print(f"   -> Converting notebook: {full_path}")
                 try:
                     notebook = jupytext.read(full_path)
                     content = jupytext.writes(notebook, fmt='py:percent')
                     lang = 'python'
                 except Exception as e:
-                    content = f"# FAILED TO CONVERT NOTEBOOK: {path}\n# ERROR: {e}"
-                    logger.print(f"Warning: Failed to convert {path}: {e}")
+                    content = f"# FAILED TO CONVERT NOTEBOOK: {full_path}\n# ERROR: {e}"
+                    logger.print(f"Warning: Failed to convert {full_path}: {e}")
             else:
-                content = f"# SKIPPING NOTEBOOK CONVERSION: jupytext not installed for {path}"
-                logger.print(f"Warning: `jupytext` library not found. Skipping conversion for {path}.")
+                content = f"# SKIPPING NOTEBOOK CONVERSION: jupytext not installed for {full_path}"
+                logger.print(f"Warning: `jupytext` library not found. Skipping conversion for {full_path}.")
         else:
             try:
                 with open(full_path, 'r', encoding='utf-8') as f: content = f.read()
@@ -661,8 +672,10 @@ def main():
             except Exception as e:
                 logger.print(f"ERROR: Could not read or process {full_path}: {e}")
                 sys.exit(1)
+        
+        # Store using full_path for the key to ensure uniqueness and absolute reference
         processed_files_data.append({
-            "path": path, "comment": comment, "content": content,
+            "path": full_path, "comment": comment, "content": content,
             "tokens": count_tokens(content), "words": count_words(content), "lang": lang
         })
 
