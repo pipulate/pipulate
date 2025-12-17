@@ -71,6 +71,7 @@ def create_jekyll_post(article_content, instructions, output_dir):
     structured AI-generated instructions.
     
     Auto-increments 'sort_order' based on existing posts for the current date.
+    Wraps content in Liquid {% raw %} tags to prevent template errors.
     """
     print("Formatting final Jekyll post...")
 
@@ -173,6 +174,13 @@ def create_jekyll_post(article_content, instructions, output_dir):
     if prepend_text:
         intro_section = f"## Setting the Stage: Context for the Curious Book Reader\n\n{prepend_text}\n\n---"
         article_body = f"{intro_section}\n\n{article_body}"
+
+    # --- WRAPPING LOGIC START ---
+    # Wrap the entire body in {% raw %} ... {% endraw %} to prevent Liquid processing errors
+    # only if it's not already wrapped.
+    if not article_body.strip().startswith("{% raw %}"):
+        article_body = f"{{% raw %}}\n{article_body}\n{{% endraw %}}"
+    # --- WRAPPING LOGIC END ---
 
     analysis_markdown = "\n## Book Analysis\n"
     if 'ai_editorial_take' in analysis_content:
