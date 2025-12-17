@@ -1,8 +1,6 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/trimnoir/_layouts/default.html
-/home/mike/repos/trimnoir/_layouts/page.html
-/home/mike/repos/trimnoir/_site/jupyter-notebook-7/index.html
-/home/mike/repos/pipulate/scripts/d3js/generate_hubs.py
+prompt_foo.py
+foo_files.py
 """
 
 ## > We've got content, it's groovy context  
@@ -16,6 +14,12 @@ AI_PHOOEY_CHOP = """\
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+## Showing how we build hub pages
+# /home/mike/repos/trimnoir/_layouts/default.html
+# /home/mike/repos/trimnoir/_layouts/page.html
+# /home/mike/repos/trimnoir/_site/jupyter-notebook-7/index.html
+# /home/mike/repos/pipulate/scripts/articles/generate_hubs.py
 
 # # Just built the tech to create intermediary json file for hub page generation
 # /home/mike/repos/pipulate/scripts/d3js/build_navgraph.py
