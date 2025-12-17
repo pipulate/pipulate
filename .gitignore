@@ -3,12 +3,12 @@ assets/js/
 
 _config*.py
 
-# Temp until I figure it out
+#navgraph.json Temp until I figure it out
 graph.json
+navgraph.json
 ideal_hierarchy_master_real.html
 semrush_candidates.txt
 gsc_velocity.json
-groucho.json
 
 prompt.md
 article.txt
