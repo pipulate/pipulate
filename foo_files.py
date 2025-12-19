@@ -5,6 +5,7 @@ scripts/articles/editing_prompt.txt
 scripts/articles/contextualizer.py
 scripts/articles/generate_semrush_candidates.py
 scripts/articles/gsc_historical_fetch.py
+scripts/d3js/gsc_velocity.json
 scripts/articles/build_hierarchy.py
 scripts/articles/build_navgraph.py
 scripts/articles/generate_hubs.py
