@@ -116,7 +116,18 @@ def load_velocity_data(directory=Path(".")):
     print(f"❤️ Loading health velocity from: {velocity_file.name}")
     try:
         with open(velocity_file, 'r', encoding='utf-8') as f:
-            return json.load(f)
+            data = json.load(f)
+        
+        slug_map = {}
+        for key, metrics in data.items():
+            # Skip metadata keys
+            if key.startswith("_"):
+                continue
+
+            slug = key.strip('/').split('/')[-1]
+            slug_map[slug] = metrics
+            
+        return slug_map
     except:
         return {}
 
