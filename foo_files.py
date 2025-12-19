@@ -1,5 +1,14 @@
 AI_PHOOEY_CHOP = """\
-scripts/articles/articleizer.py
+# # PURPOSE OF CONTEXT: To show AI all the publishing steps for consolidating some into a master script
+/home/mike/repos/MikeLev.in/_posts/2025-12-19-amnesiac-genie-storytelling-ai-future-proofing.md
+scripts/articles/editing_prompt.txt
+scripts/articles/contextualizer.py
+scripts/articles/generate_semrush_candidates.py
+scripts/articles/gsc_historical_fetch.py
+scripts/articles/build_hierarchy.py
+scripts/articles/build_navgraph.py
+scripts/articles/generate_hubs.py
+scripts/articles/show_graph.html
 """
 
 ## > We've got content, it's groovy context  
