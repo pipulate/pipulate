@@ -1,15 +1,5 @@
 AI_PHOOEY_CHOP = """\
-# # PURPOSE OF CONTEXT: To show AI all the publishing steps for consolidating some into a master script
-/home/mike/repos/MikeLev.in/_posts/2025-12-19-amnesiac-genie-storytelling-ai-future-proofing.md
-scripts/articles/editing_prompt.txt
-scripts/articles/contextualizer.py
-scripts/articles/generate_semrush_candidates.py
 scripts/articles/gsc_historical_fetch.py
-scripts/d3js/gsc_velocity.json
-scripts/articles/build_hierarchy.py
-scripts/articles/build_navgraph.py
-scripts/articles/generate_hubs.py
-scripts/articles/show_graph.html
 """
 
 ## > We've got content, it's groovy context  
@@ -23,6 +13,20 @@ scripts/articles/show_graph.html
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# AI_PHOOEY_CHOP = """\
+# # PURPOSE OF CONTEXT: To show AI all the publishing steps for consolidating some into a master script
+# /home/mike/repos/MikeLev.in/_posts/2025-12-19-amnesiac-genie-storytelling-ai-future-proofing.md
+# scripts/articles/editing_prompt.txt
+# scripts/articles/contextualizer.py
+# scripts/articles/generate_semrush_candidates.py
+# scripts/articles/gsc_historical_fetch.py
+# scripts/d3js/gsc_velocity.json
+# scripts/articles/build_hierarchy.py
+# scripts/articles/build_navgraph.py
+# scripts/articles/generate_hubs.py
+# scripts/articles/show_graph.html
+# """
 
 # # PURPOSE OF CONTEXT: Scrub and Wrap Jekyll Liquid Tags
 # AI_PHOOEY_CHOP = """\

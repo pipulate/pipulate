@@ -3,7 +3,7 @@
 The Dragnet: Fetches historical GSC data to ground the Virtual Graph in Reality.
 Aggregates 16 months of data to eliminate 'Gray Circles' (Unknown Status).
 
-Outputs: gsc_velocity.json
+Outputs: gsc_velocity.json (Rate-limited to once per day)
 """
 
 import os
@@ -11,18 +11,20 @@ import sys
 import json
 import time
 import re
+import argparse
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 import random
+from pathlib import Path
 
 # --- CONFIGURATION ---
 SITE_URL = "sc-domain:mikelev.in" 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+SCRIPT_DIR = Path(__file__).parent.resolve()
 # Adjust path to match your actual key location provided in context
-SERVICE_ACCOUNT_KEY_FILE = "/home/mike/.config/articleizer/service-account-key.json"
-OUTPUT_FILE = os.path.join(SCRIPT_DIR, '../d3js/gsc_velocity.json')
+SERVICE_ACCOUNT_KEY_FILE = Path.home() / ".config/articleizer/service-account-key.json"
+OUTPUT_FILE = SCRIPT_DIR / 'gsc_velocity.json'
 
 # The date of the "Crash" to pivot analysis around
 CRASH_DATE = datetime(2025, 4, 23).date()
@@ -33,7 +35,7 @@ SCOPES = ['https://www.googleapis.com/auth/webmasters.readonly']
 
 def authenticate_gsc():
     """Authenticates with the GSC API using Service Account."""
-    if not os.path.exists(SERVICE_ACCOUNT_KEY_FILE):
+    if not SERVICE_ACCOUNT_KEY_FILE.exists():
         print(f"❌ Key file not found: {SERVICE_ACCOUNT_KEY_FILE}")
         sys.exit(1)
     creds = service_account.Credentials.from_service_account_file(
@@ -43,9 +45,6 @@ def authenticate_gsc():
 def extract_slug(url):
     """
     Normalizes a full URL into the specific slug format expected by build_hierarchy.py.
-    
-    Input:  https://mikelev.in/futureproof/ai-ready-web-navigation-caching/
-    Output: ai-ready-web-navigation-caching
     """
     # Remove protocol and domain
     path = url.replace(SITE_URL.replace("sc-domain:", "https://"), "")
@@ -115,9 +114,39 @@ def fetch_month_data(service, start_date, end_date):
             
     return mapped_data
 
+def should_run(force=False):
+    """Checks if the output file exists and was updated today."""
+    if force:
+        return True
+        
+    if not OUTPUT_FILE.exists():
+        return True
+        
+    try:
+        with open(OUTPUT_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            
+        last_updated = data.get('_meta', {}).get('last_updated')
+        today = datetime.now().strftime('%Y-%m-%d')
+        
+        if last_updated == today:
+            print(f"✅ GSC Data is fresh for today ({today}). Skipping fetch.")
+            return False
+            
+    except Exception:
+        # If file is corrupt or format is old, run anyway
+        return True
+        
+    return True
+
 def main():
-    from pathlib import Path # Ensure Path is available
-    
+    parser = argparse.ArgumentParser(description="Fetch GSC History")
+    parser.add_argument('--force', action='store_true', help="Ignore cache and force fetch")
+    args = parser.parse_args()
+
+    if not should_run(args.force):
+        return
+
     print(f"🚀 Starting GSC Historical Dragnet for {SITE_URL}")
     print(f"📅 Pivot Date (Crash): {CRASH_DATE}")
     
@@ -130,9 +159,8 @@ def main():
     
     # Data Structure:
     # { 
-    #   "my-slug": { 
-    #       "timeline": { "2024-01": 50, "2024-02": 45 ... } 
-    #   } 
+    #   "_meta": { "last_updated": "YYYY-MM-DD" },
+    #   "my-slug": { ... } 
     # }
     history_data = {} 
     
@@ -168,7 +196,11 @@ def main():
 
     print(f"\n🧮 Calculating Velocity and Health Scores for {len(history_data)} unique slugs...")
     
-    final_output = {}
+    final_output = {
+        "_meta": {
+            "last_updated": datetime.now().strftime('%Y-%m-%d')
+        }
+    }
     
     for slug, data in history_data.items():
         timeline = data['timeline']
@@ -232,15 +264,12 @@ def main():
             "timeline": timeline
         }
 
-    # Ensure output directory exists
-    os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
-
     # Save to file
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
         json.dump(final_output, f, indent=2)
         
     print(f"💾 Saved velocity data to {OUTPUT_FILE}")
-    print(f"💎 Total Unique Content Nodes Grounded: {len(final_output)}")
+    print(f"💎 Total Unique Content Nodes Grounded: {len(history_data)}")
 
 if __name__ == "__main__":
     main()
