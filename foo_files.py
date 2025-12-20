@@ -1,5 +1,11 @@
 AI_PHOOEY_CHOP = """\
-scripts/articles/gsc_historical_fetch.py
+scripts/articles/contextualizer.py
+/home/mike/repos/MikeLev.in/_posts/_context/2025-12-14-semantic-clustering-rule-of-7-ai-friendly-site-hierarchy.json
+/home/mike/repos/MikeLev.in/_posts/_context/2025-12-15-ai-ready-web-navigation-caching.json
+/home/mike/repos/MikeLev.in/_posts/_context/2025-12-15-industrializing-intelligence-ai-content-pipelines.json
+/home/mike/repos/MikeLev.in/_posts/_context/2025-12-15-the-gold-pan-hybrid-hierarchies-ai.json
+foo_files.py
+prompt_foo.py
 """
 
 ## > We've got content, it's groovy context  
@@ -13,6 +19,30 @@ scripts/articles/gsc_historical_fetch.py
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# AI_PHOOEY_CHOP = """\
+# # PURPOSE OF CONTEXT: To show how the local Jekyll hosting previewing is done.
+# /home/mike/repos/trimnoir/_config.yml
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_layouts/default.html
+# /home/mike/repos/trimnoir/_layouts/page.html
+# /home/mike/repos/trimnoir/index.md
+# /home/mike/repos/trimnoir/_site/jupyter-notebook-7/index.html
+# """
+
+# AI_PHOOEY_CHOP = """\
+# # PURPOSE OF CONTEXT: To jump right to showing the "magic wand" part of Pipulate.
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# imports/__init__.py
+# imports/stream_orchestrator.py
+# imports/mcp_orchestrator.py
+# assets/nbs/URLinspector.ipynb
+# assets/nbs/imports/url_inspect_sauce.py
+# Notebooks/imports/seo_gadget.py
+# tools/scraper_tools.py
+# """
 
 # AI_PHOOEY_CHOP = """\
 # # PURPOSE OF CONTEXT: To show AI all the publishing steps for consolidating some into a master script
