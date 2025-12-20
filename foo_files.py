@@ -1,10 +1,10 @@
 AI_PHOOEY_CHOP = """\
-scripts/articles/contextualizer.py
+# scripts/articles/contextualizer.py
 /home/mike/repos/MikeLev.in/_posts/_context/2025-12-14-semantic-clustering-rule-of-7-ai-friendly-site-hierarchy.json
 /home/mike/repos/MikeLev.in/_posts/_context/2025-12-15-ai-ready-web-navigation-caching.json
 /home/mike/repos/MikeLev.in/_posts/_context/2025-12-15-industrializing-intelligence-ai-content-pipelines.json
 /home/mike/repos/MikeLev.in/_posts/_context/2025-12-15-the-gold-pan-hybrid-hierarchies-ai.json
-foo_files.py
+# foo_files.py
 prompt_foo.py
 """
 
