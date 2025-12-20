@@ -133,6 +133,35 @@ def count_words(text: str) -> int:
 # ============================================================================
 # --- Auto-Context Generation (UML, Tree, Narrative) ---
 # ============================================================================
+def add_holographic_shards(builder, articles: List[Dict]):
+    """Finds and injects JSON context shards for a specific list of articles."""
+    json_parts = []
+    found_count = 0
+    
+    for article in articles:
+        # Resolve path: _posts/filename.md -> _posts/_context/filename.json
+        article_path = article['path']
+        parent_dir = os.path.dirname(article_path)
+        stem = os.path.splitext(os.path.basename(article_path))[0]
+        json_path = os.path.join(parent_dir, "_context", f"{stem}.json")
+        
+        if os.path.exists(json_path):
+            try:
+                with open(json_path, 'r', encoding='utf-8') as f:
+                    json_content = f.read().strip()
+                    # Wrap in markers for absolute coordinate certainty
+                    json_parts.append(f"--- START: {json_path} ---\n{json_content}\n--- END: {json_path} ---")
+                    found_count += 1
+            except Exception as e:
+                logger.print(f"Warning: Could not read context shard {json_path}: {e}")
+
+    if json_parts:
+        title = "Holographic Context Shards"
+        builder.add_auto_context(title, "\n\n".join(json_parts))
+        cdata = builder.auto_context.get(title, {})
+        logger.print(f"Matched context shards: ({found_count} files | {cdata.get('tokens',0):,} tokens)")
+
+
 def generate_uml_and_dot(target_file: str, project_name: str) -> Dict:
     pyreverse_exec = shutil.which("pyreverse")
     plantuml_exec = shutil.which("plantuml")
@@ -627,6 +656,11 @@ def main():
         nargs='?', const='[-1:]', default=None,
         help='Include FULL CONTENT of recent articles. Provide a slice, e.g., "[-5:]". Defaults to "[-1:]".'
     )
+    parser.add_argument(
+        '-c', '--context',
+        action='store_true',
+        help='Include matching Holographic Context JSONs for any articles listed/included.'
+    )
     args = parser.parse_args()
 
     if args.check_dependencies:
@@ -785,6 +819,10 @@ def main():
         else:
             logger.print(" (no articles found or invalid slice)")
 
+    # After slicing articles for -l or -a...
+    if args.context and sliced_articles:
+        logger.print("Pairing holographic context shards...", end='', flush=True)
+        add_holographic_shards(builder, sliced_articles)
 
     python_files_to_diagram = [f['path'] for f in processed_files_data if f['path'].endswith('.py')]
     if python_files_to_diagram:
