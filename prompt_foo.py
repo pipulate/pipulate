@@ -391,10 +391,11 @@ class PromptBuilder:
     def add_auto_context(self, title: str, content: str):
         is_narrative = (title == "Recent Narrative Context")
         is_article = (title == "Full Article Content")
+        is_shard = (title == "Holographic Context Shards")
         content_is_valid = bool(content)
         filter_passed = "error" not in content.lower() and "skipping" not in content.lower()
-        
-        if content_is_valid and (is_narrative or is_article or filter_passed):
+
+        if content_is_valid and (is_narrative or is_article or is_shard or filter_passed):
             self.auto_context[title] = {
                 'content': content, 'tokens': count_tokens(content), 'words': count_words(content)
             }
@@ -436,8 +437,18 @@ class PromptBuilder:
         return "\n\n".join(uml_parts)
 
     def _build_articles_content(self) -> str:
-        title = "Full Article Content"
-        return self.auto_context.get(title, {}).get('content', '').strip()
+        parts = []
+
+        # 1. Grab Full Article Content if it exists
+        if "Full Article Content" in self.auto_context:
+            parts.append(self.auto_context["Full Article Content"]['content'].strip())
+            
+        # 2. Grab Holographic Shards if they exist
+        if "Holographic Context Shards" in self.auto_context:
+            parts.append(self.auto_context["Holographic Context Shards"]['content'].strip())
+            
+        return "\n\n".join(parts).strip()
+
 
     def _build_codebase_content(self) -> str:
         if self.context_only: return ""
