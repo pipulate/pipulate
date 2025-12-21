@@ -1,4 +1,5 @@
 AI_PHOOEY_CHOP = """\
+foo_files.py
 prompt_foo.py
 """
 
@@ -13,6 +14,29 @@ prompt_foo.py
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# AI_PHOOEY_CHOP = """\
+# # PURPOSE OF CONTEXT: The additional files to learn about the home network chosen through the rg approach but missed by the context approach
+# /home/mike/repos/MikeLev.in/_posts/2025-05-08-github-pages-home-hosting-jekyll.md
+# /home/mike/repos/MikeLev.in/_posts/2025-11-18-nixos-caddy-https-internal-trust-debugging-journey.md
+# /home/mike/repos/MikeLev.in/_posts/2025-04-29-nixos-jekyll-git-push-self-hosted-deployment.md
+# """
+
+# AI_PHOOEY_CHOP = """\
+# # PURPOSE OF CONTEXT: The first self-selected by Gemini 3 Thinking model using the -c param context to help with home-hosting.
+# prompt_foo.py                   
+# flake.nix                       
+# AI_RUNME.py                     
+# tools/system_tools.py           
+# server.py                       
+# scripts/articles/list_articles.py <-- Metadata and slice management logic
+# # RELEVANT NARRATIVE HISTORY (Paths for slice reference)
+# /home/mike/repos/MikeLev.in/_posts/2025-04-23-pfsense-firewall-secure-home-network-hosting-setup.md  <-- The Network Foundation
+# /home/mike/repos/MikeLev.in/_posts/2025-04-29-nixos-jekyll-git-push-self-hosted-deployment.md        <-- The Nginx/Git-Push Blueprint
+# /home/mike/repos/MikeLev.in/_posts/2025-11-18-nixos-lan-services-declarative-https-caddy.md          <-- The HTTPS/Caddy Strategy
+# /home/mike/repos/MikeLev.in/_posts/2025-11-18-nixos-caddy-https-internal-trust-debugging-journey.md  <-- SSL/Trust Management
+# /home/mike/repos/MikeLev.in/_posts/2025-12-20-reclaiming-black-river-raw-logs-ai-observability.md    <-- The Log Sovereignty Vision
+# """
 
 # AI_PHOOEY_CHOP = """\
 # # PURPOSE OF CONTEXT: To show how the local Jekyll hosting previewing is done.
