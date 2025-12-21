@@ -135,7 +135,7 @@ def count_words(text: str) -> int:
 # ============================================================================
 def add_holographic_shards(builder, articles: List[Dict]):
     """Finds and injects JSON context shards for a specific list of articles."""
-    json_parts = []
+    shards = {}
     found_count = 0
     
     for article in articles:
@@ -148,16 +148,20 @@ def add_holographic_shards(builder, articles: List[Dict]):
         if os.path.exists(json_path):
             try:
                 with open(json_path, 'r', encoding='utf-8') as f:
-                    json_content = f.read().strip()
-                    # Wrap in markers for absolute coordinate certainty
-                    json_parts.append(f"--- START: {json_path} ---\n{json_content}\n--- END: {json_path} ---")
+                    # Load as object to consolidate
+                    shard_data = json.load(f)
+                    shards[stem] = shard_data
                     found_count += 1
             except Exception as e:
                 logger.print(f"Warning: Could not read context shard {json_path}: {e}")
 
-    if json_parts:
+    if shards:
         title = "Holographic Context Shards"
-        builder.add_auto_context(title, "\n\n".join(json_parts))
+        # Dense serialization to save tokens
+        consolidated_json = json.dumps(shards, separators=(',', ':'))
+        content = f"--- START: Holographic Context Shards (Consolidated) ---\n{consolidated_json}\n--- END: Holographic Context Shards ---"
+        
+        builder.add_auto_context(title, content)
         cdata = builder.auto_context.get(title, {})
         logger.print(f"Matched context shards: ({found_count} files | {cdata.get('tokens',0):,} tokens)")
 
