@@ -656,6 +656,7 @@ def main():
     parser.add_argument('--no-clipboard', action='store_true', help='Disable copying output to clipboard.')
     parser.add_argument('--check-dependencies', action='store_true', help='Verify that all required external tools are installed.')
     parser.add_argument('--context-only', action='store_true', help='Generate a context-only prompt without file contents.')
+    parser.add_argument('-n', '--no-tree', action='store_true', help='Suppress file tree and UML generation.')
     parser.add_argument(
         '-t', '--target',
         type=int,
@@ -746,10 +747,10 @@ def main():
 
     # 3. Build the prompt and add auto-generated context
     builder = PromptBuilder(processed_files_data, prompt_content, context_only=args.context_only, list_arg=args.list)
-    
-    # Only generate the codebase tree if .py files are explicitly included.
-    # This avoids clutter when only .md, .nix, or .ipynb files are present.
-    include_tree = any(f['path'].endswith('.py') for f in processed_files_data)
+
+    # Only generate the codebase tree if .py files are explicitly included AND --no-tree is not set.
+    # This avoids clutter when only .md, .nix, or .ipynb files are present, or when explicitly disabled.
+    include_tree = any(f['path'].endswith('.py') for f in processed_files_data) and not args.no_tree
     
     if include_tree:
         logger.print("Python file(s) detected. Generating codebase tree diagram...", end='', flush=True)
@@ -762,6 +763,8 @@ def main():
         t_count = tree_data.get('tokens', 0)
         b_count = len(tree_data.get('content', '').encode('utf-8'))
         logger.print(f" ({t_count:,} tokens | {b_count:,} bytes)")
+    elif args.no_tree:
+        logger.print("Skipping codebase tree (--no-tree flag detected).")
     else:
         logger.print("Skipping codebase tree (no .py files included).")
 
@@ -842,7 +845,7 @@ def main():
         add_holographic_shards(builder, sliced_articles)
 
     python_files_to_diagram = [f['path'] for f in processed_files_data if f['path'].endswith('.py')]
-    if python_files_to_diagram:
+    if python_files_to_diagram and not args.no_tree:
         logger.print("Python file(s) detected. Generating UML diagrams...")
         for py_file_path in python_files_to_diagram:
             logger.print(f"   -> Generating for {py_file_path}...", end='', flush=True)
