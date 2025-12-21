@@ -776,15 +776,17 @@ def main():
         except (ValueError, IndexError):
             logger.print(f" (invalid slice '{args.list}')")
             sliced_articles = []
-        
+
         if sliced_articles:
-            narrative_content = ""
+            # COMPRESSED FORMAT: Base Path Header + Filenames Only
+            narrative_content = f"**Base Path:** {CONFIG['POSTS_DIRECTORY']}\n\n"
             for article in sliced_articles:
-                # COMPRESSED FORMAT
+                # We normalize to filename because the base path is declared above
+                filename = os.path.basename(article['path'])
                 narrative_content += f"### {article['title']} ({article['date']} | {article['tokens']:,} tok)\n"
                 if article.get('url'):
                     narrative_content += f"URL: {article['url']}\n"
-                narrative_content += f"Path: {article['path']}\n"
+                narrative_content += f"File: {filename}\n"
                 narrative_content += f"Sum: {article['summary']}\n\n"
             
             title = "Recent Narrative Context"
