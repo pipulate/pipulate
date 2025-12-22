@@ -1,0 +1,30 @@
+#!/bin/sh
+# The "Sovereign Deployment" Hook (Local Master Copy)
+# -----------------------------
+
+GIT_DIR="/home/mike/git/mikelev.in.git"
+WORK_TREE="/home/mike/www/mikelev.in"
+
+echo "🎯 [Hook] Received Push. Deploying to $WORK_TREE..."
+
+# 1. Force checkout
+git --work-tree=$WORK_TREE --git-dir=$GIT_DIR checkout -f main
+
+# 2. Move to stage
+cd $WORK_TREE
+
+# 3. HUD Reset
+if tmux has-session -t website 2>/dev/null; then
+    echo "🛑 [Hook] Stopping existing server session..."
+    tmux kill-session -t website
+fi
+
+# 4. The Launch (With Debug Safety Net)
+# We add '|| sleep 10000' so the window stays open if the server crashes.
+echo "🚀 [Hook] Launching 'jes-prod' in tmux session 'website'..."
+
+# We use 'nix develop' with the '-c' (command) flag to run our new binary
+tmux new-session -d -s website "nix develop -c jes-prod || (echo 'CRASHED'; sleep 10000)"
+
+echo "✅ [Hook] Deployment Triggered."
+echo "👀 [Hook] Debug: ssh honeybot -t 'tmux attach -t website'"
