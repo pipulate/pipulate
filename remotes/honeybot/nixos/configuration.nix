@@ -21,6 +21,9 @@
   networking.hostName = "honeybot"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
+  # Allow Nginx to read files in /home/mike
+  systemd.services.nginx.serviceConfig.ProtectHome = "read-only"
+
   # 2. THE INSOMNIA (Server Mode)
   # Prevent the laptop from sleeping when you close the lid
   services.logind.lidSwitch = "ignore";

@@ -1,5 +1,9 @@
 AI_PHOOEY_CHOP = """\
-prompt_foo.py
+/home/mike/repos/pipulate/deploy_honeybot.sh
+/home/mike/repos/trimnoir/_config.yml
+/home/mike/repos/trimnoir/flake.nix
+/home/mike/repos/pipulate/remotes/honeybot/hooks/post-receive
+/home/mike/repos/pipulate/remotes/honeybot/nixos/configuration.nix
 """
 
 ## > We've got content, it's groovy context  
@@ -13,6 +17,32 @@ prompt_foo.py
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
+# scripts/articles/contextualizer.py
+# scripts/articles/generate_semrush_candidates.py
+# scripts/articles/gsc_historical_fetch.py
+# scripts/articles/gsc_velocity.json
+# scripts/articles/build_hierarchy.py
+# scripts/articles/build_navgraph.py
+# scripts/articles/generate_hubs.py
+# scripts/articles/graph.json
+# scripts/articles/show_graph.html
+# /home/mike/repos/MikeLev.in/_config.yml
+# /home/mike/repos/MikeLev.in/flake.nix
+# /home/mike/repos/MikeLev.in/index.md
+# /home/mike/repos/trimnoir/_config.yml
+# /home/mike/repos/trimnoir/flake.nix
+
+# AI_PHOOEY_CHOP = """\
+# # Setting up DMZ Webserver hosting a Jekyll site on nginx
+# /home/mike/repos/pipulate/remotes/honeybot/hooks/post-receive
+# /home/mike/repos/pipulate/remotes/honeybot/nixos/configuration.nix
+# /home/mike/repos/pipulate/deploy_honeybot.sh
+# /home/mike/repos/trimnoir/_config.yml
+# /home/mike/repos/trimnoir/flake.nix
+# """
 
 # AI_PHOOEY_CHOP = """\
 # # PURPOSE OF CONTEXT: The additional files to learn about the home network chosen through the rg approach but missed by the context approach
