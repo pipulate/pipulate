@@ -1,8 +1,13 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/trimnoir/_posts/2025-12-22-sovereign-airlock-rfc1918-dmz-ai-observation.md
+# /home/mike/repos/trimnoir/_posts/2025-12-22-sovereign-airlock-rfc1918-dmz-ai-observation.md
 /home/mike/repos/trimnoir/pages/hub_nix-6.md
 /home/mike/repos/trimnoir/_config.yml
 /home/mike/repos/MikeLev.in/_config.yml
+/home/mike/repos/trimnoir/flake.nix
+remotes/honeybot/nixos/configuration.nix
+remotes/honeybot/hooks/post-receive
+deploy_honeybot.sh
+/etc/hosts
 """
 
 ## > We've got content, it's groovy context  
