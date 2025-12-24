@@ -14,4 +14,4 @@ echo "🚀 Syncing NixOS Config..."
 rsync -av remotes/honeybot/nixos/ $TARGET:~/nixos-config-staged/
 
 echo "✅ Sync Complete."
-echo "   To apply NixOS config: ssh $TARGET 'sudo cp ~/nixos-config-staged/* /etc/nixos/ && sudo nixos-rebuild switch'"
+echo "   To apply NixOS config: ssh -t $TARGET 'sudo cp ~/nixos-config-staged/* /etc/nixos/ && sudo nixos-rebuild switch'"

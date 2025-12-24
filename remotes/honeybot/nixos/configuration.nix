@@ -22,7 +22,7 @@
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Allow Nginx to read files in /home/mike
-  systemd.services.nginx.serviceConfig.ProtectHome = "read-only"
+  systemd.services.nginx.serviceConfig.ProtectHome = "read-only";
 
   # 2. THE INSOMNIA (Server Mode)
   # Prevent the laptop from sleeping when you close the lid
@@ -34,6 +34,13 @@
   systemd.targets.suspend.enable = false;
   systemd.targets.hibernate.enable = false;
   systemd.targets.hybrid-sleep.enable = false;
+
+  # ENSURE NGINX CAN WALK TO HOME
+  # 'x' = mode, 'mike' = user, 'users' = group, '0711' = rwx--x--x
+  systemd.tmpfiles.rules = [
+    "d /home/mike 0711 mike users -"
+    "d /home/mike/www 0711 mike users -"
+  ];
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -121,11 +128,11 @@
     recommendedGzipSettings = true;
     recommendedOptimisation = true;
     recommendedProxySettings = true;
-    recommendedTlsSettings = true;
+    # recommendedTlsSettings = true; # <--- Comment this out temporarily
 
     virtualHosts."mikelev.in" = {
-      forceSSL = true;      # Force all traffic to HTTPS
-      enableACME = true;    # Let's Encrypt magic
+      # forceSSL = true;      # Force all traffic to HTTPS  # <--- Comment out (Don't force HTTPS yet)
+      # enableACME = true;    # Let's Encrypt magic # <--- Comment out (Don't try to get certs yet)
 
       # The Web Root
       root = "/home/mike/www/mikelev.in/_site"; 
