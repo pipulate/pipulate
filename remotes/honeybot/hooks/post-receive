@@ -1,56 +1,42 @@
 #!/bin/sh
-# The "Sovereign Build" Hook (System Nginx Edition)
+# The "Sovereign Build" Hook (Hybrid Late-Stage Edition)
 
 GIT_DIR="/home/mike/git/mikelev.in.git"
 WORK_TREE="/home/mike/www/mikelev.in"
 
-echo "🎯 [Hook] Received Push. Building Site..."
+echo "🎯 [Hook] Received Push. Deploying..."
 
-# 1. Checkout
+# 1. Force Checkout to the Web Root
 git --work-tree=$WORK_TREE --git-dir=$GIT_DIR checkout -f main
 
-# 2. Build (using the flake environment)
+# 2. Enter the Arena
 cd $WORK_TREE
-# We force the PROD variable to skip interactive menus
-# We use 'nix develop' to run the build command
-echo "🔨 [Hook] Building Jekyll..."
-export PIPULATE_PROD=1
-nix develop --command jekyll build
+echo "🔨 [Hook] Starting Hybrid Build..."
 
-# 3. Permissions Fix (Crucial for System Nginx)
-# The 'nginx' user needs to read these files, but 'mike' owns them.
-# We make them world-readable (755).
+# 3. The Build Command
+# We use 'nix develop' to get Ruby/GCC/Libs, but we manually
+# setup the gem environment because --command skips shellHook.
+nix develop --command bash -c "
+  # --- MANUAL ENV SETUP (Mimics shellHook) ---
+  export GEM_HOME=\$PWD/.gem
+  export PATH=\$GEM_HOME/bin:\$PATH
+  export BUNDLE_FORCE_RUBY_PLATFORM=1
+  
+  # --- LATE-STAGE DEPENDENCY MANAGEMENT ---
+  echo '💎 Checking Gems...'
+  # Ensure bundler is present (Nix provides Ruby, but maybe not bundler binary in path)
+  gem install bundler --no-document --silent
+  
+  # Install site dependencies into local .gem/
+  bundle install --quiet
+  
+  # --- THE BUILD ---
+  echo '🏗️  Jekyll Build...'
+  bundle exec jekyll build --future
+"
+
+# 4. Permissions Fix (Crucial for Nginx)
+echo "🔒 [Hook] Fixing Permissions..."
 chmod -R 755 $WORK_TREE/_site
 
-echo "✅ [Hook] Build Complete. Nginx is serving."
-
-
-#!/bin/sh
-# The "Sovereign Deployment" Hook (Local Master Copy)
-# -----------------------------
-
-# GIT_DIR="/home/mike/git/mikelev.in.git"
-# WORK_TREE="/home/mike/www/mikelev.in"
-# 
-# echo "🎯 [Hook] Received Push. Deploying to $WORK_TREE..."
-# 
-# # 1. Force checkout
-# git --work-tree=$WORK_TREE --git-dir=$GIT_DIR checkout -f main
-# 
-# # 2. Move to stage
-# cd $WORK_TREE
-# 
-# # 3. HUD Reset
-# if tmux has-session -t website 2>/dev/null; then
-#     echo "🛑 [Hook] Stopping existing server session..."
-#     tmux kill-session -t website
-# fi
-# 
-# # 4. The Launch (With Debug Safety Net)
-# # We add '|| sleep 10000' so the window stays open if the server crashes.
-# echo "🚀 [Hook] Launching 'jes-prod' in tmux session 'website'..."
-# 
-# tmux new-session -d -s website "export PIPULATE_PROD=1; nix develop -c jes-prod || (echo 'CRASHED'; sleep 10000)"
-# 
-# echo "✅ [Hook] Deployment Triggered."
-# echo "👀 [Hook] Debug: ssh honeybot -t 'tmux attach -t website'"
+echo "✅ [Hook] Deployment Complete. Site is Live."
