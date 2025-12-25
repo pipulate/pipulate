@@ -36,10 +36,13 @@
   systemd.targets.hybrid-sleep.enable = false;
 
   # ENSURE NGINX CAN WALK TO HOME
+  # 'd' creates, 'z' adjusts mode of existing lines.
   # 'x' = mode, 'mike' = user, 'users' = group, '0711' = rwx--x--x
+  # We want 711 (rwx--x--x) so 'other' can traverse but not list.
   systemd.tmpfiles.rules = [
-    "d /home/mike 0711 mike users -"
-    "d /home/mike/www 0711 mike users -"
+    # path          mode user group age argument
+    "d /home/mike     0711 mike users -"
+    "d /home/mike/www 0755 mike users -"
   ];
 
   # Configure network proxy if necessary
@@ -144,6 +147,7 @@
     isNormalUser = true;
     description = "Mike";
     extraGroups = [ "networkmanager" "wheel" ];
+    homeMode = "711"; # <--- ADD THIS. Crucial for Nginx traversal.
     packages = with pkgs; [
     #  thunderbird
     ];
