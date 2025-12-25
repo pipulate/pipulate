@@ -15,7 +15,7 @@ warnings.filterwarnings('ignore', category=pd.errors.SettingWithCopyWarning)
 
 # --- CONFIGURATION ---
 # Adjust path to your context folder relative to script execution location
-CONTEXT_DIR = Path("../../_posts/_context") 
+CONTEXT_DIR = Path("/home/mike/repos/MikeLev.in/_posts/_context") 
 OUTPUT_FILE = "graph.json"
 TARGET_BRANCHING_FACTOR = 7  # The "Rule of 7" (Clusters)
 GOLD_PAN_SIZE = 5            # Number of "Top Articles" to keep at the Hub level
