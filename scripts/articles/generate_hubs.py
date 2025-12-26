@@ -5,12 +5,11 @@ import shutil
 import argparse
 import common
 
+
 NAVGRAPH_FILE = Path("navgraph.json")
 
 def clean_and_prep_dirs(hubs_dir):
-    """Ensures the target directory exists and is empty."""
     if hubs_dir.exists():
-        # Optimized: Only delete if it looks like a generated folder to avoid accidents
         shutil.rmtree(hubs_dir)
     hubs_dir.mkdir(parents=True, exist_ok=True)
     print(f"🧹 Cleaned: {hubs_dir}")
@@ -28,25 +27,54 @@ def generate_hub_file(node, target_repo_root, hubs_dir):
         filename = f"{safe_id}.md"
         filepath = hubs_dir / filename
     
-    # ... [Frontmatter and Body generation logic remains identical] ...
-    # ... Just ensure you use the passed 'filepath' variable ...
+    # 2. Build Frontmatter
+    frontmatter = f"""---
+layout: page
+title: "{node['title']}"
+permalink: {node['permalink']}
+---
+"""
+
+    # 3. Build Body
+    body = f"# {node['title']}\n\n"
+    if node.get('blurb'):
+        body += f"_{node['blurb']}_\n\n"
+    
+    if node.get('children_hubs'):
+        body += "## Explore Topics\n"
+        for child in node['children_hubs']:
+            body += f"* [{child['title']}]({child['permalink']})\n"
+    
+    if node.get('children_articles'):
+        body += "\n## Top Articles\n"
+        for article in node['children_articles']:
+            body += f"* [{article['title']}]({article['permalink']})\n"
+            if 'date' in article:
+                body += f"  <small>{article['date']}</small>\n"
+
+    if not node.get('children_hubs') and not node.get('children_articles'):
+        body += "*No sub-topics found.*\n"
+
+    # 4. Write File
+    with open(filepath, 'w', encoding='utf-8') as f:
+        f.write(frontmatter + body)
+        
+    # NOTE: No recursion here! It is handled in main().
+
 
 def main():
     parser = argparse.ArgumentParser(description="Generate Hub Pages")
     common.add_target_argument(parser)
     args = parser.parse_args()
 
-    # Get the _posts dir
     posts_dir = common.get_target_path(args)
-    # Deduce Repo Root (parent of _posts)
     target_repo_root = posts_dir.parent
-    # Define Hubs Dir
     hubs_dir = target_repo_root / "pages"
 
     print(f"🚀 Generating Hubs for: {target_repo_root.name}")
     
     if not NAVGRAPH_FILE.exists():
-        print(f"❌ Error: {NAVGRAPH_FILE} not found. Run build_navgraph.py first.")
+        print(f"❌ Error: {NAVGRAPH_FILE} not found.")
         return
 
     with open(NAVGRAPH_FILE, 'r', encoding='utf-8') as f:
@@ -54,13 +82,11 @@ def main():
 
     clean_and_prep_dirs(hubs_dir)
     
-    # Cleanup old index if exists
     old_index = target_repo_root / "index.markdown"
     if old_index.exists():
         os.remove(old_index)
 
-    # Recursive generation
-    # You will need to wrap the recursion in a helper that passes the dirs
+    # Recursive Walker
     def recurse(node):
         generate_hub_file(node, target_repo_root, hubs_dir)
         for child in node.get('children_hubs', []):
