@@ -146,7 +146,7 @@
   users.users.mike = {
     isNormalUser = true;
     description = "Mike";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "nginx" ];
     homeMode = "711"; # <--- ADD THIS. Crucial for Nginx traversal.
     packages = with pkgs; [
     #  thunderbird
