@@ -19,12 +19,24 @@ import shutil
 import json
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
+from pathlib import Path
 
 try:
     import jupytext
     JUPYTEXT_AVAILABLE = True
 except ImportError:
     JUPYTEXT_AVAILABLE = False
+
+
+CONFIG_DIR = Path.home() / ".config" / "articleizer"
+TARGETS_FILE = CONFIG_DIR / "targets.json"
+
+DEFAULT_TARGETS = {
+    "1": {
+        "name": "Local Project (Default)",
+        "path": "/home/mike/repos/trimnoir/_posts" # Updated default fallback
+    }
+}
 
 # ============================================================================
 # --- Logging & Capture ---
@@ -65,14 +77,19 @@ def load_url_map():
 
 def load_targets():
     """Loads publishing targets from external config."""
-    config_path = os.path.expanduser("~/.config/articleizer/targets.json")
-    if os.path.exists(config_path):
+    if TARGETS_FILE.exists():
         try:
-            with open(config_path, 'r') as f:
+            with open(TARGETS_FILE, 'r') as f:
                 return json.load(f)
         except json.JSONDecodeError:
-            logger.print(f"Warning: Could not decode JSON from {config_path}")
-    return {}
+            logger.print(f"Warning: {TARGETS_FILE} is corrupt. Using defaults.")
+    return DEFAULT_TARGETS
+
+# Initialize with defaults, but allow override
+CONFIG = {
+    "PROJECT_NAME": "pipulate",
+    "POSTS_DIRECTORY": DEFAULT_TARGETS["1"]["path"] 
+}
 
 URL_MAP = load_url_map()
 
@@ -658,11 +675,6 @@ def main():
     parser.add_argument('--context-only', action='store_true', help='Generate a context-only prompt without file contents.')
     parser.add_argument('-n', '--no-tree', action='store_true', help='Suppress file tree and UML generation.')
     parser.add_argument(
-        '-t', '--target',
-        type=int,
-        help='Specify a target ID from targets.json to set the article source.'
-    )
-    parser.add_argument(
         '-l', '--list',
         nargs='?', const='[-5:]', default=None,
         help='Include a list of recent articles. Optionally provide a slice, e.g., "[:]". Defaults to "[-5:]".'
@@ -677,7 +689,22 @@ def main():
         action='store_true',
         help='Include matching Holographic Context JSONs for any articles listed/included.'
     )
+    parser.add_argument(
+        '-t', '--target', 
+        type=str, 
+        help='Specify a target ID from targets.json to set the article source.'
+    )
     args = parser.parse_args()
+
+    # Handle Target Selection
+    targets = load_targets()
+    if args.target:
+        if args.target in targets:
+            selected = targets[args.target]
+            CONFIG["POSTS_DIRECTORY"] = selected["path"]
+            logger.print(f"🎯 Target set to: {selected['name']} ({selected['path']})")
+        else:
+            logger.print(f"❌ Invalid target key: {args.target}. Using default.")
 
     if args.check_dependencies:
         check_dependencies()
