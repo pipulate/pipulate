@@ -1,4 +1,8 @@
 AI_PHOOEY_CHOP = """\
+# /home/mike/repos/trimnoir/flake.nix
+/home/mike/.config/articleizer/targets.json
+scripts/articles/articleizer.py
+scripts/articles/editing_prompt.txt
 scripts/articles/contextualizer.py
 scripts/articles/generate_semrush_candidates.py
 scripts/articles/gsc_historical_fetch.py
