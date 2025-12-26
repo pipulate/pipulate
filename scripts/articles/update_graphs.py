@@ -1,97 +1,68 @@
-# scripts/articles/update_graphs.py
-import os
-import sys
 import subprocess
+import sys
 import time
+import argparse
 from pathlib import Path
+import common
 
-# --- CONFIGURATION ---
-# We assume sibling scripts are in the same directory as this orchestrator
-BASE_DIR = Path(__file__).parent.resolve()
-
-# The Sequence of Operations (Order Matters!)
-PIPELINE = [
-    {
-        "name": "Contextualizer",
-        "file": "contextualizer.py",
-        "desc": "Extracting keywords and metadata from new articles..."
-    },
-    {
-        "name": "SEMRush Candidates",
-        "file": "generate_semrush_candidates.py",
-        "desc": "Updating keyword candidate list for market analysis..."
-    },
-    {
-        "name": "GSC Historical Fetch",
-        "file": "gsc_historical_fetch.py",
-        "desc": "Fetching latest performance velocity from Google Search Console..."
-    },
-    {
-        "name": "Hierarchy Builder",
-        "file": "build_hierarchy.py",
-        "desc": "Clustering content and generating D3 Link Graph..."
-    },
-    {
-        "name": "NavGraph Builder",
-        "file": "build_navgraph.py",
-        "desc": "Constructing the recursive navigation tree (NavGraph)..."
-    },
-    {
-        "name": "Hub Generator",
-        "file": "generate_hubs.py",
-        "desc": "Generating static Jekyll Hub pages from NavGraph..."
-    }
+# The pipeline sequence
+SCRIPTS = [
+    "contextualizer.py",
+    "generate_semrush_candidates.py",
+    "gsc_historical_fetch.py",
+    "build_hierarchy.py",
+    "build_navgraph.py",
+    "generate_hubs.py"
 ]
 
-def run_step(step_info):
-    """Runs a single python script as a subprocess."""
-    script_path = BASE_DIR / step_info["file"]
+def run_step(script_name, target_key):
+    print(f"\n--- 🚀 Step: {script_name} ---")
+    start = time.time()
     
-    if not script_path.exists():
-        print(f"❌ ERROR: Could not find {script_path}")
-        return False
-
-    print(f"\n--- 🚀 Step: {step_info['name']} ---")
-    print(f"ℹ️  {step_info['desc']}")
+    # We pass the target key to every script
+    cmd = [sys.executable, script_name, "--target", target_key]
     
     try:
-        # We use sys.executable to ensure we use the same Python interpreter (and venv)
-        # that is running this orchestrator.
-        start_time = time.time()
-        result = subprocess.run(
-            [sys.executable, str(script_path)], 
-            check=True,
-            text=True
-        )
-        duration = time.time() - start_time
-        print(f"✅ {step_info['name']} complete ({duration:.2f}s).")
-        return True
+        # check=True ensures we stop if a step fails
+        subprocess.run(cmd, check=True)
+    except subprocess.CalledProcessError:
+        print(f"❌ Critical Failure in {script_name}. Stopping pipeline.")
+        sys.exit(1)
         
-    except subprocess.CalledProcessError as e:
-        print(f"\n💥 ERROR in {step_info['name']}!")
-        print(f"   Exit Code: {e.returncode}")
-        return False
-    except Exception as e:
-        print(f"\n💥 UNEXPECTED ERROR: {e}")
-        return False
+    duration = time.time() - start
+    print(f"✅ {script_name} complete ({duration:.2f}s).")
 
 def main():
-    print(f"🤖 Initiating Pipulate Graph Update Sequence...")
-    print(f"📂 Working Directory: {BASE_DIR}")
+    parser = argparse.ArgumentParser(description="Update all Pipulate graphs")
+    common.add_target_argument(parser)
+    args = parser.parse_args()
     
-    total_start = time.time()
-    success_count = 0
-    
-    for step in PIPELINE:
-        if run_step(step):
-            success_count += 1
-        else:
-            print("\n🛑 Pipeline halted due to error.")
-            sys.exit(1)
+    # 1. Resolve the Target Key ONCE
+    targets = common.load_targets()
+    target_key = args.target
 
+    if not target_key:
+        print("🤖 Initiating Pipulate Graph Update Sequence...")
+        print("Select Target Repo for ALL steps:")
+        for k, v in targets.items():
+            print(f"  [{k}] {v['name']} ({v['path']})")
+        
+        target_key = input("Enter choice (default 1): ").strip() or "1"
+    
+    if target_key not in targets:
+        print(f"❌ Invalid target key: {target_key}")
+        sys.exit(1)
+
+    print(f"\n🔒 Locked Target: {targets[target_key]['name']}")
+    
+    # 2. Run the sequence
+    total_start = time.time()
+    
+    for script in SCRIPTS:
+        run_step(script, target_key)
+        
     total_duration = time.time() - total_start
-    print(f"\n✨ All {success_count} steps completed successfully in {total_duration:.2f}s.")
-    print("👉 Your Link Graph and Hub Pages are now synchronized with Reality.")
+    print(f"\n✨ All steps completed successfully in {total_duration:.2f}s.")
 
 if __name__ == "__main__":
     main()
