@@ -3,11 +3,11 @@ import glob
 from pathlib import Path
 from collections import Counter
 import re
+import argparse
 import common
 
 # --- CONFIGURATION ---
 # Path to your JSON context shards relative to this script
-CONTEXT_DIR = Path("/home/mike/repos/MikeLev.in/_posts/_context")
 OUTPUT_FILE = "semrush_candidates.txt"
 TOP_N = 100
 
@@ -39,12 +39,12 @@ def normalize_keyword(kw):
         
     return clean
 
-def generate_candidates():
-    print(f"🚀 Scanning shards in {CONTEXT_DIR}...")
+def generate_candidates(context_dir):
+    print(f"🚀 Scanning shards in {context_dir}...")
     
-    files = list(CONTEXT_DIR.glob("*.json"))
+    files = list(context_dir.glob("*.json"))
     if not files:
-        print(f"❌ No JSON files found in {CONTEXT_DIR}. Check your path.")
+        print(f"❌ No JSON files found in {context_dir}. Check your path.")
         return
 
     keyword_counter = Counter()
@@ -54,16 +54,11 @@ def generate_candidates():
         try:
             with open(f, 'r', encoding='utf-8') as file:
                 data = json.load(file)
-                
-                # We mine both 'kw' (Keywords) and 'sub' (Sub-topics)
-                # These are your highest signal semantic markers
                 sources = data.get('kw', []) + data.get('sub', [])
-                
                 for raw_kw in sources:
                     clean_kw = normalize_keyword(raw_kw)
                     if clean_kw:
                         keyword_counter[clean_kw] += 1
-            
             file_count += 1
         except Exception as e:
             print(f"⚠️ Error reading {f.name}: {e}")
@@ -89,18 +84,12 @@ def generate_candidates():
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Build D3 Hierarchy Graph")
+    parser = argparse.ArgumentParser(...)
     common.add_target_argument(parser)
     args = parser.parse_args()
-
-    # Dynamic Path Resolution
     posts_dir = common.get_target_path(args)
     context_dir = posts_dir / "_context"
-    
-    print("🚀 Initializing Hierarchy Builder...")
-    
-    df = load_shards(context_dir)
-    # ... [Rest of main function] ...
+    generate_candidates(context_dir)
 
 
 if __name__ == "__main__":

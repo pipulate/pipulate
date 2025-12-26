@@ -9,6 +9,8 @@ from sklearn.decomposition import TruncatedSVD
 from collections import Counter
 import re
 import warnings
+import argparse
+import common
 
 # Silence the specific warning if copy usage is correct logic-wise
 warnings.filterwarnings('ignore', category=pd.errors.SettingWithCopyWarning)
@@ -281,6 +283,13 @@ def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, market_d
 
 def main():
     print("🚀 Initializing Hierarchy Builder...")
+    parser = argparse.ArgumentParser(description="Build D3 Hierarchy Graph")
+    common.add_target_argument(parser)
+    args = parser.parse_args()
+
+    # Dynamic Path Resolution
+    posts_dir = common.get_target_path(args)
+    context_dir = posts_dir / "_context"
     
     df = load_shards(CONTEXT_DIR)
     if df.empty:
