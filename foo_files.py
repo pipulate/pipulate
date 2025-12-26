@@ -1,5 +1,15 @@
 AI_PHOOEY_CHOP = """\
-prompt_foo.py
+config.py
+server.py                       
+imports/__init__.py
+imports/voice_synthesis.py
+pipulate/__init__.py
+pipulate/pipulate.py
+pipulate/core.py
+apps/010_introduction.py
+/home/mike/repos/nixos/autognome.py
+/home/mike/repos/trimnoir/flake.nix
+remotes/honeybot/nixos/configuration.nix
 """
 
 ## > We've got content, it's groovy context  
