@@ -147,7 +147,7 @@
     isNormalUser = true;
     description = "Mike";
     extraGroups = [ "networkmanager" "wheel" "nginx" ];
-    homeMode = "711"; # <--- ADD THIS. Crucial for Nginx traversal.
+    homeMode = "711"; 
     packages = with pkgs; [
     #  thunderbird
     ];
@@ -165,6 +165,12 @@
     git
     tmux
   ];
+
+  # The "Studio" Alias
+  # This creates a 'logs' command that works immediately upon login.
+  environment.shellAliases = {
+    logs = "tail -f /var/log/nginx/access.log | nix develop /home/mike/www/mikelev.in#quiet --command python3 -u /home/mike/www/mikelev.in/scripts/aquarium_tui.py";
+  };
 
   # 1. The Editor (The Bridge to AI)
   programs.neovim = {
