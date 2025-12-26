@@ -131,11 +131,11 @@
     recommendedGzipSettings = true;
     recommendedOptimisation = true;
     recommendedProxySettings = true;
-    # recommendedTlsSettings = true; # <--- Comment this out temporarily
+    recommendedTlsSettings = true; 
 
     virtualHosts."mikelev.in" = {
-      # forceSSL = true;      # Force all traffic to HTTPS  # <--- Comment out (Don't force HTTPS yet)
-      # enableACME = true;    # Let's Encrypt magic # <--- Comment out (Don't try to get certs yet)
+      forceSSL = true;      # Force all traffic to HTTPS  # <--- Comment out (Don't force HTTPS yet)
+      enableACME = true;    # Let's Encrypt magic # <--- Comment out (Don't try to get certs yet)
 
       # The Web Root
       root = "/home/mike/www/mikelev.in/_site"; 
