@@ -10,6 +10,7 @@ from datetime import datetime
 import google.generativeai as genai
 import frontmatter
 import tiktoken  # Requires: pip install tiktoken
+import common
 
 # --- CONFIGURATION ---
 CONFIG_DIR = Path.home() / ".config" / "articleizer"
@@ -270,26 +271,20 @@ def process_batch(batch_files, key_name, api_key, context_dir, dry_run):
     return processed_count
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate AI context JSONs with multi-key rotation.")
-    parser.add_argument('--limit', type=int, default=20, help="Max items per key batch")
-    parser.add_argument('--force', action='store_true', help="Overwrite existing context files")
-    parser.add_argument('--dry-run', action='store_true', help="Show what would happen")
-    parser.add_argument('-k', '--key', type=str, default="default", help="Single key mode (default: 'default')")
-    parser.add_argument('-m', '--keys', type=str, help="Multi-key mode: Comma-separated list of keys (e.g., 'c1,c2,c3')")
+    parser = argparse.ArgumentParser(description="Generate AI context JSONs.")
+    parser.add_argument('--limit', type=int, default=20)
+    parser.add_argument('--force', action='store_true')
+    parser.add_argument('--dry-run', action='store_true')
+    parser.add_argument('-k', '--key', type=str, default="default")
+    parser.add_argument('-m', '--keys', type=str)
+    
+    # Use Common Argument
+    common.add_target_argument(parser)
     
     args = parser.parse_args()
 
-    # Target Selection
-    print("Select target blog directory:")
-    for key, target in PROJECT_TARGETS.items():
-        print(f"  [{key}] {target['name']}")
-    
-    choice = input("Enter choice (1..): ").strip()
-    if choice not in PROJECT_TARGETS:
-        print("Invalid choice.")
-        return
-
-    posts_dir = Path(PROJECT_TARGETS[choice]['path']).resolve()
+    # Dynamic Path Resolution via Common
+    posts_dir = common.get_target_path(args)
     context_dir = posts_dir / "_context"
     
     if not posts_dir.exists():

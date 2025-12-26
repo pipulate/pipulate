@@ -18,6 +18,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 import random
 from pathlib import Path
+import common
 
 # --- CONFIGURATION ---
 SITE_URL = "sc-domain:mikelev.in" 
@@ -142,6 +143,10 @@ def should_run(force=False):
 def main():
     parser = argparse.ArgumentParser(description="Fetch GSC History")
     parser.add_argument('--force', action='store_true', help="Ignore cache and force fetch")
+    
+    # Add this line so it swallows the --target flag without error
+    common.add_target_argument(parser) 
+    
     args = parser.parse_args()
 
     if not should_run(args.force):
