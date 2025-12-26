@@ -3,6 +3,7 @@ import glob
 from pathlib import Path
 from collections import Counter
 import re
+import common
 
 # --- CONFIGURATION ---
 # Path to your JSON context shards relative to this script
@@ -86,5 +87,21 @@ def generate_candidates():
     print(f"💾 Saved list to: {OUTPUT_FILE}")
     print("📋 Copy the contents of this file into SEMRush Keyword Overview (Bulk Analysis).")
 
+
+def main():
+    parser = argparse.ArgumentParser(description="Build D3 Hierarchy Graph")
+    common.add_target_argument(parser)
+    args = parser.parse_args()
+
+    # Dynamic Path Resolution
+    posts_dir = common.get_target_path(args)
+    context_dir = posts_dir / "_context"
+    
+    print("🚀 Initializing Hierarchy Builder...")
+    
+    df = load_shards(context_dir)
+    # ... [Rest of main function] ...
+
+
 if __name__ == "__main__":
-    generate_candidates()
+    main()
