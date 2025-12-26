@@ -291,9 +291,11 @@ def main():
     posts_dir = common.get_target_path(args)
     context_dir = posts_dir / "_context"
     
-    df = load_shards(CONTEXT_DIR)
+    # BUG FIX: Use the local 'context_dir', NOT the global 'CONTEXT_DIR'
+    df = load_shards(context_dir) 
+    
     if df.empty:
-        print("❌ No data found. Check CONTEXT_DIR path.")
+        print(f"❌ No data found in {context_dir}")
         return
         
     market_data = load_market_data()
