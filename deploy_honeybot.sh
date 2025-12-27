@@ -12,6 +12,7 @@ echo "🚀 Syncing Tools..."
 # We move the sonar script that hides IPs into location
 ssh $TARGET "mkdir -p ~/www/mikelev.in/scripts"
 rsync -av scripts/sonar.py $TARGET:~/www/mikelev.in/scripts/
+rsync -av scripts/aquarium.py $TARGET:~/www/mikelev.in/scripts/
 
 echo "🚀 Syncing NixOS Config..."
 # We push the config to a temp folder, then sudo move it (requires interactive password or NOPASSWD sudo)

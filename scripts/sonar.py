@@ -20,6 +20,9 @@ from textual.binding import Binding
 # Configuration & Patterns
 # -----------------------------------------------------------------------------
 
+# 1. The "Nuclear" ANSI Stripper (Removes colors, resets, and weird terminal codes)
+ANSI_ESCAPE = re.compile(r'(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]')
+
 # Nginx Combined Log Format Regex
 # Matches: 127.0.0.1 - - [27/Dec/2025:10:00:00 +0000] "GET /index.html HTTP/1.1" 200 1234 "-" "Mozilla/5.0..."
 LOG_PATTERN = re.compile(
@@ -43,6 +46,8 @@ class SonarApp(App):
         color: auto;
     }
     """
+
+    ENABLE_COMMAND_PALETTE = False
 
     BINDINGS = [
         Binding("q", "quit", "Quit Sonar"),
@@ -122,19 +127,26 @@ class SonarApp(App):
     # -------------------------------------------------------------------------
     # The Pump: Reading the Stream
     # -------------------------------------------------------------------------
-
     async def monitor_stdin(self):
-        """Reads stdin line by line in a non-blocking way."""
-        # We use a file iterator on stdin which blocks, so we run it in a thread.
-        # This keeps the UI responsive.
+        """Reads stdin, scrubs it, and updates the table."""
         while True:
-            # Read a line from the pipe
             line = await asyncio.to_thread(sys.stdin.readline)
-            
             if not line:
-                break # End of stream
+                break
             
-            self.process_line(line.strip())
+            # SANITIZATION PROTOCOL
+            # 1. Remove ANSI escape codes (colors, resets, cursor moves)
+            clean_line = ANSI_ESCAPE.sub('', line)
+            
+            # 2. Remove common mouse reporting garbage (e.g., <35;14;M)
+            if "<" in clean_line and ";" in clean_line and "M" in clean_line:
+                continue
+
+            # 3. Strip whitespace
+            clean_line = clean_line.strip()
+            
+            if clean_line:
+                self.process_line(clean_line)
 
     def process_line(self, line):
         """Parses a raw log line and schedules the UI update."""
