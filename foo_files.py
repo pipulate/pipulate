@@ -1,9 +1,12 @@
 AI_PHOOEY_CHOP = """\
-# remotes/honeybot/nixos/configuration.nix
-# /home/mike/repos/trimnoir/flake.nix
-# deploy_honeybot.sh
-scripts/aquarium.py
-scripts/sonar.py
+/home/mike/repos/nixos/configuration.nix
+/home/mike/repos/nixos/packages.nix
+/home/mike/repos/nixos/services.nix
+/home/mike/repos/nixos/ai-acceleration.nix
+/home/mike/repos/nixos/autognome.py
+remotes/honeybot/nixos/configuration.nix
+/home/mike/repos/trimnoir/flake.nix
+remotes/honeybot/nixos/configuration.nix
 """
 
 ## > We've got content, it's groovy context  
@@ -17,6 +20,12 @@ scripts/sonar.py
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# remotes/honeybot/nixos/configuration.nix
+# /home/mike/repos/trimnoir/flake.nix
+# deploy_honeybot.sh
+# scripts/aquarium.py
+# scripts/sonar.py
 
 # /home/mike/repos/trimnoir/flake.nix
 

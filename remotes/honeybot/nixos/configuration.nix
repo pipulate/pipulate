@@ -75,7 +75,13 @@
 
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
+  services.xserver.displayManager.gdm.wayland = false; # <--- CRITICAL: Force X11 for automation
   services.xserver.desktopManager.gnome.enable = true;
+
+  # Remote Desktop (The Headless Head)
+  services.xrdp.enable = true;
+  services.xrdp.defaultWindowManager = "gnome-shell";
+  services.xrdp.openFirewall = true; # Opens port 3389
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -164,6 +170,14 @@
   environment.systemPackages = with pkgs; [
     git
     tmux
+
+    # The Broadcast Studio
+    obs-studio
+    pavucontrol     # Essential for routing audio (PulseAudio Volume Control)
+    
+    # The Automaton's Hands (Amiga AREXX style control)
+    xdotool         # Keyboard/Mouse simulation
+    wmctrl          # Window management
   ];
 
   # The "Studio" Aliases
