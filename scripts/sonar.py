@@ -159,7 +159,12 @@ class SonarApp(App):
 
     def write_log(self, text):
         log = self.query_one(Log)
-        log.write(text)
+        # Only write the string content for now to stop the crash
+        # We lose color temporarily but gain stability
+        if hasattr(text, "plain"):
+             log.write(text.plain)
+        else:
+             log.write(str(text))
 
     def update_stats(self, hits, bots, errors):
         try:
