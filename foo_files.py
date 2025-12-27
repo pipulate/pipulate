@@ -1,7 +1,7 @@
 AI_PHOOEY_CHOP = """\
-remotes/honeybot/nixos/configuration.nix
-/home/mike/repos/trimnoir/flake.nix
-deploy_honeybot.sh
+# remotes/honeybot/nixos/configuration.nix
+# /home/mike/repos/trimnoir/flake.nix
+# deploy_honeybot.sh
 scripts/aquarium.py
 scripts/sonar.py
 """
