@@ -1,248 +1,222 @@
 #!/usr/bin/env python3
 """
-Sonar: A Real-Time Log Visualizer for the Forever Machine.
-Usage: tail -f access.log | python sonar.py
+Sonar V2: Stable Core Edition.
+Based on the rock-solid aquarium.py log widget, enhanced with IP hashing.
 """
 
 import sys
 import re
 import hashlib
-import asyncio
 from datetime import datetime
-
-# Third-party imports (Provided by Nix flake)
-from rich.text import Text
 from textual.app import App, ComposeResult
-from textual.widgets import DataTable, Header, Footer
-from textual.binding import Binding
+from textual.containers import Container
+from textual.widgets import Header, Footer, Static, Log, Label
+from textual import work
+from rich.text import Text
 
-# -----------------------------------------------------------------------------
-# Configuration & Patterns
-# -----------------------------------------------------------------------------
-
-# 1. The "Nuclear" ANSI Stripper (Removes colors, resets, and weird terminal codes)
+# --- Configuration ---
+# 1. The "Nuclear" ANSI Stripper
 ANSI_ESCAPE = re.compile(r'(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]')
 
-# Nginx Combined Log Format Regex
-# Matches: 127.0.0.1 - - [27/Dec/2025:10:00:00 +0000] "GET /index.html HTTP/1.1" 200 1234 "-" "Mozilla/5.0..."
-LOG_PATTERN = re.compile(
-    r'(?P<ip>[\d\.]+) - - \[(?P<time>.*?)\] "(?P<request>.*?)" (?P<status>\d+) (?P<bytes>\d+) "(?P<referrer>.*?)" "(?P<ua>.*?)"'
-)
+# 2. Standard Nginx Regex
+LOG_PATTERN = re.compile(r'(?P<ip>[\d\.]+) - - \[(?P<time>.*?)\] "(?P<request>.*?)" (?P<status>\d+) (?P<bytes>\d+) "(?P<referrer>.*?)" "(?P<ua>.*?)"')
 
 class SonarApp(App):
-    """The Cybernetic HUD for watching the Black River."""
+    """The Cybernetic HUD (Stable Edition)."""
 
     CSS = """
-    DataTable {
-        height: 100%;
-        border-top: solid green;
-        scrollbar-gutter: stable;
+    Screen {
+        layout: grid;
+        grid-size: 4 6;
+        background: #0f1f27;
     }
-    Header {
-        dock: top;
-        height: 1;
+
+    /* TOP SECTION: Full Width Log Stream */
+    #log_stream {
+        column-span: 4;
+        row-span: 5;
+        background: #000000;
+        border: solid #00ff00;
+        color: #00ff00;
+        height: 100%;
+        scrollbar-gutter: stable;
+        overflow-y: scroll;
+    }
+
+    /* BOTTOM LEFT: AI Commentary */
+    #ai_commentary {
+        column-span: 3;
+        row-span: 1;
+        border: solid magenta;
+        background: #100010;
+        height: 100%;
         content-align: center middle;
-        background: $primary;
-        color: auto;
+        text-style: bold;
+    }
+    
+    /* BOTTOM RIGHT: Stats */
+    #stats_panel {
+        column-span: 1;
+        row-span: 1;
+        border: solid cyan;
+        background: #051515;
+        padding: 0 1;
+    }
+    
+    Label {
+        width: 100%;
+    }
+    
+    .header {
+        color: cyan;
+        text-style: bold underline;
+        margin-bottom: 1;
     }
     """
 
-    ENABLE_COMMAND_PALETTE = False
-
-    BINDINGS = [
-        Binding("q", "quit", "Quit Sonar"),
-        Binding("c", "clear_table", "Clear History"),
-    ]
+    TITLE = "🌊 SONAR V2 🌊"
+    SUB_TITLE = "Listening to the Black River"
 
     def compose(self) -> ComposeResult:
-        yield Header(show_clock=True)
-        yield DataTable(zebra_stripes=True)
+        yield Header()
+        yield Log(id="log_stream", highlight=True)
+        
+        yield Static("Sonar Active. Watching for patterns...", id="ai_commentary")
+        
+        with Container(id="stats_panel"):
+            yield Label("STATS", classes="header")
+            yield Label("Hits: 0", id="stat_hits")
+            yield Label("Bots: 0", id="stat_bots")
+            yield Label("Err:  0", id="stat_errors")
+            
         yield Footer()
 
     def on_mount(self) -> None:
-        """Initialize the data table structure."""
-        table = self.query_one(DataTable)
-        # Define our columns
-        table.add_columns(
-            "Time", 
-            "Identity [Hash]", 
-            "Method", 
-            "Path", 
-            "Status", 
-            "Agent (Snippet)"
-        )
-        table.cursor_type = "row"
-        
-        # Start the background worker to read the pipe
-        self.run_worker(self.monitor_stdin(), exclusive=True)
-
-    def action_clear_table(self) -> None:
-        """Clear the table rows."""
-        table = self.query_one(DataTable)
-        table.clear()
+        self.stream_logs()
 
     # -------------------------------------------------------------------------
-    # Core Logic: The Anonymization Protocol
+    # Core Logic: IP Anonymization (Ported from Sonar V1)
     # -------------------------------------------------------------------------
-    
     def anonymize_ip(self, ip_str):
-        """
-        Transforms raw IP into a semi-anonymous 'Personality'.
-        Input: 192.168.10.5
-        Output: 192.168.*.* [a1b2]
-        """
+        """Transforms raw IP into a semi-anonymous 'Personality'."""
         try:
             parts = ip_str.split('.')
             if len(parts) == 4:
-                # The Mask: Keep the neighborhood
+                # Mask
                 masked = f"{parts[0]}.{parts[1]}.*.*"
-                
-                # The Hash: A consistent fingerprint for this session
-                # We salt it with the current date so tracking resets daily (privacy)
+                # Hash
                 salt = datetime.now().strftime("%Y-%m-%d")
                 hash_input = f"{ip_str}-{salt}"
                 hash_digest = hashlib.md5(hash_input.encode()).hexdigest()[:4]
-                
-                return Text.assemble(
-                    (masked, "cyan"), 
-                    " ", 
-                    (f"[{hash_digest}]", "bold magenta")
-                )
-            return Text(ip_str, style="red") # Fallback for non-IPv4
-        except Exception:
+                return Text.assemble((masked, "cyan"), " ", (f"[{hash_digest}]", "bold magenta"))
+            return Text(ip_str, style="red")
+        except:
             return Text(ip_str, style="red")
 
     def parse_request(self, request_str):
-        """Breaks down the request string."""
         try:
             parts = request_str.split()
             if len(parts) >= 2:
-                method = parts[0]
-                path = parts[1]
-                return method, path
+                return parts[0], parts[1] # Method, Path
             return "???", request_str
         except:
             return "???", request_str
 
-    # -------------------------------------------------------------------------
-    # The Pump: Reading the Stream
-    # -------------------------------------------------------------------------
-    async def monitor_stdin(self):
-        """Reads stdin, scrubs it, and updates the table."""
-        while True:
-            line = await asyncio.to_thread(sys.stdin.readline)
-            if not line:
-                break
-            
-            # SANITIZATION PROTOCOL
-            # 1. Remove ANSI escape codes (colors, resets, cursor moves)
+    @work(thread=True)
+    def stream_logs(self) -> None:
+        hits = 0
+        bots = 0
+        errors = 0
+        
+        # Read directly from standard input (The Pipe)
+        for line in sys.stdin:
+            # 1. Clean
             clean_line = ANSI_ESCAPE.sub('', line)
-            
-            # 2. Remove common mouse reporting garbage (e.g., <35;14;M)
-            if "<" in clean_line and ";" in clean_line and "M" in clean_line:
-                continue
-
-            # 3. Strip whitespace
+            if "<" in clean_line and ";" in clean_line and "M" in clean_line: continue
             clean_line = clean_line.strip()
-            
-            if clean_line:
-                self.process_line(clean_line)
+            if not clean_line: continue
 
-    def process_line(self, line):
-        """Parses a raw log line and schedules the UI update."""
-        match = LOG_PATTERN.match(line)
-        if match:
-            data = match.groupdict()
+            hits += 1
             
-            # 1. Identity
-            ip_display = self.anonymize_ip(data['ip'])
-            
-            # 2. Action
-            method, path = self.parse_request(data['request'])
-            
-            # 3. Status (Color Coded)
-            status = int(data['status'])
-            if 200 <= status < 300:
-                status_style = "bold green"
-            elif 300 <= status < 400:
-                status_style = "yellow"
-            elif 400 <= status < 500:
-                status_style = "bold red"
+            # 2. Parse & Format
+            match = LOG_PATTERN.search(clean_line)
+            if match:
+                data = match.groupdict()
+                
+                # Stats update
+                if "bot" in data['ua'].lower() or "spider" in data['ua'].lower():
+                    bots += 1
+                if data['status'].startswith('4') or data['status'].startswith('5'):
+                    errors += 1
+                
+                rich_text = self.format_log_line(data)
+                # Write to Log widget (Stable!)
+                self.call_from_thread(self.write_log, rich_text)
+                self.call_from_thread(self.update_stats, hits, bots, errors)
             else:
-                status_style = "white on red"
+                # Fallback for non-matching lines
+                self.call_from_thread(self.write_log, Text(clean_line, style="dim"))
 
-            # 4. Agent (The Fingerprint)
-            ua = data['ua']
+    def write_log(self, text):
+        log = self.query_one(Log)
+        log.write(text)
+
+    def update_stats(self, hits, bots, errors):
+        try:
+            self.query_one("#stat_hits", Label).update(f"Hits: {hits}")
+            self.query_one("#stat_bots", Label).update(f"Bots: {bots}")
+            self.query_one("#stat_errors", Label).update(f"Err:  {errors}")
+        except:
+            pass
+
+    def format_log_line(self, data):
+        # Color coding status
+        status = int(data['status'])
+        if 200 <= status < 300: status_style = "bold green"
+        elif 300 <= status < 400: status_style = "yellow"
+        elif 400 <= status < 500: status_style = "bold red"
+        else: status_style = "white on red"
+
+        # Identity
+        ip_display = self.anonymize_ip(data['ip'])
+        
+        # Request
+        method, path = self.parse_request(data['request'])
+        
+        # User Agent (Full Width Logic)
+        ua = data['ua']
+        ua_style = "dim white"
+        prefix = ""
+        if "Googlebot" in ua: prefix = "🤖 "; ua_style = "green"
+        elif "GPTBot" in ua or "Claude" in ua: prefix = "🧠 "; ua_style = "bold purple"
+        elif "Mozilla" in ua and "compatible" not in ua: prefix = "👤 "; ua_style = "bright_white"
+        elif "python" in ua.lower() or "curl" in ua.lower(): prefix = "🔧 "; ua_style = "cyan"
+        
+        ua_display = f"{prefix}{ua}"
+
+        # Assembly
+        # We manually space them to look table-like in the Log widget
+        text = Text()
+        try:
+            time_str = data['time'].split(':')[1:]
+            time_str = ":".join(time_str).split(' ')[0]
+            text.append(f"[{time_str}] ", style="dim")
+        except:
+            text.append("[TIME] ", style="dim")
             
-            # Default Style
-            ua_style = "dim white"
-            prefix = ""
-
-            # Simple heuristic detection for coloring
-            if "Googlebot" in ua:
-                prefix = "🤖 "
-                ua_style = "green"
-            elif "GPTBot" in ua or "ClaudeBot" in ua or "anthropic" in ua.lower():
-                prefix = "🧠 "
-                ua_style = "bold purple"
-            elif "Mozilla" in ua and "compatible" not in ua:
-                prefix = "👤 "
-                ua_style = "bright_white"
-            elif "python" in ua.lower() or "curl" in ua.lower() or "Go-http" in ua:
-                prefix = "🔧 "
-                ua_style = "cyan"
-            elif "bot" in ua.lower() or "spider" in ua.lower() or "crawl" in ua.lower():
-                prefix = "🕷️ "
-                ua_style = "yellow"
-
-            # FULL WIDTH: No truncation. Let Textual handle the layout.
-            ua_display = f"{prefix}{ua}"
-
-            # Extract clean time (HH:MM:SS)
-            # Log time format is typically: 27/Dec/2025:10:00:00
-            try:
-                time_part = data['time'].split(':')[1:] # Drop date part
-                time_str = ":".join(time_part).split(' ')[0]
-            except:
-                time_str = data['time']
-
-            row = [
-                time_str,
-                ip_display,
-                Text(method, style="bold"),
-                Text(path, style="blue"),
-                Text(str(status), style=status_style),
-                Text(ua_display, style=ua_style) # Use full display
-            ]
-
-            # Extract clean time (HH:MM:SS)
-            # Log time format is typically: 27/Dec/2025:10:00:00
-            try:
-                time_part = data['time'].split(':')[1:] # Drop date part
-                time_str = ":".join(time_part).split(' ')[0]
-            except:
-                time_str = data['time']
-
-            row = [
-                time_str,
-                ip_display,
-                Text(method, style="bold"),
-                Text(path, style="blue"),
-                Text(str(status), style=status_style),
-                Text(ua_display, style=ua_style)
-            ]
-            
-            # Schedule the UI update on the main thread
-            # self.call_from_thread(self.add_table_row, row)
-            # self.add_log_row(row)
-            self.add_table_row(row)
-
-    def add_table_row(self, row):
-        """Adds the row to the widget."""
-        table = self.query_one(DataTable)
-        table.add_row(*row)
-        # Auto-scroll to bottom to keep the "river" flowing
-        table.scroll_end(animate=False)
+        text.append(ip_display)
+        text.append(" | ", style="dim")
+        text.append(f"{method:4} ", style="bold")
+        text.append(f"{path} ", style="blue")
+        text.append(f"[{status}] ", style=status_style)
+        text.append("\n    ↳ ", style="dim") # Indent the UA on a new line for readability? Or keep same line?
+        # Let's keep same line for now to mimic the table row feel, but maybe add a separator
+        # text.append(f"{ua_display}", style=ua_style)
+        
+        # Actually, let's try the newline approach for UA to handle long strings better in a Log
+        text.append(f"{ua_display}", style=ua_style)
+        
+        return text
 
 if __name__ == "__main__":
     app = SonarApp()
