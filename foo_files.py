@@ -1,14 +1,8 @@
 AI_PHOOEY_CHOP = """\
-# CHAPTER 1: BOOTSTRAPPING THE FOREVER MACHINE
-assets/installer/install.sh
-prompt_foo.py
-foo_files.py
-flake.nix
-.gitignore
-config.py
-server.py
-AI_RUNME.py
-README.md
+remotes/honeybot/nixos/configuration.nix
+/home/mike/repos/trimnoir/flake.nix
+deploy_honeybot.sh
+scripts/sonar.py
 """
 
 ## > We've got content, it's groovy context  

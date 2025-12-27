@@ -161,25 +161,30 @@ class SonarApp(App):
 
             # 4. Agent (The Fingerprint)
             ua = data['ua']
-            ua_short = "Unknown"
-            ua_style = "dim white"
             
+            # Default Style
+            ua_style = "dim white"
+            prefix = ""
+
             # Simple heuristic detection for coloring
             if "Googlebot" in ua:
-                ua_short = "🤖 Googlebot"
+                prefix = "🤖 "
                 ua_style = "green"
-            elif "GPTBot" in ua or "ClaudeBot" in ua:
-                ua_short = "🧠 AI Crawler"
+            elif "GPTBot" in ua or "ClaudeBot" in ua or "anthropic" in ua.lower():
+                prefix = "🧠 "
                 ua_style = "bold purple"
             elif "Mozilla" in ua and "compatible" not in ua:
-                ua_short = "👤 Browser"
+                prefix = "👤 "
                 ua_style = "bright_white"
-            elif "python" in ua.lower() or "curl" in ua.lower():
-                ua_short = "🔧 Script"
+            elif "python" in ua.lower() or "curl" in ua.lower() or "Go-http" in ua:
+                prefix = "🔧 "
                 ua_style = "cyan"
-            else:
-                # Truncate long UAs
-                ua_short = ua[:25] + "..." if len(ua) > 25 else ua
+            elif "bot" in ua.lower() or "spider" in ua.lower() or "crawl" in ua.lower():
+                prefix = "🕷️ "
+                ua_style = "yellow"
+
+            # FULL WIDTH: No truncation. Let Textual handle the layout.
+            ua_display = f"{prefix}{ua}"
 
             # Extract clean time (HH:MM:SS)
             # Log time format is typically: 27/Dec/2025:10:00:00
@@ -195,7 +200,24 @@ class SonarApp(App):
                 Text(method, style="bold"),
                 Text(path, style="blue"),
                 Text(str(status), style=status_style),
-                Text(ua_short, style=ua_style)
+                Text(ua_display, style=ua_style) # Use full display
+            ]
+
+            # Extract clean time (HH:MM:SS)
+            # Log time format is typically: 27/Dec/2025:10:00:00
+            try:
+                time_part = data['time'].split(':')[1:] # Drop date part
+                time_str = ":".join(time_part).split(' ')[0]
+            except:
+                time_str = data['time']
+
+            row = [
+                time_str,
+                ip_display,
+                Text(method, style="bold"),
+                Text(path, style="blue"),
+                Text(str(status), style=status_style),
+                Text(ua_display, style=ua_style)
             ]
             
             # Schedule the UI update on the main thread
