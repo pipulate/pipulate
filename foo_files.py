@@ -1,7 +1,14 @@
 AI_PHOOEY_CHOP = """\
-remotes/honeybot/nixos/configuration.nix
-remotes/honeybot/hooks/post-receive
-deploy_honeybot.sh
+# CHAPTER 1: BOOTSTRAPPING THE FOREVER MACHINE
+assets/installer/install.sh
+prompt_foo.py
+foo_files.py
+flake.nix
+.gitignore
+config.py
+server.py
+AI_RUNME.py
+README.md
 """
 
 ## > We've got content, it's groovy context  
@@ -15,6 +22,37 @@ deploy_honeybot.sh
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/trimnoir/flake.nix
+
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/.config/articleizer/targets.json
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
+# /home/mike/repos/pipulate/scripts/articles/common.py
+# scripts/articles/contextualizer.py
+# scripts/articles/generate_semrush_candidates.py
+# scripts/articles/gsc_historical_fetch.py
+# scripts/articles/gsc_velocity.json
+# scripts/articles/build_hierarchy.py
+# scripts/articles/build_navgraph.py
+# scripts/articles/generate_hubs.py
+# scripts/articles/graph.json
+# scripts/articles/show_graph.html
+
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/packages.nix
+# /home/mike/repos/nixos/services.nix
+# /home/mike/repos/nixos/ai-acceleration.nix
+# /home/mike/repos/nixos/init.lua
+# /home/mike/repos/nixos/autognome.py
+# assets/installer/install.sh
+# flake.nix
+# remotes/honeybot/nixos/configuration.nix
+# remotes/honeybot/hooks/post-receive
+# deploy_honeybot.sh
+# /home/mike/repos/trimnoir/_config.yml
+# home/mike/repos/trimnoir/flake.nix
 
 # config.py
 # server.py                       
