@@ -214,7 +214,8 @@ class SonarApp(App):
         text.append(f"{method:4} ", style="bold")
         text.append(f"{path} ", style="blue")
         text.append(f"[{status}] ", style=status_style)
-        text.append("\n    ↳ ", style="dim") # Indent the UA on a new line for readability? Or keep same line?
+        text.append(" | ", style="dim") # Replaced newline with a separator
+        text.append(f"{ua_display}", style=ua_style)
         # Let's keep same line for now to mimic the table row feel, but maybe add a separator
         # text.append(f"{ua_display}", style=ua_style)
         
