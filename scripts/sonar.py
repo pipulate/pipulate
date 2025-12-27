@@ -150,12 +150,22 @@ class SonarApp(App):
                     errors += 1
                 
                 rich_text = self.format_log_line(data)
+
+                # --- NEW LOGIC: Conditional Prefix Newline ---
+                # This breaks the "forever line" by adding a return BEFORE the entry
+                # but ONLY if it is not the first one.
+                if hits > 1:
+                    rich_text = Text("\n") + rich_text
+                
                 # Write to Log widget (Stable!)
                 self.call_from_thread(self.write_log, rich_text)
                 self.call_from_thread(self.update_stats, hits, bots, errors)
             else:
                 # Fallback for non-matching lines
-                self.call_from_thread(self.write_log, Text(clean_line, style="dim"))
+                text_obj = Text(clean_line, style="dim")
+                if hits > 1:
+                    text_obj = Text("\n") + text_obj
+                self.call_from_thread(self.write_log, text_obj)
 
     def write_log(self, text):
         log = self.query_one(Log)
@@ -200,7 +210,6 @@ class SonarApp(App):
         ua_display = f"{prefix}{ua}"
 
         # Assembly
-        # We manually space them to look table-like in the Log widget
         text = Text()
         try:
             time_str = data['time'].split(':')[1:]
@@ -214,12 +223,9 @@ class SonarApp(App):
         text.append(f"{method:4} ", style="bold")
         text.append(f"{path} ", style="blue")
         text.append(f"[{status}] ", style=status_style)
-        text.append(" | ", style="dim") # Replaced newline with a separator
-        text.append(f"{ua_display}", style=ua_style)
-        # Let's keep same line for now to mimic the table row feel, but maybe add a separator
-        # text.append(f"{ua_display}", style=ua_style)
         
-        # Actually, let's try the newline approach for UA to handle long strings better in a Log
+        # Single line separator
+        text.append(" | ", style="dim")
         text.append(f"{ua_display}", style=ua_style)
         
         return text
