@@ -8,6 +8,11 @@ echo "🚀 Syncing Hooks..."
 scp remotes/honeybot/hooks/post-receive $TARGET:~/git/mikelev.in.git/hooks/post-receive
 ssh $TARGET "chmod +x ~/git/mikelev.in.git/hooks/post-receive"
 
+echo "🚀 Syncing Tools..."
+# We move the sonar script that hides IPs into location
+ssh $TARGET "mkdir -p ~/scripts"
+rsync -av scripts/sonar.py $TARGET:~/scripts/
+
 echo "🚀 Syncing NixOS Config..."
 # We push the config to a temp folder, then sudo move it (requires interactive password or NOPASSWD sudo)
 # For now, let's just push it to the home dir for review
