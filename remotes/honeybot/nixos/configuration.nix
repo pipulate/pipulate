@@ -166,10 +166,12 @@
     tmux
   ];
 
-  # The "Studio" Alias
-  # This creates a 'logs' command that works immediately upon login.
+  # The "Studio" Aliases
+  # 'logs' = Old Aquarium (Legacy)
+  # 'sonar' = New Sonar (The Pulse)
   environment.shellAliases = {
     logs = "tail -f /var/log/nginx/access.log | nix develop /home/mike/www/mikelev.in#quiet --command python3 -u /home/mike/www/mikelev.in/scripts/aquarium_tui.py";
+    sonar = "tail -f /var/log/nginx/access.log | nix develop /home/mike/www/mikelev.in#quiet --command python3 -u /home/mike/www/mikelev.in/scripts/sonar.py";
   };
 
   # 1. The Editor (The Bridge to AI)
