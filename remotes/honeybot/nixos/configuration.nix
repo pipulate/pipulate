@@ -75,13 +75,37 @@
 
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
+  services.xserver.desktopManager.xfce.enable = true;
   services.xserver.displayManager.gdm.wayland = false; # <--- CRITICAL: Force X11 for automation
-  services.xserver.desktopManager.gnome.enable = true;
 
-  # Remote Desktop (The Headless Head)
+  # Remote Desktop - Debug Mode
   services.xrdp.enable = true;
-  services.xrdp.defaultWindowManager = "gnome-shell";
-  services.xrdp.openFirewall = true; # Opens port 3389
+  services.xrdp.openFirewall = true;
+  services.xrdp.defaultWindowManager = "${pkgs.writeShellScript "start-xfce-debug" ''
+    # Redirect ALL output to a log file we can read
+    exec > /tmp/xrdp-debug.log 2>&1
+    set -x
+
+    echo "=== STARTING XRDP SESSION ==="
+    echo "User: $USER"
+    echo "Path: $PATH"
+    
+    # Force X11 Environment
+    export XDG_SESSION_TYPE=x11
+    export GDK_BACKEND=x11
+    export DESKTOP_SESSION=xfce
+    export XDG_CURRENT_DESKTOP=XFCE
+    
+    # Check if the binary exists
+    if [ -f "${pkgs.xfce.xfce4-session}/bin/startxfce4" ]; then
+        echo "Binary found. Launching..."
+        ${pkgs.xfce.xfce4-session}/bin/startxfce4
+    else
+        echo "CRITICAL ERROR: startxfce4 not found!"
+        # Keep session open so we can see the error if we had a window
+        sleep 30
+    fi
+  ''}";
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -174,10 +198,50 @@
     # The Broadcast Studio
     obs-studio
     pavucontrol     # Essential for routing audio (PulseAudio Volume Control)
+
+    xfce.xfce4-session
+    xfce.xfce4-terminal
     
     # The Automaton's Hands (Amiga AREXX style control)
     xdotool         # Keyboard/Mouse simulation
     wmctrl          # Window management
+
+    # 🎥 THE STUDIO DIRECTOR (Declarative Script)
+    (writeShellScriptBin "studio-director" ''
+      # Resolution Configuration
+      WIDTH=1280
+      HEIGHT=720
+      
+      echo "🧹 Clearing the stage..."
+      ${pkgs.procps}/bin/pkill -f "xfce4-terminal --title=Sonar" || true
+      ${pkgs.procps}/bin/pkill -f "obs" || true
+      sleep 1
+
+      echo "🌊 Releasing the river..."
+      # Launch Terminal
+      # We use full paths for robustness
+      ${pkgs.xfce.xfce4-terminal}/bin/xfce4-terminal \
+        --title="Sonar" \
+        --geometry="''${WIDTH}x''${HEIGHT}" \
+        --hide-menubar \
+        --hide-borders \
+        --command="bash -c 'source ~/.bashrc; sonar'" &
+
+      sleep 3
+
+      echo "📏 Aligning the grid..."
+      # Use xdotool to force position
+      WID=$(${pkgs.xdotool}/bin/xdotool search --name "Sonar" | head -1)
+      if [ -n "$WID" ]; then
+          ${pkgs.xdotool}/bin/xdotool windowmove "$WID" 0 0
+          ${pkgs.xdotool}/bin/xdotool windowsize "$WID" $WIDTH $HEIGHT
+      fi
+
+      echo "📡 Powering up transmitter..."
+      ${pkgs.obs-studio}/bin/obs --minimize &
+      
+      echo "✅ Studio Active."
+    '')
   ];
 
   # The "Studio" Aliases
