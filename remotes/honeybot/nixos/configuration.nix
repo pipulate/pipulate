@@ -206,26 +206,71 @@
     xdotool         # Keyboard/Mouse simulation
     wmctrl          # Window management
 
+    # 🎭 THE PROPS (Visuals for the stage)
+    cmatrix     # The "Digital Rain"
+    fastfetch   # System info display (faster neofetch)
+    bc          # Calculator (useful for timing math if needed)
+
     # 🗣️ THE VOICE (System Capability)
     piper-tts
     
-    # 🎤 THE INNER VOICE (The Performer)
-    # This script does the actual work. It speaks, then exits.
-    (writeShellScriptBin "hello-voice" ''
+    # 🎬 THE PERFORMER (The Choreographed Scene)
+    (writeShellScriptBin "perform" ''
+      # --- Setup ---
       MODEL_DIR="$HOME/.local/share/piper_voices"
       MODEL_NAME="en_US-amy-low.onnx"
       
-      # Speak
-      echo "🔊 Speaking..."
-      echo "Hello World. I am the Honeybot. Systems online." | \
-        ${pkgs.piper-tts}/bin/piper --model "$MODEL_DIR/$MODEL_NAME" --output_raw | \
-        ${pkgs.alsa-utils}/bin/aplay -r 22050 -f S16_LE -t raw -
+      # Helper function for "Voice Over" (Non-blocking speech)
+      # Usage: narrate "Text to say"
+      narrate() {
+        echo "🔊 Narrating: $1"
+        echo "$1" | \
+          ${pkgs.piper-tts}/bin/piper --model "$MODEL_DIR/$MODEL_NAME" --output_raw | \
+          ${pkgs.alsa-utils}/bin/aplay -r 22050 -f S16_LE -t raw - 2>/dev/null &
+      }
+
+      # Helper function for "Monologue" (Blocking speech)
+      # Usage: speak "Text to say"
+      speak() {
+        echo "🔊 Speaking: $1"
+        echo "$1" | \
+          ${pkgs.piper-tts}/bin/piper --model "$MODEL_DIR/$MODEL_NAME" --output_raw | \
+          ${pkgs.alsa-utils}/bin/aplay -r 22050 -f S16_LE -t raw - 2>/dev/null
+      }
+
+      # --- SCENE START ---
+      
+      # 1. The Hook (Blocking)
+      clear
+      speak "Initiating visual diagnostic sequence."
+      sleep 0.5
+
+      # 2. The Action (Concurrent)
+      # We start the voice, then IMMEDIATELY start the visual.
+      narrate "Injecting digital rain into the framebuffer. Observe the flow."
+      
+      # We run cmatrix for 6 seconds (enough time for the sentence to finish)
+      # -b: Bold characters (looks better)
+      timeout 6s ${pkgs.cmatrix}/bin/cmatrix -b
+
+      # 3. The Transition
+      clear
+      speak "Matrix simulation stable. Now verifying system identity."
+
+      # 4. The Reveal (Concurrent)
+      narrate "Querying hardware abstraction layer."
+      ${pkgs.fastfetch}/bin/fastfetch --logo none # Run fastfetch without logo for speed
+      
+      # 5. The Outro (Blocking)
+      sleep 1
+      speak "Diagnostic complete. System nominal. Returning control."
+      clear
     '')
 
     # 🛡️ THE WATCHDOG (The Director)
-    # This script ensures the performer keeps performing.
+    # Updated to call 'perform' instead of 'hello-voice'
     (writeShellScriptBin "hello" ''
-      # 1. Define Model Storage (User local, persistent)
+      # 1. Define Model Storage
       MODEL_DIR="$HOME/.local/share/piper_voices"
       mkdir -p "$MODEL_DIR"
       
@@ -233,28 +278,27 @@
       JSON_NAME="en_US-amy-low.onnx.json"
       URL_BASE="https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/amy/low"
       
-      # 2. Fetch if missing (One-time setup logic remains here)
+      # 2. Fetch if missing
       if [ ! -f "$MODEL_DIR/$MODEL_NAME" ]; then
         echo "📥 Downloading voice model (One-time setup)..."
         ${pkgs.curl}/bin/curl -L -o "$MODEL_DIR/$MODEL_NAME" "$URL_BASE/$MODEL_NAME?download=true"
         ${pkgs.curl}/bin/curl -L -o "$MODEL_DIR/$JSON_NAME" "$URL_BASE/$JSON_NAME?download=true"
       fi
 
-      echo "🛡️ Watchdog Active. Starting Loop..."
+      echo "🛡️ Watchdog Active. Starting Performance Loop..."
       
       # 3. The Infinite Loop
       while true; do
         echo "🎬 Action!"
         
-        # Run the inner script
-        hello-voice
+        # Run the Choreographed Scene
+        perform
         
-        # The Pause (30 seconds to avoid "Crazy People" vibes)
-        echo "⏳ Waiting 30 seconds..."
+        # The Intermission
+        echo "⏳ Intermission (30 seconds)..."
         sleep 30
       done
     '')
-
   ];
 
   # The "Studio" Aliases
