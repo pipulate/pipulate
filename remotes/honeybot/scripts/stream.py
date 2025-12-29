@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 🌊 Stream Orchestrator
 The 'Mind' of the Honeybot.
@@ -48,32 +48,32 @@ def speak(text):
     except Exception as e:
         print(f"❌ Speech failed: {e}")
 
-def run_sonar():
-    """Launch the Sonar log visualizer."""
-    print("🌊 Launching Sonar...")
-    # We assume sonar.py is in the same directory
+# ... inside run_sonar() ...
+
+def run_logs():  # Renamed from run_sonar
+    """Launch the Logs visualizer."""
+    print("🌊 Launching Log Stream...")
+    # We assume logs.py is in the same directory
     script_dir = Path(__file__).parent
-    sonar_script = script_dir / "sonar.py"
+    logs_script = script_dir / "logs.py"  # UPDATED
     
-    # We need to pipe the logs into sonar. 
-    # In the full deployment, this might be handled differently, 
-    # but for now we mirror the 'tail -f' behavior.
+    # ... inside try block ...
     
-    # Command: tail -f /var/log/nginx/access.log | python3 sonar.py
+    # Command: tail -f /var/log/nginx/access.log | python3 logs.py
     try:
         tail_proc = subprocess.Popen(
             ["tail", "-f", "/var/log/nginx/access.log"],
             stdout=subprocess.PIPE
         )
         
-        # We run sonar and let it take over the foreground
+        # We run the logs script and let it take over the foreground
         subprocess.run(
-            [sys.executable, str(sonar_script)],
+            [sys.executable, str(logs_script)],
             stdin=tail_proc.stdout,
             check=True
         )
     except KeyboardInterrupt:
-        print("\n🌊 Sonar stopped.")
+        print("\n🌊 Log stream stopped.")
     finally:
         tail_proc.terminate()
 
@@ -85,9 +85,9 @@ def main():
     time.sleep(1)
     
     # 2. The Main Event
-    run_sonar()
+    run_logs()  # UPDATED
     
-    # 3. The Outro (If Sonar crashes or exits)
+    # 3. The Outro
     speak("Visual link lost. Resetting connection.")
     time.sleep(1)
 

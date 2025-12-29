@@ -6,10 +6,12 @@ AI_PHOOEY_CHOP = """\
 # assets/pipulate-init.js
 # assets/pipulate.js
 # apps/010_introduction.py
-/home/mike/repos/trimnoir/flake.nix
 deploy_honeybot.sh
+/home/mike/repos/trimnoir/flake.nix
+remotes/honeybot/hooks/post-receive
 remotes/honeybot/nixos/configuration.nix
-scripts/sonar.py
+/home/mike/repos/pipulate/remotes/honeybot/scripts/sonar.py
+/home/mike/repos/pipulate/remotes/honeybot/scripts/stream.py
 """
 
 ## > We've got content, it's groovy context  

@@ -14,9 +14,6 @@ ssh $TARGET "mkdir -p ~/www/mikelev.in/scripts"
 # Sync the new dedicated script folder
 rsync -av remotes/honeybot/scripts/ $TARGET:~/www/mikelev.in/scripts/
 
-# Legacy sync (optional, keep for now if needed, or remove)
-# rsync -av scripts/aquarium.py $TARGET:~/www/mikelev.in/scripts/
-
 echo "🚀 Syncing NixOS Config..."
 rsync -av remotes/honeybot/nixos/ $TARGET:~/nixos-config-staged/
 
