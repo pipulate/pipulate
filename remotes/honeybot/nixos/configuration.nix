@@ -214,7 +214,7 @@
     # 🗣️ THE VOICE (System Capability)
     piper-tts
 
-# 🎬 THE PERFORMER (The Choreographed Scene)
+    # 🎬 THE PERFORMER (The Choreographed Scene)
     (writeShellScriptBin "perform" ''
       # --- Setup ---
       MODEL_DIR="$HOME/.local/share/piper_voices"
@@ -223,11 +223,10 @@
       mkdir -p "$CACHE_DIR"
 
       # ---------------------------------------------------------
-      # THE ENGINE: Pre-render + Playback Locks
+      # THE ENGINE: Voice-Driven Timing
       # ---------------------------------------------------------
       
-      # 1. Pre-render: Generates audio to disk (Blocking)
-      # Usage: prepare "key" "text to say"
+      # 1. Pre-render (Same as before)
       prepare() {
         local key="$1"
         local text="$2"
@@ -236,7 +235,7 @@
           ${pkgs.piper-tts}/bin/piper --model "$MODEL_DIR/$MODEL_NAME" --output_raw > "$CACHE_DIR/$key.raw"
       }
 
-      # 2. Action: Plays audio + Runs Visual (Concurrent)
+      # 2. Action: Visual Background, Audio Foreground
       # Usage: action "key" "visual_command"
       action() {
         local key="$1"
@@ -245,16 +244,21 @@
         echo "---------------------------------------------------"
         echo "🎬 SCENE START: [$key]"
         
-        # Start Audio in Background (Instant start due to pre-render)
-        ${pkgs.alsa-utils}/bin/aplay -r 22050 -f S16_LE -t raw "$CACHE_DIR/$key.raw" 2>/dev/null &
-        AUDIO_PID=$!
+        # Start Visual in Background
+        # We use a subshell to ensure complex commands work
+        (eval "$visual_cmd") &
+        VISUAL_PID=$!
         
-        # Run Visual immediately
-        eval "$visual_cmd"
+        # Give the visual a split second to paint (e.g. cmatrix startup)
+        sleep 0.2
         
-        # THE LOCK: Wait for audio to finish before returning
-        # This prevents the next scene from stepping on this line.
-        wait $AUDIO_PID
+        # Play Audio in Foreground (Blocks until done)
+        ${pkgs.alsa-utils}/bin/aplay -r 22050 -f S16_LE -t raw "$CACHE_DIR/$key.raw" 2>/dev/null
+        
+        # Scene Over. Kill the visual if it's still running.
+        kill $VISUAL_PID 2>/dev/null
+        wait $VISUAL_PID 2>/dev/null
+        
         echo "---------------------------------------------------"
       }
 
@@ -272,17 +276,19 @@
       # ---------------------------------------------------------
       
       # Scene 1: Intro (Just voice)
-      action "intro" "sleep 0.1"
+      # We sleep in background to keep the PID logic valid
+      action "intro" "sleep 10" 
 
       # Scene 2: The Matrix
-      # We assume the visual takes about as long as the audio, or we force it with timeout
-      action "matrix" "timeout 5s ${pkgs.cmatrix}/bin/cmatrix -b"
+      # REMOVED timeout command. The voice is the timeout.
+      action "matrix" "${pkgs.cmatrix}/bin/cmatrix -b"
 
       # Scene 3: Stats
+      # fastfetch finishes fast, so audio will continue over the static output
       action "stats" "${pkgs.fastfetch}/bin/fastfetch --logo none"
 
       # Scene 4: Outro
-      action "outro" "sleep 0.1"
+      action "outro" "sleep 10"
       
       # Cleanup
       rm -rf "$CACHE_DIR"
