@@ -209,7 +209,21 @@
     # 🗣️ THE VOICE (System Capability)
     piper-tts
     
-    # 📢 HELLO WORLD (The "Mic Check")
+    # 🎤 THE INNER VOICE (The Performer)
+    # This script does the actual work. It speaks, then exits.
+    (writeShellScriptBin "hello-voice" ''
+      MODEL_DIR="$HOME/.local/share/piper_voices"
+      MODEL_NAME="en_US-amy-low.onnx"
+      
+      # Speak
+      echo "🔊 Speaking..."
+      echo "Hello World. I am the Honeybot. Systems online." | \
+        ${pkgs.piper-tts}/bin/piper --model "$MODEL_DIR/$MODEL_NAME" --output_raw | \
+        ${pkgs.alsa-utils}/bin/aplay -r 22050 -f S16_LE -t raw -
+    '')
+
+    # 🛡️ THE WATCHDOG (The Director)
+    # This script ensures the performer keeps performing.
     (writeShellScriptBin "hello" ''
       # 1. Define Model Storage (User local, persistent)
       MODEL_DIR="$HOME/.local/share/piper_voices"
@@ -219,57 +233,28 @@
       JSON_NAME="en_US-amy-low.onnx.json"
       URL_BASE="https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/amy/low"
       
-      # 2. Fetch if missing (The "Cache" Logic)
+      # 2. Fetch if missing (One-time setup logic remains here)
       if [ ! -f "$MODEL_DIR/$MODEL_NAME" ]; then
         echo "📥 Downloading voice model (One-time setup)..."
         ${pkgs.curl}/bin/curl -L -o "$MODEL_DIR/$MODEL_NAME" "$URL_BASE/$MODEL_NAME?download=true"
         ${pkgs.curl}/bin/curl -L -o "$MODEL_DIR/$JSON_NAME" "$URL_BASE/$JSON_NAME?download=true"
       fi
+
+      echo "🛡️ Watchdog Active. Starting Loop..."
       
-      # 3. Speak!
-      # We pipe text -> piper (raw audio) -> aplay (hardware output)
-      echo "🔊 Speaking..."
-      echo "Hello World. I am the Honeybot. Systems online." | \
-        ${pkgs.piper-tts}/bin/piper --model "$MODEL_DIR/$MODEL_NAME" --output_raw | \
-        ${pkgs.alsa-utils}/bin/aplay -r 22050 -f S16_LE -t raw -
+      # 3. The Infinite Loop
+      while true; do
+        echo "🎬 Action!"
+        
+        # Run the inner script
+        hello-voice
+        
+        # The Pause (30 seconds to avoid "Crazy People" vibes)
+        echo "⏳ Waiting 30 seconds..."
+        sleep 30
+      done
     '')
 
-    # 🎥 THE STUDIO DIRECTOR (Declarative Script)
-    (writeShellScriptBin "studio-director" ''
-      # Resolution Configuration
-      WIDTH=1280
-      HEIGHT=720
-      
-      echo "🧹 Clearing the stage..."
-      ${pkgs.procps}/bin/pkill -f "xfce4-terminal --title=Sonar" || true
-      ${pkgs.procps}/bin/pkill -f "obs" || true
-      sleep 1
-
-      echo "🌊 Releasing the river..."
-      # Launch Terminal
-      # We use full paths for robustness
-      ${pkgs.xfce.xfce4-terminal}/bin/xfce4-terminal \
-        --title="Sonar" \
-        --geometry="''${WIDTH}x''${HEIGHT}" \
-        --hide-menubar \
-        --hide-borders \
-        --command="bash -c 'source ~/.bashrc; sonar'" &
-
-      sleep 3
-
-      echo "📏 Aligning the grid..."
-      # Use xdotool to force position
-      WID=$(${pkgs.xdotool}/bin/xdotool search --name "Sonar" | head -1)
-      if [ -n "$WID" ]; then
-          ${pkgs.xdotool}/bin/xdotool windowmove "$WID" 0 0
-          ${pkgs.xdotool}/bin/xdotool windowsize "$WID" $WIDTH $HEIGHT
-      fi
-
-      echo "📡 Powering up transmitter..."
-      ${pkgs.obs-studio}/bin/obs --minimize &
-      
-      echo "✅ Studio Active."
-    '')
   ];
 
   # The "Studio" Aliases
