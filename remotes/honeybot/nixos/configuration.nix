@@ -235,8 +235,8 @@
           ${pkgs.piper-tts}/bin/piper --model "$MODEL_DIR/$MODEL_NAME" --output_raw > "$CACHE_DIR/$key.raw"
       }
 
+
       # 2. Action: Visual Background, Audio Foreground
-      # Usage: action "key" "visual_command"
       action() {
         local key="$1"
         local visual_cmd="$2"
@@ -245,19 +245,27 @@
         echo "🎬 SCENE START: [$key]"
         
         # Start Visual in Background
-        # We use a subshell to ensure complex commands work
-        (eval "$visual_cmd") &
+        # We run it directly if possible to avoid subshell nesting hell
+        # But eval is needed for complex strings
+        bash -c "$visual_cmd" &
         VISUAL_PID=$!
         
-        # Give the visual a split second to paint (e.g. cmatrix startup)
+        # Give it a moment to paint
         sleep 0.2
         
-        # Play Audio in Foreground (Blocks until done)
+        # Play Audio (Blocking - The Timer)
         ${pkgs.alsa-utils}/bin/aplay -r 22050 -f S16_LE -t raw "$CACHE_DIR/$key.raw" 2>/dev/null
         
-        # Scene Over. Kill the visual if it's still running.
+        # Scene Over. KILL THE CHILDREN.
+        # This kills any process whose Parent Process ID (PPID) is our background shell
+        pkill -P $VISUAL_PID
+        
+        # Then kill the shell itself
         kill $VISUAL_PID 2>/dev/null
         wait $VISUAL_PID 2>/dev/null
+        
+        # Restore terminal sanity (cmatrix often breaks newlines)
+        stty sane
         
         echo "---------------------------------------------------"
       }
