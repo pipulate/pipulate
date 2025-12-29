@@ -12,10 +12,10 @@ echo "🚀 Syncing Scripts (New Location)..."
 ssh $TARGET "mkdir -p ~/www/mikelev.in/scripts"
 
 # Sync the new dedicated script folder
-rsync -av remotes/honeybot/scripts/ $TARGET:~/www/mikelev.in/scripts/
+rsync --delete -av remotes/honeybot/scripts/ $TARGET:~/www/mikelev.in/scripts/
 
 echo "🚀 Syncing NixOS Config..."
-rsync -av remotes/honeybot/nixos/ $TARGET:~/nixos-config-staged/
+rsync --delete -av remotes/honeybot/nixos/ $TARGET:~/nixos-config-staged/
 
 echo "✅ Sync Complete."
 echo "   To apply NixOS config: ssh -t $TARGET 'sudo cp ~/nixos-config-staged/* /etc/nixos/ && sudo nixos-rebuild switch'"
