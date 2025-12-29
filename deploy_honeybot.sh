@@ -4,19 +4,20 @@
 TARGET="mike@192.168.10.100"
 
 echo "🚀 Syncing Hooks..."
-# We use rsync to push the hook to the bare repo
 scp remotes/honeybot/hooks/post-receive $TARGET:~/git/mikelev.in.git/hooks/post-receive
 ssh $TARGET "chmod +x ~/git/mikelev.in.git/hooks/post-receive"
 
-echo "🚀 Syncing Tools..."
-# We move the sonar script that hides IPs into location
+echo "🚀 Syncing Scripts (New Location)..."
+# Ensure the directory exists
 ssh $TARGET "mkdir -p ~/www/mikelev.in/scripts"
-rsync -av scripts/sonar.py $TARGET:~/www/mikelev.in/scripts/
-rsync -av scripts/aquarium.py $TARGET:~/www/mikelev.in/scripts/
+
+# Sync the new dedicated script folder
+rsync -av remotes/honeybot/scripts/ $TARGET:~/www/mikelev.in/scripts/
+
+# Legacy sync (optional, keep for now if needed, or remove)
+# rsync -av scripts/aquarium.py $TARGET:~/www/mikelev.in/scripts/
 
 echo "🚀 Syncing NixOS Config..."
-# We push the config to a temp folder, then sudo move it (requires interactive password or NOPASSWD sudo)
-# For now, let's just push it to the home dir for review
 rsync -av remotes/honeybot/nixos/ $TARGET:~/nixos-config-staged/
 
 echo "✅ Sync Complete."
