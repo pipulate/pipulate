@@ -206,6 +206,34 @@
     xdotool         # Keyboard/Mouse simulation
     wmctrl          # Window management
 
+    # 🗣️ THE VOICE (System Capability)
+    piper-tts
+    
+    # 📢 HELLO WORLD (The "Mic Check")
+    (writeShellScriptBin "hello" ''
+      # 1. Define Model Storage (User local, persistent)
+      MODEL_DIR="$HOME/.local/share/piper_voices"
+      mkdir -p "$MODEL_DIR"
+      
+      MODEL_NAME="en_US-amy-low.onnx"
+      JSON_NAME="en_US-amy-low.onnx.json"
+      URL_BASE="https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/amy/low"
+      
+      # 2. Fetch if missing (The "Cache" Logic)
+      if [ ! -f "$MODEL_DIR/$MODEL_NAME" ]; then
+        echo "📥 Downloading voice model (One-time setup)..."
+        ${pkgs.curl}/bin/curl -L -o "$MODEL_DIR/$MODEL_NAME" "$URL_BASE/$MODEL_NAME?download=true"
+        ${pkgs.curl}/bin/curl -L -o "$MODEL_DIR/$JSON_NAME" "$URL_BASE/$JSON_NAME?download=true"
+      fi
+      
+      # 3. Speak!
+      # We pipe text -> piper (raw audio) -> aplay (hardware output)
+      echo "🔊 Speaking..."
+      echo "Hello World. I am the Honeybot. Systems online." | \
+        ${pkgs.piper-tts}/bin/piper --model "$MODEL_DIR/$MODEL_NAME" --output_raw | \
+        ${pkgs.alsa-utils}/bin/aplay -r 22050 -f S16_LE -t raw -
+    '')
+
     # 🎥 THE STUDIO DIRECTOR (Declarative Script)
     (writeShellScriptBin "studio-director" ''
       # Resolution Configuration
