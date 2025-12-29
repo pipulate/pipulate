@@ -214,6 +214,19 @@
     # 🗣️ THE VOICE (System Capability)
     piper-tts
 
+    (writeShellScriptBin "stream" ''
+      while true; do
+        echo "🛡️ Watchdog: Launching Stream..."
+        
+        # We use nix develop to enter the environment defined in the flake
+        # and run our new python orchestrator
+        nix develop /home/mike/www/mikelev.in#quiet --command python3 -u /home/mike/www/mikelev.in/scripts/stream.py
+        
+        echo "🛑 Process died. Rebooting in 5s..."
+        sleep 5
+      done
+    '')
+
     # 🎬 THE PERFORMER (The Choreographed Scene)
     (writeShellScriptBin "perform" ''
       # --- Setup ---
