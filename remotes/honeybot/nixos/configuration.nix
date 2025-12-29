@@ -213,58 +213,79 @@
 
     # 🗣️ THE VOICE (System Capability)
     piper-tts
-    
-    # 🎬 THE PERFORMER (The Choreographed Scene)
+
+# 🎬 THE PERFORMER (The Choreographed Scene)
     (writeShellScriptBin "perform" ''
       # --- Setup ---
       MODEL_DIR="$HOME/.local/share/piper_voices"
       MODEL_NAME="en_US-amy-low.onnx"
+      CACHE_DIR="/tmp/honeybot_voice_cache"
+      mkdir -p "$CACHE_DIR"
+
+      # ---------------------------------------------------------
+      # THE ENGINE: Pre-render + Playback Locks
+      # ---------------------------------------------------------
       
-      # Helper function for "Voice Over" (Non-blocking speech)
-      # Usage: narrate "Text to say"
-      narrate() {
-        echo "🔊 Narrating: $1"
-        echo "$1" | \
-          ${pkgs.piper-tts}/bin/piper --model "$MODEL_DIR/$MODEL_NAME" --output_raw | \
-          ${pkgs.alsa-utils}/bin/aplay -r 22050 -f S16_LE -t raw - 2>/dev/null &
+      # 1. Pre-render: Generates audio to disk (Blocking)
+      # Usage: prepare "key" "text to say"
+      prepare() {
+        local key="$1"
+        local text="$2"
+        echo "⚙️  Pre-rendering [$key]..."
+        echo "$text" | \
+          ${pkgs.piper-tts}/bin/piper --model "$MODEL_DIR/$MODEL_NAME" --output_raw > "$CACHE_DIR/$key.raw"
       }
 
-      # Helper function for "Monologue" (Blocking speech)
-      # Usage: speak "Text to say"
-      speak() {
-        echo "🔊 Speaking: $1"
-        echo "$1" | \
-          ${pkgs.piper-tts}/bin/piper --model "$MODEL_DIR/$MODEL_NAME" --output_raw | \
-          ${pkgs.alsa-utils}/bin/aplay -r 22050 -f S16_LE -t raw - 2>/dev/null
+      # 2. Action: Plays audio + Runs Visual (Concurrent)
+      # Usage: action "key" "visual_command"
+      action() {
+        local key="$1"
+        local visual_cmd="$2"
+        
+        echo "---------------------------------------------------"
+        echo "🎬 SCENE START: [$key]"
+        
+        # Start Audio in Background (Instant start due to pre-render)
+        ${pkgs.alsa-utils}/bin/aplay -r 22050 -f S16_LE -t raw "$CACHE_DIR/$key.raw" 2>/dev/null &
+        AUDIO_PID=$!
+        
+        # Run Visual immediately
+        eval "$visual_cmd"
+        
+        # THE LOCK: Wait for audio to finish before returning
+        # This prevents the next scene from stepping on this line.
+        wait $AUDIO_PID
+        echo "---------------------------------------------------"
       }
 
-      # --- SCENE START ---
-      
-      # 1. The Hook (Blocking)
-      clear
-      speak "Initiating visual diagnostic sequence."
-      sleep 0.5
+      # ---------------------------------------------------------
+      # THE SCRIPT (Pre-production)
+      # ---------------------------------------------------------
+      echo "📝 Scripting the scene..."
+      prepare "intro"   "Initiating visual diagnostic sequence. Stand by."
+      prepare "matrix"  "Injecting digital rain into the framebuffer. Observe the flow."
+      prepare "stats"   "Matrix simulation stable. Querying hardware abstraction layer."
+      prepare "outro"   "Diagnostic complete. System nominal. Returning control to Watchdog."
 
-      # 2. The Action (Concurrent)
-      # We start the voice, then IMMEDIATELY start the visual.
-      narrate "Injecting digital rain into the framebuffer. Observe the flow."
+      # ---------------------------------------------------------
+      # THE PERFORMANCE (Execution)
+      # ---------------------------------------------------------
       
-      # We run cmatrix for 6 seconds (enough time for the sentence to finish)
-      # -b: Bold characters (looks better)
-      timeout 6s ${pkgs.cmatrix}/bin/cmatrix -b
+      # Scene 1: Intro (Just voice)
+      action "intro" "sleep 0.1"
 
-      # 3. The Transition
-      clear
-      speak "Matrix simulation stable. Now verifying system identity."
+      # Scene 2: The Matrix
+      # We assume the visual takes about as long as the audio, or we force it with timeout
+      action "matrix" "timeout 5s ${pkgs.cmatrix}/bin/cmatrix -b"
 
-      # 4. The Reveal (Concurrent)
-      narrate "Querying hardware abstraction layer."
-      ${pkgs.fastfetch}/bin/fastfetch --logo none # Run fastfetch without logo for speed
+      # Scene 3: Stats
+      action "stats" "${pkgs.fastfetch}/bin/fastfetch --logo none"
+
+      # Scene 4: Outro
+      action "outro" "sleep 0.1"
       
-      # 5. The Outro (Blocking)
-      sleep 1
-      speak "Diagnostic complete. System nominal. Returning control."
-      clear
+      # Cleanup
+      rm -rf "$CACHE_DIR"
     '')
 
     # 🛡️ THE WATCHDOG (The Director)
