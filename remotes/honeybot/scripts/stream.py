@@ -211,19 +211,6 @@ def visit_site():
     except Exception:
         pass
 
-def start_director_track():
-    """The Script for the Show. Runs in parallel to the Log Stream."""
-    # 1. Wait for TUI to initialize and paint the screen
-    time.sleep(5)
-    
-    # 2. The Preamble
-    narrator.say("System Online. Connecting to the Black River.")
-    narrator.say("What you are seeing is the raw logfile of the Future Proof blog.")
-    narrator.say("Unlike mobile readiness, there is no viewport for AI readiness. This stream is that viewport.")
-    
-    # 3. The Visual Handshake (Flashcard)
-    # This will pop up OVER the logs, then disappear, revealing the hit
-    visit_site()
 
 def main():
     # Start the Voice

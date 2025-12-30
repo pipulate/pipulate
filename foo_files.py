@@ -1,8 +1,8 @@
 AI_PHOOEY_CHOP = """\
-remotes/honeybot/nixos/configuration.nix
-# /home/mike/repos/nixos/autognome.py
-# remotes/honeybot/scripts/logs.py
-# remotes/honeybot/scripts/stream.py
+# remotes/honeybot/nixos/configuration.nix
+remotes/honeybot/scripts/logs.py
+remotes/honeybot/scripts/show.py
+remotes/honeybot/scripts/stream.py
 """
 
 ## > We've got content, it's groovy context  
