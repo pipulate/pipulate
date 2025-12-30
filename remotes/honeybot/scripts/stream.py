@@ -194,7 +194,7 @@ def visit_site():
     try:
         # Launch Firefox
         browser = subprocess.Popen(
-            ["firefox", "--new-window", "https://mikelev.in/"],
+            ["firefox", "--new-window", "--private-window", "https://mikelev.in/"],
             env=env,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
