@@ -124,6 +124,42 @@ def run_logs():
         tail_proc.terminate()
         heartbeat.join(timeout=1)
 
+
+def visit_site():
+    """Opens the site to generate a log entry and verify browser control."""
+    print("🌍 Opening browser to generate signal...")
+    narrator.say("Initiating visual contact. Opening secure channel.")
+    
+    # We must force the display to :0 because this script runs from SSH
+    # but the browser must appear on the physical screen.
+    env = os.environ.copy()
+    env["DISPLAY"] = ":0"
+    
+    try:
+        # Launch Firefox
+        # --new-window ensures we don't just add a tab to an existing hidden window
+        browser = subprocess.Popen(
+            ["firefox", "--new-window", "https://mikelev.in/"],
+            env=env,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+        
+        # Wait for page load and log hit (15s is safe for a slow laptop)
+        time.sleep(15)
+        
+        # Cleanup: Close the browser
+        print("🌍 Closing browser...")
+        browser.terminate()
+        
+        # Double tap to ensure it's dead
+        time.sleep(1)
+        subprocess.run(["pkill", "firefox"], check=False)
+        
+    except Exception as e:
+        print(f"❌ Browser automation failed: {e}")
+
+
 def main():
     print("🎬 Stream Orchestrator Starting...")
     
@@ -131,9 +167,12 @@ def main():
     narrator.start()
     
     # 1. The Intro (Queued)
-    narrator.say("System Online. Connecting to the Black River.")
+    narrator.say("System Online. Connecting to Weblogs.")
     
-    # 2. The Main Event
+    # 2. The Visual Handshake (NEW)
+    visit_site()
+
+    # 3. The Main Event
     run_logs()
     
     # 3. The Outro (Queued)
