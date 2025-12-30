@@ -10,7 +10,7 @@ import hashlib
 from datetime import datetime
 from textual.app import App, ComposeResult
 from textual.containers import Container
-from textual.widgets import Header, Footer, Static, Log, Label
+from textual.widgets import Header, Footer, Static, Log, Label, Markdown
 from textual import work
 from rich.text import Text
 
@@ -62,6 +62,16 @@ class SonarApp(App):
         background: #051515;
         padding: 0 1;
     }
+
+    /* Update AI Commentary style for Markdown */
+    #active_projects {
+        column-span: 3;
+        row-span: 1;
+        border: solid magenta;
+        background: #100010;
+        height: 100%;
+        padding: 0 1;
+    }
     
     Label {
         width: 100%;
@@ -81,7 +91,13 @@ class SonarApp(App):
         yield Header()
         yield Log(id="log_stream", highlight=True)
         
-        yield Static("Sonar Active. Watching for patterns...", id="ai_commentary")
+        # CHANGED: Replaced Static with Markdown for formatted list
+        yield Markdown("""
+**Active Projects:**
+1. 📖 Storytelling Framework (In Progress)
+2. 🚦 Smart 404 Handler (Pending)
+3. 🤖 AI-Bot JS Execution Detector (Pending)
+""", id="active_projects")
         
         with Container(id="stats_panel"):
             yield Label("STATS", classes="header")
