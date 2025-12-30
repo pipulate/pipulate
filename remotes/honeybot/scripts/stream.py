@@ -133,7 +133,8 @@ def visit_site():
     # We must force the display to :0 because this script runs from SSH
     # but the browser must appear on the physical screen.
     env = os.environ.copy()
-    env["DISPLAY"] = ":0"
+    # env["DISPLAY"] = ":0"
+    env["DISPLAY"] = ":10.0"
     
     try:
         # Launch Firefox

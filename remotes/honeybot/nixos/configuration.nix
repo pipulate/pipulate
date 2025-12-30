@@ -21,6 +21,11 @@
   networking.hostName = "honeybot"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
+  # DNS Overrides: Map public domain to localhost to avoid Hairpin NAT issues
+  networking.hosts = {
+    "127.0.0.1" = [ "mikelev.in" "www.mikelev.in" ];
+  };
+
   # Allow Nginx to read files in /home/mike
   systemd.services.nginx.serviceConfig.ProtectHome = "read-only";
 
