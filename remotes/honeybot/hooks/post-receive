@@ -18,22 +18,23 @@ echo "🔨 [Hook] Starting Hybrid Build..."
 # We use 'nix develop' to get Ruby/GCC/Libs, but we manually
 # setup the gem environment because --command skips shellHook.
 nix develop --command bash -c "
-  # --- MANUAL ENV SETUP (Mimics shellHook) ---
-  export GEM_HOME=\$PWD/.gem
-  export PATH=\$GEM_HOME/bin:\$PATH
-  export BUNDLE_FORCE_RUBY_PLATFORM=1
-  
-  # --- LATE-STAGE DEPENDENCY MANAGEMENT ---
-  echo '💎 Checking Gems...'
-  # Ensure bundler is present (Nix provides Ruby, but maybe not bundler binary in path)
-  gem install bundler --no-document --silent
-  
-  # Install site dependencies into local .gem/
-  bundle install --quiet
+  # ... env setup ...
   
   # --- THE BUILD ---
   echo '🏗️  Jekyll Build...'
   bundle exec jekyll build --future
+  
+  # --- PUBLISH SOURCE MARKDOWN (NEW) ---
+  echo '📄 Publishing Source Markdown...'
+  # Create the destination directory
+  mkdir -p _site/source/
+  
+  # Copy posts, preserving structure if needed, or just flat list
+  # We copy the entire _posts folder to _site/source/
+  cp -r _posts/* _site/source/
+  
+  # Optional: Copy pages too if they are markdown
+  # cp *.md _site/source/ 2>/dev/null || true
 "
 
 # 4. Permissions Fix (Crucial for Nginx)
