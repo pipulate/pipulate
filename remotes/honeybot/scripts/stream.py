@@ -33,23 +33,19 @@ class Narrator(threading.Thread):
     def run(self):
         while not self.stop_event.is_set():
             try:
-                # Wait for text (non-blocking check loop)
                 text = self.queue.get(timeout=1)
                 self._speak_now(text)
                 self.queue.task_done()
-                
-                # Minimum spacing between thoughts so it doesn't sound manic
                 time.sleep(0.5) 
             except queue.Empty:
                 continue
 
     def _speak_now(self, text):
         """Internal method to actually generate and play audio."""
-        print(f"🔊 Speaking: {text}")
+        # Note: We avoid print() here because it might corrupt the TUI layout
         model_path = MODEL_DIR / MODEL_NAME
         
         if not model_path.exists():
-            print(f"❌ Voice model not found at {model_path}")
             return
 
         try:
@@ -67,8 +63,8 @@ class Narrator(threading.Thread):
                 stderr=subprocess.DEVNULL,
                 check=True
             )
-        except Exception as e:
-            print(f"❌ Speech failed: {e}")
+        except Exception:
+            pass
 
     def stop(self):
         self.stop_event.set()
@@ -90,7 +86,6 @@ class Heartbeat(threading.Thread):
                 break
             
             now = datetime.datetime.now().strftime("%H:%M:%S")
-            # CHANGED: Push to queue instead of direct call
             narrator.say(f"Signal check. The time is {now}.")
 
     def stop(self):
@@ -98,7 +93,7 @@ class Heartbeat(threading.Thread):
 
 def run_logs():
     """Launch the Logs visualizer."""
-    print("🌊 Launching Log Stream...")
+    # print("🌊 Launching Log Stream...") # Commented out to save TUI
     script_dir = Path(__file__).parent
     logs_script = script_dir / "logs.py"
     
@@ -118,7 +113,7 @@ def run_logs():
             check=True
         )
     except KeyboardInterrupt:
-        print("\n🌊 Log stream stopped.")
+        pass
     finally:
         heartbeat.stop()
         tail_proc.terminate()
@@ -127,18 +122,14 @@ def run_logs():
 
 def visit_site():
     """Opens the site to generate a log entry and verify browser control."""
-    print("🌍 Opening browser to generate signal...")
+    # We avoid print() here as it interferes with the running TUI
     narrator.say("Initiating visual contact. Opening secure channel.")
     
-    # We must force the display to :0 because this script runs from SSH
-    # but the browser must appear on the physical screen.
     env = os.environ.copy()
-    # env["DISPLAY"] = ":0"
-    env["DISPLAY"] = ":10.0"
+    env["DISPLAY"] = ":10.0" # Targeted RDP Display
     
     try:
         # Launch Firefox
-        # --new-window ensures we don't just add a tab to an existing hidden window
         browser = subprocess.Popen(
             ["firefox", "--new-window", "https://mikelev.in/"],
             env=env,
@@ -146,43 +137,46 @@ def visit_site():
             stderr=subprocess.DEVNULL
         )
         
-        # Wait for page load and log hit (15s is safe for a slow laptop)
+        # Flashcard Duration (Show the site while narrating)
         time.sleep(15)
         
-        # Cleanup: Close the browser
-        print("🌍 Closing browser...")
+        # Cleanup
         browser.terminate()
-        
-        # Double tap to ensure it's dead
         time.sleep(1)
         subprocess.run(["pkill", "firefox"], check=False)
         
-    except Exception as e:
-        print(f"❌ Browser automation failed: {e}")
+    except Exception:
+        pass
 
+def start_director_track():
+    """The Script for the Show. Runs in parallel to the Log Stream."""
+    # 1. Wait for TUI to initialize and paint the screen
+    time.sleep(5)
+    
+    # 2. The Preamble
+    narrator.say("System Online. Connecting to the Black River.")
+    narrator.say("What you are seeing is the raw logfile of the Future Proof blog.")
+    narrator.say("Unlike mobile readiness, there is no viewport for AI readiness. This stream is that viewport.")
+    
+    # 3. The Visual Handshake (Flashcard)
+    # This will pop up OVER the logs, then disappear, revealing the hit
+    visit_site()
 
 def main():
-    print("🎬 Stream Orchestrator Starting...")
-    
     # Start the Voice
     narrator.start()
     
-    # 1. The Intro (Queued)
-    narrator.say("System Online. Connecting to Weblogs.")
-    
-    # 2. The Visual Handshake (NEW)
-    visit_site()
+    # Start the Director (Background Thread)
+    # This runs the "Show" logic while the main thread runs the "Visuals"
+    director = threading.Thread(target=start_director_track, daemon=True)
+    director.start()
 
-    # 3. The Main Event
+    # Start the Visuals (Blocking Main Thread)
+    # This takes over the terminal window
     run_logs()
     
-    # 3. The Outro (Queued)
-    # Note: This might not play if run_logs is killed hard, but handled by Bash watchdog mostly.
-    # If run_logs exits cleanly (Ctrl+C), this gets queued.
+    # Cleanup (Only hit if logs exit)
     narrator.say("Visual link lost. Resetting connection.")
-    
-    # Give the narrator a moment to finish the queue before exiting the script
-    # (Since narrator is a daemon thread, it dies when main dies)
     time.sleep(3) 
     narrator.stop()
 
