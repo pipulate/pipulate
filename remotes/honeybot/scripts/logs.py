@@ -8,6 +8,7 @@ import sys
 import re
 import hashlib
 from datetime import datetime
+from collections import Counter
 from textual.app import App, ComposeResult
 from textual.containers import Container
 from textual.widgets import Header, Footer, Static, Log, Label, Markdown
@@ -104,10 +105,12 @@ class SonarApp(App):
             yield Label("Hits: 0", id="stat_hits")
             yield Label("Bots: 0", id="stat_bots")
             yield Label("Err:  0", id="stat_errors")
+            yield Label("Top:  -", id="stat_top_ua")
             
         yield Footer()
 
     def on_mount(self) -> None:
+        self.ua_counter = Counter()
         self.stream_logs()
 
     # -------------------------------------------------------------------------
@@ -158,6 +161,11 @@ class SonarApp(App):
             match = LOG_PATTERN.search(clean_line)
             if match:
                 data = match.groupdict()
+
+                # Update Counter
+                ua_clean = data['ua'].split('/')[0] # Simple cleanup
+                if len(ua_clean) > 20: ua_clean = ua_clean[:20] + "..."
+                self.ua_counter[ua_clean] += 1 # <--- Count it
                 
                 # Stats update
                 if "bot" in data['ua'].lower() or "spider" in data['ua'].lower():
@@ -197,6 +205,11 @@ class SonarApp(App):
             self.query_one("#stat_hits", Label).update(f"Hits: {hits}")
             self.query_one("#stat_bots", Label).update(f"Bots: {bots}")
             self.query_one("#stat_errors", Label).update(f"Err:  {errors}")
+
+            # Update Top UA
+            if self.ua_counter:
+                top_ua, count = self.ua_counter.most_common(1)[0]
+                self.query_one("#stat_top_ua", Label).update(f"Top:  {top_ua} ({count})")
         except:
             pass
 
