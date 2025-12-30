@@ -14,6 +14,12 @@ import datetime
 import queue
 from pathlib import Path
 
+sys.path.append(str(Path(__file__).parent))
+try:
+    from show import SCRIPT
+except ImportError:
+    SCRIPT = [("SAY", "Error. Show file not found.")]
+
 # --- Configuration ---
 MODEL_DIR = Path.home() / ".local/share/piper_voices"
 MODEL_NAME = "en_US-amy-low.onnx"
@@ -91,6 +97,54 @@ class Heartbeat(threading.Thread):
     def stop(self):
         self.stop_event.set()
 
+def perform_show():
+    """Reads the sheet music from show.py and executes it."""
+    
+    # Define the environment for the browser once
+    env = os.environ.copy()
+    env["DISPLAY"] = ":10.0" 
+    
+    for command, content in SCRIPT:
+        if command == "SAY":
+            narrator.say(content)
+            # Dynamic pause based on text length (roughly) to pace the stream
+            time.sleep(len(content) / 20)
+            
+        elif command == "VISIT":
+            # We don't narrate this specifically, we just do it.
+            # The narration should be queued BEFORE this command in show.py if needed.
+            try:
+                subprocess.Popen(
+                    ["firefox", "--new-window", content],
+                    env=env,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL
+                )
+            except Exception:
+                pass
+                
+        elif command == "WAIT":
+            # Explicit wait for visual effect (e.g. holding the browser on screen)
+            try:
+                time.sleep(int(content))
+            except:
+                time.sleep(1)
+                
+        elif command == "CLOSE":
+            try:
+                subprocess.run(["pkill", "firefox"], check=False)
+            except:
+                pass
+
+def start_director_track():
+    """The Script for the Show. Runs in parallel to the Log Stream."""
+    # 1. Wait for TUI to initialize
+    time.sleep(5)
+    
+    # 2. Play the Music
+    perform_show()
+
+
 def run_logs():
     """Launch the Logs visualizer."""
     # print("🌊 Launching Log Stream...") # Commented out to save TUI
@@ -118,6 +172,15 @@ def run_logs():
         heartbeat.stop()
         tail_proc.terminate()
         heartbeat.join(timeout=1)
+
+
+def start_director_track():
+    """The Script for the Show. Runs in parallel to the Log Stream."""
+    # 1. Wait for TUI to initialize
+    time.sleep(5)
+    
+    # 2. Play the Music
+    perform_show()
 
 
 def visit_site():
