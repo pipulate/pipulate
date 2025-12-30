@@ -115,7 +115,7 @@ def perform_show():
             # The narration should be queued BEFORE this command in show.py if needed.
             try:
                 subprocess.Popen(
-                    ["firefox", "--new-window", content],
+                    ["firefox", "--new-window", "--private-window", content],
                     env=env,
                     stdout=subprocess.DEVNULL,
                     stderr=subprocess.DEVNULL
