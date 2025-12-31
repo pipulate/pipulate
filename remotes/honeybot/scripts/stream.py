@@ -15,10 +15,11 @@ import queue
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent))
+
 try:
-    from show import SCRIPT
+    import show 
 except ImportError:
-    SCRIPT = [("SAY", "Error. Show file not found.")]
+    show = None
 
 # --- Configuration ---
 MODEL_DIR = Path.home() / ".local/share/piper_voices"
