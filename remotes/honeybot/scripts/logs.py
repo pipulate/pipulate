@@ -44,9 +44,9 @@ class SonarApp(App):
         overflow-y: scroll;
     }
 
-    /* BOTTOM LEFT: Active Projects (Shrunk) */
+    /* BOTTOM LEFT: Active Projects (2 Columns) */
     #active_projects {
-        column-span: 2; /* This is the CORRECT span */
+        column-span: 2; 
         row-span: 1;
         border: solid magenta;
         background: #100010;
@@ -54,17 +54,17 @@ class SonarApp(App):
         padding: 0 1;
     }
 
-    /* BOTTOM CENTER: Context (New) */
+    /* BOTTOM CENTER: Context (1 Column) */
     #context_panel {
         column-span: 1;
         row-span: 1;
-        border: solid yellow; /* Yellow for high visibility */
+        border: solid yellow;
         background: #151505;
         height: 100%;
         padding: 0 1;
     }
     
-    /* BOTTOM RIGHT: Stats */
+    /* BOTTOM RIGHT: Stats (1 Column) */
     #stats_panel {
         column-span: 1;
         row-span: 1;
@@ -83,6 +83,7 @@ class SonarApp(App):
         margin-bottom: 1;
     }
     """
+
 
     TITLE = "🌊 SONAR V2 🌊"
     SUB_TITLE = "Listening to the Black River"
@@ -156,29 +157,24 @@ Watching AI bots traversing the "Black River."
         
         # Read directly from standard input (The Pipe)
         for line in sys.stdin:
-            # 1. Clean ANSI (Colors)
+            # 1. Clean
             clean_line = ANSI_ESCAPE.sub('', line).strip()
-            
-            if not clean_line: 
-                continue
+            if not clean_line: continue
 
-            # 2. THE SHIELD: Filter Mouse Garbage
-            # Nginx logs ALWAYS start with an IP (number). 
-            # Mouse codes start with ESC, [, <, etc.
+            # 2. Strict Filter: Must start with a digit (IP address)
             if not clean_line[0].isdigit():
                 continue
 
-            hits += 1
-            
             # 3. Parse & Format
             match = LOG_PATTERN.search(clean_line)
             if match:
+                hits += 1
                 data = match.groupdict()
 
                 # Update Counter
-                ua_clean = data['ua'].split('/')[0] # Simple cleanup
+                ua_clean = data['ua'].split('/')[0]
                 if len(ua_clean) > 20: ua_clean = ua_clean[:20] + "..."
-                self.ua_counter[ua_clean] += 1 # <--- Count it
+                self.ua_counter[ua_clean] += 1
                 
                 # Stats update
                 if "bot" in data['ua'].lower() or "spider" in data['ua'].lower():
@@ -188,21 +184,13 @@ Watching AI bots traversing the "Black River."
                 
                 rich_text = self.format_log_line(data)
 
-                # --- NEW LOGIC: Conditional Prefix Newline ---
-                # This breaks the "forever line" by adding a return BEFORE the entry
-                # but ONLY if it is not the first one.
+                # Conditional Prefix Newline
                 if hits > 1:
                     rich_text = Text("\n") + rich_text
                 
-                # Write to Log widget (Stable!)
+                # Write to Log widget
                 self.call_from_thread(self.write_log, rich_text)
                 self.call_from_thread(self.update_stats, hits, bots, errors)
-            else:
-                # Fallback for non-matching lines (if they passed the isdigit check)
-                text_obj = Text(clean_line, style="dim")
-                if hits > 1:
-                    text_obj = Text("\n") + text_obj
-                self.call_from_thread(self.write_log, text_obj)
 
     def write_log(self, text):
         log = self.query_one(Log)
