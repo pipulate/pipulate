@@ -46,7 +46,7 @@ class SonarApp(App):
 
     /* BOTTOM LEFT: Active Projects (Shrunk) */
     #active_projects {
-        column-span: 2; /* CHANGED from 3 to 2 */
+        column-span: 2; /* This is the CORRECT span */
         row-span: 1;
         border: solid magenta;
         background: #100010;
@@ -72,6 +72,16 @@ class SonarApp(App):
         background: #051515;
         padding: 0 1;
     }
+    
+    Label {
+        width: 100%;
+    }
+    
+    .header {
+        color: cyan;
+        text-style: bold underline;
+        margin-bottom: 1;
+    }
     """
 
     TITLE = "🌊 SONAR V2 🌊"
@@ -89,7 +99,7 @@ class SonarApp(App):
 3. 🤖 AI-Bot JS Execution Detector (Pending)
 """, id="active_projects")
 
-        # 2. Context Panel (Center) <--- THIS WAS MISSING
+        # 2. Context Panel (Center)
         yield Markdown("""
 **What is this?**
 Real-time web logs from **MikeLev.in**.
@@ -146,15 +156,21 @@ Watching AI bots traversing the "Black River."
         
         # Read directly from standard input (The Pipe)
         for line in sys.stdin:
-            # 1. Clean
-            clean_line = ANSI_ESCAPE.sub('', line)
-            if "<" in clean_line and ";" in clean_line and "M" in clean_line: continue
-            clean_line = clean_line.strip()
-            if not clean_line: continue
+            # 1. Clean ANSI (Colors)
+            clean_line = ANSI_ESCAPE.sub('', line).strip()
+            
+            if not clean_line: 
+                continue
+
+            # 2. THE SHIELD: Filter Mouse Garbage
+            # Nginx logs ALWAYS start with an IP (number). 
+            # Mouse codes start with ESC, [, <, etc.
+            if not clean_line[0].isdigit():
+                continue
 
             hits += 1
             
-            # 2. Parse & Format
+            # 3. Parse & Format
             match = LOG_PATTERN.search(clean_line)
             if match:
                 data = match.groupdict()
@@ -182,7 +198,7 @@ Watching AI bots traversing the "Black River."
                 self.call_from_thread(self.write_log, rich_text)
                 self.call_from_thread(self.update_stats, hits, bots, errors)
             else:
-                # Fallback for non-matching lines
+                # Fallback for non-matching lines (if they passed the isdigit check)
                 text_obj = Text(clean_line, style="dim")
                 if hits > 1:
                     text_obj = Text("\n") + text_obj
