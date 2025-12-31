@@ -1,0 +1,143 @@
+import sqlite3
+import datetime
+from pathlib import Path
+
+# The single file that holds the truth
+DB_PATH = Path("/home/mike/www/mikelev.in/honeybot.db")
+
+class HoneyDB:
+    def __init__(self, db_path=DB_PATH):
+        self.db_path = db_path
+        self.conn = None
+        self.init_db()
+
+    def get_conn(self):
+        if not self.conn:
+            self.conn = sqlite3.connect(self.db_path, check_same_thread=False)
+            # Enable WAL mode for concurrency (readers don't block writers)
+            self.conn.execute("PRAGMA journal_mode=WAL;")
+        return self.conn
+
+    def init_db(self):
+        """Creates the schema if it doesn't exist. Idempotent."""
+        conn = self.get_conn()
+        cur = conn.cursor()
+
+        # 1. The Dimensions (Normalized Tables)
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS ips (
+                id INTEGER PRIMARY KEY,
+                value TEXT UNIQUE,
+                first_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS user_agents (
+                id INTEGER PRIMARY KEY,
+                value TEXT UNIQUE,
+                first_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS paths (
+                id INTEGER PRIMARY KEY,
+                value TEXT UNIQUE,
+                first_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+        # 2. The Fact Table (Daily Aggregation)
+        # Composite Key: Date + IP + UA + Path + Status
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS daily_logs (
+                date TEXT,
+                ip_id INTEGER,
+                ua_id INTEGER,
+                path_id INTEGER,
+                status INTEGER,
+                count INTEGER DEFAULT 1,
+                last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (date, ip_id, ua_id, path_id, status),
+                FOREIGN KEY(ip_id) REFERENCES ips(id),
+                FOREIGN KEY(ua_id) REFERENCES user_agents(id),
+                FOREIGN KEY(path_id) REFERENCES paths(id)
+            )
+        """)
+
+        # 3. The Simple KV Store (Persistent Counters)
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS kv_store (
+                key TEXT PRIMARY KEY,
+                value INTEGER DEFAULT 0,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+        conn.commit()
+
+    def _get_or_create_id(self, table, value):
+        """Helper to manage normalized dimensions."""
+        conn = self.get_conn()
+        cur = conn.cursor()
+        
+        # Try to find existing
+        cur.execute(f"SELECT id FROM {table} WHERE value = ?", (value,))
+        res = cur.fetchone()
+        if res:
+            return res[0]
+            
+        # Insert new (Ignore conflicts to be safe against race conditions)
+        try:
+            cur.execute(f"INSERT OR IGNORE INTO {table} (value) VALUES (?)", (value,))
+            conn.commit()
+            # Fetch again to get the ID
+            cur.execute(f"SELECT id FROM {table} WHERE value = ?", (value,))
+            return cur.fetchone()[0]
+        except:
+            return None
+
+    def log_request(self, ip, ua, path, status, date_str=None):
+        """
+        The Main Ingestor. 
+        Takes raw log data, normalizes it, and updates the daily counter.
+        """
+        if not date_str:
+            date_str = datetime.date.today().isoformat()
+
+        # 1. Resolve IDs (The Normalization)
+        ip_id = self._get_or_create_id('ips', ip)
+        ua_id = self._get_or_create_id('user_agents', ua)
+        path_id = self._get_or_create_id('paths', path)
+
+        # 2. Upsert the Daily Record
+        sql = """
+            INSERT INTO daily_logs (date, ip_id, ua_id, path_id, status, count)
+            VALUES (?, ?, ?, ?, ?, 1)
+            ON CONFLICT(date, ip_id, ua_id, path_id, status) 
+            DO UPDATE SET count = count + 1, last_updated = CURRENT_TIMESTAMP
+        """
+        
+        conn = self.get_conn()
+        conn.execute(sql, (date_str, ip_id, ua_id, path_id, status))
+        conn.commit()
+
+    def increment_counter(self, key, amount=1):
+        """Updates a simple persistent counter."""
+        sql = """
+            INSERT INTO kv_store (key, value) VALUES (?, ?)
+            ON CONFLICT(key) DO UPDATE SET value = value + ?, updated_at = CURRENT_TIMESTAMP
+        """
+        conn = self.get_conn()
+        conn.execute(sql, (key, amount, amount))
+        conn.commit()
+
+    def get_counter(self, key):
+        """Reads a counter."""
+        conn = self.get_conn()
+        cur = conn.cursor()
+        cur.execute("SELECT value FROM kv_store WHERE key = ?", (key,))
+        res = cur.fetchone()
+        return res[0] if res else 0
+
+# Global Instance
+db = HoneyDB()
