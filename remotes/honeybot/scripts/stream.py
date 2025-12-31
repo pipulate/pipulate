@@ -18,6 +18,7 @@ sys.path.append(str(Path(__file__).parent))
 
 try:
     import show 
+    from content_loader import check_for_updates
 except ImportError:
     show = None
 
@@ -105,11 +106,26 @@ def perform_show(script):
     # Define the environment for the browser once
     env = os.environ.copy()
     env["DISPLAY"] = ":10.0" 
-    
+
+
+
+
     for command, content in script:
+        
+        # --- NEW: The Breaking News Interrupt ---
+        # We check before every command.
+        # If new content exists, we return False to signal "Abort & Restart"
+        if check_for_updates():
+            narrator.say("Interrupting program. Breaking news detected.")
+            # Close browser just in case
+            try:
+                subprocess.run(["pkill", "firefox"], check=False)
+            except: pass
+            return False 
+        # ----------------------------------------
+
         if command == "SAY":
             narrator.say(content)
-            # Dynamic pause based on text length
             time.sleep(len(content) / 20)
             
         elif command == "VISIT":
@@ -138,15 +154,18 @@ def perform_show(script):
 
 def start_director_track():
     """The Script for the Show. Runs in parallel to the Log Stream."""
-    # 1. Wait for TUI to initialize
     time.sleep(5)
     
-    # 2. The Infinite Loop
     while True:
         if show:
-            # Generate a fresh script (New shuffle every time)
+            # Generate a fresh script
             current_script = show.get_script()
+            
+            # Run the show. 
+            # If perform_show returns False, it means "New Content Detected",
+            # so the loop restarts immediately, generating a NEW script with the new article at top.
             perform_show(current_script)
+            
         else:
             narrator.say("Error. Show module not found.")
             time.sleep(30)
