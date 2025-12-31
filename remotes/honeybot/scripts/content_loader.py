@@ -130,6 +130,15 @@ def get_playlist(recent_n=10):
 
 def clean_markdown(text):
     """Sanitizes Markdown for the Piper TTS engine."""
+
+    # --- NEW: Strip Liquid Tags ({% ... %}) ---
+    # This removes {% raw %}, {% endraw %}, {% include ... %}, etc.
+    text = re.sub(r'\{%.*?%\}', '', text)
+    
+    # --- NEW: Strip Liquid Variables ({{ ... }}) ---
+    # Optional, but good practice if you use them in text
+    text = re.sub(r'\{\{.*?\}\}', '', text)
+
     # Remove Code Blocks
     text = re.sub(r'```.*?```', ' [Code block omitted] ', text, flags=re.DOTALL)
     # Remove Inline Code
