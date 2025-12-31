@@ -81,7 +81,8 @@ narrator = Narrator()
 
 class Heartbeat(threading.Thread):
     """A background thread that queues the time every N seconds."""
-    def __init__(self, interval=30):
+    # CHANGED: Default interval to 90 seconds
+    def __init__(self, interval=90):
         super().__init__()
         self.interval = interval
         self.stop_event = threading.Event()
@@ -158,7 +159,7 @@ def run_logs():
     logs_script = script_dir / "logs.py"
     
     # Start the Heartbeat
-    heartbeat = Heartbeat(interval=60)
+    heartbeat = Heartbeat(interval=90)
     heartbeat.start()
     
     try:
