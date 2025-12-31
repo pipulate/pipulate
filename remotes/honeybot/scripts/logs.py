@@ -44,15 +44,24 @@ class SonarApp(App):
         overflow-y: scroll;
     }
 
-    /* BOTTOM LEFT: AI Commentary */
-    #ai_commentary {
-        column-span: 3;
+    /* BOTTOM LEFT: Active Projects (Shrunk) */
+    #active_projects {
+        column-span: 2; /* CHANGED from 3 to 2 */
         row-span: 1;
         border: solid magenta;
         background: #100010;
         height: 100%;
-        content-align: center middle;
-        text-style: bold;
+        padding: 0 1;
+    }
+
+    /* BOTTOM CENTER: Context (New) */
+    #context_panel {
+        column-span: 1;
+        row-span: 1;
+        border: solid yellow; /* Yellow for high visibility */
+        background: #151505;
+        height: 100%;
+        padding: 0 1;
     }
     
     /* BOTTOM RIGHT: Stats */
