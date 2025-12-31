@@ -15,6 +15,11 @@ from textual.widgets import Header, Footer, Static, Log, Label, Markdown
 from textual import work
 from rich.text import Text
 
+try:
+    from db import db  # Import our new database singleton
+except ImportError:
+    db = None
+
 # --- Configuration ---
 # 1. The "Nuclear" ANSI Stripper
 ANSI_ESCAPE = re.compile(r'(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]')
@@ -173,6 +178,22 @@ Watching AI bots traversing the "Black River."
             if match:
                 hits += 1
                 data = match.groupdict()
+
+                # --- NEW: Persist to DB ---
+                if db:
+                    try:
+                        db.log_request(
+                            ip=data['ip'],
+                            ua=data['ua'],
+                            path=data['request'].split()[1] if len(data['request'].split()) > 1 else data['request'],
+                            status=int(data['status'])
+                        )
+                        
+                        # Use the KV store for a global persistence counter
+                        db.increment_counter("global_hits")
+                    except Exception as e:
+                        pass
+                # --------------------------
 
                 # Update Counter
                 ua_clean = data['ua'].split('/')[0]
