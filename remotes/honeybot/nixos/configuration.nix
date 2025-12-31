@@ -199,6 +199,7 @@
   environment.systemPackages = with pkgs; [
     git
     tmux
+    sqlite
 
     # The Broadcast Studio
     obs-studio
