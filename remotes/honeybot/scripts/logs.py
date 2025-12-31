@@ -161,8 +161,11 @@ Watching AI bots traversing the "Black River."
             clean_line = ANSI_ESCAPE.sub('', line).strip()
             if not clean_line: continue
 
-            # 2. Strict Filter: Must start with a digit (IP address)
-            if not clean_line[0].isdigit():
+            # 2. THE SHIELD: Structural Filter
+            # Mouse codes are numbers like "35;24;9M".
+            # Real logs are "1.2.3.4 - - [31/Dec/..."
+            # We look for the " - - [" sequence which is unique to Nginx combined logs.
+            if " - - [" not in clean_line:
                 continue
 
             # 3. Parse & Format

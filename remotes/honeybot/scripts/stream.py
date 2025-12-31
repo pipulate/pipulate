@@ -10,7 +10,8 @@ import sys
 import time
 import subprocess
 import threading
-import datetime
+import shutil   # <--- Add this import
+import tempfile # <--- Add this import
 import queue
 from pathlib import Path
 
@@ -110,46 +111,60 @@ def perform_show(script):
 
 
 
-    for command, content in script:
-        
-        # --- NEW: The Breaking News Interrupt ---
-        # We check before every command.
-        # If new content exists, we return False to signal "Abort & Restart"
-        if check_for_updates():
-            narrator.say("Interrupting program. Breaking news detected.")
-            # Close browser just in case
-            try:
-                subprocess.run(["pkill", "firefox"], check=False)
-            except: pass
-            return False 
-        # ----------------------------------------
-
-        if command == "SAY":
-            narrator.say(content)
-            time.sleep(len(content) / 20)
+    profile_dir = tempfile.mkdtemp(prefix="honeybot_fx_")
+    
+    try:
+        for command, content in script:
             
-        elif command == "VISIT":
-            try:
-                subprocess.Popen(
-                    ["firefox", "--new-window", "--private-window", content],
-                    env=env,
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL
-                )
-            except Exception:
-                pass
+            # --- NEW: The Breaking News Interrupt ---
+            # We check before every command.
+            # If new content exists, we return False to signal "Abort & Restart"
+            if check_for_updates():
+                narrator.say("Interrupting program. Breaking news detected.")
+                # Close browser just in case
+                try:
+                    subprocess.run(["pkill", "firefox"], check=False)
+                except: pass
+                return False 
+            # ----------------------------------------
+
+            if command == "SAY":
+                narrator.say(content)
+                time.sleep(len(content) / 20)
                 
-        elif command == "WAIT":
-            try:
-                time.sleep(int(content))
-            except:
-                time.sleep(1)
-                
-        elif command == "CLOSE":
-            try:
-                subprocess.run(["pkill", "firefox"], check=False)
-            except:
-                pass
+            elif command == "VISIT":
+                try:
+                    subprocess.Popen(
+                        [
+                            "firefox", 
+                            "--profile", profile_dir,  # <--- MAGIC: Use temp profile
+                            "--no-remote",             # <--- Don't connect to existing instances
+                            "--new-instance",          # <--- Force new process
+                            content
+                        ],
+                        env=env,
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL
+                    )
+                except Exception:
+                    pass
+                    
+            elif command == "WAIT":
+                try: time.sleep(int(content))
+                except: time.sleep(1)
+                    
+            elif command == "CLOSE":
+                try: 
+                    # We kill the specific firefox instance running on this profile if possible,
+                    # but pkill is safer for the kiosk mode.
+                    subprocess.run(["pkill", "firefox"], check=False)
+                except: pass
+    finally:
+        # CLEANUP: Destroy the memory of this session
+        try:
+            shutil.rmtree(profile_dir)
+        except:
+            pass
 
 
 def start_director_track():
