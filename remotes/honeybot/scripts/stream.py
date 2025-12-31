@@ -186,7 +186,7 @@ def start_director_track():
     time.sleep(5)
     
     # 2. Play the Music
-    perform_show()
+    perform_show(script)
 
 
 def visit_site():
