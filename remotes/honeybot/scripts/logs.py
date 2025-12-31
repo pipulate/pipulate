@@ -101,14 +101,22 @@ class SonarApp(App):
         yield Header()
         yield Log(id="log_stream", highlight=True)
         
-        # CHANGED: Replaced Static with Markdown for formatted list
+        # 1. Active Projects (Left)
         yield Markdown("""
 **Active Projects:**
-1. 📖 Storytelling Framework (In Progress)
+1. 📖 Storytelling Framework (Live)
 2. 🚦 Smart 404 Handler (Pending)
 3. 🤖 AI-Bot JS Execution Detector (Pending)
 """, id="active_projects")
+
+        # 2. Context Panel (Center) <--- THIS WAS MISSING
+        yield Markdown("""
+**What is this?**
+Real-time web logs from **MikeLev.in**.
+Watching AI bots traversing the "Black River."
+""", id="context_panel")
         
+        # 3. Stats Panel (Right)
         with Container(id="stats_panel"):
             yield Label("STATS", classes="header")
             yield Label("Hits: 0", id="stat_hits")
