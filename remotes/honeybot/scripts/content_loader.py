@@ -1,6 +1,7 @@
 import os
 import re
 import yaml
+import random # <--- Added for the shuffle
 from pathlib import Path
 from datetime import datetime
 
@@ -8,12 +9,11 @@ from datetime import datetime
 POSTS_DIR = Path("/home/mike/www/mikelev.in/_posts")
 BASE_URL = "https://mikelev.in"
 
-def get_playlist(limit=10):
+def get_playlist(recent_n=10):
     """
-    Returns a list of articles sorted Newest -> Oldest.
-    Structure: [{'title', 'date', 'url', 'content'}, ...]
+    Returns a playlist: Recent N (sorted date desc) + Rest (shuffled).
     """
-    articles = []
+    all_articles = []
     
     try:
         # Find all markdown files
@@ -22,12 +22,12 @@ def get_playlist(limit=10):
         for filepath in files:
             filename = filepath.name
             
-            # 1. Extract Date from filename (YYYY-MM-DD-title.md)
+            # 1. Extract Date
             try:
                 date_str = filename[:10]
                 post_date = datetime.strptime(date_str, '%Y-%m-%d').date()
             except ValueError:
-                continue # Skip non-conforming files
+                continue 
 
             # 2. Read File & Frontmatter
             with open(filepath, 'r', encoding='utf-8') as f:
@@ -46,63 +46,57 @@ def get_playlist(limit=10):
                     pass
 
             # 3. Construct URL
-            # Priority: Frontmatter permalink > Filename slug
             slug = frontmatter.get('permalink', '').strip('/')
             if not slug:
-                # Remove date (first 11 chars) and extension
                 slug = filename[11:].rsplit('.', 1)[0]
-            
             url = f"{BASE_URL}/{slug}/"
             
-            # 4. Clean Text for TTS
+            # 4. Clean Text
             clean_text = clean_markdown(body_text)
             
-            articles.append({
+            all_articles.append({
                 'date': post_date,
                 'title': frontmatter.get('title', slug.replace('-', ' ')),
                 'url': url,
                 'content': clean_text
             })
 
-        # Sort Reverse Chronological (Newest First)
-        articles.sort(key=lambda x: x['date'], reverse=True)
+        # Sort ALL by date first to identify the "Recent" block
+        all_articles.sort(key=lambda x: x['date'], reverse=True)
         
-        return articles[:limit]
+        # Split the lists
+        recent_articles = all_articles[:recent_n]
+        archive_articles = all_articles[recent_n:]
+        
+        # Shuffle the archive to keep it fresh
+        random.shuffle(archive_articles)
+        
+        # Combine them
+        return recent_articles + archive_articles
 
     except Exception as e:
         print(f"Librarian Error: {e}")
         return []
 
-
 def clean_markdown(text):
     """Sanitizes Markdown for the Piper TTS engine."""
-    # ... existing cleanups ...
-    
-    # 1. Remove Code Blocks
+    # Remove Code Blocks
     text = re.sub(r'```.*?```', ' [Code block omitted] ', text, flags=re.DOTALL)
-    # 2. Remove Inline Code
+    # Remove Inline Code
     text = re.sub(r'`([^`]+)`', r'\1', text)
-    # 3. Remove Images
+    # Remove Images
     text = re.sub(r'!\[.*?\]\(.*?\)', '', text)
-    # 4. Remove Links [text](url) -> text
+    # Remove Links [text](url) -> text
     text = re.sub(r'\[([^\]]+)\]\(.*?\)', r'\1', text)
-    # 5. Remove HTML tags
+    # Remove HTML tags
     text = re.sub(r'<[^>]+>', '', text)
-    # 6. Remove Headers/Bold/Italic markers
+    # Remove Headers/Bold/Italic markers
     text = re.sub(r'[*_#]', '', text)
     
-    # --- CHANGED: Reflow Logic ---
-    # 7. Protect Paragraphs: Convert double newlines to a placeholder
+    # Reflow Logic (The Hard Wrap Fix)
     text = re.sub(r'\n\s*\n', '||PARAGRAPH||', text)
-    
-    # 8. Reflow: Convert single newlines to spaces
     text = re.sub(r'\n', ' ', text)
-    
-    # 9. Restore Paragraphs: Convert placeholder back to real newlines
     text = text.replace('||PARAGRAPH||', '\n')
-    
-    # 10. Clean up extra spaces
     text = re.sub(r' +', ' ', text).strip()
     
     return text
-
