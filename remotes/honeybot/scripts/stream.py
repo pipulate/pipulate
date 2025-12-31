@@ -97,22 +97,20 @@ class Heartbeat(threading.Thread):
     def stop(self):
         self.stop_event.set()
 
-def perform_show():
-    """Reads the sheet music from show.py and executes it."""
-    
+
+def perform_show(script):
+    """Reads the sheet music list and executes it."""
     # Define the environment for the browser once
     env = os.environ.copy()
     env["DISPLAY"] = ":10.0" 
     
-    for command, content in SCRIPT:
+    for command, content in script:
         if command == "SAY":
             narrator.say(content)
-            # Dynamic pause based on text length (roughly) to pace the stream
+            # Dynamic pause based on text length
             time.sleep(len(content) / 20)
             
         elif command == "VISIT":
-            # We don't narrate this specifically, we just do it.
-            # The narration should be queued BEFORE this command in show.py if needed.
             try:
                 subprocess.Popen(
                     ["firefox", "--new-window", "--private-window", content],
@@ -124,7 +122,6 @@ def perform_show():
                 pass
                 
         elif command == "WAIT":
-            # Explicit wait for visual effect (e.g. holding the browser on screen)
             try:
                 time.sleep(int(content))
             except:
@@ -136,13 +133,21 @@ def perform_show():
             except:
                 pass
 
+
 def start_director_track():
     """The Script for the Show. Runs in parallel to the Log Stream."""
     # 1. Wait for TUI to initialize
     time.sleep(5)
     
-    # 2. Play the Music
-    perform_show()
+    # 2. The Infinite Loop
+    while True:
+        if show:
+            # Generate a fresh script (New shuffle every time)
+            current_script = show.get_script()
+            perform_show(current_script)
+        else:
+            narrator.say("Error. Show module not found.")
+            time.sleep(30)
 
 
 def run_logs():
