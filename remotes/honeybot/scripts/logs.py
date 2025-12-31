@@ -72,26 +72,6 @@ class SonarApp(App):
         background: #051515;
         padding: 0 1;
     }
-
-    /* Update AI Commentary style for Markdown */
-    #active_projects {
-        column-span: 3;
-        row-span: 1;
-        border: solid magenta;
-        background: #100010;
-        height: 100%;
-        padding: 0 1;
-    }
-    
-    Label {
-        width: 100%;
-    }
-    
-    .header {
-        color: cyan;
-        text-style: bold underline;
-        margin-bottom: 1;
-    }
     """
 
     TITLE = "🌊 SONAR V2 🌊"
