@@ -9,6 +9,49 @@ from datetime import datetime
 POSTS_DIR = Path("/home/mike/www/mikelev.in/_posts")
 BASE_URL = "https://mikelev.in"
 
+# ... existing imports ...
+
+# Global cache to track state
+_last_scan_time = 0
+_last_file_count = 0
+
+def check_for_updates():
+    """
+    Checks if the _posts directory has changed since the last playlist generation.
+    Returns True if updates are detected.
+    """
+    global _last_scan_time, _last_file_count
+    
+    try:
+        # Get directory stats
+        stat = POSTS_DIR.stat()
+        current_mtime = stat.st_mtime
+        
+        # Also check file count (sometimes mtime on dir doesn't update on all FS)
+        current_files = list(POSTS_DIR.glob("*.md")) + list(POSTS_DIR.glob("*.markdown"))
+        current_count = len(current_files)
+        
+        # First run logic
+        if _last_scan_time == 0:
+            _last_scan_time = current_mtime
+            _last_file_count = current_count
+            return False
+
+        # Detection logic
+        if current_mtime > _last_scan_time or current_count != _last_file_count:
+            # Update cache
+            _last_scan_time = current_mtime
+            _last_file_count = current_count
+            print("🚀 New content detected! Resetting playlist.")
+            return True
+            
+        return False
+        
+    except Exception as e:
+        print(f"Update Check Error: {e}")
+        return False
+
+
 def get_playlist(recent_n=10):
     """
     Returns a playlist: Recent N (sorted date desc) + Rest (shuffled).
@@ -71,7 +114,14 @@ def get_playlist(recent_n=10):
         # Shuffle the archive to keep it fresh
         random.shuffle(archive_articles)
         
-        # Combine them
+        global _last_scan_time, _last_file_count
+        try:
+            stat = POSTS_DIR.stat()
+            _last_scan_time = stat.st_mtime
+            files = list(POSTS_DIR.glob("*.md")) + list(POSTS_DIR.glob("*.markdown"))
+            _last_file_count = len(files)
+        except: pass
+        
         return recent_articles + archive_articles
 
     except Exception as e:
