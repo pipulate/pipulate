@@ -180,44 +180,6 @@ def run_logs():
         heartbeat.join(timeout=1)
 
 
-def start_director_track():
-    """The Script for the Show. Runs in parallel to the Log Stream."""
-    # 1. Wait for TUI to initialize
-    time.sleep(5)
-    
-    # 2. Play the Music
-    perform_show(script)
-
-
-def visit_site():
-    """Opens the site to generate a log entry and verify browser control."""
-    # We avoid print() here as it interferes with the running TUI
-    narrator.say("Initiating visual contact. Opening secure channel.")
-    
-    env = os.environ.copy()
-    env["DISPLAY"] = ":10.0" # Targeted RDP Display
-    
-    try:
-        # Launch Firefox
-        browser = subprocess.Popen(
-            ["firefox", "--new-window", "--private-window", "https://mikelev.in/"],
-            env=env,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
-        )
-        
-        # Flashcard Duration (Show the site while narrating)
-        time.sleep(15)
-        
-        # Cleanup
-        browser.terminate()
-        time.sleep(1)
-        subprocess.run(["pkill", "firefox"], check=False)
-        
-    except Exception:
-        pass
-
-
 def main():
     # Start the Voice
     narrator.start()
