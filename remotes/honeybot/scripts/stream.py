@@ -31,6 +31,44 @@ except ImportError:
 MODEL_DIR = Path.home() / ".local/share/piper_voices"
 MODEL_NAME = "en_US-amy-low.onnx"
 
+
+def run_tui_app(script_name, duration=None):
+    """Launch a TUI script. If duration is set, kill it after N seconds."""
+    script_path = Path(__file__).parent / script_name
+    
+    try:
+        # Start the process
+        if script_name == "logs.py":
+             # Logs needs the pipe
+             tail_proc = subprocess.Popen(
+                ["tail", "-f", "/var/log/nginx/access.log"],
+                stdout=subprocess.PIPE
+            )
+             proc = subprocess.Popen(
+                [sys.executable, str(script_path)],
+                stdin=tail_proc.stdout
+            )
+        else:
+             # Normal app (report.py)
+             tail_proc = None
+             proc = subprocess.Popen([sys.executable, str(script_path)])
+
+        # Wait for duration or death
+        if duration:
+            try:
+                proc.wait(timeout=duration * 60)
+            except subprocess.TimeoutExpired:
+                proc.terminate()
+        else:
+            proc.wait()
+
+    except KeyboardInterrupt:
+        pass
+    finally:
+        if proc.poll() is None: proc.terminate()
+        if tail_proc: tail_proc.terminate()
+
+
 class Narrator(threading.Thread):
     """The Single Voice of Truth. Consumes text from a queue and speaks it."""
     def __init__(self):
@@ -229,24 +267,24 @@ def run_logs():
         tail_proc.terminate()
         heartbeat.join(timeout=1)
 
-
 def main():
-    # Start the Voice
     narrator.start()
-    
-    # Start the Director (Background Thread)
-    # This runs the "Show" logic while the main thread runs the "Visuals"
     director = threading.Thread(target=start_director_track, daemon=True)
     director.start()
 
-    # Start the Visuals (Blocking Main Thread)
-    # This takes over the terminal window
-    run_logs()
-    
-    # Cleanup (Only hit if logs exit)
-    narrator.say("Visual link lost. Resetting connection.")
-    time.sleep(3) 
+    # The Infinite Visual Loop
+    while True:
+        # 1. The Main Event (Logs) - 15 Minutes
+        run_tui_app("logs.py", duration=15)
+        
+        # 2. The Intermission (Report) - 1 Minute
+        narrator.say("Pausing log stream for analysis report.")
+        run_tui_app("report.py", duration=1)
+        
+        narrator.say("Resuming live feed.")
+
     narrator.stop()
+
 
 if __name__ == "__main__":
     main()
