@@ -14,6 +14,16 @@
   # Enable Flakes and the new Nix Command Line Tool
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  # Garbage Collection
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 7d";
+  };
+  
+  # Optimize Store (Hard-link identical files to save space)
+  nix.settings.auto-optimise-store = true;
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
