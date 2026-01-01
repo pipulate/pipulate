@@ -9,6 +9,7 @@ remotes/honeybot/hooks/post-receive
 remotes/honeybot/scripts/stream.py
 remotes/honeybot/scripts/show.py
 remotes/honeybot/scripts/content_loader.py
+/home/mike/repos/pipulate/remotes/honeybot/scripts/report.py
 """
 
 ## > We've got content, it's groovy context  

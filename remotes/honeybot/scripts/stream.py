@@ -267,6 +267,7 @@ def run_logs():
         tail_proc.terminate()
         heartbeat.join(timeout=1)
 
+
 def main():
     narrator.start()
     director = threading.Thread(target=start_director_track, daemon=True)
@@ -274,14 +275,14 @@ def main():
 
     # The Infinite Visual Loop
     while True:
-        # 1. The Main Event (Logs) - 15 Minutes
+        # TEST MODE: Run Report FIRST
+        narrator.say("Initiating analysis report.")
+        run_tui_app("report.py", duration=0.2) # Run for 0.2 minutes (12 seconds)
+        
+        narrator.say("Switching to live feed.")
         run_tui_app("logs.py", duration=15)
         
-        # 2. The Intermission (Report) - 1 Minute
-        narrator.say("Pausing log stream for analysis report.")
-        run_tui_app("report.py", duration=1)
-        
-        narrator.say("Resuming live feed.")
+        # Then the loop repeats: Report -> Logs -> Report -> Logs...
 
     narrator.stop()
 
