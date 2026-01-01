@@ -1,14 +1,6 @@
 AI_PHOOEY_CHOP = """\
-deploy_honeybot.sh
-remotes/honeybot/nixos/configuration.nix
-/home/mike/repos/trimnoir/flake.nix
-# remotes/honeybot/scripts/logs.py
-# /home/mike/repos/trimnoir/_config.yml
-# remotes/honeybot/hooks/post-receive
-# /home/mike/repos/trimnoir/_layouts/default.html
-# remotes/honeybot/scripts/stream.py
-# remotes/honeybot/scripts/show.py
-# remotes/honeybot/scripts/content_loader.py
+/home/mike/repos/trimnoir/_config.yml
+/home/mike/repos/trimnoir/_layouts/default.html
 """
 
 ## > We've got content, it's groovy context  
@@ -22,6 +14,17 @@ remotes/honeybot/nixos/configuration.nix
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# deploy_honeybot.sh
+# remotes/honeybot/nixos/configuration.nix
+# /home/mike/repos/trimnoir/flake.nix
+# remotes/honeybot/scripts/logs.py
+# /home/mike/repos/trimnoir/_config.yml
+# remotes/honeybot/hooks/post-receive
+# /home/mike/repos/trimnoir/_layouts/default.html
+# remotes/honeybot/scripts/stream.py
+# remotes/honeybot/scripts/show.py
+# remotes/honeybot/scripts/content_loader.py
 
 # deploy_honeybot.sh
 # /home/mike/repos/trimnoir/flake.nix

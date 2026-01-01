@@ -29,7 +29,7 @@ def generate_hub_file(node, target_repo_root, hubs_dir):
     
     # 2. Build Frontmatter
     frontmatter = f"""---
-layout: page
+layout: default
 title: "{node['title']}"
 permalink: {node['permalink']}
 ---
