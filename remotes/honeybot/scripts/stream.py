@@ -36,6 +36,14 @@ def run_tui_app(script_name, duration=None):
     """Launch a TUI script. If duration is set, kill it after N seconds."""
     script_path = Path(__file__).parent / script_name
     
+    # --- NEW: Prepare Environment with Time Data ---
+    # We copy the current env to preserve DISPLAY, PATH, etc.
+    local_env = os.environ.copy()
+    if duration:
+        local_env["SONAR_DURATION"] = str(duration)
+        local_env["SONAR_START_TIME"] = str(time.time())
+    # -----------------------------------------------
+    
     try:
         # Start the process
         if script_name == "logs.py":
@@ -46,12 +54,17 @@ def run_tui_app(script_name, duration=None):
             )
              proc = subprocess.Popen(
                 [sys.executable, str(script_path)],
-                stdin=tail_proc.stdout
+                stdin=tail_proc.stdout,
+                env=local_env  # <--- Pass the modified env
             )
         else:
              # Normal app (report.py)
              tail_proc = None
-             proc = subprocess.Popen([sys.executable, str(script_path)])
+             # We pass local_env here too, though report.py doesn't use it yet
+             proc = subprocess.Popen(
+                 [sys.executable, str(script_path)],
+                 env=local_env 
+             )
 
         # Wait for duration or death
         if duration:

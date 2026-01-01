@@ -9,6 +9,9 @@ import re
 import hashlib
 from datetime import datetime
 from collections import Counter
+import os  # <--- NEW
+import time # <--- NEW
+
 from textual.app import App, ComposeResult
 from textual.containers import Container
 from textual.widgets import Header, Footer, Static, Log, Label, Markdown
@@ -33,13 +36,13 @@ class SonarApp(App):
     CSS = """
     Screen {
         layout: grid;
-        grid-size: 4 6;
+        grid-size: 3 6;  /* CHANGED: 4 -> 3 columns for equal thirds */
         background: #0f1f27;
     }
 
     /* TOP SECTION: Full Width Log Stream */
     #log_stream {
-        column-span: 4;
+        column-span: 3; /* CHANGED: 4 -> 3 */
         row-span: 5;
         background: #000000;
         border: solid #00ff00;
@@ -49,9 +52,9 @@ class SonarApp(App):
         overflow-y: scroll;
     }
 
-    /* BOTTOM LEFT: Active Projects (2 Columns) */
+    /* BOTTOM PANELS: All span 1 column now */
     #active_projects {
-        column-span: 2; 
+        column-span: 1; 
         row-span: 1;
         border: solid magenta;
         background: #100010;
@@ -59,7 +62,6 @@ class SonarApp(App):
         padding: 0 1;
     }
 
-    /* BOTTOM CENTER: Context (1 Column) */
     #context_panel {
         column-span: 1;
         row-span: 1;
@@ -69,7 +71,6 @@ class SonarApp(App):
         padding: 0 1;
     }
     
-    /* BOTTOM RIGHT: Stats (1 Column) */
     #stats_panel {
         column-span: 1;
         row-span: 1;
@@ -85,36 +86,44 @@ class SonarApp(App):
     .header {
         color: cyan;
         text-style: bold underline;
+        margin-bottom: 0;
+    }
+    
+    #countdown {
+        color: bold orange;
         margin-bottom: 1;
     }
     """
 
 
-    TITLE = "🌊 SONAR V2 🌊"
-    SUB_TITLE = "Listening to the Black River"
+    TITLE = "Honeybot Sonar"
+    SUB_TITLE = "Live Nginx Log Analysis (Textual HUD)"
 
     def compose(self) -> ComposeResult:
         yield Header()
         yield Log(id="log_stream", highlight=True)
         
-        # 1. Active Projects (Left)
+        # 1. Active Projects
         yield Markdown("""
 **Active Projects:**
-1. 📖 Storytelling Framework (Live)
-2. 🚦 Smart 404 Handler (Pending)
-3. 🤖 AI-Bot JS Execution Detector (Pending)
+1. 📖 Storytelling (Live)
+2. 🚦 404 Handler (Pending)
+3. 🤖 JS Bot Trap (Live)
 """, id="active_projects")
 
-        # 2. Context Panel (Center)
+        # 2. Context Panel
         yield Markdown("""
-**What is this?**
-Real-time web logs from **MikeLev.in**.
-Watching AI bots traversing the "Black River."
+**The Black River**
+Live Nginx Logs.
+Streaming from:
+**https://mikelev.in**
 """, id="context_panel")
         
-        # 3. Stats Panel (Right)
+        # 3. Stats Panel
         with Container(id="stats_panel"):
             yield Label("STATS", classes="header")
+            # --- NEW: The Countdown ---
+            yield Label("Next Report: --:--", id="countdown") 
             yield Label("Hits: 0", id="stat_hits")
             yield Label("Bots: 0", id="stat_bots")
             yield Label("Err:  0", id="stat_errors")
@@ -125,7 +134,34 @@ Watching AI bots traversing the "Black River."
     def on_mount(self) -> None:
         self.ua_counter = Counter()
         self.stream_logs()
+        
+        # --- NEW: Setup Countdown Timer ---
+        # We look for environment variables passed by stream.py
+        try:
+            self.start_time = float(os.environ.get("SONAR_START_TIME", time.time()))
+            self.duration_mins = float(os.environ.get("SONAR_DURATION", 15))
+        except:
+            self.start_time = time.time()
+            self.duration_mins = 15
+            
+        self.set_interval(1, self.update_countdown)
 
+    def update_countdown(self):
+        """Ticks the clock down to the next Commercial Break."""
+        elapsed = time.time() - self.start_time
+        total_seconds = self.duration_mins * 60
+        remaining = total_seconds - elapsed
+        
+        if remaining < 0:
+            remaining = 0
+            
+        mins, secs = divmod(int(remaining), 60)
+        time_str = f"{mins:02d}:{secs:02d}"
+        
+        try:
+            self.query_one("#countdown", Label).update(f"Report In: {time_str}")
+        except:
+            pass
     # -------------------------------------------------------------------------
     # Core Logic: IP Anonymization (Ported from Sonar V1)
     # -------------------------------------------------------------------------
