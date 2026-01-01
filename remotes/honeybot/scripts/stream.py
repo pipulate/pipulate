@@ -8,6 +8,7 @@ Handles the intro, launches the visualizer, and maintains the heartbeat.
 import os
 import sys
 import time
+import datetime
 import subprocess
 import threading
 import shutil   # <--- Add this import
