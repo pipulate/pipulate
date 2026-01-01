@@ -1,15 +1,16 @@
 AI_PHOOEY_CHOP = """\
-deploy_honeybot.sh
-remotes/honeybot/nixos/configuration.nix
-/home/mike/repos/trimnoir/_config.yml
-/home/mike/repos/trimnoir/flake.nix
-/home/mike/repos/trimnoir/_layouts/default.html
+# deploy_honeybot.sh
+# remotes/honeybot/nixos/configuration.nix
+# /home/mike/repos/trimnoir/_config.yml
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_layouts/default.html
+# remotes/honeybot/hooks/post-receive
 remotes/honeybot/scripts/logs.py
-remotes/honeybot/hooks/post-receive
 remotes/honeybot/scripts/stream.py
 remotes/honeybot/scripts/show.py
 remotes/honeybot/scripts/content_loader.py
-/home/mike/repos/pipulate/remotes/honeybot/scripts/report.py
+/home/mike/repos/MikeLev.in/_posts/list_articles.py
+# /home/mike/repos/pipulate/remotes/honeybot/scripts/report.py
 """
 
 ## > We've got content, it's groovy context  
