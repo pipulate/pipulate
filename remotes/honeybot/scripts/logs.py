@@ -88,11 +88,11 @@ class SonarApp(App):
         text-style: bold underline;
         margin-bottom: 0;
     }
-    
     #countdown {
-        color: bold orange;
+        color: orange;
+        text-style: bold;
         margin-bottom: 1;
-    }
+    }   
     """
 
 
