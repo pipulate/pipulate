@@ -15,6 +15,9 @@ import tempfile # <--- Add this import
 import queue
 from pathlib import Path
 
+# --- Configuration ---
+SHOW_DURATION_MINUTES = 5  # <--- The New "T" Variable
+
 sys.path.append(str(Path(__file__).parent))
 
 try:
@@ -115,8 +118,19 @@ def perform_show(script):
     
     try:
         for command, content in script:
+
+            # --- The Timer Interrupt ---
+            # If we exceed the duration, we return False to restart the cycle.
+            # This allows the "Preamble" to run again in the next loop.
+            if (time.time() - start_time) > duration_seconds:
+                narrator.say("Cycle complete. Refreshing narrative feed.")
+                # Close browser just in case
+                try:
+                    subprocess.run(["pkill", "firefox"], check=False)
+                except: pass
+                return False 
             
-            # --- NEW: The Breaking News Interrupt ---
+            # --- The Breaking News Interrupt ---
             # We check before every command.
             # If new content exists, we return False to signal "Abort & Restart"
             if check_for_updates():
@@ -126,7 +140,6 @@ def perform_show(script):
                     subprocess.run(["pkill", "firefox"], check=False)
                 except: pass
                 return False 
-            # ----------------------------------------
 
             if command == "SAY":
                 narrator.say(content)
