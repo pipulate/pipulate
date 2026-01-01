@@ -167,7 +167,7 @@ def clean_markdown(text):
             parsed = urlparse(url)
             # Strip www. for better flow
             hostname = parsed.netloc.replace('www.', '')
-            return f" URL from {hostname} "
+            return f" from {hostname} "
         except:
             return " URL "
 
