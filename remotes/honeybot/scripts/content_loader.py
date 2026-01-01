@@ -55,7 +55,7 @@ def check_for_updates():
 
 def get_playlist(recent_n=10):
     """
-    Returns a playlist: Recent N (sorted date desc) + Rest (shuffled).
+    Returns a playlist: Recent N (sorted date desc + sort_order desc) + Rest (shuffled).
     """
     all_articles = []
     
@@ -89,24 +89,32 @@ def get_playlist(recent_n=10):
                 except yaml.YAMLError:
                     pass
 
-            # 3. Construct URL
+            # 3. Extract Sort Order (Default to 0)
+            try:
+                sort_order = int(frontmatter.get('sort_order', 0))
+            except (ValueError, TypeError):
+                sort_order = 0
+
+            # 4. Construct URL
             slug = frontmatter.get('permalink', '').strip('/')
             if not slug:
                 slug = filename[11:].rsplit('.', 1)[0]
             url = f"{BASE_URL}/{slug}/"
             
-            # 4. Clean Text
+            # 5. Clean Text
             clean_text = clean_markdown(body_text)
             
             all_articles.append({
                 'date': post_date,
+                'sort_order': sort_order, # Added for secondary sort key
                 'title': frontmatter.get('title', slug.replace('-', ' ')),
                 'url': url,
                 'content': clean_text
             })
 
-        # Sort ALL by date first to identify the "Recent" block
-        all_articles.sort(key=lambda x: x['date'], reverse=True)
+        # Sort ALL by date first, then by sort_order (both Descending/Reverse)
+        # Tuple comparison works element by element: (2026-01-01, 2) > (2026-01-01, 1)
+        all_articles.sort(key=lambda x: (x['date'], x['sort_order']), reverse=True)
         
         # Split the lists
         recent_articles = all_articles[:recent_n]
@@ -148,10 +156,6 @@ def clean_markdown(text):
     text = re.sub(r'!\[.*?\]\(.*?\)', '', text)
     # Remove Links [text](url) -> text
     text = re.sub(r'\[([^\]]+)\]\(.*?\)', r'\1', text)
-    # Remove HTML tags
-    text = re.sub(r'<[^>]+>', '', text)
-    # Remove Headers/Bold/Italic markers
-    text = re.sub(r'[*_#]', '', text)
 
     # --- NEW: Humanize Raw URLs for TTS ---
     # Captures https://example.com/foo and converts to "URL from example.com"
