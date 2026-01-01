@@ -35,7 +35,7 @@ def get_script():
             
             # 2. Flashcard
             if article['url']:
-                script.append(("SAY", "Loading visual context..."))
+                # script.append(("SAY", "Loading visual context..."))
                 script.append(("VISIT", article['url']))
                 script.append(("WAIT", 10))
                 script.append(("CLOSE", ""))
