@@ -277,18 +277,17 @@ def main():
     
     # 1. The Commercial Break (Report)
     narrator.say("Initiating analysis report.")
-    run_tui_app("report.py", duration=0.2) # Short duration for testing
+    run_tui_app("report.py", duration=0.2) 
     
     # 2. The Main Event (Logs)
     narrator.say("Switching to live feed.")
-    run_tui_app("logs.py", duration=5) # Run for 5 minutes
+    
+    # FIX: Use the variable!
+    run_tui_app("logs.py", duration=SHOW_DURATION_MINUTES) 
     
     # 3. The Exit
     narrator.say("Cycle complete. Rebooting system.")
     narrator.stop()
-    # The script ends here. 
-    # The external 'stream' bash script will catch the exit and restart 'python stream.py'
-    # causing the Report to show again immediately.
 
 if __name__ == "__main__":
     main()
