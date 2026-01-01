@@ -231,6 +231,20 @@
     piper-tts
 
     (writeShellScriptBin "stream" ''
+      # --- Ensure Voice Model Exists ---
+      MODEL_DIR="$HOME/.local/share/piper_voices"
+      MODEL_NAME="en_US-amy-low.onnx"
+      JSON_NAME="en_US-amy-low.onnx.json"
+      URL_BASE="https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/amy/low"
+
+      mkdir -p "$MODEL_DIR"
+      if [ ! -f "$MODEL_DIR/$MODEL_NAME" ]; then
+        echo "📥 Downloading voice model..."
+        ${pkgs.curl}/bin/curl -L -o "$MODEL_DIR/$MODEL_NAME" "$URL_BASE/$MODEL_NAME?download=true"
+        ${pkgs.curl}/bin/curl -L -o "$MODEL_DIR/$JSON_NAME" "$URL_BASE/$JSON_NAME?download=true"
+      fi
+      # ---------------------------------
+
       while true; do
         echo "🛡️ Watchdog: Launching Stream..."
         
