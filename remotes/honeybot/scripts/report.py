@@ -38,12 +38,16 @@ class ReportApp(App):
         try:
             top_agents = db.get_top_user_agents(limit=8)
             for ua, count in top_agents:
-                # Clean up the UA string for display
-                short_ua = ua.split('/')[0] 
-                if len(short_ua) > 50: short_ua = short_ua[:47] + "..."
-                table.add_row(str(count), short_ua)
+                # --- FIX: Stop chopping at the first slash ---
+                # Just truncate the very end if it's too long for the TUI
+                clean_ua = ua.strip()
+                if len(clean_ua) > 60: 
+                    clean_ua = clean_ua[:57] + "..."
+                # ---------------------------------------------
+                table.add_row(str(count), clean_ua)
         except Exception as e:
             table.add_row("ERROR", str(e))
+
 
 if __name__ == "__main__":
     app = ReportApp()
