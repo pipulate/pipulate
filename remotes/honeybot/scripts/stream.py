@@ -273,19 +273,22 @@ def main():
     director = threading.Thread(target=start_director_track, daemon=True)
     director.start()
 
-    # The Infinite Visual Loop
-    while True:
-        # TEST MODE: Run Report FIRST
-        narrator.say("Initiating analysis report.")
-        run_tui_app("report.py", duration=0.2) # Run for 0.2 minutes (12 seconds)
-        
-        narrator.say("Switching to live feed.")
-        run_tui_app("logs.py", duration=15)
-        
-        # Then the loop repeats: Report -> Logs -> Report -> Logs...
-
+    # --- ONE CYCLE ONLY ---
+    
+    # 1. The Commercial Break (Report)
+    narrator.say("Initiating analysis report.")
+    run_tui_app("report.py", duration=0.2) # Short duration for testing
+    
+    # 2. The Main Event (Logs)
+    narrator.say("Switching to live feed.")
+    run_tui_app("logs.py", duration=5) # Run for 5 minutes
+    
+    # 3. The Exit
+    narrator.say("Cycle complete. Rebooting system.")
     narrator.stop()
-
+    # The script ends here. 
+    # The external 'stream' bash script will catch the exit and restart 'python stream.py'
+    # causing the Report to show again immediately.
 
 if __name__ == "__main__":
     main()
