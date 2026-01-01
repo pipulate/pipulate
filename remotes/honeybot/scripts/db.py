@@ -139,5 +139,20 @@ class HoneyDB:
         res = cur.fetchone()
         return res[0] if res else 0
 
+    def get_top_user_agents(self, limit=5):
+        """Fetches the top user agents by total hit count."""
+        conn = self.get_conn()
+        cur = conn.cursor()
+        sql = """
+            SELECT ua.value, SUM(logs.count) as total
+            FROM daily_logs logs
+            JOIN user_agents ua ON logs.ua_id = ua.id
+            GROUP BY ua.id
+            ORDER BY total DESC
+            LIMIT ?
+        """
+        cur.execute(sql, (limit,))
+        return cur.fetchall()
+
 # Global Instance
 db = HoneyDB()
