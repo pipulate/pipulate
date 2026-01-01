@@ -111,8 +111,9 @@ def perform_show(script):
     env = os.environ.copy()
     env["DISPLAY"] = ":10.0" 
 
-
-
+    # --- NEW: Start the Timer ---
+    start_time = time.time()
+    duration_seconds = SHOW_DURATION_MINUTES * 60
 
     profile_dir = tempfile.mkdtemp(prefix="honeybot_fx_")
     
