@@ -1,6 +1,7 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/trimnoir/_config.yml
-/home/mike/repos/trimnoir/_layouts/default.html
+# /home/mike/repos/trimnoir/_config.yml
+# /home/mike/repos/trimnoir/_layouts/default.html
+remotes/honeybot/scripts/content_loader.py
 """
 
 ## > We've got content, it's groovy context  
