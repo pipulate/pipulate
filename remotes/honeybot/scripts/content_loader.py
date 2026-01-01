@@ -1,9 +1,10 @@
 import os
 import re
 import yaml
-import random # <--- Added for the shuffle
+import random
 from pathlib import Path
 from datetime import datetime
+from urllib.parse import urlparse
 
 # Path to your Jekyll posts on the Honeybot
 POSTS_DIR = Path("/home/mike/www/mikelev.in/_posts")
@@ -131,11 +132,11 @@ def get_playlist(recent_n=10):
 def clean_markdown(text):
     """Sanitizes Markdown for the Piper TTS engine."""
 
-    # --- NEW: Strip Liquid Tags ({% ... %}) ---
+    # --- Strip Liquid Tags ({% ... %}) ---
     # This removes {% raw %}, {% endraw %}, {% include ... %}, etc.
     text = re.sub(r'\{%.*?%\}', '', text)
     
-    # --- NEW: Strip Liquid Variables ({{ ... }}) ---
+    # --- Strip Liquid Variables ({{ ... }}) ---
     # Optional, but good practice if you use them in text
     text = re.sub(r'\{\{.*?\}\}', '', text)
 
@@ -151,7 +152,29 @@ def clean_markdown(text):
     text = re.sub(r'<[^>]+>', '', text)
     # Remove Headers/Bold/Italic markers
     text = re.sub(r'[*_#]', '', text)
-    
+
+    # --- NEW: Humanize Raw URLs for TTS ---
+    # Captures https://example.com/foo and converts to "URL from example.com"
+    def simplify_url(match):
+        try:
+            url = match.group(0)
+            # Remove trailing punctuation often caught by regex (like closing parens or dots)
+            url = url.rstrip(').,;]')
+            parsed = urlparse(url)
+            # Strip www. for better flow
+            hostname = parsed.netloc.replace('www.', '')
+            return f" URL from {hostname} "
+        except:
+            return " URL "
+
+    text = re.sub(r'https?://\S+', simplify_url, text)
+    # --------------------------------------
+
+    # Remove HTML tags
+    text = re.sub(r'<[^>]+>', '', text)
+    # Remove Headers/Bold/Italic markers
+    text = re.sub(r'[*_#]', '', text)
+
     # Reflow Logic (The Hard Wrap Fix)
     text = re.sub(r'\n\s*\n', '||PARAGRAPH||', text)
     text = re.sub(r'\n', ' ', text)
