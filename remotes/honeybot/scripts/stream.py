@@ -17,7 +17,7 @@ import queue
 from pathlib import Path
 
 # --- Configuration ---
-SHOW_DURATION_MINUTES = 28  # <--- The New "T" Variable
+SHOW_DURATION_MINUTES = 45  # <--- The New "T" Variable
 
 sys.path.append(str(Path(__file__).parent))
 
