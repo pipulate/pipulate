@@ -154,5 +154,48 @@ class HoneyDB:
         cur.execute(sql, (limit,))
         return cur.fetchall()
 
+    # --- NEW: Capability Analysis Queries ---
+
+    def get_js_executors(self, limit=5):
+        """
+        Finds UAs that requested MathJax resources.
+        Proof of JavaScript Execution.
+        """
+        conn = self.get_conn()
+        cur = conn.cursor()
+        sql = """
+            SELECT ua.value, SUM(logs.count) as total
+            FROM daily_logs logs
+            JOIN user_agents ua ON logs.ua_id = ua.id
+            JOIN paths p ON logs.path_id = p.id
+            WHERE p.value LIKE '%mathjax%'
+              AND p.value NOT LIKE '%.html' /* Exclude pages *about* mathjax if any */
+            GROUP BY ua.id
+            ORDER BY total DESC
+            LIMIT ?
+        """
+        cur.execute(sql, (limit,))
+        return cur.fetchall()
+
+    def get_markdown_readers(self, limit=5):
+        """
+        Finds UAs that requested .md files directly.
+        Proof of Semantic/Tool Intent.
+        """
+        conn = self.get_conn()
+        cur = conn.cursor()
+        sql = """
+            SELECT ua.value, SUM(logs.count) as total
+            FROM daily_logs logs
+            JOIN user_agents ua ON logs.ua_id = ua.id
+            JOIN paths p ON logs.path_id = p.id
+            WHERE p.value LIKE '%.md'
+            GROUP BY ua.id
+            ORDER BY total DESC
+            LIMIT ?
+        """
+        cur.execute(sql, (limit,))
+        return cur.fetchall()
+
 # Global Instance
 db = HoneyDB()
