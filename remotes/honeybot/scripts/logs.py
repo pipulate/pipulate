@@ -9,12 +9,12 @@ import re
 import hashlib
 from datetime import datetime
 from collections import Counter
-import os  # <--- NEW
-import time # <--- NEW
+import os 
+import time
 
 from textual.app import App, ComposeResult
-from textual.containers import Container
-from textual.widgets import Header, Footer, Static, Log, Label, Markdown
+from textual.containers import Container, Vertical
+from textual.widgets import Header, Footer, Static, Log, Label, Markdown, DataTable
 from textual import work
 from rich.text import Text
 
@@ -24,10 +24,7 @@ except ImportError:
     db = None
 
 # --- Configuration ---
-# 1. The "Nuclear" ANSI Stripper
 ANSI_ESCAPE = re.compile(r'(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]')
-
-# 2. Standard Nginx Regex
 LOG_PATTERN = re.compile(r'(?P<ip>[\d\.]+) - - \[(?P<time>.*?)\] "(?P<request>.*?)" (?P<status>\d+) (?P<bytes>\d+) "(?P<referrer>.*?)" "(?P<ua>.*?)"')
 
 class SonarApp(App):
@@ -36,14 +33,13 @@ class SonarApp(App):
     CSS = """
     Screen {
         layout: grid;
-        grid-size: 3 6;  /* CHANGED: 4 -> 3 columns for equal thirds */
+        grid-size: 1 6; /* CHANGED: 1 column layout */
         background: #0f1f27;
     }
 
-    /* TOP SECTION: Full Width Log Stream */
+    /* TOP SECTION: Full Width Log Stream (Rows 1-4) */
     #log_stream {
-        column-span: 3; /* CHANGED: 4 -> 3 */
-        row-span: 5;
+        row-span: 4;
         background: #000000;
         border: solid #00ff00;
         color: #00ff00;
@@ -52,50 +48,33 @@ class SonarApp(App):
         overflow-y: scroll;
     }
 
-    /* BOTTOM PANELS: All span 1 column now */
-    #active_projects {
-        column-span: 1; 
-        row-span: 1;
-        border: solid magenta;
-        background: #100010;
-        height: 100%;
-        padding: 0 1;
-    }
-
-    #context_panel {
-        column-span: 1;
-        row-span: 1;
-        border: solid yellow;
-        background: #151505;
-        height: 100%;
-        padding: 0 1;
-    }
-    
-    #stats_panel {
-        column-span: 1;
-        row-span: 1;
+    /* BOTTOM SECTION: The Intelligence Panel (Rows 5-6) */
+    #intelligence_panel {
+        row-span: 2;
         border: solid cyan;
         background: #051515;
         padding: 0 1;
     }
     
-    Label {
+    #panel_header {
+        text-align: center;
+        background: #002200;
+        color: #00ff00;
+        text-style: bold;
+        border-bottom: solid green;
+    }
+
+    DataTable {
+        height: 1fr;
         width: 100%;
     }
     
-    .header {
-        color: cyan;
-        text-style: bold underline;
-        margin-bottom: 0;
-    }
-    
-    #countdown {
+    #countdown_label {
         color: orange;
         text-style: bold;
-        margin-bottom: 1;
+        dock: right;
     }
     """
-
 
     TITLE = "Honeybot Sonar"
     SUB_TITLE = "Live Nginx Log Analysis (Textual HUD)"
@@ -104,31 +83,17 @@ class SonarApp(App):
         yield Header()
         yield Log(id="log_stream", highlight=True)
         
-        # 1. Active Projects
-        yield Markdown("""
-**Active Projects:**
-1. 📖 Storytelling (Live)
-2. 🚦 404 Handler (Pending)
-3. 🤖 JS Bot Trap (Live)
-""", id="active_projects")
-
-        # 2. Context Panel
-        yield Markdown("""
-**The Black River**
-Live Nginx Logs.
-Streaming from:
-**https://mikelev.in**
-""", id="context_panel")
-        
-        # 3. Stats Panel
-        with Container(id="stats_panel"):
-            yield Label("STATS", classes="header")
-            # --- NEW: The Countdown ---
-            yield Label("Next Report: --:--", id="countdown") 
-            yield Label("Hits: 0", id="stat_hits")
-            yield Label("Bots: 0", id="stat_bots")
-            yield Label("Err:  0", id="stat_errors")
-            yield Label("Top:  -", id="stat_top_ua")
+        # --- NEW: The Intelligence Panel (Replaces old 3-col layout) ---
+        with Container(id="intelligence_panel"):
+            # Header with Source + Title
+            yield Label("⚡ JAVASCRIPT EXECUTORS (Live Tracking from https://mikelev.in) ⚡", id="panel_header")
+            
+            # The Data Table
+            yield DataTable(id="js_table")
+            
+            # The Countdown (Footer of panel)
+            yield Label("Next Report: --:--", id="countdown_label")
+        # ---------------------------------------------------------------
             
         yield Footer()
 
@@ -136,8 +101,12 @@ Streaming from:
         self.ua_counter = Counter()
         self.stream_logs()
         
-        # --- NEW: Setup Countdown Timer ---
-        # We look for environment variables passed by stream.py
+        # Setup Table
+        table = self.query_one("#js_table", DataTable)
+        table.add_columns("Hits", "Agent (Proof of JS Execution)")
+        self.refresh_js_table() # Initial load
+
+        # Timers
         try:
             self.start_time = float(os.environ.get("SONAR_START_TIME", time.time()))
             self.duration_mins = float(os.environ.get("SONAR_DURATION", 15))
@@ -146,35 +115,51 @@ Streaming from:
             self.duration_mins = 15
             
         self.set_interval(1, self.update_countdown)
+        self.set_interval(5, self.refresh_js_table) # Refresh table every 5s
+
+    def refresh_js_table(self):
+        """Updates the JS Executors table from DB."""
+        if not db: return
+        try:
+            table = self.query_one("#js_table", DataTable)
+            table.clear()
+            
+            # Get top 5 JS executors
+            data = db.get_js_executors(limit=5)
+            
+            if not data:
+                table.add_row("-", "Waiting for data...")
+                return
+
+            for ua, count in data:
+                clean_ua = ua.strip()
+                if len(clean_ua) > 120: 
+                    clean_ua = clean_ua[:117] + "..."
+                table.add_row(str(count), clean_ua)
+        except:
+            pass
 
     def update_countdown(self):
-        """Ticks the clock down to the next Commercial Break."""
+        """Ticks the clock."""
         elapsed = time.time() - self.start_time
         total_seconds = self.duration_mins * 60
         remaining = total_seconds - elapsed
         
-        if remaining < 0:
-            remaining = 0
-            
+        if remaining < 0: remaining = 0
         mins, secs = divmod(int(remaining), 60)
-        time_str = f"{mins:02d}:{secs:02d}"
         
         try:
-            self.query_one("#countdown", Label).update(f"Report In: {time_str}")
-        except:
-            pass
+            self.query_one("#countdown_label", Label).update(f"⏱️ Next Full Report: {mins:02d}:{secs:02d}")
+        except: pass
 
     # -------------------------------------------------------------------------
-    # Core Logic: IP Anonymization (Ported from Sonar V1)
+    # Core Logic: IP Anonymization & Stream Parsing
     # -------------------------------------------------------------------------
     def anonymize_ip(self, ip_str):
-        """Transforms raw IP into a semi-anonymous 'Personality'."""
         try:
             parts = ip_str.split('.')
             if len(parts) == 4:
-                # Mask
                 masked = f"{parts[0]}.{parts[1]}.*.*"
-                # Hash
                 salt = datetime.now().strftime("%Y-%m-%d")
                 hash_input = f"{ip_str}-{salt}"
                 hash_digest = hashlib.md5(hash_input.encode()).hexdigest()[:4]
@@ -187,7 +172,7 @@ Streaming from:
         try:
             parts = request_str.split()
             if len(parts) >= 2:
-                return parts[0], parts[1] # Method, Path
+                return parts[0], parts[1]
             return "???", request_str
         except:
             return "???", request_str
@@ -195,35 +180,18 @@ Streaming from:
     @work(thread=True)
     def stream_logs(self) -> None:
         hits = 0
-        bots = 0
-        errors = 0
-        
-        # Read directly from standard input (The Pipe)
         for line in sys.stdin:
-            # 1. Clean
             clean_line = ANSI_ESCAPE.sub('', line).strip()
-            if not clean_line: continue
+            if not clean_line or " - - [" not in clean_line: continue
 
-            # 2. THE SHIELD: Structural Filter
-            # Mouse codes are numbers like "35;24;9M".
-            # Real logs are "1.2.3.4 - - [31/Dec/..."
-            # We look for the " - - [" sequence which is unique to Nginx combined logs.
-            if " - - [" not in clean_line:
-                continue
-
-            # 3. Parse & Format
             match = LOG_PATTERN.search(clean_line)
             if match:
                 data = match.groupdict()
-
-                # --- Content Filter ---
-                if "porn" in data['request'].lower():
-                    continue
-                # ----------------------
+                if "porn" in data['request'].lower(): continue
 
                 hits += 1
 
-                # --- NEW: Persist to DB ---
+                # Persist to DB
                 if db:
                     try:
                         db.log_request(
@@ -232,100 +200,52 @@ Streaming from:
                             path=data['request'].split()[1] if len(data['request'].split()) > 1 else data['request'],
                             status=int(data['status'])
                         )
-                        
-                        # Use the KV store for a global persistence counter
                         db.increment_counter("global_hits")
-                    except Exception as e:
-                        pass
-                # --------------------------
+                    except: pass
 
-                # Update Counter
-                ua_clean = data['ua'].split('/')[0]
-                if len(ua_clean) > 20: ua_clean = ua_clean[:20] + "..."
-                self.ua_counter[ua_clean] += 1
-                
-                # Stats update
-                if "bot" in data['ua'].lower() or "spider" in data['ua'].lower():
-                    bots += 1
-                if data['status'].startswith('4') or data['status'].startswith('5'):
-                    errors += 1
-                
+                # Update Logs UI
+                self.ua_counter[data['ua'].split('/')[0]] += 1
                 rich_text = self.format_log_line(data)
-
-                # Conditional Prefix Newline
-                if hits > 1:
-                    rich_text = Text("\n") + rich_text
-                
-                # Write to Log widget
+                if hits > 1: rich_text = Text("\n") + rich_text
                 self.call_from_thread(self.write_log, rich_text)
-                self.call_from_thread(self.update_stats, hits, bots, errors)
 
     def write_log(self, text):
         log = self.query_one(Log)
-        # Only write the string content for now to stop the crash
-        # We lose color temporarily but gain stability
-        if hasattr(text, "plain"):
-             log.write(text.plain)
-        else:
-             log.write(str(text))
-
-    def update_stats(self, hits, bots, errors):
-        try:
-            self.query_one("#stat_hits", Label).update(f"Hits: {hits}")
-            self.query_one("#stat_bots", Label).update(f"Bots: {bots}")
-            self.query_one("#stat_errors", Label).update(f"Err:  {errors}")
-
-            # Update Top UA
-            if self.ua_counter:
-                top_ua, count = self.ua_counter.most_common(1)[0]
-                self.query_one("#stat_top_ua", Label).update(f"Top:  {top_ua} ({count})")
-        except:
-            pass
+        if hasattr(text, "plain"): log.write(text.plain)
+        else: log.write(str(text))
 
     def format_log_line(self, data):
-        # Color coding status
         status = int(data['status'])
         if 200 <= status < 300: status_style = "bold green"
         elif 300 <= status < 400: status_style = "yellow"
         elif 400 <= status < 500: status_style = "bold red"
         else: status_style = "white on red"
 
-        # Identity
         ip_display = self.anonymize_ip(data['ip'])
-        
-        # Request
         method, path = self.parse_request(data['request'])
         
-        # User Agent (Full Width Logic)
         ua = data['ua']
         ua_style = "dim white"
         prefix = ""
         if "Googlebot" in ua: prefix = "🤖 "; ua_style = "green"
         elif "GPTBot" in ua or "Claude" in ua: prefix = "🧠 "; ua_style = "bold purple"
-        elif "Mozilla" in ua and "compatible" not in ua: prefix = "👤 "; ua_style = "bright_white"
-        elif "python" in ua.lower() or "curl" in ua.lower(): prefix = "🔧 "; ua_style = "cyan"
+        elif "Mozilla" in ua: prefix = "👤 "; ua_style = "bright_white"
+        elif "python" in ua.lower(): prefix = "🔧 "; ua_style = "cyan"
         
-        ua_display = f"{prefix}{ua}"
-
-        # Assembly
         text = Text()
         try:
             time_str = data['time'].split(':')[1:]
             time_str = ":".join(time_str).split(' ')[0]
             text.append(f"[{time_str}] ", style="dim")
-        except:
-            text.append("[TIME] ", style="dim")
+        except: text.append("[TIME] ", style="dim")
             
         text.append(ip_display)
         text.append(" | ", style="dim")
         text.append(f"{method:4} ", style="bold")
         text.append(f"{path} ", style="blue")
         text.append(f"[{status}] ", style=status_style)
-        
-        # Single line separator
         text.append(" | ", style="dim")
-        text.append(f"{ua_display}", style=ua_style)
-        
+        text.append(f"{prefix}{ua}", style=ua_style)
         return text
 
 if __name__ == "__main__":
