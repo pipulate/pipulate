@@ -6,28 +6,26 @@ from db import db  # Import our shared DB instance
 class ReportApp(App):
     CSS = """
     Screen {
-        layout: grid;
-        grid-size: 3 6;
+        layout: vertical; /* CHANGED: Stack panels vertically */
         background: #200020;
     }
 
-    /* TOP HEADER: Spans all 3 columns */
+    /* TOP HEADER: Compact and efficient */
     #main_header {
-        column-span: 3;
-        row-span: 1;
+        height: auto;
         text-align: center;
         color: #00ff00;
         text-style: bold;
+        background: #002200;
         border-bottom: solid green;
-        padding: 1;
+        padding: 0 1;
     }
 
-    /* COLUMNS: Each takes 1 column, spanning remaining height */
-    .column {
-        column-span: 1;
-        row-span: 5;
+    /* SECTIONS: Each takes equal available vertical space */
+    .section {
+        height: 1fr;
         border: solid purple;
-        margin: 1;
+        margin: 0 0 1 0; /* Slight spacing between panels */
     }
 
     /* Table Styling */
@@ -41,33 +39,32 @@ class ReportApp(App):
         background: #400040;
         color: white;
         text-style: bold;
-        padding: 1;
+        padding: 0 1;
     }
     """
 
     def compose(self) -> ComposeResult:
         yield Header()
         
-        # 1. The Main Explainer (Top Row)
+        # 1. The Main Explainer (Top Row - Compact)
         yield Static(
-            "\n📊 TRAFFIC INTELLIGENCE REPORT\n\n"
-            "Left: Volume Leaders | Center: JavaScript Executors (MathJax) | Right: Semantic Readers (Markdown)", 
+            "📊 TRAFFIC INTELLIGENCE REPORT | Volume vs Capability vs Intent", 
             id="main_header"
         )
 
-        # 2. Left Panel: Volume
-        with Vertical(classes="column"):
-            yield Label("🏆 TOP VOLUME", classes="col_header")
+        # 2. Top Volume Panel
+        with Container(classes="section"):
+            yield Label("🏆 TOP VOLUME LEADERS", classes="col_header")
             yield DataTable(id="table_top")
 
-        # 3. Center Panel: Capability (JS)
-        with Vertical(classes="column"):
-            yield Label("⚡ JS EXECUTORS", classes="col_header")
+        # 3. Capability Panel (JS)
+        with Container(classes="section"):
+            yield Label("⚡ JAVASCRIPT EXECUTORS (MathJax Resource Fetch)", classes="col_header")
             yield DataTable(id="table_js")
 
-        # 4. Right Panel: Intent (Markdown)
-        with Vertical(classes="column"):
-            yield Label("🧠 MD READERS", classes="col_header")
+        # 4. Intent Panel (Markdown)
+        with Container(classes="section"):
+            yield Label("🧠 SEMANTIC READERS (Source Markdown Fetch)", classes="col_header")
             yield DataTable(id="table_md")
 
         yield Footer()
@@ -78,7 +75,8 @@ class ReportApp(App):
             table = self.query_one(f"#{table_id}", DataTable)
             table.add_columns("Hits", "Agent")
             
-            data = data_source(limit=10) # Fetch top 10
+            # Use limit=5 for stacked layout to avoid scrolling on standard screens
+            data = data_source(limit=5) 
             
             if not data:
                 table.add_row("-", "No data yet")
@@ -87,9 +85,9 @@ class ReportApp(App):
             for ua, count in data:
                 # --- The Mozilla Mask Fix ---
                 clean_ua = ua.strip()
-                # Truncate strictly for UI fit
-                if len(clean_ua) > 35: 
-                    clean_ua = clean_ua[:32] + "..."
+                # Truncate strictly for UI fit - WIDER NOW due to vertical layout
+                if len(clean_ua) > 90: 
+                    clean_ua = clean_ua[:87] + "..."
                 # ----------------------------
                 table.add_row(str(count), clean_ua)
                 
