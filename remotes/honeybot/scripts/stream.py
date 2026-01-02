@@ -290,11 +290,10 @@ def main():
     
     # 1. The Commercial Break (Report)
     narrator.say("Initiating analysis report.")
-    # CHANGE: 0.2 -> 1.0 (Give it a full minute)
-    run_tui_app("report.py", duration=1.0) 
+    run_tui_app("report.py", duration=0.5)  # Half minute
     
     # 2. The Main Event (Logs)
-    narrator.say("Switching to live feed.")
+    narrator.say("Switching to streaming feed of the web access logfile.")
     
     # FIX: Use the variable!
     run_tui_app("logs.py", duration=SHOW_DURATION_MINUTES) 
