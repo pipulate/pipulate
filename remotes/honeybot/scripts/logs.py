@@ -88,11 +88,12 @@ class SonarApp(App):
         text-style: bold underline;
         margin-bottom: 0;
     }
+    
     #countdown {
         color: orange;
         text-style: bold;
         margin-bottom: 1;
-    }   
+    }
     """
 
 
@@ -162,6 +163,7 @@ Streaming from:
             self.query_one("#countdown", Label).update(f"Report In: {time_str}")
         except:
             pass
+
     # -------------------------------------------------------------------------
     # Core Logic: IP Anonymization (Ported from Sonar V1)
     # -------------------------------------------------------------------------
@@ -212,8 +214,14 @@ Streaming from:
             # 3. Parse & Format
             match = LOG_PATTERN.search(clean_line)
             if match:
-                hits += 1
                 data = match.groupdict()
+
+                # --- Content Filter ---
+                if "porn" in data['request'].lower():
+                    continue
+                # ----------------------
+
+                hits += 1
 
                 # --- NEW: Persist to DB ---
                 if db:
