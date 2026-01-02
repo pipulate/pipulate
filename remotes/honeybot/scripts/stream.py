@@ -290,7 +290,8 @@ def main():
     
     # 1. The Commercial Break (Report)
     narrator.say("Initiating analysis report.")
-    run_tui_app("report.py", duration=0.2) 
+    # CHANGE: 0.2 -> 1.0 (Give it a full minute)
+    run_tui_app("report.py", duration=1.0) 
     
     # 2. The Main Event (Logs)
     narrator.say("Switching to live feed.")
@@ -301,6 +302,7 @@ def main():
     # 3. The Exit
     narrator.say("Cycle complete. Rebooting system.")
     narrator.stop()
+
 
 if __name__ == "__main__":
     main()

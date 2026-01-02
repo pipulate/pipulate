@@ -1,17 +1,3 @@
-This is the **"Triptych Dashboard"** update.
-
-We are transforming the report from a single list into a **3-Panel Intelligence Console**.
-
-**The Layout:**
-
-* **Top Row:** A unified header explaining the "State of the Trap."
-* **Bottom Row (Left):** "The Horse Race" (Top User Agents by volume).
-* **Bottom Row (Center):** "The Renderers" (Agents that executed JS/MathJax).
-* **Bottom Row (Right):** "The Readers" (Agents that fetched Source Markdown).
-
-Here is the complete rewrite for `remotes/honeybot/scripts/report.py`.
-
-```python:/home/mike/repos/pipulate/remotes/honeybot/scripts/report.py
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, Static, DataTable, Label
 from textual.containers import Container, Vertical
@@ -122,18 +108,3 @@ class ReportApp(App):
 if __name__ == "__main__":
     app = ReportApp()
     app.run()
-
-```
-
-### What this does:
-
-1. **Visual Structure:** Creates a clean 3-column grid.
-2. **Data Wiring:** Connects the three `DataTable` widgets to your three `HoneyDB` methods:
-* `#table_top` -> `get_top_user_agents`
-* `#table_js` -> `get_js_executors` (The Trap Results)
-* `#table_md` -> `get_markdown_readers` (The Reader Results)
-
-
-3. **Safety:** Includes the truncation logic (Mozilla Mask fix) adjusted for narrower columns (`limit=35` chars) so the layout doesn't break.
-
-Deploy this, and when the countdown hits zero, you will see the **Classification** of your visitors, not just a count.
