@@ -14,8 +14,9 @@ def get_script():
     
     # Preamble
     script.append(("SAY", "Greetings, visitor."))
-    script.append(("SAY", "System Online. Initiating Infinity Protocol."))
-    script.append(("SAY", "We will traverse the logs of the present, then drift into the archives of the past."))
+    script.append(("SAY", "System Online. Beginning Web Logfile Streaming. Looking for AI-bots. Who executes JavaScript?"))
+    script.append(("SAY", "We will watch the web logs of a static home-hosted Jekyll site, and we shall read the content of that site."))
+    script.append(("SAY", "On every loop, we shall report on which AI-bots execute JavaScript and which don't."))
 
     try:
         from content_loader import get_playlist
