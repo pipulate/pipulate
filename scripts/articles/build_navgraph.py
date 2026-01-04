@@ -11,7 +11,7 @@ from collections import Counter
 import re
 import warnings
 import argparse
-import common
+import common 
 
 warnings.filterwarnings('ignore', category=pd.errors.SettingWithCopyWarning)
 
@@ -20,7 +20,15 @@ TARGET_BRANCHING_FACTOR = 7
 GOLD_PAN_SIZE = 5
 MIN_CLUSTER_SIZE = 5
 
+# 1. RESTORE THIS FUNCTION
+def slugify(text):
+    text = text.lower()
+    text = re.sub(r'[^a-z0-9\s-]', '', text)
+    text = re.sub(r'\s+', '-', text)
+    return text.strip('-')
+
 def load_enriched_shards(context_dir, posts_dir):
+    # ... (No changes here) ...
     """Ingests shards AND merges with Frontmatter."""
     shards = []
     files = list(context_dir.glob("*.json"))
@@ -62,6 +70,7 @@ def load_enriched_shards(context_dir, posts_dir):
     return pd.DataFrame(shards)
 
 def load_velocity_data(directory=Path(".")):
+    # ... (No changes here) ...
     """Loads GSC velocity/health data."""
     if not directory.exists():
         directory = Path(__file__).parent
@@ -86,6 +95,7 @@ def load_velocity_data(directory=Path(".")):
         return {}
 
 def load_market_data(directory=Path(".")):
+    # ... (No changes here) ...
     """Loads SEMRush/GSC CSV data for weighting."""
     if not directory.exists():
         directory = Path(__file__).parent
@@ -105,6 +115,7 @@ def load_market_data(directory=Path(".")):
     except: return {}
 
 def get_cluster_label(df_cluster, market_data=None):
+    # ... (No changes here) ...
     all_keywords = [kw for sublist in df_cluster['keywords'] for kw in sublist]
     if not all_keywords: return "Misc"
     counts = Counter(all_keywords)
@@ -136,7 +147,7 @@ def recursive_cluster_tree(df_slice, current_node, current_depth, market_data, v
     """Builds the nested JSON tree using Gold Pan logic."""
     df = df_slice.copy()
 
-    # 0. SORT BY CLICKS (Syncs with build_hierarchy.py)
+    # 0. SORT BY CLICKS
     df['sort_clicks'] = df['id'].apply(lambda x: velocity_data.get(re.sub(r'^\d{4}-\d{2}-\d{2}-', '', x), {}).get('total_clicks', 0))
     df = df.sort_values(by='sort_clicks', ascending=False)
 
@@ -146,7 +157,7 @@ def recursive_cluster_tree(df_slice, current_node, current_depth, market_data, v
             add_article_to_node(current_node, row)
         return
 
-    # 2. THE GOLD PAN (Top items stay at this level)
+    # 2. THE GOLD PAN
     gold = df.head(GOLD_PAN_SIZE)
     remainder = df.iloc[GOLD_PAN_SIZE:].copy()
 
@@ -188,7 +199,8 @@ def recursive_cluster_tree(df_slice, current_node, current_depth, market_data, v
             new_hub_node = {
                 "id": f"{current_node['id']}_{cluster_id}",
                 "title": hub_label,
-                "permalink": f"{current_node['permalink']}{common.slugify(hub_label)}/",
+                # 2. FIX THIS CALL: Use local slugify, NOT common.slugify
+                "permalink": f"{current_node['permalink']}{slugify(hub_label)}/",
                 "blurb": f"Explore {len(cluster_data)} articles about {hub_label}."
             }
             
