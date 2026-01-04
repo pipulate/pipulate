@@ -34,25 +34,25 @@ def run_step(script_name, target_key):
     print(f"✅ {script_name} complete ({duration:.2f}s).")
 
 def sync_data_to_jekyll(target_path):
-    """Copies graph.json to the Jekyll _data folder."""
+    """Copies show_graph.hmtl to the Jekyll _data folder."""
     print("\n--- 📦 Syncing Data to Jekyll ---")
     
     # Source is local to this script
     script_dir = Path(__file__).parent
-    graph_source = script_dir / "graph.json"
+    graph_source = script_dir / "show_graph.html"
     
-    # Destination is target_repo/graph.json
+    # Destination is target_repo/show_graph.html
     # target_path is usually .../trimnoir/_posts
     repo_root = target_path.parent
     # data_dir = repo_root / "_data"
     # data_dir.mkdir(exist_ok=True)
     data_dir = repo_root
     
-    graph_dest = data_dir / "graph.json"
+    graph_dest = data_dir / "show_graph.html"
     
     if graph_source.exists():
         shutil.copy2(graph_source, graph_dest)
-        print(f"✅ Copied graph.json to {graph_dest}")
+        print(f"✅ Copied show_graph.html to {graph_dest}")
     else:
         print(f"⚠️ Warning: {graph_source} not found. Skipping sync.")
 

@@ -325,27 +325,34 @@ def main():
     
     # Inject into HTML
     try:
-        html_path = Path("ideal_hierarchy_master.html")
+        # 1. CHANGE THIS: Point to your new file name
+        html_path = Path("show_graph.html") 
+        
         if html_path.exists():
-            print("💉 Injecting data into HTML visualization...")
+            print(f"💉 Injecting data into {html_path.name}...")
             with open(html_path, 'r', encoding='utf-8') as f:
                 content = f.read()
             
             json_str = json.dumps(output_data)
+            
+            # This regex finds the existing data variable
             match = re.search(r'const rawGraph = \{.*?\};', content, flags=re.DOTALL)
             
             if match:
                 start, end = match.span()
+                # 2. THIS IS THE MAGIC: It keeps your CSS/JS, only swaps the JSON
                 new_content = content[:start] + f'const rawGraph = {json_str};' + content[end:]
                 
-                with open("ideal_hierarchy_master_real.html", 'w', encoding='utf-8') as f:
+                # 3. CHANGE THIS: Overwrite the file directly
+                with open(html_path, 'w', encoding='utf-8') as f:
                     f.write(new_content)
-                print("✅ Created 'ideal_hierarchy_master_real.html' with live data.")
+                print(f"✅ Updated {html_path.name} with live data (CSS/JS preserved).")
             else:
                 print("⚠️ Could not find 'const rawGraph = {...};' placeholder in HTML file.")
                 
     except Exception as e:
         print(f"⚠️ HTML Injection failed: {e}")
+
 
 if __name__ == "__main__":
     main()
