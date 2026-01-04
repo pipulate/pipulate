@@ -1,16 +1,9 @@
 AI_PHOOEY_CHOP = """\
-scripts/articles/contextualizer.py
-scripts/articles/generate_semrush_candidates.py
-scripts/articles/gsc_historical_fetch.py
-scripts/articles/gsc_velocity.json
-scripts/articles/build_hierarchy.py
-scripts/articles/build_navgraph.py
+/home/mike/repos/trimnoir/_config.yml
+/home/mike/repos/trimnoir/_layouts/default.html
+/home/mike/repos/trimnoir/index.md
 scripts/articles/generate_hubs.py
 scripts/articles/update_graphs.py
-scripts/articles/graph.json
-scripts/articles/show_graph.html
-/home/mike/repos/trimnoir/index.md
-/home/mike/repos/trimnoir/_layouts/home.html
 """
 
 ## > We've got content, it's groovy context  
@@ -24,6 +17,19 @@ scripts/articles/show_graph.html
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# scripts/articles/contextualizer.py
+# scripts/articles/generate_semrush_candidates.py
+# scripts/articles/gsc_historical_fetch.py
+# scripts/articles/gsc_velocity.json
+# scripts/articles/build_hierarchy.py
+# scripts/articles/build_navgraph.py
+# scripts/articles/generate_hubs.py
+# scripts/articles/update_graphs.py
+# scripts/articles/graph.json
+# scripts/articles/show_graph.html
+# /home/mike/repos/trimnoir/index.md
+# /home/mike/repos/trimnoir/_layouts/home.html
 
 # /home/mike/repos/MikeLev.in/_posts/list_articles.py
 # /home/mike/repos/Pipulate.com/index.md
