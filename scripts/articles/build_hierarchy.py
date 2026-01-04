@@ -16,19 +16,15 @@ import common
 warnings.filterwarnings('ignore', category=pd.errors.SettingWithCopyWarning)
 
 # --- CONFIGURATION ---
-# Adjust path to your context folder relative to script execution location
-CONTEXT_DIR = Path("/home/mike/repos/MikeLev.in/_posts/_context") 
 OUTPUT_FILE = "graph.json"
 TARGET_BRANCHING_FACTOR = 7  # The "Rule of 7" (Clusters)
-GOLD_PAN_SIZE = 5            # Number of "Top Articles" to keep at the Hub level
-MIN_CLUSTER_SIZE = 5         # Don't split if smaller than this (Restored!)
+GOLD_PAN_SIZE = 5            # Top articles to keep at the Hub level
+MIN_CLUSTER_SIZE = 5         # Don't split if smaller than this
 
 def load_shards(directory):
     """Ingests the Holographic Shards (JSON context files)."""
     shards = []
-    # Handle relative path resolution if run from different dir
     if not directory.exists():
-         # Fallback try relative to this file
          directory = Path(__file__).parent / directory
     
     files = list(directory.glob("*.json"))
@@ -38,7 +34,6 @@ def load_shards(directory):
         try:
             with open(f, 'r', encoding='utf-8') as file:
                 data = json.load(file)
-                # Create a rich semantic soup for vectorization
                 # Weighting: Title (3x), Keywords (2x), Subtopics (1x)
                 soup = (
                     (data.get('t', '') + " ") * 3 + 
@@ -50,7 +45,7 @@ def load_shards(directory):
                     "id": data.get('id', f.stem),
                     "label": data.get('t', 'Untitled'),
                     "soup": soup,
-                    "keywords": data.get('kw', []) + data.get('sub', []), # For labeling
+                    "keywords": data.get('kw', []) + data.get('sub', []),
                     "type": "article"
                 })
         except Exception as e:
@@ -65,7 +60,7 @@ def load_market_data(directory=Path(".")):
 
     files = list(directory.glob("*bulk_us*.csv"))
     if not files:
-        print("ℹ️ No market data (CSV) found. Graph will be unweighted.")
+        # print("ℹ️ No market data (CSV) found. Graph will be unweighted.")
         return {}
     
     latest_file = max(files, key=lambda f: f.stat().st_mtime)
@@ -93,7 +88,7 @@ def load_velocity_data(directory=Path(".")):
         
     velocity_file = directory / "gsc_velocity.json"
     if not velocity_file.exists():
-        print("ℹ️ No GSC velocity data found. Graph will not show health status.")
+        print("ℹ️ No GSC velocity data found.")
         return {}
         
     print(f"❤️ Loading health velocity from: {velocity_file.name}")
@@ -104,11 +99,7 @@ def load_velocity_data(directory=Path(".")):
             
         slug_map = {}
         for key, metrics in data.items():
-            # Skip metadata keys
-            if key.startswith("_"):
-                continue
-                
-            # Extract slug if key is a URL, or use as is
+            if key.startswith("_"): continue
             slug = key.strip('/').split('/')[-1]
             slug_map[slug] = metrics
             
@@ -142,63 +133,75 @@ def get_cluster_label(df_cluster, market_data=None):
     return candidates[0][0]
 
 def calculate_gravity(keywords, market_data):
-    """Calculates additional node radius based on max keyword volume."""
-    if not market_data or not keywords:
-        return 0
-    
+    if not market_data or not keywords: return 0
     max_vol = 0
     for kw in keywords:
         k_clean = kw.lower().strip()
         vol = market_data.get(k_clean, 0)
-        if vol > max_vol:
-            max_vol = vol
-            
-    if max_vol > 0:
-        return np.log1p(max_vol)
+        if vol > max_vol: max_vol = vol
+    if max_vol > 0: return np.log1p(max_vol)
     return 0
+
+def add_article_node(row, parent_id, current_depth, nodes, links, market_data, velocity_data):
+    """Helper to create an article node and link."""
+    gravity_boost = calculate_gravity(row['keywords'], market_data)
+    
+    # Match filename/ID to GSC slug
+    slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', row['id'])
+    health = velocity_data.get(slug, {})
+    
+    node = {
+        "id": row['id'],
+        "group": "article",
+        "depth": current_depth,
+        "label": row['label'],
+        "val": 5 + gravity_boost,
+        "parentId": parent_id,
+        "status": health.get("status", "unknown"),
+        "velocity": health.get("velocity", 0),
+        "clicks": health.get("total_clicks", 0)
+    }
+    nodes.append(node)
+    links.append({
+        "source": parent_id,
+        "target": row['id'],
+        "type": "article_link"
+    })
 
 def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, market_data, velocity_data, vectorizer=None):
     """The Gold Panning Recursive Engine."""
     df = df_slice.copy()
     
-    # --- STOP CONDITION ---
+    # 0. Enrich with Clicks for Sorting
+    df['sort_clicks'] = df['id'].apply(lambda x: velocity_data.get(re.sub(r'^\d{4}-\d{2}-\d{2}-', '', x), {}).get('total_clicks', 0))
+    df = df.sort_values(by='sort_clicks', ascending=False)
+
+    # 1. STOP CONDITION (Small groups just get attached)
     if len(df) <= TARGET_BRANCHING_FACTOR + GOLD_PAN_SIZE:
         for _, row in df.iterrows():
-            # Gravity
-            gravity_boost = calculate_gravity(row['keywords'], market_data)
-            
-            # Health/Velocity
-            slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', row['id'])
-            health = velocity_data.get(slug, {})
-            
-            node = {
-                "id": row['id'],
-                "group": "article",
-                "depth": current_depth,
-                "label": row['label'],
-                "val": 5 + gravity_boost,
-                "parentId": parent_id,
-                # Inject Health Data
-                "status": health.get("status", "unknown"),
-                "velocity": health.get("velocity", 0),
-                "clicks": health.get("total_clicks", 0)
-            }
-            nodes.append(node)
-            links.append({
-                "source": parent_id,
-                "target": row['id'],
-                "type": "article_link"
-            })
+            add_article_node(row, parent_id, current_depth, nodes, links, market_data, velocity_data)
         return
 
-    # --- VECTORIZATION & CLUSTERING ---
+    # 2. THE GOLD PAN (Extract Top Items)
+    # These stay attached to the Current Hub (parent_id)
+    gold = df.head(GOLD_PAN_SIZE)
+    remainder = df.iloc[GOLD_PAN_SIZE:].copy() # Important: Copy to avoid SettingWithCopy
+    
+    for _, row in gold.iterrows():
+        add_article_node(row, parent_id, current_depth, nodes, links, market_data, velocity_data)
+
+    # 3. CLUSTER THE REST
+    if len(remainder) == 0:
+        return
+
     if vectorizer is None:
         vectorizer = TfidfVectorizer(stop_words='english', max_features=1000)
     
     try:
-        tfidf_matrix = vectorizer.fit_transform(df['soup'])
+        # Fit on remainder
+        tfidf_matrix = vectorizer.fit_transform(remainder['soup'])
         
-        n_components = min(5, len(df) - 1) 
+        n_components = min(5, len(remainder) - 1) 
         if n_components > 1:
             svd = TruncatedSVD(n_components=n_components)
             matrix = svd.fit_transform(tfidf_matrix)
@@ -212,11 +215,11 @@ def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, market_d
             batch_size=256
         )
         clusters = kmeans.fit_predict(matrix)
-        df.loc[:, 'cluster'] = clusters 
+        remainder.loc[:, 'cluster'] = clusters 
         
         # --- RECURSION ---
         for cluster_id in range(TARGET_BRANCHING_FACTOR):
-            cluster_data = df[df['cluster'] == cluster_id]
+            cluster_data = remainder[remainder['cluster'] == cluster_id]
             
             if len(cluster_data) == 0:
                 continue
@@ -238,7 +241,7 @@ def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, market_d
                 "label": hub_label,
                 "val": hub_base_val + hub_gravity,
                 "parentId": parent_id,
-                "status": "hub" # Hubs are neutral
+                "status": "hub"
             })
             
             links.append({
@@ -257,29 +260,11 @@ def recursive_cluster(df_slice, parent_id, current_depth, nodes, links, market_d
                 velocity_data
             )
             
-    except ValueError as e:
+    except Exception as e:
         print(f"⚠️ Clustering fallback at depth {current_depth}: {e}")
-        for _, row in df.iterrows():
-            gravity_boost = calculate_gravity(row['keywords'], market_data)
-            slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', row['id'])
-            health = velocity_data.get(slug, {})
-            
-            nodes.append({
-                "id": row['id'],
-                "group": "article",
-                "depth": current_depth,
-                "label": row['label'],
-                "val": 5 + gravity_boost,
-                "parentId": parent_id,
-                "status": health.get("status", "unknown"),
-                "velocity": health.get("velocity", 0),
-                "clicks": health.get("total_clicks", 0)
-            })
-            links.append({
-                "source": parent_id,
-                "target": row['id'],
-                "type": "article_link"
-            })
+        # Fallback: Just attach everything in remainder to parent
+        for _, row in remainder.iterrows():
+            add_article_node(row, parent_id, current_depth, nodes, links, market_data, velocity_data)
 
 def main():
     print("🚀 Initializing Hierarchy Builder...")
@@ -291,7 +276,6 @@ def main():
     posts_dir = common.get_target_path(args)
     context_dir = posts_dir / "_context"
     
-    # BUG FIX: Use the local 'context_dir', NOT the global 'CONTEXT_DIR'
     df = load_shards(context_dir) 
     
     if df.empty:
@@ -299,7 +283,7 @@ def main():
         return
         
     market_data = load_market_data()
-    velocity_data = load_velocity_data() # Load GSC Velocity
+    velocity_data = load_velocity_data() 
 
     nodes = [{
         "id": "hub_0",
@@ -325,7 +309,6 @@ def main():
     
     # Inject into HTML
     try:
-        # 1. CHANGE THIS: Point to your new file name
         html_path = Path("show_graph.html") 
         
         if html_path.exists():
@@ -334,16 +317,12 @@ def main():
                 content = f.read()
             
             json_str = json.dumps(output_data)
-            
-            # This regex finds the existing data variable
             match = re.search(r'const rawGraph = \{.*?\};', content, flags=re.DOTALL)
             
             if match:
                 start, end = match.span()
-                # 2. THIS IS THE MAGIC: It keeps your CSS/JS, only swaps the JSON
                 new_content = content[:start] + f'const rawGraph = {json_str};' + content[end:]
                 
-                # 3. CHANGE THIS: Overwrite the file directly
                 with open(html_path, 'w', encoding='utf-8') as f:
                     f.write(new_content)
                 print(f"✅ Updated {html_path.name} with live data (CSS/JS preserved).")
@@ -352,7 +331,6 @@ def main():
                 
     except Exception as e:
         print(f"⚠️ HTML Injection failed: {e}")
-
 
 if __name__ == "__main__":
     main()
