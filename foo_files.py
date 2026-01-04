@@ -1,9 +1,18 @@
 AI_PHOOEY_CHOP = """\
 /home/mike/repos/trimnoir/_config.yml
 /home/mike/repos/trimnoir/_layouts/default.html
+/home/mike/repos/trimnoir/_includes/home_hub.md
 /home/mike/repos/trimnoir/index.md
+scripts/articles/contextualizer.py
+scripts/articles/generate_semrush_candidates.py
+scripts/articles/gsc_historical_fetch.py
+scripts/articles/gsc_velocity.json
+scripts/articles/build_hierarchy.py
+scripts/articles/build_navgraph.py
 scripts/articles/generate_hubs.py
 scripts/articles/update_graphs.py
+scripts/articles/graph.json
+scripts/articles/show_graph.html
 """
 
 ## > We've got content, it's groovy context  
