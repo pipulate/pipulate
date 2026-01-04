@@ -17,7 +17,7 @@ import queue
 from pathlib import Path
 
 # --- Configuration ---
-SHOW_DURATION_MINUTES = 45  # <--- The New "T" Variable
+SHOW_DURATION_MINUTES = 60  # <--- The New "T" Variable
 
 sys.path.append(str(Path(__file__).parent))
 
@@ -290,7 +290,7 @@ def main():
     
     # 1. The Commercial Break (Report)
     narrator.say("Initiating analysis report.")
-    run_tui_app("report.py", duration=0.5)  # Half minute
+    run_tui_app("report.py", duration=1)  # One minute
     
     # 2. The Main Event (Logs)
     narrator.say("Switching to streaming feed of the web access logfile.")

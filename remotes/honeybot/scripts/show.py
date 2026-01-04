@@ -15,6 +15,7 @@ def get_script():
     # Preamble
     script.append(("SAY", "Greetings, visitor."))
     script.append(("SAY", "System Online. Beginning Web Logfile Streaming. Looking for AI-bots. Who executes JavaScript?"))
+    script.append(("SAY", "And it's not just executing JavaScript. It's also who requests the markdown alternatives when specified in a rel alternative link. Both ClaudeBot and ChatGPT do this, and it is one of the big surprises."))
     script.append(("SAY", "We will watch the web logs of a static home-hosted Jekyll site, and we shall read the content of that site."))
     script.append(("SAY", "On every loop, we shall report on which AI-bots execute JavaScript and which don't."))
 
