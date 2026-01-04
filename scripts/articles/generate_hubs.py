@@ -16,50 +16,58 @@ def clean_and_prep_dirs(hubs_dir):
 
 def generate_hub_file(node, target_repo_root, hubs_dir):
     safe_id = node['id']
+    is_root = node.get('id') == 'root' or node.get('permalink') == '/'
     
-    # Root Node -> Homepage
-    if node.get('id') == 'root' or node.get('permalink') == '/':
-        filename = "index.md"
-        filepath = target_repo_root / filename
-        print(f"🏠 Homepage: {filepath}")
+    if is_root:
+        # ROOT NODE STRATEGY: "Hole Punching"
+        # We generate an _include file, NOT the full page.
+        # This allows index.md to be maintained manually.
+        includes_dir = target_repo_root / "_includes"
+        includes_dir.mkdir(exist_ok=True)
+        filepath = includes_dir / "home_hub.md"
+        print(f"🏠 Homepage Include: {filepath}")
+        
+        # Start with empty content (No Frontmatter, No Title)
+        content = ""
+        
     else:
-        # Hub Page
+        # STANDARD HUB STRATEGY: Full Page Generation
         filename = f"{safe_id}.md"
         filepath = hubs_dir / filename
     
-    # 2. Build Frontmatter
-    frontmatter = f"""---
+        # Build Frontmatter & Title
+        frontmatter = f"""---
 layout: default
 title: "{node['title']}"
 permalink: {node['permalink']}
 ---
 """
+        content = frontmatter + f"# {node['title']}\n\n"
 
-    # 3. Build Body
-    body = f"# {node['title']}\n\n"
+    # --- COMMON BODY GENERATION ---
+    # This logic applies to both Root (Partial) and Standard (Full)
+    
     if node.get('blurb'):
-        body += f"_{node['blurb']}_\n\n"
+        content += f"_{node['blurb']}_\n\n"
     
     if node.get('children_hubs'):
-        body += "## Explore Topics\n"
+        content += "## Explore Topics\n"
         for child in node['children_hubs']:
-            body += f"* [{child['title']}]({child['permalink']})\n"
+            content += f"* [{child['title']}]({child['permalink']})\n"
     
     if node.get('children_articles'):
-        body += "\n## Top Articles\n"
+        content += "\n## Top Articles\n"
         for article in node['children_articles']:
-            body += f"* [{article['title']}]({article['permalink']})\n"
+            content += f"* [{article['title']}]({article['permalink']})\n"
             if 'date' in article:
-                body += f"  <small>{article['date']}</small>\n"
+                content += f"  <small>{article['date']}</small>\n"
 
     if not node.get('children_hubs') and not node.get('children_articles'):
-        body += "*No sub-topics found.*\n"
+        content += "*No sub-topics found.*\n"
 
-    # 4. Write File
+    # Write File
     with open(filepath, 'w', encoding='utf-8') as f:
-        f.write(frontmatter + body)
-        
-    # NOTE: No recursion here! It is handled in main().
+        f.write(content)
 
 
 def main():
@@ -82,10 +90,8 @@ def main():
 
     clean_and_prep_dirs(hubs_dir)
     
-    old_index = target_repo_root / "index.markdown"
-    if old_index.exists():
-        os.remove(old_index)
-
+    # NOTE: We no longer delete index.md here, because it is now a persistent source file.
+    
     # Recursive Walker
     def recurse(node):
         generate_hub_file(node, target_repo_root, hubs_dir)
