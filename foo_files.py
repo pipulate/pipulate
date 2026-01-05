@@ -1,11 +1,16 @@
 AI_PHOOEY_CHOP = """\
-# remotes/honeybot/hooks/post-receive
-# remotes/honeybot/scripts/show.py
-# remotes/honeybot/scripts/content_loader.py
-# remotes/honeybot/scripts/stream.py
-# remotes/honeybot/scripts/db.py
-# remotes/honeybot/scripts/report.py
-remotes/honeybot/scripts/logs.py
+scripts/articles/contextualizer.py
+scripts/articles/update_graphs.py
+scripts/articles/generate_semrush_candidates.py
+scripts/articles/semrush_candidates.txt
+/home/mike/repos/pipulate/scripts/articles/web-scraping_ai_seo_bulk_us_2025-12-14_10-55-37.csv
+scripts/articles/gsc_historical_fetch.py
+scripts/articles/gsc_velocity.json
+scripts/articles/build_hierarchy.py
+scripts/articles/build_navgraph.py
+scripts/articles/generate_hubs.py
+/home/mike/repos/trimnoir/index.md
+/home/mike/repos/trimnoir/_layouts/default.html
 """
 
 ## > We've got content, it's groovy context  
@@ -19,6 +24,14 @@ remotes/honeybot/scripts/logs.py
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/scripts/show.py
+# remotes/honeybot/scripts/content_loader.py
+# remotes/honeybot/scripts/stream.py
+# remotes/honeybot/scripts/db.py
+# remotes/honeybot/scripts/report.py
+# remotes/honeybot/scripts/logs.py
 
 # /home/mike/repos/trimnoir/index.md
 # /home/mike/repos/trimnoir/show_graph.html

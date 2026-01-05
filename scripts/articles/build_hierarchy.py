@@ -306,31 +306,6 @@ def main():
         
     print(f"✅ Hierarchy generated: {len(nodes)} nodes, {len(links)} links.")
     print(f"💾 Saved to {OUTPUT_FILE}")
-    
-    # Inject into HTML
-    try:
-        html_path = Path("show_graph.html") 
-        
-        if html_path.exists():
-            print(f"💉 Injecting data into {html_path.name}...")
-            with open(html_path, 'r', encoding='utf-8') as f:
-                content = f.read()
-            
-            json_str = json.dumps(output_data)
-            match = re.search(r'const rawGraph = \{.*?\};', content, flags=re.DOTALL)
-            
-            if match:
-                start, end = match.span()
-                new_content = content[:start] + f'const rawGraph = {json_str};' + content[end:]
-                
-                with open(html_path, 'w', encoding='utf-8') as f:
-                    f.write(new_content)
-                print(f"✅ Updated {html_path.name} with live data (CSS/JS preserved).")
-            else:
-                print("⚠️ Could not find 'const rawGraph = {...};' placeholder in HTML file.")
-                
-    except Exception as e:
-        print(f"⚠️ HTML Injection failed: {e}")
 
 if __name__ == "__main__":
     main()
