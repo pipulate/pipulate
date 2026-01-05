@@ -1,7 +1,7 @@
 import subprocess
 import sys
 import time
-import shutil  # Added for file copying
+import shutil
 import argparse
 from pathlib import Path
 import common
@@ -11,7 +11,7 @@ SCRIPTS = [
     "contextualizer.py",
     "generate_semrush_candidates.py",
     "gsc_historical_fetch.py",
-    "build_hierarchy.py",
+    "build_hierarchy.py",  # Generates graph.json locally
     "build_navgraph.py",
     "generate_hubs.py"
 ]
@@ -34,25 +34,32 @@ def run_step(script_name, target_key):
     print(f"✅ {script_name} complete ({duration:.2f}s).")
 
 def sync_data_to_jekyll(target_path):
-    """Copies show_graph.hmtl to the Jekyll _data folder."""
+    """
+    Copies the generated graph.json to the Jekyll SITE ROOT.
+    This allows both humans and LLMs to fetch it at /graph.json
+    """
     print("\n--- 📦 Syncing Data to Jekyll ---")
     
     # Source is local to this script
     script_dir = Path(__file__).parent
-    graph_source = script_dir / "show_graph.html"
+    graph_source = script_dir / "graph.json"
     
-    # Destination is target_repo/show_graph.html
     # target_path is usually .../trimnoir/_posts
+    # We want the site root: .../trimnoir/
     repo_root = target_path.parent
-    # data_dir = repo_root / "_data"
-    # data_dir.mkdir(exist_ok=True)
-    data_dir = repo_root
     
-    graph_dest = data_dir / "show_graph.html"
+    # Destination 1: The Site Root (For fetch /graph.json)
+    graph_dest_root = repo_root / "graph.json"
     
     if graph_source.exists():
-        shutil.copy2(graph_source, graph_dest)
-        print(f"✅ Copied show_graph.html to {graph_dest}")
+        shutil.copy2(graph_source, graph_dest_root)
+        print(f"✅ Copied graph.json to SITE ROOT: {graph_dest_root}")
+        
+        # Optional: We stopped copying show_graph.html because it is now an 
+        # _include managed in the theme, but if you wanted to sync a 
+        # standalone viewer, you could do it here. 
+        # For now, we trust the repo's internal _includes/show_graph.html
+        
     else:
         print(f"⚠️ Warning: {graph_source} not found. Skipping sync.")
 

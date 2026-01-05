@@ -1,16 +1,6 @@
 AI_PHOOEY_CHOP = """\
-scripts/articles/contextualizer.py
-scripts/articles/update_graphs.py
-scripts/articles/generate_semrush_candidates.py
-scripts/articles/semrush_candidates.txt
-/home/mike/repos/pipulate/scripts/articles/web-scraping_ai_seo_bulk_us_2025-12-14_10-55-37.csv
-scripts/articles/gsc_historical_fetch.py
-scripts/articles/gsc_velocity.json
-scripts/articles/build_hierarchy.py
-scripts/articles/build_navgraph.py
-scripts/articles/generate_hubs.py
+/home/mike/repos/trimnoir/_includes/show_graph.html
 /home/mike/repos/trimnoir/index.md
-/home/mike/repos/trimnoir/_layouts/default.html
 """
 
 ## > We've got content, it's groovy context  
@@ -24,6 +14,19 @@ scripts/articles/generate_hubs.py
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# scripts/articles/contextualizer.py
+# scripts/articles/update_graphs.py
+# scripts/articles/generate_semrush_candidates.py
+# scripts/articles/semrush_candidates.txt
+# /home/mike/repos/pipulate/scripts/articles/web-scraping_ai_seo_bulk_us_2025-12-14_10-55-37.csv
+# scripts/articles/gsc_historical_fetch.py
+# scripts/articles/gsc_velocity.json
+# scripts/articles/build_hierarchy.py
+# scripts/articles/build_navgraph.py
+# scripts/articles/generate_hubs.py
+# /home/mike/repos/trimnoir/index.md
+# /home/mike/repos/trimnoir/_layouts/default.html
 
 # remotes/honeybot/hooks/post-receive
 # remotes/honeybot/scripts/show.py
