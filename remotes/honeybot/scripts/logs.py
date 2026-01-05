@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Sonar V2: Stable Core Edition.
-Based on the rock-solid aquarium.py log widget, enhanced with IP hashing.
+Sonar V2.5: The Dual-Minded HUD.
+Tracks both Javascript Execution (Rendering) and Semantic Reading (Source).
 """
 
 import sys
@@ -13,7 +13,7 @@ import os
 import time
 
 from textual.app import App, ComposeResult
-from textual.containers import Container, Vertical
+from textual.containers import Container, Vertical, Horizontal
 from textual.widgets import Header, Footer, Static, Log, Label, Markdown, DataTable
 from textual import work
 from rich.text import Text
@@ -28,12 +28,12 @@ ANSI_ESCAPE = re.compile(r'(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]')
 LOG_PATTERN = re.compile(r'(?P<ip>[\d\.]+) - - \[(?P<time>.*?)\] "(?P<request>.*?)" (?P<status>\d+) (?P<bytes>\d+) "(?P<referrer>.*?)" "(?P<ua>.*?)"')
 
 class SonarApp(App):
-    """The Cybernetic HUD (Stable Edition)."""
+    """The Cybernetic HUD (Dual-Panel Edition)."""
 
     CSS = """
     Screen {
         layout: grid;
-        grid-size: 1 6; /* CHANGED: 1 column layout */
+        grid-size: 1 6; 
         background: #0f1f27;
     }
 
@@ -51,17 +51,25 @@ class SonarApp(App):
     /* BOTTOM SECTION: The Intelligence Panel (Rows 5-6) */
     #intelligence_panel {
         row-span: 2;
-        border: solid cyan;
+        border-top: solid cyan;
         background: #051515;
-        padding: 0 1;
+        padding: 0;
+        layout: horizontal; /* Split Left/Right */
     }
     
-    #panel_header {
+    .half_panel {
+        width: 50%;
+        height: 100%;
+        border-right: solid #004400;
+    }
+
+    .panel_header {
         text-align: center;
         background: #002200;
         color: #00ff00;
         text-style: bold;
         border-bottom: solid green;
+        width: 100%;
     }
 
     DataTable {
@@ -69,42 +77,48 @@ class SonarApp(App):
         width: 100%;
     }
     
-    #countdown_label {
-        color: orange;
-        text-style: bold;
-        dock: right;
-    }
+    /* Countdown moves to the footer area style override if needed, 
+       but standard Footer widget handles it well. */
     """
 
     TITLE = "Honeybot Sonar"
-    SUB_TITLE = "Live Nginx Log Analysis (Textual HUD)"
+    
+    def get_sub_title(self):
+        return f"Live Nginx Log Analysis | Next Report: {self.countdown_str}"
 
     def compose(self) -> ComposeResult:
         yield Header()
         yield Log(id="log_stream", highlight=True)
         
-        # --- NEW: The Intelligence Panel (Replaces old 3-col layout) ---
+        # --- NEW: The Dual Intelligence Panel ---
         with Container(id="intelligence_panel"):
-            # Header with Source + Title
-            yield Label("⚡ JAVASCRIPT EXECUTORS (Live Tracking from https://mikelev.in) ⚡", id="panel_header")
             
-            # The Data Table
-            yield DataTable(id="js_table")
+            # LEFT: Javascript Executors
+            with Vertical(classes="half_panel"):
+                yield Label("⚡ JAVASCRIPT EXECUTORS (Renderers)", classes="panel_header")
+                yield DataTable(id="js_table")
             
-            # The Countdown (Footer of panel)
-            yield Label("Next Report: --:--", id="countdown_label")
-        # ---------------------------------------------------------------
+            # RIGHT: Markdown Seekers
+            with Vertical(classes="half_panel"):
+                yield Label("🧠 SEMANTIC READERS (Source Seekers)", classes="panel_header")
+                yield DataTable(id="md_table")
+        # ----------------------------------------
             
         yield Footer()
 
     def on_mount(self) -> None:
         self.ua_counter = Counter()
+        self.countdown_str = "--:--"
         self.stream_logs()
         
-        # Setup Table
-        table = self.query_one("#js_table", DataTable)
-        table.add_columns("Hits", "Agent (Proof of JS Execution)")
-        self.refresh_js_table() # Initial load
+        # Setup Tables
+        js_table = self.query_one("#js_table", DataTable)
+        js_table.add_columns("Hits", "Agent")
+        
+        md_table = self.query_one("#md_table", DataTable)
+        md_table.add_columns("Hits", "Agent")
+
+        self.refresh_tables() # Initial load
 
         # Timers
         try:
@@ -115,32 +129,45 @@ class SonarApp(App):
             self.duration_mins = 15
             
         self.set_interval(1, self.update_countdown)
-        self.set_interval(5, self.refresh_js_table) # Refresh table every 5s
+        self.set_interval(5, self.refresh_tables) # Refresh data every 5s
 
-    def refresh_js_table(self):
-        """Updates the JS Executors table from DB."""
+    def refresh_tables(self):
+        """Updates both Intelligence tables from DB."""
         if not db: return
+        
+        # 1. Update JS Executors (Left)
         try:
             table = self.query_one("#js_table", DataTable)
             table.clear()
-            
-            # Get top 5 JS executors
-            data = db.get_js_executors(limit=50)
-            
+            # Fetch plenty, let UI clip
+            data = db.get_js_executors(limit=50) 
             if not data:
                 table.add_row("-", "Waiting for data...")
-                return
+            else:
+                for ua, count in data:
+                    clean_ua = ua.strip()
+                    # Truncate slightly more aggressively for split view
+                    if len(clean_ua) > 60: clean_ua = clean_ua[:57] + "..."
+                    table.add_row(str(count), clean_ua)
+        except: pass
 
-            for ua, count in data:
-                clean_ua = ua.strip()
-                if len(clean_ua) > 120: 
-                    clean_ua = clean_ua[:117] + "..."
-                table.add_row(str(count), clean_ua)
-        except:
-            pass
+        # 2. Update Markdown Readers (Right)
+        try:
+            table = self.query_one("#md_table", DataTable)
+            table.clear()
+            # Fetch plenty, let UI clip
+            data = db.get_markdown_readers(limit=50)
+            if not data:
+                table.add_row("-", "Waiting for data...")
+            else:
+                for ua, count in data:
+                    clean_ua = ua.strip()
+                    if len(clean_ua) > 60: clean_ua = clean_ua[:57] + "..."
+                    table.add_row(str(count), clean_ua)
+        except: pass
 
     def update_countdown(self):
-        """Ticks the clock."""
+        """Ticks the clock and updates the Sub-Title."""
         elapsed = time.time() - self.start_time
         total_seconds = self.duration_mins * 60
         remaining = total_seconds - elapsed
@@ -148,9 +175,8 @@ class SonarApp(App):
         if remaining < 0: remaining = 0
         mins, secs = divmod(int(remaining), 60)
         
-        try:
-            self.query_one("#countdown_label", Label).update(f"⏱️ Next Full Report: {mins:02d}:{secs:02d}")
-        except: pass
+        self.countdown_str = f"{mins:02d}:{secs:02d}"
+        self.sub_title = self.get_sub_title() # Trigger header update
 
     # -------------------------------------------------------------------------
     # Core Logic: IP Anonymization & Stream Parsing

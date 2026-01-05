@@ -1,11 +1,11 @@
 AI_PHOOEY_CHOP = """\
-remotes/honeybot/hooks/post-receive
-remotes/honeybot/scripts/show.py
-remotes/honeybot/scripts/content_loader.py
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/scripts/show.py
+# remotes/honeybot/scripts/content_loader.py
+# remotes/honeybot/scripts/stream.py
+# remotes/honeybot/scripts/db.py
+# remotes/honeybot/scripts/report.py
 remotes/honeybot/scripts/logs.py
-remotes/honeybot/scripts/stream.py
-remotes/honeybot/scripts/db.py
-remotes/honeybot/scripts/report.py
 """
 
 ## > We've got content, it's groovy context  
