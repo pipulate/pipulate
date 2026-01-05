@@ -861,7 +861,7 @@ async def generate_extractions_post_scrape(job: str, verbose: bool = False):
 
     if not script_path.exists():
          logger.error(f"❌ Cannot find visualization script at: {script_path}")
-         logger.error("   Please ensure seo_gadget.py is in the Notebooks/ directory.")
+         logger.error("   Please ensure seo_gadget.py is in the Notebooks/ directory.")
          return
 
     python_executable = sys.executable # Use the same python that runs the notebook

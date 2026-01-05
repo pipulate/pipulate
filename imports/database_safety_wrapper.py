@@ -211,7 +211,7 @@ if __name__ == '__main__':
     # Test 1: Safe operation on dev database
     try:
         conn = safe_sqlite_connect('data/test_dev.db')
-        # conn.execute('DELETE FROM test_table')  # This would error if table doesnt exist, so we skip for test
+        # conn.execute('DELETE FROM test_table')  # This would error if table doesnt exist, so we skip for test
         print("✅ TEST 1 PASSED: Destructive operation allowed on dev database (conceptually)")
     except SafetyViolationError as e:
         print(f"❌ TEST 1 FAILED: {e}")
@@ -219,7 +219,7 @@ if __name__ == '__main__':
     # Test 2: Unsafe operation on production database
     try:
         conn = safe_sqlite_connect('data/test.db')
-        conn.execute('DELETE FROM test_table')  # Should fail
+        conn.execute('DELETE FROM test_table')  # Should fail
         print("❌ TEST 2 FAILED: Destructive operation was allowed on production database!")
     except SafetyViolationError as e:
         print(f"✅ TEST 2 PASSED: {e}")

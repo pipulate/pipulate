@@ -486,7 +486,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           pip install -r requirements.txt --quiet
           # Install the local project in editable mode so it's importable
           pip install -e . --no-deps --quiet
-        '';
+        '';
         # --- REFACTORED SHELL LOGIC ---
         # Logic for setting up Python venv, PATH, etc.
         pythonSetupLogic = ''
