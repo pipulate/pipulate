@@ -1,7 +1,6 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Header, Footer, DataTable, Label, Static
-from textual.containers import Container, Horizontal, Vertical
-from textual import work
+from textual.widgets import Header, Footer, DataTable, Label
+from textual.containers import Horizontal, Vertical
 import time
 from datetime import datetime
 from db import db
@@ -19,7 +18,7 @@ class DBMonitor(App):
     }
     
     .metric-title { color: #888; text-style: bold; }
-    .metric-value { color: #0f0; text-style: bold; font-size: 2; }
+    .metric-value { color: #0f0; text-style: bold; }
     
     #recent-table {
         height: 2fr;
@@ -31,7 +30,9 @@ class DBMonitor(App):
         height: 1fr;
         border: solid red;
         margin: 1;
-        background: #200;
+        background: #220000;
+        text-align: center;
+        content-align: center middle;
     }
     """
 
@@ -39,7 +40,7 @@ class DBMonitor(App):
         yield Header(show_clock=True)
         
         # Top Row: Vital Stats
-        with Horizontal(style="height: 14;"):
+        with Horizontal(style="height: 10;"):
             with Vertical(classes="metric"):
                 yield Label("Unique IPs", classes="metric-title")
                 yield Label("...", id="count-ips", classes="metric-value")
@@ -59,8 +60,8 @@ class DBMonitor(App):
 
         # Bottom: The Trap Monitor
         with Vertical(id="trap-panel"):
-            yield Label("  🪤 BOT TRAP STATUS (d3.v7.min.js)", style="color: red; text-style: bold;")
-            yield Label("Waiting for signal...", id="trap-status")
+            yield Label("🪤 BOT TRAP STATUS (d3.v7.min.js)", style="color: red; text-style: bold;")
+            yield Label("Waiting for signal...", id="trap-status", style="color: white;")
 
         yield Footer()
 
@@ -120,6 +121,7 @@ class DBMonitor(App):
 
         # 3. Check Trap specifically
         try:
+            # Note: We look for the path value containing the trap string
             sql = """
                 SELECT ua.value, SUM(logs.count) 
                 FROM daily_logs logs
@@ -134,7 +136,7 @@ class DBMonitor(App):
             trap_res = cur.fetchone()
             if trap_res:
                 self.query_one("#trap-status", Label).update(
-                    f"⚠️ CAUGHT: {trap_res[0]} (Hits: {trap_res[1]})"
+                    f"⚠️ CAUGHT: {trap_res[0]}\nHits: {trap_res[1]}"
                 )
             else:
                 self.query_one("#trap-status", Label).update("No trap triggers yet.")
