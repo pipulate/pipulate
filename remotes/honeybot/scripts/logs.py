@@ -125,7 +125,7 @@ class SonarApp(App):
             table.clear()
             
             # Get top 5 JS executors
-            data = db.get_js_executors(limit=5)
+            data = db.get_js_executors(limit=50)
             
             if not data:
                 table.add_row("-", "Waiting for data...")
