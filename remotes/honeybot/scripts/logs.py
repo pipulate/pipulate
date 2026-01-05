@@ -145,10 +145,7 @@ class SonarApp(App):
                 table.add_row("-", "Waiting for data...")
             else:
                 for ua, count in data:
-                    clean_ua = ua.strip()
-                    # Truncate slightly more aggressively for split view
-                    if len(clean_ua) > 60: clean_ua = clean_ua[:57] + "..."
-                    table.add_row(str(count), clean_ua)
+                    table.add_row(str(count), ua.strip())
         except: pass
 
         # 2. Update Markdown Readers (Right)
@@ -161,9 +158,7 @@ class SonarApp(App):
                 table.add_row("-", "Waiting for data...")
             else:
                 for ua, count in data:
-                    clean_ua = ua.strip()
-                    if len(clean_ua) > 60: clean_ua = clean_ua[:57] + "..."
-                    table.add_row(str(count), clean_ua)
+                    table.add_row(str(count), ua.strip())
         except: pass
 
     def update_countdown(self):
