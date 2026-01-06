@@ -154,22 +154,34 @@ class HoneyDB:
         cur.execute(sql, (limit,))
         return cur.fetchall()
 
-    # --- NEW: Capability Analysis Queries ---
+    # Helper to construct the exclusion clause
+    # We filter out UAs that are "Mozilla" but NOT "compatible" (which bots often use)
+    # AND contain typical platform strings.
+    _BROWSER_FILTER = """
+        AND NOT (
+            ua.value LIKE 'Mozilla%' 
+            AND ua.value NOT LIKE '%compatible%' 
+            AND (
+                ua.value LIKE '%Windows NT%' OR 
+                ua.value LIKE '%Macintosh%' OR 
+                ua.value LIKE '%X11; Linux%' OR
+                ua.value LIKE '%iPhone%' OR
+                ua.value LIKE '%Android%'
+            )
+        )
+    """
 
-    def get_js_executors(self, limit=5):
-        """
-        Finds UAs that requested JS resources (MathJax OR D3).
-        Proof of JavaScript Execution / Deep DOM parsing.
-        """
+    def get_js_executors(self, limit=20): # Increased default limit slightly
         conn = self.get_conn()
         cur = conn.cursor()
-        sql = """
+        sql = f"""
             SELECT ua.value, SUM(logs.count) as total
             FROM daily_logs logs
             JOIN user_agents ua ON logs.ua_id = ua.id
             JOIN paths p ON logs.path_id = p.id
             WHERE (p.value LIKE '%mathjax%' OR p.value LIKE '%d3.v7.min.js%')
-              AND p.value NOT LIKE '%.html' /* Exclude pages *about* these topics */
+              AND p.value NOT LIKE '%.html'
+              {self._BROWSER_FILTER}  /* Apply Noise Filter */
             GROUP BY ua.id
             ORDER BY total DESC
             LIMIT ?
@@ -177,25 +189,23 @@ class HoneyDB:
         cur.execute(sql, (limit,))
         return cur.fetchall()
 
-    def get_markdown_readers(self, limit=5):
-        """
-        Finds UAs that requested .md files directly.
-        Proof of Semantic/Tool Intent.
-        """
+    def get_markdown_readers(self, limit=20):
         conn = self.get_conn()
         cur = conn.cursor()
-        sql = """
+        sql = f"""
             SELECT ua.value, SUM(logs.count) as total
             FROM daily_logs logs
             JOIN user_agents ua ON logs.ua_id = ua.id
             JOIN paths p ON logs.path_id = p.id
             WHERE p.value LIKE '%.md'
+              {self._BROWSER_FILTER} /* Apply Noise Filter */
             GROUP BY ua.id
             ORDER BY total DESC
             LIMIT ?
         """
         cur.execute(sql, (limit,))
         return cur.fetchall()
+
 
 # Global Instance
 db = HoneyDB()
