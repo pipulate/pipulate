@@ -18,6 +18,17 @@ from textual.widgets import Header, Footer, Static, Log, Label, Markdown, DataTa
 from textual import work
 from rich.text import Text
 
+# NEW: Single List, Single Color
+KNOWN_BOTS = [
+    "ClaudeBot", "GPTBot", "OAI-SearchBot", "PerplexityBot",
+    "Amazonbot", "Googlebot", "bingbot", "meta-externalagent",
+    "Applebot", "Aliyun", "Yandex", "AhrefsBot", "DataForSeoBot",
+    "SemrushBot", "DotBot", "LinkupBot", "botify", "PetalBot",
+    "Bytespider", "Barkrowler" 
+]
+
+BOT_STYLE = "bold #ff9900"  # Amazon Orange
+
 try:
     from db import db  # Import our new database singleton
 except ImportError:
@@ -167,19 +178,14 @@ class SonarApp(App):
         agent_str = agent_str.strip()
         text = Text(agent_str)
         
-        # Default styling for common browsers to push them to background
+        # Default styling
         if "Mozilla" in agent_str and "compatible" not in agent_str:
             text.stylize("dim white")
             
-        # Highlight specific bots
-        for bot_name, style in BOT_HIGHLIGHTS.items():
+        # Highlight ANY known bot
+        for bot_name in KNOWN_BOTS:
             if bot_name in agent_str:
-                # We use regex to find the specific substring and color it
-                # distinctively against the rest of the string
-                text.highlight_regex(re.escape(bot_name), style)
-                
-                # Optional: If you want the WHOLE line to pop when a bot is found:
-                # text.stylize(style) 
+                text.highlight_regex(re.escape(bot_name), BOT_STYLE)
                 
         return text
 
