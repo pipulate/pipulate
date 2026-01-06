@@ -27,6 +27,37 @@ except ImportError:
 ANSI_ESCAPE = re.compile(r'(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]')
 LOG_PATTERN = re.compile(r'(?P<ip>[\d\.]+) - - \[(?P<time>.*?)\] "(?P<request>.*?)" (?P<status>\d+) (?P<bytes>\d+) "(?P<referrer>.*?)" "(?P<ua>.*?)"')
 
+# ... existing imports ...
+
+# --- Configuration ---
+ANSI_ESCAPE = re.compile(r'(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]')
+LOG_PATTERN = re.compile(r'(?P<ip>[\d\.]+) - - \[(?P<time>.*?)\] "(?P<request>.*?)" (?P<status>\d+) (?P<bytes>\d+) "(?P<referrer>.*?)" "(?P<ua>.*?)"')
+
+# NEW: The Bot Highlighting Palette
+BOT_HIGHLIGHTS = {
+    # AI & LLMs
+    "ClaudeBot": "bold #d97757",       # Anthropic Clay
+    "GPTBot": "bold #10a37f",          # OpenAI Green
+    "OAI-SearchBot": "bold #10a37f",   # OpenAI Green
+    "PerplexityBot": "bold #22b5bf",   # Perplexity Teal
+    
+    # Big Tech / Cloud
+    "Amazonbot": "bold #ff9900",       # Amazon Orange
+    "Googlebot": "bold #4285f4",       # Google Blue
+    "bingbot": "bold #008373",         # Bing Teal
+    "meta-externalagent": "bold #0668e1", # Meta Blue
+    "Applebot": "bold #A2AAAD",        # Apple Silver
+    "Aliyun": "bold #ff6a00",          # Alibaba Orange
+    
+    # Search & SEO
+    "Yandex": "bold #fc3f1d",          # Yandex Red
+    "AhrefsBot": "bold #fd6917",       # Ahrefs Orange
+    "DataForSeoBot": "bold magenta",
+    "SemrushBot": "bold orange1",
+    "DotBot": "bold green",
+    "LinkupBot": "bold cyan",
+}
+
 class SonarApp(App):
     """The Cybernetic HUD (Dual-Panel Edition)."""
 
@@ -131,6 +162,27 @@ class SonarApp(App):
         self.set_interval(1, self.update_countdown)
         self.set_interval(5, self.refresh_tables) # Refresh data every 5s
 
+    def stylize_agent(self, agent_str):
+        """Converts a raw UA string into a Rich Text object with highlights."""
+        agent_str = agent_str.strip()
+        text = Text(agent_str)
+        
+        # Default styling for common browsers to push them to background
+        if "Mozilla" in agent_str and "compatible" not in agent_str:
+            text.stylize("dim white")
+            
+        # Highlight specific bots
+        for bot_name, style in BOT_HIGHLIGHTS.items():
+            if bot_name in agent_str:
+                # We use regex to find the specific substring and color it
+                # distinctively against the rest of the string
+                text.highlight_regex(re.escape(bot_name), style)
+                
+                # Optional: If you want the WHOLE line to pop when a bot is found:
+                # text.stylize(style) 
+                
+        return text
+
     def refresh_tables(self):
         """Updates both Intelligence tables from DB."""
         if not db: return
@@ -145,7 +197,8 @@ class SonarApp(App):
                 table.add_row("-", "Waiting for data...")
             else:
                 for ua, count in data:
-                    table.add_row(str(count), ua.strip())
+                    # CHANGED: Wrap in stylize_agent
+                    table.add_row(str(count), self.stylize_agent(ua))
         except: pass
 
         # 2. Update Markdown Readers (Right)
@@ -158,7 +211,8 @@ class SonarApp(App):
                 table.add_row("-", "Waiting for data...")
             else:
                 for ua, count in data:
-                    table.add_row(str(count), ua.strip())
+                    # CHANGED: Wrap in stylize_agent
+                    table.add_row(str(count), self.stylize_agent(ua))
         except: pass
 
     def update_countdown(self):
