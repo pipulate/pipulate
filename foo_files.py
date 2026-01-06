@@ -1,5 +1,6 @@
 AI_PHOOEY_CHOP = """\
-remotes/honeybot/scripts/show.py
+deploy_honeybot.sh
+remotes/honeybot/nixos/configuration.nix
 remotes/honeybot/scripts/content_loader.py
 remotes/honeybot/scripts/stream.py
 remotes/honeybot/scripts/db.py
@@ -18,6 +19,13 @@ remotes/honeybot/scripts/logs.py
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# remotes/honeybot/scripts/show.py
+# remotes/honeybot/scripts/content_loader.py
+# remotes/honeybot/scripts/stream.py
+# remotes/honeybot/scripts/db.py
+# remotes/honeybot/scripts/report.py
+# remotes/honeybot/scripts/logs.py
 
 # /home/mike/repos/trimnoir/_includes/show_graph.html
 # /home/mike/repos/trimnoir/index.md
