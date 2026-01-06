@@ -21,6 +21,7 @@ combined_prompt.txt
 instructions.json
 
 # File-types that should never get into repo
+*.bak
 *.mp4
 *.mov
 *.csv
