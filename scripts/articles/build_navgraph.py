@@ -29,9 +29,8 @@ def slugify(text):
 def load_enriched_shards(context_dir, posts_dir):
     """Ingests shards AND merges with Frontmatter."""
     shards = []
-    # Handle cases where context_dir is relative to script execution
     if not context_dir.exists():
-         print(f"⚠️ Context dir {context_dir} does not exist. Checking relative...")
+         print(f"⚠️ Context dir {context_dir} does not exist.")
          return pd.DataFrame()
 
     files = list(context_dir.glob("*.json"))
@@ -42,7 +41,6 @@ def load_enriched_shards(context_dir, posts_dir):
             with open(f, 'r', encoding='utf-8') as file:
                 data = json.load(file)
             
-            # Map shard back to markdown file
             md_path = posts_dir / f"{f.stem}.md"
             if not md_path.exists():
                 continue
@@ -73,16 +71,11 @@ def load_enriched_shards(context_dir, posts_dir):
     return pd.DataFrame(shards)
 
 def load_velocity_data(directory=Path(".")):
-    """Loads GSC velocity/health data."""
     if not directory.exists():
         directory = Path(__file__).parent
-        
     velocity_file = directory / "gsc_velocity.json"
     if not velocity_file.exists():
-        print("ℹ️ No GSC velocity data found.")
         return {}
-        
-    print(f"❤️ Loading health velocity from: {velocity_file.name}")
     try:
         with open(velocity_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -92,12 +85,9 @@ def load_velocity_data(directory=Path(".")):
             slug = key.strip('/').split('/')[-1]
             slug_map[slug] = metrics
         return slug_map
-    except Exception as e:
-        print(f"⚠️ Error loading velocity data: {e}")
-        return {}
+    except: return {}
 
 def load_market_data(directory=Path(".")):
-    """Loads SEMRush/GSC CSV data for weighting."""
     if not directory.exists():
         directory = Path(__file__).parent
     files = list(directory.glob("*bulk_us*.csv"))
@@ -131,7 +121,6 @@ def get_cluster_candidates(df_cluster, market_data=None):
         score = freq
         if market_data:
             vol = market_data.get(kw.lower().strip(), 0)
-            # Use same scoring logic as before
             score = freq * np.log1p(vol)
         scored_candidates.append((kw, score))
         
@@ -140,7 +129,6 @@ def get_cluster_candidates(df_cluster, market_data=None):
     return scored_candidates
 
 def add_article_to_node(hub_node, row):
-    """Helper to append article dict to the hub node."""
     article = {
         "title": row['title'],
         "permalink": row['permalink'],
@@ -150,7 +138,6 @@ def add_article_to_node(hub_node, row):
     hub_node.setdefault('children_articles', []).append(article)
 
 def recursive_cluster_tree(df_slice, current_node, current_depth, market_data, velocity_data, vectorizer=None):
-    """Builds the nested JSON tree using Gold Pan logic."""
     df = df_slice.copy()
 
     # 0. SORT BY CLICKS
@@ -185,12 +172,7 @@ def recursive_cluster_tree(df_slice, current_node, current_depth, market_data, v
         else:
             matrix = tfidf_matrix
 
-        kmeans = MiniBatchKMeans(
-            n_clusters=TARGET_BRANCHING_FACTOR,
-            random_state=42,
-            n_init=10,
-            batch_size=256
-        )
+        kmeans = MiniBatchKMeans(n_clusters=TARGET_BRANCHING_FACTOR, random_state=42, n_init=10, batch_size=256)
         clusters = kmeans.fit_predict(matrix)
         remainder.loc[:, 'cluster'] = clusters
 
@@ -225,7 +207,6 @@ def recursive_cluster_tree(df_slice, current_node, current_depth, market_data, v
             used_slugs.add(slug)
             # -------------------------------------
             
-            # Create Sub-Hub Node
             new_hub_node = {
                 "id": f"{current_node['id']}_{cluster_id}",
                 "title": hub_label,
@@ -233,10 +214,8 @@ def recursive_cluster_tree(df_slice, current_node, current_depth, market_data, v
                 "blurb": f"Explore {len(cluster_data)} articles about {hub_label}."
             }
             
-            # Attach to Parent
             current_node.setdefault('children_hubs', []).append(new_hub_node)
 
-            # Recurse
             recursive_cluster_tree(
                 cluster_data, 
                 new_hub_node, 
@@ -246,13 +225,13 @@ def recursive_cluster_tree(df_slice, current_node, current_depth, market_data, v
             )
 
     except Exception as e:
-        print(f"⚠️ Clustering fallback at depth {current_depth}: {e}")
+        print(f"⚠️ Clustering fallback: {e}")
         for _, row in remainder.iterrows():
             add_article_to_node(current_node, row)
 
 def main():
     print("🚀 Initializing NavGraph Builder...")
-    parser = argparse.ArgumentParser(description="Build Navigation Graph")
+    parser = argparse.ArgumentParser()
     common.add_target_argument(parser)
     args = parser.parse_args()
 
@@ -272,7 +251,6 @@ def main():
     market_data = load_market_data()
     velocity_data = load_velocity_data()
 
-    # Root Node
     nav_tree = {
         "id": "root",
         "title": "Home",
