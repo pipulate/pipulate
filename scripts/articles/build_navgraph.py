@@ -20,7 +20,6 @@ TARGET_BRANCHING_FACTOR = 7
 GOLD_PAN_SIZE = 5
 MIN_CLUSTER_SIZE = 5
 
-# 1. RESTORE THIS FUNCTION
 def slugify(text):
     text = text.lower()
     text = re.sub(r'[^a-z0-9\s-]', '', text)
@@ -28,9 +27,13 @@ def slugify(text):
     return text.strip('-')
 
 def load_enriched_shards(context_dir, posts_dir):
-    # ... (No changes here) ...
     """Ingests shards AND merges with Frontmatter."""
     shards = []
+    # Handle cases where context_dir is relative to script execution
+    if not context_dir.exists():
+         print(f"⚠️ Context dir {context_dir} does not exist. Checking relative...")
+         return pd.DataFrame()
+
     files = list(context_dir.glob("*.json"))
     print(f"💎 Loading {len(files)} shards from {context_dir}...")
     
@@ -70,7 +73,6 @@ def load_enriched_shards(context_dir, posts_dir):
     return pd.DataFrame(shards)
 
 def load_velocity_data(directory=Path(".")):
-    # ... (No changes here) ...
     """Loads GSC velocity/health data."""
     if not directory.exists():
         directory = Path(__file__).parent
@@ -95,7 +97,6 @@ def load_velocity_data(directory=Path(".")):
         return {}
 
 def load_market_data(directory=Path(".")):
-    # ... (No changes here) ...
     """Loads SEMRush/GSC CSV data for weighting."""
     if not directory.exists():
         directory = Path(__file__).parent
@@ -114,24 +115,29 @@ def load_market_data(directory=Path(".")):
         return market_map
     except: return {}
 
-def get_cluster_label(df_cluster, market_data=None):
-    # ... (No changes here) ...
+# --- UPDATED: Return candidates instead of single label ---
+def get_cluster_candidates(df_cluster, market_data=None):
+    """Returns a list of (keyword, score) tuples sorted by relevance."""
     all_keywords = [kw for sublist in df_cluster['keywords'] for kw in sublist]
-    if not all_keywords: return "Misc"
-    counts = Counter(all_keywords)
-    candidates = counts.most_common(5)
+    if not all_keywords:
+        return [("Misc", 0)]
     
-    if market_data:
-        best_kw = candidates[0][0]
-        best_score = -1
-        for kw, freq in candidates:
+    counts = Counter(all_keywords)
+    # Get top 10 candidates to have a buffer for collisions
+    candidates = counts.most_common(10)
+    
+    scored_candidates = []
+    for kw, freq in candidates:
+        score = freq
+        if market_data:
             vol = market_data.get(kw.lower().strip(), 0)
+            # Use same scoring logic as before
             score = freq * np.log1p(vol)
-            if score > best_score:
-                best_score = score
-                best_kw = kw
-        return best_kw
-    return candidates[0][0]
+        scored_candidates.append((kw, score))
+        
+    # Sort by score descending
+    scored_candidates.sort(key=lambda x: x[1], reverse=True)
+    return scored_candidates
 
 def add_article_to_node(hub_node, row):
     """Helper to append article dict to the hub node."""
@@ -189,18 +195,41 @@ def recursive_cluster_tree(df_slice, current_node, current_depth, market_data, v
         remainder.loc[:, 'cluster'] = clusters
 
         # --- RECURSION ---
+        # Track used slugs at this level to prevent collisions
+        used_slugs = set()
+
         for cluster_id in range(TARGET_BRANCHING_FACTOR):
             cluster_data = remainder[remainder['cluster'] == cluster_id]
             if len(cluster_data) == 0: continue
 
-            hub_label = get_cluster_label(cluster_data, market_data)
+            # --- NEW COLLISION DETECTION LOGIC ---
+            candidates = get_cluster_candidates(cluster_data, market_data)
+            
+            # Find the first candidate that hasn't been used yet
+            hub_label = "Misc"
+            for kw, score in candidates:
+                test_slug = slugify(kw)
+                if test_slug not in used_slugs:
+                    hub_label = kw
+                    break
+            else:
+                # Fallback: If all candidates used, append number to top candidate
+                top_kw = candidates[0][0]
+                base_slug = slugify(top_kw)
+                counter = 2
+                while f"{base_slug}-{counter}" in used_slugs:
+                    counter += 1
+                hub_label = f"{top_kw} {counter}"
+
+            slug = slugify(hub_label)
+            used_slugs.add(slug)
+            # -------------------------------------
             
             # Create Sub-Hub Node
             new_hub_node = {
                 "id": f"{current_node['id']}_{cluster_id}",
                 "title": hub_label,
-                # 2. FIX THIS CALL: Use local slugify, NOT common.slugify
-                "permalink": f"{current_node['permalink']}{slugify(hub_label)}/",
+                "permalink": f"{current_node['permalink']}{slug}/",
                 "blurb": f"Explore {len(cluster_data)} articles about {hub_label}."
             }
             
