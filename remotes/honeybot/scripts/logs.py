@@ -27,7 +27,7 @@ KNOWN_BOTS = [
     "Bytespider", "Barkrowler" 
 ]
 
-BOT_STYLE = "bold #ff9900"  # Amazon Orange
+BOT_STYLE = "bold orange1"  # Amazon Orange
 
 try:
     from db import db  # Import our new database singleton
@@ -307,30 +307,22 @@ class SonarApp(App):
         
         ua = data['ua']
         
-        # --- NEW: Unified Bot Detection Logic ---
-        # Default to noise
-        ua_style = "dim white"
+        # 1. Get the base styled text from our helper
+        # This handles the dimming of Mozilla AND the regex highlighting of Bots
+        ua_text = self.stylize_agent(ua)
+        
+        # 2. Add the prefix icon manually (since stylize_agent just does text)
         prefix = ""
-        is_known_bot = False
-
-        # 1. Check against the Master List (Orange Alert)
+        if "Mozilla" in ua and "compatible" not in ua:
+            prefix = "👤 "
+        elif "python" in ua.lower():
+            prefix = "🔧 "
+        
+        # Check if any known bot is in there to add the Robot Icon
         for bot_name in KNOWN_BOTS:
             if bot_name in ua:
                 prefix = "🤖 "
-                ua_style = BOT_STYLE # The Unified Orange
-                is_known_bot = True
                 break
-        
-        # 2. Fallbacks for non-bots
-        if not is_known_bot:
-            if "Mozilla" in ua: 
-                prefix = "👤 "
-                # We dim this to match the lower panel's "Noise" strategy
-                ua_style = "dim white" 
-            elif "python" in ua.lower(): 
-                prefix = "🔧 " 
-                ua_style = "cyan"
-        # ----------------------------------------
         
         text = Text()
         try:
@@ -345,7 +337,13 @@ class SonarApp(App):
         text.append(f"{path} ", style="blue")
         text.append(f"[{status}] ", style=status_style)
         text.append(" | ", style="dim")
-        text.append(f"{prefix}{ua}", style=ua_style)
+        
+        # 3. Append the prefix
+        text.append(prefix)
+        
+        # 4. Append the already-styled UA text
+        text.append(ua_text)
+        
         return text
 
 
