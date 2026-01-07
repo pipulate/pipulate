@@ -25,7 +25,8 @@ GRAPH_FILE = "graph.json"
 # --- 1. UNIFIED DATA INGESTION ---
 
 def slugify(text):
-    text = text.lower()
+    if not text: return ""
+    text = str(text).lower()
     text = re.sub(r'[^a-z0-9\s-]', '', text)
     text = re.sub(r'\s+', '-', text)
     return text.strip('-')
@@ -54,9 +55,17 @@ def load_enriched_shards(context_dir, posts_dir):
 
             post = frontmatter.load(md_path)
             
+            # --- DEFENSIVE TITLE EXTRACTION ---
+            title = post.metadata.get('title')
+            if not title:
+                title = data.get('t', 'Untitled')
+            if not title:
+                title = "Untitled"
+            # ----------------------------------
+
             # Weighted Soup: Title gets 3x weight
             soup = (
-                (data.get('t', '') + " ") * 3 + 
+                (str(title) + " ") * 3 + 
                 (" ".join(data.get('kw', [])) + " ") * 2 + 
                 " ".join(data.get('sub', []))
             )
@@ -65,7 +74,7 @@ def load_enriched_shards(context_dir, posts_dir):
             
             shards.append({
                 "id": f.stem,
-                "title": post.metadata.get('title', data.get('t', 'Untitled')),
+                "title": str(title), # Force string
                 "permalink": post.metadata.get('permalink', f"/{f.stem}/"),
                 "description": post.metadata.get('description', data.get('s', '')),
                 "date": str(date_val), 
@@ -122,9 +131,10 @@ def get_cluster_candidates(df_cluster, market_data=None):
     
     scored_candidates = []
     for kw, freq in candidates:
+        if not kw: continue 
         score = freq
         if market_data:
-            vol = market_data.get(kw.lower().strip(), 0)
+            vol = market_data.get(str(kw).lower().strip(), 0)
             score = freq * np.log1p(vol)
         scored_candidates.append((kw, score))
         
@@ -134,13 +144,16 @@ def get_cluster_candidates(df_cluster, market_data=None):
 def calculate_node_gravity(label, keywords, market_data):
     """Calculates visual size (gravity) for D3."""
     base = 0
+    if not label: label = "Untitled"
+    
     if market_data:
         # Check label volume
-        base += np.log1p(market_data.get(label.lower(), 0))
+        base += np.log1p(market_data.get(str(label).lower(), 0))
         # Check max keyword volume
         max_kw_vol = 0
         for kw in keywords:
-            vol = market_data.get(kw.lower(), 0)
+            if not kw: continue
+            vol = market_data.get(str(kw).lower(), 0)
             if vol > max_kw_vol: max_kw_vol = vol
         base += np.log1p(max_kw_vol)
     return 5 + base  # Minimum size 5
@@ -167,7 +180,7 @@ def build_canonical_tree(df_slice, current_node, current_depth, market_data, vel
         article_node = {
             "type": "article",
             "id": row['id'],
-            "title": row['title'],
+            "title": str(row['title']), # Force string
             "permalink": row['permalink'],
             "date": row['date'],
             "gravity": grav,
@@ -219,6 +232,7 @@ def build_canonical_tree(df_slice, current_node, current_depth, market_data, vel
             
             hub_label = "Misc"
             for kw, score in candidates:
+                if not kw: continue
                 test_slug = slugify(kw)
                 if test_slug not in used_slugs:
                     hub_label = kw
