@@ -21,6 +21,7 @@ TARGET_BRANCHING_FACTOR = 7  # The "Rule of 7"
 GOLD_PAN_SIZE = 5            # Top articles kept at hub level
 NAVGRAPH_FILE = "navgraph.json"
 GRAPH_FILE = "graph.json"
+LLMS_TXT_FILE = "llms.txt"
 
 # --- 1. UNIFIED DATA INGESTION ---
 
@@ -292,8 +293,8 @@ def project_d3_graph(tree_node, nodes, links, parent_id=None, depth=0):
         "group": tree_node['type'], 
         "val": tree_node.get('gravity', 20),
         "status": "hub",
-        "parentId": parent_id, # <--- RESTORED
-        "depth": depth         # <--- RESTORED
+        "parentId": parent_id,
+        "depth": depth
     }
     nodes.append(d3_node)
 
@@ -307,8 +308,8 @@ def project_d3_graph(tree_node, nodes, links, parent_id=None, depth=0):
             "status": article.get('status', 'unknown'),
             "velocity": article.get('velocity', 0),
             "clicks": article.get('clicks', 0),
-            "parentId": tree_node['id'], # <--- RESTORED
-            "depth": depth + 1           # <--- RESTORED
+            "parentId": tree_node['id'],
+            "depth": depth + 1
         }
         nodes.append(art_node)
         links.append({
@@ -325,6 +326,42 @@ def project_d3_graph(tree_node, nodes, links, parent_id=None, depth=0):
             "type": "hub_link"
         })
         project_d3_graph(hub, nodes, links, parent_id=tree_node['id'], depth=depth + 1)
+
+def project_llms_txt(tree_node, lines=None, level=0):
+    """
+    Projector C: Generates a Markdown Manifest (llms.txt) for AI Agents.
+    Structure:
+      - Intro / Brand / Instructions
+      - Full Topology (Indented)
+    """
+    if lines is None:
+        lines = []
+        # --- PREAMBLE ---
+        lines.append(f"# {tree_node['title']} - AI Context & Navigation Manifest")
+        lines.append(f"> {tree_node['blurb']}")
+        lines.append("")
+        lines.append("## Information Architecture")
+        lines.append("This site is organized using AI-driven K-Means clustering (Rule of 7).")
+        lines.append("Content is load-balanced to prevent deep nesting.")
+        lines.append("")
+        lines.append("## Direct Data Access")
+        lines.append("- **Full Graph Topology (JSON)**: [graph.json](/graph.json) - Contains all nodes, links, and velocity data.")
+        lines.append("- **Source Code**: Most articles offer `<link rel='alternate'>` to raw Markdown.")
+        lines.append("")
+        lines.append("## Site Map (High-Level)")
+    
+    indent = "  " * level
+    
+    # Hubs First (Navigation)
+    for hub in tree_node.get('children_hubs', []):
+        lines.append(f"{indent}- **[{hub['title']}]({hub['permalink']})**")
+        project_llms_txt(hub, lines, level + 1)
+
+    # Articles (Content)
+    for article in tree_node.get('children_articles', []):
+        lines.append(f"{indent}- [{article['title']}]({article['permalink']})")
+        
+    return lines
 
 # --- MAIN EXECUTION ---
 
@@ -353,13 +390,13 @@ def main():
     # 2. BUILD CANONICAL TREE
     print(f"🧠 Clustering {len(df)} articles into Canonical Tree...")
     
-    # Initialize Root Node with explicit type='root'
+    # Initialize Root Node
     canonical_tree = {
         "type": "root", 
         "id": "root",
-        "title": "Home",
+        "title": "MikeLev.in", # Branding
         "permalink": "/",
-        "blurb": "Welcome to the knowledge graph.",
+        "blurb": "Python, NixOS, SEO, and AI Engineering.",
         "gravity": 60,
         "children_hubs": [],
         "children_articles": []
@@ -381,6 +418,12 @@ def main():
     with open(GRAPH_FILE, 'w', encoding='utf-8') as f:
         json.dump(d3_data, f, indent=None) # Minified
     print(f"✅ Generated D3 Graph: {GRAPH_FILE} ({len(nodes)} nodes)")
+
+    # 5. EXPORT LLMS.TXT (Markdown Manifest)
+    llms_lines = project_llms_txt(canonical_tree)
+    with open(LLMS_TXT_FILE, 'w', encoding='utf-8') as f:
+        f.write("\n".join(llms_lines))
+    print(f"✅ Generated LLMs.txt: {LLMS_TXT_FILE}")
 
 if __name__ == "__main__":
     main()
