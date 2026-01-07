@@ -279,18 +279,21 @@ def build_canonical_tree(df_slice, current_node, current_depth, market_data, vel
 
 # --- 3. PROJECTORS ---
 
-def project_d3_graph(tree_node, nodes, links):
+def project_d3_graph(tree_node, nodes, links, parent_id=None, depth=0):
     """
     Projector B: Flattens the Canonical Tree into D3 Nodes/Links.
+    Now preserves hierarchy (parentId, depth) for D3 Stratify & Radial Layouts.
     """
     # Create the node for D3
     d3_node = {
         "id": tree_node['id'],
         "label": tree_node['title'],
-        # IMPORTANT: Map canonical type to D3 group (ensures 'root' is preserved)
+        # Map canonical type to D3 group (ensures 'root' is preserved)
         "group": tree_node['type'], 
         "val": tree_node.get('gravity', 20),
         "status": "hub",
+        "parentId": parent_id, # <--- RESTORED
+        "depth": depth         # <--- RESTORED
     }
     nodes.append(d3_node)
 
@@ -302,7 +305,10 @@ def project_d3_graph(tree_node, nodes, links):
             "group": "article",
             "val": article.get('gravity', 5),
             "status": article.get('status', 'unknown'),
-            "velocity": article.get('velocity', 0)
+            "velocity": article.get('velocity', 0),
+            "clicks": article.get('clicks', 0),
+            "parentId": tree_node['id'], # <--- RESTORED
+            "depth": depth + 1           # <--- RESTORED
         }
         nodes.append(art_node)
         links.append({
@@ -318,7 +324,7 @@ def project_d3_graph(tree_node, nodes, links):
             "target": hub['id'],
             "type": "hub_link"
         })
-        project_d3_graph(hub, nodes, links)
+        project_d3_graph(hub, nodes, links, parent_id=tree_node['id'], depth=depth + 1)
 
 # --- MAIN EXECUTION ---
 
@@ -349,7 +355,7 @@ def main():
     
     # Initialize Root Node with explicit type='root'
     canonical_tree = {
-        "type": "root",  # <--- CRITICAL FIX FOR D3 VISUALIZATION
+        "type": "root", 
         "id": "root",
         "title": "Home",
         "permalink": "/",
