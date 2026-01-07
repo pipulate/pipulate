@@ -11,8 +11,7 @@ SCRIPTS = [
     "contextualizer.py",
     "generate_semrush_candidates.py",
     "gsc_historical_fetch.py",
-    "build_hierarchy.py",  # Generates graph.json locally
-    "build_navgraph.py",
+    "build_knowledge_graph.py",
     "generate_hubs.py"
 ]
 
