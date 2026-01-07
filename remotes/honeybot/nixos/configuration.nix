@@ -60,6 +60,22 @@
     "d /home/mike/www 0755 mike users -"
   ];
 
+  # Hardware Acceleration
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs; [
+      intel-media-driver # For Broadwell+ (Ice Lake needs this)
+      intel-vaapi-driver # Fallback
+      libvdpau-va-gl
+    ];
+  };
+
+  # Force applications to find the drivers
+  environment.sessionVariables = {
+    LIBVA_DRIVER_NAME = "iHD"; # Force the Intel Media Driver (modern)
+    # Or try "i965" if you are on older hardware, but i5-1035G7 is Ice Lake, so iHD is correct.
+  };
+
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
@@ -191,7 +207,7 @@
   users.users.mike = {
     isNormalUser = true;
     description = "Mike";
-    extraGroups = [ "networkmanager" "wheel" "nginx" ];
+    extraGroups = [ "networkmanager" "wheel" "nginx" "video" "render" ];
     homeMode = "711"; 
     packages = with pkgs; [
     #  thunderbird
@@ -210,6 +226,9 @@
     git
     tmux
     sqlite
+
+    libva-utils
+    intel-gpu-tools
 
     # The Broadcast Studio
     obs-studio
