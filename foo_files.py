@@ -1,8 +1,11 @@
 AI_PHOOEY_CHOP = """\
-scripts/articles/build_hierarchy.py
-scripts/articles/build_navgraph.py
-scripts/articles/generate_hubs.py
-scripts/articles/build_knowledge_graph.py
+# scripts/articles/build_hierarchy.py
+# scripts/articles/build_navgraph.py
+# scripts/articles/generate_hubs.py
+# scripts/articles/build_knowledge_graph.py
+scripts/articles/graph.json
+scripts/articles/graph-good.json
+/home/mike/repos/trimnoir/_includes/show_graph.html
 """
 
 ## > We've got content, it's groovy context  

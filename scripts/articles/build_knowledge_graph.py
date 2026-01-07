@@ -74,7 +74,7 @@ def load_enriched_shards(context_dir, posts_dir):
             
             shards.append({
                 "id": f.stem,
-                "title": str(title), # Force string
+                "title": str(title),
                 "permalink": post.metadata.get('permalink', f"/{f.stem}/"),
                 "description": post.metadata.get('description', data.get('s', '')),
                 "date": str(date_val), 
@@ -180,7 +180,7 @@ def build_canonical_tree(df_slice, current_node, current_depth, market_data, vel
         article_node = {
             "type": "article",
             "id": row['id'],
-            "title": str(row['title']), # Force string
+            "title": str(row['title']),
             "permalink": row['permalink'],
             "date": row['date'],
             "gravity": grav,
@@ -251,7 +251,7 @@ def build_canonical_tree(df_slice, current_node, current_depth, market_data, vel
             
             # Create Hub Node
             hub_gravity = calculate_node_gravity(hub_label, [hub_label], market_data)
-            # Boost Hub gravity based on depth (root is massive, leaves are smaller)
+            # Boost Hub gravity based on depth
             hub_val = max(10, 50 - (current_depth * 10)) + hub_gravity
 
             new_hub_node = {
@@ -287,12 +287,11 @@ def project_d3_graph(tree_node, nodes, links):
     d3_node = {
         "id": tree_node['id'],
         "label": tree_node['title'],
-        "group": "hub", # tree_node['type'],
+        # IMPORTANT: Map canonical type to D3 group (ensures 'root' is preserved)
+        "group": tree_node['type'], 
         "val": tree_node.get('gravity', 20),
         "status": "hub",
-        # D3 specific logic can go here (e.g. depth)
     }
-    # Don't add root twice if it's already seeded, but here we just append
     nodes.append(d3_node)
 
     # Process Articles (Leaves)
@@ -347,8 +346,10 @@ def main():
 
     # 2. BUILD CANONICAL TREE
     print(f"🧠 Clustering {len(df)} articles into Canonical Tree...")
+    
+    # Initialize Root Node with explicit type='root'
     canonical_tree = {
-        "type": "hub",
+        "type": "root",  # <--- CRITICAL FIX FOR D3 VISUALIZATION
         "id": "root",
         "title": "Home",
         "permalink": "/",
@@ -361,7 +362,6 @@ def main():
     build_canonical_tree(df, canonical_tree, 0, market_data, velocity_data)
 
     # 3. EXPORT NAVGRAPH (JSON Tree for Jekyll)
-    # The canonical tree structure matches the NavGraph requirements closely
     with open(NAVGRAPH_FILE, 'w', encoding='utf-8') as f:
         json.dump(canonical_tree, f, indent=2)
     print(f"✅ Generated NavGraph: {NAVGRAPH_FILE}")
@@ -369,12 +369,11 @@ def main():
     # 4. EXPORT GRAPH (Flat JSON for D3)
     nodes = []
     links = []
-    # Seed nodes/links via recursion
     project_d3_graph(canonical_tree, nodes, links)
     
     d3_data = {"nodes": nodes, "links": links}
     with open(GRAPH_FILE, 'w', encoding='utf-8') as f:
-        json.dump(d3_data, f, indent=None) # Minified for network speed
+        json.dump(d3_data, f, indent=None) # Minified
     print(f"✅ Generated D3 Graph: {GRAPH_FILE} ({len(nodes)} nodes)")
 
 if __name__ == "__main__":
