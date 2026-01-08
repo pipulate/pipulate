@@ -44,31 +44,6 @@ LOG_PATTERN = re.compile(r'(?P<ip>[\d\.]+) - - \[(?P<time>.*?)\] "(?P<request>.*
 ANSI_ESCAPE = re.compile(r'(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]')
 LOG_PATTERN = re.compile(r'(?P<ip>[\d\.]+) - - \[(?P<time>.*?)\] "(?P<request>.*?)" (?P<status>\d+) (?P<bytes>\d+) "(?P<referrer>.*?)" "(?P<ua>.*?)"')
 
-# NEW: The Bot Highlighting Palette
-BOT_HIGHLIGHTS = {
-    # AI & LLMs
-    "ClaudeBot": "bold #d97757",       # Anthropic Clay
-    "GPTBot": "bold #10a37f",          # OpenAI Green
-    "OAI-SearchBot": "bold #10a37f",   # OpenAI Green
-    "PerplexityBot": "bold #22b5bf",   # Perplexity Teal
-    
-    # Big Tech / Cloud
-    "Amazonbot": "bold #ff9900",       # Amazon Orange
-    "Googlebot": "bold #4285f4",       # Google Blue
-    "bingbot": "bold #008373",         # Bing Teal
-    "meta-externalagent": "bold #0668e1", # Meta Blue
-    "Applebot": "bold #A2AAAD",        # Apple Silver
-    "Aliyun": "bold #ff6a00",          # Alibaba Orange
-    
-    # Search & SEO
-    "Yandex": "bold #fc3f1d",          # Yandex Red
-    "AhrefsBot": "bold #fd6917",       # Ahrefs Orange
-    "DataForSeoBot": "bold magenta",
-    "SemrushBot": "bold orange1",
-    "DotBot": "bold green",
-    "LinkupBot": "bold cyan",
-}
-
 class SonarApp(App):
     """The Cybernetic HUD (Dual-Panel Edition)."""
 
@@ -130,7 +105,7 @@ class SonarApp(App):
 
     def compose(self) -> ComposeResult:
         yield Header()
-        yield Log(id="log_stream", highlight=True)
+        yield Log(id="log_stream", highlight=False)
         
         # --- NEW: The Dual Intelligence Panel ---
         with Container(id="intelligence_panel"):
@@ -291,9 +266,9 @@ class SonarApp(App):
                 self.call_from_thread(self.write_log, rich_text)
 
     def write_log(self, text):
+        """Write the Rich Text object directly to the log to preserve styles."""
         log = self.query_one(Log)
-        if hasattr(text, "plain"): log.write(text.plain)
-        else: log.write(str(text))
+        log.write(text)
 
     def format_log_line(self, data):
         status = int(data['status'])
