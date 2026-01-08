@@ -20,7 +20,8 @@ from rich.text import Text
 from rich.console import Console
 
 # A hidden console to render styles into ANSI codes for the Log widget
-OFFSCREEN_CONSOLE = Console(force_terminal=True, color_system="truecolor", file=open(os.devnull, "w"))
+# We set a massive width to prevent the console from hard-wrapping the text before the Log widget gets it
+OFFSCREEN_CONSOLE = Console(force_terminal=True, color_system="truecolor", file=open(os.devnull, "w"), width=10000)
 
 # NEW: Single List, Single Color
 KNOWN_BOTS = [
@@ -277,7 +278,8 @@ class SonarApp(App):
         
         # Render the styled text object into a string with embedded ANSI color codes
         with OFFSCREEN_CONSOLE.capture() as capture:
-            OFFSCREEN_CONSOLE.print(text, end="")
+            # soft_wrap=True ensures no newlines are inserted, letting the UI widget handle wrapping
+            OFFSCREEN_CONSOLE.print(text, end="", soft_wrap=True)
         
         ansi_string = capture.get()
         log.write(ansi_string)
@@ -317,13 +319,13 @@ class SonarApp(App):
             time_str = ":".join(time_str).split(' ')[0]
             text.append(f"[{time_str}] ", style="dim")
         except: text.append("[TIME] ", style="dim")
-            
+
         text.append(ip_display)
-        text.append(" | ", style="dim")
+        text.append("  ") # Just space
         text.append(f"{method:4} ", style="bold")
         text.append(f"{path} ", style="blue")
         text.append(f"[{status}] ", style=status_style)
-        text.append(" | ", style="dim")
+        text.append("  ") # Just space
         
         # 3. Append the prefix
         text.append(prefix)
