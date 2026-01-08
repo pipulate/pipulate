@@ -14,7 +14,7 @@ import time
 
 from textual.app import App, ComposeResult
 from textual.containers import Container, Vertical, Horizontal
-from textual.widgets import Header, Footer, Static, Log, Label, Markdown, DataTable
+from textual.widgets import Header, Footer, Static, Log, RichLog, Label, Markdown, DataTable
 from textual import work
 from rich.text import Text
 from rich.console import Console
@@ -114,9 +114,9 @@ class SonarApp(App):
 
     def compose(self) -> ComposeResult:
         yield Header()
-        # Disable auto-highlighting (green wash) BUT enable markup so we can pass styled strings
-        yield Log(id="log_stream", highlight=False)
-
+        # RichLog handles wrapping and styling natively. 
+        # wrap=True ensures lines don't get cut off.
+        yield RichLog(id="log_stream", highlight=False, wrap=True)
         
         # --- NEW: The Dual Intelligence Panel ---
         with Container(id="intelligence_panel"):
@@ -277,22 +277,10 @@ class SonarApp(App):
                 self.call_from_thread(self.write_log, rich_text)
 
     def write_log(self, text):
-        """Render Rich Text to ANSI string and write to log."""
-        log = self.query_one(Log)
-        
-        # DIAGNOSTIC: Force width to be massive to ensure no hard wrapping happens here
-        OFFSCREEN_CONSOLE.width = 10000
-        
-        with OFFSCREEN_CONSOLE.capture() as capture:
-            OFFSCREEN_CONSOLE.print(text, end="", soft_wrap=True)
-        
-        ansi_string = capture.get()
-        
-        # DIAGNOSTIC: Check if we are getting newlines in the wrong places
-        # If the string has \n inside it (other than the end), the console wrapped it.
-        # log.write(f"DEBUG LEN: {len(ansi_string)}") # Optional debug
-        
-        log.write(ansi_string)
+        """Write the Rich Text object directly to the RichLog widget."""
+        # Note: We query RichLog now, not Log
+        log = self.query_one(RichLog)
+        log.write(text)
 
     def format_log_line(self, data):
         status = int(data['status'])
