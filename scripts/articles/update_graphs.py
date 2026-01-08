@@ -34,33 +34,32 @@ def run_step(script_name, target_key):
 
 def sync_data_to_jekyll(target_path):
     """
-    Copies the generated graph.json to the Jekyll SITE ROOT.
-    This allows both humans and LLMs to fetch it at /graph.json
+    Copies the generated artifacts to the Jekyll SITE ROOT.
     """
     print("\n--- 📦 Syncing Data to Jekyll ---")
     
     # Source is local to this script
     script_dir = Path(__file__).parent
-    graph_source = script_dir / "graph.json"
+    
+    # Artifacts to sync
+    artifacts = {
+        "graph.json": "graph.json",
+        "llms.txt": "llms.txt"
+    }
     
     # target_path is usually .../trimnoir/_posts
     # We want the site root: .../trimnoir/
     repo_root = target_path.parent
     
-    # Destination 1: The Site Root (For fetch /graph.json)
-    graph_dest_root = repo_root / "graph.json"
-    
-    if graph_source.exists():
-        shutil.copy2(graph_source, graph_dest_root)
-        print(f"✅ Copied graph.json to SITE ROOT: {graph_dest_root}")
+    for filename, dest_name in artifacts.items():
+        source = script_dir / filename
+        dest = repo_root / dest_name
         
-        # Optional: We stopped copying show_graph.html because it is now an 
-        # _include managed in the theme, but if you wanted to sync a 
-        # standalone viewer, you could do it here. 
-        # For now, we trust the repo's internal _includes/show_graph.html
-        
-    else:
-        print(f"⚠️ Warning: {graph_source} not found. Skipping sync.")
+        if source.exists():
+            shutil.copy2(source, dest)
+            print(f"✅ Synced {filename} -> {dest}")
+        else:
+            print(f"⚠️ Warning: {filename} not found. Skipping sync.")
 
 def main():
     parser = argparse.ArgumentParser(description="Update all Pipulate graphs")
