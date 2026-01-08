@@ -18,7 +18,7 @@ def check_file(filename_pattern):
     total = cur.fetchone()[0] or 0
     
     print(f"📉 Total Hits: {total}")
-    print("-" * 40)
+    print("-" * 80)
     
     # 2. Breakdown by User Agent
     sql_breakdown = """
@@ -29,7 +29,7 @@ def check_file(filename_pattern):
         WHERE p.value LIKE ?
         GROUP BY ua.id
         ORDER BY hits DESC
-        LIMIT 20
+        LIMIT 50
     """
     
     cur.execute(sql_breakdown, (f"%{filename_pattern}%",))
@@ -39,13 +39,13 @@ def check_file(filename_pattern):
         print("❌ No traffic found for this file.")
         return
 
+    # Use a wider format
     print(f"{'HITS':<6} | {'USER AGENT'}")
-    print("-" * 40)
+    print("-" * 80)
     
     for ua, count in rows:
-        # Truncate UA for display
-        display_ua = (ua[:70] + '..') if len(ua) > 70 else ua
-        print(f"{count:<6} | {display_ua}")
+        # No truncation: Show the full raw UA string
+        print(f"{count:<6} | {ua}")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
