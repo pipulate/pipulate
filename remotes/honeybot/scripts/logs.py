@@ -68,7 +68,6 @@ class SonarApp(App):
         height: 100%;
         scrollbar-gutter: stable;
         overflow-y: scroll;
-        overflow-x: hidden; /* Force wrapping instead of scrolling */
     }
 
     /* BOTTOM SECTION: The Intelligence Panel (Rows 5-6) */
@@ -277,12 +276,18 @@ class SonarApp(App):
         """Render Rich Text to ANSI string and write to log."""
         log = self.query_one(Log)
         
-        # Render the styled text object into a string with embedded ANSI color codes
+        # DIAGNOSTIC: Force width to be massive to ensure no hard wrapping happens here
+        OFFSCREEN_CONSOLE.width = 10000
+        
         with OFFSCREEN_CONSOLE.capture() as capture:
-            # soft_wrap=True ensures no newlines are inserted, letting the UI widget handle wrapping
             OFFSCREEN_CONSOLE.print(text, end="", soft_wrap=True)
         
         ansi_string = capture.get()
+        
+        # DIAGNOSTIC: Check if we are getting newlines in the wrong places
+        # If the string has \n inside it (other than the end), the console wrapped it.
+        # log.write(f"DEBUG LEN: {len(ansi_string)}") # Optional debug
+        
         log.write(ansi_string)
 
     def format_log_line(self, data):
