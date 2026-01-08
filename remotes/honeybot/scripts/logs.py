@@ -17,6 +17,10 @@ from textual.containers import Container, Vertical, Horizontal
 from textual.widgets import Header, Footer, Static, Log, Label, Markdown, DataTable
 from textual import work
 from rich.text import Text
+from rich.console import Console
+
+# A hidden console to render styles into ANSI codes for the Log widget
+OFFSCREEN_CONSOLE = Console(force_terminal=True, color_system="truecolor", file=open(os.devnull, "w"))
 
 # NEW: Single List, Single Color
 KNOWN_BOTS = [
@@ -105,7 +109,9 @@ class SonarApp(App):
 
     def compose(self) -> ComposeResult:
         yield Header()
+        # Disable auto-highlighting (green wash) BUT enable markup so we can pass styled strings
         yield Log(id="log_stream", highlight=False)
+
         
         # --- NEW: The Dual Intelligence Panel ---
         with Container(id="intelligence_panel"):
@@ -266,9 +272,15 @@ class SonarApp(App):
                 self.call_from_thread(self.write_log, rich_text)
 
     def write_log(self, text):
-        """Write the Rich Text object directly to the log to preserve styles."""
+        """Render Rich Text to ANSI string and write to log."""
         log = self.query_one(Log)
-        log.write(text)
+        
+        # Render the styled text object into a string with embedded ANSI color codes
+        with OFFSCREEN_CONSOLE.capture() as capture:
+            OFFSCREEN_CONSOLE.print(text, end="")
+        
+        ansi_string = capture.get()
+        log.write(ansi_string)
 
     def format_log_line(self, data):
         status = int(data['status'])
