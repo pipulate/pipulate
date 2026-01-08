@@ -68,6 +68,7 @@ class SonarApp(App):
         height: 100%;
         scrollbar-gutter: stable;
         overflow-y: scroll;
+        overflow-x: hidden; /* Force wrapping instead of scrolling */
     }
 
     /* BOTTOM SECTION: The Intelligence Panel (Rows 5-6) */
