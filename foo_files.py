@@ -19,6 +19,13 @@ remotes/honeybot/scripts/logs.py
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
 
+# remotes/honeybot/nixos/configuration.nix
+# remotes/honeybot/scripts/content_loader.py
+# remotes/honeybot/scripts/stream.py
+# remotes/honeybot/scripts/db.py
+# remotes/honeybot/scripts/report.py
+# remotes/honeybot/scripts/logs.py
+
 # scripts/articles/contextualizer.py
 # scripts/articles/update_graphs.py
 # scripts/articles/generate_semrush_candidates.py
