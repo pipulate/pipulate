@@ -21,7 +21,8 @@ from rich.console import Console
 
 # A hidden console to render styles into ANSI codes for the Log widget
 # We set a massive width to prevent the console from hard-wrapping the text before the Log widget gets it
-OFFSCREEN_CONSOLE = Console(force_terminal=True, color_system="truecolor", file=open(os.devnull, "w"), width=10000)
+OFFSCREEN_CONSOLE = Console(force_terminal=True, color_system="truecolor", file=open(os.devnull, "w"), width=100000)
+# OFFSCREEN_CONSOLE = Console(force_terminal=True, color_system="truecolor", file=open(os.devnull, "w"), width=10000)
 
 # NEW: Single List, Single Color
 KNOWN_BOTS = [
@@ -68,7 +69,9 @@ class SonarApp(App):
         height: 100%;
         scrollbar-gutter: stable;
         overflow-y: scroll;
-        overflow-x: scroll; /* Force horizontal scrolling capability */
+        overflow-x: hidden; 
+        width: 100%;
+        min-width: 100%;
     }
 
     /* BOTTOM SECTION: The Intelligence Panel (Rows 5-6) */
@@ -279,15 +282,12 @@ class SonarApp(App):
         
         # DIAGNOSTIC: Force width to be massive to ensure no hard wrapping happens here
         OFFSCREEN_CONSOLE.width = 10000
-
-        # Render the styled text object into a string with embedded ANSI color codes
+        
         with OFFSCREEN_CONSOLE.capture() as capture:
-            # soft_wrap=True ensures no newlines are inserted, letting the UI widget handle wrapping
             OFFSCREEN_CONSOLE.print(text, end="", soft_wrap=True)
         
         ansi_string = capture.get()
-        log.write(ansi_string)
-
+        
         # DIAGNOSTIC: Check if we are getting newlines in the wrong places
         # If the string has \n inside it (other than the end), the console wrapped it.
         # log.write(f"DEBUG LEN: {len(ansi_string)}") # Optional debug

@@ -1,13 +1,13 @@
 AI_PHOOEY_CHOP = """\
-remotes/honeybot/scripts/showips.py
-remotes/honeybot/scripts/check_file_traffic.py
-remotes/honeybot/scripts/db_monitor.py
+# remotes/honeybot/scripts/showips.py
+# remotes/honeybot/scripts/check_file_traffic.py
+# remotes/honeybot/scripts/db_monitor.py
 remotes/honeybot/scripts/stream.py
 remotes/honeybot/scripts/show.py
-remotes/honeybot/scripts/report.py
-remotes/honeybot/scripts/content_loader.py
-remotes/honeybot/scripts/db.py
-/home/mike/repos/trimnoir/_posts/2026-01-08-the-fish-tank-principle-ambient-observability-for-ai-agents.md
+# remotes/honeybot/scripts/report.py
+# remotes/honeybot/scripts/content_loader.py
+# remotes/honeybot/scripts/db.py
+# /home/mike/repos/trimnoir/_posts/2026-01-08-the-fish-tank-principle-ambient-observability-for-ai-agents.md
 remotes/honeybot/scripts/logs.py
 """
 
