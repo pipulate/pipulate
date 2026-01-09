@@ -19,6 +19,9 @@ from textual import work
 from rich.text import Text
 from rich.console import Console
 
+# --- Configuration ---
+STRIP_MOZILLA_PREFIX = False  # Set to True to save space in bottom panels
+
 # A hidden console to render styles into ANSI codes for the Log widget
 # We set a massive width to prevent the console from hard-wrapping the text before the Log widget gets it
 OFFSCREEN_CONSOLE = Console(force_terminal=True, color_system="truecolor", file=open(os.devnull, "w"), width=100000)
@@ -223,7 +226,11 @@ class SonarApp(App):
                 table.add_row("-", "Waiting for data...")
             else:
                 for ua, count in data:
-                    display_ua = ua.replace("Mozilla/5.0 ", "")
+                    if STRIP_MOZILLA_PREFIX:
+                        display_ua = ua.replace("Mozilla/5.0 ", "")
+                    else:
+                        display_ua = ua
+                        
                     table.add_row(str(count), self.stylize_agent(display_ua))
         except: pass
 
@@ -237,7 +244,11 @@ class SonarApp(App):
                 table.add_row("-", "Waiting for data...")
             else:
                 for ua, count in data:
-                    display_ua = ua.replace("Mozilla/5.0 ", "")
+                    if STRIP_MOZILLA_PREFIX:
+                        display_ua = ua.replace("Mozilla/5.0 ", "")
+                    else:
+                        display_ua = ua
+                        
                     table.add_row(str(count), self.stylize_agent(display_ua))
         except: pass
 
