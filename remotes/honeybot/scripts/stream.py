@@ -9,6 +9,7 @@ import os
 import sys
 import time
 import datetime
+import requests
 import subprocess
 import threading
 import shutil   # <--- Add this import
@@ -157,6 +158,41 @@ class Heartbeat(threading.Thread):
         self.stop_event.set()
 
 
+def wait_for_availability(url, timeout=30):
+    """
+    Polls the URL to ensure it exists before we try to show it.
+    This prevents the '404 Flash' while Jekyll is still building.
+    """
+    # Only check our own domain. External sites (like Google) are assumed up.
+    if "mikelev.in" not in url:
+        return
+
+    start_time = time.time()
+    first_failure = True
+
+    while (time.time() - start_time) < timeout:
+        try:
+            # We use verify=False because local certs/hairpin NAT can be finicky
+            # and we just want to know if Nginx serves the file.
+            response = requests.head(url, timeout=2, verify=False)
+            
+            if response.status_code == 200:
+                if not first_failure:
+                    narrator.say("Content generated. Rendering.")
+                return
+        except:
+            pass # Network error, just retry
+
+        # If we are here, it failed.
+        if first_failure:
+            narrator.say("New content detected. Waiting for static site generation.")
+            first_failure = False
+            
+        time.sleep(2)
+
+    narrator.say("Generation timed out. Proceeding with caution.")
+
+
 def perform_show(script):
     """Reads the sheet music list and executes it."""
     # Define the environment for the browser once
@@ -197,8 +233,11 @@ def perform_show(script):
             if command == "SAY":
                 narrator.say(content)
                 time.sleep(len(content) / 20)
-                
+            
             elif command == "VISIT":
+                # Ensure the page actually exists before showing it
+                wait_for_availability(content)
+                
                 try:
                     subprocess.Popen(
                         [
