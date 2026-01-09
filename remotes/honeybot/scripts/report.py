@@ -1,13 +1,22 @@
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, Static, DataTable, Label
 from textual.containers import Container, Vertical
-from db import db  # Import our shared DB instance
+
+from rich.text import Text
+import re
+from db import db, KNOWN_BOTS
 
 class ReportApp(App):
     CSS = """
     Screen {
         layout: vertical;
-        background: #200020;
+        background: #000000; /* Pure Black */
+    }
+    
+    DataTable {
+        background: #000000;
+        color: #00ff00;
+        height: 1fr;
     }
 
     #main_header {
@@ -66,6 +75,21 @@ class ReportApp(App):
         # Removed JS/MD panels - moved to Radar
 
         yield Footer()
+
+    def stylize_agent(self, agent_str):
+        agent_str = agent_str.strip()
+        text = Text(agent_str)
+        
+        # Default styling
+        text.stylize("dim white") # Make humans dim
+
+        # Highlight Bots
+        for bot_name in KNOWN_BOTS:
+            if bot_name in agent_str:
+                text.highlight_regex(re.escape(bot_name), "bold orange1")
+                # Optional: break optimization if you want to highlight multiple
+                
+        return text
 
     def populate_table(self, table_id, data_source):
         try:

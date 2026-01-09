@@ -19,55 +19,14 @@ from textual import work
 from rich.text import Text
 from rich.console import Console
 
+from db import db, KNOWN_BOTS  # Import the list
+
 # --- Configuration ---
 STRIP_MOZILLA_PREFIX = False  # Set to True to save space in bottom panels
 
 # A hidden console to render styles into ANSI codes for the Log widget
 # We set a massive width to prevent the console from hard-wrapping the text before the Log widget gets it
 OFFSCREEN_CONSOLE = Console(force_terminal=True, color_system="truecolor", file=open(os.devnull, "w"), width=100000)
-# OFFSCREEN_CONSOLE = Console(force_terminal=True, color_system="truecolor", file=open(os.devnull, "w"), width=10000)
-
-# NEW: Single List, Single Color (Stacked for easy copy-paste)
-KNOWN_BOTS = """\
-ClaudeBot
-GPTBot
-OAI-SearchBot
-PerplexityBot
-Amazonbot
-Googlebot
-bingbot
-meta-externalagent
-Applebot
-Aliyun
-Yandex
-AhrefsBot
-DataForSeoBot
-SemrushBot
-DotBot
-LinkupBot
-botify
-PetalBot
-Bytespider
-Barkrowler
-SeekportBot
-MJ12bot
-Baiduspider
-SeznamBot
-ChatGPT-User
-Perplexity-User
-DuckAssistBot
-Qwantbot
-AwarioBot
-GenomeCrawlerd
-IbouBot
-Sogou
-python-requests
-python-httpx
-Go-http-client
-Wget
-curl
-SERankingBacklinksBot
-""".splitlines()
 
 BOT_STYLE = "bold orange1"  # Amazon Orange
 
