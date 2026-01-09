@@ -63,6 +63,7 @@ python-httpx
 Go-http-client
 Wget
 curl
+SERankingBacklinksBot
 """.splitlines()
 
 BOT_STYLE = "bold orange1"  # Amazon Orange
@@ -262,7 +263,7 @@ class SonarApp(App):
                 salt = datetime.now().strftime("%Y-%m-%d")
                 hash_input = f"{ip_str}-{salt}"
                 hash_digest = hashlib.md5(hash_input.encode()).hexdigest()[:4]
-                return Text.assemble((masked, "cyan"), " ", (f"[{hash_digest}]", "bold magenta"))
+                return Text.assemble((masked, "cyan"), " ", (f"[{hash_digest}]", "bold cyan"))
             return Text(ip_str, style="red")
         except:
             return Text(ip_str, style="red")
@@ -317,7 +318,7 @@ class SonarApp(App):
     def format_log_line(self, data):
         status = int(data['status'])
         if 200 <= status < 300: status_style = "bold green"
-        elif 300 <= status < 400: status_style = "yellow"
+        elif 300 <= status < 400: status_style = "bold white"
         elif 400 <= status < 500: status_style = "bold red"
         else: status_style = "white on red"
 
