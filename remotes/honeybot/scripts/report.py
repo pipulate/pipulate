@@ -96,18 +96,16 @@ class ReportApp(App):
             table = self.query_one(f"#{table_id}", DataTable)
             table.add_columns("Hits", "Agent")
             
-            data = data_source(limit=20) 
+            # INCREASE LIMIT
+            data = data_source(limit=100) 
             
             if not data:
                 table.add_row("-", "No data yet")
                 return
 
             for ua, count in data:
-                clean_ua = ua.strip()
-                if len(clean_ua) > 140: 
-                    clean_ua = clean_ua[:137] + "..."
-                
-                table.add_row(str(count), clean_ua)
+                # APPLY STYLING
+                table.add_row(str(count), self.stylize_agent(ua))
                 
         except Exception as e:
             try:
