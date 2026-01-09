@@ -100,7 +100,6 @@ class SonarApp(App):
     #log_stream {
         row-span: 4;
         background: #000000;
-        border: solid #00ff00;
         color: #00ff00;
         height: 100%;
         scrollbar-gutter: stable;
