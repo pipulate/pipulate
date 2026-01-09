@@ -24,14 +24,46 @@ from rich.console import Console
 OFFSCREEN_CONSOLE = Console(force_terminal=True, color_system="truecolor", file=open(os.devnull, "w"), width=100000)
 # OFFSCREEN_CONSOLE = Console(force_terminal=True, color_system="truecolor", file=open(os.devnull, "w"), width=10000)
 
-# NEW: Single List, Single Color
-KNOWN_BOTS = [
-    "ClaudeBot", "GPTBot", "OAI-SearchBot", "PerplexityBot",
-    "Amazonbot", "Googlebot", "bingbot", "meta-externalagent",
-    "Applebot", "Aliyun", "Yandex", "AhrefsBot", "DataForSeoBot",
-    "SemrushBot", "DotBot", "LinkupBot", "botify", "PetalBot",
-    "Bytespider", "Barkrowler" 
-]
+# NEW: Single List, Single Color (Stacked for easy copy-paste)
+KNOWN_BOTS = """\
+ClaudeBot
+GPTBot
+OAI-SearchBot
+PerplexityBot
+Amazonbot
+Googlebot
+bingbot
+meta-externalagent
+Applebot
+Aliyun
+Yandex
+AhrefsBot
+DataForSeoBot
+SemrushBot
+DotBot
+LinkupBot
+botify
+PetalBot
+Bytespider
+Barkrowler
+SeekportBot
+MJ12bot
+Baiduspider
+SeznamBot
+ChatGPT-User
+Perplexity-User
+DuckAssistBot
+Qwantbot
+AwarioBot
+GenomeCrawlerd
+IbouBot
+Sogou
+python-requests
+python-httpx
+Go-http-client
+Wget
+curl
+""".splitlines()
 
 BOT_STYLE = "bold orange1"  # Amazon Orange
 
