@@ -224,7 +224,7 @@ class SonarApp(App):
             else:
                 for ua, count in data:
                     display_ua = ua.replace("Mozilla/5.0 ", "")
-                    table.add_row(str(count), self.stylize_agent(ua))
+                    table.add_row(str(count), self.stylize_agent(display_ua))
         except: pass
 
         # 2. Update Markdown Readers (Right)
@@ -238,7 +238,7 @@ class SonarApp(App):
             else:
                 for ua, count in data:
                     display_ua = ua.replace("Mozilla/5.0 ", "")
-                    table.add_row(str(count), self.stylize_agent(ua))
+                    table.add_row(str(count), self.stylize_agent(display_ua))
         except: pass
 
     def update_countdown(self):
