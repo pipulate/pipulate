@@ -53,27 +53,17 @@ class ReportApp(App):
         yield Header()
         
         yield Static(
-            "📊 TRAFFIC INTELLIGENCE REPORT | Volume vs Capability vs Intent", 
+            "📊 GLOBAL TRAFFIC INTELLIGENCE | High Volume Patterns", 
             id="main_header"
         )
 
-        # 2. Top Volume Panel
+        # 1. Top Volume Panel (Full Height)
         with Vertical(classes="section"):
-            yield Label("🏆 TOP VOLUME LEADERS", classes="col_header")
+            yield Label("🏆 TOP VOLUME LEADERS (All Time)", classes="col_header")
             with Container(classes="table_container"):
                 yield DataTable(id="table_top")
 
-        # 3. Capability Panel (JS)
-        with Vertical(classes="section"):
-            yield Label("⚡ JAVASCRIPT EXECUTORS (MathJax Resource Fetch)", classes="col_header")
-            with Container(classes="table_container"):
-                yield DataTable(id="table_js")
-
-        # 4. Intent Panel (Markdown)
-        with Vertical(classes="section"):
-            yield Label("🧠 SEMANTIC READERS (Source Markdown Fetch)", classes="col_header")
-            with Container(classes="table_container"):
-                yield DataTable(id="table_md")
+        # Removed JS/MD panels - moved to Radar
 
         yield Footer()
 
@@ -103,8 +93,7 @@ class ReportApp(App):
 
     def on_mount(self) -> None:
         self.populate_table("table_top", db.get_top_user_agents)
-        self.populate_table("table_js", db.get_js_executors)
-        self.populate_table("table_md", db.get_markdown_readers)
+
 
 if __name__ == "__main__":
     app = ReportApp()
