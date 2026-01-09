@@ -101,24 +101,32 @@ def mine():
         table.add_row(str(c['count']), str(c['score']), c['ua'], c['reasons'])
         
     console.print(table)
-    
-    # Generate Copy-Paste List
+
+    # Generate Copy-Paste List (Stacked Format)
     if candidates:
-        console.print("\n[bold green]📋 Recommended Additions to KNOWN_BOTS:[/]")
-        print("NEW_BOTS = [")
+        console.print("\n[bold green]📋 Paste this into logs.py:[/]")
+        print('KNOWN_BOTS = """\\')
+        
+        # 1. Print existing bots to keep context (optional, but helpful for merging)
+        # for bot in KNOWN_BOTS:
+        #     print(bot)
+            
+        # 2. Print new candidates
         suggested_names = set()
         for c in candidates[:20]:
             # Try to extract a clean name (e.g., "FooBot/1.0" -> "FooBot")
-            # Simple heuristic: Split by slash or space, take the chunk with 'bot'
             parts = re.split(r'[ /;()]', c['ua'])
             for p in parts:
                 if any(x in p.lower() for x in SUSPICIOUS_TERMS) and len(p) > 2:
-                    suggested_names.add(f'    "{p}", # {c["count"]} hits')
+                    suggested_names.add(p)
                     break
         
         for s in sorted(list(suggested_names)):
-            print(s)
-        print("]")
+            if s not in KNOWN_BOTS:
+                print(s)
+                
+        print('""".splitlines()')
+
 
 if __name__ == "__main__":
     mine()
