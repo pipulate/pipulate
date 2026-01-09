@@ -196,9 +196,10 @@ class SonarApp(App):
         """Converts a raw UA string into a Rich Text object with highlights."""
         agent_str = agent_str.strip()
         text = Text(agent_str)
-        
-        # Default styling
-        if "Mozilla" in agent_str and "compatible" not in agent_str:
+
+        # Default styling (Broadened to catch browsers even if "Mozilla/5.0" is stripped)
+        # We look for "Mozilla" OR "AppleWebKit" OR "Gecko" to identify standard browser chains
+        if ("Mozilla" in agent_str or "AppleWebKit" in agent_str) and "compatible" not in agent_str:
             text.stylize("dim white")
             
         # Highlight ANY known bot
@@ -222,7 +223,7 @@ class SonarApp(App):
                 table.add_row("-", "Waiting for data...")
             else:
                 for ua, count in data:
-                    # CHANGED: Wrap in stylize_agent
+                    display_ua = ua.replace("Mozilla/5.0 ", "")
                     table.add_row(str(count), self.stylize_agent(ua))
         except: pass
 
@@ -236,7 +237,7 @@ class SonarApp(App):
                 table.add_row("-", "Waiting for data...")
             else:
                 for ua, count in data:
-                    # CHANGED: Wrap in stylize_agent
+                    display_ua = ua.replace("Mozilla/5.0 ", "")
                     table.add_row(str(count), self.stylize_agent(ua))
         except: pass
 
