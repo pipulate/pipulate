@@ -158,37 +158,49 @@ class Heartbeat(threading.Thread):
         self.stop_event.set()
 
 
-def wait_for_availability(url, timeout=30):
+def wait_for_availability(url, timeout=60):
     """
-    Polls the URL to ensure it exists before we try to show it.
-    This prevents the '404 Flash' while Jekyll is still building.
+    Checks for the PHYSICAL FILE existence first, then confirms via HTTP.
+    This prevents the 404 race condition where Nginx serves before the file is flushed.
     """
-    # Only check our own domain. External sites (like Google) are assumed up.
+    # Only check our own domain
     if "mikelev.in" not in url:
         return
 
+    # Derive file path from URL
+    # Example: https://mikelev.in/foo/ -> /home/mike/www/mikelev.in/_site/foo/index.html
+    base_path = Path("/home/mike/www/mikelev.in/_site")
+    slug = url.replace("https://mikelev.in/", "").strip("/")
+    target_file = base_path / slug / "index.html"
+
     start_time = time.time()
+    
+    # PHASE 1: The Hard Wait (Give Jekyll a head start)
+    # Jekyll takes time to even start writing. 
+    # If we check too fast, we might see the OLD file before it gets deleted/rebuilt.
+    time.sleep(5) 
+
     first_failure = True
 
     while (time.time() - start_time) < timeout:
-        try:
-            # We use verify=False because local certs/hairpin NAT can be finicky
-            # and we just want to know if Nginx serves the file.
-            response = requests.head(url, timeout=2, verify=False)
-            
-            if response.status_code == 200:
-                if not first_failure:
-                    narrator.say("Content generated. Rendering.")
-                return
-        except:
-            pass # Network error, just retry
-
-        # If we are here, it failed.
+        # Check 1: File System (The Source of Truth)
+        if target_file.exists():
+            # Check 2: HTTP (The Delivery Mechanism) - ensuring Nginx sees it too
+            try:
+                response = requests.head(url, timeout=2, verify=False)
+                if response.status_code == 200:
+                    if not first_failure:
+                        narrator.say("Content generated. Rendering.")
+                    return
+            except:
+                pass
+        
+        # Feedback
         if first_failure:
             narrator.say("New content detected. Waiting for static site generation.")
             first_failure = False
             
-        time.sleep(2)
+        time.sleep(5) # Reduced polling frequency
 
     narrator.say("Generation timed out. Proceeding with caution.")
 
