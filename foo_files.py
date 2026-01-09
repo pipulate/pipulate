@@ -1,14 +1,14 @@
 AI_PHOOEY_CHOP = """\
-# 1deploy_honeybot.sh
-# 1remotes/honeybot/nixos/configuration.nix
-# 1/home/mike/repos/trimnoir/_config.yml
-# 1/home/mike/repos/trimnoir/flake.nix
-# 1remotes/honeybot/scripts/check_file_traffic.py
-# 1remotes/honeybot/scripts/stream.py
-# 1remotes/honeybot/scripts/show.py
-# 1remotes/honeybot/scripts/report.py
-# 1remotes/honeybot/scripts/content_loader.py
-# 1remotes/honeybot/scripts/db.py
+deploy_honeybot.sh
+remotes/honeybot/nixos/configuration.nix
+/home/mike/repos/trimnoir/_config.yml
+/home/mike/repos/trimnoir/flake.nix
+remotes/honeybot/scripts/check_file_traffic.py
+remotes/honeybot/scripts/stream.py
+remotes/honeybot/scripts/show.py
+remotes/honeybot/scripts/report.py
+remotes/honeybot/scripts/content_loader.py
+remotes/honeybot/scripts/db.py
 remotes/honeybot/scripts/logs.py
 """
 
