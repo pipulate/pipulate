@@ -353,22 +353,29 @@ def main():
     director = threading.Thread(target=start_director_track, daemon=True)
     director.start()
 
-    # --- ONE CYCLE ONLY ---
+    # --- THE SHOW SEQUENCE ---
     
-    # 1. The Commercial Break (Report)
-    narrator.say("Initiating analysis report.")
-    run_tui_app("report.py", duration=1)  # One minute
+    # Scene 1: The Executive Summary
+    narrator.say("Initiating daily traffic analysis. Executive summary follows.")
+    run_tui_app("report.py", duration=0.5)  # 30 seconds
     
-    # 2. The Main Event (Logs)
-    narrator.say("Switching to streaming feed of the web access logfile.")
+    # Scene 2: The Radar (Intelligence)
+    narrator.say("Activating capability radar. Scanning for Javascript execution and semantic data mining.")
+    run_tui_app("radar.py", duration=0.5)   # 30 seconds
     
-    # FIX: Use the variable!
-    run_tui_app("logs.py", duration=SHOW_DURATION_MINUTES) 
+    # Scene 3: The Deep Stream (Logs)
+    narrator.say("Connecting to live sovereign feed. Monitoring real-time agent activity.")
     
-    # 3. The Exit
-    narrator.say("Cycle complete. Rebooting system.")
+    # Station ID Logic Update: Reset the pitch timer here so it doesn't fire immediately
+    # We rely on last_pitch_time being initialized in perform_show, but for the main loop:
+    # (Since perform_show is independent, we just let logs.py run)
+    
+    run_tui_app("logs.py", duration=SHOW_DURATION_MINUTES)
+    
+    # Outro
+    narrator.say("Cycle complete. Rebooting visualization sequence.")
     narrator.stop()
-
+    
 
 if __name__ == "__main__":
     main()
