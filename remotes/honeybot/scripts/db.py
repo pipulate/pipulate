@@ -2,6 +2,49 @@ import sqlite3
 import datetime
 from pathlib import Path
 
+
+# Shared Intelligence
+KNOWN_BOTS = """\
+ClaudeBot
+GPTBot
+OAI-SearchBot
+PerplexityBot
+Amazonbot
+Googlebot
+bingbot
+meta-externalagent
+Applebot
+Aliyun
+Yandex
+AhrefsBot
+DataForSeoBot
+SemrushBot
+DotBot
+LinkupBot
+botify
+PetalBot
+Bytespider
+Barkrowler
+SeekportBot
+MJ12bot
+Baiduspider
+SeznamBot
+ChatGPT-User
+Perplexity-User
+DuckAssistBot
+Qwantbot
+AwarioBot
+GenomeCrawlerd
+IbouBot
+Sogou
+python-requests
+python-httpx
+Go-http-client
+Wget
+curl
+SERankingBacklinksBot
+""".splitlines()
+
 # The single file that holds the truth
 DB_PATH = Path("/home/mike/www/mikelev.in/honeybot.db")
 
