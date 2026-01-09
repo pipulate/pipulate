@@ -2,14 +2,11 @@ from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, Static, DataTable, Label
 from textual.containers import Container, Vertical, Horizontal
 from rich.text import Text
-from db import db
+from db import db, KNOWN_BOTS
 import re
 
 # Import Shared Bot List (We need to centralize this properly later, but for now we copy-paste or import)
 # Ideally, we should move KNOWN_BOTS to a shared config.py, but to keep it simple we'll use a small helper here.
-# Since logs.py has the master list, let's just use a simple heuristic for highlighting for now.
-
-KNOWN_BOTS_PATTERN = r"(Bot|Spider|Crawl|Slurp|facebook|Google|Amazon|Apple|Bing|Yandex|Baidu|Ahrefs|Semrush|DotBot|PetalBot|Bytespider|Barkrowler|Seekport|MJ12|Seznam|GPT|Claude|Perplexity|Qwant|Awario|Sogou|Python|Wget|curl)"
 
 class RadarApp(App):
     CSS = """
@@ -75,12 +72,15 @@ class RadarApp(App):
         agent_str = agent_str.strip().replace("Mozilla/5.0 ", "")
         text = Text(agent_str)
         
-        # Highlight potential bots in Orange
-        if re.search(KNOWN_BOTS_PATTERN, agent_str, re.IGNORECASE):
-            text.stylize("bold orange1")
-        else:
-            text.stylize("dim green")
-            
+        # Default styling (Radar theme)
+        text.stylize("dim green")
+
+        # Highlight Bots (Precision)
+        for bot_name in KNOWN_BOTS:
+            if bot_name in agent_str:
+                # We use regex escape to be safe
+                text.highlight_regex(re.escape(bot_name), "bold orange1")
+                
         return text
 
     def populate_table(self, table_id, data_source):

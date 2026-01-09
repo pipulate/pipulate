@@ -10,6 +10,7 @@ AI_PHOOEY_CHOP = """\
 remotes/honeybot/scripts/db.py
 remotes/honeybot/scripts/logs.py
 remotes/honeybot/scripts/report.py
+remotes/honeybot/scripts/radar.py
 """
 
 ## > We've got content, it's groovy context  
