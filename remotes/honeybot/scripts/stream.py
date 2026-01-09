@@ -18,7 +18,9 @@ import queue
 from pathlib import Path
 
 # --- Configuration ---
-SHOW_DURATION_MINUTES = 60  # <--- The New "T" Variable
+SHOW_DURATION_MINUTES = 60  # Minutes for the big logfile stream
+PITCH_INTERVAL = 180        # 3 Minutes between "Station Identification"
+PITCH_TEXT = "You are watching Honeybot Sonar. This is a live visualization of an Nginx web server log, analyzing AI bot traffic in real-time. Orange highlights indicate AI agents. The voice you hear is reading the content currently being accessed. Sit back and watch the machine think."
 
 sys.path.append(str(Path(__file__).parent))
 
@@ -211,9 +213,13 @@ def perform_show(script):
     env = os.environ.copy()
     env["DISPLAY"] = ":10.0" 
 
+
     # --- NEW: Start the Timer ---
     start_time = time.time()
     duration_seconds = SHOW_DURATION_MINUTES * 60
+    
+    # Initialize the Pitch Timer
+    last_pitch_time = time.time()
 
     profile_dir = tempfile.mkdtemp(prefix="honeybot_fx_")
     
@@ -243,6 +249,16 @@ def perform_show(script):
                 return False 
 
             if command == "SAY":
+                # --- The Pervasive Pitch (Station ID) ---
+                # We check if it's been 3 minutes since the last explanation.
+                # We insert it BEFORE the next sentence to preserve flow.
+                if (time.time() - last_pitch_time) > PITCH_INTERVAL:
+                    narrator.say(PITCH_TEXT)
+                    # We sleep to let the pitch play out before queuing the next sentence
+                    time.sleep(len(PITCH_TEXT) / 18) 
+                    last_pitch_time = time.time()
+                # ----------------------------------------
+
                 narrator.say(content)
                 time.sleep(len(content) / 20)
             
