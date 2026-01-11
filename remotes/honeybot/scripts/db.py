@@ -197,12 +197,17 @@ class HoneyDB:
         cur.execute(sql, (limit,))
         return cur.fetchall()
 
+
+    # ... existing code ...
     # Helper to construct the exclusion clause
     # We filter out UAs that are "Mozilla" but NOT "compatible" (which bots often use)
     # AND contain typical platform strings.
     # UPDATE: Added exclusion for Googlebot Smartphone/Inspection (Nexus 5X)
+    # UPDATE: Added exclusion for generic HTTP clients (python-httpx, Go-http-client)
     _BROWSER_FILTER = """
         AND ua.value NOT LIKE '%Nexus 5X%'
+        AND ua.value NOT LIKE 'python-httpx%'
+        AND ua.value NOT LIKE 'Go-http-client%'
         AND NOT (
             ua.value LIKE 'Mozilla%' 
             AND ua.value NOT LIKE '%compatible%' 
