@@ -200,7 +200,9 @@ class HoneyDB:
     # Helper to construct the exclusion clause
     # We filter out UAs that are "Mozilla" but NOT "compatible" (which bots often use)
     # AND contain typical platform strings.
+    # UPDATE: Added exclusion for Googlebot Smartphone/Inspection (Nexus 5X)
     _BROWSER_FILTER = """
+        AND ua.value NOT LIKE '%Nexus 5X%'
         AND NOT (
             ua.value LIKE 'Mozilla%' 
             AND ua.value NOT LIKE '%compatible%' 
