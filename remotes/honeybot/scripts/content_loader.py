@@ -149,7 +149,7 @@ def clean_markdown(text):
     text = re.sub(r'\{\{.*?\}\}', '', text)
 
     # Remove Code Blocks
-    text = re.sub(r'```.*?```', ' [Skipping code block] ', text, flags=re.DOTALL)
+    text = re.sub(r'```.*?```', ' [Skipping code] ', text, flags=re.DOTALL)
     # Remove Inline Code
     text = re.sub(r'`([^`]+)`', r'\1', text)
     # Remove Images

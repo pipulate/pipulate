@@ -1,8 +1,8 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/trimnoir/_config.yml
-/home/mike/repos/trimnoir/flake.nix
-/home/mike/repos/trimnoir/index.md
+# /home/mike/repos/trimnoir/_config.yml
+# /home/mike/repos/trimnoir/flake.nix
 /home/mike/repos/trimnoir/_layouts/default.html
+/home/mike/repos/trimnoir/index.md
 /home/mike/repos/trimnoir/_includes/show_graph.html
 """
 
