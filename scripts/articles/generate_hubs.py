@@ -49,11 +49,19 @@ permalink: {node['permalink']}
     
     if node.get('blurb'):
         content += f"_{node['blurb']}_\n\n"
+
+    # Conditional Header
+    if node.get('children_hubs'):
+        content += '<h2>Explore Topics</h2>\n'
+
+    # Unconditional Nav Container (The Magic Carpet Dock)
+    content += '<nav class="hub-nav">\n<ul>\n'
     
     if node.get('children_hubs'):
-        content += "## Explore Topics\n"
         for child in node['children_hubs']:
-            content += f"* [{child['title']}]({child['permalink']})\n"
+            content += f'  <li><a href="{child["permalink"]}">{child["title"]}</a></li>\n'
+            
+    content += '</ul>\n</nav>\n'
     
     if node.get('children_articles'):
         content += "\n## Top Articles\n"

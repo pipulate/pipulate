@@ -1,22 +1,7 @@
 AI_PHOOEY_CHOP = """\
-scripts/articles/update_graphs.py
-scripts/articles/generate_semrush_candidates.py
-scripts/articles/semrush_candidates.txt
-/home/mike/repos/pipulate/scripts/articles/web-scraping_ai_seo_bulk_us_2025-12-14_10-55-37.csv
-scripts/articles/gsc_historical_fetch.py
-scripts/articles/gsc_velocity.json
-scripts/articles/build_knowledge_graph.py
 scripts/articles/generate_hubs.py
-/home/mike/repos/trimnoir/_config.yml
-/home/mike/repos/trimnoir/flake.nix
-/home/mike/repos/trimnoir/_layouts/post.html
-/home/mike/repos/trimnoir/_layouts/home.html
-/home/mike/repos/trimnoir/_layouts/page.html
-# /home/mike/repos/trimnoir/_includes/show_graph.html
-/home/mike/repos/trimnoir/_layouts/default.html
-/home/mike/repos/trimnoir/assets/main.css
-/home/mike/repos/trimnoir/index.md
-/home/mike/repos/trimnoir/_site/index.html
+# /home/mike/repos/trimnoir/_site/python/htmx/pipulate/index.html
+# /home/mike/repos/trimnoir/_site/python/htmx/index.html
 """
 
 ## > We've got content, it's groovy context  
