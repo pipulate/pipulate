@@ -366,7 +366,7 @@ def main():
     # ----------------------------------------
 
     # Scene 2: The Radar (Intelligence)
-    narrator.say("The top bots are executing JavaScript but the surprise is the ones below that are requesting your alternative markdown content. Are you providing any?"
+    narrator.say("The top bots are executing JavaScript but the surprise is the ones below that are requesting your alternative markdown content. Are you providing any?")
     run_tui_app("radar.py", duration=0.5)   # 30 seconds
 
     # Scene 3: The Deep Stream (Logs)
