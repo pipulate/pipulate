@@ -14,7 +14,8 @@ def clean_and_prep_dirs(hubs_dir):
     hubs_dir.mkdir(parents=True, exist_ok=True)
     print(f"🧹 Cleaned: {hubs_dir}")
 
-def generate_hub_file(node, target_repo_root, hubs_dir):
+
+def generate_hub_file(node, target_repo_root, hubs_dir, parents=None):
     safe_id = node['id']
     is_root = node.get('id') == 'root' or node.get('permalink') == '/'
     
@@ -73,6 +74,33 @@ permalink: {node['permalink']}
     if not node.get('children_hubs') and not node.get('children_articles'):
         content += "*No sub-topics found.*\n"
 
+    # --- JSON-LD BREADCRUMBS ---
+    # Only for non-root pages (Home usually handles its own schema)
+    if not is_root and parents is not None:
+        base_url = "https://mikelev.in"
+        
+        # Full Trail: Ancestors + Self
+        trail = parents + [{'title': node['title'], 'permalink': node['permalink']}]
+        
+        list_items = []
+        for i, item in enumerate(trail):
+            list_items.append({
+                "@type": "ListItem",
+                "position": i + 1,
+                "name": item['title'],
+                "item": f"{base_url}{item['permalink']}"
+            })
+            
+        json_ld = {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": list_items
+        }
+        
+        content += "\n\n<script type=\"application/ld+json\">\n"
+        content += json.dumps(json_ld, indent=2)
+        content += "\n</script>\n"
+
     # Write File
     with open(filepath, 'w', encoding='utf-8') as f:
         f.write(content)
@@ -99,16 +127,23 @@ def main():
     clean_and_prep_dirs(hubs_dir)
     
     # NOTE: We no longer delete index.md here, because it is now a persistent source file.
-    
+   
     # Recursive Walker
-    def recurse(node):
-        generate_hub_file(node, target_repo_root, hubs_dir)
+    def recurse(node, parents=None):
+        if parents is None: parents = []
+        
+        generate_hub_file(node, target_repo_root, hubs_dir, parents)
+        
+        # Current node becomes parent for the next level
+        # We capture just the data needed for breadcrumbs
+        current_crumb = {'title': node['title'], 'permalink': node['permalink']}
+        next_parents = parents + [current_crumb]
+        
         for child in node.get('children_hubs', []):
-            recurse(child)
+            recurse(child, next_parents)
 
     recurse(nav_tree)
 
-    print(f"\n🎉 Done. Hubs in {hubs_dir}")
 
 if __name__ == "__main__":
     main()
