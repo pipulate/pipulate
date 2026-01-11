@@ -222,6 +222,41 @@ class HoneyDB:
         )
     """
 
+    # NEW: The AIE Aggregation Query
+    def get_ai_education_status(self):
+        """
+        Groups traffic by AI Family to visualize Education Rate.
+        Who is actually learning from us?
+        """
+        conn = self.get_conn()
+        cur = conn.cursor()
+        
+        # We categorize the Known Bots into Families
+        sql = f"""
+            SELECT 
+                CASE 
+                    WHEN ua.value LIKE '%GPTBot%' OR ua.value LIKE '%ChatGPT%' OR ua.value LIKE '%OAI-SearchBot%' THEN 'OpenAI'
+                    WHEN ua.value LIKE '%Claude%' THEN 'Anthropic'
+                    WHEN ua.value LIKE '%Perplexity%' THEN 'Perplexity'
+                    WHEN ua.value LIKE '%Applebot%' THEN 'Apple'
+                    WHEN ua.value LIKE '%Amazonbot%' THEN 'Amazon'
+                    WHEN ua.value LIKE '%Googlebot%' THEN 'Google'
+                    WHEN ua.value LIKE '%bingbot%' THEN 'Microsoft'
+                    WHEN ua.value LIKE '%meta-%' THEN 'Meta'
+                    WHEN ua.value LIKE '%Bytespider%' THEN 'ByteDance'
+                    ELSE 'Other Agents'
+                END as family,
+                SUM(logs.count) as total
+            FROM daily_logs logs
+            JOIN user_agents ua ON logs.ua_id = ua.id
+            WHERE family != 'Other Agents' 
+            {self._BROWSER_FILTER}
+            GROUP BY family
+            ORDER BY total DESC
+        """
+        cur.execute(sql)
+        return cur.fetchall()
+
     def get_js_executors(self, limit=20): # Increased default limit slightly
         conn = self.get_conn()
         cur = conn.cursor()
