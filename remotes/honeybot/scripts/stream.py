@@ -20,7 +20,15 @@ from pathlib import Path
 # --- Configuration ---
 SHOW_DURATION_MINUTES = 60  # Minutes for the big logfile stream
 PITCH_INTERVAL = 180        # 3 Minutes between "Station Identification"
-PITCH_TEXT = "You are watching Honeybot Sonar. This is a live visualization of an Nginx web server log, analyzing AI bot traffic in real-time. Orange highlights indicate AI agents. The voice you hear is reading the content currently being accessed. Sit back and watch the machine think."
+
+PITCH_TEXT = (
+    "You are watching Honeybot Sonar. "
+    "This is a live visualization of an Nginx web server log, analyzing AI bot traffic in real-time. "
+    "Orange highlights indicate AI agents. "
+    "The purpose of this site is to answer the most frequently asked questions in marketing today. "
+    "The voice you hear is reading the content currently being accessed. "
+    "Sit back and watch the machine think."
+)
 
 sys.path.append(str(Path(__file__).parent))
 
