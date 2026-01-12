@@ -90,13 +90,37 @@ permalink: {node['permalink']}
                 "name": item['title'],
                 "item": f"{base_url}{item['permalink']}"
             })
-            
+
         json_ld = {
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             "itemListElement": list_items
         }
+       
+        # --- VISIBLE STEALTH BREADCRUMBS ---
+        # Render as spans with data attributes. No <a> tags.
+        breadcrumbs_html = '<div class="stealth-breadcrumbs">'
+        breadcrumbs_html += f'<span class="crumb" data-go="/">Home</span>'
         
+        for item in parents:
+            # Skip the root node if it's in the parents list to avoid redundancy
+            if item['permalink'] == '/': continue
+            breadcrumbs_html += f' &gt; <span class="crumb" data-go="{item["permalink"]}">{item["title"]}</span>'
+            
+        # The current page is usually just text, not a link
+        breadcrumbs_html += f' &gt; <span class="current-crumb">{node["title"]}</span>'
+        breadcrumbs_html += '</div>\n'
+
+        # Inject at the top of the content (after the H1)
+        # We need to insert this *after* the H1 which is added earlier in 'content'.
+        # A simple string replacement or append strategy works.
+        # Since we are building 'content' string, we can inject it now.
+        
+        # NOTE: We need to put this near the top. Let's prepend it to the body content logic.
+        # Actually, let's insert it right after the title in the generated markdown.
+        
+        content = content.replace(f"# {node['title']}\n\n", f"# {node['title']}\n\n{breadcrumbs_html}\n")
+
         content += "\n\n<script type=\"application/ld+json\">\n"
         content += json.dumps(json_ld, indent=2)
         content += "\n</script>\n"

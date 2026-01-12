@@ -1,7 +1,12 @@
 AI_PHOOEY_CHOP = """\
+# scripts/articles/graph-good.json
+# /home/mike/repos/trimnoir/index.md
+# /home/mike/repos/trimnoir/_site/index.html
+scripts/articles/graph.json
+scripts/articles/update_graphs.py
 scripts/articles/generate_hubs.py
-# /home/mike/repos/trimnoir/_site/python/htmx/pipulate/index.html
-# /home/mike/repos/trimnoir/_site/python/htmx/index.html
+scripts/articles/build_knowledge_graph.py
+/home/mike/repos/trimnoir/_includes/show_graph.html
 """
 
 ## > We've got content, it's groovy context  
@@ -15,6 +20,11 @@ scripts/articles/generate_hubs.py
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/trimnoir/_site/python/htmx/index.html
+# /home/mike/repos/trimnoir/assets/main.css
+# /home/mike/repos/trimnoir/_layouts/default.html
+# scripts/articles/generate_hubs.py
 
 # remotes/honeybot/scripts/education.py
 
