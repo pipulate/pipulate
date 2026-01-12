@@ -2,7 +2,7 @@ AI_PHOOEY_CHOP = """\
 # scripts/articles/graph-good.json
 # /home/mike/repos/trimnoir/index.md
 # /home/mike/repos/trimnoir/_site/index.html
-# scripts/articles/graph.json
+scripts/articles/graph.json
 scripts/articles/update_graphs.py
 scripts/articles/generate_hubs.py
 scripts/articles/build_knowledge_graph.py

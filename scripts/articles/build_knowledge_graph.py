@@ -309,8 +309,7 @@ def project_d3_graph(tree_node, nodes, links, parent_id=None, depth=0):
             "velocity": article.get('velocity', 0),
             "clicks": article.get('clicks', 0),
             "parentId": tree_node['id'],
-            # Articles share the SAME depth as their parent Hub to stay in the same orbit
-            "depth": depth 
+            "depth": depth + 1
         }
         nodes.append(art_node)
         links.append({
