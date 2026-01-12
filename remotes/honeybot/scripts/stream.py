@@ -27,7 +27,7 @@ PITCH_TEXT = (
     "Orange highlights indicate AI agents. "
     "The purpose of this site is to answer the most frequently asked questions in marketing today. "
     "The voice you hear is reading the content currently being accessed. "
-    "Check back often because we are always talking about something new. "
+    "Subscribe, like and check back often because we are always talking about something new. "
     "Sit back and watch the machine think."
 )
 
