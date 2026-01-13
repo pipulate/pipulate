@@ -22,12 +22,14 @@ SHOW_DURATION_MINUTES = 60  # Minutes for the big logfile stream
 PITCH_INTERVAL = 180        # 3 Minutes between "Station Identification"
 
 PITCH_TEXT = (
-    "You are watching Honeybot Sonar. "
+    "You are watching Honeybot Sonar on MikeLev dot eye N. "
     "This is a live visualization of an Nginx web server log, analyzing AI bot traffic in real-time. "
     "Orange highlights indicate AI agents. "
-    "The purpose of this site is to answer the most frequently asked questions in marketing today. "
-    "The voice you hear is reading the content currently being accessed. "
-    "Subscribe, like and check back often because we are always talking about something new. "
+    "The purpose of this site is to answer many of the most important questions being asked today about AI-bot behavior. "
+    "Once an hour we show a series of more in-depth reports. "
+    "Subscribe, like and check back often because you can always see new experiments running live. "
+    "If you don't know how your content's being scraped for tomorrow's models versus used in RAG responses today, you don't now JACK. "
+    "The voice you hear is reading the content you currently see being accessed. "
     "Sit back and watch the machine think."
 )
 

@@ -1,12 +1,14 @@
 AI_PHOOEY_CHOP = """\
-# scripts/articles/graph-good.json
-# /home/mike/repos/trimnoir/index.md
-# /home/mike/repos/trimnoir/_site/index.html
-scripts/articles/graph.json
-scripts/articles/update_graphs.py
-scripts/articles/generate_hubs.py
-scripts/articles/build_knowledge_graph.py
-/home/mike/repos/trimnoir/_includes/show_graph.html
+# /home/mike/repos/nixos/hardware-configuration.nix
+# /home/mike/repos/nixos/packages.nix
+# /home/mike/repos/nixos/services.nix
+# /home/mike/repos/nixos/ai-acceleration.nix
+/home/mike/repos/nixos/configuration.nix
+/home/mike/repos/nixos/scripts/backup-essential.py
+/home/mike/repos/nixos/scripts/backup-force.py
+/home/mike/repos/nixos/scripts/backup-home.py
+/home/mike/repos/nixos/scripts/backup-nix.sh
+/home/mike/repos/nixos/scripts/backup-things.py
 """
 
 ## > We've got content, it's groovy context  
@@ -20,6 +22,15 @@ scripts/articles/build_knowledge_graph.py
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# scripts/articles/graph-good.json
+# /home/mike/repos/trimnoir/index.md
+# /home/mike/repos/trimnoir/_site/index.html
+# scripts/articles/graph.json
+# scripts/articles/update_graphs.py
+# scripts/articles/generate_hubs.py
+# scripts/articles/build_knowledge_graph.py
+# /home/mike/repos/trimnoir/_includes/show_graph.html
 
 # /home/mike/repos/trimnoir/_site/python/htmx/index.html
 # /home/mike/repos/trimnoir/assets/main.css

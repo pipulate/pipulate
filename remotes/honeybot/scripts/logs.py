@@ -101,7 +101,7 @@ class SonarApp(App):
        but standard Footer widget handles it well. */
     """
 
-    TITLE = "Honeybot Sonar"
+    TITLE = "Honeybot Sonar of https://mikelev.in/"
     
     def get_sub_title(self):
         return f"Live Nginx Log Analysis | Next Report: {self.countdown_str}"
