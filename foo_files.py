@@ -1,5 +1,14 @@
 AI_PHOOEY_CHOP = """\
-prompt_foo.py                   
+pipulate/__init__.py
+pipulate/pipulate.py
+pipulate/core.py
+imports/__init__.py
+imports/stream_orchestrator.py
+imports/mcp_orchestrator.py
+assets/nbs/URLinspector.ipynb
+assets/nbs/imports/url_inspect_sauce.py
+Notebooks/imports/seo_gadget.py
+tools/scraper_tools.py
 """
 
 ## > We've got content, it's groovy context  
@@ -13,6 +22,10 @@ prompt_foo.py
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# prompt_foo.py                   
+# foo_files.py
+# https://mikelev.in/
 
 # /home/mike/repos/nixos/hardware-configuration.nix
 # /home/mike/repos/nixos/packages.nix

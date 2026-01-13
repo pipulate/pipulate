@@ -17,6 +17,7 @@ import subprocess
 import tempfile
 import shutil
 import json
+import urllib.request
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 from pathlib import Path
@@ -734,8 +735,26 @@ def main():
     # 2. Process all specified files
     files_to_process = parse_file_list_from_config()
     processed_files_data = []
+
     logger.print("--- Processing Files ---")
     for path, comment in files_to_process:
+        # HANDLE REMOTE URLS
+        if path.startswith(('http://', 'https://')):
+            try:
+                logger.print(f"   -> Fetching URL: {path}")
+                with urllib.request.urlopen(path) as response:
+                    content = response.read().decode('utf-8')
+                ext = os.path.splitext(path.split('?')[0])[1].lower()
+                lang_map = {'.py': 'python', '.js': 'javascript', '.html': 'html', '.css': 'css', '.md': 'markdown', '.json': 'json', '.nix': 'nix', '.sh': 'bash'}
+                lang = lang_map.get(ext, 'text')
+                processed_files_data.append({
+                    "path": path, "comment": comment, "content": content,
+                    "tokens": count_tokens(content), "words": count_words(content), "lang": lang
+                })
+            except Exception as e:
+                logger.print(f"Error fetching URL {path}: {e}")
+            continue
+
         # ABSOLUTE PATH CERTAINTY: Resolve to absolute path immediately
         full_path = os.path.join(REPO_ROOT, path) if not os.path.isabs(path) else path
         
