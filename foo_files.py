@@ -1,14 +1,5 @@
 AI_PHOOEY_CHOP = """\
-# /home/mike/repos/nixos/hardware-configuration.nix
-# /home/mike/repos/nixos/packages.nix
-# /home/mike/repos/nixos/services.nix
-# /home/mike/repos/nixos/ai-acceleration.nix
-/home/mike/repos/nixos/configuration.nix
-/home/mike/repos/nixos/scripts/backup-essential.py
-/home/mike/repos/nixos/scripts/backup-force.py
-/home/mike/repos/nixos/scripts/backup-home.py
-/home/mike/repos/nixos/scripts/backup-nix.sh
-/home/mike/repos/nixos/scripts/backup-things.py
+prompt_foo.py                   
 """
 
 ## > We've got content, it's groovy context  
@@ -22,6 +13,17 @@ AI_PHOOEY_CHOP = """\
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/nixos/hardware-configuration.nix
+# /home/mike/repos/nixos/packages.nix
+# /home/mike/repos/nixos/services.nix
+# /home/mike/repos/nixos/ai-acceleration.nix
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/scripts/backup-essential.py
+# /home/mike/repos/nixos/scripts/backup-force.py
+# /home/mike/repos/nixos/scripts/backup-home.py
+# /home/mike/repos/nixos/scripts/backup-nix.sh
+# /home/mike/repos/nixos/scripts/backup-things.py
 
 # scripts/articles/graph-good.json
 # /home/mike/repos/trimnoir/index.md
