@@ -25,7 +25,7 @@ PITCH_TEXT = (
     "You are watching Honeybot Sonar on MikeLev dot eye N. "
     "This is a live visualization of an Nginx web server log, analyzing AI bot traffic in real-time. "
     "Orange highlights indicate AI agents. "
-    "The purpose of this site is to answer many of the most important questions being asked today. "
+    "The purpose of this site is to answer many of the important questions being asked in marketing and society today. "
     "Watch AI-Bots like fish in a fish-tank. There's something special about watching live weblogs. "
     "Witness them scrape content to use it directly in their own results. "
     "Once an hour we show a series of more surprising in-depth reports. "
