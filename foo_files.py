@@ -1,14 +1,4 @@
 AI_PHOOEY_CHOP = """\
-pipulate/__init__.py
-pipulate/pipulate.py
-pipulate/core.py
-imports/__init__.py
-imports/stream_orchestrator.py
-imports/mcp_orchestrator.py
-assets/nbs/URLinspector.ipynb
-assets/nbs/imports/url_inspect_sauce.py
-Notebooks/imports/seo_gadget.py
-tools/scraper_tools.py
 """
 
 ## > We've got content, it's groovy context  
@@ -22,6 +12,32 @@ tools/scraper_tools.py
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# deploy_honeybot.sh
+# remotes/honeybot/nixos/configuration.nix
+# /home/mike/repos/trimnoir/_config.yml
+# remotes/honeybot/nixos/configuration.nix
+# /home/mike/repos/trimnoir/_config.yml
+# /home/mike/repos/trimnoir/flake.nix
+# remotes/honeybot/scripts/check_file_traffic.py
+# remotes/honeybot/scripts/stream.py
+# remotes/honeybot/scripts/show.py
+# remotes/honeybot/scripts/content_loader.py
+# remotes/honeybot/scripts/db.py
+# remotes/honeybot/scripts/logs.py
+# remotes/honeybot/scripts/report.py
+# remotes/honeybot/scripts/radar.py
+
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# imports/__init__.py
+# imports/stream_orchestrator.py
+# imports/mcp_orchestrator.py
+# assets/nbs/URLinspector.ipynb
+# assets/nbs/imports/url_inspect_sauce.py
+# Notebooks/imports/seo_gadget.py
+# tools/scraper_tools.py
 
 # prompt_foo.py                   
 # foo_files.py

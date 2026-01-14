@@ -122,7 +122,7 @@ class SonarApp(App):
             
             # RIGHT: Markdown Seekers
             with Vertical(classes="half_panel"):
-                yield Label("🧠 SEMANTIC READERS (Source Seekers)", classes="panel_header")
+                yield Label("🧠 SEMANTIC RAIDERS (Slurps alt-Markdown)", classes="panel_header")
                 yield DataTable(id="md_table")
         # ----------------------------------------
             
