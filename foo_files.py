@@ -1,4 +1,5 @@
 AI_PHOOEY_CHOP = """\
+prompt_foo.py
 """
 
 ## > We've got content, it's groovy context  
@@ -12,6 +13,11 @@ AI_PHOOEY_CHOP = """\
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/Pipulate.com/index.md
+# release.py
+# assets/installer/install.sh
+# flake.nix
 
 # deploy_honeybot.sh
 # remotes/honeybot/nixos/configuration.nix

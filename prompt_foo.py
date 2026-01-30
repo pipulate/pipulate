@@ -435,9 +435,9 @@ class PromptBuilder:
                 # Detailed list for Codebase for searching (absolute paths)
                 if section_name == "Codebase" and not self.context_only and self.processed_files:
                      for f in self.processed_files:
-                         byte_len = len(f['content'].encode('utf-8'))
-                         lines.append(f"  - {f['path']} ({f['tokens']:,} tokens | {byte_len:,} bytes)")
-                         
+                          byte_len = len(f['content'].encode('utf-8'))
+                          lines.append(f"  - {f['path']} ({f['tokens']:,} tokens | {byte_len:,} bytes)")
+                          
         return "\n".join(lines)
 
     def _build_story_content(self) -> str:
@@ -528,15 +528,8 @@ Before addressing the user's prompt, perform the following verification steps:
             lines.append("--- Processing Log ---")
             lines.append(f"```\n{logs}\n```\n")
 
-        # Files Included
-        lines.append("--- Files Included ---")
-        for f in self.processed_files:
-            if self.context_only:
-                lines.append(f"• {f['path']} (content omitted)")
-            else:
-                byte_len = len(f['content'].encode('utf-8'))
-                lines.append(f"• {f['path']} ({f['tokens']:,} tokens | {byte_len:,} bytes)")
-        
+        # OPTIMIZATION: Removed redundant "Files Included" section to save tokens
+
         if self.auto_context:
             lines.append("\n--- Auto-Context Included ---")
             for title, data in self.auto_context.items():
@@ -832,11 +825,12 @@ def main():
             for article in sliced_articles:
                 # We normalize to filename because the base path is declared above
                 filename = os.path.basename(article['path'])
-                narrative_content += f"### {article['title']} ({article['date']} | {article['tokens']:,} tok)\n"
+                # OPTIMIZATION: Reduced verbosity for list items
+                narrative_content += f"### {article['title']} ({article['date']})\n"
                 if article.get('url'):
-                    narrative_content += f"URL: {article['url']}\n"
-                narrative_content += f"File: {filename}\n"
-                narrative_content += f"Sum: {article['summary']}\n\n"
+                    narrative_content += f"{article['url']}\n"
+                narrative_content += f"{filename}\n"
+                narrative_content += f"{article['summary']}\n\n"
             
             title = "Recent Narrative Context"
             builder.add_auto_context(title, narrative_content.strip())
