@@ -1,4 +1,23 @@
 AI_PHOOEY_CHOP = """\
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/packages.nix
+# /home/mike/repos/nixos/services.nix
+# /home/mike/repos/nixos/ai-acceleration.nix
+# /home/mike/repos/nixos/openclaw.nix
+# /home/mike/.openclaw/workspace/skills/system/SKILL.md
+# /home/mike/.openclaw/workspace/AGENTS.md
+# /home/mike/.openclaw/workspace/BOOTSTRAP.md
+# /home/mike/.openclaw/workspace/HEARTBEAT.md
+# /home/mike/.openclaw/workspace/IDENTITY.md
+# /home/mike/.openclaw/workspace/SOUL.md
+# /home/mike/.openclaw/workspace/TOOLS.md
+# /home/mike/.openclaw/workspace/USER.md
+# /home/mike/repos/trimnoir/_posts/2026-02-15-agentic-bake-off-flatnotes-nixos-pipulate-inner-loop.md
+# /home/mike/repos/trimnoir/_posts/2026-02-15-architecting-digital-sovereignty-openclaw-nixos-knowledge-lag-workflow.md
+# /home/mike/repos/trimnoir/_posts/2026-02-15-nixos-immutable-host-deploying-openclaw-agent.md
+# /home/mike/repos/trimnoir/_posts/2026-02-16-openclaw-nixos-local-ai-sovereignty.md
+# /home/mike/repos/trimnoir/_posts/2026-02-16-twikis-first-steps-context-engineering-local-ai-sovereignty.md
+# /home/mike/repos/trimnoir/_posts/2026-02-16-digital-sovereignty-secured-openclaw-nixos-claude-code-bridge.md
 """
 
 ## > We've got content, it's groovy context  
@@ -32,6 +51,7 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/trimnoir/_posts/2026-02-15-nixos-immutable-host-deploying-openclaw-agent.md
 # /home/mike/repos/trimnoir/_posts/2026-02-16-openclaw-nixos-local-ai-sovereignty.md
 # /home/mike/repos/trimnoir/_posts/2026-02-16-twikis-first-steps-context-engineering-local-ai-sovereignty.md
+# /home/mike/repos/trimnoir/_posts/2026-02-16-digital-sovereignty-secured-openclaw-nixos-claude-code-bridge.md
 
 # /home/mike/repos/trimnoir/_posts/2026-02-15-agentic-bake-off-flatnotes-nixos-pipulate-inner-loop.md
 # /home/mike/repos/trimnoir/_posts/2026-02-15-architecting-digital-sovereignty-openclaw-nixos-knowledge-lag-workflow.md
