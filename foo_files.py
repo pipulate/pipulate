@@ -1,8 +1,12 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/trimnoir/_posts/2026-02-15-agentic-bake-off-flatnotes-nixos-pipulate-inner-loop.md
-/home/mike/repos/trimnoir/_posts/2026-02-15-architecting-digital-sovereignty-openclaw-nixos-knowledge-lag-workflow.md
-/home/mike/repos/trimnoir/_posts/2026-02-15-nixos-immutable-host-deploying-openclaw-agent.md
-/home/mike/repos/trimnoir/_posts/2026-02-16-openclaw-nixos-local-ai-sovereignty.md
+foo_files.py
+# prompt_foo.py
+# AI_RUNME.py
+# README.md
+# /home/mike/repos/trimnoir/_posts/2026-02-15-agentic-bake-off-flatnotes-nixos-pipulate-inner-loop.md
+# /home/mike/repos/trimnoir/_posts/2026-02-15-architecting-digital-sovereignty-openclaw-nixos-knowledge-lag-workflow.md
+# /home/mike/repos/trimnoir/_posts/2026-02-15-nixos-immutable-host-deploying-openclaw-agent.md
+# /home/mike/repos/trimnoir/_posts/2026-02-16-openclaw-nixos-local-ai-sovereignty.md
 """
 
 ## > We've got content, it's groovy context  
@@ -16,6 +20,11 @@ AI_PHOOEY_CHOP = """\
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# /home/mike/repos/trimnoir/_posts/2026-02-15-agentic-bake-off-flatnotes-nixos-pipulate-inner-loop.md
+# /home/mike/repos/trimnoir/_posts/2026-02-15-architecting-digital-sovereignty-openclaw-nixos-knowledge-lag-workflow.md
+# /home/mike/repos/trimnoir/_posts/2026-02-15-nixos-immutable-host-deploying-openclaw-agent.md
+# /home/mike/repos/trimnoir/_posts/2026-02-16-openclaw-nixos-local-ai-sovereignty.md
 
 # /home/mike/repos/Pipulate.com/index.md
 # release.py
