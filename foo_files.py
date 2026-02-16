@@ -1,5 +1,8 @@
 AI_PHOOEY_CHOP = """\
-prompt_foo.py
+/home/mike/repos/trimnoir/_posts/2026-02-15-agentic-bake-off-flatnotes-nixos-pipulate-inner-loop.md
+/home/mike/repos/trimnoir/_posts/2026-02-15-architecting-digital-sovereignty-openclaw-nixos-knowledge-lag-workflow.md
+/home/mike/repos/trimnoir/_posts/2026-02-15-nixos-immutable-host-deploying-openclaw-agent.md
+/home/mike/repos/trimnoir/_posts/2026-02-16-openclaw-nixos-local-ai-sovereignty.md
 """
 
 ## > We've got content, it's groovy context  
