@@ -1,12 +1,21 @@
 AI_PHOOEY_CHOP = """\
-foo_files.py
-# prompt_foo.py
-# AI_RUNME.py
-# README.md
-# /home/mike/repos/trimnoir/_posts/2026-02-15-agentic-bake-off-flatnotes-nixos-pipulate-inner-loop.md
-# /home/mike/repos/trimnoir/_posts/2026-02-15-architecting-digital-sovereignty-openclaw-nixos-knowledge-lag-workflow.md
-# /home/mike/repos/trimnoir/_posts/2026-02-15-nixos-immutable-host-deploying-openclaw-agent.md
-# /home/mike/repos/trimnoir/_posts/2026-02-16-openclaw-nixos-local-ai-sovereignty.md
+/home/mike/repos/trimnoir/_posts/2026-02-15-agentic-bake-off-flatnotes-nixos-pipulate-inner-loop.md
+/home/mike/repos/trimnoir/_posts/2026-02-15-architecting-digital-sovereignty-openclaw-nixos-knowledge-lag-workflow.md
+/home/mike/repos/trimnoir/_posts/2026-02-15-nixos-immutable-host-deploying-openclaw-agent.md
+/home/mike/repos/trimnoir/_posts/2026-02-16-openclaw-nixos-local-ai-sovereignty.md
+/home/mike/repos/nixos/configuration.nix
+/home/mike/repos/nixos/packages.nix
+/home/mike/repos/nixos/services.nix
+/home/mike/repos/nixos/ai-acceleration.nix
+/home/mike/repos/nixos/openclaw.nix
+/home/mike/.openclaw/workspace/skills/system/SKILL.md
+/home/mike/.openclaw/workspace/AGENTS.md
+/home/mike/.openclaw/workspace/BOOTSTRAP.md
+/home/mike/.openclaw/workspace/HEARTBEAT.md
+/home/mike/.openclaw/workspace/IDENTITY.md
+/home/mike/.openclaw/workspace/SOUL.md
+/home/mike/.openclaw/workspace/TOOLS.md
+/home/mike/.openclaw/workspace/USER.md
 """
 
 ## > We've got content, it's groovy context  
@@ -1733,7 +1742,7 @@ foo_files.py
 # cli.py
 # scripts/articles/articleizer.py
 # scripts/articles/editing_prompt.txt
-# /home/mike/repos/MikeLev.in/flake.nix
+# /home/mike/repos/trimnoir/flake.nix
 
 ## Currently, Pipulate relies on an Ollama install on the native OS. I could try to
 ## jam all that into the Nix flake too, but Ollama goes through so much to make
