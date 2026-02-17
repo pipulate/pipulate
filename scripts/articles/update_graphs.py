@@ -8,6 +8,7 @@ import common
 
 # The pipeline sequence
 SCRIPTS = [
+    "sanitizer.py",
     "contextualizer.py",
     "generate_semrush_candidates.py",
     "gsc_historical_fetch.py",

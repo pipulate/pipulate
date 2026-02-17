@@ -1,4 +1,7 @@
 AI_PHOOEY_CHOP = """\
+/home/mike/repos/pipulate/scripts/articles/update_graphs.py
+/home/mike/repos/pipulate/scripts/articles/sanitizer.py
+/home/mike/repos/pipulate/scripts/articles/article.txt
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
 # /home/mike/repos/nixos/services.nix
@@ -33,6 +36,7 @@ AI_PHOOEY_CHOP = """\
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
 
 # # Working on OpenClaw integration
+
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
 # /home/mike/repos/nixos/services.nix
