@@ -1,26 +1,7 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/scripts/articles/update_graphs.py
-/home/mike/repos/pipulate/scripts/articles/sanitizer.py
-/home/mike/repos/pipulate/scripts/articles/article.txt
-# /home/mike/repos/nixos/configuration.nix
-# /home/mike/repos/nixos/packages.nix
-# /home/mike/repos/nixos/services.nix
-# /home/mike/repos/nixos/ai-acceleration.nix
-# /home/mike/repos/nixos/openclaw.nix
-# /home/mike/.openclaw/workspace/skills/system/SKILL.md
-# /home/mike/.openclaw/workspace/AGENTS.md
-# /home/mike/.openclaw/workspace/BOOTSTRAP.md
-# /home/mike/.openclaw/workspace/HEARTBEAT.md
-# /home/mike/.openclaw/workspace/IDENTITY.md
-# /home/mike/.openclaw/workspace/SOUL.md
-# /home/mike/.openclaw/workspace/TOOLS.md
-# /home/mike/.openclaw/workspace/USER.md
-# /home/mike/repos/trimnoir/_posts/2026-02-15-agentic-bake-off-flatnotes-nixos-pipulate-inner-loop.md
-# /home/mike/repos/trimnoir/_posts/2026-02-15-architecting-digital-sovereignty-openclaw-nixos-knowledge-lag-workflow.md
-# /home/mike/repos/trimnoir/_posts/2026-02-15-nixos-immutable-host-deploying-openclaw-agent.md
-# /home/mike/repos/trimnoir/_posts/2026-02-16-openclaw-nixos-local-ai-sovereignty.md
-# /home/mike/repos/trimnoir/_posts/2026-02-16-twikis-first-steps-context-engineering-local-ai-sovereignty.md
-# /home/mike/repos/trimnoir/_posts/2026-02-16-digital-sovereignty-secured-openclaw-nixos-claude-code-bridge.md
+/home/mike/repos/trimnoir/_posts/2026-02-16-digital-sovereignty-secured-openclaw-nixos-claude-code-bridge.md
+scripts/articles/editing_prompt.txt
+scripts/articles/articleizer.py
 """
 
 ## > We've got content, it's groovy context  
@@ -35,8 +16,30 @@ AI_PHOOEY_CHOP = """\
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
 
-# # Working on OpenClaw integration
+# # Showing how longer Pipulate workflows work
+# apps/110_parameter_buster.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# Notebooks/GAPalyzer.ipynb
+# Notebooks/imports/gap_analyzer_sauce.py
+# assets/nbs/GAPalyzer.ipynb
+# assets/nbs/imports/gap_analyzer_sauce.py
 
+# # Describing the home-hosting system
+# deploy_honeybot.sh
+# /home/mike/repos/trimnoir/index.md
+# /home/mike/repos/trimnoir/_layouts/default.html
+# /home/mike/repos/trimnoir/flake.nix
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/scripts/show.py
+# remotes/honeybot/scripts/content_loader.py
+# remotes/honeybot/scripts/stream.py
+# remotes/honeybot/scripts/db.py
+# remotes/honeybot/scripts/report.py
+# remotes/honeybot/scripts/logs.py
+
+# # Working on OpenClaw integration
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
 # /home/mike/repos/nixos/services.nix
