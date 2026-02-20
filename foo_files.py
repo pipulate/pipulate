@@ -1,7 +1,6 @@
 AI_PHOOEY_CHOP = """\
-deploy_honeybot.sh
-remotes/honeybot/scripts/db.py
-remotes/honeybot/scripts/report.py
+/home/mike/repos/pipulate/scripts/articles/article.txt
+scripts/articles/sanitizer.py
 """
 
 ## > We've got content, it's groovy context  
