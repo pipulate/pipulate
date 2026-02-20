@@ -155,14 +155,23 @@ def create_jekyll_post(article_content, instructions, output_dir):
     analysis_content = instructions.get("book_analysis_content", {})
     yaml_updates = editing_instr.get("yaml_updates", {})
 
+    # --- NEW: Construct the absolute Canonical URL ---
+    permalink = yaml_updates.get("permalink", "")
+    # Ensure proper slash formatting
+    if not permalink.startswith("/"):
+        permalink = f"/{permalink}"
+    canonical_url = f"https://mikelev.in{permalink}"
+    # -----------------------------------------------
+
     new_yaml_data = {
         'title': yaml_updates.get("title"),
-        'permalink': yaml_updates.get("permalink"),
+        'permalink': permalink,
+        'canonical_url': canonical_url,  # <--- INJECTED HERE
         'description': analysis_content.get("authors_imprint"),
         'meta_description': yaml_updates.get("description"),
         'meta_keywords': yaml_updates.get("keywords"),
         'layout': 'post',
-        'sort_order': next_sort_order  # <--- Now uses the dynamic value
+        'sort_order': next_sort_order
     }
     
     # 3. Assemble Content

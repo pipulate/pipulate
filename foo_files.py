@@ -1,7 +1,7 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/trimnoir/_posts/2026-02-16-digital-sovereignty-secured-openclaw-nixos-claude-code-bridge.md
-scripts/articles/editing_prompt.txt
-scripts/articles/articleizer.py
+deploy_honeybot.sh
+remotes/honeybot/scripts/db.py
+remotes/honeybot/scripts/report.py
 """
 
 ## > We've got content, it's groovy context  
