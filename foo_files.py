@@ -1,6 +1,4 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/scripts/articles/article.txt
-scripts/articles/sanitizer.py
 """
 
 ## > We've got content, it's groovy context  
@@ -14,6 +12,10 @@ scripts/articles/sanitizer.py
 ## Anything inside the pipulate git repo can be a relative path. Anything outside needs absolute paths.
 
 ## HISTORY OF PAYLOADS (BUNDLES OF CONTEXT)
+
+# # Refining my Gemini Deep Research Google Docs markdown formatting
+# /home/mike/repos/nixos/init.lua
+# /home/mike/Research/OpenClaw_Competitors.md
 
 # # Showing how longer Pipulate workflows work
 # apps/110_parameter_buster.py
