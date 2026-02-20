@@ -32,6 +32,7 @@ PerplexityBot
 PetalBot
 Photon
 Qwantbot
+SEOkicks
 SERankingBacklinksBot
 SeekportBot
 SemrushBot
