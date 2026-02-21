@@ -1,5 +1,11 @@
 AI_PHOOEY_CHOP = """\
-flake.nix
+pipulate/__init__.py
+pipulate/pipulate.py
+core.py
+assets/nbs/URLinspector.ipynb
+Notebooks/imports/seo_gadget.py
+tools/dom_tools.py
+tools/scraper_tools.py
 """
 
 ## > We've got content, it's groovy context  

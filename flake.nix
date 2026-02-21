@@ -101,10 +101,15 @@
         jupyterWorkspaceName = "pipulate-main";
  
  		# Define the default notebook for JupyterLab to open on startup
- 		jupyterStartupNotebook = "Notebooks/AI_HelloWorld.ipynb";
+ 		jupyterStartupNotebook = "Notebooks/0nboard.ipynb";
 
         # --- CORRECTED: Declarative list for notebooks to copy ---
         notebookFilesToCopy = [
+          {
+            source = "assets/nbs/0nboard.ipynb";
+            dest = "Notebooks/0nboard.ipynb";
+            desc = "the Pipulate initiation rite and setup guide";
+          }
           {
             source = "assets/nbs/AI_HelloWorld.ipynb";
             dest = "Notebooks/AI_HelloWorld.ipynb";
