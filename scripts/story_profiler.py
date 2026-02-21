@@ -23,9 +23,15 @@ def find_repo_root(start_path: str) -> str:
     raise FileNotFoundError("Could not find the repository root (.git directory).")
 
 # Directories to skip when scanning for orphans
+# Mirrors .gitignore + common non-story dirs
 SKIP_DIRS = {
-    '.git', 'node_modules', '__pycache__', '.ipynb_checkpoints',
-    'browser_cache', '.nix-profile', '.nix-defexpr',
+    '.git', '.venv', '.cursor', '.jupyter', '.ipynb_checkpoints',
+    '.ssh', '.nix-profile', '.nix-defexpr',
+    'node_modules', '__pycache__',
+    'browser_cache', 'piper_models',
+    'data', 'downloads', 'logs', 'temp',
+    'build', 'dist',
+    'Client_Work', 'deliverables',
 }
 
 # File extensions we consider "story-worthy" (code, config, docs)
