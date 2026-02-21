@@ -41,6 +41,8 @@ Sogou
 TerraCotta
 Wget
 Yandex
+YandexBot
+YandexRenderResourcesBot
 bingbot
 botify
 curl
