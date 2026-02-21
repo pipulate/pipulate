@@ -1,10 +1,13 @@
 AI_PHOOEY_CHOP = """\
-config.py
-server.py
-pipulate/__init__.py
-pipulate/pipulate.py
+Notebooks/GAPalyzer.ipynb
+Notebooks/imports/gap_analyzer_sauce.py
 pipulate/core.py
-core.py
+# config.py
+# server.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# core.py
 """
 
 ## > We've got content, it's groovy context  
