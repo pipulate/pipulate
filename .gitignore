@@ -102,3 +102,4 @@ browser_cache/test_rotation_data/
 
 # Voice synthesis models - auto-downloaded as needed
 piper_models/
+Notebooks/0nboard.ipynb
