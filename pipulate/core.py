@@ -325,6 +325,22 @@ class Pipulate:
             self._current_step = step_num
             self._step_started = True
 
+    def speak(self, text: str):
+        """
+        Synthesizes text to speech using the global ChipVoiceSystem if available.
+        Fails gracefully to simple printing if the audio backend is unavailable.
+        """
+        print(f"🤖 {text}")
+        try:
+            # We import here to avoid circular dependencies and unnecessary 
+            # loading if the user never calls pip.speak()
+            from imports.voice_synthesis import chip_voice_system
+            if chip_voice_system and chip_voice_system.voice_ready:
+                 chip_voice_system.speak_text(text)
+        except Exception as e:
+            # We fail silently because the print() statement above acts as our fallback
+            pass
+
     def make_singular(self, word):
         """Convert a potentially plural word to its singular form using simple rules.
 
