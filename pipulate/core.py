@@ -325,6 +325,31 @@ class Pipulate:
             self._current_step = step_num
             self._step_started = True
 
+    def open_folder(self, path_str: str = "."):
+        """Opens the specified folder in the host system's default file explorer."""
+        import platform
+        import subprocess
+        from pathlib import Path
+        
+        folder_path = Path(path_str).resolve()
+        
+        if not folder_path.exists() or not folder_path.is_dir():
+            self.logger.error(f"❌ Error: Path is not a valid directory: {folder_path}")
+            return False
+
+        system = platform.system()
+        try:
+            if system == "Windows":
+                os.startfile(folder_path)
+            elif system == "Darwin":  # macOS
+                subprocess.run(["open", folder_path])
+            else:  # Linux (xdg-open covers most desktop environments)
+                subprocess.run(["xdg-open", folder_path])
+            return True
+        except Exception as e:
+            self.logger.error(f"❌ Failed to open folder. Error: {e}")
+            return False
+
     def speak(self, text: str):
         """
         Synthesizes text to speech using the global ChipVoiceSystem if available.
