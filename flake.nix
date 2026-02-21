@@ -16,7 +16,7 @@
 #
 # 1. Transform a non-git directory into a proper git repository
 # 2. Enable forever-forward git-pull auto-updates
-# 3. Provide a consistent development environment across macOS and Linux
+# 3. Provide a consistent development environment across macOS, Windows (WSL2) and Linux
 #
 # === THE "MAGIC COOKIE" CONCEPT ===
 # The "magic cookie" approach solves a bootstrapping problem:
