@@ -1,6 +1,10 @@
 AI_PHOOEY_CHOP = """\
+config.py
+server.py
+pipulate/__init__.py
+pipulate/pipulate.py
+pipulate/core.py
 core.py
-Notebooks/0nboard.ipynb
 """
 
 ## > We've got content, it's groovy context  

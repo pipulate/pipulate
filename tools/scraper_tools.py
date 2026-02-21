@@ -237,8 +237,16 @@ async def selenium_automation(params: dict) -> dict:
 
     finally:
         if driver:
-            driver.quit()
-            if verbose: logger.info("Browser closed.")
+            try:
+                driver.quit()
+                if verbose: logger.info("Browser closed.")
+            except Exception as e:
+                logger.warning(f"Error while quitting browser: {e}")
+
         if temp_profile and profile_path and os.path.exists(profile_path):
-             shutil.rmtree(profile_path)
-             if verbose: logger.info(f"Cleaned up temporary profile: {profile_path}")
+            try:
+                # Add ignore_errors=True to prevent ghost processes from crashing the cleanup
+                shutil.rmtree(profile_path, ignore_errors=True)
+                if verbose: logger.info(f"Cleaned up temporary profile: {profile_path}")
+            except Exception as e:
+                logger.warning(f"Could not completely remove temp profile (this is normal): {e}")
