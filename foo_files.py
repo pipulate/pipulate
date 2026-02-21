@@ -1,5 +1,7 @@
 AI_PHOOEY_CHOP = """\
+.gitignore
 Notebooks/0nboard.ipynb
+nbs/0nboard.ipynb
 """
 
 ## > We've got content, it's groovy context  
