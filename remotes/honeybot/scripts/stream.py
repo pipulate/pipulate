@@ -383,7 +383,14 @@ def main():
     run_tui_app("radar.py", duration=0.5)   # 30 seconds
 
     # Scene 3: The Deep Stream (Logs)
-    narrator.say("Now I read from the very website we monitor the bot activity on. This is the transition from SEO to AI Education (AIE). We are both educating the AI about our content but also the audience about AI. Sit back and enjoy storytime!")
+    NARRATOR_SAYS = (
+        "Now I read from the very website we monitor the bot activity on. "
+        "This is the transition from SEO to AI Education. "
+        "We are educating the AI about our content and the audience about AI. Leave me a comment. "
+        "This streams 24 by 7 so I'm probably not there right now so check back for my reply. I try to answer everyone. "
+        "Now sit back and enjoy storytime! "
+    )
+    narrator.say(NARRATOR_SAYS)
 
     # Station ID Logic Update: Reset the pitch timer here so it doesn't fire immediately
     # We rely on last_pitch_time being initialized in perform_show, but for the main loop:
