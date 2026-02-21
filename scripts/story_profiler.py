@@ -2,6 +2,8 @@
 # scripts/story_profiler.py
 
 import os
+import re
+import subprocess
 import tiktoken
 from pathlib import Path
 
@@ -22,18 +24,6 @@ def find_repo_root(start_path: str) -> str:
         path = os.path.dirname(path)
     raise FileNotFoundError("Could not find the repository root (.git directory).")
 
-# Directories to skip when scanning for orphans
-# Mirrors .gitignore + common non-story dirs
-SKIP_DIRS = {
-    '.git', '.venv', '.cursor', '.jupyter', '.ipynb_checkpoints',
-    '.ssh', '.nix-profile', '.nix-defexpr',
-    'node_modules', '__pycache__',
-    'browser_cache', 'piper_models',
-    'data', 'downloads', 'logs', 'temp',
-    'build', 'dist',
-    'Client_Work', 'deliverables',
-}
-
 # File extensions we consider "story-worthy" (code, config, docs)
 STORY_EXTENSIONS = {
     '.py', '.js', '.css', '.html', '.md', '.markdown', '.txt',
@@ -41,21 +31,47 @@ STORY_EXTENSIONS = {
     '.svg', '.xsd',
 }
 
-# Files to always skip (binary, generated, or infrastructure-only)
-SKIP_FILES = {
-    'favicon.ico', 'LICENSE', 'requirements.txt', 'requirements.in',
-    'pyproject.toml', 'release.py',
-}
-
 def collect_repo_files(repo_root: str) -> set:
-    """Walk the repo and collect all 'story-worthy' file paths (relative to repo root)."""
+    """Use `git ls-files` to get only tracked, non-ignored files.
+    Falls back to os.walk if git is unavailable."""
+    try:
+        result = subprocess.run(
+            ['git', 'ls-files'],
+            capture_output=True, text=True, cwd=repo_root, check=True
+        )
+        repo_files = set()
+        for line in result.stdout.strip().splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            ext = os.path.splitext(line)[1].lower()
+            if ext in STORY_EXTENSIONS:
+                repo_files.add(line)
+        return repo_files
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        # Fallback: manual walk (less accurate, doesn't respect .gitignore)
+        print("⚠️  `git ls-files` failed. Falling back to directory walk (may include gitignored files).\n")
+        return _collect_repo_files_fallback(repo_root)
+
+def _collect_repo_files_fallback(repo_root: str) -> set:
+    """Fallback file collector using os.walk. Less accurate than git ls-files."""
+    SKIP_DIRS = {
+        '.git', '.venv', '.cursor', '.jupyter', '.ipynb_checkpoints',
+        '.ssh', '.nix-profile', '.nix-defexpr',
+        'node_modules', '__pycache__',
+        'browser_cache', 'piper_models',
+        'data', 'downloads', 'logs', 'temp',
+        'build', 'dist',
+        'Client_Work', 'deliverables',
+    }
+    SKIP_FILES = {
+        'favicon.ico', 'LICENSE', 'requirements.txt', 'requirements.in',
+        'pyproject.toml', 'release.py',
+    }
     repo_files = set()
     for dirpath, dirnames, filenames in os.walk(repo_root):
-        # Prune skipped directories in-place
         dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
-
         rel_dir = os.path.relpath(dirpath, repo_root)
-
         for filename in filenames:
             if filename in SKIP_FILES:
                 continue
@@ -64,12 +80,7 @@ def collect_repo_files(repo_root: str) -> set:
             ext = os.path.splitext(filename)[1].lower()
             if ext not in STORY_EXTENSIONS:
                 continue
-
-            if rel_dir == '.':
-                rel_path = filename
-            else:
-                rel_path = os.path.join(rel_dir, filename)
-
+            rel_path = filename if rel_dir == '.' else os.path.join(rel_dir, filename)
             repo_files.add(rel_path)
     return repo_files
 
@@ -111,13 +122,10 @@ def main():
             file_path = line.lstrip("# ").strip().split()[0]
             if file_path:
                 chapters[current_chapter].append(file_path)
-                # Normalize: if it's an absolute path inside repo, make relative
                 if os.path.isabs(file_path) and file_path.startswith(repo_root):
                     all_claimed_files.add(os.path.relpath(file_path, repo_root))
                 elif not os.path.isabs(file_path):
                     all_claimed_files.add(file_path)
-                # External absolute paths (like /home/mike/repos/trimnoir/...) are
-                # intentionally excluded from the orphan check since they're outside the repo.
 
     # ── Chapter Size Report ──────────────────────────────────────────────
     print("# 📊 Pipulate Story Size Profile (Claude/Gemini Optimized)\n")
@@ -180,10 +188,9 @@ def main():
         print("### 🏠 Orphan Report: All story-worthy files are claimed by a chapter. Nice work.")
         return
 
-    # Size the orphans so you can make informed decisions
     print("\n---")
-    print(f"### 👻 Orphan Report: {len(orphans)} files in the repo appear in NO chapter\n")
-    print("*These files exist in the repository but are not referenced by any chapter in `foo_files.py`.")
+    print(f"### 👻 Orphan Report: {len(orphans)} tracked files appear in NO chapter\n")
+    print("*These files are tracked by git but not referenced by any chapter in `foo_files.py`.")
     print("Decide for each: include in a chapter, or intentionally exclude.*\n")
 
     print("| File | Tokens | Bytes | Suggested Chapter |")
@@ -194,7 +201,6 @@ def main():
 
     for orphan_path in orphans:
         full_path = os.path.join(repo_root, orphan_path)
-        suggestion = ""
 
         try:
             with open(full_path, "r", encoding="utf-8") as f:
@@ -207,7 +213,7 @@ def main():
             tokens = 0
             b_size = 0
 
-        # Simple heuristic suggestions based on path
+        # Heuristic suggestions based on path
         if orphan_path.startswith("apps/"):
             suggestion = "Ch 5 (Apps) or Ch 6 (SEO)"
         elif orphan_path.startswith("imports/"):
