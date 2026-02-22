@@ -1,8 +1,17 @@
 AI_PHOOEY_CHOP = """\
-tools/scraper_tools.py
-tools/mcp_tools.py
-apps/440_browser_automation.py
-apps/820_selenium.py
+server.py
+assets/pipulate-init.js
+assets/pipulate.js
+apps/040_hello_workflow.py
+assets/scenarios/hello_workflow_test.json
+imports/append_only_conversation.py
+
+
+# tools/scraper_tools.py
+# tools/mcp_tools.py
+# apps/440_browser_automation.py
+# apps/820_selenium.py
+
 # /home/mike/repos/Pipulate.com/index.md
 # /home/mike/repos/Pipulate.com/_layouts/default.html
 # /home/mike/repos/Pipulate.com/_site/index.html
