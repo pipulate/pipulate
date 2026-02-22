@@ -31,7 +31,6 @@ PITCH_TEXT = (
     "Once an hour we show a series of more surprising in-depth reports. "
     "Subscribe, like, leave a comment and sit back and watch the machine think. It's never the same twice. "
     "The voice you hear is reading the content you currently see being accessed. "
-    "Check back later for my reply. "
     ""
 )
 

@@ -1,13 +1,18 @@
 AI_PHOOEY_CHOP = """\
-Notebooks/GAPalyzer.ipynb
-Notebooks/imports/gap_analyzer_sauce.py
-pipulate/core.py
-# config.py
-# server.py
-# pipulate/__init__.py
-# pipulate/pipulate.py
-# pipulate/core.py
-# core.py
+tools/scraper_tools.py
+tools/mcp_tools.py
+apps/440_browser_automation.py
+apps/820_selenium.py
+# /home/mike/repos/Pipulate.com/index.md
+# /home/mike/repos/Pipulate.com/_layouts/default.html
+# /home/mike/repos/Pipulate.com/_site/index.html
+# /home/mike/repos/Pipulate.com/install.md
+# https://raw.githubusercontent.com/miklevin/pipulate/refs/heads/main/README.md
+# /home/mike/repos/Pipulate.com/install.md
+# /home/mike/repos/pipulate/release.py
+# /home/mike/repos/pipulate/flake.nix
+# /home/mike/repos/pipulate/apps/010_introduction.py
+# /home/mike/repos/pipulate/imports/voice_synthesis.py
 """
 
 ## > We've got content, it's groovy context  
