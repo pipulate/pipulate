@@ -1,8 +1,12 @@
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/trimnoir/_posts/list_articles.py
-/home/mike/repos/trimnoir/_posts/template.md
-scripts/articles/articleizer.py
-scripts/articles/editing_prompt.txt
+foo_files.py
+prompt_foo.py
+remotes/honeybot/scripts/content_loader.py
+
+# /home/mike/repos/trimnoir/_posts/list_articles.py
+# /home/mike/repos/trimnoir/_posts/template.md
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
 
 # server.py
 # assets/player-piano.js
