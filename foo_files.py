@@ -1,11 +1,15 @@
 AI_PHOOEY_CHOP = """\
-server.py
-assets/player-piano.js
-assets/pipulate.js
-apps/040_hello_workflow.py
-assets/scenarios/hello_workflow_test.json
-imports/append_only_conversation.py
+/home/mike/repos/trimnoir/_posts/list_articles.py
+/home/mike/repos/trimnoir/_posts/template.md
+scripts/articles/articleizer.py
+scripts/articles/editing_prompt.txt
 
+# server.py
+# assets/player-piano.js
+# assets/pipulate.js
+# apps/040_hello_workflow.py
+# assets/scenarios/hello_workflow_test.json
+# imports/append_only_conversation.py
 
 # tools/scraper_tools.py
 # tools/mcp_tools.py
