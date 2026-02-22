@@ -150,6 +150,12 @@ def clean_markdown(text):
 
     # Remove Code Blocks
     text = re.sub(r'```.*?```', ' [Skipping code] ', text, flags=re.DOTALL)
+
+    # --- NEW: Remove Indented Code Blocks ---
+    # Matches one or more contiguous lines that start with exactly 4 spaces (or a tab)
+    # Using non-capturing groups (?:) for efficiency. 
+    text = re.sub(r'(?:\n(?: {4}|\t)[^\n]*)+', '\n [Skipping code] \n', text)
+
     # Remove Inline Code
     text = re.sub(r'`([^`]+)`', r'\1', text)
     # Remove Images
