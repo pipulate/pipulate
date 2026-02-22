@@ -2,29 +2,48 @@
 import os
 import sys
 import yaml
-import difflib
 import argparse
 from datetime import datetime
 from collections import defaultdict
 from rich.console import Console
 from rich.table import Table
 from rich import box
+from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 
 # --- CONFIGURATION ---
 POSTS_DIRECTORY = "/home/mike/repos/MikeLev.in/_posts"
 SIMILARITY_THRESHOLD = 0.85  # Flag if body text is 85% or more similar
 
-def get_post_data(posts_dir):
-    """Parses Jekyll posts, extracting the body separately from the YAML."""
+def get_bigrams(text):
+    """Chop text into a set of overlapping two-word pairs for lightning-fast comparison."""
+    words = text.lower().split()
+    return set(zip(words[:-1], words[1:]))
+
+def fast_similarity(text1, text2):
+    """Calculates Jaccard similarity using bigrams. O(N) instead of difflib's O(N^2)."""
+    b1 = get_bigrams(text1)
+    b2 = get_bigrams(text2)
+    
+    if not b1 or not b2:
+        return 0.0
+        
+    intersection = len(b1 & b2)
+    union = len(b1 | b2)
+    return intersection / union if union > 0 else 0.0
+
+def get_post_data(posts_dir, progress):
+    """Parses Jekyll posts with a progress bar."""
     posts_data = []
     if not os.path.isdir(posts_dir):
-        print(f"Error: Directory not found at {posts_dir}", file=sys.stderr)
+        progress.console.print(f"[red]Error: Directory not found at {posts_dir}[/red]")
         return []
 
-    for filename in os.listdir(posts_dir):
-        if not filename.endswith(('.md', '.markdown')):
-            continue
-            
+    # Get file list first so we know the total for the progress bar
+    all_files = [f for f in os.listdir(posts_dir) if f.endswith(('.md', '.markdown'))]
+    
+    task = progress.add_task("[cyan]Parsing YAML Frontmatter...", total=len(all_files))
+
+    for filename in all_files:
         filepath = os.path.join(posts_dir, filename)
         try:
             date_str = filename[:10]
@@ -33,7 +52,6 @@ def get_post_data(posts_dir):
             with open(filepath, 'r', encoding='utf-8') as f:
                 content = f.read()
 
-            # Strip YAML frontmatter to only compare the actual article body
             if content.startswith('---'):
                 parts = content.split('---', 2)
                 front_matter = yaml.safe_load(parts[1]) or {}
@@ -51,42 +69,48 @@ def get_post_data(posts_dir):
                 'body': body
             })
         except Exception:
-            continue
+            pass
+            
+        progress.advance(task)
             
     return posts_data
 
-def find_adjacent_duplicates(posts, threshold):
-    """Groups by date, sorts by order, and checks adjacent posts for high similarity."""
+def find_adjacent_duplicates(posts, threshold, progress):
+    """Checks adjacent posts for high similarity using Bigram Jaccard algorithm."""
     posts_by_day = defaultdict(list)
     for post in posts:
         posts_by_day[post['date']].append(post)
 
     duplicates = []
     
-    for date, daily_posts in sorted(posts_by_day.items()):
-        # Sort chronologically within the day using sort_order
+    # Only days with more than 1 post need comparison
+    days_to_check = {d: p for d, p in posts_by_day.items() if len(p) > 1}
+    
+    task = progress.add_task("[green]Calculating AI Ghost Variations...", total=len(days_to_check))
+    
+    for date, daily_posts in sorted(days_to_check.items()):
         daily_posts.sort(key=lambda x: x['sort_order'])
         
-        # Compare adjacent posts
         for i in range(len(daily_posts) - 1):
             post1 = daily_posts[i]
             post2 = daily_posts[i + 1]
             
-            # Calculate similarity ratio (0.0 to 1.0)
-            similarity = difflib.SequenceMatcher(None, post1['body'], post2['body']).ratio()
+            # Use our new lightning-fast math instead of difflib
+            similarity = fast_similarity(post1['body'], post2['body'])
             
             if similarity >= threshold:
                 duplicates.append({
                     'date': date,
                     'post1': post1,
                     'post2': post2,
-                    'similarity': similarity * 100  # Convert to percentage
+                    'similarity': similarity * 100 
                 })
+                
+        progress.advance(task)
                 
     return duplicates
 
 def print_report(duplicates):
-    """Prints a Rich table of the suspected duplicates."""
     console = Console()
     console.print("\n" + "="*70)
     console.print("[bold bright_blue]Article Duplication/Ghost Variation Report[/bold bright_blue]")
@@ -122,7 +146,17 @@ if __name__ == '__main__':
                         help="Similarity threshold (0.0 to 1.0). Default is 0.85.")
     args = parser.parse_args()
 
-    print("Scanning articles and calculating text similarities. This may take a moment...")
-    posts = get_post_data(POSTS_DIRECTORY)
-    duplicates = find_adjacent_duplicates(posts, args.threshold)
+    # The magic of Rich Progress Context Manager
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TaskProgressColumn(),
+        transient=True  # Clears the progress bar when done!
+    ) as progress:
+        
+        posts = get_post_data(POSTS_DIRECTORY, progress)
+        duplicates = find_adjacent_duplicates(posts, args.threshold, progress)
+        
+    # Print the final report after the progress bars disappear
     print_report(duplicates)
