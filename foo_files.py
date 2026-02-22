@@ -1,7 +1,8 @@
 AI_PHOOEY_CHOP = """\
 foo_files.py
 prompt_foo.py
-remotes/honeybot/scripts/content_loader.py
+
+# remotes/honeybot/scripts/content_loader.py
 
 # /home/mike/repos/trimnoir/_posts/list_articles.py
 # /home/mike/repos/trimnoir/_posts/template.md
