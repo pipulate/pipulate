@@ -1,6 +1,15 @@
 AI_PHOOEY_CHOP = """\
-foo_files.py
-prompt_foo.py
+Notebooks/imports/seo_gadget.py
+apps/001_dom_visualizer.py
+apps/430_tab_opener.py
+apps/440_browser_automation.py
+assets/nbs/AI_Scrape.ipynb
+assets/nbs/imports/url_inspect_sauce.py
+imports/dom_processing/ai_dom_beautifier.py
+imports/dom_processing/enhanced_dom_processor.py
+tools/advanced_automation_tools.py
+tools/dom_tools.py
+tools/scraper_tools.py
 
 # remotes/honeybot/scripts/content_loader.py
 
