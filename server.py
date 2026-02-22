@@ -2680,7 +2680,7 @@ def create_chat_interface(autofocus=False):
         del pipulate.db['temp_message']
     init_script = f'\n    // Set global variables for the external script\n    window.CFG = {{\n        tempMessage: {json.dumps(temp_message)},\n        clipboardSVG: {json.dumps(CFG.SVG_ICONS["CLIPBOARD"])}\n    }};\n    window.APP_NAME = {json.dumps(APP_NAME)};\n    '
     # Enter/Shift+Enter handling is now externalized in pipulate.js
-    return Div(Card(H2(f'{APP_NAME} Chatbot'), Div(id='msg-list', cls='overflow-auto', style=msg_list_height, role='log', aria_label='Chat conversation', aria_live='polite'), Form(mk_chat_input_group(value='', autofocus=autofocus), onsubmit='sendSidebarMessage(event)', role='form', aria_label='Chat input form'), Script(init_script), Script(src='/assets/pipulate-init.js'), Script('initializeChatInterface();')), id='chat-interface', role='complementary', aria_label='AI Assistant Chat')
+    return Div(Card(H2(f'{APP_NAME} Chatbot'), Div(id='msg-list', cls='overflow-auto', style=msg_list_height, role='log', aria_label='Chat conversation', aria_live='polite'), Form(mk_chat_input_group(value='', autofocus=autofocus), onsubmit='sendSidebarMessage(event)', role='form', aria_label='Chat input form'), Script(init_script), Script(src='/assets/player-piano.js'), Script('initializeChatInterface();')), id='chat-interface', role='complementary', aria_label='AI Assistant Chat')
 
 
 # Global variable to track streaming state

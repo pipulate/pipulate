@@ -132,7 +132,7 @@ function setupWebSocketAndSSE() {
         return lastMessage;
     }
     
-    console.log('SSE handlers initialized (WebSocket handled by pipulate-init.js)');
+    console.log('SSE handlers initialized (WebSocket handled by player-piano.js)');
 }
 
 function setupInteractions() {

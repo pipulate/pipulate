@@ -1,6 +1,6 @@
 AI_PHOOEY_CHOP = """\
 server.py
-assets/pipulate-init.js
+assets/player-piano.js
 assets/pipulate.js
 apps/040_hello_workflow.py
 assets/scenarios/hello_workflow_test.json
@@ -125,13 +125,13 @@ imports/append_only_conversation.py
 # # CHAPTER 6: THE SKIN (FRONTEND ASSETS & INIT) (~265KB)
 # # HTML over the wire. The client-side muscle.
 # # No build step. No Virtual DOM. What the server sends is what renders.
-# # `pipulate-init.js` handles HTMX/WebSocket UI interactions.
+# # `player-piano.js` handles HTMX/WebSocket UI interactions.
 # assets/init.js
 # assets/pipulate.js
 # assets/styles.css
 # assets/theme.js
 # assets/utils.js
-# assets/pipulate-init.js
+# assets/player-piano.js
 
 # # CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS) (~200KB)
 # # The fundamental plugin apps that govern the user experience:
