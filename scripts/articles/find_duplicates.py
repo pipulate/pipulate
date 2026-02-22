@@ -38,9 +38,7 @@ def get_post_data(posts_dir, progress):
         progress.console.print(f"[red]Error: Directory not found at {posts_dir}[/red]")
         return []
 
-    # Get file list first so we know the total for the progress bar
     all_files = [f for f in os.listdir(posts_dir) if f.endswith(('.md', '.markdown'))]
-    
     task = progress.add_task("[cyan]Parsing YAML Frontmatter...", total=len(all_files))
 
     for filename in all_files:
@@ -76,16 +74,15 @@ def get_post_data(posts_dir, progress):
     return posts_data
 
 def find_adjacent_duplicates(posts, threshold, progress):
-    """Checks adjacent posts for high similarity using Bigram Jaccard algorithm."""
+    """Checks adjacent posts and tracks ALL comparisons to establish a baseline."""
     posts_by_day = defaultdict(list)
     for post in posts:
         posts_by_day[post['date']].append(post)
 
     duplicates = []
+    all_comparisons = []
     
-    # Only days with more than 1 post need comparison
     days_to_check = {d: p for d, p in posts_by_day.items() if len(p) > 1}
-    
     task = progress.add_task("[green]Calculating AI Ghost Variations...", total=len(days_to_check))
     
     for date, daily_posts in sorted(days_to_check.items()):
@@ -95,50 +92,97 @@ def find_adjacent_duplicates(posts, threshold, progress):
             post1 = daily_posts[i]
             post2 = daily_posts[i + 1]
             
-            # Use our new lightning-fast math instead of difflib
             similarity = fast_similarity(post1['body'], post2['body'])
+            sim_percentage = similarity * 100
             
-            if similarity >= threshold:
-                duplicates.append({
-                    'date': date,
-                    'post1': post1,
-                    'post2': post2,
-                    'similarity': similarity * 100 
-                })
+            comp_data = {
+                'date': date,
+                'post1': post1,
+                'post2': post2,
+                'similarity': sim_percentage 
+            }
+            
+            all_comparisons.append(comp_data)
+            
+            if sim_percentage >= (threshold * 100):
+                duplicates.append(comp_data)
                 
         progress.advance(task)
                 
-    return duplicates
+    return duplicates, all_comparisons
 
-def print_report(duplicates):
+def print_report(duplicates, all_comparisons, threshold):
     console = Console()
+    
+    # 1. THE DUPLICATE REPORT
     console.print("\n" + "="*70)
-    console.print("[bold bright_blue]Article Duplication/Ghost Variation Report[/bold bright_blue]")
+    console.print(f"[bold bright_blue]Article Duplication Report (Threshold: {threshold*100:.1f}%)[/bold bright_blue]")
     console.print("="*70)
 
     if not duplicates:
         console.print("✅ [bold green]All Clear![/bold green] No adjacent articles exceed the similarity threshold.")
+    else:
+        table = Table(box=box.ROUNDED, show_lines=True)
+        table.add_column("Date", style="magenta")
+        table.add_column("Similarity", justify="right", style="bold red")
+        table.add_column("Older Version (Lower Sort)", style="dim white")
+        table.add_column("Newer Version (Higher Sort)", style="bright_white")
+
+        for dup in duplicates:
+            p1 = dup['post1']
+            p2 = dup['post2']
+            table.add_row(
+                str(dup['date']),
+                f"{dup['similarity']:.1f}%",
+                f"[{p1['sort_order']}] {p1['filename']}",
+                f"[{p2['sort_order']}] {p2['filename']}"
+            )
+        console.print(table)
+        console.print("\n💡 [dim]Recommendation: Usually, you want to keep the Newer Version (Higher Sort) and delete the Older Version.[/dim]")
+
+    # 2. THE DATA PROBE (Top 5 Closest Matches)
+    console.print("\n" + "="*70)
+    console.print("[bold bright_yellow]Data Probe: Top 5 Closest Adjacent Matches[/bold bright_yellow]")
+    console.print("="*70)
+    
+    if not all_comparisons:
+        console.print("[dim]Not enough multiple-post days to perform comparisons.[/dim]")
         return
-
-    table = Table(box=box.ROUNDED, show_lines=True)
-    table.add_column("Date", style="magenta")
-    table.add_column("Similarity", justify="right", style="bold red")
-    table.add_column("Older Version (Lower Sort)", style="dim white")
-    table.add_column("Newer Version (Higher Sort)", style="bright_white")
-
-    for dup in duplicates:
-        p1 = dup['post1']
-        p2 = dup['post2']
         
-        table.add_row(
-            str(dup['date']),
-            f"{dup['similarity']:.1f}%",
+    # Sort all comparisons by highest similarity
+    all_comparisons.sort(key=lambda x: x['similarity'], reverse=True)
+    top_matches = all_comparisons[:5]
+    
+    probe_table = Table(box=box.ROUNDED, show_lines=True)
+    probe_table.add_column("Date", style="magenta")
+    probe_table.add_column("Similarity", justify="right")
+    probe_table.add_column("Post 1", style="dim white")
+    probe_table.add_column("Post 2", style="bright_white")
+    
+    for match in top_matches:
+        p1 = match['post1']
+        p2 = match['post2']
+        
+        # Color code the similarity based on how close it is to the threshold
+        sim_val = match['similarity']
+        sim_str = f"{sim_val:.1f}%"
+        
+        if sim_val >= (threshold * 100):
+            sim_str = f"[bold red]{sim_str}[/bold red]"
+        elif sim_val >= (threshold * 100) - 15: # Within 15% of threshold (Near Miss)
+            sim_str = f"[bold yellow]{sim_str}[/bold yellow]"
+        else:
+            sim_str = f"[cyan]{sim_str}[/cyan]"
+            
+        probe_table.add_row(
+            str(match['date']),
+            sim_str,
             f"[{p1['sort_order']}] {p1['filename']}",
             f"[{p2['sort_order']}] {p2['filename']}"
         )
         
-    console.print(table)
-    console.print("\n💡 [dim]Recommendation: Usually, you want to keep the Newer Version (Higher Sort) and delete the Older Version.[/dim]")
+    console.print(probe_table)
+    console.print(f"\n💡 [dim]This shows the natural similarity of your articles. If the top matches are low (e.g., 20%), your dataset is very clean.[/dim]\n")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Find highly similar adjacent articles.")
@@ -146,17 +190,14 @@ if __name__ == '__main__':
                         help="Similarity threshold (0.0 to 1.0). Default is 0.85.")
     args = parser.parse_args()
 
-    # The magic of Rich Progress Context Manager
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
         BarColumn(),
         TaskProgressColumn(),
-        transient=True  # Clears the progress bar when done!
+        transient=True 
     ) as progress:
-        
         posts = get_post_data(POSTS_DIRECTORY, progress)
-        duplicates = find_adjacent_duplicates(posts, args.threshold, progress)
+        duplicates, all_comparisons = find_adjacent_duplicates(posts, args.threshold, progress)
         
-    # Print the final report after the progress bars disappear
-    print_report(duplicates)
+    print_report(duplicates, all_comparisons, args.threshold)
