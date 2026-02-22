@@ -906,10 +906,15 @@ def main():
     
     # 4. Generate final output with convergence loop
     final_output = builder.build_final_prompt()
-    
+
     # 5. Print the Summary section to console for immediate feedback
     if "Summary" in builder.all_sections:
-        print(builder.all_sections["Summary"]["content"])
+        # Strip markdown code fencing from console output to prevent 
+        # nesting collisions when copy/pasting into other markdown files
+        console_summary = builder.all_sections["Summary"]["content"]
+        console_summary = console_summary.replace("```\n", "")
+        console_summary = console_summary.replace("```", "")
+        print(console_summary)
     
     # 6. Handle output
     if args.output:

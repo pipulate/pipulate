@@ -19,7 +19,7 @@ from pathlib import Path
 
 # --- Configuration ---
 SHOW_DURATION_MINUTES = 120  # Minutes for the big logfile stream
-PITCH_INTERVAL = 180        # 3 Minutes between "Station Identification"
+PITCH_INTERVAL = 360        # Second between "Station Identification"
 
 PITCH_TEXT = (
     "You are watching Honeybot Sonar on MikeLev dot eye N. "
