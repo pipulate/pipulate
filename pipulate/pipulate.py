@@ -54,8 +54,9 @@ def _get_db_path():
 
 # The "factory" instantiation. This code runs when this module is imported.
 # It creates a single, pre-configured instance of the Pipulate class.
-db_path = _get_db_path()
+# This is the magic `wand` object for notebooks.
+wand = Pipulate(db_path=str(db_path))
 
-# This is the magic `pip` object for notebooks.
-pip = Pipulate(db_path=str(db_path))
+# Maintain backward compatibility during the codebase transition
+pip = wand
 # END: pipulate_factory_content
