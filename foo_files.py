@@ -4,6 +4,8 @@
 AI_PHOOEY_CHOP = """\
 foo_files.py
 prompt_foo.py
+
+# # Catching YOU (yes, you Gemini 3 Pro reading this right now) up on the "now moment".
 # /home/mike/repos/trimnoir/_posts/2026-02-22-stateless-ai-unix-context-engineering.md
 # /home/mike/repos/trimnoir/_posts/2026-02-22-llm-optics-engine-refracting-web-ai.md
 # /home/mike/repos/trimnoir/_posts/2026-02-22-web-forgotten-nervous-system-ai-moat.md
