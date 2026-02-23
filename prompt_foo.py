@@ -516,24 +516,25 @@ Before addressing the user's prompt, perform the following verification steps:
 '''
 
     def _generate_summary_content(self, verified_token_count: int) -> str:
-        """Generates the content for the Summary section with article echo."""
+        """Generates the content for the Summary section with article echo and file manifest."""
         lines = []
         
         # Command Line
         lines.append(f"**Command:** `{self.command_line}`\n")
 
-        # Execution Log (Captured from Logger)
-        logs = logger.get_captured_text().strip()
-        if logs:
-            lines.append("--- Processing Log ---")
-            lines.append(f"```\n{logs}\n```\n")
+        # --- NEW: File Manifest (The "Knapped Arrowhead" List) ---
+        if self.processed_files:
+            lines.append("--- Codebase Files Included ---")
+            for f in self.processed_files:
+                # Show relative path for scannability
+                display_path = os.path.relpath(f['path'], REPO_ROOT) if os.path.isabs(f['path']) else f['path']
+                lines.append(f"• {display_path} ({f['tokens']:,} tokens)")
+            lines.append("")
 
-        # --- NEW: Article Narrative Echo ---
-        # This peeks into the narrative context and extracts titles for terminal feedback
+        # --- Article Narrative Echo ---
         narrative = self.auto_context.get("Recent Narrative Context")
         if narrative:
             lines.append("--- Articles Included ---")
-            # Regex to find our H3 titles from the narrative_content assembly
             titles = re.findall(r"### (.*?) \(", narrative['content'])
             for title in titles:
                 lines.append(f"• {title}")
@@ -545,7 +546,7 @@ Before addressing the user's prompt, perform the following verification steps:
                 byte_len = len(data['content'].encode('utf-8'))
                 lines.append(f"• {title} ({data['tokens']:,} tokens | {byte_len:,} bytes)")
 
-        # Metrics (The rest of your existing logic)
+        # Metrics (Condensed)
         total_tokens = sum(v.get('tokens', 0) for k, v in self.all_sections.items() if k != self.manifest_key)
         
         total_words = 0
@@ -560,9 +561,6 @@ Before addressing the user's prompt, perform the following verification steps:
         byte_count = len(final_content_for_metrics.encode('utf-8'))
 
         lines.append("\n--- Prompt Summary ---")
-        if self.context_only:
-            lines.append("NOTE: Running in --context-only mode. File contents are excluded.")
-        
         lines.append(f"Summed Tokens:    {total_tokens:,} (from section parts)")
         lines.append(f"Verified Tokens: {verified_token_count:,} (from final output)")
         
