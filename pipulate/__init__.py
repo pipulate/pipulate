@@ -41,5 +41,9 @@ logger.add(sys.stderr, level="WARNING", colorize=True, format="<level>{level: <8
 logger.add(log_dir / "notebook_run.log", level="DEBUG", rotation="10 MB", format="{time} {level} {message}")
 # --- END CONFIGURATION ---
 
-# Create the singleton instance that gets imported by `from pipulate import pip`.
-pip = Pipulate(db_path=str(DB_PATH))
+# Create the singleton instance that acts as the central actuator.
+wand = Pipulate(db_path=str(DB_PATH))
+
+# Maintain backward compatibility during the codebase transition
+pip = wand
+

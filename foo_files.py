@@ -2,7 +2,7 @@
 # with a vim `Ctrl`+`v` visual selection to edit in and out columns of comment hashes.
 
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/trimnoir/_posts/ls2.py
+# /home/mike/repos/trimnoir/_posts/ls2.py
 
 # foo_files.py
 # /home/mike/repos/trimnoir/_posts/list_articles.py
@@ -10,20 +10,20 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/trimnoir/_posts/template.md
 
 # Finally onto the work-at-hand
-# flake.nix
-# pipulate/__init__.py
-# pipulate/pipulate.py
-# pipulate/core.py
-# tools/__init__.py
-# tools/llm_optics.py
-# /home/mike/repos/pipulate/assets/nbs/URLinspector.ipynb
-# /home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
-# /home/mike/repos/pipulate/assets/nbs/imports/url_inspect_sauce.py
-# /home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
-# /home/mike/repos/pipulate/assets/nbs/0nboard.ipynb
-# /home/mike/repos/pipulate/Notebooks/0nboard.ipynb
-# /home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py
-# /home/mike/repos/pipulate/Notebooks/imports/onboard_sauce.py
+flake.nix
+pipulate/__init__.py
+pipulate/pipulate.py
+pipulate/core.py
+tools/__init__.py
+tools/llm_optics.py
+/home/mike/repos/pipulate/assets/nbs/URLinspector.ipynb
+/home/mike/repos/pipulate/Notebooks/URLinspector.ipynb
+/home/mike/repos/pipulate/assets/nbs/imports/url_inspect_sauce.py
+/home/mike/repos/pipulate/Notebooks/imports/url_inspect_sauce.py
+/home/mike/repos/pipulate/assets/nbs/0nboard.ipynb
+/home/mike/repos/pipulate/Notebooks/0nboard.ipynb
+/home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py
+/home/mike/repos/pipulate/Notebooks/imports/onboard_sauce.py
 
 # # Catching LLM up on the "now moment".
 # /home/mike/repos/trimnoir/_posts/2026-02-22-stateless-ai-unix-context-engineering.md
