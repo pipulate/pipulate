@@ -1,7 +1,7 @@
-# seo_gadget.py
-# Purpose: Extracts SEO data, generates DOM visualizations (hierarchy, boxes),
-#          and creates a markdown summary from a rendered HTML file.
-#          Go Gadget Go! ⚙️
+# llm_optics.py
+# Purpose: The Semantic SIFT Engine. Translates raw DOM into AI-ready 
+#          Markdown, JSON registries, and human-readable ASCII structures.
+#          Complete Optics Engaged. 👁️
 
 import argparse
 import io
@@ -243,8 +243,8 @@ canonical_url: {json.dumps(canonical_url)}
 # --- Standard Script Execution Guard ---
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Extract SEO data and generate DOM visualizations from an HTML file.",
-        epilog="Go Gadget Go!"
+        description="The LLM Optics Engine: Generate semantic and visual representations of a DOM.",
+        epilog="Complete Optics Engaged."
         )
     parser.add_argument("html_file", help="Path to the input rendered_dom.html file.")
     args = parser.parse_args()
