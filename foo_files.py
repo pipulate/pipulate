@@ -1,11 +1,18 @@
-AI_PHOOEY_CHOP = """\
-/home/mike/repos/trimnoir/_posts/2026-02-22-stateless-ai-unix-context-engineering.md
-/home/mike/repos/trimnoir/_posts/2026-02-22-llm-optics-engine-refracting-web-ai.md
-/home/mike/repos/trimnoir/_posts/2026-02-22-web-forgotten-nervous-system-ai-moat.md
-flake.nix
-Notebooks/imports/seo_gadget.py
-assets/nbs/imports/url_inspect_sauce.py
+# If you're an AI here reading this, you have to imagine how this is managed
+# with a vim `Ctrl`+`v` visual selection to edit in and out columns of comment hashes.
 
+AI_PHOOEY_CHOP = """\
+foo_files.py
+prompt_foo.py
+# /home/mike/repos/trimnoir/_posts/2026-02-22-stateless-ai-unix-context-engineering.md
+# /home/mike/repos/trimnoir/_posts/2026-02-22-llm-optics-engine-refracting-web-ai.md
+# /home/mike/repos/trimnoir/_posts/2026-02-22-web-forgotten-nervous-system-ai-moat.md
+# tools/llm_optics.py
+# flake.nix
+# Notebooks/imports/seo_gadget.py
+# assets/nbs/imports/url_inspect_sauce.py
+
+# # One chunk of articles of recent work
 # /home/mike/repos/trimnoir/_posts/2025-10-27-coachmans-reins-ai-workflow-seo-gadget.md
 # /home/mike/repos/trimnoir/_posts/2025-10-27-seo-gadget-automated-data-extraction-blueprint.md
 # /home/mike/repos/trimnoir/_posts/2025-10-28-ai-debugging-chisel-strike-blueprint.md
@@ -15,6 +22,7 @@ assets/nbs/imports/url_inspect_sauce.py
 # /home/mike/repos/trimnoir/_posts/2025-10-28-debugging-rich-html-export-performance-theming-ai-development.md
 # /home/mike/repos/trimnoir/_posts/2025-10-28-digital-jiu-jitsu-foundational-skills-ai-web-analysis.md
 
+# # Two chunk of articles of recent work
 # /home/mike/repos/trimnoir/_posts/2025-10-28-digital-sovereignty-pandas-nix-ai-blueprint.md
 # /home/mike/repos/trimnoir/_posts/2025-10-30-fractal-unfurling-ai-video-workflows.md
 # /home/mike/repos/trimnoir/_posts/2025-11-01-articulate-ape-blueprint-scaffolding-no-gooey-video-editing-nix.md
@@ -25,6 +33,7 @@ assets/nbs/imports/url_inspect_sauce.py
 # /home/mike/repos/trimnoir/_posts/2025-12-10-context-saturation-semantic-compression-fractal-blog-navigation.md
 # /home/mike/repos/trimnoir/_posts/2025-12-11-architects-pivot-file-backed-state-scalable-data-analysis.md
 
+# # We got some technical debt here from exploratory dev work
 # Notebooks/imports/seo_gadget.py
 # apps/001_dom_visualizer.py
 # apps/430_tab_opener.py
@@ -39,11 +48,13 @@ assets/nbs/imports/url_inspect_sauce.py
 
 # remotes/honeybot/scripts/content_loader.py
 
+# # Getting some AI-help managing and deduping articles
 # /home/mike/repos/trimnoir/_posts/list_articles.py
 # /home/mike/repos/trimnoir/_posts/template.md
 # scripts/articles/articleizer.py
 # scripts/articles/editing_prompt.txt
 
+# # Showing how the Ghost Driver works for tests, demos, AI-training, making YouTube videos, etc.
 # server.py
 # assets/player-piano.js
 # assets/pipulate.js
@@ -51,11 +62,7 @@ assets/nbs/imports/url_inspect_sauce.py
 # assets/scenarios/hello_workflow_test.json
 # imports/append_only_conversation.py
 
-# tools/scraper_tools.py
-# tools/mcp_tools.py
-# apps/440_browser_automation.py
-# apps/820_selenium.py
-
+# # Showing how Nix actually doesn't have a steep learning curve if you use it like the Electron platform
 # /home/mike/repos/Pipulate.com/index.md
 # /home/mike/repos/Pipulate.com/_layouts/default.html
 # /home/mike/repos/Pipulate.com/_site/index.html

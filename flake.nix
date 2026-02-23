@@ -155,11 +155,6 @@
             dest = "Notebooks/imports/videditor_sauce.py";
             desc = "a local 'videditor_sauce.py' source of secret sauce";
           }
-#           {
-#             source = "assets/nbs/imports/seo_gadget.py";
-#             dest = "Notebooks/imports/seo_gadget.py";
-#             desc = "a local 'seo_gadget.py' subprocess file";
-#           }
         ];
 
         # Convert the Nix list to a string that Bash can loop over

@@ -840,7 +840,7 @@ async def generate_extractions_post_scrape(job: str, verbose: bool = False):
     import sys # Needed for sys.executable
     # --- End local imports ---
 
-    logger.info("🎨 Generating DOM visualizations via subprocess for scraped pages...")
+    logger.info("👁️ Generating Complete Optics via subprocess for scraped pages...")
     extracted_data = pip.get(job, "extracted_data", []) # Use string for step name
     urls_processed = {item['url'] for item in extracted_data if isinstance(item, dict) and 'url' in item} # Safer extraction
 
@@ -857,11 +857,11 @@ async def generate_extractions_post_scrape(job: str, verbose: bool = False):
     base_dir = project_root_notebooks / "browser_cache" # /home/mike/.../Notebooks/browser_cache
     logger.info(f"Using absolute base_dir: {base_dir}") # Log confirmation
 
-    script_path = (Path(__file__).parent / "seo_gadget.py").resolve()
+    script_path = (project_root_notebooks.parent / "tools" / "llm_optics.py").resolve()
 
     if not script_path.exists():
-         logger.error(f"❌ Cannot find visualization script at: {script_path}")
-         logger.error("   Please ensure seo_gadget.py is in the Notebooks/ directory.")
+         logger.error(f"❌ Cannot find LLM Optics engine at: {script_path}")
+         logger.error("   Please ensure llm_optics.py exists in the tools/ directory.")
          return
 
     python_executable = sys.executable # Use the same python that runs the notebook
