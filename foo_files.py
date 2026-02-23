@@ -1,15 +1,41 @@
 AI_PHOOEY_CHOP = """\
+/home/mike/repos/trimnoir/_posts/2026-02-22-stateless-ai-unix-context-engineering.md
+/home/mike/repos/trimnoir/_posts/2026-02-22-llm-optics-engine-refracting-web-ai.md
+/home/mike/repos/trimnoir/_posts/2026-02-22-web-forgotten-nervous-system-ai-moat.md
+flake.nix
 Notebooks/imports/seo_gadget.py
-apps/001_dom_visualizer.py
-apps/430_tab_opener.py
-apps/440_browser_automation.py
-assets/nbs/AI_Scrape.ipynb
 assets/nbs/imports/url_inspect_sauce.py
-imports/dom_processing/ai_dom_beautifier.py
-imports/dom_processing/enhanced_dom_processor.py
-tools/advanced_automation_tools.py
-tools/dom_tools.py
-tools/scraper_tools.py
+
+# /home/mike/repos/trimnoir/_posts/2025-10-27-coachmans-reins-ai-workflow-seo-gadget.md
+# /home/mike/repos/trimnoir/_posts/2025-10-27-seo-gadget-automated-data-extraction-blueprint.md
+# /home/mike/repos/trimnoir/_posts/2025-10-28-ai-debugging-chisel-strike-blueprint.md
+# /home/mike/repos/trimnoir/_posts/2025-10-28-ai-regressions-human-ai-empathy-nomad-future-blueprint.md
+# /home/mike/repos/trimnoir/_posts/2025-10-28-automating-professional-excel-deliverables-url-audit-reports.md
+# /home/mike/repos/trimnoir/_posts/2025-10-28-dataframe-chisel-strikes-precision-data-ai-audits.md
+# /home/mike/repos/trimnoir/_posts/2025-10-28-debugging-rich-html-export-performance-theming-ai-development.md
+# /home/mike/repos/trimnoir/_posts/2025-10-28-digital-jiu-jitsu-foundational-skills-ai-web-analysis.md
+
+# /home/mike/repos/trimnoir/_posts/2025-10-28-digital-sovereignty-pandas-nix-ai-blueprint.md
+# /home/mike/repos/trimnoir/_posts/2025-10-30-fractal-unfurling-ai-video-workflows.md
+# /home/mike/repos/trimnoir/_posts/2025-11-01-articulate-ape-blueprint-scaffolding-no-gooey-video-editing-nix.md
+# /home/mike/repos/trimnoir/_posts/2025-11-14-pebble-trails-smug-mugs-sovereign-craftsmanship-ai-age.md
+# /home/mike/repos/trimnoir/_posts/2025-11-22-the-matter-of-soul-turing-machines-sovereign-ai.md
+# /home/mike/repos/trimnoir/_posts/2025-11-23-sovereign-technomancer-ai-whimper-autonomy.md
+# /home/mike/repos/trimnoir/_posts/2025-12-09-context-king-blueprint-local-ai-operating-system.md
+# /home/mike/repos/trimnoir/_posts/2025-12-10-context-saturation-semantic-compression-fractal-blog-navigation.md
+# /home/mike/repos/trimnoir/_posts/2025-12-11-architects-pivot-file-backed-state-scalable-data-analysis.md
+
+# Notebooks/imports/seo_gadget.py
+# apps/001_dom_visualizer.py
+# apps/430_tab_opener.py
+# apps/440_browser_automation.py
+# assets/nbs/AI_Scrape.ipynb
+# assets/nbs/imports/url_inspect_sauce.py
+# imports/dom_processing/ai_dom_beautifier.py
+# imports/dom_processing/enhanced_dom_processor.py
+# tools/advanced_automation_tools.py
+# tools/dom_tools.py
+# tools/scraper_tools.py
 
 # remotes/honeybot/scripts/content_loader.py
 
@@ -55,26 +81,6 @@ tools/scraper_tools.py
 ## memory recovery protocol.
 ##
 ## You are operating within a "Forever Machine"—a sovereign, local-first
-## architecture designed to outlive corporate acquisitions, API deprecations,
-## and framework churn. We reject the opacity of modern JS frameworks (React/Vue)
-## and the complex abstractions of DRY enterprise code.
-##
-## Instead, we embrace the WET philosophy: "Write Explicitly, Terminate."
-## Our stack is simple: Nix, Python, SQLite, FastHTML, and HTMX.
-##
-## Below are the Chapters of our system. When you need to understand a specific
-## component, the human operator will include the relevant Chapter in your
-## context window.
-##
-## The chapters are ordered as a progressive reveal: infrastructure first,
-## then the server core, then the layers that wrap around it, then the
-## applications that run on top, and finally the heavy specialist tools.
-## ============================================================================
-
-
-# # PREFACE: SOMETIMES JUST SHOWING HOW WE PAINT CONTEXT IS ENOUGH (~50KB)
-# # This is the meta-layer: the context engineering toolkit itself.
-# # `prompt_foo.py` concatenates files into structured AI prompts.
 # # `foo_files.py` (this file) is both the routing table and the story.
 # prompt_foo.py
 # foo_files.py
@@ -145,6 +151,26 @@ tools/scraper_tools.py
 # # No build step. No Virtual DOM. What the server sends is what renders.
 # # `player-piano.js` handles HTMX/WebSocket UI interactions.
 # assets/init.js
+# assets/pipulate.js
+# assets/styles.css
+# assets/theme.js
+# assets/utils.js
+# assets/player-piano.js
+
+# # CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS) (~200KB)
+# # The fundamental plugin apps that govern the user experience:
+# # profiles, roles, tasks, the introduction wizard, and the
+# # hello-world workflow that teaches the pattern. Plus Piper TTS.
+# imports/crud.py
+# imports/voice_synthesis.py
+# apps/010_introduction.py
+# apps/020_profiles.py
+# apps/025_aspect.py
+# apps/030_roles.py
+# apps/040_hello_workflow.py
+# apps/060_tasks.py
+# apps/070_history.py
+
 # assets/pipulate.js
 # assets/styles.css
 # assets/theme.js
