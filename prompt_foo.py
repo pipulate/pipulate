@@ -516,7 +516,7 @@ Before addressing the user's prompt, perform the following verification steps:
 '''
 
     def _generate_summary_content(self, verified_token_count: int) -> str:
-        """Generates the content for the Summary section."""
+        """Generates the content for the Summary section with article echo."""
         lines = []
         
         # Command Line
@@ -528,15 +528,24 @@ Before addressing the user's prompt, perform the following verification steps:
             lines.append("--- Processing Log ---")
             lines.append(f"```\n{logs}\n```\n")
 
-        # OPTIMIZATION: Removed redundant "Files Included" section to save tokens
+        # --- NEW: Article Narrative Echo ---
+        # This peeks into the narrative context and extracts titles for terminal feedback
+        narrative = self.auto_context.get("Recent Narrative Context")
+        if narrative:
+            lines.append("--- Articles Included ---")
+            # Regex to find our H3 titles from the narrative_content assembly
+            titles = re.findall(r"### (.*?) \(", narrative['content'])
+            for title in titles:
+                lines.append(f"• {title}")
+            lines.append("")
 
         if self.auto_context:
-            lines.append("\n--- Auto-Context Included ---")
+            lines.append("--- Auto-Context Included ---")
             for title, data in self.auto_context.items():
                 byte_len = len(data['content'].encode('utf-8'))
                 lines.append(f"• {title} ({data['tokens']:,} tokens | {byte_len:,} bytes)")
 
-        # Metrics
+        # Metrics (The rest of your existing logic)
         total_tokens = sum(v.get('tokens', 0) for k, v in self.all_sections.items() if k != self.manifest_key)
         
         total_words = 0
@@ -565,7 +574,6 @@ Before addressing the user's prompt, perform the following verification steps:
         lines.append(f"Total Chars:      {char_count:,}")
         lines.append(f"Total Bytes:      {byte_count:,} (UTF-8)")
 
-        # Literary Perspective
         ratio = verified_token_count / total_words if total_words > 0 else 0
         perspective = get_literary_perspective(total_words, ratio)
         lines.append("\n--- Size Perspective ---")
