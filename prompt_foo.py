@@ -516,22 +516,32 @@ Before addressing the user's prompt, perform the following verification steps:
 '''
 
     def _generate_summary_content(self, verified_token_count: int) -> str:
-        """Generates the content for the Summary section with article echo and file manifest."""
+        """
+        Generates a consolidated terminal report and prompt summary.
+        Stacks: Command -> Execution Logs -> File Manifest -> Metrics.
+        """
         lines = []
         
-        # Command Line
+        # 1. The Command line
         lines.append(f"**Command:** `{self.command_line}`\n")
 
-        # --- NEW: File Manifest (The "Knapped Arrowhead" List) ---
+        # 2. RESTORED: Execution Log (Haptic Feedback)
+        # Captures "Skipping tree", notebook conversion status, etc.
+        logs = logger.get_captured_text().strip()
+        if logs:
+            lines.append("--- Processing Log ---")
+            lines.append(f"```\n{logs}\n```\n")
+
+        # 3. NEW: File Manifest (The "Knapped Arrowhead" List)
         if self.processed_files:
             lines.append("--- Codebase Files Included ---")
             for f in self.processed_files:
-                # Show relative path for scannability
+                # Show relative path for terminal scannability
                 display_path = os.path.relpath(f['path'], REPO_ROOT) if os.path.isabs(f['path']) else f['path']
                 lines.append(f"• {display_path} ({f['tokens']:,} tokens)")
             lines.append("")
 
-        # --- Article Narrative Echo ---
+        # 4. Article Narrative Echo
         narrative = self.auto_context.get("Recent Narrative Context")
         if narrative:
             lines.append("--- Articles Included ---")
@@ -540,13 +550,14 @@ Before addressing the user's prompt, perform the following verification steps:
                 lines.append(f"• {title}")
             lines.append("")
 
+        # 5. Auto-Context Metadata
         if self.auto_context:
-            lines.append("--- Auto-Context Included ---")
+            lines.append("--- Auto-Context Metadata ---")
             for title, data in self.auto_context.items():
                 byte_len = len(data['content'].encode('utf-8'))
                 lines.append(f"• {title} ({data['tokens']:,} tokens | {byte_len:,} bytes)")
 
-        # Metrics (Condensed)
+        # 6. Final Metrics (The Convergence Proof)
         total_tokens = sum(v.get('tokens', 0) for k, v in self.all_sections.items() if k != self.manifest_key)
         
         total_words = 0
