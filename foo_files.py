@@ -2,12 +2,24 @@
 # with a vim `Ctrl`+`v` visual selection to edit in and out columns of comment hashes.
 
 AI_PHOOEY_CHOP = """\
-pipulate/__init__.py
-pipulate/core.py
-tools/__init__.py
+flake.nix
+.gitignore
+config.py
+AI_RUNME.py
+README.md
+cli.py
+server.py
 tools/llm_optics.py
-/home/mike/repos/pipulate/Notebooks/0nboard.ipynb
-/home/mike/repos/pipulate/Notebooks/imports/onboard_sauce.py
+assets/player-piano.js
+apps/040_hello_workflow.py
+assets/scenarios/hello_workflow_test.json
+
+# pipulate/__init__.py
+# pipulate/core.py
+# tools/__init__.py
+# tools/llm_optics.py
+# /home/mike/repos/pipulate/Notebooks/0nboard.ipynb
+# /home/mike/repos/pipulate/Notebooks/imports/onboard_sauce.py
 
 # foo_files.py
 # /home/mike/repos/trimnoir/_posts/list_articles.py
