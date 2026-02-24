@@ -2,11 +2,13 @@
 # with a vim `Ctrl`+`v` visual selection to edit in and out columns of comment hashes.
 
 AI_PHOOEY_CHOP = """\
-Notebooks/0nboard.ipynb
-Notebooks/imports/onboard_sauce.py
-pipulate/core.py
-tools/scraper_tools.py
-tools/llm_optics.py
+
+# # Making the crawler cache support overriding
+# Notebooks/0nboard.ipynb
+# Notebooks/imports/onboard_sauce.py
+# pipulate/core.py
+# tools/scraper_tools.py
+# tools/llm_optics.py
 
 # # Revealing the thing that handles the `app/` plugins.
 # foo_files.py
