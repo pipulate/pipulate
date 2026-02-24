@@ -42,7 +42,7 @@ langchain-community
 
 # Jupyter Environment
 jupyterlab
-jupyter-ai[all]
+# jupyter-ai[all]
 ipywidgets
 itables
 jupytext
