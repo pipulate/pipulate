@@ -7,13 +7,19 @@
 # then re-install pip-tools then do the compile command.
 
 # NEW stuff
-llm
 moviepy
 requests-toolbelt
 markdownify
 pip-tools
 python-frontmatter
 google-api-python-client
+
+# Simon Willison's llm
+llm
+llm-gemini
+llm-anthropic
+llm-mistral
+llm-ollama
 
 # GAPalyzer
 nltk
