@@ -2,7 +2,11 @@
 # with a vim `Ctrl`+`v` visual selection to edit in and out columns of comment hashes.
 
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/pipulate/Notebooks/0nboard.ipynb
+Notebooks/0nboard.ipynb
+Notebooks/imports/onboard_sauce.py
+pipulate/core.py
+tools/scraper_tools.py
+tools/llm_optics.py
 
 # # Revealing the thing that handles the `app/` plugins.
 # foo_files.py
@@ -37,8 +41,8 @@ AI_PHOOEY_CHOP = """\
 # prompt_foo.py                       # <-- because you deserve to know how I'm doing this
 # foo_files.py                        # <-- So you can see the full chapter-based onboarding of AI to this system and history of recent thoughts / work
 # apps/040_hello_workflow.py          # <-- Because you ought to see an example of a Pipulate FastHTML Web App workflow plugin sooner rather than later
-# Notebooks/imports/onboard_sauce.py  # <-- How we keep the onboarding experience from being too intimidating
-# Notebooks/0nboard.ipynb             # <-- The thing you're helping me edit
+# notebooks/imports/onboard_sauce.py  # <-- how we keep the onboarding experience from being too intimidating
+# notebooks/0nboard.ipynb             # <-- the thing you're helping me edit
 
 # # Deciding between F-strings and T-strings for onboarding cell #1 experience.
 # /home/mike/repos/Pipulate.com/index.md
