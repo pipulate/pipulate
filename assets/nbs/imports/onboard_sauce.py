@@ -89,7 +89,7 @@ def show_artifacts(target_url: str):
     else:
         print("Directory not found. The scrape may not have completed successfully.")
 
-def interrogate_local_ai(target_url: str):
+def interrogate_local_ai(target_url: str, preferred_model: str = None):
     """Reads the accessibility tree and asks the local AI to summarize it."""
     from urllib.parse import urlparse, quote
     
@@ -107,9 +107,13 @@ def interrogate_local_ai(target_url: str):
         prompt = f"Based on the following DevTools accessibility tree extracted from a scrape, what is this page about? Answer in exactly 3 short bullet points.\n\n{content[:2000]}"
         
         try:
-            # Grab the default model from the Universal Adapter
-            target_model_id = llm.get_default_model().model_id
-            model = llm.get_model(target_model_id)
+            # The Universal Adapter handles fallbacks automatically!
+            if preferred_model:
+                model = llm.get_model(preferred_model)
+            else:
+                model = llm.get_model()  # Auto-grabs the default
+                
+            target_model_id = model.model_id
             wand.speak(f"I am now interrogating the scraped data using the Universal Adapter, routed to {target_model_id}.")
             
             # The elegant prompt execution

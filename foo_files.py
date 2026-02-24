@@ -2,8 +2,12 @@
 # with a vim `Ctrl`+`v` visual selection to edit in and out columns of comment hashes.
 
 AI_PHOOEY_CHOP = """\
-Notebooks/0nboard.ipynb
-Notebooks/imports/onboard_sauce.py
+config.py
+.gitignore
+/home/mike/repos/pipulate/apps/100_connect_with_botify.py
+
+# Notebooks/0nboard.ipynb
+# Notebooks/imports/onboard_sauce.py
 
 # # Making the crawler cache support overriding
 # Notebooks/0nboard.ipynb
