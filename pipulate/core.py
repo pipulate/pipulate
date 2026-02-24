@@ -1930,6 +1930,7 @@ class Pipulate:
                      headless: bool = True, 
                      verbose: bool = True, 
                      persistent: bool = False, 
+                     override_cache: bool = False,
                      profile_name: str = "default", 
                      delay_range: tuple = None, **kwargs):
         """
@@ -1945,6 +1946,7 @@ class Pipulate:
             headless (bool): Whether to run the browser in headless mode (selenium mode only). Defaults to True.
             persistent (bool): Whether to use a persistent browser profile. Defaults to False.
             profile_name (str): The name of the persistent profile to use. Defaults to "default".
+            override_cache (bool): If True, deletes existing cached artifacts before scraping. Defaults to False.
             delay_range (tuple): A tuple (min, max) for random delay in seconds between requests.
             **kwargs: Additional parameters to pass to the underlying automation tool.
 
@@ -1973,6 +1975,7 @@ class Pipulate:
             "is_notebook_context": self.is_notebook_context, # Pass the context flag
             "verbose": verbose,
             "persistent": persistent,
+            "override_cache": override_cache,
             "profile_name": profile_name,
             "delay_range": delay_range,
             **kwargs # Pass through any other params
