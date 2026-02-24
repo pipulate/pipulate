@@ -39,6 +39,7 @@ SemrushBot
 SeznamBot
 Sogou
 TerraCotta
+TikTokSpider
 Wget
 Yandex
 YandexBot
