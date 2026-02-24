@@ -2,8 +2,9 @@
 # with a vim `Ctrl`+`v` visual selection to edit in and out columns of comment hashes.
 
 AI_PHOOEY_CHOP = """\
-requirements.in
-requirements.txt
+/home/mike/repos/pipulate/scripts/articles/common.py
+/home/mike/repos/pipulate/scripts/articles/update_graphs.py
+/home/mike/repos/pipulate/scripts/articles/build_knowledge_graph.py
 
 # # Making the crawler cache support overriding
 # Notebooks/0nboard.ipynb

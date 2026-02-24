@@ -14,7 +14,7 @@ from sklearn.decomposition import TruncatedSVD
 
 import common
 
-warnings.filterwarnings('ignore', category=pd.errors.SettingWithCopyWarning)
+# warnings.filterwarnings('ignore', category=pd.errors.SettingWithCopyWarning)
 
 # --- GLOBAL CONFIGURATION ---
 TARGET_BRANCHING_FACTOR = 7  # The "Rule of 7"
