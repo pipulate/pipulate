@@ -137,19 +137,25 @@ def interrogate_local_ai(target_url: str):
     else:
         print(f"⚠️ Could not find {md_file}. Did the previous step complete successfully?")
 
-async def analyze_ai_readiness(job: str, url: str, verbose: bool = True):
+async def analyze_ai_readiness(job: str, url: str, verbose: bool = True, override_cache: bool = False):
     """
     The master 'Aha!' sequence for onboarding.
     Scrapes a URL and immediately shatters it into LLM Optics.
     """
     wand.speak(f"Beginning AI-Readiness analysis for {url}.")
+
+    if override_cache:
+        print("🧹 Cache override engaged. Forcing a fresh scrape.")
     
     # 1. THE SCRAPE (The Acquisition)
-    logger.info(f"🚀 Step 1: Navigating to {url}...")
+    if not override_cache:
+        logger.info(f"🚀 Step 1: Checking cache or navigating to {url}...")
+
     result = await wand.scrape(
         url=url, 
         take_screenshot=True, 
         headless=False, 
+        override_cache=override_cache,
         verbose=verbose
     )
     
@@ -158,6 +164,13 @@ async def analyze_ai_readiness(job: str, url: str, verbose: bool = True):
         wand.speak("I encountered an issue during navigation.")
         print(f"❌ Scrape Failed: {error_msg}")
         return False
+
+    if result.get('cached'):
+        wand.speak("I already have this data cached locally. Bypassing browser navigation.")
+        print("⚡ Cache Hit! Using existing artifacts to save time and compute.")
+    else:
+        wand.speak("Navigation complete. Page data captured.")
+        print("✅ Fresh Scrape Successful.")
 
     # 2. THE OPTICS (The Refraction)
     dom_path = result.get("looking_at_files", {}).get("rendered_dom")
