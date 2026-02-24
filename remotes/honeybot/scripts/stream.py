@@ -28,6 +28,7 @@ PITCH_TEXT = (
     "The purpose of this site is to answer many of the important questions being asked in marketing and society today. "
     "There's something special about watching AI-Bots live like fish in a fish-tank. "
     "Witness them scrape content to use it for their own purposes. "
+    "You can review the code used to create this at Pipulate dot com. "
     "Once every two hours we show a series of more surprising in-depth reports. "
     "Subscribe, like, leave a comment and sit back and watch the machine think. It's never the same twice. "
     "The voice you hear is reading the content you currently see being accessed. "
