@@ -13,46 +13,45 @@ import ipywidgets as widgets
 from IPython.display import display
 from loguru import logger
 from pipulate import wand  # Use wand!
+import llm
 
-def check_for_ollama():
-    """Scans the local system for a running Ollama instance and available models."""
-    wand.speak("Scanning your system for a local AI brain...")
-    
-    # Try multiple common local addresses to bypass DNS/IPv6 routing quirks
-    addresses_to_try = [
-        "http://127.0.0.1:11434/api/tags",
-        "http://localhost:11434/api/tags",
-        "http://0.0.0.0:11434/api/tags"
-    ]
-    
-    for url in addresses_to_try:
-        try:
-            req = urllib.request.Request(url)
-            with urllib.request.urlopen(req, timeout=2) as response:
-                if response.getcode() == 200:
-                    data = json.loads(response.read())
-                    models = [model['name'] for model in data.get('models', [])]
-                    if models:
-                        wand.speak(f"Excellent! I detect Ollama is running. You have {len(models)} models installed.")
-                        print(f"\n✅ Installed Models: {', '.join(models)}")
-                    else:
-                        wand.speak("Ollama is running, but you don't have any models downloaded yet.")
-                    return True
-        except (urllib.error.URLError, socket.timeout, ConnectionRefusedError):
-            continue # Try the next address
-        except Exception as e:
-            print(f"  [Debug] Error trying {url}: {e}")
-            continue
-    
-    # The Fallback State (only reached if ALL addresses fail)
-    wand.speak("I do not detect a local AI brain on your system.")
-    print("\nℹ️  Ollama is not running or not installed.")
-    print("Pipulate works perfectly fine without it, but an AI 'riding shotgun' makes the experience much better.")
-    print("\nTo upgrade your environment:")
-    print("1. Go to https://ollama.com/")
-    print("2. Download the installer for your operating system (Mac/Windows/Linux).")
-    print("3. Install it, and run this cell again.")
-    
+def check_ai_models(preferred_model=None):
+    """Uses the Universal Adapter (llm) to verify AI readiness and preferred models."""
+    if preferred_model:
+        wand.speak(f"Checking for your preferred AI model: {preferred_model}...")
+    else:
+        wand.speak("Scanning your system for available AI models...")
+    try:
+        # Grab all models registered with the llm package
+        models = [m.model_id for m in llm.get_models()]
+        
+        # Check if any local Ollama models are present (they usually don't have a provider prefix like 'gpt-' or 'claude-')
+        # The llm-ollama plugin registers them dynamically.
+        has_local = any('ollama' in str(type(m)).lower() for m in llm.get_models())
+        
+        if preferred_model and preferred_model in models:
+            wand.speak(f"Excellent! Your preferred model '{preferred_model}' is active and ready.")
+            print(f"\n✅ Locked in model: {preferred_model}")
+            return preferred_model
+            
+        if has_local:
+            wand.speak(f"I found {len(models)} total models, including local options. Your preferred model was not found.")
+            print(f"\nℹ️  '{preferred_model}' not found, but you have local models ready to use.")
+            return True # Or return a default local model if you prefer
+            
+        # The Fallback State: No local models detected
+        wand.speak("I do not detect a local AI brain on your system.")
+        print("\nℹ️  Ollama is not running or not installed.")
+        print("Pipulate works perfectly fine without it, but an AI 'riding shotgun' makes the experience much better.")
+        print("\nTo upgrade your environment for true Local-First Sovereignty:")
+        print("1. Go to https://ollama.com/")
+        print("2. Download the installer for your operating system (Mac/Windows/Linux).")
+        print("3. Install it, pull a model (e.g., 'ollama run qwen3:1.7b'), and run this cell again.")
+        return False
+
+    except Exception as e:
+        print(f"❌ Error communicating with the Universal Adapter: {e}")
+
     return False
 
 def show_artifacts(target_url: str):
@@ -107,31 +106,19 @@ def interrogate_local_ai(target_url: str):
         # Use first 2000 characters to keep it fast
         prompt = f"Based on the following DevTools accessibility tree extracted from a scrape, what is this page about? Answer in exactly 3 short bullet points.\n\n{content[:2000]}"
         
-        req_tags = urllib.request.Request("http://localhost:11434/api/tags")
         try:
-            with urllib.request.urlopen(req_tags, timeout=2) as response:
-                available_models = [m['name'] for m in json.loads(response.read()).get('models', [])]
-                
-            if available_models:
-                target_model = available_models[0] 
-                
-                wand.speak(f"I am now interrogating the scraped data using your local AI brain, {target_model}. This analysis costs exactly zero cents.")
-                
-                req_generate = urllib.request.Request(
-                    "http://localhost:11434/api/generate",
-                    data=json.dumps({"model": target_model, "prompt": prompt, "stream": False}).encode("utf-8"),
-                    headers={"Content-Type": "application/json"}
-                )
-                
-                with urllib.request.urlopen(req_generate) as ai_response:
-                    result = json.loads(ai_response.read())
-                    analysis = result.get("response", "")
-                    
-                    print(f"🤖 Analysis from {target_model}:\n")
-                    print(analysis)
-                    
-                    wand.speak("Analysis complete. As you can see, I can read and summarize local files instantly, with total privacy.")
-                    
+            # Grab the default model from the Universal Adapter
+            target_model_id = llm.get_default_model().model_id
+            model = llm.get_model(target_model_id)
+            wand.speak(f"I am now interrogating the scraped data using the Universal Adapter, routed to {target_model_id}.")
+            
+            # The elegant prompt execution
+            response = model.prompt(prompt)
+            
+            print(f"🤖 Analysis from {target_model_id}:\n")
+            print(response.text())                
+            wand.speak("Analysis complete. As you can see, I can read and summarize local files instantly.")
+
         except Exception as e:
             print(f"⚠️ Could not complete local AI analysis: {e}")
     else:

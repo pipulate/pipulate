@@ -15,20 +15,40 @@ from loguru import logger
 from pipulate import wand  # Use wand!
 import llm
 
-def check_ai_models():
-    """Uses the Universal Adapter (llm) to list available models."""
-    wand.speak("Scanning your system for available AI models via the Universal Adapter...")
-    
+def check_ai_models(preferred_model=None):
+    """Uses the Universal Adapter (llm) to verify AI readiness and preferred models."""
+    if preferred_model:
+        wand.speak(f"Checking for your preferred AI model: {preferred_model}...")
+    else:
+        wand.speak("Scanning your system for available AI models...")
     try:
         # Grab all models registered with the llm package
         models = [m.model_id for m in llm.get_models()]
-        if models:
-            wand.speak(f"Excellent! The adapter is active. I see {len(models)} models ready for use.")
-            print(f"\n✅ Available Models (First 10): {', '.join(models[:10])}...")
-            return True
-        else:
-            wand.speak("The adapter is active, but no models are configured.")
-            return False
+        
+        # Check if any local Ollama models are present (they usually don't have a provider prefix like 'gpt-' or 'claude-')
+        # The llm-ollama plugin registers them dynamically.
+        has_local = any('ollama' in str(type(m)).lower() for m in llm.get_models())
+        
+        if preferred_model and preferred_model in models:
+            wand.speak(f"Excellent! Your preferred model '{preferred_model}' is active and ready.")
+            print(f"\n✅ Locked in model: {preferred_model}")
+            return preferred_model
+            
+        if has_local:
+            wand.speak(f"I found {len(models)} total models, including local options. Your preferred model was not found.")
+            print(f"\nℹ️  '{preferred_model}' not found, but you have local models ready to use.")
+            return True # Or return a default local model if you prefer
+            
+        # The Fallback State: No local models detected
+        wand.speak("I do not detect a local AI brain on your system.")
+        print("\nℹ️  Ollama is not running or not installed.")
+        print("Pipulate works perfectly fine without it, but an AI 'riding shotgun' makes the experience much better.")
+        print("\nTo upgrade your environment for true Local-First Sovereignty:")
+        print("1. Go to https://ollama.com/")
+        print("2. Download the installer for your operating system (Mac/Windows/Linux).")
+        print("3. Install it, pull a model (e.g., 'ollama run qwen3:1.7b'), and run this cell again.")
+        return False
+
     except Exception as e:
         print(f"❌ Error communicating with the Universal Adapter: {e}")
 
