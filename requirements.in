@@ -8,14 +8,15 @@
 
 # Here's the procedure for when things get stubborn.
 
-# 1. exit
+# 1. exit (from previous nix environment)
 # 2. rm -rf .venv
 # 3. nix develop .#quiet
 # 4. pip install --upgrade pip==25.2
 # 5. pip install --upgrade pip-tools
 # 6. pip-compile requirements.in -o requirements.txt --upgrade --max-rounds 500
 #    Make sure the new thing actually made it to requirements.txt
-# 7. git add requirements.txt (& commit & push)
+# 7. nix develop (may have to start new nix environment)
+# 8. git add requirements.txt (& commit & push)
 
 # NEW stuff
 moviepy
