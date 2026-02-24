@@ -2,6 +2,8 @@
 # with a vim `Ctrl`+`v` visual selection to edit in and out columns of comment hashes.
 
 AI_PHOOEY_CHOP = """\
+/home/mike/repos/pipulate/Notebooks/0nboard.ipynb
+
 # # Revealing the thing that handles the `app/` plugins.
 # foo_files.py
 # .gitignore
