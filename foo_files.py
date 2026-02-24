@@ -2,6 +2,8 @@
 # with a vim `Ctrl`+`v` visual selection to edit in and out columns of comment hashes.
 
 AI_PHOOEY_CHOP = """\
+requirements.in
+requirements.txt
 /home/mike/repos/pipulate/pipulate/core.py
 imports/voice_synthesis.py
 
