@@ -47,6 +47,7 @@ async def selenium_automation(params: dict) -> dict:
     persistent = params.get("persistent", False)
     profile_name = params.get("profile_name", "default")
     verbose = params.get("verbose", True)
+    override_cache = params.get("override_cache", False)
     delay_range = params.get("delay_range")
 
     if not all([url, domain, url_path_slug is not None]):
@@ -58,6 +59,15 @@ async def selenium_automation(params: dict) -> dict:
     
     output_dir = base_dir / domain / url_path_slug
     artifacts = {}
+
+    # --- CACHE OVERRIDE LOGIC ---
+    if override_cache and output_dir.exists():
+        if verbose:
+            logger.warning(f"🧹 override_cache is True. Clearing existing directory: {output_dir}")
+        try:
+            shutil.rmtree(output_dir)
+        except Exception as e:
+            logger.error(f"Failed to clear cache directory: {e}")
 
     # --- IDEMPOTENCY CHECK ---
     # Check if the primary artifact (rendered_dom.html) already exists.
