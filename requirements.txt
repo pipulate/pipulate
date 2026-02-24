@@ -14,8 +14,11 @@ aiosignal==1.4.0
     # via aiohttp
 annotated-types==0.7.0
     # via pydantic
+anthropic==0.83.0
+    # via llm-anthropic
 anyio==4.12.1
     # via
+    #   anthropic
     #   google-genai
     #   httpx
     #   jupyter-server
@@ -120,8 +123,11 @@ dill==0.4.1
     # via pylint
 distro==1.9.0
     # via
+    #   anthropic
     #   google-genai
     #   openai
+docstring-parser==0.17.0
+    # via anthropic
 et-xmlfile==2.0.0
     # via openpyxl
 executing==2.2.1
@@ -206,14 +212,20 @@ httptools==0.7.1
     # via uvicorn
 httpx==0.28.1
     # via
+    #   anthropic
     #   google-genai
     #   jupyterlab
     #   langgraph-sdk
     #   langsmith
+    #   llm-gemini
+    #   llm-mistral
+    #   ollama
     #   openai
     #   python-fasthtml
 httpx-sse==0.4.3
-    # via langchain-community
+    # via
+    #   langchain-community
+    #   llm-mistral
 hyperframe==6.1.0
     # via
     #   h2
@@ -227,6 +239,8 @@ idna==3.11
     #   tldextract
     #   trio
     #   yarl
+ijson==3.5.0
+    # via llm-gemini
 imageio==2.37.2
     # via moviepy
 imageio-ffmpeg==0.6.0
@@ -260,11 +274,15 @@ jinja2==3.1.6
     #   jupyterlab-server
     #   nbconvert
 jiter==0.13.0
-    # via openai
+    # via
+    #   anthropic
+    #   openai
 joblib==1.5.3
     # via
     #   nltk
     #   scikit-learn
+json-schema-to-pydantic==0.4.9
+    # via llm-anthropic
 json5==0.13.0
     # via jupyterlab-server
 jsonpatch==1.33
@@ -351,7 +369,7 @@ langgraph-checkpoint==4.0.0
     #   langgraph-prebuilt
 langgraph-prebuilt==1.0.8
     # via langgraph
-langgraph-sdk==0.3.8
+langgraph-sdk==0.3.9
     # via langgraph
 langsmith==0.7.6
     # via
@@ -361,6 +379,19 @@ langsmith==0.7.6
 lark==1.3.1
     # via rfc3987-syntax
 llm==0.28
+    # via
+    #   -r requirements.in
+    #   llm-anthropic
+    #   llm-gemini
+    #   llm-mistral
+    #   llm-ollama
+llm-anthropic==0.24
+    # via -r requirements.in
+llm-gemini==0.29
+    # via -r requirements.in
+llm-mistral==0.15
+    # via -r requirements.in
+llm-ollama==0.15.1
     # via -r requirements.in
 loguru==0.7.3
     # via -r requirements.in
@@ -436,11 +467,13 @@ numpy==2.4.2
     #   scipy
 oauthlib==3.3.1
     # via python-fasthtml
+ollama==0.6.1
+    # via llm-ollama
 onnxruntime==1.24.2
     # via
     #   -r requirements.in
     #   piper-tts
-openai==2.23.0
+openai==2.24.0
     # via
     #   langchain-openai
     #   llm
@@ -544,8 +577,10 @@ pycparser==3.0
 pydantic==2.12.5
     # via
     #   -r requirements.in
+    #   anthropic
     #   google-genai
     #   google-generativeai
+    #   json-schema-to-pydantic
     #   langchain
     #   langchain-classic
     #   langchain-core
@@ -553,6 +588,8 @@ pydantic==2.12.5
     #   langgraph
     #   langsmith
     #   llm
+    #   llm-ollama
+    #   ollama
     #   openai
     #   pydantic-settings
 pydantic-core==2.41.5
@@ -698,6 +735,7 @@ six==1.17.0
     #   rfc3339-validator
 sniffio==1.3.1
     # via
+    #   anthropic
     #   google-genai
     #   openai
     #   trio
@@ -782,6 +820,7 @@ trio-websocket==0.12.2
 typing-extensions==4.15.0
     # via
     #   aiosignal
+    #   anthropic
     #   anyio
     #   beautifulsoup4
     #   google-genai
