@@ -2,17 +2,66 @@
 # with a vim `Ctrl`+`v` visual selection to edit in and out columns of comment hashes.
 
 AI_PHOOEY_CHOP = """\
-flake.nix
-.gitignore
-config.py
-AI_RUNME.py
-README.md
-cli.py
-server.py
-tools/llm_optics.py
-assets/player-piano.js
-apps/040_hello_workflow.py
-assets/scenarios/hello_workflow_test.json
+# # Revealing the thing that handles the `app/` plugins.
+# foo_files.py
+# .gitignore
+# config.py
+# server.py
+
+# The AI's gotta see the FastHTML HTMX building blocks of a workflow and ideas how they might be deterministically split-and-joined into workflows.
+# Not DRY but maybe just about as good as WET can get.
+# /home/mike/repos/pipulate/apps/230_dev_assistant.py
+# /home/mike/repos/pipulate/apps/300_blank_placeholder.py
+# /home/mike/repos/pipulate/apps/510_text_field.py
+# /home/mike/repos/pipulate/apps/520_text_area.py
+# /home/mike/repos/pipulate/apps/530_dropdown.py
+# /home/mike/repos/pipulate/apps/540_checkboxes.py
+# /home/mike/repos/pipulate/apps/550_radios.py
+# /home/mike/repos/pipulate/apps/560_range.py
+# /home/mike/repos/pipulate/apps/570_switch.py
+# /home/mike/repos/pipulate/apps/580_upload.py
+# /home/mike/repos/pipulate/apps/610_markdown.py
+# /home/mike/repos/pipulate/apps/620_mermaid.py
+# /home/mike/repos/pipulate/apps/630_prism.py
+# /home/mike/repos/pipulate/apps/640_javascript.py
+# /home/mike/repos/pipulate/apps/710_pandas.py
+# /home/mike/repos/pipulate/apps/720_rich.py
+# /home/mike/repos/pipulate/apps/730_matplotlib.py
+# /home/mike/repos/pipulate/apps/810_webbrowser.py
+# /home/mike/repos/pipulate/apps/820_selenium.py
+# /home/mike/repos/pipulate/apps/200_workflow_genesis.py
+
+# # Working out Pipulate onboarding details.
+# prompt_foo.py                       # <-- because you deserve to know how I'm doing this
+# foo_files.py                        # <-- So you can see the full chapter-based onboarding of AI to this system and history of recent thoughts / work
+# apps/040_hello_workflow.py          # <-- Because you ought to see an example of a Pipulate FastHTML Web App workflow plugin sooner rather than later
+# Notebooks/imports/onboard_sauce.py  # <-- How we keep the onboarding experience from being too intimidating
+# Notebooks/0nboard.ipynb             # <-- The thing you're helping me edit
+
+# # Deciding between F-strings and T-strings for onboarding cell #1 experience.
+# /home/mike/repos/Pipulate.com/index.md
+# /home/mike/repos/Pipulate.com/install.sh
+# .gitignore
+# README.md
+# AI_RUNME.py
+# flake.nix
+# pipulate/__init__.py
+# pipulate/core.py
+# Notebooks/imports/onboard_sauce.py
+
+# # Demonstrating how the Ghost Driver works to provide unit testing-coverage (preventing AI generative regression), 
+# # feature demonstrations and blipverts for pd.concat()-like cuts-only editing ultimately for YouTube viral promotion.
+# flake.nix
+# .gitignore
+# config.py
+# AI_RUNME.py
+# README.md
+# cli.py
+# server.py
+# tools/llm_optics.py
+# assets/player-piano.js
+# apps/040_hello_workflow.py
+# assets/scenarios/hello_workflow_test.json
 
 # pipulate/__init__.py
 # pipulate/core.py
@@ -48,7 +97,7 @@ assets/scenarios/hello_workflow_test.json
 # /home/mike/repos/trimnoir/_posts/2026-02-22-web-forgotten-nervous-system-ai-moat.md
 # tools/llm_optics.py
 # flake.nix
-# Notebooks/imports/seo_gadget.py
+# Notebooks/imports/llm_optics.py  # <-- deleted
 # assets/nbs/imports/url_inspect_sauce.py
 
 # # One chunk of articles of recent work
@@ -107,7 +156,7 @@ assets/scenarios/hello_workflow_test.json
 # /home/mike/repos/Pipulate.com/_site/index.html
 # /home/mike/repos/Pipulate.com/install.md
 # https://raw.githubusercontent.com/miklevin/pipulate/refs/heads/main/README.md
-# /home/mike/repos/Pipulate.com/install.md
+# /home/mike/repos/Pipulate.com/install.sh
 # /home/mike/repos/pipulate/release.py
 # /home/mike/repos/pipulate/flake.nix
 # /home/mike/repos/pipulate/apps/010_introduction.py
