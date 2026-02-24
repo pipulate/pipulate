@@ -13,6 +13,7 @@ markdownify
 pip-tools
 python-frontmatter
 google-api-python-client
+huggingface_hub
 
 # Simon Willison's llm
 llm
