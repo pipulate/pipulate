@@ -206,8 +206,8 @@
     '';
 
     virtualHosts."mikelev.in" = {
-      # forceSSL = true;      # Force all traffic to HTTPS  # <--- Comment out (Don't force HTTPS yet)
-      # enableACME = true;    # Let's Encrypt magic # <--- Comment out (Don't try to get certs yet)
+      forceSSL = true;      # Force all traffic to HTTPS 
+      enableACME = true;    # Let's Encrypt magic 
 
       # The Web Root
       root = "/home/mike/www/mikelev.in/_site"; 

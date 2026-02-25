@@ -7,7 +7,9 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-prompt_foo.py
+deploy_honeybot.sh
+remotes/honeybot/hooks/post-receive
+remotes/honeybot/nixos/configuration.nix
 
 # # Yet Another Onboarding. Working towards Nginx config.
 # 
