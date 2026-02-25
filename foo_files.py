@@ -7,6 +7,7 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
+prompt_foo.py
 
 # # Yet Another Onboarding. Working towards Nginx config.
 # 
@@ -20,9 +21,9 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/trimnoir/_layouts/default.html
 # https://mikelev.in/futureproof/automating-dual-layer-content-markdown-html-ai/index.md
 # 
-foo_files.py
-AI_RUNME.py
-/home/mike/repos/trimnoir/about.md
+# foo_files.py
+# AI_RUNME.py
+# /home/mike/repos/trimnoir/about.md
 
 # # Showing AI the IaC way my HP Z640 is the puppet-master of my i5 Windows machine repurposed as a home-hosted DMZ webhead
 # deploy_honeybot.sh

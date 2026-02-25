@@ -194,12 +194,32 @@
     recommendedProxySettings = true;
     recommendedTlsSettings = true; 
 
+    # 1. THE SENSOR: Read the Accept header and define the MIME type
+    appendHttpConfig = ''
+      map $http_accept $serve_markdown {
+        default 0;
+        "~*text/markdown" 1;
+      }
+      types {
+        text/markdown md;
+      }
+    '';
+
     virtualHosts."mikelev.in" = {
-      forceSSL = true;      # Force all traffic to HTTPS  # <--- Comment out (Don't force HTTPS yet)
-      enableACME = true;    # Let's Encrypt magic # <--- Comment out (Don't try to get certs yet)
+      # forceSSL = true;      # Force all traffic to HTTPS  # <--- Comment out (Don't force HTTPS yet)
+      # enableACME = true;    # Let's Encrypt magic # <--- Comment out (Don't try to get certs yet)
 
       # The Web Root
       root = "/home/mike/www/mikelev.in/_site"; 
+
+      # 2. THE SWITCH: Route to the .md file if the sensor fired
+      locations."/" = {
+        extraConfig = ''
+          if ($serve_markdown = 1) {
+            rewrite ^(.*)/$ $1/index.md break;
+          }
+        '';
+      };
     };
   };
 
