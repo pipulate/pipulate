@@ -7,7 +7,9 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/trimnoir/_posts/2026-01-12-reclaiming-digital-agency-local-owner-operated-tech.md
+/home/mike/repos/trimnoir/_layouts/default.html
+
+# /home/mike/repos/trimnoir/_posts/2026-01-12-reclaiming-digital-agency-local-owner-operated-tech.md
 
 # remotes/honeybot/nixos/configuration.nix
 # remotes/honeybot/hooks/post-receive

@@ -23,18 +23,36 @@ nix develop --command bash -c "
   # --- THE BUILD ---
   echo '🏗️  Jekyll Build...'
   bundle exec jekyll build --future
+ 
+  # --- PUBLISH SOURCE MARKDOWN (CHISEL-STRIKE) ---
+  echo '📄 Publishing Source Markdown alongside HTML...'
   
-  # --- PUBLISH SOURCE MARKDOWN (NEW) ---
-  echo '📄 Publishing Source Markdown...'
-  # Create the destination directory
-  mkdir -p _site/source/
-  
-  # Copy posts, preserving structure if needed, or just flat list
-  # We copy the entire _posts folder to _site/source/
-  cp -r _posts/* _site/source/
-  
-  # Optional: Copy pages too if they are markdown
-  # cp *.md _site/source/ 2>/dev/null || true
+  # Loop through all markdown files in the _posts directory
+  for post in _posts/*.md; do
+    # Safety check in case the directory is empty
+    [ -e "$post" ] || continue
+
+    # Extract the permalink. 
+    # grep -m 1: grabs only the first match (safely inside frontmatter)
+    # awk '{print $2}': grabs the path after the colon and space
+    # tr -d: strips any accidental single or double quotes
+    PERMALINK=$(grep -m 1 "^permalink:" "$post" | awk '{print $2}' | tr -d '"'\''')
+
+    if [ -n "$PERMALINK" ]; then
+      # Construct the full target path (e.g., _site/futureproof/reclaiming-...)
+      # Note: PERMALINK already includes the leading and trailing slashes
+      TARGET_DIR="_site${PERMALINK}"
+      
+      # Create the directory structure quietly
+      mkdir -p "$TARGET_DIR"
+      
+      # Copy the file to its new sovereign home as index.md
+      cp "$post" "${TARGET_DIR}index.md"
+      echo "  -> Placed index.md in $PERMALINK"
+    else
+      echo "  -> Warning: No permalink found in $post. Skipping."
+    fi
+  done
 "
 
 # 4. Permissions Fix (Crucial for Nginx)
