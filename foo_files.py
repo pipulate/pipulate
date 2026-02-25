@@ -7,16 +7,29 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/trimnoir/_layouts/default.html
 
-# /home/mike/repos/trimnoir/_posts/2026-01-12-reclaiming-digital-agency-local-owner-operated-tech.md
-
-# remotes/honeybot/nixos/configuration.nix
-# remotes/honeybot/hooks/post-receive
-
+# # Yet Another Onboarding. Working towards Nginx config.
+# 
 # foo_files.py
 # prompt_foo.py
+# 
+# AI_README.py
 # deploy_honeybot.sh
+# remotes/honeybot/nixos/configuration.nix
+# remotes/honeybot/hooks/post-receive
+# /home/mike/repos/trimnoir/_layouts/default.html
+# https://mikelev.in/futureproof/automating-dual-layer-content-markdown-html-ai/index.md
+# 
+foo_files.py
+AI_RUNME.py
+/home/mike/repos/trimnoir/about.md
+
+# # Showing AI the IaC way my HP Z640 is the puppet-master of my i5 Windows machine repurposed as a home-hosted DMZ webhead
+# deploy_honeybot.sh
+# remotes/honeybot/nixos/configuration.nix
+# remotes/honeybot/hooks/post-receive
+# /home/mike/repos/trimnoir/_layouts/default.html
+# /home/mike/repos/trimnoir/_posts/2026-01-12-reclaiming-digital-agency-local-owner-operated-tech.md
 
 # # Figuring out how we're going to do dotenv secrets
 # config.py

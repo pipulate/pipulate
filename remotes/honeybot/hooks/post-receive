@@ -23,34 +23,31 @@ nix develop --command bash -c "
   # --- THE BUILD ---
   echo '🏗️  Jekyll Build...'
   bundle exec jekyll build --future
- 
+  
   # --- PUBLISH SOURCE MARKDOWN (CHISEL-STRIKE) ---
   echo '📄 Publishing Source Markdown alongside HTML...'
   
   # Loop through all markdown files in the _posts directory
   for post in _posts/*.md; do
     # Safety check in case the directory is empty
-    [ -e "$post" ] || continue
+    [ -e \"\$post\" ] || continue
 
-    # Extract the permalink. 
-    # grep -m 1: grabs only the first match (safely inside frontmatter)
-    # awk '{print $2}': grabs the path after the colon and space
-    # tr -d: strips any accidental single or double quotes
-    PERMALINK=$(grep -m 1 "^permalink:" "$post" | awk '{print $2}' | tr -d '"'\''')
+    # Extract the permalink using sed to avoid quote-escaping hell inside bash -c
+    # This grabs the line starting with permalink:, removes the key, and strips whitespace and quotes
+    PERMALINK=\$(grep -m 1 '^permalink:' \"\$post\" | sed -e 's/^permalink:[[:space:]]*//' -e 's/[\"'\''[:space:]]//g')
 
-    if [ -n "$PERMALINK" ]; then
-      # Construct the full target path (e.g., _site/futureproof/reclaiming-...)
-      # Note: PERMALINK already includes the leading and trailing slashes
-      TARGET_DIR="_site${PERMALINK}"
+    if [ -n \"\$PERMALINK\" ]; then
+      # Construct the full target path
+      TARGET_DIR=\"_site\$PERMALINK\"
       
       # Create the directory structure quietly
-      mkdir -p "$TARGET_DIR"
+      mkdir -p \"\$TARGET_DIR\"
       
       # Copy the file to its new sovereign home as index.md
-      cp "$post" "${TARGET_DIR}index.md"
-      echo "  -> Placed index.md in $PERMALINK"
+      cp \"\$post\" \"\${TARGET_DIR}index.md\"
+      echo \"  -> Placed index.md in \$PERMALINK\"
     else
-      echo "  -> Warning: No permalink found in $post. Skipping."
+      echo \"  -> Warning: No permalink found in \$post. Skipping.\"
     fi
   done
 "
