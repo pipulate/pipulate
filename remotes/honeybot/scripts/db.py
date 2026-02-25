@@ -115,6 +115,37 @@ class HoneyDB:
             )
         """)
 
+        # --- NEW: TELEMETRY DIMENSIONS ---
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS referrers (
+                id INTEGER PRIMARY KEY,
+                value TEXT UNIQUE
+            )
+        """)
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS accept_headers (
+                id INTEGER PRIMARY KEY,
+                value TEXT UNIQUE
+            )
+        """)
+        
+        # --- NEW: TELEMETRY FACT TABLE (SIDECAR) ---
+        # Maps the daily activity to the new dimensions without breaking the old table
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS telemetry (
+                date TEXT,
+                ip_id INTEGER,
+                path_id INTEGER,
+                ua_id INTEGER,
+                referrer_id INTEGER,
+                accept_id INTEGER,
+                served_md INTEGER,
+                count INTEGER DEFAULT 1,
+                last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (date, ip_id, path_id, ua_id, referrer_id, accept_id, served_md)
+            )
+        """)
+
         # 3. The Simple KV Store (Persistent Counters)
         cur.execute("""
             CREATE TABLE IF NOT EXISTS kv_store (
@@ -147,7 +178,7 @@ class HoneyDB:
         except:
             return None
 
-    def log_request(self, ip, ua, path, status, date_str=None):
+    def log_request(self, ip, ua, path, status, date_str=None, referrer=None, accept=None, served_md=None):
         """
         The Main Ingestor. 
         Takes raw log data, normalizes it, and updates the daily counter.
@@ -170,6 +201,21 @@ class HoneyDB:
         
         conn = self.get_conn()
         conn.execute(sql, (date_str, ip_id, ua_id, path_id, status))
+
+        # 3. Handle Telemetry (If provided by the new Nginx format)
+        if accept is not None:
+            ref_id = self._get_or_create_id('referrers', referrer) if referrer else None
+            acc_id = self._get_or_create_id('accept_headers', accept)
+            is_md = 1 if served_md == '1' else 0
+            
+            sql_telemetry = """
+                INSERT INTO telemetry (date, ip_id, path_id, ua_id, referrer_id, accept_id, served_md, count)
+                VALUES (?, ?, ?, ?, ?, ?, ?, 1)
+                ON CONFLICT(date, ip_id, path_id, ua_id, referrer_id, accept_id, served_md) 
+                DO UPDATE SET count = count + 1, last_updated = CURRENT_TIMESTAMP
+            """
+            conn.execute(sql_telemetry, (date_str, ip_id, path_id, ua_id, ref_id, acc_id, is_md))
+
         conn.commit()
 
     def increment_counter(self, key, amount=1):

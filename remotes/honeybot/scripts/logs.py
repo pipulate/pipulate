@@ -37,13 +37,11 @@ except ImportError:
 
 # --- Configuration ---
 ANSI_ESCAPE = re.compile(r'(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]')
-LOG_PATTERN = re.compile(r'(?P<ip>[\d\.]+) - - \[(?P<time>.*?)\] "(?P<request>.*?)" (?P<status>\d+) (?P<bytes>\d+) "(?P<referrer>.*?)" "(?P<ua>.*?)"')
-
-# ... existing imports ...
-
-# --- Configuration ---
-ANSI_ESCAPE = re.compile(r'(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]')
-LOG_PATTERN = re.compile(r'(?P<ip>[\d\.]+) - - \[(?P<time>.*?)\] "(?P<request>.*?)" (?P<status>\d+) (?P<bytes>\d+) "(?P<referrer>.*?)" "(?P<ua>.*?)"')
+# Updated to optionally capture the new custom fields at the end of the line
+LOG_PATTERN = re.compile(
+    r'(?P<ip>[\d\.]+) - - \[(?P<time>.*?)\] "(?P<request>.*?)" (?P<status>\d+) (?P<bytes>\d+) '
+    r'"(?P<referrer>.*?)" "(?P<ua>.*?)"(?: Accept:"(?P<accept>.*?)" MarkdownServed:(?P<md>\d))?'
+)
 
 class SonarApp(App):
     """The Cybernetic HUD (Dual-Panel Edition)."""
@@ -268,7 +266,10 @@ class SonarApp(App):
                             ip=data['ip'],
                             ua=data['ua'],
                             path=data['request'].split()[1] if len(data['request'].split()) > 1 else data['request'],
-                            status=int(data['status'])
+                            status=int(data['status']),
+                            referrer=data.get('referrer'),
+                            accept=data.get('accept'),
+                            served_md=data.get('md')
                         )
                         db.increment_counter("global_hits")
                     except: pass

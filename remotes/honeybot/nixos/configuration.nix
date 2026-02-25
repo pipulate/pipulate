@@ -194,6 +194,15 @@
     recommendedProxySettings = true;
     recommendedTlsSettings = true; 
 
+    # THE NEW TELEMETRY LOG FORMAT
+    commonHttpConfig = ''
+      log_format ai_tracker '$remote_addr - $remote_user [$time_local] '
+                            '"$request" $status $body_bytes_sent '
+                            '"$http_referer" "$http_user_agent" '
+                            'Accept:"$http_accept" MarkdownServed:$serve_markdown';
+      access_log /var/log/nginx/access.log ai_tracker;
+    '';
+
     # 1. THE SENSOR: Read the Accept header and define the MIME type
     appendHttpConfig = ''
       map $http_accept $serve_markdown {
