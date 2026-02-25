@@ -215,6 +215,7 @@
       # 2. THE SWITCH: Route to the .md file if the sensor fired
       locations."/" = {
         extraConfig = ''
+          add_header Vary "Accept" always; # <--- The final polish
           if ($serve_markdown = 1) {
             rewrite ^(.*)/$ $1/index.md break;
           }
