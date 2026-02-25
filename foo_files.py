@@ -7,9 +7,18 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-deploy_honeybot.sh
-remotes/honeybot/hooks/post-receive
-remotes/honeybot/nixos/configuration.nix
+scripts/articles/build_knowledge_graph.py
+
+# # Adding the link in the HTML to the Markdown
+# /home/mike/repos/trimnoir/_layouts/default.html
+# /home/mike/repos/trimnoir/_layouts/post.html
+
+# # Putting Markdown into correct location
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_config.yml
+# deploy_honeybot.sh
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
 
 # # Yet Another Onboarding. Working towards Nginx config.
 # 

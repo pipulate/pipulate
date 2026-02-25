@@ -50,6 +50,21 @@ nix develop --command bash -c "
       echo \"  -> Warning: No permalink found in \$post. Skipping.\"
     fi
   done
+
+  # --- PUBLISH ROOT-LEVEL MARKDOWN ---
+  echo '📄 Sweeping root directory for standalone Markdown pages...'
+  for root_post in *.md; do
+    [ -e \"\$root_post\" ] || continue
+    
+    PERMALINK=\$(grep -m 1 '^permalink:' \"\$root_post\" | sed -e 's/^permalink:[[:space:]]*//' -e 's/[\"'\''[:space:]]//g')
+
+    if [ -n \"\$PERMALINK\" ]; then
+      TARGET_DIR=\"_site\$PERMALINK\"
+      mkdir -p \"\$TARGET_DIR\"
+      cp \"\$root_post\" \"\${TARGET_DIR}index.md\"
+      echo \"  -> Placed root index.md in \$PERMALINK\"
+    fi
+  done
 "
 
 # 4. Permissions Fix (Crucial for Nginx)

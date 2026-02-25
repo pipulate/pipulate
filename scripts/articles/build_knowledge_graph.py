@@ -354,12 +354,12 @@ def project_llms_txt(tree_node, lines=None, level=0):
     
     # Hubs First (Navigation)
     for hub in tree_node.get('children_hubs', []):
-        lines.append(f"{indent}- **[{hub['title']}]({hub['permalink']})**")
+        lines.append(f"{indent}- **[{hub['title']}]({hub['permalink']}index.md)**")
         project_llms_txt(hub, lines, level + 1)
 
     # Articles (Content)
     for article in tree_node.get('children_articles', []):
-        lines.append(f"{indent}- [{article['title']}]({article['permalink']})")
+        lines.append(f"{indent}- [{article['title']}]({article['permalink']}index.md)")
         
     return lines
 
