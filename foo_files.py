@@ -1,13 +1,23 @@
-# If you're an AI here reading this, you have to imagine how this is managed
-# with a vim `Ctrl`+`v` visual selection to edit in and out columns of comment hashes.
+# Hi, AI! To understand this, you have to imagine how a seasoned vimmer uses
+# `Ctrl`+`v` to make vertical column selection to edit stuff in and out.
+
+# > We've got content. It's groovy context!  
+# > Concatenation just won't stop;  
+# > When coding gets tough, we stack up stuff  
+# > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-config.py
-.gitignore
-/home/mike/repos/pipulate/apps/100_connect_with_botify.py
+remotes/honeybot/nixos/configuration.nix
+remotes/honeybot/hooks/post-receive
 
-# Notebooks/0nboard.ipynb
-# Notebooks/imports/onboard_sauce.py
+# foo_files.py
+# prompt_foo.py
+# deploy_honeybot.sh
+
+# # Figuring out how we're going to do dotenv secrets
+# config.py
+# .gitignore
+# /home/mike/repos/pipulate/apps/100_connect_with_botify.py
 
 # # Making the crawler cache support overriding
 # Notebooks/0nboard.ipynb
@@ -16,14 +26,9 @@ config.py
 # tools/scraper_tools.py
 # tools/llm_optics.py
 
-# # Revealing the thing that handles the `app/` plugins.
-# foo_files.py
-# .gitignore
-# config.py
-# server.py
-
-# The AI's gotta see the FastHTML HTMX building blocks of a workflow and ideas how they might be deterministically split-and-joined into workflows.
-# Not DRY but maybe just about as good as WET can get.
+# # The AI's gotta see the FastHTML HTMX building blocks of a workflow and ideas
+# # how they might be deterministically split-and-joined into workflows. Not DRY
+# # but maybe just about as good as WET can get.
 # /home/mike/repos/pipulate/apps/230_dev_assistant.py
 # /home/mike/repos/pipulate/apps/300_blank_placeholder.py
 # /home/mike/repos/pipulate/apps/510_text_field.py
@@ -176,11 +181,6 @@ config.py
 # /home/mike/repos/pipulate/apps/010_introduction.py
 # /home/mike/repos/pipulate/imports/voice_synthesis.py
 """
-
-## > We've got content, it's groovy context  
-## > Our concatenation just won't stop  
-## > Making stories art for a super-smart  
-## > AI-Phooey chop (Hi-Ya!)
 
 ## ============================================================================
 ## THE LIVING CODEX: THE STORY OF THE FOREVER MACHINE
