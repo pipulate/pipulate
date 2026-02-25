@@ -42,7 +42,12 @@ nix develop --command bash -c "
       
       # Create the directory structure quietly
       mkdir -p \"\$TARGET_DIR\"
-      
+
+      # INJECT TRACER DYE & LICENSE
+      if [ -f \"_ai_license.md\" ]; then
+        cat \"_ai_license.md\" >> \"\${TARGET_DIR}index.md\"
+      fi
+
       # Copy the file to its new sovereign home as index.md
       cp \"\$post\" \"\${TARGET_DIR}index.md\"
       echo \"  -> Placed index.md in \$PERMALINK\"
@@ -62,6 +67,10 @@ nix develop --command bash -c "
       TARGET_DIR=\"_site\$PERMALINK\"
       mkdir -p \"\$TARGET_DIR\"
       cp \"\$root_post\" \"\${TARGET_DIR}index.md\"
+      # INJECT TRACER DYE & LICENSE
+      if [ -f \"_ai_license.md\" ]; then
+        cat \"_ai_license.md\" >> \"\${TARGET_DIR}index.md\"
+      fi
       echo \"  -> Placed root index.md in \$PERMALINK\"
     fi
   done
