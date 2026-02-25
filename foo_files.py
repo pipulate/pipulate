@@ -7,6 +7,21 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
+remotes/honeybot/scripts/check_file_traffic.py
+remotes/honeybot/scripts/content_loader.py
+remotes/honeybot/scripts/db_monitor.py
+remotes/honeybot/scripts/db.py
+remotes/honeybot/scripts/education.py
+remotes/honeybot/scripts/intel_report.py
+remotes/honeybot/scripts/logs.py
+remotes/honeybot/scripts/mine_bots.py
+remotes/honeybot/scripts/radar.py
+remotes/honeybot/scripts/report.py
+remotes/honeybot/scripts/showips.py
+remotes/honeybot/scripts/show.py
+remotes/honeybot/scripts/stream.py
+remotes/honeybot/nixos/configuration.nix
+
 # /home/mike/repos/trimnoir/_posts/2026-02-24-mobilegeddon-aigeddon-sovereign-futures.md  # [Idx: 869 | Order: 1 | Tokens: 24,052 | Bytes: 103,993]
 # /home/mike/repos/trimnoir/_posts/2026-02-24-dual-layer-web-serving-humans-ai-sovereign-content.md  # [Idx: 873 | Order: 5 | Tokens: 38,901 | Bytes: 143,697]
 # /home/mike/repos/trimnoir/_posts/2026-02-25-ai-content-architects-llm-ingestion-control.md  # [Idx: 875 | Order: 2 | Tokens: 11,773 | Bytes: 49,012]
@@ -14,15 +29,15 @@ AI_PHOOEY_CHOP = """\
 # scripts/articles/build_knowledge_graph.py
 
 # # Adding the link in the HTML to the Markdown
-/home/mike/repos/trimnoir/_layouts/default.html
-/home/mike/repos/trimnoir/_layouts/post.html
+# /home/mike/repos/trimnoir/_layouts/default.html
+# /home/mike/repos/trimnoir/_layouts/post.html
 
 # # Putting Markdown into correct location
 # /home/mike/repos/trimnoir/flake.nix
 # /home/mike/repos/trimnoir/_config.yml
-deploy_honeybot.sh
-remotes/honeybot/hooks/post-receive
-remotes/honeybot/nixos/configuration.nix
+# deploy_honeybot.sh
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
 
 # # Yet Another Onboarding. Working towards Nginx config.
 # 
