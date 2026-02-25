@@ -245,6 +245,7 @@
     cmatrix     # The "Digital Rain"
     fastfetch   # System info display (faster neofetch)
     bc          # Calculator (useful for timing math if needed)
+    eza         # tree-command alternative that uses .gitignore as filter
 
     # 🗣️ THE VOICE (System Capability)
     piper-tts

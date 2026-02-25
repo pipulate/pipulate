@@ -7,8 +7,10 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-remotes/honeybot/nixos/configuration.nix
-remotes/honeybot/hooks/post-receive
+/home/mike/repos/trimnoir/_posts/2026-01-12-reclaiming-digital-agency-local-owner-operated-tech.md
+
+# remotes/honeybot/nixos/configuration.nix
+# remotes/honeybot/hooks/post-receive
 
 # foo_files.py
 # prompt_foo.py
