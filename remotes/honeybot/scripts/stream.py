@@ -374,12 +374,12 @@ def main():
     run_tui_app("report.py", duration=0.5)  # 30 seconds
 
     # --- NEW SCENE: The Education Monitor ---
-    narrator.say("Did you know that Amazonbot is a top content scraper? ")
+    narrator.say("Did you know that Amazon and Meta are top content scrapers? ")
     run_tui_app("education.py", duration=0.5) # 30 seconds
     # ----------------------------------------
 
     # Scene 2: The Radar (Intelligence)
-    narrator.say("Yes, some bots are executing JavaScript but the surprise is how many request your alternative markdown when available. ")
+    narrator.say("A bulletproof JavaScript captcha was just implemented. Check back for updated reports.")
     run_tui_app("radar.py", duration=0.5)   # 30 seconds
 
     # Scene 3: The Deep Stream (Logs)
