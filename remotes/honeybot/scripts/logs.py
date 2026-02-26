@@ -323,7 +323,7 @@ class SonarApp(App):
         path_style = "blue"
         if "js_confirm.gif" in path:
             prefix = "🪤 " + prefix
-            path_style = "black on yellow"
+            path_style = "black on blue"
 
         text = Text()
         try:
