@@ -3,24 +3,28 @@
 
 # > We've got content. It's groovy context!  
 # > Concatenation just won't stop;  
-# > When coding gets tough, we stack up stuff  
+# > When coding gets tough, we stack up-stuff  
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-remotes/honeybot/scripts/check_file_traffic.py
-remotes/honeybot/scripts/content_loader.py
-remotes/honeybot/scripts/db_monitor.py
-remotes/honeybot/scripts/db.py
-remotes/honeybot/scripts/education.py
-remotes/honeybot/scripts/intel_report.py
-remotes/honeybot/scripts/logs.py
-remotes/honeybot/scripts/mine_bots.py
-remotes/honeybot/scripts/radar.py
-remotes/honeybot/scripts/report.py
-remotes/honeybot/scripts/showips.py
-remotes/honeybot/scripts/show.py
-remotes/honeybot/scripts/stream.py
-remotes/honeybot/nixos/configuration.nix
+/home/mike/repos/trimnoir/_layouts/default.html
+/home/mike/repos/trimnoir/index.md
+/home/mike/repos/trimnoir/_site/index.html
+
+# # The big reveal of the HoneyBot Sonar show
+# remotes/honeybot/scripts/check_file_traffic.py
+# remotes/honeybot/scripts/content_loader.py
+# remotes/honeybot/scripts/db_monitor.py
+# remotes/honeybot/scripts/db.py
+# remotes/honeybot/scripts/education.py
+# remotes/honeybot/scripts/intel_report.py
+# remotes/honeybot/scripts/logs.py
+# remotes/honeybot/scripts/mine_bots.py
+# remotes/honeybot/scripts/radar.py
+# remotes/honeybot/scripts/report.py
+# remotes/honeybot/scripts/showips.py
+# remotes/honeybot/scripts/stream.py
+# remotes/honeybot/nixos/configuration.nix
 
 # /home/mike/repos/trimnoir/_posts/2026-02-24-mobilegeddon-aigeddon-sovereign-futures.md  # [Idx: 869 | Order: 1 | Tokens: 24,052 | Bytes: 103,993]
 # /home/mike/repos/trimnoir/_posts/2026-02-24-dual-layer-web-serving-humans-ai-sovereign-content.md  # [Idx: 873 | Order: 5 | Tokens: 38,901 | Bytes: 143,697]

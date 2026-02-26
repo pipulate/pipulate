@@ -230,6 +230,10 @@
           }
         '';
       };
+      # THE JAVASCRIPT TRAPDOOR
+      locations."= /api/telemetry/js_confirm.gif" = {
+        extraConfig = "empty_gif;";
+      };
     };
   };
 

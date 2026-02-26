@@ -262,10 +262,14 @@ class SonarApp(App):
                 # Persist to DB
                 if db:
                     try:
+                        # Extract path and strip query strings to prevent DB bloat
+                        raw_path = data['request'].split()[1] if len(data['request'].split()) > 1 else data['request']
+                        clean_path = raw_path.split('?')[0]
+
                         db.log_request(
                             ip=data['ip'],
                             ua=data['ua'],
-                            path=data['request'].split()[1] if len(data['request'].split()) > 1 else data['request'],
+                            path=clean_path,
                             status=int(data['status']),
                             referrer=data.get('referrer'),
                             accept=data.get('accept'),
