@@ -318,7 +318,13 @@ class SonarApp(App):
             if bot_name in ua:
                 prefix = "🤖 "
                 break
-        
+
+        # Dynamic styling for the requested path
+        path_style = "blue"
+        if "js_confirm.gif" in path:
+            prefix = "🪤 " + prefix
+            path_style = "bold magenta"
+
         text = Text()
         try:
             time_str = data['time'].split(':')[1:]
@@ -329,7 +335,7 @@ class SonarApp(App):
         text.append(ip_display)
         text.append("  ") # Just space
         text.append(f"{method:4} ", style="bold")
-        text.append(f"{path} ", style="blue")
+        text.append(f"{path} ", style=path_style)
         text.append(f"[{status}] ", style=status_style)
         text.append("  ") # Just space
         

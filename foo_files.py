@@ -7,9 +7,11 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/trimnoir/_layouts/default.html
-/home/mike/repos/trimnoir/index.md
-/home/mike/repos/trimnoir/_site/index.html
+remotes/honeybot/scripts/logs.py
+
+# /home/mike/repos/trimnoir/_layouts/default.html
+# /home/mike/repos/trimnoir/index.md
+# /home/mike/repos/trimnoir/_site/index.html
 
 # # The big reveal of the HoneyBot Sonar show
 # remotes/honeybot/scripts/check_file_traffic.py
