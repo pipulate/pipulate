@@ -25,6 +25,8 @@ PITCH_TEXT = (
     "You are watching Honeybot Sonar on MikeLev dot eye N. "
     "This is a live visualization of an Nginx web server log, analyzing AI bot traffic in real-time. "
     "Orange highlights indicate AI agents. Agents are Orange. "
+    "The very rare Purple Blue Boxes are the JavaScript captcha being triggered indicating either a human or a bot executing JavaScript. "
+    "Don't believe me? Visit Mike Lev dot Eye N and watch and see. "
     "The purpose of this site is to answer many of the important questions being asked in marketing and society today. "
     "There's something special about watching AI-Bots live like fish in a fish-tank. "
     "Witness them scrape content to use it for their own purposes. "

@@ -7,7 +7,15 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-remotes/honeybot/scripts/logs.py
+https://raw.githubusercontent.com/miklevin/levinix/refs/heads/main/README.md
+https://raw.githubusercontent.com/miklevin/levinix/refs/heads/main/flake.nix
+https://levinux.com/
+
+# https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site
+# https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/verifying-your-custom-domain-for-github-pages
+# https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/troubleshooting-custom-domains-and-github-pages
+
+# remotes/honeybot/scripts/logs.py
 
 # /home/mike/repos/trimnoir/_layouts/default.html
 # /home/mike/repos/trimnoir/index.md
