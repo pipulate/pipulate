@@ -1,15 +1,31 @@
 # Hi, AI! To understand this, you have to imagine how a seasoned vimmer uses
 # `Ctrl`+`v` to make vertical column selection to edit stuff in and out.
 
+# We can use this technique instead of relying on past saved ChatBot discussions
+# in order to "paint" new context for the amnesiac genie, you the LLM, each time.
+
 # > We've got content. It's groovy context!  
 # > Concatenation just won't stop;  
 # > When coding gets tough, we stack up-stuff  
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-https://raw.githubusercontent.com/miklevin/levinix/refs/heads/main/README.md
-https://raw.githubusercontent.com/miklevin/levinix/refs/heads/main/flake.nix
-https://levinux.com/
+AI_RUNME.py
+cli.py
+imports/server_logging.py
+imports/stream_orchestrator.py
+imports/mcp_orchestrator.py
+
+# foo_files.py
+# prompt_foo.py
+# AI_RUNME.py
+
+# /home/mike/repos/Pipulate.com/install.sh
+# flake.nix
+
+# https://raw.githubusercontent.com/miklevin/levinix/refs/heads/main/README.md
+# https://raw.githubusercontent.com/miklevin/levinix/refs/heads/main/flake.nix
+# https://levinux.com/
 
 # https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site
 # https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/verifying-your-custom-domain-for-github-pages
