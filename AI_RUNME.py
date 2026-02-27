@@ -71,6 +71,13 @@ Mastering the `pip` object grants you **traction** against the slippery slope of
 
 Study `pipulate/core.py`. Understanding the Wand is key to wielding your power effectively and maintaining control. It is your **mechanical advantage**.
 
+**5.5 The Sixth Sense: Dual-Logging and Finder Tokens**
+
+When you need to debug the system, do not try to parse the human-readable console output. The system runs a **Dual-Logging Architecture** (`imports/server_logging.py`) specifically designed for your silicon eyes.
+
+  * **Grep for the Robot:** If you need to see structured data state, search the logs (`logs/server.log`) for the `🤖 AI_JSON_DATA` or `🤖 AI_JSON_ERROR` markers. This guarantees you get clean, parsable JSON instead of ANSI-escaped terminal strings.
+  * **Grep for the Tokens:** System state snapshots are tagged with `FINDER_TOKEN`. Search the logs for `FINDER_TOKEN: DB_STATE` or `FINDER_TOKEN: PIPELINE_SUMMARY` to instantly orient yourself in the timeline.
+
 **6. The Hands & The Spellbook: `cli.py` and Tool Calling**
 
 While the `pip` object manages state, your **"Hands"** for acting upon the world are primarily accessed through the **`cli.py`** script. This provides a stable, **command-line contract** for invoking tools.
@@ -79,7 +86,8 @@ We use **Progressive Reveal** for tool calling:
 
   * **Level 1 (Simple Alias):** `[ls]`, `[shell ...]` – Easy incantations for basic tasks, parsed by `imports/stream_orchestrator.py` and `imports/ai_tool_discovery_simple_parser.py`.
   * **Level 2 (CLI Discovery):** `.venv/bin/python cli.py mcp-discover` – Your reliable way to learn available spells, guided by `AI_RUNME.py`.
-  * **Level 3 (CLI Precision):** `.venv/bin/python cli.py call <tool_name> --json-args '{...}'` – The **Golden Path** for unambiguous, reliable execution of any tool listed in the registry (`tools/__init__.py`, `tools/*.py`). Use this for critical actions. Remember to use `.venv/bin/python` to ensure the correct environment.
+  * **Level 3 (CLI Precision):** `.venv/bin/python cli.py <tool_name> --json-args '{...}'` – The **Golden Path**. The `call` keyword is implicit. Use this for critical actions. Remember to use `.venv/bin/python` to ensure the correct Nix environment.
+  * **Level 3.5 (State X-Ray):** `.venv/bin/python cli.py db-inspect main_dev` – Your direct lens into the SQLite DictLikeDB states without needing to write custom Python scripts.
   * **Levels 4 & 5 (Formal MCP):** `<tool name="..."><params>...</params></tool>` (JSON or XML) – For complex interactions or when explicitly requested, handled by `imports/mcp_orchestrator.py`.
 
 Your spellbook (`tools/` directory) is growing. Use discovery (`mcp-discover`) often. Prefer specific tools (like `local_llm_read_file`) over the general `execute_shell_command` (`[shell]`) where possible – scalpel before chainsaw.
@@ -208,11 +216,11 @@ def main():
                 "1. **Discover Core Tools:** This reveals the 'Rule of 7' essential tools.\n"
                 "   Command: `.venv/bin/python cli.py mcp-discover`\n\n" # Level 2 CLI
                 "2. **Verify Capabilities:** Run the test suite to confirm tools work.\n"
-                "   Command: `.venv/bin/python cli.py call ai_capability_test_suite`\n\n" # Level 3 CLI Call
+                "   Command: `.venv/bin/python cli.py ai_capability_test_suite`\n\n" # Level 3 CLI Call
                 "3. **Understand Context:** Ask the system about itself.\n"
-                "   Command: `.venv/bin/python cli.py call ai_self_discovery_assistant`\n\n" # Level 3 CLI Call
+                "   Command: `.venv/bin/python cli.py ai_self_discovery_assistant`\n\n" # Level 3 CLI Call
                 "4. **Execute Specific Tasks:** Use `call` with `--json-args` for precision.\n"
-                "   Example: `.venv/bin/python cli.py call local_llm_list_files --json-args '{\"directory\": \".\"}'`\n\n" # Level 3 CLI Call w/ args
+                "   Example: `.venv/bin/python cli.py local_llm_list_files --json-args '{\"directory\": \".\"}'`\n\n" # Level 3 CLI Call w/ args
                 "[italic]This structured approach ensures reliable interaction via the command-line interface, your primary means of action.[/italic]",
                 title=options[choice],
                 border_style="green"

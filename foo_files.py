@@ -10,11 +10,13 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-AI_RUNME.py
-cli.py
-imports/server_logging.py
-imports/stream_orchestrator.py
-imports/mcp_orchestrator.py
+
+# # Improving AI_RUNME.py
+# AI_RUNME.py
+# cli.py
+# imports/server_logging.py
+# imports/stream_orchestrator.py
+# imports/mcp_orchestrator.py
 
 # foo_files.py
 # prompt_foo.py
