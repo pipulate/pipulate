@@ -842,8 +842,10 @@ def main():
             for article in sliced_articles:
                 # We normalize to filename because the base path is declared above
                 filename = os.path.basename(article['path'])
+                # Extract token count for AI dietary planning
+                t_count = article.get('tokens', 0)
                 # OPTIMIZATION: Reduced verbosity for list items
-                narrative_content += f"### {article['title']} ({article['date']})\n"
+                narrative_content += f"### {article['title']} ({article['date']}) [{t_count:,} tokens]\n"
                 if article.get('url'):
                     narrative_content += f"{article['url']}\n"
                 narrative_content += f"{filename}\n"

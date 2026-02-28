@@ -10,9 +10,10 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-prompt_foo.py
-scripts/articles/lsa.py
-/home/mike/.config/articleizer/targets.json
+
+# prompt_foo.py
+# scripts/articles/lsa.py
+# /home/mike/.config/articleizer/targets.json
 
 # scripts/articles/sanitizer.py
 # scripts/articles/articleizer.py
