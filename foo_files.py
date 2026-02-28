@@ -11,8 +11,7 @@
 
 AI_PHOOEY_CHOP = """\
 prompt_foo.py
-scripts/articles/list_articles.py
-scripts/articles/ls2.py
+scripts/articles/lsa.py
 /home/mike/.config/articleizer/targets.json
 
 # scripts/articles/sanitizer.py
