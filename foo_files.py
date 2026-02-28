@@ -10,14 +10,104 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/trimnoir/llms.txt
-scripts/articles/build_knowledge_graph.py
-deploy_honeybot.sh
-remotes/honeybot/hooks/post-receive
-remotes/honeybot/nixos/configuration.nix
-/home/mike/repos/trimnoir/_layouts/default.html
-/home/mike/repos/trimnoir/index.md
-/home/mike/repos/trimnoir/_site/index.html
+/home/mike/repos/levinix/CNAME
+/home/mike/repos/levinix/index.html
+https://levinix.com/
+
+# /home/mike/repos/Pipulate.com/index.md
+# /home/mike/repos/Pipulate.com/install.md
+
+# /home/mike/repos/Pipulate.com/install.sh
+# flake.nix
+# https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/README.md
+# https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/flake.nix
+# prompt2.md
+
+# README.md
+
+# https://raw.githubusercontent.com/piskvorky/sqlitedict/refs/heads/master/README.rst
+# https://raw.githubusercontent.com/AnswerDotAI/fasthtml/refs/heads/main/fasthtml/fastapp.py
+# https://raw.githubusercontent.com/AnswerDotAI/fastlite/refs/heads/main/README.md
+# /home/mike/repos/pipulate/assets/temp/MiniDataAPI_spec.md
+
+# flake.nix
+# /home/mike/repos/Pipulate.com/install.sh
+
+# https://developers.google.com/merchant/ucp/guides
+# https://developers.google.com/merchant/ucp/guides/merchant-center
+# https://developers.google.com/merchant/ucp/guides/google-pay
+# https://developers.google.com/merchant/ucp/guides/ucp-profile
+# https://developers.google.com/merchant/ucp/guides/checkout
+# https://developers.google.com/merchant/ucp/guides/orders
+# https://developers.google.com/merchant/ucp/guides/risk-signals
+# https://developers.google.com/merchant/ucp/guides/code-samples
+# https://developer.chrome.com/docs/ai/join-epp
+# https://developer.chrome.com/docs/ai/built-in
+# https://developer.chrome.com/docs/ai/built-in-apis
+
+# README.md
+# AI_RUNME.py
+
+# foo_files.py
+# prompt_foo.py
+
+# /home/mike/repos/Pipulate.com/install.sh
+# flake.nix
+
+# deploy_honeybot.sh
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_config.yml
+# /home/mike/repos/trimnoir/_layouts/default.html
+# /home/mike/repos/trimnoir/_layouts/home.html
+# /home/mike/repos/trimnoir/_layouts/page.html
+# /home/mike/repos/trimnoir/_layouts/post.html
+# /home/mike/repos/trimnoir/index.md
+# remotes/honeybot/scripts/check_file_traffic.py
+# remotes/honeybot/scripts/check_telemetry.py
+# remotes/honeybot/scripts/content_loader.py
+# remotes/honeybot/scripts/db_monitor.py
+# remotes/honeybot/scripts/db.py
+# remotes/honeybot/scripts/education.py
+# remotes/honeybot/scripts/intel_report.py
+# remotes/honeybot/scripts/logs.py
+# remotes/honeybot/scripts/mine_bots.py
+# remotes/honeybot/scripts/radar.py
+# remotes/honeybot/scripts/report.py
+# remotes/honeybot/scripts/show.py
+# remotes/honeybot/scripts/stream.py
+
+# remotes/honeybot/hooks/post-receive
+# https://mikelev.in/futureproof/unpacking-fasthtml-databases/index.md
+# https://mikelev.in/futureproof/ollama-websocket-chat/index.md
+
+# /home/mike/repos/pipulate/scripts/articles/gsc_historical_fetch.py
+# /home/mike/repos/pipulate/scripts/articles/gsc_velocity.json
+
+# remotes/honeybot/scripts/check_file_traffic.py
+# remotes/honeybot/scripts/check_telemetry.py
+# remotes/honeybot/scripts/content_loader.py
+# remotes/honeybot/scripts/db_monitor.py
+# remotes/honeybot/scripts/db.py
+# remotes/honeybot/scripts/education.py
+# remotes/honeybot/scripts/intel_report.py
+# remotes/honeybot/scripts/logs.py
+# remotes/honeybot/scripts/mine_bots.py
+# remotes/honeybot/scripts/radar.py
+# remotes/honeybot/scripts/report.py
+# remotes/honeybot/scripts/show.py
+# remotes/honeybot/scripts/stream.py
+
+# # Inserting tracking querystrings on markdown
+# /home/mike/repos/trimnoir/llms.txt
+# scripts/articles/build_knowledge_graph.py
+# deploy_honeybot.sh
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
+# /home/mike/repos/trimnoir/_layouts/default.html
+# /home/mike/repos/trimnoir/index.md
+# /home/mike/repos/trimnoir/_site/index.html
 
 # # Improving AI_RUNME.py
 # AI_RUNME.py
@@ -37,11 +127,10 @@ remotes/honeybot/nixos/configuration.nix
 # https://raw.githubusercontent.com/miklevin/levinix/refs/heads/main/flake.nix
 # https://levinux.com/
 
+# # Trouble-shooting GitHub Pages DNS. levinux.com, levinix.com and pipulate.com all still hosted there
 # https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site
 # https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/verifying-your-custom-domain-for-github-pages
 # https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/troubleshooting-custom-domains-and-github-pages
-
-# remotes/honeybot/scripts/logs.py
 
 # # Show enough about trimnoir MikeLev.in publishing to help with Jekyll template stuff
 # /home/mike/repos/trimnoir/_layouts/default.html

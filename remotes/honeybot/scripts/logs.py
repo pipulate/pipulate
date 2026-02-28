@@ -264,7 +264,17 @@ class SonarApp(App):
                     try:
                         # Extract path and strip query strings to prevent DB bloat
                         raw_path = data['request'].split()[1] if len(data['request'].split()) > 1 else data['request']
-                        clean_path = raw_path.split('?')[0]
+                        
+                        # SELECTIVE QUERY STRING PRESERVATION
+                        # We keep the ?src= tracking dyes for attribution, but strip everything else (like cache busters)
+                        if '?' in raw_path:
+                            base_path, qs = raw_path.split('?', 1)
+                            if qs in ['src=a+href', 'src=llms.txt', 'src=link+rel']:
+                                clean_path = raw_path
+                            else:
+                                clean_path = base_path
+                        else:
+                            clean_path = raw_path
 
                         db.log_request(
                             ip=data['ip'],

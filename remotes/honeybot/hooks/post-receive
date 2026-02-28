@@ -45,7 +45,8 @@ nix develop --command bash -c "
 
       # Copy the file to its new sovereign home as index.md
       # Strip Jekyll raw/endraw tags and copy to its sovereign home as index.md
-      sed -e 's/{% raw %}//g' -e 's/{% endraw %}//g' "$post" > "${TARGET_DIR}index.md"
+      cp \"\$post\" \"\${TARGET_DIR}index.md\"
+      sed -i -e 's/{% raw %}//g' -e 's/{% endraw %}//g' \"\${TARGET_DIR}index.md\"
 
       # INJECT TRACER DYE & LICENSE
       if [ -f \"_ai_license.md\" ]; then
@@ -69,7 +70,8 @@ nix develop --command bash -c "
       TARGET_DIR=\"_site\$PERMALINK\"
       mkdir -p \"\$TARGET_DIR\"
       # Strip Jekyll raw/endraw tags here too
-      sed -e 's/{% raw %}//g' -e 's/{% endraw %}//g' "$root_post" > "${TARGET_DIR}index.md"
+      cp \"\$root_post\" \"\${TARGET_DIR}index.md\"
+      sed -i -e 's/{% raw %}//g' -e 's/{% endraw %}//g' \"\${TARGET_DIR}index.md\"
       # INJECT TRACER DYE & LICENSE
       if [ -f \"_ai_license.md\" ]; then
         cat \"_ai_license.md\" >> \"\${TARGET_DIR}index.md\"
