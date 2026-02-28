@@ -10,18 +10,23 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-scripts/articles/sanitizer.py
-scripts/articles/articleizer.py
-scripts/articles/update_graphs.py
-scripts/articles/common.py
-scripts/articles/editing_prompt.txt
-scripts/articles/contextualizer.py
-scripts/articles/generate_semrush_candidates.py
-scripts/articles/gsc_historical_fetch.py
-scripts/articles/build_knowledge_graph.py
-scripts/articles/generate_hubs.py
-/home/mike/.config/articleizer/url_map.json
+prompt_foo.py
+scripts/articles/list_articles.py
+scripts/articles/ls2.py
 /home/mike/.config/articleizer/targets.json
+
+# scripts/articles/sanitizer.py
+# scripts/articles/articleizer.py
+# scripts/articles/update_graphs.py
+# scripts/articles/common.py
+# scripts/articles/editing_prompt.txt
+# scripts/articles/contextualizer.py
+# scripts/articles/generate_semrush_candidates.py
+# scripts/articles/gsc_historical_fetch.py
+# scripts/articles/build_knowledge_graph.py
+# scripts/articles/generate_hubs.py
+# /home/mike/.config/articleizer/url_map.json
+# /home/mike/.config/articleizer/targets.json
 
 # deploy_honeybot.sh
 # remotes/honeybot/hooks/post-receive

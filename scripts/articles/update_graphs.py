@@ -7,12 +7,17 @@ from pathlib import Path
 import common
 
 
-def run_step(script_name, target_key):
+def run_step(script_name, target_key, extra_args=None):
     print(f"\n--- 🚀 Step: {script_name} ---")
     start = time.time()
     
     # We pass the target key to every script
     cmd = [sys.executable, script_name, "--target", target_key]
+
+    # Only feed API keys to the scripts that know how to eat them
+    if script_name == "contextualizer.py" and extra_args:
+        cmd.extend(extra_args)
+
     
     try:
         # check=True ensures we stop if a step fails
@@ -57,6 +62,11 @@ def sync_data_to_jekyll(target_path):
 def main():
     parser = argparse.ArgumentParser(description="Update all Pipulate graphs")
     common.add_target_argument(parser)
+    
+    # --- NEW: Catch API key arguments to pass down ---
+    parser.add_argument('-k', '--key', type=str, help="Pass a specific API key alias to the contextualizer")
+    parser.add_argument('-m', '--keys', type=str, help="Pass a comma-separated list of keys for rotation")
+
     args = parser.parse_args()
     
     # 1. Resolve the Target Key ONCE
@@ -83,12 +93,19 @@ def main():
     
     print(f"\n🔒 Locked Target: {targets[target_key]['name']}")
     print(f"🛤️  Active Pipeline: {len(pipeline_scripts)} steps")
+
+    # Pack the extra arguments
+    extra_args = []
+    if args.key:
+        extra_args.extend(['-k', args.key])
+    if args.keys:
+        extra_args.extend(['-m', args.keys])
     
     # 2. Run the sequence
     total_start = time.time()
     
     for script in pipeline_scripts:
-        run_step(script, target_key)
+        run_step(script, target_key, extra_args)
     
     # 3. Sync Data
     sync_data_to_jekyll(target_path)
