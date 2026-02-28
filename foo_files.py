@@ -10,9 +10,33 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/levinix/CNAME
-/home/mike/repos/levinix/index.html
-https://levinix.com/
+scripts/articles/sanitizer.py
+scripts/articles/articleizer.py
+scripts/articles/update_graphs.py
+scripts/articles/common.py
+scripts/articles/editing_prompt.txt
+scripts/articles/contextualizer.py
+scripts/articles/generate_semrush_candidates.py
+scripts/articles/gsc_historical_fetch.py
+scripts/articles/build_knowledge_graph.py
+scripts/articles/generate_hubs.py
+/home/mike/.config/articleizer/url_map.json
+/home/mike/.config/articleizer/targets.json
+
+# deploy_honeybot.sh
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_config.yml
+# /home/mike/repos/trimnoir/_layouts/default.html
+# /home/mike/repos/trimnoir/_layouts/home.html
+# /home/mike/repos/trimnoir/_layouts/page.html
+# /home/mike/repos/trimnoir/_layouts/post.html
+# /home/mike/repos/grimoire/flake.nix
+
+# /home/mike/repos/levinix/CNAME
+# /home/mike/repos/levinix/index.html
+# https://levinix.com/
 
 # /home/mike/repos/Pipulate.com/index.md
 # /home/mike/repos/Pipulate.com/install.md
