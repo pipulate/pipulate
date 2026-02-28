@@ -6,15 +6,6 @@ import argparse
 from pathlib import Path
 import common
 
-# The pipeline sequence
-SCRIPTS = [
-    "sanitizer.py",
-    "contextualizer.py",
-    "generate_semrush_candidates.py",
-    "gsc_historical_fetch.py",
-    "build_knowledge_graph.py",
-    "generate_hubs.py"
-]
 
 def run_step(script_name, target_key):
     print(f"\n--- 🚀 Step: {script_name} ---")
@@ -62,6 +53,7 @@ def sync_data_to_jekyll(target_path):
         else:
             print(f"⚠️ Warning: {filename} not found. Skipping sync.")
 
+
 def main():
     parser = argparse.ArgumentParser(description="Update all Pipulate graphs")
     common.add_target_argument(parser)
@@ -85,12 +77,17 @@ def main():
 
     # Resolve actual path for file operations
     target_path = Path(targets[target_key]['path']).expanduser().resolve()
+    
+    # THE BJJ SWEEP: Dynamically pull the pipeline array from the JSON config
+    pipeline_scripts = targets[target_key].get('pipeline', [])
+    
     print(f"\n🔒 Locked Target: {targets[target_key]['name']}")
+    print(f"🛤️  Active Pipeline: {len(pipeline_scripts)} steps")
     
     # 2. Run the sequence
     total_start = time.time()
     
-    for script in SCRIPTS:
+    for script in pipeline_scripts:
         run_step(script, target_key)
     
     # 3. Sync Data
