@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # prompt_foo.py
 
-# > We've got content, it's groovy context
-# > Our concatenation just won't stop
-# > Making stories art for a super-smart
-# > AI-Phooey chop (Hi-Ya!)
+# > We've got content. It's groovy context!  
+# > Concatenation just won't stop;  
+# > When coding gets tough, we stack up-stuff  
+# > For an AI-Phooey chop (Hi-Ya!)  
 
 import os
 import re
@@ -748,6 +748,34 @@ def main():
 
     logger.print("--- Processing Files ---")
     for path, comment in files_to_process:
+        # HANDLE DYNAMIC COMMANDS (The ! Chisel-Strike)
+        if path.startswith('! '):
+            raw_command = path[2:].strip()
+            
+            # Pragmatic Templating: Replace {{filename.ext}} with local file contents
+            def inject_file(match):
+                filepath = match.group(1).strip()
+                full_filepath = os.path.join(REPO_ROOT, filepath) if not os.path.isabs(filepath) else filepath
+                if os.path.exists(full_filepath):
+                    with open(full_filepath, 'r', encoding='utf-8') as f:
+                        return f.read()
+                return f"ERROR_FILE_NOT_FOUND:{filepath}"
+            
+            command_str = re.sub(r'\{\{(.+?)\}\}', inject_file, raw_command)
+            
+            logger.print(f"   -> Executing: {raw_command}")
+            try:
+                result = subprocess.run(command_str, shell=True, capture_output=True, text=True, check=True)
+                content = result.stdout.strip() or "(Executed successfully, no output)"
+                
+                processed_files_data.append({
+                    "path": f"COMMAND: {raw_command}", "comment": comment, "content": content,
+                    "tokens": count_tokens(content), "words": count_words(content), "lang": "text"
+                })
+            except subprocess.CalledProcessError as e:
+                logger.print(f"      [Error] Exit {e.returncode}: {e.stderr.strip()}")
+            continue
+
         # HANDLE REMOTE URLS
         if path.startswith(('http://', 'https://')):
             try:
