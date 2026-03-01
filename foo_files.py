@@ -10,6 +10,9 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
+# flake.nix
+# /home/mike/repos/levinix/install.sh
+# /home/mike/repos/levinix/flake.nix
 
 # prompt_foo.py
 # scripts/articles/lsa.py
@@ -37,7 +40,6 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/trimnoir/_layouts/home.html
 # /home/mike/repos/trimnoir/_layouts/page.html
 # /home/mike/repos/trimnoir/_layouts/post.html
-# /home/mike/repos/grimoire/flake.nix
 
 # /home/mike/repos/levinix/CNAME
 # /home/mike/repos/levinix/index.html
@@ -83,29 +85,29 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/Pipulate.com/install.sh
 # flake.nix
 
-# deploy_honeybot.sh
-# remotes/honeybot/hooks/post-receive
-# remotes/honeybot/nixos/configuration.nix
-# /home/mike/repos/trimnoir/flake.nix
-# /home/mike/repos/trimnoir/_config.yml
-# /home/mike/repos/trimnoir/_layouts/default.html
-# /home/mike/repos/trimnoir/_layouts/home.html
-# /home/mike/repos/trimnoir/_layouts/page.html
-# /home/mike/repos/trimnoir/_layouts/post.html
-# /home/mike/repos/trimnoir/index.md
-# remotes/honeybot/scripts/check_file_traffic.py
-# remotes/honeybot/scripts/check_telemetry.py
-# remotes/honeybot/scripts/content_loader.py
-# remotes/honeybot/scripts/db_monitor.py
-# remotes/honeybot/scripts/db.py
-# remotes/honeybot/scripts/education.py
-# remotes/honeybot/scripts/intel_report.py
-# remotes/honeybot/scripts/logs.py
-# remotes/honeybot/scripts/mine_bots.py
-# remotes/honeybot/scripts/radar.py
-# remotes/honeybot/scripts/report.py
-# remotes/honeybot/scripts/show.py
-# remotes/honeybot/scripts/stream.py
+deploy_honeybot.sh
+remotes/honeybot/hooks/post-receive
+remotes/honeybot/nixos/configuration.nix
+/home/mike/repos/trimnoir/flake.nix
+/home/mike/repos/trimnoir/_config.yml
+/home/mike/repos/trimnoir/_layouts/default.html
+/home/mike/repos/trimnoir/_layouts/home.html
+/home/mike/repos/trimnoir/_layouts/page.html
+/home/mike/repos/trimnoir/_layouts/post.html
+/home/mike/repos/trimnoir/index.md
+remotes/honeybot/scripts/check_file_traffic.py
+remotes/honeybot/scripts/check_telemetry.py
+remotes/honeybot/scripts/content_loader.py
+remotes/honeybot/scripts/db_monitor.py
+remotes/honeybot/scripts/db.py
+remotes/honeybot/scripts/education.py
+remotes/honeybot/scripts/intel_report.py
+remotes/honeybot/scripts/logs.py
+remotes/honeybot/scripts/mine_bots.py
+remotes/honeybot/scripts/radar.py
+remotes/honeybot/scripts/report.py
+remotes/honeybot/scripts/show.py
+remotes/honeybot/scripts/stream.py
 
 # remotes/honeybot/hooks/post-receive
 # https://mikelev.in/futureproof/unpacking-fasthtml-databases/index.md
