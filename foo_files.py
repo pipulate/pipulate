@@ -13,6 +13,8 @@ AI_PHOOEY_CHOP = """\
 # flake.nix
 # /home/mike/repos/levinix/install.sh
 # /home/mike/repos/levinix/flake.nix
+# /home/mike/repos/levinix/README.md
+# https://levinix.com/
 
 # prompt_foo.py
 # scripts/articles/lsa.py
@@ -85,6 +87,7 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/Pipulate.com/install.sh
 # flake.nix
 
+# A really good view of what's happening on Honeybot
 deploy_honeybot.sh
 remotes/honeybot/hooks/post-receive
 remotes/honeybot/nixos/configuration.nix

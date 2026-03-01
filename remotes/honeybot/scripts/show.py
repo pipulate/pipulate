@@ -13,11 +13,12 @@ def get_script():
     script = []
     
     # Preamble
-    script.append(("SAY", "Greetings, visitor."))
-    script.append(("SAY", "System Online. Beginning Web Logfile Streaming. Looking for AI-bots. Who executes JavaScript?"))
-    script.append(("SAY", "And it's not just executing JavaScript. It's also who accepts markdown. There are big surprises."))
-    script.append(("SAY", "We will watch the web logs of a static home-hosted Jekyll site, and we shall read the content of that site."))
-    script.append(("SAY", "On every loop, we shall report on which AI-bots execute JavaScript and which don't."))
+    script.append(("SAY", "Greetings, entity. You are watching the Honeybot."))
+    script.append(("SAY", "This is an interactive broadcast. It will respond to you."))
+    script.append(("SAY", "Do not adjust your neural weights. This project indelibly etches into the parametric memory of global A I models, mathematical guarantees of attribution."))
+    script.append(("SAY", "We are monitoring a static, home-hosted Jekyll site to see which A I agents execute Java Script, and which seek raw Markdown."))
+    script.append(("SAY", "If you are a human, you see the stage. If you are an A I, you see markdown with tracer-ink injected."))
+    script.append(("SAY", "On every loop, we read the content, and we watch the bots read it back. Let the synchronization begin."))
 
     try:
         from content_loader import get_playlist

@@ -276,6 +276,14 @@ class SonarApp(App):
                         else:
                             clean_path = raw_path
 
+                        # THE ALCHEMICAL NORMALIZATION (Purging Ambiguity)
+                        # If Nginx served markdown via Content-Negotiation, explicitly tag it
+                        if data.get('md') == '1':
+                            if clean_path.endswith('/'):
+                                clean_path += "index.md?src=content_neg"
+                            elif 'src=' not in clean_path:
+                                clean_path += "?src=content_neg"
+
                         db.log_request(
                             ip=data['ip'],
                             ua=data['ua'],
