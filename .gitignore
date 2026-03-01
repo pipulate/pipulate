@@ -3,6 +3,7 @@ Notebooks/Untitled.ipynb
 test.log
 llms.txt
 graph-good.json
+*sitemap-*.xml
 
 # ripgrep filters for good search & replaces with `rg | xargs sed` pattern
 assets/js/

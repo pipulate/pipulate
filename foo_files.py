@@ -10,6 +10,10 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
+/home/mike/repos/trimnoir/sitemap.xml
+/home/mike/repos/trimnoir/sitemap-core.xml
+/home/mike/repos/trimnoir/sitemap-hubs.xml
+/home/mike/repos/trimnoir/sitemap-posts.xml
 scripts/articles/update_graphs.py
 scripts/articles/build_knowledge_graph.py
 
