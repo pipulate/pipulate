@@ -41,7 +41,10 @@ def sync_data_to_jekyll(target_path):
     # Artifacts to sync
     artifacts = {
         "graph.json": "graph.json",
-        "llms.txt": "llms.txt"
+        "llms.txt": "llms.txt",
+        "sitemap-core.xml": "sitemap-core.xml",
+        "sitemap-hubs.xml": "sitemap-hubs.xml",
+        "sitemap-posts.xml": "sitemap-posts.xml"
     }
     
     # target_path is usually .../trimnoir/_posts
