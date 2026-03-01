@@ -103,63 +103,23 @@ def load_velocity_data(directory=Path(".")):
         return slug_map
     except: return {}
 
-def load_market_data(directory=Path(".")):
-    if not directory.exists(): directory = Path(__file__).parent
-    files = list(directory.glob("*bulk_us*.csv"))
-    if not files: return {}
-    latest_file = max(files, key=lambda f: f.stat().st_mtime)
-    print(f"💰 Loading market data from: {latest_file.name}")
-    try:
-        df = pd.read_csv(latest_file)
-        market_map = {}
-        for _, row in df.iterrows():
-            kw = str(row['Keyword']).lower().strip()
-            try: vol = int(row['Volume'])
-            except: vol = 0
-            market_map[kw] = vol
-        return market_map
-    except: return {}
-
 # --- 2. CANONICAL CLUSTERING LOGIC ---
 
-def get_cluster_candidates(df_cluster, market_data=None):
+def get_cluster_candidates(df_cluster):
     """Returns a list of (keyword, score) tuples sorted by relevance."""
     all_keywords = [kw for sublist in df_cluster['keywords'] for kw in sublist]
     if not all_keywords: return [("Misc", 0)]
     
     counts = Counter(all_keywords)
-    candidates = counts.most_common(10) # Buffer for collisions
-    
-    scored_candidates = []
-    for kw, freq in candidates:
-        if not kw: continue 
-        score = freq
-        if market_data:
-            vol = market_data.get(str(kw).lower().strip(), 0)
-            score = freq * np.log1p(vol)
-        scored_candidates.append((kw, score))
-        
-    scored_candidates.sort(key=lambda x: x[1], reverse=True)
-    return scored_candidates
+    return counts.most_common(10)
 
-def calculate_node_gravity(label, keywords, market_data):
+def calculate_node_gravity(label, keywords):
     """Calculates visual size (gravity) for D3."""
-    base = 0
-    if not label: label = "Untitled"
-    
-    if market_data:
-        # Check label volume
-        base += np.log1p(market_data.get(str(label).lower(), 0))
-        # Check max keyword volume
-        max_kw_vol = 0
-        for kw in keywords:
-            if not kw: continue
-            vol = market_data.get(str(kw).lower(), 0)
-            if vol > max_kw_vol: max_kw_vol = vol
-        base += np.log1p(max_kw_vol)
-    return 5 + base  # Minimum size 5
+    # Without external market volume, gravity is determined by the raw number 
+    # of semantic keywords attached to the node, granting weight to dense content.
+    return 5 + len(keywords)
 
-def build_canonical_tree(df_slice, current_node, current_depth, market_data, velocity_data, vectorizer=None):
+def build_canonical_tree(df_slice, current_node, current_depth, velocity_data, vectorizer=None):
     """
     The Single Logic Stream.
     Builds a recursive dictionary (Tree) that represents the Truth.
@@ -171,8 +131,8 @@ def build_canonical_tree(df_slice, current_node, current_depth, market_data, vel
     df = df.sort_values(by='sort_clicks', ascending=False)
 
     def attach_article(row):
-        # Calculate gravity for the article based on its keywords
-        grav = calculate_node_gravity(row['title'], row['keywords'], market_data)
+        # Calculate organic gravity
+        grav = calculate_node_gravity(row['title'], row['keywords'])
         
         # Get status from GSC
         slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', row['id'])
@@ -229,7 +189,7 @@ def build_canonical_tree(df_slice, current_node, current_depth, market_data, vel
             if len(cluster_data) == 0: continue
 
             # Semantic Labeling & Collision Resolution
-            candidates = get_cluster_candidates(cluster_data, market_data)
+            candidates = get_cluster_candidates(cluster_data)
             
             hub_label = "Misc"
             for kw, score in candidates:
@@ -251,7 +211,7 @@ def build_canonical_tree(df_slice, current_node, current_depth, market_data, vel
             used_slugs.add(slug)
             
             # Create Hub Node
-            hub_gravity = calculate_node_gravity(hub_label, [hub_label], market_data)
+            hub_gravity = calculate_node_gravity(hub_label, [hub_label])
             # Boost Hub gravity based on depth
             hub_val = max(10, 50 - (current_depth * 10)) + hub_gravity
 
@@ -271,7 +231,7 @@ def build_canonical_tree(df_slice, current_node, current_depth, market_data, vel
             # Recurse
             build_canonical_tree(
                 cluster_data, new_hub_node, current_depth + 1, 
-                market_data, velocity_data
+                velocity_data
             )
 
     except Exception as e:
@@ -384,7 +344,6 @@ def main():
         print("❌ No data found.")
         return
         
-    market_data = load_market_data()
     velocity_data = load_velocity_data()
 
     # 2. BUILD CANONICAL TREE
@@ -402,7 +361,7 @@ def main():
         "children_articles": []
     }
     
-    build_canonical_tree(df, canonical_tree, 0, market_data, velocity_data)
+    build_canonical_tree(df, canonical_tree, 0, velocity_data)
 
     # 3. EXPORT NAVGRAPH (JSON Tree for Jekyll)
     with open(NAVGRAPH_FILE, 'w', encoding='utf-8') as f:

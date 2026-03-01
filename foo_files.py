@@ -10,17 +10,19 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-# /home/mike/repos/trimnoir/sitemap.xml
 scripts/articles/update_graphs.py
-scripts/articles/common.py
-scripts/articles/editing_prompt.txt
-scripts/articles/contextualizer.py
-scripts/articles/generate_semrush_candidates.py
-scripts/articles/gsc_historical_fetch.py
 scripts/articles/build_knowledge_graph.py
-scripts/articles/generate_hubs.py
-/home/mike/.config/articleizer/targets.json
 
+# /home/mike/repos/trimnoir/sitemap.xml
+# scripts/articles/update_graphs.py
+# scripts/articles/common.py
+# scripts/articles/editing_prompt.txt
+# scripts/articles/contextualizer.py
+# scripts/articles/generate_semrush_candidates.py
+# scripts/articles/gsc_historical_fetch.py
+# scripts/articles/build_knowledge_graph.py
+# scripts/articles/generate_hubs.py
+# /home/mike/.config/articleizer/targets.json
 
 # /home/mike/repos/trimnoir/_layouts/home.html
 # /home/mike/repos/trimnoir/_layouts/default.html
@@ -37,6 +39,19 @@ scripts/articles/generate_hubs.py
 # scripts/articles/lsa.py
 # /home/mike/.config/articleizer/targets.json
 
+# # Really big context awareness for Honeybot from deploy through Jekyll templates
+# deploy_honeybot.sh
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_config.yml
+# /home/mike/repos/trimnoir/_ai_license.md
+# /home/mike/repos/trimnoir/_layouts/default.html
+# /home/mike/repos/trimnoir/_layouts/home.html
+# /home/mike/repos/trimnoir/_layouts/page.html
+# /home/mike/repos/trimnoir/_layouts/post.html
+# /home/mike/repos/trimnoir/llms.txt
+# /home/mike/repos/trimnoir/nginx.conf
 # scripts/articles/sanitizer.py
 # scripts/articles/articleizer.py
 # scripts/articles/update_graphs.py
@@ -49,6 +64,7 @@ scripts/articles/generate_hubs.py
 # scripts/articles/generate_hubs.py
 # /home/mike/.config/articleizer/url_map.json
 # /home/mike/.config/articleizer/targets.json
+# /home/mike/repos/trimnoir/robots.txt
 
 # deploy_honeybot.sh
 # remotes/honeybot/hooks/post-receive
