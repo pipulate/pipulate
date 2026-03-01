@@ -10,7 +10,8 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-# foo_files.py
+# Let's check the live database for cloaking bots:
+! cat remotes/honeybot/queries/find_cloakers.sql | ssh honeybot 'sqlite3 ~/www/mikelev.in/honeybot.db'
 
 deploy_honeybot.sh
 remotes/honeybot/hooks/post-receive
@@ -31,8 +32,7 @@ remotes/honeybot/scripts/radar.py
 remotes/honeybot/scripts/report.py
 remotes/honeybot/scripts/show.py
 remotes/honeybot/scripts/stream.py
-
-prompt_foo.py
+remotes/honeybot/queries/find_cloakers.sql
 
 # /home/mike/repos/trimnoir/_layouts/default.html
 # /home/mike/repos/trimnoir/assets/main.css
