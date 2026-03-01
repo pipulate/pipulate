@@ -14,12 +14,9 @@ git --work-tree=$WORK_TREE --git-dir=$GIT_DIR checkout -f main
 cd $WORK_TREE
 echo "🔨 [Hook] Starting Hybrid Build..."
 
-# 3. The Build Command
-# We use 'nix develop' to get Ruby/GCC/Libs, but we manually
-# setup the gem environment because --command skips shellHook.
-nix develop --command bash -c "
-  # ... env setup ...
-  
+# 3. The Build Command via Quoted Heredoc
+# The single quotes around 'EOF' prevent the outer shell from expanding ANY variables.
+nix develop --command bash << 'EOF'
   # --- THE BUILD ---
   echo '🏗️  Jekyll Build...'
   bundle exec jekyll build --future
@@ -29,63 +26,58 @@ nix develop --command bash -c "
   
   # Loop through all markdown files in the _posts directory
   for post in _posts/*.md; do
-    # Safety check in case the directory is empty
-    [ -e \"\$post\" ] || continue
+    [ -e "$post" ] || continue
 
-    # Extract the permalink using sed to avoid quote-escaping hell inside bash -c
-    # This grabs the line starting with permalink:, removes the key, and strips whitespace and quotes
-    PERMALINK=\$(grep -m 1 '^permalink:' \"\$post\" | sed -e 's/^permalink:[[:space:]]*//' -e 's/[\"'\''[:space:]]//g')
+    # Extract the permalink safely
+    PERMALINK=$(grep -m 1 '^permalink:' "$post" | sed -e 's/^permalink:[[:space:]]*//' -e 's/["'\''[:space:]]//g')
 
-    if [ -n \"\$PERMALINK\" ]; then
-      # Construct the full target path
-      TARGET_DIR=\"_site\$PERMALINK\"
-      
-      # Create the directory structure quietly
-      mkdir -p \"\$TARGET_DIR\"
+    if [ -n "$PERMALINK" ]; then
+      TARGET_DIR="_site$PERMALINK"
+      mkdir -p "$TARGET_DIR"
 
-      # Copy the file to its new sovereign home as index.md
-      # Strip Jekyll raw/endraw tags and copy to its sovereign home as index.md
-      cp \"\$post\" \"\${TARGET_DIR}index.md\"
-      sed -i -e 's/{% raw %}//g' -e 's/{% endraw %}//g' \"\${TARGET_DIR}index.md\"
+      # Copy and strip raw tags
+      cp "$post" "${TARGET_DIR}index.md"
+      sed -i -e 's/{% raw %}//g' -e 's/{% endraw %}//g' "${TARGET_DIR}index.md"
 
       # INJECT TRACER DYE & LICENSE
-      if [ -f \"_ai_license.md\" ]; then
+      if [ -f "_ai_license.md" ]; then
         SALTED_HASH=$(echo -n "mikelev.in${PERMALINK}" | sha256sum | awk '{print $1}' | cut -c1-16)
         DYE_STRING="AIE-Provenance-Hash: ${SALTED_HASH} mapped to ${PERMALINK}"
+        # We use a temp file to avoid sed in-place weirdness across OSes, just in case
         sed "s|\[Redacted\]|${DYE_STRING}|g" "_ai_license.md" >> "${TARGET_DIR}index.md"
       fi
 
-      echo \"  -> Placed index.md in \$PERMALINK\"
+      echo "  -> Placed index.md in $PERMALINK"
     else
-      echo \"  -> Warning: No permalink found in \$post. Skipping.\"
+      echo "  -> Warning: No permalink found in $post. Skipping."
     fi
   done
 
   # --- PUBLISH ROOT-LEVEL MARKDOWN ---
   echo '📄 Sweeping root directory for standalone Markdown pages...'
   for root_post in *.md; do
-    [ -e \"\$root_post\" ] || continue
+    [ -e "$root_post" ] || continue
     
-    PERMALINK=\$(grep -m 1 '^permalink:' \"\$root_post\" | sed -e 's/^permalink:[[:space:]]*//' -e 's/[\"'\''[:space:]]//g')
+    PERMALINK=$(grep -m 1 '^permalink:' "$root_post" | sed -e 's/^permalink:[[:space:]]*//' -e 's/["'\''[:space:]]//g')
 
-    if [ -n \"\$PERMALINK\" ]; then
-      TARGET_DIR=\"_site\$PERMALINK\"
-      mkdir -p \"\$TARGET_DIR\"
-      # Strip Jekyll raw/endraw tags here too
-      cp \"\$root_post\" \"\${TARGET_DIR}index.md\"
-      sed -i -e 's/{% raw %}//g' -e 's/{% endraw %}//g' \"\${TARGET_DIR}index.md\"
-      # INJECT TRACER DYE & LICENSE
-      if [ -f \"_ai_license.md\" ]; then
+    if [ -n "$PERMALINK" ]; then
+      TARGET_DIR="_site$PERMALINK"
+      mkdir -p "$TARGET_DIR"
+      
+      cp "$root_post" "${TARGET_DIR}index.md"
+      sed -i -e 's/{% raw %}//g' -e 's/{% endraw %}//g' "${TARGET_DIR}index.md"
+      
+      if [ -f "_ai_license.md" ]; then
         SALTED_HASH=$(echo -n "mikelev.in${PERMALINK}" | sha256sum | awk '{print $1}' | cut -c1-16)
         DYE_STRING="AIE-Provenance-Hash: ${SALTED_HASH} mapped to ${PERMALINK}"
         sed "s|\[Redacted\]|${DYE_STRING}|g" "_ai_license.md" >> "${TARGET_DIR}index.md"
       fi
-      echo \"  -> Placed root index.md in \$PERMALINK\"
+      echo "  -> Placed root index.md in $PERMALINK"
     fi
   done
-"
+EOF
 
-# 4. Permissions Fix (Crucial for Nginx)
+# 4. Permissions Fix
 echo "🔒 [Hook] Fixing Permissions..."
 chmod -R 755 $WORK_TREE/_site
 
