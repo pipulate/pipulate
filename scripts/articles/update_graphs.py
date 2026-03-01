@@ -42,15 +42,13 @@ def sync_data_to_jekyll(target_path):
     artifacts = {
         "graph.json": "graph.json",
         "llms.txt": "llms.txt",
-        "sitemap-core.xml": "sitemap-core.xml",
-        "sitemap-hubs.xml": "sitemap-hubs.xml",
-        "sitemap-posts.xml": "sitemap-posts.xml"
     }
     
     # target_path is usually .../trimnoir/_posts
     # We want the site root: .../trimnoir/
     repo_root = target_path.parent
     
+    # Sync static artifacts
     for filename, dest_name in artifacts.items():
         source = script_dir / filename
         dest = repo_root / dest_name
@@ -61,6 +59,11 @@ def sync_data_to_jekyll(target_path):
         else:
             print(f"⚠️ Warning: {filename} not found. Skipping sync.")
 
+    # Sync dynamic sitemaps (sitemap.xml, sitemap-core.xml, sitemap-branch-0.xml, etc.)
+    for sitemap in script_dir.glob("sitemap*.xml"):
+        dest = repo_root / sitemap.name
+        shutil.copy2(sitemap, dest)
+        print(f"✅ Synced {sitemap.name} -> {dest}")
 
 def main():
     parser = argparse.ArgumentParser(description="Update all Pipulate graphs")

@@ -10,12 +10,18 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/trimnoir/sitemap.xml
-/home/mike/repos/trimnoir/sitemap-core.xml
-/home/mike/repos/trimnoir/sitemap-hubs.xml
-/home/mike/repos/trimnoir/sitemap-posts.xml
-scripts/articles/update_graphs.py
-scripts/articles/build_knowledge_graph.py
+/home/mike/repos/trimnoir/_layouts/default.html
+/home/mike/repos/trimnoir/assets/main.css
+
+# scripts/articles/update_graphs.py
+# scripts/articles/build_knowledge_graph.py
+
+# /home/mike/repos/trimnoir/sitemap.xml
+# /home/mike/repos/trimnoir/sitemap-core.xml
+# /home/mike/repos/trimnoir/sitemap-hubs.xml
+# /home/mike/repos/trimnoir/sitemap-posts.xml
+# scripts/articles/update_graphs.py
+# scripts/articles/build_knowledge_graph.py
 
 # /home/mike/repos/trimnoir/sitemap.xml
 # scripts/articles/update_graphs.py
@@ -44,6 +50,8 @@ scripts/articles/build_knowledge_graph.py
 # /home/mike/.config/articleizer/targets.json
 
 # # Really big context awareness for Honeybot from deploy through Jekyll templates
+# README.md
+# AI_RUNME.py
 # deploy_honeybot.sh
 # remotes/honeybot/hooks/post-receive
 # remotes/honeybot/nixos/configuration.nix
@@ -68,7 +76,10 @@ scripts/articles/build_knowledge_graph.py
 # scripts/articles/generate_hubs.py
 # /home/mike/.config/articleizer/url_map.json
 # /home/mike/.config/articleizer/targets.json
+# /home/mike/repos/Pipulate.com/index.md
+# /home/mike/repos/Pipulate.com/install.md
 # /home/mike/repos/trimnoir/robots.txt
+# /home/mike/repos/trimnoir/about.md
 
 # deploy_honeybot.sh
 # remotes/honeybot/hooks/post-receive
