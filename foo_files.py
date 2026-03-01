@@ -10,29 +10,42 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-# Let's check the live database for cloaking bots:
-! cat remotes/honeybot/queries/find_cloakers.sql | ssh honeybot 'sqlite3 ~/www/mikelev.in/honeybot.db'
-
 deploy_honeybot.sh
 remotes/honeybot/hooks/post-receive
 remotes/honeybot/nixos/configuration.nix
 /home/mike/repos/trimnoir/flake.nix
 /home/mike/repos/trimnoir/_config.yml
 /home/mike/repos/trimnoir/nginx.conf
-remotes/honeybot/scripts/check_file_traffic.py
-remotes/honeybot/scripts/check_telemetry.py
-remotes/honeybot/scripts/content_loader.py
-remotes/honeybot/scripts/db_monitor.py
-remotes/honeybot/scripts/db.py
-remotes/honeybot/scripts/education.py
-remotes/honeybot/scripts/intel_report.py
-remotes/honeybot/scripts/logs.py
-remotes/honeybot/scripts/mine_bots.py
-remotes/honeybot/scripts/radar.py
-remotes/honeybot/scripts/report.py
-remotes/honeybot/scripts/show.py
-remotes/honeybot/scripts/stream.py
-remotes/honeybot/queries/find_cloakers.sql
+# remotes/honeybot/scripts/content_loader.py
+# remotes/honeybot/scripts/db.py
+# remotes/honeybot/scripts/education.py
+# remotes/honeybot/scripts/logs.py
+# remotes/honeybot/scripts/radar.py
+# remotes/honeybot/scripts/report.py
+# remotes/honeybot/scripts/show.py
+# remotes/honeybot/scripts/stream.py
+# deploy_honeybot.sh
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_config.yml
+# /home/mike/repos/trimnoir/nginx.conf
+/home/mike/repos/trimnoir/_ai_license.md
+# /home/mike/repos/trimnoir/_layouts/default.html
+# /home/mike/repos/trimnoir/assets/main.css
+# /home/mike/repos/trimnoir/_layouts/home.html
+# /home/mike/repos/trimnoir/index.md
+# /home/mike/repos/trimnoir/_site/index.html
+# 
+# /home/mike/repos/pipulate/remotes/honeybot/queries/check_file_traffic.py_tbd
+# /home/mike/repos/pipulate/remotes/honeybot/queries/check_telemetry.py_tbd
+# /home/mike/repos/pipulate/remotes/honeybot/queries/find_cloakers.sql
+# /home/mike/repos/pipulate/remotes/honeybot/queries/intel_report.py_tbd
+# /home/mike/repos/pipulate/remotes/honeybot/queries/mine_bots.py_tbd
+# ! cat remotes/honeybot/queries/find_cloakers.sql | ssh honeybot 'sqlite3 ~/www/mikelev.in/honeybot.db'
+
+# prompt_foo.py
+# foo_files.py
 
 # /home/mike/repos/trimnoir/_layouts/default.html
 # /home/mike/repos/trimnoir/assets/main.css
