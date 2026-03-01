@@ -10,8 +10,32 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/trimnoir/_layouts/default.html
-/home/mike/repos/trimnoir/assets/main.css
+# foo_files.py
+
+deploy_honeybot.sh
+remotes/honeybot/hooks/post-receive
+remotes/honeybot/nixos/configuration.nix
+/home/mike/repos/trimnoir/flake.nix
+/home/mike/repos/trimnoir/_config.yml
+/home/mike/repos/trimnoir/nginx.conf
+remotes/honeybot/scripts/check_file_traffic.py
+remotes/honeybot/scripts/check_telemetry.py
+remotes/honeybot/scripts/content_loader.py
+remotes/honeybot/scripts/db_monitor.py
+remotes/honeybot/scripts/db.py
+remotes/honeybot/scripts/education.py
+remotes/honeybot/scripts/intel_report.py
+remotes/honeybot/scripts/logs.py
+remotes/honeybot/scripts/mine_bots.py
+remotes/honeybot/scripts/radar.py
+remotes/honeybot/scripts/report.py
+remotes/honeybot/scripts/show.py
+remotes/honeybot/scripts/stream.py
+
+prompt_foo.py
+
+# /home/mike/repos/trimnoir/_layouts/default.html
+# /home/mike/repos/trimnoir/assets/main.css
 
 # scripts/articles/update_graphs.py
 # scripts/articles/build_knowledge_graph.py
@@ -50,20 +74,18 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/.config/articleizer/targets.json
 
 # # Really big context awareness for Honeybot from deploy through Jekyll templates
-# README.md
-# AI_RUNME.py
 # deploy_honeybot.sh
 # remotes/honeybot/hooks/post-receive
 # remotes/honeybot/nixos/configuration.nix
 # /home/mike/repos/trimnoir/flake.nix
 # /home/mike/repos/trimnoir/_config.yml
+# /home/mike/repos/trimnoir/nginx.conf
 # /home/mike/repos/trimnoir/_ai_license.md
 # /home/mike/repos/trimnoir/_layouts/default.html
 # /home/mike/repos/trimnoir/_layouts/home.html
 # /home/mike/repos/trimnoir/_layouts/page.html
 # /home/mike/repos/trimnoir/_layouts/post.html
 # /home/mike/repos/trimnoir/llms.txt
-# /home/mike/repos/trimnoir/nginx.conf
 # scripts/articles/sanitizer.py
 # scripts/articles/articleizer.py
 # scripts/articles/update_graphs.py
