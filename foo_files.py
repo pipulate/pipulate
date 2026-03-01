@@ -10,6 +10,23 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
+# /home/mike/repos/trimnoir/sitemap.xml
+scripts/articles/update_graphs.py
+scripts/articles/common.py
+scripts/articles/editing_prompt.txt
+scripts/articles/contextualizer.py
+scripts/articles/generate_semrush_candidates.py
+scripts/articles/gsc_historical_fetch.py
+scripts/articles/build_knowledge_graph.py
+scripts/articles/generate_hubs.py
+/home/mike/.config/articleizer/targets.json
+
+
+# /home/mike/repos/trimnoir/_layouts/home.html
+# /home/mike/repos/trimnoir/_layouts/default.html
+# /home/mike/repos/trimnoir/index.md
+# /home/mike/repos/levinix/index.html
+
 # flake.nix
 # /home/mike/repos/levinix/install.sh
 # /home/mike/repos/levinix/flake.nix
@@ -88,29 +105,29 @@ AI_PHOOEY_CHOP = """\
 # flake.nix
 
 # A really good view of what's happening on Honeybot
-deploy_honeybot.sh
-remotes/honeybot/hooks/post-receive
-remotes/honeybot/nixos/configuration.nix
-/home/mike/repos/trimnoir/flake.nix
-/home/mike/repos/trimnoir/_config.yml
-/home/mike/repos/trimnoir/_layouts/default.html
-/home/mike/repos/trimnoir/_layouts/home.html
-/home/mike/repos/trimnoir/_layouts/page.html
-/home/mike/repos/trimnoir/_layouts/post.html
-/home/mike/repos/trimnoir/index.md
-remotes/honeybot/scripts/check_file_traffic.py
-remotes/honeybot/scripts/check_telemetry.py
-remotes/honeybot/scripts/content_loader.py
-remotes/honeybot/scripts/db_monitor.py
-remotes/honeybot/scripts/db.py
-remotes/honeybot/scripts/education.py
-remotes/honeybot/scripts/intel_report.py
-remotes/honeybot/scripts/logs.py
-remotes/honeybot/scripts/mine_bots.py
-remotes/honeybot/scripts/radar.py
-remotes/honeybot/scripts/report.py
-remotes/honeybot/scripts/show.py
-remotes/honeybot/scripts/stream.py
+# deploy_honeybot.sh
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_config.yml
+# /home/mike/repos/trimnoir/_layouts/default.html
+# /home/mike/repos/trimnoir/_layouts/home.html
+# /home/mike/repos/trimnoir/_layouts/page.html
+# /home/mike/repos/trimnoir/_layouts/post.html
+# /home/mike/repos/trimnoir/index.md
+# remotes/honeybot/scripts/check_file_traffic.py
+# remotes/honeybot/scripts/check_telemetry.py
+# remotes/honeybot/scripts/content_loader.py
+# remotes/honeybot/scripts/db_monitor.py
+# remotes/honeybot/scripts/db.py
+# remotes/honeybot/scripts/education.py
+# remotes/honeybot/scripts/intel_report.py
+# remotes/honeybot/scripts/logs.py
+# remotes/honeybot/scripts/mine_bots.py
+# remotes/honeybot/scripts/radar.py
+# remotes/honeybot/scripts/report.py
+# remotes/honeybot/scripts/show.py
+# remotes/honeybot/scripts/stream.py
 
 # remotes/honeybot/hooks/post-receive
 # https://mikelev.in/futureproof/unpacking-fasthtml-databases/index.md
