@@ -8,7 +8,7 @@ class EducationApp(App):
     CSS = """
     Screen {
         layout: vertical;
-        background: #000022; /* Deep Academic Blue */
+        background: #001000;
     }
 
     #header {
@@ -16,7 +16,7 @@ class EducationApp(App):
         text-align: center;
         color: #00ffff;
         text-style: bold;
-        background: #000044;
+        background: #002200;
         border-bottom: solid cyan;
         padding: 0 1;
     }
@@ -25,13 +25,12 @@ class EducationApp(App):
         height: 1fr; 
         border: solid cyan;
         margin: 0 1;
-        padding: 1;
     }
     
     DataTable {
         height: 1fr;
         width: 100%;
-        background: #000022;
+        background: #001000;
         color: #00ffff;
         border: none;
     }
@@ -41,7 +40,7 @@ class EducationApp(App):
         yield Header()
         
         yield Static(
-            "🎓 AIE MONITOR | Artificial Intelligence Education Rate", 
+            "🎓 KNOWLEDGE EXTRACTION | AI Engine Ingestion Rates",
             id="header"
         )
 
