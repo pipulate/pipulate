@@ -10,13 +10,15 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-foo_files.py
-remotes/honeybot/scripts/content_loader.py
-remotes/honeybot/scripts/db.py
-remotes/honeybot/scripts/logs.py
 remotes/honeybot/scripts/radar.py
-remotes/honeybot/scripts/show.py
-remotes/honeybot/scripts/stream.py
+
+# foo_files.py
+# remotes/honeybot/scripts/content_loader.py
+# remotes/honeybot/scripts/db.py
+# remotes/honeybot/scripts/logs.py
+# remotes/honeybot/scripts/radar.py
+# remotes/honeybot/scripts/show.py
+# remotes/honeybot/scripts/stream.py
 
 # # Making Prompt Fu support commands, adding ad hoc grep/sql queries and updating reports.
 # remotes/honeybot/scripts/education.py
