@@ -115,12 +115,12 @@ class SonarApp(App):
             
             # LEFT: Javascript Executors
             with Vertical(classes="half_panel"):
-                yield Label("⚡ JAVASCRIPT EXECUTORS (Renderers)", classes="panel_header")
+                yield Label("⚡ JAVASCRIPT EXECUTORS (Caught by CAPTCHA)", classes="panel_header")
                 yield DataTable(id="js_table")
             
             # RIGHT: Markdown Seekers
             with Vertical(classes="half_panel"):
-                yield Label("🧠 SEMANTIC RAIDERS (Slurps alt-Markdown)", classes="panel_header")
+                yield Label("🧠 ACCEPTS MARKDOWN (Negotiated / Traced)", classes="panel_header")
                 yield DataTable(id="md_table")
         # ----------------------------------------
             
