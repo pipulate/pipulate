@@ -98,7 +98,8 @@ class RadarApp(App):
                 table.add_row(str(count), self.stylize_agent(ua))
                 
         except Exception as e:
-            pass
+            table.clear()
+            table.add_row("ERROR", str(e)[:40])
 
     def on_mount(self) -> None:
         self.populate_table("table_js", db.get_js_executors)
