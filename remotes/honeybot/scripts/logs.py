@@ -131,12 +131,12 @@ class SonarApp(App):
         self.countdown_str = "--:--"
         self.stream_logs()
         
-        # Setup Tables
+        # Setup Tables (Now with 3 columns!)
         js_table = self.query_one("#js_table", DataTable)
-        js_table.add_columns("Hits", "Agent")
+        js_table.add_columns("Hits", "Identity", "Raw Signature")
         
         md_table = self.query_one("#md_table", DataTable)
-        md_table.add_columns("Hits", "Agent")
+        md_table.add_columns("Hits", "Identity", "Raw Signature")
 
         self.refresh_tables() # Initial load
 
@@ -149,24 +149,27 @@ class SonarApp(App):
             self.duration_mins = 15
             
         self.set_interval(1, self.update_countdown)
-        self.set_interval(5, self.refresh_tables) # Refresh data every 5s
+        self.set_interval(5, self.refresh_tables)
 
-    def stylize_agent(self, agent_str):
-        """Converts a raw UA string into a Rich Text object with highlights."""
-        agent_str = agent_str.strip()
-        text = Text(agent_str)
-
-        # Default styling (Broadened to catch browsers even if "Mozilla/5.0" is stripped)
-        # We look for "Mozilla" OR "AppleWebKit" OR "Gecko" to identify standard browser chains
-        if ("Mozilla" in agent_str or "AppleWebKit" in agent_str) and "compatible" not in agent_str:
-            text.stylize("dim white")
-            
-        # Highlight ANY known bot
+    def extract_and_stylize(self, agent_str):
+        """Returns a tuple: (Styled Identity, Dimmed Full String)"""
+        agent_str = agent_str.strip().replace("Mozilla/5.0 ", "")
+        
+        identity = "Unknown"
+        identity_style = "dim white"
+        
+        # Find the specific Bot Identity
         for bot_name in KNOWN_BOTS:
             if bot_name in agent_str:
-                text.highlight_regex(re.escape(bot_name), BOT_STYLE)
+                identity = bot_name
+                identity_style = "bold orange1"
+                break
                 
-        return text
+        # Format the outputs
+        id_text = Text(identity, style=identity_style)
+        full_text = Text(agent_str, style="dim green")
+        
+        return id_text, full_text
 
     def refresh_tables(self):
         """Updates both Intelligence tables from DB."""
@@ -176,37 +179,33 @@ class SonarApp(App):
         try:
             table = self.query_one("#js_table", DataTable)
             table.clear()
-            # Fetch plenty, let UI clip
             data = db.get_js_executors(limit=50) 
             if not data:
-                table.add_row("-", "Waiting for data...")
+                table.add_row("-", "None", "Waiting for data...")
             else:
                 for ua, count in data:
-                    if STRIP_MOZILLA_PREFIX:
-                        display_ua = ua.replace("Mozilla/5.0 ", "")
-                    else:
-                        display_ua = ua
-                        
-                    table.add_row(str(count), self.stylize_agent(display_ua))
-        except: pass
+                    display_ua = ua.replace("Mozilla/5.0 ", "") if STRIP_MOZILLA_PREFIX else ua
+                    identity, signature = self.extract_and_stylize(display_ua)
+                    table.add_row(str(count), identity, signature)
+        except Exception as e:
+            table.clear()
+            table.add_row("ERROR", "None", str(e)[:40])
 
         # 2. Update Markdown Readers (Right)
         try:
             table = self.query_one("#md_table", DataTable)
             table.clear()
-            # Fetch plenty, let UI clip
             data = db.get_markdown_readers(limit=50)
             if not data:
-                table.add_row("-", "Waiting for data...")
+                table.add_row("-", "None", "Waiting for data...")
             else:
                 for ua, count in data:
-                    if STRIP_MOZILLA_PREFIX:
-                        display_ua = ua.replace("Mozilla/5.0 ", "")
-                    else:
-                        display_ua = ua
-                        
-                    table.add_row(str(count), self.stylize_agent(display_ua))
-        except: pass
+                    display_ua = ua.replace("Mozilla/5.0 ", "") if STRIP_MOZILLA_PREFIX else ua
+                    identity, signature = self.extract_and_stylize(display_ua)
+                    table.add_row(str(count), identity, signature)
+        except Exception as e:
+            table.clear()
+            table.add_row("ERROR", "None", str(e)[:40])
 
     def update_countdown(self):
         """Ticks the clock and updates the Sub-Title."""
