@@ -10,13 +10,21 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-prompt_foo.py
 foo_files.py
+! echo "--- TOTALS ---" && cat remotes/honeybot/queries/telemetry_totals.sql | ssh honeybot 'sqlite3 ~/www/mikelev.in/honeybot.db'
+! echo "--- HEADERS ---" && cat remotes/honeybot/queries/telemetry_accept_headers.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- TRAPDOOR EVENTS ---" && cat remotes/honeybot/queries/telemetry_trapdoor_events.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
 remotes/honeybot/queries/check_file_traffic.py_tbd
-remotes/honeybot/queries/check_telemetry.py_tbd
 remotes/honeybot/queries/find_cloakers.sql
 remotes/honeybot/queries/intel_report.py_tbd
 remotes/honeybot/queries/mine_bots.py_tbd
+remotes/honeybot/queries/telemetry_accept_headers.sql
+remotes/honeybot/queries/telemetry_totals.sql
+remotes/honeybot/queries/telemetry_trapdoor_events.sql
+
+# prompt_foo.py
+# foo_files.py
 
 # deploy_honeybot.sh
 # remotes/honeybot/hooks/post-receive
