@@ -10,7 +10,10 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-remotes/honeybot/scripts/radar.py
+README.md
+/home/mike/repos/trimnoir/about.md
+
+# remotes/honeybot/scripts/radar.py
 
 # foo_files.py
 # remotes/honeybot/scripts/content_loader.py
