@@ -49,8 +49,8 @@ class ReportApp(App):
     
     .col_header {
         text-align: center;
-        background: #400040;
-        color: white;
+        background: #002200;
+        color: #00ff00;
         text-style: bold;
         padding: 0 1;
         dock: top; /* Ensure it stays at the top */
@@ -62,13 +62,13 @@ class ReportApp(App):
         yield Header()
         
         yield Static(
-            "📊 GLOBAL TRAFFIC INTELLIGENCE | High Volume Patterns", 
+            "📊 RAW DATASPHERE | The Global Traffic Funnel",
             id="main_header"
         )
 
         # 1. Top Volume Panel (Full Height)
         with Vertical(classes="section"):
-            yield Label("🏆 TOP VOLUME LEADERS (All Time)", classes="col_header")
+            yield Label("🏆 UNFILTERED VOLUME (Humans, Bots, and Noise)", classes="col_header")
             with Container(classes="table_container"):
                 yield DataTable(id="table_top")
 
