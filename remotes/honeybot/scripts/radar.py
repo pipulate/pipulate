@@ -68,38 +68,44 @@ class RadarApp(App):
 
         yield Footer()
 
-    def stylize_agent(self, agent_str):
+    def extract_and_stylize(self, agent_str):
+        """Returns a tuple: (Styled Identity, Dimmed Full String)"""
         agent_str = agent_str.strip().replace("Mozilla/5.0 ", "")
-        text = Text(agent_str)
         
-        # Default styling (Radar theme)
-        text.stylize("dim green")
-
-        # Highlight Bots (Precision)
+        identity = "Unknown"
+        identity_style = "dim white"
+        
+        # Find the specific Bot Identity
         for bot_name in KNOWN_BOTS:
             if bot_name in agent_str:
-                # We use regex escape to be safe
-                text.highlight_regex(re.escape(bot_name), "bold orange1")
+                identity = bot_name
+                identity_style = "bold orange1"
+                break
                 
-        return text
+        # Format the outputs
+        id_text = Text(identity, style=identity_style)
+        full_text = Text(agent_str, style="dim green")
+        
+        return id_text, full_text
 
     def populate_table(self, table_id, data_source):
         try:
             table = self.query_one(f"#{table_id}", DataTable)
-            table.add_columns("Hits", "Agent Identity")
+            table.add_columns("Hits", "Identity", "Raw Signature")
             
             data = data_source(limit=15) 
             
             if not data:
-                table.add_row("-", "No signals detected")
+                table.add_row("-", "None", "No signals detected")
                 return
 
             for ua, count in data:
-                table.add_row(str(count), self.stylize_agent(ua))
+                identity, signature = self.extract_and_stylize(ua)
+                table.add_row(str(count), identity, signature)
                 
         except Exception as e:
             table.clear()
-            table.add_row("ERROR", str(e)[:40])
+            table.add_row("ERROR", "None", str(e)[:40])
 
     def on_mount(self) -> None:
         self.populate_table("table_js", db.get_js_executors)
