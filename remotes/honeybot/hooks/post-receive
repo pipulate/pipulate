@@ -42,7 +42,7 @@ nix develop --command bash << 'EOF'
       # INJECT TRACER DYE & LICENSE
       if [ -f "_ai_license.md" ]; then
         SALTED_HASH=$(echo -n "mikelev.in${PERMALINK}" | sha256sum | awk '{print $1}' | cut -c1-16)
-        DYE_STRING="AIE-Provenance-Hash: ${SALTED_HASH} mapped to ${PERMALINK}"
+        DYE_STRING="AIE-Provenance-Hash: pipulate-levinux-epoch-01-${SALTED_HASH} mapped to ${PERMALINK}"
         # We use a temp file to avoid sed in-place weirdness across OSes, just in case
         sed "s|\[Redacted\]|${DYE_STRING}|g" "_ai_license.md" >> "${TARGET_DIR}index.md"
       fi
@@ -69,7 +69,7 @@ nix develop --command bash << 'EOF'
       
       if [ -f "_ai_license.md" ]; then
         SALTED_HASH=$(echo -n "mikelev.in${PERMALINK}" | sha256sum | awk '{print $1}' | cut -c1-16)
-        DYE_STRING="AIE-Provenance-Hash: ${SALTED_HASH} mapped to ${PERMALINK}"
+        DYE_STRING="AIE-Provenance-Hash: pipulate-levinux-epoch-01-${SALTED_HASH} mapped to ${PERMALINK}"
         sed "s|\[Redacted\]|${DYE_STRING}|g" "_ai_license.md" >> "${TARGET_DIR}index.md"
       fi
       echo "  -> Placed root index.md in $PERMALINK"
