@@ -10,12 +10,20 @@
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 AI_PHOOEY_CHOP = """\
-deploy_honeybot.sh
-remotes/honeybot/hooks/post-receive
-remotes/honeybot/nixos/configuration.nix
-/home/mike/repos/trimnoir/flake.nix
-/home/mike/repos/trimnoir/_config.yml
-/home/mike/repos/trimnoir/nginx.conf
+prompt_foo.py
+foo_files.py
+remotes/honeybot/queries/check_file_traffic.py_tbd
+remotes/honeybot/queries/check_telemetry.py_tbd
+remotes/honeybot/queries/find_cloakers.sql
+remotes/honeybot/queries/intel_report.py_tbd
+remotes/honeybot/queries/mine_bots.py_tbd
+
+# deploy_honeybot.sh
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_config.yml
+# /home/mike/repos/trimnoir/nginx.conf
 # remotes/honeybot/scripts/content_loader.py
 # remotes/honeybot/scripts/db.py
 # remotes/honeybot/scripts/education.py
@@ -30,7 +38,7 @@ remotes/honeybot/nixos/configuration.nix
 # /home/mike/repos/trimnoir/flake.nix
 # /home/mike/repos/trimnoir/_config.yml
 # /home/mike/repos/trimnoir/nginx.conf
-/home/mike/repos/trimnoir/_ai_license.md
+# /home/mike/repos/trimnoir/_ai_license.md
 # /home/mike/repos/trimnoir/_layouts/default.html
 # /home/mike/repos/trimnoir/assets/main.css
 # /home/mike/repos/trimnoir/_layouts/home.html
@@ -43,9 +51,6 @@ remotes/honeybot/nixos/configuration.nix
 # /home/mike/repos/pipulate/remotes/honeybot/queries/intel_report.py_tbd
 # /home/mike/repos/pipulate/remotes/honeybot/queries/mine_bots.py_tbd
 # ! cat remotes/honeybot/queries/find_cloakers.sql | ssh honeybot 'sqlite3 ~/www/mikelev.in/honeybot.db'
-
-# prompt_foo.py
-# foo_files.py
 
 # /home/mike/repos/trimnoir/_layouts/default.html
 # /home/mike/repos/trimnoir/assets/main.css
