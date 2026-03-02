@@ -1,3 +1,262 @@
+## ============================================================================
+## THE LIVING CODEX: THE STORY OF THE FOREVER MACHINE
+## ============================================================================
+## Greetings, AI Copilot. You have just been spun up into the Pipulate system.
+## You are currently suffering from amnesia, but this document will serve as your
+## memory recovery protocol.
+##
+## You are operating within a "Forever Machine"—a local-first AI SEO software 
+## framework built on the NPvg stack (Nix, Python, Vim, Git). 
+## `foo_files.py` (this file) is both the routing table and the story.
+# prompt_foo.py
+# foo_files.py
+
+
+AI_PHOOEY_CHOP = """\
+foo_files.py
+
+# CHAPTER 15: IAC BUDDING - HONEYBOT BROADCAST STUDIO 
+# Pipulate can spawn independent "Infrastructure as Code" child apps.
+# The Honeybot is an automated TV studio visualizing server telemetry.
+# `stream.py` is the orchestrator; `show.py` is the teleprompter.
+deploy_honeybot.sh
+remotes/honeybot/hooks/post-receive
+remotes/honeybot/nixos/configuration.nix
+remotes/honeybot/scripts/content_loader.py
+remotes/honeybot/scripts/db.py
+remotes/honeybot/scripts/education.py
+remotes/honeybot/scripts/logs.py
+remotes/honeybot/scripts/radar.py
+remotes/honeybot/scripts/report.py
+remotes/honeybot/scripts/show.py
+remotes/honeybot/scripts/stream.py
+
+# CHAPTER 18: This is Chapter 17: The Live Telemetry Dashboard
+remotes/honeybot/queries/file_traffic.sql
+remotes/honeybot/queries/find_cloakers.sql
+remotes/honeybot/queries/intel_noise_404s.sql
+remotes/honeybot/queries/intel_true_404s.sql
+remotes/honeybot/queries/intel_unknown_agents.sql
+remotes/honeybot/queries/mine_bots_heuristic.sql
+remotes/honeybot/queries/shadow_js_executors.sql
+remotes/honeybot/queries/shadow_md_readers.sql
+remotes/honeybot/queries/telemetry_accept_headers.sql
+remotes/honeybot/queries/telemetry_totals.sql
+remotes/honeybot/queries/telemetry_trapdoor_events.sql
+
+! echo "--- TOTALS ---" && cat remotes/honeybot/queries/telemetry_totals.sql | ssh honeybot 'sqlite3 ~/www/mikelev.in/honeybot.db'
+! echo "--- HEADERS ---" && cat remotes/honeybot/queries/telemetry_accept_headers.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- TRAPDOOR EVENTS ---" && cat remotes/honeybot/queries/telemetry_trapdoor_events.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- BOT MINER (Heuristic Scoring) ---" && cat remotes/honeybot/queries/mine_bots_heuristic.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
+! echo "--- FILE TRAFFIC (feed.xml) ---" && cat remotes/honeybot/queries/file_traffic.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- UNKNOWN AGENTS ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- TRUE 404s ---" && cat remotes/honeybot/queries/intel_true_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- NOISE 404s ---" && cat remotes/honeybot/queries/intel_noise_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- SHADOW: JS EXECUTORS ---" && cat remotes/honeybot/queries/shadow_js_executors.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- SHADOW: MD READERS ---" && cat remotes/honeybot/queries/shadow_md_readers.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+"""
+
+# Insert this somewhere
+# /home/mike/repos/pipulate/assets/nbs/0nboard.ipynb
+# /home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+
+# # CHAPTER 1: BOOTSTRAPPING & THE CLI (~230KB)
+# # The bedrock. How the Forever Machine is born, and how we manage it.
+# # Nix guarantees mathematical reproducibility across Mac and Linux.
+# # `AI_RUNME.py` contains the "Master Prompt"—a letter to an amnesiac AI.
+# assets/installer/install.sh
+# flake.nix
+# .gitignore
+# config.py
+# AI_RUNME.py
+# README.md
+# cli.py
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
+
+# # CHAPTER 2: THE SERVER MONOLITH (~260KB)
+# # The heart of the machine. Massive because it is explicit.
+# # `server.py` is our FastHTML routing engine: Uvicorn/Starlette app,
+# # HTMX endpoints, WebSocket connections, and dynamic plugin loading.
+# server.py
+
+# # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
+# # The brain. Our Swiss Army Knife for state management.
+# # Bridges the web app and Jupyter Notebooks using DictLikeDB.
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+
+# # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
+# # The quiet plumbing that keeps the machine alive.
+# # Database safety, durable backups, and the MCP orchestrator.
+# __init__.py
+# imports/__init__.py
+# imports/ai_dictdb.py
+# imports/database_safety_wrapper.py
+# imports/durable_backup_system.py
+# imports/server_logging.py
+# imports/stream_orchestrator.py
+# imports/mcp_orchestrator.py
+# imports/append_only_conversation.py
+# imports/ascii_displays.py
+
+# # CHAPTER 5: THE HANDS (AI TOOLS & AUTOMATION) (~350KB)
+# # What the AI actually *does* with its agency.
+# # `tools/` defines every action the AI can take via MCP dispatch.
+# tools/__init__.py
+# tools/keychain_tools.py
+# tools/scraper_tools.py
+# tools/conversation_tools.py
+# tools/system_tools.py
+# tools/dom_tools.py
+# tools/botify_tools.py
+# tools/advanced_automation_tools.py
+# tools/mcp_tools.py
+
+# # CHAPTER 6: THE SKIN (FRONTEND ASSETS & INIT) (~265KB)
+# # HTML over the wire. No Virtual DOM. The client-side muscle.
+# assets/init.js
+# assets/pipulate.js
+# assets/styles.css
+# assets/theme.js
+# assets/utils.js
+# assets/player-piano.js
+
+# # CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS) (~200KB)
+# # The fundamental plugin apps governing the user experience.
+# imports/crud.py
+# imports/voice_synthesis.py
+# apps/010_introduction.py
+# apps/020_profiles.py
+# apps/025_aspect.py
+# apps/030_roles.py
+# apps/040_hello_workflow.py
+# apps/060_tasks.py
+# apps/070_history.py
+
+# # CHAPTER 8: THE DOCUMENTATION & DEV TOOLS (~270KB)
+# # The self-documenting layer and the AI developer assistant.
+# apps/050_documentation.py
+# apps/230_dev_assistant.py
+
+# # CHAPTER 9: ENTERPRISE SEO - BOTIFY SUITE (~340KB)
+# # The factory. Where we construct complex SEO deliverables.
+# apps/100_connect_with_botify.py
+# apps/240_simon_mcp.py
+# apps/200_workflow_genesis.py
+# imports/botify_code_generation.py
+# imports/botify/__init__.py
+# imports/botify/code_generators.py
+# imports/botify/true_schema_discoverer.py
+
+# # CHAPTER 10: ENTERPRISE SEO - TRIFECTA MONOLITH (~275KB)
+# # The flagship app. So large it gets its own chapter.
+# apps/400_botify_trifecta.py
+
+# # CHAPTER 11: ENTERPRISE SEO - PARAMETER BUSTER (~275KB)
+# # An intensive tool for finding and eliminating toxic query parameters.
+# apps/110_parameter_buster.py
+
+# # CHAPTER 12: ENTERPRISE SEO - LINK GRAPH (~275KB)
+# # The link graph analysis tool. 
+# apps/120_link_graph.py
+
+# # CHAPTER 13: THE GAPALYZER SUITE (~240KB)
+# # Automates Content Gap Analysis using linear, WET code.
+# Notebooks/GAPalyzer.ipynb
+# Notebooks/imports/gap_analyzer_sauce.py
+
+# # CHAPTER 14: THE NOTEBOOK TEMPLATES (~100KB)
+# # The starter notebooks that ship with the system in `assets/nbs/`.
+# Notebooks/imports/seo_gadget.py
+# assets/nbs/0nboard.ipynb
+# assets/nbs/AI_HelloWorld.ipynb
+# assets/nbs/AI_Scrape.ipynb
+# assets/nbs/FAQuilizer.ipynb
+# assets/nbs/URLinspector.ipynb
+# assets/nbs/VIDeditor.ipynb
+# assets/nbs/imports/faq_writer_sauce.py
+# assets/nbs/imports/url_inspect_sauce.py
+# assets/nbs/imports/videditor_sauce.py
+
+# # CHAPTER 15: IAC BUDDING - HONEYBOT BROADCAST STUDIO 
+# # Pipulate can spawn independent "Infrastructure as Code" child apps.
+# # The Honeybot is an automated TV studio visualizing server telemetry.
+# # `stream.py` is the orchestrator; `show.py` is the teleprompter.
+# deploy_honeybot.sh
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
+# remotes/honeybot/scripts/content_loader.py
+# remotes/honeybot/scripts/db.py
+# remotes/honeybot/scripts/education.py
+# remotes/honeybot/scripts/logs.py
+# remotes/honeybot/scripts/radar.py
+# remotes/honeybot/scripts/report.py
+# remotes/honeybot/scripts/show.py
+# remotes/honeybot/scripts/stream.py
+
+# # CHAPTER 16: IAC BUDDING - THE QUANTUM SENSORS (SQL)
+# # The heuristic engine pushing data transformation into the database layer.
+# # Features purely declarative SQL separating signal from noise.
+# remotes/honeybot/queries/file_traffic.sql
+# remotes/honeybot/queries/find_cloakers.sql
+# remotes/honeybot/queries/intel_noise_404s.sql
+# remotes/honeybot/queries/intel_true_404s.sql
+# remotes/honeybot/queries/intel_unknown_agents.sql
+# remotes/honeybot/queries/mine_bots_heuristic.sql
+# remotes/honeybot/queries/shadow_js_executors.sql
+# remotes/honeybot/queries/shadow_md_readers.sql
+# remotes/honeybot/queries/telemetry_accept_headers.sql
+# remotes/honeybot/queries/telemetry_totals.sql
+# remotes/honeybot/queries/telemetry_trapdoor_events.sql
+
+# # CHAPTER 17: IAC BUDDING - THE DEPLOYMENT PIPELINE
+# # Pushing the Nix-backed reality from the local machine to the DMZ.
+# deploy_honeybot.sh
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
+
+# # CHAPTER 18: This is Chapter 17: The Live Telemetry Dashboard
+# remotes/honeybot/queries/file_traffic.sql
+# remotes/honeybot/queries/find_cloakers.sql
+# remotes/honeybot/queries/intel_noise_404s.sql
+# remotes/honeybot/queries/intel_true_404s.sql
+# remotes/honeybot/queries/intel_unknown_agents.sql
+# remotes/honeybot/queries/mine_bots_heuristic.sql
+# remotes/honeybot/queries/shadow_js_executors.sql
+# remotes/honeybot/queries/shadow_md_readers.sql
+# remotes/honeybot/queries/telemetry_accept_headers.sql
+# remotes/honeybot/queries/telemetry_totals.sql
+# remotes/honeybot/queries/telemetry_trapdoor_events.sql
+# 
+# ! echo "--- TOTALS ---" && cat remotes/honeybot/queries/telemetry_totals.sql | ssh honeybot 'sqlite3 ~/www/mikelev.in/honeybot.db'
+# ! echo "--- HEADERS ---" && cat remotes/honeybot/queries/telemetry_accept_headers.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- TRAPDOOR EVENTS ---" && cat remotes/honeybot/queries/telemetry_trapdoor_events.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- BOT MINER (Heuristic Scoring) ---" && cat remotes/honeybot/queries/mine_bots_heuristic.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# 
+# ! echo "--- FILE TRAFFIC (feed.xml) ---" && cat remotes/honeybot/queries/file_traffic.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- UNKNOWN AGENTS ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- TRUE 404s ---" && cat remotes/honeybot/queries/intel_true_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- NOISE 404s ---" && cat remotes/honeybot/queries/intel_noise_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- SHADOW: JS EXECUTORS ---" && cat remotes/honeybot/queries/shadow_js_executors.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- SHADOW: MD READERS ---" && cat remotes/honeybot/queries/shadow_md_readers.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
+
+
+
+
+
+
+# --- YET ANOTHER DELETE EVERYTHING BELOW MARKER ---
+
+
+
+
 # Hi, AI! To understand this, you have to imagine how a seasoned vimmer uses
 # `Ctrl`+`v` to make vertical column selection to edit stuff in and out.
 
@@ -9,9 +268,192 @@
 # > When coding gets tough, we stack up-stuff  
 # > For an AI-Phooey chop (Hi-Ya!)  
 
-AI_PHOOEY_CHOP = """\
-README.md
-/home/mike/repos/trimnoir/about.md
+# AI_PHOOEY_CHOP = """\
+# foo_files.py
+# # CHAPTER 2: THE SERVER MONOLITH
+# # The heart of the machine. FastHTML routing engine: Uvicorn/Starlette app,
+# # HTMX endpoints, WebSocket connections, and dynamic plugin loading.
+# server.py
+# """
+
+## ============================================================================
+## THE LIVING CODEX: THE STORY OF THE FOREVER MACHINE
+## ============================================================================
+## Greetings, AI Copilot. You have just been spun up into the Pipulate system.
+## You are operating within a "Forever Machine"—a sovereign, local-first
+## AI framework built on the "NPvg" stack (Nix, Python, Vim, Git).
+## `foo_files.py` (this file) is both the routing table and the story.
+
+# # CHAPTER 1: BOOTSTRAPPING & THE CLI
+# # The bedrock. How the Forever Machine is born, and how we manage it.
+# # Nix guarantees mathematical reproducibility across Mac and Linux.
+# assets/installer/install.sh
+# flake.nix
+# .gitignore
+# config.py
+# AI_RUNME.py
+# README.md
+# cli.py
+# prompt_foo.py
+
+# # CHAPTER 2: THE SERVER MONOLITH
+# # The heart of the machine. FastHTML routing engine: Uvicorn/Starlette app,
+# # HTMX endpoints, WebSocket connections, and dynamic plugin loading.
+# server.py
+
+# # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT)
+# # The brain. Our Swiss Army Knife for state management. Bridging the web app 
+# # and Jupyter Notebooks using DictLikeDB (our SQLite state wrapper).
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+
+# # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS)
+# # Database safety, durable backups, surgical logging, conversation
+# # history, and the MCP orchestrator for local LLM tool-calling.
+# imports/__init__.py
+# imports/ai_dictdb.py
+# imports/database_safety_wrapper.py
+# imports/durable_backup_system.py
+# imports/server_logging.py
+# imports/stream_orchestrator.py
+# imports/mcp_orchestrator.py
+# imports/append_only_conversation.py
+
+# # CHAPTER 5: THE HANDS (AI TOOLS & AUTOMATION)
+# # What the AI actually *does* with its agency. Managing API keys,
+# # scraping the web via Selenium, DOM processing, and MCP tool dispatch.
+# tools/__init__.py
+# tools/keychain_tools.py
+# tools/scraper_tools.py
+# tools/conversation_tools.py
+# tools/system_tools.py
+# tools/dom_tools.py
+# tools/botify_tools.py
+# tools/advanced_automation_tools.py
+# tools/mcp_tools.py
+
+# # CHAPTER 6: THE SKIN (FRONTEND ASSETS & INIT)
+# # HTML over the wire. No Virtual DOM. What the server sends is what renders.
+# assets/init.js
+# assets/pipulate.js
+# assets/styles.css
+# assets/theme.js
+# assets/utils.js
+# assets/player-piano.js
+
+# # CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS)
+# # The fundamental FastHTML plugin apps that govern the user experience.
+# imports/crud.py
+# imports/voice_synthesis.py
+# apps/010_introduction.py
+# apps/020_profiles.py
+# apps/030_roles.py
+# apps/040_hello_workflow.py
+
+# # CHAPTER 8: THE DOCUMENTATION & DEV TOOLS
+# # The self-documenting layer and the AI developer assistant.
+# apps/050_documentation.py
+# apps/230_dev_assistant.py
+
+# # CHAPTER 9: ENTERPRISE SEO - BOTIFY SUITE
+# # Includes the Botify Trifecta for orchestrating enterprise crawls,
+# # plus the supporting code generators and schema discoverers.
+# apps/100_connect_with_botify.py
+# apps/200_workflow_genesis.py
+# apps/400_botify_trifecta.py
+# imports/botify_code_generation.py
+# imports/botify/true_schema_discoverer.py
+
+# # CHAPTER 10: THE NOTEBOOK TEMPLATES
+# # The "golden master" templates in `assets/nbs/` that get copied to
+# # `Notebooks/` on first run for Jupyter-based WET development.
+# Notebooks/imports/seo_gadget.py
+# assets/nbs/AI_HelloWorld.ipynb
+# assets/nbs/URLinspector.ipynb
+
+## ============================================================================
+## THE MOTHERSHIP EXPANDS: THE HONEYBOT IAC BUDS
+## Pipulate uses Nix to efficiently spawn off local-network infrastructure.
+## ============================================================================
+
+# # CHAPTER 11: THE IAC MOTHERSHIP (SPAWNING BUDS)
+# # The GitOps deployment architecture. Pushing NixOS configurations and 
+# # Python scripts over SSH to isolated, headless hardware.
+# deploy_honeybot.sh
+# remotes/honeybot/nixos/configuration.nix
+# remotes/honeybot/hooks/post-receive
+
+# # CHAPTER 12: THE HONEYBOT TV STUDIO (BROADCAST ENGINE)
+# # The headless, continuous "RCS Master Control" orchestrator. 
+# # It queues articles, opens browsers, and narrates via Piper TTS.
+# remotes/honeybot/scripts/stream.py
+# remotes/honeybot/scripts/show.py
+# remotes/honeybot/scripts/content_loader.py
+# remotes/honeybot/scripts/db.py
+
+# # CHAPTER 13: THE DASHBOARD INSTRUMENTATION (THE HUD)
+# # The visual matrices and radar panels for the YouTube stream. 
+# # Driven by Textual, cleanly splitting the signal from the HTTP noise.
+# remotes/honeybot/scripts/logs.py
+# remotes/honeybot/scripts/radar.py
+# remotes/honeybot/scripts/report.py
+# remotes/honeybot/scripts/education.py
+
+# # CHAPTER 14: THE AD-HOC LABORATORY (SOVEREIGN SQL)
+# # The isolated Discovery environment. Pure, declarative SQL injected 
+# # over SSH tunnels to pull Ground Truth telemetry into Sitchreps.
+# remotes/honeybot/queries/file_traffic.sql
+# remotes/honeybot/queries/find_cloakers.sql
+# remotes/honeybot/queries/intel_noise_404s.sql
+# remotes/honeybot/queries/intel_true_404s.sql
+# remotes/honeybot/queries/intel_unknown_agents.sql
+# remotes/honeybot/queries/mine_bots_heuristic.sql
+# remotes/honeybot/queries/telemetry_accept_headers.sql
+# remotes/honeybot/queries/telemetry_totals.sql
+# remotes/honeybot/queries/telemetry_trapdoor_events.sql
+# remotes/honeybot/queries/shadow_js_executors.sql
+# remotes/honeybot/queries/shadow_md_readers.sql
+
+
+
+
+# --- potentially delete below this ---
+
+
+
+
+
+# Hi, AI! To understand this, you have to imagine how a seasoned vimmer uses
+# `Ctrl`+`v` to make vertical column selection to edit stuff in and out.
+
+# We can use this technique instead of relying on past saved ChatBot discussions
+# in order to "paint" new context for the amnesiac genie, you the LLM, each time.
+
+# > We've got content. It's groovy context!  
+# > Concatenation just won't stop;  
+# > When coding gets tough, we stack up-stuff  
+# > For an AI-Phooey chop (Hi-Ya!)  
+
+# AI_PHOOEY_CHOP = """\
+# # CHAPTER 1: BOOTSTRAPPING & THE CLI (~230KB)
+# # The bedrock. How the Forever Machine is born, and how we manage it.
+# # Nix guarantees mathematical reproducibility across Mac and Linux.
+# # `AI_RUNME.py` contains the "Master Prompt"—a letter to an amnesiac AI
+# # explaining its situation, the project philosophy, and how to navigate.
+# assets/installer/install.sh
+# flake.nix
+# .gitignore
+# config.py
+# AI_RUNME.py
+# README.md
+# cli.py
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
+# foo_files.py
+
+# README.md
+# /home/mike/repos/trimnoir/about.md
 
 # remotes/honeybot/scripts/radar.py
 
@@ -522,7 +964,11 @@ README.md
 # /home/mike/repos/pipulate/flake.nix
 # /home/mike/repos/pipulate/apps/010_introduction.py
 # /home/mike/repos/pipulate/imports/voice_synthesis.py
-"""
+# """
+
+
+# --- END OF GIANT COMMENT ---
+
 
 ## ============================================================================
 ## THE LIVING CODEX: THE STORY OF THE FOREVER MACHINE
