@@ -58,12 +58,12 @@ class RadarApp(App):
 
         # 1. JS Capability Panel
         with Vertical(classes="panel"):
-            yield Label("⚡ JAVASCRIPT EXECUTORS (Rendering Engine Detected)", classes="panel_title")
+            yield Label("⚡ JAVASCRIPT EXECUTORS (Caught by Trapdoor)", classes="panel_title")
             yield DataTable(id="table_js")
 
         # 2. Intent Panel
         with Vertical(classes="panel"):
-            yield Label("🧠 SOURCE MINERS (Raw Markdown/Data Fetch)", classes="panel_title")
+            yield Label("🧠 ACCEPTS MARKDOWN (Negotiated / Traced)", classes="panel_title")
             yield DataTable(id="table_md")
 
         yield Footer()
