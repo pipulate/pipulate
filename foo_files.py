@@ -13,6 +13,9 @@
 
 
 AI_PHOOEY_CHOP = """\
+remotes/honeybot/queries/markdown_routing_metrics.sql
+! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
 # https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/README.md
 # https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/install.sh
 # https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/flake.nix
@@ -27,46 +30,46 @@ AI_PHOOEY_CHOP = """\
 
 # foo_files.py
 
-# CHAPTER 15: IAC BUDDING - HONEYBOT BROADCAST STUDIO 
-# Pipulate can spawn independent "Infrastructure as Code" child apps.
-# The Honeybot is an automated TV studio visualizing server telemetry.
-# `stream.py` is the orchestrator; `show.py` is the teleprompter.
-deploy_honeybot.sh
-remotes/honeybot/hooks/post-receive
-remotes/honeybot/nixos/configuration.nix
-remotes/honeybot/scripts/content_loader.py
-remotes/honeybot/scripts/db.py
-remotes/honeybot/scripts/education.py
-remotes/honeybot/scripts/logs.py
-remotes/honeybot/scripts/radar.py
-remotes/honeybot/scripts/report.py
-remotes/honeybot/scripts/show.py
-remotes/honeybot/scripts/stream.py
+# # CHAPTER 15: IAC BUDDING - HONEYBOT BROADCAST STUDIO 
+# # Pipulate can spawn independent "Infrastructure as Code" child apps.
+# # The Honeybot is an automated TV studio visualizing server telemetry.
+# # `stream.py` is the orchestrator; `show.py` is the teleprompter.
+# deploy_honeybot.sh
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
+# remotes/honeybot/scripts/content_loader.py
+# remotes/honeybot/scripts/db.py
+# remotes/honeybot/scripts/education.py
+# remotes/honeybot/scripts/logs.py
+# remotes/honeybot/scripts/radar.py
+# remotes/honeybot/scripts/report.py
+# remotes/honeybot/scripts/show.py
+# remotes/honeybot/scripts/stream.py
 
-# CHAPTER 18: This is Chapter 17: The Live Telemetry Dashboard
-remotes/honeybot/queries/file_traffic.sql
-remotes/honeybot/queries/find_cloakers.sql
-remotes/honeybot/queries/intel_noise_404s.sql
-remotes/honeybot/queries/intel_true_404s.sql
-remotes/honeybot/queries/intel_unknown_agents.sql
-remotes/honeybot/queries/mine_bots_heuristic.sql
-remotes/honeybot/queries/shadow_js_executors.sql
-remotes/honeybot/queries/shadow_md_readers.sql
-remotes/honeybot/queries/telemetry_accept_headers.sql
-remotes/honeybot/queries/telemetry_totals.sql
-remotes/honeybot/queries/telemetry_trapdoor_events.sql
+# # CHAPTER 18: This is Chapter 17: The Live Telemetry Dashboard
+# remotes/honeybot/queries/file_traffic.sql
+# remotes/honeybot/queries/find_cloakers.sql
+# remotes/honeybot/queries/intel_noise_404s.sql
+# remotes/honeybot/queries/intel_true_404s.sql
+# remotes/honeybot/queries/intel_unknown_agents.sql
+# remotes/honeybot/queries/mine_bots_heuristic.sql
+# remotes/honeybot/queries/shadow_js_executors.sql
+# remotes/honeybot/queries/shadow_md_readers.sql
+# remotes/honeybot/queries/telemetry_accept_headers.sql
+# remotes/honeybot/queries/telemetry_totals.sql
+# remotes/honeybot/queries/telemetry_trapdoor_events.sql
 
-! echo "--- TOTALS ---" && cat remotes/honeybot/queries/telemetry_totals.sql | ssh honeybot 'sqlite3 ~/www/mikelev.in/honeybot.db'
-! echo "--- HEADERS ---" && cat remotes/honeybot/queries/telemetry_accept_headers.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-! echo "--- TRAPDOOR EVENTS ---" && cat remotes/honeybot/queries/telemetry_trapdoor_events.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-! echo "--- BOT MINER (Heuristic Scoring) ---" && cat remotes/honeybot/queries/mine_bots_heuristic.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-
-! echo "--- FILE TRAFFIC (feed.xml) ---" && cat remotes/honeybot/queries/file_traffic.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-! echo "--- UNKNOWN AGENTS ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-! echo "--- TRUE 404s ---" && cat remotes/honeybot/queries/intel_true_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-! echo "--- NOISE 404s ---" && cat remotes/honeybot/queries/intel_noise_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-! echo "--- SHADOW: JS EXECUTORS ---" && cat remotes/honeybot/queries/shadow_js_executors.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-! echo "--- SHADOW: MD READERS ---" && cat remotes/honeybot/queries/shadow_md_readers.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- TOTALS ---" && cat remotes/honeybot/queries/telemetry_totals.sql | ssh honeybot 'sqlite3 ~/www/mikelev.in/honeybot.db'
+# ! echo "--- HEADERS ---" && cat remotes/honeybot/queries/telemetry_accept_headers.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- TRAPDOOR EVENTS ---" && cat remotes/honeybot/queries/telemetry_trapdoor_events.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- BOT MINER (Heuristic Scoring) ---" && cat remotes/honeybot/queries/mine_bots_heuristic.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# 
+# ! echo "--- FILE TRAFFIC (feed.xml) ---" && cat remotes/honeybot/queries/file_traffic.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- UNKNOWN AGENTS ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- TRUE 404s ---" && cat remotes/honeybot/queries/intel_true_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- NOISE 404s ---" && cat remotes/honeybot/queries/intel_noise_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- SHADOW: JS EXECUTORS ---" && cat remotes/honeybot/queries/shadow_js_executors.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- SHADOW: MD READERS ---" && cat remotes/honeybot/queries/shadow_md_readers.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 """
 
 # Insert this somewhere
