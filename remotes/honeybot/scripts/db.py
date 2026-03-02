@@ -311,16 +311,17 @@ class HoneyDB:
         cur.execute(sql)
         return cur.fetchall()
 
-    def get_js_executors(self, limit=20): # Increased default limit slightly
+    def get_js_executors(self, limit=20): 
         conn = self.get_conn()
         cur = conn.cursor()
+        # We explicitly look for the js_confirm.gif trapdoor.
+        # We dropped mathjax and d3.js because they don't prove CAPTCHA execution.
         sql = f"""
             SELECT ua.value, SUM(logs.count) as total
             FROM daily_logs logs
             JOIN user_agents ua ON logs.ua_id = ua.id
             JOIN paths p ON logs.path_id = p.id
-            WHERE (p.value LIKE '%mathjax%' OR p.value LIKE '%d3.v7.min.js%')
-              AND p.value NOT LIKE '%.html'
+            WHERE p.value LIKE '%js_confirm.gif%'
               {self._BROWSER_FILTER}  /* Apply Noise Filter */
             GROUP BY ua.id
             ORDER BY total DESC
@@ -329,15 +330,17 @@ class HoneyDB:
         cur.execute(sql, (limit,))
         return cur.fetchall()
 
-    def get_markdown_readers(self, limit=20):
+def get_markdown_readers(self, limit=20):
         conn = self.get_conn()
         cur = conn.cursor()
+        # We enforce that the path MUST contain the ?src= tracer dye.
+        # This eliminates human clicks on raw .md files from the report.
         sql = f"""
             SELECT ua.value, SUM(logs.count) as total
             FROM daily_logs logs
             JOIN user_agents ua ON logs.ua_id = ua.id
             JOIN paths p ON logs.path_id = p.id
-            WHERE p.value LIKE '%.md'
+            WHERE p.value LIKE '%.md?src=%'
               {self._BROWSER_FILTER} /* Apply Noise Filter */
             GROUP BY ua.id
             ORDER BY total DESC
