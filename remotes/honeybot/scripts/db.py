@@ -44,6 +44,8 @@ Wget
 Yandex
 YandexBot
 YandexRenderResourcesBot
+YisouSpider
+axios
 bingbot
 botify
 curl
