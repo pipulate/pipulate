@@ -212,10 +212,11 @@ remotes/honeybot/queries/trapdoor_ips.sql
 # assets/nbs/imports/url_inspect_sauce.py
 # assets/nbs/imports/videditor_sauce.py
 
-# # CHAPTER 15: IAC BUDDING - HONEYBOT BROADCAST STUDIO 
+# # CHAPTER 15: THE HONEYBOT OBSERVATORY (IAC BUDDING)
 # # Pipulate can spawn independent "Infrastructure as Code" child apps.
-# # The Honeybot is an automated TV studio visualizing server telemetry.
-# # `stream.py` is the orchestrator; `show.py` is the teleprompter.
+# # The Honeybot is an automated TV studio and telemetry database sitting in 
+# # the DMZ. It deploys via Nix, records web traffic via Nginx/SQLite, and
+# # uses heuristic SQL queries to isolate AI bot signal from internet noise.
 # deploy_honeybot.sh
 # remotes/honeybot/hooks/post-receive
 # remotes/honeybot/nixos/configuration.nix
@@ -227,30 +228,24 @@ remotes/honeybot/queries/trapdoor_ips.sql
 # remotes/honeybot/scripts/report.py
 # remotes/honeybot/scripts/show.py
 # remotes/honeybot/scripts/stream.py
-
-# # CHAPTER 16: IAC BUDDING - THE QUANTUM SENSORS (SQL)
-# # The heuristic engine pushing data transformation into the database layer.
-# # Features purely declarative SQL separating signal from noise.
 # remotes/honeybot/queries/file_traffic.sql
 # remotes/honeybot/queries/find_cloakers.sql
+# remotes/honeybot/queries/format_ratio.sql
 # remotes/honeybot/queries/intel_noise_404s.sql
 # remotes/honeybot/queries/intel_true_404s.sql
 # remotes/honeybot/queries/intel_unknown_agents.sql
+# remotes/honeybot/queries/markdown_routing_metrics.sql
+# remotes/honeybot/queries/md_diet.sql
 # remotes/honeybot/queries/mine_bots_heuristic.sql
 # remotes/honeybot/queries/shadow_js_executors.sql
 # remotes/honeybot/queries/shadow_md_readers.sql
 # remotes/honeybot/queries/telemetry_accept_headers.sql
 # remotes/honeybot/queries/telemetry_totals.sql
 # remotes/honeybot/queries/telemetry_trapdoor_events.sql
-
-# # CHAPTER 17: IAC BUDDING - THE DEPLOYMENT PIPELINE
-# # Pushing the Nix-backed reality from the local machine to the DMZ.
-# deploy_honeybot.sh
-# remotes/honeybot/hooks/post-receive
-# remotes/honeybot/nixos/configuration.nix
+# remotes/honeybot/queries/trapdoor_ips.sql
 
 # # ============================================================================
-# # CHAPTER 18: THE LIVE TELEMETRY DASHBOARD (ACTIVE SONAR)
+# # CHAPTER 16: THE LIVE TELEMETRY DASHBOARD (ACTIVE SONAR)
 # # This block acts as the 'Sitchrep Protocol' for the local LLM. By using the 
 # # ! (Chisel-Strike) operator, we pipe live production data over SSH directly 
 # # into the AI's context window. 
@@ -308,7 +303,7 @@ remotes/honeybot/queries/trapdoor_ips.sql
 # ! echo "--- NOISE 404s (PHP/WP Probes) ---" && cat remotes/honeybot/queries/intel_noise_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- TRUE 404s (Legitimate Missing Content) ---" && cat remotes/honeybot/queries/intel_true_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
-# # CHAPTER 19: THE LEVINIX BOTTLING PLANT (UNIVERSAL DISTRIBUTION)
+# # CHAPTER 17: THE LEVINIX BOTTLING PLANT (UNIVERSAL DISTRIBUTION)
 # # The "Magic Cookie" architecture. A generic, technology-agnostic template
 # # for distributing local-first applications without Electron or Docker.
 # # Uses Nix to guarantee the environment and bash to handle the UX.
