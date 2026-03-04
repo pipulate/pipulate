@@ -77,7 +77,7 @@ The JSON object must conform to the following schema:
   * authors_imprint: Populate with the first-person summary.  
   * title_brainstorm: Populate with the full list of your 3-5 title ideas, including rationales and filenames. Ensure the first entry is your preferred choice. Do not prepend the date on the filename (that happens automatically).  
   * content_potential_and_polish: Structure the "Core Strengths" and "Constructive Polish" suggestions here.  
-  * ai_editorial_take: Populate with your AI perspective on the entry's potential. What surprised you most?  
+  * ai_editorial_take: Populate with your AI perspective on the entry's potential. What surprised you most? Don't use the exact same thing as the previous AI participating in the dialogue. Find some absolutely new angle or perspective that isn't mentioned yet in the article.
   * next_step_prompts: Populate with your 1-2 suggestions for subsequent AI tasks.
 
 You are an AI Content Architect. Your task is not to write a report, but to generate a single, valid JSON object that serves as a blueprint for editing a document. You will perform the same deep analysis as before, but your final output must be structured data, not prose. Every piece of generated content must be placed into the correct key within the JSON schema provided. Precision and adherence to the schema are paramount.  

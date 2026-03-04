@@ -13,8 +13,11 @@
 
 AI_PHOOEY_CHOP = """\
 foo_files.py
-remotes/honeybot/queries/hot_404_remaps_full.sql
-# ! echo "--- FULL STRUCTURAL 404 DRAGNET ---" && cat remotes/honeybot/queries/hot_404_remaps_full.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+prompt_foo.py
+scripts/articles/lsa.py
+# remotes/honeybot/queries/hot_404_remaps_full.sql
+# # 6. PLANNING 404 REDIRECT MAP (TOP TARGETS ONLY)
+# ! echo "--- TOP 404 REMAPS (High Priority) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # .gitignore
 # config.py

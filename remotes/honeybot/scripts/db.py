@@ -31,6 +31,7 @@ Perplexity-User
 PerplexityBot
 PetalBot
 Photon
+PromptingBot
 Qwantbot
 SEOkicks
 SERankingBacklinksBot
