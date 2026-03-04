@@ -133,10 +133,10 @@ class SonarApp(App):
         
         # Setup Tables (Now with 3 columns!)
         js_table = self.query_one("#js_table", DataTable)
-        js_table.add_columns("Hits", "Identity", "Raw Signature")
+        js_table.add_columns("Hits", "Bot Identity", "Raw Signature")
         
         md_table = self.query_one("#md_table", DataTable)
-        md_table.add_columns("Hits", "Identity", "Raw Signature")
+        md_table.add_columns("Hits", "Bot Identity", "Raw Signature")
 
         self.refresh_tables() # Initial load
 
