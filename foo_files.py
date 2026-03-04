@@ -13,9 +13,8 @@
 
 AI_PHOOEY_CHOP = """\
 foo_files.py
-prompt_foo.py
-
-! echo "--- FULL STRUCTURAL 404 DRAGNET ---" && cat remotes/honeybot/queries/hot_404_remaps_full.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+remotes/honeybot/queries/hot_404_remaps_full.sql
+# ! echo "--- FULL STRUCTURAL 404 DRAGNET ---" && cat remotes/honeybot/queries/hot_404_remaps_full.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # .gitignore
 # config.py
