@@ -20,28 +20,29 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/trimnoir/_posts/2026-03-04-architecting-ai-context-data-density-blueprint-404-remapping.md  # [Idx: 898 | Order: 2 | Tokens: 20,308 | Bytes: 80,742]
 # /home/mike/repos/trimnoir/_posts/2026-03-04-nginx-404-remapping-llm-context-architecture-blueprint.md  # [Idx: 899 | Order: 3 | Tokens: 16,433 | Bytes: 67,822]
 # /home/mike/repos/trimnoir/_posts/2026-03-04-john-henry-gambit-llms-honeybots-dynamic-latest-url.md  # [Idx: 900 | Order: 4 | Tokens: 12,951 | Bytes: 55,594]
-/home/mike/repos/trimnoir/_posts/2026-03-05-self-healing-ai-404-redirects-nginx-nixos.md  # [Idx: 901 | Order: 1 | Tokens: 48,228 | Bytes: 183,128]
-
-# Why these redirects are so necessary (we're always K-Means clustering our hubs)
-scripts/articles/update_graphs.py  # <-- This picks the publishing workflow based on the target choice
-scripts/articles/build_knowledge_graph.py
-scripts/articles/generate_hubs.py
-
-# We deploy our TV Studio DMZ webhead honeybot as NixOS IaC
+# /home/mike/repos/trimnoir/_posts/2026-03-05-self-healing-ai-404-redirects-nginx-nixos.md  # [Idx: 901 | Order: 1 | Tokens: 48,228 | Bytes: 183,128]
+# 
+# # Why these redirects are so necessary (we're always K-Means clustering our hubs)
+# scripts/articles/update_graphs.py  # <-- This picks the publishing workflow based on the target choice
+# scripts/articles/build_knowledge_graph.py
+# scripts/articles/generate_hubs.py
+# 
+# # We deploy our TV Studio DMZ webhead honeybot as NixOS IaC
 deploy_honeybot.sh
 /home/mike/repos/trimnoir/flake.nix
 remotes/honeybot/hooks/post-receive
+/home/mike/repos/trimnoir/_redirects.map
 remotes/honeybot/nixos/configuration.nix
-
-# This content shows in a desktop Python Textual slideshow OBS TV Studio streaming to YouTube
-remotes/honeybot/scripts/db.py
-remotes/honeybot/scripts/logs.py
-remotes/honeybot/scripts/stream.py
-
-# THE DATA TO PRODUCE A NEW 404 REDIRECT MAP
-remotes/honeybot/queries/hot_404_remaps.sql
-! python scripts/articles/ls_semantic.py
-! echo "--- HOT 404 REMAPS (Structural Signal) ---" && cat remotes/honeybot/queries/hot_404_remaps.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# 
+# # This content shows in a desktop Python Textual slideshow OBS TV Studio streaming to YouTube
+# remotes/honeybot/scripts/db.py
+# remotes/honeybot/scripts/logs.py
+# remotes/honeybot/scripts/stream.py
+# 
+# # THE DATA TO PRODUCE A NEW 404 REDIRECT MAP
+# remotes/honeybot/queries/hot_404_remaps.sql
+# ! python scripts/articles/ls_semantic.py
+# ! echo "--- HOT 404 REMAPS (Structural Signal) ---" && cat remotes/honeybot/queries/hot_404_remaps.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 
 
