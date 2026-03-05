@@ -204,19 +204,18 @@
     '';
 
     # 1. THE SENSOR: Read the Accept header and define the MIME type
-    appendHttpConfig = ''
-      # # --- THE MAP: Load the AI-generated routing table ---
-      # include /home/mike/www/mikelev.in/_site/redirects.map*;
-      # # ----------------------------------------------------
+      appendHttpConfig = ''
+        # --- THE MAP: Load the AI-generated routing table ---
+        map $request_uri $new_uri {
+            default "";
+            include /home/mike/www/mikelev.in/_site/redirects.map*;
+        }
+        # ----------------------------------------------------
 
-      map $http_accept $serve_markdown {
-        default 0;
-        "~*text/markdown" 1;
-      }
-      types {
-        text/markdown md;
-      }
-    '';
+        map $http_accept $serve_markdown {
+          default 0;
+          "~*text/markdown" 1;
+        }
 
     virtualHosts."mikelev.in" = {
       forceSSL = true;      # Force all traffic to HTTPS 
