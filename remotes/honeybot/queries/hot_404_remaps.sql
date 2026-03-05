@@ -49,7 +49,8 @@ WHERE l.status = 404
   AND p.value NOT LIKE '%/.svn/%'
   AND p.value NOT LIKE '%.yml'
   AND p.value NOT LIKE '%.json'
+  AND p.value NOT LIKE '% %'
 GROUP BY p.id
 HAVING total_hits > 1 
 ORDER BY total_hits DESC
-LIMIT 200; -- Expanded limit for the AI to process
+LIMIT 500; -- Expanded limit for the AI to process

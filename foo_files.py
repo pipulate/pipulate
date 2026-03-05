@@ -18,8 +18,9 @@ AI_PHOOEY_CHOP = """\
 # foo_files.py
 # prompt_foo.py
 
-! python scripts/articles/ls_semantic.py
-! echo "--- HOT 404 REMAPS (Structural Signal) ---" && cat remotes/honeybot/queries/hot_404_remaps.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# # PRODUCE A NEW 404 REDIRECT MAP
+# ! python scripts/articles/ls_semantic.py
+# ! echo "--- HOT 404 REMAPS (Structural Signal) ---" && cat remotes/honeybot/queries/hot_404_remaps.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # scripts/articles/update_graphs.py  # <-- This picks the publishing workflow based on the target choice
 # scripts/articles/contextualizer.py
@@ -126,23 +127,22 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/trimnoir/_posts/2026-03-04-architecting-ai-context-data-density-blueprint-404-remapping.md  # [Idx: 898 | Order: 2 | Tokens: 20,275 | Bytes: 80,587]
 # 
 # # CHAPTER 15: JEKYLL PUBLISHING
-# /home/mike/repos/nixos/init.lua  # <-- The creator of this system uses NixOS as the Pipulate prime "parent" OS and you can see their blogging habits here
-# scripts/articles/articleizer.py  # <- Extractions from the 1-file-4life tech journal get copy-pasted into the article.txt that this file works on
-# scripts/articles/editing_prompt.txt  # <-- I cannot emphasizes enough the "keeping response in JSON" aspect of the player piano / mechanical loom aspect
-# /home/mike/.config/articleizer/targets.json  # <-- These scripts are designed to work with any Jekyll blog site repo with --target (and -k API key)
-# scripts/articles/update_graphs.py  # <-- This picks the publishing workflow based on the target choice
-# scripts/articles/sanitizer.py
-# scripts/articles/contextualizer.py
-# scripts/articles/gsc_historical_fetch.py
-# scripts/articles/build_knowledge_graph.py
-# scripts/articles/generate_hubs.py
+/home/mike/repos/nixos/init.lua  # <-- The creator of this system uses NixOS as the Pipulate prime "parent" OS and you can see their blogging habits here
+scripts/articles/articleizer.py  # <- Extractions from the 1-file-4life tech journal get copy-pasted into the article.txt that this file works on
+scripts/articles/editing_prompt.txt  # <-- I cannot emphasizes enough the "keeping response in JSON" aspect of the player piano / mechanical loom aspect
+/home/mike/.config/articleizer/targets.json  # <-- These scripts are designed to work with any Jekyll blog site repo with --target (and -k API key)
+scripts/articles/update_graphs.py  # <-- This picks the publishing workflow based on the target choice
+scripts/articles/sanitizer.py
+scripts/articles/contextualizer.py
+scripts/articles/gsc_historical_fetch.py
+scripts/articles/build_knowledge_graph.py
+scripts/articles/generate_hubs.py
 # 
 # # A reminder of how we control Honeybot
-# deploy_honeybot.sh
-# /home/mike/repos/trimnoir/flake.nix
-# remotes/honeybot/hooks/post-receive
-# remotes/honeybot/nixos/configuration.nix
-# scripts/articles/ls_semantic.py
+deploy_honeybot.sh
+/home/mike/repos/trimnoir/flake.nix
+remotes/honeybot/hooks/post-receive
+remotes/honeybot/nixos/configuration.nix
 # 
 # # 6. PLANNING 404 REDIRECT MAP
 # ! echo "--- HOT 404 REMAPS (Structural Signal) ---" && cat remotes/honeybot/queries/hot_404_remaps.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
