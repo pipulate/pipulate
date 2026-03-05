@@ -15,8 +15,14 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
+# The WET Pipeline (The "Before and After")
+foo_files.py
 prompt_foo.py
-foo_files.py  # <-- this
+
+# THE DATA (The "From" and "To" Lists)
+! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! python scripts/articles/ls_semantic.py
+
 # The story of the 404 Redirect Map Project
 # /home/mike/repos/trimnoir/_posts/2026-03-03-cybernetic-terrarium-ai-observability.md  # [Idx: 897 | Order: 4 | Tokens: 3,170 | Bytes: 15,104]
 # /home/mike/repos/trimnoir/_posts/2026-03-04-architecting-ai-context-data-density-blueprint-404-remapping.md  # [Idx: 898 | Order: 2 | Tokens: 20,308 | Bytes: 80,742]
@@ -24,8 +30,8 @@ foo_files.py  # <-- this
 # /home/mike/repos/trimnoir/_posts/2026-03-04-john-henry-gambit-llms-honeybots-dynamic-latest-url.md  # [Idx: 900 | Order: 4 | Tokens: 12,951 | Bytes: 55,594]
 # /home/mike/repos/trimnoir/_posts/2026-03-05-self-healing-ai-404-redirects-nginx-nixos.md  # [Idx: 901 | Order: 1 | Tokens: 48,228 | Bytes: 183,128]
 # 
-# # Why these redirects are so necessary (we're always K-Means clustering our hubs)
-# scripts/articles/update_graphs.py  # <-- This picks the publishing workflow based on the target choice
+# Why these redirects are so necessary (we're always K-Means clustering our hubs)
+# scripts/articles/publishizer.py  # <-- This picks the publishing workflow based on the target choice
 # scripts/articles/build_knowledge_graph.py
 # scripts/articles/generate_hubs.py
 # 
@@ -47,9 +53,6 @@ foo_files.py  # <-- this
 # remotes/honeybot/queries/hot_404_remaps.sql
 # ! python scripts/articles/ls_semantic.py
 # ! echo "--- HOT 404 REMAPS (Structural Signal) ---" && cat remotes/honeybot/queries/hot_404_remaps.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-
-
-
 # 
 # remotes/honeybot/queries/hot_404_remaps_full.sql
 # # 6. PLANNING 404 REDIRECT MAP (TOP TARGETS ONLY)
@@ -138,7 +141,7 @@ foo_files.py  # <-- this
 # scripts/articles/articleizer.py  # <- Extractions from the 1-file-4life tech journal get copy-pasted into the article.txt that this file works on
 # scripts/articles/editing_prompt.txt  # <-- I cannot emphasizes enough the "keeping response in JSON" aspect of the player piano / mechanical loom aspect
 # /home/mike/.config/articleizer/targets.json  # <-- These scripts are designed to work with any Jekyll blog site repo with --target (and -k API key)
-# scripts/articles/update_graphs.py  # <-- This picks the publishing workflow based on the target choice
+# scripts/articles/publishizer.py  # <-- This picks the publishing workflow based on the target choice
 # scripts/articles/sanitizer.py
 # scripts/articles/contextualizer.py
 # scripts/articles/gsc_historical_fetch.py
@@ -288,7 +291,7 @@ foo_files.py  # <-- this
 # scripts/articles/articleizer.py  # <- Extractions from the 1-file-4life tech journal get copy-pasted into the article.txt that this file works on
 # scripts/articles/editing_prompt.txt  # <-- I cannot emphasizes enough the "keeping response in JSON" aspect of the player piano / mechanical loom aspect
 # /home/mike/.config/articleizer/targets.json  # <-- These scripts are designed to work with any Jekyll blog site repo with --target (and -k API key)
-# scripts/articles/update_graphs.py  # <-- This picks the publishing workflow based on the target choice
+# scripts/articles/publishizer.py  # <-- This picks the publishing workflow based on the target choice
 # scripts/articles/sanitizer.py
 # scripts/articles/contextualizer.py
 # scripts/articles/gsc_historical_fetch.py

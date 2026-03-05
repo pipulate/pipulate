@@ -27,4 +27,4 @@ WHERE l.status = 404
 GROUP BY p.id
 HAVING total_hits > 1 
 ORDER BY total_hits DESC
-LIMIT 50; -- THE CHOKEPOINT: Adjust this value to control the payload
+LIMIT 250; -- THE CHOKEPOINT: Adjust this value to control the payload

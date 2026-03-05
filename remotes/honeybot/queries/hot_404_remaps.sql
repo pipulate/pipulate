@@ -53,4 +53,4 @@ WHERE l.status = 404
 GROUP BY p.id
 HAVING total_hits > 1 
 ORDER BY total_hits DESC
-LIMIT 10; -- Expanded limit for the AI to process
+LIMIT 250; -- Expanded limit for the AI to process
