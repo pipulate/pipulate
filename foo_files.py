@@ -42,18 +42,18 @@ scripts/articles/generate_redirects.py
 # /home/mike/repos/trimnoir/_posts/2026-03-05-self-healing-ai-404-redirects-nginx-nixos.md  # [Idx: 901 | Order: 1 | Tokens: 48,228 | Bytes: 183,128]
 # 
 # Why these redirects are so necessary (we're always K-Means clustering our hubs)
-# scripts/articles/publishizer.py  # <-- This picks the publishing workflow based on the target choice
-# scripts/articles/build_knowledge_graph.py
-# scripts/articles/generate_hubs.py
+scripts/articles/publishizer.py  # <-- This picks the publishing workflow based on the target choice
+scripts/articles/build_knowledge_graph.py
+scripts/articles/generate_hubs.py
 # 
-# # We deploy our TV Studio DMZ webhead honeybot as NixOS IaC
-# deploy_honeybot.sh
-# /home/mike/repos/trimnoir/.gitignore
-# /home/mike/repos/trimnoir/flake.nix
-# /home/mike/repos/trimnoir/_config.yml
-# remotes/honeybot/hooks/post-receive
-# /home/mike/repos/trimnoir/_redirects.map
-# remotes/honeybot/nixos/configuration.nix
+# We deploy our TV Studio DMZ webhead honeybot as NixOS IaC
+deploy_honeybot.sh
+/home/mike/repos/trimnoir/.gitignore
+/home/mike/repos/trimnoir/flake.nix
+/home/mike/repos/trimnoir/_config.yml
+remotes/honeybot/hooks/post-receive
+/home/mike/repos/trimnoir/_redirects.map
+remotes/honeybot/nixos/configuration.nix
 # 
 # # This content shows in a desktop Python Textual slideshow OBS TV Studio streaming to YouTube
 # remotes/honeybot/scripts/db.py

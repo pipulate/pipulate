@@ -1,6 +1,9 @@
+#!/usr/bin/env python3
 import csv
 import urllib.parse
 import os
+import sys
+from pathlib import Path
 
 def build_nginx_map(csv_input_path, map_output_path):
     print(f"🛠️ Forging Nginx map from {csv_input_path}...")
@@ -32,5 +35,8 @@ def build_nginx_map(csv_input_path, map_output_path):
     print(f"✅ Nginx map forged successfully at {map_output_path}")
 
 if __name__ == "__main__":
-    # Point this at your raw CSV and output to your Jekyll root
-    build_nginx_map('raw_map.csv', '_redirects.map')
+    # Fallback to defaults if no arguments provided
+    input_file = sys.argv[1] if len(sys.argv) > 1 else '/home/mike/repos/trimnoir/_raw_map.csv'
+    output_file = sys.argv[2] if len(sys.argv) > 2 else '/home/mike/repos/trimnoir/_redirects.map'
+    
+    build_nginx_map(input_file, output_file)
