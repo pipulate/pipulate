@@ -69,14 +69,33 @@ import urllib.parse # Need this for correctly encoding the domain/path
 # It follows a strict "Output -> Next Action" structure so the user always 
 # knows what just happened and what they are about to do before pressing Shift+Enter.
 DIALOGUE = {
+    "set_limits": {
+        "output": "Configuration set. The final report will be limited to {row_limit} rows.",
+        "next": "Run the next cell to define the custom keyword filters, like 'Narrow Questions' and 'Gifts', which we will use to slice the data."
+    },
     "extract_domains": {
         "output": "I have successfully extracted {count} target domains and saved them to the state machine.",
         "next": "When you are ready, run the next cell to sweep your downloads folder for the matching SEMrush exports."
     },
-    # Future steps will be mapped here to keep the logic functions clean:
-    # "collect_downloads": { ... },
-    # "combine_data": { ... },
 }
+
+
+def gab(step_key: str, **kwargs):
+    """
+    Looks up dialogue by key, formats it with local variables, and speaks.
+    This allows the notebook to explicitly trigger speech without cluttering cells.
+    """
+    script = DIALOGUE.get(step_key)
+    if not script:
+        print(f"⚠️ Dialogue key '{step_key}' not found.")
+        return
+        
+    output_msg = script.get("output", "").format(**kwargs)
+    next_msg = script.get("next", "").format(**kwargs)
+    
+    full_message = f"{output_msg} {next_msg}".strip()
+    if full_message:
+        wand.speak(full_message)
 
 
 def extract_domains_and_print_urls(job: str, notebook_filename: str = "GAPalyzer.ipynb"):
