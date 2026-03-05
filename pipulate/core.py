@@ -196,9 +196,11 @@ class Pipulate:
         self.append_to_conversation = append_func
         self.get_current_profile_id = get_profile_id_func
         self.get_profile_name = get_profile_name_func
+
         self.model = model
         self.message_queue = self.OrderedMessageQueue()
         self.is_notebook_context = bool(db_path) # Flag for notebook context
+        self.dialogue_tree = {} # Container for centralized narrative scripts
     
         if db_path:
             # Standalone/Notebook Context: Create our "Parallel Universe" DB using fastlite directly
@@ -365,6 +367,27 @@ class Pipulate:
         except Exception as e:
             # We fail silently because the print() statement above acts as our fallback
             pass
+
+    def register_dialogue(self, dialogue_dict: dict):
+        """Registers a dictionary of narrative scripts into the wand's memory."""
+        self.dialogue_tree.update(dialogue_dict)
+
+    def gab(self, step_key: str, **kwargs):
+        """
+        Looks up dialogue by key, formats it with local variables, and speaks.
+        This allows the notebook to explicitly trigger speech without cluttering cells.
+        """
+        script = self.dialogue_tree.get(step_key)
+        if not script:
+            print(f"⚠️ Dialogue key '{step_key}' not found.")
+            return
+            
+        output_msg = script.get("output", "").format(**kwargs)
+        next_msg = script.get("next", "").format(**kwargs)
+        
+        full_message = f"{output_msg} {next_msg}".strip()
+        if full_message:
+            self.speak(full_message)
 
     def make_singular(self, word):
         """Convert a potentially plural word to its singular form using simple rules.
