@@ -10,7 +10,7 @@ import shutil
 from pathlib import Path
 import glob
 import json
-from pipulate import pip # Import pip for persistence
+from pipulate import wand # Import wand for persistence
 import nbformat
 import itertools
 import requests
@@ -38,8 +38,6 @@ from sklearn.metrics import silhouette_score
 import numpy as np
 
 # --- EXCEL OUTPUT SUPPORT ---
-import platform
-import subprocess
 import ipywidgets as widgets
 from IPython.display import display
 import xlsxwriter
@@ -60,30 +58,31 @@ nltk.download('stopwords', quiet=True)
 nltk.download('punkt', quiet=True)
 nltk.download('punkt_tab', quiet=True) # Added from a later cell for consolidation
 
-# ... (keep existing imports like Path, nbformat, pip, keys, etc.) ...
+# ... (keep existing imports like Path, nbformat, wand, keys, etc.) ...
 import urllib.parse # Need this for correctly encoding the domain/path
 
-try:
-    from imports.voice_synthesis import chip_voice_system
-    VOICE_AVAILABLE = True
-except ImportError:
-    VOICE_AVAILABLE = False
 
-
-def speak(text):
-    """Safe wrapper for voice synthesis."""
-    if VOICE_AVAILABLE:
-        # Fire and forget - don't block the data processing
-        try:
-            chip_voice_system.speak_text(text)
-        except Exception as e:
-            print(f"🔇 Voice error: {e}")
+# =============================================================================
+# 🗣️ CENTRALIZED NARRATIVE SCRIPT
+# =============================================================================
+# This dictionary controls the voice cadence of the notebook. 
+# It follows a strict "Output -> Next Action" structure so the user always 
+# knows what just happened and what they are about to do before pressing Shift+Enter.
+DIALOGUE = {
+    "extract_domains": {
+        "output": "I have successfully extracted {count} target domains and saved them to the state machine.",
+        "next": "When you are ready, run the next cell to sweep your downloads folder for the matching SEMrush exports."
+    },
+    # Future steps will be mapped here to keep the logic functions clean:
+    # "collect_downloads": { ... },
+    # "combine_data": { ... },
+}
 
 
 def extract_domains_and_print_urls(job: str, notebook_filename: str = "GAPalyzer.ipynb"):
     """
     Parses the specified notebook for competitor domains or subfolders,
-    stores them using pip.set, and prints the generated SEMrush URLs
+    stores them using wand.set, and prints the generated SEMrush URLs
     with appropriate country code and search type.
 
     Args:
@@ -138,8 +137,14 @@ def extract_domains_and_print_urls(job: str, notebook_filename: str = "GAPalyzer
 
     # --- Pipulate Scaffolding ---
     # Store the extracted items list.
-    pip.set(job, 'competitor_items', items_to_analyze) # Use a more general key name
-    print(f"💾 Stored {len(items_to_analyze)} domains/subfolders in pip state for job '{job}'.")
+    wand.set(job, 'competitor_items', items_to_analyze) # Use a more general key name
+    print(f"💾 Stored {len(items_to_analyze)} domains/subfolders in wand state for job '{job}'.")
+    
+    # --- 🗣️ Narrative Cadence ---
+    if items_to_analyze:
+        output_msg = DIALOGUE["extract_domains"]["output"].format(count=len(items_to_analyze))
+        next_msg = DIALOGUE["extract_domains"]["next"]
+        wand.speak(f"{output_msg} {next_msg}")
     # ---------------------------
 
     # --- Use country_code from keys ---
@@ -187,7 +192,7 @@ def collect_semrush_downloads(job: str, download_path_str: str, file_pattern_xls
     """
     Moves downloaded SEMRush files matching patterns from the user's download
     directory to a job-specific 'downloads/{job}/' folder, records the
-    destination directory and file list in pip state.
+    destination directory and file list in wand state.
 
     Args:
         job (str): The current job ID.
@@ -234,8 +239,8 @@ def collect_semrush_downloads(job: str, download_path_str: str, file_pattern_xls
         if not files_to_move:
             print(f"⚠️ No new files matching patterns ('{file_pattern_xlsx}', '{file_pattern_csv}') found in '{source_dir}'. Skipping move.")
             # --- Pipulate Scaffolding ---
-            pip.set(job, 'semrush_download_dir', str(destination_dir)) # Still record the dir path
-            pip.set(job, 'collected_semrush_files', []) # Record empty list
+            wand.set(job, 'semrush_download_dir', str(destination_dir)) # Still record the dir path
+            wand.set(job, 'collected_semrush_files', []) # Record empty list
             # ---------------------------
             return destination_dir_str, []
 
@@ -265,9 +270,9 @@ def collect_semrush_downloads(job: str, download_path_str: str, file_pattern_xls
         print(f"✅ Collection complete. {move_count} new files moved to '{destination_dir}'. Total relevant files: {len(moved_files_list)}")
 
         # --- Pipulate Scaffolding ---
-        pip.set(job, 'semrush_download_dir', destination_dir_str)
-        pip.set(job, 'collected_semrush_files', moved_files_list)
-        print(f"💾 Stored download directory and {len(moved_files_list)} file paths in pip state for job '{job}'.")
+        wand.set(job, 'semrush_download_dir', destination_dir_str)
+        wand.set(job, 'collected_semrush_files', moved_files_list)
+        print(f"💾 Stored download directory and {len(moved_files_list)} file paths in wand state for job '{job}'.")
         # ---------------------------
 
         return destination_dir_str, moved_files_list
@@ -275,14 +280,14 @@ def collect_semrush_downloads(job: str, download_path_str: str, file_pattern_xls
     except Exception as e:
         print(f"❌ An unexpected error occurred during file collection: {e}")
         # Attempt to store whatever state we have
-        pip.set(job, 'semrush_download_dir', destination_dir_str)
-        pip.set(job, 'collected_semrush_files', moved_files_list)
+        wand.set(job, 'semrush_download_dir', destination_dir_str)
+        wand.set(job, 'collected_semrush_files', moved_files_list)
         return destination_dir_str, moved_files_list
 
 
 def find_semrush_files_and_generate_summary(job: str, competitor_limit: int = None):
     """
-    Finds SEMRush files, stores paths in pip state, and generates a Markdown summary.
+    Finds SEMRush files, stores paths in wand state, and generates a Markdown summary.
 
     Args:
         job (str): The current Pipulate job ID.
@@ -300,7 +305,7 @@ def find_semrush_files_and_generate_summary(job: str, competitor_limit: int = No
     if not semrush_dir.is_dir():
          warning_msg = f"⚠️ **Warning:** Download directory `{semrush_dir.resolve()}` not found. Assuming no files collected yet."
          print(warning_msg.replace("**","")) # Print clean version to console
-         pip.set(job, 'collected_semrush_files', [])
+         wand.set(job, 'collected_semrush_files', [])
          return warning_msg # Return Markdown warning
 
     file_patterns = [
@@ -315,12 +320,12 @@ def find_semrush_files_and_generate_summary(job: str, competitor_limit: int = No
         all_downloaded_files_as_str = [str(p.resolve()) for p in all_downloaded_files]
 
         # --- Pipulate Scaffolding ---
-        pip.set(job, 'collected_semrush_files', all_downloaded_files_as_str)
+        wand.set(job, 'collected_semrush_files', all_downloaded_files_as_str)
         # ---------------------------
 
         # --- Generate Markdown Output ---
         if all_downloaded_files:
-            print(f"💾 Found {len(all_downloaded_files)} files and stored paths in pip state.")
+            print(f"💾 Found {len(all_downloaded_files)} files and stored paths in wand state.")
             markdown_output_lines.append("## 💾 Found Downloaded Files")
             markdown_output_lines.append(f"✅ **{len(all_downloaded_files)} files** ready for processing in `{semrush_dir}/`\n")
 
@@ -336,7 +341,7 @@ def find_semrush_files_and_generate_summary(job: str, competitor_limit: int = No
                 markdown_output_lines.append(f"{i + 1}. **`{domain_name}`** ({file.suffix.upper()})")
 
         else:
-            print(f"🤷 No files found matching patterns in '{semrush_dir}'. Stored empty list in pip state.")
+            print(f"🤷 No files found matching patterns in '{semrush_dir}'. Stored empty list in wand state.")
             warning_msg = f"⚠️ **Warning:** No SEMRush files found in `{semrush_dir.resolve()}/`.\n(Looking for `*-organic.Positions*.xlsx` or `*.csv`)"
             markdown_output_lines.append(warning_msg)
 
@@ -345,7 +350,7 @@ def find_semrush_files_and_generate_summary(job: str, competitor_limit: int = No
     except Exception as e:
         error_msg = f"❌ An unexpected error occurred while listing SEMRush files: {e}"
         print(error_msg)
-        pip.set(job, 'collected_semrush_files', []) # Store empty list on error
+        wand.set(job, 'collected_semrush_files', []) # Store empty list on error
         return f"❌ **Error:** An error occurred during file listing. Check logs. ({e})"
 
 # In Notebooks/gap_analyzer_sauce.py
@@ -353,7 +358,7 @@ import pandas as pd
 from tldextract import extract
 import itertools
 from pathlib import Path
-from pipulate import pip # Ensure pip is imported
+from pipulate import wand # Ensure wand is imported
 
 # (Keep previously added functions)
 # ...
@@ -369,8 +374,8 @@ def _extract_registered_domain(url: str) -> str:
 
 def load_and_combine_semrush_data(job: str, client_domain: str, competitor_limit: int = None):
     """
-    Loads all SEMRush files from pip state, combines them into a single master DataFrame,
-    stores the result in pip state, and returns the DataFrame along with value counts for display.
+    Loads all SEMRush files from wand state, combines them into a single master DataFrame,
+    stores the result in wand state, and returns the DataFrame along with value counts for display.
 
     Args:
         job (str): The current Pipulate job ID.
@@ -385,10 +390,10 @@ def load_and_combine_semrush_data(job: str, client_domain: str, competitor_limit
     semrush_lookup = _extract_registered_domain(client_domain)
     print(f"🛠️  Loading and combining SEMRush files for {semrush_lookup}...")
 
-    # --- INPUT (from pip state) ---
-    files_to_process_str = pip.get(job, 'collected_semrush_files', [])
+    # --- INPUT (from wand state) ---
+    files_to_process_str = wand.get(job, 'collected_semrush_files', [])
     if not files_to_process_str:
-        print("🤷 No collected SEMRush files found in pip state. Nothing to process.")
+        print("🤷 No collected SEMRush files found in wand state. Nothing to process.")
         return pd.DataFrame(), pd.Series(dtype='int64')
 
     # Convert string paths back to Path objects
@@ -438,15 +443,15 @@ def load_and_combine_semrush_data(job: str, client_domain: str, competitor_limit
     
     domain_counts = master_df["Domain"].value_counts()
 
-    # --- OUTPUT (to pip state) ---
-    # --- FIX: Save master DF to CSV and store the PATH in pip state ---
+    # --- OUTPUT (to wand state) ---
+    # --- FIX: Save master DF to CSV and store the PATH in wand state ---
     temp_dir = Path("temp") / job # Use the temp directory structure
     temp_dir.mkdir(parents=True, exist_ok=True) # Ensure it exists
     master_csv_path = temp_dir / "semrush_master_combined.csv"
     master_df.to_csv(master_csv_path, index=False)
     print(f"💾 Saved combined SEMrush data to '{master_csv_path}'")
-    pip.set(job, 'semrush_master_df_csv_path', str(master_csv_path.resolve()))
-    print(f"💾 Stored master DataFrame path and competitor dictionary in pip state for job '{job}'.")
+    wand.set(job, 'semrush_master_df_csv_path', str(master_csv_path.resolve()))
+    print(f"💾 Stored master DataFrame path and competitor dictionary in wand state for job '{job}'.")
     # -----------------------------
 
     # --- RETURN VALUE ---
@@ -456,7 +461,7 @@ def load_and_combine_semrush_data(job: str, client_domain: str, competitor_limit
 def pivot_semrush_data(job: str, df2: pd.DataFrame, client_domain_from_keys: str):
     """
     Pivots the combined SEMRush DataFrame, calculates competitor positioning,
-    manages the competitors CSV file, stores results in pip state, and
+    manages the competitors CSV file, stores results in wand state, and
     returns the pivot DataFrame for display.
 
     Args:
@@ -476,10 +481,10 @@ def pivot_semrush_data(job: str, df2: pd.DataFrame, client_domain_from_keys: str
     temp_dir.mkdir(parents=True, exist_ok=True)
     competitors_csv_file = temp_dir / "competitors.csv"
 
-    # --- INPUTS from pip state & args ---
+    # --- INPUTS from wand state & args ---
     semrush_lookup = _extract_registered_domain(client_domain_from_keys)
     # Retrieve the competitor dictionary stored by the previous step
-    cdict = pip.get(job, 'competitors_dict_json', {})
+    cdict = wand.get(job, 'competitors_dict_json', {})
     if not isinstance(cdict, dict): # Handle potential JSON string load
         try:
              cdict = json.loads(cdict) if isinstance(cdict, str) else {}
@@ -510,8 +515,8 @@ def pivot_semrush_data(job: str, df2: pd.DataFrame, client_domain_from_keys: str
             print(f"❌ Critical Warning: Client domain '{semrush_lookup}' (or variant) not found in pivot table columns. Cannot reorder.")
 
         competitors = list(pivot_df.columns) # Get competitors AFTER potential reorder
-        pip.set(job, 'competitors_list_json', json.dumps(competitors))
-        print(f"  💾 Stored canonical competitor list ({len(competitors)} competitors) to pip state.")
+        wand.set(job, 'competitors_list_json', json.dumps(competitors))
+        print(f"  💾 Stored canonical competitor list ({len(competitors)} competitors) to wand state.")
         pivot_df['Competitors Positioning'] = pivot_df.iloc[:, 1:].notna().sum(axis=1)
 
         # Load or initialize df_competitors
@@ -555,10 +560,10 @@ def pivot_semrush_data(job: str, df2: pd.DataFrame, client_domain_from_keys: str
         print(f"  Cols (pivot df): {cols_pivot:,}")
         print("---------------------\n")
 
-        # --- OUTPUT (to pip state) ---
-        pip.set(job, 'keyword_pivot_df_json', pivot_df.to_json(orient='records'))
-        pip.set(job, 'competitors_df_json', df_competitors.to_json(orient='records'))
-        print(f"💾 Stored pivot DataFrame and competitors DataFrame in pip state for job '{job}'.")
+        # --- OUTPUT (to wand state) ---
+        wand.set(job, 'keyword_pivot_df_json', pivot_df.to_json(orient='records'))
+        wand.set(job, 'competitors_df_json', df_competitors.to_json(orient='records'))
+        print(f"💾 Stored pivot DataFrame and competitors DataFrame in wand state for job '{job}'.")
         # ---------------------------
 
         # --- RETURN VALUE ---
@@ -567,8 +572,8 @@ def pivot_semrush_data(job: str, df2: pd.DataFrame, client_domain_from_keys: str
     except Exception as e:
         print(f"❌ An error occurred during pivoting: {e}")
         # Store empty states on error
-        pip.set(job, 'keyword_pivot_df_json', pd.DataFrame().to_json(orient='records'))
-        pip.set(job, 'competitors_df_json', pd.DataFrame().to_json(orient='records'))
+        wand.set(job, 'keyword_pivot_df_json', pd.DataFrame().to_json(orient='records'))
+        wand.set(job, 'competitors_df_json', pd.DataFrame().to_json(orient='records'))
         return pd.DataFrame() # Return empty DataFrame
 
 # --- Helper Functions for Title Fetching (Made private) ---
@@ -675,7 +680,7 @@ def _split_domain_name(domain):
 def fetch_titles_and_create_filters(job: str):
     """
     Fetches homepage titles for competitors lacking them, updates the competitors DataFrame
-    and CSV, generates a keyword filter list, saves it to CSV, and updates pip state.
+    and CSV, generates a keyword filter list, saves it to CSV, and updates wand state.
 
     Args:
         job (str): The current Pipulate job ID.
@@ -691,10 +696,10 @@ def fetch_titles_and_create_filters(job: str):
     competitors_csv_file = temp_dir / "competitors.csv"
     filter_file = temp_dir / "filter_keywords.csv"
 
-    # --- INPUT (from pip state) ---
+    # --- INPUT (from wand state) ---
     try:
         from io import StringIO # Import StringIO here
-        competitors_df_json = pip.get(job, 'competitors_df_json', '[]')
+        competitors_df_json = wand.get(job, 'competitors_df_json', '[]')
         # --- FIX: Wrap JSON string in StringIO ---
         df_competitors = pd.read_json(StringIO(competitors_df_json), orient='records')
         # --- END FIX ---
@@ -704,7 +709,7 @@ def fetch_titles_and_create_filters(job: str):
                   df_competitors[col] = '' if col in ['Title', 'Matched Title'] else None
 
     except Exception as e:
-        print(f"❌ Error loading competitors DataFrame from pip state: {e}")
+        print(f"❌ Error loading competitors DataFrame from wand state: {e}")
         return "Error loading competitors data. Cannot proceed."
 
     if df_competitors.empty:
@@ -802,18 +807,18 @@ def fetch_titles_and_create_filters(job: str):
                  status_messages.append("Keyword filter file exists and is up-to-date.")
 
 
-        # --- OUTPUT (to pip state) ---
-        pip.set(job, 'competitors_df_json', df_competitors.to_json(orient='records'))
+        # --- OUTPUT (to wand state) ---
+        wand.set(job, 'competitors_df_json', df_competitors.to_json(orient='records'))
         # Store the generated/updated filter list as well
-        pip.set(job, 'filter_keyword_list_json', json.dumps(combined_list))
-        print(f"💾 Stored updated competitors DataFrame and filter list in pip state for job '{job}'.")
+        wand.set(job, 'filter_keyword_list_json', json.dumps(combined_list))
+        print(f"💾 Stored updated competitors DataFrame and filter list in wand state for job '{job}'.")
         # ---------------------------
 
     except Exception as e:
         print(f"❌ An error occurred during filter generation: {e}")
         status_messages.append("Error generating keyword filters.")
         # Attempt to save competitors DF state even if filter gen fails
-        pip.set(job, 'competitors_df_json', df_competitors.to_json(orient='records'))
+        wand.set(job, 'competitors_df_json', df_competitors.to_json(orient='records'))
 
 
     # --- RETURN VALUE ---
@@ -823,7 +828,7 @@ def fetch_titles_and_create_filters(job: str):
 def aggregate_semrush_metrics(job: str, df2: pd.DataFrame):
     """
     Aggregates metrics in the combined SEMRush DataFrame (df2) by Keyword,
-    stores the aggregated DataFrame in pip state, and returns it.
+    stores the aggregated DataFrame in wand state, and returns it.
 
     Args:
         job (str): The current Pipulate job ID.
@@ -918,9 +923,9 @@ def aggregate_semrush_metrics(job: str, df2: pd.DataFrame):
         print(f"  Rows: {rows:,}, Columns: {cols:,}")
 
 
-        # --- OUTPUT (to pip state) ---
-        pip.set(job, 'keyword_aggregate_df_json', agg_df.to_json(orient='records'))
-        print(f"💾 Stored aggregated DataFrame in pip state for job '{job}'.")
+        # --- OUTPUT (to wand state) ---
+        wand.set(job, 'keyword_aggregate_df_json', agg_df.to_json(orient='records'))
+        print(f"💾 Stored aggregated DataFrame in wand state for job '{job}'.")
         # ---------------------------
 
         # --- RETURN VALUE ---
@@ -928,7 +933,7 @@ def aggregate_semrush_metrics(job: str, df2: pd.DataFrame):
 
     except Exception as e:
         print(f"❌ An error occurred during aggregation: {e}")
-        pip.set(job, 'keyword_aggregate_df_json', pd.DataFrame().to_json(orient='records'))
+        wand.set(job, 'keyword_aggregate_df_json', pd.DataFrame().to_json(orient='records'))
         return pd.DataFrame() # Return empty DataFrame
 
 
@@ -963,7 +968,7 @@ def _reorder_columns_surgical(df, priority_column, after_column):
 def merge_filter_arrange_data(job: str, pivot_df: pd.DataFrame, agg_df: pd.DataFrame):
     """
     Merges pivot and aggregate DataFrames, applies keyword filters, reorders/drops columns,
-    sorts the result, stores it in pip state, and returns the final DataFrame.
+    sorts the result, stores it in wand state, and returns the final DataFrame.
 
     Args:
         job (str): The current Pipulate job ID.
@@ -1077,9 +1082,9 @@ def merge_filter_arrange_data(job: str, pivot_df: pd.DataFrame, agg_df: pd.DataF
         print(f"   Final Rows: {final_rows:,}, Final Columns: {final_cols:,}")
 
 
-        # --- OUTPUT (to pip state) ---
-        pip.set(job, 'filtered_gap_analysis_df_json', arranged_df.to_json(orient='records'))
-        print(f"💾 Stored final arranged DataFrame in pip state for job '{job}'.")
+        # --- OUTPUT (to wand state) ---
+        wand.set(job, 'filtered_gap_analysis_df_json', arranged_df.to_json(orient='records'))
+        print(f"💾 Stored final arranged DataFrame in wand state for job '{job}'.")
         # ---------------------------
 
         # --- RETURN VALUE ---
@@ -1087,7 +1092,7 @@ def merge_filter_arrange_data(job: str, pivot_df: pd.DataFrame, agg_df: pd.DataF
 
     except Exception as e:
         print(f"❌ An error occurred during merge/filter/arrange: {e}")
-        pip.set(job, 'filtered_gap_analysis_df_json', pd.DataFrame().to_json(orient='records'))
+        wand.set(job, 'filtered_gap_analysis_df_json', pd.DataFrame().to_json(orient='records'))
         return pd.DataFrame() # Return empty DataFrame
 
 
@@ -1242,7 +1247,7 @@ def fetch_botify_data(job: str, botify_token: str, botify_project_url: str):
     """
     Orchestrates fetching data from the Botify API, handling slug detection,
     API calls with fallbacks, downloading, and decompression. Stores the final
-    DataFrame in pip state.
+    DataFrame in wand state.
 
     Args:
         job (str): The current Pipulate job ID.
@@ -1270,7 +1275,7 @@ def fetch_botify_data(job: str, botify_token: str, botify_project_url: str):
 
     except (IndexError, ValueError) as e:
         print(f"  ❌ Critical Error: Could not parse Botify URL or find analysis slug. {e}")
-        pip.set(job, 'botify_export_df_json', pd.DataFrame().to_json(orient='records'))
+        wand.set(job, 'botify_export_df_json', pd.DataFrame().to_json(orient='records'))
         return pd.DataFrame(), False
 
     # --- 2. Define Paths and Payloads ---
@@ -1315,20 +1320,20 @@ def fetch_botify_data(job: str, botify_token: str, botify_project_url: str):
             print("  ❌ Botify export failed critically after both attempts.")
             botify_export_df = pd.DataFrame()
 
-    # --- START URGENT FIX: Comment out the failing pip.set() ---
+    # --- START URGENT FIX: Comment out the failing wand.set() ---
     # We will skip persistence for this step to get past the TooBigError.
     # The df is already in memory for the next cell, which is all we need.
-    # pip.set(job, 'botify_export_csv_path', str(report_name.resolve()))
+    # wand.set(job, 'botify_export_csv_path', str(report_name.resolve()))
     # --- 4. Store State and Return ---
     has_botify = not botify_export_df.empty
     if has_botify:
-        print(f"💾 Bypassing pip.set() for Botify CSV path to avoid TooBigError.")
+        print(f"💾 Bypassing wand.set() for Botify CSV path to avoid TooBigError.")
     else:
         # If it failed, ensure an empty DF is stored
-        pip.set(job, 'botify_export_csv_path', None)
-        print("🤷 No Botify data loaded. Stored empty DataFrame in pip state.")
-        # pip.set(job, 'botify_export_csv_path', None)
-        print("🤷 No Botify data loaded. Bypassing pip.set().")
+        wand.set(job, 'botify_export_csv_path', None)
+        print("🤷 No Botify data loaded. Stored empty DataFrame in wand state.")
+        # wand.set(job, 'botify_export_csv_path', None)
+        print("🤷 No Botify data loaded. Bypassing wand.set().")
     # --- END URGENT FIX ---
     return botify_export_df, has_botify
 
@@ -1337,7 +1342,7 @@ def fetch_botify_data_and_save(job: str, botify_token: str, botify_project_url: 
     """
     Orchestrates fetching data from the Botify API using pre-defined helpers,
     handling slug detection, API calls with fallbacks, downloading, decompression,
-    and storing the final DataFrame in pip state.
+    and storing the final DataFrame in wand state.
 
     Args:
         job (str): The current Pipulate job ID.
@@ -1374,7 +1379,7 @@ def fetch_botify_data_and_save(job: str, botify_token: str, botify_project_url: 
     except (IndexError, ValueError, Exception) as e:  # Catch broader exceptions during setup
         print(f"  ❌ Critical Error during Botify setup: {e}")
         # Store None path on failure to avoid massive JSON blobs
-        pip.set(job, 'botify_export_csv_path', None)
+        wand.set(job, 'botify_export_csv_path', None)
         return pd.DataFrame(), False, None, None  # Return empty DF, False, and None paths
 
     # --- 2. Define Paths and Payloads ---
@@ -1393,7 +1398,7 @@ def fetch_botify_data_and_save(job: str, botify_token: str, botify_project_url: 
         }
     except Exception as e:
         print(f"  ❌ Error defining paths/payloads: {e}")
-        pip.set(job, 'botify_export_csv_path', None)
+        wand.set(job, 'botify_export_csv_path', None)
         return pd.DataFrame(), False, None, csv_dir  # Return csv_dir if it was created
 
     # --- 3. Main Logic: Check existing, call API with fallback ---
@@ -1436,11 +1441,11 @@ def fetch_botify_data_and_save(job: str, botify_token: str, botify_project_url: 
     
     # FIX: Store PATH instead of JSON content to avoid "blob too big" error
     if has_botify and report_name:
-        pip.set(job, 'botify_export_csv_path', str(report_name.resolve()))
-        print(f"💾 Stored Botify CSV path in pip state for job '{job}': {report_name.name}")
+        wand.set(job, 'botify_export_csv_path', str(report_name.resolve()))
+        print(f"💾 Stored Botify CSV path in wand state for job '{job}': {report_name.name}")
     else:
-        pip.set(job, 'botify_export_csv_path', None)
-        print("🤷 No Botify data loaded or available. Stored None path in pip state.")
+        wand.set(job, 'botify_export_csv_path', None)
+        print("🤷 No Botify data loaded or available. Stored None path in wand state.")
 
     # Return necessary info for display logic in notebook
     return botify_export_df, has_botify, report_name, csv_dir
@@ -1498,7 +1503,7 @@ def _insert_columns_after_surgical(df, column_names, after_column):
 def merge_and_finalize_data(job: str, arranged_df: pd.DataFrame, botify_export_df: pd.DataFrame, has_botify: bool):
     """
     Merges SEMRush data with Botify data (if present), cleans columns,
-    saves an intermediate CSV, stores the final DF in pip state,
+    saves an intermediate CSV, stores the final DF in wand state,
     and returns the final DF and data for display.
     
     Args:
@@ -1567,24 +1572,24 @@ def merge_and_finalize_data(job: str, arranged_df: pd.DataFrame, botify_export_d
             "pagerank_counts": pagerank_counts
         }
 
-        # --- OUTPUT (to pip state) ---
+        # --- OUTPUT (to wand state) ---
         # --- FIX: Store the PATH to the intermediate CSV, not the giant DataFrame JSON ---
-        pip.set(job, 'final_working_df_csv_path', str(unformatted_csv.resolve()))
-        print(f"💾 Stored final working DF path in pip state for job '{job}': {unformatted_csv.resolve()}")
+        wand.set(job, 'final_working_df_csv_path', str(unformatted_csv.resolve()))
+        print(f"💾 Stored final working DF path in wand state for job '{job}': {unformatted_csv.resolve()}")
 
         # --- RETURN VALUE ---
         return df, display_data
 
     except Exception as e:
         print(f"❌ An error occurred during final merge/cleanup: {e}")
-        pip.set(job, 'final_working_df_csv_path', None) # Store None on error
+        wand.set(job, 'final_working_df_csv_path', None) # Store None on error
         # Return empty/default values
         return pd.DataFrame(), {"rows": 0, "cols": 0, "has_botify": False, "pagerank_counts": None}
 
 def truncate_dataframe_by_volume(job: str, final_df: pd.DataFrame, row_limit: int):
     """
     Truncates the DataFrame to be under a specific row limit by iterating
-    through search volume cutoffs. Stores the truncated DF in pip state.
+    through search volume cutoffs. Stores the truncated DF in wand state.
 
     Args:
         job (str): The current Pipulate job ID.
@@ -1612,7 +1617,7 @@ def truncate_dataframe_by_volume(job: str, final_df: pd.DataFrame, row_limit: in
             temp_dir.mkdir(parents=True, exist_ok=True)
             fallback_csv = temp_dir / "truncated_df_fallback.csv"
             final_df.to_csv(fallback_csv, index=False)
-            pip.set(job, 'truncated_df_for_clustering_csv_path', str(fallback_csv.resolve()))
+            wand.set(job, 'truncated_df_for_clustering_csv_path', str(fallback_csv.resolve()))
             return final_df
         
         # Ensure 'Search Volume' is numeric, coercing errors to NaN and filling with 0
@@ -1642,13 +1647,12 @@ def truncate_dataframe_by_volume(job: str, final_df: pd.DataFrame, row_limit: in
 
         # --- Final Output and Persistence ---
         rows, cols = truncated_df.shape
+
         print(f"✅ Final truncation floor: Search Volume >{try_fit:,} resulting in {rows:,} rows.")
-
-        speak(f"Data truncation complete. Retained {rows} rows with search volume above {try_fit}.")
-
+        wand.speak(f"Data truncation complete. Retained {rows} rows with search volume above {try_fit}.")
         df_to_store = truncated_df.copy()
 
-        # --- OUTPUT (to pip state) ---
+        # --- OUTPUT (to wand state) ---
         # FIX: Save to disk instead of DB to avoid "string or blob too big" error
         temp_dir = Path("temp") / job
         temp_dir.mkdir(parents=True, exist_ok=True)
@@ -1656,7 +1660,7 @@ def truncate_dataframe_by_volume(job: str, final_df: pd.DataFrame, row_limit: in
         
         df_to_store.to_csv(truncated_csv_path, index=False)
         
-        pip.set(job, 'truncated_df_for_clustering_csv_path', str(truncated_csv_path.resolve()))
+        wand.set(job, 'truncated_df_for_clustering_csv_path', str(truncated_csv_path.resolve()))
         print(f"💾 Stored truncated DataFrame ({len(df_to_store)} rows) to CSV: {truncated_csv_path.name}")
         # ---------------------------
 
@@ -1757,7 +1761,7 @@ def name_keyword_clusters(df, keyword_column, cluster_column):
 def cluster_and_finalize_dataframe(job: str, df: pd.DataFrame, has_botify: bool, enable_clustering: bool = True):
     """
     Performs keyword clustering (optional), names clusters, reorders columns,
-    saves the unformatted CSV, stores the final DataFrame in pip state,
+    saves the unformatted CSV, stores the final DataFrame in wand state,
     and returns the final DataFrame for display.
 
     Args:
@@ -1898,12 +1902,12 @@ def cluster_and_finalize_dataframe(job: str, df: pd.DataFrame, has_botify: bool,
             print("  (Clustering disabled)")
         print("----------------------------------")
 
-        # --- OUTPUT (to pip state) ---
+        # --- OUTPUT (to wand state) ---
         # FIX: Save to disk instead of DB to avoid "string or blob too big" error
         clustered_csv_path = temp_dir / "final_clustered_df.csv"
         df.to_csv(clustered_csv_path, index=False)
         
-        pip.set(job, 'final_clustered_df_csv_path', str(clustered_csv_path.resolve()))
+        wand.set(job, 'final_clustered_df_csv_path', str(clustered_csv_path.resolve()))
         print(f"💾 Stored final clustered DataFrame ({len(df)} rows) to CSV: {clustered_csv_path.name}")
         # ---------------------------
 
@@ -1913,29 +1917,9 @@ def cluster_and_finalize_dataframe(job: str, df: pd.DataFrame, has_botify: bool,
     except Exception as e:
         print(f"❌ An error occurred during clustering and finalization: {e}")
         # Store None on error instead of massive empty DF
-        pip.set(job, 'final_clustered_df_csv_path', None)
+        wand.set(job, 'final_clustered_df_csv_path', None)
         return pd.DataFrame() # Return empty DataFrame
 
-
-# Surgical port of _open_folder from FAQuilizer, necessary for the widget to work
-def _open_folder(path_str: str = "."):
-    """Opens the specified folder in the system's default file explorer."""
-    folder_path = Path(path_str).resolve()
-    
-    if not folder_path.exists() or not folder_path.is_dir():
-        print(f"❌ Error: Path is not a valid directory: {folder_path}")
-        return
-
-    system = platform.system()
-    try:
-        if system == "Windows":
-            os.startfile(folder_path)
-        elif system == "Darwin":  # macOS
-            subprocess.run(["open", folder_path])
-        else:  # Linux (xdg-open covers most desktop environments)
-            subprocess.run(["xdg-open", folder_path])
-    except Exception as e:
-        print(f"❌ Failed to open folder. Error: {e}")
 
 # This utility must be defined for normalize_and_score to work
 def safe_normalize(series):
@@ -2038,7 +2022,7 @@ def create_deliverables_excel_and_button(job: str, df: pd.DataFrame, client_doma
     """
     Creates the deliverables directory, writes the first "Gap Analysis" tab
     to the Excel file, creates the "Open Folder" button, and stores
-    key file paths in pip state.
+    key file paths in wand state.
 
     Args:
         job (str): The current Pipulate job ID.
@@ -2059,15 +2043,15 @@ def create_deliverables_excel_and_button(job: str, df: pd.DataFrame, client_doma
         # 1. Get semrush_lookup
         semrush_lookup = _extract_registered_domain(client_domain_from_keys)
 
-        # 2. Get canonical competitors list from pip state
-        competitors_list_json = pip.get(job, 'competitors_list_json', '[]')
+        # 2. Get canonical competitors list from wand state
+        competitors_list_json = wand.get(job, 'competitors_list_json', '[]')
         competitors = json.loads(competitors_list_json)
         if not competitors:
             # This should NOT happen, but it's a safe fallback.
-            print(f"  ❌ CRITICAL WARNING: 'competitors_list_json' not found in pip state. Inferring from DataFrame columns.")
+            print(f"  ❌ CRITICAL WARNING: 'competitors_list_json' not found in wand state. Inferring from DataFrame columns.")
             competitors = [col for col in df.columns if col == semrush_lookup or '/' in col or '.com' in col]
         else:
-            print(f"  ✅ Loaded canonical list of {len(competitors)} competitors from pip state.")
+            print(f"  ✅ Loaded canonical list of {len(competitors)} competitors from wand state.")
 
 
         # 3. Find the canonical client column name (TARGET_COMPETITOR_COL)
@@ -2118,24 +2102,24 @@ def create_deliverables_excel_and_button(job: str, df: pd.DataFrame, client_doma
             tooltip=f"Open {deliverables_dir.resolve()}",
             button_style='success'
         )
-        
-        # Define the on_click handler that calls our private helper
+       
+        # Define the on_click handler that routes to the wand
         def on_open_folder_click(b):
-            _open_folder(str(deliverables_dir))
+            wand.open_folder(str(deliverables_dir))
             
         button.on_click(on_open_folder_click)
 
-        # --- OUTPUT (to pip state) ---
-        pip.set(job, 'final_xl_file', str(xl_file))
-        pip.set(job, 'deliverables_folder', str(deliverables_dir))
+        # --- OUTPUT (to wand state) ---
+        wand.set(job, 'final_xl_file', str(xl_file))
+        wand.set(job, 'deliverables_folder', str(deliverables_dir))
         # --- FIX: Serialize lists to JSON strings before storing ---
-        pip.set(job, 'loop_list', json.dumps(loop_list)) # Store loop_list for the next step
+        wand.set(job, 'loop_list', json.dumps(loop_list)) # Store loop_list for the next step
         # Store competitors and target col for the *next* cell (the formatting one)
-        pip.set(job, 'competitors_list', json.dumps(competitors)) 
+        wand.set(job, 'competitors_list', json.dumps(competitors)) 
         # --- END FIX ---
-        pip.set(job, 'semrush_lookup', semrush_lookup) # The clean domain
-        pip.set(job, 'target_competitor_col', TARGET_COMPETITOR_COL) # The canonical column name
-        print(f"💾 Stored final Excel path, folder, and competitor info in pip state.")
+        wand.set(job, 'semrush_lookup', semrush_lookup) # The clean domain
+        wand.set(job, 'target_competitor_col', TARGET_COMPETITOR_COL) # The canonical column name
+        print(f"💾 Stored final Excel path, folder, and competitor info in wand state.")
         # ---------------------------
 
         # --- RETURN VALUE ---
@@ -2448,7 +2432,7 @@ def create_final_deliverable(
         print(f"⚠️ Warning: Could not find canonical column for '{semrush_lookup}'. Using default.")
         target_competitor_col = semrush_lookup
 
-    competitors_list_json = pip.get(job, 'competitors_list_json', '[]')
+    competitors_list_json = wand.get(job, 'competitors_list_json', '[]')
     competitors = json.loads(competitors_list_json)
     if not competitors:
         competitors = [col for col in df.columns if col == semrush_lookup or '/' in col or '.com' in col]
@@ -2460,7 +2444,7 @@ def create_final_deliverable(
         button_style='success'
     )
     def on_open_folder_click(b):
-        _open_folder(str(deliverables_dir))
+        wand.open_folder(str(deliverables_dir))
     button.on_click(on_open_folder_click)
 
     # 4. Execute Batch Write

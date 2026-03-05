@@ -17,6 +17,8 @@
 AI_PHOOEY_CHOP = """\
 .gitignore
 config.py
+Notebooks/GAPalyzer.ipynb
+Notebooks/imports/gap_analyzer_sauce.py
 assets/nbs/0nboard.ipynb
 assets/nbs/imports/onboard_sauce.py
 pipulate/__init__.py
