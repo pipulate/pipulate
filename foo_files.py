@@ -15,10 +15,18 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
+.gitignore
+config.py
+assets/nbs/0nboard.ipynb
+assets/nbs/imports/onboard_sauce.py
+pipulate/__init__.py
+pipulate/pipulate.py
+pipulate/core.py
+
 # CHAPTER 13: THE GAPALYZER SUITE (~240KB)
 # Automates Content Gap Analysis using linear, WET code.
-Notebooks/GAPalyzer.ipynb
-Notebooks/imports/gap_analyzer_sauce.py
+# Notebooks/GAPalyzer.ipynb
+# Notebooks/imports/gap_analyzer_sauce.py
 
 # # Getting to the bottom of who requests llms.txt and where they found the link
 # ! echo "--- LLMS.TXT INTELLIGENCE ---" && cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
