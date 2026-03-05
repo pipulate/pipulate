@@ -15,25 +15,36 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-# foo_files.py
-# prompt_foo.py
+# The story of the 404 Redirect Map Project
+# /home/mike/repos/trimnoir/_posts/2026-03-03-cybernetic-terrarium-ai-observability.md  # [Idx: 897 | Order: 4 | Tokens: 3,170 | Bytes: 15,104]
+# /home/mike/repos/trimnoir/_posts/2026-03-04-architecting-ai-context-data-density-blueprint-404-remapping.md  # [Idx: 898 | Order: 2 | Tokens: 20,308 | Bytes: 80,742]
+# /home/mike/repos/trimnoir/_posts/2026-03-04-nginx-404-remapping-llm-context-architecture-blueprint.md  # [Idx: 899 | Order: 3 | Tokens: 16,433 | Bytes: 67,822]
+# /home/mike/repos/trimnoir/_posts/2026-03-04-john-henry-gambit-llms-honeybots-dynamic-latest-url.md  # [Idx: 900 | Order: 4 | Tokens: 12,951 | Bytes: 55,594]
+/home/mike/repos/trimnoir/_posts/2026-03-05-self-healing-ai-404-redirects-nginx-nixos.md  # [Idx: 901 | Order: 1 | Tokens: 48,228 | Bytes: 183,128]
 
-# # PRODUCE A NEW 404 REDIRECT MAP
-# ! python scripts/articles/ls_semantic.py
-# ! echo "--- HOT 404 REMAPS (Structural Signal) ---" && cat remotes/honeybot/queries/hot_404_remaps.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# Why these redirects are so necessary (we're always K-Means clustering our hubs)
+scripts/articles/update_graphs.py  # <-- This picks the publishing workflow based on the target choice
+scripts/articles/build_knowledge_graph.py
+scripts/articles/generate_hubs.py
 
-# scripts/articles/update_graphs.py  # <-- This picks the publishing workflow based on the target choice
-# scripts/articles/contextualizer.py
-# scripts/articles/gsc_historical_fetch.py
-# scripts/articles/build_knowledge_graph.py
-# scripts/articles/generate_hubs.py
-# prompt_foo.py
-# scripts/articles/lsa.py
-# ! echo "--- HOT 404 REMAPS (Structural Signal) ---" && cat remotes/honeybot/queries/hot_404_remaps.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# We deploy our TV Studio DMZ webhead honeybot as NixOS IaC
+deploy_honeybot.sh
+/home/mike/repos/trimnoir/flake.nix
+remotes/honeybot/hooks/post-receive
+remotes/honeybot/nixos/configuration.nix
 
-# foo_files.py
-# prompt_foo.py
-# scripts/articles/lsa.py
+# This content shows in a desktop Python Textual slideshow OBS TV Studio streaming to YouTube
+remotes/honeybot/scripts/db.py
+remotes/honeybot/scripts/logs.py
+remotes/honeybot/scripts/stream.py
+
+# THE DATA TO PRODUCE A NEW 404 REDIRECT MAP
+remotes/honeybot/queries/hot_404_remaps.sql
+! python scripts/articles/ls_semantic.py
+! echo "--- HOT 404 REMAPS (Structural Signal) ---" && cat remotes/honeybot/queries/hot_404_remaps.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
+
+
 # 
 # remotes/honeybot/queries/hot_404_remaps_full.sql
 # # 6. PLANNING 404 REDIRECT MAP (TOP TARGETS ONLY)
@@ -77,15 +88,6 @@ AI_PHOOEY_CHOP = """\
 # remotes/honeybot/queries/trapdoor_ips.sql
 # 
 
-# remotes/honeybot/scripts/content_loader.py
-# remotes/honeybot/scripts/db.py
-# remotes/honeybot/scripts/education.py
-# remotes/honeybot/scripts/logs.py
-# remotes/honeybot/scripts/radar.py
-# remotes/honeybot/scripts/report.py
-# remotes/honeybot/scripts/show.py
-# remotes/honeybot/scripts/stream.py
-
 # # ============================================================================
 # # THE LIVE TELEMETRY FEEDS
 # # ============================================================================
@@ -127,24 +129,18 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/trimnoir/_posts/2026-03-04-architecting-ai-context-data-density-blueprint-404-remapping.md  # [Idx: 898 | Order: 2 | Tokens: 20,275 | Bytes: 80,587]
 # 
 # # CHAPTER 15: JEKYLL PUBLISHING
-/home/mike/repos/nixos/init.lua  # <-- The creator of this system uses NixOS as the Pipulate prime "parent" OS and you can see their blogging habits here
-scripts/articles/articleizer.py  # <- Extractions from the 1-file-4life tech journal get copy-pasted into the article.txt that this file works on
-scripts/articles/editing_prompt.txt  # <-- I cannot emphasizes enough the "keeping response in JSON" aspect of the player piano / mechanical loom aspect
-/home/mike/.config/articleizer/targets.json  # <-- These scripts are designed to work with any Jekyll blog site repo with --target (and -k API key)
-scripts/articles/update_graphs.py  # <-- This picks the publishing workflow based on the target choice
-scripts/articles/sanitizer.py
-scripts/articles/contextualizer.py
-scripts/articles/gsc_historical_fetch.py
-scripts/articles/build_knowledge_graph.py
-scripts/articles/generate_hubs.py
-# 
-# # A reminder of how we control Honeybot
-deploy_honeybot.sh
-/home/mike/repos/trimnoir/flake.nix
-remotes/honeybot/hooks/post-receive
-remotes/honeybot/nixos/configuration.nix
-
-/home/mike/repos/trimnoir/_redirects.map
+# /home/mike/repos/nixos/init.lua  # <-- The creator of this system uses NixOS as the Pipulate prime "parent" OS and you can see their blogging habits here
+# scripts/articles/articleizer.py  # <- Extractions from the 1-file-4life tech journal get copy-pasted into the article.txt that this file works on
+# scripts/articles/editing_prompt.txt  # <-- I cannot emphasizes enough the "keeping response in JSON" aspect of the player piano / mechanical loom aspect
+# /home/mike/.config/articleizer/targets.json  # <-- These scripts are designed to work with any Jekyll blog site repo with --target (and -k API key)
+# scripts/articles/update_graphs.py  # <-- This picks the publishing workflow based on the target choice
+# scripts/articles/sanitizer.py
+# scripts/articles/contextualizer.py
+# scripts/articles/gsc_historical_fetch.py
+# scripts/articles/build_knowledge_graph.py
+# scripts/articles/generate_hubs.py
+# # 
+# /home/mike/repos/trimnoir/_redirects.map
 
 # 
 # # 6. PLANNING 404 REDIRECT MAP
