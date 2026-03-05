@@ -51,7 +51,7 @@ from openpyxl.styles import PatternFill, Font, Alignment, Border, Side
 from openpyxl.formatting.rule import ColorScaleRule
 from openpyxl.worksheet.table import Table, TableStyleInfo
 from openpyxl.utils import get_column_letter
-import validators # For URL validation
+# import validators # For URL validation
 
 # --- ML ---
 import nltk
@@ -2380,11 +2380,11 @@ def _apply_conditional_formatting(sheet, column_mapping, last_row, conditionals_
             except Exception as e:
                 print(f"  ⚠️ Failed to apply conditional formatting for {label}: {e}")
 
-def _is_safe_url(url):
-    """ Check if the given string is a valid URL using the validators library. """
-    if not isinstance(url, str):
-        return False
-    return validators.url(url) is True # Explicitly check for True
+# def _is_safe_url(url):
+#     """ Check if the given string is a valid URL using the validators library. """
+#     if not isinstance(url, str):
+#         return False
+#     return validators.url(url) is True # Explicitly check for True
 
 
 def apply_excel_formatting(

@@ -205,6 +205,8 @@
 
     # 1. THE SENSOR: Read the Accept header and define the MIME type
       appendHttpConfig = ''
+        # Expand CPU cache line alignment for long AI-generated URL keys
+        # map_hash_bucket_size 256;  # <-- had to edit out
         # --- THE MAP: Load the AI-generated routing table ---
         map $request_uri $new_uri {
             default "";

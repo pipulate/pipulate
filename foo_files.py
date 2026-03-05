@@ -15,9 +15,31 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-foo_files.py
-/home/mike/repos/trimnoir/_raw_map.csv
-scripts/articles/generate_redirects.py
+# CHAPTER 13: THE GAPALYZER SUITE (~240KB)
+# Automates Content Gap Analysis using linear, WET code.
+Notebooks/GAPalyzer.ipynb
+Notebooks/imports/gap_analyzer_sauce.py
+
+# # Getting to the bottom of who requests llms.txt and where they found the link
+# ! echo "--- LLMS.TXT INTELLIGENCE ---" && cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
+# # Starting engaging with Claude Opus 4.6  # <-- Hi, Opus! How meta is this?
+# prompt_foo.py
+# foo_files.py
+
+# deploy_honeybot.sh
+# /home/mike/repos/trimnoir/.gitignore
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_config.yml
+# remotes/honeybot/hooks/post-receive
+# /home/mike/repos/trimnoir/_redirects.map
+# remotes/honeybot/nixos/configuration.nix
+
+# -----------------------------------------------------
+
+# /home/mike/repos/trimnoir/_raw_map.csv.bak
+# /home/mike/repos/trimnoir/_raw_map.csv
+# scripts/articles/generate_redirects.py
 
 # /home/mike/repos/trimnoir/_posts/2026-03-03-cybernetic-terrarium-ai-observability.md  # [Idx: 897 | Order: 4 | Tokens: 3,170 | Bytes: 15,104]
 # /home/mike/repos/trimnoir/_posts/2026-03-04-architecting-ai-context-data-density-blueprint-404-remapping.md  # [Idx: 898 | Order: 2 | Tokens: 20,308 | Bytes: 80,742]
@@ -41,20 +63,20 @@ scripts/articles/generate_redirects.py
 # /home/mike/repos/trimnoir/_posts/2026-03-04-john-henry-gambit-llms-honeybots-dynamic-latest-url.md  # [Idx: 900 | Order: 4 | Tokens: 12,951 | Bytes: 55,594]
 # /home/mike/repos/trimnoir/_posts/2026-03-05-self-healing-ai-404-redirects-nginx-nixos.md  # [Idx: 901 | Order: 1 | Tokens: 48,228 | Bytes: 183,128]
 # 
-# Why these redirects are so necessary (we're always K-Means clustering our hubs)
-scripts/articles/publishizer.py  # <-- This picks the publishing workflow based on the target choice
-scripts/articles/build_knowledge_graph.py
-scripts/articles/generate_hubs.py
-# 
-# We deploy our TV Studio DMZ webhead honeybot as NixOS IaC
-deploy_honeybot.sh
-/home/mike/repos/trimnoir/.gitignore
-/home/mike/repos/trimnoir/flake.nix
-/home/mike/repos/trimnoir/_config.yml
-remotes/honeybot/hooks/post-receive
-/home/mike/repos/trimnoir/_redirects.map
-remotes/honeybot/nixos/configuration.nix
-# 
+# # Why these redirects are so necessary (we're always K-Means clustering our hubs)
+# scripts/articles/publishizer.py  # <-- This picks the publishing workflow based on the target choice
+# scripts/articles/build_knowledge_graph.py
+# scripts/articles/generate_hubs.py
+# # 
+# # We deploy our TV Studio DMZ webhead honeybot as NixOS IaC
+# deploy_honeybot.sh
+# /home/mike/repos/trimnoir/.gitignore
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_config.yml
+# remotes/honeybot/hooks/post-receive
+# /home/mike/repos/trimnoir/_redirects.map
+# remotes/honeybot/nixos/configuration.nix
+# # 
 # # This content shows in a desktop Python Textual slideshow OBS TV Studio streaming to YouTube
 # remotes/honeybot/scripts/db.py
 # remotes/honeybot/scripts/logs.py
@@ -105,7 +127,6 @@ remotes/honeybot/nixos/configuration.nix
 # remotes/honeybot/queries/telemetry_totals.sql
 # remotes/honeybot/queries/telemetry_trapdoor_events.sql
 # remotes/honeybot/queries/trapdoor_ips.sql
-# 
 
 # # ============================================================================
 # # THE LIVE TELEMETRY FEEDS
