@@ -29,7 +29,9 @@ AI_PHOOEY_CHOP = """\
 # 
 # # We deploy our TV Studio DMZ webhead honeybot as NixOS IaC
 deploy_honeybot.sh
+/home/mike/repos/trimnoir/.gitignore
 /home/mike/repos/trimnoir/flake.nix
+/home/mike/repos/trimnoir/_config.yml
 remotes/honeybot/hooks/post-receive
 /home/mike/repos/trimnoir/_redirects.map
 remotes/honeybot/nixos/configuration.nix
