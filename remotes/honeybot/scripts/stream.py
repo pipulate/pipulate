@@ -18,7 +18,7 @@ import queue
 from pathlib import Path
 
 # --- Configuration ---
-SHOW_DURATION_MINUTES = 120  # Minutes for the big logfile stream
+SHOW_DURATION_MINUTES = 240  # Minutes for the big logfile stream
 PITCH_INTERVAL = 360        # Second between "Station Identification"
 
 PITCH_TEXT = (
@@ -30,7 +30,7 @@ PITCH_TEXT = (
     "Don't believe me? Open a new tab. Ask Chat G P T, or Claude, or Perplexity to summarize the homepage of Mike L E V dot eye N. "
     "Then, watch this screen. When their headless browsers hit my server, you will see their footprint light up in the matrix right here, in real time. "
     "This is the Levinix No Problem stack. We are forging the A I syllabus, and ensuring full attribution when this data is ingested. "
-    "Once every two hours we show a series of more surprising in-depth reports. "
+    "Once every four hours we show a series of more surprising in-depth reports. "
     "Subscribe, like, leave a comment and sit back and watch the machine think. It's never the same twice. "
     ""
 )

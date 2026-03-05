@@ -14,11 +14,6 @@ git --work-tree=$WORK_TREE --git-dir=$GIT_DIR checkout -f main
 cd $WORK_TREE
 echo "🔨 [Hook] Starting Hybrid Build..."
 
-# --- NEW: Deploy the Map File ---
-echo '🗺️  Deploying Nginx Redirect Map...'
-cp _redirects.map _site/redirects.map
-# --------------------------------
-
 # 3. The Build Command via Quoted Heredoc
 # The single quotes around 'EOF' prevent the outer shell from expanding ANY variables.
 nix develop --command bash << 'EOF'
@@ -81,6 +76,11 @@ nix develop --command bash << 'EOF'
     fi
   done
 EOF
+
+# --- NEW: Deploy the Map File ---
+echo '🗺️  Deploying Nginx Redirect Map...'
+cp _redirects.map _site/redirects.map
+# --------------------------------
 
 # 4. Permissions Fix
 echo "🔒 [Hook] Fixing Permissions..."

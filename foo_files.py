@@ -15,6 +15,8 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
+prompt_foo.py
+foo_files.py  # <-- this
 # The story of the 404 Redirect Map Project
 # /home/mike/repos/trimnoir/_posts/2026-03-03-cybernetic-terrarium-ai-observability.md  # [Idx: 897 | Order: 4 | Tokens: 3,170 | Bytes: 15,104]
 # /home/mike/repos/trimnoir/_posts/2026-03-04-architecting-ai-context-data-density-blueprint-404-remapping.md  # [Idx: 898 | Order: 2 | Tokens: 20,308 | Bytes: 80,742]
@@ -28,13 +30,13 @@ AI_PHOOEY_CHOP = """\
 # scripts/articles/generate_hubs.py
 # 
 # # We deploy our TV Studio DMZ webhead honeybot as NixOS IaC
-deploy_honeybot.sh
-/home/mike/repos/trimnoir/.gitignore
-/home/mike/repos/trimnoir/flake.nix
-/home/mike/repos/trimnoir/_config.yml
-remotes/honeybot/hooks/post-receive
-/home/mike/repos/trimnoir/_redirects.map
-remotes/honeybot/nixos/configuration.nix
+# deploy_honeybot.sh
+# /home/mike/repos/trimnoir/.gitignore
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_config.yml
+# remotes/honeybot/hooks/post-receive
+# /home/mike/repos/trimnoir/_redirects.map
+# remotes/honeybot/nixos/configuration.nix
 # 
 # # This content shows in a desktop Python Textual slideshow OBS TV Studio streaming to YouTube
 # remotes/honeybot/scripts/db.py
