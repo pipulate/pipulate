@@ -143,6 +143,9 @@ deploy_honeybot.sh
 /home/mike/repos/trimnoir/flake.nix
 remotes/honeybot/hooks/post-receive
 remotes/honeybot/nixos/configuration.nix
+
+/home/mike/repos/trimnoir/_redirects.map
+
 # 
 # # 6. PLANNING 404 REDIRECT MAP
 # ! echo "--- HOT 404 REMAPS (Structural Signal) ---" && cat remotes/honeybot/queries/hot_404_remaps.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
