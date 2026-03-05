@@ -229,12 +229,12 @@
       locations."/" = {
         extraConfig = ''
           add_header Vary "Accept" always; # <--- The final polish
-          
-          # # --- THE SWITCH: Execute the 301 Redirect if mapped ---
-          # if ($new_uri != "") {
-          #     return 301 $new_uri;
-          # }
-          # # ------------------------------------------------------
+
+          # --- THE SWITCH: Execute the 301 Redirect if mapped ---
+          if ($new_uri != "") {
+              return 301 $new_uri;
+          }
+          # ------------------------------------------------------
 
           if ($serve_markdown = 1) {
             rewrite ^(.*)/$ $1/index.md break;
