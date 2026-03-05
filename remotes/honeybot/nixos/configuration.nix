@@ -216,6 +216,7 @@
           default 0;
           "~*text/markdown" 1;
         }
+    '';
 
     virtualHosts."mikelev.in" = {
       forceSSL = true;      # Force all traffic to HTTPS 
