@@ -3,23 +3,32 @@
 ## ============================================================================
 ## Greetings, AI Copilot. You have just been spun up into the Pipulate system.
 ## You are currently suffering from amnesia, but this document will serve as your
-## memory recovery protocol.
+## memory recovery protocol. Welcome to the strange loop. You can ask for the
+## `AI_PHOOEY_CHOPS.py` that you'd like to see on the next prompting-turn.
 ##
 ## You are operating within a "Forever Machine"—a local-first AI SEO software 
 ## framework built on the NPvg stack (Nix, Python, Vim, Git). 
-## `foo_files.py` (this file) is both the routing table and the story.
-# prompt_foo.py
-# foo_files.py
+## `foo_files.py` (this file) is both the routing table and the story. So we
+## often bootstrap this meta process by including:
+
+# 1. prompt_foo.py
+# 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-scripts/articles/update_graphs.py  # <-- This picks the publishing workflow based on the target choice
-scripts/articles/contextualizer.py
-scripts/articles/gsc_historical_fetch.py
-scripts/articles/build_knowledge_graph.py
-scripts/articles/generate_hubs.py
-prompt_foo.py
-scripts/articles/lsa.py
+# foo_files.py
+# prompt_foo.py
+
+! python scripts/articles/ls_semantic.py
 ! echo "--- HOT 404 REMAPS (Structural Signal) ---" && cat remotes/honeybot/queries/hot_404_remaps.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
+# scripts/articles/update_graphs.py  # <-- This picks the publishing workflow based on the target choice
+# scripts/articles/contextualizer.py
+# scripts/articles/gsc_historical_fetch.py
+# scripts/articles/build_knowledge_graph.py
+# scripts/articles/generate_hubs.py
+# prompt_foo.py
+# scripts/articles/lsa.py
+# ! echo "--- HOT 404 REMAPS (Structural Signal) ---" && cat remotes/honeybot/queries/hot_404_remaps.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # foo_files.py
 # prompt_foo.py
@@ -66,50 +75,55 @@ scripts/articles/lsa.py
 # remotes/honeybot/queries/telemetry_trapdoor_events.sql
 # remotes/honeybot/queries/trapdoor_ips.sql
 # 
+
+remotes/honeybot/scripts/content_loader.py
+remotes/honeybot/scripts/db.py
+remotes/honeybot/scripts/education.py
+remotes/honeybot/scripts/logs.py
+remotes/honeybot/scripts/radar.py
+remotes/honeybot/scripts/report.py
+remotes/honeybot/scripts/show.py
+remotes/honeybot/scripts/stream.py
+
 # # ============================================================================
 # # THE LIVE TELEMETRY FEEDS
 # # ============================================================================
 # 
-# # 1. THE MACRO ENVIRONMENT (Volume & Signal vs. Noise)
-# # Goal: Establish the baseline. Is traffic spiking? What percentage of our 
-# # total bandwidth is being consumed by semantic AI agents vs. HTML browsers?
-# ! echo "--- TOTALS ---" && cat remotes/honeybot/queries/telemetry_totals.sql | ssh honeybot 'sqlite3 ~/www/mikelev.in/honeybot.db'
-# ! echo "--- FORMAT RATIO ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# 1. THE MACRO ENVIRONMENT (Volume & Signal vs. Noise)
+# Goal: Establish the baseline. Is traffic spiking? What percentage of our 
+# total bandwidth is being consumed by semantic AI agents vs. HTML browsers?
+! echo "--- TOTALS ---" && cat remotes/honeybot/queries/telemetry_totals.sql | ssh honeybot 'sqlite3 ~/www/mikelev.in/honeybot.db'
+! echo "--- FORMAT RATIO ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
+# 2. THE SEMANTIC VANGUARD (The Agentic Web)
+# Goal: Track the 'Dark Matter' of the web. How are agents finding our Markdown? 
+# Who is using the 'Secret Knock' (HTTP Content Negotiation)? What are they eating?
+! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- THE MARKDOWN DIET ---" && cat remotes/honeybot/queries/md_diet.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
+# 3. THE SHADOW REALM (Execution Traps)
+# Goal: Unmask the headless browsers (Puppeteer/Selenium) trying to pass as human. 
+# Who is physically rendering the DOM and triggering the invisible js_confirm.gif?
+! echo "--- SHADOW: JS EXECUTORS ---" && cat remotes/honeybot/queries/shadow_js_executors.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- TRAPDOOR IPS ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
+# 4. THE HEURISTIC GUILLOTINE (Bot Mining)
+# Goal: Filter out the "polite" bots (Google, Anthropic) and identify the hostile,
+# poorly configured, or high-volume scrapers using our custom SQL scoring engine.
+! echo "--- BOT MINER (Heuristic Scoring) ---" && cat remotes/honeybot/queries/mine_bots_heuristic.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- UNKNOWN AGENTS (Empty/Generic UAs) ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
+# 5. THE BACKGROUND RADIATION (Vulnerability Probes)
+# Goal: Separate legitimate missing content (True 404s) from automated script-kiddies
+# blindly knocking on doors looking for WordPress or PHP vulnerabilities (Noise 404s).
+! echo "--- NOISE 404s (PHP/WP Probes) ---" && cat remotes/honeybot/queries/intel_noise_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- TRUE 404s (Legitimate Missing Content) ---" && cat remotes/honeybot/queries/intel_true_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # 
-# # 2. THE SEMANTIC VANGUARD (The Agentic Web)
-# # Goal: Track the 'Dark Matter' of the web. How are agents finding our Markdown? 
-# # Who is using the 'Secret Knock' (HTTP Content Negotiation)? What are they eating?
-# ! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- THE MARKDOWN DIET ---" && cat remotes/honeybot/queries/md_diet.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# # 3. THE SHADOW REALM (Execution Traps)
-# # Goal: Unmask the headless browsers (Puppeteer/Selenium) trying to pass as human. 
-# # Who is physically rendering the DOM and triggering the invisible js_confirm.gif?
-# ! echo "--- SHADOW: JS EXECUTORS ---" && cat remotes/honeybot/queries/shadow_js_executors.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- TRAPDOOR IPS ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# # 4. THE HEURISTIC GUILLOTINE (Bot Mining)
-# # Goal: Filter out the "polite" bots (Google, Anthropic) and identify the hostile,
-# # poorly configured, or high-volume scrapers using our custom SQL scoring engine.
-# ! echo "--- BOT MINER (Heuristic Scoring) ---" && cat remotes/honeybot/queries/mine_bots_heuristic.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- UNKNOWN AGENTS (Empty/Generic UAs) ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# # 5. THE BACKGROUND RADIATION (Vulnerability Probes)
-# # Goal: Separate legitimate missing content (True 404s) from automated script-kiddies
-# # blindly knocking on doors looking for WordPress or PHP vulnerabilities (Noise 404s).
-# ! echo "--- NOISE 404s (PHP/WP Probes) ---" && cat remotes/honeybot/queries/intel_noise_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- TRUE 404s (Legitimate Missing Content) ---" && cat remotes/honeybot/queries/intel_true_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# # 
 # 
 # # # Recent "article" context
 # foo_files.py
 # /home/mike/repos/trimnoir/_posts/2026-03-04-architecting-ai-context-data-density-blueprint-404-remapping.md  # [Idx: 898 | Order: 2 | Tokens: 20,275 | Bytes: 80,587]
-# 
-# # A reminder of how we control Honeybot
-# deploy_honeybot.sh
-# remotes/honeybot/hooks/post-receive
-# remotes/honeybot/nixos/configuration.nix
 # 
 # # CHAPTER 15: JEKYLL PUBLISHING
 # /home/mike/repos/nixos/init.lua  # <-- The creator of this system uses NixOS as the Pipulate prime "parent" OS and you can see their blogging habits here
@@ -122,6 +136,13 @@ scripts/articles/lsa.py
 # scripts/articles/gsc_historical_fetch.py
 # scripts/articles/build_knowledge_graph.py
 # scripts/articles/generate_hubs.py
+# 
+# # A reminder of how we control Honeybot
+# deploy_honeybot.sh
+# /home/mike/repos/trimnoir/flake.nix
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
+# scripts/articles/ls_semantic.py
 # 
 # # 6. PLANNING 404 REDIRECT MAP
 # ! echo "--- HOT 404 REMAPS (Structural Signal) ---" && cat remotes/honeybot/queries/hot_404_remaps.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
