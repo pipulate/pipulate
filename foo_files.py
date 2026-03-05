@@ -15,13 +15,24 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-# The WET Pipeline (The "Before and After")
 foo_files.py
-prompt_foo.py
+/home/mike/repos/trimnoir/_raw_map.csv
+scripts/articles/generate_redirects.py
 
-# THE DATA (The "From" and "To" Lists)
-! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-! python scripts/articles/ls_semantic.py
+# /home/mike/repos/trimnoir/_posts/2026-03-03-cybernetic-terrarium-ai-observability.md  # [Idx: 897 | Order: 4 | Tokens: 3,170 | Bytes: 15,104]
+# /home/mike/repos/trimnoir/_posts/2026-03-04-architecting-ai-context-data-density-blueprint-404-remapping.md  # [Idx: 898 | Order: 2 | Tokens: 20,308 | Bytes: 80,742]
+# /home/mike/repos/trimnoir/_posts/2026-03-04-nginx-404-remapping-llm-context-architecture-blueprint.md  # [Idx: 899 | Order: 3 | Tokens: 16,433 | Bytes: 67,822]
+# /home/mike/repos/trimnoir/_posts/2026-03-04-john-henry-gambit-llms-honeybots-dynamic-latest-url.md  # [Idx: 900 | Order: 4 | Tokens: 12,951 | Bytes: 55,594]
+# /home/mike/repos/trimnoir/_posts/2026-03-05-self-healing-ai-404-redirects-nginx-nixos.md  # [Idx: 901 | Order: 1 | Tokens: 48,228 | Bytes: 183,128]
+# /home/mike/repos/trimnoir/_posts/2026-03-05-nginx-404-redirects-test-driven-ai-pipeline.md  # [Idx: 902 | Order: 2 | Tokens: 22,744 | Bytes: 87,309]
+
+# # The WET Pipeline (The "Before and After")
+# foo_files.py
+# prompt_foo.py
+# 
+# # THE DATA (The "From" and "To" Lists)
+# ! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! python scripts/articles/ls_semantic.py
 
 # The story of the 404 Redirect Map Project
 # /home/mike/repos/trimnoir/_posts/2026-03-03-cybernetic-terrarium-ai-observability.md  # [Idx: 897 | Order: 4 | Tokens: 3,170 | Bytes: 15,104]
