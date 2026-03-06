@@ -24,6 +24,7 @@ scripts/articles/generate_redirects.py
 scripts/articles/generate_hubs.py
 /home/mike/repos/trimnoir/_raw_map.csv
 /home/mike/repos/trimnoir/_redirects.map
+/home/mike/repos/trimnoir/llms.txt
 
 # # THE DATA (The "From" and "To" Lists)
 # scripts/articles/extract_404_ghosts.py  # <-- The physics of extraction

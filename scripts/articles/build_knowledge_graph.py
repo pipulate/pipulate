@@ -294,7 +294,7 @@ def project_d3_graph(tree_node, nodes, links, parent_id=None, depth=0):
         })
         project_d3_graph(hub, nodes, links, parent_id=tree_node['id'], depth=depth + 1)
 
-def project_llms_txt(tree_node, lines=None, level=0):
+def project_llms_txt(tree_node, lines=None, level=0, base_url="https://mikelev.in"):
     """
     Projector C: Generates a Markdown Manifest (llms.txt) for AI Agents.
     Structure:
@@ -312,7 +312,7 @@ def project_llms_txt(tree_node, lines=None, level=0):
         lines.append("Content is load-balanced to prevent deep nesting.")
         lines.append("")
         lines.append("## Direct Data Access")
-        lines.append("- **Full Graph Topology (JSON)**: [graph.json](/graph.json) - Contains all nodes, links, and velocity data.")
+        lines.append(f"- **Full Graph Topology (JSON)**: [{base_url}/graph.json]({base_url}/graph.json) - Contains all nodes, links, and velocity data.")
         lines.append("- **Source Code**: Most articles offer `<link rel='alternate'>` to raw Markdown.")
         lines.append("")
         lines.append("## Site Map (High-Level)")
@@ -321,7 +321,7 @@ def project_llms_txt(tree_node, lines=None, level=0):
     
     # Hubs First (Navigation)
     for hub in tree_node.get('children_hubs', []):
-        lines.append(f"{indent}- **[{hub['title']}]({hub['permalink']}index.md?src=llms.txt)**")
+        lines.append(f"{indent}- **[{hub['title']}]({base_url}{hub['permalink']}index.md?src=llms.txt)**")
         project_llms_txt(hub, lines, level + 1)
 
     # Articles (Content)
@@ -436,7 +436,7 @@ def main():
     print(f"✅ Generated D3 Graph: {GRAPH_FILE} ({len(nodes)} nodes)")
 
     # 5. EXPORT LLMS.TXT (Markdown Manifest)
-    llms_lines = project_llms_txt(canonical_tree)
+    llms_lines = project_llms_txt(canonical_tree, base_url="https://mikelev.in")
     with open(LLMS_TXT_FILE, 'w', encoding='utf-8') as f:
         f.write("\n".join(llms_lines))
     print(f"✅ Generated LLMs.txt: {LLMS_TXT_FILE}")
