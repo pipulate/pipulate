@@ -15,6 +15,15 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
+/home/mike/repos/trimnoir/_raw_map.csv
+/home/mike/repos/trimnoir/_redirects.map
+
+scripts/articles/extract_404_ghosts.py
+scripts/articles/generate_redirects.py
+remotes/honeybot/queries/hot_404_remaps_top.sql
+! python scripts/articles/extract_404_ghosts.py
+! python scripts/articles/ls_semantic.py
+
 # # The core script and routing table (always keep the loop open)
 # prompt_foo.py
 # foo_files.py
@@ -57,31 +66,31 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/trimnoir/_posts/2026-03-06-the-topological-healer-ai-driven-404-management-blueprint.md  # [Idx: 906 | Order: 1 | Tokens: 54,749 | Bytes: 198,753]
 # /home/mike/repos/trimnoir/_posts/2026-03-06-deterministic-ai-knowledge-graph-web.md  # [Idx: 907 | Order: 2 | Tokens: 23,299 | Bytes: 95,345]
 
-# We deploy our TV Studio DMZ webhead honeybot as NixOS IaC
-deploy_honeybot.sh
-/home/mike/repos/trimnoir/.gitignore
-/home/mike/repos/trimnoir/flake.nix
-/home/mike/repos/trimnoir/_config.yml
-remotes/honeybot/hooks/post-receive
-remotes/honeybot/nixos/configuration.nix
+# # We deploy our TV Studio DMZ webhead honeybot as NixOS IaC
+# deploy_honeybot.sh
+# /home/mike/repos/trimnoir/.gitignore
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_config.yml
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
 
-# Getting the Link Graph rendering correctly on the MikeLev.in/ homepage.
-/home/mike/repos/trimnoir/_site/index.html
-scripts/articles/publishizer.py
-/home/mike/.config/articleizer/targets.json
-/home/mike/repos/trimnoir/index.md
-/home/mike/repos/trimnoir/_layouts/default.html
-/home/mike/repos/trimnoir/_layouts/home.html
-/home/mike/repos/trimnoir/_includes/home_hub.md
-scripts/articles/build_knowledge_graph.py
-scripts/articles/generate_hubs.py
+# # Getting the Link Graph rendering correctly on the MikeLev.in/ homepage.
+# /home/mike/repos/trimnoir/_site/index.html
+# scripts/articles/publishizer.py
+# /home/mike/.config/articleizer/targets.json
+# /home/mike/repos/trimnoir/index.md
+# /home/mike/repos/trimnoir/_layouts/default.html
+# /home/mike/repos/trimnoir/_layouts/home.html
+# /home/mike/repos/trimnoir/_includes/home_hub.md
+# scripts/articles/build_knowledge_graph.py
+# scripts/articles/generate_hubs.py
 # scripts/articles/graph.json
 
-# Fine-tuning the 404 page-not-found finding query for remapping
-/home/mike/repos/trimnoir/_raw_map.csv
-/home/mike/repos/trimnoir/_redirects.map
-remotes/honeybot/queries/hot_404_remaps_top.sql
-scripts/articles/generate_redirects.py
+# # Fine-tuning the 404 page-not-found finding query for remapping
+# /home/mike/repos/trimnoir/_raw_map.csv
+# /home/mike/repos/trimnoir/_redirects.map
+# remotes/honeybot/queries/hot_404_remaps_top.sql
+# scripts/articles/generate_redirects.py
 
 # # THE DATA (The "From" and "To" Lists)
 # ! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
