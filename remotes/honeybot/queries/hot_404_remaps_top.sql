@@ -50,6 +50,10 @@ WHERE l.status = 404
   AND p.value NOT LIKE '%attachment%id%'
   -- The 80/20 Encoding Filter: Drop URL-encoded noise (assumes canonical exists)
   AND instr(p.value, '%') = 0
+  -- Asset & Parameter Filters: Drop images and query strings
+  AND instr(p.value, '?') = 0
+  AND p.value NOT LIKE '%.png'
+  AND p.value NOT LIKE '%.jpg'
   AND e.url IS NULL -- Exclude anything that matched our temporary known-universe table
 GROUP BY p.id
 HAVING total_hits > 1 
