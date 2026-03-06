@@ -16,10 +16,10 @@
 
 AI_PHOOEY_CHOP = """\
 # THE DATA (The "From" and "To" Lists)
-scripts/articles/extract_404_ghosts.py  # <-- The physics of extraction
-scripts/articles/ls_semantic.py         # <-- The physics of the semantic map
-! python scripts/articles/extract_404_ghosts.py  # <-- The actual List A - HUGELY IMPORTANT FOR 404 REDUCTION / DON'T LOSE SIGHT OF THIS!
-! python scripts/articles/ls_semantic.py         # <-- The actual List B
+# scripts/articles/extract_404_ghosts.py  # <-- The physics of extraction
+# scripts/articles/ls_semantic.py         # <-- The physics of the semantic map
+# ! python scripts/articles/extract_404_ghosts.py  # <-- The actual List A - HUGELY IMPORTANT FOR 404 REDUCTION / DON'T LOSE SIGHT OF THIS!
+# ! python scripts/articles/ls_semantic.py         # <-- The actual List B
 
 
 # # CHAPTER 10: ENTERPRISE SEO - TRIFECTA MONOLITH (~275KB)
