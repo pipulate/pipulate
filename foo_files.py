@@ -15,8 +15,18 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-prompt_foo.py
-foo_files.py  # <-- this
+/home/mike/repos/trimnoir/_site/index.html
+scripts/articles/publishizer.py
+/home/mike/.config/articleizer/targets.json
+/home/mike/repos/trimnoir/index.md
+/home/mike/repos/trimnoir/_layouts/default.html
+/home/mike/repos/trimnoir/_layouts/home.html
+/home/mike/repos/trimnoir/_includes/home_hub.md
+scripts/articles/build_knowledge_graph.py
+scripts/articles/generate_hubs.py
+
+# prompt_foo.py
+# foo_files.py  # <-- this
 
 # remotes/honeybot/queries/hot_404_remaps_top.sql
 # scripts/articles/generate_redirects.py
