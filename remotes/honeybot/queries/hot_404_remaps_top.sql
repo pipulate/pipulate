@@ -42,6 +42,8 @@ WHERE l.status = 404
   AND l.ip_id NOT IN NaughtyIPs
   -- Upstream Length Filter: Block excessively long bot payloads
   AND LENGTH(p.value) <= 150
+  -- Artifact Filter: Ignore malformed Jupyter/WordPress media paths
+  AND p.value NOT LIKE '%attachment%id%'
 GROUP BY p.id
 HAVING total_hits > 1 
 ORDER BY total_hits DESC

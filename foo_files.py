@@ -15,12 +15,12 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-prompt_foo.py
-foo_files.py  # <-- this
+# prompt_foo.py
+# foo_files.py  # <-- this
 
 # # THE DATA (The "From" and "To" Lists)
-! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 remotes/honeybot/queries/hot_404_remaps_top.sql
+# ! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! python scripts/articles/ls_semantic.py
 
 # /home/mike/repos/trimnoir/_posts/2026-03-04-architecting-ai-context-data-density-blueprint-404-remapping.md  # [Idx: 898 | Order: 2 | Tokens: 20,308 | Bytes: 80,742]
