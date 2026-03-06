@@ -14,6 +14,9 @@
 -- Example Output: /2012/07/old-article/,/futureproof/new-concept/
 -- ============================================================================
 
+-- Ensure the table exists so the query runs even if executed manually without Python
+CREATE TEMP TABLE IF NOT EXISTS exclusions (url TEXT);
+
 WITH NaughtyIPs AS (
     -- The Script-Kiddie Quarantine
     SELECT DISTINCT l.ip_id
@@ -37,6 +40,7 @@ SELECT
     COUNT(DISTINCT l.ip_id) as unique_clean_ips
 FROM daily_logs l
 JOIN paths p ON l.path_id = p.id
+LEFT JOIN exclusions e ON p.value = e.url -- THE ANTI-COLLISION JOIN
 WHERE l.status = 404
   AND l.date >= date('now', '-7 days')
   AND l.ip_id NOT IN NaughtyIPs
@@ -46,6 +50,7 @@ WHERE l.status = 404
   AND p.value NOT LIKE '%attachment%id%'
   -- The 80/20 Encoding Filter: Drop URL-encoded noise (assumes canonical exists)
   AND instr(p.value, '%') = 0
+  AND e.url IS NULL -- Exclude anything that matched our temporary known-universe table
 GROUP BY p.id
 HAVING total_hits > 1 
 ORDER BY total_hits DESC
