@@ -18,7 +18,6 @@ import common
 
 # --- GLOBAL CONFIGURATION ---
 TARGET_BRANCHING_FACTOR = 7  # The "Rule of 7"
-GOLD_PAN_SIZE = 5            # Top articles kept at hub level
 NAVGRAPH_FILE = "navgraph.json"
 GRAPH_FILE = "graph.json"
 LLMS_TXT_FILE = "llms.txt"
@@ -130,7 +129,8 @@ def build_canonical_tree(df_slice, current_node, current_depth, velocity_data, v
 
     # Sort by GSC Clicks (High velocity content floats to top)
     df['sort_clicks'] = df['id'].apply(lambda x: velocity_data.get(re.sub(r'^\d{4}-\d{2}-\d{2}-', '', x), {}).get('total_clicks', 0))
-    df = df.sort_values(by='sort_clicks', ascending=False)
+    # Deterministic fallback: Sort by Clicks, then by Date
+    df = df.sort_values(by=['sort_clicks', 'date'], ascending=[False, False])
 
     def attach_article(row):
         # Calculate organic gravity
@@ -154,25 +154,17 @@ def build_canonical_tree(df_slice, current_node, current_depth, velocity_data, v
         current_node.setdefault('children_articles', []).append(article_node)
 
     # 1. Stop Condition
-    if len(df) <= TARGET_BRANCHING_FACTOR + GOLD_PAN_SIZE:
+    if len(df) <= TARGET_BRANCHING_FACTOR:
         for _, row in df.iterrows(): attach_article(row)
         return
 
-    # 2. Gold Pan (High Value Items stay at this level)
-    gold = df.head(GOLD_PAN_SIZE)
-    remainder = df.iloc[GOLD_PAN_SIZE:].copy()
-
-    for _, row in gold.iterrows(): attach_article(row)
-
-    if len(remainder) == 0: return
-
-    # 3. Clustering
+    # 2. Clustering (Evaluate ALL items to find the true leaders)
     if vectorizer is None:
         vectorizer = TfidfVectorizer(stop_words='english', max_features=1000)
 
     try:
-        tfidf_matrix = vectorizer.fit_transform(remainder['soup'])
-        n_components = min(5, len(remainder) - 1)
+        tfidf_matrix = vectorizer.fit_transform(df['soup'])
+        n_components = min(5, len(df) - 1)
         if n_components > 1:
             svd = TruncatedSVD(n_components=n_components)
             matrix = svd.fit_transform(tfidf_matrix)
@@ -181,14 +173,24 @@ def build_canonical_tree(df_slice, current_node, current_depth, velocity_data, v
 
         kmeans = MiniBatchKMeans(n_clusters=TARGET_BRANCHING_FACTOR, random_state=42, n_init=10, batch_size=256)
         clusters = kmeans.fit_predict(matrix)
-        remainder.loc[:, 'cluster'] = clusters
+        df.loc[:, 'cluster'] = clusters
 
         # Collision Tracking (Scoped to this level of recursion)
         used_slugs = set()
 
         for cluster_id in range(TARGET_BRANCHING_FACTOR):
-            cluster_data = remainder[remainder['cluster'] == cluster_id]
+            cluster_data = df[df['cluster'] == cluster_id]
             if len(cluster_data) == 0: continue
+
+            # THE NEW GOLD PAN: Promote the #1 article from this semantic cluster 
+            # to represent it as a flagship at the parent level.
+            gold_article = cluster_data.iloc[0]
+            attach_article(gold_article)
+            
+            # The rest of the cluster goes into the sub-hub
+            remainder = cluster_data.iloc[1:].copy()
+            
+            if len(remainder) == 0: continue
 
             # Semantic Labeling & Collision Resolution
             candidates = get_cluster_candidates(cluster_data)

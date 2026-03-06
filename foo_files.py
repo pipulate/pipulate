@@ -24,6 +24,7 @@ scripts/articles/publishizer.py
 /home/mike/repos/trimnoir/_includes/home_hub.md
 scripts/articles/build_knowledge_graph.py
 scripts/articles/generate_hubs.py
+scripts/articles/graph.json
 
 # prompt_foo.py
 # foo_files.py  # <-- this
