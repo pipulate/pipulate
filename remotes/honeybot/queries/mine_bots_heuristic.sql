@@ -50,6 +50,7 @@ WHERE
     AND ua.value NOT LIKE '%GPTBot%'
     AND ua.value NOT LIKE '%Google-Safety%'
     AND ua.value NOT LIKE '%Googlebot%'
+    AND ua.value NOT LIKE '%KagiApp%'
     AND ua.value NOT LIKE '%MJ12bot%'
     AND ua.value NOT LIKE '%OAI-SearchBot%'
     AND ua.value NOT LIKE '%Perplexity%'

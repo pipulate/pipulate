@@ -25,6 +25,7 @@ Go-http-client
 Google-Safety
 Googlebot
 IbouBot
+KagiApp
 LinkupBot
 MJ12bot
 OAI-SearchBot
