@@ -15,6 +15,16 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
+scripts/articles/publishizer.py
+/home/mike/.config/articleizer/targets.json
+scripts/articles/build_knowledge_graph.py
+scripts/articles/extract_404_ghosts.py
+scripts/articles/ls_semantic.py
+scripts/articles/generate_redirects.py
+scripts/articles/generate_hubs.py
+/home/mike/repos/trimnoir/_raw_map.csv
+/home/mike/repos/trimnoir/_redirects.map
+
 # # THE DATA (The "From" and "To" Lists)
 # scripts/articles/extract_404_ghosts.py  # <-- The physics of extraction
 # scripts/articles/ls_semantic.py         # <-- The physics of the semantic map
@@ -232,8 +242,6 @@ AI_PHOOEY_CHOP = """\
 # scripts/articles/build_knowledge_graph.py
 # scripts/articles/generate_redirects.py
 # scripts/articles/generate_hubs.py
-# # 
-# /home/mike/repos/trimnoir/_redirects.map
 
 # 
 # # 6. PLANNING 404 REDIRECT MAP
