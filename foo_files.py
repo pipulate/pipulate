@@ -15,37 +15,39 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-# The core script and routing table (always keep the loop open)
-prompt_foo.py
-foo_files.py
+# # The core script and routing table (always keep the loop open)
+# prompt_foo.py
+# foo_files.py
+# remotes/honeybot/queries/hot_404_remaps_top.sql
+# scripts/articles/generate_redirects.py
 
-# The Textual Dashboard UI and its data layer
-remotes/honeybot/scripts/logs.py
-remotes/honeybot/scripts/db.py
-
-# The SQL Heuristics identifying (or failing to identify) the bots
-remotes/honeybot/queries/intel_unknown_agents.sql
-remotes/honeybot/queries/mine_bots_heuristic.sql
-
-# Optional: To see what live data looks like right now
-! echo "--- UNKNOWN AGENTS LIVE ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# # The Textual Dashboard UI and its data layer
+# remotes/honeybot/scripts/logs.py
+# remotes/honeybot/scripts/db.py
+# 
+# # The SQL Heuristics identifying (or failing to identify) the bots
+# remotes/honeybot/queries/intel_unknown_agents.sql
+# remotes/honeybot/queries/mine_bots_heuristic.sql
+# 
+# # Optional: To see what live data looks like right now
+# ! echo "--- UNKNOWN AGENTS LIVE ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # # CHAPTER 16: THE HONEYBOT OBSERVATORY (IAC BUDDING)
 # # Pipulate can spawn independent "Infrastructure as Code" child apps.
 # # The Honeybot is an automated TV studio and telemetry database sitting in 
 # # the DMZ. It deploys via Nix, records web traffic via Nginx/SQLite, and
 # # uses heuristic SQL queries to isolate AI bot signal from internet noise.
-deploy_honeybot.sh
-remotes/honeybot/hooks/post-receive
-remotes/honeybot/nixos/configuration.nix
-remotes/honeybot/scripts/content_loader.py
-remotes/honeybot/scripts/db.py
-remotes/honeybot/scripts/education.py
-remotes/honeybot/scripts/radar.py
-remotes/honeybot/scripts/report.py
-remotes/honeybot/scripts/show.py
-remotes/honeybot/scripts/stream.py
-remotes/honeybot/scripts/logs.py
+# deploy_honeybot.sh
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
+# remotes/honeybot/scripts/content_loader.py
+# remotes/honeybot/scripts/db.py
+# remotes/honeybot/scripts/education.py
+# remotes/honeybot/scripts/radar.py
+# remotes/honeybot/scripts/report.py
+# remotes/honeybot/scripts/show.py
+# remotes/honeybot/scripts/stream.py
+# remotes/honeybot/scripts/logs.py
 
 # # Catching an AI up on recent work
 # /home/mike/repos/trimnoir/_posts/2026-03-05-nginx-404-redirects-test-driven-ai-pipeline.md  # [Idx: 902 | Order: 2 | Tokens: 22,754 | Bytes: 87,334]
@@ -55,21 +57,31 @@ remotes/honeybot/scripts/logs.py
 # /home/mike/repos/trimnoir/_posts/2026-03-06-the-topological-healer-ai-driven-404-management-blueprint.md  # [Idx: 906 | Order: 1 | Tokens: 54,749 | Bytes: 198,753]
 # /home/mike/repos/trimnoir/_posts/2026-03-06-deterministic-ai-knowledge-graph-web.md  # [Idx: 907 | Order: 2 | Tokens: 23,299 | Bytes: 95,345]
 
-# # Getting the Link Graph rendering correctly on the MikeLev.in/ homepage.
-# /home/mike/repos/trimnoir/_site/index.html
-# scripts/articles/publishizer.py
-# /home/mike/.config/articleizer/targets.json
-# /home/mike/repos/trimnoir/index.md
-# /home/mike/repos/trimnoir/_layouts/default.html
-# /home/mike/repos/trimnoir/_layouts/home.html
-# /home/mike/repos/trimnoir/_includes/home_hub.md
-# scripts/articles/build_knowledge_graph.py
-# scripts/articles/generate_hubs.py
+# We deploy our TV Studio DMZ webhead honeybot as NixOS IaC
+deploy_honeybot.sh
+/home/mike/repos/trimnoir/.gitignore
+/home/mike/repos/trimnoir/flake.nix
+/home/mike/repos/trimnoir/_config.yml
+remotes/honeybot/hooks/post-receive
+remotes/honeybot/nixos/configuration.nix
+
+# Getting the Link Graph rendering correctly on the MikeLev.in/ homepage.
+/home/mike/repos/trimnoir/_site/index.html
+scripts/articles/publishizer.py
+/home/mike/.config/articleizer/targets.json
+/home/mike/repos/trimnoir/index.md
+/home/mike/repos/trimnoir/_layouts/default.html
+/home/mike/repos/trimnoir/_layouts/home.html
+/home/mike/repos/trimnoir/_includes/home_hub.md
+scripts/articles/build_knowledge_graph.py
+scripts/articles/generate_hubs.py
 # scripts/articles/graph.json
 
-# # Fine-tuning the 404 page-not-found finding query for remapping
-# remotes/honeybot/queries/hot_404_remaps_top.sql
-# scripts/articles/generate_redirects.py
+# Fine-tuning the 404 page-not-found finding query for remapping
+/home/mike/repos/trimnoir/_raw_map.csv
+/home/mike/repos/trimnoir/_redirects.map
+remotes/honeybot/queries/hot_404_remaps_top.sql
+scripts/articles/generate_redirects.py
 
 # # THE DATA (The "From" and "To" Lists)
 # ! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
@@ -79,14 +91,6 @@ remotes/honeybot/scripts/logs.py
 # scripts/articles/publishizer.py  # <-- This picks the publishing workflow based on the target choice
 # scripts/articles/build_knowledge_graph.py
 # scripts/articles/generate_hubs.py
-
-# # We deploy our TV Studio DMZ webhead honeybot as NixOS IaC
-# deploy_honeybot.sh
-# /home/mike/repos/trimnoir/.gitignore
-# /home/mike/repos/trimnoir/flake.nix
-# /home/mike/repos/trimnoir/_config.yml
-# remotes/honeybot/hooks/post-receive
-# remotes/honeybot/nixos/configuration.nix
 
 # # Working through making the Nginx 404 remapping precise and correct
 # /home/mike/repos/trimnoir/_raw_map.csv.bak
@@ -210,6 +214,7 @@ remotes/honeybot/scripts/logs.py
 # scripts/articles/contextualizer.py
 # scripts/articles/gsc_historical_fetch.py
 # scripts/articles/build_knowledge_graph.py
+# scripts/articles/generate_redirects.py
 # scripts/articles/generate_hubs.py
 # # 
 # /home/mike/repos/trimnoir/_redirects.map

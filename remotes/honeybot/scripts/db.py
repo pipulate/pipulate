@@ -265,6 +265,8 @@ class HoneyDB:
         AND ua.value NOT LIKE '%Nexus 5X%'
         AND ua.value NOT LIKE '%Google-InspectionTool%'
         AND ua.value NOT LIKE '%Ubuntu/10.04%'
+        AND ua.value NOT LIKE '%Ubuntu%'  /* Admin Scrub: Catches your local dev boxes */
+        AND ua.value NOT LIKE '%iPad%'    /* Admin Scrub: Catches the iPad OS leak */
         AND ua.value NOT LIKE 'python-httpx%'
         AND ua.value NOT LIKE 'Go-http-client%'
         AND NOT (
@@ -273,8 +275,9 @@ class HoneyDB:
             AND (
                 ua.value LIKE '%Windows NT%' OR 
                 ua.value LIKE '%Macintosh%' OR 
-                ua.value LIKE '%X11; Linux%' OR
+                ua.value LIKE '%X11%' OR      /* Broadened to catch all X11 variants */
                 ua.value LIKE '%iPhone%' OR
+                ua.value LIKE '%iPad%' OR     /* Added iPad to standard OS checks */
                 ua.value LIKE '%Android%'
             )
         )
