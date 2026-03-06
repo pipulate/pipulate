@@ -156,25 +156,17 @@ def build_canonical_tree(df_slice, current_node, current_depth, velocity_data, v
         current_node.setdefault('children_articles', []).append(article_node)
 
     # 1. Stop Condition
-    if len(df) <= TARGET_BRANCHING_FACTOR + GOLD_PAN_SIZE:
+    if len(df) <= TARGET_BRANCHING_FACTOR:
         for _, row in df.iterrows(): attach_article(row)
         return
 
-    # 2. Gold Pan (High Value Items stay at this level)
-    gold = df.head(GOLD_PAN_SIZE)
-    remainder = df.iloc[GOLD_PAN_SIZE:].copy()
-
-    for _, row in gold.iterrows(): attach_article(row)
-
-    if len(remainder) == 0: return
-
-    # 3. Clustering
+    # 2. Clustering (Evaluate ALL items to find the true leaders)
     if vectorizer is None:
         vectorizer = TfidfVectorizer(stop_words='english', max_features=1000)
 
     try:
-        tfidf_matrix = vectorizer.fit_transform(remainder['soup'])
-        n_components = min(5, len(remainder) - 1)
+        tfidf_matrix = vectorizer.fit_transform(df['soup'])
+        n_components = min(5, len(df) - 1)
         if n_components > 1:
             svd = TruncatedSVD(n_components=n_components)
             matrix = svd.fit_transform(tfidf_matrix)
@@ -183,14 +175,25 @@ def build_canonical_tree(df_slice, current_node, current_depth, velocity_data, v
 
         kmeans = MiniBatchKMeans(n_clusters=TARGET_BRANCHING_FACTOR, random_state=42, n_init=10, batch_size=256)
         clusters = kmeans.fit_predict(matrix)
-        remainder.loc[:, 'cluster'] = clusters
+        df.loc[:, 'cluster'] = clusters
 
         # Collision Tracking (Scoped to this level of recursion)
         used_slugs = set()
 
         for cluster_id in range(TARGET_BRANCHING_FACTOR):
-            cluster_data = remainder[remainder['cluster'] == cluster_id]
+            cluster_data = df[df['cluster'] == cluster_id]
             if len(cluster_data) == 0: continue
+
+            # 3. Flagship Promotion (The Semantic Gold Pan)
+            # Extract the absolute best article from THIS specific cluster.
+            flagship = cluster_data.iloc[0]
+            attach_article(flagship)
+            
+            # The rest of the cluster gets pushed down into a sub-hub
+            cluster_remainder = cluster_data.iloc[1:].copy()
+            
+            # Prevent "Ghost Hubs" if the cluster only had 1 article
+            if len(cluster_remainder) == 0: continue
 
             # Semantic Labeling & Collision Resolution
             candidates = get_cluster_candidates(cluster_data)
@@ -224,7 +227,7 @@ def build_canonical_tree(df_slice, current_node, current_depth, velocity_data, v
                 "id": f"{current_node['id']}_{cluster_id}",
                 "title": hub_label,
                 "permalink": f"{current_node['permalink']}{slug}/",
-                "blurb": f"Explore {len(cluster_data)} articles about {hub_label}.",
+                "blurb": f"Explore {len(cluster_remainder)} articles about {hub_label}.",
                 "gravity": hub_val,
                 "children_hubs": [],
                 "children_articles": []
@@ -232,15 +235,15 @@ def build_canonical_tree(df_slice, current_node, current_depth, velocity_data, v
             
             current_node.setdefault('children_hubs', []).append(new_hub_node)
 
-            # Recurse
+            # Recurse (CRITICAL FIX: Pass ONLY the remainder)
             build_canonical_tree(
-                cluster_data, new_hub_node, current_depth + 1, 
+                cluster_remainder, new_hub_node, current_depth + 1,
                 velocity_data
             )
 
     except Exception as e:
         print(f"⚠️ Clustering fallback at depth {current_depth}: {e}")
-        for _, row in remainder.iterrows(): attach_article(row)
+        for _, row in df.iterrows(): attach_article(row)
 
 # --- 3. PROJECTORS ---
 
