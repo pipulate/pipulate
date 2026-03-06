@@ -322,7 +322,7 @@ def project_llms_txt(tree_node, lines=None, level=0, base_url="https://mikelev.i
     # Hubs First (Navigation)
     for hub in tree_node.get('children_hubs', []):
         lines.append(f"{indent}- **[{hub['title']}]({base_url}{hub['permalink']}index.md?src=llms.txt)**")
-        project_llms_txt(hub, lines, level + 1)
+        project_llms_txt(hub, lines, level + 1, base_url)
 
     # Articles (Content)
     for article in tree_node.get('children_articles', []):
