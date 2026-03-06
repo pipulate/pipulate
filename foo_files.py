@@ -15,15 +15,40 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-.gitignore
-config.py
-Notebooks/GAPalyzer.ipynb
-Notebooks/imports/gap_analyzer_sauce.py
-assets/nbs/0nboard.ipynb
-assets/nbs/imports/onboard_sauce.py
-pipulate/__init__.py
-pipulate/pipulate.py
+# Let's mess with Grok a bit.
+server.py
 pipulate/core.py
+pipulate/pipulate.py
+pipulate/__init__.py
+
+# LLM & orchestration core (these are the ones we will actually rewrite)
+tools/llm_optics.py
+imports/mcp_orchestrator.py
+imports/stream_orchestrator.py
+tools/conversation_tools.py
+tools/mcp_tools.py
+tools/advanced_automation_tools.py
+
+# Dev assistant & workflow engine (where model swapping will surface to the user)
+apps/230_dev_assistant.py
+apps/200_workflow_genesis.py
+apps/240_simon_mcp.py
+
+# Any other tools you know contain LLM calls
+tools/__init__.py
+tools/botify_tools.py
+tools/scraper_tools.py
+tools/system_tools.py
+
+# .gitignore
+# config.py
+# Notebooks/GAPalyzer.ipynb
+# Notebooks/imports/gap_analyzer_sauce.py
+# assets/nbs/0nboard.ipynb
+# assets/nbs/imports/onboard_sauce.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
 
 # CHAPTER 13: THE GAPALYZER SUITE (~240KB)
 # Automates Content Gap Analysis using linear, WET code.

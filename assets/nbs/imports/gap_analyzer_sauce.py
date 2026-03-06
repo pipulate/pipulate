@@ -79,23 +79,8 @@ DIALOGUE = {
     },
 }
 
-
-def gab(step_key: str, **kwargs):
-    """
-    Looks up dialogue by key, formats it with local variables, and speaks.
-    This allows the notebook to explicitly trigger speech without cluttering cells.
-    """
-    script = DIALOGUE.get(step_key)
-    if not script:
-        print(f"⚠️ Dialogue key '{step_key}' not found.")
-        return
-        
-    output_msg = script.get("output", "").format(**kwargs)
-    next_msg = script.get("next", "").format(**kwargs)
-    
-    full_message = f"{output_msg} {next_msg}".strip()
-    if full_message:
-        wand.speak(full_message)
+# Register the dialogue tree with the global wand instance
+wand.register_dialogue(DIALOGUE)
 
 
 def extract_domains_and_print_urls(job: str, notebook_filename: str = "GAPalyzer.ipynb"):
