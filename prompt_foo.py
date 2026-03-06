@@ -339,6 +339,26 @@ def run_tree_command() -> str:
 # ============================================================================
 # --- Helper Functions (File Parsing, Clipboard) ---
 # ============================================================================
+def annotate_tree_with_tokens(tree_output: str, processed_files: List[Dict], repo_root: str) -> str:
+    """Injects (X,XXX tokens) next to every included file in the eza tree."""
+    token_map = {}
+    for f in processed_files:
+        if f.get('path', '').endswith(('.py', '.ipynb', '.md', '.nix', '.sh')):  # expand as needed
+            rel_path = os.path.relpath(f['path'], repo_root)
+            token_map[rel_path] = f['tokens']
+    
+    lines = tree_output.splitlines()
+    annotated = []
+    for line in lines:
+        for rel_path, tokens in token_map.items():
+            filename = os.path.basename(rel_path)
+            if filename in line and line.strip().endswith(filename):
+                # Preserve the beautiful tree art, just tack on the size
+                line = f"{line}  ({tokens:,} tokens)"
+                break
+        annotated.append(line)
+    return '\n'.join(annotated)
+
 def parse_file_list_from_config() -> List[Tuple[str, str]]:
     try:
         import foo_files
@@ -445,7 +465,7 @@ class PromptBuilder:
         return self.auto_context.get(title, {}).get('content', '').strip()
 
     def _build_tree_content(self) -> str:
-        title = "Codebase Structure (eza --tree)"
+        title = "Codebase Structure (eza --tree + token sizes)"  # ← sync with main()
         if title in self.auto_context:
             content = self.auto_context[title]['content'].strip()
             return f"```text\n{content}\n```"
@@ -835,18 +855,22 @@ def main():
     # Only generate the codebase tree if .py files are explicitly included AND --no-tree is not set.
     # This avoids clutter when only .md, .nix, or .ipynb files are present, or when explicitly disabled.
     include_tree = any(f['path'].endswith('.py') for f in processed_files_data) and not args.no_tree
-    
+
     if include_tree:
         logger.print("Python file(s) detected. Generating codebase tree diagram...", end='', flush=True)
         tree_output = run_tree_command()
-        title = "Codebase Structure (eza --tree)"
-        builder.add_auto_context(title, tree_output)
         
-        # Calculate sizes for live display
+        # === ONE-LINE MAGIC: now with token sizes ===
+        annotated_tree = annotate_tree_with_tokens(tree_output, processed_files_data, REPO_ROOT)
+        
+        title = "Codebase Structure (eza --tree + token sizes)"
+        builder.add_auto_context(title, annotated_tree)
+        
+        # Live feedback
         tree_data = builder.auto_context.get(title, {})
         t_count = tree_data.get('tokens', 0)
         b_count = len(tree_data.get('content', '').encode('utf-8'))
-        logger.print(f" ({t_count:,} tokens | {b_count:,} bytes)")
+        logger.print(f" ({t_count:,} tokens | {b_count:,} bytes)  ← TOKEN SIZES ADDED!")
     elif args.no_tree:
         logger.print("Skipping codebase tree (--no-tree flag detected).")
     else:

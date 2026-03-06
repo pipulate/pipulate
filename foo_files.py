@@ -15,66 +15,16 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-# Let's mess with Grok a bit.
-server.py
-pipulate/core.py
-pipulate/pipulate.py
-pipulate/__init__.py
+/home/mike/repos/trimnoir/_posts/2026-03-04-architecting-ai-context-data-density-blueprint-404-remapping.md  # [Idx: 898 | Order: 2 | Tokens: 20,308 | Bytes: 80,742]
+/home/mike/repos/trimnoir/_posts/2026-03-04-nginx-404-remapping-llm-context-architecture-blueprint.md  # [Idx: 899 | Order: 3 | Tokens: 16,433 | Bytes: 67,822]
+/home/mike/repos/trimnoir/_posts/2026-03-04-john-henry-gambit-llms-honeybots-dynamic-latest-url.md  # [Idx: 900 | Order: 4 | Tokens: 12,951 | Bytes: 55,594]
+/home/mike/repos/trimnoir/_posts/2026-03-05-self-healing-ai-404-redirects-nginx-nixos.md  # [Idx: 901 | Order: 1 | Tokens: 48,228 | Bytes: 183,128]
+/home/mike/repos/trimnoir/_posts/2026-03-05-nginx-404-redirects-test-driven-ai-pipeline.md  # [Idx: 902 | Order: 2 | Tokens: 22,744 | Bytes: 87,309]
+/home/mike/repos/trimnoir/_posts/2026-03-05-topological-healer-ai-automated-redirects.md  # [Idx: 903 | Order: 3 | Tokens: 49,783 | Bytes: 188,781]
 
-# LLM & orchestration core (these are the ones we will actually rewrite)
-tools/llm_optics.py
-imports/mcp_orchestrator.py
-imports/stream_orchestrator.py
-tools/conversation_tools.py
-tools/mcp_tools.py
-tools/advanced_automation_tools.py
-
-# Dev assistant & workflow engine (where model swapping will surface to the user)
-apps/230_dev_assistant.py
-apps/200_workflow_genesis.py
-apps/240_simon_mcp.py
-
-# Any other tools you know contain LLM calls
-tools/__init__.py
-tools/botify_tools.py
-tools/scraper_tools.py
-tools/system_tools.py
-
-# .gitignore
-# config.py
-# Notebooks/GAPalyzer.ipynb
-# Notebooks/imports/gap_analyzer_sauce.py
-# assets/nbs/0nboard.ipynb
-# assets/nbs/imports/onboard_sauce.py
-# pipulate/__init__.py
-# pipulate/pipulate.py
-# pipulate/core.py
-
-# CHAPTER 13: THE GAPALYZER SUITE (~240KB)
-# Automates Content Gap Analysis using linear, WET code.
-# Notebooks/GAPalyzer.ipynb
-# Notebooks/imports/gap_analyzer_sauce.py
-
-# # Getting to the bottom of who requests llms.txt and where they found the link
-# ! echo "--- LLMS.TXT INTELLIGENCE ---" && cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-
-# # Starting engaging with Claude Opus 4.6  # <-- Hi, Opus! How meta is this?
-# prompt_foo.py
-# foo_files.py
-
-# deploy_honeybot.sh
-# /home/mike/repos/trimnoir/.gitignore
-# /home/mike/repos/trimnoir/flake.nix
-# /home/mike/repos/trimnoir/_config.yml
-# remotes/honeybot/hooks/post-receive
-# /home/mike/repos/trimnoir/_redirects.map
-# remotes/honeybot/nixos/configuration.nix
-
-# -----------------------------------------------------
-
-# /home/mike/repos/trimnoir/_raw_map.csv.bak
-# /home/mike/repos/trimnoir/_raw_map.csv
-# scripts/articles/generate_redirects.py
+/home/mike/repos/trimnoir/_raw_map.csv.bak
+/home/mike/repos/trimnoir/_raw_map.csv
+scripts/articles/generate_redirects.py
 
 # /home/mike/repos/trimnoir/_posts/2026-03-03-cybernetic-terrarium-ai-observability.md  # [Idx: 897 | Order: 4 | Tokens: 3,170 | Bytes: 15,104]
 # /home/mike/repos/trimnoir/_posts/2026-03-04-architecting-ai-context-data-density-blueprint-404-remapping.md  # [Idx: 898 | Order: 2 | Tokens: 20,308 | Bytes: 80,742]
@@ -99,18 +49,18 @@ tools/system_tools.py
 # /home/mike/repos/trimnoir/_posts/2026-03-05-self-healing-ai-404-redirects-nginx-nixos.md  # [Idx: 901 | Order: 1 | Tokens: 48,228 | Bytes: 183,128]
 # 
 # # Why these redirects are so necessary (we're always K-Means clustering our hubs)
-# scripts/articles/publishizer.py  # <-- This picks the publishing workflow based on the target choice
-# scripts/articles/build_knowledge_graph.py
-# scripts/articles/generate_hubs.py
+scripts/articles/publishizer.py  # <-- This picks the publishing workflow based on the target choice
+scripts/articles/build_knowledge_graph.py
+scripts/articles/generate_hubs.py
 # # 
 # # We deploy our TV Studio DMZ webhead honeybot as NixOS IaC
-# deploy_honeybot.sh
-# /home/mike/repos/trimnoir/.gitignore
-# /home/mike/repos/trimnoir/flake.nix
-# /home/mike/repos/trimnoir/_config.yml
-# remotes/honeybot/hooks/post-receive
-# /home/mike/repos/trimnoir/_redirects.map
-# remotes/honeybot/nixos/configuration.nix
+deploy_honeybot.sh
+/home/mike/repos/trimnoir/.gitignore
+/home/mike/repos/trimnoir/flake.nix
+/home/mike/repos/trimnoir/_config.yml
+remotes/honeybot/hooks/post-receive
+/home/mike/repos/trimnoir/_redirects.map
+remotes/honeybot/nixos/configuration.nix
 # # 
 # # This content shows in a desktop Python Textual slideshow OBS TV Studio streaming to YouTube
 # remotes/honeybot/scripts/db.py
