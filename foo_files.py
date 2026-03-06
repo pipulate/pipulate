@@ -15,14 +15,20 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/trimnoir/_raw_map.csv
-/home/mike/repos/trimnoir/_redirects.map
+# THE DATA (The "From" and "To" Lists)
+scripts/articles/extract_404_ghosts.py  # <-- The physics of extraction
+scripts/articles/ls_semantic.py         # <-- The physics of the semantic map
+! python scripts/articles/extract_404_ghosts.py  # <-- The actual List A
+! python scripts/articles/ls_semantic.py         # <-- The actual List B
 
-scripts/articles/extract_404_ghosts.py
-scripts/articles/generate_redirects.py
-remotes/honeybot/queries/hot_404_remaps_top.sql
-! python scripts/articles/extract_404_ghosts.py
-! python scripts/articles/ls_semantic.py
+# /home/mike/repos/trimnoir/_raw_map.csv
+# /home/mike/repos/trimnoir/_redirects.map
+# 
+# scripts/articles/extract_404_ghosts.py
+# scripts/articles/generate_redirects.py
+# remotes/honeybot/queries/hot_404_remaps_top.sql
+# ! python scripts/articles/extract_404_ghosts.py
+# ! python scripts/articles/ls_semantic.py
 
 # # The core script and routing table (always keep the loop open)
 # prompt_foo.py
