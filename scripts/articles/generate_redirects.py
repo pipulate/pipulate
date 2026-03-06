@@ -32,6 +32,11 @@ def build_nginx_map(csv_input_path, map_output_path):
             if 'attachment' in old_url.lower():
                 print(f"⚠️ Dropping artifact URL: {old_url[:30]}...")
                 continue
+                
+            # THE BOUNCER: Asset & Parameter Filter
+            if '?' in old_url or old_url.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.ico')):
+                print(f"⚠️ Dropping asset/parameter URL: {old_url[:30]}...")
+                continue
             
             # Deterministic sanitization
             old_url = urllib.parse.quote(old_url, safe='/%')
