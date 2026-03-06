@@ -15,36 +15,36 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/trimnoir/_site/index.html
-scripts/articles/publishizer.py
-/home/mike/.config/articleizer/targets.json
-/home/mike/repos/trimnoir/index.md
-/home/mike/repos/trimnoir/_layouts/default.html
-/home/mike/repos/trimnoir/_layouts/home.html
-/home/mike/repos/trimnoir/_includes/home_hub.md
-scripts/articles/build_knowledge_graph.py
-scripts/articles/generate_hubs.py
-scripts/articles/graph.json
+prompt_foo.py
+foo_files.py  # <-- this
 
-# prompt_foo.py
-# foo_files.py  # <-- this
+# # Catching an AI up on recent work
+# /home/mike/repos/trimnoir/_posts/2026-03-05-nginx-404-redirects-test-driven-ai-pipeline.md  # [Idx: 902 | Order: 2 | Tokens: 22,754 | Bytes: 87,334]
+# /home/mike/repos/trimnoir/_posts/2026-03-05-topological-healer-ai-automated-redirects.md  # [Idx: 903 | Order: 3 | Tokens: 49,783 | Bytes: 188,781]
+# /home/mike/repos/trimnoir/_posts/2026-03-05-pipulate-stateful-jupyter-ai-seo-strategy.md  # [Idx: 904 | Order: 4 | Tokens: 28,194 | Bytes: 120,178]
+# /home/mike/repos/trimnoir/_posts/2026-03-05-self-bootstrapping-ai-workshop-reproducible-development-hot-swappable-llms.md  # [Idx: 905 | Order: 5 | Tokens: 14,294 | Bytes: 57,984]
+# /home/mike/repos/trimnoir/_posts/2026-03-06-the-topological-healer-ai-driven-404-management-blueprint.md  # [Idx: 906 | Order: 1 | Tokens: 54,749 | Bytes: 198,753]
+# /home/mike/repos/trimnoir/_posts/2026-03-06-deterministic-ai-knowledge-graph-web.md  # [Idx: 907 | Order: 2 | Tokens: 23,299 | Bytes: 95,345]
 
+# # Getting the Link Graph rendering correctly on the MikeLev.in/ homepage.
+# /home/mike/repos/trimnoir/_site/index.html
+# scripts/articles/publishizer.py
+# /home/mike/.config/articleizer/targets.json
+# /home/mike/repos/trimnoir/index.md
+# /home/mike/repos/trimnoir/_layouts/default.html
+# /home/mike/repos/trimnoir/_layouts/home.html
+# /home/mike/repos/trimnoir/_includes/home_hub.md
+# scripts/articles/build_knowledge_graph.py
+# scripts/articles/generate_hubs.py
+# scripts/articles/graph.json
+
+# # Fine-tuning the 404 page-not-found finding query for remapping
 # remotes/honeybot/queries/hot_404_remaps_top.sql
 # scripts/articles/generate_redirects.py
-
-# prompt_foo.py
-# foo_files.py  # <-- this
 
 # # THE DATA (The "From" and "To" Lists)
 # ! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! python scripts/articles/ls_semantic.py
-
-# /home/mike/repos/trimnoir/_posts/2026-03-04-architecting-ai-context-data-density-blueprint-404-remapping.md  # [Idx: 898 | Order: 2 | Tokens: 20,308 | Bytes: 80,742]
-# /home/mike/repos/trimnoir/_posts/2026-03-04-nginx-404-remapping-llm-context-architecture-blueprint.md  # [Idx: 899 | Order: 3 | Tokens: 16,433 | Bytes: 67,822]
-# /home/mike/repos/trimnoir/_posts/2026-03-04-john-henry-gambit-llms-honeybots-dynamic-latest-url.md  # [Idx: 900 | Order: 4 | Tokens: 12,951 | Bytes: 55,594]
-# /home/mike/repos/trimnoir/_posts/2026-03-05-self-healing-ai-404-redirects-nginx-nixos.md  # [Idx: 901 | Order: 1 | Tokens: 48,228 | Bytes: 183,128]
-# /home/mike/repos/trimnoir/_posts/2026-03-05-nginx-404-redirects-test-driven-ai-pipeline.md  # [Idx: 902 | Order: 2 | Tokens: 22,744 | Bytes: 87,309]
-# /home/mike/repos/trimnoir/_posts/2026-03-05-topological-healer-ai-automated-redirects.md  # [Idx: 903 | Order: 3 | Tokens: 49,783 | Bytes: 188,781]
 
 # # Why these redirects are so necessary (we're always K-Means clustering our hubs)
 # scripts/articles/publishizer.py  # <-- This picks the publishing workflow based on the target choice
@@ -58,7 +58,8 @@ scripts/articles/graph.json
 # /home/mike/repos/trimnoir/_config.yml
 # remotes/honeybot/hooks/post-receive
 # remotes/honeybot/nixos/configuration.nix
-# 
+
+# # Working through making the Nginx 404 remapping precise and correct
 # /home/mike/repos/trimnoir/_raw_map.csv.bak
 # scripts/articles/generate_redirects.py
 # /home/mike/repos/trimnoir/_raw_map.csv
