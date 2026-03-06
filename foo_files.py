@@ -15,11 +15,13 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
+remotes/honeybot/queries/hot_404_remaps_top.sql
+scripts/articles/generate_redirects.py
+
 # prompt_foo.py
 # foo_files.py  # <-- this
 
 # # THE DATA (The "From" and "To" Lists)
-remotes/honeybot/queries/hot_404_remaps_top.sql
 # ! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! python scripts/articles/ls_semantic.py
 

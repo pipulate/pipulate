@@ -44,6 +44,8 @@ WHERE l.status = 404
   AND LENGTH(p.value) <= 150
   -- Artifact Filter: Ignore malformed Jupyter/WordPress media paths
   AND p.value NOT LIKE '%attachment%id%'
+  -- The 80/20 Encoding Filter: Drop URL-encoded noise (assumes canonical exists)
+  AND instr(p.value, '%') = 0
 GROUP BY p.id
 HAVING total_hits > 1 
 ORDER BY total_hits DESC
