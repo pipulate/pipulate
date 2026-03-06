@@ -22,12 +22,22 @@ def build_nginx_map(csv_input_path, map_output_path):
                 
             old_url = row[0].strip()
             new_url = row[1].strip()
+
+            # THE BOUNCER: 80/20 Encoding Filter (Reject hallucinated encoded URLs)
+            if '%' in old_url or '%' in new_url:
+                print(f"⚠️ Dropping encoded URL: {old_url[:30]}...")
+                continue
+
+            # THE BOUNCER: Artifact Filter (Reject hallucinated media paths)
+            if 'attachment' in old_url.lower():
+                print(f"⚠️ Dropping artifact URL: {old_url[:30]}...")
+                continue
             
             # Deterministic sanitization
             old_url = urllib.parse.quote(old_url, safe='/%')
-            
-            # THE BOUNCER: Preserve Nginx default map_hash_bucket_size
-            if len(old_url) > 60:
+
+            # THE BOUNCER: Preserve Nginx default map_hash_bucket_size (120 char limit)
+            if len(old_url) > 120 or len(new_url) > 120:
                 print(f"⚠️ Dropping oversized URL (>{len(old_url)} chars): {old_url[:30]}...")
                 continue
             

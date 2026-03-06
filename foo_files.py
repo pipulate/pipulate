@@ -15,8 +15,11 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-remotes/honeybot/queries/hot_404_remaps_top.sql
-scripts/articles/generate_redirects.py
+prompt_foo.py
+foo_files.py  # <-- this
+
+# remotes/honeybot/queries/hot_404_remaps_top.sql
+# scripts/articles/generate_redirects.py
 
 # prompt_foo.py
 # foo_files.py  # <-- this
