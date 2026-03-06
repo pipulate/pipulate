@@ -15,8 +15,37 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
+# The core script and routing table (always keep the loop open)
 prompt_foo.py
-foo_files.py  # <-- this
+foo_files.py
+
+# The Textual Dashboard UI and its data layer
+remotes/honeybot/scripts/logs.py
+remotes/honeybot/scripts/db.py
+
+# The SQL Heuristics identifying (or failing to identify) the bots
+remotes/honeybot/queries/intel_unknown_agents.sql
+remotes/honeybot/queries/mine_bots_heuristic.sql
+
+# Optional: To see what live data looks like right now
+! echo "--- UNKNOWN AGENTS LIVE ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
+# # CHAPTER 16: THE HONEYBOT OBSERVATORY (IAC BUDDING)
+# # Pipulate can spawn independent "Infrastructure as Code" child apps.
+# # The Honeybot is an automated TV studio and telemetry database sitting in 
+# # the DMZ. It deploys via Nix, records web traffic via Nginx/SQLite, and
+# # uses heuristic SQL queries to isolate AI bot signal from internet noise.
+deploy_honeybot.sh
+remotes/honeybot/hooks/post-receive
+remotes/honeybot/nixos/configuration.nix
+remotes/honeybot/scripts/content_loader.py
+remotes/honeybot/scripts/db.py
+remotes/honeybot/scripts/education.py
+remotes/honeybot/scripts/radar.py
+remotes/honeybot/scripts/report.py
+remotes/honeybot/scripts/show.py
+remotes/honeybot/scripts/stream.py
+remotes/honeybot/scripts/logs.py
 
 # # Catching an AI up on recent work
 # /home/mike/repos/trimnoir/_posts/2026-03-05-nginx-404-redirects-test-driven-ai-pipeline.md  # [Idx: 902 | Order: 2 | Tokens: 22,754 | Bytes: 87,334]

@@ -48,6 +48,7 @@ WHERE
     AND ua.value NOT LIKE '%ClaudeBot%'
     AND ua.value NOT LIKE '%DataForSeoBot%'
     AND ua.value NOT LIKE '%GPTBot%'
+    AND ua.value NOT LIKE '%Google-Safety%'
     AND ua.value NOT LIKE '%Googlebot%'
     AND ua.value NOT LIKE '%MJ12bot%'
     AND ua.value NOT LIKE '%OAI-SearchBot%'

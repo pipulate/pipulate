@@ -22,6 +22,7 @@ DuckAssistBot
 GPTBot
 GenomeCrawlerd
 Go-http-client
+Google-Safety
 Googlebot
 IbouBot
 LinkupBot
