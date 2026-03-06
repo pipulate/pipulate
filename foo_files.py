@@ -15,23 +15,38 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-/home/mike/repos/trimnoir/_posts/2026-03-04-architecting-ai-context-data-density-blueprint-404-remapping.md  # [Idx: 898 | Order: 2 | Tokens: 20,308 | Bytes: 80,742]
-/home/mike/repos/trimnoir/_posts/2026-03-04-nginx-404-remapping-llm-context-architecture-blueprint.md  # [Idx: 899 | Order: 3 | Tokens: 16,433 | Bytes: 67,822]
-/home/mike/repos/trimnoir/_posts/2026-03-04-john-henry-gambit-llms-honeybots-dynamic-latest-url.md  # [Idx: 900 | Order: 4 | Tokens: 12,951 | Bytes: 55,594]
-/home/mike/repos/trimnoir/_posts/2026-03-05-self-healing-ai-404-redirects-nginx-nixos.md  # [Idx: 901 | Order: 1 | Tokens: 48,228 | Bytes: 183,128]
-/home/mike/repos/trimnoir/_posts/2026-03-05-nginx-404-redirects-test-driven-ai-pipeline.md  # [Idx: 902 | Order: 2 | Tokens: 22,744 | Bytes: 87,309]
-/home/mike/repos/trimnoir/_posts/2026-03-05-topological-healer-ai-automated-redirects.md  # [Idx: 903 | Order: 3 | Tokens: 49,783 | Bytes: 188,781]
+prompt_foo.py
+foo_files.py  # <-- this
 
-/home/mike/repos/trimnoir/_raw_map.csv.bak
-/home/mike/repos/trimnoir/_raw_map.csv
-scripts/articles/generate_redirects.py
+# # THE DATA (The "From" and "To" Lists)
+! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+remotes/honeybot/queries/hot_404_remaps_top.sql
+# ! python scripts/articles/ls_semantic.py
 
-# /home/mike/repos/trimnoir/_posts/2026-03-03-cybernetic-terrarium-ai-observability.md  # [Idx: 897 | Order: 4 | Tokens: 3,170 | Bytes: 15,104]
 # /home/mike/repos/trimnoir/_posts/2026-03-04-architecting-ai-context-data-density-blueprint-404-remapping.md  # [Idx: 898 | Order: 2 | Tokens: 20,308 | Bytes: 80,742]
 # /home/mike/repos/trimnoir/_posts/2026-03-04-nginx-404-remapping-llm-context-architecture-blueprint.md  # [Idx: 899 | Order: 3 | Tokens: 16,433 | Bytes: 67,822]
 # /home/mike/repos/trimnoir/_posts/2026-03-04-john-henry-gambit-llms-honeybots-dynamic-latest-url.md  # [Idx: 900 | Order: 4 | Tokens: 12,951 | Bytes: 55,594]
 # /home/mike/repos/trimnoir/_posts/2026-03-05-self-healing-ai-404-redirects-nginx-nixos.md  # [Idx: 901 | Order: 1 | Tokens: 48,228 | Bytes: 183,128]
 # /home/mike/repos/trimnoir/_posts/2026-03-05-nginx-404-redirects-test-driven-ai-pipeline.md  # [Idx: 902 | Order: 2 | Tokens: 22,744 | Bytes: 87,309]
+# /home/mike/repos/trimnoir/_posts/2026-03-05-topological-healer-ai-automated-redirects.md  # [Idx: 903 | Order: 3 | Tokens: 49,783 | Bytes: 188,781]
+
+# # Why these redirects are so necessary (we're always K-Means clustering our hubs)
+# scripts/articles/publishizer.py  # <-- This picks the publishing workflow based on the target choice
+# scripts/articles/build_knowledge_graph.py
+# scripts/articles/generate_hubs.py
+
+# # We deploy our TV Studio DMZ webhead honeybot as NixOS IaC
+# deploy_honeybot.sh
+# /home/mike/repos/trimnoir/.gitignore
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_config.yml
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
+# 
+# /home/mike/repos/trimnoir/_raw_map.csv.bak
+# scripts/articles/generate_redirects.py
+# /home/mike/repos/trimnoir/_raw_map.csv
+# /home/mike/repos/trimnoir/_redirects.map
 
 # # The WET Pipeline (The "Before and After")
 # foo_files.py
@@ -48,20 +63,6 @@ scripts/articles/generate_redirects.py
 # /home/mike/repos/trimnoir/_posts/2026-03-04-john-henry-gambit-llms-honeybots-dynamic-latest-url.md  # [Idx: 900 | Order: 4 | Tokens: 12,951 | Bytes: 55,594]
 # /home/mike/repos/trimnoir/_posts/2026-03-05-self-healing-ai-404-redirects-nginx-nixos.md  # [Idx: 901 | Order: 1 | Tokens: 48,228 | Bytes: 183,128]
 # 
-# # Why these redirects are so necessary (we're always K-Means clustering our hubs)
-scripts/articles/publishizer.py  # <-- This picks the publishing workflow based on the target choice
-scripts/articles/build_knowledge_graph.py
-scripts/articles/generate_hubs.py
-# # 
-# # We deploy our TV Studio DMZ webhead honeybot as NixOS IaC
-deploy_honeybot.sh
-/home/mike/repos/trimnoir/.gitignore
-/home/mike/repos/trimnoir/flake.nix
-/home/mike/repos/trimnoir/_config.yml
-remotes/honeybot/hooks/post-receive
-/home/mike/repos/trimnoir/_redirects.map
-remotes/honeybot/nixos/configuration.nix
-# # 
 # # This content shows in a desktop Python Textual slideshow OBS TV Studio streaming to YouTube
 # remotes/honeybot/scripts/db.py
 # remotes/honeybot/scripts/logs.py
