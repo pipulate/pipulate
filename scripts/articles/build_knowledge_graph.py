@@ -326,7 +326,7 @@ def project_llms_txt(tree_node, lines=None, level=0, base_url="https://mikelev.i
 
     # Articles (Content)
     for article in tree_node.get('children_articles', []):
-        lines.append(f"{indent}- [{article['title']}]({article['permalink']}index.md?src=llms.txt)")
+        lines.append(f"{indent}- [{article['title']}]({base_url}{article['permalink']}index.md?src=llms.txt)")
         
     return lines
 
