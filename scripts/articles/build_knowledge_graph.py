@@ -130,7 +130,9 @@ def build_canonical_tree(df_slice, current_node, current_depth, velocity_data, v
 
     # Sort by GSC Clicks (High velocity content floats to top)
     df['sort_clicks'] = df['id'].apply(lambda x: velocity_data.get(re.sub(r'^\d{4}-\d{2}-\d{2}-', '', x), {}).get('total_clicks', 0))
-    df = df.sort_values(by='sort_clicks', ascending=False)
+
+    # THE FIX: Deterministic fallback. Sort by Clicks, then by Date (newest first).
+    df = df.sort_values(by=['sort_clicks', 'date'], ascending=[False, False])
 
     def attach_article(row):
         # Calculate organic gravity
