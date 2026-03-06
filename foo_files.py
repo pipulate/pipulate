@@ -15,11 +15,11 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-# THE DATA (The "From" and "To" Lists)
-scripts/articles/extract_404_ghosts.py  # <-- The physics of extraction
-scripts/articles/ls_semantic.py         # <-- The physics of the semantic map
-! python scripts/articles/extract_404_ghosts.py  # <-- The actual List A
-! python scripts/articles/ls_semantic.py         # <-- The actual List B
+# # THE DATA (The "From" and "To" Lists)
+# scripts/articles/extract_404_ghosts.py  # <-- The physics of extraction
+# scripts/articles/ls_semantic.py         # <-- The physics of the semantic map
+# ! python scripts/articles/extract_404_ghosts.py  # <-- The actual List A - HUGELY IMPORTANT FOR 404 REDUCTION / DON'T LOSE SIGHT OF THIS!
+# ! python scripts/articles/ls_semantic.py         # <-- The actual List B
 
 # /home/mike/repos/trimnoir/_raw_map.csv
 # /home/mike/repos/trimnoir/_redirects.map
@@ -90,6 +90,7 @@ scripts/articles/ls_semantic.py         # <-- The physics of the semantic map
 # /home/mike/repos/trimnoir/_includes/home_hub.md
 # scripts/articles/build_knowledge_graph.py
 # scripts/articles/generate_hubs.py
+# scripts/articles/generate_redirects.py
 # scripts/articles/graph.json
 
 # # Fine-tuning the 404 page-not-found finding query for remapping
