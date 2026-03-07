@@ -205,21 +205,14 @@
 
     # 1. THE SENSOR: Read the Accept header and define the MIME type
       appendHttpConfig = ''
-        # Expand CPU cache line alignment for long AI-generated URL keys
-        map_hash_bucket_size 256; 
-        map_hash_max_size 4096;
-        # --- THE MAP: Load the AI-generated routing table ---
-        map $request_uri $new_uri {
-            default "";
-            include /home/mike/www/mikelev.in/_site/redirects.map*;
-        }
-        # ----------------------------------------------------
+        # map_hash_bucket_size 256; 
+        # map_hash_max_size 4096;
 
-        map $http_accept $serve_markdown {
-          default 0;
-          "~*text/markdown" 1;
-        }
-    '';
+        # map $uri $new_uri {
+        #     default "";
+        #     include /home/mike/www/mikelev.in/_site/redirects.map;
+        # }
+      '';
 
     virtualHosts."mikelev.in" = {
       forceSSL = true;      # Force all traffic to HTTPS 
@@ -230,18 +223,14 @@
 
       # 2. THE SWITCH: Route to the .md file if the sensor fired
       locations."/" = {
+
+        # In virtualHosts."mikelev.in" locations."/" block
         extraConfig = ''
-          add_header Vary "Accept" always; # <--- The final polish
+          add_header Vary "Accept" always;
 
-          # --- THE SWITCH: Execute the 301 Redirect if mapped ---
-          if ($new_uri != "") {
-              return 301 $new_uri;
-          }
-          # ------------------------------------------------------
-
-          if ($serve_markdown = 1) {
-            rewrite ^(.*)/$ $1/index.md break;
-          }
+          # if ($new_uri) {
+          #     return 301 $new_uri;
+          # }
         '';
       };
       # THE JAVASCRIPT TRAPDOOR
