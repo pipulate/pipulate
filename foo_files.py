@@ -15,11 +15,25 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-# THE DATA (The "From" and "To" Lists)
-# scripts/articles/extract_404_ghosts.py  # <-- The physics of extraction
-# scripts/articles/ls_semantic.py         # <-- The physics of the semantic map
-# ! python scripts/articles/extract_404_ghosts.py  # <-- The actual List A - HUGELY IMPORTANT FOR 404 REDUCTION / DON'T LOSE SIGHT OF THIS!
-# ! python scripts/articles/ls_semantic.py         # <-- The actual List B
+# ============================================================================
+# PROMPT FU: SEMANTIC ROUTER
+# ============================================================================
+# System Directive: Semantic Router (CSV Output ONLY)
+# You are a deterministic semantic routing engine. Your only job is to map the 
+# dead URLs in LIST A (this data) to the living URLs in the INTERLEAVED SEMANTIC MAP.
+# Rules:
+# 1. Analyze the keywords, sub-topics, and summaries in the semantic map to find the best conceptual fit for each 404 path.
+# 2. You must output a strict, two-column CSV format.
+# 3. Column 1: The dead URL from List A.
+# 4. Column 2: The matched living URL from the semantic map.
+# 5. DO NOT include headers, markdown formatting, or Nginx syntax.
+# 6. Output ONLY the raw comma-separated values.
+# Example Output: /2012/07/old-article/,/futureproof/new-concept/
+# ============================================================================
+scripts/articles/extract_404_ghosts.py  # <-- The physics of extraction
+scripts/articles/ls_semantic.py         # <-- The physics of the semantic map
+! python scripts/articles/extract_404_ghosts.py  # <-- The actual List A - HUGELY IMPORTANT FOR 404 REDUCTION / DON'T LOSE SIGHT OF THIS!
+! python scripts/articles/ls_semantic.py         # <-- The actual List B
 
 
 # # CHAPTER 10: ENTERPRISE SEO - TRIFECTA MONOLITH (~275KB)
