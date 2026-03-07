@@ -16,8 +16,10 @@
 
 AI_PHOOEY_CHOP = """\
 # # Doing a SitRep with Gemini 3 Pro to move Tracer Dye to near top of page.
-foo_files.py
-remotes/honeybot/hooks/post-receive
+# foo_files.py
+# remotes/honeybot/hooks/post-receive
+# https://mikelev.in/futureproof/nixos-wayland-hyprland/index.md?src=link+rel
+
 
 # prompt_foo.py
 # remotes/honeybot/hooks/post-receive
@@ -53,11 +55,10 @@ remotes/honeybot/hooks/post-receive
 # ! python scripts/articles/extract_404_ghosts.py  # <-- The actual List A - HUGELY IMPORTANT FOR 404 REDUCTION / DON'T LOSE SIGHT OF THIS!
 # ! python scripts/articles/ls_semantic.py         # <-- The actual List B
 
-/home/mike/repos/trimnoir/_raw_map.csv
-/home/mike/repos/trimnoir/_redirects.map
-remotes/honeybot/hooks/post-receive
-remotes/honeybot/nixos/configuration.nix
-
+# /home/mike/repos/trimnoir/_raw_map.csv
+# /home/mike/repos/trimnoir/_redirects.map
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
 
 # # CHAPTER 10: ENTERPRISE SEO - TRIFECTA MONOLITH (~275KB)
 # # The flagship app. So large it gets its own chapter.
@@ -133,8 +134,6 @@ remotes/honeybot/nixos/configuration.nix
 # config.py
 # server.py
 
-# https://levinix.com/install.sh
-
 # # CHAPTER 1.5: HUMAN ONBOARDING
 # /home/mike/repos/pipulate/assets/nbs/0nboard.ipynb
 # /home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py
@@ -165,10 +164,116 @@ remotes/honeybot/nixos/configuration.nix
 # scripts/articles/editing_prompt.txt
 
 # # levinix.com
+# foo_files.py
+# https://levinix.com/install.sh
 # /home/mike/repos/levinix/CNAME
 # /home/mike/repos/levinix/index.md
 # /home/mike/repos/levinix/README.md
 
+# # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
+# # The quiet plumbing that keeps the machine alive.
+# # Database safety, durable backups, and the MCP orchestrator.
+# __init__.py
+# imports/__init__.py
+# imports/ai_dictdb.py
+# imports/database_safety_wrapper.py
+# imports/durable_backup_system.py
+# imports/server_logging.py
+# imports/stream_orchestrator.py
+# imports/mcp_orchestrator.py
+# imports/append_only_conversation.py
+# imports/ascii_displays.py
+
+# # CHAPTER 1: BOOTSTRAPPING & THE CLI (~230KB)
+# # The bedrock. How the Forever Machine is born, and how we manage it.
+# # Nix guarantees mathematical reproducibility across Mac and Linux.
+# # `AI_RUNME.py` contains the "Master Prompt"—a letter to an amnesiac AI.
+# assets/installer/install.sh
+# flake.nix
+# .gitignore
+# config.py
+# AI_RUNME.py
+# README.md
+# cli.py
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
+
+# # CHAPTER 2: THE SERVER MONOLITH (~260KB)
+# # The heart of the machine. Massive because it is explicit.
+# # `server.py` is our FastHTML routing engine: Uvicorn/Starlette app,
+# # HTMX endpoints, WebSocket connections, and dynamic plugin loading.
+# config.py
+# server.py
+
+# # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
+# # The brain. Our Swiss Army Knife for state management.
+# # Bridges the web app and Jupyter Notebooks using DictLikeDB.
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+
+
+
+
+
+# # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
+# # The quiet plumbing that keeps the machine alive.
+# # Database safety, durable backups, and the MCP orchestrator.
+# __init__.py
+# imports/__init__.py
+# imports/ai_dictdb.py
+# imports/database_safety_wrapper.py
+# imports/durable_backup_system.py
+# imports/server_logging.py
+# imports/stream_orchestrator.py
+# imports/mcp_orchestrator.py
+# imports/append_only_conversation.py
+# imports/ascii_displays.py
+
+# # CHAPTER 5: THE HANDS (AI TOOLS & AUTOMATION) (~350KB)
+# # What the AI actually *does* with its agency.
+# # `tools/` defines every action the AI can take via MCP dispatch.
+# tools/__init__.py
+# tools/keychain_tools.py
+# tools/scraper_tools.py
+# tools/conversation_tools.py
+# tools/system_tools.py
+# tools/dom_tools.py
+# tools/botify_tools.py
+# # tools/advanced_automation_tools.py
+# tools/mcp_tools.py
+
+# # CHAPTER 6: THE SKIN (FRONTEND ASSETS & INIT) (~265KB)
+# # HTML over the wire. No Virtual DOM. The client-side muscle.
+# assets/init.js
+# assets/pipulate.js
+# assets/styles.css
+# assets/theme.js
+# assets/utils.js
+# assets/player-piano.js
+
+# CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS) (~200KB)
+# The fundamental plugin apps governing the user experience.
+imports/crud.py
+imports/voice_synthesis.py
+apps/010_introduction.py
+apps/020_profiles.py
+apps/025_aspect.py
+apps/030_roles.py
+apps/040_hello_workflow.py
+apps/060_tasks.py
+apps/070_history.py
+
+
+
+
+
+
+
+
+# # Let the AI see what goes into a Jekyll site build. Check out that graph for
+# # the d3.js force graph visualization! Rule of 7 load-balanced ideal.
+# # Unachievable in reality without a cost. Hub-URL-churn. Very SEO-unfriendly.
 # scripts/articles/publishizer.py
 # /home/mike/.config/articleizer/targets.json
 # scripts/articles/build_knowledge_graph.py
@@ -432,6 +537,7 @@ foo_files.py
 # # The heart of the machine. Massive because it is explicit.
 # # `server.py` is our FastHTML routing engine: Uvicorn/Starlette app,
 # # HTMX endpoints, WebSocket connections, and dynamic plugin loading.
+# config.py
 # server.py
 
 # # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
