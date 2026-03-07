@@ -30,10 +30,15 @@ AI_PHOOEY_CHOP = """\
 # 6. Output ONLY the raw comma-separated values.
 # Example Output: /2012/07/old-article/,/futureproof/new-concept/
 # ============================================================================
-scripts/articles/extract_404_ghosts.py  # <-- The physics of extraction
-scripts/articles/ls_semantic.py         # <-- The physics of the semantic map
-! python scripts/articles/extract_404_ghosts.py  # <-- The actual List A - HUGELY IMPORTANT FOR 404 REDUCTION / DON'T LOSE SIGHT OF THIS!
-! python scripts/articles/ls_semantic.py         # <-- The actual List B
+# scripts/articles/extract_404_ghosts.py  # <-- The physics of extraction
+# scripts/articles/ls_semantic.py         # <-- The physics of the semantic map
+# ! python scripts/articles/extract_404_ghosts.py  # <-- The actual List A - HUGELY IMPORTANT FOR 404 REDUCTION / DON'T LOSE SIGHT OF THIS!
+# ! python scripts/articles/ls_semantic.py         # <-- The actual List B
+
+/home/mike/repos/trimnoir/_raw_map.csv
+/home/mike/repos/trimnoir/_redirects.map
+remotes/honeybot/hooks/post-receive
+remotes/honeybot/nixos/configuration.nix
 
 
 # # CHAPTER 10: ENTERPRISE SEO - TRIFECTA MONOLITH (~275KB)
