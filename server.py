@@ -1657,7 +1657,9 @@ def find_plugin_classes(plugin_modules, discovered_modules):
                     else:
                         # Only log classes that look like they might be plugins (have common plugin attributes)
                         if any(hasattr(obj, attr) for attr in ['APP_NAME', 'DISPLAY_NAME', 'ROLES', 'steps']):
-                            logger.warning(f'FINDER_TOKEN: PLUGIN_REGISTRATION_FAILURE - Plugin class {module_name}.{name} appears to be a plugin (has APP_NAME/DISPLAY_NAME/ROLES/steps) but missing required landing method - skipping')
+                            # THE FIX: Ignore helper/base classes to stop log spam
+                            if not any(ignore in name for ignore in ['Identity', 'Manager', 'Base']):
+                                logger.warning(f'FINDER_TOKEN: PLUGIN_REGISTRATION_FAILURE - Plugin class {module_name}.{name} appears to be a plugin (has APP_NAME/DISPLAY_NAME/ROLES/steps) but missing required landing method - skipping')
         except Exception as e:
             logger.error(f'FINDER_TOKEN: PLUGIN_REGISTRATION_FAILURE - Error processing module {module_or_name}: {str(e)}')
             import traceback

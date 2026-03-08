@@ -15,8 +15,14 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-server.py
+# server.py
 # apps/040_hello_workflow.py
+pipulate/__init__.py
+pipulate/pipulate.py
+pipulate/core.py
+tools/__init__.py
+tools/llm_optics.py
+apps/440_browser_automation.py
 
 # foo_files.py
 # prompt_foo.py
@@ -467,6 +473,7 @@ server.py
 # config.py
 # assets/nbs/0nboard.ipynb
 # assets/nbs/imports/onboard_sauce.py
+# tools/llm_optics.py
 # pipulate/__init__.py
 # pipulate/pipulate.py
 # pipulate/core.py
@@ -579,6 +586,7 @@ server.py
 # # CHAPTER 1.5: HUMAN ONBOARDING
 # /home/mike/repos/pipulate/assets/nbs/0nboard.ipynb
 # /home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py
+# tools/llm_optics.py
 # pipulate/__init__.py
 # pipulate/pipulate.py
 # pipulate/core.py
