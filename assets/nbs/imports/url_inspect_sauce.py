@@ -321,12 +321,8 @@ The JSON object must conform to the following schema:
   ]
 }} 
 '''
-    # The API key is configured via pip.api_key() in the notebook.
-    # This function assumes that has been run.
-    
     # --- 4. Process Loop ---
     try:
-        model = genai.GenerativeModel('models/gemini-2.5-flash')
         for index, webpage_data_dict in enumerate(extracted_data):
             url = webpage_data_dict.get('url')
             if url in processed_urls:
@@ -347,8 +343,17 @@ The JSON object must conform to the following schema:
                     print(full_prompt)
                     print("--- END PROMPT ---\n")
 
-                ai_response = model.generate_content(full_prompt)
-                response_text = ai_response.text.strip()
+                # THE CURE: Invoke the Universal Adapter via the Wand
+                # We pass the system instructions separately for cleaner LLM routing
+                response_text = pip.prompt(
+                    prompt_text=full_prompt, 
+                    model_name="gemini-2.5-flash"  # You can parameterize this later!
+                )
+                
+                if response_text.startswith("❌"):
+                    print(f"  -> {response_text}")
+                    break # Stop on auth/API errors
+               
                 # New robust JSON cleaning
                 clean_json = response_text
                 if clean_json.startswith("```json"):
