@@ -43,9 +43,10 @@ CONSOLE_WIDTH = 180
 
 # --- Path Configuration (Robust sys.path setup) ---
 try:
-    script_dir = Path(__file__).resolve().parent # Notebooks/imports
-    project_root = script_dir.parent.parent # Assumes script is in Notebooks/imports
-    tools_dir = project_root / 'tools'
+    # THE FIX: Adjust the `.parent` traversal for the new location
+    script_dir = Path(__file__).resolve().parent  # This is the 'tools' dir
+    project_root = script_dir.parent              # This is the 'pipulate' root
+    tools_dir = script_dir
 
     if not tools_dir.is_dir():
         raise FileNotFoundError(f"'tools' directory not found at expected location: {tools_dir}")
