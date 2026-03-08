@@ -15,12 +15,21 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
+ixops.sh
+remotes/honeybot/hooks/post-receive
+remotes/honeybot/nixos/configuration.nix
+/home/mike/repos/trimnoir/.gitignore
+/home/mike/repos/trimnoir/flake.nix
+/home/mike/repos/trimnoir/_config.yml
+
+# foo_files.py
+# /home/mike/repos/trimnoir/_posts/2026-03-08-holographic-context-engineering-ai-ready-semantic-maps-web-native-llms.md  # [Idx: 917 | Order: 2 | Tokens: 77,605 | Bytes: 245,100]
+
 # # Showing Gemini the 1-line-per-content Semantic Context Thunkers that need Thinking. Thinking about thunking. Auto situation reports (sitreps).
-foo_files.py
-/home/mike/repos/trimnoir/_posts/list_articles.py
-/home/mike/repos/trimnoir/_posts/ls2.py
-scripts/articles/lsa.py
-prompt_foo.py
+# foo_files.py
+# /home/mike/repos/trimnoir/_posts/list_articles.py
+# /home/mike/repos/trimnoir/_posts/ls2.py
+# scripts/articles/lsa.py
 
 # /home/mike/repos/trimnoir/_posts/2026-03-08-the-immutable-webhead-building-resilient-ai-telemetry-system.md  # [Idx: 916 | Order: 1 | Tokens: 23,423 | Bytes: 90,726]
 
