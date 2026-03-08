@@ -216,5 +216,76 @@ def main():
         anomalies = analyze_sort_order_contiguity(metadata)
         print_contiguity_report(anomalies)
 
+
+def get_holographic_article_data(target_dir: str) -> list[dict]:
+    """
+    The Universal Semantic Extractor.
+    Reads Jekyll Markdown and associated JSON shards to create dense context objects.
+    """
+    target_path = Path(target_dir).expanduser().resolve()
+    context_dir = target_path / "_context"
+    
+    metadata = []
+    
+    for filename in os.listdir(target_path):
+        filepath = target_path / filename
+        if not filepath.is_file() or not filename.endswith(('.md', '.markdown')):
+            continue
+            
+        try:
+            # 1. Fast YAML Extraction
+            with open(filepath, 'r', encoding='utf-8') as f:
+                content = f.read()
+                
+            if not content.startswith('---'):
+                continue
+                
+            parts = content.split('---', 2)
+            if len(parts) < 3:
+                continue
+                
+            fm = yaml.safe_load(parts[1]) or {}
+            
+            # 2. Basic Metadata
+            date_str = filename[:10]
+            post_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+            sort_order = int(fm.get('sort_order', 0))
+            
+            # 3. Holographic JSON Shard Extraction (The Flattener logic)
+            stem = filepath.stem
+            json_path = context_dir / f"{stem}.json"
+            
+            kw_str, sub_str, sum_str = "", "", ""
+            if json_path.exists():
+                try:
+                    with open(json_path, 'r', encoding='utf-8') as jf:
+                        shard = json.load(jf)
+                        kw_str = ", ".join(shard.get('kw', []))
+                        sub_str = ", ".join(shard.get('sub', []))
+                        sum_str = shard.get('s', '').replace('\n', ' ').strip()
+                except Exception:
+                    pass
+
+            metadata.append({
+                'path': str(filepath),
+                'filename': filename,
+                'date': post_date,
+                'sort_order': sort_order,
+                'title': fm.get('title', 'Untitled'),
+                'permalink': fm.get('permalink', ''),
+                'summary': fm.get('meta_description', fm.get('description', '')),
+                'shard_kw': kw_str,
+                'shard_sub': sub_str,
+                'shard_sum': sum_str,
+                # We defer expensive token/byte counting until needed by the caller
+            })
+            
+        except Exception:
+            continue
+            
+    # Sort first by date (newest first), then by the YAML sort_order
+    metadata.sort(key=lambda p: (p['date'], p['sort_order']), reverse=True)
+    return metadata
+
 if __name__ == "__main__":
     main()
