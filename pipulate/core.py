@@ -2193,3 +2193,29 @@ class Pipulate:
                     print(f"    ⚠️ Warning: Module file not found, skipping sync: '{module_source_path}'")
 
 
+def prompt(self, prompt_text: str, model_name: str = 'qwen3:1.7b', system_prompt: str = None):
+        """
+        The Universal Adapter prompt. 
+        Sends a single, one-shot prompt to ANY configured AI model (local or cloud)
+        with zero vendor lock-in.
+        """
+        import llm
+        
+        print(f"🤖 Channeling intent through {model_name}...")
+
+        try:
+            # The Magic Wand invokes the Universal Adapter
+            model = llm.get_model(model_name)
+            response = model.prompt(prompt_text, system=system_prompt)
+            
+            print("✅ AI response received.")
+            return response.text()
+            
+        except llm.errors.NeedsKeyException:
+            error_msg = f"❌ Authentication missing for {model_name}. Please set the appropriate key in your .env file."
+            print(error_msg)
+            return error_msg
+        except Exception as e:
+            error_msg = f"❌ AI prompt failed: {e}"
+            print(error_msg)
+            return error_msg
