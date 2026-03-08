@@ -16,7 +16,7 @@ echo "🔨 [Hook] Starting Hybrid Build..."
 
 # 3. The Build Command via Quoted Heredoc
 # The single quotes around 'EOF' prevent the outer shell from expanding ANY variables.
-nix develop --command bash << 'EOF'
+nix develop .#quiet --command bash << 'EOF'
   # --- THE BUILD ---
   echo '🏗️  Jekyll Build...'
   bundle exec jekyll build --future
