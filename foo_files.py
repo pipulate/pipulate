@@ -15,8 +15,15 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
+# Just messing with ChatGPT 5.2 Extended Thinking. Let's see what it says!
+# prompt_foo.py
+# scripts/articles/lsa.py
+# /home/mike/.config/articleizer/targets.json
+# /home/mike/.config/articleizer/url_map.json
+# foo_files.py  # <-- this
+
 # /home/mike/repos/trimnoir/_posts/2026-03-08-holographic-context-engineering-ai-ready-semantic-maps-web-native-llms.md  # [Idx: 917 | Order: 2 | Tokens: 77,786 | Bytes: 245,940]
-/home/mike/repos/trimnoir/_posts/2025-09-12-git-branch-takeover-promote-feature-branch.md
+# /home/mike/repos/trimnoir/_posts/2025-09-12-git-branch-takeover-promote-feature-branch.md
 
 # # Claude Opus 4.6 wrote its own Prompt Fu, so let's let it have a go at this Simon Willison llm thing.
 # requirements.in
@@ -75,7 +82,7 @@ AI_PHOOEY_CHOP = """\
 # Map the dead URLs in LIST A to the living URLs in the narrative context map.
 # Output ONLY a strict, two-column CSV format: /old-path/,/new-path/
 # ============================================================================
-scripts/articles/extract_404_ghosts.py 
+# scripts/articles/extract_404_ghosts.py 
 # ! python scripts/articles/extract_404_ghosts.py  # <-- LIST A: THE 404 GHOSTS
 # Note: LIST B (The Semantic Map) is provided via the -l [slice] argument in prompt_foo
 
@@ -138,9 +145,9 @@ scripts/articles/extract_404_ghosts.py
 # # tools/advanced_automation_tools.py
 # tools/mcp_tools.py
 
-# # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
-# # The quiet plumbing that keeps the machine alive.
-# # Database safety, durable backups, and the MCP orchestrator.
+# CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
+# The quiet plumbing that keeps the machine alive.
+# Database safety, durable backups, and the MCP orchestrator.
 # __init__.py
 # imports/__init__.py
 # imports/ai_dictdb.py
@@ -158,34 +165,36 @@ scripts/articles/extract_404_ghosts.py
 # config.py
 # server.py
 
-# # CHAPTER 1.5: HUMAN ONBOARDING
-# /home/mike/repos/pipulate/assets/nbs/0nboard.ipynb
-# /home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py
-# pipulate/__init__.py
-# pipulate/pipulate.py
-# pipulate/core.py
-
 # /home/mike/repos/nixos/autognome.py
 
-# # CHAPTER 2: THE SERVER MONOLITH (~260KB)
-# # The heart of the machine. Massive because it is explicit.
-# # `server.py` is our FastHTML routing engine: Uvicorn/Starlette app,
-# # HTMX endpoints, WebSocket connections, and dynamic plugin loading.
-# server.py
 
-# # CHAPTER 1: BOOTSTRAPPING & THE CLI (~230KB)
-# # The bedrock. How the Forever Machine is born, and how we manage it.
-# # Nix guarantees mathematical reproducibility across Mac and Linux.
-# # `AI_RUNME.py` contains the "Master Prompt"—a letter to an amnesiac AI.
-# assets/installer/install.sh
-# flake.nix
-# .gitignore
-# config.py
-# AI_RUNME.py
-# README.md
-# cli.py
-# scripts/articles/articleizer.py
-# scripts/articles/editing_prompt.txt
+# CHAPTER 1: BOOTSTRAPPING & THE CLI (~230KB)
+# The bedrock. How the Forever Machine is born, and how we manage it.
+# Nix guarantees mathematical reproducibility across Mac and Linux.
+# `AI_RUNME.py` contains the "Master Prompt"—a letter to an amnesiac AI.
+assets/installer/install.sh
+flake.nix
+.gitignore
+config.py
+AI_RUNME.py
+README.md
+cli.py
+scripts/articles/articleizer.py
+scripts/articles/editing_prompt.txt
+
+# CHAPTER 1.5: HUMAN ONBOARDING
+/home/mike/repos/pipulate/assets/nbs/0nboard.ipynb
+/home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py
+pipulate/__init__.py
+pipulate/pipulate.py
+pipulate/core.py
+
+# CHAPTER 2: THE SERVER MONOLITH (~260KB)
+# The heart of the machine. Massive because it is explicit.
+# `server.py` is our FastHTML routing engine: Uvicorn/Starlette app,
+# HTMX endpoints, WebSocket connections, and dynamic plugin loading.
+config.py
+server.py
 
 # # levinix.com
 # foo_files.py
