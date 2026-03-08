@@ -15,12 +15,12 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-# Showing Gemini the 1-line-per-content Semantic Context Thunkers that need Thinking. Thinking about thunking. Auto situation reports (sitreps).
-foo_files.py
-scripts/articles/lsa.py
-/home/mike/repos/trimnoir/_posts/ls2.py
-scripts/articles/ls_semantic.py
-prompt_foo.py
+# # Showing Gemini the 1-line-per-content Semantic Context Thunkers that need Thinking. Thinking about thunking. Auto situation reports (sitreps).
+# foo_files.py
+# scripts/articles/lsa.py
+# /home/mike/repos/trimnoir/_posts/ls2.py
+# scripts/articles/ls_semantic.py
+# prompt_foo.py
 
 # /home/mike/repos/trimnoir/_posts/2026-03-08-the-immutable-webhead-building-resilient-ai-telemetry-system.md  # [Idx: 916 | Order: 1 | Tokens: 23,423 | Bytes: 90,726]
 
@@ -320,18 +320,18 @@ prompt_foo.py
 
 # # The core script and routing table (always keep the loop open)
 # prompt_foo.py
-foo_files.py
+# foo_files.py
 # remotes/honeybot/queries/hot_404_remaps_top.sql
 # scripts/articles/generate_redirects.py
 
-# The Textual Dashboard UI and its data layer
-remotes/honeybot/scripts/logs.py
-remotes/honeybot/scripts/db.py
-# 
+# # The Textual Dashboard UI and its data layer
+# remotes/honeybot/scripts/logs.py
+# remotes/honeybot/scripts/db.py
+
 # # The SQL Heuristics identifying (or failing to identify) the bots
 # remotes/honeybot/queries/intel_unknown_agents.sql
 # remotes/honeybot/queries/mine_bots_heuristic.sql
-# 
+
 # # Optional: To see what live data looks like right now
 # ! echo "--- UNKNOWN AGENTS LIVE ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
