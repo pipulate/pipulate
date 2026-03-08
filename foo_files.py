@@ -16,6 +16,7 @@
 
 AI_PHOOEY_CHOP = """\
 
+flake.nix
 foo_files.py
 .gitignore
 __init__.py
