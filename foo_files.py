@@ -15,13 +15,43 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
+
+foo_files.py
+.gitignore
+__init__.py
+release.py
+pyproject.toml
+imports/__init__.py
+pipulate/__init__.py
+
+# flake.nix
+# pipulate/pipulate.py
+# pipulate/core.py
+# 
+# assets/nbs/0nboard.ipynb
+# assets/nbs/imports/onboard_sauce.py
+# 
+# assets/nbs/AI_HelloWorld.ipynb
+# 
+# assets/nbs/FAQuilizer.ipynb
+# assets/nbs/imports/faq_writer_sauce.py
+# 
+# assets/nbs/URLinspector.ipynb
+# assets/nbs/imports/url_inspect_sauce.py
+# 
+# assets/nbs/VIDeditor.ipynb
+# assets/nbs/imports/videditor_sauce.py
+
+# Notebooks/GAPalyzer.ipynb
+# Notebooks/imports/gap_analyzer_sauce.py
+
 # server.py
 # apps/040_hello_workflow.py
-pipulate/__init__.py
-pipulate/pipulate.py
-pipulate/core.py
-tools/__init__.py
-tools/llm_optics.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# tools/__init__.py
+# tools/llm_optics.py
 # apps/440_browser_automation.py
 
 # foo_files.py
@@ -687,10 +717,8 @@ tools/llm_optics.py
 
 # # CHAPTER 14: THE NOTEBOOK TEMPLATES (~100KB)
 # # The starter notebooks that ship with the system in `assets/nbs/`.
-# Notebooks/imports/seo_gadget.py
 # assets/nbs/0nboard.ipynb
 # assets/nbs/AI_HelloWorld.ipynb
-# assets/nbs/AI_Scrape.ipynb
 # assets/nbs/FAQuilizer.ipynb
 # assets/nbs/URLinspector.ipynb
 # assets/nbs/VIDeditor.ipynb

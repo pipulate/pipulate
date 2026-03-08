@@ -100,6 +100,20 @@ if __name__ == '__main__' and not os.environ.get('PIPULATE_WATCHDOG_RESTART'):
 
 warnings.filterwarnings("ignore", category=UserWarning, message=".*pkg_resources.*")
 
+import logging
+
+class MuteHMRPhantom(logging.Filter):
+    """Silences the harmless FastHTML live-reload disconnect error."""
+    def filter(self, record):
+        if record.exc_info:
+            exc_type, exc_value, _ = record.exc_info
+            if exc_type is RuntimeError and 'Cannot call "receive" once a disconnect' in str(exc_value):
+                return False
+        return True
+
+# Apply the gag to Uvicorn's error logger
+logging.getLogger("uvicorn.error").addFilter(MuteHMRPhantom())
+
 # Various debug settings
 DEBUG_MODE = False
 STATE_TABLES = False
