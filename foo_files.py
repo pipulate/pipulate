@@ -214,8 +214,6 @@ AI_PHOOEY_CHOP = """\
 
 
 
-
-
 # # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
 # # The quiet plumbing that keeps the machine alive.
 # # Database safety, durable backups, and the MCP orchestrator.
@@ -252,21 +250,33 @@ AI_PHOOEY_CHOP = """\
 # assets/utils.js
 # assets/player-piano.js
 
-# CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS) (~200KB)
-# The fundamental plugin apps governing the user experience.
-imports/crud.py
-imports/voice_synthesis.py
-apps/010_introduction.py
-apps/020_profiles.py
-apps/025_aspect.py
-apps/030_roles.py
-apps/040_hello_workflow.py
-apps/060_tasks.py
-apps/070_history.py
+# # CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS) (~200KB)
+# # The fundamental plugin apps governing the user experience.
+# imports/crud.py
+# imports/voice_synthesis.py
+# apps/010_introduction.py
+# apps/020_profiles.py
+# apps/025_aspect.py
+# apps/030_roles.py
+# apps/040_hello_workflow.py
+# apps/060_tasks.py
+# apps/070_history.py
 
 
-
-
+# # CHAPTER 8: THE DOCUMENTATION & DEV TOOLS (~270KB)
+# # The self-documenting layer and the AI developer assistant.
+# apps/050_documentation.py
+# apps/230_dev_assistant.py
+# 
+# # CHAPTER 9: ENTERPRISE SEO - BOTIFY SUITE (~340KB)
+# # The factory. Where we construct complex SEO deliverables.
+# apps/100_connect_with_botify.py
+# apps/240_simon_mcp.py
+# apps/200_workflow_genesis.py
+# imports/botify_code_generation.py
+# imports/botify/__init__.py
+# imports/botify/code_generators.py
+# imports/botify/true_schema_discoverer.py
 
 
 
@@ -306,9 +316,9 @@ foo_files.py
 # remotes/honeybot/queries/hot_404_remaps_top.sql
 # scripts/articles/generate_redirects.py
 
-# # The Textual Dashboard UI and its data layer
-# remotes/honeybot/scripts/logs.py
-# remotes/honeybot/scripts/db.py
+# The Textual Dashboard UI and its data layer
+remotes/honeybot/scripts/logs.py
+remotes/honeybot/scripts/db.py
 # 
 # # The SQL Heuristics identifying (or failing to identify) the bots
 # remotes/honeybot/queries/intel_unknown_agents.sql
