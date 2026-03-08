@@ -168,33 +168,34 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/nixos/autognome.py
 
 
-# CHAPTER 1: BOOTSTRAPPING & THE CLI (~230KB)
-# The bedrock. How the Forever Machine is born, and how we manage it.
-# Nix guarantees mathematical reproducibility across Mac and Linux.
-# `AI_RUNME.py` contains the "Master Prompt"—a letter to an amnesiac AI.
-assets/installer/install.sh
-flake.nix
-.gitignore
-config.py
-AI_RUNME.py
-README.md
-cli.py
-scripts/articles/articleizer.py
-scripts/articles/editing_prompt.txt
-
-# CHAPTER 1.5: HUMAN ONBOARDING
-/home/mike/repos/pipulate/assets/nbs/0nboard.ipynb
-/home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py
-pipulate/__init__.py
-pipulate/pipulate.py
-pipulate/core.py
-
-# CHAPTER 2: THE SERVER MONOLITH (~260KB)
-# The heart of the machine. Massive because it is explicit.
-# `server.py` is our FastHTML routing engine: Uvicorn/Starlette app,
-# HTMX endpoints, WebSocket connections, and dynamic plugin loading.
+# # CHAPTER 1: BOOTSTRAPPING & THE CLI (~230KB)
+# # The bedrock. How the Forever Machine is born, and how we manage it.
+# # Nix guarantees mathematical reproducibility across Mac and Linux.
+# # `AI_RUNME.py` contains the "Master Prompt"—a letter to an amnesiac AI.
+# assets/installer/install.sh
+# flake.nix
+# .gitignore
+# config.py
+# AI_RUNME.py
+# README.md
+# cli.py
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
+# 
+# # CHAPTER 1.5: HUMAN ONBOARDING
+# /home/mike/repos/pipulate/assets/nbs/0nboard.ipynb
+# /home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# 
+# # CHAPTER 2: THE SERVER MONOLITH (~260KB)
+# # The heart of the machine. Massive because it is explicit.
+# # `server.py` is our FastHTML routing engine: Uvicorn/Starlette app,
+# # HTMX endpoints, WebSocket connections, and dynamic plugin loading.
 config.py
 server.py
+pipulate/core.py
 
 # # levinix.com
 # foo_files.py

@@ -1744,14 +1744,11 @@ class Pipulate:
         self.write_state(pipeline_id, state)
         return state
 
-
     async def process_llm_interaction(self, MODEL: str, messages: list, base_app=None) -> AsyncGenerator[str, None]:
         from rich.table import Table
-        # Import the formal MCP orchestrator for passive listening
         from imports.mcp_orchestrator import parse_mcp_request
+        import llm
         
-        url = 'http://localhost:11434/api/chat'
-        payload = {'MODEL': MODEL, 'messages': messages, 'stream': True}
         accumulated_response = []
         full_content_buffer = ""
         word_buffer = ""  # Buffer for word-boundary detection
@@ -1776,133 +1773,110 @@ class Pipulate:
         # This orchestrator monitors LLM response streams for MCP tool calls.
         # When found, tools are executed asynchronously and results injected back.
 
-        # Match XML/JSON tool tags AND bracket notation commands
-        mcp_pattern = re.compile(r'(<mcp-request>.*?</mcp-request>|<tool\s+[^>]*/>|<tool\s+[^>]*>.*?</tool>|\[[^\]]+\])', re.DOTALL)
-
-        logger.debug("🔍 DEBUG: === STARTING process_llm_interaction ===")
-        logger.debug(f"🔍 DEBUG: MODEL='{MODEL}', messages_count={len(messages)}")
-
-        # 🚨 TRANSPARENCY: Show COMPLETE conversation history being sent to LLM
-        logger.info("🔍 TRANSPARENCY: === COMPLETE CONVERSATION HISTORY ===")
-        for i, msg in enumerate(messages):
-            role = msg.get('role', 'unknown')
-            content = msg.get('content', '')
-            logger.info(f"🔍 TRANSPARENCY: Message {i}: [{role}] {content}")
-        logger.info("🔍 TRANSPARENCY: === END CONVERSATION HISTORY ===")
-
-        table = Table(title='User Input')
-        table.add_column('Role', style='cyan')
-        table.add_column('Content', style='orange3')
-        if messages:
-            # Show the current user input (last message should be the current user's message)
-            current_message = messages[-1]
-            role = current_message.get('role', 'unknown')
-            content = current_message.get('content', '')
-            if isinstance(content, dict):
-                # Use Rich JSON display for LLM content formatting
-                content = slog.rich_json_display(content, console_output=False, log_output=True)
-            table.add_row(role, content)
-            logger.debug(f"🔍 DEBUG: Current user input - role: {role}, content: '{content[:100]}...'")
-        slog.print_and_log_table(table, "LLM DEBUG - ")
-
         try:
-            async with aiohttp.ClientSession() as session:
-                async with session.post(url, json=payload) as response:
-                    if response.status != 200:
-                        error_text = await response.text()
-                        error_msg = f'Ollama server error: {error_text}'
-                        logger.error(f"🔍 DEBUG: HTTP Error {response.status}: {error_text}")
-                        yield error_msg
-                        return
+            # 1. THE UNIVERSAL ADAPTER GRABS THE MODEL
+            model = llm.get_model(MODEL)
+            
+            # 2. EXTRACT SYSTEM PROMPT AND CONVERSATION
+            # llm expects a system prompt, the current prompt, and optionally previous history.
+            system_prompt = None
+            history = []
+            current_prompt = ""
+            
+            for msg in messages:
+                if msg.get('role') == 'system':
+                    system_prompt = msg.get('content')
+                elif msg == messages[-1] and msg.get('role') == 'user':
+                    current_prompt = msg.get('content')
+                else:
+                    # We map your dicts to llm's expected conversation format if needed, 
+                    # but for raw streaming, we can feed the current prompt with history.
+                    history.append(msg)
 
-                    yield '\n'  # Start with a newline for better formatting in UI
+            # 3. TRIGGER THE STREAM
+            # We use stream=True. This works identically for OpenAI, Anthropic, Gemini, and Ollama.
+            response = model.prompt(
+                current_prompt,
+                system=system_prompt,
+                stream=True
+            )
+            
+            yield '\n'  # Start with a newline for better formatting in UI
 
-                    async for line in response.content:
-                        if not line:
-                            continue
-                        try:
-                            chunk = json.loads(line)
-                            chunk_count += 1
+            # 4. ITERATE OVER THE UNIVERSAL CHUNKS
+            for chunk in response:
+                if not chunk:
+                    continue
+                    
+                chunk_count += 1
+                
+                # If we've already found and handled a tool call, ignore the rest of the stream.
+                if mcp_detected:
+                    continue
 
-                            if chunk.get('done', False):
-                                logger.debug(f"🔍 DEBUG: Stream complete (done=True)")
-                                break
+                full_content_buffer += chunk
 
-                            if (content := chunk.get('message', {}).get('content', '')):
-                                # If we've already found and handled a tool call, ignore the rest of the stream.
-                                if mcp_detected:
-                                    continue
+                # STAGE 3: Active MCP execution - detect and execute formal MCP requests
+                formal_mcp_result = parse_mcp_request(full_content_buffer)
+                if formal_mcp_result:
+                    tool_name, inner_content = formal_mcp_result
+                    mcp_detected = True  # Stop streaming the LLM response
+                    
+                    logger.info(f"🎯 MCP ACTIVATED: Found formal MCP tool call for '{tool_name}'")
+                    
+                    # Execute the formal MCP tool call
+                    asyncio.create_task(
+                        execute_formal_mcp_tool_call(messages, tool_name, inner_content)
+                    )
+                    continue  
 
-                                full_content_buffer += content
+                # Use regex to find a complete MCP block
+                match = mcp_pattern.search(full_content_buffer)
+                if match:
+                    mcp_block = match.group(1)
+                    mcp_detected = True  
+                    
+                    logger.info(f"🔧 MCP CLIENT: Complete MCP tool call extracted.")
 
-                                # STAGE 3: Active MCP execution - detect and execute formal MCP requests
-                                formal_mcp_result = parse_mcp_request(full_content_buffer)
-                                if formal_mcp_result:
-                                    tool_name, inner_content = formal_mcp_result
-                                    mcp_detected = True  # Stop streaming the LLM response
-                                    
-                                    logger.info(f"🎯 MCP ACTIVATED: Found formal MCP tool call for '{tool_name}'")
-                                    logger.debug(f"🎯 MCP CONTENT: {inner_content}")
-                                    
-                                    # Execute the formal MCP tool call
-                                    asyncio.create_task(
-                                        execute_formal_mcp_tool_call(messages, tool_name, inner_content)
-                                    )
-                                    continue  # Skip the rest of the stream processing
+                    asyncio.create_task(
+                        execute_and_respond_to_tool_call(messages, mcp_block)
+                    )
+                    continue
 
-                                # Use regex to find a complete MCP block
-                                match = mcp_pattern.search(full_content_buffer)
-                                if match:
-                                    mcp_block = match.group(1)
-                                    mcp_detected = True  # Flag that we've found our tool call
+                word_buffer += chunk
 
-                                    logger.info(f"🔧 MCP CLIENT: Complete MCP tool call extracted.")
-                                    logger.debug(f"🔧 MCP BLOCK:\n{mcp_block}")
+                # Hold off on yielding if we might be building a tool call
+                if '<tool' in word_buffer or '<mcp-request' in word_buffer or '```xml' in word_buffer:
+                    continue
 
-                                    # Offload the tool execution to a background task
-                                    asyncio.create_task(
-                                        execute_and_respond_to_tool_call(messages, mcp_block)
-                                    )
-                                    # Now that we have the tool call, we ignore all subsequent content from this stream
-                                    continue
+                parts = re.split(r'(\s+)', word_buffer)
+                if len(parts) > 1:
+                    complete_parts = parts[:-1]
+                    word_buffer = parts[-1]
+                    for part in complete_parts:
+                        accumulated_response.append(part)
+                        yield part
+                        
+                # ⚡ CRITICAL: Because the `llm` stream is technically synchronous under the hood, 
+                # we yield to the asyncio event loop to keep the UI perfectly responsive.
+                await asyncio.sleep(0)
 
-                                # If no MCP block is detected yet, stream the content normally.
-                                # This handles regular, non-tool-call conversations.
-                                word_buffer += content
+            # Flush the remaining buffer
+            if word_buffer and not mcp_detected:
+                accumulated_response.append(word_buffer)
+                yield word_buffer
 
-                                # Check if word_buffer contains start of potential MCP/tool tag or markdown code block
-                                if '<tool' in word_buffer or '<mcp-request' in word_buffer or '```xml' in word_buffer:
-                                    # Hold off on yielding if we might be building a tool call
-                                    continue
+            # Final logging table for LLM responses (including tool calls)
+            if accumulated_response:
+                final_response = ''.join(accumulated_response)
+                table = Table(title='Chat Response')
+                table.add_column('Accumulated Response')
+                table.add_row(final_response, style='green')
+                slog.print_and_log_table(table, "LLM RESPONSE - ")
 
-                                parts = re.split(r'(\s+)', word_buffer)
-                                if len(parts) > 1:
-                                    complete_parts = parts[:-1]
-                                    word_buffer = parts[-1]
-                                    for part in complete_parts:
-                                        accumulated_response.append(part)
-                                        yield part
-
-                        except json.JSONDecodeError:
-                            logger.warning(f"🔍 DEBUG: JSON decode error on chunk #{chunk_count}")
-                            continue
-
-                    # After the loop, if there's remaining content in the buffer and no tool was called, flush it.
-                    if word_buffer and not mcp_detected:
-                        accumulated_response.append(word_buffer)
-                        yield word_buffer
-
-                    # Final logging table for LLM responses (including tool calls)
-                    if accumulated_response:
-                        final_response = ''.join(accumulated_response)
-                        table = Table(title='Chat Response')
-                        table.add_column('Accumulated Response')
-                        table.add_row(final_response, style='green')
-                        slog.print_and_log_table(table, "LLM RESPONSE - ")
-
-        except aiohttp.ClientConnectorError as e:
-            error_msg = 'Unable to connect to Ollama server. Please ensure Ollama is running.'
-            logger.error(f"🔍 DEBUG: Connection error: {e}")
+        except llm.errors.NeedsKeyException:
+            error_msg = f'Authentication missing for {MODEL}. Please check your .env file or API keys.'
+            logger.error(f"🔍 DEBUG: {error_msg}")
             yield error_msg
         except Exception as e:
             error_msg = f'Error: {str(e)}'
