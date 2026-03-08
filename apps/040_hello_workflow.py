@@ -274,14 +274,20 @@ You're here to make the workflow concepts accessible and help users understand t
         """
         self.app = app
         self.app_name = app_name
-        self.pip = pipulate
+        self.wand = pipulate
+        wand = self.wand
+
+        # THE FIX: Instantiate the wand!
+        self.wand = pipulate
+        wand = self.wand
+
         self.pipeline = pipeline
         self.steps_indices = {}
-        pip = self.pip
         self.message_queue = self.wand.get_message_queue()
 
         # Access centralized UI constants through dependency injection
-        self.ui = wand.get_ui_constants()
+        # THE FIX: Add 'self.' here, as 'wand' isn't a global import
+        self.ui = self.wand.get_ui_constants()
 
         # Define workflow steps
         # splice_workflow_step.py inserts new data steps BEFORE STEPS_LIST_INSERTION_POINT.
@@ -318,20 +324,20 @@ You're here to make the workflow concepts accessible and help users understand t
         for step in self.steps:
             if step.id != 'finalize':
                 self.step_messages[step.id] = {
-                    'input': f'{self.ui["EMOJIS"]["INPUT_FORM"]} {wand.fmt(step.id)}: Please enter {step.show}.',
+                    'input': f'{self.ui["EMOJIS"]["INPUT_FORM"]} {self.wand.fmt(step.id)}: Please enter {step.show}.',
                     'complete': f'{self.ui["EMOJIS"]["SUCCESS"]} {step.show} complete. Continue to next step.'
                 }
 
     async def landing(self, request):
         """Generate the landing page using the standardized helper while maintaining WET explicitness."""
-        pip = self.pip
+        wand = self.wand
 
         # Use centralized landing page helper - maintains WET principle by explicit call
         return wand.create_standard_landing_page(self)
 
     async def init(self, request):
         """ Handles the key submission, initializes state, and renders the step UI placeholders. """
-        pip, steps, app_name = (self.pip, self.steps, self.app_name)
+        wand, steps, app_name = (self.wand, self.steps, self.app_name)
         form = await request.form()
         user_input = form.get('pipeline_id', '').strip()
         if not user_input:
@@ -359,17 +365,17 @@ You're here to make the workflow concepts accessible and help users understand t
         is_finalized = 'finalize' in state and 'finalized' in state['finalize']
 
         # Progressive feedback with emoji conventions
-        await self.message_queue.add(pip, f'{self.ui["EMOJIS"]["WORKFLOW"]} Workflow ID: {pipeline_id}', verbatim=True, spaces_before=0)
-        await self.message_queue.add(pip, f"{self.ui["EMOJIS"]["KEY"]} Return later by selecting '{pipeline_id}' from the dropdown.", verbatim=True, spaces_before=0)
+        await self.message_queue.add(wand, f'{self.ui["EMOJIS"]["WORKFLOW"]} Workflow ID: {pipeline_id}', verbatim=True, spaces_before=0)
+        await self.message_queue.add(wand, f"{self.ui["EMOJIS"]["KEY"]} Return later by selecting '{pipeline_id}' from the dropdown.", verbatim=True, spaces_before=0)
 
         if all_steps_complete:
             if is_finalized:
                 status_msg = f'{self.ui["EMOJIS"]["LOCKED"]} Workflow is complete and finalized. Use {self.ui["BUTTON_LABELS"]["UNLOCK"]} to make changes.'
             else:
                 status_msg = f'{self.ui["EMOJIS"]["SUCCESS"]} Workflow is complete but not finalized. Press Finalize to lock your data.'
-            await self.message_queue.add(pip, status_msg, verbatim=True)
+            await self.message_queue.add(wand, status_msg, verbatim=True)
         elif not any((step.id in state for step in self.steps)):
-            await self.message_queue.add(pip, f'{self.ui["EMOJIS"]["INPUT_FORM"]} Please complete each step in sequence. Your progress will be saved automatically.', verbatim=True)
+            await self.message_queue.add(wand, f'{self.ui["EMOJIS"]["INPUT_FORM"]} Please complete each step in sequence. Your progress will be saved automatically.', verbatim=True)
 
         parsed = wand.parse_pipeline_key(pipeline_id)
         prefix = f"{parsed['profile_part']}-{parsed['plugin_part']}-"
@@ -382,7 +388,7 @@ You're here to make the workflow concepts accessible and help users understand t
 
     async def finalize(self, request):
         """ Handles GET request to show Finalize button and POST request to lock the workflow. """
-        pip, steps, app_name = (self.pip, self.steps, self.app_name)
+        wand, steps, app_name = (self.wand, self.steps, self.app_name)
         pipeline_id = wand.db.get('pipeline_id', 'unknown')
         finalize_step = steps[-1]
         finalize_data = wand.get_step_data(pipeline_id, finalize_step.id, {})
@@ -448,20 +454,20 @@ You're here to make the workflow concepts accessible and help users understand t
                     )
         else:
             await wand.finalize_workflow(pipeline_id)
-            await self.message_queue.add(pip, self.step_messages['finalize']['complete'], verbatim=True)
+            await self.message_queue.add(wand, self.step_messages['finalize']['complete'], verbatim=True)
             return wand.run_all_cells(app_name, steps)
 
     async def unfinalize(self, request):
         """ Handles POST request to unlock the workflow. """
-        pip, steps, app_name = (self.pip, self.steps, self.app_name)
+        wand, steps, app_name = (self.wand, self.steps, self.app_name)
         pipeline_id = wand.db.get('pipeline_id', 'unknown')
         await wand.unfinalize_workflow(pipeline_id)
-        await self.message_queue.add(pip, f'{self.ui["EMOJIS"]["UNLOCKED"]} Workflow unfinalized! You can now revert to any step and make changes.', verbatim=True)
+        await self.message_queue.add(wand, f'{self.ui["EMOJIS"]["UNLOCKED"]} Workflow unfinalized! You can now revert to any step and make changes.', verbatim=True)
         return wand.run_all_cells(app_name, steps)
 
     async def get_suggestion(self, step_id, state):
         """ Gets a suggested input value for a step, often using the previous step's transformed output. """
-        pip, steps = (self.pip, self.steps)
+        wand, steps = (self.wand, self.steps)
         step = next((s for s in steps if s.id == step_id), None)
         if not step or not step.transform:
             return ''
@@ -475,19 +481,19 @@ You're here to make the workflow concepts accessible and help users understand t
 
     async def handle_revert(self, request):
         """ Handles POST request to revert to a previous step, clearing subsequent step data. """
-        pip, steps, app_name = (self.pip, self.steps, self.app_name)
+        wand, steps, app_name = (self.wand, self.steps, self.app_name)
         form = await request.form()
         step_id = form.get('step_id')
         pipeline_id = wand.db.get('pipeline_id', 'unknown')
         if not step_id:
-            await self.message_queue.add(pip, f'{self.ui["EMOJIS"]["ERROR"]} Error: No step specified', verbatim=True)
+            await self.message_queue.add(wand, f'{self.ui["EMOJIS"]["ERROR"]} Error: No step specified', verbatim=True)
             return P('Error: No step specified', cls='text-invalid')
         await wand.clear_steps_from(pipeline_id, step_id, steps)
         state = wand.read_state(pipeline_id)
         state['_revert_target'] = step_id
         wand.write_state(pipeline_id, state)
         message = await wand.get_state_message(pipeline_id, steps, self.step_messages)
-        await self.message_queue.add(pip, f'{self.ui["EMOJIS"]["WARNING"]} Reverted to {step_id}. {message}', verbatim=True)
+        await self.message_queue.add(wand, f'{self.ui["EMOJIS"]["WARNING"]} Reverted to {step_id}. {message}', verbatim=True)
         return wand.run_all_cells(app_name, steps)
 
     # --- START_STEP_BUNDLE: step_01 ---
@@ -500,7 +506,7 @@ You're here to make the workflow concepts accessible and help users understand t
         2. Revert Phase: Shows completed view with revert option
         3. Input Phase: Shows input form for new/updated value
         """
-        pip, steps, app_name = (self.pip, self.steps, self.app_name)
+        wand, steps, app_name = (self.wand, self.steps, self.app_name)
         step_id = 'step_01'  # This string literal will be replaced by swap_workflow_step.py
         step_index = self.steps_indices[step_id]
         step = steps[step_index]  # Use the resolved step object
@@ -514,7 +520,7 @@ You're here to make the workflow concepts accessible and help users understand t
         # Phase 1: Finalize Phase - Show locked view
         if 'finalized' in finalize_data:
             locked_msg = f'{self.ui["EMOJIS"]["LOCKED"]} Your name is set to: {user_val}'
-            await self.message_queue.add(pip, locked_msg, verbatim=True)
+            await self.message_queue.add(wand, locked_msg, verbatim=True)
             return Div(
                 Card(
                     H3(f'{self.ui["EMOJIS"]["LOCKED"]} {step.show}: {user_val}'),
@@ -535,7 +541,7 @@ You're here to make the workflow concepts accessible and help users understand t
         # Phase 2: Revert Phase - Show completed view with revert option
         elif user_val and state.get('_revert_target') != step_id:
             completed_msg = f'{self.ui["EMOJIS"]["SUCCESS"]} Step 1 is complete. You entered: {user_val}'
-            await self.message_queue.add(pip, completed_msg, verbatim=True)
+            await self.message_queue.add(wand, completed_msg, verbatim=True)
             return Div(
                 wand.display_revert_header(
                     step_id=step_id,
@@ -557,13 +563,13 @@ You're here to make the workflow concepts accessible and help users understand t
         else:
             display_value = user_val if step.refill and user_val else await self.get_suggestion(step_id, state)
             form_msg = f'{self.ui["EMOJIS"]["INPUT_FORM"]} Showing name input form. No name has been entered yet.'
-            await self.message_queue.add(pip, form_msg, verbatim=True)
-            await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
+            await self.message_queue.add(wand, form_msg, verbatim=True)
+            await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
             explanation = f"Workflows are Notebooks without having to look at the code. Let's collect some data..."
-            await self.message_queue.add(pip, explanation, verbatim=True)
+            await self.message_queue.add(wand, explanation, verbatim=True)
             return Div(
                 Card(
-                    H3(f'{self.ui["EMOJIS"]["USER_INPUT"]} {wand.fmt(step.id)}: Enter {step.show}'),
+                    H3(f'{self.ui["EMOJIS"]["USER_INPUT"]} {self.wand.fmt(step.id)}: Enter {step.show}'),
                     P(explanation, cls='text-muted'),
                     Label(
                         'Your Name:',
@@ -619,7 +625,7 @@ You're here to make the workflow concepts accessible and help users understand t
         3. Updates the workflow state
         4. Returns a UI showing the completed step and triggering the next step
         """
-        pip, steps, app_name = (self.pip, self.steps, self.app_name)
+        wand, steps, app_name = (self.wand, self.steps, self.app_name)
         step_id = 'step_01'  # This string literal will be replaced by swap_workflow_step.py
         step_index = self.steps_indices[step_id]
         step = steps[step_index]  # Use the resolved step object
@@ -631,7 +637,7 @@ You're here to make the workflow concepts accessible and help users understand t
         # Validate input with emoji error handling
         if not user_val:
             error_msg = f'{self.ui["EMOJIS"]["ERROR"]} Please enter a value'
-            await self.message_queue.add(self.pip, error_msg, verbatim=True)
+            await self.message_queue.add(self.wand, error_msg, verbatim=True)
             return P(error_msg, cls='text-invalid')
 
         # Update state
@@ -639,7 +645,7 @@ You're here to make the workflow concepts accessible and help users understand t
 
         # Progressive feedback with emoji
         success_msg = f'{self.ui["EMOJIS"]["SUCCESS"]} Name saved: {user_val}'
-        await self.message_queue.add(self.pip, success_msg, verbatim=True)
+        await self.message_queue.add(self.wand, success_msg, verbatim=True)
 
         # Update LLM context
         self.wand.append_to_history(f"[WIDGET CONTENT] {step.show}:\n{user_val}")
@@ -651,7 +657,7 @@ You're here to make the workflow concepts accessible and help users understand t
     # --- START_STEP_BUNDLE: step_02 ---
     async def step_02(self, request):
         """ Handles GET request for Step 2: Displays input form or completed value. """
-        pip, steps, app_name = (self.pip, self.steps, self.app_name)
+        wand, steps, app_name = (self.wand, self.steps, self.app_name)
         step_id = 'step_02'  # This string literal will be replaced by swap_workflow_step.py
         step_index = self.steps_indices[step_id]
         step = steps[step_index]  # Use the resolved step object
@@ -665,7 +671,7 @@ You're here to make the workflow concepts accessible and help users understand t
         # Phase 1: Finalize Phase - Show locked view
         if 'finalized' in finalize_data:
             locked_msg = f'{self.ui["EMOJIS"]["LOCKED"]} Greeting is locked: {user_val}'
-            await self.message_queue.add(pip, locked_msg, verbatim=True)
+            await self.message_queue.add(wand, locked_msg, verbatim=True)
             return Div(
                 Card(
                     H3(f'{self.ui["EMOJIS"]["LOCKED"]} {step.show}: {user_val}'),
@@ -686,7 +692,7 @@ You're here to make the workflow concepts accessible and help users understand t
         # Phase 2: Revert Phase - Show completed view with revert option
         elif user_val and state.get('_revert_target') != step_id:
             completed_msg = f'{self.ui["EMOJIS"]["SUCCESS"]} Step 2 is complete. Greeting: {user_val}'
-            await self.message_queue.add(pip, completed_msg, verbatim=True)
+            await self.message_queue.add(wand, completed_msg, verbatim=True)
             return Div(
                 wand.display_revert_header(
                     step_id=step_id,
@@ -707,12 +713,12 @@ You're here to make the workflow concepts accessible and help users understand t
         # Phase 3: Input Phase - Show input form
         else:
             display_value = user_val if step.refill and user_val else await self.get_suggestion(step_id, state)
-            await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
+            await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
             explanation = f"That's it! Workflows just collect data — walking you from one Step to the Next Step ▸"
-            await self.message_queue.add(pip, explanation, verbatim=True)
+            await self.message_queue.add(wand, explanation, verbatim=True)
             return Div(
                 Card(
-                    H3(f'{self.ui["EMOJIS"]["GREETING"]} {wand.fmt(step.id)}: Enter {step.show}'),
+                    H3(f'{self.ui["EMOJIS"]["GREETING"]} {self.wand.fmt(step.id)}: Enter {step.show}'),
                     P(explanation, cls='text-muted'),
                     Label(
                         'Hello Message:',
@@ -760,7 +766,7 @@ You're here to make the workflow concepts accessible and help users understand t
 
     async def step_02_submit(self, request):
         """ Handles POST submission for Step 2: Validates, saves state, returns navigation. """
-        pip, steps, app_name = (self.pip, self.steps, self.app_name)
+        wand, steps, app_name = (self.wand, self.steps, self.app_name)
         step_id = 'step_02'  # This string literal will be replaced by swap_workflow_step.py
         step_index = self.steps_indices[step_id]
         step = steps[step_index]  # Use the resolved step object
@@ -776,7 +782,7 @@ You're here to make the workflow concepts accessible and help users understand t
         is_valid, error_msg, error_component = wand.validate_step_input(user_val, step.show)
         if not is_valid:
             error_with_emoji = f'{self.ui["EMOJIS"]["ERROR"]} {error_msg}'
-            await self.message_queue.add(pip, error_with_emoji, verbatim=True)
+            await self.message_queue.add(wand, error_with_emoji, verbatim=True)
             return error_component
 
         processed_val = user_val
@@ -784,10 +790,10 @@ You're here to make the workflow concepts accessible and help users understand t
 
         # Progressive feedback with emoji
         success_msg = f'{self.ui["EMOJIS"]["SUCCESS"]} {step.show}: {processed_val}'
-        await self.message_queue.add(pip, success_msg, verbatim=True)
+        await self.message_queue.add(wand, success_msg, verbatim=True)
 
         if wand.check_finalize_needed(step_index, steps):
-            await self.message_queue.add(pip, self.step_messages['finalize']['ready'], verbatim=True)
+            await self.message_queue.add(wand, self.step_messages['finalize']['ready'], verbatim=True)
 
         return self.wand.chain_reverter(
             step_id=step_id,

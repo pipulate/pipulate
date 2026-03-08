@@ -16,7 +16,7 @@
 
 AI_PHOOEY_CHOP = """\
 server.py
-apps/040_hello_workflow.py
+# apps/040_hello_workflow.py
 
 # foo_files.py
 # prompt_foo.py
