@@ -26,6 +26,12 @@ def find_project_root(start_path):
 # --- PATH & LOGGING CONFIGURATION ---
 project_root = find_project_root(os.getcwd()) or Path.cwd()
 
+# ... after project_root is defined ...
+if project_root:
+    notebooks_path = str(project_root / "Notebooks")
+    if notebooks_path not in sys.path:
+        sys.path.append(notebooks_path)
+
 # 1. Configure the data directory
 data_dir = project_root / "Notebooks" / "data"
 data_dir.mkdir(parents=True, exist_ok=True)
