@@ -28,11 +28,11 @@ AI_PHOOEY_CHOP = """\
 # # Claude Opus 4.6 wrote its own Prompt Fu, so let's let it have a go at this Simon Willison llm thing.
 # requirements.in
 # requirements.txt
-# pipulate/__init__.py
-# pipulate/pipulate.py
-# pipulate/core.py
-# /home/mike/repos/pipulate/assets/nbs/0nboard.ipynb
-# /home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py
+pipulate/__init__.py
+pipulate/pipulate.py
+pipulate/core.py
+/home/mike/repos/pipulate/assets/nbs/0nboard.ipynb
+/home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py
 # scripts/articles/diagramizer.py
 # assets/nbs/imports/url_inspect_sauce.py
 # assets/nbs/imports/faq_writer_sauce.py
@@ -193,9 +193,9 @@ AI_PHOOEY_CHOP = """\
 # # The heart of the machine. Massive because it is explicit.
 # # `server.py` is our FastHTML routing engine: Uvicorn/Starlette app,
 # # HTMX endpoints, WebSocket connections, and dynamic plugin loading.
-config.py
-server.py
-pipulate/core.py
+# config.py
+# server.py
+# pipulate/core.py
 
 # # levinix.com
 # foo_files.py
