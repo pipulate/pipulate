@@ -28,15 +28,17 @@ AI_PHOOEY_CHOP = """\
 # # Claude Opus 4.6 wrote its own Prompt Fu, so let's let it have a go at this Simon Willison llm thing.
 # requirements.in
 # requirements.txt
-pipulate/__init__.py
-pipulate/pipulate.py
-pipulate/core.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+.gitignore
+flake.nix
 /home/mike/repos/pipulate/assets/nbs/0nboard.ipynb
 /home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py
-# scripts/articles/diagramizer.py
-# assets/nbs/imports/url_inspect_sauce.py
-# assets/nbs/imports/faq_writer_sauce.py
-# scripts/articles/contextualizer.py
+assets/nbs/FAQuilizer.ipynb
+assets/nbs/imports/faq_writer_sauce.py
+assets/nbs/URLinspector.ipynb
+assets/nbs/imports/url_inspect_sauce.py
 
 # nixops.sh
 # remotes/honeybot/hooks/post-receive
