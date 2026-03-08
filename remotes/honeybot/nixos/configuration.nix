@@ -205,14 +205,17 @@
 
     # 1. THE SENSOR: Read the Accept header and define the MIME type
       appendHttpConfig = ''
-        # map_hash_bucket_size 256; 
-        # map_hash_max_size 4096;
+      # 1. The Missing Map: Define $serve_markdown based on the Accept header
+      map $http_accept $serve_markdown {
+          default 0;
+          "~*text/markdown" 1;
+      }
 
-        # map $uri $new_uri {
-        #     default "";
-        #     include /home/mike/www/mikelev.in/_site/redirects.map;
-        # }
-      '';
+      # ... any other maps you have, like your 404 redirect map ...
+
+      # 2. The Log Format (which you already have, causing the error)
+      log_format custom_format '$remote_addr - - [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" Accept:"$http_accept" MarkdownServed:$serve_markdown';
+    '';
 
     virtualHosts."mikelev.in" = {
       forceSSL = true;      # Force all traffic to HTTPS 

@@ -15,11 +15,19 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
+# Showing Gemini the 1-line-per-content Semantic Context Thunkers that need Thinking. Thinking about thunking. Auto situation reports (sitreps).
+foo_files.py
+scripts/articles/lsa.py
+/home/mike/repos/trimnoir/_posts/ls2.py
+scripts/articles/ls_semantic.py
+prompt_foo.py
+
+# /home/mike/repos/trimnoir/_posts/2026-03-08-the-immutable-webhead-building-resilient-ai-telemetry-system.md  # [Idx: 916 | Order: 1 | Tokens: 23,423 | Bytes: 90,726]
+
 # # Doing a SitRep with Gemini 3 Pro to move Tracer Dye to near top of page.
 # foo_files.py
 # remotes/honeybot/hooks/post-receive
 # https://mikelev.in/futureproof/nixos-wayland-hyprland/index.md?src=link+rel
-
 
 # prompt_foo.py
 # remotes/honeybot/hooks/post-receive
