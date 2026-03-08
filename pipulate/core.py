@@ -3,7 +3,9 @@ import importlib
 from pathlib import Path
 import functools
 import json
+import os
 import re
+from dotenv import load_dotenv, set_key
 import asyncio
 import aiohttp
 from datetime import datetime
@@ -2211,3 +2213,80 @@ class Pipulate:
             error_msg = f"❌ AI prompt failed: {e}"
             print(error_msg)
             return error_msg
+
+    def load_secrets(self, key_name="GOOGLE_API_KEY"):
+        """
+        Orchestrates secret retrieval with a 'Waterfall of Truth':
+        1. OS Environment / already loaded .env
+        2. Local .env file at project root
+        3. Interactive Notebook prompt (UI fallback)
+        """
+        # Find project root (re-using your existing logic)
+        project_root = self._find_project_root(os.getcwd()) or Path.cwd()
+        env_path = project_root / ".env"
+
+        # 1 & 2. Try to get from environment or load from .env
+        if not os.environ.get(key_name):
+            load_dotenv(dotenv_path=env_path)
+        
+        current_val = os.environ.get(key_name)
+        
+        if current_val:
+            return current_val
+
+        # 3. UI Fallback if we are in a notebook
+        if self.is_notebook_context:
+            return self._prompt_for_secret(key_name, env_path)
+        
+        return None
+
+    def _prompt_for_secret(self, key_name, env_path):
+        """Interactive widget to capture and persist a secret."""
+        import ipywidgets as widgets
+        from IPython.display import display, clear_output
+
+        print(f"🔑 {key_name} not found. Let's set it up for this machine.")
+        
+        password_input = widgets.Password(
+            description='API Key:',
+            placeholder='Paste key here...',
+            style={'description_width': 'initial'}
+        )
+        button = widgets.Button(description="💾 Save to .env", button_style='success')
+        output = widgets.Output()
+
+        def on_click(b):
+            val = password_input.value.strip()
+            if val:
+                # 4. Persistence: Save to .env and set in current session
+                with output:
+                    clear_output()
+                    try:
+                        # Ensure .env exists
+                        if not env_path.exists():
+                            env_path.touch()
+                        
+                        set_key(str(env_path), key_name, val)
+                        os.environ[key_name] = val
+                        print(f"✅ Success! {key_name} saved to {env_path.name}")
+                        print("You can now continue running your notebook.")
+                        # Hide the input after success
+                        password_input.close()
+                        button.close()
+                    except Exception as e:
+                        print(f"❌ Error saving key: {e}")
+
+        button.on_click(on_click)
+        display(widgets.VBox([password_input, button, output]))
+        return None # User will need to run the next cell after clicking save
+
+    # Update your existing api_key method or wrap it
+    def api_key(self, job=None, key=None):
+        """Standardized wrapper for the new load_secrets logic."""
+        # If user hardcoded a key in the cell, we honor it
+        if key:
+            os.environ["GOOGLE_API_KEY"] = key
+            return True
+            
+        found_key = self.load_secrets("GOOGLE_API_KEY")
+        return bool(found_key)
