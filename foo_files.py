@@ -16,9 +16,9 @@
 
 AI_PHOOEY_CHOP = """\
 # # Showing Gemini the 1-line-per-content Semantic Context Thunkers that need Thinking. Thinking about thunking. Auto situation reports (sitreps).
-# foo_files.py
+foo_files.py
+/home/mike/repos/trimnoir/_posts/list_articles.py
 /home/mike/repos/trimnoir/_posts/ls2.py
-scripts/articles/ls_semantic.py
 scripts/articles/lsa.py
 prompt_foo.py
 
@@ -44,24 +44,15 @@ prompt_foo.py
 # /home/mike/repos/trimnoir/_posts/2026-03-07-nginx-nixos-red-queen-deterministic-redirects.md  # [Idx: 913 | Order: 2 | Tokens: 16,419 | Bytes: 65,951]
 
 # ============================================================================
-# PROMPT FU: SEMANTIC ROUTER
+# PROMPT FU: SEMANTIC ROUTER (404 HEALING)
 # ============================================================================
-# System Directive: Semantic Router (CSV Output ONLY)
-# You are a deterministic semantic routing engine. Your only job is to map the 
-# dead URLs in LIST A (this data) to the living URLs in the INTERLEAVED SEMANTIC MAP.
-# Rules:
-# 1. Analyze the keywords, sub-topics, and summaries in the semantic map to find the best conceptual fit for each 404 path.
-# 2. You must output a strict, two-column CSV format.
-# 3. Column 1: The dead URL from List A.
-# 4. Column 2: The matched living URL from the semantic map.
-# 5. DO NOT include headers, markdown formatting, or Nginx syntax.
-# 6. Output ONLY the raw comma-separated values.
-# Example Output: /2012/07/old-article/,/futureproof/new-concept/
+# System Directive: You are a deterministic semantic routing engine. 
+# Map the dead URLs in LIST A to the living URLs in the narrative context map.
+# Output ONLY a strict, two-column CSV format: /old-path/,/new-path/
 # ============================================================================
-# scripts/articles/extract_404_ghosts.py  # <-- The physics of extraction
-# scripts/articles/ls_semantic.py         # <-- The physics of the semantic map
-# ! python scripts/articles/extract_404_ghosts.py  # <-- The actual List A - HUGELY IMPORTANT FOR 404 REDUCTION / DON'T LOSE SIGHT OF THIS!
-# ! python scripts/articles/ls_semantic.py         # <-- The actual List B
+scripts/articles/extract_404_ghosts.py 
+# ! python scripts/articles/extract_404_ghosts.py  # <-- LIST A: THE 404 GHOSTS
+# Note: LIST B (The Semantic Map) is provided via the -l [slice] argument in prompt_foo
 
 # /home/mike/repos/trimnoir/_raw_map.csv
 # /home/mike/repos/trimnoir/_redirects.map
@@ -296,7 +287,6 @@ prompt_foo.py
 # /home/mike/.config/articleizer/targets.json
 # scripts/articles/build_knowledge_graph.py
 # scripts/articles/extract_404_ghosts.py
-# scripts/articles/ls_semantic.py
 # scripts/articles/generate_redirects.py
 # scripts/articles/generate_hubs.py
 # /home/mike/repos/trimnoir/_raw_map.csv
@@ -305,9 +295,8 @@ prompt_foo.py
 
 # # THE DATA (The "From" and "To" Lists)
 # scripts/articles/extract_404_ghosts.py  # <-- The physics of extraction
-# scripts/articles/ls_semantic.py         # <-- The physics of the semantic map
+# Note: LIST B (The Semantic Map) is provided via the -l [slice] argument in prompt_foo
 # ! python scripts/articles/extract_404_ghosts.py  # <-- The actual List A - HUGELY IMPORTANT FOR 404 REDUCTION / DON'T LOSE SIGHT OF THIS!
-# ! python scripts/articles/ls_semantic.py         # <-- The actual List B
 
 # /home/mike/repos/trimnoir/_raw_map.csv
 # /home/mike/repos/trimnoir/_redirects.map
@@ -316,7 +305,7 @@ prompt_foo.py
 # scripts/articles/generate_redirects.py
 # remotes/honeybot/queries/hot_404_remaps_top.sql
 # ! python scripts/articles/extract_404_ghosts.py
-# ! python scripts/articles/ls_semantic.py
+# Note: LIST B (The Semantic Map) is provided via the -l [slice] argument in prompt_foo
 
 # # The core script and routing table (always keep the loop open)
 # prompt_foo.py
@@ -389,7 +378,7 @@ prompt_foo.py
 
 # # THE DATA (The "From" and "To" Lists)
 # ! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! python scripts/articles/ls_semantic.py
+# Note: LIST B (The Semantic Map) is provided via the -l [slice] argument in prompt_foo
 
 # # Why these redirects are so necessary (we're always K-Means clustering our hubs)
 # scripts/articles/publishizer.py  # <-- This picks the publishing workflow based on the target choice
@@ -408,7 +397,7 @@ prompt_foo.py
 # 
 # # THE DATA (The "From" and "To" Lists)
 # ! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! python scripts/articles/ls_semantic.py
+# Note: LIST B (The Semantic Map) is provided via the -l [slice] argument in prompt_foo
 
 # The story of the 404 Redirect Map Project
 # /home/mike/repos/trimnoir/_posts/2026-03-03-cybernetic-terrarium-ai-observability.md  # [Idx: 897 | Order: 4 | Tokens: 3,170 | Bytes: 15,104]
@@ -424,7 +413,7 @@ prompt_foo.py
 # 
 # # THE DATA TO PRODUCE A NEW 404 REDIRECT MAP
 # remotes/honeybot/queries/hot_404_remaps.sql
-# ! python scripts/articles/ls_semantic.py
+# Note: LIST B (The Semantic Map) is provided via the -l [slice] argument in prompt_foo
 # ! echo "--- HOT 404 REMAPS (Structural Signal) ---" && cat remotes/honeybot/queries/hot_404_remaps.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # 
 # remotes/honeybot/queries/hot_404_remaps_full.sql
