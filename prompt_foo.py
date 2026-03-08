@@ -265,6 +265,7 @@ def generate_uml_and_dot(target_file: str, project_name: str) -> Dict:
 
     return {"ascii_uml": ascii_uml, "dot_graph": dot_content}
 
+
 def _get_article_list_data(posts_dir: str = CONFIG["POSTS_DIRECTORY"]) -> List[Dict]:
     posts_data = []
     if not os.path.isdir(posts_dir):
@@ -273,45 +274,66 @@ def _get_article_list_data(posts_dir: str = CONFIG["POSTS_DIRECTORY"]) -> List[D
 
     url_config = URL_MAP.get(posts_dir)
 
-    for filename in os.listdir(posts_dir):
-        if not filename.endswith((".md", ".markdown")): continue
-        filepath = os.path.join(posts_dir, filename)
+    # Dynamically import lsa.py to avoid sys.path issues regardless of where prompt_foo is run
+    sys.path.insert(0, os.path.join(REPO_ROOT, 'scripts', 'articles'))
+    try:
+        import lsa
+    except ImportError as e:
+        logger.print(f"Error importing lsa.py: {e}", file=sys.stderr)
+        sys.path.pop(0)
+        return []
+    sys.path.pop(0)
+
+    # 1. Delegate the metadata and JSON shard extraction to the universal parser
+    raw_metadata = lsa.get_holographic_article_data(posts_dir)
+
+    # 2. Append the heavy lifting (tokens/bytes) and URL mapping specific to prompt_foo
+    for item in raw_metadata:
+        filepath = item['path']
+        filename = item['filename']
+        
+        full_url = ""
+        if url_config:
+            slug = item['permalink'].strip('/')
+            if not slug:
+                raw_slug = os.path.splitext(filename)[0]
+                if re.match(r'\d{4}-\d{2}-\d{2}-', raw_slug):
+                     raw_slug = raw_slug[11:]
+                style = url_config.get('permalink_style', '/:slug/')
+                slug_path = style.replace(':slug', raw_slug)
+            else:
+                  slug_path = "/" + slug.lstrip('/')
+
+            full_url = f"{url_config['base_url']}{slug_path}"
+
         try:
-            date_str = filename[:10]
-            post_date = datetime.strptime(date_str, '%Y-%m-%d').date()
-            with open(filepath, 'r', encoding='utf-8') as f: content = f.read()
-            if content.startswith('---'):
-                parts = content.split('---', 2)
-                front_matter = yaml.safe_load(parts[1]) or {}
+            # We still need the full content here for token counting
+            with open(filepath, 'r', encoding='utf-8') as f: 
+                content = f.read()
+                
+            article_tokens = count_tokens(content)
+            article_bytes = len(content.encode('utf-8'))
+            
+            posts_data.append({
+                'path': filepath,
+                'date': item['date'],
+                'sort_order': item['sort_order'],
+                'title': item['title'],
+                'summary': item['summary'],
+                'url': full_url,
+                'tokens': article_tokens,
+                'bytes': article_bytes,
+                # Pass along the newly extracted JSON Shards!
+                'shard_kw': item['shard_kw'],
+                'shard_sub': item['shard_sub'],
+                'shard_sum': item['shard_sum']
+            })
+        except Exception:
+            continue
+            
+    # The lsa function already sorted them, but we maintain the return signature
+    return posts_data
 
-                full_url = ""
-                if url_config:
-                    slug = front_matter.get('permalink', '').strip('/')
-                    if not slug:
-                        raw_slug = os.path.splitext(filename)[0]
-                        if re.match(r'\d{4}-\d{2}-\d{2}-', raw_slug):
-                             raw_slug = raw_slug[11:]
-                        style = url_config.get('permalink_style', '/:slug/')
-                        slug_path = style.replace(':slug', raw_slug)
-                    else:
-                          slug_path = "/" + slug.lstrip('/')
-
-                    full_url = f"{url_config['base_url']}{slug_path}"
-
-                article_tokens = count_tokens(content)
-                article_bytes = len(content.encode('utf-8'))
-                posts_data.append({
-                    'path': filepath,
-                    'date': post_date,
-                    'sort_order': int(front_matter.get('sort_order', 0)),
-                    'title': front_matter.get('title', 'Untitled'),
-                    'summary': front_matter.get('meta_description', ''),
-                    'url': full_url,
-                    'tokens': article_tokens,
-                    'bytes': article_bytes
-                })
-        except (ValueError, yaml.YAMLError, IndexError): continue
-    return sorted(posts_data, key=lambda p: (p['date'], p['sort_order']))
 
 def parse_slice_arg(arg_str: str):
     if not arg_str or not arg_str.startswith('[') or not arg_str.endswith(']'): return None
