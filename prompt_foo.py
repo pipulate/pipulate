@@ -330,7 +330,11 @@ def _get_article_list_data(posts_dir: str = CONFIG["POSTS_DIRECTORY"]) -> List[D
             })
         except Exception:
             continue
-            
+
+    # Reverse to match prompt_foo's original oldest-to-newest expectation
+    posts_data.reverse()
+    return posts_data
+
     # The lsa function already sorted them, but we maintain the return signature
     return posts_data
 
@@ -918,21 +922,27 @@ def main():
                 filename = os.path.basename(article['path'])
                 # Extract token count for AI dietary planning
                 t_count = article.get('tokens', 0)
-                # OPTIMIZATION: Reduced verbosity for list items
-                narrative_content += f"### {article['title']} ({article['date']}) [{t_count:,} tokens]\n"
-                if article.get('url'):
-                    narrative_content += f"{article['url']}\n"
-                narrative_content += f"{filename}\n"
-                narrative_content += f"{article['summary']}\n\n"
+                
+                # --- NEW: HOLOGRAPHIC INJECTION ---
+                # Fallback to YAML summary if JSON shard summary is missing
+                summary = article.get('shard_sum') or article.get('summary', '')
+                kw_str = f" | KW: {article['shard_kw']}" if article.get('shard_kw') else ""
+                sub_str = f" | SUB: {article['shard_sub']}" if article.get('shard_sub') else ""
+                
+                # OPTIMIZATION: Ultra-dense, single-line-per-article format
+                # Format: [Date] /slug/ (Ord:X | Y tokens) | Title | KW: ... | SUB: ... | SUM: ...
+                
+                slug_display = article.get('url', filename).replace(URL_MAP.get(CONFIG["POSTS_DIRECTORY"], {}).get('base_url', ''), '')
+                
+                dense_line = (f"[{article['date']}] {slug_display} "
+                              f"(Ord:{article['sort_order']} | {t_count:,} tkn) | "
+                              f"{article['title']}{kw_str}{sub_str} | SUM: {summary}")
+                
+                narrative_content += f"{dense_line}\n"
             
             title = "Recent Narrative Context"
             builder.add_auto_context(title, narrative_content.strip())
-            
-            # Calculate sizes for live display
-            narrative_data = builder.auto_context.get(title, {})
-            t_count = narrative_data.get('tokens', 0)
-            b_count = len(narrative_data.get('content', '').encode('utf-8'))
-            logger.print(f" ({len(sliced_articles)} articles | {t_count:,} tokens | {b_count:,} bytes)")
+
         else:
             logger.print(" (no articles found or invalid slice)")
     
