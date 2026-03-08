@@ -111,13 +111,8 @@
             desc = "the Pipulate initiation rite and setup guide";
           }
           {
-            source = "assets/nbs/AI_HelloWorld.ipynb";
-            dest = "Notebooks/AI_HelloWorld.ipynb";
-            desc = "a local 'Hello, AI!' example notebook";
-          }
-          {
-            source = "assets/nbs/FAQuilizer.ipynb";
-            dest = "Notebooks/FAQuilizer.ipynb";
+            source = "assets/nbs/Advanced_Notebooks/FAQuilizer.ipynb";
+            dest = "Notebooks/Advanced_Notebooks/FAQuilizer.ipynb";
             desc = "a local 'FAQuilizer' simple workflow";
           }
           {
@@ -126,8 +121,8 @@
             desc = "a local 'faq_writer_sauce.py' source of secret sauce";
           }
           {
-            source = "assets/nbs/GAPalyzer.ipynb";
-            dest = "Notebooks/GAPalyzer.ipynb";
+            source = "assets/nbs/Advanced_Notebooks/GAPalyzer.ipynb";
+            dest = "Notebooks/Advanced_Notebooks/GAPalyzer.ipynb";
             desc = "a local 'Competitor Gap Analyzer.' advanced workflow";
           }
           {
@@ -136,8 +131,8 @@
             desc = "a local 'gap_analyzer_sauce.py' source of secret sauce";
           }
           {
-            source = "assets/nbs/URLinspector.ipynb";
-            dest = "Notebooks/URLinspector.ipynb";
+            source = "assets/nbs/Advanced_Notebooks/URLinspector.ipynb";
+            dest = "Notebooks/Advanced_Notebooks/URLinspector.ipynb";
             desc = "a local 'URL-by-URL auditor.' derived from FAQuilizer";
           }
           {
@@ -146,8 +141,8 @@
             desc = "a local 'url_inspect_sauce.py' source of secret sauce";
           }
           {
-            source = "assets/nbs/VIDeditor.ipynb";
-            dest = "Notebooks/VIDeditor.ipynb";
+            source = "assets/nbs/Advanced_Notebooks/VIDeditor.ipynb";
+            dest = "Notebooks/Advanced_Notebooks/VIDeditor.ipynb";
             desc = "a local 'NoGooey Video Editor.'";
           }
           {

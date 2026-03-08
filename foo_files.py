@@ -17,22 +17,24 @@
 AI_PHOOEY_CHOP = """\
 
 flake.nix
-foo_files.py
-.gitignore
-__init__.py
-release.py
-pyproject.toml
-imports/__init__.py
-pipulate/__init__.py
+# foo_files.py
+# .gitignore
+# __init__.py
+# release.py
+# pyproject.toml
+# imports/__init__.py
+# pipulate/__init__.py
 
 # flake.nix
-# pipulate/pipulate.py
-# pipulate/core.py
-# 
-# assets/nbs/0nboard.ipynb
-# assets/nbs/imports/onboard_sauce.py
-# 
-# assets/nbs/AI_HelloWorld.ipynb
+
+assets/nbs/AI_HelloWorld.ipynb
+assets/nbs/0nboard.ipynb
+assets/nbs/imports/onboard_sauce.py
+imports/__init__.py
+pipulate/__init__.py
+pipulate/pipulate.py
+pipulate/core.py
+
 # 
 # assets/nbs/FAQuilizer.ipynb
 # assets/nbs/imports/faq_writer_sauce.py
