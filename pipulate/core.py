@@ -1755,6 +1755,9 @@ class Pipulate:
         mcp_detected = False
         chunk_count = 0
 
+        # Match XML/JSON tool tags AND bracket notation commands
+        mcp_pattern = re.compile(r'(<mcp-request>.*?</mcp-request>|<tool\s+[^>]*/>|<tool\s+[^>]*>.*?</tool>|\[[^\]]+\])', re.DOTALL)
+
         # 🎯 GOLDEN PATH EXECUTION MATRIX - ORCHESTRATOR STATUS:
         # ✅ WORKING: XML syntax <tool><params><url>value</url></params></tool>
         # ✅ WORKING: JSON syntax <tool><params>{"url": "value"}</params></tool>
@@ -2190,120 +2193,3 @@ class Pipulate:
                     print(f"    ⚠️ Warning: Module file not found, skipping sync: '{module_source_path}'")
 
 
-    def api_key(self, job: str, service: str = 'google', key: str = None):
-        """
-        Handles getting, storing, and configuring a Google API key for a given service,
-        and includes validation before saving.
-
-        - If `key` is provided, it attempts a one-shot validation.
-        - If `key` is None, it checks for a stored key, validates it, and if invalid,
-          enters an interactive prompt loop until a valid key is entered or the
-          user cancels (by pressing Enter).
-        """
-        if service.lower() != 'google':
-            print(f"⚠️ Service '{service}' not yet supported. Only 'google' is currently configured.")
-            return False
-
-        if not GOOGLE_AI_AVAILABLE:
-            print("❌ Error: The 'google-generativeai' package is not installed.")
-            print("   Please run: pip install google-generativeai")
-            return False
-
-        api_key_step = "google_api_key"
-
-        def validate_key(api_key_to_validate):
-            try:
-                genai.configure(api_key=api_key_to_validate)
-                model = genai.GenerativeModel('gemini-2.5-flash')
-                model.generate_content("test", generation_config=genai.types.GenerationConfig(max_output_tokens=1))
-                return True
-            except (google_exceptions.PermissionDenied, google_exceptions.Unauthenticated) as e:
-                print(f"❌ API Key Validation Failed. Please try again or press Enter to cancel.")
-                print(f"   Error: {e}\n")
-                return False
-            except Exception as e:
-                print(f"❌ An unexpected error occurred: {e}. Please try again or press Enter to cancel.\n")
-                return False
-
-        # --- Scenario 1: Key is provided directly (non-interactive "one-shot" attempt) ---
-        if key is not None:
-            print("Checking API key provided via parameter...")
-            if not key: # Check for empty string ""
-                 print("❌ API Key provided is empty.")
-                 return False
-
-            if validate_key(key):
-                self.set(job, api_key_step, key)
-                print("✅ Google AI configured and key validated successfully.")
-                return True
-            else:
-                return False
-
-        # --- Scenario 2: No key provided (interactive mode) ---
-        # First, check if a non-empty key is already stored and valid.
-        stored_key = self.get(job, api_key_step)
-        # Explicitly check if stored_key exists AND is not just whitespace
-        if stored_key and stored_key.strip():
-            print("Validating stored API key...")
-            if validate_key(stored_key):
-                print("✅ Stored Google AI key is valid and configured.")
-                return True
-            else:
-                print(f"⚠️ Stored API key failed validation. Please re-enter your key.")
-                # Clear the invalid stored key so we prompt correctly
-                self.set(job, api_key_step, None) 
-
-        # No valid key stored or provided. Enter the prompt loop.
-        print("\n💡 To cancel API key setup, just press Enter without typing a key.")
-        print("   (Note: If the kernel seems 'stuck' after entry, it might be an invalid key. Press Esc, 0, 0 to interrupt.)")
-
-        while True:
-            try:
-                prompt_message = "Enter your Google AI API Key (or press Enter to cancel): "
-                api_key_input = getpass.getpass(prompt_message)
-            except Exception as e:
-                print(f"❌ Could not prompt for API key in this environment: {e}")
-                return False # Exit if prompting fails
-
-            # Check for cancel condition (empty string entered by user)
-            if not api_key_input.strip():
-                print("🚫 API Key setup cancelled by user.")
-                return False # Exit function if user cancels
-
-            # A non-empty key was entered, now validate it.
-            print("Validating new key...")
-            if validate_key(api_key_input):
-                self.set(job, api_key_step, api_key_input)
-                print("✅ Google AI configured and key validated successfully.")
-                return True # Exit loop and function with success
-
-    def prompt(self, prompt_text: str, model_name: str = 'gemini-2.5-flash'):
-        """
-        Sends a simple, one-shot prompt to the configured AI model and returns the response.
-        This is a bare-minimum implementation for demonstration, not a chat system.
-        """
-        if not GOOGLE_AI_AVAILABLE:
-            error_msg = "❌ Error: The 'google-generativeai' package is not installed."
-            print(error_msg)
-            return error_msg
-
-        print(f"🤖 Sending prompt to {model_name}...")
-
-        try:
-            # Instantiate the model for this specific call
-            model = genai.GenerativeModel(model_name)
-            
-            # Send the prompt and get the response
-            response = model.generate_content(prompt_text)
-            
-            # Extract and return the text
-            response_text = response.text.strip()
-            print("✅ AI response received.")
-            return response_text
-
-        except Exception as e:
-            # Catch common errors like authentication failure or model not found
-            error_msg = f"❌ AI prompt failed: {e}"
-            print(error_msg)
-            print("   Did you remember to run pip.api_key(job) in a previous cell?")
-            return error_msg
