@@ -15,12 +15,27 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-ixops.sh
-remotes/honeybot/hooks/post-receive
-remotes/honeybot/nixos/configuration.nix
-/home/mike/repos/trimnoir/.gitignore
-/home/mike/repos/trimnoir/flake.nix
-/home/mike/repos/trimnoir/_config.yml
+/home/mike/repos/trimnoir/_posts/2026-03-08-holographic-context-engineering-ai-ready-semantic-maps-web-native-llms.md  # [Idx: 917 | Order: 2 | Tokens: 77,786 | Bytes: 245,940]
+
+# Claude Opus 4.6 wrote its own Prompt Fu, so let's let it have a go at this Simon Willison llm thing.
+requirements.in
+requirements.txt
+pipulate/__init__.py
+pipulate/pipulate.py
+pipulate/core.py
+/home/mike/repos/pipulate/assets/nbs/0nboard.ipynb
+/home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py
+scripts/articles/diagramizer.py
+assets/nbs/imports/url_inspect_sauce.py
+assets/nbs/imports/faq_writer_sauce.py
+scripts/articles/contextualizer.py
+
+# nixops.sh
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
+# /home/mike/repos/trimnoir/.gitignore
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_config.yml
 
 # foo_files.py
 # /home/mike/repos/trimnoir/_posts/2026-03-08-holographic-context-engineering-ai-ready-semantic-maps-web-native-llms.md  # [Idx: 917 | Order: 2 | Tokens: 77,605 | Bytes: 245,100]
