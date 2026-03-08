@@ -2,7 +2,6 @@
 # This module contains the implementation details for a 1-to-many AI enrichment workflow.
 
 from pipulate import pip
-import google.generativeai as genai
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd

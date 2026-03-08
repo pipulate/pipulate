@@ -2,7 +2,6 @@
 # This module contains the implementation details for a 1-to-many AI enrichment workflow.
 
 from pipulate import pip
-import google.generativeai as genai
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -606,11 +605,11 @@ async def generate_visualizations_post_scrape(job: str, verbose: bool = False):
     base_dir = project_root_notebooks / "browser_cache" # /home/mike/.../Notebooks/browser_cache
     logger.info(f"Using absolute base_dir: {base_dir}") # Log confirmation
 
-    script_path = (Path(__file__).parent / "visualize_dom.py").resolve()
+    script_path = (Path(__file__).parent / "seo_gadget.py").resolve()
 
     if not script_path.exists():
          logger.error(f"❌ Cannot find visualization script at: {script_path}")
-         logger.error("   Please ensure visualize_dom.py is in the Notebooks/ directory.")
+         logger.error("   Please ensure seo_gadget.py is in the Notebooks/imports/ directory.")
          return
 
     python_executable = sys.executable # Use the same python that runs the notebook
