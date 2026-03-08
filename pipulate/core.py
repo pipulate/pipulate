@@ -20,14 +20,6 @@ import imports.server_logging as slog
 
 log = slog.LogManager(logger)
 
-import getpass
-from google.api_core import exceptions as google_exceptions
-try:
-    import google.generativeai as genai
-    GOOGLE_AI_AVAILABLE = True
-except ImportError:
-    GOOGLE_AI_AVAILABLE = False
-
 
 def title_name(word: str) -> str:
     """Format a string into a title case form."""
@@ -2193,7 +2185,7 @@ class Pipulate:
                     print(f"    ⚠️ Warning: Module file not found, skipping sync: '{module_source_path}'")
 
 
-def prompt(self, prompt_text: str, model_name: str = 'qwen3:1.7b', system_prompt: str = None):
+    def prompt(self, prompt_text: str, model_name: str = 'qwen3:1.7b', system_prompt: str = None):
         """
         The Universal Adapter prompt. 
         Sends a single, one-shot prompt to ANY configured AI model (local or cloud)
