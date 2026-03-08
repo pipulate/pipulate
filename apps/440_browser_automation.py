@@ -14,7 +14,6 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from seleniumwire import webdriver as wire_webdriver
 from starlette.responses import HTMLResponse, JSONResponse
 from webdriver_manager.chrome import ChromeDriverManager
 
@@ -350,7 +349,7 @@ class BrowserAutomation:
             return Div(Card(H3('Crawl URL'), Form(Input(type='url', name='url', placeholder='https://example.com', required=True, value=display_value, cls='contrast'), Button('Crawl URL', type='submit', cls='primary'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_02_submit(self, request):
-        """Process the Crawl URL submission, open with Selenium-wire, and save crawl data."""
+        """Process the Crawl URL submission, open with Selenium, and save crawl data."""
         pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_02'
         step_index = self.steps_indices[step_id]
@@ -381,7 +380,7 @@ class BrowserAutomation:
                 await self.message_queue.add(pip, 'Using system Chrome for Linux', verbatim=True)
                 service = Service()
             await self.message_queue.add(pip, 'Initializing Chrome driver...', verbatim=True)
-            driver = wire_webdriver.Chrome(service=service, options=chrome_options)
+            driver = webdriver.Chrome(service=service, options=chrome_options)
             await self.message_queue.add(pip, f'Crawling URL with Selenium: {url}', verbatim=True)
             driver.get(url)
             await asyncio.sleep(2)
@@ -389,21 +388,11 @@ class BrowserAutomation:
             source = driver.page_source
             dom = driver.execute_script('return document.documentElement.outerHTML;')
             main_request = None
-            for request in driver.requests:
-                if request.response and request.url.startswith(url):
-                    main_request = request
-                    break
-            if not main_request:
-                for request in driver.requests:
-                    if request.response:
-                        main_request = request
-                        break
-            if main_request and main_request.response:
-                headers = dict(main_request.response.headers)
-                status = main_request.response.status_code
-            else:
-                headers = {}
-                status = 200
+
+            # RIP OUT THE ENTIRE `driver.requests` LOOP AND REPLACE WITH STUBS:
+            headers = {"Notice": "selenium-wire removed; headers unavailable"}
+            status = 200
+
             domain, path = get_safe_path(url)
             date_slug = datetime.now().strftime('%Y%m%d')
             base_dir = ensure_crawl_dir(app_name, domain, date_slug)
