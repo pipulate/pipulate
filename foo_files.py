@@ -22,7 +22,7 @@ pipulate/pipulate.py
 pipulate/core.py
 tools/__init__.py
 tools/llm_optics.py
-apps/440_browser_automation.py
+# apps/440_browser_automation.py
 
 # foo_files.py
 # prompt_foo.py
