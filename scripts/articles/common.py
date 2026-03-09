@@ -107,4 +107,4 @@ def add_standard_arguments(parser):
 
 def add_target_argument(parser):
     """Legacy helper - redirects to add_standard_arguments for backwards compatibility."""
-    parser.add_argument('--target', type=str, help="Key of the target repo from targets.json (e.g., '1')")
+    add_standard_arguments(parser)
