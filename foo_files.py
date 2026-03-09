@@ -15,6 +15,7 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
+flake.nix
 # /home/mike/repos/trimnoir/_posts/2026-03-09-wet-code-dry-interfaces-ai-unified-cli.md  # [Idx: 923 | Order: 2 | Tokens: 32,290 | Bytes: 196,485]
 # foo_files.py
 # prompt_foo.py
