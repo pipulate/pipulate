@@ -577,16 +577,23 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # Set EFFECTIVE_OS for browser automation scripts
           if [[ "$(uname -s)" == "Darwin" ]]; then export EFFECTIVE_OS="darwin"; else export EFFECTIVE_OS="linux"; fi
           echo "INFO: EFFECTIVE_OS set to: $EFFECTIVE_OS"
-          export PS1="(nix) $PS1"
+          # Clean up the prompt to remove Nix's redundant prefixes and Mac's long hostname
+          export PS1="\[\033[1;32m\](nix)\[\033[0m\] \[\033[1;34m\]\W\[\033[0m\] $ "
           # Add aliases
           alias gdiff='git --no-pager diff --no-textconv'
           alias isnix="if [ -n \"$IN_NIX_SHELL\" ]; then echo \"✓ In Nix shell v${version}\"; else echo \"✗ Not in Nix shell\"; fi"
           alias mcp='.venv/bin/python cli.py call'
           alias release='.venv/bin/python helpers/release/publish.py'
           alias vim='nvim'
-          alias xc='xclip -selection clipboard <'
-          alias xcp='xclip -selection clipboard'
-          alias xv='xclip -selection clipboard -o >'
+          if [ "$EFFECTIVE_OS" = "darwin" ]; then
+            alias xc='pbcopy <'
+            alias xcp='pbcopy'
+            alias xv='pbpaste >'
+          else
+            alias xc='xclip -selection clipboard <'
+            alias xcp='xclip -selection clipboard'
+            alias xv='xclip -selection clipboard -o >'
+          fi
           # Update remote URL to use SSH if we have a key
           if [ -d .git ] && [ -f ~/.ssh/id_rsa ]; then
             REMOTE_URL=$(git remote get-url origin 2>/dev/null || echo "")
