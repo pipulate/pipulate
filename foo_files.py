@@ -19,18 +19,19 @@ AI_PHOOEY_CHOP = """\
 # foo_files.py
 # prompt_foo.py
 
-/home/mike/repos/trimnoir/.gitignore
-/home/mike/repos/trimnoir/flake.nix
-/home/mike/repos/trimnoir/_config.yml
-remotes/honeybot/hooks/post-receive
-remotes/honeybot/nixos/configuration.nix
-/home/mike/.config/articleizer/targets.json
-scripts/articles/articleizer.py
-scripts/articles/editing_prompt.txt
-scripts/articles/instructions.json
-scripts/articles/publishizer.py
-scripts/articles/contextualizer.py
-scripts/articles/common.py
+# # Showing Gemini Enough to Unify Publishing CLI API args and such.
+# /home/mike/repos/trimnoir/.gitignore
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_config.yml
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
+# /home/mike/.config/articleizer/targets.json
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
+# scripts/articles/instructions.json
+# scripts/articles/publishizer.py
+# scripts/articles/contextualizer.py
+# scripts/articles/common.py
 
 # /home/mike/repos/trimnoir/_posts/2026-03-08-llmectomy-ai-agnosticism-nixos-python.md  # [Idx: 919 | Order: 4 | Tokens: 32,765 | Bytes: 140,401]
 # /home/mike/repos/trimnoir/_posts/2026-03-08-immutable-python-environment-jupyter-notebooks.md  # [Idx: 921 | Order: 6 | Tokens: 14,298 | Bytes: 56,507]
@@ -306,12 +307,12 @@ scripts/articles/common.py
 # server.py
 # pipulate/core.py
 
-# # levinix.com
-# foo_files.py
-# https://levinix.com/install.sh
-# /home/mike/repos/levinix/CNAME
-# /home/mike/repos/levinix/index.md
-# /home/mike/repos/levinix/README.md
+# levinix.com
+foo_files.py
+https://levinix.com/install.sh
+/home/mike/repos/levinix/CNAME
+/home/mike/repos/levinix/index.md
+/home/mike/repos/levinix/README.md
 
 # # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
 # # The quiet plumbing that keeps the machine alive.
@@ -371,18 +372,19 @@ scripts/articles/common.py
 # imports/append_only_conversation.py
 # imports/ascii_displays.py
 
-# # CHAPTER 5: THE HANDS (AI TOOLS & AUTOMATION) (~350KB)
-# # What the AI actually *does* with its agency.
-# # `tools/` defines every action the AI can take via MCP dispatch.
-# tools/__init__.py
-# tools/keychain_tools.py
-# tools/scraper_tools.py
-# tools/conversation_tools.py
-# tools/system_tools.py
-# tools/dom_tools.py
-# tools/botify_tools.py
-# # tools/advanced_automation_tools.py
-# tools/mcp_tools.py
+# CHAPTER 5: THE HANDS (AI TOOLS & AUTOMATION) (~350KB)
+# What the AI actually *does* with its agency.
+# `tools/` defines every action the AI can take via MCP dispatch.
+tools/__init__.py
+tools/keychain_tools.py
+tools/scraper_tools.py
+tools/llm_optics.py
+tools/conversation_tools.py
+tools/system_tools.py
+tools/dom_tools.py
+tools/botify_tools.py
+# tools/advanced_automation_tools.py
+tools/mcp_tools.py
 
 # # CHAPTER 6: THE SKIN (FRONTEND ASSETS & INIT) (~265KB)
 # # HTML over the wire. No Virtual DOM. The client-side muscle.
