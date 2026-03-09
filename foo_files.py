@@ -15,12 +15,22 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
+# /home/mike/repos/trimnoir/_posts/2026-03-09-wet-code-dry-interfaces-ai-unified-cli.md  # [Idx: 923 | Order: 2 | Tokens: 32,290 | Bytes: 196,485]
+# foo_files.py
+# prompt_foo.py
+
+/home/mike/repos/trimnoir/.gitignore
+/home/mike/repos/trimnoir/flake.nix
+/home/mike/repos/trimnoir/_config.yml
+remotes/honeybot/hooks/post-receive
+remotes/honeybot/nixos/configuration.nix
 /home/mike/.config/articleizer/targets.json
 scripts/articles/articleizer.py
+scripts/articles/editing_prompt.txt
+scripts/articles/instructions.json
 scripts/articles/publishizer.py
 scripts/articles/contextualizer.py
 scripts/articles/common.py
-prompt_foo.py
 
 # /home/mike/repos/trimnoir/_posts/2026-03-08-llmectomy-ai-agnosticism-nixos-python.md  # [Idx: 919 | Order: 4 | Tokens: 32,765 | Bytes: 140,401]
 # /home/mike/repos/trimnoir/_posts/2026-03-08-immutable-python-environment-jupyter-notebooks.md  # [Idx: 921 | Order: 6 | Tokens: 14,298 | Bytes: 56,507]
