@@ -1,3 +1,5 @@
+.env
+
 secrets.nix
 Notebooks/Untitled.ipynb
 test.log
