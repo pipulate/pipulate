@@ -253,15 +253,11 @@ def generate_uml_and_dot(target_file: str, project_name: str) -> Dict:
     return {"ascii_uml": ascii_uml, "dot_graph": dot_content}
 
 
-def _get_article_list_data(posts_dir: str = CONFIG["POSTS_DIRECTORY"]) -> List[Dict]:
+def _get_article_list_data(posts_dir: str = CONFIG["POSTS_DIRECTORY"], url_config: dict = None) -> List[Dict]:
     posts_data = []
     if not os.path.isdir(posts_dir):
         logger.print(f"Warning: Article directory not found at {posts_dir}", file=sys.stderr)
         return []
-
-    # Find the target configuration matching our current directory
-    targets = load_targets()
-    url_config = next((target for target in targets.values() if os.path.abspath(target['path']) == os.path.abspath(posts_dir)), None)
 
     # Dynamically import lsa.py to avoid sys.path issues regardless of where prompt_foo is run
     sys.path.insert(0, os.path.join(REPO_ROOT, 'scripts', 'articles'))
@@ -288,12 +284,13 @@ def _get_article_list_data(posts_dir: str = CONFIG["POSTS_DIRECTORY"]) -> List[D
                 raw_slug = os.path.splitext(filename)[0]
                 if re.match(r'\d{4}-\d{2}-\d{2}-', raw_slug):
                      raw_slug = raw_slug[11:]
-                style = url_config.get('permalink_style', '/futureproof/:slug/')
+                style = url_config.get('permalink_style', '/:slug/')
                 slug_path = style.replace(':slug', raw_slug)
             else:
                   slug_path = "/" + slug.lstrip('/')
 
-            full_url = f"{url_config.get('base_url', 'https://mikelev.in')}{slug_path}"
+            base = url_config.get('base_url', '')
+            full_url = f"{base}{slug_path}"
 
         try:
             # We still need the full content here for token counting
@@ -742,13 +739,19 @@ def main():
 
     # Handle Target Selection
     targets = load_targets()
+    active_target_config = None  # Capture the full config to pass to functions
     if args.target:
         if args.target in targets:
             selected = targets[args.target]
             CONFIG["POSTS_DIRECTORY"] = selected["path"]
+            active_target_config = selected  # Capture for URL generation
             logger.print(f"🎯 Target set to: {selected['name']} ({selected['path']})")
         else:
             logger.print(f"❌ Invalid target key: {args.target}. Using default.")
+    else:
+        # If no target specified, use the default target for URL generation
+        if "1" in targets:
+            active_target_config = targets["1"]
 
     if args.check_dependencies:
         check_dependencies()
@@ -891,7 +894,7 @@ def main():
 
     if args.list is not None:
         logger.print("Adding narrative context from articles...", end='', flush=True)
-        all_articles = _get_article_list_data(CONFIG["POSTS_DIRECTORY"])
+        all_articles = _get_article_list_data(CONFIG["POSTS_DIRECTORY"], url_config=active_target_config)
         sliced_articles = []
         try:
             slice_or_index = parse_slice_arg(args.list)
@@ -944,7 +947,7 @@ def main():
     
     if args.article is not None:
         logger.print("Adding full article content...", end='', flush=True)
-        all_articles = _get_article_list_data(CONFIG["POSTS_DIRECTORY"])
+        all_articles = _get_article_list_data(CONFIG["POSTS_DIRECTORY"], url_config=active_target_config)
         sliced_articles = []
         try:
             slice_or_index = parse_slice_arg(args.article)
