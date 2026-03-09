@@ -4,7 +4,6 @@ import json
 import time
 import re
 import argparse
-import getpass
 from pathlib import Path
 from datetime import datetime
 import google.generativeai as genai
@@ -13,32 +12,9 @@ import tiktoken  # Requires: pip install tiktoken
 import common
 
 # --- CONFIGURATION ---
-CONFIG_DIR = Path.home() / ".config" / "articleizer"
-KEYS_FILE = CONFIG_DIR / "keys.json"
-TARGETS_FILE = CONFIG_DIR / "targets.json"
-
 # MODEL CONFIGURATION
-MODEL_NAME = 'gemini-2.5-flash-lite' 
+MODEL_NAME = 'gemini-2.5-flash-lite'
 SAFETY_SLEEP_SECONDS = 5
-
-DEFAULT_TARGETS = {
-    "1": {
-        "name": "Local Project (Default)",
-        "path": "./_posts"
-    }
-}
-
-def load_targets():
-    """Loads publishing targets from external config or falls back to default."""
-    if TARGETS_FILE.exists():
-        try:
-            with open(TARGETS_FILE, 'r') as f:
-                return json.load(f)
-        except json.JSONDecodeError:
-            print(f"⚠️ Warning: {TARGETS_FILE} is corrupt. Using defaults.")
-    return DEFAULT_TARGETS
-
-PROJECT_TARGETS = load_targets()
 
 def count_tokens(text: str, model: str = "gpt-4o") -> int:
     """Estimates token count using tiktoken."""
@@ -47,43 +23,6 @@ def count_tokens(text: str, model: str = "gpt-4o") -> int:
         return len(encoding.encode(text))
     except Exception:
         return len(text.split())
-
-def load_keys_dict():
-    """Loads the entire keys dictionary."""
-    if KEYS_FILE.exists():
-        try:
-            with open(KEYS_FILE, 'r') as f:
-                return json.load(f)
-        except json.JSONDecodeError:
-            print(f"❌ Error: {KEYS_FILE} is corrupt.")
-            sys.exit(1)
-    return {}
-
-def get_api_key(key_name="default", keys_dict=None):
-    """Gets a specific named API key."""
-    if keys_dict is None:
-        keys_dict = load_keys_dict()
-
-    if key_name in keys_dict:
-        return keys_dict[key_name]
-    
-    # Interactive fallback
-    print(f"⚠️ API Key '{key_name}' not found in {KEYS_FILE}.")
-    new_key = getpass.getpass(f"Enter Google API Key for '{key_name}': ").strip()
-    
-    if new_key:
-        save = input(f"Save key '{key_name}' to config? (y/n): ").lower()
-        if save == 'y':
-            keys_dict[key_name] = new_key
-            CONFIG_DIR.mkdir(parents=True, exist_ok=True)
-            with open(KEYS_FILE, 'w') as f:
-                json.dump(keys_dict, f, indent=2)
-            KEYS_FILE.chmod(0o600)
-            print(f"✅ Key '{key_name}' saved.")
-        return new_key
-    else:
-        print("❌ No key provided. Exiting.")
-        sys.exit(1)
 
 def extract_metadata_and_content(file_path):
     """Reads markdown file, extracts YAML frontmatter and body."""
@@ -275,12 +214,11 @@ def main():
     parser.add_argument('--limit', type=int, default=20)
     parser.add_argument('--force', action='store_true')
     parser.add_argument('--dry-run', action='store_true')
-    parser.add_argument('-k', '--key', type=str, default="default")
     parser.add_argument('-m', '--keys', type=str)
-    
+
     # Use Common Argument
-    common.add_target_argument(parser)
-    
+    common.add_standard_arguments(parser)
+
     args = parser.parse_args()
 
     # Dynamic Path Resolution via Common
@@ -296,19 +234,18 @@ def main():
 
     # Key Strategy Selection
     keys_queue = []
-    keys_dict = load_keys_dict()
 
     if args.keys:
         # Multi-key Mode
         requested_keys = [k.strip() for k in args.keys.split(',')]
         for k in requested_keys:
-            val = get_api_key(k, keys_dict) # Ensures interactive prompt if missing
+            val = common.get_api_key(k)  # Ensures interactive prompt if missing
             keys_queue.append((k, val))
         print(f"🔄 Multi-Key Rotation Enabled: {len(keys_queue)} keys loaded.")
     else:
         # Single Key Mode
-        val = get_api_key(args.key, keys_dict)
-        keys_queue.append((args.key, val))
+        val = common.get_api_key(args.key)
+        keys_queue.append((args.key or "default", val))
 
     # File Discovery
     all_posts = sorted(list(posts_dir.glob("*.md")), reverse=True)

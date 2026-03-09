@@ -10,15 +10,14 @@ import common
 def run_step(script_name, target_key, extra_args=None):
     print(f"\n--- 🚀 Step: {script_name} ---")
     start = time.time()
-    
-    # We pass the target key to every script
-    cmd = [sys.executable, script_name, "--target", target_key]
 
-    # Only feed API keys to the scripts that know how to eat them
-    if script_name == "contextualizer.py" and extra_args:
+    # We pass the target key to every script
+    cmd = [sys.executable, script_name, "-t", target_key]
+
+    # Now all scripts accept standard arguments, safely pass them down
+    if extra_args:
         cmd.extend(extra_args)
 
-    
     try:
         # check=True ensures we stop if a step fails
         subprocess.run(cmd, check=True)
@@ -67,10 +66,7 @@ def sync_data_to_jekyll(target_path):
 
 def main():
     parser = argparse.ArgumentParser(description="Update all Pipulate graphs")
-    common.add_target_argument(parser)
-    
-    # --- NEW: Catch API key arguments to pass down ---
-    parser.add_argument('-k', '--key', type=str, help="Pass a specific API key alias to the contextualizer")
+    common.add_standard_arguments(parser)
     parser.add_argument('-m', '--keys', type=str, help="Pass a comma-separated list of keys for rotation")
 
     args = parser.parse_args()

@@ -65,17 +65,6 @@ class Logger:
 # Global logger instance
 logger = Logger()
 
-def load_url_map():
-    """Loads the URL mapping configuration from .config/url_map.json"""
-    config_path = os.path.expanduser("~/.config/articleizer/url_map.json")
-    if os.path.exists(config_path):
-        try:
-            with open(config_path, 'r') as f:
-                return json.load(f)
-        except json.JSONDecodeError:
-            logger.print(f"Warning: Could not decode JSON from {config_path}")
-    return {}
-
 def load_targets():
     """Loads publishing targets from external config."""
     if TARGETS_FILE.exists():
@@ -89,10 +78,8 @@ def load_targets():
 # Initialize with defaults, but allow override
 CONFIG = {
     "PROJECT_NAME": "pipulate",
-    "POSTS_DIRECTORY": DEFAULT_TARGETS["1"]["path"] 
+    "POSTS_DIRECTORY": DEFAULT_TARGETS["1"]["path"]
 }
-
-URL_MAP = load_url_map()
 
 # ============================================================================
 # --- Configuration ---
@@ -272,7 +259,9 @@ def _get_article_list_data(posts_dir: str = CONFIG["POSTS_DIRECTORY"]) -> List[D
         logger.print(f"Warning: Article directory not found at {posts_dir}", file=sys.stderr)
         return []
 
-    url_config = URL_MAP.get(posts_dir)
+    # Find the target configuration matching our current directory
+    targets = load_targets()
+    url_config = next((target for target in targets.values() if os.path.abspath(target['path']) == os.path.abspath(posts_dir)), None)
 
     # Dynamically import lsa.py to avoid sys.path issues regardless of where prompt_foo is run
     sys.path.insert(0, os.path.join(REPO_ROOT, 'scripts', 'articles'))
@@ -299,12 +288,12 @@ def _get_article_list_data(posts_dir: str = CONFIG["POSTS_DIRECTORY"]) -> List[D
                 raw_slug = os.path.splitext(filename)[0]
                 if re.match(r'\d{4}-\d{2}-\d{2}-', raw_slug):
                      raw_slug = raw_slug[11:]
-                style = url_config.get('permalink_style', '/:slug/')
+                style = url_config.get('permalink_style', '/futureproof/:slug/')
                 slug_path = style.replace(':slug', raw_slug)
             else:
                   slug_path = "/" + slug.lstrip('/')
 
-            full_url = f"{url_config['base_url']}{slug_path}"
+            full_url = f"{url_config.get('base_url', 'https://mikelev.in')}{slug_path}"
 
         try:
             # We still need the full content here for token counting
@@ -746,11 +735,9 @@ def main():
         action='store_true',
         help='Include matching Holographic Context JSONs for any articles listed/included.'
     )
-    parser.add_argument(
-        '-t', '--target', 
-        type=str, 
-        help='Specify a target ID from targets.json to set the article source.'
-    )
+    # Add the unified arguments (we recreate it here to avoid dynamic import pathing nightmares with prompt_foo being at the root)
+    parser.add_argument('-t', '--target', type=str, help="Target ID from targets.json (e.g., '1')")
+    parser.add_argument('-k', '--key', type=str, help="API key alias from keys.json (ignored by prompt_foo, here for compatibility)")
     args = parser.parse_args()
 
     # Handle Target Selection
