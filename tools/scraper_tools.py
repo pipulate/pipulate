@@ -107,6 +107,12 @@ async def selenium_automation(params: dict) -> dict:
 
     # --- Find the browser executable path (Platform-Specific) ---
     effective_os = os.environ.get("EFFECTIVE_OS") # This is set by your flake.nix
+    
+    # Fallback in case script is run outside of the Nix shell
+    if not effective_os:
+        import platform
+        effective_os = platform.system().lower()
+
     browser_path = None
     driver_path = None
 

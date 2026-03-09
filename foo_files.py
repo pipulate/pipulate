@@ -17,8 +17,12 @@
 AI_PHOOEY_CHOP = """\
 # FIXING MAC BSD vs LINUX GNU QUIRKS
 flake.nix
+prompt_foo.py
 tools/mcp_tools.py
 tools/scraper_tools.py
+apps/040_hello_workflow.py
+assets/player-piano.js
+assets/scenarios/hello_workflow_test.json
 
 # flake.nix
 # prompt_foo.py
