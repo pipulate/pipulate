@@ -16,7 +16,6 @@
 
 AI_PHOOEY_CHOP = """\
 /home/mike/.config/articleizer/targets.json
-/home/mike/.config/articleizer/url_map.json
 scripts/articles/articleizer.py
 scripts/articles/publishizer.py
 scripts/articles/contextualizer.py
