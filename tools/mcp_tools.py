@@ -2592,16 +2592,25 @@ async def browser_automate_workflow_walkthrough(params: dict) -> dict:
 
         try:
             # Kill only hung Chromium automation instances (not user's main Chrome)
-            # Look for automation-specific patterns in command line
-            result = subprocess.run(['pgrep', '-f', 'chromium.*--user-data-dir.*temp'], capture_output=True, text=True)
+            import platform
+            is_mac = platform.system().lower() == 'darwin'
+            
+            # Mac process name contains 'Chrome', Linux uses 'chromium'
+            process_pattern = 'Chrome.*--user-data-dir.*temp' if is_mac else 'chromium.*--user-data-dir.*temp'
+            
+            result = subprocess.run(['pgrep', '-f', process_pattern], capture_output=True, text=True)
             if result.stdout.strip():
                 pids = result.stdout.strip().split('\n')
                 for pid in pids:
                     if pid.strip():
                         try:
                             # Verify this is actually an automation instance before killing
-                            cmdline_check = subprocess.run(['ps', '-p', pid, '-o', 'cmd', '--no-headers'],
-                                                           capture_output=True, text=True)
+                            if is_mac:
+                                ps_cmd = ['ps', '-p', pid, '-o', 'command=']
+                            else:
+                                ps_cmd = ['ps', '-p', pid, '-o', 'cmd', '--no-headers']
+                                
+                            cmdline_check = subprocess.run(ps_cmd, capture_output=True, text=True)
                             if 'temp' in cmdline_check.stdout and '--user-data-dir' in cmdline_check.stdout:
                                 os.kill(int(pid), signal.SIGKILL)
                                 logger.info(f"🔪 FINDER_TOKEN: WORKFLOW_AUTOMATION_CHROMIUM_CLEANUP - Killed automation Chromium PID: {pid}")
