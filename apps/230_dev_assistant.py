@@ -783,7 +783,7 @@ class DevAssistant:
                 f"Update each step handler (step_01, step_02, etc.) to check three phases:\n\n"
                 f"```python\n"
                 f"# In each step_XX method, add these checks:\n"
-                f"finalize_data = pip.get_step_data(pipeline_id, 'finalize', {{}})\n"
+                f"finalize_data = wand.get_step_data(pipeline_id, 'finalize', {{}})\n"
                 f"if 'finalized' in finalize_data:\n"
                 f"    # Return finalized view\n"
                 f"    return Div(\n"
@@ -793,7 +793,7 @@ class DevAssistant:
                 f"    )\n"
                 f"elif user_val and state.get('_revert_target') != step_id:\n"
                 f"    # Return completed view with revert option\n"
-                f"    return pip.chain_reverter(step_id, step_index, steps, app_name, processed_val)\n"
+                f"    return wand.chain_reverter(step_id, step_index, steps, app_name, processed_val)\n"
                 f"else:\n"
                 f"    # Return input form\n"
                 f"```"
@@ -810,7 +810,7 @@ class DevAssistant:
                 f"In step submit handlers, ensure the response includes hx_trigger='load':\n\n"
                 f"```python\n"
                 f"# In step_XX_submit methods, return:\n"
-                f"return pip.chain_reverter(\n"
+                f"return wand.chain_reverter(\n"
                 f"    step_id=step_id,\n"
                 f"    step_index=step_index,\n"
                 f"    steps=steps,\n"
@@ -821,7 +821,7 @@ class DevAssistant:
                 f"Or manually create the pattern:\n"
                 f"```python\n"
                 f"return Div(\n"
-                f"    pip.display_revert_header(step_id, app_name, steps, f'{{step.show}}: {{value}}'),\n"
+                f"    wand.display_revert_header(step_id, app_name, steps, f'{{step.show}}: {{value}}'),\n"
                 f"    Div(id=next_step_id, hx_get=f'/{{app_name}}/{{next_step_id}}', hx_trigger='load'),\n"
                 f"    id=step_id\n"
                 f")\n"
@@ -869,12 +869,12 @@ class DevAssistant:
                         f"Add this method to the class:\n\n"
                         f"```python\n"
                         f"async def finalize_submit(self, request):\n"
-                        f"    pip, db, app_name = self.pipulate, self.pipulate.db, self.APP_NAME\n"
-                        f"    pipeline_id = pip.db.get('pipeline_id', 'unknown')\n"
+                        f"    wand, db, app_name = self.pipulate, self.pipulate.db, self.APP_NAME\n"
+                        f"    pipeline_id = wand.db.get('pipeline_id', 'unknown')\n"
                         f"    \n"
-                        f"    await pip.set_step_data(pipeline_id, 'finalize', {{'finalized': True}}, self.steps)\n"
-                        f"    await self.message_queue.add(pip, 'Workflow finalized.', verbatim=True)\n"
-                        f"    return pip.run_all_cells(app_name, self.steps)\n"
+                        f"    await wand.set_step_data(pipeline_id, 'finalize', {{'finalized': True}}, self.steps)\n"
+                        f"    await self.message_queue.add(wand, 'Workflow finalized.', verbatim=True)\n"
+                        f"    return wand.run_all_cells(app_name, self.steps)\n"
                         f"```\n\n"
                         f"OR modify the route registration to not expect finalize_submit and handle POST in finalize() method instead."
                     )
@@ -901,12 +901,12 @@ class DevAssistant:
                             f"SOLUTION 1 - Add the missing method:\n"
                             f"```python\n"
                             f"async def finalize_submit(self, request):\n"
-                            f"    pip, db, app_name = self.pipulate, self.pipulate.db, self.app_name\n"
-                            f"    pipeline_id = pip.db.get('pipeline_id', 'unknown')\n"
+                            f"    wand, db, app_name = self.pipulate, self.pipulate.db, self.app_name\n"
+                            f"    pipeline_id = wand.db.get('pipeline_id', 'unknown')\n"
                             f"    \n"
-                            f"    await pip.set_step_data(pipeline_id, 'finalize', {{'finalized': True}}, self.steps)\n"
-                            f"    await self.message_queue.add(pip, 'Workflow finalized.', verbatim=True)\n"
-                            f"    return pip.run_all_cells(app_name, self.steps)\n"
+                            f"    await wand.set_step_data(pipeline_id, 'finalize', {{'finalized': True}}, self.steps)\n"
+                            f"    await self.message_queue.add(wand, 'Workflow finalized.', verbatim=True)\n"
+                            f"    return wand.run_all_cells(app_name, self.steps)\n"
                             f"```\n\n"
                             f"SOLUTION 2 - Exclude finalize from dynamic registration:\n"
                             f"```python\n"
@@ -919,16 +919,16 @@ class DevAssistant:
                             f"SOLUTION 3 - Handle POST in finalize() method (RECOMMENDED):\n"
                             f"```python\n"
                             f"async def finalize(self, request):\n"
-                            f"    pip, db, app_name = self.pipulate, self.pipulate.db, self.app_name\n"
-                            f"    pipeline_id = pip.db.get('pipeline_id', 'unknown')\n"
+                            f"    wand, db, app_name = self.pipulate, self.pipulate.db, self.app_name\n"
+                            f"    pipeline_id = wand.db.get('pipeline_id', 'unknown')\n"
                             f"    \n"
                             f"    if request.method == 'GET':\n"
                             f"        # Handle GET request (show finalize form)\n"
                             f"        return Card(H3('Ready to finalize?'), ...)\n"
                             f"    else:  # POST\n"
                             f"        # Handle finalization\n"
-                            f"        await pip.finalize_workflow(pipeline_id)\n"
-                            f"        return pip.run_all_cells(app_name, self.steps)\n"
+                            f"        await wand.finalize_workflow(pipeline_id)\n"
+                            f"        return wand.run_all_cells(app_name, self.steps)\n"
                             f"```"
                         )
 
@@ -945,19 +945,19 @@ class DevAssistant:
                         f"Add this method to the class:\n\n"
                         f"```python\n"
                         f"async def {step_submit}_submit(self, request):\n"
-                        f"    pip, steps, app_name = (self.pipulate, self.steps, self.app_name)\n"
+                        f"    wand, steps, app_name = (self.pipulate, self.steps, self.app_name)\n"
                         f"    step_id = '{step_submit}'\n"
                         f"    step_index = self.steps_indices[step_id]\n"
-                        f"    pipeline_id = pip.db.get('pipeline_id', 'unknown')\n"
+                        f"    pipeline_id = wand.db.get('pipeline_id', 'unknown')\n"
                         f"    \n"
                         f"    form = await request.form()\n"
                         f"    # Process form data here\n"
                         f"    user_input = form.get('field_name', '').strip()\n"
                         f"    \n"
                         f"    # Store step data\n"
-                        f"    await pip.set_step_data(pipeline_id, step_id, user_input, steps)\n"
+                        f"    await wand.set_step_data(pipeline_id, step_id, user_input, steps)\n"
                         f"    \n"
-                        f"    return pip.chain_reverter(step_id, step_index, steps, app_name, user_input)\n"
+                        f"    return wand.chain_reverter(step_id, step_index, steps, app_name, user_input)\n"
                         f"```"
                     )
 
@@ -1098,7 +1098,7 @@ class DevAssistant:
 
         # UPDATED: UI Constants check - handle both patterns
         has_local_ui_constants = 'UI_CONSTANTS' in content and 'UI_CONSTANTS = {' in content
-        has_centralized_ui = 'pip.get_ui_constants()' in content or 'self.ui = ' in content
+        has_centralized_ui = 'wand.get_ui_constants()' in content or 'self.ui = ' in content
 
         if has_local_ui_constants:
             analysis["patterns_found"].append("✅ Local UI_CONSTANTS for styling found")
@@ -1134,7 +1134,7 @@ class DevAssistant:
                 f"```python\n"
                 f"def __init__(self, app, pipulate, pipeline, db, app_name=None):\n"
                 f"    # ... existing code ...\n"
-                f"    self.ui = pip.get_ui_constants()  # Access centralized UI constants\n"
+                f"    self.ui = wand.get_ui_constants()  # Access centralized UI constants\n"
                 f"    # ... rest of init ...\n"
                 f"```"
             )
@@ -1323,16 +1323,16 @@ class DevAssistant:
                         handler_code.append(f"""
 
     async def step_{num}(self, request):
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_{num}'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {{}})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {{}})
         user_val = step_data.get(step.done, '')
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {{}})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {{}})
 
         if 'finalized' in finalize_data:
             return Div(
@@ -1341,7 +1341,7 @@ class DevAssistant:
                 id=step_id
             )
         elif user_val and state.get('_revert_target') != step_id:
-            return pip.chain_reverter(step_id, step_index, steps, app_name, user_val)
+            return wand.chain_reverter(step_id, step_index, steps, app_name, user_val)
         else:
             return Div(
                 Card(
@@ -1361,19 +1361,19 @@ class DevAssistant:
                         handler_code.append(f"""
 
     async def step_{num}_submit(self, request):
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_{num}'
         step_index = self.steps_indices[step_id]
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
 
         form = await request.form()
         # Process form data here
         user_input = form.get('field_name', '').strip()
 
         # Store step data
-        await pip.set_step_data(pipeline_id, step_id, user_input, steps)
+        await wand.set_step_data(pipeline_id, step_id, user_input, steps)
 
-        return pip.chain_reverter(step_id, step_index, steps, app_name, user_input)\n""")
+        return wand.chain_reverter(step_id, step_index, steps, app_name, user_input)\n""")
 
                 analysis["coding_assistant_prompts"].append(
                     f"Add missing step handlers to {filename}:\n"
@@ -1392,15 +1392,15 @@ class DevAssistant:
                 f"Add this method to handle workflow finalization:\n\n"
                 f"```python\n"
                 f"async def finalize(self, request):\n"
-                f"    pip, db, app_name = self.pipulate, self.pipulate.db, self.APP_NAME\n"
-                f"    pipeline_id = pip.db.get('pipeline_id', 'unknown')\n"
+                f"    wand, db, app_name = self.pipulate, self.pipulate.db, self.APP_NAME\n"
+                f"    pipeline_id = wand.db.get('pipeline_id', 'unknown')\n"
                 f"    \n"
                 f"    if request.method == 'POST':\n"
-                f"        await pip.set_step_data(pipeline_id, 'finalize', {{'finalized': True}}, self.steps)\n"
-                f"        await self.message_queue.add(pip, 'Workflow finalized.', verbatim=True)\n"
-                f"        return pip.run_all_cells(app_name, self.steps)\n"
+                f"        await wand.set_step_data(pipeline_id, 'finalize', {{'finalized': True}}, self.steps)\n"
+                f"        await self.message_queue.add(wand, 'Workflow finalized.', verbatim=True)\n"
+                f"        return wand.run_all_cells(app_name, self.steps)\n"
                 f"    \n"
-                f"    finalize_data = pip.get_step_data(pipeline_id, 'finalize', {{}})\n"
+                f"    finalize_data = wand.get_step_data(pipeline_id, 'finalize', {{}})\n"
                 f"    if 'finalized' in finalize_data:\n"
                 f"        return Card(\n"
                 f"            H3('🔒 Workflow Finalized'),\n"

@@ -15,45 +15,45 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-apps/010_introduction.py
-apps/015_backup_introduction.py
-apps/020_profiles.py
-apps/025_aspect.py
-apps/030_roles.py
-apps/050_documentation.py
-apps/060_tasks.py
-apps/070_history.py
-apps/100_connect_with_botify.py
-# apps/110_parameter_buster.py
-# apps/120_link_graph.py
-apps/130_gap_analysis.py
-apps/200_workflow_genesis.py
-# apps/210_widget_examples.py
-apps/220_roadmap.py
+# apps/010_introduction.py
+# apps/015_backup_introduction.py
+# apps/020_profiles.py
+# apps/025_aspect.py
+# apps/030_roles.py
+# apps/050_documentation.py
+# apps/060_tasks.py
+# apps/070_history.py
+# apps/100_connect_with_botify.py
+# # apps/110_parameter_buster.py
+# # apps/120_link_graph.py
+# apps/130_gap_analysis.py
+# apps/200_workflow_genesis.py
+# # apps/210_widget_examples.py
+# apps/220_roadmap.py
 apps/230_dev_assistant.py
-apps/240_simon_mcp.py
-apps/300_blank_placeholder.py
-# apps/400_botify_trifecta.py
-apps/440_browser_automation.py
-apps/450_stream_simulator.py
-apps/510_text_field.py
-apps/520_text_area.py
-apps/530_dropdown.py
-apps/540_checkboxes.py
-apps/550_radios.py
-apps/560_range.py
-apps/570_switch.py
-apps/580_upload.py
-apps/610_markdown.py
-apps/620_mermaid.py
-apps/630_prism.py
-apps/640_javascript.py
-apps/710_pandas.py
-apps/720_rich.py
-apps/730_matplotlib.py
-apps/810_webbrowser.py
-apps/820_selenium.py
-apps/040_hello_workflow.py
+# apps/240_simon_mcp.py
+# apps/300_blank_placeholder.py
+# # apps/400_botify_trifecta.py
+# apps/440_browser_automation.py
+# apps/450_stream_simulator.py
+# apps/510_text_field.py
+# apps/520_text_area.py
+# apps/530_dropdown.py
+# apps/540_checkboxes.py
+# apps/550_radios.py
+# apps/560_range.py
+# apps/570_switch.py
+# apps/580_upload.py
+# apps/610_markdown.py
+# apps/620_mermaid.py
+# apps/630_prism.py
+# apps/640_javascript.py
+# apps/710_pandas.py
+# apps/720_rich.py
+# apps/730_matplotlib.py
+# apps/810_webbrowser.py
+# apps/820_selenium.py
+# apps/040_hello_workflow.py
 
 # flake.nix
 # foo_files.py
