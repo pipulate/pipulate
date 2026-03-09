@@ -392,11 +392,25 @@ def parse_file_list_from_config() -> List[Tuple[str, str]]:
     return parsed_files
 
 def copy_to_clipboard(text: str):
-    if not shutil.which('xclip'):
-        logger.print("\nWarning: 'xclip' not found. Cannot copy to clipboard.")
+    """Copies text to the system clipboard gracefully across macOS and Linux."""
+    import platform
+    
+    system = platform.system().lower()
+    
+    if system == "darwin":
+        cmd = ['pbcopy']
+    elif system == "linux":
+        cmd = ['xclip', '-selection', 'clipboard']
+    else:
+        logger.print(f"\nWarning: Unsupported OS for clipboard copy: {system}")
         return
+        
+    if not shutil.which(cmd[0]):
+        logger.print(f"\nWarning: '{cmd[0]}' not found. Cannot copy to clipboard.")
+        return
+
     try:
-        subprocess.run(['xclip', '-selection', 'clipboard'], input=text.encode('utf-8'), check=True)
+        subprocess.run(cmd, input=text.encode('utf-8'), check=True)
         logger.print("Markdown output copied to clipboard")
     except Exception as e:
         logger.print(f"\nWarning: Could not copy to clipboard: {e}")
