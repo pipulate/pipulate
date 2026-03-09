@@ -323,7 +323,7 @@ To add a new optional data source (e.g., third-party analytics):
    if new_data_file.exists():
        try:
            new_df = pd.read_csv(new_data_file)
-           await self.message_queue.add(pip, f'📊 Loaded new data: {len(new_df):,} rows', verbatim=True)
+           await self.message_queue.add(wand, f'📊 Loaded new data: {len(new_df):,} rows', verbatim=True)
            
            # Handle column naming consistency
            if 'Different URL Column' in new_df.columns:
@@ -333,9 +333,9 @@ To add a new optional data source (e.g., third-party analytics):
            nodes_df = nodes_df.merge(new_df, on='url', how='left')
            
        except Exception as e:
-           await self.message_queue.add(pip, f'⚠️ Warning: Could not load new data: {str(e)}', verbatim=True)
+           await self.message_queue.add(wand, f'⚠️ Warning: Could not load new data: {str(e)}', verbatim=True)
    else:
-       await self.message_queue.add(pip, '⚠️ No new data found, continuing without additional metrics', verbatim=True)
+       await self.message_queue.add(wand, '⚠️ No new data found, continuing without additional metrics', verbatim=True)
    ```
 
 3. **Update NaN handling** to include new metrics with appropriate defaults
@@ -433,8 +433,8 @@ The workflow fails gracefully if the essential link graph data is missing:
 
 ```python
 if not link_graph_file.exists():
-    await self.message_queue.add(pip, '❌ Error: Link graph data not found. Please complete Step 2 first.', verbatim=True)
-    return P('Error: Link graph data not found. Please complete Step 2 first.', style=pip.get_style('error'))
+    await self.message_queue.add(wand, '❌ Error: Link graph data not found. Please complete Step 2 first.', verbatim=True)
+    return P('Error: Link graph data not found. Please complete Step 2 first.', style=wand.get_style('error'))
 ```
 
 ### Graceful Handling of Missing GSC Data
@@ -446,7 +446,7 @@ GSC data enhances the visualization but isn't required:
 if gsc_file.exists():
     try:
         gsc_df = pd.read_csv(gsc_file)
-        await self.message_queue.add(pip, f'📈 Loaded GSC data: {len(gsc_df):,} rows', verbatim=True)
+        await self.message_queue.add(wand, f'📈 Loaded GSC data: {len(gsc_df):,} rows', verbatim=True)
         
         # Rename 'Full URL' to 'url' for consistent merging
         if 'Full URL' in gsc_df.columns:
@@ -456,9 +456,9 @@ if gsc_file.exists():
         nodes_df = nodes_df.merge(gsc_df, on='url', how='left')
         
     except Exception as e:
-        await self.message_queue.add(pip, f'⚠️ Warning: Could not load GSC data: {str(e)}', verbatim=True)
+        await self.message_queue.add(wand, f'⚠️ Warning: Could not load GSC data: {str(e)}', verbatim=True)
 else:
-    await self.message_queue.add(pip, '⚠️ No GSC data found, continuing without performance metrics', verbatim=True)
+    await self.message_queue.add(wand, '⚠️ No GSC data found, continuing without performance metrics', verbatim=True)
 ```
 
 ### Graceful Handling of Missing Web Logs Data
@@ -470,7 +470,7 @@ Similar pattern for weblog data:
 if weblog_file.exists():
     try:
         weblog_df = pd.read_csv(weblog_file)
-        await self.message_queue.add(pip, f'🌐 Loaded weblog data: {len(weblog_df):,} rows', verbatim=True)
+        await self.message_queue.add(wand, f'🌐 Loaded weblog data: {len(weblog_df):,} rows', verbatim=True)
         
         # Rename 'Full URL' to 'url' for consistent merging
         if 'Full URL' in weblog_df.columns:
@@ -480,9 +480,9 @@ if weblog_file.exists():
         nodes_df = nodes_df.merge(weblog_df, on='url', how='left')
         
     except Exception as e:
-        await self.message_queue.add(pip, f'⚠️ Warning: Could not load weblog data: {str(e)}', verbatim=True)
+        await self.message_queue.add(wand, f'⚠️ Warning: Could not load weblog data: {str(e)}', verbatim=True)
 else:
-    await self.message_queue.add(pip, '⚠️ No weblog data found, continuing without crawl data', verbatim=True)
+    await self.message_queue.add(wand, '⚠️ No weblog data found, continuing without crawl data', verbatim=True)
 ```
 
 ### Comprehensive Robustness Checklist
