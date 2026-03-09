@@ -150,8 +150,10 @@ def create_jekyll_post(article_content, instructions, output_dir):
     analysis_markdown = "\n## Book Analysis\n"
     if 'ai_editorial_take' in analysis_content:
         analysis_markdown += f"\n### Ai Editorial Take\n{analysis_content['ai_editorial_take']}\n"
+    if 'promotional_tweet' in analysis_content:
+        analysis_markdown += f"\n### 🐦 X.com Promo Tweet\n```text\n{analysis_content['promotional_tweet']}\n```\n"
     for key, value in analysis_content.items():
-        if key in ['authors_imprint', 'ai_editorial_take']:
+        if key in ['authors_imprint', 'ai_editorial_take', 'promotional_tweet']:
             continue
         title = key.replace('_', ' ').title()
         analysis_markdown += f"\n### {title}\n"
