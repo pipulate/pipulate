@@ -372,19 +372,19 @@ https://levinix.com/install.sh
 # imports/append_only_conversation.py
 # imports/ascii_displays.py
 
-# CHAPTER 5: THE HANDS (AI TOOLS & AUTOMATION) (~350KB)
-# What the AI actually *does* with its agency.
-# `tools/` defines every action the AI can take via MCP dispatch.
-tools/__init__.py
-tools/keychain_tools.py
-tools/scraper_tools.py
-tools/llm_optics.py
-tools/conversation_tools.py
-tools/system_tools.py
-tools/dom_tools.py
-tools/botify_tools.py
-# tools/advanced_automation_tools.py
-tools/mcp_tools.py
+# # CHAPTER 5: THE HANDS (AI TOOLS & AUTOMATION) (~350KB)
+# # What the AI actually *does* with its agency.
+# # `tools/` defines every action the AI can take via MCP dispatch.
+# tools/__init__.py
+# tools/keychain_tools.py
+# tools/scraper_tools.py
+# tools/llm_optics.py
+# tools/conversation_tools.py
+# tools/system_tools.py
+# tools/dom_tools.py
+# tools/botify_tools.py
+# # tools/advanced_automation_tools.py
+# tools/mcp_tools.py
 
 # # CHAPTER 6: THE SKIN (FRONTEND ASSETS & INIT) (~265KB)
 # # HTML over the wire. No Virtual DOM. The client-side muscle.
