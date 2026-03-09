@@ -56,9 +56,9 @@ class WorkflowGenesis:
         self.app_name = self.APP_NAME
         self.pipulate = pipulate
         self.pipeline = pipeline
-        pip = self.pipulate
-        pip = self.pipulate
-        self.message_queue = pip.get_message_queue()
+        wand = self.pipulate
+        wand = self.pipulate
+        self.message_queue = wand.get_message_queue()
 
         self.steps = [
             Step(id='step_01', done='workflow_params', show='1. Define Workflow Parameters', refill=True),
@@ -98,11 +98,11 @@ class WorkflowGenesis:
 
     def _init_step_messages(self):
         """Initialize step messages"""
-        pip = self.pipulate
+        wand = self.pipulate
         return {
             'finalize': {
                     'ready': 'All steps complete. Ready to finalize workflow.',
-                    'complete': f'Workflow finalized. Use {pip.UNLOCK_BUTTON_LABEL} to make changes.'
+                    'complete': f'Workflow finalized. Use {wand.UNLOCK_BUTTON_LABEL} to make changes.'
             },
             'step_01': {
                 'input': 'Define the basic parameters for your new workflow.',
@@ -120,13 +120,13 @@ class WorkflowGenesis:
 
     async def landing(self, request):
         """Generate the landing page using the standardized helper while maintaining WET explicitness."""
-        pip = self.pipulate
+        wand = self.pipulate
 
         # Use centralized landing page helper - maintains WET principle by explicit call
-        return pip.create_standard_landing_page(self)
+        return wand.create_standard_landing_page(self)
 
     async def init(self, request):
-        pip, db = self.pipulate, self.pipulate.db
+        wand, db = self.pipulate, self.pipulate.db
         internal_app_name = self.APP_NAME
         form = await request.form()
         user_input_key = form.get('pipeline_id', '').strip()
@@ -137,29 +137,29 @@ class WorkflowGenesis:
             response.headers['HX-Refresh'] = 'true'
             return response
 
-        _, prefix_for_key_gen, _ = pip.generate_pipeline_key(self)
+        _, prefix_for_key_gen, _ = wand.generate_pipeline_key(self)
         if user_input_key.startswith(prefix_for_key_gen) and len(user_input_key.split('-')) == 3:
             pipeline_id = user_input_key
         else:
-            _, prefix, user_part = pip.generate_pipeline_key(self, user_input_key)
+            _, prefix, user_part = wand.generate_pipeline_key(self, user_input_key)
             pipeline_id = f'{prefix}{user_part}'
 
-        pip.db['pipeline_id'] = pipeline_id
-        state, error = pip.initialize_if_missing(pipeline_id, {'app_name': internal_app_name})
+        wand.db['pipeline_id'] = pipeline_id
+        state, error = wand.initialize_if_missing(pipeline_id, {'app_name': internal_app_name})
         if error: return error
 
-        await self.message_queue.add(pip, f'Workflow ID: {pipeline_id}', verbatim=True, spaces_before=0)
-        await self.message_queue.add(pip, f"Return later by selecting '{pipeline_id}' from the dropdown.", verbatim=True, spaces_before=0)
+        await self.message_queue.add(wand, f'Workflow ID: {pipeline_id}', verbatim=True, spaces_before=0)
+        await self.message_queue.add(wand, f"Return later by selecting '{pipeline_id}' from the dropdown.", verbatim=True, spaces_before=0)
 
-        return pip.run_all_cells(internal_app_name, self.steps)
+        return wand.run_all_cells(internal_app_name, self.steps)
 
     # Common finalization methods (simplified)
     async def finalize(self, request):
-        pip, db, app_name = self.pipulate, self.pipulate.db, self.APP_NAME
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        wand, db, app_name = self.pipulate, self.pipulate.db, self.APP_NAME
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
 
         finalize_step_obj = next(s for s in self.steps if s.id == 'finalize')
-        finalize_data = pip.get_step_data(pipeline_id, finalize_step_obj.id, {})
+        finalize_data = wand.get_step_data(pipeline_id, finalize_step_obj.id, {})
 
         if request.method == 'GET':
             if finalize_step_obj.done in finalize_data:
@@ -167,14 +167,14 @@ class WorkflowGenesis:
                     H3('Workflow Creation Complete'),
                     P('Your workflow commands have been generated and are ready to use.', cls='text-secondary'),
                     Form(
-                        Button(pip.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline'),
+                        Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline'),
                         hx_post=f'/{app_name}/unfinalize',
                         hx_target=f'#{app_name}-container'
                     ),
                     id=finalize_step_obj.id
                 )
             else:
-                all_data_steps_complete = all(pip.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in self.steps if step.id != 'finalize')
+                all_data_steps_complete = all(wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in self.steps if step.id != 'finalize')
                 if all_data_steps_complete:
                     return Card(
                         H3('Ready to Finalize'),
@@ -189,34 +189,34 @@ class WorkflowGenesis:
                 else:
                     return Div(id=finalize_step_obj.id)
         elif request.method == 'POST':
-            await pip.finalize_workflow(pipeline_id)
-            await self.message_queue.add(pip, self.step_messages['finalize']['complete'], verbatim=True)
-            return pip.run_all_cells(app_name, self.steps)
+            await wand.finalize_workflow(pipeline_id)
+            await self.message_queue.add(wand, self.step_messages['finalize']['complete'], verbatim=True)
+            return wand.run_all_cells(app_name, self.steps)
 
     async def unfinalize(self, request):
-        pip, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        await pip.unfinalize_workflow(pipeline_id)
-        await self.message_queue.add(pip, 'Workflow creation unfinalized. You can now modify any step.', verbatim=True)
-        return pip.run_all_cells(app_name, self.steps)
+        wand, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        await wand.unfinalize_workflow(pipeline_id)
+        await self.message_queue.add(wand, 'Workflow creation unfinalized. You can now modify any step.', verbatim=True)
+        return wand.run_all_cells(app_name, self.steps)
 
     async def handle_revert(self, request):
-        pip, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
+        wand, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
         form = await request.form()
         step_id_to_revert_to = form.get('step_id')
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
 
         if not step_id_to_revert_to:
             return P('Error: No step specified for revert.', style='color: #dc3545;')
 
-        await pip.clear_steps_from(pipeline_id, step_id_to_revert_to, self.steps)
-        state = pip.read_state(pipeline_id)
+        await wand.clear_steps_from(pipeline_id, step_id_to_revert_to, self.steps)
+        state = wand.read_state(pipeline_id)
         state['_revert_target'] = step_id_to_revert_to
-        pip.write_state(pipeline_id, state)
+        wand.write_state(pipeline_id, state)
 
-        message = await pip.get_state_message(pipeline_id, self.steps, self.step_messages)
-        await self.message_queue.add(pip, message, verbatim=True)
-        return pip.run_all_cells(app_name, self.steps)
+        message = await wand.get_state_message(pipeline_id, self.steps, self.step_messages)
+        await self.message_queue.add(wand, message, verbatim=True)
+        return wand.run_all_cells(app_name, self.steps)
 
     # Utility methods (simplified and extracted)
     def format_bash_command(self, text):
@@ -493,28 +493,28 @@ class WorkflowGenesis:
     # Step implementation methods (simplified structure)
     async def step_01(self, request):
         """Step 1: Define workflow parameters"""
-        pip, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
+        wand, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
         step_id = 'step_01'
         step_index = self.steps_indices[step_id]
         step_obj = self.steps[step_index]
         next_step_id = self.steps[step_index + 1].id
 
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         current_value = step_data.get(step_obj.done, '')
-        finalize_sys_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_sys_data = wand.get_step_data(pipeline_id, 'finalize', {})
 
         if 'finalized' in finalize_sys_data and current_value:
             return Div(
-                pip.finalized_content(message=f"🔒 {step_obj.show}", content=P(f"Workflow: {current_value.get('display_name', 'Unknown')}", cls='text-success')),
+                wand.finalized_content(message=f"🔒 {step_obj.show}", content=P(f"Workflow: {current_value.get('display_name', 'Unknown')}", cls='text-success')),
                 Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'),
                 id=step_id
             )
 
         elif current_value and state.get('_revert_target') != step_id:
             return Div(
-                pip.display_revert_widget(
+                wand.display_revert_widget(
                     step_id=step_id,
                     app_name=app_name,
                     message="Workflow Parameters Defined",
@@ -525,7 +525,7 @@ class WorkflowGenesis:
                 id=step_id
             )
         else:
-            await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
+            await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
 
             # Comprehensive form with all workflow parameters including ENDPOINT_MESSAGE and TRAINING_PROMPT
             form_content = Form(
@@ -571,13 +571,13 @@ class WorkflowGenesis:
 
     async def step_01_submit(self, request):
         """Handle step 1 submission"""
-        pip, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
+        wand, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
         step_id = 'step_01'
         step_index = self.steps_indices[step_id]
         step_obj = self.steps[step_index]
         next_step_id = self.steps[step_index + 1].id
 
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         form_data = await request.form()
 
         # Properly capture form data with fallbacks for empty fields
@@ -591,11 +591,11 @@ class WorkflowGenesis:
         }
 
         # Store form data using set_step_data which handles the {step.done: value} wrapping
-        await pip.set_step_data(pipeline_id, step_id, params, self.steps)
-        await self.message_queue.add(pip, self.step_messages[step_id]['complete'], verbatim=True)
+        await wand.set_step_data(pipeline_id, step_id, params, self.steps)
+        await self.message_queue.add(wand, self.step_messages[step_id]['complete'], verbatim=True)
 
         return Div(
-            pip.display_revert_widget(
+            wand.display_revert_widget(
                 step_id=step_id,
                 app_name=app_name,
                 message="Workflow Parameters Defined",
@@ -608,22 +608,22 @@ class WorkflowGenesis:
 
     async def step_02(self, request):
         """Step 2: Choose template approach"""
-        pip, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
+        wand, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
         step_id = 'step_02'
         step_index = self.steps_indices[step_id]
         step_obj = self.steps[step_index]
         next_step_id = self.steps[step_index + 1].id
 
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         current_value = step_data.get(step_obj.done, '')
-        finalize_sys_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_sys_data = wand.get_step_data(pipeline_id, 'finalize', {})
 
         if 'finalized' in finalize_sys_data and current_value:
             template_info = self.get_template_info(current_value.get('template', 'blank'))
             return Div(
-                pip.finalized_content(message=f"🔒 {step_obj.show}", content=P(f"Template: {template_info['name']}", cls='text-success')),
+                wand.finalized_content(message=f"🔒 {step_obj.show}", content=P(f"Template: {template_info['name']}", cls='text-success')),
                 Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'),
                 id=step_id
             )
@@ -631,7 +631,7 @@ class WorkflowGenesis:
         elif current_value and state.get('_revert_target') != step_id:
             template_info = self.get_template_info(current_value.get('template', 'blank'))
             return Div(
-                pip.display_revert_widget(
+                wand.display_revert_widget(
                     step_id=step_id,
                     app_name=app_name,
                     message="Template Approach Selected",
@@ -642,7 +642,7 @@ class WorkflowGenesis:
                 id=step_id
             )
         else:
-            await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
+            await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
 
             form_content = Form(
                 Label("Template Approach", **{'for': 'template'}),
@@ -663,13 +663,13 @@ class WorkflowGenesis:
 
     async def step_02_submit(self, request):
         """Handle step 2 submission"""
-        pip, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
+        wand, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
         step_id = 'step_02'
         step_index = self.steps_indices[step_id]
         step_obj = self.steps[step_index]
         next_step_id = self.steps[step_index + 1].id
 
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         form_data = await request.form()
 
         template_choice = {
@@ -677,11 +677,11 @@ class WorkflowGenesis:
         }
 
         # Store template choice using set_step_data which handles the {step.done: value} wrapping
-        await pip.set_step_data(pipeline_id, step_id, template_choice, self.steps)
-        await self.message_queue.add(pip, self.step_messages[step_id]['complete'], verbatim=True)
+        await wand.set_step_data(pipeline_id, step_id, template_choice, self.steps)
+        await self.message_queue.add(wand, self.step_messages[step_id]['complete'], verbatim=True)
 
         # Get previous step data for command generation
-        step_01_data = pip.get_step_data(pipeline_id, 'step_01', {})
+        step_01_data = wand.get_step_data(pipeline_id, 'step_01', {})
         workflow_params = step_01_data.get('workflow_params', {})
         selected_template = template_choice.get('template', 'blank')
 
@@ -757,7 +757,7 @@ class WorkflowGenesis:
 
         return Div(
             copy_script,
-            pip.display_revert_widget(
+            wand.display_revert_widget(
                 step_id=step_id,
                 app_name=app_name,
                 message=f"Template: {template_info['name']} - Commands Generated",
@@ -770,28 +770,28 @@ class WorkflowGenesis:
 
     async def step_03(self, request):
         """Step 3: Execute command sequence (placeholder for subprocess execution)"""
-        pip, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
+        wand, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
         step_id = 'step_03'
         step_index = self.steps_indices[step_id]
         step_obj = self.steps[step_index]
         next_step_id = self.steps[step_index + 1].id
 
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         current_value = step_data.get(step_obj.done, '')
-        finalize_sys_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_sys_data = wand.get_step_data(pipeline_id, 'finalize', {})
 
         if 'finalized' in finalize_sys_data and current_value:
             return Div(
-                pip.finalized_content(message=f"🔒 {step_obj.show}", content=P("Command execution complete.", cls='text-success')),
+                wand.finalized_content(message=f"🔒 {step_obj.show}", content=P("Command execution complete.", cls='text-success')),
                 Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'),
                 id=step_id
             )
 
         elif current_value and state.get('_revert_target') != step_id:
             return Div(
-                pip.display_revert_widget(
+                wand.display_revert_widget(
                     step_id=step_id,
                     app_name=app_name,
                     message="Command Execution Complete",
@@ -802,10 +802,10 @@ class WorkflowGenesis:
                 id=step_id
             )
         else:
-            await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
+            await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
 
             # Get workflow parameters to show what file will be created
-            step_01_data = pip.get_step_data(pipeline_id, 'step_01', {})
+            step_01_data = wand.get_step_data(pipeline_id, 'step_01', {})
             workflow_params = step_01_data.get('workflow_params', {})
             target_filename = workflow_params.get('target_filename', '001_kungfu_workflow.py')
             display_name = workflow_params.get('display_name', 'Kung Fu Download')
@@ -863,17 +863,17 @@ class WorkflowGenesis:
 
     async def step_03_submit(self, request):
         """Handle step 3 submission - actually execute the command sequence"""
-        pip, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
+        wand, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
         step_id = 'step_03'
         step_index = self.steps_indices[step_id]
         step_obj = self.steps[step_index]
         next_step_id = self.steps[step_index + 1].id
 
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
 
         # Get workflow parameters and template data
-        step_01_data = pip.get_step_data(pipeline_id, 'step_01', {})
-        step_02_data = pip.get_step_data(pipeline_id, 'step_02', {})
+        step_01_data = wand.get_step_data(pipeline_id, 'step_01', {})
+        step_02_data = wand.get_step_data(pipeline_id, 'step_02', {})
         workflow_params = step_01_data.get('workflow_params', {})
         template_choice = step_02_data.get('template_choice', {})
 
@@ -942,11 +942,11 @@ class WorkflowGenesis:
 
             # Check if another critical operation is in progress
             if is_critical_operation_in_progress():
-                await self.message_queue.add(pip, "⚠️ Another critical operation is in progress. Please wait and try again.", verbatim=True)
+                await self.message_queue.add(wand, "⚠️ Another critical operation is in progress. Please wait and try again.", verbatim=True)
                 execution_output = "❌ Another critical operation was already in progress."
                 execution_success = False
             else:
-                await self.message_queue.add(pip, "🔄 Executing workflow creation commands...", verbatim=True)
+                await self.message_queue.add(wand, "🔄 Executing workflow creation commands...", verbatim=True)
 
                 # Set flag to prevent watchdog restarts during subprocess execution
                 logger.info("[WORKFLOW_GENESIS] Starting critical subprocess operation. Pausing Watchdog restarts.")
@@ -981,11 +981,11 @@ class WorkflowGenesis:
                     if result.returncode == 0:
                         execution_success = True
                         execution_output += "✅ Workflow creation completed successfully!"
-                        await self.message_queue.add(pip, f"✅ Created {display_filename} successfully!", verbatim=True)
-                        await self.message_queue.add(pip, "🔄 Server restart will be triggered after command completion...", verbatim=True)
+                        await self.message_queue.add(wand, f"✅ Created {display_filename} successfully!", verbatim=True)
+                        await self.message_queue.add(wand, "🔄 Server restart will be triggered after command completion...", verbatim=True)
                     else:
                         execution_output += f"❌ Command failed with exit code {result.returncode}"
-                        await self.message_queue.add(pip, f"❌ Command execution failed with exit code {result.returncode}", verbatim=True)
+                        await self.message_queue.add(wand, f"❌ Command execution failed with exit code {result.returncode}", verbatim=True)
 
                 finally:
                     # Always reset the flag, even if subprocess fails
@@ -1000,12 +1000,12 @@ class WorkflowGenesis:
 
         except subprocess.TimeoutExpired:
             execution_output = f"❌ Command timed out after 60 seconds:\n{combined_cmd}"
-            await self.message_queue.add(pip, "❌ Command execution timed out", verbatim=True)
+            await self.message_queue.add(wand, "❌ Command execution timed out", verbatim=True)
             # Reset flag on timeout
             clear_critical_operation_flag()
         except Exception as e:
             execution_output = f"❌ Error executing command:\n{str(e)}\n\nCommand was:\n{combined_cmd}"
-            await self.message_queue.add(pip, f"❌ Error executing command: {str(e)}", verbatim=True)
+            await self.message_queue.add(wand, f"❌ Error executing command: {str(e)}", verbatim=True)
             # Reset flag on error
             clear_critical_operation_flag()
 
@@ -1031,12 +1031,12 @@ class WorkflowGenesis:
         execution_summary += f"✅ Success: {'Yes' if execution_success else 'No'}\n\n"
         execution_summary += execution_output
 
-        await pip.set_step_data(pipeline_id, step_id, execution_summary, self.steps)
-        await self.message_queue.add(pip, self.step_messages[step_id]['complete'], verbatim=True)
+        await wand.set_step_data(pipeline_id, step_id, execution_summary, self.steps)
+        await self.message_queue.add(wand, self.step_messages[step_id]['complete'], verbatim=True)
 
         if execution_success:
             # Parse current pipeline key to show next key guidance
-            parsed_key = pip.parse_pipeline_key(pipeline_id)
+            parsed_key = wand.parse_pipeline_key(pipeline_id)
             current_number = int(parsed_key.get('run_part', '01'))
             next_number = current_number + 1
             next_key = f"{parsed_key['profile_part']}-{parsed_key['plugin_part']}-{next_number:02d}"
@@ -1095,7 +1095,7 @@ class WorkflowGenesis:
             )
 
         return Div(
-            pip.display_revert_widget(
+            wand.display_revert_widget(
                 step_id=step_id,
                 app_name=app_name,
                 message="🚀 Workflow Creation Executed!" if execution_success else "❌ Workflow Creation Failed",

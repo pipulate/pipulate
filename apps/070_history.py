@@ -70,7 +70,7 @@ class HistoryViewer:
         self.app = app
         self.pipulate = pipulate
         self.pipeline = pipeline
-        pip = self.pipulate
+        wand = self.pipulate
         
         # Register HTMX interaction routes (utility plugin pattern)
         app.route('/history/refresh', methods=['GET'])(self.refresh_history)

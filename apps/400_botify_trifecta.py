@@ -278,13 +278,13 @@ class Trifecta:
         self.pipulate = pipulate
         self.pipeline = pipeline
         self.steps_indices = {}
-        pip = self.pipulate
-        pip = self.pipulate
-        self.message_queue = pip.message_queue
+        wand = self.pipulate
+        wand = self.pipulate
+        self.message_queue = wand.message_queue
 
         # Access centralized configuration through dependency injection
-        self.ui = pip.get_ui_constants()
-        self.config = pip.get_config()
+        self.ui = wand.get_ui_constants()
+        self.config = wand.get_config()
         # HYBRID APPROACH: Dynamic steps with static fallback for helper script compatibility
         # The workflow uses dynamic steps by default, but can fall back to static when needed
         use_static_steps = False  # Set to True to enable static mode for helper scripts
@@ -323,14 +323,14 @@ class Trifecta:
         # Field Discovery Endpoint - Foundation for BQL template validation
         app.route(f'/{app_name}/discover-fields/{{username}}/{{project}}/{{analysis}}', methods=['GET'])(self.discover_fields_endpoint)
 
-        self.step_messages = {'finalize': {'ready': self.ui['MESSAGES']['ALL_STEPS_COMPLETE'], 'complete': f'Workflow finalized. Use {self.ui["BUTTON_LABELS"]["UNLOCK"]} to make changes.'}, 'step_analysis': {'input': f"❔{pip.fmt('step_analysis')}: Please select a crawl analysis for this project.", 'complete': '📊 Crawl analysis download complete. Continue to next step.'}}
+        self.step_messages = {'finalize': {'ready': self.ui['MESSAGES']['ALL_STEPS_COMPLETE'], 'complete': f'Workflow finalized. Use {self.ui["BUTTON_LABELS"]["UNLOCK"]} to make changes.'}, 'step_analysis': {'input': f"❔{wand.fmt('step_analysis')}: Please select a crawl analysis for this project.", 'complete': '📊 Crawl analysis download complete. Continue to next step.'}}
         for step in self.steps:
             if step.id not in self.step_messages:
-                self.step_messages[step.id] = {'input': f'❔{pip.fmt(step.id)}: Please complete {step.show}.', 'complete': f'✳️ {step.show} complete. Continue to next step.'}
-        self.step_messages['step_gsc'] = {'input': f"❔{pip.fmt('step_gsc')}: Please check if the project has Search Console data.", 'complete': 'Search Console check complete. Continue to next step.'}
+                self.step_messages[step.id] = {'input': f'❔{wand.fmt(step.id)}: Please complete {step.show}.', 'complete': f'✳️ {step.show} complete. Continue to next step.'}
+        self.step_messages['step_gsc'] = {'input': f"❔{wand.fmt('step_gsc')}: Please check if the project has Search Console data.", 'complete': 'Search Console check complete. Continue to next step.'}
 
-        self.step_messages['step_crawler'] = {'input': f"❔{pip.fmt('step_crawler')}: Please download basic crawl attributes for node metadata.", 'complete': '📊 Basic crawl data download complete. Continue to next step.'}
-        self.step_messages['step_webogs'] = {'input': f"❔{pip.fmt('step_webogs')}: Please check if the project has web logs available.", 'complete': '📋 Web logs check complete. Continue to next step.'}
+        self.step_messages['step_crawler'] = {'input': f"❔{wand.fmt('step_crawler')}: Please download basic crawl attributes for node metadata.", 'complete': '📊 Basic crawl data download complete. Continue to next step.'}
+        self.step_messages['step_webogs'] = {'input': f"❔{wand.fmt('step_webogs')}: Please check if the project has web logs available.", 'complete': '📋 Web logs check complete. Continue to next step.'}
 
 
     def get_available_templates_for_data_type(self, data_type):
@@ -449,14 +449,14 @@ class Trifecta:
 
     async def landing(self, request):
         """Generate the landing page using the standardized helper while maintaining WET explicitness."""
-        pip = self.pipulate
+        wand = self.pipulate
 
         # Use centralized landing page helper - maintains WET principle by explicit call
-        return pip.create_standard_landing_page(self)
+        return wand.create_standard_landing_page(self)
 
     async def init(self, request):
         """Handles the key submission, initializes state, and renders the step UI placeholders."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         form = await request.form()
         user_input = form.get('pipeline_id', '').strip()
         if not user_input:
@@ -464,7 +464,7 @@ class Trifecta:
             response = Response('')
             response.headers['HX-Refresh'] = 'true'
             return response
-        context = pip.get_plugin_context(self)
+        context = wand.get_plugin_context(self)
         profile_name = context['profile_name'] or 'default'
         plugin_name = app_name  # Use app_name directly to ensure consistency
         profile_part = profile_name.replace(' ', '_')
@@ -473,15 +473,15 @@ class Trifecta:
         if user_input.startswith(expected_prefix):
             pipeline_id = user_input
         else:
-            _, prefix, user_provided_id = pip.generate_pipeline_key(self, user_input)
+            _, prefix, user_provided_id = wand.generate_pipeline_key(self, user_input)
             pipeline_id = f'{prefix}{user_provided_id}'
-        pip.db['pipeline_id'] = pipeline_id
-        state, error = pip.initialize_if_missing(pipeline_id, {'app_name': app_name})
+        wand.db['pipeline_id'] = pipeline_id
+        state, error = wand.initialize_if_missing(pipeline_id, {'app_name': app_name})
         if error:
             return error
-        await self.message_queue.add(pip, f'Workflow ID: {pipeline_id}', verbatim=True, spaces_before=0)
-        await self.message_queue.add(pip, f"Return later by selecting '{pipeline_id}' from the dropdown.", verbatim=True, spaces_before=0)
-        return pip.run_all_cells(app_name, steps)
+        await self.message_queue.add(wand, f'Workflow ID: {pipeline_id}', verbatim=True, spaces_before=0)
+        await self.message_queue.add(wand, f"Return later by selecting '{pipeline_id}' from the dropdown.", verbatim=True, spaces_before=0)
+        return wand.run_all_cells(app_name, steps)
 
     async def finalize(self, request):
         """Handles GET request to show Finalize button and POST request to lock the workflow.
@@ -489,36 +489,36 @@ class Trifecta:
         # PATTERN NOTE: The finalize step is the final destination of the chain reaction
         # and should be triggered by the last content step's submit handler.
         """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         finalize_step = steps[-1]
-        finalize_data = pip.get_step_data(pipeline_id, finalize_step.id, {})
+        finalize_data = wand.get_step_data(pipeline_id, finalize_step.id, {})
         if request.method == 'GET':
             if finalize_step.done in finalize_data:
                 return Card(H3(self.ui['MESSAGES']['WORKFLOW_LOCKED']), Form(Button(self.ui['BUTTON_LABELS']['UNLOCK'], type='submit', cls=self.ui['BUTTON_STYLES']['OUTLINE'], id='trifecta-unlock-button', aria_label='Unlock workflow to make changes', data_testid='trifecta-unlock-button'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
             else:
-                all_steps_complete = all((pip.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
+                all_steps_complete = all((wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
                 if all_steps_complete:
-                    await self.message_queue.add(pip, 'All steps are complete. You can now finalize the workflow or revert to any step to make changes.', verbatim=True)
+                    await self.message_queue.add(wand, 'All steps are complete. You can now finalize the workflow or revert to any step to make changes.', verbatim=True)
                     return Card(H3(self.ui['MESSAGES']['FINALIZE_QUESTION']), P(self.ui['MESSAGES']['FINALIZE_HELP'], cls='text-secondary'), Form(Button(self.ui['BUTTON_LABELS']['FINALIZE'], type='submit', cls=self.ui['BUTTON_STYLES']['PRIMARY'], id='trifecta-finalize-button', aria_label='Finalize workflow and lock all steps', data_testid='trifecta-finalize-button'), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
                 else:
                     return Div(id=finalize_step.id)
         else:
-            await pip.finalize_workflow(pipeline_id)
-            await self.message_queue.add(pip, self.step_messages['finalize']['complete'], verbatim=True)
-            return pip.run_all_cells(app_name, steps)
+            await wand.finalize_workflow(pipeline_id)
+            await self.message_queue.add(wand, self.step_messages['finalize']['complete'], verbatim=True)
+            return wand.run_all_cells(app_name, steps)
 
     async def unfinalize(self, request):
         """Handles POST request to unlock the workflow."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        await pip.unfinalize_workflow(pipeline_id)
-        await self.message_queue.add(pip, self.ui['MESSAGES']['WORKFLOW_UNLOCKED'], verbatim=True)
-        return pip.run_all_cells(app_name, steps)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        await wand.unfinalize_workflow(pipeline_id)
+        await self.message_queue.add(wand, self.ui['MESSAGES']['WORKFLOW_UNLOCKED'], verbatim=True)
+        return wand.run_all_cells(app_name, steps)
 
     async def get_suggestion(self, step_id, state):
         """Gets a suggested input value for a step, often using the previous step's transformed output."""
-        pip, db, steps = (self.pipulate, self.pipulate.db, self.steps)
+        wand, db, steps = (self.pipulate, self.pipulate.db, self.steps)
         step = next((s for s in steps if s.id == step_id), None)
         if not step or not step.transform:
             return ''
@@ -526,26 +526,26 @@ class Trifecta:
         if prev_index < 0:
             return ''
         prev_step = steps[prev_index]
-        prev_data = pip.get_step_data(pip.db['pipeline_id'], prev_step.id, {})
+        prev_data = wand.get_step_data(wand.db['pipeline_id'], prev_step.id, {})
         prev_value = prev_data.get(prev_step.done, '')
         return step.transform(prev_value) if prev_value else ''
 
     async def handle_revert(self, request):
         """Handles POST request to revert to a previous step, clearing subsequent step data."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         form = await request.form()
         step_id = form.get('step_id')
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         if not step_id:
             return P('Error: No step specified', cls='text-invalid')
-        await pip.clear_steps_from(pipeline_id, step_id, steps)
-        state = pip.read_state(pipeline_id)
+        await wand.clear_steps_from(pipeline_id, step_id, steps)
+        state = wand.read_state(pipeline_id)
         state['_revert_target'] = step_id
-        pip.write_state(pipeline_id, state)
-        message = await pip.get_state_message(pipeline_id, steps, self.step_messages)
-        await self.message_queue.add(pip, message, verbatim=True)
-        await self.message_queue.add(pip, f'↩️ Reverted to {step_id}. All subsequent data has been cleared.', verbatim=True)
-        return pip.run_all_cells(app_name, steps)
+        wand.write_state(pipeline_id, state)
+        message = await wand.get_state_message(pipeline_id, steps, self.step_messages)
+        await self.message_queue.add(wand, message, verbatim=True)
+        await self.message_queue.add(wand, f'↩️ Reverted to {step_id}. All subsequent data has been cleared.', verbatim=True)
+        return wand.run_all_cells(app_name, steps)
 
     async def step_project(self, request):
         """Handles GET request for Botify URL input widget.
@@ -553,28 +553,28 @@ class Trifecta:
         # STEP PATTERN: GET handler returns current step UI + empty placeholder for next step
         # Important: The next step div should NOT have hx_trigger here, only in the submit handler
         """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_project'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         project_data_str = step_data.get(step.done, '')
         project_data = json.loads(project_data_str) if project_data_str else {}
         project_url = project_data.get('url', '')
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and project_data:
             return Div(Card(H3(f'🔒 {step.show}'), Div(P(f"Project: {project_data.get('project_name', '')}"), Small(project_url, cls='url-breakable'), cls='custom-card-padding-bg')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         elif project_data and state.get('_revert_target') != step_id:
             project_name = project_data.get('project_name', '')
             username = project_data.get('username', '')
             project_info = Div(H4(f'Project: {project_name}'), P(f'Username: {username}'), Small(project_url, cls='url-breakable'), cls='project-info-box')
-            return Div(pip.display_revert_header(step_id=step_id, app_name=app_name, message=f'{step.show}: {project_url}', steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(wand.display_revert_header(step_id=step_id, app_name=app_name, message=f'{step.show}: {project_url}', steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         else:
             display_value = project_url if step.refill and project_url else ''
-            await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
+            await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
             return Div(
                 Card(
                     H3(f'{step.show}'),
@@ -625,20 +625,20 @@ class Trifecta:
         # 1. Revert control for the completed step
         # 2. Next step div with explicit hx_trigger="load" to chain reaction to next step
         """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_project'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         form = await request.form()
         botify_url = form.get('botify_url', '').strip()
         is_valid, message, project_data = self.validate_botify_url(botify_url)
         if not is_valid:
             return P(f'Error: {message}', cls='text-invalid')
         project_data_str = json.dumps(project_data)
-        await pip.set_step_data(pipeline_id, step_id, project_data_str, steps)
-        await self.message_queue.add(pip, f"✳️ {step.show} complete: {project_data['project_name']}", verbatim=True)
+        await wand.set_step_data(pipeline_id, step_id, project_data_str, steps)
+        await self.message_queue.add(wand, f"✳️ {step.show} complete: {project_data['project_name']}", verbatim=True)
         
         # NEW: Save analyses data as soon as we have a valid project URL
         project_name = project_data.get('project_name', '')
@@ -648,9 +648,9 @@ class Trifecta:
         api_token = self.read_api_token()
         if api_token:
             try:
-                await self.message_queue.add(pip, "🔍 Fetching analyses data...", verbatim=True)
+                await self.message_queue.add(wand, "🔍 Fetching analyses data...", verbatim=True)
                 success, save_message, filepath = await self.save_analyses_to_json(username, project_name, api_token)
-                await self.message_queue.add(pip, save_message, verbatim=True)
+                await self.message_queue.add(wand, save_message, verbatim=True)
                 
                 if success and filepath:
                     # Log the API call for debugging purposes
@@ -665,7 +665,7 @@ class Trifecta:
                     with open(filepath, 'r', encoding='utf-8') as f:
                         saved_data = json.load(f)
                     
-                    await pip.log_api_call_details(
+                    await wand.log_api_call_details(
                         pipeline_id=pipeline_id, step_id=step_id,
                         call_description="Fetch and Save Analyses Data",
                         http_method="GET", url=url, headers=headers,
@@ -676,37 +676,37 @@ class Trifecta:
                     )
                     
             except Exception as e:
-                await self.message_queue.add(pip, f"⚠️ Could not save analyses data: {str(e)}", verbatim=True)
+                await self.message_queue.add(wand, f"⚠️ Could not save analyses data: {str(e)}", verbatim=True)
                 logger.error(f'Error in analyses data saving: {e}')
         else:
-            await self.message_queue.add(pip, "⚠️ No API token found - skipping analyses data save", verbatim=True)
+            await self.message_queue.add(wand, "⚠️ No API token found - skipping analyses data save", verbatim=True)
         
         project_url = project_data.get('url', '')
         project_info = Div(H4(f'Project: {project_name}'), Small(project_url, cls='url-breakable'), cls='project-info-box')
-        return pip.chain_reverter(step_id, step_index, steps, app_name, project_url)
+        return wand.chain_reverter(step_id, step_index, steps, app_name, project_url)
 
     async def step_analysis(self, request):
         """Handles GET request for Analysis selection between steps 1 and 2."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_analysis'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         analysis_result_str = step_data.get(step.done, '')
         analysis_result = json.loads(analysis_result_str) if analysis_result_str else {}
         selected_slug = analysis_result.get('analysis_slug', '')
         prev_step_id = 'step_project'
-        prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('botify_project', '')
         if not prev_data_str:
             return P('Error: Project data not found. Please complete step 1 first.', cls='text-invalid')
         project_data = json.loads(prev_data_str)
         project_name = project_data.get('project_name', '')
         username = project_data.get('username', '')
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and selected_slug:
             return Div(Card(H3(f'🔒 {step.show}'), Div(P(f'Project: {project_name}', cls='mb-sm'), P(f'Selected Analysis: {selected_slug}', cls='font-bold'), cls='custom-card-padding-bg')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         elif selected_slug and state.get('_revert_target') != step_id:
@@ -731,7 +731,7 @@ class Trifecta:
                     id=f'{step_id}_widget'
                 )
             )
-            return Div(pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {selected_slug}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {selected_slug}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         try:
             api_token = self.read_api_token()
             if not api_token:
@@ -779,7 +779,7 @@ class Trifecta:
 
                 if files_found:
                     downloaded_files_info[slug] = files_found
-            await self.message_queue.add(pip, self.step_messages.get(step_id, {}).get('input', f'Select an analysis for {project_name}'), verbatim=True)
+            await self.message_queue.add(wand, self.step_messages.get(step_id, {}).get('input', f'Select an analysis for {project_name}'), verbatim=True)
 
             # Build dropdown options with human-readable descriptions
             dropdown_options = []
@@ -896,14 +896,14 @@ class Trifecta:
 
     async def step_analysis_submit(self, request):
         """Process the selected analysis slug for step_analysis and download crawl data."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_analysis'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         prev_step_id = 'step_project'
-        prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('botify_project', '')
         if not prev_data_str:
             return P('Error: Project data not found. Please complete step 1 first.', cls='text-invalid')
@@ -919,9 +919,9 @@ class Trifecta:
         api_token = self.read_api_token()
         if api_token:
             try:
-                await self.message_queue.add(pip, "🔍 Fetching advanced export data...", verbatim=True)
+                await self.message_queue.add(wand, "🔍 Fetching advanced export data...", verbatim=True)
                 success, save_message, filepath = await self.save_advanced_export_to_json(username, project_name, analysis_slug, api_token)
-                await self.message_queue.add(pip, save_message, verbatim=True)
+                await self.message_queue.add(wand, save_message, verbatim=True)
                 
                 if success and filepath:
                     # Log the API call for debugging purposes
@@ -936,7 +936,7 @@ class Trifecta:
                     with open(filepath, 'r', encoding='utf-8') as f:
                         saved_data = json.load(f)
                     
-                    await pip.log_api_call_details(
+                    await wand.log_api_call_details(
                         pipeline_id=pipeline_id, step_id=step_id,
                         call_description="Fetch and Save Advanced Export Data",
                         http_method="GET", url=url, headers=headers,
@@ -947,10 +947,10 @@ class Trifecta:
                     )
                     
             except Exception as e:
-                await self.message_queue.add(pip, f"⚠️ Could not save advanced export data: {str(e)}", verbatim=True)
+                await self.message_queue.add(wand, f"⚠️ Could not save advanced export data: {str(e)}", verbatim=True)
                 logger.error(f'Error in advanced export data saving: {e}')
         else:
-            await self.message_queue.add(pip, "⚠️ No API token found - skipping advanced export data save", verbatim=True)
+            await self.message_queue.add(wand, "⚠️ No API token found - skipping advanced export data save", verbatim=True)
         
         # Get active template details and check for qualifier config
         active_analysis_template_key = self.get_configured_template('analysis')
@@ -974,7 +974,7 @@ class Trifecta:
                     'export_type': export_type
                 }
                 analysis_result_str = json.dumps(analysis_result)
-                await pip.set_step_data(pipeline_id, step_id, step.done, analysis_result_str)
+                await wand.set_step_data(pipeline_id, step_id, step.done, analysis_result_str)
                 
                 # Create completion widget with action buttons
                 completed_message = f"Using cached crawl data ({file_info['size']})"
@@ -1002,7 +1002,7 @@ class Trifecta:
                 )
                 
                 return Div(
-                    pip.display_revert_widget(
+                    wand.display_revert_widget(
                         step_id=step_id, 
                         app_name=app_name, 
                         message=f'{step.show}: {completed_message}', 
@@ -1016,7 +1016,7 @@ class Trifecta:
             # Cache check failed, continue with download
             pass
 
-        await self.message_queue.add(pip, f'📊 Selected analysis: {analysis_slug}. Starting crawl data download...', verbatim=True)
+        await self.message_queue.add(wand, f'📊 Selected analysis: {analysis_slug}. Starting crawl data download...', verbatim=True)
 
         analysis_result = {
             'analysis_slug': analysis_slug,
@@ -1034,7 +1034,7 @@ class Trifecta:
                 if not api_token:
                     return P('Error: Botify API token not found. Please connect with Botify first.', cls='text-invalid')
 
-                await self.message_queue.add(pip, qualifier_config['user_message_running'], verbatim=True)
+                await self.message_queue.add(wand, qualifier_config['user_message_running'], verbatim=True)
                 qualifier_outcome = await self._execute_qualifier_logic(username, project_name, analysis_slug, api_token, qualifier_config)
 
                 # Store qualifier results
@@ -1043,20 +1043,20 @@ class Trifecta:
                 analysis_result['parameter_placeholder_in_main_query'] = qualifier_config['parameter_placeholder_in_main_query']
 
                 # Send completion message
-                await self.message_queue.add(pip, qualifier_config['user_message_found'].format(
+                await self.message_queue.add(wand, qualifier_config['user_message_found'].format(
                     param_value=qualifier_outcome['parameter_value'],
                     metric_value=qualifier_outcome['metric_at_parameter']
                 ), verbatim=True)
 
             except Exception as e:
-                await self.message_queue.add(pip, f'Error during qualifier logic: {str(e)}', verbatim=True)
+                await self.message_queue.add(wand, f'Error during qualifier logic: {str(e)}', verbatim=True)
                 # Continue with default values
                 analysis_result['dynamic_parameter_value'] = None
                 analysis_result['metric_at_dynamic_parameter'] = 0
                 analysis_result['parameter_placeholder_in_main_query'] = None
 
         analysis_result_str = json.dumps(analysis_result)
-        await pip.set_step_data(pipeline_id, step_id, analysis_result_str, steps)
+        await wand.set_step_data(pipeline_id, step_id, analysis_result_str, steps)
         return Card(
             H3(f'{step.show}'),
             P(f"Downloading data for analysis '{analysis_slug}'..."),
@@ -1078,18 +1078,18 @@ class Trifecta:
 
     async def step_crawler(self, request):
         """Handles GET request for basic crawl data download step."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_crawler'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         check_result_str = step_data.get(step.done, '')
         check_result = json.loads(check_result_str) if check_result_str else {}
         prev_step_id = 'step_project'
-        prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('botify_project', '')
         if not prev_data_str:
             return P('Error: Project data not found. Please complete step 1 first.', cls='text-invalid')
@@ -1120,9 +1120,9 @@ class Trifecta:
                     id=f'{step_id}_widget'
                 )
             )
-            return Div(pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {status_text}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {status_text}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         else:
-            await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
+            await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
             crawler_template = self.get_configured_template('crawler')
 
             # Check if basic crawl data is cached for the CURRENT analysis
@@ -1131,7 +1131,7 @@ class Trifecta:
             try:
                 # Get the current analysis from step_analysis data - try multiple possible keys
                 analysis_step_id = 'step_analysis'
-                analysis_step_data = pip.get_step_data(pipeline_id, analysis_step_id, {})
+                analysis_step_data = wand.get_step_data(pipeline_id, analysis_step_id, {})
                 current_analysis_slug = ''
 
                 # Try to get analysis_slug from the stored data
@@ -1191,12 +1191,12 @@ class Trifecta:
 
     async def step_crawler_submit(self, request):
         """Process the basic crawl data download submission."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_crawler'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
 
         # Check if user clicked skip button
         form = await request.form()
@@ -1204,7 +1204,7 @@ class Trifecta:
 
         if action == 'skip':
             # Handle skip action - create fake completion data and proceed to next step
-            await self.message_queue.add(pip, f"⏭️ Skipping basic crawl data download...", verbatim=True)
+            await self.message_queue.add(wand, f"⏭️ Skipping basic crawl data download...", verbatim=True)
 
             # Create skip data that indicates step was skipped
             skip_result = {
@@ -1217,11 +1217,11 @@ class Trifecta:
                 'template_used': 'Crawl Basic'
             }
 
-            await pip.set_step_data(pipeline_id, step_id, json.dumps(skip_result), steps)
-            await self.message_queue.add(pip, f"⏭️ Basic crawl data step skipped. Proceeding to next step.", verbatim=True)
+            await wand.set_step_data(pipeline_id, step_id, json.dumps(skip_result), steps)
+            await self.message_queue.add(wand, f"⏭️ Basic crawl data step skipped. Proceeding to next step.", verbatim=True)
 
             return Div(
-                pip.display_revert_widget(
+                wand.display_revert_widget(
                     step_id=step_id,
                     app_name=app_name,
                     message=f'{step.show}: Skipped',
@@ -1234,7 +1234,7 @@ class Trifecta:
 
         # Handle normal download action
         prev_step_id = 'step_project'
-        prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('botify_project', '')
         if not prev_data_str:
             return P('Error: Project data not found. Please complete step 1 first.', cls='text-invalid')
@@ -1244,7 +1244,7 @@ class Trifecta:
 
         # Get analysis slug from step_analysis data
         analysis_step_id = 'step_analysis'
-        analysis_step_data = pip.get_step_data(pipeline_id, analysis_step_id, {})
+        analysis_step_data = wand.get_step_data(pipeline_id, analysis_step_id, {})
         analysis_slug = ''
         if analysis_step_data:
             analysis_data_str = analysis_step_data.get('analysis_selection', '')
@@ -1264,7 +1264,7 @@ class Trifecta:
             
             if is_cached and file_info:
                 # Use cached file - create immediate completion result
-                await self.message_queue.add(pip, f"✅ Using cached basic crawl data ({file_info['size']})...", verbatim=True)
+                await self.message_queue.add(wand, f"✅ Using cached basic crawl data ({file_info['size']})...", verbatim=True)
                 
                 # Generate Python code for cached file to enable toggle functionality
                 try:
@@ -1321,7 +1321,7 @@ class Trifecta:
                 }
                 
                 # Store the cached result
-                await pip.set_step_data(pipeline_id, step_id, json.dumps(cached_result), steps)
+                await wand.set_step_data(pipeline_id, step_id, json.dumps(cached_result), steps)
                 
                 # Create completion widget
                 action_buttons = self._create_action_buttons(cached_result, step_id)
@@ -1343,7 +1343,7 @@ class Trifecta:
                 )
                 
                 return Div(
-                    pip.display_revert_widget(
+                    wand.display_revert_widget(
                         step_id=step_id,
                         app_name=app_name,
                         message=f'{step.show}: Using cached basic crawl data ({file_info["size"]})',
@@ -1356,7 +1356,7 @@ class Trifecta:
                 
         except Exception as e:
             # If cache check fails, proceed with download
-            await self.message_queue.add(pip, f"Cache check failed, proceeding with download: {str(e)}", verbatim=True)
+            await self.message_queue.add(wand, f"Cache check failed, proceeding with download: {str(e)}", verbatim=True)
 
         # Proceed with download if not cached
         return Card(
@@ -1376,16 +1376,16 @@ class Trifecta:
 
     async def step_crawler_complete(self, request):
         """Handles completion of basic crawl data step - delegates to step_analysis_process."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_crawler'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         
         # Get project and analysis data
         prev_step_id = 'step_project'
-        prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('botify_project', '')
         if not prev_data_str:
             return P('Error: Project data not found.', cls='text-invalid')
@@ -1394,7 +1394,7 @@ class Trifecta:
         username = project_data.get('username', '')
         
         analysis_step_id = 'step_analysis'
-        analysis_step_data = pip.get_step_data(pipeline_id, analysis_step_id, {})
+        analysis_step_data = wand.get_step_data(pipeline_id, analysis_step_id, {})
         analysis_data_str = analysis_step_data.get('analysis_selection', '')
         if not analysis_data_str:
             return P('Error: Analysis data not found.', cls='text-invalid')
@@ -1426,7 +1426,7 @@ class Trifecta:
             
             # Get the actual step data that was stored by step_analysis_process
             # It should have been stored with key 'crawler_basic' (our step's done key)
-            stored_step_data = pip.get_step_data(pipeline_id, step_id, {})
+            stored_step_data = wand.get_step_data(pipeline_id, step_id, {})
             stored_data_str = stored_step_data.get(step.done, '')
             
             if stored_data_str:
@@ -1447,7 +1447,7 @@ class Trifecta:
                 }
                 
                 # Re-store the enhanced data
-                await pip.set_step_data(pipeline_id, step_id, json.dumps(enhanced_data), steps)
+                await wand.set_step_data(pipeline_id, step_id, json.dumps(enhanced_data), steps)
             else:
                 # Fallback if no data was stored (shouldn't happen but safety first)
                 check_result = {
@@ -1461,7 +1461,7 @@ class Trifecta:
                     'download_complete': True,
                     'python_command': '# Step completed but Python code not available'
                 }
-                await pip.set_step_data(pipeline_id, step_id, json.dumps(check_result), steps)
+                await wand.set_step_data(pipeline_id, step_id, json.dumps(check_result), steps)
             
             return result
             
@@ -1471,18 +1471,18 @@ class Trifecta:
 
     async def step_webogs(self, request):
         """Handles GET request for checking if a Botify project has web logs."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_webogs'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         check_result_str = step_data.get(step.done, '')
         check_result = json.loads(check_result_str) if check_result_str else {}
         prev_step_id = 'step_project'
-        prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('botify_project', '')
         if not prev_data_str:
             return P('Error: Project data not found. Please complete step 1 first.', cls='text-invalid')
@@ -1513,9 +1513,9 @@ class Trifecta:
                     id=f'{step_id}_widget'
                 )
             )
-            return Div(pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Project {status_text}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Project {status_text}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         else:
-            await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
+            await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
 
             # Check if web logs are cached for the CURRENT analysis
             # Use the same logic as step_analysis to get the current analysis
@@ -1523,7 +1523,7 @@ class Trifecta:
             try:
                 # Get the current analysis from step_analysis data - try multiple possible keys
                 analysis_step_id = 'step_analysis'
-                analysis_step_data = pip.get_step_data(pipeline_id, analysis_step_id, {})
+                analysis_step_data = wand.get_step_data(pipeline_id, analysis_step_id, {})
                 current_analysis_slug = ''
 
                 # Try to get analysis_slug from the stored data
@@ -1589,12 +1589,12 @@ class Trifecta:
 
     async def step_webogs_submit(self, request):
         """Process the check for Botify web logs and download if available."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_webogs'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
 
         # Check if user clicked skip button
         form = await request.form()
@@ -1602,7 +1602,7 @@ class Trifecta:
 
         if action == 'skip':
             # Handle skip action - create fake completion data and proceed to next step
-            await self.message_queue.add(pip, f"⏭️ Skipping Web Logs download...", verbatim=True)
+            await self.message_queue.add(wand, f"⏭️ Skipping Web Logs download...", verbatim=True)
 
             # Create skip data that indicates step was skipped
             skip_result = {
@@ -1616,11 +1616,11 @@ class Trifecta:
                 'jobs_payload': {}
             }
 
-            await pip.set_step_data(pipeline_id, step_id, json.dumps(skip_result), steps)
-            await self.message_queue.add(pip, f"⏭️ Web Logs step skipped. Proceeding to next step.", verbatim=True)
+            await wand.set_step_data(pipeline_id, step_id, json.dumps(skip_result), steps)
+            await self.message_queue.add(wand, f"⏭️ Web Logs step skipped. Proceeding to next step.", verbatim=True)
 
             return Div(
-                pip.display_revert_widget(
+                wand.display_revert_widget(
                     step_id=step_id,
                     app_name=app_name,
                     message=f'{step.show}: Skipped',
@@ -1633,7 +1633,7 @@ class Trifecta:
 
         # Handle normal download action
         prev_step_id = 'step_project'
-        prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('botify_project', '')
         if not prev_data_str:
             return P('Error: Project data not found. Please complete step 1 first.', cls='text-invalid')
@@ -1641,7 +1641,7 @@ class Trifecta:
         project_name = project_data.get('project_name', '')
         username = project_data.get('username', '')
         analysis_step_id = 'step_analysis'
-        analysis_step_data = pip.get_step_data(pipeline_id, analysis_step_id, {})
+        analysis_step_data = wand.get_step_data(pipeline_id, analysis_step_id, {})
         analysis_data_str = analysis_step_data.get('analysis_selection', '')
         if not analysis_data_str:
             return P('Error: Analysis data not found. Please complete step 2 first.', cls='text-invalid')
@@ -1653,7 +1653,7 @@ class Trifecta:
             exists, file_info = await self.check_cached_file_for_button_text(username, project_name, analysis_slug, 'weblog')
             if exists:
                 # Use cached file
-                await self.message_queue.add(pip, f"✅ Using cached Web Logs data ({file_info['size']})...", verbatim=True)
+                await self.message_queue.add(wand, f"✅ Using cached Web Logs data ({file_info['size']})...", verbatim=True)
                 
                 # Create cached result data
                 cached_result = {
@@ -1671,7 +1671,7 @@ class Trifecta:
                     'jobs_payload': {}
                 }
 
-                await pip.set_step_data(pipeline_id, step_id, json.dumps(cached_result), steps)
+                await wand.set_step_data(pipeline_id, step_id, json.dumps(cached_result), steps)
 
                 # Create completion widget
                 action_buttons = self._create_action_buttons(cached_result, step_id)
@@ -1693,7 +1693,7 @@ class Trifecta:
                 )
 
                 return Div(
-                    pip.display_revert_widget(
+                    wand.display_revert_widget(
                         step_id=step_id,
                         app_name=app_name,
                         message=f'{step.show}: Using cached Web Logs data ({file_info["size"]})',
@@ -1704,7 +1704,7 @@ class Trifecta:
                     id=step_id
                 )
         except Exception as e:
-            await self.message_queue.add(pip, f"Cache check failed, proceeding with download: {str(e)}", verbatim=True)
+            await self.message_queue.add(wand, f"Cache check failed, proceeding with download: {str(e)}", verbatim=True)
 
         # Fallback to download if no cached file or cache check failed
         return Card(
@@ -1729,12 +1729,12 @@ class Trifecta:
 
     async def step_webogs_complete(self, request):
         """Handles completion after the progress indicator has been shown."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_webogs'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         
         # Get form data
         form = await request.form()
@@ -1745,7 +1745,7 @@ class Trifecta:
         if not all([analysis_slug, username, project_name]):
             # Try to get from previous steps if not in form
             prev_step_id = 'step_project'
-            prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+            prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
             prev_data_str = prev_step_data.get('botify_project', '')
             if prev_data_str:
                 project_data = json.loads(prev_data_str)
@@ -1753,7 +1753,7 @@ class Trifecta:
                 username = project_data.get('username', '')
                 
             analysis_step_id = 'step_analysis'
-            analysis_step_data = pip.get_step_data(pipeline_id, analysis_step_id, {})
+            analysis_step_data = wand.get_step_data(pipeline_id, analysis_step_id, {})
             analysis_data_str = analysis_step_data.get('analysis_selection', '')
             if analysis_data_str:
                 try:
@@ -1770,18 +1770,18 @@ class Trifecta:
 
     async def step_gsc(self, request):
         """Handles GET request for checking if a Botify project has Search Console data."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_gsc'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         check_result_str = step_data.get(step.done, '')
         check_result = json.loads(check_result_str) if check_result_str else {}
         prev_step_id = 'step_project'
-        prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('botify_project', '')
         if not prev_data_str:
             return P('Error: Project data not found. Please complete step 1 first.', cls='text-invalid')
@@ -1812,9 +1812,9 @@ class Trifecta:
                     id=f'{step_id}_widget'
                 )
             )
-            return Div(pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Project {status_text}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Project {status_text}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         else:
-            await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
+            await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
             gsc_template = self.get_configured_template('gsc')
 
             # Check if GSC data is cached for the CURRENT analysis
@@ -1823,7 +1823,7 @@ class Trifecta:
             try:
                 # Get the current analysis from step_analysis data - try multiple possible keys
                 analysis_step_id = 'step_analysis'
-                analysis_step_data = pip.get_step_data(pipeline_id, analysis_step_id, {})
+                analysis_step_data = wand.get_step_data(pipeline_id, analysis_step_id, {})
                 current_analysis_slug = ''
 
                 # Try to get analysis_slug from the stored data
@@ -1883,12 +1883,12 @@ class Trifecta:
 
     async def step_gsc_submit(self, request):
         """Process the check for Botify Search Console data."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_gsc'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
 
         # Check if user clicked skip button
         form = await request.form()
@@ -1896,7 +1896,7 @@ class Trifecta:
 
         if action == 'skip':
             # Handle skip action - create fake completion data and proceed to next step
-            await self.message_queue.add(pip, f"⏭️ Skipping Search Console download...", verbatim=True)
+            await self.message_queue.add(wand, f"⏭️ Skipping Search Console download...", verbatim=True)
 
             # Create skip data that indicates step was skipped
             skip_result = {
@@ -1910,11 +1910,11 @@ class Trifecta:
                 'jobs_payload': {}
             }
 
-            await pip.set_step_data(pipeline_id, step_id, json.dumps(skip_result), steps)
-            await self.message_queue.add(pip, f"⏭️ Search Console step skipped. Proceeding to next step.", verbatim=True)
+            await wand.set_step_data(pipeline_id, step_id, json.dumps(skip_result), steps)
+            await self.message_queue.add(wand, f"⏭️ Search Console step skipped. Proceeding to next step.", verbatim=True)
 
             return Div(
-                pip.display_revert_widget(
+                wand.display_revert_widget(
                     step_id=step_id,
                     app_name=app_name,
                     message=f'{step.show}: Skipped',
@@ -1927,7 +1927,7 @@ class Trifecta:
 
         # Handle normal download action
         prev_step_id = 'step_project'
-        prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('botify_project', '')
         if not prev_data_str:
             return P('Error: Project data not found. Please complete step 1 first.', cls='text-invalid')
@@ -1937,7 +1937,7 @@ class Trifecta:
 
         # Get analysis slug from step_analysis data
         analysis_step_id = 'step_analysis'
-        analysis_step_data = pip.get_step_data(pipeline_id, analysis_step_id, {})
+        analysis_step_data = wand.get_step_data(pipeline_id, analysis_step_id, {})
         analysis_slug = ''
         if analysis_step_data:
             analysis_data_str = analysis_step_data.get('analysis_selection', '')
@@ -1957,7 +1957,7 @@ class Trifecta:
             
             if is_cached and file_info:
                 # Use cached file - create immediate completion result
-                await self.message_queue.add(pip, f"✅ Using cached GSC data ({file_info['size']})...", verbatim=True)
+                await self.message_queue.add(wand, f"✅ Using cached GSC data ({file_info['size']})...", verbatim=True)
                 
                 # Create cached result data
                 cached_result = {
@@ -1976,7 +1976,7 @@ class Trifecta:
                 }
                 
                 # Store the cached result
-                await pip.set_step_data(pipeline_id, step_id, json.dumps(cached_result), steps)
+                await wand.set_step_data(pipeline_id, step_id, json.dumps(cached_result), steps)
                 
                 # Create completion widget
                 action_buttons = self._create_action_buttons(cached_result, step_id)
@@ -1998,7 +1998,7 @@ class Trifecta:
                 )
                 
                 return Div(
-                    pip.display_revert_widget(
+                    wand.display_revert_widget(
                         step_id=step_id,
                         app_name=app_name,
                         message=f'{step.show}: Using cached GSC data ({file_info["size"]})',
@@ -2011,7 +2011,7 @@ class Trifecta:
                 
         except Exception as e:
             # If cache check fails, proceed with download
-            await self.message_queue.add(pip, f"Cache check failed, proceeding with download: {str(e)}", verbatim=True)
+            await self.message_queue.add(wand, f"Cache check failed, proceeding with download: {str(e)}", verbatim=True)
 
         # Proceed with download if not cached
         return Card(
@@ -2031,14 +2031,14 @@ class Trifecta:
 
     async def step_gsc_complete(self, request):
         """Handles completion after the progress indicator has been shown."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_gsc'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         prev_step_id = 'step_project'
-        prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('botify_project', '')
         if not prev_data_str:
             return P('Error: Project data not found.', cls='text-invalid')
@@ -2046,7 +2046,7 @@ class Trifecta:
         project_name = project_data.get('project_name', '')
         username = project_data.get('username', '')
         analysis_step_id = 'step_analysis'
-        analysis_step_data = pip.get_step_data(pipeline_id, analysis_step_id, {})
+        analysis_step_data = wand.get_step_data(pipeline_id, analysis_step_id, {})
         analysis_data_str = analysis_step_data.get('analysis_selection', '')
         if not analysis_data_str:
             return P('Error: Analysis data not found.', cls='text-invalid')
@@ -2058,10 +2058,10 @@ class Trifecta:
                 return Div(P(f'Error: {error_message}', cls='text-invalid'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
             check_result = {'has_search_console': has_search_console, 'project': project_name, 'username': username, 'analysis_slug': analysis_slug, 'timestamp': datetime.now().isoformat()}
             if has_search_console:
-                await self.message_queue.add(pip, f'✅ Project has Search Console data, downloading...', verbatim=True)
-                await self.process_search_console_data(pip, pipeline_id, step_id, username, project_name, analysis_slug, check_result)
+                await self.message_queue.add(wand, f'✅ Project has Search Console data, downloading...', verbatim=True)
+                await self.process_search_console_data(wand, pipeline_id, step_id, username, project_name, analysis_slug, check_result)
             else:
-                await self.message_queue.add(pip, f'Project does not have Search Console data (skipping download)', verbatim=True)
+                await self.message_queue.add(wand, f'Project does not have Search Console data (skipping download)', verbatim=True)
                 
                 # Generate Python debugging code even when no GSC data (for educational purposes)
                 try:
@@ -2083,7 +2083,7 @@ class Trifecta:
                     check_result['python_command'] = f'# Example GSC query for {project_name} (no GSC data available)\n# This project does not have Search Console data integrated.'
                 
                 check_result_str = json.dumps(check_result)
-                await pip.set_step_data(pipeline_id, step_id, check_result_str, steps)
+                await wand.set_step_data(pipeline_id, step_id, check_result_str, steps)
             status_text = 'HAS' if has_search_console else 'does NOT have'
             completed_message = 'Data downloaded successfully' if has_search_console else 'No Search Console data available'
             # Standardize step data before creating action buttons (fixes regression)
@@ -2106,7 +2106,7 @@ class Trifecta:
                     id=f'{step_id}_widget'
                 )
             )
-            return Div(pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {completed_message}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {completed_message}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         except Exception as e:
             logger.error(f'Error in step_gsc_complete: {e}')
             return Div(P(f'Error: {str(e)}', cls='text-invalid'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
@@ -3005,14 +3005,14 @@ await main()
 """
         return curl_command, python_command
 
-    async def process_search_console_data(self, pip, pipeline_id, step_id, username, project_name, analysis_slug, check_result):
+    async def process_search_console_data(self, wand, pipeline_id, step_id, username, project_name, analysis_slug, check_result):
         """Process search console data in the background."""
         logger.info(f'Starting real GSC data export for {username}/{project_name}/{analysis_slug}')
         try:
             gsc_filepath = await self.get_deterministic_filepath(username, project_name, analysis_slug, 'gsc')
             file_exists, file_info = await self.check_file_exists(gsc_filepath)
             if file_exists:
-                await self.message_queue.add(pip, f"✅ Using cached GSC data ({file_info['size']})", verbatim=True)
+                await self.message_queue.add(wand, f"✅ Using cached GSC data ({file_info['size']})", verbatim=True)
                 check_result.update({'download_complete': True, 'download_info': {'has_file': True, 'file_path': gsc_filepath, 'timestamp': file_info['created'], 'size': file_info['size'], 'cached': True}})
                 
                 # Generate Python debugging code even for cached files
@@ -3023,9 +3023,9 @@ await main()
                 check_result['python_command'] = python_command
                 
                 check_result_str = json.dumps(check_result)
-                await pip.set_step_data(pipeline_id, step_id, check_result_str, self.steps)
+                await wand.set_step_data(pipeline_id, step_id, check_result_str, self.steps)
                 return
-            await self.message_queue.add(pip, '🔄 Initiating Search Console data export...', verbatim=True)
+            await self.message_queue.add(wand, '🔄 Initiating Search Console data export...', verbatim=True)
             api_token = self.read_api_token()
             if not api_token:
                 raise ValueError('Cannot read API token')
@@ -3054,23 +3054,23 @@ await main()
                         raise ValueError('Failed to get job URL from response')
                     full_job_url = f'https://api.botify.com{job_url_path}'
                     logger.info(f'Got job URL: {full_job_url}')
-                    await self.message_queue.add(pip, '✅ Export job created successfully!', verbatim=True)
+                    await self.message_queue.add(wand, '✅ Export job created successfully!', verbatim=True)
             except Exception as e:
                 logger.error(f'Error creating export job: {str(e)}')
-                await self.message_queue.add(pip, f'❌ Error creating export job: {str(e)}', verbatim=True)
+                await self.message_queue.add(wand, f'❌ Error creating export job: {str(e)}', verbatim=True)
                 raise
-            await self.message_queue.add(pip, '🔄 Polling for export completion...', verbatim=True)
+            await self.message_queue.add(wand, '🔄 Polling for export completion...', verbatim=True)
             success, result = await self.poll_job_status(full_job_url, api_token, step_context="export")
             if not success:
                 error_message = isinstance(result, str) and result or 'Export job failed'
-                await self.message_queue.add(pip, f'❌ Export failed: {error_message}', verbatim=True)
+                await self.message_queue.add(wand, f'❌ Export failed: {error_message}', verbatim=True)
                 raise ValueError(f'Export failed: {error_message}')
-            await self.message_queue.add(pip, '✅ Export completed and ready for download!', verbatim=True)
+            await self.message_queue.add(wand, '✅ Export completed and ready for download!', verbatim=True)
             download_url = result.get('download_url')
             if not download_url:
-                await self.message_queue.add(pip, '❌ No download URL found in job result', verbatim=True)
+                await self.message_queue.add(wand, '❌ No download URL found in job result', verbatim=True)
                 raise ValueError('No download URL found in job result')
-            await self.message_queue.add(pip, '🔄 Downloading Search Console data...', verbatim=True)
+            await self.message_queue.add(wand, '🔄 Downloading Search Console data...', verbatim=True)
             await self.ensure_directory_exists(gsc_filepath)
             zip_path = f'{gsc_filepath}.zip'
             try:
@@ -3097,23 +3097,23 @@ await main()
                 if os.path.exists(zip_path):
                     os.remove(zip_path)
                 _, file_info = await self.check_file_exists(gsc_filepath)
-                await self.message_queue.add(pip, f"✅ Download complete: {file_info['path']} ({file_info['size']})", verbatim=True)
+                await self.message_queue.add(wand, f"✅ Download complete: {file_info['path']} ({file_info['size']})", verbatim=True)
                 df = pd.read_csv(gsc_filepath, skiprows=1)
                 df.to_csv(gsc_filepath, index=False)
                 download_info = {'has_file': True, 'file_path': gsc_filepath, 'timestamp': file_info['created'], 'size': file_info['size'], 'cached': False}
                 check_result.update({'download_complete': True, 'download_info': download_info})
             except Exception as e:
-                await self.message_queue.add(pip, f'❌ Error downloading or extracting file: {str(e)}', verbatim=True)
+                await self.message_queue.add(wand, f'❌ Error downloading or extracting file: {str(e)}', verbatim=True)
                 raise
-            await self.message_queue.add(pip, '✅ Search Console data ready for analysis!', verbatim=True)
+            await self.message_queue.add(wand, '✅ Search Console data ready for analysis!', verbatim=True)
             check_result_str = json.dumps(check_result)
-            await pip.set_step_data(pipeline_id, step_id, check_result_str, self.steps)
+            await wand.set_step_data(pipeline_id, step_id, check_result_str, self.steps)
         except Exception as e:
             logger.error(f'Error in process_search_console_data: {e}')
             check_result.update({'download_complete': True, 'error': str(e)})
             check_result_str = json.dumps(check_result)
-            await pip.set_step_data(pipeline_id, step_id, check_result_str, self.steps)
-            await self.message_queue.add(pip, f'❌ Error processing Search Console data: {str(e)}', verbatim=True)
+            await wand.set_step_data(pipeline_id, step_id, check_result_str, self.steps)
+            await self.message_queue.add(wand, f'❌ Error processing Search Console data: {str(e)}', verbatim=True)
             raise
 
 
@@ -3536,20 +3536,20 @@ await main()
 
     async def step_analysis_process(self, request, step_context=None):
         """Process the actual download after showing the progress indicator."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         # Use step_context if provided (for reusability), otherwise default to 'step_analysis'
         step_id = step_context or 'step_analysis'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         form = await request.form()
         analysis_slug = form.get('analysis_slug', '').strip()
         username = form.get('username', '').strip()
         project_name = form.get('project_name', '').strip()
         if not all([analysis_slug, username, project_name]):
             return P('Error: Missing required parameters', cls='text-invalid')
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         analysis_result_str = step_data.get(step.done, '')
         analysis_result = json.loads(analysis_result_str) if analysis_result_str else {}
 
@@ -3570,7 +3570,7 @@ await main()
             crawl_filepath = await self.get_deterministic_filepath(username, project_name, analysis_slug, export_type)
             file_exists, file_info = await self.check_file_exists(crawl_filepath)
             if file_exists:
-                await self.message_queue.add(pip, f"✅ Using cached crawl data ({file_info['size']})", verbatim=True)
+                await self.message_queue.add(wand, f"✅ Using cached crawl data ({file_info['size']})", verbatim=True)
                 analysis_result.update({'download_complete': True, 'download_info': {'has_file': True, 'file_path': crawl_filepath, 'timestamp': file_info['created'], 'size': file_info['size'], 'cached': True}})
 
                 # Generate Python debugging code even for cached files
@@ -3611,7 +3611,7 @@ await main()
                 _, _, python_command = self.generate_query_api_call(export_query, username, project_name)
                 analysis_result['python_command'] = python_command
             else:
-                await self.message_queue.add(pip, '🔄 Initiating crawl data export...', verbatim=True)
+                await self.message_queue.add(wand, '🔄 Initiating crawl data export...', verbatim=True)
                 api_token = self.read_api_token()
                 if not api_token:
                     raise ValueError('Cannot read API token')
@@ -3689,11 +3689,11 @@ await main()
                         if not job_url_path:
                             raise ValueError('Failed to get job URL from response')
                         full_job_url = f'https://api.botify.com{job_url_path}'
-                        await self.message_queue.add(pip, '✅ Crawl export job created successfully!', verbatim=True)
-                        await self.message_queue.add(pip, '🔄 Polling for export completion...', verbatim=True)
+                        await self.message_queue.add(wand, '✅ Crawl export job created successfully!', verbatim=True)
+                        await self.message_queue.add(wand, '🔄 Polling for export completion...', verbatim=True)
                     except httpx.HTTPStatusError as e:
                         error_message = f'Export request failed: HTTP {e.response.status_code}'
-                        await self.message_queue.add(pip, f'❌ {error_message}', verbatim=True)
+                        await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
                         # Store the error in analysis_result but don't raise exception
                         analysis_result.update({
                             'download_complete': False,
@@ -3707,7 +3707,7 @@ await main()
                         full_job_url = None  # Prevent polling
                     except Exception as e:
                         error_message = f'Export request failed: {str(e)}'
-                        await self.message_queue.add(pip, f'❌ {error_message}', verbatim=True)
+                        await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
                         # Store the error in analysis_result but don't raise exception
                         analysis_result.update({
                             'download_complete': False,
@@ -3723,13 +3723,13 @@ await main()
                     success, result = await self.poll_job_status(full_job_url, api_token, step_context="export")
                     if not success:
                         error_message = isinstance(result, str) and result or 'Export job failed'
-                        await self.message_queue.add(pip, f'❌ Export failed: {error_message}', verbatim=True)
+                        await self.message_queue.add(wand, f'❌ Export failed: {error_message}', verbatim=True)
 
                         # Try to get more detailed error by testing the /query endpoint
                         detailed_error = await self._diagnose_query_endpoint_error(export_query, username, project_name, api_token)
                         if detailed_error:
                             error_message = f"{error_message} | Detailed diagnosis: {detailed_error}"
-                            await self.message_queue.add(pip, f'🔍 Detailed error diagnosis: {detailed_error}', verbatim=True)
+                            await self.message_queue.add(wand, f'🔍 Detailed error diagnosis: {detailed_error}', verbatim=True)
 
                         # Store the error in analysis_result but don't raise exception
                         analysis_result.update({
@@ -3742,10 +3742,10 @@ await main()
                             }
                         })
                     else:
-                        await self.message_queue.add(pip, '✅ Export completed and ready for download!', verbatim=True)
+                        await self.message_queue.add(wand, '✅ Export completed and ready for download!', verbatim=True)
                         download_url = result.get('download_url')
                         if not download_url:
-                            await self.message_queue.add(pip, '❌ No download URL found in job result', verbatim=True)
+                            await self.message_queue.add(wand, '❌ No download URL found in job result', verbatim=True)
                             # Store the error in analysis_result but don't raise exception
                             analysis_result.update({
                                 'download_complete': False,
@@ -3757,7 +3757,7 @@ await main()
                                 }
                             })
                         else:
-                            await self.message_queue.add(pip, '🔄 Downloading crawl data...', verbatim=True)
+                            await self.message_queue.add(wand, '🔄 Downloading crawl data...', verbatim=True)
                             await self.ensure_directory_exists(crawl_filepath)
                             try:
                                 gz_filepath = f'{crawl_filepath}.gz'
@@ -3772,7 +3772,7 @@ await main()
                                         shutil.copyfileobj(f_in, f_out)
                                 os.remove(gz_filepath)
                                 _, file_info = await self.check_file_exists(crawl_filepath)
-                                await self.message_queue.add(pip, f"✅ Download complete: {file_info['path']} ({file_info['size']})", verbatim=True)
+                                await self.message_queue.add(wand, f"✅ Download complete: {file_info['path']} ({file_info['size']})", verbatim=True)
                                 df = pd.read_csv(crawl_filepath)
 
                                 # Apply appropriate column names based on export type
@@ -3805,7 +3805,7 @@ await main()
                                 analysis_result.update({'download_complete': True, 'download_info': download_info})
                             except httpx.ReadTimeout as e:
                                 error_message = f'Timeout error during file download: {str(e)}'
-                                await self.message_queue.add(pip, f'❌ {error_message}', verbatim=True)
+                                await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
                                 # Store the error in analysis_result but don't raise exception
                                 analysis_result.update({
                                     'download_complete': False,
@@ -3818,7 +3818,7 @@ await main()
                                 })
                             except Exception as e:
                                 error_message = f'Error downloading or decompressing file: {str(e)}'
-                                await self.message_queue.add(pip, f'❌ {error_message}', verbatim=True)
+                                await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
                                 # Store the error in analysis_result but don't raise exception
                                 analysis_result.update({
                                     'download_complete': False,
@@ -3831,10 +3831,10 @@ await main()
                                 })
             # Only show success message if download was actually successful
             if analysis_result.get('download_complete', False) and 'error' not in analysis_result:
-                await self.message_queue.add(pip, f"✅ Crawl data downloaded: {file_info['size']}", verbatim=True)
+                await self.message_queue.add(wand, f"✅ Crawl data downloaded: {file_info['size']}", verbatim=True)
 
             analysis_result_str = json.dumps(analysis_result)
-            await pip.set_step_data(pipeline_id, step_id, analysis_result_str, self.steps)
+            await wand.set_step_data(pipeline_id, step_id, analysis_result_str, self.steps)
 
             # Determine status message and color based on success/failure
             if 'error' in analysis_result:
@@ -3864,19 +3864,19 @@ await main()
                     id=f'{step_id}_widget'
                 )
             )
-            return Div(pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Analysis {status_text}{download_message}', widget=widget, steps=self.steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Analysis {status_text}{download_message}', widget=widget, steps=self.steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         except Exception as e:
             logger.error(f'Error in step_analysis_process: {e}')
             return P(f'Error: {str(e)}', cls='text-invalid')
 
     async def step_webogs_process(self, request):
         """Process the web logs check and download if available."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_webogs'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         form = await request.form()
         analysis_slug = form.get('analysis_slug', '').strip()
         username = form.get('username', '').strip()
@@ -3889,7 +3889,7 @@ await main()
                 return P(f'Error: {error_message}', cls='text-invalid')
             check_result = {'has_logs': has_logs, 'project': project_name, 'username': username, 'analysis_slug': analysis_slug, 'timestamp': datetime.now().isoformat()}
             status_text = 'HAS' if has_logs else 'does NOT have'
-            await self.message_queue.add(pip, f'{step.show} complete: Project {status_text} web logs', verbatim=True)
+            await self.message_queue.add(wand, f'{step.show} complete: Project {status_text} web logs', verbatim=True)
             
             # Generate Python debugging code even when no web logs (for educational purposes)
             if not has_logs:
@@ -3908,7 +3908,7 @@ await main()
                 logs_filepath = await self.get_deterministic_filepath(username, project_name, analysis_slug, 'weblog')
                 file_exists, file_info = await self.check_file_exists(logs_filepath)
                 if file_exists:
-                    await self.message_queue.add(pip, f"✅ Using cached web logs data ({file_info['size']})", verbatim=True)
+                    await self.message_queue.add(wand, f"✅ Using cached web logs data ({file_info['size']})", verbatim=True)
                     check_result.update({'download_complete': True, 'download_info': {'has_file': True, 'file_path': logs_filepath, 'timestamp': file_info['created'], 'size': file_info['size'], 'cached': True}})
 
                     # Generate Python debugging code even for cached files
@@ -3925,7 +3925,7 @@ await main()
                     _, _, python_command = self.generate_query_api_call(export_query, username, project_name)
                     check_result['python_command'] = python_command
                 else:
-                    await self.message_queue.add(pip, '🔄 Initiating web logs export...', verbatim=True)
+                    await self.message_queue.add(wand, '🔄 Initiating web logs export...', verbatim=True)
                     api_token = self.read_api_token()
                     if not api_token:
                         raise ValueError('Cannot read API token')
@@ -3968,11 +3968,11 @@ await main()
                             if not job_id:
                                 raise ValueError('Failed to extract job ID from job URL')
                             full_job_url = f'https://api.botify.com/v1/jobs/{job_id}'
-                            await self.message_queue.add(pip, f'✅ Web logs export job created successfully! (Job ID: {job_id})', verbatim=True)
-                            await self.message_queue.add(pip, '🔄 Polling for export completion...', verbatim=True)
+                            await self.message_queue.add(wand, f'✅ Web logs export job created successfully! (Job ID: {job_id})', verbatim=True)
+                            await self.message_queue.add(wand, '🔄 Polling for export completion...', verbatim=True)
                         except httpx.HTTPStatusError as e:
                             error_message = f'Export request failed: HTTP {e.response.status_code}'
-                            await self.message_queue.add(pip, f'❌ {error_message}', verbatim=True)
+                            await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
                             # Store the error in check_result but don't raise exception
                             check_result.update({
                                 'download_complete': False,
@@ -3987,7 +3987,7 @@ await main()
                             job_id = None  # Prevent polling
                         except Exception as e:
                             error_message = f'Export request failed: {str(e)}'
-                            await self.message_queue.add(pip, f'❌ {error_message}', verbatim=True)
+                            await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
                             # Store the error in check_result but don't raise exception
                             check_result.update({
                                 'download_complete': False,
@@ -4001,18 +4001,18 @@ await main()
                             has_logs = False
                             job_id = None  # Prevent polling
                     if job_id:
-                        await self.message_queue.add(pip, f'🎯 Using job ID {job_id} for polling...', verbatim=True)
+                        await self.message_queue.add(wand, f'🎯 Using job ID {job_id} for polling...', verbatim=True)
                         full_job_url = f'https://api.botify.com/v1/jobs/{job_id}'
                     success, result = await self.poll_job_status(full_job_url, api_token, step_context="export")
                     if not success:
                         error_message = isinstance(result, str) and result or 'Export job failed'
-                        await self.message_queue.add(pip, f'❌ Export failed: {error_message}', verbatim=True)
+                        await self.message_queue.add(wand, f'❌ Export failed: {error_message}', verbatim=True)
 
                         # Try to get more detailed error by testing the /query endpoint
                         detailed_error = await self._diagnose_query_endpoint_error(export_query, username, project_name, api_token)
                         if detailed_error:
                             error_message = f"{error_message} | Detailed diagnosis: {detailed_error}"
-                            await self.message_queue.add(pip, f'🔍 Detailed error diagnosis: {detailed_error}', verbatim=True)
+                            await self.message_queue.add(wand, f'🔍 Detailed error diagnosis: {detailed_error}', verbatim=True)
 
                         # Store the error in check_result but don't raise exception
                         check_result.update({
@@ -4028,10 +4028,10 @@ await main()
                         has_logs = False
                         # Skip the download section and go directly to widget creation
                     else:
-                        await self.message_queue.add(pip, '✅ Export completed and ready for download!', verbatim=True)
+                        await self.message_queue.add(wand, '✅ Export completed and ready for download!', verbatim=True)
                         download_url = result.get('download_url')
                         if not download_url:
-                            await self.message_queue.add(pip, '❌ No download URL found in job result', verbatim=True)
+                            await self.message_queue.add(wand, '❌ No download URL found in job result', verbatim=True)
                             # Store the error in check_result but don't raise exception
                             check_result.update({
                                 'download_complete': False,
@@ -4044,7 +4044,7 @@ await main()
                             })
                             has_logs = False
                         else:
-                            await self.message_queue.add(pip, '🔄 Downloading web logs data...', verbatim=True)
+                            await self.message_queue.add(wand, '🔄 Downloading web logs data...', verbatim=True)
                             await self.ensure_directory_exists(logs_filepath)
                             try:
                                 compressed_path = f'{logs_filepath}.compressed'
@@ -4075,8 +4075,8 @@ await main()
                                 if os.path.exists(compressed_path):
                                     os.remove(compressed_path)
                                 _, file_info = await self.check_file_exists(logs_filepath)
-                                await self.message_queue.add(pip, f"✅ Download complete: {file_info['path']} ({file_info['size']})", verbatim=True)
-                                await self.message_queue.add(pip, f"✅ Web logs data downloaded: {file_info['size']}", verbatim=True)
+                                await self.message_queue.add(wand, f"✅ Download complete: {file_info['path']} ({file_info['size']})", verbatim=True)
+                                await self.message_queue.add(wand, f"✅ Web logs data downloaded: {file_info['size']}", verbatim=True)
 
                                 # Mark download as complete for button creation
                                 check_result.update({
@@ -4090,7 +4090,7 @@ await main()
                                     }
                                 })
                             except Exception as e:
-                                await self.message_queue.add(pip, f'❌ Error downloading file: {str(e)}', verbatim=True)
+                                await self.message_queue.add(wand, f'❌ Error downloading file: {str(e)}', verbatim=True)
                                 # Store the error in check_result but don't raise exception
                                 check_result.update({
                                     'download_complete': False,
@@ -4103,7 +4103,7 @@ await main()
                                 })
                                 has_logs = False
             check_result_str = json.dumps(check_result)
-            await pip.set_step_data(pipeline_id, step_id, check_result_str, steps)
+            await wand.set_step_data(pipeline_id, step_id, check_result_str, steps)
 
             # Determine status message and color based on success/failure
             if 'error' in check_result:
@@ -4134,7 +4134,7 @@ await main()
                     id=f'{step_id}_widget'
                 )
             )
-            return Div(pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Project {status_text} web logs{download_message}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Project {status_text} web logs{download_message}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         except Exception as e:
             logger.error(f'Error in step_webogs_process: {e}')
             return Div(P(f'Error: {str(e)}', cls='text-invalid'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
@@ -4151,18 +4151,18 @@ await main()
 
     async def common_toggle(self, request):
         """Unified toggle method for all step widgets using configuration-driven approach."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = request.query_params.get('step_id')
         if not step_id or step_id not in self.TOGGLE_CONFIG:
             return Div("Invalid step ID for toggle.", style="color: red;")
         
         config = self.TOGGLE_CONFIG[step_id]
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         data_str = step_data.get(steps[self.steps_indices[step_id]].done, '')
         data_obj = json.loads(data_str) if data_str else {}
         
-        state = pip.read_state(pipeline_id)
+        state = wand.read_state(pipeline_id)
         widget_visible_key = f'{step_id}_widget_visible'
         is_visible = state.get(widget_visible_key, False)
         
@@ -4207,12 +4207,12 @@ await main()
         # First time toggling, just show it
         if widget_visible_key not in state:
             state[widget_visible_key] = True
-            pip.write_state(pipeline_id, state)
+            wand.write_state(pipeline_id, state)
             return content_div
 
         # Subsequent toggles
         state[widget_visible_key] = not is_visible
-        pip.write_state(pipeline_id, state)
+        wand.write_state(pipeline_id, state)
         
         if is_visible: # if it was visible, now hide it
             content_div.attrs['style'] = 'display: none;'

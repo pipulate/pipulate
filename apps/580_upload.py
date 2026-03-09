@@ -61,9 +61,9 @@ class FileUploadWidget:
         self.pipulate = pipulate
         self.pipeline = pipeline
         self.steps_indices = {}
-        pip = self.pipulate
-        pip = self.pipulate
-        self.message_queue = pip.message_queue
+        wand = self.pipulate
+        wand = self.pipulate
+        self.message_queue = wand.message_queue
         steps = [
             Step(id='step_01', done='file_summary', show='Upload Files', refill=True, transform=lambda prev_value: prev_value.strip() if prev_value else ''),
             # --- STEPS_LIST_INSERTION_POINT ---
@@ -77,20 +77,20 @@ class FileUploadWidget:
         for path, handler, *methods in routes:
             method_list = methods[0] if methods else ['GET']
             app.route(path, methods=method_list)(handler)
-        self.step_messages = {'finalize': {'ready': 'All steps complete. Ready to finalize workflow.', 'complete': f'Workflow finalized. Use {pip.UNLOCK_BUTTON_LABEL} to make changes.'}, 'new': 'Please complete each step to explore the file upload widget.', 'step_01': {'input': 'Please select files to upload.', 'complete': 'Files uploaded successfully.'}}
+        self.step_messages = {'finalize': {'ready': 'All steps complete. Ready to finalize workflow.', 'complete': f'Workflow finalized. Use {wand.UNLOCK_BUTTON_LABEL} to make changes.'}, 'new': 'Please complete each step to explore the file upload widget.', 'step_01': {'input': 'Please select files to upload.', 'complete': 'Files uploaded successfully.'}}
         steps.append(Step(id='finalize', done='finalized', show='Finalize', refill=False))
         self.steps_indices = {step.id: i for i, step in enumerate(steps)}
 
     async def landing(self, request):
         """Generate the landing page using the standardized helper while maintaining WET explicitness."""
-        pip = self.pipulate
+        wand = self.pipulate
 
         # Use centralized landing page helper - maintains WET principle by explicit call
-        return pip.create_standard_landing_page(self)
+        return wand.create_standard_landing_page(self)
 
     async def init(self, request):
         """ Initialize the workflow state and redirect to the first step. """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         form = await request.form()
         user_input = form.get('pipeline_id', '').strip()
         if not user_input:
@@ -98,7 +98,7 @@ class FileUploadWidget:
             response = Response('')
             response.headers['HX-Refresh'] = 'true'
             return response
-        context = pip.get_plugin_context(self)
+        context = wand.get_plugin_context(self)
         plugin_name = app_name  # Use app_name directly to ensure consistency
         profile_name = context['profile_name'] or 'default'
         profile_part = profile_name.replace(' ', '_')
@@ -107,58 +107,58 @@ class FileUploadWidget:
         if user_input.startswith(expected_prefix):
             pipeline_id = user_input
         else:
-            _, prefix, user_provided_id = pip.generate_pipeline_key(self, user_input)
+            _, prefix, user_provided_id = wand.generate_pipeline_key(self, user_input)
             pipeline_id = f'{prefix}{user_provided_id}'
-        pip.db['pipeline_id'] = pipeline_id
+        wand.db['pipeline_id'] = pipeline_id
         logger.debug(f'Using pipeline ID: {pipeline_id}')
-        state, error = pip.initialize_if_missing(pipeline_id, {'app_name': app_name})
+        state, error = wand.initialize_if_missing(pipeline_id, {'app_name': app_name})
         if error:
             return error
         all_steps_complete = all((step.id in state and step.done in state[step.id] for step in steps[:-1]))
         is_finalized = 'finalize' in state and 'finalized' in state['finalize']
-        await self.message_queue.add(pip, f'Workflow ID: {pipeline_id}', verbatim=True, spaces_before=0)
-        await self.message_queue.add(pip, f"Return later by selecting '{pipeline_id}' from the dropdown.", verbatim=True, spaces_before=0)
+        await self.message_queue.add(wand, f'Workflow ID: {pipeline_id}', verbatim=True, spaces_before=0)
+        await self.message_queue.add(wand, f"Return later by selecting '{pipeline_id}' from the dropdown.", verbatim=True, spaces_before=0)
         if all_steps_complete:
-            status_msg = f'Workflow is complete and finalized. Use {pip.UNLOCK_BUTTON_LABEL} to make changes.' if is_finalized else 'Workflow is complete but not finalized. Press Finalize to lock your data.'
-            await self.message_queue.add(pip, status_msg, verbatim=True)
+            status_msg = f'Workflow is complete and finalized. Use {wand.UNLOCK_BUTTON_LABEL} to make changes.' if is_finalized else 'Workflow is complete but not finalized. Press Finalize to lock your data.'
+            await self.message_queue.add(wand, status_msg, verbatim=True)
         elif not any((step.id in state for step in self.steps)):
-            await self.message_queue.add(pip, self.step_messages['new'], verbatim=True)
-        parsed = pip.parse_pipeline_key(pipeline_id)
+            await self.message_queue.add(wand, self.step_messages['new'], verbatim=True)
+        parsed = wand.parse_pipeline_key(pipeline_id)
         prefix = f"{parsed['profile_part']}-{parsed['plugin_part']}-"
         self.pipeline.xtra(app_name=app_name)
         matching_records = [record.pkey for record in self.pipeline() if record.pkey.startswith(prefix)]
         if pipeline_id not in matching_records:
             matching_records.append(pipeline_id)
-        updated_datalist = pip.update_datalist('pipeline-ids', options=matching_records)
-        return pip.run_all_cells(app_name, steps)
+        updated_datalist = wand.update_datalist('pipeline-ids', options=matching_records)
+        return wand.run_all_cells(app_name, steps)
 
     async def finalize(self, request):
         """ Handle GET/POST requests to finalize (lock) the workflow. """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         finalize_step = steps[-1]
-        finalize_data = pip.get_step_data(pipeline_id, finalize_step.id, {})
+        finalize_data = wand.get_step_data(pipeline_id, finalize_step.id, {})
         if request.method == 'GET':
             if finalize_step.done in finalize_data:
-                return Card(H3('Workflow is locked.'), Form(Button(pip.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
+                return Card(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
             else:
-                all_steps_complete = all((pip.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
+                all_steps_complete = all((wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
                 if all_steps_complete:
                     return Card(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary'), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
                 else:
                     return Div(id=finalize_step.id)
         else:
-            await pip.finalize_workflow(pipeline_id)
-            await self.message_queue.add(pip, self.step_messages['finalize']['complete'], verbatim=True)
-            return pip.run_all_cells(app_name, steps)
+            await wand.finalize_workflow(pipeline_id)
+            await self.message_queue.add(wand, self.step_messages['finalize']['complete'], verbatim=True)
+            return wand.run_all_cells(app_name, steps)
 
     async def unfinalize(self, request):
         """ Handle POST request to unlock the workflow. """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        await pip.unfinalize_workflow(pipeline_id)
-        await self.message_queue.add(pip, 'Workflow unfinalized! You can now revert to any step and make changes.', verbatim=True)
-        return pip.run_all_cells(app_name, steps)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        await wand.unfinalize_workflow(pipeline_id)
+        await self.message_queue.add(wand, 'Workflow unfinalized! You can now revert to any step and make changes.', verbatim=True)
+        return wand.run_all_cells(app_name, steps)
 
     async def get_suggestion(self, step_id, state):
         """ Gets a suggested input value for a step. """
@@ -168,32 +168,32 @@ class FileUploadWidget:
 
     async def handle_revert(self, request):
         """ Handle POST request to revert to a previous step. """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         form = await request.form()
         step_id = form.get('step_id')
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         if not step_id:
             return P('Error: No step specified', cls='text-invalid')
-        await pip.clear_steps_from(pipeline_id, step_id, steps)
-        state = pip.read_state(pipeline_id)
+        await wand.clear_steps_from(pipeline_id, step_id, steps)
+        state = wand.read_state(pipeline_id)
         state['_revert_target'] = step_id
-        pip.write_state(pipeline_id, state)
-        message = await pip.get_state_message(pipeline_id, steps, self.step_messages)
-        await self.message_queue.add(pip, message, verbatim=True)
-        return pip.run_all_cells(app_name, steps)
+        wand.write_state(pipeline_id, state)
+        message = await wand.get_state_message(pipeline_id, steps, self.step_messages)
+        await self.message_queue.add(wand, message, verbatim=True)
+        return wand.run_all_cells(app_name, steps)
 
     async def step_01(self, request):
         """ Handles GET request for file upload widget. """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_01'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         file_summary = step_data.get(step.done, '')
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and file_summary:
             try:
                 save_directory = PLUGIN_DOWNLOADS_BASE_DIR / app_name
@@ -233,7 +233,7 @@ class FileUploadWidget:
                 return Div(Card(f'🔒 {step.show}: <content locked>'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
         elif state.get('_finalized'):
             try:
-                file_summary = pip.get_step_data(pipeline_id, step_id)
+                file_summary = wand.get_step_data(pipeline_id, step_id)
                 save_directory = PLUGIN_DOWNLOADS_BASE_DIR / app_name
                 # Parse file_summary to extract file names (if possible)
                 file_lines = file_summary.split('\n') if file_summary else []
@@ -301,30 +301,30 @@ class FileUploadWidget:
                         cls="outline contrast ml-sm"
                     )
                     file_buttons.append(download_file_link_ui)
-            content_container = pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Files previously uploaded', widget=Div(
+            content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Files previously uploaded', widget=Div(
                 Pre(file_summary, style='white-space: pre-wrap; font-size: 0.9em; margin-top:1em; padding: 1em; background-color: var(--pico-code-background); border-radius: var(--pico-border-radius);'),
                 P(open_folder_link_ui, *file_buttons, cls='upload-file-buttons')
             ), steps=steps)
             return Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         explanation = 'Select one or more files. They will be saved to the `downloads` directory in a subfolder named after this workflow.'
-        await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
-        await self.message_queue.add(pip, explanation, verbatim=True)
-        return Div(Card(H3(f'{pip.fmt(step_id)}: {step.show}'), P(explanation, cls='text-secondary'), Form(Input(type='file', name='uploaded_files', multiple='true', required='true', cls='contrast', data_testid=self.UI_CONSTANTS["AUTOMATION"]["FILE_INPUT_TESTID"], aria_label='Select files to upload to the server'), Button('Upload Files ▸', type='submit', cls='primary', data_testid=self.UI_CONSTANTS["AUTOMATION"]["UPLOAD_BUTTON_TESTID"], aria_label='Upload selected files to server'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', enctype='multipart/form-data')), Div(id=next_step_id), id=step_id)
+        await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
+        await self.message_queue.add(wand, explanation, verbatim=True)
+        return Div(Card(H3(f'{wand.fmt(step_id)}: {step.show}'), P(explanation, cls='text-secondary'), Form(Input(type='file', name='uploaded_files', multiple='true', required='true', cls='contrast', data_testid=self.UI_CONSTANTS["AUTOMATION"]["FILE_INPUT_TESTID"], aria_label='Select files to upload to the server'), Button('Upload Files ▸', type='submit', cls='primary', data_testid=self.UI_CONSTANTS["AUTOMATION"]["UPLOAD_BUTTON_TESTID"], aria_label='Upload selected files to server'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', enctype='multipart/form-data')), Div(id=next_step_id), id=step_id)
 
     async def step_01_submit(self, request):
         """ Process the submission for file upload widget. """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_01'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         form_data = await request.form()
         uploaded_files = form_data.getlist('uploaded_files')
         if not uploaded_files or not uploaded_files[0].filename:
-            await self.message_queue.add(pip, 'No files selected. Please try again.', verbatim=True)
+            await self.message_queue.add(wand, 'No files selected. Please try again.', verbatim=True)
             explanation = 'Select one or more files. They will be saved to the `downloads` directory.'
-            return Div(Card(H3(f'{pip.fmt(step_id)}: {step.show}'), P('No files were selected. Please try again.', cls='text-invalid'), P(explanation, cls='text-secondary'), Form(Input(type='file', name='uploaded_files', multiple='true', required='true', cls='contrast', data_testid=self.UI_CONSTANTS["AUTOMATION"]["FILE_INPUT_TESTID"], aria_label='Select files to upload to the server'), Button('Upload Files ▸', type='submit', cls='primary', data_testid=self.UI_CONSTANTS["AUTOMATION"]["UPLOAD_BUTTON_TESTID"], aria_label='Upload selected files to server'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', enctype='multipart/form-data')), Div(id=next_step_id), id=step_id)
+            return Div(Card(H3(f'{wand.fmt(step_id)}: {step.show}'), P('No files were selected. Please try again.', cls='text-invalid'), P(explanation, cls='text-secondary'), Form(Input(type='file', name='uploaded_files', multiple='true', required='true', cls='contrast', data_testid=self.UI_CONSTANTS["AUTOMATION"]["FILE_INPUT_TESTID"], aria_label='Select files to upload to the server'), Button('Upload Files ▸', type='submit', cls='primary', data_testid=self.UI_CONSTANTS["AUTOMATION"]["UPLOAD_BUTTON_TESTID"], aria_label='Upload selected files to server'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', enctype='multipart/form-data')), Div(id=next_step_id), id=step_id)
 
         # Use the same base directory as the download endpoint
         save_directory = PLUGIN_DOWNLOADS_BASE_DIR / app_name
@@ -333,7 +333,7 @@ class FileUploadWidget:
         except Exception as e:
             error_msg = f'Error creating save directory {save_directory}: {str(e)}'
             logger.error(error_msg)
-            await self.message_queue.add(pip, error_msg, verbatim=True)
+            await self.message_queue.add(wand, error_msg, verbatim=True)
             return P(f'Error creating save directory. Please check permissions or disk space. Details: {error_msg}', cls='text-invalid')
 
         file_info_list_for_summary = []  # For the existing text summary
@@ -366,7 +366,7 @@ class FileUploadWidget:
             except Exception as e:
                 error_msg = f'Error saving file {uploaded_file.filename}: {str(e)}'
                 logger.error(error_msg)
-                await self.message_queue.add(pip, error_msg, verbatim=True)
+                await self.message_queue.add(wand, error_msg, verbatim=True)
                 return P(f'Error saving file {uploaded_file.filename}. Details: {error_msg}', cls='text-invalid')
 
         # Construct the text summary
@@ -374,10 +374,10 @@ class FileUploadWidget:
         file_summary += f'\n\nTotal: {len(actual_saved_file_details)} files, {total_size:,} bytes'
         file_summary += f'\nSaved to directory: {save_directory.resolve()}'
 
-        await pip.set_step_data(pipeline_id, step_id, file_summary, steps)
-        pip.append_to_history(f'[WIDGET CONTENT] {step.show}:\n{file_summary}')
-        pip.append_to_history(f'[WIDGET STATE] {step.show}: Files saved')
-        await self.message_queue.add(pip, f'Successfully saved {len(actual_saved_file_details)} files to {save_directory}', verbatim=True)
+        await wand.set_step_data(pipeline_id, step_id, file_summary, steps)
+        wand.append_to_history(f'[WIDGET CONTENT] {step.show}:\n{file_summary}')
+        wand.append_to_history(f'[WIDGET STATE] {step.show}: Files saved')
+        await self.message_queue.add(wand, f'Successfully saved {len(actual_saved_file_details)} files to {save_directory}', verbatim=True)
 
         # Start building the widget content
         widget_elements = [
@@ -437,7 +437,7 @@ class FileUploadWidget:
 
         final_widget_content = Div(*widget_elements)
 
-        content_container = pip.display_revert_widget(
+        content_container = wand.display_revert_widget(
             step_id=step_id,
             app_name=app_name,
             message=f'{step.show}: {len(actual_saved_file_details)} File(s) Uploaded Successfully!',

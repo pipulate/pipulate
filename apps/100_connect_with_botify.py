@@ -40,11 +40,11 @@ class BotifyConnect:
         self.pipulate = pipulate
         self.pipeline = pipeline
         self.steps_indices = {}
-        pip = self.pipulate
-        pip = self.pipulate
+        wand = self.pipulate
+        wand = self.pipulate
 
         # Use message queue from Pipulate for ordered message streaming
-        self.message_queue = pip.message_queue
+        self.message_queue = wand.message_queue
 
         steps = [
             # No steps for this workflow - just finalize
@@ -75,14 +75,14 @@ class BotifyConnect:
         self.step_messages = {
             "finalize": {
                 "ready": "Ready to save your Botify API token.",
-                "complete": f"✅ Botify API token saved. Use {pip.UNLOCK_BUTTON_LABEL} to change token."
+                "complete": f"✅ Botify API token saved. Use {wand.UNLOCK_BUTTON_LABEL} to change token."
             }
         }
 
         # Creates a default message for each step (you can change these)
         for step in steps:
             self.step_messages[step.id] = {
-                "input": f"{pip.fmt(step.id)}: Please enter {step.show}.",
+                "input": f"{wand.fmt(step.id)}: Please enter {step.show}.",
                 "complete": f"{step.show} complete. Continue to next step."
             }
 
@@ -122,7 +122,7 @@ class BotifyConnect:
         This is the landing page for the workflow. It asks for a unique identifier.
         It is necessary for the workflow to function. Only change cosmetic elements.
         """
-        pip, pipeline, steps, app_name = self.pipulate, self.pipeline, self.steps, self.app_name
+        wand, pipeline, steps, app_name = self.pipulate, self.pipeline, self.steps, self.app_name
         title = f"{self.DISPLAY_NAME or app_name.title()}"
         pipeline.xtra(app_name=app_name)
         existing_ids = [record.pkey for record in pipeline()]
@@ -148,7 +148,7 @@ class BotifyConnect:
                 H2(title, id="botify-connect-title"),
                 endpoint_message,
                 Form(
-                    pip.wrap_with_inline_button(
+                    wand.wrap_with_inline_button(
                         Input(
                             placeholder="Paste your Botify API token here",
                             name="pipeline_id",
@@ -199,21 +199,21 @@ class BotifyConnect:
         Returns:
             FastHTML components representing the workflow UI
         """
-        pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
+        wand, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
         form = await request.form()
         pipeline_id = form.get("pipeline_id")
         if not pipeline_id:
             return await self.landing()
         db["pipeline_id"] = pipeline_id
-        state, error = pip.initialize_if_missing(pipeline_id, {"app_name": app_name})
+        state, error = wand.initialize_if_missing(pipeline_id, {"app_name": app_name})
         if error:
             return error
 
-        state = pip.read_state(pipeline_id)
+        state = wand.read_state(pipeline_id)
         if "finalize" in state:
             del state["finalize"]
             state["updated"] = datetime.now().isoformat()
-            pip.write_state(pipeline_id, state)
+            wand.write_state(pipeline_id, state)
             logger.debug(f"Cleared finalize state for pipeline: {pipeline_id}")
 
         # Validate the token immediately after submission
@@ -222,7 +222,7 @@ class BotifyConnect:
             if username:
                 # Make chat messages non-blocking
                 await self.safe_stream(
-                    f"🟢 Botify API token validated for user: {pip.fmt(username)}. Ready to finalize.",
+                    f"🟢 Botify API token validated for user: {wand.fmt(username)}. Ready to finalize.",
                     verbatim=True,
                     spaces_after=1  # Set to 0 to remove the extra line break
                 )
@@ -232,7 +232,7 @@ class BotifyConnect:
             await self.safe_stream(f"⚠️ Error validating token: {type(e).__name__}. Please check your token before finalizing.", verbatim=True)
 
         # Initialize workflow steps
-        return pip.run_all_cells(app_name, steps)
+        return wand.run_all_cells(app_name, steps)
 
     # Required methods for the workflow system, even if we don't have steps
 
@@ -256,10 +256,10 @@ class BotifyConnect:
         Returns:
             UI components for either the finalization prompt or confirmation
         """
-        pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
+        wand, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
         pipeline_id = db.get("pipeline_id", "")
         finalize_step = steps[-1]
-        finalize_data = pip.get_step_data(pipeline_id, finalize_step.id, {})
+        finalize_data = wand.get_step_data(pipeline_id, finalize_step.id, {})
         logger.debug(f"Pipeline ID: {pipeline_id}")
         logger.debug(f"Finalize step: {finalize_step}")
         logger.debug(f"Finalize data: {finalize_data}")
@@ -269,18 +269,18 @@ class BotifyConnect:
                 logger.debug("Pipeline is already finalized")
                 return Card(
                     H3("Connection Complete", id="botify-connection-complete-title"),
-                    P(f"Botify API token is saved. Use {pip.UNLOCK_BUTTON_LABEL} to make changes.",
+                    P(f"Botify API token is saved. Use {wand.UNLOCK_BUTTON_LABEL} to make changes.",
                       id="botify-connection-complete-message"),
                     Form(
                         Button(
-                            pip.UNLOCK_BUTTON_LABEL,
+                            wand.UNLOCK_BUTTON_LABEL,
                             type="submit",
                             cls="secondary outline",
                             id="botify-unlock-button",
                             aria_label="Unlock to modify Botify API token connection",
                             aria_describedby="botify-connection-complete-message",
                             data_testid="botify-unlock-button",
-                            title=f"Click to {pip.UNLOCK_BUTTON_LABEL.lower()} and modify token"
+                            title=f"Click to {wand.UNLOCK_BUTTON_LABEL.lower()} and modify token"
                         ),
                         hx_post=f"/{app_name}/unfinalize",
                         hx_target=f"#{app_name}-container",
@@ -330,20 +330,20 @@ class BotifyConnect:
                 await self.safe_stream("⚠️ Invalid Botify API token! Cannot finalize.", verbatim=True)
 
                 # Make sure we're not finalized
-                state = pip.read_state(pipeline_id)
+                state = wand.read_state(pipeline_id)
                 if "finalize" in state:
                     del state["finalize"]
                     state["updated"] = datetime.now().isoformat()
-                    pip.write_state(pipeline_id, state)
+                    wand.write_state(pipeline_id, state)
 
                 # Just run_all_cells the workflow, which will now show the unfinalized state
-                return pip.run_all_cells(app_name, steps)
+                return wand.run_all_cells(app_name, steps)
 
             # Token is valid, proceed with finalization
-            state = pip.read_state(pipeline_id)
+            state = wand.read_state(pipeline_id)
             state["finalize"] = {"finalized": True}
             state["updated"] = datetime.now().isoformat()
-            pip.write_state(pipeline_id, state)
+            wand.write_state(pipeline_id, state)
 
             # Write the token to a file in the current working directory
             try:
@@ -351,7 +351,7 @@ class BotifyConnect:
                 with open("botify_token.txt", "w") as token_file:
                     token_file.write(f"{pipeline_id}\n# username: {username}")
 
-                await self.safe_stream(f"✅ Botify API token saved to botify_token.txt for user: {pip.fmt(username)}", verbatim=True, spaces_after=1)
+                await self.safe_stream(f"✅ Botify API token saved to botify_token.txt for user: {wand.fmt(username)}", verbatim=True, spaces_after=1)
 
                 await self.safe_stream(
                     f"You may now use any workflows requiring Botify API integration.",
@@ -363,7 +363,7 @@ class BotifyConnect:
                 await self.safe_stream(f"Error saving token file: {type(e).__name__}.", verbatim=True)
 
             # Return the updated UI
-            return pip.run_all_cells(app_name, steps)
+            return wand.run_all_cells(app_name, steps)
 
     async def validate_botify_token(self, token):
         """
@@ -400,14 +400,14 @@ class BotifyConnect:
             return None
 
     async def unfinalize(self, request):
-        pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
+        wand, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
         pipeline_id = db.get("pipeline_id", "unknown")
 
         # Update state using DRY helper
-        state = pip.read_state(pipeline_id)
+        state = wand.read_state(pipeline_id)
         if "finalize" in state:
             del state["finalize"]
-        pip.write_state(pipeline_id, state)
+        wand.write_state(pipeline_id, state)
 
         # Delete the token file if it exists
         try:
@@ -424,10 +424,10 @@ class BotifyConnect:
         await self.safe_stream("Connection unfinalized. You can now update your Botify API token.", verbatim=True)
 
         # Return the rebuilt UI
-        return pip.run_all_cells(app_name, steps)
+        return wand.run_all_cells(app_name, steps)
 
     async def get_suggestion(self, step_id, state):
-        pip, db, steps = self.pipulate, self.pipulate.db, self.steps
+        wand, db, steps = self.pipulate, self.pipulate.db, self.steps
         # If a transform function exists, use the previous step's output.
         step = next((s for s in steps if s.id == step_id), None)
         if not step or not step.transform:
@@ -437,23 +437,23 @@ class BotifyConnect:
             return ""
         prev_step_id = steps[prev_index].id
         prev_step = steps[prev_index]
-        prev_data = pip.get_step_data(db["pipeline_id"], prev_step_id, {})
+        prev_data = wand.get_step_data(db["pipeline_id"], prev_step_id, {})
         prev_word = prev_data.get(prev_step.done, "")
         return step.transform(prev_word) if prev_word else ""
 
     async def handle_revert(self, request):
-        pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
+        wand, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
         form = await request.form()
         step_id = form.get("step_id")
         pipeline_id = db.get("pipeline_id", "unknown")
         if not step_id:
             return P("Error: No step specified", cls="text-invalid")
-        await pip.clear_steps_from(pipeline_id, step_id, steps)
-        state = pip.read_state(pipeline_id)
+        await wand.clear_steps_from(pipeline_id, step_id, steps)
+        state = wand.read_state(pipeline_id)
         state["_revert_target"] = step_id
-        pip.write_state(pipeline_id, state)
+        wand.write_state(pipeline_id, state)
         await self.safe_stream("Reverting to update your Botify API token.", verbatim=True)
-        return pip.run_all_cells(app_name, steps)
+        return wand.run_all_cells(app_name, steps)
 
     async def safe_stream(self, message, verbatim=False, role="user", spaces_before=None, spaces_after=1):
         """
@@ -473,13 +473,13 @@ class BotifyConnect:
         Returns:
             The original message
         """
-        pip = self.pipulate
+        wand = self.pipulate
 
         try:
             # For verbatim messages, just use the message queue
             if verbatim:
                 return await self.message_queue.add(
-                    pip,
+                    wand,
                     message,
                     verbatim=True,
                     role=role,
@@ -490,7 +490,7 @@ class BotifyConnect:
             # For LLM-processed messages, try the LLM but have a fallback
             try:
                 return await self.message_queue.add(
-                    pip,
+                    wand,
                     message,
                     verbatim=False,
                     role=role,
@@ -505,7 +505,7 @@ class BotifyConnect:
                     fallback_message = "Welcome! Your Botify token is ready to be saved. Click Finalize to continue."
 
                 return await self.message_queue.add(
-                    pip,
+                    wand,
                     fallback_message,
                     verbatim=True,  # Force verbatim mode for the fallback
                     role=role,

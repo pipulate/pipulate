@@ -28,7 +28,7 @@ class StreamSimulatorPlugin:
     def __init__(self, app, pipulate, pipeline, db):
         self.app = app
         self.pipulate = pipulate
-        pip = self.pipulate
+        wand = self.pipulate
         self.logger = logger
         # Use message queue from Pipulate for ordered message streaming
         self.message_queue = pipulate.message_queue

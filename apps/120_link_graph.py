@@ -684,12 +684,12 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         self.pipulate = pipulate
         self.pipeline = pipeline
         self.steps_indices = {}
-        pip = self.pipulate
-        self.message_queue = pip.message_queue
+        wand = self.pipulate
+        self.message_queue = wand.message_queue
         
         # Access centralized configuration through dependency injection
-        self.ui = pip.get_ui_constants()
-        self.config = pip.get_config()
+        self.ui = wand.get_ui_constants()
+        self.config = wand.get_config()
         
         # Build step names dynamically based on template configuration
         crawl_template = self.get_configured_template('crawl')
@@ -722,14 +722,14 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         app.route(f'/{app_name}/download_file', methods=['GET'])(self.download_file)
         app.route(f'/{app_name}/update_button_text', methods=['POST'])(self.update_button_text)
         
-        self.step_messages = {'finalize': {'ready': self.ui['MESSAGES']['ALL_STEPS_COMPLETE'], 'complete': f'Workflow finalized. Use {self.ui["BUTTON_LABELS"]["UNLOCK"]} to make changes.'}, 'step_02': {'input': f"❔{pip.fmt('step_02')}: Please select a crawl analysis for this project.", 'complete': '📊 Crawl analysis download complete. Continue to next step.'}}
+        self.step_messages = {'finalize': {'ready': self.ui['MESSAGES']['ALL_STEPS_COMPLETE'], 'complete': f'Workflow finalized. Use {self.ui["BUTTON_LABELS"]["UNLOCK"]} to make changes.'}, 'step_02': {'input': f"❔{wand.fmt('step_02')}: Please select a crawl analysis for this project.", 'complete': '📊 Crawl analysis download complete. Continue to next step.'}}
         for step in steps:
             if step.id not in self.step_messages:
-                self.step_messages[step.id] = {'input': f'❔{pip.fmt(step.id)}: Please complete {step.show}.', 'complete': f'✳️ {step.show} complete. Continue to next step.'}
-        self.step_messages['step_04'] = {'input': f"❔{pip.fmt('step_04')}: Please check if the project has Search Console data.", 'complete': 'Search Console check complete. Continue to next step.'}
-        self.step_messages['step_03'] = {'input': f"❔{pip.fmt('step_03')}: Please check if the project has web logs available.", 'complete': '📋 Web logs check complete. Continue to next step.'}
-        self.step_messages['step_05'] = {'input': f"❔{pip.fmt('step_05')}: All data downloaded. Ready to prepare visualization.", 'complete': 'Visualization ready. Graph link generated.'}
-        self.step_messages['step_02b'] = {'input': f"❔{pip.fmt('step_02b')}: Download node attributes (page type, compliance, etc.)", 'complete': 'Node attributes download complete. Continue to next step.'}
+                self.step_messages[step.id] = {'input': f'❔{wand.fmt(step.id)}: Please complete {step.show}.', 'complete': f'✳️ {step.show} complete. Continue to next step.'}
+        self.step_messages['step_04'] = {'input': f"❔{wand.fmt('step_04')}: Please check if the project has Search Console data.", 'complete': 'Search Console check complete. Continue to next step.'}
+        self.step_messages['step_03'] = {'input': f"❔{wand.fmt('step_03')}: Please check if the project has web logs available.", 'complete': '📋 Web logs check complete. Continue to next step.'}
+        self.step_messages['step_05'] = {'input': f"❔{wand.fmt('step_05')}: All data downloaded. Ready to prepare visualization.", 'complete': 'Visualization ready. Graph link generated.'}
+        self.step_messages['step_02b'] = {'input': f"❔{wand.fmt('step_02b')}: Download node attributes (page type, compliance, etc.)", 'complete': 'Node attributes download complete. Continue to next step.'}
 
     def get_available_templates_for_data_type(self, data_type):
         """Get available query templates for a specific data type."""
@@ -772,14 +772,14 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
 
     async def landing(self, request):
         """Generate the landing page using the standardized helper while maintaining WET explicitness."""
-        pip = self.pipulate
+        wand = self.pipulate
 
         # Use centralized landing page helper - maintains WET principle by explicit call
-        return pip.create_standard_landing_page(self)
+        return wand.create_standard_landing_page(self)
 
     async def init(self, request):
         """Handles the key submission, initializes state, and renders the step UI placeholders."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         form = await request.form()
         user_input = form.get('pipeline_id', '').strip()
         if not user_input:
@@ -787,7 +787,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
             response = Response('')
             response.headers['HX-Refresh'] = 'true'
             return response
-        context = pip.get_plugin_context(self)
+        context = wand.get_plugin_context(self)
         profile_name = context['profile_name'] or 'default'
         plugin_name = app_name  # Use app_name directly to ensure consistency
         profile_part = profile_name.replace(' ', '_')
@@ -796,15 +796,15 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         if user_input.startswith(expected_prefix):
             pipeline_id = user_input
         else:
-            _, prefix, user_provided_id = pip.generate_pipeline_key(self, user_input)
+            _, prefix, user_provided_id = wand.generate_pipeline_key(self, user_input)
             pipeline_id = f'{prefix}{user_provided_id}'
-        pip.db['pipeline_id'] = pipeline_id
-        state, error = pip.initialize_if_missing(pipeline_id, {'app_name': app_name})
+        wand.db['pipeline_id'] = pipeline_id
+        state, error = wand.initialize_if_missing(pipeline_id, {'app_name': app_name})
         if error:
             return error
-        await self.message_queue.add(pip, f'Workflow ID: {pipeline_id}', verbatim=True, spaces_before=0)
-        await self.message_queue.add(pip, f"Return later by selecting '{pipeline_id}' from the dropdown.", verbatim=True, spaces_before=0)
-        return pip.run_all_cells(app_name, steps)
+        await self.message_queue.add(wand, f'Workflow ID: {pipeline_id}', verbatim=True, spaces_before=0)
+        await self.message_queue.add(wand, f"Return later by selecting '{pipeline_id}' from the dropdown.", verbatim=True, spaces_before=0)
+        return wand.run_all_cells(app_name, steps)
 
     async def finalize(self, request):
         """Handles GET request to show Finalize button and POST request to lock the workflow.
@@ -812,36 +812,36 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         # PATTERN NOTE: The finalize step is the final destination of the chain reaction
         # and should be triggered by the last content step's submit handler.
         """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         finalize_step = steps[-1]
-        finalize_data = pip.get_step_data(pipeline_id, finalize_step.id, {})
+        finalize_data = wand.get_step_data(pipeline_id, finalize_step.id, {})
         if request.method == 'GET':
             if finalize_step.done in finalize_data:
                 return Card(H3(self.ui['MESSAGES']['WORKFLOW_LOCKED']), Form(Button(self.ui['BUTTON_LABELS']['UNLOCK'], type='submit', cls=self.ui['BUTTON_STYLES']['OUTLINE']), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
             else:
-                all_steps_complete = all((pip.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
+                all_steps_complete = all((wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
                 if all_steps_complete:
-                    await self.message_queue.add(pip, 'All steps are complete. You can now finalize the workflow or revert to any step to make changes.', verbatim=True)
+                    await self.message_queue.add(wand, 'All steps are complete. You can now finalize the workflow or revert to any step to make changes.', verbatim=True)
                     return Card(H3(self.ui['MESSAGES']['FINALIZE_QUESTION']), P(self.ui['MESSAGES']['FINALIZE_HELP'], cls='text-secondary'), Form(Button(self.ui['BUTTON_LABELS']['FINALIZE'], type='submit', cls=self.ui['BUTTON_STYLES']['PRIMARY']), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
                 else:
                     return Div(id=finalize_step.id)
         else:
-            await pip.finalize_workflow(pipeline_id)
-            await self.message_queue.add(pip, self.step_messages['finalize']['complete'], verbatim=True)
-            return pip.run_all_cells(app_name, steps)
+            await wand.finalize_workflow(pipeline_id)
+            await self.message_queue.add(wand, self.step_messages['finalize']['complete'], verbatim=True)
+            return wand.run_all_cells(app_name, steps)
 
     async def unfinalize(self, request):
         """Handles POST request to unlock the workflow."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        await pip.unfinalize_workflow(pipeline_id)
-        await self.message_queue.add(pip, self.ui['MESSAGES']['WORKFLOW_UNLOCKED'], verbatim=True)
-        return pip.run_all_cells(app_name, steps)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        await wand.unfinalize_workflow(pipeline_id)
+        await self.message_queue.add(wand, self.ui['MESSAGES']['WORKFLOW_UNLOCKED'], verbatim=True)
+        return wand.run_all_cells(app_name, steps)
 
     async def get_suggestion(self, step_id, state):
         """Gets a suggested input value for a step, often using the previous step's transformed output."""
-        pip, db, steps = (self.pipulate, self.pip.db, self.steps)
+        wand, db, steps = (self.pipulate, self.wand.db, self.steps)
         step = next((s for s in steps if s.id == step_id), None)
         if not step or not step.transform:
             return ''
@@ -849,26 +849,26 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         if prev_index < 0:
             return ''
         prev_step = steps[prev_index]
-        prev_data = pip.get_step_data(pip.db['pipeline_id'], prev_step.id, {})
+        prev_data = wand.get_step_data(wand.db['pipeline_id'], prev_step.id, {})
         prev_value = prev_data.get(prev_step.done, '')
         return step.transform(prev_value) if prev_value else ''
 
     async def handle_revert(self, request):
         """Handles POST request to revert to a previous step, clearing subsequent step data."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         form = await request.form()
         step_id = form.get('step_id')
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         if not step_id:
             return P('Error: No step specified', cls='text-invalid')
-        await pip.clear_steps_from(pipeline_id, step_id, steps)
-        state = pip.read_state(pipeline_id)
+        await wand.clear_steps_from(pipeline_id, step_id, steps)
+        state = wand.read_state(pipeline_id)
         state['_revert_target'] = step_id
-        pip.write_state(pipeline_id, state)
-        message = await pip.get_state_message(pipeline_id, steps, self.step_messages)
-        await self.message_queue.add(pip, message, verbatim=True)
-        await self.message_queue.add(pip, f'↩️ Reverted to {step_id}. All subsequent data has been cleared.', verbatim=True)
-        return pip.run_all_cells(app_name, steps)
+        wand.write_state(pipeline_id, state)
+        message = await wand.get_state_message(pipeline_id, steps, self.step_messages)
+        await self.message_queue.add(wand, message, verbatim=True)
+        await self.message_queue.add(wand, f'↩️ Reverted to {step_id}. All subsequent data has been cleared.', verbatim=True)
+        return wand.run_all_cells(app_name, steps)
 
     async def step_01(self, request):
         """Handles GET request for Botify URL input widget.
@@ -876,28 +876,28 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         # STEP PATTERN: GET handler returns current step UI + empty placeholder for next step
         # Important: The next step div should NOT have hx_trigger here, only in the submit handler
         """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_01'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         project_data_str = step_data.get(step.done, '')
         project_data = json.loads(project_data_str) if project_data_str else {}
         project_url = project_data.get('url', '')
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and project_data:
             return Div(Card(H3(f'🔒 {step.show}'), Div(P(f"Project: {project_data.get('project_name', '')}"), Small(project_url, style='word-break: break-all;'), cls='custom-card-padding-bg')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         elif project_data and state.get('_revert_target') != step_id:
             project_name = project_data.get('project_name', '')
             username = project_data.get('username', '')
             project_info = Div(H4(f'Project: {project_name}'), P(f'Username: {username}'), Small(project_url, style='word-break: break-all;'), style='padding: 10px; background: #f8f9fa; border-radius: 5px;')
-            return Div(pip.display_revert_header(step_id=step_id, app_name=app_name, message=f'{step.show}: {project_url}', steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(wand.display_revert_header(step_id=step_id, app_name=app_name, message=f'{step.show}: {project_url}', steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         else:
             display_value = project_url if step.refill and project_url else ''
-            await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
+            await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
             return Div(
                 Card(
                     H3(f'{step.show}'),
@@ -942,47 +942,47 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         # 1. Revert control for the completed step
         # 2. Next step div with explicit hx_trigger="load" to chain reaction to next step
         """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_01'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         form = await request.form()
         botify_url = form.get('botify_url', '').strip()
         is_valid, message, project_data = self.validate_botify_url(botify_url)
         if not is_valid:
             return P(f'Error: {message}', cls='text-invalid')
         project_data_str = json.dumps(project_data)
-        await pip.set_step_data(pipeline_id, step_id, project_data_str, steps)
-        await self.message_queue.add(pip, f"✳️ {step.show} complete: {project_data['project_name']}", verbatim=True)
+        await wand.set_step_data(pipeline_id, step_id, project_data_str, steps)
+        await self.message_queue.add(wand, f"✳️ {step.show} complete: {project_data['project_name']}", verbatim=True)
         project_name = project_data.get('project_name', '')
         project_url = project_data.get('url', '')
         project_info = Div(H4(f'Project: {project_name}'), Small(project_url, style='word-break: break-all;'), style='padding: 10px; background: #f8f9fa; border-radius: 5px;')
-        return Div(pip.display_revert_header(step_id=step_id, app_name=app_name, message=f'{step.show}: {project_url}', steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+        return Div(wand.display_revert_header(step_id=step_id, app_name=app_name, message=f'{step.show}: {project_url}', steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
 
     async def step_02(self, request):
         """Handles GET request for Analysis selection between steps 1 and 2."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_02'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         analysis_result_str = step_data.get(step.done, '')
         analysis_result = json.loads(analysis_result_str) if analysis_result_str else {}
         selected_slug = analysis_result.get('analysis_slug', '')
         prev_step_id = 'step_01'
-        prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('botify_project', '')
         if not prev_data_str:
             return P('Error: Project data not found. Please complete step 1 first.', cls='text-invalid')
         project_data = json.loads(prev_data_str)
         project_name = project_data.get('project_name', '')
         username = project_data.get('username', '')
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and selected_slug:
             return Div(Card(H3(f'🔒 {step.show}'), Div(P(f'Project: {project_name}', style='margin-bottom: 5px;'), P(f'Selected Analysis: {selected_slug}', style='font-weight: bold;'), cls='custom-card-padding-bg')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         elif selected_slug and state.get('_revert_target') != step_id:
@@ -1007,7 +1007,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                     id=f'{step_id}_widget'
                 )
             )
-            return Div(pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {selected_slug}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {selected_slug}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         try:
             api_token = self.read_api_token()
             if not api_token:
@@ -1061,7 +1061,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
 
                 if files_found:
                     downloaded_files_info[slug] = files_found
-            await self.message_queue.add(pip, self.step_messages.get(step_id, {}).get('input', f'Select an analysis for {project_name}'), verbatim=True)
+            await self.message_queue.add(wand, self.step_messages.get(step_id, {}).get('input', f'Select an analysis for {project_name}'), verbatim=True)
 
             # Build dropdown options with file summaries
             dropdown_options = []
@@ -1124,14 +1124,14 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
 
     async def step_02_submit(self, request):
         """Process the selected analysis slug for step_02 and download crawl data."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_02'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         prev_step_id = 'step_01'
-        prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('botify_project', '')
         if not prev_data_str:
             return P('Error: Project data not found. Please complete step 1 first.', cls='text-invalid')
@@ -1142,7 +1142,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         analysis_slug = form.get('analysis_slug', '').strip()
         if not analysis_slug:
             return P('Error: No analysis selected', cls='text-invalid')
-        await self.message_queue.add(pip, f'📊 Selected analysis: {analysis_slug}. Starting crawl data download...', verbatim=True)
+        await self.message_queue.add(wand, f'📊 Selected analysis: {analysis_slug}. Starting crawl data download...', verbatim=True)
 
         # Get active template details and check for qualifier config
         active_crawl_template_key = self.get_configured_template('crawl')
@@ -1165,7 +1165,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                 if not api_token:
                     return P('Error: Botify API token not found. Please connect with Botify first.', cls='text-invalid')
 
-                await self.message_queue.add(pip, qualifier_config['user_message_running'], verbatim=True)
+                await self.message_queue.add(wand, qualifier_config['user_message_running'], verbatim=True)
                 qualifier_outcome = await self._execute_qualifier_logic(username, project_name, analysis_slug, api_token, qualifier_config)
 
                 # Store qualifier results
@@ -1174,20 +1174,20 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                 analysis_result['parameter_placeholder_in_main_query'] = qualifier_config['parameter_placeholder_in_main_query']
 
                 # Send completion message
-                await self.message_queue.add(pip, qualifier_config['user_message_found'].format(
+                await self.message_queue.add(wand, qualifier_config['user_message_found'].format(
                     param_value=qualifier_outcome['parameter_value'],
                     metric_value=qualifier_outcome['metric_at_parameter']
                 ), verbatim=True)
 
             except Exception as e:
-                await self.message_queue.add(pip, f'Error during qualifier logic: {str(e)}', verbatim=True)
+                await self.message_queue.add(wand, f'Error during qualifier logic: {str(e)}', verbatim=True)
                 # Continue with default values
                 analysis_result['dynamic_parameter_value'] = None
                 analysis_result['metric_at_dynamic_parameter'] = 0
                 analysis_result['parameter_placeholder_in_main_query'] = None
 
         analysis_result_str = json.dumps(analysis_result)
-        await pip.set_step_data(pipeline_id, step_id, analysis_result_str, steps)
+        await wand.set_step_data(pipeline_id, step_id, analysis_result_str, steps)
         return Card(
             H3(f'{step.show}'),
             P(f"Downloading data for analysis '{analysis_slug}'..."),
@@ -1209,20 +1209,20 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
 
     async def step_02b(self, request):
         """Handles GET request for Node Attributes (Crawl Basic) download."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_02b'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         analysis_result_str = step_data.get(step.done, '')
         analysis_result = json.loads(analysis_result_str) if analysis_result_str else {}
         
         # Get analysis slug from step_02 (we need this to know which analysis to use)
         prev_step_id = 'step_02'
-        prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('analysis_selection', '')
         if not prev_data_str:
             return P('Error: Analysis data not found. Please complete step 2 first.', cls='text-invalid')
@@ -1232,7 +1232,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         project_name = prev_analysis_data.get('project', '')
         username = prev_analysis_data.get('username', '')
         
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
 
         # Phase 1: Finalized view (locked)
         if 'finalized' in finalize_data and analysis_result:
@@ -1266,7 +1266,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                 )
             )
             return Div(
-                pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {analysis_slug}', widget=widget, steps=steps),
+                wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {analysis_slug}', widget=widget, steps=steps),
                 Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'),
                 id=step_id
             )
@@ -1286,7 +1286,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
             
             button_text = f'Use Cached {button_suffix} ▸' if is_cached else f'Download {button_suffix} ▸'
             
-            await self.message_queue.add(pip, f'📄 Ready to download node attributes for analysis {analysis_slug}', verbatim=True)
+            await self.message_queue.add(wand, f'📄 Ready to download node attributes for analysis {analysis_slug}', verbatim=True)
             
             return Div(
                 Card(
@@ -1310,12 +1310,12 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
 
     async def step_02b_submit(self, request):
         """Process the Node Attributes (Crawl Basic) download submission."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_02b'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
 
         # Check if user clicked skip button
         form = await request.form()
@@ -1323,7 +1323,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
 
         if action == 'skip':
             # Handle skip action - create fake completion data and proceed to next step
-            await self.message_queue.add(pip, f"⏭️ Skipping Node Attributes download...", verbatim=True)
+            await self.message_queue.add(wand, f"⏭️ Skipping Node Attributes download...", verbatim=True)
 
             # Create skip data that indicates step was skipped
             skip_result = {
@@ -1336,11 +1336,11 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                 'template_used': 'Crawl Basic'
             }
 
-            await pip.set_step_data(pipeline_id, step_id, json.dumps(skip_result), steps)
-            await self.message_queue.add(pip, f"⏭️ Node Attributes step skipped. Proceeding to next step.", verbatim=True)
+            await wand.set_step_data(pipeline_id, step_id, json.dumps(skip_result), steps)
+            await self.message_queue.add(wand, f"⏭️ Node Attributes step skipped. Proceeding to next step.", verbatim=True)
 
             return Div(
-                pip.display_revert_widget(
+                wand.display_revert_widget(
                     step_id=step_id,
                     app_name=app_name,
                     message=f'{step.show}: Skipped',
@@ -1354,7 +1354,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         # Handle normal download action
         # Get analysis data from step_02
         prev_step_id = 'step_02'
-        prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('analysis_selection', '')
         if not prev_data_str:
             return P('Error: Analysis data not found. Please complete step 2 first.', cls='text-invalid')
@@ -1367,7 +1367,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         if not all([analysis_slug, username, project_name]):
             return P('Error: Missing required analysis data', cls='text-invalid')
         
-        await self.message_queue.add(pip, f'📊 Starting node attributes download for {analysis_slug}...', verbatim=True)
+        await self.message_queue.add(wand, f'📊 Starting node attributes download for {analysis_slug}...', verbatim=True)
         
         # Create analysis result for step_02b using Crawl Basic template
         analysis_result = {
@@ -1381,7 +1381,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         }
         
         analysis_result_str = json.dumps(analysis_result)
-        await pip.set_step_data(pipeline_id, step_id, analysis_result_str, steps)
+        await wand.set_step_data(pipeline_id, step_id, analysis_result_str, steps)
         
         return Card(
             H3(f'{step.show}'),
@@ -1404,12 +1404,12 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
 
     async def step_02b_process(self, request):
         """Process the actual Crawl Basic download after showing the progress indicator."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_02b'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         form = await request.form()
         analysis_slug = form.get('analysis_slug', '').strip()
         username = form.get('username', '').strip()
@@ -1418,7 +1418,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         if not all([analysis_slug, username, project_name]):
             return P('Error: Missing required parameters', cls='text-invalid')
         
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         analysis_result_str = step_data.get(step.done, '')
         analysis_result = json.loads(analysis_result_str) if analysis_result_str else {}
         
@@ -1431,7 +1431,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
             file_exists, file_info = await self.check_file_exists(crawl_filepath)
             
             if file_exists:
-                await self.message_queue.add(pip, f"✅ Using cached node attributes ({file_info['size']})", verbatim=True)
+                await self.message_queue.add(wand, f"✅ Using cached node attributes ({file_info['size']})", verbatim=True)
                 analysis_result.update({
                     'download_complete': True,
                     'download_info': {
@@ -1471,7 +1471,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                 analysis_result['python_command'] = python_command
                 
             else:
-                await self.message_queue.add(pip, '🔄 Initiating node attributes export...', verbatim=True)
+                await self.message_queue.add(wand, '🔄 Initiating node attributes export...', verbatim=True)
                 api_token = self.read_api_token()
                 if not api_token:
                     raise ValueError('Cannot read API token')
@@ -1522,12 +1522,12 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                             raise ValueError('Failed to get job URL from response')
                         
                         full_job_url = f'https://api.botify.com{job_url_path}'
-                        await self.message_queue.add(pip, '✅ Node attributes export job created successfully!', verbatim=True)
-                        await self.message_queue.add(pip, '🔄 Polling for export completion...', verbatim=True)
+                        await self.message_queue.add(wand, '✅ Node attributes export job created successfully!', verbatim=True)
+                        await self.message_queue.add(wand, '🔄 Polling for export completion...', verbatim=True)
                         
                     except httpx.HTTPStatusError as e:
                         error_message = f'Export request failed: HTTP {e.response.status_code}'
-                        await self.message_queue.add(pip, f'❌ {error_message}', verbatim=True)
+                        await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
                         analysis_result.update({
                             'download_complete': False,
                             'error': error_message,
@@ -1541,7 +1541,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                         
                     except Exception as e:
                         error_message = f'Export request failed: {str(e)}'
-                        await self.message_queue.add(pip, f'❌ {error_message}', verbatim=True)
+                        await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
                         analysis_result.update({
                             'download_complete': False,
                             'error': error_message,
@@ -1557,12 +1557,12 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                     success, result = await self.poll_job_status(full_job_url, api_token, step_context="export")
                     if not success:
                         error_message = isinstance(result, str) and result or 'Export job failed'
-                        await self.message_queue.add(pip, f'❌ Export failed: {error_message}', verbatim=True)
+                        await self.message_queue.add(wand, f'❌ Export failed: {error_message}', verbatim=True)
                         
                         detailed_error = await self._diagnose_query_endpoint_error(export_query, username, project_name, api_token)
                         if detailed_error:
                             error_message = f"{error_message} | Detailed diagnosis: {detailed_error}"
-                            await self.message_queue.add(pip, f'🔍 Detailed error diagnosis: {detailed_error}', verbatim=True)
+                            await self.message_queue.add(wand, f'🔍 Detailed error diagnosis: {detailed_error}', verbatim=True)
                         
                         analysis_result.update({
                             'download_complete': False,
@@ -1574,10 +1574,10 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                             }
                         })
                     else:
-                        await self.message_queue.add(pip, '✅ Export completed and ready for download!', verbatim=True)
+                        await self.message_queue.add(wand, '✅ Export completed and ready for download!', verbatim=True)
                         download_url = result.get('download_url')
                         if not download_url:
-                            await self.message_queue.add(pip, '❌ No download URL found in job result', verbatim=True)
+                            await self.message_queue.add(wand, '❌ No download URL found in job result', verbatim=True)
                             analysis_result.update({
                                 'download_complete': False,
                                 'error': 'No download URL found in job result',
@@ -1588,7 +1588,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                                 }
                             })
                         else:
-                            await self.message_queue.add(pip, '🔄 Downloading node attributes...', verbatim=True)
+                            await self.message_queue.add(wand, '🔄 Downloading node attributes...', verbatim=True)
                             await self.ensure_directory_exists(crawl_filepath)
                             try:
                                 gz_filepath = f'{crawl_filepath}.gz'
@@ -1605,7 +1605,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                                 os.remove(gz_filepath)
                                 
                                 _, file_info = await self.check_file_exists(crawl_filepath)
-                                await self.message_queue.add(pip, f"✅ Download complete: {file_info['path']} ({file_info['size']})", verbatim=True)
+                                await self.message_queue.add(wand, f"✅ Download complete: {file_info['path']} ({file_info['size']})", verbatim=True)
                                 
                                 # Set proper column names for Crawl Basic data
                                 df = pd.read_csv(crawl_filepath)
@@ -1616,7 +1616,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                                     df.columns = [f'Column_{i+1}' for i in range(len(df.columns))]
                                 
                                 df.to_csv(crawl_filepath, index=False)
-                                await self.message_queue.add(pip, f'✅ Node attributes data saved with {len(df):,} rows', verbatim=True)
+                                await self.message_queue.add(wand, f'✅ Node attributes data saved with {len(df):,} rows', verbatim=True)
                                 
                                 analysis_result.update({
                                     'download_complete': True,
@@ -1632,7 +1632,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                                 
                             except Exception as e:
                                 error_message = f'Download failed: {str(e)}'
-                                await self.message_queue.add(pip, f'❌ {error_message}', verbatim=True)
+                                await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
                                 analysis_result.update({
                                     'download_complete': False,
                                     'error': error_message,
@@ -1645,12 +1645,12 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
             
             # Update step data with final result
             analysis_result_str = json.dumps(analysis_result)
-            await pip.set_step_data(pipeline_id, step_id, analysis_result_str, steps)
+            await wand.set_step_data(pipeline_id, step_id, analysis_result_str, steps)
             
         except Exception as e:
             error_message = f'Unexpected error in step_02b_process: {str(e)}'
             logging.exception(error_message)
-            await self.message_queue.add(pip, f'❌ {error_message}', verbatim=True)
+            await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
             analysis_result.update({
                 'download_complete': False,
                 'error': error_message,
@@ -1661,7 +1661,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                 }
             })
             analysis_result_str = json.dumps(analysis_result)
-            await pip.set_step_data(pipeline_id, step_id, analysis_result_str, steps)
+            await wand.set_step_data(pipeline_id, step_id, analysis_result_str, steps)
         
         # Return completed view with action buttons
         action_buttons = self._create_action_buttons(analysis_result, step_id)
@@ -1684,25 +1684,25 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         )
         
         return Div(
-            pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {analysis_slug}', widget=widget, steps=steps),
+            wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {analysis_slug}', widget=widget, steps=steps),
             Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'),
             id=step_id
         )
 
     async def step_03(self, request):
         """Handles GET request for checking if a Botify project has web logs."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_03'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         check_result_str = step_data.get(step.done, '')
         check_result = json.loads(check_result_str) if check_result_str else {}
         prev_step_id = 'step_01'
-        prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('botify_project', '')
         if not prev_data_str:
             return P('Error: Project data not found. Please complete step 1 first.', cls='text-invalid')
@@ -1731,9 +1731,9 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                     id=f'{step_id}_widget'
                 )
             )
-            return Div(pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Project {status_text}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Project {status_text}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         else:
-            await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
+            await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
 
             # Check if web logs are cached for the CURRENT analysis
             # Use the same logic as step_02 to get the current analysis
@@ -1741,7 +1741,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
             try:
                 # Get the current analysis from step_02 data - try multiple possible keys
                 analysis_step_id = 'step_02'
-                analysis_step_data = pip.get_step_data(pipeline_id, analysis_step_id, {})
+                analysis_step_data = wand.get_step_data(pipeline_id, analysis_step_id, {})
                 current_analysis_slug = ''
 
                 # Try to get analysis_slug from the stored data
@@ -1804,12 +1804,12 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
 
     async def step_03_submit(self, request):
         """Process the check for Botify web logs and download if available."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_03'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
 
         # Check if user clicked skip button
         form = await request.form()
@@ -1817,7 +1817,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
 
         if action == 'skip':
             # Handle skip action - create fake completion data and proceed to next step
-            await self.message_queue.add(pip, f"⏭️ Skipping Web Logs download...", verbatim=True)
+            await self.message_queue.add(wand, f"⏭️ Skipping Web Logs download...", verbatim=True)
 
             # Create skip data that indicates step was skipped
             skip_result = {
@@ -1831,11 +1831,11 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                 'jobs_payload': {}
             }
 
-            await pip.set_step_data(pipeline_id, step_id, json.dumps(skip_result), steps)
-            await self.message_queue.add(pip, f"⏭️ Web Logs step skipped. Proceeding to next step.", verbatim=True)
+            await wand.set_step_data(pipeline_id, step_id, json.dumps(skip_result), steps)
+            await self.message_queue.add(wand, f"⏭️ Web Logs step skipped. Proceeding to next step.", verbatim=True)
 
             return Div(
-                pip.display_revert_widget(
+                wand.display_revert_widget(
                     step_id=step_id,
                     app_name=app_name,
                     message=f'{step.show}: Skipped',
@@ -1848,7 +1848,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
 
         # Handle normal download action
         prev_step_id = 'step_01'
-        prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('botify_project', '')
         if not prev_data_str:
             return P('Error: Project data not found. Please complete step 1 first.', cls='text-invalid')
@@ -1856,13 +1856,13 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         project_name = project_data.get('project_name', '')
         username = project_data.get('username', '')
         analysis_step_id = 'step_02'
-        analysis_step_data = pip.get_step_data(pipeline_id, analysis_step_id, {})
+        analysis_step_data = wand.get_step_data(pipeline_id, analysis_step_id, {})
         analysis_data_str = analysis_step_data.get('analysis_selection', '')
         if not analysis_data_str:
             return P('Error: Analysis data not found. Please complete step 2 first.', cls='text-invalid')
         analysis_data = json.loads(analysis_data_str)
         analysis_slug = analysis_data.get('analysis_slug', '')
-        await self.message_queue.add(pip, f"📥 Downloading Web Logs for '{project_name}'...", verbatim=True)
+        await self.message_queue.add(wand, f"📥 Downloading Web Logs for '{project_name}'...", verbatim=True)
         return Card(
             H3(f'{step.show}'),
             P(f"Downloading Web Logs for '{project_name}'..."),
@@ -1884,18 +1884,18 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
 
     async def step_04(self, request):
         """Handles GET request for checking if a Botify project has Search Console data."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_04'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         check_result_str = step_data.get(step.done, '')
         check_result = json.loads(check_result_str) if check_result_str else {}
         prev_step_id = 'step_01'
-        prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('botify_project', '')
         if not prev_data_str:
             return P('Error: Project data not found. Please complete step 1 first.', cls='text-invalid')
@@ -1924,9 +1924,9 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                     id=f'{step_id}_widget'
                 )
             )
-            return Div(pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Project {status_text}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Project {status_text}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         else:
-            await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
+            await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
             gsc_template = self.get_configured_template('gsc')
 
             # Check if GSC data is cached for the CURRENT analysis
@@ -1935,7 +1935,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
             try:
                 # Get the current analysis from step_02 data - try multiple possible keys
                 analysis_step_id = 'step_02'
-                analysis_step_data = pip.get_step_data(pipeline_id, analysis_step_id, {})
+                analysis_step_data = wand.get_step_data(pipeline_id, analysis_step_id, {})
                 current_analysis_slug = ''
 
                 # Try to get analysis_slug from the stored data
@@ -1992,12 +1992,12 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
 
     async def step_04_submit(self, request):
         """Process the check for Botify Search Console data."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_04'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
 
         # Check if user clicked skip button
         form = await request.form()
@@ -2005,7 +2005,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
 
         if action == 'skip':
             # Handle skip action - create fake completion data and proceed to next step
-            await self.message_queue.add(pip, f"⏭️ Skipping Search Console download...", verbatim=True)
+            await self.message_queue.add(wand, f"⏭️ Skipping Search Console download...", verbatim=True)
 
             # Create skip data that indicates step was skipped
             skip_result = {
@@ -2019,11 +2019,11 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                 'jobs_payload': {}
             }
 
-            await pip.set_step_data(pipeline_id, step_id, json.dumps(skip_result), steps)
-            await self.message_queue.add(pip, f"⏭️ Search Console step skipped. Proceeding to next step.", verbatim=True)
+            await wand.set_step_data(pipeline_id, step_id, json.dumps(skip_result), steps)
+            await self.message_queue.add(wand, f"⏭️ Search Console step skipped. Proceeding to next step.", verbatim=True)
 
             return Div(
-                pip.display_revert_widget(
+                wand.display_revert_widget(
                     step_id=step_id,
                     app_name=app_name,
                     message=f'{step.show}: Skipped',
@@ -2036,7 +2036,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
 
         # Handle normal download action
         prev_step_id = 'step_01'
-        prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('botify_project', '')
         if not prev_data_str:
             return P('Error: Project data not found. Please complete step 1 first.', cls='text-invalid')
@@ -2060,15 +2060,15 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
 
     async def step_04_complete(self, request):
         """Handles completion after the progress indicator has been shown."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_04'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         
         prev_step_id = 'step_01'
-        prev_step_data = pip.get_step_data(pipeline_id, prev_step_id, {})
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('botify_project', '')
         if not prev_data_str:
             return P('Error: Project data not found.', cls='text-invalid')
@@ -2078,7 +2078,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         username = project_data.get('username', '')
         
         analysis_step_id = 'step_02'
-        analysis_step_data = pip.get_step_data(pipeline_id, analysis_step_id, {})
+        analysis_step_data = wand.get_step_data(pipeline_id, analysis_step_id, {})
         analysis_data_str = analysis_step_data.get('analysis_selection', '')
         if not analysis_data_str:
             return P('Error: Analysis data not found.', cls='text-invalid')
@@ -2094,14 +2094,14 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
             check_result = {'has_search_console': has_search_console, 'project': project_name, 'username': username, 'analysis_slug': analysis_slug, 'timestamp': datetime.now().isoformat()}
             
             if has_search_console:
-                await self.message_queue.add(pip, f'✅ Project has Search Console data, downloading...', verbatim=True)
-                await self.process_search_console_data(pip, pipeline_id, step_id, username, project_name, analysis_slug, check_result)
+                await self.message_queue.add(wand, f'✅ Project has Search Console data, downloading...', verbatim=True)
+                await self.process_search_console_data(wand, pipeline_id, step_id, username, project_name, analysis_slug, check_result)
             else:
-                await self.message_queue.add(pip, f'Project does not have Search Console data (skipping download)', verbatim=True)
+                await self.message_queue.add(wand, f'Project does not have Search Console data (skipping download)', verbatim=True)
                 # Add empty python_command for consistency with other steps
                 check_result['python_command'] = ''
                 check_result_str = json.dumps(check_result)
-                await pip.set_step_data(pipeline_id, step_id, check_result_str, steps)
+                await wand.set_step_data(pipeline_id, step_id, check_result_str, steps)
             
             status_text = 'HAS' if has_search_console else 'does NOT have'
             completed_message = 'Data downloaded successfully' if has_search_console else 'No Search Console data available'
@@ -2123,28 +2123,28 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                     id=f'{step_id}_widget'
                 )
             )
-            return Div(pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {completed_message}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {completed_message}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         except Exception as e:
             logging.exception(f'Error in step_04_complete: {e}')
             return Div(P(f'Error: {str(e)}', cls='text-invalid'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
 
     async def step_05(self, request):
         """Handles GET request for the Visualization Preparation step."""
-        pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
+        wand, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
         step_id = "step_05"
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = 'finalize'
         pipeline_id = db.get("pipeline_id", "unknown")
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         
         # Check if the visualization is already prepared
         viz_result_str = step_data.get(step.done, '')
         viz_result = json.loads(viz_result_str) if viz_result_str else {}
         viz_url = viz_result.get('visualization_url')
         
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and viz_url:
             return Div(
                 Card(
@@ -2159,13 +2159,13 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                 A("🚀 Open Visualization in New Tab", href=viz_url, target="_blank", role="button", cls=self.ui['BUTTON_STYLES']['PRIMARY'])
             )
             return Div(
-                pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f"{step.show}: Link generated!", widget=widget, steps=steps),
+                wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f"{step.show}: Link generated!", widget=widget, steps=steps),
                 Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
                 id=step_id
             )
         else:
             # Show the button to start the process
-            await self.message_queue.add(pip, self.step_messages[step_id]["input"], verbatim=True)
+            await self.message_queue.add(wand, self.step_messages[step_id]["input"], verbatim=True)
             return Div(
                 Card(
                     H3(f"{step.show}"),
@@ -2181,7 +2181,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
 
     async def step_05_submit(self, request):
         """Process the submission for the Visualization Preparation step."""
-        pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
+        wand, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
         step_id = "step_05"
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
@@ -2204,7 +2204,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
 
     async def step_05_process(self, request):
         """Process downloaded data into Cosmograph-compatible format and generate visualization URL."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_05'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
@@ -2213,14 +2213,14 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         pipeline_id = form.get('pipeline_id', 'unknown')
         
         # Load project and analysis data
-        project_data = pip.get_step_data(pipeline_id, 'step_01', {}).get('botify_project', '{}')
-        analysis_data = pip.get_step_data(pipeline_id, 'step_02', {}).get('analysis_selection', '{}')
+        project_data = wand.get_step_data(pipeline_id, 'step_01', {}).get('botify_project', '{}')
+        analysis_data = wand.get_step_data(pipeline_id, 'step_02', {}).get('analysis_selection', '{}')
         
         try:
             project_info = json.loads(project_data)
             analysis_info = json.loads(analysis_data)
         except json.JSONDecodeError:
-            await self.message_queue.add(pip, '❌ Error: Could not load project or analysis data', verbatim=True)
+            await self.message_queue.add(wand, '❌ Error: Could not load project or analysis data', verbatim=True)
             return P('Error: Could not load project or analysis data', cls='text-invalid')
         
         username = project_info.get('username')
@@ -2228,11 +2228,11 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         analysis_slug = analysis_info.get('analysis_slug')
         
         if not all([username, project_name, analysis_slug]):
-            await self.message_queue.add(pip, '❌ Error: Missing required project information', verbatim=True)
+            await self.message_queue.add(wand, '❌ Error: Missing required project information', verbatim=True)
             return P('Error: Missing required project information', cls='text-invalid')
         
         try:
-            await self.message_queue.add(pip, '🔄 Processing data for visualization...', verbatim=True)
+            await self.message_queue.add(wand, '🔄 Processing data for visualization...', verbatim=True)
             
             # Get data directory
             data_dir = await self.get_deterministic_filepath(username, project_name, analysis_slug)
@@ -2244,15 +2244,15 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
             weblog_file = data_path / 'weblog.csv'
             
             if not link_graph_file.exists():
-                await self.message_queue.add(pip, '❌ Error: Link graph data not found. Please complete Step 2 first.', verbatim=True)
+                await self.message_queue.add(wand, '❌ Error: Link graph data not found. Please complete Step 2 first.', verbatim=True)
                 return P('Error: Link graph data not found. Please complete Step 2 first.', cls='text-invalid')
             
-            await self.message_queue.add(pip, '📊 Loading link graph data...', verbatim=True)
+            await self.message_queue.add(wand, '📊 Loading link graph data...', verbatim=True)
             
             # Load link graph data
             try:
                 link_graph_df = pd.read_csv(link_graph_file)
-                await self.message_queue.add(pip, f'✅ Loaded {len(link_graph_df):,} link graph rows', verbatim=True)
+                await self.message_queue.add(wand, f'✅ Loaded {len(link_graph_df):,} link graph rows', verbatim=True)
                 
                 # Check for link graph columns - handle both BQL field names and simplified export names
                 columns = list(link_graph_df.columns)
@@ -2276,16 +2276,16 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                     source_col = 'source'
                     target_col = 'target'
                 else:
-                    await self.message_queue.add(pip, f'❌ Error: Could not identify source/target columns in link graph. Found: {columns}', verbatim=True)
+                    await self.message_queue.add(wand, f'❌ Error: Could not identify source/target columns in link graph. Found: {columns}', verbatim=True)
                     return P('Error: Could not identify source/target columns in link graph data', cls='text-invalid')
                 
-                await self.message_queue.add(pip, f'✅ Using columns: {source_col} → {target_col}', verbatim=True)
+                await self.message_queue.add(wand, f'✅ Using columns: {source_col} → {target_col}', verbatim=True)
                 
             except Exception as e:
-                await self.message_queue.add(pip, f'❌ Error loading link graph data: {str(e)}', verbatim=True)
+                await self.message_queue.add(wand, f'❌ Error loading link graph data: {str(e)}', verbatim=True)
                 return P(f'Error loading link graph data: {str(e)}', cls='text-invalid')
             
-            await self.message_queue.add(pip, '🔗 Creating edge list for Cosmograph...', verbatim=True)
+            await self.message_queue.add(wand, '🔗 Creating edge list for Cosmograph...', verbatim=True)
             
             # Create cosmo_links.csv (edge list) using the detected column names
             # Filter out rows with missing source or target URLs
@@ -2295,25 +2295,25 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
             # Remove self-loops
             edges_df = edges_df[edges_df['source'] != edges_df['target']]
             
-            await self.message_queue.add(pip, f'✅ Created {len(edges_df):,} edges (removed self-loops)', verbatim=True)
+            await self.message_queue.add(wand, f'✅ Created {len(edges_df):,} edges (removed self-loops)', verbatim=True)
             
             # Save cosmo_links.csv
             cosmo_links_file = data_path / 'cosmo_links.csv'
             edges_df.to_csv(cosmo_links_file, index=False)
             
-            await self.message_queue.add(pip, '🎯 Creating node list and merging performance data...', verbatim=True)
+            await self.message_queue.add(wand, '🎯 Creating node list and merging performance data...', verbatim=True)
             
             # Create master node list from unique URLs
             all_urls = set(edges_df['source'].tolist() + edges_df['target'].tolist())
             nodes_df = pd.DataFrame({'url': list(all_urls)})
             
-            await self.message_queue.add(pip, f'✅ Created {len(nodes_df):,} unique nodes', verbatim=True)
+            await self.message_queue.add(wand, f'✅ Created {len(nodes_df):,} unique nodes', verbatim=True)
             
             # Load and merge GSC data if available
             if gsc_file.exists():
                 try:
                     gsc_df = pd.read_csv(gsc_file)
-                    await self.message_queue.add(pip, f'📈 Loaded GSC data: {len(gsc_df):,} rows', verbatim=True)
+                    await self.message_queue.add(wand, f'📈 Loaded GSC data: {len(gsc_df):,} rows', verbatim=True)
                     
                     # Rename 'Full URL' to 'url' for consistent merging
                     if 'Full URL' in gsc_df.columns:
@@ -2323,16 +2323,16 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                     nodes_df = nodes_df.merge(gsc_df, on='url', how='left')
                     
                 except Exception as e:
-                    await self.message_queue.add(pip, f'⚠️ Warning: Could not load GSC data: {str(e)}', verbatim=True)
+                    await self.message_queue.add(wand, f'⚠️ Warning: Could not load GSC data: {str(e)}', verbatim=True)
             else:
-                await self.message_queue.add(pip, '⚠️ No GSC data found, continuing without performance metrics', verbatim=True)
+                await self.message_queue.add(wand, '⚠️ No GSC data found, continuing without performance metrics', verbatim=True)
             
             # Load and merge basic crawl attributes from step_02b if available
             crawl_file = data_path / 'crawl.csv'
             if crawl_file.exists():
                 try:
                     crawl_df = pd.read_csv(crawl_file)
-                    await self.message_queue.add(pip, f'📄 Loaded crawl attributes: {len(crawl_df):,} rows', verbatim=True)
+                    await self.message_queue.add(wand, f'📄 Loaded crawl attributes: {len(crawl_df):,} rows', verbatim=True)
                     
                     # Handle different possible URL column names from step_02b
                     url_column = None
@@ -2346,18 +2346,18 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                     
                     # Merge crawl attributes (left join to preserve all nodes)
                     nodes_df = nodes_df.merge(crawl_df, on='url', how='left')
-                    await self.message_queue.add(pip, f'✅ Merged crawl attributes (HTTP status, page titles, compliance, etc.)', verbatim=True)
+                    await self.message_queue.add(wand, f'✅ Merged crawl attributes (HTTP status, page titles, compliance, etc.)', verbatim=True)
                     
                 except Exception as e:
-                    await self.message_queue.add(pip, f'⚠️ Warning: Could not load crawl attributes: {str(e)}', verbatim=True)
+                    await self.message_queue.add(wand, f'⚠️ Warning: Could not load crawl attributes: {str(e)}', verbatim=True)
             else:
-                await self.message_queue.add(pip, '⚠️ No crawl attributes found from step_02b', verbatim=True)
+                await self.message_queue.add(wand, '⚠️ No crawl attributes found from step_02b', verbatim=True)
 
             # Load and merge weblog data if available
             if weblog_file.exists():
                 try:
                     weblog_df = pd.read_csv(weblog_file)
-                    await self.message_queue.add(pip, f'🌐 Loaded weblog data: {len(weblog_df):,} rows', verbatim=True)
+                    await self.message_queue.add(wand, f'🌐 Loaded weblog data: {len(weblog_df):,} rows', verbatim=True)
                     
                     # Rename 'Full URL' to 'url' for consistent merging
                     if 'Full URL' in weblog_df.columns:
@@ -2367,11 +2367,11 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                     nodes_df = nodes_df.merge(weblog_df, on='url', how='left')
                     
                 except Exception as e:
-                    await self.message_queue.add(pip, f'⚠️ Warning: Could not load weblog data: {str(e)}', verbatim=True)
+                    await self.message_queue.add(wand, f'⚠️ Warning: Could not load weblog data: {str(e)}', verbatim=True)
             else:
-                await self.message_queue.add(pip, '⚠️ No weblog data found, continuing without crawl data', verbatim=True)
+                await self.message_queue.add(wand, '⚠️ No weblog data found, continuing without crawl data', verbatim=True)
             
-            await self.message_queue.add(pip, '📋 Preparing non-destructive metadata for Cosmograph...', verbatim=True)
+            await self.message_queue.add(wand, '📋 Preparing non-destructive metadata for Cosmograph...', verbatim=True)
             
             # Non-destructive approach: Keep all original metric names and values
             # Fill NaN values with defaults only for visualization
@@ -2403,9 +2403,9 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
             cosmo_nodes_file = data_path / 'cosmo_nodes.csv'
             cosmo_nodes_df.to_csv(cosmo_nodes_file, index=False)
             
-            await self.message_queue.add(pip, f'✅ Saved visualization files: {len(edges_df):,} edges, {len(cosmo_nodes_df):,} nodes', verbatim=True)
+            await self.message_queue.add(wand, f'✅ Saved visualization files: {len(edges_df):,} edges, {len(cosmo_nodes_df):,} nodes', verbatim=True)
             
-            await self.message_queue.add(pip, '🚀 Generating Cosmograph visualization URL...', verbatim=True)
+            await self.message_queue.add(wand, '🚀 Generating Cosmograph visualization URL...', verbatim=True)
             
             # Generate download URLs for the CSV files using the proper download_file endpoint
             
@@ -2433,9 +2433,9 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
             }
             
             # Save to step data
-            await pip.set_step_data(pipeline_id, step_id, json.dumps(visualization_result), self.steps)
+            await wand.set_step_data(pipeline_id, step_id, json.dumps(visualization_result), self.steps)
             
-            await self.message_queue.add(pip, f'🎉 Visualization ready! {len(edges_df):,} edges and {len(cosmo_nodes_df):,} nodes processed.', verbatim=True)
+            await self.message_queue.add(wand, f'🎉 Visualization ready! {len(edges_df):,} edges and {len(cosmo_nodes_df):,} nodes processed.', verbatim=True)
             
             # Create visualization widget
             widget = Div(
@@ -2449,7 +2449,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
             )
             
             return Div(
-                pip.display_revert_widget(
+                wand.display_revert_widget(
                     step_id=step_id, 
                     app_name=app_name, 
                     message=f'{step.show}: Visualization link generated', 
@@ -2462,7 +2462,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
             
         except Exception as e:
             logging.exception(f'Error in step_05_process: {e}')
-            await self.message_queue.add(pip, f'❌ Error generating visualization: {str(e)}', verbatim=True)
+            await self.message_queue.add(wand, f'❌ Error generating visualization: {str(e)}', verbatim=True)
             return P(f'Error generating visualization: {str(e)}', cls='text-invalid')
 
 
@@ -2685,7 +2685,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         import httpx
         import json
 
-        pip = self.pipulate
+        wand = self.pipulate
         iter_param_name = qualifier_config['iterative_parameter_name']
         bql_template_str = json.dumps(qualifier_config['qualifier_bql_template'])
         collection_name = f"crawl.{analysis_slug}"
@@ -2732,7 +2732,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                     response = await client.post(url, headers=headers, json=query_payload, timeout=60.0)
 
                 if response.status_code != 200:
-                    await self.message_queue.add(pip, f"API error during qualifier check at {iter_param_name}={current_iter_val}: Status {response.status_code}", verbatim=True)
+                    await self.message_queue.add(wand, f"API error during qualifier check at {iter_param_name}={current_iter_val}: Status {response.status_code}", verbatim=True)
                     break
 
                 data = response.json()
@@ -2750,10 +2750,10 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                         metric_value = 0
 
                 except (KeyError, IndexError, TypeError):
-                    await self.message_queue.add(pip, f"Could not extract metric from response at {iter_param_name}={current_iter_val}", verbatim=True)
+                    await self.message_queue.add(wand, f"Could not extract metric from response at {iter_param_name}={current_iter_val}", verbatim=True)
                     metric_value = 0
 
-                await self.message_queue.add(pip, f"🔍 Qualifier '{iter_param_name}' at {current_iter_val}: {metric_value:,} items.", verbatim=True)
+                await self.message_queue.add(wand, f"🔍 Qualifier '{iter_param_name}' at {current_iter_val}: {metric_value:,} items.", verbatim=True)
 
                 # Check if we're within threshold
                 if metric_value <= threshold:
@@ -2764,14 +2764,14 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                     # Threshold exceeded
                     if current_iter_val == start_val:
                         # Even the first value exceeds threshold
-                        await self.message_queue.add(pip, qualifier_config['user_message_threshold_exceeded'].format(metric_value=metric_value), verbatim=True)
+                        await self.message_queue.add(wand, qualifier_config['user_message_threshold_exceeded'].format(metric_value=metric_value), verbatim=True)
                         determined_param_value = start_val
                         metric_at_determined_param = metric_value
                     # Break since further iterations will also exceed
                     break
 
             except Exception as e:
-                await self.message_queue.add(pip, f"Error during qualifier check at {iter_param_name}={current_iter_val}: {str(e)}", verbatim=True)
+                await self.message_queue.add(wand, f"Error during qualifier check at {iter_param_name}={current_iter_val}: {str(e)}", verbatim=True)
                 break
 
         return {
@@ -3104,7 +3104,7 @@ await main()
 """
         return curl_command, python_command
 
-    async def process_search_console_data(self, pip, pipeline_id, step_id, username, project_name, analysis_slug, check_result):
+    async def process_search_console_data(self, wand, pipeline_id, step_id, username, project_name, analysis_slug, check_result):
         """Process search console data in the background."""
         logging.info(f'Starting real GSC data export for {username}/{project_name}/{analysis_slug}')
         try:
@@ -3118,12 +3118,12 @@ await main()
                 _, _, python_command = self.generate_query_api_call(export_query['export_job_payload'], username, project_name)
                 check_result['python_command'] = python_command
                 
-                await self.message_queue.add(pip, f"✅ Using cached GSC data ({file_info['size']})", verbatim=True)
+                await self.message_queue.add(wand, f"✅ Using cached GSC data ({file_info['size']})", verbatim=True)
                 check_result.update({'download_complete': True, 'download_info': {'has_file': True, 'file_path': gsc_filepath, 'timestamp': file_info['created'], 'size': file_info['size'], 'cached': True}})
                 check_result_str = json.dumps(check_result)
-                await pip.set_step_data(pipeline_id, step_id, check_result_str, self.steps)
+                await wand.set_step_data(pipeline_id, step_id, check_result_str, self.steps)
                 return
-            await self.message_queue.add(pip, '🔄 Initiating Search Console data export...', verbatim=True)
+            await self.message_queue.add(wand, '🔄 Initiating Search Console data export...', verbatim=True)
             api_token = self.read_api_token()
             if not api_token:
                 raise ValueError('Cannot read API token')
@@ -3152,23 +3152,23 @@ await main()
                         raise ValueError('Failed to get job URL from response')
                     full_job_url = f'https://api.botify.com{job_url_path}'
                     logging.info(f'Got job URL: {full_job_url}')
-                    await self.message_queue.add(pip, '✅ Export job created successfully!', verbatim=True)
+                    await self.message_queue.add(wand, '✅ Export job created successfully!', verbatim=True)
             except Exception as e:
                 logging.exception(f'Error creating export job: {str(e)}')
-                await self.message_queue.add(pip, f'❌ Error creating export job: {str(e)}', verbatim=True)
+                await self.message_queue.add(wand, f'❌ Error creating export job: {str(e)}', verbatim=True)
                 raise
-            await self.message_queue.add(pip, '🔄 Polling for export completion...', verbatim=True)
+            await self.message_queue.add(wand, '🔄 Polling for export completion...', verbatim=True)
             success, result = await self.poll_job_status(full_job_url, api_token, step_context="export")
             if not success:
                 error_message = isinstance(result, str) and result or 'Export job failed'
-                await self.message_queue.add(pip, f'❌ Export failed: {error_message}', verbatim=True)
+                await self.message_queue.add(wand, f'❌ Export failed: {error_message}', verbatim=True)
                 raise ValueError(f'Export failed: {error_message}')
-            await self.message_queue.add(pip, '✅ Export completed and ready for download!', verbatim=True)
+            await self.message_queue.add(wand, '✅ Export completed and ready for download!', verbatim=True)
             download_url = result.get('download_url')
             if not download_url:
-                await self.message_queue.add(pip, '❌ No download URL found in job result', verbatim=True)
+                await self.message_queue.add(wand, '❌ No download URL found in job result', verbatim=True)
                 raise ValueError('No download URL found in job result')
-            await self.message_queue.add(pip, '🔄 Downloading Search Console data...', verbatim=True)
+            await self.message_queue.add(wand, '🔄 Downloading Search Console data...', verbatim=True)
             await self.ensure_directory_exists(gsc_filepath)
             zip_path = f'{gsc_filepath}.zip'
             try:
@@ -3195,23 +3195,23 @@ await main()
                 if os.path.exists(zip_path):
                     os.remove(zip_path)
                 _, file_info = await self.check_file_exists(gsc_filepath)
-                await self.message_queue.add(pip, f"✅ Download complete: {file_info['path']} ({file_info['size']})", verbatim=True)
+                await self.message_queue.add(wand, f"✅ Download complete: {file_info['path']} ({file_info['size']})", verbatim=True)
                 df = pd.read_csv(gsc_filepath, skiprows=1)
                 df.to_csv(gsc_filepath, index=False)
                 download_info = {'has_file': True, 'file_path': gsc_filepath, 'timestamp': file_info['created'], 'size': file_info['size'], 'cached': False}
                 check_result.update({'download_complete': True, 'download_info': download_info})
             except Exception as e:
-                await self.message_queue.add(pip, f'❌ Error downloading or extracting file: {str(e)}', verbatim=True)
+                await self.message_queue.add(wand, f'❌ Error downloading or extracting file: {str(e)}', verbatim=True)
                 raise
-            await self.message_queue.add(pip, '✅ Search Console data ready for analysis!', verbatim=True)
+            await self.message_queue.add(wand, '✅ Search Console data ready for analysis!', verbatim=True)
             check_result_str = json.dumps(check_result)
-            await pip.set_step_data(pipeline_id, step_id, check_result_str, self.steps)
+            await wand.set_step_data(pipeline_id, step_id, check_result_str, self.steps)
         except Exception as e:
             logging.exception(f'Error in process_search_console_data: {e}')
             check_result.update({'download_complete': True, 'error': str(e)})
             check_result_str = json.dumps(check_result)
-            await pip.set_step_data(pipeline_id, step_id, check_result_str, self.steps)
-            await self.message_queue.add(pip, f'❌ Error processing Search Console data: {str(e)}', verbatim=True)
+            await wand.set_step_data(pipeline_id, step_id, check_result_str, self.steps)
+            await self.message_queue.add(wand, f'❌ Error processing Search Console data: {str(e)}', verbatim=True)
             raise
 
     async def build_exports(self, username, project_name, analysis_slug=None, data_type='crawl', start_date=None, end_date=None, dynamic_param_value=None, placeholder_for_dynamic_param=None):
@@ -3611,19 +3611,19 @@ await main()
 
     async def step_02_process(self, request):
         """Process the actual download after showing the progress indicator."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_02'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         form = await request.form()
         analysis_slug = form.get('analysis_slug', '').strip()
         username = form.get('username', '').strip()
         project_name = form.get('project_name', '').strip()
         if not all([analysis_slug, username, project_name]):
             return P('Error: Missing required parameters', cls='text-invalid')
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         analysis_result_str = step_data.get(step.done, '')
         analysis_result = json.loads(analysis_result_str) if analysis_result_str else {}
 
@@ -3640,7 +3640,7 @@ await main()
             crawl_filepath = await self.get_deterministic_filepath(username, project_name, analysis_slug, export_type)
             file_exists, file_info = await self.check_file_exists(crawl_filepath)
             if file_exists:
-                await self.message_queue.add(pip, f"✅ Using cached crawl data ({file_info['size']})", verbatim=True)
+                await self.message_queue.add(wand, f"✅ Using cached crawl data ({file_info['size']})", verbatim=True)
                 analysis_result.update({'download_complete': True, 'download_info': {'has_file': True, 'file_path': crawl_filepath, 'timestamp': file_info['created'], 'size': file_info['size'], 'cached': True}})
 
                 # Generate Python debugging code even for cached files
@@ -3678,7 +3678,7 @@ await main()
                 _, _, python_command = self.generate_query_api_call(export_query, username, project_name)
                 analysis_result['python_command'] = python_command
             else:
-                await self.message_queue.add(pip, '🔄 Initiating crawl data export...', verbatim=True)
+                await self.message_queue.add(wand, '🔄 Initiating crawl data export...', verbatim=True)
                 api_token = self.read_api_token()
                 if not api_token:
                     raise ValueError('Cannot read API token')
@@ -3753,11 +3753,11 @@ await main()
                         if not job_url_path:
                             raise ValueError('Failed to get job URL from response')
                         full_job_url = f'https://api.botify.com{job_url_path}'
-                        await self.message_queue.add(pip, '✅ Crawl export job created successfully!', verbatim=True)
-                        await self.message_queue.add(pip, '🔄 Polling for export completion...', verbatim=True)
+                        await self.message_queue.add(wand, '✅ Crawl export job created successfully!', verbatim=True)
+                        await self.message_queue.add(wand, '🔄 Polling for export completion...', verbatim=True)
                     except httpx.HTTPStatusError as e:
                         error_message = f'Export request failed: HTTP {e.response.status_code}'
-                        await self.message_queue.add(pip, f'❌ {error_message}', verbatim=True)
+                        await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
                         # Store the error in analysis_result but don't raise exception
                         analysis_result.update({
                             'download_complete': False,
@@ -3771,7 +3771,7 @@ await main()
                         full_job_url = None  # Prevent polling
                     except Exception as e:
                         error_message = f'Export request failed: {str(e)}'
-                        await self.message_queue.add(pip, f'❌ {error_message}', verbatim=True)
+                        await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
                         # Store the error in analysis_result but don't raise exception
                         analysis_result.update({
                             'download_complete': False,
@@ -3787,13 +3787,13 @@ await main()
                     success, result = await self.poll_job_status(full_job_url, api_token, step_context="export")
                     if not success:
                         error_message = isinstance(result, str) and result or 'Export job failed'
-                        await self.message_queue.add(pip, f'❌ Export failed: {error_message}', verbatim=True)
+                        await self.message_queue.add(wand, f'❌ Export failed: {error_message}', verbatim=True)
 
                         # Try to get more detailed error by testing the /query endpoint
                         detailed_error = await self._diagnose_query_endpoint_error(export_query, username, project_name, api_token)
                         if detailed_error:
                             error_message = f"{error_message} | Detailed diagnosis: {detailed_error}"
-                            await self.message_queue.add(pip, f'🔍 Detailed error diagnosis: {detailed_error}', verbatim=True)
+                            await self.message_queue.add(wand, f'🔍 Detailed error diagnosis: {detailed_error}', verbatim=True)
 
                         # Store the error in analysis_result but don't raise exception
                         analysis_result.update({
@@ -3806,10 +3806,10 @@ await main()
                             }
                         })
                     else:
-                        await self.message_queue.add(pip, '✅ Export completed and ready for download!', verbatim=True)
+                        await self.message_queue.add(wand, '✅ Export completed and ready for download!', verbatim=True)
                         download_url = result.get('download_url')
                         if not download_url:
-                            await self.message_queue.add(pip, '❌ No download URL found in job result', verbatim=True)
+                            await self.message_queue.add(wand, '❌ No download URL found in job result', verbatim=True)
                             # Store the error in analysis_result but don't raise exception
                             analysis_result.update({
                                 'download_complete': False,
@@ -3821,7 +3821,7 @@ await main()
                                 }
                             })
                         else:
-                            await self.message_queue.add(pip, '🔄 Downloading crawl data...', verbatim=True)
+                            await self.message_queue.add(wand, '🔄 Downloading crawl data...', verbatim=True)
                             await self.ensure_directory_exists(crawl_filepath)
                             try:
                                 gz_filepath = f'{crawl_filepath}.gz'
@@ -3836,7 +3836,7 @@ await main()
                                         shutil.copyfileobj(f_in, f_out)
                                 os.remove(gz_filepath)
                                 _, file_info = await self.check_file_exists(crawl_filepath)
-                                await self.message_queue.add(pip, f"✅ Download complete: {file_info['path']} ({file_info['size']})", verbatim=True)
+                                await self.message_queue.add(wand, f"✅ Download complete: {file_info['path']} ({file_info['size']})", verbatim=True)
                                 df = pd.read_csv(crawl_filepath)
 
                                 # Apply appropriate column names based on export type
@@ -3869,7 +3869,7 @@ await main()
                                 analysis_result.update({'download_complete': True, 'download_info': download_info})
                             except httpx.ReadTimeout as e:
                                 error_message = f'Timeout error during file download: {str(e)}'
-                                await self.message_queue.add(pip, f'❌ {error_message}', verbatim=True)
+                                await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
                                 # Store the error in analysis_result but don't raise exception
                                 analysis_result.update({
                                     'download_complete': False,
@@ -3882,7 +3882,7 @@ await main()
                                 })
                             except Exception as e:
                                 error_message = f'Error downloading or decompressing file: {str(e)}'
-                                await self.message_queue.add(pip, f'❌ {error_message}', verbatim=True)
+                                await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
                                 # Store the error in analysis_result but don't raise exception
                                 analysis_result.update({
                                     'download_complete': False,
@@ -3895,10 +3895,10 @@ await main()
                                 })
             # Only show success message if download was actually successful
             if analysis_result.get('download_complete', False) and 'error' not in analysis_result:
-                await self.message_queue.add(pip, f"✅ Crawl data downloaded: {file_info['size']}", verbatim=True)
+                await self.message_queue.add(wand, f"✅ Crawl data downloaded: {file_info['size']}", verbatim=True)
 
             analysis_result_str = json.dumps(analysis_result)
-            await pip.set_step_data(pipeline_id, step_id, analysis_result_str, self.steps)
+            await wand.set_step_data(pipeline_id, step_id, analysis_result_str, self.steps)
 
             # Determine status message and color based on success/failure
             if 'error' in analysis_result:
@@ -3928,19 +3928,19 @@ await main()
                     id=f'{step_id}_widget'
                 )
             )
-            return Div(pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Analysis {status_text}{download_message}', widget=widget, steps=self.steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Analysis {status_text}{download_message}', widget=widget, steps=self.steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         except Exception as e:
             logging.exception(f'Error in step_02_process: {e}')
             return P(f'Error: {str(e)}', cls='text-invalid')
 
     async def step_03_process(self, request):
         """Process the web logs check and download if available."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_03'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         form = await request.form()
         analysis_slug = form.get('analysis_slug', '').strip()
         username = form.get('username', '').strip()
@@ -3953,12 +3953,12 @@ await main()
                 return P(f'Error: {error_message}', cls='text-invalid')
             check_result = {'has_logs': has_logs, 'project': project_name, 'username': username, 'analysis_slug': analysis_slug, 'timestamp': datetime.now().isoformat()}
             status_text = 'HAS' if has_logs else 'does NOT have'
-            await self.message_queue.add(pip, f'{step.show} complete: Project {status_text} web logs', verbatim=True)
+            await self.message_queue.add(wand, f'{step.show} complete: Project {status_text} web logs', verbatim=True)
             if has_logs:
                 logs_filepath = await self.get_deterministic_filepath(username, project_name, analysis_slug, 'weblog')
                 file_exists, file_info = await self.check_file_exists(logs_filepath)
                 if file_exists:
-                    await self.message_queue.add(pip, f"✅ Using cached web logs data ({file_info['size']})", verbatim=True)
+                    await self.message_queue.add(wand, f"✅ Using cached web logs data ({file_info['size']})", verbatim=True)
                     check_result.update({'download_complete': True, 'download_info': {'has_file': True, 'file_path': logs_filepath, 'timestamp': file_info['created'], 'size': file_info['size'], 'cached': True}})
 
                     # Generate Python debugging code even for cached files
@@ -3975,7 +3975,7 @@ await main()
                     _, _, python_command = self.generate_query_api_call(export_query, username, project_name)
                     check_result['python_command'] = python_command
                 else:
-                    await self.message_queue.add(pip, '🔄 Initiating web logs export...', verbatim=True)
+                    await self.message_queue.add(wand, '🔄 Initiating web logs export...', verbatim=True)
                     api_token = self.read_api_token()
                     if not api_token:
                         raise ValueError('Cannot read API token')
@@ -4018,11 +4018,11 @@ await main()
                             if not job_id:
                                 raise ValueError('Failed to extract job ID from job URL')
                             full_job_url = f'https://api.botify.com/v1/jobs/{job_id}'
-                            await self.message_queue.add(pip, f'✅ Web logs export job created successfully! (Job ID: {job_id})', verbatim=True)
-                            await self.message_queue.add(pip, '🔄 Polling for export completion...', verbatim=True)
+                            await self.message_queue.add(wand, f'✅ Web logs export job created successfully! (Job ID: {job_id})', verbatim=True)
+                            await self.message_queue.add(wand, '🔄 Polling for export completion...', verbatim=True)
                         except httpx.HTTPStatusError as e:
                             error_message = f'Export request failed: HTTP {e.response.status_code}'
-                            await self.message_queue.add(pip, f'❌ {error_message}', verbatim=True)
+                            await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
                             # Store the error in check_result but don't raise exception
                             check_result.update({
                                 'download_complete': False,
@@ -4037,7 +4037,7 @@ await main()
                             job_id = None  # Prevent polling
                         except Exception as e:
                             error_message = f'Export request failed: {str(e)}'
-                            await self.message_queue.add(pip, f'❌ {error_message}', verbatim=True)
+                            await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
                             # Store the error in check_result but don't raise exception
                             check_result.update({
                                 'download_complete': False,
@@ -4051,18 +4051,18 @@ await main()
                             has_logs = False
                             job_id = None  # Prevent polling
                     if job_id:
-                        await self.message_queue.add(pip, f'🎯 Using job ID {job_id} for polling...', verbatim=True)
+                        await self.message_queue.add(wand, f'🎯 Using job ID {job_id} for polling...', verbatim=True)
                         full_job_url = f'https://api.botify.com/v1/jobs/{job_id}'
                     success, result = await self.poll_job_status(full_job_url, api_token, step_context="export")
                     if not success:
                         error_message = isinstance(result, str) and result or 'Export job failed'
-                        await self.message_queue.add(pip, f'❌ Export failed: {error_message}', verbatim=True)
+                        await self.message_queue.add(wand, f'❌ Export failed: {error_message}', verbatim=True)
 
                         # Try to get more detailed error by testing the /query endpoint
                         detailed_error = await self._diagnose_query_endpoint_error(export_query, username, project_name, api_token)
                         if detailed_error:
                             error_message = f"{error_message} | Detailed diagnosis: {detailed_error}"
-                            await self.message_queue.add(pip, f'🔍 Detailed error diagnosis: {detailed_error}', verbatim=True)
+                            await self.message_queue.add(wand, f'🔍 Detailed error diagnosis: {detailed_error}', verbatim=True)
 
                         # Store the error in check_result but don't raise exception
                         check_result.update({
@@ -4078,10 +4078,10 @@ await main()
                         has_logs = False
                         # Skip the download section and go directly to widget creation
                     else:
-                        await self.message_queue.add(pip, '✅ Export completed and ready for download!', verbatim=True)
+                        await self.message_queue.add(wand, '✅ Export completed and ready for download!', verbatim=True)
                         download_url = result.get('download_url')
                         if not download_url:
-                            await self.message_queue.add(pip, '❌ No download URL found in job result', verbatim=True)
+                            await self.message_queue.add(wand, '❌ No download URL found in job result', verbatim=True)
                             # Store the error in check_result but don't raise exception
                             check_result.update({
                                 'download_complete': False,
@@ -4094,7 +4094,7 @@ await main()
                             })
                             has_logs = False
                         else:
-                            await self.message_queue.add(pip, '🔄 Downloading web logs data...', verbatim=True)
+                            await self.message_queue.add(wand, '🔄 Downloading web logs data...', verbatim=True)
                             await self.ensure_directory_exists(logs_filepath)
                             try:
                                 compressed_path = f'{logs_filepath}.compressed'
@@ -4125,8 +4125,8 @@ await main()
                                 if os.path.exists(compressed_path):
                                     os.remove(compressed_path)
                                 _, file_info = await self.check_file_exists(logs_filepath)
-                                await self.message_queue.add(pip, f"✅ Download complete: {file_info['path']} ({file_info['size']})", verbatim=True)
-                                await self.message_queue.add(pip, f"✅ Web logs data downloaded: {file_info['size']}", verbatim=True)
+                                await self.message_queue.add(wand, f"✅ Download complete: {file_info['path']} ({file_info['size']})", verbatim=True)
+                                await self.message_queue.add(wand, f"✅ Web logs data downloaded: {file_info['size']}", verbatim=True)
 
                                 # Mark download as complete for button creation
                                 check_result.update({
@@ -4140,7 +4140,7 @@ await main()
                                     }
                                 })
                             except Exception as e:
-                                await self.message_queue.add(pip, f'❌ Error downloading file: {str(e)}', verbatim=True)
+                                await self.message_queue.add(wand, f'❌ Error downloading file: {str(e)}', verbatim=True)
                                 # Store the error in check_result but don't raise exception
                                 check_result.update({
                                     'download_complete': False,
@@ -4153,7 +4153,7 @@ await main()
                                 })
                                 has_logs = False
             check_result_str = json.dumps(check_result)
-            await pip.set_step_data(pipeline_id, step_id, check_result_str, steps)
+            await wand.set_step_data(pipeline_id, step_id, check_result_str, steps)
 
             # Determine status message and color based on success/failure
             if 'error' in check_result:
@@ -4182,7 +4182,7 @@ await main()
                     id=f'{step_id}_widget'
                 )
             )
-            return Div(pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Project {status_text} web logs{download_message}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Project {status_text} web logs{download_message}', widget=widget, steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         except Exception as e:
             logging.exception(f'Error in step_03_process: {e}')
             return Div(P(f'Error: {str(e)}', cls='text-invalid'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
@@ -4197,18 +4197,18 @@ await main()
 
     async def common_toggle(self, request):
         """Unified toggle method for all step widgets using configuration-driven approach."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = request.query_params.get('step_id')
         if not step_id or step_id not in self.TOGGLE_CONFIG:
             return Div("Invalid step ID for toggle.", style="color: red;")
         
         config = self.TOGGLE_CONFIG[step_id]
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         data_str = step_data.get(steps[self.steps_indices[step_id]].done, '')
         data_obj = json.loads(data_str) if data_str else {}
         
-        state = pip.read_state(pipeline_id)
+        state = wand.read_state(pipeline_id)
         widget_visible_key = f'{step_id}_widget_visible'
         is_visible = state.get(widget_visible_key, False)
         
@@ -4238,12 +4238,12 @@ await main()
         # First time toggling, just show it
         if widget_visible_key not in state:
             state[widget_visible_key] = True
-            pip.write_state(pipeline_id, state)
+            wand.write_state(pipeline_id, state)
             return content_div
 
         # Subsequent toggles
         state[widget_visible_key] = not is_visible
-        pip.write_state(pipeline_id, state)
+        wand.write_state(pipeline_id, state)
         
         if is_visible: # if it was visible, now hide it
             content_div.attrs['style'] = 'display: none;'
@@ -5154,35 +5154,35 @@ await main()
     # --- START_SWAPPABLE_STEP: step_06 ---
     async def step_06(self, request):
         """Handles GET request for Placeholder Step 6 (Edit Me)."""
-        pip, db, steps, app_name = self.pipulate, self.pip.db, self.steps, self.app_name
+        wand, db, steps, app_name = self.pipulate, self.wand.db, self.steps, self.app_name
         step_id = "step_06"
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         # Determine next_step_id dynamically based on runtime position in steps list
         next_step_id = steps[step_index + 1].id if step_index + 1 < len(steps) else 'finalize'
         pipeline_id = db.get("pipeline_id", "unknown")
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         current_value = step_data.get(step.done, "") # 'step.done' will be like 'placeholder_06'
-        finalize_data = pip.get_step_data(pipeline_id, "finalize", {})
+        finalize_data = wand.get_step_data(pipeline_id, "finalize", {})
     
         if "finalized" in finalize_data and current_value:
-            pip.append_to_history(f"[WIDGET CONTENT] {step.show} (Finalized):\n{current_value}")
+            wand.append_to_history(f"[WIDGET CONTENT] {step.show} (Finalized):\n{current_value}")
             return Div(
                 Card(H3(f"🔒 {step.show}: Completed")),
                 Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
                 id=step_id
             )
         elif current_value and state.get("_revert_target") != step_id:
-            pip.append_to_history(f"[WIDGET CONTENT] {step.show} (Completed):\n{current_value}")
+            wand.append_to_history(f"[WIDGET CONTENT] {step.show} (Completed):\n{current_value}")
             return Div(
-                pip.display_revert_header(step_id=step_id, app_name=app_name, message=f"{step.show}: Complete", steps=steps),
+                wand.display_revert_header(step_id=step_id, app_name=app_name, message=f"{step.show}: Complete", steps=steps),
                 Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
                 id=step_id
             )
         else:
-            pip.append_to_history(f"[WIDGET STATE] {step.show}: Showing input form")
-            await self.message_queue.add(pip, self.step_messages[step_id]["input"], verbatim=True)
+            wand.append_to_history(f"[WIDGET STATE] {step.show}: Showing input form")
+            await self.message_queue.add(wand, self.step_messages[step_id]["input"], verbatim=True)
             return Div(
                 Card(
                     H3(f"{step.show}"),
@@ -5201,7 +5201,7 @@ await main()
 
     async def step_06_submit(self, request):
         """Process the submission for Placeholder Step 6 (Edit Me)."""
-        pip, db, steps, app_name = self.pipulate, self.pip.db, self.steps, self.app_name
+        wand, db, steps, app_name = self.pipulate, self.wand.db, self.steps, self.app_name
         step_id = "step_06"
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
@@ -5211,15 +5211,15 @@ await main()
         form_data = await request.form()
         # For a placeholder, get value from the hidden input or use a default
         value_to_save = form_data.get(step.done, f"Default value for {step.show}") 
-        await pip.set_step_data(pipeline_id, step_id, value_to_save, steps)
+        await wand.set_step_data(pipeline_id, step_id, value_to_save, steps)
         
-        pip.append_to_history(f"[WIDGET CONTENT] {step.show}:\n{value_to_save}")
-        pip.append_to_history(f"[WIDGET STATE] {step.show}: Step completed")
+        wand.append_to_history(f"[WIDGET CONTENT] {step.show}:\n{value_to_save}")
+        wand.append_to_history(f"[WIDGET STATE] {step.show}: Step completed")
         
-        await self.message_queue.add(pip, f"{step.show} complete.", verbatim=True)
+        await self.message_queue.add(wand, f"{step.show} complete.", verbatim=True)
         
         return Div(
-            pip.display_revert_header(step_id=step_id, app_name=app_name, message=f"{step.show}: Complete", steps=steps),
+            wand.display_revert_header(step_id=step_id, app_name=app_name, message=f"{step.show}: Complete", steps=steps),
             Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
             id=step_id
         )
@@ -5245,9 +5245,9 @@ await main()
                     return HTMLResponse("Pipeline ID required for cosmo files", status_code=400)
                 
                 # Load pipeline data to get project info
-                pip = self.pipulate
-                project_data = pip.get_step_data(pipeline_id, 'step_01', {}).get('botify_project', '{}')
-                analysis_data = pip.get_step_data(pipeline_id, 'step_02', {}).get('analysis_selection', '{}')
+                wand = self.pipulate
+                project_data = wand.get_step_data(pipeline_id, 'step_01', {}).get('botify_project', '{}')
+                analysis_data = wand.get_step_data(pipeline_id, 'step_02', {}).get('analysis_selection', '{}')
                 
                 try:
                     project_info = json.loads(project_data)

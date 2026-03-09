@@ -90,9 +90,9 @@ class DevAssistant:
         self.app_name = self.APP_NAME
         self.pipulate = pipulate
         self.pipeline = pipeline
-        pip = self.pipulate
-        pip = self.pipulate
-        self.message_queue = pip.get_message_queue()
+        wand = self.pipulate
+        wand = self.pipulate
+        self.message_queue = wand.get_message_queue()
 
         self.steps = [
             Step(id='step_01', done='plugin_analysis', show='1. Plugin Selection', refill=False),
@@ -140,7 +140,7 @@ class DevAssistant:
         )
 
     async def init(self, request):
-        pip, db = self.pipulate, self.pipulate.db
+        wand, db = self.pipulate, self.pipulate.db
         internal_app_name = self.APP_NAME
         form = await request.form()
         user_input_key = form.get('pipeline_id', '').strip()
@@ -151,31 +151,31 @@ class DevAssistant:
             response.headers['HX-Refresh'] = 'true'
             return response
 
-        _, prefix_for_key_gen, _ = pip.generate_pipeline_key(self)
+        _, prefix_for_key_gen, _ = wand.generate_pipeline_key(self)
         if user_input_key.startswith(prefix_for_key_gen) and len(user_input_key.split('-')) == 3:
             pipeline_id = user_input_key
         else:
-             _, prefix, user_part = pip.generate_pipeline_key(self, user_input_key)
+             _, prefix, user_part = wand.generate_pipeline_key(self, user_input_key)
              pipeline_id = f'{prefix}{user_part}'
 
-        pip.db['pipeline_id'] = pipeline_id
-        state, error = pip.initialize_if_missing(pipeline_id, {'app_name': internal_app_name})
+        wand.db['pipeline_id'] = pipeline_id
+        state, error = wand.initialize_if_missing(pipeline_id, {'app_name': internal_app_name})
         if error: return error
 
-        await self.message_queue.add(pip, f'Development Assistant Session: {pipeline_id}', verbatim=True, spaces_before=0)
+        await self.message_queue.add(wand, f'Development Assistant Session: {pipeline_id}', verbatim=True, spaces_before=0)
 
-        return pip.run_all_cells(internal_app_name, self.steps)
+        return wand.run_all_cells(internal_app_name, self.steps)
 
     async def finalize(self, request):
-        pip, db, app_name = self.pipulate, self.pipulate.db, self.APP_NAME
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        wand, db, app_name = self.pipulate, self.pipulate.db, self.APP_NAME
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
 
         if request.method == 'POST':
-            await pip.set_step_data(pipeline_id, 'finalize', {'finalized': True}, self.steps)
-            await self.message_queue.add(pip, 'Development analysis session finalized.', verbatim=True)
-            return pip.run_all_cells(app_name, self.steps)
+            await wand.set_step_data(pipeline_id, 'finalize', {'finalized': True}, self.steps)
+            await self.message_queue.add(wand, 'Development analysis session finalized.', verbatim=True)
+            return wand.run_all_cells(app_name, self.steps)
 
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data:
             return Card(
                 H3('🔒 Analysis Session Finalized'),
@@ -206,30 +206,30 @@ class DevAssistant:
             )
 
     async def unfinalize(self, request):
-        pip, db, app_name = self.pipulate, self.pipulate.db, self.APP_NAME
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        await pip.unfinalize_workflow(pipeline_id)
-        await self.message_queue.add(pip, 'Development analysis session unlocked for editing.', verbatim=True)
-        return pip.run_all_cells(app_name, self.steps)
+        wand, db, app_name = self.pipulate, self.pipulate.db, self.APP_NAME
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        await wand.unfinalize_workflow(pipeline_id)
+        await self.message_queue.add(wand, 'Development analysis session unlocked for editing.', verbatim=True)
+        return wand.run_all_cells(app_name, self.steps)
 
     async def handle_revert(self, request):
-        pip, db, app_name = self.pipulate, self.pipulate.db, self.APP_NAME
+        wand, db, app_name = self.pipulate, self.pipulate.db, self.APP_NAME
         form = await request.form()
         step_id = form.get('step_id')
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
 
         if not step_id:
             return P('Error: No step specified for revert.', cls='text-invalid')
 
-        await pip.clear_steps_from(pipeline_id, step_id, self.steps)
+        await wand.clear_steps_from(pipeline_id, step_id, self.steps)
 
-        state = pip.read_state(pipeline_id)
+        state = wand.read_state(pipeline_id)
         state['_revert_target'] = step_id
-        pip.write_state(pipeline_id, state)
+        wand.write_state(pipeline_id, state)
 
-        await self.message_queue.add(pip, f'Reverted to {step_id} for re-analysis.', verbatim=True)
+        await self.message_queue.add(wand, f'Reverted to {step_id} for re-analysis.', verbatim=True)
 
-        return pip.run_all_cells(app_name, self.steps)
+        return wand.run_all_cells(app_name, self.steps)
 
     def generate_automation_ai_prompt(self, automation_readiness, filename):
         """Generate a comprehensive AI prompt for fixing automation and accessibility issues."""

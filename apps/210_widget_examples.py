@@ -157,9 +157,9 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         self.pipulate = pipulate
         self.pipeline = pipeline
         self.steps_indices = {}
-        pip = self.pipulate
-        pip = self.pipulate
-        self.message_queue = pip.message_queue
+        wand = self.pipulate
+        wand = self.pipulate
+        self.message_queue = wand.message_queue
         steps = [Step(id='step_01', done='simple_content', show='Simple Text Widget', refill=True), Step(id='step_02', done='markdown_content', show='Markdown Renderer (MarkedJS)', refill=True), Step(id='step_03', done='mermaid_content', show='Mermaid Diagram Renderer', refill=True), Step(id='step_04', done='table_data', show='Pandas Table Widget', refill=True), Step(id='step_05', done='code_content', show='Code Syntax Highlighter', refill=True), Step(id='step_06', done='js_content', show='JavaScript Widget', refill=True), Step(id='step_07', done='counter_data', show='Matplotlib Histogram', refill=True), Step(id='step_08', done='url', show='URL Opener Widget', refill=True), Step(id='step_09', done='rich_table', show='Rich Table Widget', refill=True), Step(id='step_10', done='selenium_url', show='Selenium URL Opener', refill=True), Step(id='step_11', done='file_uploads', show='File Upload Widget', refill=True)]
         routes = [(f'/{app_name}', self.landing), (f'/{app_name}/init', self.init, ['POST']), (f'/{app_name}/revert', self.handle_revert, ['POST']), (f'/{app_name}/finalize', self.finalize, ['GET', 'POST']), (f'/{app_name}/unfinalize', self.unfinalize, ['POST']), (f'/{app_name}/reopen_url', self.reopen_url, ['POST'])]
         self.steps = steps
@@ -170,27 +170,27 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         for path, handler, *methods in routes:
             method_list = methods[0] if methods else ['GET']
             app.route(path, methods=method_list)(handler)
-        self.step_messages = {'finalize': {'ready': 'All steps complete. Ready to finalize workflow.', 'complete': f'Workflow finalized. Use {pip.UNLOCK_BUTTON_LABEL} to make changes.'}, 'new': 'Please complete each step to explore different widget types.', 'step_08': {'input': f"{pip.fmt('step_08')}: Please complete New Placeholder Step.", 'complete': f'New Placeholder Step complete. Continue to next step.'}, 'step_09': {'input': f"{pip.fmt('step_09')}: Configure Rich Table Widget.", 'complete': f'Rich Table Widget complete. Continue to next step.'}, 'step_07': {'input': f"{pip.fmt('step_07')}: Enter counter data for Matplotlib Histogram.", 'complete': f'Matplotlib Histogram complete. Continue to next step.'}}
+        self.step_messages = {'finalize': {'ready': 'All steps complete. Ready to finalize workflow.', 'complete': f'Workflow finalized. Use {wand.UNLOCK_BUTTON_LABEL} to make changes.'}, 'new': 'Please complete each step to explore different widget types.', 'step_08': {'input': f"{wand.fmt('step_08')}: Please complete New Placeholder Step.", 'complete': f'New Placeholder Step complete. Continue to next step.'}, 'step_09': {'input': f"{wand.fmt('step_09')}: Configure Rich Table Widget.", 'complete': f'Rich Table Widget complete. Continue to next step.'}, 'step_07': {'input': f"{wand.fmt('step_07')}: Enter counter data for Matplotlib Histogram.", 'complete': f'Matplotlib Histogram complete. Continue to next step.'}}
         for step in steps:
-            self.step_messages[step.id] = {'input': f'{pip.fmt(step.id)}: Enter content for {step.show}.', 'complete': f'{step.show} complete. Continue to next step.'}
+            self.step_messages[step.id] = {'input': f'{wand.fmt(step.id)}: Enter content for {step.show}.', 'complete': f'{step.show} complete. Continue to next step.'}
         steps.append(Step(id='finalize', done='finalized', show='Finalize', refill=False))
         self.steps_indices = {step.id: i for i, step in enumerate(steps)}
 
     async def landing(self, request):
         """ Renders the initial landing page with the key input form. """
-        pip, pipeline, steps, app_name = (self.pipulate, self.pipeline, self.steps, self.app_name)
-        context = pip.get_plugin_context(self)
+        wand, pipeline, steps, app_name = (self.pipulate, self.pipeline, self.steps, self.app_name)
+        context = wand.get_plugin_context(self)
         title = f'{self.DISPLAY_NAME or app_name.title()}'
-        full_key, prefix, user_part = pip.generate_pipeline_key(self)
+        full_key, prefix, user_part = wand.generate_pipeline_key(self)
         default_value = full_key
         pipeline.xtra(app_name=app_name)
         matching_records = [record.pkey for record in pipeline() if record.pkey.startswith(prefix)]
         datalist_options = [f"{prefix}{record_key.replace(prefix, '')}" for record_key in matching_records]
-        return Container(Card(H2(title), P(self.ENDPOINT_MESSAGE, cls='text-secondary'), Form(pip.wrap_with_inline_button(Input(placeholder='Existing or new 🗝 here (Enter for auto)', name='pipeline_id', list='pipeline-ids', type='search', required=False, autofocus=True, value=default_value, _onfocus='this.setSelectionRange(this.value.length, this.value.length)', cls='contrast'), button_label=f'Enter 🔑', button_class='secondary'), pip.update_datalist('pipeline-ids', options=datalist_options if datalist_options else None), hx_post=f'/{app_name}/init', hx_target=f'#{app_name}-container')), Div(id=f'{app_name}-container'))
+        return Container(Card(H2(title), P(self.ENDPOINT_MESSAGE, cls='text-secondary'), Form(wand.wrap_with_inline_button(Input(placeholder='Existing or new 🗝 here (Enter for auto)', name='pipeline_id', list='pipeline-ids', type='search', required=False, autofocus=True, value=default_value, _onfocus='this.setSelectionRange(this.value.length, this.value.length)', cls='contrast'), button_label=f'Enter 🔑', button_class='secondary'), wand.update_datalist('pipeline-ids', options=datalist_options if datalist_options else None), hx_post=f'/{app_name}/init', hx_target=f'#{app_name}-container')), Div(id=f'{app_name}-container'))
 
     async def init(self, request):
         """ Initialize the workflow state and redirect to the first step. """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         form = await request.form()
         user_input = form.get('pipeline_id', '').strip()
         if not user_input:
@@ -198,7 +198,7 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
             response = Response('')
             response.headers['HX-Refresh'] = 'true'
             return response
-        context = pip.get_plugin_context(self)
+        context = wand.get_plugin_context(self)
         plugin_name = app_name  # Use app_name directly to ensure consistency
         profile_name = context['profile_name'] or 'default'
         profile_part = profile_name.replace(' ', '_')
@@ -207,80 +207,80 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         if user_input.startswith(expected_prefix):
             pipeline_id = user_input
         else:
-            _, prefix, user_provided_id = pip.generate_pipeline_key(self, user_input)
+            _, prefix, user_provided_id = wand.generate_pipeline_key(self, user_input)
             pipeline_id = f'{prefix}{user_provided_id}'
-        pip.db['pipeline_id'] = pipeline_id
+        wand.db['pipeline_id'] = pipeline_id
         logger.debug(f'Using pipeline ID: {pipeline_id}')
-        state, error = pip.initialize_if_missing(pipeline_id, {'app_name': app_name})
+        state, error = wand.initialize_if_missing(pipeline_id, {'app_name': app_name})
         if error:
             return error
         all_steps_complete = all((step.id in state and step.done in state[step.id] for step in steps[:-1]))
         is_finalized = 'finalize' in state and 'finalized' in state['finalize']
-        await self.message_queue.add(pip, f'Workflow ID: {pipeline_id}', verbatim=True, spaces_before=0)
-        await self.message_queue.add(pip, f"Return later by selecting '{pipeline_id}' from the dropdown.", verbatim=True, spaces_before=0)
+        await self.message_queue.add(wand, f'Workflow ID: {pipeline_id}', verbatim=True, spaces_before=0)
+        await self.message_queue.add(wand, f"Return later by selecting '{pipeline_id}' from the dropdown.", verbatim=True, spaces_before=0)
         if all_steps_complete:
-            status_msg = f'Workflow is complete and finalized. Use {pip.UNLOCK_BUTTON_LABEL} to make changes.' if is_finalized else 'Workflow is complete but not finalized. Press Finalize to lock your data.'
-            await self.message_queue.add(pip, status_msg, verbatim=True)
+            status_msg = f'Workflow is complete and finalized. Use {wand.UNLOCK_BUTTON_LABEL} to make changes.' if is_finalized else 'Workflow is complete but not finalized. Press Finalize to lock your data.'
+            await self.message_queue.add(wand, status_msg, verbatim=True)
         elif not any((step.id in state for step in self.steps)):
-            await self.message_queue.add(pip, self.step_messages['new'], verbatim=True)
-        parsed = pip.parse_pipeline_key(pipeline_id)
+            await self.message_queue.add(wand, self.step_messages['new'], verbatim=True)
+        parsed = wand.parse_pipeline_key(pipeline_id)
         prefix = f"{parsed['profile_part']}-{parsed['plugin_part']}-"
         self.pipeline.xtra(app_name=app_name)
         matching_records = [record.pkey for record in self.pipeline() if record.pkey.startswith(prefix)]
         if pipeline_id not in matching_records:
             matching_records.append(pipeline_id)
-        updated_datalist = pip.update_datalist('pipeline-ids', options=matching_records)
-        return pip.run_all_cells(app_name, steps)
+        updated_datalist = wand.update_datalist('pipeline-ids', options=matching_records)
+        return wand.run_all_cells(app_name, steps)
 
     async def finalize(self, request):
         """ Handle GET/POST requests to finalize (lock) the workflow. """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         finalize_step = steps[-1]
-        finalize_data = pip.get_step_data(pipeline_id, finalize_step.id, {})
+        finalize_data = wand.get_step_data(pipeline_id, finalize_step.id, {})
         if request.method == 'GET':
             if finalize_step.done in finalize_data:
-                return Card(H3('Workflow is locked.'), Form(Button(pip.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
+                return Card(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
             else:
-                all_steps_complete = all((pip.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
+                all_steps_complete = all((wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
                 if all_steps_complete:
                     return Card(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary'), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
                 else:
                     return Div(id=finalize_step.id)
         else:
-            await pip.finalize_workflow(pipeline_id)
-            await self.message_queue.add(pip, self.step_messages['finalize']['complete'], verbatim=True)
-            return pip.run_all_cells(app_name, steps)
+            await wand.finalize_workflow(pipeline_id)
+            await self.message_queue.add(wand, self.step_messages['finalize']['complete'], verbatim=True)
+            return wand.run_all_cells(app_name, steps)
 
     async def unfinalize(self, request):
         """ Handle POST request to unlock the workflow. """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        await pip.unfinalize_workflow(pipeline_id)
-        await self.message_queue.add(pip, 'Workflow unfinalized! You can now revert to any step and make changes.', verbatim=True)
-        return pip.run_all_cells(app_name, steps)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        await wand.unfinalize_workflow(pipeline_id)
+        await self.message_queue.add(wand, 'Workflow unfinalized! You can now revert to any step and make changes.', verbatim=True)
+        return wand.run_all_cells(app_name, steps)
 
     async def get_suggestion(self, step_id, state):
         """ Gets a suggested input value for a step, often using the previous step's transformed output. """
-        pip, db, steps = (self.pipulate, self.pipulate.db, self.steps)
+        wand, db, steps = (self.pipulate, self.pipulate.db, self.steps)
         examples = {'step_01': 'Simple text content example:\n- Basic text formatting\n- Preserves line breaks and formatting\n- Great for lists, paragraphs, descriptions, etc.\n- Easy to modify\n\nThis is a sample widget that shows basic text content.', 'step_02': '# Markdown Example\n\nThis is a **bold statement** about _markdown_.\n\n## Features demonstrated:\n\n1. Headings (h1, h2)\n2. Formatted text (**bold**, _italic_)\n3. Ordered lists\n4. Unordered lists\n   - Nested item 1\n   - Nested item 2\n5. Code blocks\n\n### Code Example\n\n```python\ndef hello_world():\n    print("Hello from Markdown!")\n    for i in range(3):\n        print(f"Count: {i}")\n```\n\n> Blockquotes are also supported\n> - With nested lists\n> - And formatting\n\n[Learn more about Markdown](https://www.markdownguide.org/)\n', 'step_03': 'graph TD\n    A[Start] --> B{Decision}\n    B -->|Yes| C[Action 1]\n    B -->|No| D[Action 2]\n    C --> E[Result 1]\n    D --> F[Result 2]\n    E --> G[End]\n    F --> G', 'step_04': '[\n    {"Name": "John", "Age": 32, "Role": "Developer", "Department": "Engineering"},\n    {"Name": "Jane", "Age": 28, "Role": "Designer", "Department": "Product"},\n    {"Name": "Bob", "Age": 45, "Role": "Manager", "Department": "Engineering"},\n    {"Name": "Alice", "Age": 33, "Role": "PM", "Department": "Product"},\n    {"Name": "Charlie", "Age": 40, "Role": "Architect", "Department": "Engineering"}\n]', 'step_05': 'function calculateFactorial(n) {\n    // Base case: factorial of 0 or 1 is 1\n    if (n <= 1) {\n        return 1;\n    }\n    \n    // Recursive case: n! = n * (n-1)!\n    return n * calculateFactorial(n - 1);\n}\n\n// Example usage\nfor (let i = 0; i < 10; i++) {\n    console.log(`Factorial of ${i} is ${calculateFactorial(i)}`);\n}\n', 'step_06': "// Simple counter example\nlet count = 0;\nconst countDisplay = document.createElement('div');\ncountDisplay.style.fontSize = '24px';\ncountDisplay.style.margin = '20px 0';\ncountDisplay.textContent = count;\n\nconst button = document.createElement('button');\nbutton.textContent = 'Increment Count';\nbutton.style.backgroundColor = '#9370DB';\nbutton.style.borderColor = '#9370DB';\nbutton.onclick = function() {\n    count++;\n    countDisplay.textContent = count;\n};\n\nwidget.appendChild(countDisplay);\nwidget.appendChild(button);", 'step_07': '{\n    "apples": 35,\n    "oranges": 42, \n    "bananas": 28,\n    "grapes": 51,\n    "peaches": 22,\n    "plums": 18,\n    "mangoes": 39\n}', 'step_08': 'New placeholder step - no user content needed.\n\nThis step serves as a placeholder for future widget types.'}
         return examples.get(step_id, '')
 
     async def handle_revert(self, request):
         """ Handle POST request to revert to a previous step. """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         form = await request.form()
         step_id = form.get('step_id')
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         if not step_id:
             return P('Error: No step specified', cls='text-invalid')
-        await pip.clear_steps_from(pipeline_id, step_id, steps)
-        state = pip.read_state(pipeline_id)
+        await wand.clear_steps_from(pipeline_id, step_id, steps)
+        state = wand.read_state(pipeline_id)
         state['_revert_target'] = step_id
-        pip.write_state(pipeline_id, state)
-        message = await pip.get_state_message(pipeline_id, steps, self.step_messages)
-        await self.message_queue.add(pip, message, verbatim=True)
-        return pip.run_all_cells(app_name, steps)
+        wand.write_state(pipeline_id, state)
+        message = await wand.get_state_message(pipeline_id, steps, self.step_messages)
+        await self.message_queue.add(wand, message, verbatim=True)
+        return wand.run_all_cells(app_name, steps)
 
     async def step_01(self, request):
         """
@@ -294,27 +294,27 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         In a "Separated Step" pattern, this would only handle input collection,
         and a separate step would display the widget.
         """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_01'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         user_val = step_data.get(step.done, '')
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and user_val:
             simple_widget = Pre(user_val, cls='code-block-container')
             return Div(Card(H3(f'🔒 {step.show}'), simple_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
         elif user_val and state.get('_revert_target') != step_id:
             simple_widget = Pre(user_val, cls='code-block-container')
-            content_container = pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show} Configured', widget=simple_widget, steps=steps)
+            content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show} Configured', widget=simple_widget, steps=steps)
             return Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
         else:
             display_value = user_val if step.refill and user_val else await self.get_suggestion(step_id, state)
-            await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
-            return Div(Card(H3(f'{pip.fmt(step_id)}: Configure {step.show}'), P('Enter text content for the simple widget. Example is pre-populated.'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter text content for the widget', required=True, rows=10, style='width: 100%; font-family: monospace;'), Div(Button('Record Text ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+            await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
+            return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter text content for the simple widget. Example is pre-populated.'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter text content for the widget', required=True, rows=10, style='width: 100%; font-family: monospace;'), Div(Button('Record Text ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_01_submit(self, request):
         """
@@ -329,23 +329,23 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         This immediate transformation from input to widget in the same step
         creates a tight cause-effect relationship visible to the user.
         """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_01'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
         form = await request.form()
         user_val = form.get(step.done, '')
-        is_valid, error_msg, error_component = pip.validate_step_input(user_val, step.show)
+        is_valid, error_msg, error_component = wand.validate_step_input(user_val, step.show)
         if not is_valid:
             return error_component
-        await pip.set_step_data(pipeline_id, step_id, user_val, steps)
-        pip.append_to_history(f'[WIDGET CONTENT] Simple Text Widget:\n{user_val}')
+        await wand.set_step_data(pipeline_id, step_id, user_val, steps)
+        wand.append_to_history(f'[WIDGET CONTENT] Simple Text Widget:\n{user_val}')
         simple_widget = Pre(user_val, cls='code-block-container')
-        content_container = pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Simple text content provided', widget=simple_widget, steps=steps)
+        content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Simple text content provided', widget=simple_widget, steps=steps)
         response_content = Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
-        await self.message_queue.add(pip, f'{step.show} complete.', verbatim=True)
+        await self.message_queue.add(wand, f'{step.show} complete.', verbatim=True)
         return HTMLResponse(to_xml(response_content))
 
     async def step_02(self, request):
@@ -355,16 +355,16 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         Allows the user to input markdown content that will be rendered
         using the marked.js library for a Jupyter notebook-like experience.
         """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_02'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         user_val = step_data.get(step.done, '')
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and user_val:
             try:
                 widget_id = f"marked-widget-{pipeline_id.replace('-', '_')}-{step_id}"
@@ -379,17 +379,17 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
             try:
                 widget_id = f"marked-widget-{pipeline_id.replace('-', '_')}-{step_id}"
                 marked_widget = self.create_marked_widget(user_val, widget_id)
-                content_container = pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show} Configured', widget=marked_widget, steps=steps)
+                content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show} Configured', widget=marked_widget, steps=steps)
                 response = HTMLResponse(to_xml(Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))))
                 response.headers['HX-Trigger'] = json.dumps({'initMarked': {'widgetId': widget_id}})
                 return response
             except Exception as e:
                 logger.error(f'Error creating Marked widget: {str(e)}')
                 state['_revert_target'] = step_id
-                pip.write_state(pipeline_id, state)
+                wand.write_state(pipeline_id, state)
         display_value = user_val if step.refill and user_val else await self.get_suggestion(step_id, state)
-        await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
-        return Div(Card(H3(f'{pip.fmt(step_id)}: Configure {step.show}'), P('Enter markdown content to be rendered. Example is pre-populated.'), P('The markdown will be rendered with support for headings, lists, bold/italic text, and code blocks.', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter markdown content', required=True, rows=15, style='width: 100%; font-family: monospace;'), Div(Button('Render Markdown ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+        await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
+        return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter markdown content to be rendered. Example is pre-populated.'), P('The markdown will be rendered with support for headings, lists, bold/italic text, and code blocks.', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter markdown content', required=True, rows=15, style='width: 100%; font-family: monospace;'), Div(Button('Render Markdown ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_02_submit(self, request):
         """
@@ -398,40 +398,40 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         Takes the user's markdown input, creates a marked.js widget,
         and returns it as part of the response with MarkedJS initialization.
         """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_02'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
         form = await request.form()
         user_val = form.get(step.done, '')
-        is_valid, error_msg, error_component = pip.validate_step_input(user_val, step.show)
+        is_valid, error_msg, error_component = wand.validate_step_input(user_val, step.show)
         if not is_valid:
             return error_component
-        await pip.set_step_data(pipeline_id, step_id, user_val, steps)
-        pip.append_to_history(f'[WIDGET CONTENT] Markdown Widget:\n{user_val}')
+        await wand.set_step_data(pipeline_id, step_id, user_val, steps)
+        wand.append_to_history(f'[WIDGET CONTENT] Markdown Widget:\n{user_val}')
         widget_id = f"marked-widget-{pipeline_id.replace('-', '_')}-{step_id}"
         marked_widget = self.create_marked_widget(user_val, widget_id)
-        content_container = pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Markdown rendered with Marked.js', widget=marked_widget, steps=steps)
+        content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Markdown rendered with Marked.js', widget=marked_widget, steps=steps)
         response_content = Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         response = HTMLResponse(to_xml(response_content))
         response.headers['HX-Trigger'] = json.dumps({'initMarked': {'widgetId': widget_id}})
-        await self.message_queue.add(pip, f'{step.show} complete. Markdown rendered successfully.', verbatim=True)
+        await self.message_queue.add(wand, f'{step.show} complete. Markdown rendered successfully.', verbatim=True)
         return response
 
     async def step_03(self, request):
         """ Handles GET request for Step 3: Mermaid Diagram Renderer. """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_03'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         user_val = step_data.get(step.done, '')
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and user_val:
             try:
                 widget_id = f"mermaid-widget-{pipeline_id.replace('-', '_')}-{step_id}"
@@ -446,17 +446,17 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
             try:
                 widget_id = f"mermaid-widget-{pipeline_id.replace('-', '_')}-{step_id}"
                 mermaid_widget = self.create_mermaid_widget(user_val, widget_id)
-                content_container = pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show} Configured', widget=mermaid_widget, steps=steps)
+                content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show} Configured', widget=mermaid_widget, steps=steps)
                 response = HTMLResponse(to_xml(Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))))
                 response.headers['HX-Trigger'] = json.dumps({'renderMermaid': {'targetId': f'{widget_id}_output', 'diagram': user_val}})
                 return response
             except Exception as e:
                 logger.error(f'Error creating mermaid widget: {str(e)}')
                 state['_revert_target'] = step_id
-                pip.write_state(pipeline_id, state)
+                wand.write_state(pipeline_id, state)
         display_value = user_val if step.refill and user_val else await self.get_suggestion(step_id, state)
-        await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
-        return Div(Card(H3(f'{pip.fmt(step_id)}: Configure {step.show}'), P('Enter Mermaid diagram syntax for the widget. Example is pre-populated.'), P('Supports flowcharts, sequence diagrams, class diagrams, etc.', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter Mermaid diagram syntax', required=True, rows=15, style='width: 100%; font-family: monospace;'), Div(Button('Create Diagram ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+        await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
+        return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter Mermaid diagram syntax for the widget. Example is pre-populated.'), P('Supports flowcharts, sequence diagrams, class diagrams, etc.', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter Mermaid diagram syntax', required=True, rows=15, style='width: 100%; font-family: monospace;'), Div(Button('Create Diagram ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_03_submit(self, request):
         """
@@ -475,26 +475,26 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         - Support for different Mermaid API versions
         - Comprehensive error handling
         """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_03'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
         form = await request.form()
         user_val = form.get(step.done, '')
-        is_valid, error_msg, error_component = pip.validate_step_input(user_val, step.show)
+        is_valid, error_msg, error_component = wand.validate_step_input(user_val, step.show)
         if not is_valid:
             return error_component
-        await pip.set_step_data(pipeline_id, step_id, user_val, steps)
-        pip.append_to_history(f'[WIDGET CONTENT] Mermaid Diagram:\n{user_val}')
+        await wand.set_step_data(pipeline_id, step_id, user_val, steps)
+        wand.append_to_history(f'[WIDGET CONTENT] Mermaid Diagram:\n{user_val}')
         widget_id = f"mermaid-widget-{pipeline_id.replace('-', '_')}-{step_id}"
         mermaid_widget = self.create_mermaid_widget(user_val, widget_id)
-        content_container = pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Client-side Mermaid diagram rendering', widget=mermaid_widget, steps=steps)
+        content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Client-side Mermaid diagram rendering', widget=mermaid_widget, steps=steps)
         response_content = Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         response = HTMLResponse(to_xml(response_content))
         response.headers['HX-Trigger'] = json.dumps({'renderMermaid': {'targetId': f'{widget_id}_output', 'diagram': user_val}})
-        await self.message_queue.add(pip, f'{step.show} complete. Mermaid diagram rendered.', verbatim=True)
+        await self.message_queue.add(wand, f'{step.show} complete. Mermaid diagram rendered.', verbatim=True)
         return response
 
     async def step_04(self, request):
@@ -505,16 +505,16 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         Note that when displaying an existing widget, we recreate it from
         the saved data rather than storing the rendered widget itself.
         """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_04'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         user_val = step_data.get(step.done, '')
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and user_val:
             try:
                 table_widget = self.create_pandas_table(user_val)
@@ -525,15 +525,15 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         elif user_val and state.get('_revert_target') != step_id:
             try:
                 table_widget = self.create_pandas_table(user_val)
-                content_container = pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show} Configured', widget=table_widget, steps=steps)
+                content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show} Configured', widget=table_widget, steps=steps)
                 return Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
             except Exception as e:
                 logger.error(f'Error creating table widget: {str(e)}')
                 state['_revert_target'] = step_id
-                pip.write_state(pipeline_id, state)
+                wand.write_state(pipeline_id, state)
         display_value = user_val if step.refill and user_val else await self.get_suggestion(step_id, state)
-        await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
-        return Div(Card(H3(f'{pip.fmt(step_id)}: Configure {step.show}'), P('Enter table data as JSON array of objects. Example is pre-populated.'), P('Format: [{"name": "value", "value1": number, ...}, {...}]', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter JSON array of objects for the DataFrame', required=True, rows=10, style='width: 100%; font-family: monospace;'), Div(Button('Draw Table ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+        await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
+        return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter table data as JSON array of objects. Example is pre-populated.'), P('Format: [{"name": "value", "value1": number, ...}, {...}]', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter JSON array of objects for the DataFrame', required=True, rows=10, style='width: 100%; font-family: monospace;'), Div(Button('Draw Table ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_04_submit(self, request):
         """
@@ -548,14 +548,14 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         When using the "Combined Step" pattern with complex widgets, it's
         important to handle errors gracefully to avoid breaking the workflow.
         """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_04'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         form = await request.form()
         user_val = form.get(step.done, '')
-        is_valid, error_msg, error_component = pip.validate_step_input(user_val, step.show)
+        is_valid, error_msg, error_component = wand.validate_step_input(user_val, step.show)
         if not is_valid:
             return error_component
         try:
@@ -566,15 +566,15 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
                 return P('Invalid JSON: All items must be objects (dictionaries)', cls='text-invalid')
         except json.JSONDecodeError:
             return P('Invalid JSON format. Please check your syntax.', cls='text-invalid')
-        await pip.set_step_data(pipeline_id, step_id, user_val, steps)
-        pip.append_to_history(f'[WIDGET CONTENT] Pandas Table Data:\n{user_val}')
+        await wand.set_step_data(pipeline_id, step_id, user_val, steps)
+        wand.append_to_history(f'[WIDGET CONTENT] Pandas Table Data:\n{user_val}')
         try:
             data = json.loads(user_val)
             df = pd.DataFrame(data)
             html_table = df.to_html(index=False, classes='table', border=0, escape=True, justify='left')
             table_container = Div(H5('Pandas DataFrame Table:'), Div(NotStr(html_table), style='overflow-x: auto; max-width: 100%;'), cls='mt-4')
-            await self.message_queue.add(pip, f'{step.show} complete. Table rendered successfully.', verbatim=True)
-            response = HTMLResponse(to_xml(Div(pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Table rendered from pandas DataFrame', widget=table_container, steps=steps), Div(id=f'{steps[step_index + 1].id}', hx_get=f'/{app_name}/{steps[step_index + 1].id}', hx_trigger='load'), id=step_id)))
+            await self.message_queue.add(wand, f'{step.show} complete. Table rendered successfully.', verbatim=True)
+            response = HTMLResponse(to_xml(Div(wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Table rendered from pandas DataFrame', widget=table_container, steps=steps), Div(id=f'{steps[step_index + 1].id}', hx_get=f'/{app_name}/{steps[step_index + 1].id}', hx_trigger='load'), id=step_id)))
             return response
         except Exception as e:
             logger.error(f'Error creating pandas table: {e}')
@@ -582,16 +582,16 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
 
     async def step_05(self, request):
         """ Handles GET request for Step 5: Code Syntax Highlighter. """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_05'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         user_val = step_data.get(step.done, '')
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and user_val:
             try:
                 language = 'javascript'
@@ -628,25 +628,25 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
                         code_to_display = code_to_display.rsplit('```', 1)[0]
                 widget_id = f"prism-widget-{pipeline_id.replace('-', '_')}-{step_id}"
                 prism_widget = self.create_prism_widget(code_to_display, widget_id, language)
-                content_container = pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Syntax highlighting with Prism.js ({language})', widget=prism_widget, steps=steps)
+                content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Syntax highlighting with Prism.js ({language})', widget=prism_widget, steps=steps)
                 response = HTMLResponse(to_xml(Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))))
                 response.headers['HX-Trigger'] = json.dumps({'initializePrism': {'targetId': widget_id}})
                 return response
             except Exception as e:
                 logger.error(f'Error creating Prism widget: {str(e)}')
                 state['_revert_target'] = step_id
-                pip.write_state(pipeline_id, state)
+                wand.write_state(pipeline_id, state)
         display_value = user_val if step.refill and user_val else await self.get_suggestion(step_id, state)
-        await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
-        return Div(Card(H3(f'{pip.fmt(step_id)}: Configure {step.show}'), P('Enter code to be highlighted with syntax coloring. JavaScript example is pre-populated.'), P('The code will be displayed with syntax highlighting and a copy button.', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter code for syntax highlighting', required=True, rows=15, style='width: 100%; font-family: monospace;'), Div(Button('Highlight Code ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+        await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
+        return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter code to be highlighted with syntax coloring. JavaScript example is pre-populated.'), P('The code will be displayed with syntax highlighting and a copy button.', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter code for syntax highlighting', required=True, rows=15, style='width: 100%; font-family: monospace;'), Div(Button('Highlight Code ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_05_submit(self, request):
         """ Process the submission for Step 5. """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_05'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
         form = await request.form()
         user_val = form.get(step.done, '')
@@ -660,32 +660,32 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
                     user_val = user_val.split('\n', 1)[1] if '\n' in user_val else user_val
             if user_val.endswith('```'):
                 user_val = user_val.rsplit('```', 1)[0]
-        is_valid, error_msg, error_component = pip.validate_step_input(user_val, step.show)
+        is_valid, error_msg, error_component = wand.validate_step_input(user_val, step.show)
         if not is_valid:
             return error_component
-        await pip.set_step_data(pipeline_id, step_id, user_val, steps)
-        pip.append_to_history(f'[WIDGET CONTENT] Code Syntax Highlighting ({language}):\n{user_val}')
+        await wand.set_step_data(pipeline_id, step_id, user_val, steps)
+        wand.append_to_history(f'[WIDGET CONTENT] Code Syntax Highlighting ({language}):\n{user_val}')
         widget_id = f"prism-widget-{pipeline_id.replace('-', '_')}-{step_id}"
         prism_widget = self.create_prism_widget(user_val, widget_id, language)
-        content_container = pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Syntax highlighting with Prism.js ({language})', widget=prism_widget, steps=steps)
+        content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Syntax highlighting with Prism.js ({language})', widget=prism_widget, steps=steps)
         response_content = Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         response = HTMLResponse(to_xml(response_content))
         response.headers['HX-Trigger'] = json.dumps({'initializePrism': {'targetId': widget_id}})
-        await self.message_queue.add(pip, f'{step.show} complete. Code syntax highlighted with {language}.', verbatim=True)
+        await self.message_queue.add(wand, f'{step.show} complete. Code syntax highlighted with {language}.', verbatim=True)
         return response
 
     async def step_06(self, request):
         """ Handles GET request for Step 6: JavaScript Widget. """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_06'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         user_val = step_data.get(step.done, '')
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and user_val:
             try:
                 widget_id = f'js-widget-{pipeline_id}-{step_id}'.replace('-', '_')
@@ -702,41 +702,41 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
                 widget_id = f'js-widget-{pipeline_id}-{step_id}'.replace('-', '_')
                 target_id = f'{widget_id}_target'
                 js_widget = Div(P('JavaScript will execute here...', id=target_id, style='padding: 1.5rem; background-color: var(--pico-card-background-color); border-radius: var(--pico-border-radius); min-height: 100px;'), Button('Re-run JavaScript', type='button', _onclick=f"runJsWidget('{widget_id}', `{user_val.replace('`', '\\`')}`, '{target_id}')", style='margin-top: 1rem; background-color: #9370DB; border-color: #9370DB;'), id=widget_id)
-                content_container = pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show} Configured', widget=js_widget, steps=steps)
+                content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show} Configured', widget=js_widget, steps=steps)
                 response = HTMLResponse(to_xml(Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))))
                 response.headers['HX-Trigger'] = json.dumps({'runJavaScript': {'widgetId': widget_id, 'code': user_val, 'targetId': target_id}})
                 return response
             except Exception as e:
                 logger.error(f'Error creating JS widget: {str(e)}')
                 state['_revert_target'] = step_id
-                pip.write_state(pipeline_id, state)
+                wand.write_state(pipeline_id, state)
         display_value = user_val if step.refill and user_val else await self.get_suggestion(step_id, state)
-        await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
-        return Div(Card(H3(f'{pip.fmt(step_id)}: Configure {step.show}'), P('Enter JavaScript code for the widget. Example is pre-populated.'), P("Use the 'widget' variable to access the container element.", cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter JavaScript code', required=True, rows=12, style='width: 100%; font-family: monospace;'), Div(Button('Run JavaScript ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+        await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
+        return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter JavaScript code for the widget. Example is pre-populated.'), P("Use the 'widget' variable to access the container element.", cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter JavaScript code', required=True, rows=12, style='width: 100%; font-family: monospace;'), Div(Button('Run JavaScript ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_06_submit(self, request):
         """ Process the submission for Step 6. """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_06'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
         form = await request.form()
         user_val = form.get(step.done, '')
-        is_valid, error_msg, error_component = pip.validate_step_input(user_val, step.show)
+        is_valid, error_msg, error_component = wand.validate_step_input(user_val, step.show)
         if not is_valid:
             return error_component
-        await pip.set_step_data(pipeline_id, step_id, user_val, steps)
-        pip.append_to_history(f'[WIDGET CONTENT] JavaScript Widget Code:\n{user_val}')
+        await wand.set_step_data(pipeline_id, step_id, user_val, steps)
+        wand.append_to_history(f'[WIDGET CONTENT] JavaScript Widget Code:\n{user_val}')
         widget_id = f'js-widget-{pipeline_id}-{step_id}'.replace('-', '_')
         target_id = f'{widget_id}_target'
         js_widget = Div(P('JavaScript will execute here...', id=target_id, style='padding: 1.5rem; background-color: var(--pico-card-background-color); border-radius: var(--pico-border-radius); min-height: 100px;'), Button('Re-run JavaScript ▸', type='button', _onclick=f"runJsWidget('{widget_id}', `{user_val.replace('`', '\\`')}`, '{target_id}')", style='margin-top: 1rem; background-color: #9370DB; border-color: #9370DB;'), id=widget_id)
-        content_container = pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Interactive JavaScript example', widget=js_widget, steps=steps)
+        content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Interactive JavaScript example', widget=js_widget, steps=steps)
         response_content = Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         response = HTMLResponse(to_xml(response_content))
         response.headers['HX-Trigger'] = json.dumps({'runJavaScript': {'widgetId': widget_id, 'code': user_val, 'targetId': target_id}})
-        await self.message_queue.add(pip, f'{step.show} complete. JavaScript executed.', verbatim=True)
+        await self.message_queue.add(wand, f'{step.show} complete. JavaScript executed.', verbatim=True)
         return response
 
     def create_marked_widget(self, markdown_content, widget_id):
@@ -812,16 +812,16 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
 
         This step allows users to input counter data and visualizes it as a histogram.
         """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_07'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         counter_data = step_data.get(step.done, '')
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and counter_data:
             try:
                 histogram_widget = self.create_matplotlib_histogram(counter_data)
@@ -832,15 +832,15 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         elif counter_data and state.get('_revert_target') != step_id:
             try:
                 histogram_widget = self.create_matplotlib_histogram(counter_data)
-                content_container = pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show} Configured', widget=histogram_widget, steps=steps)
+                content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show} Configured', widget=histogram_widget, steps=steps)
                 return Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
             except Exception as e:
                 logger.error(f'Error creating histogram widget: {str(e)}')
                 state['_revert_target'] = step_id
-                pip.write_state(pipeline_id, state)
+                wand.write_state(pipeline_id, state)
         display_value = counter_data if step.refill and counter_data else await self.get_suggestion(step_id, state)
-        await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
-        return Div(Card(H3(f'{pip.fmt(step_id)}: Configure {step.show}'), P('Enter counter data as JSON object (keys and values):'), P('Format: {"category1": count1, "category2": count2, ...}', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter JSON object for Counter data', required=True, rows=10, style='width: 100%; font-family: monospace;'), Div(Button('Create Histogram ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+        await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
+        return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter counter data as JSON object (keys and values):'), P('Format: {"category1": count1, "category2": count2, ...}', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter JSON object for Counter data', required=True, rows=10, style='width: 100%; font-family: monospace;'), Div(Button('Create Histogram ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_07_submit(self, request):
         """
@@ -848,15 +848,15 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
 
         Takes counter data as input and creates a histogram visualization.
         """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_07'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
         form = await request.form()
         counter_data = form.get(step.done, '').strip()
-        is_valid, error_msg, error_component = pip.validate_step_input(counter_data, step.show)
+        is_valid, error_msg, error_component = wand.validate_step_input(counter_data, step.show)
         if not is_valid:
             return error_component
         try:
@@ -868,12 +868,12 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
                 return P('Invalid data: Counter cannot be empty', cls='text-invalid')
         except json.JSONDecodeError:
             return P('Invalid JSON format. Please check your syntax.', cls='text-invalid')
-        await pip.set_step_data(pipeline_id, step_id, counter_data, steps)
+        await wand.set_step_data(pipeline_id, step_id, counter_data, steps)
         try:
             histogram_widget = self.create_matplotlib_histogram(counter_data)
-            content_container = pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Histogram created from Counter data', widget=histogram_widget, steps=steps)
+            content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Histogram created from Counter data', widget=histogram_widget, steps=steps)
             response_content = Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
-            await self.message_queue.add(pip, f'{step.show} complete. Histogram created.', verbatim=True)
+            await self.message_queue.add(wand, f'{step.show} complete. Histogram created.', verbatim=True)
             return HTMLResponse(to_xml(response_content))
         except Exception as e:
             logger.error(f'Error creating histogram visualization: {e}')
@@ -886,25 +886,25 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         This widget allows users to input a URL and open it in their default browser.
         It demonstrates a practical use case for workflow steps.
         """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_08'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         url_value = step_data.get(step.done, '')
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and url_value:
             return Div(Card(H3(f'🔒 {step.show}'), P(f'URL configured: ', B(url_value)), Button('Open URL Again ▸', type='button', _onclick=f"window.open('{url_value}', '_blank')", cls='secondary')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
         elif url_value and state.get('_revert_target') != step_id:
-            content_container = pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {url_value}', widget=Div(P(f'URL configured: ', B(url_value)), Button('Open URL Again ▸', type='button', _onclick=f"window.open('{url_value}', '_blank')", cls='secondary')), steps=steps)
+            content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {url_value}', widget=Div(P(f'URL configured: ', B(url_value)), Button('Open URL Again ▸', type='button', _onclick=f"window.open('{url_value}', '_blank')", cls='secondary')), steps=steps)
             return Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
         else:
             display_value = url_value if step.refill and url_value else 'https://example.com'
-            await self.message_queue.add(pip, 'Enter the URL you want to open:', verbatim=True)
-            return Div(Card(H3(f'{pip.fmt(step_id)}: Configure {step.show}'), P('Enter a URL to open in your default browser.'), Form(Div(Input(type='url', name='url', placeholder='https://example.com', required=True, value=display_value, cls='contrast'), Div(Button('Open URL ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+            await self.message_queue.add(wand, 'Enter the URL you want to open:', verbatim=True)
+            return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter a URL to open in your default browser.'), Form(Div(Input(type='url', name='url', placeholder='https://example.com', required=True, value=display_value, cls='contrast'), Div(Button('Open URL ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_08_submit(self, request):
         """
@@ -913,11 +913,11 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         Takes a URL input, validates it, opens it in the default browser,
         and provides a button to reopen it later.
         """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_08'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
         form = await request.form()
         url = form.get('url', '').strip()
@@ -925,14 +925,14 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
             return P('Error: URL is required', cls='text-invalid')
         if not url.startswith(('http://', 'https://')):
             url = f'https://{url}'
-        await pip.set_step_data(pipeline_id, step_id, url, steps)
-        await self.message_queue.add(pip, f'URL set to: {url}', verbatim=True)
+        await wand.set_step_data(pipeline_id, step_id, url, steps)
+        await self.message_queue.add(wand, f'URL set to: {url}', verbatim=True)
         import webbrowser
         webbrowser.open(url)
         url_widget = Div(P(f'URL configured: ', B(url)), Button('Open URL Again ▸', type='button', _onclick=f"window.open('{url}', '_blank')", cls='secondary'))
-        content_container = pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {url}', widget=url_widget, steps=steps)
+        content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {url}', widget=url_widget, steps=steps)
         response_content = Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
-        await self.message_queue.add(pip, f'Opening URL: {url}', verbatim=True)
+        await self.message_queue.add(wand, f'Opening URL: {url}', verbatim=True)
         return HTMLResponse(to_xml(response_content))
 
     def create_matplotlib_histogram(self, data_str):
@@ -990,16 +990,16 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         - Proper cell padding and alignment
         - Color-coded columns
         """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_09'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         table_data = step_data.get(step.done, '')
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and table_data:
             try:
                 data = json.loads(table_data)
@@ -1012,28 +1012,28 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
             try:
                 data = json.loads(table_data)
                 table_widget = self.create_rich_table_widget(data)
-                content_container = pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show} Configured', widget=table_widget, steps=steps)
+                content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show} Configured', widget=table_widget, steps=steps)
                 return Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
             except Exception as e:
                 logger.error(f'Error creating table widget: {str(e)}')
                 state['_revert_target'] = step_id
-                pip.write_state(pipeline_id, state)
+                wand.write_state(pipeline_id, state)
         sample_data = [{'name': 'Parameter 1', 'value1': 1000, 'value2': 500, 'value3': 50}, {'name': 'Parameter 2', 'value1': 2000, 'value2': 1000, 'value3': 100}, {'name': 'Parameter 3', 'value1': 3000, 'value2': 1500, 'value3': 150}]
         display_value = table_data if step.refill and table_data else json.dumps(sample_data, indent=2)
-        await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
-        return Div(Card(H3(f'{pip.fmt(step_id)}: Configure {step.show}'), P('Enter table data as JSON array of objects. Example is pre-populated.'), P('Format: [{"name": "value", "value1": number, ...}, {...}]', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter JSON array of objects for the table', required=True, rows=10, style='width: 100%; font-family: monospace;'), Div(Button('Create Table ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+        await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
+        return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter table data as JSON array of objects. Example is pre-populated.'), P('Format: [{"name": "value", "value1": number, ...}, {...}]', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter JSON array of objects for the table', required=True, rows=10, style='width: 100%; font-family: monospace;'), Div(Button('Create Table ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_09_submit(self, request):
         """Process the submission for Rich Table Widget."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_09'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         form = await request.form()
         table_data = form.get(step.done, '').strip()
-        is_valid, error_msg, error_component = pip.validate_step_input(table_data, step.show)
+        is_valid, error_msg, error_component = wand.validate_step_input(table_data, step.show)
         if not is_valid:
             return error_component
         try:
@@ -1044,12 +1044,12 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
                 return P('Invalid JSON: All items must be objects (dictionaries)', cls='text-invalid')
         except json.JSONDecodeError:
             return P('Invalid JSON format. Please check your syntax.', cls='text-invalid')
-        await pip.set_step_data(pipeline_id, step_id, table_data, steps)
+        await wand.set_step_data(pipeline_id, step_id, table_data, steps)
         try:
             table_widget = self.create_rich_table_widget(data)
-            content_container = pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Table created with {len(data)} rows', widget=table_widget, steps=steps)
+            content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: Table created with {len(data)} rows', widget=table_widget, steps=steps)
             response_content = Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
-            await self.message_queue.add(pip, f'{step.show} complete. Table created with {len(data)} rows.', verbatim=True)
+            await self.message_queue.add(wand, f'{step.show} complete. Table created with {len(data)} rows.', verbatim=True)
             return HTMLResponse(to_xml(response_content))
         except Exception as e:
             logger.error(f'Error creating table widget: {e}')
@@ -1080,41 +1080,41 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
 
     async def step_10(self, request):
         """Handles GET request for Selenium URL step."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_10'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         url_value = step_data.get(step.done, '')
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and url_value:
             return Div(Card(H3(f'🔒 {step.show}'), P(f'URL configured: ', B(url_value)), Form(Input(type='hidden', name='url', value=url_value), Button('Open URL Again 🪄', type='submit', cls='secondary'), hx_post=f'/{app_name}/reopen_url', hx_target=f'#{step_id}-status'), Div(id=f'{step_id}-status')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         elif url_value and state.get('_revert_target') != step_id:
-            content_container = pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {url_value}', widget=Div(P(f'URL configured: ', B(url_value)), Form(Input(type='hidden', name='url', value=url_value), Button('Open URL Again 🪄', type='submit', cls='secondary'), hx_post=f'/{app_name}/reopen_url', hx_target=f'#{step_id}-status'), Div(id=f'{step_id}-status')), steps=steps)
+            content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {url_value}', widget=Div(P(f'URL configured: ', B(url_value)), Form(Input(type='hidden', name='url', value=url_value), Button('Open URL Again 🪄', type='submit', cls='secondary'), hx_post=f'/{app_name}/reopen_url', hx_target=f'#{step_id}-status'), Div(id=f'{step_id}-status')), steps=steps)
             return Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         else:
-            await self.message_queue.add(pip, 'Enter the URL you want to open with Selenium:', verbatim=True)
+            await self.message_queue.add(wand, 'Enter the URL you want to open with Selenium:', verbatim=True)
             display_value = url_value if step.refill and url_value else 'https://example.com/'
             return Div(Card(H3(f'{step.show}'), Form(Input(type='url', name='url', placeholder='https://example.com/', required=True, value=display_value, cls='contrast'), Button('Open URL 🪄', type='submit', cls='primary'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_10_submit(self, request):
         """Process the submission for Step 10."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_10'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         form = await request.form()
         url = form.get('url', '').strip()
         if not url:
             return P('Error: URL is required', cls='text-invalid')
         if not url.startswith(('http://', 'https://')):
             url = f'https://{url}'
-        await pip.set_step_data(pipeline_id, step_id, url, steps)
+        await wand.set_step_data(pipeline_id, step_id, url, steps)
         try:
             chrome_options = Options()
             chrome_options.add_argument('--no-sandbox')
@@ -1125,33 +1125,33 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
             profile_dir = tempfile.mkdtemp()
             chrome_options.add_argument(f'--user-data-dir={profile_dir}')
             effective_os = os.environ.get('EFFECTIVE_OS', 'unknown')
-            await self.message_queue.add(pip, f'Current OS: {effective_os}', verbatim=True)
+            await self.message_queue.add(wand, f'Current OS: {effective_os}', verbatim=True)
             if effective_os == 'darwin':
-                await self.message_queue.add(pip, 'Using webdriver-manager for macOS', verbatim=True)
+                await self.message_queue.add(wand, 'Using webdriver-manager for macOS', verbatim=True)
                 service = Service(ChromeDriverManager().install())
             else:
-                await self.message_queue.add(pip, 'Using system Chrome for Linux', verbatim=True)
+                await self.message_queue.add(wand, 'Using system Chrome for Linux', verbatim=True)
                 service = Service()
-            await self.message_queue.add(pip, 'Initializing Chrome driver...', verbatim=True)
+            await self.message_queue.add(wand, 'Initializing Chrome driver...', verbatim=True)
             driver = webdriver.Chrome(service=service, options=chrome_options)
-            await self.message_queue.add(pip, f'Opening URL with Selenium: {url}', verbatim=True)
+            await self.message_queue.add(wand, f'Opening URL with Selenium: {url}', verbatim=True)
             driver.get(url)
             await asyncio.sleep(2)
             title = driver.title
-            await self.message_queue.add(pip, f'Page loaded successfully. Title: {title}', verbatim=True)
+            await self.message_queue.add(wand, f'Page loaded successfully. Title: {title}', verbatim=True)
             driver.quit()
-            await self.message_queue.add(pip, 'Browser closed successfully', verbatim=True)
+            await self.message_queue.add(wand, 'Browser closed successfully', verbatim=True)
             import shutil
             shutil.rmtree(profile_dir, ignore_errors=True)
         except Exception as e:
             error_msg = f'Error opening URL with Selenium: {str(e)}'
             logger.error(error_msg)
-            await self.message_queue.add(pip, error_msg, verbatim=True)
+            await self.message_queue.add(wand, error_msg, verbatim=True)
             return P(error_msg, cls='text-invalid')
-        pip.append_to_history(f'[WIDGET CONTENT] {step.show}:\n{url}')
-        pip.append_to_history(f'[WIDGET STATE] {step.show}: Step completed')
-        await self.message_queue.add(pip, f'{step.show} complete.', verbatim=True)
-        return Div(pip.display_revert_header(step_id=step_id, app_name=app_name, message=f'{step.show}: Complete', steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+        wand.append_to_history(f'[WIDGET CONTENT] {step.show}:\n{url}')
+        wand.append_to_history(f'[WIDGET STATE] {step.show}: Step completed')
+        await self.message_queue.add(wand, f'{step.show} complete.', verbatim=True)
+        return Div(wand.display_revert_header(step_id=step_id, app_name=app_name, message=f'{step.show}: Complete', steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
 
     async def step_11(self, request):
         """Handles GET request for the file upload widget.
@@ -1162,39 +1162,39 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         - Automatic file saving
         - Upload summary display
         """
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_11'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         file_summary = step_data.get(step.done, '')
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and file_summary:
-            pip.append_to_history(f'[WIDGET CONTENT] {step.show} (Finalized):\n{file_summary}')
+            wand.append_to_history(f'[WIDGET CONTENT] {step.show} (Finalized):\n{file_summary}')
             return Div(Card(H3(f'🔒 {step.show}: Completed')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         elif file_summary and state.get('_revert_target') != step_id:
-            pip.append_to_history(f'[WIDGET CONTENT] {step.show} (Completed):\n{file_summary}')
-            return Div(Card(H3(f'{step.show}'), P('Uploaded files:'), Pre(file_summary, style='white-space: pre-wrap; font-size: 0.9em;'), pip.display_revert_header(step_id=step_id, app_name=app_name, message=f'{step.show}: Complete', steps=steps)), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            wand.append_to_history(f'[WIDGET CONTENT] {step.show} (Completed):\n{file_summary}')
+            return Div(Card(H3(f'{step.show}'), P('Uploaded files:'), Pre(file_summary, style='white-space: pre-wrap; font-size: 0.9em;'), wand.display_revert_header(step_id=step_id, app_name=app_name, message=f'{step.show}: Complete', steps=steps)), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         else:
-            pip.append_to_history(f'[WIDGET STATE] {step.show}: Showing upload form')
-            await self.message_queue.add(pip, self.step_messages[step_id]['input'], verbatim=True)
+            wand.append_to_history(f'[WIDGET STATE] {step.show}: Showing upload form')
+            await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
             return Div(Card(H3(f'{step.show}'), P('Select one or more files to upload. Files will be saved automatically.'), Form(Input(type='file', name='uploaded_files', multiple='true', required='true', cls='contrast'), Button('Upload Files ▸', type='submit', cls='primary'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', enctype='multipart/form-data')), Div(id=next_step_id), id=step_id)
 
     async def step_11_submit(self, request):
         """Process the submission for the file upload widget."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_11'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         form_data = await request.form()
         uploaded_files = form_data.getlist('uploaded_files')
         if not uploaded_files:
-            await self.message_queue.add(pip, 'No files selected. Please try again.', verbatim=True)
+            await self.message_queue.add(wand, 'No files selected. Please try again.', verbatim=True)
             return Div(Card(H3(f'{step.show}'), P('No files were selected. Please try again.'), Form(Input(type='file', name='uploaded_files', multiple='true', required='true', cls='contrast'), Button('Upload Files ▸', type='submit', cls='primary'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', enctype='multipart/form-data')), id=step_id)
         save_directory = Path('downloads') / self.app_name / pipeline_id
         try:
@@ -1202,7 +1202,7 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         except Exception as e:
             error_msg = f'Error creating save directory: {str(e)}'
             logger.error(error_msg)
-            await self.message_queue.add(pip, error_msg, verbatim=True)
+            await self.message_queue.add(wand, error_msg, verbatim=True)
             return P('Error creating save directory. Please try again.', cls='text-invalid')
         file_info = []
         total_size = 0
@@ -1220,20 +1220,20 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
             except Exception as e:
                 error_msg = f'Error saving file {file.filename}: {str(e)}'
                 logger.error(error_msg)
-                await self.message_queue.add(pip, error_msg, verbatim=True)
+                await self.message_queue.add(wand, error_msg, verbatim=True)
                 return P(f'Error saving file {file.filename}. Please try again.', cls='text-invalid')
         file_summary = '\n'.join(file_info)
         file_summary += f'\n\nTotal: {len(uploaded_files)} files, {total_size:,} bytes'
         file_summary += f'\nSaved to: {save_directory}'
-        await pip.set_step_data(pipeline_id, step_id, file_summary, steps)
-        pip.append_to_history(f'[WIDGET CONTENT] {step.show}:\n{file_summary}')
-        pip.append_to_history(f'[WIDGET STATE] {step.show}: Files saved')
-        await self.message_queue.add(pip, f'Successfully saved {len(uploaded_files)} files to {save_directory}', verbatim=True)
-        return Div(Card(H3(f'{step.show}'), P('Files saved successfully:'), Pre(file_summary, style='white-space: pre-wrap; font-size: 0.9em;'), pip.display_revert_header(step_id=step_id, app_name=app_name, message=f'{step.show}: Complete', steps=steps)), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+        await wand.set_step_data(pipeline_id, step_id, file_summary, steps)
+        wand.append_to_history(f'[WIDGET CONTENT] {step.show}:\n{file_summary}')
+        wand.append_to_history(f'[WIDGET STATE] {step.show}: Files saved')
+        await self.message_queue.add(wand, f'Successfully saved {len(uploaded_files)} files to {save_directory}', verbatim=True)
+        return Div(Card(H3(f'{step.show}'), P('Files saved successfully:'), Pre(file_summary, style='white-space: pre-wrap; font-size: 0.9em;'), wand.display_revert_header(step_id=step_id, app_name=app_name, message=f'{step.show}: Complete', steps=steps)), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
 
     async def reopen_url(self, request):
         """Handle reopening a URL with Selenium."""
-        pip, db = (self.pipulate, self.pipulate.db)
+        wand, db = (self.pipulate, self.pipulate.db)
         form = await request.form()
         url = form.get('url', '').strip()
         if not url:
@@ -1248,27 +1248,27 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
             profile_dir = tempfile.mkdtemp()
             chrome_options.add_argument(f'--user-data-dir={profile_dir}')
             effective_os = os.environ.get('EFFECTIVE_OS', 'unknown')
-            await self.message_queue.add(pip, f'Current OS: {effective_os}', verbatim=True)
+            await self.message_queue.add(wand, f'Current OS: {effective_os}', verbatim=True)
             if effective_os == 'darwin':
-                await self.message_queue.add(pip, 'Using webdriver-manager for macOS', verbatim=True)
+                await self.message_queue.add(wand, 'Using webdriver-manager for macOS', verbatim=True)
                 service = Service(ChromeDriverManager().install())
             else:
-                await self.message_queue.add(pip, 'Using system Chrome for Linux', verbatim=True)
+                await self.message_queue.add(wand, 'Using system Chrome for Linux', verbatim=True)
                 service = Service()
-            await self.message_queue.add(pip, 'Initializing Chrome driver...', verbatim=True)
+            await self.message_queue.add(wand, 'Initializing Chrome driver...', verbatim=True)
             driver = webdriver.Chrome(service=service, options=chrome_options)
-            await self.message_queue.add(pip, f'Reopening URL with Selenium: {url}', verbatim=True)
+            await self.message_queue.add(wand, f'Reopening URL with Selenium: {url}', verbatim=True)
             driver.get(url)
             await asyncio.sleep(2)
             title = driver.title
-            await self.message_queue.add(pip, f'Page loaded successfully. Title: {title}', verbatim=True)
+            await self.message_queue.add(wand, f'Page loaded successfully. Title: {title}', verbatim=True)
             driver.quit()
-            await self.message_queue.add(pip, 'Browser closed successfully', verbatim=True)
+            await self.message_queue.add(wand, 'Browser closed successfully', verbatim=True)
             import shutil
             shutil.rmtree(profile_dir, ignore_errors=True)
             return P(f'Successfully reopened: {url}', style='color: green;')
         except Exception as e:
             error_msg = f'Error reopening URL with Selenium: {str(e)}'
             logger.error(error_msg)
-            await self.message_queue.add(pip, error_msg, verbatim=True)
+            await self.message_queue.add(wand, error_msg, verbatim=True)
             return P(error_msg, cls='text-invalid')
