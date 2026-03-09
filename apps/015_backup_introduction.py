@@ -24,7 +24,7 @@ class IntroductionPlugin:
         self.app = app
         self.pipulate = pipulate
         self.pipeline = pipeline
-        pip = self.pipulate
+        wand = self.pipulate
         self._has_sent_endpoint_message = False  # Flag to track if we've sent the initial endpoint message
         self._last_streamed_page = None  # Track the last page we sent to LLM
 

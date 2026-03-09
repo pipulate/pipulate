@@ -36,7 +36,7 @@ class IntroductionPlugin:
 
     def __init__(self, app, pipulate, pipeline, db, app_name=APP_NAME):
         self.app = app
-        self.pip = pipulate
+        self.wand = pipulate
         self.db = db
         self.app_name = app_name
         self.name = self.NAME 
@@ -64,11 +64,11 @@ class IntroductionPlugin:
         Uses '1' and '0' strings for safe SQLite storage.
         """
         # Explicit string comparison for boolean state
-        current_state = self.pip.db.get('voice_enabled', '0') == '1'
+        current_state = self.wand.db.get('voice_enabled', '0') == '1'
         new_state = not current_state
         
         # Save as '1' or '0' string
-        self.pip.db['voice_enabled'] = '1' if new_state else '0'
+        self.wand.db['voice_enabled'] = '1' if new_state else '0'
         
         logger.info(f"🔊 Voice toggled: {new_state}")
         return self._render_voice_controls(new_state)
@@ -103,7 +103,7 @@ class IntroductionPlugin:
     def _render_slide(self, step_id, title, content, next_step_id=None):
         """Helper to render a standardized slide."""
         # Explicit check against string '1'
-        voice_enabled = self.pip.db.get('voice_enabled', '0') == '1'
+        voice_enabled = self.wand.db.get('voice_enabled', '0') == '1'
         
         # Auto-speak trigger
         onload_trigger = ""

@@ -48,9 +48,9 @@ class CheckboxWorkflow:
         self.pipulate = pipulate
         self.pipeline = pipeline
         self.steps_indices = {}
-        pip = self.pipulate
-        pip = self.pipulate
-        self.message_queue = pip.message_queue
+        wand = self.pipulate
+        wand = self.pipulate
+        self.message_queue = wand.message_queue
         steps = [Step(id='step_01', done='checkbox_selection', show='Checkbox Selection', refill=True, transform=lambda prev_value: prev_value.strip() if prev_value else '')]
         routes = [(f'/{app_name}', self.landing), (f'/{app_name}/init', self.init, ['POST']), (f'/{app_name}/revert', self.handle_revert, ['POST']), (f'/{app_name}/finalize', self.finalize, ['GET', 'POST']), (f'/{app_name}/unfinalize', self.unfinalize, ['POST'])]
         self.steps = steps
@@ -61,22 +61,22 @@ class CheckboxWorkflow:
         for path, handler, *methods in routes:
             method_list = methods[0] if methods else ['GET']
             app.route(path, methods=method_list)(handler)
-        self.step_messages = {'finalize': {'ready': 'All steps complete. Ready to finalize workflow.', 'complete': f'Workflow finalized. Use {pip.UNLOCK_BUTTON_LABEL} to make changes.'}}
+        self.step_messages = {'finalize': {'ready': 'All steps complete. Ready to finalize workflow.', 'complete': f'Workflow finalized. Use {wand.UNLOCK_BUTTON_LABEL} to make changes.'}}
         for step in steps:
-            self.step_messages[step.id] = {'input': f'{pip.fmt(step.id)}: Please complete {step.show}.', 'complete': f'{step.show} complete. Continue to next step.'}
+            self.step_messages[step.id] = {'input': f'{wand.fmt(step.id)}: Please complete {step.show}.', 'complete': f'{step.show} complete. Continue to next step.'}
         steps.append(Step(id='finalize', done='finalized', show='Finalize', refill=False))
         self.steps_indices = {step.id: i for i, step in enumerate(steps)}
 
     async def landing(self, request):
         """Generate the landing page using the standardized helper while maintaining WET explicitness."""
-        pip = self.pipulate
+        wand = self.pipulate
 
         # Use centralized landing page helper - maintains WET principle by explicit call
-        return pip.create_standard_landing_page(self)
+        return wand.create_standard_landing_page(self)
 
     async def init(self, request):
         """Handles the key submission, initializes state, and renders the step UI placeholders."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         form = await request.form()
         user_input = form.get('pipeline_id', '').strip()
         if not user_input:
@@ -84,7 +84,7 @@ class CheckboxWorkflow:
             response = Response('')
             response.headers['HX-Refresh'] = 'true'
             return response
-        context = pip.get_plugin_context(self)
+        context = wand.get_plugin_context(self)
         profile_name = context['profile_name'] or 'default'
         plugin_name = app_name  # Use app_name directly to ensure consistency
         profile_part = profile_name.replace(' ', '_')
@@ -93,47 +93,47 @@ class CheckboxWorkflow:
         if user_input.startswith(expected_prefix):
             pipeline_id = user_input
         else:
-            _, prefix, user_provided_id = pip.generate_pipeline_key(self, user_input)
+            _, prefix, user_provided_id = wand.generate_pipeline_key(self, user_input)
             pipeline_id = f'{prefix}{user_provided_id}'
-        pip.db['pipeline_id'] = pipeline_id
-        state, error = pip.initialize_if_missing(pipeline_id, {'app_name': app_name})
+        wand.db['pipeline_id'] = pipeline_id
+        state, error = wand.initialize_if_missing(pipeline_id, {'app_name': app_name})
         if error:
             return error
-        await self.message_queue.add(pip, f'Workflow ID: {pipeline_id}', verbatim=True, spaces_before=0)
-        await self.message_queue.add(pip, f"Return later by selecting '{pipeline_id}' from the dropdown.", verbatim=True, spaces_before=0)
-        return pip.run_all_cells(app_name, steps)
+        await self.message_queue.add(wand, f'Workflow ID: {pipeline_id}', verbatim=True, spaces_before=0)
+        await self.message_queue.add(wand, f"Return later by selecting '{pipeline_id}' from the dropdown.", verbatim=True, spaces_before=0)
+        return wand.run_all_cells(app_name, steps)
 
     async def finalize(self, request):
         """Handles GET request to show Finalize button and POST request to lock the workflow."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         finalize_step = steps[-1]
-        finalize_data = pip.get_step_data(pipeline_id, finalize_step.id, {})
+        finalize_data = wand.get_step_data(pipeline_id, finalize_step.id, {})
         if request.method == 'GET':
             if finalize_step.done in finalize_data:
-                return Card(H3('Workflow is locked.'), Form(Button(pip.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline', data_testid='checkbox-widget-unlock-button', aria_label='Unlock checkbox workflow for editing'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
+                return Card(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline', data_testid='checkbox-widget-unlock-button', aria_label='Unlock checkbox workflow for editing'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
             else:
-                all_steps_complete = all((pip.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
+                all_steps_complete = all((wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
                 if all_steps_complete:
                     return Card(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary', data_testid='checkbox-widget-finalize-button', aria_label='Finalize checkbox workflow'), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
                 else:
                     return Div(id=finalize_step.id)
         else:
-            await pip.finalize_workflow(pipeline_id)
-            await self.message_queue.add(pip, self.step_messages['finalize']['complete'], verbatim=True)
-            return pip.run_all_cells(app_name, steps)
+            await wand.finalize_workflow(pipeline_id)
+            await self.message_queue.add(wand, self.step_messages['finalize']['complete'], verbatim=True)
+            return wand.run_all_cells(app_name, steps)
 
     async def unfinalize(self, request):
         """Handles POST request to unlock the workflow."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        await pip.unfinalize_workflow(pipeline_id)
-        await self.message_queue.add(pip, 'Workflow unfinalized! You can now revert to any step and make changes.', verbatim=True)
-        return pip.run_all_cells(app_name, steps)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        await wand.unfinalize_workflow(pipeline_id)
+        await self.message_queue.add(wand, 'Workflow unfinalized! You can now revert to any step and make changes.', verbatim=True)
+        return wand.run_all_cells(app_name, steps)
 
     async def get_suggestion(self, step_id, state):
         """Gets a suggested input value for a step, often using the previous step's transformed output."""
-        pip, db, steps = (self.pipulate, self.pipulate.db, self.steps)
+        wand, db, steps = (self.pipulate, self.pipulate.db, self.steps)
         step = next((s for s in steps if s.id == step_id), None)
         if not step or not step.transform:
             return ''
@@ -141,37 +141,37 @@ class CheckboxWorkflow:
         if prev_index < 0:
             return ''
         prev_step = steps[prev_index]
-        prev_data = pip.get_step_data(pip.db['pipeline_id'], prev_step.id, {})
+        prev_data = wand.get_step_data(wand.db['pipeline_id'], prev_step.id, {})
         prev_value = prev_data.get(prev_step.done, '')
         return step.transform(prev_value) if prev_value else ''
 
     async def handle_revert(self, request):
         """Handles POST request to revert to a previous step, clearing subsequent step data."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         form = await request.form()
         step_id = form.get('step_id')
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         if not step_id:
             return P('Error: No step specified', cls='text-invalid')
-        await pip.clear_steps_from(pipeline_id, step_id, steps)
-        state = pip.read_state(pipeline_id)
+        await wand.clear_steps_from(pipeline_id, step_id, steps)
+        state = wand.read_state(pipeline_id)
         state['_revert_target'] = step_id
-        pip.write_state(pipeline_id, state)
-        message = await pip.get_state_message(pipeline_id, steps, self.step_messages)
-        await self.message_queue.add(pip, message, verbatim=True)
-        return pip.run_all_cells(app_name, steps)
+        wand.write_state(pipeline_id, state)
+        message = await wand.get_state_message(pipeline_id, steps, self.step_messages)
+        await self.message_queue.add(wand, message, verbatim=True)
+        return wand.run_all_cells(app_name, steps)
 
     async def step_01(self, request):
         """Handles GET request for checkbox selection step."""
         logger.debug('Entering step_01')
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_01'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
         logger.debug(f'Pipeline ID: {pipeline_id}')
         logger.debug(f'State: {state}')
         logger.debug(f'Step data: {step_data}')
@@ -179,12 +179,12 @@ class CheckboxWorkflow:
         if isinstance(selected_values, str):
             selected_values = [selected_values]
         logger.debug(f'Selected values: {selected_values}')
-        finalize_data = pip.get_step_data(pipeline_id, 'finalize', {})
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and selected_values:
             return Div(Card(H3(f'🔒 {step.show}'), P('Selected options:', cls='font-bold'), Ul(*[Li(value) for value in selected_values])), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         elif selected_values and state.get('_revert_target') != step_id:
-            return Div(pip.display_revert_header(step_id=step_id, app_name=app_name, message=f"{step.show}: {', '.join(selected_values)}", steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
-        await self.message_queue.add(pip, self.step_messages.get(step_id, {}).get('input', f'Complete {step.show}'), verbatim=True)
+            return Div(wand.display_revert_header(step_id=step_id, app_name=app_name, message=f"{step.show}: {', '.join(selected_values)}", steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+        await self.message_queue.add(wand, self.step_messages.get(step_id, {}).get('input', f'Complete {step.show}'), verbatim=True)
         try:
             logger.debug('About to get options')
             raw_options = await self.get_options(pipeline_id)
@@ -213,12 +213,12 @@ class CheckboxWorkflow:
 
     async def step_01_submit(self, request):
         """Handles POST request for checkbox selection step."""
-        pip, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
         step_id = 'step_01'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
         next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         form = await request.form()
         values = form.getlist(step.done)
         if not values:

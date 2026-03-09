@@ -58,12 +58,12 @@ class SimonSaysMcpWidget:
         self.app_name = self.APP_NAME
         self.pipulate = pipulate
         self.pipeline = pipeline
-        pip = self.pipulate
-        pip = self.pipulate
-        self.message_queue = pip.get_message_queue()
+        wand = self.pipulate
+        wand = self.pipulate
+        self.message_queue = wand.get_message_queue()
 
         # Access centralized UI constants through dependency injection
-        self.ui = pip.get_ui_constants()
+        self.ui = wand.get_ui_constants()
 
         # self.steps includes all data steps AND the system 'finalize' step at the end.
         # splice_workflow_step.py inserts new data steps BEFORE STEPS_LIST_INSERTION_POINT.
@@ -105,7 +105,7 @@ class SimonSaysMcpWidget:
         )
 
     async def init(self, request):
-        pip, db = self.pipulate, self.pipulate.db
+        wand, db = self.pipulate, self.pipulate.db
         internal_app_name = self.APP_NAME
         form = await request.form()
         user_input_key = form.get('pipeline_id', '').strip()
@@ -118,28 +118,28 @@ class SimonSaysMcpWidget:
             return response
 
         # Handle user-provided keys
-        _, prefix_for_key_gen, _ = pip.generate_pipeline_key(self)
+        _, prefix_for_key_gen, _ = wand.generate_pipeline_key(self)
         if user_input_key.startswith(prefix_for_key_gen) and len(user_input_key.split('-')) == 3:
             pipeline_id = user_input_key
         else:
-             _, prefix, user_part = pip.generate_pipeline_key(self, user_input_key)
+             _, prefix, user_part = wand.generate_pipeline_key(self, user_input_key)
              pipeline_id = f'{prefix}{user_part}'
 
-        pip.db['pipeline_id'] = pipeline_id
-        state, error = pip.initialize_if_missing(pipeline_id, {'app_name': internal_app_name})
+        wand.db['pipeline_id'] = pipeline_id
+        state, error = wand.initialize_if_missing(pipeline_id, {'app_name': internal_app_name})
         if error: return error
 
         # Skip verbose init messages for cleaner Simon Says demonstration
         pass
 
-        return pip.run_all_cells(internal_app_name, self.steps)
+        return wand.run_all_cells(internal_app_name, self.steps)
 
     async def finalize(self, request):
-        pip, db, app_name = self.pipulate, self.pipulate.db, self.APP_NAME
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        wand, db, app_name = self.pipulate, self.pipulate.db, self.APP_NAME
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
         finalize_step_obj = next(s for s in self.steps if s.id == 'finalize')
-        finalize_data = pip.get_step_data(pipeline_id, finalize_step_obj.id, {})
-        state = pip.read_state(pipeline_id)
+        finalize_data = wand.get_step_data(pipeline_id, finalize_step_obj.id, {})
+        state = wand.read_state(pipeline_id)
 
         if request.method == 'GET':
             # STEP PHASE: Finalize (already finalized)
@@ -159,7 +159,7 @@ class SimonSaysMcpWidget:
             all_data_steps_complete = True
             
             for step in data_steps:
-                step_data = pip.get_step_data(pipeline_id, step.id, {})
+                step_data = wand.get_step_data(pipeline_id, step.id, {})
                 if not (step.done in step_data and step_data.get(step.done)):
                     all_data_steps_complete = False
                     break
@@ -185,19 +185,19 @@ class SimonSaysMcpWidget:
                 )
         
         elif request.method == 'POST':
-            await pip.finalize_workflow(pipeline_id)
+            await wand.finalize_workflow(pipeline_id)
             # Skip finalize message for cleaner demonstration
-            return pip.run_all_cells(app_name, self.steps)
+            return wand.run_all_cells(app_name, self.steps)
 
     async def unfinalize(self, request):
-        pip, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
-        await pip.unfinalize_workflow(pipeline_id)
+        wand, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        await wand.unfinalize_workflow(pipeline_id)
         # Skip unfinalize message for cleaner demonstration
-        return pip.run_all_cells(app_name, self.steps)
+        return wand.run_all_cells(app_name, self.steps)
 
     async def get_suggestion(self, step_id, state):
-        pip, db, current_steps = self.pipulate, self.pipulate.db, self.steps
+        wand, db, current_steps = self.pipulate, self.pipulate.db, self.steps
         step_obj = next((s for s in current_steps if s.id == step_id), None)
         if not step_obj or not step_obj.transform: return ''
 
@@ -205,29 +205,29 @@ class SimonSaysMcpWidget:
         if current_step_index is None or current_step_index == 0: return ''
 
         prev_step_obj = current_steps[current_step_index - 1]
-        prev_data = pip.get_step_data(db.get('pipeline_id', 'unknown'), prev_step_obj.id, {})
+        prev_data = wand.get_step_data(db.get('pipeline_id', 'unknown'), prev_step_obj.id, {})
         prev_value = prev_data.get(prev_step_obj.done, '')
 
         return step_obj.transform(prev_value) if prev_value and callable(step_obj.transform) else ''
 
     async def handle_revert(self, request):
-        pip, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
+        wand, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
         current_steps_to_pass_helpers = self.steps # Use self.steps which includes 'finalize'
         form = await request.form()
         step_id_to_revert_to = form.get('step_id')
-        pipeline_id = pip.db.get('pipeline_id', 'unknown')
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
 
         if not step_id_to_revert_to:
             return P('Error: No step specified for revert.', cls='text-invalid')
 
-        await pip.clear_steps_from(pipeline_id, step_id_to_revert_to, current_steps_to_pass_helpers)
-        state = pip.read_state(pipeline_id)
+        await wand.clear_steps_from(pipeline_id, step_id_to_revert_to, current_steps_to_pass_helpers)
+        state = wand.read_state(pipeline_id)
         state['_revert_target'] = step_id_to_revert_to
-        pip.write_state(pipeline_id, state)
+        wand.write_state(pipeline_id, state)
 
         # Skip revert state messages for cleaner demonstration
         pass
-        return pip.run_all_cells(app_name, current_steps_to_pass_helpers)
+        return wand.run_all_cells(app_name, current_steps_to_pass_helpers)
 
     def _get_base_style(self):
         """Generate base style shared by both input and display."""
@@ -267,10 +267,10 @@ class SimonSaysMcpWidget:
         """Simon Says Make MCP Call interface - simplified utility."""
         app_name = self.app_name
         step_id = 'step_01'
-        pip = self.pipulate
+        wand = self.pipulate
         
         # Simple utility - no pipeline state management needed
-        await self.message_queue.add(pip, "🎪 Simon Says Make MCP Call! Select an MCP action from the dropdown and click the button to execute it directly for teaching and testing!", verbatim=True)
+        await self.message_queue.add(wand, "🎪 Simon Says Make MCP Call! Select an MCP action from the dropdown and click the button to execute it directly for teaching and testing!", verbatim=True)
         
         # Simplified mode selection - store in a simple class attribute since this is a utility
         current_mode = getattr(self, 'current_mode', 'cat_fact')
@@ -526,7 +526,7 @@ Output only the MCP block above. Do not add any other text."""
         """Process the 'Simon Says' prompt and directly execute the MCP tool."""
         app_name = self.app_name
         step_id = 'step_01'
-        pip = self.pipulate
+        wand = self.pipulate
 
         try:
             form = await request.form()
@@ -582,14 +582,14 @@ Output only the MCP block above. Do not add any other text."""
                                 fact = fact_data.get('fact', 'No fact returned')
                                 
                                 # Add to conversation history for LLM training (silent - no user stream)
-                                await self.message_queue.add(pip, f"User selected: Cat Fact Test", verbatim=True, role='user')
-                                await self.message_queue.add(pip, f"MCP Tool Execution: get_cat_fact → Success. Fact: {fact}", verbatim=True, role='assistant')
+                                await self.message_queue.add(wand, f"User selected: Cat Fact Test", verbatim=True, role='user')
+                                await self.message_queue.add(wand, f"MCP Tool Execution: get_cat_fact → Success. Fact: {fact}", verbatim=True, role='assistant')
                             else:
                                 error_msg = result.get("error", "Unknown error")
                                 
                                 # Add failure to conversation history for LLM learning (silent - no user stream)
-                                await self.message_queue.add(pip, f"User selected: Cat Fact Test", verbatim=True, role='user')
-                                await self.message_queue.add(pip, f"MCP Tool Execution: get_cat_fact → Failed. Error: {error_msg}", verbatim=True, role='assistant')
+                                await self.message_queue.add(wand, f"User selected: Cat Fact Test", verbatim=True, role='user')
+                                await self.message_queue.add(wand, f"MCP Tool Execution: get_cat_fact → Failed. Error: {error_msg}", verbatim=True, role='assistant')
                         
                         elif current_mode == 'google_search':
                             # Handle Google search results
@@ -601,23 +601,23 @@ Output only the MCP block above. Do not add any other text."""
                                 logger.info(f"🔧 FINDER_TOKEN: GOOGLE_SUCCESS_DATA - {len(results)} results, files: {list(files.keys())}")
                                 
                                 # Add to conversation history for LLM training (silent - no user stream)
-                                await self.message_queue.add(pip, f"User selected: Google Search Test", verbatim=True, role='user')
-                                await self.message_queue.add(pip, f"MCP Tool Execution: browser_stealth_search(query='python programming tutorial') → Success. Found {len(results)} results. Files: {list(files.keys())}", verbatim=True, role='assistant')
+                                await self.message_queue.add(wand, f"User selected: Google Search Test", verbatim=True, role='user')
+                                await self.message_queue.add(wand, f"MCP Tool Execution: browser_stealth_search(query='python programming tutorial') → Success. Found {len(results)} results. Files: {list(files.keys())}", verbatim=True, role='assistant')
                                 
                                 logger.info(f"🔧 FINDER_TOKEN: GOOGLE_MESSAGE_QUEUE_COMPLETE - Added success messages to queue")
                             else:
                                 error_msg = result.get("error", "Unknown error")
                                 
                                 # Add failure to conversation history for LLM learning (silent - no user stream)
-                                await self.message_queue.add(pip, f"User selected: Google Search Test", verbatim=True, role='user')
-                                await self.message_queue.add(pip, f"MCP Tool Execution: browser_stealth_search → Failed. Error: {error_msg}", verbatim=True, role='assistant')
+                                await self.message_queue.add(wand, f"User selected: Google Search Test", verbatim=True, role='user')
+                                await self.message_queue.add(wand, f"MCP Tool Execution: browser_stealth_search → Failed. Error: {error_msg}", verbatim=True, role='assistant')
                     else:
                         error_msg = f'HTTP error: {response.status_code}'
                         
                         # Add HTTP failure to conversation history (silent - no user stream)
                         tool_display = "Cat Fact Test" if current_mode == 'cat_fact' else "Google Search Test"
-                        await self.message_queue.add(pip, f"User selected: {tool_display}", verbatim=True, role='user')
-                        await self.message_queue.add(pip, f"MCP Tool Execution: {tool_name} → HTTP Error {response.status_code}", verbatim=True, role='assistant')
+                        await self.message_queue.add(wand, f"User selected: {tool_display}", verbatim=True, role='user')
+                        await self.message_queue.add(wand, f"MCP Tool Execution: {tool_name} → HTTP Error {response.status_code}", verbatim=True, role='assistant')
             else:
                 # Handle UI flash elements
                 import httpx
@@ -639,20 +639,20 @@ Output only the MCP block above. Do not add any other text."""
                         if result.get('success'):
                             # Add successful flash to conversation history for LLM training (silent - no user stream)
                             element_name = mode_to_element[current_mode]
-                            await self.message_queue.add(pip, f"User selected: {current_mode.replace('_', ' ').title()}", verbatim=True, role='user')
-                            await self.message_queue.add(pip, f"MCP Tool Execution: ui_flash_element(element_id='{config['element_id']}', message='{config['message']}', delay=500) → Success. Element flashed 10 times.", verbatim=True, role='assistant')
+                            await self.message_queue.add(wand, f"User selected: {current_mode.replace('_', ' ').title()}", verbatim=True, role='user')
+                            await self.message_queue.add(wand, f"MCP Tool Execution: ui_flash_element(element_id='{config['element_id']}', message='{config['message']}', delay=500) → Success. Element flashed 10 times.", verbatim=True, role='assistant')
                         else:
                             error_msg = result.get("error", "Unknown error")
                             
                             # Add failure to conversation history for LLM learning (silent - no user stream)
-                            await self.message_queue.add(pip, f"User selected: {current_mode.replace('_', ' ').title()}", verbatim=True, role='user')
-                            await self.message_queue.add(pip, f"MCP Tool Execution: ui_flash_element(element_id='{config['element_id']}') → Failed. Error: {error_msg}", verbatim=True, role='assistant')
+                            await self.message_queue.add(wand, f"User selected: {current_mode.replace('_', ' ').title()}", verbatim=True, role='user')
+                            await self.message_queue.add(wand, f"MCP Tool Execution: ui_flash_element(element_id='{config['element_id']}') → Failed. Error: {error_msg}", verbatim=True, role='assistant')
                     else:
                         error_msg = f'HTTP error: {response.status_code}'
                         
                         # Add HTTP failure to conversation history (silent - no user stream)
-                        await self.message_queue.add(pip, f"User selected: {current_mode.replace('_', ' ').title()}", verbatim=True, role='user')
-                        await self.message_queue.add(pip, f"MCP Tool Execution: ui_flash_element → HTTP Error {response.status_code}", verbatim=True, role='assistant')
+                        await self.message_queue.add(wand, f"User selected: {current_mode.replace('_', ' ').title()}", verbatim=True, role='user')
+                        await self.message_queue.add(wand, f"MCP Tool Execution: ui_flash_element → HTTP Error {response.status_code}", verbatim=True, role='assistant')
             
             # Return fresh form for immediate re-testing
             logger.info(f"🔧 FINDER_TOKEN: SIMON_SUCCESS - MCP tool executed successfully, returning refresh")
@@ -665,8 +665,8 @@ Output only the MCP block above. Do not add any other text."""
                 logger.warning(f"🔧 FINDER_TOKEN: SIMON_TIMEOUT - HTTP timeout in step_01_submit: {type(e).__name__}")
                 
                 # Add timeout info to conversation history
-                await self.message_queue.add(pip, f"User executed MCP tool (HTTP timeout occurred)", verbatim=True, role='user')
-                await self.message_queue.add(pip, f"MCP Tool Execution: HTTP timeout after 2+ minutes - tool likely completed successfully in background", verbatim=True, role='assistant')
+                await self.message_queue.add(wand, f"User executed MCP tool (HTTP timeout occurred)", verbatim=True, role='user')
+                await self.message_queue.add(wand, f"MCP Tool Execution: HTTP timeout after 2+ minutes - tool likely completed successfully in background", verbatim=True, role='assistant')
                 
                 # Return success message since the MCP tool probably worked
                 return Div(
@@ -687,8 +687,8 @@ Output only the MCP block above. Do not add any other text."""
                  logger.error(f"🔧 FINDER_TOKEN: SIMON_EXCEPTION_REPR - Exception repr: {repr(e)}")
                  
                  # Add exception to conversation history for LLM learning (silent - no user stream)
-                 await self.message_queue.add(pip, f"User attempted MCP execution", verbatim=True, role='user')
-                 await self.message_queue.add(pip, f"MCP Tool Execution → Exception: {error_msg}", verbatim=True, role='assistant')
+                 await self.message_queue.add(wand, f"User attempted MCP execution", verbatim=True, role='user')
+                 await self.message_queue.add(wand, f"MCP Tool Execution → Exception: {error_msg}", verbatim=True, role='assistant')
                  
                  # CRITICAL: Return proper div structure to preserve HTMX functionality
                  return Div(

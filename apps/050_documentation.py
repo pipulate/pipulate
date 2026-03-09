@@ -80,7 +80,7 @@ This system provides unprecedented debugging power:
     def __init__(self, app, pipulate, pipeline, db):
         logger.debug(f"DocumentationPlugin initialized with NAME: {self.NAME}")
         self.pipulate = pipulate
-        pip = self.pipulate
+        wand = self.pipulate
         self._has_streamed = False
 
         # Dynamically discover all documentation files
