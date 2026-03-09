@@ -5,7 +5,7 @@ This workflow serves as the "Why" - a cinematic, narrated slide deck that
 sells the philosophy of the Forever Machine.
 
 Features:
-- Global Voice Toggle (persisted in pip.db as '1'/'0')
+- Global Voice Toggle (persisted in wand.db as '1'/'0')
 - Auto-advancing narration (if voice enabled)
 - "Encore" button (Volume Icon) to re-speak slides
 - Proper Containerization for HTMX navigation

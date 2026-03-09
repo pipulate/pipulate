@@ -35,7 +35,7 @@ class WidgetExamples:
     6. JavaScript Execution Widget - Running JS in HTMX-injected content
 
     Key Implementation Notes:
-    - Widgets use pip.widget_container for consistent styling and DOM structure
+    - Widgets use wand.widget_container for consistent styling and DOM structure
     - JavaScript widgets use unique IDs for targeting in the DOM
     - Client-side libraries are loaded in server.py's hdrs tuple
     - HX-Trigger headers are used for reliable JS execution in HTMX-injected content
@@ -139,7 +139,7 @@ When assisting a user with this workflow:
     * Describe the result: "After you submit, you'll see the rendered [widget type]."
     * Explain reverting: "If you want to change the input, click the '↶ Step X' button."
 * Explain client-side vs. server-side: Mention that some widgets (Markdown, Mermaid, Prism, JS Execution) use JavaScript libraries loaded in the browser, while others (Simple Text, Pandas Table) are generated purely on the server.
-* Emphasize the `pip.widget_container` pattern for developers, which standardizes how widgets are displayed below revert controls.
+* Emphasize the `wand.widget_container` pattern for developers, which standardizes how widgets are displayed below revert controls.
 * Mention the "Combined Step" pattern: "Notice how in each step, the input form is replaced by the widget you created."
 * Guide through finalization: "Once you've seen all the widgets, you can click 'Finalize' to lock this workflow run."
 
