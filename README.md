@@ -26,7 +26,7 @@ curl -L https://pipulate.com/assets/installer/install.sh | bash
 
 ```bash
 # 3. Launch it
-cd ~/pipulate && nix develop
+cd ~/pipulate && ./run
 ```
 
 **What you get:** A local web app at `http://localhost:5001` with step-by-step workflows, integrated AI chat, and a JupyterLab instance at `http://localhost:8888`. No cloud required.
@@ -521,7 +521,7 @@ Navigate into your new project directory and launch the environment with `nix de
 cd ~/Botifython
 
 # Launch Pipulate
-nix develop
+./run
 ```
 
 That's it! The server and JupyterLab will start, and the application will open in your browser.
@@ -533,7 +533,7 @@ That's it! The server and JupyterLab will start, and the application will open i
 
 ```bash
 cd ~/Botifython
-nix develop
+./run
 ```
 
 **The Big Reset (If Necessary):**
@@ -544,7 +544,7 @@ nix develop
 rm -rf ~/Botifython
 curl -L https://pipulate.com/assets/installer/install.sh | bash -s Botifython
 cd ~/Botifython
-nix develop
+./run
 ```
 
 Wait for ***BOTH TABS*** to auto-open in your browser.
@@ -1395,10 +1395,10 @@ create_workflow.py               │ └──────┬──────�
 ### Essential Commands
 ```bash
 # Development workflow
-cd ~/pipulate && nix develop          # Start Pipulate
+cd ~/pipulate && ./run          # Start Pipulate
 nix develop .#quiet                   # Start without auto-services
 python server.py                     # Manual server start
-git pull && nix develop              # Update to latest
+git pull && ./run              # Update to latest
 
 # Create new workflows  
 python helpers/workflow/create_workflow.py my_workflow.py MyClass my_internal_name
