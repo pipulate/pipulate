@@ -30,6 +30,7 @@ window.PLATFORM_KEYS = {
     n_key: isMac ? 'Control+Option+N' : 'Ctrl+Alt+N',
     d_key: isMac ? 'Control+Option+D' : 'Ctrl+Alt+D',
     r_key: isMac ? 'Control+Option+R' : 'Ctrl+Alt+R',
+    s_key: isMac ? 'Control+Option+S' : 'Ctrl+Alt+S',
     v_key: isMac ? 'Control+Option+V' : 'Ctrl+Alt+V',
     w_key: isMac ? 'Control+Option+W' : 'Ctrl+Alt+W',
     g_key: isMac ? 'Control+Option+G' : 'Ctrl+Alt+G'
@@ -48,6 +49,7 @@ window.adaptMessageForPlatform = function(message) {
         .replace(/\*\*Ctrl\+Alt\+n\*\*/gi, `**${window.PLATFORM_KEYS.n_key}**`)
         .replace(/\*\*Ctrl\+Alt\+d\*\*/gi, `**${window.PLATFORM_KEYS.d_key}**`)
         .replace(/\*\*Ctrl\+Alt\+r\*\*/gi, `**${window.PLATFORM_KEYS.r_key}**`)
+        .replace(/\*\*Ctrl\+Alt\+s\*\*/gi, `**${window.PLATFORM_KEYS.s_key}**`)
         .replace(/\*\*Ctrl\+Alt\+v\*\*/gi, `**${window.PLATFORM_KEYS.v_key}**`)
         .replace(/\*\*Ctrl\+Alt\+w\*\*/gi, `**${window.PLATFORM_KEYS.w_key}**`)
         .replace(/\*\*Ctrl\+Alt\+g\*\*/gi, `**${window.PLATFORM_KEYS.g_key}**`)
@@ -55,6 +57,7 @@ window.adaptMessageForPlatform = function(message) {
         .replace(/\*\*Ctrl\+Alt\+N\*\*/g, `**${window.PLATFORM_KEYS.n_key}**`)
         .replace(/\*\*Ctrl\+Alt\+D\*\*/g, `**${window.PLATFORM_KEYS.d_key}**`)
         .replace(/\*\*Ctrl\+Alt\+R\*\*/g, `**${window.PLATFORM_KEYS.r_key}**`)
+        .replace(/\*\*Ctrl\+Alt\+S\*\*/g, `**${window.PLATFORM_KEYS.s_key}**`)
         .replace(/\*\*Ctrl\+Alt\+V\*\*/g, `**${window.PLATFORM_KEYS.v_key}**`)
         .replace(/\*\*Ctrl\+Alt\+W\*\*/g, `**${window.PLATFORM_KEYS.w_key}**`)
         .replace(/\*\*Ctrl\+Alt\+G\*\*/g, `**${window.PLATFORM_KEYS.g_key}**`)
@@ -63,6 +66,7 @@ window.adaptMessageForPlatform = function(message) {
         .replace(/Ctrl\+Alt\+n/gi, window.PLATFORM_KEYS.n_key)
         .replace(/Ctrl\+Alt\+d/gi, window.PLATFORM_KEYS.d_key)
         .replace(/Ctrl\+Alt\+r/gi, window.PLATFORM_KEYS.r_key)
+        .replace(/Ctrl\+Alt\+s/gi, window.PLATFORM_KEYS.s_key)
         .replace(/Ctrl\+Alt\+v/gi, window.PLATFORM_KEYS.v_key)
         .replace(/Ctrl\+Alt\+w/gi, window.PLATFORM_KEYS.w_key)
         .replace(/Ctrl\+Alt\+g/gi, window.PLATFORM_KEYS.g_key)
@@ -70,6 +74,7 @@ window.adaptMessageForPlatform = function(message) {
         .replace(/Ctrl\+Alt\+N/g, window.PLATFORM_KEYS.n_key)
         .replace(/Ctrl\+Alt\+D/g, window.PLATFORM_KEYS.d_key)
         .replace(/Ctrl\+Alt\+R/g, window.PLATFORM_KEYS.r_key)
+        .replace(/Ctrl\+Alt\+S/g, window.PLATFORM_KEYS.s_key)
         .replace(/Ctrl\+Alt\+V/g, window.PLATFORM_KEYS.v_key)
         .replace(/Ctrl\+Alt\+W/g, window.PLATFORM_KEYS.w_key)
         .replace(/Ctrl\+Alt\+G/g, window.PLATFORM_KEYS.g_key);
@@ -788,19 +793,13 @@ document.addEventListener('keydown', function(event) {
         loadAndExecuteCleanDemoScript('introduction.json'); 
     }
 
-    // 🎯 NEW: Context-Sensitive Test/Train
-    // Windows/Linux: Ctrl+Alt+Shift+S (Changed from T to avoid Terminal collision)
-    // Mac: Ctrl+Option+T (Kept T for Mac as requested)
-    
-    // Check for 'T' (Mac preference) or 'S' (Windows/Linux safety fallback)
-    const isKeyTrigger = event.code === 'KeyT' || event.code === 'KeyS';
-    
-    const isMacTrigger = isMac && event.ctrlKey && event.altKey && !event.shiftKey && isKeyTrigger;
-    const isWinTrigger = !isMac && event.ctrlKey && event.altKey && event.shiftKey && isKeyTrigger;
-
-    if (isMacTrigger || isWinTrigger) {
+    // 🎯 NEW: Context-Sensitive Scenario/Script ("Sheet Music")
+    // Unified: Ctrl+Alt+S (Mac natively maps Alt to Option in JS events)
+    // Note: Strictly checking !event.shiftKey to ensure clean triggers
+    if (event.ctrlKey && event.altKey && !event.shiftKey && event.code === 'KeyS') {
         event.preventDefault();
-        console.log(`🎯 Context-sensitive Test/Train triggered via ${event.code}`);
+
+        console.log(`🎯 Context-sensitive Scenario triggered via ${event.code}`);
         
         // 1. Detect current app/context
         let currentApp = 'introduction'; // Default
