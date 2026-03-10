@@ -585,7 +585,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias mcp='.venv/bin/python cli.py call'
           alias release='.venv/bin/python helpers/release/publish.py'
           alias vim='nvim'
-          alias lsp = 'ls -d -1 "$PWD"/*'
+          alias lsp='ls -d -1 "$PWD"/*'
 
           if [ "$EFFECTIVE_OS" = "darwin" ]; then
             alias xc='pbcopy <'
