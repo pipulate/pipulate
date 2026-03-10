@@ -18,11 +18,11 @@ AI_PHOOEY_CHOP = """\
 foo_files.py
 https://raw.githubusercontent.com/pipulate/pipulate/refs/heads/main/README.md
 https://pipulate.com/
-README.md  # <-- full of incorrect information about 2-curl install!!!
+README.md
+release.py
 
 # flake.nix
 # # assets/installer/install.sh
-# release.py
 # __index__.py
 # # /home/mike/repos/Pipulate.com/install.sh
 # # /home/mike/repos/Pipulate.com/flake.nix
