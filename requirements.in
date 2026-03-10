@@ -41,7 +41,7 @@ wordninja
 xlsxwriter
 
 # The pinned problems
-blinker==1.6.2
+# blinker==1.6.2  <-- No longer needed because selenium-wire no longer used.
 apsw==3.50.3.0
 grpcio==1.60.1
 pydantic>=2.12.2
