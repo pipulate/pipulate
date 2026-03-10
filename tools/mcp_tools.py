@@ -2171,7 +2171,6 @@ def run_browser_cache():
     try:
         from selenium import webdriver
         from selenium.webdriver.chrome.options import Options
-        from seleniumwire import webdriver as wire_webdriver
         
         target_url = "{url}"
         print(f"🌐 SUBPROCESS: Starting browser for URL: {{target_url}}")
@@ -2204,9 +2203,10 @@ def run_browser_cache():
         chrome_options.add_argument(f'--remote-debugging-port={{debug_port}}')
         
         # Initialize driver
-        driver = wire_webdriver.Chrome(options=chrome_options)
+        driver = webdriver.Chrome(options=chrome_options)
         
         try:
+
             print(f"🌐 SUBPROCESS: Browser launched! Preparing to navigate...")
             time.sleep(3)  # Let human see the browser opened
             
@@ -2332,6 +2332,31 @@ def run_browser_cache():
             
             print(f"💾 SUBPROCESS: Finalizing session hijacking data...")
             time.sleep(1)  # Final dramatic pause
+            # --- NATIVE HEADER CAPTURE VIA BROWSER API ---
+            # Without selenium-wire, we ask the browser for its own network log
+            print(f"🌐 SUBPROCESS: Extracting headers via Performance API...")
+            try:
+                # This JS snippet fetches the headers of the main document request
+                headers_json = driver.execute_script('''
+                    var req = new XMLHttpRequest();
+                    req.open('GET', document.location, false);
+                    req.send(null);
+                    var headers = req.getAllResponseHeaders().toLowerCase();
+                    var arr = headers.trim().split(/[\\r\\n]+/);
+                    var headerMap = {};
+                    arr.forEach(function (line) {
+                        var parts = line.split(': ');
+                        var header = parts.shift();
+                        var value = parts.join(': ');
+                        headerMap[header] = value;
+                    });
+                    return JSON.stringify(headerMap);
+                ''')
+                actual_headers = json.loads(headers_json)
+            except Exception as e:
+                print(f"⚠️ SUBPROCESS: Failed to extract headers: {{e}}")
+                actual_headers = {{"error": "Could not extract headers without proxy"}}
+
             
             # Save headers and metadata
             headers_data = {{
@@ -2340,7 +2365,8 @@ def run_browser_cache():
                 "timestamp": datetime.now().isoformat(),
                 "status": "success",
                 "wait_seconds": {wait_seconds},
-                "screenshot_taken": {take_screenshot}
+                "screenshot_taken": {take_screenshot},
+                "headers": actual_headers
             }}
             
             with open("{looking_at_dir}/headers.json", "w") as f:

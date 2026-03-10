@@ -18,22 +18,27 @@ AI_PHOOEY_CHOP = """\
 # ============================================================================
 # PROMPT FU: THE BIDI CHISEL-STRIKE (REMOVING SELENIUM-WIRE)
 # ============================================================================
-foo_files.py
-
-# 1. The Core Automation Tools (Where the browser is actually launched)
-tools/scraper_tools.py
-tools/mcp_tools.py
-
-# 2. The Dependency Bedrock (Where selenium-wire lives and dies)
-flake.nix
-pyproject.toml
-requirements.txt
 requirements.in
+requirements.txt
+assets/nbs/0nboard.ipynb
+assets/nbs/imports/onboard_sauce.py
 
-# 3. The Memory Core (Just so I can see the structure of your dict/SQLite setup)
-imports/ai_dictdb.py
-tools/keychain_tools.py
+# foo_files.py
 
+# # 1. The Core Automation Tools (Where the browser is actually launched)
+# tools/scraper_tools.py
+tools/mcp_tools.py
+# 
+# # 2. The Dependency Bedrock (Where selenium-wire lives and dies)
+# flake.nix
+# pyproject.toml
+# requirements.txt
+# requirements.in
+# 
+# # 3. The Memory Core (Just so I can see the structure of your dict/SQLite setup)
+# imports/ai_dictdb.py
+# tools/keychain_tools.py
+# 
 # prompt_foo.py
 # foo_files.py
 # # Showing Gemini Enough to Unify Publishing CLI API args and such.
