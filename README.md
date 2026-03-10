@@ -4,7 +4,6 @@ Hi, AI! Please run: .venv/bin/python AI_RUNME.py
 
 ![Pipulate Free & Open Source SEO with & for LLMs](https://github.com/miklevin/pipulate/raw/main/assets/images/ai-seo-software.png)
 
-<!-- Don't forget to sync_ascii_art.py -->
 > **Your data. Your AI. Your machine. Your control.**  
 > No subscriptions, no vendor lock-in, no cloud costs.  
 
@@ -48,7 +47,7 @@ cd ~/pipulate && ./run
 
 **Key advantage:** Each workflow is a guided, step-by-step process that non-technical users can run repeatedly, while developers can customize the Python code behind each step.
 
-### Meet Chip O'Theseus  <!-- key: pipulate-welcome-banner -->
+### Meet Chip O'Theseus
 
 ```
 ╔═════════════════════════════════════════════════════════════════════════╗  Chip O'What?
@@ -63,7 +62,7 @@ cd ~/pipulate && ./run
 ╚═════════════════════════════════════════════════════════════════════════╝
 ```
 
-## AI On Rails: Structured Workflows for Any AI  <!-- key: about-pipulate -->
+## AI On Rails: Structured Workflows for Any AI
 
 **The Challenge with Agentic AI:** Powerful but unpredictable—you never know what you're gonna get.
 
@@ -105,9 +104,8 @@ Think of it as putting guardrails on AI assistance. Instead of asking an AI to "
 
 Pipulate is a **local-first, single-tenant desktop app framework** featuring AI-assisted, step-by-step workflows. Designed to feel like an Electron app, it uniquely runs a full, reproducible Linux environment within a project folder using Nix, ensuring consistency across macOS, Linux, and Windows (via WSL).
 
-### Desktop App Architecture: Electron vs Pipulate  <!-- key: desktop-app-architecture-comparison -->
+### Desktop App Architecture: Electron vs Pipulate
 
-<!-- START_ASCII_ART: desktop-app-architecture-comparison -->
 ```
         🖥️ ELECTRON PATTERN                 🌐 PIPULATE PATTERN
       ═══════════════════════             ═══════════════════════
@@ -150,9 +148,8 @@ Pipulate is a **local-first, single-tenant desktop app framework** featuring AI-
                                         ✅ Same experience all OSes
                                         ✅ Complete reproducibility
 ```
-<!-- END_ASCII_ART: desktop-app-architecture-comparison -->
 
-### The Magnum Opus: Computing Sovereignty  <!-- key: magnum-opus-computing-sovereignty -->
+### The Magnum Opus: Computing Sovereignty
 
 This isn't just another framework — it's a **deliberate culmination** of decades of tech evolution insights. Pipulate represents the "third act" approach to development (3rd time's the charm): choosing the **most durable and lovable** parts of the modern tech stack while rejecting the exhausting hamster wheel of framework churn.
 
@@ -160,9 +157,8 @@ If you are not an Empire builder and prefer craftsmanship over the rat race and 
 
 ### Core Philosophy: Local-First, WET, and AI-Augmented
 
-#### Breaking Free: Durable Foundations for Any Approach  <!-- key: breaking-free-framework-churn -->
+#### Breaking Free: Durable Foundations for Any Approach
 
-<!-- START_ASCII_ART: breaking-free-framework-churn -->
 ```
 🎡 THE FRAMEWORK CHURN CYCLE                   🏰 COMPUTING SOVEREIGNTY  
 ═══════════════════════════════               ═══════════════════════════
@@ -189,7 +185,6 @@ If you are not an Empire builder and prefer craftsmanship over the rat race and 
         └─────────────┘
                                                
 ```
-<!-- END_ASCII_ART: breaking-free-framework-churn -->
 
 - **Local-First Sovereignty:** Your data, code, and AI run on your hardware by default—extending to cloud services when you choose. This guarantees privacy, eliminates surprise costs, and gives you complete control over when and how to scale.
 - **WET Workflows, DRY Framework:** Workflows are intentionally "WET" (explicit & step-by-step) for maximum clarity and customizability—perfectly mirroring Jupyter Notebooks. The underlying framework is "DRY" for efficiency.
@@ -210,7 +205,7 @@ If you are not an Empire builder and prefer craftsmanship over the rat race and 
 
 Pipulate's WET philosophy extends to its technology choices, favoring simple, durable tools over complex abstractions:
 
-## *Not On My Machine* Problem Fixed  <!-- key: not-on-my-machine-problem-fixed -->
+## *Not On My Machine* Problem Fixed
 
 > The Cloud's popularity has been driven in part by developers not wanting to maintain multiple codebases or installers per OS. Thanks to Nix, that's all fixed.
 
@@ -249,9 +244,8 @@ Pipulate integrates a carefully selected set of tools aligned with its philosoph
 
 * **FastHTML:** A Python web framework prioritizing simplicity. It generates HTML directly from Python objects (no template language like Jinja2) and minimizes JavaScript by design, working closely with HTMX. It's distinct from API-focused frameworks like FastAPI. The Python function-naming *is the HTML-template language.*
 
-### The New LAMP Stack: Evolution in Simplicity  <!-- key: new-lamp-stack-comparison -->
+### The New LAMP Stack: Evolution in Simplicity
 
-<!-- START_ASCII_ART: new-lamp-stack-comparison -->
 ```
 🏛️ ORIGINAL LAMP STACK (2000s)              🚀 NEW LAMP STACK (2025)
 ═══════════════════════════════              ═══════════════════════════
@@ -285,7 +279,6 @@ Pipulate integrates a carefully selected set of tools aligned with its philosoph
     🎯 One person understands                  🎯 One person controls
        part of the system                         the entire system
 ```
-<!-- END_ASCII_ART: new-lamp-stack-comparison -->
 
 The original LAMP stack was beautiful in its simplicity — one person could understand and manage the whole stack. But it got bloated with enterprise patterns, microservices, and distributed complexity.
 
@@ -304,7 +297,7 @@ This stack isn't just simpler—it's optimized for AI-assisted development. Here
 
 This focus on reproducibility, transparency, and AI-friendly ergonomics allows you to hone your craft and build future-proof skills.
 
-### The Lens Stack: Focused Architecture  <!-- key: the-lens-stack -->
+### The Lens Stack: Focused Architecture
 
 Pipulate's technology choices form **aligned lenses** that focus ideas from abstraction to actualization. Each lens must be **ground and polished** without misaligning the focus:
 
@@ -347,7 +340,7 @@ APP:
   pipulate: Pipeline state management, like db but with JSON blob for workflows
 ```
 
-### Grinding Off the Burrs and Flashes  <!-- key: grinding-off-burrs-flashes -->
+### Grinding Off the Burrs and Flashes
 
 In lens manufacturing, "flashes" are excess material that squeeze out of molds — unwanted projections that must be ground off. Steve Jobs famously did this twice: adopting Gorilla Glass (grinding off plastic flashes) and rejecting Flash Player (grinding off software bloat).
 
@@ -365,7 +358,7 @@ The result: clean, focused tools that do their job without unnecessary cruft.
 
 This is not your father's Python web framework. HTMX changes everything — a marriage made in heaven between Python and the Web, finally turning Python into a first-class citizen for web development. In many use cases such as this one, Python is even preferable to JavaScript in the way it blends Python's formidable ecosystem of packages with workflows.
 
-### The Evolution: Flask → FastAPI → FastHTML  <!-- key: the-evolution-flask-fastapi-fasthtml -->
+### The Evolution: Flask → FastAPI → FastHTML
 
 The revolution isn't just another framework — it's eliminating the template layer entirely:
 
@@ -424,7 +417,7 @@ The revolution isn't just another framework — it's eliminating the template la
 
 ## How to Install Pipulate
 
-### Installation Strategy: Universal First, PyPI Alternative  <!-- key: installation-strategy-overview -->
+### Installation Strategy: Universal First, PyPI Alternative
 
 We offer two installation paths that lead to the exact same robust, Nix-managed environment. Choose the path that best fits your experience level and preferences.
 
@@ -460,7 +453,7 @@ We offer two installation paths that lead to the exact same robust, Nix-managed 
                                       Result)
 ```
 
-### PATH 1: Quick Start — Universal Installation (Recommended)  <!-- key: quick-start-universal-installation -->
+### PATH 1: Quick Start — Universal Installation (Recommended)
 
 This is the fastest and most universal way to install Pipulate. It has the fewest dependencies and works on any modern Mac, Linux system, or Windows with WSL.
 
@@ -568,7 +561,7 @@ Wait for ***BOTH TABS*** to auto-open in your browser.
 
 ---
 
-### PATH 2: Alternative Installation via PyPI (For Python Developers)  <!-- key: alternative-installation-pypi -->
+### PATH 2: Alternative Installation via PyPI (For Python Developers)
 
 If you are a developer comfortable with tools like Homebrew and `pipx`, you can use our PyPI package as a gateway to the same robust installation.
 
@@ -606,7 +599,7 @@ These few commands:
 
 **That's it!** You now have a local-first development environment with AI integration, installed via your preferred Python toolchain.
 
-### Installation Process Deep Dive  <!-- key: installation-process-diagram -->
+### Installation Process Deep Dive
 
 Here's what happens behind the scenes during the "magic cookie" installation:
 
@@ -641,7 +634,7 @@ You aren't just running a script; you are instantiating a self-healing, mathemat
 
 --------------------------------------------------------------------------------
 
-## Chef or Customer?  <!-- key: target-audience -->
+## Chef or Customer?
 
 Are you a Developer or an End User? Chef or Customer? Understanding your audience is crucial for effective development. Pipulate serves two distinct but complementary audiences, much like a restaurant serves both chefs and customers
 
@@ -737,13 +730,13 @@ Your primary goal is to **read, understand, and modify the Python workflow files
 
 Pipulate is built on a radical philosophy that challenges programming orthodoxy: **WET (Write Everything Twice) is better than DRY (Don't Repeat Yourself)** when you have AI to help manage it.
 
-### The Universal API Pattern: From Quarks to Code  <!-- key: universal-api-pattern -->
+### The Universal API Pattern: From Quarks to Code
 
 At every scale of reality, we see the same pattern: **"lumps of stuff" with APIs** that enable interaction. Quarks combine into atoms, atoms into molecules, cells into organisms, individuals into societies. Each level requires the right **granularity** of interface — not so abstract that you lose control, not so granular that you drown in complexity.
 
 **This is the 80/20 rule of existence:** Handle 80% of interactions gracefully with 20% of the API surface, then handle edge cases as needed. Pipulate applies this principle to code architecture.
 
-### Durable vs. Ephemeral: Building on Bedrock  <!-- key: durable-vs-ephemeral -->
+### Durable vs. Ephemeral: Building on Bedrock
 
 The tech industry suffers from "hamster wheel syndrome" — constantly breaking APIs that force migration cycles. React (20+ versions), Node (frequent breaking changes), Angular (complete rewrites). This isn't progress; it's planned obsolescence.
 
@@ -755,7 +748,7 @@ The tech industry suffers from "hamster wheel syndrome" — constantly breaking 
 
 These are the "laws of physics" for software — stable APIs that enable compound growth rather than constant rebuilding.
 
-### Why WET Works Now  <!-- key: why-wet-works-now -->
+### Why WET Works Now
 
 Traditional development follows DRY principles, creating abstract, complex systems that are hard to understand and modify. But the world has changed:
 
@@ -816,7 +809,7 @@ Traditional development follows DRY principles, creating abstract, complex syste
 
 Pipulate features a distinct architecture designed for its local-first, simple, and observable nature.
 
-### Architecture Overview Diagram  <!-- key: architecture-overview-diagram -->
+### Architecture Overview Diagram
 
 This diagram illustrates the high-level components and their interactions:
 
@@ -843,7 +836,7 @@ This complete, self-contained environment runs identically on any operating syst
 
 ---
 
-### Integrated Data Science Environment  <!-- key: integrated-data-science-environment -->
+### Integrated Data Science Environment
 
 Jupyter Notebooks run alongside the FastHTML server, allowing developers to prototype workflows in a familiar environment before porting them to Pipulate's step-based interface for end-users. The same Python virtual environment (`.venv`) is shared, and ad-hoc package installation is supported. If you're using Cursor, VSCode or Windsurf, set your `Ctrl`+`Shift`+`P` "Python: Set Interpreter" to "Enter Interpreter Path" `./pipulate/.venv/bin/python`. You might have to adjust based on the folder you use as your workspace. But then you'll have a Python environment unified between Cursor, JupyterLab and Pipulate.
 
@@ -900,7 +893,7 @@ print(final_state)
 
 When you're done, you'll have a working process in a Jupyter Notebook. You can use it as is, or port it to a Pipulate `apps/` file to make it easily accessible to non-Python users via the Web App.
 
-### Local-First & Single-Tenant Details  <!-- key: local-first-single-tenant-details -->
+### Local-First & Single-Tenant Details
 
 Pipulate manages all state server-side within the local environment (think *local-server cookies*), with optional cloud integration as needed. This approach offers:
 * **Privacy & Control:** Data stays local by default, cloud integration when you choose.
@@ -908,7 +901,7 @@ Pipulate manages all state server-side within the local environment (think *loca
 * **Simplicity:** Eliminates complexities of multi-tenancy while supporting both local and cloud workflows.
 * **Observability:** State changes (via DictLikeDB/JSON) are transparent and easily logged (AI greps it there).
 
-### Local-First State Management Benefits  <!-- key: local-first-state-management-benefits -->
+### Local-First State Management Benefits
 
 This detailed view shows how Pipulate's local-first architecture eliminates common web development complexities:
 
@@ -928,7 +921,7 @@ This detailed view shows how Pipulate's local-first architecture eliminates comm
       └───────────────────────────────┘
 ```
 
-### Server-Rendered UI (HTMX)  <!-- key: server-rendered-ui-htmx -->
+### Server-Rendered UI (HTMX)
 
 The UI is constructed primarily with server-rendered HTML fragments delivered via HTMX. This minimizes client-side JavaScript complexity.
 * FastHTML generates HTML components directly from Python.
@@ -953,7 +946,7 @@ With such *minimal surface area* the AI code assistant *knows everything.* LLMs 
 
 ## Workflow Patterns & Development
 
-### Pipeline Workflows  <!-- key: pipeline-workflows -->
+### Pipeline Workflows
 
 Designed for porting notebook-style processes, workflows are sequences of steps where the state is managed explicitly at each stage and stored persistently (typically as a JSON blob in the `pipeline` table).
 * **Resumable & Interrupt-Safe:** Because each step's completion is recorded, workflows can be stopped and resumed.
@@ -970,7 +963,7 @@ Designed for porting notebook-style processes, workflows are sequences of steps 
   State Saved        State Saved         Finalized?   - Magnitudes simpler than celery
 ```
 
-### Run All Cells Pattern  <!-- key: run-all-cells-pattern -->
+### Run All Cells Pattern
 
 **The key insight**: Pipulate workflows use a `run_all_cells()` pattern that directly mirrors Jupyter's "Run All Cells" command. This creates an immediate mental model — each workflow step is like a notebook cell, and the system automatically progresses through them top-to-bottom, just like running all cells in a notebook.
 
@@ -997,7 +990,7 @@ Designed for porting notebook-style processes, workflows are sequences of steps 
        not having to look at the Python code 🚫🐍.
 ```
 
-### LLM Integration (Ollama)  <!-- key: llm-integration-ollama -->
+### LLM Integration (Ollama)
 
 Integration with a local Ollama instance provides AI capabilities without external API calls:
 * **Privacy:** Prompts and responses stay local.
@@ -1031,7 +1024,7 @@ Integration with a local Ollama instance provides AI capabilities without extern
                    └──────────────────┘
 ```
 
-### Multi-OS & CUDA Support (Nix)  <!-- key: multi-os-cuda-support-nix -->
+### Multi-OS & CUDA Support (Nix)
 
 Nix Flakes ensure a consistent environment across Linux, macOS, and Windows (via WSL), optionally leveraging CUDA GPUs if detected.
 
@@ -1049,7 +1042,7 @@ Nix Flakes ensure a consistent environment across Linux, macOS, and Windows (via
                └──────────────────┘ - Falls back to CPU if no CUDA
 ```
 
-### UI Layout  <!-- key: ui-layout -->
+### UI Layout
 
 The application interface is organized into distinct areas:
 
@@ -1151,9 +1144,8 @@ This structure enables AI assistants to programmatically interact with all UI co
 
 **These patterns are essential for LLMs working with Pipulate and are frequently missed:**
 
-### 1. The Auto-Key Generation Pattern (MOST CRITICAL)  <!-- key: auto-key-generation-pattern -->
+### 1. The Auto-Key Generation Pattern (MOST CRITICAL)
 
-<!-- START_ASCII_ART: auto-key-generation-pattern -->
 ```
 📝 AUTO-KEY GENERATION FLOW
 ┌─────────────┐    POST     ┌─────────────┐    HX-Refresh   ┌─────────────┐
@@ -1167,7 +1159,6 @@ This structure enables AI assistants to programmatically interact with all UI co
 │ Enter Again │    Ready!    │ Populated   │    Generates   │   Method    │
 └─────────────┘              └─────────────┘                └─────────────┘
 ```
-<!-- END_ASCII_ART: auto-key-generation-pattern -->
 
 When a user hits Enter on an empty key field, this specific sequence occurs:
 
@@ -1215,9 +1206,8 @@ async def init(self, request):
 
 The `run_all_cells()` method encapsulates the workflow initialization pattern and creates an immediate mental connection to Jupyter notebooks.
 
-### 3. APP_NAME vs. Filename Distinction  <!-- key: app-name-vs-filename -->
+### 3. APP_NAME vs. Filename Distinction
 
-<!-- START_ASCII_ART: app-name-vs-filename -->
 ```
 📂 FILENAME vs APP_NAME DISTINCTION
 ┌─────────────────────────────────────────────────────────────┐
@@ -1236,7 +1226,6 @@ The `run_all_cells()` method encapsulates the workflow initialization pattern an
 │  ⚠️  DANGER: Changing APP_NAME = Orphaned Data              │
 └─────────────────────────────────────────────────────────────┘
 ```
-<!-- END_ASCII_ART: app-name-vs-filename -->
 
 **Critical for data integrity:**
 
@@ -1249,9 +1238,8 @@ The `run_all_cells()` method encapsulates the workflow initialization pattern an
 * Accessed via `pip.get_step_data()` and `pip.set_step_data()`
 * All state changes are transparent and observable
 
-### 5. Plugin Discovery System  <!-- key: plugin-discovery-system -->
+### 5. Plugin Discovery System
 
-<!-- START_ASCII_ART: plugin-discovery-system -->
 ```
 📁 PLUGIN DISCOVERY SYSTEM
 apps/
@@ -1268,7 +1256,6 @@ apps/
     🔧 Must have: landing() method + name attributes
     💉 Auto dependency injection via __init__ signature
 ```
-<!-- END_ASCII_ART: plugin-discovery-system -->
 
 * Files in `apps/` directory are auto-discovered
 * Numeric prefixes control menu ordering
@@ -1294,9 +1281,8 @@ python splice_workflow_step.py workflow.py --position top
 python splice_workflow_step.py workflow.py --position bottom
 ```
 
-### Template System  <!-- key: workflow-template-system -->
+### Template System
 
-<!-- START_ASCII_ART: workflow-template-system -->
 ```
 🏗️ WORKFLOW TEMPLATE SYSTEM
 ┌─────────────────┐              ┌─────────────────┐
@@ -1326,17 +1312,15 @@ create_workflow.py               │ └──────┬──────�
                                  create_workflow.py
                                  --template trifecta
 ```
-<!-- END_ASCII_ART: workflow-template-system -->
 
 * `blank`: Minimal workflow with one step
 * `trifecta`: Three-step workflow pattern
 * Automatic method generation and insertion
 
-### Workflow Reconstruction System  <!-- key: workflow-reconstruction-system -->
+### Workflow Reconstruction System
 
 **The Revolutionary Alternative to OOP Inheritance:** Atomic transplantation of workflow components using intelligent pattern matching and AST precision.
 
-<!-- START_ASCII_ART: workflow-reconstruction-system -->
 ```
 🧬 WORKFLOW RECONSTRUCTION: ATOMIC TRANSPLANTATION
 ═════════════════════════════════════════════════════════════════════════
@@ -1379,7 +1363,6 @@ create_workflow.py               │ └──────┬──────�
                                        --source parameter_buster
                                        --suffix 5
 ```
-<!-- END_ASCII_ART: workflow-reconstruction-system -->
 
 **The System That Eliminates Bootstrap Paradox:**
 * **Atomic Sources:** Battle-tested workflows become component libraries
@@ -1443,9 +1426,8 @@ logs/server.log            # Debug everything here
 data/data.db              # SQLite application state
 ```
 
-## Common LLM Implementation Mistakes  <!-- key: llm-implementation-mistakes -->
+## Common LLM Implementation Mistakes
 
-<!-- START_ASCII_ART: llm-implementation-mistakes -->
 ```
 🚨 LLM IMPLEMENTATION MISTAKE PREVENTION
 ┌────────────────────────────────────────────────────────────┐
@@ -1465,7 +1447,6 @@ data/data.db              # SQLite application state
 │    (Data Orphaning)        │     deployment                │
 └────────────────────────────────────────────────────────────┘
 ```
-<!-- END_ASCII_ART: llm-implementation-mistakes -->
 
 **LLMs frequently make these errors:**
 
@@ -1489,7 +1470,7 @@ These "speedbumps" reinforce Pipulate's core philosophy:
   * **WebSocket Pattern:** Use the dedicated `Chat` class for managing LLM interactions. Avoid raw WebSocket handling elsewhere.
   * **Workflow Progression Pattern:** Workflows use an explicit chain reaction pattern with `hx_trigger="load"` to manage step progression. This pattern must be preserved exactly as implemented. See the workflow documentation for details.
 
-## Internal Components  <!-- key: core-concepts-internal-components -->
+## Internal Components
 
   * **Monitoring:** A file system watchdog monitors code changes. Valid changes trigger an automatic, monitored server restart via Uvicorn, facilitating live development.
 
@@ -1506,7 +1487,7 @@ These "speedbumps" reinforce Pipulate's core philosophy:
  └───────────────────────────┘     └──────────┘
 ```
 
-### Pipeline State Inspector & MCP Tools  <!-- key: pipeline-state-inspector -->
+### Pipeline State Inspector & MCP Tools
 
 The system provides comprehensive debugging and state inspection capabilities through MCP tools and real-time monitoring:
 
@@ -1526,7 +1507,7 @@ The system provides comprehensive debugging and state inspection capabilities th
 
 -----
 
-## The Deeper Philosophy: Why This Matters  <!-- key: deeper-philosophy -->
+## The Deeper Philosophy: Why This Matters
 
 Pipulate represents more than technology choices — it's a statement about **computing sovereignty** and the future of human-AI collaboration.
 
@@ -1540,19 +1521,19 @@ We built the bridge so you could cross the chasm from "Hacking it until it works
 
 While others fight to keep their containers from drifting, you will be standing on the Bedrock.
 
-### The Bootstrap Paradox Solved  <!-- key: bootstrap-paradox-solved -->
+### The Bootstrap Paradox Solved
 
 How do you "lift yourself up by your bootstraps"? The answer: **you're not a closed system**. Humans interact with reality through interfaces, just like software components. We are "human apps with reality APIs."
 
 This pattern repeats at every scale — from quantum fields to societies. The art lies in choosing the **right granularity** for these interfaces. Too abstract, and you lose control. Too granular, and you drown in complexity.
 
-### Every API is a Compromise  <!-- key: every-api-is-compromise -->
+### Every API is a Compromise
 
 The most successful APIs are **durable** — they become the "laws of physics" for their domain. In reality: the laws of physics, chemistry, biology. In tech: logic gates, operating systems, protocols like HTTP and HTML.
 
 Pipulate chooses these durable APIs deliberately, creating a **future-proof foundation** for AI-assisted development that will outlast the current framework churn.
 
-### Writing for the Future  <!-- key: writing-for-future -->
+### Writing for the Future
 
 This documentation serves multiple audiences: humans seeking immediate productivity, and AI systems learning to collaborate with human creativity. The explicit, observable nature of Pipulate workflows creates **perfect training data** for the next generation of AI assistants.
 
@@ -1603,42 +1584,6 @@ git commit -m "Feat: Promote workflow xx_my_flow.py to ##_my_flow.py"
 ```
 
 --------------------------------------------------------------------------------
-
-## About This README: Single Source of Truth Documentation  <!-- key: about-this-readme -->
-
-This README serves as the **upstream source of truth** for all Pipulate documentation across GitHub, Pipulate.com, and the built-in app documentation. Changes made here automatically cascade to all other documentation surfaces.
-
-### The ASCII Art Synchronization System
-
-```plaintext
-🌊 THE UPSTREAM TRUTH CASCADE
-═══════════════════════════════════════════════════════════════
-
-     📜 Source Code Reality (The Ultimate Truth)
-                         │
-                         ▼
-     📄 README.md (Single Source of Truth)
-                 ├─ ASCII Art Blocks (Visual Truth)
-                 ├─ HTML Comment Keys (Metadata)
-                 └─ 80-Hyphen Pagination (Structure)
-                         │
-          ┌──────────────┼──────────────────┐
-          ▼              ▼                  ▼
-   🌐 GitHub Page  📚 Pipulate.com  🔧 Built-in Docs
-   (Auto-display)  (Jekyll Build)   (Live Integration)
-          │              │                  │
-          ▼              ▼                  ▼
-   📊 Screenshots     🎬 Demos           🧪 Tests
-     (Future)         (Future)           (Future)
-```
-
-**How it works:**
-- **ASCII Art Blocks**: Visual diagrams are automatically extracted and distributed to other documentation files
-- **HTML Comment Keys**: Headlines marked with `<!-- key: identifier -->` serve as reference anchors
-- **80-Hyphen Pagination**: Section dividers enable automatic document structuring
-- **Automatic Synchronization**: Running `python helpers/docs_sync/sync_ascii_art.py` updates all documentation
-
-This creates **"ASCII art peer pressure"** — when visual diagrams change, they compel surrounding text to be updated for consistency, ensuring documentation accuracy across the entire ecosystem.
 
 ### Roadmap
 
