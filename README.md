@@ -130,7 +130,7 @@ Pipulate is a **local-first, single-tenant desktop app framework** featuring AI-
     ┌─────────────────────────┐        ┌─────────────────────────┐  This is new.
     │   📱 Native Window      │        │ 🖥️ Terminal Console     │    ,       O
     │  ┌─────────────────┐    │        │ ┌─────────────────────┐ │    \\  .  O
-    │  │  Web Browser    │    │        │ │ nix develop         │ │    |\\/| o
+    │  │  Web Browser    │    │        │ │ nix develop (./run) │ │    |\\/| o
     │  │  (Bundled)      │    │        │ │ Starting servers... │ │    / " '\
     │  │  ┌───────────┐  │    │        │ │ ✓ JupyterLab ready  │ │   . .   .
     │  │  │           │  │    │        │ │ ✓ Pipulate ready    │ │  /    ) |
@@ -514,7 +514,7 @@ curl -L https://pipulate.com/assets/installer/install.sh | bash
 
 **Step 3: Launch Pipulate**
 
-Navigate into your new project directory and launch the environment with `nix develop`.
+Navigate into your new project directory and launch the environment with `./run` (a.k.a. `nix develop`).
 
 ```bash
 # cd into the directory you just created
@@ -616,10 +616,10 @@ Here's what happens behind the scenes during the "magic cookie" installation:
 ```
 User runs assets/installer/install.sh (via curl)           Nix Flake Activation & Transformation
 ┌──────────────────────────────┐         ┌────────────────────────────────────────────┐
-│ 1. Download assets/installer/install.sh       │         │ 5. User runs 'nix develop'                 │
+│ 1. Download install.sh       │         │ 5. User runs './run' ('nix develop')       │
 │ 2. Download ZIP from GitHub  │         │ 6. Flake detects non-git directory         │
 │ 3. Extract ZIP to ~/AppName  │         │ 7. Flake clones repo to temp dir           │
-│ 4. Download ROT13 SSH key    │         │ 8. Preserves whitelabel.txt, .ssh, .venv     │
+│ 4. Download ROT13 SSH key    │         │ 8. Preserves whitelabel.txt, .ssh, .venv   │
 │    to .ssh/rot               │         │ 9. Moves git repo into place               │
 └─────────────┬────────────────┘         │10. Sets up SSH key for git                 │
               │                          │11. Transforms into git repo                │
@@ -798,11 +798,11 @@ Traditional development follows DRY principles, creating abstract, complex syste
 
 ## Developer Setup & Environment Notes
 
-**Nix Environment Activation:** Always run `nix develop` from the `~/pipulate` directory *before* running any project commands (`python server.py`, `pip install`, etc.) in a new terminal. This ensures you are using the correct dependencies defined in `flake.nix`.
+**Nix Environment Activation:** Always run `./run` (a.k.a. `nix develop`) from the `~/pipulate` directory *before* running any project commands (`python server.py`, `pip install`, etc.) in a new terminal. This ensures you are using the correct dependencies defined in `flake.nix`.
 
 **Interactive vs. Quiet Shell:**
 
-**Standard Shell:** `nix develop` (or `nix develop .#default`) runs the startup script (`run-script` defined in `flake.nix`) with welcome messages and service startup. Ideal for general use.
+**Standard Shell:** `./run` (same as `nix develop` or `nix develop .#default`) runs the startup script (`run-script` defined in `flake.nix`) with welcome messages and service startup. Ideal for general use.
 
 **Quiet Shell:** `nix develop .#quiet` activates the Nix environment *without* running the full startup script or launching services automatically. It only sets up paths and installs pip requirements. Use this for:
 - Running specific commands without starting the servers (e.g., `nix develop .#quiet --command python -c "import pandas"`).
