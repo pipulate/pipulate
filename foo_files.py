@@ -15,6 +15,48 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
+# ============================================================================
+# PROMPT FU: THE BIDI CHISEL-STRIKE (REMOVING SELENIUM-WIRE)
+# ============================================================================
+foo_files.py
+
+# 1. The Core Automation Tools (Where the browser is actually launched)
+tools/scraper_tools.py
+tools/mcp_tools.py
+
+# 2. The Dependency Bedrock (Where selenium-wire lives and dies)
+flake.nix
+pyproject.toml
+requirements.txt
+requirements.in
+
+# 3. The Memory Core (Just so I can see the structure of your dict/SQLite setup)
+imports/ai_dictdb.py
+tools/keychain_tools.py
+
+# prompt_foo.py
+# foo_files.py
+# # Showing Gemini Enough to Unify Publishing CLI API args and such.
+# foo_files.py
+# # /home/mike/repos/trimnoir/.gitignore
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_config.yml
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
+# /home/mike/.config/articleizer/targets.json
+# scripts/articles/article.txt
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
+# scripts/articles/instructions.json
+# scripts/articles/build_knowledge_graph.py
+# scripts/articles/extract_404_ghosts.py
+# scripts/articles/generate_redirects.py
+# scripts/articles/generate_hubs.py
+# scripts/articles/contextualizer.py
+# scripts/articles/common.py
+# scripts/articles/publishizer.py
+# /home/mike/repos/trimnoir/_posts/2026-03-10-seamless-ux-unifying-multi-platform-keyboard-shortcuts.md  # [Idx: 926 | Order: 1 | Tokens: 13,978 | Bytes: 55,307]
+# nixops.sh
 
 # # Unifying the mental models of macOS, Windows and Linux keyboard shortcuts.
 # assets/scenarios/introduction.json
@@ -25,19 +67,12 @@ AI_PHOOEY_CHOP = """\
 # foo_files.py
 # prompt_foo.py
 
-# # Showing Gemini Enough to Unify Publishing CLI API args and such.
-# /home/mike/repos/trimnoir/.gitignore
-# /home/mike/repos/trimnoir/flake.nix
-# /home/mike/repos/trimnoir/_config.yml
-# remotes/honeybot/hooks/post-receive
-# remotes/honeybot/nixos/configuration.nix
-# /home/mike/.config/articleizer/targets.json
-# scripts/articles/articleizer.py
-# scripts/articles/editing_prompt.txt
-# scripts/articles/instructions.json
-# scripts/articles/publishizer.py
-# scripts/articles/contextualizer.py
-# scripts/articles/common.py
+# Let the AI see what goes into a Jekyll site build. Check out that graph for
+# the d3.js force graph visualization! Rule of 7 load-balanced ideal.
+# Unachievable in reality without a cost. Hub-URL-churn. Very SEO-unfriendly.
+# /home/mike/repos/trimnoir/_raw_map.csv
+# /home/mike/repos/trimnoir/_redirects.map
+# /home/mike/repos/trimnoir/llms.txt
 
 # /home/mike/repos/trimnoir/_posts/2026-03-08-llmectomy-ai-agnosticism-nixos-python.md  # [Idx: 919 | Order: 4 | Tokens: 32,765 | Bytes: 140,401]
 # /home/mike/repos/trimnoir/_posts/2026-03-08-immutable-python-environment-jupyter-notebooks.md  # [Idx: 921 | Order: 6 | Tokens: 14,298 | Bytes: 56,507]
@@ -154,13 +189,6 @@ AI_PHOOEY_CHOP = """\
 # assets/nbs/imports/faq_writer_sauce.py
 # assets/nbs/URLinspector.ipynb
 # assets/nbs/imports/url_inspect_sauce.py
-
-# nixops.sh
-# remotes/honeybot/hooks/post-receive
-# remotes/honeybot/nixos/configuration.nix
-# /home/mike/repos/trimnoir/.gitignore
-# /home/mike/repos/trimnoir/flake.nix
-# /home/mike/repos/trimnoir/_config.yml
 
 # foo_files.py
 # /home/mike/repos/trimnoir/_posts/2026-03-08-holographic-context-engineering-ai-ready-semantic-maps-web-native-llms.md  # [Idx: 917 | Order: 2 | Tokens: 77,605 | Bytes: 245,100]
@@ -314,12 +342,12 @@ AI_PHOOEY_CHOP = """\
 # server.py
 # pipulate/core.py
 
-# levinix.com
-foo_files.py
-https://levinix.com/install.sh
-/home/mike/repos/levinix/CNAME
-/home/mike/repos/levinix/index.md
-/home/mike/repos/levinix/README.md
+# # levinix.com
+# foo_files.py
+# https://levinix.com/install.sh
+# /home/mike/repos/levinix/CNAME
+# /home/mike/repos/levinix/index.md
+# /home/mike/repos/levinix/README.md
 
 # # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
 # # The quiet plumbing that keeps the machine alive.
@@ -432,19 +460,6 @@ https://levinix.com/install.sh
 
 
 
-
-# # Let the AI see what goes into a Jekyll site build. Check out that graph for
-# # the d3.js force graph visualization! Rule of 7 load-balanced ideal.
-# # Unachievable in reality without a cost. Hub-URL-churn. Very SEO-unfriendly.
-# scripts/articles/publishizer.py
-# /home/mike/.config/articleizer/targets.json
-# scripts/articles/build_knowledge_graph.py
-# scripts/articles/extract_404_ghosts.py
-# scripts/articles/generate_redirects.py
-# scripts/articles/generate_hubs.py
-# /home/mike/repos/trimnoir/_raw_map.csv
-# /home/mike/repos/trimnoir/_redirects.map
-# /home/mike/repos/trimnoir/llms.txt
 
 # # THE DATA (The "From" and "To" Lists)
 # scripts/articles/extract_404_ghosts.py  # <-- The physics of extraction
