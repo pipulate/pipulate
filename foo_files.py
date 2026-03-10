@@ -18,17 +18,17 @@ AI_PHOOEY_CHOP = """\
 flake.nix
 # assets/installer/install.sh
 release.py
-# __index__.py
+__index__.py
 # /home/mike/repos/Pipulate.com/install.sh
 # /home/mike/repos/Pipulate.com/flake.nix
-# README.md
-# /home/mike/repos/Pipulate.com/index.md
-# /home/mike/repos/Pipulate.com/install.md
 # levinix.com
 # /home/mike/repos/levinix/CNAME
-# /home/mike/repos/levinix/index.md
-# /home/mike/repos/levinix/README.md
+/home/mike/repos/levinix/index.md
+/home/mike/repos/levinix/README.md
 # https://levinix.com/install.sh  # <-- I think this is actually missing on the live site.
+README.md
+/home/mike/repos/Pipulate.com/index.md
+/home/mike/repos/Pipulate.com/install.md
 
 # # ============================================================================
 # # PROMPT FU: THE BIDI CHISEL-STRIKE (REMOVING SELENIUM-WIRE)
