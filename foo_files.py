@@ -18,16 +18,28 @@ AI_PHOOEY_CHOP = """\
 # ============================================================================
 # PROMPT FU: THE BIDI CHISEL-STRIKE (REMOVING SELENIUM-WIRE)
 # ============================================================================
+flake.nix
+# levinix.com
+foo_files.py
+# https://levinix.com/install.sh  # <-- I think this is actually missing on the live site.
+/home/mike/repos/levinix/CNAME
+/home/mike/repos/levinix/index.md
+/home/mike/repos/levinix/README.md
+https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/README.md
+https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/install.sh
+https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/flake.nix
+
 # requirements.in
 # requirements.txt
 
-assets/installer/install.sh
-flake.nix
-pipulate/__init__.py
-pipulate/pipulate.py
-pipulate/core.py
-assets/nbs/0nboard.ipynb
-assets/nbs/imports/onboard_sauce.py
+# # We're Starting to Polish the Onboarding process
+# assets/installer/install.sh
+# flake.nix
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# assets/nbs/0nboard.ipynb
+# assets/nbs/imports/onboard_sauce.py
 
 # foo_files.py
 
