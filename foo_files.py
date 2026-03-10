@@ -15,9 +15,11 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-assets/scenarios/introduction.json
-assets/scenarios/hello_workflow_test.json
-assets/player-piano.js
+
+# # Unifying the mental models of macOS, Windows and Linux keyboard shortcuts.
+# assets/scenarios/introduction.json
+# assets/scenarios/hello_workflow_test.json
+# assets/player-piano.js
 
 # /home/mike/repos/trimnoir/_posts/2026-03-09-wet-code-dry-interfaces-ai-unified-cli.md  # [Idx: 923 | Order: 2 | Tokens: 32,290 | Bytes: 196,485]
 # foo_files.py
@@ -43,6 +45,7 @@ assets/player-piano.js
 
 # server.py
 
+# # # Getting help replacing all instances of `.pip()` with `.wand()` in `apps/`.
 # # apps/010_introduction.py
 # # apps/015_backup_introduction.py
 # # apps/020_profiles.py
