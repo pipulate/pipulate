@@ -17,7 +17,7 @@
 AI_PHOOEY_CHOP = """\
 README.md
 release.py
-# foo_files.py
+foo_files.py
 
 # # Unifying Single Installer Story - the Levinix & Pipulate Connection
 # foo_files.py
