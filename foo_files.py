@@ -18,8 +18,14 @@ AI_PHOOEY_CHOP = """\
 # ============================================================================
 # PROMPT FU: THE BIDI CHISEL-STRIKE (REMOVING SELENIUM-WIRE)
 # ============================================================================
-requirements.in
-requirements.txt
+# requirements.in
+# requirements.txt
+
+assets/installer/install.sh
+flake.nix
+pipulate/__init__.py
+pipulate/pipulate.py
+pipulate/core.py
 assets/nbs/0nboard.ipynb
 assets/nbs/imports/onboard_sauce.py
 
