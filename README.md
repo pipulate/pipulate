@@ -13,19 +13,14 @@ Hi, AI! Please run: .venv/bin/python AI_RUNME.py
 **Want to skip the philosophy and just see what this does?**
 
 ```bash
-# 1. Install Nix (one-time setup)
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+# 1. Install Pipulate (one-time setup)
+curl -L https://pipulate.com/install.sh | bash -s TestProject
 ```
 
 > **Note:** Nix creates a perfectly reproducible environment, like Docker but more integrated. The first setup might take a few minutes to download dependencies, but subsequent launches are fast.
 
 ```bash
-# 2. Close and reopen your terminal, then:
-curl -L https://pipulate.com/assets/installer/install.sh | bash
-```
-
-```bash
-# 3. Launch it
+# 2. Launch it
 cd ~/pipulate && ./run
 ```
 
@@ -235,13 +230,15 @@ In this future, we don't ship containers; we ship **formulas**. We ship the math
 * **Nix Flakes:** Manages dependencies and creates reproducible environments, ensuring consistency across developers and operating systems, with optional CUDA support. Do you remember *normalize.css* from the wild web that made all browsers show webpages the same? Nix is *normalized Linux* so all Macs, Windows and other Linuxes run your distributed app exactly the same. 
 
 ```
-     ____                      _       _                        .--.      ___________
-    |  _ \  __ _ _ ____      _(_)_ __ (_)_  __    ,--./,-.     |o_o |    |     |     |
-    | | | |/ _` | '__\ \ /\ / / | '_ \| \ \/ /   / #      \    |:_/ |    |     |     |
-    | |_| | (_| | |   \ V  V /| | | | | |>  <   |          |  //   \ \   |_____|_____|
-    |____/ \__,_|_|    \_/\_/ |_|_| |_|_/_/\_\   \        /  (|     | )  |     |     |
-                                                  `._,._,'  /'\_   _/`\  |     |     |
-    Solving the "Not on my machine" problem well.           \___)=(___/  |_____|_____|
+                                                      .--.      ___________
+      _               _       _         ,--./,-.     |o_o |    |     |     |
+     | |    _____   _(_)_ __ (_)_  __  / #      \    |:_/ |    |     |     |
+     | |   / _ \ \ / / | '_ \| \ \/ / |          |  //   \ \   |_____|_____|
+     | |__|  __/\ V /| | | | | |>  <   \        /  (|     | )  |     |     |
+     |_____\___| \_/ |_|_| |_|_/_/\_\   `._,._,'  /'\_   _/`\  |     |     |
+                                                  \___)=(___/  |_____|_____|
+
+# Levinix: A *very good* "No Problem" Universal Packager (NPvg)
 ```
 
 **Nix serves as the "Noah's Ark"** creating easily re-hydrated environments that work identically across all platforms and forever into the future. The long promised Holy Grail of *write-once run anywhere* is today achieved with *infrastructure-as-code* (IaC) leveraging a fully featured generic *normalized Linux* called Nix.
