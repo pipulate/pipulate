@@ -15,18 +15,10 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-# FIXING MAC BSD vs LINUX GNU QUIRKS
-flake.nix
-prompt_foo.py
-tools/mcp_tools.py
-tools/scraper_tools.py
-apps/040_hello_workflow.py
-assets/player-piano.js
+assets/scenarios/introduction.json
 assets/scenarios/hello_workflow_test.json
+assets/player-piano.js
 
-# flake.nix
-# prompt_foo.py
-# foo_files.py
 # /home/mike/repos/trimnoir/_posts/2026-03-09-wet-code-dry-interfaces-ai-unified-cli.md  # [Idx: 923 | Order: 2 | Tokens: 32,290 | Bytes: 196,485]
 # foo_files.py
 # prompt_foo.py
@@ -319,12 +311,12 @@ assets/scenarios/hello_workflow_test.json
 # server.py
 # pipulate/core.py
 
-# # levinix.com
-# foo_files.py
-# https://levinix.com/install.sh
-# /home/mike/repos/levinix/CNAME
-# /home/mike/repos/levinix/index.md
-# /home/mike/repos/levinix/README.md
+# levinix.com
+foo_files.py
+https://levinix.com/install.sh
+/home/mike/repos/levinix/CNAME
+/home/mike/repos/levinix/index.md
+/home/mike/repos/levinix/README.md
 
 # # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
 # # The quiet plumbing that keeps the machine alive.
