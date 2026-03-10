@@ -15,19 +15,39 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-# ============================================================================
-# PROMPT FU: THE BIDI CHISEL-STRIKE (REMOVING SELENIUM-WIRE)
-# ============================================================================
 flake.nix
-# levinix.com
-foo_files.py
-# https://levinix.com/install.sh  # <-- I think this is actually missing on the live site.
+assets/installer/install.sh
+release.py
+__index__.py
+/home/mike/repos/Pipulate.com/install.sh
+/home/mike/repos/Pipulate.com/flake.nix
+README.md
+/home/mike/repos/Pipulate.com/index.md
+/home/mike/repos/Pipulate.com/install.md
+levinix.com
 /home/mike/repos/levinix/CNAME
 /home/mike/repos/levinix/index.md
 /home/mike/repos/levinix/README.md
-https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/README.md
-https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/install.sh
-https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/flake.nix
+https://levinix.com/install.sh  # <-- I think this is actually missing on the live site.
+
+# # ============================================================================
+# # PROMPT FU: THE BIDI CHISEL-STRIKE (REMOVING SELENIUM-WIRE)
+# # ============================================================================
+# foo_files.py
+# README.md
+# flake.nix
+# /home/mike/repos/Pipulate.com/index.md
+# /home/mike/repos/Pipulate.com/install.md
+# /home/mike/repos/Pipulate.com/install.sh
+
+# levinix.com
+# https://levinix.com/install.sh  # <-- I think this is actually missing on the live site.
+# /home/mike/repos/levinix/CNAME
+# /home/mike/repos/levinix/index.md
+# /home/mike/repos/levinix/README.md
+# https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/README.md
+# https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/install.sh
+# https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/flake.nix
 
 # requirements.in
 # requirements.txt

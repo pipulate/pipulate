@@ -106,7 +106,19 @@ echo
 echo "🔍 Checking prerequisites..."
 check_command "curl"
 check_command "unzip"
-check_command "nix" # Should be present after initial nix installation
+
+# The Universe Builder (Nix Foundation Check)
+if ! command -v nix &> /dev/null; then
+  echo "📦 Nix Package Manager not found. Inventing the universe..."
+  curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+  echo "=================================================================="
+  echo "⚠️  CRITICAL: The universe has been built, but you must enter it."
+  echo "Please CLOSE this terminal window, open a NEW one, and re-run:"
+  echo "curl -L https://pipulate.com/assets/installer/install.sh | bash -s ${CUSTOM_NAME}"
+  echo "=================================================================="
+  exit 0
+fi
+
 echo "✅ All required tools found."
 echo
 
@@ -219,9 +231,9 @@ chmod 644 "${TARGET_DIR}/whitelabel.txt"
 echo "✅ Application identity set."
 echo
 
-# Creating a convenience startup script
-echo "Creating startup convenience script..."
-cat > "${TARGET_DIR}/start.sh" << 'EOL'
+# Creating the 'Double-Click' Actuator
+echo "Creating the universal ./run actuator..."
+cat > "${TARGET_DIR}/run" << 'EOL'
 #!/usr/bin/env bash
 cd "$(dirname "$0")" 
 if [[ "$(uname)" == "Darwin" ]]; then
@@ -230,7 +242,7 @@ else
   exec nix develop
 fi
 EOL
-chmod +x "${TARGET_DIR}/start.sh"
+chmod +x "${TARGET_DIR}/run"
 
 # VERSION NOTE: This version is synced from pipulate/__init__.py.__version__
 # To update: Edit __version__ in __init__.py, then run: python version_sync.py
