@@ -15,6 +15,8 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
+tools/mcp_tools.py
+
 # Unifying the mental models of macOS, Windows and Linux keyboard shortcuts.
 # /home/mike/repos/trimnoir/_posts/2026-03-10-single-pass-llm-optics-engine-causal-fidelity.md  # [Idx: 931 | Order: 6 | Tokens: 8,195 | Bytes: 36,983]
 
@@ -23,22 +25,22 @@ AI_PHOOEY_CHOP = """\
 # assets/nbs/Advanced_Notebooks/URLinspector.ipynb
 # assets/nbs/imports/url_inspect_sauce.py
 
-apps/040_hello_workflow.py
-apps/440_browser_automation.py
-pipulate/__init__.py
-pipulate/pipulate.py
-pipulate/core.py
-tools/__init__.py
-tools/llm_optics.py
-tools/dom_tools.py
-tools/mcp_tools.py
-tools/scraper_tools.py
-tools/advanced_automation_tools.py
-assets/scenarios/introduction.json
-assets/scenarios/hello_workflow_test.json
-assets/player-piano.js
-assets/nbs/Onboarding.ipynb
-assets/nbs/imports/onboard_sauce.py
+# apps/040_hello_workflow.py
+# apps/440_browser_automation.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# tools/__init__.py
+# tools/llm_optics.py
+# tools/dom_tools.py
+# tools/mcp_tools.py
+# tools/scraper_tools.py
+# tools/advanced_automation_tools.py
+# assets/scenarios/introduction.json
+# assets/scenarios/hello_workflow_test.json
+# assets/player-piano.js
+# assets/nbs/Onboarding.ipynb
+# assets/nbs/imports/onboard_sauce.py
 
 # README.md
 # release.py

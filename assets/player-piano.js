@@ -793,13 +793,11 @@ document.addEventListener('keydown', function(event) {
         loadAndExecuteCleanDemoScript('introduction.json'); 
     }
 
-    // 🎯 NEW: Context-Sensitive Scenario/Script ("Sheet Music")
-    // Unified: Ctrl+Alt+S (Mac natively maps Alt to Option in JS events)
-    // Note: Strictly checking !event.shiftKey to ensure clean triggers
-    if (event.ctrlKey && event.altKey && !event.shiftKey && event.code === 'KeyS') {
-        event.preventDefault();
 
-        console.log(`🎯 Context-sensitive Scenario triggered via ${event.code}`);
+
+    // 🎯 NEW: Context-Sensitive Scenario/Script Trigger (Callable via WebSocket or Hotkey)
+    window.triggerContextAwareDemo = function() {
+        console.log("🎯 AI Triggered Context-Sensitive Scenario");
         
         // 1. Detect current app/context
         let currentApp = 'introduction'; // Default
@@ -823,6 +821,14 @@ document.addEventListener('keydown', function(event) {
         
         // 3. Load the specific test script
         loadAndExecuteCleanDemoScript(scriptName);
+    };
+
+    // Unified: Ctrl+Alt+S (Mac natively maps Alt to Option in JS events)
+    // Note: Strictly checking !event.shiftKey to ensure clean triggers
+    if (event.ctrlKey && event.altKey && !event.shiftKey && event.code === 'KeyS') {
+        event.preventDefault();
+        console.log(`🎯 Context-sensitive Scenario triggered via ${event.code}`);
+        window.triggerContextAwareDemo();
     }
 
     // Ctrl+Alt+V: Test voice synthesis (Mac: Control+Option+V)
