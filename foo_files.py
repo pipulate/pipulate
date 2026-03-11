@@ -18,57 +18,33 @@ AI_PHOOEY_CHOP = """\
 prompt_foo.py
 foo_files.py
 
+# ============================================================================
+# I. THE SCRATCHPAD (Active Context & Transient Probes)
+# ============================================================================
+# Your daily ebb and flow happens here. Clear this out regularly.
+
 # Brand new query to figure out what user agents request markdown from what sources.
 # ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
-# Brand new ability to see pages with the LLM Optics.
+# Active LLM Optics Probes
 # !https://www.hubspot.com/pricing
 # !https://mikelev.in/about/
 
-# # CHAPTER 1: BOOTSTRAPPING & THE CLI (~230KB)
-# # The bedrock. How the Forever Machine is born, and how we manage it.
-# # Nix guarantees mathematical reproducibility across Mac and Linux.
-# # `AI_RUNME.py` contains the "Master Prompt"—a letter to an amnesiac AI.
-# assets/installer/install.sh
-# flake.nix
-# .gitignore
-# config.py
-# AI_RUNME.py
-# README.md
-# cli.py
-# scripts/articles/articleizer.py
-# scripts/articles/editing_prompt.txt
-# 
-# tools/scraper_tools.py
-# tools/mcp_tools.py
+# Active Working Markdown / Recent Posts
+# /home/mike/repos/trimnoir/_posts/2026-03-10-zero-friction-actuator-ai-development.md
+# /home/mike/repos/trimnoir/_posts/2026-03-10-machine-native-semantic-architecture-ai-age.md
+# /home/mike/repos/trimnoir/_posts/2026-03-10-single-pass-llm-optics-engine-causal-fidelity.md
+# /home/mike/repos/trimnoir/_posts/2026-03-11-single-pass-causal-optics-ai-browser-automation.md
+# /home/mike/repos/trimnoir/_posts/2026-03-10-local-first-ai-web-bottling-apps-nix-bidi.md
+# /home/mike/repos/trimnoir/_posts/2026-03-10-seamless-ux-unifying-multi-platform-keyboard-shortcuts.md
+# /home/mike/repos/trimnoir/_posts/2026-03-09-wet-code-dry-interfaces-ai-unified-cli.md
+# /home/mike/repos/trimnoir/_posts/2026-03-08-llmectomy-ai-agnosticism-nixos-python.md
+# /home/mike/repos/trimnoir/_posts/2026-03-08-immutable-python-environment-jupyter-notebooks.md
+# /home/mike/repos/trimnoir/_posts/2026-03-09-wet-coding-fearless-refactoring-python-tokenizer.md
+# /home/mike/repos/trimnoir/_posts/2026-03-08-holographic-context-engineering-ai-ready-semantic-maps-web-native-llms.md
+# /home/mike/repos/trimnoir/_posts/2026-03-08-the-immutable-webhead-building-resilient-ai-telemetry-system.md
 
-# /home/mike/repos/trimnoir/_posts/2026-03-10-zero-friction-actuator-ai-development.md  # [Idx: 929 | Order: 4 | Tokens: 28,692 | Bytes: 150,243]
-# /home/mike/repos/trimnoir/_posts/2026-03-10-machine-native-semantic-architecture-ai-age.md  # [Idx: 930 | Order: 5 | Tokens: 19,121 | Bytes: 85,579]
-# /home/mike/repos/trimnoir/_posts/2026-03-10-single-pass-llm-optics-engine-causal-fidelity.md  # [Idx: 931 | Order: 6 | Tokens: 8,195 | Bytes: 36,983]
-# /home/mike/repos/trimnoir/_posts/2026-03-11-single-pass-causal-optics-ai-browser-automation.md  # [Idx: 932 | Order: 1 | Tokens: 28,580 | Bytes: 125,370]
-
-# tools/scraper_tools.py
-# tools/llm_optics.py
-# assets/nbs/imports/onboard_sauce.py
-# 
-# Notebooks/browser_cache/example.com/%2F/accessibility_tree.json
-# Notebooks/browser_cache/example.com/%2F/accessibility_tree_summary.txt
-# Notebooks/browser_cache/example.com/%2F/dom_hierarchy.html
-# Notebooks/browser_cache/example.com/%2F/dom_hierarchy.txt
-# Notebooks/browser_cache/example.com/%2F/dom_layout_boxes.html
-# Notebooks/browser_cache/example.com/%2F/dom_layout_boxes.txt
-# Notebooks/browser_cache/example.com/%2F/headers.json
-# Notebooks/browser_cache/example.com/%2F/rendered_dom.html
-# Notebooks/browser_cache/example.com/%2F/seo.md
-# Notebooks/browser_cache/example.com/%2F/simple_dom.html
-# Notebooks/browser_cache/example.com/%2F/source.html
-
-# /home/mike/repos/trimnoir/_posts/2026-03-10-local-first-ai-web-bottling-apps-nix-bidi.md  # [Idx: 928 | Order: 3 | Tokens: 24,739 | Bytes: 104,490]
-# /home/mike/repos/trimnoir/_posts/2026-03-10-zero-friction-actuator-ai-development.md  # [Idx: 929 | Order: 4 | Tokens: 28,692 | Bytes: 150,243]
-# /home/mike/repos/trimnoir/_posts/2026-03-10-machine-native-semantic-architecture-ai-age.md  # [Idx: 930 | Order: 5 | Tokens: 19,121 | Bytes: 85,579]
-# /home/mike/repos/trimnoir/_posts/2026-03-10-single-pass-llm-optics-engine-causal-fidelity.md  # [Idx: 931 | Order: 6 | Tokens: 8,195 | Bytes: 36,983]
-# /home/mike/repos/trimnoir/_posts/2026-03-11-single-pass-causal-optics-ai-browser-automation.md  # [Idx: 932 | Order: 1 | Tokens: 28,580 | Bytes: 125,370]
-
+# Transient Browser Cache & Artifacts
 # /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/accessibility_tree.json
 # /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/accessibility_tree_summary.txt
 # /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/headers.json
@@ -76,364 +52,31 @@ foo_files.py
 # /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/simple_dom.html
 # /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/source.html
 
-# # Unifying the mental models of macOS, Windows and Linux keyboard shortcuts.
-# assets/nbs/Advanced_Notebooks/FAQuilizer.ipynb
-# assets/nbs/imports/faq_writer_sauce.py
-# assets/nbs/Advanced_Notebooks/URLinspector.ipynb
-# assets/nbs/imports/url_inspect_sauce.py
+# ============================================================================
+# II. THE CORE MACHINE (Architecture & Monolith)
+# ============================================================================
+# The foundational NPvg framework and state management.
 
-# apps/040_hello_workflow.py
-# apps/440_browser_automation.py
-# pipulate/__init__.py
-# pipulate/pipulate.py
-# pipulate/core.py
-# tools/__init__.py
-# tools/llm_optics.py
-# tools/dom_tools.py
-# tools/mcp_tools.py
-# tools/scraper_tools.py
-# tools/advanced_automation_tools.py
-# assets/scenarios/introduction.json
-# assets/scenarios/hello_workflow_test.json
-# assets/player-piano.js
-# assets/nbs/Onboarding.ipynb
-# assets/nbs/imports/onboard_sauce.py
-
-# README.md
-# release.py
-# foo_files.py
-
-# # # Unifying Single Installer Story - the Levinix & Pipulate Connection
-# # foo_files.py
-# # https://raw.githubusercontent.com/pipulate/pipulate/refs/heads/main/README.md
-# # https://pipulate.com/
-# /home/mike/repos/Pipulate.com/index.md
-# /home/mike/repos/Pipulate.com/install.md
-# /home/mike/repos/Pipulate.com/install.sh
-
-# README.md
-# release.py
-
-# flake.nix
-# # assets/installer/install.sh
-# __index__.py
-# # /home/mike/repos/Pipulate.com/install.sh
-# # /home/mike/repos/Pipulate.com/flake.nix
-# # levinix.com
-# # /home/mike/repos/levinix/CNAME
-# /home/mike/repos/levinix/index.md
-# /home/mike/repos/levinix/README.md
-# # https://levinix.com/install.sh  # <-- I think this is actually missing on the live site.
-# README.md
-# /home/mike/repos/Pipulate.com/index.md
-# /home/mike/repos/Pipulate.com/install.md
-
-# # ============================================================================
-# # PROMPT FU: THE BIDI CHISEL-STRIKE (REMOVING SELENIUM-WIRE)
-# # ============================================================================
-# foo_files.py
-# README.md
-# flake.nix
-# /home/mike/repos/Pipulate.com/index.md
-# /home/mike/repos/Pipulate.com/install.md
-# /home/mike/repos/Pipulate.com/install.sh
-
-# levinix.com
-# https://levinix.com/install.sh  # <-- I think this is actually missing on the live site.
-# /home/mike/repos/levinix/CNAME
-# /home/mike/repos/levinix/index.md
-# /home/mike/repos/levinix/README.md
-# https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/README.md
-# https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/install.sh
-# https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/flake.nix
-
-# requirements.in
-# requirements.txt
-
-# # We're Starting to Polish the Onboarding process
+# CHAPTER 1 & 1.5: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
 # assets/installer/install.sh
 # flake.nix
-# pipulate/__init__.py
-# pipulate/pipulate.py
-# pipulate/core.py
-# assets/nbs/0nboard.ipynb
-# assets/nbs/imports/onboard_sauce.py
-
-# foo_files.py
-
-# # 1. The Core Automation Tools (Where the browser is actually launched)
-# tools/scraper_tools.py
-# tools/mcp_tools.py
-# 
-# # 2. The Dependency Bedrock (Where selenium-wire lives and dies)
-# flake.nix
-# pyproject.toml
-# requirements.txt
-# requirements.in
-# 
-# # 3. The Memory Core (Just so I can see the structure of your dict/SQLite setup)
-# imports/ai_dictdb.py
-# tools/keychain_tools.py
-# 
-# prompt_foo.py
-# foo_files.py
-# # Showing Gemini Enough to Unify Publishing CLI API args and such.
-# foo_files.py
-# # /home/mike/repos/trimnoir/.gitignore
-# /home/mike/repos/trimnoir/flake.nix
-# /home/mike/repos/trimnoir/_config.yml
-# remotes/honeybot/hooks/post-receive
-# remotes/honeybot/nixos/configuration.nix
-# /home/mike/.config/articleizer/targets.json
-# scripts/articles/article.txt
-# scripts/articles/articleizer.py
-# scripts/articles/editing_prompt.txt
-# scripts/articles/instructions.json
-# scripts/articles/build_knowledge_graph.py
-# scripts/articles/extract_404_ghosts.py
-# scripts/articles/generate_redirects.py
-# scripts/articles/generate_hubs.py
-# scripts/articles/contextualizer.py
-# scripts/articles/common.py
-# scripts/articles/publishizer.py
-# /home/mike/repos/trimnoir/_posts/2026-03-10-seamless-ux-unifying-multi-platform-keyboard-shortcuts.md  # [Idx: 926 | Order: 1 | Tokens: 13,978 | Bytes: 55,307]
-# nixops.sh
-
-# # Unifying the mental models of macOS, Windows and Linux keyboard shortcuts.
-# assets/scenarios/introduction.json
-# assets/scenarios/hello_workflow_test.json
-# assets/player-piano.js
-
-# /home/mike/repos/trimnoir/_posts/2026-03-09-wet-code-dry-interfaces-ai-unified-cli.md  # [Idx: 923 | Order: 2 | Tokens: 32,290 | Bytes: 196,485]
-# foo_files.py
-# prompt_foo.py
-
-# Let the AI see what goes into a Jekyll site build. Check out that graph for
-# the d3.js force graph visualization! Rule of 7 load-balanced ideal.
-# Unachievable in reality without a cost. Hub-URL-churn. Very SEO-unfriendly.
-# /home/mike/repos/trimnoir/_raw_map.csv
-# /home/mike/repos/trimnoir/_redirects.map
-# /home/mike/repos/trimnoir/llms.txt
-
-# /home/mike/repos/trimnoir/_posts/2026-03-08-llmectomy-ai-agnosticism-nixos-python.md  # [Idx: 919 | Order: 4 | Tokens: 32,765 | Bytes: 140,401]
-# /home/mike/repos/trimnoir/_posts/2026-03-08-immutable-python-environment-jupyter-notebooks.md  # [Idx: 921 | Order: 6 | Tokens: 14,298 | Bytes: 56,507]
-# /home/mike/repos/trimnoir/_posts/2026-03-09-wet-coding-fearless-refactoring-python-tokenizer.md  # [Idx: 922 | Order: 1 | Tokens: 182,741 | Bytes: 726,664]
-
-# server.py
-
-# # # Getting help replacing all instances of `.pip()` with `.wand()` in `apps/`.
-# # apps/010_introduction.py
-# # apps/015_backup_introduction.py
-# # apps/020_profiles.py
-# # apps/025_aspect.py
-# # apps/030_roles.py
-# # apps/050_documentation.py
-# # apps/060_tasks.py
-# # apps/070_history.py
-# # apps/100_connect_with_botify.py
-# # # apps/110_parameter_buster.py
-# # # apps/120_link_graph.py
-# # apps/130_gap_analysis.py
-# # apps/200_workflow_genesis.py
-# # # apps/210_widget_examples.py
-# # apps/220_roadmap.py
-# apps/230_dev_assistant.py
-# # apps/240_simon_mcp.py
-# # apps/300_blank_placeholder.py
-# # # apps/400_botify_trifecta.py
-# # apps/440_browser_automation.py
-# # apps/450_stream_simulator.py
-# # apps/510_text_field.py
-# # apps/520_text_area.py
-# # apps/530_dropdown.py
-# # apps/540_checkboxes.py
-# # apps/550_radios.py
-# # apps/560_range.py
-# # apps/570_switch.py
-# # apps/580_upload.py
-# # apps/610_markdown.py
-# # apps/620_mermaid.py
-# # apps/630_prism.py
-# # apps/640_javascript.py
-# # apps/710_pandas.py
-# # apps/720_rich.py
-# # apps/730_matplotlib.py
-# # apps/810_webbrowser.py
-# # apps/820_selenium.py
-# # apps/040_hello_workflow.py
-
-# flake.nix
-# foo_files.py
 # .gitignore
-# __init__.py
-# release.py
-# pyproject.toml
-# imports/__init__.py
-# pipulate/__init__.py
-
-# flake.nix
-
-# assets/nbs/AI_HelloWorld.ipynb
-# assets/nbs/0nboard.ipynb
-# assets/nbs/imports/onboard_sauce.py
-# imports/__init__.py
-# pipulate/__init__.py
-# pipulate/pipulate.py
-# pipulate/core.py
-
-# 
-# assets/nbs/FAQuilizer.ipynb
-# assets/nbs/imports/faq_writer_sauce.py
-# 
-# assets/nbs/URLinspector.ipynb
-# assets/nbs/imports/url_inspect_sauce.py
-# 
-# assets/nbs/VIDeditor.ipynb
-# assets/nbs/imports/videditor_sauce.py
-
-# Notebooks/GAPalyzer.ipynb
-# Notebooks/imports/gap_analyzer_sauce.py
-
-# server.py
-# apps/040_hello_workflow.py
-# pipulate/__init__.py
-# pipulate/pipulate.py
-# pipulate/core.py
-# tools/__init__.py
-# tools/llm_optics.py
-# apps/440_browser_automation.py
-
-# foo_files.py
-# prompt_foo.py
-
-# Just messing with ChatGPT 5.2 Extended Thinking. Let's see what it says!
-# prompt_foo.py
-# scripts/articles/lsa.py
-# /home/mike/.config/articleizer/targets.json
-# /home/mike/.config/articleizer/url_map.json
-# foo_files.py  # <-- this
-
-# /home/mike/repos/trimnoir/_posts/2026-03-08-holographic-context-engineering-ai-ready-semantic-maps-web-native-llms.md  # [Idx: 917 | Order: 2 | Tokens: 77,786 | Bytes: 245,940]
-# /home/mike/repos/trimnoir/_posts/2025-09-12-git-branch-takeover-promote-feature-branch.md
-
-# # Claude Opus 4.6 wrote its own Prompt Fu, so let's let it have a go at this Simon Willison llm thing.
-# # requirements.in
-# # requirements.txt
-# pipulate/__init__.py
-# pipulate/pipulate.py
-# pipulate/core.py
-# .gitignore
-# flake.nix
+# config.py
+# AI_RUNME.py
+# README.md
+# cli.py
 # /home/mike/repos/pipulate/assets/nbs/0nboard.ipynb
 # /home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py
-# assets/nbs/FAQuilizer.ipynb
-# assets/nbs/imports/faq_writer_sauce.py
-# assets/nbs/URLinspector.ipynb
-# assets/nbs/imports/url_inspect_sauce.py
 
-# foo_files.py
-# /home/mike/repos/trimnoir/_posts/2026-03-08-holographic-context-engineering-ai-ready-semantic-maps-web-native-llms.md  # [Idx: 917 | Order: 2 | Tokens: 77,605 | Bytes: 245,100]
+# CHAPTER 2: THE SERVER MONOLITH (~260KB)
+# server.py
 
-# # Showing Gemini the 1-line-per-content Semantic Context Thunkers that need Thinking. Thinking about thunking. Auto situation reports (sitreps).
-# foo_files.py
-# /home/mike/repos/trimnoir/_posts/list_articles.py
-# /home/mike/repos/trimnoir/_posts/ls2.py
-# scripts/articles/lsa.py
-
-# /home/mike/repos/trimnoir/_posts/2026-03-08-the-immutable-webhead-building-resilient-ai-telemetry-system.md  # [Idx: 916 | Order: 1 | Tokens: 23,423 | Bytes: 90,726]
-
-# # Doing a SitRep with Gemini 3 Pro to move Tracer Dye to near top of page.
-# foo_files.py
-# remotes/honeybot/hooks/post-receive
-# https://mikelev.in/futureproof/nixos-wayland-hyprland/index.md?src=link+rel
-
-# prompt_foo.py
-# remotes/honeybot/hooks/post-receive
-# /home/mike/repos/pipulate/nixops.sh
-# remotes/honeybot/nixos/configuration.nix
-# /home/mike/repos/trimnoir/_layouts/default.html
-# /home/mike/repos/trimnoir/_layouts/post.html
-# /home/mike/repos/trimnoir/_posts/template.md
-# /home/mike/repos/trimnoir/_ai_license.md
-
-# # Recent history of The 404 Affair
-# /home/mike/repos/trimnoir/_posts/2026-03-06-automated-404-healing-semantic-router.md  # [Idx: 911 | Order: 6 | Tokens: 48,506 | Bytes: 181,869]
-# /home/mike/repos/trimnoir/_posts/2026-03-07-the-80-20-rule-resilient-404-redirects-pure-hash-ledger.md  # [Idx: 912 | Order: 1 | Tokens: 23,670 | Bytes: 91,872]
-# /home/mike/repos/trimnoir/_posts/2026-03-07-nginx-nixos-red-queen-deterministic-redirects.md  # [Idx: 913 | Order: 2 | Tokens: 16,419 | Bytes: 65,951]
-
-# ============================================================================
-# PROMPT FU: SEMANTIC ROUTER (404 HEALING)
-# ============================================================================
-# System Directive: You are a deterministic semantic routing engine. 
-# Map the dead URLs in LIST A to the living URLs in the narrative context map.
-# Output ONLY a strict, two-column CSV format: /old-path/,/new-path/
-# ============================================================================
-# scripts/articles/extract_404_ghosts.py 
-# ! python scripts/articles/extract_404_ghosts.py  # <-- LIST A: THE 404 GHOSTS
-# Note: LIST B (The Semantic Map) is provided via the -l [slice] argument in prompt_foo
-
-# /home/mike/repos/trimnoir/_raw_map.csv
-# /home/mike/repos/trimnoir/_redirects.map
-# remotes/honeybot/hooks/post-receive
-# remotes/honeybot/nixos/configuration.nix
-
-# # CHAPTER 10: ENTERPRISE SEO - TRIFECTA MONOLITH (~275KB)
-# # The flagship app. So large it gets its own chapter.
-# apps/400_botify_trifecta.py
-
-# # CHAPTER 9: ENTERPRISE SEO - BOTIFY SUITE (~340KB)
-# # The factory. Where we construct complex SEO deliverables.
-# apps/100_connect_with_botify.py
-# apps/240_simon_mcp.py
-# apps/200_workflow_genesis.py
-# imports/botify_code_generation.py
-# imports/botify/__init__.py
-# imports/botify/code_generators.py
-# imports/botify/true_schema_discoverer.py
-
-# # CHAPTER 8: THE DOCUMENTATION & DEV TOOLS (~270KB)
-# # The self-documenting layer and the AI developer assistant.
-# apps/050_documentation.py
-# apps/230_dev_assistant.py
-
-
-# # CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS) (~200KB)
-# # The fundamental plugin apps governing the user experience.
-# imports/crud.py
-# imports/voice_synthesis.py
-# apps/010_introduction.py
-# apps/020_profiles.py
-# apps/025_aspect.py
-# apps/030_roles.py
-# apps/040_hello_workflow.py
-# apps/060_tasks.py
-# apps/070_history.py
-
-# # CHAPTER 6: THE SKIN (FRONTEND ASSETS & INIT) (~265KB)
-# # HTML over the wire. No Virtual DOM. The client-side muscle.
-# assets/init.js
-# assets/pipulate.js
-# assets/styles.css
-# assets/theme.js
-# assets/utils.js
-# assets/player-piano.js
-
-# # CHAPTER 5: THE HANDS (AI TOOLS & AUTOMATION) (~350KB)
-# # What the AI actually *does* with its agency.
-# # `tools/` defines every action the AI can take via MCP dispatch.
-# tools/__init__.py
-# tools/keychain_tools.py
-# tools/scraper_tools.py
-# tools/conversation_tools.py
-# tools/system_tools.py
-# tools/dom_tools.py
-# tools/botify_tools.py
-# # tools/advanced_automation_tools.py
-# tools/mcp_tools.py
+# CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
 
 # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
-# The quiet plumbing that keeps the machine alive.
-# Database safety, durable backups, and the MCP orchestrator.
 # __init__.py
 # imports/__init__.py
 # imports/ai_dictdb.py
@@ -445,485 +88,16 @@ foo_files.py
 # imports/append_only_conversation.py
 # imports/ascii_displays.py
 
-
-
-# foo_files.py
-# config.py
-# server.py
-
-# /home/mike/repos/nixos/autognome.py
-
-
-# # CHAPTER 1: BOOTSTRAPPING & THE CLI (~230KB)
-# # The bedrock. How the Forever Machine is born, and how we manage it.
-# # Nix guarantees mathematical reproducibility across Mac and Linux.
-# # `AI_RUNME.py` contains the "Master Prompt"—a letter to an amnesiac AI.
-# assets/installer/install.sh
-# flake.nix
-# .gitignore
-# config.py
-# AI_RUNME.py
-# README.md
-# cli.py
-# scripts/articles/articleizer.py
-# scripts/articles/editing_prompt.txt
-# 
-# # CHAPTER 1.5: HUMAN ONBOARDING
-# /home/mike/repos/pipulate/assets/nbs/0nboard.ipynb
-# /home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py
-# pipulate/__init__.py
-# pipulate/pipulate.py
-# pipulate/core.py
-# 
-# # CHAPTER 2: THE SERVER MONOLITH (~260KB)
-# # The heart of the machine. Massive because it is explicit.
-# # `server.py` is our FastHTML routing engine: Uvicorn/Starlette app,
-# # HTMX endpoints, WebSocket connections, and dynamic plugin loading.
-# config.py
-# server.py
-# pipulate/core.py
-
-# # levinix.com
-# foo_files.py
-# https://levinix.com/install.sh
-# /home/mike/repos/levinix/CNAME
-# /home/mike/repos/levinix/index.md
-# /home/mike/repos/levinix/README.md
-
-# # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
-# # The quiet plumbing that keeps the machine alive.
-# # Database safety, durable backups, and the MCP orchestrator.
-# __init__.py
-# imports/__init__.py
-# imports/ai_dictdb.py
-# imports/database_safety_wrapper.py
-# imports/durable_backup_system.py
-# imports/server_logging.py
-# imports/stream_orchestrator.py
-# imports/mcp_orchestrator.py
-# imports/append_only_conversation.py
-# imports/ascii_displays.py
-
-# # CHAPTER 1: BOOTSTRAPPING & THE CLI (~230KB)
-# # The bedrock. How the Forever Machine is born, and how we manage it.
-# # Nix guarantees mathematical reproducibility across Mac and Linux.
-# # `AI_RUNME.py` contains the "Master Prompt"—a letter to an amnesiac AI.
-# assets/installer/install.sh
-# flake.nix
-# .gitignore
-# config.py
-# AI_RUNME.py
-# README.md
-# cli.py
-# scripts/articles/articleizer.py
-# scripts/articles/editing_prompt.txt
-
-# # CHAPTER 2: THE SERVER MONOLITH (~260KB)
-# # The heart of the machine. Massive because it is explicit.
-# # `server.py` is our FastHTML routing engine: Uvicorn/Starlette app,
-# # HTMX endpoints, WebSocket connections, and dynamic plugin loading.
-# config.py
-# server.py
-
-# # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
-# # The brain. Our Swiss Army Knife for state management.
-# # Bridges the web app and Jupyter Notebooks using DictLikeDB.
-# pipulate/__init__.py
-# pipulate/pipulate.py
-# pipulate/core.py
-
-
-
-# # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
-# # The quiet plumbing that keeps the machine alive.
-# # Database safety, durable backups, and the MCP orchestrator.
-# __init__.py
-# imports/__init__.py
-# imports/ai_dictdb.py
-# imports/database_safety_wrapper.py
-# imports/durable_backup_system.py
-# imports/server_logging.py
-# imports/stream_orchestrator.py
-# imports/mcp_orchestrator.py
-# imports/append_only_conversation.py
-# imports/ascii_displays.py
-
-# # CHAPTER 5: THE HANDS (AI TOOLS & AUTOMATION) (~350KB)
-# # What the AI actually *does* with its agency.
-# # `tools/` defines every action the AI can take via MCP dispatch.
-# tools/__init__.py
-# tools/keychain_tools.py
-# tools/scraper_tools.py
-# tools/llm_optics.py
-# tools/conversation_tools.py
-# tools/system_tools.py
-# tools/dom_tools.py
-# tools/botify_tools.py
-# # tools/advanced_automation_tools.py
-# tools/mcp_tools.py
-
-# # CHAPTER 6: THE SKIN (FRONTEND ASSETS & INIT) (~265KB)
-# # HTML over the wire. No Virtual DOM. The client-side muscle.
-# assets/init.js
-# assets/pipulate.js
-# assets/styles.css
-# assets/theme.js
-# assets/utils.js
-# assets/player-piano.js
-
-# # CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS) (~200KB)
-# # The fundamental plugin apps governing the user experience.
-# imports/crud.py
-# imports/voice_synthesis.py
-# apps/010_introduction.py
-# apps/020_profiles.py
-# apps/025_aspect.py
-# apps/030_roles.py
-# apps/040_hello_workflow.py
-# apps/060_tasks.py
-# apps/070_history.py
-
-
-# # CHAPTER 8: THE DOCUMENTATION & DEV TOOLS (~270KB)
-# # The self-documenting layer and the AI developer assistant.
-# apps/050_documentation.py
-# apps/230_dev_assistant.py
-# 
-# # CHAPTER 9: ENTERPRISE SEO - BOTIFY SUITE (~340KB)
-# # The factory. Where we construct complex SEO deliverables.
-# apps/100_connect_with_botify.py
-# apps/240_simon_mcp.py
-# apps/200_workflow_genesis.py
-# imports/botify_code_generation.py
-# imports/botify/__init__.py
-# imports/botify/code_generators.py
-# imports/botify/true_schema_discoverer.py
-
-
-
-
-# # THE DATA (The "From" and "To" Lists)
-# scripts/articles/extract_404_ghosts.py  # <-- The physics of extraction
-# Note: LIST B (The Semantic Map) is provided via the -l [slice] argument in prompt_foo
-# ! python scripts/articles/extract_404_ghosts.py  # <-- The actual List A - HUGELY IMPORTANT FOR 404 REDUCTION / DON'T LOSE SIGHT OF THIS!
-
-# /home/mike/repos/trimnoir/_raw_map.csv
-# /home/mike/repos/trimnoir/_redirects.map
-# 
-# scripts/articles/extract_404_ghosts.py
-# scripts/articles/generate_redirects.py
-# remotes/honeybot/queries/hot_404_remaps_top.sql
-# ! python scripts/articles/extract_404_ghosts.py
-# Note: LIST B (The Semantic Map) is provided via the -l [slice] argument in prompt_foo
-# 
-# # The core script and routing table (always keep the loop open)
-# prompt_foo.py
-# foo_files.py
-# remotes/honeybot/queries/hot_404_remaps_top.sql
-# scripts/articles/generate_redirects.py
-# 
-# # The Textual Dashboard UI and its data layer
-# remotes/honeybot/scripts/logs.py
-# remotes/honeybot/scripts/db.py
-# 
-# # The SQL Heuristics identifying (or failing to identify) the bots
-# remotes/honeybot/queries/intel_unknown_agents.sql
-# remotes/honeybot/queries/mine_bots_heuristic.sql
-# 
-# # # Optional: To see what live data looks like right now
-# # ! echo "--- UNKNOWN AGENTS LIVE ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# # CHAPTER 16: THE HONEYBOT OBSERVATORY (IAC BUDDING)
-# # Pipulate can spawn independent "Infrastructure as Code" child apps.
-# # The Honeybot is an automated TV studio and telemetry database sitting in 
-# # the DMZ. It deploys via Nix, records web traffic via Nginx/SQLite, and
-# # uses heuristic SQL queries to isolate AI bot signal from internet noise.
-# deploy_honeybot.sh
-# remotes/honeybot/hooks/post-receive
-# remotes/honeybot/nixos/configuration.nix
-# remotes/honeybot/scripts/content_loader.py
-# remotes/honeybot/scripts/db.py
-# remotes/honeybot/scripts/education.py
-# remotes/honeybot/scripts/radar.py
-# remotes/honeybot/scripts/report.py
-# remotes/honeybot/scripts/show.py
-# remotes/honeybot/scripts/stream.py
-# remotes/honeybot/scripts/logs.py
-
-# # ============================================================================
-# # THE LIVE TELEMETRY FEEDS
-# # ============================================================================
-# 
-# # 1. THE MACRO ENVIRONMENT (Volume & Signal vs. Noise)
-# # Goal: Establish the baseline. Is traffic spiking? What percentage of our 
-# # total bandwidth is being consumed by semantic AI agents vs. HTML browsers?
-# ! echo "--- TOTALS ---" && cat remotes/honeybot/queries/telemetry_totals.sql | ssh honeybot 'sqlite3 ~/www/mikelev.in/honeybot.db'
-# ! echo "--- FORMAT RATIO ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# # 2. THE SEMANTIC VANGUARD (The Agentic Web)
-# # Goal: Track the 'Dark Matter' of the web. How are agents finding our Markdown? 
-# # Who is using the 'Secret Knock' (HTTP Content Negotiation)? What are they eating?
-# ! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- THE MARKDOWN DIET ---" && cat remotes/honeybot/queries/md_diet.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# # 3. THE SHADOW REALM (Execution Traps)
-# # Goal: Unmask the headless browsers (Puppeteer/Selenium) trying to pass as human. 
-# # Who is physically rendering the DOM and triggering the invisible js_confirm.gif?
-# ! echo "--- SHADOW: JS EXECUTORS ---" && cat remotes/honeybot/queries/shadow_js_executors.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- TRAPDOOR IPS ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# # 4. THE HEURISTIC GUILLOTINE (Bot Mining)
-# # Goal: Filter out the "polite" bots (Google, Anthropic) and identify the hostile,
-# # poorly configured, or high-volume scrapers using our custom SQL scoring engine.
-# ! echo "--- BOT MINER (Heuristic Scoring) ---" && cat remotes/honeybot/queries/mine_bots_heuristic.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- UNKNOWN AGENTS (Empty/Generic UAs) ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# # 5. THE BACKGROUND RADIATION (Vulnerability Probes)
-# # Goal: Separate legitimate missing content (True 404s) from automated script-kiddies
-# # blindly knocking on doors looking for WordPress or PHP vulnerabilities (Noise 404s).
-# ! echo "--- NOISE 404s (PHP/WP Probes) ---" && cat remotes/honeybot/queries/intel_noise_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- TRUE 404s (Legitimate Missing Content) ---" && cat remotes/honeybot/queries/intel_true_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-
-# # 6. PLANNING 404 REDIRECT MAP
-# ! echo "--- HOT 404 REMAPS (Structural Signal) ---" && cat remotes/honeybot/queries/hot_404_remaps.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-
-
-# # Catching an AI up on recent work
-# /home/mike/repos/trimnoir/_posts/2026-03-05-nginx-404-redirects-test-driven-ai-pipeline.md  # [Idx: 902 | Order: 2 | Tokens: 22,754 | Bytes: 87,334]
-# /home/mike/repos/trimnoir/_posts/2026-03-05-topological-healer-ai-automated-redirects.md  # [Idx: 903 | Order: 3 | Tokens: 49,783 | Bytes: 188,781]
-# /home/mike/repos/trimnoir/_posts/2026-03-05-pipulate-stateful-jupyter-ai-seo-strategy.md  # [Idx: 904 | Order: 4 | Tokens: 28,194 | Bytes: 120,178]
-# /home/mike/repos/trimnoir/_posts/2026-03-05-self-bootstrapping-ai-workshop-reproducible-development-hot-swappable-llms.md  # [Idx: 905 | Order: 5 | Tokens: 14,294 | Bytes: 57,984]
-# /home/mike/repos/trimnoir/_posts/2026-03-06-the-topological-healer-ai-driven-404-management-blueprint.md  # [Idx: 906 | Order: 1 | Tokens: 54,749 | Bytes: 198,753]
-# /home/mike/repos/trimnoir/_posts/2026-03-06-deterministic-ai-knowledge-graph-web.md  # [Idx: 907 | Order: 2 | Tokens: 23,299 | Bytes: 95,345]
-
-# # We deploy our TV Studio DMZ webhead honeybot as NixOS IaC
-# deploy_honeybot.sh
-# /home/mike/repos/trimnoir/.gitignore
-# /home/mike/repos/trimnoir/flake.nix
-# /home/mike/repos/trimnoir/_config.yml
-# remotes/honeybot/hooks/post-receive
-# remotes/honeybot/nixos/configuration.nix
-
-# # Getting the Link Graph rendering correctly on the MikeLev.in/ homepage.
-# /home/mike/repos/trimnoir/_site/index.html
-# scripts/articles/publishizer.py
-# /home/mike/.config/articleizer/targets.json
-# /home/mike/repos/trimnoir/index.md
-# /home/mike/repos/trimnoir/_layouts/default.html
-# /home/mike/repos/trimnoir/_layouts/home.html
-# /home/mike/repos/trimnoir/_includes/home_hub.md
-# scripts/articles/build_knowledge_graph.py
-# scripts/articles/generate_hubs.py
-# scripts/articles/generate_redirects.py
-# scripts/articles/graph.json
-
-# # Fine-tuning the 404 page-not-found finding query for remapping
-# /home/mike/repos/trimnoir/_raw_map.csv
-# /home/mike/repos/trimnoir/_redirects.map
-# remotes/honeybot/queries/hot_404_remaps_top.sql
-# scripts/articles/generate_redirects.py
-
-# # THE DATA (The "From" and "To" Lists)
-# ! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# Note: LIST B (The Semantic Map) is provided via the -l [slice] argument in prompt_foo
-
-# # Why these redirects are so necessary (we're always K-Means clustering our hubs)
-# scripts/articles/publishizer.py  # <-- This picks the publishing workflow based on the target choice
-# scripts/articles/build_knowledge_graph.py
-# scripts/articles/generate_hubs.py
-
-# # Working through making the Nginx 404 remapping precise and correct
-# /home/mike/repos/trimnoir/_raw_map.csv.bak
-# scripts/articles/generate_redirects.py
-# /home/mike/repos/trimnoir/_raw_map.csv
-# /home/mike/repos/trimnoir/_redirects.map
-
-# # The WET Pipeline (The "Before and After")
-# foo_files.py
-# prompt_foo.py
-# 
-# # THE DATA (The "From" and "To" Lists)
-# ! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# Note: LIST B (The Semantic Map) is provided via the -l [slice] argument in prompt_foo
-
-# The story of the 404 Redirect Map Project
-# /home/mike/repos/trimnoir/_posts/2026-03-03-cybernetic-terrarium-ai-observability.md  # [Idx: 897 | Order: 4 | Tokens: 3,170 | Bytes: 15,104]
-# /home/mike/repos/trimnoir/_posts/2026-03-04-architecting-ai-context-data-density-blueprint-404-remapping.md  # [Idx: 898 | Order: 2 | Tokens: 20,308 | Bytes: 80,742]
-# /home/mike/repos/trimnoir/_posts/2026-03-04-nginx-404-remapping-llm-context-architecture-blueprint.md  # [Idx: 899 | Order: 3 | Tokens: 16,433 | Bytes: 67,822]
-# /home/mike/repos/trimnoir/_posts/2026-03-04-john-henry-gambit-llms-honeybots-dynamic-latest-url.md  # [Idx: 900 | Order: 4 | Tokens: 12,951 | Bytes: 55,594]
-# /home/mike/repos/trimnoir/_posts/2026-03-05-self-healing-ai-404-redirects-nginx-nixos.md  # [Idx: 901 | Order: 1 | Tokens: 48,228 | Bytes: 183,128]
-# 
-# # This content shows in a desktop Python Textual slideshow OBS TV Studio streaming to YouTube
-# remotes/honeybot/scripts/db.py
-# remotes/honeybot/scripts/logs.py
-# remotes/honeybot/scripts/stream.py
-# 
-# # THE DATA TO PRODUCE A NEW 404 REDIRECT MAP
-# remotes/honeybot/queries/hot_404_remaps.sql
-# Note: LIST B (The Semantic Map) is provided via the -l [slice] argument in prompt_foo
-# ! echo "--- HOT 404 REMAPS (Structural Signal) ---" && cat remotes/honeybot/queries/hot_404_remaps.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# remotes/honeybot/queries/hot_404_remaps_full.sql
-# # 6. PLANNING 404 REDIRECT MAP (TOP TARGETS ONLY)
-# ! echo "--- TOP 404 REMAPS (High Priority) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# .gitignore
-# config.py
-# assets/nbs/0nboard.ipynb
-# assets/nbs/imports/onboard_sauce.py
-# tools/llm_optics.py
-# pipulate/__init__.py
-# pipulate/pipulate.py
-# pipulate/core.py
-# imports/server_logging.py
-# imports/stream_orchestrator.py
-# imports/mcp_orchestrator.py
-# AI_RUNME.py
-# cli.py
-# 
 # ============================================================================
-# # CHAPTER 17: THE LIVE TELEMETRY DASHBOARD (ACTIVE SONAR)
-# # This block acts as the 'Sitchrep Protocol' for the local LLM. By using the 
-# # ! (Chisel-Strike) operator, we pipe live production data over SSH directly 
-# # into the AI's context window. 
-# # ============================================================================
-# 
-# # --- THE SQL SENSOR DEFINITIONS ---
-# remotes/honeybot/queries/file_traffic.sql
-# remotes/honeybot/queries/find_cloakers.sql
-# remotes/honeybot/queries/format_ratio.sql
-# remotes/honeybot/queries/intel_noise_404s.sql
-# remotes/honeybot/queries/intel_true_404s.sql
-# remotes/honeybot/queries/intel_unknown_agents.sql
-# remotes/honeybot/queries/markdown_routing_metrics.sql
-# remotes/honeybot/queries/md_diet.sql
-# remotes/honeybot/queries/mine_bots_heuristic.sql
-# remotes/honeybot/queries/shadow_js_executors.sql
-# remotes/honeybot/queries/shadow_md_readers.sql
-# remotes/honeybot/queries/telemetry_accept_headers.sql
-# remotes/honeybot/queries/telemetry_totals.sql
-# remotes/honeybot/queries/telemetry_trapdoor_events.sql
-# remotes/honeybot/queries/trapdoor_ips.sql
+# III. THE ANATOMY (UX, Tools & Apps)
+# ============================================================================
+# What the user sees and what the AI can touch.
 
-# # ============================================================================
-# # THE LIVE TELEMETRY FEEDS
-# # ============================================================================
-# # 
-# # 1. THE MACRO ENVIRONMENT (Volume & Signal vs. Noise)
-# # Goal: Establish the baseline. Is traffic spiking? What percentage of our 
-# # total bandwidth is being consumed by semantic AI agents vs. HTML browsers?
-# ! echo "--- TOTALS ---" && cat remotes/honeybot/queries/telemetry_totals.sql | ssh honeybot 'sqlite3 ~/www/mikelev.in/honeybot.db'
-# ! echo "--- FORMAT RATIO ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# # 2. THE SEMANTIC VANGUARD (The Agentic Web)
-# # Goal: Track the 'Dark Matter' of the web. How are agents finding our Markdown? 
-# # Who is using the 'Secret Knock' (HTTP Content Negotiation)? What are they eating?
-# ! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- THE MARKDOWN DIET ---" && cat remotes/honeybot/queries/md_diet.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# # 3. THE SHADOW REALM (Execution Traps)
-# # Goal: Unmask the headless browsers (Puppeteer/Selenium) trying to pass as human. 
-# # Who is physically rendering the DOM and triggering the invisible js_confirm.gif?
-# ! echo "--- SHADOW: JS EXECUTORS ---" && cat remotes/honeybot/queries/shadow_js_executors.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- TRAPDOOR IPS ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# # 4. THE HEURISTIC GUILLOTINE (Bot Mining)
-# # Goal: Filter out the "polite" bots (Google, Anthropic) and identify the hostile,
-# # poorly configured, or high-volume scrapers using our custom SQL scoring engine.
-# ! echo "--- BOT MINER (Heuristic Scoring) ---" && cat remotes/honeybot/queries/mine_bots_heuristic.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- UNKNOWN AGENTS (Empty/Generic UAs) ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# # 5. THE BACKGROUND RADIATION (Vulnerability Probes)
-# # Goal: Separate legitimate missing content (True 404s) from automated script-kiddies
-# # blindly knocking on doors looking for WordPress or PHP vulnerabilities (Noise 404s).
-# ! echo "--- NOISE 404s (PHP/WP Probes) ---" && cat remotes/honeybot/queries/intel_noise_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- TRUE 404s (Legitimate Missing Content) ---" && cat remotes/honeybot/queries/intel_true_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# 
-# # # Recent "article" context
-# foo_files.py
-# /home/mike/repos/trimnoir/_posts/2026-03-04-architecting-ai-context-data-density-blueprint-404-remapping.md  # [Idx: 898 | Order: 2 | Tokens: 20,275 | Bytes: 80,587]
-# 
-# # CHAPTER 15: JEKYLL PUBLISHING
-# /home/mike/repos/nixos/init.lua  # <-- The creator of this system uses NixOS as the Pipulate prime "parent" OS and you can see their blogging habits here
-# scripts/articles/articleizer.py  # <- Extractions from the 1-file-4life tech journal get copy-pasted into the article.txt that this file works on
-# scripts/articles/editing_prompt.txt  # <-- I cannot emphasizes enough the "keeping response in JSON" aspect of the player piano / mechanical loom aspect
-# /home/mike/.config/articleizer/targets.json  # <-- These scripts are designed to work with any Jekyll blog site repo with --target (and -k API key)
-# scripts/articles/publishizer.py  # <-- This picks the publishing workflow based on the target choice
-# scripts/articles/sanitizer.py
-# scripts/articles/contextualizer.py
-# scripts/articles/gsc_historical_fetch.py
-# scripts/articles/build_knowledge_graph.py
-# scripts/articles/generate_redirects.py
-# scripts/articles/generate_hubs.py
-
-# 
-# # 6. PLANNING 404 REDIRECT MAP
-# ! echo "--- HOT 404 REMAPS (Structural Signal) ---" && cat remotes/honeybot/queries/hot_404_remaps.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# # And the files that are necessary to look at for actual implementation plans.
-# prompt_foo.py
-# scripts/articles/lsa.py
-"""
-
-# # CHAPTER 1: BOOTSTRAPPING & THE CLI (~230KB)
-# # The bedrock. How the Forever Machine is born, and how we manage it.
-# # Nix guarantees mathematical reproducibility across Mac and Linux.
-# # `AI_RUNME.py` contains the "Master Prompt"—a letter to an amnesiac AI.
-# assets/installer/install.sh
-# flake.nix
-# .gitignore
-# config.py
-# AI_RUNME.py
-# README.md
-# cli.py
-# scripts/articles/articleizer.py
-# scripts/articles/editing_prompt.txt
-
-# # CHAPTER 1.5: HUMAN ONBOARDING
-# /home/mike/repos/pipulate/assets/nbs/0nboard.ipynb
-# /home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py
-# tools/llm_optics.py
-# pipulate/__init__.py
-# pipulate/pipulate.py
-# pipulate/core.py
-
-# # CHAPTER 2: THE SERVER MONOLITH (~260KB)
-# # The heart of the machine. Massive because it is explicit.
-# # `server.py` is our FastHTML routing engine: Uvicorn/Starlette app,
-# # HTMX endpoints, WebSocket connections, and dynamic plugin loading.
-# config.py
-# server.py
-
-# # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
-# # The brain. Our Swiss Army Knife for state management.
-# # Bridges the web app and Jupyter Notebooks using DictLikeDB.
-# pipulate/__init__.py
-# pipulate/pipulate.py
-# pipulate/core.py
-
-# # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
-# # The quiet plumbing that keeps the machine alive.
-# # Database safety, durable backups, and the MCP orchestrator.
-# __init__.py
-# imports/__init__.py
-# imports/ai_dictdb.py
-# imports/database_safety_wrapper.py
-# imports/durable_backup_system.py
-# imports/server_logging.py
-# imports/stream_orchestrator.py
-# imports/mcp_orchestrator.py
-# imports/append_only_conversation.py
-# imports/ascii_displays.py
-
-# # CHAPTER 5: THE HANDS (AI TOOLS & AUTOMATION) (~350KB)
-# # What the AI actually *does* with its agency.
-# # `tools/` defines every action the AI can take via MCP dispatch.
+# CHAPTER 5: THE HANDS (AI TOOLS & AUTOMATION) (~350KB)
 # tools/__init__.py
 # tools/keychain_tools.py
 # tools/scraper_tools.py
+# tools/llm_optics.py
 # tools/conversation_tools.py
 # tools/system_tools.py
 # tools/dom_tools.py
@@ -931,17 +105,17 @@ foo_files.py
 # tools/advanced_automation_tools.py
 # tools/mcp_tools.py
 
-# # CHAPTER 6: THE SKIN (FRONTEND ASSETS & INIT) (~265KB)
-# # HTML over the wire. No Virtual DOM. The client-side muscle.
+# CHAPTER 6: THE SKIN (FRONTEND ASSETS & INIT) (~265KB)
 # assets/init.js
 # assets/pipulate.js
 # assets/styles.css
 # assets/theme.js
 # assets/utils.js
 # assets/player-piano.js
+# assets/scenarios/introduction.json
+# assets/scenarios/hello_workflow_test.json
 
-# # CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS) (~200KB)
-# # The fundamental plugin apps governing the user experience.
+# CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS) (~200KB)
 # imports/crud.py
 # imports/voice_synthesis.py
 # apps/010_introduction.py
@@ -952,13 +126,16 @@ foo_files.py
 # apps/060_tasks.py
 # apps/070_history.py
 
-# # CHAPTER 8: THE DOCUMENTATION & DEV TOOLS (~270KB)
-# # The self-documenting layer and the AI developer assistant.
+# CHAPTER 8: THE DOCUMENTATION & DEV TOOLS (~270KB)
 # apps/050_documentation.py
 # apps/230_dev_assistant.py
 
-# # CHAPTER 9: ENTERPRISE SEO - BOTIFY SUITE (~340KB)
-# # The factory. Where we construct complex SEO deliverables.
+# ============================================================================
+# IV. THE ENTERPRISE SEO FACTORY
+# ============================================================================
+# The heavy-lifting SEO applications.
+
+# CHAPTER 9 & 10: BOTIFY SUITE & TRIFECTA MONOLITH (~615KB)
 # apps/100_connect_with_botify.py
 # apps/240_simon_mcp.py
 # apps/200_workflow_genesis.py
@@ -966,27 +143,22 @@ foo_files.py
 # imports/botify/__init__.py
 # imports/botify/code_generators.py
 # imports/botify/true_schema_discoverer.py
-
-# # CHAPTER 10: ENTERPRISE SEO - TRIFECTA MONOLITH (~275KB)
-# # The flagship app. So large it gets its own chapter.
 # apps/400_botify_trifecta.py
 
-# # CHAPTER 11: ENTERPRISE SEO - PARAMETER BUSTER (~275KB)
-# # An intensive tool for finding and eliminating toxic query parameters.
+# CHAPTER 11 & 12: PARAMETER BUSTER & LINK GRAPH (~550KB)
 # apps/110_parameter_buster.py
-
-# # CHAPTER 12: ENTERPRISE SEO - LINK GRAPH (~275KB)
-# # The link graph analysis tool. 
 # apps/120_link_graph.py
 
-# # CHAPTER 13: THE GAPALYZER SUITE (~240KB)
-# # Automates Content Gap Analysis using linear, WET code.
+# CHAPTER 13: THE GAPALYZER SUITE (~240KB)
 # Notebooks/GAPalyzer.ipynb
 # Notebooks/imports/gap_analyzer_sauce.py
 
-# # CHAPTER 14: THE NOTEBOOK TEMPLATES (~100KB)
-# # The starter notebooks that ship with the system in `assets/nbs/`.
-# assets/nbs/0nboard.ipynb
+# ============================================================================
+# V. THE CONTENT LOOM & SEMANTIC ROUTER
+# ============================================================================
+# Publishing, Notebook Templates, and topological self-healing.
+
+# CHAPTER 14: THE NOTEBOOK TEMPLATES (~100KB)
 # assets/nbs/AI_HelloWorld.ipynb
 # assets/nbs/FAQuilizer.ipynb
 # assets/nbs/URLinspector.ipynb
@@ -995,23 +167,32 @@ foo_files.py
 # assets/nbs/imports/url_inspect_sauce.py
 # assets/nbs/imports/videditor_sauce.py
 
-# # CHAPTER 15: JEKYLL PUBLISHING
-# /home/mike/repos/nixos/init.lua  # <-- The creator of this system uses NixOS as the Pipulate prime "parent" OS and you can see their blogging habits here
-# scripts/articles/articleizer.py  # <- Extractions from the 1-file-4life tech journal get copy-pasted into the article.txt that this file works on
-# scripts/articles/editing_prompt.txt  # <-- I cannot emphasizes enough the "keeping response in JSON" aspect of the player piano / mechanical loom aspect
-# /home/mike/.config/articleizer/targets.json  # <-- These scripts are designed to work with any Jekyll blog site repo with --target (and -k API key)
-# scripts/articles/publishizer.py  # <-- This picks the publishing workflow based on the target choice
+# CHAPTER 15: JEKYLL PUBLISHING
+# /home/mike/repos/nixos/init.lua
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
+# /home/mike/.config/articleizer/targets.json
+# /home/mike/repos/trimnoir/_config.yml
+# scripts/articles/publishizer.py
 # scripts/articles/sanitizer.py
 # scripts/articles/contextualizer.py
 # scripts/articles/gsc_historical_fetch.py
 # scripts/articles/build_knowledge_graph.py
 # scripts/articles/generate_hubs.py
 
-# # CHAPTER 16: THE HONEYBOT OBSERVATORY (IAC BUDDING)
-# # Pipulate can spawn independent "Infrastructure as Code" child apps.
-# # The Honeybot is an automated TV studio and telemetry database sitting in 
-# # the DMZ. It deploys via Nix, records web traffic via Nginx/SQLite, and
-# # uses heuristic SQL queries to isolate AI bot signal from internet noise.
+# THE 404 AFFAIR (Topological Healer Blueprint)
+# /home/mike/repos/trimnoir/_raw_map.csv
+# /home/mike/repos/trimnoir/_redirects.map
+# scripts/articles/extract_404_ghosts.py
+# scripts/articles/generate_redirects.py
+# ! python scripts/articles/extract_404_ghosts.py
+
+# ============================================================================
+# VI. THE HONEYBOT OBSERVATORY (Live Telemetry)
+# ============================================================================
+# DMZ TV Studio, Telemetry DB, and NixOS IaC. 
+
+# CHAPTER 16: HONEYBOT IAC & SCRIPTS
 # deploy_honeybot.sh
 # remotes/honeybot/hooks/post-receive
 # remotes/honeybot/nixos/configuration.nix
@@ -1023,92 +204,29 @@ foo_files.py
 # remotes/honeybot/scripts/report.py
 # remotes/honeybot/scripts/show.py
 # remotes/honeybot/scripts/stream.py
-# remotes/honeybot/queries/file_traffic.sql
-# remotes/honeybot/queries/find_cloakers.sql
-# remotes/honeybot/queries/format_ratio.sql
-# remotes/honeybot/queries/intel_noise_404s.sql
-# remotes/honeybot/queries/intel_true_404s.sql
-# remotes/honeybot/queries/intel_unknown_agents.sql
-# remotes/honeybot/queries/markdown_routing_metrics.sql
-# remotes/honeybot/queries/md_diet.sql
-# remotes/honeybot/queries/mine_bots_heuristic.sql
-# remotes/honeybot/queries/shadow_js_executors.sql
-# remotes/honeybot/queries/shadow_md_readers.sql
-# remotes/honeybot/queries/telemetry_accept_headers.sql
-# remotes/honeybot/queries/telemetry_totals.sql
-# remotes/honeybot/queries/telemetry_trapdoor_events.sql
-# remotes/honeybot/queries/trapdoor_ips.sql
 
-# # ============================================================================
-# # CHAPTER 17: THE LIVE TELEMETRY DASHBOARD (ACTIVE SONAR)
-# # This block acts as the 'Sitchrep Protocol' for the local LLM. By using the 
-# # ! (Chisel-Strike) operator, we pipe live production data over SSH directly 
-# # into the AI's context window. 
-# # ============================================================================
-# 
-# # --- THE SQL SENSOR DEFINITIONS ---
-# remotes/honeybot/queries/file_traffic.sql
-# remotes/honeybot/queries/find_cloakers.sql
-# remotes/honeybot/queries/format_ratio.sql
-# remotes/honeybot/queries/intel_noise_404s.sql
-# remotes/honeybot/queries/intel_true_404s.sql
-# remotes/honeybot/queries/intel_unknown_agents.sql
-# remotes/honeybot/queries/markdown_routing_metrics.sql
-# remotes/honeybot/queries/md_diet.sql
-# remotes/honeybot/queries/mine_bots_heuristic.sql
-# remotes/honeybot/queries/shadow_js_executors.sql
-# remotes/honeybot/queries/shadow_md_readers.sql
-# remotes/honeybot/queries/telemetry_accept_headers.sql
-# remotes/honeybot/queries/telemetry_totals.sql
-# remotes/honeybot/queries/telemetry_trapdoor_events.sql
-# remotes/honeybot/queries/trapdoor_ips.sql
-# 
-# # ============================================================================
-# # THE LIVE TELEMETRY FEEDS
-# # ============================================================================
-# 
-# # 1. THE MACRO ENVIRONMENT (Volume & Signal vs. Noise)
-# # Goal: Establish the baseline. Is traffic spiking? What percentage of our 
-# # total bandwidth is being consumed by semantic AI agents vs. HTML browsers?
+# CHAPTER 17: LIVE TELEMETRY DASHBOARD (Chisel-Strikes)
 # ! echo "--- TOTALS ---" && cat remotes/honeybot/queries/telemetry_totals.sql | ssh honeybot 'sqlite3 ~/www/mikelev.in/honeybot.db'
 # ! echo "--- FORMAT RATIO ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# # 2. THE SEMANTIC VANGUARD (The Agentic Web)
-# # Goal: Track the 'Dark Matter' of the web. How are agents finding our Markdown? 
-# # Who is using the 'Secret Knock' (HTTP Content Negotiation)? What are they eating?
 # ! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- THE MARKDOWN DIET ---" && cat remotes/honeybot/queries/md_diet.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# # 3. THE SHADOW REALM (Execution Traps)
-# # Goal: Unmask the headless browsers (Puppeteer/Selenium) trying to pass as human. 
-# # Who is physically rendering the DOM and triggering the invisible js_confirm.gif?
 # ! echo "--- SHADOW: JS EXECUTORS ---" && cat remotes/honeybot/queries/shadow_js_executors.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- TRAPDOOR IPS ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# # 4. THE HEURISTIC GUILLOTINE (Bot Mining)
-# # Goal: Filter out the "polite" bots (Google, Anthropic) and identify the hostile,
-# # poorly configured, or high-volume scrapers using our custom SQL scoring engine.
 # ! echo "--- BOT MINER (Heuristic Scoring) ---" && cat remotes/honeybot/queries/mine_bots_heuristic.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- UNKNOWN AGENTS (Empty/Generic UAs) ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# # 5. THE BACKGROUND RADIATION (Vulnerability Probes)
-# # Goal: Separate legitimate missing content (True 404s) from automated script-kiddies
-# # blindly knocking on doors looking for WordPress or PHP vulnerabilities (Noise 404s).
 # ! echo "--- NOISE 404s (PHP/WP Probes) ---" && cat remotes/honeybot/queries/intel_noise_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- TRUE 404s (Legitimate Missing Content) ---" && cat remotes/honeybot/queries/intel_true_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-
-# # 6. PLANNING 404 REDIRECT MAP
 # ! echo "--- HOT 404 REMAPS (Structural Signal) ---" && cat remotes/honeybot/queries/hot_404_remaps.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
-# # CHAPTER 18: THE LEVINIX BOTTLING PLANT (UNIVERSAL DISTRIBUTION)
-# # The "Magic Cookie" architecture. A generic, technology-agnostic template
-# # for distributing local-first applications without Electron or Docker.
-# # Uses Nix to guarantee the environment and bash to handle the UX.
+# ============================================================================
+# VII. UNIVERSAL DISTRIBUTION
+# ============================================================================
+# The Levinix bottling plant.
+
+# CHAPTER 18: THE LEVINIX BOTTLING PLANT
 # https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/README.md
 # https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/install.sh
 # https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/flake.nix
-
-
-
-
+"""
