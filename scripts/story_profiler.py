@@ -100,32 +100,61 @@ def main():
     with open(foo_file, "r", encoding="utf-8") as f:
         lines = f.readlines()
 
-    chapters = {}
-    current_chapter = None
+    chapters = {"Root / Uncategorized": []}
+    current_chapter = "Root / Uncategorized"
     in_story_section = False
     all_claimed_files = set()
 
     for line in lines:
         line = line.strip()
 
-        if "THE LIVING CODEX" in line:
+        # Start parsing once we hit the string variable assignment
+        if "AI_PHOOEY_CHOP =" in line:
             in_story_section = True
+            continue
 
         if not in_story_section:
             continue
 
-        if line.startswith("# # CHAPTER") or line.startswith("# # PREFACE"):
-            current_chapter = line.lstrip("# ").strip()
-            chapters[current_chapter] = []
+        # Stop parsing once we reach the auto-generated Orphanage block to avoid recursion
+        if "VIII. THE ORPHANAGE" in line:
+            break
 
-        elif current_chapter and line.startswith("# ") and not line.startswith("# #"):
-            file_path = line.lstrip("# ").strip().split()[0]
-            if file_path:
-                chapters[current_chapter].append(file_path)
-                if os.path.isabs(file_path) and file_path.startswith(repo_root):
-                    all_claimed_files.add(os.path.relpath(file_path, repo_root))
-                elif not os.path.isabs(file_path):
-                    all_claimed_files.add(file_path)
+        # Detect our Roman numeral structural headers (e.g., "# II. THE CORE MACHINE")
+        m_chap = re.match(r'^#\s*([IVX]+\.\s+.*)', line)
+        if m_chap:
+            current_chapter = m_chap.group(1).strip()
+            if current_chapter not in chapters:
+                chapters[current_chapter] = []
+            continue
+
+        # Clean the line of comment hashes and whitespace
+        clean_line = line.lstrip("#").strip()
+        
+        # Skip empty lines, visual dividers, sub-headers, chisel-strikes, and raw URLs
+        if (not clean_line or clean_line.startswith("=") or 
+            clean_line.startswith("CHAPTER") or clean_line.startswith("THE 404") or
+            clean_line.startswith("!") or clean_line.startswith("http")):
+            continue
+
+        # The first word on the remaining lines should be the file path
+        file_path = clean_line.split()[0]
+        
+        # Verify it looks like a file
+        ext = os.path.splitext(file_path)[1].lower()
+        if ext in STORY_EXTENSIONS or ('/' in file_path and '.' in file_path):
+            chapters[current_chapter].append(file_path)
+            
+            # Path Normalization for the Orphan Delta (The core fix)
+            if os.path.isabs(file_path):
+                if file_path.startswith(repo_root):
+                    rel_path = os.path.relpath(file_path, repo_root)
+                    all_claimed_files.add(os.path.normpath(rel_path))
+            else:
+                all_claimed_files.add(os.path.normpath(file_path))
+
+    # Remove empty chapters before printing
+    chapters = {k: v for k, v in chapters.items() if v}
 
     # ── Chapter Size Report ──────────────────────────────────────────────
     print("# 📊 Pipulate Story Size Profile (Claude/Gemini Optimized)\n")
