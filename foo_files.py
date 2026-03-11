@@ -15,30 +15,45 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-# Unifying the mental models of macOS, Windows and Linux keyboard shortcuts.
-# /home/mike/repos/trimnoir/_posts/2026-03-10-single-pass-llm-optics-engine-causal-fidelity.md  # [Idx: 931 | Order: 6 | Tokens: 8,195 | Bytes: 36,983]
-
-assets/nbs/Advanced_Notebooks/FAQuilizer.ipynb
-assets/nbs/imports/faq_writer_sauce.py
-assets/nbs/Advanced_Notebooks/URLinspector.ipynb
-assets/nbs/imports/url_inspect_sauce.py
-
-apps/040_hello_workflow.py
-apps/440_browser_automation.py
-pipulate/__init__.py
-pipulate/pipulate.py
-pipulate/core.py
-tools/__init__.py
-tools/llm_optics.py
-tools/dom_tools.py
-tools/mcp_tools.py
 tools/scraper_tools.py
-tools/advanced_automation_tools.py
-assets/scenarios/introduction.json
-assets/scenarios/hello_workflow_test.json
-assets/player-piano.js
-assets/nbs/Onboarding.ipynb
+tools/llm_optics.py
 assets/nbs/imports/onboard_sauce.py
+
+# /home/mike/repos/trimnoir/_posts/2026-03-10-local-first-ai-web-bottling-apps-nix-bidi.md  # [Idx: 928 | Order: 3 | Tokens: 24,739 | Bytes: 104,490]
+# /home/mike/repos/trimnoir/_posts/2026-03-10-zero-friction-actuator-ai-development.md  # [Idx: 929 | Order: 4 | Tokens: 28,692 | Bytes: 150,243]
+# /home/mike/repos/trimnoir/_posts/2026-03-10-machine-native-semantic-architecture-ai-age.md  # [Idx: 930 | Order: 5 | Tokens: 19,121 | Bytes: 85,579]
+# /home/mike/repos/trimnoir/_posts/2026-03-10-single-pass-llm-optics-engine-causal-fidelity.md  # [Idx: 931 | Order: 6 | Tokens: 8,195 | Bytes: 36,983]
+# /home/mike/repos/trimnoir/_posts/2026-03-11-single-pass-causal-optics-ai-browser-automation.md  # [Idx: 932 | Order: 1 | Tokens: 28,580 | Bytes: 125,370]
+
+# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/accessibility_tree.json
+# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/accessibility_tree_summary.txt
+# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/headers.json
+# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/rendered_dom.html
+# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/simple_dom.html
+# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/source.html
+
+# # Unifying the mental models of macOS, Windows and Linux keyboard shortcuts.
+# assets/nbs/Advanced_Notebooks/FAQuilizer.ipynb
+# assets/nbs/imports/faq_writer_sauce.py
+# assets/nbs/Advanced_Notebooks/URLinspector.ipynb
+# assets/nbs/imports/url_inspect_sauce.py
+
+# apps/040_hello_workflow.py
+# apps/440_browser_automation.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
+# tools/__init__.py
+# tools/llm_optics.py
+# tools/dom_tools.py
+# tools/mcp_tools.py
+# tools/scraper_tools.py
+# tools/advanced_automation_tools.py
+# assets/scenarios/introduction.json
+# assets/scenarios/hello_workflow_test.json
+# assets/player-piano.js
+# assets/nbs/Onboarding.ipynb
+# assets/nbs/imports/onboard_sauce.py
 
 # README.md
 # release.py
