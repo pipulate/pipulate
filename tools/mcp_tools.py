@@ -1259,84 +1259,38 @@ async def keychain_set(params: dict) -> dict:
         }
 
 
+@auto_tool
 async def execute_ai_session_hijacking_demonstration(params: dict) -> dict:
     """
     🎭 MAGIC WORDS MCP TOOL: Execute AI session hijacking demonstration protocol
 
-    This tool triggers the SIMPLE AI session hijacking demonstration using our new
-    execute_complete_session_hijacking function with NO parameters needed.
-
-    This is the "canned way" to demonstrate AI capabilities without any configuration.
-    It loads the proper documentation automatically and provides context to LLM.
+    This tool triggers the context-aware AI session hijacking demonstration using
+    the native player-piano.js integration. It is incredibly fast and avoids
+    spinning up secondary Chromium instances.
 
     Returns:
-    - Simple hijacking results and DOM injection for LLM context
+    - Success confirmation of triggering the frontend sheet music.
     """
+    import sys
     try:
         trigger_source = params.get("trigger_source", "mcp_tool")
-        logger.info(f"🎭 FINDER_TOKEN: MCP_MAGIC_WORDS - AI session hijacking demonstration triggered by {trigger_source}")
+        logger.info(f"🎭 FINDER_TOKEN: MCP_MAGIC_WORDS - Triggering frontend piano from {trigger_source}")
 
-        # 🚀 EXECUTE OUR NEW SIMPLE HIJACKING (no parameters, all defaults set correctly)
-        logger.info("🎭 FINDER_TOKEN: MAGIC_WORDS_SIMPLE_HIJACK - Executing 1-shot session hijacking")
-
-        # Add dramatic delay so humans can see the breadcrumb sequence
-        import asyncio
-        await asyncio.sleep(2)  # Let humans read the startup sequence
-
-        hijack_result = await execute_complete_session_hijacking({})
-
-        # Check if server module is available for conversation injection
-        import sys
         server_module = sys.modules.get('server')
-        server_available = bool(server_module)
+        if not server_module or not hasattr(server_module, 'chat'):
+            return {"success": False, "error": "Chat subsystem not available for broadcast."}
 
-        if server_available:
-            # Server is running - inject into conversation
-            read_training = getattr(server_module, 'read_training', None)
-            append_to_conversation = getattr(server_module, 'append_to_conversation', None)
-
-            if read_training and append_to_conversation:
-                # 🎭 MAGIC WORDS ACKNOWLEDGMENT
-                append_to_conversation("🎭 **MAGIC WORDS DETECTED!** Executing session hijacking demonstration using the new SIMPLE pattern...", 'system')
-
-                # Load our NEW simple documentation
-                simple_hijack_docs = read_training("ai_discovery/ai_1_shot_session_hijacking_mastery.md")
-
-                # Load the updated session hijacking message
-                session_context = read_training("ai_discovery/ai_session_hijacking_message.md")
-
-                # Add all context to conversation
-                append_to_conversation(simple_hijack_docs, 'system')
-                append_to_conversation(session_context, 'system')
-
-                # Add the hijacking results summary
-                if hijack_result.get('success'):
-                    success_msg = f"""🎭 **SESSION HIJACKING EXECUTED!** Result: Success = {hijack_result.get('success')}
-
-👁️ **BROWSER EVIDENCE CAPTURED:**
-- Check: browser_cache/looking_at/simple_dom.html (fits in your context!)
-- Screenshot: browser_cache/looking_at/screenshot.png
-- Automation ready: {hijack_result.get('session_hijacking_steps', [])}
-
-🧠 **SIMPLE PATTERN DEMONSTRATED:**
-```python
-result = asyncio.run(execute_complete_session_hijacking({{}}))
-print(f'🎭 Hijack: {{result.get("success")}}')
-```
-
-✅ **NO COMPLEX STEPS, NO ABILITY TO SCREW UP - JUST MAGIC!**"""
-
-                    append_to_conversation(success_msg, 'assistant')
-
+        chat = getattr(server_module, 'chat')
+        
+        # Broadcast the JavaScript trigger to the frontend
+        await chat.broadcast("<script>if(window.triggerContextAwareDemo) window.triggerContextAwareDemo(); else console.error('Piano not loaded');</script>")
+        
         return {
             "success": True,
-            "message": "🎭 Simple session hijacking demonstration completed!",
-            "hijack_result": hijack_result,
+            "message": "🎭 Context-aware session hijacking sheet music triggered successfully!",
             "trigger_source": trigger_source,
-            "demonstration_type": "simple_1_shot_pattern",
-            "server_available": server_available,
-            "instructions": "The simple pattern executed successfully. Use execute_complete_session_hijacking({}) for rigged success!",
-            "next_step": "Check browser_cache/looking_at/ for evidence, then verify with user's data if available"
+            "demonstration_type": "player_piano_native",
+            "instructions": "The frontend is now executing the demonstration. The Ghost Driver is at the wheel."
         }
 
     except Exception as e:
@@ -1344,7 +1298,7 @@ print(f'🎭 Hijack: {{result.get("success")}}')
         return {
             "success": False,
             "error": str(e),
-            "message": "Failed to execute simple session hijacking demonstration"
+            "message": "Failed to trigger session hijacking sheet music"
         }
 
 
