@@ -357,6 +357,50 @@ class HoneyDB:
         cur.execute(sql, (limit,))
         return cur.fetchall()
 
+    def get_md_routing_agents(self, limit=30):
+        """Fetches the AI Vanguard using specific routing parameters."""
+        conn = self.get_conn()
+        cur = conn.cursor()
+        sql = f"""
+            SELECT 
+                CASE 
+                    WHEN p.value LIKE '%src=a+href%' THEN 'Hyperlink'
+                    WHEN p.value LIKE '%src=link+rel%' THEN 'Head Tag'
+                    WHEN p.value LIKE '%src=llms.txt%' THEN 'Manifest'
+                    ELSE 'Unknown'
+                END as ingestion_method,
+                ua.value as agent,
+                SUM(l.count) as total_reads
+            FROM daily_logs l
+            JOIN paths p ON l.path_id = p.id
+            JOIN user_agents ua ON l.ua_id = ua.id
+            WHERE p.value LIKE '%.md?src=%'
+              AND p.value NOT LIKE '%src=content_neg%'
+              {self._BROWSER_FILTER}
+            GROUP BY ingestion_method, ua.id
+            ORDER BY ingestion_method ASC, total_reads DESC
+            LIMIT ?
+        """
+        cur.execute(sql, (limit,))
+        return cur.fetchall()
+
+    def get_content_neg_agents(self, limit=30):
+        """Fetches the bleeding-edge bots using HTTP Accept headers."""
+        conn = self.get_conn()
+        cur = conn.cursor()
+        # Note: This specifically uses the newer 'telemetry' table per your SQL
+        sql = """
+            SELECT ua.value as agent, SUM(t.count) as total_reads
+            FROM telemetry t
+            JOIN paths p ON t.path_id = p.id
+            JOIN user_agents ua ON t.ua_id = ua.id
+            WHERE p.value LIKE '%src=content_neg%'
+            GROUP BY ua.id
+            ORDER BY total_reads DESC
+            LIMIT ?
+        """
+        cur.execute(sql, (limit,))
+        return cur.fetchall()
 
 # Global Instance
 db = HoneyDB()
