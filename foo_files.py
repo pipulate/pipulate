@@ -19,6 +19,18 @@ tools/scraper_tools.py
 tools/llm_optics.py
 assets/nbs/imports/onboard_sauce.py
 
+Notebooks/browser_cache/example.com/%2F/accessibility_tree.json
+Notebooks/browser_cache/example.com/%2F/accessibility_tree_summary.txt
+Notebooks/browser_cache/example.com/%2F/dom_hierarchy.html
+Notebooks/browser_cache/example.com/%2F/dom_hierarchy.txt
+Notebooks/browser_cache/example.com/%2F/dom_layout_boxes.html
+Notebooks/browser_cache/example.com/%2F/dom_layout_boxes.txt
+Notebooks/browser_cache/example.com/%2F/headers.json
+Notebooks/browser_cache/example.com/%2F/rendered_dom.html
+Notebooks/browser_cache/example.com/%2F/seo.md
+Notebooks/browser_cache/example.com/%2F/simple_dom.html
+Notebooks/browser_cache/example.com/%2F/source.html
+
 # /home/mike/repos/trimnoir/_posts/2026-03-10-local-first-ai-web-bottling-apps-nix-bidi.md  # [Idx: 928 | Order: 3 | Tokens: 24,739 | Bytes: 104,490]
 # /home/mike/repos/trimnoir/_posts/2026-03-10-zero-friction-actuator-ai-development.md  # [Idx: 929 | Order: 4 | Tokens: 28,692 | Bytes: 150,243]
 # /home/mike/repos/trimnoir/_posts/2026-03-10-machine-native-semantic-architecture-ai-age.md  # [Idx: 930 | Order: 5 | Tokens: 19,121 | Bytes: 85,579]

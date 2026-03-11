@@ -380,12 +380,28 @@ async def selenium_automation(params: dict) -> dict:
         except Exception as ax_error:
             logger.warning(f"⚠️ Could not extract accessibility tree: {ax_error}")
 
+        # --- Generate LLM Optics (Subprocess Bulkhead) ---
+        if verbose: logger.info("👁️‍🗨️ Running LLM Optics Engine (Subprocess Bulkhead)...")
+        optics_result = await generate_optics_subprocess(str(dom_path))
+        
+        if optics_result.get('success'):
+            if verbose: logger.success("✅ LLM Optics Engine completed successfully.")
+            # Append new optical artifacts to the result dictionary
+            for optic_key, filename in [
+                ('seo_md', 'seo.md'),
+                ('hierarchy_txt', 'dom_hierarchy.txt'),
+                ('hierarchy_html', 'dom_hierarchy.html'),
+                ('boxes_txt', 'dom_layout_boxes.txt'),
+                ('boxes_html', 'dom_layout_boxes.html')
+            ]:
+                optic_path = output_dir / filename
+                if optic_path.exists():
+                    artifacts[optic_key] = str(optic_path)
+        else:
+            if verbose: logger.warning(f"⚠️ LLM Optics Engine partially failed: {optics_result.get('error')}")
+
         logger.success(f"✅ Scrape successful for {url}")
         return {"success": True, "looking_at_files": artifacts, "cached": False}
-
-    except Exception as e:
-        logger.error(f"❌ Scrape failed for {url}: {e}", exc_info=True)
-        return {"success": False, "error": str(e), "looking_at_files": artifacts}
 
     finally:
         if driver:
