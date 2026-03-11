@@ -92,13 +92,17 @@ async def selenium_automation(params: dict) -> dict:
     if dom_path.exists():
         if verbose:
             logger.info(f"✅ Using cached data from: {output_dir}")
-        
+
         # Gather paths of existing artifacts
         for artifact_name in ["rendered_dom.html", 
-                              "source_html.txt", 
+                              "source.html", 
+                              "simple_dom.html",
                               "screenshot.png", 
+                              "seo.md",
                               "dom_layout_boxes.txt", 
+                              "dom_layout_boxes.html", 
                               "dom_hierarchy.txt", 
+                              "dom_hierarchy.html", 
                               "accessibility_tree.json", 
                               "accessibility_tree_summary.txt"]:
             artifact_path = output_dir / artifact_name
