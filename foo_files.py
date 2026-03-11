@@ -17,9 +17,11 @@
 AI_PHOOEY_CHOP = """\
 # prompt_foo.py  # [11,791 tokens | 54,155 bytes]
 # foo_files.py  # [2,990 tokens | 11,024 bytes]
-
+remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
+remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
 ! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
 
 # ============================================================================
 # I. THE SCRATCHPAD (Active Context & Transient Probes)
@@ -195,17 +197,17 @@ AI_PHOOEY_CHOP = """\
 # DMZ TV Studio, Telemetry DB, and NixOS IaC. 
 
 # CHAPTER 16: HONEYBOT IAC & SCRIPTS
-# deploy_honeybot.sh
-# remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
-# remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
-# remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
-# remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
-# remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
-# remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
-# remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
-# remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
-# remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
-# remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
+nixops.sh  # [227 tokens | 765 bytes]
+remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
+remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
+remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
+remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
+remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
+remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
+remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
+remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
+remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
+remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
 
 # CHAPTER 17: TELEMETRY SENSORS & DASHBOARD PROBES
 # These are the structural SQL definitions the AI can read to understand the schema.
@@ -336,7 +338,6 @@ AI_PHOOEY_CHOP = """\
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
-# nixops.sh  # [227 tokens | 765 bytes]
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 # release.py  # [9,879 tokens | 44,440 bytes]
 # requirements.in  # [573 tokens | 1,924 bytes]
