@@ -15,21 +15,46 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-tools/scraper_tools.py
-tools/llm_optics.py
-assets/nbs/imports/onboard_sauce.py
+prompt_foo.py
+foo_files.py
 
-Notebooks/browser_cache/example.com/%2F/accessibility_tree.json
-Notebooks/browser_cache/example.com/%2F/accessibility_tree_summary.txt
-Notebooks/browser_cache/example.com/%2F/dom_hierarchy.html
-Notebooks/browser_cache/example.com/%2F/dom_hierarchy.txt
-Notebooks/browser_cache/example.com/%2F/dom_layout_boxes.html
-Notebooks/browser_cache/example.com/%2F/dom_layout_boxes.txt
-Notebooks/browser_cache/example.com/%2F/headers.json
-Notebooks/browser_cache/example.com/%2F/rendered_dom.html
-Notebooks/browser_cache/example.com/%2F/seo.md
-Notebooks/browser_cache/example.com/%2F/simple_dom.html
-Notebooks/browser_cache/example.com/%2F/source.html
+# CHAPTER 1: BOOTSTRAPPING & THE CLI (~230KB)
+# The bedrock. How the Forever Machine is born, and how we manage it.
+# Nix guarantees mathematical reproducibility across Mac and Linux.
+# `AI_RUNME.py` contains the "Master Prompt"—a letter to an amnesiac AI.
+assets/installer/install.sh
+flake.nix
+.gitignore
+config.py
+AI_RUNME.py
+README.md
+cli.py
+scripts/articles/articleizer.py
+scripts/articles/editing_prompt.txt
+
+tools/scraper_tools.py
+tools/mcp_tools.py
+
+# /home/mike/repos/trimnoir/_posts/2026-03-10-zero-friction-actuator-ai-development.md  # [Idx: 929 | Order: 4 | Tokens: 28,692 | Bytes: 150,243]
+# /home/mike/repos/trimnoir/_posts/2026-03-10-machine-native-semantic-architecture-ai-age.md  # [Idx: 930 | Order: 5 | Tokens: 19,121 | Bytes: 85,579]
+# /home/mike/repos/trimnoir/_posts/2026-03-10-single-pass-llm-optics-engine-causal-fidelity.md  # [Idx: 931 | Order: 6 | Tokens: 8,195 | Bytes: 36,983]
+# /home/mike/repos/trimnoir/_posts/2026-03-11-single-pass-causal-optics-ai-browser-automation.md  # [Idx: 932 | Order: 1 | Tokens: 28,580 | Bytes: 125,370]
+
+# tools/scraper_tools.py
+# tools/llm_optics.py
+# assets/nbs/imports/onboard_sauce.py
+# 
+# Notebooks/browser_cache/example.com/%2F/accessibility_tree.json
+# Notebooks/browser_cache/example.com/%2F/accessibility_tree_summary.txt
+# Notebooks/browser_cache/example.com/%2F/dom_hierarchy.html
+# Notebooks/browser_cache/example.com/%2F/dom_hierarchy.txt
+# Notebooks/browser_cache/example.com/%2F/dom_layout_boxes.html
+# Notebooks/browser_cache/example.com/%2F/dom_layout_boxes.txt
+# Notebooks/browser_cache/example.com/%2F/headers.json
+# Notebooks/browser_cache/example.com/%2F/rendered_dom.html
+# Notebooks/browser_cache/example.com/%2F/seo.md
+# Notebooks/browser_cache/example.com/%2F/simple_dom.html
+# Notebooks/browser_cache/example.com/%2F/source.html
 
 # /home/mike/repos/trimnoir/_posts/2026-03-10-local-first-ai-web-bottling-apps-nix-bidi.md  # [Idx: 928 | Order: 3 | Tokens: 24,739 | Bytes: 104,490]
 # /home/mike/repos/trimnoir/_posts/2026-03-10-zero-friction-actuator-ai-development.md  # [Idx: 929 | Order: 4 | Tokens: 28,692 | Bytes: 150,243]
