@@ -15,25 +15,29 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-prompt_foo.py
-foo_files.py
+# ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
-# CHAPTER 1: BOOTSTRAPPING & THE CLI (~230KB)
-# The bedrock. How the Forever Machine is born, and how we manage it.
-# Nix guarantees mathematical reproducibility across Mac and Linux.
-# `AI_RUNME.py` contains the "Master Prompt"—a letter to an amnesiac AI.
-assets/installer/install.sh
-flake.nix
-.gitignore
-config.py
-AI_RUNME.py
-README.md
-cli.py
-scripts/articles/articleizer.py
-scripts/articles/editing_prompt.txt
+# !https://www.hubspot.com/pricing
+# prompt_foo.py
+# foo_files.py
+# !https://mikelev.in/about/
 
-tools/scraper_tools.py
-tools/mcp_tools.py
+# # CHAPTER 1: BOOTSTRAPPING & THE CLI (~230KB)
+# # The bedrock. How the Forever Machine is born, and how we manage it.
+# # Nix guarantees mathematical reproducibility across Mac and Linux.
+# # `AI_RUNME.py` contains the "Master Prompt"—a letter to an amnesiac AI.
+# assets/installer/install.sh
+# flake.nix
+# .gitignore
+# config.py
+# AI_RUNME.py
+# README.md
+# cli.py
+# scripts/articles/articleizer.py
+# scripts/articles/editing_prompt.txt
+# 
+# tools/scraper_tools.py
+# tools/mcp_tools.py
 
 # /home/mike/repos/trimnoir/_posts/2026-03-10-zero-friction-actuator-ai-development.md  # [Idx: 929 | Order: 4 | Tokens: 28,692 | Bytes: 150,243]
 # /home/mike/repos/trimnoir/_posts/2026-03-10-machine-native-semantic-architecture-ai-age.md  # [Idx: 930 | Order: 5 | Tokens: 19,121 | Bytes: 85,579]
@@ -608,24 +612,24 @@ tools/mcp_tools.py
 # remotes/honeybot/queries/hot_404_remaps_top.sql
 # ! python scripts/articles/extract_404_ghosts.py
 # Note: LIST B (The Semantic Map) is provided via the -l [slice] argument in prompt_foo
-
+# 
 # # The core script and routing table (always keep the loop open)
 # prompt_foo.py
 # foo_files.py
 # remotes/honeybot/queries/hot_404_remaps_top.sql
 # scripts/articles/generate_redirects.py
-
+# 
 # # The Textual Dashboard UI and its data layer
 # remotes/honeybot/scripts/logs.py
 # remotes/honeybot/scripts/db.py
-
+# 
 # # The SQL Heuristics identifying (or failing to identify) the bots
 # remotes/honeybot/queries/intel_unknown_agents.sql
 # remotes/honeybot/queries/mine_bots_heuristic.sql
-
-# # Optional: To see what live data looks like right now
-# ! echo "--- UNKNOWN AGENTS LIVE ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-
+# 
+# # # Optional: To see what live data looks like right now
+# # ! echo "--- UNKNOWN AGENTS LIVE ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# 
 # # CHAPTER 16: THE HONEYBOT OBSERVATORY (IAC BUDDING)
 # # Pipulate can spawn independent "Infrastructure as Code" child apps.
 # # The Honeybot is an automated TV studio and telemetry database sitting in 
@@ -642,6 +646,45 @@ tools/mcp_tools.py
 # remotes/honeybot/scripts/show.py
 # remotes/honeybot/scripts/stream.py
 # remotes/honeybot/scripts/logs.py
+
+# # ============================================================================
+# # THE LIVE TELEMETRY FEEDS
+# # ============================================================================
+# 
+# # 1. THE MACRO ENVIRONMENT (Volume & Signal vs. Noise)
+# # Goal: Establish the baseline. Is traffic spiking? What percentage of our 
+# # total bandwidth is being consumed by semantic AI agents vs. HTML browsers?
+# ! echo "--- TOTALS ---" && cat remotes/honeybot/queries/telemetry_totals.sql | ssh honeybot 'sqlite3 ~/www/mikelev.in/honeybot.db'
+# ! echo "--- FORMAT RATIO ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# 
+# # 2. THE SEMANTIC VANGUARD (The Agentic Web)
+# # Goal: Track the 'Dark Matter' of the web. How are agents finding our Markdown? 
+# # Who is using the 'Secret Knock' (HTTP Content Negotiation)? What are they eating?
+# ! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- THE MARKDOWN DIET ---" && cat remotes/honeybot/queries/md_diet.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# 
+# # 3. THE SHADOW REALM (Execution Traps)
+# # Goal: Unmask the headless browsers (Puppeteer/Selenium) trying to pass as human. 
+# # Who is physically rendering the DOM and triggering the invisible js_confirm.gif?
+# ! echo "--- SHADOW: JS EXECUTORS ---" && cat remotes/honeybot/queries/shadow_js_executors.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- TRAPDOOR IPS ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# 
+# # 4. THE HEURISTIC GUILLOTINE (Bot Mining)
+# # Goal: Filter out the "polite" bots (Google, Anthropic) and identify the hostile,
+# # poorly configured, or high-volume scrapers using our custom SQL scoring engine.
+# ! echo "--- BOT MINER (Heuristic Scoring) ---" && cat remotes/honeybot/queries/mine_bots_heuristic.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- UNKNOWN AGENTS (Empty/Generic UAs) ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# 
+# # 5. THE BACKGROUND RADIATION (Vulnerability Probes)
+# # Goal: Separate legitimate missing content (True 404s) from automated script-kiddies
+# # blindly knocking on doors looking for WordPress or PHP vulnerabilities (Noise 404s).
+# ! echo "--- NOISE 404s (PHP/WP Probes) ---" && cat remotes/honeybot/queries/intel_noise_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- TRUE 404s (Legitimate Missing Content) ---" && cat remotes/honeybot/queries/intel_true_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
+# # 6. PLANNING 404 REDIRECT MAP
+# ! echo "--- HOT 404 REMAPS (Structural Signal) ---" && cat remotes/honeybot/queries/hot_404_remaps.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
 
 # # Catching an AI up on recent work
 # /home/mike/repos/trimnoir/_posts/2026-03-05-nginx-404-redirects-test-driven-ai-pipeline.md  # [Idx: 902 | Order: 2 | Tokens: 22,754 | Bytes: 87,334]
