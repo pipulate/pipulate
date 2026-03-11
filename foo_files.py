@@ -15,11 +15,14 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
+prompt_foo.py
+foo_files.py
+
+# Brand new query to figure out what user agents request markdown from what sources.
 # ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
+# Brand new ability to see pages with the LLM Optics.
 # !https://www.hubspot.com/pricing
-# prompt_foo.py
-# foo_files.py
 # !https://mikelev.in/about/
 
 # # CHAPTER 1: BOOTSTRAPPING & THE CLI (~230KB)
