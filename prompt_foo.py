@@ -815,21 +815,57 @@ def main():
                 logger.print(f"      [Error] Exit {e.returncode}: {e.stderr.strip()}")
             continue
 
-        # HANDLE REMOTE URLS
-        if path.startswith(('http://', 'https://')):
-            try:
-                logger.print(f"   -> Fetching URL: {path}")
-                with urllib.request.urlopen(path) as response:
-                    content = response.read().decode('utf-8')
-                ext = os.path.splitext(path.split('?')[0])[1].lower()
-                lang_map = {'.py': 'python', '.js': 'javascript', '.html': 'html', '.css': 'css', '.md': 'markdown', '.json': 'json', '.nix': 'nix', '.sh': 'bash'}
-                lang = lang_map.get(ext, 'text')
-                processed_files_data.append({
-                    "path": path, "comment": comment, "content": content,
-                    "tokens": count_tokens(content), "words": count_words(content), "lang": lang
-                })
-            except Exception as e:
-                logger.print(f"Error fetching URL {path}: {e}")
+        # HANDLE REMOTE URLS (And JIT Optical Distillation)
+        if path.startswith(('http://', 'https://', '!http://', '!https://')):
+            target_url = path[1:].strip() if path.startswith('!') else path.strip()
+            
+            if path.startswith('!'):
+                # JIT OPTICAL DISTILLATION (The MST3K Balcony)
+                logger.print(f"   -> 👁️‍🗨️ Engaging LLM Optics for: {target_url}")
+                from tools.scraper_tools import selenium_automation
+                from urllib.parse import urlparse, quote
+                
+                parsed = urlparse(target_url)
+                domain = parsed.netloc
+                path_slug = quote(parsed.path or '/', safe='').replace('/', '_')[:100]
+                
+                scrape_params = {
+                    "url": target_url, "domain": domain, "url_path_slug": path_slug,
+                    "take_screenshot": False, "headless": True, "is_notebook_context": True, "verbose": False
+                }
+                
+                import asyncio
+                result = asyncio.run(selenium_automation(scrape_params))
+                
+                if result.get("success"):
+                    artifacts = result.get("looking_at_files", {})
+                    lenses = [('seo_md', 'SEO Metadata'), ('accessibility_tree_summary', 'Semantic Outline'), ('hierarchy_txt', 'DOM Hierarchy')]
+                    
+                    for key, title in lenses:
+                        file_path = artifacts.get(key)
+                        if file_path and os.path.exists(file_path):
+                            with open(file_path, 'r', encoding='utf-8') as f: content = f.read()
+                            processed_files_data.append({
+                                "path": f"OPTICS [{title}]: {target_url}", "comment": comment, "content": content,
+                                "tokens": count_tokens(content), "words": count_words(content), "lang": "markdown" if key == 'seo_md' else "text"
+                            })
+                else:
+                    logger.print(f"      [Error] Scrape failed: {result.get('error')}")
+            else:
+                # STANDARD NAIVE FETCH (For raw text/code)
+                try:
+                    logger.print(f"   -> Fetching URL: {target_url}")
+                    with urllib.request.urlopen(target_url) as response:
+                        content = response.read().decode('utf-8')
+                    ext = os.path.splitext(target_url.split('?')[0])[1].lower()
+                    lang_map = {'.py': 'python', '.js': 'javascript', '.html': 'html', '.css': 'css', '.md': 'markdown', '.json': 'json', '.nix': 'nix', '.sh': 'bash'}
+                    lang = lang_map.get(ext, 'text')
+                    processed_files_data.append({
+                        "path": target_url, "comment": comment, "content": content,
+                        "tokens": count_tokens(content), "words": count_words(content), "lang": lang
+                    })
+                except Exception as e:
+                    logger.print(f"Error fetching URL {target_url}: {e}")
             continue
 
         # ABSOLUTE PATH CERTAINTY: Resolve to absolute path immediately
