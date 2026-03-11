@@ -719,6 +719,86 @@ Before addressing the user's prompt, perform the following verification steps:
 
         return final_output_text
 
+
+def annotate_foo_files_in_place():
+    """Reads foo_files.py, annotates file paths with token/byte sizes, and writes it back."""
+    foo_path = os.path.join(REPO_ROOT, "foo_files.py")
+    if not os.path.exists(foo_path):
+        return
+
+    try:
+        with open(foo_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        # Isolate the AI_PHOOEY_CHOP block
+        match = re.search(r'(AI_PHOOEY_CHOP\s*=\s*"""\\?\n)(.*?)("""|\\n""")', content, re.DOTALL)
+        if not match:
+            return
+
+        prefix, body, suffix = match.groups()
+        new_lines = []
+        modified = False
+
+        for line in body.split('\n'):
+            stripped = line.strip()
+            
+            # Skip empties, headers, URLs, and chisel strikes
+            if (not stripped or stripped.startswith('# =') or 
+                stripped.startswith('# CHAPTER') or 'http' in stripped or 
+                stripped.startswith('!') or stripped.startswith('# !')):
+                new_lines.append(line)
+                continue
+
+            # Match potential file paths: optional comment hash -> path -> remainder
+            m = re.match(r'^(\s*(?:#\s*)?)([^#\s]+)(.*)$', line)
+            if m:
+                indent_and_hash = m.group(1)
+                filepath = m.group(2)
+                remainder = m.group(3)
+
+                # 1. Idempotency: If it already has an inline comment, skip it
+                if '#' in remainder:
+                    new_lines.append(line)
+                    continue
+                
+                # 2. Skip obvious prose/structural comments (words without dots or slashes)
+                if not ('/' in filepath or '.' in filepath):
+                    new_lines.append(line)
+                    continue
+
+                # 3. Resolve absolute path and measure
+                full_path = os.path.join(REPO_ROOT, filepath) if not os.path.isabs(filepath) else filepath
+                if os.path.exists(full_path) and os.path.isfile(full_path):
+                    try:
+                        with open(full_path, 'r', encoding='utf-8') as f:
+                            file_content = f.read()
+                        
+                        t_count = count_tokens(file_content)
+                        b_count = len(file_content.encode('utf-8'))
+                        
+                        # Reconstruct line with annotation at the end
+                        new_line = f"{line}  # [{t_count:,} tokens | {b_count:,} bytes]"
+                        new_lines.append(new_line)
+                        modified = True
+                    except Exception:
+                        new_lines.append(line) # Error reading, leave untouched
+                else:
+                    new_lines.append(line) # File not found, leave untouched
+            else:
+                new_lines.append(line) # Didn't match pattern
+
+        # Write back ONLY if we added new annotations
+        if modified:
+            new_body = '\n'.join(new_lines)
+            new_content = content[:match.start()] + prefix + new_body + suffix + content[match.end():]
+            with open(foo_path, 'w', encoding='utf-8') as f:
+                f.write(new_content)
+            logger.print("✨ Auto-annotated foo_files.py with token/byte sizes.")
+
+    except Exception as e:
+        logger.print(f"Warning: Failed to auto-annotate foo_files.py: {e}")
+
+
 # ============================================================================
 # --- Main Execution Logic ---
 # ============================================================================
@@ -782,8 +862,11 @@ def main():
         with open("prompt.md", 'r', encoding='utf-8') as f: prompt_content = f.read()
 
     # 2. Process all specified files
+    annotate_foo_files_in_place()  # <-- ADD THIS LINE
     files_to_process = parse_file_list_from_config()
     processed_files_data = []
+
+    logger.print("--- Processing Files ---")
 
     logger.print("--- Processing Files ---")
     for path, comment in files_to_process:
