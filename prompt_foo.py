@@ -804,7 +804,7 @@ def annotate_foo_files_in_place():
 STORY_EXTENSIONS = {
     '.py', '.js', '.css', '.html', '.md', '.markdown', '.txt',
     '.json', '.nix', '.sh', '.ipynb', '.toml', '.in', '.cfg',
-    '.svg', '.xsd',
+    '.svg', '.xsd', '.sql', '.lua', '.yaml', '.yml',
 }
 
 def collect_repo_files(repo_root: str) -> set:
