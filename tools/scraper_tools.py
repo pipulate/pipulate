@@ -20,6 +20,23 @@ from selenium.webdriver.common.by import By
 from tools import auto_tool
 from . import dom_tools
 
+async def generate_optics_subprocess(dom_file_path: str):
+    """Isolated wrapper to call llm_optics.py as a subprocess, protecting the event loop."""
+    script_path = Path(__file__).resolve().parent / "llm_optics.py"
+    
+    proc = await asyncio.create_subprocess_exec(
+        sys.executable, str(script_path), str(dom_file_path),
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE
+    )
+    
+    stdout, stderr = await proc.communicate()
+    
+    if proc.returncode == 0:
+        return {"success": True, "output": stdout.decode()}
+    else:
+        return {"success": False, "error": stderr.decode()}
+
 def get_safe_path_component(url: str) -> tuple[str, str]:
     """Converts a URL into filesystem-safe components for directory paths."""
     parsed = urlparse(url)
