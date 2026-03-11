@@ -216,10 +216,58 @@ async def selenium_automation(params: dict) -> dict:
         dom_path.write_text(dom_content, encoding='utf-8')
         artifacts['rendered_dom'] = str(dom_path)
         
-        # Capture raw source (pre-JS)
+        # 1. Native Header & TRUE Raw Source Capture (The XHR Hack Lens)
+        if verbose: logger.info("🌐 Extracting native headers and true raw source via XHR injection...")
+        try:
+            # We use a single XHR call to grab both the raw headers and the untouched responseText
+            network_data_json = driver.execute_script("""
+                var req = new XMLHttpRequest();
+                req.open('GET', document.location.href, false);
+                req.send(null);
+                
+                var headers = req.getAllResponseHeaders().toLowerCase();
+                var arr = headers.trim().split(/[\\r\\n]+/);
+                var headerMap = {};
+                arr.forEach(function (line) {
+                    var parts = line.split(': ');
+                    var header = parts.shift();
+                    if (header) headerMap[header] = parts.join(': ');
+                });
+                
+                return JSON.stringify({
+                    headers: headerMap,
+                    raw_source: req.responseText
+                });
+            """)
+            network_data = json.loads(network_data_json)
+            actual_headers = network_data.get("headers", {})
+            true_raw_source = network_data.get("raw_source", "")
+            
+            # Fallback to page_source if responseText is somehow empty
+            if not true_raw_source.strip():
+                true_raw_source = driver.page_source
+                
+        except Exception as e:
+            if verbose: logger.warning(f"⚠️ Failed to extract native network data: {e}")
+            actual_headers = {"error": "Could not extract headers without proxy"}
+            true_raw_source = driver.page_source  # Fallback to the live DOM
+            
+        # Save True Raw Source
         source_html_path = output_dir / "source.html"
-        source_html_path.write_text(driver.page_source, encoding='utf-8')
+        source_html_path.write_text(true_raw_source, encoding='utf-8')
         artifacts['source_html'] = str(source_html_path)
+        
+        # Save Headers
+        headers_data = {
+            "url": url,
+            "title": driver.title,
+            "timestamp": datetime.now().isoformat(),
+            "status": "success",
+            "headers": actual_headers
+        }
+        headers_path = output_dir / "headers.json"
+        headers_path.write_text(json.dumps(headers_data, indent=2), encoding='utf-8')
+        artifacts['headers'] = str(headers_path)
 
         if take_screenshot:
             screenshot_path = output_dir / "screenshot.png"
