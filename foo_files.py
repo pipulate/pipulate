@@ -16,11 +16,24 @@
 
 AI_PHOOEY_CHOP = """\
 # prompt_foo.py  # [11,791 tokens | 54,155 bytes]
-# foo_files.py  # [2,990 tokens | 11,024 bytes]
-remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
-remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
-! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+foo_files.py  # [2,990 tokens | 11,024 bytes]
+
+.gitignore  # [573 tokens | 2,089 bytes]
+flake.nix  # [7,721 tokens | 32,979 bytes]
+__init__.py  # [357 tokens | 1,565 bytes]
+release.py  # [9,879 tokens | 44,440 bytes]
+pyproject.toml  # [677 tokens | 2,299 bytes]
+pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+imports/__init__.py  # [0 tokens | 0 bytes]
+assets/nbs/Advanced_Notebooks/URLInspector.ipynb
+assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
+
+# remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
+# remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
+# ! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 
 # ============================================================================
@@ -163,10 +176,9 @@ remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
 # Publishing, Notebook Templates, and topological self-healing.
 
 # CHAPTER 14: THE NOTEBOOK TEMPLATES (~100KB)
-# assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
-# assets/nbs/FAQuilizer.ipynb
-# assets/nbs/URLinspector.ipynb
-# assets/nbs/VIDeditor.ipynb
+# assets/nbs/Advanced_Notebooks/AdvancedFAQuilizer.ipynb
+# assets/nbs/Advanced_Notebooks/AdvancedURLinspector.ipynb
+# assets/nbs/Advanced_Notebooks/AdvancedVIDeditor.ipynb
 # assets/nbs/imports/faq_writer_sauce.py  # [6,042 tokens | 26,760 bytes]
 # assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
 # assets/nbs/imports/videditor_sauce.py  # [937 tokens | 4,098 bytes]
@@ -312,6 +324,7 @@ remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
 # assets/js/script.js  # [1,400 tokens | 6,134 bytes]
 # assets/js/split.js  # [6,166 tokens | 29,959 bytes]
 # assets/js/surreal.js  # [3,812 tokens | 13,432 bytes]
+# assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
 # assets/nbs/Advanced_Notebooks/FAQuilizer.ipynb  # [2,516 tokens | 7,593 bytes]
 # assets/nbs/Advanced_Notebooks/GAPalyzer.ipynb  # [9,193 tokens | 31,140 bytes]
 # assets/nbs/Advanced_Notebooks/URLinspector.ipynb  # [2,405 tokens | 7,284 bytes]
@@ -338,8 +351,7 @@ remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
-# pyproject.toml  # [677 tokens | 2,299 bytes]
-# release.py  # [9,879 tokens | 44,440 bytes]
+# remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
 # requirements.in  # [573 tokens | 1,924 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
