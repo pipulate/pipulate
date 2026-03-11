@@ -179,64 +179,64 @@ def main():
     print("---")
     print(f"### 📈 Grand Total: {total_story_tokens:,} tokens | {total_story_bytes / 1024 / 1024:.2f} MB")
 
-    # ── Orphan Report ────────────────────────────────────────────────────
+    # ── The Orphanage (Idempotent Injection) ─────────────────────────────
     repo_files = collect_repo_files(repo_root)
     orphans = sorted(repo_files - all_claimed_files)
 
+    # Read the current foo_files.py
+    with open(foo_file, "r", encoding="utf-8") as f:
+        foo_content = f.read()
+
+    # Define our idempotent marker
+    ORPHAN_MARKER = "# ============================================================================\n# VIII. THE ORPHANAGE (Uncovered Files)\n# ============================================================================"
+
+    # Strip out the old Orphanage (and the closing quotes) if it exists
+    marker_index = foo_content.find(ORPHAN_MARKER)
+    if marker_index != -1:
+        base_content = foo_content[:marker_index].rstrip() + "\n\n"
+    else:
+        # If it doesn't exist, just slice off the closing quotes to make room
+        end_quote_idx = foo_content.rfind('"""')
+        base_content = foo_content[:end_quote_idx].rstrip() + "\n\n"
+
     if not orphans:
         print("\n---")
-        print("### 🏠 Orphan Report: All story-worthy files are claimed by a chapter. Nice work.")
+        print("### 🏠 Orphan Report: All story-worthy files are claimed! No orphans found.")
+        # Restore closing quotes cleanly
+        with open(foo_file, "w", encoding="utf-8") as f:
+            f.write(base_content + '\n"""\n')
         return
 
-    print("\n---")
-    print(f"### 👻 Orphan Report: {len(orphans)} tracked files appear in NO chapter\n")
-    print("*These files are tracked by git but not referenced by any chapter in `foo_files.py`.")
-    print("Decide for each: include in a chapter, or intentionally exclude.*\n")
-
-    print("| File | Tokens | Bytes | Suggested Chapter |")
-    print("|---|---|---|---|")
-
-    orphan_total_tokens = 0
-    orphan_total_bytes = 0
+    # Build the new Orphanage block
+    orphan_lines = [
+        ORPHAN_MARKER, 
+        "# Files tracked by git but not listed in any chapter above.",
+        "# Move these into the active chapters to grant the AI visibility.\n"
+    ]
+    
+    print(f"\n---")
+    print(f"### 👻 Writing {len(orphans)} orphans to foo_files.py...")
 
     for orphan_path in orphans:
         full_path = os.path.join(repo_root, orphan_path)
-
         try:
             with open(full_path, "r", encoding="utf-8") as f:
                 content = f.read()
             tokens = count_tokens(content)
             b_size = len(content.encode('utf-8'))
-            orphan_total_tokens += tokens
-            orphan_total_bytes += b_size
+            orphan_lines.append(f"# {orphan_path}  # [{tokens:,} tokens | {b_size:,} bytes]")
         except Exception:
-            tokens = 0
-            b_size = 0
+            orphan_lines.append(f"# {orphan_path}  # [Error reading file]")
 
-        # Heuristic suggestions based on path
-        if orphan_path.startswith("apps/"):
-            suggestion = "Ch 5 (Apps) or Ch 6 (SEO)"
-        elif orphan_path.startswith("imports/"):
-            suggestion = "Ch 3 (Spells) or Ch 5 (Apps)"
-        elif orphan_path.startswith("tools/"):
-            suggestion = "Ch 3 (Spells)"
-        elif orphan_path.startswith("assets/"):
-            suggestion = "Ch 4 (UI) or Ch 1 (Bootstrap)"
-        elif orphan_path.startswith("scripts/"):
-            suggestion = "Ch 1 (CLI) or Preface"
-        elif orphan_path.startswith("pipulate/"):
-            suggestion = "Ch 2 (Monolith)"
-        elif orphan_path.startswith("Notebooks/") or orphan_path.startswith("assets/nbs/"):
-            suggestion = "Ch 8 (Notebooks)"
-        elif orphan_path.startswith("remotes/"):
-            suggestion = "Maybe Ch 1 (Deploy)"
-        else:
-            suggestion = "—"
+    orphan_block = "\n".join(orphan_lines) + "\n"
 
-        print(f"| `{orphan_path}` | {tokens:,} | {b_size:,} | {suggestion} |")
+    # Reassemble with the closing quotes
+    final_content = base_content + orphan_block + '"""\n'
 
-    orphan_kb = orphan_total_bytes / 1024
-    print(f"| **ORPHAN TOTAL** | **{orphan_total_tokens:,}** | **{orphan_total_bytes:,} ({orphan_kb:.1f} KB)** | |")
+    with open(foo_file, "w", encoding="utf-8") as f:
+        f.write(final_content)
+        
+    print("✨ foo_files.py updated with the latest uncovered files.")
 
 if __name__ == "__main__":
     main()
