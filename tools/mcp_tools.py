@@ -2031,6 +2031,7 @@ async def browser_analyze_scraped_page(params: dict) -> dict:
         return {"success": False, "error": str(e)}
 
 
+@auto_tool
 async def browser_scrape_page(params: dict) -> dict:
     """
     MCP Tool: AI EYES - Scrape a web page and save to /looking_at/ for AI perception.
@@ -2038,134 +2039,72 @@ async def browser_scrape_page(params: dict) -> dict:
     This is the AI's primary sensory interface - captures current browser state
     into the /browser_cache/looking_at/ directory for AI analysis.
 
-    Uses subprocess to avoid threading conflicts with the main server event loop.
-
-    🔍 PROGRESSIVE DEBUGGING PATTERN: Trace automation history across states
-    ═══════════════════════════════════════════════════════════════════════
-    # Check last 5 automation states for debugging progression:
-    for i in range(1, 6):
-        metadata_file = f"browser_cache/looking_at-{i}/headers.json"
-        if os.path.exists(metadata_file):
-            data = json.load(open(metadata_file))
-            print(f"State {i}: {data.get('step', 'unknown')} at {data.get('url', 'unknown')}")
-
-    Saves to /looking_at/:
-    - headers.json - HTTP headers and metadata
-    - source.html - Raw page source before JavaScript  
-    - dom.html - Full JavaScript-rendered DOM state (HTMX and all)
-    - simple_dom.html - Distilled DOM for context window consumption
-    - screenshot.png - Visual representation (if enabled)
-
     Args:
         params: {
             "url": "https://example.com",  # Required: URL to scrape
             "wait_seconds": 3,             # Optional: wait for JS to load
             "take_screenshot": True,       # Optional: capture visual state
-            "update_looking_at": True      # Optional: update /looking_at/ directory
-        }
-
-    Returns:
-        dict: {
-            "success": True,
-            "url": "https://example.com",
-            "looking_at_files": {
-                "headers": "browser_cache/looking_at/headers.json",
-                "source": "browser_cache/looking_at/source.html", 
-                "dom": "browser_cache/looking_at/dom.html",
-                "simple_dom": "browser_cache/looking_at/simple_dom.html",
-                "screenshot": "browser_cache/looking_at/screenshot.png"
-            },
-            "page_info": {
-                "title": "Page Title",
-                "url": "https://example.com",
-                "timestamp": "2025-01-11T14:30:15"
-            }
         }
     """
-    import asyncio
-    import json
-    import os
-    import subprocess
-    import tempfile
     from datetime import datetime
-    from pathlib import Path
-
-    logger.info(f"🔧 FINDER_TOKEN: MCP_BROWSER_SCRAPE_START - URL: {params.get('url')} (subprocess mode)")
+    
+    logger.info(f"🔧 FINDER_TOKEN: MCP_BROWSER_SCRAPE_START - URL: {params.get('url')} (Native Mode)")
 
     try:
         url = params.get('url')
-        wait_seconds = params.get('wait_seconds', 3)
-        take_screenshot = params.get('take_screenshot', True)
-        update_looking_at = params.get('update_looking_at', True)
-
-        # === AGGRESSIVE URL VALIDATION BEFORE BROWSER OPENING ===
         if not url:
             return {"success": False, "error": "URL parameter is required"}
-
-        # Validate URL format BEFORE opening browser
-        if not isinstance(url, str):
-            return {"success": False, "error": f"URL must be a string, got: {type(url)}"}
-
-        if not url.strip():
-            return {"success": False, "error": "URL is empty or whitespace only"}
-
-            # Check for invalid URL patterns that cause data: URLs
-        from config import INVALID_URL_PATTERNS
-
-        for pattern in INVALID_URL_PATTERNS:
-            if url.lower().startswith(pattern):
-                return {"success": False, "error": f"Invalid URL scheme detected: {pattern}. URL: {url}"}
 
         # Validate URL structure
         if not url.startswith(('http://', 'https://')):
             return {"success": False, "error": f"URL must start with http:// or https://. Got: {url}"}
 
-        # Check for malformed localhost URLs
-        import re
-        if 'localhost' in url or '127.0.0.1' in url:
-            if not re.match(r'^https?://(localhost|127\.0\.0\.1)(:\d+)?(/.*)?$', url):
-                return {"success": False, "error": f"Malformed localhost URL: {url}"}
-
-        # Check for empty hostname
-        try:
-            from urllib.parse import urlparse
-            parsed = urlparse(url)
-            if not parsed.netloc:
-                return {"success": False, "error": f"URL has no hostname: {url}"}
-        except Exception as e:
-            return {"success": False, "error": f"URL parsing failed: {url}. Error: {e}"}
-
-        logger.info(f"✅ FINDER_TOKEN: URL_VALIDATION_PASSED | URL validated: {url}")
-
-        # === DIRECTORY ROTATION BEFORE NEW BROWSER SCRAPE ===
-        # Rotate looking_at directory to preserve AI perception history
-        # rotate_looking_at_directory is now defined locally in this module
-
-        rotation_success = rotate_looking_at_directory(
-            looking_at_path=Path('browser_cache/looking_at'),
-            max_rolled_dirs=MAX_ROLLED_LOOKING_AT_DIRS
-        )
-
-        if not rotation_success:
-            logger.warning("⚠️ FINDER_TOKEN: DIRECTORY_ROTATION_WARNING - Directory rotation failed, continuing with scrape")
-
-        # Set up the /looking_at/ directory - AI's primary perception interface
-        looking_at_dir = 'browser_cache/looking_at'
-        os.makedirs(looking_at_dir, exist_ok=True)
-
-        # Also create timestamped backup in downloads for history
+        # Prepare parameters for the central scraper engine
+        from urllib.parse import urlparse, quote
         parsed = urlparse(url)
-        domain_safe = parsed.netloc.replace('.', '_').replace(':', '_')
-        timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-        scrape_id = f"{domain_safe}_{timestamp}"
-        backup_dir = os.path.join('downloads/browser_scrapes', scrape_id)
-        os.makedirs(backup_dir, exist_ok=True)
+        domain = parsed.netloc
+        path = parsed.path or '/'
+        url_path_slug = quote(path, safe='').replace('/', '_')[:100]
 
-        # === SUBPROCESS BROWSER AUTOMATION TO AVOID THREADING ISSUES ===
-        # Create a Python script to run the browser automation in a separate process
-        from config import get_browser_script_imports
-        browser_script = f'''
-{get_browser_script_imports()}
+        scrape_params = {
+            "url": url,
+            "domain": domain,
+            "url_path_slug": url_path_slug,
+            "take_screenshot": params.get('take_screenshot', True),
+            "headless": True, # Keep background scrapes headless
+            "is_notebook_context": False, # Forces it to use /looking_at/ directory
+            "verbose": True
+        }
+
+        # Route to the newly fortified scraper engine
+        # We import here to ensure we grab the updated tool
+        from tools.scraper_tools import selenium_automation
+        result = await selenium_automation(scrape_params)
+
+        if result.get("success"):
+            logger.info(f"✅ FINDER_TOKEN: MCP_BROWSER_SCRAPE_SUCCESS - Files saved to /looking_at/")
+            # Normalize output to match what the AI expects from this specific tool
+            return {
+                "success": True,
+                "url": url,
+                "looking_at_files": result.get("looking_at_files", {}),
+                "page_info": {
+                    "title": "Captured via Native Engine",
+                    "url": url,
+                    "timestamp": datetime.now().isoformat()
+                }
+            }
+        else:
+            logger.error(f"❌ FINDER_TOKEN: MCP_BROWSER_SCRAPE_FAILED - {result.get('error')}")
+            return result
+
+    except Exception as e:
+        logger.error(f"❌ FINDER_TOKEN: MCP_BROWSER_SCRAPE_EXCEPTION - {e}")
+        return {
+            "success": False,
+            "error": f"Browser automation failed: {str(e)}"
+        }
+
 
 def run_browser_cache():
     try:
