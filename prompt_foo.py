@@ -836,7 +836,7 @@ def main():
         full_path = os.path.join(REPO_ROOT, path) if not os.path.isabs(path) else path
         
         if not os.path.exists(full_path):
-            logger.print(f"Warning: File not found and will be skipped: {full_path}")
+            logger.print(f"Warning: FILE NOT FOUND AND WILL BE SKIPPED: {full_path} <--------------------------- !!!")
             continue
         content, lang = "", "text"
         ext = os.path.splitext(full_path)[1].lower()
@@ -889,7 +889,7 @@ def main():
         tree_data = builder.auto_context.get(title, {})
         t_count = tree_data.get('tokens', 0)
         b_count = len(tree_data.get('content', '').encode('utf-8'))
-        logger.print(f" ({t_count:,} tokens | {b_count:,} bytes)  ← TOKEN SIZES ADDED!")
+        logger.print(f" ({t_count:,} tokens | {b_count:,} bytes)")
     elif args.no_tree:
         logger.print("Skipping codebase tree (--no-tree flag detected).")
     else:
