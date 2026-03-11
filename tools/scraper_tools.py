@@ -211,20 +211,87 @@ async def selenium_automation(params: dict) -> dict:
             if verbose: logger.warning(f"Did not detect a page reload for security challenge. Proceeding anyway. Error: {e}")
 
         # --- Capture Core Artifacts ---
+        dom_content = driver.execute_script("return document.documentElement.outerHTML;")
         dom_path = output_dir / "rendered_dom.html"
-        dom_path.write_text(driver.execute_script("return document.documentElement.outerHTML;"), encoding='utf-8')
+        dom_path.write_text(dom_content, encoding='utf-8')
         artifacts['rendered_dom'] = str(dom_path)
         
-        # Re-use the rendered DOM content already captured
-        rendered_dom_content = (output_dir / "rendered_dom.html").read_text(encoding='utf-8')
-        source_html_path = output_dir / "source.html" # New filename
-        source_html_path.write_text(rendered_dom_content, encoding='utf-8')
-        artifacts['source_html'] = str(source_html_path) # Update artifact key
+        # Capture raw source (pre-JS)
+        source_html_path = output_dir / "source.html"
+        source_html_path.write_text(driver.page_source, encoding='utf-8')
+        artifacts['source_html'] = str(source_html_path)
 
         if take_screenshot:
             screenshot_path = output_dir / "screenshot.png"
             driver.save_screenshot(str(screenshot_path))
             artifacts['screenshot'] = str(screenshot_path)
+
+        # 1. Native Header Capture via Performance API (The XHR Hack Lens)
+        if verbose: logger.info("🌐 Extracting headers via XHR injection...")
+        try:
+            headers_json = driver.execute_script("""
+                var req = new XMLHttpRequest();
+                req.open('GET', document.location, false);
+                req.send(null);
+                var headers = req.getAllResponseHeaders().toLowerCase();
+                var arr = headers.trim().split(/[\\r\\n]+/);
+                var headerMap = {};
+                arr.forEach(function (line) {
+                    var parts = line.split(': ');
+                    var header = parts.shift();
+                    if (header) headerMap[header] = parts.join(': ');
+                });
+                return JSON.stringify(headerMap);
+            """)
+            actual_headers = json.loads(headers_json)
+        except Exception as e:
+            if verbose: logger.warning(f"⚠️ Failed to extract headers: {e}")
+            actual_headers = {"error": "Could not extract headers without proxy"}
+        
+        headers_data = {
+            "url": url,
+            "title": driver.title,
+            "timestamp": datetime.now().isoformat(),
+            "status": "success",
+            "headers": actual_headers
+        }
+        headers_path = output_dir / "headers.json"
+        headers_path.write_text(json.dumps(headers_data, indent=2), encoding='utf-8')
+        artifacts['headers'] = str(headers_path)
+
+        # 2. Create LLM-Optimized Simplified DOM (The Distillation Lens)
+        if verbose: logger.info("🧠 Creating LLM-optimized simplified DOM...")
+        try:
+            from bs4 import BeautifulSoup
+            soup = BeautifulSoup(dom_content, 'html.parser')
+            
+            # Remove all noise elements that confuse LLMs
+            for tag in soup(['script', 'style', 'noscript', 'meta', 'link', 'head']):
+                tag.decompose()
+            
+            # Clean up attributes - keep only automation-relevant ones
+            for element in soup.find_all():
+                attrs_to_keep = {}
+                for attr, value in element.attrs.items():
+                    if attr in ['id', 'role', 'data-testid', 'name', 'type', 'href', 'src', 'class', 'for', 'value', 'placeholder', 'title'] or attr.startswith('aria-'):
+                        attrs_to_keep[attr] = value
+                element.attrs = attrs_to_keep
+            
+            simple_dom_html = soup.prettify()
+        except Exception as e:
+            if verbose: logger.warning(f"⚠️ DOM simplification failed, using fallback: {e}")
+            simple_dom_html = dom_content
+
+        # Add metadata wrapper
+        final_simple_dom = f"<html>\n<head><title>{driver.title}</title></head>\n<body>\n"
+        final_simple_dom += f"\n"
+        final_simple_dom += f"\n"
+        final_simple_dom += "\n"
+        final_simple_dom += simple_dom_html + "\n</body>\n</html>"
+
+        simple_dom_path = output_dir / "simple_dom.html"
+        simple_dom_path.write_text(final_simple_dom, encoding='utf-8')
+        artifacts['simple_dom'] = str(simple_dom_path)
 
         # --- Generate Accessibility Tree Artifact ---
         if verbose: logger.info("🌲 Extracting accessibility tree...")
