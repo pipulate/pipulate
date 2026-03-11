@@ -31,6 +31,12 @@ if project_root:
     notebooks_path = str(project_root / "Notebooks")
     if notebooks_path not in sys.path:
         sys.path.append(notebooks_path)
+        
+    # 🪄 THE FUSION DANCE: Merge core imports with user imports
+    import imports
+    notebook_imports_path = project_root / "Notebooks" / "imports"
+    if notebook_imports_path.exists() and str(notebook_imports_path) not in imports.__path__:
+        imports.__path__.append(str(notebook_imports_path))
 
 # 1. Configure the data directory
 data_dir = project_root / "Notebooks" / "data"
