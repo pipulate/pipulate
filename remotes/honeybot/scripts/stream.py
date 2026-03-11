@@ -376,6 +376,10 @@ def main():
     # --- NEW SCENE: The Education Monitor ---
     narrator.say("Did you know that Amazon and Meta are top content scrapers? ")
     run_tui_app("education.py", duration=0.5) # 30 seconds
+    
+    # --- NEW SCENE: Semantic Routing ---
+    narrator.say("Analyzing ingestion vectors. Who is using the front door, and who found the loading dock?")
+    run_tui_app("routing.py", duration=0.5) # 30 seconds
     # ----------------------------------------
 
     # Scene 2: The Radar (Intelligence)
