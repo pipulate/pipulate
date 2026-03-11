@@ -164,23 +164,15 @@ async def analyze_ai_readiness(job: str, url: str, verbose: bool = True, overrid
         print("✅ Fresh Scrape Successful.")
 
     # 2. THE OPTICS (The Refraction)
+    # The scrape now natively handles optical extraction via the JIT subprocess bulkhead!
     dom_path = result.get("looking_at_files", {}).get("rendered_dom")
     if not dom_path or not Path(dom_path).exists():
         print("❌ Error: Could not locate rendered_dom.html for analysis.")
         return False
 
-    wand.speak("I have captured the page. Now, generating AI Optics.")
-    logger.info(f"👁️‍🗨️ Step 2: Running LLM Optics Engine on {dom_path}...")
-    
-    optics_result = await generate_optics_subprocess(dom_path)
-    
-    if optics_result.get('success'):
-        wand.speak("Analysis complete. You can now see your site through the eyes of an AI.")
-        print(f"✅ Success! Optics generated in: {Path(dom_path).parent}")
-        return True
-    else:
-        print(f"⚠️ Optics generation partially failed: {optics_result.get('error')}")
-        return False
+    wand.speak("Analysis complete. You can now see your site through the eyes of an AI.")
+    print(f"✅ Success! Scrape and Optics completely generated in: {Path(dom_path).parent}")
+    return True    
 
 async def generate_optics_subprocess(dom_file_path: str):
     """Isolated wrapper to call llm_optics.py as a subprocess."""
