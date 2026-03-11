@@ -15,8 +15,10 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-prompt_foo.py  # [11,791 tokens | 54,155 bytes]
-foo_files.py  # [2,990 tokens | 11,024 bytes]
+# prompt_foo.py  # [11,791 tokens | 54,155 bytes]
+# foo_files.py  # [2,990 tokens | 11,024 bytes]
+
+scripts/story_profiler.py  # [2,182 tokens | 9,241 bytes]
 
 # ============================================================================
 # I. THE SCRATCHPAD (Active Context & Transient Probes)
@@ -229,3 +231,7 @@ foo_files.py  # [2,990 tokens | 11,024 bytes]
 # https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/install.sh
 # https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/flake.nix
 """
+
+# ----------------- CANDIDATE INCLUSIONS BELOW THIS POINT -----------------
+
+
