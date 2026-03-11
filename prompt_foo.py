@@ -798,6 +798,125 @@ def annotate_foo_files_in_place():
     except Exception as e:
         logger.print(f"Warning: Failed to auto-annotate foo_files.py: {e}")
 
+# ============================================================================
+# --- Orphanage & Repository Profiling ---
+# ============================================================================
+STORY_EXTENSIONS = {
+    '.py', '.js', '.css', '.html', '.md', '.markdown', '.txt',
+    '.json', '.nix', '.sh', '.ipynb', '.toml', '.in', '.cfg',
+    '.svg', '.xsd',
+}
+
+def collect_repo_files(repo_root: str) -> set:
+    """Use `git ls-files` to get only tracked, non-ignored files."""
+    try:
+        result = subprocess.run(
+            ['git', 'ls-files'],
+            capture_output=True, text=True, cwd=repo_root, check=True
+        )
+        repo_files = set()
+        for line in result.stdout.strip().splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            ext = os.path.splitext(line)[1].lower()
+            if ext in STORY_EXTENSIONS:
+                repo_files.add(line)
+        return repo_files
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        logger.print("⚠️  `git ls-files` failed. Cannot run Orphanage check.\n")
+        return set()
+
+def update_orphanage_in_place():
+    """Finds unmapped files in the repo and injects them into the Orphanage section of foo_files.py."""
+    foo_path = os.path.join(REPO_ROOT, "foo_files.py")
+    if not os.path.exists(foo_path):
+        return
+
+    try:
+        with open(foo_path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+
+        # Phase 1: Parse the current map to see what is already "claimed"
+        in_story_section = False
+        all_claimed_files = set()
+
+        for line in lines:
+            line = line.strip()
+            if "AI_PHOOEY_CHOP =" in line:
+                in_story_section = True
+                continue
+            if not in_story_section:
+                continue
+            if "VIII. THE ORPHANAGE" in line:
+                break # Stop before parsing the orphans themselves
+
+            clean_line = line.lstrip("#").strip()
+            if (not clean_line or clean_line.startswith("=") or 
+                clean_line.startswith("CHAPTER") or clean_line.startswith("THE 404") or
+                clean_line.startswith("!") or clean_line.startswith("http")):
+                continue
+
+            file_path = clean_line.split()[0]
+            ext = os.path.splitext(file_path)[1].lower()
+            if ext in STORY_EXTENSIONS or ('/' in file_path and '.' in file_path):
+                if os.path.isabs(file_path):
+                    if file_path.startswith(REPO_ROOT):
+                        rel_path = os.path.relpath(file_path, REPO_ROOT)
+                        all_claimed_files.add(os.path.normpath(rel_path))
+                else:
+                    all_claimed_files.add(os.path.normpath(file_path))
+
+        # Phase 2: Diff the map against the territory
+        repo_files = collect_repo_files(REPO_ROOT)
+        if not repo_files:
+            return # Bail if git failed
+            
+        orphans = sorted(repo_files - all_claimed_files)
+
+        # Phase 3: Inject the orphans idempotently
+        with open(foo_path, "r", encoding="utf-8") as f:
+            foo_content = f.read()
+
+        ORPHAN_MARKER = "# ============================================================================\n# VIII. THE ORPHANAGE (Uncovered Files)\n# ============================================================================"
+        marker_index = foo_content.find(ORPHAN_MARKER)
+        
+        if marker_index != -1:
+            base_content = foo_content[:marker_index].rstrip() + "\n\n"
+        else:
+            end_quote_idx = foo_content.rfind('"""')
+            base_content = foo_content[:end_quote_idx].rstrip() + "\n\n"
+
+        if not orphans:
+            with open(foo_path, "w", encoding="utf-8") as f:
+                f.write(base_content + '\n"""\n')
+            return # Clean exit, no orphans
+
+        orphan_lines = [
+            ORPHAN_MARKER, 
+            "# Files tracked by git but not listed in any chapter above.",
+            "# Move these into the active chapters to grant the AI visibility.\n"
+        ]
+
+        logger.print(f"👻 Injecting {len(orphans)} unmapped files into the Orphanage...")
+        for orphan_path in orphans:
+            full_path = os.path.join(REPO_ROOT, orphan_path)
+            try:
+                with open(full_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+                tokens = count_tokens(content)
+                b_size = len(content.encode('utf-8'))
+                orphan_lines.append(f"# {orphan_path}  # [{tokens:,} tokens | {b_size:,} bytes]")
+            except Exception:
+                orphan_lines.append(f"# {orphan_path}  # [Error reading file]")
+
+        final_content = base_content + "\n".join(orphan_lines) + '\n"""\n'
+        
+        with open(foo_path, "w", encoding="utf-8") as f:
+            f.write(final_content)
+
+    except Exception as e:
+        logger.print(f"Warning: Failed to update the Orphanage: {e}")
 
 # ============================================================================
 # --- Main Execution Logic ---
@@ -862,7 +981,8 @@ def main():
         with open("prompt.md", 'r', encoding='utf-8') as f: prompt_content = f.read()
 
     # 2. Process all specified files
-    annotate_foo_files_in_place()  # <-- ADD THIS LINE
+    annotate_foo_files_in_place()
+    update_orphanage_in_place()   # <-- THE NEW SENSOR PING
     files_to_process = parse_file_list_from_config()
     processed_files_data = []
 
