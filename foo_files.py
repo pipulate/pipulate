@@ -16,19 +16,19 @@
 
 AI_PHOOEY_CHOP = """\
 # prompt_foo.py  # [11,791 tokens | 54,155 bytes]
-foo_files.py  # [2,990 tokens | 11,024 bytes]
-
-.gitignore  # [573 tokens | 2,089 bytes]
-flake.nix  # [7,721 tokens | 32,979 bytes]
-__init__.py  # [357 tokens | 1,565 bytes]
-release.py  # [9,879 tokens | 44,440 bytes]
-pyproject.toml  # [677 tokens | 2,299 bytes]
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-imports/__init__.py  # [0 tokens | 0 bytes]
-assets/nbs/Advanced_Notebooks/URLInspector.ipynb
-assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
+# foo_files.py  # [2,990 tokens | 11,024 bytes]
+# 
+# .gitignore  # [573 tokens | 2,089 bytes]
+# flake.nix  # [7,721 tokens | 32,979 bytes]
+# __init__.py  # [357 tokens | 1,565 bytes]
+# release.py  # [9,879 tokens | 44,440 bytes]
+# pyproject.toml  # [677 tokens | 2,299 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# imports/__init__.py  # [0 tokens | 0 bytes]
+# assets/nbs/Advanced_Notebooks/URLInspector.ipynb
+# assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
 
 # remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
 # remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
@@ -82,7 +82,7 @@ assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
 # AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
 # README.md  # [20,467 tokens | 103,208 bytes]
 # cli.py  # [5,092 tokens | 22,615 bytes]
-# /home/mike/repos/pipulate/assets/nbs/0nboard.ipynb
+# /home/mike/repos/pipulate/assets/nbs/Onboarding.ipynb
 # /home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH (~260KB)
@@ -209,17 +209,17 @@ assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
 # DMZ TV Studio, Telemetry DB, and NixOS IaC. 
 
 # CHAPTER 16: HONEYBOT IAC & SCRIPTS
-nixops.sh  # [227 tokens | 765 bytes]
-remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
-remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
-remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
-remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
-remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
-remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
-remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
-remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
-remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
-remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
+# nixops.sh  # [227 tokens | 765 bytes]
+# remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
+# remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
+# remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
+# remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
+# remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
+# remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
+# remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
+# remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
+# remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
+# remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
 
 # CHAPTER 17: TELEMETRY SENSORS & DASHBOARD PROBES
 # These are the structural SQL definitions the AI can read to understand the schema.
