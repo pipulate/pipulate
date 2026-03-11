@@ -2337,26 +2337,25 @@ def run_browser_cache():
             print(f"🌐 SUBPROCESS: Extracting headers via Performance API...")
             try:
                 # This JS snippet fetches the headers of the main document request
-                headers_json = driver.execute_script('''
+                headers_json = driver.execute_script("""
                     var req = new XMLHttpRequest();
                     req.open('GET', document.location, false);
                     req.send(null);
                     var headers = req.getAllResponseHeaders().toLowerCase();
                     var arr = headers.trim().split(/[\\r\\n]+/);
-                    var headerMap = {};
-                    arr.forEach(function (line) {
+                    var headerMap = {{}};
+                    arr.forEach(function (line) {{
                         var parts = line.split(': ');
                         var header = parts.shift();
                         var value = parts.join(': ');
                         headerMap[header] = value;
-                    });
+                    }});
                     return JSON.stringify(headerMap);
-                ''')
+                """)
                 actual_headers = json.loads(headers_json)
             except Exception as e:
-                print(f"⚠️ SUBPROCESS: Failed to extract headers: {{e}}")
-                actual_headers = {{"error": "Could not extract headers without proxy"}}
-
+                print(f"⚠️ SUBPROCESS: Failed to extract headers: {e}")
+                actual_headers = {"error": "Could not extract headers without proxy"}
             
             # Save headers and metadata
             headers_data = {{

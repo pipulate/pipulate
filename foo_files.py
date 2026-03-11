@@ -15,14 +15,14 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-README.md
-release.py
+# README.md
+# release.py
 foo_files.py
 
-# # Unifying Single Installer Story - the Levinix & Pipulate Connection
-# foo_files.py
-# https://raw.githubusercontent.com/pipulate/pipulate/refs/heads/main/README.md
-# https://pipulate.com/
+# # # Unifying Single Installer Story - the Levinix & Pipulate Connection
+# # foo_files.py
+# # https://raw.githubusercontent.com/pipulate/pipulate/refs/heads/main/README.md
+# # https://pipulate.com/
 # /home/mike/repos/Pipulate.com/index.md
 # /home/mike/repos/Pipulate.com/install.md
 # /home/mike/repos/Pipulate.com/install.sh
