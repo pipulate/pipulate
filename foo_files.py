@@ -27,7 +27,6 @@ foo_files.py  # [2,990 tokens | 11,024 bytes]
 # ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # Active LLM Optics Probes
-# !https://www.hubspot.com/pricing
 # !https://mikelev.in/about/
 
 # Active Working Markdown / Recent Posts
