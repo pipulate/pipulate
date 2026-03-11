@@ -16,12 +16,12 @@
 
 AI_PHOOEY_CHOP = """\
 # Unifying the mental models of macOS, Windows and Linux keyboard shortcuts.
-/home/mike/repos/trimnoir/_posts/2026-03-10-single-pass-llm-optics-engine-causal-fidelity.md  # [Idx: 931 | Order: 6 | Tokens: 8,195 | Bytes: 36,983]
+# /home/mike/repos/trimnoir/_posts/2026-03-10-single-pass-llm-optics-engine-causal-fidelity.md  # [Idx: 931 | Order: 6 | Tokens: 8,195 | Bytes: 36,983]
 
-assets/nbs/Advanced_Notebooks/FAQuilizer.ipynb
-assets/nbs/imports/faq_writer_sauce.py
-assets/nbs/Advanced_Notebooks/URLinspector.ipynb
-assets/nbs/imports/url_inspect_sauce.py
+# assets/nbs/Advanced_Notebooks/FAQuilizer.ipynb
+# assets/nbs/imports/faq_writer_sauce.py
+# assets/nbs/Advanced_Notebooks/URLinspector.ipynb
+# assets/nbs/imports/url_inspect_sauce.py
 
 apps/040_hello_workflow.py
 apps/440_browser_automation.py
