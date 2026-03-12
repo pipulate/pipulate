@@ -15,21 +15,29 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
+# The entry point where wand is defined
+pipulate/__init__.py  # [472 tokens | 1,988 bytes]
+# Where the log is actually firing from (Line 223 and 95)
+pipulate/core.py  # [22,638 tokens | 109,630 bytes]
+# Where you likely configure loguru (based on your file tree)
+imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
+# If you have global environment flags set here
+config.py  # [4,098 tokens | 15,949 bytes]
+
 # The last article
 # /home/mike/repos/trimnoir/_posts/2026-03-12-architecting-ai-workflows-deterministic-editing-computational-autonomy.md  # [Idx: 942 | Order: 2 | Tokens: 26,833 | Bytes: 114,125]
-# 
-# foo_files.py  # [2,990 tokens | 11,024 bytes]
 
+foo_files.py  # [2,990 tokens | 11,024 bytes]
 # prompt_foo.py  # [11,791 tokens | 54,155 bytes]
 # 
-# flake.nix  # [7,711 tokens | 32,991 bytes]
+# # flake.nix  # [7,711 tokens | 32,991 bytes]
 
-assets/nbs/Advanced_Notebooks/FAQuilizer.ipynb  # [2,516 tokens | 7,593 bytes]
+# assets/nbs/Advanced_Notebooks/FAQuilizer.ipynb  # [2,516 tokens | 7,593 bytes]
 # assets/nbs/Advanced_Notebooks/URLinspector.ipynb  # [2,405 tokens | 7,284 bytes]
 # assets/nbs/Advanced_Notebooks/VIDeditor.ipynb  # [569 tokens | 1,670 bytes]
 # assets/nbs/Advanced_Notebooks/URLinspector.ipynb  # [2,405 tokens | 7,284 bytes]
 # assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-assets/nbs/imports/faq_writer_sauce.py  # [6,042 tokens | 26,760 bytes]
+# assets/nbs/imports/faq_writer_sauce.py  # [6,042 tokens | 26,760 bytes]
 # assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
 # assets/nbs/imports/videditor_sauce.py  # [937 tokens | 4,098 bytes]
 # assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
@@ -37,8 +45,11 @@ assets/nbs/imports/faq_writer_sauce.py  # [6,042 tokens | 26,760 bytes]
 # 
 # tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
 
-assets/nbs/Advanced_Notebooks/GAPalyzer.ipynb  # [9,193 tokens | 31,140 bytes]
-assets/nbs/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
+# assets/nbs/Advanced_Notebooks/GAPalyzer.ipynb  # [9,193 tokens | 31,140 bytes]
+# assets/nbs/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
+
+# Notebooks/Advanced_Notebooks/GAPalyzer.ipynb  # [9,193 tokens | 31,140 bytes]
+# Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 
 # /home/mike/repos/trimnoir/_posts/2026-03-09-wet-coding-fearless-refactoring-python-tokenizer.md  # [182,723 tokens | 726,616 bytes]
 
