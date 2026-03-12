@@ -224,7 +224,16 @@ async def selenium_automation(params: dict) -> dict:
                 if match:
                     fallback_version = int(match.group(1))
                     logger.warning(f"⚠️ Chrome version mismatch detected. Auto-healing with version_main={fallback_version}")
-                    driver = uc.Chrome(options=options, 
+                    # UC consumes the options object. We must forge a fresh one.
+                    fresh_options = uc.ChromeOptions()
+                    if headless:
+                        fresh_options.add_argument("--headless")
+                    fresh_options.add_argument("--no-sandbox")
+                    fresh_options.add_argument("--disable-dev-shm-usage")
+                    fresh_options.add_argument("--start-maximized")
+                    fresh_options.add_argument("--window-size=1920,1080")
+                    
+                    driver = uc.Chrome(options=fresh_options, 
                                        user_data_dir=str(profile_path), 
                                        browser_executable_path=browser_path,
                                        driver_executable_path=driver_path,
