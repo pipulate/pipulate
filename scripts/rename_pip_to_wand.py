@@ -60,7 +60,7 @@ def process_file(filepath):
     return True
 
 def main():
-    apps_dir = Path('apps')
+    apps_dir = Path('assets/nbs/imports')
     if not apps_dir.exists() or not apps_dir.is_dir():
         print("❌ Error: apps/ directory not found. Run this from the project root.")
         return
