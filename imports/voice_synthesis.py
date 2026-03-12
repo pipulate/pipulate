@@ -56,15 +56,18 @@ class ChipVoiceSystem:
     def setup_voice_model(self):
         """Download and setup Piper TTS model (Mike's tested approach)"""
         try:
+
             repo_id = "rhasspy/piper-voices"
             model_path_in_repo = "en/en_US/amy/low/en_US-amy-low.onnx"
             config_path_in_repo = "en/en_US/amy/low/en_US-amy-low.onnx.json"
             
-            local_model_dir = "./assets/piper_models"
-            os.makedirs(local_model_dir, exist_ok=True)
+            # ⚓ TOPOLOGICAL ANCHOR: Always resolve relative to the project root
+            project_root = Path(__file__).resolve().parent.parent
+            local_model_dir = project_root / "assets" / "piper_models"
+            local_model_dir.mkdir(parents=True, exist_ok=True)
             
-            self.model_path = os.path.join(local_model_dir, model_path_in_repo)
-            self.config_path = os.path.join(local_model_dir, config_path_in_repo)
+            self.model_path = str(local_model_dir / model_path_in_repo)
+            self.config_path = str(local_model_dir / config_path_in_repo)
             
             # Download files if they don't exist
             if not os.path.exists(self.model_path):
