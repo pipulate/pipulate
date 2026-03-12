@@ -148,9 +148,14 @@
             desc = "a local 'NoGooey Video Editor.'";
           }
           {
-            source = "assets/nbs/imports/videditor_sauce.py.py";
+            source = "assets/nbs/imports/videditor_sauce.py";
             dest = "Notebooks/imports/videditor_sauce.py";
             desc = "a local 'videditor_sauce.py' source of secret sauce";
+          }
+          {
+            source = "assets/nbs/imports/onboard_sauce.py";
+            dest = "Notebooks/imports/onboard_sauce.py";
+            desc = "a local 'onboard_sauce.py' source of secret sauce";
           }
         ];
 
