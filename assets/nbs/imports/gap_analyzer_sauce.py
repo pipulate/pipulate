@@ -1,6 +1,5 @@
 # Drops pebble in pond
 
-import _config as keys
 import nest_asyncio
 import asyncio
 import httpx
@@ -217,7 +216,7 @@ def collect_semrush_downloads(job: str, download_path_str: str, file_pattern_xls
             return None, []
 
         # Destination path relative to the current working directory (assumed Notebooks/)
-        destination_dir = Path("downloads") / job
+        destination_dir = wand.paths.downloads / job
         destination_dir.mkdir(parents=True, exist_ok=True)
         destination_dir_str = str(destination_dir.resolve()) # Store resolved path as string
         print(f"Destination folder created/ensured: '{destination_dir_str}'")
@@ -302,7 +301,7 @@ def find_semrush_files_and_generate_summary(job: str, competitor_limit: int = No
         str: A Markdown formatted string summarizing the found files, or a warning message.
     """
     print(f"🔍 Locating SEMRush files for job '{job}' and generating summary...")
-    semrush_dir = Path("downloads") / job
+    semrush_dir = wand.paths.downloads / job
     markdown_output_lines = [] # Initialize list to build Markdown output
 
     # Ensure the directory exists
@@ -449,7 +448,7 @@ def load_and_combine_semrush_data(job: str, client_domain: str, competitor_limit
 
     # --- OUTPUT (to wand state) ---
     # --- FIX: Save master DF to CSV and store the PATH in wand state ---
-    temp_dir = Path("temp") / job # Use the temp directory structure
+    temp_dir = wand.paths.temp / job # Use the temp directory structure
     temp_dir.mkdir(parents=True, exist_ok=True) # Ensure it exists
     master_csv_path = temp_dir / "semrush_master_combined.csv"
     master_df.to_csv(master_csv_path, index=False)
@@ -481,7 +480,7 @@ def pivot_semrush_data(job: str, df2: pd.DataFrame, client_domain_from_keys: str
         return pd.DataFrame()
 
     # --- PATH DEFINITION ---
-    temp_dir = Path("temp") / job
+    temp_dir = wand.paths.temp / job
     temp_dir.mkdir(parents=True, exist_ok=True)
     competitors_csv_file = temp_dir / "competitors.csv"
 
@@ -695,7 +694,7 @@ def fetch_titles_and_create_filters(job: str):
     print("🏷️  Fetching competitor titles and generating keyword filters...")
 
     # --- PATH DEFINITIONS ---
-    temp_dir = Path("temp") / job
+    temp_dir = wand.paths.temp / job
     temp_dir.mkdir(parents=True, exist_ok=True)
     competitors_csv_file = temp_dir / "competitors.csv"
     filter_file = temp_dir / "filter_keywords.csv"
@@ -989,7 +988,7 @@ def merge_filter_arrange_data(job: str, pivot_df: pd.DataFrame, agg_df: pd.DataF
     print("🧩 Merging Pivot Data with Aggregate Data...")
 
     # --- PATH DEFINITION ---
-    filter_file = Path("data") / f"{job}_filter_keywords.csv"
+    filter_file = wand.paths.data / f"{job}_filter_keywords.csv"
 
     # --- CORE LOGIC (Moved from Notebook) ---
     try:
@@ -1139,11 +1138,11 @@ def _fetch_analysis_slugs(org, project, botify_token):
         return []
 
 
-def _export_data(version, org, project, export_payload, report_path, analysis=None, retry_url=None):
+def _export_data(version, org, project, export_payload, report_path, botify_token, analysis=None, retry_url=None):
     """
     Unified function to export data using BQLv1 or BQLv2.
     Handles API calls, polling, download, and decompression via helpers.
-    Uses keys.botify directly for authentication.
+    Uses the provided Botify token for authentication.
 
     Args:
         version (str): 'v1' or 'v2'.
@@ -1188,8 +1187,7 @@ def _export_data(version, org, project, export_payload, report_path, analysis=No
             print("Download failed using retry URL.")
             return (None, None)
 
-    # Use the token from the keys module
-    headers = {'Authorization': f'Token {keys.botify}', 'Content-Type': 'application/json'}
+    headers = {'Authorization': f'Token {botify_token}', 'Content-Type': 'application/json'}
 
     if version == 'v1':
         url = f'https://api.botify.com/v1/analyses/{org}/{project}/{analysis}/urls/export'
@@ -1283,7 +1281,7 @@ def fetch_botify_data(job: str, botify_token: str, botify_project_url: str):
         return pd.DataFrame(), False
 
     # --- 2. Define Paths and Payloads ---
-    csv_dir = Path("data") / f"{job}_botify"
+    csv_dir = wand.paths.data / f"{job}_botify"
     csv_dir.mkdir(parents=True, exist_ok=True)
     report_name = csv_dir / "botify_export.csv"
 
@@ -1388,7 +1386,7 @@ def fetch_botify_data_and_save(job: str, botify_token: str, botify_project_url: 
 
     # --- 2. Define Paths and Payloads ---
     try:
-        csv_dir = Path("temp") / job  # Pointing to the consolidated temp/job_name dir
+        csv_dir = wand.paths.temp / job  # Pointing to the consolidated temp/job_name dir
         csv_dir.mkdir(parents=True, exist_ok=True)
         report_name = csv_dir / "botify_export.csv"
 
@@ -1521,7 +1519,7 @@ def merge_and_finalize_data(job: str, arranged_df: pd.DataFrame, botify_export_d
                The final DataFrame (aliased as 'df' in notebook) and
                a dict with data for display (rows, cols, has_botify, pagerank_counts).
     """
-    temp_dir = Path("temp") / job
+    temp_dir = wand.paths.temp / job
     temp_dir.mkdir(parents=True, exist_ok=True) # Ensure it exists just in case
     unformatted_csv = temp_dir / "unformatted.csv"
 
@@ -1617,7 +1615,7 @@ def truncate_dataframe_by_volume(job: str, final_df: pd.DataFrame, row_limit: in
         if 'Search Volume' not in final_df.columns:
             print("  ❌ 'Search Volume' column not found. Cannot truncate by volume.")
             # Store path to original file if truncation fails
-            temp_dir = Path("temp") / job
+            temp_dir = wand.paths.temp / job
             temp_dir.mkdir(parents=True, exist_ok=True)
             fallback_csv = temp_dir / "truncated_df_fallback.csv"
             final_df.to_csv(fallback_csv, index=False)
@@ -1658,7 +1656,7 @@ def truncate_dataframe_by_volume(job: str, final_df: pd.DataFrame, row_limit: in
 
         # --- OUTPUT (to wand state) ---
         # FIX: Save to disk instead of DB to avoid "string or blob too big" error
-        temp_dir = Path("temp") / job
+        temp_dir = wand.paths.temp / job
         temp_dir.mkdir(parents=True, exist_ok=True)
         truncated_csv_path = temp_dir / "truncated_df_for_clustering.csv"
         
@@ -1784,7 +1782,7 @@ def cluster_and_finalize_dataframe(job: str, df: pd.DataFrame, has_botify: bool,
     # --- CORE LOGIC (Moved from Notebook) ---
     try:
         # --- PATH DEFINITIONS ---
-        temp_dir = Path("temp") / job # Define temp_dir if not already defined in scope
+        temp_dir = wand.paths.temp / job # Define temp_dir if not already defined in scope
         temp_dir.mkdir(parents=True, exist_ok=True) # Ensure it exists
         keyword_cluster_params = temp_dir / "keyword_cluster_params.json"
         unformatted_csv = temp_dir / "unformatted.csv"
@@ -2022,7 +2020,7 @@ def normalize_and_score_surgical(df, registered_domain, has_botify_data, after_c
     return df
 
 
-def create_deliverables_excel_and_button(job: str, df: pd.DataFrame, client_domain_from_keys: str, has_botify: bool):
+def create_deliverables_excel_and_button(job: str, df: pd.DataFrame, client_domain: str, has_botify: bool):
     """
     Creates the deliverables directory, writes the first "Gap Analysis" tab
     to the Excel file, creates the "Open Folder" button, and stores
@@ -2031,7 +2029,7 @@ def create_deliverables_excel_and_button(job: str, df: pd.DataFrame, client_doma
     Args:
         job (str): The current Pipulate job ID.
         df (pd.DataFrame): The final clustered/arranged DataFrame.
-        client_domain_from_keys (str): The client's domain from the keys module.
+        client_domain (str): The client's domain.
         has_botify (bool): Flag indicating if Botify data is present.
 
     Returns:
@@ -2045,7 +2043,7 @@ def create_deliverables_excel_and_button(job: str, df: pd.DataFrame, client_doma
     try:
         # --- FIX: Re-derive missing variables ---
         # 1. Get semrush_lookup
-        semrush_lookup = _extract_registered_domain(client_domain_from_keys)
+        semrush_lookup = _extract_registered_domain(client_domain)
 
         # 2. Get canonical competitors list from wand state
         competitors_list_json = wand.get(job, 'competitors_list_json', '[]')
@@ -2075,7 +2073,7 @@ def create_deliverables_excel_and_button(job: str, df: pd.DataFrame, client_doma
 
 
         # --- 1. DEFINE SECURE OUTPUT PATHS ---
-        deliverables_dir = Path("deliverables") / job
+        deliverables_dir = wand.paths.deliverables / job
         deliverables_dir.mkdir(parents=True, exist_ok=True)
 
         xl_filename = f"{semrush_lookup.replace('.', '_').rstrip('_')}_GAPalyzer_{job}_V1.xlsx"
@@ -2173,7 +2171,7 @@ def add_filtered_excel_tabs(
     tabs_to_write["Gap Analysis"] = df_main
 
     # B. Important Keywords
-    important_keywords_file = Path("data") / f"{job}_important_keywords.txt"
+    important_keywords_file = wand.paths.data / f"{job}_important_keywords.txt"
     if important_keywords_file.exists():
         kws = read_keywords(important_keywords_file)
         if kws:
@@ -2419,7 +2417,7 @@ def create_final_deliverable(
     print("🚀 Starting Final Deliverable Creation...")
 
     # 1. Define Output Path
-    deliverables_dir = Path("deliverables") / job
+    deliverables_dir = wand.paths.deliverables / job
     deliverables_dir.mkdir(parents=True, exist_ok=True)
     semrush_lookup = _extract_registered_domain(client_domain)
     xl_filename = f"{semrush_lookup.replace('.', '_').rstrip('_')}_GAPalyzer_{job}_V1.xlsx"

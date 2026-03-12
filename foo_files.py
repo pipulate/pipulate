@@ -15,24 +15,28 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
+# The last article
+/home/mike/repos/trimnoir/_posts/2026-03-12-architecting-ai-workflows-deterministic-editing-computational-autonomy.md  # [Idx: 942 | Order: 2 | Tokens: 26,833 | Bytes: 114,125]
+
+foo_files.py  # [2,990 tokens | 11,024 bytes]
+
 # prompt_foo.py  # [11,791 tokens | 54,155 bytes]
-# foo_files.py  # [2,990 tokens | 11,024 bytes]
 # 
 # flake.nix  # [7,711 tokens | 32,991 bytes]
 
-assets/nbs/Advanced_Notebooks/FAQuilizer.ipynb  # [2,516 tokens | 7,593 bytes]
-assets/nbs/Advanced_Notebooks/URLinspector.ipynb  # [2,405 tokens | 7,284 bytes]
-assets/nbs/Advanced_Notebooks/VIDeditor.ipynb  # [569 tokens | 1,670 bytes]
-assets/nbs/Advanced_Notebooks/URLinspector.ipynb  # [2,405 tokens | 7,284 bytes]
-assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-assets/nbs/imports/faq_writer_sauce.py  # [6,042 tokens | 26,760 bytes]
-assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
-assets/nbs/imports/videditor_sauce.py  # [937 tokens | 4,098 bytes]
-assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
-assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+# assets/nbs/Advanced_Notebooks/FAQuilizer.ipynb  # [2,516 tokens | 7,593 bytes]
+# assets/nbs/Advanced_Notebooks/URLinspector.ipynb  # [2,405 tokens | 7,284 bytes]
+# assets/nbs/Advanced_Notebooks/VIDeditor.ipynb  # [569 tokens | 1,670 bytes]
+# assets/nbs/Advanced_Notebooks/URLinspector.ipynb  # [2,405 tokens | 7,284 bytes]
+# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+# assets/nbs/imports/faq_writer_sauce.py  # [6,042 tokens | 26,760 bytes]
+# assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
+# assets/nbs/imports/videditor_sauce.py  # [937 tokens | 4,098 bytes]
+# assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
-assets/nbs/Advanced_Notebooks/GAPalyzer.ipynb  # [9,193 tokens | 31,140 bytes]
-assets/nbs/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
+# assets/nbs/Advanced_Notebooks/GAPalyzer.ipynb  # [9,193 tokens | 31,140 bytes]
+# assets/nbs/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 
 # /home/mike/repos/trimnoir/_posts/2026-03-09-wet-coding-fearless-refactoring-python-tokenizer.md  # [182,723 tokens | 726,616 bytes]
 
@@ -118,9 +122,9 @@ assets/nbs/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 # server.py  # [54,246 tokens | 258,931 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 
 # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
 # __init__.py  # [357 tokens | 1,565 bytes]
