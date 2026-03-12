@@ -211,10 +211,28 @@ async def selenium_automation(params: dict) -> dict:
             logger.info(f"👻 Using temporary profile: {profile_path}")
         
         logger.info(f"🚀 Initializing undetected-chromedriver (Headless: {headless})...")
-        driver = uc.Chrome(options=options, 
-                           user_data_dir=str(profile_path), 
-                           browser_executable_path=browser_path,
-                           driver_executable_path=driver_path)
+        try:
+            driver = uc.Chrome(options=options, 
+                               user_data_dir=str(profile_path), 
+                               browser_executable_path=browser_path,
+                               driver_executable_path=driver_path)
+        except Exception as e:
+            error_msg = str(e)
+            if "Current browser version is" in error_msg:
+                import re
+                match = re.search(r'Current browser version is (\d+)', error_msg)
+                if match:
+                    fallback_version = int(match.group(1))
+                    logger.warning(f"⚠️ Chrome version mismatch detected. Auto-healing with version_main={fallback_version}")
+                    driver = uc.Chrome(options=options, 
+                                       user_data_dir=str(profile_path), 
+                                       browser_executable_path=browser_path,
+                                       driver_executable_path=driver_path,
+                                       version_main=fallback_version)
+                else:
+                    raise
+            else:
+                raise
 
         logger.info(f"Navigating to: {url}")
         driver.get(url)
