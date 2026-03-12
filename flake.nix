@@ -593,7 +593,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias release='.venv/bin/python helpers/release/publish.py'
           alias vim='nvim'
           alias lsp='ls -d -1 "$PWD"/*'
-          alias cd ~/repos/pipulate
+          alias p='cd ~/repos/pipulate'
 
           if [ "$EFFECTIVE_OS" = "darwin" ]; then
             alias xc='pbcopy <'
