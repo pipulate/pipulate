@@ -63,7 +63,7 @@ def show_artifacts(target_url: str):
     path = parsed_url.path or '/'
     url_path_slug = quote(path, safe='')
     
-    cache_dir = Path(f"browser_cache/{domain}/{url_path_slug}")
+    cache_dir = wand.paths.browser_cache / domain / url_path_slug
 
     if cache_dir.exists():
         wand.speak("Let's examine the artifacts I extracted. Click the button to open the folder on your computer.")
@@ -97,8 +97,8 @@ def interrogate_local_ai(target_url: str, preferred_model: str = None):
     domain = parsed_url.netloc
     path = parsed_url.path or '/'
     url_path_slug = quote(path, safe='')
-    
-    md_file = Path(f"browser_cache/{domain}/{url_path_slug}/accessibility_tree.json")
+
+    md_file = wand.paths.browser_cache / domain / url_path_slug / "accessibility_tree.json"
 
     if md_file.exists():
         content = md_file.read_text()
@@ -164,15 +164,23 @@ async def analyze_ai_readiness(job: str, url: str, verbose: bool = True, overrid
         print("✅ Fresh Scrape Successful.")
 
     # 2. THE OPTICS (The Refraction)
-    # The scrape now natively handles optical extraction via the JIT subprocess bulkhead!
     dom_path = result.get("looking_at_files", {}).get("rendered_dom")
     if not dom_path or not Path(dom_path).exists():
         print("❌ Error: Could not locate rendered_dom.html for analysis.")
         return False
 
-    wand.speak("Analysis complete. You can now see your site through the eyes of an AI.")
-    print(f"✅ Success! Scrape and Optics completely generated in: {Path(dom_path).parent}")
-    return True    
+    wand.speak("I have captured the page. Now, generating AI Optics.")
+    logger.info(f"👁️‍🗨️ Step 2: Running LLM Optics Engine on {dom_path}...")
+    
+    optics_result = await generate_optics_subprocess(dom_path)
+    
+    if optics_result.get('success'):
+        wand.speak("Analysis complete. You can now see your site through the eyes of an AI.")
+        print(f"✅ Success! Optics generated in: {Path(dom_path).parent}")
+        return True
+    else:
+        print(f"⚠️ Optics generation partially failed: {optics_result.get('error')}")
+        return False
 
 async def generate_optics_subprocess(dom_file_path: str):
     """Isolated wrapper to call llm_optics.py as a subprocess."""
