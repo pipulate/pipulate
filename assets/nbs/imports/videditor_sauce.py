@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from moviepy import VideoFileClip, concatenate_videoclips
 from moviepy.video.fx import Crop
+from pipulate import pip
 
 def concatenate_videos(source_directory: str, output_filename: str = "output.mp4") -> str:
     """
@@ -59,7 +60,7 @@ def concatenate_videos(source_directory: str, output_filename: str = "output.mp4
         # method="compose" prevents scrambling when resolutions differ
         final_clip = concatenate_videoclips(valid_clips, method="compose") 
         
-        output_path = Path.cwd() / output_filename
+        output_path = pip.paths.downloads / output_filename
         print(f"💾 Writing to: {output_path}")
         
         # Write file (using libx264 for high compatibility)
@@ -91,7 +92,7 @@ def concatenate_videos(source_directory: str, output_filename: str = "output.mp4
             ])
             
             vert_filename = f"vertical_{output_filename}"
-            vert_path = Path.cwd() / vert_filename
+            vert_path = pip.paths.downloads / vert_filename
             print(f"💾 Writing Vertical to: {vert_path}")
             
             vertical_clip.write_videofile(
