@@ -15,10 +15,10 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-prompt_foo.py  # [11,791 tokens | 54,155 bytes]
-foo_files.py  # [2,990 tokens | 11,024 bytes]
-
-flake.nix  # [7,711 tokens | 32,991 bytes]
+# prompt_foo.py  # [11,791 tokens | 54,155 bytes]
+# foo_files.py  # [2,990 tokens | 11,024 bytes]
+# 
+# flake.nix  # [7,711 tokens | 32,991 bytes]
 
 assets/nbs/Advanced_Notebooks/FAQuilizer.ipynb  # [2,516 tokens | 7,593 bytes]
 assets/nbs/Advanced_Notebooks/URLinspector.ipynb  # [2,405 tokens | 7,284 bytes]
@@ -31,8 +31,8 @@ assets/nbs/imports/videditor_sauce.py  # [937 tokens | 4,098 bytes]
 assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
 assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
-# assets/nbs/Advanced_Notebooks/GAPalyzer.ipynb  # [9,193 tokens | 31,140 bytes]
-# assets/nbs/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
+assets/nbs/Advanced_Notebooks/GAPalyzer.ipynb  # [9,193 tokens | 31,140 bytes]
+assets/nbs/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 
 # /home/mike/repos/trimnoir/_posts/2026-03-09-wet-coding-fearless-refactoring-python-tokenizer.md  # [182,723 tokens | 726,616 bytes]
 
