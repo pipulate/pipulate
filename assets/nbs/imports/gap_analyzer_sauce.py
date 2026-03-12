@@ -1,4 +1,5 @@
 # Drops pebble in pond
+import _config as keys
 
 import nest_asyncio
 import asyncio
