@@ -1,12 +1,14 @@
 # Hi, AI! Please run: .venv/bin/python AI_RUNME.py
-#  ____                      _       _                        .--.      ___________
-# |  _ \  __ _ _ ____      _(_)_ __ (_)_  __    ,--./,-.     |o_o |    |     |     |
-# | | | |/ _` | '__\ \ /\ / / | '_ \| \ \/ /   / #      \    |:_/ |    |     |     |
-# | |_| | (_| | |   \ V  V /| | | | | |>  <   |          |  //   \ \   |_____|_____|
-# |____/ \__,_|_|    \_/\_/ |_|_| |_|_/_/\_\   \        /  (|     | )  |     |     |
-#                                               `._,._,'  /'\_   _/`\  |     |     |
-# Nix: Solving the "Not on my machine" problem.           \___)=(___/  |_____|_____|
-# The dream of "Write once, run anywhere" achieved.
+#                                                       .--.      ___________
+#       _               _       _         ,--./,-.     |o_o |    |     |     |
+#      | |    _____   _(_)_ __ (_)_  __  / #      \    |:_/ |    |     |     |
+#      | |   / _ \ \ / / | '_ \| \ \/ / |          |  //   \ \   |_____|_____|
+#      | |__|  __/\ V /| | | | | |>  <   \        /  (|     | )  |     |     |
+#      |_____\___| \_/ |_|_| |_|_/_/\_\   `._,._,'  /'\_   _/`\  |     |     |
+#                                                   \___)=(___/  |_____|_____|
+# 
+#  Levinix: A *very good* "No Problem" Universal Packager (NPvg)
+#
 # ==============================================================================
 # PIPULATE NIX FLAKE - "MAGIC COOKIE" AUTO-UPDATING SYSTEM
 # ==============================================================================
@@ -586,6 +588,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias release='.venv/bin/python helpers/release/publish.py'
           alias vim='nvim'
           alias lsp='ls -d -1 "$PWD"/*'
+          alias cd ~/repos/pipulate
 
           if [ "$EFFECTIVE_OS" = "darwin" ]; then
             alias xc='pbcopy <'
