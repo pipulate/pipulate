@@ -43,12 +43,18 @@ DB_PATH = project_root / "Notebooks" / "data" / "pipeline.sqlite"
 DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 wand = Pipulate(db_path=str(DB_PATH))
 
-# Set up the loggers using the wand's manifold
+# 1. Silence loguru's default handler and set up the quiet console logger FIRST
 logger.remove()
 logger.add(sys.stderr, level="WARNING", colorize=True, format="<level>{level: <8}</level> | <cyan>{name}:{function}:{line}</cyan> - <level>{message}</level>")
+
+# 2. Instantiate the wand so we can use its Topological Manifold for paths
+DB_PATH = project_root / "Notebooks" / "data" / "pipeline.sqlite"
+DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+wand = Pipulate(db_path=str(DB_PATH))
+
+# 3. Add the file logger using the wand's manifold to capture everything else
 logger.add(wand.paths.logs / "notebook_run.log", level="DEBUG", rotation="10 MB", format="{time} {level} {message}")
 # --- END CONFIGURATION ---
 
 # Maintain backward compatibility during the codebase transition
 pip = wand
-
