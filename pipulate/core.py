@@ -200,9 +200,10 @@ class Pipulate:
         actual_root = self._find_project_root(Path(__file__).resolve()) or Path.cwd()
         
         class WorkspaceManifold:
-            def __init__(self, root: Path):
+            def __init__(self, root: Path, is_notebook: bool):
                 self.root = root
-                self.data = root / "data"
+                self.base = root / "Notebooks" if is_notebook else root
+                self.data = self.base / "data"
                 self.logs = self.data / "logs"
                 self.temp = self.data / "temp"
                 self.downloads = self.data / "downloads"
@@ -212,7 +213,7 @@ class Pipulate:
                 for p in [self.data, self.logs, self.temp, self.downloads, self.browser_cache]:
                     p.mkdir(parents=True, exist_ok=True)
                     
-        self.paths = WorkspaceManifold(actual_root)
+        self.paths = WorkspaceManifold(actual_root, self.is_notebook_context)
 
         if db_path:
             # Standalone/Notebook Context: Create our "Parallel Universe" DB using fastlite directly
