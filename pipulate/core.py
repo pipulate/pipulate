@@ -208,9 +208,10 @@ class Pipulate:
                 self.temp = self.data / "temp"
                 self.downloads = self.data / "downloads"
                 self.browser_cache = self.data / "browser_cache"
+                self.deliverables = self.base / "Deliverables"
                 
                 # Force the physical reality into existence
-                for p in [self.data, self.logs, self.temp, self.downloads, self.browser_cache]:
+                for p in [self.data, self.logs, self.temp, self.downloads, self.browser_cache, self.deliverables]:
                     p.mkdir(parents=True, exist_ok=True)
                     
         self.paths = WorkspaceManifold(actual_root, self.is_notebook_context)
