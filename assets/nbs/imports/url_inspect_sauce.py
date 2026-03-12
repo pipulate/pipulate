@@ -1096,16 +1096,10 @@ def export_audits_to_excel(job: str, df: pd.DataFrame):
         return None
         
     unique_hosts = df_to_export['host'].unique()
-    
-    # --- 2. Define Paths ---
-    script_location = Path(__file__).resolve().parent # Notebooks/imports
-    project_root = _find_project_root(script_location)
-    if not project_root:
-        print("❌ Error: Could not find project root. Cannot create deliverables path.")
-        return None
-        
-    output_dir = project_root / "Notebooks" / "deliverables" / job
+
+    output_dir = wand.paths.deliverables / job
     output_dir.mkdir(parents=True, exist_ok=True)
+
     excel_path = output_dir / f"URLinspector_Audit_{job}.xlsx"
 
     # --- 3. Write Data to Tabs ---
