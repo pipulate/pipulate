@@ -25,9 +25,9 @@ from openpyxl.worksheet.table import Table, TableStyleInfo
 
 
 # --- CONFIGURATION ---
-CACHE_DB_FILE = "url_cache.sqlite"
-EXTRACTED_DATA_CSV = "_step_extract_output.csv"
-AI_LOG_CSV = "_step_ai_log_output.csv" # NEW: Filename for the AI output log
+CACHE_DB_FILE = pip.paths.temp / "url_cache.sqlite"
+EXTRACTED_DATA_CSV = pip.paths.temp / "_step_extract_output.csv"
+AI_LOG_CSV = pip.paths.logs / "_step_ai_log_output.csv"
 
 # Pipulate step names
 API_KEY_STEP = "api_key"
@@ -227,10 +227,7 @@ def ai_faq_em(job: str, debug: bool = False) -> pd.DataFrame:
     import re
 
     # --- 1. Define Cache Path ---
-    # The script runs from the Notebooks directory, so the path is relative to that.
-    cache_dir = Path("data")
-    cache_dir.mkdir(parents=True, exist_ok=True)
-    cache_file = cache_dir / f"faq_cache_{job}.json"
+    cache_file = pip.paths.temp / f"faq_cache_{job}.json"
 
     # --- 2. Load Data ---
     extracted_data = pip.get(job, EXTRACTED_DATA_STEP, [])
