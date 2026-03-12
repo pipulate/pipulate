@@ -1,7 +1,7 @@
 # secretsauce.py (version 3.0 - Refactored Workflow)
 # This module contains the implementation details for a 1-to-many AI enrichment workflow.
 
-from pipulate import pip
+from pipulate import wand
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -25,9 +25,9 @@ from openpyxl.worksheet.table import Table, TableStyleInfo
 
 
 # --- CONFIGURATION ---
-CACHE_DB_FILE = pip.paths.temp / "url_cache.sqlite"
-EXTRACTED_DATA_CSV = pip.paths.temp / "_step_extract_output.csv"
-AI_LOG_CSV = pip.paths.logs / "_step_ai_log_output.csv"
+CACHE_DB_FILE = wand.paths.temp / "url_cache.sqlite"
+EXTRACTED_DATA_CSV = wand.paths.temp / "_step_extract_output.csv"
+AI_LOG_CSV = wand.paths.logs / "_step_ai_log_output.csv"
 
 # Pipulate step names
 API_KEY_STEP = "api_key"
@@ -94,10 +94,10 @@ async def scrape(job: str,
     fresh_urls = _get_urls_from_notebook()
     if fresh_urls:
         print(f"✨ Found {len(fresh_urls)} URLs in the notebook.")
-        pip.set(job, URL_LIST_STEP, fresh_urls)
+        wand.set(job, URL_LIST_STEP, fresh_urls)
     # --------------------------------------------------------------------
 
-    urls_to_process = pip.get(job, URL_LIST_STEP, [])
+    urls_to_process = wand.get(job, URL_LIST_STEP, [])
     if not urls_to_process:
         print("❌ No URLs to process. Please add them to the 'url-list-input' cell in your notebook.")
         return
@@ -112,7 +112,7 @@ async def scrape(job: str,
         current_delay_range = delay_range if i > 0 else None
 
         try:
-            scrape_result = await pip.scrape(
+            scrape_result = await wand.scrape(
                 url=url,
                 take_screenshot=True,
                 headless=headless,
@@ -161,13 +161,13 @@ async def scrape(job: str,
         except Exception as e:
             print(f"  -> ❌ A critical error occurred while processing {url}: {e}")
 
-    pip.set(job, EXTRACTED_DATA_STEP, extracted_data)
+    wand.set(job, EXTRACTED_DATA_STEP, extracted_data)
     print(f"✅ Scraping and extraction complete for {len(extracted_data)} URLs.")
 
 
 def extract_webpage_data(job: str):
     """Reads from cache, extracts key SEO elements, and saves to CSV."""
-    urls_to_process = pip.get(job, URL_LIST_STEP, [])
+    urls_to_process = wand.get(job, URL_LIST_STEP, [])
     extracted_data = []
     print(f"🔍 Extracting SEO elements for {len(urls_to_process)} URLs...")
     with SqliteDict(CACHE_DB_FILE) as cache:
@@ -187,7 +187,7 @@ def extract_webpage_data(job: str):
                 'url': url, 'title': title, 'meta_description': meta_description,
                 'h1s': h1s, 'h2s': h2s
             })
-    pip.set(job, EXTRACTED_DATA_STEP, extracted_data)
+    wand.set(job, EXTRACTED_DATA_STEP, extracted_data)
     try:
         df = pd.DataFrame(extracted_data)
         df.to_csv(EXTRACTED_DATA_CSV, index=False)
@@ -206,7 +206,7 @@ def stack_em(job: str) -> pd.DataFrame:
     This is the "Stack 'Em" step.
     """
     print("📊 Stacking pre-extracted data into a DataFrame...")
-    extracted_data = pip.get(job, EXTRACTED_DATA_STEP, [])
+    extracted_data = wand.get(job, EXTRACTED_DATA_STEP, [])
     if not extracted_data:
         print("❌ No extracted data found. Please run `scrape` first.")
         return pd.DataFrame()
@@ -227,10 +227,10 @@ def ai_faq_em(job: str, debug: bool = False) -> pd.DataFrame:
     import re
 
     # --- 1. Define Cache Path ---
-    cache_file = pip.paths.temp / f"faq_cache_{job}.json"
+    cache_file = wand.paths.temp / f"faq_cache_{job}.json"
 
     # --- 2. Load Data ---
-    extracted_data = pip.get(job, EXTRACTED_DATA_STEP, [])
+    extracted_data = wand.get(job, EXTRACTED_DATA_STEP, [])
     if not extracted_data:
         print("❌ No extracted data found. Please run `scrape` first.")
         return pd.DataFrame()
@@ -312,7 +312,7 @@ The JSON object must conform to the following schema:
 
                 # THE CURE: Invoke the Universal Adapter via the Wand
                 # We pass the system instructions separately for cleaner LLM routing
-                response_text = pip.prompt(
+                response_text = wand.prompt(
                     prompt_text=full_prompt, 
                     model_name="gemini-2.5-flash"  # You can parameterize this later!
                 )
@@ -371,7 +371,7 @@ The JSON object must conform to the following schema:
             print(f"❌ Error saving cache in `finally` block: {e}")
 
     print("✅ FAQ generation complete.")
-    pip.set(job, FAQ_DATA_STEP, faq_data)
+    wand.set(job, FAQ_DATA_STEP, faq_data)
     return pd.DataFrame(faq_data)
 
 def rack_em(df: pd.DataFrame) -> pd.DataFrame:
@@ -431,7 +431,7 @@ def display_results_log(job: str):
     MODIFIED: Displays the FAQ log AND saves it to an intermediate CSV.
     """
     print("📊 Displaying raw FAQ log...")
-    faq_data = pip.get(job, FAQ_DATA_STEP, [])
+    faq_data = wand.get(job, FAQ_DATA_STEP, [])
     if not faq_data:
         print("No FAQ data to display. Please run the previous steps.")
         return
@@ -445,7 +445,7 @@ def display_results_log(job: str):
     except Exception as e:
         print(f"⚠️ Could not save AI log CSV: {e}")
 
-    pip.set(job, FINAL_DATAFRAME_STEP, df.to_json(orient='records'))
+    wand.set(job, FINAL_DATAFRAME_STEP, df.to_json(orient='records'))
     with pd.option_context('display.max_rows', None, 'display.max_colwidth', 80):
         display(df)
 
@@ -454,7 +454,7 @@ def export_to_excel(job: str):
     Exports the final DataFrame to a formatted Excel file.
     """
     print("📄 Exporting data to Excel...")
-    final_json = pip.get(job, FINAL_DATAFRAME_STEP)
+    final_json = wand.get(job, FINAL_DATAFRAME_STEP)
     if not final_json:
         print("❌ No final data found to export. Please run the 'display_results' step first.")
         return
@@ -468,7 +468,7 @@ def export_to_excel(job: str):
                 max_length = max((df_final[column[0].value].astype(str).map(len).max(), len(str(column[0].value))))
                 adjusted_width = (max_length + 2) if max_length < 80 else 80
                 worksheet.column_dimensions[column[0].column_letter].width = adjusted_width
-        pip.set(job, EXPORT_FILE_STEP, output_filename)
+        wand.set(job, EXPORT_FILE_STEP, output_filename)
         print(f"✅ Success! Data exported to '{output_filename}'")
     except Exception as e:
         print(f"❌ Failed to export to Excel: {e}")
@@ -583,7 +583,7 @@ async def generate_visualizations_post_scrape(job: str, verbose: bool = False):
     """
     # --- Make imports local ---
     import asyncio
-    from pipulate import pip # Make sure pip is accessible
+    from pipulate import wand # Make sure pip is accessible
     from tools.scraper_tools import get_safe_path_component
     from pathlib import Path
     from loguru import logger # Use logger for output consistency
@@ -591,7 +591,7 @@ async def generate_visualizations_post_scrape(job: str, verbose: bool = False):
     # --- End local imports ---
 
     logger.info("🎨 Generating DOM visualizations via subprocess for scraped pages...")
-    extracted_data = pip.get(job, "extracted_data", []) # Use string for step name
+    extracted_data = wand.get(job, "extracted_data", []) # Use string for step name
     urls_processed = {item['url'] for item in extracted_data if isinstance(item, dict) and 'url' in item} # Safer extraction
 
     if not urls_processed:
