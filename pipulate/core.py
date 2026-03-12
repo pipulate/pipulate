@@ -195,7 +195,25 @@ class Pipulate:
         self.message_queue = self.OrderedMessageQueue()
         self.is_notebook_context = bool(db_path) # Flag for notebook context
         self.dialogue_tree = {} # Container for centralized narrative scripts
-    
+
+        # 🌌 THE TOPOLOGICAL MANIFOLD (Unified Path Registry)
+        actual_root = self._find_project_root(Path(__file__).resolve()) or Path.cwd()
+        
+        class WorkspaceManifold:
+            def __init__(self, root: Path):
+                self.root = root
+                self.data = root / "data"
+                self.logs = self.data / "logs"
+                self.temp = self.data / "temp"
+                self.downloads = self.data / "downloads"
+                self.browser_cache = self.data / "browser_cache"
+                
+                # Force the physical reality into existence
+                for p in [self.data, self.logs, self.temp, self.downloads, self.browser_cache]:
+                    p.mkdir(parents=True, exist_ok=True)
+                    
+        self.paths = WorkspaceManifold(actual_root)
+
         if db_path:
             # Standalone/Notebook Context: Create our "Parallel Universe" DB using fastlite directly
             from fastlite import Database
