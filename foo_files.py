@@ -17,24 +17,39 @@
 AI_PHOOEY_CHOP = """\
 # prompt_foo.py  # [11,791 tokens | 54,155 bytes]
 # foo_files.py  # [2,990 tokens | 11,024 bytes]
-# 
-# .gitignore  # [573 tokens | 2,089 bytes]
-# flake.nix  # [7,721 tokens | 32,979 bytes]
+
+.gitignore  # [573 tokens | 2,089 bytes]
+flake.nix  # [7,721 tokens | 32,979 bytes]
+
+imports/__init__.py  # [0 tokens | 0 bytes]
+assets/nbs/Advanced_Notebooks/URLInspector.ipynb
+assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
+  
+/home/mike/repos/pipulate/assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+/home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+imports/__init__.py  # [0 tokens | 0 bytes]
+imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
+
+pipulte/__init__.py
+pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+tools/mcp_tools.py  # [36,628 tokens | 186,793 bytes]
+imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
+assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
+assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
+
 # __init__.py  # [357 tokens | 1,565 bytes]
 # release.py  # [9,879 tokens | 44,440 bytes]
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
 # pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
 # pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-# imports/__init__.py  # [0 tokens | 0 bytes]
-# assets/nbs/Advanced_Notebooks/URLInspector.ipynb
-# assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
 
+# # HOW TO FIND MARKDOWN ACCEPTERS
 # remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
 # remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
 # ! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-
 
 # ============================================================================
 # I. THE SCRATCHPAD (Active Context & Transient Probes)
@@ -82,8 +97,6 @@ AI_PHOOEY_CHOP = """\
 # AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
 # README.md  # [20,467 tokens | 103,208 bytes]
 # cli.py  # [5,092 tokens | 22,615 bytes]
-# /home/mike/repos/pipulate/assets/nbs/Onboarding.ipynb
-# /home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH (~260KB)
 # server.py  # [54,246 tokens | 258,931 bytes]
@@ -329,7 +342,6 @@ AI_PHOOEY_CHOP = """\
 # assets/nbs/Advanced_Notebooks/GAPalyzer.ipynb  # [9,193 tokens | 31,140 bytes]
 # assets/nbs/Advanced_Notebooks/URLinspector.ipynb  # [2,405 tokens | 7,284 bytes]
 # assets/nbs/Advanced_Notebooks/VIDeditor.ipynb  # [569 tokens | 1,670 bytes]
-# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
 # assets/nbs/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
 # assets/prompts/pipulate-context.xsd  # [2,286 tokens | 8,129 bytes]
