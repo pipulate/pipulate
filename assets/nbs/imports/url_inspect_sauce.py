@@ -29,28 +29,10 @@ from openpyxl.worksheet.table import Table, TableStyleInfo
 from tools.scraper_tools import get_safe_path_component
 
 
-# --- Add Root Finding Helper ---
-def _find_project_root(start_path):
-    """Walks up from a starting path to find the project root (marked by 'flake.nix')."""
-    current_path = Path(start_path).resolve()
-    # Check current dir first
-    if (current_path / 'flake.nix').exists():
-        return current_path
-    # Then walk up
-    while current_path != current_path.parent:
-        if (current_path / 'flake.nix').exists():
-            return current_path
-        current_path = current_path.parent
-    # Check parent one last time if loop finishes at root
-    if (current_path / 'flake.nix').exists():
-        return current_path
-    return None # Return None if not found
-
-
 # --- CONFIGURATION ---
-CACHE_DB_FILE = "url_cache.sqlite"
-EXTRACTED_DATA_CSV = "_step_extract_output.csv"
-AI_LOG_CSV = "_step_ai_log_output.csv" # NEW: Filename for the AI output log
+CACHE_DB_FILE = pip.paths.temp / "url_cache.sqlite"
+EXTRACTED_DATA_CSV = pip.paths.temp / "_step_extract_output.csv"
+AI_LOG_CSV = pip.paths.logs / "_step_ai_log_output.csv"
 
 
 # Pipulate step names
@@ -739,19 +721,7 @@ def stack_seo_data(job: str) -> pd.DataFrame:
         return pd.DataFrame()
 
     all_seo_data = []
-
-    # --- Start Path Fix ---
-    # Find project root based on this script's location
-    script_location = Path(__file__).resolve().parent # Notebooks/imports
-    project_root = _find_project_root(script_location)
-
-    if not project_root:
-        print("❌ Error: Could not find project root (containing flake.nix). Cannot locate browser_cache.")
-        return pd.DataFrame()
-
-    base_dir = project_root / "Notebooks" / "browser_cache" # Use absolute path *including Notebooks*
-    print(f"🔍 Using absolute browser_cache path: {base_dir}")
-    # --- End Path Fix ---
+    base_dir = pip.paths.browser_cache
 
     # Regex to capture YAML front matter
     yaml_pattern = re.compile(r'^---\s*$(.*?)^---\s*$', re.MULTILINE | re.DOTALL)
