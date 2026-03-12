@@ -38,11 +38,7 @@ if project_root:
     if notebook_imports_path.exists() and str(notebook_imports_path) not in imports.__path__:
         imports.__path__.append(str(notebook_imports_path))
 
-# Instantiate the wand FIRST so we can use its Topological Manifold for paths
-DB_PATH = project_root / "Notebooks" / "data" / "pipeline.sqlite"
-DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-wand = Pipulate(db_path=str(DB_PATH))
-
+# --- PATH & LOGGING CONFIGURATION ---
 # 1. Silence loguru's default handler and set up the quiet console logger FIRST
 logger.remove()
 logger.add(sys.stderr, level="WARNING", colorize=True, format="<level>{level: <8}</level> | <cyan>{name}:{function}:{line}</cyan> - <level>{message}</level>")
