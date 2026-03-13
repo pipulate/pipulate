@@ -43,6 +43,7 @@ SeznamBot
 Sogou
 TerraCotta
 TikTokSpider
+Twitterbot
 Wget
 Yandex
 YandexBot
@@ -302,6 +303,7 @@ class HoneyDB:
                     WHEN ua.value LIKE '%Perplexity%' THEN 'Perplexity'
                     WHEN ua.value LIKE '%Applebot%' THEN 'Apple'
                     WHEN ua.value LIKE '%Amazonbot%' THEN 'Amazon'
+                    WHEN ua.value LIKE '%Twitterbot%' THEN 'X.com'
                     WHEN ua.value LIKE '%Googlebot%' THEN 'Google'
                     WHEN ua.value LIKE '%bingbot%' THEN 'Microsoft'
                     WHEN ua.value LIKE '%meta-%' THEN 'Meta'

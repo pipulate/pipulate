@@ -59,6 +59,7 @@ WHERE
     AND ua.value NOT LIKE '%SemrushBot%'
     AND ua.value NOT LIKE '%SeznamBot%'
     AND ua.value NOT LIKE '%TikTokSpider%'
+    AND ua.value NOT LIKE '%Twitterbot%'
     AND ua.value NOT LIKE '%Yandex%'
     AND ua.value NOT LIKE '%YisouSpider%'
     AND ua.value NOT LIKE '%axios%'
