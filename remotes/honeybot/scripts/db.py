@@ -4,8 +4,7 @@ import json
 from pathlib import Path
 
 
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-INTEL_PATH = REPO_ROOT / "assets" / "prompts" / "bot_intel.json"
+INTEL_PATH = Path(__file__).resolve().parent / "bot_intel.json"
 
 with open(INTEL_PATH, "r") as f:
     BOT_INTEL = json.load(f)
