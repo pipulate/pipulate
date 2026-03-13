@@ -17,7 +17,7 @@
 
 AI_PHOOEY_CHOP = """\
 # prompt_foo.py  # [11,791 tokens | 54,155 bytes]
-# foo_files.py  # [2,990 tokens | 11,024 bytes]
+foo_files.py  # [2,990 tokens | 11,024 bytes]
 
 remotes/honeybot/scripts/db.py  # [3,088 tokens | 14,008 bytes]
 remotes/honeybot/queries/mine_bots_heuristic.sql  # [688 tokens | 2,781 bytes]
@@ -269,17 +269,17 @@ remotes/honeybot/queries/mine_bots_heuristic.sql  # [688 tokens | 2,781 bytes]
 # DMZ TV Studio, Telemetry DB, and NixOS IaC. 
 
 # CHAPTER 16: HONEYBOT IAC & SCRIPTS
-# nixops.sh  # [227 tokens | 765 bytes]
-# remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
-# remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
-# remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
-# remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
-# remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
-# remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
-# remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
-# remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
-# remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
-# remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
+nixops.sh  # [227 tokens | 765 bytes]
+remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
+remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
+remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
+remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
+remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
+remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
+remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
+remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
+remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
+remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
 
 # CHAPTER 17: TELEMETRY SENSORS & DASHBOARD PROBES
 # These are the structural SQL definitions the AI can read to understand the schema.
@@ -385,6 +385,7 @@ remotes/honeybot/queries/mine_bots_heuristic.sql  # [688 tokens | 2,781 bytes]
 # assets/js/surreal.js  # [3,812 tokens | 13,432 bytes]
 # assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
+# assets/prompts/bot_intel.json  # [472 tokens | 1,411 bytes]
 # assets/prompts/pipulate-context.xsd  # [2,286 tokens | 8,129 bytes]
 # assets/prompts/system_prompt.md  # [628 tokens | 2,618 bytes]
 # assets/rich-table.css  # [417 tokens | 1,459 bytes]
