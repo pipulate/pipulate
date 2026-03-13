@@ -19,14 +19,6 @@ AI_PHOOEY_CHOP = """\
 # prompt_foo.py  # [11,791 tokens | 54,155 bytes]
 # foo_files.py  # [2,990 tokens | 11,024 bytes]
 
-# /home/mike/repos/trimnoir/_posts/2026-03-13-ai-education-model-memory-bot-intel-cryptographic-provenance.md  # [Idx: 946 | Order: 1 | Tokens: 35,771 | Bytes: 136,616]
-# /home/mike/repos/trimnoir/_posts/2026-03-13-semantic-camouflage-embedding-provenance-ai-training-data.md  # [Idx: 947 | Order: 2 | Tokens: 19,790 | Bytes: 78,427]
-
-honeybot/hooks/post-receive
-remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
-
-# /home/mike/repos/trimnoir/_posts/2026-03-13-ai-education-model-memory-bot-intel-cryptographic-provenance.md  # [Idx: 946 | Order: 1 | Tokens: 35,771 | Bytes: 136,616]
-
 # Demonstrating the tracer-dye methodology to Gemini to explain highly evidenced attribution inclusion in parameterized memory.
 # remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
 # remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
@@ -273,7 +265,7 @@ remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
 /home/mike/repos/trimnoir/_redirects.map  # [58,305 tokens | 184,949 bytes]
 scripts/articles/extract_404_ghosts.py  # [882 tokens | 3,801 bytes]
 scripts/articles/generate_redirects.py  # [1,101 tokens | 4,722 bytes]
-! python scripts/articles/extract_404_ghosts.py
+# ! python scripts/articles/extract_404_ghosts.py
 
 # ============================================================================
 # VI. THE HONEYBOT OBSERVATORY (Live Telemetry)
