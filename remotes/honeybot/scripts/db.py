@@ -1,63 +1,17 @@
 import sqlite3
 import datetime
+import json
 from pathlib import Path
 
 
-# Shared Intelligence
-KNOWN_BOTS = """\
-AhrefsBot
-Aliyun
-Amazonbot
-Applebot
-AwarioBot
-Baiduspider
-Barkrowler
-Bytespider
-CCBot
-ChatGPT-User
-ClaudeBot
-DataForSeoBot
-DotBot
-DuckAssistBot
-GPTBot
-GenomeCrawlerd
-Go-http-client
-Google-Safety
-Googlebot
-IbouBot
-KagiApp
-LinkupBot
-MJ12bot
-OAI-SearchBot
-Perplexity-User
-PerplexityBot
-PetalBot
-Photon
-PromptingBot
-Qwantbot
-SEOkicks
-SERankingBacklinksBot
-SeekportBot
-SemrushBot
-SeznamBot
-Sogou
-TerraCotta
-TikTokSpider
-Twitterbot
-Wget
-Yandex
-YandexBot
-YandexRenderResourcesBot
-YisouSpider
-axios
-bingbot
-botify
-curl
-kagi-fetcher
-meta-externalagent
-python-httpx
-python-requests
-""".splitlines()
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
+INTEL_PATH = REPO_ROOT / "assets" / "prompts" / "bot_intel.json"
+
+with open(INTEL_PATH, "r") as f:
+    BOT_INTEL = json.load(f)
+
+# Shared Intelligence automatically generated from JSON
+KNOWN_BOTS = list(BOT_INTEL["seen"].keys())
 
 # The single file that holds the truth
 DB_PATH = Path("/home/mike/www/mikelev.in/honeybot.db")
@@ -295,19 +249,17 @@ class HoneyDB:
         cur = conn.cursor()
         
         # We categorize the Known Bots into Families
+        case_lines = []
+        for bot, family in BOT_INTEL["seen"].items():
+            if family not in ("Other", "Script", "Search", "SEO Tool"):
+                case_lines.append(f"WHEN ua.value LIKE '%{bot}%' THEN '{family}'")
+        
+        case_sql = "\n                    ".join(case_lines)
+
         sql = f"""
             SELECT 
                 CASE 
-                    WHEN ua.value LIKE '%GPTBot%' OR ua.value LIKE '%ChatGPT%' OR ua.value LIKE '%OAI-SearchBot%' THEN 'OpenAI'
-                    WHEN ua.value LIKE '%Claude%' THEN 'Anthropic'
-                    WHEN ua.value LIKE '%Perplexity%' THEN 'Perplexity'
-                    WHEN ua.value LIKE '%Applebot%' THEN 'Apple'
-                    WHEN ua.value LIKE '%Amazonbot%' THEN 'Amazon'
-                    WHEN ua.value LIKE '%Twitterbot%' THEN 'X.com'
-                    WHEN ua.value LIKE '%Googlebot%' THEN 'Google'
-                    WHEN ua.value LIKE '%bingbot%' THEN 'Microsoft'
-                    WHEN ua.value LIKE '%meta-%' THEN 'Meta'
-                    WHEN ua.value LIKE '%Bytespider%' THEN 'ByteDance'
+                    {case_sql}
                     ELSE 'Other Agents'
                 END as family,
                 SUM(logs.count) as total
