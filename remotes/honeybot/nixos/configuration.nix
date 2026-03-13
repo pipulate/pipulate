@@ -211,9 +211,12 @@
           "~*text/markdown" 1;
       }
 
-      # ... any other maps you have, like your 404 redirect map ...
+      # 2. THE GHOST CATCHER: Load the dynamic 404 ledger into RAM
+      map $uri $new_uri {
+          include /home/mike/www/mikelev.in/_site/redirects.map;
+      }
 
-      # 2. The Log Format (which you already have, causing the error)
+      # 3. The Log Format (which you already have, causing the error)
       log_format custom_format '$remote_addr - - [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" Accept:"$http_accept" MarkdownServed:$serve_markdown';
     '';
 
