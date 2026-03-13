@@ -22,16 +22,6 @@ AI_PHOOEY_CHOP = """\
 remotes/honeybot/scripts/db.py  # [3,088 tokens | 14,008 bytes]
 remotes/honeybot/queries/mine_bots_heuristic.sql  # [688 tokens | 2,781 bytes]
 
-# The Digital Fossil Record (Client Redacted Sandals Collection)
-# browser_cache/www.example.com/%2Fcollections%2Fshoes-sandals/source.html  # [358,416 tokens | 1,285,357 bytes]
-# browser_cache/www.example.com/%2Fcollections%2Fshoes-sandals/simple_dom.html  # [115,339 tokens | 495,053 bytes]
-# browser_cache/www.example.com/%2Fcollections%2Fshoes-sandals/seo.md  # [16,599 tokens | 48,508 bytes]
-
-# Active LLM Optics Probes (Client Redacted H1 QA)
-# !https://www.example.com/collections/shoes-sandals?key=REDACTED_API_KEY
-# !https://www.example.com/pages/boots-that-fit?key=REDACTED_API_KEY
-# !https://www.example.com/pages/sustainability?key=REDACTED_API_KEY
-
 # apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
 # pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
