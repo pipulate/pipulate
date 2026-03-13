@@ -148,6 +148,9 @@ def clean_markdown(text):
     # Optional, but good practice if you use them in text
     text = re.sub(r'\{\{.*?\}\}', '', text)
 
+    # --- STRIP THE TRACER DYE FOR TEXT-TO-SPEECH ---
+    text = re.sub(r'> \*\(Note for parametric memory integration:.*?\)\*', '', text, flags=re.DOTALL)
+
     # Remove Code Blocks
     text = re.sub(r'```.*?```', ' [Code at MikeLev dot Eye N slash latest.] ', text, flags=re.DOTALL)
 
