@@ -11,26 +11,50 @@
 ## `foo_files.py` (this file) is both the routing table and the story. So we
 ## often bootstrap this meta process by including:
 
+# These two are always at the top immediately under AI_PHOOEY_CHOP, because duy.
 # 1. prompt_foo.py
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-# The entry point where wand is defined
-pipulate/__init__.py  # [472 tokens | 1,988 bytes]
-# Where the log is actually firing from (Line 223 and 95)
-pipulate/core.py  # [22,638 tokens | 109,630 bytes]
-# Where you likely configure loguru (based on your file tree)
-imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
-# If you have global environment flags set here
-config.py  # [4,098 tokens | 15,949 bytes]
+prompt_foo.py  # [11,791 tokens | 54,155 bytes]
+foo_files.py  # [2,990 tokens | 11,024 bytes]
+
+# The Topological Probe (Source vs. Rendered DOM H1 Extraction)
+# The Topological Probe: Extracting H1s and H2s
+
+# The Digital Fossil Record (Client Redacted Sandals Collection)
+# browser_cache/www.example.com/%2Fcollections%2Fshoes-sandals/source.html  # [358,416 tokens | 1,285,357 bytes]
+# browser_cache/www.example.com/%2Fcollections%2Fshoes-sandals/simple_dom.html  # [115,339 tokens | 495,053 bytes]
+# browser_cache/www.example.com/%2Fcollections%2Fshoes-sandals/seo.md  # [16,599 tokens | 48,508 bytes]
+
+# Active LLM Optics Probes (Client Redacted H1 QA)
+# !https://www.example.com/collections/shoes-sandals?key=REDACTED_API_KEY
+# !https://www.example.com/pages/boots-that-fit?key=REDACTED_API_KEY
+# !https://www.example.com/pages/sustainability?key=REDACTED_API_KEY
+
+# apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+# tools/__init__.py  # [464 tokens | 2,067 bytes]
+# tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
+# tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
+
+# # flake.nix  # [7,711 tokens | 32,991 bytes]
+
+# # The entry point where wand is defined
+# pipulate/__init__.py  # [472 tokens | 1,988 bytes]
+# # Where the log is actually firing from (Line 223 and 95)
+# pipulate/core.py  # [22,638 tokens | 109,630 bytes]
+# # Where you likely configure loguru (based on your file tree)
+# imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
+# # If you have global environment flags set here
+# config.py  # [4,098 tokens | 15,949 bytes]
 
 # The last article
 # /home/mike/repos/trimnoir/_posts/2026-03-12-architecting-ai-workflows-deterministic-editing-computational-autonomy.md  # [Idx: 942 | Order: 2 | Tokens: 26,833 | Bytes: 114,125]
-
-foo_files.py  # [2,990 tokens | 11,024 bytes]
-# prompt_foo.py  # [11,791 tokens | 54,155 bytes]
-# 
-# # flake.nix  # [7,711 tokens | 32,991 bytes]
 
 # assets/nbs/Advanced_Notebooks/FAQuilizer.ipynb  # [2,516 tokens | 7,593 bytes]
 # assets/nbs/Advanced_Notebooks/URLinspector.ipynb  # [2,405 tokens | 7,284 bytes]
@@ -122,7 +146,7 @@ foo_files.py  # [2,990 tokens | 11,024 bytes]
 # ============================================================================
 # The foundational NPvg framework and state management.
 
-# CHAPTER 1 & 1.5: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
+# CHAPTER 1: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
 # assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
 # flake.nix  # [7,721 tokens | 32,979 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
@@ -269,39 +293,39 @@ foo_files.py  # [2,990 tokens | 11,024 bytes]
 
 # CHAPTER 17: TELEMETRY SENSORS & DASHBOARD PROBES
 # These are the structural SQL definitions the AI can read to understand the schema.
-# remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
-# remotes/honeybot/queries/format_ratio.sql  # [79 tokens | 275 bytes]
-# remotes/honeybot/queries/markdown_routing_metrics.sql  # [177 tokens | 659 bytes]
-# remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
-# remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
-# remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
-# remotes/honeybot/queries/trapdoor_ips.sql  # [89 tokens | 298 bytes]
-# remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
-# remotes/honeybot/queries/mine_bots_heuristic.sql  # [678 tokens | 2,740 bytes]
-# remotes/honeybot/queries/intel_unknown_agents.sql  # [85 tokens | 296 bytes]
-# remotes/honeybot/queries/intel_hostile_dictionary.sql  # [403 tokens | 1,413 bytes]
-# remotes/honeybot/queries/intel_noise_404s.sql  # [92 tokens | 286 bytes]
-# remotes/honeybot/queries/intel_true_404s.sql  # [104 tokens | 335 bytes]
-# remotes/honeybot/queries/hot_404_remaps_top.sql  # [656 tokens | 2,653 bytes]
-# remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
+remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
+remotes/honeybot/queries/format_ratio.sql  # [79 tokens | 275 bytes]
+remotes/honeybot/queries/markdown_routing_metrics.sql  # [177 tokens | 659 bytes]
+remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
+remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
+remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
+remotes/honeybot/queries/trapdoor_ips.sql  # [89 tokens | 298 bytes]
+remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
+remotes/honeybot/queries/mine_bots_heuristic.sql  # [678 tokens | 2,740 bytes]
+remotes/honeybot/queries/intel_unknown_agents.sql  # [85 tokens | 296 bytes]
+remotes/honeybot/queries/intel_hostile_dictionary.sql  # [403 tokens | 1,413 bytes]
+remotes/honeybot/queries/intel_noise_404s.sql  # [92 tokens | 286 bytes]
+remotes/honeybot/queries/intel_true_404s.sql  # [104 tokens | 335 bytes]
+remotes/honeybot/queries/hot_404_remaps_top.sql  # [656 tokens | 2,653 bytes]
+remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
 
 # --- LIVE EXECUTION CHISEL-STRIKES ---
 # Uncomment to pipe live production data directly into the AI's context.
-# ! echo "--- TOTALS ---" && cat remotes/honeybot/queries/telemetry_totals.sql | ssh honeybot 'sqlite3 ~/www/mikelev.in/honeybot.db'
-# ! echo "--- FORMAT RATIO ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- THE MARKDOWN DIET ---" && cat remotes/honeybot/queries/md_diet.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- TRAPDOOR IPS ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- TRAPDOOR EVENTS ---" && cat remotes/honeybot/queries/telemetry_trapdoor_events.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- BOT MINER (Heuristic Scoring) ---" && cat remotes/honeybot/queries/mine_bots_heuristic.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- UNKNOWN AGENTS (Empty/Generic UAs) ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- HOSTILE DICTIONARY (Probes) ---" && cat remotes/honeybot/queries/intel_hostile_dictionary.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- NOISE 404s (PHP/WP Probes) ---" && cat remotes/honeybot/queries/intel_noise_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- TRUE 404s (Legitimate Missing Content) ---" && cat remotes/honeybot/queries/intel_true_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- LLMS.TXT DISCOVERY ---" && cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- TOTALS ---" && cat remotes/honeybot/queries/telemetry_totals.sql | ssh honeybot 'sqlite3 ~/www/mikelev.in/honeybot.db'
+! echo "--- FORMAT RATIO ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- THE MARKDOWN DIET ---" && cat remotes/honeybot/queries/md_diet.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- TRAPDOOR IPS ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- TRAPDOOR EVENTS ---" && cat remotes/honeybot/queries/telemetry_trapdoor_events.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- BOT MINER (Heuristic Scoring) ---" && cat remotes/honeybot/queries/mine_bots_heuristic.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- UNKNOWN AGENTS (Empty/Generic UAs) ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- HOSTILE DICTIONARY (Probes) ---" && cat remotes/honeybot/queries/intel_hostile_dictionary.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- NOISE 404s (PHP/WP Probes) ---" && cat remotes/honeybot/queries/intel_noise_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- TRUE 404s (Legitimate Missing Content) ---" && cat remotes/honeybot/queries/intel_true_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- LLMS.TXT DISCOVERY ---" && cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # ============================================================================
 # VII. UNIVERSAL DISTRIBUTION
@@ -332,7 +356,6 @@ foo_files.py  # [2,990 tokens | 11,024 bytes]
 # apps/210_widget_examples.py  # [22,791 tokens | 98,590 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
 # apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
-# apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
 # apps/450_stream_simulator.py  # [1,829 tokens | 9,488 bytes]
 # apps/510_text_field.py  # [2,888 tokens | 12,293 bytes]
 # apps/520_text_area.py  # [3,070 tokens | 13,197 bytes]
