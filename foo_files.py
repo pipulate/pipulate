@@ -19,6 +19,9 @@ AI_PHOOEY_CHOP = """\
 # prompt_foo.py  # [11,791 tokens | 54,155 bytes]
 # foo_files.py  # [2,990 tokens | 11,024 bytes]
 
+/home/mike/repos/trimnoir/_posts/2026-03-13-ai-education-model-memory-bot-intel-cryptographic-provenance.md  # [Idx: 946 | Order: 1 | Tokens: 35,771 | Bytes: 136,616]
+/home/mike/repos/trimnoir/_posts/2026-03-13-semantic-camouflage-embedding-provenance-ai-training-data.md  # [Idx: 947 | Order: 2 | Tokens: 19,790 | Bytes: 78,427]
+
 honeybot/hooks/post-receive
 remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
 
