@@ -14,22 +14,18 @@ def get_excluded_urls():
     repo_root = Path(__file__).resolve().parent.parent.parent
     trimnoir_root = repo_root.parent / 'trimnoir'
     
-    # 1. Read already mapped URLs to push deeper into the Zipfian tail
-    redirects_path = trimnoir_root / '_redirects.map'
-    if redirects_path.exists():
-        with open(redirects_path, 'r') as f:
-            for line in f:
-                line = line.strip()
-                if not line or line.startswith('#'): continue
-                
-                # Extract the source path from the regex syntax (~^/path//?$)
-                raw_source = line.split()[0]
-                if raw_source.startswith("~^"): raw_source = raw_source[2:]
-                if raw_source.endswith("/?$"): raw_source = raw_source[:-3]
-                elif raw_source.endswith("$"): raw_source = raw_source[:-1]
-                
-                exclusions.add(raw_source)
-                exclusions.add(raw_source.rstrip('/')) # Catch variations
+    # 1. Read the upstream CSV ledger to push deeper into the Zipfian tail instantly
+    raw_csv_path = trimnoir_root / '_raw_map.csv'
+    if raw_csv_path.exists():
+        import csv
+        with open(raw_csv_path, 'r', encoding='utf-8') as f:
+            reader = csv.reader(f)
+            for row in reader:
+                if len(row) >= 1:
+                    raw_source = row[0].strip()
+                    if raw_source:
+                        exclusions.add(raw_source)
+                        exclusions.add(raw_source.rstrip('/')) # Catch variations
 
     # 2. Read active physical hubs to prevent Nginx collision
     navgraph_path = trimnoir_root / 'navgraph.json'
