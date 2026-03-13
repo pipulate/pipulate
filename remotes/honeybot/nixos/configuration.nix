@@ -231,9 +231,9 @@
         extraConfig = ''
           add_header Vary "Accept" always;
 
-          # if ($new_uri) {
-          #     return 301 $new_uri;
-          # }
+          if ($new_uri) {
+              return 301 $new_uri;
+          }
         '';
       };
       # THE JAVASCRIPT TRAPDOOR
