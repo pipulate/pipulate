@@ -269,10 +269,10 @@ scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
 scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
 
 # THE 404 AFFAIR (Topological Healer Blueprint)
-# /home/mike/repos/trimnoir/_raw_map.csv  # [46,314 tokens | 164,991 bytes]
-# /home/mike/repos/trimnoir/_redirects.map  # [58,305 tokens | 184,949 bytes]
-# scripts/articles/extract_404_ghosts.py  # [882 tokens | 3,801 bytes]
-# scripts/articles/generate_redirects.py  # [1,101 tokens | 4,722 bytes]
+/home/mike/repos/trimnoir/_raw_map.csv  # [46,314 tokens | 164,991 bytes]
+/home/mike/repos/trimnoir/_redirects.map  # [58,305 tokens | 184,949 bytes]
+scripts/articles/extract_404_ghosts.py  # [882 tokens | 3,801 bytes]
+scripts/articles/generate_redirects.py  # [1,101 tokens | 4,722 bytes]
 # ! python scripts/articles/extract_404_ghosts.py
 
 # ============================================================================
@@ -416,7 +416,7 @@ remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
-# remotes/honeybot/scripts/bot_intel.json  # [472 tokens | 1,411 bytes]
+# remotes/honeybot/scripts/bot_intel.json  # [482 tokens | 1,443 bytes]
 # remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
 # requirements.in  # [573 tokens | 1,924 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
