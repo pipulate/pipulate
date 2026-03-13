@@ -39,7 +39,7 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
         return
 
     active_permalinks = get_active_permalinks(navgraph_path)
-    valid_rows = []
+    valid_mappings = {}  # The Deduplication Ledger
     
     # Pass 1: Read, Clean, and Filter the CSV
     with open(csv_input_path, 'r', encoding='utf-8') as infile:
@@ -80,19 +80,20 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
                 print(f"⚠️ Dropping oversized URL (>{len(safe_old_url)} chars): {safe_old_url[:30]}...")
                 continue
                 
-            # Keep it in our valid ledger memory
-            valid_rows.append([old_url, new_url])
+            # Add to dict. If old_url already exists, the newer AI mapping silently overrides it.
+            valid_mappings[old_url] = new_url
 
     # Pass 2: Rewrite the CSV Ledger (Self-Pruning, No Blank Lines)
     with open(csv_input_path, 'w', newline='', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerows(valid_rows)
+        # Convert the dict back to a list of rows for the CSV
+        writer.writerows([[k, v] for k, v in valid_mappings.items()])
     print(f"🧹 Pruned and synchronized raw CSV ledger.")
 
     # Pass 3: Compile the final Nginx Map
     with open(map_output_path, 'w', encoding='utf-8') as outfile:
         outfile.write("# AI-Generated Semantic Redirects\n")
-        for old_url, new_url in valid_rows:
+        for old_url, new_url in valid_mappings.items():
             safe_old_url = urllib.parse.quote(old_url, safe='/%')
             if not safe_old_url.startswith('/'): safe_old_url = '/' + safe_old_url
             if not new_url.startswith('/'): new_url = '/' + new_url
