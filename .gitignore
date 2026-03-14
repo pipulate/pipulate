@@ -76,8 +76,10 @@ Notebooks/Advanced_Notebooks/FAQuilizer.ipynb
 Notebooks/Advanced_Notebooks/GAPalyzer.ipynb
 Notebooks/Advanced_Notebooks/URLinspector.ipynb
 Notebooks/Advanced_Notebooks/VIDeditor.ipynb
-Notebooks/imports/gap_analyzer_sauce.py
+
 Notebooks/imports/faq_writer_sauce.py
+Notebooks/imports/gap_analyzer_sauce.py
+Notebooks/imports/onboard_sauce.py
 Notebooks/imports/url_inspect_sauce.py
 Notebooks/imports/videditor_sauce.py
 
