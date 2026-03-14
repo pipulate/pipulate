@@ -339,17 +339,12 @@ foo_files.py  # [8,873 tokens | 28,749 bytes]
 # ============================================================================
 CHOP_404_AFFAIR = """\
 # THE 404 AFFAIR (Topological Healer Blueprint)
-/home/mike/repos/trimnoir/_raw_map.csv
-/home/mike/repos/trimnoir/_redirects.map
-scripts/articles/extract_404_ghosts.py
-scripts/articles/generate_redirects.py
+/home/mike/repos/trimnoir/_raw_map.csv  # [18,608 tokens | 65,818 bytes]
+/home/mike/repos/trimnoir/_redirects.map  # [23,413 tokens | 73,822 bytes]
+scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
+scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 ! python scripts/articles/extract_404_ghosts.py
 """
-
-# ============================================================================
-# VIII. THE PAINTBOX (Unused Colors)
-# ============================================================================
-# Files tracked by git but not yet mixed into the palette above.
 
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
@@ -470,3 +465,4 @@ scripts/articles/generate_redirects.py
 # scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
 # scripts/workflow/update_template_config.py  # [1,671 tokens | 8,381 bytes]
 # scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
+"""
