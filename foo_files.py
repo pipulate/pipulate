@@ -332,10 +332,10 @@ foo_files.py  # [8,873 tokens | 28,749 bytes]
 # https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/flake.nix
 
 # ============================================================================
-# VIII. THE ORPHANAGE (Uncovered Files)
+# VIII. THE PAINTBOX (Unused Colors)
 # ============================================================================
-# Files tracked by git but not listed in any chapter above.
-# Move these into the active chapters to grant the AI visibility.
+# Files tracked by git but not yet mixed into the palette above.
+# Move these into the active chapters to paint them onto the context canvas.
 
 # .jupyter/lab/user-settings/@jupyterlab/apputils-extension/themes.json  # [9 tokens | 29 bytes]
 # .jupyter/lab/user-settings/@jupyterlab/codemirror-extension/plugin.json  # [15 tokens | 45 bytes]
