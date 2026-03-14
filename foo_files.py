@@ -15,6 +15,8 @@
 # 1. prompt_foo.py
 # 2. foo_files.py  # <-- this
 
+# Search using this to jump to next un-commented line: \v^\s*[^#\s]
+
 AI_PHOOEY_CHOP = """\
 # prompt_foo.py  # [12,914 tokens | 59,241 bytes]
 foo_files.py  # [8,873 tokens | 28,749 bytes]
@@ -160,32 +162,32 @@ foo_files.py  # [8,873 tokens | 28,749 bytes]
 # AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
 # README.md  # [20,467 tokens | 103,208 bytes]
 # cli.py  # [5,092 tokens | 22,615 bytes]
-apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
 # assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH (~260KB)
-config.py  # [4,098 tokens | 15,949 bytes]
-server.py  # [54,246 tokens | 258,931 bytes]
+# config.py  # [4,098 tokens | 15,949 bytes]
+# server.py  # [54,246 tokens | 258,931 bytes]
 # requirements.in  # [573 tokens | 1,924 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+ 
 # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
-# __init__.py  # [357 tokens | 1,565 bytes]
-# imports/__init__.py  # [0 tokens | 0 bytes]
-# imports/ai_dictdb.py  # [1,733 tokens | 8,158 bytes]
-# imports/database_safety_wrapper.py  # [1,744 tokens | 8,254 bytes]
-# imports/durable_backup_system.py  # [5,117 tokens | 25,413 bytes]
-# imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
-# imports/stream_orchestrator.py  # [1,163 tokens | 5,841 bytes]
-# imports/mcp_orchestrator.py  # [772 tokens | 3,332 bytes]
-# imports/append_only_conversation.py  # [4,345 tokens | 22,449 bytes]
-# imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
+__init__.py  # [357 tokens | 1,565 bytes]
+imports/__init__.py  # [0 tokens | 0 bytes]
+imports/ai_dictdb.py  # [1,733 tokens | 8,158 bytes]
+imports/database_safety_wrapper.py  # [1,744 tokens | 8,254 bytes]
+imports/durable_backup_system.py  # [5,117 tokens | 25,413 bytes]
+imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
+imports/stream_orchestrator.py  # [1,163 tokens | 5,841 bytes]
+imports/mcp_orchestrator.py  # [772 tokens | 3,332 bytes]
+imports/append_only_conversation.py  # [4,345 tokens | 22,449 bytes]
+imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 
 # ============================================================================
 # III. THE ANATOMY (UX, Tools & Apps)
