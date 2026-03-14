@@ -194,6 +194,10 @@
     recommendedProxySettings = true;
     recommendedTlsSettings = true; 
 
+    # ✅ THE NIXOS WAY: Add the memory buckets here as native attributes
+    mapHashBucketSize = 256;
+    mapHashMaxSize = 8192;
+
     # THE NEW TELEMETRY LOG FORMAT
     commonHttpConfig = ''
       log_format ai_tracker '$remote_addr - $remote_user [$time_local] '
@@ -205,10 +209,6 @@
 
     # 1. THE SENSOR: Read the Accept header and define the MIME type
       appendHttpConfig = ''
-      # Expand Memory for Massive Map Files
-      map_hash_bucket_size 256;
-      map_hash_max_size 8192;
-
       # 1. The Missing Map: Define $serve_markdown based on the Accept header
       map $http_accept $serve_markdown {
           default 0;
