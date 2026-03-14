@@ -799,7 +799,7 @@ def annotate_foo_files_in_place():
         logger.print(f"Warning: Failed to auto-annotate foo_files.py: {e}")
 
 # ============================================================================
-# --- Orphanage & Repository Profiling ---
+# --- Paintbox & Repository Profiling ---
 # ============================================================================
 STORY_EXTENSIONS = {
     '.py', '.js', '.css', '.html', '.md', '.markdown', '.txt',
@@ -824,11 +824,11 @@ def collect_repo_files(repo_root: str) -> set:
                 repo_files.add(line)
         return repo_files
     except (subprocess.CalledProcessError, FileNotFoundError):
-        logger.print("⚠️  `git ls-files` failed. Cannot run Orphanage check.\n")
+        logger.print("⚠️  `git ls-files` failed. Cannot run Paintbox check.\n")
         return set()
 
-def update_orphanage_in_place():
-    """Finds unmapped files in the repo and injects them into the Orphanage section of foo_files.py."""
+def update_paintbox_in_place():
+    """Finds unclaimed files in the repo and injects them into the Paintbox section of foo_files.py."""
     foo_path = os.path.join(REPO_ROOT, "foo_files.py")
     if not os.path.exists(foo_path):
         return
@@ -848,8 +848,8 @@ def update_orphanage_in_place():
                 continue
             if not in_story_section:
                 continue
-            if "VIII. THE ORPHANAGE" in line:
-                break # Stop before parsing the orphans themselves
+            if "VIII. THE PAINTBOX" in line:
+                break # Stop before parsing the unused tubes themselves
 
             clean_line = line.lstrip("#").strip()
             if (not clean_line or clean_line.startswith("=") or 
@@ -872,14 +872,14 @@ def update_orphanage_in_place():
         if not repo_files:
             return # Bail if git failed
             
-        orphans = sorted(repo_files - all_claimed_files)
+        unused_tubes = sorted(repo_files - all_claimed_files)
 
-        # Phase 3: Inject the orphans idempotently
+        # Phase 3: Inject the unused tubes idempotently
         with open(foo_path, "r", encoding="utf-8") as f:
             foo_content = f.read()
 
-        ORPHAN_MARKER = "# ============================================================================\n# VIII. THE ORPHANAGE (Uncovered Files)\n# ============================================================================"
-        marker_index = foo_content.find(ORPHAN_MARKER)
+        PAINTBOX_MARKER = "# ============================================================================\n# VIII. THE PAINTBOX (Unused Colors)\n# ============================================================================"
+        marker_index = foo_content.find(PAINTBOX_MARKER)
         
         if marker_index != -1:
             base_content = foo_content[:marker_index].rstrip() + "\n\n"
@@ -887,36 +887,36 @@ def update_orphanage_in_place():
             end_quote_idx = foo_content.rfind('"""')
             base_content = foo_content[:end_quote_idx].rstrip() + "\n\n"
 
-        if not orphans:
+        if not unused_tubes:
             with open(foo_path, "w", encoding="utf-8") as f:
                 f.write(base_content + '\n"""\n')
-            return # Clean exit, no orphans
+            return # Clean exit, no unused paint
 
-        orphan_lines = [
-            ORPHAN_MARKER, 
-            "# Files tracked by git but not listed in any chapter above.",
-            "# Move these into the active chapters to grant the AI visibility.\n"
+        paintbox_lines = [
+            PAINTBOX_MARKER,
+            "# Files tracked by git but not yet mixed into the palette above.",
+            "# Move these into the active chapters to paint them onto the context canvas.\n"
         ]
 
-        logger.print(f"👻 Injecting {len(orphans)} unmapped files into the Orphanage...")
-        for orphan_path in orphans:
-            full_path = os.path.join(REPO_ROOT, orphan_path)
+        logger.print(f"🎨 Squeezing {len(unused_tubes)} fresh tubes of code into the Paintbox...")
+        for tube_path in unused_tubes:
+            full_path = os.path.join(REPO_ROOT, tube_path)
             try:
                 with open(full_path, "r", encoding="utf-8") as f:
                     content = f.read()
                 tokens = count_tokens(content)
                 b_size = len(content.encode('utf-8'))
-                orphan_lines.append(f"# {orphan_path}  # [{tokens:,} tokens | {b_size:,} bytes]")
+                paintbox_lines.append(f"# {tube_path}  # [{tokens:,} tokens | {b_size:,} bytes]")
             except Exception:
-                orphan_lines.append(f"# {orphan_path}  # [Error reading file]")
+                paintbox_lines.append(f"# {tube_path}  # [Error reading file]")
 
-        final_content = base_content + "\n".join(orphan_lines) + '\n"""\n'
+        final_content = base_content + "\n".join(paintbox_lines) + '\n"""\n'
         
         with open(foo_path, "w", encoding="utf-8") as f:
             f.write(final_content)
 
     except Exception as e:
-        logger.print(f"Warning: Failed to update the Orphanage: {e}")
+        logger.print(f"Warning: Failed to update the Paintbox: {e}")
 
 # ============================================================================
 # --- Main Execution Logic ---
@@ -982,7 +982,7 @@ def main():
 
     # 2. Process all specified files
     annotate_foo_files_in_place()
-    update_orphanage_in_place()   # <-- THE NEW SENSOR PING
+    update_paintbox_in_place()   # <-- THE NEW SENSOR PING
     files_to_process = parse_file_list_from_config()
     processed_files_data = []
 
