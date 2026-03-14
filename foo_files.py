@@ -19,7 +19,7 @@
 
 AI_PHOOEY_CHOP = """\
 # prompt_foo.py  # [12,914 tokens | 59,241 bytes]
-foo_files.py  # [8,873 tokens | 28,749 bytes]
+# foo_files.py  # [8,873 tokens | 28,749 bytes]
 
 # Demonstrating the tracer-dye methodology to Gemini to explain highly evidenced attribution inclusion in parameterized memory.
 # remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
@@ -269,8 +269,10 @@ foo_files.py  # [8,873 tokens | 28,749 bytes]
 # assets/nbs/imports/videditor_sauce.py  # [937 tokens | 4,098 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
-Notebooks/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-Notebooks/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+assets/nbs/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
+Notebooks/Onboarding.ipynb  # [4,504 tokens | 14,798 bytes]
+Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
 
 # CHAPTER 15: JEKYLL PUBLISHING
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
