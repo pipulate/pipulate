@@ -151,6 +151,8 @@ foo_files.py  # [8,873 tokens | 28,749 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH (~260KB)
 # server.py  # [54,246 tokens | 258,931 bytes]
+# requirements.in  # [573 tokens | 1,924 bytes]
+# requirements.txt  # [7,010 tokens | 18,582 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
@@ -411,8 +413,6 @@ foo_files.py  # [8,873 tokens | 28,749 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
 # remotes/honeybot/scripts/bot_intel.json  # [482 tokens | 1,443 bytes]
 # remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
-# requirements.in  # [573 tokens | 1,924 bytes]
-# requirements.txt  # [7,010 tokens | 18,582 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
 # scripts/articles/common.py  # [881 tokens | 3,571 bytes]
