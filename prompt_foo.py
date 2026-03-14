@@ -828,6 +828,7 @@ def collect_repo_files(repo_root: str) -> set:
         logger.print("⚠️  `git ls-files` failed. Cannot run Paintbox check.\n")
         return set()
 
+
 def update_paintbox_in_place():
     """Finds unclaimed files in the repo and injects them into the Paintbox section of foo_files.py."""
     foo_path = os.path.join(REPO_ROOT, "foo_files.py")
@@ -893,11 +894,6 @@ def update_paintbox_in_place():
                 f.write(base_content + '\n')
             return # Clean exit, no unused paint
 
-        if not unused_tubes:
-            with open(foo_path, "w", encoding="utf-8") as f:
-                f.write(base_content + '\n"""\n')
-            return # Clean exit, no unused paint
-
         paintbox_lines = [
             PAINTBOX_MARKER,
             "# Files tracked by git but not yet mixed into the palette above.",
@@ -916,13 +912,15 @@ def update_paintbox_in_place():
             except Exception:
                 paintbox_lines.append(f"# {tube_path}  # [Error reading file]")
 
-        final_content = base_content + "\n".join(paintbox_lines) + '\n"""\n'
-
+        # THIS IS THE CRITICAL FIX: No string closure appended!
+        final_content = base_content + "\n".join(paintbox_lines) + '\n'
+        
         with open(foo_path, "w", encoding="utf-8") as f:
             f.write(final_content)
 
     except Exception as e:
         logger.print(f"Warning: Failed to update the Paintbox: {e}")
+
 
 # ============================================================================
 # --- Main Execution Logic ---
