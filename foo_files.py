@@ -165,7 +165,8 @@ apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH (~260KB)
-# server.py  # [54,246 tokens | 258,931 bytes]
+config.py  # [4,098 tokens | 15,949 bytes]
+server.py  # [54,246 tokens | 258,931 bytes]
 # requirements.in  # [573 tokens | 1,924 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
 
