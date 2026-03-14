@@ -92,14 +92,12 @@ def check_ai_models(preferred_local=None, preferred_cloud=None):
         print(f"❌ Error communicating with the Universal Adapter: {e}")
         return {"local": False, "cloud": False, "has_any_local": False}
 
+
 def show_artifacts(target_url: str):
     """Displays a button to open the cache directory for a given URL."""
-    from urllib.parse import urlparse, quote
+    from tools.scraper_tools import get_safe_path_component
     
-    parsed_url = urlparse(target_url)
-    domain = parsed_url.netloc
-    path = parsed_url.path or '/'
-    url_path_slug = quote(path, safe='')
+    domain, url_path_slug = get_safe_path_component(target_url)
     
     cache_dir = wand.paths.browser_cache / 'looking_at' / domain / url_path_slug
 
@@ -127,14 +125,12 @@ def show_artifacts(target_url: str):
     else:
         print("Directory not found. The scrape may not have completed successfully.")
 
+
 def interrogate_local_ai(target_url: str, preferred_model: str = None):
     """Reads the accessibility tree and asks the local AI to summarize it."""
-    from urllib.parse import urlparse, quote
+    from tools.scraper_tools import get_safe_path_component
     
-    parsed_url = urlparse(target_url)
-    domain = parsed_url.netloc
-    path = parsed_url.path or '/'
-    url_path_slug = quote(path, safe='')
+    domain, url_path_slug = get_safe_path_component(target_url)
 
     md_file = wand.paths.browser_cache / "looking_at" / domain / url_path_slug / "accessibility_tree.json"
 
@@ -165,6 +161,7 @@ def interrogate_local_ai(target_url: str, preferred_model: str = None):
             print(f"⚠️ Could not complete local AI analysis: {e}")
     else:
         print(f"⚠️ Could not find {md_file}. Did the previous step complete successfully?")
+
 
 async def analyze_ai_readiness(job: str, url: str, verbose: bool = True, override_cache: bool = False):
     """
