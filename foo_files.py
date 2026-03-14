@@ -16,8 +16,8 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-# prompt_foo.py  # [11,791 tokens | 54,155 bytes]
-# foo_files.py  # [2,990 tokens | 11,024 bytes]
+prompt_foo.py  # [12,914 tokens | 59,241 bytes]
+foo_files.py  # [8,873 tokens | 28,749 bytes]
 
 # Demonstrating the tracer-dye methodology to Gemini to explain highly evidenced attribution inclusion in parameterized memory.
 # remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
@@ -261,10 +261,10 @@ AI_PHOOEY_CHOP = """\
 # scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
 
 # THE 404 AFFAIR (Topological Healer Blueprint)
-/home/mike/repos/trimnoir/_raw_map.csv  # [46,314 tokens | 164,991 bytes]
-/home/mike/repos/trimnoir/_redirects.map  # [58,305 tokens | 184,949 bytes]
-scripts/articles/extract_404_ghosts.py  # [882 tokens | 3,801 bytes]
-scripts/articles/generate_redirects.py  # [1,101 tokens | 4,722 bytes]
+# /home/mike/repos/trimnoir/_raw_map.csv  # [46,314 tokens | 164,991 bytes]
+# /home/mike/repos/trimnoir/_redirects.map  # [58,305 tokens | 184,949 bytes]
+# scripts/articles/extract_404_ghosts.py  # [882 tokens | 3,801 bytes]
+# scripts/articles/generate_redirects.py  # [1,101 tokens | 4,722 bytes]
 # ! python scripts/articles/extract_404_ghosts.py
 
 # ============================================================================
@@ -389,6 +389,7 @@ scripts/articles/generate_redirects.py  # [1,101 tokens | 4,722 bytes]
 # assets/js/surreal.js  # [3,812 tokens | 13,432 bytes]
 # assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
+# assets/prompts/find404s.md  # [350 tokens | 1,624 bytes]
 # assets/prompts/pipulate-context.xsd  # [2,286 tokens | 8,129 bytes]
 # assets/prompts/system_prompt.md  # [628 tokens | 2,618 bytes]
 # assets/rich-table.css  # [417 tokens | 1,459 bytes]
