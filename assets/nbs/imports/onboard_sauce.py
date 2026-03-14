@@ -96,25 +96,11 @@ def check_ai_models(preferred_local=None, preferred_cloud=None):
 def show_artifacts(target_url: str):
     """Displays a button to open the cache directory for a given URL."""
     from tools.scraper_tools import get_safe_path_component
-    import os
+    import ipywidgets as widgets
+    from IPython.display import display
     
     domain, url_path_slug = get_safe_path_component(target_url)
-    
     cache_dir = wand.paths.browser_cache / domain / url_path_slug
-
-    # --- START BRUTAL DEBUGGING ---
-    print(f"🛑 DIAGNOSTIC: Target URL: {target_url}")
-    print(f"🛑 DIAGNOSTIC: Constructed cache_dir: {cache_dir}")
-    print(f"🛑 DIAGNOSTIC: Does it exist? {cache_dir.exists()}")
-    
-    # Let's see what *is* inside the browser_cache folder
-    if wand.paths.browser_cache.exists():
-        print(f"🛑 DIAGNOSTIC: Contents of {wand.paths.browser_cache}:")
-        for item in wand.paths.browser_cache.iterdir():
-            print(f"    - {item.name}")
-    else:
-        print(f"🛑 DIAGNOSTIC: The root browser_cache directory DOES NOT EXIST at {wand.paths.browser_cache}")
-    # --- END BRUTAL DEBUGGING ---
 
     if cache_dir.exists():
         wand.speak("Let's examine the artifacts I extracted. Click the button to open the folder on your computer.")
