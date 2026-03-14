@@ -36,8 +36,8 @@ AI_PHOOEY_CHOP = """\
 # tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
 # tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 
-flake.nix  # [7,711 tokens | 32,991 bytes]
-/home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
+# flake.nix  # [7,711 tokens | 32,991 bytes]
+# /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
 
 # # The entry point where wand is defined
 # pipulate/__init__.py  # [472 tokens | 1,988 bytes]
@@ -140,6 +140,17 @@ flake.nix  # [7,711 tokens | 32,991 bytes]
 # II. THE CORE MACHINE (Architecture & Monolith)
 # ============================================================================
 # The foundational NPvg framework and state management.
+
+# CHAPTER 0: ONBOARDING
+# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
+# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # CHAPTER 1: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
 # assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
@@ -361,7 +372,6 @@ scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # Notebooks/imports/__init__.py  # [0 tokens | 0 bytes]
 # Notebooks/imports/onboard_sauce.py  # [1,849 tokens | 8,243 bytes]
 # ai_edit.py  # [2,296 tokens | 10,210 bytes]
-# apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
 # apps/130_gap_analysis.py  # [9,625 tokens | 48,280 bytes]
 # apps/210_widget_examples.py  # [22,791 tokens | 98,590 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
@@ -405,6 +415,7 @@ scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # assets/js/surreal.js  # [3,812 tokens | 13,432 bytes]
 # assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
+# assets/prompts/book_holographic.json  # [122 tokens | 463 bytes]
 # assets/prompts/find404s.md  # [350 tokens | 1,624 bytes]
 # assets/prompts/pipulate-context.xsd  # [2,286 tokens | 8,129 bytes]
 # assets/prompts/system_prompt.md  # [628 tokens | 2,618 bytes]
@@ -425,7 +436,7 @@ scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
-# remotes/honeybot/scripts/bot_intel.json  # [504 tokens | 1,520 bytes]
+# remotes/honeybot/scripts/bot_intel.json  # [513 tokens | 1,550 bytes]
 # remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
