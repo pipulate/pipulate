@@ -26,12 +26,12 @@ class IntroductionPlugin:
     DISPLAY_NAME = 'Introduction 🏠'
     ENDPOINT_MESSAGE = 'Welcome to the Machine. Click to enter.'
     
-    # Narrative Script
+    # Narrative Script (UPDATED to match the slide text)
     NARRATION = {
         'step_01': "Welcome. I am Chip O'Theseus. I am not a recording. I am generated locally on your machine, right now. I live here.",
         'step_02': "I am a 'Forever Machine.' I protect your work from cloud subscriptions, broken updates, and the entropy of the web.",
         'step_03': "This is not 'software as a service'. You are the operator. I am the interface. Together, we are sovereign.",
-        'finalize': "You have initialized the system. The workshop is open. Select a tool from the menu to begin."
+        'finalize': "The web interface is just the dashboard. True sovereignty happens in the engine room. Switch back to the JupyterLab tab that opened alongside this window. Click on the first gray code block and press Shift plus Enter to cast your first spell."
     }
 
     def __init__(self, app, pipulate, pipeline, db, app_name=APP_NAME):
@@ -197,12 +197,33 @@ class IntroductionPlugin:
             next_step_id='finalize'
         )
 
+# ... [Keep previous imports and setup] ...
+
+class IntroductionPlugin:
+    # Standard Workflow Configuration
+    NAME = 'introduction'
+    APP_NAME = 'introduction'
+    DISPLAY_NAME = 'Introduction 🏠'
+    ENDPOINT_MESSAGE = 'Welcome to the Machine. Click to enter.'
+    
+    # Narrative Script (UPDATED to match the slide text)
+    NARRATION = {
+        'step_01': "Welcome. I am Chip O'Theseus. I am not a recording. I am generated locally on your machine, right now. I live here.",
+        'step_02': "I am a 'Forever Machine.' I protect your work from cloud subscriptions, broken updates, and the entropy of the web.",
+        'step_03': "This is not 'software as a service'. You are the operator. I am the interface. Together, we are sovereign.",
+        'finalize': "The web interface is just the dashboard. True sovereignty happens in the engine room. Switch back to the JupyterLab tab that opened alongside this window. Click on the first gray code block and press Shift plus Enter to cast your first spell."
+    }
+
     async def finalize(self, request):
         return self._render_slide(
             'finalize',
             "The Awakening",
-            "The web interface is just the dashboard. True sovereignty happens in the engine room.\n\n"
-            "Switch back to the **JupyterLab tab** that opened alongside this window. Click on the first gray code block and press **Shift + Enter** to cast your first spell.",
+            (
+                "The web interface is just the dashboard. True sovereignty happens in the engine room.",
+                Br(), Br(),
+                "Switch back to the ", Strong("JupyterLab tab"), " that opened alongside this window. ",
+                "Click on the first gray code block and press ", Strong("Shift + Enter"), " to cast your first spell."
+            ),
             next_step_id=None
         )
 
