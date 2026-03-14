@@ -16,8 +16,8 @@
 # 2. foo_files.py  # <-- this
 
 AI_PHOOEY_CHOP = """\
-prompt_foo.py  # [12,914 tokens | 59,241 bytes]
-foo_files.py  # [8,873 tokens | 28,749 bytes]
+# prompt_foo.py  # [12,914 tokens | 59,241 bytes]
+# foo_files.py  # [8,873 tokens | 28,749 bytes]
 
 # Demonstrating the tracer-dye methodology to Gemini to explain highly evidenced attribution inclusion in parameterized memory.
 # remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
@@ -36,7 +36,8 @@ foo_files.py  # [8,873 tokens | 28,749 bytes]
 # tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
 # tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 
-# # flake.nix  # [7,711 tokens | 32,991 bytes]
+flake.nix  # [7,711 tokens | 32,991 bytes]
+/home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
 
 # # The entry point where wand is defined
 # pipulate/__init__.py  # [472 tokens | 1,988 bytes]
@@ -339,9 +340,9 @@ foo_files.py  # [8,873 tokens | 28,749 bytes]
 # ============================================================================
 CHOP_404_AFFAIR = """\
 # THE 404 AFFAIR (Topological Healer Blueprint)
-/home/mike/repos/trimnoir/_raw_map.csv  # [18,608 tokens | 65,818 bytes]
-/home/mike/repos/trimnoir/_redirects.map  # [23,413 tokens | 73,822 bytes]
-scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
+# /home/mike/repos/trimnoir/_raw_map.csv  # [18,608 tokens | 65,818 bytes]
+# /home/mike/repos/trimnoir/_redirects.map  # [23,413 tokens | 73,822 bytes]
+# scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
 scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 ! python scripts/articles/extract_404_ghosts.py
 """
@@ -424,7 +425,7 @@ scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
-# remotes/honeybot/scripts/bot_intel.json  # [482 tokens | 1,443 bytes]
+# remotes/honeybot/scripts/bot_intel.json  # [504 tokens | 1,520 bytes]
 # remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]

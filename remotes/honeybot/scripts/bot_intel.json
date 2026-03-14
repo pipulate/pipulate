@@ -14,6 +14,7 @@
     "DataForSeoBot": "SEO Tool",
     "DotBot": "SEO Tool",
     "DuckAssistBot": "Search",
+    "GPTBot-User": "OpenAI",
     "GPTBot": "OpenAI",
     "GenomeCrawlerd": "Other",
     "Go-http-client": "Script",
@@ -46,8 +47,9 @@
     "bingbot": "Microsoft",
     "botify": "SEO Tool",
     "curl": "Script",
+    "facebookexternalhit": "Meta",
     "kagi-fetcher": "Search",
-    "meta-": "Meta",
+    "meta-externalagent": "Meta",
     "python-httpx": "Script",
     "python-requests": "Script"
   },
