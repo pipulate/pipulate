@@ -153,15 +153,16 @@ foo_files.py  # [8,873 tokens | 28,749 bytes]
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # CHAPTER 1: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
-assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
-flake.nix  # [7,721 tokens | 32,979 bytes]
-.gitignore  # [573 tokens | 2,089 bytes]
-config.py  # [4,098 tokens | 15,949 bytes]
-AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
-README.md  # [20,467 tokens | 103,208 bytes]
-cli.py  # [5,092 tokens | 22,615 bytes]
-assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+# assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
+# flake.nix  # [7,721 tokens | 32,979 bytes]
+# .gitignore  # [573 tokens | 2,089 bytes]
+# config.py  # [4,098 tokens | 15,949 bytes]
+# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
+# README.md  # [20,467 tokens | 103,208 bytes]
+# cli.py  # [5,092 tokens | 22,615 bytes]
+apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH (~260KB)
 # server.py  # [54,246 tokens | 258,931 bytes]
@@ -169,9 +170,9 @@ assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
-# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 
 # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
 # __init__.py  # [357 tokens | 1,565 bytes]
