@@ -99,7 +99,7 @@ def show_artifacts(target_url: str):
     
     domain, url_path_slug = get_safe_path_component(target_url)
     
-    cache_dir = wand.paths.browser_cache / 'looking_at' / domain / url_path_slug
+    cache_dir = wand.paths.browser_cache / domain / url_path_slug
 
     if cache_dir.exists():
         wand.speak("Let's examine the artifacts I extracted. Click the button to open the folder on your computer.")
@@ -132,7 +132,7 @@ def interrogate_local_ai(target_url: str, preferred_model: str = None):
     
     domain, url_path_slug = get_safe_path_component(target_url)
 
-    md_file = wand.paths.browser_cache / "looking_at" / domain / url_path_slug / "accessibility_tree.json"
+    md_file = wand.paths.browser_cache / domain / url_path_slug / "accessibility_tree.json"
 
     if md_file.exists():
         content = md_file.read_text()
@@ -199,7 +199,6 @@ async def analyze_ai_readiness(job: str, url: str, verbose: bool = True, overrid
         print("✅ Fresh Scrape Successful.")
 
     # 2. THE OPTICS (The Refraction)
-    dom_path = result.get("looking_at_files", {}).get("rendered_dom")
     if not dom_path or not Path(dom_path).exists():
         print("❌ Error: Could not locate rendered_dom.html for analysis.")
         return False
