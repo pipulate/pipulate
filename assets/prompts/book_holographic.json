@@ -1,0 +1,16 @@
+{
+  "title": "The Holographic Logs: Forging the Forever Machine",
+  "author": "Mike Levin",
+  "acts": [
+    {
+      "id": "act_1",
+      "title": "The Bedrock and the Blueprint",
+      "intro_prompt": "Write a 1-page introduction about the transition from fragile web stacks to the LPvg stack and NixOS...",
+      "articles": [
+        "/futureproof/future-proof-tech-skills",
+        "/futureproof/LPvg",
+        "/futureproof/nixos-language"
+      ]
+    }
+  ]
+}
