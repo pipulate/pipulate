@@ -205,6 +205,10 @@
 
     # 1. THE SENSOR: Read the Accept header and define the MIME type
       appendHttpConfig = ''
+      # Expand Memory for Massive Map Files
+      map_hash_bucket_size 256;
+      map_hash_max_size 8192;
+
       # 1. The Missing Map: Define $serve_markdown based on the Accept header
       map $http_accept $serve_markdown {
           default 0;
