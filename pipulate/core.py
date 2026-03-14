@@ -207,7 +207,7 @@ class Pipulate:
                 self.logs = self.data / "logs"
                 self.temp = self.data / "temp"
                 self.downloads = self.data / "downloads"
-                self.browser_cache = self.data / "browser_cache"
+                self.browser_cache = self.base / "browser_cache"
                 self.deliverables = self.base / "Deliverables"
                 
                 # Force the physical reality into existence
