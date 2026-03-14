@@ -15,44 +15,82 @@ from loguru import logger
 from pipulate import wand  # Use wand!
 import llm
 
-def check_ai_models(preferred_model=None):
-    """Uses the Universal Adapter (llm) to verify AI readiness and preferred models."""
-    if preferred_model:
-        wand.speak(f"Checking for your preferred AI model: {preferred_model}...")
+
+def check_ai_models(preferred_local=None, preferred_cloud=None):
+    """
+    Uses the Universal Adapter (llm) to verify AI readiness using fuzzy matching
+    against a prioritized list of preferred models.
+    """
+    if preferred_local:
+        wand.speak(f"Scanning for your preferred local models...")
     else:
         wand.speak("Scanning your system for available AI models...")
+
     try:
-        # Grab all models registered with the llm package
-        models = [m.model_id for m in llm.get_models()]
+        # 1. Gather all models known to the Universal Adapter
+        available_models = [m.model_id for m in llm.get_models()]
         
-        # Check if any local Ollama models are present (they usually don't have a provider prefix like 'gpt-' or 'claude-')
-        # The llm-ollama plugin registers them dynamically.
+        # 2. Check for ANY local model (Ollama models typically lack provider prefixes)
         has_local = any('ollama' in str(type(m)).lower() for m in llm.get_models())
-        
-        if preferred_model and preferred_model in models:
-            wand.speak(f"Excellent! Your preferred model '{preferred_model}' is active and ready.")
-            print(f"\n✅ Locked in model: {preferred_model}")
-            return preferred_model
+
+        # 3. Process User Preferences
+        def parse_preferences(pref_string):
+            if not pref_string: return []
+            return [p.strip().lower() for p in pref_string.split(',')]
+
+        local_prefs = parse_preferences(preferred_local)
+        cloud_prefs = parse_preferences(preferred_cloud)
+
+        selected_local = None
+        selected_cloud = None
+
+        # 4. Fuzzy Matching Logic (Find highest priority match)
+        # We check each preference against the available models. If the preference
+        # string is *in* the available model string (e.g., 'gemma3' in 'gemma3:latest'), it's a match.
+        for pref in local_prefs:
+            match = next((m for m in available_models if pref in m.lower() and 'ollama' in str(type(llm.get_model(m))).lower()), None)
+            if match:
+                selected_local = match
+                break # Found our highest priority local model
+
+        for pref in cloud_prefs:
+            match = next((m for m in available_models if pref in m.lower() and 'ollama' not in str(type(llm.get_model(m))).lower()), None)
+            if match:
+                selected_cloud = match
+                break # Found our highest priority cloud model
+
+        # 5. Reporting and Graceful Degradation
+        if selected_local:
+            wand.speak(f"Excellent. Local model '{selected_local}' is active and ready.")
+            print(f"\n✅ Locked in Local Model: {selected_local}")
+        elif has_local:
+            # Fallback: They have Ollama, but not their preferred model
+            wand.speak("I found local models, but not your preferred choices.")
+            print(f"\nℹ️  Preferred local models not found, but other local models are available.")
+            print(f"Available models: {', '.join([m for m in available_models if 'ollama' in str(type(llm.get_model(m))).lower()])}")
+            selected_local = True # Indicate local capacity exists
+        else:
+            # The Fallback State: No local models detected
+            wand.speak("I do not detect a local AI brain on your system.")
+            print("\nℹ️  Ollama is not running or not installed.")
+            print("Pipulate works perfectly fine without it, but a local AI 'riding shotgun' ensures privacy.")
+            print("\nTo upgrade your environment for true Local-First Sovereignty:")
+            print("1. Go to https://ollama.com/")
+            print("2. Download the installer for your host operating system.")
+            print("3. Install it, open a terminal, run 'ollama run gemma3', and try again.")
             
-        if has_local:
-            wand.speak(f"I found {len(models)} total models, including local options. Your preferred model was not found.")
-            print(f"\nℹ️  '{preferred_model}' not found, but you have local models ready to use.")
-            return True # Or return a default local model if you prefer
-            
-        # The Fallback State: No local models detected
-        wand.speak("I do not detect a local AI brain on your system.")
-        print("\nℹ️  Ollama is not running or not installed.")
-        print("Pipulate works perfectly fine without it, but an AI 'riding shotgun' makes the experience much better.")
-        print("\nTo upgrade your environment for true Local-First Sovereignty:")
-        print("1. Go to https://ollama.com/")
-        print("2. Download the installer for your operating system (Mac/Windows/Linux).")
-        print("3. Install it, pull a model (e.g., 'ollama run qwen3:1.7b'), and run this cell again.")
-        return False
+        if selected_cloud:
+             print(f"✅ Locked in Cloud Model: {selected_cloud}")
+
+        return {
+            "local": selected_local,
+            "cloud": selected_cloud,
+            "has_any_local": has_local
+        }
 
     except Exception as e:
         print(f"❌ Error communicating with the Universal Adapter: {e}")
-
-    return False
+        return {"local": False, "cloud": False, "has_any_local": False}
 
 def show_artifacts(target_url: str):
     """Displays a button to open the cache directory for a given URL."""
@@ -63,7 +101,7 @@ def show_artifacts(target_url: str):
     path = parsed_url.path or '/'
     url_path_slug = quote(path, safe='')
     
-    cache_dir = wand.paths.browser_cache / domain / url_path_slug
+    cache_dir = wand.paths.browser_cache / 'looking_at' / domain / url_path_slug
 
     if cache_dir.exists():
         wand.speak("Let's examine the artifacts I extracted. Click the button to open the folder on your computer.")
@@ -98,7 +136,7 @@ def interrogate_local_ai(target_url: str, preferred_model: str = None):
     path = parsed_url.path or '/'
     url_path_slug = quote(path, safe='')
 
-    md_file = wand.paths.browser_cache / domain / url_path_slug / "accessibility_tree.json"
+    md_file = wand.paths.browser_cache / "looking_at" / domain / url_path_slug / "accessibility_tree.json"
 
     if md_file.exists():
         content = md_file.read_text()
