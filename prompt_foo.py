@@ -890,6 +890,11 @@ def update_paintbox_in_place():
 
         if not unused_tubes:
             with open(foo_path, "w", encoding="utf-8") as f:
+                f.write(base_content + '\n')
+            return # Clean exit, no unused paint
+
+        if not unused_tubes:
+            with open(foo_path, "w", encoding="utf-8") as f:
                 f.write(base_content + '\n"""\n')
             return # Clean exit, no unused paint
 
@@ -912,7 +917,7 @@ def update_paintbox_in_place():
                 paintbox_lines.append(f"# {tube_path}  # [Error reading file]")
 
         final_content = base_content + "\n".join(paintbox_lines) + '\n"""\n'
-        
+
         with open(foo_path, "w", encoding="utf-8") as f:
             f.write(final_content)
 
