@@ -196,12 +196,13 @@ class IntroductionPlugin:
             "No API keys required. No monthly fees. Just you and me.",
             next_step_id='finalize'
         )
-        
+
     async def finalize(self, request):
         return self._render_slide(
             'finalize',
-            "The Workshop",
-            "You are ready. Select 'Profiles' or 'Hello Workflow' from the menu to begin work.",
+            "The Awakening",
+            "The web interface is just the dashboard. True sovereignty happens in the engine room.\n\n"
+            "Switch back to the **JupyterLab tab** that opened alongside this window. Click on the first gray code block and press **Shift + Enter** to cast your first spell.",
             next_step_id=None
         )
 
