@@ -332,6 +332,24 @@ foo_files.py  # [8,873 tokens | 28,749 bytes]
 # https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/README.md
 # https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/install.sh
 # https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/flake.nix
+"""
+
+# ============================================================================
+# SPECIALIZED STRIKE PACKAGES
+# ============================================================================
+CHOP_404_AFFAIR = """\
+# THE 404 AFFAIR (Topological Healer Blueprint)
+/home/mike/repos/trimnoir/_raw_map.csv
+/home/mike/repos/trimnoir/_redirects.map
+scripts/articles/extract_404_ghosts.py
+scripts/articles/generate_redirects.py
+! python scripts/articles/extract_404_ghosts.py
+"""
+
+# ============================================================================
+# VIII. THE PAINTBOX (Unused Colors)
+# ============================================================================
+# Files tracked by git but not yet mixed into the palette above.
 
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
@@ -452,4 +470,3 @@ foo_files.py  # [8,873 tokens | 28,749 bytes]
 # scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
 # scripts/workflow/update_template_config.py  # [1,671 tokens | 8,381 bytes]
 # scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
-"""
