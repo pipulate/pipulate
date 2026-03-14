@@ -17,7 +17,7 @@
 
 AI_PHOOEY_CHOP = """\
 # prompt_foo.py  # [12,914 tokens | 59,241 bytes]
-# foo_files.py  # [8,873 tokens | 28,749 bytes]
+foo_files.py  # [8,873 tokens | 28,749 bytes]
 
 # Demonstrating the tracer-dye methodology to Gemini to explain highly evidenced attribution inclusion in parameterized memory.
 # remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
@@ -153,13 +153,15 @@ AI_PHOOEY_CHOP = """\
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # CHAPTER 1: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
-# assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
-# flake.nix  # [7,721 tokens | 32,979 bytes]
-# .gitignore  # [573 tokens | 2,089 bytes]
-# config.py  # [4,098 tokens | 15,949 bytes]
-# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
-# README.md  # [20,467 tokens | 103,208 bytes]
-# cli.py  # [5,092 tokens | 22,615 bytes]
+assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
+flake.nix  # [7,721 tokens | 32,979 bytes]
+.gitignore  # [573 tokens | 2,089 bytes]
+config.py  # [4,098 tokens | 15,949 bytes]
+AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
+README.md  # [20,467 tokens | 103,208 bytes]
+cli.py  # [5,092 tokens | 22,615 bytes]
+assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH (~260KB)
 # server.py  # [54,246 tokens | 258,931 bytes]
