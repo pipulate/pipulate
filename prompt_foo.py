@@ -371,13 +371,14 @@ def annotate_tree_with_tokens(tree_output: str, processed_files: List[Dict], rep
         annotated.append(line)
     return '\n'.join(annotated)
 
-def parse_file_list_from_config() -> List[Tuple[str, str]]:
+def parse_file_list_from_config(chop_var: str = "AI_PHOOEY_CHOP") -> List[Tuple[str, str]]:
     try:
         import foo_files
-        files_raw = foo_files.AI_PHOOEY_CHOP
+        files_raw = getattr(foo_files, chop_var)
     except (ImportError, AttributeError):
-        logger.print("ERROR: foo_files.py not found or doesn't contain AI_PHOOEY_CHOP.")
+        logger.print(f"ERROR: foo_files.py not found or doesn't contain '{chop_var}'.")
         sys.exit(1)
+    
     lines = files_raw.strip().splitlines()
     seen_files, parsed_files = set(), []
     for line in lines:
@@ -720,7 +721,7 @@ Before addressing the user's prompt, perform the following verification steps:
         return final_output_text
 
 
-def annotate_foo_files_in_place():
+def annotate_foo_files_in_place(chop_var: str = "AI_PHOOEY_CHOP"):
     """Reads foo_files.py, annotates file paths with token/byte sizes, and writes it back."""
     foo_path = os.path.join(REPO_ROOT, "foo_files.py")
     if not os.path.exists(foo_path):
@@ -730,8 +731,8 @@ def annotate_foo_files_in_place():
         with open(foo_path, 'r', encoding='utf-8') as f:
             content = f.read()
 
-        # Isolate the AI_PHOOEY_CHOP block
-        match = re.search(r'(AI_PHOOEY_CHOP\s*=\s*"""\\?\n)(.*?)("""|\\n""")', content, re.DOTALL)
+        # Isolate the requested chop block dynamically
+        match = re.search(rf'({chop_var}\s*=\s*"""\\?\n)(.*?)("""|\\n""")', content, re.DOTALL)
         if not match:
             return
 
@@ -930,6 +931,7 @@ def main():
     parser.add_argument('--check-dependencies', action='store_true', help='Verify that all required external tools are installed.')
     parser.add_argument('--context-only', action='store_true', help='Generate a context-only prompt without file contents.')
     parser.add_argument('-n', '--no-tree', action='store_true', help='Suppress file tree and UML generation.')
+    parser.add_argument('--chop', type=str, default='AI_PHOOEY_CHOP', help='Specify an alternative payload variable from foo_files.py')
     parser.add_argument(
         '-l', '--list',
         nargs='?', const='[-5:]', default=None,
@@ -980,10 +982,10 @@ def main():
     elif os.path.exists("prompt.md"):
         with open("prompt.md", 'r', encoding='utf-8') as f: prompt_content = f.read()
 
-    # 2. Process all specified files
-    annotate_foo_files_in_place()
+    # 2. Process all specified files (UPDATE THESE TWO LINES):
+    annotate_foo_files_in_place(args.chop)
     update_paintbox_in_place()   # <-- THE NEW SENSOR PING
-    files_to_process = parse_file_list_from_config()
+    files_to_process = parse_file_list_from_config(args.chop)
     processed_files_data = []
 
     logger.print("--- Processing Files ---")
