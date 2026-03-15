@@ -21,7 +21,7 @@ AI_PHOOEY_CHOP = """\
 # prompt_foo.py  # [12,914 tokens | 59,241 bytes]
 # foo_files.py  # [8,873 tokens | 28,749 bytes]
 
-imports/voice_synthesis.py
+imports/voice_synthesis.py  # [3,025 tokens | 14,886 bytes]
 
 # Demonstrating the tracer-dye methodology to Gemini to explain highly evidenced attribution inclusion in parameterized memory.
 # remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
@@ -279,7 +279,7 @@ imports/voice_synthesis.py
 # CHAPTER 15: JEKYLL PUBLISHING
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
 # scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
-# scripts/articles/common.py
+# scripts/articles/common.py  # [881 tokens | 3,571 bytes]
 # scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
 # /home/mike/.config/articleizer/targets.json  # [164 tokens | 661 bytes]
 # /home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
@@ -292,10 +292,10 @@ imports/voice_synthesis.py
 
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # ! python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree  # Konami Cheat Code 404s, run from the terminal by itself!!!
-# assets/prompts/find404s.md
-# /home/mike/repos/trimnoir/_raw_map.csv
+# assets/prompts/find404s.md  # [350 tokens | 1,624 bytes]
+# /home/mike/repos/trimnoir/_raw_map.csv  # [103,981 tokens | 359,660 bytes]
 # scripts/articles/generate_redirects.py  # [1,101 tokens | 4,722 bytes]
-# /home/mike/repos/trimnoir/_redirects.map
+# /home/mike/repos/trimnoir/_redirects.map  # [125,447 tokens | 401,978 bytes]
 
 # ============================================================================
 # VI. THE HONEYBOT OBSERVATORY (Live Telemetry)
@@ -309,7 +309,7 @@ imports/voice_synthesis.py
 # remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
 # remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
 # remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
-# remotes/honeybot/scripts/bot_intel.json
+# remotes/honeybot/scripts/bot_intel.json  # [513 tokens | 1,550 bytes]
 # remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
 # remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
 # remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
@@ -451,11 +451,9 @@ scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
-# remotes/honeybot/scripts/bot_intel.json  # [513 tokens | 1,550 bytes]
 # remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
-# scripts/articles/common.py  # [881 tokens | 3,571 bytes]
 # scripts/articles/diagramizer.py  # [1,912 tokens | 8,193 bytes]
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
@@ -493,6 +491,3 @@ scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
 # scripts/workflow/update_template_config.py  # [1,671 tokens | 8,381 bytes]
 # scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
-
-if __name__ == '__main__':
-    print("I think you meant: python prompt_foo.py")
