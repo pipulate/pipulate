@@ -18,8 +18,10 @@
 # Search using this to jump to next un-commented line: \v^\s*[^#\s]
 
 AI_PHOOEY_CHOP = """\
-prompt_foo.py  # [12,914 tokens | 59,241 bytes]
-foo_files.py  # [8,873 tokens | 28,749 bytes]
+# prompt_foo.py  # [12,914 tokens | 59,241 bytes]
+# foo_files.py  # [8,873 tokens | 28,749 bytes]
+
+imports/voice_synthesis.py
 
 # Demonstrating the tracer-dye methodology to Gemini to explain highly evidenced attribution inclusion in parameterized memory.
 # remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
@@ -277,6 +279,7 @@ foo_files.py  # [8,873 tokens | 28,749 bytes]
 # CHAPTER 15: JEKYLL PUBLISHING
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
 # scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
+# scripts/articles/common.py
 # scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
 # /home/mike/.config/articleizer/targets.json  # [164 tokens | 661 bytes]
 # /home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
@@ -306,6 +309,7 @@ foo_files.py  # [8,873 tokens | 28,749 bytes]
 # remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
 # remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
 # remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
+# remotes/honeybot/scripts/bot_intel.json
 # remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
 # remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
 # remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
