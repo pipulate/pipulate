@@ -371,7 +371,7 @@ class Pipulate:
         Synthesizes text to speech using the global ChipVoiceSystem if available.
         Fails gracefully to simple printing if the audio backend is unavailable.
         """
-        print(f"🤖 {text}")
+        print(f"🪄 {text}")
         try:
             # We import here to avoid circular dependencies and unnecessary 
             # loading if the user never calls pip.speak()
@@ -381,6 +381,10 @@ class Pipulate:
         except Exception as e:
             # We fail silently because the print() statement above acts as our fallback
             pass
+
+    def imperio(self):
+        self.speak("Done step. Please run the next cell.")
+        return True
 
     def register_dialogue(self, dialogue_dict: dict):
         """Registers a dictionary of narrative scripts into the wand's memory."""
