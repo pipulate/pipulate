@@ -7,6 +7,24 @@ from pathlib import Path
 import common
 
 
+def brand_markdown_files(target_path):
+    """Sweeps the posts directory and swaps **Me**: for the semantic brand."""
+    print("\n--- 🏷️  Branding Markdown Files ---")
+    count = 0
+    # Search all markdown files in the target directory
+    for md_file in target_path.glob("*.md"):
+        content = md_file.read_text(encoding='utf-8')
+        if "**Me**:" in content:
+            content = content.replace("**Me**:", "**MikeLev.in**:")
+            md_file.write_text(content, encoding='utf-8')
+            count += 1
+    
+    if count > 0:
+        print(f"✅ Applied semantic branding to {count} files.")
+    else:
+        print("✅ All files are perfectly branded.")
+
+
 def run_step(script_name, target_key, extra_args=None):
     print(f"\n--- 🚀 Step: {script_name} ---")
     start = time.time()
@@ -102,7 +120,10 @@ def main():
         extra_args.extend(['-k', args.key])
     if args.keys:
         extra_args.extend(['-m', args.keys])
-    
+
+    # 1.5 THE BRANDING SWEEP (Run this right before the BJJ Sweep!)
+    brand_markdown_files(target_path)
+
     # 2. Run the sequence
     total_start = time.time()
     
