@@ -67,9 +67,6 @@ nix develop .#quiet --command bash << 'EOF'
       # Overwrite with the newly spliced file
       mv "${TARGET_DIR}index.md.tmp" "${TARGET_DIR}index.md"      
 
-      echo "  -> Placed index.md in $PERMALINK"
-    else
-      echo "  -> Warning: No permalink found in $post. Skipping."
     fi
   done
 
@@ -114,7 +111,6 @@ nix develop .#quiet --command bash << 'EOF'
       
       # Overwrite with the newly spliced file
       mv "${TARGET_DIR}index.md.tmp" "${TARGET_DIR}index.md"        
-      echo "  -> Placed root index.md in $PERMALINK"
     fi
   done
 EOF
