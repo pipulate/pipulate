@@ -85,11 +85,33 @@ def build_manifest():
         
         lines.append("") # Spacing between acts
 
+    # --- ORPHAN RECOVERY (The "Use Up All Inventory" Rule) ---
+    unused_slugs = set(shards.keys()) - used_slugs
+    if unused_slugs:
+        lines.append("### Uncategorized Archives")
+        lines.append("*The chronological overflow. Content pending narrative placement.*\n")
+        
+        # Pull the unused shards and sort them by date (newest first)
+        orphans = [(slug, shards[slug]) for slug in unused_slugs]
+        orphans.sort(key=lambda x: x[1].get('d', ''), reverse=True)
+        
+        for slug, orphan_data in orphans:
+            title = orphan_data.get('t', 'Untitled')
+            summary = orphan_data.get('s', 'No summary available.')
+            orphan_url = f"{BASE_URL}/{slug}/index.md?src=llms.txt"
+            
+            lines.append(f"- **[{title}]({orphan_url})**")
+            lines.append(f"  > {summary}")
+        
+        lines.append("")
+
     # --- OUTPUT ---
     with open(OUTPUT_LLMS_TXT, 'w', encoding='utf-8') as f:
         f.write("\n".join(lines))
     
     print(f"✅ Generated deterministic manifest: {OUTPUT_LLMS_TXT}")
+    print(f"✅ Reclaimed {len(unused_slugs)} orphaned articles.")
+
 
 if __name__ == "__main__":
     build_manifest()
