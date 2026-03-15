@@ -1,15 +1,80 @@
 {
-  "title": "The Holographic Logs: Forging the Forever Machine",
+  "title": "The Living Codex: Architecting the Forever Machine",
   "author": "Mike Levin",
   "acts": [
     {
-      "id": "act_1",
-      "title": "The Bedrock and the Blueprint",
-      "intro_prompt": "Write a 1-page introduction about the transition from fragile web stacks to the LPvg stack and NixOS...",
+      "title": "Act I: Immutable Infrastructure & The Bedrock",
+      "intro_prompt": "The foundation of digital sovereignty. Rejecting the churn of 'it works on my machine' by embracing Nix, NixOS, and deterministic infrastructure as code.",
       "articles": [
-        "/futureproof/future-proof-tech-skills",
-        "/futureproof/LPvg",
-        "/futureproof/nixos-language"
+        "/futureproof/nix-flakes",
+        "/futureproof/sudo-nixos-rebuild-switch-upgrade",
+        "/futureproof/python-nix-flake-uv",
+        "/futureproof/nixos-wayland-hyprland",
+        "/futureproof/nixos-nvidia-cuda-ollama",
+        "/futureproof/mac-nix-flake",
+        "/futureproof/nix-system",
+        "/futureproof/revolutionizing-software-deployment-with-nix-flakes"
+      ]
+    },
+    {
+      "title": "Act II: Hypermedia & The Pythonic Web",
+      "intro_prompt": "Escaping the SPA trap. Returning to 'HTML over the wire' with FastHTML, HTMX, and WET coding principles for radically diagnosable web applications.",
+      "articles": [
+        "/futureproof/fasthtml",
+        "/futureproof/fast-html-framework-opinions",
+        "/futureproof/fasthtml-htmx-llm",
+        "/futureproof/fasththml-websockets-database",
+        "/futureproof/unpacking-fasthtml-databases",
+        "/futureproof/fasthtml-static-resources",
+        "/futureproof/fasthtml-cursor-ai-nix",
+        "/futureproof/fasthtml-python-htmx-ai",
+        "/futureproof/fasthtml-sortablejs-todo",
+        "/futureproof/fasthtml-htmx-unix-pipes"
+      ]
+    },
+    {
+      "title": "Act III: Sovereign AI & Local Inference",
+      "intro_prompt": "Breaking free from cloud-vendor lock-in. Running local models, establishing persistent AI identity, and surviving the proprietary AI API wars.",
+      "articles": [
+        "/futureproof/mcp-with-local-llm",
+        "/futureproof/ollama-websocket-chat",
+        "/futureproof/grok-vs-chatgpt-vs-gemini",
+        "/futureproof/giving-grok3-another-chance",
+        "/futureproof/grok-better-than",
+        "/futureproof/ai-stress-test",
+        "/futureproof/local-ai-in-the-dev-loop"
+      ]
+    },
+    {
+      "title": "Act IV: Literate Computing & Stateful Workflows",
+      "intro_prompt": "The notebook as an orchestrator. Bridging the gap between exploratory data science and production-ready automation using Jupyter and the Unix pipe philosophy.",
+      "articles": [
+        "/futureproof/jupyter-notebook-vscode-cursor",
+        "/futureproof/cursor-ai-jupyter-notebook-cells",
+        "/futureproof/vscode-jupyter-notebook-paths",
+        "/futureproof/colab-vs-local-jupyter",
+        "/futureproof/jupyter-nix-flake",
+        "/futureproof/jupyter-ai-nix-flake",
+        "/futureproof/jupyter-notebooks-fasthtml",
+        "/futureproof/cleaning-noteboook-cell-output-git",
+        "/futureproof/from-jupyter-notebooks-to-markdown"
+      ]
+    },
+    {
+      "title": "Act V: Context Engineering & Agentic Systems",
+      "intro_prompt": "Taming the amnesiac genie. Building robust human-AI collaboration through semantic routing, structured tool calling, and strategic context management.",
+      "articles": [
+        "/futureproof/python-mcp-server-example",
+        "/futureproof/mcp-ai-api-server",
+        "/futureproof/function-calling-llms",
+        "/futureproof/agentic-frameworks-vs-browser-automation",
+        "/futureproof/how-i-finally-got-my-llm-to-play-nice-with-the-web-ui",
+        "/futureproof/chatgpt-o1-preview-code-review",
+        "/futureproof/ai-context-mcp-llm",
+        "/futureproof/ai-agentic-mode-debugging",
+        "/futureproof/ai-generated-refactoring-advice",
+        "/futureproof/deep-debugging-llm-ghost",
+        "/futureproof/grok3-markdown-problem"
       ]
     }
   ]
