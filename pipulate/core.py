@@ -386,7 +386,7 @@ class Pipulate:
         self.speak("Done step. Run the next cell.")
 
     def show_llm_optics(self, target_url: str):
-        """Displays a button to open the cache directory for a given URL."""
+        """Displays a numbered, alphabetical list of files and a button to open the cache directory."""
         from tools.scraper_tools import get_safe_path_component
         import ipywidgets as widgets
         from IPython.display import display
@@ -398,10 +398,13 @@ class Pipulate:
             print(f"📁 Contents of {cache_dir}:\n")
             self.speak("Let's examine the artifacts I extracted. Click the button to open the folder on your computer...")
             
-            for item in cache_dir.iterdir():
-                if item.is_file():
-                    size_kb = item.stat().st_size / 1024
-                    print(f" - {item.name} ({size_kb:.1f} KB)")
+            # 1. Filter for files and sort them alphabetically by name
+            files = sorted([f for f in cache_dir.iterdir() if f.is_file()], key=lambda x: x.name.lower())
+            
+            # 2. Iterate with an index for numbering
+            for i, item in enumerate(files, 1):
+                size_kb = item.stat().st_size / 1024
+                print(f"{i}. {item.name} ({size_kb:.1f} KB)")
                     
             # Create the "Open Folder" button
             button = widgets.Button(
