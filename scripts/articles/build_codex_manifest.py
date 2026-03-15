@@ -9,6 +9,8 @@ with the AI-compressed semantic shards (_context/*.json).
 
 import json
 from pathlib import Path
+import re
+
 
 # --- CONFIGURATION ---
 POSTS_DIR = Path("/home/mike/repos/trimnoir/_posts")
@@ -17,8 +19,9 @@ BOOK_SCHEMA_FILE = Path("/home/mike/repos/pipulate/assets/prompts/book_holograph
 OUTPUT_LLMS_TXT = Path("llms.txt")
 BASE_URL = "https://mikelev.in"
 
+
 def load_shards():
-    """Loads all holographic shards into a dictionary keyed by filename/slug."""
+    """Loads all holographic shards into a dictionary keyed by the clean slug."""
     shards = {}
     if not CONTEXT_DIR.exists():
         print(f"⚠️ Context dir {CONTEXT_DIR} does not exist.")
@@ -28,8 +31,9 @@ def load_shards():
         try:
             with open(f, 'r', encoding='utf-8') as file:
                 data = json.load(file)
-                # Key by the raw slug (e.g., 'future-proof-tech-skills')
-                shards[f.stem] = data
+                # Strip the YYYY-MM-DD- date prefix to match the book schema slugs
+                clean_slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', f.stem)
+                shards[clean_slug] = data
         except Exception as e:
             print(f"⚠️ Error loading shard {f.name}: {e}")
     return shards
