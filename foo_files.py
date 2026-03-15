@@ -293,10 +293,10 @@ scripts/articles/common.py  # [881 tokens | 3,571 bytes]
 scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
 /home/mike/.config/articleizer/targets.json  # [164 tokens | 661 bytes]
 /home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
-/home/mike/repos/trimnoir/_layouts/default.html
-/home/mike/repos/trimnoir/_layouts/default.html
-/home/mike/repos/trimnoir/_layouts/home.html
-/home/mike/repos/trimnoir/_layouts/post.html
+/home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
+/home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
+/home/mike/repos/trimnoir/_layouts/home.html  # [265 tokens | 905 bytes]
+/home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
 scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
 scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
 scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
