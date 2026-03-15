@@ -21,10 +21,17 @@ AI_PHOOEY_CHOP = """\
 foo_files.py  # [8,873 tokens | 28,749 bytes]
 # prompt_foo.py  # [12,914 tokens | 59,241 bytes]
 
-imports/voice_synthesis.py  # [3,025 tokens | 14,886 bytes]
+/home/mike/repos/trimnoir/_posts/2026-03-11-topological-folding-pipulate-manifold.md  # [Idx: 940 | Order: 9 | Tokens: 8,625 | Bytes: 36,873]
+/home/mike/repos/trimnoir/_posts/2026-03-12-curated-chisel-strike-silencing-jupyter-logs-precise-ai-context.md  # [Idx: 944 | Order: 4 | Tokens: 8,437 | Bytes: 35,327]
+/home/mike/repos/trimnoir/_posts/2026-03-12-ai-magic-mirror-cybernetic-feedback-loop-content-intelligence.md  # [Idx: 945 | Order: 5 | Tokens: 15,920 | Bytes: 70,917]
+/home/mike/repos/trimnoir/_posts/2026-03-13-polymorphic-provenance-linguistic-steganography-ai-data.md  # [Idx: 948 | Order: 3 | Tokens: 13,889 | Bytes: 58,675]
+/home/mike/repos/trimnoir/_posts/2026-03-14-building-zero-trust-gateway-ai-data-nixos.md  # [Idx: 954 | Order: 5 | Tokens: 2,456 | Bytes: 11,005]
+/home/mike/repos/trimnoir/_posts/2026-03-15-ai-semantic-gravity-dual-layer-content-branding.md  # [Idx: 955 | Order: 1 | Tokens: 11,330 | Bytes: 47,368]
 
-/home/mike/repos/pipulate/scripts/articles/article.txt  # [9,912 tokens | 40,258 bytes]
-/home/mike/repos/trimnoir/_posts/2026-03-15-ai-semantic-gravity-dual-layer-content-branding.md  # [11,280 tokens | 47,176 bytes]
+# imports/voice_synthesis.py  # [3,025 tokens | 14,886 bytes]
+
+# /home/mike/repos/pipulate/scripts/articles/article.txt  # [9,912 tokens | 40,258 bytes]
+# /home/mike/repos/trimnoir/_posts/2026-03-15-ai-semantic-gravity-dual-layer-content-branding.md  # [11,280 tokens | 47,176 bytes]
 
 # Demonstrating the tracer-dye methodology to Gemini to explain highly evidenced attribution inclusion in parameterized memory.
 # remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
@@ -183,16 +190,16 @@ imports/voice_synthesis.py  # [3,025 tokens | 14,886 bytes]
 # pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 
 # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
-__init__.py  # [357 tokens | 1,565 bytes]
-imports/__init__.py  # [0 tokens | 0 bytes]
-imports/ai_dictdb.py  # [1,733 tokens | 8,158 bytes]
-imports/database_safety_wrapper.py  # [1,744 tokens | 8,254 bytes]
-imports/durable_backup_system.py  # [5,117 tokens | 25,413 bytes]
-imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
-imports/stream_orchestrator.py  # [1,163 tokens | 5,841 bytes]
-imports/mcp_orchestrator.py  # [772 tokens | 3,332 bytes]
-imports/append_only_conversation.py  # [4,345 tokens | 22,449 bytes]
-imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
+# __init__.py  # [357 tokens | 1,565 bytes]
+# imports/__init__.py  # [0 tokens | 0 bytes]
+# imports/ai_dictdb.py  # [1,733 tokens | 8,158 bytes]
+# imports/database_safety_wrapper.py  # [1,744 tokens | 8,254 bytes]
+# imports/durable_backup_system.py  # [5,117 tokens | 25,413 bytes]
+# imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
+# imports/stream_orchestrator.py  # [1,163 tokens | 5,841 bytes]
+# imports/mcp_orchestrator.py  # [772 tokens | 3,332 bytes]
+# imports/append_only_conversation.py  # [4,345 tokens | 22,449 bytes]
+# imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 
 # ============================================================================
 # III. THE ANATOMY (UX, Tools & Apps)
@@ -286,6 +293,10 @@ scripts/articles/common.py  # [881 tokens | 3,571 bytes]
 scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
 /home/mike/.config/articleizer/targets.json  # [164 tokens | 661 bytes]
 /home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
+/home/mike/repos/trimnoir/_layouts/default.html
+/home/mike/repos/trimnoir/_layouts/default.html
+/home/mike/repos/trimnoir/_layouts/home.html
+/home/mike/repos/trimnoir/_layouts/post.html
 scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
 scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
 scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
