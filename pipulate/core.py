@@ -385,7 +385,7 @@ class Pipulate:
     def imperio(self):
         self.speak("Done step. Run the next cell.")
 
-    def show_artifacts(self, target_url: str):
+    def show_llm_optics(self, target_url: str):
         """Displays a button to open the cache directory for a given URL."""
         from tools.scraper_tools import get_safe_path_component
         import ipywidgets as widgets
