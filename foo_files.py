@@ -325,11 +325,11 @@ AI_PHOOEY_CHOP = """\
 # scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
 # scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
 # scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
-scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
+# scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
 # scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
 # scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
 
-scripts/articles/gsc_velocity.json  # [103,079 tokens | 253,460 bytes]
+# scripts/articles/gsc_velocity.json  # [103,079 tokens | 253,460 bytes]
 
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # ! python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree  # Konami Cheat Code 404s, run from the terminal by itself!!!
@@ -375,7 +375,7 @@ scripts/articles/gsc_velocity.json  # [103,079 tokens | 253,460 bytes]
 # remotes/honeybot/queries/hot_404_remaps_top.sql  # [656 tokens | 2,653 bytes]
 # remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
 # remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
-remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
+# remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
 
 # --- LIVE EXECUTION CHISEL-STRIKES ---
 # Uncomment to pipe live production data directly into the AI's context.
@@ -395,7 +395,7 @@ remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
 # ! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- LLMS.TXT DISCOVERY ---" && cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- ALL-TIME POPULAR PATHS ---" && cat remotes/honeybot/queries/all_time_popular_paths.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-! echo "--- HUB CANDIDATES (404s & 301s) ---" && cat remotes/honeybot/queries/hub_candidates.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- HUB CANDIDATES (404s & 301s) ---" && cat remotes/honeybot/queries/hub_candidates.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # ============================================================================
 # VII. UNIVERSAL DISTRIBUTION
@@ -505,6 +505,7 @@ scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # scripts/articles/other/list_models.py  # [157 tokens | 685 bytes]
 # scripts/articles/other/make_article.py  # [1,513 tokens | 6,559 bytes]
+# scripts/articles/rescue_equity.py  # [514 tokens | 2,040 bytes]
 # scripts/articles/sanitize_redirects.py  # [684 tokens | 2,935 bytes]
 # scripts/articles/scrub_tags.py  # [358 tokens | 1,587 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
