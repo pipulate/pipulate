@@ -138,7 +138,9 @@ class ChipVoiceSystem:
         # ---------------------------------------------------------
         # THE INTERCEPT: Swap the domain for a natural spoken name 
         # ---------------------------------------------------------
-        spoken_text = re.sub(r'\*\*MikeLev\.in\*\*:', 'Mike:', text)
+        # This catches "**MikeLev.in**:", "MikeLev.in:", and "MikeLev.in"
+        import re
+        spoken_text = re.sub(r'\*?\*?MikeLev\.in\*?\*?:?', 'Mike:', text, flags=re.IGNORECASE)
         # ---------------------------------------------------------
         
         try:
