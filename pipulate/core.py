@@ -384,7 +384,6 @@ class Pipulate:
 
     def imperio(self):
         self.speak("Done step. Please run the next cell.")
-        return True
 
     def register_dialogue(self, dialogue_dict: dict):
         """Registers a dictionary of narrative scripts into the wand's memory."""
