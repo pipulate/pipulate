@@ -374,7 +374,8 @@ scripts/articles/gsc_velocity.json  # [103,079 tokens | 253,460 bytes]
 # remotes/honeybot/queries/intel_true_404s.sql  # [104 tokens | 335 bytes]
 # remotes/honeybot/queries/hot_404_remaps_top.sql  # [656 tokens | 2,653 bytes]
 # remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
-remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
+# remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
+remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
 
 # --- LIVE EXECUTION CHISEL-STRIKES ---
 # Uncomment to pipe live production data directly into the AI's context.
@@ -393,7 +394,8 @@ remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
 # ! echo "--- TRUE 404s (Legitimate Missing Content) ---" && cat remotes/honeybot/queries/intel_true_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- LLMS.TXT DISCOVERY ---" && cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-! echo "--- ALL-TIME POPULAR PATHS ---" && cat remotes/honeybot/queries/all_time_popular_paths.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- ALL-TIME POPULAR PATHS ---" && cat remotes/honeybot/queries/all_time_popular_paths.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- HUB CANDIDATES (404s & 301s) ---" && cat remotes/honeybot/queries/hub_candidates.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # ============================================================================
 # VII. UNIVERSAL DISTRIBUTION
