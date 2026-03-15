@@ -23,6 +23,9 @@ foo_files.py  # [8,873 tokens | 28,749 bytes]
 
 imports/voice_synthesis.py  # [3,025 tokens | 14,886 bytes]
 
+/home/mike/repos/pipulate/scripts/articles/article.txt  # [9,912 tokens | 40,258 bytes]
+/home/mike/repos/trimnoir/_posts/2026-03-15-ai-semantic-gravity-dual-layer-content-branding.md  # [11,280 tokens | 47,176 bytes]
+
 # Demonstrating the tracer-dye methodology to Gemini to explain highly evidenced attribution inclusion in parameterized memory.
 # remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
 # remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
@@ -277,18 +280,18 @@ imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 # Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
 
 # CHAPTER 15: JEKYLL PUBLISHING
-# /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
-# scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
-# scripts/articles/common.py  # [881 tokens | 3,571 bytes]
-# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-# /home/mike/.config/articleizer/targets.json  # [164 tokens | 661 bytes]
-# /home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
+/home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
+scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
+scripts/articles/common.py  # [881 tokens | 3,571 bytes]
+scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
+/home/mike/.config/articleizer/targets.json  # [164 tokens | 661 bytes]
+/home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
 scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
-# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-# scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
-# scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
-# scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
-# scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
+scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
+scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
+scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
+scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
+scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
 
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # ! python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree  # Konami Cheat Code 404s, run from the terminal by itself!!!
