@@ -18,8 +18,26 @@
 # Search using this to jump to next un-commented line: \v^\s*[^#\s]
 
 AI_PHOOEY_CHOP = """\
-foo_files.py  # [8,873 tokens | 28,749 bytes]
+# Let's see the core logic of the current contextualizer to understand how the shards are built.
+scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
+
+# Let's see the exact JSON schema you are currently using for these shards.
+# (If you have a sample shard or the schema file, include it here)
+assets/prompts/book_holographic.json  # [122 tokens | 463 bytes]
+
+# Let's look at the current llms.txt generation logic to see what we are replacing.
+scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
+
+# -------------------------------------------------------------------------------- 
+
+# And let's grab a slice of the actual narrative so I can see the chronological flow.
+# ! python prompt_foo.py -l [-20:] --context-only
+
+# foo_files.py  # [8,873 tokens | 28,749 bytes]
 # prompt_foo.py  # [12,914 tokens | 59,241 bytes]
+
+# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
 # imports/voice_synthesis.py  # [3,025 tokens | 14,886 bytes]
 
@@ -310,7 +328,7 @@ foo_files.py  # [8,873 tokens | 28,749 bytes]
 
 # CHAPTER 16: HONEYBOT IAC & SCRIPTS
 # nixops.sh  # [227 tokens | 765 bytes]
-remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
+# remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
 # remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
 # remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
 # remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
@@ -437,7 +455,6 @@ scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # assets/js/surreal.js  # [3,812 tokens | 13,432 bytes]
 # assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
-# assets/prompts/book_holographic.json  # [122 tokens | 463 bytes]
 # assets/prompts/pipulate-context.xsd  # [2,286 tokens | 8,129 bytes]
 # assets/prompts/system_prompt.md  # [628 tokens | 2,618 bytes]
 # assets/rich-table.css  # [417 tokens | 1,459 bytes]
