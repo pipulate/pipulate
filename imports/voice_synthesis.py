@@ -116,6 +116,8 @@ class ChipVoiceSystem:
             finally:
                 self.current_process = None
 
+
+
     def synthesize_and_play(self, text: str) -> bool:
         """
         Synthesize text and play audio (Mike's tested approach)
@@ -132,15 +134,21 @@ class ChipVoiceSystem:
         
         # STOP any existing audio before starting new one
         self.stop_speaking()
+
+        # ---------------------------------------------------------
+        # THE INTERCEPT: Swap the domain for a natural spoken name 
+        # ---------------------------------------------------------
+        spoken_text = re.sub(r'\*\*MikeLev\.in\*\*:', 'Mike:', text)
+        # ---------------------------------------------------------
         
         try:
             # Use temporary file for audio output
             with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as tmp_file:
                 output_path = tmp_file.name
             
-            # Synthesize speech to WAV file
+            # Synthesize speech to WAV file using the intercepted text
             with wave.open(output_path, "wb") as wav_file:
-                self.voice.synthesize_wav(text, wav_file)
+                self.voice.synthesize_wav(spoken_text, wav_file)
             
             # Play audio using platform-specific command
             import platform
@@ -159,6 +167,7 @@ class ChipVoiceSystem:
                     stdout=subprocess.DEVNULL
                 )
                 
+                # Keep logging the original 'text' so the terminal output matches the Markdown
                 logger.info(f"🎤 Speaking (PID {self.current_process.pid}): {text[:50]}...")
                 
                 # Wait for the process to finish naturally
