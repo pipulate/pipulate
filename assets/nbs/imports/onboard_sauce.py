@@ -103,8 +103,8 @@ def show_artifacts(target_url: str):
     cache_dir = wand.paths.browser_cache / domain / url_path_slug
 
     if cache_dir.exists():
-        wand.speak("Let's examine the artifacts I extracted. Click the button to open the folder on your computer.")
         print(f"📁 Contents of {cache_dir}:\n")
+        wand.speak("Let's examine the artifacts I extracted. Click the button to open the folder on your computer.")
         
         for item in cache_dir.iterdir():
             if item.is_file():
