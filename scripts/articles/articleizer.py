@@ -192,6 +192,7 @@ def create_jekyll_post(article_content, instructions, output_dir):
         f.write(final_content)
 
     print(f"✨ Success! Article saved to: {output_path}")
+    print("Collect new 404s: python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree")
 
 def main():
     parser = argparse.ArgumentParser(description="Process an article with the Gemini API and format it for Jekyll.")
