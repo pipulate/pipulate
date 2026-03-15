@@ -28,6 +28,8 @@ assets/prompts/book_holographic.json  # [122 tokens | 463 bytes]
 # Let's look at the current llms.txt generation logic to see what we are replacing.
 scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
 
+scripts/articles/llms.txt  # [213 tokens | 824 bytes]
+
 # -------------------------------------------------------------------------------- 
 
 # And let's grab a slice of the actual narrative so I can see the chronological flow.
@@ -475,6 +477,7 @@ scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
 # remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
+# scripts/articles/build_codex_manifest.py  # [830 tokens | 3,484 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
 # scripts/articles/diagramizer.py  # [1,912 tokens | 8,193 bytes]
