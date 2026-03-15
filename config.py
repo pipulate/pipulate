@@ -6,6 +6,7 @@ from pathlib import Path
 from rich.theme import Theme
 from rich.style import Style as RichStyle
 
+WAND_SPEAKS_EMOJI = "🪄"
 TONE = 'neutral'
 MODEL = 'gemma3'
 MAX_LLM_RESPONSE_WORDS = 80
