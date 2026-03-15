@@ -48,6 +48,7 @@ def build_manifest():
 
     shards = load_shards()
     lines = []
+    used_slugs = set()
 
     # --- PREAMBLE ---
     lines.append(f"# {book_data.get('title', 'System Codex')}")
@@ -69,6 +70,7 @@ def build_manifest():
             # Extract the slug to match against the shard IDs
             # Assumes format: "/futureproof/future-proof-tech-skills"
             slug = article_path.strip('/').split('/')[-1]
+            used_slugs.add(slug)
             shard = shards.get(slug)
 
             if shard:
