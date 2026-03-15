@@ -385,8 +385,41 @@ class Pipulate:
     def imperio(self):
         self.speak("Done step. Run the next cell.")
 
+    def show_artifacts(self, target_url: str):
+        """Displays a button to open the cache directory for a given URL."""
+        from tools.scraper_tools import get_safe_path_component
+        import ipywidgets as widgets
+        from IPython.display import display
+        
+        domain, url_path_slug = get_safe_path_component(target_url)
+        cache_dir = self.paths.browser_cache / domain / url_path_slug
+
+        if cache_dir.exists():
+            print(f"📁 Contents of {cache_dir}:\n")
+            self.speak("Let's examine the artifacts I extracted. Click the button to open the folder on your computer...")
+            
+            for item in cache_dir.iterdir():
+                if item.is_file():
+                    size_kb = item.stat().st_size / 1024
+                    print(f" - {item.name} ({size_kb:.1f} KB)")
+                    
+            # Create the "Open Folder" button
+            button = widgets.Button(
+                description=f"📂 Open Folder",
+                tooltip=f"Open {cache_dir.resolve()}",
+                button_style='success'
+            )
+            
+            def on_button_click(b):
+                self.open_folder(str(cache_dir))
+                
+            button.on_click(on_button_click)
+            display(button)
+        else:
+            print("Directory not found. The scrape may not have completed successfully.")
+
     def register_dialogue(self, dialogue_dict: dict):
-        """Registers a dictionary of narrative scripts into the wand's memory."""
+        """Registers a dictionary of narrative scripts into the self's memory."""
         self.dialogue_tree.update(dialogue_dict)
 
     def gab(self, step_key: str, **kwargs):
