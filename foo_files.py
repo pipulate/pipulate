@@ -18,8 +18,8 @@
 # Search using this to jump to next un-commented line: \v^\s*[^#\s]
 
 AI_PHOOEY_CHOP = """\
+foo_files.py  # [8,873 tokens | 28,749 bytes]
 # prompt_foo.py  # [12,914 tokens | 59,241 bytes]
-# foo_files.py  # [8,873 tokens | 28,749 bytes]
 
 imports/voice_synthesis.py  # [3,025 tokens | 14,886 bytes]
 
@@ -180,16 +180,16 @@ imports/voice_synthesis.py  # [3,025 tokens | 14,886 bytes]
 # pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 
 # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
-# __init__.py  # [357 tokens | 1,565 bytes]
-# imports/__init__.py  # [0 tokens | 0 bytes]
-# imports/ai_dictdb.py  # [1,733 tokens | 8,158 bytes]
-# imports/database_safety_wrapper.py  # [1,744 tokens | 8,254 bytes]
-# imports/durable_backup_system.py  # [5,117 tokens | 25,413 bytes]
-# imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
-# imports/stream_orchestrator.py  # [1,163 tokens | 5,841 bytes]
-# imports/mcp_orchestrator.py  # [772 tokens | 3,332 bytes]
-# imports/append_only_conversation.py  # [4,345 tokens | 22,449 bytes]
-# imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
+__init__.py  # [357 tokens | 1,565 bytes]
+imports/__init__.py  # [0 tokens | 0 bytes]
+imports/ai_dictdb.py  # [1,733 tokens | 8,158 bytes]
+imports/database_safety_wrapper.py  # [1,744 tokens | 8,254 bytes]
+imports/durable_backup_system.py  # [5,117 tokens | 25,413 bytes]
+imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
+imports/stream_orchestrator.py  # [1,163 tokens | 5,841 bytes]
+imports/mcp_orchestrator.py  # [772 tokens | 3,332 bytes]
+imports/append_only_conversation.py  # [4,345 tokens | 22,449 bytes]
+imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 
 # ============================================================================
 # III. THE ANATOMY (UX, Tools & Apps)
@@ -277,18 +277,18 @@ imports/voice_synthesis.py  # [3,025 tokens | 14,886 bytes]
 # Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
 
 # CHAPTER 15: JEKYLL PUBLISHING
-/home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
-scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
-scripts/articles/common.py  # [881 tokens | 3,571 bytes]
-scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-/home/mike/.config/articleizer/targets.json  # [164 tokens | 661 bytes]
-/home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
+# /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
+# scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
+# scripts/articles/common.py  # [881 tokens | 3,571 bytes]
+# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
+# /home/mike/.config/articleizer/targets.json  # [164 tokens | 661 bytes]
+# /home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
 scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
-scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
-scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
-scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
-scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
+# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
+# scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
+# scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
+# scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
+# scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
 
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # ! python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree  # Konami Cheat Code 404s, run from the terminal by itself!!!
