@@ -93,40 +93,6 @@ def check_ai_models(preferred_local=None, preferred_cloud=None):
         return {"local": False, "cloud": False, "has_any_local": False}
 
 
-def show_artifacts(target_url: str):
-    """Displays a button to open the cache directory for a given URL."""
-    from tools.scraper_tools import get_safe_path_component
-    import ipywidgets as widgets
-    from IPython.display import display
-    
-    domain, url_path_slug = get_safe_path_component(target_url)
-    cache_dir = wand.paths.browser_cache / domain / url_path_slug
-
-    if cache_dir.exists():
-        print(f"📁 Contents of {cache_dir}:\n")
-        wand.speak("Let's examine the artifacts I extracted. Click the button to open the folder on your computer.")
-        
-        for item in cache_dir.iterdir():
-            if item.is_file():
-                size_kb = item.stat().st_size / 1024
-                print(f" - {item.name} ({size_kb:.1f} KB)")
-                
-        # Create the "Open Folder" button
-        button = widgets.Button(
-            description=f"📂 Open Folder",
-            tooltip=f"Open {cache_dir.resolve()}",
-            button_style='success'
-        )
-        
-        def on_button_click(b):
-            wand.open_folder(str(cache_dir))
-            
-        button.on_click(on_button_click)
-        display(button)
-    else:
-        print("Directory not found. The scrape may not have completed successfully.")
-
-
 def interrogate_local_ai(target_url: str, preferred_model: str = None):
     """Reads the accessibility tree and asks the local AI to summarize it."""
     from tools.scraper_tools import get_safe_path_component
