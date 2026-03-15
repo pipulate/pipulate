@@ -18,8 +18,8 @@
 # Search using this to jump to next un-commented line: \v^\s*[^#\s]
 
 AI_PHOOEY_CHOP = """\
-# prompt_foo.py  # [12,914 tokens | 59,241 bytes]
-# foo_files.py  # [8,873 tokens | 28,749 bytes]
+prompt_foo.py  # [12,914 tokens | 59,241 bytes]
+foo_files.py  # [8,873 tokens | 28,749 bytes]
 
 # Demonstrating the tracer-dye methodology to Gemini to explain highly evidenced attribution inclusion in parameterized memory.
 # remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
@@ -269,30 +269,30 @@ AI_PHOOEY_CHOP = """\
 # assets/nbs/imports/videditor_sauce.py  # [937 tokens | 4,098 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
-assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-assets/nbs/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
-Notebooks/Onboarding.ipynb  # [4,504 tokens | 14,798 bytes]
-Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
+# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
+# Notebooks/Onboarding.ipynb  # [4,504 tokens | 14,798 bytes]
+# Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
 
 # CHAPTER 15: JEKYLL PUBLISHING
-/home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
-scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
-scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-/home/mike/.config/articleizer/targets.json  # [164 tokens | 661 bytes]
-/home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
-scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
-scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
-scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
-scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
-scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
+# /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
+# scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
+# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
+# /home/mike/.config/articleizer/targets.json  # [164 tokens | 661 bytes]
+# /home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
+# scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
+# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
+# scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
+# scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
+# scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
+# scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
 
 # THE 404 AFFAIR (Topological Healer Blueprint)
-/home/mike/repos/trimnoir/_raw_map.csv  # [46,314 tokens | 164,991 bytes]
-/home/mike/repos/trimnoir/_redirects.map  # [58,305 tokens | 184,949 bytes]
-# scripts/articles/extract_404_ghosts.py  # [882 tokens | 3,801 bytes]
+# ! python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree  # Konami Cheat Code 404s, run from the terminal by itself!!!
+# assets/prompts/find404s.md
+# /home/mike/repos/trimnoir/_raw_map.csv
 # scripts/articles/generate_redirects.py  # [1,101 tokens | 4,722 bytes]
-# ! python scripts/articles/extract_404_ghosts.py
+# /home/mike/repos/trimnoir/_redirects.map
 
 # ============================================================================
 # VI. THE HONEYBOT OBSERVATORY (Live Telemetry)
@@ -300,17 +300,17 @@ scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
 # DMZ TV Studio, Telemetry DB, and NixOS IaC. 
 
 # CHAPTER 16: HONEYBOT IAC & SCRIPTS
-nixops.sh  # [227 tokens | 765 bytes]
-remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
-remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
-remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
-remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
-remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
-remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
-remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
-remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
-remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
-remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
+# nixops.sh  # [227 tokens | 765 bytes]
+# remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
+# remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
+# remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
+# remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
+# remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
+# remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
+# remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
+# remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
+# remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
+# remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
 
 # CHAPTER 17: TELEMETRY SENSORS & DASHBOARD PROBES
 # These are the structural SQL definitions the AI can read to understand the schema.
@@ -460,6 +460,7 @@ scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # scripts/articles/other/list_models.py  # [157 tokens | 685 bytes]
 # scripts/articles/other/make_article.py  # [1,513 tokens | 6,559 bytes]
+# scripts/articles/sanitize_redirects.py  # [684 tokens | 2,935 bytes]
 # scripts/articles/scrub_tags.py  # [358 tokens | 1,587 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
 # scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
