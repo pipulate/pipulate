@@ -89,6 +89,7 @@ def create_jekyll_post(article_content, instructions, output_dir):
         'canonical_url': canonical_url,  # <--- INJECTED HERE
         'description': analysis_content.get("authors_imprint"),
         'meta_description': yaml_updates.get("description"),
+        'excerpt': yaml_updates.get("description"),
         'meta_keywords': yaml_updates.get("keywords"),
         'layout': 'post',
         'sort_order': next_sort_order
