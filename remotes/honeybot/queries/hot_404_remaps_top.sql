@@ -55,8 +55,8 @@ WHERE l.status = 404
   AND p.value NOT LIKE '%.png'
   AND p.value NOT LIKE '%.jpg'
   -- 🛡️ NEW PROTOCOL SHIELDS: Drop absolute URLs and Nginx/Bot noise
-  AND p.value NOT LIKE 'http://%' 
-  AND p.value NOT LIKE 'https://%'
+  AND p.value NOT LIKE '%http://%' 
+  AND p.value NOT LIKE '%https://%'
   AND p.value NOT LIKE '~^%'
   AND instr(p.value, ' ') = 0
   AND instr(p.value, ';') = 0
