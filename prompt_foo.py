@@ -931,7 +931,8 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP"):
     # This looks for words ending in known extensions or containing slashes/dots
     # potential_refs = set(re.findall(r'([\w\d\./\\-]+\.(?:py|md|nix|sh|ipynb|json|js|css|html|sql))', raw_content))
     extensions = '|'.join([ext.lstrip('.') for ext in STORY_EXTENSIONS])
-    potential_refs = set(re.findall(rf'([\w\d\./\\-]+\.(?:{extensions}))', raw_content))
+    # Use \b or ensure the match isn't immediately followed by more word characters
+    potential_refs = set(re.findall(rf'([\w\d\./\\-]+\.(?:{extensions}))(?!\w)', raw_content))
 
     
     # 2. Get the reality of the disk
@@ -940,8 +941,8 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP"):
     # 3. Find the Ghosts
     broken_refs = []
     for ref in potential_refs:
-        # Ignore HTTP, Commands, and double-slash URL stubs
-        if ref.startswith(('http', '!', '//')) or '://' in ref: 
+        # Ignore HTTP, Commands, double-slashes, and server-side absolute paths
+        if ref.startswith(('http', '!', '//', '/www/')) or '://' in ref: 
             continue
         
         full_path = os.path.join(REPO_ROOT, ref) if not os.path.isabs(ref) else ref
