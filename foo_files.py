@@ -29,7 +29,10 @@ AI_PHOOEY_CHOP = """\
 # 
 # # Let's peek at the new script to see if we can add an auto-discovery mechanism
 # # for articles that exist but aren't listed in the JSON yet.
+
 scripts/articles/build_codex_manifest.py  # [862 tokens | 3,584 bytes]
+scripts/articles/llms.txt  # [93,184 tokens | 412,795 bytes]
+
 # 
 # # Let's check the targets file to see the current pipeline order.
 # /home/mike/.config/articleizer/targets.json  # [171 tokens | 698 bytes]
