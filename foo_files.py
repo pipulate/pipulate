@@ -20,17 +20,17 @@
 AI_PHOOEY_CHOP = """\
 # ! python scripts/articles/lsa.py -t 1
 
-foo_files.py  # [8,873 tokens | 28,749 bytes]
-prompt_foo.py  # [12,914 tokens | 59,241 bytes]
-scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
+foo_files.py  # [10,245 tokens | 33,406 bytes]
+# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+
+/home/mike/.config/articleizer/targets.json  # [171 tokens | 698 bytes]
+
+scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
+
 
 # scripts/articles/build_codex_manifest.py  # [862 tokens | 3,584 bytes]
 # scripts/articles/llms.txt  # [93,184 tokens | 412,795 bytes]
 
-# # We need to modify the publishing sweep to include the new script.
-scripts/articles/publishizer.py  # [1,101 tokens | 4,525 bytes]
-
-# 
 # # We need to lobotomize the old llms.txt generation from the graph builder.
 # scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
 # 
@@ -319,21 +319,21 @@ scripts/articles/publishizer.py  # [1,101 tokens | 4,525 bytes]
 # Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
 
 # CHAPTER 15: JEKYLL PUBLISHING
-# /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
-# scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
-# scripts/articles/common.py  # [881 tokens | 3,571 bytes]
-# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-# /home/mike/.config/articleizer/targets.json  # [164 tokens | 661 bytes]
-# /home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
-# /home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
-# /home/mike/repos/trimnoir/_layouts/home.html  # [265 tokens | 905 bytes]
-# /home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
-# scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
-# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-# scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
-# scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
-# scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
-# scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
+/home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
+scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
+scripts/articles/common.py  # [881 tokens | 3,571 bytes]
+scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
+/home/mike/.config/articleizer/targets.json  # [164 tokens | 661 bytes]
+/home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
+/home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
+/home/mike/repos/trimnoir/_layouts/home.html  # [265 tokens | 905 bytes]
+/home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
+scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
+scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
+scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
+scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
+scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
+scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
 
 # scripts/articles/gsc_velocity.json  # [103,079 tokens | 253,460 bytes]
 
@@ -482,6 +482,7 @@ scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # assets/js/surreal.js  # [3,812 tokens | 13,432 bytes]
 # assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
+# assets/prompts/llms_header.md  # [1,110 tokens | 5,129 bytes]
 # assets/prompts/pipulate-context.xsd  # [2,286 tokens | 8,129 bytes]
 # assets/prompts/system_prompt.md  # [628 tokens | 2,618 bytes]
 # assets/rich-table.css  # [417 tokens | 1,459 bytes]
@@ -508,6 +509,7 @@ scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
 # scripts/articles/list_models.py  # [165 tokens | 651 bytes]
+# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # scripts/articles/other/list_models.py  # [157 tokens | 685 bytes]
 # scripts/articles/other/make_article.py  # [1,513 tokens | 6,559 bytes]
 # scripts/articles/rescue_equity.py  # [514 tokens | 2,040 bytes]
