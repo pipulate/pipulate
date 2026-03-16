@@ -1285,13 +1285,16 @@ def main():
 
     # 5. Print the Summary section to console for immediate feedback
     if "Summary" in builder.all_sections:
-        # Strip markdown code fencing from console output to prevent 
-        # nesting collisions when copy/pasting into other markdown files
         console_summary = builder.all_sections["Summary"]["content"]
-        console_summary = console_summary.replace("```\n", "")
-        console_summary = console_summary.replace("```", "")
-        print(console_summary)
-    
+        
+        # FIX: Strip the redundant Processing Log specifically for terminal display
+        # This uses DOTALL to catch everything between the header and the closing fence
+        console_summary = re.sub(r'--- Processing Log ---.*?```\n\n', '', console_summary, flags=re.DOTALL)
+        
+        # Clean up the remaining fences for terminal readability
+        console_summary = console_summary.replace("```\n", "").replace("```", "")
+        print(console_summary.strip())
+
     # 6. Handle output
     if args.output:
         with open(args.output, 'w', encoding='utf-8') as f: f.write(final_output)
