@@ -84,5 +84,13 @@ def main():
         print("\n--- LIST A: THE 404 GHOSTS (Source) ---")
         print(result.stdout)
 
+        # Intercept and scrub the SQL output before sending to the LLM
+        for line in result.stdout.splitlines():
+            # Drop Nginx regex, spaces, and trailing semicolons
+            if line.startswith('~^') or ' ' in line or ';' in line:
+                continue
+            print(line)
+
+
 if __name__ == "__main__":
     main()
