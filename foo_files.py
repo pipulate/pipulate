@@ -18,11 +18,18 @@
 # Search using this to jump to next un-commented line: \v^\s*[^#\s]
 
 AI_PHOOEY_CHOP = """\
-# foo_files.py  # [8,873 tokens | 28,749 bytes]
-# prompt_foo.py  # [12,914 tokens | 59,241 bytes]
+# ! python scripts/articles/lsa.py -t 1
+
+foo_files.py  # [8,873 tokens | 28,749 bytes]
+prompt_foo.py  # [12,914 tokens | 59,241 bytes]
+scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
+
+# scripts/articles/build_codex_manifest.py  # [862 tokens | 3,584 bytes]
+# scripts/articles/llms.txt  # [93,184 tokens | 412,795 bytes]
 
 # # We need to modify the publishing sweep to include the new script.
-# scripts/articles/publishizer.py  # [1,101 tokens | 4,525 bytes]
+scripts/articles/publishizer.py  # [1,101 tokens | 4,525 bytes]
+
 # 
 # # We need to lobotomize the old llms.txt generation from the graph builder.
 # scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
@@ -30,10 +37,6 @@ AI_PHOOEY_CHOP = """\
 # # Let's peek at the new script to see if we can add an auto-discovery mechanism
 # # for articles that exist but aren't listed in the JSON yet.
 
-scripts/articles/build_codex_manifest.py  # [862 tokens | 3,584 bytes]
-scripts/articles/llms.txt  # [93,184 tokens | 412,795 bytes]
-
-# 
 # # Let's check the targets file to see the current pipeline order.
 # /home/mike/.config/articleizer/targets.json  # [171 tokens | 698 bytes]
 
@@ -505,7 +508,6 @@ scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
 # scripts/articles/list_models.py  # [165 tokens | 651 bytes]
-# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # scripts/articles/other/list_models.py  # [157 tokens | 685 bytes]
 # scripts/articles/other/make_article.py  # [1,513 tokens | 6,559 bytes]
 # scripts/articles/rescue_equity.py  # [514 tokens | 2,040 bytes]
