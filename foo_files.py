@@ -22,13 +22,6 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # ! python scripts/articles/lsa.py -t 1
 
-test1.py
-# test2.py
-this/is/a/test3.py
-# this/is/a/test4.py
-/this/is/test5.py
-# /this/is/test6.py
-
 # /home/mike/repos/trimnoir/_site/flake.nix  # [5,253 tokens | 23,747 bytes]
 # ! cat /home/mike/repos/trimnoir/_site/feed.xml | head -c 50K
 # /home/mike/repos/trimnoir/feed.xml  # [407 tokens | 1,615 bytes]
@@ -47,8 +40,6 @@ this/is/a/test3.py
 # remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
 # remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
 # remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
-# /home/mike/repos/trimnoir/_ai_license.md  # [168 tokens | 695 bytes]
-# https://mikelev.in/futureproof/ai-magic-mirror-cybernetic-feedback-loop-content-intelligence/index.md?src=a+href
 
 # apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
@@ -106,7 +97,7 @@ this/is/a/test3.py
 # imports/__init__.py  # [0 tokens | 0 bytes]
 # imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
 # 
-# pipulte/__init__.py
+# pipulate/__init__.py  # [509 tokens | 2,135 bytes]
 # pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 # apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
 # tools/mcp_tools.py  # [36,628 tokens | 186,793 bytes]
@@ -135,9 +126,6 @@ this/is/a/test3.py
 # Brand new query to figure out what user agents request markdown from what sources.
 # ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
-# Active LLM Optics Probes
-# !https://mikelev.in/about/
-
 # Active Working Markdown / Recent Posts
 # /home/mike/repos/trimnoir/_posts/2026-03-10-zero-friction-actuator-ai-development.md  # [28,692 tokens | 150,243 bytes]
 # /home/mike/repos/trimnoir/_posts/2026-03-10-machine-native-semantic-architecture-ai-age.md  # [19,121 tokens | 85,579 bytes]
@@ -151,14 +139,6 @@ this/is/a/test3.py
 # /home/mike/repos/trimnoir/_posts/2026-03-09-wet-coding-fearless-refactoring-python-tokenizer.md  # [182,723 tokens | 726,616 bytes]
 # /home/mike/repos/trimnoir/_posts/2026-03-08-holographic-context-engineering-ai-ready-semantic-maps-web-native-llms.md  # [77,786 tokens | 245,940 bytes]
 # /home/mike/repos/trimnoir/_posts/2026-03-08-the-immutable-webhead-building-resilient-ai-telemetry-system.md  # [23,423 tokens | 90,726 bytes]
-
-# Transient Browser Cache & Artifacts
-# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/accessibility_tree.json  # [2,511 tokens | 10,012 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/accessibility_tree_summary.txt  # [143 tokens | 579 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/headers.json  # [180 tokens | 486 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/rendered_dom.html  # [149 tokens | 513 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/simple_dom.html  # [109 tokens | 370 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/source.html  # [152 tokens | 528 bytes]
 
 # ============================================================================
 # II. THE CORE MACHINE (Architecture & Monolith)
@@ -273,7 +253,7 @@ this/is/a/test3.py
 # apps/120_link_graph.py  # [54,349 tokens | 272,468 bytes]
 
 # CHAPTER 13: THE GAPALYZER SUITE (~240KB)
-# Notebooks/GAPalyzer.ipynb
+# Notebooks/Advanced_Notebooks/GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
 # Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 
 # ============================================================================
@@ -283,9 +263,9 @@ this/is/a/test3.py
 
 # CHAPTER 14: THE NOTEBOOK TEMPLATES (~100KB)
 # assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-# assets/nbs/Advanced_Notebooks/AdvancedFAQuilizer.ipynb
-# assets/nbs/Advanced_Notebooks/AdvancedURLinspector.ipynb
-# assets/nbs/Advanced_Notebooks/AdvancedVIDeditor.ipynb
+# assets/nbs/Advanced_Notebooks/FAQuilizer.ipynb  # [2,516 tokens | 7,593 bytes]
+# assets/nbs/Advanced_Notebooks/URLinspector.ipynb  # [2,407 tokens | 7,284 bytes]
+# assets/nbs/Advanced_Notebooks/VIDeditor.ipynb  # [569 tokens | 1,670 bytes]
 # assets/nbs/imports/faq_writer_sauce.py  # [6,042 tokens | 26,760 bytes]
 # assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
 # assets/nbs/imports/videditor_sauce.py  # [937 tokens | 4,098 bytes]
@@ -301,7 +281,6 @@ this/is/a/test3.py
 # scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
 # scripts/articles/common.py  # [881 tokens | 3,571 bytes]
 # scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-# /home/mike/.config/articleizer/targets.json  # [164 tokens | 661 bytes]
 # /home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
 # /home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
 # /home/mike/repos/trimnoir/_layouts/home.html  # [265 tokens | 905 bytes]
@@ -313,8 +292,6 @@ this/is/a/test3.py
 # scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
 # scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
-
-# scripts/articles/gsc_velocity.json  # [103,079 tokens | 253,460 bytes]
 
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # ! python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree  # Konami Cheat Code 404s, run from the terminal by itself!!!
