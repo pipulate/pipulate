@@ -940,8 +940,9 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP"):
     # 3. Find the Ghosts
     broken_refs = []
     for ref in potential_refs:
-        # Ignore HTTP and Commands
-        if ref.startswith(('http', '!')): continue
+        # Ignore HTTP, Commands, and double-slash URL stubs
+        if ref.startswith(('http', '!', '//')) or '://' in ref: 
+            continue
         
         full_path = os.path.join(REPO_ROOT, ref) if not os.path.isabs(ref) else ref
         if not os.path.exists(full_path):
