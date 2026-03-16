@@ -16,6 +16,7 @@ CRITICAL RULES - FAILURE IS NOT AN OPTION:
 8. IMMUTABLE SOURCE: You must take the URLs in LIST A exactly as provided. You are strictly forbidden from creating, inventing, or predicting "potential" dead URLs based on the semantic map.
 9. ONLY MAP OBSERVED DATA: If a URL does not appear in the provided LIST A, it must not appear in your output.
 10. FILTER NOISE: Ignore any items in LIST A that contain spaces, semicolons, or begin with regex characters (e.g., `~^`). Treat them as invisible and DO NOT include them in your final CSV output.
+11. RAW TEXT ONLY: You are strictly forbidden from converting URLs into clickable links. Do not use Markdown link syntax `[text](url)`, do not add asterisks, and do not generate search queries. Output the raw, unformatted text strings exactly as they exist in the source data.
 
 Example Output:
 /2012/07/old-article/,/futureproof/actual-living-url/

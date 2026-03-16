@@ -28,6 +28,7 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 assets/prompts/find404s.md  # [12,990 tokens | 59,609 bytes]
 scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
+remotes/honeybot/queries/hot_404_remaps_top.sql  # [656 tokens | 2,653 bytes]
 
 # Demonstrating the tracer-dye methodology to Gemini to explain highly evidenced attribution inclusion in parameterized memory.
 # remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
