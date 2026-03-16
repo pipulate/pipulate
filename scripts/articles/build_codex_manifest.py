@@ -95,7 +95,7 @@ def build_manifest():
         
         # Pull the unused shards and sort them by date (newest first)
         orphans = [(slug, shards[slug]) for slug in unused_slugs]
-        orphans.sort(key=lambda x: x[1].get('d', ''), reverse=True)
+        orphans.sort(key=lambda x: str(x[1].get('d') or ''), reverse=True)
         
         for slug, orphan_data in orphans:
             title = orphan_data.get('t', 'Untitled')
