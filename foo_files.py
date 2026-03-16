@@ -26,7 +26,8 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC PROMPT FU INCLUSIONS HERE
 
-prompt_foo.py assets/prompts/find404s.md  # [12,990 tokens | 59,609 bytes]
+assets/prompts/find404s.md  # [12,990 tokens | 59,609 bytes]
+scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
 
 # Demonstrating the tracer-dye methodology to Gemini to explain highly evidenced attribution inclusion in parameterized memory.
 # remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
