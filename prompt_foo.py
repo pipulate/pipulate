@@ -1017,7 +1017,7 @@ def main():
 
     # 2. Process all specified files (UPDATE THESE TWO LINES):
     annotate_foo_files_in_place(args.chop)
-    update_paintbox_in_place()   # <-- THE NEW SENSOR PING
+    update_paintbox_in_place()
     files_to_process = parse_file_list_from_config(args.chop)
     processed_files_data = []
 

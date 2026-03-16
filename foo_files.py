@@ -22,6 +22,9 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # ! python scripts/articles/lsa.py -t 1
 
+/this/is/a/test1.foo
+# /this/is/a/test2.bar
+
 # /home/mike/repos/trimnoir/_site/flake.nix  # [5,253 tokens | 23,747 bytes]
 # ! cat /home/mike/repos/trimnoir/_site/feed.xml | head -c 50K
 # /home/mike/repos/trimnoir/feed.xml  # [407 tokens | 1,615 bytes]
