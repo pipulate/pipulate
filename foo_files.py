@@ -18,52 +18,15 @@
 # Search using this to jump to next un-commented line: \v^\s*[^#\s]
 
 AI_PHOOEY_CHOP = """\
-# ! python scripts/articles/lsa.py -t 1
-
+# USEFUL INITIALIZATION
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 # prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+# ! python scripts/articles/lsa.py -t 1
+# https://mikelev.in/llms.txt
 
-/home/mike/.config/articleizer/targets.json  # [171 tokens | 698 bytes]
+# AD HOC PROMPT FU INCLUSIONS HERE
 
-scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
-
-
-# scripts/articles/build_codex_manifest.py  # [862 tokens | 3,584 bytes]
-# scripts/articles/llms.txt  # [93,184 tokens | 412,795 bytes]
-
-# # We need to lobotomize the old llms.txt generation from the graph builder.
-# scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
-# 
-# # Let's peek at the new script to see if we can add an auto-discovery mechanism
-# # for articles that exist but aren't listed in the JSON yet.
-
-# # Let's check the targets file to see the current pipeline order.
-# /home/mike/.config/articleizer/targets.json  # [171 tokens | 698 bytes]
-
-# # Let's see the core logic of the current contextualizer to understand how the shards are built.
-# scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
-# 
-# # Let's see the exact JSON schema you are currently using for these shards.
-# # (If you have a sample shard or the schema file, include it here)
-# assets/prompts/book_holographic.json  # [122 tokens | 463 bytes]
-# 
-# # Let's look at the current llms.txt generation logic to see what we are replacing.
-# scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
-# 
-# scripts/articles/llms.txt  # [213 tokens | 824 bytes]
-
-# -------------------------------------------------------------------------------- 
-
-# And let's grab a slice of the actual narrative so I can see the chronological flow.
-# ! python prompt_foo.py -l [-20:] --context-only
-
-# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
-
-# imports/voice_synthesis.py  # [3,025 tokens | 14,886 bytes]
-
-# /home/mike/repos/pipulate/scripts/articles/article.txt  # [9,912 tokens | 40,258 bytes]
-# /home/mike/repos/trimnoir/_posts/2026-03-15-ai-semantic-gravity-dual-layer-content-branding.md  # [11,280 tokens | 47,176 bytes]
+prompt_foo.py assets/prompts/find404s.md  # [12,990 tokens | 59,609 bytes]
 
 # Demonstrating the tracer-dye methodology to Gemini to explain highly evidenced attribution inclusion in parameterized memory.
 # remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
@@ -319,21 +282,21 @@ scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
 # Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
 
 # CHAPTER 15: JEKYLL PUBLISHING
-/home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
-scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
-scripts/articles/common.py  # [881 tokens | 3,571 bytes]
-scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-/home/mike/.config/articleizer/targets.json  # [164 tokens | 661 bytes]
-/home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
-/home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
-/home/mike/repos/trimnoir/_layouts/home.html  # [265 tokens | 905 bytes]
-/home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
-scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
-scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
-scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
-scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
-scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
+# /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
+# scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
+# scripts/articles/common.py  # [881 tokens | 3,571 bytes]
+# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
+# /home/mike/.config/articleizer/targets.json  # [164 tokens | 661 bytes]
+# /home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
+# /home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
+# /home/mike/repos/trimnoir/_layouts/home.html  # [265 tokens | 905 bytes]
+# /home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
+# scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
+# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
+# scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
+# scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
+# scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
+# scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
 
 # scripts/articles/gsc_velocity.json  # [103,079 tokens | 253,460 bytes]
 
@@ -482,6 +445,7 @@ scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # assets/js/surreal.js  # [3,812 tokens | 13,432 bytes]
 # assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
+# assets/prompts/book_holographic.json  # [923 tokens | 3,726 bytes]
 # assets/prompts/llms_header.md  # [1,110 tokens | 5,129 bytes]
 # assets/prompts/pipulate-context.xsd  # [2,286 tokens | 8,129 bytes]
 # assets/prompts/system_prompt.md  # [628 tokens | 2,618 bytes]
@@ -503,10 +467,12 @@ scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
 # remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
+# scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
 # scripts/articles/diagramizer.py  # [1,912 tokens | 8,193 bytes]
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
+# scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
 # scripts/articles/list_models.py  # [165 tokens | 651 bytes]
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
