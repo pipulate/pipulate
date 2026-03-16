@@ -922,6 +922,36 @@ def update_paintbox_in_place():
         logger.print(f"Warning: Failed to update the Paintbox: {e}")
 
 
+def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP"):
+    """Reports references in foo_files.py that no longer exist on disk."""
+    import foo_files
+    raw_content = getattr(foo_files, chop_var, "")
+    
+    # 1. Identify all potential file-like strings in the CHOP
+    # This looks for words ending in known extensions or containing slashes/dots
+    potential_refs = set(re.findall(r'([\w\d\./\\-]+\.(?:py|md|nix|sh|ipynb|json|js|css|html|sql))', raw_content))
+    
+    # 2. Get the reality of the disk
+    repo_files = collect_repo_files(REPO_ROOT)
+    
+    # 3. Find the Ghosts
+    broken_refs = []
+    for ref in potential_refs:
+        # Ignore HTTP and Commands
+        if ref.startswith(('http', '!')): continue
+        
+        full_path = os.path.join(REPO_ROOT, ref) if not os.path.isabs(ref) else ref
+        if not os.path.exists(full_path):
+            broken_refs.append(ref)
+            
+    if broken_refs:
+        logger.print("\n⚠️  TOPOLOGICAL INTEGRITY ALERT (Broken References):")
+        for ghost in sorted(broken_refs):
+            logger.print(f"  • {ghost}")
+    else:
+        logger.print("\n✅ Topological Integrity Verified: All references exist.")
+
+
 # ============================================================================
 # --- Main Execution Logic ---
 # ============================================================================
