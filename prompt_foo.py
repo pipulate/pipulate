@@ -929,7 +929,10 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP"):
     
     # 1. Identify all potential file-like strings in the CHOP
     # This looks for words ending in known extensions or containing slashes/dots
-    potential_refs = set(re.findall(r'([\w\d\./\\-]+\.(?:py|md|nix|sh|ipynb|json|js|css|html|sql))', raw_content))
+    # potential_refs = set(re.findall(r'([\w\d\./\\-]+\.(?:py|md|nix|sh|ipynb|json|js|css|html|sql))', raw_content))
+    extensions = '|'.join([ext.lstrip('.') for ext in STORY_EXTENSIONS])
+    potential_refs = set(re.findall(rf'([\w\d\./\\-]+\.(?:{extensions}))', raw_content))
+
     
     # 2. Get the reality of the disk
     repo_files = collect_repo_files(REPO_ROOT)
