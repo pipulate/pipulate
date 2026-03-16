@@ -12,6 +12,7 @@
     "ChatGPT-User": "OpenAI",
     "ChatGPT": "OpenAI",
     "ClaudeBot": "Anthropic",
+    "Claude-User": "Anthropic",
     "Claude": "Anthropic",
     "DataForSeoBot": "SEO Tool",
     "DotBot": "SEO Tool",
