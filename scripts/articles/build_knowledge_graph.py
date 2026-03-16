@@ -436,10 +436,10 @@ def main():
     print(f"✅ Generated D3 Graph: {GRAPH_FILE} ({len(nodes)} nodes)")
 
     # 5. EXPORT LLMS.TXT (Markdown Manifest)
-    llms_lines = project_llms_txt(canonical_tree, base_url="https://mikelev.in")
-    with open(LLMS_TXT_FILE, 'w', encoding='utf-8') as f:
-        f.write("\n".join(llms_lines))
-    print(f"✅ Generated LLMs.txt: {LLMS_TXT_FILE}")
+    # llms_lines = project_llms_txt(canonical_tree, base_url="https://mikelev.in")
+    # with open(LLMS_TXT_FILE, 'w', encoding='utf-8') as f:
+    #     f.write("\n".join(llms_lines))
+    # print(f"✅ Generated LLMs.txt: {LLMS_TXT_FILE}")
 
     # 6. EXPORT XML SITEMAPS (The Sitrep)
     xml_core, xml_hubs, xml_index = project_xml_sitemaps(canonical_tree)
