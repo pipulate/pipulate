@@ -22,7 +22,7 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # ! python scripts/articles/lsa.py -t 1
 
-blah.py
+/home/mike/repos/nixos/autognome.py  # [7,210 tokens | 34,310 bytes]
 
 # /home/mike/repos/trimnoir/_site/flake.nix  # [5,253 tokens | 23,747 bytes]
 # ! cat /home/mike/repos/trimnoir/_site/feed.xml | head -c 50K
@@ -159,16 +159,16 @@ blah.py
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # CHAPTER 1: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
-# assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
-# flake.nix  # [7,721 tokens | 32,979 bytes]
-# .gitignore  # [573 tokens | 2,089 bytes]
-# config.py  # [4,098 tokens | 15,949 bytes]
-# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
-# README.md  # [20,467 tokens | 103,208 bytes]
-# cli.py  # [5,092 tokens | 22,615 bytes]
-# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
+flake.nix  # [7,721 tokens | 32,979 bytes]
+.gitignore  # [573 tokens | 2,089 bytes]
+config.py  # [4,098 tokens | 15,949 bytes]
+AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
+README.md  # [20,467 tokens | 103,208 bytes]
+cli.py  # [5,092 tokens | 22,615 bytes]
+apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH (~260KB)
 # config.py  # [4,098 tokens | 15,949 bytes]
