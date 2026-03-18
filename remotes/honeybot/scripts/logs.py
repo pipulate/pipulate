@@ -59,8 +59,7 @@ class SonarApp(App):
         background: #000000;
         color: #00ff00;
         height: 100%;
-        scrollbar-gutter: stable;
-        overflow-y: scroll;
+        scrollbar-size: 0;
         overflow-x: hidden; 
         width: 100%;
         min-width: 100%;
@@ -73,6 +72,8 @@ class SonarApp(App):
         background: #051515;
         padding: 0;
         layout: horizontal; /* Split Left/Right */
+        scrollbar-size: 0;
+        overflow-x: hidden;
     }
     
     .half_panel {
