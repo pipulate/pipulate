@@ -22,7 +22,7 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # ! python scripts/articles/lsa.py -t 1
 
-/home/mike/repos/nixos/autognome.py  # [7,210 tokens | 34,310 bytes]
+# /home/mike/repos/nixos/autognome.py  # [7,210 tokens | 34,310 bytes]
 
 # /home/mike/repos/trimnoir/_site/flake.nix  # [5,253 tokens | 23,747 bytes]
 # ! cat /home/mike/repos/trimnoir/_site/feed.xml | head -c 50K
@@ -171,10 +171,8 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH (~260KB)
-config.py  # [4,098 tokens | 15,949 bytes]
-server.py  # [54,246 tokens | 258,931 bytes]
-requirements.in  # [573 tokens | 1,924 bytes]
-requirements.txt  # [7,010 tokens | 18,582 bytes]
+# config.py  # [4,098 tokens | 15,949 bytes] server.py  # [54,246 tokens | 258,931 bytes] requirements.in  # [573 tokens | 1,924 bytes] requirements.txt  # [7,010 tokens | 18,582 bytes]
+# server.py   # [54,246 tokens | 258,931 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
@@ -279,26 +277,26 @@ requirements.txt  # [7,010 tokens | 18,582 bytes]
 # Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
 
 # CHAPTER 15: JEKYLL PUBLISHING
-# /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
-# scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
-# scripts/articles/common.py  # [881 tokens | 3,571 bytes]
-# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-# /home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
-# /home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
-# /home/mike/repos/trimnoir/_layouts/home.html  # [265 tokens | 905 bytes]
-# /home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
-# scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
-# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-# scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
-# scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
-# scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
-# scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
-# scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
+/home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
+scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
+scripts/articles/common.py  # [881 tokens | 3,571 bytes]
+scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
+/home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
+/home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
+/home/mike/repos/trimnoir/_layouts/home.html  # [265 tokens | 905 bytes]
+/home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
+scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
+scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
+scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
+scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
+scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
+scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
+scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
 
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # ! python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree  # Konami Cheat Code 404s, run from the terminal by itself!!!
-# assets/prompts/find404s.md  # [350 tokens | 1,624 bytes]
-# /home/mike/repos/trimnoir/_raw_map.csv  # [103,981 tokens | 359,660 bytes]
+assets/prompts/find404s.md  # [350 tokens | 1,624 bytes]
+/home/mike/repos/trimnoir/_raw_map.csv  # [103,981 tokens | 359,660 bytes]
 # scripts/articles/generate_redirects.py  # [1,101 tokens | 4,722 bytes]
 # /home/mike/repos/trimnoir/_redirects.map  # [125,447 tokens | 401,978 bytes]
 
@@ -323,23 +321,23 @@ requirements.txt  # [7,010 tokens | 18,582 bytes]
 
 # CHAPTER 17: TELEMETRY SENSORS & DASHBOARD PROBES
 # These are the structural SQL definitions the AI can read to understand the schema.
-# remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
-# remotes/honeybot/queries/format_ratio.sql  # [79 tokens | 275 bytes]
-# remotes/honeybot/queries/markdown_routing_metrics.sql  # [177 tokens | 659 bytes]
-# remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
-# remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
-# remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
-# remotes/honeybot/queries/trapdoor_ips.sql  # [89 tokens | 298 bytes]
-# remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
-# remotes/honeybot/scripts/build_bot_miner.py  # [510 tokens | 2,105 bytes]
-# remotes/honeybot/queries/intel_unknown_agents.sql  # [85 tokens | 296 bytes]
-# remotes/honeybot/queries/intel_hostile_dictionary.sql  # [403 tokens | 1,413 bytes]
-# remotes/honeybot/queries/intel_noise_404s.sql  # [92 tokens | 286 bytes]
-# remotes/honeybot/queries/intel_true_404s.sql  # [104 tokens | 335 bytes]
-# remotes/honeybot/queries/hot_404_remaps_top.sql  # [656 tokens | 2,653 bytes]
-# remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
-# remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
-# remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
+remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
+remotes/honeybot/queries/format_ratio.sql  # [79 tokens | 275 bytes]
+remotes/honeybot/queries/markdown_routing_metrics.sql  # [177 tokens | 659 bytes]
+remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
+remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
+remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
+remotes/honeybot/queries/trapdoor_ips.sql  # [89 tokens | 298 bytes]
+remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
+remotes/honeybot/scripts/build_bot_miner.py  # [510 tokens | 2,105 bytes]
+remotes/honeybot/queries/intel_unknown_agents.sql  # [85 tokens | 296 bytes]
+remotes/honeybot/queries/intel_hostile_dictionary.sql  # [403 tokens | 1,413 bytes]
+remotes/honeybot/queries/intel_noise_404s.sql  # [92 tokens | 286 bytes]
+remotes/honeybot/queries/intel_true_404s.sql  # [104 tokens | 335 bytes]
+remotes/honeybot/queries/hot_404_remaps_top.sql  # [656 tokens | 2,653 bytes]
+remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
+remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
+remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
 
 # --- LIVE EXECUTION CHISEL-STRIKES ---
 # Uncomment to pipe live production data directly into the AI's context.
@@ -354,7 +352,7 @@ requirements.txt  # [7,010 tokens | 18,582 bytes]
 # ! echo "--- BOT MINER (Heuristic Scoring) ---" && python remotes/honeybot/scripts/build_bot_miner.py | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- UNKNOWN AGENTS (Empty/Generic UAs) ---" && cat remotes/honeybot/queries/intel_unknown_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- HOSTILE DICTIONARY (Probes) ---" && cat remotes/honeybot/queries/intel_hostile_dictionary.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- NOISE 404s (PHP/WP Probes) ---" && cat remotes/honeybot/queries/intel_noise_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- NOISE 404s (PHP/WP Probes) ---" && cat remotes/honeybot/queries/intel_noise_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- TRUE 404s (Legitimate Missing Content) ---" && cat remotes/honeybot/queries/intel_true_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- LLMS.TXT DISCOVERY ---" && cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
@@ -462,6 +460,8 @@ scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
 # remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
+# requirements.in  # [573 tokens | 1,924 bytes]
+# requirements.txt  # [7,010 tokens | 18,582 bytes]
 # scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
