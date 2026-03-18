@@ -5,7 +5,7 @@ import yaml
 import re
 from datetime import datetime
 from pathlib import Path
-import google.generativeai as genai
+import llm
 import argparse
 import time
 import common
@@ -233,7 +233,6 @@ def main():
         if not api_key:
             print("API Key not provided. Exiting.")
             return
-        genai.configure(api_key=api_key)
 
         if not os.path.exists(PROMPT_FILENAME):
             print(f"Error: Prompt file '{PROMPT_FILENAME}' not found.")
@@ -243,15 +242,16 @@ def main():
 
         full_prompt = prompt_template.replace(PROMPT_PLACEHOLDER, article_text)
 
-        print(f"Calling the Gemini API directly (using {DEFAULT_MODEL})...")
+        print(f"Calling the Universal Adapter (using {DEFAULT_MODEL})...")
         max_retries = 5
         retry_delay = 2
         for attempt in range(max_retries):
             try:
                 # Use a free-tier compatible model.
-                model = genai.GenerativeModel(DEFAULT_MODEL)
-                response = model.generate_content(full_prompt)
-                gemini_output = response.text
+                model = llm.get_model(DEFAULT_MODEL)
+                model.key = api_key  # Assign the key directly to the adapter
+                response = model.prompt(full_prompt)
+                gemini_output = response.text()
                 print("Successfully received response from API.")
                 
                 json_match = re.search(r'```json\s*([\s\S]*?)\s*```', gemini_output)
