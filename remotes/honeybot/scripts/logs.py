@@ -59,8 +59,7 @@ class SonarApp(App):
         background: #000000;
         color: #00ff00;
         height: 100%;
-        scrollbar-size: 0 0;
-        overflow-x: hidden; 
+        overflow: hidden;
         width: 100%;
         min-width: 100%;
     }
@@ -72,8 +71,7 @@ class SonarApp(App):
         background: #051515;
         padding: 0;
         layout: horizontal; /* Split Left/Right */
-        scrollbar-size: 0 0;
-        overflow-x: hidden;
+        overflow: hidden;
     }
     
     .half_panel {
@@ -94,6 +92,7 @@ class SonarApp(App):
     DataTable {
         height: 1fr;
         width: 100%;
+        overflow: hidden;
     }
     
     /* Countdown moves to the footer area style override if needed, 
