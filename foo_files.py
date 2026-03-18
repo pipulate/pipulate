@@ -22,9 +22,10 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # ! python scripts/articles/lsa.py -t 1
 
-/home/mike/repos/trimnoir/index.md  # [1,229 tokens | 5,589 bytes]
-/home/mike/repos/trimnoir/_includes/show_graph.html  # [3,641 tokens | 14,454 bytes]
-/home/mike/repos/trimnoir/_includes/home_hub.md  # [425 tokens | 1,253 bytes]
+# Getting rid of extra slider on homepage
+# /home/mike/repos/trimnoir/index.md  # [1,229 tokens | 5,589 bytes]
+# /home/mike/repos/trimnoir/_includes/show_graph.html  # [3,641 tokens | 14,454 bytes]
+# /home/mike/repos/trimnoir/_includes/home_hub.md  # [425 tokens | 1,253 bytes]
 
 # /home/mike/repos/nixos/autognome.py  # [7,210 tokens | 34,310 bytes]
 
@@ -163,6 +164,7 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # CHAPTER 1: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
+# /home/mike/repos/Pipulate.com/index.md  # [2,361 tokens | 10,579 bytes]
 # assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
 # flake.nix  # [7,721 tokens | 32,979 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
@@ -175,8 +177,8 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH (~260KB)
-# config.py  # [4,098 tokens | 15,949 bytes] server.py  # [54,246 tokens | 258,931 bytes] requirements.in  # [573 tokens | 1,924 bytes] requirements.txt  # [7,010 tokens | 18,582 bytes]
-# server.py   # [54,246 tokens | 258,931 bytes]
+config.py  # [4,098 tokens | 15,949 bytes] server.py  # [54,246 tokens | 258,931 bytes] requirements.in  # [573 tokens | 1,924 bytes] requirements.txt  # [7,010 tokens | 18,582 bytes]
+server.py   # [54,246 tokens | 258,931 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
@@ -299,9 +301,9 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # ! python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree  # Konami Cheat Code 404s, run from the terminal by itself!!!
-assets/prompts/find404s.md  # [350 tokens | 1,624 bytes]
+# assets/prompts/find404s.md  # [350 tokens | 1,624 bytes]
 # /home/mike/repos/trimnoir/_raw_map.csv  # [103,981 tokens | 359,660 bytes]
-scripts/articles/generate_redirects.py  # [1,101 tokens | 4,722 bytes]
+# scripts/articles/generate_redirects.py  # [1,101 tokens | 4,722 bytes]
 # /home/mike/repos/trimnoir/_redirects.map  # [125,447 tokens | 401,978 bytes]
 
 # ============================================================================
