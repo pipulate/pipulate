@@ -255,7 +255,8 @@ class Pipulate:
         import llm
         
         if preferred_local:
-            self.speak("Scanning for your preferred local models...")
+            # self.speak("Scanning for your preferred local models...")
+            print("Scanning for your preferred local models...")
         else:
             self.speak("Scanning your system for available AI models...")
 
@@ -292,7 +293,8 @@ class Pipulate:
 
             # 5. Reporting and Graceful Degradation
             if selected_local:
-                self.speak(f"Excellent. Local model '{selected_local}' is active and ready.")
+                # self.speak(f"Excellent. Local model '{selected_local}' is active and ready.")
+                print(f"Excellent. Local model '{selected_local}' is active and ready.")
                 print(f"\n✅ Locked in Local Model: {selected_local}")
             elif has_local:
                 self.speak("I found local models, but not your preferred choices.")
