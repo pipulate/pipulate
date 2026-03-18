@@ -31,6 +31,7 @@ def get_active_permalinks(navgraph_path):
     traverse(nav)
     return active
 
+
 def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
     print(f"🛠️ Forging Nginx map from {csv_input_path.name}...")
     
@@ -38,7 +39,19 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
         print(f"❌ Error: {csv_input_path} not found.")
         return
 
+    # 1. Establish the Absolute Truth
     active_permalinks = get_active_permalinks(navgraph_path)
+    
+    # Add root and common system paths to active list to protect them
+    active_permalinks.update(['/', '/index.html', '/feed.xml', '/sitemap.xml', '/llms.txt', '/robots.txt'])
+    
+    # Define obvious noise signatures that SQL might have missed
+    known_noise_signatures = [
+        'actuator', 'owa', 'rdweb', 'sslvpn', 'remote', 
+        'wp-', 'wordpress', 'sitemap.aspx', 'sdk', 'dr0v',
+        '.well-known', 'ads.txt', 'bingsiteauth', 'login'
+    ]
+
     valid_mappings = {}  # The Deduplication Ledger
     
     # Pass 1: Read, Clean, and Filter the CSV
@@ -51,11 +64,27 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
             old_url = row[0].strip()
             new_url = row[1].strip()
 
-            # THE BOUNCER: Collision Filter (Protect living hubs/articles)
+            # --- THE DEFENSIVE PERIMETER ---
+
+            # 1. The Living Tissue Filter (Protects Hubs, Articles, and Root)
+            # Ensure we check both with and without trailing slashes
             check_url = old_url if old_url.endswith('/') else old_url + '/'
             if check_url in active_permalinks or old_url in active_permalinks:
-                print(f"🛡️ Active Collision Avoided (Pruning): {old_url}")
-                continue # Drop the row entirely, it will be deleted from the CSV
+                print(f"🛡️ Protected Living URL (Collision Avoided): {old_url}")
+                continue # Drop the row entirely
+
+            # 2. The Noise Filter (Blocks Script Kiddies)
+            is_noise = any(sig in old_url.lower() for sig in known_noise_signatures)
+            if is_noise:
+                print(f"🗑️ Dropped Known Noise Probe: {old_url}")
+                continue
+
+            # 3. The Placeholder Filter (Blocks LLM Hallucinations)
+            if '...' in old_url or 'placeholder' in old_url.lower() or 'slug' in old_url.lower():
+                print(f"🤖 Dropped LLM Placeholder/Hallucination: {old_url}")
+                continue
+
+            # -------------------------------
 
             # THE BOUNCER: 80/20 Encoding Filter
             if '%' in old_url or '%' in new_url:
@@ -68,7 +97,7 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
                 continue
                 
             # THE BOUNCER: Asset & Parameter Filter
-            if '?' in old_url or old_url.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.ico')):
+            if '?' in old_url or old_url.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.ico', '.txt', '.xml')):
                 print(f"⚠️ Dropping asset/parameter URL: {old_url[:30]}...")
                 continue
                 
