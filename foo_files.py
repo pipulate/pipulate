@@ -18,18 +18,23 @@
 # Search using this to jump to next un-commented line: \^\s*[^ \t#]
 AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
-foo_files.py  # [10,245 tokens | 33,406 bytes]
-prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+# foo_files.py  # [10,245 tokens | 33,406 bytes]
+# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # ! python scripts/articles/lsa.py -t 1
 
 # AD HOC PROMPT FU INCLUSIONS HERE
 
-AI_RUNME.py
-tools/mcp_tools.py
-pipulate/core.py
-README.md
-server.py
-imports/server_logging.py
+# imports/stream_orchestrator.py  # (The mid-stream catcher)
+# imports/mcp_orchestrator.py  # (The tool dispatcher)
+# pipulate/core.py  # (Where the actual mcp_pattern regex lives)
+
+# Teaching the AI about DictLikeDB
+# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
+# tools/mcp_tools.py  # [36,628 tokens | 186,793 bytes]
+# pipulate/core.py  # [22,996 tokens | 111,351 bytes]
+# README.md  # [20,467 tokens | 103,208 bytes]
+# server.py  # [54,246 tokens | 258,931 bytes]
+# imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 
 # Getting rid of extra slider on homepage
 # /home/mike/repos/trimnoir/index.md  # [1,229 tokens | 5,589 bytes]
@@ -160,15 +165,15 @@ imports/server_logging.py
 # The foundational NPvg framework and state management.
 
 # CHAPTER 0: ONBOARDING
-# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
-# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-# apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
-# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
+apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
+assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # CHAPTER 1: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
 # /home/mike/repos/Pipulate.com/index.md  # [2,361 tokens | 10,579 bytes]
