@@ -22,6 +22,15 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # ! python scripts/articles/lsa.py -t 1
 
+# AD HOC PROMPT FU INCLUSIONS HERE
+
+AI_RUNME.py
+tools/mcp_tools.py
+pipulate/core.py
+README.md
+server.py
+imports/server_logging.py
+
 # Getting rid of extra slider on homepage
 # /home/mike/repos/trimnoir/index.md  # [1,229 tokens | 5,589 bytes]
 # /home/mike/repos/trimnoir/_includes/show_graph.html  # [3,641 tokens | 14,454 bytes]
@@ -34,8 +43,6 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # /home/mike/repos/trimnoir/feed.xml  # [407 tokens | 1,615 bytes]
 
 # /home/mike/repos/trimnoir/Gemfile  # [410 tokens | 1,339 bytes]
-
-# AD HOC PROMPT FU INCLUSIONS HERE
 
 # assets/prompts/find404s.md  # [12,990 tokens | 59,609 bytes]
 # remotes/honeybot/queries/hot_404_remaps_top.sql  # [656 tokens | 2,653 bytes]
@@ -177,8 +184,8 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH (~260KB)
-config.py  # [4,098 tokens | 15,949 bytes] server.py  # [54,246 tokens | 258,931 bytes] requirements.in  # [573 tokens | 1,924 bytes] requirements.txt  # [7,010 tokens | 18,582 bytes]
-server.py   # [54,246 tokens | 258,931 bytes]
+# config.py  # [4,098 tokens | 15,949 bytes] server.py  # [54,246 tokens | 258,931 bytes] requirements.in  # [573 tokens | 1,924 bytes] requirements.txt  # [7,010 tokens | 18,582 bytes]
+# server.py   # [54,246 tokens | 258,931 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
