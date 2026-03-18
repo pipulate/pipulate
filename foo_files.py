@@ -25,18 +25,18 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # AD HOC PROMPT FU INCLUSIONS HERE
 
 # Continuing the LLMectomy
-pyproject.toml  # [677 tokens | 2,299 bytes]
-requirements.in  # [573 tokens | 1,924 bytes]
-assets/nbs/Onboarding.ipynb  # [3,133 tokens | 10,252 bytes]
-assets/nbs/imports/onboard_sauce.py  # [1,341 tokens | 6,010 bytes]
-assets/nbs/imports/faq_writer_sauce.py  # [6,006 tokens | 26,636 bytes]
-assets/nbs/imports/url_inspect_sauce.py  # [11,083 tokens | 50,229 bytes]
-scripts/articles/articleizer.py  # [2,797 tokens | 12,820 bytes]
-scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
-scripts/articles/diagramizer.py  # [1,912 tokens | 8,193 bytes]
-scripts/articles/list_models.py  # [165 tokens | 651 bytes]
-scripts/articles/other/list_models.py  # [157 tokens | 685 bytes]
-
+# pyproject.toml  # [677 tokens | 2,299 bytes]
+# requirements.in  # [573 tokens | 1,924 bytes]
+# assets/nbs/Onboarding.ipynb  # [3,133 tokens | 10,252 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [1,341 tokens | 6,010 bytes]
+# assets/nbs/imports/faq_writer_sauce.py  # [6,006 tokens | 26,636 bytes]
+# assets/nbs/imports/url_inspect_sauce.py  # [11,083 tokens | 50,229 bytes]
+# scripts/articles/articleizer.py  # [2,797 tokens | 12,820 bytes]
+# scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
+# scripts/articles/diagramizer.py  # [1,912 tokens | 8,193 bytes]
+# scripts/articles/list_models.py  # [165 tokens | 651 bytes]
+# scripts/articles/other/list_models.py  # [157 tokens | 685 bytes]
+ 
 # imports/stream_orchestrator.py  # (The mid-stream catcher)
 # imports/mcp_orchestrator.py  # (The tool dispatcher)
 # pipulate/core.py  # (Where the actual mcp_pattern regex lives)
@@ -337,18 +337,18 @@ scripts/articles/other/list_models.py  # [157 tokens | 685 bytes]
 # DMZ TV Studio, Telemetry DB, and NixOS IaC. 
 
 # CHAPTER 16: HONEYBOT IAC & SCRIPTS
-# nixops.sh  # [227 tokens | 765 bytes]
-# remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
-# remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
-# remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
-# remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
-# remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
-# remotes/honeybot/scripts/bot_intel.json  # [513 tokens | 1,550 bytes]
-# remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
-# remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
-# remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
-# remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
-# remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
+nixops.sh  # [227 tokens | 765 bytes]
+remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
+remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
+remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
+remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
+remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
+remotes/honeybot/scripts/bot_intel.json  # [513 tokens | 1,550 bytes]
+remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
+remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
+remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
+remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
+remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
 
 # CHAPTER 17: TELEMETRY SENSORS & DASHBOARD PROBES
 # These are the structural SQL definitions the AI can read to understand the schema.
