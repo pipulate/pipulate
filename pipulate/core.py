@@ -247,6 +247,80 @@ class Pipulate:
             self.db = db
     # END: pipulate_init
 
+    def negotiate_ai_models(self, preferred_local: str = None, preferred_cloud: str = None) -> dict:
+        """
+        Uses the Universal Adapter (llm) to verify AI readiness using fuzzy matching
+        against a prioritized list of preferred models. Elevates model selection to a global capability.
+        """
+        import llm
+        
+        if preferred_local:
+            self.speak("Scanning for your preferred local models...")
+        else:
+            self.speak("Scanning your system for available AI models...")
+
+        try:
+            # 1. Gather all models known to the Universal Adapter
+            available_models = [m.model_id for m in llm.get_models()]
+            
+            # 2. Check for ANY local model (Ollama models typically lack provider prefixes)
+            has_local = any('ollama' in str(type(m)).lower() for m in llm.get_models())
+
+            # 3. Process User Preferences
+            def parse_preferences(pref_string):
+                if not pref_string: return []
+                return [p.strip().lower() for p in pref_string.split(',')]
+
+            local_prefs = parse_preferences(preferred_local)
+            cloud_prefs = parse_preferences(preferred_cloud)
+
+            selected_local = None
+            selected_cloud = None
+
+            # 4. Fuzzy Matching Logic (Find highest priority match)
+            for pref in local_prefs:
+                match = next((m for m in available_models if pref in m.lower() and 'ollama' in str(type(llm.get_model(m))).lower()), None)
+                if match:
+                    selected_local = match
+                    break 
+
+            for pref in cloud_prefs:
+                match = next((m for m in available_models if pref in m.lower() and 'ollama' not in str(type(llm.get_model(m))).lower()), None)
+                if match:
+                    selected_cloud = match
+                    break 
+
+            # 5. Reporting and Graceful Degradation
+            if selected_local:
+                self.speak(f"Excellent. Local model '{selected_local}' is active and ready.")
+                print(f"\n✅ Locked in Local Model: {selected_local}")
+            elif has_local:
+                self.speak("I found local models, but not your preferred choices.")
+                print(f"\nℹ️  Preferred local models not found, but other local models are available.")
+                print(f"Available models: {', '.join([m for m in available_models if 'ollama' in str(type(llm.get_model(m))).lower()])}")
+                selected_local = True 
+            else:
+                self.speak("I do not detect a local AI brain on your system.")
+                print("\nℹ️  Ollama is not running or not installed.")
+                print("Pipulate works perfectly fine without it, but a local AI 'riding shotgun' ensures privacy.")
+                print("\nTo upgrade your environment for true Local-First Sovereignty:")
+                print("1. Go to https://ollama.com/")
+                print("2. Download the installer for your host operating system.")
+                print("3. Install it, open a terminal, run 'ollama run gemma3', and try again.")
+                
+            if selected_cloud:
+                 print(f"✅ Locked in Cloud Model: {selected_cloud}")
+
+            return {
+                "local": selected_local,
+                "cloud": selected_cloud,
+                "has_any_local": has_local
+            }
+
+        except Exception as e:
+            print(f"❌ Error communicating with the Universal Adapter: {e}")
+            return {"local": False, "cloud": False, "has_any_local": False}
+
     def get_home_menu_item(self) -> str:
         """Returns the appropriate home menu item text based on the HOME_APP setting."""
         home_app_name = getattr(CFG, 'HOME_APP', '030_roles') # Default to '030_roles'
