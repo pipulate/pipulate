@@ -26,7 +26,7 @@ class IntroductionPlugin:
     DISPLAY_NAME = 'Introduction 🏠'
     ENDPOINT_MESSAGE = 'Welcome to the Machine. Click to enter.'
     
-    # Narrative Script (UPDATED to match the slide text)
+    # Narrative Script (Base template)
     NARRATION = {
         'step_01': "Welcome. I am Chip O'Theseus. I am not a recording. I am generated locally on your machine, right now. I live here.",
         'step_02': "I am a 'Forever Machine.' I protect your work from cloud subscriptions, broken updates, and the entropy of the web.",
@@ -44,6 +44,24 @@ class IntroductionPlugin:
         
         # Access UI constants
         self.ui = pipulate.get_ui_constants()
+
+        # 🧠 CHISEL-STRIKE 3: Dynamic Model Negotiation
+        self.narration = self.NARRATION.copy()
+        
+        # Run the global negotiation at startup
+        ai_status = self.wand.negotiate_ai_models(
+            preferred_local="qwen3, gemma3",
+            preferred_cloud="claude, gpt, gemini"
+        )
+        
+        if ai_status.get('has_any_local'):
+            local_model = ai_status.get('local')
+            if local_model:
+                self.narration['step_01'] = f"Welcome. I am Chip O'Theseus. I am not a recording. I am generated locally on your machine using {local_model}, right now. I live here."
+            else:
+                self.narration['step_01'] = "Welcome. I am Chip O'Theseus. I see you have local AI capabilities, though not our preferred models. I live here."
+        else:
+            self.narration['step_01'] = "Welcome. I am Chip O'Theseus. I am currently running without a local brain. Please install Ollama with Gemma 3 to fully awaken me."
         
         # Define the Slides as Steps
         self.steps = [
@@ -75,7 +93,7 @@ class IntroductionPlugin:
 
     async def speak_step(self, step_id: str):
         """Trigger server-side audio playback."""
-        text = self.NARRATION.get(step_id, "I have nothing to say about this.")
+        text = self.narration.get(step_id, "I have nothing to say about this.")
         
         from imports.voice_synthesis import chip_voice_system
         if chip_voice_system and chip_voice_system.voice_ready:
@@ -177,7 +195,7 @@ class IntroductionPlugin:
         return self._render_slide(
             'step_01', 
             "Identity", 
-            "I am Chip O'Theseus. Born from code, living on your local metal.",
+            self.narration['step_01'],
             next_step_id='step_02'
         )
 
