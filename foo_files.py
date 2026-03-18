@@ -18,11 +18,24 @@
 # Search using this to jump to next un-commented line: \^\s*[^ \t#]
 AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
-# foo_files.py  # [10,245 tokens | 33,406 bytes]
-# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # ! python scripts/articles/lsa.py -t 1
+foo_files.py  # [10,245 tokens | 33,406 bytes]
+prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 
 # AD HOC PROMPT FU INCLUSIONS HERE
+
+# Continuing the LLMectomy
+pyproject.toml  # [677 tokens | 2,299 bytes]
+requirements.in  # [573 tokens | 1,924 bytes]
+assets/nbs/Onboarding.ipynb  # [3,133 tokens | 10,252 bytes]
+assets/nbs/imports/onboard_sauce.py  # [1,341 tokens | 6,010 bytes]
+assets/nbs/imports/faq_writer_sauce.py  # [6,006 tokens | 26,636 bytes]
+assets/nbs/imports/url_inspect_sauce.py  # [11,083 tokens | 50,229 bytes]
+scripts/articles/articleizer.py  # [2,797 tokens | 12,820 bytes]
+scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
+scripts/articles/diagramizer.py  # [1,912 tokens | 8,193 bytes]
+scripts/articles/list_models.py  # [165 tokens | 651 bytes]
+scripts/articles/other/list_models.py  # [157 tokens | 685 bytes]
 
 # imports/stream_orchestrator.py  # (The mid-stream catcher)
 # imports/mcp_orchestrator.py  # (The tool dispatcher)
@@ -165,15 +178,15 @@ AI_PHOOEY_CHOP = """\
 # The foundational NPvg framework and state management.
 
 # CHAPTER 0: ONBOARDING
-assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
-apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
-assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
+# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # CHAPTER 1: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
 # /home/mike/repos/Pipulate.com/index.md  # [2,361 tokens | 10,579 bytes]
@@ -237,15 +250,15 @@ assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 # assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
 
 # CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS) (~200KB)
-imports/crud.py  # [7,365 tokens | 35,666 bytes]
-imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
-apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-apps/020_profiles.py  # [4,022 tokens | 18,487 bytes]
-apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
-apps/030_roles.py  # [8,889 tokens | 44,090 bytes]
-apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
-apps/060_tasks.py  # [4,991 tokens | 23,182 bytes]
-apps/070_history.py  # [5,272 tokens | 28,545 bytes]
+# imports/crud.py  # [7,365 tokens | 35,666 bytes]
+# imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
+# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+# apps/020_profiles.py  # [4,022 tokens | 18,487 bytes]
+# apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
+# apps/030_roles.py  # [8,889 tokens | 44,090 bytes]
+# apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
+# apps/060_tasks.py  # [4,991 tokens | 23,182 bytes]
+# apps/070_history.py  # [5,272 tokens | 28,545 bytes]
 
 # CHAPTER 8: THE DOCUMENTATION & DEV TOOLS (~270KB)
 # apps/050_documentation.py  # [30,795 tokens | 143,127 bytes]
@@ -478,18 +491,14 @@ scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
 # remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
-# requirements.in  # [573 tokens | 1,924 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
 # scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
-# scripts/articles/diagramizer.py  # [1,912 tokens | 8,193 bytes]
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
 # scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
-# scripts/articles/list_models.py  # [165 tokens | 651 bytes]
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
-# scripts/articles/other/list_models.py  # [157 tokens | 685 bytes]
 # scripts/articles/other/make_article.py  # [1,513 tokens | 6,559 bytes]
 # scripts/articles/rescue_equity.py  # [514 tokens | 2,040 bytes]
 # scripts/articles/sanitize_redirects.py  # [684 tokens | 2,935 bytes]
