@@ -307,54 +307,39 @@ class CrudCustomizer(BaseCrud):
     async def toggle_role(self, request):
         """Custom toggle method that includes Default button update and messaging."""
         try:
-            # Extract item_id from the request path
+            # 1. Extract item_id from the request path
             path_parts = request.url.path.split('/')
-            item_id = int(path_parts[-1])  # Last part should be the item_id
+            item_id = int(path_parts[-1])
             
-            # Get the item and toggle its done status
+            # 2. Update Database State
             item = self.table[item_id]
-            old_status = item.done
-            
-            # Toggle the done status (but Core is always done)
             if item.text != "Core":
                 item.done = not item.done
                 self.table.update(item)
                 
-                # Send message to msg-list like tasks app does
+                # Send narrative feedback to the chat
                 status_text = 'enabled' if item.done else 'disabled'
                 action_details = f"The role '{item.text}' is now {status_text}."
                 self.safe_send_message(action_details, verbatim=True)
             
-            # Render the updated item
+            # 3. Prepare the Multi-Part UI Response
+            # Part A: The updated Role Item (the checkbox row)
             updated_item_html = self.render_item(item)
             
-            # Get the updated button
-            from fasthtml.common import HTMLResponse, to_xml
-            import json
+            # Part B: The updated Default Button (calculates if it should be disabled)
             updated_button = await self.plugin.update_default_button(request)
             
-            # Add hx-swap-oob attribute
-            if hasattr(updated_button, 'attrs'):
-                updated_button.attrs['hx-swap-oob'] = 'true'
-            else:
-                updated_button.attrs = {'hx-swap-oob': 'true'}
+            # CRITICAL: Tell HTMX to swap the button "Out of Band" (wherever its ID is)
+            # instead of inside the target row.
+            updated_button.attrs['hx_swap_oob'] = 'true'
             
-            # Combine the updated item with the button update
-            item_html = str(to_xml(updated_item_html))
-            button_html = str(to_xml(updated_button))
-            combined_html = item_html + button_html
-            
-            response = HTMLResponse(combined_html)
-            response.headers['HX-Trigger'] = json.dumps({'refreshAppMenu': {}})
-            return response
+            # Return both components wrapped in a Group
+            return Group(updated_item_html, updated_button)
             
         except Exception as e:
             logger.error(f"Error in toggle_role: {e}")
-            import traceback
-            logger.error(f"Traceback: {traceback.format_exc()}")
-            # Return error response
-            from fasthtml.common import HTMLResponse
             return HTMLResponse('Error toggling role', status_code=500)
+
 
 class CrudUI(PluginIdentityManager):
     DEFAULT_BUTTON_TEXT = "Restore Default Selections"
