@@ -552,20 +552,27 @@ class CrudUI(PluginIdentityManager):
 
     async def select_default_roles(self, request):
         """Reset roles to DEFAULT_ACTIVE_ROLES configuration and original sort order."""
+
         try:
-            # Get the default active roles from config
+            # 1. Get the defaults from the injected config
             default_active = getattr(self.config, 'DEFAULT_ACTIVE_ROLES', set())
             roles_config = getattr(self.config, 'ROLES_CONFIG', {})
-            logger.info(f"DEFAULT: Starting reset process")
-            logger.info(f"DEFAULT: Target active roles: {default_active}")
-            logger.info(f"DEFAULT: Available ROLES_CONFIG: {list(roles_config.keys())}")
             
-            # Debug the config structure for Botify Employee specifically
-            botify_config = roles_config.get('Botify Employee', {})
-            logger.info(f"DEFAULT: Botify Employee config: {botify_config}")
-            
-            # Update all roles based on default configuration
             all_roles = self.table()
+            
+            for role in all_roles:
+                # FIX: Explicit boolean logic
+                # 'Core' is the sovereign exception, others must be in the config set
+                should_be_active = (role.text == "Core") or (role.text in default_active)
+                
+                role.done = should_be_active
+                
+                # 2. Reset priority to config values
+                if role.text in roles_config:
+                    role.priority = roles_config[role.text].get('priority', 99)
+                
+                self.table.update(role)
+
             logger.info(f"DEFAULT: Found {len(all_roles)} roles in database")
             
             changes_made = []
@@ -697,14 +704,15 @@ def render_item(item, app_instance):
     # Core role is always enabled and cannot be toggled
     is_core = item.text == "Core"
 
-    # FIX: Ensure checked status is DERIVED, not ASSUMED
-    # We use bool(item.done) to ensure SQLite 0/1 translates correctly to checkbox state
+    # FIX: Use strict Python booleans. 
+    # HTML renders anything in 'checked' as active. 
+    # False tells FastHTML to omit the attribute entirely.
     is_checked = True if is_core else bool(item.done)
 
     checkbox = Input(
         type="checkbox",
         name="done", # Added name for form consistency
-        checked=is_checked,
+        checked=is_checked,  # <--- CHANGED THIS
         disabled=is_core,
         cls="flex-shrink-0",
         style=f"margin-left: {app_instance.plugin.UI_CONSTANTS['SPACING']['SECTION_MARGIN']};",
