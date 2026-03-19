@@ -19,8 +19,8 @@
 AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
 # ! python scripts/articles/lsa.py -t 1
-foo_files.py  # [10,245 tokens | 33,406 bytes]
-prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+# foo_files.py  # [10,245 tokens | 33,406 bytes]
+# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 
 # AD HOC PROMPT FU INCLUSIONS HERE
 
@@ -206,9 +206,9 @@ config.py  # [4,098 tokens | 15,949 bytes] server.py  # [54,246 tokens | 258,931
 server.py   # [54,246 tokens | 258,931 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 
 # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
 # __init__.py  # [357 tokens | 1,565 bytes]
@@ -252,14 +252,14 @@ pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 
 # CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS) (~200KB)
 imports/crud.py  # [7,365 tokens | 35,666 bytes]
-imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
-apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-apps/020_profiles.py  # [4,022 tokens | 18,487 bytes]
-apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
+# imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
+# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+# apps/020_profiles.py  # [4,022 tokens | 18,487 bytes]
+# apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
 apps/030_roles.py  # [8,889 tokens | 44,090 bytes]
-apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
-apps/060_tasks.py  # [4,991 tokens | 23,182 bytes]
-apps/070_history.py  # [5,272 tokens | 28,545 bytes]
+# apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
+# apps/060_tasks.py  # [4,991 tokens | 23,182 bytes]
+# apps/070_history.py  # [5,272 tokens | 28,545 bytes]
 
 # CHAPTER 8: THE DOCUMENTATION & DEV TOOLS (~270KB)
 # apps/050_documentation.py  # [30,795 tokens | 143,127 bytes]
