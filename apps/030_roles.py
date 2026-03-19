@@ -689,9 +689,6 @@ def render_item(item, app_instance):
     item_id = f'{app_instance.name}-{item.id}'
     toggle_url = f"{app_instance.plugin.ENDPOINT_PREFIX}/toggle/{item.id}"
 
-    # VANDALISM TEST: Add this line
-    vandal_tag = Span("⚠️ I AM ALIVE ⚠️", style="color: red; font-weight: bold;")
-
     # Get role configuration from the injected config
     roles_config = getattr(app_instance.plugin.config, 'ROLES_CONFIG', {})
     role_info = roles_config.get(item.text, {})
@@ -750,7 +747,6 @@ def render_item(item, app_instance):
         # Main role item with checkbox and title:description - clickable to expand/collapse
         Div(
             checkbox,
-            vandal_tag, # <--- Inject this here
             title_and_description,
             cls="flex-center-items",
             onmousedown="this.parentElement._mouseDownPos = {x: event.clientX, y: event.clientY};",
