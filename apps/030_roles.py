@@ -697,17 +697,14 @@ def render_item(item, app_instance):
     # Core role is always enabled and cannot be toggled
     is_core = item.text == "Core"
 
-
-    # 1. DERIVE the checked status from the DB (item.done) 
-    # 2. Convert SQLite 0/1 to strict Python True/False
-    # 3. Core is ALWAYS checked
+    # THE FIX: Derive boolean state and ensure Core is always True
     is_checked = True if is_core else bool(item.done)
 
-    # Use a single Input definition
+    # Use a single Input definition with the correct HTMX headers
     checkbox = Input(
         type="checkbox",
         name="done", 
-        checked=is_checked, # Omitted if False
+        checked=is_checked, # Omits attribute if False
         disabled=is_core,
         cls="flex-shrink-0",
         style=f"margin-left: {app_instance.plugin.UI_CONSTANTS['SPACING']['SECTION_MARGIN']};",
