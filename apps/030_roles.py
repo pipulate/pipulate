@@ -559,18 +559,11 @@ class CrudUI(PluginIdentityManager):
             roles_config = getattr(self.config, 'ROLES_CONFIG', {})
             
             all_roles = self.table()
-            
+    
             for role in all_roles:
-                # FIX: Explicit boolean logic
-                # 'Core' is the sovereign exception, others must be in the config set
-                should_be_active = (role.text == "Core") or (role.text in default_active)
-                
+                # Ensure we are saving a clean 0 or 1 to SQLite
+                should_be_active = 1 if (role.text == "Core" or role.text in default_active) else 0
                 role.done = should_be_active
-                
-                # 2. Reset priority to config values
-                if role.text in roles_config:
-                    role.priority = roles_config[role.text].get('priority', 99)
-                
                 self.table.update(role)
 
             logger.info(f"DEFAULT: Found {len(all_roles)} roles in database")
@@ -704,9 +697,9 @@ def render_item(item, app_instance):
     # Core role is always enabled and cannot be toggled
     is_core = item.text == "Core"
 
-    # FIX: Use strict Python booleans. 
-    # HTML renders anything in 'checked' as active. 
-    # False tells FastHTML to omit the attribute entirely.
+    # THE SURGICAL FIX: 
+    # Use bool() to convert SQLite 0/1 into Python True/False.
+    # FastHTML will OMIT the 'checked' attribute if this is False.
     is_checked = True if is_core else bool(item.done)
 
     checkbox = Input(
