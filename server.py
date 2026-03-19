@@ -1556,12 +1556,12 @@ async def synchronize_roles_to_db():
                 else:
                     logger.error(f"SYNC_ROLES: FAILED to prepare insert data for role '{role_name}' via CrudCustomizer.")
             else:
-                if role_name in DEFAULT_ACTIVE_ROLES:
-                    existing_role = next((r for r in existing_role_objects if r.text == role_name), None)
-                    if existing_role and (not existing_role.done):
-                        logger.debug(f"SYNC_ROLES: Setting default active role '{role_name}' to done=True while preserving other roles.")
-                        existing_role.done = True
-                        roles_table_handler.update(existing_role)
+                # if role_name in DEFAULT_ACTIVE_ROLES:
+                #     existing_role = next((r for r in existing_role_objects if r.text == role_name), None)
+                #     if existing_role and (not existing_role.done):
+                #         logger.debug(f"SYNC_ROLES: Setting default active role '{role_name}' to done=True while preserving other roles.")
+                #         existing_role.done = True
+                #         roles_table_handler.update(existing_role)
                 logger.debug(f"SYNC_ROLES: Role '{role_name}' already exists globally. Status preserved.")
         if new_roles_added_count > 0:
             logger.info(f'SYNC_ROLES: Synchronization complete. Added {new_roles_added_count} new role(s) globally.')
