@@ -328,10 +328,10 @@ class CrudCustomizer(BaseCrud):
             
             # Part B: The updated Default Button (calculates if it should be disabled)
             updated_button = await self.plugin.update_default_button(request)
-            
+
             # CRITICAL: Tell HTMX to swap the button "Out of Band" (wherever its ID is)
             # instead of inside the target row.
-            updated_button.attrs['hx_swap_oob'] = 'true'
+            updated_button.attrs['hx-swap-oob'] = 'true'
             
             # Return both components wrapped in a Group
             return Group(updated_item_html, updated_button)
