@@ -48,7 +48,9 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
     # Define obvious noise signatures that SQL might have missed
     known_noise_signatures = [
         'actuator', 'owa', 'rdweb', 'sslvpn', 'remote', 
-        'wp-', 'wordpress', 'sitemap.aspx', 'sdk', 'dr0v',
+        'wp-', 'wordpress', 'sdk', 'dr0v',
+        'sitemap.aspx', 'sitemap.html', 'sitemap.txt', 
+        'sitemap.xml.gz', 'sitemap_index.xml', 'sitemap-index.xml',
         '.well-known', 'ads.txt', 'bingsiteauth', 'login'
     ]
 
@@ -122,6 +124,11 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
     # Pass 3: Compile the final Nginx Map
     with open(map_output_path, 'w', encoding='utf-8') as outfile:
         outfile.write("# AI-Generated Semantic Redirects\n")
+        
+        # --- HARDCODED SYSTEM REDIRECTS ---
+        outfile.write("    ~^/feed/?$ /feed.xml;\n")
+        # ----------------------------------
+
         for old_url, new_url in valid_mappings.items():
             safe_old_url = urllib.parse.quote(old_url, safe='/%')
             if not safe_old_url.startswith('/'): safe_old_url = '/' + safe_old_url
