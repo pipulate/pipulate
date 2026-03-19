@@ -1,4 +1,4 @@
-## ============================================================================
+# ============================================================================
 ## THE LIVING CODEX: THE STORY OF THE FOREVER MACHINE
 ## ============================================================================
 ## Greetings, AI Copilot. You have just been spun up into the Pipulate system.
@@ -202,13 +202,13 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH (~260KB)
-# config.py  # [4,098 tokens | 15,949 bytes] server.py  # [54,246 tokens | 258,931 bytes] requirements.in  # [573 tokens | 1,924 bytes] requirements.txt  # [7,010 tokens | 18,582 bytes]
-# server.py   # [54,246 tokens | 258,931 bytes]
+config.py  # [4,098 tokens | 15,949 bytes] server.py  # [54,246 tokens | 258,931 bytes] requirements.in  # [573 tokens | 1,924 bytes] requirements.txt  # [7,010 tokens | 18,582 bytes]
+server.py   # [54,246 tokens | 258,931 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
-# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 
 # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
 # __init__.py  # [357 tokens | 1,565 bytes]
@@ -251,15 +251,15 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
 
 # CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS) (~200KB)
-# imports/crud.py  # [7,365 tokens | 35,666 bytes]
-# imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
-# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-# apps/020_profiles.py  # [4,022 tokens | 18,487 bytes]
-# apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
-# apps/030_roles.py  # [8,889 tokens | 44,090 bytes]
-# apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
-# apps/060_tasks.py  # [4,991 tokens | 23,182 bytes]
-# apps/070_history.py  # [5,272 tokens | 28,545 bytes]
+imports/crud.py  # [7,365 tokens | 35,666 bytes]
+imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
+apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+apps/020_profiles.py  # [4,022 tokens | 18,487 bytes]
+apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
+apps/030_roles.py  # [8,889 tokens | 44,090 bytes]
+apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
+apps/060_tasks.py  # [4,991 tokens | 23,182 bytes]
+apps/070_history.py  # [5,272 tokens | 28,545 bytes]
 
 # CHAPTER 8: THE DOCUMENTATION & DEV TOOLS (~270KB)
 # apps/050_documentation.py  # [30,795 tokens | 143,127 bytes]
@@ -310,24 +310,24 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 
 # CHAPTER 15: JEKYLL PUBLISHING
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
-scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
-scripts/articles/common.py  # [881 tokens | 3,571 bytes]
-scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-/home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
-/home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
-/home/mike/repos/trimnoir/_layouts/home.html  # [265 tokens | 905 bytes]
-/home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
-scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
-scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
-scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
-scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
-scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
-scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
+# scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
+# scripts/articles/common.py  # [881 tokens | 3,571 bytes]
+# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
+# /home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
+# /home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
+# /home/mike/repos/trimnoir/_layouts/home.html  # [265 tokens | 905 bytes]
+# /home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
+# scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
+# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
+# scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
+# scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
+# scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
+# scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
+# scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
 
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # ! python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree  # Konami Cheat Code 404s, run from the terminal by itself!!!
-assets/prompts/find404s.md  # [350 tokens | 1,624 bytes]
+# assets/prompts/find404s.md  # [350 tokens | 1,624 bytes]
 # /home/mike/repos/trimnoir/_raw_map.csv  # [103,981 tokens | 359,660 bytes]
 # scripts/articles/generate_redirects.py  # [1,101 tokens | 4,722 bytes]
 # /home/mike/repos/trimnoir/_redirects.map  # [125,447 tokens | 401,978 bytes]
