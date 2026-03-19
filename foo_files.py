@@ -415,6 +415,33 @@ scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 """
 
 # ============================================================================
+# SPECIALIZED STRIKE PACKAGES
+# ============================================================================
+CHOP_404_AFFAIR = """\
+# THE 404 AFFAIR (Topological Healer Blueprint)
+# /home/mike/repos/trimnoir/_raw_map.csv  # [18,608 tokens | 65,818 bytes]
+# /home/mike/repos/trimnoir/_redirects.map  # [23,413 tokens | 73,822 bytes]
+# scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
+scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
+! python scripts/articles/extract_404_ghosts.py
+"""
+
+CHOP_FISHTANK = """\
+# THE FISHTANK TELEMETRY BLUEPRINT
+# Pumping live Honeybot observability data directly into the AI's context.
+
+remotes/honeybot/queries/format_ratio.sql
+remotes/honeybot/queries/markdown_routing_metrics.sql
+remotes/honeybot/queries/content_neg_agents.sql
+remotes/honeybot/queries/md_routing_agents.sql
+
+! echo "--- FORMAT RATIO (Markdown vs HTML) ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+"""
+
+# ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
