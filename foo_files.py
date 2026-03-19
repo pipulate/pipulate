@@ -19,8 +19,9 @@
 AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
 # ! python scripts/articles/lsa.py -t 1
-foo_files.py  # [10,245 tokens | 33,406 bytes]
-prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+# python scripts/articles/lsa.py -t 1
+# foo_files.py  # [10,245 tokens | 33,406 bytes]
+# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 
 # AD HOC PROMPT FU INCLUSIONS HERE
 
@@ -251,14 +252,15 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
 
 # CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS) (~200KB)
-# imports/crud.py  # [7,365 tokens | 35,666 bytes]
+imports/__init__.py  # [0 tokens | 0 bytes]
+imports/crud.py  # [7,365 tokens | 35,666 bytes]
 # imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
-# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-# apps/020_profiles.py  # [4,022 tokens | 18,487 bytes]
-# apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
-# apps/030_roles.py  # [8,889 tokens | 44,090 bytes]
-# apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
-# apps/060_tasks.py  # [4,991 tokens | 23,182 bytes]
+apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+apps/020_profiles.py  # [4,022 tokens | 18,487 bytes]
+apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
+apps/030_roles.py  # [8,889 tokens | 44,090 bytes]
+apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
+apps/060_tasks.py  # [4,991 tokens | 23,182 bytes]
 # apps/070_history.py  # [5,272 tokens | 28,545 bytes]
 
 # CHAPTER 8: THE DOCUMENTATION & DEV TOOLS (~270KB)
@@ -353,23 +355,23 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 
 # CHAPTER 17: TELEMETRY SENSORS & DASHBOARD PROBES
 # These are the structural SQL definitions the AI can read to understand the schema.
-remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
-remotes/honeybot/queries/format_ratio.sql  # [79 tokens | 275 bytes]
-remotes/honeybot/queries/markdown_routing_metrics.sql  # [177 tokens | 659 bytes]
-remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
-remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
-remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
-remotes/honeybot/queries/trapdoor_ips.sql  # [89 tokens | 298 bytes]
-remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
-remotes/honeybot/scripts/build_bot_miner.py  # [510 tokens | 2,105 bytes]
-remotes/honeybot/queries/intel_unknown_agents.sql  # [85 tokens | 296 bytes]
-remotes/honeybot/queries/intel_hostile_dictionary.sql  # [403 tokens | 1,413 bytes]
-remotes/honeybot/queries/intel_noise_404s.sql  # [92 tokens | 286 bytes]
-remotes/honeybot/queries/intel_true_404s.sql  # [104 tokens | 335 bytes]
-remotes/honeybot/queries/hot_404_remaps_top.sql  # [656 tokens | 2,653 bytes]
-remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
-remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
-remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
+# remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
+# remotes/honeybot/queries/format_ratio.sql  # [79 tokens | 275 bytes]
+# remotes/honeybot/queries/markdown_routing_metrics.sql  # [177 tokens | 659 bytes]
+# remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
+# remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
+# remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
+# remotes/honeybot/queries/trapdoor_ips.sql  # [89 tokens | 298 bytes]
+# remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
+# remotes/honeybot/scripts/build_bot_miner.py  # [510 tokens | 2,105 bytes]
+# remotes/honeybot/queries/intel_unknown_agents.sql  # [85 tokens | 296 bytes]
+# remotes/honeybot/queries/intel_hostile_dictionary.sql  # [403 tokens | 1,413 bytes]
+# remotes/honeybot/queries/intel_noise_404s.sql  # [92 tokens | 286 bytes]
+# remotes/honeybot/queries/intel_true_404s.sql  # [104 tokens | 335 bytes]
+# remotes/honeybot/queries/hot_404_remaps_top.sql  # [656 tokens | 2,653 bytes]
+# remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
+# remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
+# remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
 
 # --- LIVE EXECUTION CHISEL-STRIKES ---
 # Uncomment to pipe live production data directly into the AI's context.
@@ -430,10 +432,10 @@ CHOP_FISHTANK = """\
 # THE FISHTANK TELEMETRY BLUEPRINT
 # Pumping live Honeybot observability data directly into the AI's context.
 
-remotes/honeybot/queries/format_ratio.sql
-remotes/honeybot/queries/markdown_routing_metrics.sql
-remotes/honeybot/queries/content_neg_agents.sql
-remotes/honeybot/queries/md_routing_agents.sql
+remotes/honeybot/queries/format_ratio.sql  # [79 tokens | 275 bytes]
+remotes/honeybot/queries/markdown_routing_metrics.sql  # [177 tokens | 659 bytes]
+remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
+remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
 
 ! echo "--- FORMAT RATIO (Markdown vs HTML) ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 ! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
