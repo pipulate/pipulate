@@ -700,19 +700,21 @@ def render_item(item, app_instance):
     # Core role is always enabled and cannot be toggled
     is_core = item.text == "Core"
 
-    # THE SURGICAL FIX: 
-    # Use bool() to convert SQLite 0/1 into Python True/False.
-    # FastHTML will OMIT the 'checked' attribute if this is False.
+
+    # 1. DERIVE the checked status from the DB (item.done) 
+    # 2. Convert SQLite 0/1 to strict Python True/False
+    # 3. Core is ALWAYS checked
     is_checked = True if is_core else bool(item.done)
 
+    # Use a single Input definition
     checkbox = Input(
         type="checkbox",
-        name="done", # Added name for form consistency
-        checked=is_checked,  # <--- CHANGED THIS
+        name="done", 
+        checked=is_checked, # Omitted if False
         disabled=is_core,
         cls="flex-shrink-0",
         style=f"margin-left: {app_instance.plugin.UI_CONSTANTS['SPACING']['SECTION_MARGIN']};",
-        hx_post=toggle_url,
+        hx_post=None if is_core else toggle_url,
         hx_swap="outerHTML",
         hx_target=f"#{item_id}"
     )
@@ -726,15 +728,6 @@ def render_item(item, app_instance):
             'hx_target': f"#{item_id}"
         })
     
-    checkbox = Input(
-        type="checkbox",
-        checked=True if is_core else item.done,
-        disabled=is_core,
-        cls="flex-shrink-0",
-        style=f"margin-left: {app_instance.plugin.UI_CONSTANTS['SPACING']['SECTION_MARGIN']};",
-        **htmx_attrs
-    )
-
     # Get plugin count for this role
     plugin_list = get_plugin_list()
     affected_plugins = [plugin for plugin in plugin_list if item.text in plugin['roles']]
