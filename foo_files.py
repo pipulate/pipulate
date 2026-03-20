@@ -20,8 +20,8 @@ AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
 # ! python scripts/articles/lsa.py -t 1
 # scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]
-# foo_files.py  # [10,245 tokens | 33,406 bytes]
-# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+foo_files.py  # [10,245 tokens | 33,406 bytes]
+prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 
 # AD HOC PROMPT FU INCLUSIONS HERE
 
@@ -166,8 +166,8 @@ AI_PHOOEY_CHOP = """\
 # CHAPTER 0: ONBOARDING
 # !https://pipulate.com/
 # /home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
-assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
 # pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
 # pipulate/core.py  # [22,424 tokens | 108,599 bytes]
@@ -194,11 +194,11 @@ assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 # server.py   # [54,246 tokens | 258,931 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
-config.py  # [4,098 tokens | 15,949 bytes]
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
+# config.py  # [4,098 tokens | 15,949 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 
 
 # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
