@@ -20,10 +20,12 @@ AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
 # ! python scripts/articles/lsa.py -t 1
 # python scripts/articles/lsa.py -t 1
-# foo_files.py  # [10,245 tokens | 33,406 bytes]
+foo_files.py  # [10,245 tokens | 33,406 bytes]
 # prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 
 # AD HOC PROMPT FU INCLUSIONS HERE
+
+/home/mike/repos/trimnoir/_posts/2026-03-19-pipulate-full-stack-python-htmx-durable-state.md  # [23,853 tokens | 108,922 bytes]
 
 # Continuing the LLMectomy
 # pyproject.toml  # [677 tokens | 2,299 bytes]
@@ -69,11 +71,6 @@ AI_PHOOEY_CHOP = """\
 # scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # scripts/articles/extract_404_ghosts.py  # [901 tokens | 3,836 bytes]
 
-# Demonstrating the tracer-dye methodology to Gemini to explain highly evidenced attribution inclusion in parameterized memory.
-# remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
-# remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
-# remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
-
 # apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
 # pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
@@ -86,15 +83,6 @@ AI_PHOOEY_CHOP = """\
 
 # flake.nix  # [7,711 tokens | 32,991 bytes]
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
-
-# # The entry point where wand is defined
-# pipulate/__init__.py  # [472 tokens | 1,988 bytes]
-# # Where the log is actually firing from (Line 223 and 95)
-# pipulate/core.py  # [22,638 tokens | 109,630 bytes]
-# # Where you likely configure loguru (based on your file tree)
-# imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
-# # If you have global environment flags set here
-# config.py  # [4,098 tokens | 15,949 bytes]
 
 # The last article
 # /home/mike/repos/trimnoir/_posts/2026-03-12-architecting-ai-workflows-deterministic-editing-computational-autonomy.md  # [Idx: 942 | Order: 2 | Tokens: 26,833 | Bytes: 114,125]
@@ -207,9 +195,12 @@ AI_PHOOEY_CHOP = """\
 # server.py   # [54,246 tokens | 258,931 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
+# config.py  # [4,098 tokens | 15,949 bytes]
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
 # pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
 # pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
+
 
 # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
 # __init__.py  # [357 tokens | 1,565 bytes]
@@ -251,16 +242,15 @@ AI_PHOOEY_CHOP = """\
 # assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
 # assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
 
-# CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS) (~200KB)
-imports/__init__.py  # [0 tokens | 0 bytes]
-imports/crud.py  # [7,365 tokens | 35,666 bytes]
+# CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS) (~200KB) imports/__init__.py  # [0 tokens | 0 bytes]
+# imports/crud.py  # [7,365 tokens | 35,666 bytes]
 # imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
-apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-apps/020_profiles.py  # [4,022 tokens | 18,487 bytes]
-apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
-apps/030_roles.py  # [8,889 tokens | 44,090 bytes]
-apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
-apps/060_tasks.py  # [4,991 tokens | 23,182 bytes]
+# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+# apps/020_profiles.py  # [4,022 tokens | 18,487 bytes]
+# apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
+# apps/030_roles.py  # [8,889 tokens | 44,090 bytes]
+# apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
+# apps/060_tasks.py  # [4,991 tokens | 23,182 bytes]
 # apps/070_history.py  # [5,272 tokens | 28,545 bytes]
 
 # CHAPTER 8: THE DOCUMENTATION & DEV TOOLS (~270KB)
@@ -340,18 +330,19 @@ apps/060_tasks.py  # [4,991 tokens | 23,182 bytes]
 # DMZ TV Studio, Telemetry DB, and NixOS IaC. 
 
 # CHAPTER 16: HONEYBOT IAC & SCRIPTS
-# nixops.sh  # [227 tokens | 765 bytes]
-# remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
-# remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
-# remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
-# remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
-# remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
-# remotes/honeybot/scripts/bot_intel.json  # [513 tokens | 1,550 bytes]
-# remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
-# remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
-# remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
-# remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
-# remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
+nixops.sh  # [227 tokens | 765 bytes]
+remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
+remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
+remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
+remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
+remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
+remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
+remotes/honeybot/scripts/bot_intel.json  # [513 tokens | 1,550 bytes]
+remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
+remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
+remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
+remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
+remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
 
 # CHAPTER 17: TELEMETRY SENSORS & DASHBOARD PROBES
 # These are the structural SQL definitions the AI can read to understand the schema.
@@ -402,6 +393,7 @@ apps/060_tasks.py  # [4,991 tokens | 23,182 bytes]
 # https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/README.md
 # https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/install.sh
 # https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/flake.nix
+
 """
 
 # ============================================================================
@@ -520,7 +512,6 @@ remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
-# remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
 # scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
