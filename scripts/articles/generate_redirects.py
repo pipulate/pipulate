@@ -42,16 +42,24 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
     # 1. Establish the Absolute Truth
     active_permalinks = get_active_permalinks(navgraph_path)
     
-    # Add root and common system paths to active list to protect them
-    active_permalinks.update(['/', '/index.html', '/feed.xml', '/sitemap.xml', '/llms.txt', '/robots.txt'])
+    # 1.5 Protect Explicit System Paths (DO NOT REMAP THESE)
+    protected_system_paths = [
+        '/', '/index.html', '/feed.xml', '/llms.txt', '/robots.txt',
+        '/sitemap.xml', '/sitemap-core.xml', '/sitemap-hubs.xml',
+        '/sitemap-branch-0.xml', '/sitemap-branch-1.xml',
+        '/sitemap-branch-2.xml', '/sitemap-branch-3.xml',
+        '/sitemap-branch-4.xml', '/sitemap-branch-5.xml',
+        '/sitemap-branch-6.xml'
+    ]
+    active_permalinks.update(protected_system_paths)
     
     # Define obvious noise signatures that SQL might have missed
     known_noise_signatures = [
         'actuator', 'owa', 'rdweb', 'sslvpn', 'remote', 
         'wp-', 'wordpress', 'sdk', 'dr0v',
-        'sitemap.aspx', 'sitemap.html', 'sitemap.txt', 
-        'sitemap.xml.gz', 'sitemap_index.xml', 'sitemap-index.xml',
-        '.well-known', 'ads.txt', 'bingsiteauth', 'login'
+        'sitemap', '.xml', # Aggressively block any sitemap variations
+        '.well-known', 'ads.txt', 'bingsiteauth', 'login', 'admin',
+        'security.txt', 'favicon.ico', '.php', '.env', '.git'
     ]
 
     valid_mappings = {}  # The Deduplication Ledger
