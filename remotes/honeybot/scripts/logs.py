@@ -59,7 +59,8 @@ class SonarApp(App):
         background: #000000;
         color: #00ff00;
         height: 100%;
-        overflow: hidden;
+        overflow-y: auto;   /* <-- RESTORES VERTICAL SCROLL & AUTO-SCROLLING */
+        overflow-x: hidden; /* <-- KEEPS THE BOTTOM FLUSH */
         width: 100%;
         min-width: 100%;
     }
