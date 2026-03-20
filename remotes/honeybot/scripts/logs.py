@@ -101,6 +101,9 @@ class SonarApp(App):
     """
 
     TITLE = "Honeybot Sonar of https://mikelev.in/"
+
+    # --- NEW: Banish the interactive Command Palette ---
+    ENABLE_COMMAND_PALETTE = False
     
     def get_sub_title(self):
         return f"Live Nginx Log Analysis | Next Report: {self.countdown_str}"
