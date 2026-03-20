@@ -25,9 +25,10 @@ AI_PHOOEY_CHOP = """\
 
 # AD HOC PROMPT FU INCLUSIONS HERE
 
-scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
-scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
-scripts/articles/common.py  # [881 tokens | 3,571 bytes]
+# scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
+# scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
+# scripts/articles/common.py  # [881 tokens | 3,571 bytes]
+# /home/mike/repos/trimnoir/_redirects.map  # [156,992 tokens | 496,337 bytes]
 
 # /home/mike/repos/trimnoir/_posts/2026-03-19-pipulate-full-stack-python-htmx-durable-state.md  # [23,853 tokens | 108,922 bytes]
 
@@ -314,11 +315,12 @@ scripts/articles/common.py  # [881 tokens | 3,571 bytes]
 # scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
 
 # THE 404 AFFAIR (Topological Healer Blueprint)
-# ! python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree  # Konami Cheat Code 404s, run from the terminal by itself!!!
-assets/prompts/find404s.md  # [350 tokens | 1,624 bytes]
-/home/mike/repos/trimnoir/_raw_map.csv  # [103,981 tokens | 359,660 bytes]
+# assets/prompts/find404s.md  # [350 tokens | 1,624 bytes]
+# /home/mike/repos/trimnoir/_raw_map.csv  # [103,981 tokens | 359,660 bytes]
+# INCLUDING ANY OF THESE MAKES IT BIG
 # scripts/articles/generate_redirects.py  # [1,101 tokens | 4,722 bytes]
 # /home/mike/repos/trimnoir/_redirects.map  # [125,447 tokens | 401,978 bytes]
+# ! python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree  # Konami Cheat Code 404s, run from the terminal by itself!!!
 
 # ============================================================================
 # VI. THE HONEYBOT OBSERVATORY (Live Telemetry)
@@ -397,6 +399,7 @@ assets/prompts/find404s.md  # [350 tokens | 1,624 bytes]
 # ============================================================================
 CHOP_404_AFFAIR = """\
 # THE 404 AFFAIR (Topological Healer Blueprint)
+# COMMAND: python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree
 # /home/mike/repos/trimnoir/_raw_map.csv  # [18,608 tokens | 65,818 bytes]
 # /home/mike/repos/trimnoir/_redirects.map  # [23,413 tokens | 73,822 bytes]
 scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
@@ -407,6 +410,7 @@ scripts/articles/common.py  # [881 tokens | 3,571 bytes]
 
 CHOP_FISHTANK = """\
 # THE FISHTANK TELEMETRY BLUEPRINT
+# COMMAND: python prompt_foo.py --chop CHOP_FISHTANK -n
 # Pumping live Honeybot observability data directly into the AI's context.
 
 remotes/honeybot/queries/format_ratio.sql  # [79 tokens | 275 bytes]
