@@ -453,7 +453,15 @@ class Pipulate:
             # loading if the user never calls pip.speak()
             from imports.voice_synthesis import chip_voice_system
             if chip_voice_system and chip_voice_system.voice_ready:
-                 chip_voice_system.speak_text(text)
+                 # --- CHISEL STRIKE: Acoustic Sanitization ---
+                 # Strip invisible characters or weird punctuation that confuse Piper's phoneme map.
+                 # Using the unicode escape to prevent Neovim syntax highlighting breaks.
+                 safe_text = text.replace('\u0329', '')
+                 
+                 # Replace complex punctuation with phonetic equivalents or spaces
+                 safe_text = safe_text.replace('—', ', ').replace('–', ', ')
+                 # --------------------------------------------
+                 chip_voice_system.speak_text(safe_text)
         except Exception as e:
             # We fail silently because the print() statement above acts as our fallback
             pass
