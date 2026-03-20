@@ -128,7 +128,7 @@ class SonarApp(App):
                 yield DataTable(id="md_table")
         # ----------------------------------------
             
-        yield Footer()
+        # yield Footer()
 
     def on_mount(self) -> None:
         self.ua_counter = Counter()
