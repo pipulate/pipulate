@@ -22,6 +22,10 @@ import imports.server_logging as slog
 
 log = slog.LogManager(logger)
 
+import logging
+
+# Silence the piper logger
+logging.getLogger("piper").setLevel(logging.ERROR)
 
 def title_name(word: str) -> str:
     """Format a string into a title case form."""
