@@ -18,14 +18,14 @@
 # Search using this to jump to next un-commented line: \^\s*[^ \t#]
 AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
-# ! python scripts/articles/lsa.py -t 1
-# python scripts/articles/lsa.py -t 1
-foo_files.py  # [10,245 tokens | 33,406 bytes]
+! python scripts/articles/lsa.py -t 1
+# scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]
+# foo_files.py  # [10,245 tokens | 33,406 bytes]
 # prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 
 # AD HOC PROMPT FU INCLUSIONS HERE
 
-/home/mike/repos/trimnoir/_posts/2026-03-19-pipulate-full-stack-python-htmx-durable-state.md  # [23,853 tokens | 108,922 bytes]
+# /home/mike/repos/trimnoir/_posts/2026-03-19-pipulate-full-stack-python-htmx-durable-state.md  # [23,853 tokens | 108,922 bytes]
 
 # Continuing the LLMectomy
 # pyproject.toml  # [677 tokens | 2,299 bytes]
@@ -330,19 +330,19 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # DMZ TV Studio, Telemetry DB, and NixOS IaC. 
 
 # CHAPTER 16: HONEYBOT IAC & SCRIPTS
-nixops.sh  # [227 tokens | 765 bytes]
-remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
-remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
-remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
-remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
-remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
-remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
-remotes/honeybot/scripts/bot_intel.json  # [513 tokens | 1,550 bytes]
-remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
-remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
-remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
-remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
-remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
+# nixops.sh  # [227 tokens | 765 bytes]
+# remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
+# remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
+# remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
+# remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
+# remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
+# remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
+# remotes/honeybot/scripts/bot_intel.json  # [513 tokens | 1,550 bytes]
+# remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
+# remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
+# remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
+# remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
+# remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
 
 # CHAPTER 17: TELEMETRY SENSORS & DASHBOARD PROBES
 # These are the structural SQL definitions the AI can read to understand the schema.
@@ -519,7 +519,6 @@ remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
 # scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
-# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # scripts/articles/other/make_article.py  # [1,513 tokens | 6,559 bytes]
 # scripts/articles/rescue_equity.py  # [514 tokens | 2,040 bytes]
 # scripts/articles/sanitize_redirects.py  # [684 tokens | 2,935 bytes]
