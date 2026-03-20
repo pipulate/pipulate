@@ -18,12 +18,16 @@
 # Search using this to jump to next un-commented line: \^\s*[^ \t#]
 AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
-! python scripts/articles/lsa.py -t 1
+# ! python scripts/articles/lsa.py -t 1
 # scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]
 # foo_files.py  # [10,245 tokens | 33,406 bytes]
 # prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 
 # AD HOC PROMPT FU INCLUSIONS HERE
+
+scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
+scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
+scripts/articles/common.py  # [881 tokens | 3,571 bytes]
 
 # /home/mike/repos/trimnoir/_posts/2026-03-19-pipulate-full-stack-python-htmx-durable-state.md  # [23,853 tokens | 108,922 bytes]
 
@@ -62,14 +66,6 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/trimnoir/_site/flake.nix  # [5,253 tokens | 23,747 bytes]
 # ! cat /home/mike/repos/trimnoir/_site/feed.xml | head -c 50K
 # /home/mike/repos/trimnoir/feed.xml  # [407 tokens | 1,615 bytes]
-
-# /home/mike/repos/trimnoir/Gemfile  # [410 tokens | 1,339 bytes]
-
-# assets/prompts/find404s.md  # [12,990 tokens | 59,609 bytes]
-# remotes/honeybot/queries/hot_404_remaps_top.sql  # [656 tokens | 2,653 bytes]
-# 
-# scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
-# scripts/articles/extract_404_ghosts.py  # [901 tokens | 3,836 bytes]
 
 # apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
@@ -319,8 +315,8 @@ AI_PHOOEY_CHOP = """\
 
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # ! python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree  # Konami Cheat Code 404s, run from the terminal by itself!!!
-# assets/prompts/find404s.md  # [350 tokens | 1,624 bytes]
-# /home/mike/repos/trimnoir/_raw_map.csv  # [103,981 tokens | 359,660 bytes]
+assets/prompts/find404s.md  # [350 tokens | 1,624 bytes]
+/home/mike/repos/trimnoir/_raw_map.csv  # [103,981 tokens | 359,660 bytes]
 # scripts/articles/generate_redirects.py  # [1,101 tokens | 4,722 bytes]
 # /home/mike/repos/trimnoir/_redirects.map  # [125,447 tokens | 401,978 bytes]
 
@@ -403,21 +399,10 @@ CHOP_404_AFFAIR = """\
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # /home/mike/repos/trimnoir/_raw_map.csv  # [18,608 tokens | 65,818 bytes]
 # /home/mike/repos/trimnoir/_redirects.map  # [23,413 tokens | 73,822 bytes]
-# scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
+scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
 scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
-! python scripts/articles/extract_404_ghosts.py
-"""
-
-# ============================================================================
-# SPECIALIZED STRIKE PACKAGES
-# ============================================================================
-CHOP_404_AFFAIR = """\
-# THE 404 AFFAIR (Topological Healer Blueprint)
-# /home/mike/repos/trimnoir/_raw_map.csv  # [18,608 tokens | 65,818 bytes]
-# /home/mike/repos/trimnoir/_redirects.map  # [23,413 tokens | 73,822 bytes]
-# scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
-scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
-! python scripts/articles/extract_404_ghosts.py
+scripts/articles/common.py  # [881 tokens | 3,571 bytes]
+# ! python scripts/articles/extract_404_ghosts.py
 """
 
 CHOP_FISHTANK = """\
