@@ -342,6 +342,10 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           tmux new-session -d -s jupyter "source .venv/bin/activate && jupyter lab ${jupyterStartupNotebook} --workspace=\$JUPYTER_WORKSPACE_NAME --NotebookApp.token=\"\" --NotebookApp.password=\"\" --NotebookApp.disable_check_xsrf=True"
           # Wait for JupyterLab to start
           echo "JupyterLab is starting..."
+
+          # 🗣️ THE UNIFIED VOICE TRIGGER
+          python -c "from imports.voice_synthesis import chip_voice_system as cvs; cvs.speak_text('Pipulate is installed. Starting JupyterLab and the Pipulate server. JupyterLab will appear first for your onboarding.')" &
+
           for i in {1..30}; do
             if curl -s http://localhost:8888 > /dev/null; then
               echo "JupyterLab is ready!"
