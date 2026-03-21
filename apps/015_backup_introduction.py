@@ -252,6 +252,40 @@ class IntroductionPlugin:
                 cls=card_class
             )
 
+        elif page_num == 8:
+            import os
+            title = 'The Vault: Unlock Frontier Magic 🗝️'
+            intro_text = f"Pipulate works perfectly offline. However, to unlock heavy-duty analysis, you can provide Cloud AI or Enterprise API keys. These are saved securely to a local `.env` file on your machine."
+            
+            # Check current state using OS environment
+            has_ai_key = bool(os.environ.get('OPENAI_API_KEY') or os.environ.get('ANTHROPIC_API_KEY') or os.environ.get('GEMINI_API_KEY'))
+            has_botify_key = bool(os.environ.get('BOTIFY_API_TOKEN'))
+
+            ai_status = "✅ Active" if has_ai_key else "❌ Missing (Optional)"
+            botify_status = "✅ Active" if has_botify_key else "❌ Missing (Optional)"
+
+            return Card(
+                H3(title),
+                P(intro_text),
+                Ul(
+                    Li(Strong('Cloud AI Key (OpenAI/Anthropic/Gemini): '), ai_status),
+                    Li(Strong('Botify API Key: '), botify_status)
+                ),
+                Form(
+                    self.pipulate.wrap_with_inline_button(
+                        Input(type="password", name="api_key", placeholder="Paste any API key here..."),
+                        button_label="Save to Vault",
+                        button_class="secondary"
+                    ),
+                    hx_post=f"/introduction/save_key",
+                    hx_target="#vault-feedback",
+                    hx_swap="innerHTML"
+                ),
+                Div(id="vault-feedback"), # HTMX target for the success/fail message
+                P(Small("Note: Workflows requiring missing keys will gracefully remain dormant until you provide them. We detect key types automatically.")),
+                cls=card_class
+            )
+
         else:
             return Card(
                 H3("Page Not Found"),
