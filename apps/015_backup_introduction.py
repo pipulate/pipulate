@@ -273,11 +273,11 @@ class IntroductionPlugin:
 
         next_button = Button(
             'Next ▸',
-            hx_post=f'/introduction/page/{current_page + 1}' if current_page < 7 else '#',
             hx_target='#grid-left-content',
+            hx_post=f'/introduction/page/{current_page + 1}' if current_page < 8 else '#',
             hx_swap='innerHTML',
-            cls=f"{'primary outline' if current_page == 7 else 'primary'} width-160",
-            disabled=current_page == 7
+            cls=f"{'primary outline' if current_page == 8 else 'primary'} width-160",
+            disabled=current_page == 8
         )
 
         nav_arrows = Div(
