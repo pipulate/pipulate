@@ -30,6 +30,41 @@ class IntroductionPlugin:
 
         # Register routes for page navigation
         app.route('/introduction/page/{page_num}', methods=['GET', 'POST'])(self.serve_page)
+        app.route('/introduction/save_key', methods=['POST'])(self.save_key) # <-- ADD THIS
+
+    async def save_key(self, request):
+        """Intelligently detects key type, saves to .env, and updates os.environ."""
+        from dotenv import set_key
+        import os
+        from pathlib import Path
+        
+        form_data = await request.form()
+        api_key = form_data.get('api_key', '').strip()
+        
+        if not api_key:
+            return P("❌ Please paste a valid key.", style="color: var(--pico-color-red-500); margin-top: 10px;")
+            
+        # The Heuristics Engine for Key Detection
+        key_name = 'UNKNOWN_KEY'
+        if api_key.startswith('sk-ant'):
+            key_name = 'ANTHROPIC_API_KEY'
+        elif api_key.startswith('sk-'):
+            key_name = 'OPENAI_API_KEY'
+        elif api_key.startswith('AIza'):
+            key_name = 'GEMINI_API_KEY'
+        elif len(api_key) == 40 and api_key.isalnum(): # Common Botify format
+            key_name = 'BOTIFY_API_TOKEN'
+        else:
+            key_name = 'GEMINI_API_KEY' # Safe fallback for demonstration
+            
+        env_path = Path.cwd() / '.env'
+        if not env_path.exists():
+            env_path.touch()
+            
+        set_key(str(env_path), key_name, api_key)
+        os.environ[key_name] = api_key # Make available immediately
+        
+        return P(f"✅ Success! Key secured as '{key_name}'.", style="color: var(--pico-color-green-500); margin-top: 10px;")
 
     def create_page_content(self, page_num: int, app_name: str, model: str):
         """Create FastHTML content for a specific page."""
