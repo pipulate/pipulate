@@ -164,17 +164,18 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # The foundational NPvg framework and state management.
 
 # CHAPTER 0: ONBOARDING
-# !https://pipulate.com/
-# /home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
-# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
-# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-# apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
-# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+!https://pipulate.com/
+/home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
+flake.nix  # [7,721 tokens | 32,979 bytes]
+assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
+apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
+assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # CHAPTER 1: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
 # /home/mike/repos/Pipulate.com/index.md  # [2,361 tokens | 10,579 bytes]
@@ -404,10 +405,10 @@ CHOP_404_AFFAIR = """\
 # COMMAND: python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree
 # /home/mike/repos/trimnoir/_raw_map.csv  # [18,608 tokens | 65,818 bytes]
 # /home/mike/repos/trimnoir/_redirects.map  # [23,413 tokens | 73,822 bytes]
-scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
-scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
-scripts/articles/common.py  # [881 tokens | 3,571 bytes]
-# ! python scripts/articles/extract_404_ghosts.py
+# scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
+# scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
+# scripts/articles/common.py  # [881 tokens | 3,571 bytes]
+! python scripts/articles/extract_404_ghosts.py
 """
 
 CHOP_FISHTANK = """\
