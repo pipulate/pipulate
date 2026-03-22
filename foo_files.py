@@ -25,6 +25,12 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 
 # AD HOC PROMPT FU INCLUSIONS HERE
 
+assets/nbs/Onboarding.ipynb  # [3,807 tokens | 12,678 bytes]
+assets/nbs/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
+Notebooks/Onboarding.ipynb  # [5,167 tokens | 17,293 bytes]
+Notebooks/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
+
+
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 
 # scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
