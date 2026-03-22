@@ -20,10 +20,12 @@ AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
 # ! python scripts/articles/lsa.py -t 1
 # scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]
-# foo_files.py  # [10,245 tokens | 33,406 bytes]
-# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+foo_files.py  # [10,245 tokens | 33,406 bytes]
+prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 
 # AD HOC PROMPT FU INCLUSIONS HERE
+
+# pyproject.toml  # [677 tokens | 2,299 bytes]
 
 # scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
 # scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
@@ -164,19 +166,19 @@ AI_PHOOEY_CHOP = """\
 # The foundational NPvg framework and state management.
 
 # CHAPTER 0: ONBOARDING
-!https://pipulate.com/
-/home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
-flake.nix  # [7,721 tokens | 32,979 bytes]
-assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
-apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
-assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-
+# !https://pipulate.com/
+# /home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
+# flake.nix  # [7,721 tokens | 32,979 bytes]
+# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
+# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+ 
 # CHAPTER 1: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
 # /home/mike/repos/Pipulate.com/index.md  # [2,361 tokens | 10,579 bytes]
 # assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
@@ -214,6 +216,8 @@ assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 # imports/append_only_conversation.py  # [4,345 tokens | 22,449 bytes]
 # imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 # apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
+# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
 # ============================================================================
 # III. THE ANATOMY (UX, Tools & Apps)
@@ -221,16 +225,16 @@ assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 # What the user sees and what the AI can touch.
 
 # CHAPTER 5: THE HANDS (AI TOOLS & AUTOMATION) (~350KB)
-# tools/__init__.py  # [464 tokens | 2,067 bytes]
-# tools/keychain_tools.py  # [1,376 tokens | 5,688 bytes]
-# tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
-# tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
-# tools/conversation_tools.py  # [491 tokens | 2,357 bytes]
-# tools/system_tools.py  # [707 tokens | 3,254 bytes]
-# tools/dom_tools.py  # [3,466 tokens | 15,120 bytes]
-# tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
-# tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
-# tools/mcp_tools.py  # [36,628 tokens | 186,793 bytes]
+tools/__init__.py  # [464 tokens | 2,067 bytes]
+tools/keychain_tools.py  # [1,376 tokens | 5,688 bytes]
+tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
+tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
+tools/conversation_tools.py  # [491 tokens | 2,357 bytes]
+tools/system_tools.py  # [707 tokens | 3,254 bytes]
+tools/dom_tools.py  # [3,466 tokens | 15,120 bytes]
+tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
+tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
+tools/mcp_tools.py  # [36,628 tokens | 186,793 bytes]
 
 # CHAPTER 6: THE SKIN (FRONTEND ASSETS & INIT) (~265KB)
 # assets/init.js  # [2,303 tokens | 12,158 bytes]
