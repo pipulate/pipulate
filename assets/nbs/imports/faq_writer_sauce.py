@@ -318,62 +318,12 @@ def display_results_log(job: str):
     with pd.option_context('display.max_rows', None, 'display.max_colwidth', 80):
         display(df)
 
-def export_to_excel(job: str):
-    """
-    Exports the final DataFrame to a formatted Excel file.
-    """
-    print("📄 Exporting data to Excel...")
-    final_json = wand.get(job, FINAL_DATAFRAME_STEP)
-    if not final_json:
-        print("❌ No final data found to export. Please run the 'display_results' step first.")
-        return
-    df_final = pd.read_json(StringIO(final_json))
-    output_filename = f"{job}_output.xlsx"
-    try:
-        with pd.ExcelWriter(output_filename, engine='openpyxl') as writer:
-            df_final.to_excel(writer, index=False, sheet_name='Faquillizer_Data')
-            worksheet = writer.sheets['Faquillizer_Data']
-            for column in worksheet.columns:
-                max_length = max((df_final[column[0].value].astype(str).map(len).max(), len(str(column[0].value))))
-                adjusted_width = (max_length + 2) if max_length < 80 else 80
-                worksheet.column_dimensions[column[0].column_letter].width = adjusted_width
-        wand.set(job, EXPORT_FILE_STEP, output_filename)
-        print(f"✅ Success! Data exported to '{output_filename}'")
-    except Exception as e:
-        print(f"❌ Failed to export to Excel: {e}")
-
 
 def export_and_format_excel(job, df):
     """Submit the pivoted data to the core professional formatter."""
     return core.format_excel_pro(job, df, sheet_name="FAQ_Analysis")
     
     
-def _open_folder(path_str: str = "."):
-    """
-    Opens the specified folder in the system's default file explorer.
-    Handles Windows, macOS, and Linux.
-    """
-    folder_path = Path(path_str).resolve()
-    print(f"Attempting to open folder: {folder_path}")
-    
-    if not folder_path.exists() or not folder_path.is_dir():
-        print(f"❌ Error: Path is not a valid directory: {folder_path}")
-        return
-
-    system = platform.system()
-    try:
-        if system == "Windows":
-            os.startfile(folder_path)
-        elif system == "Darwin":  # macOS
-            subprocess.run(["open", folder_path])
-        else:  # Linux
-            subprocess.run(["xdg-open", folder_path])
-    except Exception as e:
-        print(f"❌ Failed to open folder. Please navigate to it manually. Error: {e}")
-
-
-# Replacement function for Notebooks/secretsauce.py
-
 async def generate_visualizations_post_scrape(job: str, verbose: bool = False):
     """
     Generates DOM visualizations by calling the standalone visualize_dom.py script
