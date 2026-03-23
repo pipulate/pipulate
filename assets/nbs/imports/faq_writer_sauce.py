@@ -1,28 +1,12 @@
 # secretsauce.py (version 3.0 - Refactored Workflow)
 # This module contains the implementation details for a 1-to-many AI enrichment workflow.
 
-from pipulate import wand
-import requests
-from bs4 import BeautifulSoup
 import pandas as pd
-from io import StringIO
+from pipulate import wand
+from imports import core_sauce as core
 import json
-from sqlitedict import SqliteDict
-import asyncio
 import nbformat
 from pathlib import Path
-import re
-
-import os
-import platform
-import subprocess
-import ipywidgets as widgets
-from IPython.display import display
-
-from openpyxl.utils import get_column_letter
-from openpyxl.styles import Font, Alignment
-from openpyxl.worksheet.table import Table, TableStyleInfo
-
 
 # --- CONFIGURATION ---
 CACHE_DB_FILE = wand.paths.temp / "url_cache.sqlite"
@@ -77,143 +61,28 @@ def _get_urls_from_notebook(notebook_filename="FAQuilizer.ipynb"):
         return []
 
 
-async def scrape(job: str, 
-                 headless: bool = True, 
-                 verbose: bool = False, 
-                 stealth: bool = True, 
-                 persistent: bool = True, 
-                 profile_name: str = "my_session", 
-                 delay_range: tuple = (5, 10)):
-    """
-    Scrapes each URL using pip.scrape(), leveraging cached data if available,
-    and immediately parses the HTML to extract key SEO data.
-    """
-    print("🚀 Starting browser-based scraping and extraction...")
-    
-    # --- Read fresh URLs from the notebook and update the state ---
-    fresh_urls = _get_urls_from_notebook()
-    if fresh_urls:
-        print(f"✨ Found {len(fresh_urls)} URLs in the notebook.")
-        wand.set(job, URL_LIST_STEP, fresh_urls)
-    # --------------------------------------------------------------------
-
-    urls_to_process = wand.get(job, URL_LIST_STEP, [])
-    if not urls_to_process:
-        print("❌ No URLs to process. Please add them to the 'url-list-input' cell in your notebook.")
-        return
-
-    extracted_data = []
-
-    for i, url in enumerate(urls_to_process):
-        # The logging is now cleaner, showing a distinct message for cached items.
-        # The core processing logic remains the same.
-        
-        # Apply delay only AFTER the first request to avoid an unnecessary initial wait
-        current_delay_range = delay_range if i > 0 else None
-
-        try:
-            scrape_result = await wand.scrape(
-                url=url,
-                take_screenshot=True,
-                headless=headless,
-                verbose=verbose,
-                stealth=stealth,
-                persistent=persistent,
-                profile_name=profile_name,
-                delay_range=current_delay_range
-            )
-            
-            # --- AESTHETIC LOGGING UPDATE ---
-            is_cached = scrape_result.get("cached", False)
-            if is_cached:
-                print(f"  -> ✅ Cached [{i+1}/{len(urls_to_process)}] Using data for: {url}")
-            else:
-                print(f"  -> 👁️  Scraped [{i+1}/{len(urls_to_process)}] New data for: {url}")
+async def scrape(job, **kwargs):
+    """Configuration wrapper for the core scraper."""
+    # Get the URL list defined in the Notebook
+    urls = wand.get(job, "url_list", [])
+    # Pass the heavy lifting to core
+    return await core.universal_scrape(job, urls, **kwargs)
 
 
-            if not scrape_result.get("success"):
-                if verbose:
-                    print(f"  -> ❌ Scrape failed: {scrape_result.get('error')}")
-                continue
-
-            dom_path = scrape_result.get("looking_at_files", {}).get("rendered_dom")
-            if not dom_path:
-                if verbose:
-                    print(f"  -> ⚠️ Scrape succeeded, but no DOM file was found.")
-                continue
-
-            with open(dom_path, 'r', encoding='utf-8') as f:
-                html_content = f.read()
-            
-            soup = BeautifulSoup(html_content, 'html.parser')
-            title = soup.title.string.strip() if soup.title else "No Title Found"
-            meta_desc_tag = soup.find('meta', attrs={'name': 'description'})
-            meta_description = meta_desc_tag['content'].strip() if meta_desc_tag else ""
-            h1s = [h1.get_text(strip=True) for h1 in soup.find_all('h1')]
-            h2s = [h2.get_text(strip=True) for h2 in soup.find_all('h2')]
-            
-            extracted_data.append({
-                'url': url, 'title': title, 'meta_description': meta_description,
-                'h1s': h1s, 'h2s': h2s
-            })
-            # No need for a verbose check here, the new logging is always informative.
-
-        except Exception as e:
-            print(f"  -> ❌ A critical error occurred while processing {url}: {e}")
-
-    wand.set(job, EXTRACTED_DATA_STEP, extracted_data)
-    print(f"✅ Scraping and extraction complete for {len(extracted_data)} URLs.")
-
-
-def extract_webpage_data(job: str):
-    """Reads from cache, extracts key SEO elements, and saves to CSV."""
-    urls_to_process = wand.get(job, URL_LIST_STEP, [])
-    extracted_data = []
-    print(f"🔍 Extracting SEO elements for {len(urls_to_process)} URLs...")
-    with SqliteDict(CACHE_DB_FILE) as cache:
-        for url in urls_to_process:
-            response = cache.get(url)
-            if not response or not isinstance(response, requests.Response):
-                print(f"  -> ⏭️ Skipping {url} (no valid cache entry).")
-                continue
-            print(f"  -> Parsing {url}...")
-            soup = BeautifulSoup(response.content, 'html.parser')
-            title = soup.title.string.strip() if soup.title else "No Title Found"
-            meta_desc_tag = soup.find('meta', attrs={'name': 'description'})
-            meta_description = meta_desc_tag['content'].strip() if meta_desc_tag else ""
-            h1s = [h1.get_text(strip=True) for h1 in soup.find_all('h1')]
-            h2s = [h2.get_text(strip=True) for h2 in soup.find_all('h2')]
-            extracted_data.append({
-                'url': url, 'title': title, 'meta_description': meta_description,
-                'h1s': h1s, 'h2s': h2s
-            })
-    wand.set(job, EXTRACTED_DATA_STEP, extracted_data)
-    try:
-        df = pd.DataFrame(extracted_data)
-        df.to_csv(EXTRACTED_DATA_CSV, index=False)
-        print(f"✅ Extraction complete. Intermediate data saved to '{EXTRACTED_DATA_CSV}'")
-    except Exception as e:
-        print(f"⚠️ Could not save intermediate CSV: {e}")
+async def generate_visualizations_post_scrape(job, verbose=False):
+    """Pass optics generation to core."""
+    return await core.generate_optics_batch(job, verbose=verbose)
 
 
 # -----------------------------------------------------------------------------
 # NEW REFACTORED WORKFLOW: Stack 'Em, FAQ 'Em, Rack 'Em
 # -----------------------------------------------------------------------------
 
-def stack_em(job: str) -> pd.DataFrame:
-    """
-    Loads pre-scraped and extracted data for a job into a DataFrame.
-    This is the "Stack 'Em" step.
-    """
-    print("📊 Stacking pre-extracted data into a DataFrame...")
-    extracted_data = wand.get(job, EXTRACTED_DATA_STEP, [])
-    if not extracted_data:
-        print("❌ No extracted data found. Please run `scrape` first.")
-        return pd.DataFrame()
+def stack_em(job):
+    """Load core extraction data into a DataFrame for FAQ processing."""
+    data = wand.get(job, "extracted_data", [])
+    return pd.DataFrame(data)
 
-    df = pd.DataFrame(extracted_data)
-    print(f"✅ Stacked {len(df)} pages into the initial DataFrame.")
-    return df
 
 def ai_faq_em(job: str, debug: bool = False) -> pd.DataFrame:
     """
@@ -474,80 +343,9 @@ def export_to_excel(job: str):
         print(f"❌ Failed to export to Excel: {e}")
 
 
-def export_and_format_excel(job: str, df: pd.DataFrame):
-    """
-    Exports the DataFrame to a professionally formatted Excel file and a CSV file
-    inside a dedicated 'output' folder. Displays a button to open the folder.
-    """
-    if df.empty:
-        print("⚠️ DataFrame is empty, skipping file export.")
-        return
-
-    output_dir = Path("output")
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    csv_filename = output_dir / f"{job}_output.csv"
-    excel_filename = output_dir / f"{job}_output.xlsx"
-    
-    print(f"📄 Saving CSV file: {csv_filename}")
-    df.to_csv(csv_filename, index=False)
-    
-    print(f"🎨 Formatting and exporting data to Excel: {excel_filename}")
-    with pd.ExcelWriter(excel_filename, engine='openpyxl') as writer:
-        df.to_excel(writer, index=False, sheet_name='FAQ_Analysis')
-        
-        worksheet = writer.sheets['FAQ_Analysis']
-
-        # 1. Create an Excel Table for high-contrast banded rows and filtering
-        table_range = f"A1:{get_column_letter(worksheet.max_column)}{worksheet.max_row}"
-        table = Table(displayName="FAQTable", ref=table_range)
-        # Using a more visible style for alternate row shading
-        style = TableStyleInfo(name="TableStyleMedium9", showFirstColumn=False,
-                               showLastColumn=False, showRowStripes=True, showColumnStripes=False)
-        table.tableStyleInfo = style
-        worksheet.add_table(table)
-
-        # 2. Define consistent column widths
-        width_map = {
-            "url": 50,
-            "title": 50,
-            "priority": 10,
-            "question": 60,
-            "target_intent": 45,
-            "justification": 45,
-        }
-        default_width = 18
-        
-        # 3. Apply formatting to all cells
-        # Loop through headers (row 1)
-        for col_idx, column_cell in enumerate(worksheet[1], 1):
-            column_letter = get_column_letter(col_idx)
-            header_text = str(column_cell.value)
-            
-            # A. Format header cell
-            column_cell.font = Font(bold=True)
-            column_cell.alignment = Alignment(horizontal='center', vertical='center')
-
-            # B. Set column width based on header
-            width = default_width
-            for prefix, value in width_map.items():
-                if header_text.lower().startswith(prefix):
-                    width = value
-                    break
-            worksheet.column_dimensions[column_letter].width = width
-
-        # Loop through data cells (rows 2 onwards) to apply text wrapping
-        for row in worksheet.iter_rows(min_row=2):
-            for cell in row:
-                cell.alignment = Alignment(wrap_text=True, vertical='top')
-
-    print(f"✅ Success! Files saved in the '{output_dir}' folder.")
-    
-    button = widgets.Button(
-        description="📂 Open Output Folder",
-        tooltip=f"Open {output_dir.resolve()}",
-        button_style='success'
-    )
+def export_and_format_excel(job, df):
+    """Submit the pivoted data to the core professional formatter."""
+    return core.format_excel_pro(job, df, sheet_name="FAQ_Analysis")
     
     
 def _open_folder(path_str: str = "."):
