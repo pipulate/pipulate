@@ -199,3 +199,32 @@ async def generate_optics_subprocess(dom_file_path: str):
         return {"success": True, "output": stdout.decode()}
     else:
         return {"success": False, "error": stderr.decode()}
+
+
+def explain_optics_artifacts(target_url):
+    """
+    Feeds the AI both the raw source and the rendered DOM structure
+    to educate the user on 'The JavaScript Gap'.
+    """
+    domain, slug = get_safe_path_component(target_url)
+    base = wand.paths.browser_cache / domain / slug
+    
+    source_txt = (base / "source.html").read_text()[:1000] # Snippet
+    rendered_txt = (base / "rendered_dom.html").read_text()[:1000] # Snippet
+
+    prompt = f"""
+    I am looking at the scrape artifacts for {target_url}.
+    
+    RAW SOURCE SNIPPET:
+    {source_txt}
+    
+    RENDERED DOM SNIPPET:
+    {rendered_txt}
+    
+    Explain to the human why these two views differ and why a 'Forever Machine' 
+    needs to see the Rendered DOM to understand modern web apps. 
+    Point out any specific SEO tags or content that only appear in one of them.
+    """
+    
+    response = wand.prompt(prompt)
+    display(Markdown(f"### 👁️ Optics Education\n\n{response}"))

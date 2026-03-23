@@ -30,6 +30,7 @@ assets/nbs/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
 Notebooks/Onboarding.ipynb  # [5,167 tokens | 17,293 bytes]
 Notebooks/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
 
+flake.nix  # [7,921 tokens | 33,867 bytes]
 
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 
@@ -449,6 +450,7 @@ remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
 # Notebooks/Advanced_Notebooks/__init__.py  # [0 tokens | 0 bytes]
 # Notebooks/__init__.py  # [0 tokens | 0 bytes]
 # Notebooks/imports/__init__.py  # [0 tokens | 0 bytes]
+# Notebooks/imports/core_sauce.py  # [830 tokens | 3,425 bytes]
 # ai_edit.py  # [2,296 tokens | 10,210 bytes]
 # apps/130_gap_analysis.py  # [9,625 tokens | 48,280 bytes]
 # apps/210_widget_examples.py  # [22,791 tokens | 98,590 bytes]
