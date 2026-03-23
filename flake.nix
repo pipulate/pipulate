@@ -148,6 +148,11 @@
             desc = "a local 'NoGooey Video Editor.'";
           }
           {
+            source = "assets/nbs/imports/core_sauce.py";
+            dest = "Notebooks/imports/core_sauce.py";
+            desc = "the unified core workflow engine";
+          }
+          {
             source = "assets/nbs/imports/videditor_sauce.py";
             dest = "Notebooks/imports/videditor_sauce.py";
             desc = "a local 'videditor_sauce.py' source of secret sauce";
