@@ -298,12 +298,12 @@ flake.nix  # [7,962 tokens | 34,057 bytes]
 Notebooks/Onboarding.ipynb  # [4,504 tokens | 14,798 bytes]
 Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
 assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-assets/nbs/Advanced_Notebooks/FAQuilizer.ipynb  # [2,516 tokens | 7,593 bytes]
-assets/nbs/Advanced_Notebooks/URLinspector.ipynb  # [2,407 tokens | 7,284 bytes]
-assets/nbs/Advanced_Notebooks/VIDeditor.ipynb  # [569 tokens | 1,670 bytes]
-assets/nbs/Advanced_Notebooks/GAPalyzer.ipynb  # [9,193 tokens | 31,140 bytes]
+assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb
+assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb
+assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb
+assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb
 assets/nbs/imports/core_sauce.py  # [811 tokens | 3,362 bytes]
-assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+assets/nbs/imports/onboard_sauce.py  # [ imports Ceiling Level ]
 assets/nbs/imports/faq_writer_sauce.py  # [6,042 tokens | 26,760 bytes]
 assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
 assets/nbs/imports/videditor_sauce.py  # [937 tokens | 4,098 bytes]
