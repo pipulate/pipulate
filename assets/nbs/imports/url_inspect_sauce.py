@@ -1,7 +1,7 @@
 # assets/nbs/imports/url_inspect_sauce.py
 import pandas as pd
 from pipulate import wand
-from imports import core_sauce as core
+from . import core_sauce as core
 import time
 import random
 import yaml
