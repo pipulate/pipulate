@@ -1,5 +1,4 @@
 # start temp
-Notebooks/AI_HelloWorld.ipynb
 Notebooks/Advanced_Notebooks/Untitled.ipynb
 # end temp
 
@@ -70,12 +69,10 @@ __pycache__/
 Notebooks/Client_Work/
 Notebooks/deliverables/
 Notebooks/_config.py
-Notebooks/Advanced_Notebooks/AI_HelloWorld.ipynb
-Notebooks/Advanced_Notebooks/AI_Scrape.ipynb
-Notebooks/Advanced_Notebooks/FAQuilizer.ipynb
-Notebooks/Advanced_Notebooks/GAPalyzer.ipynb
-Notebooks/Advanced_Notebooks/URLinspector.ipynb
-Notebooks/Advanced_Notebooks/VIDeditor.ipynb
+Notebooks/Advanced_Notebooks/01_URLinspector.ipynb
+Notebooks/Advanced_Notebooks/02_FAQuilizer.ipynb
+Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb
+Notebooks/Advanced_Notebooks/04_VIDeditor.ipynb
 
 Notebooks/imports/core_sauce.py
 Notebooks/imports/onboard_sauce.py
