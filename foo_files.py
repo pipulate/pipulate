@@ -20,7 +20,7 @@ AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
 # ! python scripts/articles/lsa.py -t 1
 # scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]
-pyproject.toml  # [677 tokens | 2,299 bytes]
+# pyproject.toml  # [677 tokens | 2,299 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 
@@ -173,6 +173,7 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # !https://pipulate.com/
 # /home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
 # flake.nix  # [7,721 tokens | 32,979 bytes]
+# pyproject.toml  # [677 tokens | 2,299 bytes]
 # assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
@@ -187,6 +188,7 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # /home/mike/repos/Pipulate.com/index.md  # [2,361 tokens | 10,579 bytes]
 # assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
 # flake.nix  # [7,721 tokens | 32,979 bytes]
+# pyproject.toml  # [677 tokens | 2,299 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
 # config.py  # [4,098 tokens | 15,949 bytes]
 # AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
@@ -298,10 +300,10 @@ flake.nix  # [7,962 tokens | 34,057 bytes]
 Notebooks/Onboarding.ipynb  # [4,504 tokens | 14,798 bytes]
 Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
 assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb
-assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb
-assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb
-assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb
+assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb  # [2,317 tokens | 7,323 bytes]
+assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
+assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [9,228 tokens | 31,278 bytes]
+assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
 assets/nbs/imports/core_sauce.py  # [811 tokens | 3,362 bytes]
 assets/nbs/imports/onboard_sauce.py  # [ imports Ceiling Level ]
 assets/nbs/imports/faq_writer_sauce.py  # [6,042 tokens | 26,760 bytes]
