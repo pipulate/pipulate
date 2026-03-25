@@ -20,6 +20,7 @@ AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
 # ! python scripts/articles/lsa.py -t 1
 # scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]
+pyproject.toml  # [677 tokens | 2,299 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 
@@ -29,10 +30,6 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
 # Notebooks/Onboarding.ipynb  # [5,167 tokens | 17,293 bytes]
 # Notebooks/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
-
-# flake.nix  # [7,921 tokens | 33,867 bytes]
-
-# pyproject.toml  # [677 tokens | 2,299 bytes]
 
 # scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
 # scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
@@ -117,7 +114,7 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
 # flake.nix  # [7,721 tokens | 32,979 bytes]
 # 
-imports/__init__.py  # [0 tokens | 0 bytes]
+# imports/__init__.py  # [0 tokens | 0 bytes]
 #   
 # /home/mike/repos/pipulate/assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
 # /home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
@@ -204,11 +201,11 @@ imports/__init__.py  # [0 tokens | 0 bytes]
 # server.py   # [54,246 tokens | 258,931 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
-config.py  # [4,098 tokens | 15,949 bytes]
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
+# config.py  # [4,098 tokens | 15,949 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 
 
 # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
@@ -297,6 +294,9 @@ imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 # Publishing, Notebook Templates, and topological self-healing.
 
 # CHAPTER 14: THE NOTEBOOK TEMPLATES (~100KB)
+flake.nix  # [7,962 tokens | 34,057 bytes]
+Notebooks/Onboarding.ipynb  # [4,504 tokens | 14,798 bytes]
+Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
 assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
 assets/nbs/Advanced_Notebooks/FAQuilizer.ipynb  # [2,516 tokens | 7,593 bytes]
 assets/nbs/Advanced_Notebooks/URLinspector.ipynb  # [2,407 tokens | 7,284 bytes]
@@ -308,11 +308,6 @@ assets/nbs/imports/faq_writer_sauce.py  # [6,042 tokens | 26,760 bytes]
 assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
 assets/nbs/imports/videditor_sauce.py  # [937 tokens | 4,098 bytes]
 assets/nbs/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
-
-# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
-# Notebooks/Onboarding.ipynb  # [4,504 tokens | 14,798 bytes]
-# Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
 
 # CHAPTER 15: JEKYLL PUBLISHING
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
