@@ -8,9 +8,22 @@ import yaml
 
 
 async def scrape(job, **kwargs):
-    """Thin wrapper for URL auditing acquisition using topological parsing."""
-    urls = core.get_urls_from_notebook("URLinspector.ipynb")
+    """
+    Thin wrapper for URL auditing acquisition. 
+    Now strictly state-driven, pulling the target from the wand.
+    """
+    # Pull the URL set by the widget in the notebook
+    target_url = wand.get(job, 'target_url')
+    
+    if not target_url:
+        print("❌ Error: No target_url found in state. Did you run the widget cell?")
+        return []
+        
+    urls = [target_url]
+    
+    # Still set url_list for compatibility with downstream core logic
     wand.set(job, "url_list", urls)
+    
     return await core.universal_scrape(job, urls, **kwargs)
 
 async def generate_extractions_post_scrape(job, verbose=False):
