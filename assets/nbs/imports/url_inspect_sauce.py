@@ -5,6 +5,66 @@ from . import core_sauce as core
 import time
 import random
 import yaml
+import difflib
+from bs4 import BeautifulSoup
+from tools.scraper_tools import get_safe_path_component
+
+
+def calculate_js_gap(job: str):
+    """
+    Forensic analysis of the JavaScript Gap. 
+    Reads the source and rendered HTML from the cache and computes the structural delta.
+    """
+    target_url = wand.get(job, 'target_url')
+    if not target_url:
+        return {"error": "No target URL found in state."}
+
+    # Resolve the exact cache path
+    domain, url_path_slug = get_safe_path_component(target_url)
+    base_dir = wand.paths.browser_cache / domain / url_path_slug
+    
+    source_path = base_dir / "source.html"
+    rendered_path = base_dir / "rendered_dom.html"
+
+    if not source_path.exists() or not rendered_path.exists():
+        return {"error": "Missing source or rendered HTML in cache. Did the scrape succeed?"}
+
+    try:
+        # Read the raw files
+        with open(source_path, 'r', encoding='utf-8') as f:
+            source_html = f.read()
+        with open(rendered_path, 'r', encoding='utf-8') as f:
+            rendered_html = f.read()
+
+        # Perform a basic structural count using BeautifulSoup
+        source_soup = BeautifulSoup(source_html, 'html.parser')
+        rendered_soup = BeautifulSoup(rendered_html, 'html.parser')
+
+        source_tags = len(source_soup.find_all(True))
+        rendered_tags = len(rendered_soup.find_all(True))
+        
+        # Calculate the raw byte difference
+        source_size = len(source_html.encode('utf-8'))
+        rendered_size = len(rendered_html.encode('utf-8'))
+
+        # Prepare the summary payload
+        gap_analysis = {
+            "source_tag_count": source_tags,
+            "rendered_tag_count": rendered_tags,
+            "tag_delta": rendered_tags - source_tags,
+            "source_bytes": source_size,
+            "rendered_bytes": rendered_size,
+            "byte_delta": rendered_size - source_size,
+            "is_js_heavy": (rendered_tags - source_tags) > (source_tags * 0.5) # Arbitrary threshold for "heavy" injection
+        }
+        
+        # Store the finding on the Tape
+        wand.set(job, 'js_gap_analysis', gap_analysis)
+        
+        return gap_analysis
+
+    except Exception as e:
+        return {"error": f"Failed to compute diff: {str(e)}"}
 
 
 async def scrape(job, **kwargs):
