@@ -166,9 +166,10 @@ async def ai_audit_em(job: str, seo_df: pd.DataFrame, debug: bool = False, limit
     print(f"🧠 Auditing {len(seo_df)} pages... ({len(processed_urls)} already cached)")
 
     # --- 3. Get Prompt & Configure AI ---
-    user_prompt_instructions = _get_prompt_from_notebook("URLinspector.ipynb")
+    user_prompt_instructions = wand.get(job, 'user_prompt_instructions')
+    
     if not user_prompt_instructions:
-        print("❌ Error: Prompt not found in 'prompt-input' cell of URLinspector.ipynb.")
+        print("❌ Error: Instructions not found in state. Did you run the prompt definition cell?")
         return seo_df # Return original df
         
     system_prompt_wrapper = f'''
