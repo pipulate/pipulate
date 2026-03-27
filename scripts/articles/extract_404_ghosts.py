@@ -89,8 +89,12 @@ def main():
             # Drop Nginx regex, spaces, and trailing semicolons
             if line.startswith('~^') or ' ' in line or ';' in line:
                 continue
+                
+            # ENFORCE TRAILING SLASH: Only pass URLs ending in '/' to the AI
+            if not line.endswith('/'):
+                continue
+                
             print(line)
-
 
 if __name__ == "__main__":
     main()
