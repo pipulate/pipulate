@@ -21,8 +21,8 @@ AI_PHOOEY_CHOP = """\
 # ! python scripts/articles/lsa.py -t 1
 # scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]
 # pyproject.toml  # [677 tokens | 2,299 bytes]
-foo_files.py  # [10,245 tokens | 33,406 bytes]
-prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+# foo_files.py  # [10,245 tokens | 33,406 bytes]
+# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 
 # AD HOC PROMPT FU INCLUSIONS HERE
 
@@ -31,7 +31,7 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # Notebooks/Onboarding.ipynb  # [5,167 tokens | 17,293 bytes]
 # Notebooks/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
 
-# scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
+scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
 # scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # scripts/articles/common.py  # [881 tokens | 3,571 bytes]
 # /home/mike/repos/trimnoir/_redirects.map  # [156,992 tokens | 496,337 bytes]
@@ -87,55 +87,6 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # flake.nix  # [7,711 tokens | 32,991 bytes]
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
 
-# The last article
-# /home/mike/repos/trimnoir/_posts/2026-03-12-architecting-ai-workflows-deterministic-editing-computational-autonomy.md  # [Idx: 942 | Order: 2 | Tokens: 26,833 | Bytes: 114,125]
-
-# assets/nbs/Advanced_Notebooks/FAQuilizer.ipynb  # [2,516 tokens | 7,593 bytes]
-# assets/nbs/Advanced_Notebooks/URLinspector.ipynb  # [2,405 tokens | 7,284 bytes]
-# assets/nbs/Advanced_Notebooks/VIDeditor.ipynb  # [569 tokens | 1,670 bytes]
-# assets/nbs/Advanced_Notebooks/URLinspector.ipynb  # [2,405 tokens | 7,284 bytes]
-# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-# assets/nbs/imports/faq_writer_sauce.py  # [6,042 tokens | 26,760 bytes]
-# assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
-# assets/nbs/imports/videditor_sauce.py  # [937 tokens | 4,098 bytes]
-# assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
-# 
-# tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
-
-# assets/nbs/Advanced_Notebooks/GAPalyzer.ipynb  # [9,193 tokens | 31,140 bytes]
-# assets/nbs/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
-
-# Notebooks/Advanced_Notebooks/GAPalyzer.ipynb  # [9,193 tokens | 31,140 bytes]
-# Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
-
-# /home/mike/repos/trimnoir/_posts/2026-03-09-wet-coding-fearless-refactoring-python-tokenizer.md  # [182,723 tokens | 726,616 bytes]
-
-# .gitignore  # [573 tokens | 2,089 bytes]
-# flake.nix  # [7,721 tokens | 32,979 bytes]
-# 
-# imports/__init__.py  # [0 tokens | 0 bytes]
-#   
-# /home/mike/repos/pipulate/assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-# /home/mike/repos/pipulate/assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
-# imports/__init__.py  # [0 tokens | 0 bytes]
-# imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
-# 
-# pipulate/__init__.py  # [509 tokens | 2,135 bytes]
-# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-# tools/mcp_tools.py  # [36,628 tokens | 186,793 bytes]
-# imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
-# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
-# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
-
-# __init__.py  # [357 tokens | 1,565 bytes]
-# release.py  # [9,879 tokens | 44,440 bytes]
-# pyproject.toml  # [677 tokens | 2,299 bytes]
-# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-
 # # HOW TO FIND MARKDOWN ACCEPTERS
 # remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
 # remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
@@ -170,19 +121,19 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # The foundational NPvg framework and state management.
 
 # CHAPTER 0: ONBOARDING
-!https://pipulate.com/
-/home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
-flake.nix  # [7,721 tokens | 32,979 bytes]
-pyproject.toml  # [677 tokens | 2,299 bytes]
-assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
-apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
-assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+# !https://pipulate.com/
+# /home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
+# flake.nix  # [7,721 tokens | 32,979 bytes]
+# pyproject.toml  # [677 tokens | 2,299 bytes]
+# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
+# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
  
 # CHAPTER 1: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
 # /home/mike/repos/Pipulate.com/index.md  # [2,361 tokens | 10,579 bytes]
@@ -211,19 +162,19 @@ assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 
 # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
-__init__.py  # [357 tokens | 1,565 bytes]
-imports/__init__.py  # [0 tokens | 0 bytes]
-imports/ai_dictdb.py  # [1,733 tokens | 8,158 bytes]
-imports/database_safety_wrapper.py  # [1,744 tokens | 8,254 bytes]
-imports/durable_backup_system.py  # [5,117 tokens | 25,413 bytes]
-imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
-imports/stream_orchestrator.py  # [1,163 tokens | 5,841 bytes]
-imports/mcp_orchestrator.py  # [772 tokens | 3,332 bytes]
-imports/append_only_conversation.py  # [4,345 tokens | 22,449 bytes]
-imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
-apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
-assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+# __init__.py  # [357 tokens | 1,565 bytes]
+# imports/__init__.py  # [0 tokens | 0 bytes]
+# imports/ai_dictdb.py  # [1,733 tokens | 8,158 bytes]
+# imports/database_safety_wrapper.py  # [1,744 tokens | 8,254 bytes]
+# imports/durable_backup_system.py  # [5,117 tokens | 25,413 bytes]
+# imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
+# imports/stream_orchestrator.py  # [1,163 tokens | 5,841 bytes]
+# imports/mcp_orchestrator.py  # [772 tokens | 3,332 bytes]
+# imports/append_only_conversation.py  # [4,345 tokens | 22,449 bytes]
+# imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
+# apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
+# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
 # ============================================================================
 # III. THE ANATOMY (UX, Tools & Apps)
@@ -287,7 +238,7 @@ assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 # apps/120_link_graph.py  # [54,349 tokens | 272,468 bytes]
 
 # CHAPTER 13: THE GAPALYZER SUITE (~240KB)
-# Notebooks/Advanced_Notebooks/GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
+# Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
 # Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 
 # ============================================================================
@@ -495,6 +446,8 @@ remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
 # assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
 # assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [9,228 tokens | 31,278 bytes]
 # assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
+# assets/nbs/imports/gap_analyzer_sauce.py  # [26,335 tokens | 116,961 bytes]
+# assets/nbs/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
 # assets/prompts/book_holographic.json  # [923 tokens | 3,726 bytes]
 # assets/prompts/llms_header.md  # [1,110 tokens | 5,129 bytes]
@@ -517,6 +470,7 @@ remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
+# release.py  # [9,879 tokens | 44,440 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
 # scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
