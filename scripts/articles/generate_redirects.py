@@ -110,13 +110,29 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
             if '?' in old_url or old_url.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.ico', '.txt', '.xml')):
                 print(f"⚠️ Dropping asset/parameter URL: {old_url[:30]}...")
                 continue
-                
+
             # THE BOUNCER: Strict Trailing Slash Enforcer
             # Drops .php, .html, and ambiguous non-slashed directory paths.
             if not old_url.endswith('/'):
                 print(f"🗡️ Dropping non-directory URL (No trailing slash): {old_url}")
                 continue
                 
+            # --- THE HEALER: Fix new_url before saving to ledger ---
+            # Ensures the destination has a slash (unless it's an explicit file)
+            # so the CSV is permanently healed.
+            if not new_url.endswith('/'):
+                parts = new_url.split('/')
+                last_part = parts[-1] if parts else ""
+                
+                if '.' not in last_part:
+                    new_url += '/'
+                else:
+                    if new_url.lower().endswith(('.txt', '.php', '.html', '.xml')):
+                        pass  # It's a valid file extension, leave it alone
+                    else:
+                        new_url += '/'  # Ambiguous, add a slash to be safe
+            # -------------------------------------------------------
+
             # Deterministic sanitization
             safe_old_url = urllib.parse.quote(old_url, safe='/%')
 
