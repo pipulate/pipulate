@@ -13,6 +13,8 @@ import ipywidgets as widgets
 from IPython.display import display
 from loguru import logger
 from pipulate import wand  # Use wand!
+import imports
+from dotenv import dotenv_values
 import llm
 
 
@@ -311,3 +313,41 @@ def ensure_cloud_credentials(cloud_model_id):
         wand.speak("Cloud credentials verified in your environment.")
         print(f"✅ Secure connection ready for {cloud_model_id}.")
         wand.imperio()
+
+# Add this function to the bottom of assets/nbs/imports/onboard_sauce.py
+
+def audit_environment():
+    """
+    Provides a safe, transparent readout of the local Python environment
+    and securely masks the contents of the .env vault.
+    """
+    
+    print("=== 🌍 YOUR LOCAL REALITY ===")
+    print(f"🐍 Python Executable: {sys.executable}")
+    print(f"📁 Working Directory: {os.getcwd()}")
+    
+    print("\n=== 🧬 THE NAMESPACE FUSION ===")
+    print("Paths mapped to your 'imports' module:")
+    for p in imports.__path__:
+        print(f"  - {p}")
+        
+    try:
+        loop = asyncio.get_running_loop()
+        print(f"\n⚡ Event Loop: Active ({type(loop).__name__})")
+    except RuntimeError:
+        print("\n⚡ Event Loop: None detected.")
+
+    print("\n=== 🛡️ THE VAULT (.env) ===")
+    env_path = Path.cwd() / '.env'
+    if env_path.exists():
+        secrets = dotenv_values(env_path)
+        if secrets:
+            print("Your secrets are encrypted and safe. Here is what we see:")
+            for key, val in secrets.items():
+                # Mask the value, showing only the first 4 chars for visual confirmation
+                masked = f"{val[:4]}••••••••••••••••" if val and len(val) > 4 else "••••••••••••••••"
+                print(f"  🔑 {key}: {masked}")
+        else:
+            print("  Your vault exists but is currently empty.")
+    else:
+        print("  No .env file found yet. (The Gatekeeper will create one when needed!)")
