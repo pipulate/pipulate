@@ -111,6 +111,12 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
                 print(f"⚠️ Dropping asset/parameter URL: {old_url[:30]}...")
                 continue
                 
+            # THE BOUNCER: Strict Trailing Slash Enforcer
+            # Drops .php, .html, and ambiguous non-slashed directory paths.
+            if not old_url.endswith('/'):
+                print(f"🗡️ Dropping non-directory URL (No trailing slash): {old_url}")
+                continue
+                
             # Deterministic sanitization
             safe_old_url = urllib.parse.quote(old_url, safe='/%')
 
