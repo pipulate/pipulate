@@ -21,7 +21,7 @@ AI_PHOOEY_CHOP = """\
 # ! python scripts/articles/lsa.py -t 1
 # scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]
 # pyproject.toml  # [677 tokens | 2,299 bytes]
-# foo_files.py  # [10,245 tokens | 33,406 bytes]
+foo_files.py  # [10,245 tokens | 33,406 bytes]
 # prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 
 # AD HOC PROMPT FU INCLUSIONS HERE
@@ -31,8 +31,11 @@ AI_PHOOEY_CHOP = """\
 # Notebooks/Onboarding.ipynb  # [5,167 tokens | 17,293 bytes]
 # Notebooks/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
 
+# /home/mike/repos/trimnoir/_raw_map.csv  # [153,997 tokens | 541,002 bytes]
+# /home/mike/repos/trimnoir/_redirects.map  # [183,913 tokens | 581,910 bytes]
 scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
-# scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
+scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
+
 # scripts/articles/common.py  # [881 tokens | 3,571 bytes]
 # /home/mike/repos/trimnoir/_redirects.map  # [156,992 tokens | 496,337 bytes]
 
