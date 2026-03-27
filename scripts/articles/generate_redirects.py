@@ -163,10 +163,6 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
             safe_old_url = urllib.parse.quote(old_url, safe='/%')
             if not safe_old_url.startswith('/'): safe_old_url = '/' + safe_old_url
             if not new_url.startswith('/'): new_url = '/' + new_url
-            
-            # --- THE CHISEL-STRIKE: Trailing Slash Enforcer ---
-            if not new_url.endswith('/'): new_url += '/'
-            # --------------------------------------------------
 
             # THE REGEX FORGER
             outfile.write(f"    ~^{safe_old_url}/?$ {new_url};\n")
