@@ -228,3 +228,86 @@ def explain_optics_artifacts(target_url):
     
     response = wand.prompt(prompt)
     display(Markdown(f"### 👁️ Optics Education\n\n{response}"))
+
+
+def ensure_cloud_credentials(cloud_model_id):
+    """
+    The Gatekeeper. Checks for required cloud API keys upfront to prevent 
+    mid-workflow lazy-loading crashes. Renders a secure widget if missing.
+    """
+    import os
+    import ipywidgets as widgets
+    from IPython.display import display, clear_output
+    from dotenv import load_dotenv, set_key
+
+    # Load existing environment variables
+    load_dotenv()
+    
+    if not cloud_model_id:
+        print("ℹ️ No cloud model selected or required.")
+        wand.imperio()
+        return
+
+    # Map the model string to the standard API Key variable
+    env_var_name = None
+    if 'claude' in cloud_model_id.lower() or 'anthropic' in cloud_model_id.lower():
+        env_var_name = 'ANTHROPIC_API_KEY'
+    elif 'gpt' in cloud_model_id.lower() or 'openai' in cloud_model_id.lower():
+        env_var_name = 'OPENAI_API_KEY'
+    elif 'gemini' in cloud_model_id.lower() or 'google' in cloud_model_id.lower():
+        env_var_name = 'GEMINI_API_KEY'
+        
+    if env_var_name and not os.getenv(env_var_name):
+        wand.speak(f"I need your API key for {cloud_model_id} to proceed.")
+        
+        # Build the secure password widget (hides the input)
+        key_input = widgets.Password(
+            value='',
+            placeholder='Paste your API Key here...',
+            description=f'🔑 {env_var_name}:',
+            style={'description_width': 'initial'},
+            disabled=False,
+            layout=widgets.Layout(width='80%')
+        )
+        
+        submit_btn = widgets.Button(
+            description="Save to Vault", 
+            button_style='success',
+            icon='lock'
+        )
+        out = widgets.Output()
+        
+        def on_submit(b):
+            with out:
+                clear_output()
+                if key_input.value.strip():
+                    # 1. Save permanently to .env
+                    env_path = Path('.env')
+                    env_path.touch(exist_ok=True)
+                    set_key(str(env_path), env_var_name, key_input.value.strip())
+                    
+                    # 2. Export to current runtime environment
+                    os.environ[env_var_name] = key_input.value.strip()
+                    
+                    # 3. Explicitly set it in Simon Willison's 'llm' tool keychain
+                    try:
+                        import llm
+                        key_alias = env_var_name.split('_')[0].lower()
+                        llm.set_key(key_alias, key_input.value.strip())
+                    except Exception as e:
+                        pass # Fail silently if the specific llm set_key implementation differs
+                        
+                    wand.speak("Key securely saved to the vault. The cloud is connected.")
+                    print(f"✅ {env_var_name} successfully encrypted in .env.")
+                    wand.imperio()
+                else:
+                    print("❌ Please enter a valid API key.")
+        
+        submit_btn.on_click(on_submit)
+        display(widgets.VBox([key_input, submit_btn, out]))
+        
+    else:
+        # Key is already present, keep the rhythm flowing
+        wand.speak("Cloud credentials verified in your environment.")
+        print(f"✅ Secure connection ready for {cloud_model_id}.")
+        wand.imperio()
