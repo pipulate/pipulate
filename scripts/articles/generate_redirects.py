@@ -7,6 +7,7 @@ import json
 import argparse
 from pathlib import Path
 import re
+import difflib
 import common
 
 def get_active_permalinks(navgraph_path):
@@ -136,25 +137,43 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
                 print(f"🗡️ Dropping non-directory URL (No trailing slash): {old_url}")
                 continue
 
-            # --- THE HEALER & VALIDATOR ---
-            # Fix both URLs before evaluating them
-            old_url = enforce_slash(old_url)
-            new_url = enforce_slash(new_url)
+            # --- THE HEALER & VALIDATOR (FUZZY SNAP) ---
+            
+            # 1. Aggressive cleaning: lower, unquote, strip hidden chars
+            clean_new = urllib.parse.unquote(new_url.lower().replace('\r', '').replace('\u200b', '').strip())
+            clean_new = enforce_slash(clean_new)
 
-            # Ensure the destination actually exists in our living graph
-            if new_url not in active_permalinks:
-                # FUZZY HEALER: Check if the core slug matches a known article
-                clean_new = new_url.strip('/')
-                new_slug = clean_new.split('/')[-1] if clean_new else ""
-                new_slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', new_slug)
+            # Create a lowercased map of active permalinks for resilient checking
+            lower_to_actual = {p.lower(): p for p in active_permalinks}
 
-                if new_slug in slug_map:
-                    corrected_url = slug_map[new_slug]
-                    print(f"🪄 Auto-corrected AI Dest: {new_url} -> {corrected_url}")
-                    new_url = corrected_url
-                else:
-                    print(f"👻 Dropping AI Hallucination (Dest not found): {new_url}")
-                    continue
+            # 2. Try Exact Match (Case-Insensitive)
+            if clean_new in lower_to_actual:
+                valid_mappings[old_url] = lower_to_actual[clean_new]
+                continue
+
+            # 3. Try Slug Match
+            new_slug = clean_new.strip('/').split('/')[-1] if clean_new.strip('/') else ""
+            new_slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', new_slug)
+            lower_slug_map = {k.lower(): v for k, v in slug_map.items()}
+            
+            if new_slug in lower_slug_map:
+                corrected_url = lower_slug_map[new_slug]
+                print(f"🪄 Slug-corrected: {new_url} -> {corrected_url}")
+                valid_mappings[old_url] = corrected_url
+                continue
+
+            # 4. The Ultimate Fuzzy Matcher (Nipping it in the bud)
+            # Find the closest matching actual permalink (minimum 70% similarity)
+            matches = difflib.get_close_matches(clean_new, lower_to_actual.keys(), n=1, cutoff=0.7)
+            if matches:
+                corrected_url = lower_to_actual[matches[0]]
+                print(f"🧲 Fuzzy-snapped: {new_url} -> {corrected_url}")
+                valid_mappings[old_url] = corrected_url
+                continue
+
+            # 5. Total Hallucination (Drop it)
+            print(f"👻 Dropping AI Hallucination (No match found): {new_url}")
+            continue
             # ------------------------------
                 
             # Add to dict. If old_url already exists, the newer AI mapping silently overrides it.
