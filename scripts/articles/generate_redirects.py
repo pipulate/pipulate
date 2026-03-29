@@ -196,7 +196,7 @@ def main():
     
     csv_input_path = repo_root / '_raw_map.csv'
     map_output_path = repo_root / '_redirects.map'
-    navgraph_path = repo_root / 'navgraph.json'
+    navgraph_path = Path('navgraph.json').resolve()
 
     build_nginx_map(csv_input_path, map_output_path, navgraph_path)
 
