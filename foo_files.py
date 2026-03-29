@@ -18,7 +18,8 @@
 # Search using this to jump to next un-commented line: \^\s*[^ \t#]
 AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
-# ! python scripts/articles/lsa.py -t 1
+scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
+! python scripts/articles/lsa.py -t 1
 # scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 # foo_files.py  # [10,245 tokens | 33,406 bytes]
@@ -273,21 +274,21 @@ AI_PHOOEY_CHOP = """\
 # # assets/nbs/imports/videditor_sauce.py  # [937 tokens | 4,098 bytes]
 
 # CHAPTER 15: JEKYLL PUBLISHING
-# /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
-# scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
-# scripts/articles/common.py  # [881 tokens | 3,571 bytes]
-# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-# /home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
-# /home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
-# /home/mike/repos/trimnoir/_layouts/home.html  # [265 tokens | 905 bytes]
-# /home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
-# scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
-# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-# scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
-# scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
-# scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
-# scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
-# scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
+/home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
+scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
+scripts/articles/common.py  # [881 tokens | 3,571 bytes]
+scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
+/home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
+/home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
+/home/mike/repos/trimnoir/_layouts/home.html  # [265 tokens | 905 bytes]
+/home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
+scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
+scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
+scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
+scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
+scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
+scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
+scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
 
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # assets/prompts/find404s.md  # [350 tokens | 1,624 bytes]
@@ -303,19 +304,19 @@ AI_PHOOEY_CHOP = """\
 # DMZ TV Studio, Telemetry DB, and NixOS IaC. 
 
 # CHAPTER 16: HONEYBOT IAC & SCRIPTS
-nixops.sh  # [227 tokens | 765 bytes]
-remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
-remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
-remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
-remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
-remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
-remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
-remotes/honeybot/scripts/bot_intel.json  # [513 tokens | 1,550 bytes]
-remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
-remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
-remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
-remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
-remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
+# nixops.sh  # [227 tokens | 765 bytes]
+# remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
+# remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
+# remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
+# remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
+# remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
+# remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
+# remotes/honeybot/scripts/bot_intel.json  # [513 tokens | 1,550 bytes]
+# remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
+# remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
+# remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
+# remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
+# remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
 
 # CHAPTER 17: TELEMETRY SENSORS & DASHBOARD PROBES
 # These are the structural SQL definitions the AI can read to understand the schema.
@@ -336,9 +337,9 @@ remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
 # remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
 # remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
 # remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
-remotes/honeybot/queries/intel_phantom_ui.sql  # [227 tokens | 856 bytes]
-remotes/honeybot/queries/intel_sovereign_bots.sql  # [148 tokens | 558 bytes]
-remotes/honeybot/queries/intel_404_decay_curve.sql  # [158 tokens | 558 bytes]
+# remotes/honeybot/queries/intel_phantom_ui.sql  # [227 tokens | 856 bytes]
+# remotes/honeybot/queries/intel_sovereign_bots.sql  # [148 tokens | 558 bytes]
+# remotes/honeybot/queries/intel_404_decay_curve.sql  # [158 tokens | 558 bytes]
 
 # --- LIVE EXECUTION CHISEL-STRIKES ---
 # Uncomment to pipe live production data directly into the AI's context.
@@ -359,10 +360,9 @@ remotes/honeybot/queries/intel_404_decay_curve.sql  # [158 tokens | 558 bytes]
 # ! echo "--- LLMS.TXT DISCOVERY ---" && cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- ALL-TIME POPULAR PATHS ---" && cat remotes/honeybot/queries/all_time_popular_paths.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- HUB CANDIDATES (404s & 301s) ---" && cat remotes/honeybot/queries/hub_candidates.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-! echo "--- PHANTOM UI TRACKER ---" && cat remotes/honeybot/queries/intel_phantom_ui.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-! echo "--- SOVEREIGN BOT MATRIX ---" && cat remotes/honeybot/queries/intel_sovereign_bots.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-! echo "--- 404 DECAY CURVE ---" && cat remotes/honeybot/queries/intel_404_decay_curve.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-
+# ! echo "--- PHANTOM UI TRACKER ---" && cat remotes/honeybot/queries/intel_phantom_ui.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- SOVEREIGN BOT MATRIX ---" && cat remotes/honeybot/queries/intel_sovereign_bots.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- 404 DECAY CURVE ---" && cat remotes/honeybot/queries/intel_404_decay_curve.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
  
 # ============================================================================
 # VII. UNIVERSAL DISTRIBUTION
