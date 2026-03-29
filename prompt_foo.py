@@ -1074,10 +1074,10 @@ def main():
                 path_slug = quote(parsed.path or '/', safe='').replace('/', '_')[:100]
 
                 scrape_params = {
-                    "url": target_url, "domain": domain, "url_path_slug": path_slug,
-                    "take_screenshot": False, "headless": False, "is_notebook_context": True, "verbose": False,
-                    "override_cache": True  # 💥 Bust the cached Cloudflare 403 page!
-                }
+                    "url": target_url, "domain": domain, "url_path_slug": path_slug,
+                    "take_screenshot": False, "headless": False, "is_notebook_context": True, "verbose": False,
+                    "override_cache": True  # 💥 Bust the cached Cloudflare 403 page!
+                }
                 
                 import asyncio
                 result = asyncio.run(selenium_automation(scrape_params))
