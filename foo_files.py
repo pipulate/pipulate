@@ -22,10 +22,14 @@ AI_PHOOEY_CHOP = """\
 # ! python scripts/articles/lsa.py -t 1
 # scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]
 # pyproject.toml  # [677 tokens | 2,299 bytes]
-# foo_files.py  # [10,245 tokens | 33,406 bytes]
+foo_files.py  # [10,245 tokens | 33,406 bytes]
 # prompt_foo.py  # [12,990 tokens | 59,609 bytes]
  
 # AD HOC PROMPT FU INCLUSIONS HERE
+
+# scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
+scripts/articles/navgraph.json  # [136,833 tokens | 592,242 bytes]
+# /home/mike/repos/trimnoir/graph.json  # [151,683 tokens | 418,188 bytes]
 
 # /home/mike/repos/trimnoir/_posts/2026-03-29-the-audacious-bot-ai-agents-must-show-up-on-modern-web.md  # [19,670 tokens | 80,681 bytes]
 
@@ -491,7 +495,6 @@ remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
 # scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
-# scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
 # scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
