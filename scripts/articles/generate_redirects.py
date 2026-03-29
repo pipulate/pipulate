@@ -31,6 +31,16 @@ def get_active_permalinks(navgraph_path):
     traverse(nav)
     return active
 
+def enforce_slash(url):
+    """Ensures directories have trailing slashes while leaving explicit files alone."""
+    if not url.endswith('/'):
+        last_part = url.split('/')[-1] if '/' in url else url
+        if '.' not in last_part:
+            return url + '/'
+        # If it has a dot but isn't a known file type, it's an ambiguous bot probe. Add slash.
+        elif not url.lower().endswith(('.txt', '.php', '.html', '.xml', '.md', '.json', '.ico', '.png', '.jpg', '.gif', '.css', '.js')):
+            return url + '/'
+    return url
 
 def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
     print(f"🛠️ Forging Nginx map from {csv_input_path.name}...")
@@ -116,30 +126,17 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
             if not old_url.endswith('/'):
                 print(f"🗡️ Dropping non-directory URL (No trailing slash): {old_url}")
                 continue
-                
-            # --- THE HEALER: Fix new_url before saving to ledger ---
-            # Ensures the destination has a slash (unless it's an explicit file)
-            # so the CSV is permanently healed.
-            if not new_url.endswith('/'):
-                parts = new_url.split('/')
-                last_part = parts[-1] if parts else ""
-                
-                if '.' not in last_part:
-                    new_url += '/'
-                else:
-                    if new_url.lower().endswith(('.txt', '.php', '.html', '.xml')):
-                        pass  # It's a valid file extension, leave it alone
-                    else:
-                        new_url += '/'  # Ambiguous, add a slash to be safe
-            # -------------------------------------------------------
 
-            # Deterministic sanitization
-            safe_old_url = urllib.parse.quote(old_url, safe='/%')
+            # --- THE HEALER & VALIDATOR ---
+            # Fix both URLs before evaluating them
+            old_url = enforce_slash(old_url)
+            new_url = enforce_slash(new_url)
 
-            # THE BOUNCER: Preserve Nginx default map_hash_bucket_size
-            if len(safe_old_url) > 120 or len(new_url) > 120:
-                print(f"⚠️ Dropping oversized URL (>{len(safe_old_url)} chars): {safe_old_url[:30]}...")
+            # Ensure the destination actually exists in our living graph
+            if new_url not in active_permalinks:
+                print(f"👻 Dropping AI Hallucination (Dest not found in navgraph): {new_url}")
                 continue
+            # ------------------------------
                 
             # Add to dict. If old_url already exists, the newer AI mapping silently overrides it.
             valid_mappings[old_url] = new_url
