@@ -25,8 +25,8 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 
 # AD HOC PROMPT FU INCLUSIONS HERE
-# https://www.datacamp.com/tutorial/guide-to-autoresearch
-# !https://www.datacamp.com/tutorial/guide-to-autoresearch
+https://www.datacamp.com/tutorial/guide-to-autoresearch
+!https://www.datacamp.com/tutorial/guide-to-autoresearch
 
 # assets/nbs/Onboarding.ipynb  # [3,807 tokens | 12,678 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
@@ -189,16 +189,16 @@ tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 # What the user sees and what the AI can touch.
 
 # CHAPTER 5: THE HANDS (AI TOOLS & AUTOMATION) (~350KB)
-# tools/__init__.py  # [464 tokens | 2,067 bytes]
-# tools/keychain_tools.py  # [1,376 tokens | 5,688 bytes]
-# tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
-# tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
-# tools/conversation_tools.py  # [491 tokens | 2,357 bytes]
-# tools/system_tools.py  # [707 tokens | 3,254 bytes]
-# tools/dom_tools.py  # [3,466 tokens | 15,120 bytes]
-# tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
-# tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
-# tools/mcp_tools.py  # [36,628 tokens | 186,793 bytes]
+tools/__init__.py  # [464 tokens | 2,067 bytes]
+tools/keychain_tools.py  # [1,376 tokens | 5,688 bytes]
+tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
+tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
+tools/conversation_tools.py  # [491 tokens | 2,357 bytes]
+tools/system_tools.py  # [707 tokens | 3,254 bytes]
+tools/dom_tools.py  # [3,466 tokens | 15,120 bytes]
+tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
+tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
+tools/mcp_tools.py  # [36,628 tokens | 186,793 bytes]
 
 # CHAPTER 6: THE SKIN (FRONTEND ASSETS & INIT) (~265KB)
 # assets/init.js  # [2,303 tokens | 12,158 bytes]
