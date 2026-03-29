@@ -18,13 +18,16 @@
 # Search using this to jump to next un-commented line: \^\s*[^ \t#]
 AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
-# ! python scripts/articles/lsa.py -t 1
-# scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]
-# pyproject.toml  # [677 tokens | 2,299 bytes]
-# foo_files.py  # [10,245 tokens | 33,406 bytes]
-# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+! python scripts/articles/lsa.py -t 1
+scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]
+pyproject.toml  # [677 tokens | 2,299 bytes]
+foo_files.py  # [10,245 tokens | 33,406 bytes]
+prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 
 # AD HOC PROMPT FU INCLUSIONS HERE
+
+# /home/mike/repos/trimnoir/_posts/2026-03-29-the-audacious-bot-ai-agents-must-show-up-on-modern-web.md  # [19,670 tokens | 80,681 bytes]
+
 # https://www.datacamp.com/tutorial/guide-to-autoresearch
 # !https://www.datacamp.com/tutorial/guide-to-autoresearch
 
@@ -315,7 +318,7 @@ remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
 remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
 
 # CHAPTER 17: TELEMETRY SENSORS & DASHBOARD PROBES
-# These are the structural SQL definitions the AI can read to understand the schema.
+These are the structural SQL definitions the AI can read to understand the schema.
 remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
 remotes/honeybot/queries/format_ratio.sql  # [79 tokens | 275 bytes]
 remotes/honeybot/queries/markdown_routing_metrics.sql  # [177 tokens | 659 bytes]
@@ -353,7 +356,7 @@ remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
 ! echo "--- LLMS.TXT DISCOVERY ---" && cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 ! echo "--- ALL-TIME POPULAR PATHS ---" && cat remotes/honeybot/queries/all_time_popular_paths.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 ! echo "--- HUB CANDIDATES (404s & 301s) ---" && cat remotes/honeybot/queries/hub_candidates.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-
+ 
 # ============================================================================
 # VII. UNIVERSAL DISTRIBUTION
 # ============================================================================
