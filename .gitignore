@@ -67,7 +67,7 @@ __pycache__/
 
 # User-facing notebooks generated on first run
 Notebooks/Client_Work/
-Notebooks/deliverables/
+Notebooks/Deliverables/
 Notebooks/_config.py
 Notebooks/Advanced_Notebooks/01_URLinspector.ipynb
 Notebooks/Advanced_Notebooks/02_FAQuilizer.ipynb
