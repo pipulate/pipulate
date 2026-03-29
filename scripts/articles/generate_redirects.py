@@ -6,30 +6,39 @@ import sys
 import json
 import argparse
 from pathlib import Path
+import re
 import common
 
 def get_active_permalinks(navgraph_path):
-    """Recursively extracts all active permalinks from the knowledge graph."""
+    """Recursively extracts active permalinks AND builds a slug fallback map."""
     active = set()
+    slug_map = {}
     if not navgraph_path.exists():
         print(f"⚠️ Warning: {navgraph_path} not found. Proceeding without collision check.")
-        return active
-        
+        return active, slug_map
+
     with open(navgraph_path, 'r', encoding='utf-8') as f:
         nav = json.load(f)
-        
+
     def traverse(node):
         if 'permalink' in node:
-            active.add(node['permalink'])
-            active.add(node['permalink'].rstrip('/'))
+            p = node['permalink']
+            active.add(p)
+            active.add(p.rstrip('/'))
+
+            # Build fuzzy slug map for auto-correction
+            clean_p = p.strip('/')
+            if clean_p:
+                raw_slug = clean_p.split('/')[-1]
+                # Strip date prefix if it exists (YYYY-MM-DD-)
+                slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', raw_slug)
+                slug_map[slug] = p
+
         for child in node.get('children_hubs', []): traverse(child)
-        for child in node.get('children_articles', []):
-            if 'permalink' in child:
-                active.add(child['permalink'])
-                active.add(child['permalink'].rstrip('/'))
-                
+        for child in node.get('children_articles', []): traverse(child)
+
     traverse(nav)
-    return active
+    return active, slug_map
 
 def enforce_slash(url):
     """Ensures directories have trailing slashes while leaving explicit files alone."""
@@ -50,7 +59,7 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
         return
 
     # 1. Establish the Absolute Truth
-    active_permalinks = get_active_permalinks(navgraph_path)
+    active_permalinks, slug_map = get_active_permalinks(navgraph_path)
     
     # 1.5 Protect Explicit System Paths (DO NOT REMAP THESE)
     protected_system_paths = [
@@ -134,8 +143,18 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
 
             # Ensure the destination actually exists in our living graph
             if new_url not in active_permalinks:
-                print(f"👻 Dropping AI Hallucination (Dest not found in navgraph): {new_url}")
-                continue
+                # FUZZY HEALER: Check if the core slug matches a known article
+                clean_new = new_url.strip('/')
+                new_slug = clean_new.split('/')[-1] if clean_new else ""
+                new_slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', new_slug)
+
+                if new_slug in slug_map:
+                    corrected_url = slug_map[new_slug]
+                    print(f"🪄 Auto-corrected AI Dest: {new_url} -> {corrected_url}")
+                    new_url = corrected_url
+                else:
+                    print(f"👻 Dropping AI Hallucination (Dest not found): {new_url}")
+                    continue
             # ------------------------------
                 
             # Add to dict. If old_url already exists, the newer AI mapping silently overrides it.
