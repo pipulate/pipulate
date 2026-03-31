@@ -108,6 +108,18 @@ scripts/articles/navgraph.json  # [136,833 tokens | 592,242 bytes]
 # ! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
+# My Personal NixOS System
+/home/mike/repos/nixos/ai-acceleration.nix
+/home/mike/repos/nixos/ai.py
+/home/mike/repos/nixos/autognome.py
+/home/mike/repos/nixos/configuration.nix
+/home/mike/repos/nixos/flatnotes.nix
+/home/mike/repos/nixos/hardware-configuration.nix
+/home/mike/repos/nixos/init.lua
+/home/mike/repos/nixos/openclaw.nix
+/home/mike/repos/nixos/packages.nix
+/home/mike/repos/nixos/services.nix
+
 # ============================================================================
 # I. THE SCRATCHPAD (Active Context & Transient Probes)
 # ============================================================================
@@ -291,7 +303,7 @@ scripts/articles/navgraph.json  # [136,833 tokens | 592,242 bytes]
 # scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
 # scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
 # scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
-scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
+# scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
 # scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
 
 # THE 404 AFFAIR (Topological Healer Blueprint)
