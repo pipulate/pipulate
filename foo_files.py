@@ -329,9 +329,9 @@ https://mikelev.in/futureproof/future-proof-tech-skills/index.md
 # DMZ TV Studio, Telemetry DB, and NixOS IaC. 
 
 # CHAPTER 16: HONEYBOT IAC & SCRIPTS
-# nixops.sh  # [227 tokens | 765 bytes]
+nixops.sh  # [227 tokens | 765 bytes]
 remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
-# remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
+remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
 # remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
 # remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
 # remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]

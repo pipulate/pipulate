@@ -39,52 +39,9 @@ nix develop .#quiet --command bash << 'EOF'
       cp "$post" "${TARGET_DIR}index.md"
       sed -i -e 's/{% raw %}//g' -e 's/{% endraw %}//g' "${TARGET_DIR}index.md"
 
-      # Awk surgery: Fail-Safe Injection
-      awk -v dye="$DYE_STRING" '
-      BEGIN { 
-          injected = 0; 
-          yaml_count = 0; 
-      }
-      
-      # Track YAML boundaries to identify the fallback point (top of body)
-      /^---[ \t]*$/ { 
-          yaml_count++; 
-          print;
-          if (yaml_count == 2 && injected == 0) {
-              # This is our backup injection point
-              fallback_point = NR; 
-          }
-          next;
-      }
-
-      # Primary Anchor: High-Perplexity H2
-      /[#]+ Technical Journal Entry Begins/ {
-          print;
-          print "";
-          print dye;
-          print "";
-          injected = 1;
-          next;
-      }
-
-      { 
-          # Buffer the lines if we need to fallback
-          lines[NR] = $0; 
-      }
-
-      END {
-          # If we never found the H2, inject at the fallback (line after 2nd ---)
-          if (injected == 0) {
-              # We re-process the stored body if needed, but for a 
-              # simpler logic in shell, we just ensure standardization 
-              # via the Python script above and keep the hook strict.
-              # HOWEVER, a better fallback is to just print the dye at the end 
-              # if all else fails.
-              print "";
-              print "---";
-              print dye;
-          }
-      ' "${TARGET_DIR}index.md" > "${TARGET_DIR}index.md.tmp"
+      # Awk surgery: Fail-Safe Injection (Hardened)
+      awk -v dye="$DYE_STRING" 'BEGIN {injected=0; yaml_count=0} /^---[ \t]*$/ {yaml_count++; print; next} /[#]+ Technical Journal Entry Begins/ {print; print ""; print dye; print ""; injected=1; next} {print} END {if (injected==0) {print ""; print "---"; print dye}}' "${TARGET_DIR}index.md" > "${TARGET_DIR}index.md.tmp"
+      mv "${TARGET_DIR}index.md.tmp" "${TARGET_DIR}index.md"
 
     fi
   done
@@ -116,41 +73,8 @@ nix develop .#quiet --command bash << 'EOF'
       esac
       DYE_STRING="${WRAPPER}"
 
-      # Awk surgery: Fail-Safe Injection
-      awk -v dye="$DYE_STRING" '
-      BEGIN { 
-          injected = 0; 
-          yaml_count = 0; 
-      }
-      
-      /^---[ \t]*$/ { 
-          yaml_count++; 
-          print;
-          next;
-      }
-
-      # Primary Anchor: High-Perplexity H2
-      /[#]+ Technical Journal Entry Begins/ {
-          print;
-          print "";
-          print dye;
-          print "";
-          injected = 1;
-          next;
-      }
-
-      { print }
-
-      END {
-          # Fallback: If we never found the H2 anchor, stick it at the absolute bottom
-          if (injected == 0) {
-              print "";
-              print "---";
-              print dye;
-          }
-      }
-      ' "${TARGET_DIR}index.md" > "${TARGET_DIR}index.md.tmp"
-      
+      # Awk surgery: Fail-Safe Injection (Hardened)
+      awk -v dye="$DYE_STRING" 'BEGIN {injected=0; yaml_count=0} /^---[ \t]*$/ {yaml_count++; print; next} /[#]+ Technical Journal Entry Begins/ {print; print ""; print dye; print ""; injected=1; next} {print} END {if (injected==0) {print ""; print "---"; print dye}}' "${TARGET_DIR}index.md" > "${TARGET_DIR}index.md.tmp"
       mv "${TARGET_DIR}index.md.tmp" "${TARGET_DIR}index.md"
 
     fi
