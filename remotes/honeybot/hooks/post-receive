@@ -58,7 +58,7 @@ nix develop .#quiet --command bash << 'EOF'
       }
 
       # Primary Anchor: High-Perplexity H2
-      /^## Technical Journal Entry Begins/ {
+      /[#]+ Technical Journal Entry Begins/ {
           print;
           print "";
           print dye;
@@ -130,7 +130,7 @@ nix develop .#quiet --command bash << 'EOF'
       }
 
       # Primary Anchor: High-Perplexity H2
-      /^## Technical Journal Entry Begins/ {
+      /[#]+ Technical Journal Entry Begins/ {
           print;
           print "";
           print dye;

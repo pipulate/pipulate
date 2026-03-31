@@ -26,7 +26,7 @@ AI_PHOOEY_CHOP = """\
 # prompt_foo.py  # [12,990 tokens | 59,609 bytes]
  
 # AD HOC PROMPT FU INCLUSIONS HERE
-/home/mike/repos/pipulate/scripts/standardize_anchors.py  # [347 tokens | 1,316 bytes]
+https://mikelev.in/futureproof/future-proof-tech-skills/index.md
 
 # /home/mike/repos/trimnoir/_posts/2025-03-16-hot-prompt-injection-ai-workflow.md  # [Idx: 161 | Order: 3 | Tokens: 10,637 | Bytes: 50,676]
 # /home/mike/repos/trimnoir/_posts/2026-03-30-pipulates-wet-procedural-memory-meets-ai-skill-md-standard.md  # [Idx: 991 | Order: 3 | Tokens: 13,725 | Bytes: 62,078]
@@ -35,10 +35,6 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/trimnoir/_posts/2025-12-25-sovereign-self-hosting-twin-engine-deployment.md  # [Idx: 759 | Order: 1 | Tokens: 25,352 | Bytes: 99,725]
 # /home/mike/repos/trimnoir/_posts/2026-03-13-semantic-camouflage-embedding-provenance-ai-training-data.md  # [Idx: 947 | Order: 2 | Tokens: 19,853 | Bytes: 78,755]
 # /home/mike/repos/trimnoir/_posts/2025-05-15-compounding-craft-future-proof-tech-skills-ai.md  # [Idx: 280 | Order: 2 | Tokens: 4,958 | Bytes: 23,123]
-
-scripts/articles/articleizer.py  # [2,795 tokens | 12,814 bytes]
-scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-remotes/honeybot/hooks/post-receive  # [1,543 tokens | 5,457 bytes]
 
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
 # scripts/articles/navgraph.json  # [136,833 tokens | 592,242 bytes]
@@ -304,20 +300,20 @@ remotes/honeybot/hooks/post-receive  # [1,543 tokens | 5,457 bytes]
 
 # CHAPTER 15: JEKYLL PUBLISHING
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
-# scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
-# scripts/articles/common.py  # [881 tokens | 3,571 bytes]
-# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-# /home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
-# /home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
-# /home/mike/repos/trimnoir/_layouts/home.html  # [265 tokens | 905 bytes]
-# /home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
-# scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
-# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-# scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
-# scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
-# scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
-# scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
-# scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
+scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
+scripts/articles/common.py  # [881 tokens | 3,571 bytes]
+scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
+/home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
+/home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
+/home/mike/repos/trimnoir/_layouts/home.html  # [265 tokens | 905 bytes]
+/home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
+scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
+scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
+scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
+scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
+scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
+scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
+scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
 
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # assets/prompts/find404s.md  # [350 tokens | 1,624 bytes]
