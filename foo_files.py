@@ -26,6 +26,7 @@ AI_PHOOEY_CHOP = """\
 # prompt_foo.py  # [12,990 tokens | 59,609 bytes]
  
 # AD HOC PROMPT FU INCLUSIONS HERE
+/home/mike/repos/pipulate/scripts/standardize_anchors.py  # [347 tokens | 1,316 bytes]
 
 # /home/mike/repos/trimnoir/_posts/2025-03-16-hot-prompt-injection-ai-workflow.md  # [Idx: 161 | Order: 3 | Tokens: 10,637 | Bytes: 50,676]
 # /home/mike/repos/trimnoir/_posts/2026-03-30-pipulates-wet-procedural-memory-meets-ai-skill-md-standard.md  # [Idx: 991 | Order: 3 | Tokens: 13,725 | Bytes: 62,078]
