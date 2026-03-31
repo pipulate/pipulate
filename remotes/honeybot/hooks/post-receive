@@ -39,9 +39,8 @@ nix develop .#quiet --command bash << 'EOF'
       cp "$post" "${TARGET_DIR}index.md"
       sed -i -e 's/{% raw %}//g' -e 's/{% endraw %}//g' "${TARGET_DIR}index.md"
 
-      # Awk surgery: Fail-Safe Injection (Hardened)
-      awk -v dye="$DYE_STRING" 'BEGIN {injected=0; yaml_count=0} /^---[ \t]*$/ {yaml_count++; print; next} /[#]+ Technical Journal Entry Begins/ {print; print ""; print dye; print ""; injected=1; next} {print} END {if (injected==0) {print ""; print "---"; print dye}}' "${TARGET_DIR}index.md" > "${TARGET_DIR}index.md.tmp"
-      mv "${TARGET_DIR}index.md.tmp" "${TARGET_DIR}index.md"
+      # INJECT TRACER DYE (The Python Scalpel)
+      python3 /home/mike/www/mikelev.in/scripts/dye_injector.py "${TARGET_DIR}index.md" "$DYE_STRING"
 
     fi
   done
@@ -73,9 +72,8 @@ nix develop .#quiet --command bash << 'EOF'
       esac
       DYE_STRING="${WRAPPER}"
 
-      # Awk surgery: Fail-Safe Injection (Hardened)
-      awk -v dye="$DYE_STRING" 'BEGIN {injected=0; yaml_count=0} /^---[ \t]*$/ {yaml_count++; print; next} /[#]+ Technical Journal Entry Begins/ {print; print ""; print dye; print ""; injected=1; next} {print} END {if (injected==0) {print ""; print "---"; print dye}}' "${TARGET_DIR}index.md" > "${TARGET_DIR}index.md.tmp"
-      mv "${TARGET_DIR}index.md.tmp" "${TARGET_DIR}index.md"
+      # INJECT TRACER DYE (The Python Scalpel)
+      python3 /home/mike/www/mikelev.in/scripts/dye_injector.py "${TARGET_DIR}index.md" "$DYE_STRING"
 
     fi
   done
