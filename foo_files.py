@@ -22,13 +22,25 @@ AI_PHOOEY_CHOP = """\
 # ! python scripts/articles/lsa.py -t 1
 # scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]
 # pyproject.toml  # [677 tokens | 2,299 bytes]
-foo_files.py  # [10,245 tokens | 33,406 bytes]
+# foo_files.py  # [10,245 tokens | 33,406 bytes]
 # prompt_foo.py  # [12,990 tokens | 59,609 bytes]
  
 # AD HOC PROMPT FU INCLUSIONS HERE
 
+# /home/mike/repos/trimnoir/_posts/2025-03-16-hot-prompt-injection-ai-workflow.md  # [Idx: 161 | Order: 3 | Tokens: 10,637 | Bytes: 50,676]
+# /home/mike/repos/trimnoir/_posts/2026-03-30-pipulates-wet-procedural-memory-meets-ai-skill-md-standard.md  # [Idx: 991 | Order: 3 | Tokens: 13,725 | Bytes: 62,078]
+# /home/mike/repos/trimnoir/_posts/2025-06-27-feynman-safeguard-ascii-docs.md  # [Idx: 327 | Order: 1 | Tokens: 6,610 | Bytes: 31,856]
+# /home/mike/repos/trimnoir/2025-10-15-automated-markdown-formatting-regex-debugging-ai.md
+# /home/mike/repos/trimnoir/_posts/2025-12-25-sovereign-self-hosting-twin-engine-deployment.md  # [Idx: 759 | Order: 1 | Tokens: 25,352 | Bytes: 99,725]
+# /home/mike/repos/trimnoir/_posts/2026-03-13-semantic-camouflage-embedding-provenance-ai-training-data.md  # [Idx: 947 | Order: 2 | Tokens: 19,853 | Bytes: 78,755]
+# /home/mike/repos/trimnoir/_posts/2025-05-15-compounding-craft-future-proof-tech-skills-ai.md  # [Idx: 280 | Order: 2 | Tokens: 4,958 | Bytes: 23,123]
+
+scripts/articles/articleizer.py  # [2,795 tokens | 12,814 bytes]
+scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
+remotes/honeybot/hooks/post-receive  # [1,543 tokens | 5,457 bytes]
+
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
-scripts/articles/navgraph.json  # [136,833 tokens | 592,242 bytes]
+# scripts/articles/navgraph.json  # [136,833 tokens | 592,242 bytes]
 # /home/mike/repos/trimnoir/graph.json  # [151,683 tokens | 418,188 bytes]
 
 # /home/mike/repos/trimnoir/_posts/2026-03-29-the-audacious-bot-ai-agents-must-show-up-on-modern-web.md  # [19,670 tokens | 80,681 bytes]
@@ -109,16 +121,16 @@ scripts/articles/navgraph.json  # [136,833 tokens | 592,242 bytes]
 # ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # My Personal NixOS System
-/home/mike/repos/nixos/ai-acceleration.nix
-/home/mike/repos/nixos/ai.py
-/home/mike/repos/nixos/autognome.py
-/home/mike/repos/nixos/configuration.nix
-/home/mike/repos/nixos/flatnotes.nix
-/home/mike/repos/nixos/hardware-configuration.nix
-/home/mike/repos/nixos/init.lua
-/home/mike/repos/nixos/openclaw.nix
-/home/mike/repos/nixos/packages.nix
-/home/mike/repos/nixos/services.nix
+# /home/mike/repos/nixos/ai-acceleration.nix  # [525 tokens | 2,069 bytes]
+# /home/mike/repos/nixos/ai.py  # [591 tokens | 2,814 bytes]
+# /home/mike/repos/nixos/autognome.py  # [7,210 tokens | 34,310 bytes]
+# /home/mike/repos/nixos/configuration.nix  # [2,734 tokens | 9,798 bytes]
+# /home/mike/repos/nixos/flatnotes.nix  # [760 tokens | 2,497 bytes]
+# /home/mike/repos/nixos/hardware-configuration.nix  # [404 tokens | 1,438 bytes]
+# /home/mike/repos/nixos/init.lua  # [4,288 tokens | 16,495 bytes]
+# /home/mike/repos/nixos/openclaw.nix  # [435 tokens | 1,573 bytes]
+# /home/mike/repos/nixos/packages.nix  # [772 tokens | 2,697 bytes]
+# /home/mike/repos/nixos/services.nix  # [1,407 tokens | 5,363 bytes]
 
 # ============================================================================
 # I. THE SCRATCHPAD (Active Context & Transient Probes)
