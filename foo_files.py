@@ -27,7 +27,7 @@ AI_PHOOEY_CHOP = """\
  
 # AD HOC PROMPT FU INCLUSIONS HERE
 https://mikelev.in/futureproof/future-proof-tech-skills/index.md
-remotes/honeybot/scripts/dye_injector.py  # [271 tokens | 1,070 bytes]
+remotes/honeybot/scripts/dye_injector_v2.py  # [542 tokens | 2,361 bytes]
 
 # /home/mike/repos/trimnoir/_posts/2025-03-16-hot-prompt-injection-ai-workflow.md  # [Idx: 161 | Order: 3 | Tokens: 10,637 | Bytes: 50,676]
 # /home/mike/repos/trimnoir/_posts/2026-03-30-pipulates-wet-procedural-memory-meets-ai-skill-md-standard.md  # [Idx: 991 | Order: 3 | Tokens: 13,725 | Bytes: 62,078]
@@ -514,6 +514,7 @@ remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
 # release.py  # [9,879 tokens | 44,440 bytes]
+# remotes/honeybot/scripts/dye_injector.py  # [271 tokens | 1,070 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
 # scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
