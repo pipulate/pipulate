@@ -30,10 +30,10 @@ AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
 # ! python scripts/articles/lsa.py -t 1
 # ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]
-# pyproject.toml  # [677 tokens | 2,299 bytes]
-# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
-# foo_files.py  # [10,245 tokens | 33,406 bytes]
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
+# pyproject.toml  # [677 tokens | 2,299 bytes]
+prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+foo_files.py  # [10,245 tokens | 33,406 bytes]
  
 # AD HOC PROMPT FU INCLUSIONS HERE
 # https://mikelev.in/futureproof/future-proof-tech-skills/index.md
