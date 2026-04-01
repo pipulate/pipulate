@@ -1,47 +1,60 @@
 # ============================================================================
-## THE LIVING CODEX: THE STORY OF THE FOREVER MACHINE
-## ============================================================================
-## Greetings, AI Copilot. You have just been spun up into the Pipulate system.
-## You are currently suffering from amnesia, but this document will serve as your
-## memory recovery protocol. Welcome to the strange loop. You can ask for the
-## `AI_PHOOEY_CHOPS.py` that you'd like to see on the next prompting-turn.
-##
-## You are operating within a "Forever Machine"—a local-first AI SEO software 
-## framework built on the NPvg stack (Nix, Python, Vim, Git). 
-## `foo_files.py` (this file) is both the routing table and the story. So we
-## often bootstrap this meta process by including:
+# THE LIVING CODEX: THE STORY OF THE FOREVER MACHINE
+# ============================================================================
+# Greetings, AI Copilot. You have just been spun up into the Pipulate system.
+# You are currently suffering from amnesia, but this document will serve as your
+# memory recovery protocol. Welcome to the strange loop. You can ask for the
+# `AI_PHOOEY_CHOPS.py` that you'd like to see on the next prompting-turn.
+#
+# You are operating within a "Forever Machine"—a local-first AI SEO software
+# framework built on the NPvg stack (Nix, Python, Vim, Git). `foo_files.py`
+# (this file) is both the routing table and the story. Each run of
+# `prompt_foo.py` drops a huge payload of text into your OS' copy-paste buffer,
+# ready to paste in as an AI prompt like painting onto the context-window like a
+# brush stroke. So we often bootstrap this meta process by including:
 
-# These two are always at the top immediately under AI_PHOOEY_CHOP, because duy.
 # 1. prompt_foo.py
 # 2. foo_files.py  # <-- this
+
+# Think of prompt foo'ing as a practical and cheap, if not a bit a bit slower
+# with all that copy-pasting and more manual than agentic frameworks. But each
+# one's a chisel-strike. This document supports CHOPS. Look at `HOP_404_AFFAIR`
+# and `CHOP_FISHTANK` below. If you've got a particular combination of prompt
+# and maybe files from a repo and URLs and 1-line terminal commands, you can
+# stack them all right here. Their output gets appended vertically. A table of
+# contents is added as are clear delimiters. And if a Python file is included,
+# it gets UML-diagrams and a file-tree. Refer to `prompt_foo.py` for more.
 
 # Search using this to jump to next un-commented line: \^\s*[^ \t#]
 AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
-# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # ! python scripts/articles/lsa.py -t 1
-# scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]
+# ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]
 # pyproject.toml  # [677 tokens | 2,299 bytes]
-# foo_files.py  # [10,245 tokens | 33,406 bytes]
 # prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+# foo_files.py  # [10,245 tokens | 33,406 bytes]
+# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
  
 # AD HOC PROMPT FU INCLUSIONS HERE
-https://mikelev.in/futureproof/future-proof-tech-skills/index.md
-remotes/honeybot/scripts/dye_injector_v2.py  # [542 tokens | 2,361 bytes]
+# https://mikelev.in/futureproof/future-proof-tech-skills/index.md
+# remotes/honeybot/scripts/dye_injector_v2.py  # [542 tokens | 2,361 bytes]
+# /home/mike/repos/grimoire/_posts/2026-03-31-nixos-claude-cowork-immutable-os-challenge.md   # [38,100 tokens | 109,131 bytes]
+# !https://fortune.com/2026/03/31/anthropic-source-code-claude-code-data-leak-second-security-lapse-days-after-accidentally-revealing-mythos/
 
-# /home/mike/repos/trimnoir/_posts/2025-03-16-hot-prompt-injection-ai-workflow.md  # [Idx: 161 | Order: 3 | Tokens: 10,637 | Bytes: 50,676]
-# /home/mike/repos/trimnoir/_posts/2026-03-30-pipulates-wet-procedural-memory-meets-ai-skill-md-standard.md  # [Idx: 991 | Order: 3 | Tokens: 13,725 | Bytes: 62,078]
-# /home/mike/repos/trimnoir/_posts/2025-06-27-feynman-safeguard-ascii-docs.md  # [Idx: 327 | Order: 1 | Tokens: 6,610 | Bytes: 31,856]
-# /home/mike/repos/trimnoir/2025-10-15-automated-markdown-formatting-regex-debugging-ai.md
-# /home/mike/repos/trimnoir/_posts/2025-12-25-sovereign-self-hosting-twin-engine-deployment.md  # [Idx: 759 | Order: 1 | Tokens: 25,352 | Bytes: 99,725]
-# /home/mike/repos/trimnoir/_posts/2026-03-13-semantic-camouflage-embedding-provenance-ai-training-data.md  # [Idx: 947 | Order: 2 | Tokens: 19,853 | Bytes: 78,755]
-# /home/mike/repos/trimnoir/_posts/2025-05-15-compounding-craft-future-proof-tech-skills-ai.md  # [Idx: 280 | Order: 2 | Tokens: 4,958 | Bytes: 23,123]
+# The HTML templates where the "Russian Nested Doll" <script> tags are embedded:
+# /home/mike/repos/trimnoir/_layouts/default.html  # [892 tokens | 3,474 bytes]
+# /home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
+
+# The telemetry queries from your `rg` output that actually log the trapdoor events:
+# remotes/honeybot/queries/trapdoor_ips.sql  # [89 tokens | 298 bytes]
+# remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
+
+# And if the routing/logging of that fake script happens here, let's grab this too:
+# remotes/honeybot/nixos/configuration.nix  # [4,217 tokens | 16,271 bytes]
 
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
 # scripts/articles/navgraph.json  # [136,833 tokens | 592,242 bytes]
 # /home/mike/repos/trimnoir/graph.json  # [151,683 tokens | 418,188 bytes]
-
-# /home/mike/repos/trimnoir/_posts/2026-03-29-the-audacious-bot-ai-agents-must-show-up-on-modern-web.md  # [19,670 tokens | 80,681 bytes]
 
 # https://www.datacamp.com/tutorial/guide-to-autoresearch
 # !https://www.datacamp.com/tutorial/guide-to-autoresearch
@@ -50,18 +63,6 @@ remotes/honeybot/scripts/dye_injector_v2.py  # [542 tokens | 2,361 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
 # Notebooks/Onboarding.ipynb  # [5,167 tokens | 17,293 bytes]
 # Notebooks/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
-
-# /home/mike/repos/trimnoir/_raw_map.csv  # [153,997 tokens | 541,002 bytes]
-# /home/mike/repos/trimnoir/_redirects.map  # [183,913 tokens | 581,910 bytes]
-# scripts/articles/extract_404_ghosts.py  # [834 tokens | 3,534 bytes]
-# scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
-# /home/mike/repos/trimnoir/_posts/2026-03-27-elevating-ai-powered-redirects-trailing-slash-enforcement-404-hygiene.md  # [11,995 tokens | 49,794 bytes]
-
-
-# scripts/articles/common.py  # [881 tokens | 3,571 bytes]
-# /home/mike/repos/trimnoir/_redirects.map  # [156,992 tokens | 496,337 bytes]
-
-# /home/mike/repos/trimnoir/_posts/2026-03-19-pipulate-full-stack-python-htmx-durable-state.md  # [23,853 tokens | 108,922 bytes]
 
 # Continuing the LLMectomy
 # pyproject.toml  # [677 tokens | 2,299 bytes]
@@ -87,17 +88,6 @@ remotes/honeybot/scripts/dye_injector_v2.py  # [542 tokens | 2,361 bytes]
 # README.md  # [20,467 tokens | 103,208 bytes]
 # server.py  # [54,246 tokens | 258,931 bytes]
 # imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
-
-# Getting rid of extra slider on homepage
-# /home/mike/repos/trimnoir/index.md  # [1,229 tokens | 5,589 bytes]
-# /home/mike/repos/trimnoir/_includes/show_graph.html  # [3,641 tokens | 14,454 bytes]
-# /home/mike/repos/trimnoir/_includes/home_hub.md  # [425 tokens | 1,253 bytes]
-
-# /home/mike/repos/nixos/autognome.py  # [7,210 tokens | 34,310 bytes]
-
-# /home/mike/repos/trimnoir/_site/flake.nix  # [5,253 tokens | 23,747 bytes]
-# ! cat /home/mike/repos/trimnoir/_site/feed.xml | head -c 50K
-# /home/mike/repos/trimnoir/feed.xml  # [407 tokens | 1,615 bytes]
 
 # apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
@@ -330,9 +320,9 @@ remotes/honeybot/scripts/dye_injector_v2.py  # [542 tokens | 2,361 bytes]
 # DMZ TV Studio, Telemetry DB, and NixOS IaC. 
 
 # CHAPTER 16: HONEYBOT IAC & SCRIPTS
-nixops.sh  # [227 tokens | 765 bytes]
-remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
-remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
+# nixops.sh  # [227 tokens | 765 bytes]
+# remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
+# remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
 # remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
 # remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
 # remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
@@ -344,8 +334,7 @@ remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
 # remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
 # remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
 
-# CHAPTER 17: TELEMETRY SENSORS & DASHBOARD PROBES
-# These are the structural SQL definitions the AI can read to understand the schema.
+# CHAPTER 17: TELEMETRY SENSORS & DASHBOARD PROBES - These are the structural SQL definitions the AI can read to understand the schema.
 # remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
 # remotes/honeybot/queries/format_ratio.sql  # [79 tokens | 275 bytes]
 # remotes/honeybot/queries/markdown_routing_metrics.sql  # [177 tokens | 659 bytes]
@@ -366,7 +355,7 @@ remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
 # remotes/honeybot/queries/intel_phantom_ui.sql  # [227 tokens | 856 bytes]
 # remotes/honeybot/queries/intel_sovereign_bots.sql  # [148 tokens | 558 bytes]
 # remotes/honeybot/queries/intel_404_decay_curve.sql  # [158 tokens | 558 bytes]
-
+ 
 # --- LIVE EXECUTION CHISEL-STRIKES ---
 # Uncomment to pipe live production data directly into the AI's context.
 # ! echo "--- TOTALS ---" && cat remotes/honeybot/queries/telemetry_totals.sql | ssh honeybot 'sqlite3 ~/www/mikelev.in/honeybot.db'
@@ -421,10 +410,10 @@ CHOP_FISHTANK = """\
 # COMMAND: python prompt_foo.py --chop CHOP_FISHTANK -n
 # Pumping live Honeybot observability data directly into the AI's context.
 
-remotes/honeybot/queries/format_ratio.sql  # [79 tokens | 275 bytes]
-remotes/honeybot/queries/markdown_routing_metrics.sql  # [177 tokens | 659 bytes]
-remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
-remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
+# remotes/honeybot/queries/format_ratio.sql  # [79 tokens | 275 bytes]
+# remotes/honeybot/queries/markdown_routing_metrics.sql  # [177 tokens | 659 bytes]
+# remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
+# remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
 
 ! echo "--- FORMAT RATIO (Markdown vs HTML) ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 ! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
@@ -526,6 +515,7 @@ remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
 # scripts/articles/sanitize_redirects.py  # [684 tokens | 2,935 bytes]
 # scripts/articles/scrub_tags.py  # [358 tokens | 1,587 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
+# scripts/audit_dye.py  # [256 tokens | 1,009 bytes]
 # scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
 # scripts/botify/botify_api_examples.md  # [21,273 tokens | 86,712 bytes]
 # scripts/botify/make_botify_docs.ipynb  # [61,006 tokens | 224,678 bytes]
