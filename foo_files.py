@@ -28,10 +28,9 @@
 # Search using this to jump to next un-commented line: \^\s*[^ \t#]
 AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
-# ! python scripts/articles/lsa.py -t 1
+# pyproject.toml  # [677 tokens | 2,299 bytes]
 # ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
-# pyproject.toml  # [677 tokens | 2,299 bytes]
 prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
  
@@ -40,6 +39,10 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # remotes/honeybot/scripts/dye_injector_v2.py  # [542 tokens | 2,361 bytes]
 # /home/mike/repos/grimoire/_posts/2026-03-31-nixos-claude-cowork-immutable-os-challenge.md   # [38,100 tokens | 109,131 bytes]
 # !https://fortune.com/2026/03/31/anthropic-source-code-claude-code-data-leak-second-security-lapse-days-after-accidentally-revealing-mythos/
+/home/mike/repos/trimnoir/_posts/2026-04-01-forever-machine-blueprint-deterministic-ai-book-creation.md  # [32,081 tokens | 136,321 bytes]
+
+# https://raw.githubusercontent.com/pipulate/pipulate/refs/heads/main/remotes/honeybot/scripts/logs.py
+# https://raw.githubusercontent.com/pipulate/pipulate/refs/heads/main/remotes/honeybot/scripts/db.py
 
 # The HTML templates where the "Russian Nested Doll" <script> tags are embedded:
 # /home/mike/repos/trimnoir/_layouts/default.html  # [892 tokens | 3,474 bytes]
