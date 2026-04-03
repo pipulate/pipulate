@@ -33,11 +33,28 @@ AI_PHOOEY_CHOP = """\
 # AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 # # ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
-scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
-prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
+# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
-/home/mike/repos/trimnoir/_posts/2026-04-02-forging-forever-machine-ai-book-decanting.md  # [63,035 tokens | 264,275 bytes]
+/home/mike/repos/bookforge/10_context/pass_001.json  # [1,059 tokens | 3,877 bytes]
+/home/mike/repos/bookforge/10_context/pass_002.json  # [446 tokens | 1,714 bytes]
+/home/mike/repos/bookforge/10_context/pass_003.json  # [827 tokens | 3,105 bytes]
+/home/mike/repos/bookforge/10_context/pass_004.json  # [551 tokens | 2,442 bytes]
+/home/mike/repos/bookforge/10_context/pass_005.json  # [728 tokens | 3,001 bytes]
+/home/mike/repos/bookforge/10_context/pass_006.json  # [989 tokens | 3,458 bytes]
+/home/mike/repos/bookforge/10_context/pass_007.json  # [537 tokens | 2,100 bytes]
+/home/mike/repos/bookforge/10_context/pass_008.json  # [928 tokens | 3,443 bytes]
+/home/mike/repos/bookforge/10_context/pass_009.json  # [800 tokens | 2,934 bytes]
+/home/mike/repos/bookforge/10_context/pass_010.json  # [1,286 tokens | 4,693 bytes]
+/home/mike/repos/bookforge/10_context/pass_011.json  # [915 tokens | 3,482 bytes]
+/home/mike/repos/bookforge/10_context/pass_012.json  # [1,023 tokens | 3,826 bytes]
+
+# /home/mike/repos/bookforge/00_meta/pass_ledger.jsonl  # [4,096 tokens | 11,405 bytes]
+# /home/mike/repos/bookforge/00_meta/project.json  # [113 tokens | 422 bytes]
+# 
+# /home/mike/repos/trimnoir/_posts/2026-04-02-forging-forever-machine-ai-book-decanting.md  # [Idx: 998 | Order: 1 | Tokens: 63,035 | Bytes: 264,275]
+# /home/mike/repos/trimnoir/_posts/2026-04-03-automated-book-decanting-ai-editing-pipeline.md  # [Idx: 999 | Order: 1 | Tokens: 47,161 | Bytes: 190,009]
 
 # SHOWING HOW THE JAVASCRIPT TRAPDOOR WORKS
 # https://raw.githubusercontent.com/pipulate/pipulate/refs/heads/main/remotes/honeybot/scripts/logs.py
@@ -434,7 +451,7 @@ CHOP_FISHTANK = """\
 
 CHOP_BOOK_DISTILLER = """\
 # THE BOOKFORGE: CONTEXT DISTILLATION PASS
-# COMMAND: python prompt_foo.py -a [CHECK_LEDGER_FOR_SLICE] --chop CHOP_BOOK_DISTILLER --no-tree
+# COMMAND: python prompt_foo.py /home/mike/repos/bookforge/skills/context-distiller/prompt.md -a [CHECK_LEDGER_FOR_SLICE] --chop CHOP_BOOK_DISTILLER --no-tree
 
 # 1. Load the Distiller's Brain and Schema
 ! cat /home/mike/repos/bookforge/skills/context-distiller/SKILL.md
@@ -532,8 +549,10 @@ CHOP_BOOK_DISTILLER = """\
 # remotes/honeybot/scripts/dye_injector.py  # [271 tokens | 1,070 bytes]
 # remotes/honeybot/scripts/dye_injector_v2.py  # [542 tokens | 2,361 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
+# scripts/articles/build_book_passes.py  # [535 tokens | 2,210 bytes]
 # scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
+# scripts/articles/consolidate_chapter_data.py  # [554 tokens | 2,755 bytes]
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
 # scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
