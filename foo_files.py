@@ -26,6 +26,7 @@
 # it gets UML-diagrams and a file-tree. Refer to `prompt_foo.py` for more.
 
 # Search using this to jump to next un-commented line: \^\s*[^ \t#]
+
 AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
 # README.md  # [20,467 tokens | 103,208 bytes]
@@ -35,8 +36,71 @@ AI_PHOOEY_CHOP = """\
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
- 
-# AD HOC PROMPT FU INCLUSIONS HERE
+
+# # AD HOC PROMPT FU INCLUSIONS HERE
+# 
+# # PASS: SEED THE CANONICAL OUTLINE
+# # COMMAND: python prompt_foo.py -n
+# 
+# # 1. Load the Evolver's brain and constraints
+# ! cat ~/repos/bookforge/skills/outline-evolver/SKILL.md
+# ! cat ~/repos/bookforge/skills/outline-evolver/references/outline-schema.md
+# 
+# # 2. Provide the raw material (The Macro View)
+# # Executing lsa.py to give the Evolver a high-level map of the 1000 articles
+# ! python ~/repos/pipulate/scripts/articles/lsa.py -t 1
+# 
+# THE PROMPT:
+# You are the outline-evolver. Guided by your SKILL.md rules and the outline-schema.md, analyze the macro-map of articles provided by lsa.py. 
+# Your task is to generate the initial, seeded JSON outline. Do not write prose; output strictly the JSON structure required to organize this corpus into a book format.
+
+
+# # THE ORCHESTRATOR'S FIRST TURN (Absolute Path Correction)
+# # COMMAND: python prompt_foo.py -n
+# 
+# # 1. Provide the Orchestrator's brain
+# ! cat ~/repos/bookforge/skills/bookforge-orchestrator/SKILL.md
+# 
+# # 2. Provide the current reality of the workspace
+# ! cat ~/repos/bookforge/00_meta/project.json
+# ! eza --tree --level 2 --ignore-glob=".git|__pycache__|testrepo|packages" ~/repos/bookforge/
+# 
+# # THE PROMPT:
+# # You are the bookforge-orchestrator. Based on your SKILL.md rules and the current state of the workspace above, what is the exact next step? Do not execute it; provide the explicit command for me to execute as the Read/Write head.
+
+
+# # THE BOOKFORGE INITIALIZATION
+# # COMMAND: python prompt_foo.py -n
+# 
+# # THE ORCHESTRATOR'S FIRST TURN
+# # COMMAND: python prompt_foo.py -n
+# 
+# # 1. Provide the Orchestrator's brain
+# ! cat skills/bookforge-orchestrator/SKILL.md
+# 
+# # 2. Provide the current reality of the workspace
+# ! cat 00_meta/project.json
+# ! eza --tree --level 2 --ignore-glob=".git|__pycache__|testrepo|packages"
+
+# THE PROMPT:
+# You are the bookforge-orchestrator. Based on your SKILL.md rules and the current state of the workspace above, what is the exact next step? Do not execute it; provide the explicit command for me to execute as the Read/Write head.
+
+# # 1. Run the initializer script that came with the skills
+# ! python skills/bookforge-orchestrator/scripts/ensure_bookforge_layout.py --root .
+# 
+# # 2. Check the meta ledger to ensure we are ready
+# ! cat 00_meta/project.json
+# ! cat 00_meta/pass_ledger.jsonl
+# 
+# # 3. Verify the final structure (Safely limited)
+# ! eza --tree --level 2 --ignore-glob=".git|__pycache__|testrepo|packages"
+
+# Let's read the contracts.
+# ! cat ~/repos/bookforge/bookforge/README.md
+# ! cat ~/repos/bookforge/bookforge/skills/bookforge-orchestrator/SKILL.md
+# ! cat ~/repos/bookforge/bookforge/skills/context-distiller/SKILL.md
+# ! cat ~/repos/bookforge/bookforge/skills/outline-evolver/SKILL.md
+# ! cat ~/repos/bookforge/bookforge/skills/repo-handoff-checkpoint/SKILL.md
 
 # /home/mike/repos/nixos/scripts/backup-essential.py  # [2,116 tokens | 9,218 bytes]
 # /home/mike/repos/nixos/scripts/backup-force.py  # [796 tokens | 3,142 bytes]
@@ -110,7 +174,7 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # tools/__init__.py  # [464 tokens | 2,067 bytes]
 # tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
 # tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
- 
+
 # flake.nix  # [7,711 tokens | 32,991 bytes]
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
 
@@ -231,7 +295,7 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
 # tools/mcp_tools.py  # [36,628 tokens | 186,793 bytes]
-
+ 
 # CHAPTER 6: THE SKIN (FRONTEND ASSETS & INIT) (~265KB)
 # assets/init.js  # [2,303 tokens | 12,158 bytes]
 # assets/pipulate.js  # [4,889 tokens | 24,977 bytes]
