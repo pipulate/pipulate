@@ -497,6 +497,25 @@ CHOP_FISHTANK = """\
 ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 """
 
+CHOP_BOOK_DISTILLER = """\
+# THE BOOKFORGE: CONTEXT DISTILLATION PASS
+# COMMAND: python prompt_foo.py -a [-10:] --chop CHOP_BOOK_DISTILLER --no-tree
+# NOTE: Adjust the [-10:] slice argument on the command line to target different article batches.
+
+# 1. Load the Distiller's Brain and Schema
+! cat ~/repos/bookforge/skills/context-distiller/SKILL.md
+! cat ~/repos/bookforge/skills/context-distiller/assets/distillation-record.template.json
+
+# 2. Verify the Target Structure (The Spine)
+! cat ~/repos/bookforge/20_outline/outline.json
+
+# THE PROMPT:
+# You are the context-distiller. Analyze the full article content provided above. 
+# Extract the core technical concepts, historical context, and 'MikeLev.in' specific terminology (e.g., NPvg, Prompt Fu, Air-Gapped Actuator).
+# Map these concepts to the relevant chapters in the outline.json.
+# Output ONLY valid JSON matching the distillation-record.template.json schema. Do not write prose.
+"""
+
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
 # ============================================================================
