@@ -434,8 +434,7 @@ CHOP_FISHTANK = """\
 
 CHOP_BOOK_DISTILLER = """\
 # THE BOOKFORGE: CONTEXT DISTILLATION PASS
-# COMMAND: python prompt_foo.py -a [-10:] --chop CHOP_BOOK_DISTILLER --no-tree
-# NOTE: Adjust the [-10:] slice argument on the command line to target different article batches.
+# COMMAND: python prompt_foo.py -a [CHECK_LEDGER_FOR_SLICE] --chop CHOP_BOOK_DISTILLER --no-tree
 
 # 1. Load the Distiller's Brain and Schema
 ! cat /home/mike/repos/bookforge/skills/context-distiller/SKILL.md
@@ -444,11 +443,8 @@ CHOP_BOOK_DISTILLER = """\
 # 2. Verify the Target Structure (The Spine)
 ! cat /home/mike/repos/bookforge/20_outline/outline.json
 
-# THE PROMPT:
-# You are the context-distiller. Analyze the full article content provided above. 
-# Extract the core technical concepts, historical context, and 'MikeLev.in' specific terminology (e.g., NPvg, Prompt Fu, Air-Gapped Actuator).
-# Map these concepts to the relevant chapters in the outline.json.
-# Output ONLY valid JSON matching the distillation-record.template.json schema. Do not write prose.
+# 3. The Execution Directive
+! cat /home/mike/repos/bookforge/skills/context-distiller/prompt.md
 """
 
 # ============================================================================
