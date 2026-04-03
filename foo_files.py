@@ -33,22 +33,13 @@ AI_PHOOEY_CHOP = """\
 # AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 # # ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
-# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
+scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
-# /home/mike/repos/nixos/scripts/backup-essential.py  # [2,116 tokens | 9,218 bytes]
-# /home/mike/repos/nixos/scripts/backup-force.py  # [796 tokens | 3,142 bytes]
-# /home/mike/repos/nixos/scripts/backup-home.py  # [1,743 tokens | 7,335 bytes]
-# /home/mike/repos/nixos/scripts/backup-nix.sh  # [318 tokens | 1,099 bytes]
-# /home/mike/repos/nixos/scripts/backup-things.py  # [1,511 tokens | 6,264 bytes]
+/home/mike/repos/trimnoir/_posts/2026-04-02-forging-forever-machine-ai-book-decanting.md  # [63,035 tokens | 264,275 bytes]
 
-# https://mikelev.in/futureproof/future-proof-tech-skills/index.md
-# remotes/honeybot/scripts/dye_injector_v2.py  # [542 tokens | 2,361 bytes]
-# /home/mike/repos/grimoire/_posts/2026-03-31-nixos-claude-cowork-immutable-os-challenge.md   # [38,100 tokens | 109,131 bytes]
-# !https://fortune.com/2026/03/31/anthropic-source-code-claude-code-data-leak-second-security-lapse-days-after-accidentally-revealing-mythos/
-# /home/mike/repos/trimnoir/_posts/2026-04-01-forever-machine-blueprint-deterministic-ai-book-creation.md  # [32,081 tokens | 136,321 bytes]
-
+# SHOWING HOW THE JAVASCRIPT TRAPDOOR WORKS
 # https://raw.githubusercontent.com/pipulate/pipulate/refs/heads/main/remotes/honeybot/scripts/logs.py
 # https://raw.githubusercontent.com/pipulate/pipulate/refs/heads/main/remotes/honeybot/scripts/db.py
 
@@ -110,8 +101,8 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
 # tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 
-# flake.nix  # [7,711 tokens | 32,991 bytes]
-# /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
+flake.nix  # [7,711 tokens | 32,991 bytes]
+/home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
 
 # # HOW TO FIND MARKDOWN ACCEPTERS
 # remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
@@ -268,6 +259,15 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
+# scripts/workflow/splice_workflow_step.py  # [5,064 tokens | 22,110 bytes]
+# scripts/workflow/splice_workflow_step.py  # [5,064 tokens | 22,110 bytes]
+# scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
+# scripts/workflow/WORKFLOW_DEVELOPMENT_GUIDE.md  # [4,283 tokens | 20,359 bytes]
+# scripts/workflow/create_workflow.py  # [3,729 tokens | 16,615 bytes]
+# scripts/workflow/manage_class_attributes.py  # [2,678 tokens | 12,795 bytes]
+# scripts/workflow/update_template_config.py  # [1,671 tokens | 8,381 bytes]
+# scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
+
 # imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
 # apps/400_botify_trifecta.py  # [53,199 tokens | 276,285 bytes]
 
@@ -438,11 +438,11 @@ CHOP_BOOK_DISTILLER = """\
 # NOTE: Adjust the [-10:] slice argument on the command line to target different article batches.
 
 # 1. Load the Distiller's Brain and Schema
-! cat ~/repos/bookforge/skills/context-distiller/SKILL.md
-! cat ~/repos/bookforge/skills/context-distiller/assets/distillation-record.template.json
+! cat /home/mike/repos/bookforge/skills/context-distiller/SKILL.md
+! cat /home/mike/repos/bookforge/skills/context-distiller/assets/distillation-record.template.json
 
 # 2. Verify the Target Structure (The Spine)
-! cat ~/repos/bookforge/20_outline/outline.json
+! cat /home/mike/repos/bookforge/20_outline/outline.json
 
 # THE PROMPT:
 # You are the context-distiller. Analyze the full article content provided above. 
@@ -534,6 +534,7 @@ CHOP_BOOK_DISTILLER = """\
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
 # release.py  # [9,879 tokens | 44,440 bytes]
 # remotes/honeybot/scripts/dye_injector.py  # [271 tokens | 1,070 bytes]
+# remotes/honeybot/scripts/dye_injector_v2.py  # [542 tokens | 2,361 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
 # scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
@@ -566,10 +567,3 @@ CHOP_BOOK_DISTILLER = """\
 # scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
 # scripts/vulture_whitelist.py  # [948 tokens | 4,188 bytes]
-# scripts/workflow/WORKFLOW_DEVELOPMENT_GUIDE.md  # [4,283 tokens | 20,359 bytes]
-# scripts/workflow/create_workflow.py  # [3,729 tokens | 16,615 bytes]
-# scripts/workflow/manage_class_attributes.py  # [2,678 tokens | 12,795 bytes]
-# scripts/workflow/splice_workflow_step.py  # [5,064 tokens | 22,110 bytes]
-# scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
-# scripts/workflow/update_template_config.py  # [1,671 tokens | 8,381 bytes]
-# scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
