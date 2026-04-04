@@ -29,15 +29,18 @@
 
 AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
-README.md  # [20,467 tokens | 103,208 bytes]
-AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
-pyproject.toml  # [677 tokens | 2,299 bytes]
-# ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
-scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
-prompt_foo.py  # [12,990 tokens | 59,609 bytes]
-foo_files.py  # [10,245 tokens | 33,406 bytes]
+# README.md  # [20,467 tokens | 103,208 bytes]
+# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
+# pyproject.toml  # [677 tokens | 2,299 bytes]
+# # ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
+# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
+# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+# foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
+
+/home/mike/repos/bookforge/skills/context-distiller/prompt.md  # [102 tokens | 475 bytes]
+/home/mike/repos/bookforge/skills/context-distiller/SKILL.md  # [496 tokens | 2,336 bytes]
 
 # /home/mike/repos/trimnoir/_posts/2026-04-01-forever-machine-blueprint-deterministic-ai-book-creation.md  # [Idx: 997 | Order: 2 | Tokens: 32,081 | Bytes: 136,321]
 # /home/mike/repos/trimnoir/_posts/2026-04-02-forging-forever-machine-ai-book-decanting.md  # [Idx: 998 | Order: 1 | Tokens: 63,033 | Bytes: 264,266]
