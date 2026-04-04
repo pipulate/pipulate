@@ -518,11 +518,8 @@ CHOP_BOOK_REFINER = """\
 # 3. The High-Level Spine
 ! cat /home/mike/repos/bookforge/20_outline/outline.json
 
-# THE PROMPT:
-# You are the Master Refiner. Analyze the Telemetry and Integrity reports above.
-# Identify which chapters are reaching "Rotor Stall" (too much repetition) and which are "Starving" (too little data).
-# Suggest the exact 2-3 sentences I should add to the context-distiller's SKILL.md to optimize the NEXT five distillation passes. 
-# Also, suggest a one-sentence "Hook" for my current article detailing how the book is congealing.
+# 4. The Refinement Directive
+! cat /home/mike/repos/bookforge/skills/book-refiner/prompt.md
 """
 
 # ============================================================================
