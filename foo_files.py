@@ -33,25 +33,25 @@ AI_PHOOEY_CHOP = """\
 # AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 # ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
-# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
-# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
-# foo_files.py  # [10,245 tokens | 33,406 bytes]
+scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
+prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
 # /home/mike/repos/trimnoir/_posts/2026-04-01-forever-machine-blueprint-deterministic-ai-book-creation.md  # [Idx: 997 | Order: 2 | Tokens: 32,081 | Bytes: 136,321]
-/home/mike/repos/trimnoir/_posts/2026-04-02-forging-forever-machine-ai-book-decanting.md  # [Idx: 998 | Order: 1 | Tokens: 63,033 | Bytes: 264,266]
-/home/mike/repos/trimnoir/_posts/2026-04-03-automated-book-decanting-ai-editing-pipeline.md  # [Idx: 999 | Order: 1 | Tokens: 47,161 | Bytes: 190,009]
-/home/mike/repos/trimnoir/_posts/2026-04-04-conceptual-integrity-ai-content-distillation.md  # [Idx: 1000 | Order: 1 | Tokens: 66,574 | Bytes: 236,274]
-/home/mike/repos/trimnoir/_posts/2026-04-04-the-golden-spike-automating-1000-articles-npvg.md  # [Idx: 1001 | Order: 2 | Tokens: 45,833 | Bytes: 147,248]
+# /home/mike/repos/trimnoir/_posts/2026-04-02-forging-forever-machine-ai-book-decanting.md  # [Idx: 998 | Order: 1 | Tokens: 63,033 | Bytes: 264,266]
+# /home/mike/repos/trimnoir/_posts/2026-04-03-automated-book-decanting-ai-editing-pipeline.md  # [Idx: 999 | Order: 1 | Tokens: 47,161 | Bytes: 190,009]
+# /home/mike/repos/trimnoir/_posts/2026-04-04-conceptual-integrity-ai-content-distillation.md  # [Idx: 1000 | Order: 1 | Tokens: 66,574 | Bytes: 236,274]
+# /home/mike/repos/trimnoir/_posts/2026-04-04-the-golden-spike-automating-1000-articles-npvg.md  # [Idx: 1001 | Order: 2 | Tokens: 45,833 | Bytes: 147,248]
 
-/home/mike/repos/bookforge/skills/context-distiller/SKILL.md  # [496 tokens | 2,336 bytes]
-/home/mike/repos/bookforge/skills/context-distiller/prompt.md  # [102 tokens | 475 bytes]
-/home/mike/repos/bookforge/00_meta/project.json  # [117 tokens | 430 bytes]
+# /home/mike/repos/bookforge/skills/context-distiller/SKILL.md  # [496 tokens | 2,336 bytes]
+# /home/mike/repos/bookforge/skills/context-distiller/prompt.md  # [102 tokens | 475 bytes]
+# /home/mike/repos/bookforge/00_meta/project.json  # [117 tokens | 430 bytes]
 
-scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
-prompt_foo.py  # [12,990 tokens | 59,609 bytes]
-foo_files.py  # [10,245 tokens | 33,406 bytes]
+# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
+# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+# foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # /home/mike/repos/bookforge/10_context/pass_001.json  # [1,059 tokens | 3,877 bytes]
 # /home/mike/repos/bookforge/10_context/pass_002.json  # [446 tokens | 1,714 bytes]
