@@ -503,6 +503,28 @@ CHOP_BOOK_DISTILLER = """\
 ! cat /home/mike/repos/bookforge/skills/context-distiller/prompt.md
 """
 
+CHOP_BOOK_REFINER = """\
+# THE BOOKFORGE: SEMANTIC GOVERNANCE & REFINEMENT
+# COMMAND: python prompt_foo.py --chop CHOP_BOOK_REFINER --no-tree
+
+# 1. The Current Strategy
+! cat /home/mike/repos/bookforge/skills/context-distiller/SKILL.md
+! cat /home/mike/repos/bookforge/skills/context-distiller/prompt.md
+
+# 2. The Real-Time Telemetry
+! python /home/mike/repos/pipulate/scripts/articles/bookforge_dashboard.py
+! python /home/mike/repos/pipulate/scripts/articles/conceptual_integrity.py
+
+# 3. The High-Level Spine
+! cat /home/mike/repos/bookforge/20_outline/outline.json
+
+# THE PROMPT:
+# You are the Master Refiner. Analyze the Telemetry and Integrity reports above.
+# Identify which chapters are reaching "Rotor Stall" (too much repetition) and which are "Starving" (too little data).
+# Suggest the exact 2-3 sentences I should add to the context-distiller's SKILL.md to optimize the NEXT five distillation passes. 
+# Also, suggest a one-sentence "Hook" for my current article detailing how the book is congealing.
+"""
+
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
 # ============================================================================
