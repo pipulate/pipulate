@@ -29,9 +29,9 @@
 
 AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
-# README.md  # [20,467 tokens | 103,208 bytes]
-# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
-# pyproject.toml  # [677 tokens | 2,299 bytes]
+README.md  # [20,467 tokens | 103,208 bytes]
+AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
+pyproject.toml  # [677 tokens | 2,299 bytes]
 # ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
 scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 prompt_foo.py  # [12,990 tokens | 59,609 bytes]
@@ -92,8 +92,8 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # /home/mike/repos/bookforge/10_context/pass_037.json  # [1,122 tokens | 4,137 bytes]
 # /home/mike/repos/bookforge/10_context/pass_038.json  # [1,238 tokens | 4,741 bytes]
 
-scripts/articles/bookforge_dashboard.py  # [851 tokens | 3,484 bytes]
-scripts/articles/conceptual_integrity.py  # [550 tokens | 2,404 bytes]
+# scripts/articles/bookforge_dashboard.py  # [851 tokens | 3,484 bytes]
+# scripts/articles/conceptual_integrity.py  # [550 tokens | 2,404 bytes]
 
 # SHOWING HOW THE JAVASCRIPT TRAPDOOR WORKS
 # https://raw.githubusercontent.com/pipulate/pipulate/refs/heads/main/remotes/honeybot/scripts/logs.py
@@ -207,32 +207,32 @@ scripts/articles/conceptual_integrity.py  # [550 tokens | 2,404 bytes]
 
 # CHAPTER 0: ONBOARDING
 # !https://pipulate.com/
-# /home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
-# flake.nix  # [7,721 tokens | 32,979 bytes]
-# pyproject.toml  # [677 tokens | 2,299 bytes]
-# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
-# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-# apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
-# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+/home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
+flake.nix  # [7,721 tokens | 32,979 bytes]
+pyproject.toml  # [677 tokens | 2,299 bytes]
+assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
+apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
+assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
  
 # CHAPTER 1: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
-# /home/mike/repos/Pipulate.com/index.md  # [2,361 tokens | 10,579 bytes]
-# assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
-# flake.nix  # [7,721 tokens | 32,979 bytes]
-# pyproject.toml  # [677 tokens | 2,299 bytes]
-# .gitignore  # [573 tokens | 2,089 bytes]
-# config.py  # [4,098 tokens | 15,949 bytes]
-# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
-# README.md  # [20,467 tokens | 103,208 bytes]
-# cli.py  # [5,092 tokens | 22,615 bytes]
-# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+/home/mike/repos/Pipulate.com/index.md  # [2,361 tokens | 10,579 bytes]
+assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
+flake.nix  # [7,721 tokens | 32,979 bytes]
+pyproject.toml  # [677 tokens | 2,299 bytes]
+.gitignore  # [573 tokens | 2,089 bytes]
+config.py  # [4,098 tokens | 15,949 bytes]
+AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
+README.md  # [20,467 tokens | 103,208 bytes]
+cli.py  # [5,092 tokens | 22,615 bytes]
+apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH (~260KB)
 # config.py  # [4,098 tokens | 15,949 bytes] server.py  # [54,246 tokens | 258,931 bytes] requirements.in  # [573 tokens | 1,924 bytes] requirements.txt  # [7,010 tokens | 18,582 bytes]
@@ -505,7 +505,7 @@ CHOP_BOOK_DISTILLER = """\
 
 CHOP_BOOK_REFINER = """\
 # THE BOOKFORGE: SEMANTIC GOVERNANCE & REFINEMENT
-# COMMAND: python prompt_foo.py --chop CHOP_BOOK_REFINER --no-tree
+# COMMAND: python prompt_foo.py /home/mike/repos/bookforge/skills/book-refiner/prompt.md --chop CHOP_BOOK_REFINER --no-tree
 
 # 1. The Current Strategy
 ! cat /home/mike/repos/bookforge/skills/context-distiller/SKILL.md
@@ -518,8 +518,8 @@ CHOP_BOOK_REFINER = """\
 # 3. The High-Level Spine
 ! cat /home/mike/repos/bookforge/20_outline/outline.json
 
-# 4. The Refinement Directive
-! cat /home/mike/repos/bookforge/skills/book-refiner/prompt.md
+# 4. The Refinement Directive not needed. Provided in command for better prompt priority positioning.
+# ! cat /home/mike/repos/bookforge/skills/book-refiner/prompt.md
 """
 
 # ============================================================================
