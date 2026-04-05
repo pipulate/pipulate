@@ -371,7 +371,7 @@ def annotate_tree_with_tokens(tree_output: str, processed_files: List[Dict], rep
         annotated.append(line)
     return '\n'.join(annotated)
 
-def parse_file_list_from_config(chop_var: str = "AI_PHOOEY_CHOP") -> List[Tuple[str, str]]:
+def parse_file_list_from_config(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs: dict = None) -> List[Tuple[str, str]]:
     try:
         import foo_files
         files_raw = getattr(foo_files, chop_var)
@@ -379,6 +379,12 @@ def parse_file_list_from_config(chop_var: str = "AI_PHOOEY_CHOP") -> List[Tuple[
         logger.print(f"ERROR: foo_files.py not found or doesn't contain '{chop_var}'.")
         sys.exit(1)
     
+    # 💥 SAFE REPLACEMENT: Prevents crashing on bash/awk curly braces {}
+    if format_kwargs:
+        for key, val in format_kwargs.items():
+            placeholder = f"{{{key}}}"
+            files_raw = files_raw.replace(placeholder, str(val))
+            
     lines = files_raw.strip().splitlines()
     seen_files, parsed_files = set(), []
     for line in lines:
@@ -922,18 +928,19 @@ def update_paintbox_in_place():
         logger.print(f"Warning: Failed to update the Paintbox: {e}")
 
 
-def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP"):
+def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs: dict = None):
     """Reports references in foo_files.py that no longer exist on disk."""
     import foo_files
     raw_content = getattr(foo_files, chop_var, "")
     
+    # Inject dynamic arguments before parsing paths
+    if format_kwargs:
+        for key, val in format_kwargs.items():
+            raw_content = raw_content.replace(f"{{{key}}}", str(val))
+    
     # 1. Identify all potential file-like strings in the CHOP
-    # This looks for words ending in known extensions or containing slashes/dots
-    # potential_refs = set(re.findall(r'([\w\d\./\\-]+\.(?:py|md|nix|sh|ipynb|json|js|css|html|sql))', raw_content))
     extensions = '|'.join([ext.lstrip('.') for ext in STORY_EXTENSIONS])
-    # Use \b or ensure the match isn't immediately followed by more word characters
     potential_refs = set(re.findall(rf'([\w\d\./\\-]+\.(?:{extensions}))(?!\w)', raw_content))
-
     
     # 2. Get the reality of the disk
     repo_files = collect_repo_files(REPO_ROOT)
@@ -970,6 +977,10 @@ def main():
     parser.add_argument('--context-only', action='store_true', help='Generate a context-only prompt without file contents.')
     parser.add_argument('-n', '--no-tree', action='store_true', help='Suppress file tree and UML generation.')
     parser.add_argument('--chop', type=str, default='AI_PHOOEY_CHOP', help='Specify an alternative payload variable from foo_files.py')
+    
+    # 💥 NEW: Dynamic argument injection
+    parser.add_argument('--arg', action='append', help='Pass dynamic arguments to CHOP templates (format: key=value)')
+    
     parser.add_argument(
         '-l', '--list',
         nargs='?', const='[-5:]', default=None,
@@ -985,24 +996,32 @@ def main():
         action='store_true',
         help='Include matching Holographic Context JSONs for any articles listed/included.'
     )
-    # Add the unified arguments (we recreate it here to avoid dynamic import pathing nightmares with prompt_foo being at the root)
     parser.add_argument('-t', '--target', type=str, help="Target ID from targets.json (e.g., '1')")
     parser.add_argument('-k', '--key', type=str, help="API key alias from keys.json (ignored by prompt_foo, here for compatibility)")
     args = parser.parse_args()
 
-    # Handle Target Selection
+    # 💥 NEW: Parse --arg into a dictionary
+    format_kwargs = {}
+    if args.arg:
+        for a in args.arg:
+            if '=' in a:
+                k, v = a.split('=', 1)
+                format_kwargs[k.strip()] = v.strip()
+            else:
+                logger.print(f"Warning: Invalid argument format '{a}'. Expected key=value.")
+
+    # Handle Target Selection (unchanged)
     targets = load_targets()
-    active_target_config = None  # Capture the full config to pass to functions
+    active_target_config = None  
     if args.target:
         if args.target in targets:
             selected = targets[args.target]
             CONFIG["POSTS_DIRECTORY"] = selected["path"]
-            active_target_config = selected  # Capture for URL generation
+            active_target_config = selected  
             logger.print(f"🎯 Target set to: {selected['name']} ({selected['path']})")
         else:
             logger.print(f"❌ Invalid target key: {args.target}. Using default.")
     else:
-        # If no target specified, use the default target for URL generation
         if "1" in targets:
             active_target_config = targets["1"]
 
@@ -1010,7 +1029,7 @@ def main():
         check_dependencies()
         sys.exit(0)
 
-    # 1. Handle user prompt
+    # 1. Handle user prompt (unchanged)
     prompt_content = "Please review the provided context and assist with the codebase."
     if args.prompt:
         if os.path.exists(args.prompt):
@@ -1020,14 +1039,12 @@ def main():
     elif os.path.exists("prompt.md"):
         with open("prompt.md", 'r', encoding='utf-8') as f: prompt_content = f.read()
 
-    # 2. Process all specified files (UPDATE THESE TWO LINES):
+    # 2. Process all specified files (💥 UPDATED WITH KWARGS)
     annotate_foo_files_in_place(args.chop)
     update_paintbox_in_place()
-    check_topological_integrity(args.chop)
-    files_to_process = parse_file_list_from_config(args.chop)
+    check_topological_integrity(args.chop, format_kwargs)
+    files_to_process = parse_file_list_from_config(args.chop, format_kwargs)
     processed_files_data = []
-
-    logger.print("--- Processing Files ---")
 
     logger.print("--- Processing Files ---")
     for path, comment in files_to_process:

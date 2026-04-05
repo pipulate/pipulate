@@ -204,7 +204,7 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # /home/mike/repos/bookforge/10_context/pass_127.json  # [936 tokens | 3,786 bytes]
 # /home/mike/repos/bookforge/10_context/pass_128.json  # [619 tokens | 2,632 bytes]
 # 
-# scripts/articles/consolidate_chapter_data.py  # [554 tokens | 2,755 bytes]
+scripts/articles/consolidate_chapter_data.py  # [554 tokens | 2,755 bytes]
 
 # scripts/articles/bookforge_dashboard.py  # [851 tokens | 3,484 bytes]
 # scripts/articles/conceptual_integrity.py  # [550 tokens | 2,404 bytes]
@@ -619,10 +619,10 @@ CHOP_BOOK_DISTILLER = """\
 
 CHOP_BOOK_REFINER = """\
 # 1. THE COMMANDER
-/home/mike/repos/bookforge/skills/book-refiner/prompt.md
+/home/mike/repos/bookforge/skills/book-refiner/prompt.md  # [511 tokens | 2,201 bytes]
 
 # 2. THE SPINE
-/home/mike/repos/bookforge/20_outline/outline.json
+/home/mike/repos/bookforge/20_outline/outline.json  # [1,740 tokens | 7,346 bytes]
 
 # 3. THE SITREP
 ! python /home/mike/repos/pipulate/scripts/articles/bookforge_dashboard.py
