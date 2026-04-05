@@ -39,12 +39,50 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
+/home/mike/repos/bookforge/30_drafts/ch_01_blueprint.md  # [1,114 tokens | 4,729 bytes]
+/home/mike/repos/bookforge/30_drafts/ch_02_blueprint.md  # [1,038 tokens | 4,434 bytes]
+/home/mike/repos/bookforge/30_drafts/ch_03_blueprint.md  # [1,246 tokens | 5,400 bytes]
+/home/mike/repos/bookforge/30_drafts/ch_04_blueprint.md  # [963 tokens | 4,336 bytes]
+/home/mike/repos/bookforge/30_drafts/ch_05_blueprint.md  # [974 tokens | 4,243 bytes]
+/home/mike/repos/bookforge/30_drafts/ch_06_blueprint.md  # [1,226 tokens | 5,236 bytes]
+/home/mike/repos/bookforge/30_drafts/ch_07_blueprint.md  # [1,204 tokens | 5,035 bytes]
+/home/mike/repos/bookforge/30_drafts/ch_08_blueprint.md  # [899 tokens | 4,033 bytes]
+/home/mike/repos/bookforge/30_drafts/ch_09_blueprint.md  # [1,162 tokens | 5,060 bytes]
+/home/mike/repos/bookforge/30_drafts/ch_10_blueprint.md  # [1,108 tokens | 5,021 bytes]
+/home/mike/repos/bookforge/30_drafts/ch_11_blueprint.md  # [1,181 tokens | 5,228 bytes]
+/home/mike/repos/bookforge/30_drafts/ch_12_blueprint.md  # [1,091 tokens | 4,720 bytes]
+
+/home/mike/repos/bookforge/skills/repo-handoff-checkpoint/SKILL.md  # [385 tokens | 1,786 bytes]
+/home/mike/repos/bookforge/skills/repo-handoff-checkpoint/scripts/make_checkpoint.py  # [401 tokens | 1,862 bytes]
+/home/mike/repos/bookforge/skills/repo-handoff-checkpoint/agents/openai.yaml  # [13 tokens | 53 bytes]
+/home/mike/repos/bookforge/skills/repo-handoff-checkpoint/references/checkpoint-contract.md  # [127 tokens | 525 bytes]
+/home/mike/repos/bookforge/skills/repo-handoff-checkpoint/assets/checkpoint.template.json  # [52 tokens | 168 bytes]
+/home/mike/repos/bookforge/skills/outline-evolver/SKILL.md  # [418 tokens | 2,041 bytes]
+/home/mike/repos/bookforge/skills/outline-evolver/scripts/seed_outline.py  # [248 tokens | 1,061 bytes]
+/home/mike/repos/bookforge/skills/outline-evolver/agents/openai.yaml  # [11 tokens | 45 bytes]
+/home/mike/repos/bookforge/skills/outline-evolver/references/outline-schema.md  # [141 tokens | 481 bytes]
+/home/mike/repos/bookforge/skills/outline-evolver/assets/outline.template.json  # [96 tokens | 312 bytes]
+/home/mike/repos/bookforge/skills/book-refiner/prompt.md  # [511 tokens | 2,201 bytes]
+/home/mike/repos/bookforge/skills/bookforge-orchestrator/SKILL.md  # [570 tokens | 2,684 bytes]
+/home/mike/repos/bookforge/skills/bookforge-orchestrator/scripts/ensure_bookforge_layout.py  # [434 tokens | 1,804 bytes]
+/home/mike/repos/bookforge/skills/bookforge-orchestrator/agents/openai.yaml  # [13 tokens | 52 bytes]
+/home/mike/repos/bookforge/skills/bookforge-orchestrator/references/state-layout.md  # [236 tokens | 1,046 bytes]
+/home/mike/repos/bookforge/skills/bookforge-orchestrator/assets/project.template.json  # [114 tokens | 424 bytes]
+/home/mike/repos/bookforge/skills/context-distiller/SKILL.md  # [600 tokens | 2,816 bytes]
+/home/mike/repos/bookforge/skills/context-distiller/agents/openai.yaml  # [11 tokens | 47 bytes]
+/home/mike/repos/bookforge/skills/context-distiller/references/distillation-targets.md  # [172 tokens | 752 bytes]
+/home/mike/repos/bookforge/skills/context-distiller/assets/distillation-record.template.json  # [38 tokens | 121 bytes]
+/home/mike/repos/bookforge/skills/context-distiller/prompt.md  # [154 tokens | 699 bytes]
+
+# /home/mike/repos/trimnoir/_posts/2026-04-05-automated-book-forge-ai-content-control.md  # [23,522 tokens | 95,511 bytes]
+# /home/mike/repos/trimnoir/_posts/2026-04-04-strange-loop-forever-machine-governing-ai-distillation.md  # [Idx: 1002 | Order: 3 | Tokens: 24,597 | Bytes: 102,862]
+
 # # 1. THE COMMANDER: The Refinement Intent
 # /home/mike/repos/bookforge/skills/book-refiner/prompt.md  # [179 tokens | 831 bytes]
 # /home/mike/repos/bookforge/skills/outline-evolver/SKILL.md  # [418 tokens | 2,041 bytes]
 # 
 # # 2. THE SPINE: The Target Architecture
-# /home/mike/repos/bookforge/20_outline/outline.json  # [1,740 tokens | 7,346 bytes]
+/home/mike/repos/bookforge/20_outline/outline.json  # [1,740 tokens | 7,346 bytes]
 # 
 # # 3. THE SITREP: Telemetry from the 128 Passes
 # ! python /home/mike/repos/pipulate/scripts/articles/bookforge_dashboard.py
@@ -204,7 +242,7 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # /home/mike/repos/bookforge/10_context/pass_127.json  # [936 tokens | 3,786 bytes]
 # /home/mike/repos/bookforge/10_context/pass_128.json  # [619 tokens | 2,632 bytes]
 # 
-scripts/articles/consolidate_chapter_data.py  # [554 tokens | 2,755 bytes]
+# scripts/articles/consolidate_chapter_data.py  # [554 tokens | 2,755 bytes]
 
 # scripts/articles/bookforge_dashboard.py  # [851 tokens | 3,484 bytes]
 # scripts/articles/conceptual_integrity.py  # [550 tokens | 2,404 bytes]
@@ -271,7 +309,7 @@ scripts/articles/consolidate_chapter_data.py  # [554 tokens | 2,755 bytes]
 # tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
 # tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 
-# flake.nix  # [7,711 tokens | 32,991 bytes]
+flake.nix  # [7,711 tokens | 32,991 bytes]
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
 
 # # HOW TO FIND MARKDOWN ACCEPTERS
@@ -630,6 +668,17 @@ CHOP_BOOK_REFINER = """\
 
 # 4. THE MATERIAL (Dynamically Strained)
 ! python /home/mike/repos/pipulate/scripts/articles/consolidate_chapter_data.py {target_chapter}
+"""
+
+CHOP_CHAPTER_DRAFTER = """\
+# 1. THE COMMANDER: Drafting Instructions
+/home/mike/repos/bookforge/skills/chapter-drafter/prompt.md
+
+# 2. THE SPINE: Book Context
+/home/mike/repos/bookforge/20_outline/outline.json
+
+# 3. THE BLUEPRINT: The Explicit Chapter Architecture
+/home/mike/repos/bookforge/30_drafts/{target_chapter}_blueprint.md
 """
 
 # ============================================================================

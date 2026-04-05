@@ -15,34 +15,49 @@ def main(target_chapter):
         try:
             with open(json_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-                
-            anchors = data.get("source_anchors", [])
-            for anchor in anchors:
-                
-                # SCENARIO A: The AI followed the schema (Object/Dict)
-                if isinstance(anchor, dict):
-                    if anchor.get("chapter_id") == target_chapter:
-                        # Extract Concepts
-                        concepts = anchor.get("concepts", [])
-                        if isinstance(concepts, str): concepts = [concepts]
-                        elif "concept" in anchor: concepts = [str(anchor["concept"])]
-                        
-                        # Extract Sources
-                        sources = anchor.get("sources", [])
-                        if isinstance(sources, str): sources = [sources]
-                        elif "source_files" in anchor: sources = anchor.get("source_files", [])
-                        
-                        consolidated_concepts.update(concepts)
-                        consolidated_sources.update(sources)
-                
-                # SCENARIO B: The AI hallucinated a string list (e.g., pass_007)
-                elif isinstance(anchor, str):
-                    if anchor.startswith(target_chapter):
-                        parts = anchor.split(":", 1)
-                        if len(parts) > 1:
-                            concept_text = parts[1].strip()
-                            consolidated_concepts.add(concept_text)
-                            consolidated_sources.add(f"Extracted implicitly from {json_file.name}")
+            
+            # 💥 FIX: Normalize data to a list of items to handle AI schema drift (Dict vs List)
+            items = data if isinstance(data, list) else [data]
+            
+            for item in items:
+                if not isinstance(item, dict):
+                    continue
+                    
+                anchors = item.get("source_anchors", [])
+                for anchor in anchors:
+                    
+                    # SCENARIO A: The AI followed the schema (Object/Dict)
+                    if isinstance(anchor, dict):
+                        # Catch schema drift: 'chapter_id' vs 'chapter'
+                        ch_id = anchor.get("chapter_id") or anchor.get("chapter")
+                        if ch_id == target_chapter:
+                            # Extract Concepts (Catching schema drift)
+                            concepts = anchor.get("concepts", [])
+                            if isinstance(concepts, str): concepts = [concepts]
+                            elif "concept" in anchor: concepts = [str(anchor["concept"])]
+                            elif "concept_title" in anchor: concepts = [str(anchor["concept_title"])]
+                            elif "concept_anchors" in anchor: concepts = anchor["concept_anchors"]
+                            
+                            # Extract Sources (Catching schema drift)
+                            sources = anchor.get("sources", [])
+                            if isinstance(sources, str): sources = [sources]
+                            elif "source_files" in anchor: sources = anchor.get("source_files", [])
+                            elif "source" in anchor: 
+                                s = anchor["source"]
+                                sources = [s] if isinstance(s, str) else s
+                            elif "file_anchor" in anchor: sources = [anchor["file_anchor"]]
+                            
+                            consolidated_concepts.update(concepts)
+                            consolidated_sources.update(sources)
+                    
+                    # SCENARIO B: The AI hallucinated a string list (e.g., pass_007)
+                    elif isinstance(anchor, str):
+                        if anchor.startswith(target_chapter):
+                            parts = anchor.split(":", 1)
+                            if len(parts) > 1:
+                                concept_text = parts[1].strip()
+                                consolidated_concepts.add(concept_text)
+                                consolidated_sources.add(f"Extracted implicitly from {json_file.name}")
 
         except json.JSONDecodeError:
             print(f"⚠️  Warning: Could not parse {json_file.name}")
