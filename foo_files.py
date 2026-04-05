@@ -35,12 +35,31 @@ AI_PHOOEY_CHOP = """\
 # # ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # prompt_foo.py  # [12,990 tokens | 59,609 bytes]
-# foo_files.py  # [10,245 tokens | 33,406 bytes]
+foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-/home/mike/repos/bookforge/skills/context-distiller/prompt.md  # [102 tokens | 475 bytes]
-/home/mike/repos/bookforge/skills/context-distiller/SKILL.md  # [496 tokens | 2,336 bytes]
+# 1. THE COMMANDER: The Refinement Intent
+/home/mike/repos/bookforge/skills/book-refiner/prompt.md  # [179 tokens | 831 bytes]
+/home/mike/repos/bookforge/skills/outline-evolver/SKILL.md  # [418 tokens | 2,041 bytes]
+
+# 2. THE SPINE: The Target Architecture
+/home/mike/repos/bookforge/20_outline/outline.json  # [1,740 tokens | 7,346 bytes]
+
+# 3. THE SITREP: Telemetry from the 128 Passes
+! python /home/mike/repos/pipulate/scripts/articles/bookforge_dashboard.py
+! python /home/mike/repos/pipulate/scripts/articles/conceptual_integrity.py
+
+# 4. THE MATERIAL: Distillation Shards for Part 1 (The Crucible)
+# We feed the shards that mention Ch 1 and Ch 2 concepts
+/home/mike/repos/bookforge/10_context/pass_001.json  # [1,059 tokens | 3,877 bytes]
+/home/mike/repos/bookforge/10_context/pass_002.json  # [446 tokens | 1,714 bytes]
+/home/mike/repos/bookforge/10_context/pass_011.json  # [915 tokens | 3,482 bytes]
+/home/mike/repos/bookforge/10_context/pass_017.json  # [834 tokens | 3,424 bytes]
+/home/mike/repos/bookforge/10_context/pass_078.json  # [708 tokens | 2,823 bytes]
+
+# /home/mike/repos/bookforge/skills/context-distiller/prompt.md  # [102 tokens | 475 bytes]
+# /home/mike/repos/bookforge/skills/context-distiller/SKILL.md  # [496 tokens | 2,336 bytes]
 
 # /home/mike/repos/trimnoir/_posts/2026-04-01-forever-machine-blueprint-deterministic-ai-book-creation.md  # [Idx: 997 | Order: 2 | Tokens: 32,081 | Bytes: 136,321]
 # /home/mike/repos/trimnoir/_posts/2026-04-02-forging-forever-machine-ai-book-decanting.md  # [Idx: 998 | Order: 1 | Tokens: 63,033 | Bytes: 264,266]
@@ -128,11 +147,64 @@ AI_PHOOEY_CHOP = """\
 /home/mike/repos/bookforge/10_context/pass_070.json  # [609 tokens | 2,563 bytes]
 /home/mike/repos/bookforge/10_context/pass_071.json  # [706 tokens | 3,135 bytes]
 /home/mike/repos/bookforge/10_context/pass_072.json  # [492 tokens | 2,027 bytes]
+/home/mike/repos/bookforge/10_context/pass_073.json  # [655 tokens | 2,704 bytes]
 /home/mike/repos/bookforge/10_context/pass_074.json  # [826 tokens | 3,342 bytes]
 /home/mike/repos/bookforge/10_context/pass_075.json  # [536 tokens | 2,219 bytes]
 /home/mike/repos/bookforge/10_context/pass_076.json  # [836 tokens | 3,627 bytes]
 /home/mike/repos/bookforge/10_context/pass_077.json  # [1,240 tokens | 4,847 bytes]
 /home/mike/repos/bookforge/10_context/pass_078.json  # [708 tokens | 2,823 bytes]
+/home/mike/repos/bookforge/10_context/pass_079.json  # [579 tokens | 2,369 bytes]
+/home/mike/repos/bookforge/10_context/pass_080.json  # [736 tokens | 2,763 bytes]
+/home/mike/repos/bookforge/10_context/pass_081.json  # [729 tokens | 2,980 bytes]
+/home/mike/repos/bookforge/10_context/pass_082.json  # [727 tokens | 3,010 bytes]
+/home/mike/repos/bookforge/10_context/pass_083.json  # [513 tokens | 2,169 bytes]
+/home/mike/repos/bookforge/10_context/pass_084.json  # [754 tokens | 3,345 bytes]
+/home/mike/repos/bookforge/10_context/pass_085.json  # [825 tokens | 3,298 bytes]
+/home/mike/repos/bookforge/10_context/pass_086.json  # [573 tokens | 2,362 bytes]
+/home/mike/repos/bookforge/10_context/pass_087.json  # [562 tokens | 2,345 bytes]
+/home/mike/repos/bookforge/10_context/pass_088.json  # [857 tokens | 3,415 bytes]
+/home/mike/repos/bookforge/10_context/pass_089.json  # [732 tokens | 3,016 bytes]
+/home/mike/repos/bookforge/10_context/pass_090.json  # [944 tokens | 3,659 bytes]
+/home/mike/repos/bookforge/10_context/pass_091.json  # [1,034 tokens | 4,234 bytes]
+/home/mike/repos/bookforge/10_context/pass_092.json  # [804 tokens | 2,978 bytes]
+/home/mike/repos/bookforge/10_context/pass_093.json  # [660 tokens | 2,548 bytes]
+/home/mike/repos/bookforge/10_context/pass_094.json  # [592 tokens | 2,474 bytes]
+/home/mike/repos/bookforge/10_context/pass_095.json  # [854 tokens | 3,368 bytes]
+/home/mike/repos/bookforge/10_context/pass_096.json  # [489 tokens | 1,867 bytes]
+/home/mike/repos/bookforge/10_context/pass_097.json  # [754 tokens | 3,004 bytes]
+/home/mike/repos/bookforge/10_context/pass_098.json  # [633 tokens | 2,668 bytes]
+/home/mike/repos/bookforge/10_context/pass_099.json  # [486 tokens | 2,212 bytes]
+/home/mike/repos/bookforge/10_context/pass_100.json  # [485 tokens | 2,050 bytes]
+/home/mike/repos/bookforge/10_context/pass_101.json  # [619 tokens | 2,526 bytes]
+/home/mike/repos/bookforge/10_context/pass_102.json  # [570 tokens | 2,370 bytes]
+/home/mike/repos/bookforge/10_context/pass_103.json  # [699 tokens | 2,977 bytes]
+/home/mike/repos/bookforge/10_context/pass_104.json  # [714 tokens | 2,921 bytes]
+/home/mike/repos/bookforge/10_context/pass_105.json  # [648 tokens | 2,501 bytes]
+/home/mike/repos/bookforge/10_context/pass_106.json  # [876 tokens | 3,660 bytes]
+/home/mike/repos/bookforge/10_context/pass_107.json  # [1,157 tokens | 4,639 bytes]
+/home/mike/repos/bookforge/10_context/pass_108.json  # [551 tokens | 2,449 bytes]
+/home/mike/repos/bookforge/10_context/pass_109.json  # [709 tokens | 2,984 bytes]
+/home/mike/repos/bookforge/10_context/pass_110.json  # [470 tokens | 2,100 bytes]
+/home/mike/repos/bookforge/10_context/pass_111.json  # [726 tokens | 3,066 bytes]
+/home/mike/repos/bookforge/10_context/pass_112.json  # [651 tokens | 2,787 bytes]
+/home/mike/repos/bookforge/10_context/pass_113.json  # [439 tokens | 1,951 bytes]
+/home/mike/repos/bookforge/10_context/pass_114.json  # [730 tokens | 2,999 bytes]
+/home/mike/repos/bookforge/10_context/pass_115.json  # [797 tokens | 2,988 bytes]
+/home/mike/repos/bookforge/10_context/pass_116.json  # [797 tokens | 2,988 bytes]
+/home/mike/repos/bookforge/10_context/pass_117.json  # [851 tokens | 3,435 bytes]
+/home/mike/repos/bookforge/10_context/pass_118.json  # [881 tokens | 4,084 bytes]
+/home/mike/repos/bookforge/10_context/pass_119.json  # [657 tokens | 2,911 bytes]
+/home/mike/repos/bookforge/10_context/pass_120.json  # [280 tokens | 1,105 bytes]
+/home/mike/repos/bookforge/10_context/pass_121.json  # [523 tokens | 2,236 bytes]
+/home/mike/repos/bookforge/10_context/pass_122.json  # [676 tokens | 2,660 bytes]
+/home/mike/repos/bookforge/10_context/pass_123.json  # [604 tokens | 2,302 bytes]
+/home/mike/repos/bookforge/10_context/pass_124.json  # [821 tokens | 3,424 bytes]
+/home/mike/repos/bookforge/10_context/pass_125.json  # [810 tokens | 3,558 bytes]
+/home/mike/repos/bookforge/10_context/pass_126.json  # [452 tokens | 1,861 bytes]
+/home/mike/repos/bookforge/10_context/pass_127.json  # [936 tokens | 3,786 bytes]
+/home/mike/repos/bookforge/10_context/pass_128.json  # [619 tokens | 2,632 bytes]
+
+scripts/articles/consolidate_chapter_data.py  # [554 tokens | 2,755 bytes]
 
 # scripts/articles/bookforge_dashboard.py  # [851 tokens | 3,484 bytes]
 # scripts/articles/conceptual_integrity.py  # [550 tokens | 2,404 bytes]
@@ -546,22 +618,18 @@ CHOP_BOOK_DISTILLER = """\
 """
 
 CHOP_BOOK_REFINER = """\
-# THE BOOKFORGE: SEMANTIC GOVERNANCE & REFINEMENT
-# COMMAND: python prompt_foo.py /home/mike/repos/bookforge/skills/book-refiner/prompt.md --chop CHOP_BOOK_REFINER --no-tree
+# 1. THE COMMANDER
+/home/mike/repos/bookforge/skills/book-refiner/prompt.md
 
-# 1. The Current Strategy
-! cat /home/mike/repos/bookforge/skills/context-distiller/SKILL.md
-! cat /home/mike/repos/bookforge/skills/context-distiller/prompt.md
+# 2. THE SPINE
+/home/mike/repos/bookforge/20_outline/outline.json
 
-# 2. The Real-Time Telemetry
+# 3. THE SITREP
 ! python /home/mike/repos/pipulate/scripts/articles/bookforge_dashboard.py
 ! python /home/mike/repos/pipulate/scripts/articles/conceptual_integrity.py
 
-# 3. The High-Level Spine
-! cat /home/mike/repos/bookforge/20_outline/outline.json
-
-# 4. The Refinement Directive not needed. Provided in command for better prompt priority positioning.
-# ! cat /home/mike/repos/bookforge/skills/book-refiner/prompt.md
+# 4. THE MATERIAL (Dynamically Strained)
+! python /home/mike/repos/pipulate/scripts/articles/consolidate_chapter_data.py {target_chapter}
 """
 
 # ============================================================================
@@ -652,7 +720,6 @@ CHOP_BOOK_REFINER = """\
 # scripts/articles/build_book_passes.py  # [535 tokens | 2,210 bytes]
 # scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
-# scripts/articles/consolidate_chapter_data.py  # [554 tokens | 2,755 bytes]
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
 # scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
