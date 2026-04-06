@@ -28,7 +28,7 @@
 # Search using this to jump to next un-commented line: \^\s*[^ \t#]
 
 AI_PHOOEY_CHOP = """\
-# USEFUL INITIALIZATION
+# # USEFUL INITIALIZATION
 # README.md  # [20,467 tokens | 103,208 bytes]
 # AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
 # pyproject.toml  # [677 tokens | 2,299 bytes]
@@ -39,19 +39,23 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-/home/mike/repos/bookforge/30_drafts/ch_01_blueprint.md  # [1,114 tokens | 4,729 bytes]
-/home/mike/repos/bookforge/30_drafts/ch_02_blueprint.md  # [1,038 tokens | 4,434 bytes]
-/home/mike/repos/bookforge/30_drafts/ch_03_blueprint.md  # [1,246 tokens | 5,400 bytes]
-/home/mike/repos/bookforge/30_drafts/ch_04_blueprint.md  # [963 tokens | 4,336 bytes]
-/home/mike/repos/bookforge/30_drafts/ch_05_blueprint.md  # [974 tokens | 4,243 bytes]
-/home/mike/repos/bookforge/30_drafts/ch_06_blueprint.md  # [1,226 tokens | 5,236 bytes]
-/home/mike/repos/bookforge/30_drafts/ch_07_blueprint.md  # [1,204 tokens | 5,035 bytes]
-/home/mike/repos/bookforge/30_drafts/ch_08_blueprint.md  # [899 tokens | 4,033 bytes]
 /home/mike/repos/bookforge/30_drafts/ch_09_blueprint.md  # [1,162 tokens | 5,060 bytes]
-/home/mike/repos/bookforge/30_drafts/ch_10_blueprint.md  # [1,108 tokens | 5,021 bytes]
-/home/mike/repos/bookforge/30_drafts/ch_11_blueprint.md  # [1,181 tokens | 5,228 bytes]
-/home/mike/repos/bookforge/30_drafts/ch_12_blueprint.md  # [1,091 tokens | 4,720 bytes]
+/home/mike/repos/bookforge/skills/chapter-drafter/prompt.md  # [358 tokens | 1,626 bytes]
+/home/mike/repos/bookforge/skills/book-refiner/prompt.md  # [511 tokens | 2,201 bytes]
 
+# /home/mike/repos/bookforge/30_drafts/ch_01_blueprint.md  # [1,114 tokens | 4,729 bytes]
+# /home/mike/repos/bookforge/30_drafts/ch_02_blueprint.md  # [1,038 tokens | 4,434 bytes]
+# /home/mike/repos/bookforge/30_drafts/ch_03_blueprint.md  # [1,246 tokens | 5,400 bytes]
+# /home/mike/repos/bookforge/30_drafts/ch_04_blueprint.md  # [963 tokens | 4,336 bytes]
+# /home/mike/repos/bookforge/30_drafts/ch_05_blueprint.md  # [974 tokens | 4,243 bytes]
+# /home/mike/repos/bookforge/30_drafts/ch_06_blueprint.md  # [1,226 tokens | 5,236 bytes]
+# /home/mike/repos/bookforge/30_drafts/ch_07_blueprint.md  # [1,204 tokens | 5,035 bytes]
+# /home/mike/repos/bookforge/30_drafts/ch_08_blueprint.md  # [899 tokens | 4,033 bytes]
+# /home/mike/repos/bookforge/30_drafts/ch_09_blueprint.md  # [1,162 tokens | 5,060 bytes]
+# /home/mike/repos/bookforge/30_drafts/ch_10_blueprint.md  # [1,108 tokens | 5,021 bytes]
+# /home/mike/repos/bookforge/30_drafts/ch_11_blueprint.md  # [1,181 tokens | 5,228 bytes]
+# /home/mike/repos/bookforge/30_drafts/ch_12_blueprint.md  # [1,091 tokens | 4,720 bytes]
+# 
 /home/mike/repos/bookforge/skills/repo-handoff-checkpoint/SKILL.md  # [385 tokens | 1,786 bytes]
 /home/mike/repos/bookforge/skills/repo-handoff-checkpoint/scripts/make_checkpoint.py  # [401 tokens | 1,862 bytes]
 /home/mike/repos/bookforge/skills/repo-handoff-checkpoint/agents/openai.yaml  # [13 tokens | 53 bytes]
@@ -82,7 +86,7 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # /home/mike/repos/bookforge/skills/outline-evolver/SKILL.md  # [418 tokens | 2,041 bytes]
 # 
 # # 2. THE SPINE: The Target Architecture
-/home/mike/repos/bookforge/20_outline/outline.json  # [1,740 tokens | 7,346 bytes]
+# /home/mike/repos/bookforge/20_outline/outline.json  # [1,740 tokens | 7,346 bytes]
 # 
 # # 3. THE SITREP: Telemetry from the 128 Passes
 # ! python /home/mike/repos/pipulate/scripts/articles/bookforge_dashboard.py
@@ -309,7 +313,7 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
 # tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 
-flake.nix  # [7,711 tokens | 32,991 bytes]
+# flake.nix  # [7,711 tokens | 32,991 bytes]
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
 
 # # HOW TO FIND MARKDOWN ACCEPTERS
