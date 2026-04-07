@@ -2783,6 +2783,7 @@ async def poke_flyout(request):
     lock_button = Button(lock_button_text, hx_post='/toggle_profile_lock', hx_target='body', hx_swap='outerHTML', cls='secondary outline')
 
     # Theme toggle switch
+    # Theme toggle switch
     theme_switch = Div(
         Label(
             Input(
@@ -2822,10 +2823,9 @@ async def poke_flyout(request):
                 }}
             }})();
         """),
-        id='theme-switch-container',
-        cls='theme-switch-container'
+        id='theme-switch-container'
     )
-
+    
     # --- NEW: Voice toggle switch ---
     voice_switch = Div(
         Label(
@@ -2840,8 +2840,7 @@ async def poke_flyout(request):
             ),
             Span(f'{voice_icon} Voice Output', cls='ml-quarter')
         ),
-        id='voice-switch-container',
-        cls='voice-switch-container'
+        id='voice-switch-container'
     )
 
     delete_workflows_button = Button('🗑️ Clear Workflows', hx_post='/clear-pipeline', hx_target='body', hx_confirm='Are you sure you want to delete workflows?', hx_swap='outerHTML', cls='secondary outline') if is_workflow else None
@@ -3228,7 +3227,6 @@ async def toggle_profile_lock(request):
     return HTMLResponse('', headers={'HX-Refresh': 'true'})
 
 
-
 @rt('/toggle_theme', methods=['POST'])
 async def toggle_theme(request):
     """Toggle between light and dark theme."""
@@ -3254,11 +3252,14 @@ async def toggle_theme(request):
             Span('🌙 Dark Mode', cls='ml-quarter')
         ),
         Script(f"""
-            // ... [keep script logic] ...
+            // Apply theme to HTML element
+            document.documentElement.setAttribute('data-theme', '{new_theme}');
+            // Store in localStorage for persistence across page loads
+            localStorage.setItem('theme_preference', '{new_theme}');
         """),
         id='theme-switch-container'
-        # 💥 REMOVED: cls='theme-switch-container'
     )
+
     return theme_switch
 
 
