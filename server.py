@@ -3241,6 +3241,49 @@ async def toggle_theme(request):
     return theme_switch
 
 
+@rt('/toggle_voice_system', methods=['POST'])
+async def toggle_voice_system(request):
+    """Toggle the global voice synthesis system on or off."""
+    current_state = pipulate.db.get('voice_enabled', '0')
+    
+    # Toggle logic
+    new_state = '1' if current_state == '0' else '0'
+    pipulate.db['voice_enabled'] = new_state
+    
+    # If turning OFF, immediately silence any ongoing speech
+    if new_state == '0':
+        try:
+            from imports.voice_synthesis import chip_voice_system
+            if chip_voice_system:
+                chip_voice_system.stop_speaking()
+                logger.info("🔇 Global mute activated. Killed active audio process.")
+        except Exception as e:
+            logger.warning(f"Error silencing voice system: {e}")
+
+    # Re-render the switch component to reflect the new state
+    voice_is_on = new_state == '1'
+    icon = "🔊" if voice_is_on else "🔇"
+    
+    voice_switch = Div(
+        Label(
+            Input(
+                type='checkbox',
+                role='switch',
+                name='voice_switch',
+                checked=voice_is_on,
+                hx_post='/toggle_voice_system',
+                hx_target='#voice-switch-container',
+                hx_swap='outerHTML'
+            ),
+            Span(f'{icon} Voice Output', cls='ml-quarter')
+        ),
+        id='voice-switch-container',
+        cls='voice-switch-container'
+    )
+    
+    return voice_switch
+
+
 @rt('/sync_theme', methods=['POST'])
 async def sync_theme(request):
     """Sync theme preference from client to server."""
