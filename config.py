@@ -7,15 +7,22 @@ from rich.theme import Theme
 from rich.style import Style as RichStyle
 
 WAND_SPEAKS_EMOJI = "🪄"
+
+# --- AI MODEL CONFIGURATION ---
 TONE = 'neutral'
-MODEL = 'gemma3'
+MODEL = 'gemma4'  # Default active model
+PREFERRED_LOCAL_MODEL = 'gemma4'
+PREFERRED_CLOUD_MODEL = 'gpt-4o'
 MAX_LLM_RESPONSE_WORDS = 80
 MAX_CONVERSATION_LENGTH = 600
+# ------------------------------
+
 HOME_MENU_ITEM = 'Home'
 DEFAULT_ACTIVE_ROLES = {'Botify Employee', 'Core'}
 DEMO_STATE_FILE = 'data/demo_state.json'
 ENV_FILE = 'data/current_environment.txt'
 DISCUSSION_DB_PATH = 'data/discussion.db'
+
 
 COLOR_MAP = {'key': 'yellow', 'value': 'white', 'error': 'red', 'warning': 'yellow', 'success': 'green', 'debug': 'blue'}
 
