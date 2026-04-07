@@ -111,12 +111,16 @@ class DictLikeDB:
 
     @db_operation
     def __setitem__(self, key, value):
-        try:
-            self.store.update({'key': key, 'value': value})
-            logger.debug(f'Updated persistence store: {key} = {value}')
-        except NotFoundError:
-            self.store.insert({'key': key, 'value': value})
-            logger.debug(f'Inserted new item in persistence store: {key} = {value}')
+        # Explicitly declare pk='key' to prevent FastLite from defaulting to 'rowid'
+        self.store.upsert({'key': key, 'value': value}, pk='key')
+        logger.debug(f'Saved to persistence store: {key} = {value}')
+    # def __setitem__(self, key, value):
+    #     try:
+    #         self.store.update({'key': key, 'value': value})
+    #         logger.debug(f'Updated persistence store: {key} = {value}')
+    #     except NotFoundError:
+    #         self.store.insert({'key': key, 'value': value})
+    #         logger.debug(f'Inserted new item in persistence store: {key} = {value}')
 
     @db_operation
     def __delitem__(self, key):

@@ -8,6 +8,7 @@ Contains setup_logging(), DebugConsole, and rich_json_display().
 import json
 import os
 import sys
+import traceback
 from datetime import datetime
 from pathlib import Path
 
