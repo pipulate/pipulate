@@ -454,11 +454,11 @@ imports/voice_synthesis.py  # To understand the current voice engine state
 # tools/mcp_tools.py  # [36,628 tokens | 186,793 bytes]
  
 # CHAPTER 6: THE SKIN (FRONTEND ASSETS & INIT) (~265KB)
-# assets/init.js  # [2,303 tokens | 12,158 bytes]
-# assets/pipulate.js  # [4,889 tokens | 24,977 bytes]
-# assets/styles.css  # [18,671 tokens | 81,016 bytes]
-# assets/theme.js  # [930 tokens | 4,337 bytes]
-# assets/utils.js  # [3,125 tokens | 15,103 bytes]
+assets/init.js  # [2,303 tokens | 12,158 bytes]
+assets/pipulate.js  # [4,889 tokens | 24,977 bytes]
+assets/styles.css  # [18,671 tokens | 81,016 bytes]
+assets/theme.js  # [930 tokens | 4,337 bytes]
+assets/utils.js  # [3,125 tokens | 15,103 bytes]
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 # assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
 # assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]

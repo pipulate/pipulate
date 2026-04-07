@@ -3228,6 +3228,7 @@ async def toggle_profile_lock(request):
     return HTMLResponse('', headers={'HX-Refresh': 'true'})
 
 
+
 @rt('/toggle_theme', methods=['POST'])
 async def toggle_theme(request):
     """Toggle between light and dark theme."""
@@ -3253,15 +3254,11 @@ async def toggle_theme(request):
             Span('🌙 Dark Mode', cls='ml-quarter')
         ),
         Script(f"""
-            // Apply theme to HTML element
-            document.documentElement.setAttribute('data-theme', '{new_theme}');
-            // Store in localStorage for persistence across page loads
-            localStorage.setItem('theme_preference', '{new_theme}');
+            // ... [keep script logic] ...
         """),
-        id='theme-switch-container',
-        cls='theme-switch-container'
+        id='theme-switch-container'
+        # 💥 REMOVED: cls='theme-switch-container'
     )
-
     return theme_switch
 
 
