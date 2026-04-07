@@ -101,7 +101,9 @@ class DictLikeDB:
     @db_operation
     def __getitem__(self, key):
         try:
-            value = self.store[key].value
+            record = self.store[key]
+            # 🎯 UNIFIED FIX: Handle both dicts (notebook) and objects (server)
+            value = record['value'] if isinstance(record, dict) else record.value
             logger.debug(f'Retrieved from DB: {key} = {value}')
             return value
         except NotFoundError:
@@ -114,13 +116,6 @@ class DictLikeDB:
         # Explicitly declare pk='key' to prevent FastLite from defaulting to 'rowid'
         self.store.upsert({'key': key, 'value': value}, pk='key')
         logger.debug(f'Saved to persistence store: {key} = {value}')
-    # def __setitem__(self, key, value):
-    #     try:
-    #         self.store.update({'key': key, 'value': value})
-    #         logger.debug(f'Updated persistence store: {key} = {value}')
-    #     except NotFoundError:
-    #         self.store.insert({'key': key, 'value': value})
-    #         logger.debug(f'Inserted new item in persistence store: {key} = {value}')
 
     @db_operation
     def __delitem__(self, key):
@@ -141,12 +136,16 @@ class DictLikeDB:
     @db_operation
     def __iter__(self):
         for record in self.store():
-            yield record.key
+            # 🎯 UNIFIED FIX
+            yield record['key'] if isinstance(record, dict) else record.key
 
     @db_operation
     def items(self):
         for record in self.store():
-            yield (record.key, record.value)
+            # 🎯 UNIFIED FIX
+            k = record['key'] if isinstance(record, dict) else record.key
+            v = record['value'] if isinstance(record, dict) else record.value
+            yield (k, v)
 
     @db_operation
     def keys(self):
@@ -155,7 +154,8 @@ class DictLikeDB:
     @db_operation
     def values(self):
         for record in self.store():
-            yield record.value
+            # 🎯 UNIFIED FIX
+            yield record['value'] if isinstance(record, dict) else record.value
 
     @db_operation
     def get(self, key, default=None):
