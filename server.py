@@ -2775,6 +2775,10 @@ async def poke_flyout(request):
     current_theme = pipulate.db.get('theme_preference', 'dark')
     theme_is_dark = current_theme == 'dark'
 
+    # --- NEW: Get Voice State ---
+    voice_is_on = pipulate.db.get('voice_enabled', '0') == '1'
+    voice_icon = "🔊" if voice_is_on else "🔇"
+
     # Create buttons
     lock_button = Button(lock_button_text, hx_post='/toggle_profile_lock', hx_target='body', hx_swap='outerHTML', cls='secondary outline')
 
@@ -2821,6 +2825,25 @@ async def poke_flyout(request):
         id='theme-switch-container',
         cls='theme-switch-container'
     )
+
+    # --- NEW: Voice toggle switch ---
+    voice_switch = Div(
+        Label(
+            Input(
+                type='checkbox',
+                role='switch',
+                name='voice_switch',
+                checked=voice_is_on,
+                hx_post='/toggle_voice_system',
+                hx_target='#voice-switch-container',
+                hx_swap='outerHTML'
+            ),
+            Span(f'{voice_icon} Voice Output', cls='ml-quarter')
+        ),
+        id='voice-switch-container',
+        cls='voice-switch-container'
+    )
+
     delete_workflows_button = Button('🗑️ Clear Workflows', hx_post='/clear-pipeline', hx_target='body', hx_confirm='Are you sure you want to delete workflows?', hx_swap='outerHTML', cls='secondary outline') if is_workflow else None
     # Create reset button with different labels for DEV vs PROD mode
     # Database reset button - only available when in DEV mode for safety
@@ -2891,6 +2914,7 @@ async def poke_flyout(request):
     # Build list items in the requested order: Theme Toggle, Lock Profile, Update, Clear Workflows, Reset Database, MCP Test
     list_items = [
         Li(theme_switch, cls='flyout-list-item'),
+        Li(voice_switch, cls='flyout-list-item'),  # <--- INJECTED HERE
         Li(lock_button, cls='flyout-list-item'),
         Li(update_button, cls='flyout-list-item')
     ]
