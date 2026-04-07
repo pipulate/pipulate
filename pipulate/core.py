@@ -478,6 +478,64 @@ class Pipulate:
             # We fail silently because the print() statement above acts as our fallback
             pass
 
+    def mute(self, verbose: bool = True):
+        """Instantly silence the AI and disable future voice output globally."""
+        self.db['voice_enabled'] = '0'
+        try:
+            from imports.voice_synthesis import chip_voice_system
+            if chip_voice_system:
+                chip_voice_system.stop_speaking()
+        except Exception:
+            pass
+        if verbose:
+            print("🔇 Global mute activated. The machine will be quiet.")
+
+    def unmute(self, verbose: bool = True):
+        """Enable AI voice output globally."""
+        self.db['voice_enabled'] = '1'
+        if verbose:
+            print("🔊 Global voice enabled. The machine will speak.")
+
+    def voice_controls(self):
+        """Display an interactive widget in the Jupyter Notebook to toggle voice on/off."""
+        if not self.is_notebook_context:
+            print("Voice controls are optimized for the Notebook context.")
+            return
+
+        try:
+            import ipywidgets as widgets
+            from IPython.display import display, clear_output
+        except ImportError:
+            print("⚠️ ipywidgets is required for interactive controls. Use pip.mute() or pip.unmute() instead.")
+            return
+
+        current_state = self.db.get('voice_enabled', '0') == '1'
+
+        toggle = widgets.ToggleButton(
+            value=current_state,
+            description='🔊 Voice ON' if current_state else '🔇 Voice OFF',
+            button_style='success' if current_state else 'danger',
+            tooltip='Toggle the global voice synthesis system'
+        )
+        
+        out = widgets.Output()
+
+        def on_toggle(change):
+            with out:
+                clear_output(wait=True)
+                new_state = change['new']
+                if new_state:
+                    self.unmute(verbose=True)
+                    toggle.description = '🔊 Voice ON'
+                    toggle.button_style = 'success'
+                else:
+                    self.mute(verbose=True)
+                    toggle.description = '🔇 Voice OFF'
+                    toggle.button_style = 'danger'
+
+        toggle.observe(on_toggle, 'value')
+        display(widgets.VBox([toggle, out]))
+
     def imperio(self):
         self.speak("Done step. Run the next cell.")
 
