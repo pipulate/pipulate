@@ -447,9 +447,19 @@ class Pipulate:
     def speak(self, text: str):
         """
         Synthesizes text to speech using the global ChipVoiceSystem if available.
-        Fails gracefully to simple printing if the audio backend is unavailable.
+        Fails gracefully to simple printing if the audio backend is unavailable
+        or if the user has globally muted the voice.
         """
         print(f"{CFG.WAND_SPEAKS_EMOJI} {text}")
+        
+        # --- NEW GLOBAL MUTE CHECK ---
+        # Check if the user has globally enabled voice. Default is '0' (Off)
+        voice_enabled = self.db.get('voice_enabled', '0') == '1'
+        
+        if not voice_enabled:
+            return # Exit early, the print statement acts as the visual fallback
+        # -----------------------------
+
         try:
             # We import here to avoid circular dependencies and unnecessary 
             # loading if the user never calls pip.speak()
