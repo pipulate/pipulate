@@ -259,10 +259,9 @@ class Pipulate:
         import llm
         
         if preferred_local:
-            # self.speak("Scanning for your preferred local models...")
             print("Scanning for your preferred local models...")
         else:
-            self.speak("Scanning your system for available AI models...")
+            print("Scanning your system for available AI models...")
 
         try:
             # 1. Gather all models known to the Universal Adapter
@@ -297,16 +296,15 @@ class Pipulate:
 
             # 5. Reporting and Graceful Degradation
             if selected_local:
-                # self.speak(f"Excellent. Local model '{selected_local}' is active and ready.")
                 print(f"Excellent. Local model '{selected_local}' is active and ready.")
                 print(f"\n✅ Locked in Local Model: {selected_local}")
             elif has_local:
-                self.speak("I found local models, but not your preferred choices.")
+                print("I found local models, but not your preferred choices.")
                 print(f"\nℹ️  Preferred local models not found, but other local models are available.")
                 print(f"Available models: {', '.join([m for m in available_models if 'ollama' in str(type(llm.get_model(m))).lower()])}")
                 selected_local = True 
             else:
-                self.speak("I do not detect a local AI brain on your system.")
+                print("I do not detect a local AI brain on your system.")
                 print("\nℹ️  Ollama is not running or not installed.")
                 print("Pipulate works perfectly fine without it, but a local AI 'riding shotgun' ensures privacy.")
                 print("\nTo upgrade your environment for true Local-First Sovereignty:")
@@ -484,7 +482,7 @@ class Pipulate:
 
         if cache_dir.exists():
             print(f"📁 Contents of {cache_dir}:\n")
-            self.speak("Let's examine the artifacts I extracted. Click the button to open the folder on your computer...")
+            print("Let's examine the artifacts I extracted. Click the button to open the folder on your computer...")
             
             # 1. Filter for files and sort them alphabetically by name
             files = sorted([f for f in cache_dir.iterdir() if f.is_file()], key=lambda x: x.name.lower())
