@@ -108,34 +108,14 @@
         # --- CORRECTED: Declarative list for notebooks to copy ---
         notebookFilesToCopy = [
           {
-            source = "assets/nbs/Onboarding.ipynb";
-            dest = "Notebooks/Onboarding.ipynb";
-            desc = "the Pipulate initiation rite and setup guide";
+            source = "assets/nbs/imports/core_sauce.py";
+            dest = "Notebooks/imports/core_sauce.py";
+            desc = "the unified core workflow engine";
           }
           {
-            source = "assets/nbs/Advanced_Notebooks/FAQuilizer.ipynb";
-            dest = "Notebooks/Advanced_Notebooks/FAQuilizer.ipynb";
-            desc = "a local 'FAQuilizer' simple workflow";
-          }
-          {
-            source = "assets/nbs/imports/faq_writer_sauce.py";
-            dest = "Notebooks/imports/faq_writer_sauce.py";
-            desc = "a local 'faq_writer_sauce.py' source of secret sauce";
-          }
-          {
-            source = "assets/nbs/Advanced_Notebooks/GAPalyzer.ipynb";
-            dest = "Notebooks/Advanced_Notebooks/GAPalyzer.ipynb";
-            desc = "a local 'Competitor Gap Analyzer.' advanced workflow";
-          }
-          {
-            source = "assets/nbs/imports/gap_analyzer_sauce.py";
-            dest = "Notebooks/imports/gap_analyzer_sauce.py";
-            desc = "a local 'gap_analyzer_sauce.py' source of secret sauce";
-          }
-          {
-            source = "assets/nbs/Advanced_Notebooks/URLinspector.ipynb";
-            dest = "Notebooks/Advanced_Notebooks/URLinspector.ipynb";
-            desc = "a local 'URL-by-URL auditor.' derived from FAQuilizer";
+            source = "assets/nbs/imports/onboard_sauce.py";
+            dest = "Notebooks/imports/onboard_sauce.py";
+            desc = "a local 'onboard_sauce.py' source of secret sauce";
           }
           {
             source = "assets/nbs/imports/url_inspect_sauce.py";
@@ -143,14 +123,14 @@
             desc = "a local 'url_inspect_sauce.py' source of secret sauce";
           }
           {
-            source = "assets/nbs/Advanced_Notebooks/VIDeditor.ipynb";
-            dest = "Notebooks/Advanced_Notebooks/VIDeditor.ipynb";
-            desc = "a local 'NoGooey Video Editor.'";
+            source = "assets/nbs/imports/faq_writer_sauce.py";
+            dest = "Notebooks/imports/faq_writer_sauce.py";
+            desc = "a local 'faq_writer_sauce.py' source of secret sauce";
           }
           {
-            source = "assets/nbs/imports/core_sauce.py";
-            dest = "Notebooks/imports/core_sauce.py";
-            desc = "the unified core workflow engine";
+            source = "assets/nbs/imports/gap_analyzer_sauce.py";
+            dest = "Notebooks/imports/gap_analyzer_sauce.py";
+            desc = "a local 'gap_analyzer_sauce.py' source of secret sauce";
           }
           {
             source = "assets/nbs/imports/videditor_sauce.py";
@@ -158,9 +138,29 @@
             desc = "a local 'videditor_sauce.py' source of secret sauce";
           }
           {
-            source = "assets/nbs/imports/onboard_sauce.py";
-            dest = "Notebooks/imports/onboard_sauce.py";
-            desc = "a local 'onboard_sauce.py' source of secret sauce";
+            source = "assets/nbs/Onboarding.ipynb";
+            dest = "Notebooks/Onboarding.ipynb";
+            desc = "the Pipulate initiation rite and setup guide";
+          }
+          {
+            source = "assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb";
+            dest = "Notebooks/Advanced_Notebooks/01_URLinspector.ipynb";
+            desc = "a local 'URL-by-URL auditor.' derived from FAQuilizer";
+          }
+          {
+            source = "assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb";
+            dest = "Notebooks/Advanced_Notebooks/02_FAQuilizer.ipynb";
+            desc = "a local 'FAQuilizer' simple workflow";
+          }
+          {
+            source = "assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb";
+            dest = "Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb";
+            desc = "a local 'Competitor Gap Analyzer.' advanced workflow";
+          }
+          {
+            source = "assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb";
+            dest = "Notebooks/Advanced_Notebooks/0VIDeditor.ipynb";
+            desc = "a local 'NoGooey Video Editor.'";
           }
         ];
 
