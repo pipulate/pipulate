@@ -34,15 +34,15 @@ AI_PHOOEY_CHOP = """\
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 # # ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
-# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
-# foo_files.py  # [10,245 tokens | 33,406 bytes]
+prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
 # /home/mike/repos/bookforge/30_drafts/ch_01_0_blueprint.md  # [1,114 tokens | 4,729 bytes]
-/home/mike/repos/bookforge/30_drafts/ch_01_1_rough.md  # [1,185 tokens | 6,148 bytes]
+# /home/mike/repos/bookforge/30_drafts/ch_01_1_rough.md  # [1,185 tokens | 6,148 bytes]
 # /home/mike/repos/bookforge/30_drafts/ch_02_0_blueprint.md  # [1,038 tokens | 4,434 bytes]
-/home/mike/repos/bookforge/30_drafts/ch_02_1_rough.md  # [1,171 tokens | 6,063 bytes]
+# /home/mike/repos/bookforge/30_drafts/ch_02_1_rough.md  # [1,171 tokens | 6,063 bytes]
 # /home/mike/repos/bookforge/30_drafts/ch_03_0_blueprint.md  # [1,246 tokens | 5,400 bytes]
 # /home/mike/repos/bookforge/30_drafts/ch_04_0_blueprint.md  # [963 tokens | 4,336 bytes]
 # /home/mike/repos/bookforge/30_drafts/ch_05_0_blueprint.md  # [974 tokens | 4,243 bytes]
@@ -377,10 +377,10 @@ AI_PHOOEY_CHOP = """\
 # The foundational NPvg framework and state management.
 
 # CHAPTER 0: ONBOARDING
-# !https://pipulate.com/
-# /home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
-# flake.nix  # [7,721 tokens | 32,979 bytes]
-# pyproject.toml  # [677 tokens | 2,299 bytes]
+!https://pipulate.com/
+/home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
+flake.nix  # [7,721 tokens | 32,979 bytes]
+pyproject.toml  # [677 tokens | 2,299 bytes]
 # assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
@@ -513,17 +513,17 @@ AI_PHOOEY_CHOP = """\
 
 # # CHAPTER 14: THE NOTEBOOK TEMPLATES (~100KB)
 # flake.nix  # [7,962 tokens | 34,057 bytes]
-# Notebooks/Onboarding.ipynb  # [4,504 tokens | 14,798 bytes]
-# Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
-# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-# assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb  # [2,317 tokens | 7,323 bytes]
-# assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
-# # assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [9,228 tokens | 31,278 bytes]
-# # assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
-# assets/nbs/imports/core_sauce.py  # [811 tokens | 3,362 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [ imports Ceiling Level ]
-# assets/nbs/imports/faq_writer_sauce.py  # [6,042 tokens | 26,760 bytes]
-# assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
+Notebooks/Onboarding.ipynb  # [4,504 tokens | 14,798 bytes]
+Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
+assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb  # [2,317 tokens | 7,323 bytes]
+assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
+# assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [9,228 tokens | 31,278 bytes]
+# assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
+assets/nbs/imports/core_sauce.py  # [811 tokens | 3,362 bytes]
+assets/nbs/imports/onboard_sauce.py  # [ imports Ceiling Level ]
+assets/nbs/imports/faq_writer_sauce.py  # [6,042 tokens | 26,760 bytes]
+assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
 # # assets/nbs/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 # # assets/nbs/imports/videditor_sauce.py  # [937 tokens | 4,098 bytes]
 
@@ -756,8 +756,6 @@ CHOP_CHAPTER_DRAFTER = """\
 # assets/js/split.js  # [6,166 tokens | 29,959 bytes]
 # assets/js/surreal.js  # [3,812 tokens | 13,432 bytes]
 # assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
-# assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [9,228 tokens | 31,278 bytes]
-# assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
 # assets/nbs/imports/gap_analyzer_sauce.py  # [26,335 tokens | 116,961 bytes]
 # assets/nbs/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
