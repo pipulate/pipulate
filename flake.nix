@@ -159,7 +159,7 @@
           }
           {
             source = "assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb";
-            dest = "Notebooks/Advanced_Notebooks/0VIDeditor.ipynb";
+            dest = "Notebooks/Advanced_Notebooks/04_VIDeditor.ipynb";
             desc = "a local 'NoGooey Video Editor.'";
           }
         ];
