@@ -6,14 +6,14 @@ import re
 import argparse
 from pathlib import Path
 from datetime import datetime
-import google.generativeai as genai
+import llm
 import frontmatter
 import tiktoken  # Requires: pip install tiktoken
 import common
 
 # --- CONFIGURATION ---
 # MODEL CONFIGURATION
-MODEL_NAME = 'gemini-2.5-flash-lite'
+MODEL_NAME = 'gemini-flash-lite-latest'
 SAFETY_SLEEP_SECONDS = 5
 
 def count_tokens(text: str, model: str = "gpt-4o") -> int:
@@ -98,20 +98,22 @@ def generate_context_json(article_data, token_count):
     }}
     """
 
-    # REVERT: Removed generation_config for compatibility with older SDKs
-    model = genai.GenerativeModel(MODEL_NAME)
-    
+    # Use the Universal Adapter
+    model = llm.get_model(MODEL_NAME)
+    if api_key:
+        model.key = api_key
+
     max_retries = 3
     attempt = 0
 
     while attempt < max_retries:
         try:
             req_start = time.time()
-            response = model.generate_content(prompt)
+            response = model.prompt(prompt)
             req_end = time.time()
             duration = req_end - req_start
 
-            text = response.text.strip()
+            text = response.text().strip()
             
             # Basic cleanup if mime_type doesn't catch it
             if text.startswith("```json"): text = text[7:]
