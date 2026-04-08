@@ -2636,3 +2636,59 @@ class Pipulate:
             self.ensure_credentials(env_var_name, service_name)
         else:
             print(f"✅ {env_var_name} has been reset. Please update your .env file.")
+
+    def collect_config(self, job: str, config_keys: list):
+        """
+        Ensures a list of configuration keys exist in the job state.
+        If missing, prompts the user via a UI widget and saves to wand.db.
+        """
+        import ipywidgets as widgets
+        from IPython.display import display, clear_output
+
+        missing_keys = [k for k in config_keys if not self.get(job, k)]
+        
+        if not missing_keys:
+            self.speak(f"Configuration for job '{job}' is complete and loaded.")
+            self.imperio()
+            return
+
+        self.speak(f"I need some specific details for the '{job}' session.")
+        
+        # Build a form with inputs for all missing keys
+        inputs = {}
+        for key in missing_keys:
+            label = key.replace('_', ' ').title()
+            inputs[key] = widgets.Text(
+                placeholder=f"Enter {label}...",
+                description=f"{label}:",
+                style={'description_width': 'initial'},
+                layout=widgets.Layout(width='80%')
+            )
+
+        submit_btn = widgets.Button(
+            description="Lock in Session Config", 
+            button_style='primary',
+            icon='save'
+        )
+        
+        out = widgets.Output()
+
+        def on_submit(b):
+            with out:
+                clear_output()
+                all_valid = True
+                for k, widget in inputs.items():
+                    val = widget.value.strip()
+                    if val:
+                        self.set(job, k, val)
+                    else:
+                        all_valid = False
+                        print(f"❌ '{k}' cannot be empty.")
+                
+                if all_valid:
+                    self.speak("Session configuration saved to database.")
+                    for w in list(inputs.values()) + [submit_btn]:
+                        w.close()
+
+        submit_btn.on_click(on_submit)
+        display(widgets.VBox(list(inputs.values()) + [submit_btn, out]))
