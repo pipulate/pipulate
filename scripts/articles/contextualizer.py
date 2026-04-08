@@ -100,8 +100,8 @@ def generate_context_json(article_data, token_count):
 
     # Use the Universal Adapter
     model = llm.get_model(MODEL_NAME)
-    if api_key:
-        model.key = api_key
+    # We pass the key directly; llm handles fallback to env vars if needed
+    model.key = api_key 
 
     max_retries = 3
     attempt = 0
@@ -173,9 +173,6 @@ def process_batch(batch_files, key_name, api_key, context_dir, dry_run):
     
     print(f"\n🔑 Switch-on: '{key_name}' | Batch Size: {len(batch_files)}")
     
-    if not dry_run:
-        genai.configure(api_key=api_key)
-
     processed_count = 0
     
     for i, post in enumerate(batch_files):
@@ -190,7 +187,8 @@ def process_batch(batch_files, key_name, api_key, context_dir, dry_run):
         input_tokens = count_tokens(data['content'][:15000])
         print(f"     ↳ Input Tokens: {input_tokens} ... ", end='', flush=True)
 
-        context_json, duration, status = generate_context_json(data, input_tokens)
+        # CRITICAL FIX: Pass the api_key to the generator function
+        context_json, duration, status = generate_context_json(data, input_tokens, api_key)
         
         if status == 0: # Success
             json_path = context_dir / f"{post.stem}.json"
