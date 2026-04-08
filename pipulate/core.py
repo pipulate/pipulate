@@ -2516,3 +2516,82 @@ class Pipulate:
             
         found_key = self.load_secrets("GOOGLE_API_KEY")
         return bool(found_key)
+
+    def ensure_credentials(self, env_var_name: str, service_name: str = None) -> str:
+        """
+        The Universal Gatekeeper. Checks for required API keys upfront to prevent 
+        mid-workflow lazy-loading crashes. Renders a secure widget if missing.
+        
+        Args:
+            env_var_name (str): The environment variable to look for (e.g., 'BOTIFY_API_TOKEN').
+            service_name (str): Friendly name for the UI (e.g., 'Botify'). Auto-derived if None.
+        """
+        import os
+        from dotenv import load_dotenv, set_key
+        
+        if not service_name:
+            # Auto-derive friendly name (e.g., 'BOTIFY_API_TOKEN' -> 'Botify')
+            service_name = env_var_name.split('_')[0].title()
+
+        # 1. Load existing environment variables
+        project_root = self._find_project_root(os.getcwd()) or Path.cwd()
+        env_path = project_root / ".env"
+        load_dotenv(dotenv_path=env_path)
+        
+        current_val = os.environ.get(env_var_name)
+        if current_val:
+            self.speak(f"{service_name} credentials verified in your environment.")
+            print(f"✅ Secure {service_name} connection ready.")
+            self.imperio()
+            return current_val
+
+        # 2. Interactive Fallback for Notebooks
+        if self.is_notebook_context:
+            import ipywidgets as widgets
+            from IPython.display import display, clear_output
+            
+            self.speak(f"I need your {service_name} API key to proceed.")
+            
+            key_input = widgets.Password(
+                value='',
+                placeholder=f'Paste your {service_name} API Key here...',
+                description=f'🔑 {service_name}:',
+                style={'description_width': 'initial'},
+                layout=widgets.Layout(width='80%')
+            )
+            
+            submit_btn = widgets.Button(
+                description="Save to Vault", 
+                button_style='success',
+                icon='lock'
+            )
+            out = widgets.Output()
+            
+            def on_submit(b):
+                with out:
+                    clear_output()
+                    val = key_input.value.strip()
+                    if val:
+                        # Save permanently to .env
+                        env_path.touch(exist_ok=True)
+                        set_key(str(env_path), env_var_name, val)
+                        
+                        # Export to current runtime environment
+                        os.environ[env_var_name] = val
+                        
+                        self.speak(f"{service_name} key securely saved to the vault.")
+                        print(f"✅ {env_var_name} successfully encrypted in .env.")
+                        
+                        # Hide the widget and maintain the rhythm
+                        key_input.close()
+                        submit_btn.close()
+                        self.imperio()
+                    else:
+                        print("❌ Please enter a valid API key.")
+            
+            submit_btn.on_click(on_submit)
+            display(widgets.VBox([key_input, submit_btn, out]))
+            return None
+        else:
+            print(f"❌ Missing {env_var_name} in environment. Please add it to your .env file.")
+            return None
