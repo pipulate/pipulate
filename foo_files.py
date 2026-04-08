@@ -34,11 +34,14 @@ AI_PHOOEY_CHOP = """\
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 # # ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
-.gitignore  # [573 tokens | 2,089 bytes]
+# .gitignore  # [573 tokens | 2,089 bytes]
 prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
+
+# /home/mike/repos/trimnoir/_posts/2026-04-08-async-narration-metadata-minefield.md  # [Idx: 1011 | Order: 1 | Tokens: 16,036 | Bytes: 63,514]
+# /home/mike/repos/trimnoir/_posts/2026-04-08-llmectomy-universal-adapter-resilience.md  # [Idx: 1012 | Order: 2 | Tokens: 23,076 | Bytes: 89,108]
 
 # /home/mike/repos/bookforge/30_drafts/ch_01_0_blueprint.md  # [1,114 tokens | 4,729 bytes]
 # /home/mike/repos/bookforge/30_drafts/ch_01_1_rough.md  # [1,185 tokens | 6,148 bytes]
@@ -275,8 +278,8 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # https://www.datacamp.com/tutorial/guide-to-autoresearch
 # !https://www.datacamp.com/tutorial/guide-to-autoresearch
 
-# assets/nbs/Onboarding.ipynb  # [3,807 tokens | 12,678 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
+assets/nbs/Onboarding.ipynb  # [3,807 tokens | 12,678 bytes]
+assets/nbs/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
 # Notebooks/Onboarding.ipynb  # [5,167 tokens | 17,293 bytes]
 # Notebooks/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
 
@@ -484,8 +487,8 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # apps/120_link_graph.py  # [54,349 tokens | 272,468 bytes]
 
 # CHAPTER 13: THE GAPALYZER SUITE (~240KB)
-# Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
-# Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
+Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
+Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 
 # ============================================================================
 # V. THE CONTENT LOOM & SEMANTIC ROUTER
@@ -512,16 +515,16 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
 # /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
 # scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
-scripts/articles/common.py  # [881 tokens | 3,571 bytes]
+# scripts/articles/common.py  # [881 tokens | 3,571 bytes]
 # scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
 # /home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
 # /home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
 # /home/mike/repos/trimnoir/_layouts/home.html  # [265 tokens | 905 bytes]
 # /home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
-scripts/articles/list_models.py  # [165 tokens | 651 bytes]
+# scripts/articles/list_models.py  # [165 tokens | 651 bytes]
 # scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
 # scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
+# scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
 # scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
 # scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
 # scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
