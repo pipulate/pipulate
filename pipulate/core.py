@@ -2639,26 +2639,23 @@ class Pipulate:
 
     def collect_config(self, job: str, config_keys: list):
         """
-        Ensures a list of configuration keys exist in the job state.
-        If missing, prompts the user via a UI widget and saves to wand.db.
+        Displays a UI widget form to collect or update job-specific configuration.
+        Pre-fills inputs with existing values from wand.db if available.
         """
         import ipywidgets as widgets
         from IPython.display import display, clear_output
 
-        missing_keys = [k for k in config_keys if not self.get(job, k)]
-        
-        if not missing_keys:
-            self.speak(f"Configuration for job '{job}' is complete and loaded.")
-            self.imperio()
+        if not self.is_notebook_context:
+            print(f"ℹ️ collect_config called for job '{job}'. Pre-fill available in Notebooks.")
             return
 
-        self.speak(f"I need some specific details for the '{job}' session.")
-        
-        # Build a form with inputs for all missing keys
+        # 1. Build the form inputs with pre-filled data
         inputs = {}
-        for key in missing_keys:
+        for key in config_keys:
+            existing_val = self.get(job, key) or ""
             label = key.replace('_', ' ').title()
             inputs[key] = widgets.Text(
+                value=existing_val,
                 placeholder=f"Enter {label}...",
                 description=f"{label}:",
                 style={'description_width': 'initial'},
@@ -2666,7 +2663,7 @@ class Pipulate:
             )
 
         submit_btn = widgets.Button(
-            description="Lock in Session Config", 
+            description="Update Session Config", 
             button_style='primary',
             icon='save'
         )
@@ -2677,18 +2674,29 @@ class Pipulate:
             with out:
                 clear_output()
                 all_valid = True
+                updates = []
                 for k, widget in inputs.items():
                     val = widget.value.strip()
                     if val:
                         self.set(job, k, val)
+                        updates.append(k)
                     else:
                         all_valid = False
                         print(f"❌ '{k}' cannot be empty.")
                 
                 if all_valid:
-                    self.speak("Session configuration saved to database.")
-                    for w in list(inputs.values()) + [submit_btn]:
-                        w.close()
+                    self.speak(f"Job '{job}' updated with: {', '.join(updates)}.")
+                    # Keep widgets open so they can see the success, 
+                    # but maybe change button color to show it's "saved"
+                    submit_btn.button_style = 'success'
+                    submit_btn.description = "Config Locked & Saved"
+                    self.imperio()
 
         submit_btn.on_click(on_submit)
+        
+        # Display the "Control Panel"
         display(widgets.VBox(list(inputs.values()) + [submit_btn, out]))
+        
+        # If data already existed, give a silent nudge that they can proceed
+        if all(self.get(job, k) for k in config_keys):
+            print(f"✅ Existing config detected for '{job}'. You may update above or proceed.")
