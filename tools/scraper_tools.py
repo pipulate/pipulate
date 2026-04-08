@@ -80,7 +80,7 @@ async def selenium_automation(params: dict) -> dict:
     # --- CACHE OVERRIDE LOGIC ---
     if override_cache and output_dir.exists():
         if verbose:
-            logger.warning(f"🧹 override_cache is True. Clearing existing directory: {output_dir}")
+            logger.info(f"🧹 override_cache is True. Clearing existing directory: {output_dir}")
         try:
             shutil.rmtree(output_dir)
         except Exception as e:
@@ -256,7 +256,7 @@ async def selenium_automation(params: dict) -> dict:
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "body")))
             if verbose: logger.success("✅ Main content located!")
         except Exception as e:
-            if verbose: logger.warning(f"Did not detect a page reload for security challenge. Proceeding anyway. Error: {e}")
+            if verbose: logger.info(f"Did not detect a page reload for security challenge. Proceeding anyway.")
 
         # --- Capture Core Artifacts ---
         dom_content = driver.execute_script("return document.documentElement.outerHTML;")

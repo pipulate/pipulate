@@ -29,15 +29,17 @@
 
 AI_PHOOEY_CHOP = """\
 # # USEFUL INITIALIZATION
-# README.md  # [20,467 tokens | 103,208 bytes]
-# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
-# pyproject.toml  # [677 tokens | 2,299 bytes]
-# # ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
-# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
+README.md  # [20,467 tokens | 103,208 bytes]
+AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
+pyproject.toml  # [677 tokens | 2,299 bytes]
+# ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
+scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
+
+imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
 
 # /home/mike/repos/bookforge/30_drafts/ch_01_0_blueprint.md  # [1,114 tokens | 4,729 bytes]
 # /home/mike/repos/bookforge/30_drafts/ch_01_1_rough.md  # [1,185 tokens | 6,148 bytes]
@@ -57,19 +59,6 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # /home/mike/repos/bookforge/skills/chapter-drafter/prompt.md  # [358 tokens | 1,626 bytes]
 # /home/mike/repos/bookforge/skills/book-refiner/prompt.md  # [511 tokens | 2,201 bytes]
  
-# /home/mike/repos/bookforge/30_drafts/ch_01_blueprint.md  # [1,114 tokens | 4,729 bytes]
-# /home/mike/repos/bookforge/30_drafts/ch_02_blueprint.md  # [1,038 tokens | 4,434 bytes]
-# /home/mike/repos/bookforge/30_drafts/ch_03_blueprint.md  # [1,246 tokens | 5,400 bytes]
-# /home/mike/repos/bookforge/30_drafts/ch_04_blueprint.md  # [963 tokens | 4,336 bytes]
-# /home/mike/repos/bookforge/30_drafts/ch_05_blueprint.md  # [974 tokens | 4,243 bytes]
-# /home/mike/repos/bookforge/30_drafts/ch_06_blueprint.md  # [1,226 tokens | 5,236 bytes]
-# /home/mike/repos/bookforge/30_drafts/ch_07_blueprint.md  # [1,204 tokens | 5,035 bytes]
-# /home/mike/repos/bookforge/30_drafts/ch_08_blueprint.md  # [899 tokens | 4,033 bytes]
-# /home/mike/repos/bookforge/30_drafts/ch_09_blueprint.md  # [1,162 tokens | 5,060 bytes]
-# /home/mike/repos/bookforge/30_drafts/ch_10_blueprint.md  # [1,108 tokens | 5,021 bytes]
-# /home/mike/repos/bookforge/30_drafts/ch_11_blueprint.md  # [1,181 tokens | 5,228 bytes]
-# /home/mike/repos/bookforge/30_drafts/ch_12_blueprint.md  # [1,091 tokens | 4,720 bytes]
-# 
 # /home/mike/repos/bookforge/skills/repo-handoff-checkpoint/SKILL.md  # [385 tokens | 1,786 bytes]
 # /home/mike/repos/bookforge/skills/repo-handoff-checkpoint/scripts/make_checkpoint.py  # [401 tokens | 1,862 bytes]
 # /home/mike/repos/bookforge/skills/repo-handoff-checkpoint/agents/openai.yaml  # [13 tokens | 53 bytes]
@@ -287,10 +276,10 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # https://www.datacamp.com/tutorial/guide-to-autoresearch
 # !https://www.datacamp.com/tutorial/guide-to-autoresearch
 
-assets/nbs/Onboarding.ipynb  # [3,807 tokens | 12,678 bytes]
-assets/nbs/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
-Notebooks/Onboarding.ipynb  # [5,167 tokens | 17,293 bytes]
-Notebooks/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
+# assets/nbs/Onboarding.ipynb  # [3,807 tokens | 12,678 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
+# Notebooks/Onboarding.ipynb  # [5,167 tokens | 17,293 bytes]
+# Notebooks/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
 
 # Continuing the LLMectomy
 # pyproject.toml  # [677 tokens | 2,299 bytes]
@@ -327,7 +316,7 @@ Notebooks/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
 # tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
 # tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 
-flake.nix  # [7,711 tokens | 32,991 bytes]
+# flake.nix  # [7,711 tokens | 32,991 bytes]
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
 
 # # HOW TO FIND MARKDOWN ACCEPTERS
@@ -377,43 +366,43 @@ flake.nix  # [7,711 tokens | 32,991 bytes]
 
 # CHAPTER 0: ONBOARDING
 # !https://pipulate.com/
-# /home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
-# flake.nix  # [7,721 tokens | 32,979 bytes]
-# pyproject.toml  # [677 tokens | 2,299 bytes]
-# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
-# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-# apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
-# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+/home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
+flake.nix  # [7,721 tokens | 32,979 bytes]
+pyproject.toml  # [677 tokens | 2,299 bytes]
+assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
+apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
+assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
  
 # CHAPTER 1: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
-# /home/mike/repos/Pipulate.com/index.md  # [2,361 tokens | 10,579 bytes]
-# assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
-# flake.nix  # [7,721 tokens | 32,979 bytes]
-# pyproject.toml  # [677 tokens | 2,299 bytes]
-# .gitignore  # [573 tokens | 2,089 bytes]
-# config.py  # [4,098 tokens | 15,949 bytes]
-# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
-# README.md  # [20,467 tokens | 103,208 bytes]
-# cli.py  # [5,092 tokens | 22,615 bytes]
-# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+/home/mike/repos/Pipulate.com/index.md  # [2,361 tokens | 10,579 bytes]
+assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
+flake.nix  # [7,721 tokens | 32,979 bytes]
+pyproject.toml  # [677 tokens | 2,299 bytes]
+.gitignore  # [573 tokens | 2,089 bytes]
+config.py  # [4,098 tokens | 15,949 bytes]
+AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
+README.md  # [20,467 tokens | 103,208 bytes]
+cli.py  # [5,092 tokens | 22,615 bytes]
+apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH (~260KB)
 config.py  # [4,098 tokens | 15,949 bytes] server.py  # [54,246 tokens | 258,931 bytes] requirements.in  # [573 tokens | 1,924 bytes] requirements.txt  # [7,010 tokens | 18,582 bytes]
 server.py   # [54,246 tokens | 258,931 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
-config.py  # [4,098 tokens | 15,949 bytes]
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
+# config.py  # [4,098 tokens | 15,949 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 
 
 # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
@@ -449,11 +438,11 @@ imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 # tools/mcp_tools.py  # [36,628 tokens | 186,793 bytes]
  
 # CHAPTER 6: THE SKIN (FRONTEND ASSETS & INIT) (~265KB)
-assets/init.js  # [2,303 tokens | 12,158 bytes]
-assets/pipulate.js  # [4,889 tokens | 24,977 bytes]
-assets/styles.css  # [18,671 tokens | 81,016 bytes]
-assets/theme.js  # [930 tokens | 4,337 bytes]
-assets/utils.js  # [3,125 tokens | 15,103 bytes]
+# assets/init.js  # [2,303 tokens | 12,158 bytes]
+# assets/pipulate.js  # [4,889 tokens | 24,977 bytes]
+# assets/styles.css  # [18,671 tokens | 81,016 bytes]
+# assets/theme.js  # [930 tokens | 4,337 bytes]
+# assets/utils.js  # [3,125 tokens | 15,103 bytes]
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 # assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
 # assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
