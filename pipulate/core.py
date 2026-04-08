@@ -448,39 +448,48 @@ class Pipulate:
             self.logger.error(f"❌ Failed to open folder. Error: {e}")
             return False
 
-    def speak(self, text: str):
+    def speak(self, text: str, delay: float = 0.0, wait: bool = True):
         """
         Synthesizes text to speech using the global ChipVoiceSystem if available.
-        Fails gracefully to simple printing if the audio backend is unavailable
-        or if the user has globally muted the voice.
+        Fails gracefully to simple printing if the audio backend is unavailable.
+        
+        Args:
+            text (str): The text to synthesize and speak.
+            delay (float): Seconds to wait before speaking (useful for background narration).
+            wait (bool): If True, blocks execution until speech finishes. If False, runs in background.
         """
         print(f"{CFG.WAND_SPEAKS_EMOJI} {text}")
         
-        # --- NEW GLOBAL MUTE CHECK ---
         # Check if the user has globally enabled voice. Default is '0' (Off)
         voice_enabled = self.db.get('voice_enabled', '0') == '1'
         
         if not voice_enabled:
             return # Exit early, the print statement acts as the visual fallback
-        # -----------------------------
 
-        try:
-            # We import here to avoid circular dependencies and unnecessary 
-            # loading if the user never calls pip.speak()
-            from imports.voice_synthesis import chip_voice_system
-            if chip_voice_system and chip_voice_system.voice_ready:
-                 # --- CHISEL STRIKE: Acoustic Sanitization ---
-                 # Strip invisible characters or weird punctuation that confuse Piper's phoneme map.
-                 # Using the unicode escape to prevent Neovim syntax highlighting breaks.
-                 safe_text = text.replace('\u0329', '')
-                 
-                 # Replace complex punctuation with phonetic equivalents or spaces
-                 safe_text = safe_text.replace('—', ', ').replace('–', ', ')
-                 # --------------------------------------------
-                 chip_voice_system.speak_text(safe_text)
-        except Exception as e:
-            # We fail silently because the print() statement above acts as our fallback
-            pass
+        def _execute_speech():
+            if delay > 0:
+                import time
+                time.sleep(delay)
+            try:
+                # Import here to avoid circular dependencies
+                from imports.voice_synthesis import chip_voice_system
+                if chip_voice_system and chip_voice_system.voice_ready:
+                     # Acoustic Sanitization
+                     safe_text = text.replace('\u0329', '')
+                     safe_text = safe_text.replace('—', ', ').replace('–', ', ')
+                     
+                     # This blocks the current thread while playing, 
+                     # which is perfect if we are in a daemon thread.
+                     chip_voice_system.speak_text(safe_text)
+            except Exception:
+                pass
+
+        # If we don't want to wait, or if we have a delay, spawn a background thread
+        if not wait or delay > 0:
+            import threading
+            threading.Thread(target=_execute_speech, daemon=True).start()
+        else:
+            _execute_speech()
 
     def mute(self, verbose: bool = True):
         """Instantly silence the AI and disable future voice output globally."""
