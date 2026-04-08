@@ -2601,3 +2601,38 @@ class Pipulate:
         else:
             print(f"❌ Missing {env_var_name} in environment. Please add it to your .env file.")
             return None
+
+    def reset_credentials(self, env_var_name: str, service_name: str = None):
+        """
+        Removes a credential from the active environment and the .env vault, 
+        then immediately prompts the user to enter a new one via the UI widget.
+        
+        Args:
+            env_var_name (str): The environment variable to remove (e.g., 'BOTIFY_API_TOKEN').
+            service_name (str): Friendly name for the UI (e.g., 'Botify'). Auto-derived if None.
+        """
+        import os
+        from dotenv import load_dotenv, set_key
+        from IPython.display import clear_output
+        
+        if not service_name:
+            service_name = env_var_name.split('_')[0].title()
+
+        # 1. Clear from active environment
+        if env_var_name in os.environ:
+            del os.environ[env_var_name]
+            
+        # 2. Clear from .env vault by setting it to an empty string
+        project_root = self._find_project_root(os.getcwd()) or Path.cwd()
+        env_path = project_root / ".env"
+        
+        if env_path.exists():
+            set_key(str(env_path), env_var_name, "")
+            self.speak(f"{service_name} credentials cleared from the vault.")
+        
+        # 3. If in a notebook, clear the cell output and pop the widget back up
+        if self.is_notebook_context:
+            clear_output(wait=True)
+            self.ensure_credentials(env_var_name, service_name)
+        else:
+            print(f"✅ {env_var_name} has been reset. Please update your .env file.")
