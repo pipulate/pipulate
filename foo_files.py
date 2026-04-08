@@ -40,8 +40,6 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-!https://cloud.google.com/blog/products/ai-machine-learning/gemma-4-available-on-google-cloud
-
 # /home/mike/repos/bookforge/30_drafts/ch_01_0_blueprint.md  # [1,114 tokens | 4,729 bytes]
 # /home/mike/repos/bookforge/30_drafts/ch_01_1_rough.md  # [1,185 tokens | 6,148 bytes]
 # /home/mike/repos/bookforge/30_drafts/ch_02_0_blueprint.md  # [1,038 tokens | 4,434 bytes]
