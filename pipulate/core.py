@@ -2244,12 +2244,20 @@ class Pipulate:
 
         ### NEW LOGIC STARTS HERE ###
         class SecretScrubber(ast.NodeTransformer):
-            """An AST transformer to replace string literals in assignments with None."""
+            """An AST transformer to replace string literals in assignments with safe defaults or None."""
             def visit_Assign(self, node):
                 # Check if the value being assigned is a string constant
                 if isinstance(node.value, ast.Constant) and isinstance(node.value.value, str):
-                    # Replace the string value with None
-                    node.value = ast.Constant(value=None)
+                    # Identify the target variable names of this assignment
+                    target_names = [t.id for t in node.targets if isinstance(t, ast.Name)]
+                    
+                    if "CLIENT_DOMAIN" in target_names:
+                        node.value = ast.Constant(value="uhnd.com")
+                    elif "BOTIFY_PROJECT_URL" in target_names:
+                        node.value = ast.Constant(value="https://app.botify.com/uhnd-com/uhnd.com-demo-account/")
+                    else:
+                        # Replace all other string values with None
+                        node.value = ast.Constant(value=None)
                 return node
         ### NEW LOGIC ENDS HERE ###
 
