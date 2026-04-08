@@ -40,7 +40,9 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
+assets/nbs/imports/onboard_sauce.py  # [3,181 tokens | 14,316 bytes]
+pipulate/core.py  # [24,509 tokens | 118,816 bytes]
+scripts/articles/articleizer.py  # [2,795 tokens | 12,814 bytes]
 
 # /home/mike/repos/bookforge/30_drafts/ch_01_0_blueprint.md  # [1,114 tokens | 4,729 bytes]
 # /home/mike/repos/bookforge/30_drafts/ch_01_1_rough.md  # [1,185 tokens | 6,148 bytes]
@@ -277,23 +279,17 @@ imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
 # https://www.datacamp.com/tutorial/guide-to-autoresearch
 # !https://www.datacamp.com/tutorial/guide-to-autoresearch
 
-assets/nbs/Onboarding.ipynb  # [3,807 tokens | 12,678 bytes]
-assets/nbs/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
-Notebooks/Onboarding.ipynb  # [5,167 tokens | 17,293 bytes]
-Notebooks/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
+# assets/nbs/Onboarding.ipynb  # [3,807 tokens | 12,678 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
+# Notebooks/Onboarding.ipynb  # [5,167 tokens | 17,293 bytes]
+# Notebooks/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
 
 # Continuing the LLMectomy
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 # requirements.in  # [573 tokens | 1,924 bytes]
 # assets/nbs/Onboarding.ipynb  # [3,133 tokens | 10,252 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [1,341 tokens | 6,010 bytes]
-# assets/nbs/imports/faq_writer_sauce.py  # [6,006 tokens | 26,636 bytes]
-# assets/nbs/imports/url_inspect_sauce.py  # [11,083 tokens | 50,229 bytes]
-# scripts/articles/articleizer.py  # [2,797 tokens | 12,820 bytes]
-# scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
-# scripts/articles/diagramizer.py  # [1,912 tokens | 8,193 bytes]
 # scripts/articles/list_models.py  # [165 tokens | 651 bytes]
-# scripts/articles/other/list_models.py  # [157 tokens | 685 bytes]
  
 # imports/stream_orchestrator.py  # (The mid-stream catcher)
 # imports/mcp_orchestrator.py  # (The tool dispatcher)
@@ -317,7 +313,7 @@ Notebooks/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
 # tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
 # tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 
-flake.nix  # [7,711 tokens | 32,991 bytes]
+# flake.nix  # [7,711 tokens | 32,991 bytes]
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
 
 # # HOW TO FIND MARKDOWN ACCEPTERS
@@ -374,7 +370,7 @@ flake.nix  # [7,711 tokens | 32,991 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
 # pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 # apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
 # apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
 # assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
@@ -501,25 +497,25 @@ pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 # Publishing, Notebook Templates, and topological self-healing.
 
 # # CHAPTER 14: THE NOTEBOOK TEMPLATES (~100KB)
-flake.nix  # [7,962 tokens | 34,057 bytes]
-Notebooks/Onboarding.ipynb  # [4,504 tokens | 14,798 bytes]
-Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
-assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb  # [2,317 tokens | 7,323 bytes]
-assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
-assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [9,228 tokens | 31,278 bytes]
-assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
-assets/nbs/imports/core_sauce.py  # [811 tokens | 3,362 bytes]
-assets/nbs/imports/onboard_sauce.py  # [ imports Ceiling Level ]
-assets/nbs/imports/faq_writer_sauce.py  # [6,042 tokens | 26,760 bytes]
-assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
+# flake.nix  # [7,962 tokens | 34,057 bytes]
+# Notebooks/Onboarding.ipynb  # [4,504 tokens | 14,798 bytes]
+# Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
+# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+# assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb  # [2,317 tokens | 7,323 bytes]
+# assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
+# assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [9,228 tokens | 31,278 bytes]
+# assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
+# assets/nbs/imports/core_sauce.py  # [811 tokens | 3,362 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [ imports Ceiling Level ]
+# assets/nbs/imports/faq_writer_sauce.py  # [6,042 tokens | 26,760 bytes]
+# assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
 # # assets/nbs/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 # # assets/nbs/imports/videditor_sauce.py  # [937 tokens | 4,098 bytes]
 
 # CHAPTER 15: JEKYLL PUBLISHING
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
-# scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
-# scripts/articles/common.py  # [881 tokens | 3,571 bytes]
+scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
+scripts/articles/common.py  # [881 tokens | 3,571 bytes]
 # scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
 # /home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
 # /home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
@@ -776,6 +772,7 @@ CHOP_CHAPTER_DRAFTER = """\
 # scripts/articles/build_book_passes.py  # [535 tokens | 2,210 bytes]
 # scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
+# scripts/articles/diagramizer.py  # [1,912 tokens | 8,193 bytes]
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
 # scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
