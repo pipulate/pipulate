@@ -202,6 +202,11 @@ def main():
         action='store_true',
         help=f"Use local '{INSTRUCTIONS_CACHE_FILE}' cache instead of calling the API."
     )
+    parser.add_argument(
+        '--copy',
+        action='store_true',
+        help="Copy the generated prompt to the clipboard and exit without calling the API."
+    )
     common.add_standard_arguments(parser)
     args = parser.parse_args()
 
@@ -241,6 +246,16 @@ def main():
             prompt_template = f.read()
 
         full_prompt = prompt_template.replace(PROMPT_PLACEHOLDER, article_text)
+
+        if args.copy:
+            try:
+                # We borrow the existing robust clipboard function from prompt_foo
+                import subprocess
+                subprocess.run(['pbcopy'] if sys.platform == 'darwin' else ['xclip', '-selection', 'clipboard'], input=full_prompt.encode('utf-8'), check=True)
+                print("📋 Prompt copied to clipboard! You can now paste it into any web UI.")
+            except Exception as e:
+                print(f"❌ Failed to copy to clipboard: {e}")
+            return
 
         print(f"Calling the Universal Adapter (using {DEFAULT_MODEL})...")
         max_retries = 5
