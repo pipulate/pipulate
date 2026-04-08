@@ -29,11 +29,12 @@
 
 AI_PHOOEY_CHOP = """\
 # # USEFUL INITIALIZATION
-README.md  # [20,467 tokens | 103,208 bytes]
-AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
-pyproject.toml  # [677 tokens | 2,299 bytes]
-# ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
-scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
+# README.md  # [20,467 tokens | 103,208 bytes]
+# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
+# pyproject.toml  # [677 tokens | 2,299 bytes]
+# # ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
+# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
+.gitignore  # [573 tokens | 2,089 bytes]
 prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
@@ -276,10 +277,10 @@ imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
 # https://www.datacamp.com/tutorial/guide-to-autoresearch
 # !https://www.datacamp.com/tutorial/guide-to-autoresearch
 
-# assets/nbs/Onboarding.ipynb  # [3,807 tokens | 12,678 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
-# Notebooks/Onboarding.ipynb  # [5,167 tokens | 17,293 bytes]
-# Notebooks/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
+assets/nbs/Onboarding.ipynb  # [3,807 tokens | 12,678 bytes]
+assets/nbs/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
+Notebooks/Onboarding.ipynb  # [5,167 tokens | 17,293 bytes]
+Notebooks/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
 
 # Continuing the LLMectomy
 # pyproject.toml  # [677 tokens | 2,299 bytes]
@@ -316,7 +317,7 @@ imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
 # tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
 # tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 
-# flake.nix  # [7,711 tokens | 32,991 bytes]
+flake.nix  # [7,711 tokens | 32,991 bytes]
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
 
 # # HOW TO FIND MARKDOWN ACCEPTERS
@@ -366,36 +367,36 @@ imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
 
 # CHAPTER 0: ONBOARDING
 # !https://pipulate.com/
-/home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
-flake.nix  # [7,721 tokens | 32,979 bytes]
-pyproject.toml  # [677 tokens | 2,299 bytes]
-assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# /home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
+# flake.nix  # [7,721 tokens | 32,979 bytes]
+# pyproject.toml  # [677 tokens | 2,299 bytes]
+# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
 pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
-apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
-assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+# apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
+# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
  
 # CHAPTER 1: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
-/home/mike/repos/Pipulate.com/index.md  # [2,361 tokens | 10,579 bytes]
-assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
-flake.nix  # [7,721 tokens | 32,979 bytes]
-pyproject.toml  # [677 tokens | 2,299 bytes]
-.gitignore  # [573 tokens | 2,089 bytes]
-config.py  # [4,098 tokens | 15,949 bytes]
-AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
-README.md  # [20,467 tokens | 103,208 bytes]
-cli.py  # [5,092 tokens | 22,615 bytes]
-apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+# /home/mike/repos/Pipulate.com/index.md  # [2,361 tokens | 10,579 bytes]
+# assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
+# flake.nix  # [7,721 tokens | 32,979 bytes]
+# pyproject.toml  # [677 tokens | 2,299 bytes]
+# .gitignore  # [573 tokens | 2,089 bytes]
+# config.py  # [4,098 tokens | 15,949 bytes]
+# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
+# README.md  # [20,467 tokens | 103,208 bytes]
+# cli.py  # [5,092 tokens | 22,615 bytes]
+# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH (~260KB)
-config.py  # [4,098 tokens | 15,949 bytes] server.py  # [54,246 tokens | 258,931 bytes] requirements.in  # [573 tokens | 1,924 bytes] requirements.txt  # [7,010 tokens | 18,582 bytes]
-server.py   # [54,246 tokens | 258,931 bytes]
+# config.py  # [4,098 tokens | 15,949 bytes] server.py  # [54,246 tokens | 258,931 bytes] requirements.in  # [573 tokens | 1,924 bytes] requirements.txt  # [7,010 tokens | 18,582 bytes]
+# server.py   # [54,246 tokens | 258,931 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
 # config.py  # [4,098 tokens | 15,949 bytes]
@@ -500,18 +501,18 @@ server.py   # [54,246 tokens | 258,931 bytes]
 # Publishing, Notebook Templates, and topological self-healing.
 
 # # CHAPTER 14: THE NOTEBOOK TEMPLATES (~100KB)
-# flake.nix  # [7,962 tokens | 34,057 bytes]
-# Notebooks/Onboarding.ipynb  # [4,504 tokens | 14,798 bytes]
-# Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
-# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-# assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb  # [2,317 tokens | 7,323 bytes]
-# assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
-# assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [9,228 tokens | 31,278 bytes]
-# assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
-# assets/nbs/imports/core_sauce.py  # [811 tokens | 3,362 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [ imports Ceiling Level ]
-# assets/nbs/imports/faq_writer_sauce.py  # [6,042 tokens | 26,760 bytes]
-# assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
+flake.nix  # [7,962 tokens | 34,057 bytes]
+Notebooks/Onboarding.ipynb  # [4,504 tokens | 14,798 bytes]
+Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
+assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb  # [2,317 tokens | 7,323 bytes]
+assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
+assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [9,228 tokens | 31,278 bytes]
+assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
+assets/nbs/imports/core_sauce.py  # [811 tokens | 3,362 bytes]
+assets/nbs/imports/onboard_sauce.py  # [ imports Ceiling Level ]
+assets/nbs/imports/faq_writer_sauce.py  # [6,042 tokens | 26,760 bytes]
+assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
 # # assets/nbs/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 # # assets/nbs/imports/videditor_sauce.py  # [937 tokens | 4,098 bytes]
 
