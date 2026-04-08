@@ -312,7 +312,6 @@ def ensure_cloud_credentials(cloud_model_id):
         # Key is already present, keep the rhythm flowing
         wand.speak("Cloud credentials verified in your environment.")
         print(f"✅ Secure connection ready for {cloud_model_id}.")
-        wand.imperio()
 
 # Add this function to the bottom of assets/nbs/imports/onboard_sauce.py
 
