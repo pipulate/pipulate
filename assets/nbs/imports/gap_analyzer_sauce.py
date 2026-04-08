@@ -1417,14 +1417,16 @@ def fetch_botify_data_and_save(job: str, botify_token: str, botify_project_url: 
             botify_export_df = pd.DataFrame()  # Reset DF if read fails
 
     # Only attempt download if not loaded from existing file
+    # ... inside fetch_botify_data_and_save ...
     if not loaded_from_existing:
         print("  Attempting download with Full GSC Payload...")
-        # Pass botify_token to the helper
-        status_code, _ = _export_data('v1', org, project, payload_full, report_name, analysis=analysis)
+        # FIX: Added botify_token here
+        status_code, _ = _export_data('v1', org, project, payload_full, report_name, botify_token, analysis=analysis)
 
-        if status_code not in [200, 201]:  # Check includes 201 for job creation success
+        if status_code not in [200, 201]:
             print("    -> Full Payload failed. Attempting Fallback Payload (no GSC data)...")
-            status_code, _ = _export_data('v1', org, project, payload_fallback, report_name, analysis=analysis)
+            # FIX: Added botify_token here
+            status_code, _ = _export_data('v1', org, project, payload_fallback, report_name, botify_token, analysis=analysis)
 
         # After attempts, check if the file exists and try to read it
         if report_name.exists():
