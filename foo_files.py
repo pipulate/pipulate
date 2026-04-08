@@ -40,6 +40,31 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F/accessibility_tree.json  # [220,652 tokens | 842,823 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F/accessibility_tree_summary.txt  # [52 tokens | 182 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F/dom_hierarchy.html  # [389,452 tokens | 1,233,904 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F/dom_hierarchy.txt  # [138,758 tokens | 576,153 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F/dom_layout_boxes.html  # [5,800 tokens | 44,403 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F/dom_layout_boxes.txt  # [3,342 tokens | 37,351 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F/headers.json  # [1,092 tokens | 2,983 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F/rendered_dom.html  # [465,394 tokens | 1,605,638 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F/seo.md  # [14,996 tokens | 49,454 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F/simple_dom.html  # [93,096 tokens | 386,384 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F/source.html  # [251,600 tokens | 1,009,622 bytes]
+
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F-preview/accessibility_tree.json  # [218,529 tokens | 834,390 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F-preview/accessibility_tree_summary.txt  # [65 tokens | 200 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F-preview/dom_hierarchy.html  # [406,328 tokens | 1,273,374 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F-preview/dom_hierarchy.txt  # [147,146 tokens | 593,145 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F-preview/dom_layout_boxes.html  # [8,421 tokens | 60,137 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F-preview/dom_layout_boxes.txt  # [5,116 tokens | 50,667 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F-preview/headers.json  # [1,102 tokens | 3,022 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F-preview/rendered_dom.html  # [470,107 tokens | 1,620,277 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F-preview/seo.md  # [15,638 tokens | 51,521 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F-preview/simple_dom.html  # [95,960 tokens | 396,052 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.stevemadden.com/%2F-preview/source.html  # [253,977 tokens | 1,015,169 bytes]
+
+
 # /home/mike/repos/trimnoir/_posts/2026-04-08-async-narration-metadata-minefield.md  # [Idx: 1011 | Order: 1 | Tokens: 16,036 | Bytes: 63,514]
 # /home/mike/repos/trimnoir/_posts/2026-04-08-llmectomy-universal-adapter-resilience.md  # [Idx: 1012 | Order: 2 | Tokens: 23,076 | Bytes: 89,108]
 
@@ -394,10 +419,10 @@ assets/nbs/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
 # server.py   # [54,246 tokens | 258,931 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
-config.py  # [4,098 tokens | 15,949 bytes]
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# config.py  # [4,098 tokens | 15,949 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 # imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 
 
