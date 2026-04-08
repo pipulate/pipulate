@@ -56,7 +56,7 @@ def clean_json_string(text):
                 pass
         return None
 
-def generate_context_json(article_data, token_count):
+def generate_context_json(article_data, token_count, api_key=None):
     """
     Calls Gemini to compress the article.
     Returns: (json_object, duration, status_code)
