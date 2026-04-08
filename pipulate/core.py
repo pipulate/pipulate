@@ -2542,7 +2542,6 @@ class Pipulate:
         if current_val:
             self.speak(f"{service_name} credentials verified in your environment.")
             print(f"✅ Secure {service_name} connection ready.")
-            self.imperio()
             return current_val
 
         # 2. Interactive Fallback for Notebooks
@@ -2585,7 +2584,6 @@ class Pipulate:
                         # Hide the widget and maintain the rhythm
                         key_input.close()
                         submit_btn.close()
-                        self.imperio()
                     else:
                         print("❌ Please enter a valid API key.")
             
