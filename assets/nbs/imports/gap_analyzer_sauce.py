@@ -263,26 +263,23 @@ def collect_semrush_downloads(job: str, download_path_str: str, file_pattern_xls
 
 def find_semrush_files_and_generate_summary(job: str, competitor_limit: int = None):
     """
-    Finds SEMRush files, stores paths in wand state, and generates a Markdown summary.
+    Finds SEMRush files, stores paths in wand state, and prints a summary to the console.
 
     Args:
         job (str): The current Pipulate job ID.
-        competitor_limit (int, optional): Max number of competitors to list in summary. Defaults to None (list all).
-
+        competitor_limit (int, optional): Max number of competitors to list. Defaults to None.
 
     Returns:
-        str: A Markdown formatted string summarizing the found files, or a warning message.
+        bool: True if files were found, False otherwise.
     """
-    print(f"🔍 Locating SEMRush files for job '{job}' and generating summary...")
+    print(f"🔍 Locating SEMRush files for job '{job}'...")
     semrush_dir = wand.paths.downloads / job
-    markdown_output_lines = [] # Initialize list to build Markdown output
 
     # Ensure the directory exists
     if not semrush_dir.is_dir():
-         warning_msg = f"⚠️ **Warning:** Download directory `{semrush_dir.resolve()}` not found. Assuming no files collected yet."
-         print(warning_msg.replace("**","")) # Print clean version to console
-         wand.set(job, 'collected_semrush_files', [])
-         return warning_msg # Return Markdown warning
+        print(f"⚠️ Warning: Download directory '{semrush_dir.resolve()}' not found. Assuming no files collected yet.")
+        wand.set(job, 'collected_semrush_files', [])
+        return False
 
     file_patterns = [
         "*-organic.Positions*.xlsx",
@@ -299,35 +296,33 @@ def find_semrush_files_and_generate_summary(job: str, competitor_limit: int = No
         wand.set(job, 'collected_semrush_files', all_downloaded_files_as_str)
         # ---------------------------
 
-        # --- Generate Markdown Output ---
         if all_downloaded_files:
             print(f"💾 Found {len(all_downloaded_files)} files and stored paths in wand state.")
-            markdown_output_lines.append("## 💾 Found Downloaded Files")
-            markdown_output_lines.append(f"✅ **{len(all_downloaded_files)} files** ready for processing in `{semrush_dir}/`\n")
+            print(f"✅ {len(all_downloaded_files)} files ready for processing in {semrush_dir}/")
 
             display_limit = competitor_limit if competitor_limit is not None else len(all_downloaded_files)
             if display_limit < len(all_downloaded_files):
-                 markdown_output_lines.append(f"*(Displaying first {display_limit} based on COMPETITOR_LIMIT)*\n")
+                print(f"(Displaying first {display_limit} based on competitor limit)")
 
             for i, file in enumerate(all_downloaded_files[:display_limit]):
                 try:
                     domain_name = file.name[:file.name.index("-organic.")].strip()
                 except ValueError:
-                    domain_name = file.name # Fallback
-                markdown_output_lines.append(f"{i + 1}. **`{domain_name}`** ({file.suffix.upper()})")
+                    domain_name = file.name  # Fallback
+                print(f"{i + 1}. {domain_name} ({file.suffix.upper()})")
+            
+            return True
 
         else:
             print(f"🤷 No files found matching patterns in '{semrush_dir}'. Stored empty list in wand state.")
-            warning_msg = f"⚠️ **Warning:** No SEMRush files found in `{semrush_dir.resolve()}/`.\n(Looking for `*-organic.Positions*.xlsx` or `*.csv`)"
-            markdown_output_lines.append(warning_msg)
-
-        return "\n".join(markdown_output_lines)
+            print(f"⚠️ Warning: No SEMRush files found in {semrush_dir.resolve()}/")
+            print(f"   (Looking for *-organic.Positions*.xlsx or .csv)")
+            return False
 
     except Exception as e:
-        error_msg = f"❌ An unexpected error occurred while listing SEMRush files: {e}"
-        print(error_msg)
+        print(f"❌ An unexpected error occurred while listing SEMRush files: {e}")
         wand.set(job, 'collected_semrush_files', []) # Store empty list on error
-        return f"❌ **Error:** An error occurred during file listing. Check logs. ({e})"
+        return False
 
 # In Notebooks/gap_analyzer_sauce.py
 import pandas as pd
