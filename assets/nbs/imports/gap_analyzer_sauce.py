@@ -83,7 +83,7 @@ DIALOGUE = {
 wand.register_dialogue(DIALOGUE)
 
 
-def extract_domains_and_print_urls(job: str, notebook_filename: str = "GAPalyzer.ipynb"):
+def extract_domains_and_print_urls(job: str, notebook_filename: str = "03_GAPalyzer.ipynb"):
     """
     Parses the specified notebook for competitor domains or subfolders,
     stores them using wand.set, and prints the generated SEMrush URLs

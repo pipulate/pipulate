@@ -40,6 +40,8 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
+deleteme.md  # [39,221 tokens | 164,579 bytes]
+
 # /home/mike/repos/trimnoir/_posts/2026-04-08-async-narration-metadata-minefield.md  # [Idx: 1011 | Order: 1 | Tokens: 16,036 | Bytes: 63,514]
 # /home/mike/repos/trimnoir/_posts/2026-04-08-llmectomy-universal-adapter-resilience.md  # [Idx: 1012 | Order: 2 | Tokens: 23,076 | Bytes: 89,108]
 
@@ -394,11 +396,11 @@ assets/nbs/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
 # server.py   # [54,246 tokens | 258,931 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
-# config.py  # [4,098 tokens | 15,949 bytes]
-# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-# imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
+config.py  # [4,098 tokens | 15,949 bytes]
+pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 
 
 # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
@@ -500,14 +502,14 @@ Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 # Notebooks/Onboarding.ipynb  # [4,504 tokens | 14,798 bytes]
 # Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
 # assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-# assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb  # [2,317 tokens | 7,323 bytes]
+assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb  # [2,317 tokens | 7,323 bytes]
 # assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
 # assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [9,228 tokens | 31,278 bytes]
 # assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
 # assets/nbs/imports/core_sauce.py  # [811 tokens | 3,362 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [ imports Ceiling Level ]
 # assets/nbs/imports/faq_writer_sauce.py  # [6,042 tokens | 26,760 bytes]
-# assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
+assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
 # # assets/nbs/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 # # assets/nbs/imports/videditor_sauce.py  # [937 tokens | 4,098 bytes]
 
@@ -742,7 +744,7 @@ CHOP_CHAPTER_DRAFTER = """\
 # assets/js/split.js  # [6,166 tokens | 29,959 bytes]
 # assets/js/surreal.js  # [3,812 tokens | 13,432 bytes]
 # assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
-# assets/nbs/imports/gap_analyzer_sauce.py  # [26,353 tokens | 117,030 bytes]
+# assets/nbs/imports/gap_analyzer_sauce.py  # [26,354 tokens | 117,033 bytes]
 # assets/nbs/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
 # assets/prompts/book_holographic.json  # [923 tokens | 3,726 bytes]
