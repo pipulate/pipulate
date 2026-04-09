@@ -980,29 +980,25 @@ def merge_filter_arrange_data(job: str, pivot_df: pd.DataFrame, agg_df: pd.DataF
         print(f"     Rows: {rows_pre_filter:,}, Columns: {cols_pre_filter:,}")
 
         # --- Filtering ---
-        print("\n🧹 Applying Brand and Negative Filters...")
-        kw_filter = [] # Initialize filter list
+        manual_negatives = wand.get(job, 'manual_negatives', [])
+        kw_filter = [] 
+        
+        # Load auto-generated filters
         if filter_file.exists():
-            try:
-                df_filter = pd.read_csv(filter_file, header=0)
-                # Ensure Filter column exists and handle potential NaNs robustly
-                if 'Filter' in df_filter.columns:
-                     kw_filter = df_filter["Filter"].dropna().astype(str).tolist()
-                else:
-                     print(f"  ⚠️ Filter file '{filter_file}' exists but missing 'Filter' column.")
+            df_filter = pd.read_csv(filter_file, header=0)
+            if 'Filter' in df_filter.columns:
+                 kw_filter = df_filter["Filter"].dropna().astype(str).tolist()
 
-            except Exception as e:
-                print(f"  ⚠️ Error reading filter file '{filter_file}': {e}")
+        # FUSE filters: Auto + Manual
+        combined_filter = list(set(kw_filter + manual_negatives))
 
-        if kw_filter:
-            pattern = '|'.join([re.escape(keyword) for keyword in kw_filter])
-            # Ensure 'Keyword' column exists before filtering
+        if combined_filter:
+            pattern = '|'.join([re.escape(keyword) for keyword in combined_filter])
             if 'Keyword' in pivotmerge_df.columns:
                  filtered_df = pivotmerge_df[~pivotmerge_df["Keyword"].astype(str).str.contains(pattern, case=False, na=False)]
-                 print(f"  ✅ Filter applied using {len(kw_filter)} terms from '{filter_file}'.")
+                 print(f"  ✅ Filter applied: {len(kw_filter)} auto + {len(manual_negatives)} manual terms.")
             else:
-                 print("  ⚠️ 'Keyword' column missing. Cannot apply filter.")
-                 filtered_df = pivotmerge_df # Skip filtering
+                 filtered_df = pivotmerge_df
         else:
             filtered_df = pivotmerge_df
             if filter_file.exists():
