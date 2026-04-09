@@ -592,23 +592,6 @@ class Pipulate:
         """Registers a dictionary of narrative scripts into the self's memory."""
         self.dialogue_tree.update(dialogue_dict)
 
-    def gab(self, step_key: str, **kwargs):
-        """
-        Looks up dialogue by key, formats it with local variables, and speaks.
-        This allows the notebook to explicitly trigger speech without cluttering cells.
-        """
-        script = self.dialogue_tree.get(step_key)
-        if not script:
-            print(f"⚠️ Dialogue key '{step_key}' not found.")
-            return
-            
-        output_msg = script.get("output", "").format(**kwargs)
-        next_msg = script.get("next", "").format(**kwargs)
-        
-        full_message = f"{output_msg} {next_msg}".strip()
-        if full_message:
-            self.speak(full_message)
-
     def make_singular(self, word):
         """Convert a potentially plural word to its singular form using simple rules.
 
