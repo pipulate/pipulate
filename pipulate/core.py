@@ -2693,3 +2693,36 @@ class Pipulate:
         # If data already existed, give a silent nudge that they can proceed
         if all(self.get(job, k) for k in config_keys):
             print(f"✅ Existing config detected for '{job}'. You may update above or proceed.")
+
+    def audit_environment(self):
+        """
+        Reveals the local Python reality and securely masks the .env vault.
+        Moves from a 'sauce' helper to a core Wand capability.
+        """
+        import sys
+        from dotenv import dotenv_values
+        
+        print("=== 🌍 YOUR LOCAL REALITY ===")
+        print(f"🐍 Python Executable: {sys.executable}")
+        print(f"📁 Working Directory: {os.getcwd()}")
+        
+        # Pulling from the Workspace Manifold
+        print(f"Logs Path: {self.paths.logs}")
+
+        print("\n=== 🛡️ THE VAULT (.env) ===")
+        # Look for .env in the project root
+        project_root = self._find_project_root(Path(__file__).resolve()) or Path.cwd()
+        env_path = project_root / '.env'
+        
+        if env_path.exists():
+            secrets = dotenv_values(env_path)
+            if secrets:
+                print("Your secrets are encrypted and safe. Here is what we see:")
+                for key, val in secrets.items():
+                    # Mask the value, showing only the first 4 chars
+                    masked = f"{val[:4]}••••••••••••••••" if val and len(val) > 4 else "••••••••••••••••"
+                    print(f"  🔑 {key}: {masked}")
+            else:
+                print("  Your vault exists but is currently empty.")
+        else:
+            print("  No .env file found yet. (The Gatekeeper will create one when needed!)")
