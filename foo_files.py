@@ -40,8 +40,6 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-deleteme.md  # [39,221 tokens | 164,579 bytes]
-
 # /home/mike/repos/trimnoir/_posts/2026-04-08-async-narration-metadata-minefield.md  # [Idx: 1011 | Order: 1 | Tokens: 16,036 | Bytes: 63,514]
 # /home/mike/repos/trimnoir/_posts/2026-04-08-llmectomy-universal-adapter-resilience.md  # [Idx: 1012 | Order: 2 | Tokens: 23,076 | Bytes: 89,108]
 
