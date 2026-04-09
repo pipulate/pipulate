@@ -549,8 +549,19 @@ class Pipulate:
         toggle.observe(on_toggle, 'value')
         display(widgets.VBox([toggle, out]))
 
-    def imperio(self):
-        self.speak("Done step. Run the next cell.")
+    def imperio(self, side_quest: bool = False):
+        """
+        The Compulsion. Finalizes a step and ushers the user to the next.
+        If a side_quest is active, the machine demands external action 
+        before the spell can continue.
+        """
+        if side_quest:
+            self.speak(
+                "Spell paused. You must complete the side-quest instructions "
+                "above before casting the next cell."
+            )
+        else:
+            self.speak("Done step. Run the next cell.")
 
     def show_llm_optics(self, target_url: str):
         """Displays a numbered, alphabetical list of files and a button to open the cache directory."""
