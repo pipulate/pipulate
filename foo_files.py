@@ -742,7 +742,7 @@ CHOP_CHAPTER_DRAFTER = """\
 # assets/js/split.js  # [6,166 tokens | 29,959 bytes]
 # assets/js/surreal.js  # [3,812 tokens | 13,432 bytes]
 # assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
-# assets/nbs/imports/gap_analyzer_sauce.py  # [26,071 tokens | 115,664 bytes]
+# assets/nbs/imports/gap_analyzer_sauce.py  # [26,026 tokens | 115,427 bytes]
 # assets/nbs/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
 # assets/prompts/book_holographic.json  # [923 tokens | 3,726 bytes]

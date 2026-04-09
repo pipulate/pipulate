@@ -2245,21 +2245,21 @@ def add_filtered_excel_tabs(
 
                 # Iterate Columns to apply widths and formats
                 for i, col_name in enumerate(df_sheet.columns):
-                    # A. Widths
-                    width = col_widths.get(col_name, small) * width_adjustment
-                    # Check number format
-                    n_fmt = workbook.add_format({'num_format': num_fmts.get(col_name, '')})
+                    # Use the specific narrow width for competitors, otherwise use standard scaling
+                    if col_name in competitors:
+                        width = COMPETITOR_COLUMN_WIDTH # Use our new variable (e.g., 5)
+                    else:
+                        width = col_widths.get(col_name, small) * width_adjustment
                     
-                    # B. Client Column Highlight (Apply to whole column)
-                    if col_name == TARGET_COMPETITOR_COL:
-                         # Table style usually wins for body background, but we set width below.
-                         pass 
-
+                    n_fmt = workbook.add_format({'num_format': num_fmts.get(col_name, '')})
                     worksheet.set_column(i, i, width, n_fmt)
 
-                    # C. Header Formatting
-                    # Overwrite header cell with specific styles
+                    # Header Formatting
                     current_header_fmt = header_fmt
+                    if col_name in competitors and col_name != TARGET_COMPETITOR_COL:
+                        current_header_fmt = rot_fmt
+                    elif col_name == TARGET_COMPETITOR_COL:
+                        current_header_fmt = client_rot_fmt
                     
                     if col_name in competitors and col_name != TARGET_COMPETITOR_COL:
                         current_header_fmt = rot_fmt
