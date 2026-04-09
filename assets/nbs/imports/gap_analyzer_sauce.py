@@ -2111,7 +2111,6 @@ def add_filtered_excel_tabs(
 ):
     """
     Generates data, writes all tabs, and applies ALL formatting in a single fast pass.
-    Replaces the slow append-and-format openpyxl workflow.
     """
     print(f"⚡ Batch-processing filters, writing, and formatting {xl_file.name}...")
 
@@ -2119,7 +2118,6 @@ def add_filtered_excel_tabs(
     COMP_W = wand.get(job, 'competitor_column_width', 5)
 
     # --- 1. PREPARE DATA IN MEMORY ---
-    # Helper functions
     def read_keywords(file_path):
         if not file_path.exists(): return []
         with open(file_path, 'r') as file: return [line.strip() for line in file.readlines()]
@@ -2127,7 +2125,6 @@ def add_filtered_excel_tabs(
     def filter_df_by_keywords(df, keywords):
         return df[df["Keyword"].isin(keywords)]
 
-    # Dictionary to hold {SheetName: DataFrame}
     tabs_to_write = {}
 
     # A. Main Tab
@@ -2174,13 +2171,7 @@ def add_filtered_excel_tabs(
                 tabs_to_write[filter_name] = df_tab
 
     # --- 2. CONFIGURATION FOR FORMATTING ---
-    # Colors
-    colors = {
-        'client': '#FFFF00', 'semrush': '#FAEADB', 'semrush_opp': '#F1C196',
-        'botify': '#EADFF2', 'botify_opp': '#AEA1C4', 'competitor': '#EEECE2'
-    }
-    
-    # Columns Config
+    colors = {'client': '#FFFF00', 'semrush': '#FAEADB', 'botify': '#EADFF2', 'competitor': '#EEECE2'}
     tiny, small, medium, large, url_w = 11, 15, 20, 50, 70
     col_widths = {
         'Keyword': 40, 'Search Volume': small, 'Number of Words': tiny, 'Keyword Group (Experimental)': small, 
@@ -2192,123 +2183,68 @@ def add_filtered_excel_tabs(
         'Title': large, 'Meta Description': large, 'Competitor URL': url_w, 'Client URL': url_w,
         'Combined Score': tiny
     }
-    
     num_fmts = {
         'Search Volume': '#,##0', 'CPC': '0.00', 'Keyword Difficulty': '0', 'Competition': '0.00',
         'Raw Internal Pagerank': '0.0000000', 'Internal Pagerank': '0.00', 'Combined Score': '0.00',
         'No. of Impressions excluding anonymized queries': '#,##0', 'No. of Clicks excluding anonymized queries': '#,##0'
     }
-
     cond_desc = ['Search Volume', 'CPC', 'Competition', 'Avg. URL CTR excluding anonymized queries', 'No. of Missed Clicks excluding anonymized queries', 'Combined Score', 'No. of Unique Inlinks']
     cond_asc = ['Keyword Difficulty', 'Raw Internal Pagerank', 'Internal Pagerank', 'Avg. URL Position excluding anonymized queries', 'Depth']
 
     # --- 3. WRITE AND FORMAT ---
-    # (Inside the column loop around line 2245)
-    for i, col_name in enumerate(df_sheet.columns):
-        # A. Determine Width
-        if col_name in competitors:
-            width = COMP_W 
-        else:
-            width = col_widths.get(col_name, small) * width_adjustment
-        
-        n_fmt = workbook.add_format({'num_format': num_fmts.get(col_name, '')})
-        worksheet.set_column(i, i, width, n_fmt)
-
-        # B. Determine Header Format
-        if col_name in competitors and col_name != TARGET_COMPETITOR_COL:
-            current_header_fmt = rot_fmt
-        elif col_name == TARGET_COMPETITOR_COL:
-            current_header_fmt = client_rot_fmt
-        elif col_name in ['Keyword', 'Search Volume', 'CPC', 'Keyword Difficulty', 'Competition']:
-            current_header_fmt = fmt_semrush
-        elif col_name in ['Internal Pagerank', 'Depth', 'Title']:
-            current_header_fmt = fmt_botify
-        else:
-            current_header_fmt = header_fmt
-            
-        worksheet.write(0, i, col_name, current_header_fmt)
-
-    # --- 3. WRITE AND FORMAT ---
     print(f"💾 Writing and formatting {len(tabs_to_write)} tabs...")
-    
     try:
         with pd.ExcelWriter(xl_file, engine="xlsxwriter", engine_kwargs={'options': {'strings_to_urls': False}}) as writer:
             workbook = writer.book
             
-            # Define Formats
-            # UPDATED: Text Wrap turned ON for standard headers
+            # Format Definitions
             header_fmt = workbook.add_format({'bold': True, 'align': 'center', 'valign': 'vcenter', 'border': 1, 'text_wrap': True})
-            
-            client_col_fmt = workbook.add_format({'bg_color': colors['client']})
-            
-            # Rotated Header: Align to 'top' (left) as requested
             rot_fmt = workbook.add_format({'bold': True, 'align': 'center', 'valign': 'top', 'rotation': 90, 'border': 1, 'bg_color': colors['competitor']})
-            
-            # UPDATED: Client Header now rotates 90 deg and aligns top (left), with yellow background
             client_rot_fmt = workbook.add_format({'bold': True, 'align': 'center', 'valign': 'top', 'rotation': 90, 'border': 1, 'bg_color': colors['client']})
-            
-            # Color Formats (Standard headers with colors)
             fmt_semrush = workbook.add_format({'bg_color': colors['semrush'], 'bold': True, 'align': 'center', 'border': 1, 'text_wrap': True})
             fmt_botify = workbook.add_format({'bg_color': colors['botify'], 'bold': True, 'align': 'center', 'border': 1, 'text_wrap': True})
             
             for sheet_name, df_sheet in tabs_to_write.items():
-                # Write Data
                 df_sheet.to_excel(writer, sheet_name=sheet_name, index=False)
                 worksheet = writer.sheets[sheet_name]
-                
-                # Add Table (Auto-filter, banding)
                 (max_row, max_col) = df_sheet.shape
                 cols = [{'header': col} for col in df_sheet.columns]
                 worksheet.add_table(0, 0, max_row, max_col - 1, {'columns': cols, 'style': 'TableStyleMedium9'})
-                
-                # Freeze Panes (C2)
                 worksheet.freeze_panes(1, 2)
 
-                # Iterate Columns to apply widths and formats
+                # UNIFIED WIDTH & STYLE LOOP
                 for i, col_name in enumerate(df_sheet.columns):
-                    # Use the specific narrow width for competitors, otherwise use standard scaling
+                    # A. Logic for Widths
                     if col_name in competitors:
-                        width = COMPETITOR_COLUMN_WIDTH # Use our new variable (e.g., 5)
+                        width = COMP_W 
                     else:
                         width = col_widths.get(col_name, small) * width_adjustment
                     
                     n_fmt = workbook.add_format({'num_format': num_fmts.get(col_name, '')})
                     worksheet.set_column(i, i, width, n_fmt)
 
-                    # Header Formatting
-                    current_header_fmt = header_fmt
+                    # B. Logic for Headers
                     if col_name in competitors and col_name != TARGET_COMPETITOR_COL:
                         current_header_fmt = rot_fmt
                     elif col_name == TARGET_COMPETITOR_COL:
                         current_header_fmt = client_rot_fmt
-                    
-                    if col_name in competitors and col_name != TARGET_COMPETITOR_COL:
-                        current_header_fmt = rot_fmt
-                        worksheet.set_column(i, i, 5) # Narrow width for rotated cols
-                    elif col_name == TARGET_COMPETITOR_COL:
-                        # UPDATED: Use the rotated yellow format and force narrow width
-                        current_header_fmt = client_rot_fmt
-                        worksheet.set_column(i, i, 5) 
                     elif col_name in ['Keyword', 'Search Volume', 'CPC', 'Keyword Difficulty', 'Competition']:
-                         current_header_fmt = fmt_semrush
+                        current_header_fmt = fmt_semrush
                     elif col_name in ['Internal Pagerank', 'Depth', 'Title']:
-                         current_header_fmt = fmt_botify
+                        current_header_fmt = fmt_botify
+                    else:
+                        current_header_fmt = header_fmt
                     
                     worksheet.write(0, i, col_name, current_header_fmt)
 
-                    # D. Conditional Formatting
+                    # C. Conditional Formatting
                     rng = f"{get_column_letter(i+1)}2:{get_column_letter(i+1)}{max_row+1}"
                     if col_name in cond_desc:
                         worksheet.conditional_format(rng, {'type': '3_color_scale', 'min_color': '#FFFFFF', 'max_color': '#33FF33'})
                     elif col_name in cond_asc:
                         worksheet.conditional_format(rng, {'type': '3_color_scale', 'min_color': '#33FF33', 'max_color': '#FFFFFF'})
 
-                    # E. Hyperlinks (Simple blue underline for URLs)
-                    if "URL" in col_name:
-                        pass
-
         print("✅ Excel write and format complete.")
-        
     except Exception as e:
         print(f"❌ Error writing Excel file: {e}")
         return widgets.Button(description=f"Error: {e}", disabled=True)
