@@ -2557,7 +2557,7 @@ class Pipulate:
             import ipywidgets as widgets
             from IPython.display import display, clear_output
             
-            self.speak(f"I need your {service_name} API key to proceed.")
+            self.speak(f"Please provide your {service_name} API key.")
             
             key_input = widgets.Password(
                 value='',
