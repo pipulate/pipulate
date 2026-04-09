@@ -1626,7 +1626,7 @@ def truncate_dataframe_by_volume(job: str, final_df: pd.DataFrame, row_limit: in
         rows, cols = truncated_df.shape
 
         print(f"✅ Final truncation floor: Search Volume >{try_fit:,} resulting in {rows:,} rows.")
-        wand.speak(f"Data truncation complete. Retained {rows} rows with search volume above {try_fit}.")
+        print(f"Data truncation complete. Retained {rows} rows with search volume above {try_fit}.")
         df_to_store = truncated_df.copy()
 
         # --- OUTPUT (to wand state) ---
