@@ -2106,22 +2106,17 @@ def create_deliverables_excel_and_button(job: str, df: pd.DataFrame, client_doma
 
 
 def add_filtered_excel_tabs(
-    job: str,
-    df: pd.DataFrame,
-    semrush_lookup: str,
-    has_botify: bool,
-    competitors: list,
-    xl_file: Path,
-    TARGET_COMPETITOR_COL: str,
-    button: widgets.Button,
-    custom_filters: list = None,
-    width_adjustment: float = 1.5
+    job, df, semrush_lookup, has_botify, competitors, xl_file, 
+    TARGET_COMPETITOR_COL, button, custom_filters=None, width_adjustment=1.5
 ):
     """
     Generates data, writes all tabs, and applies ALL formatting in a single fast pass.
     Replaces the slow append-and-format openpyxl workflow.
     """
     print(f"⚡ Batch-processing filters, writing, and formatting {xl_file.name}...")
+
+    # 1. Pull the narrowness setting from the wand (default to 5 if not set)
+    COMP_W = wand.get(job, 'competitor_column_width', 5)
 
     # --- 1. PREPARE DATA IN MEMORY ---
     # Helper functions
@@ -2206,6 +2201,32 @@ def add_filtered_excel_tabs(
 
     cond_desc = ['Search Volume', 'CPC', 'Competition', 'Avg. URL CTR excluding anonymized queries', 'No. of Missed Clicks excluding anonymized queries', 'Combined Score', 'No. of Unique Inlinks']
     cond_asc = ['Keyword Difficulty', 'Raw Internal Pagerank', 'Internal Pagerank', 'Avg. URL Position excluding anonymized queries', 'Depth']
+
+    # --- 3. WRITE AND FORMAT ---
+    # (Inside the column loop around line 2245)
+    for i, col_name in enumerate(df_sheet.columns):
+        # A. Determine Width
+        if col_name in competitors:
+            width = COMP_W 
+        else:
+            width = col_widths.get(col_name, small) * width_adjustment
+        
+        n_fmt = workbook.add_format({'num_format': num_fmts.get(col_name, '')})
+        worksheet.set_column(i, i, width, n_fmt)
+
+        # B. Determine Header Format
+        if col_name in competitors and col_name != TARGET_COMPETITOR_COL:
+            current_header_fmt = rot_fmt
+        elif col_name == TARGET_COMPETITOR_COL:
+            current_header_fmt = client_rot_fmt
+        elif col_name in ['Keyword', 'Search Volume', 'CPC', 'Keyword Difficulty', 'Competition']:
+            current_header_fmt = fmt_semrush
+        elif col_name in ['Internal Pagerank', 'Depth', 'Title']:
+            current_header_fmt = fmt_botify
+        else:
+            current_header_fmt = header_fmt
+            
+        worksheet.write(0, i, col_name, current_header_fmt)
 
     # --- 3. WRITE AND FORMAT ---
     print(f"💾 Writing and formatting {len(tabs_to_write)} tabs...")
