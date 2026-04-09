@@ -557,8 +557,7 @@ class Pipulate:
         """
         if side_quest:
             self.speak(
-                "Spell paused. You must complete the side-quest instructions "
-                "above before casting the next cell."
+                "You must complete the side-quest instructions above before running the next cell."
             )
         else:
             self.speak("Done step. Run the next cell.")
