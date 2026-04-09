@@ -2212,9 +2212,9 @@ def add_filtered_excel_tabs(
                 worksheet.add_table(0, 0, max_row, max_col - 1, {'columns': cols, 'style': 'TableStyleMedium9'})
                 worksheet.freeze_panes(1, 2)
 
-                # UNIFIED WIDTH & STYLE LOOP
+                # UNIFIED WIDTH & STYLE PASS
                 for i, col_name in enumerate(df_sheet.columns):
-                    # A. Logic for Widths
+                    # A. Set Column Width
                     if col_name in competitors:
                         width = COMP_W 
                     else:
@@ -2223,17 +2223,17 @@ def add_filtered_excel_tabs(
                     n_fmt = workbook.add_format({'num_format': num_fmts.get(col_name, '')})
                     worksheet.set_column(i, i, width, n_fmt)
 
-                    # B. Logic for Headers
-                    if col_name in competitors and col_name != TARGET_COMPETITOR_COL:
-                        current_header_fmt = rot_fmt
-                    elif col_name == TARGET_COMPETITOR_COL:
-                        current_header_fmt = client_rot_fmt
+                    # B. Set Header Style (Surgical Priority)
+                    if col_name == TARGET_COMPETITOR_COL:
+                        current_header_fmt = client_rot_fmt  # Client is always Yellow + Rotated
+                    elif col_name in competitors:
+                        current_header_fmt = rot_fmt         # Competitors are Beige + Rotated
                     elif col_name in ['Keyword', 'Search Volume', 'CPC', 'Keyword Difficulty', 'Competition']:
-                        current_header_fmt = fmt_semrush
+                        current_header_fmt = fmt_semrush     # SEMrush core columns
                     elif col_name in ['Internal Pagerank', 'Depth', 'Title']:
-                        current_header_fmt = fmt_botify
+                        current_header_fmt = fmt_botify      # Botify core columns
                     else:
-                        current_header_fmt = header_fmt
+                        current_header_fmt = header_fmt      # Fallback
                     
                     worksheet.write(0, i, col_name, current_header_fmt)
 
