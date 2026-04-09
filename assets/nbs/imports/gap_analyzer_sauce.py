@@ -62,27 +62,6 @@ nltk.download('punkt_tab', quiet=True) # Added from a later cell for consolidati
 import urllib.parse # Need this for correctly encoding the domain/path
 
 
-# =============================================================================
-# 🗣️ CENTRALIZED NARRATIVE SCRIPT
-# =============================================================================
-# This dictionary controls the voice cadence of the notebook. 
-# It follows a strict "Output -> Next Action" structure so the user always 
-# knows what just happened and what they are about to do before pressing Shift+Enter.
-DIALOGUE = {
-    "set_limits": {
-        "output": "Configuration set. The final report will be limited to {row_limit} rows.",
-        "next": "Run the next cell to define the custom keyword filters, like 'Narrow Questions' and 'Gifts', which we will use to slice the data."
-    },
-    "extract_domains": {
-        "output": "I have successfully extracted {count} target domains and saved them to the state machine.",
-        "next": "When you are ready, run the next cell to sweep your downloads folder for the matching SEMrush exports."
-    },
-}
-
-# Register the dialogue tree with the global wand instance
-wand.register_dialogue(DIALOGUE)
-
-
 def extract_domains_and_print_urls(job: str, notebook_filename: str = "03_GAPalyzer.ipynb"):
     """
     Parses the specified notebook for competitor domains or subfolders,
@@ -144,13 +123,6 @@ def extract_domains_and_print_urls(job: str, notebook_filename: str = "03_GAPaly
     wand.set(job, 'competitor_items', items_to_analyze) # Use a more general key name
     print(f"💾 Stored {len(items_to_analyze)} domains/subfolders in wand state for job '{job}'.")
     
-    # --- 🗣️ Narrative Cadence ---
-    if items_to_analyze:
-        output_msg = DIALOGUE["extract_domains"]["output"].format(count=len(items_to_analyze))
-        next_msg = DIALOGUE["extract_domains"]["next"]
-        wand.speak(f"{output_msg} {next_msg}")
-    # ---------------------------
-
     # --- Use country_code from keys ---
     try:
         country_db = keys.country_code
