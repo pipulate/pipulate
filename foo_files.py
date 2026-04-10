@@ -41,7 +41,7 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-flake.nix  # [7,974 tokens | 34,081 bytes]
+# flake.nix  # [7,974 tokens | 34,081 bytes]
 # /home/mike/repos/pipulate/Notebooks/Deliverables/onboarding_job/example_com_Optics_Baseline.xlsx
 
 # /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/accessibility_tree.json  # [2,513 tokens | 10,012 bytes]
@@ -408,11 +408,11 @@ tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 # server.py   # [54,246 tokens | 258,931 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
-# config.py  # [4,098 tokens | 15,949 bytes]
-# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-# imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
+config.py  # [4,098 tokens | 15,949 bytes]
+pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 
 
 # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
@@ -459,7 +459,7 @@ tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 
 # CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS) (~200KB) imports/__init__.py  # [0 tokens | 0 bytes]
 # imports/crud.py  # [7,365 tokens | 35,666 bytes]
-# imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
+imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
 # apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
 # apps/020_profiles.py  # [4,022 tokens | 18,487 bytes]
 # apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
@@ -501,8 +501,8 @@ tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 # apps/120_link_graph.py  # [54,349 tokens | 272,468 bytes]
 
 # CHAPTER 13: THE GAPALYZER SUITE (~240KB)
-Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
-Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
+# Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
+# Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 
 # ============================================================================
 # V. THE CONTENT LOOM & SEMANTIC ROUTER
