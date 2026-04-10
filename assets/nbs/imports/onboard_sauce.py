@@ -14,7 +14,7 @@ from IPython.display import display
 from loguru import logger
 from pipulate import wand  # Use wand!
 import imports
-from dotenv import dotenv_values
+from dotenv import unset_key
 import llm
 
 
@@ -504,3 +504,61 @@ DATA:
 {accessibility_context}
 """
     return local_system_prompt, local_prompt.strip()
+
+
+def factory_reset_credentials():
+    """
+    Renders a two-step IPyWidget confirmation to wipe API keys from the .env vault
+    and the active environment, allowing the onboarding workflow to be tested from scratch.
+    """
+    import ipywidgets as widgets
+    from IPython.display import display, clear_output
+    import os
+    from dotenv import set_key
+    from pipulate import wand
+    
+    button = widgets.Button(
+        description="⚠️ Factory Reset .env Vault",
+        button_style="danger",
+        icon="trash"
+    )
+    out = widgets.Output()
+
+    def on_click(b):
+        with out:
+            clear_output()
+            wand.speak("Are you sure? This will wipe your cloud keys.")
+            confirm = widgets.Button(description="Yes, Wipe It", button_style="danger")
+            cancel = widgets.Button(description="Cancel", button_style="success")
+            
+            def on_confirm(cb):
+                with out:
+                    clear_output()
+                    env_path = wand.paths.root / ".env"
+                    keys_to_nuke = [
+                        "OPENAI_API_KEY", 
+                        "ANTHROPIC_API_KEY", 
+                        "GEMINI_API_KEY",
+                        "GOOGLE_API_KEY",
+                        "BOTIFY_API_TOKEN"
+                    ]
+                    for k in keys_to_nuke:
+                        if k in os.environ:
+                            del os.environ[k]
+                        if env_path.exists():
+                            set_key(str(env_path), k, "")
+                    wand.speak("Vault wiped. Restart the kernel to complete the amnesia.")
+                    print("✅ Credentials cleared. Please restart the kernel (Esc, 0, 0) to start over.")
+
+            def on_cancel(cb):
+                with out:
+                    clear_output()
+                    wand.speak("Crisis averted.")
+                    print("🛡️ Crisis averted. Vault remains intact.")
+
+            confirm.on_click(on_confirm)
+            cancel.on_click(on_cancel)
+            display(widgets.HBox([confirm, cancel]))
+
+    button.on_click(on_click)
+    display(widgets.VBox([button, out]))
