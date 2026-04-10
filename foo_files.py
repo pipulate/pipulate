@@ -36,15 +36,15 @@ AI_PHOOEY_CHOP = """\
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
 
-# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
-# foo_files.py  # [10,245 tokens | 33,406 bytes]
+prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-pyproject.toml  # [677 tokens | 2,299 bytes]
-apps/015_backup_introduction.py  # [4,053 tokens | 19,147 bytes]
-assets/nbs/imports/onboard_sauce.py  # [2,806 tokens | 12,750 bytes]
-pipulate/core.py  # [26,240 tokens | 127,595 bytes]
+# pyproject.toml  # [677 tokens | 2,299 bytes]
+# apps/015_backup_introduction.py  # [4,053 tokens | 19,147 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [2,806 tokens | 12,750 bytes]
+# pipulate/core.py  # [26,240 tokens | 127,595 bytes]
 
 # https://gist.githubusercontent.com/karpathy/442a6bf555914893e9891c11519de94f/raw/ac46de1ad27f92b28ac95459c782c07f6b8c964a/llm-wiki.md
 # https://gist.githubusercontent.com/karpathy/8627fe009c40f57531cb18360106ce95/raw/14fb038816c7aae0bb9342c2dbf1a51dd134a5ff/microgpt.py
@@ -300,15 +300,14 @@ pipulate/core.py  # [26,240 tokens | 127,595 bytes]
 # server.py  # [54,246 tokens | 258,931 bytes]
 # imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 
-# apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
-# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 Notebooks/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
 Notebooks/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
-# tools/__init__.py  # [464 tokens | 2,067 bytes]
-# tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
-# tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
+tools/__init__.py  # [464 tokens | 2,067 bytes]
+tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
+tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 
 flake.nix  # [7,711 tokens | 32,991 bytes]
 /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
@@ -485,8 +484,8 @@ flake.nix  # [7,711 tokens | 32,991 bytes]
 # apps/120_link_graph.py  # [54,349 tokens | 272,468 bytes]
 
 # CHAPTER 13: THE GAPALYZER SUITE (~240KB)
-# Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
-# Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
+Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
+Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 
 # ============================================================================
 # V. THE CONTENT LOOM & SEMANTIC ROUTER
@@ -711,6 +710,7 @@ CHOP_CHAPTER_DRAFTER = """\
 # apps/210_widget_examples.py  # [22,791 tokens | 98,590 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
 # apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
+# apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
 # apps/450_stream_simulator.py  # [1,829 tokens | 9,488 bytes]
 # apps/510_text_field.py  # [2,888 tokens | 12,293 bytes]
 # apps/520_text_area.py  # [3,070 tokens | 13,197 bytes]
