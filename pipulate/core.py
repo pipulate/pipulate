@@ -448,7 +448,7 @@ class Pipulate:
             self.logger.error(f"❌ Failed to open folder. Error: {e}")
             return False
 
-    def speak(self, text: str, delay: float = 0.0, wait: bool = True):
+    def speak(self, text: str, delay: float = 0.0, wait: bool = True, emoji: str = None):
         """
         Synthesizes text to speech using the global ChipVoiceSystem if available.
         Fails gracefully to simple printing if the audio backend is unavailable.
@@ -457,8 +457,11 @@ class Pipulate:
             text (str): The text to synthesize and speak.
             delay (float): Seconds to wait before speaking (useful for background narration).
             wait (bool): If True, blocks execution until speech finishes. If False, runs in background.
+           emoji (str): Optional emoji to override the default wand spark.
         """
-        print(f"{CFG.WAND_SPEAKS_EMOJI} {text}")
+
+        display_emoji = emoji if emoji is not None else CFG.WAND_SPEAKS_EMOJI
+        print(f"{display_emoji} {text}")
         
         # Check if the user has globally enabled voice. Default is '0' (Off)
         voice_enabled = self.db.get('voice_enabled', '0') == '1'
@@ -549,7 +552,7 @@ class Pipulate:
         toggle.observe(on_toggle, 'value')
         display(widgets.VBox([toggle, out]))
 
-    def imperio(self, side_quest: bool = False):
+    def imperio(self, side_quest: bool = False, emoji: str = "🌀"):
         """
         The Compulsion. Finalizes a step and ushers the user to the next.
         If a side_quest is active, the machine demands external action 
@@ -557,10 +560,11 @@ class Pipulate:
         """
         if side_quest:
             self.speak(
-                "You must complete the side-quest instructions above before running the next cell."
+                "You must complete the side-quest instructions above before running the next cell.",
+                emoji=emoji
             )
         else:
-            self.speak("Done step. Run the next cell.")
+            self.speak("Done step. Run the next cell.", emoji=emoji)
 
     def show_llm_optics(self, target_url: str):
         """Displays a numbered, alphabetical list of files and a button to open the cache directory."""
