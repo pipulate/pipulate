@@ -2736,3 +2736,32 @@ class Pipulate:
                         print(f"  🔑 {key}: {'*' * len(val)}")
         else:
             print("  (No .env file found. The vault is unbuilt.)")
+
+    def import_this(self):
+        """
+        The Zen of Python, channeled through the Wand.
+        Decodes the ancient wisdom and synthesizes it into spoken word.
+        """
+        import io
+        import contextlib
+        
+        # 1. The 'this' module prints to stdout upon first import.
+        # We trap that output in a null buffer to prevent the first duplication.
+        with contextlib.redirect_stdout(io.StringIO()):
+            import this
+            
+        # 2. Decode the rot13 cipher natively
+        zen_of_python = "".join([this.d.get(c, c) for c in this.s])
+        
+        # 3. Clean up the text for the TTS engine 
+        # (Replace dashes with commas so the voice pauses instead of saying "dash")
+        spoken_zen = zen_of_python.replace("--", ",").replace("-", " ")
+
+        # 4. Speak it into reality! 
+        # (self.speak automatically handles the console printing, so we don't need manual prints)
+        self.speak(
+            text=f"Channeling The Zen of Python...\n\n{spoken_zen}",
+            delay=0.0,    # Remove the delay so it starts immediately
+            wait=True,    # Set wait to True to block the execution of the next cell
+            emoji="🐍"
+        )
