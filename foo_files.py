@@ -29,16 +29,18 @@
 
 AI_PHOOEY_CHOP = """\
 # # USEFUL INITIALIZATION
-# README.md  # [20,467 tokens | 103,208 bytes]
-# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
-# pyproject.toml  # [677 tokens | 2,299 bytes]
-# # ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
-# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
-# .gitignore  # [573 tokens | 2,089 bytes]
+README.md  # [20,467 tokens | 103,208 bytes]
+AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
+pyproject.toml  # [677 tokens | 2,299 bytes]
+# ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
+scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
+.gitignore  # [573 tokens | 2,089 bytes]
 prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
+
+# https://gist.githubusercontent.com/karpathy/442a6bf555914893e9891c11519de94f/raw/ac46de1ad27f92b28ac95459c782c07f6b8c964a/llm-wiki.md
 
 # /home/mike/repos/trimnoir/_posts/2026-04-08-async-narration-metadata-minefield.md  # [Idx: 1011 | Order: 1 | Tokens: 16,036 | Bytes: 63,514]
 # /home/mike/repos/trimnoir/_posts/2026-04-08-llmectomy-universal-adapter-resilience.md  # [Idx: 1012 | Order: 2 | Tokens: 23,076 | Bytes: 89,108]
@@ -278,11 +280,6 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # https://www.datacamp.com/tutorial/guide-to-autoresearch
 # !https://www.datacamp.com/tutorial/guide-to-autoresearch
 
-assets/nbs/Onboarding.ipynb  # [3,807 tokens | 12,678 bytes]
-assets/nbs/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
-# Notebooks/Onboarding.ipynb  # [5,167 tokens | 17,293 bytes]
-# Notebooks/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
-
 # Continuing the LLMectomy
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 # requirements.in  # [573 tokens | 1,924 bytes]
@@ -361,19 +358,19 @@ assets/nbs/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
 # The foundational NPvg framework and state management.
 
 # CHAPTER 0: ONBOARDING
-# !https://pipulate.com/
-# /home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
-# flake.nix  # [7,721 tokens | 32,979 bytes]
-# pyproject.toml  # [677 tokens | 2,299 bytes]
-# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
-# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-# apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
-# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+!https://pipulate.com/
+/home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
+flake.nix  # [7,721 tokens | 32,979 bytes]
+pyproject.toml  # [677 tokens | 2,299 bytes]
+assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
+apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
+assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
  
 # CHAPTER 1: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
 # /home/mike/repos/Pipulate.com/index.md  # [2,361 tokens | 10,579 bytes]
@@ -394,10 +391,10 @@ assets/nbs/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
 # server.py   # [54,246 tokens | 258,931 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
-config.py  # [4,098 tokens | 15,949 bytes]
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# config.py  # [4,098 tokens | 15,949 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 # imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 
 
@@ -487,8 +484,8 @@ pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 # apps/120_link_graph.py  # [54,349 tokens | 272,468 bytes]
 
 # CHAPTER 13: THE GAPALYZER SUITE (~240KB)
-Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
-Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
+# Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
+# Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 
 # ============================================================================
 # V. THE CONTENT LOOM & SEMANTIC ROUTER
@@ -498,18 +495,19 @@ Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 # # CHAPTER 14: THE NOTEBOOK TEMPLATES (~100KB)
 # flake.nix  # [7,962 tokens | 34,057 bytes]
 # Notebooks/Onboarding.ipynb  # [4,504 tokens | 14,798 bytes]
-# Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
 # assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
 # assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb  # [2,317 tokens | 7,323 bytes]
 # assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
 # assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [9,228 tokens | 31,278 bytes]
 # assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
+# Notebooks/imports/onboard_sauce.py  # [1,881 tokens | 8,441 bytes]
 # assets/nbs/imports/core_sauce.py  # [811 tokens | 3,362 bytes]
+# Notebooks/imports/onboard_sauce.py  # [2,162 tokens | 9,735 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [ imports Ceiling Level ]
 # assets/nbs/imports/faq_writer_sauce.py  # [6,042 tokens | 26,760 bytes]
 # assets/nbs/imports/url_inspect_sauce.py  # [11,434 tokens | 51,733 bytes]
-# # assets/nbs/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
-# # assets/nbs/imports/videditor_sauce.py  # [937 tokens | 4,098 bytes]
+# assets/nbs/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
+# assets/nbs/imports/videditor_sauce.py  # [937 tokens | 4,098 bytes]
 
 # CHAPTER 15: JEKYLL PUBLISHING
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
@@ -742,8 +740,6 @@ CHOP_CHAPTER_DRAFTER = """\
 # assets/js/split.js  # [6,166 tokens | 29,959 bytes]
 # assets/js/surreal.js  # [3,812 tokens | 13,432 bytes]
 # assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
-# assets/nbs/imports/gap_analyzer_sauce.py  # [25,753 tokens | 114,007 bytes]
-# assets/nbs/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
 # assets/prompts/book_holographic.json  # [923 tokens | 3,726 bytes]
 # assets/prompts/llms_header.md  # [1,110 tokens | 5,129 bytes]
