@@ -313,3 +313,90 @@ def ensure_cloud_credentials(cloud_model_id):
         wand.speak("Cloud credentials verified in your environment.")
         print(f"✅ Secure connection ready for {cloud_model_id}.")
 
+def package_optics_to_excel(job: str, target_url: str, ai_assessment: str):
+    """
+    Packages the high-signal LLM Optics into a beautifully formatted Excel deliverable.
+    """
+    import pandas as pd
+    import re
+    import yaml
+    from tools.scraper_tools import get_safe_path_component
+    from pipulate import wand
+    import ipywidgets as widgets
+
+    domain, slug = get_safe_path_component(target_url)
+    cache_dir = wand.paths.browser_cache / domain / slug
+
+    # 1. Parse SEO Metadata (The Signal)
+    seo_file = cache_dir / "seo.md"
+    seo_data = {"Metric": [], "Value": []}
+    
+    if seo_file.exists():
+        content = seo_file.read_text(encoding='utf-8')
+        # Extract YAML frontmatter
+        match = re.search(r'^---\n(.*?)\n---', content, re.DOTALL)
+        if match:
+            try:
+                frontmatter = yaml.safe_load(match.group(1))
+                for k, v in frontmatter.items():
+                    seo_data["Metric"].append(str(k).replace('_', ' ').title())
+                    seo_data["Value"].append(str(v))
+            except Exception as e:
+                print(f"⚠️ Warning: Could not parse SEO frontmatter: {e}")
+
+    df_seo = pd.DataFrame(seo_data)
+
+    # 2. Prepare AI Assessment
+    df_ai = pd.DataFrame({
+        "Intelligence Layer": ["Local Edge AI (Chip O'Theseus)"], 
+        "Semantic Assessment": [ai_assessment]
+    })
+
+    # 3. Write to Excel with High-End Formatting
+    deliverables_dir = wand.paths.deliverables / job
+    deliverables_dir.mkdir(parents=True, exist_ok=True)
+    xl_filename = f"{domain.replace('.', '_')}_Optics_Baseline.xlsx"
+    xl_file = deliverables_dir / xl_filename
+
+    with pd.ExcelWriter(xl_file, engine="xlsxwriter") as writer:
+        df_ai.to_excel(writer, sheet_name='AI Assessment', index=False)
+        if not df_seo.empty:
+            df_seo.to_excel(writer, sheet_name='SEO Metadata', index=False)
+
+        workbook = writer.book
+        header_fmt = workbook.add_format({
+            'bold': True, 
+            'bg_color': '#D9E1F2', 
+            'border': 1, 
+            'align': 'center'
+        })
+        wrap_fmt = workbook.add_format({'text_wrap': True, 'valign': 'top'})
+
+        # Format AI Sheet
+        ws_ai = writer.sheets['AI Assessment']
+        ws_ai.set_column(0, 0, 30, wrap_fmt)
+        ws_ai.set_column(1, 1, 100, wrap_fmt)
+        for col_num, value in enumerate(df_ai.columns.values):
+            ws_ai.write(0, col_num, value, header_fmt)
+
+        # Format SEO Sheet
+        if not df_seo.empty:
+            ws_seo = writer.sheets['SEO Metadata']
+            ws_seo.set_column(0, 0, 25, wrap_fmt)
+            ws_seo.set_column(1, 1, 80, wrap_fmt)
+            for col_num, value in enumerate(df_seo.columns.values):
+                ws_seo.write(0, col_num, value, header_fmt)
+
+    # 4. Generate Egress Button
+    button = widgets.Button(
+        description=f"📂 Open Deliverables Folder",
+        tooltip=f"Open {deliverables_dir.resolve()}",
+        button_style='success'
+    )
+    
+    def on_click(b):
+        wand.open_folder(str(deliverables_dir))
+        
+    button.on_click(on_click)
+
+    return button, xl_file
