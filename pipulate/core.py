@@ -2433,7 +2433,7 @@ class Pipulate:
             model = llm.get_model(model_name)
             response = model.prompt(prompt_text, system=system_prompt)
             
-            print("✅ AI response received.")
+            print("✅ Prompt successfully submitted to model. Wait a moment...")
             return response.text()
             
         except llm.errors.NeedsKeyException:
