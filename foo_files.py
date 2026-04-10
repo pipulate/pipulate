@@ -41,6 +41,23 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
+flake.nix  # [7,974 tokens | 34,081 bytes]
+# /home/mike/repos/pipulate/Notebooks/Deliverables/onboarding_job/example_com_Optics_Baseline.xlsx
+
+/home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/accessibility_tree.json  # [2,513 tokens | 10,012 bytes]
+/home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/accessibility_tree_summary.txt  # [143 tokens | 579 bytes]
+/home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/dom_hierarchy.html  # [578 tokens | 1,745 bytes]
+/home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/dom_hierarchy.txt  # [144 tokens | 530 bytes]
+/home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/dom_layout_boxes.html  # [2,091 tokens | 15,435 bytes]
+/home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/dom_layout_boxes.txt  # [1,041 tokens | 12,454 bytes]
+/home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/headers.json  # [172 tokens | 453 bytes]
+/home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/rendered_dom.html  # [149 tokens | 513 bytes]
+/home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/seo.md  # [101 tokens | 421 bytes]
+/home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/simple_dom.html  # [109 tokens | 370 bytes]
+/home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/source.html  # [152 tokens | 528 bytes]
+
+tools/scraper_tools.py  # [4,243 tokens | 20,798 bytes]
+
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 # apps/015_backup_introduction.py  # [4,053 tokens | 19,147 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [2,806 tokens | 12,750 bytes]
@@ -309,8 +326,8 @@ tools/__init__.py  # [464 tokens | 2,067 bytes]
 tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
 tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 
-flake.nix  # [7,711 tokens | 32,991 bytes]
-/home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
+# flake.nix  # [7,711 tokens | 32,991 bytes]
+# /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
 
 # # HOW TO FIND MARKDOWN ACCEPTERS
 # remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
