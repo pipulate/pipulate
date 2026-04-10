@@ -400,3 +400,107 @@ def package_optics_to_excel(job: str, target_url: str, ai_assessment: str):
     button.on_click(on_click)
 
     return button, xl_file
+
+def generate_js_gap_prompt(target_url: str) -> str:
+    """Generates a high-signal unified diff prompt for Cloud AI analysis."""
+    from bs4 import BeautifulSoup
+    import difflib
+    from tools.scraper_tools import get_safe_path_component
+    from pipulate import wand
+
+    domain, slug = get_safe_path_component(target_url)
+    cache_dir = wand.paths.browser_cache / domain / slug
+
+    source_file = cache_dir / "source.html"
+    dom_file = cache_dir / "simple_dom.html" 
+
+    if not source_file.exists() or not dom_file.exists():
+        return "Error: Source or DOM files missing. Run the scrape first."
+
+    def clean_html(filepath):
+        soup = BeautifulSoup(filepath.read_text(encoding='utf-8'), 'html.parser')
+        for tag in soup(['script', 'style', 'meta', 'link', 'noscript', 'svg']):
+            tag.decompose()
+        return soup.prettify().splitlines()
+
+    source_lines = clean_html(source_file)
+    dom_lines = clean_html(dom_file)
+
+    diff = difflib.unified_diff(
+        source_lines, dom_lines,
+        fromfile='Raw_Source.html',
+        tofile='Hydrated_DOM.html',
+        lineterm=''
+    )
+    
+    # Cap the diff so it doesn't blow out the LLM's context window
+    diff_text = '\n'.join(list(diff)[:800]) 
+
+    prompt = f"""# ROLE
+You are an elite Technical SEO and Frontend Architecture expert.
+
+# TASK
+Analyze the "JavaScript Gap" for {target_url}. I have provided a Unified Diff showing the difference between the raw HTTP response (Raw_Source.html) and the simplified rendered DOM after JavaScript execution (Hydrated_DOM.html).
+
+# DATA (Unified Diff Snippet)
+```diff
+{diff_text}
+```
+
+# INSTRUCTIONS
+1. Analyze the diff. What critical content, internal links, or semantic structures are ONLY present in the Hydrated_DOM?
+2. Explain the SEO implications if a search engine crawler (like Googlebot) fails to execute this JavaScript.
+3. Recommend a mitigation strategy (e.g., Server-Side Rendering, Dynamic Rendering, or HTML fallbacks) based on the specific elements being injected client-side.
+"""
+    return prompt
+
+def render_copy_button(prompt_text: str):
+    """Renders an HTML/JS button to copy text to the OS clipboard from Jupyter."""
+    from IPython.display import HTML
+    import base64
+
+    # Base64 encode to safely pass multi-line Python strings into JS
+    b64_prompt = base64.b64encode(prompt_text.encode('utf-8')).decode('utf-8')
+    
+    button_html = f"""
+    <button onclick="
+        const ta = document.createElement('textarea');
+        ta.value = decodeURIComponent(escape(window.atob('{b64_prompt}')));
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        this.innerText = '✅ Copied to OS Clipboard! Paste into Gemini/Claude.';
+        this.style.backgroundColor = '#28a745';
+        this.style.color = 'white';
+        this.style.borderColor = '#28a745';
+    " style="padding: 12px 24px; font-size: 16px; border-radius: 6px; cursor: pointer; border: 1px solid #ccc; font-weight: bold; margin-top: 15px;">
+    📋 Copy 'JavaScript Gap' Prompt for Cloud AI
+    </button>
+    """
+    return HTML(button_html)
+
+
+def build_local_optics_prompt(target_url: str):
+    """Retrieves cached optics and formats the prompts for the local AI assessment."""
+    from tools.scraper_tools import get_safe_path_component
+    from pipulate import wand
+
+    domain, slug = get_safe_path_component(target_url)
+    ax_file = wand.paths.browser_cache / domain / slug / "accessibility_tree_summary.txt"
+
+    accessibility_context = ax_file.read_text(encoding='utf-8')[:2000] if ax_file.exists() else "No accessibility data available."
+
+    local_system_prompt = (
+        "You are Chip O'Theseus, an AI running locally on the user's hardware. "
+        "You are highly analytical and concise."
+    )
+
+    local_prompt = f"""
+The user has successfully scraped {target_url}. 
+Based on the following Accessibility Tree snippet, provide a 2-3 sentence semantic summary of what this page is actually about and what its primary conversion goal appears to be.
+
+DATA:
+{accessibility_context}
+"""
+    return local_system_prompt, local_prompt.strip()
