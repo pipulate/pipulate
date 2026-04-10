@@ -2721,4 +2721,18 @@ class Pipulate:
         print("\n=== 🛡️ THE VAULT (.env) ===")
         if env_path.exists():
             secrets = dotenv_values(env_path)
-            # ... rest of the existing print logic ...
+            if not secrets:
+                print("  (The vault is currently empty)")
+            else:
+                for key, val in secrets.items():
+                    if not val:
+                        print(f"  🔑 {key}: [EMPTY]")
+                    elif len(val) > 10:
+                        # Show first 4 and last 4 chars, mask the rest
+                        masked_val = f"{val[:4]}{'*' * (len(val) - 8)}{val[-4:]}"
+                        print(f"  🔑 {key}: {masked_val}")
+                    else:
+                        # Too short to safely show any characters
+                        print(f"  🔑 {key}: {'*' * len(val)}")
+        else:
+            print("  (No .env file found. The vault is unbuilt.)")

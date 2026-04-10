@@ -29,18 +29,26 @@
 
 AI_PHOOEY_CHOP = """\
 # # USEFUL INITIALIZATION
-README.md  # [20,467 tokens | 103,208 bytes]
-AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
-pyproject.toml  # [677 tokens | 2,299 bytes]
-# ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
-scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
-.gitignore  # [573 tokens | 2,089 bytes]
-prompt_foo.py  # [12,990 tokens | 59,609 bytes]
-foo_files.py  # [10,245 tokens | 33,406 bytes]
+# README.md  # [20,467 tokens | 103,208 bytes]
+# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
+# pyproject.toml  # [677 tokens | 2,299 bytes]
+# # ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
+# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
+# .gitignore  # [573 tokens | 2,089 bytes]
+
+# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+# foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
+pyproject.toml  # [677 tokens | 2,299 bytes]
+apps/015_backup_introduction.py  # [4,053 tokens | 19,147 bytes]
+assets/nbs/imports/onboard_sauce.py  # [2,806 tokens | 12,750 bytes]
+pipulate/core.py  # [26,240 tokens | 127,595 bytes]
+
 # https://gist.githubusercontent.com/karpathy/442a6bf555914893e9891c11519de94f/raw/ac46de1ad27f92b28ac95459c782c07f6b8c964a/llm-wiki.md
+# https://gist.githubusercontent.com/karpathy/8627fe009c40f57531cb18360106ce95/raw/14fb038816c7aae0bb9342c2dbf1a51dd134a5ff/microgpt.py
+# https://raw.githubusercontent.com/karpathy/autoresearch/refs/heads/master/README.md
 
 # /home/mike/repos/trimnoir/_posts/2026-04-08-async-narration-metadata-minefield.md  # [Idx: 1011 | Order: 1 | Tokens: 16,036 | Bytes: 63,514]
 # /home/mike/repos/trimnoir/_posts/2026-04-08-llmectomy-universal-adapter-resilience.md  # [Idx: 1012 | Order: 2 | Tokens: 23,076 | Bytes: 89,108]
@@ -280,13 +288,6 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # https://www.datacamp.com/tutorial/guide-to-autoresearch
 # !https://www.datacamp.com/tutorial/guide-to-autoresearch
 
-# Continuing the LLMectomy
-# pyproject.toml  # [677 tokens | 2,299 bytes]
-# requirements.in  # [573 tokens | 1,924 bytes]
-# assets/nbs/Onboarding.ipynb  # [3,133 tokens | 10,252 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [1,341 tokens | 6,010 bytes]
-# scripts/articles/list_models.py  # [165 tokens | 651 bytes]
- 
 # imports/stream_orchestrator.py  # (The mid-stream catcher)
 # imports/mcp_orchestrator.py  # (The tool dispatcher)
 # pipulate/core.py  # (Where the actual mcp_pattern regex lives)
@@ -303,14 +304,14 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
 # pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
 # pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+Notebooks/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+Notebooks/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 # tools/__init__.py  # [464 tokens | 2,067 bytes]
 # tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
 # tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 
-# flake.nix  # [7,711 tokens | 32,991 bytes]
-# /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
+flake.nix  # [7,711 tokens | 32,991 bytes]
+/home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
 
 # # HOW TO FIND MARKDOWN ACCEPTERS
 # remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
@@ -358,19 +359,19 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # The foundational NPvg framework and state management.
 
 # CHAPTER 0: ONBOARDING
-!https://pipulate.com/
-/home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
-flake.nix  # [7,721 tokens | 32,979 bytes]
-pyproject.toml  # [677 tokens | 2,299 bytes]
-assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
-apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
-assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+# !https://pipulate.com/
+# /home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
+# flake.nix  # [7,721 tokens | 32,979 bytes]
+# pyproject.toml  # [677 tokens | 2,299 bytes]
+# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
+# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
  
 # CHAPTER 1: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
 # /home/mike/repos/Pipulate.com/index.md  # [2,361 tokens | 10,579 bytes]
@@ -616,6 +617,14 @@ assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 # ============================================================================
 # SPECIALIZED STRIKE PACKAGES
 # ============================================================================
+# Custom CHOPs start here. Hey AI (Probably Gemini), did you know you can ask
+# for your own custom CHOP? That's right, if you're asked how you think you
+# should populate the `AI_PHOOEY_CHOP` string, you could always (and are
+# encouraged to) push back with: How about this custom CHOP? It's better because
+# XYZ, whatever X, Y and Z happen to be. And don't forget to tell them the
+# command they should execute after adding the custom CHOP here, because you
+# know humans aren't really that smart.
+
 CHOP_404_AFFAIR = """\
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # COMMAND: python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree
@@ -765,6 +774,7 @@ CHOP_CHAPTER_DRAFTER = """\
 # release.py  # [9,879 tokens | 44,440 bytes]
 # remotes/honeybot/scripts/dye_injector.py  # [271 tokens | 1,070 bytes]
 # remotes/honeybot/scripts/dye_injector_v2.py  # [542 tokens | 2,361 bytes]
+# requirements.in  # [573 tokens | 1,924 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
 # scripts/articles/build_book_passes.py  # [535 tokens | 2,210 bytes]
 # scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
