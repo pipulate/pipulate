@@ -44,19 +44,7 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # flake.nix  # [7,974 tokens | 34,081 bytes]
 # /home/mike/repos/pipulate/Notebooks/Deliverables/onboarding_job/example_com_Optics_Baseline.xlsx
 
-# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/accessibility_tree.json  # [2,513 tokens | 10,012 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/accessibility_tree_summary.txt  # [143 tokens | 579 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/dom_hierarchy.html  # [578 tokens | 1,745 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/dom_hierarchy.txt  # [144 tokens | 530 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/dom_layout_boxes.html  # [2,091 tokens | 15,435 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/dom_layout_boxes.txt  # [1,041 tokens | 12,454 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/headers.json  # [172 tokens | 453 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/rendered_dom.html  # [149 tokens | 513 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/seo.md  # [101 tokens | 421 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/simple_dom.html  # [109 tokens | 370 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/example.com/%2F/source.html  # [152 tokens | 528 bytes]
-
-tools/scraper_tools.py  # [4,243 tokens | 20,798 bytes]
+# tools/scraper_tools.py  # [4,243 tokens | 20,798 bytes]
 
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 # apps/015_backup_introduction.py  # [4,053 tokens | 19,147 bytes]
@@ -64,8 +52,8 @@ tools/scraper_tools.py  # [4,243 tokens | 20,798 bytes]
 # pipulate/core.py  # [26,240 tokens | 127,595 bytes]
 
 # https://gist.githubusercontent.com/karpathy/442a6bf555914893e9891c11519de94f/raw/ac46de1ad27f92b28ac95459c782c07f6b8c964a/llm-wiki.md
-# https://gist.githubusercontent.com/karpathy/8627fe009c40f57531cb18360106ce95/raw/14fb038816c7aae0bb9342c2dbf1a51dd134a5ff/microgpt.py
 # https://raw.githubusercontent.com/karpathy/autoresearch/refs/heads/master/README.md
+# https://gist.githubusercontent.com/karpathy/8627fe009c40f57531cb18360106ce95/raw/14fb038816c7aae0bb9342c2dbf1a51dd134a5ff/microgpt.py
 
 # /home/mike/repos/trimnoir/_posts/2026-04-08-async-narration-metadata-minefield.md  # [Idx: 1011 | Order: 1 | Tokens: 16,036 | Bytes: 63,514]
 # /home/mike/repos/trimnoir/_posts/2026-04-08-llmectomy-universal-adapter-resilience.md  # [Idx: 1012 | Order: 2 | Tokens: 23,076 | Bytes: 89,108]
@@ -305,7 +293,7 @@ tools/scraper_tools.py  # [4,243 tokens | 20,798 bytes]
 # https://www.datacamp.com/tutorial/guide-to-autoresearch
 # !https://www.datacamp.com/tutorial/guide-to-autoresearch
 
-# imports/stream_orchestrator.py  # (The mid-stream catcher)
+imports/stream_orchestrator.py  # (The mid-stream catcher)
 # imports/mcp_orchestrator.py  # (The tool dispatcher)
 # pipulate/core.py  # (Where the actual mcp_pattern regex lives)
 
@@ -395,7 +383,7 @@ tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 # flake.nix  # [7,721 tokens | 32,979 bytes]
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
-# config.py  # [4,098 tokens | 15,949 bytes]
+config.py  # [4,098 tokens | 15,949 bytes]
 # AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
 # README.md  # [20,467 tokens | 103,208 bytes]
 # cli.py  # [5,092 tokens | 22,615 bytes]
@@ -408,10 +396,10 @@ tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 # server.py   # [54,246 tokens | 258,931 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
-config.py  # [4,098 tokens | 15,949 bytes]
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# config.py  # [4,098 tokens | 15,949 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 
 
@@ -438,11 +426,11 @@ imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 # CHAPTER 5: THE HANDS (AI TOOLS & AUTOMATION) (~350KB)
 # tools/__init__.py  # [464 tokens | 2,067 bytes]
 # tools/keychain_tools.py  # [1,376 tokens | 5,688 bytes]
-# tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
-# tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
+tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
+tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 # tools/conversation_tools.py  # [491 tokens | 2,357 bytes]
 # tools/system_tools.py  # [707 tokens | 3,254 bytes]
-# tools/dom_tools.py  # [3,466 tokens | 15,120 bytes]
+tools/dom_tools.py  # [3,466 tokens | 15,120 bytes]
 # tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
 # tools/mcp_tools.py  # [36,628 tokens | 186,793 bytes]
@@ -459,7 +447,7 @@ imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 
 # CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS) (~200KB) imports/__init__.py  # [0 tokens | 0 bytes]
 # imports/crud.py  # [7,365 tokens | 35,666 bytes]
-imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
+# imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
 # apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
 # apps/020_profiles.py  # [4,022 tokens | 18,487 bytes]
 # apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
@@ -481,7 +469,7 @@ imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
 # apps/100_connect_with_botify.py  # [4,478 tokens | 22,512 bytes]
 # apps/240_simon_mcp.py  # [8,881 tokens | 44,519 bytes]
 # apps/200_workflow_genesis.py  # [12,397 tokens | 59,508 bytes]
-# imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
+imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
 # scripts/workflow/splice_workflow_step.py  # [5,064 tokens | 22,110 bytes]
