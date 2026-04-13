@@ -293,7 +293,7 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # https://www.datacamp.com/tutorial/guide-to-autoresearch
 # !https://www.datacamp.com/tutorial/guide-to-autoresearch
 
-imports/stream_orchestrator.py  # (The mid-stream catcher)
+# imports/stream_orchestrator.py  # (The mid-stream catcher)
 # imports/mcp_orchestrator.py  # (The tool dispatcher)
 # pipulate/core.py  # (Where the actual mcp_pattern regex lives)
 
@@ -305,14 +305,14 @@ imports/stream_orchestrator.py  # (The mid-stream catcher)
 # server.py  # [54,246 tokens | 258,931 bytes]
 # imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-Notebooks/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-Notebooks/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
-tools/__init__.py  # [464 tokens | 2,067 bytes]
-tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
-tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# Notebooks/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+# Notebooks/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+# tools/__init__.py  # [464 tokens | 2,067 bytes]
+# tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
+# tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 
 # flake.nix  # [7,711 tokens | 32,991 bytes]
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
@@ -324,16 +324,16 @@ tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 # ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # My Personal NixOS System
-# /home/mike/repos/nixos/ai-acceleration.nix  # [525 tokens | 2,069 bytes]
-# /home/mike/repos/nixos/ai.py  # [591 tokens | 2,814 bytes]
-# /home/mike/repos/nixos/autognome.py  # [7,210 tokens | 34,310 bytes]
-# /home/mike/repos/nixos/configuration.nix  # [2,734 tokens | 9,798 bytes]
-# /home/mike/repos/nixos/flatnotes.nix  # [760 tokens | 2,497 bytes]
-# /home/mike/repos/nixos/hardware-configuration.nix  # [404 tokens | 1,438 bytes]
-# /home/mike/repos/nixos/init.lua  # [4,288 tokens | 16,495 bytes]
-# /home/mike/repos/nixos/openclaw.nix  # [435 tokens | 1,573 bytes]
-# /home/mike/repos/nixos/packages.nix  # [772 tokens | 2,697 bytes]
-# /home/mike/repos/nixos/services.nix  # [1,407 tokens | 5,363 bytes]
+/home/mike/repos/nixos/ai-acceleration.nix  # [525 tokens | 2,069 bytes]
+/home/mike/repos/nixos/ai.py  # [591 tokens | 2,814 bytes]
+/home/mike/repos/nixos/autognome.py  # [7,210 tokens | 34,310 bytes]
+/home/mike/repos/nixos/configuration.nix  # [2,734 tokens | 9,798 bytes]
+/home/mike/repos/nixos/flatnotes.nix  # [760 tokens | 2,497 bytes]
+/home/mike/repos/nixos/hardware-configuration.nix  # [404 tokens | 1,438 bytes]
+/home/mike/repos/nixos/init.lua  # [4,288 tokens | 16,495 bytes]
+/home/mike/repos/nixos/openclaw.nix  # [435 tokens | 1,573 bytes]
+/home/mike/repos/nixos/packages.nix  # [772 tokens | 2,697 bytes]
+/home/mike/repos/nixos/services.nix  # [1,407 tokens | 5,363 bytes]
 
 # ============================================================================
 # I. THE SCRATCHPAD (Active Context & Transient Probes)
@@ -363,10 +363,10 @@ tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 # The foundational NPvg framework and state management.
 
 # CHAPTER 0: ONBOARDING
-# !https://pipulate.com/
-# /home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
-# flake.nix  # [7,721 tokens | 32,979 bytes]
-# pyproject.toml  # [677 tokens | 2,299 bytes]
+!https://pipulate.com/
+/home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
+flake.nix  # [7,721 tokens | 32,979 bytes]
+pyproject.toml  # [677 tokens | 2,299 bytes]
 # assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
@@ -383,7 +383,7 @@ tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 # flake.nix  # [7,721 tokens | 32,979 bytes]
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
-config.py  # [4,098 tokens | 15,949 bytes]
+# config.py  # [4,098 tokens | 15,949 bytes]
 # AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
 # README.md  # [20,467 tokens | 103,208 bytes]
 # cli.py  # [5,092 tokens | 22,615 bytes]
@@ -400,7 +400,7 @@ config.py  # [4,098 tokens | 15,949 bytes]
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
 # pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
 # pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
+# imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 
 
 # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS) (~170KB)
@@ -426,11 +426,11 @@ imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 # CHAPTER 5: THE HANDS (AI TOOLS & AUTOMATION) (~350KB)
 # tools/__init__.py  # [464 tokens | 2,067 bytes]
 # tools/keychain_tools.py  # [1,376 tokens | 5,688 bytes]
-tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
-tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
+# tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
+# tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 # tools/conversation_tools.py  # [491 tokens | 2,357 bytes]
 # tools/system_tools.py  # [707 tokens | 3,254 bytes]
-tools/dom_tools.py  # [3,466 tokens | 15,120 bytes]
+# tools/dom_tools.py  # [3,466 tokens | 15,120 bytes]
 # tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
 # tools/mcp_tools.py  # [36,628 tokens | 186,793 bytes]
@@ -469,7 +469,7 @@ tools/dom_tools.py  # [3,466 tokens | 15,120 bytes]
 # apps/100_connect_with_botify.py  # [4,478 tokens | 22,512 bytes]
 # apps/240_simon_mcp.py  # [8,881 tokens | 44,519 bytes]
 # apps/200_workflow_genesis.py  # [12,397 tokens | 59,508 bytes]
-imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
+# imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
 # scripts/workflow/splice_workflow_step.py  # [5,064 tokens | 22,110 bytes]
