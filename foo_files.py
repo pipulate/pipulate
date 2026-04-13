@@ -41,7 +41,7 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-# flake.nix  # [7,974 tokens | 34,081 bytes]
+flake.nix  # [7,974 tokens | 34,081 bytes]
 # /home/mike/repos/pipulate/Notebooks/Deliverables/onboarding_job/example_com_Optics_Baseline.xlsx
 
 # tools/scraper_tools.py  # [4,243 tokens | 20,798 bytes]
