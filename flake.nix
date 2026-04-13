@@ -310,6 +310,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           echo "A JupyterLab tab will open in your default browser."
           tmux kill-session -t jupyter 2>/dev/null || echo "No tmux session named 'jupyter' is running."
           tmux new-session -d -s jupyter "source .venv/bin/activate && jupyter lab ${jupyterStartupNotebook} --workspace=\$JUPYTER_WORKSPACE_NAME --NotebookApp.token=\"\" --NotebookApp.password=\"\" --NotebookApp.disable_check_xsrf=True"
+          sleep 2
           echo "If no tab opens, visit http://localhost:8888/lab"
           echo "To view JupyterLab server: tmux attach -t jupyter"
           echo "To stop JupyterLab server: stop"
@@ -376,6 +377,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # Start JupyterLab
           echo "Starting JupyterLab..."
           tmux new-session -d -s jupyter "source .venv/bin/activate && jupyter lab ${jupyterStartupNotebook} --workspace=\$JUPYTER_WORKSPACE_NAME --NotebookApp.token=\"\" --NotebookApp.password=\"\" --NotebookApp.disable_check_xsrf=True"
+          sleep 2
           # Wait for JupyterLab to start
           echo "JupyterLab is starting..."
           for i in {1..30}; do
@@ -429,6 +431,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # Start JupyterLab with error logging
           echo "Starting JupyterLab..."
           tmux new-session -d -s jupyter "source .venv/bin/activate && jupyter lab ${jupyterStartupNotebook} --workspace=\$JUPYTER_WORKSPACE_NAME --NotebookApp.token=\"\" --NotebookApp.password=\"\" --NotebookApp.disable_check_xsrf=True 2>&1 | tee /tmp/jupyter-startup.log"
+          sleep 2
           # Wait for JupyterLab to start with better feedback
           echo "Waiting for JupyterLab to start (checking http://localhost:8888)..."
           
