@@ -42,22 +42,19 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # AD HOC STUFF
 
 # REFINING ONBOARDING
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
-Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
-Notebooks/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-Notebooks/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+# https://pipulate.com
+# flake.nix  # [8,011 tokens | 34,229 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
+# # Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
+# # Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
+# Notebooks/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+# Notebooks/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 # tools/__init__.py  # [464 tokens | 2,067 bytes]
 # tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
 # tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
-
-# flake.nix  # [7,974 tokens | 34,081 bytes]
-# /home/mike/repos/pipulate/Notebooks/Deliverables/onboarding_job/example_com_Optics_Baseline.xlsx
-
-# tools/scraper_tools.py  # [4,243 tokens | 20,798 bytes]
 
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 # apps/015_backup_introduction.py  # [4,053 tokens | 19,147 bytes]
@@ -521,9 +518,9 @@ Notebooks/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
 # CHAPTER 15: JEKYLL PUBLISHING
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
-# /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
+/home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
 # scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
-# scripts/articles/common.py  # [881 tokens | 3,571 bytes]
+scripts/articles/common.py  # [881 tokens | 3,571 bytes]
 # scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
 # /home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
 # /home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
@@ -532,7 +529,7 @@ Notebooks/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 # scripts/articles/list_models.py  # [165 tokens | 651 bytes]
 # scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
 # scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-# scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
+scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
 # scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
 # scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
 # scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
