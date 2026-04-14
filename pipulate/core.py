@@ -452,32 +452,33 @@ class Pipulate:
         """
         Synthesizes text to speech using the global ChipVoiceSystem if available.
         Fails gracefully to simple printing if the audio backend is unavailable.
-        Now supports dual-channel output: Markdown for the UI, plain text for the TTS.
+        Uses ANSI OSC 8 terminal primitives to render clickable links securely via stdout.
         """
         import re
         
         display_emoji = emoji if emoji is not None else CFG.WAND_SPEAKS_EMOJI
 
-        # 1. Strip Markdown links for TTS and standard terminal output
-        # Converts "[weird stuff happens](http://...)" -> "weird stuff happens"
-        plain_text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', text)
+        # 1. The Acoustic Payload (Strip URLs entirely for the voice engine)
+        voice_text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', text)
 
-        # 2. Visual Output
-        if getattr(self, 'is_notebook_context', False):
-            try:
-                from IPython.display import display, Markdown
-                # Render the clickable Markdown beautifully in Jupyter
-                display(Markdown(f"{display_emoji} {text}"))
-            except ImportError:
-                print(f"{display_emoji} {plain_text}")
-        else:
-            print(f"{display_emoji} {plain_text}")
+        # 2. The Visual Payload (ANSI OSC 8 Terminal Hyperlinks via stdout)
+        # Avoids regex backreference hell by using a clean replacer function
+        def osc8_replacer(match):
+            link_text = match.group(1)
+            url = match.group(2)
+            # ESC ] 8 ; ; URL ESC \ TEXT ESC ] 8 ; ; ESC \
+            return f"\033]8;;{url}\033\\{link_text}\033]8;;\033\\"
+            
+        console_text = re.sub(r'\[([^\]]+)\]\(([^\)]+)\)', osc8_replacer, text)
+
+        # Print standard text bytes; the Jupyter console natively hydrates the link
+        print(f"{display_emoji} {console_text}")
         
         # Check if the user has globally enabled voice. Default is '0' (Off)
         voice_enabled = self.db.get('voice_enabled', '0') == '1'
         
         if not voice_enabled:
-            return # Exit early, the print/display statement acts as the visual fallback
+            return # Exit early, the print statement acts as the visual fallback
 
         def _execute_speech():
             if delay > 0:
@@ -487,12 +488,11 @@ class Pipulate:
                 # Import here to avoid circular dependencies
                 from imports.voice_synthesis import chip_voice_system
                 if chip_voice_system and chip_voice_system.voice_ready:
-                     # Acoustic Sanitization (Using the plain_text so it doesn't read URLs!)
-                     safe_text = plain_text.replace('\u0329', '')
+                     # Acoustic Sanitization (Using the voice_text so it doesn't read URLs!)
+                     safe_text = voice_text.replace('\u0329', '')
                      safe_text = safe_text.replace('—', ', ').replace('–', ', ')
                      
-                     # This blocks the current thread while playing, 
-                     # which is perfect if we are in a daemon thread.
+                     # This blocks the current thread while playing
                      chip_voice_system.speak_text(safe_text)
             except Exception:
                 pass
