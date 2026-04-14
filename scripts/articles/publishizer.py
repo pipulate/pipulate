@@ -93,14 +93,6 @@ def main():
     targets = common.load_targets()
     target_key = args.target
 
-    if not target_key:
-        print("🤖 Initiating Pipulate Graph Update Sequence...")
-        print("Select Target Repo for ALL steps:")
-        for k, v in targets.items():
-            print(f"  [{k}] {v['name']} ({v['path']})")
-        
-        target_key = input("Enter choice (default 1): ").strip() or "1"
-    
     if target_key not in targets:
         print(f"❌ Invalid target key: {target_key}")
         sys.exit(1)
