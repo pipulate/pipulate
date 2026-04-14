@@ -145,14 +145,11 @@ def generate_context_json(article_data, token_count, api_key=None):
                 return None, 0, 1 # Signal: STOP KEY
 
             # Case B: RATE LIMIT (RPM) or SERVER ERROR - Soft Retry
-            if "429" in error_msg or "500" in error_msg or "503" in error_msg:
+            if "429" in error_msg or "500" in error_msg or "503" in error_msg or "high demand" in error_msg.lower():
                 if attempt < max_retries:
                     wait_time = 10 * attempt
-                    print(f"  ⚠️ Transient error (RPM/Server). Retrying in {wait_time}s...")
+                    print(f"  ⚠️ Transient error (RPM/Server/Demand). Retrying in {wait_time}s...")
                     time.sleep(wait_time)
-                else:
-                    print(f"  ❌ Failed after {max_retries} attempts.")
-                    return None, 0, 2 # Signal: SKIP FILE
             
             # Case C: Parsing/Content Errors
             elif "JSON" in error_msg:
