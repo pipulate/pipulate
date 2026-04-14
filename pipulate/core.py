@@ -582,7 +582,7 @@ class Pipulate:
         toggle.observe(on_toggle, 'value')
         display(widgets.VBox([toggle, out]))
 
-    def imperio(self, side_quest=False, emoji: str = "🌀", newline: bool = False):
+    def imperio(self, side_quest=False, emoji: str = "🌀", newline: bool = True):
         """
         The Compulsion. Finalizes a step and ushers the user to the next.
         If a side_quest is active, the machine demands external action 
@@ -594,7 +594,7 @@ class Pipulate:
                 - "optional": Action available but not required.
                 - False: Standard progression.
             emoji: The icon prepended to the spoken text.
-            newline: If True, prints an empty line before the compulsion for visual pacing.
+            newline: If True (default), prints an empty line before the compulsion for visual pacing.
         """
         if newline:
             print()
