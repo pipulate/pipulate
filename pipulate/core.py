@@ -2717,13 +2717,15 @@ class Pipulate:
                     val = widget.value.strip()
                     if val:
                         self.set(job, k, val)
-                        updates.append(k)
+                        # Capture both the key and the new value for the read-back
+                        updates.append(f"{k} with {val}")
                     else:
                         all_valid = False
                         print(f"❌ '{k}' cannot be empty.")
                 
                 if all_valid:
-                    self.speak(f"Job '{job}' updated with: {', '.join(updates)}.")
+                    # Adjust the sentence structure to read naturally
+                    self.speak(f"Job '{job}' updated {', '.join(updates)}.")
                     # Keep widgets open so they can see the success, 
                     # but maybe change button color to show it's "saved"
                     submit_btn.button_style = 'success'
