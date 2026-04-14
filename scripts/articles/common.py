@@ -28,40 +28,6 @@ def load_targets():
             print(f"⚠️ Warning: {TARGETS_FILE} is corrupt. Using defaults.")
     return DEFAULT_TARGETS
 
-def get_target_path(cli_args=None):
-    """
-    Determines the active project path.
-    Priority:
-    1. CLI Argument (--target_key)
-    2. Interactive Selection (if running in terminal)
-    3. Default (Target "1")
-    """
-    targets = load_targets()
-    
-    # If args provided and key exists, use it
-    if cli_args and getattr(cli_args, 'target', None):
-        key = str(cli_args.target)
-        if key in targets:
-            print(f"🎯 Target set via CLI: {targets[key]['name']}")
-            return Path(targets[key]['path'])
-        else:
-            print(f"❌ Invalid target key: {key}")
-            sys.exit(1)
-
-    # Interactive Mode
-    print("\nSelect Target Repo:")
-    for k, v in targets.items():
-        print(f"  [{k}] {v['name']} ({v['path']})")
-    
-    choice = input("Enter choice (default 1): ").strip() or "1"
-    
-    if choice in targets:
-        path = Path(targets[choice]['path'])
-        print(f"✅ Active Target: {targets[choice]['name']}")
-        return path
-    else:
-        print("❌ Invalid selection.")
-        sys.exit(1)
 
 def load_keys_dict():
     """Loads the entire keys dictionary from keys.json."""
@@ -100,11 +66,52 @@ def get_api_key(key_name=None):
         print("❌ No key provided. Exiting.")
         sys.exit(1)
 
-def add_standard_arguments(parser):
-    """Unified API for all scripts."""
-    parser.add_argument('-t', '--target', type=str, help="Target ID from targets.json (e.g., '1')")
-    parser.add_argument('-k', '--key', type=str, help="API key alias from keys.json (e.g., 'pipulate')")
-
 def add_target_argument(parser):
     """Legacy helper - redirects to add_standard_arguments for backwards compatibility."""
     add_standard_arguments(parser)
+
+
+def get_target_path(cli_args=None):
+    """
+    Determines the active project path.
+    Priority:
+    1. CLI Argument (--target)
+    2. Default (Target "1")
+    3. Interactive Selection (Fallback)
+    """
+    targets = load_targets()
+    
+    # If args provided and key exists, use it
+    if cli_args and getattr(cli_args, 'target', None):
+        key = str(cli_args.target)
+        if key in targets:
+            # Polish: Tell the user if it was explicit or defaulted
+            if '-t' in sys.argv or '--target' in sys.argv:
+                print(f"🎯 Target set via CLI: {targets[key]['name']}")
+            else:
+                print(f"🎯 Default target auto-selected: {targets[key]['name']}")
+            return Path(targets[key]['path'])
+        else:
+            print(f"❌ Invalid target key: {key}")
+            sys.exit(1)
+
+    # Interactive Mode (Fallback if cli_args is completely missing)
+    print("\nSelect Target Repo:")
+    for k, v in targets.items():
+        print(f"  [{k}] {v['name']} ({v['path']})")
+    
+    choice = input("Enter choice (default 1): ").strip() or "1"
+    
+    if choice in targets:
+        path = Path(targets[choice]['path'])
+        print(f"✅ Active Target: {targets[choice]['name']}")
+        return path
+    else:
+        print("❌ Invalid selection.")
+        sys.exit(1)
+
+def add_standard_arguments(parser):
+    """Unified API for all scripts."""
+    # CRITICAL FIX: Inject default="1" here
+    parser.add_argument('-t', '--target', type=str, default="1", help="Target ID from targets.json (default: '1')")
+    parser.add_argument('-k', '--key', type=str, help="API key alias from keys.json (e.g., 'pipulate')")
