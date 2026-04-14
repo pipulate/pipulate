@@ -582,15 +582,26 @@ class Pipulate:
         toggle.observe(on_toggle, 'value')
         display(widgets.VBox([toggle, out]))
 
-    def imperio(self, side_quest: bool = False, emoji: str = "🌀"):
+    def imperio(self, side_quest=False, emoji: str = "🌀"):
         """
         The Compulsion. Finalizes a step and ushers the user to the next.
         If a side_quest is active, the machine demands external action 
         before the spell can continue.
+
+        Args:
+            side_quest: bool or str. 
+                - True: Mandatory action required.
+                - "optional": Action available but not required.
+                - False: Standard progression.
         """
-        if side_quest:
+        if side_quest is True:
             self.speak(
                 "You must complete the side-quest instructions above before running the next cell.",
+                emoji=emoji
+            )
+        elif side_quest == "optional":
+            self.speak(
+                "You may interact with the optional side-quest above, or simply run the next cell to continue.",
                 emoji=emoji
             )
         else:
