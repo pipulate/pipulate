@@ -15,10 +15,11 @@ import common
 # MODEL CONFIGURATION
 # MODEL_NAME = 'gemini-flash-lite-latest'
 MODEL_CASCADE = [
-    'gemini-flash-lite-latest',
-    'gemini-1.5-flash-latest',   # Step up: standard flash
-    'gemini-1.5-pro-latest'      # Heavy duty fallback
+    'gemini-flash-latest',
+    'gemini-1.5-flash-002',      # Step up: explicit stable version
+    'gemini-1.5-pro-002'         # Heavy duty fallback: explicit stable version
 ]
+
 SAFETY_SLEEP_SECONDS = 5
 
 def count_tokens(text: str, model: str = "gpt-4o") -> int:

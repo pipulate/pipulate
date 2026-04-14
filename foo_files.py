@@ -41,6 +41,8 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
+! cd scripts/articles && python list_models.py
+
 # REFINING ONBOARDING
 # https://pipulate.com
 # flake.nix  # [8,011 tokens | 34,229 bytes]
@@ -519,21 +521,21 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # CHAPTER 15: JEKYLL PUBLISHING
 # /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
 /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
-# scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
+scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
 scripts/articles/common.py  # [881 tokens | 3,571 bytes]
-# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-# /home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
-# /home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
-# /home/mike/repos/trimnoir/_layouts/home.html  # [265 tokens | 905 bytes]
-# /home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
+scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
+/home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
+/home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
+/home/mike/repos/trimnoir/_layouts/home.html  # [265 tokens | 905 bytes]
+/home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
 scripts/articles/list_models.py  # [165 tokens | 651 bytes]
-# scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
-# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
+scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
+scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
 scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
-# scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
-# scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
-# scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
-# scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
+scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
+scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
+scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
+scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
 
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # assets/prompts/find404s.md  # [350 tokens | 1,624 bytes]
