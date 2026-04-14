@@ -449,11 +449,14 @@ class Pipulate:
             return False
     # pipulate/core.py (Replace the speak method)
 
+    # pipulate/core.py (Replace the speak method)
+
     def speak(self, text: str, delay: float = 0.0, wait: bool = True, emoji: str = None):
         """
         Synthesizes text to speech using the global ChipVoiceSystem if available.
         Fails gracefully to simple printing if the audio backend is unavailable.
-        Automatically routes Markdown links to the UI while stripping them for the TTS engine.
+        Automatically routes Markdown links to the UI as tightly-spaced HTML, 
+        while stripping them for the TTS engine.
         """
         import re
         
@@ -466,9 +469,16 @@ class Pipulate:
         # 2. The Visual Payload (Hidden IPython complexity)
         if getattr(self, 'is_notebook_context', False):
             try:
-                from IPython.display import display, Markdown
-                # Render the clickable Markdown beautifully in Jupyter
-                display(Markdown(f"{display_emoji} {text}"))
+                from IPython.display import display, HTML
+                
+                # Parse the Markdown link into an HTML anchor tag
+                html_text = re.sub(r'\[([^\]]+)\]\(([^\)]+)\)', r'<a href="\2" target="_blank">\1</a>', text)
+                
+                # Convert newlines to HTML breaks to perfectly mimic print() spacing
+                html_text = html_text.replace('\n', '<br>')
+                
+                # Render as a tightly packed block with zero bottom margin
+                display(HTML(f'<div style="margin-bottom: 0;">{display_emoji} {html_text}</div>'))
             except ImportError:
                 # Fallback if IPython is somehow missing
                 print(f"{display_emoji} {voice_text}")
