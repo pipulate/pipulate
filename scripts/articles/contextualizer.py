@@ -13,7 +13,12 @@ import common
 
 # --- CONFIGURATION ---
 # MODEL CONFIGURATION
-MODEL_NAME = 'gemini-flash-lite-latest'
+# MODEL_NAME = 'gemini-flash-lite-latest'
+MODEL_CASCADE = [
+    'gemini-flash-lite-latest',
+    'gemini-1.5-flash-latest',   # Step up: standard flash
+    'gemini-1.5-pro-latest'      # Heavy duty fallback
+]
 SAFETY_SLEEP_SECONDS = 5
 
 def count_tokens(text: str, model: str = "gpt-4o") -> int:
@@ -97,73 +102,90 @@ def generate_context_json(article_data, token_count, api_key=None):
       "kw": ["Keyword1", "Keyword2"]
     }}
     """
+    """
+    Calls Gemini to compress the article using a fallback cascade.
+    """
 
-    # Use the Universal Adapter
-    model = llm.get_model(MODEL_NAME)
-    # We pass the key directly; llm handles fallback to env vars if needed
-    model.key = api_key 
-
-    max_retries = 3
-    attempt = 0
-
-    while attempt < max_retries:
+    for current_model in MODEL_CASCADE:
+        # Use the Universal Adapter for the specific model in the cascade
         try:
-            req_start = time.time()
-            response = model.prompt(prompt)
-            req_end = time.time()
-            duration = req_end - req_start
-
-            text = response.text().strip()
-            
-            # Basic cleanup if mime_type doesn't catch it
-            if text.startswith("```json"): text = text[7:]
-            if text.startswith("```"): text = text[3:]
-            if text.endswith("```"): text = text[:-3]
-            text = text.strip()
-
-            try:
-                json_obj = json.loads(text)
-                return json_obj, duration, 0 # Success
-            except json.JSONDecodeError as e:
-                # Attempt One Cleanup
-                print(f"  ⚠️ JSON Parse Error: {e}. Attempting cleanup...")
-                cleaned = clean_json_string(text)
-                if cleaned:
-                    return cleaned, duration, 0
-                else:
-                    print(f"  ❌ Parse Failed on attempt {attempt+1}")
-                    # Retrying generation might fix it if temperature > 0
-                    raise Exception("JSON Parsing Failed") 
-
+            model = llm.get_model(current_model)
+            model.key = api_key 
         except Exception as e:
-            error_msg = str(e)
-            attempt += 1
-            
-            # Case A: DAILY QUOTA (RPD) - Hard Stop
-            if "ResourceExhausted" in error_msg or "quota" in error_msg.lower():
-                print(f"\n🛑 HARD STOP: Quota Exceeded for this key.")
-                return None, 0, 1 # Signal: STOP KEY
+            print(f"  ⚠️ Plugin missing for {current_model}: {e}. Skipping...")
+            continue
 
-            # Case B: RATE LIMIT (RPM) or SERVER ERROR - Soft Retry
-            if "429" in error_msg or "500" in error_msg or "503" in error_msg or "high demand" in error_msg.lower():
-                if attempt < max_retries:
-                    wait_time = 10 * attempt
-                    print(f"  ⚠️ Transient error (RPM/Server/Demand). Retrying in {wait_time}s...")
-                    time.sleep(wait_time)
-            
-            # Case C: Parsing/Content Errors
-            elif "JSON" in error_msg:
-                 if attempt < max_retries:
-                    print(f"  ⚠️ Retrying generation due to bad JSON...")
-                 else:
-                    print(f"  ❌ consistently bad JSON.")
-                    return None, 0, 2 # Signal: SKIP FILE
-            
-            else:
-                print(f"  ⚠️ Non-retriable error: {e}")
-                return None, 0, 2 # Signal: SKIP FILE
+        max_retries = 3
+        attempt = 0
 
+        while attempt < max_retries:
+            try:
+                req_start = time.time()
+                response = model.prompt(prompt)
+                req_end = time.time()
+                duration = req_end - req_start
+
+                text = response.text().strip()
+                
+                # Basic cleanup if mime_type doesn't catch it
+                if text.startswith("```json"): text = text[7:]
+                if text.startswith("```"): text = text[3:]
+                if text.endswith("```"): text = text[:-3]
+                text = text.strip()
+
+                try:
+                    json_obj = json.loads(text)
+                    # Success! Show which model actually did the work.
+                    print(f"  ↳ 🧠 Forged by: {current_model}")
+                    return json_obj, duration, 0 
+                except json.JSONDecodeError as e:
+                    print(f"  ⚠️ JSON Parse Error: {e}. Attempting cleanup...")
+                    cleaned = clean_json_string(text)
+                    if cleaned:
+                        print(f"  ↳ 🧠 Forged by: {current_model} (Cleaned)")
+                        return cleaned, duration, 0
+                    else:
+                        print(f"  ❌ Parse Failed on attempt {attempt+1}")
+                        raise Exception("JSON Parsing Failed") 
+
+            except Exception as e:
+                error_msg = str(e)
+                attempt += 1
+                
+                # Case A: DAILY QUOTA (RPD) - Hard Stop
+                if "ResourceExhausted" in error_msg or "quota" in error_msg.lower():
+                    print(f"\n🛑 HARD STOP: Quota Exceeded for this key.")
+                    return None, 0, 1 # Signal: STOP KEY
+
+                # Case B: RATE LIMIT / SERVER ERROR / HIGH DEMAND 
+                if "429" in error_msg or "500" in error_msg or "503" in error_msg or "high demand" in error_msg.lower():
+                    # If it's specifically high demand, we might just want to failover immediately
+                    # rather than waiting for the same taxed model. 
+                    if "high demand" in error_msg.lower():
+                        print(f"  ⚠️ {current_model} experiencing high demand. Failing over...")
+                        break # Break the while loop, let the for loop try the next model
+
+                    if attempt < max_retries:
+                        wait_time = 10 * attempt
+                        print(f"  ⚠️ Transient error on {current_model}. Retrying in {wait_time}s...")
+                        time.sleep(wait_time)
+                
+                # Case C: Parsing/Content Errors
+                elif "JSON" in error_msg:
+                     if attempt < max_retries:
+                        print(f"  ⚠️ Retrying generation due to bad JSON...")
+                     else:
+                        print(f"  ❌ Consistently bad JSON from {current_model}.")
+                        break # Give the next model a try at generating valid JSON
+                
+                else:
+                    print(f"  ⚠️ Non-retriable error on {current_model}: {e}")
+                    break # Give the next model a try
+
+    # If we exhaust the entire MODEL_CASCADE
+    print("  ❌ All models in cascade exhausted.")
     return None, 0, 2
+
 
 def process_batch(batch_files, key_name, api_key, context_dir, dry_run):
     """Processes a specific list of files with a specific key."""
