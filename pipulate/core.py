@@ -447,38 +447,40 @@ class Pipulate:
         except Exception as e:
             self.logger.error(f"❌ Failed to open folder. Error: {e}")
             return False
+    # pipulate/core.py (Replace the speak method)
 
     def speak(self, text: str, delay: float = 0.0, wait: bool = True, emoji: str = None):
         """
         Synthesizes text to speech using the global ChipVoiceSystem if available.
         Fails gracefully to simple printing if the audio backend is unavailable.
-        Uses ANSI OSC 8 terminal primitives to render clickable links securely via stdout.
+        Automatically routes Markdown links to the UI while stripping them for the TTS engine.
         """
         import re
         
         display_emoji = emoji if emoji is not None else CFG.WAND_SPEAKS_EMOJI
 
-        # 1. The Acoustic Payload (Strip URLs entirely for the voice engine)
+        # 1. The Acoustic Payload (Strip URLs entirely for the voice engine and terminal)
+        # Converts "[weird stuff happens](http://...)" -> "weird stuff happens"
         voice_text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', text)
 
-        # 2. The Visual Payload (ANSI OSC 8 Terminal Hyperlinks via stdout)
-        # Avoids regex backreference hell by using a clean replacer function
-        def osc8_replacer(match):
-            link_text = match.group(1)
-            url = match.group(2)
-            # ESC ] 8 ; ; URL ESC \ TEXT ESC ] 8 ; ; ESC \
-            return f"\033]8;;{url}\033\\{link_text}\033]8;;\033\\"
-            
-        console_text = re.sub(r'\[([^\]]+)\]\(([^\)]+)\)', osc8_replacer, text)
-
-        # Print standard text bytes; the Jupyter console natively hydrates the link
-        print(f"{display_emoji} {console_text}")
+        # 2. The Visual Payload (Hidden IPython complexity)
+        if getattr(self, 'is_notebook_context', False):
+            try:
+                from IPython.display import display, Markdown
+                # Render the clickable Markdown beautifully in Jupyter
+                display(Markdown(f"{display_emoji} {text}"))
+            except ImportError:
+                # Fallback if IPython is somehow missing
+                print(f"{display_emoji} {voice_text}")
+        else:
+            # Standard terminal output gets the clean text without URL clutter
+            print(f"{display_emoji} {voice_text}")
         
         # Check if the user has globally enabled voice. Default is '0' (Off)
         voice_enabled = self.db.get('voice_enabled', '0') == '1'
         
         if not voice_enabled:
-            return # Exit early, the print statement acts as the visual fallback
+            return # Exit early, the print/display statement acts as the visual fallback
 
         def _execute_speech():
             if delay > 0:
