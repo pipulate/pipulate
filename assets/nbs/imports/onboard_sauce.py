@@ -14,7 +14,6 @@ from IPython.display import display
 from loguru import logger
 from pipulate import wand  # Use wand!
 import imports
-from dotenv import unset_key
 import llm
 
 
@@ -545,8 +544,15 @@ def factory_reset_credentials():
                     for k in keys_to_nuke:
                         if k in os.environ:
                             del os.environ[k]
-                        if env_path.exists():
-                            set_key(str(env_path), k, "")
+                    # Ruthless file scrubber: physically purge the lines
+                    if env_path.exists():
+                        lines = env_path.read_text(encoding='utf-8').splitlines()
+                        clean_lines = [line for line in lines if not any(line.startswith(f"{k}=") for k in keys_to_nuke)]
+                        if clean_lines:
+                            env_path.write_text('\n'.join(clean_lines) + '\n', encoding='utf-8')
+                        else:
+                            env_path.unlink()  # Nuke the whole file if it's empty
+                    
                     wand.speak("Vault wiped. Restart the kernel to complete the amnesia.")
                     print("✅ Credentials cleared. Please restart the kernel (Esc, 0, 0) to start over.")
 
