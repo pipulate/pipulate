@@ -451,20 +451,25 @@ class Pipulate:
 
     # pipulate/core.py (Replace the speak method)
 
+    # pipulate/core.py (Inside the speak method)
+
     def speak(self, text: str, delay: float = 0.0, wait: bool = True, emoji: str = None):
         """
         Synthesizes text to speech using the global ChipVoiceSystem if available.
         Fails gracefully to simple printing if the audio backend is unavailable.
         Automatically routes Markdown links to the UI as tightly-spaced HTML, 
         while stripping them for the TTS engine.
+        Bracketed text like [🏆] is shown visually but omitted from speech.
         """
         import re
         
         display_emoji = emoji if emoji is not None else CFG.WAND_SPEAKS_EMOJI
 
-        # 1. The Acoustic Payload (Strip URLs entirely for the voice engine and terminal)
-        # Converts "[weird stuff happens](http://...)" -> "weird stuff happens"
+        # 1. The Acoustic Payload 
+        # Extract link text: "[weird stuff](url)" -> "weird stuff"
         voice_text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', text)
+        # Remove silent tags entirely: "active [🏆]" -> "active "
+        voice_text = re.sub(r'\[[^\]]+\]', '', voice_text)
 
         # 2. The Visual Payload (Hidden IPython complexity)
         if getattr(self, 'is_notebook_context', False):
@@ -473,6 +478,9 @@ class Pipulate:
                 
                 # Parse the Markdown link into an HTML anchor tag
                 html_text = re.sub(r'\[([^\]]+)\]\(([^\)]+)\)', r'<a href="\2" target="_blank">\1</a>', text)
+                
+                # Strip the brackets from silent tags so they display normally
+                html_text = re.sub(r'\[([^\]]+)\]', r'\1', html_text)
                 
                 # Convert newlines to HTML breaks to perfectly mimic print() spacing
                 html_text = html_text.replace('\n', '<br>')
