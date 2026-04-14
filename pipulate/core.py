@@ -452,22 +452,32 @@ class Pipulate:
         """
         Synthesizes text to speech using the global ChipVoiceSystem if available.
         Fails gracefully to simple printing if the audio backend is unavailable.
-        
-        Args:
-            text (str): The text to synthesize and speak.
-            delay (float): Seconds to wait before speaking (useful for background narration).
-            wait (bool): If True, blocks execution until speech finishes. If False, runs in background.
-           emoji (str): Optional emoji to override the default wand spark.
+        Now supports dual-channel output: Markdown for the UI, plain text for the TTS.
         """
-
+        import re
+        
         display_emoji = emoji if emoji is not None else CFG.WAND_SPEAKS_EMOJI
-        print(f"{display_emoji} {text}")
+
+        # 1. Strip Markdown links for TTS and standard terminal output
+        # Converts "[weird stuff happens](http://...)" -> "weird stuff happens"
+        plain_text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', text)
+
+        # 2. Visual Output
+        if getattr(self, 'is_notebook_context', False):
+            try:
+                from IPython.display import display, Markdown
+                # Render the clickable Markdown beautifully in Jupyter
+                display(Markdown(f"{display_emoji} {text}"))
+            except ImportError:
+                print(f"{display_emoji} {plain_text}")
+        else:
+            print(f"{display_emoji} {plain_text}")
         
         # Check if the user has globally enabled voice. Default is '0' (Off)
         voice_enabled = self.db.get('voice_enabled', '0') == '1'
         
         if not voice_enabled:
-            return # Exit early, the print statement acts as the visual fallback
+            return # Exit early, the print/display statement acts as the visual fallback
 
         def _execute_speech():
             if delay > 0:
@@ -477,8 +487,8 @@ class Pipulate:
                 # Import here to avoid circular dependencies
                 from imports.voice_synthesis import chip_voice_system
                 if chip_voice_system and chip_voice_system.voice_ready:
-                     # Acoustic Sanitization
-                     safe_text = text.replace('\u0329', '')
+                     # Acoustic Sanitization (Using the plain_text so it doesn't read URLs!)
+                     safe_text = plain_text.replace('\u0329', '')
                      safe_text = safe_text.replace('—', ', ').replace('–', ', ')
                      
                      # This blocks the current thread while playing, 
