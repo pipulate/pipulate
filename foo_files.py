@@ -29,17 +29,24 @@
 
 AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
-# README.md  # [20,467 tokens | 103,208 bytes]
-# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
-# pyproject.toml  # [677 tokens | 2,299 bytes]
-# # ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
+README.md  # [20,467 tokens | 103,208 bytes]
+AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
+pyproject.toml  # [677 tokens | 2,299 bytes]
+# ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
-# .gitignore  # [573 tokens | 2,089 bytes]
+.gitignore  # [573 tokens | 2,089 bytes]
 
 # prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
+
+pipulate/core.py  # [27,171 tokens | 131,795 bytes]
+scripts/articles/articleizer.py  # [2,936 tokens | 13,517 bytes]
+assets/nbs/imports/onboard_sauce.py  # [5,061 tokens | 22,697 bytes]
+scripts/articles/execute_massive_prompt.py  # [491 tokens | 2,209 bytes]
+scripts/articles/contextualizer.py  # [2,545 tokens | 11,246 bytes]
+scripts/articles/list_models.py  # [102 tokens | 391 bytes]
 
 # ! cd scripts/articles && python list_models.py
 
