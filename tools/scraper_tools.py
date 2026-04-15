@@ -415,17 +415,22 @@ async def selenium_automation(params: dict) -> dict:
 
         # --- Generate LLM Optics (Subprocess Bulkhead) ---
         if verbose: logger.info("👁️‍🗨️ Running LLM Optics Engine (Subprocess Bulkhead)...")
-        optics_result = await generate_optics_subprocess(str(dom_path))
+        # We pass the output_dir, not the dom_path
+        optics_result = await generate_optics_subprocess(str(output_dir))
         
         if optics_result.get('success'):
             if verbose: logger.success("✅ LLM Optics Engine completed successfully.")
             # Append new optical artifacts to the result dictionary
             for optic_key, filename in [
                 ('seo_md', 'seo.md'),
-                ('hierarchy_txt', 'dom_hierarchy.txt'),
-                ('hierarchy_html', 'dom_hierarchy.html'),
-                ('boxes_txt', 'dom_layout_boxes.txt'),
-                ('boxes_html', 'dom_layout_boxes.html')
+                ('source_hierarchy_txt', 'source_dom_hierarchy.txt'),
+                ('source_hierarchy_html', 'source_dom_hierarchy.html'),
+                ('source_boxes_txt', 'source_dom_layout_boxes.txt'),
+                ('source_boxes_html', 'source_dom_layout_boxes.html'),
+                ('hydrated_hierarchy_txt', 'hydrated_dom_hierarchy.txt'),
+                ('hydrated_hierarchy_html', 'hydrated_dom_hierarchy.html'),
+                ('hydrated_boxes_txt', 'hydrated_dom_layout_boxes.txt'),
+                ('hydrated_boxes_html', 'hydrated_dom_layout_boxes.html')
             ]:
                 optic_path = output_dir / filename
                 if optic_path.exists():
