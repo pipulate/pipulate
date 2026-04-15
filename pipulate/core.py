@@ -2880,3 +2880,54 @@ class Pipulate:
         except Exception as e:
             print(f"❌ Error communicating with the Universal Adapter: {e}")
             return None
+
+    def verify_cloud_ai(self, preferred_models: str = "gemini, claude, gpt") -> str:
+        """
+        Dedicated check for Cloud AI capabilities.
+        Negotiates the preferred cloud model and triggers the credential widget if needed.
+        """
+        import llm
+        
+        print("Scanning Universal Adapter for preferred Cloud models...")
+        available_models = [m.model_id for m in llm.get_models()]
+        prefs = [p.strip().lower() for p in preferred_models.split(',')]
+        selected_cloud = None
+        
+        for pref in prefs:
+            # Find first match that is NOT an ollama model
+            match = next((m for m in available_models if pref in m.lower() and 'ollama' not in str(type(llm.get_model(m))).lower()), None)
+            if match:
+                selected_cloud = match
+                break
+        
+        # Fallback to Gemini if nothing explicit matches, as it's our recommended free tier
+        if not selected_cloud:
+            selected_cloud = "gemini-1.5-flash-latest" 
+            
+        print(f"☁️ Selected Cloud Model: {selected_cloud}")
+        
+        # Map the selected model to its corresponding environment variable
+        env_var_name = None
+        if 'claude' in selected_cloud.lower() or 'anthropic' in selected_cloud.lower():
+            env_var_name = 'ANTHROPIC_API_KEY'
+            service_name = 'Anthropic'
+        elif 'gpt' in selected_cloud.lower() or 'openai' in selected_cloud.lower():
+            env_var_name = 'OPENAI_API_KEY'
+            service_name = 'OpenAI'
+        elif 'groq' in selected_cloud.lower():
+            env_var_name = 'GROQ_API_KEY'
+            service_name = 'Groq'
+        else: # Default to Gemini
+            env_var_name = 'GEMINI_API_KEY'
+            service_name = 'Google Gemini'
+            
+        # The Gatekeeper: Forces the API key request up-front via a secure widget if missing.
+        # If it's already in your .env, it silently passes and returns the key.
+        key_present = self.ensure_credentials(env_var_name, service_name)
+        
+        if key_present:
+            # If the key was already there, we automatically trigger the compulsion to move forward.
+            # If it wasn't, the widget handles the compulsion upon successful submission.
+            self.imperio()
+            
+        return selected_cloud
