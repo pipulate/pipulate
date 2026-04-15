@@ -606,7 +606,7 @@ class Pipulate:
             )
         elif side_quest == "optional":
             self.speak(
-                "You may interact with the optional side-quest above, or simply run the next cell to continue.",
+                "Go on the optional side-quest above. \nThen run the next cell to continue.",
                 emoji=emoji
             )
         else:
