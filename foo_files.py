@@ -29,26 +29,26 @@
 
 AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
-README.md  # [20,467 tokens | 103,208 bytes]
-AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
-pyproject.toml  # [677 tokens | 2,299 bytes]
-# ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
-# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
-.gitignore  # [573 tokens | 2,089 bytes]
+# README.md  # [20,467 tokens | 103,208 bytes]
+# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
+# pyproject.toml  # [677 tokens | 2,299 bytes]
+# # ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
+# # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
+# .gitignore  # [573 tokens | 2,089 bytes]
 
 # prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-pipulate/core.py  # [27,171 tokens | 131,795 bytes]
-scripts/articles/articleizer.py  # [2,936 tokens | 13,517 bytes]
-assets/nbs/imports/onboard_sauce.py  # [5,061 tokens | 22,697 bytes]
-scripts/articles/execute_massive_prompt.py  # [491 tokens | 2,209 bytes]
-scripts/articles/contextualizer.py  # [2,545 tokens | 11,246 bytes]
-scripts/articles/list_models.py  # [102 tokens | 391 bytes]
+# pipulate/core.py  # [27,171 tokens | 131,795 bytes]
+# scripts/articles/articleizer.py  # [2,936 tokens | 13,517 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [5,061 tokens | 22,697 bytes]
+# scripts/articles/execute_massive_prompt.py  # [491 tokens | 2,209 bytes]
+# scripts/articles/contextualizer.py  # [2,545 tokens | 11,246 bytes]
+# scripts/articles/list_models.py  # [102 tokens | 391 bytes]
 
-# ! cd scripts/articles && python list_models.py
+# !cd scripts/articles && python list_models.py
 
 # REFINING ONBOARDING
 # https://pipulate.com
@@ -61,9 +61,9 @@ scripts/articles/list_models.py  # [102 tokens | 391 bytes]
 # Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 Notebooks/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
 Notebooks/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
-# tools/__init__.py  # [464 tokens | 2,067 bytes]
-# tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
-# tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
+tools/__init__.py  # [464 tokens | 2,067 bytes]
+tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
+tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 # apps/015_backup_introduction.py  # [4,053 tokens | 19,147 bytes]
@@ -406,10 +406,10 @@ Notebooks/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 # server.py   # [54,246 tokens | 258,931 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
-# config.py  # [4,098 tokens | 15,949 bytes]
-# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+config.py  # [4,098 tokens | 15,949 bytes]
+pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 # imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 
 
