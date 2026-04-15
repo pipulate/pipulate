@@ -568,3 +568,57 @@ def factory_reset_credentials():
 
     button.on_click(on_click)
     display(widgets.VBox([button, out]))
+
+def render_persona_selector(job_id: str = "onboarding_job"):
+    """
+    Renders the IPyWidget to select the AI auditor persona.
+    Handles persistent state writing and triggers the downstream compulsion.
+    """
+    import ipywidgets as widgets
+    from IPython.display import display, clear_output
+    from pipulate import wand
+
+    # 1. Check if they already made a choice previously (defaulting to the suit)
+    existing_choice = wand.get(job_id, "auditor_persona") or "enterprise"
+
+    # 2. Build the visual selection widget
+    persona_widget = widgets.RadioButtons(
+        options=[
+            ('👔 The Enterprise Consultant (Strict, analytical, buttoned-up)', 'enterprise'),
+            ('🎭 Statler & Waldorf (Ruthless heckling from the balcony)', 'muppets')
+        ],
+        value=existing_choice,
+        layout={'width': 'max-content'}
+    )
+
+    submit_btn = widgets.Button(
+        description="Lock in Persona", 
+        button_style='primary',
+        icon='check'
+    )
+
+    out = widgets.Output()
+
+    def on_submit(b):
+        with out:
+            clear_output()
+            selected = persona_widget.value
+            
+            # 3. Save the choice to persistent memory
+            wand.set(job_id, "auditor_persona", selected)
+            
+            # 4. Give contextual audio feedback based on their choice
+            if selected == 'muppets':
+                wand.speak("Excellent choice. Prepare to be insulted.")
+            else:
+                wand.speak("Very well. We will keep this strictly professional.")
+                
+            submit_btn.description = "Persona Locked"
+            submit_btn.button_style = 'success'
+            
+            # 5. Fire the compulsion to advance
+            wand.imperio(newline=True)
+
+    submit_btn.on_click(on_submit)
+
+    display(widgets.VBox([persona_widget, submit_btn, out]))
