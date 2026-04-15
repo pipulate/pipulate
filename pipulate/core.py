@@ -2814,29 +2814,44 @@ class Pipulate:
             emoji="🐍"
         )
 
-    def verify_local_ai(self, preferred_models: str = "gemma4:latest, qwen3.5:latest") -> str:
+    def verify_local_ai(self, preferred_models: str = "gemma4:latest, qwen3.5:latest", simulate_state: str = None) -> str:
         """
         Dedicated check for local AI capabilities (Ollama).
         Returns the selected model string if successful, or None if not found,
         while printing clear educational instructions for the user to install it.
+        
+        Args:
+            preferred_models: Comma-separated list of acceptable local models.
+            simulate_state: For testing. Can be 'no_ollama', 'no_models', or None (actual check).
         """
         import llm
         
         print("Scanning your system for a local AI brain...")
         try:
-            available_models = [m.model_id for m in llm.get_models()]
-            has_local = any('ollama' in str(type(m)).lower() for m in llm.get_models())
+            # 1. State Simulation (For Testing)
+            if simulate_state == 'no_ollama':
+                available_models = []
+                has_local = False
+            elif simulate_state == 'no_models':
+                available_models = ["llama2:7b", "mistral:latest"] # Dummy models, not preferred
+                has_local = True
+            else:
+                # Actual System Check
+                available_models = [m.model_id for m in llm.get_models()]
+                has_local = any('ollama' in str(type(m)).lower() for m in llm.get_models())
             
             prefs = [p.strip().lower() for p in preferred_models.split(',')]
             selected_local = None
             
-            # Fuzzy match for preferred models
-            for pref in prefs:
-                match = next((m for m in available_models if pref in m.lower() and 'ollama' in str(type(llm.get_model(m))).lower()), None)
-                if match:
-                    selected_local = match
-                    break
+            # 2. Fuzzy match for preferred models
+            if not simulate_state == 'no_ollama' and not simulate_state == 'no_models':
+                for pref in prefs:
+                    match = next((m for m in available_models if pref in m.lower() and 'ollama' in str(type(llm.get_model(m))).lower()), None)
+                    if match:
+                        selected_local = match
+                        break
             
+            # 3. Response Matrix
             if selected_local:
                 self.speak(f"Excellent. Local model '{selected_local}' is active and ready.")
                 print(f"\n✅ Locked in Local Model: {selected_local}")
