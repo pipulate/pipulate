@@ -20,12 +20,12 @@ from selenium.webdriver.common.by import By
 from tools import auto_tool
 from . import dom_tools
 
-async def generate_optics_subprocess(dom_file_path: str):
+async def generate_optics_subprocess(target_dir_path: str):
     """Isolated wrapper to call llm_optics.py as a subprocess, protecting the event loop."""
     script_path = Path(__file__).resolve().parent / "llm_optics.py"
     
     proc = await asyncio.create_subprocess_exec(
-        sys.executable, str(script_path), str(dom_file_path),
+        sys.executable, str(script_path), str(target_dir_path),
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE
     )
