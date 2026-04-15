@@ -2568,83 +2568,6 @@ class Pipulate:
         found_key = self.load_secrets("GOOGLE_API_KEY")
         return bool(found_key)
 
-    def ensure_credentials(self, env_var_name: str, service_name: str = None) -> str:
-        """
-        The Universal Gatekeeper. Checks for required API keys upfront to prevent 
-        mid-workflow lazy-loading crashes. Renders a secure widget if missing.
-        
-        Args:
-            env_var_name (str): The environment variable to look for (e.g., 'BOTIFY_API_TOKEN').
-            service_name (str): Friendly name for the UI (e.g., 'Botify'). Auto-derived if None.
-        """
-        import os
-        from dotenv import load_dotenv, set_key
-        
-        if not service_name:
-            # Auto-derive friendly name (e.g., 'BOTIFY_API_TOKEN' -> 'Botify')
-            service_name = env_var_name.split('_')[0].title()
-
-        # 1. Load existing environment variables
-        project_root = self._find_project_root(os.getcwd()) or Path.cwd()
-        env_path = project_root / ".env"
-        load_dotenv(dotenv_path=env_path)
-        
-        current_val = os.environ.get(env_var_name)
-        if current_val:
-            self.speak(f"{service_name} credentials verified in your environment.")
-            print(f"✅ Secure {service_name} connection ready.")
-            return current_val
-
-        # 2. Interactive Fallback for Notebooks
-        if self.is_notebook_context:
-            import ipywidgets as widgets
-            from IPython.display import display, clear_output
-            
-            self.speak(f"Please provide your {service_name} API key.")
-            
-            key_input = widgets.Password(
-                value='',
-                placeholder=f'Paste your {service_name} API Key here...',
-                description=f'🔑 {service_name}:',
-                style={'description_width': 'initial'},
-                layout=widgets.Layout(width='80%')
-            )
-            
-            submit_btn = widgets.Button(
-                description="Save to Vault", 
-                button_style='success',
-                icon='lock'
-            )
-            out = widgets.Output()
-            
-            def on_submit(b):
-                with out:
-                    clear_output()
-                    val = key_input.value.strip()
-                    if val:
-                        # Save permanently to .env
-                        env_path.touch(exist_ok=True)
-                        set_key(str(env_path), env_var_name, val)
-                        
-                        # Export to current runtime environment
-                        os.environ[env_var_name] = val
-                        
-                        self.speak(f"{service_name} key securely saved to the vault.")
-                        print(f"✅ {env_var_name} successfully encrypted in .env.")
-                        
-                        # Hide the widget and maintain the rhythm
-                        key_input.close()
-                        submit_btn.close()
-                    else:
-                        print("❌ Please enter a valid API key.")
-            
-            submit_btn.on_click(on_submit)
-            display(widgets.VBox([key_input, submit_btn, out]))
-            return None
-        else:
-            print(f"❌ Missing {env_var_name} in environment. Please add it to your .env file.")
-            return None
-
     def reset_credentials(self, env_var_name: str, service_name: str = None):
         """
         Removes a credential from the active environment and the .env vault, 
@@ -2881,10 +2804,107 @@ class Pipulate:
             print(f"❌ Error communicating with the Universal Adapter: {e}")
             return None
 
-    def verify_cloud_ai(self, preferred_models: str = "gemini, claude, gpt") -> str:
+    def ensure_credentials(self, env_var_name: str, service_name: str = None, force_prompt: bool = False) -> str:
+        """
+        The Universal Gatekeeper. Checks for required API keys upfront to prevent 
+        mid-workflow lazy-loading crashes. Renders a secure widget if missing.
+        
+        Args:
+            env_var_name: The environment variable to look for (e.g., 'BOTIFY_API_TOKEN').
+            service_name: Friendly name for the UI (e.g., 'Botify'). Auto-derived if None.
+            force_prompt: If True, ignores cached credentials and forces the UI widget.
+        """
+        import os
+        import ipywidgets as widgets
+        from IPython.display import display, clear_output
+        from dotenv import load_dotenv, set_key
+        
+        if not service_name:
+            # Auto-derive friendly name (e.g., 'BOTIFY_API_TOKEN' -> 'Botify')
+            service_name = env_var_name.split('_')[0].title()
+
+        # 1. Load existing environment variables (override=True fights caching stubbornness)
+        project_root = self._find_project_root(os.getcwd()) or Path.cwd()
+        env_path = project_root / ".env"
+        load_dotenv(dotenv_path=env_path, override=True)
+        
+        current_val = os.environ.get(env_var_name)
+        
+        # If force_prompt is True, we deliberately ignore the current value
+        if current_val and not force_prompt:
+            self.speak(f"{service_name} credentials verified in your environment.")
+            print(f"✅ Secure {service_name} connection ready.")
+            return current_val
+
+        # 2. Interactive Fallback for Notebooks
+        if self.is_notebook_context:
+            self.speak(f"Please provide your {service_name} API key.")
+            
+            key_input = widgets.Password(
+                value='',
+                placeholder=f'Paste your {service_name} API Key here...',
+                description=f'🔑 {service_name}:',
+                style={'description_width': 'initial'},
+                disabled=False,
+                layout=widgets.Layout(width='80%')
+            )
+            
+            submit_btn = widgets.Button(
+                description="Save to Vault", 
+                button_style='success',
+                icon='lock'
+            )
+            out = widgets.Output()
+            
+            def on_submit(b):
+                with out:
+                    clear_output()
+                    val = key_input.value.strip()
+                    if val:
+                        # Save permanently to .env
+                        env_path.touch(exist_ok=True)
+                        set_key(str(env_path), env_var_name, val)
+                        
+                        # Export to current runtime environment
+                        os.environ[env_var_name] = val
+                        
+                        # Explicitly set it in Simon Willison's 'llm' tool keychain
+                        try:
+                            import llm
+                            key_alias = env_var_name.split('_')[0].lower()
+                            llm.set_key(key_alias, val)
+                        except Exception as e:
+                            pass # Fail silently if the specific llm set_key implementation differs
+                            
+                        self.speak(f"{service_name} key securely saved to the vault.")
+                        print(f"✅ {env_var_name} successfully encrypted in .env.")
+                        
+                        # Hide the widget and fire the compulsion to move forward
+                        key_input.close()
+                        submit_btn.close()
+                        self.imperio()
+                    else:
+                        print("❌ Please enter a valid API key.")
+            
+            submit_btn.on_click(on_submit)
+            display(widgets.VBox([key_input, submit_btn, out]))
+            return None
+        else:
+            print(f"❌ Missing {env_var_name} in environment. Please add it to your .env file.")
+            return None
+
+
+    def verify_cloud_ai(self, preferred_models: str = "gemini, claude, gpt", simulate_state: str = None) -> tuple:
         """
         Dedicated check for Cloud AI capabilities.
         Negotiates the preferred cloud model and triggers the credential widget if needed.
+        
+        Args:
+            preferred_models: Comma-separated list of acceptable cloud models.
+            simulate_state: For testing. Can be 'missing_key' or None.
+            
+        Returns:
+            tuple: (selected_cloud_model_string, key_ready_boolean)
         """
         import llm
         
@@ -2922,12 +2942,7 @@ class Pipulate:
             service_name = 'Google Gemini'
             
         # The Gatekeeper: Forces the API key request up-front via a secure widget if missing.
-        # If it's already in your .env, it silently passes and returns the key.
-        key_present = self.ensure_credentials(env_var_name, service_name)
-        
-        if key_present:
-            # If the key was already there, we automatically trigger the compulsion to move forward.
-            # If it wasn't, the widget handles the compulsion upon successful submission.
-            self.imperio()
+        force_prompt = (simulate_state == 'missing_key')
+        key_present = self.ensure_credentials(env_var_name, service_name, force_prompt=force_prompt)
             
-        return selected_cloud
+        return selected_cloud, bool(key_present)
