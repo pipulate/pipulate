@@ -2813,3 +2813,55 @@ class Pipulate:
             wait=True,    # Set wait to True to block the execution of the next cell
             emoji="🐍"
         )
+
+    def verify_local_ai(self, preferred_models: str = "gemma4:latest, qwen3.5:latest") -> str:
+        """
+        Dedicated check for local AI capabilities (Ollama).
+        Returns the selected model string if successful, or None if not found,
+        while printing clear educational instructions for the user to install it.
+        """
+        import llm
+        
+        print("Scanning your system for a local AI brain...")
+        try:
+            available_models = [m.model_id for m in llm.get_models()]
+            has_local = any('ollama' in str(type(m)).lower() for m in llm.get_models())
+            
+            prefs = [p.strip().lower() for p in preferred_models.split(',')]
+            selected_local = None
+            
+            # Fuzzy match for preferred models
+            for pref in prefs:
+                match = next((m for m in available_models if pref in m.lower() and 'ollama' in str(type(llm.get_model(m))).lower()), None)
+                if match:
+                    selected_local = match
+                    break
+            
+            if selected_local:
+                self.speak(f"Excellent. Local model '{selected_local}' is active and ready.")
+                print(f"\n✅ Locked in Local Model: {selected_local}")
+                return selected_local
+                
+            elif has_local:
+                primary_recommendation = prefs[0].split(':')[0] if prefs else "gemma4"
+                self.speak("I found Ollama, but not your preferred models. Please download one.")
+                print(f"\nℹ️ Ollama is running, but your preferred models ({preferred_models}) are missing.")
+                print("To fix this, open your terminal and run:")
+                print(f"    ollama run {primary_recommendation}")
+                print("\nOnce it finishes downloading, come back and re-run this cell.")
+                return None
+                
+            else:
+                primary_recommendation = prefs[0].split(':')[0] if prefs else "gemma4"
+                self.speak("I do not detect a local AI brain. Let's get you set up.")
+                print("\nℹ️ Ollama is not running or not installed.")
+                print("To achieve true Local-First Sovereignty, you need a local AI running on your metal.")
+                print("\n1. Go to https://ollama.com/")
+                print("2. Download and install it for your operating system.")
+                print(f"3. Open your terminal and run: ollama run {primary_recommendation}")
+                print("4. Come back here and re-run this cell.")
+                return None
+                
+        except Exception as e:
+            print(f"❌ Error communicating with the Universal Adapter: {e}")
+            return None
