@@ -36,8 +36,8 @@ AI_PHOOEY_CHOP = """\
 # # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
 
-# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
-foo_files.py  # [10,245 tokens | 33,406 bytes]
+prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+# foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
@@ -51,17 +51,17 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # REFINING ONBOARDING
 # https://pipulate.com
 # flake.nix  # [8,011 tokens | 34,229 bytes]
-# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-# Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-# Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
-# Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
-Notebooks/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-Notebooks/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
-tools/__init__.py  # [464 tokens | 2,067 bytes]
-tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
-tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
+pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
+Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
+Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
+# Notebooks/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+# Notebooks/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+# tools/__init__.py  # [464 tokens | 2,067 bytes]
+# tools/scraper_tools.py  # [4,018 tokens | 19,363 bytes]
+# tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 # apps/015_backup_introduction.py  # [4,053 tokens | 19,147 bytes]
@@ -404,10 +404,10 @@ tools/llm_optics.py  # [2,638 tokens | 11,830 bytes]
 # server.py   # [54,246 tokens | 258,931 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
-config.py  # [4,098 tokens | 15,949 bytes]
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# config.py  # [4,098 tokens | 15,949 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 # imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 
 
