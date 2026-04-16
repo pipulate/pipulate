@@ -36,8 +36,8 @@ AI_PHOOEY_CHOP = """\
 # # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
 
-prompt_foo.py  # [12,990 tokens | 59,609 bytes]
-# foo_files.py  # [10,245 tokens | 33,406 bytes]
+# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
@@ -51,12 +51,12 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 # REFINING ONBOARDING
 # https://pipulate.com
 # flake.nix  # [8,011 tokens | 34,229 bytes]
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
-Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
+# Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
+# Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 # Notebooks/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
 # Notebooks/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 # tools/__init__.py  # [464 tokens | 2,067 bytes]
@@ -386,22 +386,22 @@ Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
  
 # CHAPTER 1: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
-# /home/mike/repos/Pipulate.com/index.md  # [2,361 tokens | 10,579 bytes]
-# assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
-# flake.nix  # [7,721 tokens | 32,979 bytes]
-# pyproject.toml  # [677 tokens | 2,299 bytes]
-# .gitignore  # [573 tokens | 2,089 bytes]
-# config.py  # [4,098 tokens | 15,949 bytes]
-# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
-# README.md  # [20,467 tokens | 103,208 bytes]
-# cli.py  # [5,092 tokens | 22,615 bytes]
-# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+/home/mike/repos/Pipulate.com/index.md  # [2,361 tokens | 10,579 bytes]
+assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
+flake.nix  # [7,721 tokens | 32,979 bytes]
+pyproject.toml  # [677 tokens | 2,299 bytes]
+.gitignore  # [573 tokens | 2,089 bytes]
+config.py  # [4,098 tokens | 15,949 bytes]
+AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
+README.md  # [20,467 tokens | 103,208 bytes]
+cli.py  # [5,092 tokens | 22,615 bytes]
+apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH (~260KB)
-# config.py  # [4,098 tokens | 15,949 bytes] server.py  # [54,246 tokens | 258,931 bytes] requirements.in  # [573 tokens | 1,924 bytes] requirements.txt  # [7,010 tokens | 18,582 bytes]
-# server.py   # [54,246 tokens | 258,931 bytes]
+config.py  # [4,098 tokens | 15,949 bytes] server.py  # [54,246 tokens | 258,931 bytes] requirements.in  # [573 tokens | 1,924 bytes] requirements.txt  # [7,010 tokens | 18,582 bytes]
+server.py   # [54,246 tokens | 258,931 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT) (~115KB)
 # config.py  # [4,098 tokens | 15,949 bytes]
@@ -422,7 +422,7 @@ Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 # imports/mcp_orchestrator.py  # [772 tokens | 3,332 bytes]
 # imports/append_only_conversation.py  # [4,345 tokens | 22,449 bytes]
 # imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
-# apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
+apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
 # assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
@@ -498,8 +498,8 @@ Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 # apps/120_link_graph.py  # [54,349 tokens | 272,468 bytes]
 
 # CHAPTER 13: THE GAPALYZER SUITE (~240KB)
-# Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
-# Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
+Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
+Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 
 # ============================================================================
 # V. THE CONTENT LOOM & SEMANTIC ROUTER
