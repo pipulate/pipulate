@@ -16,6 +16,8 @@
 # 1. prompt_foo.py
 # 2. foo_files.py  # <-- this
 
+# Search using this to jump to next un-commented line: \^\s*[^ \t#]
+
 # Think of prompt foo'ing as a practical and cheap, if not a bit a bit slower
 # with all that copy-pasting and more manual than agentic frameworks. But each
 # one's a chisel-strike. This document supports CHOPS. Look at `HOP_404_AFFAIR`
@@ -24,8 +26,6 @@
 # stack them all right here. Their output gets appended vertically. A table of
 # contents is added as are clear delimiters. And if a Python file is included,
 # it gets UML-diagrams and a file-tree. Refer to `prompt_foo.py` for more.
-
-# Search using this to jump to next un-commented line: \^\s*[^ \t#]
 
 AI_PHOOEY_CHOP = """\
 # USEFUL INITIALIZATION
@@ -36,7 +36,7 @@ AI_PHOOEY_CHOP = """\
 # # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
 
-# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
