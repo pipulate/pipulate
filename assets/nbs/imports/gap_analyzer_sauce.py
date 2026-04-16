@@ -2125,6 +2125,15 @@ def add_filtered_excel_tabs(
     # A. Main Tab
     print("  - Preparing 'Gap Analysis' tab...")
     last_competitor = competitors[-1] if competitors else None
+
+    # --- NEW DETERMINISTIC TRUNCATION ---
+    if len(df) > 60000: # Use a hard 60k or pass the ROW_LIMIT through
+        print(f"  ⚠️ 'Gap Analysis' tab truncated to 60,000 rows for Google Sheets safety.")
+        df_main_source = df.head(60000).copy()
+    else:
+        df_main_source = df.copy()
+    # ------------------------------------
+
     df_main = normalize_and_score_surgical(df.copy(), semrush_lookup, has_botify, last_competitor, False)
     tabs_to_write["Gap Analysis"] = df_main
 
