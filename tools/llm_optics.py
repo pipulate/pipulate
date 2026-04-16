@@ -1,4 +1,4 @@
-# llm_optics.py
+# tools/llm_optics.py
 # Purpose: The Semantic SIFT Engine. Translates raw DOM into AI-ready 
 #          Markdown, JSON registries, and human-readable ASCII structures.
 #          Complete Optics Engaged. 👁️
@@ -8,10 +8,12 @@ import io
 import sys
 from pathlib import Path
 import json
+import difflib
 
 # --- Third-Party Imports ---
 from bs4 import BeautifulSoup
 from rich.console import Console
+from rich.syntax import Syntax
 from rich.terminal_theme import MONOKAI
 
 # Attempt to import visualization classes
@@ -41,6 +43,10 @@ OUTPUT_FILES = {
     "hydrated_hierarchy_html": "hydrated_dom_hierarchy.html",
     "hydrated_boxes_txt": "hydrated_dom_layout_boxes.txt",
     "hydrated_boxes_html": "hydrated_dom_layout_boxes.html",
+    "diff_hierarchy_txt": "diff_hierarchy.txt",
+    "diff_hierarchy_html": "diff_hierarchy.html",
+    "diff_boxes_txt": "diff_boxes.txt",
+    "diff_boxes_html": "diff_boxes.html",
 }
 CONSOLE_WIDTH = 180
 
@@ -124,10 +130,41 @@ def generate_visualizations(html_content: str, prefix: str, output_dir: Path, re
     except Exception as e:
         print(f"Error generating {prefix} boxes: {e}", file=sys.stderr)
 
+def generate_diff(source_text: str, hydrated_text: str, prefix: str, results: dict):
+    """Generates a unified diff of the two ASCII representations and bottles it in Rich HTML."""
+    if not source_text and not hydrated_text:
+        return
+
+    source_lines = source_text.splitlines()
+    hydrated_lines = hydrated_text.splitlines()
+
+    diff_iterator = difflib.unified_diff(
+        source_lines, hydrated_lines,
+        fromfile=f"source_dom_{prefix}.txt",
+        tofile=f"hydrated_dom_{prefix}.txt",
+        lineterm=''
+    )
+    diff_text = '\n'.join(diff_iterator)
+
+    if not diff_text.strip():
+        diff_text = "No structural differences detected between source and hydrated DOM."
+
+    try:
+        # 1. Raw Text Export
+        results[f'diff_{prefix}_txt_content'] = diff_text
+
+        # 2. HTML Export via Rich Syntax
+        syntax = Syntax(diff_text, "diff", theme="monokai", word_wrap=True)
+        record_console = Console(record=True, file=io.StringIO(), width=CONSOLE_WIDTH)
+        record_console.print(syntax)
+        results[f'diff_{prefix}_html_content'] = record_console.export_html(theme=MONOKAI)
+    except Exception as e:
+        print(f"Error generating diff for {prefix}: {e}", file=sys.stderr)
+
 # --- Main Processing Logic ---
 def main(target_dir_path: str):
     """
-    Orchestrates extraction for both raw source and hydrated DOM.
+    Orchestrates extraction for both raw source and hydrated DOM, and diffs them.
     """
     output_dir = Path(target_dir_path).resolve()
     results = {} 
@@ -190,8 +227,18 @@ canonical_url: {json.dumps(canonical_url)}
     print(f"Generating visualizations for rendered_dom.html...", file=sys.stderr)
     generate_visualizations(rendered_content, "hydrated", output_dir, results)
 
-    # --- 3. Save Visualization Files ---
-    for prefix in ["source", "hydrated"]:
+    # --- 3. Generate Diffs ---
+    print(f"Generating structural diffs...", file=sys.stderr)
+    source_hier = results.get('source_hierarchy_txt_content', '')
+    hydrated_hier = results.get('hydrated_hierarchy_txt_content', '')
+    generate_diff(source_hier, hydrated_hier, 'hierarchy', results)
+
+    source_boxes = results.get('source_boxes_txt_content', '')
+    hydrated_boxes = results.get('hydrated_boxes_txt_content', '')
+    generate_diff(source_boxes, hydrated_boxes, 'boxes', results)
+
+    # --- 4. Save Visualization Files ---
+    for prefix in ["source", "hydrated", "diff"]:
         for v_type in ["hierarchy_txt", "hierarchy_html", "boxes_txt", "boxes_html"]:
             file_key = f"{prefix}_{v_type}"
             content = results.get(f"{file_key}_content", "")
