@@ -622,3 +622,46 @@ def render_persona_selector(job_id: str = "onboarding_job"):
     submit_btn.on_click(on_submit)
 
     display(widgets.VBox([persona_widget, submit_btn, out]))
+
+
+def render_prompt_workbench(job_id: str, recovered_url: str):
+    """
+    Renders an editable textarea for the Cloud AI prompt.
+    Initial value is drafted by the Local AI based on selected persona.
+    """
+    import ipywidgets as widgets
+    from IPython.display import display, clear_output
+
+    # 1. Fetch current persona and drafted prompt from wand memory
+    persona = wand.get(job_id, "auditor_persona") or "enterprise"
+    existing_prompt = wand.get(job_id, "cloud_ai_prompt")
+    
+    if not existing_prompt:
+        # Initial draft generation logic would go here, 
+        # triggered by gemma4:latest in the previous cell.
+        existing_prompt = "# ROLE\nSeasoned SEO Auditor...\n# TASK\nAnalyze the Gap..."
+
+    # 2. Build the Workbench UI
+    prompt_area = widgets.Textarea(
+        value=existing_prompt,
+        placeholder='The local AI is drafting your prompt...',
+        description='Prompt:',
+        layout=widgets.Layout(width='95%', height='300px'),
+        style={'description_width': 'initial'}
+    )
+
+    save_btn = widgets.Button(
+        description="💾 Save Prompt",
+        button_style='success',
+        icon='save'
+    )
+
+    def on_save(b):
+        wand.set(job_id, "cloud_ai_prompt", prompt_area.value)
+        wand.speak("Prompt saved to the wand's memory. It is ready for the Cloud.")
+        save_btn.description = "Prompt Locked"
+        # Trigger next step compulsion
+        wand.imperio(newline=True)
+
+    save_btn.on_click(on_save)
+    display(widgets.VBox([prompt_area, save_btn]))
