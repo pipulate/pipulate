@@ -2160,7 +2160,15 @@ def add_filtered_excel_tabs(
         for filter_name, keywords in custom_filters:
             pattern = r'\b(?:' + '|'.join([re.escape(k) for k in keywords]) + r')\b'
             df_tab = df[df["Keyword"].str.contains(pattern, case=False, na=False)].copy()
+
             if not df_tab.empty:
+                # Ensure this tab alone doesn't exceed a safe threshold 
+                # e.g., 500k cells per tab to leave room for the main Gap Analysis
+                tab_row_limit = 10000 
+                if len(df_tab) > tab_row_limit:
+                    print(f"  ⚠️ Tab '{filter_name}' truncated to {tab_row_limit} rows for Google Sheets compatibility.")
+                    df_tab = df_tab.head(tab_row_limit)
+
                 df_tab = normalize_and_score_surgical(df_tab, semrush_lookup, has_botify, competitors[-1], True)
                 df_tab.sort_values(by='Combined Score', ascending=False, inplace=True)
                 tabs_to_write[filter_name] = df_tab
