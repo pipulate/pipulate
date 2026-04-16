@@ -2134,7 +2134,7 @@ def add_filtered_excel_tabs(
         df_main_source = df.copy()
     # ------------------------------------
 
-    df_main = normalize_and_score_surgical(df.copy(), semrush_lookup, has_botify, last_competitor, False)
+    df_main = normalize_and_score_surgical(df_main_source, semrush_lookup, has_botify, last_competitor, False)
     tabs_to_write["Gap Analysis"] = df_main
 
     # B. Important Keywords
