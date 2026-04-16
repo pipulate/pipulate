@@ -16,8 +16,8 @@ import common
 # MODEL_NAME = 'gemini-flash-lite-latest'
 MODEL_CASCADE = [
     'gemini-flash-latest',
-    'gemini-1.5-flash-002',      # Step up: explicit stable version
-    'gemini-1.5-pro-002'         # Heavy duty fallback: explicit stable version
+    'gemini-flash-latest',
+    'gemini-flash-latest'
 ]
 
 SAFETY_SLEEP_SECONDS = 5
