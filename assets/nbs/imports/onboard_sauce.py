@@ -665,3 +665,49 @@ def render_prompt_workbench(job_id: str, recovered_url: str):
 
     save_btn.on_click(on_save)
     display(widgets.VBox([prompt_area, save_btn]))
+
+
+def prepare_prompt_draft(job_id: str, recovered_url: str, local_model: str):
+    """
+    Asks the local AI to look at the diff artifacts and draft the initial 
+    prompt for the Cloud AI.
+    """
+    from tools.scraper_tools import get_safe_path_component
+    
+    # 1. Locate the artifacts
+    domain, slug = get_safe_path_component(recovered_url)
+    cache_base = wand.paths.browser_cache / domain / slug
+    diff_file = cache_base / "diff_hierarchy.txt"
+    
+    diff_context = "No diff data available."
+    if diff_file.exists():
+        # Grab the middle 2000 chars of the diff where the interesting stuff usually is
+        content = diff_file.read_text()
+        diff_context = content[:2000]
+
+    # 2. Determine Persona Scripting
+    persona = wand.get(job_id, "auditor_persona") or "enterprise"
+    
+    if persona == "muppets":
+        system_msg = "You are Statler and Waldorf. You are heckling a web developer's messy JavaScript-heavy site."
+        task_msg = "Write a snarky, insulting prompt for a Cloud AI to analyze this DOM diff. Be mean but technical."
+    else:
+        system_msg = "You are an elite Enterprise SEO Consultant. You are professional and surgical."
+        task_msg = "Draft a formal technical audit prompt for a frontier model to analyze this DOM diff."
+
+    prompt_to_local = f"""
+    {task_msg}
+    
+    URL: {recovered_url}
+    DOM DIFF SNIPPET:
+    {diff_context}
+    
+    Generate the 'Instructions' portion of a prompt. Do not include the data envelope.
+    """
+
+    # 3. Call Local AI via Wand
+    draft = wand.prompt(prompt_to_local, model_name=local_model, system_prompt=system_msg)
+    
+    # 4. Save to Wand Memory so the Workbench can find it
+    wand.set(job_id, "cloud_ai_prompt", draft.strip())
+    return draft
