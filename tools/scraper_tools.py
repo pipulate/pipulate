@@ -133,6 +133,8 @@ async def selenium_automation(params: dict) -> dict:
             "diff_boxes.html",
             "diff_hierarchy.txt",
             "diff_hierarchy.html",
+            "diff_simple.txt",
+            "diff_simple.html",
             "screenshot.png", 
             "seo.md",
             "source_dom_layout_boxes.txt", 
@@ -449,7 +451,9 @@ async def selenium_automation(params: dict) -> dict:
                 ('diff_hierarchy_txt', 'diff_hierarchy.txt'),
                 ('diff_hierarchy_html', 'diff_hierarchy.html'),
                 ('diff_boxes_txt', 'diff_boxes.txt'),
-                ('diff_boxes_html', 'diff_boxes.html')
+                ('diff_boxes_html', 'diff_boxes.html'),
+                ('diff_simple_txt', 'diff_simple.txt'),
+                ('diff_simple_html', 'diff_simple.html')
             ]:
                 optic_path = output_dir / filename
                 if optic_path.exists():
