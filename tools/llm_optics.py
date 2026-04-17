@@ -47,6 +47,8 @@ OUTPUT_FILES = {
     "diff_hierarchy_html": "diff_hierarchy.html",
     "diff_boxes_txt": "diff_boxes.txt",
     "diff_boxes_html": "diff_boxes.html",
+    "diff_simple_txt": "diff_simple.txt",
+    "diff_simple_html": "diff_simple.html",
 }
 CONSOLE_WIDTH = 180
 
