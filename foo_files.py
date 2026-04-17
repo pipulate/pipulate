@@ -36,14 +36,14 @@ AI_PHOOEY_CHOP = """\
 # # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
 
-prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
 tools/scraper_tools.py  # [4,449 tokens | 21,625 bytes]
-# tools/llm_optics.py  # [2,574 tokens | 11,257 bytes]
-# Notebooks/imports/onboard_sauce.py  # [6,904 tokens | 30,646 bytes]
+tools/llm_optics.py  # [2,574 tokens | 11,257 bytes]
+Notebooks/imports/onboard_sauce.py  # [6,904 tokens | 30,646 bytes]
  
 # pipulate/core.py  # [27,171 tokens | 131,795 bytes]
 # scripts/articles/articleizer.py  # [2,936 tokens | 13,517 bytes]
@@ -375,19 +375,19 @@ Notebooks/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 # The foundational NPvg framework and state management.
 
 # CHAPTER 0: ONBOARDING
-# !https://pipulate.com/
-# /home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
-# flake.nix  # [7,721 tokens | 32,979 bytes]
-# pyproject.toml  # [677 tokens | 2,299 bytes]
-# assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
-# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-# apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
-# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+!https://pipulate.com/
+/home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
+flake.nix  # [7,721 tokens | 32,979 bytes]
+pyproject.toml  # [677 tokens | 2,299 bytes]
+assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
+assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
+pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+apps/015_backup_introduction.py  # [3,338 tokens | 15,844 bytes]
+apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
+assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
  
 # CHAPTER 1: BOOTSTRAPPING, CLI & ONBOARDING (~230KB)
 # /home/mike/repos/Pipulate.com/index.md  # [2,361 tokens | 10,579 bytes]
