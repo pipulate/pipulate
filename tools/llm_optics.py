@@ -171,12 +171,16 @@ def main(target_dir_path: str):
 
     source_path = output_dir / "source.html"
     rendered_path = output_dir / "rendered_dom.html"
+    simple_source_path = output_dir / "simple_source.html"
+    simple_hydrated_path = output_dir / "simple_hydrated.html"
 
-    source_content = read_html_file(source_path)
     rendered_content = read_html_file(rendered_path)
 
-    if not source_content or not rendered_content:
-        print("Error: Both source.html and rendered_dom.html must exist in the target directory.", file=sys.stderr)
+    simple_source_content = read_html_file(simple_source_path)
+    simple_hydrated_content = read_html_file(simple_hydrated_path)
+
+    if not simple_source_content or not simple_hydrated_content:
+        print("Error: Both simple_source.html and simple_hydrated.html must exist in the target directory.", file=sys.stderr)
         sys.exit(1)
 
     # --- 1. Generate SEO.md (Using Rendered DOM for accuracy) ---
@@ -221,11 +225,11 @@ canonical_url: {json.dumps(canonical_url)}
         print(f"Error creating seo.md: {e}", file=sys.stderr)
 
     # --- 2. Generate Visualizations for Both States ---
-    print(f"Generating visualizations for source.html...", file=sys.stderr)
-    generate_visualizations(source_content, "source", output_dir, results)
-    
-    print(f"Generating visualizations for rendered_dom.html...", file=sys.stderr)
-    generate_visualizations(rendered_content, "hydrated", output_dir, results)
+    print(f"Generating visualizations for simple_source.html...", file=sys.stderr)
+    generate_visualizations(simple_source_content, "source", output_dir, results)
+
+    print(f"Generating visualizations for simple_hydrated.html...", file=sys.stderr)
+    generate_visualizations(simple_hydrated_content, "hydrated", output_dir, results)
 
     # --- 3. Generate Diffs ---
     print(f"Generating structural diffs...", file=sys.stderr)
