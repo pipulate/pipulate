@@ -731,3 +731,49 @@ def render_prompt_workbench(job_id: str, recovered_url: str):
     # 4. Use an Output widget to contain everything
     out = widgets.Output()
     display(link_html, prompt_area, save_btn, out)
+
+
+def render_cloud_handoff(job_id: str, recovered_url: str):
+    """
+    Retrieves the user-polished prompt from the wand, attaches the actual
+    DOM diff data envelope, and renders a clipboard copy button for loose coupling.
+    """
+    import difflib
+    from bs4 import BeautifulSoup
+    from tools.scraper_tools import get_safe_path_component
+    from IPython.display import HTML
+
+    # 1. Retrieve the polished instructions (The Intent)
+    instructions = wand.get(job_id, "cloud_ai_prompt")
+    if not instructions:
+        return HTML("<p style='color:var(--pico-color-red-500);'>⚠️ No instructions found in the wand. Did you click 'Save' above?</p>"), ""
+
+    # 2. Retrieve the Data (The Reality)
+    domain, slug = get_safe_path_component(recovered_url)
+    cache_base = wand.paths.browser_cache / domain / slug
+    
+    # We re-use your clean_html logic to keep the payload dense and high-signal
+    def clean_html(filepath):
+        if not filepath.exists(): return []
+        soup = BeautifulSoup(filepath.read_text(encoding='utf-8'), 'html.parser')
+        # Strip out the noise; we only care about structural hierarchy here
+        for tag in soup(['script', 'style', 'meta', 'link', 'noscript', 'svg']):
+            tag.decompose()
+        return soup.prettify().splitlines()
+
+    source_lines = clean_html(cache_base / "source.html")
+    dom_lines = clean_html(cache_base / "simple_dom.html")
+
+    diff = difflib.unified_diff(
+        source_lines, dom_lines,
+        fromfile='Raw_Source.html',
+        tofile='Hydrated_DOM.html',
+        lineterm=''
+    )
+    
+    # Cap the diff to prevent blowing out the context window if the site is massive
+    diff_text = '\n'.join(list(diff)[:800]) 
+
+    # 3. Construct the Final Payload (The Diamond)
+    final_payload = f"""{instructions}
+
