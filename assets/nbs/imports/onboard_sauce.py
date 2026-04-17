@@ -410,20 +410,14 @@ def generate_js_gap_prompt(target_url: str) -> str:
     domain, slug = get_safe_path_component(target_url)
     cache_dir = wand.paths.browser_cache / domain / slug
 
-    source_file = cache_dir / "source.html"
-    dom_file = cache_dir / "simple_dom.html" 
+    source_file = cache_dir / "simple_source.html"
+    dom_file = cache_dir / "simple_hydrated.html"
 
     if not source_file.exists() or not dom_file.exists():
-        return "Error: Source or DOM files missing. Run the scrape first."
+        return "Error: Simplified Source or DOM files missing. Run the scrape first."
 
-    def clean_html(filepath):
-        soup = BeautifulSoup(filepath.read_text(encoding='utf-8'), 'html.parser')
-        for tag in soup(['script', 'style', 'meta', 'link', 'noscript', 'svg']):
-            tag.decompose()
-        return soup.prettify().splitlines()
-
-    source_lines = clean_html(source_file)
-    dom_lines = clean_html(dom_file)
+    source_lines = source_file.read_text(encoding='utf-8').splitlines()
+    dom_lines = dom_file.read_text(encoding='utf-8').splitlines()
 
     diff = difflib.unified_diff(
         source_lines, dom_lines,
@@ -751,18 +745,15 @@ def render_cloud_handoff(job_id: str, recovered_url: str):
     # 2. Retrieve the Data (The Reality)
     domain, slug = get_safe_path_component(recovered_url)
     cache_base = wand.paths.browser_cache / domain / slug
-    
-    # We re-use your clean_html logic to keep the payload dense and high-signal
-    def clean_html(filepath):
-        if not filepath.exists(): return []
-        soup = BeautifulSoup(filepath.read_text(encoding='utf-8'), 'html.parser')
-        # Strip out the noise; we only care about structural hierarchy here
-        for tag in soup(['script', 'style', 'meta', 'link', 'noscript', 'svg']):
-            tag.decompose()
-        return soup.prettify().splitlines()
 
-    source_lines = clean_html(cache_base / "source.html")
-    dom_lines = clean_html(cache_base / "simple_dom.html")
+    source_file = cache_base / "simple_source.html"
+    dom_file = cache_base / "simple_hydrated.html"
+    
+    if not source_file.exists() or not dom_file.exists():
+        return HTML("<p style='color:var(--pico-color-red-500);'>⚠️ Error: Simplified Source or DOM files missing. Run the scrape first.</p>"), ""
+
+    source_lines = source_file.read_text(encoding='utf-8').splitlines()
+    dom_lines = dom_file.read_text(encoding='utf-8').splitlines()
 
     diff = difflib.unified_diff(
         source_lines, dom_lines,
