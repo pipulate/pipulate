@@ -777,3 +777,11 @@ def render_cloud_handoff(job_id: str, recovered_url: str):
     # 3. Construct the Final Payload (The Diamond)
     final_payload = f"""{instructions}
 
+# DATA (Unified Diff Snippet)
+```diff
+{diff_text}
+```
+"""
+    # 4. Return the UI component and the text (for the notebook to display if it wants)
+    return render_copy_button(final_payload), final_payload
+
