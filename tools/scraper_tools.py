@@ -48,6 +48,36 @@ def get_safe_path_component(url: str) -> tuple[str, str]:
         path_slug = quote(path, safe='').replace('/', '_')[:100]
     return domain, path_slug
 
+
+def _simplify_html_for_llm(html_content, default_title=""):
+    """Applies a symmetrical, opinionated filter to HTML for LLM consumption."""
+    try:
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(html_content, 'html.parser')
+        
+        # Remove all noise elements that confuse LLMs (Added 'svg' to the hit list!)
+        for tag in soup(['script', 'style', 'noscript', 'meta', 'link', 'head', 'svg']):
+            tag.decompose()
+        
+        # Clean up attributes - keep only automation-relevant ones
+        for element in soup.find_all():
+            attrs_to_keep = {}
+            for attr, value in element.attrs.items():
+                if attr in ['id', 'role', 'data-testid', 'name', 'type', 'href', 'src', 'class', 'for', 'value', 'placeholder', 'title'] or attr.startswith('aria-'):
+                    attrs_to_keep[attr] = value
+            element.attrs = attrs_to_keep
+        
+        simple_html = soup.prettify()
+    except Exception as e:
+        logger.warning(f"⚠️ DOM simplification failed, using fallback: {e}")
+        simple_html = html_content
+
+    # Add minimal metadata wrapper
+    title = soup.title.string if soup and soup.title else default_title
+    final_html = f"<html>\n<head><title>{title}</title></head>\n<body>\n{simple_html}\n</body>\n</html>"
+    return final_html
+
+
 @auto_tool
 async def selenium_automation(params: dict) -> dict:
     """
