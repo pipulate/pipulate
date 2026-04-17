@@ -243,13 +243,26 @@ canonical_url: {json.dumps(canonical_url)}
     hydrated_boxes = results.get('hydrated_boxes_txt_content', '')
     generate_diff(source_boxes, hydrated_boxes, 'boxes', results)
 
+    # --- 3.5 Generate Simple HTML Diff ---
+    print(f"Generating simple HTML diff...", file=sys.stderr)
+    generate_diff(simple_source_content, simple_hydrated_content, 'simple', results)
+
     # --- 4. Save Visualization Files ---
-    for prefix in ["source", "hydrated", "diff"]:
+    # We need to handle the new 'simple' v_type specifically for the 'diff' prefix
+    # Save source and hydrated visualizations
+    for prefix in ["source", "hydrated"]:
         for v_type in ["hierarchy_txt", "hierarchy_html", "boxes_txt", "boxes_html"]:
             file_key = f"{prefix}_{v_type}"
             content = results.get(f"{file_key}_content", "")
             if content:
                 write_output_file(output_dir, file_key, content, results)
+                
+    # Save diffs (now including 'simple_txt' and 'simple_html')
+    for v_type in ["hierarchy_txt", "hierarchy_html", "boxes_txt", "boxes_html", "simple_txt", "simple_html"]:
+        file_key = f"diff_{v_type}"
+        content = results.get(f"{file_key}_content", "")
+        if content:
+            write_output_file(output_dir, file_key, content, results)
 
     print(f"Successfully generated optical artifacts for {output_dir.name}")
 
