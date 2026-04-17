@@ -41,9 +41,13 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-tools/scraper_tools.py  # [4,449 tokens | 21,625 bytes]
-tools/llm_optics.py  # [2,574 tokens | 11,257 bytes]
-Notebooks/imports/onboard_sauce.py  # [6,904 tokens | 30,646 bytes]
+# tools/scraper_tools.py  # [4,449 tokens | 21,625 bytes]
+# tools/llm_optics.py  # [2,574 tokens | 11,257 bytes]
+# Notebooks/imports/onboard_sauce.py  # [6,904 tokens | 30,646 bytes]
+
+/home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/simple_hydrated.html  # [3,246 tokens | 12,248 bytes]
+/home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/simple_source.html  # [3,250 tokens | 12,260 bytes]
+/home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/diff_simple.txt  # [136 tokens | 446 bytes]
  
 # pipulate/core.py  # [27,171 tokens | 131,795 bytes]
 # scripts/articles/articleizer.py  # [2,936 tokens | 13,517 bytes]
