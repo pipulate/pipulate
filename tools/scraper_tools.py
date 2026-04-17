@@ -127,7 +127,8 @@ async def selenium_automation(params: dict) -> dict:
         for artifact_name in [
             "rendered_dom.html", 
             "source.html", 
-            "simple_dom.html",
+            "simple_source.html",
+            "simple_hydrated.html",
             "diff_boxes.txt",
             "diff_boxes.html",
             "diff_hierarchy.txt",
