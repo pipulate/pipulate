@@ -624,49 +624,6 @@ def render_persona_selector(job_id: str = "onboarding_job"):
     display(widgets.VBox([persona_widget, submit_btn, out]))
 
 
-def render_prompt_workbench(job_id: str, recovered_url: str):
-    """
-    Renders an editable textarea for the Cloud AI prompt.
-    Initial value is drafted by the Local AI based on selected persona.
-    """
-    import ipywidgets as widgets
-    from IPython.display import display, clear_output
-
-    # 1. Fetch current persona and drafted prompt from wand memory
-    persona = wand.get(job_id, "auditor_persona") or "enterprise"
-    existing_prompt = wand.get(job_id, "cloud_ai_prompt")
-    
-    if not existing_prompt:
-        # Initial draft generation logic would go here, 
-        # triggered by gemma4:latest in the previous cell.
-        existing_prompt = "# ROLE\nSeasoned SEO Auditor...\n# TASK\nAnalyze the Gap..."
-
-    # 2. Build the Workbench UI
-    prompt_area = widgets.Textarea(
-        value=existing_prompt,
-        placeholder='The local AI is drafting your prompt...',
-        description='Prompt:',
-        layout=widgets.Layout(width='95%', height='300px'),
-        style={'description_width': 'initial'}
-    )
-
-    save_btn = widgets.Button(
-        description="💾 Save Prompt",
-        button_style='success',
-        icon='save'
-    )
-
-    def on_save(b):
-        wand.set(job_id, "cloud_ai_prompt", prompt_area.value)
-        wand.speak("Prompt saved to the wand's memory. It is ready for the Cloud.")
-        save_btn.description = "Prompt Locked"
-        # Trigger next step compulsion
-        wand.imperio(newline=True)
-
-    save_btn.on_click(on_save)
-    display(widgets.VBox([prompt_area, save_btn]))
-
-
 def prepare_prompt_draft(job_id: str, recovered_url: str, local_model: str):
     """
     Asks the local AI to look at the diff artifacts and draft the initial 
@@ -711,3 +668,66 @@ def prepare_prompt_draft(job_id: str, recovered_url: str, local_model: str):
     # 4. Save to Wand Memory so the Workbench can find it
     wand.set(job_id, "cloud_ai_prompt", draft.strip())
     return draft
+
+
+def get_local_file_link(path_str: str, label: str):
+    """Generates a clickable file:// link for local browser viewing."""
+    from pathlib import Path
+    path = Path(path_str).resolve()
+    return f'<a href="file://{path}" target="_blank">🔗 {label}</a>'
+
+
+def render_prompt_workbench(job_id: str, recovered_url: str):
+    """
+    Renders an editable textarea with a layout that doesn't 
+    clobber subsequent cell output.
+    """
+    import ipywidgets as widgets
+    from IPython.display import display, HTML
+    from tools.scraper_tools import get_safe_path_component
+
+    # 1. Gather context for the 'Verification Links'
+    domain, slug = get_safe_path_component(recovered_url)
+    cache_base = wand.paths.browser_cache / domain / slug
+    
+    # Pre-generate links to the Rich HTML diffs
+    hier_link = get_local_file_link(cache_base / "diff_hierarchy.html", "View Hierarchy Diff (Color)")
+    box_link = get_local_file_link(cache_base / "diff_boxes.html", "View Box Layout Diff (Color)")
+
+    # 2. Fetch drafted prompt
+    existing_prompt = wand.get(job_id, "cloud_ai_prompt") or "Drafting..."
+
+    # 3. Build UI components
+    prompt_area = widgets.Textarea(
+        value=existing_prompt,
+        layout=widgets.Layout(width='98%', height='400px')
+    )
+
+    save_btn = widgets.Button(
+        description="💾 Save & Finalize Prompt",
+        button_style='success',
+        layout=widgets.Layout(width='250px')
+    )
+
+    # Display the links above the textarea so the user can 'verify' before saving
+    link_html = HTML(f"""
+        <div style="margin-bottom: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+            <strong>Verification Links (Open in New Tab):</strong><br>
+            {hier_link} | {box_link}
+        </div>
+    """)
+
+    def on_save(b):
+        wand.set(job_id, "cloud_ai_prompt", prompt_area.value)
+        save_btn.description = "✅ Saved to Wand"
+        save_btn.button_style = ''
+        wand.speak("Instructions locked. Ready for the next turn.")
+        # Trigger the visual compulsion below the widget
+        with out:
+            wand.imperio(newline=True)
+
+    save_btn.on_click(on_save)
+    
+    # 4. Use an Output widget to contain everything
+    out = widgets.Output()
+    display(link_html, prompt_area, save_btn, out)
