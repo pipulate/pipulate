@@ -312,6 +312,82 @@ def ensure_cloud_credentials(cloud_model_id):
         wand.speak("Cloud credentials verified in your environment.")
         print(f"✅ Secure connection ready for {cloud_model_id}.")
 
+
+def etl_optics_to_excel(job: str, target_url: str):
+    """
+    The ETL (Extract, Transform, Load) demonstration.
+    Extracts data from raw scraped artifacts (JSON, Markdown), 
+    Transforms it into Pandas DataFrames, and Loads it into an Excel deliverable.
+    """
+    import pandas as pd
+    import re
+    import yaml
+    import json
+    import ipywidgets as widgets
+    from tools.scraper_tools import get_safe_path_component
+    from pipulate import wand
+
+    domain, slug = get_safe_path_component(target_url)
+    cache_dir = wand.paths.browser_cache / domain / slug
+
+    # --- EXTRACT & TRANSFORM: SEO Metadata ---
+    seo_file = cache_dir / "seo.md"
+    seo_data = {"Metric": [], "Value": []}
+    if seo_file.exists():
+        content = seo_file.read_text(encoding='utf-8')
+        match = re.search(r'^---\n(.*?)\n---', content, re.DOTALL)
+        if match:
+            try:
+                frontmatter = yaml.safe_load(match.group(1))
+                for k, v in frontmatter.items():
+                    seo_data["Metric"].append(str(k).replace('_', ' ').title())
+                    seo_data["Value"].append(str(v))
+            except Exception as e:
+                print(f"⚠️ Warning: Could not parse SEO frontmatter: {e}")
+    df_seo = pd.DataFrame(seo_data)
+
+    # --- EXTRACT & TRANSFORM: HTTP Headers ---
+    headers_file = cache_dir / "headers.json"
+    headers_data = {"Header": [], "Value": []}
+    if headers_file.exists():
+        try:
+            with open(headers_file, 'r', encoding='utf-8') as f:
+                h_json = json.load(f)
+                actual_headers = h_json.get("headers", {})
+                for k, v in actual_headers.items():
+                    headers_data["Header"].append(str(k).title())
+                    headers_data["Value"].append(str(v))
+        except Exception as e:
+            print(f"⚠️ Warning: Could not parse headers.json: {e}")
+    df_headers = pd.DataFrame(headers_data)
+
+    # --- LOAD: Excel Deliverable ---
+    deliverables_dir = wand.paths.deliverables / job
+    deliverables_dir.mkdir(parents=True, exist_ok=True)
+    xl_filename = f"{domain.replace('.', '_')}_Technical_Baseline.xlsx"
+    xl_file = deliverables_dir / xl_filename
+
+    with pd.ExcelWriter(xl_file, engine="xlsxwriter") as writer:
+        workbook = writer.book
+        header_fmt = workbook.add_format({'bold': True, 'bg_color': '#D9E1F2', 'border': 1, 'align': 'left'})
+        wrap_fmt = workbook.add_format({'text_wrap': True, 'valign': 'top'})
+
+        for sheet_name, df_sheet in [('SEO Metadata', df_seo), ('HTTP Headers', df_headers)]:
+            if not df_sheet.empty:
+                df_sheet.to_excel(writer, sheet_name=sheet_name, index=False)
+                ws = writer.sheets[sheet_name]
+                ws.set_column(0, 0, 30, wrap_fmt)
+                ws.set_column(1, 1, 80, wrap_fmt)
+                for col_num, value in enumerate(df_sheet.columns.values):
+                    ws.write(0, col_num, value, header_fmt)
+
+    # Egress Button
+    button = widgets.Button(description=f"📂 Open Deliverables Folder", tooltip=f"Open {deliverables_dir.resolve()}", button_style='success')
+    button.on_click(lambda b: wand.open_folder(str(deliverables_dir)))
+
+    return df_seo, df_headers, button, xl_file
+
+
 def package_optics_to_excel(job: str, target_url: str, ai_assessment: str):
     """
     Packages the high-signal LLM Optics into a beautifully formatted Excel deliverable.
