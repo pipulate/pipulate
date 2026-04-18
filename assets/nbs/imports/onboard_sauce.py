@@ -316,8 +316,9 @@ def ensure_cloud_credentials(cloud_model_id):
 def etl_optics_to_excel(job: str, target_url: str):
     """
     The ETL (Extract, Transform, Load) demonstration.
-    Extracts data from raw scraped artifacts (JSON, Markdown), 
-    Transforms it into Pandas DataFrames, and Loads it into an Excel deliverable.
+    Extracts data from raw scraped artifacts (JSON, Markdown, TXT), 
+    Transforms it into Pandas DataFrames, and Loads it into an Excel deliverable
+    with conditional formatting to emulate a terminal output.
     """
     import pandas as pd
     import re
@@ -361,6 +362,27 @@ def etl_optics_to_excel(job: str, target_url: str):
             print(f"⚠️ Warning: Could not parse headers.json: {e}")
     df_headers = pd.DataFrame(headers_data)
 
+    # --- EXTRACT & TRANSFORM: The ASCII Lenses ---
+    ascii_artifacts = {
+        'Tree Source': 'source_dom_hierarchy.txt',
+        'Tree Hydrated': 'hydrated_dom_hierarchy.txt',
+        'Tree Diff': 'diff_hierarchy.txt',
+        'Boxes Source': 'source_dom_layout_boxes.txt',
+        'Boxes Hydrated': 'hydrated_dom_layout_boxes.txt',
+        'Boxes Diff': 'diff_boxes.txt'
+    }
+    
+    ascii_dfs = {}
+    for sheet_name, filename in ascii_artifacts.items():
+        file_path = cache_dir / filename
+        if file_path.exists():
+            # Read line by line into a single column
+            lines = file_path.read_text(encoding='utf-8').splitlines()
+            # Prefix diff files with a space if they don't have a marker, to prevent Excel from thinking +/- are formulas
+            if 'Diff' in sheet_name:
+                lines = [f"'{line}" if line.startswith(('+', '-', '@')) else line for line in lines]
+            ascii_dfs[sheet_name] = pd.DataFrame({"Terminal Output": lines})
+
     # --- LOAD: Excel Deliverable ---
     deliverables_dir = wand.paths.deliverables / job
     deliverables_dir.mkdir(parents=True, exist_ok=True)
@@ -369,9 +391,18 @@ def etl_optics_to_excel(job: str, target_url: str):
 
     with pd.ExcelWriter(xl_file, engine="xlsxwriter") as writer:
         workbook = writer.book
+        
+        # Format Definitions
         header_fmt = workbook.add_format({'bold': True, 'bg_color': '#D9E1F2', 'border': 1, 'align': 'left'})
         wrap_fmt = workbook.add_format({'text_wrap': True, 'valign': 'top'})
+        
+        # Terminal Formatting
+        mono_fmt = workbook.add_format({'font_name': 'Consolas', 'font_size': 9, 'text_wrap': False, 'valign': 'top'})
+        add_fmt = workbook.add_format({'font_name': 'Consolas', 'font_size': 9, 'font_color': '#008000', 'bg_color': '#e6ffec'}) # Green
+        rem_fmt = workbook.add_format({'font_name': 'Consolas', 'font_size': 9, 'font_color': '#cc0000', 'bg_color': '#ffe6e6'}) # Red
+        meta_fmt = workbook.add_format({'font_name': 'Consolas', 'font_size': 9, 'font_color': '#808080'}) # Grey
 
+        # 1. Write Standard Data Tabs
         for sheet_name, df_sheet in [('SEO Metadata', df_seo), ('HTTP Headers', df_headers)]:
             if not df_sheet.empty:
                 df_sheet.to_excel(writer, sheet_name=sheet_name, index=False)
@@ -381,11 +412,89 @@ def etl_optics_to_excel(job: str, target_url: str):
                 for col_num, value in enumerate(df_sheet.columns.values):
                     ws.write(0, col_num, value, header_fmt)
 
+        # 2. Write Terminal ASCII Tabs
+        for sheet_name, df_sheet in ascii_dfs.items():
+            if not df_sheet.empty:
+                df_sheet.to_excel(writer, sheet_name=sheet_name, index=False)
+                ws = writer.sheets[sheet_name]
+                
+                # Make Column A massive and monospace
+                ws.set_column(0, 0, 180, mono_fmt)
+                ws.write(0, 0, "Terminal Output", header_fmt)
+                
+                # Apply syntax highlighting to Diff tabs using Excel formulas
+                if 'Diff' in sheet_name:
+                    max_row = len(df_sheet) + 1
+                    rng = f'A2:A{max_row}'
+                    # Highlight additions (starts with + or '+)
+                    ws.conditional_format(rng, {'type': 'formula', 'criteria': 'OR(LEFT($A2,1)="+", LEFT($A2,2)="''+")', 'format': add_fmt})
+                    # Highlight removals (starts with - or '-)
+                    ws.conditional_format(rng, {'type': 'formula', 'criteria': 'OR(LEFT($A2,1)="-", LEFT($A2,2)="''-")', 'format': rem_fmt})
+                    # Highlight metadata (starts with @@ or '@@)
+                    ws.conditional_format(rng, {'type': 'formula', 'criteria': 'OR(LEFT($A2,2)="@@", LEFT($A2,3)="''@@")', 'format': meta_fmt})
+
     # Egress Button
     button = widgets.Button(description=f"📂 Open Deliverables Folder", tooltip=f"Open {deliverables_dir.resolve()}", button_style='success')
     button.on_click(lambda b: wand.open_folder(str(deliverables_dir)))
 
     return df_seo, df_headers, button, xl_file
+
+
+def append_ai_keyword_assessment(job: str, xl_file_path, df_seo, df_headers, local_model_id: str, target_url: str):
+    """
+    Idempotently appends a local AI assessment tab to an existing Excel deliverable.
+    """
+    import pandas as pd
+    import openpyxl
+    from pipulate import wand
+    from datetime import datetime
+
+    # 1. Idempotency Check
+    book = openpyxl.load_workbook(xl_file_path)
+    if 'AI Keyword Target' in book.sheetnames:
+        print("☑️ 'AI Keyword Target' tab already exists. Skipping LLM inference to save cycles.")
+        return xl_file_path
+        
+    # 2. Prepare the Context Payload
+    seo_context = df_seo.to_string(index=False)
+    
+    prompt = f"""
+    You are an expert technical SEO. Analyze this metadata extracted from a webpage:
+    
+    URL: {target_url}
+    
+    METADATA:
+    {seo_context}
+    
+    Based strictly on this data, what is the ONE primary keyword this page is trying to target?
+    Respond with exactly two lines:
+    KEYWORD: [your predicted keyword]
+    RATIONALE: [One sentence explaining why based on the title/h1 tags]
+    """
+    
+    # 3. The Local Lambda Call
+    print(f"🤖 Pinging local AI ({local_model_id}) for keyword extraction...")
+    response_text = wand.prompt(prompt_text=prompt, model_name=local_model_id)
+    
+    # 4. Deterministic Parsing
+    lines = response_text.strip().split('\n')
+    keyword = lines[0].replace('KEYWORD:', '').strip() if len(lines) > 0 else "Unknown"
+    rationale = lines[1].replace('RATIONALE:', '').strip() if len(lines) > 1 else "Failed to parse."
+    
+    df_ai = pd.DataFrame({
+        "Crawled URL": [target_url],
+        "Predicted Target Keyword": [keyword],
+        "AI Rationale": [rationale],
+        "Model Used": [local_model_id],
+        "Timestamp": [datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+    })
+    
+    # 5. The Safe Load (Writing the new tab)
+    with pd.ExcelWriter(xl_file_path, engine='openpyxl', mode='a', if_sheet_exists='overlay') as writer:
+        df_ai.to_excel(writer, sheet_name='AI Keyword Target', index=False)
+        
+    print(f"✅ AI Insights successfully appended to {xl_file_path.name}")
+    return xl_file_path
 
 
 def package_optics_to_excel(job: str, target_url: str, ai_assessment: str):
