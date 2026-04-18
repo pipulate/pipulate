@@ -36,7 +36,7 @@ AI_PHOOEY_CHOP = """\
 # # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
 
-prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
@@ -84,8 +84,8 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
 # pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 # Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-# Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
-# Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
+Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
+Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 Notebooks/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
 Notebooks/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 # tools/__init__.py  # [464 tokens | 2,067 bytes]
