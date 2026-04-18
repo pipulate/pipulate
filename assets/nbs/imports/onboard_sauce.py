@@ -691,6 +691,55 @@ def append_ai_keyword_assessment(job: str, xl_file_path, ai_assessment: str, loc
     return button, xl_file_path
 
 
+def conduct_local_assessment(job_id: str, target_url: str, local_model_id: str):
+    """
+    Orchestrates the local AI assessment, displays the result to the notebook,
+    and idempotently injects the findings into the Excel deliverable.
+    """
+    from IPython.display import display
+    from pathlib import Path
+    from pipulate import wand
+
+    # 1. Prepare the AI directives
+    system_prompt, user_prompt = build_local_optics_prompt(target_url)
+
+    wand.speak(f"Channeling local intent through {local_model_id} to extract the target keyword...")
+
+    # 2. Execute the local prompt (Kept front-and-center for the user to see)
+    ai_assessment = wand.prompt(
+        prompt_text=user_prompt, 
+        model_name=local_model_id, 
+        system_prompt=system_prompt
+    )
+
+    print(f"\n🤖 Chip O'Theseus ({local_model_id}):\n")
+    print(ai_assessment)
+    print("\n" + "-"*40 + "\n")
+
+    # 3. Idempotent Deliverable Injection
+    wand.speak("Injecting AI insights directly into your technical baseline workbook.")
+
+    xl_file_path_str = wand.get(job_id, "baseline_excel_path")
+
+    if xl_file_path_str and Path(xl_file_path_str).exists():
+        xl_file = Path(xl_file_path_str)
+        button, xl_file = append_ai_keyword_assessment(
+            job_id, xl_file, ai_assessment, local_model_id, target_url
+        )
+        display(button)
+        print(f"💾 Optics Baseline Augmented: {xl_file.name}")
+    else:
+        print("⚠️ Technical Baseline Excel file not found. Did you run the Pandas cell?")
+
+    wand.speak(
+        "Deliverable upgraded. We have successfully fused raw browser automation "
+        "with local generative intelligence. You may open the folder to inspect the result. "
+        "Next, we prepare for the Cloud AI handoff."
+    )
+
+    wand.imperio()
+
+
 def factory_reset_credentials():
     """
     Renders a two-step IPyWidget confirmation to wipe API keys from the .env vault
