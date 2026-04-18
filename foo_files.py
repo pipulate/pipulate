@@ -41,7 +41,7 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-# /home/mike/repos/pipulate/Notebooks/Deliverables/onboarding_job/mikelev_in_Technical_Baseline.xlsx
+/home/mike/repos/pipulate/Notebooks/Deliverables/onboarding_job/mikelev_in_Technical_Baseline.xlsx
 
 # tools/scraper_tools.py  # [4,449 tokens | 21,625 bytes]
 # tools/llm_optics.py  # [2,574 tokens | 11,257 bytes]
