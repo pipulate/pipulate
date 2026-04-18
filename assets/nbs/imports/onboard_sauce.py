@@ -970,20 +970,21 @@ def render_prompt_workbench(job_id: str, recovered_url: str):
 
 def render_cloud_handoff(job_id: str, recovered_url: str):
     """
-    Retrieves the user-polished prompt from the wand, attaches the actual
-    DOM diff data envelope, and renders a clipboard copy button for loose coupling.
+    Retrieves the user-polished prompt, attaches the DOM diff data, 
+    and renders a Bifurcated Egress (Copy Button + Paste Bin) for loose coupling.
     """
     import difflib
+    import ipywidgets as widgets
     from bs4 import BeautifulSoup
     from tools.scraper_tools import get_safe_path_component
     from IPython.display import HTML
 
-    # 1. Retrieve the polished instructions (The Intent)
+    # 1. Retrieve the polished instructions
     instructions = wand.get(job_id, "cloud_ai_prompt")
     if not instructions:
-        return HTML("<p style='color:var(--pico-color-red-500);'>⚠️ No instructions found in the wand. Did you click 'Save' above?</p>"), ""
+        return widgets.HTML("<p style='color:var(--pico-color-red-500);'>⚠️ No instructions found. Did you click 'Save'?</p>"), ""
 
-    # 2. Retrieve the Data (The Reality)
+    # 2. Retrieve the Data
     domain, slug = get_safe_path_component(recovered_url)
     cache_base = wand.paths.browser_cache / domain / slug
 
@@ -991,7 +992,7 @@ def render_cloud_handoff(job_id: str, recovered_url: str):
     dom_file = cache_base / "simple_hydrated.html"
     
     if not source_file.exists() or not dom_file.exists():
-        return HTML("<p style='color:var(--pico-color-red-500);'>⚠️ Error: Simplified Source or DOM files missing. Run the scrape first.</p>"), ""
+        return widgets.HTML("<p style='color:var(--pico-color-red-500);'>⚠️ Error: DOM files missing.</p>"), ""
 
     source_lines = source_file.read_text(encoding='utf-8').splitlines()
     dom_lines = dom_file.read_text(encoding='utf-8').splitlines()
@@ -1003,19 +1004,72 @@ def render_cloud_handoff(job_id: str, recovered_url: str):
         lineterm=''
     )
     
-    # Cap the diff to prevent blowing out the context window if the site is massive
+    # Cap the diff to prevent blowing out the context window
     diff_text = '\n'.join(list(diff)[:800]) 
 
-    # 3. Construct the Final Payload (The Diamond)
-    final_payload = f"""{instructions}
+    # 3. Construct the Final Payload
+    final_payload = f"{instructions}\n\n# DATA (Unified Diff Snippet)\n```diff\n{diff_text}\n```\n"
+    
+    # Save the payload to the state machine for the formal API fallback
+    wand.set(job_id, "final_cloud_payload", final_payload)
 
-# DATA (Unified Diff Snippet)
-```diff
-{diff_text}
-```
-"""
-    # 4. Return the UI component and the text (for the notebook to display if it wants)
-    return render_copy_button(final_payload), final_payload
+    # 4. Build the Bifurcated UI (Copy Button + Paste Bin)
+    paste_area = widgets.Textarea(
+        value=wand.get(job_id, "manual_cloud_response") or "",
+        placeholder="Paste the Web UI response here (leave blank to use the formal API)...",
+        layout=widgets.Layout(width='98%', height='150px')
+    )
+    
+    def on_change(change):
+        wand.set(job_id, "manual_cloud_response", change['new'])
+        
+    paste_area.observe(on_change, names='value')
+    
+    # Extract the raw HTML string from the IPython display object
+    copy_btn_html = render_copy_button(final_payload).data
+    
+    ui = widgets.VBox([
+        widgets.HTML("<p><b>Option 1: The 'Poor-Man's API' (Free)</b><br>Click below to copy the prompt, paste it into ChatGPT/Claude, and paste the response into the text box below.</p>"),
+        widgets.HTML(copy_btn_html),
+        widgets.HTML("<br><p><b>Paste Web UI Response Here:</b><br>(If you leave this blank, running the next cell will automatically use your API key)</p>"),
+        paste_area
+    ])
+
+    return ui, final_payload
+
+
+def append_cloud_assessment(job: str, xl_file_path, ai_assessment: str, model_id: str):
+    """
+    Idempotently appends the Cloud AI JavaScript Gap analysis to the Excel deliverable.
+    """
+    import pandas as pd
+    import openpyxl
+    from pipulate import wand
+    from datetime import datetime
+    import ipywidgets as widgets
+    from pathlib import Path
+
+    book = openpyxl.load_workbook(xl_file_path)
+    if 'Cloud JS Gap Analysis' in book.sheetnames:
+        print("☑️ 'Cloud JS Gap Analysis' tab already exists in this workbook.")
+    else:
+        df_ai = pd.DataFrame({
+            "Intelligence Layer": ["Cloud Frontier Model"],
+            "Semantic Assessment": [ai_assessment],
+            "Model Used": [model_id],
+            "Timestamp": [datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+        })
+        
+        with pd.ExcelWriter(xl_file_path, engine='openpyxl', mode='a', if_sheet_exists='overlay') as writer:
+            df_ai.to_excel(writer, sheet_name='Cloud JS Gap Analysis', index=False)
+            
+        print(f"✅ Cloud Insights successfully appended to {Path(xl_file_path).name}")
+    
+    deliverables_dir = wand.paths.deliverables / job
+    button = widgets.Button(description=f"📂 Open Deliverables Folder", tooltip=f"Open {deliverables_dir.resolve()}", button_style='success')
+    button.on_click(lambda b: wand.open_folder(str(deliverables_dir)))
+    
+    return button, Path(xl_file_path)
 
 
 # Inside onboard_sauce.py (Conceptual addition)
