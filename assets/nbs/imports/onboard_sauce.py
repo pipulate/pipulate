@@ -441,63 +441,6 @@ def etl_optics_to_excel(job: str, target_url: str):
     return df_seo, df_headers, button, xl_file
 
 
-def append_ai_keyword_assessment(job: str, xl_file_path, df_seo, df_headers, local_model_id: str, target_url: str):
-    """
-    Idempotently appends a local AI assessment tab to an existing Excel deliverable.
-    """
-    import pandas as pd
-    import openpyxl
-    from pipulate import wand
-    from datetime import datetime
-
-    # 1. Idempotency Check
-    book = openpyxl.load_workbook(xl_file_path)
-    if 'AI Keyword Target' in book.sheetnames:
-        print("☑️ 'AI Keyword Target' tab already exists. Skipping LLM inference to save cycles.")
-        return xl_file_path
-        
-    # 2. Prepare the Context Payload
-    seo_context = df_seo.to_string(index=False)
-    
-    prompt = f"""
-    You are an expert technical SEO. Analyze this metadata extracted from a webpage:
-    
-    URL: {target_url}
-    
-    METADATA:
-    {seo_context}
-    
-    Based strictly on this data, what is the ONE primary keyword this page is trying to target?
-    Respond with exactly two lines:
-    KEYWORD: [your predicted keyword]
-    RATIONALE: [One sentence explaining why based on the title/h1 tags]
-    """
-    
-    # 3. The Local Lambda Call
-    print(f"🤖 Pinging local AI ({local_model_id}) for keyword extraction...")
-    response_text = wand.prompt(prompt_text=prompt, model_name=local_model_id)
-    
-    # 4. Deterministic Parsing
-    lines = response_text.strip().split('\n')
-    keyword = lines[0].replace('KEYWORD:', '').strip() if len(lines) > 0 else "Unknown"
-    rationale = lines[1].replace('RATIONALE:', '').strip() if len(lines) > 1 else "Failed to parse."
-    
-    df_ai = pd.DataFrame({
-        "Crawled URL": [target_url],
-        "Predicted Target Keyword": [keyword],
-        "AI Rationale": [rationale],
-        "Model Used": [local_model_id],
-        "Timestamp": [datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
-    })
-    
-    # 5. The Safe Load (Writing the new tab)
-    with pd.ExcelWriter(xl_file_path, engine='openpyxl', mode='a', if_sheet_exists='overlay') as writer:
-        df_ai.to_excel(writer, sheet_name='AI Keyword Target', index=False)
-        
-    print(f"✅ AI Insights successfully appended to {xl_file_path.name}")
-    return xl_file_path
-
-
 def package_optics_to_excel(job: str, target_url: str, ai_assessment: str):
     """
     Packages the high-signal LLM Optics into a beautifully formatted Excel deliverable.
@@ -661,28 +604,91 @@ def render_copy_button(prompt_text: str):
 
 
 def build_local_optics_prompt(target_url: str):
-    """Retrieves cached optics and formats the prompts for the local AI assessment."""
+    """Generates the local prompt to extract the target keyword from SEO metadata."""
     from tools.scraper_tools import get_safe_path_component
     from pipulate import wand
+    import re
+    import yaml
+    import pandas as pd
 
     domain, slug = get_safe_path_component(target_url)
-    ax_file = wand.paths.browser_cache / domain / slug / "accessibility_tree_summary.txt"
+    seo_file = wand.paths.browser_cache / domain / slug / "seo.md"
 
-    accessibility_context = ax_file.read_text(encoding='utf-8')[:2000] if ax_file.exists() else "No accessibility data available."
+    seo_context = "No SEO data available."
+    if seo_file.exists():
+        content = seo_file.read_text(encoding='utf-8')
+        match = re.search(r'^---\n(.*?)\n---', content, re.DOTALL)
+        if match:
+            try:
+                frontmatter = yaml.safe_load(match.group(1))
+                seo_data = {"Metric": [], "Value": []}
+                for k, v in frontmatter.items():
+                    seo_data["Metric"].append(str(k).replace('_', ' ').title())
+                    seo_data["Value"].append(str(v))
+                seo_context = pd.DataFrame(seo_data).to_string(index=False)
+            except Exception:
+                pass
 
     local_system_prompt = (
         "You are Chip O'Theseus, an AI running locally on the user's hardware. "
-        "You are highly analytical and concise."
+        "You are an expert technical SEO."
     )
 
     local_prompt = f"""
-The user has successfully scraped {target_url}. 
-Based on the following Accessibility Tree snippet, provide a 2-3 sentence semantic summary of what this page is actually about and what its primary conversion goal appears to be.
+Analyze this metadata extracted from a webpage:
 
-DATA:
-{accessibility_context}
+URL: {target_url}
+
+METADATA:
+{seo_context}
+
+Based strictly on this data, what is the ONE primary keyword this page is trying to target?
+Respond with exactly two lines:
+KEYWORD: [your predicted keyword]
+RATIONALE: [One sentence explaining why based on the title/h1 tags]
 """
     return local_system_prompt, local_prompt.strip()
+
+def append_ai_keyword_assessment(job: str, xl_file_path, ai_assessment: str, local_model_id: str, target_url: str):
+    """
+    Idempotently appends a local AI assessment tab to an existing Excel deliverable.
+    """
+    import pandas as pd
+    import openpyxl
+    from pipulate import wand
+    from datetime import datetime
+    import ipywidgets as widgets
+
+    # 1. Idempotency Check
+    book = openpyxl.load_workbook(xl_file_path)
+    if 'AI Keyword Target' in book.sheetnames:
+        print("☑️ 'AI Keyword Target' tab already exists in this workbook.")
+    else:
+        # 2. Deterministic Parsing of the LLM Output
+        lines = ai_assessment.strip().split('\n')
+        keyword = lines[0].replace('KEYWORD:', '').strip() if len(lines) > 0 else "Unknown"
+        rationale = lines[1].replace('RATIONALE:', '').strip() if len(lines) > 1 else "Failed to parse."
+        
+        df_ai = pd.DataFrame({
+            "Crawled URL": [target_url],
+            "Predicted Target Keyword": [keyword],
+            "AI Rationale": [rationale],
+            "Model Used": [local_model_id],
+            "Timestamp": [datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+        })
+        
+        # 3. The Safe Load (Writing the new tab)
+        with pd.ExcelWriter(xl_file_path, engine='openpyxl', mode='a', if_sheet_exists='overlay') as writer:
+            df_ai.to_excel(writer, sheet_name='AI Keyword Target', index=False)
+            
+        print(f"✅ AI Insights successfully appended to {xl_file_path.name}")
+    
+    # Return the egress button for the notebook UI
+    deliverables_dir = wand.paths.deliverables / job
+    button = widgets.Button(description=f"📂 Open Deliverables Folder", tooltip=f"Open {deliverables_dir.resolve()}", button_style='success')
+    button.on_click(lambda b: wand.open_folder(str(deliverables_dir)))
+    
+    return button, xl_file_path
 
 
 def factory_reset_credentials():
