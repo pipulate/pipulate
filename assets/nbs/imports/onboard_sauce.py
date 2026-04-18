@@ -1025,20 +1025,19 @@ def reveal_system_architecture():
     from rich.text import Text
     
     console = Console()
-    
     lens_art = """
-     Idea --> Lens 1   -->   Lens 2  -->  Lens 3  -> Lens 4 -> Lens 5 -> Lens 6
-     
-          -----> ,--.
-          ---> ,'   `.---------> ,--.
-          --> /        \------> ,'   `.-------> ,--.        ,-.
-      o   -> /  Linux   \----> /  http  \----> ,'_hx `.--->,'   `.    ,-.
-     /|\    (  HARDWARE  )--> ( PROTOCOL )--> ( LINGUA )->( UI/UX )->(APP)->(git)
-     / \ -> \   Nix    /----> \  html  /----> `..py ,'--->`.   ,'    `-'
-          --> \        /------> `.    ,'-------> `--'        `-'    And so on
-          ---> `.    ,'---------> `--'         AI Help
-          -----> `--'            AI Help
-               AI Help
+  Idea --> Lens 1   -->   Lens 2  -->  Lens 3  -> Lens 4 -> Lens 5 -> Lens 6
+
+     -----> ,--.
+     ---> ,'    `.---------> ,--.
+     --> /        \------> ,'    `.-------> ,--.        ,-.
+  o  -> /  Linux   \----> /  http  \----> ,'_hx `.--->,'   `.    ,-.
+ /|\   (  HARDWARE  )--> ( PROTOCOL )--> ( LINGUA )->( UI/UX )->(APP)->(git)
+ / \ -> \   Nix    /----> \  html  /----> `..py ,'--->`.   ,'    `-'
+     --> \        /------> `.    ,'-------> `--'        `-'    And so on
+     ---> `.    ,'---------> `--'         AI Help
+     -----> `--'           AI Help
+          AI Help
     """
     
     # We apply specific colors to specific layers of the stack
