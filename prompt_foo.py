@@ -940,7 +940,7 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
     
     # 1. Identify all potential file-like strings in the CHOP
     extensions = '|'.join([ext.lstrip('.') for ext in STORY_EXTENSIONS])
-    potential_refs = set(re.findall(rf'([\w\d\./\\-%]+\.(?:{extensions}))(?!\w)', raw_content))
+    potential_refs = set(re.findall(rf'([\w\d\./\\%-]+\.(?:{extensions}))(?!\w)', raw_content))
     
     # 2. Get the reality of the disk
     repo_files = collect_repo_files(REPO_ROOT)
@@ -1159,6 +1159,9 @@ def main():
                 with open(full_path, 'r', encoding='utf-8') as f: content = f.read()
                 lang_map = {'.py': 'python', '.js': 'javascript', '.html': 'html', '.css': 'css', '.md': 'markdown', '.json': 'json', '.nix': 'nix', '.sh': 'bash'}
                 lang = lang_map.get(ext, 'text')
+            except UnicodeDecodeError:
+                content = f"# [Binary file or incompatible encoding omitted from text context: {os.path.basename(full_path)}]"
+                lang = "text"
             except Exception as e:
                 logger.print(f"ERROR: Could not read or process {full_path}: {e}")
                 sys.exit(1)
