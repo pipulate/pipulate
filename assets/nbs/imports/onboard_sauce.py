@@ -1017,3 +1017,37 @@ def render_cloud_handoff(job_id: str, recovered_url: str):
     # 4. Return the UI component and the text (for the notebook to display if it wants)
     return render_copy_button(final_payload), final_payload
 
+
+# Inside onboard_sauce.py (Conceptual addition)
+def reveal_system_architecture():
+    from rich.console import Console
+    from rich.panel import Panel
+    from rich.text import Text
+    
+    console = Console()
+    
+    lens_art = """
+     Idea --> Lens 1   -->   Lens 2  -->  Lens 3  -> Lens 4 -> Lens 5 -> Lens 6
+     
+          -----> ,--.
+          ---> ,'   `.---------> ,--.
+          --> /        \------> ,'   `.-------> ,--.        ,-.
+      o   -> /  Linux   \----> /  http  \----> ,'_hx `.--->,'   `.    ,-.
+     /|\    (  HARDWARE  )--> ( PROTOCOL )--> ( LINGUA )->( UI/UX )->(APP)->(git)
+     / \ -> \   Nix    /----> \  html  /----> `..py ,'--->`.   ,'    `-'
+          --> \        /------> `.    ,'-------> `--'        `-'    And so on
+          ---> `.    ,'---------> `--'         AI Help
+          -----> `--'            AI Help
+               AI Help
+    """
+    
+    # We apply specific colors to specific layers of the stack
+    styled_art = Text(lens_art)
+    styled_art.highlight_regex(r"HARDWARE|Linux|Nix", "bold cyan")
+    styled_art.highlight_regex(r"PROTOCOL|http|html", "bold green")
+    styled_art.highlight_regex(r"LINGUA|_hx|\.py", "bold yellow")
+    styled_art.highlight_regex(r"UI/UX", "bold magenta")
+    styled_art.highlight_regex(r"APP|git", "bold blue")
+    styled_art.highlight_regex(r"AI Help", "dim white")
+    
+    console.print(Panel(styled_art, title="[bold orange3]The Pipulate Lens Stack[/]", border_style="cyan"))
