@@ -421,17 +421,18 @@ def etl_optics_to_excel(job: str, target_url: str):
                 # Make Column A massive and monospace
                 ws.set_column(0, 0, 180, mono_fmt)
                 ws.write(0, 0, "Terminal Output", header_fmt)
-                
+
                 # Apply syntax highlighting to Diff tabs using Excel formulas
                 if 'Diff' in sheet_name:
                     max_row = len(df_sheet) + 1
                     rng = f'A2:A{max_row}'
-                    # Highlight additions (starts with + or '+)
-                    ws.conditional_format(rng, {'type': 'formula', 'criteria': 'OR(LEFT($A2,1)="+", LEFT($A2,2)="''+")', 'format': add_fmt})
-                    # Highlight removals (starts with - or '-)
-                    ws.conditional_format(rng, {'type': 'formula', 'criteria': 'OR(LEFT($A2,1)="-", LEFT($A2,2)="''-")', 'format': rem_fmt})
-                    # Highlight metadata (starts with @@ or '@@)
-                    ws.conditional_format(rng, {'type': 'formula', 'criteria': 'OR(LEFT($A2,2)="@@", LEFT($A2,3)="''@@")', 'format': meta_fmt})
+                    # Highlight additions (starts with +)
+                    ws.conditional_format(rng, {'type': 'formula', 'criteria': '=LEFT($A2,1)="+"', 'format': add_fmt})
+                    # Highlight removals (starts with -)
+                    ws.conditional_format(rng, {'type': 'formula', 'criteria': '=LEFT($A2,1)="-"', 'format': rem_fmt})
+                    # Highlight metadata (starts with @@)
+                    ws.conditional_format(rng, {'type': 'formula', 'criteria': '=LEFT($A2,2)="@@"', 'format': meta_fmt})
+                # Apply syntax highlighting to Diff tabs using Excel formulas
 
     # Egress Button
     button = widgets.Button(description=f"📂 Open Deliverables Folder", tooltip=f"Open {deliverables_dir.resolve()}", button_style='success')

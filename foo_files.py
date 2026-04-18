@@ -34,9 +34,9 @@ AI_PHOOEY_CHOP = """\
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 # # ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
 # # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
-# .gitignore  # [573 tokens | 2,089 bytes]
+.gitignore  # [573 tokens | 2,089 bytes]
 
-prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
