@@ -538,52 +538,6 @@ def package_optics_to_excel(job: str, target_url: str, ai_assessment: str):
 
     return button, xl_file
 
-def generate_js_gap_prompt(target_url: str) -> str:
-    """Generates a high-signal unified diff prompt for Cloud AI analysis."""
-    from bs4 import BeautifulSoup
-    import difflib
-    from tools.scraper_tools import get_safe_path_component
-    from pipulate import wand
-
-    domain, slug = get_safe_path_component(target_url)
-    cache_dir = wand.paths.browser_cache / domain / slug
-
-    source_file = cache_dir / "simple_source.html"
-    dom_file = cache_dir / "simple_hydrated.html"
-
-    if not source_file.exists() or not dom_file.exists():
-        return "Error: Simplified Source or DOM files missing. Run the scrape first."
-
-    source_lines = source_file.read_text(encoding='utf-8').splitlines()
-    dom_lines = dom_file.read_text(encoding='utf-8').splitlines()
-
-    diff = difflib.unified_diff(
-        source_lines, dom_lines,
-        fromfile='Raw_Source.html',
-        tofile='Hydrated_DOM.html',
-        lineterm=''
-    )
-    
-    # Cap the diff so it doesn't blow out the LLM's context window
-    diff_text = '\n'.join(list(diff)[:800]) 
-
-    prompt = f"""# ROLE
-You are an elite Technical SEO and Frontend Architecture expert.
-
-# TASK
-Analyze the "JavaScript Gap" for {target_url}. I have provided a Unified Diff showing the difference between the raw HTTP response (Raw_Source.html) and the simplified rendered DOM after JavaScript execution (Hydrated_DOM.html).
-
-# DATA (Unified Diff Snippet)
-```diff
-{diff_text}
-```
-
-# INSTRUCTIONS
-1. Analyze the diff. What critical content, internal links, or semantic structures are ONLY present in the Hydrated_DOM?
-2. Explain the SEO implications if a search engine crawler (like Googlebot) fails to execute this JavaScript.
-3. Recommend a mitigation strategy (e.g., Server-Side Rendering, Dynamic Rendering, or HTML fallbacks) based on the specific elements being injected client-side.
-"""
-    return prompt
 
 def render_copy_button(prompt_text: str):
     """Renders an HTML/JS button to copy text to the OS clipboard from Jupyter."""
