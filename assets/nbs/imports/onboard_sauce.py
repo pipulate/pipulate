@@ -293,19 +293,19 @@ def ensure_cloud_credentials(cloud_model_id):
                     # 3. Explicitly set it in Simon Willison's 'llm' tool keychain
                     try:
                         import llm
-                        # The llm library uses specific aliases for its core plugins
-                        if env_var_name == 'GEMINI_API_KEY':
-                            key_alias = 'gemini'
-                        elif env_var_name == 'OPENAI_API_KEY':
-                            key_alias = 'openai'
-                        elif env_var_name == 'ANTHROPIC_API_KEY':
-                            key_alias = 'anthropic'
-                        else:
-                            key_alias = env_var_name.split('_')[0].lower()
+                        # The llm library uses specific aliases for its core plugins
+                        if env_var_name == 'GEMINI_API_KEY':
+                            key_alias = 'gemini'
+                        elif env_var_name == 'OPENAI_API_KEY':
+                            key_alias = 'openai'
+                        elif env_var_name == 'ANTHROPIC_API_KEY':
+                            key_alias = 'anthropic'
+                        else:
+                            key_alias = env_var_name.split('_')[0].lower()
 
                         llm.set_key(key_alias, key_input.value.strip())
                     except Exception as e:
-                        print(f"⚠️ Warning: Could not sync key to internal LLM keychain: {e}")
+                        print(f"⚠️ Warning: Could not sync key to internal LLM keychain: {e}")
                         
                     wand.speak("Key securely saved to the vault. The cloud is connected.")
                     print(f"✅ {env_var_name} successfully encrypted in .env.")
