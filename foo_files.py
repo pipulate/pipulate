@@ -41,18 +41,24 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-# flake.nix  # [7,711 tokens | 32,991 bytes]
+flake.nix  # [7,711 tokens | 32,991 bytes]
+pipulate/core.py  # [28,546 tokens | 138,551 bytes]
+scripts/articles/articleizer.py  # [2,936 tokens | 13,517 bytes]
+assets/nbs/imports/onboard_sauce.py  # [10,027 tokens | 43,241 bytes]
+scripts/articles/execute_massive_prompt.py  # [491 tokens | 2,209 bytes]
+scripts/articles/list_models.py  # [102 tokens | 391 bytes]
+scripts/articles/contextualizer.py  # [2,519 tokens | 11,151 bytes]
+Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
+Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
+Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
+
 # AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
 # tools/mcp_tools.py  # [36,628 tokens | 186,793 bytes]
-# pipulate/core.py  # [22,996 tokens | 111,351 bytes]
 # README.md  # [20,467 tokens | 103,208 bytes]
 # server.py  # [54,246 tokens | 258,931 bytes]
 # imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 # tools/scraper_tools.py  # [4,449 tokens | 21,625 bytes]
 # tools/llm_optics.py  # [2,574 tokens | 11,257 bytes]
-Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
-Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
-Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
 # /home/mike/repos/pipulate/Notebooks/Deliverables/onboarding_job/mikelev_in_Technical_Baseline.xlsx
 
 # # /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/accessibility_tree.json  # [443,389 tokens | 1,827,049 bytes]
