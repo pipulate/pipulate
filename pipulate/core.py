@@ -2477,6 +2477,23 @@ class Pipulate:
         try:
             # The Magic Wand invokes the Universal Adapter
             model = llm.get_model(model_name)
+
+            # --- BULLETPROOF AUTHENTICATION ---
+            # Bypass internal keystore mapping issues by explicitly assigning the key
+            env_var_name = None
+            if 'claude' in model_name.lower() or 'anthropic' in model_name.lower():
+                env_var_name = 'ANTHROPIC_API_KEY'
+            elif 'gpt' in model_name.lower() or 'openai' in model_name.lower():
+                env_var_name = 'OPENAI_API_KEY'
+            elif 'groq' in model_name.lower():
+                env_var_name = 'GROQ_API_KEY'
+            elif 'gemini' in model_name.lower() or 'google' in model_name.lower():
+                env_var_name = 'GEMINI_API_KEY'
+
+            if env_var_name:
+                api_key = self.load_secrets(env_var_name)
+                if api_key:
+                    model.key = api_key
             response = model.prompt(prompt_text, system=system_prompt)
             
             print("✅ Prompt successfully submitted to model. Wait a moment...")
@@ -2631,7 +2648,8 @@ class Pipulate:
         submit_btn = widgets.Button(
             description="Update Session Config", 
             button_style='primary',
-            icon='save'
+            icon='save',
+            layout=widgets.Layout(width='max-content')
         )
         
         out = widgets.Output()
@@ -2658,7 +2676,7 @@ class Pipulate:
                     # but maybe change button color to show it's "saved"
                     submit_btn.button_style = 'success'
                     submit_btn.description = "Config Locked & Saved"
-                    self.imperio()
+                    self.speak("You may now run the next cell.", emoji="✅")
 
         submit_btn.on_click(on_submit)
         
