@@ -872,7 +872,16 @@ def get_local_file_link(path_str: str, label: str):
     """Generates a clickable file:// link for local browser viewing."""
     from pathlib import Path
     path = Path(path_str).resolve()
-    return f'<a href="file://{path}" target="_blank">🔗 {label}</a>'
+    
+    # JupyterLab serves files relative to its root workspace.
+    try:
+        cwd = Path.cwd()
+        rel_path = path.relative_to(cwd)
+        href = f"/files/{rel_path}"
+    except ValueError:
+        href = f"file://{path}"
+        
+    return f'<a href="{href}" target="_blank">🔗 {label}</a>'
 
 
 def render_prompt_workbench(job_id: str, recovered_url: str):

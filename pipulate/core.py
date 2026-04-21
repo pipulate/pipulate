@@ -2725,6 +2725,7 @@ class Pipulate:
                         print(f"  🔑 {key}: {'*' * len(val)}")
         else:
             print("  (No .env file found. The vault is unbuilt.)")
+        print()
 
     def import_this(self):
         """
