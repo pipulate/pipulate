@@ -469,6 +469,8 @@ class Pipulate:
         # Extract link text: "[weird stuff](url)" -> "weird stuff"
         voice_text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', text)
         # Remove silent tags entirely: "active [🏆]" -> "active "
+        # Strip HTML tags so the TTS doesn't read them aloud
+        voice_text = re.sub(r'<[^>]+>', '', voice_text)
         voice_text = re.sub(r'\[[^\]]+\]', '', voice_text)
 
         # 2. The Visual Payload (Hidden IPython complexity)
