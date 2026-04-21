@@ -385,8 +385,8 @@ def etl_optics_to_excel(job: str, target_url: str):
     for sheet_name, filename in ascii_artifacts.items():
         file_path = cache_dir / filename
         if file_path.exists():
-            # Read line by line into a single column
-            lines = file_path.read_text(encoding='utf-8').splitlines()
+            # Read line by line, expanding tabs to hard spaces to prevent Excel from collapsing them
+            lines = [line.expandtabs(4) for line in file_path.read_text(encoding='utf-8').splitlines()]
             if 'Diff' in sheet_name:
                 structured_data = []
                 for line in lines:
