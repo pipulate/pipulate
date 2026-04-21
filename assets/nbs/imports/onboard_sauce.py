@@ -376,9 +376,9 @@ def etl_optics_to_excel(job: str, target_url: str):
         'Tree Source': 'source_dom_hierarchy.txt',
         'Tree Hydrated': 'hydrated_dom_hierarchy.txt',
         'Tree Diff': 'diff_hierarchy.txt',
-        'Boxes Source': 'source_dom_layout_boxes.txt',
-        'Boxes Hydrated': 'hydrated_dom_layout_boxes.txt',
-        'Boxes Diff': 'diff_boxes.txt'
+        'Simple Source': 'simple_source.html',
+        'Simple Hydrated': 'simple_hydrated.html',
+        'Simple Diff': 'diff_simple.txt'
     }
     
     ascii_dfs = {}
