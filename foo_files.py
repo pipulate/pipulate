@@ -41,7 +41,7 @@ AI_PHOOEY_CHOP = """\
 
 # AD HOC STUFF
 
-pipulate/core.py  # [28,546 tokens | 138,551 bytes]
+# pipulate/core.py  # [28,546 tokens | 138,551 bytes]
 assets/nbs/imports/onboard_sauce.py  # [10,027 tokens | 43,241 bytes]
 Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
 Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
@@ -97,7 +97,7 @@ Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
 # flake.nix  # [8,011 tokens | 34,229 bytes]
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
 # pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-# pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 # Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
 # Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
 # Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
