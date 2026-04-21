@@ -387,15 +387,30 @@ def etl_optics_to_excel(job: str, target_url: str):
         if file_path.exists():
             # Read line by line into a single column
             lines = file_path.read_text(encoding='utf-8').splitlines()
-            # Prefix diff files with a space if they don't have a marker, to prevent Excel from thinking +/- are formulas
             if 'Diff' in sheet_name:
-                lines = [f"'{line}" if line.startswith(('+', '-', '@')) else line for line in lines]
-            ascii_dfs[sheet_name] = pd.DataFrame({"Terminal Output": lines})
+                structured_data = []
+                for line in lines:
+                    diff_type = ''
+                    if line.startswith('+'):
+                        diff_type = 'Added'
+                    elif line.startswith('-'):
+                        diff_type = 'Removed'
+                    elif line.startswith('@@'):
+                        diff_type = 'Meta'
+                        
+                    # Prefix with a space to neutralize Excel formula execution
+                    safe_line = f" {line}" if line.startswith(('+', '-', '@', '=')) else line
+                    structured_data.append({"Diff Type": diff_type, "Terminal Output": safe_line})
+                ascii_dfs[sheet_name] = pd.DataFrame(structured_data)
+            else:
+                ascii_dfs[sheet_name] = pd.DataFrame({"Terminal Output": lines})
 
     # --- LOAD: Excel Deliverable ---
-    deliverables_dir = wand.paths.deliverables / job
+    # Isolate the deliverable directory per domain to prevent client name leakage
+    domain_slug = domain.replace('.', '_')
+    deliverables_dir = wand.paths.deliverables / job / domain_slug
     deliverables_dir.mkdir(parents=True, exist_ok=True)
-    xl_filename = f"{domain.replace('.', '_')}_Technical_Baseline.xlsx"
+    xl_filename = f"{domain_slug}_Technical_Baseline.xlsx"
     xl_file = deliverables_dir / xl_filename
 
     with pd.ExcelWriter(xl_file, engine="xlsxwriter") as writer:
@@ -427,21 +442,23 @@ def etl_optics_to_excel(job: str, target_url: str):
                 df_sheet.to_excel(writer, sheet_name=sheet_name, index=False)
                 ws = writer.sheets[sheet_name]
                 
-                # Make Column A massive and monospace
-                ws.set_column(0, 0, 180, mono_fmt)
-                ws.write(0, 0, "Terminal Output", header_fmt)
-
-                # Apply syntax highlighting to Diff tabs using Excel formulas
                 if 'Diff' in sheet_name:
+                    # Hide the 'Diff Type' column, make 'Terminal Output' massive
+                    ws.set_column(0, 0, 10, mono_fmt, {'hidden': True})
+                    ws.set_column(1, 1, 180, mono_fmt)
+                    ws.write(0, 0, "Diff Type", header_fmt)
+                    ws.write(0, 1, "Terminal Output", header_fmt)
                     max_row = len(df_sheet) + 1
-                    rng = f'A2:A{max_row}'
-                    # Highlight additions (starts with +)
-                    ws.conditional_format(rng, {'type': 'formula', 'criteria': '=LEFT($A2,1)="+"', 'format': add_fmt})
-                    # Highlight removals (starts with -)
-                    ws.conditional_format(rng, {'type': 'formula', 'criteria': '=LEFT($A2,1)="-"', 'format': rem_fmt})
-                    # Highlight metadata (starts with @@)
-                    ws.conditional_format(rng, {'type': 'formula', 'criteria': '=LEFT($A2,2)="@@"', 'format': meta_fmt})
-                # Apply syntax highlighting to Diff tabs using Excel formulas
+                    rng = f'A2:B{max_row}'
+                    
+                    # Conditional formatting perfectly anchored to the hidden helper column
+                    ws.conditional_format(rng, {'type': 'formula', 'criteria': '=$A2="Added"', 'format': add_fmt})
+                    ws.conditional_format(rng, {'type': 'formula', 'criteria': '=$A2="Removed"', 'format': rem_fmt})
+                    ws.conditional_format(rng, {'type': 'formula', 'criteria': '=$A2="Meta"', 'format': meta_fmt})
+                else:
+                    # Standard ASCII tabs just have 'Terminal Output' (A)
+                    ws.set_column(0, 0, 180, mono_fmt)
+                    ws.write(0, 0, "Terminal Output", header_fmt)
 
     # Egress Button
     button = widgets.Button(description=f"📂 Open Deliverables Folder", tooltip=f"Open {deliverables_dir.resolve()}", button_style='success')
