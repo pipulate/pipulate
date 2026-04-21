@@ -421,10 +421,10 @@ def etl_optics_to_excel(job: str, target_url: str):
         wrap_fmt = workbook.add_format({'text_wrap': True, 'valign': 'top'})
         
         # Terminal Formatting
-        mono_fmt = workbook.add_format({'font_name': 'Consolas', 'font_size': 9, 'text_wrap': False, 'valign': 'top'})
-        add_fmt = workbook.add_format({'font_name': 'Consolas', 'font_size': 9, 'font_color': '#008000', 'bg_color': '#e6ffec'}) # Green
-        rem_fmt = workbook.add_format({'font_name': 'Consolas', 'font_size': 9, 'font_color': '#cc0000', 'bg_color': '#ffe6e6'}) # Red
-        meta_fmt = workbook.add_format({'font_name': 'Consolas', 'font_size': 9, 'font_color': '#808080'}) # Grey
+        mono_fmt = workbook.add_format({'font_name': 'Courier New', 'font_size': 9, 'text_wrap': False, 'valign': 'top'})
+        add_fmt = workbook.add_format({'font_name': 'Courier New', 'font_size': 9, 'font_color': '#008000', 'bg_color': '#e6ffec'}) # Green
+        rem_fmt = workbook.add_format({'font_name': 'Courier New', 'font_size': 9, 'font_color': '#cc0000', 'bg_color': '#ffe6e6'}) # Red
+        meta_fmt = workbook.add_format({'font_name': 'Courier New', 'font_size': 9, 'font_color': '#808080'}) # Grey
 
         # 1. Write Standard Data Tabs
         for sheet_name, df_sheet in [('SEO Metadata', df_seo), ('HTTP Headers', df_headers)]:
