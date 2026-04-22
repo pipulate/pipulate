@@ -12,18 +12,22 @@ from openpyxl.styles import Font, Alignment
 from openpyxl.worksheet.table import Table, TableStyleInfo
 import nbformat
 
-async def universal_scrape(job, urls, headless=True, delay_range=(5, 10)):
+# In assets/nbs/imports/core_sauce.py
+
+async def universal_scrape(job, urls, headless=True, delay_range=(5, 10), override_cache=False):
     """The unified acquisition engine for all tier-2 tools."""
     extracted_data = []
     for i, url in enumerate(urls):
         current_delay = delay_range if i > 0 else None
-        result = await wand.scrape(url=url, headless=headless, delay_range=current_delay)
+        
+        # Pass override_cache down to the wand
+        result = await wand.scrape(url=url, headless=headless, delay_range=current_delay, override_cache=override_cache)
         
         is_cached = result.get("cached", False)
         status = "✅ Cached" if is_cached else "👁️ Scraped"
         print(f"  -> {status} [{i+1}/{len(urls)}] {url}")
 
-        dom_path = result.get("looking_at_files", {}).get("rendered_dom")
+        dom_path = result.get("looking_at_files", {}).get("hydrated_dom")
         if dom_path and Path(dom_path).exists():
             with open(dom_path, 'r', encoding='utf-8') as f:
                 soup = BeautifulSoup(f.read(), 'html.parser')
@@ -31,8 +35,20 @@ async def universal_scrape(job, urls, headless=True, delay_range=(5, 10)):
                     'url': url,
                     'title': soup.title.string.strip() if soup.title else "No Title",
                     'h1s': [h1.get_text(strip=True) for h1 in soup.find_all('h1')],
-                    'rendered_dom_path': str(dom_path)
+                    'hydrated_dom_path': str(dom_path),
+                    'cached': is_cached,                     # <-- New enriched state
+                    'success': result.get('success', False), # <-- New enriched state
+                    'error': result.get('error', '')         # <-- New enriched state
                 })
+        else:
+            # Handle failure states gracefully in the returned list
+            extracted_data.append({
+                'url': url,
+                'cached': is_cached,
+                'success': False,
+                'error': result.get('error', 'DOM file not found')
+            })
+            
     wand.set(job, "extracted_data", extracted_data)
     return extracted_data
 
@@ -44,7 +60,7 @@ async def generate_optics_batch(job, verbose=False):
     
     tasks = []
     for item in extracted_data:
-        dom_path = item.get('rendered_dom_path')
+        dom_path = item.get('hydrated_dom_path')
         if dom_path and Path(dom_path).exists():
             tasks.append(_run_optics_subprocess(sys.executable, script_path, dom_path))
             
