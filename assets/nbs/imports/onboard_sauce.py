@@ -1160,16 +1160,24 @@ def append_cloud_assessment(job: str, xl_file_path, ai_assessment: str, model_id
             style = TableStyleInfo(name="TableStyleMedium9", showFirstColumn=False, showLastColumn=False, showRowStripes=True, showColumnStripes=False)
             tab.tableStyleInfo = style
             ws.add_table(tab)
-            
+
             widths = {'A': 25, 'B': 100, 'C': 18, 'D': 20}
             for col, width in widths.items():
                 ws.column_dimensions[col].width = width
                 
+            # Apply distinct formatting for Headers vs Data
+            header_font = Font(bold=True)
+            header_alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
             wrap_alignment = Alignment(wrap_text=True, vertical='top')
-            for row in ws.iter_rows(min_row=1, max_row=max_row, min_col=1, max_col=ws.max_column):
-                for cell in row:
-                    cell.alignment = wrap_alignment
             
+            for row_idx, row in enumerate(ws.iter_rows(min_row=1, max_row=max_row, min_col=1, max_col=ws.max_column), start=1):
+                for cell in row:
+                    if row_idx == 1:
+                        cell.font = header_font
+                        cell.alignment = header_alignment
+                    else:
+                        cell.alignment = wrap_alignment
+
         print(f"✅ Cloud Insights successfully appended to {Path(xl_file_path).name}")
     
     # SOVEREIGN DELIVERY FIX: Open exactly one level deeper
