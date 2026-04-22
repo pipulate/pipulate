@@ -594,94 +594,6 @@ def render_copy_button(prompt_text: str):
     return HTML(button_html)
 
 
-def build_local_optics_prompt(target_url: str):
-    """Generates the local prompt to extract the target keyword from SEO metadata."""
-    from tools.scraper_tools import get_safe_path_component
-    from pipulate import wand
-    import re
-    import yaml
-    import pandas as pd
-
-    domain, slug = get_safe_path_component(target_url)
-    seo_file = wand.paths.browser_cache / domain / slug / "seo.md"
-
-    seo_context = "No SEO data available."
-    if seo_file.exists():
-        content = seo_file.read_text(encoding='utf-8')
-        match = re.search(r'^---\n(.*?)\n---', content, re.DOTALL)
-        if match:
-            try:
-                frontmatter = yaml.safe_load(match.group(1))
-                seo_data = {"Metric": [], "Value": []}
-                for k, v in frontmatter.items():
-                    seo_data["Metric"].append(str(k).replace('_', ' ').title())
-                    seo_data["Value"].append(str(v))
-                seo_context = pd.DataFrame(seo_data).to_string(index=False)
-            except Exception:
-                pass
-
-    local_system_prompt = (
-        "You are Chip O'Theseus, an AI running locally on the user's hardware. "
-        "You are an expert technical SEO."
-    )
-
-    local_prompt = f"""
-Analyze this metadata extracted from a webpage:
-
-URL: {target_url}
-
-METADATA:
-{seo_context}
-
-Based strictly on this data, what is the ONE primary keyword this page is trying to target?
-Respond with exactly two lines:
-KEYWORD: [your predicted keyword]
-RATIONALE: [One sentence explaining why based on the title/h1 tags]
-"""
-    return local_system_prompt, local_prompt.strip()
-
-def append_ai_keyword_assessment(job: str, xl_file_path, ai_assessment: str, local_model_id: str, target_url: str):
-    """
-    Idempotently appends a local AI assessment tab to an existing Excel deliverable.
-    """
-    import pandas as pd
-    import openpyxl
-    from pipulate import wand
-    from datetime import datetime
-    import ipywidgets as widgets
-
-    # 1. Idempotency Check
-    book = openpyxl.load_workbook(xl_file_path)
-    if 'AI Keyword Target' in book.sheetnames:
-        print("☑️ 'AI Keyword Target' tab already exists in this workbook.")
-    else:
-        # 2. Deterministic Parsing of the LLM Output
-        lines = ai_assessment.strip().split('\n')
-        keyword = lines[0].replace('KEYWORD:', '').strip() if len(lines) > 0 else "Unknown"
-        rationale = lines[1].replace('RATIONALE:', '').strip() if len(lines) > 1 else "Failed to parse."
-        
-        df_ai = pd.DataFrame({
-            "Crawled URL": [target_url],
-            "Predicted Target Keyword": [keyword],
-            "AI Rationale": [rationale],
-            "Model Used": [local_model_id],
-            "Timestamp": [datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
-        })
-        
-        # 3. The Safe Load (Writing the new tab)
-        with pd.ExcelWriter(xl_file_path, engine='openpyxl', mode='a', if_sheet_exists='overlay') as writer:
-            df_ai.to_excel(writer, sheet_name='AI Keyword Target', index=False)
-            
-        print(f"✅ AI Insights successfully appended to {xl_file_path.name}")
-    
-    # Return the egress button for the notebook UI
-    deliverables_dir = wand.paths.deliverables / job
-    button = widgets.Button(description=f"📂 Open Deliverables Folder", tooltip=f"Open {deliverables_dir.resolve()}", button_style='success')
-    button.on_click(lambda b: wand.open_folder(str(deliverables_dir)))
-    
-    return button, xl_file_path
-
-
 def conduct_local_assessment(job_id: str, target_url: str, local_model_id: str):
     """
     Orchestrates the local AI assessment, displays the result to the notebook,
@@ -1038,6 +950,138 @@ def render_cloud_handoff(job_id: str, recovered_url: str):
     return ui, final_payload
 
 
+def reveal_system_architecture():
+    from rich.console import Console
+    from rich.panel import Panel
+    from rich.text import Text
+    
+    console = Console()
+    lens_art = """
+  Idea --> Lens 1   -->   Lens 2  -->  Lens 3  -> Lens 4 -> Lens 5 -> Lens 6
+
+     -----> ,--.
+     ---> ,'    `.---------> ,--.
+     --> /        \------> ,'    `.-------> ,--.        ,-.
+  o  -> /  Linux   \----> /  HTTP  \----> ,'_hx `.--->,'   `.    ,-.
+ /|\   (  HARDWARE  )--> ( PROTOCOL )--> ( LINGUA )->( UI/UX )->(APP)->(git)
+ / \ -> \  (Nix)   /----> \ (html) /----> `..py ,'--->`.   ,'    `-'
+     --> \        /------> `.    ,'-------> `--'        `-'    And so on
+     ---> `.    ,'---------> `--'         AI Help
+     -----> `--'           AI Help
+          AI Help
+    """
+    
+    # We apply specific colors to specific layers of the stack
+    styled_art = Text(lens_art)
+    styled_art.highlight_regex(r"HARDWARE|Linux|Nix", "bold cyan")
+    styled_art.highlight_regex(r"PROTOCOL|http|html", "bold green")
+    styled_art.highlight_regex(r"LINGUA|_hx|\.py", "bold yellow")
+    styled_art.highlight_regex(r"UI/UX", "bold magenta")
+    styled_art.highlight_regex(r"APP|git", "bold blue")
+    styled_art.highlight_regex(r"AI Help", "dim white")
+    
+    console.print(Panel(styled_art, title="[bold orange3]The Pipulate Lens Stack[/]", border_style="cyan"))
+
+
+def build_local_optics_prompt(target_url: str):
+    """Generates the local prompt to extract the target keyword from SEO metadata."""
+    from tools.scraper_tools import get_safe_path_component
+    from pipulate import wand
+    import re
+    import yaml
+    import pandas as pd
+
+    domain, slug = get_safe_path_component(target_url)
+    seo_file = wand.paths.browser_cache / domain / slug / "seo.md"
+
+    seo_context = "No SEO data available."
+    if seo_file.exists():
+        content = seo_file.read_text(encoding='utf-8')
+        match = re.search(r'^---\n(.*?)\n---', content, re.DOTALL)
+        if match:
+            try:
+                frontmatter = yaml.safe_load(match.group(1))
+                seo_data = {"Metric": [], "Value": []}
+                for k, v in frontmatter.items():
+                    seo_data["Metric"].append(str(k).replace('_', ' ').title())
+                    seo_data["Value"].append(str(v))
+                seo_context = pd.DataFrame(seo_data).to_string(index=False)
+            except Exception:
+                pass
+
+    local_system_prompt = (
+        "You are Chip O'Theseus, an AI running locally on the user's hardware. "
+        "You are an expert technical SEO."
+    )
+
+    local_prompt = f"""
+Analyze this metadata extracted from a webpage:
+
+URL: {target_url}
+
+METADATA:
+{seo_context}
+
+Based strictly on this data, identify the Brand Entity and the primary Generic Keyword this page is trying to target.
+Respond with exactly four lines:
+BRAND: [The brand or company name]
+BRAND_RATIONALE: [One sentence explaining why]
+KEYWORD: [The primary generic targeted keyword phrase]
+KEYWORD_RATIONALE: [One sentence explaining why based on the title/h1 tags]
+"""
+    return local_system_prompt, local_prompt.strip()
+
+def append_ai_keyword_assessment(job: str, xl_file_path, ai_assessment: str, local_model_id: str, target_url: str):
+    """
+    Idempotently appends a local AI assessment tab to an existing Excel deliverable.
+    """
+    import pandas as pd
+    import openpyxl
+    from pipulate import wand
+    from datetime import datetime
+    import ipywidgets as widgets
+    from pathlib import Path
+
+    # 1. Idempotency Check
+    book = openpyxl.load_workbook(xl_file_path)
+    if 'AI Keyword Target' in book.sheetnames:
+        print("☑️ 'AI Keyword Target' tab already exists in this workbook.")
+    else:
+        # 2. Deterministic Parsing of the LLM Output (Robust against blank lines)
+        lines = [line.strip() for line in ai_assessment.strip().split('\n') if line.strip()]
+        
+        brand, brand_rat = "Unknown", "Failed to parse."
+        keyword, keyword_rat = "Unknown", "Failed to parse."
+        
+        for line in lines:
+            if line.startswith("BRAND:"): brand = line.replace("BRAND:", "").strip()
+            elif line.startswith("BRAND_RATIONALE:"): brand_rat = line.replace("BRAND_RATIONALE:", "").strip()
+            elif line.startswith("KEYWORD:"): keyword = line.replace("KEYWORD:", "").strip()
+            elif line.startswith("KEYWORD_RATIONALE:"): keyword_rat = line.replace("KEYWORD_RATIONALE:", "").strip()
+        
+        df_ai = pd.DataFrame({
+            "Crawled URL": [target_url, target_url],
+            "Entity Type": ["Brand", "Generic Keyword"],
+            "Predicted Target": [brand, keyword],
+            "AI Rationale": [brand_rat, keyword_rat],
+            "Model Used": [local_model_id, local_model_id],
+            "Timestamp": [datetime.now().strftime("%Y-%m-%d %H:%M:%S")] * 2
+        })
+        
+        # 3. The Safe Load (Writing the new tab)
+        with pd.ExcelWriter(xl_file_path, engine='openpyxl', mode='a', if_sheet_exists='overlay') as writer:
+            df_ai.to_excel(writer, sheet_name='AI Keyword Target', index=False)
+            
+        print(f"✅ AI Insights successfully appended to {Path(xl_file_path).name}")
+    
+    # 4. SOVEREIGN DELIVERY FIX: Open exactly one level deeper
+    deliverables_dir = Path(xl_file_path).parent
+    button = widgets.Button(description=f"📂 Open Deliverables Folder", tooltip=f"Open {deliverables_dir.resolve()}", button_style='success')
+    button.on_click(lambda b: wand.open_folder(str(deliverables_dir)))
+    
+    return button, xl_file_path
+
+
 def append_cloud_assessment(job: str, xl_file_path, ai_assessment: str, model_id: str):
     """
     Idempotently appends the Cloud AI JavaScript Gap analysis to the Excel deliverable.
@@ -1065,42 +1109,9 @@ def append_cloud_assessment(job: str, xl_file_path, ai_assessment: str, model_id
             
         print(f"✅ Cloud Insights successfully appended to {Path(xl_file_path).name}")
     
-    deliverables_dir = wand.paths.deliverables / job
+    # SOVEREIGN DELIVERY FIX: Open exactly one level deeper
+    deliverables_dir = Path(xl_file_path).parent
     button = widgets.Button(description=f"📂 Open Deliverables Folder", tooltip=f"Open {deliverables_dir.resolve()}", button_style='success')
     button.on_click(lambda b: wand.open_folder(str(deliverables_dir)))
     
     return button, Path(xl_file_path)
-
-
-# Inside onboard_sauce.py (Conceptual addition)
-def reveal_system_architecture():
-    from rich.console import Console
-    from rich.panel import Panel
-    from rich.text import Text
-    
-    console = Console()
-    lens_art = """
-  Idea --> Lens 1   -->   Lens 2  -->  Lens 3  -> Lens 4 -> Lens 5 -> Lens 6
-
-     -----> ,--.
-     ---> ,'    `.---------> ,--.
-     --> /        \------> ,'    `.-------> ,--.        ,-.
-  o  -> /  Linux   \----> /  http  \----> ,'_hx `.--->,'   `.    ,-.
- /|\   (  HARDWARE  )--> ( PROTOCOL )--> ( LINGUA )->( UI/UX )->(APP)->(git)
- / \ -> \   Nix    /----> \  html  /----> `..py ,'--->`.   ,'    `-'
-     --> \        /------> `.    ,'-------> `--'        `-'    And so on
-     ---> `.    ,'---------> `--'         AI Help
-     -----> `--'           AI Help
-          AI Help
-    """
-    
-    # We apply specific colors to specific layers of the stack
-    styled_art = Text(lens_art)
-    styled_art.highlight_regex(r"HARDWARE|Linux|Nix", "bold cyan")
-    styled_art.highlight_regex(r"PROTOCOL|http|html", "bold green")
-    styled_art.highlight_regex(r"LINGUA|_hx|\.py", "bold yellow")
-    styled_art.highlight_regex(r"UI/UX", "bold magenta")
-    styled_art.highlight_regex(r"APP|git", "bold blue")
-    styled_art.highlight_regex(r"AI Help", "dim white")
-    
-    console.print(Panel(styled_art, title="[bold orange3]The Pipulate Lens Stack[/]", border_style="cyan"))
