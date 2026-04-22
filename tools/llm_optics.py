@@ -47,8 +47,8 @@ OUTPUT_FILES = {
     "diff_hierarchy_html": "diff_hierarchy.html",
     "diff_boxes_txt": "diff_boxes.txt",
     "diff_boxes_html": "diff_boxes.html",
-    "diff_simple_txt": "diff_simple.txt",
-    "diff_simple_html": "diff_simple.html",
+    "diff_simple_txt": "diff_simple_dom.txt",
+    "diff_simple_html": "diff_simple_dom.html",
 }
 CONSOLE_WIDTH = 180
 
@@ -173,8 +173,8 @@ def main(target_dir_path: str):
 
     source_path = output_dir / "source.html"
     rendered_path = output_dir / "rendered_dom.html"
-    simple_source_path = output_dir / "simple_source.html"
-    simple_hydrated_path = output_dir / "simple_hydrated.html"
+    simple_source_path = output_dir / "simple_source_html.html"
+    simple_hydrated_path = output_dir / "simple_hydrated_dom.html"
 
     rendered_content = read_html_file(rendered_path)
 
@@ -182,7 +182,7 @@ def main(target_dir_path: str):
     simple_hydrated_content = read_html_file(simple_hydrated_path)
 
     if not simple_source_content or not simple_hydrated_content:
-        print("Error: Both simple_source.html and simple_hydrated.html must exist in the target directory.", file=sys.stderr)
+        print("Error: Both simple_source_html.html and simple_hydrated_dom.html must exist in the target directory.", file=sys.stderr)
         sys.exit(1)
 
     # --- 1. Generate SEO.md (Using Rendered DOM for accuracy) ---
