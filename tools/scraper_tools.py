@@ -127,14 +127,14 @@ async def selenium_automation(params: dict) -> dict:
         for artifact_name in [
             "rendered_dom.html", 
             "source.html", 
-            "simple_source.html",
-            "simple_hydrated.html",
+            "simple_source_html.html",
+            "simple_hydrated_dom.html",
             "diff_boxes.txt",
             "diff_boxes.html",
             "diff_hierarchy.txt",
             "diff_hierarchy.html",
-            "diff_simple.txt",
-            "diff_simple.html",
+            "diff_simple_dom.txt",
+            "diff_simple_dom.html",
             "screenshot.png", 
             "seo.md",
             "source_dom_layout_boxes.txt", 
@@ -398,17 +398,16 @@ async def selenium_automation(params: dict) -> dict:
         headers_path.write_text(json.dumps(headers_data, indent=2), encoding='utf-8')
         artifacts['headers'] = str(headers_path)
 
-
         # 2. Create LLM-Optimized Simplified DOMs (The Symmetrical Lens)
         if verbose: logger.info("🧠 Creating LLM-optimized simplified DOMs (Symmetrical Lens)...")
         
         simple_source_content = _simplify_html_for_llm(true_raw_source, driver.title)
-        simple_source_path = output_dir / "simple_source.html"
+        simple_source_path = output_dir / "simple_source_html.html"
         simple_source_path.write_text(simple_source_content, encoding='utf-8')
         artifacts['simple_source'] = str(simple_source_path)
 
         simple_hydrated_content = _simplify_html_for_llm(dom_content, driver.title)
-        simple_hydrated_path = output_dir / "simple_hydrated.html"
+        simple_hydrated_path = output_dir / "simple_hydrated_dom.html"
         simple_hydrated_path.write_text(simple_hydrated_content, encoding='utf-8')
         artifacts['simple_hydrated'] = str(simple_hydrated_path)
 
@@ -452,8 +451,8 @@ async def selenium_automation(params: dict) -> dict:
                 ('diff_hierarchy_html', 'diff_hierarchy.html'),
                 ('diff_boxes_txt', 'diff_boxes.txt'),
                 ('diff_boxes_html', 'diff_boxes.html'),
-                ('diff_simple_txt', 'diff_simple.txt'),
-                ('diff_simple_html', 'diff_simple.html')
+                ('diff_simple_txt', 'diff_simple_dom.txt'),
+                ('diff_simple_html', 'diff_simple_dom.html')
             ]:
                 optic_path = output_dir / filename
                 if optic_path.exists():
