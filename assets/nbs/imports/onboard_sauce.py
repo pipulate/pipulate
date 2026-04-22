@@ -373,6 +373,7 @@ def etl_optics_to_excel(job: str, target_url: str):
 
     # --- EXTRACT & TRANSFORM: The ASCII Lenses ---
     ascii_artifacts = {
+        'A11y Intent Tree': 'accessibility_tree_summary.txt',
         'Tree Source': 'source_dom_hierarchy.txt',
         'Tree Hydrated': 'hydrated_dom_hierarchy.txt',
         'Tree Diff': 'diff_hierarchy.txt',
@@ -431,16 +432,26 @@ def etl_optics_to_excel(job: str, target_url: str):
             if not df_sheet.empty:
                 df_sheet.to_excel(writer, sheet_name=sheet_name, index=False)
                 ws = writer.sheets[sheet_name]
+                ws.set_tab_color('#4F81BD') # Professional Blue
                 ws.set_column(0, 0, 30, wrap_fmt)
                 ws.set_column(1, 1, 80, wrap_fmt)
                 for col_num, value in enumerate(df_sheet.columns.values):
                     ws.write(0, col_num, value, header_fmt)
 
         # 2. Write Terminal ASCII Tabs
+        # 2. Write Terminal ASCII Tabs
         for sheet_name, df_sheet in ascii_dfs.items():
             if not df_sheet.empty:
                 df_sheet.to_excel(writer, sheet_name=sheet_name, index=False)
                 ws = writer.sheets[sheet_name]
+                
+                # The Tab Color Flex
+                if 'A11y' in sheet_name:
+                    ws.set_tab_color('#8064A2') # Phantom Purple
+                elif 'Tree' in sheet_name:
+                    ws.set_tab_color('#9BBB59') # Structural Green
+                elif 'Simple' in sheet_name:
+                    ws.set_tab_color('#F79646') # Semantic Orange
                 
                 if 'Diff' in sheet_name:
                     # Hide the 'Diff Type' column, make 'Terminal Output' massive

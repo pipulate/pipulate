@@ -41,8 +41,9 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-tools/dom_tools.py  # Let's see the summarize_accessibility_tree logic!
-tools/advanced_automation_tools.py  # The heavy lifter
+flake.nix
+tools/dom_tools.py
+# tools/advanced_automation_tools.py
 pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 tools/scraper_tools.py  # [4,449 tokens | 21,625 bytes]
 tools/llm_optics.py  # [2,574 tokens | 11,257 bytes]
