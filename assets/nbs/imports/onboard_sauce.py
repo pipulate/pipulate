@@ -376,9 +376,9 @@ def etl_optics_to_excel(job: str, target_url: str):
         'Tree Source': 'source_dom_hierarchy.txt',
         'Tree Hydrated': 'hydrated_dom_hierarchy.txt',
         'Tree Diff': 'diff_hierarchy.txt',
-        'Simple Source': 'simple_source.html',
-        'Simple Hydrated': 'simple_hydrated.html',
-        'Simple Diff': 'diff_simple.txt'
+        'Simple Source HTML': 'simple_source_html.html',
+        'Simple Hydrated DOM': 'simple_hydrated_dom.html',
+        'Simple DOM Diff': 'diff_simple_dom.txt'
     }
     
     ascii_dfs = {}
@@ -977,8 +977,8 @@ def render_cloud_handoff(job_id: str, recovered_url: str):
     domain, slug = get_safe_path_component(recovered_url)
     cache_base = wand.paths.browser_cache / domain / slug
 
-    source_file = cache_base / "simple_source.html"
-    dom_file = cache_base / "simple_hydrated.html"
+    source_file = cache_base / "simple_source_html.html"
+    dom_file = cache_base / "simple_hydrated_dom.html"
     
     if not source_file.exists() or not dom_file.exists():
         return widgets.HTML("<p style='color:var(--pico-color-red-500);'>⚠️ Error: DOM files missing.</p>"), ""
