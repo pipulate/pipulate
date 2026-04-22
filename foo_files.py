@@ -37,7 +37,7 @@ AI_PHOOEY_CHOP = """\
 # .gitignore  # [573 tokens | 2,089 bytes]
 
 # prompt_foo.py  # [12,990 tokens | 59,609 bytes]
-# foo_files.py  # [10,245 tokens | 33,406 bytes]
+foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
@@ -48,6 +48,7 @@ tools/llm_optics.py  # [2,574 tokens | 11,257 bytes]
 Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
 Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
 Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
+# /home/mike/repos/pipulate/Notebooks/browser_cache/www.google.com/%2F/diff_simple_dom.txt  # [2,701 tokens | 7,756 bytes]
 
 # flake.nix  # [7,711 tokens | 32,991 bytes]
 # scripts/articles/articleizer.py  # [2,936 tokens | 13,517 bytes]
