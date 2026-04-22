@@ -118,15 +118,15 @@ async def selenium_automation(params: dict) -> dict:
             logger.error(f"Failed to clear cache directory: {e}")
 
     # --- IDEMPOTENCY CHECK ---
-    # Check if the primary artifact (rendered_dom.html) already exists.
-    dom_path = output_dir / "rendered_dom.html"
+    # Check if the primary artifact (hydrated_dom.html) already exists.
+    dom_path = output_dir / "hydrated_dom.html"
     if dom_path.exists():
         if verbose:
             logger.info(f"✅ Using cached data from: {output_dir}")
 
         # Gather paths of existing artifacts
         for artifact_name in [
-            "rendered_dom.html", 
+            "hydrated_dom.html", 
             "source.html", 
             "simple_source_html.html",
             "simple_hydrated_dom.html",
@@ -304,9 +304,9 @@ async def selenium_automation(params: dict) -> dict:
 
         # --- Capture Core Artifacts ---
         dom_content = driver.execute_script("return document.documentElement.outerHTML;")
-        dom_path = output_dir / "rendered_dom.html"
+        dom_path = output_dir / "hydrated_dom.html"
         dom_path.write_text(dom_content, encoding='utf-8')
-        artifacts['rendered_dom'] = str(dom_path)
+        artifacts['hydrated_dom'] = str(dom_path)
         
         # 1. Native Header & TRUE Raw Source Capture (The XHR Hack Lens)
         if verbose: logger.info("🌐 Extracting native headers and true raw source via XHR injection...")
