@@ -58,12 +58,13 @@ def _simplify_html_for_llm(html_content, default_title=""):
         # Remove all noise elements that confuse LLMs (Added 'svg' to the hit list!)
         for tag in soup(['script', 'style', 'noscript', 'meta', 'link', 'head', 'svg']):
             tag.decompose()
-        
+
         # Clean up attributes - keep only automation-relevant ones
         for element in soup.find_all():
             attrs_to_keep = {}
             for attr, value in element.attrs.items():
-                if attr in ['id', 'role', 'data-testid', 'name', 'type', 'href', 'src', 'class', 'for', 'value', 'placeholder', 'title'] or attr.startswith('aria-'):
+                # Added 'rel' and 'target' to preserve SEO link data!
+                if attr in ['id', 'role', 'data-testid', 'name', 'type', 'href', 'src', 'class', 'for', 'value', 'placeholder', 'title', 'rel', 'target'] or attr.startswith('aria-'):
                     attrs_to_keep[attr] = value
             element.attrs = attrs_to_keep
         
