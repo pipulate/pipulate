@@ -15,6 +15,9 @@ from loguru import logger
 from pipulate import wand  # Use wand!
 import imports
 import llm
+from openpyxl.utils import get_column_letter
+from openpyxl.styles import Alignment
+from openpyxl.worksheet.table import Table, TableStyleInfo
 
 
 def check_ai_models(preferred_local=None, preferred_cloud=None):
@@ -1033,10 +1036,14 @@ KEYWORD_RATIONALE: [One sentence explaining why based on the title/h1 tags]
 
 def append_ai_keyword_assessment(job: str, xl_file_path, ai_assessment: str, local_model_id: str, target_url: str):
     """
-    Idempotently appends a local AI assessment tab to an existing Excel deliverable.
+    Idempotently appends a local AI assessment tab to an existing Excel deliverable,
+    with high-end enterprise formatting.
     """
     import pandas as pd
     import openpyxl
+    from openpyxl.utils import get_column_letter
+    from openpyxl.styles import Alignment
+    from openpyxl.worksheet.table import Table, TableStyleInfo
     from pipulate import wand
     from datetime import datetime
     import ipywidgets as widgets
@@ -1072,6 +1079,30 @@ def append_ai_keyword_assessment(job: str, xl_file_path, ai_assessment: str, loc
         with pd.ExcelWriter(xl_file_path, engine='openpyxl', mode='a', if_sheet_exists='overlay') as writer:
             df_ai.to_excel(writer, sheet_name='AI Keyword Target', index=False)
             
+            # --- THE AESTHETIC UPGRADE ---
+            ws = writer.sheets['AI Keyword Target']
+            ws.sheet_properties.tabColor = "FFC000"  # AI Gold
+            
+            max_col = get_column_letter(ws.max_column)
+            max_row = ws.max_row
+            
+            # Format as a slick Excel Table
+            tab = Table(displayName="AIKeywordTarget", ref=f"A1:{max_col}{max_row}")
+            style = TableStyleInfo(name="TableStyleMedium9", showFirstColumn=False, showLastColumn=False, showRowStripes=True, showColumnStripes=False)
+            tab.tableStyleInfo = style
+            ws.add_table(tab)
+            
+            # Set specific column widths for readability
+            widths = {'A': 25, 'B': 18, 'C': 25, 'D': 80, 'E': 18, 'F': 20}
+            for col, width in widths.items():
+                ws.column_dimensions[col].width = width
+                
+            # Apply Top-Left alignment and Text Wrap
+            wrap_alignment = Alignment(wrap_text=True, vertical='top')
+            for row in ws.iter_rows(min_row=1, max_row=max_row, min_col=1, max_col=ws.max_column):
+                for cell in row:
+                    cell.alignment = wrap_alignment
+            
         print(f"✅ AI Insights successfully appended to {Path(xl_file_path).name}")
     
     # 4. SOVEREIGN DELIVERY FIX: Open exactly one level deeper
@@ -1084,10 +1115,14 @@ def append_ai_keyword_assessment(job: str, xl_file_path, ai_assessment: str, loc
 
 def append_cloud_assessment(job: str, xl_file_path, ai_assessment: str, model_id: str):
     """
-    Idempotently appends the Cloud AI JavaScript Gap analysis to the Excel deliverable.
+    Idempotently appends the Cloud AI JavaScript Gap analysis to the Excel deliverable,
+    with high-end enterprise formatting.
     """
     import pandas as pd
     import openpyxl
+    from openpyxl.utils import get_column_letter
+    from openpyxl.styles import Alignment
+    from openpyxl.worksheet.table import Table, TableStyleInfo
     from pipulate import wand
     from datetime import datetime
     import ipywidgets as widgets
@@ -1106,6 +1141,27 @@ def append_cloud_assessment(job: str, xl_file_path, ai_assessment: str, model_id
         
         with pd.ExcelWriter(xl_file_path, engine='openpyxl', mode='a', if_sheet_exists='overlay') as writer:
             df_ai.to_excel(writer, sheet_name='Cloud JS Gap Analysis', index=False)
+            
+            # --- THE AESTHETIC UPGRADE ---
+            ws = writer.sheets['Cloud JS Gap Analysis']
+            ws.sheet_properties.tabColor = "FF33CC"  # Cloud Pink/Magenta
+            
+            max_col = get_column_letter(ws.max_column)
+            max_row = ws.max_row
+            
+            tab = Table(displayName="CloudAnalysis", ref=f"A1:{max_col}{max_row}")
+            style = TableStyleInfo(name="TableStyleMedium9", showFirstColumn=False, showLastColumn=False, showRowStripes=True, showColumnStripes=False)
+            tab.tableStyleInfo = style
+            ws.add_table(tab)
+            
+            widths = {'A': 25, 'B': 100, 'C': 18, 'D': 20}
+            for col, width in widths.items():
+                ws.column_dimensions[col].width = width
+                
+            wrap_alignment = Alignment(wrap_text=True, vertical='top')
+            for row in ws.iter_rows(min_row=1, max_row=max_row, min_col=1, max_col=ws.max_column):
+                for cell in row:
+                    cell.alignment = wrap_alignment
             
         print(f"✅ Cloud Insights successfully appended to {Path(xl_file_path).name}")
     
