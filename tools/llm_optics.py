@@ -172,11 +172,11 @@ def main(target_dir_path: str):
     results = {} 
 
     source_path = output_dir / "source.html"
-    rendered_path = output_dir / "rendered_dom.html"
+    hydrated_dom_path = output_dir / "hydrated_dom.html"
     simple_source_path = output_dir / "simple_source_html.html"
     simple_hydrated_path = output_dir / "simple_hydrated_dom.html"
 
-    rendered_content = read_html_file(rendered_path)
+    hydrated_dom_content = read_html_file(hydrated_dom_path)
 
     simple_source_content = read_html_file(simple_source_path)
     simple_hydrated_content = read_html_file(simple_hydrated_path)
@@ -186,7 +186,7 @@ def main(target_dir_path: str):
         sys.exit(1)
 
     # --- 1. Generate SEO.md (Using Rendered DOM for accuracy) ---
-    soup = BeautifulSoup(rendered_content, 'html.parser')
+    soup = BeautifulSoup(hydrated_dom_content, 'html.parser')
     try:
         page_title = soup.title.string.strip() if soup.title and soup.title.string else "No Title Found"
         meta_desc_tag = soup.find('meta', attrs={'name': 'description'})
@@ -271,6 +271,6 @@ if __name__ == "__main__":
         description="The LLM Optics Engine: Generates semantic and visual representations for both raw and hydrated DOMs.",
         epilog="Complete Optics Engaged."
         )
-    parser.add_argument("target_dir", help="Path to the directory containing source.html and rendered_dom.html")
+    parser.add_argument("target_dir", help="Path to the directory containing source.html and hydrated_dom.html")
     args = parser.parse_args()
     main(args.target_dir)
