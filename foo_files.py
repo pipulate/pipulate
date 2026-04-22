@@ -36,12 +36,13 @@ AI_PHOOEY_CHOP = """\
 # # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
 
-# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-# pipulate/core.py  # [28,546 tokens | 138,551 bytes]
+tools/dom_tools.py  # Let's see the summarize_accessibility_tree logic!
+tools/advanced_automation_tools.py  # The heavy lifter
 pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 tools/scraper_tools.py  # [4,449 tokens | 21,625 bytes]
 tools/llm_optics.py  # [2,574 tokens | 11,257 bytes]
@@ -739,6 +740,14 @@ CHOP_CHAPTER_DRAFTER = """\
 
 # 3. THE BLUEPRINT: The Explicit Chapter Architecture
 /home/mike/repos/bookforge/30_drafts/{target_chapter}_0_blueprint.md
+"""
+
+CHOP_A11Y_VISION = """\
+# THE PHANTOM UI PARSERS (How the machine sees)
+# COMMAND: python prompt_foo.py --chop CHOP_A11Y_VISION --no-tree
+
+tools/dom_tools.py  # Let's see the summarize_accessibility_tree logic!
+tools/advanced_automation_tools.py  # The heavy lifter
 """
 
 # ============================================================================
