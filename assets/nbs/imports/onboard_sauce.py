@@ -168,7 +168,7 @@ async def analyze_ai_readiness(job: str, url: str, verbose: bool = True, overrid
 
     # 2. THE OPTICS (The Refraction)
     if not dom_path or not Path(dom_path).exists():
-        print("❌ Error: Could not locate rendered_dom.html for analysis.")
+        print("❌ Error: Could not locate hydrated_dom.html for analysis.")
         return False
 
     wand.speak("I have captured the page. Now, generating AI Optics.")
@@ -211,7 +211,7 @@ def explain_optics_artifacts(target_url):
     base = wand.paths.browser_cache / domain / slug
     
     source_txt = (base / "source.html").read_text()[:1000] # Snippet
-    rendered_txt = (base / "rendered_dom.html").read_text()[:1000] # Snippet
+    rendered_txt = (base / "hydrated_dom.html").read_text()[:1000] # Snippet
 
     prompt = f"""
     I am looking at the scrape artifacts for {target_url}.
