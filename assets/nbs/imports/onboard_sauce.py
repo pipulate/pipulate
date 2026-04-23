@@ -1197,4 +1197,13 @@ def compile_cloud_payload(job_id: str, target_url: str) -> str:
         # Safety valve: cap at 40,000 characters to prevent blowing out context windows
         diff_content = diff_file.read_text(encoding='utf-8')[:40000]
 
-    return f"{instructions}\n\n# DATA (Unified Diff Snippet)\n```diff\n{diff_content}\n```\n"
+    final_payload = f"{instructions}\n\n# DATA (Unified Diff Snippet)\n```diff\n{diff_content}\n```\n"
+    
+    # Write the fully compiled payload to disk for the fossil record
+    job_dir = wand.paths.data / "jobs" / job_id
+    job_dir.mkdir(parents=True, exist_ok=True)
+    compiled_file = job_dir / "compiled_payload.md"
+    compiled_file.write_text(final_payload, encoding='utf-8')
+    wand.set(job_id, "compiled_payload_path", str(compiled_file))
+    
+    return final_payload
