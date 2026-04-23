@@ -2164,6 +2164,14 @@ class Pipulate:
         if 'created' in existing_state:
             state['created'] = existing_state['created']
         self.write_state(job, state)
+
+    def clear_memory(self, job: str):
+        """Completely obliterates a job's state from the database."""
+        try:
+            self.pipeline_table.delete(job)
+            logger.info(f"🗑️ Memory wiped for job: {job}")
+        except Exception as e:
+            logger.debug(f"Memory wipe failed or job not found for {job}: {e}")
     
     def set(self, job: str, step: str, value: any):
         """Sets a key-value pair within a job's state for notebook usage."""
