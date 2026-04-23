@@ -41,8 +41,8 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-flake.nix  # [8,011 tokens | 34,229 bytes]
-tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
+# flake.nix  # [8,011 tokens | 34,229 bytes]
+# tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
 pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 tools/llm_optics.py  # [2,574 tokens | 11,257 bytes]
 tools/scraper_tools.py  # [4,449 tokens | 21,625 bytes]
