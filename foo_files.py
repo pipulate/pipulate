@@ -51,7 +51,7 @@ Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
 Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
 Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
 # /home/mike/repos/pipulate/Notebooks/browser_cache/www.google.com/%2F/diff_simple_dom.txt  # [2,701 tokens | 7,756 bytes]
-/home/mike/repos/pipulate/Notebooks/data/jobs/onboarding_01/cloud_prompt.md  # [527 tokens | 2,904 bytes]
+# /home/mike/repos/pipulate/Notebooks/data/jobs/onboarding_01/cloud_prompt.md  # [527 tokens | 2,904 bytes]
 
 # flake.nix  # [7,711 tokens | 32,991 bytes]
 # scripts/articles/articleizer.py  # [2,936 tokens | 13,517 bytes]
