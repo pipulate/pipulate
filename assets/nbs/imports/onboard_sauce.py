@@ -1183,22 +1183,57 @@ def compile_cloud_payload(job_id: str, target_url: str) -> str:
     from tools.scraper_tools import get_safe_path_component
     from pipulate import wand
 
-    instructions = "Please analyze the following data."
+    instructions = wand.get(job_id, "cloud_ai_prompt") or "Please analyze the following data."
     prompt_path_str = wand.get(job_id, "cloud_prompt_path")
     if prompt_path_str and Path(prompt_path_str).exists():
         instructions = Path(prompt_path_str).read_text(encoding='utf-8')
     
     # Resolve the pointer
     domain, slug = get_safe_path_component(target_url)
-    diff_file = wand.paths.browser_cache / domain / slug / "diff_simple_dom.txt"
+    cache_base = wand.paths.browser_cache / domain / slug
 
-    diff_content = "No diff data available."
-    if diff_file.exists():
-        # Safety valve: cap at 40,000 characters to prevent blowing out context windows
-        diff_content = diff_file.read_text(encoding='utf-8')[:40000]
+    # The Flexible Artifact Roster (Ordered by Priority)
+    artifacts_to_include = [
+        ("Semantic Outline", "accessibility_tree_summary.txt"),
+        ("Unified Diff Snippet", "diff_simple_dom.txt")
+    ]
 
-    final_payload = f"{instructions}\n\n# DATA (Unified Diff Snippet)\n```diff\n{diff_content}\n```\n"
-    
+    payload_parts = [instructions, "\n\n# ARTIFACTS\n"]
+    
+    # Max payload size for UI clipboard safety (approx 250KB)
+    MAX_BYTES = 250 * 1024
+    current_bytes = len("".join(payload_parts).encode('utf-8'))
+
+    for label, filename in artifacts_to_include:
+        file_path = cache_base / filename
+        if not file_path.exists():
+            continue
+
+        content = file_path.read_text(encoding='utf-8')
+        
+        # Apply prompt_foo style delimiters
+        header = f"\n--- START: {label} ({filename}) ---\n```text\n"
+        footer = "\n```\n--- END ---\n"
+        
+        overhead_bytes = len((header + footer).encode('utf-8'))
+        available_bytes = MAX_BYTES - current_bytes - overhead_bytes
+        
+        if available_bytes <= 0:
+            break  # No room left for more files
+
+        content_bytes = len(content.encode('utf-8'))
+        
+        if content_bytes > available_bytes:
+            # Truncate safely by bytes to respect clipboard limits
+            truncated_bytes = content.encode('utf-8')[:available_bytes]
+            content = truncated_bytes.decode('utf-8', errors='ignore') + "\n...[TRUNCATED TO FIT CAPACITY]..."
+        
+        formatted_part = f"{header}{content}{footer}"
+        payload_parts.append(formatted_part)
+        current_bytes += len(formatted_part.encode('utf-8'))
+
+    final_payload = "".join(payload_parts)
+
     # Write the fully compiled payload to disk for the fossil record
     job_dir = wand.paths.data / "jobs" / job_id
     job_dir.mkdir(parents=True, exist_ok=True)
