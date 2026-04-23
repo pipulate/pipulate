@@ -803,8 +803,12 @@ def prepare_prompt_draft(job_id: str, recovered_url: str, local_model: str):
     # 3. Call Local AI via Wand
     draft = wand.prompt(prompt_to_local, model_name=local_model, system_prompt=system_msg)
     
-    # 4. Save to Wand Memory so the Workbench can find it
-    wand.set(job_id, "cloud_ai_prompt", draft.strip())
+    # 4. Save to Disk and store Pointer in Wand Memory
+    job_dir = wand.paths.data / "jobs" / job_id
+    job_dir.mkdir(parents=True, exist_ok=True)
+    prompt_file = job_dir / "cloud_prompt.md"
+    prompt_file.write_text(draft.strip(), encoding='utf-8')
+    wand.set(job_id, "cloud_prompt_path", str(prompt_file))
     return draft
 
 
@@ -841,8 +845,14 @@ def render_prompt_workbench(job_id: str, recovered_url: str):
     hier_link = get_local_file_link(cache_base / "diff_hierarchy.html", "View Hierarchy Diff (Color)")
     box_link = get_local_file_link(cache_base / "diff_boxes.html", "View Box Layout Diff (Color)")
 
-    # 2. Fetch drafted prompt
-    existing_prompt = wand.get(job_id, "cloud_ai_prompt") or "Drafting..."
+    # 2. Fetch drafted prompt from Disk (via Pointer)
+    prompt_path_str = wand.get(job_id, "cloud_prompt_path")
+    existing_prompt = "Drafting..."
+    if prompt_path_str and Path(prompt_path_str).exists():
+        try:
+            existing_prompt = Path(prompt_path_str).read_text(encoding='utf-8')
+        except Exception as e:
+            existing_prompt = f"Error reading prompt file: {e}"
 
     # 3. Build UI components
     prompt_area = widgets.Textarea(
@@ -865,8 +875,9 @@ def render_prompt_workbench(job_id: str, recovered_url: str):
     """)
 
     def on_save(b):
-        wand.set(job_id, "cloud_ai_prompt", prompt_area.value)
-        save_btn.description = "✅ Saved to Wand"
+        if prompt_path_str:
+            Path(prompt_path_str).write_text(prompt_area.value, encoding='utf-8')
+        save_btn.description = "✅ Saved to Disk"
         save_btn.button_style = ''
         wand.speak("Instructions locked. Ready for the next turn.")
         # Trigger the visual compulsion below the widget
@@ -1172,7 +1183,10 @@ def compile_cloud_payload(job_id: str, target_url: str) -> str:
     from tools.scraper_tools import get_safe_path_component
     from pipulate import wand
 
-    instructions = wand.get(job_id, "cloud_ai_prompt") or "Please analyze the following data."
+    instructions = "Please analyze the following data."
+    prompt_path_str = wand.get(job_id, "cloud_prompt_path")
+    if prompt_path_str and Path(prompt_path_str).exists():
+        instructions = Path(prompt_path_str).read_text(encoding='utf-8')
     
     # Resolve the pointer
     domain, slug = get_safe_path_component(target_url)
