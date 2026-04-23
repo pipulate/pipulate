@@ -249,7 +249,6 @@ def ensure_cloud_credentials(cloud_model_id):
     
     if not cloud_model_id:
         print("ℹ️ No cloud model selected or required.")
-        wand.imperio()
         return
 
     # Map the model string to the standard API Key variable
@@ -311,7 +310,7 @@ def ensure_cloud_credentials(cloud_model_id):
                         print(f"⚠️ Warning: Could not sync key to internal LLM keychain: {e}")
                         
                     wand.speak("Key securely saved to the vault. The cloud is connected.")
-                    print(f"✅ {env_var_name} successfully encrypted in .env.")
+                    wand.speak("You may now run the next cell.", emoji="✅") # REPLACED
                     wand.imperio()
                 else:
                     print("❌ Please enter a valid API key.")
@@ -643,8 +642,6 @@ def conduct_local_assessment(job_id: str, target_url: str, local_model_id: str):
         "Next, we prepare for the Cloud AI handoff."
     )
 
-    wand.imperio()
-
 
 def factory_reset_credentials():
     """
@@ -758,7 +755,7 @@ def render_persona_selector(job_id: str = "onboarding_job"):
             submit_btn.button_style = 'success'
             
             # 5. Fire the compulsion to advance
-            wand.imperio(newline=True)
+            wand.speak("You may now run the next cell.", emoji="✅") # REPLACED
 
     submit_btn.on_click(on_submit)
 
@@ -874,7 +871,7 @@ def render_prompt_workbench(job_id: str, recovered_url: str):
         wand.speak("Instructions locked. Ready for the next turn.")
         # Trigger the visual compulsion below the widget
         with out:
-            wand.imperio(newline=True)
+            wand.speak("You may now run the next cell.", emoji="✅") # REPLACED
 
     save_btn.on_click(on_save)
     
