@@ -882,12 +882,10 @@ def render_prompt_workbench(job_id: str, recovered_url: str):
 
 def render_cloud_handoff(job_id: str, recovered_url: str):
     """
-    Retrieves the user-polished prompt, attaches the DOM diff data, 
+    Retrieves the user-polished prompt, compiles the DOM diff data JIT,
     and renders a Bifurcated Egress (Copy Button + Paste Bin) for loose coupling.
     """
-    import difflib
     import ipywidgets as widgets
-    from bs4 import BeautifulSoup
     from tools.scraper_tools import get_safe_path_component
     from IPython.display import HTML
 
@@ -896,34 +894,15 @@ def render_cloud_handoff(job_id: str, recovered_url: str):
     if not instructions:
         return widgets.HTML("<p style='color:var(--pico-color-red-500);'>⚠️ No instructions found. Did you click 'Save'?</p>"), ""
 
-    # 2. Retrieve the Data
+    # 2. Store the Absolute Path Reference (The Pointer)
     domain, slug = get_safe_path_component(recovered_url)
     cache_base = wand.paths.browser_cache / domain / slug
 
-    source_file = cache_base / "simple_source_html.html"
-    dom_file = cache_base / "simple_hydrated_dom.html"
-    
-    if not source_file.exists() or not dom_file.exists():
-        return widgets.HTML("<p style='color:var(--pico-color-red-500);'>⚠️ Error: DOM files missing.</p>"), ""
+    diff_path = cache_base / "diff_simple_dom.txt"
+    wand.set(job_id, "optics_diff_path", str(diff_path))
 
-    source_lines = source_file.read_text(encoding='utf-8').splitlines()
-    dom_lines = dom_file.read_text(encoding='utf-8').splitlines()
-
-    diff = difflib.unified_diff(
-        source_lines, dom_lines,
-        fromfile='Raw_Source.html',
-        tofile='Hydrated_DOM.html',
-        lineterm=''
-    )
-    
-    # Cap the diff to prevent blowing out the context window
-    diff_text = '\n'.join(list(diff)[:800]) 
-
-    # 3. Construct the Final Payload
-    final_payload = f"{instructions}\n\n# DATA (Unified Diff Snippet)\n```diff\n{diff_text}\n```\n"
-    
-    # Save the payload to the state machine for the formal API fallback
-    wand.set(job_id, "final_cloud_payload", final_payload)
+    # 3. JIT Compile the Final Payload for the UI Copy Button
+    final_payload = compile_cloud_payload(job_id, recovered_url)
 
     # 4. Build the Bifurcated UI (Copy Button + Paste Bin)
     paste_area = widgets.Textarea(
@@ -1183,3 +1162,25 @@ def append_cloud_assessment(job: str, xl_file_path, ai_assessment: str, model_id
     button.on_click(lambda b: wand.open_folder(str(deliverables_dir)))
     
     return button, Path(xl_file_path)
+
+
+def compile_cloud_payload(job_id: str, target_url: str) -> str:
+    """
+    JIT compilation of the Cloud AI prompt.
+    Reads the user instructions from the wand and heavy artifacts from the disk.
+    """
+    from tools.scraper_tools import get_safe_path_component
+    from pipulate import wand
+
+    instructions = wand.get(job_id, "cloud_ai_prompt") or "Please analyze the following data."
+    
+    # Resolve the pointer
+    domain, slug = get_safe_path_component(target_url)
+    diff_file = wand.paths.browser_cache / domain / slug / "diff_simple_dom.txt"
+
+    diff_content = "No diff data available."
+    if diff_file.exists():
+        # Safety valve: cap at 40,000 characters to prevent blowing out context windows
+        diff_content = diff_file.read_text(encoding='utf-8')[:40000]
+
+    return f"{instructions}\n\n# DATA (Unified Diff Snippet)\n```diff\n{diff_content}\n```\n"
