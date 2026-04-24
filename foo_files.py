@@ -541,7 +541,7 @@ tools/dom_tools.py  # [3,466 tokens | 15,120 bytes]
 # apps/400_botify_trifecta.py  # [53,199 tokens | 276,285 bytes]
 
 # CHAPTER 11 & 12: PARAMETER BUSTER & LINK GRAPH (~550KB)
-apps/110_parameter_buster.py  # [55,573 tokens | 274,005 bytes]
+# apps/110_parameter_buster.py  # [55,573 tokens | 274,005 bytes]
 # apps/120_link_graph.py  # [54,349 tokens | 272,468 bytes]
 
 # CHAPTER 13: THE GAPALYZER SUITE (~240KB)
