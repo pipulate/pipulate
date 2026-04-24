@@ -812,26 +812,6 @@ def prepare_prompt_draft(job_id: str, recovered_url: str, local_model: str):
     return draft
 
 
-def get_local_file_link(path_str: str, label: str):
-    """Generates a clickable file:// link for local browser viewing."""
-    from pathlib import Path
-    path = Path(path_str).resolve()
-    
-    # JupyterLab serves files relative to where it was launched (the project root).
-    # We use the wand's topological manifold rather than the Notebook's local CWD.
-    try:
-        from pipulate import wand
-        project_root = wand.paths.root
-        rel_path = path.relative_to(project_root)
-        # Ensure URL-safe forward slashes, even on Windows/WSL
-        rel_path_str = str(rel_path).replace('\\', '/')
-        href = f"/files/{rel_path_str}"
-    except ValueError:
-        href = f"file://{path}"
-        
-    return f'<a href="{href}" target="_blank">🔗 {label}</a>'
-
-
 def render_prompt_workbench(job_id: str, recovered_url: str):
     """
     Renders an editable textarea with a layout that doesn't 
@@ -840,14 +820,17 @@ def render_prompt_workbench(job_id: str, recovered_url: str):
     import ipywidgets as widgets
     from IPython.display import display, HTML
     from tools.scraper_tools import get_safe_path_component
+    from pipulate import wand
 
     # 1. Gather context for the 'Verification Links'
     domain, slug = get_safe_path_component(recovered_url)
     cache_base = wand.paths.browser_cache / domain / slug
-    
-    # Pre-generate links to the Rich HTML diffs
-    hier_link = get_local_file_link(cache_base / "diff_hierarchy.html", "View Hierarchy Diff (Color)")
-    box_link = get_local_file_link(cache_base / "diff_boxes.html", "View Box Layout Diff (Color)")
+
+    try:
+        rel_dir = cache_base.relative_to(wand.paths.root)
+        rel_dir_str = str(rel_dir).replace('\\', '/')
+    except ValueError:
+        rel_dir_str = str(cache_base).replace('\\', '/')
 
     # 2. Fetch drafted prompt from Disk (via Pointer)
     prompt_path_str = wand.get(job_id, "cloud_prompt_path")
@@ -870,11 +853,13 @@ def render_prompt_workbench(job_id: str, recovered_url: str):
         layout=widgets.Layout(width='250px')
     )
 
-    # Display the links above the textarea so the user can 'verify' before saving
+    # Display the instructions above the textarea so the user can 'verify' before saving
     link_html = HTML(f"""
         <div style="margin-bottom: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
-            <strong>Verification Links (Open in New Tab):</strong><br>
-            {hier_link} | {box_link}
+            <strong>🔍 Verification Step:</strong><br>
+            Use the Jupyter file browser on the left to navigate to:<br>
+            <code>{rel_dir_str}/</code><br><br>
+            Double-click <strong>diff_hierarchy.html</strong> and <strong>diff_boxes.html</strong> to view the visual evidence before saving.
         </div>
     """)
 
