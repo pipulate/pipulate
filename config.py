@@ -12,7 +12,7 @@ WAND_SPEAKS_EMOJI = "🪄"
 TONE = 'neutral'
 MODEL = 'gemma4'  # Default active model
 PREFERRED_LOCAL_MODEL = 'gemma4'
-PREFERRED_CLOUD_MODEL = 'gpt-4o'
+PREFERRED_CLOUD_MODEL = 'gemini-flash-latest'
 MAX_LLM_RESPONSE_WORDS = 80
 MAX_CONVERSATION_LENGTH = 600
 # ------------------------------
