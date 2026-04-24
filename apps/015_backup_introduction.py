@@ -298,7 +298,8 @@ class IntroductionPlugin:
         page_num = int(request.path_params.get('page_num', '1'))
 
         # Get app name and model from server settings
-        from server import APP_NAME, MODEL
+        from server import APP_NAME
+from config import DEFAULT_PROMPT_MODEL as MODEL
 
         # Store current page in database
         try:
@@ -313,7 +314,8 @@ class IntroductionPlugin:
     async def landing(self, render_items=None):
         """Always appears in create_grid_left."""
         # Get app name and model from server settings
-        from server import APP_NAME, MODEL
+        from server import APP_NAME
+from config import DEFAULT_PROMPT_MODEL as MODEL
 
         # Get current page from database, default to 1
         current_page = int(self.pipulate.db.get('intro_current_page', '1'))

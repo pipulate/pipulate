@@ -2877,7 +2877,7 @@ async def poke_flyout(request):
                                  **{'hx-on:click': '''
                                     triggerPythonEnvironmentReset();
                                 '''}) if is_dev_mode else None
-    mcp_test_button = Button(f'🤖 MCP Test {MODEL}', hx_post='/poke', hx_target='#msg-list', hx_swap='beforeend', cls='secondary outline')
+    mcp_test_button = Button(f'🤖 MCP Test {pipulate.active_local_model}', hx_post='/poke', hx_target='#msg-list', hx_swap='beforeend', cls='secondary outline')
 
     # Add Update button (full-screen effect only triggers on actual restart)
     update_button = Button(f'🔄 Update {APP_NAME}',
@@ -4810,7 +4810,7 @@ for route in ALL_ROUTES:
         return await home(request)
 app.add_middleware(DOMSkeletonMiddleware)
 logger.debug('Application setup completed with DOMSkeletonMiddleware.')
-logger.debug(f'Using MODEL: {MODEL}')
+logger.debug(f'Active Models - Local: {pipulate.active_local_model}, Cloud: {pipulate.active_cloud_model}')
 
 
 def check_syntax(filename):
