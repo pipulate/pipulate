@@ -2474,13 +2474,14 @@ class Pipulate:
                     print(f"    ⚠️ Warning: Module file not found, skipping sync: '{module_source_path}'")
 
 
-    def prompt(self, prompt_text: str, model_name: str = 'qwen3:1.7b', system_prompt: str = None):
+    def prompt(self, prompt_text: str, model_name: str = None, system_prompt: str = None):
         """
         The Universal Adapter prompt. 
         Sends a single, one-shot prompt to ANY configured AI model (local or cloud)
         with zero vendor lock-in.
         """
         import llm
+        model_name = model_name or CFG.DEFAULT_PROMPT_MODEL
         
         print(f"🤖 Channeling intent through {model_name}...")
 
@@ -2766,7 +2767,7 @@ class Pipulate:
             emoji="🐍"
         )
 
-    def verify_local_ai(self, preferred_models: str = "gemma4:latest, qwen3.5:latest", simulate_state: str = None) -> str:
+    def verify_local_ai(self, preferred_models: str = None, simulate_state: str = None) -> str:
         """
         Dedicated check for local AI capabilities (Ollama).
         Returns the selected model string if successful, or None if not found,
@@ -2777,6 +2778,7 @@ class Pipulate:
             simulate_state: For testing. Can be 'no_ollama', 'no_models', or None (actual check).
         """
         import llm
+        preferred_models = preferred_models or CFG.PREFERRED_LOCAL_MODELS
         
         print("Scanning your system for a local AI brain...")
         try:
@@ -2923,7 +2925,7 @@ class Pipulate:
             return None
 
 
-    def verify_cloud_ai(self, preferred_models: str = "gemini, claude, gpt", simulate_state: str = None) -> tuple:
+    def verify_cloud_ai(self, preferred_models: str = None, simulate_state: str = None) -> tuple:
         """
         Dedicated check for Cloud AI capabilities.
         Negotiates the preferred cloud model and triggers the credential widget if needed.
@@ -2936,6 +2938,7 @@ class Pipulate:
             tuple: (selected_cloud_model_string, key_ready_boolean)
         """
         import llm
+        preferred_models = preferred_models or CFG.PREFERRED_CLOUD_MODELS
         
         print("Scanning Universal Adapter for preferred Cloud models...")
         available_models = [m.model_id for m in llm.get_models()]

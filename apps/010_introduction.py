@@ -50,8 +50,8 @@ class IntroductionPlugin:
         
         # Run the global negotiation at startup
         ai_status = self.wand.negotiate_ai_models(
-            preferred_local="qwen3, gemma3",
-            preferred_cloud="claude, gpt, gemini"
+            preferred_local=self.wand.get_config().PREFERRED_LOCAL_MODELS,
+            preferred_cloud=self.wand.get_config().PREFERRED_CLOUD_MODELS
         )
         
         if ai_status.get('has_any_local'):
