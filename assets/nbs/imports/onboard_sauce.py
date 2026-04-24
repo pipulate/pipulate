@@ -817,11 +817,15 @@ def get_local_file_link(path_str: str, label: str):
     from pathlib import Path
     path = Path(path_str).resolve()
     
-    # JupyterLab serves files relative to its root workspace.
+    # JupyterLab serves files relative to where it was launched (the project root).
+    # We use the wand's topological manifold rather than the Notebook's local CWD.
     try:
-        cwd = Path.cwd()
-        rel_path = path.relative_to(cwd)
-        href = f"/files/{rel_path}"
+        from pipulate import wand
+        project_root = wand.paths.root
+        rel_path = path.relative_to(project_root)
+        # Ensure URL-safe forward slashes, even on Windows/WSL
+        rel_path_str = str(rel_path).replace('\\', '/')
+        href = f"/files/{rel_path_str}"
     except ValueError:
         href = f"file://{path}"
         
