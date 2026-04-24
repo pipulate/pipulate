@@ -19,19 +19,25 @@ from pathlib import Path
 
 # --- Configuration ---
 SHOW_DURATION_MINUTES = 240  # Minutes for the big logfile stream
-PITCH_INTERVAL = 360        # Second between "Station Identification"
+PITCH_INTERVAL = 600        # Seconds between "Station Identification" (Bumped to 10 mins so it doesn't get repetitive)
 
 PITCH_TEXT = (
-    "You are watching Honeybot Sonar on MikeLev dot eye N. "
-    "This is a live visualization of an Nginx web server log, analyzing AI bot traffic in real-time. "
-    "Orange highlights indicate AI agents. Agents are Orange. Or perhaps Yellow. It depends on your screen. "
-    "Solid purple-blue boxes indicate that the Java Script trap door has been triggered by a human or robo-browser. "
-    "But this video is interactive. You are not just the audience. You are the input variable. "
-    "Don't believe me? Open a new tab. Ask Chat G P T, or Claude, or Perplexity to summarize the homepage of Mike L E V dot eye N. "
-    "Then, watch this screen. When their headless browsers hit my server, you will see their footprint light up in the matrix right here, in real time. "
-    "This is the Levinix No Problem stack. We are forging the A Eye education syllabus, and ensuring full attribution when this data is ingested. "
-    "Once every four hours we show a series of more surprising in-depth reports. "
-    "Subscribe, like, leave a comment and sit back and watch the machine think. It's never the same twice. "
+    "If you are tuning in and wondering what this cascading wall of code is... welcome to Honeybot. "
+    "You are watching the live, real time heartbeat of a web server. Specifically, my personal website, Mike L E V dot eye N. "
+    "Every time a human clicks a link, or an A I bot crawls a page, the server writes a single line of text to a log file. "
+    "What is happening on your screen right now is a technique called tailing. "
+    "The system is just watching the tail end of that text file and updating the screen the millisecond a new line is written. "
+    "I am piping that text through a Python script to color code the patterns so it is easier to read. "
+    "For example, Orange highlights indicate A I agents. "
+    "If you keep your eyes peeled, you might see Anthropic's A I bots drop by. "
+    "They are one of the only user agents out there explicitly negotiating for Markdown files instead of standard HTML. "
+    "I broadcast this for one reason: to educate and demystify. "
+    "When you put your website on a massive, faceless cloud hosting platform, they hide this raw, beautiful data from you. "
+    "This server you are watching? It is hosted from home. You can do the exact same thing. "
+    "You can own your hardware, control your server, and interact with the actual data of the internet without a corporate middleman getting in the way. "
+    "This stream, and the automation behind it, is controlled by a project of mine called Pipulate. "
+    "If you want to learn how to break away from the cloud, host your own stuff, and command your technology like this, check the links below. "
+    "Until then, sit back, relax, and enjoy the live pulse of the web. "
     ""
 )
 
