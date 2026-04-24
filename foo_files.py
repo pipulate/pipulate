@@ -41,13 +41,15 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
-Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
-Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
-apps/010_introduction.py  # [2,167 tokens | 9,493 bytes]
+# Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
+# Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
+# Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
+# apps/010_introduction.py  # [2,167 tokens | 9,493 bytes]
 server.py  # [54,718 tokens | 261,069 bytes]
 config.py  # [4,177 tokens | 16,201 bytes]
 pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+apps/015_backup_introduction.py  # [4,069 tokens | 19,231 bytes]
+apps/240_simon_mcp.py  # [8,886 tokens | 44,543 bytes]
 
 # flake.nix  # [8,011 tokens | 34,229 bytes]
 # tools/llm_optics.py  # [2,574 tokens | 11,257 bytes]
