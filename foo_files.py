@@ -41,26 +41,27 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-# Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
-# Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
-# Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
-# apps/010_introduction.py  # [2,167 tokens | 9,493 bytes]
-server.py  # [54,718 tokens | 261,069 bytes]
-config.py  # [4,177 tokens | 16,201 bytes]
-pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-apps/015_backup_introduction.py  # [4,069 tokens | 19,231 bytes]
-apps/240_simon_mcp.py  # [8,886 tokens | 44,543 bytes]
-
 # flake.nix  # [8,011 tokens | 34,229 bytes]
-# tools/llm_optics.py  # [2,574 tokens | 11,257 bytes]
-# tools/scraper_tools.py  # [4,449 tokens | 21,625 bytes]
-# tools/dom_tools.py  # [3,466 tokens | 15,120 bytes]
+pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
+Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
+Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
+apps/010_introduction.py  # [2,167 tokens | 9,493 bytes]
+pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+tools/llm_optics.py  # [2,574 tokens | 11,257 bytes]
+tools/scraper_tools.py  # [4,449 tokens | 21,625 bytes]
+tools/dom_tools.py  # [3,466 tokens | 15,120 bytes]
 
 # Notebooks/data/jobs/onboarding_01/compiled_payload.md  # [5,027 tokens | 13,431 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
 
 # /home/mike/repos/pipulate/Notebooks/browser_cache/www.google.com/%2F/diff_simple_dom.txt  # [2,701 tokens | 7,756 bytes]
 # /home/mike/repos/pipulate/Notebooks/data/jobs/onboarding_01/cloud_prompt.md  # [527 tokens | 2,904 bytes]
+
+# server.py  # [54,718 tokens | 261,069 bytes]
+# config.py  # [4,177 tokens | 16,201 bytes]
+# apps/015_backup_introduction.py  # [4,069 tokens | 19,231 bytes]
+# apps/240_simon_mcp.py  # [8,886 tokens | 44,543 bytes]
 
 # flake.nix  # [7,711 tokens | 32,991 bytes]
 # scripts/articles/articleizer.py  # [2,936 tokens | 13,517 bytes]
@@ -540,7 +541,7 @@ apps/240_simon_mcp.py  # [8,886 tokens | 44,543 bytes]
 # apps/400_botify_trifecta.py  # [53,199 tokens | 276,285 bytes]
 
 # CHAPTER 11 & 12: PARAMETER BUSTER & LINK GRAPH (~550KB)
-# apps/110_parameter_buster.py  # [55,573 tokens | 274,005 bytes]
+apps/110_parameter_buster.py  # [55,573 tokens | 274,005 bytes]
 # apps/120_link_graph.py  # [54,349 tokens | 272,468 bytes]
 
 # CHAPTER 13: THE GAPALYZER SUITE (~240KB)
