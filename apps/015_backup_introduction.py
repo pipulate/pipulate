@@ -299,7 +299,7 @@ class IntroductionPlugin:
 
         # Get app name and model from server settings
         from server import APP_NAME
-from config import DEFAULT_PROMPT_MODEL as MODEL
+        from config import DEFAULT_PROMPT_MODEL as MODEL
 
         # Store current page in database
         try:
@@ -315,7 +315,7 @@ from config import DEFAULT_PROMPT_MODEL as MODEL
         """Always appears in create_grid_left."""
         # Get app name and model from server settings
         from server import APP_NAME
-from config import DEFAULT_PROMPT_MODEL as MODEL
+        from config import DEFAULT_PROMPT_MODEL as MODEL
 
         # Get current page from database, default to 1
         current_page = int(self.pipulate.db.get('intro_current_page', '1'))
