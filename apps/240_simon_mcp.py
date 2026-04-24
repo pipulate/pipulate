@@ -13,7 +13,7 @@ from imports.crud import Step  # 🎯 STANDARDIZED: Import centralized Step defi
 ROLES = ['Developer'] # Defines which user roles can see this plugin
 
 # Import MODEL constant from server
-from server import MODEL
+from config import DEFAULT_PROMPT_MODEL as MODEL
 
 class SimonSaysMcpWidget:
     """

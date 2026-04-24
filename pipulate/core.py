@@ -2145,7 +2145,7 @@ class Pipulate:
                 slog.print_and_log_table(table, "LLM RESPONSE - ")
 
         except llm.errors.NeedsKeyException:
-            error_msg = f'Authentication missing for {MODEL}. Please check your .env file or API keys.'
+            error_msg = f'Authentication missing for {target_model}. Please check your .env file or API keys.'
             logger.error(f"🔍 DEBUG: {error_msg}")
             yield error_msg
         except Exception as e:
