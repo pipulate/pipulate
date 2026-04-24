@@ -192,14 +192,15 @@ class Pipulate:
     UNLOCK_BUTTON_LABEL = '🔓 Unlock'
 
     # START: pipulate_init
-    def __init__(self, pipeline_table=None, db=None, friendly_names=None, append_func=None, get_profile_id_func=None, get_profile_name_func=None, model=None, chat_instance=None, db_path=None):
+    def __init__(self, pipeline_table=None, db=None, friendly_names=None, append_func=None, get_profile_id_func=None, get_profile_name_func=None, chat_instance=None, db_path=None):
         self.chat = chat_instance
         self.friendly_names = friendly_names
         self.append_to_conversation = append_func
         self.get_current_profile_id = get_profile_id_func
         self.get_profile_name = get_profile_name_func
 
-        self.model = model
+        self.active_local_model = CFG.DEFAULT_PROMPT_MODEL
+        self.active_cloud_model = None
         self.message_queue = self.OrderedMessageQueue()
         self.is_notebook_context = bool(db_path) # Flag for notebook context
         self.dialogue_tree = {} # Container for centralized narrative scripts
@@ -1347,7 +1348,7 @@ class Pipulate:
             response_text = ''
     
             logger.info("ORCHESTRATOR: Entering LLM stream loop.")
-            async for chunk in self.process_llm_interaction(self.model, conversation_history):
+            async for chunk in self.process_llm_interaction(self.active_local_model, conversation_history):
                 await self.chat.broadcast(chunk)
                 response_text += chunk
             logger.info(f"ORCHESTRATOR: Exited LLM stream loop. Full response_text: '{response_text}'")
@@ -2009,7 +2010,7 @@ class Pipulate:
         self.write_state(pipeline_id, state)
         return state
 
-    async def process_llm_interaction(self, MODEL: str, messages: list, base_app=None) -> AsyncGenerator[str, None]:
+    async def process_llm_interaction(self, model_name: str = None, messages: list = None, base_app=None) -> AsyncGenerator[str, None]:
         from rich.table import Table
         from imports.mcp_orchestrator import parse_mcp_request
         import llm
@@ -2042,8 +2043,9 @@ class Pipulate:
         # When found, tools are executed asynchronously and results injected back.
 
         try:
+            target_model = model_name or self.active_local_model or CFG.DEFAULT_PROMPT_MODEL
             # 1. THE UNIVERSAL ADAPTER GRABS THE MODEL
-            model = llm.get_model(MODEL)
+            model = llm.get_model(target_model)
             
             # 2. EXTRACT SYSTEM PROMPT AND CONVERSATION
             # llm expects a system prompt, the current prompt, and optionally previous history.

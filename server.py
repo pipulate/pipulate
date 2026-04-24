@@ -70,7 +70,6 @@ TABLE_LIFECYCLE_LOGGING = False  # Set to True to enable detailed table lifecycl
 config_keys = """
 ENV_FILE
 TONE
-MODEL
 MAX_LLM_RESPONSE_WORDS
 MAX_CONVERSATION_LENGTH
 HOME_MENU_ITEM
@@ -269,7 +268,7 @@ if get_current_environment() == 'Production':
     logger.warning(f'🚨 PRODUCTION_DATABASE_WARNING: Server starting in Production mode with database: {DB_FILENAME}')
     logger.warning(f'🚨 PRODUCTION_DATABASE_WARNING: If demo is triggered, plugins using static DB_FILENAME may cause issues!')
 
-logger.info(f'🤖 FINDER_TOKEN: LLM_CONFIG - Model: {MODEL}, Max words: {MAX_LLM_RESPONSE_WORDS}, Conversation length: {MAX_CONVERSATION_LENGTH}, Context window: 128k tokens')
+logger.info(f'🤖 FINDER_TOKEN: LLM_CONFIG - Max words: {MAX_LLM_RESPONSE_WORDS}, Conversation length: {MAX_CONVERSATION_LENGTH}')
 
 
 def get_discussion_db():
@@ -695,7 +694,7 @@ async def execute_formal_mcp_tool_call(conversation_history: list, tool_name: st
         logger.info(f"🎯 FORMAL MCP: Sending updated conversation back to LLM")
         
         # Send the updated conversation back to the LLM for the next turn
-        async for chunk in process_llm_interaction(MODEL, updated_messages):
+        async for chunk in pipulate.process_llm_interaction(pipulate.active_local_model, updated_messages):
             await chat.broadcast(chunk)
             
         logger.info(f"🎯 FORMAL MCP: Completed formal MCP execution cycle")
@@ -1129,9 +1128,19 @@ pipulate = Pipulate(
     friendly_names=friendly_names,
     append_func=append_to_conversation,
     get_profile_id_func=get_current_profile_id,
-    get_profile_name_func=get_profile_name,
-    model=MODEL
+    get_profile_name_func=get_profile_name
 )
+# Autonomically negotiate models on startup
+ai_status = pipulate.negotiate_ai_models(
+    preferred_local=CFG.PREFERRED_LOCAL_MODELS,
+    preferred_cloud=CFG.PREFERRED_CLOUD_MODELS
+)
+if ai_status.get('has_any_local') and ai_status.get('local'):
+    pipulate.active_local_model = ai_status.get('local')
+if ai_status.get('cloud'):
+    pipulate.active_cloud_model = ai_status.get('cloud')
+
+logger.info(f'🤖 FINDER_TOKEN: NEGOTIATED_AI - Local: {pipulate.active_local_model}, Cloud: {pipulate.active_cloud_model}')
 logger.info('💾 FINDER_TOKEN: PIPULATE - Pipeline object created.')
 
 
@@ -3177,7 +3186,7 @@ Do not say anything else. Just output the exact MCP block above."""
     async def consume_mcp_response():
         """Consume the MCP response generator without displaying it."""
         try:
-            async for chunk in process_llm_interaction(MODEL, [{"role": "user", "content": one_shot_mcp_prompt}]):
+            async for chunk in pipulate.process_llm_interaction(pipulate.active_local_model, [{"role": "user", "content": one_shot_mcp_prompt}]):
                 # Consume the chunks but don't display them - the tool execution handles the response
                 pass
         except Exception as e:
