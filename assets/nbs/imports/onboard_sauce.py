@@ -1231,3 +1231,75 @@ def compile_cloud_payload(job_id: str, target_url: str) -> str:
     wand.set(job_id, "compiled_payload_path", str(compiled_file))
     
     return final_payload
+
+
+def execute_cloud_analysis(job_id: str, recovered_url: str, active_cloud_model: str):
+    """
+    Checks for a manual response, falls back to the API with exponential backoff, 
+    renders the output via Rich, and injects the final assessment into the Excel baseline.
+    """
+    from IPython.display import display
+    from pathlib import Path
+    import time
+    from pipulate import wand
+
+    # 1. Check the manual paste bin from the previous step
+    manual_response = wand.get(job_id, "manual_cloud_response")
+    final_analysis = ""
+    active_model_used = "None"
+
+    if manual_response and manual_response.strip():
+        wand.speak("Manual response detected in the paste bin. Bypassing the metered API.")
+        final_analysis = manual_response
+        active_model_used = "Manual Web UI Paste"
+    else:
+        wand.speak(f"No manual response detected. Engaging formal API via {active_cloud_model}...")
+        payload = compile_cloud_payload(job_id, recovered_url)
+        
+        if payload:
+            active_model_used = active_cloud_model
+            max_retries = 3
+            base_wait = 5
+            
+            # Exponential Backoff Loop
+            for attempt in range(max_retries):
+                try:
+                    final_analysis = wand.prompt(prompt_text=payload, model_name=active_cloud_model)
+                    break  # Success, exit retry loop
+                except Exception as e:
+                    error_msg = str(e).lower()
+                    if any(trigger in error_msg for trigger in ["429", "500", "503", "high demand", "quota"]):
+                        if attempt < max_retries - 1:
+                            wait_time = base_wait * (2 ** attempt)  # 5s, 10s, 20s
+                            print(f"⚠️ {active_cloud_model} is experiencing network friction. Retrying in {wait_time} seconds...")
+                            time.sleep(wait_time)
+                        else:
+                            final_analysis = f"❌ API failed after {max_retries} attempts: {e}"
+                            print(final_analysis)
+                    else:
+                        final_analysis = f"❌ Execution Error: {e}"
+                        print(final_analysis)
+                        break
+        else:
+            final_analysis = "Error: Payload missing. Did you run the previous steps?"
+
+    # 2. Use Rich for beautiful output if the terminal supports it
+    try:
+        from rich.console import Console
+        from rich.panel import Panel
+        from rich.markdown import Markdown
+        console = Console()
+        console.print(Panel(Markdown(final_analysis), title=f"[bold cyan]☁️ Cloud AI Analysis ({active_model_used})[/]", border_style="blue"))
+    except ImportError:
+        print(f"\n☁️ Cloud AI Analysis ({active_model_used}):\n{'-'*40}\n{final_analysis}\n{'-'*40}\n")
+
+    # 3. The Final Stamp: Idempotent Deliverable Injection
+    wand.speak("The audit is complete. I am injecting the Cloud AI insights into your technical baseline workbook.")
+    xl_file_path_str = wand.get(job_id, "baseline_excel_path")
+
+    if xl_file_path_str and Path(xl_file_path_str).exists():
+        button, xl_file = append_cloud_assessment(job_id, xl_file_path_str, final_analysis, active_model_used)
+        display(button)
+        print(f"💾 Optics Baseline Augmented: {xl_file.name}")
+    else:
+        print("⚠️ Technical Baseline Excel file not found. Did you run the Pandas cell?")
