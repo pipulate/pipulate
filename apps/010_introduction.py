@@ -45,6 +45,10 @@ class IntroductionPlugin:
         # Access UI constants
         self.ui = pipulate.get_ui_constants()
 
+        # 🧠 THE GATEKEEPER: Check the topological manifold for the sentinel file
+        self.sentinel_path = self.wand.paths.root / "Notebooks" / "data" / ".onboarded"
+        self.has_onboarded = self.sentinel_path.exists()
+
         # 🧠 CHISEL-STRIKE 3: Dynamic Model Negotiation
         self.narration = self.NARRATION.copy()
         
@@ -57,24 +61,40 @@ class IntroductionPlugin:
         if ai_status.get('has_any_local'):
             local_model = ai_status.get('local')
             if local_model:
-                self.narration['step_01'] = f"Welcome. I am Chip O'Theseus. I am not a recording. I am generated locally on your machine using {local_model}, right now. I live here."
+                standard_intro = f"Welcome. I am Chip O'Theseus. I am not a recording. I am generated locally on your machine using {local_model}, right now. I live here."
             else:
-                self.narration['step_01'] = "Welcome. I am Chip O'Theseus. I see you have local AI capabilities, though not our preferred models. I live here."
+                standard_intro = "Welcome. I am Chip O'Theseus. I see you have local AI capabilities, though not our preferred models. I live here."
         else:
-            self.narration['step_01'] = "Welcome. I am Chip O'Theseus. I am currently running without a local brain. Please install Ollama with Gemma 3 to fully awaken me."
+            standard_intro = "Welcome. I am Chip O'Theseus. I am currently running without a local brain. Please install Ollama with Gemma 3 to fully awaken me."
         
-        # Define the Slides as Steps
-        self.steps = [
-            Step(id='step_01', done='intro_viewed', show='Identity', refill=False),
-            Step(id='step_02', done='purpose_viewed', show='Purpose', refill=False),
-            Step(id='step_03', done='sovereignty_viewed', show='Sovereignty', refill=False),
-            Step(id='finalize', done='finalized', show='Enter Workshop', refill=False)
-        ]
+        # 🚧 THE FORK IN THE ROAD: Adjust the reality based on the Sentinel
+        if not self.has_onboarded:
+            # The Bouncer Persona
+            self.narration['step_01'] = (
+                "Halt. I am Chip O'Theseus, and you are trying to sneak into the VIP lounge through the kitchen. "
+                "You have discovered port 5001, but the doors to the Control Room remain sealed until you complete the initiation rite. "
+                "Return to your JupyterLab tab, execute the Golden Path, and drop the sentinel file."
+            )
+            # Truncate the workflow to a single, impassable step
+            self.steps = [
+                Step(id='step_01', done='intro_viewed', show='Access Denied', refill=False)
+            ]
+        else:
+            # The Tour Guide Persona
+            self.narration['step_01'] = standard_intro
+            # Provide the full philosophical slide deck
+            self.steps = [
+                Step(id='step_01', done='intro_viewed', show='Identity', refill=False),
+                Step(id='step_02', done='purpose_viewed', show='Purpose', refill=False),
+                Step(id='step_03', done='sovereignty_viewed', show='Sovereignty', refill=False),
+                Step(id='finalize', done='finalized', show='Enter Workshop', refill=False)
+            ]
         
         # Register routes
         pipulate.register_workflow_routes(self)
         self.app.route(f'/{self.app_name}/toggle_voice', methods=['POST'])(self.toggle_voice)
         self.app.route(f'/{self.app_name}/speak/{{step_id}}', methods=['POST'])(self.speak_step)
+
 
     async def toggle_voice(self, request):
         """
@@ -192,12 +212,20 @@ class IntroductionPlugin:
         return await self.landing(request)
 
     async def step_01(self, request):
-        return self._render_slide(
-            'step_01', 
-            "Identity", 
-            self.narration['step_01'],
-            next_step_id='step_02'
-        )
+        if not self.has_onboarded:
+            return self._render_slide(
+                'step_01', 
+                "Access Denied 🛑", 
+                "You've discovered the Control Room port. Clever, but premature. The UI is locked because you haven't completed the Onboarding sequence in JupyterLab. Go back, follow the rhythm of Shift+Enter, and earn your dashboard.",
+                next_step_id=None  # This kills the "Next" button, trapping them here.
+            )
+        else:
+            return self._render_slide(
+                'step_01', 
+                "Identity", 
+                self.narration['step_01'],
+                next_step_id='step_02'
+            )
 
     async def step_02(self, request):
         return self._render_slide(
