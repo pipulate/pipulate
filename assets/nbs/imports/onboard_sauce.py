@@ -957,7 +957,7 @@ def reveal_system_architecture():
     # We apply specific colors to specific layers of the stack
     styled_art = Text(lens_art)
     styled_art.highlight_regex(r"HARDWARE|Linux|Nix", "bold cyan")
-    styled_art.highlight_regex(r"PROTOCOL|http|html", "bold green")
+    styled_art.highlight_regex(r"PROTOCOL|HTTP|html", "bold green")
     styled_art.highlight_regex(r"LINGUA|_hx|\.py", "bold yellow")
     styled_art.highlight_regex(r"UI/UX", "bold magenta")
     styled_art.highlight_regex(r"APP|git", "bold blue")
