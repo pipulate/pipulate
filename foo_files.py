@@ -36,24 +36,30 @@ AI_PHOOEY_CHOP = """\
 # # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
 
-prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-# flake.nix  # [8,011 tokens | 34,229 bytes]
-# config.py  # [4,170 tokens | 16,184 bytes]
+/home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
+flake.nix  # [8,011 tokens | 34,229 bytes]
+config.py  # [4,170 tokens | 16,184 bytes]
+pyproject.toml  # [677 tokens | 2,299 bytes]
+.gitignore  # [573 tokens | 2,089 bytes]
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
 # Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
 # Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
 # Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
 # pipulate/core.py  # [22,424 tokens | 108,599 bytes]
+# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+# apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
+
+# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 # tools/llm_optics.py  # [2,574 tokens | 11,257 bytes]
 # tools/scraper_tools.py  # [4,449 tokens | 21,625 bytes]
 # tools/dom_tools.py  # [3,466 tokens | 15,120 bytes]
 # apps/010_introduction.py  # [2,167 tokens | 9,493 bytes]
-# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # Notebooks/data/jobs/onboarding_01/compiled_payload.md  # [5,027 tokens | 13,431 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
