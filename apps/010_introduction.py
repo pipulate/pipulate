@@ -25,13 +25,12 @@ class IntroductionPlugin:
     APP_NAME = 'introduction'
     DISPLAY_NAME = 'Introduction 🏠'
     ENDPOINT_MESSAGE = 'Welcome to the Machine. Click to enter.'
-    
+
     # Narrative Script (Base template)
     NARRATION = {
         'step_01': "Welcome. I am Chip O'Theseus, the voice of the Forever Machine. My speech is rendered entirely on your local metal, but my reasoning engines—both local and cloud—are currently idling. I am waiting for you to wire the control board.",
         'step_02': "I am about to hand you over to the Configuration Workflow. You will repeat what you just did Notebook-side in JupyterLab; telling me your name, local and cloud AI preferences, and Botify API key if you're a Botify employee or customer. After that, we remember it. The Configuration Workflow will feel a lot like running a Jupyter Notebook, proceeding top-to-bottom as if through the cells. Only you don't have to see any of the Python code.",
-        'step_03': "This is not 'software as a service'. You are the operator. I am the interface. Together, we are sovereign.",
-        'finalize': "The web interface is just the dashboard. True sovereignty happens in the engine room. Switch back to the JupyterLab tab that opened alongside this window. Click on the first gray code block and press Shift plus Enter to cast your first spell."
+        'finalize': "Every workflow requires a unique Key to store its memory. You can keep the default key, or generate a New Key to start a fresh configuration. Let's establish your permanent identity."
     }
 
     def __init__(self, app, pipulate, pipeline, db, app_name=APP_NAME):
@@ -227,31 +226,36 @@ class IntroductionPlugin:
                 next_step_id='step_02'
             )
 
+
+
+
+
+
     async def step_02(self, request):
         return self._render_slide(
             'step_02', 
-            "Purpose", 
+            "The Handoff", 
             self.NARRATION["step_02"],
-            next_step_id='step_03'
-        )
-
-    async def step_03(self, request):
-        return self._render_slide(
-            'step_03', 
-            "Sovereignty", 
-            "No API keys required. No monthly fees. Just you and me.",
             next_step_id='finalize'
         )
 
     async def finalize(self, request):
+        # The explicit, clickable transition to the Configuration App
+        config_button = A(
+            "⚙️ Proceed to Configuration", 
+            href="/redirect/015_config", 
+            role="button", 
+            cls="primary",
+            style="margin-top: 1rem;"
+        )
+        
         return self._render_slide(
             'finalize',
-            "The Awakening",
+            "The Keys to the Machine",
             (
-                "The web interface is just the dashboard. True sovereignty happens in the engine room.",
+                self.NARRATION["finalize"],
                 Br(), Br(),
-                "Switch back to the ", Strong("JupyterLab tab"), " that opened alongside this window. ",
-                "Click on the first gray code block and press ", Strong("Shift + Enter"), " to cast your first spell."
+                config_button
             ),
             next_step_id=None
         )
