@@ -167,7 +167,7 @@ class IntroductionPlugin:
         if next_step_id:
             nav_buttons.append(
                 Button(
-                    "Next ➡", 
+                    "Next Step ▸", 
                     hx_get=f"/{self.app_name}/{next_step_id}", 
                     hx_target=f"#{self.CONTAINER_ID}",
                     hx_swap="innerHTML",  # Explicitly swap inner content
