@@ -412,7 +412,11 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               sleep 1
               echo -n "."
             done
-            if [ "$SERVER_STARTED" = true ]; then
+            if [ "$SERVER_STARTED" = true ] && [ "${autoOpenFastHTML}" = "true" ]; then
+              if [ "${fastHtmlOpenDelay}" -gt 0 ]; then
+                echo "Delaying FastHTML tab by ${fastHtmlOpenDelay} seconds..."
+                sleep ${fastHtmlOpenDelay}
+              fi
               if command -v xdg-open >/dev/null 2>&1; then
                 xdg-open http://localhost:5001 >/dev/null 2>&1 &
               elif command -v open >/dev/null 2>&1; then
@@ -487,7 +491,11 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               sleep 1
               echo -n "."
             done
-            if [ "$SERVER_STARTED" = true ]; then
+            if [ "$SERVER_STARTED" = true ] && [ "${autoOpenFastHTML}" = "true" ]; then
+              if [ "${fastHtmlOpenDelay}" -gt 0 ]; then
+                echo "Delaying FastHTML tab by ${fastHtmlOpenDelay} seconds..."
+                sleep ${fastHtmlOpenDelay}
+              fi
               if command -v xdg-open >/dev/null 2>&1; then
                 xdg-open http://localhost:5001 >/dev/null 2>&1 &
               elif command -v open >/dev/null 2>&1; then
