@@ -412,7 +412,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               sleep 1
               echo -n "."
             done
-            if [ "$SERVER_STARTED" = true ] && [ "${autoOpenFastHTML}" = "true" ]; then
+            if [ "$SERVER_STARTED" = true ] && ( [ "${autoOpenFastHTML}" = "true" ] || [ -f Notebooks/data/.onboarded ] ); then
               if [ "${fastHtmlOpenDelay}" -gt 0 ]; then
                 echo "Delaying FastHTML tab by ${fastHtmlOpenDelay} seconds..."
                 sleep ${fastHtmlOpenDelay}
@@ -495,7 +495,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               sleep 1
               echo -n "."
             done
-            if [ "$SERVER_STARTED" = true ] && [ "${autoOpenFastHTML}" = "true" ]; then
+            if [ "$SERVER_STARTED" = true ] && ( [ "${autoOpenFastHTML}" = "true" ] || [ -f Notebooks/data/.onboarded ] ); then
               if [ "${fastHtmlOpenDelay}" -gt 0 ]; then
                 echo "Delaying FastHTML tab by ${fastHtmlOpenDelay} seconds..."
                 sleep ${fastHtmlOpenDelay}
