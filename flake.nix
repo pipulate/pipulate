@@ -444,8 +444,12 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # Wait for JupyterLab to start with better feedback
           echo "Waiting for JupyterLab to start (checking http://localhost:8888)..."
           
-          # 🗣️ THE UNIFIED VOICE TRIGGER (Actual startup execution)
-          python -c "import logging; logging.getLogger('piper').setLevel(logging.ERROR); from imports.voice_synthesis import chip_voice_system as cvs; cvs.speak_text('Pipulate is installed. Starting JupyterLab and the Pipulate server. JupyterLab will appear first for your onboarding. Get ready to hit Shift Enter all the way down.')" > /dev/null 2>&1 &
+          # 🗣️ THE UNIFIED VOICE TRIGGER (Context-Aware)
+          if [ -f data/.onboarded ]; then
+            python -c "import logging; logging.getLogger('piper').setLevel(logging.ERROR); from imports.voice_synthesis import chip_voice_system as cvs; cvs.speak_text('Welcome back to the workshop. JupyterLab is waiting in the foreground.')" > /dev/null 2>&1 &
+          else
+            python -c "import logging; logging.getLogger('piper').setLevel(logging.ERROR); from imports.voice_synthesis import chip_voice_system as cvs; cvs.speak_text('Pipulate is installed. Starting JupyterLab and the Pipulate server. JupyterLab will appear first for your onboarding. Get ready to hit Shift Enter all the way down.')" > /dev/null 2>&1 &
+          fi
 
           JUPYTER_STARTED=false
           for i in {1..30}; do
