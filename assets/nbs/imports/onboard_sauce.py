@@ -888,11 +888,15 @@ def render_cloud_handoff(job_id: str, recovered_url: str):
     import ipywidgets as widgets
     from tools.scraper_tools import get_safe_path_component
     from IPython.display import HTML
+    from pathlib import Path
 
-    # 1. Retrieve the polished instructions
-    instructions = wand.get(job_id, "cloud_ai_prompt")
-    if not instructions:
-        return widgets.HTML("<p style='color:var(--pico-color-red-500);'>⚠️ No instructions found. Did you click 'Save'?</p>"), ""
+    # 1. Retrieve the polished instructions via the filesystem pointer
+    prompt_path_str = wand.get(job_id, "cloud_prompt_path")
+    
+    if not prompt_path_str or not Path(prompt_path_str).exists():
+        # Legacy fallback just in case old state exists
+        if not wand.get(job_id, "cloud_ai_prompt"):
+            return widgets.HTML("<p style='color:var(--pico-color-red-500);'>⚠️ No instructions found. Did you click 'Save'?</p>"), ""
 
     # 2. Store the Absolute Path Reference (The Pointer)
     domain, slug = get_safe_path_component(recovered_url)
