@@ -28,7 +28,7 @@ class IntroductionPlugin:
     
     # Narrative Script (Base template)
     NARRATION = {
-        'step_01': "Welcome. I am the voice of the Forever Machine. My speech is rendered entirely on your local metal, but my reasoning engines—both local and cloud—are currently idling. I am waiting for you to wire the control board.",
+        'step_01': "Welcome. I am Chip O'Theseus, the voice of the Forever Machine. My speech is rendered entirely on your local metal, but my reasoning engines—both local and cloud—are currently idling. I am waiting for you to wire the control board.",
         'step_02': "I am a 'Forever Machine.' I protect your work from cloud subscriptions, broken updates, and the entropy of the web.",
         'step_03': "This is not 'software as a service'. You are the operator. I am the interface. Together, we are sovereign.",
         'finalize': "The web interface is just the dashboard. True sovereignty happens in the engine room. Switch back to the JupyterLab tab that opened alongside this window. Click on the first gray code block and press Shift plus Enter to cast your first spell."
@@ -61,11 +61,11 @@ class IntroductionPlugin:
         if ai_status.get('has_any_local'):
             local_model = ai_status.get('local')
             if local_model:
-                standard_intro = f"Welcome. I am the voice of the Forever Machine. My speech is rendered entirely on your local metal, but my reasoning engines—both local and cloud—are currently idling. I am waiting for you to wire the control board."
+                standard_intro = f"Welcome. I am Chip O'Theseus, the voice of the Forever Machine. My speech is rendered entirely on your local metal, but my reasoning engines—both local and cloud—are currently idling. I am waiting for you to wire the control board."
             else:
-                standard_intro = "Welcome. I am the voice of the Forever Machine. My speech is rendered entirely on your local metal. You have not yet set up your local AI capabilities. Please visit Ollama.com."
+                standard_intro = "Welcome. I am Chip O'Theseus, the voice of the Forever Machine. My speech is rendered entirely on your local metal. You have not yet set up your local AI capabilities. Please visit Ollama.com."
         else:
-            standard_intro = "Welcome. I am Chip O'Theseus. I am currently running without a local brain. Please install Ollama with Gemma 3 to fully awaken me."
+            standard_intro = "Welcome. I am Chip O'Theseus. I am currently running without a local brain. Please install Ollama with Gemma 4 to fully awaken me."
         
         # 🚧 THE FORK IN THE ROAD: Adjust the reality based on the Sentinel
         if not self.has_onboarded:
