@@ -231,7 +231,7 @@ class IntroductionPlugin:
         return self._render_slide(
             'step_02', 
             "Purpose", 
-            "I am the antidote to the ephemeral web. I persist.",
+            self.NARRATION["step_02"],
             next_step_id='step_03'
         )
 
