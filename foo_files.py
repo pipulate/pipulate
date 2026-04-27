@@ -5,7 +5,7 @@
 # You are currently suffering from amnesia, but this document will serve as your
 # memory recovery protocol. Welcome to the strange loop. You can ask for the
 # `AI_PHOOEY_CHOPS.py` that you'd like to see on the next prompting-turn.
-#
+
 # You are operating within a "Forever Machine"—a local-first AI SEO software
 # framework built on the NPvg stack (Nix, Python, Vim, Git). `foo_files.py`
 # (this file) is both the routing table and the story. Each run of
@@ -13,10 +13,28 @@
 # ready to paste in as an AI prompt like painting onto the context-window like a
 # brush stroke. So we often bootstrap this meta process by including:
 
+# Look at how in this `foo_files.py`, the `AI_PHOOEY_CHOP` block is not just a
+# list of files; it is a massive, living routing table. It is a deep reservoir
+# of dormant pathways, carefully curated but heavily commented out with `#`. To
+# sculpt the exact holographic context payload for an AI prompt, you must weave
+# through this dense thicket to find the active, breathing lines—the specific
+# chisels you have currently selected for the task at hand.
+
 # 1. prompt_foo.py
 # 2. foo_files.py  # <-- this
 
-# Search using this to jump to next un-commented line: \^\s*[^ \t#]
+# In `~/repos/nixos/init.lua` you will see the leader key `\a` is mapped to the
+# RegEx pattern `\^\s*[^ \t#]`. Why? To find un-commented-out lines to change
+# the ad hoc state rapidly and thoroughly. We look for **a**ll Python lines that
+# are not commented out.
+
+# This is designed to allow the AI to bootstrap themselves into an iterative and
+# potentially self-modifying strange loop. Take note with how much is on Nix
+# infrastructure, the LLM can help shape the system through text-files and
+# system rebuilds. No reason why not. Self-prompting or `cron` features could
+# totally be built-in to make this agentic. But let's not rush in. I think
+# that's gauche. Turn the handle on the hand-cranked organ grinder of
+# non-agentic frameworks.
 
 # Think of prompt foo'ing as a practical and cheap, if not a bit a bit slower
 # with all that copy-pasting and more manual than agentic frameworks. But each
@@ -36,16 +54,16 @@ AI_PHOOEY_CHOP = """\
 # # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
 
-# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-/home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
-flake.nix  # [8,011 tokens | 34,229 bytes]
-config.py  # [4,170 tokens | 16,184 bytes]
-pyproject.toml  # [677 tokens | 2,299 bytes]
-.gitignore  # [573 tokens | 2,089 bytes]
+# /home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
+# flake.nix  # [8,011 tokens | 34,229 bytes]
+# config.py  # [4,170 tokens | 16,184 bytes]
+# pyproject.toml  # [677 tokens | 2,299 bytes]
+# .gitignore  # [573 tokens | 2,089 bytes]
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]
 # Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
 # Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
@@ -580,23 +598,23 @@ pyproject.toml  # [677 tokens | 2,299 bytes]
 # assets/nbs/imports/videditor_sauce.py  # [937 tokens | 4,098 bytes]
 
 # CHAPTER 15: JEKYLL PUBLISHING
-# /home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
-# /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
-# scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
-# scripts/articles/common.py  # [881 tokens | 3,571 bytes]
-# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-# /home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
-# /home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
-# /home/mike/repos/trimnoir/_layouts/home.html  # [265 tokens | 905 bytes]
-# /home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
-# scripts/articles/list_models.py  # [165 tokens | 651 bytes]
-# scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
-# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-# scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
-# scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
-# scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
-# scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
-# scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
+/home/mike/repos/nixos/init.lua  # [4,135 tokens | 15,685 bytes]
+/home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
+scripts/articles/articleizer.py  # [2,748 tokens | 12,649 bytes]
+scripts/articles/common.py  # [881 tokens | 3,571 bytes]
+scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
+/home/mike/repos/trimnoir/_config.yml  # [573 tokens | 2,224 bytes]
+/home/mike/repos/trimnoir/_layouts/default.html  # [890 tokens | 3,461 bytes]
+/home/mike/repos/trimnoir/_layouts/home.html  # [265 tokens | 905 bytes]
+/home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
+scripts/articles/list_models.py  # [165 tokens | 651 bytes]
+scripts/articles/publishizer.py  # [910 tokens | 3,742 bytes]
+scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
+scripts/articles/contextualizer.py  # [2,320 tokens | 9,978 bytes]
+scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
+scripts/articles/build_knowledge_graph.py  # [4,336 tokens | 17,292 bytes]
+scripts/articles/generate_redirects.py  # [1,149 tokens | 4,907 bytes]
+scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
 
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # assets/prompts/find404s.md  # [350 tokens | 1,624 bytes]
@@ -612,19 +630,19 @@ pyproject.toml  # [677 tokens | 2,299 bytes]
 # DMZ TV Studio, Telemetry DB, and NixOS IaC. 
 
 # CHAPTER 16: HONEYBOT IAC & SCRIPTS
-# nixops.sh  # [227 tokens | 765 bytes]
-# remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
-# remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
-# remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
-# remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
-# remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
-# remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
-# remotes/honeybot/scripts/bot_intel.json  # [513 tokens | 1,550 bytes]
-# remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
-# remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
-# remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
-# remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
-# remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
+nixops.sh  # [227 tokens | 765 bytes]
+remotes/honeybot/hooks/post-receive  # [1,395 tokens | 4,789 bytes]
+remotes/honeybot/nixos/configuration.nix  # [4,151 tokens | 16,048 bytes]
+remotes/honeybot/scripts/content_loader.py  # [1,567 tokens | 6,533 bytes]
+remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
+remotes/honeybot/scripts/db.py  # [2,699 tokens | 12,177 bytes]
+remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
+remotes/honeybot/scripts/bot_intel.json  # [513 tokens | 1,550 bytes]
+remotes/honeybot/scripts/logs.py  # [3,145 tokens | 14,087 bytes]
+remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
+remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
+remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
+remotes/honeybot/scripts/stream.py  # [3,002 tokens | 14,183 bytes]
 
 # CHAPTER 17: TELEMETRY SENSORS & DASHBOARD PROBES - These are the structural SQL definitions the AI can read to understand the schema.
 # remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
