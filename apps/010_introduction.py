@@ -29,7 +29,7 @@ class IntroductionPlugin:
     # Narrative Script (Base template)
     NARRATION = {
         'step_01': "Welcome. I am Chip O'Theseus, the voice of the Forever Machine. My speech is rendered entirely on your local metal, but my reasoning engines—both local and cloud—are currently idling. I am waiting for you to wire the control board.",
-        'step_02': "I am a 'Forever Machine.' I protect your work from cloud subscriptions, broken updates, and the entropy of the web.",
+        'step_02': "I am about to hand you over to the Configuration Workflow. You will repeat what you just did Notebook-side in JupyterLab; telling me your name, local and cloud AI preferences, and Botify API key if you're a Botify employee or customer. After that, we remember it. The Configuration Workflow will feel a lot like running a Jupyter Notebook, proceeding top-to-bottom as if through the cells. Only you don't have to see any of the Python code.",
         'step_03': "This is not 'software as a service'. You are the operator. I am the interface. Together, we are sovereign.",
         'finalize': "The web interface is just the dashboard. True sovereignty happens in the engine room. Switch back to the JupyterLab tab that opened alongside this window. Click on the first gray code block and press Shift plus Enter to cast your first spell."
     }
