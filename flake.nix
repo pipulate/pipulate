@@ -101,9 +101,14 @@
         isLinux = pkgs.stdenv.isLinux;
         # Define a static workspace name to prevent random file generation
         jupyterWorkspaceName = "pipulate-main";
- 
+
  		# Define the default notebook for JupyterLab to open on startup
  		jupyterStartupNotebook = "Notebooks/Onboarding.ipynb";
+
+        # --- 🌐 BROWSER TAB CONFIGURATION ---
+        autoOpenJupyter = "true";
+        autoOpenFastHTML = "false";
+        fastHtmlOpenDelay = "0";  # Seconds to delay FastHTML tab if both are true
 
         # --- CORRECTED: Declarative list for notebooks to copy ---
         notebookFilesToCopy = [
