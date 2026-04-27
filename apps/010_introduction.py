@@ -61,9 +61,9 @@ class IntroductionPlugin:
         if ai_status.get('has_any_local'):
             local_model = ai_status.get('local')
             if local_model:
-                standard_intro = f"Welcome. I am Chip O'Theseus. I am not a recording. I am generated locally on your machine using {local_model}, right now. I live here."
+                standard_intro = f"Welcome. I am the voice of the Forever Machine. My speech is rendered entirely on your local metal, but my reasoning engines—both local and cloud—are currently idling. I am waiting for you to wire the control board."
             else:
-                standard_intro = "Welcome. I am Chip O'Theseus. I see you have local AI capabilities, though not our preferred models. I live here."
+                standard_intro = "Welcome. I am the voice of the Forever Machine. My speech is rendered entirely on your local metal. You have not yet set up your local AI capabilities. Please visit Ollama.com."
         else:
             standard_intro = "Welcome. I am Chip O'Theseus. I am currently running without a local brain. Please install Ollama with Gemma 3 to fully awaken me."
         
