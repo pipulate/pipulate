@@ -1660,6 +1660,23 @@ input[type="password"]:focus {
 }
 
 /* ============================================================================
+   HTMX IN-FLIGHT STATE (GHOSTING) - The 80/20 Systemic Lock
+   ============================================================================
+   Automatically ghosts and locks inputs/buttons while the server is processing
+   (e.g., waiting for TTS to finish speaking). HTMX natively applies the 
+   .htmx-request class to the element issuing the request.
+   ============================================================================ */
+form.htmx-request button[type="submit"],
+form.htmx-request button[type="button"],
+form.htmx-request input,
+button.htmx-request {
+    opacity: 0.5 !important;
+    pointer-events: none !important;
+    cursor: wait !important;
+    filter: grayscale(50%);
+}
+
+/* ============================================================================
    UTILITY CLASSES - Common property patterns from inline styles
    ============================================================================ */
 
