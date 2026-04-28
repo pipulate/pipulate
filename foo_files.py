@@ -59,7 +59,7 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-# /home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
+/home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
 flake.nix  # [8,011 tokens | 34,229 bytes]
 config.py  # [4,170 tokens | 16,184 bytes]
 # server.py  # [54,718 tokens | 261,069 bytes]
@@ -70,8 +70,23 @@ Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
 Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
 Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
 pipulate/core.py  # [22,424 tokens | 108,599 bytes]
-apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
 apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
+
+# Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
+# Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
+
+# apps/230_dev_assistant.py  # [25,808 tokens | 124,873 bytes]
+# apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
+# scripts/workflow/splice_workflow_step.py  # [5,064 tokens | 22,110 bytes]
+# scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
+# scripts/workflow/create_workflow.py  # [3,729 tokens | 16,615 bytes]
+# scripts/workflow/manage_class_attributes.py  # [2,678 tokens | 12,795 bytes]
+# scripts/workflow/update_template_config.py  # [1,671 tokens | 8,381 bytes]
+# scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
+# apps/200_workflow_genesis.py  # [12,397 tokens | 59,508 bytes]
+# apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
+# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
 
 # assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
@@ -87,7 +102,6 @@ apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
 # /home/mike/repos/pipulate/Notebooks/data/jobs/onboarding_01/cloud_prompt.md  # [527 tokens | 2,904 bytes]
 
 # config.py  # [4,177 tokens | 16,201 bytes]
-# apps/015_backup_introduction.py  # [4,069 tokens | 19,231 bytes]
 # apps/240_simon_mcp.py  # [8,886 tokens | 44,543 bytes]
 
 # flake.nix  # [7,711 tokens | 32,991 bytes]
@@ -556,7 +570,6 @@ apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
 # scripts/workflow/splice_workflow_step.py  # [5,064 tokens | 22,110 bytes]
-# scripts/workflow/splice_workflow_step.py  # [5,064 tokens | 22,110 bytes]
 # scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
 # scripts/workflow/WORKFLOW_DEVELOPMENT_GUIDE.md  # [4,283 tokens | 20,359 bytes]
 # scripts/workflow/create_workflow.py  # [3,729 tokens | 16,615 bytes]
@@ -672,7 +685,7 @@ apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
 # ! echo "--- FORMAT RATIO ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# # ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- THE MARKDOWN DIET ---" && cat remotes/honeybot/queries/md_diet.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- TRAPDOOR IPS ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- TRAPDOOR EVENTS ---" && cat remotes/honeybot/queries/telemetry_trapdoor_events.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
@@ -683,7 +696,7 @@ apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
 # ! echo "--- TRUE 404s (Legitimate Missing Content) ---" && cat remotes/honeybot/queries/intel_true_404s.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- LIST A: THE 404 GHOSTS (Source) ---" && cat remotes/honeybot/queries/hot_404_remaps_top.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- LLMS.TXT DISCOVERY ---" && cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- ALL-TIME POPULAR PATHS ---" && cat remotes/honeybot/queries/all_time_popular_paths.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# # ! echo "--- ALL-TIME POPULAR PATHS ---" && cat remotes/honeybot/queries/all_time_popular_paths.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- HUB CANDIDATES (404s & 301s) ---" && cat remotes/honeybot/queries/hub_candidates.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- PHANTOM UI TRACKER ---" && cat remotes/honeybot/queries/intel_phantom_ui.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- SOVEREIGN BOT MATRIX ---" && cat remotes/honeybot/queries/intel_sovereign_bots.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
@@ -805,7 +818,6 @@ tools/advanced_automation_tools.py  # The heavy lifter
 # apps/130_gap_analysis.py  # [9,625 tokens | 48,280 bytes]
 # apps/210_widget_examples.py  # [22,791 tokens | 98,590 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
-# apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
 # apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
 # apps/450_stream_simulator.py  # [1,829 tokens | 9,488 bytes]
 # apps/510_text_field.py  # [2,888 tokens | 12,293 bytes]
