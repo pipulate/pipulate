@@ -466,7 +466,7 @@ You're here to make the workflow concepts accessible and help users understand t
         pipeline_id = wand.db.get('pipeline_id', 'unknown')
         await wand.unfinalize_workflow(pipeline_id)
         await self.message_queue.add(wand, f'{self.ui["EMOJIS"]["UNLOCKED"]} Workflow unfinalized! You can now revert to any step and make changes.', verbatim=True)
-        self.wand.speak("Workflow unlocked. You may now revert to any step.") # <-- UPDATED SCRIPT
+        self.wand.speak("Workflow unlocked. You may now revert to any step.", wait=False)
         return wand.run_all_cells(app_name, steps)
 
     async def get_suggestion(self, step_id, state):
@@ -725,7 +725,7 @@ You're here to make the workflow concepts accessible and help users understand t
             await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
             explanation = f"That's it! Workflows just collect data — walking you from one Step to the Next Step ▸"
             await self.message_queue.add(wand, explanation, verbatim=True)
-            self.wand.speak("That's it! Workflows just collect data, walking you from one step to the next. Please enter a greeting.", wait=False)
+            self.wand.speak("That's it! Workflows just collect data, walking you from one step to the next. Unix pipes. Please enter a greeting.", wait=False)
             
             return Div(
                 Card(
