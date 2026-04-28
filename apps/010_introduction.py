@@ -28,7 +28,7 @@ class IntroductionPlugin:
 
     # Narrative Script (Base template)
     NARRATION = {
-        'step_01': "Welcome. I am Chip O'Theseus, the voice of the Forever Machine. My speech is rendered entirely on your local metal, but my reasoning engines—both local and cloud—are currently idling. I am waiting for you to wire the control board.",
+        'step_01': "Welcome to the dashboard. I am Chip O'Theseus, the voice of the Forever Machine. My speech is rendered entirely on your local metal, but my reasoning engines are currently idling. You can return to this homepage at any time by clicking the home link in the upper-left corner of the screen.",
         'step_02': "I am about to hand you over to the Configuration Workflow. You will repeat what you just did Notebook-side in JupyterLab; telling me your name, local and cloud AI preferences, and Botify API key if you're a Botify employee or customer. After that, we remember it. The Configuration Workflow will feel a lot like running a Jupyter Notebook, proceeding top-to-bottom as if through the cells. Only you don't have to see any of the Python code.",
         'finalize': "Every workflow requires a unique Key to store its memory. You can keep the default key, or generate a New Key to start a fresh configuration. Let's establish your permanent identity."
     }
@@ -43,6 +43,9 @@ class IntroductionPlugin:
         
         # Access UI constants
         self.ui = pipulate.get_ui_constants()
+
+        # Dynamically fetch the current App Name (e.g. Botifython or Pipulate)
+        dynamic_app_name = self.wand.get_config().APP_NAME
 
         # 🧠 THE GATEKEEPER: Check the topological manifold for the sentinel file
         self.sentinel_path = self.wand.paths.root / "Notebooks" / "data" / ".onboarded"
@@ -60,11 +63,11 @@ class IntroductionPlugin:
         if ai_status.get('has_any_local'):
             local_model = ai_status.get('local')
             if local_model:
-                standard_intro = f"Welcome. I am Chip O'Theseus, the voice of the Forever Machine. My speech is rendered entirely on your local metal, but my reasoning engines—both local and cloud—are currently idling. I am waiting for you to wire the control board."
+                standard_intro = f"Welcome to the {dynamic_app_name} dashboard. I am Chip O'Theseus, the voice of the Forever Machine. My speech is rendered entirely on your local metal, but my reasoning engines are currently idling. You can return to this homepage at any time by clicking the '{dynamic_app_name}' link in the upper-left corner of the screen."
             else:
-                standard_intro = "Welcome. I am Chip O'Theseus, the voice of the Forever Machine. My speech is rendered entirely on your local metal. You have not yet set up your local AI capabilities. Please visit Ollama.com."
+                standard_intro = f"Welcome to the {dynamic_app_name} dashboard. I am Chip O'Theseus. My speech is rendered entirely on your local metal. You have not yet set up your local AI capabilities. Please visit Ollama.com."
         else:
-            standard_intro = "Welcome. I am Chip O'Theseus. I am currently running without a local brain. Please install Ollama with Gemma 4 to fully awaken me."
+            standard_intro = f"Welcome to the {dynamic_app_name} dashboard. I am Chip O'Theseus. I am currently running without a local brain. Please install Ollama with Gemma 4 to fully awaken me."
         
         # 🚧 THE FORK IN THE ROAD: Adjust the reality based on the Sentinel
         if not self.has_onboarded:
@@ -83,9 +86,9 @@ class IntroductionPlugin:
             self.narration['step_01'] = standard_intro
             # Provide the full philosophical slide deck
             self.steps = [
-                Step(id='step_01', done='intro_viewed', show='Identity', refill=False),
-                Step(id='step_02', done='purpose_viewed', show='Purpose', refill=False),
-                Step(id='step_03', done='sovereignty_viewed', show='Sovereignty', refill=False),
+                Step(id='step_01', done='intro_viewed', show='Welcome', refill=False),
+                Step(id='step_02', done='purpose_viewed', show='Expectations', refill=False),
+                Step(id='finalize', done='finalized', show='Hand-off', refill=False)
                 Step(id='finalize', done='finalized', show='Enter Workshop', refill=False)
             ]
         
@@ -116,6 +119,7 @@ class IntroductionPlugin:
         
         from imports.voice_synthesis import chip_voice_system
         if chip_voice_system and chip_voice_system.voice_ready:
+             chip_voice_system.stop_speaking()  # 🛑 INTERRUPT: Prevent voice overlapping on Back button
              logger.info(f"🎤 Speaking: {step_id}")
              asyncio.create_task(asyncio.to_thread(chip_voice_system.speak_text, text))
              
@@ -221,21 +225,16 @@ class IntroductionPlugin:
         else:
             return self._render_slide(
                 'step_01', 
-                "Identity", 
+                "Welcome", 
                 self.narration['step_01'],
                 next_step_id='step_02'
             )
 
-
-
-
-
-
     async def step_02(self, request):
         return self._render_slide(
             'step_02', 
-            "The Handoff", 
-            self.NARRATION["step_02"],
+            "Expectations", 
+            self.narration["step_02"],
             next_step_id='finalize'
         )
 
@@ -251,9 +250,9 @@ class IntroductionPlugin:
         
         return self._render_slide(
             'finalize',
-            "The Keys to the Machine",
+            "Hand-off",
             (
-                self.NARRATION["finalize"],
+                self.narration["finalize"],
                 Br(), Br(),
                 config_button
             ),
