@@ -4595,6 +4595,8 @@ async def send_startup_environment_message():
             env_message = f"🚀 Server started in {env_display} mode. Ready for experimentation and testing!"
         else:
             env_message = f"🚀 Server started in {env_display} mode. Ready for production use."
+        # 🎤 Speak it into existence!
+        pipulate.speak(f"Server started in {env_display} mode.", wait=False)
 
         # Ensure message queue is ready with retry logic
         max_retries = 3
