@@ -457,7 +457,7 @@ You're here to make the workflow concepts accessible and help users understand t
         else:
             await wand.finalize_workflow(pipeline_id)
             await self.message_queue.add(wand, self.step_messages['finalize']['complete'], verbatim=True)
-            self.wand.speak("The workflow is now locked and finalized.", wait=False)
+            self.wand.speak("The workflow is now locked and finalized. You can pull it up again any time with the same key.", wait=False)
             return wand.run_all_cells(app_name, steps)
 
     async def unfinalize(self, request):
