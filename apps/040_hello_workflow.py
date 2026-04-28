@@ -374,8 +374,10 @@ You're here to make the workflow concepts accessible and help users understand t
             else:
                 status_msg = f'{self.ui["EMOJIS"]["SUCCESS"]} Workflow is complete but not finalized. Press Finalize to lock your data.'
             await self.message_queue.add(wand, status_msg, verbatim=True)
+            self.wand.speak("Your workflow has been recovered.") # <-- ADD THIS
         elif not any((step.id in state for step in self.steps)):
             await self.message_queue.add(wand, f'{self.ui["EMOJIS"]["INPUT_FORM"]} Please complete each step in sequence. Your progress will be saved automatically.', verbatim=True)
+            self.wand.speak("A new workflow has been initialized. Please complete each step in sequence.") # <-- ADD THIS
 
         parsed = wand.parse_pipeline_key(pipeline_id)
         prefix = f"{parsed['profile_part']}-{parsed['plugin_part']}-"
@@ -455,6 +457,7 @@ You're here to make the workflow concepts accessible and help users understand t
         else:
             await wand.finalize_workflow(pipeline_id)
             await self.message_queue.add(wand, self.step_messages['finalize']['complete'], verbatim=True)
+            self.wand.speak("The workflow is now locked and finalized.") # <-- ADD THIS
             return wand.run_all_cells(app_name, steps)
 
     async def unfinalize(self, request):
@@ -567,6 +570,8 @@ You're here to make the workflow concepts accessible and help users understand t
             await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
             explanation = f"Workflows are Notebooks without having to look at the code. Let's collect some data..."
             await self.message_queue.add(wand, explanation, verbatim=True)
+            self.wand.speak("Workflows are Notebooks without having to look at the code. Please enter your name to begin.") # <-- ADD THIS
+            
             return Div(
                 Card(
                     H3(f'{self.ui["EMOJIS"]["USER_INPUT"]} {self.wand.fmt(step.id)}: Enter {step.show}'),
@@ -647,6 +652,9 @@ You're here to make the workflow concepts accessible and help users understand t
         success_msg = f'{self.ui["EMOJIS"]["SUCCESS"]} Name saved: {user_val}'
         await self.message_queue.add(self.wand, success_msg, verbatim=True)
 
+        # Speak it into existence!
+        self.wand.speak(f"Name saved. Hello {user_val}. Proceed to the next step.") # <-- ADD THIS
+
         # Update LLM context
         self.wand.append_to_history(f"[WIDGET CONTENT] {step.show}:\n{user_val}")
 
@@ -716,6 +724,8 @@ You're here to make the workflow concepts accessible and help users understand t
             await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
             explanation = f"That's it! Workflows just collect data — walking you from one Step to the Next Step ▸"
             await self.message_queue.add(wand, explanation, verbatim=True)
+            self.wand.speak("That's it! Workflows just collect data, walking you from one step to the next. Please enter a greeting.") # <-- ADD THIS
+            
             return Div(
                 Card(
                     H3(f'{self.ui["EMOJIS"]["GREETING"]} {self.wand.fmt(step.id)}: Enter {step.show}'),
@@ -791,6 +801,7 @@ You're here to make the workflow concepts accessible and help users understand t
         # Progressive feedback with emoji
         success_msg = f'{self.ui["EMOJIS"]["SUCCESS"]} {step.show}: {processed_val}'
         await self.message_queue.add(wand, success_msg, verbatim=True)
+        self.wand.speak("Greeting saved. All steps are complete. You may now finalize the workflow.") # <-- ADD THIS
 
         if wand.check_finalize_needed(step_index, steps):
             await self.message_queue.add(wand, self.step_messages['finalize']['ready'], verbatim=True)
