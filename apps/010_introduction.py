@@ -24,7 +24,7 @@ class IntroductionPlugin:
     NAME = 'introduction'
     APP_NAME = 'introduction'
     DISPLAY_NAME = 'Introduction 🏠'
-    ENDPOINT_MESSAGE = 'Welcome to the Machine. Click to enter.'
+    ENDPOINT_MESSAGE = 'Welcome! Chat with me here.'
 
     # Narrative Script (Base template)
     NARRATION = {
@@ -63,11 +63,11 @@ class IntroductionPlugin:
         if ai_status.get('has_any_local'):
             local_model = ai_status.get('local')
             if local_model:
-                standard_intro = f"Welcome to the {dynamic_app_name} dashboard. I am Chip O'Theseus, the voice of the Forever Machine. My speech is rendered entirely on your local metal, but my reasoning engines are currently idling. You can return to this homepage at any time by clicking the '{dynamic_app_name}' link in the upper-left corner of the screen."
+                standard_intro = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus, the voice of the Forever Machine. My speech is rendered entirely on your local metal, but my reasoning engines are currently idling. You can return to this homepage at any time by clicking the '{dynamic_app_name}' link in the upper-left corner of the screen."
             else:
-                standard_intro = f"Welcome to the {dynamic_app_name} dashboard. I am Chip O'Theseus. My speech is rendered entirely on your local metal. You have not yet set up your local AI capabilities. Please visit Ollama.com."
+                standard_intro = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus. My speech is rendered entirely on your local metal. You have not yet set up your local AI capabilities. Please visit Ollama.com."
         else:
-            standard_intro = f"Welcome to the {dynamic_app_name} dashboard. I am Chip O'Theseus. I am currently running without a local brain. Please install Ollama with Gemma 4 to fully awaken me."
+            standard_intro = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus. I am currently running without a local brain. Please install Ollama with Gemma 4 to fully awaken me."
         
         # 🚧 THE FORK IN THE ROAD: Adjust the reality based on the Sentinel
         if not self.has_onboarded:
