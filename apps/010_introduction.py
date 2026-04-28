@@ -89,7 +89,6 @@ class IntroductionPlugin:
                 Step(id='step_01', done='intro_viewed', show='Welcome', refill=False),
                 Step(id='step_02', done='purpose_viewed', show='Expectations', refill=False),
                 Step(id='finalize', done='finalized', show='Hand-off', refill=False)
-                Step(id='finalize', done='finalized', show='Enter Workshop', refill=False)
             ]
         
         # Register routes
