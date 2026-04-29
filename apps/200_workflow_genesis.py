@@ -264,18 +264,18 @@ class WorkflowGenesis:
         apps_filename = f"apps/{filename}" if not filename.startswith('apps/') else filename
 
         # Single create command - uses blank template specifically
-        create_cmd = f"python helpers/workflow/create_workflow.py {apps_filename} {class_name} {internal_name} \\\n" + \
+        create_cmd = f"python scripts/workflow/create_workflow.py {apps_filename} {class_name} {internal_name} \\\n" + \
                     f"  {self.format_bash_command(display_name)} \\\n" + \
                     f"  {self.format_bash_command(endpoint_message)} \\\n" + \
                     f"  {self.format_bash_command(training_prompt)} \\\n" + \
                     f"  --template blank --role Core --force"
 
         # Step positioning demo commands
-        splice_bottom_cmd = f"python helpers/workflow/splice_workflow_step.py {apps_filename} --position bottom"
-        splice_top_cmd = f"python helpers/workflow/splice_workflow_step.py {apps_filename} --position top"
+        splice_bottom_cmd = f"python scripts/workflow/splice_workflow_step.py {apps_filename} --position bottom"
+        splice_top_cmd = f"python scripts/workflow/splice_workflow_step.py {apps_filename} --position top"
 
         # Combined command with backslash line breaks for readability
-        combined_cmd = f"python helpers/workflow/create_workflow.py {apps_filename} {class_name} {internal_name} \\\n" + \
+        combined_cmd = f"python scripts/workflow/create_workflow.py {apps_filename} {class_name} {internal_name} \\\n" + \
                       f"  {self.format_bash_command(display_name)} \\\n" + \
                       f"  {self.format_bash_command(endpoint_message)} \\\n" + \
                       f"  {self.format_bash_command(training_prompt)} \\\n" + \
@@ -338,32 +338,32 @@ class WorkflowGenesis:
         apps_filename = f"apps/{filename}" if not filename.startswith('apps/') else filename
 
         # The corrected 5-command sequence - starts with blank template, becomes Hello World
-        cmd1 = f"python helpers/workflow/create_workflow.py {apps_filename} {class_name} {internal_name} " + \
+        cmd1 = f"python scripts/workflow/create_workflow.py {apps_filename} {class_name} {internal_name} " + \
                f"{self.format_bash_command(hello_display_name)} " + \
                f"{self.format_bash_command(hello_endpoint_message)} " + \
                f"{self.format_bash_command(hello_training_prompt)} --template blank --role Core --force"
 
-        cmd2 = f"python helpers/workflow/manage_class_attributes.py {apps_filename} apps/040_hello_workflow.py --attributes-to-merge UI_CONSTANTS --force"
+        cmd2 = f"python scripts/workflow/manage_class_attributes.py {apps_filename} apps/040_hello_workflow.py --attributes-to-merge UI_CONSTANTS --force"
 
-        cmd3 = f"python helpers/workflow/swap_workflow_step.py {apps_filename} step_01 apps/040_hello_workflow.py step_01 --force"
+        cmd3 = f"python scripts/workflow/swap_workflow_step.py {apps_filename} step_01 apps/040_hello_workflow.py step_01 --force"
 
-        cmd4 = f"python helpers/workflow/splice_workflow_step.py {apps_filename} --position bottom"
+        cmd4 = f"python scripts/workflow/splice_workflow_step.py {apps_filename} --position bottom"
 
-        cmd5 = f"python helpers/workflow/swap_workflow_step.py {apps_filename} step_02 apps/040_hello_workflow.py step_02 --force"
+        cmd5 = f"python scripts/workflow/swap_workflow_step.py {apps_filename} step_02 apps/040_hello_workflow.py step_02 --force"
 
         # Combined command with proper && chaining for complete automation
-        combined_cmd = f"python helpers/workflow/create_workflow.py {apps_filename} {class_name} {internal_name} \\\n" + \
+        combined_cmd = f"python scripts/workflow/create_workflow.py {apps_filename} {class_name} {internal_name} \\\n" + \
                       f"  {self.format_bash_command(hello_display_name)} \\\n" + \
                       f"  {self.format_bash_command(hello_endpoint_message)} \\\n" + \
                       f"  {self.format_bash_command(hello_training_prompt)} \\\n" + \
                       f"  --template blank --role Core --force && \\\n" + \
-                      f"python helpers/workflow/manage_class_attributes.py {apps_filename} \\\n" + \
+                      f"python scripts/workflow/manage_class_attributes.py {apps_filename} \\\n" + \
                       f"  apps/040_hello_workflow.py \\\n" + \
                       f"  --attributes-to-merge UI_CONSTANTS --force && \\\n" + \
-                      f"python helpers/workflow/swap_workflow_step.py {apps_filename} step_01 \\\n" + \
+                      f"python scripts/workflow/swap_workflow_step.py {apps_filename} step_01 \\\n" + \
                       f"  apps/040_hello_workflow.py step_01 --force && \\\n" + \
-                      f"python helpers/workflow/splice_workflow_step.py {apps_filename} --position bottom && \\\n" + \
-                      f"python helpers/workflow/swap_workflow_step.py {apps_filename} step_02 \\\n" + \
+                      f"python scripts/workflow/splice_workflow_step.py {apps_filename} --position bottom && \\\n" + \
+                      f"python scripts/workflow/swap_workflow_step.py {apps_filename} step_02 \\\n" + \
                       f"  apps/040_hello_workflow.py step_02 --force"
 
         return Div(
@@ -443,20 +443,20 @@ class WorkflowGenesis:
         apps_filename = f"apps/{filename}" if not filename.startswith('apps/') else filename
 
         # Trifecta workflow commands - uses trifecta template
-        cmd1 = f"python helpers/workflow/create_workflow.py {apps_filename} {class_name} {internal_name} " + \
+        cmd1 = f"python scripts/workflow/create_workflow.py {apps_filename} {class_name} {internal_name} " + \
                f"{self.format_bash_command(display_name)} " + \
                f"{self.format_bash_command(endpoint_message)} " + \
                f"{self.format_bash_command(training_prompt)} --template trifecta --role Core --force"
 
-        cmd2 = f"python helpers/workflow/splice_workflow_step.py {apps_filename} --position bottom"
+        cmd2 = f"python scripts/workflow/splice_workflow_step.py {apps_filename} --position bottom"
 
         # Combined command with backslash line breaks for readability
-        combined_cmd = f"python helpers/workflow/create_workflow.py {apps_filename} {class_name} {internal_name} \\\n" + \
+        combined_cmd = f"python scripts/workflow/create_workflow.py {apps_filename} {class_name} {internal_name} \\\n" + \
                       f"  {self.format_bash_command(display_name)} \\\n" + \
                       f"  {self.format_bash_command(endpoint_message)} \\\n" + \
                       f"  {self.format_bash_command(training_prompt)} \\\n" + \
                       f"  --template trifecta --role Core --force && \\\n" + \
-                      f"python helpers/workflow/splice_workflow_step.py {apps_filename} --position bottom"
+                      f"python scripts/workflow/splice_workflow_step.py {apps_filename} --position bottom"
 
         return Div(
             H4("Trifecta Workflow Experience", cls="section-title"),
@@ -901,30 +901,30 @@ class WorkflowGenesis:
             hello_endpoint_message = "🥋 This workflow will become a Hello World equivalent using helper scripts."
             hello_training_prompt = "You are assisting with the Kung Fu Hello World workflow recreation. This demonstrates the complete helper tool sequence for building workflows from scratch. The secret word is 'MORPHEUS'."
 
-            combined_cmd = f"python helpers/workflow/create_workflow.py {apps_filename} {class_name} {internal_name} " + \
+            combined_cmd = f"python scripts/workflow/create_workflow.py {apps_filename} {class_name} {internal_name} " + \
                           f"{self.format_bash_command(hello_display_name)} " + \
                           f"{self.format_bash_command(hello_endpoint_message)} " + \
                           f"{self.format_bash_command(hello_training_prompt)} --template blank --role Core --force && " + \
-                          f"python helpers/workflow/manage_class_attributes.py {apps_filename} " + \
+                          f"python scripts/workflow/manage_class_attributes.py {apps_filename} " + \
                           f"apps/040_hello_workflow.py " + \
                           f"--attributes-to-merge UI_CONSTANTS --force && " + \
-                          f"python helpers/workflow/swap_workflow_step.py {apps_filename} step_01 " + \
+                          f"python scripts/workflow/swap_workflow_step.py {apps_filename} step_01 " + \
                           f"apps/040_hello_workflow.py step_01 --force && " + \
-                          f"python helpers/workflow/splice_workflow_step.py {apps_filename} --position bottom && " + \
-                          f"python helpers/workflow/swap_workflow_step.py {apps_filename} step_02 " + \
+                          f"python scripts/workflow/splice_workflow_step.py {apps_filename} --position bottom && " + \
+                          f"python scripts/workflow/swap_workflow_step.py {apps_filename} step_02 " + \
                           f"apps/040_hello_workflow.py step_02 --force"
         elif selected_template == 'trifecta':
             # Trifecta workflow commands - use template-specific display name
             trifecta_display_name = "Kung Fu Trifecta 🏇"
-            combined_cmd = f"python helpers/workflow/create_workflow.py {apps_filename} {class_name} {internal_name} " + \
+            combined_cmd = f"python scripts/workflow/create_workflow.py {apps_filename} {class_name} {internal_name} " + \
                           f"{self.format_bash_command(trifecta_display_name)} " + \
                           f"{self.format_bash_command(endpoint_message)} " + \
                           f"{self.format_bash_command(training_prompt)} --template trifecta --role Core --force && " + \
-                          f"python helpers/workflow/splice_workflow_step.py {apps_filename} --position bottom"
+                          f"python scripts/workflow/splice_workflow_step.py {apps_filename} --position bottom"
         else:
             # Blank template - use template-specific display name
             blank_display_name = "Kung Fu Placeholder 🥋"
-            combined_cmd = f"python helpers/workflow/create_workflow.py {apps_filename} {class_name} {internal_name} " + \
+            combined_cmd = f"python scripts/workflow/create_workflow.py {apps_filename} {class_name} {internal_name} " + \
                           f"{self.format_bash_command(blank_display_name)} " + \
                           f"{self.format_bash_command(endpoint_message)} " + \
                           f"{self.format_bash_command(training_prompt)} --template blank --role Core --force"
