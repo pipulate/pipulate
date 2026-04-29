@@ -389,7 +389,7 @@ def main():
     # ----------------------------------------
 
     # Scene 2: The Radar (Intelligence)
-    narrator.say("A bulletproof JavaScript captcha was just implemented. Check back for updated reports.")
+    # narrator.say("A bulletproof JavaScript captcha was just implemented. Check back for updated reports.")
     run_tui_app("radar.py", duration=0.5)   # 30 seconds
 
     # Scene 3: The Deep Stream (Logs)
