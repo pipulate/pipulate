@@ -307,8 +307,8 @@ You're here to make the workflow concepts accessible and help users understand t
             ),
             Step(
                 id='step_03',
-                done='placeholder_03',
-                show='Placeholder Step 3 (Edit Me)',
+                done='cloud_config',
+                show='Cloud AI Engine',
                 refill=False,
             ),
             # --- STEPS_LIST_INSERTION_POINT ---
@@ -833,56 +833,90 @@ You're here to make the workflow concepts accessible and help users understand t
         )
     # --- END_STEP_BUNDLE: step_02 ---
 
-
     # --- START_STEP_BUNDLE: step_03 ---
     async def step_03(self, request):
-        """Handles GET request for Placeholder Step 3 (Edit Me)."""
+        """Handles GET request for Cloud AI Engine selection."""
         pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
         step_id = "step_03"
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
-        # Determine next_step_id dynamically based on runtime position in steps list
         next_step_id = steps[step_index + 1].id if step_index + 1 < len(steps) else 'finalize'
         pipeline_id = db.get("pipeline_id", "unknown")
         state = pip.read_state(pipeline_id)
         step_data = pip.get_step_data(pipeline_id, step_id, {})
-        current_value = step_data.get(step.done, "") # 'step.done' will be like 'placeholder_03'
+        
+        # current_value is now a dictionary containing 'model' and 'api_key'
+        current_value = step_data.get(step.done, {}) 
         finalize_data = pip.get_step_data(pipeline_id, "finalize", {})
     
         if "finalized" in finalize_data and current_value:
-            pip.append_to_history(f"[WIDGET CONTENT] {step.show} (Finalized):\n{current_value}")
+            display_text = f"Model: {current_value.get('model')}\nToken: {current_value.get('api_key')}"
+            pip.append_to_history(f"[WIDGET CONTENT] {step.show} (Finalized):\n{display_text}")
             return Div(
-                Card(H3(f"🔒 {step.show}: Completed")),
+                Card(H3(f"🔒 {step.show}: Completed"), Pre(display_text, cls="code-block-container")),
                 Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
                 id=step_id
             )
+            
         elif current_value and state.get("_revert_target") != step_id:
-            pip.append_to_history(f"[WIDGET CONTENT] {step.show} (Completed):\n{current_value}")
+            display_text = f"Model: {current_value.get('model')}\nToken: {current_value.get('api_key')}"
+            pip.append_to_history(f"[WIDGET CONTENT] {step.show} (Completed):\n{display_text}")
+            widget = Pre(display_text, cls="code-block-container")
             return Div(
-                pip.display_revert_header(step_id=step_id, app_name=app_name, message=f"{step.show}: Complete", steps=steps),
+                pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f"{step.show}: Configured", widget=widget, steps=steps),
                 Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
                 id=step_id
             )
+            
         else:
             pip.append_to_history(f"[WIDGET STATE] {step.show}: Showing input form")
-            await self.message_queue.add(pip, self.step_messages[step_id]["input"], verbatim=True)
+            
+            # Fetch Model Preferences from Config
+            config = pip.get_config()
+            cloud_models = [m.strip() for m in config.PREFERRED_CLOUD_MODELS.split(',')]
+            
+            form_content = Form(
+                Label("Cloud Model", _for=f"{step_id}-model-select"),
+                pip.wrap_with_inline_button(
+                    Select(
+                        *[Option(m, value=m) for m in cloud_models],
+                        name="cloud_model", 
+                        id=f"{step_id}-model-select",
+                        required=True
+                    ),
+                    button_label="Select",
+                    button_class="secondary outline"
+                )[0], # Extract just the select from the wrapper since we want custom layout
+                
+                Label("API Key", _for=f"{step_id}-api-key", style="margin-top: 1rem;"),
+                pip.wrap_with_inline_button(
+                    Input(
+                        type="password", 
+                        name="api_key", 
+                        id=f"{step_id}-api-key", 
+                        placeholder="Paste your API key here...", 
+                        required=True
+                    ),
+                    button_label="Save Cloud Config ▸",
+                    button_class="primary"
+                ),
+                hx_post=f"/{app_name}/{step_id}_submit", 
+                hx_target=f"#{step_id}"
+            )
+            
             return Div(
                 Card(
-                    H3(f"{step.show}"),
-                    P("This is a new placeholder step. Customize its input form as needed. Click Proceed to continue."),
-                    Form(
-                        # Example: Hidden input to submit something for the placeholder
-                        Input(type="hidden", name=step.done, value="Placeholder Value for Placeholder Step 3 (Edit Me)"),
-                        Button("Next ▸", type="submit", cls="primary"),
-                        hx_post=f"/{app_name}/{step_id}_submit", hx_target=f"#{step_id}"
-                    )
+                    H3(f"☁️ {step.show}"),
+                    P("Select your preferred Cloud AI engine and provide the corresponding API key. This unlocks advanced capabilities and provides a fallback when the local engine needs help.", cls="text-muted"),
+                    form_content
                 ),
-                Div(id=next_step_id), # Placeholder for next step, no trigger here
+                Div(id=next_step_id),
                 id=step_id
             )
 
+
     async def step_03_submit(self, request):
-        """Process the submission for Placeholder Step 3 (Edit Me)."""
+        """Process the submission for Cloud AI Engine."""
         pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
         step_id = "step_03"
         step_index = self.steps_indices[step_id]
@@ -891,21 +925,73 @@ You're here to make the workflow concepts accessible and help users understand t
         pipeline_id = db.get("pipeline_id", "unknown")
         
         form_data = await request.form()
-        # For a placeholder, get value from the hidden input or use a default
-        value_to_save = form_data.get(step.done, f"Default value for {step.show}") 
-        await pip.set_step_data(pipeline_id, step_id, value_to_save, steps)
+        selected_model = form_data.get("cloud_model", "").strip()
+        raw_key = form_data.get("api_key", "").strip()
         
-        pip.append_to_history(f"[WIDGET CONTENT] {step.show}:\n{value_to_save}")
+        if not selected_model or not raw_key:
+            error_msg = f'{pip.get_ui_constants()["EMOJIS"]["ERROR"]} Both model and API key are required.'
+            await self.message_queue.add(pip, error_msg, verbatim=True)
+            return P(error_msg, cls="text-invalid")
+            
+        # 1. Update OS Vault (.env) and Environment
+        import os
+        from pathlib import Path
+        from dotenv import set_key
+        
+        project_root = pip._find_project_root(os.getcwd()) or Path.cwd()
+        env_path = project_root / ".env"
+        env_path.touch(exist_ok=True)
+        
+        # Determine environment variable name based on model
+        env_var_name = 'GEMINI_API_KEY' # default
+        if 'claude' in selected_model.lower() or 'anthropic' in selected_model.lower():
+            env_var_name = 'ANTHROPIC_API_KEY'
+        elif 'gpt' in selected_model.lower() or 'openai' in selected_model.lower():
+            env_var_name = 'OPENAI_API_KEY'
+        elif 'groq' in selected_model.lower():
+            env_var_name = 'GROQ_API_KEY'
+            
+        set_key(str(env_path), env_var_name, raw_key)
+        os.environ[env_var_name] = raw_key
+        
+        # Register it with Simon Willison's LLM keychain to ensure system-wide availability
+        try:
+            import llm
+            key_alias = env_var_name.split('_')[0].lower()
+            llm.set_key(key_alias, raw_key)
+        except Exception:
+            pass
+
+        # 2. Update Global Server Cookie
+        db['active_cloud_model'] = selected_model
+        
+        # 3. Update Pipeline Record (Obfuscated)
+        masked_key = f"{raw_key[:4]}{'*' * 15}{raw_key[-4:]}" if len(raw_key) > 8 else "****"
+        payload = {
+            "model": selected_model,
+            "api_key": masked_key
+        }
+        
+        # The payload dictionary becomes the value for state[step_id][step.done]
+        await pip.set_step_data(pipeline_id, step_id, payload, steps)
+        
+        display_text = f"Model: {selected_model}\nToken: {masked_key}"
+        pip.append_to_history(f"[WIDGET CONTENT] {step.show}:\n{display_text}")
         pip.append_to_history(f"[WIDGET STATE] {step.show}: Step completed")
         
-        await self.message_queue.add(pip, f"{step.show} complete.", verbatim=True)
+        success_msg = f'{pip.get_ui_constants()["EMOJIS"]["SUCCESS"]} Cloud Engine secured: {selected_model}'
+        await self.message_queue.add(pip, success_msg, verbatim=True)
+        pip.speak(f"Cloud cognitive engine selected. Connection secured.", wait=False)
         
+        if pip.check_finalize_needed(step_index, steps):
+            await self.message_queue.add(pip, self.step_messages['finalize']['ready'], verbatim=True)
+        
+        widget = Pre(display_text, cls="code-block-container")
         return Div(
-            pip.display_revert_header(step_id=step_id, app_name=app_name, message=f"{step.show}: Complete", steps=steps),
+            pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f"{step.show}: Configured", widget=widget, steps=steps),
             Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
             id=step_id
         )
     # --- END_STEP_BUNDLE: step_03 ---
-
 
     # --- STEP_METHODS_INSERTION_POINT ---
