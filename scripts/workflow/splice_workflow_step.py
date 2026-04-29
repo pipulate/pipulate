@@ -214,7 +214,7 @@ def generate_step_method_templates(step_id_str: str, step_done_key: str, step_sh
     get_method_template = f"""
 async def {step_id_str}(self, request):
     \"\"\"Handles GET request for {step_show_name}.\"\"\"
-    pip, db, steps, app_name = self.pipulate, self.db, self.steps, {app_name_var}
+    pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, {app_name_var}
     step_id = "{step_id_str}"
     step_index = self.steps_indices[step_id]
     step = steps[step_index]
@@ -262,7 +262,7 @@ async def {step_id_str}(self, request):
     submit_method_template = f"""
 async def {step_id_str}_submit(self, request):
     \"\"\"Process the submission for {step_show_name}.\"\"\"
-    pip, db, steps, app_name = self.pipulate, self.db, self.steps, {app_name_var}
+    pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, {app_name_var}
     step_id = "{step_id_str}"
     step_index = self.steps_indices[step_id]
     step = steps[step_index]
