@@ -309,7 +309,7 @@ You're here to make the workflow concepts accessible and help users understand t
                 id='step_03',
                 done='cloud_config',
                 show='Cloud AI Engine',
-                refill=False,
+                refill=True,
             ),
             # --- STEPS_LIST_INSERTION_POINT ---
             Step(id='finalize', done='finalized', show='Finalize', refill=False)
