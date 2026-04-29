@@ -313,9 +313,9 @@ You're here to make the workflow concepts accessible and help users understand t
             ),
             Step(
                 id='step_04',
-                done='placeholder_04',
-                show='Placeholder Step 4 (Edit Me)',
-                refill=False,
+                done='botify_config',
+                show='Botify Integration',
+                refill=True,
             ),
             # --- STEPS_LIST_INSERTION_POINT ---
             Step(id='finalize', done='finalized', show='Finalize', refill=False)
@@ -1022,57 +1022,85 @@ You're here to make the workflow concepts accessible and help users understand t
         )
     # --- END_STEP_BUNDLE: step_03 ---
 
-
     # --- START_STEP_BUNDLE: step_04 ---
     async def step_04(self, request):
-        """Handles GET request for Placeholder Step 4 (Edit Me)."""
+        """Handles GET request for Botify Integration."""
         pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
         step_id = "step_04"
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
-        # Determine next_step_id dynamically based on runtime position in steps list
         next_step_id = steps[step_index + 1].id if step_index + 1 < len(steps) else 'finalize'
         pipeline_id = db.get("pipeline_id", "unknown")
         state = pip.read_state(pipeline_id)
         step_data = pip.get_step_data(pipeline_id, step_id, {})
-        current_value = step_data.get(step.done, "") # 'step.done' will be like 'placeholder_04'
+        
+        current_value = step_data.get(step.done, {}) 
         finalize_data = pip.get_step_data(pipeline_id, "finalize", {})
     
         if "finalized" in finalize_data and current_value:
-            pip.append_to_history(f"[WIDGET CONTENT] {step.show} (Finalized):\n{current_value}")
+            display_text = f"Status: {current_value.get('status')}\nToken: {current_value.get('api_key')}"
+            pip.append_to_history(f"[WIDGET CONTENT] {step.show} (Finalized):\n{display_text}")
             return Div(
-                Card(H3(f"🔒 {step.show}: Completed")),
+                Card(H3(f"🔒 {step.show}: Completed"), Pre(display_text, cls="code-block-container")),
                 Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
                 id=step_id
             )
+            
         elif current_value and state.get("_revert_target") != step_id:
-            pip.append_to_history(f"[WIDGET CONTENT] {step.show} (Completed):\n{current_value}")
+            display_text = f"Status: {current_value.get('status')}\nToken: {current_value.get('api_key')}"
+            pip.append_to_history(f"[WIDGET CONTENT] {step.show} (Completed):\n{display_text}")
+            widget = Pre(display_text, cls="code-block-container")
             return Div(
-                pip.display_revert_header(step_id=step_id, app_name=app_name, message=f"{step.show}: Complete", steps=steps),
+                pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f"{step.show}: Configured", widget=widget, steps=steps),
                 Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
                 id=step_id
             )
+            
         else:
             pip.append_to_history(f"[WIDGET STATE] {step.show}: Showing input form")
-            await self.message_queue.add(pip, self.step_messages[step_id]["input"], verbatim=True)
+            
+            # --- THE REFILL LOGIC ---
+            refill_key = ""
+            if step.refill:
+                refill_key = pip.load_secrets("BOTIFY_API_TOKEN") or ""
+            
+            form_content = Form(
+                Label("Botify API Key (Optional)", _for=f"{step_id}-api-key"),
+                Div(
+                    Input(
+                        type="password", 
+                        name="botify_token", 
+                        value=refill_key,
+                        id=f"{step_id}-api-key", 
+                        placeholder="Paste your Botify API key here...", 
+                        required=False
+                    ),
+                    Div(
+                        Button("Save Token ▸", type="submit", cls="primary", name="action", value="save"),
+                        Button("Skip ▸", type="submit", cls="secondary outline", name="action", value="skip", formnovalidate=True),
+                        style="display: flex; gap: 0.5rem; margin-top: 0.5rem;"
+                    ),
+                    cls="flex-column"
+                ),
+                hx_post=f"/{app_name}/{step_id}_submit", 
+                hx_target=f"#{step_id}"
+            )
+            
             return Div(
                 Card(
-                    H3(f"{step.show}"),
-                    P("This is a new placeholder step. Customize its input form as needed. Click Proceed to continue."),
-                    Form(
-                        # Example: Hidden input to submit something for the placeholder
-                        Input(type="hidden", name=step.done, value="Placeholder Value for Placeholder Step 4 (Edit Me)"),
-                        Button("Next ▸", type="submit", cls="primary"),
-                        hx_post=f"/{app_name}/{step_id}_submit", hx_target=f"#{step_id}"
-                    )
+                    H3(f"🕷️ {step.show}"),
+                    P("If you are a Botify customer or employee, you can connect your account. ", 
+                      A("Get your API key here ↗", href="https://app.botify.com/account/", target="_blank"),
+                      cls="text-muted"),
+                    form_content
                 ),
-                Div(id=next_step_id), # Placeholder for next step, no trigger here
+                Div(id=next_step_id),
                 id=step_id
             )
 
 
     async def step_04_submit(self, request):
-        """Process the submission for Placeholder Step 4 (Edit Me)."""
+        """Process the submission for Botify Integration."""
         pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
         step_id = "step_04"
         step_index = self.steps_indices[step_id]
@@ -1081,21 +1109,55 @@ You're here to make the workflow concepts accessible and help users understand t
         pipeline_id = db.get("pipeline_id", "unknown")
         
         form_data = await request.form()
-        # For a placeholder, get value from the hidden input or use a default
-        value_to_save = form_data.get(step.done, f"Default value for {step.show}") 
-        await pip.set_step_data(pipeline_id, step_id, value_to_save, steps)
+        action = form_data.get("action", "save")
+        raw_key = form_data.get("botify_token", "").strip()
         
-        pip.append_to_history(f"[WIDGET CONTENT] {step.show}:\n{value_to_save}")
+        if action == "skip" or not raw_key:
+            payload = {"status": "Skipped", "api_key": "None"}
+            display_text = "Status: Skipped\nToken: None"
+            success_msg = f'{pip.get_ui_constants()["EMOJIS"]["SUCCESS"]} Botify Integration skipped.'
+            await self.message_queue.add(pip, success_msg, verbatim=True)
+            pip.speak("Botify integration skipped.", wait=False)
+        else:
+            # 1. Update OS Vault (.env) and Environment
+            import os
+            from pathlib import Path
+            from dotenv import set_key
+            
+            project_root = pip._find_project_root(os.getcwd()) or Path.cwd()
+            env_path = project_root / ".env"
+            env_path.touch(exist_ok=True)
+            
+            env_var_name = 'BOTIFY_API_TOKEN'
+            set_key(str(env_path), env_var_name, raw_key)
+            os.environ[env_var_name] = raw_key
+            
+            # 2. Update Pipeline Record (Obfuscated)
+            masked_key = f"{raw_key[:4]}{'*' * 15}{raw_key[-4:]}" if len(raw_key) > 8 else "****"
+            payload = {
+                "status": "Configured",
+                "api_key": masked_key
+            }
+            display_text = f"Status: Configured\nToken: {masked_key}"
+            
+            success_msg = f'{pip.get_ui_constants()["EMOJIS"]["SUCCESS"]} Botify token secured.'
+            await self.message_queue.add(pip, success_msg, verbatim=True)
+            pip.speak("Botify API token secured.", wait=False)
+            
+        await pip.set_step_data(pipeline_id, step_id, payload, steps)
+        
+        pip.append_to_history(f"[WIDGET CONTENT] {step.show}:\n{display_text}")
         pip.append_to_history(f"[WIDGET STATE] {step.show}: Step completed")
         
-        await self.message_queue.add(pip, f"{step.show} complete.", verbatim=True)
+        if pip.check_finalize_needed(step_index, steps):
+            await self.message_queue.add(pip, self.step_messages['finalize']['ready'], verbatim=True)
         
+        widget = Pre(display_text, cls="code-block-container")
         return Div(
-            pip.display_revert_header(step_id=step_id, app_name=app_name, message=f"{step.show}: Complete", steps=steps),
+            pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f"{step.show}: Complete", widget=widget, steps=steps),
             Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
             id=step_id
         )
     # --- END_STEP_BUNDLE: step_04 ---
-
 
     # --- STEP_METHODS_INSERTION_POINT ---
