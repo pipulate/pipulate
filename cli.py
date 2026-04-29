@@ -133,13 +133,9 @@ def discover_tools(show_all=False, tool_name=None):
 async def call_mcp_tool(tool_name: str, tool_args: dict):
     """Execute an MCP tool with the given arguments."""
     console.print(Panel(f"🔧 [bold cyan]Executing MCP Tool: {tool_name}[/bold cyan]", border_style="cyan"))
-    
+
     try:
         # Import MCP tools module
-        from tools.mcp_tools import register_all_mcp_tools
-        register_all_mcp_tools()
-        
-        # Import the server's registry - with inline architecture, we need to get it from mcp_tools
         from tools import get_all_tools
         registry = get_all_tools()
         
