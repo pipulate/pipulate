@@ -24,7 +24,6 @@ from imports.crud import Step  # 🎯 STANDARDIZED: Import centralized Step defi
 import config
 
 ROLES = ['Developer']
-TOKEN_FILE = 'botify_token.txt'
 
 
 class Trifecta:
@@ -2152,16 +2151,9 @@ class Trifecta:
         Returns:
             (True, None) if found, (False, None) if not found, or (False, error_message) on error.
         """
-        try:
-            if not os.path.exists(TOKEN_FILE):
-                return (False, f"Token file '{TOKEN_FILE}' not found.")
-            with open(TOKEN_FILE) as f:
-                content = f.read().strip()
-                api_key = content.split('\n')[0].strip()
-                if not api_key:
-                    return (False, f"Token file '{TOKEN_FILE}' is empty.")
-        except Exception as e:
-            return (False, f'Error loading API key: {e}')
+        api_key = self.read_api_token()
+        if not api_key:
+            return (False, "Botify API token not found in the .env vault. Please run the Configuration App.")
         if not org_slug or not project_slug:
             return (False, 'Organization and project slugs are required.')
         collections_url = f'https://api.botify.com/v1/projects/{org_slug}/{project_slug}/collections'
@@ -2255,15 +2247,11 @@ class Trifecta:
         return all_slugs
 
     def read_api_token(self):
-        """Read the Botify API token from the token file."""
+        """Read the Botify API token from the secure .env vault."""
         try:
-            if not os.path.exists(TOKEN_FILE):
-                return None
-            with open(TOKEN_FILE) as f:
-                content = f.read().strip()
-                token = content.split('\n')[0].strip()
-            return token
-        except Exception:
+            return self.pipulate.load_secrets("BOTIFY_API_TOKEN")
+        except Exception as e:
+            logger.error(f"Error loading Botify API token from vault: {e}")
             return None
 
     async def save_analyses_to_json(self, username, project_name, api_token):
@@ -2878,21 +2866,16 @@ import json
 import asyncio
 import os
 from typing import Optional, Dict, Any
-
-# Configuration
-TOKEN_FILE = 'botify_token.txt'
+from dotenv import load_dotenv
 
 def load_api_token() -> str:
-    \"\"\"Load the Botify API token from the token file.\"\"\"
+    \"\"\"Load the Botify API token from the .env file.\"\"\"
     try:
-        if not os.path.exists(TOKEN_FILE):
-            raise ValueError(f"Token file '{{TOKEN_FILE}}' not found.")
-        with open(TOKEN_FILE) as f:
-            content = f.read().strip()
-            api_key = content.split('\\n')[0].strip()
-            if not api_key:
-                raise ValueError(f"Token file '{{TOKEN_FILE}}' is empty.")
-            return api_key
+        load_dotenv()
+        api_key = os.environ.get('BOTIFY_API_TOKEN')
+        if not api_key:
+            raise ValueError("BOTIFY_API_TOKEN not found in environment or .env file.")
+        return api_key
     except Exception as e:
         raise ValueError(f"Error loading API token: {{str(e)}}")
 
@@ -4985,7 +4968,7 @@ await main()
                 if not api_token:
                     return JSONResponse({
                         'error': 'No Botify API token found',
-                        'message': 'Please ensure botify_token.txt exists in the project root'
+                        'message': 'Please run the Configuration app (Step 4) to securely store your API token in the .env vault.'
                     }, status_code=401)
                 
                 # Generate the cache using the same method as Trifecta workflow
