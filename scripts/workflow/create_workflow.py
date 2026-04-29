@@ -54,6 +54,7 @@ python create_workflow.py 035_kungfu_workflow.py KungfuWorkflow kungfu "Kung Fu 
 python create_workflow.py 035_kungfu_workflow KungfuWorkflow kungfu "Kung Fu Download" "Welcome message" "Training prompt"  # .py extension optional
 python create_workflow.py apps/035_kungfu_workflow.py KungfuWorkflow kungfu "Kung Fu Download" "Welcome message" "Training prompt"  # apps/ prefix optional
 
+
 # Can be run from project root:
 python helpers/workflow/create_workflow.py 035_kungfu_workflow.py KungfuWorkflow kungfu "Kung Fu Download" "Welcome message" "Training prompt"
 
@@ -207,17 +208,11 @@ Examples:
     print()
 
     # Normalize the target filename to just the basename
-    target_filename = args.filename
-    
-    # Handle various input formats:
+    # Handle various input formats cleanly using pathlib:
     # 1. Just filename: "035_kungfu_workflow.py"
     # 2. With apps/ prefix: "apps/035_kungfu_workflow.py"  
     # 3. Full path: "/some/path/apps/035_kungfu_workflow.py"
-    if target_filename.startswith('apps/'):
-        target_filename = target_filename[8:]  # Remove 'apps/' prefix
-    elif '/' in target_filename:
-        # Extract just the filename from any path
-        target_filename = Path(target_filename).name
+    target_filename = Path(args.filename).name
     
     # Ensure it has .py extension
     if not target_filename.endswith('.py'):
