@@ -867,7 +867,7 @@ You're here to make the workflow concepts accessible and help users understand t
                 Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
                 id=step_id
             )
-            
+
         else:
             pip.append_to_history(f"[WIDGET STATE] {step.show}: Showing input form")
             
@@ -875,11 +875,33 @@ You're here to make the workflow concepts accessible and help users understand t
             config = pip.get_config()
             cloud_models = [m.strip() for m in config.PREFERRED_CLOUD_MODELS.split(',')]
             
+            # --- THE REFILL LOGIC ---
+            refill_model = ""
+            refill_key = ""
+            
+            if step.refill and current_value:
+                refill_model = current_value.get('model', '')
+                
+                # CRITICAL: We cannot refill the password field with the obfuscated 
+                # key from the pipeline state. We must fetch the raw key from the Vault.
+                if refill_model:
+                    env_var_name = 'GEMINI_API_KEY' # default
+                    if 'claude' in refill_model.lower() or 'anthropic' in refill_model.lower():
+                        env_var_name = 'ANTHROPIC_API_KEY'
+                    elif 'gpt' in refill_model.lower() or 'openai' in refill_model.lower():
+                        env_var_name = 'OPENAI_API_KEY'
+                    elif 'groq' in refill_model.lower():
+                        env_var_name = 'GROQ_API_KEY'
+                        
+                    # securely extract the unmasked key for the UI
+                    refill_key = pip.load_secrets(env_var_name) or ""
+            
             form_content = Form(
                 Label("Cloud Model", _for=f"{step_id}-model-select"),
                 pip.wrap_with_inline_button(
                     Select(
-                        *[Option(m, value=m) for m in cloud_models],
+                        # Automatically select the previously chosen model
+                        *[Option(m, value=m, selected=(m == refill_model)) for m in cloud_models],
                         name="cloud_model", 
                         id=f"{step_id}-model-select",
                         required=True
@@ -893,6 +915,7 @@ You're here to make the workflow concepts accessible and help users understand t
                     Input(
                         type="password", 
                         name="api_key", 
+                        value=refill_key,  # Inject the raw key securely
                         id=f"{step_id}-api-key", 
                         placeholder="Paste your API key here...", 
                         required=True
@@ -913,7 +936,6 @@ You're here to make the workflow concepts accessible and help users understand t
                 Div(id=next_step_id),
                 id=step_id
             )
-
 
     async def step_03_submit(self, request):
         """Process the submission for Cloud AI Engine."""
