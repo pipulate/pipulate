@@ -1,4 +1,4 @@
-#\ ============================================================================
+# ============================================================================
 # THE LIVING CODEX: THE STORY OF THE FOREVER MACHINE
 # ============================================================================
 # Greetings, AI Copilot. You have just been spun up into the Pipulate system.
@@ -55,20 +55,20 @@ AI_PHOOEY_CHOP = """\
 # .gitignore  # [573 tokens | 2,089 bytes]
 
 # prompt_foo.py  # [12,990 tokens | 59,609 bytes]
-foo_files.py  # [10,245 tokens | 33,406 bytes]
+# foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
 # /home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
-# flake.nix  # [8,011 tokens | 34,229 bytes]
-# config.py  # [4,170 tokens | 16,184 bytes]
-server.py  # [54,718 tokens | 261,069 bytes]
-# pyproject.toml  # [677 tokens | 2,299 bytes]
-# .gitignore  # [573 tokens | 2,089 bytes]
+flake.nix  # [8,011 tokens | 34,229 bytes]
+config.py  # [4,170 tokens | 16,184 bytes]
+# server.py  # [54,718 tokens | 261,069 bytes]
+pyproject.toml  # [677 tokens | 2,299 bytes]
+.gitignore  # [573 tokens | 2,089 bytes]
 pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-# Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
-# Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
-# Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
+Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
+Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
+Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
 pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
 apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
@@ -458,8 +458,8 @@ apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
 # The foundational NPvg framework and state management.
 
 # CHAPTER 0: ONBOARDING
-# !https://pipulate.com/
-# /home/mike/repos/Pipulate.com/install.sh  # [2,527 tokens | 10,174 bytes]
+# release.py  # [9,879 tokens | 44,440 bytes]
+# assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
 # flake.nix  # [7,721 tokens | 32,979 bytes]
 # pyproject.toml  # [677 tokens | 2,299 bytes]
 # assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
@@ -532,7 +532,7 @@ apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
 # CHAPTER 6: THE SKIN (FRONTEND ASSETS & INIT) (~265KB)
 # assets/init.js  # [2,303 tokens | 12,158 bytes]
 # assets/pipulate.js  # [4,889 tokens | 24,977 bytes]
-assets/styles.css  # [18,671 tokens | 81,016 bytes]
+# assets/styles.css  # [18,671 tokens | 81,016 bytes]
 # assets/theme.js  # [930 tokens | 4,337 bytes]
 # assets/utils.js  # [3,125 tokens | 15,103 bytes]
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
@@ -877,7 +877,6 @@ tools/advanced_automation_tools.py  # The heavy lifter
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
-# release.py  # [9,879 tokens | 44,440 bytes]
 # remotes/honeybot/scripts/dye_injector.py  # [271 tokens | 1,070 bytes]
 # remotes/honeybot/scripts/dye_injector_v2.py  # [542 tokens | 2,361 bytes]
 # requirements.in  # [573 tokens | 1,924 bytes]
