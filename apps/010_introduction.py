@@ -250,7 +250,7 @@ class IntroductionPlugin:
         # The explicit, clickable transition to the Configuration App
         config_button = A(
             "⚙️ Proceed to Configuration", 
-            href="/redirect/015_config", 
+            href="/redirect/config", 
             role="button", 
             cls="primary",
             style="margin-top: 1rem;"
