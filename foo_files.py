@@ -598,7 +598,7 @@ apps/015_config.py  # [8,026 tokens | 38,233 bytes]
 # apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
 
 # imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
-# apps/400_botify_trifecta.py  # [53,199 tokens | 276,285 bytes]
+apps/400_botify_trifecta.py  # [53,199 tokens | 276,285 bytes]
 
 # CHAPTER 11 & 12: PARAMETER BUSTER & LINK GRAPH (~550KB)
 # apps/110_parameter_buster.py  # [55,573 tokens | 274,005 bytes]
