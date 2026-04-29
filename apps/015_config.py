@@ -623,41 +623,52 @@ You're here to make the workflow concepts accessible and help users understand t
 
     async def step_01_submit(self, request):
         """
-        Handle the submission of step 01.
+        Handle the submission of step 01 (Operator Name).
 
-        This method:
-        1. Gets the user's input from the form
-        2. Validates the input
-        3. Updates the workflow state
-        4. Returns a UI showing the completed step and triggering the next step
+        This method validates the input and executes a triple-write to memory:
+        1. Workflow State (for local progression)
+        2. Server Cookie (for global UI access)
+        3. AI Keychain (for amnesia-proof persistence)
         """
         wand, steps, app_name = (self.wand, self.steps, self.app_name)
-        step_id = 'step_01'  # This string literal will be replaced by swap_workflow_step.py
+        step_id = 'step_01'  
         step_index = self.steps_indices[step_id]
-        step = steps[step_index]  # Use the resolved step object
+        step = steps[step_index]  
 
-        pipeline_id = self.wand.db["pipeline_id"]
+        pipeline_id = self.wand.db.get("pipeline_id", "unknown")
         form = await request.form()
-        user_val = form.get(step.done, "")  # CRITICAL CHANGE: Use step.done from the resolved Step object
+        user_val = form.get(step.done, "").strip()  
 
         # Validate input with emoji error handling
-        if not user_val:
-            error_msg = f'{self.ui["EMOJIS"]["ERROR"]} Please enter a value'
-            await self.message_queue.add(self.wand, error_msg, verbatim=True)
-            return P(error_msg, cls='text-invalid')
+        is_valid, error_msg, error_component = wand.validate_step_input(user_val, step.show)
+        if not is_valid:
+            error_with_emoji = f'{self.ui["EMOJIS"]["ERROR"]} {error_msg}'
+            await self.message_queue.add(self.wand, error_with_emoji, verbatim=True)
+            return error_component
 
-        # Update state
+        # 1. Update Workflow State (Pipeline Memory)
         await self.wand.set_step_data(pipeline_id, step_id, user_val, self.steps)
 
+        # 2. Update Global Server Cookie (FastHTML UI Memory)
+        self.wand.db['operator_name'] = user_val
+
+        # 3. Update The Subconscious (Amnesia-proof AI Memory)
+        try:
+            from imports.ai_dictdb import keychain_instance
+            keychain_instance['operator_name'] = user_val
+            logger.info(f"🧠 Operator identity '{user_val}' secured in the Subconscious.")
+        except ImportError as e:
+            logger.warning(f"⚠️ Could not access AI Keychain to store operator identity: {e}")
+
         # Progressive feedback with emoji
-        success_msg = f'{self.ui["EMOJIS"]["SUCCESS"]} Name saved: {user_val}'
+        success_msg = f'{self.ui["EMOJIS"]["SUCCESS"]} Operator Identity secured: {user_val}'
         await self.message_queue.add(self.wand, success_msg, verbatim=True)
 
         # Speak it into existence!
-        self.wand.speak(f"Name saved. Hello {user_val}. Proceed to the next step.", wait=True)
+        self.wand.speak(f"Identity confirmed. Hello {user_val}. Proceed to the next step.", wait=True)
 
         # Update LLM context
-        self.wand.append_to_history(f"[WIDGET CONTENT] {step.show}:\n{user_val}")
+        self.wand.append_to_history(f"[SYSTEM STATE] Operator identity established globally as:\n{user_val}")
 
         # Return completed view with next step trigger using chain_reverter
         return self.wand.chain_reverter(step_id, step_index, self.steps, self.app_name, user_val)
