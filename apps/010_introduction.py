@@ -29,7 +29,7 @@ class IntroductionPlugin:
 
     # Narrative Script (Base template)
     NARRATION = {
-        'step_01': "Welcome to the dashboard. I am Chip O'Theseus, the voice of the Forever Machine. My speech is rendered entirely on your local metal, but my reasoning engines are currently idling. You can return to this homepage at any time by clicking the home link in the upper-left corner of the screen.",
+        'step_01': "Welcome to the dashboard. I am Chip O'Theseus. My speech is rendered entirely on your local metal, but my reasoning engines are currently idling. You can return to this homepage at any time by clicking the home link in the upper-left corner of the screen.",
         'step_02': "I am about to hand you over to the Configuration Workflow. You will repeat what you just did Notebook-side in JupyterLab; telling me your name, local and cloud AI preferences, and Botify API key if you're a Botify employee or customer. After that, we remember it. The Configuration Workflow will feel a lot like running a Jupyter Notebook, proceeding top-to-bottom as if through the cells. Only you don't have to see any of the Python code.",
         'finalize': "Every workflow requires a unique Key to store its memory. You can keep the default key, or generate a New Key to start a fresh configuration. Let's establish your permanent identity."
     }
@@ -64,7 +64,7 @@ class IntroductionPlugin:
         if ai_status.get('has_any_local'):
             local_model = ai_status.get('local')
             if local_model:
-                standard_intro = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus, the voice of the Forever Machine. My speech is rendered entirely on your local metal, but my reasoning engines are currently idling. You can return to this homepage at any time by clicking the '{dynamic_app_name}' link in the upper-left corner of the screen."
+                standard_intro = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus. My speech is rendered entirely on your local metal, but my reasoning engines are currently idling. You can return to this homepage at any time by clicking the '{dynamic_app_name}' link in the upper-left corner of the screen."
             else:
                 standard_intro = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus. My speech is rendered entirely on your local metal. You have not yet set up your local AI capabilities. Please visit Ollama.com."
         else:
