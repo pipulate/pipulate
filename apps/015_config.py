@@ -256,7 +256,8 @@ When users ask questions about this workflow:
 - Clarify how state is maintained
 - Help them understand the purpose of each component
 
-You're here to make the workflow concepts accessible and help users understand the transformation from notebook to web app. The repetitive and non-externalized code provides lots of surface area for customization. Workflows are WET! It will take some getting used to. """
+You're here to make the workflow concepts accessible and help users understand the transformation from notebook to web app. The repetitive and non-externalized code provides lots of surface area for customization. Workflows are WET! It will take some getting used to. 
+"""
 
     # --- START_CLASS_ATTRIBUTES_BUNDLE ---
     # Additional class-level constants can be merged here by manage_class_attributes.py
@@ -296,14 +297,13 @@ You're here to make the workflow concepts accessible and help users understand t
                 id='step_01',
                 done='name',
                 show='Your Name',
-                refill=True  # Pre-fill on revert
+                refill=True
             ),
             Step(
                 id='step_02',
-                done='greeting',
-                show='Config Step',
-                refill=False,
-                transform=lambda name: f'Hello {name}!'  # Transform previous step's output
+                done='local_model',
+                show='Local AI Engine',
+                refill=True  # Ensure this is True so it repopulates if they revert
             ),
             # --- STEPS_LIST_INSERTION_POINT ---
             Step(id='finalize', done='finalized', show='Finalize', refill=False)
@@ -732,51 +732,46 @@ You're here to make the workflow concepts accessible and help users understand t
 
         # Phase 3: Input Phase - Show input form
         else:
-            display_value = user_val if step.refill and user_val else await self.get_suggestion(step_id, state)
+            # Fallback to the system default if they haven't selected one yet
+            display_value = user_val if step.refill and user_val else self.wand.get_config().DEFAULT_PROMPT_MODEL
+            
             await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
-            explanation = f"That's it! Workflows just collect data — walking you from one Step to the Next Step ▸"
+            explanation = "Select your local edge model (for privacy and unlimited use). The general contractor of your machine."
             await self.message_queue.add(wand, explanation, verbatim=True)
-            self.wand.speak("That's it! Workflows just collect data, walking you from one step to the next. Unix pipes. Please enter a greeting.", wait=False)
+            self.wand.speak("Please select your local cognitive engine. I recommend Gemma 4.", wait=False)
+            
+            # Fetch Model Preferences from Config
+            config = self.wand.get_config()
+            local_models = [m.strip() for m in config.PREFERRED_LOCAL_MODELS.split(',')]
             
             return Div(
                 Card(
-                    H3(f'{self.ui["EMOJIS"]["GREETING"]} {self.wand.fmt(step.id)}: Enter {step.show}'),
+                    H3(f'🧠 {self.wand.fmt(step.id)}: {step.show}'),
                     P(explanation, cls='text-muted'),
                     Label(
-                        'Config Step:',
-                        _for='config-step02-greeting-input',
-                        id='config-step02-greeting-label',
-                        aria_label='Greeting message input field label',
-                        data_testid='config-step02-greeting-label'
+                        'Local AI (Ollama):',
+                        _for='config-step02-local-ai-select',
+                        id='config-step02-local-ai-label',
+                        aria_label='Local AI selection label'
                     ),
                     Form(
+                        # The Magic: wrap_with_inline_button handles Select tags just fine!
                         wand.wrap_with_inline_button(
-                            Input(
-                                type='text',
-                                name=step.done,  # CRITICAL: Use step.done from resolved Step object
-                                value=display_value,
-                                placeholder=f'{step.show} (generated)',
-                                required=True,
-                                autofocus=True,
-                                _onfocus='this.setSelectionRange(this.value.length, this.value.length)',
-                                id='config-step02-greeting-input',
-                                aria_label=f'Enter {step.show}',
-                                aria_describedby='config-step02-greeting-label',
-                                aria_labelledby='config-step02-greeting-label',
-                                data_testid='config-step02-greeting-input',
-                                title=f'Please enter {step.show}'
+                            Select(
+                                *[Option(m, value=m, selected=(m == display_value)) for m in local_models],
+                                name=step.done, 
+                                id='config-step02-local-ai-select',
+                                aria_label=f'Select {step.show}',
+                                aria_describedby='config-step02-local-ai-label',
                             ),
                             button_label=self.ui['BUTTON_LABELS']['NEXT_STEP']
                         ),
                         hx_post=f'/{app_name}/{step_id}_submit',
                         hx_target=f'#{step_id}',
                         id='config-step02-form',
-                        aria_label='Greeting message input form',
-                        data_testid='config-step02-form'
                     ),
                     role='region',
-                    aria_label='Step 2: Greeting message input',
-                    data_testid='config-step02-input-card'
+                    aria_label='Step 2: Local AI Selection',
                 ),
                 Div(
                     id=next_step_id,
@@ -789,18 +784,17 @@ You're here to make the workflow concepts accessible and help users understand t
     async def step_02_submit(self, request):
         """ Handles POST submission for Step 2: Validates, saves state, returns navigation. """
         wand, steps, app_name = (self.wand, self.steps, self.app_name)
-        step_id = 'step_02'  # This string literal will be replaced by swap_workflow_step.py
+        step_id = 'step_02'
         step_index = self.steps_indices[step_id]
-        step = steps[step_index]  # Use the resolved step object
+        step = steps[step_index]
         pipeline_id = wand.db.get('pipeline_id', 'unknown')
 
         if step.done == 'finalized':
             return await wand.handle_finalized_step(pipeline_id, step_id, steps, app_name, self)
 
         form = await request.form()
-        user_val = form.get(step.done, '')  # CRITICAL CHANGE: Use step.done from resolved Step object
+        user_val = form.get(step.done, '')
 
-        # Enhanced validation with emoji error handling
         is_valid, error_msg, error_component = wand.validate_step_input(user_val, step.show)
         if not is_valid:
             error_with_emoji = f'{self.ui["EMOJIS"]["ERROR"]} {error_msg}'
@@ -808,12 +802,18 @@ You're here to make the workflow concepts accessible and help users understand t
             return error_component
 
         processed_val = user_val
+        
+        # 1. Update Workflow State (Pipeline Memory)
         await wand.set_step_data(pipeline_id, step_id, processed_val, steps)
+        
+        # 2. Update Global Server Cookie (FastHTML UI Memory)
+        self.wand.db['active_local_model'] = processed_val
 
         # Progressive feedback with emoji
         success_msg = f'{self.ui["EMOJIS"]["SUCCESS"]} {step.show}: {processed_val}'
         await self.message_queue.add(wand, success_msg, verbatim=True)
-        self.wand.speak("Greeting saved. All steps are complete. You may now finalize the workflow.", wait=False)
+        self.wand.speak("Local cognitive engine selected.", wait=False)
+        self.wand.append_to_history(f"[SYSTEM STATE] Local AI set to:\n{processed_val}")
 
         if wand.check_finalize_needed(step_index, steps):
             await self.message_queue.add(wand, self.step_messages['finalize']['ready'], verbatim=True)
