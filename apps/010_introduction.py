@@ -11,6 +11,7 @@ Features:
 - Proper Containerization for HTMX navigation
 """
 
+import time
 import asyncio
 from fasthtml.common import *
 from loguru import logger
@@ -142,15 +143,23 @@ class IntroductionPlugin:
 
     def _render_slide(self, step_id, title, content, next_step_id=None):
         """Helper to render a standardized slide."""
+        import time
+        
         # Explicit check against string '1'
         voice_enabled = self.wand.db.get('voice_enabled', '0') == '1'
+        
+        # 🚦 THE 80/20 POLITE INTERRUPTION: If the server just woke up, 
+        # tell HTMX to hold the request for 7 seconds so the server can speak first.
+        server_start = float(self.wand.db.get('server_start_time', 0))
+        is_startup = (time.time() - server_start) < 8
+        trigger_logic = "load delay:7s" if is_startup else "load"
         
         # Auto-speak trigger
         onload_trigger = ""
         if voice_enabled:
              onload_trigger = Div(
                  hx_post=f"/{self.app_name}/speak/{step_id}",
-                 hx_trigger="load",
+                 hx_trigger=trigger_logic,  # <-- USE DYNAMIC TRIGGER HERE
                  style="display:none;"
              )
 

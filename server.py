@@ -1852,6 +1852,8 @@ async def startup_event():
     the full spectrum of content curation, archive surfing, and
     progressive distillation workflows that define the Pipulate vision.
     """
+    pipulate.db['server_start_time'] = str(time.time())
+
     # 🔧 MCP Tools should already be registered from main startup sequence
     # This async startup event handles final initialization only
     tool_count = len(MCP_TOOL_REGISTRY)
