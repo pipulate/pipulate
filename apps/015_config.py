@@ -837,7 +837,7 @@ You're here to make the workflow concepts accessible and help users understand t
     # --- START_STEP_BUNDLE: step_03 ---
     async def step_03(self, request):
         """Handles GET request for Placeholder Step 3 (Edit Me)."""
-        pip, db, steps, app_name = self.pipulate, self.db, self.steps, self.app_name
+        pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
         step_id = "step_03"
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
@@ -881,10 +881,9 @@ You're here to make the workflow concepts accessible and help users understand t
                 id=step_id
             )
 
-
     async def step_03_submit(self, request):
         """Process the submission for Placeholder Step 3 (Edit Me)."""
-        pip, db, steps, app_name = self.pipulate, self.db, self.steps, self.app_name
+        pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
         step_id = "step_03"
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
