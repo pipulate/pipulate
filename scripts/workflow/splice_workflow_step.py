@@ -20,13 +20,13 @@ python splice_workflow_step.py 035_kungfu_workflow    # .py extension optional
 python splice_workflow_step.py apps/035_kungfu_workflow.py  # apps/ prefix optional
 
 # Can be run from project root:
-python helpers/workflow/splice_workflow_step.py 035_kungfu_workflow.py --position top
+# python scripts/workflow/splice_workflow_step.py 035_kungfu_workflow.py --position top
 
-# Can be run from helpers directory:
-cd helpers && python splice_workflow_step.py 035_kungfu_workflow.py --position bottom
+# Can be run from scripts directory:
+# cd scripts && python workflow/splice_workflow_step.py 035_kungfu_workflow.py --position bottom
 
 # Can be run from anywhere with full path:
-python /path/to/pipulate/helpers/workflow/splice_workflow_step.py 035_kungfu_workflow.py --position top
+# python /path/to/pipulate/scripts/workflow/splice_workflow_step.py 035_kungfu_workflow.py --position top
 """
 
 def find_pipulate_root():
@@ -323,23 +323,18 @@ Examples:
     print(f"Plugins directory: {PLUGINS_DIR}")
     print()
 
+
     # Normalize the target filename to just the basename
-    target_filename = args.target_filename
-    
-    # Handle various input formats:
+    # Handle various input formats cleanly using pathlib:
     # 1. Just filename: "035_kungfu_workflow.py"
     # 2. With apps/ prefix: "apps/035_kungfu_workflow.py"  
     # 3. Full path: "/some/path/apps/035_kungfu_workflow.py"
-    if target_filename.startswith('apps/'):
-        target_filename = target_filename[8:]  # Remove 'apps/' prefix
-    elif '/' in target_filename:
-        # Extract just the filename from any path
-        target_filename = Path(target_filename).name
+    target_filename = Path(args.target_filename).name
     
     # Ensure it has .py extension
     if not target_filename.endswith('.py'):
         target_filename += '.py'
-    
+
     target_file_path = PLUGINS_DIR / target_filename
     
     print(f"Looking for workflow file: {target_file_path}")
