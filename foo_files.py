@@ -59,7 +59,7 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-apps/120_link_graph.py  # [54,349 tokens | 272,468 bytes]
+# apps/120_link_graph.py  # [54,349 tokens | 272,468 bytes]
 apps/121_link_graph_v2.py  # [54,150 tokens | 280,523 bytes]
 
 # apps/200_workflow_genesis.py  # [12,397 tokens | 59,508 bytes]
