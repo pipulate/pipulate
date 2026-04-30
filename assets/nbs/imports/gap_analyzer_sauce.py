@@ -536,11 +536,6 @@ def pivot_semrush_data(job: str, df2: pd.DataFrame, client_domain_from_keys: str
         print("⚠️ Input DataFrame (df2) is empty. Cannot perform pivot.")
         return pd.DataFrame()
 
-    # --- PATH DEFINITION ---
-    temp_dir = wand.paths.temp / job
-    temp_dir.mkdir(parents=True, exist_ok=True)
-    competitors_csv_file = temp_dir / "competitors.csv"
-
     # --- INPUTS from wand state & args ---
     semrush_lookup = _extract_registered_domain(client_domain_from_keys)
     # Retrieve the competitor dictionary stored by the previous step
@@ -579,21 +574,21 @@ def pivot_semrush_data(job: str, df2: pd.DataFrame, client_domain_from_keys: str
         print(f"  💾 Stored canonical competitor list ({len(competitors)} competitors) to wand state.")
         pivot_df['Competitors Positioning'] = pivot_df.iloc[:, 1:].notna().sum(axis=1)
 
-        # Load or initialize df_competitors
-        if competitors_csv_file.exists():
-            df_competitors = pd.read_csv(competitors_csv_file)
+        # Load or initialize df_competitors via the wand
+        df_competitors = load_wip_dataframe(job, 'competitors_csv_path')
+        
+        if not df_competitors.empty:
             df_competitors['Title'] = df_competitors['Title'].fillna('')
             df_competitors['Matched Title'] = df_competitors['Matched Title'].fillna('')
-            print(f"  ✅ Loaded {len(df_competitors)} existing competitor records from '{competitors_csv_file}'.")
+            print(f"  ✅ Loaded {len(df_competitors)} existing competitor records from wand state.")
         else:
             if cdict:
                 df_competitors = pd.DataFrame(list(cdict.items()), columns=['Domain', 'Column Label'])
                 df_competitors['Title'] = ''
                 df_competitors['Matched Title'] = ''
-                df_competitors.to_csv(competitors_csv_file, index=False)
-                print(f"  ✅ Created new competitor file at '{competitors_csv_file}'.")
+                print(f"  ✅ Created new competitor DataFrame in memory.")
             else:
-                print(f"  ⚠️ Warning: 'competitors_dict_json' was empty or invalid. Cannot create initial competitors file.")
+                print(f"  ⚠️ Warning: 'competitors_dict_json' was empty or invalid. Cannot create initial competitors.")
                 df_competitors = pd.DataFrame(columns=['Domain', 'Column Label', 'Title', 'Matched Title'])
 
         # Print keyword counts (internal display logic)
@@ -623,9 +618,10 @@ def pivot_semrush_data(job: str, df2: pd.DataFrame, client_domain_from_keys: str
         # --- OUTPUT (to wand state) ---
         pivot_csv_path = save_wip_dataframe(job, pivot_df, "keyword_pivot.csv")
         wand.set(job, 'keyword_pivot_csv_path', pivot_csv_path)
-        
-        # Note: df_competitors is already saved to competitors_csv_file earlier in the function!
-        wand.set(job, 'competitors_csv_path', str(competitors_csv_file.resolve()))
+ 
+        # Save df_competitors and log its path
+        comp_csv_path = save_wip_dataframe(job, df_competitors, "competitors.csv")
+        wand.set(job, 'competitors_csv_path', comp_csv_path)
         print(f"💾 Stored pivot and competitors CSV paths in wand state for job '{job}'.")
 
         # --- RETURN VALUE ---
@@ -759,21 +755,15 @@ def fetch_titles_and_create_filters(job: str):
     filter_file = temp_dir / "filter_keywords.csv"
 
     # --- INPUT (from wand state) ---
-    try:
-        comp_csv_path = wand.get(job, 'competitors_csv_path')
-        if comp_csv_path and Path(comp_csv_path).exists():
-            df_competitors = pd.read_csv(comp_csv_path)
-        else:
-            print(f"⚠️ Could not find competitors CSV at pointer: {comp_csv_path}")
-            df_competitors = pd.DataFrame()
-        # Ensure required columns exist, even if empty
-        for col in ['Domain', 'Column Label', 'Title', 'Matched Title']:
-             if col not in df_competitors.columns:
-                  df_competitors[col] = '' if col in ['Title', 'Matched Title'] else None
+    df_competitors = load_wip_dataframe(job, 'competitors_csv_path')
 
-    except Exception as e:
-        print(f"❌ Error loading competitors DataFrame from wand state: {e}")
-        return "Error loading competitors data. Cannot proceed."
+    if df_competitors.empty:
+         print("⚠️ Could not load existing competitors DataFrame. Starting fresh.")
+
+    # Ensure required columns exist, even if empty
+    for col in ['Domain', 'Column Label', 'Title', 'Matched Title']:
+         if col not in df_competitors.columns:
+              df_competitors[col] = '' if col in ['Title', 'Matched Title'] else None
 
     if df_competitors.empty:
          print("🤷 Competitors DataFrame is empty. Skipping title fetch and filter generation.")
@@ -783,7 +773,6 @@ def fetch_titles_and_create_filters(job: str):
               print(f"  ✅ Created empty keyword filter file at '{filter_file}'.")
          return "Competitors list empty. Filter step skipped."
 
-
     # --- CORE LOGIC (Moved and Adapted) ---
     status_messages = []
 
@@ -791,7 +780,6 @@ def fetch_titles_and_create_filters(job: str):
     df_competitors['Title'] = df_competitors['Title'].fillna('').astype(str)
     df_competitors['Matched Title'] = df_competitors['Matched Title'].fillna('').astype(str).str.lower()
     df_competitors['Domain'] = df_competitors['Domain'].fillna('').astype(str)
-
 
     needs_titles = df_competitors[df_competitors['Title'] == ''].copy()
 
