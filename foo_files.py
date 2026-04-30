@@ -60,17 +60,17 @@ AI_PHOOEY_CHOP = """\
 # AD HOC STUFF
 
 deleteme.txt  # [6,838 tokens | 24,716 bytes]
-server.py  # [54,718 tokens | 261,069 bytes]
-assets/init.js  # [2,303 tokens | 12,158 bytes]
+# server.py  # [54,718 tokens | 261,069 bytes]
+# assets/init.js  # [2,303 tokens | 12,158 bytes]
 assets/pipulate.js  # [4,889 tokens | 24,977 bytes]
-assets/styles.css  # [18,671 tokens | 81,016 bytes]
-assets/theme.js  # [930 tokens | 4,337 bytes]
-assets/utils.js  # [3,125 tokens | 15,103 bytes]
-assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
-assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/core.py  # [27,171 tokens | 131,795 bytes]
+# assets/styles.css  # [18,671 tokens | 81,016 bytes]
+# assets/theme.js  # [930 tokens | 4,337 bytes]
+# assets/utils.js  # [3,125 tokens | 15,103 bytes]
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
+# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/core.py  # [27,171 tokens | 131,795 bytes]
 
 # /home/mike/repos/grimoire/_posts/2026-04-30-link-graph-resurrection.md  # [143,657 tokens | 564,552 bytes]
 
