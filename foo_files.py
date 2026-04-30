@@ -55,14 +55,17 @@ AI_PHOOEY_CHOP = """\
 # .gitignore  # [573 tokens | 2,089 bytes]
 
 # prompt_foo.py  # [12,990 tokens | 59,609 bytes]
-foo_files.py  # [10,245 tokens | 33,406 bytes]
+# foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-# apps/120_link_graph.py  # [54,349 tokens | 272,468 bytes]
-apps/121_link_graph_v2.py  # [54,150 tokens | 280,523 bytes]
+# /home/mike/repos/grimoire/_posts/2026-04-30-link-graph-resurrection.md  # [143,657 tokens | 564,552 bytes]
 
-# apps/200_workflow_genesis.py  # [12,397 tokens | 59,508 bytes]
+apps/120_link_graph.py  # [54,349 tokens | 272,468 bytes]
+apps/121_link_graph_v2.py  # [54,150 tokens | 280,523 bytes]
+apps/200_workflow_genesis.py  # [12,397 tokens | 59,508 bytes]
+apps/400_botify_trifecta.py  # [53,199 tokens | 276,285 bytes]
+
 # apps/230_dev_assistant.py  # [25,808 tokens | 124,873 bytes]
 # scripts/workflow/splice_workflow_step.py  # [5,064 tokens | 22,110 bytes]
 # scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
