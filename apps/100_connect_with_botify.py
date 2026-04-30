@@ -140,7 +140,12 @@ class BotifyConnect:
                   title="Opens Botify account page in new tab")
             )
         else:
-            endpoint_message = P(self.ENDPOINT_MESSAGE)
+            endpoint_message = P(
+                f"{self.ENDPOINT_MESSAGE} You can find your API token at ",
+                A(account_url, href=account_url, target="_blank", 
+                  aria_label="Open Botify account page to find API token",
+                  title="Opens Botify account page in new tab")
+            )
 
         return Container(  # Get used to this return signature of FastHTML & HTMX
             Card(
