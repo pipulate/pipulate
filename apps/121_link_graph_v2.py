@@ -279,6 +279,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         app.route(f'/{app_name}/step_02b_process', methods=['POST'])(self.step_02b_process)
         app.route(f'/{app_name}/step_05_submit', methods=['POST'])(self.step_05_submit)
         app.route(f'/{app_name}/step_05_process', methods=['POST'])(self.step_05_process)
+        app.route("/open-folder", methods=['GET'])(self.pipulate.open_folder)
 
         app.route(f'/{app_name}/update_button_text', methods=['POST'])(self.update_button_text)
         app.route(f'/{app_name}/toggle', methods=['GET'])(self.common_toggle)
