@@ -152,13 +152,87 @@ def render_competitor_workbench(job: str):
             wand.speak(f"I have staged {len(items_to_analyze)} domains. Use the links above to download the exports, then run the next cell.")
             save_btn.description = "✅ Locked & Loaded"
             save_btn.button_style = ''
-            wand.imperio(side_quest=True, newline=False)
 
     save_btn.on_click(on_save)
     
     # Display the workbench
     display(widgets.HTML("<b>🎯 Define Competitor Targets:</b>"))
     display(text_area)
+    display(save_btn)
+    display(out)
+
+
+def render_strategy_workbench(job: str):
+    """
+    Renders an interactive workbench to define negative filters and strategic tabs.
+    Parses a simple text format and persists the data to the wand database.
+    """
+    import ipywidgets as widgets
+    from IPython.display import display, clear_output
+
+    # 1. Hydrate Negatives
+    existing_negatives = wand.get(job, 'manual_negatives')
+    if existing_negatives:
+        def_negatives = ", ".join(existing_negatives)
+    else:
+        def_negatives = "x, amazon"
+
+    # 2. Hydrate Tabs (Format: "Tab Name: keyword1, keyword2...")
+    existing_filters = wand.get(job, 'targeted_filters')
+    if existing_filters:
+        def_filters = "\n".join([f"{name}: {', '.join(kws)}" for name, kws in existing_filters])
+    else:
+        def_filters = (
+            "Broad Questions: am, are, can, could, did, do, does, for, from, had, has, have, how, i, is, may, might, must, shall, should, was, were, what, when, where, which, who, whom, whose, why, will, with, would\n"
+            "Narrow Questions: who, whom, whose, what, which, where, when, why, how\n"
+            "Popular Modifiers: how to, best, review, reviews, top rated, luxury, designer, comfortable\n"
+            "Near Me: near me, for sale, nearby, closest, near you, local, boutique"
+        )
+
+    # 3. Build UI
+    neg_area = widgets.Textarea(
+        value=def_negatives, 
+        placeholder="comma, separated, negatives",
+        layout=widgets.Layout(width='95%', height='60px')
+    )
+    filter_area = widgets.Textarea(
+        value=def_filters, 
+        placeholder="Tab Name: keyword1, keyword2...",
+        layout=widgets.Layout(width='95%', height='250px')
+    )
+    
+    save_btn = widgets.Button(description="💾 Save Strategy", button_style='success', layout=widgets.Layout(width='200px'))
+    out = widgets.Output()
+
+    def on_save(b):
+        with out:
+            clear_output(wait=True)
+            
+            # Parse Negatives
+            negs = [n.strip() for n in neg_area.value.split(',') if n.strip()]
+            wand.set(job, 'manual_negatives', negs)
+            
+            # Parse Filters
+            filters = []
+            for line in filter_area.value.splitlines():
+                if ':' in line:
+                    name, kws = line.split(':', 1)
+                    kw_list = [k.strip() for k in kws.split(',') if k.strip()]
+                    if kw_list:
+                        filters.append((name.strip(), kw_list))
+            
+            wand.set(job, 'targeted_filters', filters)
+            
+            print(f"✅ Strategy Locked: Saved {len(negs)} negatives and {len(filters)} automated tabs to wand memory.")
+            save_btn.description = "✅ Locked & Loaded"
+            save_btn.button_style = ''
+
+    save_btn.on_click(on_save)
+    
+    display(widgets.HTML("<b>🚫 Manual Negative Filters (Comma Separated):</b>"))
+    display(neg_area)
+    display(widgets.HTML("<br><b>📑 Automated Tabs (Format: <code>Tab Name: keyword1, keyword2...</code>):</b>"))
+    display(filter_area)
     display(save_btn)
     display(out)
 
