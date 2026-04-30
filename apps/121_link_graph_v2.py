@@ -271,6 +271,12 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         app.route(f'/{app_name}/step_crawler_complete', methods=['POST'])(self.step_crawler_complete)
         app.route(f'/{app_name}/step_gsc_complete', methods=['POST'])(self.step_gsc_complete)
 
+        # Register Transplant Bundle Routes
+        app.route(f'/{app_name}/step_02b_submit', methods=['POST'])(self.step_02b_submit)
+        app.route(f'/{app_name}/step_02b_process', methods=['POST'])(self.step_02b_process)
+        app.route(f'/{app_name}/step_05_submit', methods=['POST'])(self.step_05_submit)
+        app.route(f'/{app_name}/step_05_process', methods=['POST'])(self.step_05_process)
+
         app.route(f'/{app_name}/update_button_text', methods=['POST'])(self.update_button_text)
         app.route(f'/{app_name}/toggle', methods=['GET'])(self.common_toggle)
         
@@ -311,43 +317,35 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         """
         # Include crawler step only for Link Graph Edges (needs node enrichment)
         return analysis_template == 'Link Graph Edges'
-    
+
     def _build_dynamic_steps(self):
-        """Build the steps list dynamically based on template configuration.
-        
-        Returns:
-            list: List of Step namedtuples for the workflow
-            
-        CRITICAL: This method maintains compatibility with helper scripts by appending
-        a static dummy step at the end. The helper scripts can target this dummy step
-        for splicing operations without breaking the dynamic functionality.
-        """
-        # Build step names dynamically based on template configuration
+        """Build the steps list dynamically, slotting in Link Graph customizations."""
         analysis_template = self.get_configured_template('analysis')
-        crawler_template = self.get_configured_template('crawler')
         gsc_template = self.get_configured_template('gsc')
 
-        # Base steps that are always present
-        steps = [
-            Step(id='step_project', done='botify_project', show='Botify Project URL', refill=True),
-            Step(id='step_analysis', done='analysis_selection', show=f'Download Crawl: {analysis_template}', refill=False),
-        ]
+        # 1. Start with the project input
+        steps = [Step(id='step_project', done='botify_project', show='Botify Project URL', refill=True)]
         
-        # Conditionally add crawler step based on analysis template
+        # 2. Add the Analysis selection
+        steps.append(Step(id='step_analysis', done='analysis_selection', show=f'Download: {analysis_template}', refill=False))
+
+        # 3. TRANSPLANT SLOT: Node Attributes (Old 02b)
+        # We always want this for Link Graph to color the nodes
+        steps.append(Step(id='step_02b', done='node_attributes', show='Download: Node Attributes', refill=False))
+
+        # 4. Optional Trifecta Crawler (Keep it if the template allows)
         if self._should_include_crawler_step(analysis_template):
-            steps.append(Step(id='step_crawler', done='crawler_basic', show=f'Download Crawl: {crawler_template}', refill=False))
+             steps.append(Step(id='step_crawler', done='crawler_basic', show='Download: Basic Crawl', refill=False))
         
-        # Continue with remaining steps
-        steps.extend([
-            Step(id='step_webogs', done='webogs', show='Download Web Logs', refill=False),
-            Step(id='step_gsc', done='gsc', show=f'Download Search Console: {gsc_template}', refill=False),
-            Step(id='finalize', done='finalized', show='Finalize Workflow', refill=False)
-        ])
-        
-        # --- STEPS_LIST_INSERTION_POINT ---
-        # CRITICAL: This static insertion point maintains compatibility with helper scripts
-        # (create_workflow.py and splice_workflow_step.py) while preserving dynamic functionality.
-        # Helper scripts can append new steps here without breaking the chain reaction pattern.
+        # 5. The standard Trifecta logs and GSC
+        steps.append(Step(id='step_webogs', done='webogs', show='Download Web Logs (Optional)', refill=False))
+        steps.append(Step(id='step_gsc', done='gsc', show=f'Download: {gsc_template}', refill=False))
+
+        # 6. TRANSPLANT SLOT: The Visualization Engine (Old 05)
+        steps.append(Step(id='step_05', done='visualization_ready', show='Prepare & Visualize Graph', refill=True))
+
+        # 7. Finalize
+        steps.append(Step(id='finalize', done='finalized', show='Finalize', refill=False))
         
         return steps
     
