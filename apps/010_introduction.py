@@ -30,8 +30,8 @@ class IntroductionPlugin:
 
     # Narrative Script (Base template)
     NARRATION = {
-        'step_02': "I am about to hand you over to the Configuration Workflow. You will repeat what you just did Notebook-side in JupyterLab; telling me your name, local and cloud AI preferences, and Botify API key if you're a Botify employee or customer. After that, we remember it. The Configuration Workflow will feel a lot like running a Jupyter Notebook, proceeding top-to-bottom as if through the cells. Only you don't have to see any of the Python code.",
-        'finalize': "Every workflow requires a unique Key to store its memory. You can keep the default key, or generate a New Key to start a fresh configuration. Let's establish your permanent identity."
+        'step_02': "I am about to hand you over to the Configuration Workflow. You will repeat what I hope you just did in JupyterLab; telling me your name, local and cloud AI preferences. We remember it after that and you won't have to enter it again. Run the next step.",
+        'finalize': "You are about to Enter a Key. Every workflow requires a unique Key to store its memory. Keep the default. Proceed to Configuration workflow."
     }
 
     def __init__(self, app, pipulate, pipeline, db, app_name=APP_NAME):
@@ -83,11 +83,11 @@ class IntroductionPlugin:
                     "Return to your JupyterLab tab, execute the Golden Path, and drop the sentinel file."
                 )
                 return "Access Denied 🛑", msg, None
-                
+
             elif not has_configured:
                 # 2. The Usher Persona
                 if self.wand.active_local_model:
-                    msg = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus. My speech is generated entirely on your machine, but my reasoning engines are currently idling. You must proceed to the Configuration app to establish your identity."
+                    msg = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus, but I don't know your name yet. Run the next step."
                 else:
                     msg = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus. My speech is generated entirely on your machine. You have not yet set up your local AI capabilities. Please visit Ollama.com."
                 return "Welcome", msg, 'step_02'
