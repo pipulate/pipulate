@@ -129,10 +129,10 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
             'qualifier_config': {
                 'enabled': True,
                 'qualifier_bql_template': {
-                    "dimensions": ["url"], # Give it a dimension to count against
+                    "dimensions": ["url"], 
                     "metrics": [{"function": "count", "args": []}],
                     "filters": {"field": "depth", "predicate": "lte", "value": "{ITERATION_VALUE}"},
-                    "limit": 1 # We only need one row to get the aggregate count
+                    "limit": 1 
                 },
                 'parameter_placeholder_in_main_query': '{OPTIMAL_DEPTH}',
                 'iterative_parameter_name': 'depth',
@@ -4808,7 +4808,7 @@ await main()
                 # Check if file actually exists
                 if expected_file_path.exists():
                     downloads_base = Path.cwd() / 'downloads'
-                    path_for_url = expected_file_path.resolve().relative_to(downloads_base.resolve())
+                    path_for_url = expected_file_path.resolve().relative_to(Path.cwd().resolve() / 'downloads')
                     path_for_url = str(path_for_url).replace('\\', '/')
 
                     # Check if this is a link graph file for Cosmograph visualization
@@ -6087,7 +6087,7 @@ await main()
                 # Check if file actually exists
                 if expected_file_path.exists():
                     downloads_base = Path.cwd() / 'downloads'
-                    path_for_url = expected_file_path.resolve().relative_to(downloads_base.resolve())
+                    path_for_url = expected_file_path.resolve().relative_to(Path.cwd().resolve() / 'downloads')
                     path_for_url = str(path_for_url).replace('\\', '/')
 
                     # Check if this is a link graph file for Cosmograph visualization
