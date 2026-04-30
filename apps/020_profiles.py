@@ -266,7 +266,7 @@ def render_profile(profile_record, main_plugin_instance: ProfilesPlugin):
         delete_icon_span = ''
     else:
         # When unlocked: show all elements
-        active_checkbox_input = Input(type='checkbox', name='active_status_profile', checked=profile_record.active, hx_post=toggle_url, hx_target=f'#{item_id_dom}', hx_swap='outerHTML', style='margin-right: 10px; flex-shrink: 0;', title='Toggle Active Status')
+        active_checkbox_input = Input(type='checkbox', name='active_status_profile', checked=bool(profile_record.active), hx_post=toggle_url, hx_target=f'#{item_id_dom}', hx_swap='outerHTML', style='margin-right: 10px; flex-shrink: 0;', title='Toggle Active Status')
         
         # Lock emoji for quick lock-to-profile action
         lock_to_profile_url = f'/{main_plugin_instance.name}/lock_to_profile/{profile_record.id}'

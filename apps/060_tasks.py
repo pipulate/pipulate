@@ -475,7 +475,7 @@ def render_item(item, app_instance):
     delete_url = f'{app_instance.plugin.ENDPOINT_PREFIX}/delete/{item.id}'
     toggle_url = f'{app_instance.plugin.ENDPOINT_PREFIX}/toggle/{item.id}'
     update_url = f'{app_instance.plugin.ENDPOINT_PREFIX}/{item.id}'
-    checkbox = Input(type='checkbox', name='done_status' if item.done else None, checked=item.done, hx_post=toggle_url, hx_swap='outerHTML', hx_target=f'#{item_id}')
+    checkbox = Input(type='checkbox', name='done_status' if item.done else None, checked=bool(item.done), hx_post=toggle_url, hx_swap='outerHTML', hx_target=f'#{item_id}')
     delete_icon = A('🗑', hx_delete=delete_url, hx_swap='outerHTML', hx_target=f'#{item_id}', cls='task-delete-icon delete-icon')
     update_input_id = f'{app_instance.name}_text_{item.id}'
     text_display = Span(item.text, id=f'{app_instance.name}-text-display-{item.id}', cls='task-text-display', onclick=f"document.getElementById('{app_instance.name}-text-display-{item.id}').style.display='none'; document.getElementById('update-form-{item.id}').style.display='inline-flex'; document.getElementById('{item_id}').style.alignItems='baseline'; document.getElementById('{update_input_id}').focus();")
