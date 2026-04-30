@@ -1032,7 +1032,7 @@ def merge_filter_arrange_data(job: str, pivot_df: pd.DataFrame, agg_df: pd.DataF
     print("🧩 Merging Pivot Data with Aggregate Data...")
 
     # --- PATH DEFINITION ---
-    filter_file = wand.paths.data / f"{job}_filter_keywords.csv"
+    filter_file = wand.paths.temp / job / "filter_keywords.csv"
 
     # --- CORE LOGIC (Moved from Notebook) ---
     try:
@@ -2213,7 +2213,7 @@ def add_filtered_excel_tabs(
     tabs_to_write["Gap Analysis"] = df_main
 
     # B. Important Keywords
-    important_keywords_file = wand.paths.data / f"{job}_important_keywords.txt"
+    important_keywords_file = wand.paths.temp / job / "important_keywords.txt"
     if important_keywords_file.exists():
         kws = read_keywords(important_keywords_file)
         if kws:
