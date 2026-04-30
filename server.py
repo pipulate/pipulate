@@ -2052,14 +2052,7 @@ logger.debug(f'Dynamic MENU_ITEMS: {MENU_ITEMS}')
 
 
 async def home(request):
-    """Handle the main home route request.
-
-    Args:
-        request: The incoming request object
-
-    Returns:
-        tuple: (Title, Main) containing the page title and main content
-    """
+    """Handle the main home route request."""
     url_path = request.url.path.strip('/')
     logger.debug(f'Received request for path: {url_path}')
     menux = normalize_menu_path(url_path)
@@ -2068,49 +2061,60 @@ async def home(request):
     pipulate.db['last_visited_url'] = request.url.path
     current_profile_id = get_current_profile_id()
     menux = pipulate.db.get('last_app_choice', 'App')
+    
     # 🎬 CINEMATIC MAGIC: Check for Oz door grayscale state
     grayscale_enabled = pipulate.db.get('oz_door_grayscale') == 'true'
     if grayscale_enabled:
         logger.info("🎬 Oz door grayscale state detected - injecting script into Container")
 
+    # ---> THE FIX: Capture temp_message BEFORE create_chat_interface deletes it
+    has_temp_message = 'temp_message' in db
+    temp_msg = pipulate.db.get('temp_message') if has_temp_message else None
+
     response = await create_outer_container(current_profile_id, menux, request, grayscale_enabled)
     last_profile_name = get_profile_name()
     page_title = f'{APP_NAME} - {title_name(last_profile_name)} - {(endpoint_name(menux) if menux else HOME_MENU_ITEM)}'
 
-    # Backup mechanism: send endpoint message if not yet sent for this session
+    # Backup mechanism and legitimate navigation messaging
     current_env = get_current_environment()
     session_key = f'endpoint_message_sent_{menux}_{current_env}'
 
-    # Check coordination system to prevent duplicates
     endpoint_message = build_endpoint_messages(menux)
-    if endpoint_message and session_key not in db:
-        # Create unique message identifier for coordination
-        message_id = f'{menux}_{current_env}_{hash(endpoint_message) % 10000}'
+    
+    # If temp_message was set (by redirect_handler), prioritize it and bypass strict session gating
+    if temp_msg or (endpoint_message and session_key not in db):
+        message_to_send = temp_msg or endpoint_message
+        message_id = f'{menux}_{current_env}_{hash(message_to_send) % 10000}'
 
-        # Check if this message was recently sent through any pathway
         current_time = time.time()
         last_sent = message_coordination['last_endpoint_message_time'].get(message_id, 0)
 
-        # Only send if not recently sent and startup is not in progress
-        if (current_time - last_sent > 10 and
-            not message_coordination['startup_in_progress'] and
-                message_id not in message_coordination['endpoint_messages_sent']):
+        # Allow if it's a legitimate navigation (has_temp_message) with basic 5s debounce
+        # OR if it's the first time this session and hasn't been sent yet
+        is_allowed = False
+        if has_temp_message:
+            is_allowed = current_time - last_sent > 5
+        else:
+            is_allowed = (current_time - last_sent > 10 and 
+                          message_id not in message_coordination['endpoint_messages_sent'])
 
+        if is_allowed and not message_coordination['startup_in_progress']:
             try:
                 # Add training to conversation history
                 build_endpoint_training(menux)
 
-                # Mark as being sent to prevent other systems from sending
+                # Update coordination tracking
                 message_coordination['last_endpoint_message_time'][message_id] = current_time
-                message_coordination['endpoint_messages_sent'].add(message_id)
+                if not has_temp_message:
+                    message_coordination['endpoint_messages_sent'].add(message_id)
 
-                # Send endpoint message with coordination
-                asyncio.create_task(send_delayed_endpoint_message(endpoint_message, session_key))
-                logger.debug(f"Scheduled backup endpoint message: {message_id}")
+                # Send endpoint message directly through the backend queue
+                asyncio.create_task(send_delayed_endpoint_message(message_to_send, session_key))
+                logger.debug(f"Scheduled endpoint message: {message_id}")
             except Exception as e:
-                logger.error(f'Error sending backup endpoint message: {e}')
+                logger.error(f'Error sending endpoint message: {e}')
         else:
-            logger.debug(f"Skipping backup endpoint message - coordination check failed: {message_id}")
+            logger.debug(f"Skipping endpoint message - coordination check failed: {message_id}")
 
     logger.debug('Returning response for main GET request.')
     return (Title(page_title), Main(response))
