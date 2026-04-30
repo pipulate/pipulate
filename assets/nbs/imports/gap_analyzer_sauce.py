@@ -62,6 +62,18 @@ nltk.download('punkt_tab', quiet=True) # Added from a later cell for consolidati
 import urllib.parse # Need this for correctly encoding the domain/path
 
 
+def save_wip_dataframe(job: str, df: pd.DataFrame, filename: str) -> str:
+    """
+    Saves a Work-In-Progress DataFrame to the job's isolated temp folder 
+    and returns the absolute path string for the wand database.
+    """
+    temp_dir = wand.paths.temp / job
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    file_path = temp_dir / filename
+    df.to_csv(file_path, index=False)
+    return str(file_path.resolve())
+
+
 def extract_domains_and_print_urls(job: str, notebook_filename: str = "03_GAPalyzer.ipynb"):
     """
     Parses the specified notebook for competitor domains or subfolders,
@@ -532,10 +544,12 @@ def pivot_semrush_data(job: str, df2: pd.DataFrame, client_domain_from_keys: str
         print("---------------------\n")
 
         # --- OUTPUT (to wand state) ---
-        wand.set(job, 'keyword_pivot_df_json', pivot_df.to_json(orient='records'))
-        wand.set(job, 'competitors_df_json', df_competitors.to_json(orient='records'))
-        print(f"💾 Stored pivot DataFrame and competitors DataFrame in wand state for job '{job}'.")
-        # ---------------------------
+        pivot_csv_path = save_wip_dataframe(job, pivot_df, "keyword_pivot.csv")
+        wand.set(job, 'keyword_pivot_csv_path', pivot_csv_path)
+        
+        # Note: df_competitors is already saved to competitors_csv_file earlier in the function!
+        wand.set(job, 'competitors_csv_path', str(competitors_csv_file.resolve()))
+        print(f"💾 Stored pivot and competitors CSV paths in wand state for job '{job}'.")
 
         # --- RETURN VALUE ---
         return pivot_df # Return the DataFrame for display
@@ -669,11 +683,12 @@ def fetch_titles_and_create_filters(job: str):
 
     # --- INPUT (from wand state) ---
     try:
-        from io import StringIO # Import StringIO here
-        competitors_df_json = wand.get(job, 'competitors_df_json', '[]')
-        # --- FIX: Wrap JSON string in StringIO ---
-        df_competitors = pd.read_json(StringIO(competitors_df_json), orient='records')
-        # --- END FIX ---
+        comp_csv_path = wand.get(job, 'competitors_csv_path')
+        if comp_csv_path and Path(comp_csv_path).exists():
+            df_competitors = pd.read_csv(comp_csv_path)
+        else:
+            print(f"⚠️ Could not find competitors CSV at pointer: {comp_csv_path}")
+            df_competitors = pd.DataFrame()
         # Ensure required columns exist, even if empty
         for col in ['Domain', 'Column Label', 'Title', 'Matched Title']:
              if col not in df_competitors.columns:
@@ -777,20 +792,17 @@ def fetch_titles_and_create_filters(job: str):
                  print(f"  ☑️ Keyword filter file already exists at '{filter_file}' and requires no update.")
                  status_messages.append("Keyword filter file exists and is up-to-date.")
 
-
         # --- OUTPUT (to wand state) ---
-        wand.set(job, 'competitors_df_json', df_competitors.to_json(orient='records'))
-        # Store the generated/updated filter list as well
+        # The CSV is already updated/saved to disk in the logic above! 
+        # We just need to store the small text list.
         wand.set(job, 'filter_keyword_list_json', json.dumps(combined_list))
-        print(f"💾 Stored updated competitors DataFrame and filter list in wand state for job '{job}'.")
-        # ---------------------------
+        print(f"💾 Competitors CSV updated on disk. Filter list stored in wand state for job '{job}'.")
 
     except Exception as e:
         print(f"❌ An error occurred during filter generation: {e}")
         status_messages.append("Error generating keyword filters.")
         # Attempt to save competitors DF state even if filter gen fails
-        wand.set(job, 'competitors_df_json', df_competitors.to_json(orient='records'))
-
+        wand.set(job, 'filter_keyword_list_json', json.dumps(combined_list))
 
     # --- RETURN VALUE ---
     return "\n".join(status_messages) # Return summary string
@@ -893,11 +905,10 @@ def aggregate_semrush_metrics(job: str, df2: pd.DataFrame):
         rows, cols = agg_df.shape
         print(f"  Rows: {rows:,}, Columns: {cols:,}")
 
-
         # --- OUTPUT (to wand state) ---
-        wand.set(job, 'keyword_aggregate_df_json', agg_df.to_json(orient='records'))
-        print(f"💾 Stored aggregated DataFrame in wand state for job '{job}'.")
-        # ---------------------------
+        agg_csv_path = save_wip_dataframe(job, agg_df, "keyword_aggregate.csv")
+        wand.set(job, 'keyword_aggregate_csv_path', agg_csv_path)
+        print(f"💾 Stored aggregated DataFrame CSV path in wand state for job '{job}'.")
 
         # --- RETURN VALUE ---
         return agg_df # Return the DataFrame for display and next step
@@ -1048,11 +1059,10 @@ def merge_filter_arrange_data(job: str, pivot_df: pd.DataFrame, agg_df: pd.DataF
         final_rows, final_cols = arranged_df.shape
         print(f"   Final Rows: {final_rows:,}, Final Columns: {final_cols:,}")
 
-
         # --- OUTPUT (to wand state) ---
-        wand.set(job, 'filtered_gap_analysis_df_json', arranged_df.to_json(orient='records'))
-        print(f"💾 Stored final arranged DataFrame in wand state for job '{job}'.")
-        # ---------------------------
+        arranged_csv_path = save_wip_dataframe(job, arranged_df, "filtered_gap_analysis.csv")
+        wand.set(job, 'filtered_gap_analysis_csv_path', arranged_csv_path)
+        print(f"💾 Stored final arranged DataFrame CSV path in wand state for job '{job}'.")
 
         # --- RETURN VALUE ---
         return arranged_df # Return the DataFrame for display
