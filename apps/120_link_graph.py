@@ -1207,488 +1207,6 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
             id=step_id
         )
 
-    async def step_02b(self, request):
-        """Handles GET request for Node Attributes (Crawl Basic) download."""
-        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
-        step_id = 'step_02b'
-        step_index = self.steps_indices[step_id]
-        step = steps[step_index]
-        next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = wand.db.get('pipeline_id', 'unknown')
-        state = wand.read_state(pipeline_id)
-        step_data = wand.get_step_data(pipeline_id, step_id, {})
-        analysis_result_str = step_data.get(step.done, '')
-        analysis_result = json.loads(analysis_result_str) if analysis_result_str else {}
-        
-        # Get analysis slug from step_02 (we need this to know which analysis to use)
-        prev_step_id = 'step_02'
-        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
-        prev_data_str = prev_step_data.get('analysis_selection', '')
-        if not prev_data_str:
-            return P('Error: Analysis data not found. Please complete step 2 first.', cls='text-invalid')
-        
-        prev_analysis_data = json.loads(prev_data_str)
-        analysis_slug = prev_analysis_data.get('analysis_slug', '')
-        project_name = prev_analysis_data.get('project', '')
-        username = prev_analysis_data.get('username', '')
-        
-        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
-
-        # Phase 1: Finalized view (locked)
-        if 'finalized' in finalize_data and analysis_result:
-            return Div(
-                Card(H3(f'🔒 {step.show}'), 
-                     Div(P(f'Project: {project_name}', style='margin-bottom: 5px;'), 
-                         P(f'Node Attributes Downloaded: {analysis_slug}', style='font-weight: bold;'), 
-                         cls='custom-card-padding-bg')),
-                Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'),
-                id=step_id
-            )
-        
-        # Phase 2: Completed view (revertible)
-        elif analysis_result and state.get('_revert_target') != step_id:
-            action_buttons = self._create_action_buttons(analysis_result, step_id)
-            
-            widget = Div(
-                Div(
-                    Button(self.ui['BUTTON_LABELS']['HIDE_SHOW_CODE'],
-                        cls=self.ui['BUTTON_STYLES']['STANDARD'],
-                        hx_get=f'/{app_name}/toggle?step_id={step_id}',
-                        hx_target=f'#{step_id}_widget',
-                        hx_swap='innerHTML'
-                    ),
-                    *action_buttons,
-                    style=self.ui['BUTTON_STYLES']['FLEX_CONTAINER']
-                ),
-                Div(
-                    Pre(f'Node attributes downloaded for: {analysis_slug}', cls='code-block-container', style='display: none;'),
-                    id=f'{step_id}_widget'
-                )
-            )
-            return Div(
-                wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {analysis_slug}', widget=widget, steps=steps),
-                Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'),
-                id=step_id
-            )
-        
-        # Phase 3: Input view
-        else:
-            # Get "Crawl Basic" template details
-            basic_template_details = self.QUERY_TEMPLATES.get('Crawl Basic', {})
-            template_name = basic_template_details.get('name', 'Crawl Basic')
-            user_message = basic_template_details.get('user_message', 'This will download basic crawl data.')
-            button_suffix = basic_template_details.get('button_label_suffix', 'Basic Attributes')
-            
-            # Check for cached file using "crawl_attributes" export type
-            is_cached = False
-            if analysis_slug:
-                is_cached = await self.check_cached_file_for_button_text(username, project_name, analysis_slug, 'crawl_attributes')
-            
-            button_text = f'Use Cached {button_suffix} ▸' if is_cached else f'Download {button_suffix} ▸'
-            
-            await self.message_queue.add(wand, f'📄 Ready to download node attributes for analysis {analysis_slug}', verbatim=True)
-            
-            return Div(
-                Card(
-                    H3(f'{step.show}'),
-                    P(f"Download node attributes for analysis '{analysis_slug}'"),
-                    P(f'Organization: {username}', cls='text-secondary'),
-                    P(user_message, cls='text-muted', style='font-style: italic; margin-top: 10px;'),
-                    Form(
-                        Div(
-                            Button(button_text, type='submit', name='action', value='download', cls='mt-10px primary', **{'hx-on:click': 'this.setAttribute("aria-busy", "true"); this.textContent = "Processing..."'}),
-                            Button(self.ui['BUTTON_LABELS']['SKIP_STEP'], type='submit', name='action', value='skip', cls='mt-10px secondary outline', style=self.ui['BUTTON_STYLES']['SKIP_BUTTON_STYLE']) if self.FEATURES_CONFIG.get('enable_skip_buttons', False) else None,
-                            style=self.ui['BUTTON_STYLES']['BUTTON_ROW']
-                        ),
-                        hx_post=f'/{app_name}/{step_id}_submit',
-                        hx_target=f'#{step_id}'
-                    )
-                ),
-                Div(id=next_step_id),  # Empty placeholder, no trigger yet
-                id=step_id
-            )
-
-    async def step_02b_submit(self, request):
-        """Process the Node Attributes (Crawl Basic) download submission."""
-        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
-        step_id = 'step_02b'
-        step_index = self.steps_indices[step_id]
-        step = steps[step_index]
-        next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = wand.db.get('pipeline_id', 'unknown')
-
-        # Check if user clicked skip button
-        form = await request.form()
-        action = form.get('action', 'download')  # Default to download for backward compatibility
-
-        if action == 'skip':
-            # Handle skip action - create fake completion data and proceed to next step
-            await self.message_queue.add(wand, f"⏭️ Skipping Node Attributes download...", verbatim=True)
-
-            # Create skip data that indicates step was skipped
-            skip_result = {
-                'download_complete': False,
-                'skipped': True,
-                'skip_reason': 'User chose to skip node attributes download',
-                'file_path': None,
-                'python_command': '',
-                'export_type': 'crawl_attributes',
-                'template_used': 'Crawl Basic'
-            }
-
-            await wand.set_step_data(pipeline_id, step_id, json.dumps(skip_result), steps)
-            await self.message_queue.add(wand, f"⏭️ Node Attributes step skipped. Proceeding to next step.", verbatim=True)
-
-            return Div(
-                wand.display_revert_widget(
-                    step_id=step_id,
-                    app_name=app_name,
-                    message=f'{step.show}: Skipped',
-                    widget=Div(P('This step was skipped.', style='color: #888; font-style: italic;')),
-                    steps=steps
-                ),
-                Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'),
-                id=step_id
-            )
-
-        # Handle normal download action
-        # Get analysis data from step_02
-        prev_step_id = 'step_02'
-        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
-        prev_data_str = prev_step_data.get('analysis_selection', '')
-        if not prev_data_str:
-            return P('Error: Analysis data not found. Please complete step 2 first.', cls='text-invalid')
-        
-        prev_analysis_data = json.loads(prev_data_str)
-        analysis_slug = prev_analysis_data.get('analysis_slug', '')
-        project_name = prev_analysis_data.get('project', '')
-        username = prev_analysis_data.get('username', '')
-        
-        if not all([analysis_slug, username, project_name]):
-            return P('Error: Missing required analysis data', cls='text-invalid')
-        
-        await self.message_queue.add(wand, f'📊 Starting node attributes download for {analysis_slug}...', verbatim=True)
-        
-        # Create analysis result for step_02b using Crawl Basic template
-        analysis_result = {
-            'analysis_slug': analysis_slug,
-            'project': project_name,
-            'username': username,
-            'timestamp': datetime.now().isoformat(),
-            'download_started': True,
-            'export_type': 'crawl_attributes',  # Always use crawl_attributes for basic data
-            'template_used': 'Crawl Basic'
-        }
-        
-        analysis_result_str = json.dumps(analysis_result)
-        await wand.set_step_data(pipeline_id, step_id, analysis_result_str, steps)
-        
-        return Card(
-            H3(f'{step.show}'),
-            P(f"Downloading node attributes for analysis '{analysis_slug}'..."),
-            Progress(style='margin-top: 10px;'),
-            Script(f"""
-                setTimeout(function() {{
-                    htmx.ajax('POST', '/{app_name}/step_02b_process', {{
-                        target: '#{step_id}',
-                        values: {{
-                            'analysis_slug': '{analysis_slug}',
-                            'username': '{username}',
-                            'project_name': '{project_name}'
-                        }}
-                    }});
-                }}, 500);
-            """),
-            id=step_id
-        )
-
-    async def step_02b_process(self, request):
-        """Process the actual Crawl Basic download after showing the progress indicator."""
-        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
-        step_id = 'step_02b'
-        step_index = self.steps_indices[step_id]
-        step = steps[step_index]
-        next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        pipeline_id = wand.db.get('pipeline_id', 'unknown')
-        form = await request.form()
-        analysis_slug = form.get('analysis_slug', '').strip()
-        username = form.get('username', '').strip()
-        project_name = form.get('project_name', '').strip()
-        
-        if not all([analysis_slug, username, project_name]):
-            return P('Error: Missing required parameters', cls='text-invalid')
-        
-        step_data = wand.get_step_data(pipeline_id, step_id, {})
-        analysis_result_str = step_data.get(step.done, '')
-        analysis_result = json.loads(analysis_result_str) if analysis_result_str else {}
-        
-        # Always use "Crawl Basic" template and "crawl_attributes" export type
-        basic_template_details = self.QUERY_TEMPLATES.get('Crawl Basic', {})
-        export_type = 'crawl_attributes'
-        
-        try:
-            crawl_filepath = await self.get_deterministic_filepath(username, project_name, analysis_slug, export_type)
-            file_exists, file_info = await self.check_file_exists(crawl_filepath)
-            
-            if file_exists:
-                await self.message_queue.add(wand, f"✅ Using cached node attributes ({file_info['size']})", verbatim=True)
-                analysis_result.update({
-                    'download_complete': True,
-                    'download_info': {
-                        'has_file': True,
-                        'file_path': crawl_filepath,
-                        'timestamp': file_info['created'],
-                        'size': file_info['size'],
-                        'cached': True
-                    }
-                })
-                
-                # Generate Python debugging code even for cached files
-                try:
-                    analysis_date_obj = datetime.strptime(analysis_slug, '%Y%m%d')
-                except ValueError:
-                    analysis_date_obj = datetime.now()
-                
-                collection = f'crawl.{analysis_slug}'
-                template_query = self.apply_template('Crawl Basic', collection)
-                
-                export_query = {
-                    'job_type': 'export',
-                    'payload': {
-                        'username': username,
-                        'project': project_name,
-                        'connector': 'direct_download',
-                        'formatter': 'csv',
-                        'export_size': config.BOTIFY_API['CRAWL_EXPORT_SIZE'],
-                        'query': {
-                            'collections': [collection],
-                            'query': template_query
-                        }
-                    }
-                }
-                
-                _, _, python_command = self.generate_query_api_call(export_query, username, project_name)
-                analysis_result['python_command'] = python_command
-                
-            else:
-                await self.message_queue.add(wand, '🔄 Initiating node attributes export...', verbatim=True)
-                api_token = self.read_api_token()
-                if not api_token:
-                    raise ValueError('Cannot read API token')
-                
-                collection = f'crawl.{analysis_slug}'
-                template_query = self.apply_template('Crawl Basic', collection)
-                
-                export_query = {
-                    'job_type': 'export',
-                    'payload': {
-                        'username': username,
-                        'project': project_name,
-                        'connector': 'direct_download',
-                        'formatter': 'csv',
-                        'export_size': config.BOTIFY_API['CRAWL_EXPORT_SIZE'],
-                        'query': {
-                            'collections': [collection],
-                            'query': template_query
-                        }
-                    }
-                }
-                
-                job_url = 'https://api.botify.com/v1/jobs'
-                headers = {'Authorization': f'Token {api_token}', 'Content-Type': 'application/json'}
-                logging.info(f'Submitting node attributes export job with payload: {json.dumps(export_query, indent=2)}')
-                
-                # Generate Python command snippet
-                _, _, python_command = self.generate_query_api_call(export_query, username, project_name)
-                analysis_result['python_command'] = python_command
-                
-                async with httpx.AsyncClient() as client:
-                    try:
-                        response = await client.post(job_url, headers=headers, json=export_query, timeout=60.0)
-                        if response.status_code >= 400:
-                            error_detail = 'Unknown error'
-                            try:
-                                error_body = response.json()
-                                error_detail = json.dumps(error_body, indent=2)
-                                logging.error(f'API error details: {error_detail}')
-                            except Exception:
-                                error_detail = response.text[:500]
-                                logging.error(f'API error text: {error_detail}')
-                            response.raise_for_status()
-                        
-                        job_data = response.json()
-                        job_url_path = job_data.get('job_url')
-                        if not job_url_path:
-                            raise ValueError('Failed to get job URL from response')
-                        
-                        full_job_url = f'https://api.botify.com{job_url_path}'
-                        await self.message_queue.add(wand, '✅ Node attributes export job created successfully!', verbatim=True)
-                        await self.message_queue.add(wand, '🔄 Polling for export completion...', verbatim=True)
-                        
-                    except httpx.HTTPStatusError as e:
-                        error_message = f'Export request failed: HTTP {e.response.status_code}'
-                        await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
-                        analysis_result.update({
-                            'download_complete': False,
-                            'error': error_message,
-                            'download_info': {
-                                'has_file': False,
-                                'error': error_message,
-                                'timestamp': datetime.now().isoformat()
-                            }
-                        })
-                        full_job_url = None
-                        
-                    except Exception as e:
-                        error_message = f'Export request failed: {str(e)}'
-                        await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
-                        analysis_result.update({
-                            'download_complete': False,
-                            'error': error_message,
-                            'download_info': {
-                                'has_file': False,
-                                'error': error_message,
-                                'timestamp': datetime.now().isoformat()
-                            }
-                        })
-                        full_job_url = None
-                
-                if full_job_url:
-                    success, result = await self.poll_job_status(full_job_url, api_token, step_context="export")
-                    if not success:
-                        error_message = isinstance(result, str) and result or 'Export job failed'
-                        await self.message_queue.add(wand, f'❌ Export failed: {error_message}', verbatim=True)
-                        
-                        detailed_error = await self._diagnose_query_endpoint_error(export_query, username, project_name, api_token)
-                        if detailed_error:
-                            error_message = f"{error_message} | Detailed diagnosis: {detailed_error}"
-                            await self.message_queue.add(wand, f'🔍 Detailed error diagnosis: {detailed_error}', verbatim=True)
-                        
-                        analysis_result.update({
-                            'download_complete': False,
-                            'error': error_message,
-                            'download_info': {
-                                'has_file': False,
-                                'error': error_message,
-                                'timestamp': datetime.now().isoformat()
-                            }
-                        })
-                    else:
-                        await self.message_queue.add(wand, '✅ Export completed and ready for download!', verbatim=True)
-                        download_url = result.get('download_url')
-                        if not download_url:
-                            await self.message_queue.add(wand, '❌ No download URL found in job result', verbatim=True)
-                            analysis_result.update({
-                                'download_complete': False,
-                                'error': 'No download URL found in job result',
-                                'download_info': {
-                                    'has_file': False,
-                                    'error': 'No download URL found in job result',
-                                    'timestamp': datetime.now().isoformat()
-                                }
-                            })
-                        else:
-                            await self.message_queue.add(wand, '🔄 Downloading node attributes...', verbatim=True)
-                            await self.ensure_directory_exists(crawl_filepath)
-                            try:
-                                gz_filepath = f'{crawl_filepath}.gz'
-                                async with httpx.AsyncClient(timeout=300.0) as client:
-                                    async with client.stream('GET', download_url, headers={'Authorization': f'Token {api_token}'}) as response:
-                                        response.raise_for_status()
-                                        with open(gz_filepath, 'wb') as gz_file:
-                                            async for chunk in response.aiter_bytes():
-                                                gz_file.write(chunk)
-                                
-                                with gzip.open(gz_filepath, 'rb') as f_in:
-                                    with open(crawl_filepath, 'wb') as f_out:
-                                        shutil.copyfileobj(f_in, f_out)
-                                os.remove(gz_filepath)
-                                
-                                _, file_info = await self.check_file_exists(crawl_filepath)
-                                await self.message_queue.add(wand, f"✅ Download complete: {file_info['path']} ({file_info['size']})", verbatim=True)
-                                
-                                # Set proper column names for Crawl Basic data
-                                df = pd.read_csv(crawl_filepath)
-                                if len(df.columns) >= 7:
-                                    df.columns = ['URL', 'HTTP Code', 'Page Title', 'Page Type', 'Is Compliant', 'Canonical URL', 'In Sitemap'][:len(df.columns)]
-                                else:
-                                    # Fallback for unexpected column count
-                                    df.columns = [f'Column_{i+1}' for i in range(len(df.columns))]
-                                
-                                df.to_csv(crawl_filepath, index=False)
-                                await self.message_queue.add(wand, f'✅ Node attributes data saved with {len(df):,} rows', verbatim=True)
-                                
-                                analysis_result.update({
-                                    'download_complete': True,
-                                    'download_info': {
-                                        'has_file': True,
-                                        'file_path': crawl_filepath,
-                                        'timestamp': file_info['created'],
-                                        'size': file_info['size'],
-                                        'cached': False,
-                                        'row_count': len(df)
-                                    }
-                                })
-                                
-                            except Exception as e:
-                                error_message = f'Download failed: {str(e)}'
-                                await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
-                                analysis_result.update({
-                                    'download_complete': False,
-                                    'error': error_message,
-                                    'download_info': {
-                                        'has_file': False,
-                                        'error': error_message,
-                                        'timestamp': datetime.now().isoformat()
-                                    }
-                                })
-            
-            # Update step data with final result
-            analysis_result_str = json.dumps(analysis_result)
-            await wand.set_step_data(pipeline_id, step_id, analysis_result_str, steps)
-            
-        except Exception as e:
-            error_message = f'Unexpected error in step_02b_process: {str(e)}'
-            logging.exception(error_message)
-            await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
-            analysis_result.update({
-                'download_complete': False,
-                'error': error_message,
-                'download_info': {
-                    'has_file': False,
-                    'error': error_message,
-                    'timestamp': datetime.now().isoformat()
-                }
-            })
-            analysis_result_str = json.dumps(analysis_result)
-            await wand.set_step_data(pipeline_id, step_id, analysis_result_str, steps)
-        
-        # Return completed view with action buttons
-        action_buttons = self._create_action_buttons(analysis_result, step_id)
-        
-        widget = Div(
-            Div(
-                Button(self.ui['BUTTON_LABELS']['HIDE_SHOW_CODE'],
-                    cls=self.ui['BUTTON_STYLES']['STANDARD'],
-                    hx_get=f'/{app_name}/toggle?step_id={step_id}',
-                    hx_target=f'#{step_id}_widget',
-                    hx_swap='innerHTML'
-                ),
-                *action_buttons,
-                style=self.ui['BUTTON_STYLES']['FLEX_CONTAINER']
-            ),
-            Div(
-                Pre(f'Node attributes downloaded for: {analysis_slug}', cls='code-block-container', style='display: none;'),
-                id=f'{step_id}_widget'
-            )
-        )
-        
-        return Div(
-            wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {analysis_slug}', widget=widget, steps=steps),
-            Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'),
-            id=step_id
-        )
-
     async def step_03(self, request):
         """Handles GET request for checking if a Botify project has web logs."""
         wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
@@ -2127,344 +1645,6 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         except Exception as e:
             logging.exception(f'Error in step_04_complete: {e}')
             return Div(P(f'Error: {str(e)}', cls='text-invalid'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
-
-    async def step_05(self, request):
-        """Handles GET request for the Visualization Preparation step."""
-        wand, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
-        step_id = "step_05"
-        step_index = self.steps_indices[step_id]
-        step = steps[step_index]
-        next_step_id = 'finalize'
-        pipeline_id = db.get("pipeline_id", "unknown")
-        state = wand.read_state(pipeline_id)
-        step_data = wand.get_step_data(pipeline_id, step_id, {})
-        
-        # Check if the visualization is already prepared
-        viz_result_str = step_data.get(step.done, '')
-        viz_result = json.loads(viz_result_str) if viz_result_str else {}
-        viz_url = viz_result.get('visualization_url')
-        
-        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
-        if 'finalized' in finalize_data and viz_url:
-            return Div(
-                Card(
-                    H3(f"🔒 {step.show}"),
-                    A("Open Visualization", href=viz_url, target="_blank", role="button", cls=self.ui['BUTTON_STYLES']['PRIMARY'])
-                ),
-                Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
-                id=step_id
-            )
-        elif viz_url and state.get("_revert_target") != step_id:
-            widget = Div(
-                A("🚀 Open Visualization in New Tab", href=viz_url, target="_blank", role="button", cls=self.ui['BUTTON_STYLES']['PRIMARY'])
-            )
-            return Div(
-                wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f"{step.show}: Link generated!", widget=widget, steps=steps),
-                Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
-                id=step_id
-            )
-        else:
-            # Show the button to start the process
-            await self.message_queue.add(wand, self.step_messages[step_id]["input"], verbatim=True)
-            return Div(
-                Card(
-                    H3(f"{step.show}"),
-                    P("This step will process the downloaded data into Cosmograph-compatible CSVs and generate a visualization link."),
-                    Form(
-                        Button("Prepare & Visualize ▸", type="submit", cls="primary", **{'hx-on:click': 'this.setAttribute("aria-busy", "true")'}),
-                        hx_post=f"/{app_name}/{step_id}_submit", hx_target=f"#{step_id}"
-                    )
-                ),
-                Div(id=next_step_id),
-                id=step_id
-            )
-
-    async def step_05_submit(self, request):
-        """Process the submission for the Visualization Preparation step."""
-        wand, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
-        step_id = "step_05"
-        step_index = self.steps_indices[step_id]
-        step = steps[step_index]
-        pipeline_id = db.get("pipeline_id", "unknown")
-
-        return Card(
-            H3(f'{step.show}'),
-            P("Processing data and preparing visualization... This may take a moment."),
-            Progress(style='margin-top: 10px;'),
-            Script(f"""
-                setTimeout(function() {{
-                    htmx.ajax('POST', '/{app_name}/step_05_process', {{
-                        target: '#{step_id}',
-                        values: {{ 'pipeline_id': '{pipeline_id}' }}
-                    }});
-                }}, 500);
-            """),
-            id=step_id
-        )
-
-    async def step_05_process(self, request):
-        """Process downloaded data into Cosmograph-compatible format and generate visualization URL."""
-        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
-        step_id = 'step_05'
-        step_index = self.steps_indices[step_id]
-        step = steps[step_index]
-        next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
-        form = await request.form()
-        pipeline_id = form.get('pipeline_id', 'unknown')
-        
-        # Load project and analysis data
-        project_data = wand.get_step_data(pipeline_id, 'step_01', {}).get('botify_project', '{}')
-        analysis_data = wand.get_step_data(pipeline_id, 'step_02', {}).get('analysis_selection', '{}')
-        
-        try:
-            project_info = json.loads(project_data)
-            analysis_info = json.loads(analysis_data)
-        except json.JSONDecodeError:
-            await self.message_queue.add(wand, '❌ Error: Could not load project or analysis data', verbatim=True)
-            return P('Error: Could not load project or analysis data', cls='text-invalid')
-        
-        username = project_info.get('username')
-        project_name = project_info.get('project_name')
-        analysis_slug = analysis_info.get('analysis_slug')
-        
-        if not all([username, project_name, analysis_slug]):
-            await self.message_queue.add(wand, '❌ Error: Missing required project information', verbatim=True)
-            return P('Error: Missing required project information', cls='text-invalid')
-        
-        try:
-            await self.message_queue.add(wand, '🔄 Processing data for visualization...', verbatim=True)
-            
-            # Get data directory
-            data_dir = await self.get_deterministic_filepath(username, project_name, analysis_slug)
-            data_path = Path(data_dir)
-            
-            # Check for required files
-            link_graph_file = data_path / 'link_graph.csv'
-            gsc_file = data_path / 'gsc.csv'
-            weblog_file = data_path / 'weblog.csv'
-            
-            if not link_graph_file.exists():
-                await self.message_queue.add(wand, '❌ Error: Link graph data not found. Please complete Step 2 first.', verbatim=True)
-                return P('Error: Link graph data not found. Please complete Step 2 first.', cls='text-invalid')
-            
-            await self.message_queue.add(wand, '📊 Loading link graph data...', verbatim=True)
-            
-            # Load link graph data
-            try:
-                link_graph_df = pd.read_csv(link_graph_file)
-                await self.message_queue.add(wand, f'✅ Loaded {len(link_graph_df):,} link graph rows', verbatim=True)
-                
-                # Check for link graph columns - handle both BQL field names and simplified export names
-                columns = list(link_graph_df.columns)
-                
-                # Try to identify source and target columns
-                source_col = None
-                target_col = None
-                
-                # First try the BQL field names
-                bql_source = f'{analysis_slug}.url'
-                bql_target = f'{analysis_slug}.outlinks_internal.graph.url'
-                
-                if bql_source in columns and bql_target in columns:
-                    source_col = bql_source
-                    target_col = bql_target
-                # Then try common export column names
-                elif 'Source URL' in columns and 'Target URL' in columns:
-                    source_col = 'Source URL'
-                    target_col = 'Target URL'
-                elif 'source' in columns and 'target' in columns:
-                    source_col = 'source'
-                    target_col = 'target'
-                else:
-                    await self.message_queue.add(wand, f'❌ Error: Could not identify source/target columns in link graph. Found: {columns}', verbatim=True)
-                    return P('Error: Could not identify source/target columns in link graph data', cls='text-invalid')
-                
-                await self.message_queue.add(wand, f'✅ Using columns: {source_col} → {target_col}', verbatim=True)
-                
-            except Exception as e:
-                await self.message_queue.add(wand, f'❌ Error loading link graph data: {str(e)}', verbatim=True)
-                return P(f'Error loading link graph data: {str(e)}', cls='text-invalid')
-            
-            await self.message_queue.add(wand, '🔗 Creating edge list for Cosmograph...', verbatim=True)
-            
-            # Create cosmo_links.csv (edge list) using the detected column names
-            # Filter out rows with missing source or target URLs
-            edges_df = link_graph_df[[source_col, target_col]].dropna()
-            edges_df.columns = ['source', 'target']  # Rename for Cosmograph compatibility
-            
-            # Remove self-loops
-            edges_df = edges_df[edges_df['source'] != edges_df['target']]
-            
-            await self.message_queue.add(wand, f'✅ Created {len(edges_df):,} edges (removed self-loops)', verbatim=True)
-            
-            # Save cosmo_links.csv
-            cosmo_links_file = data_path / 'cosmo_links.csv'
-            edges_df.to_csv(cosmo_links_file, index=False)
-            
-            await self.message_queue.add(wand, '🎯 Creating node list and merging performance data...', verbatim=True)
-            
-            # Create master node list from unique URLs
-            all_urls = set(edges_df['source'].tolist() + edges_df['target'].tolist())
-            nodes_df = pd.DataFrame({'url': list(all_urls)})
-            
-            await self.message_queue.add(wand, f'✅ Created {len(nodes_df):,} unique nodes', verbatim=True)
-            
-            # Load and merge GSC data if available
-            if gsc_file.exists():
-                try:
-                    gsc_df = pd.read_csv(gsc_file)
-                    await self.message_queue.add(wand, f'📈 Loaded GSC data: {len(gsc_df):,} rows', verbatim=True)
-                    
-                    # Rename 'Full URL' to 'url' for consistent merging
-                    if 'Full URL' in gsc_df.columns:
-                        gsc_df.rename(columns={'Full URL': 'url'}, inplace=True)
-                    
-                    # Merge GSC data (left join to preserve all nodes)
-                    nodes_df = nodes_df.merge(gsc_df, on='url', how='left')
-                    
-                except Exception as e:
-                    await self.message_queue.add(wand, f'⚠️ Warning: Could not load GSC data: {str(e)}', verbatim=True)
-            else:
-                await self.message_queue.add(wand, '⚠️ No GSC data found, continuing without performance metrics', verbatim=True)
-            
-            # Load and merge basic crawl attributes from step_02b if available
-            crawl_file = data_path / 'crawl.csv'
-            if crawl_file.exists():
-                try:
-                    crawl_df = pd.read_csv(crawl_file)
-                    await self.message_queue.add(wand, f'📄 Loaded crawl attributes: {len(crawl_df):,} rows', verbatim=True)
-                    
-                    # Handle different possible URL column names from step_02b
-                    url_column = None
-                    for col in crawl_df.columns:
-                        if 'url' in col.lower() and not any(x in col.lower() for x in ['target', 'source', 'canonical']):
-                            url_column = col
-                            break
-                    
-                    if url_column and url_column != 'url':
-                        crawl_df.rename(columns={url_column: 'url'}, inplace=True)
-                    
-                    # Merge crawl attributes (left join to preserve all nodes)
-                    nodes_df = nodes_df.merge(crawl_df, on='url', how='left')
-                    await self.message_queue.add(wand, f'✅ Merged crawl attributes (HTTP status, page titles, compliance, etc.)', verbatim=True)
-                    
-                except Exception as e:
-                    await self.message_queue.add(wand, f'⚠️ Warning: Could not load crawl attributes: {str(e)}', verbatim=True)
-            else:
-                await self.message_queue.add(wand, '⚠️ No crawl attributes found from step_02b', verbatim=True)
-
-            # Load and merge weblog data if available
-            if weblog_file.exists():
-                try:
-                    weblog_df = pd.read_csv(weblog_file)
-                    await self.message_queue.add(wand, f'🌐 Loaded weblog data: {len(weblog_df):,} rows', verbatim=True)
-                    
-                    # Rename 'Full URL' to 'url' for consistent merging
-                    if 'Full URL' in weblog_df.columns:
-                        weblog_df.rename(columns={'Full URL': 'url'}, inplace=True)
-                    
-                    # Merge weblog data (left join to preserve all nodes)
-                    nodes_df = nodes_df.merge(weblog_df, on='url', how='left')
-                    
-                except Exception as e:
-                    await self.message_queue.add(wand, f'⚠️ Warning: Could not load weblog data: {str(e)}', verbatim=True)
-            else:
-                await self.message_queue.add(wand, '⚠️ No weblog data found, continuing without crawl data', verbatim=True)
-            
-            await self.message_queue.add(wand, '📋 Preparing non-destructive metadata for Cosmograph...', verbatim=True)
-            
-            # Non-destructive approach: Keep all original metric names and values
-            # Fill NaN values with defaults only for visualization
-            nodes_df = nodes_df.fillna({
-                'Impressions': 0,
-                'Clicks': 0,
-                'CTR': 0,
-                'Avg. Position': 100,
-                'crawls.google.count': 0
-            })
-            
-            # Create id column as required by Cosmograph (rename url to id)
-            nodes_df['id'] = nodes_df['url']
-            
-            # Non-destructive selection: Keep all original columns, let Cosmograph handle gradients
-            # Start with 'id' as required by Cosmograph, then include all other original columns
-            cosmo_columns = ['id']
-            
-            # Add all other columns except 'url' (since we renamed it to 'id')
-            for col in nodes_df.columns:
-                if col not in ['id', 'url']:  # Exclude id (already added) and url (renamed to id)
-                    cosmo_columns.append(col)
-            
-            # Keep only columns that exist
-            final_columns = [col for col in cosmo_columns if col in nodes_df.columns]
-            cosmo_nodes_df = nodes_df[final_columns]
-            
-            # Save cosmo_nodes.csv
-            cosmo_nodes_file = data_path / 'cosmo_nodes.csv'
-            cosmo_nodes_df.to_csv(cosmo_nodes_file, index=False)
-            
-            await self.message_queue.add(wand, f'✅ Saved visualization files: {len(edges_df):,} edges, {len(cosmo_nodes_df):,} nodes', verbatim=True)
-            
-            await self.message_queue.add(wand, '🚀 Generating Cosmograph visualization URL...', verbatim=True)
-            
-            # Generate download URLs for the CSV files using the proper download_file endpoint
-            
-            base_url = "http://localhost:5001"
-            links_path = f"{app_name}/{username}/{project_name}/{analysis_slug}/cosmo_links.csv"
-            nodes_path = f"{app_name}/{username}/{project_name}/{analysis_slug}/cosmo_nodes.csv"
-            
-            # Create proper download URLs with timestamps (same pattern as _create_action_buttons)
-            timestamp = int(datetime.now().timestamp())
-            links_url = f"{base_url}/download_file?file={quote(links_path)}&t={timestamp}"
-            nodes_url = f"{base_url}/download_file?file={quote(nodes_path)}&t={timestamp}"
-            
-            # Use the unified Cosmograph URL creation method
-            # Generate Cosmograph URL using the meta pattern (let Cosmograph auto-detect columns)
-            cosmograph_url = self.create_cosmograph_url(links_url, meta_url=nodes_url)
-            
-            # Store the result
-            visualization_result = {
-                'visualization_url': cosmograph_url,
-                'links_url': links_url,
-                'nodes_url': nodes_url,
-                'edges_count': len(edges_df),
-                'nodes_count': len(cosmo_nodes_df),
-                'timestamp': datetime.now().isoformat()
-            }
-            
-            # Save to step data
-            await wand.set_step_data(pipeline_id, step_id, json.dumps(visualization_result), self.steps)
-            
-            await self.message_queue.add(wand, f'🎉 Visualization ready! {len(edges_df):,} edges and {len(cosmo_nodes_df):,} nodes processed.', verbatim=True)
-            
-            # Create visualization widget
-            widget = Div(
-                P(f"Graph processed: {len(edges_df):,} edges, {len(cosmo_nodes_df):,} nodes"),
-                A("🚀 Open Visualization in New Tab", 
-                  href=cosmograph_url, 
-                  target="_blank", 
-                  role="button", 
-                  cls="primary"),
-                style="text-align: center; padding: 15px;"
-            )
-            
-            return Div(
-                wand.display_revert_widget(
-                    step_id=step_id, 
-                    app_name=app_name, 
-                    message=f'{step.show}: Visualization link generated', 
-                    widget=widget, 
-                    steps=self.steps
-                ),
-                Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'),
-                id=step_id
-            )
-            
-        except Exception as e:
-            logging.exception(f'Error in step_05_process: {e}')
-            await self.message_queue.add(wand, f'❌ Error generating visualization: {str(e)}', verbatim=True)
-            return P(f'Error generating visualization: {str(e)}', cls='text-invalid')
-
 
     def validate_botify_url(self, url):
         """Validate a Botify project URL and extract project information."""
@@ -4188,13 +3368,6 @@ await main()
             return Div(P(f'Error: {str(e)}', cls='text-invalid'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
 
 
-
-
-
-
-
-
-
     async def common_toggle(self, request):
         """Unified toggle method for all step widgets using configuration-driven approach."""
         wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
@@ -4979,178 +4152,6 @@ await main()
         except Exception as e:
             return f"Diagnosis failed: {str(e)}"
 
-    def _create_action_buttons(self, step_data, step_id):
-        """Create View Folder and Download CSV buttons for a step."""
-        from urllib.parse import quote
-
-        # Extract analysis-specific folder information
-        username = step_data.get('username', '')
-        project_name = step_data.get('project_name', '') or step_data.get('project', '')
-        analysis_slug = step_data.get('analysis_slug', '')
-
-        # Construct the specific analysis folder path
-        if username and project_name and analysis_slug:
-            analysis_folder = Path.cwd() / 'downloads' / self.APP_NAME / username / project_name / analysis_slug
-            folder_path = str(analysis_folder.resolve())
-            folder_title = f"Open analysis folder: {username}/{project_name}/{analysis_slug}"
-        else:
-            # Fallback to general trifecta folder if analysis info is missing
-            analysis_folder = Path.cwd() / 'downloads' / self.APP_NAME
-            folder_path = str(analysis_folder.resolve())
-            folder_title = f"Open folder: {analysis_folder.resolve()}"
-
-        # Always create the View Folder button
-        folder_button = A(
-            self.ui['BUTTON_LABELS']['VIEW_FOLDER'],
-            href="#",
-            hx_get=f"/open-folder?path={quote(folder_path)}",
-            hx_swap="none",
-            title=folder_title,
-            role="button",
-            cls=self.ui['BUTTON_STYLES']['STANDARD']
-        )
-
-        buttons = [folder_button]
-
-        # Create download button if file exists
-        download_complete = step_data.get('download_complete', False)
-
-        # Determine the expected filename based on step and export type
-        expected_filename = None
-        if step_id == 'step_02':
-            # For crawl data, determine filename based on active template's export type
-            active_crawl_template_key = self.get_configured_template('crawl')
-            active_template_details = self.QUERY_TEMPLATES.get(active_crawl_template_key, {})
-            export_type = active_template_details.get('export_type', 'crawl_attributes')
-
-            # Use the same mapping as get_deterministic_filepath
-            filename_mapping = {
-                'crawl_attributes': 'crawl.csv',
-                'link_graph_edges': 'link_graph.csv'
-            }
-            expected_filename = filename_mapping.get(export_type, 'crawl.csv')
-        elif step_id == 'step_02b':
-            # step_02b always uses 'Crawl Basic' template which has 'crawl_attributes' export type
-            expected_filename = 'crawl.csv'
-        elif step_id == 'step_03':
-            expected_filename = 'weblog.csv'
-        elif step_id == 'step_04':
-            expected_filename = 'gsc.csv'
-
-        # Check if download was successful and try to find the file
-        if download_complete and expected_filename and username and project_name and analysis_slug:
-            try:
-                # Construct the expected file path
-                expected_file_path = Path.cwd() / 'downloads' / self.APP_NAME / username / project_name / analysis_slug / expected_filename
-
-                # Check if file actually exists
-                if expected_file_path.exists():
-                    downloads_base = Path.cwd() / 'downloads'
-                    path_for_url = expected_file_path.relative_to(downloads_base)
-                    path_for_url = str(path_for_url).replace('\\', '/')
-
-                    # Check if this is a link graph file for Cosmograph visualization
-                    is_link_graph = expected_filename.startswith('link_graph')
-
-                    # Always create the download button first
-                    download_button = A(
-                        self.ui['BUTTON_LABELS']['DOWNLOAD_CSV'],
-                        href=f"/download_file?file={quote(path_for_url)}",
-                        target="_blank",
-                        role="button",
-                        cls=self.ui['BUTTON_STYLES']['STANDARD']
-                    )
-                    buttons.append(download_button)
-
-                    # For link graph files, add the Cosmograph visualization button
-                    # Check if we have a comprehensive visualization URL from step_05_process first
-                    if is_link_graph:
-                        viz_url = None
-                        
-                        # Try to get the comprehensive visualization URL from step_05_process
-                        if step_id == 'step_05':
-                            try:
-                                step_05_data = step_data.get('step_05_process', '')
-                                if step_05_data:
-                                    visualization_result = json.loads(step_05_data)
-                                    viz_url = visualization_result.get('visualization_url')
-                            except (json.JSONDecodeError, KeyError):
-                                pass
-                        
-                        # Fallback: create simple visualization URL for individual link graph files
-                        if not viz_url:
-                            from datetime import datetime
-                            # Create simple Cosmograph visualization link for individual files
-                            file_url = f"/download_file?file={quote(path_for_url)}"
-                            timestamp = int(datetime.now().timestamp())
-                            data_url = f"http://localhost:5001{file_url}&t={timestamp}"
-                            viz_url = self.create_cosmograph_url(data_url)
-
-                        if viz_url:
-                            viz_button = A(
-                                self.ui['BUTTON_LABELS']['VISUALIZE_GRAPH'],
-                                href=viz_url,
-                                target="_blank",
-                                role="button",
-                                cls=self.ui['BUTTON_STYLES']['STANDARD']
-                            )
-                            buttons.append(viz_button)
-                else:
-                    logger.debug(f"Expected file not found: {expected_file_path}")
-            except Exception as e:
-                logger.error(f"Error creating download button for {step_id}: {e}")
-
-        # Fallback: check the old way for backward compatibility
-        elif download_complete:
-            file_path = None
-            download_info = step_data.get('download_info', {})
-            if download_info.get('has_file'):
-                file_path = download_info.get('file_path', '')
-
-            if file_path:
-                try:
-                    file_path_obj = Path(file_path)
-                    if file_path_obj.exists():
-                        downloads_base = Path.cwd() / 'downloads'
-                        path_for_url = file_path_obj.relative_to(downloads_base)
-                        path_for_url = str(path_for_url).replace('\\', '/')
-
-                        # Check if this is a link graph file for Cosmograph visualization
-                        is_link_graph = file_path_obj.name.startswith('link_graph')
-
-                        # Always create the download button first
-                        download_button = A(
-                            self.ui['BUTTON_LABELS']['DOWNLOAD_CSV'],
-                            href=f"/download_file?file={quote(path_for_url)}",
-                            target="_blank",
-                            role="button",
-                            cls=self.ui['BUTTON_STYLES']['STANDARD']
-                        )
-                        buttons.append(download_button)
-
-                        # For link graph files, also add the Cosmograph visualization button
-                        if is_link_graph:
-                            from datetime import datetime
-                            # Create Cosmograph visualization link using the unified method
-                            file_url = f"/download_file?file={quote(path_for_url)}"
-                            timestamp = int(datetime.now().timestamp())
-                            data_url = f"http://localhost:5001{file_url}&t={timestamp}"
-                            viz_url = self.create_cosmograph_url(data_url)
-
-                            viz_button = A(
-                                self.ui['BUTTON_LABELS']['VISUALIZE_GRAPH'],
-                                href=viz_url,
-                                target="_blank",
-                                role="button",
-                                cls=self.ui['BUTTON_STYLES']['STANDARD']
-                            )
-                            buttons.append(viz_button)
-                except Exception as e:
-                    logger.error(f"Error creating fallback download button for {step_id}: {e}")
-
-        return buttons
-
-
     # --- START_SWAPPABLE_STEP: step_06 ---
     async def step_06(self, request):
         """Handles GET request for Placeholder Step 6 (Edit Me)."""
@@ -5327,3 +4328,997 @@ await main()
 
     # --- STEP_METHODS_INSERTION_POINT ---
 
+    # --- START_PARAMETER_BUSTER_TRANSPLANT_BUNDLE ---
+
+    async def step_02b(self, request):
+        """Handles GET request for Node Attributes (Crawl Basic) download."""
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        step_id = 'step_02b'
+        step_index = self.steps_indices[step_id]
+        step = steps[step_index]
+        next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
+        analysis_result_str = step_data.get(step.done, '')
+        analysis_result = json.loads(analysis_result_str) if analysis_result_str else {}
+        
+        # Get analysis slug from step_02 (we need this to know which analysis to use)
+        prev_step_id = 'step_02'
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
+        prev_data_str = prev_step_data.get('analysis_selection', '')
+        if not prev_data_str:
+            return P('Error: Analysis data not found. Please complete step 2 first.', cls='text-invalid')
+        
+        prev_analysis_data = json.loads(prev_data_str)
+        analysis_slug = prev_analysis_data.get('analysis_slug', '')
+        project_name = prev_analysis_data.get('project', '')
+        username = prev_analysis_data.get('username', '')
+        
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
+
+        # Phase 1: Finalized view (locked)
+        if 'finalized' in finalize_data and analysis_result:
+            return Div(
+                Card(H3(f'🔒 {step.show}'), 
+                     Div(P(f'Project: {project_name}', style='margin-bottom: 5px;'), 
+                         P(f'Node Attributes Downloaded: {analysis_slug}', style='font-weight: bold;'), 
+                         cls='custom-card-padding-bg')),
+                Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'),
+                id=step_id
+            )
+        
+        # Phase 2: Completed view (revertible)
+        elif analysis_result and state.get('_revert_target') != step_id:
+            action_buttons = self._create_action_buttons(analysis_result, step_id)
+            
+            widget = Div(
+                Div(
+                    Button(self.ui['BUTTON_LABELS']['HIDE_SHOW_CODE'],
+                        cls=self.ui['BUTTON_STYLES']['STANDARD'],
+                        hx_get=f'/{app_name}/toggle?step_id={step_id}',
+                        hx_target=f'#{step_id}_widget',
+                        hx_swap='innerHTML'
+                    ),
+                    *action_buttons,
+                    style=self.ui['BUTTON_STYLES']['FLEX_CONTAINER']
+                ),
+                Div(
+                    Pre(f'Node attributes downloaded for: {analysis_slug}', cls='code-block-container', style='display: none;'),
+                    id=f'{step_id}_widget'
+                )
+            )
+            return Div(
+                wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {analysis_slug}', widget=widget, steps=steps),
+                Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'),
+                id=step_id
+            )
+        
+        # Phase 3: Input view
+        else:
+            # Get "Crawl Basic" template details
+            basic_template_details = self.QUERY_TEMPLATES.get('Crawl Basic', {})
+            template_name = basic_template_details.get('name', 'Crawl Basic')
+            user_message = basic_template_details.get('user_message', 'This will download basic crawl data.')
+            button_suffix = basic_template_details.get('button_label_suffix', 'Basic Attributes')
+            
+            # Check for cached file using "crawl_attributes" export type
+            is_cached = False
+            if analysis_slug:
+                is_cached = await self.check_cached_file_for_button_text(username, project_name, analysis_slug, 'crawl_attributes')
+            
+            button_text = f'Use Cached {button_suffix} ▸' if is_cached else f'Download {button_suffix} ▸'
+            
+            await self.message_queue.add(wand, f'📄 Ready to download node attributes for analysis {analysis_slug}', verbatim=True)
+            
+            return Div(
+                Card(
+                    H3(f'{step.show}'),
+                    P(f"Download node attributes for analysis '{analysis_slug}'"),
+                    P(f'Organization: {username}', cls='text-secondary'),
+                    P(user_message, cls='text-muted', style='font-style: italic; margin-top: 10px;'),
+                    Form(
+                        Div(
+                            Button(button_text, type='submit', name='action', value='download', cls='mt-10px primary', **{'hx-on:click': 'this.setAttribute("aria-busy", "true"); this.textContent = "Processing..."'}),
+                            Button(self.ui['BUTTON_LABELS']['SKIP_STEP'], type='submit', name='action', value='skip', cls='mt-10px secondary outline', style=self.ui['BUTTON_STYLES']['SKIP_BUTTON_STYLE']) if self.FEATURES_CONFIG.get('enable_skip_buttons', False) else None,
+                            style=self.ui['BUTTON_STYLES']['BUTTON_ROW']
+                        ),
+                        hx_post=f'/{app_name}/{step_id}_submit',
+                        hx_target=f'#{step_id}'
+                    )
+                ),
+                Div(id=next_step_id),  # Empty placeholder, no trigger yet
+                id=step_id
+            )
+
+    async def step_02b_submit(self, request):
+        """Process the Node Attributes (Crawl Basic) download submission."""
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        step_id = 'step_02b'
+        step_index = self.steps_indices[step_id]
+        step = steps[step_index]
+        next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+
+        # Check if user clicked skip button
+        form = await request.form()
+        action = form.get('action', 'download')  # Default to download for backward compatibility
+
+        if action == 'skip':
+            # Handle skip action - create fake completion data and proceed to next step
+            await self.message_queue.add(wand, f"⏭️ Skipping Node Attributes download...", verbatim=True)
+
+            # Create skip data that indicates step was skipped
+            skip_result = {
+                'download_complete': False,
+                'skipped': True,
+                'skip_reason': 'User chose to skip node attributes download',
+                'file_path': None,
+                'python_command': '',
+                'export_type': 'crawl_attributes',
+                'template_used': 'Crawl Basic'
+            }
+
+            await wand.set_step_data(pipeline_id, step_id, json.dumps(skip_result), steps)
+            await self.message_queue.add(wand, f"⏭️ Node Attributes step skipped. Proceeding to next step.", verbatim=True)
+
+            return Div(
+                wand.display_revert_widget(
+                    step_id=step_id,
+                    app_name=app_name,
+                    message=f'{step.show}: Skipped',
+                    widget=Div(P('This step was skipped.', style='color: #888; font-style: italic;')),
+                    steps=steps
+                ),
+                Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'),
+                id=step_id
+            )
+
+        # Handle normal download action
+        # Get analysis data from step_02
+        prev_step_id = 'step_02'
+        prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
+        prev_data_str = prev_step_data.get('analysis_selection', '')
+        if not prev_data_str:
+            return P('Error: Analysis data not found. Please complete step 2 first.', cls='text-invalid')
+        
+        prev_analysis_data = json.loads(prev_data_str)
+        analysis_slug = prev_analysis_data.get('analysis_slug', '')
+        project_name = prev_analysis_data.get('project', '')
+        username = prev_analysis_data.get('username', '')
+        
+        if not all([analysis_slug, username, project_name]):
+            return P('Error: Missing required analysis data', cls='text-invalid')
+        
+        await self.message_queue.add(wand, f'📊 Starting node attributes download for {analysis_slug}...', verbatim=True)
+        
+        # Create analysis result for step_02b using Crawl Basic template
+        analysis_result = {
+            'analysis_slug': analysis_slug,
+            'project': project_name,
+            'username': username,
+            'timestamp': datetime.now().isoformat(),
+            'download_started': True,
+            'export_type': 'crawl_attributes',  # Always use crawl_attributes for basic data
+            'template_used': 'Crawl Basic'
+        }
+        
+        analysis_result_str = json.dumps(analysis_result)
+        await wand.set_step_data(pipeline_id, step_id, analysis_result_str, steps)
+        
+        return Card(
+            H3(f'{step.show}'),
+            P(f"Downloading node attributes for analysis '{analysis_slug}'..."),
+            Progress(style='margin-top: 10px;'),
+            Script(f"""
+                setTimeout(function() {{
+                    htmx.ajax('POST', '/{app_name}/step_02b_process', {{
+                        target: '#{step_id}',
+                        values: {{
+                            'analysis_slug': '{analysis_slug}',
+                            'username': '{username}',
+                            'project_name': '{project_name}'
+                        }}
+                    }});
+                }}, 500);
+            """),
+            id=step_id
+        )
+
+    async def step_02b_process(self, request):
+        """Process the actual Crawl Basic download after showing the progress indicator."""
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        step_id = 'step_02b'
+        step_index = self.steps_indices[step_id]
+        step = steps[step_index]
+        next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
+        pipeline_id = wand.db.get('pipeline_id', 'unknown')
+        form = await request.form()
+        analysis_slug = form.get('analysis_slug', '').strip()
+        username = form.get('username', '').strip()
+        project_name = form.get('project_name', '').strip()
+        
+        if not all([analysis_slug, username, project_name]):
+            return P('Error: Missing required parameters', cls='text-invalid')
+        
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
+        analysis_result_str = step_data.get(step.done, '')
+        analysis_result = json.loads(analysis_result_str) if analysis_result_str else {}
+        
+        # Always use "Crawl Basic" template and "crawl_attributes" export type
+        basic_template_details = self.QUERY_TEMPLATES.get('Crawl Basic', {})
+        export_type = 'crawl_attributes'
+        
+        try:
+            crawl_filepath = await self.get_deterministic_filepath(username, project_name, analysis_slug, export_type)
+            file_exists, file_info = await self.check_file_exists(crawl_filepath)
+            
+            if file_exists:
+                await self.message_queue.add(wand, f"✅ Using cached node attributes ({file_info['size']})", verbatim=True)
+                analysis_result.update({
+                    'download_complete': True,
+                    'download_info': {
+                        'has_file': True,
+                        'file_path': crawl_filepath,
+                        'timestamp': file_info['created'],
+                        'size': file_info['size'],
+                        'cached': True
+                    }
+                })
+                
+                # Generate Python debugging code even for cached files
+                try:
+                    analysis_date_obj = datetime.strptime(analysis_slug, '%Y%m%d')
+                except ValueError:
+                    analysis_date_obj = datetime.now()
+                
+                collection = f'crawl.{analysis_slug}'
+                template_query = self.apply_template('Crawl Basic', collection)
+                
+                export_query = {
+                    'job_type': 'export',
+                    'payload': {
+                        'username': username,
+                        'project': project_name,
+                        'connector': 'direct_download',
+                        'formatter': 'csv',
+                        'export_size': config.BOTIFY_API['CRAWL_EXPORT_SIZE'],
+                        'query': {
+                            'collections': [collection],
+                            'query': template_query
+                        }
+                    }
+                }
+                
+                _, _, python_command = self.generate_query_api_call(export_query, username, project_name)
+                analysis_result['python_command'] = python_command
+                
+            else:
+                await self.message_queue.add(wand, '🔄 Initiating node attributes export...', verbatim=True)
+                api_token = self.read_api_token()
+                if not api_token:
+                    raise ValueError('Cannot read API token')
+                
+                collection = f'crawl.{analysis_slug}'
+                template_query = self.apply_template('Crawl Basic', collection)
+                
+                export_query = {
+                    'job_type': 'export',
+                    'payload': {
+                        'username': username,
+                        'project': project_name,
+                        'connector': 'direct_download',
+                        'formatter': 'csv',
+                        'export_size': config.BOTIFY_API['CRAWL_EXPORT_SIZE'],
+                        'query': {
+                            'collections': [collection],
+                            'query': template_query
+                        }
+                    }
+                }
+                
+                job_url = 'https://api.botify.com/v1/jobs'
+                headers = {'Authorization': f'Token {api_token}', 'Content-Type': 'application/json'}
+                logging.info(f'Submitting node attributes export job with payload: {json.dumps(export_query, indent=2)}')
+                
+                # Generate Python command snippet
+                _, _, python_command = self.generate_query_api_call(export_query, username, project_name)
+                analysis_result['python_command'] = python_command
+                
+                async with httpx.AsyncClient() as client:
+                    try:
+                        response = await client.post(job_url, headers=headers, json=export_query, timeout=60.0)
+                        if response.status_code >= 400:
+                            error_detail = 'Unknown error'
+                            try:
+                                error_body = response.json()
+                                error_detail = json.dumps(error_body, indent=2)
+                                logging.error(f'API error details: {error_detail}')
+                            except Exception:
+                                error_detail = response.text[:500]
+                                logging.error(f'API error text: {error_detail}')
+                            response.raise_for_status()
+                        
+                        job_data = response.json()
+                        job_url_path = job_data.get('job_url')
+                        if not job_url_path:
+                            raise ValueError('Failed to get job URL from response')
+                        
+                        full_job_url = f'https://api.botify.com{job_url_path}'
+                        await self.message_queue.add(wand, '✅ Node attributes export job created successfully!', verbatim=True)
+                        await self.message_queue.add(wand, '🔄 Polling for export completion...', verbatim=True)
+                        
+                    except httpx.HTTPStatusError as e:
+                        error_message = f'Export request failed: HTTP {e.response.status_code}'
+                        await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
+                        analysis_result.update({
+                            'download_complete': False,
+                            'error': error_message,
+                            'download_info': {
+                                'has_file': False,
+                                'error': error_message,
+                                'timestamp': datetime.now().isoformat()
+                            }
+                        })
+                        full_job_url = None
+                        
+                    except Exception as e:
+                        error_message = f'Export request failed: {str(e)}'
+                        await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
+                        analysis_result.update({
+                            'download_complete': False,
+                            'error': error_message,
+                            'download_info': {
+                                'has_file': False,
+                                'error': error_message,
+                                'timestamp': datetime.now().isoformat()
+                            }
+                        })
+                        full_job_url = None
+                
+                if full_job_url:
+                    success, result = await self.poll_job_status(full_job_url, api_token, step_context="export")
+                    if not success:
+                        error_message = isinstance(result, str) and result or 'Export job failed'
+                        await self.message_queue.add(wand, f'❌ Export failed: {error_message}', verbatim=True)
+                        
+                        detailed_error = await self._diagnose_query_endpoint_error(export_query, username, project_name, api_token)
+                        if detailed_error:
+                            error_message = f"{error_message} | Detailed diagnosis: {detailed_error}"
+                            await self.message_queue.add(wand, f'🔍 Detailed error diagnosis: {detailed_error}', verbatim=True)
+                        
+                        analysis_result.update({
+                            'download_complete': False,
+                            'error': error_message,
+                            'download_info': {
+                                'has_file': False,
+                                'error': error_message,
+                                'timestamp': datetime.now().isoformat()
+                            }
+                        })
+                    else:
+                        await self.message_queue.add(wand, '✅ Export completed and ready for download!', verbatim=True)
+                        download_url = result.get('download_url')
+                        if not download_url:
+                            await self.message_queue.add(wand, '❌ No download URL found in job result', verbatim=True)
+                            analysis_result.update({
+                                'download_complete': False,
+                                'error': 'No download URL found in job result',
+                                'download_info': {
+                                    'has_file': False,
+                                    'error': 'No download URL found in job result',
+                                    'timestamp': datetime.now().isoformat()
+                                }
+                            })
+                        else:
+                            await self.message_queue.add(wand, '🔄 Downloading node attributes...', verbatim=True)
+                            await self.ensure_directory_exists(crawl_filepath)
+                            try:
+                                gz_filepath = f'{crawl_filepath}.gz'
+                                async with httpx.AsyncClient(timeout=300.0) as client:
+                                    async with client.stream('GET', download_url, headers={'Authorization': f'Token {api_token}'}) as response:
+                                        response.raise_for_status()
+                                        with open(gz_filepath, 'wb') as gz_file:
+                                            async for chunk in response.aiter_bytes():
+                                                gz_file.write(chunk)
+                                
+                                with gzip.open(gz_filepath, 'rb') as f_in:
+                                    with open(crawl_filepath, 'wb') as f_out:
+                                        shutil.copyfileobj(f_in, f_out)
+                                os.remove(gz_filepath)
+                                
+                                _, file_info = await self.check_file_exists(crawl_filepath)
+                                await self.message_queue.add(wand, f"✅ Download complete: {file_info['path']} ({file_info['size']})", verbatim=True)
+                                
+                                # Set proper column names for Crawl Basic data
+                                df = pd.read_csv(crawl_filepath)
+                                if len(df.columns) >= 7:
+                                    df.columns = ['URL', 'HTTP Code', 'Page Title', 'Page Type', 'Is Compliant', 'Canonical URL', 'In Sitemap'][:len(df.columns)]
+                                else:
+                                    # Fallback for unexpected column count
+                                    df.columns = [f'Column_{i+1}' for i in range(len(df.columns))]
+                                
+                                df.to_csv(crawl_filepath, index=False)
+                                await self.message_queue.add(wand, f'✅ Node attributes data saved with {len(df):,} rows', verbatim=True)
+                                
+                                analysis_result.update({
+                                    'download_complete': True,
+                                    'download_info': {
+                                        'has_file': True,
+                                        'file_path': crawl_filepath,
+                                        'timestamp': file_info['created'],
+                                        'size': file_info['size'],
+                                        'cached': False,
+                                        'row_count': len(df)
+                                    }
+                                })
+                                
+                            except Exception as e:
+                                error_message = f'Download failed: {str(e)}'
+                                await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
+                                analysis_result.update({
+                                    'download_complete': False,
+                                    'error': error_message,
+                                    'download_info': {
+                                        'has_file': False,
+                                        'error': error_message,
+                                        'timestamp': datetime.now().isoformat()
+                                    }
+                                })
+            
+            # Update step data with final result
+            analysis_result_str = json.dumps(analysis_result)
+            await wand.set_step_data(pipeline_id, step_id, analysis_result_str, steps)
+            
+        except Exception as e:
+            error_message = f'Unexpected error in step_02b_process: {str(e)}'
+            logging.exception(error_message)
+            await self.message_queue.add(wand, f'❌ {error_message}', verbatim=True)
+            analysis_result.update({
+                'download_complete': False,
+                'error': error_message,
+                'download_info': {
+                    'has_file': False,
+                    'error': error_message,
+                    'timestamp': datetime.now().isoformat()
+                }
+            })
+            analysis_result_str = json.dumps(analysis_result)
+            await wand.set_step_data(pipeline_id, step_id, analysis_result_str, steps)
+        
+        # Return completed view with action buttons
+        action_buttons = self._create_action_buttons(analysis_result, step_id)
+        
+        widget = Div(
+            Div(
+                Button(self.ui['BUTTON_LABELS']['HIDE_SHOW_CODE'],
+                    cls=self.ui['BUTTON_STYLES']['STANDARD'],
+                    hx_get=f'/{app_name}/toggle?step_id={step_id}',
+                    hx_target=f'#{step_id}_widget',
+                    hx_swap='innerHTML'
+                ),
+                *action_buttons,
+                style=self.ui['BUTTON_STYLES']['FLEX_CONTAINER']
+            ),
+            Div(
+                Pre(f'Node attributes downloaded for: {analysis_slug}', cls='code-block-container', style='display: none;'),
+                id=f'{step_id}_widget'
+            )
+        )
+        
+        return Div(
+            wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {analysis_slug}', widget=widget, steps=steps),
+            Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'),
+            id=step_id
+        )
+
+    async def step_05(self, request):
+        """Handles GET request for the Visualization Preparation step."""
+        wand, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
+        step_id = "step_05"
+        step_index = self.steps_indices[step_id]
+        step = steps[step_index]
+        next_step_id = 'finalize'
+        pipeline_id = db.get("pipeline_id", "unknown")
+        state = wand.read_state(pipeline_id)
+        step_data = wand.get_step_data(pipeline_id, step_id, {})
+        
+        # Check if the visualization is already prepared
+        viz_result_str = step_data.get(step.done, '')
+        viz_result = json.loads(viz_result_str) if viz_result_str else {}
+        viz_url = viz_result.get('visualization_url')
+        
+        finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
+        if 'finalized' in finalize_data and viz_url:
+            return Div(
+                Card(
+                    H3(f"🔒 {step.show}"),
+                    A("Open Visualization", href=viz_url, target="_blank", role="button", cls=self.ui['BUTTON_STYLES']['PRIMARY'])
+                ),
+                Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
+                id=step_id
+            )
+        elif viz_url and state.get("_revert_target") != step_id:
+            widget = Div(
+                A("🚀 Open Visualization in New Tab", href=viz_url, target="_blank", role="button", cls=self.ui['BUTTON_STYLES']['PRIMARY'])
+            )
+            return Div(
+                wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f"{step.show}: Link generated!", widget=widget, steps=steps),
+                Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
+                id=step_id
+            )
+        else:
+            # Show the button to start the process
+            await self.message_queue.add(wand, self.step_messages[step_id]["input"], verbatim=True)
+            return Div(
+                Card(
+                    H3(f"{step.show}"),
+                    P("This step will process the downloaded data into Cosmograph-compatible CSVs and generate a visualization link."),
+                    Form(
+                        Button("Prepare & Visualize ▸", type="submit", cls="primary", **{'hx-on:click': 'this.setAttribute("aria-busy", "true")'}),
+                        hx_post=f"/{app_name}/{step_id}_submit", hx_target=f"#{step_id}"
+                    )
+                ),
+                Div(id=next_step_id),
+                id=step_id
+            )
+
+    async def step_05_submit(self, request):
+        """Process the submission for the Visualization Preparation step."""
+        wand, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
+        step_id = "step_05"
+        step_index = self.steps_indices[step_id]
+        step = steps[step_index]
+        pipeline_id = db.get("pipeline_id", "unknown")
+
+        return Card(
+            H3(f'{step.show}'),
+            P("Processing data and preparing visualization... This may take a moment."),
+            Progress(style='margin-top: 10px;'),
+            Script(f"""
+                setTimeout(function() {{
+                    htmx.ajax('POST', '/{app_name}/step_05_process', {{
+                        target: '#{step_id}',
+                        values: {{ 'pipeline_id': '{pipeline_id}' }}
+                    }});
+                }}, 500);
+            """),
+            id=step_id
+        )
+
+    async def step_05_process(self, request):
+        """Process downloaded data into Cosmograph-compatible format and generate visualization URL."""
+        wand, steps, app_name = (self.pipulate, self.steps, self.app_name)
+        step_id = 'step_05'
+        step_index = self.steps_indices[step_id]
+        step = steps[step_index]
+        next_step_id = steps[step_index + 1].id if step_index < len(steps) - 1 else 'finalize'
+        form = await request.form()
+        pipeline_id = form.get('pipeline_id', 'unknown')
+        
+        # Load project and analysis data
+        project_data = wand.get_step_data(pipeline_id, 'step_01', {}).get('botify_project', '{}')
+        analysis_data = wand.get_step_data(pipeline_id, 'step_02', {}).get('analysis_selection', '{}')
+        
+        try:
+            project_info = json.loads(project_data)
+            analysis_info = json.loads(analysis_data)
+        except json.JSONDecodeError:
+            await self.message_queue.add(wand, '❌ Error: Could not load project or analysis data', verbatim=True)
+            return P('Error: Could not load project or analysis data', cls='text-invalid')
+        
+        username = project_info.get('username')
+        project_name = project_info.get('project_name')
+        analysis_slug = analysis_info.get('analysis_slug')
+        
+        if not all([username, project_name, analysis_slug]):
+            await self.message_queue.add(wand, '❌ Error: Missing required project information', verbatim=True)
+            return P('Error: Missing required project information', cls='text-invalid')
+        
+        try:
+            await self.message_queue.add(wand, '🔄 Processing data for visualization...', verbatim=True)
+            
+            # Get data directory
+            data_dir = await self.get_deterministic_filepath(username, project_name, analysis_slug)
+            data_path = Path(data_dir)
+            
+            # Check for required files
+            link_graph_file = data_path / 'link_graph.csv'
+            gsc_file = data_path / 'gsc.csv'
+            weblog_file = data_path / 'weblog.csv'
+            
+            if not link_graph_file.exists():
+                await self.message_queue.add(wand, '❌ Error: Link graph data not found. Please complete Step 2 first.', verbatim=True)
+                return P('Error: Link graph data not found. Please complete Step 2 first.', cls='text-invalid')
+            
+            await self.message_queue.add(wand, '📊 Loading link graph data...', verbatim=True)
+            
+            # Load link graph data
+            try:
+                link_graph_df = pd.read_csv(link_graph_file)
+                await self.message_queue.add(wand, f'✅ Loaded {len(link_graph_df):,} link graph rows', verbatim=True)
+                
+                # Check for link graph columns - handle both BQL field names and simplified export names
+                columns = list(link_graph_df.columns)
+                
+                # Try to identify source and target columns
+                source_col = None
+                target_col = None
+                
+                # First try the BQL field names
+                bql_source = f'{analysis_slug}.url'
+                bql_target = f'{analysis_slug}.outlinks_internal.graph.url'
+                
+                if bql_source in columns and bql_target in columns:
+                    source_col = bql_source
+                    target_col = bql_target
+                # Then try common export column names
+                elif 'Source URL' in columns and 'Target URL' in columns:
+                    source_col = 'Source URL'
+                    target_col = 'Target URL'
+                elif 'source' in columns and 'target' in columns:
+                    source_col = 'source'
+                    target_col = 'target'
+                else:
+                    await self.message_queue.add(wand, f'❌ Error: Could not identify source/target columns in link graph. Found: {columns}', verbatim=True)
+                    return P('Error: Could not identify source/target columns in link graph data', cls='text-invalid')
+                
+                await self.message_queue.add(wand, f'✅ Using columns: {source_col} → {target_col}', verbatim=True)
+                
+            except Exception as e:
+                await self.message_queue.add(wand, f'❌ Error loading link graph data: {str(e)}', verbatim=True)
+                return P(f'Error loading link graph data: {str(e)}', cls='text-invalid')
+            
+            await self.message_queue.add(wand, '🔗 Creating edge list for Cosmograph...', verbatim=True)
+            
+            # Create cosmo_links.csv (edge list) using the detected column names
+            # Filter out rows with missing source or target URLs
+            edges_df = link_graph_df[[source_col, target_col]].dropna()
+            edges_df.columns = ['source', 'target']  # Rename for Cosmograph compatibility
+            
+            # Remove self-loops
+            edges_df = edges_df[edges_df['source'] != edges_df['target']]
+            
+            await self.message_queue.add(wand, f'✅ Created {len(edges_df):,} edges (removed self-loops)', verbatim=True)
+            
+            # Save cosmo_links.csv
+            cosmo_links_file = data_path / 'cosmo_links.csv'
+            edges_df.to_csv(cosmo_links_file, index=False)
+            
+            await self.message_queue.add(wand, '🎯 Creating node list and merging performance data...', verbatim=True)
+            
+            # Create master node list from unique URLs
+            all_urls = set(edges_df['source'].tolist() + edges_df['target'].tolist())
+            nodes_df = pd.DataFrame({'url': list(all_urls)})
+            
+            await self.message_queue.add(wand, f'✅ Created {len(nodes_df):,} unique nodes', verbatim=True)
+            
+            # Load and merge GSC data if available
+            if gsc_file.exists():
+                try:
+                    gsc_df = pd.read_csv(gsc_file)
+                    await self.message_queue.add(wand, f'📈 Loaded GSC data: {len(gsc_df):,} rows', verbatim=True)
+                    
+                    # Rename 'Full URL' to 'url' for consistent merging
+                    if 'Full URL' in gsc_df.columns:
+                        gsc_df.rename(columns={'Full URL': 'url'}, inplace=True)
+                    
+                    # Merge GSC data (left join to preserve all nodes)
+                    nodes_df = nodes_df.merge(gsc_df, on='url', how='left')
+                    
+                except Exception as e:
+                    await self.message_queue.add(wand, f'⚠️ Warning: Could not load GSC data: {str(e)}', verbatim=True)
+            else:
+                await self.message_queue.add(wand, '⚠️ No GSC data found, continuing without performance metrics', verbatim=True)
+            
+            # Load and merge basic crawl attributes from step_02b if available
+            crawl_file = data_path / 'crawl.csv'
+            if crawl_file.exists():
+                try:
+                    crawl_df = pd.read_csv(crawl_file)
+                    await self.message_queue.add(wand, f'📄 Loaded crawl attributes: {len(crawl_df):,} rows', verbatim=True)
+                    
+                    # Handle different possible URL column names from step_02b
+                    url_column = None
+                    for col in crawl_df.columns:
+                        if 'url' in col.lower() and not any(x in col.lower() for x in ['target', 'source', 'canonical']):
+                            url_column = col
+                            break
+                    
+                    if url_column and url_column != 'url':
+                        crawl_df.rename(columns={url_column: 'url'}, inplace=True)
+                    
+                    # Merge crawl attributes (left join to preserve all nodes)
+                    nodes_df = nodes_df.merge(crawl_df, on='url', how='left')
+                    await self.message_queue.add(wand, f'✅ Merged crawl attributes (HTTP status, page titles, compliance, etc.)', verbatim=True)
+                    
+                except Exception as e:
+                    await self.message_queue.add(wand, f'⚠️ Warning: Could not load crawl attributes: {str(e)}', verbatim=True)
+            else:
+                await self.message_queue.add(wand, '⚠️ No crawl attributes found from step_02b', verbatim=True)
+
+            # Load and merge weblog data if available
+            if weblog_file.exists():
+                try:
+                    weblog_df = pd.read_csv(weblog_file)
+                    await self.message_queue.add(wand, f'🌐 Loaded weblog data: {len(weblog_df):,} rows', verbatim=True)
+                    
+                    # Rename 'Full URL' to 'url' for consistent merging
+                    if 'Full URL' in weblog_df.columns:
+                        weblog_df.rename(columns={'Full URL': 'url'}, inplace=True)
+                    
+                    # Merge weblog data (left join to preserve all nodes)
+                    nodes_df = nodes_df.merge(weblog_df, on='url', how='left')
+                    
+                except Exception as e:
+                    await self.message_queue.add(wand, f'⚠️ Warning: Could not load weblog data: {str(e)}', verbatim=True)
+            else:
+                await self.message_queue.add(wand, '⚠️ No weblog data found, continuing without crawl data', verbatim=True)
+            
+            await self.message_queue.add(wand, '📋 Preparing non-destructive metadata for Cosmograph...', verbatim=True)
+            
+            # Non-destructive approach: Keep all original metric names and values
+            # Fill NaN values with defaults only for visualization
+            nodes_df = nodes_df.fillna({
+                'Impressions': 0,
+                'Clicks': 0,
+                'CTR': 0,
+                'Avg. Position': 100,
+                'crawls.google.count': 0
+            })
+            
+            # Create id column as required by Cosmograph (rename url to id)
+            nodes_df['id'] = nodes_df['url']
+            
+            # Non-destructive selection: Keep all original columns, let Cosmograph handle gradients
+            # Start with 'id' as required by Cosmograph, then include all other original columns
+            cosmo_columns = ['id']
+            
+            # Add all other columns except 'url' (since we renamed it to 'id')
+            for col in nodes_df.columns:
+                if col not in ['id', 'url']:  # Exclude id (already added) and url (renamed to id)
+                    cosmo_columns.append(col)
+            
+            # Keep only columns that exist
+            final_columns = [col for col in cosmo_columns if col in nodes_df.columns]
+            cosmo_nodes_df = nodes_df[final_columns]
+            
+            # Save cosmo_nodes.csv
+            cosmo_nodes_file = data_path / 'cosmo_nodes.csv'
+            cosmo_nodes_df.to_csv(cosmo_nodes_file, index=False)
+            
+            await self.message_queue.add(wand, f'✅ Saved visualization files: {len(edges_df):,} edges, {len(cosmo_nodes_df):,} nodes', verbatim=True)
+            
+            await self.message_queue.add(wand, '🚀 Generating Cosmograph visualization URL...', verbatim=True)
+            
+            # Generate download URLs for the CSV files using the proper download_file endpoint
+            
+            base_url = "http://localhost:5001"
+            links_path = f"{app_name}/{username}/{project_name}/{analysis_slug}/cosmo_links.csv"
+            nodes_path = f"{app_name}/{username}/{project_name}/{analysis_slug}/cosmo_nodes.csv"
+            
+            # Create proper download URLs with timestamps (same pattern as _create_action_buttons)
+            timestamp = int(datetime.now().timestamp())
+            links_url = f"{base_url}/download_file?file={quote(links_path)}&t={timestamp}"
+            nodes_url = f"{base_url}/download_file?file={quote(nodes_path)}&t={timestamp}"
+            
+            # Use the unified Cosmograph URL creation method
+            # Generate Cosmograph URL using the meta pattern (let Cosmograph auto-detect columns)
+            cosmograph_url = self.create_cosmograph_url(links_url, meta_url=nodes_url)
+            
+            # Store the result
+            visualization_result = {
+                'visualization_url': cosmograph_url,
+                'links_url': links_url,
+                'nodes_url': nodes_url,
+                'edges_count': len(edges_df),
+                'nodes_count': len(cosmo_nodes_df),
+                'timestamp': datetime.now().isoformat()
+            }
+            
+            # Save to step data
+            await wand.set_step_data(pipeline_id, step_id, json.dumps(visualization_result), self.steps)
+            
+            await self.message_queue.add(wand, f'🎉 Visualization ready! {len(edges_df):,} edges and {len(cosmo_nodes_df):,} nodes processed.', verbatim=True)
+            
+            # Create visualization widget
+            widget = Div(
+                P(f"Graph processed: {len(edges_df):,} edges, {len(cosmo_nodes_df):,} nodes"),
+                A("🚀 Open Visualization in New Tab", 
+                  href=cosmograph_url, 
+                  target="_blank", 
+                  role="button", 
+                  cls="primary"),
+                style="text-align: center; padding: 15px;"
+            )
+            
+            return Div(
+                wand.display_revert_widget(
+                    step_id=step_id, 
+                    app_name=app_name, 
+                    message=f'{step.show}: Visualization link generated', 
+                    widget=widget, 
+                    steps=self.steps
+                ),
+                Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'),
+                id=step_id
+            )
+            
+        except Exception as e:
+            logging.exception(f'Error in step_05_process: {e}')
+            await self.message_queue.add(wand, f'❌ Error generating visualization: {str(e)}', verbatim=True)
+            return P(f'Error generating visualization: {str(e)}', cls='text-invalid')
+
+
+    def _create_action_buttons(self, step_data, step_id):
+        """Create View Folder and Download CSV buttons for a step."""
+        from urllib.parse import quote
+
+        # Extract analysis-specific folder information
+        username = step_data.get('username', '')
+        project_name = step_data.get('project_name', '') or step_data.get('project', '')
+        analysis_slug = step_data.get('analysis_slug', '')
+
+        # Construct the specific analysis folder path
+        if username and project_name and analysis_slug:
+            analysis_folder = Path.cwd() / 'downloads' / self.APP_NAME / username / project_name / analysis_slug
+            folder_path = str(analysis_folder.resolve())
+            folder_title = f"Open analysis folder: {username}/{project_name}/{analysis_slug}"
+        else:
+            # Fallback to general trifecta folder if analysis info is missing
+            analysis_folder = Path.cwd() / 'downloads' / self.APP_NAME
+            folder_path = str(analysis_folder.resolve())
+            folder_title = f"Open folder: {analysis_folder.resolve()}"
+
+        # Always create the View Folder button
+        folder_button = A(
+            self.ui['BUTTON_LABELS']['VIEW_FOLDER'],
+            href="#",
+            hx_get=f"/open-folder?path={quote(folder_path)}",
+            hx_swap="none",
+            title=folder_title,
+            role="button",
+            cls=self.ui['BUTTON_STYLES']['STANDARD']
+        )
+
+        buttons = [folder_button]
+
+        # Create download button if file exists
+        download_complete = step_data.get('download_complete', False)
+
+        # Determine the expected filename based on step and export type
+        expected_filename = None
+        if step_id == 'step_02':
+            # For crawl data, determine filename based on active template's export type
+            active_crawl_template_key = self.get_configured_template('crawl')
+            active_template_details = self.QUERY_TEMPLATES.get(active_crawl_template_key, {})
+            export_type = active_template_details.get('export_type', 'crawl_attributes')
+
+            # Use the same mapping as get_deterministic_filepath
+            filename_mapping = {
+                'crawl_attributes': 'crawl.csv',
+                'link_graph_edges': 'link_graph.csv'
+            }
+            expected_filename = filename_mapping.get(export_type, 'crawl.csv')
+        elif step_id == 'step_02b':
+            # step_02b always uses 'Crawl Basic' template which has 'crawl_attributes' export type
+            expected_filename = 'crawl.csv'
+        elif step_id == 'step_03':
+            expected_filename = 'weblog.csv'
+        elif step_id == 'step_04':
+            expected_filename = 'gsc.csv'
+
+        # Check if download was successful and try to find the file
+        if download_complete and expected_filename and username and project_name and analysis_slug:
+            try:
+                # Construct the expected file path
+                expected_file_path = Path.cwd() / 'downloads' / self.APP_NAME / username / project_name / analysis_slug / expected_filename
+
+                # Check if file actually exists
+                if expected_file_path.exists():
+                    downloads_base = Path.cwd() / 'downloads'
+                    path_for_url = expected_file_path.relative_to(downloads_base)
+                    path_for_url = str(path_for_url).replace('\\', '/')
+
+                    # Check if this is a link graph file for Cosmograph visualization
+                    is_link_graph = expected_filename.startswith('link_graph')
+
+                    # Always create the download button first
+                    download_button = A(
+                        self.ui['BUTTON_LABELS']['DOWNLOAD_CSV'],
+                        href=f"/download_file?file={quote(path_for_url)}",
+                        target="_blank",
+                        role="button",
+                        cls=self.ui['BUTTON_STYLES']['STANDARD']
+                    )
+                    buttons.append(download_button)
+
+                    # For link graph files, add the Cosmograph visualization button
+                    # Check if we have a comprehensive visualization URL from step_05_process first
+                    if is_link_graph:
+                        viz_url = None
+                        
+                        # Try to get the comprehensive visualization URL from step_05_process
+                        if step_id == 'step_05':
+                            try:
+                                step_05_data = step_data.get('step_05_process', '')
+                                if step_05_data:
+                                    visualization_result = json.loads(step_05_data)
+                                    viz_url = visualization_result.get('visualization_url')
+                            except (json.JSONDecodeError, KeyError):
+                                pass
+                        
+                        # Fallback: create simple visualization URL for individual link graph files
+                        if not viz_url:
+                            from datetime import datetime
+                            # Create simple Cosmograph visualization link for individual files
+                            file_url = f"/download_file?file={quote(path_for_url)}"
+                            timestamp = int(datetime.now().timestamp())
+                            data_url = f"http://localhost:5001{file_url}&t={timestamp}"
+                            viz_url = self.create_cosmograph_url(data_url)
+
+                        if viz_url:
+                            viz_button = A(
+                                self.ui['BUTTON_LABELS']['VISUALIZE_GRAPH'],
+                                href=viz_url,
+                                target="_blank",
+                                role="button",
+                                cls=self.ui['BUTTON_STYLES']['STANDARD']
+                            )
+                            buttons.append(viz_button)
+                else:
+                    logger.debug(f"Expected file not found: {expected_file_path}")
+            except Exception as e:
+                logger.error(f"Error creating download button for {step_id}: {e}")
+
+        # Fallback: check the old way for backward compatibility
+        elif download_complete:
+            file_path = None
+            download_info = step_data.get('download_info', {})
+            if download_info.get('has_file'):
+                file_path = download_info.get('file_path', '')
+
+            if file_path:
+                try:
+                    file_path_obj = Path(file_path)
+                    if file_path_obj.exists():
+                        downloads_base = Path.cwd() / 'downloads'
+                        path_for_url = file_path_obj.relative_to(downloads_base)
+                        path_for_url = str(path_for_url).replace('\\', '/')
+
+                        # Check if this is a link graph file for Cosmograph visualization
+                        is_link_graph = file_path_obj.name.startswith('link_graph')
+
+                        # Always create the download button first
+                        download_button = A(
+                            self.ui['BUTTON_LABELS']['DOWNLOAD_CSV'],
+                            href=f"/download_file?file={quote(path_for_url)}",
+                            target="_blank",
+                            role="button",
+                            cls=self.ui['BUTTON_STYLES']['STANDARD']
+                        )
+                        buttons.append(download_button)
+
+                        # For link graph files, also add the Cosmograph visualization button
+                        if is_link_graph:
+                            from datetime import datetime
+                            # Create Cosmograph visualization link using the unified method
+                            file_url = f"/download_file?file={quote(path_for_url)}"
+                            timestamp = int(datetime.now().timestamp())
+                            data_url = f"http://localhost:5001{file_url}&t={timestamp}"
+                            viz_url = self.create_cosmograph_url(data_url)
+
+                            viz_button = A(
+                                self.ui['BUTTON_LABELS']['VISUALIZE_GRAPH'],
+                                href=viz_url,
+                                target="_blank",
+                                role="button",
+                                cls=self.ui['BUTTON_STYLES']['STANDARD']
+                            )
+                            buttons.append(viz_button)
+                except Exception as e:
+                    logger.error(f"Error creating fallback download button for {step_id}: {e}")
+
+        return buttons
+
+    # --- END_PARAMETER_BUSTER_TRANSPLANT_BUNDLE ---
