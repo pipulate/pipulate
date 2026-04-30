@@ -74,6 +74,22 @@ def save_wip_dataframe(job: str, df: pd.DataFrame, filename: str) -> str:
     return str(file_path.resolve())
 
 
+def load_wip_dataframe(job: str, key: str) -> pd.DataFrame:
+    """
+    Retrieves a saved CSV path from wand memory and loads it into a DataFrame.
+    Returns an empty DataFrame if the key is missing or the file doesn't exist.
+    """
+    csv_path_str = wand.get(job, key)
+    if csv_path_str:
+        csv_path = Path(csv_path_str)
+        if csv_path.exists():
+            try:
+                return pd.read_csv(csv_path)
+            except Exception as e:
+                print(f"⚠️ Error reading CSV from {csv_path}: {e}")
+    return pd.DataFrame()
+
+
 def render_competitor_workbench(job: str):
     """
     Renders an interactive textarea to manage competitor domains.
