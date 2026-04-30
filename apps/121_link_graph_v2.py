@@ -129,9 +129,10 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
             'qualifier_config': {
                 'enabled': True,
                 'qualifier_bql_template': {
-                    "dimensions": [],
+                    "dimensions": ["url"], # Give it a dimension to count against
                     "metrics": [{"function": "count", "args": []}],
-                    "filters": {"field": "depth", "predicate": "lte", "value": "{ITERATION_VALUE}"}
+                    "filters": {"field": "depth", "predicate": "lte", "value": "{ITERATION_VALUE}"},
+                    "limit": 1 # We only need one row to get the aggregate count
                 },
                 'parameter_placeholder_in_main_query': '{OPTIMAL_DEPTH}',
                 'iterative_parameter_name': 'depth',
@@ -5213,7 +5214,7 @@ await main()
         analysis_result = json.loads(analysis_result_str) if analysis_result_str else {}
         
         # Get analysis slug from step_02 (we need this to know which analysis to use)
-        prev_step_id = 'step_02'
+        prev_step_id = 'step_analysis'
         prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('analysis_selection', '')
         if not prev_data_str:
@@ -5345,7 +5346,7 @@ await main()
 
         # Handle normal download action
         # Get analysis data from step_02
-        prev_step_id = 'step_02'
+        prev_step_id = 'step_analysis'
         prev_step_data = wand.get_step_data(pipeline_id, prev_step_id, {})
         prev_data_str = prev_step_data.get('analysis_selection', '')
         if not prev_data_str:
