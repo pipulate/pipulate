@@ -130,7 +130,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
                 'enabled': True,
                 'qualifier_bql_template': {
                     "dimensions": [],
-                    "metrics": [{"function": "sum", "args": ["outlinks_internal.nb.total"]}],
+                    "metrics": [{"function": "count", "args": []}],
                     "filters": {"field": "depth", "predicate": "lte", "value": "{ITERATION_VALUE}"}
                 },
                 'parameter_placeholder_in_main_query': '{OPTIMAL_DEPTH}',
@@ -6185,6 +6185,44 @@ await main()
                     logger.error(f"Error creating fallback download button for {step_id}: {e}")
 
         return buttons
+
+    def create_cosmograph_url(self, edges_url, meta_url=None):
+        """Generate a Cosmograph visualization URL."""
+        import json
+        from urllib.parse import quote
+        
+        config = {
+            "data": edges_url,
+            "render": {
+                "nodeSize": {"field": "Clicks", "range": [1, 20]} if meta_url else None,
+                "nodeColor": {"field": "Impressions", "type": "gradient"} if meta_url else None
+            }
+        }
+        if meta_url:
+            config["meta"] = meta_url
+            
+        return f"https://cosmograph.app/run/?config={quote(json.dumps(config))}"
+
+    async def check_file_exists(self, filepath):
+        """Check if a file exists and return info."""
+        path = Path(filepath)
+        if path.exists():
+            stats = path.stat()
+            return True, {
+                'size': self.pipulate.format_size(stats.st_size),
+                'created': datetime.fromtimestamp(stats.st_mtime).isoformat(),
+                'path': str(path)
+            }
+        return False, None
+
+    async def get_deterministic_filepath(self, username, project, analysis, export_type=None):
+        """Generate a consistent filepath for downloads."""
+        base = Path.cwd() / 'downloads' / self.app_name / username / project / analysis
+        if export_type == 'link_graph_edges':
+            return str(base / 'link_graph.csv')
+        if export_type == 'crawl_attributes':
+            return str(base / 'crawl.csv')
+        return str(base)
 
     # --- END_PARAMETER_BUSTER_TRANSPLANT_BUNDLE ---
 
