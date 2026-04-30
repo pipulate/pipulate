@@ -114,21 +114,24 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         },
         'Link Graph Edges': {
             'name': 'Link Graph Edges',
-            'description': 'Exports internal link graph (source URL -> target URL). Automatically finds optimal depth for ~1M edges.',
+            'description': 'Exports internal link graph...',
             'export_type': 'link_graph_edges',
-            'user_message': 'This will download the site\'s internal link graph (source-target pairs). An optimal depth will be found first.',
+            'user_message': '...',
             'button_label_suffix': 'Link Graph',
             'query': {
-                'dimensions': ['{collection}.url', '{collection}.outlinks_internal.graph.url'],
+                # Change {collection}.url to url and {collection}.outlinks... to outlinks...
+                # Botify V2 queries often prefer the fields WITHOUT the collection prefix 
+                # when the collection is already defined in the payload.
+                'dimensions': ['url', 'outlinks_internal.graph.url'], 
                 'metrics': [],
-                'filters': {'field': '{collection}.depth', 'predicate': 'lte', 'value': '{OPTIMAL_DEPTH}'}
+                'filters': {'field': 'depth', 'predicate': 'lte', 'value': '{OPTIMAL_DEPTH}'}
             },
             'qualifier_config': {
                 'enabled': True,
                 'qualifier_bql_template': {
                     "dimensions": [],
-                    "metrics": [{"function": "sum", "args": ["{collection}.outlinks_internal.nb.total"]}],
-                    "filters": {"field": "{collection}.depth", "predicate": "lte", "value": "{ITERATION_VALUE}"}
+                    "metrics": [{"function": "sum", "args": ["outlinks_internal.nb.total"]}],
+                    "filters": {"field": "depth", "predicate": "lte", "value": "{ITERATION_VALUE}"}
                 },
                 'parameter_placeholder_in_main_query': '{OPTIMAL_DEPTH}',
                 'iterative_parameter_name': 'depth',
@@ -4800,7 +4803,7 @@ await main()
                 # Check if file actually exists
                 if expected_file_path.exists():
                     downloads_base = Path.cwd() / 'downloads'
-                    path_for_url = expected_file_path.relative_to(downloads_base)
+                    path_for_url = expected_file_path.resolve().relative_to(downloads_base.resolve())
                     path_for_url = str(path_for_url).replace('\\', '/')
 
                     # Check if this is a link graph file for Cosmograph visualization
@@ -4852,7 +4855,7 @@ await main()
                     file_path_obj = Path(file_path)
                     if file_path_obj.exists():
                         downloads_base = Path.cwd() / 'downloads'
-                        path_for_url = file_path_obj.relative_to(downloads_base)
+                        path_for_url = file_path_obj.resolve().relative_to(downloads_base.resolve())
                         path_for_url = str(path_for_url).replace('\\', '/')
 
                         # Check if this is a link graph file for Cosmograph visualization
@@ -6079,7 +6082,7 @@ await main()
                 # Check if file actually exists
                 if expected_file_path.exists():
                     downloads_base = Path.cwd() / 'downloads'
-                    path_for_url = expected_file_path.relative_to(downloads_base)
+                    path_for_url = expected_file_path.resolve().relative_to(downloads_base.resolve())
                     path_for_url = str(path_for_url).replace('\\', '/')
 
                     # Check if this is a link graph file for Cosmograph visualization
@@ -6145,7 +6148,7 @@ await main()
                     file_path_obj = Path(file_path)
                     if file_path_obj.exists():
                         downloads_base = Path.cwd() / 'downloads'
-                        path_for_url = file_path_obj.relative_to(downloads_base)
+                        path_for_url = file_path_obj.resolve().relative_to(downloads_base.resolve())
                         path_for_url = str(path_for_url).replace('\\', '/')
 
                         # Check if this is a link graph file for Cosmograph visualization
