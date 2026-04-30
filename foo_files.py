@@ -59,12 +59,29 @@ AI_PHOOEY_CHOP = """\
 
 # AD HOC STUFF
 
+deleteme.txt  # [6,838 tokens | 24,716 bytes]
+server.py  # [54,718 tokens | 261,069 bytes]
+assets/init.js  # [2,303 tokens | 12,158 bytes]
+assets/pipulate.js  # [4,889 tokens | 24,977 bytes]
+assets/styles.css  # [18,671 tokens | 81,016 bytes]
+assets/theme.js  # [930 tokens | 4,337 bytes]
+assets/utils.js  # [3,125 tokens | 15,103 bytes]
+assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
+assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
+pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+pipulate/core.py  # [27,171 tokens | 131,795 bytes]
+
 # /home/mike/repos/grimoire/_posts/2026-04-30-link-graph-resurrection.md  # [143,657 tokens | 564,552 bytes]
 
-apps/120_link_graph.py  # [54,349 tokens | 272,468 bytes]
-apps/121_link_graph_v2.py  # [54,150 tokens | 280,523 bytes]
-apps/200_workflow_genesis.py  # [12,397 tokens | 59,508 bytes]
-apps/400_botify_trifecta.py  # [53,199 tokens | 276,285 bytes]
+# apps/121_link_graph_v2.py  # [54,150 tokens | 280,523 bytes]
+
+# apps/200_workflow_genesis.py  # [12,397 tokens | 59,508 bytes]
+# apps/110_parameter_buster.py  # [55,573 tokens | 274,005 bytes]
+# apps/120_link_graph.py  # [54,349 tokens | 272,468 bytes]
+# apps/400_botify_trifecta.py  # [53,199 tokens | 276,285 bytes]
+# scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
+# scripts/botify/botify_api_examples.md  # [21,273 tokens | 86,712 bytes]
 
 # apps/230_dev_assistant.py  # [25,808 tokens | 124,873 bytes]
 # scripts/workflow/splice_workflow_step.py  # [5,064 tokens | 22,110 bytes]
@@ -107,7 +124,6 @@ apps/400_botify_trifecta.py  # [53,199 tokens | 276,285 bytes]
 # imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 
 # apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
-# server.py  # [54,718 tokens | 261,069 bytes]
 
 
 # Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
@@ -116,8 +132,6 @@ apps/400_botify_trifecta.py  # [53,199 tokens | 276,285 bytes]
 # apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
 # apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
 
-# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 # tools/llm_optics.py  # [2,574 tokens | 11,257 bytes]
 # tools/scraper_tools.py  # [4,449 tokens | 21,625 bytes]
 # tools/dom_tools.py  # [3,466 tokens | 15,120 bytes]
@@ -168,7 +182,7 @@ apps/400_botify_trifecta.py  # [53,199 tokens | 276,285 bytes]
 # /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/source_dom_layout_boxes.txt  # [3,137 tokens | 26,547 bytes]
 # /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/source.html  # [6,496 tokens | 25,409 bytes]
  
-# pipulate/core.py  # [27,171 tokens | 131,795 bytes]
+
 # scripts/articles/articleizer.py  # [2,936 tokens | 13,517 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [5,061 tokens | 22,697 bytes]
 # scripts/articles/execute_massive_prompt.py  # [491 tokens | 2,209 bytes]
@@ -178,7 +192,6 @@ apps/400_botify_trifecta.py  # [53,199 tokens | 276,285 bytes]
 # REFINING ONBOARDING
 # https://pipulate.com
 # flake.nix  # [8,011 tokens | 34,229 bytes]
-# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
 # pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
 # pipulate/core.py  # [22,424 tokens | 108,599 bytes]
 # Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
@@ -857,6 +870,7 @@ tools/advanced_automation_tools.py  # The heavy lifter
 # apps/730_matplotlib.py  # [3,726 tokens | 16,421 bytes]
 # apps/810_webbrowser.py  # [2,811 tokens | 12,023 bytes]
 # apps/820_selenium.py  # [3,428 tokens | 15,020 bytes]
+# apps/xx_link_graph_v2.py  # [63,994 tokens | 332,321 bytes]
 # assets/css/pico.css  # [27,899 tokens | 92,120 bytes]
 # assets/css/prism.css  # [5,178 tokens | 14,498 bytes]
 # assets/css/roboto.css  # [846 tokens | 3,101 bytes]
@@ -916,8 +930,6 @@ tools/advanced_automation_tools.py  # The heavy lifter
 # scripts/articles/scrub_tags.py  # [358 tokens | 1,587 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
 # scripts/audit_dye.py  # [256 tokens | 1,009 bytes]
-# scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
-# scripts/botify/botify_api_examples.md  # [21,273 tokens | 86,712 bytes]
 # scripts/botify/make_botify_docs.ipynb  # [61,006 tokens | 224,678 bytes]
 # scripts/chisel_mac_fixes.py  # [784 tokens | 3,552 bytes]
 # scripts/chisel_mac_fixes_2.py  # [721 tokens | 3,359 bytes]

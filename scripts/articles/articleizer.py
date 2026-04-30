@@ -19,8 +19,8 @@ PROMPT_PLACEHOLDER = "[INSERT FULL ARTICLE]"
 INSTRUCTIONS_CACHE_FILE = "instructions.json"
 
 # Model Selection - Use a stable model to avoid low quotas
-# DEFAULT_MODEL = 'gemini-flash-latest'
-DEFAULT_MODEL = 'gemini-flash-lite-latest'
+DEFAULT_MODEL = 'gemini-flash-latest'
+# DEFAULT_MODEL = 'gemini-flash-lite-latest'
 
 def create_jekyll_post(article_content, instructions, output_dir):
     """
