@@ -29,7 +29,7 @@ class IntroductionPlugin:
 
     # Narrative Script (Base template)
     NARRATION = {
-        'step_01': "Welcome to the dashboard. I am Chip O'Theseus. My speech is rendered entirely on your local metal, but my reasoning engines are currently idling. You can return to this homepage at any time by clicking the home link in the upper-left corner of the screen.",
+        'step_01': "Welcome to the dashboard. I am Chip O'Theseus. My speech is generated entirely on your machine, but my reasoning engines are currently idling. You can return to this homepage at any time by clicking the home link in the upper-left corner of the screen.",
         'step_02': "I am about to hand you over to the Configuration Workflow. You will repeat what you just did Notebook-side in JupyterLab; telling me your name, local and cloud AI preferences, and Botify API key if you're a Botify employee or customer. After that, we remember it. The Configuration Workflow will feel a lot like running a Jupyter Notebook, proceeding top-to-bottom as if through the cells. Only you don't have to see any of the Python code.",
         'finalize': "Every workflow requires a unique Key to store its memory. You can keep the default key, or generate a New Key to start a fresh configuration. Let's establish your permanent identity."
     }
@@ -48,9 +48,13 @@ class IntroductionPlugin:
         # Dynamically fetch the current App Name (e.g. Botifython or Pipulate)
         dynamic_app_name = self.wand.get_config().APP_NAME
 
-        # 🧠 THE GATEKEEPER: Check the topological manifold for the sentinel file
+        # 🧠 THE GATEKEEPER 1: Check the topological manifold for the Jupyter sentinel
         self.sentinel_path = self.wand.paths.root / "Notebooks" / "data" / ".onboarded"
         self.has_onboarded = self.sentinel_path.exists()
+        
+        # 🧠 THE GATEKEEPER 2: Check if Configuration is complete
+        # We verify this by checking if the active_local_model was saved to the global DB
+        self.has_configured = bool(self.wand.db.get('active_local_model'))
 
         # 🧠 CHISEL-STRIKE 3: Dynamic Model Negotiation
         self.narration = self.NARRATION.copy()
@@ -61,20 +65,12 @@ class IntroductionPlugin:
             preferred_cloud=self.wand.get_config().PREFERRED_CLOUD_MODELS
         )
         
-        if ai_status.get('has_any_local'):
-            local_model = ai_status.get('local')
-            if local_model:
-                standard_intro = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus. My speech is rendered entirely on your local metal, but my reasoning engines are currently idling. You can return to this homepage at any time by clicking the '{dynamic_app_name}' link in the upper-left corner of the screen."
-            else:
-                standard_intro = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus. My speech is rendered entirely on your local metal. You have not yet set up your local AI capabilities. Please visit Ollama.com."
-        else:
-            standard_intro = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus. I am currently running without a local brain. Please install Ollama with Gemma 4 to fully awaken me."
-        
-        # 🚧 THE FORK IN THE ROAD: Adjust the reality based on the Sentinel
+        # 🚧 THE FORK IN THE ROAD: Adjust reality based on the Sentinel and Config states
         if not self.has_onboarded:
-            # The Bouncer Persona
+            # 1. The Bouncer Persona
             self.narration['step_01'] = (
-                "Halt. I am Chip O'Theseus, and you are trying to sneak into the VIP lounge through the kitchen. "
+                "Halt. I am Chip O'Theseus. My speech is generated entirely on your machine, "
+                "but you are trying to sneak into the VIP lounge through the kitchen. "
                 "You have discovered port 5001, but the doors to the Control Room remain sealed until you complete the initiation rite. "
                 "Return to your JupyterLab tab, execute the Golden Path, and drop the sentinel file."
             )
@@ -82,21 +78,37 @@ class IntroductionPlugin:
             self.steps = [
                 Step(id='step_01', done='intro_viewed', show='Access Denied', refill=False)
             ]
-        else:
-            # The Tour Guide Persona
+            
+        elif not self.has_configured:
+            # 2. The Usher Persona (Needs Configuration)
+            if ai_status.get('has_any_local'):
+                local_model = ai_status.get('local')
+                if local_model:
+                    standard_intro = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus. My speech is generated entirely on your machine, but my reasoning engines are currently idling. You must proceed to the Configuration app to establish your identity."
+                else:
+                    standard_intro = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus. My speech is generated entirely on your machine. You have not yet set up your local AI capabilities. Please visit Ollama.com."
+            else:
+                standard_intro = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus. I am currently running without a local brain. Please install Ollama with Gemma 4 to fully awaken me."
+            
             self.narration['step_01'] = standard_intro
-            # Provide the full philosophical slide deck
             self.steps = [
                 Step(id='step_01', done='intro_viewed', show='Welcome', refill=False),
                 Step(id='step_02', done='purpose_viewed', show='Expectations', refill=False),
                 Step(id='finalize', done='finalized', show='Hand-off', refill=False)
+            ]
+            
+        else:
+            # 3. The Veteran Persona (Golden Path Walked)
+            self.narration['step_01'] = f"Welcome back to {dynamic_app_name}. All systems are online and ready."
+            # They already know the drill; spare them the tour.
+            self.steps = [
+                Step(id='step_01', done='intro_viewed', show='Dashboard Ready', refill=False)
             ]
         
         # Register routes
         pipulate.register_workflow_routes(self)
         self.app.route(f'/{self.app_name}/toggle_voice', methods=['POST'])(self.toggle_voice)
         self.app.route(f'/{self.app_name}/speak/{{step_id}}', methods=['POST'])(self.speak_step)
-
 
     async def toggle_voice(self, request):
         """
@@ -230,12 +242,19 @@ class IntroductionPlugin:
                 "You've discovered the Control Room port. Clever, but premature. The UI is locked because you haven't completed the Onboarding sequence in JupyterLab. Go back, follow the rhythm of Shift+Enter, and earn your dashboard.",
                 next_step_id=None  # This kills the "Next" button, trapping them here.
             )
-        else:
+        elif not self.has_configured:
             return self._render_slide(
                 'step_01', 
                 "Welcome", 
                 self.narration['step_01'],
                 next_step_id='step_02'
+            )
+        else:
+            return self._render_slide(
+                'step_01', 
+                "Dashboard Ready ✅", 
+                self.narration['step_01'],
+                next_step_id=None
             )
 
     async def step_02(self, request):
