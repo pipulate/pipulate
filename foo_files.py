@@ -55,20 +55,21 @@ AI_PHOOEY_CHOP = """\
 # .gitignore  # [573 tokens | 2,089 bytes]
 
 # prompt_foo.py  # [12,990 tokens | 59,609 bytes]
-# foo_files.py  # [10,245 tokens | 33,406 bytes]
+foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-apps/200_workflow_genesis.py  # [12,397 tokens | 59,508 bytes]
-apps/230_dev_assistant.py  # [25,808 tokens | 124,873 bytes]
-scripts/workflow/splice_workflow_step.py  # [5,064 tokens | 22,110 bytes]
-scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
-scripts/workflow/create_workflow.py  # [3,729 tokens | 16,615 bytes]
-scripts/workflow/manage_class_attributes.py  # [2,678 tokens | 12,795 bytes]
-scripts/workflow/update_template_config.py  # [1,671 tokens | 8,381 bytes]
-scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
 apps/120_link_graph.py  # [54,349 tokens | 272,468 bytes]
 apps/121_link_graph_v2.py  # [54,150 tokens | 280,523 bytes]
+
+# apps/200_workflow_genesis.py  # [12,397 tokens | 59,508 bytes]
+# apps/230_dev_assistant.py  # [25,808 tokens | 124,873 bytes]
+# scripts/workflow/splice_workflow_step.py  # [5,064 tokens | 22,110 bytes]
+# scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
+# scripts/workflow/create_workflow.py  # [3,729 tokens | 16,615 bytes]
+# scripts/workflow/manage_class_attributes.py  # [2,678 tokens | 12,795 bytes]
+# scripts/workflow/update_template_config.py  # [1,671 tokens | 8,381 bytes]
+# scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
 
 # apps/015_config.py  # [8,026 tokens | 38,233 bytes]
 
