@@ -2854,7 +2854,17 @@ async def poke_flyout(request):
         id='voice-switch-container'
     )
 
-    delete_workflows_button = Button('🗑️ Clear Workflows', hx_post='/clear-pipeline', hx_target='body', hx_confirm='Are you sure you want to delete workflows?', hx_swap='outerHTML', cls='secondary outline') if is_workflow else None
+    # 🆕 INJECT THE NEW SURGICAL RESET BUTTON HERE
+    reset_config_button = Button('⚠️ Reset Config & Onboarding',
+                                 hx_post='/reset-config-onboarding',
+                                 hx_target='body',
+                                 hx_confirm='WARNING: This will delete your .onboarded sentinel, wipe your API keys from the .env vault, and clear your configuration state. You will have to run through Onboarding again. Are you sure?',
+                                 hx_swap='none',  # Let the server restart trigger the reload
+                                 cls='secondary outline dev-button-muted',
+                                 **{'hx-on:click': '''
+                                    triggerFullScreenRestart("Erasing Identity and Vault...", "RESET_CONFIG");
+                                '''}) if is_dev_mode else None
+
     # Create reset button with different labels for DEV vs PROD mode
     # Database reset button - only available when in DEV mode for safety
     if is_dev_mode:
@@ -2930,6 +2940,11 @@ async def poke_flyout(request):
     ]
     if is_workflow:
         list_items.append(Li(delete_workflows_button, cls='flyout-list-item'))
+
+    # 🆕 APPEND THE NEW BUTTON
+    if reset_config_button:
+        list_items.append(Li(reset_config_button, cls='flyout-list-item'))
+
     # Add reset button only when available (DEV mode only for safety)
     if reset_db_button:
         list_items.append(Li(reset_db_button, cls='flyout-list-item'))
@@ -3671,6 +3686,78 @@ async def backup_now(request):
         logger.error(f"🛡️ MANUAL BACKUP ERROR: {error_msg}")
         return {"success": False, "message": error_msg}
 
+@rt('/reset-config-onboarding', methods=['POST'])
+async def reset_config_onboarding(request):
+    """Surgically wipe the onboarding and configuration state without touching the rest of the DB."""
+    logger.bind(lifecycle=True).info('RESET_CONFIG: Initiating surgical wipe of onboarding state...')
+    
+    # 1. Wipe the File System Sentinel
+    try:
+        project_root = Path(os.getcwd())
+        sentinel_path = project_root / "Notebooks" / "data" / ".onboarded"
+        if sentinel_path.exists():
+            sentinel_path.unlink()
+            logger.info(f"🗑️ Deleted sentinel file: {sentinel_path}")
+    except Exception as e:
+        logger.error(f"Failed to delete sentinel file: {e}")
+
+    # 2. Wipe the .env Vault
+    try:
+        env_path = project_root / ".env"
+        keys_to_nuke = [
+            "OPENAI_API_KEY", 
+            "ANTHROPIC_API_KEY", 
+            "GEMINI_API_KEY",
+            "GOOGLE_API_KEY",
+            "BOTIFY_API_TOKEN"
+        ]
+        
+        # Clear from active memory
+        for k in keys_to_nuke:
+            if k in os.environ:
+                del os.environ[k]
+                
+        # Clear from physical file
+        if env_path.exists():
+            lines = env_path.read_text(encoding='utf-8').splitlines()
+            clean_lines = [line for line in lines if not any(line.startswith(f"{k}=") for k in keys_to_nuke)]
+            if clean_lines:
+                env_path.write_text('\n'.join(clean_lines) + '\n', encoding='utf-8')
+            else:
+                env_path.unlink()  # Nuke the file entirely if it's empty
+            logger.info("🗑️ Vault (.env) scrubbed of API keys.")
+    except Exception as e:
+        logger.error(f"Failed to scrub .env file: {e}")
+
+    # 3. Wipe the Database Config State
+    try:
+        keys_to_delete = ['active_local_model', 'active_cloud_model', 'operator_name']
+        for k in keys_to_delete:
+            if k in pipulate.db:
+                del pipulate.db[k]
+                logger.info(f"🗑️ Deleted DB state key: {k}")
+                
+        # Also attempt to clear the 'config' pipeline from the table to reset step completion
+        try:
+            config_records = [r for r in pipeline() if r.pkey.endswith('-config-1') or 'config' in r.pkey]
+            for r in config_records:
+                pipeline.delete(r.pkey)
+                logger.info(f"🗑️ Deleted Config Pipeline state: {r.pkey}")
+        except Exception as pipe_err:
+            logger.warning(f"Could not clear config pipeline records: {pipe_err}")
+            
+    except Exception as e:
+        logger.error(f"Failed to clear DB state keys: {e}")
+
+    # Trigger a server restart so the app wakes up fresh, executing the Bouncer logic
+    logger.info('RESET_CONFIG: Scheduling server restart to engage The Bouncer.')
+    asyncio.create_task(delayed_restart(2))
+
+    return HTMLResponse(f'''
+        <script>
+            triggerFullScreenRestart("Erasing Identity and Vault...", "RESET_CONFIG");
+        </script>
+    ''')
 
 @rt('/clear-db', methods=['POST'])
 async def clear_db(request):
