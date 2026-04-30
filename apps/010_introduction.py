@@ -19,13 +19,13 @@ from loguru import logger
 from imports.crud import Step
 
 # Define Roles for Menu Visibility
-ROLES = ["Core", "Tutorial"]
+ROLES = []
 
 class IntroductionPlugin:
     # Standard Workflow Configuration
     NAME = 'introduction'
     APP_NAME = 'introduction'
-    DISPLAY_NAME = 'Introduction 🏠'
+    DISPLAY_NAME = 'Home 🏠'
     ENDPOINT_MESSAGE = 'Welcome! Chat with me here.'
 
     # Narrative Script (Base template)
