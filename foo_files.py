@@ -59,20 +59,21 @@ AI_PHOOEY_CHOP = """\
 
 # AD HOC STUFF
 
+apps/100_connect_with_botify.py  # [4,478 tokens | 22,512 bytes]
+
 .gitignore  # [571 tokens | 2,096 bytes]
 config.py  # [4,170 tokens | 16,184 bytes]
 server.py  # [55,727 tokens | 265,713 bytes]
 pipulate/__init__.py  # [509 tokens | 2,135 bytes]
 pipulate/core.py  # [28,909 tokens | 140,289 bytes]
-imports/crud.py  # [7,365 tokens | 35,666 bytes]
-apps/020_profiles.py  # [4,022 tokens | 18,487 bytes]
-apps/060_tasks.py  # [4,991 tokens | 23,182 bytes]
+# imports/crud.py  # [7,365 tokens | 35,666 bytes]
+# apps/020_profiles.py  # [4,022 tokens | 18,487 bytes]
+# apps/060_tasks.py  # [4,991 tokens | 23,182 bytes]
 assets/init.js  # [2,303 tokens | 12,158 bytes]
 assets/pipulate.js  # [4,889 tokens | 24,977 bytes]
 assets/styles.css  # [18,671 tokens | 81,016 bytes]
 assets/theme.js  # [930 tokens | 4,337 bytes]
 assets/utils.js  # [3,125 tokens | 15,103 bytes]
-deleteme.txt  # [7,440 tokens | 26,682 bytes]
 
 # apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
 # pipulate/__init__.py  # [433 tokens | 1,803 bytes]

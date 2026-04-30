@@ -25,8 +25,7 @@ class BotifyConnect:
     APP_NAME = "botify"
     DISPLAY_NAME = "Connect With Botify 🤝"
     ENDPOINT_MESSAGE = (
-        "Enter your Botify API token to connect with Botify. "
-        f"You can find your API token at {account_url}"
+        "Enter your Botify API token to connect with Botify."
     )
     TRAINING_PROMPT = "Simply get the user to enter their Botify API token. They are looking at a link where they can find their API token."
 
