@@ -66,7 +66,7 @@ Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
 Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
 apps/015_config.py  # [8,026 tokens | 38,233 bytes]
 apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-assets/pipulate.js  # [4,889 tokens | 24,977 bytes]
+# assets/pipulate.js  # [4,889 tokens | 24,977 bytes]
 config.py  # [4,170 tokens | 16,184 bytes]
 server.py  # [54,914 tokens | 261,916 bytes]
 
