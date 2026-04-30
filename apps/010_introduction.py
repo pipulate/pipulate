@@ -9,6 +9,7 @@ Features:
 - Auto-advancing narration (if voice enabled)
 - "Encore" button (Volume Icon) to re-speak slides
 - Proper Containerization for HTMX navigation
+- JIT (Just-In-Time) State Evaluation for seamless Notebook-to-App handoffs
 """
 
 import time
@@ -29,7 +30,6 @@ class IntroductionPlugin:
 
     # Narrative Script (Base template)
     NARRATION = {
-        'step_01': "Welcome to the dashboard. I am Chip O'Theseus. My speech is generated entirely on your machine, but my reasoning engines are currently idling. You can return to this homepage at any time by clicking the home link in the upper-left corner of the screen.",
         'step_02': "I am about to hand you over to the Configuration Workflow. You will repeat what you just did Notebook-side in JupyterLab; telling me your name, local and cloud AI preferences, and Botify API key if you're a Botify employee or customer. After that, we remember it. The Configuration Workflow will feel a lot like running a Jupyter Notebook, proceeding top-to-bottom as if through the cells. Only you don't have to see any of the Python code.",
         'finalize': "Every workflow requires a unique Key to store its memory. You can keep the default key, or generate a New Key to start a fresh configuration. Let's establish your permanent identity."
     }
@@ -45,89 +45,78 @@ class IntroductionPlugin:
         # Access UI constants
         self.ui = pipulate.get_ui_constants()
 
-        # Dynamically fetch the current App Name (e.g. Botifython or Pipulate)
-        dynamic_app_name = self.wand.get_config().APP_NAME
-
-        # 🧠 THE GATEKEEPER 1: Check the topological manifold for the Jupyter sentinel
-        self.sentinel_path = self.wand.paths.root / "Notebooks" / "data" / ".onboarded"
-        self.has_onboarded = self.sentinel_path.exists()
-        
-        # 🧠 THE GATEKEEPER 2: Check if Configuration is complete
-        # We verify this by checking if the active_local_model was saved to the global DB
-        self.has_configured = bool(self.wand.db.get('active_local_model'))
-
-        # 🧠 CHISEL-STRIKE 3: Dynamic Model Negotiation
-        self.narration = self.NARRATION.copy()
-        
-        # Run the global negotiation at startup
-        ai_status = self.wand.negotiate_ai_models(
-            preferred_local=self.wand.get_config().PREFERRED_LOCAL_MODELS,
-            preferred_cloud=self.wand.get_config().PREFERRED_CLOUD_MODELS
-        )
-        
-        # 🚧 THE FORK IN THE ROAD: Adjust reality based on the Sentinel and Config states
-        if not self.has_onboarded:
-            # 1. The Bouncer Persona
-            self.narration['step_01'] = (
-                "Halt. I am Chip O'Theseus. My speech is generated entirely on your machine, "
-                "but you are trying to sneak into the VIP lounge through the kitchen. "
-                "You have discovered port 5001, but the doors to the Control Room remain sealed until you complete the initiation rite. "
-                "Return to your JupyterLab tab, execute the Golden Path, and drop the sentinel file."
-            )
-            # Truncate the workflow to a single, impassable step
-            self.steps = [
-                Step(id='step_01', done='intro_viewed', show='Access Denied', refill=False)
-            ]
-            
-        elif not self.has_configured:
-            # 2. The Usher Persona (Needs Configuration)
-            if ai_status.get('has_any_local'):
-                local_model = ai_status.get('local')
-                if local_model:
-                    standard_intro = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus. My speech is generated entirely on your machine, but my reasoning engines are currently idling. You must proceed to the Configuration app to establish your identity."
-                else:
-                    standard_intro = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus. My speech is generated entirely on your machine. You have not yet set up your local AI capabilities. Please visit Ollama.com."
-            else:
-                standard_intro = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus. I am currently running without a local brain. Please install Ollama with Gemma 4 to fully awaken me."
-            
-            self.narration['step_01'] = standard_intro
-            self.steps = [
-                Step(id='step_01', done='intro_viewed', show='Welcome', refill=False),
-                Step(id='step_02', done='purpose_viewed', show='Expectations', refill=False),
-                Step(id='finalize', done='finalized', show='Hand-off', refill=False)
-            ]
-            
-        else:
-            # 3. The Veteran Persona (Golden Path Walked)
-            self.narration['step_01'] = f"Welcome back to {dynamic_app_name}. All systems are online and ready."
-            # They already know the drill; spare them the tour.
-            self.steps = [
-                Step(id='step_01', done='intro_viewed', show='Dashboard Ready', refill=False)
-            ]
+        # We unconditionally define ALL steps here so register_workflow_routes 
+        # binds the endpoints regardless of the user's current onboarding state.
+        self.steps = [
+            Step(id='step_01', done='intro_viewed', show='Welcome', refill=False),
+            Step(id='step_02', done='purpose_viewed', show='Expectations', refill=False),
+            Step(id='finalize', done='finalized', show='Hand-off', refill=False)
+        ]
         
         # Register routes
         pipulate.register_workflow_routes(self)
         self.app.route(f'/{self.app_name}/toggle_voice', methods=['POST'])(self.toggle_voice)
         self.app.route(f'/{self.app_name}/speak/{{step_id}}', methods=['POST'])(self.speak_step)
 
+    def _get_slide_data(self, step_id: str):
+        """
+        JIT (Just-In-Time) State Evaluation.
+        Evaluates the hard drive and database at the exact moment of the HTTP request,
+        ensuring the UI perfectly reflects the user's latest actions in the Notebook.
+        Returns: (Title, Content/Speech, Next_Step_ID)
+        """
+        if step_id == 'step_01':
+            # Check the topological manifold for the Jupyter sentinel
+            sentinel_path = self.wand.paths.root / "Notebooks" / "data" / ".onboarded"
+            has_onboarded = sentinel_path.exists()
+            
+            # Check if Configuration is complete
+            has_configured = bool(self.wand.db.get('active_local_model'))
+            dynamic_app_name = self.wand.get_config().APP_NAME
+            
+            if not has_onboarded:
+                # 1. The Bouncer Persona
+                msg = (
+                    "Halt. I am Chip O'Theseus. My speech is generated entirely on your machine, "
+                    "but you are trying to sneak into the VIP lounge through the kitchen. "
+                    "You have discovered port 5001, but the doors to the Control Room remain sealed until you complete the initiation rite. "
+                    "Return to your JupyterLab tab, execute the Golden Path, and drop the sentinel file."
+                )
+                return "Access Denied 🛑", msg, None
+                
+            elif not has_configured:
+                # 2. The Usher Persona
+                if self.wand.active_local_model:
+                    msg = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus. My speech is generated entirely on your machine, but my reasoning engines are currently idling. You must proceed to the Configuration app to establish your identity."
+                else:
+                    msg = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus. My speech is generated entirely on your machine. You have not yet set up your local AI capabilities. Please visit Ollama.com."
+                return "Welcome", msg, 'step_02'
+                
+            else:
+                # 3. The Veteran Persona
+                msg = f"Welcome back to {dynamic_app_name}. All systems are online and ready."
+                return "Dashboard Ready ✅", msg, None
+                
+        elif step_id == 'step_02':
+            return "Expectations", self.NARRATION["step_02"], 'finalize'
+            
+        elif step_id == 'finalize':
+            return "Hand-off", self.NARRATION["finalize"], None
+            
+        return "Unknown", "I have nothing to say about this.", None
+
+
     async def toggle_voice(self, request):
-        """
-        Toggles the global voice_enabled state.
-        Uses '1' and '0' strings for safe SQLite storage.
-        """
-        # Explicit string comparison for boolean state
+        """Toggles the global voice_enabled state."""
         current_state = self.wand.db.get('voice_enabled', '0') == '1'
         new_state = not current_state
-        
-        # Save as '1' or '0' string
         self.wand.db['voice_enabled'] = '1' if new_state else '0'
-        
         logger.info(f"🔊 Voice toggled: {new_state}")
         return self._render_voice_controls(new_state)
 
     async def speak_step(self, step_id: str):
-        """Trigger server-side audio playback."""
-        text = self.narration.get(step_id, "I have nothing to say about this.")
+        """Trigger server-side audio playback using JIT evaluated text."""
+        _, text, _ = self._get_slide_data(step_id)
         
         from imports.voice_synthesis import chip_voice_system
         if chip_voice_system and chip_voice_system.voice_ready:
@@ -157,11 +146,9 @@ class IntroductionPlugin:
         """Helper to render a standardized slide."""
         import time
         
-        # Explicit check against string '1'
         voice_enabled = self.wand.db.get('voice_enabled', '0') == '1'
         
-        # 🚦 THE 80/20 POLITE INTERRUPTION: If the server just woke up, 
-        # tell HTMX to hold the request for 7 seconds so the server can speak first.
+        # 🚦 THE 80/20 POLITE INTERRUPTION
         server_start = float(self.wand.db.get('server_start_time', 0))
         is_startup = (time.time() - server_start) < 8
         trigger_logic = "load delay:7s" if is_startup else "load"
@@ -171,7 +158,7 @@ class IntroductionPlugin:
         if voice_enabled:
              onload_trigger = Div(
                  hx_post=f"/{self.app_name}/speak/{step_id}",
-                 hx_trigger=trigger_logic,  # <-- USE DYNAMIC TRIGGER HERE
+                 hx_trigger=trigger_logic,
                  style="display:none;"
              )
 
@@ -193,7 +180,7 @@ class IntroductionPlugin:
                     "Next Step ▸", 
                     hx_get=f"/{self.app_name}/{next_step_id}", 
                     hx_target=f"#{self.CONTAINER_ID}",
-                    hx_swap="innerHTML",  # Explicitly swap inner content
+                    hx_swap="innerHTML", 
                     id="next-button"
                 )
             )
@@ -221,8 +208,6 @@ class IntroductionPlugin:
 
     async def landing(self, request):
         """Entry point: Wraps the first slide in the main container."""
-        # This is CRITICAL: The first render must provide the container ID
-        # that subsequent HTMX requests will target.
         return Div(
             await self.step_01(request),
             id=self.CONTAINER_ID,
@@ -230,43 +215,19 @@ class IntroductionPlugin:
         )
         
     async def init(self, request):
-        """Handler for initialization."""
-        # Init also needs to return the container wrapper logic
         return await self.landing(request)
 
     async def step_01(self, request):
-        if not self.has_onboarded:
-            return self._render_slide(
-                'step_01', 
-                "Access Denied 🛑", 
-                "You've discovered the Control Room port. Clever, but premature. The UI is locked because you haven't completed the Onboarding sequence in JupyterLab. Go back, follow the rhythm of Shift+Enter, and earn your dashboard.",
-                next_step_id=None  # This kills the "Next" button, trapping them here.
-            )
-        elif not self.has_configured:
-            return self._render_slide(
-                'step_01', 
-                "Welcome", 
-                self.narration['step_01'],
-                next_step_id='step_02'
-            )
-        else:
-            return self._render_slide(
-                'step_01', 
-                "Dashboard Ready ✅", 
-                self.narration['step_01'],
-                next_step_id=None
-            )
+        title, content, next_id = self._get_slide_data('step_01')
+        return self._render_slide('step_01', title, content, next_step_id=next_id)
 
     async def step_02(self, request):
-        return self._render_slide(
-            'step_02', 
-            "Expectations", 
-            self.narration["step_02"],
-            next_step_id='finalize'
-        )
+        title, content, next_id = self._get_slide_data('step_02')
+        return self._render_slide('step_02', title, content, next_step_id=next_id)
 
     async def finalize(self, request):
-        # The explicit, clickable transition to the Configuration App
+        title, content, _ = self._get_slide_data('finalize')
+        
         config_button = A(
             "⚙️ Proceed to Configuration", 
             href="/redirect/config", 
@@ -277,12 +238,8 @@ class IntroductionPlugin:
         
         return self._render_slide(
             'finalize',
-            "Hand-off",
-            (
-                self.narration["finalize"],
-                Br(), Br(),
-                config_button
-            ),
+            title,
+            (content, Br(), Br(), config_button),
             next_step_id=None
         )
 
