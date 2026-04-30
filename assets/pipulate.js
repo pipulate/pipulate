@@ -592,3 +592,55 @@ function setupMenuFlashFeedback() {
         console.error('🔑 Error setting up global auto-submit:', setupError);
     }
 })();
+
+// ============================================================================
+// THE DEAD MAN'S SWITCH (Graceful Degradation for Server Loss)
+// ============================================================================
+(function initializeDeadMansSwitch() {
+    console.log('🛡️ Initializing Dead Man\'s Switch...');
+
+    // Monkey-patch the browser's programmatic reload function.
+    // FastHTML's live-reload script forcefully calls window.location.reload() 
+    // after 1000 failed ping attempts. We intercept that to preserve the stage.
+    const originalReload = window.location.reload;
+    
+    window.location.reload = async function() {
+        try {
+            // Quick pulse check: is the server actually responding?
+            await fetch('/', { method: 'HEAD', cache: 'no-store' });
+            // If it succeeds, allow the normal reload (e.g., for genuine updates)
+            originalReload.call(window.location);
+        } catch (e) {
+            // The server is dead. FastHTML is panicking. Drop the curtain.
+            console.log('🛡️ Intercepted FastHTML force-reload. Server is offline.');
+            
+            triggerFullScreenRestart(
+                "Connection lost. 🔌<br><br><small style='font-size: 0.8em; opacity: 0.9;'>To wake the server, run:<br><code style='background: #222; border: 1px solid #444; padding: 4px 8px; border-radius: 4px; margin: 10px 0; display: inline-block; color: #a7f3d0;'>python server.py</code><br>or <code style='background: #222; border: 1px solid #444; padding: 4px 8px; border-radius: 4px; display: inline-block; color: #a7f3d0;'>nix develop</code></small>", 
+                "SERVER_OFFLINE"
+            );
+
+            // Start listening for the server to wake back up
+            startResuscitationPoller(originalReload);
+        }
+    };
+
+    function startResuscitationPoller(reloadFn) {
+        if (window._resuscitationPoller) return;
+        console.log('🔄 Server is offline. Starting resuscitation poller...');
+        
+        window._resuscitationPoller = setInterval(async () => {
+            try {
+                // Ping the server blindly
+                const res = await fetch('/', { method: 'HEAD', cache: 'no-store' });
+                if (res.ok) {
+                    console.log('✨ Server pulse detected! Raising the curtain...');
+                    clearInterval(window._resuscitationPoller);
+                    window._resuscitationPoller = null;
+                    reloadFn.call(window.location);
+                }
+            } catch (e) {
+                // Still dead. Keep waiting silently.
+            }
+        }, 2000); // Check every 2 seconds
+    }
+})();
