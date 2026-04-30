@@ -91,14 +91,7 @@ class BotifyConnect:
 
     def get_endpoint_message(self):
         """
-        Dynamically determine the endpoint message based on token file existence.
-
-        This method checks if a Botify token file exists and returns an appropriate
-        message for the user. It's called by the server when displaying the message
-        in the sidebar.
-
-        Returns:
-            str: A message indicating whether a token exists and how to proceed
+        Dynamically determine the endpoint message specifically for the chat interface.
         """
         try:
             token_path = "botify_token.txt"
@@ -108,8 +101,7 @@ class BotifyConnect:
                     if token:
                         return (
                             "You already have a Botify API token configured. "
-                            "You can update it by entering a new token below. "
-                            f"You can find your API token at {account_url}"
+                            "If you need to update it, you can enter a new token in the workflow panel."
                         )
         except Exception:
             pass
@@ -126,21 +118,29 @@ class BotifyConnect:
         pipeline.xtra(app_name=app_name)
         existing_ids = [record.pkey for record in pipeline()]
 
-        # Get the message text
-        message_text = self.get_endpoint_message()
+        # Check token status specifically for the workflow UI
+        has_token = False
+        try:
+            token_path = "botify_token.txt"
+            if os.path.exists(token_path):
+                with open(token_path, "r") as f:
+                    if f.read().strip():
+                        has_token = True
+        except Exception:
+            pass
 
-        # For the workflow UI, we can use FastHTML to create actual HTML elements
-        # Create a fragment with the text and a link
-        if "You can find your API token at" in message_text:
-            parts = message_text.split("You can find your API token at")
+        # Build the specific HTML for the workflow panel
+        if has_token:
             endpoint_message = P(
-                parts[0] + "You can find your API token at ",
+                "You already have a Botify API token configured. "
+                "You can update it by entering a new token below. "
+                "You can find your API token at ",
                 A(account_url, href=account_url, target="_blank", 
                   aria_label="Open Botify account page to find API token",
                   title="Opens Botify account page in new tab")
             )
         else:
-            endpoint_message = P(message_text)
+            endpoint_message = P(self.ENDPOINT_MESSAGE)
 
         return Container(  # Get used to this return signature of FastHTML & HTMX
             Card(
