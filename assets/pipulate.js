@@ -594,53 +594,68 @@ function setupMenuFlashFeedback() {
 })();
 
 // ============================================================================
-// THE DEAD MAN'S SWITCH (Graceful Degradation for Server Loss)
+// THE DEAD MAN'S SWITCH V2 (WebSocket Proxy)
 // ============================================================================
 (function initializeDeadMansSwitch() {
-    console.log('🛡️ Initializing Dead Man\'s Switch...');
+    console.log('🛡️ Initializing Dead Man\'s Switch v2...');
 
-    // Monkey-patch the browser's programmatic reload function.
-    // FastHTML's live-reload script forcefully calls window.location.reload() 
-    // after 1000 failed ping attempts. We intercept that to preserve the stage.
-    const originalReload = window.location.reload;
+    // The browser's Location object is unforgeable, so we cannot patch reload().
+    // Instead, we proxy the WebSocket constructor before FastHTML executes.
+    const OriginalWebSocket = window.WebSocket;
     
-    window.location.reload = async function() {
-        try {
-            // Quick pulse check: is the server actually responding?
-            await fetch('/', { method: 'HEAD', cache: 'no-store' });
-            // If it succeeds, allow the normal reload (e.g., for genuine updates)
-            originalReload.call(window.location);
-        } catch (e) {
-            // The server is dead. FastHTML is panicking. Drop the curtain.
-            console.log('🛡️ Intercepted FastHTML force-reload. Server is offline.');
-            
-            triggerFullScreenRestart(
-                "Connection lost. 🔌<br><br><small style='font-size: 0.8em; opacity: 0.9;'>To wake the server, run:<br><code style='background: #222; border: 1px solid #444; padding: 4px 8px; border-radius: 4px; margin: 10px 0; display: inline-block; color: #a7f3d0;'>python server.py</code><br>or <code style='background: #222; border: 1px solid #444; padding: 4px 8px; border-radius: 4px; display: inline-block; color: #a7f3d0;'>nix develop</code></small>", 
-                "SERVER_OFFLINE"
-            );
-
-            // Start listening for the server to wake back up
-            startResuscitationPoller(originalReload);
-        }
-    };
-
-    function startResuscitationPoller(reloadFn) {
-        if (window._resuscitationPoller) return;
-        console.log('🔄 Server is offline. Starting resuscitation poller...');
+    window.WebSocket = function(url, protocols) {
+        const ws = new OriginalWebSocket(url, protocols);
         
-        window._resuscitationPoller = setInterval(async () => {
-            try {
-                // Ping the server blindly
-                const res = await fetch('/', { method: 'HEAD', cache: 'no-store' });
-                if (res.ok) {
-                    console.log('✨ Server pulse detected! Raising the curtain...');
-                    clearInterval(window._resuscitationPoller);
-                    window._resuscitationPoller = null;
-                    reloadFn.call(window.location);
+        // Check if this is FastHTML's specific live-reload socket
+        if (url && url.includes('/live-reload')) {
+            console.log('🛡️ Intercepted FastHTML live-reload socket.');
+            
+            // Hijack the setter for the onclose event
+            let originalOnClose = null;
+            
+            Object.defineProperty(ws, 'onclose', {
+                get: function() { return originalOnClose; },
+                set: function(fn) {
+                    originalOnClose = fn;
+                    
+                    // Attach our own event listener instead of FastHTML's
+                    ws.addEventListener('close', function(e) {
+                        console.log('🛡️ Server disconnected. Dropping the curtain.');
+                        
+                        triggerFullScreenRestart(
+                            "Connection lost. 🔌<br><br><small style='font-size: 0.8em; opacity: 0.9;'>To wake the server, run:<br><code style='background: #222; border: 1px solid #444; padding: 4px 8px; border-radius: 4px; margin: 10px 0; display: inline-block; color: #a7f3d0;'>python server.py</code><br>or <code style='background: #222; border: 1px solid #444; padding: 4px 8px; border-radius: 4px; display: inline-block; color: #a7f3d0;'>nix develop</code></small>", 
+                            "SERVER_OFFLINE"
+                        );
+
+                        // Start our own resuscitation poller to wait for the server
+                        if (!window._resuscitationPoller) {
+                            console.log('🔄 Starting resuscitation poller...');
+                            window._resuscitationPoller = setInterval(async () => {
+                                try {
+                                    // Blindly ping the server root
+                                    const res = await fetch('/', { method: 'HEAD', cache: 'no-store' });
+                                    if (res.ok) {
+                                        console.log('✨ Server pulse detected! Reloading...');
+                                        clearInterval(window._resuscitationPoller);
+                                        window._resuscitationPoller = null;
+                                        // The server is back, now we execute the hard reload
+                                        window.location.reload();
+                                    }
+                                } catch (err) {
+                                    // Still dead. Keep waiting silently.
+                                }
+                            }, 2000);
+                        }
+                        
+                        // CRITICAL: We DO NOT call originalOnClose()!
+                        // This entirely neutralizes FastHTML's 1000-attempt panic loop.
+                    });
                 }
-            } catch (e) {
-                // Still dead. Keep waiting silently.
-            }
-        }, 2000); // Check every 2 seconds
-    }
+            });
+        }
+        return ws;
+    };
+    
+    // Ensure the prototype chain remains intact for other scripts
+    window.WebSocket.prototype = OriginalWebSocket.prototype;
 })();
