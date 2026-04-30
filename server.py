@@ -2103,8 +2103,8 @@ async def home(request):
                 # Add training to conversation history
                 build_endpoint_training(menux)
 
-                # Update coordination tracking
-                message_coordination['last_endpoint_message_time'][message_id] = current_time
+                # Update coordination tracking ONLY for the strict one-time ban
+                # DO NOT update last_endpoint_message_time here; let send_delayed_endpoint_message do it!
                 if not has_temp_message:
                     message_coordination['endpoint_messages_sent'].add(message_id)
 
