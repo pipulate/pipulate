@@ -74,106 +74,93 @@ def save_wip_dataframe(job: str, df: pd.DataFrame, filename: str) -> str:
     return str(file_path.resolve())
 
 
-def extract_domains_and_print_urls(job: str, notebook_filename: str = "03_GAPalyzer.ipynb"):
+def render_competitor_workbench(job: str):
     """
-    Parses the specified notebook for competitor domains or subfolders,
-    stores them using wand.set, and prints the generated SEMrush URLs
-    with appropriate country code and search type.
-
-    Args:
-        job (str): The current Pipulate job ID.
-        notebook_filename (str): The name of the notebook file to parse.
-
-    Returns:
-        list: The list of extracted domains/subfolders, or an empty list if none found/error.
+    Renders an interactive textarea to manage competitor domains.
+    Parses the input, saves it to wand memory, and generates SEMrush links.
     """
-    items_to_analyze = [] # Renamed from domains to be more general
+    import ipywidgets as widgets
+    from IPython.display import display, clear_output
+    import urllib.parse
+    import _config as keys
 
-    # --- Inner function to read notebook (kept internal to this step) ---
-    def get_items_from_notebook(nb_file):
-        """Parses the notebook to get the domain/subfolder list from the 'url-list-input' cell."""
-        try:
-            notebook_path = Path(nb_file) # Use the passed filename
-            if not notebook_path.exists():
-                print(f"❌ Error: Notebook file not found at '{notebook_path.resolve()}'")
-                return []
-            with open(notebook_path, 'r', encoding='utf-8') as f:
-                nb = nbformat.read(f, as_version=4)
-
-            for cell in nb.cells:
-                if "url-list-input" in cell.metadata.get("tags", []):
-                    items_raw = cell.source
-                    # Ensure items_raw is treated as a string before splitting lines
-                    if isinstance(items_raw, list):
-                        items_raw = "".join(items_raw) # Join list elements if needed
-                    elif not isinstance(items_raw, str):
-                        print(f"⚠️ Warning: Unexpected data type for items_raw: {type(items_raw)}. Trying to convert.")
-                        items_raw = str(items_raw)
-
-                    # Now splitlines should work reliably
-                    extracted_items = [
-                        line.split('#')[0].strip()
-                        for line in items_raw.splitlines()
-                        if line.strip() and not line.strip().startswith('#')
-                    ]
-                    # --- NEW: Strip trailing slashes ---
-                    extracted_items = [item.rstrip('/') for item in extracted_items]
-                    return extracted_items
-            print("⚠️ Warning: Could not find a cell tagged with 'url-list-input'.")
-            return []
-        except Exception as e:
-            print(f"❌ Error reading items from notebook: {e}")
-            return []
-
-    # --- Main Logic ---
-    print("🚀 Extracting domains/subfolders and generating SEMrush URLs...")
-
-    items_to_analyze = get_items_from_notebook(notebook_filename)
-
-    # --- Pipulate Scaffolding ---
-    # Store the extracted items list.
-    wand.set(job, 'competitor_items', items_to_analyze) # Use a more general key name
-    print(f"💾 Stored {len(items_to_analyze)} domains/subfolders in wand state for job '{job}'.")
-    
-    # --- Use country_code from keys ---
-    try:
-        country_db = keys.country_code
-    except AttributeError:
-        print("⚠️ Warning: 'country_code' not found in keys.py. Defaulting to 'us'.")
-        country_db = "us"
-
-    # --- Define the base URL template ---
-    base_url = "https://www.semrush.com/analytics/organic/positions/"
-
-    if not items_to_analyze:
-        print("🛑 No domains or subfolders found or extracted. Please check the 'url-list-input' cell.")
+    # 1. Hydrate from wand memory if it exists, otherwise provide default placeholders
+    existing_items = wand.get(job, 'competitor_items')
+    if existing_items:
+        default_text = "\n".join(existing_items)
     else:
-        print(f"✅ Found {len(items_to_analyze)} competitor items. URLs to check:")
-        print("-" * 30)
-        for i, item in enumerate(items_to_analyze):
-            # --- Determine searchType dynamically ---
-            if '/' in item:
-                # If it contains a slash, assume it's a path/subfolder
-                search_type = "subfolder"
-                # For subfolders, SEMrush often expects the full URL in the 'q' parameter
-                query_param = item
-                if not query_param.startswith(('http://', 'https://')):
-                    # Prepend https:// if no scheme is present
-                    query_param = f"https://{query_param}"
-            else:
-                # Otherwise, treat it as a domain
-                search_type = "domain"
-                query_param = item # Just the domain name
+        default_text = (
+            "# Enter one URL or domain per line. Comments starting with '#' are ignored.\n"
+            "example-competitor.com\n"
+            "herroom.com\n"
+            "soma.com\n"
+            "thirdlove.com"
+        )
 
-            # --- Construct the URL ---
-            # URL encode the query parameter to handle special characters
-            encoded_query = urllib.parse.quote(query_param, safe=':/')
-            full_url = f"{base_url}?db={country_db}&q={encoded_query}&searchType={search_type}"
+    # 2. Build the UI Components
+    text_area = widgets.Textarea(
+        value=default_text,
+        placeholder='Paste one domain or subfolder per line...',
+        layout=widgets.Layout(width='80%', height='250px')
+    )
 
-            # Keep the print logic here for user feedback
-            print(f"{i+1}. {item}: (Type: {search_type})\n   {full_url}\n")
+    save_btn = widgets.Button(
+        description="💾 Save Targets & Generate Links",
+        button_style='success',
+        layout=widgets.Layout(width='250px')
+    )
 
-    return items_to_analyze # Return the list for potential immediate use
+    out = widgets.Output()
+
+    def on_save(b):
+        with out:
+            clear_output(wait=True)
+            raw_text = text_area.value
+            
+            # Clean and parse the input
+            items_to_analyze = [
+                line.split('#')[0].strip().rstrip('/')
+                for line in raw_text.splitlines()
+                if line.strip() and not line.strip().startswith('#')
+            ]
+
+            if not items_to_analyze:
+                print("🛑 No domains found. Please enter at least one competitor.")
+                return
+
+            # Store in the wand
+            wand.set(job, 'competitor_items', items_to_analyze)
+            
+            # --- Visual Confirmation of Wand Memory ---
+            print(f"💾 Wand Memory Updated: 'competitor_items' now holds {len(items_to_analyze)} domains.")
+            print("-" * 40)
+
+            # Generate SEMrush Links
+            country_db = getattr(keys, 'country_code', 'us')
+            base_url = "https://www.semrush.com/analytics/organic/positions/"
+
+            print(f"✅ URLs to check (Download the 'Organic Positions' Excel export for each):\n")
+            for i, item in enumerate(items_to_analyze):
+                search_type = "subfolder" if '/' in item else "domain"
+                query_param = f"https://{item}" if search_type == "subfolder" and not item.startswith(('http://', 'https://')) else item
+                
+                encoded_query = urllib.parse.quote(query_param, safe=':/')
+                full_url = f"{base_url}?db={country_db}&q={encoded_query}&searchType={search_type}"
+                print(f"{i+1}. {item} (Type: {search_type})\n   {full_url}\n")
+            
+            # Fire the compulsion
+            wand.speak(f"I have staged {len(items_to_analyze)} domains. Use the links above to download the exports, then run the next cell.")
+            save_btn.description = "✅ Locked & Loaded"
+            save_btn.button_style = ''
+            wand.imperio(side_quest=True, newline=False)
+
+    save_btn.on_click(on_save)
+    
+    # Display the workbench
+    display(widgets.HTML("<b>🎯 Define Competitor Targets:</b>"))
+    display(text_area)
+    display(save_btn)
+    display(out)
 
 
 def collect_semrush_downloads(job: str, download_path_str: str, file_pattern_xlsx: str = "*-organic.Positions*.xlsx"):
