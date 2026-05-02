@@ -50,28 +50,44 @@ AI_PHOOEY_CHOP = """\
 # README.md  # [20,467 tokens | 103,208 bytes]
 # AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
 # pyproject.toml  # [677 tokens | 2,299 bytes]
-# # ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
-# # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
+# ! python scripts/articles/lsa.py -t 1  # [2,280 tokens | 10,180 bytes]  <-- provides context but inflates size!!!
+# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
 
-# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-# flake.nix  # [8,011 tokens | 34,229 bytes]
-# requirements.in  # [573 tokens | 1,924 bytes]
-# requirements.txt  # [7,010 tokens | 18,582 bytes]
-# .gitignore  # [571 tokens | 2,096 bytes]
-# config.py  # [4,170 tokens | 16,184 bytes]
+.gitignore  # [571 tokens | 2,096 bytes]
+__init__.py  # [357 tokens | 1,565 bytes]
+release.py  # [9,879 tokens | 44,440 bytes]
+assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
+flake.nix  # [8,011 tokens | 34,229 bytes]
+config.py  # [4,170 tokens | 16,184 bytes]
 pipulate/__init__.py  # [509 tokens | 2,135 bytes]
 pipulate/core.py  # [28,909 tokens | 140,289 bytes]
+imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
 Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
 Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
 Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
 apps/015_config.py  # [8,026 tokens | 38,233 bytes]
-Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
-Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
+# README.md  # [20,467 tokens | 103,208 bytes]
+
+# tools/mcp_tools.py  # [36,628 tokens | 186,793 bytes]
+# tools/stream_orchestrator.py
+# tools/mcp_orchestrator.py
+# imports/crud.py  # [7,365 tokens | 35,666 bytes]
+# imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
+# imports/conversation_backup_system.py
+# tools/scraper_tools.py  # [4,644 tokens | 22,416 bytes]
+# imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
+
+# requirements.in  # [573 tokens | 1,924 bytes]
+# requirements.txt  # [7,010 tokens | 18,582 bytes]
+# pipulate/core.py  # [28,909 tokens | 140,289 bytes]
+# Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
+# Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 
 # apps/100_connect_with_botify.py  # [4,478 tokens | 22,512 bytes]
 
@@ -172,7 +188,6 @@ Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
  
 # AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
 # tools/mcp_tools.py  # [36,628 tokens | 186,793 bytes]
-# README.md  # [20,467 tokens | 103,208 bytes]
 # server.py  # [54,246 tokens | 258,931 bytes]
 # imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 # /home/mike/repos/pipulate/Notebooks/Deliverables/onboarding_job/mikelev_in_Technical_Baseline.xlsx
@@ -569,6 +584,7 @@ Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 # imports/append_only_conversation.py  # [4,345 tokens | 22,449 bytes]
 # imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 # apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
+# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
 # assets/nbs/Onboarding.ipynb  # [2,935 tokens | 9,467 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [1,773 tokens | 7,952 bytes]
 
