@@ -496,9 +496,9 @@ class Pipulate:
         else:
             # Standard terminal output gets the clean text without URL clutter
             print(f"{display_emoji} {voice_text}")
-        
-        # Check if the user has globally enabled voice. Default is '0' (Off)
-        voice_enabled = self.db.get('voice_enabled', '0') == '1'
+
+        # Check if the user has globally enabled voice. Default is '1' (On) for fresh installs
+        voice_enabled = self.db.get('voice_enabled', '1') == '1'
         
         if not voice_enabled:
             return # Exit early, the print/display statement acts as the visual fallback
@@ -558,7 +558,8 @@ class Pipulate:
             print("⚠️ ipywidgets is required for interactive controls. Use pip.mute() or pip.unmute() instead.")
             return
 
-        current_state = self.db.get('voice_enabled', '0') == '1'
+        # Match the global default of '1' (On)
+        current_state = self.db.get('voice_enabled', '1') == '1'
 
         toggle = widgets.ToggleButton(
             value=current_state,
