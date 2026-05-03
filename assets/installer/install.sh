@@ -83,12 +83,8 @@ print_separator() {
 # Function to get the appropriate nix develop command based on OS
 # This is one of the few OS-specific adaptations we need to make
 get_nix_develop_cmd() {
-  if [[ "$(uname)" == "Darwin" ]]; then
-    # echo "nix develop --impure"  # Commented out for now
-    echo "nix develop"
-  else
-    echo "nix develop"
-  fi
+  # Add -L to force build logs so the user sees the download progress
+  echo "nix develop -L"
 }
 NIX_DEVELOP_CMD=$(get_nix_develop_cmd)
 
@@ -256,10 +252,15 @@ echo
 echo "This will activate the Nix development environment and"
 echo "complete the 'magic cookie' transformation process."
 echo "🚀 Booting the Forever Machine..."
-echo "Please wait while the Nix environment hydrates..."
+echo "Please wait while the Nix environment hydrates (this may take a minute)..."
 
-# Reconnect standard input to the user's terminal (bypassing the curl pipe)
-exec < /dev/tty
-
-# Replace the installer process with the interactive Nix shell
-exec ${NIX_DEVELOP_CMD}
+# The Terminal Hand-off:
+# We spawn a fresh shell attached directly to the physical terminal. 
+# This prevents the macOS SIGTTIN suspension caused by the curl pipe,
+# and permanently eliminates the need for the user to type 'cd'.
+if [ -c /dev/tty ]; then
+    bash -c "cd '${TARGET_DIR}' && ${NIX_DEVELOP_CMD}" < /dev/tty
+else
+    # Fallback for highly restricted environments
+    cd "${TARGET_DIR}" && ${NIX_DEVELOP_CMD}
+fi
