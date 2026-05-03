@@ -61,10 +61,10 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
 flake.nix  # [8,352 tokens | 35,542 bytes]
+release.py  # [9,879 tokens | 44,440 bytes]
 
 # /home/mike/repos/Pipulate.com/index.md  # [2,352 tokens | 10,545 bytes]
 # __init__.py  # [357 tokens | 1,565 bytes]
-# release.py  # [9,879 tokens | 44,440 bytes]
 # .gitignore  # [571 tokens | 2,096 bytes]
 # flake.nix  # [8,352 tokens | 35,542 bytes]
 
