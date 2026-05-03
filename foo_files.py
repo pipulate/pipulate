@@ -54,14 +54,29 @@ AI_PHOOEY_CHOP = """\
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
 
-# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
-flake.nix  # [8,352 tokens | 35,542 bytes]
-release.py  # [9,879 tokens | 44,440 bytes]
+imports/durable_backup_system.py  # To see how we can intercept or whitelist keys during a restore
+imports/voice_synthesis.py  # To see how Piper checks its default state
+pipulate/core.py  # To observe the wand.voice_controls() logic
+assets/pipulate.js  # To check if the browser is the culprit hoarding the state
+assets/init.js  # Additional frontend state checking
+
+# assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
+# flake.nix  # [8,352 tokens | 35,542 bytes]
+# release.py  # [9,879 tokens | 44,440 bytes]
+# imports/durable_backup_system.py (To see how we can intercept or whitelist keys during a restore)  # [5,117 tokens | 25,413 bytes]
+# imports/voice_synthesis.py # (To see how Piper checks its default state)  [3,133 tokens | 15,477 bytes]
+# pipulate/core.py (To observe the wand.voice_controls() logic)  # [28,907 tokens | 140,287 bytes]
+# assets/pipulate.js and/or assets/init.js (To check if the browser is the culprit hoarding the state)  # [5,574 tokens | 28,663 bytes]
+# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
+# cli.py  # [5,092 tokens | 22,615 bytes]
+
+# requirements.in  # [573 tokens | 1,924 bytes]
+# requirements.txt  # [7,010 tokens | 18,582 bytes]
 
 # /home/mike/repos/Pipulate.com/index.md  # [2,352 tokens | 10,545 bytes]
 # __init__.py  # [357 tokens | 1,565 bytes]
@@ -91,8 +106,6 @@ release.py  # [9,879 tokens | 44,440 bytes]
 # tools/scraper_tools.py  # [4,644 tokens | 22,416 bytes]
 # imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 
-# requirements.in  # [573 tokens | 1,924 bytes]
-# requirements.txt  # [7,010 tokens | 18,582 bytes]
 # pipulate/core.py  # [28,909 tokens | 140,289 bytes]
 # Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
 # Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
