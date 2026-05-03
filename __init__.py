@@ -12,13 +12,13 @@ Usage:
     pipulate
 """
 
-__version__ = "1.4.5"
-__version_description__ = "Silent Stealth Crawling"
+__version__ = "1.5"
+__version_description__ = "Big Steps Forward"
 __email__ = "pipulate@gmail.com"
 __description__ = "Local First AI SEO Software" 
 
 # Pipulate - Local-First AI SEO Software
-# Copyright (C) 2025 Mike Levin
+# Copyright (C) 2026 Mike Levin
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal

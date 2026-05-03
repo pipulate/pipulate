@@ -623,7 +623,6 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias gdiff='git --no-pager diff --no-textconv'
           alias isnix="if [ -n \"$IN_NIX_SHELL\" ]; then echo \"✓ In Nix shell v${version}\"; else echo \"✗ Not in Nix shell\"; fi"
           alias mcp='.venv/bin/python cli.py call'
-          alias release='.venv/bin/python helpers/release/publish.py'
           alias vim='nvim'
           alias lsp='ls -d -1 "$PWD"/*'
           alias p='cd ~/repos/pipulate'

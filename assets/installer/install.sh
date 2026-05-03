@@ -252,10 +252,14 @@ VERSION="1.0.2"
 # The nix flake will take over from here, handling the git repository setup
 # This is the final step of the "magic cookie" approach - letting the controlled
 # nix environment handle the git operations
-echo "Pipulate Installer v${VERSION} - Test checkpoint reached"
-echo "Setup complete! To start using Pipulate, run:"
-echo "  cd ${TARGET_DIR}"
-echo "  ${NIX_DEVELOP_CMD}"
 echo
 echo "This will activate the Nix development environment and"
 echo "complete the 'magic cookie' transformation process."
+echo "🚀 Booting the Forever Machine..."
+echo "Please wait while the Nix environment hydrates..."
+
+# Reconnect standard input to the user's terminal (bypassing the curl pipe)
+exec < /dev/tty
+
+# Replace the installer process with the interactive Nix shell
+exec ${NIX_DEVELOP_CMD}
