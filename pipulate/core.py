@@ -449,11 +449,6 @@ class Pipulate:
         except Exception as e:
             self.logger.error(f"❌ Failed to open folder. Error: {e}")
             return False
-    # pipulate/core.py (Replace the speak method)
-
-    # pipulate/core.py (Replace the speak method)
-
-    # pipulate/core.py (Inside the speak method)
 
     def speak(self, text: str, delay: float = 0.0, wait: bool = True, emoji: str = None):
         """
@@ -3046,7 +3041,7 @@ class Pipulate:
                     self.active_local_model = value
                 elif key == 'active_cloud_model':
                     self.active_cloud_model = value
-                self.logger.info(f"🧬 Injected {key} from Jupyter store: {value}")
+                logger.info(f"🧬 Injected {key} from Jupyter store: {value}")
 
             # 5. Destroy the Sentinel (The airlock cycles once)
             if sentinel_path.exists():
