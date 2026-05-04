@@ -249,13 +249,6 @@ pipulate/core.py  # To observe the wand.voice_controls() logic
 # assets/nbs/imports/onboard_sauce.py  # [2,806 tokens | 12,750 bytes]
 # pipulate/core.py  # [26,240 tokens | 127,595 bytes]
 
-# https://gist.githubusercontent.com/karpathy/442a6bf555914893e9891c11519de94f/raw/ac46de1ad27f92b28ac95459c782c07f6b8c964a/llm-wiki.md
-# https://raw.githubusercontent.com/karpathy/autoresearch/refs/heads/master/README.md
-# https://gist.githubusercontent.com/karpathy/8627fe009c40f57531cb18360106ce95/raw/14fb038816c7aae0bb9342c2dbf1a51dd134a5ff/microgpt.py
-
-# /home/mike/repos/trimnoir/_posts/2026-04-08-async-narration-metadata-minefield.md  # [Idx: 1011 | Order: 1 | Tokens: 16,036 | Bytes: 63,514]
-# /home/mike/repos/trimnoir/_posts/2026-04-08-llmectomy-universal-adapter-resilience.md  # [Idx: 1012 | Order: 2 | Tokens: 23,076 | Bytes: 89,108]
-
 # /home/mike/repos/bookforge/30_drafts/ch_01_0_blueprint.md  # [1,114 tokens | 4,729 bytes]
 # /home/mike/repos/bookforge/30_drafts/ch_01_1_rough.md  # [1,185 tokens | 6,148 bytes]
 # /home/mike/repos/bookforge/30_drafts/ch_02_0_blueprint.md  # [1,038 tokens | 4,434 bytes]
