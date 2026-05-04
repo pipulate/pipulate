@@ -2057,6 +2057,28 @@ async def home(request):
     logger.debug(f'Received request for path: {url_path}')
     menux = normalize_menu_path(url_path)
     logger.debug(f'Selected explore item: {menux}')
+
+    # ---> THE NEW AIRLOCK TRIGGER <---
+    # Check for the sentinel file before doing anything else
+    sentinel_path = Path("Notebooks/data/.onboarded")
+    if sentinel_path.exists():
+        logger.info("🚨 Sentinel detected on home route. Triggering Airlock.")
+        airlock_success = pipulate.execute_onboarding_airlock()
+        if airlock_success:
+            # We want to force the greeting message to regenerate with the new name
+            if 'temp_message' in db:
+                del pipulate.db['temp_message']
+            
+            # Create the custom "surprise and delight" message
+            operator_name = pipulate.db.get('operator_name', 'Operator')
+            pipulate.db['demo_comeback_message'] = 'true'
+            pipulate.db['demo_comeback_state'] = {
+                "show_comeback_message": True,
+                "message": f"Hello {operator_name}. It's good to see you on this side.",
+                "subtitle": "Your onboarding data has been successfully imported."
+            }
+    # ---> END AIRLOCK TRIGGER <---
+
     pipulate.db['last_app_choice'] = menux
     pipulate.db['last_visited_url'] = request.url.path
     current_profile_id = get_current_profile_id()
