@@ -2823,8 +2823,9 @@ class Pipulate:
                     print(f"\n⏳ Auto-pulling {primary_recommendation} via host OS. Please wait...")
                     
                     # Blocking subprocess call so the notebook waits for the download to finish
-                    pull_result = subprocess.run(['ollama', 'pull', primary_recommendation], capture_output=False)
-                    
+                    # capture_output=True silences the massive progress bar in the Jupyter output
+                    pull_result = subprocess.run(['ollama', 'pull', primary_recommendation], capture_output=True)
+                    
                     if pull_result.returncode == 0:
                         self.speak("Download complete. Model is locked in.")
                         print(f"\n✅ Successfully pulled and locked in Local Model: {primary_recommendation}")
