@@ -65,17 +65,17 @@ class IntroductionPlugin:
         ensuring the UI perfectly reflects the user's latest actions in the Notebook.
         Returns: (Title, Content/Speech, Next_Step_ID)
         """
+
         if step_id == 'step_01':
-            # Check the topological manifold for the Jupyter sentinel
-            sentinel_path = self.wand.paths.root / "Notebooks" / "data" / ".onboarded"
-            has_onboarded = sentinel_path.exists()
+            # Check if we have an operator name (proof the airlock worked)
+            operator_name = self.wand.db.get('operator_name')
             
             # Check if Configuration is complete
             has_configured = bool(self.wand.db.get('active_local_model'))
             dynamic_app_name = self.wand.get_config().APP_NAME
             
-            if not has_onboarded:
-                # 1. The Bouncer Persona
+            if not operator_name:
+                # 1. The Bouncer Persona (No data imported yet)
                 msg = (
                     "Halt. I am Chip O'Theseus. My speech is generated entirely on your machine, "
                     "but you are trying to sneak into the VIP lounge through the kitchen. "
@@ -85,16 +85,14 @@ class IntroductionPlugin:
                 return "Access Denied 🛑", msg, None
 
             elif not has_configured:
-                # 2. The Usher Persona
-                if self.wand.active_local_model:
-                    msg = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus, but I don't know your name yet. Run the next step."
-                else:
-                    msg = f"Welcome to {dynamic_app_name}. I am Chip O'Theseus. My speech is generated entirely on your machine. You have not yet set up your local AI capabilities. Please visit Ollama.com."
+                # This state might not be reachable if the airlock pulled everything perfectly, 
+                # but it's safe to keep as a fallback.
+                msg = f"Welcome to {dynamic_app_name}, {operator_name}. I am Chip O'Theseus. You have not yet set up your local AI capabilities. Please visit Ollama.com."
                 return "Welcome", msg, 'step_02'
                 
             else:
-                # 3. The Veteran Persona
-                msg = f"Welcome back to {dynamic_app_name}. All systems are online and ready."
+                # 3. The Veteran Persona (Airlock successful)
+                msg = f"Welcome back to {dynamic_app_name}, {operator_name}. All systems are online and ready. Your local AI engine is locked to {self.wand.db.get('active_local_model')}."
                 return "Dashboard Ready ✅", msg, None
                 
         elif step_id == 'step_02':
