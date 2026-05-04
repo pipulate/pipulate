@@ -2990,10 +2990,10 @@ class Pipulate:
         """
         import sqlite3
         import json
-        
-        # 1. Define the path to the Jupyter chrysalis
-        jupyter_db_path = self.paths.base / "data" / "pipeline.sqlite"
-        sentinel_path = self.paths.base / "data" / ".onboarded"
+
+        # 1. Explicitly define the path to the Jupyter chrysalis (ignoring current context)
+        jupyter_db_path = self.paths.root / "Notebooks" / "data" / "pipeline.sqlite"
+        sentinel_path = self.paths.root / "Notebooks" / "data" / ".onboarded"
         
         # 2. Safety Check: Only proceed if the chrysalis exists
         if not jupyter_db_path.exists():
