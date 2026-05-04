@@ -2981,3 +2981,79 @@ class Pipulate:
         key_present = self.ensure_credentials(env_var_name, service_name, force_prompt=force_prompt)
             
         return selected_cloud, bool(key_present)
+
+    def execute_onboarding_airlock(self):
+        """
+        The Sentinel-Triggered Airlock.
+        Crosses the domain boundary to extract data from the Jupyter environment
+        and inject it into the FastHTML global state.
+        """
+        import sqlite3
+        import json
+        
+        # 1. Define the path to the Jupyter chrysalis
+        jupyter_db_path = self.paths.base / "data" / "pipeline.sqlite"
+        sentinel_path = self.paths.base / "data" / ".onboarded"
+        
+        # 2. Safety Check: Only proceed if the chrysalis exists
+        if not jupyter_db_path.exists():
+            self.logger.warning(f"Airlock Aborted: No Jupyter database found at {jupyter_db_path}")
+            return False
+            
+        try:
+            self.logger.info("🌀 AIRLOCK ENGAGED: Extracting Jupyter Onboarding Data...")
+            
+            # 3. The Surgical Read-Only Extraction
+            # Connect in read-only mode to prevent lock conflicts with any hanging Jupyter kernels
+            uri = f"file:{jupyter_db_path}?mode=ro"
+            conn = sqlite3.connect(uri, uri=True)
+            cursor = conn.cursor()
+            
+            # The data we want is locked inside the 'onboarding_01' pipeline record
+            cursor.execute("SELECT data FROM pipeline WHERE pkey = 'onboarding_01'")
+            result = cursor.fetchone()
+            conn.close()
+            
+            if not result:
+                self.logger.warning("Airlock Empty: No 'onboarding_01' record found.")
+                return False
+                
+            onboarding_state = json.loads(result[0])
+            
+            # 4. The Transformation & Injection
+            # Map the extracted Jupyter state to the FastHTML global cookie state
+            
+            # Extract Operator Name
+            if 'operator_name' in onboarding_state:
+                self.db['operator_name'] = onboarding_state['operator_name']
+                self.logger.info(f"🧬 Injected Operator Name: {onboarding_state['operator_name']}")
+                
+                # Also secure it in the subconscious (AI Keychain)
+                try:
+                    from imports.ai_dictdb import keychain_instance
+                    keychain_instance['operator_name'] = onboarding_state['operator_name']
+                except Exception as e:
+                    self.logger.warning(f"Could not inject to keychain: {e}")
+
+            # Extract Local AI Preference
+            if 'active_local_model' in onboarding_state:
+                self.db['active_local_model'] = onboarding_state['active_local_model']
+                self.active_local_model = onboarding_state['active_local_model']
+                self.logger.info(f"🧬 Injected Local AI: {onboarding_state['active_local_model']}")
+
+            # Extract Cloud AI Preference (If they used the formal API route in the notebook)
+            if 'active_cloud_model' in onboarding_state:
+                 self.db['active_cloud_model'] = onboarding_state['active_cloud_model']
+                 self.active_cloud_model = onboarding_state['active_cloud_model']
+                 self.logger.info(f"🧬 Injected Cloud AI: {onboarding_state['active_cloud_model']}")
+
+            # 5. Destroy the Sentinel (The airlock cycles once)
+            if sentinel_path.exists():
+                sentinel_path.unlink()
+                self.logger.info("🗑️ Sentinel .onboarded destroyed. Airlock sealed.")
+
+            return True
+
+        except Exception as e:
+            self.logger.error(f"❌ Airlock Failure: {e}")
+            return False
