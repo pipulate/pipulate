@@ -605,9 +605,16 @@ def conduct_local_assessment(job_id: str, target_url: str, local_model_id: str):
     from pathlib import Path
     from pipulate import wand
 
+    # 🛑 Fast-fail if the model is missing
+    if not local_model_id:
+        print("\n⚠️ Local AI Assessment Skipped: No local model available.")
+        wand.speak("Skipping local AI analysis.")
+        # Ensure we still return the path so the workflow doesn't completely break
+        xl_file_path_str = wand.get(job_id, "baseline_excel_path")
+        return None, xl_file_path_str
+
     # 1. Prepare the AI directives
     system_prompt, user_prompt = build_local_optics_prompt(target_url)
-
     wand.speak(f"Channeling local intent through {local_model_id} to deduce the brand and target keyword...")
 
     # 2. Execute the local prompt (Kept front-and-center for the user to see)
