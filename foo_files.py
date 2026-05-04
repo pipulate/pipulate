@@ -54,31 +54,35 @@ AI_PHOOEY_CHOP = """\
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
 
-prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-imports/durable_backup_system.py  # To see how we can intercept or whitelist keys during a restore
-imports/voice_synthesis.py  # To see how Piper checks its default state
-pipulate/core.py  # To observe the wand.voice_controls() logic
-assets/pipulate.js  # To check if the browser is the culprit hoarding the state
-assets/init.js  # Additional frontend state checking
-
+# /home/mike/repos/Pipulate.com/index.md  # [2,352 tokens | 10,545 bytes]
 # assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
 # flake.nix  # [8,352 tokens | 35,542 bytes]
-# release.py  # [9,879 tokens | 44,440 bytes]
-# imports/durable_backup_system.py (To see how we can intercept or whitelist keys during a restore)  # [5,117 tokens | 25,413 bytes]
-# imports/voice_synthesis.py # (To see how Piper checks its default state)  [3,133 tokens | 15,477 bytes]
-# pipulate/core.py (To observe the wand.voice_controls() logic)  # [28,907 tokens | 140,287 bytes]
-# assets/pipulate.js and/or assets/init.js (To check if the browser is the culprit hoarding the state)  # [5,574 tokens | 28,663 bytes]
+release.py  # [9,879 tokens | 44,440 bytes]
+config.py  # [4,170 tokens | 16,184 bytes]
+assets/pipulate.js  # [4,889 tokens | 24,977 bytes]
+apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+apps/015_config.py  # [8,026 tokens | 38,233 bytes]
+# imports/voice_synthesis.py  # To see how Piper checks its default state
+assets/pipulate.js  # To check if the browser is the culprit hoarding the state
+assets/init.js  # Additional frontend state checking
+server.py  # [55,727 tokens | 265,713 bytes]
+Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
+Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
+Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
+pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+pipulate/core.py  # To observe the wand.voice_controls() logic
+
+# imports/durable_backup_system.py  # To see how we can intercept or whitelist keys during a restore
 # AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
 # cli.py  # [5,092 tokens | 22,615 bytes]
-
 # requirements.in  # [573 tokens | 1,924 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
 
-# /home/mike/repos/Pipulate.com/index.md  # [2,352 tokens | 10,545 bytes]
 # __init__.py  # [357 tokens | 1,565 bytes]
 # .gitignore  # [571 tokens | 2,096 bytes]
 # flake.nix  # [8,352 tokens | 35,542 bytes]
@@ -87,14 +91,6 @@ assets/init.js  # Additional frontend state checking
 # Notebooks/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
 # Notebooks/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
 # flake.nix  # [8,011 tokens | 34,229 bytes]
-config.py  # [4,170 tokens | 16,184 bytes]
-pipulate/__init__.py  # [509 tokens | 2,135 bytes]
-pipulate/core.py  # [28,909 tokens | 140,289 bytes]
-imports/voice_synthesis.py  # [2,988 tokens | 14,728 bytes]
-Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
-Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
-Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
-apps/015_config.py  # [8,026 tokens | 38,233 bytes]
 # README.md  # [20,467 tokens | 103,208 bytes]
 
 # tools/mcp_tools.py  # [36,628 tokens | 186,793 bytes]
@@ -106,7 +102,6 @@ apps/015_config.py  # [8,026 tokens | 38,233 bytes]
 # tools/scraper_tools.py  # [4,644 tokens | 22,416 bytes]
 # imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 
-# pipulate/core.py  # [28,909 tokens | 140,289 bytes]
 # Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [40,765 tokens | 130,859 bytes]
 # Notebooks/imports/gap_analyzer_sauce.py  # [26,361 tokens | 116,988 bytes]
 
@@ -121,13 +116,6 @@ apps/015_config.py  # [8,026 tokens | 38,233 bytes]
 # assets/styles.css  # [18,671 tokens | 81,016 bytes]
 # assets/theme.js  # [930 tokens | 4,337 bytes]
 # assets/utils.js  # [3,125 tokens | 15,103 bytes]
-
-# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-# pipulate/core.py  # [27,171 tokens | 131,795 bytes]
-# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-# assets/pipulate.js  # [4,889 tokens | 24,977 bytes]
-# config.py  # [4,170 tokens | 16,184 bytes]
-# server.py  # [54,914 tokens | 261,916 bytes]
 
 # server.py  # [54,718 tokens | 261,069 bytes]
 # assets/init.js  # [2,303 tokens | 12,158 bytes]
