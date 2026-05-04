@@ -303,6 +303,7 @@ class Pipulate:
             if selected_local:
                 print(f"Excellent. Local model '{selected_local}' is active and ready.")
                 print(f"\n✅ Locked in Local Model: {selected_local}")
+                self.db['active_local_model'] = selected_local
             elif has_local:
                 print("I found local models, but not your preferred choices.")
                 print(f"\nℹ️  Preferred local models not found, but other local models are available.")
@@ -2811,9 +2812,9 @@ class Pipulate:
             # 3. Response Matrix
             if selected_local:
                 self.speak(f"Excellent. Local model '{selected_local}' is active and ready.")
+                self.db['active_local_model'] = selected_local
                 print(f"\n✅ Locked in Local Model: {selected_local}")
                 return selected_local
-                
             elif has_local:
                 primary_recommendation = prefs[0].split(':')[0] if prefs else "gemma4"
                 self.speak("I found Ollama, but not your preferred models. Please download one.")
@@ -2960,6 +2961,7 @@ class Pipulate:
             selected_cloud = "gemini-1.5-flash-latest" 
             
         print(f"☁️ Selected Cloud Model: {selected_cloud}")
+        self.db['active_cloud_model'] = selected_cloud
         
         # Map the selected model to its corresponding environment variable
         env_var_name = None
@@ -3012,6 +3014,9 @@ class Pipulate:
             # The data we want is locked inside the 'onboarding_01' pipeline record
             cursor.execute("SELECT data FROM pipeline WHERE pkey = 'onboarding_01'")
             result = cursor.fetchone()
+            cursor.execute("SELECT key, value FROM store WHERE key IN ('active_local_model', 'active_cloud_model')")
+            global_store_results = cursor.fetchall()
+            
             conn.close()
             
             if not result:
@@ -3021,31 +3026,27 @@ class Pipulate:
             onboarding_state = json.loads(result[0])
             
             # 4. The Transformation & Injection
-            # Map the extracted Jupyter state to the FastHTML global cookie state
             
-            # Extract Operator Name
+            # Extract Operator Name from pipeline state
             if 'operator_name' in onboarding_state:
                 self.db['operator_name'] = onboarding_state['operator_name']
                 logger.info(f"🧬 Injected Operator Name: {onboarding_state['operator_name']}")
                 
-                # Also secure it in the subconscious (AI Keychain)
+                # Secure it in the subconscious (AI Keychain)
                 try:
                     from imports.ai_dictdb import keychain_instance
                     keychain_instance['operator_name'] = onboarding_state['operator_name']
                 except Exception as e:
                     logger.warning(f"Could not inject to keychain: {e}")
 
-            # Extract Local AI Preference
-            if 'active_local_model' in onboarding_state:
-                self.db['active_local_model'] = onboarding_state['active_local_model']
-                self.active_local_model = onboarding_state['active_local_model']
-                logger.info(f"🧬 Injected Local AI: {onboarding_state['active_local_model']}")
-
-            # Extract Cloud AI Preference (If they used the formal API route in the notebook)
-            if 'active_cloud_model' in onboarding_state:
-                 self.db['active_cloud_model'] = onboarding_state['active_cloud_model']
-                 self.active_cloud_model = onboarding_state['active_cloud_model']
-                 logger.info(f"🧬 Injected Cloud AI: {onboarding_state['active_cloud_model']}")
+            # Extract AI Preferences from global store results
+            for key, value in global_store_results:
+                self.db[key] = value
+                if key == 'active_local_model':
+                    self.active_local_model = value
+                elif key == 'active_cloud_model':
+                    self.active_cloud_model = value
+                self.logger.info(f"🧬 Injected {key} from Jupyter store: {value}")
 
             # 5. Destroy the Sentinel (The airlock cycles once)
             if sentinel_path.exists():
