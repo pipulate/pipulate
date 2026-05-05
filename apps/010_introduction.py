@@ -69,11 +69,11 @@ class IntroductionPlugin:
         if step_id == 'step_01':
             # Check if we have an operator name (proof the airlock worked)
             operator_name = self.wand.db.get('operator_name')
-            
-            # Check if Configuration is complete
-            has_configured = bool(self.wand.db.get('active_local_model'))
+
+            # 🪄 THE FIX: Check the explicit finalization flag, not just the imported data
+            has_configured = self.wand.db.get('config_finalized') == 'true'
             dynamic_app_name = self.wand.get_config().APP_NAME
-            
+
             if not operator_name:
                 # 1. The Bouncer Persona (No data imported yet)
                 msg = (
