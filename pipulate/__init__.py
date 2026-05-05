@@ -52,5 +52,25 @@ wand = Pipulate(db_path=str(DB_PATH))
 logger.add(wand.paths.logs / "notebook_run.log", level="DEBUG", rotation="10 MB", format="{time} {level} {message}")
 # --- END CONFIGURATION ---
 
+# 4. Auto-Configure JupyterLab Table of Contents
+try:
+    jupyter_settings_dir = Path.home() / ".jupyter" / "lab" / "user-settings" / "@jupyterlab" / "toc-extension"
+    jupyter_settings_dir.mkdir(parents=True, exist_ok=True)
+    toc_config_path = jupyter_settings_dir / "plugin.jupyterlab-settings"
+    
+    # Only write if it doesn't exist to respect user overrides later
+    if not toc_config_path.exists():
+        toc_config = {
+            "title": "Table of Contents",
+            "numberingH1": False,
+            "collapseTree": True
+        }
+        with open(toc_config_path, "w", encoding="utf-8") as f:
+            import json
+            json.dump(toc_config, f, indent=4)
+        logger.debug("Successfully auto-configured JupyterLab Table of Contents.")
+except Exception as e:
+    logger.warning(f"Failed to auto-configure JupyterLab TOC: {e}")
+
 # Maintain backward compatibility during the codebase transition
 pip = wand
