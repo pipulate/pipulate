@@ -54,10 +54,13 @@ AI_PHOOEY_CHOP = """\
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
 
-prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
+imports/stream_orchestrator.py  # (The mid-stream catcher)
+imports/mcp_orchestrator.py  # (The tool dispatcher)
+
 # /home/mike/repos/Pipulate.com/index.md  # [2,352 tokens | 10,545 bytes]
 # assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
 # release.py  # [9,879 tokens | 44,440 bytes]
@@ -456,8 +459,6 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 # https://www.datacamp.com/tutorial/guide-to-autoresearch
 # !https://www.datacamp.com/tutorial/guide-to-autoresearch
 
-# imports/stream_orchestrator.py  # (The mid-stream catcher)
-# imports/mcp_orchestrator.py  # (The tool dispatcher)
 # pipulate/core.py  # (Where the actual mcp_pattern regex lives)
 
 # # HOW TO FIND MARKDOWN ACCEPTERS
@@ -843,12 +844,38 @@ CHOP_CHAPTER_DRAFTER = """\
 /home/mike/repos/bookforge/30_drafts/{target_chapter}_0_blueprint.md
 """
 
-CHOP_A11Y_VISION = """\
-# THE PHANTOM UI PARSERS (How the machine sees)
-# COMMAND: python prompt_foo.py --chop CHOP_A11Y_VISION --no-tree
+CHOP_ONBOARDING_HANDOFF = """\
+# THE AIRLOCK: FROM NOTEBOOK TO FASTHTML CONFIG
+# COMMAND: python prompt_foo.py --chop CHOP_ONBOARDING_HANDOFF --no-tree
 
-tools/dom_tools.py  # Let's see the summarize_accessibility_tree logic!
-tools/advanced_automation_tools.py  # The heavy lifter
+# 1. The State Origin (What the notebook saved)
+assets/nbs/Onboarding.ipynb  # [10,806 tokens | 36,733 bytes]
+assets/nbs/imports/onboard_sauce.py  # [12,663 tokens | 55,552 bytes]
+
+# 2. The Current Dead End (Where the user lands)
+apps/010_introduction.py  # [2,312 tokens | 10,298 bytes]
+
+# 3. The Target Destination (What needs pre-filling)
+apps/015_config.py  # [11,666 tokens | 54,593 bytes]
+
+# 4. The State Manager (How data moves between them)
+pipulate/core.py  # [29,724 tokens | 144,594 bytes]
+"""
+
+CHOP_WEBSOCKET_CRISIS = """\
+# THE SILENT SERVER: WEBSOCKET DEBUGGING
+# COMMAND: python prompt_foo.py --chop CHOP_WEBSOCKET_CRISIS --no-tree
+
+# 1. The Frontend Transmitters (Where the error originates)
+assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+assets/pipulate.js  # [5,574 tokens | 28,663 bytes]
+
+# 2. The Backend Receiver (Where the WebSocket connects)
+server.py  # [56,027 tokens | 267,108 bytes]
+
+# 3. The Orchestrators (Already provided, but good to keep in scope)
+imports/stream_orchestrator.py  # [1,163 tokens | 5,841 bytes]
+imports/mcp_orchestrator.py  # [772 tokens | 3,332 bytes]
 """
 
 # ============================================================================
