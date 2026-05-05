@@ -27,6 +27,18 @@ import logging
 # Silence the piper logger
 logging.getLogger("piper").setLevel(logging.ERROR)
 
+# Strong references for background asyncio tasks to prevent ipykernel garbage collection warnings
+_background_tasks = set()
+
+
+def fire_and_forget(coro):
+    """Safely executes an async task in the background without Jupyter garbage collecting it."""
+    task = asyncio.create_task(coro)
+    _background_tasks.add(task)
+    task.add_done_callback(_background_tasks.discard)
+    return task
+
+
 def title_name(word: str) -> str:
     """Format a string into a title case form."""
     if not word:
@@ -2092,7 +2104,7 @@ class Pipulate:
                     logger.info(f"🎯 MCP ACTIVATED: Found formal MCP tool call for '{tool_name}'")
                     
                     # Execute the formal MCP tool call
-                    asyncio.create_task(
+                    fire_and_forget(
                         execute_formal_mcp_tool_call(messages, tool_name, inner_content)
                     )
                     continue  
@@ -2105,7 +2117,7 @@ class Pipulate:
                     
                     logger.info(f"🔧 MCP CLIENT: Complete MCP tool call extracted.")
 
-                    asyncio.create_task(
+                    fire_and_forget(
                         execute_and_respond_to_tool_call(messages, mcp_block)
                     )
                     continue
