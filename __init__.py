@@ -12,8 +12,8 @@ Usage:
     pipulate
 """
 
-__version__ = "1.63"
-__version_description__ = "Onboarding Configurates"
+__version__ = "1.64"
+__version_description__ = "Mac Onboarding Focus"
 __email__ = "pipulate@gmail.com"
 __description__ = "A Notebook-inspired Hand-cranked Agentic Framework" 
 

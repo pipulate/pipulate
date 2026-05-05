@@ -68,6 +68,8 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
+__init__.py  # [357 tokens | 1,565 bytes]
+release.py  # [9,879 tokens | 44,440 bytes]
 config.py  # [4,170 tokens | 16,184 bytes]
 # server.py  # [55,727 tokens | 265,713 bytes]
 Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
@@ -80,7 +82,6 @@ apps/015_config.py  # [8,026 tokens | 38,233 bytes]
 
 # /home/mike/repos/Pipulate.com/index.md  # [2,352 tokens | 10,545 bytes]
 # assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
-# release.py  # [9,879 tokens | 44,440 bytes]
 # flake.nix  # [8,352 tokens | 35,542 bytes]
 
 # assets/pipulate.js  # [4,889 tokens | 24,977 bytes]
@@ -94,7 +95,6 @@ apps/015_config.py  # [8,026 tokens | 38,233 bytes]
 # requirements.in  # [573 tokens | 1,924 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
 
-# __init__.py  # [357 tokens | 1,565 bytes]
 # .gitignore  # [571 tokens | 2,096 bytes]
 # flake.nix  # [8,352 tokens | 35,542 bytes]
 
