@@ -12,10 +12,10 @@ Usage:
     pipulate
 """
 
-__version__ = "1.62"
-__version_description__ = "Simplified Installer"
+__version__ = "1.63"
+__version_description__ = "Onboarding Configurates"
 __email__ = "pipulate@gmail.com"
-__description__ = "FastHTML Live-reload Proxied" 
+__description__ = "A Notebook-inspired Hand-cranked Agentic Framework" 
 
 # Pipulate - Local-First AI SEO Software
 # Copyright (C) 2026 Mike Levin

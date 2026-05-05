@@ -5,11 +5,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "pipulate"
 # VERSION NOTE: Synced from pipulate/__init__.py.__version__ via python version_sync.py
-version = "1.62"
+version = "1.63"
 authors = [
   { name="Mike Levin", email="pipulate@gmail.com" },
 ]
-description = "FastHTML Live-reload Proxied"
+description = "A Notebook-inspired Hand-cranked Agentic Framework"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.8"
