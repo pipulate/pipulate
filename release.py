@@ -133,27 +133,6 @@ def run_version_sync():
         print(f"⚠️  Version sync failed: {e}")
         return False
 
-def run_ascii_art_sync():
-    """Runs the ASCII art documentation synchronization and captures statistics."""
-    print("\n📚 Step 2: Synchronizing ASCII art documentation...")
-    ascii_sync_script = PIPULATE_ROOT / "scripts" / "release" / "sync_ascii_art.py"
-    if not ascii_sync_script.exists():
-        print("❌ sync_ascii_art.py not found, skipping documentation sync")
-        return False, None
-    
-    try:
-        result = run_command([".venv/bin/python", str(ascii_sync_script)], capture=True)
-        output = result.stdout
-        
-        # Parse statistics from output
-        stats = parse_ascii_art_stats(output)
-        
-        print("✅ ASCII art documentation synchronization complete")
-        return True, stats
-    except Exception as e:
-        print(f"⚠️  Documentation sync failed: {e}")
-        return False, None
-
 def parse_ascii_art_stats(output):
     """Parse ASCII art synchronization statistics from output."""
     stats = {
@@ -937,15 +916,9 @@ def main():
         print("\n⏭️  Skipping version synchronization (--skip-version-sync)")
         version_sync_success = True
     
-    # Step 2: Documentation Synchronization  
-    if not args.skip_docs_sync:
-        docs_sync_success, ascii_art_stats = run_ascii_art_sync()
-        if ascii_art_stats:
-            display_ascii_art_stats(ascii_art_stats)
-    else:
-        print("\n⏭️  Skipping documentation synchronization (--skip-docs-sync)")
-        docs_sync_success = True
-        ascii_art_stats = None
+    print("\n⏭️  Skipping documentation synchronization (--skip-docs-sync)")
+    docs_sync_success = True
+    ascii_art_stats = None
     
     # Step 3: Install.sh Synchronization
     if not args.skip_install_sh_sync:
