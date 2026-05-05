@@ -251,16 +251,16 @@ apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
 # scripts/articles/conceptual_integrity.py  # [550 tokens | 2,404 bytes]
 
 # CHAPTER 19: THE NIXOS FOUNDATION
-# /home/mike/repos/nixos/ai-acceleration.nix  # [525 tokens | 2,069 bytes]
-# /home/mike/repos/nixos/ai.py  # [591 tokens | 2,814 bytes]
-# /home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
-# /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
-# /home/mike/repos/nixos/flatnotes.nix  # [760 tokens | 2,497 bytes]
+/home/mike/repos/nixos/ai.py  # [591 tokens | 2,814 bytes]
+/home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
+/home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
+/home/mike/repos/nixos/ai-acceleration.nix  # [525 tokens | 2,069 bytes]
+/home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
 # /home/mike/repos/nixos/hardware-configuration.nix  # [404 tokens | 1,438 bytes]
-# /home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
+/home/mike/repos/nixos/packages.nix  # [773 tokens | 2,699 bytes]
+/home/mike/repos/nixos/services.nix  # [1,457 tokens | 5,559 bytes]
+# /home/mike/repos/nixos/flatnotes.nix  # [760 tokens | 2,497 bytes]
 # /home/mike/repos/nixos/openclaw.nix  # [435 tokens | 1,573 bytes]
-# /home/mike/repos/nixos/packages.nix  # [773 tokens | 2,699 bytes]
-# /home/mike/repos/nixos/services.nix  # [1,457 tokens | 5,559 bytes]
 """
 
 # ============================================================================

@@ -627,7 +627,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias lsp='ls -d -1 "$PWD"/*'
           alias p='cd ~/repos/pipulate'
           alias foo='python prompt_foo.py --no-tree'
-          alias fu='python prompt_foo.py --no-tree'
+          alias fu='python prompt_foo.py'
+          alias chop='nvim foo_files.py'
 
           if [ "$EFFECTIVE_OS" = "darwin" ]; then
             alias xc='pbcopy <'
