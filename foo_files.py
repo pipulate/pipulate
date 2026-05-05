@@ -53,6 +53,7 @@
 # - Stop `foo_files.py` edits from causing Watchdog restarts
 # - More immediate feedback and "scroll-to-bottom" when entering text in chat
 # - A spinner for Notebook steps like downloading gemma4. Are there spinner start & stop challenges in Notebooks?
+# - Move the Configuration app to be under the poke gear flyout (remove APP menu role)
 
 AI_PHOOEY_CHOP = """\
 # # USEFUL INITIALIZATION
@@ -68,17 +69,20 @@ foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
 
-__init__.py  # [357 tokens | 1,565 bytes]
-release.py  # [9,879 tokens | 44,440 bytes]
-config.py  # [4,170 tokens | 16,184 bytes]
-# server.py  # [55,727 tokens | 265,713 bytes]
-Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
-Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
-Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
-pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-pipulate/core.py  # [29,724 tokens | 144,594 bytes]
+assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
 apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-apps/015_config.py  # [8,026 tokens | 38,233 bytes]
+
+# __init__.py  # [357 tokens | 1,565 bytes]
+# release.py  # [9,879 tokens | 44,440 bytes]
+# config.py  # [4,170 tokens | 16,184 bytes]
+# # server.py  # [55,727 tokens | 265,713 bytes]
+# Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
+# Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
+# Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
+# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+# pipulate/core.py  # [29,724 tokens | 144,594 bytes]
+# apps/015_config.py  # [8,026 tokens | 38,233 bytes]
 
 # /home/mike/repos/Pipulate.com/index.md  # [2,352 tokens | 10,545 bytes]
 # assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
@@ -133,8 +137,6 @@ apps/015_config.py  # [8,026 tokens | 38,233 bytes]
 # assets/styles.css  # [18,671 tokens | 81,016 bytes]
 # assets/theme.js  # [930 tokens | 4,337 bytes]
 # assets/utils.js  # [3,125 tokens | 15,103 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
 # apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
 # assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
 
