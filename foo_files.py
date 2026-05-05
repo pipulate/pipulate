@@ -51,6 +51,15 @@ AI_PHOOEY_CHOP = """\
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 foo_files.py  # [4,028 tokens | 15,548 bytes]
 
+config.py  # [4,170 tokens | 16,184 bytes]
+# server.py  # [56,027 tokens | 267,108 bytes]
+pipulate/__init__.py  # [721 tokens | 2,998 bytes]
+pipulate/core.py  # [29,804 tokens | 144,977 bytes]
+scripts/articles/list_models.py  # [102 tokens | 391 bytes]
+apps/015_config.py  # [11,858 tokens | 55,451 bytes]
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+ai_edit.py  # [2,296 tokens | 10,210 bytes]
+
 # tools/__init__.py  # [464 tokens | 2,067 bytes]
 # assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
 # assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
@@ -86,9 +95,9 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT)
-# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-# pipulate/core.py  # [29,804 tokens | 144,977 bytes]
+pipulate/__init__.py  # [721 tokens | 2,998 bytes]
+pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+pipulate/core.py  # [29,804 tokens | 144,977 bytes]
 # imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
 
 # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS)
@@ -130,7 +139,7 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]
 # CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS)
 # imports/crud.py  # [7,365 tokens | 35,666 bytes]
 # imports/voice_synthesis.py  # [3,133 tokens | 15,477 bytes]
-# apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
+apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
 # apps/015_config.py  # [11,858 tokens | 55,451 bytes]
 # apps/020_profiles.py  # [4,023 tokens | 18,493 bytes]
 # apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
@@ -257,7 +266,7 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]
 
 # CHAPTER 19: THE NIXOS FOUNDATION
 # /home/mike/repos/nixos/ai.py  # [591 tokens | 2,814 bytes]
-/home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
+# /home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
 # /home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
 # /home/mike/repos/nixos/ai-acceleration.nix  # [525 tokens | 2,069 bytes]
 # /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
@@ -467,7 +476,6 @@ pipulate/core.py
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
 # scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
-# scripts/articles/list_models.py  # [102 tokens | 391 bytes]
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # scripts/articles/other/make_article.py  # [1,513 tokens | 6,559 bytes]
 # scripts/articles/scrub_tags.py  # [358 tokens | 1,587 bytes]
