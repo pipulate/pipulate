@@ -3181,10 +3181,11 @@ def redirect_handler(request):
         prompt = read_training(message)
         append_to_conversation(prompt, role='system')
 
-        # Always set temp_message for redirects - this is legitimate navigation
-        # The coordination system will prevent race condition duplicates in other pathways
-        pipulate.db['temp_message'] = message
-        logger.debug(f"Set temp_message for redirect to: {path}")
+        # FIX: We no longer set 'temp_message' for standard redirects.
+        # The send_delayed_endpoint_message in the home() route handles
+        # initial page-load greetings perfectly. Setting temp_message here
+        # causes player-piano.js to echo it back over the WebSocket.
+        logger.debug(f"Prepared endpoint message for {path}. Skipping temp_message to prevent echo.")
 
     build_endpoint_training(path)
     return Redirect(f'/{path}')
