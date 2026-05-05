@@ -45,6 +45,14 @@
 # contents is added as are clear delimiters. And if a Python file is included,
 # it gets UML-diagrams and a file-tree. Refer to `prompt_foo.py` for more.
 
+# TO-DO List
+# - Implement Color ASCII Art with `wand.figurate()`
+# - Fix robots.txt link under Parameter Buster
+# - Make Parameter Buster & Link Graph Visualizer auto-assemble from WET Workflow Workshop tools
+# - Speed up GAPalyzer. Polars? Dask?
+# - Stopping `foo_files.py` edits from causing Watchdog restarts
+# - More immediate feedback and "scroll-to-bottom" when entering text in chat
+
 AI_PHOOEY_CHOP = """\
 # # USEFUL INITIALIZATION
 # README.md  # [20,467 tokens | 103,208 bytes]
@@ -54,7 +62,7 @@ AI_PHOOEY_CHOP = """\
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
 
-# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF

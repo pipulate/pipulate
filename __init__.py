@@ -12,10 +12,10 @@ Usage:
     pipulate
 """
 
-__version__ = "1.61"
+__version__ = "1.62"
 __version_description__ = "Simplified Installer"
 __email__ = "pipulate@gmail.com"
-__description__ = "Local First AI SEO Software" 
+__description__ = "FastHTML Live-reload Proxied" 
 
 # Pipulate - Local-First AI SEO Software
 # Copyright (C) 2026 Mike Levin
