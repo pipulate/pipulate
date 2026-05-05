@@ -626,15 +626,19 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias vim='nvim'
           alias lsp='ls -d -1 "$PWD"/*'
           alias p='cd ~/repos/pipulate'
+          alias foo='python prompt_foo.py --no-tree'
+          alias fu='python prompt_foo.py --no-tree'
 
           if [ "$EFFECTIVE_OS" = "darwin" ]; then
             alias xc='pbcopy <'
             alias xcp='pbcopy'
             alias xv='pbpaste >'
+            alias prompt='pbpaste >prompt.md'
           else
             alias xc='xclip -selection clipboard <'
             alias xcp='xclip -selection clipboard'
             alias xv='xclip -selection clipboard -o >'
+            alias prompt='xclip -selection clipboard -o >prompt.md'
           fi
           # Update remote URL to use SSH if we have a key
           if [ -d .git ] && [ -f ~/.ssh/id_rsa ]; then
