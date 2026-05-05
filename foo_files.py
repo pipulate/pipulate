@@ -66,24 +66,22 @@ prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
-imports/stream_orchestrator.py  # (The mid-stream catcher)
-imports/mcp_orchestrator.py  # (The tool dispatcher)
 
 # /home/mike/repos/Pipulate.com/index.md  # [2,352 tokens | 10,545 bytes]
 # assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
 # release.py  # [9,879 tokens | 44,440 bytes]
 # flake.nix  # [8,352 tokens | 35,542 bytes]
 
-# apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
-# apps/015_config.py  # [8,026 tokens | 38,233 bytes]
-# server.py  # [55,727 tokens | 265,713 bytes]
-# Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
-# Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
-# Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
-# pipulate/__init__.py  # [433 tokens | 1,803 bytes]
-# pipulate/core.py  # To observe the wand.voice_controls() logic
+config.py  # [4,170 tokens | 16,184 bytes]
+server.py  # [55,727 tokens | 265,713 bytes]
+Notebooks/imports/core_sauce.py  # [8,939 tokens | 39,023 bytes]
+Notebooks/imports/onboard_sauce.py  # [8,939 tokens | 39,023 bytes]
+Notebooks/Onboarding.ipynb  # [17,430 tokens | 61,080 bytes]
+pipulate/__init__.py  # [433 tokens | 1,803 bytes]
+pipulate/core.py  # To observe the wand.voice_controls() logic
+apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
+apps/015_config.py  # [8,026 tokens | 38,233 bytes]
 
-# config.py  # [4,170 tokens | 16,184 bytes]
 # assets/pipulate.js  # [4,889 tokens | 24,977 bytes]
 # imports/voice_synthesis.py  # To see how Piper checks its default state
 # assets/pipulate.js  # To check if the browser is the culprit hoarding the state
@@ -106,11 +104,11 @@ imports/mcp_orchestrator.py  # (The tool dispatcher)
 # README.md  # [20,467 tokens | 103,208 bytes]
 
 # tools/mcp_tools.py  # [36,628 tokens | 186,793 bytes]
-# tools/stream_orchestrator.py
-# tools/mcp_orchestrator.py
+# imports/stream_orchestrator.py  # [1,163 tokens | 5,841 bytes]
+
+# imports/mcp_orchestrator.py  # [772 tokens | 3,332 bytes]
 # imports/crud.py  # [7,365 tokens | 35,666 bytes]
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
-# imports/conversation_backup_system.py
 # tools/scraper_tools.py  # [4,644 tokens | 22,416 bytes]
 # imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 
