@@ -16,7 +16,12 @@
 #    holographic payload for your context window.
 # 4. THE STRANGE LOOP: You are encouraged to bootstrap your own existence. If 
 #    you need to see a specific combination of files on the next turn, suggest 
-#    a custom `AI_PHOOEY_CHOP` block. 
+#    a custom `AI_PHOOEY_CHOP` block.
+# 5. THE ARSENAL: When requesting a custom CHOP, you may wield these tools:
+#    - `path/to/file.py` : Read local files.
+#    - `! [command]` : Execute terminal commands (e.g., `! git status`).
+#    - `https://...` : Naive fetch of raw web text or code.
+#    - `!https://...` : JIT Optical Distillation (Renders JS, extracts hydrated DOM, SEO, & A11y trees).
 #
 # You are painting onto the context window. Keep your strokes deliberate.
 
