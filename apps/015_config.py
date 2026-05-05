@@ -577,7 +577,9 @@ You're here to make the workflow concepts accessible and help users understand t
 
         # Phase 3: Input Phase - Show input form
         else:
-            display_value = user_val if step.refill and user_val else await self.get_suggestion(step_id, state)
+            # 🪄 SURPRISE & DELIGHT: Pull global state if local workflow state is empty
+            global_name = self.wand.db.get('operator_name', '')
+            display_value = user_val if (step.refill and user_val) else (global_name or await self.get_suggestion(step_id, state))
             form_msg = f'{self.ui["EMOJIS"]["INPUT_FORM"]} Showing name input form. No name has been entered yet.'
             await self.message_queue.add(wand, form_msg, verbatim=True)
             await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
@@ -744,8 +746,10 @@ You're here to make the workflow concepts accessible and help users understand t
 
         # Phase 3: Input Phase - Show input form
         else:
-            # Fallback to the system default if they haven't selected one yet
-            display_value = user_val if step.refill and user_val else self.wand.get_config().DEFAULT_PROMPT_MODEL
+            # 🪄 SURPRISE & DELIGHT: Pull local model from global state if available
+            global_model = self.wand.db.get('active_local_model', '')
+            fallback_model = global_model or self.wand.get_config().DEFAULT_PROMPT_MODEL
+            display_value = user_val if (step.refill and user_val) else fallback_model
             
             await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
             explanation = "Select your local edge model (for privacy and unlimited use). The general contractor of your machine."
@@ -887,6 +891,10 @@ You're here to make the workflow concepts accessible and help users understand t
             
             if step.refill and current_value:
                 refill_model = current_value.get('model', '')
+
+            # 🪄 SURPRISE & DELIGHT: Fallback to global state
+            if not refill_model:
+                refill_model = self.wand.db.get('active_cloud_model', '')
                 
                 # CRITICAL: We cannot refill the password field with the obfuscated 
                 # key from the pipeline state. We must fetch the raw key from the Vault.
