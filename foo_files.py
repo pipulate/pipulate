@@ -54,14 +54,14 @@ AI_PHOOEY_CHOP = """\
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # .gitignore  # [573 tokens | 2,089 bytes]
 
-# prompt_foo.py  # [12,990 tokens | 59,609 bytes]
+prompt_foo.py  # [12,990 tokens | 59,609 bytes]
 foo_files.py  # [10,245 tokens | 33,406 bytes]
 
 # AD HOC STUFF
-/home/mike/repos/Pipulate.com/index.md  # [2,352 tokens | 10,545 bytes]
-assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
-release.py  # [9,879 tokens | 44,440 bytes]
-flake.nix  # [8,352 tokens | 35,542 bytes]
+# /home/mike/repos/Pipulate.com/index.md  # [2,352 tokens | 10,545 bytes]
+# assets/installer/install.sh  # [2,527 tokens | 10,174 bytes]
+# release.py  # [9,879 tokens | 44,440 bytes]
+# flake.nix  # [8,352 tokens | 35,542 bytes]
 
 # apps/010_introduction.py  # [1,846 tokens | 8,090 bytes]
 # apps/015_config.py  # [8,026 tokens | 38,233 bytes]
@@ -128,8 +128,6 @@ flake.nix  # [8,352 tokens | 35,542 bytes]
 # apps/040_hello_workflow.py  # [7,810 tokens | 37,204 bytes]
 # assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
 
-# apps/121_link_graph_v2.py  # [54,150 tokens | 280,523 bytes]
-
 # apps/200_workflow_genesis.py  # [12,397 tokens | 59,508 bytes]
 # apps/110_parameter_buster.py  # [55,573 tokens | 274,005 bytes]
 # apps/120_link_graph.py  # [54,349 tokens | 272,468 bytes]
@@ -184,9 +182,6 @@ flake.nix  # [8,352 tokens | 35,542 bytes]
 # Notebooks/data/jobs/onboarding_01/compiled_payload.md  # [5,027 tokens | 13,431 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
 
-# /home/mike/repos/pipulate/Notebooks/browser_cache/www.google.com/%2F/diff_simple_dom.txt  # [2,701 tokens | 7,756 bytes]
-# /home/mike/repos/pipulate/Notebooks/data/jobs/onboarding_01/cloud_prompt.md  # [527 tokens | 2,904 bytes]
-
 # config.py  # [4,177 tokens | 16,201 bytes]
 # apps/240_simon_mcp.py  # [8,886 tokens | 44,543 bytes]
 
@@ -201,30 +196,6 @@ flake.nix  # [8,352 tokens | 35,542 bytes]
 # server.py  # [54,246 tokens | 258,931 bytes]
 # imports/server_logging.py  # [6,539 tokens | 30,517 bytes]
 # /home/mike/repos/pipulate/Notebooks/Deliverables/onboarding_job/mikelev_in_Technical_Baseline.xlsx
-
-# # /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/accessibility_tree.json  # [443,389 tokens | 1,827,049 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/accessibility_tree_summary.txt  # [39,340 tokens | 156,824 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/diff_boxes.html  # [584 tokens | 3,846 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/diff_boxes.txt  # [171 tokens | 2,103 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/diff_hierarchy.html  # [692 tokens | 3,387 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/diff_hierarchy.txt  # [187 tokens | 724 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/diff_simple.html  # [778 tokens | 5,135 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/diff_simple.txt  # [136 tokens | 446 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/headers.json  # [160 tokens | 414 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/hydrated_dom_hierarchy.html  # [8,247 tokens | 26,108 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/hydrated_dom_hierarchy.txt  # [3,013 tokens | 11,983 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/hydrated_dom_layout_boxes.html  # [5,308 tokens | 32,593 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/hydrated_dom_layout_boxes.txt  # [3,123 tokens | 26,376 bytes]
-# # /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/rendered_dom.html  # [194,857 tokens | 538,558 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/seo.md  # [26,417 tokens | 100,614 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/simple_hydrated.html  # [3,246 tokens | 12,248 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/simple_source.html  # [3,250 tokens | 12,260 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/source_dom_hierarchy.html  # [8,247 tokens | 26,104 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/source_dom_hierarchy.txt  # [3,012 tokens | 11,979 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/source_dom_layout_boxes.html  # [5,349 tokens | 32,846 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/source_dom_layout_boxes.txt  # [3,137 tokens | 26,547 bytes]
-# /home/mike/repos/pipulate/Notebooks/browser_cache/mikelev.in/%2F/source.html  # [6,496 tokens | 25,409 bytes]
- 
 
 # scripts/articles/articleizer.py  # [2,936 tokens | 13,517 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [5,061 tokens | 22,697 bytes]
