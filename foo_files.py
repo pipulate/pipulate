@@ -158,21 +158,21 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]
 # ============================================================================
 
 # CHAPTER 10: BOTIFY SUITE & TRIFECTA MONOLITH
-ai_edit.py  # [2,296 tokens | 10,210 bytes]
+# ai_edit.py  # [2,296 tokens | 10,210 bytes]
 # scripts/workflow/WORKFLOW_DEVELOPMENT_GUIDE.md  # [4,283 tokens | 20,359 bytes]
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
 # apps/100_connect_with_botify.py  # [4,492 tokens | 22,616 bytes]
 # apps/240_simon_mcp.py  # [8,886 tokens | 44,543 bytes]
-apps/200_workflow_genesis.py  # [12,397 tokens | 59,509 bytes]
-scripts/workflow/splice_workflow_step.py  # [5,028 tokens | 21,917 bytes]
-scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
-scripts/workflow/create_workflow.py  # [3,683 tokens | 16,394 bytes]
-scripts/workflow/manage_class_attributes.py  # [2,678 tokens | 12,795 bytes]
-scripts/workflow/update_template_config.py  # [1,671 tokens | 8,381 bytes]
-scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
-apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
+# apps/200_workflow_genesis.py  # [12,397 tokens | 59,509 bytes]
+# scripts/workflow/splice_workflow_step.py  # [5,028 tokens | 21,917 bytes]
+# scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
+# scripts/workflow/create_workflow.py  # [3,683 tokens | 16,394 bytes]
+# scripts/workflow/manage_class_attributes.py  # [2,678 tokens | 12,795 bytes]
+# scripts/workflow/update_template_config.py  # [1,671 tokens | 8,381 bytes]
+# scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
+# apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
 # imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
 # apps/400_botify_trifecta.py  # [53,083 tokens | 275,728 bytes]
 
@@ -200,12 +200,17 @@ apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
 
 # CHAPTER 14: JEKYLL PUBLISHING
 # /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
-# scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
-# scripts/articles/common.py  # [952 tokens | 3,894 bytes]
-# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # /home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
-# scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
+# scripts/articles/common.py  # [952 tokens | 3,894 bytes]
+# scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
+# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
 # scripts/articles/contextualizer.py  # [2,519 tokens | 11,151 bytes]
+# scripts/articles/build_knowledge_graph.py  # [4,341 tokens | 17,300 bytes]
+# scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
+# scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
+# scripts/articles/generate_redirects.py  # [2,233 tokens | 9,255 bytes]
+# scripts/articles/sanitize_redirects.py  # [684 tokens | 2,935 bytes]
+# scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
 
 # ============================================================================
 # VI. THE HONEYBOT OBSERVATORY (Live Telemetry)
@@ -251,14 +256,14 @@ apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
 # scripts/articles/conceptual_integrity.py  # [550 tokens | 2,404 bytes]
 
 # CHAPTER 19: THE NIXOS FOUNDATION
-/home/mike/repos/nixos/ai.py  # [591 tokens | 2,814 bytes]
+# /home/mike/repos/nixos/ai.py  # [591 tokens | 2,814 bytes]
 /home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
-/home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
-/home/mike/repos/nixos/ai-acceleration.nix  # [525 tokens | 2,069 bytes]
-/home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
+# /home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
+# /home/mike/repos/nixos/ai-acceleration.nix  # [525 tokens | 2,069 bytes]
+# /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
 # /home/mike/repos/nixos/hardware-configuration.nix  # [404 tokens | 1,438 bytes]
-/home/mike/repos/nixos/packages.nix  # [773 tokens | 2,699 bytes]
-/home/mike/repos/nixos/services.nix  # [1,457 tokens | 5,559 bytes]
+# /home/mike/repos/nixos/packages.nix  # [773 tokens | 2,699 bytes]
+# /home/mike/repos/nixos/services.nix  # [1,457 tokens | 5,559 bytes]
 # /home/mike/repos/nixos/flatnotes.nix  # [760 tokens | 2,497 bytes]
 # /home/mike/repos/nixos/openclaw.nix  # [435 tokens | 1,573 bytes]
 """
@@ -280,7 +285,6 @@ CHOP_404_AFFAIR = """\
 # /home/mike/repos/trimnoir/_raw_map.csv
 # /home/mike/repos/trimnoir/_redirects.map
 # scripts/articles/extract_404_ghosts.py
-# scripts/articles/generate_redirects.py
 # scripts/articles/common.py
 ! python scripts/articles/extract_404_ghosts.py
 """
@@ -455,21 +459,17 @@ pipulate/core.py
 # scripts/articles/build_book_passes.py  # [535 tokens | 2,210 bytes]
 # scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
-# scripts/articles/build_knowledge_graph.py  # [4,341 tokens | 17,300 bytes]
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
 # scripts/articles/consolidate_chapter_data.py  # [731 tokens | 3,819 bytes]
 # scripts/articles/diagramizer.py  # [1,912 tokens | 8,193 bytes]
 # scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
 # scripts/articles/execute_massive_prompt.py  # [491 tokens | 2,209 bytes]
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
-# scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
-# scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
 # scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
 # scripts/articles/list_models.py  # [102 tokens | 391 bytes]
+# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # scripts/articles/other/make_article.py  # [1,513 tokens | 6,559 bytes]
-# scripts/articles/sanitize_redirects.py  # [684 tokens | 2,935 bytes]
-# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
 # scripts/articles/scrub_tags.py  # [358 tokens | 1,587 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
 # scripts/audit_dye.py  # [256 tokens | 1,009 bytes]
