@@ -45,13 +45,14 @@
 # contents is added as are clear delimiters. And if a Python file is included,
 # it gets UML-diagrams and a file-tree. Refer to `prompt_foo.py` for more.
 
-# TO-DO List
+# TODO List
 # - Implement Color ASCII Art with `wand.figurate()`
 # - Fix robots.txt link under Parameter Buster
 # - Make Parameter Buster & Link Graph Visualizer auto-assemble from WET Workflow Workshop tools
 # - Speed up GAPalyzer. Polars? Dask?
-# - Stopping `foo_files.py` edits from causing Watchdog restarts
+# - Stop `foo_files.py` edits from causing Watchdog restarts
 # - More immediate feedback and "scroll-to-bottom" when entering text in chat
+# - A spinner for Notebook steps like downloading gemma4. Are there spinner start & stop challenges in Notebooks?
 
 AI_PHOOEY_CHOP = """\
 # # USEFUL INITIALIZATION
