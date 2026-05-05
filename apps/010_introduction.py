@@ -71,6 +71,7 @@ class IntroductionPlugin:
             operator_name = self.wand.db.get('operator_name')
 
             # 🪄 THE FIX: Check the explicit finalization flag, not just the imported data
+            has_local_model = bool(self.wand.db.get('active_local_model'))
             has_configured = self.wand.db.get('config_finalized') == 'true'
             dynamic_app_name = self.wand.get_config().APP_NAME
 
@@ -84,15 +85,15 @@ class IntroductionPlugin:
                 )
                 return "Access Denied 🛑", msg, None
 
-            elif not has_configured:
-                # This state might not be reachable if the airlock pulled everything perfectly, 
-                # but it's safe to keep as a fallback.
+            elif not has_local_model and not has_configured:
+                # 2. The Setup Phase
                 msg = f"Welcome to {dynamic_app_name}, {operator_name}. I am Chip O'Theseus. You have not yet set up your local AI capabilities. Please visit Ollama.com."
                 return "Welcome", msg, 'step_02'
                 
             else:
                 # 3. The Veteran Persona (Airlock successful)
-                msg = f"Welcome back to {dynamic_app_name}, {operator_name}. All systems are online and ready. Your local AI engine is locked to {self.wand.db.get('active_local_model')}."
+                active_model = self.wand.db.get('active_local_model', 'an external provider')
+                msg = f"Welcome back to {dynamic_app_name}, {operator_name}. All systems are online and ready. Your primary cognitive engine is locked to {active_model}."
                 return "Dashboard Ready ✅", msg, None
                 
         elif step_id == 'step_02':
