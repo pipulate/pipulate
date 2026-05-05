@@ -615,7 +615,9 @@ def conduct_local_assessment(job_id: str, target_url: str, local_model_id: str):
 
     # 1. Prepare the AI directives
     system_prompt, user_prompt = build_local_optics_prompt(target_url)
-    wand.speak(f"Channeling local intent through {local_model_id} to deduce the brand and target keyword. /nThis will add a tab to your Excel file. Please have patience...")
+    wand.speak(f"Channeling local intent through {local_model_id} to deduce the brand and target keyword. \n"
+               "Please have patience. We're connecting to your local AI for the first time...")
+
 
     # 2. Execute the local prompt (Kept front-and-center for the user to see)
     ai_assessment = wand.prompt(
@@ -730,7 +732,7 @@ def render_persona_selector(job_id: str = "onboarding_job"):
     persona_widget = widgets.RadioButtons(
         options=[
             ('👔 The Enterprise Consultant (Strict, analytical, buttoned-up)', 'enterprise'),
-            ('🎭 Statler & Waldorf (Ruthless heckling from the balcony)', 'muppets')
+            ('😝 Statler & Waldorf (Ruthless heckling from the balcony)', 'muppets')
         ],
         value=existing_choice,
         layout={'width': 'max-content'}
@@ -1244,7 +1246,7 @@ def compile_cloud_payload(job_id: str, target_url: str) -> str:
     return final_payload
 
 
-def execute_cloud_analysis(job_id: str, recovered_url: str, active_cloud_model: str):
+def execute_cloud_analysis(job_id: str, recovered_url: str, active_cloud_model: str, key_ready: bool = True):
     """
     Checks for a manual response, falls back to the API with exponential backoff, 
     renders the output via Rich, and injects the final assessment into the Excel baseline.
@@ -1263,6 +1265,11 @@ def execute_cloud_analysis(job_id: str, recovered_url: str, active_cloud_model: 
         wand.speak("Manual response detected in the paste bin. Bypassing the metered API.")
         final_analysis = manual_response
         active_model_used = "Manual Web UI Paste"
+    elif not key_ready:
+        # 🪄 THE FIX: Graceful bypass if no key was provided
+        wand.speak("No Cloud API key was provided. Skipping formal API execution.")
+        final_analysis = "⚠️ Cloud Analysis Skipped: No API Key provided for formal execution. You can still use the manual paste bin above."
+        active_model_used = "Skipped"
     else:
         wand.speak(f"No manual response detected. Engaging formal API via {active_cloud_model}...")
         payload = compile_cloud_payload(job_id, recovered_url)
