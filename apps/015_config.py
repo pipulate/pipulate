@@ -1163,6 +1163,15 @@ You're here to make the workflow concepts accessible and help users understand t
             await self.message_queue.add(pip, self.step_messages['finalize']['ready'], verbatim=True)
         
         widget = Pre(display_text, cls="code-block-container")
+
+        if pip.check_finalize_needed(step_index, steps):
+            await self.message_queue.add(pip, self.step_messages['finalize']['ready'], verbatim=True)
+        
+        # 🪄 LOCK THE LIMBO STATE: Broadcast that config is formally complete
+        self.wand.db['config_finalized'] = 'true'
+        
+        widget = Pre(display_text, cls="code-block-container")
+
         return Div(
             pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f"{step.show}: Complete", widget=widget, steps=steps),
             Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
