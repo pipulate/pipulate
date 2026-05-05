@@ -658,4 +658,10 @@ function setupMenuFlashFeedback() {
     
     // Ensure the prototype chain remains intact for other scripts
     window.WebSocket.prototype = OriginalWebSocket.prototype;
+    
+    // 🛡️ RESTORE STATIC CONSTANTS: Prevent 1 === undefined transmission failures
+    window.WebSocket.CONNECTING = OriginalWebSocket.CONNECTING; // 0
+    window.WebSocket.OPEN = OriginalWebSocket.OPEN;             // 1
+    window.WebSocket.CLOSING = OriginalWebSocket.CLOSING;       // 2
+    window.WebSocket.CLOSED = OriginalWebSocket.CLOSED;         // 3
 })();
