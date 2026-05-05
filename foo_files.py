@@ -46,7 +46,14 @@ AI_PHOOEY_CHOP = """\
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 foo_files.py  # [4,028 tokens | 15,548 bytes]
 
-! git show bb7d4a6897124d195bd4c7aa64823222e11ecc66:foo_files.py
+tools/__init__.py  # [464 tokens | 2,067 bytes]
+assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
+assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
+assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
+tools/llm_optics.py  # [2,829 tokens | 12,322 bytes]
+tools/scraper_tools.py  # [4,644 tokens | 22,416 bytes]
+pipulate/__init__.py  # [721 tokens | 2,998 bytes]
+pipulate/core.py  # [29,804 tokens | 144,977 bytes]
 
 # Brand new query to figure out what user agents request markdown from what sources.
 # ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
@@ -396,7 +403,6 @@ pipulate/core.py
 # assets/js/split.js  # [6,166 tokens | 29,959 bytes]
 # assets/js/surreal.js  # [3,812 tokens | 13,432 bytes]
 # assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
-# assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
 # assets/nbs/imports/faq_writer_sauce.py  # [6,006 tokens | 26,636 bytes]
 # assets/nbs/imports/gap_analyzer_sauce.py  # [26,420 tokens | 116,412 bytes]
 # assets/nbs/imports/url_inspect_sauce.py  # [3,542 tokens | 16,202 bytes]
