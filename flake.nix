@@ -630,6 +630,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias fu='python prompt_foo.py'
           alias chop='nvim foo_files.py'
           alias story='python prompt_foo.py -l [:] --no-tree'
+          alias latest='python prompt_foo.py -a [-1:] --no-tree'
 
           if [ "$EFFECTIVE_OS" = "darwin" ]; then
             alias xc='pbcopy <'
