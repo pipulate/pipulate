@@ -197,7 +197,7 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port):
     print("Collect new 404s: python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree")
 
     # --- NEW: Construct Preview URL and Copy to Clipboard ---
-    local_url = f"http://127.0.0.1:{preview_port}{permalink}"
+    local_url = f"http://localhost:{preview_port}{permalink}"
     try:
         import subprocess
         subprocess.run(

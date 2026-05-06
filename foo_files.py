@@ -53,11 +53,11 @@ AI_PHOOEY_CHOP = """\
 prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 # foo_files.py  # [4,028 tokens | 15,548 bytes]
 
-flake.nix  # [8,486 tokens | 36,115 bytes]
-/home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
-scripts/articles/common.py  # [952 tokens | 3,894 bytes]
-scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
-scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
+# flake.nix  # [8,486 tokens | 36,115 bytes]
+# /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
+# scripts/articles/common.py  # [952 tokens | 3,894 bytes]
+# scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
+# scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
 
 # deleteme.txt  # [1,003 tokens | 4,038 bytes]
 # config.py  # [4,170 tokens | 16,184 bytes]
@@ -221,18 +221,18 @@ scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
 # assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
 
 # CHAPTER 14: JEKYLL PUBLISHING
-# /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
-# /home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
-# scripts/articles/common.py  # [952 tokens | 3,894 bytes]
-# scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
-# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-# scripts/articles/contextualizer.py  # [2,519 tokens | 11,151 bytes]
+/home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
+/home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
+scripts/articles/common.py  # [952 tokens | 3,894 bytes]
+scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
+scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
+scripts/articles/contextualizer.py  # [2,519 tokens | 11,151 bytes]
 # scripts/articles/build_knowledge_graph.py  # [4,341 tokens | 17,300 bytes]
 # scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
 # scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
 # scripts/articles/generate_redirects.py  # [2,233 tokens | 9,255 bytes]
 # scripts/articles/sanitize_redirects.py  # [684 tokens | 2,935 bytes]
-# scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
+scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
 
 # ============================================================================
 # VI. THE HONEYBOT OBSERVATORY (Live Telemetry)
