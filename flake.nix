@@ -632,6 +632,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias story='python prompt_foo.py -l [:] --no-tree'
           alias latest='python prompt_foo.py -a [-1:] --no-tree'
           alias release='python release.py --release --force'
+          alias seal='clear && git status'
 
           if [ "$EFFECTIVE_OS" = "darwin" ]; then
             alias xc='pbcopy <'

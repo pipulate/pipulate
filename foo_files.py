@@ -51,15 +51,21 @@ AI_PHOOEY_CHOP = """\
 # Your daily ebb and flow happens here. Clear this out regularly.
 
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
-foo_files.py  # [4,028 tokens | 15,548 bytes]
+# foo_files.py  # [4,028 tokens | 15,548 bytes]
 
+deleteme.txt  # [1,003 tokens | 4,038 bytes]
 config.py  # [4,170 tokens | 16,184 bytes]
-# server.py  # [56,027 tokens | 267,108 bytes]
+server.py  # [56,053 tokens | 267,214 bytes]
 pipulate/__init__.py  # [721 tokens | 2,998 bytes]
 pipulate/core.py  # [29,804 tokens | 144,977 bytes]
-scripts/articles/list_models.py  # [102 tokens | 391 bytes]
-apps/015_config.py  # [11,858 tokens | 55,451 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+
+# config.py  # [4,170 tokens | 16,184 bytes]
+# # server.py  # [56,027 tokens | 267,108 bytes]
+# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
+# pipulate/core.py  # [29,804 tokens | 144,977 bytes]
+# scripts/articles/list_models.py  # [102 tokens | 391 bytes]
+# apps/015_config.py  # [11,858 tokens | 55,451 bytes]
+# # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # tools/__init__.py  # [464 tokens | 2,067 bytes]
 # assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
@@ -80,15 +86,15 @@ apps/015_config.py  # [11,858 tokens | 55,451 bytes]
 
 # CHAPTER 1: BOOTSTRAPPING, CLI & ROUTING
 # README.md  # [20,467 tokens | 103,208 bytes]
-# pyproject.toml  # [679 tokens | 2,321 bytes]
-# .gitignore  # [571 tokens | 2,096 bytes]
-# flake.nix  # [8,337 tokens | 35,472 bytes]
-# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
-# cli.py  # [5,048 tokens | 22,411 bytes]
-# config.py  # [4,170 tokens | 16,184 bytes]
 # release.py  # [9,879 tokens | 44,440 bytes]
 # /home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
 # assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
+# pyproject.toml  # [679 tokens | 2,321 bytes]
+# .gitignore  # [571 tokens | 2,096 bytes]
+# flake.nix  # [8,337 tokens | 35,472 bytes]
+# config.py  # [4,170 tokens | 16,184 bytes]
+# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
+# cli.py  # [5,048 tokens | 22,411 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH
 # server.py  # [56,027 tokens | 267,108 bytes]
@@ -96,9 +102,9 @@ apps/015_config.py  # [11,858 tokens | 55,451 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT)
-pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [29,804 tokens | 144,977 bytes]
+# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [29,804 tokens | 144,977 bytes]
 # imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
 
 # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS)
@@ -140,7 +146,7 @@ pipulate/core.py  # [29,804 tokens | 144,977 bytes]
 # CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS)
 # imports/crud.py  # [7,365 tokens | 35,666 bytes]
 # imports/voice_synthesis.py  # [3,133 tokens | 15,477 bytes]
-apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
+# apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
 # apps/015_config.py  # [11,858 tokens | 55,451 bytes]
 # apps/020_profiles.py  # [4,023 tokens | 18,493 bytes]
 # apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
