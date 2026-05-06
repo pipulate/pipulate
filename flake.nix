@@ -645,6 +645,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             alias xcp='xclip -selection clipboard'
             alias xv='xclip -selection clipboard -o >'
             alias prompt='xclip -selection clipboard -o >prompt.md'
+            alias article='xclip -selection clipboard -o >article.md && python sanitizer.py & python articleizer.py'
           fi
           # Update remote URL to use SSH if we have a key
           if [ -d .git ] && [ -f ~/.ssh/id_rsa ]; then
