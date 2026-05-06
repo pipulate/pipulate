@@ -12,8 +12,8 @@ Usage:
     pipulate
 """
 
-__version__ = "1.67"
-__version_description__ = "Better Homepage Logic"
+__version__ = "1.68"
+__version_description__ = "Better Nix Install Language"
 __email__ = "pipulate@gmail.com"
 __description__ = "A Notebook-inspired Hand-cranked Agentic Framework" 
 
