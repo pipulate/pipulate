@@ -53,9 +53,10 @@ AI_PHOOEY_CHOP = """\
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 foo_files.py  # [4,028 tokens | 15,548 bytes]
 
-! git --no-pager log -n 100
+# ! git --no-pager log -n 100
 
 # flake.nix  # [8,486 tokens | 36,115 bytes]
+# .gitignore  # [571 tokens | 2,096 bytes]
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 
 # /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
@@ -65,8 +66,8 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]
 
 # config.py  # [4,170 tokens | 16,184 bytes]
 # server.py  # [56,053 tokens | 267,214 bytes]
-# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-# pipulate/core.py  # [29,804 tokens | 144,977 bytes]
+pipulate/__init__.py  # [721 tokens | 2,998 bytes]
+pipulate/core.py  # [29,804 tokens | 144,977 bytes]
 
 # config.py  # [4,170 tokens | 16,184 bytes]
 # # server.py  # [56,027 tokens | 267,108 bytes]
@@ -76,10 +77,10 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]
 # apps/015_config.py  # [11,858 tokens | 55,451 bytes]
 # # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
-# tools/__init__.py  # [464 tokens | 2,067 bytes]
-# assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
-# assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
+tools/__init__.py  # [464 tokens | 2,067 bytes]
+assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
+assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
+assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
 # tools/llm_optics.py  # [2,829 tokens | 12,322 bytes]
 # tools/scraper_tools.py  # [4,644 tokens | 22,416 bytes]
 # pipulate/__init__.py  # [721 tokens | 2,998 bytes]
@@ -98,14 +99,15 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]
 # release.py  # [9,879 tokens | 44,440 bytes]
 # /home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
 # assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
-# pyproject.toml  # [679 tokens | 2,321 bytes]
-# .gitignore  # [571 tokens | 2,096 bytes]
+pyproject.toml  # [679 tokens | 2,321 bytes]
+.gitignore  # [571 tokens | 2,096 bytes]
 # flake.nix  # [8,337 tokens | 35,472 bytes]
 # config.py  # [4,170 tokens | 16,184 bytes]
-# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
-# cli.py  # [5,048 tokens | 22,411 bytes]
+AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
+cli.py  # [5,048 tokens | 22,411 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH
+# config.py  # [4,170 tokens | 16,184 bytes]
 # server.py  # [56,027 tokens | 267,108 bytes]
 # requirements.in  # [573 tokens | 1,924 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
@@ -160,7 +162,7 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]
 # apps/020_profiles.py  # [4,023 tokens | 18,493 bytes]
 # apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
 # apps/030_roles.py  # [8,817 tokens | 43,533 bytes]
-# apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
+apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
 # apps/060_tasks.py  # [4,993 tokens | 23,188 bytes]
 # apps/070_history.py  # [5,272 tokens | 28,545 bytes]
 
@@ -206,6 +208,7 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]
 # apps/120_link_graph.py  # [54,375 tokens | 272,569 bytes]
 
 # CHAPTER 12: THE GAPALYZER SUITE
+# Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
 # Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [29,368 tokens | 97,634 bytes]
 # Notebooks/imports/gap_analyzer_sauce.py  # [26,420 tokens | 116,412 bytes]
 
