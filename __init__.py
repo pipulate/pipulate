@@ -12,8 +12,8 @@ Usage:
     pipulate
 """
 
-__version__ = "1.68"
-__version_description__ = "Better Nix Install Language"
+__version__ = "1.69"
+__version_description__ = "Pipulate Tab After Onboarding"
 __email__ = "pipulate@gmail.com"
 __description__ = "A Notebook-inspired Hand-cranked Agentic Framework" 
 
@@ -36,4 +36,4 @@ __description__ = "A Notebook-inspired Hand-cranked Agentic Framework"
 # - flake.nix (reads this file directly at build time)
 # - install.sh (synced via version_sync.py)
 # - server.py startup banners (reads this file directly)
-# Update these values and run: python version_sync.py
+# Update these values and (under `nix develop .#quiet` env) run: release
