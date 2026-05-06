@@ -634,7 +634,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias latest='python prompt_foo.py -a [-1:] --no-tree'
           alias release='python release.py --release --force'
           alias seal='clear && git status'
-          alias posts='python ~/repos/pipulate/scripts/list_articles.py'
+          alias posts='python ~/repos/pipulate/scripts/articles/lsa.py -t 1 --reverse'
+          alias posts2='python ~/repos/pipulate/scripts/articles/lsa.py -t 1'
 
           if [ "$EFFECTIVE_OS" = "darwin" ]; then
             alias xc='pbcopy <'
