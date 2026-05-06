@@ -3069,11 +3069,6 @@ class Pipulate:
                     self.active_cloud_model = value
                 logger.info(f"🧬 Injected {key} from Jupyter store: {value}")
 
-            # 5. Destroy the Sentinel (The airlock cycles once)
-            if sentinel_path.exists():
-                sentinel_path.unlink()
-                logger.info("🗑️ Sentinel .onboarded destroyed. Airlock sealed.")
-
             return True
 
         except Exception as e:

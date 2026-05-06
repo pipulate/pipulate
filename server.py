@@ -2059,24 +2059,17 @@ async def home(request):
     logger.debug(f'Selected explore item: {menux}')
 
     # ---> THE NEW AIRLOCK TRIGGER <---
-    # Check for the sentinel file before doing anything else
     sentinel_path = Path("Notebooks/data/.onboarded")
-    if sentinel_path.exists():
-        logger.info("🚨 Sentinel detected on home route. Triggering Airlock.")
+    # Add the database flag check here:
+    if sentinel_path.exists() and pipulate.db.get('airlock_sealed') != 'true':
+        logger.info("🚨 Sentinel detected and airlock unsealed. Triggering Airlock.")
         airlock_success = pipulate.execute_onboarding_airlock()
         if airlock_success:
-            # We want to force the greeting message to regenerate with the new name
+            # Seal the airlock virtually so it never fires again
+            pipulate.db['airlock_sealed'] = 'true'
+            
             if 'temp_message' in db:
                 del pipulate.db['temp_message']
-            
-            # Create the custom "surprise and delight" message
-            operator_name = pipulate.db.get('operator_name', 'Operator')
-            pipulate.db['demo_comeback_message'] = 'true'
-            pipulate.db['demo_comeback_state'] = {
-                "show_comeback_message": True,
-                "message": f"Hello {operator_name}. It's good to see you on this side.",
-                "subtitle": "Your onboarding data has been successfully imported."
-            }
     # ---> END AIRLOCK TRIGGER <---
 
     pipulate.db['last_app_choice'] = menux
@@ -3758,7 +3751,8 @@ async def reset_config_onboarding(request):
 
     # 3. Wipe the Database Config State
     try:
-        keys_to_delete = ['active_local_model', 'active_cloud_model', 'operator_name']
+        # Add 'airlock_sealed' to the nuke list
+        keys_to_delete = ['active_local_model', 'active_cloud_model', 'operator_name', 'airlock_sealed']
         for k in keys_to_delete:
             if k in pipulate.db:
                 del pipulate.db[k]
