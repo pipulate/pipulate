@@ -95,11 +95,18 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port):
         'layout': 'post',
         'sort_order': next_sort_order
     }
-    
+
+
     # 3. Assemble Content
     final_yaml_block = f"---\n{yaml.dump(new_yaml_data, Dumper=yaml.SafeDumper, sort_keys=False, default_flow_style=False)}---"
 
     article_body = article_content.strip()
+    
+    # --- NEW: Fix Dialogue Header Collisions ---
+    # Converts "**Speaker**: ### Header" to "**Speaker**:\n\n### Header"
+    article_body = re.sub(r'(\*\*[^*]+\*\*:\s*)(#{1,6}\s)', r'\1\n\n\2', article_body)
+    # -------------------------------------------
+
     article_body = f"## Technical Journal Entry Begins\n\n{article_body}"
 
     subheadings = editing_instr.get("insert_subheadings", [])
