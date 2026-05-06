@@ -170,7 +170,10 @@ def main():
         print(f"❌ Directory not found: {target_dir}", file=sys.stderr)
         sys.exit(1)
 
-    print(f"# 🎯 Target: {targets[target_key]['name']}\n", flush=True)
+    # Determine the sort description based on the reverse flag
+    sort_desc = "Newest First" if args.reverse else "Oldest First"
+    
+    print(f"# 🎯 Target: {targets[target_key]['name']} [{sort_desc}]\n", flush=True)
 
     metadata = []
     # --- PASS 1: FAST METADATA EXTRACTION ---
