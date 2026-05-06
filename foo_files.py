@@ -53,6 +53,7 @@ AI_PHOOEY_CHOP = """\
 prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 # foo_files.py  # [4,028 tokens | 15,548 bytes]
 
+flake.nix  # [8,486 tokens | 36,115 bytes]
 /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
 scripts/articles/common.py  # [952 tokens | 3,894 bytes]
 scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
