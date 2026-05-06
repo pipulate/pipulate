@@ -196,6 +196,19 @@ def create_jekyll_post(article_content, instructions, output_dir):
     print(f"✨ Success! Article saved to: {output_path}")
     print("Collect new 404s: python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree")
 
+    # --- NEW: Construct Preview URL and Copy to Clipboard ---
+    local_url = f"http://127.0.0.1:{preview_port}{permalink}"
+    try:
+        import subprocess
+        subprocess.run(
+            ['xclip', '-selection', 'clipboard'], 
+            input=local_url.encode('utf-8'), 
+            check=True
+        )
+        print(f"🔗 Paste-ready preview URL copied to clipboard:\n   {local_url}")
+    except Exception as e:
+        print(f"⚠️ Could not copy URL to clipboard: {e}")
+
 def main():
     parser = argparse.ArgumentParser(description="Process an article with the Gemini API and format it for Jekyll.")
     parser.add_argument(
@@ -213,6 +226,11 @@ def main():
 
     # Use common to securely lock target
     output_dir = common.get_target_path(args)
+
+    # Fetch the target configuration to get the preview port
+    targets = common.load_targets()
+    target_config = targets.get(str(args.target), targets.get("1", {}))
+    preview_port = target_config.get("preview_port", 4000) # Default to 4000
 
     if not os.path.exists(ARTICLE_FILENAME):
         print(f"Error: Article file '{ARTICLE_FILENAME}' not found.")
@@ -303,7 +321,8 @@ def main():
             return
 
     if instructions:
-        create_jekyll_post(article_text, instructions, output_dir)
+        def create_jekyll_post(article_content, instructions, output_dir, preview_port):
+
 
 if __name__ == '__main__':
     main()
