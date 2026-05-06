@@ -50,14 +50,19 @@ AI_PHOOEY_CHOP = """\
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly.
 
-# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 # foo_files.py  # [4,028 tokens | 15,548 bytes]
 
-deleteme.txt  # [1,003 tokens | 4,038 bytes]
-config.py  # [4,170 tokens | 16,184 bytes]
-server.py  # [56,053 tokens | 267,214 bytes]
-pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-pipulate/core.py  # [29,804 tokens | 144,977 bytes]
+/home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
+scripts/articles/common.py  # [952 tokens | 3,894 bytes]
+scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
+scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
+
+# deleteme.txt  # [1,003 tokens | 4,038 bytes]
+# config.py  # [4,170 tokens | 16,184 bytes]
+# server.py  # [56,053 tokens | 267,214 bytes]
+# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
+# pipulate/core.py  # [29,804 tokens | 144,977 bytes]
 
 # config.py  # [4,170 tokens | 16,184 bytes]
 # # server.py  # [56,027 tokens | 267,108 bytes]
