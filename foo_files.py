@@ -41,6 +41,8 @@
 # - Stop `foo_files.py` edits from causing Watchdog restarts
 # - More immediate feedback and "scroll-to-bottom" when entering text in chat
 # - A spinner for Notebook steps like downloading gemma4. Are there spinner start & stop challenges in Notebooks?
+# - Consider adding a difference in links (with semantic wrappers?) to Onboarding Excel deliverable.
+# - Reduce how much text is in the Onboarding cells, pushing more into sauce files (reduce intimidation)
 
 AI_PHOOEY_CHOP = """\
 # ============================================================================
