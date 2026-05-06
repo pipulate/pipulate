@@ -51,9 +51,11 @@ AI_PHOOEY_CHOP = """\
 # Your daily ebb and flow happens here. Clear this out regularly.
 
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
-foo_files.py  # [4,028 tokens | 15,548 bytes]
+# foo_files.py  # [4,028 tokens | 15,548 bytes]
 
-# flake.nix  # [8,486 tokens | 36,115 bytes]
+flake.nix  # [8,486 tokens | 36,115 bytes]
+scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
+
 # /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
 # scripts/articles/common.py  # [952 tokens | 3,894 bytes]
 # scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
@@ -488,7 +490,6 @@ pipulate/core.py
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
 # scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
-# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 # scripts/articles/other/make_article.py  # [1,513 tokens | 6,559 bytes]
 # scripts/articles/scrub_tags.py  # [358 tokens | 1,587 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
