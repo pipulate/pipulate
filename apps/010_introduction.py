@@ -70,13 +70,13 @@ class IntroductionPlugin:
             # Check if we have an operator name (proof the airlock worked)
             operator_name = self.wand.db.get('operator_name')
 
-            # 🪄 THE FIX: Check the explicit finalization flag, not just the imported data
-            has_local_model = bool(self.wand.db.get('active_local_model'))
+            # 🪄 THE DETERMINISTIC STATE MATRIX
             has_configured = self.wand.db.get('config_finalized') == 'true'
             dynamic_app_name = self.wand.get_config().APP_NAME
+            active_model = self.wand.db.get('active_local_model', 'an external provider')
 
             if not operator_name:
-                # 1. The Bouncer Persona (No data imported yet)
+                # STATE 1: The Bouncer Persona (Airlock has not fired)
                 msg = (
                     "Halt. I am Chip O'Theseus. My speech is generated entirely on your machine, "
                     "but you are trying to sneak into the VIP lounge through the kitchen. "
@@ -85,14 +85,13 @@ class IntroductionPlugin:
                 )
                 return "Access Denied 🛑", msg, None
 
-            elif not has_local_model and not has_configured:
-                # 2. The Setup Phase
-                msg = f"Welcome to {dynamic_app_name}, {operator_name}. I am Chip O'Theseus. You have not yet set up your local AI capabilities. Please visit Ollama.com."
+            elif not has_configured:
+                # STATE 2: The Guide Persona (Airlock fired, but Configuration is pending)
+                msg = f"Welcome to {dynamic_app_name}, {operator_name}. I am Chip O'Theseus. I see you've selected {active_model} as your primary cognitive engine during onboarding. We now need to finalize your configuration and secure your API keys in the vault."
                 return "Welcome", msg, 'step_02'
                 
             else:
-                # 3. The Veteran Persona (Airlock successful)
-                active_model = self.wand.db.get('active_local_model', 'an external provider')
+                # STATE 3: The Veteran Persona (Config workflow is finalized)
                 msg = f"Welcome back to {dynamic_app_name}, {operator_name}. All systems are online and ready. Your primary cognitive engine is locked to {active_model}."
                 return "Dashboard Ready ✅", msg, None
                 
