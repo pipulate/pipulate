@@ -110,7 +110,13 @@ if ! command -v nix &> /dev/null; then
   echo "=================================================================="
   echo "⚠️  CRITICAL: The universe has been built, but you must enter it."
   echo "Please CLOSE this terminal window, open a NEW one, and re-run:"
-  echo "curl -L https://pipulate.com/assets/installer/install.sh | bash -s ${CUSTOM_NAME}"
+  
+  if [ "$CUSTOM_NAME" = "pipulate" ]; then
+    echo "curl -fsSL https://pipulate.com/install.sh | bash"
+  else
+    echo "curl -fsSL https://pipulate.com/install.sh | bash -s ${CUSTOM_NAME}"
+  fi
+  
   echo "=================================================================="
   exit 0
 fi
