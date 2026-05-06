@@ -58,7 +58,6 @@ pipulate/core.py  # [29,804 tokens | 144,977 bytes]
 scripts/articles/list_models.py  # [102 tokens | 391 bytes]
 apps/015_config.py  # [11,858 tokens | 55,451 bytes]
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-ai_edit.py  # [2,296 tokens | 10,210 bytes]
 
 # tools/__init__.py  # [464 tokens | 2,067 bytes]
 # assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
