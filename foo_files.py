@@ -51,10 +51,12 @@ AI_PHOOEY_CHOP = """\
 # Your daily ebb and flow happens here. Clear this out regularly.
 
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
-# foo_files.py  # [4,028 tokens | 15,548 bytes]
+foo_files.py  # [4,028 tokens | 15,548 bytes]
 
-flake.nix  # [8,486 tokens | 36,115 bytes]
-scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
+! git --no-pager log -n 100
+
+# flake.nix  # [8,486 tokens | 36,115 bytes]
+# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 
 # /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
 # scripts/articles/common.py  # [952 tokens | 3,894 bytes]
