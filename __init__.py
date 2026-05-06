@@ -12,8 +12,8 @@ Usage:
     pipulate
 """
 
-__version__ = "1.69"
-__version_description__ = "Pipulate Tab After Onboarding"
+__version__ = "1.70"
+__version_description__ = "Independent Onboarding Scraper Cell"
 __email__ = "pipulate@gmail.com"
 __description__ = "A Notebook-inspired Hand-cranked Agentic Framework" 
 
