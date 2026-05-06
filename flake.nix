@@ -636,6 +636,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias seal='clear && git status'
           alias posts='python ~/repos/pipulate/scripts/articles/lsa.py -t 1 --reverse'
           alias posts2='python ~/repos/pipulate/scripts/articles/lsa.py -t 1'
+          alias publish='python publishizer.py'
 
           if [ "$EFFECTIVE_OS" = "darwin" ]; then
             alias xc='pbcopy <'
@@ -648,6 +649,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             alias xv='xclip -selection clipboard -o >'
             alias prompt='xclip -selection clipboard -o >prompt.md'
             alias article='xclip -selection clipboard -o >article.txt && python sanitizer.py && python articleizer.py'
+            alias grim='xclip -selection clipboard -o >article.txt && python sanitizer.py && python articleizer.py -t 3'
           fi
           # Update remote URL to use SSH if we have a key
           if [ -d .git ] && [ -f ~/.ssh/id_rsa ]; then

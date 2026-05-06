@@ -41,7 +41,7 @@
 # - Stop `foo_files.py` edits from causing Watchdog restarts
 # - More immediate feedback and "scroll-to-bottom" when entering text in chat
 # - A spinner for Notebook steps like downloading gemma4. Are there spinner start & stop challenges in Notebooks?
-# - Consider adding a difference in links (with semantic wrappers?) to Onboarding Excel deliverable.
+# - Consider adding a difference source vs DOM `a href` links gap to Onboarding Excel deliverable.
 # - Reduce how much text is in the Onboarding cells, pushing more into sauce files (reduce intimidation)
 
 AI_PHOOEY_CHOP = """\
@@ -51,18 +51,28 @@ AI_PHOOEY_CHOP = """\
 # Your daily ebb and flow happens here. Clear this out regularly.
 
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
-# foo_files.py  # [4,028 tokens | 15,548 bytes]
+foo_files.py  # [4,028 tokens | 15,548 bytes]
+
+/home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
+scripts/articles/common.py  # [952 tokens | 3,894 bytes]
+scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
+scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
+flake.nix  # [8,486 tokens | 36,115 bytes]
+/home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
+
+# /home/mike/repos/trimnoir/_posts/2026-05-05-forever-machine-deterministic-ai-code-editing.md  # [25,972 tokens | 101,375 bytes]
 
 # ! git --no-pager log -n 100
 
-flake.nix  # [8,486 tokens | 36,115 bytes]
 # .gitignore  # [571 tokens | 2,096 bytes]
 # scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 
-# /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
-# scripts/articles/common.py  # [952 tokens | 3,894 bytes]
-# scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
-# scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
+# /home/mike/repos/trimnoir/_posts/2026-05-02-bitnet-and-the-browser-metronome.md  # [19,813 tokens | 88,454 bytes]
+
+# apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
+# assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
 
 # config.py  # [4,170 tokens | 16,184 bytes]
 # server.by  # [56,053 tokens | 267,214 bytes]
@@ -77,14 +87,19 @@ flake.nix  # [8,486 tokens | 36,115 bytes]
 # apps/015_config.py  # [11,858 tokens | 55,451 bytes]
 # # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
-# tools/__init__.py  # [464 tokens | 2,067 bytes]
 # assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
 # assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
-# tools/llm_optics.py  # [2,829 tokens | 12,322 bytes]
-# tools/scraper_tools.py  # [4,644 tokens | 22,416 bytes]
 # pipulate/__init__.py  # [721 tokens | 2,998 bytes]
 # pipulate/core.py  # [29,804 tokens | 144,977 bytes]
+# config.py  # [4,170 tokens | 16,184 bytes]
+# server.py  # [56,001 tokens | 266,868 bytes]
+# apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
+# apps/015_config.py  # [11,858 tokens | 55,451 bytes]
+
+# tools/__init__.py  # [464 tokens | 2,067 bytes]
+# tools/llm_optics.py  # [2,829 tokens | 12,322 bytes]
+# tools/scraper_tools.py  # [4,644 tokens | 22,416 bytes]
 
 # Brand new query to figure out what user agents request markdown from what sources.
 # ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
@@ -163,6 +178,8 @@ flake.nix  # [8,486 tokens | 36,115 bytes]
 # apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
 # apps/030_roles.py  # [8,817 tokens | 43,533 bytes]
 # apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
+# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 # apps/060_tasks.py  # [4,993 tokens | 23,188 bytes]
 # apps/070_history.py  # [5,272 tokens | 28,545 bytes]
 
@@ -192,14 +209,16 @@ flake.nix  # [8,486 tokens | 36,115 bytes]
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
 # apps/100_connect_with_botify.py  # [4,492 tokens | 22,616 bytes]
 # apps/240_simon_mcp.py  # [8,886 tokens | 44,543 bytes]
+
 # apps/200_workflow_genesis.py  # [12,397 tokens | 59,509 bytes]
+# apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
 # scripts/workflow/splice_workflow_step.py  # [5,028 tokens | 21,917 bytes]
 # scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
 # scripts/workflow/create_workflow.py  # [3,683 tokens | 16,394 bytes]
 # scripts/workflow/manage_class_attributes.py  # [2,678 tokens | 12,795 bytes]
 # scripts/workflow/update_template_config.py  # [1,671 tokens | 8,381 bytes]
 # scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
-# apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
+
 # imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
 # apps/400_botify_trifecta.py  # [53,083 tokens | 275,728 bytes]
 
@@ -228,6 +247,7 @@ flake.nix  # [8,486 tokens | 36,115 bytes]
 
 # CHAPTER 14: JEKYLL PUBLISHING
 # /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
+# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
 # /home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
 # scripts/articles/common.py  # [952 tokens | 3,894 bytes]
 # scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
@@ -448,7 +468,6 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 # assets/prompts/pipulate-context.xsd  # [2,286 tokens | 8,129 bytes]
 # assets/prompts/system_prompt.md  # [628 tokens | 2,618 bytes]
 # assets/rich-table.css  # [417 tokens | 1,459 bytes]
-# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
 # assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
 # browser_cache/automation_recipes/README_SAVE_LOAD_AUTOMATION.md  # [1,751 tokens | 7,246 bytes]
 # browser_cache/recipe_executor.py  # [2,848 tokens | 14,661 bytes]
@@ -487,7 +506,6 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
 # scripts/articles/consolidate_chapter_data.py  # [731 tokens | 3,819 bytes]
 # scripts/articles/diagramizer.py  # [1,912 tokens | 8,193 bytes]
-# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
 # scripts/articles/execute_massive_prompt.py  # [491 tokens | 2,209 bytes]
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
