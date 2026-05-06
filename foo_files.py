@@ -32,6 +32,8 @@
 #  Clear this out regularly to maintain a high signal-to-noise ratio.]
 
 # TODO List
+# - Switch versioning to use datestamp
+# - Try to suppress the "Newer Version Available" JupyterLab message
 # - Fix endpoint messages showing up to 3 times
 # - Implement Color ASCII Art with `wand.figurate()`
 # - Fix robots.txt link under Parameter Buster
