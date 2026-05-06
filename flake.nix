@@ -634,22 +634,30 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias latest='python prompt_foo.py -a [-1:] --no-tree'
           alias release='python release.py --release --force'
           alias seal='clear && git status'
-          alias posts='python ~/repos/pipulate/scripts/articles/lsa.py -t 1 --reverse'
-          alias posts2='python ~/repos/pipulate/scripts/articles/lsa.py -t 1'
-          alias publish='python publishizer.py'
+          
+          # ---------------------------------------------------------
+          # THE SUBSHELL ALIASES (Execute safely from anywhere)
+          # ---------------------------------------------------------
+          alias posts='(cd scripts/articles && python lsa.py -t 1 --reverse)'
+          alias posts2='(cd scripts/articles && python lsa.py -t 1)'
+          alias publish='(cd scripts/articles && python publishizer.py)'
 
           if [ "$EFFECTIVE_OS" = "darwin" ]; then
             alias xc='pbcopy <'
             alias xcp='pbcopy'
             alias xv='pbpaste >'
             alias prompt='pbpaste >prompt.md'
+            # Added macOS equivalents for article creation
+            alias article='(cd scripts/articles && pbpaste >article.txt && python sanitizer.py && python articleizer.py)'
+            alias grim='(cd scripts/articles && pbpaste >article.txt && python sanitizer.py && python articleizer.py -t 3)'
           else
             alias xc='xclip -selection clipboard <'
             alias xcp='xclip -selection clipboard'
             alias xv='xclip -selection clipboard -o >'
             alias prompt='xclip -selection clipboard -o >prompt.md'
-            alias article='xclip -selection clipboard -o >article.txt && python sanitizer.py && python articleizer.py'
-            alias grim='xclip -selection clipboard -o >article.txt && python sanitizer.py && python articleizer.py -t 3'
+            # Linux subshell aliases
+            alias article='(cd scripts/articles && xclip -selection clipboard -o >article.txt && python sanitizer.py && python articleizer.py)'
+            alias grim='(cd scripts/articles && xclip -selection clipboard -o >article.txt && python sanitizer.py && python articleizer.py -t 3)'
           fi
           # Update remote URL to use SSH if we have a key
           if [ -d .git ] && [ -f ~/.ssh/id_rsa ]; then
