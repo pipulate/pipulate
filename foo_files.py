@@ -378,13 +378,14 @@ CHOP_FLAKE_EVOLUTION = """\
 # Inspecting the recent mutations of the core environment definition.
 
 # 1. The Current State
-flake.nix
+flake.nix  # [8,529 tokens | 36,280 bytes]
 
 # 2. The History (Last 10 commits affecting flake.nix)
 ! git --no-pager log -n 10 --oneline flake.nix
 
 # 3. The Diffs (The actual changes from the last few major updates)
 ! git --no-pager diff HEAD~5 HEAD -- flake.nix
+"""
 
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
