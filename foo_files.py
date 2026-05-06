@@ -34,7 +34,6 @@
 # TODO List
 # - Switch versioning to use datestamp
 # - Try to suppress the "Newer Version Available" JupyterLab message
-# - Fix endpoint messages showing up to 3 times
 # - Implement Color ASCII Art with `wand.figurate()`
 # - Fix robots.txt link under Parameter Buster
 # - Move the Configuration app under the poke gear flyout
@@ -42,7 +41,6 @@
 # - Stop `foo_files.py` edits from causing Watchdog restarts
 # - More immediate feedback and "scroll-to-bottom" when entering text in chat
 # - A spinner for Notebook steps like downloading gemma4. Are there spinner start & stop challenges in Notebooks?
-# - Move the Configuration app to be under the poke gear flyout (remove APP menu role)
 
 AI_PHOOEY_CHOP = """\
 # ============================================================================
