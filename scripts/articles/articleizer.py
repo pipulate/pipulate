@@ -304,7 +304,8 @@ def main():
                 if ("429" in error_str and "Quota" in error_str) or \
                    ("504" in error_str and "timed out" in error_str) or \
                    ("503" in error_str) or \
-                   ("500" in error_str):
+                   ("500" in error_str) or \
+                   ("high demand" in error_str.lower()):
                     
                     print(f"Retriable API Error: {e}")
                     print(f"Retrying in {retry_delay} seconds... (Attempt {attempt + 1}/{max_retries})")
@@ -321,7 +322,7 @@ def main():
             return
 
     if instructions:
-        create_jekyll_post(article_content, instructions, output_dir, preview_port)
+        create_jekyll_post(article_text, instructions, output_dir, preview_port)
 
 
 if __name__ == '__main__':
