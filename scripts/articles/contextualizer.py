@@ -16,8 +16,8 @@ import common
 # MODEL_NAME = 'gemini-flash-lite-latest'
 MODEL_CASCADE = [
     'gemini-flash-latest',
-    'gemini-flash-latest',
-    'gemini-flash-latest'
+    'gemini-flash-lite-latest',
+    'gemma4:latest'
 ]
 
 SAFETY_SLEEP_SECONDS = 5

@@ -148,6 +148,8 @@ def main():
     parser = argparse.ArgumentParser(description="Unified Article Lister & Analyzer")
     parser.add_argument('-t', '--target', type=str, help="Target ID from targets.json (e.g., '1', '3')")
     parser.add_argument('-g', '--gaps', action='store_true', help="Run and display the sort_order contiguity gap report")
+    # Add this new line right here:
+    parser.add_argument('-r', '--reverse', action='store_true', help="Reverse the sorting order")
     args = parser.parse_args()
 
     targets = load_targets()
@@ -191,7 +193,7 @@ def main():
             continue
             
     # Sort first by date, then by the YAML sort_order
-    metadata.sort(key=lambda p: (p['date'], p['sort_order']))
+    metadata.sort(key=lambda p: (p['date'], p['sort_order']), reverse=args.reverse)
     
     # --- PASS 2: HEAVY LIFTING & STREAMING OUTPUT ---
     for idx, item in enumerate(metadata, start=1):
