@@ -372,23 +372,19 @@ CHOP_CHAPTER_DRAFTER = """\
 /home/mike/repos/bookforge/30_drafts/{target_chapter}_0_blueprint.md
 """
 
-CHOP_ONBOARDING_HANDOFF = """\
-# THE AIRLOCK: FROM NOTEBOOK TO FASTHTML CONFIG
-# COMMAND: python prompt_foo.py --chop CHOP_ONBOARDING_HANDOFF --no-tree
+CHOP_FLAKE_EVOLUTION = """\
+# THE FLAKE EVOLUTION BLUEPRINT
+# COMMAND: python prompt_foo.py --chop CHOP_FLAKE_EVOLUTION --no-tree
+# Inspecting the recent mutations of the core environment definition.
 
-# 1. The State Origin (What the notebook saved)
-assets/nbs/Onboarding.ipynb
-assets/nbs/imports/onboard_sauce.py
+# 1. The Current State
+flake.nix
 
-# 2. The Current Dead End (Where the user lands)
-apps/010_introduction.py
+# 2. The History (Last 10 commits affecting flake.nix)
+! git --no-pager log -n 10 --oneline flake.nix
 
-# 3. The Target Destination (What needs pre-filling)
-apps/015_config.py
-
-# 4. The State Manager (How data moves between them)
-pipulate/core.py
-"""
+# 3. The Diffs (The actual changes from the last few major updates)
+! git --no-pager diff HEAD~5 HEAD -- flake.nix
 
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
