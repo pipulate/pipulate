@@ -735,6 +735,82 @@ def _split_domain_name(domain):
 
 # --- Main Function ---
 
+def fetch_top_gsc_keywords(job: str, botify_token: str, botify_project_url: str, brand_term: str):
+    """
+    The Hook: Fetches the top non-branded GSC queries via Botify BQLv2.
+    Leverages the existing _export_data helper and saves to the job's temp workspace.
+    """
+    from datetime import datetime, timedelta
+    
+    print("🎣 Fetching top non-branded GSC keywords (The Hook)...")
+    
+    # 1. Parse org and project
+    try:
+        url_parts = botify_project_url.rstrip('/').split('/')
+        org = url_parts[-2]
+        project = url_parts[-1]
+    except Exception as e:
+        print(f"  ❌ Error parsing Botify URL: {e}")
+        return None
+
+    # 2. Define Date Range (Last 30 days)
+    end_date = datetime.now().strftime('%Y-%m-%d')
+    start_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+
+    # 3. Construct the BQLv2 Payload
+    export_payload = {
+        "job_type": "export",
+        "payload": {
+            "username": org,
+            "project": project,
+            "connector": "direct_download",
+            "formatter": "csv",
+            "export_size": 10000, 
+            "query": {
+                "collections": ["search_console"],
+                "periods": [[start_date, end_date]],
+                "query": {
+                    "dimensions": ["search_console.query"],
+                    "metrics": [
+                        {"field": "search_console.period_0.count_impressions", "name": "Impressions"},
+                        {"field": "search_console.period_0.count_clicks", "name": "Clicks"},
+                        {"field": "search_console.period_0.ctr", "name": "CTR"},
+                        {"field": "search_console.period_0.avg_position", "name": "Avg. Position"}
+                    ],
+                    "filters": {
+                        "field": "search_console.query",
+                        "predicate": "ncontains",
+                        "value": brand_term
+                    },
+                    "sort": [{"type": "metrics", "index": 0, "order": "desc"}]
+                }
+            }
+        }
+    }
+
+    # 4. Define target path using the wand's manifold
+    csv_dir = wand.paths.temp / job
+    csv_dir.mkdir(parents=True, exist_ok=True)
+    report_path = csv_dir / "top_gsc_keywords.csv"
+
+    # 5. Execute via existing _export_data helper
+    status_code, final_path = _export_data(
+        version='v2',
+        org=org,
+        project=project,
+        export_payload=export_payload,
+        report_path=report_path,
+        botify_token=botify_token
+    )
+
+    if status_code in [200, 201] or report_path.exists():
+        print(f"  ✅ Successfully retrieved The Hook: {report_path.name}")
+        return str(report_path.resolve())
+    else:
+        print("  ❌ Failed to retrieve GSC keywords.")
+        return None
+
+
 def fetch_titles_and_create_filters(job: str):
     """
     Fetches homepage titles for competitors lacking them, updates the competitors DataFrame
