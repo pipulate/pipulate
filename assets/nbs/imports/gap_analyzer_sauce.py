@@ -117,13 +117,13 @@ def render_competitor_workbench(job: str):
     text_area = widgets.Textarea(
         value=default_text,
         placeholder='Paste one domain or subfolder per line...',
-        layout=widgets.Layout(width='80%', height='250px')
+        layout=widgets.Layout(width='80%', height='450px')
     )
 
     save_btn = widgets.Button(
         description="💾 Save Targets & Generate Links",
         button_style='success',
-        layout=widgets.Layout(width='250px')
+        layout=widgets.Layout(width='450px')
     )
 
     out = widgets.Output()
@@ -434,40 +434,53 @@ def _extract_registered_domain(url: str) -> str:
 
 def load_and_combine_semrush_data(job: str, client_domain: str, competitor_limit: int = None):
     """
-    Loads all SEMRush files from wand state, combines them into a single master DataFrame,
-    stores the result in wand state, and returns the DataFrame along with value counts for display.
-
-    Args:
-        job (str): The current Pipulate job ID.
-        client_domain (str): The client's registered domain (e.g., 'example.com').
-        competitor_limit (int, optional): Max number of competitor files to process.
-
-    Returns:
-        tuple: (master_df: pd.DataFrame, domain_counts: pd.Series)
-               Returns the combined DataFrame and a Series of domain value counts.
-               Returns (empty DataFrame, empty Series) on failure or no files.
+    Loads all SEMRush files, combines them into a master DataFrame.
+    Uses blazing-fast Pickle caching to prevent re-running massive concatenations.
     """
     semrush_lookup = _extract_registered_domain(client_domain)
     print(f"🛠️  Loading and combining SEMRush files for {semrush_lookup}...")
 
-    # --- INPUT (from wand state) ---
+    # --- 1. SETUP & THE ESCAPE HATCH BUTTON ---
+    temp_dir = wand.paths.temp / job
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    master_cache_path = temp_dir / "semrush_master_combined.pkl"
+    master_csv_path = temp_dir / "semrush_master_combined.csv"
+
+    # Render the button immediately so you can pop the folder open
+    btn = widgets.Button(
+        description="📂 Open Temp Folder (Manage Cache)", 
+        button_style="warning", 
+        icon="folder-open",
+        layout=widgets.Layout(width='300px')
+    )
+    btn.on_click(lambda b: wand.open_folder(str(temp_dir)))
+    display(btn)
+
+    # --- 2. THE HIGH-SPEED CACHE CHECK ---
+    if master_cache_path.exists():
+        print(f"⚡ Cache Hit! Loading massive DataFrame instantly from {master_cache_path.name}...")
+        try:
+            master_df = pd.read_pickle(master_cache_path)
+            domain_counts = master_df["Domain"].value_counts()
+            rows, columns = master_df.shape
+            print(f"✅ Loaded from cache. Rows: {rows:,}, Columns: {columns:,}")
+            return master_df, domain_counts
+        except Exception as e:
+            print(f"⚠️ Cache corrupted or unreadable. Rebuilding. ({e})")
+
+    # --- 3. THE HEAVY LIFTING (If no cache) ---
     files_to_process_str = wand.get(job, 'collected_semrush_files', [])
     if not files_to_process_str:
         print("🤷 No collected SEMRush files found in wand state. Nothing to process.")
         return pd.DataFrame(), pd.Series(dtype='int64')
 
-    # Convert string paths back to Path objects
     all_semrush_files = [Path(p) for p in files_to_process_str]
     
-    # --- Refactoring Note: Apply COMPETITOR_LIMIT here ---
-    # We add 1 to the limit to include the client file if it exists
     processing_limit = competitor_limit + 1 if competitor_limit is not None else None
     files_to_process = all_semrush_files[:processing_limit]
     if processing_limit and len(all_semrush_files) > processing_limit:
         print(f"🔪 Applying COMPETITOR_LIMIT: Processing first {processing_limit} of {len(all_semrush_files)} files.")
 
-
-    # --- CORE LOGIC (Moved from Notebook) ---
     cdict = {}
     list_of_dfs = []
     print(f"Loading {len(files_to_process)} SEMRush files: ", end="", flush=True)
@@ -481,7 +494,7 @@ def load_and_combine_semrush_data(job: str, client_domain: str, competitor_limit
             cdict[just_domain] = xlabel
 
             df = read_func(data_file)
-            df["Domain"] = xlabel # Use the full label (sub.domain.com) for the column
+            df["Domain"] = xlabel 
             df["Client URL"] = df.apply(lambda row: row["URL"] if row["Domain"] == semrush_lookup else None, axis=1)
             df["Competitor URL"] = df.apply(lambda row: row["URL"] if row["Domain"] != semrush_lookup else None, axis=1)
             list_of_dfs.append(df)
@@ -491,7 +504,7 @@ def load_and_combine_semrush_data(job: str, client_domain: str, competitor_limit
             print(f"\n❌ Error processing file {data_file.name}: {e}")
             continue
     
-    print("\n") # Newline after the loading count
+    print("\n") 
 
     if not list_of_dfs:
         print("🛑 No DataFrames were created. Check for errors in file processing.")
@@ -503,18 +516,19 @@ def load_and_combine_semrush_data(job: str, client_domain: str, competitor_limit
     
     domain_counts = master_df["Domain"].value_counts()
 
-    # --- OUTPUT (to wand state) ---
-    # --- FIX: Save master DF to CSV and store the PATH in wand state ---
-    temp_dir = wand.paths.temp / job # Use the temp directory structure
-    temp_dir.mkdir(parents=True, exist_ok=True) # Ensure it exists
-    master_csv_path = temp_dir / "semrush_master_combined.csv"
+    # --- 4. PERSISTENCE & CACHING ---
+    print(f"💾 Saving high-speed Pickle cache to '{master_cache_path.name}'...")
+    master_df.to_pickle(master_cache_path)
+    
+    # We still write the CSV silently in the background for legacy/human inspection
     master_df.to_csv(master_csv_path, index=False)
-    print(f"💾 Saved combined SEMrush data to '{master_csv_path}'")
-    wand.set(job, 'semrush_master_df_csv_path', str(master_csv_path.resolve()))
-    print(f"💾 Stored master DataFrame path and competitor dictionary in wand state for job '{job}'.")
-    # -----------------------------
+    
+    wand.set(job, 'semrush_master_df_path', str(master_cache_path.resolve()))
+    
+    # Bugfix: Actually save the dictionary to the wand so pivot_semrush_data can find it!
+    wand.set(job, 'competitors_dict_json', json.dumps(cdict))
+    print(f"💾 Stored master DataFrame cache and competitor dictionary in wand state.")
 
-    # --- RETURN VALUE ---
     return master_df, domain_counts
 
 
