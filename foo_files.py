@@ -55,18 +55,18 @@ AI_PHOOEY_CHOP = """\
 
 # /home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
 # flake.nix  # [8,673 tokens | 37,067 bytes]
-# /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
+
+/home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
+scripts/articles/common.py  # [952 tokens | 3,894 bytes]
+scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
+scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
+/home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
+flake.nix  # [8,486 tokens | 36,115 bytes]
 
 # /home/mike/repos/nixos/ai.py  # [591 tokens | 2,814 bytes]
 
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 # apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
-
-# /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
-# scripts/articles/common.py  # [952 tokens | 3,894 bytes]
-# scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
-# scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
-# flake.nix  # [8,486 tokens | 36,115 bytes]
 
 # /home/mike/repos/trimnoir/_posts/2026-05-05-forever-machine-deterministic-ai-code-editing.md  # [25,972 tokens | 101,375 bytes]
 
