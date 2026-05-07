@@ -53,12 +53,20 @@ AI_PHOOEY_CHOP = """\
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 foo_files.py  # [4,028 tokens | 15,548 bytes]
 
-/home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
-scripts/articles/common.py  # [952 tokens | 3,894 bytes]
-scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
-scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
-flake.nix  # [8,486 tokens | 36,115 bytes]
 /home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
+flake.nix  # [8,673 tokens | 37,067 bytes]
+/home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
+
+# /home/mike/repos/nixos/ai.py  # [591 tokens | 2,814 bytes]
+
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+# apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
+
+# /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
+# scripts/articles/common.py  # [952 tokens | 3,894 bytes]
+# scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
+# scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
+# flake.nix  # [8,486 tokens | 36,115 bytes]
 
 # /home/mike/repos/trimnoir/_posts/2026-05-05-forever-machine-deterministic-ai-code-editing.md  # [25,972 tokens | 101,375 bytes]
 
@@ -71,7 +79,6 @@ flake.nix  # [8,486 tokens | 36,115 bytes]
 
 # apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
 # assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 # assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
 
 # config.py  # [4,170 tokens | 16,184 bytes]
@@ -246,30 +253,32 @@ flake.nix  # [8,486 tokens | 36,115 bytes]
 # assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
 
 # CHAPTER 14: JEKYLL PUBLISHING
-# /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
-# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-# /home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
-# scripts/articles/common.py  # [952 tokens | 3,894 bytes]
-# scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
-# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-# scripts/articles/contextualizer.py  # [2,519 tokens | 11,151 bytes]
-# scripts/articles/build_knowledge_graph.py  # [4,341 tokens | 17,300 bytes]
-# scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
-# scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
-# scripts/articles/generate_redirects.py  # [2,233 tokens | 9,255 bytes]
-# scripts/articles/sanitize_redirects.py  # [684 tokens | 2,935 bytes]
-# scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
+/home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
+scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
+/home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
+scripts/articles/common.py  # [952 tokens | 3,894 bytes]
+scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
+scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
+scripts/articles/contextualizer.py  # [2,519 tokens | 11,151 bytes]
+scripts/articles/build_knowledge_graph.py  # [4,341 tokens | 17,300 bytes]
+scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
+scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
+scripts/articles/generate_redirects.py  # [2,233 tokens | 9,255 bytes]
+scripts/articles/sanitize_redirects.py  # [684 tokens | 2,935 bytes]
+scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
 
 # ============================================================================
 # VI. THE HONEYBOT OBSERVATORY (Live Telemetry)
 # ============================================================================
 
 # CHAPTER 15: HONEYBOT IAC & SCRIPTS
-# remotes/honeybot/nixos/configuration.nix  # [4,217 tokens | 16,271 bytes]
-# remotes/honeybot/scripts/content_loader.py  # [1,641 tokens | 6,804 bytes]
-# remotes/honeybot/scripts/db.py  # [2,850 tokens | 13,221 bytes]
-# remotes/honeybot/scripts/logs.py  # [3,196 tokens | 14,285 bytes]
-# remotes/honeybot/scripts/stream.py  # [3,220 tokens | 15,109 bytes]
+nixops.sh  # [227 tokens | 765 bytes]
+remotes/honeybot/hooks/post-receive  # [522 tokens | 1,692 bytes]
+remotes/honeybot/nixos/configuration.nix  # [4,217 tokens | 16,271 bytes]
+remotes/honeybot/scripts/content_loader.py  # [1,641 tokens | 6,804 bytes]
+remotes/honeybot/scripts/db.py  # [2,850 tokens | 13,221 bytes]
+remotes/honeybot/scripts/logs.py  # [3,196 tokens | 14,285 bytes]
+remotes/honeybot/scripts/stream.py  # [3,220 tokens | 15,109 bytes]
 
 # CHAPTER 16: TELEMETRY SENSORS & DASHBOARD PROBES
 # remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
@@ -476,7 +485,6 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
-# nixops.sh  # [227 tokens | 765 bytes]
 # remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
 # remotes/honeybot/queries/hot_404_remaps_top.sql  # [733 tokens | 2,888 bytes]
 # remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
