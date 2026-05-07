@@ -640,7 +640,49 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # ---------------------------------------------------------
           alias posts='(cd scripts/articles && python lsa.py -t 1 --reverse)'
           alias posts2='(cd scripts/articles && python lsa.py -t 1)'
-          alias publish='(cd scripts/articles && python publishizer.py)'
+          alias preview='(cd scripts/articles && python publishizer.py)'
+
+          # ---------------------------------------------------------
+          # THE SUBSHELL ALIASES (Execute safely from anywhere)
+          # ---------------------------------------------------------
+          alias posts='(cd scripts/articles && python lsa.py -t 1 --reverse)'
+          alias posts2='(cd scripts/articles && python lsa.py -t 1)'
+          
+          # Renamed: The old 'publish' is now 'preview' (Local Artifact Assembly)
+          alias preview='(cd scripts/articles && python publishizer.py)'
+
+          # NEW: The true 'publish' command (Atomic Deployment)
+          # It requires a commit message as an argument.
+          publish() {
+            if [ -z "$1" ]; then
+              echo "❌ Error: Please provide a commit message."
+              echo "Usage: publish \"Your commit message here\""
+              return 1
+            fi
+            
+            echo "🚀 [1/3] Assembling Local Artifacts..."
+            (cd scripts/articles && python publishizer.py)
+            
+            echo "🚀 [2/3] Committing and Pushing to Git..."
+            git add .
+            git commit -am "$1"
+            if git push; then
+                echo "🚀 [3/3] Synchronizing Server Configurations..."
+                # Assumes nixops.sh is executable and in the project root
+                if [ -f "./nixops.sh" ]; then
+                    ./nixops.sh
+                    
+                    # Execute the final server rebuild
+                    echo "🚀 [Final] Rebuilding Nginx Routes..."
+                    ssh -t mike@192.168.10.100 'sudo cp ~/nixos-config-staged/* /etc/nixos/ && sudo nixos-rebuild switch'
+                    echo "✅ Atomic Deployment Complete."
+                else
+                    echo "⚠️ Warning: nixops.sh not found. Server config sync skipped."
+                fi
+            else
+                echo "❌ Error: Git push failed. Deployment halted."
+            fi
+          }
 
           if [ "$EFFECTIVE_OS" = "darwin" ]; then
             alias xc='pbcopy <'
