@@ -51,11 +51,11 @@ AI_PHOOEY_CHOP = """\
 # Your daily ebb and flow happens here. Clear this out regularly.
 
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
-foo_files.py  # [4,028 tokens | 15,548 bytes]
+# foo_files.py  # [4,028 tokens | 15,548 bytes]
 
-/home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
-flake.nix  # [8,673 tokens | 37,067 bytes]
-/home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
+# /home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
+# flake.nix  # [8,673 tokens | 37,067 bytes]
+# /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
 
 # /home/mike/repos/nixos/ai.py  # [591 tokens | 2,814 bytes]
 
