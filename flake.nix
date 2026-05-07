@@ -651,7 +651,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # Renamed: The old 'publish' is now 'preview' (Local Artifact Assembly)
           alias preview='(cd scripts/articles && python publishizer.py)'
 
-          # NEW: The true 'publish' command (Atomic Deployment)
+          # NEW: The true 'publish' command (Atomic Cross-Domain Deployment)
           # It requires a commit message as an argument.
           publish() {
             if [ -z "$1" ]; then
@@ -660,30 +660,35 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               return 1
             fi
             
-            echo "🚀 [1/3] Assembling Local Artifacts..."
-            (cd scripts/articles && python publishizer.py)
+            # The Bounded Context of the Payload
+            TARGET_REPO="$HOME/repos/trimnoir"
             
-            echo "🚀 [2/3] Committing and Pushing to Git..."
-            git add .
-            git commit -am "$1"
-            if git push; then
-                echo "🚀 [3/3] Synchronizing Server Configurations..."
-                # Assumes nixops.sh is executable and in the project root
+            echo "🚀 [1/3] Payload Delivery: Committing and Pushing $TARGET_REPO..."
+            # Execute in a subshell to avoid stranding the user's terminal
+            (
+                cd "$TARGET_REPO" || exit 1
+                git add .
+                git commit -am "$1"
+                git push
+            )
+            
+            # Check if the subshell push succeeded (which triggers the post-receive hook)
+            if [ $? -eq 0 ]; then
+                echo "🚀 [2/3] Infrastructure: Synchronizing Server Configurations..."
+                # Back in the Pipulate root bounded context
                 if [ -f "./nixops.sh" ]; then
                     ./nixops.sh
                     
-                    # Execute the final server rebuild
-                    echo "🚀 [Final] Rebuilding Nginx Routes..."
+                    echo "🚀 [3/3] The Capstone: Rebuilding Nginx Routes..."
                     ssh -t mike@192.168.10.100 'sudo cp ~/nixos-config-staged/* /etc/nixos/ && sudo nixos-rebuild switch'
                     echo "✅ Atomic Deployment Complete."
                 else
                     echo "⚠️ Warning: nixops.sh not found. Server config sync skipped."
                 fi
             else
-                echo "❌ Error: Git push failed. Deployment halted."
+                echo "❌ Error: Target Git push failed. Deployment halted."
             fi
           }
-
           if [ "$EFFECTIVE_OS" = "darwin" ]; then
             alias xc='pbcopy <'
             alias xcp='pbcopy'
