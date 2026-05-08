@@ -3088,6 +3088,14 @@ function displayPhantomSystemMessage(message) {
     }
 }
 
+// The 80/20 HTMX Synchronization Hook
+function waitForHtmx() {
+    return new Promise(resolve => {
+        // The { once: true } flag automatically removes the listener after it fires!
+        document.body.addEventListener('htmx:afterSettle', resolve, { once: true });
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initializeChatInterface();
     initializeScrollObserver();
