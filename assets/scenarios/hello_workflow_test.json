@@ -139,6 +139,59 @@
         },
         "description": "\ud83c\udfa4 Final confirmation",
         "end_demo": true
+      },
+      {
+        "step_id": "07_voice_final",
+        "type": "mcp_tool_call",
+        "tool_name": "voice_synthesis",
+        "tool_args": {
+          "text": "The name has been submitted, and the greeting has been generated successfully. Now, let's lock the state."
+        },
+        "timing": {
+          "delay_before": 500
+        },
+        "description": "🎤 Transitioning to finalize"
+      },
+      {
+        "step_id": "08_flash_finalize",
+        "type": "mcp_tool_call",
+        "tool_name": "ui_flash_element",
+        "tool_args": {
+          "selector": "#hello-finalize-button",
+          "color": "gold",
+          "duration": 1500
+        },
+        "timing": {
+          "wait_for_selector": "#hello-finalize-button",
+          "timeout": 5000,
+          "delay_before": 1000
+        },
+        "description": "✨ Guide eye to the Finalize button"
+      },
+      {
+        "step_id": "09_click_finalize",
+        "type": "dom_action",
+        "action": "click",
+        "selector": "#hello-finalize-button",
+        "message_template": "✅ **Ghost Driver:** Clicked the Finalize button. Locking the workflow.",
+        "timing": {
+          "delay_before": 500
+        }
+      },
+      {
+        "step_id": "10_verify_locked",
+        "type": "mcp_tool_call",
+        "tool_name": "voice_synthesis",
+        "tool_args": {
+          "text": "The workflow is now officially locked. The Ghost Driver has completed its run."
+        },
+        "timing": {
+          "wait_for_selector": "#hello-unlock-button",
+          "timeout": 5000,
+          "delay_before": 1000
+        },
+        "description": "🎤 End of line confirmation",
+        "end_demo": true
       }
     ]
   }
