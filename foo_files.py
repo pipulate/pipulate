@@ -48,18 +48,27 @@ AI_PHOOEY_CHOP = """\
 # ============================================================================
 # I. THE SCRATCHPAD (Active Context & Transient Probes)
 # ============================================================================
-# Your daily ebb and flow happens here. Clear this out regularly.
+# Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-foo_files.py  # [4,028 tokens | 15,548 bytes]
+# foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!!
+
+# LET'S FIX THE PLAYER PIANO
+.gitignore  # [571 tokens | 2,096 bytes]
+apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
+assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
+assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
+config.py  # [4,170 tokens | 16,184 bytes]
+server.by  # [56,053 tokens | 267,214 bytes]
+pipulate/__init__.py  # [721 tokens | 2,998 bytes]
+pipulate/core.py  # [29,804 tokens | 144,977 bytes]
 
 # https://mikelev.in/llms.txt
 # remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
 # ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
-# flake.nix  # [8,673 tokens | 37,067 bytes]
 # flake.nix  # [8,673 tokens | 37,067 bytes]
 # https://mikelev.in/futureproof/unix-pipeline-ollama-neovim/
 
@@ -91,15 +100,6 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]
 
 # /home/mike/repos/trimnoir/_posts/2026-05-02-bitnet-and-the-browser-metronome.md  # [19,813 tokens | 88,454 bytes]
 
-# apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
-# assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
-# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
-
-config.py  # [4,170 tokens | 16,184 bytes]
-server.by  # [56,053 tokens | 267,214 bytes]
-pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-pipulate/core.py  # [29,804 tokens | 144,977 bytes]
-
 # config.py  # [4,170 tokens | 16,184 bytes]
 # # server.py  # [56,027 tokens | 267,108 bytes]
 # pipulate/__init__.py  # [721 tokens | 2,998 bytes]
@@ -121,6 +121,7 @@ pipulate/core.py  # [29,804 tokens | 144,977 bytes]
 # The foundational NPvg framework and state management.
 
 # CHAPTER 0: ONBOARDING
+# .gitignore  # [571 tokens | 2,096 bytes]
 # assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
 # assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
@@ -249,9 +250,9 @@ pipulate/core.py  # [29,804 tokens | 144,977 bytes]
 # apps/120_link_graph.py  # [54,375 tokens | 272,569 bytes]
 
 # CHAPTER 12: THE GAPALYZER SUITE
-Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [29,368 tokens | 97,634 bytes]
-Notebooks/imports/gap_analyzer_sauce.py  # [26,420 tokens | 116,412 bytes]
+# Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
+# Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [29,368 tokens | 97,634 bytes]
+# Notebooks/imports/gap_analyzer_sauce.py  # [26,420 tokens | 116,412 bytes]
 
 # ============================================================================
 # V. THE CONTENT LOOM & SEMANTIC ROUTER
