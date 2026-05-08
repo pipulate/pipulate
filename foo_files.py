@@ -50,10 +50,12 @@ AI_PHOOEY_CHOP = """\
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
+# foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!!
+
+https://www.fsf.org/bulletin/2021/fall/the-fundamentals-of-the-agplv3
 
 # .gitignore  # [571 tokens | 2,096 bytes]
 # config.py  # [4,170 tokens | 16,184 bytes]
@@ -162,8 +164,8 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]                                   
 # CHAPTER 2: THE SERVER MONOLITH
 # requirements.in  # [573 tokens | 1,924 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
-config.py  # [4,170 tokens | 16,184 bytes]
-server.py  # [56,027 tokens | 267,108 bytes]
+# config.py  # [4,170 tokens | 16,184 bytes]
+# server.py  # [56,027 tokens | 267,108 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT)
 # pipulate/__init__.py  # [721 tokens | 2,998 bytes]
