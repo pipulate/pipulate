@@ -56,8 +56,8 @@ AI_PHOOEY_CHOP = """\
 
 # !!!
 
-release.py  # [9,649 tokens | 43,340 bytes]
-__init__.py  # [367 tokens | 1,605 bytes]
+# release.py  # [9,649 tokens | 43,340 bytes]
+# __init__.py  # [367 tokens | 1,605 bytes]
 
 # https://www.fsf.org/bulletin/2021/fall/the-fundamentals-of-the-agplv3
 # https://www.gnu.org/licenses/agpl-3.0.html
@@ -69,6 +69,7 @@ __init__.py  # [367 tokens | 1,605 bytes]
 apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
 assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
 assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+! git show 9328dfbe:assets/scenarios/hello_workflow_test.json
 # assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
 # assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
