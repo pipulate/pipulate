@@ -50,21 +50,32 @@ AI_PHOOEY_CHOP = """\
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-# foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
+foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!!
 
+# .gitignore  # [571 tokens | 2,096 bytes]
+# config.py  # [4,170 tokens | 16,184 bytes]
+# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
+# pipulate/core.py  # [29,804 tokens | 144,977 bytes]
+# apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
+# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+# assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
+# assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
+
 # LET'S FIX THE PLAYER PIANO
-.gitignore  # [571 tokens | 2,096 bytes]
-apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
-assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
-assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
-config.py  # [4,170 tokens | 16,184 bytes]
-# server.by  # [56,053 tokens | 267,214 bytes]
-pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-pipulate/core.py  # [29,804 tokens | 144,977 bytes]
+# .gitignore  # [571 tokens | 2,096 bytes]
+# apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
+# assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
+# config.py  # [4,170 tokens | 16,184 bytes]
+# # server.by  # [56,053 tokens | 267,214 bytes]
+# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
+# pipulate/core.py  # [29,804 tokens | 144,977 bytes]
 
 # https://mikelev.in/llms.txt
 # remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
@@ -126,10 +137,13 @@ pipulate/core.py  # [29,804 tokens | 144,977 bytes]
 # assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
 # assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
+# config.py  # [4,170 tokens | 16,184 bytes]
 # pipulate/__init__.py  # [721 tokens | 2,998 bytes]
 # pipulate/core.py  # [29,804 tokens | 144,977 bytes]
-# config.py  # [4,170 tokens | 16,184 bytes]
-# server.py  # [56,001 tokens | 266,868 bytes]
+# apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
+# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+# servel.py  # [56,001 tokens | 266,868 bytes]
 # apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
 # apps/015_config.py  # [11,858 tokens | 55,451 bytes]
 
@@ -146,10 +160,10 @@ pipulate/core.py  # [29,804 tokens | 144,977 bytes]
 # cli.py  # [5,048 tokens | 22,411 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH
-# config.py  # [4,170 tokens | 16,184 bytes]
-# server.py  # [56,027 tokens | 267,108 bytes]
 # requirements.in  # [573 tokens | 1,924 bytes]
 # requirements.txt  # [7,010 tokens | 18,582 bytes]
+config.py  # [4,170 tokens | 16,184 bytes]
+server.py  # [56,027 tokens | 267,108 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT)
 # pipulate/__init__.py  # [721 tokens | 2,998 bytes]
