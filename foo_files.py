@@ -56,6 +56,7 @@ AI_PHOOEY_CHOP = """\
 # !!!
 
 https://www.fsf.org/bulletin/2021/fall/the-fundamentals-of-the-agplv3
+https://www.gnu.org/licenses/agpl-3.0.html
 
 # .gitignore  # [571 tokens | 2,096 bytes]
 # config.py  # [4,170 tokens | 16,184 bytes]
