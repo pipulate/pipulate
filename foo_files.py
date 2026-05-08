@@ -381,6 +381,21 @@ imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 # command they should execute after adding the custom CHOP here, because you
 # know humans aren't really that smart.
 
+CHOP_POST_MORTEM = """\
+# THE POST-MORTEM (Surgical Log Extraction)
+# COMMAND: python prompt_foo.py assets/prompts/debug_crash.md --chop CHOP_POST_MORTEM --no-tree
+# Pulls the most recent systemic state and the last breath of the machine.
+
+# 1. The tail end of the log (The Crash Context)
+! tail -n 150 logs/server.log
+
+# 2. Extracting the Radical Transparency FINDER_TOKENs (The Narrative)
+! grep -B 2 -A 5 "FINDER_TOKEN" logs/server.log | tail -n 50
+
+# 3. Any active Tracebacks
+! grep -A 20 "Traceback (most recent call last):" logs/server.log
+"""
+
 CHOP_404_AFFAIR = """\
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # COMMAND: python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree
