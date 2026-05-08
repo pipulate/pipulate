@@ -1770,6 +1770,21 @@ async function executeStepsWithBranching(steps, demoScript) {
             await new Promise(resolve => setTimeout(resolve, step.timing.delay_before));
         }
         
+        // 🎯 THE NEW EYES: Wait for specific DOM element to settle before proceeding
+        if (step.timing && step.timing.wait_for_selector) {
+            console.log(`🎯 Auto-waiting for element to appear: ${step.timing.wait_for_selector}`);
+            try {
+                // Default to a generous 20s timeout to survive LLM streaming delays
+                const timeout = step.timing.timeout || 20000;
+                await waitForSelector(step.timing.wait_for_selector, timeout);
+                console.log(`✅ Element found. Proceeding with step.`);
+            } catch (error) {
+                console.error(`❌ Sync failure: ${error.message}`);
+                await addDemoMessage('system', `❌ **Test Stopped:** ${error.message}`);
+                return false; // Safely abort the entire async sequence
+            }
+        }
+        
         // Execute the step
         switch (step.type) {
             case 'user_input':
