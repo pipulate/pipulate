@@ -12,8 +12,8 @@ Usage:
     pipulate
 """
 
-__version__ = "1.71"
-__version_description__ = "Zenosparadoxobsticles"
+__version__ = "1.72"
+__version_description__ = "Ghost Driver Red Light"
 __email__ = "pipulate@gmail.com"
 __description__ = "A Notebook-inspired Hand-cranked Agentic Framework" 
 
