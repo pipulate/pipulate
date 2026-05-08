@@ -59,9 +59,10 @@ AI_PHOOEY_CHOP = """\
 .gitignore  # [571 tokens | 2,096 bytes]
 apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
 assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
+assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
 config.py  # [4,170 tokens | 16,184 bytes]
-server.by  # [56,053 tokens | 267,214 bytes]
+# server.by  # [56,053 tokens | 267,214 bytes]
 pipulate/__init__.py  # [721 tokens | 2,998 bytes]
 pipulate/core.py  # [29,804 tokens | 144,977 bytes]
 
