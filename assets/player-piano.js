@@ -1110,10 +1110,23 @@ async function executeDemoSequence(demoScript) {
     
     for (const step of demoScript.steps) {
         console.log(`🎯 Executing step: ${step.step_id}`);
-        
+
         // Wait for delay before step
         if (step.timing && step.timing.delay_before) {
             await new Promise(resolve => setTimeout(resolve, step.timing.delay_before));
+        }
+        
+        // 🎯 THE NEW EYES: Wait for specific DOM element to settle before proceeding
+        if (step.timing && step.timing.wait_for_selector) {
+            console.log(`🎯 Auto-waiting for element to appear: ${step.timing.wait_for_selector}`);
+            try {
+                await waitForSelector(step.timing.wait_for_selector, step.timing.timeout || 5000);
+                console.log(`✅ Element found. Proceeding with step.`);
+            } catch (error) {
+                console.error(`❌ Sync failure: ${error.message}`);
+                await addDemoMessage('system', `❌ **Test Stopped:** ${error.message}`);
+                break; // Halt the entire sequence
+            }
         }
         
         switch (step.type) {
