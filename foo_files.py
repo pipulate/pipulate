@@ -51,10 +51,16 @@ AI_PHOOEY_CHOP = """\
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-# foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
+foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!!
+
+.gitignore  # [571 tokens | 2,096 bytes]
+config.py  # [4,170 tokens | 16,184 bytes]
+server.py  # [56,173 tokens | 267,633 bytes]
+imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
+imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 
 # release.py  # [9,649 tokens | 43,340 bytes]
 # __init__.py  # [367 tokens | 1,605 bytes]
@@ -66,10 +72,10 @@ AI_PHOOEY_CHOP = """\
 # config.py  # [4,170 tokens | 16,184 bytes]
 # pipulate/__init__.py  # [721 tokens | 2,998 bytes]
 # pipulate/core.py  # [29,804 tokens | 144,977 bytes]
-apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
-assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
-assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-! git show 9328dfbe:assets/scenarios/hello_workflow_test.json
+# apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
+# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+# ! git show 9328dfbe:assets/scenarios/hello_workflow_test.json
 # assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
 # assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
