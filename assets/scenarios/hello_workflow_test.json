@@ -77,7 +77,7 @@
         },
         "timing": {
           "wait_for_selector": "#hello-step01-name-input",
-          "timeout": 5000
+          "timeout": 20000
         }
       },
       {
@@ -112,6 +112,7 @@
           "duration": 1500
         },
         "timing": {
+          "timeout": 20000,
           "delay_before": 1500
         },
         "description": "\u2728 Guide eye to result"

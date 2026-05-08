@@ -1140,7 +1140,7 @@ async function executeDemoSequence(demoScript) {
                 
                         case 'dom_action':
                 const success = await executeDomActionStep(step); if (success === false) { console.error('❌ Step failed, stopping demo'); await addDemoMessage('system', '❌ **Test Stopped:** Step failed.'); break; }
-                break;
+                return;
                 
             case 'mcp_tool_call':
                 await executeMcpToolCallStep(step);
