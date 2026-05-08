@@ -76,9 +76,9 @@
           "duration": 1000
         },
         "timing": {
-          "delay_before": 100
-        },
-        "description": "\u2728 Guide eye to name input"
+          "wait_for_selector": "#hello-step01-name-input",
+          "timeout": 5000
+        }
       },
       {
         "step_id": "04_fill_name",
