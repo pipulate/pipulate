@@ -132,19 +132,6 @@
         "type": "mcp_tool_call",
         "tool_name": "voice_synthesis",
         "tool_args": {
-          "text": "The name has been submitted, and the greeting has been generated successfully."
-        },
-        "timing": {
-          "delay_before": 500
-        },
-        "description": "\ud83c\udfa4 Final confirmation",
-        "end_demo": true
-      },
-      {
-        "step_id": "07_voice_final",
-        "type": "mcp_tool_call",
-        "tool_name": "voice_synthesis",
-        "tool_args": {
           "text": "The name has been submitted, and the greeting has been generated successfully. Now, let's lock the state."
         },
         "timing": {
