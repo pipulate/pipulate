@@ -3088,6 +3088,37 @@ function displayPhantomSystemMessage(message) {
     }
 }
 
+// The Targeted Synchronization Hook (Auto-Waiting)
+function waitForSelector(selector, timeout = 5000) {
+    return new Promise((resolve, reject) => {
+        // 1. Immediate check: Is it already there?
+        if (document.querySelector(selector)) {
+            return resolve(document.querySelector(selector));
+        }
+
+        // 2. Setup the Observer
+        const observer = new MutationObserver((mutations, obs) => {
+            const element = document.querySelector(selector);
+            if (element) {
+                obs.disconnect(); // Stop watching once found
+                resolve(element);
+            }
+        });
+
+        // 3. Start watching the entire body for changes
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+
+        // 4. Implement the Timeout Safety Net
+        setTimeout(() => {
+            observer.disconnect();
+            reject(new Error(`Timeout: Target not found after waiting ${timeout}ms for ${selector}`));
+        }, timeout);
+    });
+}
+
 // The 80/20 HTMX Synchronization Hook
 function waitForHtmx() {
     return new Promise(resolve => {
