@@ -128,6 +128,30 @@
           "delay_before": 500
         }
       },
+
+
+
+{
+        "step_id": "06_verify_greeting",
+        "type": "dom_action",
+        "action": "click",
+        "selector": "#hello-step02-greeting-input",
+        "read_value_from": "#hello-step02-greeting-input",
+        "message_template": "✅ **Verified:** Resulting Greeting: {value}",
+        "timing": {
+          "delay_before": 500
+        }
+      },
+      {
+        "step_id": "06b_submit_greeting",
+        "type": "dom_action",
+        "action": "submit_form",
+        "selector": "#hello-step02-form",
+        "timing": {
+          "delay_before": 800
+        },
+        "description": "Submitting greeting form"
+      },
       {
         "step_id": "07_voice_final",
         "type": "mcp_tool_call",
@@ -151,7 +175,7 @@
         },
         "timing": {
           "wait_for_selector": "#hello-finalize-button",
-          "timeout": 5000,
+          "timeout": 20000,
           "delay_before": 1000
         },
         "description": "✨ Guide eye to the Finalize button"
