@@ -3044,25 +3044,21 @@ async function showDemoComebackMessage(message, subtitle) {
         const cleanSubtitle = subtitle ? subtitle.replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim() : '';
         
         const messageDiv = document.createElement('div');
-        messageDiv.className = 'message assistant demo-comeback';
-        messageDiv.innerHTML = `
-            <div class="message-container">
-                <div class="message-content demo-comeback-content">
-                    <div class="demo-comeback-main">${cleanMessage}</div>
-                    ${cleanSubtitle ? `<div class="demo-comeback-subtitle">${cleanSubtitle}</div>` : ''}
-                </div>
-            </div>
-        `;
+        messageDiv.className = 'demo-comeback';
+        messageDiv.innerHTML = `<div class="demo-comeback-content"><div class="demo-comeback-main">${cleanMessage}</div>${cleanSubtitle ? `<div class="demo-comeback-subtitle">${cleanSubtitle}</div>` : ''}</div>`;
 
-
-        // Add special styling - TIGHTENED
+        // Add special styling - INDEPENDENT STRUCTURE
         messageDiv.style.cssText = `
             background: linear-gradient(135deg, #4f46e5, #7c3aed);
             border: 2px solid #8b5cf6;
             border-radius: 12px;
-            margin: 8px; /* Reduced from 16px 8px */
-            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2); /* Softer shadow */
+            margin: 8px auto; /* Center it if necessary */
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
             animation: demoGlow 2s ease-in-out;
+            display: flex; /* Establish new flex context */
+            justify-content: center;
+            width: fit-content; /* Don't stretch full width unless needed */
+            max-width: 90%;
         `;
         
         // Add CSS animation
