@@ -76,17 +76,25 @@ class IntroductionPlugin:
 
             if not operator_name:
                 # STATE 1: The Bouncer Persona (Airlock has not fired)
-                msg = (
-                    "Halt. I am Chip O'Theseus. My speech is generated entirely on your machine, "
-                    "but you are trying to sneak into the VIP lounge through the kitchen. "
-                    "You have discovered port 5001, but the doors to the Control Room remain sealed until you complete the initiation rite. "
-                    "Return to your JupyterLab tab, execute the Golden Path, and drop the sentinel file."
-                )
+                if not os.environ.get('PIPULATE_HAS_GREETED'):
+                    msg = (
+                        "Halt. I am Chip O'Theseus. My speech is generated entirely on your machine, "
+                        "but you are trying to sneak into the VIP lounge through the kitchen. "
+                        "You have discovered port 5001, but the doors to the Control Room remain sealed until you complete the initiation rite. "
+                        "Return to your JupyterLab tab, execute the Golden Path, and drop the sentinel file."
+                    )
+                    os.environ['PIPULATE_HAS_GREETED'] = '1'
+                else:
+                    msg = ""
                 return "Access Denied 🛑", msg, None
 
             elif not has_configured:
                 # STATE 2: The Guide Persona (Airlock fired, but Configuration is pending)
-                msg = f"Welcome to {dynamic_app_name}, {operator_name}. I am Chip O'Theseus. To see a demonstration of my capabilities, press Ctrl+Alt+D right now. Otherwise, we will proceed to finalize your configuration."
+                if not os.environ.get('PIPULATE_HAS_GREETED'):
+                    msg = f"Welcome to {dynamic_app_name}, {operator_name}. I am Chip O'Theseus. To see a demonstration of my capabilities, press <strong class='platform-shortcut'>Ctrl+Alt+D</strong> right now. Otherwise, we will proceed to finalize your configuration."
+                    os.environ['PIPULATE_HAS_GREETED'] = '1'
+                else:
+                    msg = ""
                 return "Welcome", msg, 'finalize'
                 
             else:
