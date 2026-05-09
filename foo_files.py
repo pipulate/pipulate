@@ -56,14 +56,14 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]                                   
 
 # !!!
 
-flake.py
-assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
+# flake.by
+# assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
 assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
 pipulate/__init__.py  # [721 tokens | 2,998 bytes]
 pipulate/core.py  # [29,800 tokens | 144,966 bytes]
 config.py  # [4,170 tokens | 16,184 bytes]
-server.py  # [56,191 tokens | 267,687 bytes]
+# server.py  # [56,191 tokens | 267,687 bytes]
 
 # JUST ENOUGH TO SEE THE WAND AND OVER-STUFFED WORKFLOW WAITING FOR A SKILL.md EXTRACTION
 # .gitignore  # [571 tokens | 2,096 bytes]
