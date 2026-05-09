@@ -202,7 +202,7 @@ class IntroductionPlugin:
                 Div(*nav_buttons, style="display: flex; justify-content: flex-end;"),
                 id=step_id,
                 cls="intro-slide",
-            )
+            ),
         shortcut_script
         )
 
