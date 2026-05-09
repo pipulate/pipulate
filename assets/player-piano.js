@@ -3094,6 +3094,10 @@ async function showDemoComebackMessage(message, subtitle) {
                     margin: 2px 0 0 0; /* Tiny gap */
                     line-height: 1.2;
                 }
+                /* Overriding the base .message class padding */
+                .message.demo-comeback {
+                    padding: 6px 10px !important;
+                }
             `;
             document.head.appendChild(style);
         }
