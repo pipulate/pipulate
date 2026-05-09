@@ -1321,3 +1321,25 @@ def execute_cloud_analysis(job_id: str, recovered_url: str, active_cloud_model: 
         print(f"💾 Optics Baseline Augmented: {xl_file.name}")
     else:
         print("⚠️ Technical Baseline Excel file not found. Did you run the Pandas cell?")
+
+
+def render_completion_handoff():
+    """Renders the final success UI and sets the sentinel file to unlock the app."""
+    from IPython.display import display, HTML
+    from pipulate import wand
+    
+    wand.speak("Congratulations! You unlocked the Pipulate tab.")
+    
+    handoff_html = HTML("""
+    <div style="margin: 20px 0; padding: 20px; border: 2px solid #28a745; border-radius: 8px; text-align: center; background-color: #e6ffec;">
+        <h2 style="color: #28a745; margin-top: 0;">✅ Level Unlocked!</h2>
+        <p style="font-size: 1.2em; color: #333;">Your baseline deliverable is complete. Click the link below to enter the main Pipulate app and configure your permanent environment.</p>
+        <a href="http://localhost:5001" target="_blank" style="display: inline-block; padding: 12px 24px; background-color: #28a745; color: white; text-decoration: none; font-weight: bold; border-radius: 6px; font-size: 1.1em;">
+            🚪 Open Pipulate Tab (localhost:5001)
+        </a>
+    </div>
+    """)
+    display(handoff_html)
+    
+    # Drop the Sentinel File
+    wand.paths.data.joinpath('.onboarded').touch(exist_ok=True)
