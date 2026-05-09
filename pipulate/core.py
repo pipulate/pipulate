@@ -3080,3 +3080,31 @@ class Pipulate:
         except Exception as e:
             logger.error(f"❌ Airlock Failure: {e}")
             return False
+
+    def copy_button(self, text_to_copy: str, label: str = "Copy Markdown"):
+        """
+        Injects a web-native Copy to Clipboard button directly into the Jupyter output.
+        Reuses the global SVG icon for aesthetic consistency.
+        """
+        if not self.is_notebook_context:
+            return # Only render in Jupyter
+
+        import json
+        from IPython.display import display, HTML
+
+        # Grab the exact same SVG used in the Chat UI
+        clipboard_svg = CFG.SVG_ICONS.get('CLIPBOARD', '📋')
+        
+        # Safely escape the text for injection into a JS function
+        escaped_text = json.dumps(text_to_copy)
+        
+        # The HTML payload includes inline JS to trigger the browser's native clipboard API
+        html_payload = f"""
+        <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
+            <button onclick='navigator.clipboard.writeText({escaped_text}).then(() => {{ const original = this.innerHTML; this.innerHTML = "✅ Copied!"; setTimeout(() => this.innerHTML = original, 2000); }}).catch(() => this.innerHTML="❌ Error")' 
+                    style="display: flex; align-items: center; gap: 6px; background: var(--jp-layout-color2, #f5f5f5); border: 1px solid var(--jp-border-color1, #ccc); border-radius: 4px; padding: 6px 12px; cursor: pointer; color: var(--jp-ui-font-color1, #333); font-family: inherit; font-size: 0.9em; transition: all 0.2s;">
+                {clipboard_svg} {label}
+            </button>
+        </div>
+        """
+        display(HTML(html_payload))
