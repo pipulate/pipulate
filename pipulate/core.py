@@ -624,7 +624,7 @@ class Pipulate:
             )
         elif side_quest == "release":
             self.speak(
-                "The compulsion is lifted. The katas are complete. Cross the threshold into the Forever Machine.",
+                "Workflow complete.",
                 emoji=emoji
             )
         else:

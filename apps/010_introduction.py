@@ -30,7 +30,7 @@ class IntroductionPlugin:
 
     # Narrative Script (Base template)
     NARRATION = {
-        'finalize': "You are about to Enter a Key. Every workflow requires a unique Key to store its memory. Keep the default. Proceed to Configuration workflow."
+        'finalize': 'Every workflow requires a unique Key to store its memory. Keep the default by simply clicking "Enter Key". Proceed to Configuration workflow.'
     }
 
     def __init__(self, app, pipulate, pipeline, db, app_name=APP_NAME):
