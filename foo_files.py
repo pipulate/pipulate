@@ -426,6 +426,13 @@ Notebooks/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
 # command they should execute after adding the custom CHOP here, because you
 # know humans aren't really that smart.
 
+CHOP_EMPTY = """\
+# THE 40K FOOT VIEW (Minimalist Context)
+# COMMAND: python prompt_foo.py --chop CHOP_EMPTY --no-tree
+# Used for story generation and pure text tasks where codebase noise is a liability.
+
+foo_files.py  # Just the map.
+"""
 CHOP_POST_MORTEM = """\
 # THE POST-MORTEM (Surgical Log Extraction)
 # COMMAND: python prompt_foo.py assets/prompts/debug_crash.md --chop CHOP_POST_MORTEM --no-tree
