@@ -102,6 +102,11 @@ for key in config_keys:
 # Show startup banner only when running as main script, not on watchdog restarts or imports
 if __name__ == '__main__' and not os.environ.get('PIPULATE_WATCHDOG_RESTART'):
     try:
+        # 🧹 THE SLATE WIPE: Clear the greeting sentinel on a true manual start
+        greet_sentinel = Path('data/.has_greeted')
+        if greet_sentinel.exists():
+            greet_sentinel.unlink()
+
         aa.figlet_banner("STARTUP", "Pipulate server starting...", font='slant', color=BANNER_COLORS['server_restart'])
         aa.white_rabbit()
         aa.system_diagram()
