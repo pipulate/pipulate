@@ -3091,6 +3091,7 @@ class Pipulate:
             return # Only render in Jupyter
 
         import json
+        import html
         from IPython.display import display, HTML
 
         # Grab the exact same SVG used in the Chat UI
