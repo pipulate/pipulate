@@ -13,6 +13,7 @@ Features:
 """
 
 import time
+import os
 import asyncio
 from fasthtml.common import *
 from loguru import logger
@@ -27,7 +28,6 @@ class IntroductionPlugin:
     APP_NAME = 'introduction'
     DISPLAY_NAME = 'Home 🏠'
     ENDPOINT_MESSAGE = 'Welcome! Chat with me here.'
-    _HAS_PLAYED_GREETING = False
 
     # Narrative Script (Base template)
     NARRATION = {
@@ -91,9 +91,9 @@ class IntroductionPlugin:
                 
             else:
                 # STATE 3: The Veteran Persona (Config workflow is finalized)
-                if not IntroductionPlugin._HAS_PLAYED_GREETING:
+                if not os.environ.get('PIPULATE_HAS_GREETED'):
                     msg = f"Welcome back to {dynamic_app_name}, {operator_name}. All systems are online and ready."
-                    IntroductionPlugin._HAS_PLAYED_GREETING = True
+                    os.environ['PIPULATE_HAS_GREETED'] = '1'
                 else:
                     msg = "" # Silence on subsequent visits
                 return "Dashboard Ready ✅", msg, None
