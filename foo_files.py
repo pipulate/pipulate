@@ -56,9 +56,11 @@ AI_PHOOEY_CHOP = """\
 
 # !!!
 
-assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
-assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-deleteme.txt  # [8,335 tokens | 31,049 bytes]
+flake.nix  # [9,135 tokens | 39,284 bytes]
+
+# assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+# deleteme.txt  # [8,335 tokens | 31,049 bytes]
 
 # .gitignore  # [571 tokens | 2,096 bytes]
 # config.py  # [4,170 tokens | 16,184 bytes]
