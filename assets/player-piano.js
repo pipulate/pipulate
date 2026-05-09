@@ -3052,6 +3052,7 @@ async function showDemoComebackMessage(message, subtitle) {
             background: linear-gradient(135deg, #4f46e5, #7c3aed);
             border: 2px solid #8b5cf6;
             border-radius: 12px;
+            padding: 15px 10px;
             margin: 8px auto; /* Center it if necessary */
             box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
             animation: demoGlow 2s ease-in-out;
