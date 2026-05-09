@@ -3079,6 +3079,7 @@ async function showDemoComebackMessage(message, subtitle) {
                     color: white !important;
                     text-align: center;
                     padding: 0 0 !important; /* Forced tight padding */
+                    white-space: normal !important; /* THE GHOST BUSTER */
                 }
                 .demo-comeback-main {
                     font-size: 0.95em; /* Reduced for elegance */
