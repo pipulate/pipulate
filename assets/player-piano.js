@@ -3078,7 +3078,7 @@ async function showDemoComebackMessage(message, subtitle) {
                 .demo-comeback-content {
                     color: white !important;
                     text-align: center;
-                    padding: 6px 12px !important; /* Forced tight padding */
+                    padding: 0 0 !important; /* Forced tight padding */
                 }
                 .demo-comeback-main {
                     font-size: 0.95em; /* Reduced for elegance */
