@@ -56,7 +56,9 @@ AI_PHOOEY_CHOP = """\
 
 # !!!
 
-flake.nix  # [9,135 tokens | 39,284 bytes]
+/home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
+
+# flake.nix  # [9,135 tokens | 39,284 bytes]
 
 # assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
