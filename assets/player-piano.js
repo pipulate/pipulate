@@ -23,6 +23,11 @@ const platform = navigator.platform.toLowerCase();
 const userAgent = navigator.userAgent.toLowerCase();
 const isMac = platform.includes('mac') || userAgent.includes('mac');
 
+let platformName = 'Linux';
+if (isMac) platformName = 'Mac';
+else if (platform.includes('win') || userAgent.includes('windows')) platformName = 'Windows';
+window.CURRENT_PLATFORM_NAME = platformName;
+
 // Set platform-appropriate display text for keyboard shortcuts
 window.PLATFORM_KEYS = {
     display: isMac ? 'Control+Option' : 'Ctrl+Alt',
