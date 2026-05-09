@@ -2056,7 +2056,7 @@ async function executeCleanSystemReplyStep(step) {
     
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message assistant';
-    messageDiv.innerHTML = `<div class="message-container"><div class="message-content"><p></p></div></div>`;
+    messageDiv.innerHTML = `<div class="message-container"><div class="message-content"></div></div>`;
     messageDiv.dataset.rawText = ''; // Initialize raw text tracking
     msgList.appendChild(messageDiv);
     msgList.scrollTop = msgList.scrollHeight;
@@ -2259,7 +2259,7 @@ function displayPhantomLLMMessage(message) {
         
         const messageDiv = document.createElement('div');
         messageDiv.className = 'message assistant';
-        messageDiv.innerHTML = `<div class="message-container"><div class="message-content"><p>${adaptedMessage}</p></div></div>`;
+        messageDiv.innerHTML = `<div class="message-container"><div class="message-content">${adaptedMessage}</div></div>`;
         msgList.appendChild(messageDiv);
         msgList.scrollTop = msgList.scrollHeight;
     }
