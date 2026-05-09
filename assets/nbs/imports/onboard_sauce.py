@@ -949,17 +949,17 @@ def reveal_system_architecture():
     
     console = Console()
     lens_art = """
-  Idea --> Lens 1   -->   Lens 2  -->  Lens 3  -> Lens 4 -> Lens 5 -> Lens 6
+  Idea --> Lens 1   -->   Lens 2  -->  Lens 3  -> Lens 4 -> Lens 5
 
      -----> ,--.
-     ---> ,'    `.---------> ,--.
-     --> /        \------> ,'    `.-------> ,--.        ,-.
-  o  -> /  Linux   \----> /  HTTP  \----> ,'_hx `.--->,'   `.    ,-.
- /|\   (  HARDWARE  )--> ( PROTOCOL )--> ( LINGUA )->( UI/UX )->(APP)->(git)
- / \ -> \  (Nix)   /----> \ (html) /----> `..py ,'--->`.   ,'    `-'
-     --> \        /------> `.    ,'-------> `--'        `-'    And so on
-     ---> `.    ,'---------> `--'         AI Help
-     -----> `--'           AI Help
+     ---> ,'    `.--------> ,--.
+     --> /        \-----> ,'    `.------> ,--.        ,-.
+  o  -> /  Linux   \---> /  HTTP  \---> ,'_hx `.--->,'   `.    ,-.
+ /|\   (  HARDWARE  )-> ( PROTOCOL )-> ( LINGUA )->( UI/UX )->(APP)
+ / \ -> \  (Nix)   /---> \ (html) /---> `..py ,'--->`.   ,'    `-'
+     --> \        /-----> `.    ,'------> `--'        `-'      git 
+     ---> `.    ,'--------> `--'        AI Help
+     -----> `--'          AI Help
           AI Help
     """
     
@@ -969,10 +969,10 @@ def reveal_system_architecture():
     styled_art.highlight_regex(r"PROTOCOL|HTTP|html", "bold green")
     styled_art.highlight_regex(r"LINGUA|_hx|\.py", "bold yellow")
     styled_art.highlight_regex(r"UI/UX", "bold magenta")
-    styled_art.highlight_regex(r"APP|git", "bold blue")
+    styled_art.highlight_regex(r"APP", "bold bright_blue")
     styled_art.highlight_regex(r"AI Help", "dim white")
     
-    console.print(Panel(styled_art, title="[bold orange3]The Pipulate Lens Stack[/]", border_style="cyan"))
+    console.print(Panel(styled_art, title="[bold orange3]The Pipulate Lens Stack[/]", border_style="cyan", width=75))
 
 
 def build_local_optics_prompt(target_url: str):
