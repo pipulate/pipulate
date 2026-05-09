@@ -85,7 +85,7 @@ class IntroductionPlugin:
 
             elif not has_configured:
                 # STATE 2: The Guide Persona (Airlock fired, but Configuration is pending)
-                msg = f"Welcome to {dynamic_app_name}, {operator_name}. I am Chip O'Theseus. To see a demonstration of my capabilities, press **Ctrl+Alt+D** (or **Control+Option+D** on Mac) right now. Otherwise, we will proceed to finalize your configuration."
+                msg = f"Welcome to {dynamic_app_name}, {operator_name}. I am Chip O'Theseus. To see a demonstration of my capabilities, press Ctrl+Alt+D (or Control+Option+D on Mac) right now. Otherwise, we will proceed to finalize your configuration."
                 return "Welcome", msg, 'finalize'
                 
             else:
