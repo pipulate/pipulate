@@ -604,6 +604,7 @@ class Pipulate:
             side_quest: bool or str. 
                 - True: Mandatory action required.
                 - "optional": Action available but not required.
+                - "release": The workflow is complete; lift the compulsion.
                 - False: Standard progression.
             emoji: The icon prepended to the spoken text.
             newline: If True (default), prints an empty line before the compulsion for visual pacing.
@@ -619,6 +620,11 @@ class Pipulate:
         elif side_quest == "optional":
             self.speak(
                 "Go on the optional side-quest above. Then run the next cell to continue.",
+                emoji=emoji
+            )
+        elif side_quest == "release":
+            self.speak(
+                "The compulsion is lifted. The katas are complete. Cross the threshold into the Forever Machine.",
                 emoji=emoji
             )
         else:
