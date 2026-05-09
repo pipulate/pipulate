@@ -3,6 +3,7 @@ import importlib
 from pathlib import Path
 import functools
 import json
+import html
 import os
 import re
 from dotenv import load_dotenv, set_key
@@ -3095,13 +3096,15 @@ class Pipulate:
         # Grab the exact same SVG used in the Chat UI
         clipboard_svg = CFG.SVG_ICONS.get('CLIPBOARD', '📋')
         
-        # Safely escape the text for injection into a JS function
-        escaped_text = json.dumps(text_to_copy)
+        # Safely escape the text for JS, and then escape the JS for HTML attribute injection
+        safe_js_string = json.dumps(text_to_copy)
+        safe_html_attr = html.escape(safe_js_string)
         
         # The HTML payload includes inline JS to trigger the browser's native clipboard API
+        # Notice we swapped to double-quotes for the onclick attribute to wrap the escaped entities
         html_payload = f"""
         <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
-            <button onclick='navigator.clipboard.writeText({escaped_text}).then(() => {{ const original = this.innerHTML; this.innerHTML = "✅ Copied!"; setTimeout(() => this.innerHTML = original, 2000); }}).catch(() => this.innerHTML="❌ Error")' 
+            <button onclick="navigator.clipboard.writeText({safe_html_attr}).then(() => {{ const original = this.innerHTML; this.innerHTML = '✅ Copied!'; setTimeout(() => this.innerHTML = original, 2000); }}).catch(() => this.innerHTML='❌ Error')"
                     style="display: flex; align-items: center; gap: 6px; background: var(--jp-layout-color2, #f5f5f5); border: 1px solid var(--jp-border-color1, #ccc); border-radius: 4px; padding: 6px 12px; cursor: pointer; color: var(--jp-ui-font-color1, #333); font-family: inherit; font-size: 0.9em; transition: all 0.2s;">
                 {clipboard_svg} {label}
             </button>
