@@ -51,16 +51,19 @@ AI_PHOOEY_CHOP = """\
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
+# foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!!
 
-.gitignore  # [571 tokens | 2,096 bytes]
-config.py  # [4,170 tokens | 16,184 bytes]
-server.py  # [56,173 tokens | 267,633 bytes]
-imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
-imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
+assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
+assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+
+# .gitignore  # [571 tokens | 2,096 bytes]
+# config.py  # [4,170 tokens | 16,184 bytes]
+# server.py  # [56,173 tokens | 267,633 bytes]
+# imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
+# imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 
 # release.py  # [9,649 tokens | 43,340 bytes]
 # __init__.py  # [367 tokens | 1,605 bytes]
@@ -74,7 +77,6 @@ imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 # pipulate/core.py  # [29,804 tokens | 144,977 bytes]
 # apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
 # assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 # ! git show 9328dfbe:assets/scenarios/hello_workflow_test.json
 # assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
 # assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
@@ -122,7 +124,6 @@ imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 # ! git --no-pager log -n 100
 
 # .gitignore  # [571 tokens | 2,096 bytes]
-# scripts/articles/lsa.py  # [2,280 tokens | 10,180 bytes]
 
 # /home/mike/repos/trimnoir/_posts/2026-05-02-bitnet-and-the-browser-metronome.md  # [19,813 tokens | 88,454 bytes]
 
@@ -577,6 +578,7 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
 # scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
+# scripts/articles/lsa.py  # [2,349 tokens | 10,485 bytes]
 # scripts/articles/other/make_article.py  # [1,513 tokens | 6,559 bytes]
 # scripts/articles/scrub_tags.py  # [358 tokens | 1,587 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
