@@ -3053,19 +3053,17 @@ async function showDemoComebackMessage(message, subtitle) {
                 </div>
             </div>
         `;
-        
-        // Add special styling
+
+
+        // Add special styling - TIGHTENED
         messageDiv.style.cssText = `
             background: linear-gradient(135deg, #4f46e5, #7c3aed);
             border: 2px solid #8b5cf6;
             border-radius: 12px;
-            margin: 16px 8px;
-            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+            margin: 8px; /* Reduced from 16px 8px */
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2); /* Softer shadow */
             animation: demoGlow 2s ease-in-out;
         `;
-        
-        msgList.appendChild(messageDiv);
-        msgList.scrollTop = msgList.scrollHeight;
         
         // Add CSS animation
         if (!document.querySelector('#demo-comeback-styles')) {
@@ -3073,29 +3071,35 @@ async function showDemoComebackMessage(message, subtitle) {
             style.id = 'demo-comeback-styles';
             style.textContent = `
                 @keyframes demoGlow {
-                    0% { transform: scale(0.95); opacity: 0; box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3); }
-                    50% { transform: scale(1.02); opacity: 1; box-shadow: 0 12px 35px rgba(139, 92, 246, 0.6); }
-                    100% { transform: scale(1); opacity: 1; box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3); }
+                    0% { transform: scale(0.98); opacity: 0.9; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2); }
+                    50% { transform: scale(1.01); opacity: 1; box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4); }
+                    100% { transform: scale(1); opacity: 1; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2); }
                 }
                 .demo-comeback-content {
                     color: white !important;
                     text-align: center;
-                    padding: 8px 16px;
+                    padding: 6px 12px !important; /* Forced tight padding */
                 }
                 .demo-comeback-main {
-                    font-size: 1.1em;
+                    font-size: 0.95em; /* Reduced for elegance */
                     font-weight: 600;
                     margin: 0;
+                    line-height: 1.3;
                 }
                 .demo-comeback-subtitle {
-                    font-size: 0.9em;
+                    font-size: 0.8em;
                     opacity: 0.9;
                     font-style: italic;
-                    margin: 0;
+                    margin: 2px 0 0 0; /* Tiny gap */
+                    line-height: 1.2;
                 }
             `;
             document.head.appendChild(style);
         }
+
+        
+        msgList.appendChild(messageDiv);
+        msgList.scrollTop = msgList.scrollHeight;
         
         console.log('🎭 Demo comeback message displayed with special styling');
         
