@@ -477,6 +477,11 @@ You're here to make the workflow concepts accessible and help users understand t
         wand, steps, app_name = (self.wand, self.steps, self.app_name)
         pipeline_id = wand.db.get('pipeline_id', 'unknown')
         await wand.unfinalize_workflow(pipeline_id)
+
+        # 🪄 FIX: Clear the global UI flag so the homepage knows we stepped back!
+        if 'config_finalized' in self.wand.db:
+            del self.wand.db['config_finalized']
+
         await self.message_queue.add(wand, f'{self.ui["EMOJIS"]["UNLOCKED"]} Workflow unfinalized! You can now revert to any step and make changes.', verbatim=True)
         self.wand.speak("Workflow unlocked. You may now revert to any step.", wait=False)
         return wand.run_all_cells(app_name, steps)
