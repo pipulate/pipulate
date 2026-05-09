@@ -7,25 +7,42 @@ Hi, AI! Please run: .venv/bin/python AI_RUNME.py
 > **Your data. Your AI. Your machine. Your control.**  
 > No subscriptions, no vendor lock-in, no cloud costs.  
 
-## 🚀 Quick Start for Impatient People
+## Quick Start: Be Running in 5 Minutes
 
-**Want to skip the philosophy and just see what this does?**
+**Want to skip the philosophy and just see what this does? Paste this into your terminal:**
 
 ```bash
-# 1. Install Pipulate (one-time setup)
-curl -L https://pipulate.com/install.sh | bash -s TestProject
+curl -fsSL https://pipulate.com/install.sh | bash
 ```
 
 > **Note:** Nix creates a perfectly reproducible environment, like Docker but more integrated. The first setup might take a few minutes to download dependencies, but subsequent launches are fast.
 
 ```bash
 # 2. Launch it
-cd ~/pipulate && ./run
+nix develop
 ```
 
 **What you get:** A local web app at `http://localhost:5001` with step-by-step workflows, integrated AI chat, and a JupyterLab instance at `http://localhost:8888`. No cloud required.
 
-**Success looks like:** Two browser tabs auto-open showing the Pipulate interface and JupyterLab.
+**Success looks like:** A JupyterLab Notebook tab opens in your default browser and Onboards you to the FastHTML web app.
+
+These few commands:
+- ✅ Updates to the latest version automatically
+- ✅ Starts JupyterLab and the Pipulate server  
+- ✅ Opens web interfaces in your browser
+- ✅ Provides a complete, reproducible development environment
+
+**That's it!** You now have a local-first development environment with AI integration.
+
+### 4. Run It Again!
+
+1. You can just forcibly exit out of that Terminal it's running from.
+2. Open a new Terminal, and once again:
+
+```bash
+cd ~/pipulate
+nix develop
+```
 
 ## 💡 What Can You Actually Build?
 
