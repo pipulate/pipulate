@@ -51,12 +51,49 @@ AI_PHOOEY_CHOP = """\
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-# foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
+foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!!
 
-/home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
+# JUST ENOUGH TO SEE THE WAND AND OVER-STUFFED WORKFLOW WAITING FOR A SKILL.md EXTRACTION
+# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
+# pipulate/core.py  # [29,804 tokens | 144,977 bytes]
+# config.py  # [4,170 tokens | 16,184 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
+# assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
+# imports/stream_orchestrator.py  # [1,163 tokens | 5,841 bytes]
+# assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
+assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+# apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
+apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
+assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
+assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
+# /home/mike/repos/trimnoir/_posts/2026-05-09-chisel-strike-architecture.md  # [28,280 tokens | 117,686 bytes]
+
+# # A MAXIMUM SUBMIT-SIZE PROMPT FU PAYLOAD (wHAT yOU jUST sAW)
+# /home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
+# .gitignore  # [571 tokens | 2,096 bytes]
+# assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
+# assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
+# imports/stream_orchestrator.py  # [1,163 tokens | 5,841 bytes]
+# imports/mcp_orchestrator.py  # [772 tokens | 3,332 bytes]
+# imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
+# imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
+# apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
+# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+# apps/200_workflow_genesis.py  # [12,397 tokens | 59,509 bytes]
+# apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
+# scripts/workflow/splice_workflow_step.py  # [5,028 tokens | 21,917 bytes]
+# scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
+# scripts/workflow/create_workflow.py  # [3,683 tokens | 16,394 bytes]
+# scripts/workflow/manage_class_attributes.py  # [2,678 tokens | 12,795 bytes]
+# scripts/workflow/update_template_config.py  # [1,671 tokens | 8,381 bytes]
+# scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
+
+# ! git show 9328dfbe:assets/scenarios/hello_workflow_test.json
 
 # flake.nix  # [9,135 tokens | 39,284 bytes]
 
@@ -67,8 +104,6 @@ AI_PHOOEY_CHOP = """\
 # .gitignore  # [571 tokens | 2,096 bytes]
 # config.py  # [4,170 tokens | 16,184 bytes]
 # server.py  # [56,173 tokens | 267,633 bytes]
-# imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
-# imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 
 # release.py  # [9,649 tokens | 43,340 bytes]
 # __init__.py  # [367 tokens | 1,605 bytes]
@@ -122,7 +157,6 @@ AI_PHOOEY_CHOP = """\
 # /home/mike/repos/nixos/ai.py  # [591 tokens | 2,814 bytes]
 
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-# apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
 
 # /home/mike/repos/trimnoir/_posts/2026-05-05-forever-machine-deterministic-ai-code-editing.md  # [25,972 tokens | 101,375 bytes]
 
@@ -304,14 +338,15 @@ AI_PHOOEY_CHOP = """\
 # assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
 
 # CHAPTER 14: JEKYLL PUBLISHING
-# /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
-# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-# /home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
-# scripts/articles/common.py  # [952 tokens | 3,894 bytes]
-# scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
-# scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
-# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-# scripts/articles/contextualizer.py  # [2,519 tokens | 11,151 bytes]
+/home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
+scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
+/home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
+scripts/articles/common.py  # [952 tokens | 3,894 bytes]
+scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
+scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
+scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
+scripts/articles/contextualizer.py  # [2,519 tokens | 11,151 bytes]
+
 # scripts/articles/build_knowledge_graph.py  # [4,341 tokens | 17,300 bytes]
 # scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
 # scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
@@ -543,7 +578,6 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 # assets/prompts/pipulate-context.xsd  # [2,286 tokens | 8,129 bytes]
 # assets/prompts/system_prompt.md  # [628 tokens | 2,618 bytes]
 # assets/rich-table.css  # [417 tokens | 1,459 bytes]
-# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
 # browser_cache/automation_recipes/README_SAVE_LOAD_AUTOMATION.md  # [1,751 tokens | 7,246 bytes]
 # browser_cache/recipe_executor.py  # [2,848 tokens | 14,661 bytes]
 # browser_cache/review_perception_history.py  # [3,208 tokens | 13,492 bytes]
