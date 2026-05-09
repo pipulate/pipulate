@@ -30,7 +30,6 @@ class IntroductionPlugin:
 
     # Narrative Script (Base template)
     NARRATION = {
-        'step_02': "I am about to hand you over to the Configuration Workflow. You will repeat what I hope you just did in JupyterLab; telling me your name, local and cloud AI preferences. We remember it after that and you won't have to enter it again. Run the next step.",
         'finalize': "You are about to Enter a Key. Every workflow requires a unique Key to store its memory. Keep the default. Proceed to Configuration workflow."
     }
 
@@ -49,7 +48,6 @@ class IntroductionPlugin:
         # binds the endpoints regardless of the user's current onboarding state.
         self.steps = [
             Step(id='step_01', done='intro_viewed', show='Welcome', refill=False),
-            Step(id='step_02', done='purpose_viewed', show='Expectations', refill=False),
             Step(id='finalize', done='finalized', show='Hand-off', refill=False)
         ]
         
@@ -87,17 +85,14 @@ class IntroductionPlugin:
 
             elif not has_configured:
                 # STATE 2: The Guide Persona (Airlock fired, but Configuration is pending)
-                msg = f"Welcome to {dynamic_app_name}, {operator_name}. I am Chip O'Theseus. I see you've selected {active_model} as your primary cognitive engine during onboarding. We now need to finalize your configuration and secure your API keys in the vault."
-                return "Welcome", msg, 'step_02'
+                msg = f"Welcome to {dynamic_app_name}, {operator_name}. I am Chip O'Theseus. To see a demonstration of my capabilities, press **Ctrl+Alt+D** (or **Control+Option+D** on Mac) right now. Otherwise, we will proceed to finalize your configuration."
+                return "Welcome", msg, 'finalize'
                 
             else:
                 # STATE 3: The Veteran Persona (Config workflow is finalized)
                 msg = f"Welcome back to {dynamic_app_name}, {operator_name}. All systems are online and ready. Your primary cognitive engine is locked to {active_model}."
                 return "Dashboard Ready ✅", msg, None
                 
-        elif step_id == 'step_02':
-            return "Expectations", self.NARRATION["step_02"], 'finalize'
-            
         elif step_id == 'finalize':
             return "Hand-off", self.NARRATION["finalize"], None
             
@@ -218,10 +213,6 @@ class IntroductionPlugin:
     async def step_01(self, request):
         title, content, next_id = self._get_slide_data('step_01')
         return self._render_slide('step_01', title, content, next_step_id=next_id)
-
-    async def step_02(self, request):
-        title, content, next_id = self._get_slide_data('step_02')
-        return self._render_slide('step_02', title, content, next_step_id=next_id)
 
     async def finalize(self, request):
         title, content, _ = self._get_slide_data('finalize')
