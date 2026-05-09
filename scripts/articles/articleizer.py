@@ -107,6 +107,11 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port):
     article_body = re.sub(r'(\*\*[^*]+\*\*:\s*)(#{1,6}\s)', r'\1\n\n\2', article_body)
     # -------------------------------------------
 
+    # --- NEW: Compress Code Block Spacing ---
+    # Replaces double newlines before a closing code block with a single newline
+    article_body = re.sub(r'\n\n```\n', '\n```\n', article_body)
+    # -------------------------------------------
+
     article_body = f"## Technical Journal Entry Begins\n\n{article_body}"
 
     subheadings = editing_instr.get("insert_subheadings", [])
