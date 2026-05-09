@@ -616,7 +616,7 @@ def conduct_local_assessment(job_id: str, target_url: str, local_model_id: str):
     # 1. Prepare the AI directives
     system_prompt, user_prompt = build_local_optics_prompt(target_url)
     wand.speak(f"Channeling local intent through {local_model_id} to deduce the brand and target keyword. \n"
-               "Please have patience. We're connecting to your local AI for the first time...")
+               "Please have patience. We're connecting to your local AI for the first time...", wait=False)
 
 
     # 2. Execute the local prompt (Kept front-and-center for the user to see)
@@ -1328,7 +1328,7 @@ def render_completion_handoff():
     from IPython.display import display, HTML
     from pipulate import wand
     
-    wand.speak("Congratulations! You unlocked the Pipulate tab.")
+    wand.speak("Congratulations! You unlocked the Pipulate tab. Now open it.")
     
     handoff_html = HTML("""
     <div style="margin: 20px 0; padding: 20px; border: 2px solid #28a745; border-radius: 8px; text-align: center; background-color: #e6ffec;">
