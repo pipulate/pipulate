@@ -74,34 +74,36 @@ class IntroductionPlugin:
             dynamic_app_name = self.wand.get_config().APP_NAME
             active_model = self.wand.db.get('active_local_model', 'an external provider')
 
+            sentinel = self.wand.paths.data / '.has_greeted'
+
             if not operator_name:
                 # STATE 1: The Bouncer Persona (Airlock has not fired)
-                if not os.environ.get('PIPULATE_HAS_GREETED'):
+                if not sentinel.exists():
                     msg = (
                         "Halt. I am Chip O'Theseus. My speech is generated entirely on your machine, "
                         "but you are trying to sneak into the VIP lounge through the kitchen. "
                         "You have discovered port 5001, but the doors to the Control Room remain sealed until you complete the initiation rite. "
                         "Return to your JupyterLab tab, execute the Golden Path, and drop the sentinel file."
                     )
-                    os.environ['PIPULATE_HAS_GREETED'] = '1'
+                    sentinel.touch(exist_ok=True)
                 else:
                     msg = ""
                 return "Access Denied 🛑", msg, None
 
             elif not has_configured:
                 # STATE 2: The Guide Persona (Airlock fired, but Configuration is pending)
-                if not os.environ.get('PIPULATE_HAS_GREETED'):
+                if not sentinel.exists():
                     msg = f"Welcome to {dynamic_app_name}, {operator_name}. I am Chip O'Theseus. To see a demonstration of my capabilities, press <strong class='platform-shortcut'>Ctrl+Alt+D</strong> right now. Otherwise, we will proceed to finalize your configuration."
-                    os.environ['PIPULATE_HAS_GREETED'] = '1'
+                    sentinel.touch(exist_ok=True)
                 else:
                     msg = ""
                 return "Welcome", msg, 'finalize'
                 
             else:
                 # STATE 3: The Veteran Persona (Config workflow is finalized)
-                if not os.environ.get('PIPULATE_HAS_GREETED'):
+                if not sentinel.exists():
                     msg = f"Welcome back to {dynamic_app_name}, {operator_name}. All systems are online and ready."
-                    os.environ['PIPULATE_HAS_GREETED'] = '1'
+                    sentinel.touch(exist_ok=True)
                 else:
                     msg = "" # Silence on subsequent visits
                 return "Dashboard Ready ✅", msg, None
