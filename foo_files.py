@@ -56,21 +56,27 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]                                   
 
 # !!!
 
+flake.py
+assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
+assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
+config.py  # [4,170 tokens | 16,184 bytes]
+server.py  # [56,191 tokens | 267,687 bytes]
+
 # JUST ENOUGH TO SEE THE WAND AND OVER-STUFFED WORKFLOW WAITING FOR A SKILL.md EXTRACTION
 # .gitignore  # [571 tokens | 2,096 bytes]
 # config.py  # [4,170 tokens | 16,184 bytes]
 # server.py  # [56,191 tokens | 267,687 bytes]
 # flake.nix  # [9,141 tokens | 39,307 bytes]
-# apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
 # apps/015_config.py  # [11,858 tokens | 55,451 bytes]
 
-Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-Notebooks/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
-Notebooks/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
-.gitignore  # [571 tokens | 2,096 bytes]
-config.py  # [4,170 tokens | 16,184 bytes]
-pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-pipulate/core.py  # [29,804 tokens | 144,977 bytes]
+# Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
+# Notebooks/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
+# Notebooks/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
+# .gitignore  # [571 tokens | 2,096 bytes]
+# config.py  # [4,170 tokens | 16,184 bytes]
+# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
+# pipulate/core.py  # [29,804 tokens | 144,977 bytes]
 
 # imports/stream_orchestrator.py  # [1,163 tokens | 5,841 bytes]
 # assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
