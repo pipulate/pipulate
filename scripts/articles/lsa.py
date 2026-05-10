@@ -222,7 +222,7 @@ def main():
                 print("# No articles matched the provided slice.", file=sys.stderr)
             else:
                 # Build the multiline command safely
-                command_lines = ["python prompt_foo.py \\"]
+                command_lines = ["python prompt_foo.py -l [:] --no-tree \\"]
                 for i, item in enumerate(sliced_metadata):
                     # Add the continuation backslash to all but the last item
                     line = f"  --decanter {item['path']}"

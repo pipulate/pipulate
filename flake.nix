@@ -638,18 +638,9 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # ---------------------------------------------------------
           # THE SUBSHELL ALIASES (Execute safely from anywhere)
           # ---------------------------------------------------------
-          alias posts='(cd scripts/articles && python lsa.py -t 1 --reverse)'
-          alias posts2='(cd scripts/articles && python lsa.py -t 1)'
-          alias preview='(cd scripts/articles && python publishizer.py)'
-
-          # ---------------------------------------------------------
-          # THE SUBSHELL ALIASES (Execute safely from anywhere)
-          # ---------------------------------------------------------
-          alias posts='(cd scripts/articles && python lsa.py -t 1 --reverse)'
-          alias posts2='(cd scripts/articles && python lsa.py -t 1)'
-          
-          # Renamed: The old 'publish' is now 'preview' (Local Artifact Assembly)
-          alias preview='(cd scripts/articles && python publishizer.py)'
+          posts() { (cd scripts/articles && python lsa.py -t 1 --reverse "$@"); }
+          posts2() { (cd scripts/articles && python lsa.py -t 1 "$@"); }
+          preview() { (cd scripts/articles && python publishizer.py "$@"); }
 
           # NEW: The true 'publish' command (Atomic Cross-Domain Deployment)
           # It requires a commit message as an argument.

@@ -56,12 +56,13 @@ prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!!
 
+flake.nix  # [9,194 tokens | 39,530 bytes]
+/home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
 scripts/articles/lsa.py  # [2,349 tokens | 10,485 bytes]
 
 # 
 # .gitignore  # [571 tokens | 2,096 bytes]
 # flake.nix  # [9,194 tokens | 39,530 bytes]
-# /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
 # /home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
 # scripts/vulture_whitelist.py  # [948 tokens | 4,188 bytes]
 # apps/200_workflow_genesis.py  # [12,397 tokens | 59,509 bytes]
