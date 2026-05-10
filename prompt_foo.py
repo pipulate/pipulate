@@ -922,7 +922,12 @@ def update_paintbox_in_place():
             "# Move these into the active chapters to paint them onto the context canvas.\n"
         ]
 
-        logger.print(f"🎨 Squeezing {len(unused_tubes)} fresh tubes of code into the Paintbox...")
+        total_files = len(repo_files)
+        mapped_files = total_files - len(unused_tubes)
+        coverage = (mapped_files / total_files) * 100 if total_files > 0 else 100
+        
+        logger.print(f"🗺️  Codex Mapping Coverage: {coverage:.1f}% ({mapped_files}/{total_files} tracked files).")
+        logger.print(f"📦 Appending {len(unused_tubes)} uncategorized files to the Paintbox ledger for future documentation...")
         for tube_path in unused_tubes:
             full_path = os.path.join(REPO_ROOT, tube_path)
             try:
