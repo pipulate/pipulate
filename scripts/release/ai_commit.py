@@ -33,7 +33,7 @@ except ImportError:
 
 # Configuration for the local LLM
 OLLAMA_API_URL = "http://localhost:11434/api/generate"
-OLLAMA_MODEL = "gemma3"  # Using a smaller, faster model for this task
+OLLAMA_MODEL = "gemma4"  # Using a smaller, faster model for this task
 
 COMMIT_PROMPT_TEMPLATE = """
 You are an expert programmer and git contributor for the "Pipulate" project, a local-first AI SEO tool.

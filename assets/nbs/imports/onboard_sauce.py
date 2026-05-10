@@ -50,7 +50,7 @@ def check_ai_models(preferred_local=None, preferred_cloud=None):
 
         # 4. Fuzzy Matching Logic (Find highest priority match)
         # We check each preference against the available models. If the preference
-        # string is *in* the available model string (e.g., 'gemma3' in 'gemma3:latest'), it's a match.
+        # string is *in* the available model string (e.g., 'gemma4' in 'gemma4:latest'), it's a match.
         for pref in local_prefs:
             match = next((m for m in available_models if pref in m.lower() and 'ollama' in str(type(llm.get_model(m))).lower()), None)
             if match:
@@ -81,7 +81,7 @@ def check_ai_models(preferred_local=None, preferred_cloud=None):
             print("\nTo upgrade your environment for true Local-First Sovereignty:")
             print("1. Go to https://ollama.com/")
             print("2. Download the installer for your host operating system.")
-            print("3. Install it, open a terminal, run 'ollama run gemma3', and try again.")
+            print("3. Install it, open a terminal, run 'ollama run gemma4', and try again.")
             
         if selected_cloud:
              print(f"✅ Locked in Cloud Model: {selected_cloud}")

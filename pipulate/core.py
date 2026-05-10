@@ -329,7 +329,7 @@ class Pipulate:
                 print("\nTo upgrade your environment for true Local-First Sovereignty:")
                 print("1. Go to https://ollama.com/")
                 print("2. Download the installer for your host operating system.")
-                print("3. Install it, open a terminal, run 'ollama run gemma3', and try again.")
+                print("3. Install it, open a terminal, run 'ollama run gemma4', and try again.")
                 
             if selected_cloud:
                  print(f"✅ Locked in Cloud Model: {selected_cloud}")
