@@ -86,7 +86,7 @@ class IntroductionPlugin:
 
             elif not has_configured:
                 # STATE 2: The Guide Persona (Airlock fired, but Configuration is pending)
-                msg = f"Welcome to {dynamic_app_name}, {operator_name}. I am Chip O'Theseus. To see a demonstration of my capabilities, press <strong class='platform-shortcut'>Ctrl+Alt+D</strong> right now. Otherwise, we will proceed to finalize your configuration."
+                msg = f"Welcome to {dynamic_app_name}, {operator_name}. I am Chip O'Theseus. To see a demonstration of my capabilities, press Ctrl+Alt+D (or Control+Option+D on Mac) right now. Otherwise, we will proceed to finalize your configuration."
                 return "Welcome", msg, 'finalize'
                 
             else:
@@ -188,14 +188,6 @@ class IntroductionPlugin:
                 )
             )
 
-        # JIT Client-Side Text Replacement for Shortcuts
-        shortcut_script = Script('''
-            const shortcutEl = document.querySelector('.platform-shortcut');
-            if (shortcutEl && window.PLATFORM_KEYS) {
-                shortcutEl.textContent = window.PLATFORM_KEYS.d_key;
-            }
-        ''')
-
         return Div(
             onload_trigger,
             Card(
@@ -212,9 +204,8 @@ class IntroductionPlugin:
                 Div(*nav_buttons, style="display: flex; justify-content: flex-end;"),
                 id=step_id,
                 cls="intro-slide",
-            ),
-        shortcut_script
-        )
+                cls="intro-slide"
+            )
 
     # --- Step Handlers ---
 
