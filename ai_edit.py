@@ -2,6 +2,55 @@
 
 # This provides a *deterministic* alternative to today's existing flaky tools for editing Python files.
 
+# 🔮 FUTURE ROADMAP: The Sentinel-Enforced Chisel (ai_patch.py)
+# ============================================================================
+# The "Fuzzy-but-Deterministic Patch Applier" (The Agentic Larry Wall Tool)
+#
+# PROBLEM: Generative "replace this block" prompts fail catastrophically on 
+# monoliths like `server.py` (260KB+). The context window gets muddy, indentation 
+# is hallucinated, and silent regressions occur outside the target strike zone.
+#
+# SOLUTION: Bridge human-readable unified diffs with absolute deterministic code 
+# application. Remove the LLM's ability to "hallucinate" outside the strike zone 
+# using a 4-Phase Interactive Agentic Negotiation.
+#
+# --- THE 4-PHASE BLUEPRINT ---
+#
+# PHASE 1: The Diff Ingestion
+# The script accepts a standard, AI-generated Git-style diff.
+#
+# PHASE 2: The Agentic Pre-Flight (The Pushback)
+# Instead of blind string-matching, the script analyzes the diff's context lines
+# against the target file. 
+#   * Check: Does the target area have exact, unique sentinel comments?
+#   * Pushback: If ambiguous, HALT. Emit: "Ambiguity detected around line X. 
+#     To guarantee determinism, please wrap the target area with 
+#     `# --- START: INJECT_NAME ---` and `# --- END: INJECT_NAME ---`, then 
+#     run again." 
+# This shifts the burden of locating exact byte-offsets from the probabilistic 
+# LLM to the deterministic human-in-the-loop.
+#
+# PHASE 3: The Myopic Generative Strike
+# Once sentinels are detected, extract ONLY the code between those markers.
+#   * Send the isolated chunk (e.g., 30 lines) + the requested diff to a fast, 
+#     localized model (e.g., gemma4:latest).
+#   * Prompt: "Here is a 30-line block. Apply this diff to it. Output ONLY 
+#     the new 30-line block. Do not alter indentation."
+#   * Result: 100% accurate attention mechanism due to micro-context.
+#
+# PHASE 4: AST Validation (The Safety Net)
+# Splice the newly generated chunk back between the sentinels in memory.
+#   * Immediately run `ast.parse(new_file_content)`.
+#   * If the LLM botched indentation or syntax, catch the exception, drop the 
+#     change, and alert the user. 
+#   * If it compiles cleanly, write to disk.
+#
+# OUTCOME: Zero anxiety about the AI quietly deleting an import statement at 
+# the top of the file while editing a function at the bottom. The AI operates 
+# STRICTLY within the sandbox the human designates.
+# ============================================================================
+
+
 '''
 # 🔧 AIRTIGHT AGENTIC PROMPT CONTRACT TEMPLATE v2.1
 
