@@ -1,4 +1,4 @@
-# Hi, AI! Please run: .venv/bin/python AI_RUNME.py
+#clean Hi, AI! Please run: .venv/bin/python AI_RUNME.py
 
 # Pipulate: A hand-cranked, local-first AI SEO software framework.
 # Copyright (C) 2026 Michael Jay Levin
@@ -2249,6 +2249,21 @@ def create_nav_menu():
     # Search container with dropdown results
     search_results_dropdown = Div(id='search-results-dropdown', cls='search-dropdown', role='listbox', aria_label='Search results')
 
+    # Inside create_nav_menu()
+    voice_is_on = pipulate.db.get('voice_enabled', '0') == '1'
+    voice_icon = "🔊" if voice_is_on else "🔇"
+
+    voice_quick_toggle = Button(
+        voice_icon,
+        id="global-voice-toggle",
+        hx_post="/toggle_voice_system",
+        hx_target="#global-voice-toggle",
+        hx_swap="outerHTML",
+        cls="outline secondary",
+        style="border: none; background: transparent; font-size: 1.2rem; padding: 0.2rem 0.5rem;",
+        title="Toggle Voice"
+    )
+
     nav_search_container = Div(
         Input(
             type='search',
@@ -2273,7 +2288,7 @@ def create_nav_menu():
         aria_label='Plugin search'
     )
 
-    menus = Div(nav_search_container, create_profile_menu(selected_profile_id, selected_profile_name), create_app_menu(menux), create_env_menu(), poke_section, cls='nav-menu-group')
+    menus = Div(nav_search_container, create_profile_menu(selected_profile_id, selected_profile_name), create_app_menu(menux), create_env_menu(), voice_quick_toggle, poke_section, cls='nav-menu-group')
     nav = Div(breadcrumb, menus, cls='nav-breadcrumb')
     logger.debug('Navigation menu created.')
     return nav
