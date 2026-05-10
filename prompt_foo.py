@@ -1307,16 +1307,16 @@ def main():
                         logger.print(f"\nWarning: Decanter target not found: {full_path}")
                 except Exception as e:
                     logger.print(f"\nWarning: Could not read decanter target {decanter_path}: {e}")
-
-            if full_content_parts:
-                full_article_content = "\n".join(full_content_parts)
-                title = "Full Article Content"
-                builder.add_auto_context(title, full_article_content)
-                
-                # Calculate sizes for live display
-                article_data = builder.auto_context.get(title, {})
-                t_count = article_data.get('tokens', 0)
-                b_count = len(article_data.get('content', '').encode('utf-8'))
+        if full_content_parts:
+            full_article_content = "\n".join(full_content_parts)
+            title = "Full Article Content"
+            builder.add_auto_context(title, full_article_content)
+            
+            # Calculate sizes for live display
+            article_data = builder.auto_context.get(title, {})
+            t_count = article_data.get('tokens', 0)
+            b_count = len(article_data.get('content', '').encode('utf-8'))
+            
             # Adjust log message to account for mixed sources
             total_articles = len(sliced_articles) + (len(args.decanter) if args.decanter else 0)
             logger.print(f" ({total_articles} full articles | {t_count:,} tokens | {b_count:,} bytes)")
