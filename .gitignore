@@ -69,6 +69,7 @@ __pycache__/
 
 # User-facing notebooks generated on first run
 Notebooks/Client_Work/
+Notebooks/Collaborators/
 Notebooks/Deliverables/
 Notebooks/_config.py
 Notebooks/Advanced_Notebooks/01_URLinspector.ipynb
