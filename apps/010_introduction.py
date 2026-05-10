@@ -204,9 +204,8 @@ class IntroductionPlugin:
                 Div(*nav_buttons, style="display: flex; justify-content: flex-end;"),
                 id=step_id,
                 cls="intro-slide",
-                cls="intro-slide"
             )
-
+        )
     # --- Step Handlers ---
 
     async def landing(self, request):
