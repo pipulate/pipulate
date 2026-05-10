@@ -55,6 +55,11 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]                                   
 prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!!
+
+/home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
+/home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
+flake.nix  # [9,141 tokens | 39,308 bytes]
+
 # config.py  # [4,170 tokens | 16,184 bytes]
 # server.py  # [56,191 tokens | 267,687 bytes]
 # pipulate/__init__.py  # [721 tokens | 2,998 bytes]
