@@ -142,6 +142,11 @@ class ChipVoiceSystem:
         import re
         spoken_text = re.sub(r'\*?\*?MikeLev\.in\*?\*?:?', 'Mike:', text, flags=re.IGNORECASE)
         # ---------------------------------------------------------
+
+        # 🛡️ THE ACOUSTIC SANITIZER: Purge visual markup before synthesis
+        spoken_text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', spoken_text)  # Extract markdown link text
+        spoken_text = re.sub(r'\[[^\]]+\]', '', spoken_text)  # Remove silent bracket tags
+        spoken_text = re.sub(r'<[^>]+>', '', spoken_text)  # Strip HTML tags
         
         try:
             # Use temporary file for audio output
