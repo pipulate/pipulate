@@ -2899,23 +2899,6 @@ async def poke_flyout(request):
         id='theme-switch-container'
     )
     
-    # --- NEW: Voice toggle switch ---
-    voice_switch = Div(
-        Label(
-            Input(
-                type='checkbox',
-                role='switch',
-                name='voice_switch',
-                checked=voice_is_on,
-                hx_post='/toggle_voice_system',
-                hx_target='#voice-switch-container',
-                hx_swap='outerHTML'
-            ),
-            Span(f'{voice_icon} Voice Output', cls='ml-quarter')
-        ),
-        id='voice-switch-container'
-    )
-
     # 🆕 INJECT THE NEW SURGICAL RESET BUTTON HERE
     reset_config_button = Button('⚠️ Reset Config & Onboarding',
                                  hx_post='/reset-config-onboarding',
@@ -2984,7 +2967,6 @@ async def poke_flyout(request):
     # Build list items in the requested order: Theme Toggle, Lock Profile, Update, Clear Workflows, Reset Database, MCP Test
     list_items = [
         Li(theme_switch, cls='flyout-list-item'),
-        Li(voice_switch, cls='flyout-list-item'),  # <--- INJECTED HERE
         Li(lock_button, cls='flyout-list-item'),
         Li(update_button, cls='flyout-list-item')
     ]
@@ -3359,29 +3341,21 @@ async def toggle_voice_system(request):
         except Exception as e:
             logger.warning(f"Error silencing voice system: {e}")
 
-    # Re-render the switch component to reflect the new state
+    # Re-render the NEW TOP NAV BUTTON to reflect the new state
     voice_is_on = new_state == '1'
     icon = "🔊" if voice_is_on else "🔇"
-    
-    voice_switch = Div(
-        Label(
-            Input(
-                type='checkbox',
-                role='switch',
-                name='voice_switch',
-                checked=voice_is_on,
-                hx_post='/toggle_voice_system',
-                hx_target='#voice-switch-container',
-                hx_swap='outerHTML'
-            ),
-            Span(f'{icon} Voice Output', cls='ml-quarter')
-        ),
-        id='voice-switch-container',
-        cls='voice-switch-container'
+    voice_quick_toggle = Button(
+        icon,
+        id="global-voice-toggle",
+        hx_post="/toggle_voice_system",
+        hx_target="#global-voice-toggle",
+        hx_swap="outerHTML",
+        cls="outline secondary",
+        style="border: none; background: transparent; font-size: 1.2rem; padding: 0.2rem 0.5rem;",
+        title="Toggle Voice"
     )
     
-    return voice_switch
-
+    return voice_quick_toggle    
 
 @rt('/sync_theme', methods=['POST'])
 async def sync_theme(request):
