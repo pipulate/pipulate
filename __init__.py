@@ -12,8 +12,8 @@ Usage:
     pipulate
 """
 
-__version__ = "1.77"
-__version_description__ = "Good Homepage Behavior"
+__version__ = "1.78"
+__version_description__ = "Global Voice Toggle"
 __email__ = "pipulate@gmail.com"
 __description__ = "A Notebook-inspired Hand-cranked Agentic Framework" 
 
