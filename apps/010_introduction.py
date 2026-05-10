@@ -74,38 +74,24 @@ class IntroductionPlugin:
             dynamic_app_name = self.wand.get_config().APP_NAME
             active_model = self.wand.db.get('active_local_model', 'an external provider')
 
-            sentinel = self.wand.paths.data / '.has_greeted'
-
             if not operator_name:
                 # STATE 1: The Bouncer Persona (Airlock has not fired)
-                if not sentinel.exists():
-                    msg = (
-                        "Halt. I am Chip O'Theseus. My speech is generated entirely on your machine, "
-                        "but you are trying to sneak into the VIP lounge through the kitchen. "
-                        "You have discovered port 5001, but the doors to the Control Room remain sealed until you complete the initiation rite. "
-                        "Return to your JupyterLab tab, execute the Golden Path, and drop the sentinel file."
-                    )
-                    sentinel.touch(exist_ok=True)
-                else:
-                    msg = ""
+                msg = (
+                    "Halt. I am Chip O'Theseus. My speech is generated entirely on your machine, "
+                    "but you are trying to sneak into the VIP lounge through the kitchen. "
+                    "You have discovered port 5001, but the doors to the Control Room remain sealed until you complete the initiation rite. "
+                    "Return to your JupyterLab tab, execute the Golden Path, and drop the sentinel file."
+                )
                 return "Access Denied 🛑", msg, None
 
             elif not has_configured:
                 # STATE 2: The Guide Persona (Airlock fired, but Configuration is pending)
-                if not sentinel.exists():
-                    msg = f"Welcome to {dynamic_app_name}, {operator_name}. I am Chip O'Theseus. To see a demonstration of my capabilities, press <strong class='platform-shortcut'>Ctrl+Alt+D</strong> right now. Otherwise, we will proceed to finalize your configuration."
-                    sentinel.touch(exist_ok=True)
-                else:
-                    msg = ""
+                msg = f"Welcome to {dynamic_app_name}, {operator_name}. I am Chip O'Theseus. To see a demonstration of my capabilities, press <strong class='platform-shortcut'>Ctrl+Alt+D</strong> right now. Otherwise, we will proceed to finalize your configuration."
                 return "Welcome", msg, 'finalize'
                 
             else:
                 # STATE 3: The Veteran Persona (Config workflow is finalized)
-                if not sentinel.exists():
-                    msg = f"Welcome back to {dynamic_app_name}, {operator_name}. All systems are online and ready."
-                    sentinel.touch(exist_ok=True)
-                else:
-                    msg = "" # Silence on subsequent visits
+                msg = f"Welcome back to {dynamic_app_name}, {operator_name}. All systems are online and ready."
                 return "Dashboard Ready ✅", msg, None
                 
         elif step_id == 'finalize':
@@ -164,11 +150,20 @@ class IntroductionPlugin:
         # Auto-speak trigger
         onload_trigger = ""
         if voice_enabled:
-             onload_trigger = Div(
-                 hx_post=f"/{self.app_name}/speak/{step_id}",
-                 hx_trigger=trigger_logic,
-                 style="display:none;"
-             )
+            allow_auto_speak = True
+            if step_id == 'step_01':
+                sentinel = self.wand.paths.data / '.has_greeted'
+                if sentinel.exists():
+                    allow_auto_speak = False
+                else:
+                    sentinel.touch(exist_ok=True)
+            
+            if allow_auto_speak:
+                onload_trigger = Div(
+                    hx_post=f"/{self.app_name}/speak/{step_id}",
+                    hx_trigger=trigger_logic,
+                    style="display:none;"
+                )
 
         # The "Encore" Button (Volume Icon)
         encore_btn = A(
