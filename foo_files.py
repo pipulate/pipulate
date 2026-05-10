@@ -52,16 +52,16 @@ AI_PHOOEY_CHOP = """\
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
-# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!!
-config.py  # [4,170 tokens | 16,184 bytes]
-server.py  # [56,191 tokens | 267,687 bytes]
-pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-pipulate/core.py  # [29,800 tokens | 144,966 bytes]
-imports/voice_synthesis.py  # [3,133 tokens | 15,477 bytes]
-apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
-assets/styles.css  # [18,811 tokens | 81,788 bytes]
+# config.py  # [4,170 tokens | 16,184 bytes]
+# server.py  # [56,191 tokens | 267,687 bytes]
+# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
+# pipulate/core.py  # [29,800 tokens | 144,966 bytes]
+# imports/voice_synthesis.py  # [3,133 tokens | 15,477 bytes]
+# apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
+# assets/styles.css  # [18,811 tokens | 81,788 bytes]
 
 # .gitignore  # [571 tokens | 2,096 bytes]
 # flake.py
@@ -610,8 +610,8 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 # assets/feather/arrow-up-circle.svg  # [128 tokens | 357 bytes]
 # assets/feather/external-link.svg  # [173 tokens | 388 bytes]
 # assets/feather/feather.svg  # [151 tokens | 323 bytes]
+# assets/feather/message-circle.svg  # [243 tokens | 428 bytes]
 # assets/feather/rewind.svg  # [112 tokens | 319 bytes]
-# assets/feather/volume-2.svg  # [146 tokens | 311 bytes]
 # assets/feather/x-octagon.svg  # [177 tokens | 406 bytes]
 # assets/images/ai-seo-software.svg  # [27,518 tokens | 50,466 bytes]
 # assets/js/Sortable.js  # [29,648 tokens | 126,497 bytes]

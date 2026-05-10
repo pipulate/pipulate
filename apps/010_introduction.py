@@ -32,7 +32,7 @@ class IntroductionPlugin:
 
     # Narrative Script (Base template)
     NARRATION = {
-        'finalize': 'Every workflow requires a Key to pull it up again. On the next screen, simply press the "Enter Key" button to keep the default. Proceed to Configuration workflow.'
+        'finalize': 'Workflows use auto-generated "Keys" so that they can be pulled up again. Keep the default. Proceed to Configuration workflow.'
     }
 
     def __init__(self, app, pipulate, pipeline, db, app_name=APP_NAME):
@@ -170,7 +170,7 @@ class IntroductionPlugin:
 
         # The "Encore" Button (Volume Icon)
         encore_btn = A(
-            Img(src='/assets/feather/volume-2.svg', style="width: 24px; height: 24px; filter: invert(1);"),
+            Img(src='/assets/feather/message-circle.svg', style="width: 24px; height: 24px; filter: invert(1);"),
             hx_post=f"/{self.app_name}/speak/{step_id}",
             hx_swap="none",
             cls="contrast",
