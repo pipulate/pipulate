@@ -144,12 +144,25 @@ def print_contiguity_report(anomalies):
     console.print(table)
 
 
+def parse_slice_arg(arg_str: str):
+    """Parses a string like '[-5:]' into a valid Python slice object."""
+    if not arg_str or not arg_str.startswith('[') or not arg_str.endswith(']'): return None
+    content = arg_str[1:-1].strip()
+    if ':' in content:
+        parts = content.split(':', 1)
+        start = int(parts[0].strip()) if parts[0].strip() else None
+        end = int(parts[1].strip()) if parts[1].strip() else None
+        return slice(start, end)
+    elif content: return int(content)
+    return slice(None, None)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Unified Article Lister & Analyzer")
     parser.add_argument('-t', '--target', type=str, help="Target ID from targets.json (e.g., '1', '3')")
     parser.add_argument('-g', '--gaps', action='store_true', help="Run and display the sort_order contiguity gap report")
-    # Add this new line right here:
     parser.add_argument('-r', '--reverse', action='store_true', help="Reverse the sorting order")
+    parser.add_argument('-a', '--article', type=str, help="Generate a prompt_foo.py command for a slice of articles (e.g., '[-5:]')")
     args = parser.parse_args()
 
     targets = load_targets()
@@ -197,29 +210,42 @@ def main():
             
     # Sort first by date, then by the YAML sort_order
     metadata.sort(key=lambda p: (p['date'], p['sort_order']), reverse=args.reverse)
-    
-    # --- PASS 2: HEAVY LIFTING & STREAMING OUTPUT ---
-    for idx, item in enumerate(metadata, start=1):
-        filepath = item['path']
-        
-        try:
-            with open(filepath, 'r', encoding='utf-8') as f:
-                content = f.read()
-                
-            tokens = count_tokens(content)
-            bytes_count = len(content.encode('utf-8'))
-            order = item['sort_order']
-            
-            # Format explicitly for prompt_foo.py consumption
-            print(f"{filepath}  # [Idx: {idx} | Order: {order} | Tokens: {tokens:,} | Bytes: {bytes_count:,}]", flush=True)
-            
-        except Exception as e:
-            print(f"# Error processing {filepath}: {e}", file=sys.stderr)
 
-    # --- PASS 3: GAP ANALYSIS (Optional) ---
-    if args.gaps:
-        anomalies = analyze_sort_order_contiguity(metadata)
-        print_contiguity_report(anomalies)
+    # --- PASS 2: OUTPUT GENERATION (REPORT OR COMMAND) ---
+    if args.article:
+        # Executable Telemetry Mode: Generate the prompt_foo.py command
+        slice_obj = parse_slice_arg(args.article)
+        if slice_obj is not None:
+            sliced_metadata = metadata[slice_obj] if isinstance(slice_obj, slice) else [metadata[slice_obj]]
+            
+            if not sliced_metadata:
+                print("# No articles matched the provided slice.", file=sys.stderr)
+            else:
+                # Build the multiline command safely
+                command_lines = ["python prompt_foo.py \\"]
+                for i, item in enumerate(sliced_metadata):
+                    # Add the continuation backslash to all but the last item
+                    line = f"  --decanter {item['path']}"
+                    if i < len(sliced_metadata) - 1:
+                        line += " \\"
+                    command_lines.append(line)
+                
+                print("\n".join(command_lines))
+        else:
+            print(f"❌ Invalid slice format: {args.article}. Use format like '[-5:]'", file=sys.stderr)
+    else:
+        # Standard Mode: Heavy Lifting & Streaming Output
+        for idx, item in enumerate(metadata, start=1):
+            filepath = item['path']
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                tokens = count_tokens(content)
+                bytes_count = len(content.encode('utf-8'))
+                order = item['sort_order']
+                print(f"{filepath}  # [Idx: {idx} | Order: {order} | Tokens: {tokens:,} | Bytes: {bytes_count:,}]", flush=True)
+            except Exception as e:
+                print(f"# Error processing {filepath}: {e}", file=sys.stderr)
 
 
 def get_holographic_article_data(target_dir: str) -> list[dict]:
