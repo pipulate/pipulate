@@ -14,6 +14,7 @@ Features:
 
 import time
 import os
+import json
 import asyncio
 from fasthtml.common import *
 from loguru import logger
@@ -69,7 +70,19 @@ class IntroductionPlugin:
             operator_name = self.wand.db.get('operator_name')
 
             # 🪄 THE DETERMINISTIC STATE MATRIX
-            has_configured = self.wand.db.get('config_finalized') == 'true'
+            # Robust SSOT check: Does a finalized config pipeline exist?
+            has_configured = False
+            try:
+                for record in self.wand.pipeline_table():
+                    pkey = record['pkey'] if isinstance(record, dict) else record.pkey
+                    if 'config' in pkey.lower():
+                        data = record['data'] if isinstance(record, dict) else record.data
+                        state = json.loads(data)
+                        if state.get('finalize', {}).get('finalized') is True:
+                            has_configured = True
+                            break
+            except Exception as e:
+                logger.warning(f"Could not verify config pipeline state: {e}")
             dynamic_app_name = self.wand.get_config().APP_NAME
             active_model = self.wand.db.get('active_local_model', 'an external provider')
 
