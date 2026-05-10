@@ -102,11 +102,6 @@ for key in config_keys:
 # Show startup banner only when running as main script, not on watchdog restarts or imports
 if __name__ == '__main__' and not os.environ.get('PIPULATE_WATCHDOG_RESTART'):
     try:
-        # 🧹 THE SLATE WIPE: Clear the greeting sentinel on a true manual start
-        greet_sentinel = Path('data/.has_greeted')
-        if greet_sentinel.exists():
-            greet_sentinel.unlink()
-
         aa.figlet_banner("STARTUP", "Pipulate server starting...", font='slant', color=BANNER_COLORS['server_restart'])
         aa.white_rabbit()
         aa.system_diagram()
@@ -1874,6 +1869,16 @@ async def startup_event():
     progressive distillation workflows that define the Pipulate vision.
     """
     pipulate.db['server_start_time'] = str(time.time())
+    # 🧹 THE SLATE WIPE: Clear the greeting sentinel on a true manual start
+    if not os.environ.get('PIPULATE_WATCHDOG_RESTART'):
+        greet_sentinel = pipulate.paths.data / '.has_greeted'
+        try:
+            if greet_sentinel.exists():
+                greet_sentinel.unlink()
+                logger.info("🧹 Slate wipe: Cleared greeting sentinel for new server session.")
+        except Exception as e:
+            logger.warning(f"Could not clear greeting sentinel: {e}")
+
 
     # 🔧 MCP Tools should already be registered from main startup sequence
     # This async startup event handles final initialization only
