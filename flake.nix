@@ -545,7 +545,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             echo "🔄 Transforming installation into git repository..."
             TEMP_DIR=$(mktemp -d)
             echo "Creating temporary clone in $TEMP_DIR..."
-            if git clone --depth=1 https://github.com/miklevin/pipulate.git "$TEMP_DIR"; then
+            if git clone --depth=1 https://github.com/pipulate/pipulate.git "$TEMP_DIR"; then
               echo "Preserving app identity and credentials..."
               if [ -f whitelabel.txt ]; then cp whitelabel.txt "$TEMP_DIR/"; fi
               if [ -d .ssh ]; then
@@ -713,7 +713,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             REMOTE_URL=$(git remote get-url origin 2>/dev/null || echo "")
             if [[ "$REMOTE_URL" == https://* ]]; then
               echo "Updating remote URL to use SSH..."
-              git remote set-url origin git@github.com:miklevin/pipulate.git
+              git remote set-url origin git@github.com:pipulate/pipulate.git
             fi
           fi
           # Set up CUDA env vars if available (Linux only)
