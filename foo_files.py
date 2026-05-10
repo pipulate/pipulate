@@ -71,8 +71,11 @@ server.py  # [56,191 tokens | 267,687 bytes]
 pipulate/__init__.py  # [721 tokens | 2,998 bytes]
 pipulate/core.py  # [29,800 tokens | 144,966 bytes]
 apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
-imports/voice_synthesis.py  # [3,133 tokens | 15,477 bytes]
+apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
+apps/060_tasks.py  # [4,993 tokens | 23,188 bytes]
+server.py  # [56,195 tokens | 267,561 bytes]
 
+# imports/voice_synthesis.py  # [3,133 tokens | 15,477 bytes]
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # JUST ENOUGH TO SEE THE WAND AND OVER-STUFFED WORKFLOW WAITING FOR A SKILL.md EXTRACTION
