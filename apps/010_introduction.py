@@ -54,7 +54,6 @@ class IntroductionPlugin:
         
         # Register routes
         pipulate.register_workflow_routes(self)
-        self.app.route(f'/{self.app_name}/toggle_voice', methods=['POST'])(self.toggle_voice)
         self.app.route(f'/{self.app_name}/speak/{{step_id}}', methods=['POST'])(self.speak_step)
 
     def _get_slide_data(self, step_id: str):
@@ -104,14 +103,6 @@ class IntroductionPlugin:
         return "Unknown", "I have nothing to say about this.", None
 
 
-    async def toggle_voice(self, request):
-        """Toggles the global voice_enabled state."""
-        current_state = self.wand.db.get('voice_enabled', '0') == '1'
-        new_state = not current_state
-        self.wand.db['voice_enabled'] = '1' if new_state else '0'
-        logger.info(f"🔊 Voice toggled: {new_state}")
-        return self._render_voice_controls(new_state)
-
     async def speak_step(self, step_id: str):
         """Trigger server-side audio playback using JIT evaluated text."""
         if step_id == 'step_01':
@@ -136,22 +127,6 @@ class IntroductionPlugin:
              asyncio.create_task(asyncio.to_thread(chip_voice_system.speak_text, text))
              
         return ""
-
-    def _render_voice_controls(self, is_enabled):
-        """Renders the Voice Toggle button."""
-        icon = "🔊" if is_enabled else "🔇"
-        style = "color: var(--pico-color-green-500); border-color: var(--pico-color-green-500);" if is_enabled else "color: var(--pico-muted-color);"
-        text = "Voice On" if is_enabled else "Voice Off"
-        
-        return Button(
-            f"{icon} {text}",
-            hx_post=f"/{self.app_name}/toggle_voice",
-            hx_swap="outerHTML",
-            cls="secondary outline",
-            style=f"{style} margin-bottom: 0; font-size: 0.8rem; padding: 4px 8px;",
-            id="voice-toggle-btn",
-            data_testid="voice-toggle"
-        )
 
     def _render_slide(self, step_id, title, content, next_step_id=None):
         """Helper to render a standardized slide."""
@@ -217,23 +192,19 @@ class IntroductionPlugin:
         ''')
 
         return Div(
-            onload_trigger,
-            Card(
-                Div(
+                onload_trigger,
+                Card(
                     Div(
-                        H2(title, style="display: inline-block; margin-bottom: 0;"),
-                        encore_btn,
-                        style="display: flex; align-items: center;"
-                    ),
-                    self._render_voice_controls(voice_enabled),
-                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;"
-                ),
-                content_tag,
-                Div(*nav_buttons, style="display: flex; justify-content: flex-end;"),
-                id=step_id,
-                cls="intro-slide",
-            ),
-            shortcut_script
+                       H2(title, style="display: inline-block; margin-bottom: 0;"),
+                       encore_btn,
+                       style="display: flex; align-items: center; margin-bottom: 2rem;"
+                   ),
+                   content_tag,
+                   Div(*nav_buttons, style="display: flex; justify-content: flex-end;"),
+                   id=step_id,
+                   cls="intro-slide",
+                   ),
+                shortcut_script
         )
     # --- Step Handlers ---
 
