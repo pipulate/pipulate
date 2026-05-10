@@ -2262,7 +2262,7 @@ def create_nav_menu():
         hx_target="#global-voice-toggle",
         hx_swap="outerHTML",
         cls="outline secondary",
-        style="border: none; background: transparent; font-size: 1.2rem; padding: 0.2rem 0.5rem;",
+        style="border: none; background: transparent; font-size: 1.2rem; padding: 0.2rem 0.5rem; margin-bottom: 0; display: flex; align-items: center;",
         title="Toggle Voice"
     )
 
@@ -2290,7 +2290,7 @@ def create_nav_menu():
         aria_label='Plugin search'
     )
 
-    menus = Div(nav_search_container, create_profile_menu(selected_profile_id, selected_profile_name), create_app_menu(menux), create_env_menu(), voice_quick_toggle, poke_section, cls='nav-menu-group')
+    menus = Div(voice_quick_toggle, nav_search_container, create_profile_menu(selected_profile_id, selected_profile_name), create_app_menu(menux), create_env_menu(), poke_section, cls='nav-menu-group')
     nav = Div(breadcrumb, menus, cls='nav-breadcrumb')
     logger.debug('Navigation menu created.')
     return nav
@@ -3351,7 +3351,7 @@ async def toggle_voice_system(request):
         hx_target="#global-voice-toggle",
         hx_swap="outerHTML",
         cls="outline secondary",
-        style="border: none; background: transparent; font-size: 1.2rem; padding: 0.2rem 0.5rem;",
+        style="border: none; background: transparent; font-size: 1.2rem; padding: 0.2rem 0.5rem; margin-bottom: 0; display: flex; align-items: center;",
         title="Toggle Voice"
     )
     

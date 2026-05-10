@@ -490,7 +490,7 @@ details.dropdown summary + ul li label[style*="background-color: var(--pico-prim
 
 .nav-menu-group {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: var(--pipulate-gap-sm);
     flex-wrap: nowrap;
     flex-shrink: 0;
