@@ -1019,6 +1019,10 @@ def main():
     )
     parser.add_argument('-t', '--target', type=str, help="Target ID from targets.json (e.g., '1')")
     parser.add_argument('-k', '--key', type=str, help="API key alias from keys.json (ignored by prompt_foo, here for compatibility)")
+    parser.add_argument(
+        '--decanter', action='append',
+        help='Inject full raw Markdown for specific article paths (can be used multiple times).'
+    )
     args = parser.parse_args()
 
     # 💥 NEW: Parse --arg into a dictionary
@@ -1278,8 +1282,9 @@ def main():
         except (ValueError, IndexError):
             logger.print(f" (invalid slice '{args.article}')")
 
+        full_content_parts = []
+        
         if sliced_articles:
-            full_content_parts = []
             for article in sliced_articles:
                 try:
                     with open(article['path'], 'r', encoding='utf-8') as f:
@@ -1287,7 +1292,22 @@ def main():
                     full_content_parts.append(f"--- START: Article: {os.path.basename(article['path'])} ---\n{content.strip()}\n--- END: Article ---\n")
                 except Exception as e:
                     logger.print(f"\nWarning: Could not read article {article['path']}: {e}")
-            
+
+        # NEW: Process explicitly targeted Decanter files
+        if args.decanter:
+            for decanter_path in args.decanter:
+                try:
+                    # Resolve absolute path to be safe
+                    full_path = os.path.abspath(decanter_path)
+                    if os.path.exists(full_path):
+                        with open(full_path, 'r', encoding='utf-8') as f:
+                            content = f.read()
+                        full_content_parts.append(f"--- START: Decanter Article: {os.path.basename(full_path)} ---\n{content.strip()}\n--- END: Decanter Article ---\n")
+                    else:
+                        logger.print(f"\nWarning: Decanter target not found: {full_path}")
+                except Exception as e:
+                    logger.print(f"\nWarning: Could not read decanter target {decanter_path}: {e}")
+
             if full_content_parts:
                 full_article_content = "\n".join(full_content_parts)
                 title = "Full Article Content"
@@ -1297,8 +1317,10 @@ def main():
                 article_data = builder.auto_context.get(title, {})
                 t_count = article_data.get('tokens', 0)
                 b_count = len(article_data.get('content', '').encode('utf-8'))
-                logger.print(f" ({len(sliced_articles)} full articles | {t_count:,} tokens | {b_count:,} bytes)")
-        else:
+            # Adjust log message to account for mixed sources
+            total_articles = len(sliced_articles) + (len(args.decanter) if args.decanter else 0)
+            logger.print(f" ({total_articles} full articles | {t_count:,} tokens | {b_count:,} bytes)")
+        elif not args.article and not args.decanter:
             logger.print(" (no articles found or invalid slice)")
 
     # After slicing articles for -l or -a...
