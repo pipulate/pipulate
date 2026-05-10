@@ -51,12 +51,15 @@ AI_PHOOEY_CHOP = """\
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-# foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
+foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!!
 
+# .gitignore  # [571 tokens | 2,096 bytes]
 # flake.by
+# /home/mike/repos/trimnoir/_posts/2026-05-09-chisel-strike-architecture.md  # [28,331 tokens | 114,958 bytes]
+
 # assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
 
 # Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
@@ -68,6 +71,7 @@ server.py  # [56,191 tokens | 267,687 bytes]
 pipulate/__init__.py  # [721 tokens | 2,998 bytes]
 pipulate/core.py  # [29,800 tokens | 144,966 bytes]
 apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
+imports/voice_synthesis.py  # [3,133 tokens | 15,477 bytes]
 
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
@@ -216,13 +220,13 @@ apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
 # apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
 # assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-# server.py  # [56,001 tokens | 266,868 bytes]
+# # server.py  # [56,001 tokens | 266,868 bytes]
 # apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
 # apps/015_config.py  # [11,858 tokens | 55,451 bytes]
 
 # CHAPTER 1: BOOTSTRAPPING, CLI & ROUTING
 # README.md  # [20,467 tokens | 103,208 bytes]
-# release.py  # [9,879 tokens | 44,440 bytes]
+# # release.py  # [9,879 tokens | 44,440 bytes]
 # /home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
 # assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
 # pyproject.toml  # [679 tokens | 2,321 bytes]
@@ -442,9 +446,9 @@ apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
 # command they should execute after adding the custom CHOP here, because you
 # know humans aren't really that smart.
 
-CHOP_EMPTY = """\
+EMPTY = """\
 # THE 40K FOOT VIEW (Minimalist Context)
-# COMMAND: python prompt_foo.py --chop CHOP_EMPTY --no-tree
+# COMMAND: python prompt_foo.py --chop EMPTY --no-tree
 # Used for story generation and pure text tasks where codebase noise is a liability.
 
 foo_files.py  # Just the map.
