@@ -2040,11 +2040,13 @@ if __name__ == '__main__':
     )
     slog.safe_print(startup_summary)
     logger.info("🔧 STARTUP_MARKER_3: aa.startup_summary_table displayed")
+    time.sleep(0.05) # 💨 Let the terminal buffer flush
 
     # Show AI capabilities summary
     ai_summary = aa.ai_breadcrumb_summary(tool_count)
     slog.safe_print(ai_summary)
     logger.info("🔧 STARTUP_MARKER_4: ai_breadcrumb_summary displayed")
+    time.sleep(0.05) # 💨 Let the terminal buffer flush
 
     # Show critical environment warnings
     warnings_summary = aa.startup_environment_warnings()
