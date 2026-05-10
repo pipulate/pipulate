@@ -52,13 +52,13 @@ AI_PHOOEY_CHOP = """\
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
+scripts/articles/lsa.py  # [2,349 tokens | 10,485 bytes]
 prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!!
 
-flake.nix  # [9,194 tokens | 39,530 bytes]
-/home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
-scripts/articles/lsa.py  # [2,349 tokens | 10,485 bytes]
+# flake.nix  # [9,194 tokens | 39,530 bytes]
+# /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
 
 # 
 # .gitignore  # [571 tokens | 2,096 bytes]
