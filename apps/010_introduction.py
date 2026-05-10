@@ -74,18 +74,18 @@ class IntroductionPlugin:
             dynamic_app_name = self.wand.get_config().APP_NAME
             active_model = self.wand.db.get('active_local_model', 'an external provider')
 
-            sentinel = self.wand.paths.data / '.has_greeted'
+            sentinel = self.wand.paths.data / '.has_greeted'
 
             if not operator_name:
                 # STATE 1: The Bouncer Persona (Airlock has not fired)
-                if not sentinel.exists():
+                if not sentinel.exists():
                     msg = (
                         "Halt. I am Chip O'Theseus. My speech is generated entirely on your machine, "
                         "but you are trying to sneak into the VIP lounge through the kitchen. "
                         "You have discovered port 5001, but the doors to the Control Room remain sealed until you complete the initiation rite. "
                         "Return to your JupyterLab tab, execute the Golden Path, and drop the sentinel file."
                     )
-                    sentinel.touch(exist_ok=True)
+                    sentinel.touch(exist_ok=True)
                 else:
                     msg = ""
                 return "Access Denied 🛑", msg, None
