@@ -51,16 +51,25 @@ AI_PHOOEY_CHOP = """\
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
-scripts/articles/lsa.py  # [2,349 tokens | 10,485 bytes]
-prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+# foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
+# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!!
 
+.gitignore  # [571 tokens | 2,096 bytes]
+config.py  # [4,170 tokens | 16,184 bytes]
+pipulate/__init__.py  # [721 tokens | 2,998 bytes]
+pipulate/core.py  # [29,800 tokens | 144,966 bytes]
+apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
+apps/015_config.py  # [11,858 tokens | 55,451 bytes]
+
+# assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
+# assets/nbs/imports/faq_writer_sauce.py  # [6,006 tokens | 26,636 bytes]
+
 # flake.nix  # [9,194 tokens | 39,530 bytes]
 # /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
+# scripts/articles/lsa.py  # [2,349 tokens | 10,485 bytes]
 
-# 
 # .gitignore  # [571 tokens | 2,096 bytes]
 # flake.nix  # [9,194 tokens | 39,530 bytes]
 # /home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
@@ -102,10 +111,7 @@ prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 # Notebooks/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
 # Notebooks/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
 
-# config.py  # [4,170 tokens | 16,184 bytes]
 # # server.py  # [56,191 tokens | 267,687 bytes]
-# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-# pipulate/core.py  # [29,800 tokens | 144,966 bytes]
 # # apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
 # # apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
 # # apps/060_tasks.py  # [4,993 tokens | 23,188 bytes]
@@ -396,6 +402,7 @@ prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 # Notebooks/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
 # assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb  # [1,852 tokens | 6,328 bytes]
 # assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
+# assets/nbs/imports/faq_writer_sauce.py  # [6,006 tokens | 26,636 bytes]
 # assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [8,479 tokens | 28,415 bytes]
 # assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
 
@@ -637,7 +644,6 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 # assets/js/split.js  # [6,166 tokens | 29,959 bytes]
 # assets/js/surreal.js  # [3,812 tokens | 13,432 bytes]
 # assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
-# assets/nbs/imports/faq_writer_sauce.py  # [6,006 tokens | 26,636 bytes]
 # assets/nbs/imports/gap_analyzer_sauce.py  # [27,162 tokens | 119,579 bytes]
 # assets/nbs/imports/url_inspect_sauce.py  # [3,542 tokens | 16,202 bytes]
 # assets/nbs/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
