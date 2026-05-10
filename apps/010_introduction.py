@@ -86,7 +86,11 @@ class IntroductionPlugin:
 
             elif not has_configured:
                 # STATE 2: The Guide Persona (Airlock fired, but Configuration is pending)
-                msg = f"Welcome to {dynamic_app_name}, {operator_name}. I am Chip O'Theseus. To see a demonstration of my capabilities, press Ctrl+Alt+D (or Control+Option+D on Mac) right now. Otherwise, we will proceed to finalize your configuration."
+                msg = (
+                    f"Welcome to {dynamic_app_name}, {operator_name}. I am Chip O'Theseus. To see a demonstration of my capabilities, press ",
+                    Strong("Ctrl+Alt+D", cls="platform-shortcut"),
+                    " right now. Otherwise, we will proceed to finalize your configuration."
+                )
                 return "Welcome", msg, 'finalize'
                 
             else:
@@ -110,7 +114,20 @@ class IntroductionPlugin:
 
     async def speak_step(self, step_id: str):
         """Trigger server-side audio playback using JIT evaluated text."""
-        _, text, _ = self._get_slide_data(step_id)
+        if step_id == 'step_01':
+            sentinel = self.wand.paths.data / '.has_greeted'
+            sentinel.touch(exist_ok=True)
+
+        _, content, _ = self._get_slide_data(step_id)
+         
+        # Convert FastHTML components to string for the voice engine
+        if isinstance(content, tuple):
+            text = "".join(to_xml(c) if hasattr(c, '__html__') else str(c) for c in content)
+        elif hasattr(content, '__html__'):
+            text = to_xml(content)
+        else:
+            text = str(content)
+
         
         from imports.voice_synthesis import chip_voice_system
         if chip_voice_system and chip_voice_system.voice_ready:
@@ -155,8 +172,6 @@ class IntroductionPlugin:
                 sentinel = self.wand.paths.data / '.has_greeted'
                 if sentinel.exists():
                     allow_auto_speak = False
-                else:
-                    sentinel.touch(exist_ok=True)
             
             if allow_auto_speak:
                 onload_trigger = Div(
@@ -188,6 +203,19 @@ class IntroductionPlugin:
                 )
             )
 
+        if isinstance(content, tuple):
+            content_tag = P(*content, style="font-size: 1.3rem; line-height: 1.6; margin-bottom: 2rem;")
+        else:
+            content_tag = P(content, style="font-size: 1.3rem; line-height: 1.6; margin-bottom: 2rem;")
+
+        # JIT Client-Side Text Replacement for Shortcuts
+        shortcut_script = Script('''
+            const shortcutEl = document.querySelector('.platform-shortcut');
+            if (shortcutEl && window.PLATFORM_KEYS) {
+                shortcutEl.textContent = window.PLATFORM_KEYS.d_key;
+            }
+        ''')
+
         return Div(
             onload_trigger,
             Card(
@@ -200,11 +228,12 @@ class IntroductionPlugin:
                     self._render_voice_controls(voice_enabled),
                     style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;"
                 ),
-                P(content, style="font-size: 1.3rem; line-height: 1.6; margin-bottom: 2rem;"),
+                content_tag,
                 Div(*nav_buttons, style="display: flex; justify-content: flex-end;"),
                 id=step_id,
                 cls="intro-slide",
-            )
+            ),
+            shortcut_script
         )
     # --- Step Handlers ---
 
