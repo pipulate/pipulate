@@ -1869,15 +1869,15 @@ async def startup_event():
     progressive distillation workflows that define the Pipulate vision.
     """
     pipulate.db['server_start_time'] = str(time.time())
-    # 🧹 THE SLATE WIPE: Clear the greeting sentinel on a true manual start
-    if not os.environ.get('PIPULATE_WATCHDOG_RESTART'):
-        greet_sentinel = pipulate.paths.data / '.has_greeted'
-        try:
-            if greet_sentinel.exists():
-                greet_sentinel.unlink()
-                logger.info("🧹 Slate wipe: Cleared greeting sentinel for new server session.")
-        except Exception as e:
-            logger.warning(f"Could not clear greeting sentinel: {e}")
+    # 🧹 THE SLATE WIPE: Clear the greeting sentinel on a true manual start
+    if not os.environ.get('PIPULATE_WATCHDOG_RESTART'):
+        greet_sentinel = pipulate.paths.data / '.has_greeted'
+        try:
+            if greet_sentinel.exists():
+                greet_sentinel.unlink()
+                logger.info("🧹 Slate wipe: Cleared greeting sentinel for new server session.")
+        except Exception as e:
+            logger.warning(f"Could not clear greeting sentinel: {e}")
 
 
     # 🔧 MCP Tools should already be registered from main startup sequence
