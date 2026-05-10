@@ -62,12 +62,14 @@ AI_PHOOEY_CHOP = """\
 # Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
 # Notebooks/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
 # Notebooks/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
+
 config.py  # [4,170 tokens | 16,184 bytes]
 server.py  # [56,191 tokens | 267,687 bytes]
-assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
 pipulate/__init__.py  # [721 tokens | 2,998 bytes]
 pipulate/core.py  # [29,800 tokens | 144,966 bytes]
+apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
+
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # JUST ENOUGH TO SEE THE WAND AND OVER-STUFFED WORKFLOW WAITING FOR A SKILL.md EXTRACTION
 # .gitignore  # [571 tokens | 2,096 bytes]
