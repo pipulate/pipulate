@@ -141,7 +141,7 @@ AI_PHOOEY_CHOP = r"""\
 # apps/070_history.py  # [5,272 tokens | 28,545 bytes]
 
 # CHAPTER 8: FASTHTML PRIMITIVES
-# apps/210_widget_examples.py  # [22,791 tokens | 98,590 bytes]
+apps/210_widget_examples.py  # [22,791 tokens | 98,590 bytes]
 # apps/510_text_field.py  # [2,888 tokens | 12,293 bytes]
 # apps/520_text_area.py  # [3,070 tokens | 13,197 bytes]
 # apps/530_dropdown.py  # [3,497 tokens | 15,429 bytes]
@@ -167,14 +167,14 @@ AI_PHOOEY_CHOP = r"""\
 # apps/100_connect_with_botify.py  # [4,492 tokens | 22,616 bytes]
 # apps/240_simon_mcp.py  # [8,886 tokens | 44,543 bytes]
 
-# apps/200_workflow_genesis.py  # [12,397 tokens | 59,509 bytes]
-# apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
-# scripts/workflow/splice_workflow_step.py  # [5,028 tokens | 21,917 bytes]
-# scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
-# scripts/workflow/create_workflow.py  # [3,683 tokens | 16,394 bytes]
-# scripts/workflow/manage_class_attributes.py  # [2,678 tokens | 12,795 bytes]
-# scripts/workflow/update_template_config.py  # [1,671 tokens | 8,381 bytes]
-# scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
+apps/200_workflow_genesis.py  # [12,397 tokens | 59,509 bytes]
+apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
+scripts/workflow/splice_workflow_step.py  # [5,028 tokens | 21,917 bytes]
+scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
+scripts/workflow/create_workflow.py  # [3,683 tokens | 16,394 bytes]
+scripts/workflow/manage_class_attributes.py  # [2,678 tokens | 12,795 bytes]
+scripts/workflow/update_template_config.py  # [1,671 tokens | 8,381 bytes]
+scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
 
 # imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
 # apps/400_botify_trifecta.py  # [53,083 tokens | 275,728 bytes]

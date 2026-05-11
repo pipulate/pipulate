@@ -1,4 +1,4 @@
-# File: apps/300_blank_placeholder.py
+# File: apps/830_pico_slider.py
 import asyncio
 from datetime import datetime
 from fasthtml.common import * # type: ignore
@@ -6,26 +6,28 @@ from loguru import logger
 import inspect
 from pathlib import Path
 import re
-from imports.crud import Step  # 🎯 STANDARDIZED: Import centralized Step definition
+from imports.crud import Step  
 
-ROLES = ['Developer'] # Defines which user roles can see this plugin
-
-# 🎯 STEP DEFINITION: Now imported from imports.crud.py (eliminates 34+ duplications)
+ROLES = ['Developer'] 
 
 class SliderPlaceholder:
     """
     Slider Placeholder Workflow
-    A minimal template for creating new Pipulate workflows.
-    It includes one placeholder step and the necessary structure for expansion.
+    A functional Moviola template using HTMX to scrub through simulated Git diffs.
     """
     APP_NAME = 'pico_slider'
     DISPLAY_NAME = 'Pico Slider 🎚'
-    ENDPOINT_MESSAGE = 'Welcome to the Pico Slider template. This is a starting point for your new workflow.'
-    TRAINING_PROMPT = 'This is a minimal workflow template. It has one placeholder step. The user will customize it.'
+    ENDPOINT_MESSAGE = 'Welcome to the Pico Slider template. Drag the slider to scrub through the timeline.'
+    TRAINING_PROMPT = 'This workflow demonstrates how to use HTMX and a range input to scrub through dynamic server-side state in real time.'
 
-    # --- START_CLASS_ATTRIBUTES_BUNDLE ---
-    # Additional class-level constants can be merged here by manage_class_attributes.py
-    # --- END_CLASS_ATTRIBUTES_BUNDLE ---
+    # Simulated Git History for the prototype
+    MOCK_DIFFS = [
+        "commit 16a1dd1a83bb90c9\nAuthor: Mike\n\n+ Initialized empty scratchpad.",
+        "commit 693a958c2101eaef\nAuthor: Mike\n\n- Initialized empty scratchpad.\n+ Added CHAPTER 1: THE SAFE HARBOR",
+        "commit a653227b36310c83\nAuthor: Mike\n\n+ Added CHAPTER 2: THE HERMETIC SEAL",
+        "commit b90aee0a687961c0\nAuthor: Mike\n\n- AI_PHOOEY_CHOP = \"\"\"\\\n+ AI_PHOOEY_CHOP = r\"\"\"\\",
+        "commit cf7ea0afb4a32966\nAuthor: Mike\n\n+ Finalized Moviola HTMX integration."
+    ]
 
     def __init__(self, app, pipulate, pipeline, db, app_name=None):
         self.pipulate = pipulate
@@ -34,23 +36,20 @@ class SliderPlaceholder:
         self.pipulate = pipulate
         self.pipeline = pipeline
         wand = self.pipulate
-        wand = self.pipulate
         self.message_queue = wand.get_message_queue()
-
-        # Access centralized UI constants through dependency injection
         self.ui = wand.get_ui_constants()
 
-        # self.steps includes all data steps AND the system 'finalize' step at the end.
-        # splice_workflow_step.py inserts new data steps BEFORE STEPS_LIST_INSERTION_POINT.
         self.steps = [
-            Step(id='step_01', done='placeholder_data_01', show='Step 1 Placeholder', refill=False),
-            # --- STEPS_LIST_INSERTION_POINT ---
+            Step(id='step_01', done='timeline_index', show='Timeline Scrubber', refill=False),
             Step(id='finalize', done='finalized', show='Finalize Workflow', refill=False)
         ]
         self.steps_indices = {step_obj.id: i for i, step_obj in enumerate(self.steps)}
 
-        # Use centralized route registration helper
+        # Register standard routes
         pipulate.register_workflow_routes(self)
+
+        # 🎯 CUSTOM ROUTE INJECTION: Register the HTMX scrubbing endpoint
+        self.app.route(f'/{self.app_name}/scrub_timeline', methods=['POST'])(self.scrub_timeline)
 
         self.step_messages = {}
         for step_obj in self.steps:
@@ -61,19 +60,15 @@ class SliderPlaceholder:
                 }
             else:
                 self.step_messages[step_obj.id] = {
-                    'input': f'{step_obj.show}: Click Done to proceed.',
+                    'input': f'{step_obj.show}: Drag the slider to scrub through history.',
                     'complete': f'{step_obj.show} is complete. Proceed to the next action.'
                 }
 
     async def landing(self, request):
-        """Generate the landing page using the standardized helper while maintaining WET explicitness."""
         wand = self.pipulate
-
-        # Use centralized landing page helper - maintains WET principle by explicit call
         return wand.create_standard_landing_page(self)
 
     async def init(self, request):
-        """ Handles the key submission, initializes state, and renders the step UI placeholders. """
         wand, db, steps, app_name = (self.pipulate, self.pipulate.db, self.steps, self.APP_NAME)
         form = await request.form()
         user_input = form.get('pipeline_id', '').strip()
@@ -83,7 +78,7 @@ class SliderPlaceholder:
             response.headers['HX-Refresh'] = 'true'
             return response
         context = wand.get_plugin_context(self)
-        plugin_name = app_name  # Use app_name directly to ensure consistency
+        plugin_name = app_name  
         profile_name = context['profile_name'] or 'default'
         profile_part = profile_name.replace(' ', '_')
         plugin_part = plugin_name.replace(' ', '_')
@@ -94,16 +89,13 @@ class SliderPlaceholder:
             _, prefix, user_provided_id = wand.generate_pipeline_key(self, user_input)
             pipeline_id = f'{prefix}{user_provided_id}'
         wand.db['pipeline_id'] = pipeline_id
-        logger.debug(f'Using pipeline ID: {pipeline_id}')
         state, error = wand.initialize_if_missing(pipeline_id, {'app_name': app_name})
         if error:
             return error
         all_steps_complete = all((step.id in state and step.done in state[step.id] for step in steps[:-1]))
         is_finalized = 'finalize' in state and 'finalized' in state['finalize']
 
-        # Progressive feedback with emoji conventions
         await self.message_queue.add(wand, f'{self.ui["EMOJIS"]["WORKFLOW"]} Workflow ID: {pipeline_id}', verbatim=True, spaces_before=0)
-        await self.message_queue.add(wand, f"{self.ui["EMOJIS"]["KEY"]} Return later by selecting '{pipeline_id}' from the dropdown.", verbatim=True, spaces_before=0)
 
         if all_steps_complete:
             if is_finalized:
@@ -112,7 +104,7 @@ class SliderPlaceholder:
                 status_msg = f'{self.ui["EMOJIS"]["SUCCESS"]} Workflow is complete but not finalized. Press Finalize to lock your data.'
             await self.message_queue.add(wand, status_msg, verbatim=True)
         elif not any((step.id in state for step in self.steps)):
-            await self.message_queue.add(wand, f'{self.ui["EMOJIS"]["INPUT_FORM"]} Please complete each step in sequence. Your progress will be saved automatically.', verbatim=True)
+            await self.message_queue.add(wand, f'{self.ui["EMOJIS"]["INPUT_FORM"]} Use the slider to explore the timeline.', verbatim=True)
 
         parsed = wand.parse_pipeline_key(pipeline_id)
         prefix = f"{parsed['profile_part']}-{parsed['plugin_part']}-"
@@ -125,9 +117,7 @@ class SliderPlaceholder:
 
     async def finalize(self, request):
         wand, db, app_name = self.pipulate, self.pipulate.db, self.APP_NAME
-        # Use self.steps as it's the definitive list including 'finalize'
         pipeline_id = wand.db.get('pipeline_id', 'unknown')
-
         finalize_step_obj = next(s for s in self.steps if s.id == 'finalize')
         finalize_data = wand.get_step_data(pipeline_id, finalize_step_obj.id, {})
 
@@ -136,52 +126,24 @@ class SliderPlaceholder:
                 return Card(
                     H3(self.ui['MESSAGES']['WORKFLOW_LOCKED'], id="workflow-locked-heading"), 
                     Form(
-                        Button(
-                            self.ui['BUTTON_LABELS']['UNLOCK'], 
-                            type='submit', 
-                            name='unlock_action',
-                            cls=self.ui['BUTTON_STYLES']['OUTLINE'],
-                            id="finalize-unlock-button",
-                            aria_label="Unlock workflow to make changes",
-                            data_testid="unlock-workflow-button"
-                        ), 
+                        Button(self.ui['BUTTON_LABELS']['UNLOCK'], type='submit', name='unlock_action', cls=self.ui['BUTTON_STYLES']['OUTLINE']), 
                         hx_post=f'/{app_name}/unfinalize', 
-                        hx_target=f'#{app_name}-container',
-                        aria_label="Form to unlock finalized workflow",
-                        aria_labelledby="finalize-unlock-button",
-                        role="form",
-                        data_testid="unlock-form"
+                        hx_target=f'#{app_name}-container'
                     ), 
-                    id=finalize_step_obj.id,
-                    data_testid="finalized-workflow-card"
+                    id=finalize_step_obj.id
                 )
             else:
-                # Check if all data steps (all steps in self.steps *before* 'finalize') are complete
                 all_data_steps_complete = all(wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in self.steps if step.id != 'finalize')
                 if all_data_steps_complete:
                     return Card(
-                        H3(self.ui['MESSAGES']['FINALIZE_QUESTION'], id="finalize-question-heading"), 
-                        P(self.ui['MESSAGES']['FINALIZE_HELP'], cls='text-secondary', id="finalize-help-text"), 
+                        H3(self.ui['MESSAGES']['FINALIZE_QUESTION']), 
+                        P(self.ui['MESSAGES']['FINALIZE_HELP'], cls='text-secondary'), 
                         Form(
-                            Button(
-                                self.ui['BUTTON_LABELS']['FINALIZE'], 
-                                type='submit',
-                                name='finalize_action', 
-                                cls=self.ui['BUTTON_STYLES']['PRIMARY'],
-                                id="finalize-submit-button",
-                                aria_label="Finalize workflow and lock data",
-                                data_testid="finalize-workflow-button"
-                            ), 
+                            Button(self.ui['BUTTON_LABELS']['FINALIZE'], type='submit', name='finalize_action', cls=self.ui['BUTTON_STYLES']['PRIMARY']), 
                             hx_post=f'/{app_name}/finalize', 
-                            hx_target=f'#{app_name}-container',
-                            aria_label="Form to finalize workflow",
-                            aria_labelledby="finalize-question-heading",
-                            aria_describedby="finalize-help-text",
-                            role="form",
-                            data_testid="finalize-form"
+                            hx_target=f'#{app_name}-container'
                         ), 
-                        id=finalize_step_obj.id,
-                        data_testid="ready-to-finalize-card"
+                        id=finalize_step_obj.id
                     )
                 else:
                     return Div(id=finalize_step_obj.id)
@@ -198,22 +160,11 @@ class SliderPlaceholder:
         return wand.run_all_cells(app_name, self.steps)
 
     async def get_suggestion(self, step_id, state):
-        wand, db, current_steps = self.pipulate, self.pipulate.db, self.steps
-        step_obj = next((s for s in current_steps if s.id == step_id), None)
-        if not step_obj or not step_obj.transform: return ''
-
-        current_step_index = self.steps_indices.get(step_id)
-        if current_step_index is None or current_step_index == 0: return ''
-
-        prev_step_obj = current_steps[current_step_index - 1]
-        prev_data = wand.get_step_data(db.get('pipeline_id', 'unknown'), prev_step_obj.id, {})
-        prev_value = prev_data.get(prev_step_obj.done, '')
-
-        return step_obj.transform(prev_value) if prev_value and callable(step_obj.transform) else ''
+        return ''
 
     async def handle_revert(self, request):
         wand, db, app_name = (self.pipulate, self.pipulate.db, self.APP_NAME)
-        current_steps_to_pass_helpers = self.steps # Use self.steps which includes 'finalize'
+        current_steps_to_pass_helpers = self.steps 
         form = await request.form()
         step_id_to_revert_to = form.get('step_id')
         pipeline_id = wand.db.get('pipeline_id', 'unknown')
@@ -230,30 +181,52 @@ class SliderPlaceholder:
         await self.message_queue.add(wand, message, verbatim=True)
         return wand.run_all_cells(app_name, current_steps_to_pass_helpers)
 
-    # --- START_STEP_BUNDLE: step_01 ---
+    # 🎯 CUSTOM ENDPOINT: HTMX dynamic scrubbing logic
+    async def scrub_timeline(self, request):
+        """Intercepts the slider input event and returns the formatted diff payload dynamically."""
+        form_data = await request.form()
+        index = int(form_data.get('timeline_index', 0))
+        
+        # Guard clause
+        if index < 0 or index >= len(self.MOCK_DIFFS):
+            return Pre(Code("Diff out of bounds."))
+
+        diff_text = self.MOCK_DIFFS[index]
+        formatted_lines = []
+
+        # Simple semantic coloring for the mock diffs
+        for line in diff_text.split('\n'):
+            if line.startswith('+'):
+                formatted_lines.append(f"<span style='color: var(--pico-color-green-500);'>{line}</span>")
+            elif line.startswith('-'):
+                formatted_lines.append(f"<span style='color: var(--pico-color-red-500); text-decoration: line-through;'>{line}</span>")
+            else:
+                formatted_lines.append(line)
+
+        # Return the raw HTML snippet to be swapped into the viewport
+        return Pre(Code(NotStr('<br>'.join(formatted_lines))))
+
     async def step_01(self, request):
-        """Handles GET request for Step 1 Placeholder."""
         wand, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.APP_NAME
         step_id = 'step_01'
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
-        # Determine next_step_id dynamically based on runtime position in steps list
         next_step_id = steps[step_index + 1].id if step_index + 1 < len(steps) else 'finalize'
         pipeline_id = wand.db.get('pipeline_id', 'unknown')
         state = wand.read_state(pipeline_id)
         step_data = wand.get_step_data(pipeline_id, step_id, {})
-        current_value = step_data.get(step.done, "") # 'step.done' will be like 'placeholder_data_01'
+        current_value = step_data.get(step.done, "") 
         finalize_data = wand.get_step_data(pipeline_id, "finalize", {})
 
         if "finalized" in finalize_data and current_value:
-            wand.append_to_history(f"[WIDGET CONTENT] {step.show} (Finalized):\\n{current_value}")
+            wand.append_to_history(f"[WIDGET CONTENT] {step.show} (Finalized):\n{current_value}")
             return Div(
                 Card(H3(f"🔒 {step.show}: Completed")),
                 Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
                 id=step_id
             )
         elif current_value and state.get("_revert_target") != step_id:
-            wand.append_to_history(f"[WIDGET CONTENT] {step.show} (Completed):\\n{current_value}")
+            wand.append_to_history(f"[WIDGET CONTENT] {step.show} (Completed):\n{current_value}")
             return Div(
                 wand.display_revert_header(step_id=step_id, app_name=app_name, message=f"{step.show}: Complete", steps=steps),
                 Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
@@ -262,42 +235,50 @@ class SliderPlaceholder:
         else:
             wand.append_to_history(f"[WIDGET STATE] {step.show}: Showing input form")
             await self.message_queue.add(wand, self.step_messages[step_id]["input"], verbatim=True)
+            
+            # The Range Input linked to HTMX via 'input' event with a 50ms throttle
+            range_slider = Input(
+                type="range",
+                name="timeline_index",
+                min="0",
+                max=str(len(self.MOCK_DIFFS) - 1),
+                value="0",
+                hx_post=f"/{app_name}/scrub_timeline",
+                hx_target="#diff-viewport",
+                hx_trigger="input delay:50ms"  # The critical delay to prevent server flooding
+            )
+
+            # The Viewport that HTMX will dynamically swap content into
+            diff_viewport = Div(
+                Pre(Code(self.MOCK_DIFFS[0])), # Initial state
+                id="diff-viewport",
+                style="margin-top: 1rem; background: var(--pico-code-background-color); padding: 1rem; border-radius: var(--pico-border-radius);"
+            )
+
             return Div(
                 Card(
-                    H3(f"{step.show}", id=f"{step_id}-heading", aria_level="3"),
-                    P("This is a placeholder step. Click Done to proceed.", 
-                      id=f"{step_id}-description",
-                      role="note"),
+                    H3(f"{step.show}", id=f"{step_id}-heading"),
+                    P("Drag the slider to physically scrub the timeline of the repository.", cls="text-secondary"),
                     Form(
-                        # Minimal placeholder: just a Done button - customize as needed
+                        range_slider,
+                        diff_viewport,
+                        Br(),
                         Button(
-                            "Done", 
+                            "Lock Selection & Proceed", 
                             type="submit",
                             name=step.done,
                             value="completed",
-                            cls=self.ui['BUTTON_STYLES']['PRIMARY'],
-                            id=f"{step_id}-done-button",
-                            data_testid=f"done-button-{step_id}"
+                            cls=self.ui['BUTTON_STYLES']['PRIMARY']
                         ),
                         hx_post=f"/{app_name}/{step_id}_submit", 
                         hx_target=f"#{step_id}",
-                        aria_label=f"Form for {step.show}",
-                        aria_describedby=f"{step_id}-description",
-                        aria_labelledby=f"{step_id}-heading",
-                        role="form",
-                        data_testid=f"step-form-{step_id}"
                     ),
-                    data_testid=f"step-card-{step_id}",
-                    role="region",
-                    aria_labelledby=f"{step_id}-heading"
                 ),
-                Div(id=next_step_id), # Placeholder for next step, no trigger here
-                id=step_id,
-                data_testid=f"step-container-{step_id}"
+                Div(id=next_step_id), 
+                id=step_id
             )
 
     async def step_01_submit(self, request):
-        """Process the submission for Step 1 Placeholder."""
         wand, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.APP_NAME
         step_id = 'step_01'
         step_index = self.steps_indices[step_id]
@@ -306,19 +287,15 @@ class SliderPlaceholder:
         pipeline_id = wand.db.get('pipeline_id', 'unknown')
 
         form_data = await request.form()
-        # Minimal placeholder: just mark as completed
-        value_to_save = "completed"
+        selected_index = form_data.get('timeline_index', '0')
+        value_to_save = f"Locked at commit index {selected_index}"
+        
         await wand.set_step_data(pipeline_id, step_id, value_to_save, steps)
-
         wand.append_to_history(f"[WIDGET STATE] {step.show}: Step completed")
-
         await self.message_queue.add(wand, f"{step.show} complete.", verbatim=True)
 
         return Div(
-            wand.display_revert_header(step_id=step_id, app_name=app_name, message=f"{step.show}: Complete", steps=steps),
+            wand.display_revert_header(step_id=step_id, app_name=app_name, message=f"{step.show}: {value_to_save}", steps=steps),
             Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
             id=step_id
         )
-    # --- END_STEP_BUNDLE: step_01 ---
-
-    # --- STEP_METHODS_INSERTION_POINT ---
