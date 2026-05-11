@@ -1385,7 +1385,7 @@ def main():
                 logger.print(" (skipped)")
         logger.print("...UML generation complete.\n")
  
-    python_files_to_analyze = [f['path'] for f in processed_files_data if f['path'].endswith('.py')]
+    python_files_to_analyze = [f['path'] for f in processed_files_data if f['path'].endswith('.py') and os.path.isfile(f['path'])]
     if python_files_to_analyze:
         analysis_output = run_static_analysis(python_files_to_analyze)
         if analysis_output:
