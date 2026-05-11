@@ -5,8 +5,7 @@ from pathlib import Path
 import common
 
 # Regex to extract fenced code blocks safely (preventing inversion)
-BLOCK_REGEX = re.compile(r'^
-```[^\n]*\n(.*?)^```', re.DOTALL | re.MULTILINE)
+BLOCK_REGEX = re.compile(r'^```[^\n]*\n(.*?)^```', re.DOTALL | re.MULTILINE)
 
 # Regex for pure commit hash
 COMMIT_REGEX = re.compile(r'\[(?:main|master)\s+([a-f0-9]{7,40})\]')
