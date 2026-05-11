@@ -78,9 +78,53 @@ prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # [A BUNCH OF STUFF DELETED]
 
-# Brand new query to figure out what user agents request markdown from what sources.
-# ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+#  ____              _       ___        _   _ _            
+# | __ )  ___   ___ | | __  / _ \ _   _| |_| (_)_ __   ___ 
+# |  _ \ / _ \ / _ \| |/ / | | | | | | | __| | | '_ \ / _ \
+# | |_) | (_) | (_) |   <  | |_| | |_| | |_| | | | | |  __/
+# |____/ \___/ \___/|_|\_\  \___/ \__,_|\__|_|_|_| |_|\___|
 
+# ============================================================================
+# THE BOOK OF FUTURE-PROOFING (Curriculum & Context Router)
+# ============================================================================
+# Uncomment a specific chapter below, run `fu`, and paste the payload to the AI.
+# The AI will instantly become a specialized guide for that specific domain.
+
+# CHAPTER 1: THE SAFE HARBOR (Cognitive Autonomy)
+# Focus: Vim muscle memory, thinking out loud, and escaping the cloud.
+# /home/mike/repos/nixos/init.lua 
+# /home/mike/repos/trimnoir/_posts/2026-05-11-safe-harbor-thought-ai-resilient-workflow.md
+
+# CHAPTER 2: THE HERMETIC SEAL (Deterministic Environments)
+# Focus: NixOS, Flakes, and the end of "It works on my machine."
+# flake.nix
+# /home/mike/repos/nixos/configuration.nix
+
+# CHAPTER 3: THE CONTEXT COMPILER (Prompt Fu)
+# Focus: How to feed an amnesiac genie without overloading the matrix.
+# prompt_foo.py
+# scripts/articles/lsa.py
+
+# CHAPTER 4: THE DIGITAL WORKSHOP (WET Code & Workflows)
+# Focus: Jupyter Notebooks, FastHTML, and bridging the gap with SKILL.md.
+# apps/040_hello_workflow.py
+# Notebooks/.agents/skills/hello_workflow/SKILL.md
+
+# CHAPTER 5: RADICAL TRANSPARENCY (The Public Ledger)
+# Focus: Jekyll, Github Hash injection, and training your machine ancestors.
+# scripts/articles/publishizer.py
+# scripts/articles/link_injector.py
+
+# CHAPTER 6: THE AUTONOMOUS MESH (Telemetry & Honeybots)
+# Focus: Observing the Agentic Web and closing the cybernetic loop.
+# remotes/honeybot/queries/md_routing_agents.sql
+
+#  _____ _             ___  _     _    ___        _   _ _            
+# |_   _| |__   ___   / _ \| | __| |  / _ \ _   _| |_| (_)_ __   ___ 
+#   | | | '_ \ / _ \ | | | | |/ _` | | | | | | | | __| | | '_ \ / _ \
+#   | | | | | |  __/ | |_| | | (_| | | |_| | |_| | |_| | | | | |  __/
+#   |_| |_| |_|\___|  \___/|_|\__,_|  \___/ \__,_|\__|_|_|_| |_|\___|
+                                                                   
 # ============================================================================
 # II. THE CORE MACHINE (Architecture & Monolith)
 # ============================================================================
@@ -311,6 +355,10 @@ prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 # /home/mike/repos/nixos/services.nix  # [1,457 tokens | 5,559 bytes]
 # /home/mike/repos/nixos/flatnotes.nix  # [760 tokens | 2,497 bytes]
 # /home/mike/repos/nixos/openclaw.nix  # [435 tokens | 1,573 bytes]
+
+# QUERY COLLECTION
+# Brand new query to figure out what user agents request markdown from what sources.
+# ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 """
 
 # ============================================================================
