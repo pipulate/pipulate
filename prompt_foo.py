@@ -337,10 +337,6 @@ def _get_article_list_data(posts_dir: str = CONFIG["POSTS_DIRECTORY"], url_confi
     posts_data.reverse()
     return posts_data
 
-    # The lsa function already sorted them, but we maintain the return signature
-    return posts_data
-
-
 def parse_slice_arg(arg_str: str):
     if not arg_str or not arg_str.startswith('[') or not arg_str.endswith(']'): return None
     content = arg_str[1:-1].strip()

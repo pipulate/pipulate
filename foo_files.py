@@ -204,15 +204,15 @@ AI_PHOOEY_CHOP = r"""\
 # assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
 
 # CHAPTER 14: JEKYLL PUBLISHING
-flake.nix  # [9,141 tokens | 39,307 bytes]
-/home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
-scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-/home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
-scripts/articles/common.py  # [952 tokens | 3,894 bytes]
-scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
-scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
-scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-scripts/articles/contextualizer.py  # [2,519 tokens | 11,151 bytes]
+# flake.nix  # [9,141 tokens | 39,307 bytes]
+# /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
+# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
+# /home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
+# scripts/articles/common.py  # [952 tokens | 3,894 bytes]
+# scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
+# scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
+# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
+# scripts/articles/contextualizer.py  # [2,519 tokens | 11,151 bytes]
 
 # scripts/articles/build_knowledge_graph.py  # [4,341 tokens | 17,300 bytes]
 # scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
@@ -292,15 +292,18 @@ prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 # !!!
 
 flake.nix  # [9,104 tokens | 39,024 bytes]
+.gitignore
+scripts/vulture_whitelist.py  # [948 tokens | 4,188 bytes]
+! cat << 'EOF' >> scripts/vulture_whitelist.py
+
 # config.py
 # server.py
 # pipulate/__init__.py
 # pipulte/core.py
 # apps/830_pico_slider.py
 # imports/voice_synthesis.py  # [3,133 tokens | 15,477 bytes]
-requirements.in  # [573 tokens | 1,924 bytes]
-requirements.txt  # [7,010 tokens | 18,582 bytes]
-scripts/vulture_whitelist.py  # [948 tokens | 4,188 bytes]
+# requirements.in  # [573 tokens | 1,924 bytes]
+# requirements.txt  # [7,010 tokens | 18,582 bytes]
 
 # apps/040_hello_workflow.py  # [7,190 tokens | 34,518 bytes]
 # Notebooks/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
