@@ -195,7 +195,6 @@ class SliderPlaceholder:
         target_file = form_data.get('target_file', 'foo_files.py')
         
         import subprocess
-        import html
         
         try:
             # Get the list of commits for this file (reverse chronological so 0 is oldest)
@@ -212,26 +211,18 @@ class SliderPlaceholder:
             diff_cmd = ['git', 'show', '--color=never', commit_hash, '--', target_file]
             diff_result = subprocess.run(diff_cmd, capture_output=True, text=True)
 
-            # The raw text of the diff
+            # The raw text of the diff (No manual HTML escaping or span wrapping needed!)
             diff_text = f"Commit:  {commit_hash}\nMessage: {commit_msg}\n\n{diff_result.stdout}"
 
         except Exception as e:
             diff_text = f"Error fetching git history: {str(e)}"
 
-        formatted_lines = []
-        for line in diff_text.split('\n'):
-            # Escape HTML to prevent code blocks from breaking the DOM
-            escaped_line = html.escape(line)
-            
-            if escaped_line.startswith('+') and not escaped_line.startswith('+++'):
-                formatted_lines.append(f"<span style='color: var(--pico-color-green-500);'>{escaped_line}</span>")
-            elif escaped_line.startswith('-') and not escaped_line.startswith('---'):
-                formatted_lines.append(f"<span style='color: var(--pico-color-red-500); text-decoration: line-through;'>{escaped_line}</span>")
-            else:
-                formatted_lines.append(escaped_line)
-
-        # Return the raw HTML snippet to be swapped into the viewport
-        return Pre(Code(NotStr('<br>'.join(formatted_lines))))
+        # HTMX Lifecycle Fix: Return the raw text wrapped in Prism's 'language-diff' class, 
+        # AND append a <script> tag to manually re-trigger Prism on the newly injected DOM.
+        return (
+            Pre(Code(diff_text, cls="language-diff")),
+            Script("if (typeof Prism !== 'undefined') { Prism.highlightAllUnder(document.getElementById('diff-viewport')); }")
+        )
 
     # --- START_STEP_BUNDLE: step_01 ---
     async def step_01(self, request):
@@ -291,7 +282,7 @@ class SliderPlaceholder:
 
             # The Viewport that HTMX will dynamically swap content into
             diff_viewport = Div(
-                Pre(Code(f"Loaded {num_commits} commits for {target_file}. Drag slider to begin scrubbing.")),
+                Pre(Code(f"Loaded {num_commits} commits for {target_file}. Drag slider to begin scrubbing.", cls="language-diff")),
                 id="diff-viewport",
                 style="margin-top: 1rem; background: var(--pico-code-background-color); padding: 1rem; border-radius: var(--pico-border-radius); max-height: 60vh; overflow-y: auto;"
             )
