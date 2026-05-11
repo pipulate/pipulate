@@ -287,11 +287,17 @@ AI_PHOOEY_CHOP = r"""\
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
-prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!!
 
 flake.nix  # [9,104 tokens | 39,024 bytes]
+config.py
+server.py
+https://pipulate.com/
+apps/560_range.py
+apps/300_blank_placeholder.py
+apps/830_pico_slider.py
 
 # GRADUALLY REVEALING SYSTEM TO GEMINI
 # /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
