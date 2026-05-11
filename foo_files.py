@@ -59,213 +59,24 @@ prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 # !!!
 
 # GRADUALLY REVEALING SYSTEM TO GEMINI
-/home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
-flake.nix  # [9,104 tokens | 39,024 bytes]
-/home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
-/home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
-scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-/home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
-scripts/articles/common.py  # [952 tokens | 3,894 bytes]
-scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
-scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
-/home/mike/repos/trimnoir/_layouts/default.html  # [892 tokens | 3,474 bytes]
-/home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
-/home/mike/repos/trimnoir/_posts/2026-05-11-safe-harbor-thought-ai-resilient-workflow.md  # [Idx: 2 | Order: 2 | Tokens: 27,876 | Bytes: 102,270]
-/home/mike/repos/trimnoir/_posts/2026-05-10-semantic-level-of-detail-engine.md  # [Idx: 3 | Order: 5 | Tokens: 30,065 | Bytes: 122,885]
-/home/mike/repos/trimnoir/_posts/2026-05-11-ai-resilience-safe-harbor-thought.md  # [36,455 tokens | 133,105 bytes]
-# /home/mike/repos/trimnoir/_posts/2026-05-11-safe-harbor-ai-resilience-git-provenance.md  # [47,518 tokens | 174,297 bytes]
-scripts/articles/link_injector.py  # [1,021 tokens | 4,205 bytes]
-
-# apps/580_upload.py  # [5,618 tokens | 26,441 bytes]
-
-# .gitignore  # [571 tokens | 2,096 bytes]
-# config.py  # [4,170 tokens | 16,184 bytes]
-# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-# pipulate/core.py  # [29,800 tokens | 144,966 bytes]
-# apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
-# apps/015_config.py  # [11,858 tokens | 55,451 bytes]
-
-# assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
-# assets/nbs/imports/faq_writer_sauce.py  # [6,006 tokens | 26,636 bytes]
-
-# flake.nix  # [9,194 tokens | 39,530 bytes]
 # /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
-# scripts/articles/lsa.py  # [2,349 tokens | 10,485 bytes]
-
-# .gitignore  # [571 tokens | 2,096 bytes]
-# flake.nix  # [9,194 tokens | 39,530 bytes]
-# scripts/vulture_whitelist.py  # [948 tokens | 4,188 bytes]
-# apps/200_workflow_genesis.py  # [12,397 tokens | 59,509 bytes]
-# apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
-# scripts/workflow/splice_workflow_step.py  # [5,028 tokens | 21,917 bytes]
-# scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
-# scripts/workflow/create_workflow.py  # [3,683 tokens | 16,394 bytes]
-# scripts/workflow/manage_class_attributes.py  # [2,678 tokens | 12,795 bytes]
-# scripts/workflow/update_template_config.py  # [1,671 tokens | 8,381 bytes]
-# scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
-# ai_edit.py  # [2,296 tokens | 10,210 bytes]
-
-# /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
-# flake.nix  # [9,141 tokens | 39,308 bytes]
-
-# config.py  # [4,170 tokens | 16,184 bytes]
-# server.py  # [56,191 tokens | 267,687 bytes]
-# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-# pipulate/core.py  # [29,800 tokens | 144,966 bytes]
-# imports/voice_synthesis.py  # [3,133 tokens | 15,477 bytes]
-# apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
-# assets/styles.css  # [18,811 tokens | 81,788 bytes]
-
-# .gitignore  # [571 tokens | 2,096 bytes]
-# config.py  # [4,170 tokens | 16,184 bytes]
-# server.py  # [56,336 tokens | 268,098 bytes]
-# imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
-# imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
-
-# .gitignore  # [571 tokens | 2,096 bytes]
-# flake.by
-# /home/mike/repos/trimnoir/_posts/2026-05-09-chisel-strike-architecture.md  # [28,331 tokens | 114,958 bytes]
-
-# assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
-
-# Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-# Notebooks/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
-# Notebooks/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
-
-# # server.py  # [56,191 tokens | 267,687 bytes]
-# # apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
-# # apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
-# # apps/060_tasks.py  # [4,993 tokens | 23,188 bytes]
-# # server.py  # [56,195 tokens | 267,561 bytes]
-
-# imports/voice_synthesis.py  # [3,133 tokens | 15,477 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-
-# JUST ENOUGH TO SEE THE WAND AND OVER-STUFFED WORKFLOW WAITING FOR A SKILL.md EXTRACTION
-# .gitignore  # [571 tokens | 2,096 bytes]
-# config.py  # [4,170 tokens | 16,184 bytes]
-# server.py  # [56,191 tokens | 267,687 bytes]
-# flake.nix  # [9,141 tokens | 39,307 bytes]
-# apps/015_config.py  # [11,858 tokens | 55,451 bytes]
-
-# .gitignore  # [571 tokens | 2,096 bytes]
-# config.py  # [4,170 tokens | 16,184 bytes]
-# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-# pipulate/core.py  # [29,804 tokens | 144,977 bytes]
-
-# imports/stream_orchestrator.py  # [1,163 tokens | 5,841 bytes]
-# assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-# apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
-# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
-# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
-# /home/mike/repos/trimnoir/_posts/2026-05-09-chisel-strike-architecture.md  # [28,280 tokens | 117,686 bytes]
-
-# # A MAXIMUM SUBMIT-SIZE PROMPT FU PAYLOAD (wHAT yOU jUST sAW)
+# flake.nix  # [9,104 tokens | 39,024 bytes]
 # /home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
-# .gitignore  # [571 tokens | 2,096 bytes]
-# assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
-# assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
-# imports/stream_orchestrator.py  # [1,163 tokens | 5,841 bytes]
-# imports/mcp_orchestrator.py  # [772 tokens | 3,332 bytes]
-# imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
-# imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
-# apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
-# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-# apps/200_workflow_genesis.py  # [12,397 tokens | 59,509 bytes]
-# apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
-# scripts/workflow/splice_workflow_step.py  # [5,028 tokens | 21,917 bytes]
-# scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
-# scripts/workflow/create_workflow.py  # [3,683 tokens | 16,394 bytes]
-# scripts/workflow/manage_class_attributes.py  # [2,678 tokens | 12,795 bytes]
-# scripts/workflow/update_template_config.py  # [1,671 tokens | 8,381 bytes]
-# scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
-
-# ! git show 9328dfbe:assets/scenarios/hello_workflow_test.json
-
-# flake.nix  # [9,135 tokens | 39,284 bytes]
-
-# assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-
-# .gitignore  # [571 tokens | 2,096 bytes]
-# config.py  # [4,170 tokens | 16,184 bytes]
-# server.py  # [56,173 tokens | 267,633 bytes]
-
-# release.py  # [9,649 tokens | 43,340 bytes]
-# __init__.py  # [367 tokens | 1,605 bytes]
-
-# https://www.fsf.org/bulletin/2021/fall/the-fundamentals-of-the-agplv3
-# https://www.gnu.org/licenses/agpl-3.0.html
-
-# .gitignore  # [571 tokens | 2,096 bytes]
-# config.py  # [4,170 tokens | 16,184 bytes]
-# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-# pipulate/core.py  # [29,804 tokens | 144,977 bytes]
-# apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
-# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
-# ! git show 9328dfbe:assets/scenarios/hello_workflow_test.json
-# assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
-# assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
-
-# LET'S FIX THE PLAYER PIANO
-# .gitignore  # [571 tokens | 2,096 bytes]
-# apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
-# assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
-# config.py  # [4,170 tokens | 16,184 bytes]
-# # server.by  # [56,053 tokens | 267,214 bytes]
-# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-# pipulate/core.py  # [29,804 tokens | 144,977 bytes]
-
-# https://mikelev.in/llms.txt
-# remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
-# ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-
-# flake.nix  # [8,673 tokens | 37,067 bytes]
-# https://mikelev.in/futureproof/unix-pipeline-ollama-neovim/
-
-# /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
-# /home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
-# /home/mike/repos/nixos/ai.py  # [591 tokens | 2,814 bytes]
-# https://ollama.com/library/gemma4
-
-# /home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
-
 # /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
+# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
+# /home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
 # scripts/articles/common.py  # [952 tokens | 3,894 bytes]
 # scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
 # scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
-# /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
-# flake.nix  # [8,486 tokens | 36,115 bytes]
+# /home/mike/repos/trimnoir/_layouts/default.html  # [892 tokens | 3,474 bytes]
+# /home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
+# /home/mike/repos/trimnoir/_posts/2026-05-11-safe-harbor-thought-ai-resilient-workflow.md  # [Idx: 2 | Order: 2 | Tokens: 27,876 | Bytes: 102,270]
+# /home/mike/repos/trimnoir/_posts/2026-05-10-semantic-level-of-detail-engine.md  # [Idx: 3 | Order: 5 | Tokens: 30,065 | Bytes: 122,885]
+# /home/mike/repos/trimnoir/_posts/2026-05-11-ai-resilience-safe-harbor-thought.md  # [36,455 tokens | 133,105 bytes]
+# # /home/mike/repos/trimnoir/_posts/2026-05-11-safe-harbor-ai-resilience-git-provenance.md  # [47,518 tokens | 174,297 bytes]
+# scripts/articles/link_injector.py  # [1,021 tokens | 4,205 bytes]
 
-# /home/mike/repos/nixos/ai.py  # [591 tokens | 2,814 bytes]
-
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-
-# /home/mike/repos/trimnoir/_posts/2026-05-05-forever-machine-deterministic-ai-code-editing.md  # [25,972 tokens | 101,375 bytes]
-
-# ! git --no-pager log -n 100
-
-# .gitignore  # [571 tokens | 2,096 bytes]
-
-# /home/mike/repos/trimnoir/_posts/2026-05-02-bitnet-and-the-browser-metronome.md  # [19,813 tokens | 88,454 bytes]
-
-# config.py  # [4,170 tokens | 16,184 bytes]
-# # server.py  # [56,027 tokens | 267,108 bytes]
-# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-# pipulate/core.py  # [29,804 tokens | 144,977 bytes]
-# scripts/articles/list_models.py  # [102 tokens | 391 bytes]
-# apps/015_config.py  # [11,858 tokens | 55,451 bytes]
-# # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-
-# tools/__init__.py  # [464 tokens | 2,067 bytes]
-# tools/llm_optics.py  # [2,829 tokens | 12,322 bytes]
-# tools/scraper_tools.py  # [4,644 tokens | 22,416 bytes]
+# [A BUNCH OF STUFF DELETED]
 
 # Brand new query to figure out what user agents request markdown from what sources.
 # ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
