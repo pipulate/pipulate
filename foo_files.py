@@ -68,10 +68,11 @@ scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
 scripts/articles/common.py  # [952 tokens | 3,894 bytes]
 scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
 scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
-scripts/articles/link_injector.py  # [1,021 tokens | 4,205 bytes]
 /home/mike/repos/trimnoir/_layouts/default.html  # [892 tokens | 3,474 bytes]
 /home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
-/home/mike/repos/trimnoir/_posts/2026-05-11-safe-harbor-thought-ai-resilient-workflow.md  # [19,962 tokens | 75,230 bytes]
+/home/mike/repos/trimnoir/_posts/2026-05-11-safe-harbor-thought-ai-resilient-workflow.md  # [Idx: 1 | Order: 2 | Tokens: 28,242 | Bytes: 103,287]
+/home/mike/repos/trimnoir/_posts/2026-05-10-semantic-level-of-detail-engine.md  # [Idx: 2 | Order: 5 | Tokens: 30,635 | Bytes: 124,428]
+scripts/articles/link_injector.py  # [1,021 tokens | 4,205 bytes]
 
 # apps/580_upload.py  # [5,618 tokens | 26,441 bytes]
 
