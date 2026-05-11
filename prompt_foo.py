@@ -424,11 +424,12 @@ def annotate_tree_with_tokens(tree_output: str, processed_files: List[Dict], rep
 
 def parse_file_list_from_config(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs: dict = None) -> List[Tuple[str, str]]:
     try:
+        # Explicitly bind the repo root to the path for static analysis parity
+        if REPO_ROOT not in sys.path:
+            sys.path.insert(0, REPO_ROOT)
+            
         import foo_files
         files_raw = getattr(foo_files, chop_var)
-    except (ImportError, AttributeError):
-        logger.print(f"ERROR: foo_files.py not found or doesn't contain '{chop_var}'.")
-        sys.exit(1)
     
     # 💥 SAFE REPLACEMENT: Prevents crashing on bash/awk curly braces {}
     if format_kwargs:
