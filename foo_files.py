@@ -167,14 +167,14 @@ AI_PHOOEY_CHOP = r"""\
 # apps/100_connect_with_botify.py  # [4,492 tokens | 22,616 bytes]
 # apps/240_simon_mcp.py  # [8,886 tokens | 44,543 bytes]
 
-apps/200_workflow_genesis.py  # [12,397 tokens | 59,509 bytes]
-apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
-scripts/workflow/splice_workflow_step.py  # [5,028 tokens | 21,917 bytes]
-scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
-scripts/workflow/create_workflow.py  # [3,683 tokens | 16,394 bytes]
-scripts/workflow/manage_class_attributes.py  # [2,678 tokens | 12,795 bytes]
-scripts/workflow/update_template_config.py  # [1,671 tokens | 8,381 bytes]
-scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
+# apps/200_workflow_genesis.py  # [12,397 tokens | 59,509 bytes]
+# apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
+# scripts/workflow/splice_workflow_step.py  # [5,028 tokens | 21,917 bytes]
+# scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
+# scripts/workflow/create_workflow.py  # [3,683 tokens | 16,394 bytes]
+# scripts/workflow/manage_class_attributes.py  # [2,678 tokens | 12,795 bytes]
+# scripts/workflow/update_template_config.py  # [1,671 tokens | 8,381 bytes]
+# scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
 
 # imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
 # apps/400_botify_trifecta.py  # [53,083 tokens | 275,728 bytes]
@@ -204,15 +204,15 @@ scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
 # assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
 
 # CHAPTER 14: JEKYLL PUBLISHING
-# flake.nix  # [9,141 tokens | 39,307 bytes]
-# /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
-# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-# /home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
-# scripts/articles/common.py  # [952 tokens | 3,894 bytes]
-# scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
-# scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
-# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-# scripts/articles/contextualizer.py  # [2,519 tokens | 11,151 bytes]
+flake.nix  # [9,141 tokens | 39,307 bytes]
+/home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
+scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
+/home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
+scripts/articles/common.py  # [952 tokens | 3,894 bytes]
+scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
+scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
+scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
+scripts/articles/contextualizer.py  # [2,519 tokens | 11,151 bytes]
 
 # scripts/articles/build_knowledge_graph.py  # [4,341 tokens | 17,300 bytes]
 # scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
@@ -287,19 +287,23 @@ scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
-# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!!
 
 # flake.nix  # [9,104 tokens | 39,024 bytes]
-config.py
-server.py
-pipulate/__init__.py
-pipulte/core.py
-apps/830_pico_slider.py
-apps/040_hello_workflow.py  # [7,190 tokens | 34,518 bytes]
-Notebooks/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
+# config.py
+# server.py
+# pipulate/__init__.py
+# pipulte/core.py
+# apps/830_pico_slider.py
+# imports/voice_synthesis.py  # [3,133 tokens | 15,477 bytes]
+requirements.in  # [573 tokens | 1,924 bytes]
+requirements.txt  # [7,010 tokens | 18,582 bytes]
+scripts/vulture_whitelist.py  # [948 tokens | 4,188 bytes]
 
+# apps/040_hello_workflow.py  # [7,190 tokens | 34,518 bytes]
+# Notebooks/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
 # https://pipulate.com/
 # apps/560_range.py
 # apps/300_blank_placeholder.py
@@ -602,4 +606,3 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
 # scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
-# scripts/vulture_whitelist.py  # [948 tokens | 4,188 bytes]
