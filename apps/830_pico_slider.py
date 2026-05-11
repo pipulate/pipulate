@@ -355,8 +355,10 @@ class SliderPlaceholder:
             except Exception:
                 tracked_files = ['foo_files.py'] # Safe fallback
                 
-            # Default to foo_files.py if it exists to prioritize the Living Codex
-            options = [Option(f, value=f, selected=(f == 'foo_files.py')) for f in tracked_files]
+            # 🎯 THE REVERT MEMORY FIX: 
+            # If current_value exists (from a revert), use it. Otherwise, default to foo_files.py
+            target_selection = current_value if current_value else 'foo_files.py'
+            options = [Option(f, value=f, selected=(f == target_selection)) for f in tracked_files]
 
             return Div(
                 Card(
