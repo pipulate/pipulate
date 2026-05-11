@@ -73,6 +73,7 @@ scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
 /home/mike/repos/trimnoir/_posts/2026-05-11-safe-harbor-thought-ai-resilient-workflow.md  # [Idx: 2 | Order: 2 | Tokens: 27,876 | Bytes: 102,270]
 /home/mike/repos/trimnoir/_posts/2026-05-10-semantic-level-of-detail-engine.md  # [Idx: 3 | Order: 5 | Tokens: 30,065 | Bytes: 122,885]
 /home/mike/repos/trimnoir/_posts/2026-05-11-ai-resilience-safe-harbor-thought.md  # [36,455 tokens | 133,105 bytes]
+# /home/mike/repos/trimnoir/_posts/2026-05-11-safe-harbor-ai-resilience-git-provenance.md  # [47,518 tokens | 174,297 bytes]
 scripts/articles/link_injector.py  # [1,021 tokens | 4,205 bytes]
 
 # apps/580_upload.py  # [5,618 tokens | 26,441 bytes]
