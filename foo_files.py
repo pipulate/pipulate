@@ -14,7 +14,6 @@ AI_PHOOEY_CHOP = r"""\ # vulture: ignore
 # CHAPTER 1: THE SAFE HARBOR (Cognitive Autonomy)
 # Focus: Vim muscle memory, thinking out loud, and escaping the cloud.
 # /home/mike/repos/nixos/init.lua   # [5,997 tokens | 22,971 bytes]
-# /home/mike/repos/trimnoir/_posts/2026-05-11-safe-harbor-thought-ai-resilient-workflow.md
 
 # CHAPTER 2: THE HERMETIC SEAL (Deterministic Environments)
 # Focus: NixOS, Flakes, and the end of "It works on my machine."
@@ -253,18 +252,6 @@ AI_PHOOEY_CHOP = r"""\ # vulture: ignore
 # VIII. THE EXTENDED BLUEPRINT
 # ============================================================================
 
-# CHAPTER 18: THE BOOKFORGE (Distillation Engine)
-# /home/mike/repos/bookforge/00_meta/project.json  # [117 tokens | 430 bytes]
-# /home/mike/repos/bookforge/20_outline/outline.json  # [1,740 tokens | 7,346 bytes]
-# /home/mike/repos/bookforge/skills/bookforge-orchestrator/SKILL.md  # [570 tokens | 2,684 bytes]
-# /home/mike/repos/bookforge/skills/context-distiller/SKILL.md  # [600 tokens | 2,816 bytes]
-# /home/mike/repos/bookforge/skills/context-distiller/prompt.md  # [154 tokens | 699 bytes]
-# /home/mike/repos/bookforge/skills/outline-evolver/SKILL.md  # [418 tokens | 2,041 bytes]
-# /home/mike/repos/bookforge/skills/chapter-drafter/prompt.md  # [382 tokens | 1,786 bytes]
-# /home/mike/repos/bookforge/skills/book-refiner/prompt.md  # [545 tokens | 2,401 bytes]
-# scripts/articles/bookforge_dashboard.py  # [851 tokens | 3,484 bytes]
-# scripts/articles/conceptual_integrity.py  # [550 tokens | 2,404 bytes]
-
 # CHAPTER 19: THE NIXOS FOUNDATION
 # /home/mike/repos/nixos/ai.py  # [591 tokens | 2,814 bytes]
 # /home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
@@ -370,54 +357,6 @@ CHOP_FISHTANK = (
 """
 )
 
-CHOP_BOOK_DISTILLER = (
-    r"""\
-# THE BOOKFORGE: CONTEXT DISTILLATION PASS
-# COMMAND: python prompt_foo.py /home/mike/repos/bookforge/skills/context-distiller/prompt.md -a [CHECK_LEDGER_FOR_SLICE] --chop CHOP_BOOK_DISTILLER --no-tree
-
-# 1. Load the Distiller's Brain and Schema
-! cat /home/mike/repos/bookforge/skills/context-distiller/SKILL.md
-! cat /home/mike/repos/bookforge/skills/context-distiller/assets/distillation-record.template.json
-
-# 2. Verify the Target Structure (The Spine)
-! cat /home/mike/repos/bookforge/20_outline/outline.json
-
-# 3. The Execution Directive
-! cat /home/mike/repos/bookforge/skills/context-distiller/prompt.md
-"""
-)
-
-CHOP_BOOK_REFINER = (
-    r"""\
-# 1. THE COMMANDER
-/home/mike/repos/bookforge/skills/book-refiner/prompt.md
-
-# 2. THE SPINE
-/home/mike/repos/bookforge/20_outline/outline.json
-
-# 3. THE SITREP
-! python /home/mike/repos/pipulate/scripts/articles/bookforge_dashboard.py
-! python /home/mike/repos/pipulate/scripts/articles/conceptual_integrity.py
-
-# 4. THE MATERIAL (Dynamically Strained)
-! python /home/mike/repos/pipulate/scripts/articles/consolidate_chapter_data.py {target_chapter}
-"""
-)
-
-CHOP_CHAPTER_DRAFTER = (  # vulture: ignore
-    r"""\
-# 1. THE COMMANDER: Drafting Instructions
-# COMMAND: python prompt_foo.py /home/mike/repos/bookforge/skills/chapter-drafter/prompt.md --chop CHOP_CHAPTER_DRAFTER --arg target_chapter=ch_01 --no-tree
-/home/mike/repos/bookforge/skills/chapter-drafter/prompt.md
-
-# 2. THE SPINE: Book Context
-/home/mike/repos/bookforge/20_outline/outline.json
-
-# 3. THE BLUEPRINT: The Explicit Chapter Architecture
-/home/mike/repos/bookforge/30_drafts/{target_chapter}_0_blueprint.md
-"""
-)
-
 CHOP_FLAKE_EVOLUTION = (
     r"""\
 # THE FLAKE EVOLUTION BLUEPRINT
@@ -486,7 +425,6 @@ _ = CHOP_POST_MORTEM
 _ = CHOP_404_AFFAIR
 _ = CHOP_FISHTANK
 _ = CHOP_BOOK_DISTILLER
-_ = CHOP_BOOK_REFINER
 _ = CHOP_CHAPTER_DRAFTER
 _ = CHOP_FLAKE_EVOLUTION
 
@@ -506,6 +444,7 @@ _ = CHOP_FLAKE_EVOLUTION
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
 # apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
 # apps/450_stream_simulator.py  # [1,829 tokens | 9,488 bytes]
+# apps/580_upload.py  # [5,618 tokens | 26,441 bytes]
 # apps/610_markdown.py  # [4,754 tokens | 24,960 bytes]
 # apps/620_mermaid.py  # [3,776 tokens | 16,778 bytes]
 # apps/630_prism.py  # [3,557 tokens | 15,660 bytes]
@@ -515,6 +454,7 @@ _ = CHOP_FLAKE_EVOLUTION
 # apps/730_matplotlib.py  # [3,726 tokens | 16,421 bytes]
 # apps/810_webbrowser.py  # [2,811 tokens | 12,023 bytes]
 # apps/820_selenium.py  # [3,428 tokens | 15,020 bytes]
+# apps/830_pico_slider.py  # [4,549 tokens | 19,866 bytes]
 # apps/xx_link_graph_v2.py  # [63,994 tokens | 332,321 bytes]
 # assets/css/pico.css  # [27,899 tokens | 92,120 bytes]
 # assets/css/prism.css  # [5,178 tokens | 14,498 bytes]
