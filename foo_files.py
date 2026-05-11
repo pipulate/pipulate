@@ -46,38 +46,6 @@
 # - When the Web UI streams llm chat, the server console should stream too
 
 AI_PHOOEY_CHOP = """\
-# ============================================================================
-# I. THE SCRATCHPAD (Active Context & Transient Probes)
-# ============================================================================
-# Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
-
-# Force change in Pipulate repo.
-
-foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
-prompt_foo.py  # [13,638 tokens | 62,389 bytes]
-
-# !!!
-
-# GRADUALLY REVEALING SYSTEM TO GEMINI
-# /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
-# flake.nix  # [9,104 tokens | 39,024 bytes]
-# /home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
-# /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
-# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-# /home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
-# scripts/articles/common.py  # [952 tokens | 3,894 bytes]
-# scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
-# scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
-# /home/mike/repos/trimnoir/_layouts/default.html  # [892 tokens | 3,474 bytes]
-# /home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
-# /home/mike/repos/trimnoir/_posts/2026-05-11-safe-harbor-thought-ai-resilient-workflow.md  # [Idx: 2 | Order: 2 | Tokens: 27,876 | Bytes: 102,270]
-# /home/mike/repos/trimnoir/_posts/2026-05-10-semantic-level-of-detail-engine.md  # [Idx: 3 | Order: 5 | Tokens: 30,065 | Bytes: 122,885]
-# /home/mike/repos/trimnoir/_posts/2026-05-11-ai-resilience-safe-harbor-thought.md  # [36,455 tokens | 133,105 bytes]
-# # /home/mike/repos/trimnoir/_posts/2026-05-11-safe-harbor-ai-resilience-git-provenance.md  # [47,518 tokens | 174,297 bytes]
-# scripts/articles/link_injector.py  # [1,021 tokens | 4,205 bytes]
-
-# [A BUNCH OF STUFF DELETED]
-
 #  ____              _       ___        _   _ _            
 # | __ )  ___   ___ | | __  / _ \ _   _| |_| (_)_ __   ___ 
 # |  _ \ / _ \ / _ \| |/ / | | | | | | | __| | | '_ \ / _ \
@@ -92,32 +60,32 @@ prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # CHAPTER 1: THE SAFE HARBOR (Cognitive Autonomy)
 # Focus: Vim muscle memory, thinking out loud, and escaping the cloud.
-# /home/mike/repos/nixos/init.lua 
+# /home/mike/repos/nixos/init.lua   # [5,997 tokens | 22,971 bytes]
 # /home/mike/repos/trimnoir/_posts/2026-05-11-safe-harbor-thought-ai-resilient-workflow.md
 
 # CHAPTER 2: THE HERMETIC SEAL (Deterministic Environments)
 # Focus: NixOS, Flakes, and the end of "It works on my machine."
-# flake.nix
-# /home/mike/repos/nixos/configuration.nix
+# flake.nix  # [9,104 tokens | 39,024 bytes]
+# /home/mike/repos/nixos/configuration.nix  # [2,913 tokens | 10,227 bytes]
 
 # CHAPTER 3: THE CONTEXT COMPILER (Prompt Fu)
 # Focus: How to feed an amnesiac genie without overloading the matrix.
-# prompt_foo.py
-# scripts/articles/lsa.py
+# prompt_foo.py  # [14,145 tokens | 64,680 bytes]
+# scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
 
 # CHAPTER 4: THE DIGITAL WORKSHOP (WET Code & Workflows)
 # Focus: Jupyter Notebooks, FastHTML, and bridging the gap with SKILL.md.
-# apps/040_hello_workflow.py
-# Notebooks/.agents/skills/hello_workflow/SKILL.md
+# apps/040_hello_workflow.py  # [7,190 tokens | 34,518 bytes]
+# Notebooks/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
 
 # CHAPTER 5: RADICAL TRANSPARENCY (The Public Ledger)
 # Focus: Jekyll, Github Hash injection, and training your machine ancestors.
-# scripts/articles/publishizer.py
-# scripts/articles/link_injector.py
+# scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
+# scripts/articles/link_injector.py  # [1,134 tokens | 4,394 bytes]
 
 # CHAPTER 6: THE AUTONOMOUS MESH (Telemetry & Honeybots)
 # Focus: Observing the Agentic Web and closing the cybernetic loop.
-# remotes/honeybot/queries/md_routing_agents.sql
+# remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
 
 #  _____ _             ___  _     _    ___        _   _ _            
 # |_   _| |__   ___   / _ \| | __| |  / _ \ _   _| |_| (_)_ __   ___ 
@@ -359,6 +327,37 @@ prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 # QUERY COLLECTION
 # Brand new query to figure out what user agents request markdown from what sources.
 # ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
+# ============================================================================
+# I. THE SCRATCHPAD (Active Context & Transient Probes)
+# ============================================================================
+# Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
+
+foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
+prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+
+# !!!
+
+flake.nix  # [9,104 tokens | 39,024 bytes]
+
+# GRADUALLY REVEALING SYSTEM TO GEMINI
+# /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
+# flake.nix  # [9,104 tokens | 39,024 bytes]
+# /home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
+# /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
+# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
+# /home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
+# scripts/articles/common.py  # [952 tokens | 3,894 bytes]
+# scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
+# scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
+# /home/mike/repos/trimnoir/_layouts/default.html  # [892 tokens | 3,474 bytes]
+# /home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
+# /home/mike/repos/trimnoir/_posts/2026-05-11-safe-harbor-thought-ai-resilient-workflow.md  # [Idx: 2 | Order: 2 | Tokens: 27,876 | Bytes: 102,270]
+# /home/mike/repos/trimnoir/_posts/2026-05-10-semantic-level-of-detail-engine.md  # [Idx: 3 | Order: 5 | Tokens: 30,065 | Bytes: 122,885]
+# /home/mike/repos/trimnoir/_posts/2026-05-11-ai-resilience-safe-harbor-thought.md  # [36,455 tokens | 133,105 bytes]
+# # /home/mike/repos/trimnoir/_posts/2026-05-11-safe-harbor-ai-resilience-git-provenance.md  # [47,518 tokens | 174,297 bytes]
+# scripts/articles/link_injector.py  # [1,021 tokens | 4,205 bytes]
+
 """
 
 # ============================================================================
@@ -486,7 +485,6 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 # .jupyter/lab/user-settings/@jupyterlab/apputils-extension/themes.json  # [9 tokens | 29 bytes]
 # .jupyter/lab/user-settings/@jupyterlab/codemirror-extension/plugin.json  # [15 tokens | 45 bytes]
 # .jupyter/lab/user-settings/@jupyterlab/notebook-extension/tracker.json  # [21 tokens | 56 bytes]
-# Notebooks/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
 # Notebooks/Advanced_Notebooks/__init__.py  # [0 tokens | 0 bytes]
 # Notebooks/__init__.py  # [0 tokens | 0 bytes]
 # Notebooks/imports/__init__.py  # [0 tokens | 0 bytes]
@@ -578,7 +576,6 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
 # scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
 # scripts/articles/list_models.py  # [102 tokens | 391 bytes]
-# scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
 # scripts/articles/other/make_article.py  # [1,513 tokens | 6,559 bytes]
 # scripts/articles/scrub_tags.py  # [358 tokens | 1,587 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
