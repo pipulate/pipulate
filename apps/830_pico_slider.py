@@ -44,7 +44,7 @@ class SliderPlaceholder:
                 id='step_02',
                 done='placeholder_02',
                 show='Placeholder Step 2 (Edit Me)',
-                refill=False,
+                refill=True,
             ),
             Step(id='step_01', done='timeline_index', show='Timeline Scrubber', refill=False),
             Step(id='finalize', done='finalized', show='Finalize Workflow', refill=False)
@@ -357,7 +357,7 @@ class SliderPlaceholder:
                 
             # 🎯 THE REVERT MEMORY FIX: 
             # If current_value exists (from a revert), use it. Otherwise, default to foo_files.py
-            target_selection = current_value if current_value else 'foo_files.py'
+            target_selection = current_value if (step.refill and current_value) else 'foo_files.py'
             options = [Option(f, value=f, selected=(f == target_selection)) for f in tracked_files]
 
             return Div(
