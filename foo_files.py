@@ -298,6 +298,8 @@ https://pipulate.com/
 apps/560_range.py
 apps/300_blank_placeholder.py
 apps/830_pico_slider.py
+Notebooks/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
+apps/040_hello_workflow.py  # [7,190 tokens | 34,518 bytes]
 
 # GRADUALLY REVEALING SYSTEM TO GEMINI
 # /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
