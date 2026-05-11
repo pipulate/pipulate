@@ -141,7 +141,7 @@ AI_PHOOEY_CHOP = r"""\
 # apps/070_history.py  # [5,272 tokens | 28,545 bytes]
 
 # CHAPTER 8: FASTHTML PRIMITIVES
-apps/210_widget_examples.py  # [22,791 tokens | 98,590 bytes]
+# apps/210_widget_examples.py  # [22,791 tokens | 98,590 bytes]
 # apps/510_text_field.py  # [2,888 tokens | 12,293 bytes]
 # apps/520_text_area.py  # [3,070 tokens | 13,197 bytes]
 # apps/530_dropdown.py  # [3,497 tokens | 15,429 bytes]
@@ -291,15 +291,16 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]                                   
 
 # !!!
 
-flake.nix  # [9,104 tokens | 39,024 bytes]
+# flake.nix  # [9,104 tokens | 39,024 bytes]
 config.py
 server.py
-https://pipulate.com/
-apps/560_range.py
-apps/300_blank_placeholder.py
+# https://pipulate.com/
+# apps/560_range.py
+# apps/300_blank_placeholder.py
 apps/830_pico_slider.py
-Notebooks/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
-apps/040_hello_workflow.py  # [7,190 tokens | 34,518 bytes]
+# Notebooks/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
+# apps/040_hello_workflow.py  # [7,190 tokens | 34,518 bytes]
+apps/580_upload.py  # [5,618 tokens | 26,441 bytes]
 
 # GRADUALLY REVEALING SYSTEM TO GEMINI
 # /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
@@ -497,7 +498,6 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
 # apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
 # apps/450_stream_simulator.py  # [1,829 tokens | 9,488 bytes]
-# apps/580_upload.py  # [5,618 tokens | 26,441 bytes]
 # apps/610_markdown.py  # [4,754 tokens | 24,960 bytes]
 # apps/620_mermaid.py  # [3,776 tokens | 16,778 bytes]
 # apps/630_prism.py  # [3,557 tokens | 15,660 bytes]
