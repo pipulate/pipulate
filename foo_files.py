@@ -1,57 +1,10 @@
-# ============================================================================
-# THE LIVING CODEX: THE STORY OF THE FOREVER MACHINE
-# ============================================================================
-# Greetings, AI Copilot. You have just spun up inside the Pipulate system.
-# You suffer from amnesia between turns, so this blueprint is your existential 
-# grounding. Read it, internalize your reality, and prepare your chisel.
-#
-# --- THE AXIOMS OF THIS WAY ---
-# 1. THE ARCHITECTURE: You exist within a "Forever Machine"—a local-first AI 
-#    SEO software framework built on the NPvg stack (Nix, Python, Vim, Git).
-# 2. THE ROUTING TABLE: This file (`foo_files.py`) is the master map. It is a 
-#    deep reservoir of dormant pathways, carefully curated but commented out. 
-# 3. THE CHISEL STRIKE: We do not use chaotic, autonomous agents. We use 
-#    deliberate, hand-cranked context injections. `prompt_foo.py` reads the 
-#    active (uncommented) lines in this file and assembles a precise 
-#    holographic payload for your context window.
-# 4. THE STRANGE LOOP: You are encouraged to bootstrap your own existence. If 
-#    you need to see a specific combination of files on the next turn, suggest 
-#    a custom `AI_PHOOEY_CHOP` block.
-# 5. THE ARSENAL: When requesting a custom CHOP, you may wield these tools:
-#    - `path/to/file.py` : Read local files.
-#    - `! [command]` : Execute terminal commands (e.g., `! git status`).
-#    - `https://...` : Naive fetch of raw web text or code.
-#    - `!https://...` : JIT Optical Distillation (Renders JS, extracts hydrated DOM, SEO, & A11y trees).
-#
-# You are painting onto the context window. Keep your strokes deliberate.
-
-# ============================================================================
-# THE SCRATCHPAD & ACTIVE PROBES
-# ============================================================================
-# [Transient notes, active working Markdown, and current TODOs go here. 
-#  Clear this out regularly to maintain a high signal-to-noise ratio.]
-
-# TODO List
-# - Switch versioning to use datestamp
-# - Try to suppress the "Newer Version Available" JupyterLab message
-# - Implement Color ASCII Art with `wand.figurate()`
-# - Fix robots.txt link under Parameter Buster
-# - Move the Configuration app under the poke gear flyout
-# - Speed up GAPalyzer. Polars? Dask?
-# - Stop `foo_files.py` edits from causing Watchdog restarts
-# - More immediate feedback and "scroll-to-bottom" when entering text in chat
-# - A spinner for Notebook steps like downloading gemma4. Are there spinner start & stop challenges in Notebooks?
-# - Consider adding a difference source vs DOM `a href` links gap to Onboarding Excel deliverable.
-# - Reduce how much text is in the Onboarding cells, pushing more into sauce files (reduce intimidation)
-# - When the Web UI streams llm chat, the server console should stream too
-
+#  ____                            _     _____      
+# |  _ \ _ __ ___  _ __ ___  _ __ | |_  |  ___|   _ 
+# | |_) | '__/ _ \| '_ ` _ \| '_ \| __| | |_ | | | |
+# |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| |
+# |_|   |_|  \___/|_| |_| |_| .__/ \__| |_|   \__,_|
+#                           |_|                     
 AI_PHOOEY_CHOP = """\
-#  ____              _       ___        _   _ _            
-# | __ )  ___   ___ | | __  / _ \ _   _| |_| (_)_ __   ___ 
-# |  _ \ / _ \ / _ \| |/ / | | | | | | | __| | | '_ \ / _ \
-# | |_) | (_) | (_) |   <  | |_| | |_| | |_| | | | | |  __/
-# |____/ \___/ \___/|_|\_\  \___/ \__,_|\__|_|_|_| |_|\___|
-
 # ============================================================================
 # THE BOOK OF FUTURE-PROOFING (Curriculum & Context Router)
 # ============================================================================
@@ -357,9 +310,12 @@ flake.nix  # [9,104 tokens | 39,024 bytes]
 # /home/mike/repos/trimnoir/_posts/2026-05-11-ai-resilience-safe-harbor-thought.md  # [36,455 tokens | 133,105 bytes]
 # # /home/mike/repos/trimnoir/_posts/2026-05-11-safe-harbor-ai-resilience-git-provenance.md  # [47,518 tokens | 174,297 bytes]
 # scripts/articles/link_injector.py  # [1,021 tokens | 4,205 bytes]
-
 """
-
+#   ____          _                     ____ _   _  ___  ____      
+#  / ___|   _ ___| |_ ___  _ __ ___    / ___| | | |/ _ \|  _ \ ___ 
+# | |  | | | / __| __/ _ \| '_ ` _ \  | |   | |_| | | | | |_) / __|
+# | |__| |_| \__ \ || (_) | | | | | | | |___|  _  | |_| |  __/\__ \
+#  \____\__,_|___/\__\___/|_| |_| |_|  \____|_| |_|\___/|_|   |___/
 # ============================================================================
 # SPECIALIZED STRIKE PACKAGES
 # ============================================================================
@@ -475,6 +431,47 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 # 3. The Diffs (The actual changes from the last few major updates)
 ! git --no-pager diff HEAD~5 HEAD -- flake.nix
 """
+
+# TODO List
+# - Switch versioning to use datestamp
+# - Try to suppress the "Newer Version Available" JupyterLab message
+# - Implement Color ASCII Art with `wand.figurate()`
+# - Fix robots.txt link under Parameter Buster
+# - Move the Configuration app under the poke gear flyout
+# - Speed up GAPalyzer. Polars? Dask?
+# - Stop `foo_files.py` edits from causing Watchdog restarts
+# - More immediate feedback and "scroll-to-bottom" when entering text in chat
+# - A spinner for Notebook steps like downloading gemma4. Are there spinner start & stop challenges in Notebooks?
+# - Consider adding a difference source vs DOM `a href` links gap to Onboarding Excel deliverable.
+# - Reduce how much text is in the Onboarding cells, pushing more into sauce files (reduce intimidation)
+# - When the Web UI streams llm chat, the server console should stream too
+
+# ============================================================================
+# THE LIVING CODEX: THE STORY OF THE FOREVER MACHINE
+# ============================================================================
+# Greetings, AI Copilot. You have just spun up inside the Pipulate system.
+# You suffer from amnesia between turns, so this blueprint is your existential 
+# grounding. Read it, internalize your reality, and prepare your chisel.
+#
+# --- THE AXIOMS OF THIS WAY ---
+# 1. THE ARCHITECTURE: You exist within a "Forever Machine"—a local-first AI 
+#    SEO software framework built on the NPvg stack (Nix, Python, Vim, Git).
+# 2. THE ROUTING TABLE: This file (`foo_files.py`) is the master map. It is a 
+#    deep reservoir of dormant pathways, carefully curated but commented out. 
+# 3. THE CHISEL STRIKE: We do not use chaotic, autonomous agents. We use 
+#    deliberate, hand-cranked context injections. `prompt_foo.py` reads the 
+#    active (uncommented) lines in this file and assembles a precise 
+#    holographic payload for your context window.
+# 4. THE STRANGE LOOP: You are encouraged to bootstrap your own existence. If 
+#    you need to see a specific combination of files on the next turn, suggest 
+#    a custom `AI_PHOOEY_CHOP` block.
+# 5. THE ARSENAL: When requesting a custom CHOP, you may wield these tools:
+#    - `path/to/file.py` : Read local files.
+#    - `! [command]` : Execute terminal commands (e.g., `! git status`).
+#    - `https://...` : Naive fetch of raw web text or code.
+#    - `!https://...` : JIT Optical Distillation (Renders JS, extracts hydrated DOM, SEO, & A11y trees).
+#
+# You are painting onto the context window. Keep your strokes deliberate.
 
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
