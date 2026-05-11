@@ -4,8 +4,10 @@ import argparse
 from pathlib import Path
 import common
 
-# Regex to extract fenced code blocks (the strict boundaries)
-BLOCK_REGEX = re.compile(r'```(?:bash|sh|text|)\n(.*?)```', re.DOTALL)
+# Regex to extract fenced code blocks safely (preventing inversion)
+BLOCK_REGEX = re.compile(r'^```[^\n]*\n(.*?)^
+```', re.DOTALL | re.MULTILINE)
+
 # Regex for pure commit hash
 COMMIT_REGEX = re.compile(r'\[(?:main|master)\s+([a-f0-9]{7,40})\]')
 
@@ -50,10 +52,13 @@ def process_file(filepath):
         return False
 
     # --- PASS 3: THE LEDGER INJECTION ---
+    # Check if a ledger already exists so we can be idempotent
     LEDGER_START = '<div class="commit-ledger"'
     if LEDGER_START in content:
+        # Strip out the old ledger to rebuild a fresh one
         content = re.sub(r'<div class="commit-ledger".*?</div>\n*', '', content, flags=re.DOTALL)
 
+    # Construct the new HTML Ledger Box
     ledger_html = [
         '<div class="commit-ledger" style="background: var(--pico-card-background-color); border: 1px solid var(--pico-muted-border-color); border-radius: var(--pico-border-radius); padding: 1rem; margin-bottom: 2rem;">',
         '  <h4 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">🔗 Verified Pipulate Commits:</h4>',
@@ -61,8 +66,8 @@ def process_file(filepath):
     ]
 
     for h in hashes:
-        web_url = f"https://github.com/{TARGET_REPO_PATH}/commit/{h}"
-        raw_url = f"https://github.com/{TARGET_REPO_PATH}/commit/{h}.patch"
+        web_url = f"[https://github.com/](https://github.com/){TARGET_REPO_PATH}/commit/{h}"
+        raw_url = f"[https://github.com/](https://github.com/){TARGET_REPO_PATH}/commit/{h}.patch"
         ledger_html.append(f'    <li><a href="{web_url}" target="_blank">{h}</a> (<a href="{raw_url}" target="_blank">raw</a>)</li>')
 
     ledger_html.append('  </ul>')
@@ -70,10 +75,12 @@ def process_file(filepath):
     
     ledger_block = "\n".join(ledger_html)
 
+    # Inject immediately after the Journal Entry anchor
     ANCHOR = "## Technical Journal Entry Begins\n\n"
     if ANCHOR in content:
         content = content.replace(ANCHOR, ANCHOR + ledger_block)
     else:
+        # Fallback if the anchor is missing: put it right after the frontmatter
         parts = content.split('---', 2)
         if len(parts) >= 3:
             content = f"---{parts[1]}---\n\n{ledger_block}{parts[2]}"
