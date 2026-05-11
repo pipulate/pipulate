@@ -57,9 +57,14 @@ prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 # !!!
 
 # GRADUALLY REVEALING SYSTEM TO GEMINI
+/home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
+flake.nix  # [9,104 tokens | 39,024 bytes]
+/home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
+scripts/articles/common.py  # [952 tokens | 3,894 bytes]
+scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
+scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
 /home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
 
-# flake.nix  # [9,104 tokens | 39,024 bytes]
 # apps/580_upload.py  # [5,618 tokens | 26,441 bytes]
 
 # .gitignore  # [571 tokens | 2,096 bytes]
