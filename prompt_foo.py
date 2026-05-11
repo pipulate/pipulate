@@ -364,6 +364,48 @@ def run_tree_command() -> str:
         return result.stdout
     except Exception as e: return f"Error running eza command: {e}"
 
+def run_static_analysis(python_files: List[str]) -> str:
+    """Runs Vulture and Pylint on the target files with high terminal transparency."""
+    if not python_files:
+        return ""
+        
+    logger.print("\n🔍 Running Static Analysis Telemetry...")
+    diagnostics = []
+    
+    # 1. Vulture (Dead Code)
+    vulture_exec = shutil.which("vulture")
+    if vulture_exec:
+        logger.print("   -> Checking for dead code (Vulture)...")
+        # Include your whitelist automatically if it exists in the repo
+        whitelist = os.path.join(REPO_ROOT, "scripts", "vulture_whitelist.py")
+        cmd = [vulture_exec] + python_files + ([whitelist] if os.path.exists(whitelist) else [])
+        
+        try:
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            if result.stdout:
+                diagnostics.append("### Vulture (Dead Code & Unused Variables)\n```text\n" + result.stdout.strip() + "\n
+```")
+                logger.print(result.stdout.strip())  # Transparent terminal output
+        except Exception as e:
+            logger.print(f"      [Error running Vulture: {e}]")
+
+    # 2. Pylint (Syntax & Fatal Errors Only)
+    pylint_exec = shutil.which("pylint")
+    if pylint_exec:
+        logger.print("   -> Checking for fatal errors (Pylint)...")
+        # --errors-only prevents style warnings from blowing up the context window
+        cmd = [pylint_exec, "--errors-only", "--output-format=text"] + python_files
+        try:
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            if result.stdout and "Your code has been rated" not in result.stdout:
+                diagnostics.append("### Pylint (Fatal Errors)\n```text\n" + result.stdout.strip() + "\n```")
+                logger.print(result.stdout.strip())  # Transparent terminal output
+        except Exception as e:
+             logger.print(f"      [Error running Pylint: {e}]")
+             
+    logger.print("✅ Static Analysis Complete.\n")
+    return "\n\n".join(diagnostics)
+
 # ============================================================================
 # --- Helper Functions (File Parsing, Clipboard) ---
 # ============================================================================
@@ -1347,7 +1389,12 @@ def main():
             else:
                 logger.print(" (skipped)")
         logger.print("...UML generation complete.\n")
-    
+ 
+    python_files_to_analyze = [f['path'] for f in processed_files_data if f['path'].endswith('.py')]
+    if python_files_to_analyze:
+        analysis_output = run_static_analysis(python_files_to_analyze)
+        if analysis_output:
+            builder.add_auto_context("Static Analysis Diagnostics", analysis_output)   
     # 4. Generate final output with convergence loop
     final_output = builder.build_final_prompt()
 
