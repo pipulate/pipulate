@@ -294,13 +294,17 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]                                   
 # flake.nix  # [9,104 tokens | 39,024 bytes]
 config.py
 server.py
+apps/830_pico_slider.py
+assets/css/prism.css  # [5,178 tokens | 14,498 bytes]
+assets/js/prism.js  # [38,819 tokens | 124,060 bytes]
+apps/630_prism.py  # [3,557 tokens | 15,660 bytes]
+
 # https://pipulate.com/
 # apps/560_range.py
 # apps/300_blank_placeholder.py
-apps/830_pico_slider.py
 # Notebooks/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
 # apps/040_hello_workflow.py  # [7,190 tokens | 34,518 bytes]
-apps/580_upload.py  # [5,618 tokens | 26,441 bytes]
+# apps/580_upload.py  # [5,618 tokens | 26,441 bytes]
 
 # GRADUALLY REVEALING SYSTEM TO GEMINI
 # /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
@@ -500,7 +504,6 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 # apps/450_stream_simulator.py  # [1,829 tokens | 9,488 bytes]
 # apps/610_markdown.py  # [4,754 tokens | 24,960 bytes]
 # apps/620_mermaid.py  # [3,776 tokens | 16,778 bytes]
-# apps/630_prism.py  # [3,557 tokens | 15,660 bytes]
 # apps/640_javascript.py  # [3,618 tokens | 15,570 bytes]
 # apps/710_pandas.py  # [3,395 tokens | 14,463 bytes]
 # apps/720_rich.py  # [3,207 tokens | 13,818 bytes]
@@ -509,7 +512,6 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 # apps/820_selenium.py  # [3,428 tokens | 15,020 bytes]
 # apps/xx_link_graph_v2.py  # [63,994 tokens | 332,321 bytes]
 # assets/css/pico.css  # [27,899 tokens | 92,120 bytes]
-# assets/css/prism.css  # [5,178 tokens | 14,498 bytes]
 # assets/css/roboto.css  # [846 tokens | 3,101 bytes]
 # assets/feather/arrow-up-circle.svg  # [128 tokens | 357 bytes]
 # assets/feather/external-link.svg  # [173 tokens | 388 bytes]
@@ -523,7 +525,6 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 # assets/js/htmx.js  # [41,256 tokens | 165,562 bytes]
 # assets/js/marked.min.js  # [14,361 tokens | 39,661 bytes]
 # assets/js/mermaid.min.js  # [1,167,164 tokens | 2,889,985 bytes]
-# assets/js/prism.js  # [38,819 tokens | 124,060 bytes]
 # assets/js/script.js  # [1,400 tokens | 6,134 bytes]
 # assets/js/split.js  # [6,166 tokens | 29,959 bytes]
 # assets/js/surreal.js  # [3,812 tokens | 13,432 bytes]
