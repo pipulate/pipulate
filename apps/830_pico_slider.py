@@ -189,29 +189,51 @@ class SliderPlaceholder:
 
     # 🎯 CUSTOM ENDPOINT: HTMX dynamic scrubbing logic
     async def scrub_timeline(self, request):
-        """Intercepts the slider input event and returns the formatted diff payload dynamically."""
+        """Intercepts the slider input event and returns the real git diff payload dynamically."""
         form_data = await request.form()
         index = int(form_data.get('timeline_index', 0))
+        target_file = form_data.get('target_file', 'foo_files.py')
         
-        # Guard clause
-        if index < 0 or index >= len(self.MOCK_DIFFS):
-            return Pre(Code("Diff out of bounds."))
+        import subprocess
+        import html
+        
+        try:
+            # Get the list of commits for this file (reverse chronological so 0 is oldest)
+            log_cmd = ['git', 'log', '--reverse', '--pretty=format:%H|%s', '--', target_file]
+            log_result = subprocess.run(log_cmd, capture_output=True, text=True, check=True)
+            commits = [line for line in log_result.stdout.split('\n') if line]
 
-        diff_text = self.MOCK_DIFFS[index]
+            if not commits or index < 0 or index >= len(commits):
+                return Pre(Code(f"No history found or index out of bounds for {target_file}."))
+
+            commit_hash, commit_msg = commits[index].split('|', 1)
+
+            # Get the specific diff for this file at this commit
+            diff_cmd = ['git', 'show', '--color=never', commit_hash, '--', target_file]
+            diff_result = subprocess.run(diff_cmd, capture_output=True, text=True)
+
+            # The raw text of the diff
+            diff_text = f"Commit:  {commit_hash}\nMessage: {commit_msg}\n\n{diff_result.stdout}"
+
+        except Exception as e:
+            diff_text = f"Error fetching git history: {str(e)}"
+
         formatted_lines = []
-
-        # Simple semantic coloring for the mock diffs
         for line in diff_text.split('\n'):
-            if line.startswith('+'):
-                formatted_lines.append(f"<span style='color: var(--pico-color-green-500);'>{line}</span>")
-            elif line.startswith('-'):
-                formatted_lines.append(f"<span style='color: var(--pico-color-red-500); text-decoration: line-through;'>{line}</span>")
+            # Escape HTML to prevent code blocks from breaking the DOM
+            escaped_line = html.escape(line)
+            
+            if escaped_line.startswith('+') and not escaped_line.startswith('+++'):
+                formatted_lines.append(f"<span style='color: var(--pico-color-green-500);'>{escaped_line}</span>")
+            elif escaped_line.startswith('-') and not escaped_line.startswith('---'):
+                formatted_lines.append(f"<span style='color: var(--pico-color-red-500); text-decoration: line-through;'>{escaped_line}</span>")
             else:
-                formatted_lines.append(line)
+                formatted_lines.append(escaped_line)
 
         # Return the raw HTML snippet to be swapped into the viewport
         return Pre(Code(NotStr('<br>'.join(formatted_lines))))
 
+    # --- START_STEP_BUNDLE: step_01 ---
     async def step_01(self, request):
         wand, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.APP_NAME
         step_id = 'step_01'
@@ -225,57 +247,65 @@ class SliderPlaceholder:
         finalize_data = wand.get_step_data(pipeline_id, "finalize", {})
 
         if "finalized" in finalize_data and current_value:
-            wand.append_to_history(f"[WIDGET CONTENT] {step.show} (Finalized):\n{current_value}")
             return Div(
                 Card(H3(f"🔒 {step.show}: Completed")),
                 Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
                 id=step_id
             )
         elif current_value and state.get("_revert_target") != step_id:
-            wand.append_to_history(f"[WIDGET CONTENT] {step.show} (Completed):\n{current_value}")
             return Div(
                 wand.display_revert_header(step_id=step_id, app_name=app_name, message=f"{step.show}: Complete", steps=steps),
                 Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
                 id=step_id
             )
         else:
-            wand.append_to_history(f"[WIDGET STATE] {step.show}: Showing input form")
-            await self.message_queue.add(wand, self.step_messages[step_id]["input"], verbatim=True)
-            
+            # 1. Retrieve the file chosen in step_02
+            step_02_data = wand.get_step_data(pipeline_id, 'step_02', {})
+            target_file = step_02_data.get('placeholder_02', 'foo_files.py')
+
+            # 2. Count the commits for this file to set the slider max
+            import subprocess
+            num_commits = 0
+            try:
+                log_result = subprocess.run(['git', 'log', '--oneline', '--', target_file], capture_output=True, text=True)
+                num_commits = len([line for line in log_result.stdout.split('\n') if line])
+            except Exception:
+                pass
+
+            slider_max = str(max(0, num_commits - 1))
+
             # The Range Input linked to HTMX via 'input' event with a 50ms throttle
             range_slider = Input(
                 type="range",
                 name="timeline_index",
                 min="0",
-                max=str(len(self.MOCK_DIFFS) - 1),
+                max=slider_max,
                 value="0",
                 hx_post=f"/{app_name}/scrub_timeline",
                 hx_target="#diff-viewport",
-                hx_trigger="input delay:50ms"  # The critical delay to prevent server flooding
+                hx_trigger="input delay:50ms"  
             )
+
+            # Pass the target file to the endpoint implicitly via hidden input
+            hidden_target = Input(type="hidden", name="target_file", value=target_file)
 
             # The Viewport that HTMX will dynamically swap content into
             diff_viewport = Div(
-                Pre(Code(self.MOCK_DIFFS[0])), # Initial state
+                Pre(Code(f"Loaded {num_commits} commits for {target_file}. Drag slider to begin scrubbing.")),
                 id="diff-viewport",
-                style="margin-top: 1rem; background: var(--pico-code-background-color); padding: 1rem; border-radius: var(--pico-border-radius);"
+                style="margin-top: 1rem; background: var(--pico-code-background-color); padding: 1rem; border-radius: var(--pico-border-radius); max-height: 60vh; overflow-y: auto;"
             )
 
             return Div(
                 Card(
-                    H3(f"{step.show}", id=f"{step_id}-heading"),
+                    H3(f"Scrubbing: {target_file}"),
                     P("Drag the slider to physically scrub the timeline of the repository.", cls="text-secondary"),
                     Form(
+                        hidden_target,
                         range_slider,
                         diff_viewport,
                         Br(),
-                        Button(
-                            "Lock Selection & Proceed", 
-                            type="submit",
-                            name=step.done,
-                            value="completed",
-                            cls=self.ui['BUTTON_STYLES']['PRIMARY']
-                        ),
+                        Button("Lock Selection & Proceed", type="submit", name=step.done, value="completed", cls=self.ui['BUTTON_STYLES']['PRIMARY']),
                         hx_post=f"/{app_name}/{step_id}_submit", 
                         hx_target=f"#{step_id}",
                     ),
@@ -307,57 +337,52 @@ class SliderPlaceholder:
         )
 # --- END_STEP_BUNDLE: step_01 ---
 
-
-    # --- START_STEP_BUNDLE: step_02 ---
+# --- START_STEP_BUNDLE: step_02 ---
     async def step_02(self, request):
-        """Handles GET request for Placeholder Step 2 (Edit Me)."""
+        """Handles GET request for the Git File Selector."""
         pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
         step_id = "step_02"
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
-        # Determine next_step_id dynamically based on runtime position in steps list
         next_step_id = steps[step_index + 1].id if step_index + 1 < len(steps) else 'finalize'
         pipeline_id = db.get("pipeline_id", "unknown")
         state = pip.read_state(pipeline_id)
         step_data = pip.get_step_data(pipeline_id, step_id, {})
-        current_value = step_data.get(step.done, "") # 'step.done' will be like 'placeholder_02'
+        current_value = step_data.get(step.done, "")
         finalize_data = pip.get_step_data(pipeline_id, "finalize", {})
     
         if "finalized" in finalize_data and current_value:
-            pip.append_to_history(f"[WIDGET CONTENT] {step.show} (Finalized):\n{current_value}")
-            return Div(
-                Card(H3(f"🔒 {step.show}: Completed")),
-                Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
-                id=step_id
-            )
+            return Div(Card(H3(f"🔒 {step.show}: Completed")), Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"), id=step_id)
         elif current_value and state.get("_revert_target") != step_id:
-            pip.append_to_history(f"[WIDGET CONTENT] {step.show} (Completed):\n{current_value}")
-            return Div(
-                pip.display_revert_header(step_id=step_id, app_name=app_name, message=f"{step.show}: Complete", steps=steps),
-                Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
-                id=step_id
-            )
+            return Div(pip.display_revert_header(step_id=step_id, app_name=app_name, message=f"Selected Target: {current_value}", steps=steps), Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"), id=step_id)
         else:
-            pip.append_to_history(f"[WIDGET STATE] {step.show}: Showing input form")
-            await self.message_queue.add(pip, self.step_messages[step_id]["input"], verbatim=True)
+            # 80/20 Rule: Ask Git for tracked files
+            import subprocess
+            try:
+                result = subprocess.run(['git', 'ls-files'], capture_output=True, text=True, check=True)
+                tracked_files = [f for f in result.stdout.split('\n') if f.strip() and f.endswith(('.py', '.md', '.nix', '.json', '.html'))]
+            except Exception:
+                tracked_files = ['foo_files.py'] # Safe fallback
+                
+            # Default to foo_files.py if it exists to prioritize the Living Codex
+            options = [Option(f, value=f, selected=(f == 'foo_files.py')) for f in tracked_files]
+
             return Div(
                 Card(
-                    H3(f"{step.show}"),
-                    P("This is a new placeholder step. Customize its input form as needed. Click Proceed to continue."),
+                    H3("Select Target File"),
+                    P("Select a file from the repository to scrub its Git history.", cls="text-secondary"),
                     Form(
-                        # Example: Hidden input to submit something for the placeholder
-                        Input(type="hidden", name=step.done, value="Placeholder Value for Placeholder Step 2 (Edit Me)"),
-                        Button("Next ▸", type="submit", cls="primary"),
+                        Select(*options, name=step.done, required=True),
+                        Button("Load Timeline ▸", type="submit", cls="primary"),
                         hx_post=f"/{app_name}/{step_id}_submit", hx_target=f"#{step_id}"
                     )
                 ),
-                Div(id=next_step_id), # Placeholder for next step, no trigger here
+                Div(id=next_step_id), 
                 id=step_id
             )
 
-
     async def step_02_submit(self, request):
-        """Process the submission for Placeholder Step 2 (Edit Me)."""
+        """Process the submission for the File Selector."""
         pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
         step_id = "step_02"
         step_index = self.steps_indices[step_id]
@@ -366,21 +391,14 @@ class SliderPlaceholder:
         pipeline_id = db.get("pipeline_id", "unknown")
         
         form_data = await request.form()
-        # For a placeholder, get value from the hidden input or use a default
-        value_to_save = form_data.get(step.done, f"Default value for {step.show}") 
+        value_to_save = form_data.get(step.done, "foo_files.py") 
         await pip.set_step_data(pipeline_id, step_id, value_to_save, steps)
         
-        pip.append_to_history(f"[WIDGET CONTENT] {step.show}:\n{value_to_save}")
-        pip.append_to_history(f"[WIDGET STATE] {step.show}: Step completed")
-        
-        await self.message_queue.add(pip, f"{step.show} complete.", verbatim=True)
-        
         return Div(
-            pip.display_revert_header(step_id=step_id, app_name=app_name, message=f"{step.show}: Complete", steps=steps),
+            pip.display_revert_header(step_id=step_id, app_name=app_name, message=f"Selected Target: {value_to_save}", steps=steps),
             Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
             id=step_id
         )
     # --- END_STEP_BUNDLE: step_02 ---
-
 
     # --- STEP_METHODS_INSERTION_POINT ---
