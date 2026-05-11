@@ -62,7 +62,7 @@ def process_file(filepath):
 
     for h in hashes:
         web_url = f"https://github.com/{TARGET_REPO_PATH}/commit/{h}"
-        raw_url = f"https://github.com/{TARGET_REPO_PATH}/raw/{h}/"
+        raw_url = f"https://github.com/{TARGET_REPO_PATH}/commit/{h}.patch"
         ledger_html.append(f'    <li><a href="{web_url}" target="_blank">{h}</a> (<a href="{raw_url}" target="_blank">raw</a>)</li>')
 
     ledger_html.append('  </ul>')
