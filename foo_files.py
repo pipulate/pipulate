@@ -51,6 +51,8 @@ AI_PHOOEY_CHOP = """\
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
+# Force change in Pipulate repo.
+
 foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
 prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
