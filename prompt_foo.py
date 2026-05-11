@@ -383,8 +383,7 @@ def run_static_analysis(python_files: List[str]) -> str:
         try:
             result = subprocess.run(cmd, capture_output=True, text=True)
             if result.stdout:
-                diagnostics.append("### Vulture (Dead Code & Unused Variables)\n```text\n" + result.stdout.strip() + "\n
-```")
+                diagnostics.append("### Vulture (Dead Code & Unused Variables)\n```text\n" + result.stdout.strip() + " ```")
                 logger.print(result.stdout.strip())  # Transparent terminal output
         except Exception as e:
             logger.print(f"      [Error running Vulture: {e}]")
