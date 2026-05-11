@@ -291,7 +291,7 @@ prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!!
 
-# flake.nix  # [9,104 tokens | 39,024 bytes]
+flake.nix  # [9,104 tokens | 39,024 bytes]
 # config.py
 # server.py
 # pipulate/__init__.py
