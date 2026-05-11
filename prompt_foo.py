@@ -26,7 +26,6 @@ import os
 import re
 import sys
 import pydot
-import yaml
 import argparse
 import tiktoken
 import subprocess
@@ -34,7 +33,6 @@ import tempfile
 import shutil
 import json
 import urllib.request
-from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 from pathlib import Path
 
@@ -812,7 +810,7 @@ def annotate_foo_files_in_place(chop_var: str = "AI_PHOOEY_CHOP"):
             # Match potential file paths: optional comment hash -> path -> remainder
             m = re.match(r'^(\s*(?:#\s*)?)([^#\s]+)(.*)$', line)
             if m:
-                indent_and_hash = m.group(1)
+                # indent_and_hash = m.group(1)
                 filepath = m.group(2)
                 remainder = m.group(3)
 

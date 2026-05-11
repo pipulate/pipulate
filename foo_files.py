@@ -348,7 +348,7 @@ scripts/vulture_whitelist.py  # [948 tokens | 4,188 bytes]
 # command they should execute after adding the custom CHOP here, because you
 # know humans aren't really that smart.
 
-EMPTY = (  # vulture: ignore
+EMPTY = (
     r"""\
 # THE 40K FOOT VIEW (Minimalist Context)
 # COMMAND: python prompt_foo.py --chop EMPTY --no-tree
@@ -358,7 +358,7 @@ foo_files.py  # Just the map.
 """
 )
 
-CHOP_POST_MORTEM = (  # vulture: ignore
+CHOP_POST_MORTEM = (
     r"""\
 # THE POST-MORTEM (Surgical Log Extraction)
 # COMMAND: python prompt_foo.py assets/prompts/debug_crash.md --chop CHOP_POST_MORTEM --no-tree
@@ -375,7 +375,7 @@ CHOP_POST_MORTEM = (  # vulture: ignore
 """
 )
 
-CHOP_404_AFFAIR = (  # vulture: ignore
+CHOP_404_AFFAIR = (
     r"""\
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # COMMAND: python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree
@@ -387,7 +387,7 @@ CHOP_404_AFFAIR = (  # vulture: ignore
 """
 )
 
-CHOP_FISHTANK = (  # vulture: ignore
+CHOP_FISHTANK = (
     r"""\
 # THE FISHTANK TELEMETRY BLUEPRINT
 # COMMAND: python prompt_foo.py --chop CHOP_FISHTANK -n
@@ -405,7 +405,7 @@ CHOP_FISHTANK = (  # vulture: ignore
 """
 )
 
-CHOP_BOOK_DISTILLER = (  # vulture: ignore
+CHOP_BOOK_DISTILLER = (
     r"""\
 # THE BOOKFORGE: CONTEXT DISTILLATION PASS
 # COMMAND: python prompt_foo.py /home/mike/repos/bookforge/skills/context-distiller/prompt.md -a [CHECK_LEDGER_FOR_SLICE] --chop CHOP_BOOK_DISTILLER --no-tree
@@ -422,7 +422,7 @@ CHOP_BOOK_DISTILLER = (  # vulture: ignore
 """
 )
 
-CHOP_BOOK_REFINER = (  # vulture: ignore
+CHOP_BOOK_REFINER = (
     r"""\
 # 1. THE COMMANDER
 /home/mike/repos/bookforge/skills/book-refiner/prompt.md
@@ -453,7 +453,7 @@ CHOP_CHAPTER_DRAFTER = (  # vulture: ignore
 """
 )
 
-CHOP_FLAKE_EVOLUTION = (  # vulture: ignore
+CHOP_FLAKE_EVOLUTION = (
     r"""\
 # THE FLAKE EVOLUTION BLUEPRINT
 # COMMAND: python prompt_foo.py --chop CHOP_FLAKE_EVOLUTION --no-tree
@@ -510,6 +510,20 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 #    - `!https://...` : JIT Optical Distillation (Renders JS, extracts hydrated DOM, SEO, & A11y trees).
 #
 # You are painting onto the context window. Keep your strokes deliberate.
+
+# ============================================================================
+# IX. STATIC ANALYSIS SUPPRESSION
+# ============================================================================
+# Variables dynamically loaded by prompt_foo.py via getattr().
+_ = AI_PHOOEY_CHOP
+_ = EMPTY
+_ = CHOP_POST_MORTEM
+_ = CHOP_404_AFFAIR
+_ = CHOP_FISHTANK
+_ = CHOP_BOOK_DISTILLER
+_ = CHOP_BOOK_REFINER
+_ = CHOP_CHAPTER_DRAFTER
+_ = CHOP_FLAKE_EVOLUTION
 
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
