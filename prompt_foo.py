@@ -430,6 +430,9 @@ def parse_file_list_from_config(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
             
         import foo_files
         files_raw = getattr(foo_files, chop_var)
+    except (ImportError, AttributeError):
+        logger.print(f"ERROR: foo_files.py not found or doesn't contain '{chop_var}'.")
+        sys.exit(1)
     
     # 💥 SAFE REPLACEMENT: Prevents crashing on bash/awk curly braces {}
     if format_kwargs:

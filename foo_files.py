@@ -296,41 +296,6 @@ flake.nix  # [9,104 tokens | 39,024 bytes]
 scripts/vulture_whitelist.py  # [948 tokens | 4,188 bytes]
 ! cat << 'EOF' >> scripts/vulture_whitelist.py
 
-# config.py
-# server.py
-# pipulate/__init__.py
-# pipulte/core.py
-# apps/830_pico_slider.py
-# imports/voice_synthesis.py  # [3,133 tokens | 15,477 bytes]
-# requirements.in  # [573 tokens | 1,924 bytes]
-# requirements.txt  # [7,010 tokens | 18,582 bytes]
-
-# apps/040_hello_workflow.py  # [7,190 tokens | 34,518 bytes]
-# Notebooks/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
-# https://pipulate.com/
-# apps/560_range.py
-# apps/300_blank_placeholder.py
-# Notebooks/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
-# apps/040_hello_workflow.py  # [7,190 tokens | 34,518 bytes]
-# apps/580_upload.py  # [5,618 tokens | 26,441 bytes]
-
-# GRADUALLY REVEALING SYSTEM TO GEMINI
-# /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
-# flake.nix  # [9,104 tokens | 39,024 bytes]
-# /home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
-# /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
-# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-# /home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
-# scripts/articles/common.py  # [952 tokens | 3,894 bytes]
-# scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
-# scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
-# /home/mike/repos/trimnoir/_layouts/default.html  # [892 tokens | 3,474 bytes]
-# /home/mike/repos/trimnoir/_layouts/post.html  # [301 tokens | 1,039 bytes]
-# /home/mike/repos/trimnoir/_posts/2026-05-11-safe-harbor-thought-ai-resilient-workflow.md  # [Idx: 2 | Order: 2 | Tokens: 27,876 | Bytes: 102,270]
-# /home/mike/repos/trimnoir/_posts/2026-05-10-semantic-level-of-detail-engine.md  # [Idx: 3 | Order: 5 | Tokens: 30,065 | Bytes: 122,885]
-# /home/mike/repos/trimnoir/_posts/2026-05-11-ai-resilience-safe-harbor-thought.md  # [36,455 tokens | 133,105 bytes]
-# # /home/mike/repos/trimnoir/_posts/2026-05-11-safe-harbor-ai-resilience-git-provenance.md  # [47,518 tokens | 174,297 bytes]
-# scripts/articles/link_injector.py  # [1,021 tokens | 4,205 bytes]
 """
 #   ____          _                     ____ _   _  ___  ____      
 #  / ___|   _ ___| |_ ___  _ __ ___    / ___| | | |/ _ \|  _ \ ___ 
