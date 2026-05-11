@@ -51,17 +51,23 @@ AI_PHOOEY_CHOP = """\
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-# foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
-# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
+prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!!
 
-.gitignore  # [571 tokens | 2,096 bytes]
-config.py  # [4,170 tokens | 16,184 bytes]
-pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-pipulate/core.py  # [29,800 tokens | 144,966 bytes]
-apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
-apps/015_config.py  # [11,858 tokens | 55,451 bytes]
+# GRADUALLY REVEALING SYSTEM TO GEMINI
+/home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
+
+# flake.nix  # [9,104 tokens | 39,024 bytes]
+# apps/580_upload.py  # [5,618 tokens | 26,441 bytes]
+
+# .gitignore  # [571 tokens | 2,096 bytes]
+# config.py  # [4,170 tokens | 16,184 bytes]
+# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
+# pipulate/core.py  # [29,800 tokens | 144,966 bytes]
+# apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
+# apps/015_config.py  # [11,858 tokens | 55,451 bytes]
 
 # assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
 # assets/nbs/imports/faq_writer_sauce.py  # [6,006 tokens | 26,636 bytes]
@@ -72,7 +78,6 @@ apps/015_config.py  # [11,858 tokens | 55,451 bytes]
 
 # .gitignore  # [571 tokens | 2,096 bytes]
 # flake.nix  # [9,194 tokens | 39,530 bytes]
-# /home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
 # scripts/vulture_whitelist.py  # [948 tokens | 4,188 bytes]
 # apps/200_workflow_genesis.py  # [12,397 tokens | 59,509 bytes]
 # apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
@@ -606,6 +611,7 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 # .jupyter/lab/user-settings/@jupyterlab/apputils-extension/themes.json  # [9 tokens | 29 bytes]
 # .jupyter/lab/user-settings/@jupyterlab/codemirror-extension/plugin.json  # [15 tokens | 45 bytes]
 # .jupyter/lab/user-settings/@jupyterlab/notebook-extension/tracker.json  # [21 tokens | 56 bytes]
+# Notebooks/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
 # Notebooks/Advanced_Notebooks/__init__.py  # [0 tokens | 0 bytes]
 # Notebooks/__init__.py  # [0 tokens | 0 bytes]
 # Notebooks/imports/__init__.py  # [0 tokens | 0 bytes]
@@ -613,7 +619,6 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
 # apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
 # apps/450_stream_simulator.py  # [1,829 tokens | 9,488 bytes]
-# apps/580_upload.py  # [5,618 tokens | 26,441 bytes]
 # apps/610_markdown.py  # [4,754 tokens | 24,960 bytes]
 # apps/620_mermaid.py  # [3,776 tokens | 16,778 bytes]
 # apps/630_prism.py  # [3,557 tokens | 15,660 bytes]
