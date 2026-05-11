@@ -4,7 +4,7 @@
 # |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| |
 # |_|   |_|  \___/|_| |_| |_| .__/ \__| |_|   \__,_|
 #                           |_|                     
-AI_PHOOEY_CHOP = r"""\
+AI_PHOOEY_CHOP = r"""\ # vulture: ignore
 # ============================================================================
 # THE BOOK OF FUTURE-PROOFING (Curriculum & Context Router)
 # ============================================================================
@@ -348,14 +348,14 @@ scripts/vulture_whitelist.py  # [948 tokens | 4,188 bytes]
 # command they should execute after adding the custom CHOP here, because you
 # know humans aren't really that smart.
 
-EMPTY = """\
+EMPTY = """\ # vulture: ignore
 # THE 40K FOOT VIEW (Minimalist Context)
 # COMMAND: python prompt_foo.py --chop EMPTY --no-tree
 # Used for story generation and pure text tasks where codebase noise is a liability.
 
 foo_files.py  # Just the map.
 """
-CHOP_POST_MORTEM = """\
+CHOP_POST_MORTEM = """\ # vulture: ignore
 # THE POST-MORTEM (Surgical Log Extraction)
 # COMMAND: python prompt_foo.py assets/prompts/debug_crash.md --chop CHOP_POST_MORTEM --no-tree
 # Pulls the most recent systemic state and the last breath of the machine.
@@ -370,7 +370,7 @@ CHOP_POST_MORTEM = """\
 ! grep -A 20 "Traceback (most recent call last):" logs/server.log
 """
 
-CHOP_404_AFFAIR = """\
+CHOP_404_AFFAIR = """ # vulture: ignore\
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # COMMAND: python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree
 # /home/mike/repos/trimnoir/_raw_map.csv
@@ -380,7 +380,7 @@ CHOP_404_AFFAIR = """\
 ! python scripts/articles/extract_404_ghosts.py
 """
 
-CHOP_FISHTANK = """\
+CHOP_FISHTANK = """\ # vulture: ignore
 # THE FISHTANK TELEMETRY BLUEPRINT
 # COMMAND: python prompt_foo.py --chop CHOP_FISHTANK -n
 # Pumping live Honeybot observability data directly into the AI's context.
@@ -396,7 +396,7 @@ CHOP_FISHTANK = """\
 ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 """
 
-CHOP_BOOK_DISTILLER = """\
+CHOP_BOOK_DISTILLER = """\ # vulture: ignore
 # THE BOOKFORGE: CONTEXT DISTILLATION PASS
 # COMMAND: python prompt_foo.py /home/mike/repos/bookforge/skills/context-distiller/prompt.md -a [CHECK_LEDGER_FOR_SLICE] --chop CHOP_BOOK_DISTILLER --no-tree
 
@@ -411,7 +411,7 @@ CHOP_BOOK_DISTILLER = """\
 ! cat /home/mike/repos/bookforge/skills/context-distiller/prompt.md
 """
 
-CHOP_BOOK_REFINER = """\
+CHOP_BOOK_REFINER = """\ # vulture: ignore
 # 1. THE COMMANDER
 /home/mike/repos/bookforge/skills/book-refiner/prompt.md
 
@@ -426,7 +426,7 @@ CHOP_BOOK_REFINER = """\
 ! python /home/mike/repos/pipulate/scripts/articles/consolidate_chapter_data.py {target_chapter}
 """
 
-CHOP_CHAPTER_DRAFTER = """\
+CHOP_CHAPTER_DRAFTER = """\ # vulture: ignore
 # 1. THE COMMANDER: Drafting Instructions
 # COMMAND: python prompt_foo.py /home/mike/repos/bookforge/skills/chapter-drafter/prompt.md --chop CHOP_CHAPTER_DRAFTER --arg target_chapter=ch_01 --no-tree
 /home/mike/repos/bookforge/skills/chapter-drafter/prompt.md
@@ -438,7 +438,7 @@ CHOP_CHAPTER_DRAFTER = """\
 /home/mike/repos/bookforge/30_drafts/{target_chapter}_0_blueprint.md
 """
 
-CHOP_FLAKE_EVOLUTION = """\
+CHOP_FLAKE_EVOLUTION = """\ # vulture: ignore
 # THE FLAKE EVOLUTION BLUEPRINT
 # COMMAND: python prompt_foo.py --chop CHOP_FLAKE_EVOLUTION --no-tree
 # Inspecting the recent mutations of the core environment definition.
