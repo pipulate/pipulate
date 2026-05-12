@@ -281,7 +281,14 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]                                   
 
 # !!!
 
-
+assets/nbs/imports/onboard_sauce.py
+/home/mike/repos/nixos/init.lua   # [5,997 tokens | 22,971 bytes]
+/home/mike/repos/nixos/ai.py
+ai_edit.py  # [2,296 tokens | 10,210 bytes]
+pipulate/core.py
+scripts/release/ai_commit.py
+scripts/articles/contextualizer.py
+config.py
 
 # deleteme.txt
 # /home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
@@ -561,7 +568,6 @@ _ = CHOP_FLAKE_EVOLUTION
 # scripts/gsc/gsc_keyworder.py  # [3,410 tokens | 14,355 bytes]
 # scripts/gsc/gsc_page_query.ipynb  # [7,842 tokens | 28,465 bytes]
 # scripts/gsc/gsc_top_movers.py  # [8,003 tokens | 34,690 bytes]
-# scripts/release/ai_commit.py  # [1,851 tokens | 8,447 bytes]
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
 # scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
