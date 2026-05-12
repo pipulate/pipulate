@@ -225,20 +225,22 @@ AI_PHOOEY_CHOP = r"""\ # vulture: ignore
 # ============================================================================
 
 # CHAPTER 15: HONEYBOT IAC & SCRIPTS
-# nixops.sh  # [227 tokens | 765 bytes]
-# remotes/honeybot/hooks/post-receive  # [522 tokens | 1,692 bytes]
-# remotes/honeybot/nixos/configuration.nix  # [4,217 tokens | 16,271 bytes]
-# remotes/honeybot/scripts/content_loader.py  # [1,641 tokens | 6,804 bytes]
-# remotes/honeybot/scripts/db.py  # [2,850 tokens | 13,221 bytes]
-# remotes/honeybot/scripts/logs.py  # [3,196 tokens | 14,285 bytes]
-# remotes/honeybot/scripts/stream.py  # [3,220 tokens | 15,109 bytes]
+nixops.sh  # [227 tokens | 765 bytes]
+remotes/honeybot/hooks/post-receive  # [522 tokens | 1,692 bytes]
+remotes/honeybot/nixos/configuration.nix  # [4,217 tokens | 16,271 bytes]
+remotes/honeybot/scripts/content_loader.py  # [1,641 tokens | 6,804 bytes]
+remotes/honeybot/scripts/db.py  # [2,850 tokens | 13,221 bytes]
+remotes/honeybot/scripts/logs.py  # [3,196 tokens | 14,285 bytes]
+remotes/honeybot/scripts/stream.py  # [3,220 tokens | 15,109 bytes]
+
+/home/mike/repos/trimnoir/_layouts/default.html
 
 # CHAPTER 16: TELEMETRY SENSORS & DASHBOARD PROBES
-# remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
-# remotes/honeybot/queries/format_ratio.sql  # [79 tokens | 275 bytes]
-# remotes/honeybot/queries/markdown_routing_metrics.sql  # [177 tokens | 659 bytes]
-# remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
-# remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
+remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
+remotes/honeybot/queries/format_ratio.sql  # [79 tokens | 275 bytes]
+remotes/honeybot/queries/markdown_routing_metrics.sql  # [177 tokens | 659 bytes]
+remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
+remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
 
 # ============================================================================
 # VII. UNIVERSAL DISTRIBUTION
@@ -267,7 +269,7 @@ AI_PHOOEY_CHOP = r"""\ # vulture: ignore
 
 # QUERY COLLECTION
 # Brand new query to figure out what user agents request markdown from what sources.
-# ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # ============================================================================
 # I. THE SCRATCHPAD (Active Context & Transient Probes)
@@ -279,10 +281,12 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]                                   
 
 # !!!
 
-deleteme.txt
-/home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
-assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
-flake.nix  # [9,104 tokens | 39,024 bytes]
+
+
+# deleteme.txt
+# /home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
+# assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
+# flake.nix  # [9,104 tokens | 39,024 bytes]
 # pyproject.toml  # [679 tokens | 2,321 bytes]
 # .gitignore
 
@@ -398,6 +402,10 @@ _ = CHOP_FISHTANK
 _ = CHOP_FLAKE_EVOLUTION
 
 # TODO List
+# - A completely silent mode (no talking)
+# - Speed-up the crawling step (esp. if not Cloudflare captcha). A bit more narration.
+# - Stripped-down experiences 
+# - White-labeling defining group namespace and "key" enabling features on install
 # - Switch versioning to use datestamp
 # - Try to suppress the "Newer Version Available" JupyterLab message
 # - Implement Color ASCII Art with `wand.figurate()`
