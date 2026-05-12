@@ -58,12 +58,13 @@ AI_PHOOEY_CHOP = r"""\ # vulture: ignore
 # config.py  # [4,170 tokens | 16,184 bytes]
 # pipulate/__init__.py  # [721 tokens | 2,998 bytes]
 # pipulate/core.py  # [29,804 tokens | 144,977 bytes]
+# apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
+# apps/015_config.py  # [11,858 tokens | 55,451 bytes]
+
 # apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
 # assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-# # server.py  # [56,001 tokens | 266,868 bytes]
-# apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
-# apps/015_config.py  # [11,858 tokens | 55,451 bytes]
+# server.py  # [56,001 tokens | 266,868 bytes]
 
 # CHAPTER 1: BOOTSTRAPPING, CLI & ROUTING
 # README.md  # [20,467 tokens | 103,208 bytes]
@@ -126,17 +127,17 @@ AI_PHOOEY_CHOP = r"""\ # vulture: ignore
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS)
-# imports/crud.py  # [7,365 tokens | 35,666 bytes]
-# imports/voice_synthesis.py  # [3,133 tokens | 15,477 bytes]
 # apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
 # apps/015_config.py  # [11,858 tokens | 55,451 bytes]
-# apps/020_profiles.py  # [4,023 tokens | 18,493 bytes]
 # apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
-# apps/030_roles.py  # [8,817 tokens | 43,533 bytes]
 # apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
+# imports/crud.py  # [7,365 tokens | 35,666 bytes]
+# apps/020_profiles.py  # [4,023 tokens | 18,493 bytes]
+# apps/060_tasks.py  # [4,993 tokens | 23,188 bytes]
+# apps/030_roles.py  # [8,817 tokens | 43,533 bytes]
+# imports/voice_synthesis.py  # [3,133 tokens | 15,477 bytes]
 # assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-# apps/060_tasks.py  # [4,993 tokens | 23,188 bytes]
 # apps/070_history.py  # [5,272 tokens | 28,545 bytes]
 
 # CHAPTER 8: FASTHTML PRIMITIVES
@@ -274,14 +275,25 @@ AI_PHOOEY_CHOP = r"""\ # vulture: ignore
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
-prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+# prompt_foo.by  # [13,638 tokens | 62,389 bytes]
 
 # !!!
 
+deleteme.txt
+/home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
+assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
 flake.nix  # [9,104 tokens | 39,024 bytes]
-.gitignore
-scripts/vulture_whitelist.py  # [948 tokens | 4,188 bytes]
-! cat << 'EOF' >> scripts/vulture_whitelist.py
+# pyproject.toml  # [679 tokens | 2,321 bytes]
+# .gitignore
+
+# config.py
+# server.py
+# pipulate/__init__.py
+# pipulate/core.py
+
+
+# scripts/vulture_whitelist.py  # [948 tokens | 4,188 bytes]
+# ! cat << 'EOF' >> scripts/vulture_whitelist.py
 
 """
 #   ____          _                     ____ _   _  ___  ____      
@@ -374,6 +386,17 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 """
 )
 
+# ============================================================================
+# IX. STATIC ANALYSIS SUPPRESSION
+# ============================================================================
+# Variables dynamically loaded by prompt_foo.py via getattr().
+_ = AI_PHOOEY_CHOP
+_ = EMPTY
+_ = CHOP_POST_MORTEM
+_ = CHOP_404_AFFAIR
+_ = CHOP_FISHTANK
+_ = CHOP_FLAKE_EVOLUTION
+
 # TODO List
 # - Switch versioning to use datestamp
 # - Try to suppress the "Newer Version Available" JupyterLab message
@@ -414,19 +437,6 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 #    - `!https://...` : JIT Optical Distillation (Renders JS, extracts hydrated DOM, SEO, & A11y trees).
 #
 # You are painting onto the context window. Keep your strokes deliberate.
-
-# ============================================================================
-# IX. STATIC ANALYSIS SUPPRESSION
-# ============================================================================
-# Variables dynamically loaded by prompt_foo.py via getattr().
-_ = AI_PHOOEY_CHOP
-_ = EMPTY
-_ = CHOP_POST_MORTEM
-_ = CHOP_404_AFFAIR
-_ = CHOP_FISHTANK
-_ = CHOP_BOOK_DISTILLER
-_ = CHOP_CHAPTER_DRAFTER
-_ = CHOP_FLAKE_EVOLUTION
 
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
@@ -518,10 +528,12 @@ _ = CHOP_FLAKE_EVOLUTION
 # remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
 # remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
 # remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
+# scripts/articles/bookforge_dashboard.py  # [851 tokens | 3,484 bytes]
 # scripts/articles/build_book_passes.py  # [535 tokens | 2,210 bytes]
 # scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
+# scripts/articles/conceptual_integrity.py  # [550 tokens | 2,404 bytes]
 # scripts/articles/consolidate_chapter_data.py  # [731 tokens | 3,819 bytes]
 # scripts/articles/diagramizer.py  # [1,912 tokens | 8,193 bytes]
 # scripts/articles/execute_massive_prompt.py  # [491 tokens | 2,209 bytes]
