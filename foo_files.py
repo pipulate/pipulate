@@ -421,7 +421,7 @@ _ = CHOP_FLAKE_EVOLUTION
 # - Speed up GAPalyzer. Polars? Dask?
 # - Stop `foo_files.py` edits from causing Watchdog restarts
 # - More immediate feedback and "scroll-to-bottom" when entering text in chat
-# - A spinner for Notebook steps like downloading gemma4. Are there spinner start & stop challenges in Notebooks?
+# - A spinner for Notebook steps like downloading models. Are there spinner start & stop challenges in Notebooks?
 # - Consider adding a difference source vs DOM `a href` links gap to Onboarding Excel deliverable.
 # - Reduce how much text is in the Onboarding cells, pushing more into sauce files (reduce intimidation)
 # - When the Web UI streams llm chat, the server console should stream too

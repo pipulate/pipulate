@@ -24,6 +24,11 @@ from pathlib import Path
 scripts_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(scripts_dir))
 
+# Add project root to sys.path to access config
+project_root = scripts_dir.parent
+sys.path.insert(0, str(project_root))
+import config as CFG
+
 try:
     from append_only_conversation import AppendOnlyConversationSystem
     CONVERSATION_SYSTEM_AVAILABLE = True
@@ -33,7 +38,7 @@ except ImportError:
 
 # Configuration for the local LLM
 OLLAMA_API_URL = "http://localhost:11434/api/generate"
-OLLAMA_MODEL = "gemma4"  # Using a smaller, faster model for this task
+OLLAMA_MODEL = CFG.DEFAULT_PROMPT_MODEL.split(':')[0]
 
 COMMIT_PROMPT_TEMPLATE = """
 You are an expert programmer and git contributor for the "Pipulate" project, a local-first AI SEO tool.

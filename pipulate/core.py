@@ -329,7 +329,7 @@ class Pipulate:
                 print("\nTo upgrade your environment for true Local-First Sovereignty:")
                 print("1. Go to https://ollama.com/")
                 print("2. Download the installer for your host operating system.")
-                print("3. Install it, open a terminal, run 'ollama run gemma4', and try again.")
+                print(f"3. Install it, open a terminal, run 'ollama run {CFG.DEFAULT_PROMPT_MODEL.split(':')[0]}', and try again.")
                 
             if selected_cloud:
                  print(f"✅ Locked in Cloud Model: {selected_cloud}")
@@ -2811,7 +2811,7 @@ class Pipulate:
             
             prefs = [p.strip().lower() for p in preferred_models.split(',')]
             selected_local = None
-            primary_recommendation = prefs[0].split(':')[0] if prefs else "gemma4"
+            primary_recommendation = prefs[0].split(':')[0] if prefs else CFG.DEFAULT_PROMPT_MODEL.split(':')[0]
             
             # 2. Fuzzy match for preferred models
             if not simulate_state == 'no_ollama' and not simulate_state == 'no_models':

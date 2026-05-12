@@ -10,8 +10,8 @@ WAND_SPEAKS_EMOJI = "🪄"
 
 # --- AI MODEL CONFIGURATION ---
 TONE = 'neutral'
-DEFAULT_PROMPT_MODEL = 'gemma4:latest'
-PREFERRED_LOCAL_MODELS = 'gemma4:latest, qwen3.5:latest'
++DEFAULT_PROMPT_MODEL = 'gemma3:latest'
++PREFERRED_LOCAL_MODELS = 'gemma3:latest, qwen3.6:latest'
 PREFERRED_CLOUD_MODELS = 'gemini-flash-latest, claude, gpt'
 MAX_LLM_RESPONSE_WORDS = 80
 MAX_CONVERSATION_LENGTH = 600

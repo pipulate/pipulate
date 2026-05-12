@@ -33,7 +33,7 @@
 # PHASE 3: The Myopic Generative Strike
 # Once sentinels are detected, extract ONLY the code between those markers.
 #   * Send the isolated chunk (e.g., 30 lines) + the requested diff to a fast, 
-#     localized model (e.g., gemma4:latest).
+#     localized model.
 #   * Prompt: "Here is a 30-line block. Apply this diff to it. Output ONLY 
 #     the new 30-line block. Do not alter indentation."
 #   * Result: 100% accurate attention mechanism due to micro-context.

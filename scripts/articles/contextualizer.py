@@ -7,6 +7,10 @@ import argparse
 from pathlib import Path
 from datetime import datetime
 import llm
+
+project_root = Path(__file__).resolve().parent.parent.parent
+sys.path.insert(0, str(project_root))
+import config as CFG
 import frontmatter
 import tiktoken  # Requires: pip install tiktoken
 import common
@@ -17,7 +21,7 @@ import common
 MODEL_CASCADE = [
     'gemini-flash-latest',
     'gemini-flash-lite-latest',
-    'gemma4:latest'
+    CFG.DEFAULT_PROMPT_MODEL
 ]
 
 SAFETY_SLEEP_SECONDS = 5
