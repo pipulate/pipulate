@@ -355,7 +355,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           echo "JupyterLab is starting..."
 
           # 🗣️ THE UNIFIED VOICE TRIGGER
-          python -c "from imports.voice_synthesis import chip_voice_system as cvs; cvs.speak_text('Pipulate is installed. Starting JupyterLab and the Pipulate server. JupyterLab will appear first for your onboarding. Get ready to hit Shift Enter all the way down.')" &
+          python -c "from imports.voice_synthesis import chip_voice_system as cvs; cvs.speak_text('Starting JupyterLab environment.')" > /dev/null 2>&1 &
 
           for i in {1..30}; do
             if curl -s http://localhost:8888 > /dev/null; then
@@ -448,7 +448,14 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           if [ -f Notebooks/data/.onboarded ]; then
             python -c "import logging; logging.getLogger('piper').setLevel(logging.ERROR); from imports.voice_synthesis import chip_voice_system as cvs; cvs.speak_text('Welcome back to the workshop. JupyterLab will be waiting in the first tab.')" > /dev/null 2>&1 &
           else
-            python -c "import logging; logging.getLogger('piper').setLevel(logging.ERROR); from imports.voice_synthesis import chip_voice_system as cvs; cvs.speak_text('Pipulate is installed. Starting JupyterLab and the Pipulate server. JupyterLab will appear first for your onboarding. Get ready to hit Shift Enter all the way down.')" > /dev/null 2>&1 &
+            if [[ "$(uname -s)" == "Darwin" ]]; then
+              CLOSE_CMD="Command W"
+            else
+              CLOSE_CMD="clicking the X"
+            fi
+            TTS_DIR_NAME=$(basename "$PWD")
+            TTS_MSG="Pipulate is installed. Starting JupyterLab and the server. To quit when you are done, forcibly close this terminal window using $CLOSE_CMD. To run it again later, open a new terminal, type C, D, space, $TTS_DIR_NAME, hit enter, then type nix develop. JupyterLab will appear first. Completing the onboarding will unlock the main application tab. Get ready to hit Shift Enter all the way down."
+            python -c "import logging; logging.getLogger('piper').setLevel(logging.ERROR); from imports.voice_synthesis import chip_voice_system as cvs; cvs.speak_text('$TTS_MSG')" > /dev/null 2>&1 &
           fi
 
           JUPYTER_STARTED=false
