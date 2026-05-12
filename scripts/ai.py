@@ -3,8 +3,15 @@ import sys
 import json
 import requests
 import argparse
+from pathlib import Path
 
-DEFAULT_MODEL = "gemma4:latest"
+
+# Wire into the central config
+project_root = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(project_root))
+import config as CFG
+
+DEFAULT_MODEL = CFG.DEFAULT_PROMPT_MODEL
 
 # Add a global variable to store the conversation history
 conversation_history = []
