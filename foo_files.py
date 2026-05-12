@@ -289,6 +289,7 @@ pipulate/core.py
 scripts/release/ai_commit.py
 scripts/articles/contextualizer.py
 config.py
+/home/mike/repos/nixos/configuration.nix  # [2,913 tokens | 10,227 bytes]
 
 # deleteme.txt
 # /home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
