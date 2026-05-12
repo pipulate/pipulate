@@ -457,6 +457,18 @@ def copy_to_clipboard(text: str):
     """Copies text to the system clipboard gracefully across macOS and Linux."""
     import platform
     
+    # === THE 80/20 SSH BYPASS ===
+    # If logged in via SSH, dump to the bridge file instead of fighting X11
+    if os.getenv("SSH_CLIENT"):
+        try:
+            with open("/tmp/clipboard_bridge.txt", "w", encoding="utf-8") as f:
+                f.write(text)
+            logger.print("✨ Markdown output routed to SSH Bridge (/tmp/clipboard_bridge.txt)")
+        except Exception as e:
+            logger.print(f"\nWarning: Could not write to SSH Bridge: {e}")
+        return
+    # ============================
+
     system = platform.system().lower()
     
     if system == "darwin":
