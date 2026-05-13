@@ -281,15 +281,11 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]                                   
 
 # !!!
 
-assets/nbs/imports/onboard_sauce.py
+config.py
 /home/mike/repos/nixos/init.lua   # [5,997 tokens | 22,971 bytes]
 /home/mike/repos/pipulate/scripts/ai.py
-ai_edit.py  # [2,296 tokens | 10,210 bytes]
-pipulate/core.py
 scripts/release/ai_commit.py
-scripts/articles/contextualizer.py
-config.py
-/home/mike/repos/nixos/configuration.nix  # [2,913 tokens | 10,227 bytes]
+release.py  # [9,879 tokens | 44,440 bytes]
 
 # deleteme.txt
 # /home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
@@ -521,7 +517,6 @@ _ = CHOP_FLAKE_EVOLUTION
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
-# release.py  # [9,649 tokens | 43,340 bytes]
 # remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
 # remotes/honeybot/queries/hot_404_remaps_top.sql  # [733 tokens | 2,888 bytes]
 # remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
