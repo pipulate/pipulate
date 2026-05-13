@@ -11,7 +11,10 @@ local set = vim.opt
 
 set.spell = true
 set.spelllang = 'en_us'
-set.spellfile = vim.fn.expand('~/repos/nixos/en.utf-8.add')
+local custom_spellfile = vim.fn.expand('~/repos/nixos/en.utf-8.add')
+if vim.fn.filereadable(custom_spellfile) == 1 then
+    set.spellfile = custom_spellfile
+end
 set.mouse = ''
 set.clipboard = 'unnamedplus'
 set.textwidth = 80
