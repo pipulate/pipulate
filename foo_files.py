@@ -26,7 +26,7 @@ AI_PHOOEY_CHOP = r"""\ # vulture: ignore
 # scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
 
 # CHAPTER 4: THE DIGITAL WORKSHOP (WET Code & Workflows)
-# Focus: Jupyter Notebooks, FastHTML, and bridging the gap with SKILL.md.
+# Focus: Jupyter Notebooks, FastHTML, and bridging the gap.
 # apps/040_hello_workflow.py  # [7,190 tokens | 34,518 bytes]
 # Notebooks/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
 
@@ -277,9 +277,13 @@ AI_PHOOEY_CHOP = r"""\ # vulture: ignore
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
-prompt_foo.by  # [13,638 tokens | 62,389 bytes]
+# prompt_foo.by  # [13,638 tokens | 62,389 bytes]
 
 # !!!
+
+Notebooks/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
+apps/040_hello_workflow.py  # [7,190 tokens | 34,518 bytes]
+apps/015_config.py  # [11,858 tokens | 55,451 bytes]
 
 # !https://thehackernews.com/2026/05/mini-shai-hulud-worm-compromises.html
 # server.py
@@ -290,19 +294,19 @@ prompt_foo.by  # [13,638 tokens | 62,389 bytes]
 # requirements.in
 # requirements.txt
 
-requirements.txt
-release.py
-scripts/ai.py
-imports/crud.py
-server.py
-requirements.in
-pipulate/core.py
-assets/nbs/imports/onboard_sauce.py
-assets/scenarios/introduction.json
-apps/030_roles.py
-scripts/articles/list_models.py
-apps/015_config.py  # [11,858 tokens | 55,451 bytes]
-apps/530_dropdown.py  # [3,497 tokens | 15,429 bytes]
+# requirements.txt
+# release.py
+# scripts/ai.py
+# imports/crud.py
+# server.py
+# requirements.in
+# pipulate/core.py
+# assets/nbs/imports/onboard_sauce.py
+# assets/scenarios/introduction.json
+# apps/030_roles.py
+# scripts/articles/list_models.py
+# apps/015_config.py  # [11,858 tokens | 55,451 bytes]
+# apps/530_dropdown.py  # [3,497 tokens | 15,429 bytes]
 
 # scripts/vulture_whitelist.py  # [948 tokens | 4,188 bytes]
 # ! cat << 'EOF' >> scripts/vulture_whitelist.py
