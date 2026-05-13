@@ -277,15 +277,17 @@ AI_PHOOEY_CHOP = r"""\ # vulture: ignore
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
-# prompt_foo.by  # [13,638 tokens | 62,389 bytes]
+prompt_foo.by  # [13,638 tokens | 62,389 bytes]
 
 # !!!
 
-config.py
-/home/mike/repos/nixos/init.lua   # [5,997 tokens | 22,971 bytes]
-/home/mike/repos/pipulate/scripts/ai.py
-scripts/release/ai_commit.py
-release.py  # [9,879 tokens | 44,440 bytes]
+pipulate/core.py
+
+# config.py
+# /home/mike/repos/nixos/init.lua   # [5,997 tokens | 22,971 bytes]
+# /home/mike/repos/pipulate/scripts/ai.py
+# scripts/release/ai_commit.py
+# release.py  # [9,879 tokens | 44,440 bytes]
 
 # deleteme.txt
 # /home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
