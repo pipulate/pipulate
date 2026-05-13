@@ -777,6 +777,9 @@ You're here to make the workflow concepts accessible and help users understand t
             if not local_models:
                 # Fallback to Config Preferences
                 local_models = [m.strip() for m in config.PREFERRED_LOCAL_MODELS.split(',')]
+            
+            # 🔤 Alphabetize the models for a clean UI experience
+            local_models = sorted(local_models, key=lambda x: x.lower())
                 
             if display_value not in local_models:
                 # Guarantee a valid selection to prevent empty form submissions that break the HTMX cascade
