@@ -13,7 +13,7 @@ AI_PHOOEY_CHOP = r"""\ # vulture: ignore
 
 # CHAPTER 1: THE SAFE HARBOR (Cognitive Autonomy)
 # Focus: Vim muscle memory, thinking out loud, and escaping the cloud.
-# /home/mike/repos/nixos/init.lua   # [5,997 tokens | 22,971 bytes]
+# init.lua   # [5,997 tokens | 22,971 bytes]
 
 # CHAPTER 2: THE HERMETIC SEAL (Deterministic Environments)
 # Focus: NixOS, Flakes, and the end of "It works on my machine."
@@ -257,7 +257,7 @@ AI_PHOOEY_CHOP = r"""\ # vulture: ignore
 
 # CHAPTER 19: THE NIXOS FOUNDATION
 # /home/mike/repos/pipulate/scripts/ai.py
-# /home/mike/repos/nixos/init.lua  # [4,770 tokens | 18,040 bytes]
+# init.lua  # [4,770 tokens | 18,040 bytes]
 # /home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
 # /home/mike/repos/nixos/ai-acceleration.nix  # [525 tokens | 2,069 bytes]
 # /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
@@ -281,7 +281,7 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]                                   
 
 # !!!
 
-/home/mike/repos/nixos/init.lua   # [5,997 tokens | 22,971 bytes]
+init.lua   # [5,997 tokens | 22,971 bytes]
 /home/mike/repos/nixos/configuration.nix  # [2,913 tokens | 10,227 bytes]
 flake.nix
 
