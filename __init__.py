@@ -12,8 +12,8 @@ Usage:
     pipulate
 """
 
-__version__ = "1.79"
-__version_description__ = "Installer Explains Quit and Restart"
+__version__ = "1.80"
+__version_description__ = "Git Commit Message by AI"
 __email__ = "pipulate@gmail.com"
 __description__ = "A Notebook-inspired Hand-cranked Agentic Framework" 
 
