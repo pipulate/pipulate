@@ -281,26 +281,28 @@ prompt_foo.by  # [13,638 tokens | 62,389 bytes]
 
 # !!!
 
-pipulate/core.py
-
-# config.py
-# /home/mike/repos/nixos/init.lua   # [5,997 tokens | 22,971 bytes]
-# /home/mike/repos/pipulate/scripts/ai.py
-# scripts/release/ai_commit.py
-# release.py  # [9,879 tokens | 44,440 bytes]
-
-# deleteme.txt
-# /home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
-# assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
-# flake.nix  # [9,104 tokens | 39,024 bytes]
-# pyproject.toml  # [679 tokens | 2,321 bytes]
-# .gitignore
-
-# config.py
+# !https://thehackernews.com/2026/05/mini-shai-hulud-worm-compromises.html
 # server.py
+# flake.nix
 # pipulate/__init__.py
 # pipulate/core.py
+# rg -n -C 2 -e "eval\(" -e "exec\(" -e "subprocess\." -e "os\.system\(" -e "shell=True" -e "pickle\.load" -e "0\.0\.0\.0" -e "host=['\"]" --type py --type nix
+# requirements.in
+# requirements.txt
 
+requirements.txt
+release.py
+scripts/ai.py
+imports/crud.py
+server.py
+requirements.in
+pipulate/core.py
+assets/nbs/imports/onboard_sauce.py
+assets/scenarios/introduction.json
+apps/030_roles.py
+scripts/articles/list_models.py
+apps/015_config.py  # [11,858 tokens | 55,451 bytes]
+apps/530_dropdown.py  # [3,497 tokens | 15,429 bytes]
 
 # scripts/vulture_whitelist.py  # [948 tokens | 4,188 bytes]
 # ! cat << 'EOF' >> scripts/vulture_whitelist.py
@@ -511,7 +513,6 @@ _ = CHOP_FLAKE_EVOLUTION
 # assets/prompts/pipulate-context.xsd  # [2,286 tokens | 8,129 bytes]
 # assets/prompts/system_prompt.md  # [628 tokens | 2,618 bytes]
 # assets/rich-table.css  # [417 tokens | 1,459 bytes]
-# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
 # browser_cache/automation_recipes/README_SAVE_LOAD_AUTOMATION.md  # [1,751 tokens | 7,246 bytes]
 # browser_cache/recipe_executor.py  # [2,848 tokens | 14,661 bytes]
 # browser_cache/review_perception_history.py  # [3,208 tokens | 13,492 bytes]
@@ -554,7 +555,6 @@ _ = CHOP_FLAKE_EVOLUTION
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
 # scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
-# scripts/articles/list_models.py  # [102 tokens | 391 bytes]
 # scripts/articles/other/make_article.py  # [1,513 tokens | 6,559 bytes]
 # scripts/articles/scrub_tags.py  # [358 tokens | 1,587 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
