@@ -53,6 +53,7 @@ Git diff context:
 - Change summary: {change_summary}
 
 Based on this analysis, choose the appropriate commit type.
+
 The commit message should:
 - Use a valid conventional commit type based on the ACTUAL nature of changes
 - Have a brief, imperative subject line (max 50 chars)
@@ -62,7 +63,7 @@ The commit message should:
 
 Here is the git diff of staged changes:
 --- GIT DIFF START ---
-{git_diff}
+{input_text}
 --- GIT DIFF END ---
 """
 
@@ -179,13 +180,14 @@ if __name__ == "__main__":
 - Lines added: +{change_analysis['lines_added']}
 - Lines deleted: -{change_analysis['lines_deleted']}
 """
+        # We stop replacing here, leaving {input_text} intact in the template
         formatted_prompt = COMMIT_PROMPT_TEMPLATE.replace("{change_analysis}", analysis_text) \
                                                  .replace("{primary_action}", change_analysis['primary_action']) \
                                                  .replace("{is_housekeeping}", str(change_analysis['is_housekeeping'])) \
-                                                 .replace("{change_summary}", change_analysis['change_summary']) \
-                                                 .replace("{git_diff}", staged_diff)
+                                                 .replace("{change_summary}", change_analysis['change_summary'])
         
-        result, used_model = chat_with_ollama("", formatted_prompt, model=args.model)
+        # Pass staged_diff directly as input_text so it bypasses .format() vulnerabilities!
+        result, used_model = chat_with_ollama(staged_diff, formatted_prompt, model=args.model)
         append_commit_to_conversation(result, change_analysis, used_model)
         
     else:
