@@ -753,33 +753,34 @@ You're here to make the workflow concepts accessible and help users understand t
         else:
             # 🪄 SURPRISE & DELIGHT: Pull local model from global state if available
             global_model = self.wand.db.get('active_local_model', '')
-            fallback_model = global_model or self.wand.get_config().DEFAULT_PROMPT_MODEL
+            config = self.wand.get_config()
+            fallback_model = global_model or config.DEFAULT_PROMPT_MODEL
             display_value = user_val if (step.refill and user_val) else fallback_model
+            
+            # Dynamically derive the recommended model name from config
+            recommended_model = config.DEFAULT_PROMPT_MODEL.split(':')[0].replace('_', ' ').title()
             
             await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
             explanation = "Select your local edge model (for privacy and unlimited use). The general contractor of your machine."
             await self.message_queue.add(wand, explanation, verbatim=True)
-            self.wand.speak("Please select your local cognitive engine. I recommend Gemma 4.", wait=False)
+            self.wand.speak(f"Please select your local cognitive engine. I recommend {recommended_model}.", wait=False)
             
             # --- START DYNAMIC OLLAMA FETCH ---
             try:
                 import llm
-                # Get all models registered in the Universal Adapter
-                all_models = [m.model_id for m in llm.get_models()]
-                # Filter specifically for Ollama instances
-                local_models = [m for m in all_models if 'ollama' in str(type(llm.get_model(m))).lower()]
-                
-                if not local_models:
-                    local_models = ["No local models found (Run 'ollama pull' in CLI)"]
-                elif display_value not in local_models:
-                    # If their saved/default model isn't actually pulled down, default to the first one they DO have
-                    display_value = local_models[0]
-                    
+                # Use model instances directly to avoid instantiating cloud models that might throw NeedsKeyException
+                local_models = [m.model_id for m in llm.get_models() if 'ollama' in str(type(m)).lower()]
             except Exception as e:
                 logger.warning(f"Could not fetch Ollama models dynamically: {e}")
+                local_models = []
+                
+            if not local_models:
                 # Fallback to Config Preferences
-                config = self.wand.get_config()
                 local_models = [m.strip() for m in config.PREFERRED_LOCAL_MODELS.split(',')]
+                
+            if display_value not in local_models:
+                # Guarantee a valid selection to prevent empty form submissions that break the HTMX cascade
+                display_value = local_models[0]
             # --- END DYNAMIC OLLAMA FETCH ---
             
             return Div(
@@ -802,6 +803,8 @@ You're here to make the workflow concepts accessible and help users understand t
                                 id='config-step02-local-ai-select',
                                 aria_label=f'Select {step.show}',
                                 aria_describedby='config-step02-local-ai-label',
+                                required=True,
+                                autofocus=True
                             ),
                             button_label=self.ui['BUTTON_LABELS']['NEXT_STEP']
                         ),
