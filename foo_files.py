@@ -51,20 +51,20 @@ AI_PHOOEY_CHOP = r"""\ # vulture: ignore
 # The foundational NPvg framework and state management.
 
 # CHAPTER 0: ONBOARDING
-# .gitignore  # [571 tokens | 2,096 bytes]
-# assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
-# assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
-# config.py  # [4,170 tokens | 16,184 bytes]
-# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-# pipulate/core.py  # [29,804 tokens | 144,977 bytes]
-# apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
-# apps/015_config.py  # [11,858 tokens | 55,451 bytes]
+.gitignore  # [571 tokens | 2,096 bytes]
+assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
+assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
+assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
+config.py  # [4,170 tokens | 16,184 bytes]
+pipulate/__init__.py  # [721 tokens | 2,998 bytes]
+pipulate/core.py  # [29,804 tokens | 144,977 bytes]
+apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
+apps/015_config.py  # [11,858 tokens | 55,451 bytes]
 
-# apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
-# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
+apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
+assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
+server.py  # [56,001 tokens | 266,868 bytes]
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-# server.py  # [56,001 tokens | 266,868 bytes]
 
 # CHAPTER 1: BOOTSTRAPPING, CLI & ROUTING
 # README.md  # [20,467 tokens | 103,208 bytes]
@@ -277,13 +277,13 @@ AI_PHOOEY_CHOP = r"""\ # vulture: ignore
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
-# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!!
 
-init.lua   # [5,997 tokens | 22,971 bytes]
-/home/mike/repos/nixos/configuration.nix  # [2,913 tokens | 10,227 bytes]
-flake.nix
+# init.lua   # [5,997 tokens | 22,971 bytes]
+# /home/mike/repos/nixos/configuration.nix  # [2,913 tokens | 10,227 bytes]
+# flake.nix
 
 # README.md
 
@@ -419,27 +419,52 @@ _ = CHOP_404_AFFAIR
 _ = CHOP_FISHTANK
 _ = CHOP_FLAKE_EVOLUTION
 
-# TODO List
-# - Let steps be skipped in Configuration. Give AI Studio and Botify links.
-# - Give any links in the Notebook-based Onboarding that still may be missing.
-# - Understand Jupyter Onboarding is optional and prepare for installation configs
-# - Installation configs combine Whitelabeling with a cryptographic feature key
-# - White-labeling defining group namespace and "key" enabling features on install
-# - Make the IPyWidget buttons wider in Onboarding
-# - A completely silent mode (no talking)
-# - Speed-up the crawling step (esp. if not Cloudflare captcha). A bit more narration.
-# - Switch versioning to use datestamp
-# - Try to suppress the "Newer Version Available" JupyterLab message
-# - Implement Color ASCII Art with `wand.figurate()`
-# - Fix robots.txt link under Parameter Buster
-# - Move the Configuration app under the poke gear flyout
-# - Speed up GAPalyzer. Polars? Dask?
-# - Stop `foo_files.py` edits from causing Watchdog restarts
-# - More immediate feedback and "scroll-to-bottom" when entering text in chat
-# - A spinner for Notebook steps like downloading models. Are there spinner start & stop challenges in Notebooks?
-# - Consider adding a difference source vs DOM `a href` links gap to Onboarding Excel deliverable.
-# - Reduce how much text is in the Onboarding cells, pushing more into sauce files (reduce intimidation)
-# - When the Web UI streams llm chat, the server console should stream too
+# ============================================================================
+# X. THE ROADMAP (The Mother Cat's To-Do List)
+# ============================================================================
+# This is not a backlog; it is the trajectory of our philosophy. 
+# We prioritize a seamless, empathetic onboarding experience over feature-bloat.
+
+# --- PHASE 1: The Onboarding Embrace (Frictionless Entry) ---
+# Goal: Make the first 5 minutes of Pipulate feel like magic, not homework.
+# - [ ] De-intimidate the Notebooks: Push heavy instructional text into `sauce` files. Keep the cells clean and action-oriented.
+# - [ ] Escapable Tooling: Allow users to skip Cloud AI API-key steps gracefully in both `Onboarding.ipynb` and `015_config.py`.
+# - [ ] The Missing Links: Ensure direct, obvious links to Google AI Studio and Botify exist exactly where the user needs them.
+# - [ ] "Cheat Codes": Add a fast-track button in the Notebook for veteran users who want to skip the tutorializing.
+# - [ ] Tactile Upgrades: Make the IPyWidget buttons wider and more satisfying to click during Onboarding.
+# - [ ] Asynchronous Patience: Implement visual spinners for Notebook steps that take time (e.g., downloading local models) so the user knows the machine is working.
+
+# --- PHASE 2: The Deployment Matrix (Enterprise & Whitelabeling) ---
+# Goal: Allow agencies to bypass the Jupyter chrysalis entirely and drop clients straight into a single-tab, locked-in workflow.
+# - [ ] The Cryptographic Key: Build installation configs that combine whitelabeling (group namespace) with a feature key.
+# - [ ] Direct-to-App Routing: Understand when Jupyter Onboarding is optional and bypass it based on the installation config.
+# - [ ] UI Reorganization: Move the Configuration app under the "Poke Gear" flyout for a cleaner primary navigation menu.
+# - [ ] Color and theme customization to match "corporate" look
+
+# --- PHASE 3: Acoustic & Visual Sovereignty (Radical Transparency) ---
+# Goal: The user must always know what the machine is thinking, saying, and contacting.
+# - [ ] The Network Sentinel: Implement a global visual indicator for TCP/IP traffic. If hitting Local AI, it stays dark. If hitting Cloud AI, a green flicker occurs (near the voice toggle).
+# - [ ] The Gag Order: Create an instantaneous, uncompromising global voice kill-switch (sentinel file required) that silences both JupyterLab and FastHTML.
+# - [ ] Acoustic Traffic Control: Prevent voices from talking over each other across separate processes (especially critical at the end of Onboarding).
+# - [ ] Silent Running: Implement a completely silent mode (no talking, ever).
+# - [ ] Terminal Parity: When the Web UI streams LLM chat, the server console must stream the exact same output.
+# - [ ] Color ASCII Art: Implement `wand.figurate()` to bring the terminal to life.
+
+# --- PHASE 4: The Core Engine & Tech Debt ---
+# Goal: Pay down the debt of progress and stabilize the foundations.
+# - [ ] The FastHTML Migration: Update the codebase to survive FastHTML's breaking changes (e.g., the removal of PicoCSS-specific tags like `Card()`). Hold until next pip-compile.
+# - [ ] Modernize Static Analysis: Replace Pylint and Vulture with Ruff in the `prompt_foo.py` prompt compiler for faster, cleaner diagnostics.
+# - [ ] Watchdog Taming: Stop `foo_files.py` edits from triggering aggressive server restarts.
+# - [ ] Chat UI Polish: Provide more immediate feedback and force "scroll-to-bottom" when entering text in the chat interface.
+# - [ ] Versioning: Switch from semantic versioning to a datestamp-based system.
+# - [ ] Jupyter Housekeeping: Suppress the annoying "Newer Version Available" message in JupyterLab.
+
+# --- PHASE 5: Tooling & Application Upgrades ---
+# Goal: Make the workflows faster, deeper, and more insightful.
+# - [ ] Crawler Acceleration: Speed up the initial scraping step (especially regarding Cloudflare captcha bypass) and add narrative voiceover to fill the dead air.
+# - [ ] GAPalyzer Turbo: Re-engineer GAPalyzer for speed (evaluate Polars or Dask).
+# - [ ] Deliverable Polish: Add a "Source vs. Rendered DOM <a> links gap" metric to the Excel deliverable.
+# - [ ] Link Rot: Fix the broken robots.txt link inside Parameter Buster.
 
 # ============================================================================
 # THE LIVING CODEX: THE STORY OF THE FOREVER MACHINE
