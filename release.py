@@ -582,24 +582,6 @@ def display_trifecta_rebuild_stats(stats):
     console.print("\n")
     console.print(panel)
 
-def get_ai_model_name():
-    """Extract the model name from ai_commit.py."""
-    ai_commit_script = PIPULATE_ROOT / "scripts" / "release" / "ai_commit.py"
-    if not ai_commit_script.exists():
-        return "AI Model"
-    
-    try:
-        content = ai_commit_script.read_text()
-        # Look for OLLAMA_MODEL = "model_name"
-        import re
-        match = re.search(r'OLLAMA_MODEL\s*=\s*["\']([^"\']+)["\']', content)
-        if match:
-            return match.group(1)
-        else:
-            return "AI Model"
-    except Exception:
-        return "AI Model"
-
 def analyze_git_changes():
     """Intelligently analyze git changes to categorize additions, deletions, modifications, etc."""
     print("🔍 Analyzing git changes for intelligent commit generation...")
@@ -716,13 +698,12 @@ def analyze_git_changes():
         return analysis
 
 def get_ai_commit_message():
-    """Gets an AI-generated commit message from local LLM with intelligent change analysis."""
+    """Gets an AI-generated commit message from the unified local LLM script."""
     print("🤖 Analyzing changes for AI commit message...")
     
-    # Check if there are any changes (staged or unstaged)
     try:
-        staged_result = run_command(['git', 'diff', '--staged'], capture=True)
-        unstaged_result = run_command(['git', 'diff'], capture=True)
+        staged_result = run_command(['git', 'diff', '--staged'], capture_output=True)
+        unstaged_result = run_command(['git', 'diff'], capture_output=True)
         if not staged_result.stdout.strip() and not unstaged_result.stdout.strip():
             print("❌ No changes found for AI commit message generation")
             return None, None
@@ -730,40 +711,38 @@ def get_ai_commit_message():
         print(f"❌ Error checking git changes: {e}")
         return None, None
     
-    # Analyze changes intelligently
     change_analysis = analyze_git_changes()
     
-    # Get the model name
-    model_name = get_ai_model_name()
-    
-    # Try to get AI commit message with enhanced context
-    ai_commit_script = PIPULATE_ROOT / "scripts" / "release" / "ai_commit.py"
-    if not ai_commit_script.exists():
-        print("❌ ai_commit.py not found, skipping AI commit generation")
+    ai_script = PIPULATE_ROOT / "scripts" / "ai.py"
+    if not ai_script.exists():
+        print("❌ scripts/ai.py not found, skipping AI commit generation")
         return None, None
     
     try:
-        # Create enhanced environment variables to pass analysis to ai_commit.py
         import os
         import json
+        import subprocess
         
-        # Pass the analysis as environment variable
         enhanced_env = os.environ.copy()
         enhanced_env['PIPULATE_CHANGE_ANALYSIS'] = json.dumps(change_analysis)
         
-        # Use subprocess directly to pass environment variables
-        import subprocess
         result = subprocess.run(
-            ["python", str(ai_commit_script)], 
+            ["python", str(ai_script), "--auto", "--format", "plain"], 
             cwd=str(PIPULATE_ROOT),
             capture_output=True,
             text=True,
             env=enhanced_env,
-            check=False  # Don't raise exception on error
+            check=False
         )
         
         if result.returncode == 0:
-            ai_message = result.stdout.strip()
+            output = result.stdout.strip()
+            
+            # Robustly unpack the delimiter string passed from the unified ai.py
+            parts = output.split('__MODEL_DELIMITER__')
+            ai_message = parts[0].strip()
+            model_name = parts[1].strip() if len(parts) > 1 else "AI Model"
+            
             if ai_message:
                 print(f"🤖 AI generated commit message:")
                 print(f"   {ai_message}")
