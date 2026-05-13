@@ -454,7 +454,7 @@ _ = CHOP_FLAKE_EVOLUTION
 # Goal: Pay down the debt of progress and stabilize the foundations.
 # - [ ] The FastHTML Migration: Update the codebase to survive FastHTML's breaking changes (e.g., the removal of PicoCSS-specific tags like `Card()`). Hold until next pip-compile.
 # - [ ] Modernize Static Analysis: Replace Pylint and Vulture with Ruff in the `prompt_foo.py` prompt compiler for faster, cleaner diagnostics.
-# - [ ] Watchdog Taming: Stop `foo_files.py` edits from triggering aggressive server restarts.
+# - [ ] Watchdog Taming: Me more thorough with which files changing will restart server and which won't.
 # - [ ] Chat UI Polish: Provide more immediate feedback and force "scroll-to-bottom" when entering text in the chat interface.
 # - [ ] Versioning: Switch from semantic versioning to a datestamp-based system.
 # - [ ] Jupyter Housekeeping: Suppress the annoying "Newer Version Available" message in JupyterLab.
