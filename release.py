@@ -702,8 +702,9 @@ def get_ai_commit_message():
     print("🤖 Analyzing changes for AI commit message...")
     
     try:
-        staged_result = run_command(['git', 'diff', '--staged'], capture_output=True)
-        unstaged_result = run_command(['git', 'diff'], capture_output=True)
+        # FIX: Changed capture_output=True to capture=True to match your wrapper
+        staged_result = run_command(['git', 'diff', '--staged'], capture=True)
+        unstaged_result = run_command(['git', 'diff'], capture=True)
         if not staged_result.stdout.strip() and not unstaged_result.stdout.strip():
             print("❌ No changes found for AI commit message generation")
             return None, None
@@ -729,7 +730,7 @@ def get_ai_commit_message():
         result = subprocess.run(
             ["python", str(ai_script), "--auto", "--format", "plain"], 
             cwd=str(PIPULATE_ROOT),
-            capture_output=True,
+            capture_output=True,  # This one is correct because it's using raw subprocess.run
             text=True,
             env=enhanced_env,
             check=False
