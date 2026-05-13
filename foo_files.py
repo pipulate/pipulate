@@ -277,13 +277,19 @@ AI_PHOOEY_CHOP = r"""\ # vulture: ignore
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
-# prompt_foo.by  # [13,638 tokens | 62,389 bytes]
+# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!!
 
-Notebooks/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
-apps/040_hello_workflow.py  # [7,190 tokens | 34,518 bytes]
-apps/015_config.py  # [11,858 tokens | 55,451 bytes]
+/home/mike/repos/nixos/init.lua   # [5,997 tokens | 22,971 bytes]
+/home/mike/repos/nixos/configuration.nix  # [2,913 tokens | 10,227 bytes]
+flake.nix
+
+# README.md
+
+# Notebooks/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
+# apps/040_hello_workflow.py  # [7,190 tokens | 34,518 bytes]
+# apps/015_config.py  # [11,858 tokens | 55,451 bytes]
 
 # !https://thehackernews.com/2026/05/mini-shai-hulud-worm-compromises.html
 # server.py
@@ -414,11 +420,14 @@ _ = CHOP_FISHTANK
 _ = CHOP_FLAKE_EVOLUTION
 
 # TODO List
+# - Let steps be skipped in Configuration. Give AI Studio and Botify links.
+# - Give any links in the Notebook-based Onboarding that still may be missing.
+# - Understand Jupyter Onboarding is optional and prepare for installation configs
+# - Installation configs combine Whitelabeling with a cryptographic feature key
+# - White-labeling defining group namespace and "key" enabling features on install
 # - Make the IPyWidget buttons wider in Onboarding
 # - A completely silent mode (no talking)
 # - Speed-up the crawling step (esp. if not Cloudflare captcha). A bit more narration.
-# - Stripped-down experiences 
-# - White-labeling defining group namespace and "key" enabling features on install
 # - Switch versioning to use datestamp
 # - Try to suppress the "Newer Version Available" JupyterLab message
 # - Implement Color ASCII Art with `wand.figurate()`
