@@ -761,9 +761,26 @@ You're here to make the workflow concepts accessible and help users understand t
             await self.message_queue.add(wand, explanation, verbatim=True)
             self.wand.speak("Please select your local cognitive engine. I recommend Gemma 4.", wait=False)
             
-            # Fetch Model Preferences from Config
-            config = self.wand.get_config()
-            local_models = [m.strip() for m in config.PREFERRED_LOCAL_MODELS.split(',')]
+            # --- START DYNAMIC OLLAMA FETCH ---
+            try:
+                import llm
+                # Get all models registered in the Universal Adapter
+                all_models = [m.model_id for m in llm.get_models()]
+                # Filter specifically for Ollama instances
+                local_models = [m for m in all_models if 'ollama' in str(type(llm.get_model(m))).lower()]
+                
+                if not local_models:
+                    local_models = ["No local models found (Run 'ollama pull' in CLI)"]
+                elif display_value not in local_models:
+                    # If their saved/default model isn't actually pulled down, default to the first one they DO have
+                    display_value = local_models[0]
+                    
+            except Exception as e:
+                logger.warning(f"Could not fetch Ollama models dynamically: {e}")
+                # Fallback to Config Preferences
+                config = self.wand.get_config()
+                local_models = [m.strip() for m in config.PREFERRED_LOCAL_MODELS.split(',')]
+            # --- END DYNAMIC OLLAMA FETCH ---
             
             return Div(
                 Card(
@@ -779,6 +796,7 @@ You're here to make the workflow concepts accessible and help users understand t
                         # The Magic: wrap_with_inline_button handles Select tags just fine!
                         wand.wrap_with_inline_button(
                             Select(
+                                # Automatically select the previously chosen model
                                 *[Option(m, value=m, selected=(m == display_value)) for m in local_models],
                                 name=step.done, 
                                 id='config-step02-local-ai-select',
