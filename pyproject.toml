@@ -95,3 +95,30 @@ exclude = [
     "CHANGELOG.md"
 ]
 
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+# Start with a minimal, non-noisy ruleset.
+# E = pycodestyle errors, F = pyflakes, W = pycodestyle warnings
+select = ["E", "F", "W"]
+
+ignore = [
+    # FastHTML route handlers registered via @rt() decorator appear unused to static analysis.
+    # These are the core false positives in this codebase.
+    "F401",   # imported but unused — FastHTML imports Card, Div, Form etc. into namespace
+    "F811",   # redefinition of unused name — common in HTMX step pattern where step_N redefines patterns
+    "E501",   # line too long — inline HTMX chains are intentionally dense
+]
+
+# Never flag these directories
+exclude = [
+    ".venv",
+    "Notebooks",
+    "scripts",
+    "browser_cache",
+    "data",
+    "downloads",
+    "logs",
+]

@@ -91,8 +91,9 @@ scikit-learn
 numpy
 
 # Code Quality
-pylint
-vulture
+pylint  # Delete after next pip-compile
+vulture  # Delete after next pip-compile
+ruff
 yapf
 isort
 
