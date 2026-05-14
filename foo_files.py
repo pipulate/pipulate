@@ -276,19 +276,21 @@ AI_PHOOEY_CHOP = r"""\
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
+foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
+prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+
+# !!!
+
+# WHAT WE'RE AD HOC BUNDLING THIS TURN
 # requirements.in
+# pyproject.toml  # [679 tokens | 2,321 bytes]
+
+# RECENTLY AD HOC BUNDLED
 # requirements.txt
 # /home/mike/repos/trimnoir/_posts/2026-05-13-future-proofed-logic-of-tech.md
 # pipulate/core.py
 # https://pipulate.com/guide/chain-reaction-pattern/
-
-foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
-# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
-
-pyproject.toml  # [679 tokens | 2,321 bytes]
 # flake.nix
-
-# !!!
 
 # init.lua   # [5,997 tokens | 22,971 bytes]
 # /home/mike/repos/nixos/configuration.nix  # [2,913 tokens | 10,227 bytes]
