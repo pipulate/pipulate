@@ -4,7 +4,7 @@
 # |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| |
 # |_|   |_|  \___/|_| |_| |_| .__/ \__| |_|   \__,_|
 #                           |_|                     
-AI_PHOOEY_CHOP = r"""\ # vulture: ignore
+AI_PHOOEY_CHOP = r"""\ 
 # ============================================================================
 # THE BOOK OF FUTURE-PROOFING (Curriculum & Context Router)
 # ============================================================================
@@ -51,19 +51,19 @@ AI_PHOOEY_CHOP = r"""\ # vulture: ignore
 # The foundational NPvg framework and state management.
 
 # CHAPTER 0: ONBOARDING
-.gitignore  # [571 tokens | 2,096 bytes]
-assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
-assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
-config.py  # [4,170 tokens | 16,184 bytes]
-pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-pipulate/core.py  # [29,804 tokens | 144,977 bytes]
-apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
-apps/015_config.py  # [11,858 tokens | 55,451 bytes]
+# .gitignore  # [571 tokens | 2,096 bytes]
+# assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
+# assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
+# config.py  # [4,170 tokens | 16,184 bytes]
+# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
+# pipulate/core.py  # [29,804 tokens | 144,977 bytes]
+# apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
+# apps/015_config.py  # [11,858 tokens | 55,451 bytes]
 
-apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
-assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
-server.py  # [56,001 tokens | 266,868 bytes]
+# apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
+# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
+# server.py  # [56,001 tokens | 266,868 bytes]
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # CHAPTER 1: BOOTSTRAPPING, CLI & ROUTING
@@ -276,8 +276,15 @@ server.py  # [56,001 tokens | 266,868 bytes]
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-foo_files.py  # [4,028 tokens | 15,548 bytes]                                   <-- Almost always included every single time.
-prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+requirements.in
+requirements.txt
+# /home/mike/repos/trimnoir/_posts/2026-05-13-future-proofed-logic-of-tech.md
+# pipulate/core.py
+
+foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
+# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+
+pyproject.toml  # [679 tokens | 2,321 bytes]
 
 # !!!
 
@@ -455,7 +462,7 @@ _ = CHOP_FLAKE_EVOLUTION
 # - [ ] The FastHTML Migration: Update the codebase to survive FastHTML's breaking changes (e.g., the removal of PicoCSS-specific tags like `Card()`). Hold until next pip-compile.
 # - [ ] Modernize Static Analysis: Replace Pylint and Vulture with Ruff in the `prompt_foo.py` prompt compiler for faster, cleaner diagnostics.
 # - [ ] Watchdog Taming: Me more thorough with which files changing will restart server and which won't.
-# - [ ] Chat UI Polish: Provide more immediate feedback and force "scroll-to-bottom" when entering text in the chat interface.
+# - [ ] Chat UI Polish: Provide more immediate feedback, forcing submit button to red and "scroll-to-bottom" when entering text in the chat interface.
 # - [ ] Versioning: Switch from semantic versioning to a datestamp-based system.
 # - [ ] Jupyter Housekeeping: Suppress the annoying "Newer Version Available" message in JupyterLab.
 
