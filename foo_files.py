@@ -4,7 +4,7 @@
 # |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| |
 # |_|   |_|  \___/|_| |_| |_| .__/ \__| |_|   \__,_|
 #                           |_|                     
-AI_PHOOEY_CHOP = r"""\ 
+AI_PHOOEY_CHOP = r""" 
 # ============================================================================
 # THE BOOK OF FUTURE-PROOFING (Curriculum & Context Router)
 # ============================================================================
@@ -278,55 +278,13 @@ AI_PHOOEY_CHOP = r"""\
 
 foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
 prompt_foo.py  # [13,638 tokens | 62,389 bytes]
-pipualte/__init__.py
-pipulate/core.py
 
 # !!! AD HOC
 
 # WHAT WE'RE AD HOC BUNDLING THIS TURN
-# requirements.in
 # pyproject.toml  # [679 tokens | 2,321 bytes]
 
-# RECENTLY AD HOC BUNDLED
-# requirements.txt
-# /home/mike/repos/trimnoir/_posts/2026-05-13-future-proofed-logic-of-tech.md
-# pipulate/core.py
-# https://pipulate.com/guide/chain-reaction-pattern/
-# flake.nix
-
-# init.lua   # [5,997 tokens | 22,971 bytes]
-# /home/mike/repos/nixos/configuration.nix  # [2,913 tokens | 10,227 bytes]
-# flake.nix
-
-# README.md
-
-# Notebooks/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
-# apps/040_hello_workflow.py  # [7,190 tokens | 34,518 bytes]
-# apps/015_config.py  # [11,858 tokens | 55,451 bytes]
-
-# !https://thehackernews.com/2026/05/mini-shai-hulud-worm-compromises.html
-# server.py
-# flake.nix
-# pipulate/__init__.py
-# pipulate/core.py
-# rg -n -C 2 -e "eval\(" -e "exec\(" -e "subprocess\." -e "os\.system\(" -e "shell=True" -e "pickle\.load" -e "0\.0\.0\.0" -e "host=['\"]" --type py --type nix
-# requirements.in
-# requirements.txt
-
-# requirements.txt
-# release.py
-# scripts/ai.py
-# imports/crud.py
-# server.py
-# requirements.in
-# pipulate/core.py
-# assets/nbs/imports/onboard_sauce.py
-# assets/scenarios/introduction.json
-# apps/030_roles.py
-# scripts/articles/list_models.py
-# apps/015_config.py  # [11,858 tokens | 55,451 bytes]
-# apps/530_dropdown.py  # [3,497 tokens | 15,429 bytes]
-
+# KEEP AN EXAMPLE LIKE THIS
 # scripts/vulture_whitelist.py  # [948 tokens | 4,188 bytes]
 # ! cat << 'EOF' >> scripts/vulture_whitelist.py
 
@@ -437,6 +395,9 @@ _ = CHOP_FLAKE_EVOLUTION
 # ============================================================================
 # This is not a backlog; it is the trajectory of our philosophy. 
 # We prioritize a seamless, empathetic onboarding experience over feature-bloat.
+
+# AD HOC / UNORGANIZED
+# - Purge orphans from Jekyll `_posts/_context/` JSON holographic context shards.
 
 # --- PHASE 1: The Onboarding Embrace (Frictionless Entry) ---
 # Goal: Make the first 5 minutes of Pipulate feel like magic, not homework.
