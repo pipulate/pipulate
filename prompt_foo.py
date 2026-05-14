@@ -644,6 +644,7 @@ Before addressing the user's prompt, perform the following verification steps:
 3.  **Check for Incompleteness:** If you determine that critical files are missing, do not proceed. Instead, your **primary task** is to inform me of the missing files and recommend adding them to `foo_files.py` to create a more complete context.
 4.  **Confirm Understanding:** If the context appears complete, state "Context verified." and then proceed with the user's request.
 5.  **Descriptions:** When describing the passion represented here, you may refer to it as a blueprint, treatise, soliloquy, methodology, philosophy or way. NEVER refer to it as a manifesto which has a negative connotation.
+6.  **ANTI-CANVAS DIRECTIVE:** You are strictly forbidden from using Canvas, Artifacts, or any proprietary UI pop-out windows. All responses, including code diffs, explanations, and patches, MUST be delivered as raw, standard, inline Markdown directly in the standard chat stream. Never generate full files unless explicitly requested; output only the targeted patch.
 '''
 
     def _generate_summary_content(self, verified_token_count: int) -> str:
