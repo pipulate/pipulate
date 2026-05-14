@@ -166,7 +166,7 @@ AI_PHOOEY_CHOP = r"""
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
 # apps/100_connect_with_botify.py  # [4,492 tokens | 22,616 bytes]
 # apps/240_simon_mcp.py  # [8,886 tokens | 44,543 bytes]
-
+# --- 
 # apps/200_workflow_genesis.py  # [12,397 tokens | 59,509 bytes]
 # apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
 # scripts/workflow/splice_workflow_step.py  # [5,028 tokens | 21,917 bytes]
@@ -281,14 +281,13 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every sin
 
 # !!! AD HOC
 
-config.py
-server.py
+/home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
+assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
+pyproject.toml  # [679 tokens | 2,321 bytes]
+flake.nix
+.gitignore
 
 # RECENTLY USED (EARLIER IN THIS DISCUSSION)
-# flake.nix
-# scripts/articles/common.py
-# scripts/articles/sanitizer.py
-# scripts/articles/articleizer.py
 
 """
 #   ____          _                     ____ _   _  ___  ____      
@@ -382,9 +381,10 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 )
 
 # ============================================================================
-# IX. STATIC ANALYSIS SUPPRESSION
+# IX. STATIC ANALYSIS SUPPRESSION (for Ruff)
 # ============================================================================
 # Variables dynamically loaded by prompt_foo.py via getattr().
+# I hate having to do this, but it will help me keep my custom CHOPs straight.
 _ = AI_PHOOEY_CHOP
 _ = EMPTY
 _ = CHOP_POST_MORTEM
@@ -403,6 +403,7 @@ _ = CHOP_FLAKE_EVOLUTION
 # - Purge orphans from Jekyll `_posts/_context/` JSON holographic context shards.
 # - Read YouTube comments through API and *really* make Honeybot respond to people!
 # - Consider layering in line-numbering in the code portions of prompt_foo.py compiled context so AI can give very precise instructions
+# - Trim the Honeybot Nix store, getting larger and larger? Make sure every `./nixops.sh` operation keeps size in check. Prevent server crashes based on running out of space!
 
 # --- PHASE 1: The Onboarding Embrace (Frictionless Entry) ---
 # Goal: Make the first 5 minutes of Pipulate feel like magic, not homework.
