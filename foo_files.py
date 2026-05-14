@@ -277,15 +277,10 @@ AI_PHOOEY_CHOP = r"""
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
-# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+init.lua
 
 # !!! AD HOC
-
-/home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
-assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
-pyproject.toml  # [679 tokens | 2,321 bytes]
-flake.nix
-.gitignore
 
 # RECENTLY USED (EARLIER IN THIS DISCUSSION)
 
