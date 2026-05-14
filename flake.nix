@@ -224,6 +224,34 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           ${notebookFilesString}
           EOF
           }
+
+          # Set up the personal playground
+          if [ ! -f "Notebooks/Playground/WELCOME.md" ]; then
+            echo "INFO: Setting up your personal Playground..."
+            mkdir -p "Notebooks/Playground"
+            cat << 'PLAYGROUND_EOF' > "Notebooks/Playground/WELCOME.md"
+# 🎢 Welcome to the Playground!
+
+This folder is your personal sandbox. It is intentionally **ignored** by Pipulate's main version control.
+
+## Why does this exist?
+As an SEO consultant, you need a place to write fast, messy, disposable Python scripts to solve immediate client problems. You shouldn't have to worry about breaking the main Pipulate architecture or accidentally committing client data to a public repository.
+
+## How it works:
+1. **Full Access:** Scripts here use the same `.venv` Python environment as Pipulate. You have access to `pandas`, `httpx`, `lxml`, and the Pipulate `wand` without installing anything.
+2. **The Sausage Factory:** Write your ad hoc "tracer bullet" scripts here. If they prove valuable across multiple clients, you can graduate them up to `Notebooks/imports/` as reusable "sauce" modules.
+3. **Protect Your Work:** Because Pipulate ignores this folder, we highly recommend turning it into your own private repository:
+
+```bash
+cd Notebooks/Playground
+git init
+# Then link it to a private GitHub repository to back up your work!
+```
+
+Happy hacking. Throw some paint around.
+PLAYGROUND_EOF
+          fi
+
           # Create a fancy welcome message
           if [ ! -f whitelabel.txt ]; then
             APP_NAME=$(basename "$PWD")
