@@ -280,10 +280,15 @@ foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every sin
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!! AD HOC
-flake.nix
-scripts/articles/common.py
-scripts/articles/sanitizer.py
-scripts/articles/articleizer.py
+
+config.py
+server.py
+
+# RECENTLY USED (EARLIER IN THIS DISCUSSION)
+# flake.nix
+# scripts/articles/common.py
+# scripts/articles/sanitizer.py
+# scripts/articles/articleizer.py
 
 """
 #   ____          _                     ____ _   _  ___  ____      
@@ -397,6 +402,7 @@ _ = CHOP_FLAKE_EVOLUTION
 # AD HOC / UNORGANIZED / CONSIDER
 # - Purge orphans from Jekyll `_posts/_context/` JSON holographic context shards.
 # - Read YouTube comments through API and *really* make Honeybot respond to people!
+# - Consider layering in line-numbering in the code portions of prompt_foo.py compiled context so AI can give very precise instructions
 
 # --- PHASE 1: The Onboarding Embrace (Frictionless Entry) ---
 # Goal: Make the first 5 minutes of Pipulate feel like magic, not homework.
