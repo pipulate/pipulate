@@ -644,7 +644,13 @@ Before addressing the user's prompt, perform the following verification steps:
 3.  **Check for Incompleteness:** If you determine that critical files are missing, do not proceed. Instead, your **primary task** is to inform me of the missing files and recommend adding them to `foo_files.py` to create a more complete context.
 4.  **Confirm Understanding:** If the context appears complete, state "Context verified." and then proceed with the user's request.
 5.  **Descriptions:** When describing the passion represented here, you may refer to it as a blueprint, treatise, soliloquy, methodology, philosophy or way. NEVER refer to it as a manifesto which has a negative connotation.
-6.  **ANTI-CANVAS DIRECTIVE:** You are strictly forbidden from using Canvas, Artifacts, or any proprietary UI pop-out windows. All responses, including code diffs, explanations, and patches, MUST be delivered as raw, standard, inline Markdown directly in the standard chat stream. Never generate full files unless explicitly requested; output only the targeted patch.
++6.  **THE ONE-SHOT PATCH PROTOCOL:** When executing a code edit, you MUST output the exact blast radius and a unified diff patch. Use the provided line numbers to determine the bounds, including a 5-line safety buffer above and below the edit. Use this exact format:
++
++**[Target Coordinates]**
++```text
++File: path/to/target.ext
++Start: <start_line_integer>
++End: <end_line_integer>
 '''
 
     def _generate_summary_content(self, verified_token_count: int) -> str:
