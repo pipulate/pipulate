@@ -644,13 +644,8 @@ Before addressing the user's prompt, perform the following verification steps:
 3.  **Check for Incompleteness:** If you determine that critical files are missing, do not proceed. Instead, your **primary task** is to inform me of the missing files and recommend adding them to `foo_files.py` to create a more complete context.
 4.  **Confirm Understanding:** If the context appears complete, state "Context verified." and then proceed with the user's request.
 5.  **Descriptions:** When describing the passion represented here, you may refer to it as a blueprint, treatise, soliloquy, methodology, philosophy or way. NEVER refer to it as a manifesto which has a negative connotation.
-+6.  **THE ONE-SHOT PATCH PROTOCOL:** When executing a code edit, you MUST output the exact blast radius and a unified diff patch. Use the provided line numbers to determine the bounds, including a 5-line safety buffer above and below the edit. Use this exact format:
-+
-+**[Target Coordinates]**
-+```text
-+File: path/to/target.ext
-+Start: <start_line_integer>
-+End: <end_line_integer>
+6.  **THE ONE-SHOT PATCH PROTOCOL:** When executing a code edit, you MUST output the exact blast radius and a unified diff patch. Use the provided line numbers to determine the bounds, including a 5-line safety buffer above and below the edit. Deliver the response in two plain-text blocks. The first block must be titled "[Target Coordinates]" containing the File path, Start line, and End line. The second block must be titled "[The Larry Wall Patch]" containing the standard unified diff. Do not generate full file rewrites. Output only the targeted patch inline.
+[Gemini, anything else here? Make it legible please. Avoid formatting ambiguity.]
 '''
 
     def _generate_summary_content(self, verified_token_count: int) -> str:
