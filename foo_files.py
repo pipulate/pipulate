@@ -277,16 +277,13 @@ AI_PHOOEY_CHOP = r"""
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
-prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!! AD HOC
-
-# WHAT WE'RE AD HOC BUNDLING THIS TURN
-# pyproject.toml  # [679 tokens | 2,321 bytes]
-
-# KEEP AN EXAMPLE LIKE THIS
-# scripts/vulture_whitelist.py  # [948 tokens | 4,188 bytes]
-# ! cat << 'EOF' >> scripts/vulture_whitelist.py
+flake.nix
+scripts/articles/common.py
+scripts/articles/sanitizer.py
+scripts/articles/articleizer.py
 
 """
 #   ____          _                     ____ _   _  ___  ____      
@@ -396,8 +393,9 @@ _ = CHOP_FLAKE_EVOLUTION
 # This is not a backlog; it is the trajectory of our philosophy. 
 # We prioritize a seamless, empathetic onboarding experience over feature-bloat.
 
-# AD HOC / UNORGANIZED
+# AD HOC / UNORGANIZED / CONSIDER
 # - Purge orphans from Jekyll `_posts/_context/` JSON holographic context shards.
+# - Read YouTube comments through API and *really* make Honeybot respond to people!
 
 # --- PHASE 1: The Onboarding Embrace (Frictionless Entry) ---
 # Goal: Make the first 5 minutes of Pipulate feel like magic, not homework.
@@ -525,6 +523,7 @@ _ = CHOP_FLAKE_EVOLUTION
 # assets/prompts/pipulate-context.xsd  # [2,286 tokens | 8,129 bytes]
 # assets/prompts/system_prompt.md  # [628 tokens | 2,618 bytes]
 # assets/rich-table.css  # [417 tokens | 1,459 bytes]
+# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
 # browser_cache/automation_recipes/README_SAVE_LOAD_AUTOMATION.md  # [1,751 tokens | 7,246 bytes]
 # browser_cache/recipe_executor.py  # [2,848 tokens | 14,661 bytes]
 # browser_cache/review_perception_history.py  # [3,208 tokens | 13,492 bytes]
@@ -532,6 +531,7 @@ _ = CHOP_FLAKE_EVOLUTION
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
+# release.py  # [9,505 tokens | 42,721 bytes]
 # remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
 # remotes/honeybot/queries/hot_404_remaps_top.sql  # [733 tokens | 2,888 bytes]
 # remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
@@ -567,6 +567,7 @@ _ = CHOP_FLAKE_EVOLUTION
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
 # scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
+# scripts/articles/list_models.py  # [102 tokens | 391 bytes]
 # scripts/articles/other/make_article.py  # [1,513 tokens | 6,559 bytes]
 # scripts/articles/scrub_tags.py  # [358 tokens | 1,587 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
