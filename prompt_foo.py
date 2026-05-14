@@ -1253,6 +1253,10 @@ def main():
             except Exception as e:
                 logger.print(f"ERROR: Could not read or process {full_path}: {e}")
                 sys.exit(1)
+
+        # The Tokenizer Physics: Unpadded mathematical coordinates for logical files
+        if ext in {'.py', '.js', '.sh', '.nix', '.lua', '.json', '.toml', '.yaml', '.yml', '.sql', '.css', '.html', '.ipynb'}:
+            content = '\n'.join(f"{i}: {line}" for i, line in enumerate(content.split('\n'), start=1))
         
         # Store using full_path for the key to ensure uniqueness and absolute reference
         processed_files_data.append({
