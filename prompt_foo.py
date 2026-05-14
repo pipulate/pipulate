@@ -115,6 +115,13 @@ CONFIG = {
 }
 
 # ============================================================================
+# --- Static Analysis Configuration ---
+# ============================================================================
+# Set to False to skip Vulture and Pylint during prompt compilation.
+# Useful when transitioning linters or to reduce context noise.
+ENABLE_STATIC_ANALYSIS = True
+
+# ============================================================================
 # --- Literary Size Scale & Token/Word Counting ---
 # ============================================================================
 LITERARY_SIZE_SCALE = [
@@ -361,6 +368,10 @@ def run_tree_command() -> str:
 def run_static_analysis(python_files: List[str]) -> str:
     """Runs Vulture and Pylint on the target files with high terminal transparency."""
     if not python_files:
+        return ""
+
+    if not ENABLE_STATIC_ANALYSIS:
+        logger.print("\n⏭️  Static Analysis skipped (ENABLE_STATIC_ANALYSIS = False).")
         return ""
         
     logger.print("\n🔍 Running Static Analysis Telemetry...")
