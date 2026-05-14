@@ -392,6 +392,7 @@ _ = CHOP_FLAKE_EVOLUTION
 # ============================================================================
 # This is not a backlog; it is the trajectory of our philosophy. 
 # We prioritize a seamless, empathetic onboarding experience over feature-bloat.
+# Stop Watchdog from restarting server for ANYTHING in the /scripts folder
 
 # AD HOC / UNORGANIZED / CONSIDER
 # - Purge orphans from Jekyll `_posts/_context/` JSON holographic context shards.
