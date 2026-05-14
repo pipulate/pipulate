@@ -119,7 +119,7 @@ CONFIG = {
 # ============================================================================
 # Set to False to skip Vulture and Pylint during prompt compilation.
 # Useful when transitioning linters or to reduce context noise.
-ENABLE_STATIC_ANALYSIS = True
+ENABLE_STATIC_ANALYSIS = False
 
 # ============================================================================
 # --- Literary Size Scale & Token/Word Counting ---
