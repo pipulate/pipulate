@@ -37,49 +37,21 @@ def apply_larry_wall_patch(filepath: str, start_line: int, end_line: int, diff_c
     start_idx = start_line - 1
     end_idx = end_line
 
-    original_slice = '\n'.join(lines[start_idx:end_idx])
-    
-    # 2. Build the Myopic Generative Prompt
-    system_prompt = "You are a surgical Python AST editor. You output ONLY valid Python code. No markdown formatting, no backticks, no explanations."
-    
-    prompt = f"""
-Apply the following unified diff to the Original Python Slice.
-Ensure the resulting code maintains exact structural indentation relative to the slice.
-Output ONLY the final mutated Python code block that will perfectly replace the original slice. Do NOT wrap in backticks.
+    # 2. The Chisel Strike: Stitch the file back together using the parsed diff
+    new_file_lines = lines[:start_idx] + replacement_lines + lines[end_idx:]
+    proposed_file_str = '\n'.join(new_file_lines) + '\n'
 
-ORIGINAL SLICE:
-{original_slice}
+    # 3. The Syntax Airlock Validator
+    try:
+        ast.parse(proposed_file_str)
+    except Exception as e:
+        print(f"❌ AST AIRLOCK FAILED: The applied patch creates invalid Python syntax.")
+        print(traceback.format_exc())
+        return False
 
-DIFF TO APPLY:
-{diff_content}
-"""
-
-    # 3. The Syntax Airlock Validator
-    def ast_validator(ai_response):
-        clean_response = re.sub(r'^```python\n|^```\n|```$', '', ai_response.strip(), flags=re.MULTILINE)
-        proposed_file_lines = lines[:start_idx] + clean_response.splitlines() + lines[end_idx:]
-        proposed_file_str = '\n'.join(proposed_file_lines) + '\n'
-        
-        try:
-            ast.parse(proposed_file_str)
-            return True, ""
-        except Exception:
-            return False, traceback.format_exc()
-
-    # 4. Engage the Sovereign Actuator
-    db_path = str(Path(__file__).resolve().parent.parent / "Notebooks" / "data" / "pipeline.sqlite")
-    wand = Pipulate(db_path=db_path)
-    final_slice_string = wand.resilient_prompt(prompt, system_prompt=system_prompt, validator=ast_validator)
-    
-    if not final_slice_string:
-        print("❌ PATCH FAILED: Could not generate an AST-valid mutation across the model cascade.")
-        return False
-        
-    # 5. Write the mutated, validated state back to disk
-    clean_response = re.sub(r'^```python\n|^```\n|```$', '', final_slice_string.strip(), flags=re.MULTILINE)
-    new_file_lines = lines[:start_idx] + clean_response.splitlines() + lines[end_idx:]
+    # 4. Write the mutated state back to disk
     with open(filepath, 'w', encoding='utf-8') as f:
-        f.write('\n'.join(new_file_lines) + '\n')
+        f.write(proposed_file_str)
         
     print(f"✅ AST AIRLOCK PASSED: Patch applied and validated in memory.")
     return True
