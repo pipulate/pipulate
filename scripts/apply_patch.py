@@ -13,32 +13,23 @@ import sys
 import re
 import os
 
+import traceback
+import ast
+from pathlib import Path
+
+# Ensure pipulate is in the path for the wand
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from pipulate import Pipulate
+import config as CFG
+
 def apply_larry_wall_patch(filepath: str, start_line: int, end_line: int, diff_content: str) -> bool:
     print(f"🎯 TARGET ACQUIRED: {filepath} (Lines {start_line}-{end_line})")
     
     if not os.path.exists(filepath):
         print(f"❌ Error: Target file '{filepath}' not found.")
         return False
-    
-    # 1. Parse the unified diff into a pristine block of replacement text
-    replacement_lines = []
-    in_hunk = False
-    
-    for d_line in diff_content.splitlines():
-        if d_line.startswith('@@ '):
-            in_hunk = True
-            continue
-        if not in_hunk:
-            continue
-            
-        # Keep additions and context, strip the prefix character
-        if d_line.startswith('+') or d_line.startswith(' '):
-            replacement_lines.append(d_line[1:])
-        elif d_line == '': # Edge case for empty context lines
-            replacement_lines.append('')
-        # Lines starting with '-' are ignored (they are the old state)
 
-    # 2. Open the live file and read it as an array
+    # 1. Load the live file and extract the Before slice 
     with open(filepath, 'r', encoding='utf-8') as f:
         lines = f.read().splitlines()
 
@@ -46,14 +37,51 @@ def apply_larry_wall_patch(filepath: str, start_line: int, end_line: int, diff_c
     start_idx = start_line - 1
     end_idx = end_line
 
-    # 3. The Chisel Strike: Stitch the file back together
-    new_file_lines = lines[:start_idx] + replacement_lines + lines[end_idx:]
+    original_slice = '\n'.join(lines[start_idx:end_idx])
+    
+    # 2. Build the Myopic Generative Prompt
+    system_prompt = "You are a surgical Python AST editor. You output ONLY valid Python code. No markdown formatting, no backticks, no explanations."
+    
+    prompt = f"""
+Apply the following unified diff to the Original Python Slice.
+Ensure the resulting code maintains exact structural indentation relative to the slice.
+Output ONLY the final mutated Python code block that will perfectly replace the original slice. Do NOT wrap in backticks.
 
-    # 4. Write the mutated state back to disk
+ORIGINAL SLICE:
+{original_slice}
+
+DIFF TO APPLY:
+{diff_content}
+"""
+
+    # 3. The Syntax Airlock Validator
+    def ast_validator(ai_response):
+        clean_response = re.sub(r'^```python\n|^```\n|```$', '', ai_response.strip(), flags=re.MULTILINE)
+        proposed_file_lines = lines[:start_idx] + clean_response.splitlines() + lines[end_idx:]
+        proposed_file_str = '\n'.join(proposed_file_lines) + '\n'
+        
+        try:
+            ast.parse(proposed_file_str)
+            return True, ""
+        except Exception:
+            return False, traceback.format_exc()
+
+    # 4. Engage the Sovereign Actuator
+    db_path = str(Path(__file__).resolve().parent.parent / "Notebooks" / "data" / "pipeline.sqlite")
+    wand = Pipulate(db_path=db_path)
+    final_slice_string = wand.resilient_prompt(prompt, system_prompt=system_prompt, validator=ast_validator)
+    
+    if not final_slice_string:
+        print("❌ PATCH FAILED: Could not generate an AST-valid mutation across the model cascade.")
+        return False
+        
+    # 5. Write the mutated, validated state back to disk
+    clean_response = re.sub(r'^```python\n|^```\n|```$', '', final_slice_string.strip(), flags=re.MULTILINE)
+    new_file_lines = lines[:start_idx] + clean_response.splitlines() + lines[end_idx:]
     with open(filepath, 'w', encoding='utf-8') as f:
         f.write('\n'.join(new_file_lines) + '\n')
-
-    print(f"✅ PATCH APPLIED: Swapped out {end_idx - start_idx} lines for {len(replacement_lines)} new lines.")
+        
+    print(f"✅ AST AIRLOCK PASSED: Patch applied and validated in memory.")
     return True
 
 def main():
