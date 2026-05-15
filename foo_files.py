@@ -276,32 +276,29 @@ AI_PHOOEY_CHOP = r"""
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
+# foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
 prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!! AD HOC
 
-# flake.nix
-# /home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
-
 pipulate/core.py
-assets/nbs/imports/onboard_sauce.py
-scripts/articles/contextualizer.py
-scripts/articles/articleizer.py
-scripts/articles/list_models.py
-assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
-assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
 config.py
-pipulate/__init__.py
-pipulate/core.py
-
 scripts/apply_patch.py
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 
+# flake.nix
+# /home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
+# assets/nbs/imports/onboard_sauce.py
+# scripts/articles/contextualizer.py
+# scripts/articles/articleizer.py
+# scripts/articles/list_models.py
+# assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
+# assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
+# pipulate/__init__.py
+# pipulate/core.py
 # assets/nbs/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
 # /home/mike/repos/pipulate/Notebooks/Advanced_Notebooks/04_VIDeditor.ipynb
-
 # Notebooks/Playground/patch_extractor.ipynb
 
 """
