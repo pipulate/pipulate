@@ -19,10 +19,9 @@ MAX_CONVERSATION_LENGTH = 600
 
 # --- AUTOMATION & CASCADE ---
 MODEL_CASCADE = [
-    'gemma3:latest',
-    'qwen3.6:latest',
     'gemini-flash-latest',
-    'gemini-flash-lite-latest'
+    'gemini-flash-lite-latest',
+    'gemma3:latest'
 ]
 
 HOME_MENU_ITEM = 'Home'
