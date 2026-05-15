@@ -276,15 +276,18 @@ AI_PHOOEY_CHOP = r"""
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-# foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
+foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!! AD HOC
 
 flake.nix
-init.lua
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
+
+# assets/nbs/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
+# /home/mike/repos/pipulate/Notebooks/Advanced_Notebooks/04_VIDeditor.ipynb
+
 # Notebooks/Playground/patch_extractor.ipynb
 
 """
@@ -521,7 +524,6 @@ _ = CHOP_FLAKE_EVOLUTION
 # assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
 # assets/nbs/imports/gap_analyzer_sauce.py  # [27,162 tokens | 119,579 bytes]
 # assets/nbs/imports/url_inspect_sauce.py  # [3,542 tokens | 16,202 bytes]
-# assets/nbs/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
 # assets/prompts/book_holographic.json  # [923 tokens | 3,726 bytes]
 # assets/prompts/find404s.md  # [459 tokens | 2,098 bytes]
