@@ -11,7 +11,7 @@ def main():
     parser = argparse.ArgumentParser(description="Drip-feed a payload into any UI, bypassing RAG-doll paste heuristics.")
     parser.add_argument("file", nargs="?", default="prompt.md", help="The compiled markdown file to inject.")
     parser.add_argument("--delay", type=int, default=2, help="Milliseconds between keystrokes (default: 2)")
-    parser.add_argument("--wait", type=int, default=3, help="Seconds to wait before typing begins (default: 3)")
+    parser.add_argument("--wait", type=int, default=15, help="Seconds to wait before typing begins (default: 15)")
     parser.add_argument("--chunk", type=int, default=0, help="If > 0, bypass typing and do chunked Ctrl+V pasting (size in chars).")
     args = parser.parse_args()
 
