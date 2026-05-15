@@ -284,6 +284,7 @@ prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 pipulate/core.py
 config.py
 scripts/apply_patch.py
+ai_response.py
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 
