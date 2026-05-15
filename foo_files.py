@@ -283,6 +283,18 @@ prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # flake.nix
 # /home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
+
+pipulate/core.py
+assets/nbs/imports/onboard_sauce.py
+scripts/articles/contextualizer.py
+scripts/articles/articleizer.py
+scripts/articles/list_models.py
+assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
+assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
+config.py
+pipulate/__init__.py
+pipulate/core.py
+
 scripts/apply_patch.py
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
@@ -578,7 +590,6 @@ _ = CHOP_FLAKE_EVOLUTION
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
 # scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
-# scripts/articles/list_models.py  # [102 tokens | 391 bytes]
 # scripts/articles/other/make_article.py  # [1,513 tokens | 6,559 bytes]
 # scripts/articles/scrub_tags.py  # [358 tokens | 1,587 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
@@ -591,6 +602,7 @@ _ = CHOP_FLAKE_EVOLUTION
 # scripts/gsc/gsc_keyworder.py  # [3,410 tokens | 14,355 bytes]
 # scripts/gsc/gsc_page_query.ipynb  # [7,842 tokens | 28,465 bytes]
 # scripts/gsc/gsc_top_movers.py  # [8,003 tokens | 34,690 bytes]
+# scripts/playground/prompt_feeder.py  # [746 tokens | 3,154 bytes]
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
 # scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
