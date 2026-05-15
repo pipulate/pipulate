@@ -277,11 +277,12 @@ AI_PHOOEY_CHOP = r"""
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
-# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!! AD HOC
 
 flake.nix
+/home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 
@@ -430,6 +431,7 @@ _ = CHOP_FLAKE_EVOLUTION
 # - [ ] Silent Running: Implement a completely silent mode (no talking, ever).
 # - [ ] Terminal Parity: When the Web UI streams LLM chat, the server console must stream the exact same output.
 # - [ ] Color ASCII Art: Implement `wand.figurate()` to bring the terminal to life.
+# - [ ] Never make the Piper TTS say it's Chip O'Theseus (local AI) when it's not (just reading a script). That's misleading and can raise unnecessary concerns. Be transparent.
 
 # --- PHASE 4: The Core Engine & Tech Debt ---
 # Goal: Pay down the debt of progress and stabilize the foundations.
