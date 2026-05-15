@@ -34,8 +34,7 @@ def main():
             
             for line in lines:
                 if line:
-                    subprocess.run(["xdotool", "type", "--clearmodifiers", "--delay", str(args.delay), line], check=True)
-                
+                    subprocess.run(["xdotool", "type", "--clearmodifiers", "--delay", str(args.delay), "--", line], check=True)
                 # The Chisel Strike: Shift+Return prevents premature web UI submission
                 subprocess.run(["xdotool", "key", "--clearmodifiers", "shift+Return"], check=True)
             print("\n✅ Injection complete.")
