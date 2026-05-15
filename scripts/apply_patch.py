@@ -22,7 +22,20 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from pipulate import Pipulate
 import config as CFG
 
+
+def detect_indent_step(lines: list) -> int:
+    from collections import Counter
+    indents = [len(line) - len(line.lstrip()) for line in lines if line.strip()]
+    diffs = [abs(indents[i] - indents[i-1]) for i in range(1, len(indents)) if abs(indents[i] - indents[i-1]) > 0]
+    if not diffs: return 4
+    most_common = Counter(diffs).most_common(1)[0][0]
+    return most_common if most_common in [2, 4, 8] else 4
+
+
 def apply_larry_wall_patch(filepath: str, start_line: int, end_line: int, diff_content: str) -> bool:
+    # Fine-tuning parameter for context lines grabbed above/below
+    CONTEXT_BUFFER_LINES = 5  # Tweak this to require more or less surrounding context
+
     print(f"🎯 TARGET ACQUIRED: {filepath} (Lines {start_line}-{end_line})")
     
     if not os.path.exists(filepath):
@@ -54,24 +67,53 @@ def apply_larry_wall_patch(filepath: str, start_line: int, end_line: int, diff_c
         elif d_line == '': # Edge case for empty context lines
             replacement_lines.append('')
 
-    # 2. The Chisel Strike: Stitch the file back together using the parsed diff
-    new_file_lines = lines[:start_idx] + replacement_lines + lines[end_idx:]
-    proposed_file_str = '\n'.join(new_file_lines) + '\n'
-
-    # 3. The Syntax Airlock Validator
-    try:
-        ast.parse(proposed_file_str)
-    except Exception as e:
-        print(f"❌ AST AIRLOCK FAILED: The applied patch creates invalid Python syntax.")
-        print(traceback.format_exc())
-        return False
-
-    # 4. Write the mutated state back to disk
-    with open(filepath, 'w', encoding='utf-8') as f:
-        f.write(proposed_file_str)
+    # 2. Dynamic Indentation Anchor & Iteration (Option A)
+    indent_step = detect_indent_step(lines)
+    
+    # Determine baseline indentation from the target block
+    orig_target_lines = lines[start_idx:end_idx]
+    non_empty_orig = [line for line in orig_target_lines if line.strip()]
+    baseline_indent = len(non_empty_orig[0]) - len(non_empty_orig[0].lstrip()) if non_empty_orig else 0
+    
+    # Normalize the replacement lines internally
+    non_empty_repl = [line for line in replacement_lines if line.strip()]
+    min_repl_indent = min(len(line) - len(line.lstrip()) for line in non_empty_repl) if non_empty_repl else 0
+    normalized_repl = [line[min_repl_indent:] if line.strip() else "" for line in replacement_lines]
+    
+    # Iterative AST Airlock
+    candidate_offsets = [0, 1, -1, 2, -2, 3, -3, 4, -4, 5, -5]
+    
+    for offset_mult in candidate_offsets:
+        target_indent = max(0, baseline_indent + (offset_mult * indent_step))
+        prefix = " " * target_indent
         
-    print(f"✅ AST AIRLOCK PASSED: Patch applied and validated in memory.")
-    return True
+        shifted_repl = [prefix + line if line else "" for line in normalized_repl]
+        
+        # The Trace: Add a discrete Pep8-compliant tracker to the first modified line
+        marked_repl = list(shifted_repl)
+        for i, line in enumerate(marked_repl):
+            if line.strip():
+                if "  # AI-PATCH" not in line:
+                    marked_repl[i] = line + "  # AI-PATCH"
+                break
+
+        # 3. The Chisel Strike: Stitch the file back together
+        new_file_lines = lines[:start_idx] + marked_repl + lines[end_idx:]
+        proposed_file_str = '\n'.join(new_file_lines) + '\n'
+
+        # 4. The Syntax Airlock Validator
+        try:
+            ast.parse(proposed_file_str)
+            # AST PASSED! Write the mutated state back to disk
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(proposed_file_str)
+            print(f"✅ AST AIRLOCK PASSED: Patch applied and validated (Indent offset: {offset_mult * indent_step}).")
+            return True
+        except SyntaxError:
+            continue
+
+    print(f"❌ AST AIRLOCK FAILED: Exhausted indentation offsets, generated syntax remains invalid.")
+    return False
 
 def main():
     # Read the raw Markdown payload from the Unix pipe
