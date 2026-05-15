@@ -37,6 +37,23 @@ def apply_larry_wall_patch(filepath: str, start_line: int, end_line: int, diff_c
     start_idx = start_line - 1
     end_idx = end_line
 
+    # 1.5 Parse the unified diff into a pristine block of replacement text
+    replacement_lines = []
+    in_hunk = False
+    
+    for d_line in diff_content.splitlines():
+        if d_line.startswith('@@ '):
+            in_hunk = True
+            continue
+        if not in_hunk:
+            continue
+            
+        # Keep additions and context, strip the prefix character
+        if d_line.startswith('+') or d_line.startswith(' '):
+            replacement_lines.append(d_line[1:])
+        elif d_line == '': # Edge case for empty context lines
+            replacement_lines.append('')
+
     # 2. The Chisel Strike: Stitch the file back together using the parsed diff
     new_file_lines = lines[:start_idx] + replacement_lines + lines[end_idx:]
     proposed_file_str = '\n'.join(new_file_lines) + '\n'
