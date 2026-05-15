@@ -17,6 +17,14 @@ MAX_LLM_RESPONSE_WORDS = 80
 MAX_CONVERSATION_LENGTH = 600
 # ------------------------------
 
+# --- AUTOMATION & CASCADE ---
+MODEL_CASCADE = [
+    'gemma3:latest',
+    'qwen3.6:latest',
+    'gemini-flash-latest',
+    'gemini-flash-lite-latest'
+]
+
 HOME_MENU_ITEM = 'Home'
 DEFAULT_ACTIVE_ROLES = {'Botify Employee', 'Core'}
 DEMO_STATE_FILE = 'data/demo_state.json'
