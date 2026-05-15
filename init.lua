@@ -235,8 +235,8 @@ function reload_config()
         end
     end
 
-    -- Re-source the init.lua file
-    vim.cmd('source ' .. vim.fn.stdpath('config') .. '/init.lua')
+    -- Re-source the init.lua file from its new Pipulate location
+    vim.cmd('source ~/repos/pipulate/init.lua')
 
     -- Force re-evaluation of all autocmds
     vim.cmd('doautocmd VimEnter')
