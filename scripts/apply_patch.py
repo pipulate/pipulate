@@ -100,7 +100,7 @@ def main():
     end_line = int(coord_match.group(3))
 
     # Non-greedy regex to find the diff payload, embracing the gravity of backticks
-    diff_match = re.search(r'\[The Larry Wall Patch\].*?```(?:diff)?\n(.*?)\n``', payload, re.DOTALL | re.IGNORECASE)
+    diff_match = re.search(r'\[The Larry Wall Patch\].*?(?:```|~~~)(?:diff)?\n(.*?)\n(?:```|~~~)', payload, re.DOTALL | re.IGNORECASE)
     
     if not diff_match:
         print("❌ Error: Could not parse [The Larry Wall Patch] enclosure.")
