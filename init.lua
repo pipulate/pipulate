@@ -15,6 +15,7 @@ local custom_spellfile = vim.fn.expand('~/repos/nixos/en.utf-8.add')
 if vim.fn.filereadable(custom_spellfile) == 1 then
     set.spellfile = custom_spellfile
 end
+vim.opt.virtualedit = "block"
 set.mouse = ''
 set.clipboard = 'unnamedplus'
 set.textwidth = 80

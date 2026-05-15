@@ -276,13 +276,16 @@ AI_PHOOEY_CHOP = r"""
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
-Notebooks/Playground/patch_extractor.ipynb
-prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+# foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
+# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!! AD HOC
 
-# RECENTLY USED (EARLIER IN THIS DISCUSSION)
+flake.nix
+init.lua
+
+# RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
+# Notebooks/Playground/patch_extractor.ipynb
 
 """
 #   ____          _                     ____ _   _  ___  ____      
