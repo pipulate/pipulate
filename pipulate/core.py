@@ -2537,6 +2537,66 @@ class Pipulate:
             print(error_msg)
             return error_msg
 
+    def resilient_prompt(self, prompt_text: str, system_prompt: str = None, validator: callable = None) -> str:
+        """
+        The Sovereign Actuator. Executes a prompt across the MODEL_CASCADE with 
+        exponential backoff, auto-pulling, and optional AST/logic validation.
+        """
+        import llm
+        import time
+        import subprocess
+        import os
+        
+        for model_id in CFG.MODEL_CASCADE:
+            attempt = 0
+            max_retries = 3
+            current_prompt = prompt_text
+            
+            print(f"🤖 Engaging {model_id}...")
+            while attempt < max_retries:
+                try:
+                    # Auto-pull local models if missing
+                    try:
+                        model = llm.get_model(model_id)
+                    except llm.UnknownModelError:
+                        if 'gemini' not in model_id and 'gpt' not in model_id and 'claude' not in model_id:
+                            print(f"⏳ Auto-pulling {model_id} via host OS. Please wait...")
+                            subprocess.run(['ollama', 'pull', model_id], capture_output=True, check=True)
+                            model = llm.get_model(model_id)
+                        else:
+                            raise
+
+                    # Cloud Auth Gatekeeper
+                    if 'gemini' in model_id.lower() and not os.getenv('GEMINI_API_KEY'):
+                        self.ensure_credentials('GEMINI_API_KEY', 'Google Gemini')
+                        model.key = os.getenv('GEMINI_API_KEY')
+
+                    response = model.prompt(current_prompt, system=system_prompt).text()
+                    
+                    if validator:
+                        is_valid, error_msg = validator(response)
+                        if not is_valid:
+                            print(f"⚠️ Validation failed on {model_id} (Attempt {attempt+1}): {error_msg.splitlines()[-1]}")
+                            current_prompt = f"{prompt_text}\n\nYOUR PREVIOUS RESPONSE FAILED VALIDATION WITH THIS ERROR:\n{error_msg}\n\nPlease correct your formatting and try again."
+                            attempt += 1
+                            continue
+                            
+                    return response
+
+                except Exception as e:
+                    error_str = str(e).lower()
+                    if "quota" in error_str or "resourceexhausted" in error_str:
+                        print(f"🛑 Hard Stop: Quota exceeded for {model_id}. Cascading to next model.")
+                        break # Break while loop, continue for loop
+                    
+                    wait_time = 2 ** attempt
+                    print(f"⚠️ Network/Execution friction on {model_id}: {e}. Retrying in {wait_time}s...")
+                    time.sleep(wait_time)
+                    attempt += 1
+                    
+        print("❌ All models in the cascade exhausted.")
+        return None
+
     def load_secrets(self, key_name="GOOGLE_API_KEY"):
         """
         Orchestrates secret retrieval with a 'Waterfall of Truth':
