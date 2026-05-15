@@ -29,12 +29,15 @@ def main():
         # Bypasses all paste listeners by acting like a very fast human.
         print("🌊 Flooding stdout to cursor via xdotool...")
         try:
-            subprocess.run([
-                "xdotool", "type", 
-                "--clearmodifiers", 
-                "--delay", str(args.delay), 
-                "--file", args.file
-            ], check=True)
+            with open(args.file, 'r', encoding='utf-8') as f:
+                lines = f.read().split('\n')
+            
+            for line in lines:
+                if line:
+                    subprocess.run(["xdotool", "type", "--clearmodifiers", "--delay", str(args.delay), line], check=True)
+                
+                # The Chisel Strike: Shift+Return prevents premature web UI submission
+                subprocess.run(["xdotool", "key", "--clearmodifiers", "shift+Return"], check=True)
             print("\n✅ Injection complete.")
         except subprocess.CalledProcessError as e:
             print(f"\n❌ Error during injection: {e}")
