@@ -37,19 +37,19 @@ def apply_larry_wall_patch(filepath: str, start_line: int, end_line: int, diff_c
     start_idx = start_line - 1
     end_idx = end_line
 
-    # 2. The Chisel Strike: Stitch the file back together using the parsed diff
-    new_file_lines = lines[:start_idx] + replacement_lines + lines[end_idx:]
-    proposed_file_str = '\n'.join(new_file_lines) + '\n'
+    # 2. The Chisel Strike: Stitch the file back together using the parsed diff
+    new_file_lines = lines[:start_idx] + replacement_lines + lines[end_idx:]
+    proposed_file_str = '\n'.join(new_file_lines) + '\n'
 
-    # 3. The Syntax Airlock Validator
-    try:
-        ast.parse(proposed_file_str)
-    except Exception as e:
-        print(f"❌ AST AIRLOCK FAILED: The applied patch creates invalid Python syntax.")
-        print(traceback.format_exc())
-        return False
+    # 3. The Syntax Airlock Validator
+    try:
+        ast.parse(proposed_file_str)
+    except Exception as e:
+        print(f"❌ AST AIRLOCK FAILED: The applied patch creates invalid Python syntax.")
+        print(traceback.format_exc())
+        return False
 
-    # 4. Write the mutated state back to disk
+    # 4. Write the mutated state back to disk
     with open(filepath, 'w', encoding='utf-8') as f:
         f.write(proposed_file_str)
         
