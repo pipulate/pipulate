@@ -283,7 +283,7 @@ prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # flake.nix
 # /home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
-scripts/playground/prompt_feeder.py
+scripts/apply_patch.py
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 
