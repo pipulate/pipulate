@@ -1,4 +1,4 @@
-#\a\  ____                            _     _____      
+#  ____                            _     _____      
 # |  _ \ _ __ ___  _ __ ___  _ __ | |_  |  ___|   _ 
 # | |_) | '__/ _ \| '_ ` _ \| '_ \| __| | |_ | | | |
 # |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| |
@@ -276,10 +276,10 @@ AI_PHOOEY_CHOP = r"""
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-# foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
-prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
 apply.py
-patch
+prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
 
 # !!! AD HOC
 
