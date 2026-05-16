@@ -669,6 +669,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias latest='python prompt_foo.py -a [-1:] --no-tree'
           alias release='python release.py --release --force'
           alias st='clear && echo "$ git status" && git status'
+          alias app='python apply.py <'
           
           # ---------------------------------------------------------
           # THE SUBSHELL ALIASES (Execute safely from anywhere)
