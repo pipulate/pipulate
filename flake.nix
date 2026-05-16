@@ -179,7 +179,7 @@
         commonPackages = with pkgs; [
           sqlite                       # Ensures correct SQLite library is linked on macOS
           (python312.withPackages (ps: with ps; [
-            pylint
+            ruff
             nbstripout
           ]))
           nbstripout
