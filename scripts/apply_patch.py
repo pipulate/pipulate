@@ -52,93 +52,57 @@ def apply_larry_wall_patch(filepath: str, start_line: int, end_line: int, diff_c
     start_idx = start_line - 1
     end_idx = end_line
 
-    # Establish the ground truth baseline from the actual file
-    orig_target_lines = lines[start_idx:end_idx]
-    non_empty_orig = [line for line in orig_target_lines if line.strip()]
-    ground_truth_indent = len(non_empty_orig[0]) - len(non_empty_orig[0].lstrip()) if non_empty_orig else 0
+    original_slice = '\n'.join(lines[start_idx:end_idx])
 
-    # Wind tunnel: strip ground truth, re-apply, and test AST
-    normalized_orig = [line[ground_truth_indent:] if line.strip() and len(line) >= ground_truth_indent else line for line in orig_target_lines]
-    reconstructed_orig = [(" " * ground_truth_indent) + line if line.strip() else "" for line in normalized_orig]
-    
-    wind_tunnel_lines = lines[:start_idx] + reconstructed_orig + lines[end_idx:]
-    try:
-        ast.parse('\n'.join(wind_tunnel_lines) + '\n')
-        print(f"🌬️  WIND TUNNEL PASSED: Original slice deconstructed and reconstructed seamlessly.")
-    except SyntaxError:
-        print("❌ WIND TUNNEL FAILED: Our baseline indent math breaks the original AST.")
-        return False
+    # 2. Build the Myopic Generative Prompt
+    system_prompt = "You are a surgical Python AST editor. You output ONLY valid Python code. No markdown formatting, no backticks, no explanations."
 
-    # PHASE 2: Parse the Diff into a pristine block of replacement text
-    replacement_lines = []
-    in_hunk = False
-    
-    for d_line in diff_content.splitlines():
-        if d_line.startswith('@@ '):
-            in_hunk = True
-            continue
-        if not in_hunk:
-            continue
-            
-        if d_line.startswith('+') or d_line.startswith(' '):
-            replacement_lines.append(d_line[1:])
-        elif d_line == '':
-            replacement_lines.append('')
+    prompt = f"""
+Apply the following unified diff to the Original Python Slice.
+Ensure the resulting code maintains exact structural indentation relative to the slice.
+Output ONLY the final mutated Python code block that will perfectly replace the original slice. Do NOT wrap in backticks.
 
-    # PHASE 3: Dynamic Indentation Anchor & Iteration
-    indent_step = detect_indent_step(lines)
-   
-    # Determine what baseline the LLM used for its hunk
-    non_empty_repl = [line for line in replacement_lines if line.strip()]
-    llm_baseline_indent = len(non_empty_repl[0]) - len(non_empty_repl[0].lstrip()) if non_empty_repl else 0
+ORIGINAL SLICE:
+{original_slice}
 
-    # The deterministic shift needed to align the LLM's hunk with the file's ground truth
-    indent_shift = ground_truth_indent - llm_baseline_indent    
+DIFF TO APPLY:
+{diff_content}
+"""
 
-    # Iterative AST Airlock
-    candidate_offsets = [0, 1, -1, 2, -2, 3, -3, 4, -4]
-    
-    for offset_mult in candidate_offsets:
-        current_shift = indent_shift + (offset_mult * indent_step)
-        
-        shifted_repl = []
-        for line in replacement_lines:
-            if not line.strip():
-                shifted_repl.append("")
-                continue
-                
-            if current_shift > 0:
-                shifted_repl.append((" " * current_shift) + line)
-            elif current_shift < 0:
-                # Strip up to abs(current_shift) spaces safely
-                strip_amount = min(abs(current_shift), len(line) - len(line.lstrip()))
-                shifted_repl.append(line[strip_amount:])
-            else:
-                shifted_repl.append(line)
-
-        # The Trace: Add a discrete Pep8-compliant tracker to the first modified line
-        marked_repl = list(shifted_repl)
-        for i, line in enumerate(marked_repl):
-            if line.strip():
-                if "  # 👀 AI-PATCH" not in line:
-                    marked_repl[i] = line + "  # 👀 AI-PATCH"
-                break
-
-        # The Chisel Strike: Stitch the file back together
-        new_file_lines = lines[:start_idx] + marked_repl + lines[end_idx:]
-        proposed_file_str = '\n'.join(new_file_lines) + '\n'
-
+    # 3. The Syntax Airlock Validator
+    def ast_validator(ai_response):
+        clean_response = re.sub(r'^python\n|^\n|$', '', ai_response.strip(), flags=re.MULTILINE)
+        proposed_file_lines = lines[:start_idx] + clean_response.splitlines() + lines[end_idx:]
+        proposed_file_str = '\n'.join(proposed_file_lines) + '\n'
         try:
             ast.parse(proposed_file_str)
-            with open(filepath, 'w', encoding='utf-8') as f:
-                f.write(proposed_file_str)
-            print(f"✅ AST AIRLOCK PASSED: Patch applied and validated (Indent offset: {offset_mult * indent_step}).")
-            return True
-        except SyntaxError:
-            continue
+            return True, ""
+        except Exception:
+            return False, traceback.format_exc()
 
-    print(f"❌ AST AIRLOCK FAILED: Exhausted indentation offsets, generated syntax remains invalid.")
-    return False
+    # 4. Engage the Sovereign Actuator
+    db_path = str(Path(__file__).resolve().parent.parent / "Notebooks" / "data" / "pipeline.sqlite")
+    wand = Pipulate(db_path=db_path)
+    final_slice_string = wand.resilient_prompt(prompt, system_prompt=system_prompt, validator=ast_validator)
+    
+    if not final_slice_string:
+        print("❌ PATCH FAILED: Could not generate an AST-valid mutation across the model cascade.")
+        return False
+        
+    # 5. Write the mutated, validated state back to disk
+    clean_response = re.sub(r'^python\n|^\n|$', '', final_slice_string.strip(), flags=re.MULTILINE)
+    
+    # The Trace: Add a discrete Pep8-compliant tracker to the first line
+    final_lines = clean_response.splitlines()
+    if final_lines and "  # 👀 AI-PATCH" not in final_lines[0]:
+        final_lines[0] = final_lines[0] + "  # 👀 AI-PATCH"
+        
+    new_file_lines = lines[:start_idx] + final_lines + lines[end_idx:]
+    with open(filepath, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(new_file_lines) + '\n')
+        
+    print(f"✅ AST AIRLOCK PASSED: Generative patch applied and validated in memory.")
+    return True
 
 def main():
     # Read the raw Markdown payload from the Unix pipe
