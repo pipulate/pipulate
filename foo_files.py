@@ -276,14 +276,14 @@ AI_PHOOEY_CHOP = r"""
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-flake.nix
-foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
+# flake.nix
+# foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
 prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!! AD HOC
 
 scripts/apply_patch.py
-/home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
+# /home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 
