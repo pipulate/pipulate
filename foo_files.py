@@ -283,7 +283,7 @@ prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!! AD HOC
 
-scripts/apply_patch.py
+apply_patch.py
 # /home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
