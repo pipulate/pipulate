@@ -49,7 +49,7 @@ def apply_search_replace_patch(payload: str) -> bool:
                     print(f"  immediately preceded it. Here is what WAS there:")
                     for ci, cl in enumerate(payload_lines[ctx_start:ctx_end], start=ctx_start+1):
                         print(f"  {ci:4d}: {repr(cl)}")
-                    print(f"\n  FIX: Add 'Target: `scripts/articles/lsa.py`' on the line")
+                    print(f"\n  FIX: Add 'Target: `path/to/file`' on the line")
                     print(f"  immediately before the [[[SEARCH]]] marker, no blank lines between.")
                     print(f"--- END DIAGNOSTIC ---\n")
                     break
@@ -92,6 +92,8 @@ def apply_search_replace_patch(payload: str) -> bool:
             file_indent = len(file_first) - len(file_first.lstrip())
             if search_indent != file_indent:
                 print(f"  ⚠ Indentation mismatch: SEARCH has {search_indent} spaces, file has {file_indent} spaces.")
+                corrected = (' ' * file_indent) + search_lines[0].lstrip()
+                print(f"  ✓ Corrected first line should be: {repr(corrected)}")
             if search_lines[0].lstrip() != file_first.lstrip():
                 print(f"  ⚠ Content mismatch even after stripping: lines differ beyond whitespace.")
             # Also show the full SEARCH block so the LLM can compare against the source
