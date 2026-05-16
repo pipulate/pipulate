@@ -56,6 +56,27 @@ def apply_search_replace_patch(payload: str) -> bool:
         
         if match_count == 0:
             print(f"❌ Warning: SEARCH block not found in '{filename}'. Skipping.")
+            # DIAGNOSTIC: Find closest matching window in target file
+            search_lines = search_block.split('\n')
+            content_lines = content.split('\n')
+            search_len = len(search_lines)
+            best_score, best_idx = 0, 0
+            for i in range(max(0, len(content_lines) - search_len + 1)):
+                score = sum(1 for j in range(min(search_len, len(content_lines) - i))
+                            if content_lines[i+j].lstrip() == search_lines[j].lstrip())
+                if score > best_score:
+                    best_score, best_idx = score, i
+            print(f"\n--- DIAGNOSTIC: First line of your SEARCH block ---")
+            print(f"  SEARCH repr : {repr(search_lines[0])}")
+            file_first = content_lines[best_idx] if best_idx < len(content_lines) else ''
+            print(f"  FILE nearest: {repr(file_first)}")
+            search_indent = len(search_lines[0]) - len(search_lines[0].lstrip())
+            file_indent = len(file_first) - len(file_first.lstrip())
+            if search_indent != file_indent:
+                print(f"  ⚠ Indentation mismatch: SEARCH has {search_indent} spaces, file has {file_indent} spaces.")
+            if search_lines[0].lstrip() != file_first.lstrip():
+                print(f"  ⚠ Content mismatch even after stripping: lines differ beyond whitespace.")
+            print(f"--- END DIAGNOSTIC ---\n")
             success = False
             continue
         elif match_count > 1:
@@ -73,6 +94,15 @@ def apply_search_replace_patch(payload: str) -> bool:
                 ast.parse(new_content)
             except SyntaxError as e:
                 print(f"❌ Error: Patching '{filename}' aborted. Invalid Python syntax:\n   {e}")
+                err_lines = new_content.split('\n')
+                err_lineno = e.lineno or 0
+                start = max(0, err_lineno - 3)
+                end = min(len(err_lines), err_lineno + 2)
+                print("--- DIAGNOSTIC: Context around syntax error ---")
+                for i, ln in enumerate(err_lines[start:end], start=start+1):
+                    marker = " >>>" if i == err_lineno else "    "
+                    print(f"{marker} {i:4d}: {ln}")
+                print("--- END DIAGNOSTIC ---")
                 success = False
                 continue
 
