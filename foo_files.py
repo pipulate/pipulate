@@ -281,10 +281,7 @@ prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!! AD HOC
 
-# pipulate/core.py
-# config.py
-# ai_response.md
-# scripts/apply_patch.py
+scripts/apply_patch.py
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 
