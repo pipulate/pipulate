@@ -1336,7 +1336,7 @@ def main():
             logger.print(" (no articles found or invalid slice)")
     
     if args.article is not None:
-        logger.print("Adding full article content...", end='', flush=True)
+        logger.print("Adding full article content...")
         all_articles = _get_article_list_data(CONFIG["POSTS_DIRECTORY"], url_config=active_target_config)
         sliced_articles = []
         try:
@@ -1351,17 +1351,22 @@ def main():
         full_content_parts = []
         
         if sliced_articles:
-            for article in sliced_articles:
+            for idx, article in enumerate(sliced_articles, start=1):
                 try:
                     with open(article['path'], 'r', encoding='utf-8') as f:
                         content = f.read()
                     full_content_parts.append(f"--- START: Article: {os.path.basename(article['path'])} ---\n{content.strip()}\n--- END: Article ---\n")
+                    t_count = article.get('tokens', count_tokens(content))
+                    b_count = article.get('bytes', len(content.encode('utf-8')))
+                    order = article.get('sort_order', 0)
+                    abs_path = os.path.abspath(article['path'])
+                    logger.print(f"{abs_path}  # [Idx: {idx} | Order: {order} | Tokens: {t_count:,} | Bytes: {b_count:,}]")
                 except Exception as e:
                     logger.print(f"\nWarning: Could not read article {article['path']}: {e}")
 
         # NEW: Process explicitly targeted Decanter files
         if args.decanter:
-            for decanter_path in args.decanter:
+            for idx, decanter_path in enumerate(args.decanter, start=1):
                 try:
                     # Resolve absolute path to be safe
                     full_path = os.path.abspath(decanter_path)
@@ -1369,6 +1374,9 @@ def main():
                         with open(full_path, 'r', encoding='utf-8') as f:
                             content = f.read()
                         full_content_parts.append(f"--- START: Decanter Article: {os.path.basename(full_path)} ---\n{content.strip()}\n--- END: Decanter Article ---\n")
+                        t_count = count_tokens(content)
+                        b_count = len(content.encode('utf-8'))
+                        logger.print(f"{full_path}  # [Decanter Idx: {idx} | Tokens: {t_count:,} | Bytes: {b_count:,}]")
                     else:
                         logger.print(f"\nWarning: Decanter target not found: {full_path}")
                 except Exception as e:
@@ -1385,9 +1393,9 @@ def main():
             
             # Adjust log message to account for mixed sources
             total_articles = len(sliced_articles) + (len(args.decanter) if args.decanter else 0)
-            logger.print(f" ({total_articles} full articles | {t_count:,} tokens | {b_count:,} bytes)")
+            logger.print(f"  Total: {total_articles} full articles | {t_count:,} tokens | {b_count:,} bytes")
         elif not args.article and not args.decanter:
-            logger.print(" (no articles found or invalid slice)")
+            logger.print("  (no articles found or invalid slice)")
 
     # After slicing articles for -l or -a...
     if args.context and sliced_articles:
