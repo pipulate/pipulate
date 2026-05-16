@@ -14,6 +14,10 @@ import re
 import os
 
 def apply_search_replace_patch(payload: str) -> bool:
+    # 1. NORMALIZE PAYLOAD WHITESPACE
+    # Convert non-breaking spaces to regular spaces and normalize line endings
+    payload = payload.replace('\xa0', ' ').replace('\r\n', '\n')
+
     # Regex to find an optional 'File:' indicator followed by SEARCH/DIVIDER/REPLACE blocks
     block_pattern = re.compile(
         r'(?:(?:File|Target):\s*`?([^`\s*]+)`?\s*\n.*?)?\[\[\[SEARCH\]\]\]\n(.*?)\n\[\[\[DIVIDER\]\]\]\n(.*?)\n\[\[\[REPLACE\]\]\]',
@@ -27,7 +31,7 @@ def apply_search_replace_patch(payload: str) -> bool:
 
     success = True
     for filename_match, search_block, replace_block in matches:
-        filename = filename_match.strip('` \t\r\n') if filename_match else None
+        filename = filename_match.strip('` \t\n') if filename_match else None
         
         if not filename:
             print("❌ Error: Missing target filename before the SEARCH block.")
@@ -41,6 +45,11 @@ def apply_search_replace_patch(payload: str) -> bool:
 
         with open(filename, 'r', encoding='utf-8') as f:
             content = f.read()
+
+        # 2. NORMALIZE TARGET FILE WHITESPACE
+        content = content.replace('\xa0', ' ').replace('\r\n', '\n')
+        search_block = search_block.replace('\xa0', ' ').replace('\r\n', '\n')
+        replace_block = replace_block.replace('\xa0', ' ').replace('\r\n', '\n')
 
         # The Exact Match Invariant
         match_count = content.count(search_block)
