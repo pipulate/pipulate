@@ -277,9 +277,10 @@ AI_PHOOEY_CHOP = r"""
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
-apply.py
 prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
+apply.py
+patch
 
 # !!! AD HOC
 
