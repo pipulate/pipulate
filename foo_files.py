@@ -278,31 +278,15 @@ AI_PHOOEY_CHOP = r"""
 
 # foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
 
-# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
-# apply.py
-# patch
+scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
+
+prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+apply.py
+patch
 
 # !!! AD HOC
 
-scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
-
-# flake.nix
-# requirements.in
-
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
-
-# /home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
-# assets/nbs/imports/onboard_sauce.py
-# scripts/articles/contextualizer.py
-# scripts/articles/articleizer.py
-# scripts/articles/list_models.py
-# assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
-# assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
-# pipulate/__init__.py
-# pipulate/core.py
-# assets/nbs/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
-# /home/mike/repos/pipulate/Notebooks/Advanced_Notebooks/04_VIDeditor.ipynb
-# Notebooks/Playground/patch_extractor.ipynb
 
 """
 #   ____          _                     ____ _   _  ___  ____      
@@ -540,6 +524,7 @@ _ = CHOP_FLAKE_EVOLUTION
 # assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
 # assets/nbs/imports/gap_analyzer_sauce.py  # [27,162 tokens | 119,579 bytes]
 # assets/nbs/imports/url_inspect_sauce.py  # [3,542 tokens | 16,202 bytes]
+# assets/nbs/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
 # assets/prompts/book_holographic.json  # [923 tokens | 3,726 bytes]
 # assets/prompts/find404s.md  # [459 tokens | 2,098 bytes]
@@ -591,6 +576,7 @@ _ = CHOP_FLAKE_EVOLUTION
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
 # scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
+# scripts/articles/list_models.py  # [102 tokens | 391 bytes]
 # scripts/articles/other/make_article.py  # [1,513 tokens | 6,559 bytes]
 # scripts/articles/scrub_tags.py  # [358 tokens | 1,587 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
