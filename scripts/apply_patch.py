@@ -33,24 +33,43 @@ def detect_indent_step(lines: list) -> int:
 
 
 def apply_larry_wall_patch(filepath: str, start_line: int, end_line: int, diff_content: str) -> bool:
-    # Fine-tuning parameter for context lines grabbed above/below
-    CONTEXT_BUFFER_LINES = 5  # Tweak this to require more or less surrounding context
-
     print(f"🎯 TARGET ACQUIRED: {filepath} (Lines {start_line}-{end_line})")
     
     if not os.path.exists(filepath):
         print(f"❌ Error: Target file '{filepath}' not found.")
         return False
 
-    # 1. Load the live file and extract the Before slice 
     with open(filepath, 'r', encoding='utf-8') as f:
         lines = f.read().splitlines()
 
-    # Convert 1-based inclusive coordinates to 0-based Python slice indices
+    # PHASE 1: The Wind Tunnel Baseline (Sanity Check)
+    # Can we parse the host file as-is before doing anything?
+    try:
+        ast.parse('\n'.join(lines) + '\n')
+    except SyntaxError:
+        print("❌ Error: The target file ALREADY has invalid Python syntax. Airlock sealed.")
+        return False
     start_idx = start_line - 1
     end_idx = end_line
 
-    # 1.5 Parse the unified diff into a pristine block of replacement text
+    # Establish the ground truth baseline from the actual file
+    orig_target_lines = lines[start_idx:end_idx]
+    non_empty_orig = [line for line in orig_target_lines if line.strip()]
+    ground_truth_indent = len(non_empty_orig[0]) - len(non_empty_orig[0].lstrip()) if non_empty_orig else 0
+
+    # Wind tunnel: strip ground truth, re-apply, and test AST
+    normalized_orig = [line[ground_truth_indent:] if line.strip() and len(line) >= ground_truth_indent else line for line in orig_target_lines]
+    reconstructed_orig = [(" " * ground_truth_indent) + line if line.strip() else "" for line in normalized_orig]
+    
+    wind_tunnel_lines = lines[:start_idx] + reconstructed_orig + lines[end_idx:]
+    try:
+        ast.parse('\n'.join(wind_tunnel_lines) + '\n')
+        print(f"🌬️  WIND TUNNEL PASSED: Original slice deconstructed and reconstructed seamlessly.")
+    except SyntaxError:
+        print("❌ WIND TUNNEL FAILED: Our baseline indent math breaks the original AST.")
+        return False
+
+    # PHASE 2: Parse the Diff into a pristine block of replacement text
     replacement_lines = []
     in_hunk = False
     
@@ -61,50 +80,56 @@ def apply_larry_wall_patch(filepath: str, start_line: int, end_line: int, diff_c
         if not in_hunk:
             continue
             
-        # Keep additions and context, strip the prefix character
         if d_line.startswith('+') or d_line.startswith(' '):
             replacement_lines.append(d_line[1:])
-        elif d_line == '': # Edge case for empty context lines
+        elif d_line == '':
             replacement_lines.append('')
 
-    # 2. Dynamic Indentation Anchor & Iteration (Option A)
+    # PHASE 3: Dynamic Indentation Anchor & Iteration
     indent_step = detect_indent_step(lines)
-    
-    # Determine baseline indentation from the target block
-    orig_target_lines = lines[start_idx:end_idx]
-    non_empty_orig = [line for line in orig_target_lines if line.strip()]
-    baseline_indent = len(non_empty_orig[0]) - len(non_empty_orig[0].lstrip()) if non_empty_orig else 0
-    
-    # Normalize the replacement lines internally
+   
+    # Determine what baseline the LLM used for its hunk
     non_empty_repl = [line for line in replacement_lines if line.strip()]
-    min_repl_indent = min(len(line) - len(line.lstrip()) for line in non_empty_repl) if non_empty_repl else 0
-    normalized_repl = [line[min_repl_indent:] if line.strip() else "" for line in replacement_lines]
-    
+    llm_baseline_indent = len(non_empty_repl[0]) - len(non_empty_repl[0].lstrip()) if non_empty_repl else 0
+
+    # The deterministic shift needed to align the LLM's hunk with the file's ground truth
+    indent_shift = ground_truth_indent - llm_baseline_indent    
+
     # Iterative AST Airlock
-    candidate_offsets = [0, 1, -1, 2, -2, 3, -3, 4, -4, 5, -5]
+    candidate_offsets = [0, 1, -1, 2, -2, 3, -3, 4, -4]
     
     for offset_mult in candidate_offsets:
-        target_indent = max(0, baseline_indent + (offset_mult * indent_step))
-        prefix = " " * target_indent
+        current_shift = indent_shift + (offset_mult * indent_step)
         
-        shifted_repl = [prefix + line if line else "" for line in normalized_repl]
-        
+        shifted_repl = []
+        for line in replacement_lines:
+            if not line.strip():
+                shifted_repl.append("")
+                continue
+                
+            if current_shift > 0:
+                shifted_repl.append((" " * current_shift) + line)
+            elif current_shift < 0:
+                # Strip up to abs(current_shift) spaces safely
+                strip_amount = min(abs(current_shift), len(line) - len(line.lstrip()))
+                shifted_repl.append(line[strip_amount:])
+            else:
+                shifted_repl.append(line)
+
         # The Trace: Add a discrete Pep8-compliant tracker to the first modified line
         marked_repl = list(shifted_repl)
         for i, line in enumerate(marked_repl):
             if line.strip():
-                if "  # AI-PATCH" not in line:
-                    marked_repl[i] = line + "  # AI-PATCH"
+                if "  # 👀 AI-PATCH" not in line:
+                    marked_repl[i] = line + "  # 👀 AI-PATCH"
                 break
 
-        # 3. The Chisel Strike: Stitch the file back together
+        # The Chisel Strike: Stitch the file back together
         new_file_lines = lines[:start_idx] + marked_repl + lines[end_idx:]
         proposed_file_str = '\n'.join(new_file_lines) + '\n'
 
-        # 4. The Syntax Airlock Validator
         try:
             ast.parse(proposed_file_str)
-            # AST PASSED! Write the mutated state back to disk
             with open(filepath, 'w', encoding='utf-8') as f:
                 f.write(proposed_file_str)
             print(f"✅ AST AIRLOCK PASSED: Patch applied and validated (Indent offset: {offset_mult * indent_step}).")
