@@ -35,6 +35,24 @@ def apply_search_replace_patch(payload: str) -> bool:
         
         if not filename:
             print("❌ Error: Missing target filename before the SEARCH block.")
+            # DIAGNOSTIC: Show context around this SEARCH block in the raw payload
+            # Find the position of the search block content in the payload
+            search_snippet = search_block[:80].split('\n')[0]
+            # Find surrounding lines in payload
+            payload_lines = payload.split('\n')
+            for li, pl in enumerate(payload_lines):
+                if search_snippet and search_snippet.strip() in pl:
+                    ctx_start = max(0, li - 4)
+                    ctx_end = min(len(payload_lines), li + 3)
+                    print(f"\n--- DIAGNOSTIC: Payload context around SEARCH block ---")
+                    print(f"  The [[[SEARCH]]] block was found but no 'Target: `filename`' line")
+                    print(f"  immediately preceded it. Here is what WAS there:")
+                    for ci, cl in enumerate(payload_lines[ctx_start:ctx_end], start=ctx_start+1):
+                        print(f"  {ci:4d}: {repr(cl)}")
+                    print(f"\n  FIX: Add 'Target: `scripts/articles/lsa.py`' on the line")
+                    print(f"  immediately before the [[[SEARCH]]] marker, no blank lines between.")
+                    print(f"--- END DIAGNOSTIC ---\n")
+                    break
             success = False
             continue
 
@@ -76,7 +94,11 @@ def apply_search_replace_patch(payload: str) -> bool:
                 print(f"  ⚠ Indentation mismatch: SEARCH has {search_indent} spaces, file has {file_indent} spaces.")
             if search_lines[0].lstrip() != file_first.lstrip():
                 print(f"  ⚠ Content mismatch even after stripping: lines differ beyond whitespace.")
-            print(f"--- END DIAGNOSTIC ---\n")
+            # Also show the full SEARCH block so the LLM can compare against the source
+            print(f"--- YOUR SUBMITTED SEARCH BLOCK (verbatim) ---")
+            for li, sl in enumerate(search_lines, start=1):
+                print(f"  {li:3d}: {repr(sl)}")
+            print(f"--- END SUBMITTED SEARCH BLOCK ---\n")
             success = False
             continue
         elif match_count > 1:
