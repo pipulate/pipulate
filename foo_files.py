@@ -1,4 +1,4 @@
-#  ____                            _     _____      
+#\a\  ____                            _     _____      
 # |  _ \ _ __ ___  _ __ ___  _ __ | |_  |  ___|   _ 
 # | |_) | '__/ _ \| '_ ` _ \| '_ \| __| | |_ | | | |
 # |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| |
@@ -276,12 +276,14 @@ AI_PHOOEY_CHOP = r"""
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
+flake.nix
 foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
 prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!! AD HOC
 
 scripts/apply_patch.py
+/home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 
@@ -404,7 +406,7 @@ _ = CHOP_FISHTANK
 _ = CHOP_FLAKE_EVOLUTION
 
 # ============================================================================
-# X. THE ROADMAP (The Mother Cat's To-Do List)
+# X. THE ROADMAP (The Mother Cat's To-Do List) todo
 # ============================================================================
 # This is not a backlog; it is the trajectory of our philosophy. 
 # We prioritize a seamless, empathetic onboarding experience over feature-bloat.
@@ -413,6 +415,7 @@ _ = CHOP_FLAKE_EVOLUTION
 # AD HOC / UNORGANIZED / CONSIDER
 # - Purge orphans from Jekyll `_posts/_context/` JSON holographic context shards.
 # - Read YouTube comments through API and *really* make Honeybot respond to people!
+# - Make the YouTube Piper TTS synthetic voice reader (or whatever you use) skip code blocks and other things that sound awful read out loud better
 # - Consider layering in line-numbering in the code portions of prompt_foo.py compiled context so AI can give very precise instructions
 # - Trim the Honeybot Nix store, getting larger and larger? Make sure every `./nixops.sh` operation keeps size in check. Prevent server crashes based on running out of space!
 
