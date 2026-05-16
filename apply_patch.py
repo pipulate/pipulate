@@ -27,7 +27,7 @@ def apply_search_replace_patch(payload: str) -> bool:
 
     success = True
     for filename_match, search_block, replace_block in matches:
-        filename = filename_match.strip() if filename_match else None
+        filename = filename_match.strip('` \t\r\n') if filename_match else None
         
         if not filename:
             print("❌ Error: Missing target filename before the SEARCH block.")
