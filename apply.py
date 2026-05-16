@@ -56,6 +56,16 @@ def apply_search_replace_patch(payload: str) -> bool:
         
         if match_count == 0:
             print(f"❌ Warning: SEARCH block not found in '{filename}'. Skipping.")
+            print("\n--- 🕵️‍♂️ HERMETIC DEBUGGING ACTIVATED ---")
+            print("EXPECTED SEARCH BLOCK (repr):")
+            print(repr(search_block))
+            
+            first_line = search_block.split('\n')[0]
+            first_line_matches = content.count(first_line)
+            print(f"\nFirst line found in target file? {'✅ Yes (' + str(first_line_matches) + ' times)' if first_line_matches > 0 else '❌ No'}")
+            print(f"FIRST LINE (repr):\n{repr(first_line)}")
+            print("----------------------------------------\n")
+            
             success = False
             continue
         elif match_count > 1:
