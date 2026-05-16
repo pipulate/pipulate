@@ -276,19 +276,20 @@ AI_PHOOEY_CHOP = r"""
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-# foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
-# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
+prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!! AD HOC
 
 # pipulate/core.py
-config.py
-ai_response.py
-scripts/apply_patch.py
+# config.py
+# ai_response.md
+# scripts/apply_patch.py
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 
-# flake.nix
+# scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
+
 # /home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
 # assets/nbs/imports/onboard_sauce.py
 # scripts/articles/contextualizer.py
