@@ -279,10 +279,9 @@ AI_PHOOEY_CHOP = r"""
 # foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
 
 scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
-
-prompt_foo.py  # [13,638 tokens | 62,389 bytes]
-apply.py
-patch
+# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+# apply.py
+# patch
 
 # !!! AD HOC
 
