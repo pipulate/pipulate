@@ -1360,7 +1360,7 @@ def main():
                     b_count = article.get('bytes', len(content.encode('utf-8')))
                     order = article.get('sort_order', 0)
                     abs_path = os.path.abspath(article['path'])
-                    logger.print(f"{abs_path}  # [Idx: {idx} | Order: {order} | Tokens: {t_count:,} | Bytes: {b_count:,}]")
+                    logger.print(f"{abs_path}  # [Idx: {idx} | Order: {order} | Tokens: {t_count:,} | Bytes: {b_count:,}]", flush=True)
                 except Exception as e:
                     logger.print(f"\nWarning: Could not read article {article['path']}: {e}")
 
@@ -1376,7 +1376,7 @@ def main():
                         full_content_parts.append(f"--- START: Decanter Article: {os.path.basename(full_path)} ---\n{content.strip()}\n--- END: Decanter Article ---\n")
                         t_count = count_tokens(content)
                         b_count = len(content.encode('utf-8'))
-                        logger.print(f"{full_path}  # [Decanter Idx: {idx} | Tokens: {t_count:,} | Bytes: {b_count:,}]")
+                        logger.print(f"{full_path}  # [Decanter Idx: {idx} | Tokens: {t_count:,} | Bytes: {b_count:,}]", flush=True)
                     else:
                         logger.print(f"\nWarning: Decanter target not found: {full_path}")
                 except Exception as e:
