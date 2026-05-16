@@ -117,7 +117,7 @@ CONFIG = {
 # ============================================================================
 # --- Static Analysis Configuration ---
 # ============================================================================
-# Set to False to skip Vulture and Pylint during prompt compilation.
+# Set to False to skip Ruff during prompt compilation.
 # Useful when transitioning linters or to reduce context noise.
 ENABLE_STATIC_ANALYSIS = False
 
@@ -366,7 +366,7 @@ def run_tree_command() -> str:
     except Exception as e: return f"Error running eza command: {e}"
 
 def run_static_analysis(python_files: List[str]) -> str:
-    """Runs Vulture and Pylint on the target files with high terminal transparency."""
+    """Runs Ruff on the target files with high terminal transparency."""
     if not python_files:
         return ""
 
@@ -377,35 +377,18 @@ def run_static_analysis(python_files: List[str]) -> str:
     logger.print("\n🔍 Running Static Analysis Telemetry...")
     diagnostics = []
     
-    # 1. Vulture (Dead Code)
-    vulture_exec = shutil.which("vulture")
-    if vulture_exec:
-        logger.print("   -> Checking for dead code (Vulture)...")
-        # Include your whitelist automatically if it exists in the repo
-        whitelist = os.path.join(REPO_ROOT, "scripts", "vulture_whitelist.py")
-        cmd = [vulture_exec] + python_files + ([whitelist] if os.path.exists(whitelist) else [])
-        
+    # Ruff (replaces both Vulture and Pylint)
+    ruff_exec = shutil.which("ruff")
+    if ruff_exec:
+        logger.print("   -> Checking for errors and dead code (Ruff)...")
+        cmd = [ruff_exec, "check"] + python_files
         try:
             result = subprocess.run(cmd, capture_output=True, text=True)
             if result.stdout:
-                diagnostics.append("### Vulture (Dead Code & Unused Variables)\n```text\n" + result.stdout.strip() + " ```")
+                diagnostics.append("### Ruff\n```text\n" + result.stdout.strip() + "\n```")
                 logger.print(result.stdout.strip())  # Transparent terminal output
         except Exception as e:
-            logger.print(f"      [Error running Vulture: {e}]")
-
-    # 2. Pylint (Syntax & Fatal Errors Only)
-    pylint_exec = shutil.which("pylint")
-    if pylint_exec:
-        logger.print("   -> Checking for fatal errors (Pylint)...")
-        # --errors-only prevents style warnings from blowing up the context window
-        cmd = [pylint_exec, "--errors-only", "--output-format=text"] + python_files
-        try:
-            result = subprocess.run(cmd, capture_output=True, text=True)
-            if result.stdout and "Your code has been rated" not in result.stdout:
-                diagnostics.append("### Pylint (Fatal Errors)\n```text\n" + result.stdout.strip() + "\n```")
-                logger.print(result.stdout.strip())  # Transparent terminal output
-        except Exception as e:
-             logger.print(f"      [Error running Pylint: {e}]")
+            logger.print(f"      [Error running Ruff: {e}]")
              
     logger.print("✅ Static Analysis Complete.\n")
     return "\n\n".join(diagnostics)
@@ -507,6 +490,7 @@ def check_dependencies():
         "plantuml": "A Java-based tool. See https://plantuml.com/starting",
         "eza": "A modern replacement for `ls`. See https://eza.rocks/install",
         "xclip": "Clipboard utility for Linux. Install with your package manager (e.g., sudo apt-get install xclip)",
+        "ruff": "Fast Python linter. Install with: pip install ruff",
     }
     missing = []
     for tool, instructions in dependencies.items():

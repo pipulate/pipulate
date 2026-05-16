@@ -159,7 +159,7 @@ AI_PHOOEY_CHOP = r"""
 # ============================================================================
 
 # CHAPTER 10: BOTIFY SUITE & TRIFECTA MONOLITH
-# ai_edit.py  # [2,296 tokens | 10,210 bytes]
+# apply.py  # [2,296 tokens | 10,210 bytes]
 # scripts/workflow/WORKFLOW_DEVELOPMENT_GUIDE.md  # [4,283 tokens | 20,359 bytes]
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
@@ -277,7 +277,7 @@ AI_PHOOEY_CHOP = r"""
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 # foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
-# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 apply.py
 patch
 
