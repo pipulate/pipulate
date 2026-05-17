@@ -110,6 +110,10 @@ ignore = [
     "F401",   # imported but unused — FastHTML imports Card, Div, Form etc. into namespace
     "F811",   # redefinition of unused name — common in HTMX step pattern where step_N redefines patterns
     "E501",   # line too long — inline HTMX chains are intentionally dense
+    "E701",   # multiple statements on one line — preserves dense if/return logic
+    "W291",   # trailing whitespace — harmless text artifacts
+    "W293",   # blank line contains whitespace — harmless
+    "F541",   # f-string without placeholders — allows uniform print(f"...") styling
 ]
 
 # Never flag these directories
