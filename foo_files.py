@@ -276,14 +276,21 @@ AI_PHOOEY_CHOP = r"""
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-# foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
+# scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
 
-scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
-prompt_foo.py  # [13,638 tokens | 62,389 bytes]
-patch
-apply.py
+# init.lua   # [5,997 tokens | 22,971 bytes]
+foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
+
+# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+# apply.py
+
+# patch
 
 # !!! AD HOC
+
+README.md  # [20,467 tokens | 103,208 bytes]
+
+# ! python scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 
