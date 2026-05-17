@@ -276,23 +276,46 @@ AI_PHOOEY_CHOP = r"""
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-# scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
-
-# init.lua   # [5,997 tokens | 22,971 bytes]
 foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
-
-# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
-# apply.py
-
-# patch
+apply.py
+prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
 # !!! AD HOC
 
-README.md  # [20,467 tokens | 103,208 bytes]
-
-# ! python scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
+# /home/mike/repos/trimnoir/_posts/2026-05-14-geometry-of-text-neovim-virtual-edit.md  # [Idx: 10 | Order: 6 | Tokens: 5,310 | Bytes: 21,276]
+# /home/mike/repos/trimnoir/_posts/2026-05-14-gravity-of-markdown-deterministic-ai-editor.md  # [Idx: 11 | Order: 5 | Tokens: 35,807 | Bytes: 148,509]
+# /home/mike/repos/trimnoir/_posts/2026-05-15-cathedral-of-one-prompt-fu-forever-machine.md  # [Idx: 9 | Order: 1 | Tokens: 30,102 | Bytes: 124,546]
+# /home/mike/repos/trimnoir/_posts/2026-05-15-deterministic-ai-coding-actuator.md  # [Idx: 8 | Order: 2 | Tokens: 38,811 | Bytes: 160,336]
+# /home/mike/repos/trimnoir/_posts/2026-05-15-solving-ai-indentation-amnesia.md  # [Idx: 7 | Order: 3 | Tokens: 20,058 | Bytes: 80,904]
+# /home/mike/repos/trimnoir/_posts/2026-05-16-beyond-the-diff-search-replace-protocol.md  # [Idx: 5 | Order: 2 | Tokens: 5,386 | Bytes: 23,502]
+# /home/mike/repos/trimnoir/_posts/2026-05-16-beyond-the-diff-search-replace.md  # [Idx: 6 | Order: 1 | Tokens: 19,424 | Bytes: 87,522]
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
+
+# README.md  # [20,467 tokens | 103,208 bytes]
+# apps/040_hello_workflow.py  # [7,190 tokens | 34,518 bytes]
+# assets/js/htmx.js  # [41,256 tokens | 165,562 bytes]
+# assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
+# assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
+# config.py
+# flake.nix
+# foo_files.py  
+# imports/__init__.py  # [0 tokens | 0 bytes]
+# imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
+# init.lua   # [5,997 tokens | 22,971 bytes]
+# output_of_rg_Card.txt
+# patch
+# pipulate/__init__.py
+# pipulate/core.py
+# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+# requirements.in
+# scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
+# server.py
+
+# ! python scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
 
 """
 #   ____          _                     ____ _   _  ___  ____      
@@ -520,7 +543,6 @@ _ = CHOP_FLAKE_EVOLUTION
 # assets/images/ai-seo-software.svg  # [27,518 tokens | 50,466 bytes]
 # assets/js/Sortable.js  # [29,648 tokens | 126,497 bytes]
 # assets/js/fasthtml.js  # [481 tokens | 1,836 bytes]
-# assets/js/htmx.js  # [41,256 tokens | 165,562 bytes]
 # assets/js/marked.min.js  # [14,361 tokens | 39,661 bytes]
 # assets/js/mermaid.min.js  # [1,167,164 tokens | 2,889,985 bytes]
 # assets/js/prism.js  # [38,819 tokens | 124,060 bytes]
@@ -564,7 +586,7 @@ _ = CHOP_FLAKE_EVOLUTION
 # remotes/honeybot/scripts/bot_intel.json  # [606 tokens | 1,838 bytes]
 # remotes/honeybot/scripts/build_bot_miner.py  # [510 tokens | 2,105 bytes]
 # remotes/honeybot/scripts/dye_injector.py  # [271 tokens | 1,070 bytes]
-# remotes/honeybot/scripts/dye_injector_v2.py  # [542 tokens | 2,361 bytes]
+# remotes/honeybot/scripts/dye_injector_v2.py  # [547 tokens | 2,362 bytes]
 # remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
 # remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
 # remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
