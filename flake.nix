@@ -655,7 +655,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # Clean up the prompt to remove Nix's redundant prefixes and Mac's long hostname
           export PS1="\[\033[1;32m\](nix)\[\033[0m\] \[\033[1;34m\]\W\[\033[0m\] $ "
           # Add aliases
-          alias dif='git --no-pager diff'
+          alias d='git --no-pager diff'
           alias gdiff='git --no-pager diff --no-textconv'
           alias isnix="if [ -n \"$IN_NIX_SHELL\" ]; then echo \"✓ In Nix shell v${version}\"; else echo \"✗ Not in Nix shell\"; fi"
           alias mcp='.venv/bin/python cli.py call'
@@ -668,7 +668,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias story='python prompt_foo.py -l [:] --no-tree'
           alias latest='python prompt_foo.py -a [-1:] --no-tree'
           alias release='python release.py --release --force'
-          alias st='clear && echo "$ git status" && git status'
+          alias g='clear && echo "$ git status" && git status'
           alias app='cat patch | python apply.py'
           
           # ---------------------------------------------------------

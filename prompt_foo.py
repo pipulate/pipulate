@@ -119,7 +119,7 @@ CONFIG = {
 # ============================================================================
 # Set to False to skip Ruff during prompt compilation.
 # Useful when transitioning linters or to reduce context noise.
-ENABLE_STATIC_ANALYSIS = False
+ENABLE_STATIC_ANALYSIS = True
 
 # ============================================================================
 # --- Literary Size Scale & Token/Word Counting ---
