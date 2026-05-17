@@ -276,12 +276,11 @@ AI_PHOOEY_CHOP = r"""
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-# foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
-# apply.py
-# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
+prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 
-pyproject.toml
-pipulate/core.py
+# pyproject.toml
+# apply.py
 
 # !!! AD HOC
 
@@ -309,7 +308,6 @@ pipulate/core.py
 # imports/__init__.py  # [0 tokens | 0 bytes]
 # imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
 # init.lua   # [5,997 tokens | 22,971 bytes]
-# output_of_rg_Card.txt
 # patch
 # pipulate/__init__.py
 # pipulate/core.py
