@@ -19,8 +19,9 @@ def apply_search_replace_patch(payload: str) -> bool:
     payload = payload.replace('\xa0', ' ').replace('\r\n', '\n')
 
     # Regex to find an optional 'File:' indicator followed by SEARCH/DIVIDER/REPLACE blocks
+    # A more robust regex that ignores bracket width variations and code fence lines
     block_pattern = re.compile(
-        r'(?:(?:File|Target):\s*`?([^`\s*]+)`?\s*\n.*?)?\[\[\[SEARCH\]\]\]\n(.*?)\n\[\[\[DIVIDER\]\]\]\n(.*?)\n\[\[\[REPLACE\]\]\]',
+        r'(?:(?:File|Target):\s*`?([^`\s*]+)`?\s*\n)?[\[{]{3,5}SEARCH[\]}]{3,5}\n(.*?)\n[\[{]{3,5}DIVIDER[\]}]{3,5}\n(.*?)\n[\[{]{3,5}REPLACE[\]}]{3,5}',
         re.DOTALL | re.IGNORECASE
     )
 
