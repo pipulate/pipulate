@@ -114,6 +114,12 @@ ignore = [
     "W291",   # trailing whitespace — harmless text artifacts
     "W293",   # blank line contains whitespace — harmless
     "F541",   # f-string without placeholders — allows uniform print(f"...") styling
+    "F403",   # star imports — FastHTML relies on `from fasthtml.common import *`
+    "F405",   # undefined name from star imports — FastHTML components (Card, Div, etc.)
+    "E402",   # module level import not at top — lazy loading and circular dep prevention
+    "F841",   # unused local variables — common during rapid iteration
+    "E722",   # bare except — used intentionally in fallback routines
+    "W605",   # invalid escape sequence — prompt templates contain regex-like escapes
 ]
 
 # Never flag these directories
