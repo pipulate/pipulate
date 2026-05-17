@@ -279,7 +279,9 @@ AI_PHOOEY_CHOP = r"""
 # foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
 # apply.py
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+
 pyproject.toml
+pipulate/core.py
 
 # !!! AD HOC
 
