@@ -1198,7 +1198,7 @@ def main():
                     lang_map = {'.py': 'python', '.js': 'javascript', '.html': 'html', '.css': 'css', '.md': 'markdown', '.json': 'json', '.nix': 'nix', '.sh': 'bash'}
                     lang = lang_map.get(ext, 'text')
                 except UnicodeDecodeError:
-                    content = f"# [Binary file or incompatible encoding omitted from text context: {os.path.basename(full_path)}]"
+                    content = f"# [Binary file or incompatible encoding omitted from text context: {os.path.basename(target_url)}]"
                     lang = "text"
                     processed_files_data.append({
                         "path": target_url, "comment": comment, "content": content,
