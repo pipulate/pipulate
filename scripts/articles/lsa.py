@@ -166,7 +166,7 @@ def main():
     parser.add_argument('--top', type=int, default=None, metavar='N', help="Limit output to the first N results (after sorting)")
     parser.add_argument('--match', type=str, default=None, metavar='TERMS', help="Filter articles whose filename contains all whitespace-separated terms (case-insensitive)")
     parser.add_argument('--tokens-under', type=int, default=None, metavar='N', dest='tokens_under', help="Exclude articles with token count >= N (requires reading each file)")
-    parser.add_argument('--fmt', type=str, default='full', choices=['full', 'paths'], help="Output format: 'full' (default, with comments) or 'paths' (bare absolute paths only)")
+    parser.add_argument('--fmt', type=str, default='full', choices=['full', 'paths', 'slugs'], help="Output format: 'full' (default, with comments), 'paths' (bare absolute paths), or 'slugs' (concept slug only, no date prefix)")
     args = parser.parse_args()
 
     targets = load_targets()
@@ -265,6 +265,12 @@ def main():
         if args.fmt == 'paths':
             for item in metadata:
                 print(item['path'], flush=True)
+        elif args.fmt == 'slugs':
+            import re
+            for item in metadata:
+                stem = os.path.splitext(os.path.basename(item['path']))[0]
+                slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', stem)
+                print(slug, flush=True)
         else:
             for idx, item in enumerate(metadata, start=1):
                 filepath = item['path']
