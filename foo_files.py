@@ -276,19 +276,22 @@ AI_PHOOEY_CHOP = r"""
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
+prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+
 # foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
+# !!! AD HOC
+
+# RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 
 # ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 
-flake.nix
-prompt_foo.py  # [13,638 tokens | 62,389 bytes]
-scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
+# flake.nix
+# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+# scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
 
 # apply.py
 # /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
 # scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
-
-# !!! AD HOC
 
 # /home/mike/repos/nixos/configuration.nix  # [2,913 tokens | 10,227 bytes]
 # flake.nix
@@ -296,7 +299,6 @@ scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
 # release.py
 # scripts/ai.py
 
-# RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 
 # ! python scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
 
