@@ -317,6 +317,10 @@ scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
 # command they should execute after adding the custom CHOP here, because you
 # know humans aren't really that smart.
 
+ROLLING_PIN_CHOP = """\
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
+"""
+
 EMPTY = (
     r"""\
 # THE 40K FOOT VIEW (Minimalist Context)
