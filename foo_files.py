@@ -278,12 +278,13 @@ AI_PHOOEY_CHOP = r"""
 
 # foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
 
+! python scripts/articles/lsa.py -t 1 --reverse --fmt slugs
+
 apply.py
 /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
 scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
 prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
-delete_article_sample.md
 
 # !!! AD HOC
 
