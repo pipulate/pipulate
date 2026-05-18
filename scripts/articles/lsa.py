@@ -163,6 +163,10 @@ def main():
     parser.add_argument('-g', '--gaps', action='store_true', help="Run and display the sort_order contiguity gap report")
     parser.add_argument('-r', '--reverse', action='store_true', help="Reverse the sorting order")
     parser.add_argument('-a', '--article', type=str, help="Generate a prompt_foo.py command for a slice of articles (e.g., '[-5:]')")
+    parser.add_argument('--top', type=int, default=None, metavar='N', help="Limit output to the first N results (after sorting)")
+    parser.add_argument('--match', type=str, default=None, metavar='TERMS', help="Filter articles whose filename contains all whitespace-separated terms (case-insensitive)")
+    parser.add_argument('--tokens-under', type=int, default=None, metavar='N', dest='tokens_under', help="Exclude articles with token count >= N (requires reading each file)")
+    parser.add_argument('--fmt', type=str, default='full', choices=['full', 'paths'], help="Output format: 'full' (default, with comments) or 'paths' (bare absolute paths only)")
     args = parser.parse_args()
 
     targets = load_targets()
@@ -211,6 +215,29 @@ def main():
     # Sort first by date, then by the YAML sort_order
     metadata.sort(key=lambda p: (p['date'], p['sort_order']), reverse=args.reverse)
 
+    # --- PASS 1.5: FILTERING ---
+    # --match: substring filter on filename (free, no I/O)
+    if args.match:
+        terms = args.match.lower().split()
+        metadata = [item for item in metadata if all(t in item['path'].lower() for t in terms)]
+
+    # --top: limit after sort+filter
+    if args.top is not None:
+        metadata = metadata[:args.top]
+
+    # --tokens-under: expensive filter, read each file
+    if args.tokens_under is not None:
+        filtered = []
+        for item in metadata:
+            try:
+                with open(item['path'], 'r', encoding='utf-8') as f:
+                    content = f.read()
+                if count_tokens(content) < args.tokens_under:
+                    filtered.append(item)
+            except Exception:
+                filtered.append(item)  # keep on error
+        metadata = filtered
+
     # --- PASS 2: OUTPUT GENERATION (REPORT OR COMMAND) ---
     if args.article:
         # Executable Telemetry Mode: Generate the prompt_foo.py command
@@ -235,17 +262,21 @@ def main():
             print(f"❌ Invalid slice format: {args.article}. Use format like '[-5:]'", file=sys.stderr)
     else:
         # Standard Mode: Heavy Lifting & Streaming Output
-        for idx, item in enumerate(metadata, start=1):
-            filepath = item['path']
-            try:
-                with open(filepath, 'r', encoding='utf-8') as f:
-                    content = f.read()
-                tokens = count_tokens(content)
-                bytes_count = len(content.encode('utf-8'))
-                order = item['sort_order']
-                print(f"{filepath}  # [Idx: {idx} | Order: {order} | Tokens: {tokens:,} | Bytes: {bytes_count:,}]", flush=True)
-            except Exception as e:
-                print(f"# Error processing {filepath}: {e}", file=sys.stderr)
+        if args.fmt == 'paths':
+            for item in metadata:
+                print(item['path'], flush=True)
+        else:
+            for idx, item in enumerate(metadata, start=1):
+                filepath = item['path']
+                try:
+                    with open(filepath, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    tokens = count_tokens(content)
+                    bytes_count = len(content.encode('utf-8'))
+                    order = item['sort_order']
+                    print(f"{filepath}  # [Idx: {idx} | Order: {order} | Tokens: {tokens:,} | Bytes: {bytes_count:,}]", flush=True)
+                except Exception as e:
+                    print(f"# Error processing {filepath}: {e}", file=sys.stderr)
 
 
 def get_holographic_article_data(target_dir: str) -> list[dict]:
