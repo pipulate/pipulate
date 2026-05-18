@@ -276,13 +276,17 @@ AI_PHOOEY_CHOP = r"""
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
+# foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 # apply.py
 
-README.md
-
 # !!! AD HOC
+
+/home/mike/repos/nixos/configuration.nix  # [2,913 tokens | 10,227 bytes]
+flake.nix
+init.lua
+release.py
+scripts/ai.py
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 
@@ -540,7 +544,6 @@ _ = CHOP_FLAKE_EVOLUTION
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
-# release.py  # [9,505 tokens | 42,721 bytes]
 # remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
 # remotes/honeybot/queries/hot_404_remaps_top.sql  # [733 tokens | 2,888 bytes]
 # remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
