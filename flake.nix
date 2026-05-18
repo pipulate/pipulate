@@ -669,6 +669,16 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias latest='python prompt_foo.py -a [-1:] --no-tree'
           alias release='python release.py --release --force'
           alias g='clear && echo "$ git status" && git status'
+          m() {
+            local msg
+            msg=$(python /home/mike/repos/pipulate/scripts/ai.py --auto --format plain 2>/dev/null | head -1)
+            if [ -z "$msg" ]; then
+              echo "❌ ai.py returned empty message, aborting."
+              return 1
+            fi
+            echo "📝 Committing: $msg"
+            git commit -am "$msg"
+          }
           alias app='cat patch | python apply.py'
           
           # ---------------------------------------------------------
