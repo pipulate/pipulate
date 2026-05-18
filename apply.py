@@ -19,6 +19,7 @@ def apply_search_replace_patch(payload: str) -> bool:
     payload = payload.replace('\xa0', ' ').replace('\r\n', '\n')
 
     # Strip markdown code fences to bypass web UI whitespace destruction
+    # (This successfully prevents the chat framework from eating our left-indentation!)
     payload = re.sub(r'^```[a-zA-Z0-9]*\s*$', '', payload, flags=re.MULTILINE)
 
     # Regex to find an optional 'File:' indicator followed by SEARCH/DIVIDER/REPLACE blocks
