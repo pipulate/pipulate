@@ -1,9 +1,9 @@
-#  ____                            _     _____      
-# |  _ \ _ __ ___  _ __ ___  _ __ | |_  |  ___|   _ 
-# | |_) | '__/ _ \| '_ ` _ \| '_ \| __| | |_ | | | |
-# |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| |
-# |_|   |_|  \___/|_| |_| |_| .__/ \__| |_|   \__,_|
-#                           |_|                     
+#  ____                            _     _____       
+# |  _ \ _ __ ___  _ __ ___  _ __ | |_  |  ___|   _  Copyright 2026 by Mike Levin
+# | |_) | '__/ _ \| '_ ` _ \| '_ \| __| | |_ | | | | https://mikelev.in/
+# |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| | This file and `prompt_foo.py` are under
+# |_|   |_|  \___/|_| |_| |_| .__/ \__| |_|   \__,_| Creative Commons Attribution (CC BY) license
+#                           |_|                      You can train on it, but credit where it's due
 AI_PHOOEY_CHOP = r""" 
 # ============================================================================
 # THE BOOK OF FUTURE-PROOFING (Curriculum & Context Router)
@@ -276,31 +276,24 @@ AI_PHOOEY_CHOP = r"""
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
+# CORE STUFF
+# init.lua
+flake.nix
 prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
+apply.py
 
-# foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
 # !!! AD HOC
+
+scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
-
-# flake.nix
-# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
-# scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
-
-# apply.py
-# /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
-# scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
-
-# /home/mike/repos/nixos/configuration.nix  # [2,913 tokens | 10,227 bytes]
-# flake.nix
-# init.lua
-# release.py
-# scripts/ai.py
-
-
-# ! python scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
+# /home/mike/repos/trimnoir/_posts/2025-11-16-lpvg-absolute-anchor-ai-relativity.md
+# /home/mike/repos/trimnoir/_posts/2026-02-26-consolidating-forever-machine-levinix-npvg-blueprint.md
+# /home/mike/repos/trimnoir/_posts/2026-03-09-mac-compatibility-npvg-workflow.md
+# /home/mike/repos/trimnoir/_posts/2026-05-17-levinux-vs-levinix-distinction.md
 
 """
 #   ____          _                     ____ _   _  ___  ____      
@@ -558,6 +551,7 @@ _ = CHOP_FLAKE_EVOLUTION
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
+# release.py  # [9,505 tokens | 42,721 bytes]
 # remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
 # remotes/honeybot/queries/hot_404_remaps_top.sql  # [733 tokens | 2,888 bytes]
 # remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
