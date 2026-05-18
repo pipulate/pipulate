@@ -286,7 +286,7 @@ apply.py
 # !!! AD HOC
 
 scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 

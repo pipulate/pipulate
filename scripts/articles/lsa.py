@@ -167,6 +167,7 @@ def main():
     parser.add_argument('--match', type=str, default=None, metavar='TERMS', help="Filter articles whose filename contains all whitespace-separated terms (case-insensitive)")
     parser.add_argument('--tokens-under', type=int, default=None, metavar='N', dest='tokens_under', help="Exclude articles with token count >= N (requires reading each file)")
     parser.add_argument('--fmt', type=str, default='full', choices=['full', 'paths', 'slugs', 'dated-slugs'], help="Output format: 'full' (default, with comments), 'paths' (bare absolute paths), or 'slugs' (concept slug only, no date prefix)")
+    parser.add_argument('--slugs', nargs='+', default=None, metavar='SLUG', help="Select articles by exact slug match (space-separated, no date prefix needed)")
     args = parser.parse_args()
 
     targets = load_targets()
@@ -218,6 +219,15 @@ def main():
     metadata.sort(key=lambda p: (p['date'], p['sort_order']), reverse=args.reverse)
 
     # --- PASS 1.5: FILTERING ---
+    # --slugs: exact slug selection (free, no I/O)
+    if args.slugs:
+        import re as _re
+        wanted = set(args.slugs)
+        def _stem_to_slug(path):
+            stem = os.path.splitext(os.path.basename(path))[0]
+            return _re.sub(r'^\d{4}-\d{2}-\d{2}-', '', stem)
+        metadata = [item for item in metadata if _stem_to_slug(item['path']) in wanted]
+
     # --match: substring filter on filename (free, no I/O)
     if args.match:
         terms = args.match.lower().split()
