@@ -277,16 +277,21 @@ AI_PHOOEY_CHOP = r"""
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 # foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
-# prompt_foo.py  # [13,638 tokens | 62,389 bytes]
-# apply.py
+
+apply.py
+/home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
+scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
+prompt_foo.py  # [13,638 tokens | 62,389 bytes]
+scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
+delete_article_sample.md
 
 # !!! AD HOC
 
-/home/mike/repos/nixos/configuration.nix  # [2,913 tokens | 10,227 bytes]
-flake.nix
-init.lua
-release.py
-scripts/ai.py
+# /home/mike/repos/nixos/configuration.nix  # [2,913 tokens | 10,227 bytes]
+# flake.nix
+# init.lua
+# release.py
+# scripts/ai.py
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 
@@ -596,4 +601,3 @@ _ = CHOP_FLAKE_EVOLUTION
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
 # scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
-# foo
