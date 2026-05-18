@@ -669,7 +669,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias latest='python prompt_foo.py -a [-1:] --no-tree'
           alias still='python prompt_foo.py --chop ROLLING_PIN_CHOP --no-tree'
           alias release='python release.py --release --force'
-          alias g='clear && echo "$ git status" && git status'
+          alias s='clear && echo "$ git status" && git status'
           m() {
             local msg
             msg=$(python /home/mike/repos/pipulate/scripts/ai.py --auto --format plain 2>/dev/null | head -1)
