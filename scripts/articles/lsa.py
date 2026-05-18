@@ -190,7 +190,9 @@ def main():
     # Determine the sort description based on the reverse flag
     sort_desc = "Newest First" if args.reverse else "Oldest First"
     
-    print(f"# 🎯 Target: {targets[target_key]['name']} [{sort_desc}]\n", flush=True)
+    # Suppress header for machine-readable output formats
+    if args.fmt not in ('paths', 'slugs', 'dated-slugs'):
+        print(f"# 🎯 Target: {targets[target_key]['name']} [{sort_desc}]\n", flush=True)
 
     metadata = []
     # --- PASS 1: FAST METADATA EXTRACTION ---

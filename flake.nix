@@ -667,6 +667,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias chop='nvim foo_files.py'
           alias story='python prompt_foo.py -l [:] --no-tree'
           alias latest='python prompt_foo.py -a [-1:] --no-tree'
+          alias still='python prompt_foo.py --chop ROLLING_PIN_CHOP --no-tree'
           alias release='python release.py --release --force'
           alias g='clear && echo "$ git status" && git status'
           m() {
