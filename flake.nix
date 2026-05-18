@@ -668,6 +668,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias story='python prompt_foo.py -l [:] --no-tree'
           alias latest='python prompt_foo.py -a [-1:] --no-tree'
           alias still='python prompt_foo.py --chop ROLLING_PIN_CHOP --no-tree'
+          roll() { python scripts/articles/lsa.py -t 1 --slugs "$@" --fmt paths | python prompt_foo.py --no-tree --decanter-from -; }
           alias release='python release.py --release --force'
           alias s='clear && echo "$ git status" && git status'
           m() {

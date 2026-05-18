@@ -1073,6 +1073,10 @@ def main():
         '--decanter', action='append',
         help='Inject full raw Markdown for specific article paths (can be used multiple times).'
     )
+    parser.add_argument(
+        '--decanter-from', type=str, metavar='FILE',
+        help='Read article paths from a file or "-" for stdin, one path per line. Equivalent to multiple --decanter args.'
+    )
     args = parser.parse_args()
 
     # 💥 NEW: Parse --arg into a dictionary
@@ -1351,6 +1355,18 @@ def main():
                     logger.print(f"{abs_path}  # [Idx: {idx} | Order: {order} | Tokens: {t_count:,} | Bytes: {b_count:,}]", flush=True)
                 except Exception as e:
                     logger.print(f"\nWarning: Could not read article {article['path']}: {e}")
+
+        # NEW: Process paths from --decanter-from (file or stdin)
+        if args.decanter_from:
+            import sys as _sys
+            if args.decanter_from == '-':
+                extra_paths = [line.strip() for line in _sys.stdin if line.strip()]
+            else:
+                with open(args.decanter_from, 'r', encoding='utf-8') as _df:
+                    extra_paths = [line.strip() for line in _df if line.strip()]
+            if args.decanter is None:
+                args.decanter = []
+            args.decanter.extend(extra_paths)
 
         # NEW: Process explicitly targeted Decanter files
         if args.decanter:
