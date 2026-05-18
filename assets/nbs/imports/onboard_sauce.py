@@ -170,6 +170,8 @@ async def analyze_ai_readiness(job: str, url: str, verbose: bool = True, overrid
         wand.speak("Navigation complete. Page data captured.")
         print("✅ Fresh Scrape Successful.")
 
+    dom_path = result.get("looking_at_files", {}).get("hydrated_dom")
+
     # 2. THE OPTICS (The Refraction)
     if not dom_path or not Path(dom_path).exists():
         print("❌ Error: Could not locate hydrated_dom.html for analysis.")
@@ -211,6 +213,9 @@ def explain_optics_artifacts(target_url):
     Feeds the AI both the raw source and the rendered DOM structure
     to educate the user on 'The JavaScript Gap'.
     """
+    from tools.scraper_tools import get_safe_path_component
+    from IPython.display import Markdown
+
     domain, slug = get_safe_path_component(target_url)
     base = wand.paths.browser_cache / domain / slug
     
