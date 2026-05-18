@@ -52,9 +52,9 @@ AI_PHOOEY_CHOP = r"""
 
 # CHAPTER 0: ONBOARDING
 # .gitignore  # [571 tokens | 2,096 bytes]
-assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
-assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
+# assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
+# assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
 # config.py  # [4,170 tokens | 16,184 bytes]
 # pipulate/__init__.py  # [721 tokens | 2,998 bytes]
 # pipulate/core.py  # [29,804 tokens | 144,977 bytes]
@@ -276,9 +276,11 @@ assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-# foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
+foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
 # prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 # apply.py
+
+README.md
 
 # !!! AD HOC
 
