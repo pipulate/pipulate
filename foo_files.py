@@ -279,18 +279,18 @@ AI_PHOOEY_CHOP = r"""
 # CORE STUFF
 
 # OUTER
-# /home/mike/repos/nixos/configuration.nix
+/home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/autognome.py
 # init.lua
 
 # INNER
-flake.nix
-prompt_foo.py
-foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
-apply.py
+# flake.nix
+# prompt_foo.py
+# foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
+# apply.py
 
-# GO AHEAD, MAKE YOUR CHOCE
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- UNCOMMENT TO LET AI PICK ARTICLES
+# GO AHEAD AI, MAKE YOUR CHOICE
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- UNCOMMENT TO LET AI PICK ARTICLES
 
 # !!! AD HOC
 
