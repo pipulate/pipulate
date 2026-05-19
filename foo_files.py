@@ -278,11 +278,11 @@ AI_PHOOEY_CHOP = r"""
 
 # CORE STUFF
 # init.lua
-# README.md
-# flake.nix
+README.md
+flake.nix
 prompt_foo.py  # [13,638 tokens | 62,389 bytes]
-# foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
-# apply.py
+foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
+apply.py
 
 # !!! AD HOC
 
