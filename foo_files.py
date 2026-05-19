@@ -277,17 +277,18 @@ AI_PHOOEY_CHOP = r"""
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 # CORE STUFF
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- UNCOMMENT TO LET AI PICK ARTICLES
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/autognome.py
 # init.lua
+# flake.nix
 prompt_foo.py
-flake.nix
-# foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
-# apply.py
+foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
+apply.py
 
 # !!! AD HOC
 
+# THE FIRST SET OF ARTICLES SELECTED BY CLAUDE
 # /home/mike/repos/trimnoir/_posts/2026-03-16-self-healing-context-automating-topological-integrity-for-ai-prompts.md
 # /home/mike/repos/trimnoir/_posts/2026-03-11-idempotent-token-ledger-llm-context.md
 # /home/mike/repos/trimnoir/_posts/2026-03-11-self-auditing-ai-context-compiler.md
