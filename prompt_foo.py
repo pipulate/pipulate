@@ -524,6 +524,12 @@ class PromptBuilder:
         self.all_sections = {}
         self.command_line = " ".join(sys.argv)
         self.manifest_key = "Manifest (Table of Contents)"
+        self.routing_note = (
+            "Routing note: This is a compiled context artifact. "
+            "The actionable user request is in the final section labeled "
+            "`--- START: Prompt ---`. Read that section before answering. "
+            "Use the Manifest, Summary, File Tree, UML, Articles, and Codebase as supporting context."
+        )
 
     def add_auto_context(self, title: str, content: str):
         is_narrative = (title == "Recent Narrative Context")
@@ -538,14 +544,17 @@ class PromptBuilder:
             }
 
     def _build_manifest_content(self) -> str:
-        lines = []
+        lines = [self.routing_note, ""]
         # Added Summary to section order
         section_order = ["Story", "File Tree", "UML Diagrams", "Articles", "Codebase", "Summary", "Context Recapture", "Prompt"]
         for section_name in section_order:
             if section_name in self.all_sections:
                 data = self.all_sections[section_name]
                 token_str = f"({data['tokens']:,} tokens)" if data['tokens'] > 0 else ""
-                lines.append(f"- {section_name} {token_str}")
+                if section_name == "Prompt":
+                    lines.append(f"- {section_name} {token_str} [ACTIONABLE REQUEST — READ BEFORE ANSWERING]")
+                else:
+                    lines.append(f"- {section_name} {token_str}")
                 
                 # Detailed list for Codebase for searching (absolute paths)
                 if section_name == "Codebase" and not self.context_only and self.processed_files:
