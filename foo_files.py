@@ -277,25 +277,31 @@ AI_PHOOEY_CHOP = r"""
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 # CORE STUFF
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- UNCOMMENT TO LET AI PICK ARTICLES
+
+# OUTER
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/autognome.py
 # init.lua
-# flake.nix
-# prompt_foo.py
-# foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
-# apply.py
+
+# INNER
+flake.nix
+prompt_foo.py
+foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
+apply.py
+
+# GO AHEAD, MAKE YOUR CHOCE
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- UNCOMMENT TO LET AI PICK ARTICLES
 
 # !!! AD HOC
 
 # GROK'S FIRST SET OF SELECTIONS
-/home/mike/repos/trimnoir/_posts/2026-03-11-idempotent-token-ledger-llm-context.md
-/home/mike/repos/trimnoir/_posts/2026-03-11-self-auditing-ai-context-compiler.md
-/home/mike/repos/trimnoir/_posts/2026-03-16-self-healing-context-automating-topological-integrity-for-ai-prompts.md
-/home/mike/repos/trimnoir/_posts/2026-05-09-taming-the-amnesia-genie.md
-/home/mike/repos/trimnoir/_posts/2026-05-13-lambda-functions-local-ai-advantage.md
-/home/mike/repos/trimnoir/_posts/2026-05-17-escape-postback-deterministic-ai-workflows.md
-/home/mike/repos/trimnoir/_posts/2026-05-19-ergonomics-of-oversight-ai-trust-rituals.md
+# /home/mike/repos/trimnoir/_posts/2026-03-11-idempotent-token-ledger-llm-context.md
+# /home/mike/repos/trimnoir/_posts/2026-03-11-self-auditing-ai-context-compiler.md
+# /home/mike/repos/trimnoir/_posts/2026-03-16-self-healing-context-automating-topological-integrity-for-ai-prompts.md
+# /home/mike/repos/trimnoir/_posts/2026-05-09-taming-the-amnesia-genie.md
+# /home/mike/repos/trimnoir/_posts/2026-05-13-lambda-functions-local-ai-advantage.md
+# /home/mike/repos/trimnoir/_posts/2026-05-17-escape-postback-deterministic-ai-workflows.md
+# /home/mike/repos/trimnoir/_posts/2026-05-19-ergonomics-of-oversight-ai-trust-rituals.md
 
 # THE FIRST SET OF ARTICLES SELECTED BY CLAUDE
 # /home/mike/repos/trimnoir/_posts/2026-03-16-self-healing-context-automating-topological-integrity-for-ai-prompts.md
