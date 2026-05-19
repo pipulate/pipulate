@@ -5182,7 +5182,7 @@ class ServerRestartHandler(FileSystemEventHandler):
         """Check if event should be ignored to prevent unnecessary restarts."""
         if event.is_directory:
             return True
-        ignore_patterns = ['/.', '.onboarded', '__pycache__', '.pyc', '.swp', '.tmp', '.DS_Store', 'foo_files.py', 'prompt.md', 'apply.py', 'foo.txt', '/scripts/']
+        ignore_patterns = ['/.', '.onboarded', '__pycache__', '.pyc', '.swp', '.tmp', '.DS_Store', 'README.md', 'prompt_foo.py', 'foo_files.py', 'prompt.md', 'apply.py', 'foo.txt', '/scripts/']
         if any((pattern in event.src_path for pattern in ignore_patterns)):
             return True
         return False
