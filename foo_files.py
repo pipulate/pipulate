@@ -277,7 +277,8 @@ AI_PHOOEY_CHOP = r"""
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 # CORE STUFF
-# init.lua
+init.lua
+README.md
 flake.nix
 prompt_foo.py  # [13,638 tokens | 62,389 bytes]
 foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
