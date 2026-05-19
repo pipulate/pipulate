@@ -266,70 +266,36 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           PROPER_APP_NAME=$(echo "$APP_NAME" | awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}')
           figlet "$PROPER_APP_NAME"
           echo "Version: ${version}"
-          if [ -n "$IN_NIX_SHELL" ] || [[ "$PS1" == *"(nix)"* ]]; then 
-            echo "✓ In Nix shell v${version} - you can run python server.py"
-          else 
-            echo "✗ Not in Nix shell - please run nix develop"
-          fi
-          echo "Welcome to the $PROPER_APP_NAME development environment on ${system}!"
-          echo 
           # --- JupyterLab Local Configuration ---
-          # Set env var for project-local JupyterLab configuration
           export JUPYTER_CONFIG_DIR="$(pwd)/.jupyter"
-          echo "✓ JupyterLab configured for project-local settings."
           # Install Python packages from requirements.txt
-          # This allows flexibility to use the latest PyPI packages
-          # Note: This makes the environment less deterministic
-          # Check if this is a fresh Python environment (after reset)
           FRESH_ENV=false
           if [ ! -d .venv/lib/python*/site-packages ] || [ $(find .venv/lib/python*/site-packages -name "*.dist-info" 2>/dev/null | wc -l) -lt 10 ]; then
             FRESH_ENV=true
-            echo "🔧 Fresh Python environment detected - installing packages (this may take 2-3 minutes)..."
-            echo "   This is normal on a fresh install or after using '🐍 Reset Python Environment' button."
-          else
-            echo "- Confirming pip packages..."
+            echo "🔧 Fresh install detected — packages downloading (2-3 min)..."
           fi
           # --- Pip Install Verbosity Toggle ---
-          # Set to "true" to see detailed pip install output for debugging
           PIP_VERBOSE="false"
           PIP_QUIET_FLAG="--quiet"
           if [ "$PIP_VERBOSE" = "true" ]; then
             PIP_QUIET_FLAG=""
-            echo "🔧 Pip verbose mode enabled."
           fi
-          # Always keep pip installation quiet - no scary technical output for users
           if pip install --upgrade pip $PIP_QUIET_FLAG && \
             pip install -r requirements.txt $PIP_QUIET_FLAG && \
             pip install -e . --no-deps $PIP_QUIET_FLAG; then
-            true  # Success case handled below
+            true
           else
-            false  # Error case handled below
+            false
           fi
-          if [ $? -eq 0 ]; then
+          if [ $? -ne 0 ]; then
+              echo "⚠️  Warning: pip setup encountered an error."
+          elif [ "$FRESH_ENV" = true ]; then
               package_count=$(pip list --format=freeze | wc -l)
-              if [ "$FRESH_ENV" = true ]; then
-                echo "✅ Fresh Python environment build complete! $package_count packages installed."
-              else
-                echo "- Done. $package_count pip packages present."
-              fi
-          else
-              echo "Warning: An error occurred during pip setup."
+              echo "✅ $package_count packages ready."
           fi
           # Check if numpy is properly installed
-          if python -c "import numpy" 2>/dev/null; then
-            echo "- numpy is importable (good to go!)"
-            echo
-            echo "Starting JupyterLab and $APP_NAME server automatically..."
-            echo "Both will open in your browser..."
-            echo
-            echo "To view server logs: tmux attach -t server"
-            echo "To view JupyterLab logs: tmux attach -t jupyter"
-            echo "To stop all services: pkill tmux"
-            echo "To restart all services: run-all"
-            echo "To start only server: run-server"
-            echo "To start only JupyterLab: run-jupyter"
-          else
-            echo "Error: numpy could not be imported. Check your installation."
+          if ! python -c "import numpy" 2>/dev/null; then
+            echo "❌ Error: numpy could not be imported. Check your installation."
           fi
           # Create convenience scripts for managing JupyterLab
           # Note: We've disabled token and password for easier access, especially in WSL environments
@@ -464,11 +430,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           copy_notebook_if_needed
           tmux kill-session -t jupyter 2>/dev/null || true
           # Start JupyterLab with error logging
-          echo "Starting JupyterLab..."
           tmux new-session -d -s jupyter "source .venv/bin/activate && jupyter lab ${jupyterStartupNotebook} ${if autoOpenJupyter == "true" then "" else "--no-browser"} --workspace=\$JUPYTER_WORKSPACE_NAME --NotebookApp.token=\"\" --NotebookApp.password=\"\" --NotebookApp.disable_check_xsrf=True 2>&1 | tee /tmp/jupyter-startup.log"
           sleep 2
-          # Wait for JupyterLab to start with better feedback
-          echo "Waiting for JupyterLab to start (checking http://localhost:8888)..."
 
           # 🗣️ THE UNIFIED VOICE TRIGGER (Context-Aware)
           if [ -f Notebooks/data/.onboarded ]; then
@@ -487,33 +450,23 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           JUPYTER_STARTED=false
           for i in {1..30}; do
             if curl -s http://localhost:8888 > /dev/null 2>&1; then
-              echo "✅ JupyterLab is ready at http://localhost:8888!"
               JUPYTER_STARTED=true
               break
             fi
             sleep 1
-            echo -n "."
           done
-          # If JupyterLab didn't start, show the logs
           if [ "$JUPYTER_STARTED" = false ]; then
-            echo
             echo "❌ JupyterLab failed to start within 30 seconds."
-            echo "📋 Recent JupyterLab logs:"
             if [ -f /tmp/jupyter-startup.log ]; then
               tail -20 /tmp/jupyter-startup.log | sed 's/^/    /'
             fi
-            echo "📋 To see full JupyterLab logs: tmux attach -t jupyter"
-            echo "📋 To check if tmux session exists: tmux list-sessions"
+            echo "   tmux attach -t jupyter  # to see full logs"
             echo
           fi
           # Kill any running server instances
           pkill -f "python server.py" || true
-          # Start the server in foreground
-          echo "Starting $APP_NAME server in the foreground..."
-          echo "Press Ctrl+C to stop the server."
           # Always pull the latest code before starting the server
-          echo "Pulling latest code updates..."
-          git pull
+          git pull --quiet
           # Open FastHTML in the browser
           (
             # Wait for server to be ready before opening browser
