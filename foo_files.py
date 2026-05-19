@@ -67,13 +67,15 @@ AI_PHOOEY_CHOP = r"""
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # CHAPTER 1: BOOTSTRAPPING, CLI & ROUTING
-# README.md  # [20,467 tokens | 103,208 bytes]
-# # release.py  # [9,879 tokens | 44,440 bytes]
-# /home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
-# assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
-# pyproject.toml  # [679 tokens | 2,321 bytes]
-# .gitignore  # [571 tokens | 2,096 bytes]
-# flake.nix  # [8,337 tokens | 35,472 bytes]
+README.md  # [20,467 tokens | 103,208 bytes]
+release.py  # [9,879 tokens | 44,440 bytes]
+/home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
+assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
+pyproject.toml  # [679 tokens | 2,321 bytes]
+.gitignore  # [571 tokens | 2,096 bytes]
+flake.nix  # [8,337 tokens | 35,472 bytes]
+
+# # Too much too soon
 # config.py  # [4,170 tokens | 16,184 bytes]
 # AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
 # cli.py  # [5,048 tokens | 22,411 bytes]
@@ -279,10 +281,10 @@ AI_PHOOEY_CHOP = r"""
 # CORE STUFF
 
 # INNER
-flake.nix
-# prompt_foo.py
-# foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
-# apply.py
+# flake.nix
+prompt_foo.py
+foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
+apply.py
 
 # OUTER
 /home/mike/repos/nixos/configuration.nix
@@ -571,7 +573,6 @@ _ = CHOP_FLAKE_EVOLUTION
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
-# release.py  # [9,505 tokens | 42,721 bytes]
 # remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
 # remotes/honeybot/queries/hot_404_remaps_top.sql  # [733 tokens | 2,888 bytes]
 # remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
