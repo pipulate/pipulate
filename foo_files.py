@@ -277,13 +277,14 @@ AI_PHOOEY_CHOP = r"""
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 # CORE STUFF
-/home/mike/repos/nixos/configuration.nix
-/home/mike/repos/nixos/autognome.py
-init.lua
-flake.nix
-prompt_foo.py
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
-apply.py
+flake.nix
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/autognome.py
+# init.lua
+# prompt_foo.py
+# apply.py
 
 # !!! AD HOC
 
@@ -292,7 +293,6 @@ apply.py
 # README.md
 
 # scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 
 """
 #   ____          _                     ____ _   _  ___  ____      
