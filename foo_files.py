@@ -277,24 +277,19 @@ AI_PHOOEY_CHOP = r"""
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 # CORE STUFF
-init.lua
-README.md
-flake.nix
+# init.lua
+# README.md
+# flake.nix
 prompt_foo.py  # [13,638 tokens | 62,389 bytes]
-foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
-apply.py
+# foo_files.py  # [4,028 tokens | 15,548 bytes]       <-- Often included every single time.
+# apply.py
 
 # !!! AD HOC
 
-scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
-
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 
-# /home/mike/repos/trimnoir/_posts/2025-11-16-lpvg-absolute-anchor-ai-relativity.md
-# /home/mike/repos/trimnoir/_posts/2026-02-26-consolidating-forever-machine-levinix-npvg-blueprint.md
-# /home/mike/repos/trimnoir/_posts/2026-03-09-mac-compatibility-npvg-workflow.md
-# /home/mike/repos/trimnoir/_posts/2026-05-17-levinux-vs-levinix-distinction.md
+# scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 
 """
 #   ____          _                     ____ _   _  ___  ____      
