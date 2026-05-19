@@ -671,7 +671,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           roll() { python scripts/articles/lsa.py -t 1 --slugs "$@" --fmt paths | python prompt_foo.py --no-tree --decanter-from -; }
           slugs() { python scripts/articles/lsa.py -t 1 --slugs "$@" --fmt paths; }
           # slugs-ordered preserves input order for narrative control
-          slugs-ordered() { for slug in "$@"; do python scripts/articles/lsa.py -t 1 --match "$slug" --fmt paths; done; }
+          sluggo() { for slug in "$@"; do python scripts/articles/lsa.py -t 1 --match "$slug" --fmt paths; done; }
           alias release='python release.py --release --force'
           alias g='clear && echo "$ git status" && git status'
           m() {
