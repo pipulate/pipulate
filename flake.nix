@@ -673,7 +673,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # slugs-ordered preserves input order for narrative control
           slugs-ordered() { for slug in "$@"; do python scripts/articles/lsa.py -t 1 --match "$slug" --fmt paths; done; }
           alias release='python release.py --release --force'
-          alias s='clear && echo "$ git status" && git status'
+          alias g='clear && echo "$ git status" && git status'
           m() {
             local msg
             msg=$(python /home/mike/repos/pipulate/scripts/ai.py --auto --format plain 2>/dev/null | head -1)
