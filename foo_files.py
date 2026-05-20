@@ -284,9 +284,9 @@ AI_PHOOEY_CHOP = r"""
 
 # INNER
 # flake.nix
+# # README.md
 # prompt_foo.py
 # foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
-# README.md
 # apply.py
 
 # OUTER
@@ -296,23 +296,25 @@ AI_PHOOEY_CHOP = r"""
 # init.lua
 
 # GO AHEAD AI, MAKE YOUR CHOICE
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- UNCOMMENT TO LET AI PICK ARTICLES
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- UNCOMMENT TO LET AI PICK ARTICLES
 
 # !!! AD HOC
 
-config.py
-server.py
-/home/mike/repos/trimnoir/_posts/2026-05-08-debugging-ghost-driver-audio-automation.md
-/home/mike/repos/trimnoir/_posts/2025-12-05-building-the-ghost-driver-automated-self-testing-for-agentic-ai.md
-/home/mike/repos/trimnoir/_posts/2026-05-17-escape-postback-deterministic-ai-workflows.md
-/home/mike/repos/trimnoir/_posts/2026-04-29-ast-syntactic-splicing-workflow-automation.md
-apps/040_hello_workflow.py
-Notebooks/.agents/skills/hello_workflow/SKILL.md
-assets/scenarios/hello_workflow_test.json
-assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-
 # .gitignore
-# flake.nix
+# pipulate/__init__.py
+# pipulate/core.py
+# config.py
+# server.py
+# apps/040_hello_workflow.py
+# Notebooks/.agents/skills/hello_workflow/SKILL.md
+# assets/scenarios/hello_workflow_test.json
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+
+# /home/mike/repos/trimnoir/_posts/2026-05-08-debugging-ghost-driver-audio-automation.md
+# /home/mike/repos/trimnoir/_posts/2025-12-05-building-the-ghost-driver-automated-self-testing-for-agentic-ai.md
+# /home/mike/repos/trimnoir/_posts/2026-05-17-escape-postback-deterministic-ai-workflows.md
+# /home/mike/repos/trimnoir/_posts/2026-04-29-ast-syntactic-splicing-workflow-automation.md
+
 
 # GROK'S FIRST SET OF SELECTIONS
 # /home/mike/repos/trimnoir/_posts/2026-03-11-idempotent-token-ledger-llm-context.md
