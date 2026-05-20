@@ -67,13 +67,13 @@ AI_PHOOEY_CHOP = r"""
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # CHAPTER 1: BOOTSTRAPPING, CLI & ROUTING
-README.md  # [20,467 tokens | 103,208 bytes]
-release.py  # [9,879 tokens | 44,440 bytes]
-/home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
-assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
-pyproject.toml  # [679 tokens | 2,321 bytes]
-.gitignore  # [571 tokens | 2,096 bytes]
-flake.nix  # [8,337 tokens | 35,472 bytes]
+# README.md  # [20,467 tokens | 103,208 bytes]
+# release.py  # [9,879 tokens | 44,440 bytes]
+# /home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
+# assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
+# pyproject.toml  # [679 tokens | 2,321 bytes]
+# .gitignore  # [571 tokens | 2,096 bytes]
+# flake.nix  # [8,337 tokens | 35,472 bytes]
 
 # # Too much too soon
 # config.py  # [4,170 tokens | 16,184 bytes]
@@ -296,6 +296,9 @@ apply.py
 # ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- UNCOMMENT TO LET AI PICK ARTICLES
 
 # !!! AD HOC
+
+.gitignore
+flake.nix
 
 # GROK'S FIRST SET OF SELECTIONS
 # /home/mike/repos/trimnoir/_posts/2026-03-11-idempotent-token-ledger-llm-context.md
