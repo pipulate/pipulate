@@ -300,6 +300,8 @@ AI_PHOOEY_CHOP = r"""
 
 # !!! AD HOC
 
+config.py
+server.py
 /home/mike/repos/trimnoir/_posts/2026-05-08-debugging-ghost-driver-audio-automation.md
 /home/mike/repos/trimnoir/_posts/2025-12-05-building-the-ghost-driver-automated-self-testing-for-agentic-ai.md
 /home/mike/repos/trimnoir/_posts/2026-05-17-escape-postback-deterministic-ai-workflows.md
@@ -307,6 +309,7 @@ AI_PHOOEY_CHOP = r"""
 apps/040_hello_workflow.py
 Notebooks/.agents/skills/hello_workflow/SKILL.md
 assets/scenarios/hello_workflow_test.json
+assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # .gitignore
 # flake.nix
