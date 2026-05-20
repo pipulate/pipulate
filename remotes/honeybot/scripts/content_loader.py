@@ -153,7 +153,7 @@ def clean_markdown(text):
     text = re.sub(dye_pattern, '', text, flags=re.DOTALL)
 
     # Remove Code Blocks
-    text = re.sub(r'```.*?```', ' [Code at MikeLev dot Eye N slash latest.] ', text, flags=re.DOTALL)
+    text = re.sub(r'```.*?```', ' [See the code at MikeLev dot Eye N slash latest.] ', text, flags=re.DOTALL)
 
     # --- NEW: Remove Indented Code Blocks ---
     # Matches one or more contiguous lines that start with exactly 4 spaces (or a tab)

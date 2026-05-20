@@ -283,17 +283,17 @@ AI_PHOOEY_CHOP = r"""
 # CORE STUFF
 
 # OUTER
-# /home/mike/repos/nixos/configuration.nix
-# /home/mike/repos/nixos/packages.nix
-# /home/mike/repos/nixos/autognome.py
-# init.lua
-# scripts/ai.py
+/home/mike/repos/nixos/configuration.nix
+/home/mike/repos/nixos/packages.nix
+/home/mike/repos/nixos/autognome.py
+init.lua
+scripts/ai.py
 
 # INNER
-# flake.nix
-# README.md
-# prompt_foo.py
-# apply.py
+flake.nix
+README.md
+prompt_foo.py
+apply.py
 foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
 
