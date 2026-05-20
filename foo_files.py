@@ -299,6 +299,12 @@ prompt_foo.py
 
 # !!! AD HOC
 
+remotes/honeybot/queries/trapdoor_ips.sql
+remotes/honeybot/queries/intel_sovereign_bots.sql
+remotes/honeybot/nixos/configuration.nix
+remotes/honeybot/scripts/logs.py
+remotes/honeybot/scripts/db.py
+
 # scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
 
 # .gitignore
@@ -627,12 +633,10 @@ _ = CHOP_FLAKE_EVOLUTION
 # remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
 # remotes/honeybot/queries/intel_noise_404s.sql  # [92 tokens | 286 bytes]
 # remotes/honeybot/queries/intel_phantom_ui.sql  # [238 tokens | 874 bytes]
-# remotes/honeybot/queries/intel_sovereign_bots.sql  # [160 tokens | 564 bytes]
 # remotes/honeybot/queries/intel_true_404s.sql  # [104 tokens | 335 bytes]
 # remotes/honeybot/queries/intel_unknown_agents.sql  # [85 tokens | 296 bytes]
 # remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
 # remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
-# remotes/honeybot/queries/trapdoor_ips.sql  # [89 tokens | 298 bytes]
 # remotes/honeybot/scripts/bot_intel.json  # [606 tokens | 1,838 bytes]
 # remotes/honeybot/scripts/build_bot_miner.py  # [510 tokens | 2,105 bytes]
 # remotes/honeybot/scripts/dye_injector.py  # [271 tokens | 1,070 bytes]
