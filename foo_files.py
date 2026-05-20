@@ -302,7 +302,7 @@ logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
 # prompt_foo.py
 # apply.py
 # foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
-# imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
+imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 
 # ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
 

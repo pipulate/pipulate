@@ -228,6 +228,7 @@ def falling_alice(console_output=True):
 
 def white_rabbit(console_output=True):
     """🐰 WHITE RABBIT: Whimsical White Rabbit-themed banner"""
+    figurate("white_rabbit", context="server startup")
     alice_art = r"""[black].[/black]
  - This is Uvicorn webserver output.                       /)    ______
    (i.e. the Uvicorn is talking to you)              /)\__//    /      \
