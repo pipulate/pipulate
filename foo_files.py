@@ -297,7 +297,7 @@ scripts/ai.py
 # apply.py
 
 # GO AHEAD AI, MAKE YOUR CHOICE
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- UNCOMMENT TO LET AI PICK ARTICLES
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- UNCOMMENT TO LET AI PICK ARTICLES
 
 # !!! AD HOC
 
