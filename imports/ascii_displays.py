@@ -77,11 +77,29 @@ def figurate(name: str, context: Optional[str] = None) -> FigurateResult:
 # Each entry provides a render() function returning (human, ai) tuple.
 # Art goes here as a data asset; rendering logic stays separate from content.
 # Populate incrementally — add entries as existing functions are migrated.
+def _figurate_white_rabbit():
+    """Render white_rabbit as (human, ai) tuple for FIGURATE_REGISTRY."""
+    art = r"""
+  .  .  .  .  .  .  .  .  .  .  .
+    W E L C O M E   T O
+      C O N S O L E L A N D
+  .  .  .  .  .  .  .  .  .  .  .
+       /)    ______
+  /)\__//    /      \
+ (/_ 0 0    |        |
+  ==(_T_)== |Pipulate|
+    ""   \   \      /
+           \  \____/
+  .  .  .  .  .  .  .  .  .  .  .
+    """
+    human = Panel(art, title="🐰 Welcome to Consoleland", border_style="white")
+    return human, art
+
+
 FIGURATE_REGISTRY: dict = {
-    # Example entry shape (uncomment when migrating white_rabbit):
-    # "white_rabbit": {
-    #     "render": lambda: _figurate_white_rabbit(),
-    # },
+    "white_rabbit": {
+        "render": _figurate_white_rabbit,
+    },
 }
 
 def safe_console_print(*args, **kwargs):
