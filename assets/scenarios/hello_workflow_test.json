@@ -128,20 +128,6 @@
           "delay_before": 500
         }
       },
-
-
-
-{
-        "step_id": "06_verify_greeting",
-        "type": "dom_action",
-        "action": "click",
-        "selector": "#hello-step02-greeting-input",
-        "read_value_from": "#hello-step02-greeting-input",
-        "message_template": "✅ **Verified:** Resulting Greeting: {value}",
-        "timing": {
-          "delay_before": 500
-        }
-      },
       {
         "step_id": "06b_submit_greeting",
         "type": "dom_action",
