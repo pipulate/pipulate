@@ -286,20 +286,20 @@ AI_PHOOEY_CHOP = r"""
 # /home/mike/repos/nixos/configuration.nix
 # # /home/mike/repos/nixos/packages.nix
 # # /home/mike/repos/nixos/autognome.py
-# init.lua
-# # scripts/ai.py
+init.lua
+scripts/ai.py
 # 
 # # INNER
-# flake.nix
+flake.nix
 # # # README.md
-# # prompt_foo.py
+prompt_foo.py
 foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
-# # apply.py
+apply.py
 
 # !!! AD HOC
 
-# https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-pro/
-# !https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-pro/
+scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 
 # .gitignore
 # pipulate/__init__.py
