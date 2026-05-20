@@ -5225,6 +5225,8 @@ def run_server_with_watchdog():
     aa.figlet_banner(figlet_text, subtitle, font='standard', color='white on default')
     slog.safe_print()
     aa.chip_says("Hello! The server is restarting. I'll be right back online.", BANNER_COLORS['workshop_ready'])
+    aa.white_rabbit()
+    logger.info("🎨 FINDER_TOKEN: FIGURATE_CANARY - white_rabbit called from run_server_with_watchdog")
     env = get_current_environment()
     env_db = get_db_filename()  # 🚨 CRITICAL FIX: Use current environment's database file
     logger.info(f'🌍 FINDER_TOKEN: ENVIRONMENT - Current environment: {env}')
