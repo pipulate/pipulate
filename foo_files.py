@@ -282,11 +282,11 @@ AI_PHOOEY_CHOP = r"""
 
 # CORE STUFF
 logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
-README.md
+# README.md
 
 # ABOVE
-/home/mike/repos/Pipulate.com/index.md
-/home/mike/repos/Pipulate.com/install.sh
+# /home/mike/repos/Pipulate.com/index.md
+# /home/mike/repos/Pipulate.com/install.sh
 # assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
 
 # # OUTER
@@ -297,16 +297,20 @@ README.md
 # scripts/ai.py
 # 
 # # INNER
-.gitignore
-flake.nix
-prompt_foo.py
-apply.py
-foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
-imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
+# .gitignore
+# flake.nix
+# prompt_foo.py
+# apply.py
+# foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
+# imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 
 # ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
 
 # !!! AD HOC
+config.py
+pipulate/__init__.py
+pipulate/core.py
+server.py
 
 # remotes/honeybot/queries/trapdoor_ips.sql
 # remotes/honeybot/queries/intel_sovereign_bots.sql

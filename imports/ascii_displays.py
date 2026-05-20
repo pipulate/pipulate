@@ -15,6 +15,75 @@ logger = logging.getLogger(__name__)
 # Initialize console for display functions
 console = Console()
 
+# ============================================================================
+# FIGURATE: The Dual-Output ASCII Art System
+# ============================================================================
+# The wand grows a new verb. figurate() always produces two versions:
+#   .human  → Rich-formatted, colorized, ready for the terminal
+#   .ai     → Plain text, no markup, no ANSI, safe for logs and LLM context
+#
+# Usage:
+#   art = figurate("white_rabbit")
+#   safe_console_print(art.human)   # for humans
+#   logger.info(art.ai)             # for AI assistants
+# ============================================================================
+
+from dataclasses import dataclass
+from typing import Optional, Callable
+
+@dataclass
+class FigurateResult:
+    """The dual-output product of a figurate() call."""
+    name: str
+    human: object   # Rich Panel, Text, or str — ready for safe_console_print()
+    ai: str         # Plain ASCII, no Rich markup, no ANSI codes — safe for logging
+
+def figurate(name: str, context: Optional[str] = None) -> FigurateResult:
+    """🎨 FIGURATE: Centralized dual-output ASCII art renderer.
+    
+    Looks up `name` in the FIGURATE_REGISTRY and returns a FigurateResult
+    with both a Rich-formatted human version and a plain-text AI version.
+    
+    Falls back gracefully if the name is not yet registered.
+    
+    Args:
+        name: Registry key for the art piece (e.g., "white_rabbit")
+        context: Optional contextual note logged alongside the AI version
+        
+    Returns:
+        FigurateResult with .human (Rich) and .ai (plain) attributes
+    """
+    entry = FIGURATE_REGISTRY.get(name)
+    if entry is None:
+        fallback = f"[figurate: '{name}' not yet registered]"
+        return FigurateResult(name=name, human=fallback, ai=fallback)
+    
+    render_fn: Callable = entry.get("render")
+    if render_fn is None:
+        fallback = f"[figurate: '{name}' has no render function]"
+        return FigurateResult(name=name, human=fallback, ai=fallback)
+    
+    # render_fn must return (human_renderable, ai_plain_str)
+    human_out, ai_out = render_fn()
+    
+    if context:
+        logger.info(f"🎨 FIGURATE: {name} | {context}")
+    logger.info(f"🎨 FIGURATE_AI: {name}\n{ai_out}")
+    
+    return FigurateResult(name=name, human=human_out, ai=ai_out)
+
+
+# FIGURATE_REGISTRY: The map of all visual vocabulary.
+# Each entry provides a render() function returning (human, ai) tuple.
+# Art goes here as a data asset; rendering logic stays separate from content.
+# Populate incrementally — add entries as existing functions are migrated.
+FIGURATE_REGISTRY: dict = {
+    # Example entry shape (uncomment when migrating white_rabbit):
+    # "white_rabbit": {
+    #     "render": lambda: _figurate_white_rabbit(),
+    # },
+}
+
 def safe_console_print(*args, **kwargs):
     """🎨 SAFE_CONSOLE: Failover from rich.print to regular print for compatibility"""
     try:
