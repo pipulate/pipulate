@@ -297,132 +297,6 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           if ! python -c "import numpy" 2>/dev/null; then
             echo "❌ Error: numpy could not be imported. Check your installation."
           fi
-          # Create convenience scripts for managing JupyterLab
-          # Note: We've disabled token and password for easier access, especially in WSL environments
-          cat << 'START_SCRIPT_EOF' > .venv/bin/start
-          #!/bin/sh
-          export JUPYTER_CONFIG_DIR="$(pwd)/.jupyter"
-          export JUPYTER_WORKSPACE_NAME="pipulate-main"
-          copy_notebook_if_needed
-          echo "A JupyterLab tab will open in your default browser."
-          tmux kill-session -t jupyter 2>/dev/null || echo "No tmux session named 'jupyter' is running."
-          tmux new-session -d -s jupyter "source .venv/bin/activate && jupyter lab ${jupyterStartupNotebook} ${if autoOpenJupyter == "true" then "" else "--no-browser"} --workspace=\$JUPYTER_WORKSPACE_NAME --NotebookApp.token=\"\" --NotebookApp.password=\"\" --NotebookApp.disable_check_xsrf=True"
-          sleep 2
-          echo "If no tab opens, visit http://localhost:8888/lab"
-          echo "To view JupyterLab server: tmux attach -t jupyter"
-          echo "To stop JupyterLab server: stop"
-          START_SCRIPT_EOF
-          chmod +x .venv/bin/start
-          cat << 'STOP_SCRIPT_EOF' > .venv/bin/stop
-          #!/bin/sh
-          echo "Stopping tmux session 'jupyter'..."
-          tmux kill-session -t jupyter 2>/dev/null || echo "No tmux session named 'jupyter' is running."
-          echo "The tmux session 'jupyter' has been stopped."
-          STOP_SCRIPT_EOF
-          chmod +x .venv/bin/stop
-          # Create a run-server script
-          cat << 'SERVER_SCRIPT_EOF' > .venv/bin/run-server
-          #!/bin/sh
-          echo "Starting $APP_NAME server..."
-          # Kill any running server instances first
-          pkill -f "python server.py" || true
-          # Always pull the latest code before starting the server
-          echo "Pulling latest code updates..."
-          git pull
-          python server.py
-          SERVER_SCRIPT_EOF
-          chmod +x .venv/bin/run-server
-          # Create a run-jupyter script
-          cat << 'JUPYTER_SCRIPT_EOF' > .venv/bin/run-jupyter
-          #!/bin/sh
-          export JUPYTER_CONFIG_DIR="$(pwd)/.jupyter"
-          export JUPYTER_WORKSPACE_NAME="pipulate-main"
-          echo "Starting JupyterLab..."
-          copy_notebook_if_needed
-          # Kill existing jupyter tmux session
-          tmux kill-session -t jupyter 2>/dev/null || true
-          # Start JupyterLab
-          tmux new-session -d -s jupyter "source .venv/bin/activate && jupyter lab ${jupyterStartupNotebook} ${if autoOpenJupyter == "true" then "" else "--no-browser"} --workspace=\$JUPYTER_WORKSPACE_NAME --NotebookApp.token=\"\" --NotebookApp.password=\"\" --NotebookApp.disable_check_xsrf=True"
-          # Wait for JupyterLab to start
-          echo "JupyterLab is starting..."
-
-          # 🗣️ THE UNIFIED VOICE TRIGGER
-          python -c "from imports.voice_synthesis import chip_voice_system as cvs; cvs.speak_text('Starting JupyterLab environment.')" > /dev/null 2>&1 &
-
-          for i in {1..30}; do
-            if curl -s http://localhost:8888 > /dev/null; then
-              echo "JupyterLab is ready!"
-              break
-            fi
-            sleep 1
-            echo -n "."
-          done
-          echo "JupyterLab started! View logs with: tmux attach -t jupyter"
-          JUPYTER_SCRIPT_EOF
-          chmod +x .venv/bin/run-jupyter
-          # Create a run-all script to restart both servers
-          cat << 'RUN_ALL_SCRIPT_EOF' > .venv/bin/run-all
-          #!/bin/sh
-          export JUPYTER_CONFIG_DIR="$(pwd)/.jupyter"
-          export JUPYTER_WORKSPACE_NAME="pipulate-main"
-          echo "JupyterLab will start in the background."
-          copy_notebook_if_needed
-          # Kill existing tmux sessions
-          tmux kill-session -t jupyter 2>/dev/null || true
-          # Kill any running server instances
-          pkill -f "python server.py" || true
-          # Start JupyterLab
-          echo "Starting JupyterLab..."
-          tmux new-session -d -s jupyter "source .venv/bin/activate && jupyter lab ${jupyterStartupNotebook} ${if autoOpenJupyter == "true" then "" else "--no-browser"} --workspace=\$JUPYTER_WORKSPACE_NAME --NotebookApp.token=\"\" --NotebookApp.password=\"\" --NotebookApp.disable_check_xsrf=True"
-          sleep 2
-          # Wait for JupyterLab to start
-          echo "JupyterLab is starting..."
-          for i in {1..30}; do
-            if curl -s http://localhost:8888 > /dev/null; then
-              echo "JupyterLab is ready!"
-              break
-            fi
-            sleep 1
-            echo -n "."
-          done
-          echo "JupyterLab started in the background. View logs with: tmux attach -t jupyter"
-          echo "Starting $APP_NAME server in the foreground..."
-          # Always pull the latest code before starting the server
-          echo "Pulling latest code updates..."
-          git pull
-          # Open FastHTML in the browser
-          (
-            # Wait for server to be ready before opening browser
-            echo "Waiting for $APP_NAME server to start (checking http://localhost:5001)..."
-            SERVER_STARTED=false
-            for i in {1..30}; do
-              if curl -s http://localhost:5001 > /dev/null 2>&1; then
-                echo "✅ $APP_NAME server is ready at http://localhost:5001!"
-                SERVER_STARTED=true
-                break
-              fi
-              sleep 1
-              echo -n "."
-            done
-            if [ "$SERVER_STARTED" = true ] && ( [ "${autoOpenFastHTML}" = "true" ] || [ -f Notebooks/data/.onboarded ] ); then
-              if [ "${fastHtmlOpenDelay}" -gt 0 ]; then
-                echo "Delaying FastHTML tab by ${fastHtmlOpenDelay} seconds..."
-                sleep ${fastHtmlOpenDelay}
-              fi
-              if command -v xdg-open >/dev/null 2>&1; then
-                xdg-open http://localhost:5001 >/dev/null 2>&1 &
-              elif command -v open >/dev/null 2>&1; then
-                open http://localhost:5001 >/dev/null 2>&1 &
-              fi
-            else
-              echo
-              echo "⚠️  Server didn't start within 30 seconds, but continuing..."
-            fi
-          ) &
-          # Run server in foreground
-          python server.py
-          RUN_ALL_SCRIPT_EOF
-          chmod +x .venv/bin/run-all
           # Add convenience scripts to PATH
           export PATH="$VIRTUAL_ENV/bin:$PATH"
           # Automatically start JupyterLab in background and server in foreground
@@ -604,7 +478,6 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           git config --local filter.nbstripout.clean "nbstripout"
           # Set EFFECTIVE_OS for browser automation scripts
           if [[ "$(uname -s)" == "Darwin" ]]; then export EFFECTIVE_OS="darwin"; else export EFFECTIVE_OS="linux"; fi
-          echo "INFO: EFFECTIVE_OS set to: $EFFECTIVE_OS"
           # Clean up the prompt to remove Nix's redundant prefixes and Mac's long hostname
           export PS1="\[\033[1;32m\](nix)\[\033[0m\] \[\033[1;34m\]\W\[\033[0m\] $ "
           # Add aliases
@@ -757,7 +630,6 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               ${pythonSetupLogic}
               ${miscSetupLogic}
               # Run the full interactive startup script
-              echo "Entering standard environment with auto-updates..."
               ${runScript}/bin/run-script
             '';
           };
