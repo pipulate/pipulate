@@ -70,7 +70,7 @@ AI_PHOOEY_CHOP = r"""
 
 # CHAPTER 1: BOOTSTRAPPING, CLI & ROUTING
 # README.md  # [20,467 tokens | 103,208 bytes]
-# release.py  # [9,879 tokens | 44,440 bytes]
+release.py  # [9,879 tokens | 44,440 bytes]
 # /home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
 # assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
 # pyproject.toml  # [679 tokens | 2,321 bytes]
@@ -83,8 +83,8 @@ AI_PHOOEY_CHOP = r"""
 # cli.py  # [5,048 tokens | 22,411 bytes]
 
 # CHAPTER 2: THE SERVER MONOLITH
-# requirements.in  # [573 tokens | 1,924 bytes]
-# requirements.txt  # [7,010 tokens | 18,582 bytes]
+requirements.in  # [573 tokens | 1,924 bytes]
+requirements.txt  # [7,010 tokens | 18,582 bytes]
 # config.py  # [4,170 tokens | 16,184 bytes]
 # server.py  # [56,027 tokens | 267,108 bytes]
 
@@ -281,7 +281,7 @@ AI_PHOOEY_CHOP = r"""
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 # CORE STUFF
-logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
+# logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
 # README.md
 
 # ABOVE
@@ -297,20 +297,20 @@ logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
 # scripts/ai.py
 # 
 # # INNER
-# .gitignore
-# flake.nix
+.gitignore
+flake.nix
 # prompt_foo.py
-# apply.py
+apply.py
 # foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
-imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
+# imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 
 # ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
 
 # !!! AD HOC
-config.py
-pipulate/__init__.py
-pipulate/core.py
-server.py
+# config.py
+# pipulate/__init__.py
+# pipulate/core.py
+# server.py
 
 # remotes/honeybot/queries/trapdoor_ips.sql
 # remotes/honeybot/queries/intel_sovereign_bots.sql
