@@ -364,6 +364,18 @@ EMPTY = r"""
 foo_files.py  # Just the map.
 """
 
+BEHAVIORAL_TELEMETRY_CHOP = """
+# THE COGNITIVE FEEDBACK LOOP (Behavioral Telemetry)
+# COMMAND: python prompt_foo.py --chop BEHAVIORAL_TELEMETRY_CHOP --no-tree
+# Internal user state + External Honeybot signals.
+
+! echo "--- AGENT ROUTING ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+/home/mike/journal/journal.txt
+/home/mike/.bash_history
+/home/mike/repos/nixos/autognome.py
+/home/mike/repos/pipulate/scripts/ai.py
+"""
+
 STORY_ARC_CHOP = """
 # THE STORY ARC: Self-Modifying Cognitive Infrastructure
 # COMMAND: python prompt_foo.py --chop STORY_ARC_CHOP --no-tree
