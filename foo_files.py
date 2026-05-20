@@ -282,24 +282,24 @@ AI_PHOOEY_CHOP = r"""
 
 # CORE STUFF
 
-# # OUTER
-# /home/mike/repos/nixos/configuration.nix
-# # /home/mike/repos/nixos/packages.nix
-# # /home/mike/repos/nixos/autognome.py
-init.lua
-scripts/ai.py
-# 
-# # INNER
-flake.nix
-# # # README.md
-prompt_foo.py
+# # # OUTER
+# # /home/mike/repos/nixos/configuration.nix
+# # # /home/mike/repos/nixos/packages.nix
+# # # /home/mike/repos/nixos/autognome.py
+# init.lua
+# scripts/ai.py
+# # 
+# # # INNER
+# flake.nix
+# # # # README.md
+# prompt_foo.py
 foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
 apply.py
 
 # !!! AD HOC
 
-scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
+# scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
 
 # .gitignore
 # pipulate/__init__.py
@@ -366,27 +366,28 @@ foo_files.py  # Just the map.
 
 STORY_ARC_CHOP = """
 # THE STORY ARC: Self-Modifying Cognitive Infrastructure
-# Purpose:
-# Show how Pipulate / NPvg evolves from portable *nix survival kit
-# into a reproducible, local-first, AI-assisted, self-documenting
-# future-proofing machine.
+# COMMAND: python prompt_foo.py --chop STORY_ARC_CHOP --no-tree
 
-# MOTOR CORTEX / PROVENANCE LAYER
-init.lua
+/home/mike/repos/trimnoir/_posts/2026-02-28-levinix-no-problem-universal-packager-blueprint-ai-age.md  # [25,907 tokens | 101,215 bytes]
+/home/mike/repos/trimnoir/_posts/2026-03-08-llmectomy-uncoupling-ai-models-vendor-lock-in.md  # [19,519 tokens | 80,097 bytes]
+/home/mike/repos/trimnoir/_posts/2026-03-11-self-auditing-ai-context-compiler.md  # [30,509 tokens | 109,354 bytes]
+/home/mike/repos/trimnoir/_posts/2026-03-11-idempotent-token-ledger-llm-context.md  # [33,745 tokens | 121,068 bytes]
+/home/mike/repos/trimnoir/_posts/2026-04-13-forever-machine-muscle-memory.md  # [39,202 tokens | 156,831 bytes]
+/home/mike/repos/trimnoir/_posts/2026-05-09-taming-the-amnesia-genie.md  # [40,744 tokens | 163,832 bytes]
+/home/mike/repos/trimnoir/_posts/2026-05-15-cathedral-of-one-prompt-fu-forever-machine.md  # [30,102 tokens | 124,546 bytes]
+/home/mike/repos/trimnoir/_posts/2026-05-15-deterministic-ai-coding-actuator.md  # [38,811 tokens | 160,336 bytes]
+/home/mike/repos/trimnoir/_posts/2026-05-17-escape-postback-deterministic-ai-workflows.md  # [18,207 tokens | 83,548 bytes]
+/home/mike/repos/trimnoir/_posts/2026-05-18-swappable-ai-strategy.md  # [22,592 tokens | 92,335 bytes]
+/home/mike/repos/trimnoir/_posts/2026-05-19-ergonomics-of-oversight-ai-trust-rituals.md  # [11,313 tokens | 47,086 bytes]
+/home/mike/repos/trimnoir/_posts/2026-05-19-unix-philosophy-nix-noise-reduction.md  # [8,717 tokens | 35,345 bytes]
+/home/mike/repos/trimnoir/_posts/2026-05-19-witnessed-machine-stateless-ai-executive-function.md  # [14,371 tokens | 59,275 bytes]
 
-# LOCAL AI / COMMIT MEMORY LAYER
-scripts/ai.py
-
-# HERMETIC PLATFORM / NPvg BOTTLE LAYER
-flake.nix
-
-# CONTEXT COMPILER / PROMPT FU LAYER
-prompt_foo.py
-foo_files.py
-apply.py
-
-# ARTICLE INDEX FOR ORIENTATION
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
+init.lua  # [6,395 tokens | 24,372 bytes]
+scripts/ai.py  # [1,862 tokens | 8,699 bytes]
+flake.nix  # [7,761 tokens | 33,368 bytes]
+prompt_foo.py  # [15,724 tokens | 71,739 bytes]
+foo_files.py  # [11,057 tokens | 37,588 bytes]
+apply.py  # [1,643 tokens | 7,124 bytes]
 """
 
 CHOP_POST_MORTEM = """
