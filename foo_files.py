@@ -352,22 +352,44 @@ scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
 # command they should execute after adding the custom CHOP here, because you
 # know humans aren't really that smart.
 
-ROLLING_PIN_CHOP = """\
+ROLLING_PIN_CHOP = """
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 """
 
-EMPTY = (
-    r"""\
+EMPTY = r"""
 # THE 40K FOOT VIEW (Minimalist Context)
 # COMMAND: python prompt_foo.py --chop EMPTY --no-tree
 # Used for story generation and pure text tasks where codebase noise is a liability.
 
 foo_files.py  # Just the map.
 """
-)
 
-CHOP_POST_MORTEM = (
-    r"""\
+STORY_ARC_CHOP = """
+# THE STORY ARC: Self-Modifying Cognitive Infrastructure
+# Purpose:
+# Show how Pipulate / NPvg evolves from portable *nix survival kit
+# into a reproducible, local-first, AI-assisted, self-documenting
+# future-proofing machine.
+
+# MOTOR CORTEX / PROVENANCE LAYER
+init.lua
+
+# LOCAL AI / COMMIT MEMORY LAYER
+scripts/ai.py
+
+# HERMETIC PLATFORM / NPvg BOTTLE LAYER
+flake.nix
+
+# CONTEXT COMPILER / PROMPT FU LAYER
+prompt_foo.py
+foo_files.py
+apply.py
+
+# ARTICLE INDEX FOR ORIENTATION
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
+"""
+
+CHOP_POST_MORTEM = """
 # THE POST-MORTEM (Surgical Log Extraction)
 # COMMAND: python prompt_foo.py assets/prompts/debug_crash.md --chop CHOP_POST_MORTEM --no-tree
 # Pulls the most recent systemic state and the last breath of the machine.
@@ -381,10 +403,8 @@ CHOP_POST_MORTEM = (
 # 3. Any active Tracebacks
 ! grep -A 20 "Traceback (most recent call last):" logs/server.log
 """
-)
 
-CHOP_404_AFFAIR = (
-    r"""\
+CHOP_404_AFFAIR = """
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # COMMAND: python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree
 # /home/mike/repos/trimnoir/_raw_map.csv
@@ -393,10 +413,8 @@ CHOP_404_AFFAIR = (
 # scripts/articles/common.py
 ! python scripts/articles/extract_404_ghosts.py
 """
-)
 
-CHOP_FISHTANK = (
-    r"""\
+CHOP_FISHTANK = """
 # THE FISHTANK TELEMETRY BLUEPRINT
 # COMMAND: python prompt_foo.py --chop CHOP_FISHTANK -n
 # Pumping live Honeybot observability data directly into the AI's context.
@@ -411,10 +429,8 @@ CHOP_FISHTANK = (
 ! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 """
-)
 
-CHOP_FLAKE_EVOLUTION = (
-    r"""\
+CHOP_FLAKE_EVOLUTION = """
 # THE FLAKE EVOLUTION BLUEPRINT
 # COMMAND: python prompt_foo.py --chop CHOP_FLAKE_EVOLUTION --no-tree
 # Inspecting the recent mutations of the core environment definition.
@@ -428,7 +444,6 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 # 3. The Diffs (The actual changes from the last few major updates)
 ! git --no-pager diff HEAD~5 HEAD -- flake.nix
 """
-)
 
 # ============================================================================
 # IX. STATIC ANALYSIS SUPPRESSION (for Ruff)
@@ -641,5 +656,4 @@ _ = CHOP_FLAKE_EVOLUTION
 # scripts/gsc/gsc_top_movers.py  # [8,003 tokens | 34,690 bytes]
 # scripts/playground/prompt_feeder.py  # [746 tokens | 3,154 bytes]
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
-# scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
