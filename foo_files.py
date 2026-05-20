@@ -293,13 +293,13 @@ AI_PHOOEY_CHOP = r"""
 # flake.nix
 # # # README.md
 # # prompt_foo.py
-# foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
+foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
 # # apply.py
 
 # !!! AD HOC
 
-https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-pro/
-!https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-pro/
+# https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-pro/
+# !https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-pro/
 
 # .gitignore
 # pipulate/__init__.py

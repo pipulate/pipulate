@@ -581,7 +581,7 @@ map('n', '<leader>r', '<cmd>lua add_liquid_raw_tags()<CR>', opts)  -- Add Liquid
 map('n', '<leader>b', '<cmd>lua bold_dialogue_speaker()<CR>', opts)  -- Bold dialogue speaker
 map('n', '<leader>ya', 'i**Gemini 3.1 Pro**: ', opts)   -- you: Gemini
 map('n', '<leader>yc', 'i**Claude Sonnet 4.6**: ', opts) -- you: Claude
-map('n', '<leader>yg', 'i**ChatGPT**: ', opts)           -- you: GPT
+map('n', '<leader>yg', 'i**ChatGPT 5.5 Pro**: ', opts)           -- you: GPT
 map('n', '<leader>t', 'i**Me**: ', opts) -- the human
 
 -- Git Operations
