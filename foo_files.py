@@ -370,10 +370,10 @@ BEHAVIORAL_TELEMETRY_CHOP = """
 # Internal user state + External Honeybot signals.
 
 ! echo "--- AGENT ROUTING ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-/home/mike/journal/journal.txt
-/home/mike/.bash_history
-/home/mike/repos/nixos/autognome.py
-/home/mike/repos/pipulate/scripts/ai.py
+remotes/honeybot/scripts/db.py  # [2,850 tokens | 13,221 bytes]
+remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
+/home/mike/repos/nixos/autognome.py  # [7,279 tokens | 34,533 bytes]
+/home/mike/repos/pipulate/scripts/ai.py  # [1,862 tokens | 8,699 bytes]
 """
 
 STORY_ARC_CHOP = """
