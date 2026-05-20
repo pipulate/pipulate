@@ -574,13 +574,13 @@ map('n', '<F4>', '<cmd>lua toggle_line_numbers()<CR>', opts)
 -- Leader key mappings
 -- Text Processing
 map('n', '<leader>s', '<cmd>lua correct_misspelling()<CR>', opts)  -- Spell correction
-map('n', '<leader>t', '<cmd>lua escape_html_tags()<CR>', opts)  -- HTML tag escaping
+map('n', '<leader>q', '<cmd>lua escape_html_tags()<CR>', opts)  -- HTML tag escaping
 map('n', '<leader>r', '<cmd>lua add_liquid_raw_tags()<CR>', opts)  -- Add Liquid raw tags
 
 -- Dialogue Labelers
 map('n', '<leader>b', '<cmd>lua bold_dialogue_speaker()<CR>', opts)  -- Bold dialogue speaker
-map('n', '<leader>y', 'i**Gemini 3.1 Pro**: ', opts) -- you
-map('n', '<leader>m', 'i**Me**: ', opts) -- me
+map('n', '<leader>y', 'i**Gemini 3.1 Pro**: ', opts) -- you (AI)
+map('n', '<leader>t', 'i**Me**: ', opts) -- the human
 
 -- Git Operations
 map('n', '<leader>g', '<cmd>lua git_commit_push()<CR>', opts)  -- Git commit and push
@@ -619,8 +619,10 @@ print("init.lua loaded successfully!")
 -- Text Processing
 -- <leader>s - Correct misspelling before cursor
 -- <leader>b - Bold dialogue speaker in text
--- <leader>t - Escape HTML tags in text
+-- <leader>q - Escape HTML tags in text
 -- <leader>r - Add Liquid {% raw %}/{% endraw %} tags around {{ content
+-- <leader>y - Insert AI speaker label (Gemini)
+-- <leader>t - Insert human speaker label (Me)
 
 -- Git Operations
 -- <leader>g - Git commit and push changes
