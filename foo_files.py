@@ -29,6 +29,8 @@ AI_PHOOEY_CHOP = r"""
 # Focus: Jupyter Notebooks, FastHTML, and bridging the gap.
 # apps/040_hello_workflow.py  # [7,190 tokens | 34,518 bytes]
 # Notebooks/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
+# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # CHAPTER 5: RADICAL TRANSPARENCY (The Public Ledger)
 # Focus: Jekyll, Github Hash injection, and training your machine ancestors.
@@ -282,14 +284,15 @@ AI_PHOOEY_CHOP = r"""
 
 # INNER
 # flake.nix
-prompt_foo.py
-foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
-apply.py
+# prompt_foo.py
+# foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
+# README.md
+# apply.py
 
 # OUTER
-/home/mike/repos/nixos/configuration.nix
-/home/mike/repos/nixos/packages.nix
-/home/mike/repos/nixos/autognome.py
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/packages.nix
+# /home/mike/repos/nixos/autognome.py
 # init.lua
 
 # GO AHEAD AI, MAKE YOUR CHOICE
@@ -297,8 +300,16 @@ apply.py
 
 # !!! AD HOC
 
-.gitignore
-flake.nix
+/home/mike/repos/trimnoir/_posts/2026-05-08-debugging-ghost-driver-audio-automation.md
+/home/mike/repos/trimnoir/_posts/2025-12-05-building-the-ghost-driver-automated-self-testing-for-agentic-ai.md
+/home/mike/repos/trimnoir/_posts/2026-05-17-escape-postback-deterministic-ai-workflows.md
+/home/mike/repos/trimnoir/_posts/2026-04-29-ast-syntactic-splicing-workflow-automation.md
+apps/040_hello_workflow.py
+Notebooks/.agents/skills/hello_workflow/SKILL.md
+assets/scenarios/hello_workflow_test.json
+
+# .gitignore
+# flake.nix
 
 # GROK'S FIRST SET OF SELECTIONS
 # /home/mike/repos/trimnoir/_posts/2026-03-11-idempotent-token-ledger-llm-context.md
@@ -315,8 +326,6 @@ flake.nix
 # /home/mike/repos/trimnoir/_posts/2026-03-11-self-auditing-ai-context-compiler.md
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
-
-# README.md
 
 # scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
 
