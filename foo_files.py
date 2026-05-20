@@ -282,24 +282,24 @@ AI_PHOOEY_CHOP = r"""
 
 # CORE STUFF
 
-# # # OUTER
-# # /home/mike/repos/nixos/configuration.nix
-# # # /home/mike/repos/nixos/packages.nix
-# # # /home/mike/repos/nixos/autognome.py
+# OUTER
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/packages.nix
+# /home/mike/repos/nixos/autognome.py
 # init.lua
 # scripts/ai.py
-# # 
-# # # INNER
+
+# INNER
 # flake.nix
-# # # # README.md
+# README.md
 # prompt_foo.py
+# apply.py
 foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
-apply.py
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
 
 # !!! AD HOC
 
 # scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
 
 # .gitignore
 # pipulate/__init__.py
