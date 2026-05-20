@@ -68,7 +68,14 @@ def figurate(name: str, context: Optional[str] = None) -> FigurateResult:
     
     if context:
         logger.info(f"🎨 FIGURATE: {name} | {context}")
-    logger.info(f"🎨 FIGURATE_AI: {name}\n{ai_out}")
+    
+    # Guaranteed AI visibility (bypass module logger issues)
+    import logging
+    root_logger = logging.getLogger()
+    root_logger.info(f"🎨 FIGURATE_AI: {name}\n{ai_out}")
+    
+    # Also use the existing share function for full AI transparency
+    share_ascii_with_ai(ai_out, f"figurate('{name}') called", "🎨")
     
     return FigurateResult(name=name, human=human_out, ai=ai_out)
 
