@@ -208,15 +208,15 @@ AI_PHOOEY_CHOP = r"""
 # assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
 
 # CHAPTER 14: JEKYLL PUBLISHING
-flake.nix  # [9,141 tokens | 39,307 bytes]
-/home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
-scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-/home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
-scripts/articles/common.py  # [952 tokens | 3,894 bytes]
-scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
-scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
-scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-scripts/articles/contextualizer.py  # [2,519 tokens | 11,151 bytes]
+# flake.nix  # [9,141 tokens | 39,307 bytes]
+# /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
+# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
+# /home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
+# scripts/articles/common.py  # [952 tokens | 3,894 bytes]
+# scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
+# scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
+# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
+# scripts/articles/contextualizer.py  # [2,519 tokens | 11,151 bytes]
 
 # scripts/articles/build_knowledge_graph.py  # [4,341 tokens | 17,300 bytes]
 # scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
@@ -290,14 +290,14 @@ init.lua
 scripts/ai.py
 
 # INNER
-# flake.nix
+flake.nix
 # # README.md
 # prompt_foo.py
-# foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
+foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
 # apply.py
 
 # GO AHEAD AI, MAKE YOUR CHOICE
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- UNCOMMENT TO LET AI PICK ARTICLES
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- UNCOMMENT TO LET AI PICK ARTICLES
 
 # !!! AD HOC
 
