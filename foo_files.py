@@ -89,9 +89,9 @@ AI_PHOOEY_CHOP = r"""
 # server.py  # [56,027 tokens | 267,108 bytes]
 
 # CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT)
-pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-pipulate/core.py  # [29,804 tokens | 144,977 bytes]
+# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
+# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
+# pipulate/core.py  # [29,804 tokens | 144,977 bytes]
 # imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
 
 # CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS)
@@ -197,9 +197,9 @@ pipulate/core.py  # [29,804 tokens | 144,977 bytes]
 # ============================================================================
 
 # CHAPTER 13: THE NOTEBOOK TEMPLATES
-Notebooks/Onboarding.ipynb  # [35,193 tokens | 102,377 bytes]
-Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-Notebooks/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
+# Notebooks/Onboarding.ipynb  # [35,193 tokens | 102,377 bytes]
+# Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
+# Notebooks/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
 # Notebooks/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
 # assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb  # [1,852 tokens | 6,328 bytes]
 # assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
@@ -282,18 +282,18 @@ Notebooks/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
 
 # CORE STUFF
 
-# INNER
-# flake.nix
-# # README.md
-# prompt_foo.py
-foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
-# apply.py
-
 # OUTER
 # /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
 # /home/mike/repos/nixos/autognome.py
-# init.lua
+init.lua
+
+# INNER
+# flake.nix
+# # README.md
+# prompt_foo.py
+# foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
+# apply.py
 
 # GO AHEAD AI, MAKE YOUR CHOICE
 # ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- UNCOMMENT TO LET AI PICK ARTICLES
