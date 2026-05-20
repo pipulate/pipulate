@@ -71,6 +71,7 @@ AI_PHOOEY_CHOP = r"""
 # CHAPTER 1: BOOTSTRAPPING, CLI & ROUTING
 # README.md  # [20,467 tokens | 103,208 bytes]
 release.py  # [9,879 tokens | 44,440 bytes]
+__init__.py
 # /home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
 # assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
 # pyproject.toml  # [679 tokens | 2,321 bytes]
