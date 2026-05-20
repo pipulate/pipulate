@@ -282,7 +282,7 @@ AI_PHOOEY_CHOP = r"""
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 # CORE STUFF
-logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
+# logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
 # README.md
 
 # ABOVE
@@ -291,27 +291,28 @@ logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
 # assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
 
 # # OUTER
-# /home/mike/repos/nixos/configuration.nix
+/home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
 # /home/mike/repos/nixos/autognome.py
-# init.lua
-# scripts/ai.py
+init.lua
+scripts/ai.py
 # 
 # # INNER
-# .gitignore
-# flake.nix
-# prompt_foo.py
-# apply.py
-# foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
+.gitignore
+flake.nix
+prompt_foo.py
+apply.py
+foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
 
+scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
 # ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
 
 # !!! AD HOC
 
-config.py
-server.py
-imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
-imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
+# config.py
+# server.py
+# imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
+# imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 
 # pipulate/__init__.py
 # pipulate/core.py
@@ -372,8 +373,6 @@ imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 # /home/mike/repos/trimnoir/_posts/2026-03-11-self-auditing-ai-context-compiler.md
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
-
-# scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
 
 """
 #   ____          _                     ____ _   _  ___  ____      
