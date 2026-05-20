@@ -1083,6 +1083,10 @@ def main():
         help='Inject full raw Markdown for specific article paths (can be used multiple times).'
     )
     parser.add_argument(
+        '--slugs', nargs='+', metavar='SLUG',
+        help='Specify one or more article slugs to automatically decant full raw content.'
+    )
+    parser.add_argument(
         '--decanter-from', type=str, metavar='FILE',
         help='Read article paths from a file or "-" for stdin, one path per line. Equivalent to multiple --decanter args.'
     )
@@ -1376,6 +1380,20 @@ def main():
             if args.decanter is None:
                 args.decanter = []
             args.decanter.extend(extra_paths)
+
+        # NEW: Map raw slugs directly to absolute paths and stage them for decanting
+        if args.slugs:
+            if args.decanter is None:
+                args.decanter = []
+            all_articles = _get_article_list_data(CONFIG["POSTS_DIRECTORY"], url_config=active_target_config)
+            target_slugs = set(args.slugs)
+            for article in all_articles:
+                filename = os.path.basename(article['path'])
+                stem = os.path.splitext(filename)[0]
+                clean_slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', stem)
+                if clean_slug in target_slugs:
+                    args.decanter.append(article['path'])
+                    logger.print(f"🎯 Resolved slug '{clean_slug}' to: {article['path']}")
 
         # NEW: Process explicitly targeted Decanter files
         if args.decanter:
