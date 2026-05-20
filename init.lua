@@ -579,7 +579,9 @@ map('n', '<leader>r', '<cmd>lua add_liquid_raw_tags()<CR>', opts)  -- Add Liquid
 
 -- Dialogue Labelers
 map('n', '<leader>b', '<cmd>lua bold_dialogue_speaker()<CR>', opts)  -- Bold dialogue speaker
-map('n', '<leader>y', 'i**Gemini 3.1 Pro**: ', opts) -- you (AI)
+map('n', '<leader>ya', 'i**Gemini 2.5 Pro**: ', opts)   -- you: Gemini
+map('n', '<leader>yc', 'i**Claude Sonnet 4.6**: ', opts) -- you: Claude
+map('n', '<leader>yg', 'i**ChatGPT**: ', opts)           -- you: GPT
 map('n', '<leader>t', 'i**Me**: ', opts) -- the human
 
 -- Git Operations
@@ -621,8 +623,10 @@ print("init.lua loaded successfully!")
 -- <leader>b - Bold dialogue speaker in text
 -- <leader>q - Escape HTML tags in text
 -- <leader>r - Add Liquid {% raw %}/{% endraw %} tags around {{ content
--- <leader>y - Insert AI speaker label (Gemini)
--- <leader>t - Insert human speaker label (Me)
+-- <leader>ya - Insert AI speaker label (Gemini)
+-- <leader>yc - Insert AI speaker label (Claude)
+-- <leader>yg - Insert AI speaker label (ChatGPT)
+-- <leader>t  - Insert human speaker label (Me)
 
 -- Git Operations
 -- <leader>g - Git commit and push changes
