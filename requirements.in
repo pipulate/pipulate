@@ -19,6 +19,7 @@
 # 8. git add requirements.txt (& commit & push)
 
 # NEW stuff
+twine
 moviepy
 requests-toolbelt
 markdownify
