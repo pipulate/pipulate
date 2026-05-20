@@ -283,39 +283,61 @@ AI_PHOOEY_CHOP = r"""
 # CORE STUFF
 
 # OUTER
-# /home/mike/repos/nixos/configuration.nix
+/home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
 # /home/mike/repos/nixos/autognome.py
-# init.lua
+init.lua
 # scripts/ai.py
 
 # INNER
-# flake.nix
-# README.md
-prompt_foo.py
-# apply.py
+flake.nix
+# prompt_foo.py
+apply.py
 # foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
+
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
+# README.md
 
 # !!! AD HOC
 
-remotes/honeybot/queries/trapdoor_ips.sql
-remotes/honeybot/queries/intel_sovereign_bots.sql
-remotes/honeybot/nixos/configuration.nix
-remotes/honeybot/scripts/logs.py
-remotes/honeybot/scripts/db.py
+# remotes/honeybot/queries/trapdoor_ips.sql
+# remotes/honeybot/queries/intel_sovereign_bots.sql
+# remotes/honeybot/nixos/configuration.nix
+# remotes/honeybot/scripts/logs.py
+# remotes/honeybot/scripts/db.py
 
 # scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
 
+logs/server.log
+
 # .gitignore
-# pipulate/__init__.py
-# pipulate/core.py
-# config.py
-# server.py
-# apps/040_hello_workflow.py
+pipulate/__init__.py
+pipulate/core.py
+config.py
+server.py
+apps/040_hello_workflow.py
+imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
+imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
+
+# Notebooks/imports/__init__.py  # [0 tokens | 0 bytes]
 # Notebooks/.agents/skills/hello_workflow/SKILL.md
 # assets/scenarios/hello_workflow_test.json
 # assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+# imports/__init__.py  # [0 tokens | 0 bytes]
+# imports/crud.py  # [7,365 tokens | 35,666 bytes]
+# apps/060_tasks.py  # [4,993 tokens | 23,188 bytes]
+# assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
+# assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
+
+# tools/__init__.py  # [464 tokens | 2,067 bytes]
+# tools/llm_optics.py  # [2,829 tokens | 12,322 bytes]
+# tools/scraper_tools.py  # [4,644 tokens | 22,416 bytes]
+
+# tools/__init__.py  # [464 tokens | 2,067 bytes]
+# tools/keychain_tools.py  # [1,376 tokens | 5,688 bytes]
+# tools/scraper_tools.py  # [4,644 tokens | 22,416 bytes]
+# tools/llm_optics.py  # [2,829 tokens | 12,322 bytes]
 
 # /home/mike/repos/trimnoir/_posts/2026-05-08-debugging-ghost-driver-audio-automation.md
 # /home/mike/repos/trimnoir/_posts/2025-12-05-building-the-ghost-driver-automated-self-testing-for-agentic-ai.md
@@ -570,7 +592,6 @@ _ = CHOP_FLAKE_EVOLUTION
 # .jupyter/lab/user-settings/@jupyterlab/notebook-extension/tracker.json  # [21 tokens | 56 bytes]
 # Notebooks/Advanced_Notebooks/__init__.py  # [0 tokens | 0 bytes]
 # Notebooks/__init__.py  # [0 tokens | 0 bytes]
-# Notebooks/imports/__init__.py  # [0 tokens | 0 bytes]
 # apps/130_gap_analysis.py  # [9,625 tokens | 48,280 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
 # apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
