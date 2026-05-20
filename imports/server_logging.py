@@ -338,6 +338,8 @@ def setup_logging(DEBUG_MODE=False, STATE_TABLES=False):
             '🤖 AI_JSON' not in record['message'] and
             # Exclude AI Creative Vision from console (humans see Rich display instead)
             'AI_CREATIVE_VISION' not in record['message'] and
+            # Exclude figurate AI payloads from console (logs retain them)
+            'FIGURATE_AI' not in record['message'] and
             (
                 record['level'].name != 'DEBUG' or
                 any(key in record['message'] for key in [
@@ -347,6 +349,9 @@ def setup_logging(DEBUG_MODE=False, STATE_TABLES=False):
             )
         )
     )
+
+    # Give figurate() a narrow bridge into the unified Loguru pipeline.
+    aa.figurate_logger = logger
     # === STARTUP MESSAGES ===
     if STATE_TABLES:
         logger.info('🔍 FINDER_TOKEN: STATE_TABLES_ENABLED - Console will show 🍪 and ➡️ table snapshots')

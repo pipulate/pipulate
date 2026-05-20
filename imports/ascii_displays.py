@@ -11,6 +11,7 @@ from pyfiglet import Figlet
 import logging
 
 logger = logging.getLogger(__name__)
+figurate_logger = logger
 
 # Initialize console for display functions
 console = Console()
@@ -69,10 +70,8 @@ def figurate(name: str, context: Optional[str] = None) -> FigurateResult:
     if context:
         logger.info(f"🎨 FIGURATE: {name} | {context}")
     
-    # Guaranteed AI visibility (bypass module logger issues)
-    import logging
-    root_logger = logging.getLogger()
-    root_logger.info(f"🎨 FIGURATE_AI: {name}\n{ai_out}")
+    # Guaranteed AI visibility through the unified logging pipeline when active
+    figurate_logger.info(f"🎨 FIGURATE_AI: {name}\n{ai_out}")
     
     # Also use the existing share function for full AI transparency
     share_ascii_with_ai(ai_out, f"figurate('{name}') called", "🎨")
