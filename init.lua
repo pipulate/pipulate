@@ -602,7 +602,7 @@ map('n', '<leader>z', '<cmd>lua clean_gemini_markdown()<CR>', opts)
 map('n', '<leader>a', '<cmd>lua jump_next_active_chop()<CR>', opts)  -- Jump to next Active line (non-comment)
 
 -- Article / Workflow Selection
-map('n', '<leader>v', '<cmd>lua select_current_article()<CR>', opts)  -- Visually select current article block
+map('n', '<leader>h', '<cmd>lua select_current_article()<CR>', opts)  -- Highlight (select) current article block
 
 -- Map it to <leader>p (for "Clip to Prompt")
 vim.api.nvim_set_keymap('v', '<leader>p', '<cmd>lua sync_to_prompt()<CR>', { noremap = true, silent = true })
@@ -637,3 +637,6 @@ print("init.lua loaded successfully!")
 
 -- Navigation
 -- <leader>a - Jump to the next Active (non-commented, non-blank) line
+
+-- Article / Workflow Selection
+-- <leader>h - Highlight (select) current article block
