@@ -1,4 +1,4 @@
-#  ____                            _     _____       
+#\  ____                            _     _____       
 # |  _ \ _ __ ___  _ __ ___  _ __ | |_  |  ___|   _  Copyright 2026 by Mike Levin
 # | |_) | '__/ _ \| '_ ` _ \| '_ \| __| | |_ | | | | https://mikelev.in/
 # |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| | This file and `prompt_foo.py` are under
@@ -281,22 +281,30 @@ AI_PHOOEY_CHOP = r"""
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 # CORE STUFF
+logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
+README.md
 
-# OUTER
-/home/mike/repos/nixos/configuration.nix
+# ABOVE
+/home/mike/repos/Pipulate.com/index.md
+/home/mike/repos/Pipulate.com/install.sh
+# assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
+
+# # OUTER
+# /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
 # /home/mike/repos/nixos/autognome.py
-init.lua
+# init.lua
 # scripts/ai.py
-
-# INNER
+# 
+# # INNER
+.gitignore
 flake.nix
-# prompt_foo.py
+prompt_foo.py
 apply.py
-# foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
+foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
+imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
-# README.md
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
 
 # !!! AD HOC
 
@@ -308,16 +316,13 @@ apply.py
 
 # scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
 
-logs/server.log
 
-# .gitignore
-pipulate/__init__.py
-pipulate/core.py
-config.py
-server.py
-apps/040_hello_workflow.py
-imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
-imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
+# pipulate/__init__.py
+# pipulate/core.py
+# config.py
+# server.py
+# apps/040_hello_workflow.py
+# imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
 
 # Notebooks/imports/__init__.py  # [0 tokens | 0 bytes]
 # Notebooks/.agents/skills/hello_workflow/SKILL.md
