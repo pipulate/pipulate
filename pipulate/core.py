@@ -269,6 +269,20 @@ class Pipulate:
             self.db = db
     # END: pipulate_init
 
+    def figurate(self, name: str, context: Optional[str] = None, console_output: bool = True):
+        """Render a named visual figure through the wand.
+
+        This is a thin facade over imports.ascii_displays.figurate().
+        It keeps the visual/acoustic sovereignty vocabulary reachable from
+        the central Pipulate object without moving the existing banner system.
+        """
+        from imports import ascii_displays as aa
+
+        art = aa.figurate(name, context=context)
+        if console_output:
+            aa.safe_console_print(art.human)
+        return art
+
     def negotiate_ai_models(self, preferred_local: str = None, preferred_cloud: str = None) -> dict:
         """
         Uses the Universal Adapter (llm) to verify AI readiness using fuzzy matching
