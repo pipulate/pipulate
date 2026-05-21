@@ -307,17 +307,19 @@ foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
 
 # ARTICLES
 # scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
 
 # !!! AD HOC
 
-# config.py
-# server.py
-# imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
-# imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
+# THE WIZARD
+config.py
+server.py
+imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
+imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 
-# pipulate/__init__.py
-# pipulate/core.py
+# THE WAND
+pipulate/__init__.py
+pipulate/core.py
 
 # remotes/honeybot/queries/trapdoor_ips.sql
 # remotes/honeybot/queries/intel_sovereign_bots.sql
