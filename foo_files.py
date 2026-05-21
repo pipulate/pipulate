@@ -509,6 +509,51 @@ _ = CHOP_POST_MORTEM
 _ = CHOP_404_AFFAIR
 _ = CHOP_FISHTANK
 _ = CHOP_FLAKE_EVOLUTION
+_ = CHOP_PROGRESSIVE_REVEAL
+
+# ============================================================================
+# SPECIALIZED STRIKE PACKAGES: PROGRESSIVE REVEAL GATE
+# ============================================================================
+
+CHOP_PROGRESSIVE_REVEAL = """
+# THE PROGRESSIVE REVEAL CONTEXT ENGINE
+# COMMAND: python prompt_foo.py --chop CHOP_PROGRESSIVE_REVEAL --no-tree
+# Structural, stateless context designed for rapid article exploration using xp.py.
+
+# 1. THE NARRATIVE MAP
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
+
+# 2. SYSTEM ARCHITECTURE REFERENCE
+foo_files.py
+prompt_foo.py
+scripts/xp.py
+
+# 3. EMBEDDED ACTION INVARIANT
+# --- SYSTEM CONTEXT CONSTRAINTS: PROGRESSIVE HISTORY REVEAL ---
+# You are acting as the Context Curation Engine for a stateless, local-first workspace.
+# Your goal is to select the next logical set of articles to hydrate the conversation's narrative spine.
+#
+# I have provided a master chronological index of available articles via the command output of `lsa.py` above. 
+# Each entry is formatted with metadata that you must discard when constructing your request.
+# Example input format: 2026-05-19 [17k] liveness-coupled-agency-browser-kill-switch
+# The core semantic identifier (the key) is ONLY the final slug: `liveness-coupled-agency-browser-kill-switch`
+#
+# CRITICAL FORMAT INVARIANT:
+# You MUST respond with exactly one `[[[TODO_SLUGS]]]` block containing only the clean semantic slugs of the 
+# articles you wish to see next, separated by spaces or newlines. Do NOT include dates, do NOT include token 
+# counts (e.g., [17k]), and do NOT include the markdown extension (.md).
+#
+# Your response block must be formatted EXACTLY like this example:
+#
+# [[[TODO_SLUGS]]]
+# liveness-coupled-agency-browser-kill-switch
+# reproducible-cockpit-nixos-gnome
+# tiling-terminals-x11-alacritty
+# [[[END_SLUGS]]]
+#
+# CRITICAL CONSTRAINT: Do not bite off more than you can chew. Select a maximum of 3 to 5 highly targeted 
+# slugs that directly anchor the immediate structural milestone. You will receive additional turns to request more.
+"""
 
 # ============================================================================
 # X. THE ROADMAP (The Mother Cat's To-Do List) todo

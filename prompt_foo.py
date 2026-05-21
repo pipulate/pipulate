@@ -1123,6 +1123,15 @@ def main():
 
     # 1. Handle user prompt (unchanged)
     prompt_content = "Please review the provided context and assist with the codebase."
+    if args.chop == "CHOP_PROGRESSIVE_REVEAL":
+        prompt_content = (
+            "--- SYSTEM CONTEXT CONSTRAINTS: PROGRESSIVE HISTORY REVEAL ---\n\n"
+            "You are acting as the Context Curation Engine for a stateless, local-first workspace. "
+            "Your goal is to select the next logical set of articles to hydrate the conversation's narrative spine.\n\n"
+            "Review the list of articles provided in the COMMAND output above. "
+            "Select a maximum of 3 to 5 highly targeted slugs that directly anchor the immediate structural milestone. "
+            "Respond using exactly the requested `[[[TODO_SLUGS]]]` format mapping invariant. Do not include dates or token sizes."
+        )
     if args.prompt:
         if os.path.exists(args.prompt):
             with open(args.prompt, 'r', encoding='utf-8') as f: prompt_content = f.read()
