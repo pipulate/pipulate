@@ -307,6 +307,8 @@ foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
 scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
 
+scripts/xp.py
+
 # !!! AD HOC
 
 # config.py
