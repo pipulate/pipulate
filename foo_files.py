@@ -282,7 +282,7 @@ AI_PHOOEY_CHOP = r"""
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 # CORE STUFF
-# logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
+logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
 # README.md
 
 # AS ABOVE
@@ -291,19 +291,19 @@ AI_PHOOEY_CHOP = r"""
 # assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
 
 # IS BELOW OUTER
-/home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
 # /home/mike/repos/nixos/autognome.py
-init.lua
-scripts/ai.py
+# init.lua
+# scripts/ai.py
  
 # BELOW INNER
-.gitignore
-flake.nix
-prompt_foo.py
-apply.py
-scripts/xp.py
-foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
+# .gitignore
+# flake.nix
+# prompt_foo.py
+# apply.py
+# scripts/xp.py
+# foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
 
 # ARTICLES
 # scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
@@ -312,10 +312,10 @@ foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
 # !!! AD HOC
 
 # THE WIZARD
-config.py
-server.py
-imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
-imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
+# config.py
+# server.py
+# imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
+# imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 
 # THE WAND
 pipulate/__init__.py
