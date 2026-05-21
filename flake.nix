@@ -500,6 +500,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               python prompt_foo.py @PROGRESSIVE_REVEAL_PROMPT --chop CHOP_PROGRESSIVE_REVEAL --no-tree "$@"
             fi
           }
+          alias next='book step'
           slugs() { python scripts/articles/lsa.py -t 1 --slugs "$@" --fmt paths; }
           # slugs-ordered preserves input order for narrative control
           sluggo() { for slug in "$@"; do python scripts/articles/lsa.py -t 1 --match "$slug" --fmt paths; done; }
