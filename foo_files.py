@@ -283,17 +283,17 @@ AI_PHOOEY_CHOP = r"""
 
 # CORE STUFF
 # logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
-README.md
+# README.md
 
 # ABOVE
-/home/mike/repos/Pipulate.com/index.md
-/home/mike/repos/Pipulate.com/install.sh
-assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
+# /home/mike/repos/Pipulate.com/index.md
+# /home/mike/repos/Pipulate.com/install.sh
+# assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
 
 # OUTER
-/home/mike/repos/nixos/configuration.nix
-/home/mike/repos/nixos/packages.nix
-/home/mike/repos/nixos/autognome.py
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/packages.nix
+# /home/mike/repos/nixos/autognome.py
 init.lua
 scripts/ai.py
  
@@ -303,11 +303,11 @@ flake.nix
 prompt_foo.py
 apply.py
 scripts/xp.py
-foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
+# foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
 
 # ARTICLES
 # scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
 
 # !!! AD HOC
 
