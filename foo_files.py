@@ -1,4 +1,4 @@
-#\  ____                            _     _____       
+#  ____                            _     _____       
 # |  _ \ _ __ ___  _ __ ___  _ __ | |_  |  ___|   _  Copyright 2026 by Mike Levin
 # | |_) | '__/ _ \| '_ ` _ \| '_ \| __| | |_ | | | | https://mikelev.in/
 # |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| | This file and `prompt_foo.py` are under
