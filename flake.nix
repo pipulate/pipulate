@@ -582,6 +582,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             alias xcp='xclip -selection clipboard'
             alias xv='xclip -selection clipboard -o >'
             alias xp='python scripts/xp.py'
+            alias xp='DISPLAY=:0 python3 /home/mike/repos/pipulate/scripts/xp.py'
             alias prompt='xclip -selection clipboard -o >prompt.md'
             alias patch='xclip -selection clipboard -o >patch'
             # Linux subshell aliases
