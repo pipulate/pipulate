@@ -567,9 +567,13 @@ Apply the 80/20 rule. What single action preserves momentum, builds on the just-
 Respond with:
 1. A concise diagnosis of where things stand based on the recent article.
 2. The recommended next step with brief rationale.
-3. MANDATORY: End with a TODO block of 2-4 article slugs that the NEXT turn will need to actually execute this step. These are not articles for you to read now — they are pre-loaded context for the next action. Choose the articles most directly relevant to implementing the recommended step (e.g., if recommending a code change, include articles that describe the pattern; if recommending a new article, include thematically adjacent ones). Even if you feel you have enough context now, the next turn starts fresh and will need them.
+3. MANDATORY: End with both a TODO_SLUGS block and a TODO_FILES block so the next turn can hydrate the narrative context and the implementation surface needed to actually execute the recommendation.
 
-Always end your response with exactly this block:
+The TODO_SLUGS block must contain 2-4 article slugs that the NEXT turn will need. These are not articles for you to read now — they are pre-loaded context for the next action.
+
+The TODO_FILES block must contain 1-5 repository-relative file paths that expose the likely patch surface, command surface, or safety model for the next action. If the next step is writing rather than patching, include the files that explain the writing/publishing workflow.
+
+Always end your response with exactly these two blocks:
 
 [[[TODO_SLUGS]]]
 slug-one
@@ -577,7 +581,12 @@ slug-two
 slug-three
 [[[END_SLUGS]]]
 
-Use only clean slugs — no dates, no token counts, no file extensions, no bullets, no commentary inside the block.
+[[[TODO_FILES]]]
+path/to/file.py
+another/path.py
+[[[END_FILES]]]
+
+Use only clean slugs in TODO_SLUGS and clean repository-relative paths in TODO_FILES. Do not include dates, token counts, markdown extensions for slugs, bullets, or commentary inside either block.
 """
 
 CHOP_NEXT_STEP = """
@@ -607,6 +616,8 @@ _ = CHOP_FISHTANK
 _ = CHOP_FLAKE_EVOLUTION
 _ = PROGRESSIVE_REVEAL_PROMPT
 _ = CHOP_PROGRESSIVE_REVEAL
+_ = NEXT_STEP_PROMPT
+_ = CHOP_NEXT_STEP
 
 # ============================================================================
 # X. THE ROADMAP (The Mother Cat's To-Do List) todo
