@@ -7,7 +7,7 @@ appropriate action. Mirrors apply.py but transforms clipboard state instead of
 mutating files.
 
 Supported blocks:
-  [[[TODO_SLUGS]]] ... [[[END_SLUGS]]]  -> runs prompt_foo.py --slugs
+  [[[TODO_SLUGS]]] ... [[[END_SLUGS]]]  -> runs prompt_foo.py @PROGRESSIVE_REVEAL_PROMPT --chop CHOP_PROGRESSIVE_REVEAL --slugs
 
 Flow:
   1. LLM responds with a structured block
@@ -65,7 +65,15 @@ def route(text: str) -> bool:
         print(f"🎯 Found TODO_SLUGS block with {len(slugs)} slug(s):")
         for s in slugs:
             print(f"   • {s}")
-        cmd = [sys.executable, os.path.join(REPO_ROOT, "prompt_foo.py"), "--no-tree", "--slugs"] + slugs
+        cmd = [
+            sys.executable,
+            os.path.join(REPO_ROOT, "prompt_foo.py"),
+            "@PROGRESSIVE_REVEAL_PROMPT",
+            "--chop",
+            "CHOP_PROGRESSIVE_REVEAL",
+            "--no-tree",
+            "--slugs",
+        ] + slugs
         print(f"\n🚀 Running: {' '.join(cmd)}\n")
         subprocess.run(cmd, cwd=REPO_ROOT)
         return True
