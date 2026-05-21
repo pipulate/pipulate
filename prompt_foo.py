@@ -1501,6 +1501,16 @@ def main():
         analysis_output = run_static_analysis(python_files_to_analyze)
         if analysis_output:
             builder.add_auto_context("Static Analysis Diagnostics", analysis_output)   
+
+    # Git Diff Telemetry Validation (Backpropagation Channel)
+    try:
+        diff_result = subprocess.run(['git', 'diff', 'HEAD~1', 'HEAD'], capture_output=True, text=True, cwd=REPO_ROOT)
+        if diff_result.stdout:
+            fence = "``" + "`"
+            builder.add_auto_context("Recent Git Diff Telemetry", f"### Recent Changes\n{fence}diff\n" + diff_result.stdout.strip() + f"\n{fence}")
+    except Exception as e:
+        logger.print(f"Warning: Failed to gather git diff telemetry: {e}")
+
     # 4. Generate final output with convergence loop
     final_output = builder.build_final_prompt()
 
