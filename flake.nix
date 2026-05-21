@@ -493,7 +493,6 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias chop='nvim foo_files.py'
           alias story='python prompt_foo.py -l [:] --no-tree'
           alias latest='python prompt_foo.py -a [-1:] --no-tree'
-          alias book='python prompt_foo.py @PROGRESSIVE_REVEAL_PROMPT --chop CHOP_PROGRESSIVE_REVEAL --no-tree'
           book() {
             if [ "$1" = "step" ]; then
               python prompt_foo.py @NEXT_STEP_PROMPT --chop CHOP_NEXT_STEP --no-tree -a '[-1:]'
