@@ -283,7 +283,7 @@ AI_PHOOEY_CHOP = r"""
 
 # CORE STUFF
 # logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
-# README.md
+README.md
 
 # ABOVE
 /home/mike/repos/Pipulate.com/index.md
@@ -307,7 +307,7 @@ foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
 
 # ARTICLES
 # scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
 
 # !!! AD HOC
 
@@ -326,7 +326,6 @@ foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
 # remotes/honeybot/scripts/db.py
 
 # scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
-
 
 # pipulate/__init__.py
 # pipulate/core.py
