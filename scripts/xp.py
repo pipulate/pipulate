@@ -7,7 +7,9 @@ appropriate action. Mirrors apply.py but transforms clipboard state instead of
 mutating files.
 
 Supported blocks:
-  [[[TODO_SLUGS]]] ... [[[END_SLUGS]]]  -> runs prompt_foo.py @PROGRESSIVE_REVEAL_PROMPT --chop CHOP_PROGRESSIVE_REVEAL --slugs
+  [[[TODO_SLUGS]]] ... [[[END_SLUGS]]]  -> request full article context by clean semantic slug
+  [[[TODO_FILES]]] ... [[[END_FILES]]]  -> request codebase files by repo-relative path
+  [[[APPLY_PATCH]]] ... [[[END_APPLY_PATCH]]]  -> pipe an explicit patch payload to apply.py
 
 Flow:
   1. LLM responds with a structured block
@@ -28,17 +30,20 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 PROGRESSIVE_REVEAL_CONTINUATION_PROMPT = """Context verified.
 
-You now have the full article context I requested through the progressive-reveal loop.
+You now have the article and/or codebase context requested through the progressive-reveal loop.
 
-First, synthesize the articles into a concise explanation of the “organ grinder” philosophy: the idea that the human remains the deliberate operator of a hand-cranked, deterministic machine, while AI acts as the performing monkey only when given precise context, bounded tools, and explicit next-step instructions.
+First, synthesize the material into a concise explanation of the “organ grinder” philosophy: the idea that the human remains the deliberate operator of a hand-cranked, deterministic machine, while AI acts as the performing monkey only when given precise context, bounded tools, and explicit next-step instructions.
 
-Then identify the three most relevant missing articles from the article index that would deepen this theme. Choose articles that clarify one of these gaps:
+Then identify the next context request in two parallel tracks:
 
-1. How the context compiler turns scattered files and articles into a reliable working memory.
-2. How deterministic SEARCH/REPLACE patching replaces vague agentic editing.
-3. How the clipboard / shell / git loop becomes a safe human-supervised actuator.
+1. Article slugs that would deepen the narrative, architectural, or historical frame.
+2. Codebase files that would deepen the implementation, patch surface, or safety model.
 
-End your answer with exactly one TODO block in this format:
+Prefer pairs that make the next turn more executable: one or more articles for why, one or more source files for how.
+
+If a tiny deterministic patch is genuinely warranted, you may include an optional APPLY_PATCH block containing a normal Target-based patch payload. Keep it surgical. Do not include it unless you can identify an exact, low-blast-radius edit from the provided source.
+
+End with exactly one TODO_SLUGS block and exactly one TODO_FILES block in this format:
 
 [[[TODO_SLUGS]]]
 slug-one
@@ -46,7 +51,12 @@ slug-two
 slug-three
 [[[END_SLUGS]]]
 
-Use only clean slugs. Do not include dates, token counts, filenames, markdown extensions, bullets, or commentary inside the TODO block."""
+[[[TODO_FILES]]]
+path/to/file.py
+another/path.py
+[[[END_FILES]]]
+
+If there are no useful entries for one track, leave that block empty rather than inventing names. Use clean slugs in TODO_SLUGS and clean repository-relative paths in TODO_FILES. Do not include dates, token counts, markdown extensions for slugs, bullets, or commentary inside either TODO block."""
 
 
 def get_clipboard() -> str:
@@ -68,25 +78,80 @@ def get_clipboard() -> str:
     return result.stdout
 
 
-def parse_todo_slugs(text: str):
+def _parse_block(text: str, start: str, end: str):
     match = re.search(
-        r'\[\[\[TODO_SLUGS\]\]\]\s*\n(.*?)\n\[\[\[END_SLUGS\]\]\]',
+        rf'\[\[\[{re.escape(start)}\]\]\]\s*\n(.*?)\n\[\[\[{re.escape(end)}\]\]\]',
         text,
         re.DOTALL
     )
     if not match:
         return None
-    raw = match.group(1).strip()
-    slugs = re.split(r'[\s,]+', raw)
-    return [s.strip() for s in slugs if s.strip()]
+    return match.group(1).strip()
+
+
+def _parse_items(raw: str):
+    items = []
+    for line in raw.splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or line.startswith("```"):
+            continue
+        line = re.sub(r'^\s*[-*]\s+', '', line)
+        items.extend(part.strip() for part in re.split(r'[\s,]+', line) if part.strip())
+    return items
+
+
+def parse_todo_slugs(text: str):
+    raw = _parse_block(text, "TODO_SLUGS", "END_SLUGS")
+    if raw is None:
+        return None
+    return _parse_items(raw)
+
+
+def parse_todo_files(text: str):
+    raw = _parse_block(text, "TODO_FILES", "END_FILES")
+    if raw is None:
+        return None
+    return _parse_items(raw)
+
+
+def parse_apply_patch(text: str):
+    return _parse_block(text, "APPLY_PATCH", "END_APPLY_PATCH")
 
 
 def route(text: str) -> bool:
+    did_something = False
+
+    patch_payload = parse_apply_patch(text)
+    if patch_payload is not None:
+        apply_path = os.path.join(REPO_ROOT, "apply.py")
+        if not os.path.exists(apply_path):
+            print(f"❌ APPLY_PATCH requested but apply.py was not found at {apply_path}")
+            sys.exit(1)
+        print("🩹 Found APPLY_PATCH block; piping inner payload to apply.py\n")
+        subprocess.run([sys.executable, apply_path], input=patch_payload, text=True, cwd=REPO_ROOT)
+        did_something = True
+
     slugs = parse_todo_slugs(text)
-    if slugs is not None:
-        print(f"🎯 Found TODO_SLUGS block with {len(slugs)} slug(s):")
-        for s in slugs:
-            print(f"   • {s}")
+    files = parse_todo_files(text)
+
+    if slugs is not None or files is not None:
+        slugs = slugs or []
+        files = files or []
+
+        if slugs:
+            print(f"🎯 Found TODO_SLUGS block with {len(slugs)} slug(s):")
+            for s in slugs:
+                print(f"   • {s}")
+
+        if files:
+            print(f"📁 Found TODO_FILES block with {len(files)} file(s):")
+            for f in files:
+                print(f"   • {f}")
+
+        if not slugs and not files:
+            print("⚠ Context request blocks were present but empty; no prompt_foo.py compile was run.")
+            return True
+
         cmd = [
             sys.executable,
             os.path.join(REPO_ROOT, "prompt_foo.py"),
@@ -94,12 +159,18 @@ def route(text: str) -> bool:
             "--chop",
             "CHOP_PROGRESSIVE_REVEAL",
             "--no-tree",
-            "--slugs",
-        ] + slugs
+        ]
+
+        if files:
+            cmd += ["--files"] + files
+        if slugs:
+            cmd += ["--slugs"] + slugs
+
         print(f"\n🚀 Running: {' '.join(cmd)}\n")
         subprocess.run(cmd, cwd=REPO_ROOT)
-        return True
-    return False
+        did_something = True
+
+    return did_something
 
 
 def main():
@@ -109,7 +180,10 @@ def main():
         sys.exit(1)
     if not route(text):
         print("❌ No recognized token blocks found in clipboard.")
-        print("   Supported: [[[TODO_SLUGS]]] ... [[[END_SLUGS]]]")
+        print("   Supported:")
+        print("   • [[[TODO_SLUGS]]] ... [[[END_SLUGS]]]")
+        print("   • [[[TODO_FILES]]] ... [[[END_FILES]]]")
+        print("   • [[[APPLY_PATCH]]] ... [[[END_APPLY_PATCH]]]")
         sys.exit(1)
 
 

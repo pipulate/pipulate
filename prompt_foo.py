@@ -1095,6 +1095,10 @@ def main():
         help='Specify one or more article slugs to automatically decant full raw content.'
     )
     parser.add_argument(
+        '--files', nargs='+', metavar='PATH',
+        help='Specify one or more codebase file paths to include in the compiled context.'
+    )
+    parser.add_argument(
         '--decanter-from', type=str, metavar='FILE',
         help='Read article paths from a file or "-" for stdin, one path per line. Equivalent to multiple --decanter args.'
     )
@@ -1151,6 +1155,15 @@ def main():
     update_paintbox_in_place()
     check_topological_integrity(args.chop, format_kwargs)
     files_to_process = parse_file_list_from_config(args.chop, format_kwargs)
+
+    # Inject --files as direct codebase paths into the processing queue
+    if args.files:
+        seen_paths = {path for path, _comment in files_to_process}
+        for file_path in args.files:
+            if file_path not in seen_paths:
+                files_to_process.append((file_path, "xp:file"))
+                seen_paths.add(file_path)
+                logger.print(f"🎯 Added file from --files: {file_path}")
 
     # Inject --slugs as direct file paths into the processing queue
     if args.slugs:
