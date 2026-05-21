@@ -1136,6 +1136,18 @@ def main():
     update_paintbox_in_place()
     check_topological_integrity(args.chop, format_kwargs)
     files_to_process = parse_file_list_from_config(args.chop, format_kwargs)
+
+    # Inject --slugs as direct file paths into the processing queue
+    if args.slugs:
+        all_articles = _get_article_list_data(CONFIG["POSTS_DIRECTORY"], url_config=active_target_config)
+        target_slugs = set(args.slugs)
+        for article in all_articles:
+            stem = os.path.splitext(os.path.basename(article['path']))[0]
+            clean_slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', stem)
+            if clean_slug in target_slugs:
+                files_to_process.append((article['path'], f"slug:{clean_slug}"))
+                logger.print(f"🎯 Resolved slug '{clean_slug}' to: {article['path']}")
+
     processed_files_data = []
 
     logger.print("--- Processing Files ---")
