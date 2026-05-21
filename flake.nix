@@ -494,6 +494,13 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias story='python prompt_foo.py -l [:] --no-tree'
           alias latest='python prompt_foo.py -a [-1:] --no-tree'
           alias book='python prompt_foo.py @PROGRESSIVE_REVEAL_PROMPT --chop CHOP_PROGRESSIVE_REVEAL --no-tree'
+          book() {
+            if [ "$1" = "step" ]; then
+              python prompt_foo.py @NEXT_STEP_PROMPT --chop CHOP_NEXT_STEP --no-tree -a '[-1:]'
+            else
+              python prompt_foo.py @PROGRESSIVE_REVEAL_PROMPT --chop CHOP_PROGRESSIVE_REVEAL --no-tree "$@"
+            fi
+          }
           slugs() { python scripts/articles/lsa.py -t 1 --slugs "$@" --fmt paths; }
           # slugs-ordered preserves input order for narrative control
           sluggo() { for slug in "$@"; do python scripts/articles/lsa.py -t 1 --match "$slug" --fmt paths; done; }
