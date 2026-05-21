@@ -128,7 +128,10 @@ def route(text: str) -> bool:
             print(f"❌ APPLY_PATCH requested but apply.py was not found at {apply_path}")
             sys.exit(1)
         print("🩹 Found APPLY_PATCH block; piping inner payload to apply.py\n")
-        subprocess.run([sys.executable, apply_path], input=patch_payload, text=True, cwd=REPO_ROOT)
+        result = subprocess.run([sys.executable, apply_path], input=patch_payload, text=True, cwd=REPO_ROOT)
+        if result.returncode != 0:
+            print(f"❌ APPLY_PATCH failed with exit code {result.returncode}; stopping before any follow-up context compile.")
+            sys.exit(result.returncode)
         did_something = True
 
     slugs = parse_todo_slugs(text)

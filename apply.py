@@ -145,7 +145,8 @@ def apply_search_replace_patch(payload: str) -> bool:
 def main():
     # Read the raw Markdown payload from the Unix pipe
     payload = sys.stdin.read()
-    apply_search_replace_patch(payload)
+    success = apply_search_replace_patch(payload)
+    sys.exit(0 if success else 1)
 
 if __name__ == "__main__":
     main()
