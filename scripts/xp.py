@@ -26,6 +26,28 @@ import platform
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+PROGRESSIVE_REVEAL_CONTINUATION_PROMPT = """Context verified.
+
+You now have the full article context I requested through the progressive-reveal loop.
+
+First, synthesize the articles into a concise explanation of the “organ grinder” philosophy: the idea that the human remains the deliberate operator of a hand-cranked, deterministic machine, while AI acts as the performing monkey only when given precise context, bounded tools, and explicit next-step instructions.
+
+Then identify the three most relevant missing articles from the article index that would deepen this theme. Choose articles that clarify one of these gaps:
+
+1. How the context compiler turns scattered files and articles into a reliable working memory.
+2. How deterministic SEARCH/REPLACE patching replaces vague agentic editing.
+3. How the clipboard / shell / git loop becomes a safe human-supervised actuator.
+
+End your answer with exactly one TODO block in this format:
+
+[[[TODO_SLUGS]]]
+slug-one
+slug-two
+slug-three
+[[[END_SLUGS]]]
+
+Use only clean slugs. Do not include dates, token counts, filenames, markdown extensions, bullets, or commentary inside the TODO block."""
+
 
 def get_clipboard() -> str:
     if os.getenv("SSH_CLIENT"):
@@ -68,7 +90,7 @@ def route(text: str) -> bool:
         cmd = [
             sys.executable,
             os.path.join(REPO_ROOT, "prompt_foo.py"),
-            "@PROGRESSIVE_REVEAL_PROMPT",
+            PROGRESSIVE_REVEAL_CONTINUATION_PROMPT,
             "--chop",
             "CHOP_PROGRESSIVE_REVEAL",
             "--no-tree",
