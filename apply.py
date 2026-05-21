@@ -78,6 +78,15 @@ def apply_search_replace_patch(payload: str) -> bool:
         match_count = content.count(search_block)
         
         if match_count == 0:
+            already_applied_count = content.count(replace_block)
+            if already_applied_count == 1:
+                print(f"✅ PATCH ALREADY APPLIED: '{filename}' already contains the replacement block.")
+                continue
+            if already_applied_count > 1:
+                print(f"❌ Warning: SEARCH block missing but replacement is ambiguous (found {already_applied_count} times) in '{filename}'. Skipping.")
+                success = False
+                continue
+
             print(f"❌ Warning: SEARCH block not found in '{filename}'. Skipping.")
             # DIAGNOSTIC: Find closest matching window in target file
             search_lines = search_block.split('\n')
@@ -114,7 +123,7 @@ def apply_search_replace_patch(payload: str) -> bool:
             continue
             
         # The Surgical Strike
-        new_content = content.replace(search_block, replace_block)
+        new_content = content.replace(search_block, replace_block, 1)
         
         # AST VALIDATION AIRLOCK (The Final Safeguard)
         if filename.endswith('.py'):
