@@ -499,19 +499,6 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 """
 
 # ============================================================================
-# IX. STATIC ANALYSIS SUPPRESSION (for Ruff)
-# ============================================================================
-# Variables dynamically loaded by prompt_foo.py via getattr().
-# I hate having to do this, but it will help me keep my custom CHOPs straight.
-_ = AI_PHOOEY_CHOP
-_ = EMPTY
-_ = CHOP_POST_MORTEM
-_ = CHOP_404_AFFAIR
-_ = CHOP_FISHTANK
-_ = CHOP_FLAKE_EVOLUTION
-_ = CHOP_PROGRESSIVE_REVEAL
-
-# ============================================================================
 # SPECIALIZED STRIKE PACKAGES: PROGRESSIVE REVEAL GATE
 # ============================================================================
 
@@ -524,9 +511,9 @@ CHOP_PROGRESSIVE_REVEAL = """
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 
 # 2. SYSTEM ARCHITECTURE REFERENCE
-foo_files.py
-prompt_foo.py
-scripts/xp.py
+foo_files.py  # [12,466 tokens | 42,266 bytes]
+prompt_foo.py  # [16,273 tokens | 74,177 bytes]
+scripts/xp.py  # [672 tokens | 2,521 bytes]
 
 # 3. EMBEDDED ACTION INVARIANT
 # --- SYSTEM CONTEXT CONSTRAINTS: PROGRESSIVE HISTORY REVEAL ---
@@ -554,6 +541,19 @@ scripts/xp.py
 # CRITICAL CONSTRAINT: Do not bite off more than you can chew. Select a maximum of 3 to 5 highly targeted 
 # slugs that directly anchor the immediate structural milestone. You will receive additional turns to request more.
 """
+
+# ============================================================================
+# IX. STATIC ANALYSIS SUPPRESSION (for Ruff)
+# ============================================================================
+# Variables dynamically loaded by prompt_foo.py via getattr().
+# I hate having to do this, but it will help me keep my custom CHOPs straight.
+_ = AI_PHOOEY_CHOP
+_ = EMPTY
+_ = CHOP_POST_MORTEM
+_ = CHOP_404_AFFAIR
+_ = CHOP_FISHTANK
+_ = CHOP_FLAKE_EVOLUTION
+_ = CHOP_PROGRESSIVE_REVEAL
 
 # ============================================================================
 # X. THE ROADMAP (The Mother Cat's To-Do List) todo
