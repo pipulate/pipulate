@@ -294,18 +294,18 @@ AI_PHOOEY_CHOP = r"""
 /home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
 # /home/mike/repos/nixos/autognome.py
-init.lua
-scripts/ai.py
-# 
+# init.lua
+# scripts/ai.py
+ 
 # # INNER
-.gitignore
-flake.nix
-prompt_foo.py
-apply.py
-foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
+# .gitignore
+# flake.nix
+# prompt_foo.py
+# apply.py
+# foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
 
-scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
+# scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
 
 scripts/xp.py
 
