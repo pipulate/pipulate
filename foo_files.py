@@ -502,7 +502,7 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 # SPECIALIZED STRIKE PACKAGES: PROGRESSIVE REVEAL GATE
 # ============================================================================
 
-PROGRESSIVE_REVEAL_PROMPT = """--- SYSTEM CONTEXT CONSTRAINTS: PROGRESSIVE HISTORY REVEAL ---
+PROGRESSIVE_REVEAL_PROMPT = r"""--- SYSTEM CONTEXT CONSTRAINTS: PROGRESSIVE HISTORY REVEAL ---
 
 You are acting as the Context Curation Engine for a stateless, local-first workspace. Your goal is to select the next logical set of articles to hydrate the conversation's narrative spine.
 
