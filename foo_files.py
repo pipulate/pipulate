@@ -567,13 +567,17 @@ Apply the 80/20 rule. What single action preserves momentum, builds on the just-
 Respond with:
 1. A concise diagnosis of where things stand based on the recent article.
 2. The recommended next step with brief rationale.
-3. OPTIONAL: A TODO block ONLY if reading more articles is genuinely necessary to make the recommendation. If you already have enough context, omit the TODO block entirely.
+3. MANDATORY: End with a TODO block of 2-4 article slugs that the NEXT turn will need to actually execute this step. These are not articles for you to read now — they are pre-loaded context for the next action. Choose the articles most directly relevant to implementing the recommended step (e.g., if recommending a code change, include articles that describe the pattern; if recommending a new article, include thematically adjacent ones). Even if you feel you have enough context now, the next turn starts fresh and will need them.
 
-If a TODO block is needed, use this format:
+Always end your response with exactly this block:
+
 [[[TODO_SLUGS]]]
 slug-one
 slug-two
+slug-three
 [[[END_SLUGS]]]
+
+Use only clean slugs — no dates, no token counts, no file extensions, no bullets, no commentary inside the block.
 """
 
 CHOP_NEXT_STEP = """
