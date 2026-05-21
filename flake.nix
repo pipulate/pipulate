@@ -516,16 +516,6 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             echo "📝 Committing: $msg"
             git commit -am "$msg"
           }
-          m() {
-            local msg
-            msg=$(python /home/mike/repos/pipulate/scripts/ai.py --auto --format plain 2>/dev/null | head -1)
-            if [ -z "$msg" ]; then
-              echo "❌ ai.py returned empty message, aborting."
-              return 1
-            fi
-            echo "📝 Committing: $msg"
-            git commit -am "$msg"
-          }
           alias app='cat patch | python apply.py'
           
           # ---------------------------------------------------------
