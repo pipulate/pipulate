@@ -616,7 +616,7 @@ _ = CHOP_PROGRESSIVE_REVEAL
 # Stop Watchdog from restarting server for ANYTHING in the /scripts folder
 
 # AD HOC / UNORGANIZED / CONSIDER
-# - Purge orphans from Jekyll `_posts/_context/` JSON holographic context shards.
+# - Purge orphans from Jekyll `_posts/_context/` JSON holographic context shards. I'M PRODUCING MORE OF THESE / EXPLORE? REPORT?
 # - Read YouTube comments through API and *really* make Honeybot respond to people!
 # - Make the YouTube Piper TTS synthetic voice reader (or whatever you use) skip code blocks and other things that sound awful read out loud better
 # - Consider layering in line-numbering in the code portions of prompt_foo.py compiled context so AI can give very precise instructions
