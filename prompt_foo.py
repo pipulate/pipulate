@@ -1121,32 +1121,17 @@ def main():
         check_dependencies()
         sys.exit(0)
 
-    # 1. Handle user prompt (unchanged)
+    # 1. Handle user prompt
     prompt_content = "Please review the provided context and assist with the codebase."
-    if args.chop == "CHOP_PROGRESSIVE_REVEAL":
-        prompt_content = (
-            "--- SYSTEM CONTEXT CONSTRAINTS: PROGRESSIVE HISTORY REVEAL ---\n\n"
-            "You are acting as the Context Curation Engine for a stateless, local-first workspace. "
-            "Your goal is to select the next logical set of articles to hydrate the conversation's narrative spine.\n\n"
-            "I have provided a master chronological index of available articles via the command output of `lsa.py` above. "
-            "Each entry is formatted with metadata that you must discard when constructing your request:\n"
-            "Example input format: 2026-05-19 [17k] liveness-coupled-agency-browser-kill-switch\n"
-            "The core semantic identifier (the key) is ONLY the final slug: `liveness-coupled-agency-browser-kill-switch`\n\n"
-            "CRITICAL FORMAT INVARIANT:\n"
-            "You MUST respond with exactly one `[[[TODO_SLUGS]]]` block containing only the clean semantic slugs of the "
-            "articles you wish to see next, separated by spaces or newlines. Do NOT include dates, do NOT include token "
-            "counts (e.g., [17k]), and do NOT include the markdown extension (.md).\n\n"
-            "Your response block must be formatted EXACTLY like this example:\n\n"
-            "[[[TODO_SLUGS]]]\n"
-            "liveness-coupled-agency-browser-kill-switch\n"
-            "reproducible-cockpit-nixos-gnome\n"
-            "tiling-terminals-x11-alacritty\n"
-            "[[[END_SLUGS]]]\n\n"
-            "CRITICAL CONSTRAINT: Do not bite off more than you can chew. Select a maximum of 3 to 5 highly targeted "
-            "slugs that directly anchor the immediate structural milestone. You will receive additional turns to request more."
-        )
     if args.prompt:
-        if os.path.exists(args.prompt):
+        if args.prompt.startswith("@"):
+            prompt_var = args.prompt[1:]
+            import foo_files
+            prompt_content = getattr(foo_files, prompt_var, "")
+            if not prompt_content:
+                logger.print(f"Warning: Prompt variable '{prompt_var}' not found in foo_files.py. Using default prompt.")
+                prompt_content = "Please review the provided context and assist with the codebase."
+        elif os.path.exists(args.prompt):
             with open(args.prompt, 'r', encoding='utf-8') as f: prompt_content = f.read()
         else:
             prompt_content = args.prompt
