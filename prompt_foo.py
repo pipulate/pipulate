@@ -1394,6 +1394,9 @@ def main():
                 if clean_slug in target_slugs:
                     args.decanter.append(article['path'])
                     logger.print(f"🎯 Resolved slug '{clean_slug}' to: {article['path']}")
+            # Ensure article processing runs when only --slugs is passed
+            if args.article is None and args.decanter:
+                args.article = "[-0:]"
 
         # NEW: Process explicitly targeted Decanter files
         if args.decanter:
