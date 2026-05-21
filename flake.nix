@@ -493,7 +493,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias chop='nvim foo_files.py'
           alias story='python prompt_foo.py -l [:] --no-tree'
           alias latest='python prompt_foo.py -a [-1:] --no-tree'
-          alias decant='python prompt_foo.py --chop ROLLING_PIN_CHOP --no-tree'
+          alias book='python prompt_foo.py @PROGRESSIVE_REVEAL_PROMPT --chop CHOP_PROGRESSIVE_REVEAL --no-tree'
           slugs() { python scripts/articles/lsa.py -t 1 --slugs "$@" --fmt paths; }
           # slugs-ordered preserves input order for narrative control
           sluggo() { for slug in "$@"; do python scripts/articles/lsa.py -t 1 --match "$slug" --fmt paths; done; }
