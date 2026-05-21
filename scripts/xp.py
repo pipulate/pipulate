@@ -32,16 +32,16 @@ PROGRESSIVE_REVEAL_CONTINUATION_PROMPT = """Context verified.
 
 You now have the article and/or codebase context requested through the progressive-reveal loop.
 
-First, synthesize the material into a concise explanation of the “organ grinder” philosophy: the idea that the human remains the deliberate operator of a hand-cranked, deterministic machine, while AI acts as the performing monkey only when given precise context, bounded tools, and explicit next-step instructions.
+Do not re-synthesize the established philosophy, metaphors, or worldview. Treat them as already known background. Your job is to preserve momentum by choosing the next concrete action or context request.
 
-Then identify the next context request in two parallel tracks:
+Identify the next move in two parallel tracks:
 
-1. Article slugs that would deepen the narrative, architectural, or historical frame.
-2. Codebase files that would deepen the implementation, patch surface, or safety model.
+1. Article slugs that would make the next turn more executable.
+2. Codebase files that would expose the implementation surface, patch target, or safety model.
 
-Prefer pairs that make the next turn more executable: one or more articles for why, one or more source files for how.
+Prefer the smallest context bundle that enables a concrete next step. Do not request articles merely to deepen the narrative if the next useful move is a code patch, test, command, or workflow change.
 
-If a tiny deterministic patch is genuinely warranted, you may include an optional APPLY_PATCH block containing a normal Target-based patch payload. Keep it surgical. Do not include it unless you can identify an exact, low-blast-radius edit from the provided source.
+If a tiny deterministic patch is genuinely warranted, include an optional APPLY_PATCH block containing a normal Target-based patch payload. Keep it surgical. Prefer patching the machinery when the machinery is what caused the stall.
 
 End with exactly one TODO_SLUGS block and exactly one TODO_FILES block in this format:
 
