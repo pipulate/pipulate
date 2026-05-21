@@ -528,16 +528,14 @@ CHOP_PROGRESSIVE_REVEAL = """
 # THE PROGRESSIVE REVEAL CONTEXT ENGINE
 # COMMAND: python prompt_foo.py @PROGRESSIVE_REVEAL_PROMPT --chop CHOP_PROGRESSIVE_REVEAL --no-tree
 # Structural, stateless context designed for rapid article exploration using xp.py.
-# The action prompt is intentionally NOT embedded here. It is supplied through
-# the positional prompt argument via @PROGRESSIVE_REVEAL_PROMPT.
 
 # 1. THE NARRATIVE MAP
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 
 # 2. SYSTEM ARCHITECTURE REFERENCE
-foo_files.py  # [12,466 tokens | 42,266 bytes]
-prompt_foo.py  # [16,273 tokens | 74,177 bytes]
-scripts/xp.py  # [672 tokens | 2,521 bytes]
+foo_files.py
+prompt_foo.py
+scripts/xp.py
 """
 
 # ============================================================================
