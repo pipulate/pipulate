@@ -132,6 +132,11 @@ def route(text: str) -> bool:
         if result.returncode != 0:
             print(f"❌ APPLY_PATCH failed with exit code {result.returncode}; stopping before any follow-up context compile.")
             sys.exit(result.returncode)
+        
+        # Show the results of the patch
+        print("\n--- Patch Diff ---")
+        subprocess.run(['git', '--no-pager', 'diff', 'HEAD'], cwd=REPO_ROOT)
+        print("------------------\n")
         did_something = True
 
     slugs = parse_todo_slugs(text)
