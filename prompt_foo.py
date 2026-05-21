@@ -1504,10 +1504,19 @@ def main():
 
     # Git Diff Telemetry Validation (Backpropagation Channel)
     try:
-        diff_result = subprocess.run(['git', 'diff', 'HEAD~1', 'HEAD'], capture_output=True, text=True, cwd=REPO_ROOT)
-        if diff_result.stdout:
+        # Prefer the live working-tree diff so an xp-applied patch is visible
+        # to the very next compiled postback before it has been committed.
+        diff_result = subprocess.run(['git', 'diff', 'HEAD'], capture_output=True, text=True, cwd=REPO_ROOT)
+        diff_label = "### Working Tree Changes Since HEAD"
+
+        # If the tree is clean, fall back to the most recent committed change.
+        if not diff_result.stdout.strip():
+            diff_result = subprocess.run(['git', 'diff', 'HEAD~1', 'HEAD'], capture_output=True, text=True, cwd=REPO_ROOT)
+            diff_label = "### Most Recent Commit Changes"
+
+        if diff_result.stdout.strip():
             fence = "``" + "`"
-            builder.add_auto_context("Recent Git Diff Telemetry", f"### Recent Changes\n{fence}diff\n" + diff_result.stdout.strip() + f"\n{fence}")
+            builder.add_auto_context("Recent Git Diff Telemetry", f"{diff_label}\n{fence}diff\n" + diff_result.stdout.strip() + f"\n{fence}")
     except Exception as e:
         logger.print(f"Warning: Failed to gather git diff telemetry: {e}")
 
