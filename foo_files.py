@@ -522,6 +522,14 @@ tiling-terminals-x11-alacritty
 [[[END_SLUGS]]]
 
 CRITICAL CONSTRAINT: Do not bite off more than you can chew. Select a maximum of 3 to 5 highly targeted slugs that directly anchor the immediate structural milestone. You will receive additional turns to request more.
+
+---
+
+### Why This Works Better Natively:
+
+* **Isolates the Semantic Key:** By explicitly showing the model the raw format matching line (`2026-05-19 [17k] slug-name`) and isolating the substring it actually needs, you eliminate the common failure mode where models mistakenly copy the whole line or include the `.md` extension.
+* **Enforces the `xp.py` Parser Expectations:** It frames the `[[[TODO_SLUGS]]]` and `[[[END_SLUGS]]]` markers not as conversational layout, but as code invariants. This ensures the output is pure text that can be instantly sucked into the OS clipboard ring and routed by your script.
+* **Sets an Explicit Attention Budget:** Stating a hard numerical limit (*"maximum of 3 to 5 slugs"*) forces the model to weigh the data density against its current context limits, preventing it from dumping half the repository history into your buffer simultaneously.
 """
 
 CHOP_PROGRESSIVE_REVEAL = """
