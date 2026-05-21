@@ -533,9 +533,9 @@ CHOP_PROGRESSIVE_REVEAL = """
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 
 # 2. SYSTEM ARCHITECTURE REFERENCE
-foo_files.py
-prompt_foo.py
-scripts/xp.py
+foo_files.py  # [12,463 tokens | 42,282 bytes]
+prompt_foo.py  # [16,195 tokens | 73,877 bytes]
+scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # ============================================================================
