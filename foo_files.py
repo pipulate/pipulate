@@ -311,7 +311,7 @@ scripts/xp.py
 
 # !!! AD HOC
 
-# patch
+patch
 
 # THE WIZARD
 # config.py
