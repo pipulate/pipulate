@@ -298,12 +298,12 @@ AI_PHOOEY_CHOP = r"""
 # scripts/ai.py
  
 # BELOW INNER
-# .gitignore
+foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
+.gitignore
 flake.nix
-# prompt_foo.py
-# apply.py
-# scripts/xp.py
-# foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
+prompt_foo.py
+apply.py
+scripts/xp.py
 
 # ARTICLES
 # scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
