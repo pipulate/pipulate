@@ -497,9 +497,9 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             if [ "$1" = "step" ] || [ "$1" = "next" ]; then
               shift
               if [ -n "$*" ]; then
-                python prompt_foo.py @NEXT_STEP_PROMPT --chop CHOP_NEXT_STEP --no-tree -a '[-1:]' --extra-prompt "$*"
+                python prompt_foo.py @NEXT_STEP_PROMPT --chop CHOP_NEXT_STEP -a '[-1:]' --extra-prompt "$*"
               else
-                python prompt_foo.py @NEXT_STEP_PROMPT --chop CHOP_NEXT_STEP --no-tree -a '[-1:]'
+                python prompt_foo.py @NEXT_STEP_PROMPT --chop CHOP_NEXT_STEP -a '[-1:]'
               fi
             else
               python prompt_foo.py @PROGRESSIVE_REVEAL_PROMPT --chop CHOP_PROGRESSIVE_REVEAL --no-tree "$@"
