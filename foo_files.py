@@ -312,18 +312,21 @@ scripts/xp.py
 # ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
 # 
 # # !!! AD HOC
+
+apps/830_pico_slider.py  # [4,549 tokens | 19,866 bytes]
+
 # 
 # patch
 
 # THE WIZARD
-# config.py
-# server.py
-# imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
-# imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
+config.py
+server.py
+imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
+imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 
 # THE WAND
-# pipulate/__init__.py
-# pipulate/core.py
+pipulate/__init__.py
+pipulate/core.py
 
 # remotes/honeybot/queries/trapdoor_ips.sql
 # remotes/honeybot/queries/intel_sovereign_bots.sql
@@ -754,7 +757,6 @@ _ = CHOP_NEXT_STEP
 # apps/730_matplotlib.py  # [3,726 tokens | 16,421 bytes]
 # apps/810_webbrowser.py  # [2,811 tokens | 12,023 bytes]
 # apps/820_selenium.py  # [3,428 tokens | 15,020 bytes]
-# apps/830_pico_slider.py  # [4,549 tokens | 19,866 bytes]
 # apps/xx_link_graph_v2.py  # [63,994 tokens | 332,321 bytes]
 # assets/css/pico.css  # [27,899 tokens | 92,120 bytes]
 # assets/css/prism.css  # [5,178 tokens | 14,498 bytes]
