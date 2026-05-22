@@ -15,19 +15,10 @@ class SliderPlaceholder:
     Slider Placeholder Workflow
     A functional Moviola template using HTMX to scrub through simulated Git diffs.
     """
-    APP_NAME = 'pico_slider'
-    DISPLAY_NAME = 'Pico Slider 🎚'
-    ENDPOINT_MESSAGE = 'Welcome to the Pico Slider template. Drag the slider to scrub through the timeline.'
-    TRAINING_PROMPT = 'This workflow demonstrates how to use HTMX and a range input to scrub through dynamic server-side state in real time.'
-
-    # Simulated Git History for the prototype
-    MOCK_DIFFS = [
-        "commit 16a1dd1a83bb90c9\nAuthor: Mike\n\n+ Initialized empty scratchpad.",
-        "commit 693a958c2101eaef\nAuthor: Mike\n\n- Initialized empty scratchpad.\n+ Added CHAPTER 1: THE SAFE HARBOR",
-        "commit a653227b36310c83\nAuthor: Mike\n\n+ Added CHAPTER 2: THE HERMETIC SEAL",
-        "commit b90aee0a687961c0\nAuthor: Mike\n\n- AI_PHOOEY_CHOP = \"\"\"\\\n+ AI_PHOOEY_CHOP = r\"\"\"\\",
-        "commit cf7ea0afb4a32966\nAuthor: Mike\n\n+ Finalized Moviola HTMX integration."
-    ]
+    APP_NAME = 'git_slider'
+    DISPLAY_NAME = 'Git Slider 🎚'
+    ENDPOINT_MESSAGE = 'Welcome to the Git Slider. Select a file, then drag the slider to scrub through its commit history.'
+    TRAINING_PROMPT = 'This workflow uses HTMX and a range input to scrub through the real git history of any tracked file in the repository.'
 
     def __init__(self, app, pipulate, pipeline, db, app_name=None):
         self.pipulate = pipulate
