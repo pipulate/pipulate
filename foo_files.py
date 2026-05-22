@@ -7,6 +7,8 @@
 AI_PHOOEY_CHOP = r""" 
 # ============================================================================
 # THE BOOK OF FUTURE-PROOFING (Curriculum & Context Router)
+# Subtitle: How to Think For Yourself in the Age of AI
+# The book outline is being progressively revealed here
 # ============================================================================
 # Uncomment a specific chapter below, run `fu`, and paste the payload to the AI.
 # The AI will instantly become a specialized guide for that specific domain.
@@ -285,33 +287,33 @@ AI_PHOOEY_CHOP = r"""
 # logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
 # README.md
 
-# AS ABOVE
+# # AS ABOVE - PIPULATE MUST BE DISCOVERED AND INSTALLED
 # /home/mike/repos/Pipulate.com/index.md
 # /home/mike/repos/Pipulate.com/install.sh
 # assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
-
-# IS BELOW OUTER
-# /home/mike/repos/nixos/configuration.nix
+# 
+# # IS BELOW OUTER - KNAPP FLAKES OFF THE OLD MOTHERSTONE CORE
+/home/mike/repos/nixos/configuration.nix
 # /home/mike/repos/nixos/packages.nix
 # /home/mike/repos/nixos/autognome.py
-# init.lua
+init.lua
 # scripts/ai.py
- 
-# BELOW INNER
+#  
+# # BELOW INNER - ITS FLAKES ALL THE GITIGNORED WAY DOWN
 foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
-.gitignore
+# .gitignore
 flake.nix
 prompt_foo.py
 apply.py
 scripts/xp.py
-
-# ARTICLES
-# scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
+# 
+# # THE BOOK DISTILLER - CHOOSE YOUR OWN ADVENTURE MAGIC ROLLING PIN FOR AI
+# scripts/articles/lsa.py
 # ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
-
-# !!! AD HOC
-
-patch
+# 
+# # !!! AD HOC
+# 
+# patch
 
 # THE WIZARD
 # config.py
