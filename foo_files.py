@@ -283,7 +283,7 @@ AI_PHOOEY_CHOP = r"""
 
 # CORE STUFF
 # logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
-# README.md
+README.md
 
 # AS ABOVE
 /home/mike/repos/Pipulate.com/index.md
@@ -311,11 +311,11 @@ foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
 
 # !!! AD HOC
 
-patch
+# patch
 
 # THE WIZARD
-# config.py
-# server.py
+config.py
+server.py
 # imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
 # imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
 
