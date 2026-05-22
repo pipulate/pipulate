@@ -281,15 +281,28 @@ class Pipulate:
         art = aa.figurate(name, context=context)
         if console_output:
             renderable = art.human
-            # Internal color token parser utilizing config.COLOR_MAP design tokens
-            if hasattr(renderable, 'renderable') and isinstance(renderable.renderable, str):
-                text = renderable.renderable
+            
+            # Extract raw artwork out of the ledger for explicit token matching if available
+            ledger_art = getattr(aa, 'FIGURATE_LEDGER', {}).get(name)
+            
+            if ledger_art:
+                # Parse markup design tokens using config.COLOR_MAP targets directly
                 for token, color in COLOR_MAP.items():
-                    text = re.sub(f'<{token}>(.*?)</{token}>', f'[{color}]\\1[/{color}]', text)
-                renderable.renderable = text
-            elif isinstance(renderable, str):
-                for token, color in COLOR_MAP.items():
-                    renderable = re.sub(f'<{token}>(.*?)</{token}>', f'[{color}]\\1[/{color}]', renderable)
+                    ledger_art = re.sub(f'<{token}>(.*?)</{token}>', f'[{color}]\\1[/{color}]', ledger_art)
+                # Re-wrap the translated string data into its visual panel context
+                from rich.panel import Panel
+                renderable = Panel(ledger_art, title="🐰 Welcome to Consoleland", border_style="white")
+            else:
+                # Fallback path for classic inline visual strings
+                if hasattr(renderable, 'renderable') and isinstance(renderable.renderable, str):
+                    text = renderable.renderable
+                    for token, color in COLOR_MAP.items():
+                        text = re.sub(f'<{token}>(.*?)</{token}>', f'[{color}]\\1[/{color}]', text)
+                    renderable.renderable = text
+                elif isinstance(renderable, str):
+                    for token, color in COLOR_MAP.items():
+                        renderable = re.sub(f'<{token}>(.*?)</{token}>', f'[{color}]\\1[/{color}]', renderable)
+                        
             aa.safe_console_print(renderable)
         return art
 
