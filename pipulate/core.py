@@ -280,7 +280,17 @@ class Pipulate:
 
         art = aa.figurate(name, context=context)
         if console_output:
-            aa.safe_console_print(art.human)
+            renderable = art.human
+            # Internal color token parser utilizing config.COLOR_MAP design tokens
+            if hasattr(renderable, 'renderable') and isinstance(renderable.renderable, str):
+                text = renderable.renderable
+                for token, color in COLOR_MAP.items():
+                    text = re.sub(f'<{token}>(.*?)</{token}>', f'[{color}]\\1[/{color}]', text)
+                renderable.renderable = text
+            elif isinstance(renderable, str):
+                for token, color in COLOR_MAP.items():
+                    renderable = re.sub(f'<{token}>(.*?)</{token}>', f'[{color}]\\1[/{color}]', renderable)
+            aa.safe_console_print(renderable)
         return art
 
     def negotiate_ai_models(self, preferred_local: str = None, preferred_cloud: str = None) -> dict:
