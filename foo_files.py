@@ -621,13 +621,13 @@ CHOP_NEXT_STEP = """
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 
 # 2. SYSTEM ARCHITECTURE REFERENCE
-foo_files.py
-prompt_foo.py
-apply.py
-scripts/xp.py
+foo_files.py  # [13,606 tokens | 47,183 bytes]
+prompt_foo.py  # [16,736 tokens | 76,377 bytes]
+apply.py  # [1,754 tokens | 7,664 bytes]
+scripts/xp.py  # [1,778 tokens | 7,417 bytes]
 
 # 3. GLOBAL WORKBENCH SURFACE (Optional context grounders)
-# apps/210_widget_examples.py
+# apps/210_widget_examples.py  # [22,791 tokens | 98,590 bytes]
 """
 
 # ============================================================================
