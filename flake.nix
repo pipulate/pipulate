@@ -496,10 +496,10 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           book() {
             if [ "$1" = "step" ] || [ "$1" = "next" ]; then
               shift
-              if [ "${1:-}" = "--prompt" ]; then
+              if [ "''${1:-}" = "--prompt" ]; then
                 # File base-path option: next --prompt (defaults to prompt.md or explicit file path)
                 shift
-                local prompt_target="${1:-prompt.md}"
+                local prompt_target="''${1:-prompt.md}"
                 echo "📖 Ingesting context payload directly from file system: $prompt_target"
                 python prompt_foo.py "$prompt_target" --chop CHOP_NEXT_STEP -a '[-1:]'
               elif [ -n "$*" ]; then
