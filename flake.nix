@@ -509,7 +509,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
                 python prompt_foo.py @NEXT_STEP_PROMPT --chop CHOP_NEXT_STEP -a '[-1:]'
               fi
             else
-              python prompt_foo.py @PROGRESSIVE_REVEAL_PROMPT --chop CHOP_PROGRESSIVE_REVEAL --no-tree "$@"
+              python prompt_foo.py @PROGRESSIVE_REVEAL_PROMPT --chop CHOP_PROGRESSIVE_REVEAL "$@"
             fi
           }
           alias next='book step'
