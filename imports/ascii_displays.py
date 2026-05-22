@@ -79,6 +79,12 @@ def figurate(name: str, context: Optional[str] = None) -> FigurateResult:
     return FigurateResult(name=name, human=human_out, ai=ai_out)
 
 
+# FIGURATE_LEDGER: Decoupled visual asset store.
+# Art strings live here as pure data, separate from rendering logic.
+# LLMs can add/modify entries without touching function bodies.
+# Use semantic XML-style tags for color tokens: <success>, <debug>, <warning>, etc.
+FIGURATE_LEDGER: dict = {}
+
 # FIGURATE_REGISTRY: The map of all visual vocabulary.
 # Each entry provides a render() function returning (human, ai) tuple.
 # Art goes here as a data asset; rendering logic stays separate from content.
