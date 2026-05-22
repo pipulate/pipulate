@@ -1065,6 +1065,7 @@ def main():
     parser.add_argument('-n', '--no-tree', action='store_true', help='Suppress file tree and UML generation.')
     parser.add_argument('--chop', type=str, default='AI_PHOOEY_CHOP', help='Specify an alternative payload variable from foo_files.py')
     parser.add_argument('--line-numbers', action='store_true', help='Prefix source lines with line numbers (review mode). Incompatible with SEARCH/REPLACE patching.')
+    parser.add_argument('--extra-prompt', type=str, default=None, help='Extra text to append to the primary prompt content.')
     
     # 💥 NEW: Dynamic argument injection
     parser.add_argument('--arg', action='append', help='Pass dynamic arguments to CHOP templates (format: key=value)')
@@ -1149,6 +1150,9 @@ def main():
             prompt_content = args.prompt
     elif os.path.exists("prompt.md"):
         with open("prompt.md", 'r', encoding='utf-8') as f: prompt_content = f.read()
+
+    if args.extra_prompt:
+        prompt_content = f"{prompt_content}\n\n### Additional Operator Instructions:\n{args.extra_prompt}"
 
     # 2. Process all specified files (💥 UPDATED WITH KWARGS)
     annotate_foo_files_in_place(args.chop)

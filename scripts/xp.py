@@ -43,7 +43,9 @@ Prefer the smallest context bundle that enables a concrete next step. Do not req
 
 If a tiny deterministic patch is genuinely warranted, include an optional APPLY_PATCH block containing a normal Target-based patch payload. Keep it surgical. Prefer patching the machinery when the machinery is what caused the stall.
 
-End with exactly one TODO_SLUGS block and exactly one TODO_FILES block in this format:
+An optional TODO_PROMPT block can be included to inject custom operator instructions or direction for the next compilation turn.
+
+End with exactly one TODO_SLUGS block, exactly one TODO_FILES block, and an optional TODO_PROMPT block in this format:
 
 [[[TODO_SLUGS]]]
 slug-one
@@ -55,6 +57,10 @@ slug-three
 path/to/file.py
 another/path.py
 [[[END_FILES]]]
+
+[[[TODO_PROMPT]]]
+Custom direction or next prompt details here.
+[[[END_PROMPT]]]
 
 If there are no useful entries for one track, leave that block empty rather than inventing names. Use clean slugs in TODO_SLUGS and clean repository-relative paths in TODO_FILES. Do not include dates, token counts, markdown extensions for slugs, bullets, or commentary inside either TODO block."""
 
@@ -114,6 +120,10 @@ def parse_todo_files(text: str):
     return _parse_items(raw)
 
 
+def parse_todo_prompt(text: str):
+    return _parse_block(text, "TODO_PROMPT", "END_PROMPT")
+
+
 def parse_apply_patch(text: str):
     return _parse_block(text, "APPLY_PATCH", "END_APPLY_PATCH")
 
@@ -141,8 +151,9 @@ def route(text: str) -> bool:
 
     slugs = parse_todo_slugs(text)
     files = parse_todo_files(text)
+    todo_prompt = parse_todo_prompt(text)
 
-    if slugs is not None or files is not None:
+    if slugs is not None or files is not None or todo_prompt is not None:
         slugs = slugs or []
         files = files or []
 
@@ -156,7 +167,10 @@ def route(text: str) -> bool:
             for f in files:
                 print(f"   • {f}")
 
-        if not slugs and not files:
+        if todo_prompt:
+            print(f"📝 Found TODO_PROMPT block:\n   {todo_prompt}")
+
+        if not slugs and not files and not todo_prompt:
             print("⚠ Context request blocks were present but empty; no prompt_foo.py compile was run.")
             return True
 
@@ -173,6 +187,8 @@ def route(text: str) -> bool:
             cmd += ["--files"] + files
         if slugs:
             cmd += ["--slugs"] + slugs
+        if todo_prompt:
+            cmd += ["--extra-prompt", todo_prompt]
 
         print(f"\n🚀 Running: {' '.join(cmd)}\n")
         subprocess.run(cmd, cwd=REPO_ROOT)

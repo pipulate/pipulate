@@ -494,8 +494,13 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias story='python prompt_foo.py -l [:] --no-tree'
           alias latest='python prompt_foo.py -a [-1:] --no-tree'
           book() {
-            if [ "$1" = "step" ]; then
-              python prompt_foo.py @NEXT_STEP_PROMPT --chop CHOP_NEXT_STEP --no-tree -a '[-1:]'
+            if [ "$1" = "step" ] || [ "$1" = "next" ]; then
+              shift
+              if [ -n "$*" ]; then
+                python prompt_foo.py @NEXT_STEP_PROMPT --chop CHOP_NEXT_STEP --no-tree -a '[-1:]' --extra-prompt "$*"
+              else
+                python prompt_foo.py @NEXT_STEP_PROMPT --chop CHOP_NEXT_STEP --no-tree -a '[-1:]'
+              fi
             else
               python prompt_foo.py @PROGRESSIVE_REVEAL_PROMPT --chop CHOP_PROGRESSIVE_REVEAL --no-tree "$@"
             fi
