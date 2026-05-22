@@ -289,9 +289,10 @@ class Pipulate:
                 # Parse markup design tokens using config.COLOR_MAP targets directly
                 for token, color in COLOR_MAP.items():
                     ledger_art = re.sub(f'<{token}>(.*?)</{token}>', f'[{color}]\\1[/{color}]', ledger_art)
-                # Re-wrap the translated string data into its visual panel context
+                # Re-wrap the translated string data into its visual panel context dynamically
                 from rich.panel import Panel
-                renderable = Panel(ledger_art, title="🐰 Welcome to Consoleland", border_style="white")
+                panel_title = "🐰 Welcome to Consoleland" if name == "white_rabbit" else f"🎨 {name.replace('_', ' ').title()}"
+                renderable = Panel(ledger_art, title=panel_title, border_style="white")
             else:
                 # Fallback path for classic inline visual strings
                 if hasattr(renderable, 'renderable') and isinstance(renderable.renderable, str):
