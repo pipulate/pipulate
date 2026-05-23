@@ -73,32 +73,32 @@ AI_PHOOEY_CHOP = r"""                                                           
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-# # CORE STUFF
-# # logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
-# # README.md
-# 
-# # AS ABOVE - PIPULATE MUST BE DISCOVERED AND INSTALLED
-# /home/mike/repos/Pipulate.com/index.md
-# /home/mike/repos/Pipulate.com/install.sh
-# assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
-#  
-# # IS BELOW OUTER - KNAPP FLAKES OFF THE OLD MOTHERSTONE CORE
-# /home/mike/repos/nixos/configuration.nix
-# /home/mike/repos/nixos/packages.nix
-# /home/mike/repos/nixos/autognome.py
-# init.lua
-# scripts/ai.py
+# CORE STUFF
+# logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
+README.md
+
+# AS ABOVE - PIPULATE MUST BE DISCOVERED AND INSTALLED
+/home/mike/repos/Pipulate.com/index.md
+/home/mike/repos/Pipulate.com/install.sh
+assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
+ 
+# IS BELOW OUTER - KNAPP FLAKES OFF THE OLD MOTHERSTONE CORE
+/home/mike/repos/nixos/configuration.nix
+/home/mike/repos/nixos/packages.nix
+/home/mike/repos/nixos/autognome.py
+init.lua
+scripts/ai.py
 #   
 # # BELOW INNER - ITS FLAKES ALL THE GITIGNORED WAY DOWN
 foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
-# .gitignore
-# flake.nix
-# prompt_foo.py
-# apply.py
-# scripts/xp.py
+.gitignore
+flake.nix
+prompt_foo.py
+apply.py
+scripts/xp.py
 #  
 # # THE BOOK DISTILLER - CHOOSE YOUR OWN ADVENTURE MAGIC ROLLING PIN FOR AI
-# scripts/articles/lsa.py
+scripts/articles/lsa.py
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
 # 
 # # !!! AD HOC
