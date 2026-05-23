@@ -19,6 +19,7 @@ AI_PHOOEY_CHOP = r"""                                                           
 # Go to `nix develop`d terminal and type `prompt` to make `prompt.md`.
 # Type `foo` for simple compile or `fu` for file-tree and UML version.
 # Paste in consumer-tier Web UI ChatBot frontier model of your choice.
+# Enjoy the fun that ensues as Chip O'Theseus helps you gain traction.
 # For a full list of content distillation options, type `book --help`.
 
 # The AI will instantly become a specialized guide for that specific domain.
@@ -45,6 +46,11 @@ AI_PHOOEY_CHOP = r"""                                                           
 # CHAPTER 18: CLARITY OF THOUGHT - I'll do you one better! Why is NeoVim?! Journal.
 # CHAPTER 19: WET WORKFLOWS - Complex many-steps HTMX code, because domain experts.
 # CHAPTER 20: THE WORKFLOW EXTRUDER - Porting from Jupyter Notebooks to slick apps.
+
+Clear? We begin by cleaning the whole book slate, but for these chapter titles
+and how I have recently tapped the selection of tubes of paint with which to
+color the canvas. I do a lot of gessoing over the canvas to start fresh, albeit
+a bit lumpy. That lumpiness is cruft and tech liability. I generally prune.
 
 # QUERY COLLECTION
 # Brand new query to figure out what user agents request markdown from what sources.
@@ -809,6 +815,7 @@ _ = CHOP_NEXT_STEP
 # scripts/articles/find_duplicates.py  # [1,785 tokens | 7,585 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
 # scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
+# scripts/articles/link_injector.py  # [1,134 tokens | 4,394 bytes]
 # scripts/articles/list_models.py  # [102 tokens | 391 bytes]
 # scripts/articles/other/make_article.py  # [1,513 tokens | 6,559 bytes]
 # scripts/articles/scrub_tags.py  # [358 tokens | 1,587 bytes]
