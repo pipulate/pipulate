@@ -644,10 +644,11 @@ Before addressing the user's prompt, perform the following verification steps:
 2.  **Analyze Import Statements:** Briefly scan the `import` statements in the provided Python files. Do they suggest dependencies on local files that were *not* included in the manifest?
 3.  **Check for Incompleteness:** If you determine that critical files are missing, do not proceed. Instead, your **primary task** is to inform me of the missing files and recommend adding them to `foo_files.py` to create a more complete context.
 4.  **Confirm Understanding:** If the context appears complete, state "Context verified." and then proceed with the user's request.
-5.  **THE SEARCH/REPLACE PROTOCOL:** When executing a code edit, you MUST respond exclusively with one or more SEARCH/REPLACE blocks. You MUST NOT use unified diffs, `@@` hunks, or line numbers. Reproduce the SEARCH block EXACTLY as it appears in the original file, including all whitespace and indentation. You MUST use `[[[SEARCH]]]`, `[[[DIVIDER]]]`, and `[[[REPLACE]]]` markers. Make the minimal change necessary. If multiple similar blocks exist, make the SEARCH section long enough to be uniquely identifiable.
-6.  **INDENTATION IS SACRED:** Every SEARCH block must be copy-pasted character-for-character from the source file shown in this prompt. Count the leading spaces on the first line of the target block in the source. Your SEARCH block must start with exactly that many spaces — not more, not fewer. If the file uses 4-space indentation and the target line has 4 spaces, your SEARCH block must also have exactly 4 spaces. LLMs that add extra padding to align with conversational context are a known failure mode. Check your leading spaces before submitting. The REPLACE block must have the same base indentation as the SEARCH block, with any nested code indented relatively from that base. Note: the source files in this prompt contain raw bytes with no line-number prefixes unless `--line-numbers` was passed. If you see `1: `, `2: ` prefixes, the context was generated in review mode and you must strip those prefixes before constructing a SEARCH block.
-7.  **THE FENCED OUTFLOW INVARIANT:** You MUST enclose the `Target: filename` line and the entire SEARCH/DIVIDER/REPLACE block inside a single ` ```text ` markdown code block. This prevents web chat UIs from stripping leading whitespace, ensuring `apply.py` receives the exact indentation.
-8.  **THE TARGET ADJACENCY RULE:** Every `[[[SEARCH]]]` marker must be immediately preceded by `Target: filename` on the line directly above it — no blank lines, no fences, no prose between the Target line and the marker. The filename in the Target line is what `apply.py` uses to find the file; omitting it or separating it with blank lines causes a fatal "Missing target filename" error. Example: `Target: scripts/articles/lsa.py` or `Target: /home/mike/repos/pipulate/scripts/articles/lsa.py`. Both relative and absolute paths work.
+5.  **THE SEARCH/REPLACE PROTOCOL:** When executing a code edit, you MUST respond exclusively with one or more SEARCH/REPLACE blocks. You MUST NOT use unified diffs, `@@` hunks, or line numbers. Reproduce the SEARCH block EXACTLY as it appears in the original file, including all whitespace, blank lines, comments, string contents, and indentation. You MUST use `[[[SEARCH]]]`, `[[[DIVIDER]]]`, and `[[[REPLACE]]]` markers. Make the minimal change necessary. If multiple similar blocks exist, make the SEARCH section long enough to be uniquely identifiable.
+6.  **RAW SOURCE IS THE EDITABLE SURFACE:** By default, Codebase file bodies are emitted as raw source with no line-number prefixes. This raw source is the only safe material for SEARCH/REPLACE patching. If `--line-numbers` was passed, the context is in review mode; line prefixes such as `1: ` or `42: ` are navigation aids only and MUST NOT appear inside SEARCH or REPLACE blocks.
+7.  **INDENTATION IS SACRED:** Every SEARCH block must be copy-pasted character-for-character from the raw source shown in this prompt. Count the leading spaces on the first line of the target block. Your SEARCH block must start with exactly that many spaces — not more, not fewer. The REPLACE block must preserve the same base indentation as the SEARCH block, with any nested code indented relatively from that base. Do not align code for conversational readability. Do not add protective padding. Do not normalize tabs or spaces.
+8.  **THE FENCED OUTFLOW INVARIANT:** You MUST enclose the `Target: filename` line and the entire SEARCH/DIVIDER/REPLACE block inside a single ` ```text ` markdown code block. This prevents web chat UIs from stripping leading whitespace, ensuring `apply.py` receives the exact indentation.
+9.  **THE TARGET ADJACENCY RULE:** Every `[[[SEARCH]]]` marker must be immediately preceded by `Target: filename` on the line directly above it — no blank lines, no fences, no prose between the Target line and the marker. The filename in the Target line is what `apply.py` uses to find the file; omitting it or separating it with blank lines causes a fatal "Missing target filename" error. Example: `Target: scripts/articles/lsa.py` or `Target: /home/mike/repos/pipulate/scripts/articles/lsa.py`. Both relative and absolute paths work.
 '''
 
     def _generate_summary_content(self, verified_token_count: int) -> str:
@@ -1064,7 +1065,7 @@ def main():
     parser.add_argument('--context-only', action='store_true', help='Generate a context-only prompt without file contents.')
     parser.add_argument('-n', '--no-tree', action='store_true', help='Suppress file tree and UML generation.')
     parser.add_argument('--chop', type=str, default='AI_PHOOEY_CHOP', help='Specify an alternative payload variable from foo_files.py')
-    parser.add_argument('--line-numbers', action='store_true', help='Prefix source lines with line numbers (review mode). Incompatible with SEARCH/REPLACE patching.')
+    parser.add_argument('--line-numbers', action='store_true', help='Prefix source lines with line numbers for review/navigation only. Do not use this mode for SEARCH/REPLACE patch generation.')
     parser.add_argument('--extra-prompt', type=str, default=None, help='Extra text to append to the primary prompt content.')
     
     # 💥 NEW: Dynamic argument injection
@@ -1302,7 +1303,8 @@ def main():
                 logger.print(f"ERROR: Could not read or process {full_path}: {e}")
                 sys.exit(1)
 
-        # The Tokenizer Physics: Raw bytes for the actuator. Use --line-numbers for review mode.
+        # The Tokenizer Physics: raw bytes are the actuator surface.
+        # Line numbers are opt-in review/navigation metadata, never patch input.
         if args.line_numbers and ext in {'.py', '.js', '.sh', '.nix', '.lua', '.json', '.toml', '.yaml', '.yml', '.sql', '.css', '.html', '.ipynb'}:
             content = '\n'.join(f"{i}: {line}" for i, line in enumerate(content.split('\n'), start=1))
         
