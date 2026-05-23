@@ -128,11 +128,11 @@ def build_canonical_tree(df_slice, current_node, current_depth, velocity_data, v
     """
     df = df_slice.copy()
 
-    # Sort by GSC Clicks (High velocity content floats to top)
-    df['sort_clicks'] = df['id'].apply(lambda x: velocity_data.get(re.sub(r'^\d{4}-\d{2}-\d{2}-', '', x), {}).get('total_clicks', 0))
+    # Sort primarily by Date (newest first) to keep home/hubs fresh, using real-time momentum velocity as a tie-breaker
+    df['velocity'] = df['id'].apply(lambda x: velocity_data.get(re.sub(r'^\d{4}-\d{2}-\d{2}-', '', x), {}).get('velocity', 0))
 
-    # THE FIX: Deterministic fallback. Sort by Clicks, then by Date (newest first).
-    df = df.sort_values(by=['sort_clicks', 'date'], ascending=[False, False])
+    # Float fresh and trending work to the surface layer, bypassing the historical click-accumulation trap
+    df = df.sort_values(by=['date', 'velocity'], ascending=[False, False])
 
     def attach_article(row):
         # Calculate organic gravity
