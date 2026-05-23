@@ -19,7 +19,7 @@
 
 # > We've got content. It's groovy context!  
 # > Concatenation just won't stop;  
-# > When coding gets tough, we stack up-stuff  
+# > When coding gets tough, we stack-up stuff  
 # > For an AI-Phooey chop (Hi-Ya!)  
 
 import os

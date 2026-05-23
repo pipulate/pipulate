@@ -13,14 +13,24 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 # There's nothing to see here. Please disperse... Have we lost the no-madges? Yes? Okay, let's proceed.
 
-# AI's follow instructions here automatically when a human does first.
-# Write prompt in NeoVim between "--- BEGIN NEW ARTICLE ---" and "!!!"
-# Type `\h`, `y` to put article in your OS copy-paste buffer (Hi-Ya!).
-# Go to `nix develop`d terminal and type `prompt` to make `prompt.md`.
-# Type `foo` for simple compile or `fu` for file-tree and UML version.
-# Paste in consumer-tier Web UI ChatBot frontier model of your choice.
-# Enjoy the fun that ensues as Chip O'Theseus helps you gain traction.
-# For a full list of content distillation options, type `book --help`.
+# BOOTSTRAPPING YOURSELF (Mostly for humans)
+
+# 1. AI's follow instructions here automatically when a human does first.
+# 2. Write prompt in NeoVim between "--- BEGIN NEW ARTICLE ---" and "!!!"
+# 3. Type `\h`, `y` to put article in your OS copy-paste buffer (Hi-Ya!).
+# 4. Go to `nix develop`d terminal and type `prompt` to make `prompt.md`.
+# 5. Type `foo` for simple compile or `fu` for file-tree and UML version.
+# 6. Paste in consumer-tier Web UI ChatBot frontier model of your choice.
+# 7. Enjoy the fun that ensues as Chip O'Theseus helps you gain traction.
+# 8. For a full list of content distillation options, type `book --help`.
+
+#                THERE'S SOMETHING HAPPENING HERE.
+#                IN CASE IT'S NOT ENTIRELY CLEAR:
+
+#                > We've got content. It's groovy context!  
+#                > Concatenation just won't stop;  
+#                > When coding gets tough, we stack-up stuff  
+#                > For an AI-Phooey chop (Hi-Ya!)  
 
 # The AI will instantly become a specialized guide for that specific domain.
 # Hello Amnesiac Genie Lambda function Mister Meeseeks Pachinko Machine AI!
@@ -46,11 +56,13 @@ AI_PHOOEY_CHOP = r"""                                                           
 # CHAPTER 18: CLARITY OF THOUGHT - I'll do you one better! Why is NeoVim?! Journal.
 # CHAPTER 19: WET WORKFLOWS - Complex many-steps HTMX code, because domain experts.
 # CHAPTER 20: THE WORKFLOW EXTRUDER - Porting from Jupyter Notebooks to slick apps.
+# CHAPTER 21: ON ACTUATORS - The tale of 2 player pianos. Spinning Turing machines.
+# CHAPTER 22: STEP 3 (PROFIT) - Domain Experts investing internally for ~10K hours.
 
-Clear? We begin by cleaning the whole book slate, but for these chapter titles
-and how I have recently tapped the selection of tubes of paint with which to
-color the canvas. I do a lot of gessoing over the canvas to start fresh, albeit
-a bit lumpy. That lumpiness is cruft and tech liability. I generally prune.
+# Clear? We begin by cleaning the whole book slate, but for these chapter titles
+# and how I have recently tapped the selection of tubes of paint with which to
+# color the canvas. I do a lot of gessoing over the canvas to start fresh,
+# albeit a bit lumpy. That lumpiness is cruft and tech liability. Let's prune!
 
 # QUERY COLLECTION
 # Brand new query to figure out what user agents request markdown from what sources.
@@ -61,65 +73,65 @@ a bit lumpy. That lumpiness is cruft and tech liability. I generally prune.
 # ============================================================================
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-# CORE STUFF
-logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
-# README.md
-
-# AS ABOVE - PIPULATE MUST BE DISCOVERED AND INSTALLED
-/home/mike/repos/Pipulate.com/index.md
-/home/mike/repos/Pipulate.com/install.sh
-assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
- 
-# IS BELOW OUTER - KNAPP FLAKES OFF THE OLD MOTHERSTONE CORE
-/home/mike/repos/nixos/configuration.nix
-/home/mike/repos/nixos/packages.nix
-/home/mike/repos/nixos/autognome.py
-init.lua
-scripts/ai.py
-  
-# BELOW INNER - ITS FLAKES ALL THE GITIGNORED WAY DOWN
+# # CORE STUFF
+# # logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
+# # README.md
+# 
+# # AS ABOVE - PIPULATE MUST BE DISCOVERED AND INSTALLED
+# /home/mike/repos/Pipulate.com/index.md
+# /home/mike/repos/Pipulate.com/install.sh
+# assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
+#  
+# # IS BELOW OUTER - KNAPP FLAKES OFF THE OLD MOTHERSTONE CORE
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/packages.nix
+# /home/mike/repos/nixos/autognome.py
+# init.lua
+# scripts/ai.py
+#   
+# # BELOW INNER - ITS FLAKES ALL THE GITIGNORED WAY DOWN
 foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
-.gitignore
-flake.nix
-prompt_foo.py
-apply.py
-scripts/xp.py
- 
-# THE BOOK DISTILLER - CHOOSE YOUR OWN ADVENTURE MAGIC ROLLING PIN FOR AI
-scripts/articles/lsa.py
+# .gitignore
+# flake.nix
+# prompt_foo.py
+# apply.py
+# scripts/xp.py
+#  
+# # THE BOOK DISTILLER - CHOOSE YOUR OWN ADVENTURE MAGIC ROLLING PIN FOR AI
+# scripts/articles/lsa.py
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
-
-# !!! AD HOC
-
-# apps/830_pico_slider.py  # [4,549 tokens | 19,866 bytes]
-
-# patch
-
-# THE WIZARD
-config.py
-server.py
-imports/server_logging.py
-imports/ascii_displays.py
-
-# THE WAND
-pipulate/__init__.py
-pipulate/core.py
-
-# THE HONEYBOT TV STUDIO
-remotes/honeybot/queries/trapdoor_ips.sql
-remotes/honeybot/queries/intel_sovereign_bots.sql
-remotes/honeybot/nixos/configuration.nix
-remotes/honeybot/scripts/logs.py
-remotes/honeybot/scripts/db.py
-
-# scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
-
-# PIPULATE HELLO WORLD
-apps/040_hello_workflow.py
-Notebooks/imports/__init__.py  # [0 tokens | 0 bytes]
-Notebooks/.agents/skills/hello_workflow/SKILL.md
-assets/scenarios/hello_workflow_test.json
-assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+# 
+# # !!! AD HOC
+# 
+# # apps/830_pico_slider.py  # [4,549 tokens | 19,866 bytes]
+# 
+# # patch
+# 
+# # THE WIZARD
+# config.py
+# server.py
+# imports/server_logging.py
+# imports/ascii_displays.py
+# 
+# # THE WAND
+# pipulate/__init__.py
+# pipulate/core.py
+# 
+# # THE HONEYBOT TV STUDIO
+# remotes/honeybot/queries/trapdoor_ips.sql
+# remotes/honeybot/queries/intel_sovereign_bots.sql
+# remotes/honeybot/nixos/configuration.nix
+# remotes/honeybot/scripts/logs.py
+# remotes/honeybot/scripts/db.py
+# 
+# # scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
+# 
+# # PIPULATE HELLO WORLD
+# apps/040_hello_workflow.py
+# Notebooks/imports/__init__.py  # [0 tokens | 0 bytes]
+# Notebooks/.agents/skills/hello_workflow/SKILL.md
+# assets/scenarios/hello_workflow_test.json
+# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # imports/__init__.py  # [0 tokens | 0 bytes]
 # imports/crud.py  # [7,365 tokens | 35,666 bytes]
@@ -743,6 +755,7 @@ _ = CHOP_NEXT_STEP
 # apps/730_matplotlib.py  # [3,726 tokens | 16,421 bytes]
 # apps/810_webbrowser.py  # [2,811 tokens | 12,023 bytes]
 # apps/820_selenium.py  # [3,428 tokens | 15,020 bytes]
+# apps/830_pico_slider.py  # [4,364 tokens | 19,317 bytes]
 # apps/xx_link_graph_v2.py  # [63,994 tokens | 332,321 bytes]
 # assets/css/pico.css  # [27,899 tokens | 92,120 bytes]
 # assets/css/prism.css  # [5,178 tokens | 14,498 bytes]
@@ -831,4 +844,5 @@ _ = CHOP_NEXT_STEP
 # scripts/gsc/gsc_top_movers.py  # [8,003 tokens | 34,690 bytes]
 # scripts/playground/prompt_feeder.py  # [746 tokens | 3,154 bytes]
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
+# scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
