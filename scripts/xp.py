@@ -191,7 +191,10 @@ def route(text: str) -> bool:
             cmd += ["--extra-prompt", todo_prompt]
 
         print(f"\n🚀 Running: {' '.join(cmd)}\n")
-        subprocess.run(cmd, cwd=REPO_ROOT)
+        result = subprocess.run(cmd, cwd=REPO_ROOT)
+        if result.returncode != 0:
+            print(f"❌ prompt_foo.py failed with exit code {result.returncode}; compiled context was not completed.")
+            sys.exit(result.returncode)
         did_something = True
 
     return did_something
