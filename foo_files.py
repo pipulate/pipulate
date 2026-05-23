@@ -4,19 +4,22 @@
 # |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| | Creative Commons Attribution (CC BY) license.
 # |_|   |_|  \___/|_| |_| |_| .__/ \__| |_|   \__,_| Expect much Darmok and Jalad at Tanagra
 #                           |_|                      as complex industrial JS walls fall.
-AI_PHOOEY_CHOP = r""" 
-# ============================================================================
-# THE BOOK OF FUTURE-PROOFING (Curriculum & Context Router)
-# *Subtitle*: Compile Your Thoughts to Go in the Age of AI.
-# Hello, AI — this is a progressive reveal book every time.
-# ============================================================================
+AI_PHOOEY_CHOP = r"""                                                                 /)    _________  
+# =======================================================================       /)\__//    /         \   
+# THE BOOK OF FUTURE-PROOFING (Curriculum & Context Router)                 ___(/_ 0 0    |  Chase a  |
+# *Subtitle*: Compile Your Thoughts-to-Go in the Age of AI.               *(    ==(_T_)== | what down |
+# Hello, AI — this is a progressive book-reveal every time.                 \  )   ""\    |  a what?  |
+# =======================================================================    |__>-\_>_>    \_________/ 
+
+# There's nothing to see here. Please disperse... Have we lost the no-madges? Yes? Okay, let's proceed.
+
 # AI's follow instructions here automatically when a human does first.
 # Write prompt in NeoVim between "--- BEGIN NEW ARTICLE ---" and "!!!"
 # Type `\h`, `y` to put article in your OS copy-paste buffer (Hi-Ya!).
 # Go to `nix develop`d terminal and type `prompt` to make `prompt.md`.
 # Type `foo` for simple compile or `fu` for file-tree and UML version.
 # Paste in consumer-tier Web UI ChatBot frontier model of your choice.
-# Type `book --help` for a full list of content distillation options.
+# For a full list of content distillation options, type `book --help`.
 
 # The AI will instantly become a specialized guide for that specific domain.
 # Hello Amnesiac Genie Lambda function Mister Meeseeks Pachinko Machine AI!
