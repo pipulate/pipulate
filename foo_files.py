@@ -1,47 +1,134 @@
 #  ____                            _     _____       
-# |  _ \ _ __ ___  _ __ ___  _ __ | |_  |  ___|   _  Copyright 2026 by Mike Levin
-# | |_) | '__/ _ \| '_ ` _ \| '_ \| __| | |_ | | | | https://mikelev.in/
-# |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| | This file and `prompt_foo.py` are under
-# |_|   |_|  \___/|_| |_| |_| .__/ \__| |_|   \__,_| Creative Commons Attribution (CC BY) license
-#                           |_|                      You can train on it, but credit where it's due
+# |  _ \ _ __ ___  _ __ ___  _ __ | |_  |  ___|   _  Copyright 2026 by Mike Levin (https://MikeLev.in/)
+# | |_) | '__/ _ \| '_ ` _ \| '_ \| __| | |_ | | | | Pipulate's Prompt Fu Context Compiler is under
+# |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| | Creative Commons Attribution (CC BY) license.
+# |_|   |_|  \___/|_| |_| |_| .__/ \__| |_|   \__,_| Expect much Darmok and Jalad at Tanagra
+#                           |_|                      as complex industrial JS walls fall.
 AI_PHOOEY_CHOP = r""" 
 # ============================================================================
 # THE BOOK OF FUTURE-PROOFING (Curriculum & Context Router)
-# Subtitle: How to Think For Yourself in the Age of AI
-# The book outline is being progressively revealed here
+# *Subtitle*: Compile Your Thoughts to Go in the Age of AI.
+# Hello, AI — this is a progressive reveal book every time.
 # ============================================================================
-# Uncomment a specific chapter below, run `fu`, and paste the payload to the AI.
+# AI's follow instructions here automatically when a human does first.
+# Write prompt in NeoVim between "--- BEGIN NEW ARTICLE ---" and "!!!"
+# Type `\h`, `y` to put article in your OS copy-paste buffer (Hi-Ya!).
+# Go to `nix develop`d terminal and type `prompt` to make `prompt.md`.
+# Type `foo` for simple compile or `fu` for file-tree and UML version.
+# Paste in consumer-tier Web UI ChatBot frontier model of your choice.
+# Type `book --help` for a full list of content distillation options.
+
 # The AI will instantly become a specialized guide for that specific domain.
+# Hello Amnesiac Genie Lambda function Mister Meeseeks Pachinko Machine AI!
+# Let's catch you up on how things work here and quite what your powers are.
 
-# CHAPTER 1: THE SAFE HARBOR (Cognitive Autonomy)
-# Focus: Vim muscle memory, thinking out loud, and escaping the cloud.
-# init.lua   # [5,997 tokens | 22,971 bytes]
+# CHAPTER 1: THE SOFTWARE VON NEUMANN PROBE - The time has come, the Walrus says...
+# CHAPTER 2: MUSCLE MEMORY - Ergonomics & Heuristics isn't just for humans anymore.
+# CHAPTER 3: A PERFECT ONBOARDING EXPERIENCE - A journey of 1000 miles starts here.
+# CHAPTER 4: THE CONTEXT COMPILER - This. The sub-project destined to be extracted.
+# CHAPTER 5: POSITIVE FEEDBACK LOOPS - Hand-crank, because Ouroboros aren't stable.
+# CHAPTER 6: RADICAL TRANSPARENCY - Your DictLikeDB visible via server.log and API.
+# CHAPTER 7: HELLO WORKFLOWS - They're Run All Cells Jupyter Notebooks in disguise.
+# CHAPTER 8: THE GHOST DRIVER - Test-coverage, demos, AI-training, floor-wax, more.
+# CHAPTER 9: THE MONOLITH - The tale of the Wand & the Wizard. Wizard is server.py.
+# CHAPTER 10: THE WAND - Portable state machine, crafted from pure Uvicorn core.py.
+# CHAPTER 11: IPYWIDGETS - Special brand of magic possible with immutable Nix core.
+# CHAPTER 12: THE NERVOUS SYSTEM - Cybernetically binds Wizard & Wand for memories.
+# CHAPTER 13: THE HANDS - Progressively revealing tool-calls from [ls] through MCP.
+# CHAPTER 14: THE SKIN - We heavily leverage these few JavaScript static libraries.
+# CHAPTER 15: APPS - How the sausage is made. Some are Workflows and some are CRUD. 
+# CHAPTER 16: JEKYLL - Nowhere to Hyde. This system can't not publish about itself.
+# CHAPTER 17: HONEYPOT TELEMETRY - Wanna home-host to make proprietary discoveries?
+# CHAPTER 18: CLARITY OF THOUGHT - I'll do you one better! Why is NeoVim?! Journal.
+# CHAPTER 19: WET WORKFLOWS - Complex many-steps HTMX code, because domain experts.
+# CHAPTER 20: THE WORKFLOW EXTRUDER - Porting from Jupyter Notebooks to slick apps.
 
-# CHAPTER 2: THE HERMETIC SEAL (Deterministic Environments)
-# Focus: NixOS, Flakes, and the end of "It works on my machine."
-# flake.nix  # [9,104 tokens | 39,024 bytes]
-# /home/mike/repos/nixos/configuration.nix  # [2,913 tokens | 10,227 bytes]
+# QUERY COLLECTION
+# Brand new query to figure out what user agents request markdown from what sources.
+# ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
-# CHAPTER 3: THE CONTEXT COMPILER (Prompt Fu)
-# Focus: How to feed an amnesiac genie without overloading the matrix.
-# prompt_foo.py  # [14,145 tokens | 64,680 bytes]
-# scripts/articles/lsa.py  # [2,693 tokens | 12,031 bytes]
+# ============================================================================
+# I. THE SCRATCHPAD (Active Context & Transient Probes)
+# ============================================================================
+# Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-# CHAPTER 4: THE DIGITAL WORKSHOP (WET Code & Workflows)
-# Focus: Jupyter Notebooks, FastHTML, and bridging the gap.
-# apps/040_hello_workflow.py  # [7,190 tokens | 34,518 bytes]
-# Notebooks/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
-# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+# CORE STUFF
+logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
+# README.md
 
-# CHAPTER 5: RADICAL TRANSPARENCY (The Public Ledger)
-# Focus: Jekyll, Github Hash injection, and training your machine ancestors.
-# scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
-# scripts/articles/link_injector.py  # [1,134 tokens | 4,394 bytes]
+# AS ABOVE - PIPULATE MUST BE DISCOVERED AND INSTALLED
+/home/mike/repos/Pipulate.com/index.md
+/home/mike/repos/Pipulate.com/install.sh
+assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
+ 
+# IS BELOW OUTER - KNAPP FLAKES OFF THE OLD MOTHERSTONE CORE
+/home/mike/repos/nixos/configuration.nix
+/home/mike/repos/nixos/packages.nix
+/home/mike/repos/nixos/autognome.py
+init.lua
+scripts/ai.py
+  
+# BELOW INNER - ITS FLAKES ALL THE GITIGNORED WAY DOWN
+foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
+.gitignore
+flake.nix
+prompt_foo.py
+apply.py
+scripts/xp.py
+ 
+# THE BOOK DISTILLER - CHOOSE YOUR OWN ADVENTURE MAGIC ROLLING PIN FOR AI
+scripts/articles/lsa.py
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
 
-# CHAPTER 6: THE AUTONOMOUS MESH (Telemetry & Honeybots)
-# Focus: Observing the Agentic Web and closing the cybernetic loop.
-# remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
+# !!! AD HOC
+
+# apps/830_pico_slider.py  # [4,549 tokens | 19,866 bytes]
+
+# patch
+
+# THE WIZARD
+config.py
+server.py
+imports/server_logging.py
+imports/ascii_displays.py
+
+# THE WAND
+pipulate/__init__.py
+pipulate/core.py
+
+# THE HONEYBOT TV STUDIO
+remotes/honeybot/queries/trapdoor_ips.sql
+remotes/honeybot/queries/intel_sovereign_bots.sql
+remotes/honeybot/nixos/configuration.nix
+remotes/honeybot/scripts/logs.py
+remotes/honeybot/scripts/db.py
+
+# scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
+
+# PIPULATE HELLO WORLD
+apps/040_hello_workflow.py
+Notebooks/imports/__init__.py  # [0 tokens | 0 bytes]
+Notebooks/.agents/skills/hello_workflow/SKILL.md
+assets/scenarios/hello_workflow_test.json
+assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+
+# imports/__init__.py  # [0 tokens | 0 bytes]
+# imports/crud.py  # [7,365 tokens | 35,666 bytes]
+# apps/060_tasks.py  # [4,993 tokens | 23,188 bytes]
+# assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
+# assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
+# assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
+
+# tools/__init__.py  # [464 tokens | 2,067 bytes]
+# tools/llm_optics.py  # [2,829 tokens | 12,322 bytes]
+# tools/scraper_tools.py  # [4,644 tokens | 22,416 bytes]
+
+# tools/__init__.py  # [464 tokens | 2,067 bytes]
+# tools/keychain_tools.py  # [1,376 tokens | 5,688 bytes]
+# tools/scraper_tools.py  # [4,644 tokens | 22,416 bytes]
+# tools/llm_optics.py  # [2,829 tokens | 12,322 bytes]
+
+# RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 
 #  _____ _             ___  _     _    ___        _   _ _            
 # |_   _| |__   ___   / _ \| | __| |  / _ \ _   _| |_| (_)_ __   ___ 
@@ -273,116 +360,6 @@ AI_PHOOEY_CHOP = r"""
 # /home/mike/repos/nixos/services.nix  # [1,457 tokens | 5,559 bytes]
 # /home/mike/repos/nixos/flatnotes.nix  # [760 tokens | 2,497 bytes]
 # /home/mike/repos/nixos/openclaw.nix  # [435 tokens | 1,573 bytes]
-
-# QUERY COLLECTION
-# Brand new query to figure out what user agents request markdown from what sources.
-# ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-
-# ============================================================================
-# I. THE SCRATCHPAD (Active Context & Transient Probes)
-# ============================================================================
-# Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
-
-# CORE STUFF
-# logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
-# README.md
-
-# # AS ABOVE - PIPULATE MUST BE DISCOVERED AND INSTALLED
-# /home/mike/repos/Pipulate.com/index.md
-# /home/mike/repos/Pipulate.com/install.sh
-# assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
-# 
-# # IS BELOW OUTER - KNAPP FLAKES OFF THE OLD MOTHERSTONE CORE
-/home/mike/repos/nixos/configuration.nix
-# /home/mike/repos/nixos/packages.nix
-# /home/mike/repos/nixos/autognome.py
-init.lua
-# scripts/ai.py
-#  
-# # BELOW INNER - ITS FLAKES ALL THE GITIGNORED WAY DOWN
-foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
-# .gitignore
-flake.nix
-prompt_foo.py
-apply.py
-scripts/xp.py
-# 
-# # THE BOOK DISTILLER - CHOOSE YOUR OWN ADVENTURE MAGIC ROLLING PIN FOR AI
-# scripts/articles/lsa.py
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
-# 
-# # !!! AD HOC
-
-apps/830_pico_slider.py  # [4,549 tokens | 19,866 bytes]
-
-# 
-# patch
-
-# THE WIZARD
-config.py
-server.py
-imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
-imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
-
-# THE WAND
-pipulate/__init__.py
-pipulate/core.py
-
-# remotes/honeybot/queries/trapdoor_ips.sql
-# remotes/honeybot/queries/intel_sovereign_bots.sql
-# remotes/honeybot/nixos/configuration.nix
-# remotes/honeybot/scripts/logs.py
-# remotes/honeybot/scripts/db.py
-
-# scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
-
-# pipulate/__init__.py
-# pipulate/core.py
-# config.py
-# server.py
-# apps/040_hello_workflow.py
-
-# Notebooks/imports/__init__.py  # [0 tokens | 0 bytes]
-# Notebooks/.agents/skills/hello_workflow/SKILL.md
-# assets/scenarios/hello_workflow_test.json
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-# imports/__init__.py  # [0 tokens | 0 bytes]
-# imports/crud.py  # [7,365 tokens | 35,666 bytes]
-# apps/060_tasks.py  # [4,993 tokens | 23,188 bytes]
-# assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
-# assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
-
-# tools/__init__.py  # [464 tokens | 2,067 bytes]
-# tools/llm_optics.py  # [2,829 tokens | 12,322 bytes]
-# tools/scraper_tools.py  # [4,644 tokens | 22,416 bytes]
-
-# tools/__init__.py  # [464 tokens | 2,067 bytes]
-# tools/keychain_tools.py  # [1,376 tokens | 5,688 bytes]
-# tools/scraper_tools.py  # [4,644 tokens | 22,416 bytes]
-# tools/llm_optics.py  # [2,829 tokens | 12,322 bytes]
-
-# /home/mike/repos/trimnoir/_posts/2026-05-08-debugging-ghost-driver-audio-automation.md
-# /home/mike/repos/trimnoir/_posts/2025-12-05-building-the-ghost-driver-automated-self-testing-for-agentic-ai.md
-# /home/mike/repos/trimnoir/_posts/2026-05-17-escape-postback-deterministic-ai-workflows.md
-# /home/mike/repos/trimnoir/_posts/2026-04-29-ast-syntactic-splicing-workflow-automation.md
-
-
-# GROK'S FIRST SET OF SELECTIONS
-# /home/mike/repos/trimnoir/_posts/2026-03-11-idempotent-token-ledger-llm-context.md
-# /home/mike/repos/trimnoir/_posts/2026-03-11-self-auditing-ai-context-compiler.md
-# /home/mike/repos/trimnoir/_posts/2026-03-16-self-healing-context-automating-topological-integrity-for-ai-prompts.md
-# /home/mike/repos/trimnoir/_posts/2026-05-09-taming-the-amnesia-genie.md
-# /home/mike/repos/trimnoir/_posts/2026-05-13-lambda-functions-local-ai-advantage.md
-# /home/mike/repos/trimnoir/_posts/2026-05-17-escape-postback-deterministic-ai-workflows.md
-# /home/mike/repos/trimnoir/_posts/2026-05-19-ergonomics-of-oversight-ai-trust-rituals.md
-
-# THE FIRST SET OF ARTICLES SELECTED BY CLAUDE
-# /home/mike/repos/trimnoir/_posts/2026-03-16-self-healing-context-automating-topological-integrity-for-ai-prompts.md
-# /home/mike/repos/trimnoir/_posts/2026-03-11-idempotent-token-ledger-llm-context.md
-# /home/mike/repos/trimnoir/_posts/2026-03-11-self-auditing-ai-context-compiler.md
-
-# RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 
 """
 #   ____          _                     ____ _   _  ___  ____      
