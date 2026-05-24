@@ -29,15 +29,18 @@ console = Console()
 #   logger.info(art.ai)             # for AI assistants
 # ============================================================================
 
-from dataclasses import dataclass
+from collections import namedtuple
+import binascii
 from typing import Optional, Callable
 
-@dataclass
-class FigurateResult:
-    """The dual-output product of a figurate() call."""
-    name: str
-    human: object   # Rich Panel, Text, or str — ready for safe_console_print()
-    ai: str         # Plain ASCII, no Rich markup, no ANSI codes — safe for logging
+# FigurateResult: The immutable bag of attributes returned by wand.figurate().
+# .drift is 0 when the ASCII art matches its registered CRC32; 1 if corrupted.
+# patronus = wand.figurate("white_rabbit")
+# patronus.human → Rich Panel for the terminal
+# patronus.ai    → plain text for logs and LLM context
+# patronus.drift → 0 means the wax seal is intact
+FigurateResult = namedtuple('FigurateResult', ['name', 'human', 'ai', 'drift'])
+
 
 def figurate(name: str, context: Optional[str] = None) -> FigurateResult:
     """🎨 FIGURATE: Centralized dual-output ASCII art renderer.
