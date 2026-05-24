@@ -106,18 +106,13 @@ FIGURATE_LEDGER: dict = {
 def _figurate_white_rabbit():
     """Render white_rabbit as (human, ai) tuple for FIGURATE_REGISTRY."""
     art = r"""
-  .  .  .  .  .  .  .  .  .  .  .
-    W E L C O M E   T O
-      C O N S O L E L A N D
-  .  .  .  .  .  .  .  .  .  .  .
-       /)    ______
-  /)\__//    /      \
- (/_ 0 0    |        |
-  ==(_T_)== |Pipulate|
-    ""   \   \      /
-           \  \____/
-  .  .  .  .  .  .  .  .  .  .  .
-    """
+                /)    ____  
+          /)\__//    /    \ 
+      ___(/_ 0 0    |      |
+    *(    ==(_T_)== | NPvg |
+      \  )   ""\    |      |
+       |__>-\_>_>    \____/ 
+    """                   
     human = Panel(art, title="🐰 Welcome to Consoleland", border_style="white")
     return human, art
 
