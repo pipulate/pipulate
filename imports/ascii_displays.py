@@ -11,6 +11,10 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
 
+import binascii
+from collections import namedtuple
+from typing import Callable, Optional
+
 logger = logging.getLogger(__name__)
 figurate_logger = logger
 
@@ -29,10 +33,6 @@ console = Console()
 #   safe_console_print(art.human)   # for humans
 #   logger.info(art.ai)             # for AI assistants
 # ============================================================================
-
-import binascii
-from collections import namedtuple
-from typing import Callable, Optional
 
 # FigurateResult: The immutable bag of attributes returned by wand.figurate().
 # .drift is 0 when the ASCII art matches its registered CRC32; 1 if corrupted.
