@@ -92,6 +92,34 @@ def figurate(name: str, context: Optional[str] = None) -> FigurateResult:
     return FigurateResult(name=name, human=human_out, ai=ai_out, drift=drift)
 
 
+# FIGURATE_COLOR_BITS: The color-bits player piano dictionary.
+# Maps named tokens to Rich style strings.
+# Usage in art strings: [[[TokenName]]] expands to styled text for humans,
+# and strips to plain TokenName for AI context and CRC hashing.
+FIGURATE_COLOR_BITS: dict = {
+    "NPvg":     "bold bright_blue",
+    "Pipulate": "bold bright_cyan",
+}
+
+
+def _expand_color_bits_human(text: str) -> str:
+    """Expand [[[Token]]] markers into Rich markup for terminal display."""
+    import re
+    def replace(m):
+        token = m.group(1)
+        style = FIGURATE_COLOR_BITS.get(token, "")
+        if style:
+            return f"[{style}]{token}[/{style}]"
+        return token  # Unknown token: pass through raw
+    return re.sub(r'\[\[\[([^\]]+)\]\]\]', replace, text)
+
+
+def _expand_color_bits_ai(text: str) -> str:
+    """Strip [[[Token]]] markers to plain text for AI context and CRC hashing."""
+    import re
+    return re.sub(r'\[\[\[([^\]]+)\]\]\]', r'\1', text)
+
+
 # FIGURATE_LEDGER: Maps art name → expected CRC32 of its raw ai string.
 # This is the wax seal registry. A drift of 1 means something touched the painting.
 # To add a new entry: print(binascii.crc32(your_art_string.encode('utf-8')))
@@ -112,9 +140,11 @@ def _figurate_white_rabbit():
     *(    ==(_T_)== | NPvg |
       \  )   ""\    |      |
        |__>-\_>_>    \____/ 
-    """                   
-    human = Panel(art, title="🐰 Welcome to Consoleland", border_style="white")
-    return human, art
+    """
+    ai_art = _expand_color_bits_ai(art)
+    human_art = _expand_color_bits_human(art)
+    human = Panel(human_art, title="🐰 Welcome to Consoleland", border_style="white")
+    return human, ai_art
 
 
 FIGURATE_REGISTRY: dict = {
