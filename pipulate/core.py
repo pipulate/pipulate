@@ -282,28 +282,16 @@ class Pipulate:
         if console_output:
             renderable = art.human
             
-            # Extract raw artwork out of the ledger for explicit token matching if available
-            ledger_art = getattr(aa, 'FIGURATE_LEDGER', {}).get(name)
-            
-            if ledger_art:
-                # Parse markup design tokens using config.COLOR_MAP targets directly
+            # Fallback path for classic inline visual strings
+            if hasattr(renderable, 'renderable') and isinstance(renderable.renderable, str):
+                text = renderable.renderable
                 for token, color in COLOR_MAP.items():
-                    ledger_art = re.sub(f'<{token}>(.*?)</{token}>', f'[{color}]\\1[/{color}]', ledger_art)
-                # Re-wrap the translated string data into its visual panel context dynamically
-                from rich.panel import Panel
-                panel_title = "🐰 Welcome to Consoleland" if name == "white_rabbit" else f"🎨 {name.replace('_', ' ').title()}"
-                renderable = Panel(ledger_art, title=panel_title, border_style="white")
-            else:
-                # Fallback path for classic inline visual strings
-                if hasattr(renderable, 'renderable') and isinstance(renderable.renderable, str):
-                    text = renderable.renderable
-                    for token, color in COLOR_MAP.items():
-                        text = re.sub(f'<{token}>(.*?)</{token}>', f'[{color}]\\1[/{color}]', text)
-                    renderable.renderable = text
-                elif isinstance(renderable, str):
-                    for token, color in COLOR_MAP.items():
-                        renderable = re.sub(f'<{token}>(.*?)</{token}>', f'[{color}]\\1[/{color}]', renderable)
-                        
+                    text = re.sub(f'<{token}>(.*?)</{token}>', f'[{color}]\\1[/{color}]', text)
+                renderable.renderable = text
+            elif isinstance(renderable, str):
+                for token, color in COLOR_MAP.items():
+                    renderable = re.sub(f'<{token}>(.*?)</{token}>', f'[{color}]\\1[/{color}]', renderable)
+                    
             aa.safe_console_print(renderable)
         return art
 
