@@ -90,25 +90,24 @@ AI_PHOOEY_CHOP = r"""                                                           
 # scripts/ai.py
    
 # # BELOW INNER - ITS FLAKES ALL THE GITIGNORED WAY DOWN
-# foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
-# .gitignore
-# flake.nix
-# prompt_foo.py
-# apply.py
-# scripts/xp.py
+foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
+.gitignore
+flake.nix
+prompt_foo.py
+apply.py
+scripts/xp.py
   
 # # THE BOOK DISTILLER - CHOOSE YOUR OWN ADVENTURE MAGIC ROLLING PIN FOR AI
 # scripts/articles/lsa.py
 # ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
-# 
+ 
 # # !!! AD HOC
 
-
+config.py
 pipulate/__init__.py
 pipulate/pipulate.py
 pipulate/core.py
-config.py
-server.py
+# server.py
 imports/ascii_displays.py
 
 # PREVIOUS AD HOC SESSIONS
