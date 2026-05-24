@@ -88,11 +88,12 @@ def figurate(name: str, context: Optional[str] = None) -> FigurateResult:
     return FigurateResult(name=name, human=human_out, ai=ai_out, drift=drift)
 
 
-# FIGURATE_LEDGER: Decoupled visual asset store.
-# Art strings live here as pure data, separate from rendering logic.
-# LLMs can add/modify entries without touching function bodies.
-# Use semantic XML-style tags for color tokens: <success>, <debug>, <warning>, etc.
-FIGURATE_LEDGER: dict = {}
+# FIGURATE_LEDGER: Maps art name → expected CRC32 of its raw ai string.
+# This is the wax seal registry. A drift of 1 means something touched the painting.
+# To add a new entry: print(binascii.crc32(your_art_string.encode('utf-8')))
+FIGURATE_LEDGER: dict = {
+    "white_rabbit": 1882318541,
+}
 
 # FIGURATE_REGISTRY: The map of all visual vocabulary.
 # Each entry provides a render() function returning (human, ai) tuple.
