@@ -2,13 +2,14 @@
 # Externalized from server.py to reduce token count while preserving functionality
 # IMPORTANT: These are EXACT transcriptions of the original ASCII art - not generated substitutes!
 
+import logging
+
+from pyfiglet import Figlet
+from rich.align import Align
+from rich.box import DOUBLE, HEAVY, ROUNDED
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
-from rich.align import Align
-from rich.box import ROUNDED, HEAVY, DOUBLE
-from pyfiglet import Figlet
-import logging
 
 logger = logging.getLogger(__name__)
 figurate_logger = logger
@@ -29,9 +30,9 @@ console = Console()
 #   logger.info(art.ai)             # for AI assistants
 # ============================================================================
 
-from collections import namedtuple
 import binascii
-from typing import Optional, Callable
+from collections import namedtuple
+from typing import Callable, Optional
 
 # FigurateResult: The immutable bag of attributes returned by wand.figurate().
 # .drift is 0 when the ASCII art matches its registered CRC32; 1 if corrupted.
@@ -566,9 +567,9 @@ def reading_legend():
 
 def ai_breadcrumb_summary(tool_count: int) -> str:
     """🍞 AI BREADCRUMB SUMMARY: Consolidate all AI discovery messages into compact format"""
-    from rich.table import Table
-    from rich.panel import Panel
     from rich.console import Console
+    from rich.panel import Panel
+    from rich.table import Table
     
     console = Console(width=100)
     
@@ -612,9 +613,9 @@ Zero uncertainty • 100% automation success rate"""
 
 def startup_environment_warnings() -> str:
     """⚠️  STARTUP WARNINGS: Critical environment setup messages for AI assistants"""
-    from rich.table import Table
-    from rich.panel import Panel
     from rich.console import Console
+    from rich.panel import Panel
+    from rich.table import Table
     
     console = Console(width=110)
     
@@ -676,10 +677,10 @@ def startup_summary_table(
     Consolidates verbose startup messages into scannable format for humans
     while preserving all FINDER_TOKEN information for AI assistants.
     """
-    from rich.table import Table
-    from rich.panel import Panel
     from rich.columns import Columns
     from rich.console import Console
+    from rich.panel import Panel
+    from rich.table import Table
     
     console = Console(width=120)
     
@@ -754,9 +755,9 @@ Rich console blocked on Mac (Error: {e}), using fallback display.
 
 def ai_breadcrumb_summary(tool_count: int) -> str:
     """🍞 AI BREADCRUMB SUMMARY: Consolidate all AI discovery messages into compact format"""
-    from rich.table import Table
-    from rich.panel import Panel
     from rich.console import Console
+    from rich.panel import Panel
+    from rich.table import Table
     
     console = Console(width=100)
     
@@ -800,9 +801,9 @@ Zero uncertainty • 100% automation success rate"""
 
 def startup_environment_warnings() -> str:
     """⚠️  STARTUP WARNINGS: Critical environment setup messages for AI assistants"""
-    from rich.table import Table
-    from rich.panel import Panel
     from rich.console import Console
+    from rich.panel import Panel
+    from rich.table import Table
     
     console = Console(width=110)
     
