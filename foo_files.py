@@ -103,11 +103,21 @@ AI_PHOOEY_CHOP = r"""                                                           
 # 
 # # !!! AD HOC
 
-/home/mike/repos/trimnoir/index.md
-_includes/home_hub.md
-scripts/articles/generate_hubs.py
-scripts/articles/build_knowledge_graph.py
-scripts/articles/navgraph.json
+
+pipulate/__init__.py
+pipulate/pipulate.py
+pipulate/core.py
+config.py
+server.py
+imports/ascii_displays.py
+
+# PREVIOUS AD HOC SESSIONS
+
+# /home/mike/repos/trimnoir/index.md
+# _includes/home_hub.md
+# scripts/articles/generate_hubs.py
+# scripts/articles/build_knowledge_graph.py
+# scripts/articles/navgraph.json
  
 # # apps/830_pico_slider.py  # [4,549 tokens | 19,866 bytes]
 # 
@@ -325,15 +335,15 @@ scripts/articles/navgraph.json
 # assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
 
 # CHAPTER 14: JEKYLL PUBLISHING
-flake.nix  # [9,141 tokens | 39,307 bytes]
-/home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
-scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-/home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
-scripts/articles/common.py  # [952 tokens | 3,894 bytes]
-scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
-scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
-scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-scripts/articles/contextualizer.py  # [2,519 tokens | 11,151 bytes]
+# flake.nix  # [9,141 tokens | 39,307 bytes]
+# /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
+# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
+# /home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
+# scripts/articles/common.py  # [952 tokens | 3,894 bytes]
+# scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
+# scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
+# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
+# scripts/articles/contextualizer.py  # [2,519 tokens | 11,151 bytes]
 
 # scripts/articles/build_knowledge_graph.py  # [4,341 tokens | 17,300 bytes]
 # scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
