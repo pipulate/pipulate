@@ -278,33 +278,9 @@ def falling_alice(console_output=True):
     return falling_alice_art
 
 def white_rabbit(console_output=True):
-    """🐰 WHITE RABBIT: Whimsical White Rabbit-themed banner"""
-    figurate("white_rabbit", context="server startup")
-    alice_art = r"""[black].[/black]
- - This is Uvicorn webserver output.                       /)    ______
-   (i.e. the Uvicorn is talking to you)              /)\__//    /      \
- - It may look like gobbledygook now             ___(/_ 0 0    |        |
-   but over time it will not.                  *(    ==(_T_)== |[bold bright_blue]Pipulate[/bold bright_blue]|
- - Curious? Become a Carpenter!                  \  )   ""\    |        |
-                                                  |__>-\_>_>    \______/
-   """
-    
-    # Console output for humans (Rich display)
-    if console_output:
-        style = BANNER_COLORS['white_rabbit']
-        panel = Panel(
-            Align.center(alice_art.strip()),
-            title=f"[bold {style}]🐰 Welcome to Consoleland[/bold {style}]",
-            subtitle="[dim]Down the rabbit hole of radical transparency[/dim]",
-            box=ROUNDED,
-            style=style,
-            padding=(1, 2)
-        )
-        safe_console_print(panel)
-    
-    # 🎭 AI CREATIVE TRANSPARENCY: Share the whimsical White Rabbit moment
-    share_ascii_with_ai(alice_art, "White Rabbit ASCII Art - 🐰 Narrative moment: Welcome to Consoleland - down the rabbit hole of radical transparency!", "🐰")
-    return alice_art
+    """🐰 WHITE RABBIT: Thin facade returning the unified dual-output figurate bunny."""
+    art = figurate("white_rabbit", context="server startup")
+    return art.ai
 
 def system_diagram(console_output=True):
     """📐 SYSTEM DIAGRAMS: ASCII art system overview"""
