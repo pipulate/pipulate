@@ -71,33 +71,34 @@ AI_PHOOEY_CHOP = r"""                                                           
 # color the canvas. I do a lot of gessoing over the canvas to start fresh, but a
 # bit lumpy. That lumpiness is cruft and tech liability. Let's prune!
 
-# QUERY COLLECTION
-# Brand new query to figure out what user agents request markdown from what sources.
-# ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# While the above serves as a good organization spine for the book, we get a bit
+# more ad hoc and loosey goosey to actually show you the articles and codebase.
 
 # ============================================================================
-# I. THE SCRATCHPAD (Active Context & Transient Probes)
+# I. DEBUGGING CRASH COURSE - Server Cookies & Radical Transparency
 # ============================================================================
-# Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
-# CORE STUFF
-logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
-README.md
+# foo_files.py     #  <-- THIS file. Content compiler router. Makes it very meta.
+# logs/server.log  #  <-- Like letting AI see your browser app state. But better.
+# README.md        #  <-- Ruin the fun by just spelling it all out for the AI.
 
-# AS ABOVE - PIPULATE MUST BE DISCOVERED AND INSTALLED
-# /home/mike/repos/Pipulate.com/index.md
-# /home/mike/repos/Pipulate.com/install.sh
-# assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
+# ============================================================================
+# II. THE MOTHERSHIP DROP-HOOK - Solving the Bootstrap Paradox
+# ============================================================================
+
+# /home/mike/repos/Pipulate.com/index.md    #  <-- It's gotta start somewhere.
+# /home/mike/repos/Pipulate.com/install.sh  #  <-- Put there by release.py
+# /home/mike/repos/nixos/configuration.nix  #  <-- Weird "global" context
+# /home/mike/repos/nixos/packages.nix       #  <-- Full disclosure on pre-flake IaC
+# /home/mike/repos/nixos/autognome.py       #  <-- How serious we are about muscle memory
+
+
  
 # IS BELOW OUTER - KNAPP FLAKES OFF THE OLD MOTHERSTONE CORE
-# /home/mike/repos/nixos/configuration.nix
-# /home/mike/repos/nixos/packages.nix
-# /home/mike/repos/nixos/autognome.py
 # init.lua
 # scripts/ai.py
    
 # # BELOW INNER - ITS FLAKES ALL THE GITIGNORED WAY DOWN
-foo_files.py  #  <-- The Prompt Fu router is often included in its own payloads.
 .gitignore
 flake.nix
 prompt_foo.py
@@ -174,16 +175,16 @@ imports/server_logging.py
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 
+# QUERY COLLECTION
+# Brand new query to figure out what user agents request markdown from what sources.
+# ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
 #  _____ _             ___  _     _    ___        _   _ _            
 # |_   _| |__   ___   / _ \| | __| |  / _ \ _   _| |_| (_)_ __   ___ 
 #   | | | '_ \ / _ \ | | | | |/ _` | | | | | | | | __| | | '_ \ / _ \
 #   | | | | | |  __/ | |_| | | (_| | | |_| | |_| | |_| | | | | |  __/
 #   |_| |_| |_|\___|  \___/|_|\__,_|  \___/ \__,_|\__|_|_|_| |_|\___|
                                                                    
-# ============================================================================
-# II. THE CORE MACHINE (Architecture & Monolith)
-# ============================================================================
-# The foundational NPvg framework and state management.
 
 # CHAPTER 0: ONBOARDING
 # .gitignore  # [571 tokens | 2,096 bytes]
