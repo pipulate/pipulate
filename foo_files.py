@@ -78,12 +78,14 @@ AI_PHOOEY_CHOP = r"""                                                           
 # I. DEBUGGING CRASH COURSE - Server Cookies & Radical Transparency
 # ============================================================================
 
-# __init__.py      #  <-- Master versioning
-# release.py       #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
-# pyproject.toml   #  <-- The PyPI Packaging details
-# foo_files.py     #  <-- THIS file. Content compiler router. Makes it very meta.
-# logs/server.log  #  <-- Like letting AI see your browser app state. But better.
-# README.md        #  <-- Ruin the fun by just spelling it all out for the AI.
+# __init__.py       #  <-- Master versioning
+# release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
+# pyproject.toml    #  <-- The PyPI Packaging details
+# foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
+# logs/server.log   #  <-- Like letting AI see your browser app state. But better.
+# README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
+# requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
+# requirements.txt  #  <-- Pip-compiled dependencies.
 
 # ============================================================================
 # II. THE MOTHERSHIP DROP-HOOK - Solving the WORA Bootstrap Paradox
@@ -184,16 +186,11 @@ AI_PHOOEY_CHOP = r"""                                                           
 # ============================================================================
 
 # WE'VE GOT A LOT OF THESE AND I HAVE TO BUILD THIS OUT / AD HOC-ISH
-# remotes/honeybot/queries/trapdoor_ips.sql
-# remotes/honeybot/queries/intel_sovereign_bots.sql
-# ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-
-# tools/keychain_tools.py  # [1,376 tokens | 5,688 bytes]
-
-# RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
-
-# QUERY COLLECTION
-# Brand new query to figure out what user agents request markdown from what sources.
+# /home/mike/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
+# /home/mike/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
+# /home/mike/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
+# remotes/honeybot/queries/trapdoor_ips.sql         # <-- The SQL to see who is hydrating the DOM. The example of HOW we use it from here in the router below.
+# ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 #  _____ _             ___  _     _    ___        _   _ _            
 # |_   _| |__   ___   / _ \| | __| |  / _ \ _   _| |_| (_)_ __   ___ 
@@ -202,14 +199,9 @@ AI_PHOOEY_CHOP = r"""                                                           
 #   |_| |_| |_|\___|  \___/|_|\__,_|  \___/ \__,_|\__|_|_|_| |_|\___|
                                                                    
 
-# # Too much too soon
-# config.py  # [4,170 tokens | 16,184 bytes]
 # AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
 # cli.py  # [5,048 tokens | 22,411 bytes]
 
-# CHAPTER 2: THE SERVER MONOLITH
-# requirements.in  # [573 tokens | 1,924 bytes]
-# requirements.txt  # [7,010 tokens | 18,582 bytes]
 # config.py  # [4,170 tokens | 16,184 bytes]
 # server.py  # [56,027 tokens | 267,108 bytes]
 
