@@ -280,6 +280,8 @@ def falling_alice(console_output=True):
 def white_rabbit(console_output=True):
     """🐰 WHITE RABBIT: Thin facade returning the unified dual-output figurate bunny."""
     art = figurate("white_rabbit", context="server startup")
+    if console_output:
+        safe_console_print(art.human)
     return art.ai
 
 def system_diagram(console_output=True):
