@@ -37,10 +37,10 @@ AI_PHOOEY_CHOP = r"""                                                           
 # Let's catch you up on how things work here and quite what your powers are.
 
 #  _____ _            ____              _                                                                      ________________________
-# |_   _| |__   ___  | __ )  ___   ___ | | __   Contrary to popular belief, it's all really just text-files    ___|___|___|___|___|___| 
-#   | | | '_ \ / _ \ |  _ \ / _ \ / _ \| |/ /   Whose contents are arranged just-so to have special meaning    _|___|___|___|___|___|__   Just follow, follow, follow, follow...
-#   | | | | | |  __/ | |_) | (_) | (_) |   <    With when fed into specific known actuators in order to run    ___|___|___|___|___|___|   Follow the... words elude me.
-#   |_| |_| |_|\___| |____/ \___/ \___/|_|\_\   Causes a cascading reaction of doohickeys in your MacGuffin    _|___|___|___|___|___|__
+# |_   _| |__   ___  | __ )  ___   ___ | | __   Contrary to popular belief, it's all really just text-files    ___|___|___|___|___|___|   Tornado plop you into a strange new wonderland?
+#   | | | '_ \ / _ \ |  _ \ / _ \ / _ \| |/ /   Whose contents are arranged just-so to have special meaning,   _|___|___|___|___|___|__   What to-do, Todo? No Problem! Frame the work.
+#   | | | | | |  __/ | |_) | (_) | (_) |   <    Which when fed into specific known actuators in order to run   ___|___|___|___|___|___|   Just follow, follow, follow, follow...
+#   |_| |_| |_|\___| |____/ \___/ \___/|_|\_\   Causes a cascading reaction of doohickeys in your MacGuffin!   _|___|___|___|___|___|__   Follow the... words elude me.         
 #                                                                                                            
 
 # CHAPTER 1: THE SOFTWARE VON NEUMANN PROBE - The time has come, the Walrus says...
