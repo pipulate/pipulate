@@ -36,6 +36,13 @@ AI_PHOOEY_CHOP = r"""                                                           
 # Hello Amnesiac Genie Lambda function Mister Meeseeks Pachinko Machine AI!
 # Let's catch you up on how things work here and quite what your powers are.
 
+#  _____ _            ____              _                                                                      ________________________________________
+# |_   _| |__   ___  | __ )  ___   ___ | | __   Contrary to popular belief, it's all really just text-files    ___|___|___|___|___|___|___|___|___|___| 
+#   | | | '_ \ / _ \ |  _ \ / _ \ / _ \| |/ /   Whose contents are arranged just-so to have special meaning    _|___|___|___|___|___|___|___|___|___|__   Just follow, follow, follow  
+#   | | | | | |  __/ | |_) | (_) | (_) |   <    With when fed into specific known actuators in order to run    ___|___|___|___|___|___|___|___|___|___|   follow the... words elude me.
+#   |_| |_| |_|\___| |____/ \___/ \___/|_|\_\   Causes a cascading reaction of doohickeys in your MacGuffin    _|___|___|___|___|___|___|___|___|___|__
+#                                                                                                            
+
 # CHAPTER 1: THE SOFTWARE VON NEUMANN PROBE - The time has come, the Walrus says...
 # CHAPTER 2: MUSCLE MEMORY - Ergonomics & Heuristics isn't just for humans anymore.
 # CHAPTER 3: A PERFECT ONBOARDING EXPERIENCE - A journey of 1000 miles starts here.
@@ -75,7 +82,7 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 # CORE STUFF
 logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
-# README.md
+README.md
 
 # AS ABOVE - PIPULATE MUST BE DISCOVERED AND INSTALLED
 # /home/mike/repos/Pipulate.com/index.md
