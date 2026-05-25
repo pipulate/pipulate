@@ -74,7 +74,7 @@ AI_PHOOEY_CHOP = r"""                                                           
 # Your daily ebb and flow happens here. Clear this out regularly. Add chapter?
 
 # CORE STUFF
-# logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
+logs/server.log  # <-- INCLUDING THIS IS A WHOLE DEBUGGING SYSTEM
 # README.md
 
 # AS ABOVE - PIPULATE MUST BE DISCOVERED AND INSTALLED
@@ -107,7 +107,7 @@ config.py
 pipulate/__init__.py
 pipulate/pipulate.py
 pipulate/core.py
-# server.py
+server.py
 imports/ascii_displays.py
 imports/server_logging.py
 
