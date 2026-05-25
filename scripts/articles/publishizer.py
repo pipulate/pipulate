@@ -100,7 +100,7 @@ def main():
     # Resolve actual path for file operations
     target_path = Path(targets[target_key]['path']).expanduser().resolve()
     
-    # THE BJJ SWEEP: Dynamically pull the pipeline array from the JSON config
+    # THE JIU-JITSU SWEEP: Dynamically pull the pipeline array from the JSON config
     pipeline_scripts = targets[target_key].get('pipeline', [])
     
     print(f"\n🔒 Locked Target: {targets[target_key]['name']}")
@@ -113,7 +113,7 @@ def main():
     if args.keys:
         extra_args.extend(['-m', args.keys])
 
-    # 1.5 THE BRANDING SWEEP (Run this right before the BJJ Sweep!)
+    # 1.5 THE BRANDING SWEEP (Run this right before the JIU-JITSU Sweep!)
     brand_markdown_files(target_path)
 
     # 2. Run the sequence

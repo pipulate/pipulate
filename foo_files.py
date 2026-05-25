@@ -82,7 +82,7 @@ AI_PHOOEY_CHOP = r"""                                                           
 # __init__.py       #  <-- Master versioning
 # release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
 # pyproject.toml    #  <-- The PyPI Packaging details
-foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. !!!
+foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
 # logs/server.log   #  <-- Like letting AI see your browser app state. But better.
 README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
@@ -112,7 +112,7 @@ README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 
 # .gitignore      #  <-- The great unsung hero of *really* showing what's going on
 # flake.nix       #  <-- Contains Magic Cookie solving the "write once run anywhere" bootstrap paradox
-# prompt_foo.py   #  <-- The Context Compiler. Takes THIS and stacks 1-big text-file. (Hi-Ya!)
+prompt_foo.py   #  <-- The Context Compiler. Takes THIS and stacks 1-big text-file. (Hi-Ya!) ------------------------------------ !!!
 # apply.py        #  <-- Aider-inspired developer's Player Piano. Applies AI-recommended edits.
 # scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 # patch           #  <-- I know what you did last patch
@@ -176,13 +176,13 @@ README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # VIII. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
 # ============================================================================
 
-# nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
-# remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
-# remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
-# remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
-# remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
-# remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
-# remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
+remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
+remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
+remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
+remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
+remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
+remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
 
 # ============================================================================
 # IV. PROPRIETARY FINDINGS - Which AI bots execute JavaScript and which negotiate for Markdown?
@@ -216,6 +216,23 @@ README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # tools/conversation_tools.py           # <-- And this is how you edit it (once I fix it).
 # imports/durable_backup_system.py      # <-- Your most important production data, clients and their tasks, survives even `rm -rf ~/pipulate`.
 # imports/database_safety_wrapper.py    # <-- Mischievous AI thinks they can blank your database? Think again! Whoops, did I say that out loud?
+
+# ============================================================================
+# VII. JEKYLL PUBLISHING - 
+# ============================================================================
+
+/home/mike/.config/articleizer/targets.json  # <-- System can work against any Jekyll blog, public or private.
+scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
+scripts/articles/common.py                   # <-- Self-explanatory
+scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
+scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
+scripts/articles/sanitizer.py                # <-- Scrubs PII
+scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
+scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
+scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
+scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
+scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
+scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
 
 #  _____ _             ___  _     _    ___        _   _ _            
 # |_   _| |__   ___   / _ \| | __| |  / _ \ _   _| |_| (_)_ __   ___ 
@@ -309,37 +326,10 @@ README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [8,479 tokens | 28,415 bytes]
 # assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
 
-# CHAPTER 14: JEKYLL PUBLISHING
-# flake.nix  # [9,141 tokens | 39,307 bytes]
-# /home/mike/.config/articleizer/targets.json  # [179 tokens | 734 bytes]
-# scripts/articles/editing_prompt.txt  # [1,533 tokens | 6,906 bytes]
-# /home/mike/repos/trimnoir/_config.yml  # [566 tokens | 2,208 bytes]
-# scripts/articles/common.py  # [952 tokens | 3,894 bytes]
-# scripts/articles/articleizer.py  # [2,949 tokens | 13,562 bytes]
-# scripts/articles/publishizer.py  # [1,021 tokens | 4,205 bytes]
-# scripts/articles/sanitizer.py  # [700 tokens | 2,508 bytes]
-# scripts/articles/contextualizer.py  # [2,519 tokens | 11,151 bytes]
-
-# scripts/articles/build_knowledge_graph.py  # [4,341 tokens | 17,300 bytes]
-# scripts/articles/generate_llms_txt.py  # [874 tokens | 3,492 bytes]
-# scripts/articles/generate_hubs.py  # [1,456 tokens | 5,970 bytes]
-# scripts/articles/generate_redirects.py  # [2,233 tokens | 9,255 bytes]
-# scripts/articles/sanitize_redirects.py  # [684 tokens | 2,935 bytes]
 
 # ============================================================================
 # VI. THE HONEYBOT OBSERVATORY (Live Telemetry)
 # ============================================================================
-
-# CHAPTER 15: HONEYBOT IAC & SCRIPTS
-# nixops.sh  # [227 tokens | 765 bytes]
-# remotes/honeybot/hooks/post-receive  # [522 tokens | 1,692 bytes]
-# remotes/honeybot/nixos/configuration.nix  # [4,217 tokens | 16,271 bytes]
-# remotes/honeybot/scripts/content_loader.py  # [1,641 tokens | 6,804 bytes]
-# remotes/honeybot/scripts/db.py  # [2,850 tokens | 13,221 bytes]
-# remotes/honeybot/scripts/logs.py  # [3,196 tokens | 14,285 bytes]
-# remotes/honeybot/scripts/stream.py  # [3,220 tokens | 15,109 bytes]
-
-# /home/mike/repos/trimnoir/_layouts/default.html
 
 # CHAPTER 16: TELEMETRY SENSORS & DASHBOARD PROBES
 # remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
@@ -838,3 +828,5 @@ _ = CHOP_NEXT_STEP
 # scripts/playground/prompt_feeder.py  # [746 tokens | 3,154 bytes]
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
+# tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
+# tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
