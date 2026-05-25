@@ -530,7 +530,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           }
           alias app='cat patch | python apply.py'
           figurate() {
-            local name="${1:-white_rabbit}"
+            local name="''${1:-white_rabbit}"
             .venv/bin/python -c "
 from pipulate import wand
 r = wand.figurate('$name')
