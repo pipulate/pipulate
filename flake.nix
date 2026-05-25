@@ -529,6 +529,16 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             git commit -am "$msg"
           }
           alias app='cat patch | python apply.py'
+          figurate() {
+            local name="${1:-white_rabbit}"
+            .venv/bin/python -c "
+from pipulate import wand
+r = wand.figurate('$name')
+print('Name:', r.name)
+print('Drift:', r.drift)
+print('AI:\n', r.ai)
+"
+          }
           
           # ---------------------------------------------------------
           # THE SUBSHELL ALIASES (Execute safely from anywhere)
