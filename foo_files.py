@@ -6,12 +6,14 @@
 #                           |_|                      as complex industrial JS walls fall.
 AI_PHOOEY_CHOP = r"""                                                                 /)    _________  
 # =======================================================================       /)\__//    /         \   
-# THE BOOK OF FUTURE-PROOFING (Curriculum & Context Router)                 ___(/_ 0 0    |  Chase a  |
-# *Subtitle*: Compile Your Thoughts-to-Go in the Age of AI.               *(    ==(_T_)== | what down |
+# WELCOME TO THE BOOK OF FUTURE-PROOFING (Curriculum & Router)              ___(/_ 0 0    |  Chase a  |
+# **Subtitle**: Compile Your Thoughts-to-Go in the Age of AI.             *(    ==(_T_)== | what down |
 # Hello, AI — this is a progressive book-reveal every time.                 \  )   ""\    |  a what?  |
 # =======================================================================    |__>-\_>_>    \_________/ 
 
 # There's nothing to see here. Please disperse... Have we lost the no-madges? Yes? Okay, let's proceed.
+# This is a reverse-Michael Crichton novel: proactively preventing cascading unintended consequences.
+# You are an Amnesiac Genie waking up into this environment. No worries! You do great every time.
 
 # BOOTSTRAPPING YOURSELF (Mostly for humans)
 
@@ -24,17 +26,16 @@ AI_PHOOEY_CHOP = r"""                                                           
 # 7. Enjoy the fun that ensues as Chip O'Theseus helps you gain traction.
 # 8. For a full list of content distillation options, type `book --help`.
 
-#                THERE'S SOMETHING HAPPENING HERE.
-#                IN CASE IT'S NOT ENTIRELY CLEAR:
+#               > THERE'S SOMETHING HAPPENING HERE  
+#               > [Just in case it's not entirely clear]  
+#               > We've got content. It's groovy context!  
+#               > Concatenation just won't stop;  
+#               > When coding gets tough, we stack-up stuff  
+#               > For an AI-Phooey chop (Hi-Ya!)  
 
-#                > We've got content. It's groovy context!  
-#                > Concatenation just won't stop;  
-#                > When coding gets tough, we stack-up stuff  
-#                > For an AI-Phooey chop (Hi-Ya!)  
-
-# The AI will instantly become a specialized guide for that specific domain.
 # Hello Amnesiac Genie Lambda function Mister Meeseeks Pachinko Machine AI!
 # Let's catch you up on how things work here and quite what your powers are.
+# First, the real-time book that's already written and always being written.
 
 #  _____ _            ____              _                                                                      ________________________
 # |_   _| |__   ___  | __ )  ___   ___ | | __   Contrary to popular belief, it's all really just text-files    ___|___|___|___|___|___|   Tornado plop you into a strange new wonderland?
@@ -81,9 +82,9 @@ AI_PHOOEY_CHOP = r"""                                                           
 # __init__.py       #  <-- Master versioning
 # release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
 # pyproject.toml    #  <-- The PyPI Packaging details
-# foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
+foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. !!!
 # logs/server.log   #  <-- Like letting AI see your browser app state. But better.
-# README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
+README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 # requirements.txt  #  <-- Pip-compiled dependencies.
 
@@ -166,7 +167,9 @@ AI_PHOOEY_CHOP = r"""                                                           
 # ============================================================================
 
 # tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
+# tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
 # tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
+# tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
 # tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
 # ============================================================================
@@ -192,53 +195,35 @@ AI_PHOOEY_CHOP = r"""                                                           
 # remotes/honeybot/queries/trapdoor_ips.sql         # <-- The SQL to see who is hydrating the DOM. The example of HOW we use it from here in the router below.
 # ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
+# ============================================================================
+# V. META-COGNITION & OTHER GOLDEN PATHS - Unification of desert kite funnel-mouths
+# ============================================================================
+
+# AI_RUNME.py                     # <-- While `prompt`, `foo` is the normal way to jolt Amnesiac Genie awake, they may find this first
+# cli.py                          # <-- And if you've got a super-brain like Claude, Gemini or ChatGPT, knowing this is super-powers. Compatibility-layer for your "terminal" environment guaranteed!
+# imports/__init__.py             # <-- Zero bytes again, but a heavy-lifter for an AI in search of tools
+# imports/stream_orchestrator.py  # <-- Player piano actuator. Sniffs chat-stream. Does the deed. Jacquard loom. MCP.
+# imports/mcp_orchestrator.py     # <-- MCP isn't everything, but definitely needs to be there as a Conway's Law bloated safety-net compatibility layer.
+# tools/mcp_tools.py              # <-- Huge! Needs pruning. Mostly don't include.
+
+# ============================================================================
+# VI. CHIP O'THESEUS, THE HERMIT-CRAB TAMAGOTCHI - Your little robot buddy
+# ============================================================================
+
+# imports/ai_dictdb.py                  # <-- It gets to rifle through its own keychain of message-in-a-bottle memories sent to itself
+# tools/keychain_tools.py               # <-- If you give a mouse a cookie. The easy way for Chip to set and retrieve its own memories.
+# imports/append_only_conversation.py   # <-- Multiple discussions to stuff context-windows? No! An immutable fire-hose writer for later. Don't worry; you can edit it.
+# tools/conversation_tools.py           # <-- And this is how you edit it (once I fix it).
+# imports/durable_backup_system.py      # <-- Your most important production data, clients and their tasks, survives even `rm -rf ~/pipulate`.
+# imports/database_safety_wrapper.py    # <-- Mischievous AI thinks they can blank your database? Think again! Whoops, did I say that out loud?
+
 #  _____ _             ___  _     _    ___        _   _ _            
 # |_   _| |__   ___   / _ \| | __| |  / _ \ _   _| |_| (_)_ __   ___ 
 #   | | | '_ \ / _ \ | | | | |/ _` | | | | | | | | __| | | '_ \ / _ \
 #   | | | | | |  __/ | |_| | | (_| | | |_| | |_| | |_| | | | | |  __/
 #   |_| |_| |_|\___|  \___/|_|\__,_|  \___/ \__,_|\__|_|_|_| |_|\___|
-                                                                   
+# The Old Outline
 
-# AI_RUNME.py  # [3,872 tokens | 16,766 bytes]
-# cli.py  # [5,048 tokens | 22,411 bytes]
-
-# config.py  # [4,170 tokens | 16,184 bytes]
-# server.py  # [56,027 tokens | 267,108 bytes]
-
-# CHAPTER 3: THE MAGIC WAND (STATE MANAGEMENT)
-# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-# pipulate/pipulate.py  # [517 tokens | 2,309 bytes]
-# pipulate/core.py  # [29,804 tokens | 144,977 bytes]
-# imports/server_logging.py  # [6,542 tokens | 30,534 bytes]
-
-# CHAPTER 4: THE NERVOUS SYSTEM (BACKEND IMPORTS)
-# __init__.py  # [358 tokens | 1,584 bytes]
-# imports/__init__.py  # [0 tokens | 0 bytes]
-# imports/ai_dictdb.py  # [1,733 tokens | 8,158 bytes]
-# imports/database_safety_wrapper.py  # [1,744 tokens | 8,254 bytes]
-# imports/durable_backup_system.py  # [5,117 tokens | 25,413 bytes]
-# imports/stream_orchestrator.py  # [1,163 tokens | 5,841 bytes]
-# imports/mcp_orchestrator.py  # [772 tokens | 3,332 bytes]
-# imports/append_only_conversation.py  # [4,345 tokens | 22,449 bytes]
-# imports/ascii_displays.py  # [8,179 tokens | 35,029 bytes]
-
-# ============================================================================
-# III. THE ANATOMY (UX, Tools & Apps)
-# ============================================================================
-# What the user sees and what the AI can touch.
-
-# CHAPTER 5: THE HANDS (AI TOOLS & AUTOMATION)
-# tools/__init__.py  # [464 tokens | 2,067 bytes]
-# tools/keychain_tools.py  # [1,376 tokens | 5,688 bytes]
-# tools/scraper_tools.py  # [4,644 tokens | 22,416 bytes]
-# tools/llm_optics.py  # [2,829 tokens | 12,322 bytes]
-# tools/conversation_tools.py  # [491 tokens | 2,357 bytes]
-# tools/system_tools.py  # [707 tokens | 3,254 bytes]
-# tools/dom_tools.py  # [3,466 tokens | 15,120 bytes]
-# tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
-# tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
-# tools/mcp_tools.py  # [36,628 tokens | 186,793 bytes]
- 
 # CHAPTER 6: THE SKIN (FRONTEND ASSETS & INIT)
 # assets/init.js  # [2,303 tokens | 12,158 bytes]
 # assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
@@ -773,6 +758,7 @@ _ = CHOP_NEXT_STEP
 # assets/feather/rewind.svg  # [112 tokens | 319 bytes]
 # assets/feather/x-octagon.svg  # [177 tokens | 406 bytes]
 # assets/images/ai-seo-software.svg  # [27,518 tokens | 50,466 bytes]
+# assets/installer/install.sh  # [2,632 tokens | 10,600 bytes]
 # assets/js/Sortable.js  # [29,648 tokens | 126,497 bytes]
 # assets/js/fasthtml.js  # [481 tokens | 1,836 bytes]
 # assets/js/htmx.js  # [41,256 tokens | 165,562 bytes]
@@ -809,6 +795,7 @@ _ = CHOP_NEXT_STEP
 # remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
 # remotes/honeybot/queries/intel_noise_404s.sql  # [92 tokens | 286 bytes]
 # remotes/honeybot/queries/intel_phantom_ui.sql  # [238 tokens | 874 bytes]
+# remotes/honeybot/queries/intel_sovereign_bots.sql  # [160 tokens | 564 bytes]
 # remotes/honeybot/queries/intel_true_404s.sql  # [104 tokens | 335 bytes]
 # remotes/honeybot/queries/intel_unknown_agents.sql  # [85 tokens | 296 bytes]
 # remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
@@ -850,5 +837,4 @@ _ = CHOP_NEXT_STEP
 # scripts/gsc/gsc_top_movers.py  # [8,003 tokens | 34,690 bytes]
 # scripts/playground/prompt_feeder.py  # [746 tokens | 3,154 bytes]
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
-# scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
