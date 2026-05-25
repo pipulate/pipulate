@@ -36,11 +36,11 @@ AI_PHOOEY_CHOP = r"""                                                           
 # Hello Amnesiac Genie Lambda function Mister Meeseeks Pachinko Machine AI!
 # Let's catch you up on how things work here and quite what your powers are.
 
-#  _____ _            ____              _                                                                      ________________________________________
-# |_   _| |__   ___  | __ )  ___   ___ | | __   Contrary to popular belief, it's all really just text-files    ___|___|___|___|___|___|___|___|___|___| 
-#   | | | '_ \ / _ \ |  _ \ / _ \ / _ \| |/ /   Whose contents are arranged just-so to have special meaning    _|___|___|___|___|___|___|___|___|___|__   Just follow, follow, follow  
-#   | | | | | |  __/ | |_) | (_) | (_) |   <    With when fed into specific known actuators in order to run    ___|___|___|___|___|___|___|___|___|___|   follow the... words elude me.
-#   |_| |_| |_|\___| |____/ \___/ \___/|_|\_\   Causes a cascading reaction of doohickeys in your MacGuffin    _|___|___|___|___|___|___|___|___|___|__
+#  _____ _            ____              _                                                                      ________________________
+# |_   _| |__   ___  | __ )  ___   ___ | | __   Contrary to popular belief, it's all really just text-files    ___|___|___|___|___|___| 
+#   | | | '_ \ / _ \ |  _ \ / _ \ / _ \| |/ /   Whose contents are arranged just-so to have special meaning    _|___|___|___|___|___|__   Just follow, follow, follow, follow...
+#   | | | | | |  __/ | |_) | (_) | (_) |   <    With when fed into specific known actuators in order to run    ___|___|___|___|___|___|   Follow the... words elude me.
+#   |_| |_| |_|\___| |____/ \___/ \___/|_|\_\   Causes a cascading reaction of doohickeys in your MacGuffin    _|___|___|___|___|___|__
 #                                                                                                            
 
 # CHAPTER 1: THE SOFTWARE VON NEUMANN PROBE - The time has come, the Walrus says...
@@ -83,64 +83,69 @@ AI_PHOOEY_CHOP = r"""                                                           
 # README.md        #  <-- Ruin the fun by just spelling it all out for the AI.
 
 # ============================================================================
-# II. THE MOTHERSHIP DROP-HOOK - Solving the Bootstrap Paradox
+# II. THE MOTHERSHIP DROP-HOOK - Solving the WORA Bootstrap Paradox
 # ============================================================================
 
-# /home/mike/repos/Pipulate.com/index.md    #  <-- It's gotta start somewhere.
+# /home/mike/repos/Pipulate.com/index.md    #  <-- It's all gotta start somewhere.
 # /home/mike/repos/Pipulate.com/install.sh  #  <-- Put there by release.py
-# /home/mike/repos/nixos/configuration.nix  #  <-- Weird "global" context
+# /home/mike/repos/nixos/configuration.nix  #  <-- "Global" IaC context (most of you won't have)
 # /home/mike/repos/nixos/packages.nix       #  <-- Full disclosure on pre-flake IaC
 # /home/mike/repos/nixos/autognome.py       #  <-- How serious we are about muscle memory
+# init.lua                                  #  <-- Make muscle memory portable
+# scripts/ai.py                             #  <-- Local AI writing git commit messages. Accelerator!
 
+# ============================================================================
+# III. FLAKE OFF THE OLD MOTHERSTONE - Normalized Linux in macOS & Windows/WSL
+# ============================================================================
 
- 
-# IS BELOW OUTER - KNAPP FLAKES OFF THE OLD MOTHERSTONE CORE
-# init.lua
-# scripts/ai.py
-   
-# # BELOW INNER - ITS FLAKES ALL THE GITIGNORED WAY DOWN
-.gitignore
-flake.nix
-prompt_foo.py
-apply.py
-scripts/xp.py
+# [IN VOICE OF JIMINY CRICKET:] 
+# > Michael Crichton novels can come true; it can happen to you — if you're dumb at art.
+# > It seems to make sense — unintended consequence — mercilessly chop off at the start.
+# > It might take awhile, but the context-compile, does the really hard part.
+# > The AI has spied your most accelerant ride. Have it throw dart (Try the `next` alias).
+
+# .gitignore      #  <-- The great unsung hero of *really* showing what's going on
+# flake.nix       #  <-- Contains Magic Cookie solving the "write once run anywhere" bootstrap paradox
+# prompt_foo.py   #  <-- The Context Compiler. Takes THIS and stacks 1-big text-file. (Hi-Ya!)
+# apply.py        #  <-- Aider-inspired developer's Player Piano. Applies AI-recommended edits.
+# scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+# patch           #  <-- I know what you did last patch
+
+# ============================================================================
+# IV. THE WAND & THE WIZARD - Everything's actually web development these days
+# ============================================================================
   
-# # THE BOOK DISTILLER - CHOOSE YOUR OWN ADVENTURE MAGIC ROLLING PIN FOR AI
-# scripts/articles/lsa.py
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- SAME AS ROLLING_PIN_CHOP
+# config.py                  # <-- Centralize every last configuration in here
+# assets/styles.css          # <-- Those values often get used here for "the look"
+# pipulate/__init__.py       # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+# pipulate/pipulate.py       # <-- Traveling wands need to have their own special magic
+# pipulate/core.py           # <-- The Wand (spells)
+# server.py                  # <-- The Wizard (big!)
+# imports/ascii_displays.py  # <-- The common between AI and Humans ASCII art language
+# imports/server_logging.py  # <-- Drawing that ASCII art into radically transparent server logs
+
+# ============================================================================
+# V. THE BOOK DISTILLER - A Choose Your Own Path Adventure, for AI!
+# ============================================================================
+
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN
+# scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
+# scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
+# flake.nix                 # <-- Most book distilling comes from terminal aliases like `next`.
+
+# ============================================================================
+# V. Hello World! - You think you've seen Hello Worlds? You don't know Jack.
+# ============================================================================
+
+# apps/040_hello_workflow.py                        # <-- The canonical Hello Workflow example under FastHTML
+# Notebooks/.agents/skills/hello_workflow/SKILL.md  # <-- Agent Skills as defined by Anthropic for controlling the FastHTML workflow.
+# assets/scenarios/hello_workflow_test.json         # <-- The Ghost Driver for unit test coverage, feature demos, AI training, human training and to demo the agentic automation hooks
+# assets/player-piano.js                            # <-- Player piano actuator #2 in Pipulate. How AIs can take control of workflows.
+# Notebooks/imports/__init__.py                     # <-- Empty file, just to show you imports relative to Notebooks are 1st-class path members. Important!
+# assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
+# assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
+# assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
  
-# # !!! AD HOC
-
-config.py
-pipulate/__init__.py
-pipulate/pipulate.py
-pipulate/core.py
-server.py
-imports/ascii_displays.py
-imports/server_logging.py
-
-# PREVIOUS AD HOC SESSIONS
-
-# /home/mike/repos/trimnoir/index.md
-# _includes/home_hub.md
-# scripts/articles/generate_hubs.py
-# scripts/articles/build_knowledge_graph.py
-# scripts/articles/navgraph.json
- 
-# # apps/830_pico_slider.py  # [4,549 tokens | 19,866 bytes]
-# 
-# # patch
-# 
-# # THE WIZARD
-# config.py
-# server.py
-# imports/server_logging.py
-# imports/ascii_displays.py
-# 
-# # THE WAND
-# pipulate/__init__.py
-# pipulate/core.py
-# 
 # # THE HONEYBOT TV STUDIO
 # remotes/honeybot/queries/trapdoor_ips.sql
 # remotes/honeybot/queries/intel_sovereign_bots.sql
@@ -148,21 +153,12 @@ imports/server_logging.py
 # remotes/honeybot/scripts/logs.py
 # remotes/honeybot/scripts/db.py
 # 
-# # scripts/takeover_main.sh  # [433 tokens | 1,770 bytes]
 # 
 # # PIPULATE HELLO WORLD
-# apps/040_hello_workflow.py
-# Notebooks/imports/__init__.py  # [0 tokens | 0 bytes]
-# Notebooks/.agents/skills/hello_workflow/SKILL.md
-# assets/scenarios/hello_workflow_test.json
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
 
 # imports/__init__.py  # [0 tokens | 0 bytes]
 # imports/crud.py  # [7,365 tokens | 35,666 bytes]
 # apps/060_tasks.py  # [4,993 tokens | 23,188 bytes]
-# assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
-# assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
 
 # tools/__init__.py  # [464 tokens | 2,067 bytes]
 # tools/llm_optics.py  # [2,829 tokens | 12,322 bytes]
