@@ -61,8 +61,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 # Clear? We begin by cleaning the whole book slate, but for these chapter titles
 # and how I have recently tapped the selection of tubes of paint with which to
-# color the canvas. I do a lot of gessoing over the canvas to start fresh,
-# albeit a bit lumpy. That lumpiness is cruft and tech liability. Let's prune!
+# color the canvas. I do a lot of gessoing over the canvas to start fresh, but a
+# bit lumpy. That lumpiness is cruft and tech liability. Let's prune!
 
 # QUERY COLLECTION
 # Brand new query to figure out what user agents request markdown from what sources.
@@ -109,6 +109,7 @@ pipulate/pipulate.py
 pipulate/core.py
 # server.py
 imports/ascii_displays.py
+imports/server_logging.py
 
 # PREVIOUS AD HOC SESSIONS
 
