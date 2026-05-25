@@ -78,6 +78,9 @@ AI_PHOOEY_CHOP = r"""                                                           
 # I. DEBUGGING CRASH COURSE - Server Cookies & Radical Transparency
 # ============================================================================
 
+# __init__.py      #  <-- Master versioning
+# release.py       #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
+# pyproject.toml   #  <-- The PyPI Packaging details
 # foo_files.py     #  <-- THIS file. Content compiler router. Makes it very meta.
 # logs/server.log  #  <-- Like letting AI see your browser app state. But better.
 # README.md        #  <-- Ruin the fun by just spelling it all out for the AI.
@@ -137,43 +140,60 @@ AI_PHOOEY_CHOP = r"""                                                           
 # V. Hello World! - You think you've seen Hello Worlds? You don't know Jack.
 # ============================================================================
 
-# apps/040_hello_workflow.py                        # <-- The canonical Hello Workflow example under FastHTML
-# Notebooks/.agents/skills/hello_workflow/SKILL.md  # <-- Agent Skills as defined by Anthropic for controlling the FastHTML workflow.
+# apps/040_hello_workflow.py                        # <-- The canonical Hello Workflow example under FastHTML. Number controls menu order.
+# Notebooks/.agents/skills/hello_workflow/SKILL.md  # <-- Agent Skills as defined by Anthropic for controlling the similarly named FastHTML workflow.
 # assets/scenarios/hello_workflow_test.json         # <-- The Ghost Driver for unit test coverage, feature demos, AI training, human training and to demo the agentic automation hooks
 # assets/player-piano.js                            # <-- Player piano actuator #2 in Pipulate. How AIs can take control of workflows.
 # Notebooks/imports/__init__.py                     # <-- Empty file, just to show you imports relative to Notebooks are 1st-class path members. Important!
 # assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
 # assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
 # assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
- 
-# # THE HONEYBOT TV STUDIO
+
+# ============================================================================
+# VI. WET WORKFLOWS / DRY CRUD - The what's best for AIs and Humans compromise
+# ============================================================================
+
+# imports/__init__.py   # <-- Another empty init just a reminder about PyPI module packing path truths.
+# imports/crud.py       # <-- While we make much ado about WET Workflows, truth is we don't want to do one wit of extra typing
+# apps/060_tasks.py     # <-- Here's the canonical master copy-paste example. Rename file, avoid collisions and BAM! New app.
+# apps/020_profiles.py  # <-- Variations of this used throughout system as privileged tapestry of system config & control apps.
+# apps/030_roles.py     # <-- The `APP` menu filter, so you have both sort-order control (app file-name numbering) and color-coded grouping.
+
+# ============================================================================
+# VII. LLM OPTICS - Like looking at raw HTML or the hydrated DOM? Them either.
+# ============================================================================
+
+# tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
+# tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
+# tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
+
+# ============================================================================
+# VIII. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
+# ============================================================================
+
+# nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
+# remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
+# remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
+# remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
+# remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
+# remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
+# remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+
+# ============================================================================
+# IV. PROPRIETARY FINDINGS - Which AI bots execute JavaScript and which negotiate for Markdown?
+# ============================================================================
+
+# WE'VE GOT A LOT OF THESE AND I HAVE TO BUILD THIS OUT / AD HOC-ISH
 # remotes/honeybot/queries/trapdoor_ips.sql
 # remotes/honeybot/queries/intel_sovereign_bots.sql
-# remotes/honeybot/nixos/configuration.nix
-# remotes/honeybot/scripts/logs.py
-# remotes/honeybot/scripts/db.py
-# 
-# 
-# # PIPULATE HELLO WORLD
+# ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
-# imports/__init__.py  # [0 tokens | 0 bytes]
-# imports/crud.py  # [7,365 tokens | 35,666 bytes]
-# apps/060_tasks.py  # [4,993 tokens | 23,188 bytes]
-
-# tools/__init__.py  # [464 tokens | 2,067 bytes]
-# tools/llm_optics.py  # [2,829 tokens | 12,322 bytes]
-# tools/scraper_tools.py  # [4,644 tokens | 22,416 bytes]
-
-# tools/__init__.py  # [464 tokens | 2,067 bytes]
 # tools/keychain_tools.py  # [1,376 tokens | 5,688 bytes]
-# tools/scraper_tools.py  # [4,644 tokens | 22,416 bytes]
-# tools/llm_optics.py  # [2,829 tokens | 12,322 bytes]
 
 # RECENTLY USED (EARLIER IN THIS OR RECENT DISCUSSION)
 
 # QUERY COLLECTION
 # Brand new query to figure out what user agents request markdown from what sources.
-# ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 #  _____ _             ___  _     _    ___        _   _ _            
 # |_   _| |__   ___   / _ \| | __| |  / _ \ _   _| |_| (_)_ __   ___ 
@@ -181,32 +201,6 @@ AI_PHOOEY_CHOP = r"""                                                           
 #   | | | | | |  __/ | |_| | | (_| | | |_| | |_| | |_| | | | | |  __/
 #   |_| |_| |_|\___|  \___/|_|\__,_|  \___/ \__,_|\__|_|_|_| |_|\___|
                                                                    
-
-# CHAPTER 0: ONBOARDING
-# .gitignore  # [571 tokens | 2,096 bytes]
-# assets/nbs/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-# assets/nbs/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
-# assets/nbs/Onboarding.ipynb  # [10,617 tokens | 36,011 bytes]
-# config.py  # [4,170 tokens | 16,184 bytes]
-# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
-# pipulate/core.py  # [29,804 tokens | 144,977 bytes]
-# apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
-# apps/015_config.py  # [11,858 tokens | 55,451 bytes]
-
-# apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
-# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
-# server.py  # [56,001 tokens | 266,868 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-
-# CHAPTER 1: BOOTSTRAPPING, CLI & ROUTING
-# README.md  # [20,467 tokens | 103,208 bytes]
-# release.py  # [9,879 tokens | 44,440 bytes]
-# __init__.py
-# /home/mike/repos/Pipulate.com/index.md  # [2,338 tokens | 10,512 bytes]
-# assets/installer/install.sh  # [2,595 tokens | 10,490 bytes]
-# pyproject.toml  # [679 tokens | 2,321 bytes]
-# .gitignore  # [571 tokens | 2,096 bytes]
-# flake.nix  # [8,337 tokens | 35,472 bytes]
 
 # # Too much too soon
 # config.py  # [4,170 tokens | 16,184 bytes]
