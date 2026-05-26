@@ -360,37 +360,6 @@ function escape_html_tags()
     vim.notify("HTML tag escaped", vim.log.levels.INFO)
 end
 
-function remove_code_filepath()
-    -- Get the current buffer
-    local bufnr = vim.api.nvim_get_current_buf()
-    
-    -- Search for the pattern ```language:filepath pattern
-    local line_num = vim.fn.search('```[^:\n]*:', 'n')
-    if line_num == 0 then
-        vim.notify("No more code blocks with filepaths found", vim.log.levels.INFO)
-        return
-    end
-    
-    -- Get the line content
-    local line = vim.api.nvim_buf_get_lines(bufnr, line_num - 1, line_num, false)[1]
-    
-    -- Extract the language part (everything between ``` and :)
-    local language = line:match("```([^:\n]*)")
-    
-    -- Extract the filepath part (everything after :)
-    local filepath = line:match(":([^\n]*)")
-    
-    -- Replace the original line with just the language
-    vim.api.nvim_buf_set_lines(bufnr, line_num - 1, line_num, false, {"```" .. language})
-    
-    -- Insert the filepath as a comment on the next line
-    vim.api.nvim_buf_set_lines(bufnr, line_num, line_num, false, {"# " .. filepath})
-    
-    -- Move cursor to the line after the comment
-    vim.api.nvim_win_set_cursor(0, {line_num + 1, 0})
-    
-    vim.notify("Filepath transformed to comment", vim.log.levels.INFO)
-end
 
 function add_liquid_raw_tags()
     -- Get cursor position before any operations
@@ -579,7 +548,7 @@ map('n', '<leader>r', '<cmd>lua add_liquid_raw_tags()<CR>', opts)  -- Add Liquid
 
 -- Dialogue Labelers
 map('n', '<leader>b', '<cmd>lua bold_dialogue_speaker()<CR>', opts)  -- Bold dialogue speaker
-map('n', '<leader>t', 'i**Me**: ', opts) -- the human
+map('n', '<leader>f', 'i**Me**: ', opts) -- the human
 map('n', '<leader>yy', 'i**Gemini 3.5 Flash**: ', opts) -- you: Gemini 3.5 Extended
 map('n', '<leader>yc', 'i**Claude Sonnet 4.6**: ', opts) -- you: Claude
 map('n', '<leader>yg', 'i**ChatGPT 5.5**: ', opts)           -- you: GPT
@@ -590,9 +559,6 @@ map('n', '<leader>g', '<cmd>lua git_commit_push()<CR>', opts)  -- Git commit and
 
 -- Journal and Notes
 map('n', '<leader>j', '<cmd>lua new_journal_entry()<CR>', opts)  -- New journal entry
-
--- Code Operations
-map('n', '<leader>f', '<cmd>lua remove_code_filepath()<CR>', opts)  -- Remove code block filepath
 
 -- Text Cleanup
 map('n', '<leader>w', '<cmd>%s/\\s\\+$//e<CR>', opts)  -- Remove trailing whitespace
@@ -627,16 +593,13 @@ print("init.lua loaded successfully!")
 -- <leader>ya - Insert AI speaker label (Gemini)
 -- <leader>yc - Insert AI speaker label (Claude)
 -- <leader>yg - Insert AI speaker label (ChatGPT)
--- <leader>t  - Insert human speaker label (Me)
+-- <leader>f  - Insert human speaker label (follow-up)
 
 -- Git Operations
 -- <leader>g - Git commit and push changes
 
 -- Journal and Notes
 -- <leader>j - Create a new journal entry
-
--- Code Operations
--- <leader>f - Remove file path after code block language
 
 -- Text Cleanup
 -- <leader>w - Remove trailing whitespace from all lines
