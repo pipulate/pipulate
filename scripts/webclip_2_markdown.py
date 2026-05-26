@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import subprocess
 import sys
+import platform
 from bs4 import BeautifulSoup
 from markdownify import markdownify as md
 

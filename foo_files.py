@@ -79,6 +79,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # I. DEBUGGING CRASH COURSE - Server Cookies & Radical Transparency
 # ============================================================================
 
+/home/mike/repos/pipulate/scripts/webclip_2_markdown.py
+
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
 
 # __init__.py       #  <-- Master versioning
@@ -772,6 +774,5 @@ _ = CHOP_NEXT_STEP
 # scripts/playground/prompt_feeder.py  # [746 tokens | 3,154 bytes]
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
-# scripts/webclip_2_markdown.py  # [316 tokens | 1,419 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
 # tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
