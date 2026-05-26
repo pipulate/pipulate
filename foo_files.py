@@ -111,8 +111,8 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # /home/mike/repos/nixos/scripts/backup-things.py
 
 # /home/mike/repos/nixos/autognome.py       #  <-- How serious we are about muscle memory
-init.lua                                  #  <-- Make muscle memory portable
-scripts/ai.py                             #  <-- Local AI writing git commit messages. Accelerator!
+# init.lua                                  #  <-- Make muscle memory portable
+# scripts/ai.py                             #  <-- Local AI writing git commit messages. Accelerator!
 
 
 
@@ -151,7 +151,7 @@ prompt_foo.py   #  <-- The Context Compiler. Takes THIS and stacks 1-big text-fi
 # ============================================================================
 
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
-# scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
+scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 # flake.nix                 # <-- Most book distilling comes from terminal aliases like `next`.
 
