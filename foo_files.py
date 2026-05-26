@@ -137,12 +137,12 @@ prompt_foo.py   #  <-- The Context Compiler. Takes THIS and stacks 1-big text-fi
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-# config.py                  # <-- Centralize every last configuration in here
-# assets/styles.css          # <-- Those values often get used here for "the look"
-# pipulate/__init__.py       # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-# pipulate/pipulate.py       # <-- Traveling wands need to have their own special magic
-# pipulate/core.py           # <-- The Wand (spells)
-# server.py                  # <-- The Wizard (big!)
+config.py                  # <-- Centralize every last configuration in here
+assets/styles.css          # <-- Those values often get used here for "the look"
+pipulate/__init__.py       # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+pipulate/pipulate.py       # <-- Traveling wands need to have their own special magic
+pipulate/core.py           # <-- The Wand (spells)
+server.py                  # <-- The Wizard (big!)
 # imports/ascii_displays.py  # <-- The common between AI and Humans ASCII art language
 # imports/server_logging.py  # <-- Drawing that ASCII art into radically transparent server logs
 
