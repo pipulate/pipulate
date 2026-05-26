@@ -150,7 +150,7 @@ prompt_foo.py   #  <-- The Context Compiler. Takes THIS and stacks 1-big text-fi
 # V. THE BOOK DISTILLER - A Choose Your Own Path Adventure, for AI!
 # ============================================================================
 
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 # flake.nix                 # <-- Most book distilling comes from terminal aliases like `next`.
