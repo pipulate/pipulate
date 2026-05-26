@@ -216,9 +216,10 @@ imports/server_logging.py  # <-- Drawing that ASCII art into radically transpare
 # tools/conversation_tools.py           # <-- And this is how you edit it (once I fix it).
 # imports/durable_backup_system.py      # <-- Your most important production data, clients and their tasks, survives even `rm -rf ~/pipulate`.
 # imports/database_safety_wrapper.py    # <-- Mischievous AI thinks they can blank your database? Think again! Whoops, did I say that out loud?
+# apps/070_history.py                   # <-- Editing immutable history broken
 
 # ============================================================================
-# VII. JEKYLL PUBLISHING - 
+# VII. JEKYLL PUBLISHING - Reaching out to the world
 # ============================================================================
 
 # /home/mike/.config/articleizer/targets.json  # <-- System can work against any Jekyll blog, public or private.
@@ -234,36 +235,21 @@ imports/server_logging.py  # <-- Drawing that ASCII art into radically transpare
 # scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
 # scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
 
-#  _____ _             ___  _     _    ___        _   _ _            
-# |_   _| |__   ___   / _ \| | __| |  / _ \ _   _| |_| (_)_ __   ___ 
-#   | | | '_ \ / _ \ | | | | |/ _` | | | | | | | | __| | | '_ \ / _ \
-#   | | | | | |  __/ | |_| | | (_| | | |_| | |_| | |_| | | | | |  __/
-#   |_| |_| |_|\___|  \___/|_|\__,_|  \___/ \__,_|\__|_|_|_| |_|\___|
-# The Old Outline
+# ============================================================================
+# VIII. WORKFLOW WORKSHOP - WET assembly scripts. Extruders.
+# ============================================================================
 
-# CHAPTER 6: THE SKIN (FRONTEND ASSETS & INIT)
-# assets/init.js  # [2,303 tokens | 12,158 bytes]
-# assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
-# assets/styles.css  # [18,811 tokens | 81,788 bytes]
-# assets/theme.js  # [930 tokens | 4,337 bytes]
-# assets/utils.js  # [3,125 tokens | 15,103 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
+# scripts/workflow/WORKFLOW_DEVELOPMENT_GUIDE.md    # <-- May be out of date. Update or delete.
+# apps/200_workflow_genesis.py                      # <-- Makes new-workflow placeholders and gives all CLI commands
+# apps/300_blank_placeholder.py                     # <-- The most common thing appended to beginning or end of workflow (the extrusion)
+# scripts/workflow/swap_workflow_step.py            # <-- Once Placeholder is there, swap in any step widget-type
+# scripts/workflow/splice_workflow_step.py          # <-- Everything below here in this section needs examination, documentation and consideration for continued inclusion.
+# scripts/workflow/create_workflow.py
+# scripts/workflow/manage_class_attributes.py
+# scripts/workflow/update_template_config.py
+# scripts/workflow/workflow_reconstructor.py
 
-# CHAPTER 7: THE CORE APPS (CRUD, ROLES & WORKFLOWS)
-# apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
-# apps/015_config.py  # [11,858 tokens | 55,451 bytes]
-# apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
-# apps/040_hello_workflow.py  # [8,027 tokens | 38,193 bytes]
-# imports/crud.py  # [7,365 tokens | 35,666 bytes]
-# apps/020_profiles.py  # [4,023 tokens | 18,493 bytes]
-# apps/060_tasks.py  # [4,993 tokens | 23,188 bytes]
-# apps/030_roles.py  # [8,817 tokens | 43,533 bytes]
-# imports/voice_synthesis.py  # [3,133 tokens | 15,477 bytes]
-# assets/scenarios/hello_workflow_test.json  # [1,107 tokens | 4,407 bytes]
-# assets/player-piano.js  # [27,143 tokens | 128,718 bytes]
-# apps/070_history.py  # [5,272 tokens | 28,545 bytes]
-
-# CHAPTER 8: FASTHTML PRIMITIVES
+# OTHER WIDGETS
 # apps/210_widget_examples.py  # [22,791 tokens | 98,590 bytes]
 # apps/510_text_field.py  # [2,888 tokens | 12,293 bytes]
 # apps/520_text_area.py  # [3,070 tokens | 13,197 bytes]
@@ -273,95 +259,44 @@ imports/server_logging.py  # <-- Drawing that ASCII art into radically transpare
 # apps/560_range.py  # [3,311 tokens | 14,102 bytes]
 # apps/570_switch.py  # [2,699 tokens | 11,688 bytes]
 
-# CHAPTER 9: THE DOCUMENTATION & DEV TOOLS
-# apps/050_documentation.py  # [30,795 tokens | 143,127 bytes]
-# apps/230_dev_assistant.py  # [25,808 tokens | 124,873 bytes]
-
 # ============================================================================
-# IV. THE ENTERPRISE SEO FACTORY
+# IV. CUSTOM JAVASCRIPT
 # ============================================================================
 
-# CHAPTER 10: BOTIFY SUITE & TRIFECTA MONOLITH
-# apply.py  # [2,296 tokens | 10,210 bytes]
-# scripts/workflow/WORKFLOW_DEVELOPMENT_GUIDE.md  # [4,283 tokens | 20,359 bytes]
+# assets/init.js  # [2,303 tokens | 12,158 bytes]
+# assets/pipulate.js  # [5,666 tokens | 29,031 bytes]
+# assets/styles.css  # [18,811 tokens | 81,788 bytes]
+# assets/theme.js  # [930 tokens | 4,337 bytes]
+# assets/utils.js  # [3,125 tokens | 15,103 bytes]
+
+# ============================================================================
+# IV. BOTIFY STUFF
+# ============================================================================
+
+# apps/100_connect_with_botify.py    # <-- Needs to go. Replaced by dotenv.
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
-# apps/100_connect_with_botify.py  # [4,492 tokens | 22,616 bytes]
-# apps/240_simon_mcp.py  # [8,886 tokens | 44,543 bytes]
-# --- 
-# apps/200_workflow_genesis.py  # [12,397 tokens | 59,509 bytes]
-# apps/300_blank_placeholder.py  # [3,541 tokens | 16,748 bytes]
-# scripts/workflow/splice_workflow_step.py  # [5,028 tokens | 21,917 bytes]
-# scripts/workflow/swap_workflow_step.py  # [5,225 tokens | 24,802 bytes]
-# scripts/workflow/create_workflow.py  # [3,683 tokens | 16,394 bytes]
-# scripts/workflow/manage_class_attributes.py  # [2,678 tokens | 12,795 bytes]
-# scripts/workflow/update_template_config.py  # [1,671 tokens | 8,381 bytes]
-# scripts/workflow/workflow_reconstructor.py  # [9,520 tokens | 48,574 bytes]
 
+#  _____ _           _           _                          
+# |  ___(_)_ __   __| |   __ _  | |__   ___  _ __ ___   ___ 
+# | |_  | | '_ \ / _` |  / _` | | '_ \ / _ \| '_ ` _ \ / _ \
+# |  _| | | | | | (_| | | (_| | | | | | (_) | | | | | |  __/
+# |_|   |_|_| |_|\__,_|  \__,_| |_| |_|\___/|_| |_| |_|\___|
+
+# apps/240_simon_mcp.py  # [8,886 tokens | 44,543 bytes]
+# apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
+# apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
+# imports/voice_synthesis.py  # [3,133 tokens | 15,477 bytes]
+# apps/050_documentation.py  # [30,795 tokens | 143,127 bytes]
+# apps/230_dev_assistant.py  # [25,808 tokens | 124,873 bytes]
 # imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
 # apps/400_botify_trifecta.py  # [53,083 tokens | 275,728 bytes]
-
-# CHAPTER 11: PARAMETER BUSTER & LINK GRAPH
 # apps/110_parameter_buster.py  # [55,573 tokens | 274,005 bytes]
 # apps/120_link_graph.py  # [54,375 tokens | 272,569 bytes]
-
-# CHAPTER 12: THE GAPALYZER SUITE
 # Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
 # Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [29,368 tokens | 97,634 bytes]
 # Notebooks/imports/gap_analyzer_sauce.py  # [26,420 tokens | 116,412 bytes]
-
-# ============================================================================
-# V. THE CONTENT LOOM & SEMANTIC ROUTER
-# ============================================================================
-
-# CHAPTER 13: THE NOTEBOOK TEMPLATES
-# Notebooks/Onboarding.ipynb  # [35,193 tokens | 102,377 bytes]
-# Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-# Notebooks/imports/onboard_sauce.py  # [12,770 tokens | 56,028 bytes]
-# Notebooks/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
-# assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb  # [1,852 tokens | 6,328 bytes]
-# assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
-# assets/nbs/imports/faq_writer_sauce.py  # [6,006 tokens | 26,636 bytes]
-# assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [8,479 tokens | 28,415 bytes]
-# assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
-
-
-# ============================================================================
-# VI. THE HONEYBOT OBSERVATORY (Live Telemetry)
-# ============================================================================
-
-# CHAPTER 16: TELEMETRY SENSORS & DASHBOARD PROBES
-# remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
-# remotes/honeybot/queries/format_ratio.sql  # [79 tokens | 275 bytes]
-# remotes/honeybot/queries/markdown_routing_metrics.sql  # [177 tokens | 659 bytes]
-# remotes/honeybot/queries/content_neg_agents.sql  # [66 tokens | 233 bytes]
-# remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
-
-# ============================================================================
-# VII. UNIVERSAL DISTRIBUTION
-# ============================================================================
-
-# CHAPTER 17: THE LEVINIX BOTTLING PLANT
-# https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/README.md
-# https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/install.sh
-# https://raw.githubusercontent.com/pipulate/levinix/refs/heads/main/flake.nix
-
-# ============================================================================
-# VIII. THE EXTENDED BLUEPRINT
-# ============================================================================
-
-# CHAPTER 19: THE NIXOS FOUNDATION
-# /home/mike/repos/pipulate/scripts/ai.py
-# init.lua  # [4,770 tokens | 18,040 bytes]
-# /home/mike/repos/nixos/autognome.py  # [7,403 tokens | 35,188 bytes]
-# /home/mike/repos/nixos/ai-acceleration.nix  # [525 tokens | 2,069 bytes]
-# /home/mike/repos/nixos/configuration.nix  # [2,798 tokens | 9,911 bytes]
-# /home/mike/repos/nixos/hardware-configuration.nix  # [404 tokens | 1,438 bytes]
-# /home/mike/repos/nixos/packages.nix  # [773 tokens | 2,699 bytes]
-# /home/mike/repos/nixos/services.nix  # [1,457 tokens | 5,559 bytes]
-# /home/mike/repos/nixos/flatnotes.nix  # [760 tokens | 2,497 bytes]
-# /home/mike/repos/nixos/openclaw.nix  # [435 tokens | 1,573 bytes]
 
 """
 #   ____          _                     ____ _   _  ___  ____      
