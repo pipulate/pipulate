@@ -251,6 +251,32 @@ def main():
         metadata = filtered
 
     # --- PASS 2: OUTPUT GENERATION (REPORT OR COMMAND) ---
+    cache_file = CONFIG_DIR / "token_cache.json"
+    token_cache = {}
+    cache_updated = False
+    if cache_file.exists():
+        try:
+            with open(cache_file, 'r', encoding='utf-8') as cf:
+                token_cache = json.load(cf)
+        except Exception:
+            pass
+
+    def _get_metrics(path):
+        nonlocal cache_updated
+        try:
+            mtime = os.path.getmtime(path)
+            if path in token_cache and token_cache[path][0] == mtime:
+                return token_cache[path][1], token_cache[path][2]
+            with open(path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            t_cnt = count_tokens(content)
+            b_cnt = len(content.encode('utf-8'))
+            token_cache[path] = [mtime, t_cnt, b_cnt]
+            cache_updated = True
+            return t_cnt, b_cnt
+        except Exception:
+            return 0, 0
+
     if args.article:
         # Executable Telemetry Mode: Generate the prompt_foo.py command
         slice_obj = parse_slice_arg(args.article)
@@ -288,25 +314,28 @@ def main():
             for item in metadata:
                 stem = os.path.splitext(os.path.basename(item['path']))[0]
                 slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', stem)
-                try:
-                    with open(item['path'], 'r', encoding='utf-8') as f:
-                        content = f.read()
-                    tokens = count_tokens(content)
+                tokens, _ = _get_metrics(item['path'])
+                if tokens > 0:
                     print(f"{item['date']} [{tokens//1000}k] {slug}", flush=True)
-                except Exception:
+                else:
                     print(f"{item['date']} [?k] {slug}", flush=True)
         else:
             for idx, item in enumerate(metadata, start=1):
                 filepath = item['path']
-                try:
-                    with open(filepath, 'r', encoding='utf-8') as f:
-                        content = f.read()
-                    tokens = count_tokens(content)
-                    bytes_count = len(content.encode('utf-8'))
+                tokens, bytes_count = _get_metrics(filepath)
+                if tokens > 0:
                     order = item['sort_order']
                     print(f"{filepath}  # [Idx: {idx} | Order: {order} | Tokens: {tokens:,} | Bytes: {bytes_count:,}]", flush=True)
-                except Exception as e:
-                    print(f"# Error processing {filepath}: {e}", file=sys.stderr)
+                else:
+                    print(f"# Error processing {filepath}", file=sys.stderr)
+
+    if cache_updated:
+        try:
+            CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+            with open(cache_file, 'w', encoding='utf-8') as cf:
+                json.dump(token_cache, cf, indent=2)
+        except Exception:
+            pass
 
 
 def get_holographic_article_data(target_dir: str) -> list[dict]:
