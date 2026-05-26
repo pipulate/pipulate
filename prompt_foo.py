@@ -1196,6 +1196,7 @@ def main():
     processed_files_data = []
 
     logger.print("--- Processing Files ---")
+    import time
     for path, comment in files_to_process:
         # HANDLE DYNAMIC COMMANDS (The ! Chisel-Strike)
         if path.startswith('! '):
@@ -1212,7 +1213,8 @@ def main():
             
             command_str = re.sub(r'\{\{(.+?)\}\}', inject_file, raw_command)
             
-            logger.print(f"   -> Executing: {raw_command}")
+            logger.print(f"   -> Executing: {raw_command:60} ... ", end='', flush=True)
+            t_start = time.perf_counter()
             try:
                 result = subprocess.run(command_str, shell=True, capture_output=True, text=True, check=True)
                 content = result.stdout.strip() or "(Executed successfully, no output)"
@@ -1221,8 +1223,9 @@ def main():
                     "path": f"COMMAND: {raw_command}", "comment": comment, "content": content,
                     "tokens": count_tokens(content), "words": count_words(content), "lang": "text"
                 })
+                logger.print(f"[{time.perf_counter() - t_start:.4f}s]")
             except subprocess.CalledProcessError as e:
-                logger.print(f"      [Error] Exit {e.returncode}: {e.stderr.strip()}")
+                logger.print(f"\n      [Error] Exit {e.returncode}: {e.stderr.strip()}")
             continue
 
         # HANDLE REMOTE URLS (And JIT Optical Distillation)
