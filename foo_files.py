@@ -79,13 +79,13 @@ AI_PHOOEY_CHOP = r"""                                                           
 # I. DEBUGGING CRASH COURSE - Server Cookies & Radical Transparency
 # ============================================================================
 
-# foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
+foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
 
 # __init__.py       #  <-- Master versioning
 # release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
 # pyproject.toml    #  <-- The PyPI Packaging details
 # logs/server.log   #  <-- Like letting AI see your browser app state. But better.
-# README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
+README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 # requirements.txt  #  <-- Pip-compiled dependencies.
 
@@ -95,9 +95,9 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 # /home/mike/repos/Pipulate.com/index.md    #  <-- It's all gotta start somewhere.
 # /home/mike/repos/Pipulate.com/install.sh  #  <-- Put there by release.py
-/home/mike/repos/nixos/configuration.nix  #  <-- "Global" IaC context (most of you won't have)
-/home/mike/repos/nixos/packages.nix       #  <-- Full disclosure on pre-flake IaC
-/home/mike/repos/nixos/services.nix       #  <-- Other side of pre-flake IaC
+# /home/mike/repos/nixos/configuration.nix  #  <-- "Global" IaC context (most of you won't have)
+# /home/mike/repos/nixos/packages.nix       #  <-- Full disclosure on pre-flake IaC
+# /home/mike/repos/nixos/services.nix       #  <-- Other side of pre-flake IaC
 # /home/mike/repos/nixos/autognome.py       #  <-- How serious we are about muscle memory
 # init.lua                                  #  <-- Make muscle memory portable
 # scripts/ai.py                             #  <-- Local AI writing git commit messages. Accelerator!
@@ -112,8 +112,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # > It might take awhile, but the context-compile, does the really hard part.
 # > The AI has spied your most accelerant ride. Have it throw dart (Try the `next` alias).
 
-# .gitignore      #  <-- The great unsung hero of *really* showing what's going on
-# flake.nix       #  <-- Contains Magic Cookie solving the "write once run anywhere" bootstrap paradox
+.gitignore      #  <-- The great unsung hero of *really* showing what's going on
+flake.nix       #  <-- Contains Magic Cookie solving the "write once run anywhere" bootstrap paradox
 prompt_foo.py   #  <-- The Context Compiler. Takes THIS and stacks 1-big text-file. (Hi-Ya!) ------------------------------------ !!!
 apply.py        #  <-- Aider-inspired developer's Player Piano. Applies AI-recommended edits.
 scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
@@ -136,7 +136,7 @@ patch           #  <-- I know what you did last patch
 # V. THE BOOK DISTILLER - A Choose Your Own Path Adventure, for AI!
 # ============================================================================
 
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 # flake.nix                 # <-- Most book distilling comes from terminal aliases like `next`.
