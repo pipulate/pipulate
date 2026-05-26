@@ -6,27 +6,24 @@ from bs4 import BeautifulSoup
 from markdownify import markdownify as md
 
 def get_clipboard_html():
-    """TODO: Expand for macOS (pbpaste) and Windows (win32clipboard)."""
-    system = platform.system().lower()
-    if system == "linux":
+    # TODO: Expand for macOS (pbpaste) and Windows (win32clipboard).
+    if platform.system().lower() == "linux":
         result = subprocess.run(['xclip', '-selection', 'clipboard', '-target', 'text/html', '-o'], 
                                 capture_output=True, text=True)
         return result.stdout if result.stdout.strip() else None
     return None
 
 def get_clipboard_text():
-    """TODO: Expand for macOS (pbpaste) and Windows (win32clipboard)."""
-    system = platform.system().lower()
-    if system == "linux":
+    # TODO: Expand for macOS (pbpaste) and Windows (win32clipboard).
+    if platform.system().lower() == "linux":
         result = subprocess.run(['xclip', '-selection', 'clipboard', '-o'], 
                                 capture_output=True, text=True)
         return result.stdout
     return ""
 
 def set_clipboard(text: str):
-    """TODO: Expand for macOS (pbcopy) and Windows (win32clipboard)."""
-    system = platform.system().lower()
-    if system == "linux":
+    # TODO: Expand for macOS (pbcopy) and Windows (win32clipboard).
+    if platform.system().lower() == "linux":
         subprocess.run(['xclip', '-selection', 'clipboard'], input=text.encode('utf-8'), check=True)
 
 def transform():
@@ -34,7 +31,7 @@ def transform():
     
     if not html_content:
         md_text = get_clipboard_text()
-        if not md_text:
+        if not md_text or not md_text.strip():
             sys.exit("❌ Clipboard is empty or contains no compatible data.")
         print("ℹ️ No HTML found, passing plain text.")
     else:
