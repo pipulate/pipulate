@@ -1037,7 +1037,9 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
         m = re.match(r'^(\s*(?:#\s*)?)([^#\s]+)', line)
         if m:
             ref = m.group(2)
-            if '/' in ref or '.' in ref:
+            has_ext = any(ref.endswith(ext) for ext in STORY_EXTENSIONS)
+            has_dir = '/' in ref and len(ref) > 2 and any(c.isalnum() for c in ref)
+            if has_ext or has_dir:
                 potential_refs.add(ref)
     
     # 2. Get the reality of the disk
