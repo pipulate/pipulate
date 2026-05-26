@@ -85,7 +85,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
 # pyproject.toml    #  <-- The PyPI Packaging details
 # logs/server.log   #  <-- Like letting AI see your browser app state. But better.
-README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
+# README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 # requirements.txt  #  <-- Pip-compiled dependencies.
 
@@ -117,7 +117,7 @@ flake.nix       #  <-- Contains Magic Cookie solving the "write once run anywher
 prompt_foo.py   #  <-- The Context Compiler. Takes THIS and stacks 1-big text-file. (Hi-Ya!) ------------------------------------ !!!
 apply.py        #  <-- Aider-inspired developer's Player Piano. Applies AI-recommended edits.
 scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
-patch           #  <-- I know what you did last patch
+# patch           #  <-- I know what you did last patch
 
 # ============================================================================
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
@@ -136,7 +136,7 @@ patch           #  <-- I know what you did last patch
 # V. THE BOOK DISTILLER - A Choose Your Own Path Adventure, for AI!
 # ============================================================================
 
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 # flake.nix                 # <-- Most book distilling comes from terminal aliases like `next`.
@@ -772,5 +772,6 @@ _ = CHOP_NEXT_STEP
 # scripts/playground/prompt_feeder.py  # [746 tokens | 3,154 bytes]
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
+# scripts/webclip_2_markdown.py  # [316 tokens | 1,419 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
 # tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
