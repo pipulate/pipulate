@@ -1026,9 +1026,19 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
         for key, val in format_kwargs.items():
             raw_content = raw_content.replace(f"{{{key}}}", str(val))
     
-    # 1. Identify all potential file-like strings in the CHOP
-    extensions = '|'.join([ext.lstrip('.') for ext in STORY_EXTENSIONS])
-    potential_refs = set(re.findall(rf'([\w\d\./\\%-]+\.(?:{extensions}))(?!\w)', raw_content))
+    # 1. Identify all potential file paths explicitly listed in the CHOP ledger lines
+    potential_refs = set()
+    for line in raw_content.splitlines():
+        stripped = line.strip()
+        if (not stripped or stripped.startswith('# =') or 
+            stripped.startswith('# CHAPTER') or 'http' in stripped or 
+            stripped.startswith('!') or stripped.startswith('# !')):
+            continue
+        m = re.match(r'^(\s*(?:#\s*)?)([^#\s]+)', line)
+        if m:
+            ref = m.group(2)
+            if '/' in ref or '.' in ref:
+                potential_refs.add(ref)
     
     # 2. Get the reality of the disk
     repo_files = collect_repo_files(REPO_ROOT)

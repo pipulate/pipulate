@@ -95,22 +95,24 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # /home/mike/repos/Pipulate.com/index.md    #  <-- It's all gotta start somewhere.
 # /home/mike/repos/Pipulate.com/install.sh  #  <-- Put there by release.py
-/home/mike/repos/nixos/configuration.nix  #  <-- "Global" IaC context (most of you won't have)
-/home/mike/repos/nixos/packages.nix       #  <-- Full disclosure on pre-flake IaC
-/home/mike/repos/nixos/services.nix       #  <-- Other side of pre-flake IaC
-/home/mike/repos/nixos/ai-acceleration.nix
-/home/mike/repos/nixos/configuration.nix
-/home/mike/repos/nixos/flatnotes.nix
-/home/mike/repos/nixos/hardware-configuration.nix
-/home/mike/repos/nixos/openclaw.nix
-/home/mike/repos/nixos/scripts/backup-essential.py
-/home/mike/repos/nixos/scripts/backup-force.py
-/home/mike/repos/nixos/scripts/backup-home.py
-/home/mike/repos/nixos/scripts/backup-nix.sh
-/home/mike/repos/nixos/scripts/backup-things.py
+
+# /home/mike/repos/nixos/configuration.nix  #  <-- "Global" IaC context (most of you won't have)
+# /home/mike/repos/nixos/packages.nix       #  <-- Full disclosure on pre-flake IaC
+# /home/mike/repos/nixos/services.nix       #  <-- Other side of pre-flake IaC
+# /home/mike/repos/nixos/ai-acceleration.nix
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/flatnotes.nix
+# /home/mike/repos/nixos/hardware-configuration.nix
+# /home/mike/repos/nixos/openclaw.nix
+# /home/mike/repos/nixos/scripts/backup-essential.py
+# /home/mike/repos/nixos/scripts/backup-force.py
+# /home/mike/repos/nixos/scripts/backup-home.py
+# /home/mike/repos/nixos/scripts/backup-nix.sh
+# /home/mike/repos/nixos/scripts/backup-things.py
+
 # /home/mike/repos/nixos/autognome.py       #  <-- How serious we are about muscle memory
-# init.lua                                  #  <-- Make muscle memory portable
-# scripts/ai.py                             #  <-- Local AI writing git commit messages. Accelerator!
+init.lua                                  #  <-- Make muscle memory portable
+scripts/ai.py                             #  <-- Local AI writing git commit messages. Accelerator!
 
 
 
