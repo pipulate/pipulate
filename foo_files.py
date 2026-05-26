@@ -4,7 +4,7 @@
 # |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| | Creative Commons Attribution (CC BY) license.
 # |_|   |_|  \___/|_| |_| |_| .__/ \__| |_|   \__,_| Expect much Darmok and Jalad at Tanagra
 #                           |_|                      as complex industrial JS walls fall.
-AI_PHOOEY_CHOP = r"""                                                                 /)    _________  
+AI_PHOOEY_CHOP = r"""#                                                                /)    _________  
 # =======================================================================       /)\__//    /         \   
 # WELCOME TO THE BOOK OF FUTURE-PROOFING (Curriculum & Router)              ___(/_ 0 0    |  Chase a  |
 # **Subtitle**: Compile Your Thoughts-to-Go in the Age of AI.             *(    ==(_T_)== | what down |
@@ -79,8 +79,6 @@ AI_PHOOEY_CHOP = r"""                                                           
 # I. DEBUGGING CRASH COURSE - Server Cookies & Radical Transparency
 # ============================================================================
 
-/home/mike/repos/pipulate/scripts/webclip_2_markdown.py
-
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
 
 # __init__.py       #  <-- Master versioning
@@ -97,12 +95,24 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # /home/mike/repos/Pipulate.com/index.md    #  <-- It's all gotta start somewhere.
 # /home/mike/repos/Pipulate.com/install.sh  #  <-- Put there by release.py
-# /home/mike/repos/nixos/configuration.nix  #  <-- "Global" IaC context (most of you won't have)
-# /home/mike/repos/nixos/packages.nix       #  <-- Full disclosure on pre-flake IaC
-# /home/mike/repos/nixos/services.nix       #  <-- Other side of pre-flake IaC
+/home/mike/repos/nixos/configuration.nix  #  <-- "Global" IaC context (most of you won't have)
+/home/mike/repos/nixos/packages.nix       #  <-- Full disclosure on pre-flake IaC
+/home/mike/repos/nixos/services.nix       #  <-- Other side of pre-flake IaC
+/home/mike/repos/nixos/ai-acceleration.nix
+/home/mike/repos/nixos/configuration.nix
+/home/mike/repos/nixos/flatnotes.nix
+/home/mike/repos/nixos/hardware-configuration.nix
+/home/mike/repos/nixos/openclaw.nix
+/home/mike/repos/nixos/scripts/backup-essential.py
+/home/mike/repos/nixos/scripts/backup-force.py
+/home/mike/repos/nixos/scripts/backup-home.py
+/home/mike/repos/nixos/scripts/backup-nix.sh
+/home/mike/repos/nixos/scripts/backup-things.py
 # /home/mike/repos/nixos/autognome.py       #  <-- How serious we are about muscle memory
 # init.lua                                  #  <-- Make muscle memory portable
 # scripts/ai.py                             #  <-- Local AI writing git commit messages. Accelerator!
+
+
 
 # ============================================================================
 # III. FLAKE OFF THE OLD MOTHERSTONE - Normalized Linux in macOS & Windows/WSL
@@ -114,11 +124,11 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # > It might take awhile, but the context-compile, does the really hard part.
 # > The AI has spied your most accelerant ride. Have it throw dart (Try the `next` alias).
 
-.gitignore      #  <-- The great unsung hero of *really* showing what's going on
-flake.nix       #  <-- Contains Magic Cookie solving the "write once run anywhere" bootstrap paradox
+# .gitignore      #  <-- The great unsung hero of *really* showing what's going on
+# flake.nix       #  <-- Contains Magic Cookie solving the "write once run anywhere" bootstrap paradox
 prompt_foo.py   #  <-- The Context Compiler. Takes THIS and stacks 1-big text-file. (Hi-Ya!) ------------------------------------ !!!
-apply.py        #  <-- Aider-inspired developer's Player Piano. Applies AI-recommended edits.
-scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+# apply.py        #  <-- Aider-inspired developer's Player Piano. Applies AI-recommended edits.
+# scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 # patch           #  <-- I know what you did last patch
 
 # ============================================================================
@@ -404,10 +414,10 @@ CHOP_POST_MORTEM = """
 CHOP_404_AFFAIR = """
 # THE 404 AFFAIR (Topological Healer Blueprint)
 # COMMAND: python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree
-# /home/mike/repos/trimnoir/_raw_map.csv
-# /home/mike/repos/trimnoir/_redirects.map
-# scripts/articles/extract_404_ghosts.py
-# scripts/articles/common.py
+# /home/mike/repos/trimnoir/_raw_map.csv  # [122,209 tokens | 431,615 bytes]
+# /home/mike/repos/trimnoir/_redirects.map  # [151,271 tokens | 480,085 bytes]
+# scripts/articles/extract_404_ghosts.py  # [931 tokens | 4,009 bytes]
+# scripts/articles/common.py  # [952 tokens | 3,894 bytes]
 ! python scripts/articles/extract_404_ghosts.py
 """
 
@@ -774,5 +784,6 @@ _ = CHOP_NEXT_STEP
 # scripts/playground/prompt_feeder.py  # [746 tokens | 3,154 bytes]
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
+# scripts/webclip_2_markdown.py  # [413 tokens | 1,814 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
 # tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
