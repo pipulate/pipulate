@@ -79,10 +79,11 @@ AI_PHOOEY_CHOP = r"""                                                           
 # I. DEBUGGING CRASH COURSE - Server Cookies & Radical Transparency
 # ============================================================================
 
+# foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
+
 # __init__.py       #  <-- Master versioning
 # release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
 # pyproject.toml    #  <-- The PyPI Packaging details
-foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
 # logs/server.log   #  <-- Like letting AI see your browser app state. But better.
 # README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
@@ -94,8 +95,9 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # /home/mike/repos/Pipulate.com/index.md    #  <-- It's all gotta start somewhere.
 # /home/mike/repos/Pipulate.com/install.sh  #  <-- Put there by release.py
-# /home/mike/repos/nixos/configuration.nix  #  <-- "Global" IaC context (most of you won't have)
-# /home/mike/repos/nixos/packages.nix       #  <-- Full disclosure on pre-flake IaC
+/home/mike/repos/nixos/configuration.nix  #  <-- "Global" IaC context (most of you won't have)
+/home/mike/repos/nixos/packages.nix       #  <-- Full disclosure on pre-flake IaC
+/home/mike/repos/nixos/services.nix       #  <-- Other side of pre-flake IaC
 # /home/mike/repos/nixos/autognome.py       #  <-- How serious we are about muscle memory
 # init.lua                                  #  <-- Make muscle memory portable
 # scripts/ai.py                             #  <-- Local AI writing git commit messages. Accelerator!
@@ -110,12 +112,12 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # > It might take awhile, but the context-compile, does the really hard part.
 # > The AI has spied your most accelerant ride. Have it throw dart (Try the `next` alias).
 
-.gitignore      #  <-- The great unsung hero of *really* showing what's going on
-flake.nix       #  <-- Contains Magic Cookie solving the "write once run anywhere" bootstrap paradox
+# .gitignore      #  <-- The great unsung hero of *really* showing what's going on
+# flake.nix       #  <-- Contains Magic Cookie solving the "write once run anywhere" bootstrap paradox
 prompt_foo.py   #  <-- The Context Compiler. Takes THIS and stacks 1-big text-file. (Hi-Ya!) ------------------------------------ !!!
 apply.py        #  <-- Aider-inspired developer's Player Piano. Applies AI-recommended edits.
 scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
-# patch           #  <-- I know what you did last patch
+patch           #  <-- I know what you did last patch
 
 # ============================================================================
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
@@ -127,14 +129,14 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # pipulate/pipulate.py       # <-- Traveling wands need to have their own special magic
 # pipulate/core.py           # <-- The Wand (spells)
 # server.py                  # <-- The Wizard (big!)
-imports/ascii_displays.py  # <-- The common between AI and Humans ASCII art language
-imports/server_logging.py  # <-- Drawing that ASCII art into radically transparent server logs
+# imports/ascii_displays.py  # <-- The common between AI and Humans ASCII art language
+# imports/server_logging.py  # <-- Drawing that ASCII art into radically transparent server logs
 
 # ============================================================================
 # V. THE BOOK DISTILLER - A Choose Your Own Path Adventure, for AI!
 # ============================================================================
 
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 # flake.nix                 # <-- Most book distilling comes from terminal aliases like `next`.
@@ -657,6 +659,7 @@ _ = CHOP_NEXT_STEP
 # .jupyter/lab/user-settings/@jupyterlab/notebook-extension/tracker.json  # [21 tokens | 56 bytes]
 # Notebooks/Advanced_Notebooks/__init__.py  # [0 tokens | 0 bytes]
 # Notebooks/__init__.py  # [0 tokens | 0 bytes]
+# apps/015_config.py  # [12,128 tokens | 56,937 bytes]
 # apps/130_gap_analysis.py  # [9,625 tokens | 48,280 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
 # apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
@@ -694,6 +697,11 @@ _ = CHOP_NEXT_STEP
 # assets/js/split.js  # [6,166 tokens | 29,959 bytes]
 # assets/js/surreal.js  # [3,812 tokens | 13,432 bytes]
 # assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
+# assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb  # [1,852 tokens | 6,328 bytes]
+# assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
+# assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [9,017 tokens | 30,164 bytes]
+# assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
+# assets/nbs/imports/faq_writer_sauce.py  # [6,006 tokens | 26,636 bytes]
 # assets/nbs/imports/gap_analyzer_sauce.py  # [27,162 tokens | 119,579 bytes]
 # assets/nbs/imports/url_inspect_sauce.py  # [3,542 tokens | 16,202 bytes]
 # assets/nbs/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
@@ -724,6 +732,7 @@ _ = CHOP_NEXT_STEP
 # remotes/honeybot/queries/intel_true_404s.sql  # [104 tokens | 335 bytes]
 # remotes/honeybot/queries/intel_unknown_agents.sql  # [85 tokens | 296 bytes]
 # remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
+# remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
 # remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
 # remotes/honeybot/scripts/bot_intel.json  # [606 tokens | 1,838 bytes]
 # remotes/honeybot/scripts/build_bot_miner.py  # [510 tokens | 2,105 bytes]
