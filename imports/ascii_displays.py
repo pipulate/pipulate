@@ -128,7 +128,7 @@ def _expand_color_bits_ai(text: str) -> str:
 # To add a new entry: print(binascii.crc32(your_art_string.encode('utf-8')))
 FIGURATE_LEDGER: dict = {
     "white_rabbit": 2735320865,
-    "player_piano": 1490216431,
+    "player_piano": 2962137920,
 }
 
 # FIGURATE_REGISTRY: The map of all visual vocabulary.
@@ -153,16 +153,19 @@ def _figurate_white_rabbit():
 
 def _figurate_player_piano():
     """Render the exact SEARCH/REPLACE structural instructions for AI patch alignment."""
-    art = r"""
+    # Concatenate brackets to prevent the color-bits engine from treating them as color tokens
+    b_open = "[[" + "["
+    b_close = "]" + "]]"
+    art = f"""
  ┌────────────────────────────────────────────────────────────────────────┐
  │ ✂️ PLAYER PIANO PROTOCOL — How Chatbots Edit Local Code               │
  ├────────────────────────────────────────────────────────────────────────┤
  │ Target: path/to/file.py                                                │
- │ \[\[\[SEARCH\]\]\]                                                           │
+ │ {b_open}SEARCH{b_close}                                                           │
  │ exact old text (character-for-character)                               │
- │ [[[DIVIDER]]]                                                          │
+ │ {b_open}DIVIDER{b_close}                                                          │
  │ exact new text                                                         │
- │ [[[REPLACE]]]                                                          │
+ │ {b_open}REPLACE{b_close}                                                          │
  │                                                                        │
  │ 1. Exact match required — no fuzzy edits.                              │
  │ 2. Preserve all whitespace and indentation.                            │
@@ -174,7 +177,6 @@ def _figurate_player_piano():
     human_art = _expand_color_bits_human(art)
     human = Panel(human_art, title="✂️ Player Piano — Safe Code Editing", border_style="white")
     return human, ai_art
-
 
 FIGURATE_REGISTRY: dict = {
     "white_rabbit": {
