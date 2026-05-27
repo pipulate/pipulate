@@ -151,9 +151,37 @@ def _figurate_white_rabbit():
     human = Panel(human_art, title="🐰 Welcome to Consoleland", border_style="white")
     return human, ai_art
 
+def _figurate_player_piano():
+    """Render the exact SEARCH/REPLACE structural instructions for AI patch alignment."""
+    art = r"""
+ ┌────────────────────────────────────────────────────────────────────────┐
+ │ ✂️ PLAYER PIANO PROTOCOL — How Chatbots Edit Local Code               │
+ ├────────────────────────────────────────────────────────────────────────┤
+ │ Target: path/to/file.py                                                │
+ │ [[[SEARCH]]]                                                           │
+ │ exact old text (character-for-character)                               │
+ │ [[[DIVIDER]]]                                                          │
+ │ exact new text                                                         │
+ │ [[[REPLACE]]]                                                          │
+ │                                                                        │
+ │ 1. Exact match required — no fuzzy edits.                              │
+ │ 2. Preserve all whitespace and indentation.                            │
+ │ 3. Wrap entire patch in a single ```text block.                        │
+ │ 4. Human reviews Git diff before commit.                               │
+ └────────────────────────────────────────────────────────────────────────┘
+    """
+    ai_art = _expand_color_bits_ai(art)
+    human_art = _expand_color_bits_human(art)
+    human = Panel(human_art, title="✂️ Player Piano — Safe Code Editing", border_style="white")
+    return human, ai_art
+
+
 FIGURATE_REGISTRY: dict = {
     "white_rabbit": {
         "render": _figurate_white_rabbit,
+    },
+    "player_piano": {
+        "render": _figurate_player_piano,
     },
 }
 
