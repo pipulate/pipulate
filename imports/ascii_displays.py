@@ -158,7 +158,7 @@ def _figurate_player_piano():
  │ ✂️ PLAYER PIANO PROTOCOL — How Chatbots Edit Local Code               │
  ├────────────────────────────────────────────────────────────────────────┤
  │ Target: path/to/file.py                                                │
- │ [[[SEARCH]]]                                                           │
+ │ \[\[\[SEARCH\]\]\]                                                           │
  │ exact old text (character-for-character)                               │
  │ [[[DIVIDER]]]                                                          │
  │ exact new text                                                         │
