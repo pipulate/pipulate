@@ -147,7 +147,6 @@ def _figurate_white_rabbit():
     human = Panel(human_art, title="🐰 Welcome to Consoleland", border_style="white")
     return human, ai_art
 
-
 FIGURATE_REGISTRY: dict = {
     "white_rabbit": {
         "render": _figurate_white_rabbit,
