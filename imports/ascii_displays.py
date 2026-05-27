@@ -153,19 +153,17 @@ def _figurate_white_rabbit():
 
 def _figurate_player_piano():
     """Render the exact SEARCH/REPLACE structural instructions for AI patch alignment."""
-    # Concatenate brackets to prevent the color-bits engine from treating them as color tokens
-    b_open = "[[" + "["
-    b_close = "]" + "]]"
-    art = f"""
+    # Use a raw string with temporary placeholders so the color engine skims past it completely
+    art = r"""
  ┌────────────────────────────────────────────────────────────────────────┐
  │ ✂️ PLAYER PIANO PROTOCOL — How Chatbots Edit Local Code               │
  ├────────────────────────────────────────────────────────────────────────┤
  │ Target: path/to/file.py                                                │
- │ {b_open}SEARCH{b_close}                                                           │
+ │ ___BOX_SEARCH___                                                       │
  │ exact old text (character-for-character)                               │
- │ {b_open}DIVIDER{b_close}                                                          │
+ │ ___BOX_DIVIDER___                                                      │
  │ exact new text                                                         │
- │ {b_open}REPLACE{b_close}                                                          │
+ │ ___BOX_REPLACE___                                                      │
  │                                                                        │
  │ 1. Exact match required — no fuzzy edits.                              │
  │ 2. Preserve all whitespace and indentation.                            │
@@ -175,6 +173,14 @@ def _figurate_player_piano():
     """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
+    
+    # Safely restore the literal triple brackets after the color bit loop is completely finished
+    def inject_brackets(text: str) -> str:
+        return text.replace("___BOX_SEARCH___", "[[[SEARCH]]]").replace("___BOX_DIVIDER___", "[[[DIVIDER]]]").replace("___BOX_REPLACE___", "[[[REPLACE]]]")
+        
+    ai_art = inject_brackets(ai_art)
+    human_art = inject_brackets(human_art)
+    
     human = Panel(human_art, title="✂️ Player Piano — Safe Code Editing", border_style="white")
     return human, ai_art
 
