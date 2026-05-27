@@ -153,17 +153,17 @@ def _figurate_white_rabbit():
 
 def _figurate_player_piano():
     """Render the exact SEARCH/REPLACE structural instructions for AI patch alignment."""
-    # Use a raw string with temporary placeholders so the color engine skims past it completely
+    # Use a raw string with precise spatial padding metrics to align the box borders after hydration
     art = r"""
  ┌────────────────────────────────────────────────────────────────────────┐
  │ ✂️ PLAYER PIANO PROTOCOL — How Chatbots Edit Local Code               │
  ├────────────────────────────────────────────────────────────────────────┤
  │ Target: path/to/file.py                                                │
- │ ___BOX_SEARCH___                                                       │
+ │ ___BOX_SEARCH___                                                          │
  │ exact old text (character-for-character)                               │
- │ ___BOX_DIVIDER___                                                      │
+ │ ___BOX_DIVIDER___                                                         │
  │ exact new text                                                         │
- │ ___BOX_REPLACE___                                                      │
+ │ ___BOX_REPLACE___                                                         │
  │                                                                        │
  │ 1. Exact match required — no fuzzy edits.                              │
  │ 2. Preserve all whitespace and indentation.                            │
@@ -176,6 +176,7 @@ def _figurate_player_piano():
     
     # Safely restore the literal triple brackets after the color bit loop is completely finished
     def inject_brackets(text: str) -> str:
+        # Padded replacements to balance out character-metric changes within the border box
         return text.replace("___BOX_SEARCH___", "[[[SEARCH]]]").replace("___BOX_DIVIDER___", "[[[DIVIDER]]]").replace("___BOX_REPLACE___", "[[[REPLACE]]]")
         
     ai_art = inject_brackets(ai_art)
