@@ -84,7 +84,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # __init__.py       #  <-- Master versioning
 # release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
 # pyproject.toml    #  <-- The PyPI Packaging details
-# logs/server.log   #  <-- Like letting AI see your browser app state. But better.
+logs/server.log   #  <-- Like letting AI see your browser app state. But better.
 # README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 # requirements.txt  #  <-- Pip-compiled dependencies.
@@ -137,21 +137,21 @@ prompt_foo.py   #  <-- The Context Compiler. Takes THIS and stacks 1-big text-fi
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-config.py                  # <-- Centralize every last configuration in here
-assets/styles.css          # <-- Those values often get used here for "the look"
-pipulate/__init__.py       # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-pipulate/pipulate.py       # <-- Traveling wands need to have their own special magic
-pipulate/core.py           # <-- The Wand (spells)
-server.py                  # <-- The Wizard (big!)
-# imports/ascii_displays.py  # <-- The common between AI and Humans ASCII art language
+# config.py                  # <-- Centralize every last configuration in here
+# assets/styles.css          # <-- Those values often get used here for "the look"
+# pipulate/__init__.py       # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+# pipulate/pipulate.py       # <-- Traveling wands need to have their own special magic
+# pipulate/core.py           # <-- The Wand (spells)
+# server.py                  # <-- The Wizard (big!)
+imports/ascii_displays.py  # <-- The common between AI and Humans ASCII art language
 # imports/server_logging.py  # <-- Drawing that ASCII art into radically transparent server logs
 
 # ============================================================================
 # V. THE BOOK DISTILLER - A Choose Your Own Path Adventure, for AI!
 # ============================================================================
 
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
-scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
+# scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 # flake.nix                 # <-- Most book distilling comes from terminal aliases like `next`.
 

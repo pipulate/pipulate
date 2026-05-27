@@ -134,12 +134,13 @@ FIGURATE_LEDGER: dict = {
 def _figurate_white_rabbit():
     """Render white_rabbit as (human, ai) tuple for FIGURATE_REGISTRY."""
     art = r"""
-                                                         /)    ____  
-    - This is Uvicorn webserver output.            /)\__//    /    \ 
-      (i.e. the Uvicorn is talking to you)     ___(/_ 0 0    |      |
-    - It may look like gobbledygook now      *(    ==(_T_)== | [[[NPvg]]] |
-      but over time it will not.               \  )   ""\    |      |
-    - Curious? Become a Carpenter!              |__>-\_>_>    \____/ 
+                        ( Like a canary you say? )                      
+                                           O        /)  ____            The "No Problem" Framework
+>  I HEREBY WILL NOT RE-GENERATE            o /)\__//  /    \        Pipulate - Protecting Your Code 
+>  Once upon machines be smarten          ___(/_ 0 0  | [[[NPvg]]] |       just by being honest about text.
+>  ASCII sealing immutata art in        *(    ==(_T_)== WORA |           < https://pipulate.com >
+>  This here cony if it's broken          \  )   ""\  | free |                    🥕🥕🥕 
+>  Smokin gun drift now in token           |__>-\_>_>  \____/ 
     """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
