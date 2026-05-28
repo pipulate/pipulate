@@ -862,6 +862,10 @@ def display_beautiful_summary(commit_message, ai_generated=False, version=None, 
     console.print(panel)
 
 def main():
+    # Manifest the first bunny via the wand
+    from pipulate import wand
+    wand.figurate("white_rabbit")
+
     parser = argparse.ArgumentParser(description="Pipulate Master Release Orchestrator")
     parser.add_argument("--release", action="store_true", help="Perform a PyPI release")
     parser.add_argument("-m", "--message", type=str, help="Custom commit message")
