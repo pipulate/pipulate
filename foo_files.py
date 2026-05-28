@@ -80,10 +80,12 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # ============================================================================
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
-# README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
-# __init__.py       #  <-- Master versioning
-# release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
-# pyproject.toml    #  <-- The PyPI Packaging details
+
+README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
+
+__init__.py       #  <-- Master versioning
+release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
+pyproject.toml    #  <-- The PyPI Packaging details
 
 # logs/server.log   #  <-- Like letting AI see your browser app state. But better.
 # requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
@@ -94,7 +96,8 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # ============================================================================
 
 # Software Von Neumann Probe IaC Kickstart
-# /home/mike/repos/Pipulate.com/index.md              #  <-- It's all gotta start somewhere.
+/home/mike/repos/Pipulate.com/index.md              #  <-- It's all gotta start somewhere.
+assets/installer/install.sh                         #  <-- the real location
 # /home/mike/repos/Pipulate.com/install.sh            #  <-- Put there by release.py
 
 # /home/mike/repos/nixos/configuration.nix            #  <-- "Global" IaC context (most of you won't have)
@@ -127,10 +130,13 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!!
 
+# IF YOU ONLY edit it one set of things besides the 3 "always" `"!" * 3` files, this clump of actuators is an excellent choice!
+
 .gitignore      #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
 flake.nix       #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
 scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+
 # patch           #  <-- I know what you did last patch
 
 # ============================================================================
@@ -143,7 +149,7 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # pipulate/pipulate.py       # <-- Traveling wands need to have their own special magic
 # pipulate/core.py           # <-- The Wand (spells)
 # server.py                  # <-- The Wizard (big!)
-imports/ascii_displays.py  # <-- The common between AI and Humans ASCII art language
+imports/ascii_displays.py  # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/server_logging.py  # <-- Drawing that ASCII art into radically transparent server logs
 
 # ============================================================================
@@ -700,7 +706,6 @@ _ = CHOP_NEXT_STEP
 # assets/feather/rewind.svg  # [112 tokens | 319 bytes]
 # assets/feather/x-octagon.svg  # [177 tokens | 406 bytes]
 # assets/images/ai-seo-software.svg  # [27,518 tokens | 50,466 bytes]
-# assets/installer/install.sh  # [2,632 tokens | 10,600 bytes]
 # assets/js/Sortable.js  # [29,648 tokens | 126,497 bytes]
 # assets/js/fasthtml.js  # [481 tokens | 1,836 bytes]
 # assets/js/htmx.js  # [41,256 tokens | 165,562 bytes]
