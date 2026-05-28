@@ -2,8 +2,8 @@
 # |  _ \ _ __ ___  _ __ ___  _ __ | |_  |  ___|   _  Copyright 2026 by Mike Levin (https://MikeLev.in/)
 # | |_) | '__/ _ \| '_ ` _ \| '_ \| __| | |_ | | | | Pipulate's Prompt Fu Context Compiler is under
 # |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| | Creative Commons Attribution (CC BY) license.
-# |_|   |_|  \___/|_| |_| |_| .__/ \__| |_|   \__,_| Expect much Darmok and Jalad at Tanagra
-#                           |_|                      as complex industrial JS walls fall.
+# |_|   |_|  \___/|_| |_| |_| .__/ \__| |_|   \__,_| Darmok and Jalad at Tanagra when JSON fell.
+#                           |_|
 AI_PHOOEY_CHOP = r"""#                                                                /)    _________  
 # =======================================================================       /)\__//    /         \   
 # WELCOME TO THE BOOK OF FUTURE-PROOFING (Curriculum & Router)              ___(/_ 0 0    |  Chase a  |
@@ -83,9 +83,9 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 
-# __init__.py       #  <-- Master versioning
-# release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
-# pyproject.toml    #  <-- The PyPI Packaging details
+__init__.py       #  <-- Master versioning
+release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
+pyproject.toml    #  <-- The PyPI Packaging details
 
 # logs/server.log   #  <-- Like letting AI see your browser app state. But better.
 # requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
@@ -143,12 +143,12 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-config.py                  # <-- Centralize every last configuration in here
-assets/styles.css          # <-- Those values often get used here for "the look"
+# config.py                  # <-- Centralize every last configuration in here
+# assets/styles.css          # <-- Those values often get used here for "the look"
 pipulate/__init__.py       # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
 pipulate/pipulate.py       # <-- Traveling wands need to have their own special magic
 pipulate/core.py           # <-- The Wand (spells)
-server.py                  # <-- The Wizard (big!)
+# server.py                  # <-- The Wizard (big!)
 imports/ascii_displays.py  # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/server_logging.py  # <-- Drawing that ASCII art into radically transparent server logs
 
@@ -165,14 +165,14 @@ imports/ascii_displays.py  # <-- The common between AI and Humans ASCII art lang
 # V. Hello World! - You think you've seen Hello Worlds? You don't know Jack.
 # ============================================================================
 
-apps/040_hello_workflow.py                        # <-- The canonical Hello Workflow example under FastHTML. Number controls menu order.
-Notebooks/.agents/skills/hello_workflow/SKILL.md  # <-- Agent Skills as defined by Anthropic for controlling the similarly named FastHTML workflow.
-assets/scenarios/hello_workflow_test.json         # <-- The Ghost Driver for unit test coverage, feature demos, AI training, human training and to demo the agentic automation hooks
-assets/player-piano.js                            # <-- Player piano actuator #2 in Pipulate. How AIs can take control of workflows.
-Notebooks/imports/__init__.py                     # <-- Empty file, just to show you imports relative to Notebooks are 1st-class path members. Important!
-assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
-assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
-assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
+# apps/040_hello_workflow.py                        # <-- The canonical Hello Workflow example under FastHTML. Number controls menu order.
+# Notebooks/.agents/skills/hello_workflow/SKILL.md  # <-- Agent Skills as defined by Anthropic for controlling the similarly named FastHTML workflow.
+# assets/scenarios/hello_workflow_test.json         # <-- The Ghost Driver for unit test coverage, feature demos, AI training, human training and to demo the agentic automation hooks
+# assets/player-piano.js                            # <-- Player piano actuator #2 in Pipulate. How AIs can take control of workflows.
+# Notebooks/imports/__init__.py                     # <-- Empty file, just to show you imports relative to Notebooks are 1st-class path members. Important!
+# assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
+# assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
+# assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
 
 # ============================================================================
 # VI. WET WORKFLOWS / DRY CRUD - The what's best for AIs and Humans compromise
