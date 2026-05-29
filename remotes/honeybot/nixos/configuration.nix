@@ -274,6 +274,10 @@
     tmux
     sqlite
     alacritty
+    (python312.withPackages (ps: with ps; [
+      rich
+      pyfiglet
+    ]))
 
     libva-utils
     intel-gpu-tools
@@ -453,7 +457,7 @@
     environment.shellAliases = {
     showips = "tail -f /var/log/nginx/access.log | nix develop /home/mike/www/mikelev.in#quiet --command python3 -u /home/mike/www/mikelev.in/scripts/showips.py";
     logs = "tail -f /var/log/nginx/access.log | nix develop /home/mike/www/mikelev.in#quiet --command python3 -u /home/mike/www/mikelev.in/scripts/logs.py";
-    patronus = "DISPLAY=:10.0 /home/mike/www/mikelev.in/.venv/bin/python3 -c \"import sys; sys.path.insert(0, '/home/mike/www/mikelev.in'); from imports.ascii_displays import patronus; target=sys.argv[1] if len(sys.argv) > 1 else 'white_rabbit'; patronus(target)\"";
+    patronus = "DISPLAY=:10.0 python3 -c \"import sys; sys.path.insert(0, '/home/mike/www/mikelev.in'); from imports.ascii_displays import patronus; target=sys.argv[1] if len(sys.argv) > 1 else 'white_rabbit'; patronus(target)\"";
   };
 
   # 1. The Editor (The Bridge to AI)
