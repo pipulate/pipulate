@@ -128,7 +128,7 @@ pyproject.toml    #  <-- The PyPI Packaging details
 #  > It might take awhile, but the context-compile will do the really hard part.
 #  > The AI has spied an accelerant ride. Ask it to throw dart (type `next`).
 
-# prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!!
+prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!!
 
 # IF YOU ONLY edit it one set of things besides the 3 "always" `"!" * 3` files, this clump of actuators is an excellent choice!
 
@@ -145,9 +145,9 @@ pyproject.toml    #  <-- The PyPI Packaging details
   
 # config.py                  # <-- Centralize every last configuration in here
 # assets/styles.css          # <-- Those values often get used here for "the look"
-pipulate/__init__.py       # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-pipulate/pipulate.py       # <-- Traveling wands need to have their own special magic
-pipulate/core.py           # <-- The Wand (spells)
+# pipulate/__init__.py       # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+# pipulate/pipulate.py       # <-- Traveling wands need to have their own special magic
+# pipulate/core.py           # <-- The Wand (spells)
 # server.py                  # <-- The Wizard (big!)
 imports/ascii_displays.py  # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/server_logging.py  # <-- Drawing that ASCII art into radically transparent server logs
