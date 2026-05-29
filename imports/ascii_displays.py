@@ -92,6 +92,80 @@ def figurate(name: str, context: Optional[str] = None) -> FigurateResult:
     return FigurateResult(name=name, human=human_out, ai=ai_out, drift=drift)
 
 
+def patronus(name: str, duration: float = 3.5) -> None:
+    """🛡️ PATRONUS: Conjures an out-of-bounds visual popup window for the asset.
+    
+    Measures the targeted ASCII artwork bounds, opens a borderless, auto-sized
+    Alacritty micro-terminal precisely padded to prevent line-wrapping, forces
+    top-level window focus, and safely terminates after the specified timeline duration.
+    """
+    import shutil
+    import platform
+    import subprocess
+    from pathlib import Path
+
+    # Gracefully lookup asset data to derive layout geometry matrix boundaries
+    entry = FIGURATE_REGISTRY.get(name)
+    if entry is None:
+        logger.error(f"🛡️ PATRONUS aborted: '{name}' is not a registered visual asset layer.")
+        return
+
+    _, ai_out = entry()
+    raw_lines = ai_out.splitlines()
+    
+    # Calculate exact dynamic column width and row bounds
+    max_width = max(len(line) for line in raw_lines) if raw_lines else 80
+    total_rows = len(raw_lines) if raw_lines else 12
+    
+    # Inject exact safety padding constants for the Rich panel frame boundaries
+    columns_needed = max_width + 12
+    lines_needed = total_rows + 4
+
+    # Resolve paths relative to framework root directory structures
+    display_file_path = Path(__file__).resolve()
+    repo_root = str(display_file_path.parents[1])
+    sys_platform = platform.system().lower()
+
+    # Isolated subshell inline execution payload script blueprint string
+    python_payload = (
+        f"import sys; sys.path.insert(0, '{repo_root}'); "
+        f"from imports.ascii_displays import figurate, safe_console_print; "
+        f"art_res = figurate('{name}'); "
+        f"safe_console_print(art_res.human); "
+        f"sys.stdout.flush(); "
+        f"import time; time.sleep({duration})"
+    )
+
+    # Base Alacritty display parameters
+    cmd = [
+        "alacritty",
+        "--title", "PatronusVisualShield",
+        "--class", "patronus_visual_shield",
+        "-o", "window.decorations='none'",
+        "-o", f"window.dimensions={{columns={columns_needed}, lines={lines_needed}}}",
+        "-o", "window.position={x=350, y=250}",
+        "-e", f"{repo_root}/.venv/bin/python", "-u", "-c", python_payload
+    ]
+
+    try:
+        logger.info(f"🛡️ Conjuring Patronus shield framework window overlay ({columns_needed}x{lines_needed}) for art asset: '{name}'")
+        proc = subprocess.Popen(cmd, cwd=repo_root, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        
+        # Settle delay for system display context registration mappings
+        time.sleep(0.15)
+
+        # Handle top-level window elevation maps uniquely per running host os environment
+        if sys_platform == "linux" and shutil.which("wmctrl"):
+            subprocess.run(["wmctrl", "-x", "-r", "patronus_visual_shield", "-b", "add,above"])
+        elif sys_platform == "darwin":
+            subprocess.run(["osascript", "-e", 'tell application "Alacritty" to activate'], stdout=subprocess.DEVNULL)
+
+        # Retain execution thread lock until duration lifecycle expires cleanly
+        proc.wait()
+    except Exception as e:
+        logger.error(f"🛡️ PATRONUS connection framework failure encountered: {e}")
+
+
 # FIGURATE_COLOR_BITS: The color-bits player piano dictionary.
 # Maps named tokens to Rich style strings.
 # Usage in art strings: [[[TokenName]]] expands to styled text for humans,
