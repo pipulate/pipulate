@@ -88,8 +88,8 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # pyproject.toml    #  <-- The PyPI Packaging details
 
 # logs/server.log   #  <-- Like letting AI see your browser app state. But better.
-# requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
-# requirements.txt  #  <-- Pip-compiled dependencies.
+requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
+requirements.txt  #  <-- Pip-compiled dependencies.
 
 # ============================================================================
 # II. THE MOTHERSHIP DROP-HOOK - Solving the WORA Bootstrap Paradox
