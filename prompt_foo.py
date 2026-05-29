@@ -1418,6 +1418,30 @@ def main():
         except (ValueError, IndexError):
             logger.print(f" (invalid slice '{args.article}')")
 
+        # 🛹 THE TAKE-OFF RAMP: When -a [-N:] pulls the newest N full articles,
+        # auto-layer the N×4 holographic shards immediately preceding them to
+        # smooth the transition between the long history and the steep full-text
+        # peak. Skipped when -c is explicit (then shards pair with the full
+        # articles instead, preserving the existing -c behavior).
+        if not args.context:
+            try:
+                ramp_slice = parse_slice_arg(args.article)
+                is_tail = (
+                    isinstance(ramp_slice, slice)
+                    and ramp_slice.start is not None
+                    and ramp_slice.start < 0
+                    and ramp_slice.stop is None
+                )
+                if is_tail:
+                    n = abs(ramp_slice.start)
+                    ramp_count = n * 4
+                    ramp_articles = all_articles[-(ramp_count + n):-n]
+                    if ramp_articles:
+                        logger.print(f"🛹 Smoothing the ramp with {len(ramp_articles)} holographic shards (N×4 lead-in before the steep {n})...")
+                        add_holographic_shards(builder, ramp_articles)
+            except (ValueError, IndexError):
+                pass
+
         full_content_parts = []
         
         if sliced_articles:
