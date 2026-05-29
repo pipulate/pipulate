@@ -98,6 +98,7 @@ def patronus(name: str, duration: float = 3.5) -> None:
     Alacritty micro-terminal precisely padded to prevent line-wrapping, forces
     top-level window focus, and safely terminates after the specified timeline duration.
     """
+    import sys
     import shutil
     import time
     import platform
@@ -149,7 +150,7 @@ def patronus(name: str, duration: float = 3.5) -> None:
         "-o", "window.decorations='none'",
         "-o", f"window.dimensions={{columns={columns_needed}, lines={lines_needed}}}",
         "-o", "window.position={x=350, y=250}",
-        "-e", f"{repo_root}/.venv/bin/python", "-u", "-c", python_payload
+        "-e", sys.executable, "-u", "-c", python_payload
     ]
 
     try:
@@ -161,7 +162,12 @@ def patronus(name: str, duration: float = 3.5) -> None:
 
         # Handle top-level window elevation maps uniquely per running host os environment
         if sys_platform == "linux" and shutil.which("wmctrl"):
-            subprocess.run(["wmctrl", "-x", "-r", "patronus_visual_shield", "-b", "add,above"])
+            # Polling retry loop to guarantee placement above maximized/F11 terminal layers
+            for _ in range(10):
+                res = subprocess.run(["wmctrl", "-x", "-r", "patronus_visual_shield", "-b", "add,above"], capture_output=True)
+                if res.returncode == 0:
+                    break
+                time.sleep(0.1)
         elif sys_platform == "darwin":
             subprocess.run(["osascript", "-e", 'tell application "Alacritty" to activate'], stdout=subprocess.DEVNULL)
 
