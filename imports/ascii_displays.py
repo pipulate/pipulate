@@ -100,6 +100,7 @@ def patronus(name: str, duration: float = 3.5) -> None:
     top-level window focus, and safely terminates after the specified timeline duration.
     """
     import shutil
+    import time
     import platform
     import subprocess
     from pathlib import Path
