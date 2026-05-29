@@ -112,27 +112,6 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port):
     article_body = re.sub(r'\n\n```\n', '\n```\n', article_body)
     # -------------------------------------------
 
-    # --- NEW: Normalize Naked Code Blocks ---
-    # Stateful line scan to enforce that every opening code fence explicitly declares a language,
-    # preventing markdown inception leaks from scrambling downstream regex text readers.
-    norm_lines = []
-    in_code_zone = False
-    for line in article_body.splitlines():
-        if line.strip() == "```":
-            if not in_code_zone:
-                norm_lines.append(line.replace("```", "```text"))
-                in_code_zone = True
-            else:
-                norm_lines.append(line)
-                in_code_zone = False
-        elif line.strip().startswith("```"):
-            norm_lines.append(line)
-            in_code_zone = not in_code_zone
-        else:
-            norm_lines.append(line)
-    article_body = "\n".join(norm_lines)
-    # -------------------------------------------
-
     article_body = f"## Technical Journal Entry Begins\n\n{article_body}"
 
     subheadings = editing_instr.get("insert_subheadings", [])
