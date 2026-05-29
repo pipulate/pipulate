@@ -9,10 +9,13 @@ ssh $TARGET "chmod +x ~/git/mikelev.in.git/hooks/post-receive"
 
 echo "🚀 Syncing Scripts (New Location)..."
 # Ensure the directory exists
-ssh $TARGET "mkdir -p ~/www/mikelev.in/scripts"
+ssh $TARGET "mkdir -p ~/www/mikelev.in/scripts ~/www/mikelev.in/imports"
 
 # Sync the new dedicated script folder
 rsync --delete -av remotes/honeybot/scripts/ $TARGET:~/www/mikelev.in/scripts/
+
+# Surgical sync of the visual display and patronus engine assets
+rsync -av imports/ascii_displays.py $TARGET:~/www/mikelev.in/imports/
 
 echo "🚀 Syncing NixOS Config..."
 rsync --delete -av remotes/honeybot/nixos/ $TARGET:~/nixos-config-staged/
