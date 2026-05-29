@@ -549,7 +549,7 @@ map('n', '<leader>r', '<cmd>lua add_liquid_raw_tags()<CR>', opts)  -- Add Liquid
 -- Dialogue Labelers
 map('n', '<leader>b', '<cmd>lua bold_dialogue_speaker()<CR>', opts)  -- Bold dialogue speaker
 map('n', '<leader>f', 'i**Me**: ', opts) -- the human
-map('n', '<leader>yy', 'i**Gemini 3.5 Flash**: ', opts) -- you: Gemini 3.5 Extended
+map('n', '<leader>yy', 'i**Gemini 3.5 Thinking**: ', opts) -- you: Gemini 3.5 Extended
 map('n', '<leader>yc', 'i**Claude Sonnet 4.6**: ', opts) -- you: Claude
 map('n', '<leader>yg', 'i**ChatGPT 5.5**: ', opts)           -- you: GPT
 map('n', '<leader>y1', 'i**Gemini 3.1 Pro**: ', opts)   -- fallback: Gemini 3.1 Fallback
