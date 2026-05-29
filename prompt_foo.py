@@ -1069,6 +1069,10 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
 # ============================================================================
 def main():
     """Main function to parse args, process files, and generate output."""
+    # Manifest the first bunny via the wand for context compiler validation
+    from pipulate import wand
+    wand.figurate("white_rabbit")
+
     parser = argparse.ArgumentParser(description='Generate a Markdown context file for AI code assistance.')
     parser.add_argument('prompt', nargs='?', default=None, help='A prompt string or path to a prompt file (e.g., prompt.md).')
     parser.add_argument('-o', '--output', type=str, help='Optional: Output filename.')
