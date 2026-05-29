@@ -969,6 +969,13 @@ def main():
     else:
         print("\n⏭️  Skipping version synchronization (--skip-version-sync)")
         version_sync_success = True
+
+    # Step 1.5: Programmatic Visual Canary Stamping
+    if not args.skip_docs_sync:
+        waxascii_sync_success = run_waxascii_release_stamp()
+    else:
+        print("\n⏭️  Skipping Waxascii release stamping (--skip-docs-sync)")
+        waxascii_sync_success = True
     
     print("\n⏭️  Skipping documentation synchronization (--skip-docs-sync)")
     docs_sync_success = True
