@@ -129,6 +129,7 @@ def _expand_color_bits_ai(text: str) -> str:
 FIGURATE_LEDGER: dict = {
     "white_rabbit": 2735320865,
     "player_piano": 2962137920,
+    "clipboard": 2324709982,
 }
 
 # FIGURATE_REGISTRY: The map of all visual vocabulary.
@@ -185,12 +186,32 @@ def _figurate_player_piano():
     human = Panel(human_art, title="✂️ Player Piano — Safe Code Editing", border_style="white")
     return human, ai_art
 
+def _figurate_clipboard():
+    """Render the clipboard system control bus architecture."""
+    art = r"""
+ ┌────────────────────────────────────────────────────────────────────────┐
+ │ 📋 SYSTEM CLIPBOARD CONTROL BUS                                        │
+ │                                                                        │
+ │   [ Host OS Selection Ring ] ──────► [ Synaptic Text Transmit ]        │
+ │   - Clipboard Buffer: Active                                           │
+ │   - Transaction Boundary Match: Verified                               │
+ │                                                                        │
+ └────────────────────────────────────────────────────────────────────────┘
+    """
+    ai_art = _expand_color_bits_ai(art)
+    human_art = _expand_color_bits_human(art)
+    human = Panel(human_art, title="📋 Clipboard Bus — Local OS Data Highway", border_style="white")
+    return human, ai_art
+
 FIGURATE_REGISTRY: dict = {
     "white_rabbit": {
         "render": _figurate_white_rabbit,
     },
     "player_piano": {
         "render": _figurate_player_piano,
+    },
+    "clipboard": {
+        "render": _figurate_clipboard,
     },
 }
 
