@@ -273,6 +273,7 @@
     git
     tmux
     sqlite
+    alacritty
 
     libva-utils
     intel-gpu-tools
