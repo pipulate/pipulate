@@ -110,7 +110,12 @@ def patronus(name: str, duration: float = 3.5) -> None:
         logger.error(f"🛡️ PATRONUS aborted: '{name}' is not a registered visual asset layer.")
         return
 
-    _, ai_out = entry()
+    render_fn = entry.get("render")
+    if render_fn is None:
+        logger.error(f"🛡️ PATRONUS aborted: '{name}' has no render function.")
+        return
+
+    _, ai_out = render_fn()
     raw_lines = ai_out.splitlines()
     
     # Calculate exact dynamic column width and row bounds
