@@ -587,13 +587,13 @@ class PromptBuilder:
     def _build_articles_content(self) -> str:
         parts = []
 
-        # 1. Grab Full Article Content if it exists
-        if "Full Article Content" in self.auto_context:
-            parts.append(self.auto_context["Full Article Content"]['content'].strip())
-            
-        # 2. Grab Holographic Shards if they exist
+        # 1. Holographic Shards first — the smooth lead-in of the take-off ramp.
         if "Holographic Context Shards" in self.auto_context:
             parts.append(self.auto_context["Holographic Context Shards"]['content'].strip())
+
+        # 2. Full Article Content last — the steep peak the ramp launches into.
+        if "Full Article Content" in self.auto_context:
+            parts.append(self.auto_context["Full Article Content"]['content'].strip())
             
         return "\n\n".join(parts).strip()
 
