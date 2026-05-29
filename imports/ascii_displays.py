@@ -4,7 +4,6 @@
 
 import logging
 
-from pyfiglet import Figlet
 from rich.align import Align
 from rich.box import DOUBLE, HEAVY, ROUNDED
 from rich.console import Console
@@ -457,6 +456,7 @@ def system_diagram(console_output=True):
 
 def figlet_banner(text, subtitle=None, font='slant', color=None, box_style=None, console_output=True):
     """🎨 FIGLET BANNERS: Beautiful FIGlet text in Rich panels"""
+    from pyfiglet import Figlet
     if color is None:
         color = BANNER_COLORS['figlet_primary']
     if box_style is None:
@@ -489,6 +489,7 @@ def figlet_banner(text, subtitle=None, font='slant', color=None, box_style=None,
 
 def fig(text, font='slant', color=None, width=200):
     """🎨 CHIP O'THESEUS STORYTELLING: Tasteful FIGlet banners for key server moments"""
+    from pyfiglet import Figlet
     if color is None:
         color = BANNER_COLORS['figlet_primary']
     
