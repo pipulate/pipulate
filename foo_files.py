@@ -81,10 +81,6 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
 
-/home/mike/repos/trimnoir/_posts/2026-03-11-self-auditing-ai-context-compiler.md
-/home/mike/repos/trimnoir/_posts/2026-05-21-hand-cranked-continuity-machine.md
-/home/mike/repos/trimnoir/_posts/2026-05-29-building-the-take-off-ramp.md
-
 # README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 
 # __init__.py       #  <-- Master versioning
