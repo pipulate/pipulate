@@ -133,8 +133,9 @@ def patronus(name: str, duration: float = 3.5) -> None:
     sys_platform = platform.system().lower()
 
     # Isolated subshell inline execution payload script blueprint string
+    # Using posix paths to handle multi-platform Windows backslash escaping bugs cleanly
     python_payload = (
-        f"import sys; sys.path.insert(0, '{repo_root}'); "
+        f"import sys; sys.path.insert(0, '{Path(repo_root).as_posix()}'); "
         f"from imports.ascii_displays import figurate, safe_console_print; "
         f"art_res = figurate('{name}'); "
         f"safe_console_print(art_res.human); "

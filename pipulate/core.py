@@ -295,6 +295,15 @@ class Pipulate:
             aa.safe_console_print(renderable)
         return art
 
+    def patronus(self, name: str, duration: float = 3.5) -> None:
+        """🛡️ PATRONUS: Conjures an out-of-bounds visual popup window for the asset.
+
+        Facade method exposing the underlying out-of-band visual popup window
+        directly through the wand singleton wrapper.
+        """
+        from imports import ascii_displays as aa
+        return aa.patronus(name, duration=duration)
+
     def negotiate_ai_models(self, preferred_local: str = None, preferred_cloud: str = None) -> dict:
         """
         Uses the Universal Adapter (llm) to verify AI readiness using fuzzy matching
