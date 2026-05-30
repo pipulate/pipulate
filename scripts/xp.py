@@ -170,8 +170,17 @@ def route(text: str) -> bool:
         if todo_prompt:
             print(f"📝 Found TODO_PROMPT block:\n   {todo_prompt}")
 
-        if not slugs and not files and not todo_prompt:
-            print("⚠ Context request blocks were present but empty; no prompt_foo.py compile was run.")
+        # Check for local prompt.md steering file in repo root
+        prompt_md_path = os.path.join(REPO_ROOT, "prompt.md")
+        local_prompt = ""
+        if os.path.exists(prompt_md_path):
+            with open(prompt_md_path, "r", encoding="utf-8") as f:
+                local_prompt = f.read().strip()
+            if local_prompt:
+                print(f"📖 Found local prompt.md steering ({len(local_prompt)} chars)")
+
+        if not slugs and not files and not todo_prompt and not local_prompt:
+            print("⚠ Context request blocks and prompt.md were empty; no prompt_foo.py compile was run.")
             return True
 
         cmd = [
@@ -187,8 +196,16 @@ def route(text: str) -> bool:
             cmd += ["--files"] + files
         if slugs:
             cmd += ["--slugs"] + slugs
+
+        # Assemble combined extra prompt from clipboard and local prompt.md
+        prompt_parts = []
         if todo_prompt:
-            cmd += ["--extra-prompt", todo_prompt]
+            prompt_parts.append(todo_prompt)
+        if local_prompt:
+            prompt_parts.append(f"### Operator Steering (from prompt.md):\n{local_prompt}")
+
+        if prompt_parts:
+            cmd += ["--extra-prompt", "\n\n".join(prompt_parts)]
 
         print(f"\n🚀 Running: {' '.join(cmd)}\n")
         result = subprocess.run(cmd, cwd=REPO_ROOT)
