@@ -340,6 +340,10 @@ def setup_logging(DEBUG_MODE=False, STATE_TABLES=False):
             'AI_CREATIVE_VISION' not in record['message'] and
             # Exclude figurate AI payloads from console (logs retain them)
             'FIGURATE_AI' not in record['message'] and
+            # Exclude un-paneled AI visual tokens from human console view
+            'ASCII_ART_FIGURATE' not in record['message'] and
+            'ASCII_ART_VISION' not in record['message'] and
+            'ASCII_ART_DATA' not in record['message'] and
             (
                 record['level'].name != 'DEBUG' or
                 any(key in record['message'] for key in [
