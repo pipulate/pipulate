@@ -83,7 +83,7 @@ def figurate(name: str, context: Optional[str] = None) -> FigurateResult:
         logger.info(f"🎨 FIGURATE: {name} | {context} | drift={drift}")
     
     # Guaranteed AI visibility through the unified logging pipeline when active
-    figurate_logger.info(f"🎨 FIGURATE_AI: {name}\n{ai_out}")
+    figurate_logger.info(f"🎨 FINDER_TOKEN: ASCII_ART_FIGURATE - {name}\n{ai_out}")
     
     # Also use the existing share function for full AI transparency
     share_ascii_with_ai(ai_out, f"figurate('{name}') called", "🎨")
@@ -382,7 +382,7 @@ def strip_rich_formatting(text):
 
 def share_ascii_with_ai(ascii_art, context_message, emoji="🎭"):
     """Share ASCII art with AI assistants via logging"""
-    logger.info(f"{emoji} AI_CREATIVE_VISION: {context_message}")
+    logger.info(f"{emoji} FINDER_TOKEN: ASCII_ART_VISION - {context_message}")
     logger.info(f"{emoji} ASCII_ART_DATA:\n{ascii_art}")
 
 def falling_alice(console_output=True):
