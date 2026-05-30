@@ -290,6 +290,23 @@ def _figurate_clipboard():
     human = Panel(human_art, title="📋 Clipboard Bus — Local OS Data Highway", border_style="white")
     return human, ai_art
 
+def _figurate_bunny_trail():
+    """Render the morning continuation tale as a tiny boot micro-narrative."""
+    art = r"""
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 🐇 THE BUNNY TRAIL — Continuation Tail / Continuation Tale                  │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ 1. Anchor  → where I left off.                                              │
+│ 2. Pulse   → what edge is vibrating.                                        │
+│ 3. Dive    → one bounded look.                                              │
+│ 4. Return  → resurface into journal.txt.                                    │
+└──────────────────────────────────────────────────────────────────────────────┘
+    """
+    ai_art = _expand_color_bits_ai(art)
+    human_art = _expand_color_bits_human(art)
+    human = Panel(human_art, title="🐇 The Bunny Trail — Morning Continuation Tale", border_style="white")
+    return human, ai_art
+
 FIGURATE_REGISTRY: dict = {
     "white_rabbit": {
         "render": _figurate_white_rabbit,
@@ -299,6 +316,9 @@ FIGURATE_REGISTRY: dict = {
     },
     "clipboard": {
         "render": _figurate_clipboard,
+    },
+    "bunny_trail": {
+        "render": _figurate_bunny_trail,
     },
 }
 
