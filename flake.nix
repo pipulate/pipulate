@@ -540,6 +540,10 @@ print('Drift:', r.drift)
 print('AI:\n', r.ai)
 "
           }
+          patronus() {
+            local target="''${1:-white_rabbit}"
+            "$PIPULATE_ROOT/.venv/bin/python" -c "import os, sys; sys.path.insert(0, os.environ.get('PIPULATE_ROOT', os.getcwd())); from imports.ascii_displays import patronus; target = sys.argv[1] if len(sys.argv) > 1 else 'white_rabbit'; patronus(target)" "$target"
+          }
           
           # ---------------------------------------------------------
           # THE SUBSHELL ALIASES (Execute safely from anywhere)
