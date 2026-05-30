@@ -234,7 +234,7 @@ def _figurate_white_rabbit():
     """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
-    human = Panel(human_art, title="🐰 Welcome to Consoleland", border_style="white")
+    human = Panel(human_art, title="🐰 Wax ASCII Bunny Seal ", border_style="white")
     return human, ai_art
 
 def _figurate_player_piano():
