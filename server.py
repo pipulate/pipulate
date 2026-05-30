@@ -1343,6 +1343,16 @@ class Chat:
 
             self.last_message = formatted_msg
             self.last_message_time = current_time
+
+            # Terminal Parity: Stream live chat output directly to the server console
+            if formatted_msg == '%%STREAM_END%%':
+                sys.stdout.write('\n')
+                sys.stdout.flush()
+            elif not formatted_msg.startswith('%%') and not formatted_msg.endswith('%%'):
+                term_msg = formatted_msg.replace('<br>', '\n')
+                sys.stdout.write(term_msg)
+                sys.stdout.flush()
+
             if self.active_websockets:
                 for ws in self.active_websockets:
                     await ws.send_text(formatted_msg)
