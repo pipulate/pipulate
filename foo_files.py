@@ -87,9 +87,9 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
 # pyproject.toml    #  <-- The PyPI Packaging details
 
-# logs/server.log   #  <-- Like letting AI see your browser app state. But better.
-requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
-requirements.txt  #  <-- Pip-compiled dependencies.
+logs/server.log   #  <-- Like letting AI see your browser app state. But better.
+# requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
+# requirements.txt  #  <-- Pip-compiled dependencies.
 
 # ============================================================================
 # II. THE MOTHERSHIP DROP-HOOK - Solving the WORA Bootstrap Paradox
@@ -143,14 +143,14 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-# config.py                  # <-- Centralize every last configuration in here
-# assets/styles.css          # <-- Those values often get used here for "the look"
-# pipulate/__init__.py       # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-# pipulate/pipulate.py       # <-- Traveling wands need to have their own special magic
-# pipulate/core.py           # <-- The Wand (spells)
-# server.py                  # <-- The Wizard (big!)
+config.py                  # <-- Centralize every last configuration in here
+assets/styles.css          # <-- Those values often get used here for "the look"
+pipulate/__init__.py       # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+pipulate/pipulate.py       # <-- Traveling wands need to have their own special magic
+pipulate/core.py           # <-- The Wand (spells)
+server.py                  # <-- The Wizard (big!)
 imports/ascii_displays.py  # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
-# imports/server_logging.py  # <-- Drawing that ASCII art into radically transparent server logs
+imports/server_logging.py  # <-- Drawing that ASCII art into radically transparent server logs
 
 # ============================================================================
 # V. THE BOOK DISTILLER - A Choose Your Own Path Adventure, for AI!
