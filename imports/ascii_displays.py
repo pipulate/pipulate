@@ -216,6 +216,7 @@ FIGURATE_LEDGER: dict = {
     "white_rabbit": 2735320865,
     "player_piano": 2962137920,
     "clipboard": 2324709982,
+    "bunny_trail": 615479347,
 }
 
 # FIGURATE_REGISTRY: The map of all visual vocabulary.
