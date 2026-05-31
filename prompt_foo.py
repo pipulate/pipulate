@@ -1394,9 +1394,11 @@ def main():
                 combined_semantics = raw_kws + raw_subs
                 semantic_string = ", ".join(combined_semantics) if combined_semantics else "No semantic data"
 
-                # OPTIMIZATION: Ultra-dense semantic hashing. Drop summaries, URLs, and token counts.
-                # Format: [Date] slug-name | Title | (sem_1, sem_2, sem_3)
-                dense_line = f"[{article['date']}] {slug} | {article['title']} | ({semantic_string})"
+                # OPTIMIZATION: Ultra-dense URL-first semantic layout.
+                # Slices out redundant slug strings to minimize the tokenizer tax.
+                # Format: [Date] URL | Title | (sem_1, sem_2, sem_3)
+                url_target = article['url'].rstrip('/') + '/index.md' if article.get('url') else f"/{slug}/index.md"
+                dense_line = f"[{article['date']}] {url_target} | {article['title']} | ({semantic_string})"
                 
                 narrative_content += f"{dense_line}\n"
             
