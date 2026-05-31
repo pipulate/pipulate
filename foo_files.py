@@ -158,7 +158,7 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 
 # THE ROLLING PIN
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
-# scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
+scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 # flake.nix                 # <-- Most book distilling comes from terminal aliases like `next`.
 
@@ -223,7 +223,7 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 # V. META-COGNITION & OTHER GOLDEN PATHS - Unification of desert kite funnel-mouths
 # ============================================================================
 
-AI_RUNME.py                     # <-- While `prompt`, `foo` is the normal way to jolt Amnesiac Genie awake, they may find this first
+# AI_RUNME.py                     # <-- While `prompt`, `foo` is the normal way to jolt Amnesiac Genie awake, they may find this first
 # cli.py                          # <-- And if you've got a super-brain like Claude, Gemini or ChatGPT, knowing this is super-powers. Compatibility-layer for your "terminal" environment guaranteed!
 # imports/__init__.py             # <-- Zero bytes again, but a heavy-lifter for an AI in search of tools
 # imports/stream_orchestrator.py  # <-- Player piano actuator. Sniffs chat-stream. Does the deed. Jacquard loom. MCP.
@@ -246,16 +246,16 @@ AI_RUNME.py                     # <-- While `prompt`, `foo` is the normal way to
 # VII. JEKYLL PUBLISHING - Reaching out to the world
 # ============================================================================
 
-/home/mike/.config/articleizer/targets.json  # <-- System can work against any Jekyll blog, public or private.
-scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
-scripts/articles/common.py                   # <-- Self-explanatory
-scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
-scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
-scripts/articles/sanitizer.py                # <-- Scrubs PII
-scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
-scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
-scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
-scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
+# /home/mike/.config/articleizer/targets.json  # <-- System can work against any Jekyll blog, public or private.
+# scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
+# scripts/articles/common.py                   # <-- Self-explanatory
+# scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
+# scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
+# scripts/articles/sanitizer.py                # <-- Scrubs PII
+# scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
+# scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
+# scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
+# scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
 # scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
 # scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
 
