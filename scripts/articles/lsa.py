@@ -323,13 +323,18 @@ def main():
                 print(slug, flush=True)
         elif args.fmt == 'dated-slugs':
             import re
+            target_config = targets[target_key]
+            base_url = target_config.get('base_url', 'https://mikelev.in').rstrip('/')
             for item in metadata:
                 stem = os.path.splitext(os.path.basename(item['path']))[0]
                 slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', stem)
                 tokens, _ = _get_metrics(item['path'])
-                # OPTIMIZATION: Complete hypermedia routing parity.
-                # Replaces the raw slug string with the explicit out-of-band markdown target path.
-                url_target = f"/futureproof/{slug}/index.md"
+                # OPTIMIZATION: Complete hypermedia routing parity with fully qualified absolute URLs.
+                # Leverages YAML frontmatter permalinks falling back to default route structures.
+                permalink = item.get('permalink', '').rstrip('/')
+                if not permalink:
+                    permalink = f"/futureproof/{slug}"
+                url_target = f"{base_url}{permalink}/index.md"
                 if tokens > 0:
                     print(f"{item['date']} [{tokens//1000}k] {url_target}", flush=True)
                 else:
