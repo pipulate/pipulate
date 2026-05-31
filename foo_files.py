@@ -132,10 +132,10 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 
 # IF YOU ONLY edit it one set of things besides the 3 "always" `"!" * 3` files, this clump of actuators is an excellent choice!
 
-# .gitignore      #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
-# flake.nix       #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
-# apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
-# scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+.gitignore      #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
+flake.nix       #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
+apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
+scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 
 # patch           #  <-- I know what you did last patch
 
