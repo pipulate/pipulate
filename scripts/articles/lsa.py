@@ -253,6 +253,14 @@ def main():
 
     # --- PASS 2: OUTPUT GENERATION (REPORT OR COMMAND) ---
     cache_file = CONFIG_DIR / "token_cache.json"
+    
+    if args.clear_cache and cache_file.exists():
+        try:
+            cache_file.unlink()
+            print("✨ Token cache file purged successfully.", file=sys.stderr)
+        except Exception:
+            pass
+
     token_cache = {}
     cache_updated = False
     if cache_file.exists():
@@ -266,14 +274,17 @@ def main():
         nonlocal cache_updated
         try:
             mtime = os.path.getmtime(path)
-            if path in token_cache and token_cache[path][0] == mtime:
+            # Anti-swallow guard: Local files can be locked during git stash pops.
+            # Only trust the cache if the file timestamp matches AND the token count is > 0.
+            if path in token_cache and token_cache[path][0] == mtime and token_cache[path][1] > 0:
                 return token_cache[path][1], token_cache[path][2]
             with open(path, 'r', encoding='utf-8') as f:
                 content = f.read()
             t_cnt = count_tokens(content)
             b_cnt = len(content.encode('utf-8'))
-            token_cache[path] = [mtime, t_cnt, b_cnt]
-            cache_updated = True
+            if t_cnt > 0:
+                token_cache[path] = [mtime, t_cnt, b_cnt]
+                cache_updated = True
             return t_cnt, b_cnt
         except Exception:
             return 0, 0
