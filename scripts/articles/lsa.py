@@ -327,10 +327,13 @@ def main():
                 stem = os.path.splitext(os.path.basename(item['path']))[0]
                 slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', stem)
                 tokens, _ = _get_metrics(item['path'])
+                # OPTIMIZATION: Complete hypermedia routing parity.
+                # Replaces the raw slug string with the explicit out-of-band markdown target path.
+                url_target = f"/futureproof/{slug}/index.md"
                 if tokens > 0:
-                    print(f"{item['date']} [{tokens//1000}k] {slug}", flush=True)
+                    print(f"{item['date']} [{tokens//1000}k] {url_target}", flush=True)
                 else:
-                    print(f"{item['date']} [?k] {slug}", flush=True)
+                    print(f"{item['date']} [?k] {url_target}", flush=True)
         else:
             for idx, item in enumerate(metadata, start=1):
                 filepath = item['path']
