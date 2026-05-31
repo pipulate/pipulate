@@ -1477,7 +1477,18 @@ def main():
             if args.decanter is None:
                 args.decanter = []
             all_articles = _get_article_list_data(CONFIG["POSTS_DIRECTORY"], url_config=active_target_config)
-            target_slugs = set(args.slugs)
+            
+            # Normalize target slugs: extract the raw topic key if a URL or absolute path is passed
+            target_slugs = set()
+            for s in args.slugs:
+                clean = s.strip()
+                if '/' in clean:
+                    clean = re.sub(r'/index\.(md|html)$', '', clean)
+                    parts = [p for p in clean.split('/') if p]
+                    if parts:
+                        clean = parts[-1]
+                target_slugs.add(clean)
+                
             for article in all_articles:
                 filename = os.path.basename(article['path'])
                 stem = os.path.splitext(filename)[0]
