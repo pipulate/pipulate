@@ -83,13 +83,13 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 
-# __init__.py       #  <-- Master versioning
-# release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
-# pyproject.toml    #  <-- The PyPI Packaging details
+__init__.py       #  <-- Master versioning
+release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
+pyproject.toml    #  <-- The PyPI Packaging details
 
-# logs/server.log   #  <-- Like letting AI see your browser app state. But better.
 # requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 # requirements.txt  #  <-- Pip-compiled dependencies.
+# logs/server.log   #  <-- Like letting AI see your browser app state, but better! --------------------- AI server.py LOG DEBUG
 
 # ============================================================================
 # II. THE MOTHERSHIP DROP-HOOK - Solving the WORA Bootstrap Paradox
@@ -246,7 +246,7 @@ scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin wo
 # VII. JEKYLL PUBLISHING - Reaching out to the world
 # ============================================================================
 
-/home/mike/.config/articleizer/targets.json  # <-- System can work against any Jekyll blog, public or private.
+# /home/mike/.config/articleizer/targets.json  # <-- System can work against any Jekyll blog, public or private.
 # scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
 # scripts/articles/common.py                   # <-- Self-explanatory
 # scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
