@@ -215,7 +215,12 @@ def clean_markdown(text):
         if asset_name.lower() in {"pp4", "patronus"}:
             asset_name = "white_rabbit"
 
-        pp4_directives.append(asset_name)
+        duration_match = re.search(r'\bduration\s*=\s*[\'\"]?([\d.]+)', directive, flags=re.IGNORECASE)
+        duration = float(duration_match.group(1)) if duration_match else 3.5
+        # Clamp duration
+        duration = max(0.75, min(12.0, duration))
+
+        pp4_directives.append((asset_name, duration))
         return f"\n\nPP4PATRONUS{len(pp4_directives) - 1}PP4\n\n"
 
     # HTML comments are otherwise removed by the generic tag-stripper below.
