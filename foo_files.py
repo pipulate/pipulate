@@ -760,7 +760,7 @@ _ = CHOP_NEXT_STEP
 # remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
 # remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
 # remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
-# remotes/honeybot/scripts/bot_intel.json  # [606 tokens | 1,838 bytes]
+# remotes/honeybot/scripts/bot_intel.json  # [617 tokens | 1,869 bytes]
 # remotes/honeybot/scripts/build_bot_miner.py  # [510 tokens | 2,105 bytes]
 # remotes/honeybot/scripts/dye_injector.py  # [271 tokens | 1,070 bytes]
 # remotes/honeybot/scripts/dye_injector_v2.py  # [547 tokens | 2,362 bytes]
