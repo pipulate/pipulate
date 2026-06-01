@@ -494,6 +494,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias wc='python scripts/webclip_2_markdown.py'
           alias story='python prompt_foo.py -l [:] --no-tree'
           alias latest='python prompt_foo.py -a [-2:] --no-tree'
+          alias momentum='python prompt_foo.py --chop TODO_MOMENTUM_CHOP --no-tree -a [-3:] -l [0:10]'
           book() {
             if [ "$1" = "step" ] || [ "$1" = "next" ]; then
               shift

@@ -584,11 +584,11 @@ TODO_MOMENTUM_CHOP = """
 ! python scripts/articles/lsa.py -t 3 --reverse --fmt dated-slugs
 
 # 2. Active Router Surface (self-referential)
-foo_files.py
-imports/ascii_displays.py
-prompt_foo.py
-apply.py
-scripts/xp.py
+foo_files.py  # [13,993 tokens | 54,473 bytes]
+imports/ascii_displays.py  # [11,540 tokens | 50,746 bytes]
+prompt_foo.py  # [17,325 tokens | 79,192 bytes]
+apply.py  # [1,754 tokens | 7,664 bytes]
+scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 
 # 3. Roadmap & Paintbox Reference
 # (The embedded roadmap + Paintbox in this file)
