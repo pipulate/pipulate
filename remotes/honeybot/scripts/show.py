@@ -8,9 +8,28 @@ from pathlib import Path
 # Add script dir to path to find content_loader
 sys.path.append(str(Path(__file__).parent))
 
-def get_script():
-    """Generates a fresh playlist (Recent + Random Archive)."""
+def get_script(breaking=False):
+    """Generates a fresh playlist (Recent + Random Archive).
+
+    When breaking=True (a fresh git push rang the bell), skip the station-ID
+    preamble and lead straight with the single newest article so a just-published
+    piece is read immediately. This is the player-piano #4 test loop: push, hear it.
+    """
     script = []
+
+    if breaking:
+        from content_loader import get_playlist
+        articles = get_playlist(recent_n=1)
+        if articles:
+            article = articles[0]
+            script.append(("SAY", "Breaking news. Reading the latest entry."))
+            script.append(("SAY", f"Title: {article['title']}."))
+            script.append(("SAY", "Reading entry..."))
+            for chunk in article['content'].split('\n'):
+                if chunk.strip() and len(chunk.strip()) > 2:
+                    script.append(("SAY", chunk))
+            script.append(("WAIT", 3))
+        return script
     
     # Preamble
     script.append(("SAY", "Greetings, entity. You are watching the Honeybot."))
