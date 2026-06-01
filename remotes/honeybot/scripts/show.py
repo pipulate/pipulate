@@ -38,9 +38,7 @@ def get_script(breaking=False):
             script.append(("SAY", "Reading the latest entry."))
             script.append(("SAY", f"Title: {article['title']}."))
             script.append(("SAY", "Reading entry..."))
-            for chunk in article['content'].split('\n'):
-                if chunk.strip() and len(chunk.strip()) > 2:
-                    script.append(("SAY", chunk))
+            append_article_content(script, article)
             script.append(("WAIT", 3))
         return script
     
