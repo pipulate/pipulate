@@ -111,6 +111,9 @@ class Narrator(threading.Thread):
         self.queue = queue.Queue()
         self.stop_event = threading.Event()
         self.daemon = True
+        # Track the live audio pipeline so interrupt() can kill it mid-sentence.
+        self._proc_lock = threading.Lock()
+        self._active_procs = []
 
     def say(self, text):
         """Add text to the speech queue."""
