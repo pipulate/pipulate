@@ -136,7 +136,7 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 flake.nix       #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
 scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
-scripts/webclip_2_markdown.py  
+# scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
 
 # patch           #  <-- I know what you did last patch
 
