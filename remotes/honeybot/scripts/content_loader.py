@@ -158,6 +158,30 @@ def get_playlist(recent_n=10):
 def clean_markdown(text):
     """Sanitizes Markdown for the Piper TTS engine."""
 
+    pp4_directives = []
+
+    def capture_pp4_comment(match):
+        """Preserve player-piano #4 directives before generic HTML stripping."""
+        directive = match.group(1).strip()
+        patronus_match = re.search(r'\bpatronus\b\s*\(?\s*[\'\"]?([A-Za-z0-9_-]+)', directive, flags=re.IGNORECASE)
+        if patronus_match:
+            asset_name = patronus_match.group(1)
+        else:
+            token_match = re.search(r'[A-Za-z0-9_-]+', directive)
+            asset_name = token_match.group(0) if token_match else "white_rabbit"
+
+        if asset_name.lower() in {"pp4", "patronus"}:
+            asset_name = "white_rabbit"
+
+        pp4_directives.append(asset_name)
+        return f"\n\nPP4PATRONUS{len(pp4_directives) - 1}PP4\n\n"
+
+    # HTML comments are otherwise removed by the generic tag-stripper below.
+    # Capture comments like:
+    #   <!-- pp4: patronus white_rabbit -->
+    #   <!-- pp4 white_rabbit -->
+    text = re.sub(r'<!--\s*pp4\b(?::|\s)?(.*?)-->', capture_pp4_comment, text, flags=re.IGNORECASE | re.DOTALL)
+
     # --- Strip Liquid Tags ({% ... %}) ---
     # This removes {% raw %}, {% endraw %}, {% include ... %}, etc.
     text = re.sub(r'\{%.*?%\}', '', text)
