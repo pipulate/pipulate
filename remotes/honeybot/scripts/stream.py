@@ -264,18 +264,19 @@ def wait_for_availability(url, timeout=60):
     narrator.say("Generation timed out. Proceeding with caution.")
 
 
-def conjure_patronus(name):
+def conjure_patronus(name, duration=3.5):
     """Launch the shared patronus renderer from a sheet-music directive."""
     safe_name = "".join(c for c in str(name).strip() if c.isalnum() or c in {"_", "-"})
     if not safe_name:
         safe_name = "white_rabbit"
+    duration = max(0.75, min(60.0, float(duration)))
 
     site_root = Path(__file__).resolve().parents[1]
     python_code = (
         "import sys; "
         f"sys.path.insert(0, {str(site_root)!r}); "
         "from imports.ascii_displays import patronus; "
-        "patronus(sys.argv[1])"
+        f"patronus(sys.argv[1], duration={duration})"
     )
     env = os.environ.copy()
     env["DISPLAY"] = env.get("DISPLAY") or ":10.0"
