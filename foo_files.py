@@ -576,21 +576,20 @@ scripts/xp.py  # [1,778 tokens | 7,417 bytes]
 # apps/210_widget_examples.py  # [22,791 tokens | 98,590 bytes]
 """
 
-# ============================================================================
-# IX. STATIC ANALYSIS SUPPRESSION (for Ruff)
-# ============================================================================
-# Variables dynamically loaded by prompt_foo.py via getattr().
-# I hate having to do this, but it will help me keep my custom CHOPs straight.
-_ = AI_PHOOEY_CHOP
-_ = EMPTY
-_ = CHOP_POST_MORTEM
-_ = CHOP_404_AFFAIR
-_ = CHOP_FISHTANK
-_ = CHOP_FLAKE_EVOLUTION
-_ = PROGRESSIVE_REVEAL_PROMPT
-_ = CHOP_PROGRESSIVE_REVEAL
-_ = NEXT_STEP_PROMPT
-_ = CHOP_NEXT_STEP
+TODO_MOMENTUM_CHOP = """
+# THE LIVING MOMENTUM LENS
+# COMMAND: python prompt_foo.py --chop TODO_MOMENTUM_CHOP --no-tree -a [-2:] 
+
+# 1. Recent Narrative Position (last 2 articles)
+! python scripts/articles/lsa.py -t 2 --reverse --fmt dated-slugs
+
+# 2. Active Router Surface
+foo_files.py
+imports/ascii_displays.py
+prompt_foo.py
+
+# 3. Roadmap Reference (embedded in foo_files.py)
+"""
 
 # ============================================================================
 # X. THE ROADMAP (The Mother Cat's To-Do List) todo
