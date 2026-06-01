@@ -211,7 +211,8 @@ def main():
             metadata.append({
                 'path': filepath,
                 'date': post_date,
-                'sort_order': sort_order
+                'sort_order': sort_order,
+                'permalink': permalink
             })
         except (ValueError, TypeError):
             continue
