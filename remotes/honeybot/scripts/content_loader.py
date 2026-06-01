@@ -37,6 +37,13 @@ def check_for_updates():
         # Also check file count (sometimes mtime on dir doesn't update on all FS)
         current_files = list(POSTS_DIR.glob("*.md")) + list(POSTS_DIR.glob("*.markdown"))
         current_count = len(current_files)
+
+        # Read the breaking-news bell rung by the post-receive hook on every push.
+        current_trigger = None
+        try:
+            current_trigger = TRIGGER_FILE.read_text().strip()
+        except FileNotFoundError:
+            current_trigger = None
         
         # First run logic
         if _last_scan_time == 0:
