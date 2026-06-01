@@ -151,7 +151,8 @@ config.py                  # <-- Centralize every last configuration in here
 # pipulate/core.py           # <-- The Wand (spells)
 # server.py                  # <-- The Wizard (big!)
 imports/ascii_displays.py  # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
-# imports/server_logging.py  # <-- Drawing that ASCII art into radically transparent server logs
+# imports/voice_synthesis.py  # <-- The wand can talk to you
+# imports/server_logging.py   # <-- Drawing that ASCII art into radically transparent server logs
 
 https://mikelev.in/futureproof/player-piano-markdown-sheet-music/index.md
 
@@ -317,7 +318,6 @@ remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblog
 # apps/240_simon_mcp.py  # [8,886 tokens | 44,543 bytes]
 # apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
 # apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
-# imports/voice_synthesis.py  # [3,133 tokens | 15,477 bytes]
 # apps/050_documentation.py  # [30,795 tokens | 143,127 bytes]
 # apps/230_dev_assistant.py  # [25,808 tokens | 124,873 bytes]
 # imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
