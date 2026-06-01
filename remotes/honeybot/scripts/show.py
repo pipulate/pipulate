@@ -22,7 +22,7 @@ def get_script(breaking=False):
         articles = get_playlist(recent_n=1)
         if articles:
             article = articles[0]
-            script.append(("SAY", "Breaking news. Reading the latest entry."))
+            script.append(("SAY", "Reading the latest entry."))
             script.append(("SAY", f"Title: {article['title']}."))
             script.append(("SAY", "Reading entry..."))
             for chunk in article['content'].split('\n'):
