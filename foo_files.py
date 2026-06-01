@@ -162,6 +162,9 @@ scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin wo
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 # flake.nix                 # <-- Most book distilling comes from terminal aliases like `next`.
 
+scripts/articles/generate_ai_context.py
+AI_CONTEXT.md
+
 # ============================================================================
 # V. Hello World! - You think you've seen Hello Worlds? You don't know Jack.
 # ============================================================================
