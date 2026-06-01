@@ -14,9 +14,12 @@ def append_article_content(script, article):
     for chunk in article['content'].split('\n'):
         chunk = chunk.strip()
         if chunk.startswith("[[PATRONUS:") and chunk.endswith("]]"):
-            target = chunk[len("[[PATRONUS:"):-2].strip()
-            if target:
-                script.append(("PATRONUS", target))
+            inner = chunk[len("[[PATRONUS:"):-2].strip()
+            parts = inner.split(":", 1)
+            key = parts[0].strip()
+            duration = float(parts[1]) if len(parts) > 1 else 3.5
+            if key:
+                script.append(("PATRONUS", {"key": key, "duration": duration}))
         elif chunk and len(chunk) > 2:
             script.append(("SAY", chunk))
 
