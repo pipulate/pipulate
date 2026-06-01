@@ -146,7 +146,11 @@ class Narrator(threading.Thread):
             try:
                 item = self.queue.get(timeout=1)
                 if isinstance(item, tuple) and item and item[0] == "PATRONUS":
-                    conjure_patronus(item[1])
+                    payload = item[1]
+                    if isinstance(payload, dict):
+                        conjure_patronus(payload.get("key", "white_rabbit"), duration=payload.get("duration", 3.5))
+                    else:
+                        conjure_patronus(str(payload))
                 else:
                     self._speak_now(item)
                 self.queue.task_done()
