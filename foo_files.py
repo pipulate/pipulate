@@ -584,9 +584,9 @@ TODO_MOMENTUM_CHOP = """
 ! python scripts/articles/lsa.py -t 2 --reverse --fmt dated-slugs
 
 # 2. Active Router Surface
-foo_files.py
-imports/ascii_displays.py
-prompt_foo.py
+foo_files.py  # [13,948 tokens | 54,302 bytes]
+imports/ascii_displays.py  # [11,540 tokens | 50,746 bytes]
+prompt_foo.py  # [17,325 tokens | 79,192 bytes]
 
 # 3. Roadmap Reference (embedded in foo_files.py)
 """
