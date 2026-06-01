@@ -7,6 +7,11 @@ WORK_TREE="/home/mike/www/mikelev.in"
 
 echo "🎯 [Hook] Received Push. Deploying..."
 
+# 0. The Stand-By Bell: signal the live stream to gracefully announce that
+# updates are incoming and HOLD narration, BEFORE the multi-second Jekyll build
+# and markdown dye pass thrash the Piper TTS. The completion bell rings at the end.
+date +%s > $WORK_TREE/.deploy_standby
+
 # 1. Force Checkout to the Web Root
 git --work-tree=$WORK_TREE --git-dir=$GIT_DIR checkout -f main
 
