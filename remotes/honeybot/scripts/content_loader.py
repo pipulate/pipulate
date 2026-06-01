@@ -284,7 +284,7 @@ def clean_markdown(text):
     text = text.replace('||PARAGRAPH||', '\n')
     text = re.sub(r' +', ' ', text).strip()
 
-    for index, asset_name in enumerate(pp4_directives):
-        text = text.replace(f"PP4PATRONUS{index}PP4", f"[[PATRONUS:{asset_name}]]")
+    for index, (asset_name, duration) in enumerate(pp4_directives):
+        text = text.replace(f"PP4PATRONUS{index}PP4", f"[[PATRONUS:{asset_name}:{duration}]]")
     
     return text
