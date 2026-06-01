@@ -140,6 +140,8 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 
 # patch           #  <-- I know what you did last patch
 
+/home/mike/repos/trimnoir/_posts/2026-06-01-designing-for-amnesia-deterministic-ai-pipeline.md
+
 # ============================================================================
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
