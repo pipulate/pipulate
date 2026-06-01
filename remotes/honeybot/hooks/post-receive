@@ -47,4 +47,10 @@ cp _redirects.map _site/redirects.map
 echo "🔒 [Hook] Fixing Permissions..."
 chmod -R 755 $WORK_TREE/_site
 
+# 5. The Breaking-News Bell: signal the live stream to jump to the newest article.
+# A fresh epoch timestamp on every push makes this retry-able even when the article
+# content is identical (push an --allow-empty commit to re-read the same piece).
+echo "🔔 [Hook] Ringing the breaking-news bell..."
+date +%s > $WORK_TREE/.reading_trigger
+
 echo "✅ [Hook] Deployment Complete. Site is Live."
