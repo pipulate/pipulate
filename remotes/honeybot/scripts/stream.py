@@ -326,7 +326,7 @@ def perform_show(script):
             if check_standby():
                 narrator.interrupt()  # cut current audio + flush the backlog
                 narrator.say("Receiving updates. Please stand by.")
-                narrator.say("There's something to see here. Please congregate. Please congregate.")
+                narrator.say("There's nothing to see here. Please disperse. Please disperse.")
                 try:
                     subprocess.run(["pkill", "firefox"], check=False)
                 except Exception:
