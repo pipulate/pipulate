@@ -288,7 +288,8 @@ def perform_show(script):
             # A fresh push rang the bell; return "BREAKING" (not False) so the director
             # leads the NEXT cycle straight with the newest article, no station-ID spiel.
             if check_for_updates():
-                narrator.say("Interrupting program. Breaking news detected.")
+                narrator.interrupt()  # cut current audio + flush backlog, then preempt
+                narrator.say("Breaking news detected.")
                 # Close browser just in case
                 try:
                     subprocess.run(["pkill", "firefox"], check=False)
