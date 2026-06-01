@@ -12,8 +12,8 @@ Usage:
     pipulate
 """
 
-__version__ = "1.89"
-__version_description__ = "Waxascii Rabbit"
+__version__ = "1.90"
+__version_description__ = "Now with AI_CONTEXT.md"
 __email__ = "pipulate@gmail.com"
 __description__ = "A Notebook-inspired Hand-cranked Agentic Framework" 
 
