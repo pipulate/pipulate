@@ -16,6 +16,12 @@ BASE_URL = "https://mikelev.in"
 _last_scan_time = 0
 _last_file_count = 0
 
+# The breaking-news bell. The post-receive hook writes a fresh epoch timestamp here
+# on every push, which lets us retry "read the newest article" even when the article
+# content itself did not change (e.g. an --allow-empty re-push).
+TRIGGER_FILE = Path("/home/mike/www/mikelev.in/.reading_trigger")
+_last_trigger = None
+
 def check_for_updates():
     """
     Checks if the _posts directory has changed since the last playlist generation.
