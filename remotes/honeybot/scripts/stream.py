@@ -164,14 +164,20 @@ class Narrator(threading.Thread):
                 stderr=subprocess.DEVNULL
             )
             p1.stdout.close()
-            subprocess.run(
+            p3 = subprocess.Popen(
                 ["aplay", "-r", "22050", "-f", "S16_LE", "-t", "raw"],
                 stdin=p2.stdout,
-                stderr=subprocess.DEVNULL,
-                check=True
+                stderr=subprocess.DEVNULL
             )
+            # Register the live pipeline so interrupt() can kill it mid-sentence.
+            with self._proc_lock:
+                self._active_procs = [p1, p2, p3]
+            p3.wait()
         except Exception:
             pass
+        finally:
+            with self._proc_lock:
+                self._active_procs = []
 
     def stop(self):
         self.stop_event.set()
