@@ -217,6 +217,9 @@ FIGURATE_LEDGER: dict = {
     "player_piano": 2962137920,
     "clipboard": 2324709982,
     "bunny_trail": 615479347,
+    "ai_stack_combo": 1544633699,  # Raw CRC32 of the diagram (verified)
+    # === FIGURATE_LEDGER_EXTRUDE_BOTTOM ===
+    # Add new artwork CRC32 entries immediately above this line
 }
 
 # FIGURATE_REGISTRY: The map of all visual vocabulary.
