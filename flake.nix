@@ -483,6 +483,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # Add aliases
           alias d='git --no-pager diff'
           alias gdiff='git --no-pager diff --no-textconv'
+          alias force='cd /home/mike/repos/trimnoir && git commit --allow-empty -m "retry" && git push'
           alias isnix="if [ -n \"$IN_NIX_SHELL\" ]; then echo \"✓ In Nix shell v${version}\"; else echo \"✗ Not in Nix shell\"; fi"
           alias mcp='.venv/bin/python cli.py call'
           alias vim='nvim'
