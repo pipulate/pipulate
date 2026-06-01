@@ -324,11 +324,10 @@ def _figurate_ai_stack_combo():
      ---> `.   ,'---------> `-'
      -----> `-'
 """
-    ai_art = _expand_color_bits_ai(art)
-    human_art = _expand_color_bits_human(art)
+    ai_art = _expand_color_bits_ai(art).strip()
+    human_art = _expand_color_bits_human(art).strip()
     human = Panel(human_art, title="🃏 Stack Combo — Local-First Agency Pipeline", border_style="white")
-    # Return clean string for AI path (no Rich Panel leakage)
-    return human, ai_art.strip()
+    return human, ai_art
 
 
 # === FIGURATE_RENDER_EXTRUDE_BOTTOM ===
