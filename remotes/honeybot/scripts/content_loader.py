@@ -129,7 +129,7 @@ def get_playlist(recent_n=10):
         # Shuffle the archive to keep it fresh
         random.shuffle(archive_articles)
         
-        global _last_scan_time, _last_file_count
+        global _last_scan_time, _last_file_count, _last_trigger
         try:
             stat = POSTS_DIR.stat()
             _last_scan_time = stat.st_mtime
