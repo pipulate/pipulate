@@ -253,6 +253,35 @@ def wait_for_availability(url, timeout=60):
     narrator.say("Generation timed out. Proceeding with caution.")
 
 
+def conjure_patronus(name):
+    """Launch the shared patronus renderer from a sheet-music directive."""
+    safe_name = "".join(c for c in str(name).strip() if c.isalnum() or c in {"_", "-"})
+    if not safe_name:
+        safe_name = "white_rabbit"
+
+    site_root = Path(__file__).resolve().parents[1]
+    python_code = (
+        "import sys; "
+        f"sys.path.insert(0, {str(site_root)!r}); "
+        "from imports.ascii_displays import patronus; "
+        "patronus(sys.argv[1])"
+    )
+    env = os.environ.copy()
+    env["DISPLAY"] = env.get("DISPLAY") or ":10.0"
+
+    try:
+        subprocess.Popen(
+            [sys.executable, "-c", python_code, safe_name],
+            cwd=site_root,
+            env=env,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        time.sleep(0.5)
+    except Exception:
+        pass
+
+
 def perform_show(script):
     """Reads the sheet music list and executes it."""
     # Define the environment for the browser once
