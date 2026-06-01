@@ -346,6 +346,11 @@ FIGURATE_REGISTRY: dict = {
     "bunny_trail": {
         "render": _figurate_bunny_trail,
     },
+    "ai_stack_combo": {
+        "render": _figurate_ai_stack_combo,
+    },
+    # === FIGURATE_REGISTRY_EXTRUDE_BOTTOM ===
+    # Add new registry entries immediately above this line
 }
 
 def safe_console_print(*args, **kwargs):
