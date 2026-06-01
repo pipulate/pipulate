@@ -81,7 +81,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
 
-# README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
+README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 
 # __init__.py       #  <-- Master versioning
 # release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
@@ -154,7 +154,7 @@ imports/ascii_displays.py  # <-- The common between AI and Humans ASCII art lang
 # imports/voice_synthesis.py  # <-- The wand can talk to you
 # imports/server_logging.py   # <-- Drawing that ASCII art into radically transparent server logs
 
-https://mikelev.in/futureproof/player-piano-markdown-sheet-music/index.md
+# https://mikelev.in/futureproof/player-piano-markdown-sheet-music/index.md
 
 # ============================================================================
 # V. THE BOOK DISTILLER - A Choose Your Own Path Adventure, for AI!
@@ -163,9 +163,8 @@ https://mikelev.in/futureproof/player-piano-markdown-sheet-music/index.md
 # THE ROLLING PIN
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
+AI_CONTEXT.md
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
-# flake.nix                 # <-- Most book distilling comes from terminal aliases like `next`.
-# AI_CONTEXT.md
 
 # ============================================================================
 # V. Hello World! - You think you've seen Hello Worlds? You don't know Jack.
