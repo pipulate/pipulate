@@ -75,9 +75,7 @@ def get_script(breaking=False):
             
             # 3. Campfire Story
             script.append(("SAY", "Reading entry..."))
-            for chunk in article['content'].split('\n'):
-                if chunk.strip() and len(chunk.strip()) > 2:
-                    script.append(("SAY", chunk))
+            append_article_content(script, article)
             
             # 4. Breath
             script.append(("WAIT", 3))
