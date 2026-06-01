@@ -132,10 +132,10 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 
 # IF YOU ONLY edit it one set of things besides the 3 "always" `"!" * 3` files, this clump of actuators is an excellent choice!
 
-# .gitignore      #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
+.gitignore      #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
 flake.nix       #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
-# apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
-# scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
+scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 scripts/webclip_2_markdown.py  
 
 # patch           #  <-- I know what you did last patch
@@ -208,6 +208,7 @@ nixops.sh                                   # <-- You've heard of GitOPs? Well, 
 remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
 remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
 remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
+remotes/honeybot/scripts/show.py
 remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
 remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
 remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
@@ -767,7 +768,6 @@ _ = CHOP_NEXT_STEP
 # remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
 # remotes/honeybot/scripts/report.py  # [737 tokens | 3,256 bytes]
 # remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
-# remotes/honeybot/scripts/show.py  # [610 tokens | 2,709 bytes]
 # scripts/articles/bookforge_dashboard.py  # [851 tokens | 3,484 bytes]
 # scripts/articles/build_book_passes.py  # [535 tokens | 2,210 bytes]
 # scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
