@@ -45,7 +45,7 @@ sys.path.append(str(Path(__file__).parent))
 
 try:
     import show
-    from content_loader import check_for_updates
+    from content_loader import check_for_updates, check_standby
 except ImportError:
     show = None
 
