@@ -208,7 +208,7 @@ nixops.sh                                   # <-- You've heard of GitOPs? Well, 
 remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
 remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
 remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
-remotes/honeybot/scripts/show.py
+remotes/honeybot/scripts/show.py            # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
 remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
 remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
 remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
