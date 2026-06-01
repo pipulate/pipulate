@@ -258,14 +258,15 @@ def perform_show(script):
 
             # --- The Breaking News Interrupt ---
             # We check before every command.
-            # If new content exists, we return False to signal "Abort & Restart"
+            # A fresh push rang the bell; return "BREAKING" (not False) so the director
+            # leads the NEXT cycle straight with the newest article, no station-ID spiel.
             if check_for_updates():
                 narrator.say("Interrupting program. Breaking news detected.")
                 # Close browser just in case
                 try:
                     subprocess.run(["pkill", "firefox"], check=False)
                 except: pass
-                return False
+                return "BREAKING"
 
             if command == "SAY":
                 # --- The Pervasive Pitch (Station ID) ---
