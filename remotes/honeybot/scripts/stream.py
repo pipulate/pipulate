@@ -367,7 +367,7 @@ def perform_show(script):
                     pass
 
             elif command == "PATRONUS":
-                conjure_patronus(content)
+                narrator.patronus(content)
 
             elif command == "WAIT":
                 try: time.sleep(int(content))
