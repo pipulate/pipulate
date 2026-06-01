@@ -493,7 +493,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias chop='cd ~/repos/pipulate && nvim foo_files.py'
           alias wc='python scripts/webclip_2_markdown.py'
           alias story='python prompt_foo.py -l [:] --no-tree'
-          alias latest='python prompt_foo.py -a [-1:] --no-tree'
+          alias latest='python prompt_foo.py -a [-2:] --no-tree'
           book() {
             if [ "$1" = "step" ] || [ "$1" = "next" ]; then
               shift
