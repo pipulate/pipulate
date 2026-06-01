@@ -144,8 +144,11 @@ class Narrator(threading.Thread):
     def run(self):
         while not self.stop_event.is_set():
             try:
-                text = self.queue.get(timeout=1)
-                self._speak_now(text)
+                item = self.queue.get(timeout=1)
+                if isinstance(item, tuple) and item and item[0] == "PATRONUS":
+                    conjure_patronus(item[1])
+                else:
+                    self._speak_now(item)
                 self.queue.task_done()
                 time.sleep(0.5)
             except queue.Empty:
