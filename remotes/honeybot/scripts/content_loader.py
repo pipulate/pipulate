@@ -27,7 +27,7 @@ def check_for_updates():
     Checks if the _posts directory has changed since the last playlist generation.
     Returns True if updates are detected.
     """
-    global _last_scan_time, _last_file_count
+    global _last_scan_time, _last_file_count, _last_trigger
     
     try:
         # Get directory stats
