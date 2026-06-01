@@ -83,9 +83,9 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 
-__init__.py       #  <-- Master versioning
-release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
-pyproject.toml    #  <-- The PyPI Packaging details
+# __init__.py       #  <-- Master versioning
+# release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
+# pyproject.toml    #  <-- The PyPI Packaging details
 
 # requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 # requirements.txt  #  <-- Pip-compiled dependencies.
@@ -132,10 +132,11 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 
 # IF YOU ONLY edit it one set of things besides the 3 "always" `"!" * 3` files, this clump of actuators is an excellent choice!
 
-.gitignore      #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
+# .gitignore      #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
 flake.nix       #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
-apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
-scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+# apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
+# scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+scripts/webclip_2_markdown.py  
 
 # patch           #  <-- I know what you did last patch
 
@@ -143,13 +144,13 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-# config.py                  # <-- Centralize every last configuration in here
+config.py                  # <-- Centralize every last configuration in here
 # assets/styles.css          # <-- Those values often get used here for "the look"
-# pipulate/__init__.py       # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-# pipulate/pipulate.py       # <-- Traveling wands need to have their own special magic
-# pipulate/core.py           # <-- The Wand (spells)
+pipulate/__init__.py       # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+pipulate/pipulate.py       # <-- Traveling wands need to have their own special magic
+pipulate/core.py           # <-- The Wand (spells)
 # server.py                  # <-- The Wizard (big!)
-# imports/ascii_displays.py  # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
+imports/ascii_displays.py  # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/server_logging.py  # <-- Drawing that ASCII art into radically transparent server logs
 
 # ============================================================================
@@ -158,7 +159,7 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 
 # THE ROLLING PIN
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
-scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
+# scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 # flake.nix                 # <-- Most book distilling comes from terminal aliases like `next`.
 
@@ -203,13 +204,13 @@ AI_CONTEXT.md
 # VIII. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
 # ============================================================================
 
-# nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
-# remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
-# remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
-# remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
-# remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
-# remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
-# remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
+remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
+remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
+remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
+remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
+remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
+remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
 
 # ============================================================================
 # IV. PROPRIETARY FINDINGS - Which AI bots execute JavaScript and which negotiate for Markdown?
@@ -796,6 +797,5 @@ _ = CHOP_NEXT_STEP
 # scripts/playground/prompt_feeder.py  # [746 tokens | 3,154 bytes]
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
-# scripts/webclip_2_markdown.py  # [413 tokens | 1,814 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
 # tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
