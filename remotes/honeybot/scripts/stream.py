@@ -324,15 +324,19 @@ def start_director_track():
     """The Script for the Show. Runs in parallel to the Log Stream."""
     time.sleep(5)
 
+    breaking = False
     while True:
         if show:
-            # Generate a fresh script
-            current_script = show.get_script()
+            # Generate a fresh script. On a breaking-news restart we request a minimal
+            # script that leads straight with the newest article, skipping the station-ID
+            # preamble so a just-pushed piece is heard immediately.
+            current_script = show.get_script(breaking=breaking)
 
-            # Run the show.
-            # If perform_show returns False, it means "New Content Detected",
-            # so the loop restarts immediately, generating a NEW script with the new article at top.
-            perform_show(current_script)
+            # perform_show returns "BREAKING" when a fresh push interrupted it (lead with
+            # the new article next), False on a normal timer cycle (replay the full
+            # preamble), or None on natural completion.
+            result = perform_show(current_script)
+            breaking = (result == "BREAKING")
 
         else:
             narrator.say("Error. Show module not found.")
