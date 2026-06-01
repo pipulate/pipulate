@@ -206,7 +206,7 @@ def main():
         try:
             date_str = filename[:10]
             post_date = datetime.strptime(date_str, '%Y-%m-%d').date()
-            sort_order = fast_get_sort_order(filepath)
+            sort_order, permalink = fast_get_sort_order(filepath)
             
             metadata.append({
                 'path': filepath,
