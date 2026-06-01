@@ -119,6 +119,24 @@ class Narrator(threading.Thread):
         """Add text to the speech queue."""
         self.queue.put(text)
 
+    def interrupt(self):
+        """Preempt the voice: drop everything queued-but-unspoken and kill the
+        audio playing RIGHT NOW, so an urgent line plays immediately instead of
+        waiting behind the backlog (which is what caused the talk-over)."""
+        try:
+            while True:
+                self.queue.get_nowait()
+                self.queue.task_done()
+        except queue.Empty:
+            pass
+        with self._proc_lock:
+            for p in self._active_procs:
+                try:
+                    p.kill()
+                except Exception:
+                    pass
+            self._active_procs = []
+
     def run(self):
         while not self.stop_event.is_set():
             try:
