@@ -119,9 +119,9 @@ class Narrator(threading.Thread):
         """Add text to the speech queue."""
         self.queue.put(text)
 
-    def patronus(self, name):
+    def patronus(self, payload):
         """Queue a visual cue so it fires in voice-order, not director-order."""
-        self.queue.put(("PATRONUS", name))
+        self.queue.put(("PATRONUS", payload))
 
     def interrupt(self):
         """Preempt the voice: drop everything queued-but-unspoken and kill the
