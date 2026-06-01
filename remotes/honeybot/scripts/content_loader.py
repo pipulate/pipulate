@@ -22,6 +22,32 @@ _last_file_count = 0
 TRIGGER_FILE = Path("/home/mike/www/mikelev.in/.reading_trigger")
 _last_trigger = None
 
+# The deploy stand-by bell. The post-receive hook writes a fresh epoch timestamp
+# here at the START of a deploy (before the long build), so the stream can announce
+# "stand by" and HOLD narration instead of thrashing through the whole build.
+STANDBY_FILE = Path("/home/mike/www/mikelev.in/.deploy_standby")
+_last_standby = "__UNINIT__"
+
+
+def check_standby():
+    """Fires once when a new deploy BEGINS (the standby bell changes).
+
+    Lets the stream gracefully announce incoming updates and pause narration
+    before the multi-second Jekyll build + dye pass would otherwise thrash the
+    Piper TTS engine."""
+    global _last_standby
+    try:
+        current = STANDBY_FILE.read_text().strip()
+    except FileNotFoundError:
+        current = None
+    if _last_standby == "__UNINIT__":
+        _last_standby = current
+        return False
+    if current is not None and current != _last_standby:
+        _last_standby = current
+        return True
+    return False
+
 def check_for_updates():
     """
     Checks if the _posts directory has changed since the last playlist generation.
