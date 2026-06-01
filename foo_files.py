@@ -578,17 +578,21 @@ scripts/xp.py  # [1,778 tokens | 7,417 bytes]
 
 TODO_MOMENTUM_CHOP = """
 # THE LIVING MOMENTUM LENS
-# COMMAND: python prompt_foo.py --chop TODO_MOMENTUM_CHOP --no-tree -a [-2:] 
+# COMMAND: python prompt_foo.py --chop TODO_MOMENTUM_CHOP --no-tree -a [-3:] -l [0:10]
 
-# 1. Recent Narrative Position (last 2 articles)
-! python scripts/articles/lsa.py -t 2 --reverse --fmt dated-slugs
+# 1. Recent Narrative Position (last 3 articles — the current edge)
+! python scripts/articles/lsa.py -t 3 --reverse --fmt dated-slugs
 
-# 2. Active Router Surface
-foo_files.py  # [13,948 tokens | 54,302 bytes]
-imports/ascii_displays.py  # [11,540 tokens | 50,746 bytes]
-prompt_foo.py  # [17,325 tokens | 79,192 bytes]
+# 2. Active Router Surface (self-referential)
+foo_files.py
+imports/ascii_displays.py
+prompt_foo.py
+apply.py
+scripts/xp.py
 
-# 3. Roadmap Reference (embedded in foo_files.py)
+# 3. Roadmap & Paintbox Reference
+# (The embedded roadmap + Paintbox in this file)
+# Current figurate drift state (for quick visual integrity check)
 """
 
 # ============================================================================
