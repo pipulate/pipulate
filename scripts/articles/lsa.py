@@ -63,7 +63,7 @@ def fast_get_sort_order(filepath):
         with open(filepath, 'r', encoding='utf-8') as f:
             first_line = f.readline()
             if not first_line.startswith('---'):
-                return 0
+                return 0, ''
             
             yaml_content = []
             for line in f:
