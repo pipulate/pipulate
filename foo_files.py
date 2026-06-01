@@ -153,6 +153,8 @@ config.py                  # <-- Centralize every last configuration in here
 imports/ascii_displays.py  # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/server_logging.py  # <-- Drawing that ASCII art into radically transparent server logs
 
+https://mikelev.in/futureproof/player-piano-markdown-sheet-music/index.md
+
 # ============================================================================
 # V. THE BOOK DISTILLER - A Choose Your Own Path Adventure, for AI!
 # ============================================================================
@@ -162,8 +164,7 @@ imports/ascii_displays.py  # <-- The common between AI and Humans ASCII art lang
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 # flake.nix                 # <-- Most book distilling comes from terminal aliases like `next`.
-
-AI_CONTEXT.md
+# AI_CONTEXT.md
 
 # ============================================================================
 # V. Hello World! - You think you've seen Hello Worlds? You don't know Jack.
@@ -203,14 +204,14 @@ AI_CONTEXT.md
 # VIII. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
 # ============================================================================
 
-# nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
-# remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
-# remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
-# remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
-# remotes/honeybot/scripts/show.py            # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
-# remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
-# remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
-# remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
+remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
+remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
+remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
+remotes/honeybot/scripts/show.py            # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
+remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
+remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
+remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
 
 # ============================================================================
 # IV. PROPRIETARY FINDINGS - Which AI bots execute JavaScript and which negotiate for Markdown?
