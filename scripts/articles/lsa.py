@@ -72,9 +72,9 @@ def fast_get_sort_order(filepath):
                 yaml_content.append(line)
                 
             fm = yaml.safe_load(''.join(yaml_content)) or {}
-            return int(fm.get('sort_order', 0))
+            return int(fm.get('sort_order', 0)), (fm.get('permalink') or '')
     except Exception:
-        return 0
+        return 0, ''
 
 def analyze_sort_order_contiguity(metadata):
     """Analyzes sort_order for gaps, duplicates, and late starts."""
