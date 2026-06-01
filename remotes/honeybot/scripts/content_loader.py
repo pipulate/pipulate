@@ -163,8 +163,11 @@ def clean_markdown(text):
     def capture_pp4_comment(match):
         """Preserve player-piano #4 directives before generic HTML stripping."""
         directive = match.group(1).strip()
+        key_match = re.search(r'\bkey\s*=\s*[\'\"]?([A-Za-z0-9_-]+)', directive, flags=re.IGNORECASE)
         patronus_match = re.search(r'\bpatronus\b\s*\(?\s*[\'\"]?([A-Za-z0-9_-]+)', directive, flags=re.IGNORECASE)
-        if patronus_match:
+        if key_match:
+            asset_name = key_match.group(1)
+        elif patronus_match and patronus_match.group(1).lower() not in {"key", "duration", "mode"}:
             asset_name = patronus_match.group(1)
         else:
             token_match = re.search(r'[A-Za-z0-9_-]+', directive)
