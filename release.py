@@ -203,6 +203,28 @@ def run_waxascii_release_stamp():
         print(f"❌ Waxascii release stamping failed: {e}")
         return False
 
+def run_ai_context_generation():
+    """Regenerate AI_CONTEXT.md — the repo's self-describing briefing for any AI
+    that clones and inspects it. Reads the (separate) blog archive and rewrites
+    AI_CONTEXT.md in the Pipulate repo root from scratch, so a fresh clone always
+    greets an AI with the latest narrative map. Non-fatal: skips cleanly if the
+    generator or the article source is unavailable."""
+    print("\n🧭 Step 1.6: Regenerating AI_CONTEXT.md (repo talk-back briefing)...")
+    generator = PIPULATE_ROOT / "scripts" / "articles" / "generate_ai_context.py"
+    if not generator.exists():
+        print(f"ℹ️  AI_CONTEXT generator not found at {generator}. Skipping.")
+        return False
+    # Direct subprocess.run (not run_command) so a failure never sys.exit()s the release.
+    result = subprocess.run([sys.executable, str(generator)], cwd=str(PIPULATE_ROOT))
+    if result.returncode != 0:
+        print("⚠️  AI_CONTEXT generation returned non-zero; continuing release.")
+        return False
+    # Stage explicitly: `git commit -am` ignores untracked files, so the very
+    # first (untracked) AI_CONTEXT.md must be added by hand. After that it rides -am.
+    subprocess.run(["git", "add", "AI_CONTEXT.md"], cwd=str(PIPULATE_ROOT))
+    print("✅ AI_CONTEXT.md regenerated and staged.")
+    return True
+
 def parse_ascii_art_stats(output):
     """Parse ASCII art synchronization statistics from output."""
     stats = {
