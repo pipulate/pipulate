@@ -8,6 +8,19 @@ from pathlib import Path
 # Add script dir to path to find content_loader
 sys.path.append(str(Path(__file__).parent))
 
+
+def append_article_content(script, article):
+    """Append article body chunks, preserving player-piano directives."""
+    for chunk in article['content'].split('\n'):
+        chunk = chunk.strip()
+        if chunk.startswith("[[PATRONUS:") and chunk.endswith("]]"):
+            target = chunk[len("[[PATRONUS:"):-2].strip()
+            if target:
+                script.append(("PATRONUS", target))
+        elif chunk and len(chunk) > 2:
+            script.append(("SAY", chunk))
+
+
 def get_script(breaking=False):
     """Generates a fresh playlist (Recent + Random Archive).
 
