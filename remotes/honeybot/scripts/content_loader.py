@@ -52,11 +52,15 @@ def check_for_updates():
             _last_trigger = current_trigger
             return False
 
-        # Detection logic
-        if current_mtime > _last_scan_time or current_count != _last_file_count:
+        # Detection logic. The trigger bell is authoritative: it fires even when
+        # mtime/file-count are unchanged (identical re-push), which is exactly what
+        # makes "retry reading the same article" possible.
+        trigger_changed = current_trigger is not None and current_trigger != _last_trigger
+        if trigger_changed or current_mtime > _last_scan_time or current_count != _last_file_count:
             # Update cache
             _last_scan_time = current_mtime
             _last_file_count = current_count
+            _last_trigger = current_trigger
             print("🚀 New content detected! Resetting playlist.")
             return True
             
