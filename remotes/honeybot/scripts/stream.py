@@ -319,6 +319,27 @@ def perform_show(script):
                 except: pass
                 return False
 
+            # --- The Deploy Stand-By Handshake ---
+            # A fresh push rings the standby bell BEFORE the multi-second build.
+            # Announce calmly ONCE, cut the current narration, and HOLD (silent) until
+            # the completion bell rings — so the TTS doesn't thrash through the deploy.
+            if check_standby():
+                narrator.interrupt()  # cut current audio + flush the backlog
+                narrator.say("Receiving updates. Please stand by.")
+                narrator.say("There's something to see here. Please congregate. Please congregate.")
+                try:
+                    subprocess.run(["pkill", "firefox"], check=False)
+                except Exception:
+                    pass
+                # Hold narration until the deploy finishes (completion bell rings)
+                # or we time out gracefully, then lead the next cycle with the new article.
+                deadline = time.time() + 120
+                while time.time() < deadline:
+                    if check_for_updates():
+                        break
+                    time.sleep(2)
+                return "BREAKING"
+
             # --- The Breaking News Interrupt ---
             # We check before every command.
             # A fresh push rang the bell; return "BREAKING" (not False) so the director
