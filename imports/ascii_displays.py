@@ -310,6 +310,29 @@ def _figurate_bunny_trail():
     human = Panel(human_art, title="🐇 The Bunny Trail — Morning Continuation Tale", border_style="white")
     return human, ai_art
 
+
+def _figurate_ai_stack_combo():
+    """Render the Normalized Linux → Python → HTx → app → git stack diagram."""
+    art = r"""
+     -----> ,-.
+     ---> ,'   `.---------> ,-.
+     --> /       \------> ,'   `.------> ,-.
+  o  -> /         \----> /       \----> /   \----> ,-.
+ /|\   ( flake.nix )--> ( Python3 )--> ( HTx )--> (app)--> (git)
+ / \ -> \         /----> \       /----> \   /----> `-'
+     --> \       /------> `.   ,'------> `-'
+     ---> `.   ,'---------> `-'
+     -----> `-'
+"""
+    ai_art = _expand_color_bits_ai(art)
+    human_art = _expand_color_bits_human(art)
+    human = Panel(human_art, title="🃏 Stack Combo — Local-First Agency Pipeline", border_style="white")
+    return human, ai_art
+
+
+# === FIGURATE_RENDER_EXTRUDE_BOTTOM ===
+# Add new _figurate_* render functions immediately above this line
+
 FIGURATE_REGISTRY: dict = {
     "white_rabbit": {
         "render": _figurate_white_rabbit,
