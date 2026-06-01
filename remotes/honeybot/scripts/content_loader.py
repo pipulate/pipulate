@@ -49,6 +49,7 @@ def check_for_updates():
         if _last_scan_time == 0:
             _last_scan_time = current_mtime
             _last_file_count = current_count
+            _last_trigger = current_trigger
             return False
 
         # Detection logic
