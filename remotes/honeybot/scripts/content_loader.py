@@ -78,15 +78,28 @@ def check_for_updates():
             _last_trigger = current_trigger
             return False
 
-        # Detection logic. The trigger bell is authoritative: it fires even when
-        # mtime/file-count are unchanged (identical re-push), which is exactly what
-        # makes "retry reading the same article" possible.
-        trigger_changed = current_trigger is not None and current_trigger != _last_trigger
-        if trigger_changed or current_mtime > _last_scan_time or current_count != _last_file_count:
-            # Update cache
+        # Detection logic. When the trigger bell exists it is the SOLE authority:
+        # one push rings it exactly once, so detection fires exactly once per deploy.
+        # This kills the double-fire that made the narrator thrash — the checkout
+        # bumps _posts mtime early while the bell rings late, so acting on both made
+        # the stream interrupt itself twice for a single push. We absorb the early
+        # mtime/count change (refresh the baselines, return False) and await the bell.
+        if current_trigger is not None:
+            if current_trigger != _last_trigger:
+                _last_scan_time = current_mtime
+                _last_file_count = current_count
+                _last_trigger = current_trigger
+                print("🔔 Breaking-news bell rung. Resetting playlist.")
+                return True
+            # Same deploy in progress (mtime moved, bell not yet rung): absorb it.
             _last_scan_time = current_mtime
             _last_file_count = current_count
-            _last_trigger = current_trigger
+            return False
+
+        # Legacy fallback (no bell present): watch raw filesystem changes directly.
+        if current_mtime > _last_scan_time or current_count != _last_file_count:
+            _last_scan_time = current_mtime
+            _last_file_count = current_count
             print("🚀 New content detected! Resetting playlist.")
             return True
             
