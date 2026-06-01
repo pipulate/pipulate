@@ -359,6 +359,9 @@ def perform_show(script):
                 except Exception:
                     pass
 
+            elif command == "PATRONUS":
+                conjure_patronus(content)
+
             elif command == "WAIT":
                 try: time.sleep(int(content))
                 except: time.sleep(1)
