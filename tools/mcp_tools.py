@@ -282,19 +282,15 @@ def rotate_looking_at_directory(looking_at_path: Path = None, max_rolled_dirs: i
 
 
 def _read_botify_api_token() -> str:
-    """Read Botify API token from the standard token file location.
+    """Read Botify API token from the environment (.env vault).
 
-    Returns the token string or None if file doesn't exist or can't be read.
-    This follows the same pattern used by all other Botify integrations.
+    Returns the token string or None if not configured. Delegates to
+    config.get_botify_token() so there is a single canonical source of truth
+    for the Botify credential.
     """
     try:
-        token_file = "helpers/botify/botify_token.txt"
-        if not os.path.exists(token_file):
-            return None
-        with open(token_file) as f:
-            content = f.read().strip()
-            token = content.split('\n')[0].strip()
-        return token
+        from config import get_botify_token
+        return get_botify_token()
     except Exception:
         return None
 
