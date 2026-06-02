@@ -219,9 +219,9 @@ imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art lan
 # ============================================================================
 
 # WE'VE GOT A LOT OF THESE AND I HAVE TO BUILD THIS OUT / AD HOC-ISH
-# /home/mike/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
-# /home/mike/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
-# /home/mike/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
+/home/mike/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
+/home/mike/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
+/home/mike/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
 # remotes/honeybot/queries/trapdoor_ips.sql         # <-- The SQL to see who is hydrating the DOM. The example of HOW we use it from here in the router below.
 # ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
@@ -252,19 +252,19 @@ imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art lan
 # VII. JEKYLL PUBLISHING - Reaching out to the world
 # ============================================================================
 
-# /home/mike/.config/articleizer/targets.json  # <-- System can work against any Jekyll blog, public or private.
-# scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
-# scripts/articles/common.py                   # <-- Self-explanatory
-# scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
-# scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
-# scripts/articles/sanitizer.py                # <-- Scrubs PII
-# scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
-# scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
-# scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
-# scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
-# scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
-# scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
-# scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
+/home/mike/.config/articleizer/targets.json  # <-- System can work against any Jekyll blog, public or private.
+scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
+scripts/articles/common.py                   # <-- Self-explanatory
+scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
+scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
+scripts/articles/sanitizer.py                # <-- Scrubs PII
+scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
+scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
+scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
+scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
+scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
+scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
+scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
 
 # ============================================================================
 # VIII. WORKFLOW WORKSHOP - WET assembly scripts. Extruders.
