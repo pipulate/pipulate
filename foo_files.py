@@ -81,13 +81,13 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
 
-README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
-AUDIT.md
+# README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
+# AUDIT.md
 
-__init__.py       #  <-- Master versioning
-release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
-pyproject.toml    #  <-- The PyPI Packaging details
-requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
+# __init__.py       #  <-- Master versioning
+# release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
+# pyproject.toml    #  <-- The PyPI Packaging details
+# requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 
 # requirements.txt  #  <-- Pip-compiled dependencies.
 # logs/server.log   #  <-- Like letting AI see your browser app state, but better! --------------------- AI server.py LOG DEBUG
@@ -600,60 +600,67 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 """
 
 # ============================================================================
-# X. THE ROADMAP (The Mother Cat's To-Do List) todo
+# X. THE ROADMAP — Trust Surfaces Before Feature Expansion
 # ============================================================================
-# This is not a backlog; it is the trajectory of our philosophy. 
-# We prioritize a seamless, empathetic onboarding experience over feature-bloat.
-# Stop Watchdog from restarting server for ANYTHING in the /scripts folder
+# Philosophy: Make the system trustworthy, legible, local-first, and adoptable
+# before adding power. Myth inside the cockpit; plain nouns on the placard.
 
-# AD HOC / UNORGANIZED / CONSIDER
-# - Purge orphans from Jekyll `_posts/_context/` JSON holographic context shards. I'M PRODUCING MORE OF THESE / EXPLORE? REPORT?
-# - Read YouTube comments through API and *really* make Honeybot respond to people!
-# - Make the YouTube Piper TTS synthetic voice reader (or whatever you use) skip code blocks and other things that sound awful read out loud better
-# - Consider layering in line-numbering in the code portions of prompt_foo.py compiled context so AI can give very precise instructions
-# - Trim the Honeybot Nix store, getting larger and larger? Make sure every `./nixops.sh` operation keeps size in check. Prevent server crashes based on running out of space!
+# Status legend:
+# [ ] planned
+# [~] partially implemented — verify & complete
+# [P] parked (lower priority)
 
-# --- PHASE 1: The Onboarding Embrace (Frictionless Entry) ---
-# Goal: Make the first 5 minutes of Pipulate feel like magic, not homework.
-# - [ ] De-intimidate the Notebooks: Push heavy instructional text into `sauce` files. Keep the cells clean and action-oriented.
-# - [ ] Escapable Tooling: Allow users to skip Cloud AI API-key steps gracefully in both `Onboarding.ipynb` and `015_config.py`.
-# - [ ] The Missing Links: Ensure direct, obvious links to Google AI Studio and Botify exist exactly where the user needs them.
-# - [ ] "Cheat Codes": Add a fast-track button in the Notebook for veteran users who want to skip the tutorializing.
-# - [ ] Tactile Upgrades: Make the IPyWidget buttons wider and more satisfying to click during Onboarding.
-# - [ ] Asynchronous Patience: Implement visual spinners for Notebook steps that take time (e.g., downloading local models) so the user knows the machine is working.
-
-# --- PHASE 2: The Deployment Matrix (Enterprise & Whitelabeling) ---
-# Goal: Allow agencies to bypass the Jupyter chrysalis entirely and drop clients straight into a single-tab, locked-in workflow.
-# - [ ] The Cryptographic Key: Build installation configs that combine whitelabeling (group namespace) with a feature key.
-# - [ ] Direct-to-App Routing: Understand when Jupyter Onboarding is optional and bypass it based on the installation config.
-# - [ ] UI Reorganization: Move the Configuration app under the "Poke Gear" flyout for a cleaner primary navigation menu.
-# - [ ] Color and theme customization to match "corporate" look
-
-# --- PHASE 3: Acoustic & Visual Sovereignty (Radical Transparency) ---
-# Goal: The user must always know what the machine is thinking, saying, and contacting.
-# - [ ] The Network Sentinel: Implement a global visual indicator for TCP/IP traffic. If hitting Local AI, it stays dark. If hitting Cloud AI, a green flicker occurs (near the voice toggle).
-# - [ ] The Gag Order: Create an instantaneous, uncompromising global voice kill-switch (sentinel file required) that silences both JupyterLab and FastHTML.
-# - [ ] Acoustic Traffic Control: Prevent voices from talking over each other across separate processes (especially critical at the end of Onboarding).
-# - [ ] Silent Running: Implement a completely silent mode (no talking, ever).
-# - [ ] Terminal Parity: When the Web UI streams LLM chat, the server console must stream the exact same output.
-# - [ ] Color ASCII Art: Implement `wand.figurate()` to bring the terminal to life.
-# - [ ] Never make the Piper TTS say it's Chip O'Theseus (local AI) when it's not (just reading a script). That's misleading and can raise unnecessary concerns. Be transparent.
-
-# --- PHASE 4: The Core Engine & Tech Debt ---
-# Goal: Pay down the debt of progress and stabilize the foundations.
-# - [ ] The FastHTML Migration: Update the codebase to survive FastHTML's breaking changes (e.g., the removal of PicoCSS-specific tags like `Card()`). Hold until next pip-compile.
-# - [ ] Modernize Static Analysis: Replace Pylint and Vulture with Ruff in the `prompt_foo.py` prompt compiler for faster, cleaner diagnostics.
-# - [ ] Watchdog Taming: Me more thorough with which files changing will restart server and which won't.
-# - [ ] Chat UI Polish: Provide more immediate feedback, forcing submit button to red and "scroll-to-bottom" when entering text in the chat interface.
-# - [ ] Versioning: Switch from semantic versioning to a datestamp-based system.
-# - [ ] Jupyter Housekeeping: Suppress the annoying "Newer Version Available" message in JupyterLab.
-
-# --- PHASE 5: Tooling & Application Upgrades ---
-# Goal: Make the workflows faster, deeper, and more insightful.
-# - [ ] Crawler Acceleration: Speed up the initial scraping step (especially regarding Cloudflare captcha bypass) and add narrative voiceover to fill the dead air.
-# - [ ] GAPalyzer Turbo: Re-engineer GAPalyzer for speed (evaluate Polars or Dask).
-# - [ ] Deliverable Polish: Add a "Source vs. Rendered DOM <a> links gap" metric to the Excel deliverable.
-# - [ ] Link Rot: Fix the broken robots.txt link inside Parameter Buster.
+# --- PHASE 0: Map Integrity & Calibration ---
+# Goal: Eliminate trust leaks in the context compiler itself.
+# - [ ] Paintbox Classification: Move highest-value uncategorized files into active chapters or mark explicitly dormant.
+# - [ ] Topological Ghost Fixes: Resolve broken references (e.g. apps/100_connect_with_botify.py).
+# - [ ] Holographic Shard Hygiene: Report & purge orphaned JSON shards in `_posts/_context/`.
+# - [ ] TODO Staleness Audit: Mark items as planned/partial/done/obsolete.
+# - [~] Ruff Confirmation: Ensure Ruff is primary; keep Pylint only for pyreverse/UML.
+# - [~] `wand.figurate()` Audit: Verify color support, drift checking, shell integration.
+# - [ ] Line-Number Review Mode: Harden `--line-numbers` as navigation-only (never pollute SEARCH/REPLACE).
+# 
+# --- PHASE 1: First-Run Consent & Trust (Onboarding + Transparency) ---
+# Goal: First 5 minutes feel like a safe, skippable, honest appliance.
+# - [ ] Notebook De-intimidation: Push instructional text into `sauce` modules.
+# - [ ] Escapable Setup: Graceful Cloud AI key skip paths in Onboarding.ipynb + 015_config.py.
+# - [ ] Obvious Links: Direct links to Google AI Studio / Botify at key decision points.
+# - [ ] Fast-Track: "Cheat code" button for veterans.
+# - [ ] Tactile UX: Wider, clearer IPyWidget buttons.
+# - [ ] Async Indicators: Spinners for long-running steps.
+# - [ ] Network Sentinel: Visual local vs. cloud traffic indicator.
+# - [ ] Global Voice Kill-Switch: Sentinel-file backed, silences everything.
+# - [ ] Silent Mode + Audio Lock: No overlapping speech; full quiet option.
+# - [ ] Truthful Narration: Never misattribute scripted TTS as local adaptive intelligence.
+# 
+# --- PHASE 2: Control Loop Stability & Ergonomics ---
+# Goal: Make the human-AI iteration loop boringly reliable.
+# - [ ] Watchdog Taming: Exclude /scripts and safe paths from restarts.
+# - [ ] Terminal Parity: Mirror Web UI LLM streams in server console.
+# - [ ] Chat UI Polish: Immediate feedback, reliable scroll-to-bottom.
+# - [ ] Jupyter Housekeeping: Suppress "Newer Version Available".
+# - [ ] Versioning: Consider datestamp-based scheme.
+# - [ ] Honeybot Nix Store Hygiene: Automated cleanup in nixops.sh.
+# 
+# --- PHASE 3: Deployment Matrix (Enterprise / Whitelabel) ---
+# Goal: Support agency use cases only after core trust is solid.
+# - [ ] Feature Keys: Whitelabel namespace + entitlement system.
+# - [ ] Direct-to-App Routing: Bypass Jupyter when appropriate.
+# - [ ] UI Reorg: Configuration under Poke Gear flyout.
+# - [ ] Theme Customization: Corporate branding support.
+# 
+# --- PHASE 4: Product Power ---
+# Goal: Performance and output quality after trust baseline.
+# - [ ] Parameter Buster Cleanup: Fix robots.txt link.
+# - [ ] Deliverable Polish: Add Source vs. Rendered DOM links gap metric.
+# - [ ] Crawler Acceleration: Speed + narrative voiceover (gated by silent mode).
+# - [ ] GAPalyzer Turbo: Evaluate Polars/Dask.
+# - [ ] Workflow Budget: Track slow/confusing steps.
+# 
+# --- PHASE 5: Public Cybernetic Loop (Parked) ---
+# Goal: Expand outward only after inward loop is trustworthy.
+# - [P] YouTube Comment Intake & Honeybot Responses.
+# - [P] TTS Code-Block Hygiene.
 
 # ============================================================================
 # THE LIVING CODEX: THE STORY OF THE FOREVER MACHINE
