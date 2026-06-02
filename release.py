@@ -1022,6 +1022,7 @@ def main():
     parser.add_argument("--skip-version-sync", action="store_true", help="Skip version synchronization")
     parser.add_argument("--skip-docs-sync", action="store_true", help="Skip documentation synchronization")
     parser.add_argument("--skip-install-sh-sync", action="store_true", help="Skip install.sh synchronization")
+    parser.add_argument("--skip-audit-sync", action="store_true", help="Skip AUDIT.md synchronization")
     parser.add_argument("--skip-breadcrumb-sync", action="store_true", help="Skip breadcrumb trail synchronization")
     parser.add_argument("--skip-trifecta-rebuild", action="store_true", help="Skip Trifecta derivative plugin rebuilding")
     
