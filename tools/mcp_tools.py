@@ -2819,8 +2819,8 @@ async def botify_execute_custom_bql_query(params: dict) -> dict:
     if not api_token:
         return {
             "status": "error",
-            "message": "Botify API token not found. Please ensure helpers/botify/botify_token.txt exists.",
-            "token_location": "helpers/botify/botify_token.txt"
+            "message": "Botify API token not found. Please configure BOTIFY_API_TOKEN in .env.",
+            "token_location": ".env:BOTIFY_API_TOKEN"
         }
 
     org_slug = params.get("org_slug")
