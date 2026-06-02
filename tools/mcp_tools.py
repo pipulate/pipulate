@@ -4021,20 +4021,21 @@ async def test_ui_interaction() -> dict:
 
 
 async def test_botify_connectivity() -> dict:
-    """Test Botify API connectivity."""
+    """Test Botify API token availability."""
     try:
-        # Test if we can read the token file
-        token_file = "helpers/botify/botify_token.txt"
-        if os.path.exists(token_file):
-            with open(token_file, 'r') as f:
-                token = f.read().strip()
+        token = _read_botify_api_token()
+        if token:
             return {
                 "success": True,
-                "token_file_exists": True,
-                "token_available": bool(token)
+                "credential_source": "BOTIFY_API_TOKEN",
+                "token_available": True
             }
-        else:
-            return {"success": False, "error": "Botify token file not found"}
+        return {
+            "success": False,
+            "error": "BOTIFY_API_TOKEN not configured",
+            "credential_source": "BOTIFY_API_TOKEN",
+            "token_available": False
+        }
     except Exception as e:
         return {"success": False, "error": str(e)}
 
