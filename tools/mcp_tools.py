@@ -3364,7 +3364,7 @@ async def ai_self_discovery_assistant(params: dict) -> dict:
             },
             "api_authentication_failure": {
                 "symptom": "Botify API calls return 401/403 errors",
-                "solution": "Verify botify_token.txt exists and contains valid token",
+                "solution": "Verify BOTIFY_API_TOKEN is configured in .env and contains a valid token",
                 "prevention": "Use botify_ping to test connectivity before complex operations"
             }
         }
