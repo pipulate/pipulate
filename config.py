@@ -314,6 +314,26 @@ def get_botify_headers(api_token):
         "Content-Type": "application/json"
     }
 
+
+def get_botify_token():
+    """Canonical accessor for the Botify API token.
+
+    Single source of truth: reads BOTIFY_API_TOKEN from the environment,
+    falling back to loading the project-root .env vault. Replaces the legacy
+    botify_token.txt file-based system. Returns the token string or None.
+    """
+    token = os.environ.get('BOTIFY_API_TOKEN')
+    if not token:
+        try:
+            from dotenv import load_dotenv
+            env_path = Path(__file__).parent / '.env'
+            if env_path.exists():
+                load_dotenv(dotenv_path=env_path)
+                token = os.environ.get('BOTIFY_API_TOKEN')
+        except Exception:
+            pass
+    return token
+
 # Browser automation helper functions
 def get_chrome_options():
     """Get standard Chrome options for browser automation."""
