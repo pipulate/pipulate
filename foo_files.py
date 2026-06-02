@@ -79,15 +79,15 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # I. DEBUGGING CRASH COURSE - Server Cookies & Radical Transparency
 # ============================================================================
 
-foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
+# foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
 
 # README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 
 # __init__.py       #  <-- Master versioning
 # release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
 # pyproject.toml    #  <-- The PyPI Packaging details
-
 # requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
+
 # requirements.txt  #  <-- Pip-compiled dependencies.
 # logs/server.log   #  <-- Like letting AI see your browser app state, but better! --------------------- AI server.py LOG DEBUG
 
@@ -128,44 +128,57 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 #  > It might take awhile, but the context-compile will do the really hard part.
 #  > The AI has spied an accelerant ride. Ask it to throw dart (type `next`).
 
-prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!!
+# prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!!
 
 # IF YOU ONLY edit it one set of things besides the 3 "always" `"!" * 3` files, this clump of actuators is an excellent choice!
 
 .gitignore      #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
-flake.nix       #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
+# flake.nix       #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
-scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+# scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 # scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
 
-# patch           #  <-- I know what you did last patch
 
-/home/mike/repos/trimnoir/_posts/2026-06-01-designing-for-amnesia-deterministic-ai-pipeline.md
+# AD HOC
+config.py
+tools/mcp_tools.py
+pipulate/__init__.py
+pipulate/pipulate.py
+pipulate/core.py
+
+apps/100_connect_with_botify.py
+# apps/110_parameter_buster.py
+apps/120_link_graph.py
+# imports/botify/true_schema_discoverer.py
+imports/botify_code_generation.py
+imports/botify/code_generators.py
+
+# patch           #  <-- I know what you did last patch
 
 # ============================================================================
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-config.py                  # <-- Centralize every last configuration in here
-# assets/styles.css          # <-- Those values often get used here for "the look"
-# pipulate/__init__.py       # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-# pipulate/pipulate.py       # <-- Traveling wands need to have their own special magic
-# pipulate/core.py           # <-- The Wand (spells)
-# server.py                  # <-- The Wizard (big!)
-imports/ascii_displays.py  # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
+# config.py                   # <-- Centralize every last configuration in here
+# assets/styles.css           # <-- Those values often get used here for "the look"
+# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+# pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
+# pipulate/core.py            # <-- The Wand (spells)
+# server.py                   # <-- The Wizard (big!)
+# imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
 # imports/server_logging.py   # <-- Drawing that ASCII art into radically transparent server logs
 
 # https://mikelev.in/futureproof/player-piano-markdown-sheet-music/index.md
 
 # ============================================================================
-# V. THE BOOK DISTILLER - A Choose Your Own Path Adventure, for AI!
+# V. THE BOOK DISTILLER - A Choose Your Own Path Adventure, for AI! (overarching story)
 # ============================================================================
 
 # THE ROLLING PIN
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
-AI_CONTEXT.md
+# AI_CONTEXT.md
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 
 # ============================================================================
@@ -178,9 +191,10 @@ AI_CONTEXT.md
 # assets/player-piano.js                            # <-- Player piano actuator #2 in Pipulate. How AIs can take control of workflows.
 # Notebooks/imports/__init__.py                     # <-- Empty file, just to show you imports relative to Notebooks are 1st-class path members. Important!
 
-# assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
-# assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
-# assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
+assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
+assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
+assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
+apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
 
 # ============================================================================
 # VI. WET WORKFLOWS / DRY CRUD - The what's best for AIs and Humans compromise
@@ -691,7 +705,6 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # .jupyter/lab/user-settings/@jupyterlab/notebook-extension/tracker.json  # [21 tokens | 56 bytes]
 # Notebooks/Advanced_Notebooks/__init__.py  # [0 tokens | 0 bytes]
 # Notebooks/__init__.py  # [0 tokens | 0 bytes]
-# apps/015_config.py  # [12,128 tokens | 56,937 bytes]
 # apps/130_gap_analysis.py  # [9,625 tokens | 48,280 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
 # apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
