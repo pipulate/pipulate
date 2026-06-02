@@ -1140,6 +1140,13 @@ def main():
     else:
         print("\n⏭️  Skipping AUDIT.md synchronization (--skip-audit-sync)")
         audit_md_success = False
+
+    # Step 3.6: AI_CONTEXT.md Synchronization
+    if not args.skip_ai_context_sync:
+        ai_context_md_success = sync_ai_context_md()
+    else:
+        print("\n⏭️  Skipping AI_CONTEXT.md synchronization (--skip-ai-context-sync)")
+        ai_context_md_success = False
     
     # Step 4: Breadcrumb Trail Synchronization
     if not args.skip_breadcrumb_sync:
