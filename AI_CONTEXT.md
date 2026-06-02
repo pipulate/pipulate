@@ -47,6 +47,7 @@ For a guided, interactive tour of the codebase itself, run
 
 ## The narrative index (newest first)
 
+- [2026-06-02] [The Local-First Shield: Defeating Paradigm Category Errors in the Age of AI](https://mikelev.in/futureproof/local-first-security-context-compiler/index.md)
 - [2026-06-02] [Refactoring Local Credentials: The Grumbling Graybeard Protocol](https://mikelev.in/futureproof/grumbling-graybeard-local-credentials/index.md)
 - [2026-06-01] [Designing for Amnesia: The Deterministic AI Editing Pipeline](https://mikelev.in/futureproof/designing-for-amnesia-deterministic-ai-pipeline/index.md)
 - [2026-06-01] [The Player Piano Method: Syncing Voice and Visuals in the Age of AI](https://mikelev.in/futureproof/player-piano-voice-visual-sync/index.md)
@@ -126,4 +127,3 @@ For a guided, interactive tour of the codebase itself, run
 - [2026-05-13] [Building the AutoGNOMEic Digital Workspace: Portability and Cognitive Reflexes](https://mikelev.in/futureproof/autognomeic-digital-workspace/index.md)
 - [2026-05-13] [Elegantly Future-Proofed: Reclaiming the Logic of Tech](https://mikelev.in/futureproof/future-proofed-logic-of-tech/index.md)
 - [2026-05-13] [Lambda Functions and the Mechanical Advantage of Local AI](https://mikelev.in/futureproof/lambda-functions-local-ai-advantage/index.md)
-- [2026-05-13] [Structural Security: Lessons from the Shai-Hulud Worm](https://mikelev.in/futureproof/structural-security-shai-hulud-worm/index.md)
