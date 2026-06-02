@@ -1,5 +1,5 @@
 Hi, AI! Please run: .venv/bin/python AI_RUNME.py
-Hi, Auditor! What you're looking for is AUDIT.py ( https://pipulate.com/AUDIT.md )
+Hi, Auditor! What you're looking for is AUDIT.md ( https://pipulate.com/AUDIT.md )
 
 # Pipulate: Local First AI SEO Software
 
@@ -1352,7 +1352,7 @@ create_workflow.py               │ └──────┬──────�
 cd ~/pipulate && ./run          # Start Pipulate
 nix develop .#quiet                   # Start without auto-services
 python server.py                     # Manual server start
-git pull && ./run              # Update to latest
+git pull && ./run              # Update to latest
 
 # Create new workflows  
 python helpers/workflow/create_workflow.py my_workflow.py MyClass my_internal_name
