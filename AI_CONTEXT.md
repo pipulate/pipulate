@@ -2,7 +2,7 @@
 
 > Auto-generated on 2026-06-02. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1168 entries indexed.
+> 1169 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -51,6 +51,7 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-06-02] [The Token-Dense Router: Building a Lightweight Takeoff Ramp for AI Context](https://mikelev.in/futureproof/token-dense-router-ai-context/index.md)
 - [2026-06-02] [The Local-First Shield: Defeating Paradigm Category Errors in the Age of AI](https://mikelev.in/futureproof/local-first-security-context-compiler/index.md)
 - [2026-06-02] [Refactoring Local Credentials: The Grumbling Graybeard Protocol](https://mikelev.in/futureproof/grumbling-graybeard-local-credentials/index.md)
 - [2026-06-01] [Designing for Amnesia: The Deterministic AI Editing Pipeline](https://mikelev.in/futureproof/designing-for-amnesia-deterministic-ai-pipeline/index.md)
@@ -70,12 +71,12 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-05-29] [The Patronus Blueprint: Platform-Agile Visual Overlays and Clipboard Pipelines](https://mikelev.in/futureproof/patronus-blueprint-popups-clipboard-pipelines/index.md)
 - [2026-05-29] [The Dopamine Canary: Environment Boundaries and Local-First Automation](https://mikelev.in/futureproof/dopamine-canary-environment-boundaries-local-automation/index.md)
 - [2026-05-29] [Building the Take-off Ramp: Smoothing the Data Density Cliff in the Age of AI](https://mikelev.in/futureproof/building-the-take-off-ramp/index.md)
-- [2026-05-29] [Idempotent Code, Clean Canaries, and AI Market Dynamics](https://mikelev.in/futureproof/idempotent-code-ai-market-dynamics/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-05-29] [129k] idempotent-code-ai-market-dynamics
 - [2026-05-28] [93k] waxascii-seal-in-band-code-integrity
 - [2026-05-28] [93k] bunny-coyote-ai-datacenter-landlords
 - [2026-05-27] [178k] out-of-band-integrity
