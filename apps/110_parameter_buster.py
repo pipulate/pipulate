@@ -1774,13 +1774,10 @@ class ParameterBuster:
             (True, None) if found, (False, None) if not found, or (False, error_message) on error.
         """
         try:
-            if not os.path.exists(TOKEN_FILE):
-                return (False, f"Token file '{TOKEN_FILE}' not found.")
-            with open(TOKEN_FILE) as f:
-                content = f.read().strip()
-                api_key = content.split('\n')[0].strip()
-                if not api_key:
-                    return (False, f"Token file '{TOKEN_FILE}' is empty.")
+            from config import get_botify_token
+            api_key = get_botify_token()
+            if not api_key:
+                return (False, 'Botify API token not found. Please configure it via the Configuration workflow.')
         except Exception as e:
             return (False, f'Error loading API key: {e}')
         if not org_slug or not project_slug:
