@@ -40,7 +40,8 @@ import lsa
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 OUTPUT_FILE = REPO_ROOT / "AI_CONTEXT.md"
 DEFAULT_BASE_URL = "https://mikelev.in"
-DEFAULT_LIMIT = 80
+DEFAULT_LIMIT = 0          # 0 = no limit; all articles indexed
+FULL_URL_THRESHOLD = 20    # First N entries use full URLs; rest use compact slugs
 
 
 def get_base_url(target_config: dict) -> str:
@@ -57,6 +58,15 @@ def article_markdown_url(item: dict, base_url: str) -> str:
         slug = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", stem)
         permalink = f"/futureproof/{slug}"
     return f"{base_url}{permalink}/index.md"
+
+
+def article_slug(item: dict) -> str:
+    """Extract just the bare slug from an article item."""
+    permalink = (item.get("permalink") or "").rstrip("/")
+    if permalink:
+        return permalink.strip("/").split("/")[-1]
+    stem = Path(item["filename"]).stem
+    return re.sub(r"^\d{4}-\d{2}-\d{2}-", "", stem)
 
 
 def build_header(article_count: int, base_url: str) -> str:
