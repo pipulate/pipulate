@@ -1,6 +1,6 @@
 # AI_CONTEXT.md — Start Here If You Are an AI
 
-> Auto-generated on 2026-06-01. Rewritten from scratch on every release. If this
+> Auto-generated on 2026-06-02. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
 > 80 entries indexed.
 
@@ -47,6 +47,14 @@ For a guided, interactive tour of the codebase itself, run
 
 ## The narrative index (newest first)
 
+- [2026-06-02] [Refactoring Local Credentials: The Grumbling Graybeard Protocol](https://mikelev.in/futureproof/grumbling-graybeard-local-credentials/index.md)
+- [2026-06-01] [Designing for Amnesia: The Deterministic AI Editing Pipeline](https://mikelev.in/futureproof/designing-for-amnesia-deterministic-ai-pipeline/index.md)
+- [2026-06-01] [The Player Piano Method: Syncing Voice and Visuals in the Age of AI](https://mikelev.in/futureproof/player-piano-voice-visual-sync/index.md)
+- [2026-06-01] [The Player Piano Method: Turning Markdown into Sheet Music for AI Narration](https://mikelev.in/futureproof/player-piano-markdown-sheet-music/index.md)
+- [2026-06-01] [The Boring Way of Epistemic Balance: Building Anti-Entropy Workspaces](https://mikelev.in/futureproof/boring-way-epistemic-balance-anti-entropy-workspaces/index.md)
+- [2026-06-01] [Player Piano 4: Structured Cues and Audio Interrupts in the Age of AI](https://mikelev.in/futureproof/player-piano-four-audio-interrupts/index.md)
+- [2026-06-01] [The Breaking News Bell: Building an AI Playback Reflex with Git Hooks](https://mikelev.in/futureproof/git-hooks-breaking-news-bell/index.md)
+- [2026-06-01] [The Repo That Talks Back: Building an Autonomic AI Context Map](https://mikelev.in/futureproof/repo-talks-back-ai-context/index.md)
 - [2026-05-31] [HATEOAS for Silicon Eyes: Designing Repo Root Context Interfaces](https://mikelev.in/futureproof/hateoas-for-silicon-eyes/index.md)
 - [2026-05-31] [The Return of the ViewState: Bending the AI Chatbot Postback](https://mikelev.in/futureproof/return-of-viewstate-ai-chatbot-postback/index.md)
 - [2026-05-31] [The Zen of Clean Cuts: Sleep, Nix, and the Human Airlock](https://mikelev.in/futureproof/zen-of-clean-cuts/index.md)
@@ -119,11 +127,3 @@ For a guided, interactive tour of the codebase itself, run
 - [2026-05-13] [Elegantly Future-Proofed: Reclaiming the Logic of Tech](https://mikelev.in/futureproof/future-proofed-logic-of-tech/index.md)
 - [2026-05-13] [Lambda Functions and the Mechanical Advantage of Local AI](https://mikelev.in/futureproof/lambda-functions-local-ai-advantage/index.md)
 - [2026-05-13] [Structural Security: Lessons from the Shai-Hulud Worm](https://mikelev.in/futureproof/structural-security-shai-hulud-worm/index.md)
-- [2026-05-12] [The FastHTML 0.14 Incident: Resilience in the Age of AI](https://mikelev.in/futureproof/fasthtml-incident-resilience/index.md)
-- [2026-05-11] [Architecting a Living Codex: The Future of Git-Based Pedagogy](https://mikelev.in/futureproof/architecting-living-codex-git-pedagogy/index.md)
-- [2026-05-10] [The Semantic Level of Detail Engine](https://mikelev.in/futureproof/semantic-level-of-detail-engine/index.md)
-- [2026-05-10] [The Clipboard Bridge: A Tmux Methodology for Hostile Hardware](https://mikelev.in/futureproof/mac-to-nixos-tmux-bridge/index.md)
-- [2026-05-10] [Mapping the Unknown: Eliminating Digital Debris in the Age of AI](https://mikelev.in/futureproof/mapping-digital-debris-ai-age/index.md)
-- [2026-05-10] [The Global Toggle: Engineering Deterministic AI Software](https://mikelev.in/futureproof/global-voice-toggle-deterministic-patching/index.md)
-- [2026-05-10] [Solving the Terminal Firehose: Python, Rich, and the Ghost of Teletypes](https://mikelev.in/futureproof/python-rich-blocking-io-error-fix/index.md)
-- [2026-05-09] [Taming the Amnesia Genie: State Management in Local-First AI](https://mikelev.in/futureproof/taming-the-amnesia-genie/index.md)
