@@ -3730,7 +3730,7 @@ async def test_botify_actual_connectivity() -> dict:
             return {
                 "success": False,
                 "error": "Botify API token not available",
-                "suggestion": "Configure Botify API token in helpers/botify/botify_token.txt"
+                "suggestion": "Configure BOTIFY_API_TOKEN in .env via the Configuration workflow"
             }
 
         # Test actual API call
