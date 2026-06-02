@@ -79,7 +79,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # I. DEBUGGING CRASH COURSE - Server Cookies & Radical Transparency
 # ============================================================================
 
-# foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
+foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
 
 # README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 
@@ -128,7 +128,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 #  > It might take awhile, but the context-compile will do the really hard part.
 #  > The AI has spied an accelerant ride. Ask it to throw dart (type `next`).
 
-# prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!!
+prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!!
 
 # IF YOU ONLY edit it one set of things besides the 3 "always" `"!" * 3` files, this clump of actuators is an excellent choice!
 
@@ -138,18 +138,18 @@ apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider
 # scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 # scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
 
+tools/mcp_tools.py
 
 # AD HOC
-config.py
-tools/mcp_tools.py
-pipulate/__init__.py
-pipulate/pipulate.py
-pipulate/core.py
+# config.py
+# tools/mcp_tools.py
+# pipulate/__init__.py
+# pipulate/pipulate.py
+# pipulate/core.py
 
-# apps/100_connect_with_botify.py
-apps/110_parameter_buster.py
+# apps/110_parameter_buster.py
 # apps/120_link_graph.py
-imports/botify/true_schema_discoverer.py
+# imports/botify/true_schema_discoverer.py
 # imports/botify_code_generation.py
 
 # patch           #  <-- I know what you did last patch
@@ -175,7 +175,7 @@ imports/botify/true_schema_discoverer.py
 # ============================================================================
 
 # THE ROLLING PIN
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 # AI_CONTEXT.md
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
@@ -190,10 +190,10 @@ imports/botify/true_schema_discoverer.py
 # assets/player-piano.js                            # <-- Player piano actuator #2 in Pipulate. How AIs can take control of workflows.
 # Notebooks/imports/__init__.py                     # <-- Empty file, just to show you imports relative to Notebooks are 1st-class path members. Important!
 
-assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
-assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
-assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
-apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
+# assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
+# assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
+# assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
+# apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
 
 # ============================================================================
 # VI. WET WORKFLOWS / DRY CRUD - The what's best for AIs and Humans compromise
