@@ -142,10 +142,16 @@ def build_ledger(target_config: dict, rich: bool, limit) -> tuple:
         metadata = metadata[:limit]
 
     lines = []
-    for item in metadata:
-        url = article_markdown_url(item, base_url)
+    for idx, item in enumerate(metadata):
         title = item.get("title", "Untitled")
-        line = f"- [{item['date']}] [{title}]({url})"
+        if idx < FULL_URL_THRESHOLD:
+            url = article_markdown_url(item, base_url)
+            line = f"- [{item['date']}] [{title}]({url})"
+        else:
+            if idx == FULL_URL_THRESHOLD:
+                lines.append(f"\n## Compact slug index — pattern: {base_url}/futureproof/{{slug}}/index.md\n")
+            slug = article_slug(item)
+            line = f"- [{item['date']}] {slug}: {title}"
         if rich and item.get("shard_kw"):
             line += f" — {item['shard_kw']}"
         lines.append(line)
