@@ -12,8 +12,8 @@ Usage:
     pipulate
 """
 
-__version__ = "1.94"
-__version_description__ = "Context Trail"
+__version__ = "1.95"
+__version_description__ = "Context Takeoff Ramp"
 __email__ = "pipulate@gmail.com"
 __description__ = "A Notebook-inspired Hand-cranked Agentic Framework" 
 
