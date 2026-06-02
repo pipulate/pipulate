@@ -1795,12 +1795,10 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
         return all_slugs
 
     def read_api_token(self):
-        """Read API token from the token file."""
+        """Read API token from the environment (.env vault)."""
         try:
-            if not os.path.exists(TOKEN_FILE):
-                return None
-            with open(TOKEN_FILE) as f:
-                return f.read().strip().split('\n')[0].strip()
+            from config import get_botify_token
+            return get_botify_token()
         except Exception as e:
             logger.error(f'Error reading API token: {e}')
             return None
