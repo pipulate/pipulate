@@ -1873,14 +1873,10 @@ class ParameterBuster:
         return all_slugs
 
     def read_api_token(self):
-        """Read the Botify API token from the token file."""
+        """Read the Botify API token from the environment (.env vault)."""
         try:
-            if not os.path.exists(TOKEN_FILE):
-                return None
-            with open(TOKEN_FILE) as f:
-                content = f.read().strip()
-                token = content.split('\n')[0].strip()
-            return token
+            from config import get_botify_token
+            return get_botify_token()
         except Exception:
             return None
 
