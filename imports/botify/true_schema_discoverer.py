@@ -262,7 +262,8 @@ async def main():
     """Main function to run true schema discovery."""
     try:
         # Load configuration
-        api_key = open(TOKEN_FILE).read().strip().splitlines()[0]
+        from config import get_botify_token
+        api_key = get_botify_token()
         with open(CONFIG_FILE) as f:
             config = json.load(f)
         org, project, analysis = config['org'], config['project'], config['analysis']
