@@ -81,7 +81,13 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
 
-# README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
+README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
+AUDIT.md
+
+/home/mike/repos/Pipulate.com/CNAME
+/home/mike/repos/Pipulate.com/_config.yml
+/home/mike/repos/Pipulate.com/_layouts/default.html
+/home/mike/repos/Pipulate.com/index.md
 
 __init__.py       #  <-- Master versioning
 release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
@@ -219,9 +225,9 @@ imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art lan
 # ============================================================================
 
 # WE'VE GOT A LOT OF THESE AND I HAVE TO BUILD THIS OUT / AD HOC-ISH
-/home/mike/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
-/home/mike/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
-/home/mike/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
+# /home/mike/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
+# /home/mike/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
+# /home/mike/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
 # remotes/honeybot/queries/trapdoor_ips.sql         # <-- The SQL to see who is hydrating the DOM. The example of HOW we use it from here in the router below.
 # ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
@@ -688,7 +694,6 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # .jupyter/lab/user-settings/@jupyterlab/apputils-extension/themes.json  # [9 tokens | 29 bytes]
 # .jupyter/lab/user-settings/@jupyterlab/codemirror-extension/plugin.json  # [15 tokens | 45 bytes]
 # .jupyter/lab/user-settings/@jupyterlab/notebook-extension/tracker.json  # [21 tokens | 56 bytes]
-# AUDIT.md  # [280 tokens | 1,372 bytes]
 # Notebooks/Advanced_Notebooks/__init__.py  # [0 tokens | 0 bytes]
 # Notebooks/__init__.py  # [0 tokens | 0 bytes]
 # apps/130_gap_analysis.py  # [9,625 tokens | 48,280 bytes]
