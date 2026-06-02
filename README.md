@@ -1,4 +1,5 @@
 Hi, AI! Please run: .venv/bin/python AI_RUNME.py
+Hi, Auditor! What you're looking for is AUDIT.py ( https://pipulate.com/AUDIT.md )
 
 # Pipulate: Local First AI SEO Software
 

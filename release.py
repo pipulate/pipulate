@@ -1072,6 +1072,13 @@ def main():
     else:
         print("\n⏭️  Skipping install.sh synchronization (--skip-install-sh-sync)")
         install_sh_success = False
+
+    # Step 3.5: AUDIT.md Synchronization
+    if not args.skip_audit_sync:
+        audit_md_success = sync_audit_md()
+    else:
+        print("\n⏭️  Skipping AUDIT.md synchronization (--skip-audit-sync)")
+        audit_md_success = False
     
     # Step 4: Breadcrumb Trail Synchronization
     if not args.skip_breadcrumb_sync:
