@@ -217,7 +217,9 @@ FIGURATE_LEDGER: dict = {
     "player_piano": 2962137920,
     "clipboard": 2324709982,
     "bunny_trail": 615479347,
-    "ai_stack_combo": 1121129699,  # CRC32 after _expand_color_bits_ai() + .strip()
+    "ai_stack_combo": 1121129699,  
+    "deployment_context": 1326657684,
+    # CRC32 after _expand_color_bits_ai() + .strip()
     # === FIGURATE_LEDGER_EXTRUDE_BOTTOM ===
     # Add new artwork CRC32 entries immediately above this line
 }
