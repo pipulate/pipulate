@@ -330,6 +330,28 @@ def _figurate_ai_stack_combo():
     return human, ai_art
 
 
+def _figurate_deployment_context():
+    """Render auditor's assumed SaaS threat model vs. actual local-first single-tenant reality.
+
+    This is a self-documenting rebuttal for security reviews and radical transparency.
+    """
+    art = r"""
+ ┌─────────────────────────────┬──────────────────────────────┐
+ │  AUDITOR'S ASSUMED MODEL    │   ACTUAL DEPLOYMENT MODEL    │
+ ├─────────────────────────────┼──────────────────────────────┤
+ │  ☁️  Multi-tenant SaaS      │  🖥️  Single-tenant desktop   │
+ │  👥  Shared infrastructure  │  👤  One operator, one box   │
+ │  🌐  Public network edge    │  🔒  localhost:5001          │
+ │  🔑  Secrets manager req.   │  📄  git-ignored .env vault  │
+ │  ❌  "CRITICAL: plaintext"  │  ✅  By design, on my disk   │
+ └─────────────────────────────┴──────────────────────────────┘
+    """
+    ai_art = _expand_color_bits_ai(art).strip()
+    human_art = _expand_color_bits_human(art).strip()
+    human = Panel(human_art, title="🖥️ Deployment Context — Auditor Model vs Local Reality", border_style="white")
+    return human, ai_art
+
+
 # === FIGURATE_RENDER_EXTRUDE_BOTTOM ===
 # Add new _figurate_* render functions immediately above this line
 
