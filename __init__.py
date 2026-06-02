@@ -12,7 +12,7 @@ Usage:
     pipulate
 """
 
-__version__ = "1.93"
+__version__ = "1.94"
 __version_description__ = "Context Trail"
 __email__ = "pipulate@gmail.com"
 __description__ = "A Notebook-inspired Hand-cranked Agentic Framework" 
