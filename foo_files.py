@@ -308,7 +308,6 @@ AI_CONTEXT.md
 # IV. BOTIFY STUFF
 # ============================================================================
 
-# apps/100_connect_with_botify.py    # <-- Needs to go. Replaced by dotenv.
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
