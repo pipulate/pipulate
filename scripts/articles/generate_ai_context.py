@@ -144,8 +144,11 @@ def build_ledger(target_config: dict, rich: bool, limit) -> tuple:
     lines = []
     for idx, item in enumerate(metadata):
         title = item.get("title", "Untitled")
-        # Rough token estimate: bytes / 4 (good enough for a size hint)
-        byte_size = item.get("bytes", 0)
+        # File size via stat — cheap metadata syscall, no full read needed
+        try:
+            byte_size = Path(item["path"]).stat().st_size if item.get("path") else 0
+        except OSError:
+            byte_size = 0
         size_k = f"{max(1, round(byte_size / 1000))}k" if byte_size else "?"
         if idx < FULL_URL_THRESHOLD:
             url = article_markdown_url(item, base_url)
