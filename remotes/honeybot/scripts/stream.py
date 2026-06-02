@@ -330,8 +330,7 @@ def perform_show(script):
             # the completion bell rings — so the TTS doesn't thrash through the deploy.
             if check_standby():
                 narrator.interrupt()  # cut current audio + flush the backlog
-                narrator.say("Receiving updates. Please stand by.")
-                narrator.say("There's nothing to see here. Please disperse.")
+                narrator.say("Receiving updates. Things will go quiet for a few moments. Then I'll start reading again. Please stand by.")
                 try:
                     subprocess.run(["pkill", "firefox"], check=False)
                 except Exception:
