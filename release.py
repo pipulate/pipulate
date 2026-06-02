@@ -459,6 +459,62 @@ def sync_install_sh():
         print(f"⚠️  Install.sh sync failed: {e}")
         return False
 
+def sync_audit_md():
+    """Copies AUDIT.md to Pipulate.com root and commits if changed."""
+    print("\n🔄 Step 3.5: Synchronizing AUDIT.md to Pipulate.com...")
+    source_path = PIPULATE_ROOT / "AUDIT.md"
+    dest_path = PIPULATE_COM_ROOT / "AUDIT.md"
+
+    if not PIPULATE_COM_ROOT.exists():
+        print(f"⚠️  Warning: Pipulate.com repo not found at {PIPULATE_COM_ROOT}. Skipping AUDIT.md sync.")
+        return False
+
+    if not source_path.exists():
+        print(f"⚠️  Warning: Source AUDIT.md not found at {source_path}. Skipping AUDIT.md sync.")
+        return False
+
+    # Copy the file
+    dest_path.write_text(source_path.read_text())
+    print(f"📄 Copied {source_path.name} to {dest_path}")
+
+    # Check if there are changes in the Pipulate.com repo
+    try:
+        status_result = run_command(['git', 'status', '--porcelain', str(dest_path.name)], cwd=PIPULATE_COM_ROOT, capture=True)
+        if status_result.stdout.strip():
+            print(f"📦 Changes detected in {dest_path.name}. Committing and pushing...")
+            run_command(['git', 'add', str(dest_path.name)], cwd=PIPULATE_COM_ROOT)
+            commit_msg = f"chore: Update AUDIT.md from pipulate repo v{get_current_version()}"
+            run_command(['git', 'commit', '-m', commit_msg], cwd=PIPULATE_COM_ROOT)
+
+            # Handle upstream branch setup for Pipulate.com repo
+            try:
+                branch_result = run_command(['git', 'branch', '--show-current'], cwd=PIPULATE_COM_ROOT, capture=True)
+                current_branch = branch_result.stdout.strip()
+
+                upstream_result = run_command(['git', 'rev-parse', '--abbrev-ref', f'{current_branch}@{{upstream}}'],
+                                            cwd=PIPULATE_COM_ROOT, capture=True, check=False)
+
+                if upstream_result.returncode != 0:
+                    print(f"🔗 No upstream configured for Pipulate.com branch '{current_branch}', setting upstream...")
+                    run_command(['git', 'push', '--set-upstream', 'origin', current_branch], cwd=PIPULATE_COM_ROOT)
+                    print(f"✅ Pushed AUDIT.md update and set upstream: origin/{current_branch}")
+                else:
+                    run_command(['git', 'push'], cwd=PIPULATE_COM_ROOT)
+                    print("✅ Pushed AUDIT.md update to Pipulate.com repo.")
+
+            except Exception as e:
+                print(f"⚠️  Git push to Pipulate.com encountered an issue: {e}")
+                print("💡 Pipulate.com repo may need manual git remote configuration")
+                return False
+
+            return True
+        else:
+            print("✅ AUDIT.md is already up-to-date in Pipulate.com repo.")
+            return False
+    except Exception as e:
+        print(f"⚠️  AUDIT.md sync failed: {e}")
+        return False
+
 def sync_breadcrumb_trail():
     """Syncs BREADCRUMB_TRAIL_DVCS.mdc to workspace root as DONT_WRITE_HERE.mdc with Cursor frontmatter."""
     print("\n🍞 Step 4: Synchronizing breadcrumb trail to workspace root...")
