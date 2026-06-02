@@ -83,6 +83,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 AUDIT.md
+AI_CONTEXT.md
 
 /home/mike/repos/Pipulate.com/CNAME
 /home/mike/repos/Pipulate.com/_config.yml
