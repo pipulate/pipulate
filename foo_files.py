@@ -613,7 +613,6 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # --- PHASE 0: Map Integrity & Calibration ---
 # Goal: Eliminate trust leaks in the context compiler itself.
 # - [ ] Paintbox Classification: Move highest-value uncategorized files into active chapters or mark explicitly dormant.
-# - [ ] Topological Ghost Fixes: Resolve broken references (e.g. apps/100_connect_with_botify.py).
 # - [ ] Holographic Shard Hygiene: Report & purge orphaned JSON shards in `_posts/_context/`.
 # - [ ] TODO Staleness Audit: Mark items as planned/partial/done/obsolete.
 # - [~] Ruff Confirmation: Ensure Ruff is primary; keep Pylint only for pyreverse/UML.
