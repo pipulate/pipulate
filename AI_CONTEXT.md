@@ -74,1151 +74,1153 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
-- [2026-05-28] waxascii-seal-in-band-code-integrity: The Waxascii Seal: In-Band Code Integrity in the Age of AI
-- [2026-05-28] bunny-coyote-ai-datacenter-landlords: The Bunny and the Coyote: How Open Efficiency Breaks the Cloud Landlord Monopoly
-- [2026-05-27] out-of-band-integrity: Out-of-Band Integrity: Local Git, Nix, and the Player Piano Protocol
-- [2026-05-27] wax-on-wax-off-waxascii: Wax on, Wax off, Waxascii: Context Under Source Control
-- [2026-05-27] waxascii-preventing-generative-drift: Waxascii: Protecting Code Integrity from Generative Drift
-- [2026-05-26] waxascii-seal-mtime-caching-ouroboros: The Waxascii Seal: Invariant Caching and the Ouroboros of Local AI Tooling
-- [2026-05-26] desert-kite-cybernetic-prompting: The Desert Kite: Prompting Beyond the Agreeable Machine
-- [2026-05-26] society-of-the-stack: The Society of the Stack: Engineering Beyond the Monolith in the Age of AI
-- [2026-05-26] building-landing-gear-multi-platform-tooling: Building the Landing Gear: Multi-Platform Tooling and the Repair Corollary
-- [2026-05-25] acetate-overlay-git-negative-space: The Acetate Overlay: Engineering Git Negative Space for Zero-Glue Workflows
-- [2026-05-25] cascading-ascii-art-local-ai-workspace: Cascading ASCII Art and Environmental Diagnostics in Local-First AI Workspaces
-- [2026-05-24] ascii-integrity-software-drift: Ensuring Visual and Semantic Integrity with ASCII Hashing
-- [2026-05-24] wax-seals-and-player-pianos: Wax Seals and Player Pianos: Securing Visual Integrity in the Age of AI
-- [2026-05-24] wax-seal-untokenized-checksums-ai: The Wax Seal of the Untokenized: Why Checksums Matter in the Age of AI
-- [2026-05-23] friction-of-execution-flat-protocols: The Friction of Execution and the Power of Flat Protocols
-- [2026-05-23] two-player-pianos-automation: The Two Player Pianos of Automation: Text as the Durable Interface
-- [2026-05-23] clipboard-control-bus-transactional-ai-workflows: The Clipboard as a Control Bus: Transactional AI Workflows and the ASCII Art Boundary
-- [2026-05-22] air-gapped-developer-cockpit: The Air-Gapped Developer's Cockpit: Designing Clean Context Windows
-- [2026-05-22] tale-of-two-alans-turing-church-local-ai: The Tale of Two Alans: Turing, Church, and the Local AI Blueprint
-- [2026-05-22] spacing-trap-ai-ascii-art: The Spacing Trap: Why AI Fails at ASCII Art and How to Fix It
-- [2026-05-21] vim-transposition-human-ai-patchmaker: Vim Transpositions and the Human-Cranked AI Patchmaker
-- [2026-05-21] breaking-ai-inception-document-architecture: Breaking AI Inception with Document Architecture
-- [2026-05-21] deterministic-momentum-engine-clutch: The Hand-Cranked Continuity Machine: Turning Vibe Coding into Deterministic Software Operations
-- [2026-05-21] engineering-momentum-loop: Engineering the Momentum Loop: Installing the Next Action Reflex
-- [2026-05-21] routing-invariant-prompt-architecture: Breaking Prompt Inception: Why Large Contexts Need Routing Invariants
-- [2026-05-20] clipboard-computational-synapse: The Clipboard as a Computational Synapse
-- [2026-05-20] software-backpropagation-git-rollbacks: Backpropagation with Soot Under Its Fingernails: Learning from Code Rollbacks
-- [2026-05-20] autonomic-memory-actuator: The Autonomic Memory Actuator: Building a High-Speed, Anti-Amnesia Workspace
-- [2026-05-19] liveness-coupled-agency-browser-kill-switch: Liveness-Coupled Agency: The Browser Tab as a Kill Switch
-- [2026-05-19] unix-philosophy-nix-noise-reduction: Unix Philosophy in the Nix Age: Noise Reduction as a Feature
-- [2026-05-19] reproducible-cockpit-nixos-gnome: The Forever Machine: Rebuilding Reality from the GNOME Desktop Up
-- [2026-05-19] tiling-terminals-x11-alacritty: Why Tiling Terminals Fail on X11 (And How to Fix It)
-- [2026-05-19] witnessed-machine-stateless-ai-executive-function: The Witnessed Machine: Bridging Stateless AI and Human Executive Function
-- [2026-05-19] ergonomics-of-oversight-ai-trust-rituals: The Ergonomics of Oversight: Building Trust through 1,114 AI-Witnessed Commits
-- [2026-05-18] context-window-build-artifact: The Context Window as a Managed Build Artifact
-- [2026-05-18] inode-strategy-ai-context-management: The Inode Strategy: High-Leverage AI Context Management
-- [2026-05-18] swappable-ai-strategy: The Swappable AI Strategy: Future-Proofing Your Cognition
-- [2026-05-17] riding-the-sandworm-vibe-coding: Riding the Sandworm: Why Vibe-Coding is Technical Debt
-- [2026-05-17] self-healing-code-terminal: AI-Driven Self-Healing in the Terminal
-- [2026-05-17] tokenizer-grain-search-replace-way: Working with the Tokenizer Grain: The Search-Replace Way
-- [2026-05-17] clipboard-air-gap-network-diode: The Clipboard Air Gap and the 60Hz Network Diode
-- [2026-05-17] escape-postback-deterministic-ai-workflows: Escape the Postback: Building Deterministic AI Workflows
-- [2026-05-17] levinux-vs-levinix-distinction: Levinux vs. Levinix: The Great Vowel Shift in Reproducible Tech
-- [2026-05-16] migrating-to-ruff-ai-patching: Migrating to Ruff: A Case Study in AI-Powered Patching and the ELTGD Way
-- [2026-05-16] beyond-the-diff-search-replace-protocol: Beyond the Diff: Engineering a Deterministic AI Coding Actuator
-- [2026-05-16] beyond-the-diff-search-replace: Beyond the Diff: Why SEARCH/REPLACE is the AI Coding Blueprint
-- [2026-05-15] solving-ai-indentation-amnesia: Solving AI Indentation Amnesia: The Outdent-to-Zero Breakthrough
-- [2026-05-15] deterministic-ai-coding-actuator: The Syntax Airlock: Building a Deterministic AI Coding Actuator
-- [2026-05-15] cathedral-of-one-prompt-fu-forever-machine: The Cathedral of One: Forging a Forever Machine with Prompt Fu
-- [2026-05-14] geometry-of-text-neovim-virtual-edit: The Geometry of Text: NeoVim, Virtual Edit, and the AI Grid
-- [2026-05-14] gravity-of-markdown-deterministic-ai-editor: The Gravity of Markdown: Building a Deterministic AI Code Editor
-- [2026-05-14] tokenizer-physics-asymmetric-compiler: Tokenizer Physics and the Asymmetric Compiler
-- [2026-05-14] safe-space-messy-code-ai-time: Engineering a Safe Space for Messy Code in AI-Time
-- [2026-05-14] high-leverage-chisel-strike-quieting-monolith: The High-Leverage Chisel Strike: Quieting the Monolith
-- [2026-05-14] context-window-painting-ruff-transplant: Context Window Painting: The Ruff Linter Transplant and the CRISPR Indexing Methodology
-- [2026-05-13] canning-intuition-ai-era: Canning Intuition: The Screaming Frog of the AI Era
-- [2026-05-13] desert-kite-wet-workflows-ai: The Desert Kite: Funneling AI through WET Workflows
-- [2026-05-13] autognomeic-digital-workspace: Building the AutoGNOMEic Digital Workspace: Portability and Cognitive Reflexes
-- [2026-05-13] future-proofed-logic-of-tech: Elegantly Future-Proofed: Reclaiming the Logic of Tech
-- [2026-05-13] lambda-functions-local-ai-advantage: Lambda Functions and the Mechanical Advantage of Local AI
-- [2026-05-13] structural-security-shai-hulud-worm: Structural Security: Lessons from the Shai-Hulud Worm
-- [2026-05-12] fasthtml-incident-resilience: The FastHTML 0.14 Incident: Resilience in the Age of AI
-- [2026-05-11] architecting-living-codex-git-pedagogy: Architecting a Living Codex: The Future of Git-Based Pedagogy
-- [2026-05-10] semantic-level-of-detail-engine: The Semantic Level of Detail Engine
-- [2026-05-10] mac-to-nixos-tmux-bridge: The Clipboard Bridge: A Tmux Methodology for Hostile Hardware
-- [2026-05-10] mapping-digital-debris-ai-age: Mapping the Unknown: Eliminating Digital Debris in the Age of AI
-- [2026-05-10] global-voice-toggle-deterministic-patching: The Global Toggle: Engineering Deterministic AI Software
-- [2026-05-10] python-rich-blocking-io-error-fix: Solving the Terminal Firehose: Python, Rich, and the Ghost of Teletypes
-- [2026-05-09] taming-the-amnesia-genie: Taming the Amnesia Genie: State Management in Local-First AI
-- [2026-05-09] dojo-logic-human-ai-calibration: The Dojo Logic: Calibrating the Alpha of Human-AI Collaboration
-- [2026-05-09] chisel-strike-architecture: The Chisel-Strike Architecture: Thinking for Yourself in the Age of AI
-- [2026-05-09] agentic-crossroads: The Agentic Crossroads: Choosing the Next Chisel-Strike
-- [2026-05-08] debugging-ghost-driver-audio-automation: Debugging the Ghost Driver: Multi-Persona Audio and Deterministic UI Automation
-- [2026-05-08] agplv3-shield-margaret-knight-lesson: The AGPLv3 Shield and the Margaret Knight Lesson
-- [2026-05-07] syncing-the-orchestra-deterministic-automation: Syncing the Orchestra: Mastering Deterministic AI Automation
-- [2026-05-07] anti-fragile-git-ai-workflow: Architecting an Anti-Fragile Git Workflow with Local LLMs
-- [2026-05-07] autonomous-git-archivist: The Autonomous Archivist: Automating Git History with Local AI
-- [2026-05-07] unix-pipeline-ollama-neovim: The Unix Pipeline Reimagined: Embedding Ollama into Neovim
-- [2026-05-07] synaptic-clipboard-automation: The Synaptic Clipboard: Reducing Friction in the Age of AI
-- [2026-05-07] information-theory-cognitive-defense: Information Theory and the Art of Cognitive Defense
-- [2026-05-06] notebook-to-web-apps: From Notebook Chaos to Automated Web Apps
-- [2026-05-06] infinite-context-pipeline-narrative-code: The Infinite Context Pipeline: Narrative as Code
-- [2026-05-06] local-first-ai-macos-deployment: Engineering the Local-First AI Loop: A Survival Guide for macOS
-- [2026-05-05] explicit-state-matrix-deterministic-ai-workflows: The Explicit State Matrix: Eliminating the Ghost in the Machine
-- [2026-05-05] forever-machine-deterministic-ai-code-editing: The Forever Machine: Deterministic AI Code Editing
-- [2026-05-05] second-pour-engineering-determinism: The Second Pour: Engineering Determinism in the Age of AI
-- [2026-05-05] fixing-ghost-in-the-proxy: Fixing the Ghost in the Proxy: The Orchestrator's Way
-- [2026-05-04] deterministic-ai-workflows-alice-protocol: The Alice Protocol: Building Deterministic AI Workflows in Jupyter
-- [2026-05-04] sentinel-airlock-bridging-jupyter-fasthtml: The Sentinel Airlock: Bridging Jupyter and FastHTML
-- [2026-05-03] deterministic-ai-wet-philosophy: Deterministic AI: Building the Glass Engine and the WET Philosophy
-- [2026-05-03] hijacking-tty-terminal-experience: Hijacking the TTY for a Zero-Click Terminal Experience
-- [2026-05-03] building-the-forever-machine: Building the Forever Machine: Local-First Resilience and the Cathedral of One
-- [2026-05-02] bitnet-and-the-browser-metronome: The 1.58-Bit Revolution and the Return of the Mainframe
-- [2026-05-01] forever-machine-obsolescence-resistance: The Forever Machine: Building Obsolescence-Resistant Workflows
-- [2026-05-01] golden-path-local-first-ai: The Golden Path to Local-First AI
-- [2026-04-30] browser-as-ai-metronome: The Browser as an AI Metronome
-- [2026-04-30] data-on-disk-pointers-in-memory: Data on Disk, Pointers in Memory: The Architecture of Kernel Resilience
-- [2026-04-30] async-time-travel-paradox-sse-race-conditions: The Async Time-Travel Paradox: Solving SSE Race Conditions
-- [2026-04-30] dead-mans-switch-websocket-proxy: The Dead Man's Switch: Orchestrating Browser-Server Resilience
-- [2026-04-30] avoiding-the-fubar-cascade: Avoiding the Fubar Cascade: A Blueprint for Tactical Code Splices
-- [2026-04-29] ast-syntactic-splicing-workflow-automation: Syntactic Splicing: Moving from String Slicing to AST
-- [2026-04-29] architecture-of-recall-memory-systems: The Architecture of Recall: Engineering Memory in the Age of AI
-- [2026-04-29] mechanical-sympathy-deterministic-ai: The Mechanical Sympathy of Deterministic AI
-- [2026-04-29] myelinated-mastery-unix-way: Draining the Walled Garden: Myelinated Mastery and the Unix Way
-- [2026-04-28] forever-machine-deterministic-workflows: The Forever Machine: Deterministic Workflows and Non-Blocking AI
-- [2026-04-28] wet-methodology-ai-friendly-architecture: The WET Methodology: Why Deep OOP is Hostile to AI
-- [2026-04-27] sentinel-file-progressive-ui: The Sentinel File: Engineering a Progressive UI Reveal
-- [2026-04-27] deterministic-onboarding-airlock: The Deterministic Onboarding Airlock
-- [2026-04-25] rhythm-of-the-next-step: The Rhythm of the Next Step: Refactoring for Deterministic AI Workflows
-- [2026-04-24] architecture-forever-machine-state-config: The Architecture of a Forever Machine: Solving State and Configuration Drift
-- [2026-04-23] honeybot-server-log-streaming: Honeybot: Demystifying the Matrix of Live Server Logs
-- [2026-04-23] context-governor-payload-sizing: The Context Governor: Mastering the Art of Payload Sizing for AI
-- [2026-04-23] architecture-pause-pass-by-reference: The Architecture of the Pause: Moving to Pass-by-Reference
-- [2026-04-23] architecture-of-the-pause-ai-notebook-refactor: The Architecture of the Pause: Refactoring UI Flow in AI Notebooks
-- [2026-04-22] refining-entity-intelligence: Things Not Strings: Refining Entity Intelligence in the Age of AI
-- [2026-04-22] phantom-ui-mechanical-sympathy: The Phantom UI and the Case for Mechanical Sympathy
-- [2026-04-22] hydration-gap-methodology: The Hydration Gap Methodology: Engineering Technical SEO for AI
-- [2026-04-21] mastering-visual-state-ai-deliverables: Locking the Grid: Mastering Visual State in AI Deliverables
-- [2026-04-21] whale-hunting-predatory-pricing-ai: Whale Hunting and Predatory Pricing in the Age of AI
-- [2026-04-21] idempotent-notebook-zero-machine: The Idempotent Notebook: Zeroing the Machine in the Age of AI
-- [2026-04-19] lisp-repl-forever-machine: From LISP REPL to the Forever Machine
-- [2026-04-18] idempotent-ai-egress: The Idempotent AI Egress: Bridging Local Intelligence and Spreadsheet Deliverables
-- [2026-04-17] robust-etl-excel-automation: From Fragile Hacks to Robust ETL: Building the Onboarding Egress
-- [2026-04-17] symmetrical-lens-dom-audit: The Symmetrical Lens: Purifying the Web for AI Auditing
-- [2026-04-17] concurrency-amiga-deterministic-ai: Taming the Deadly Embrace: Concurrency, the Amiga, and the Age of AI
-- [2026-04-17] pachinko-prompt-workbench: The Pachinko Machine and the Prompt Workbench: Engineering LLM Optics
-- [2026-04-16] epistemological-dom-slicer: The Epistemological DOM Slicer: Turning Div Soup into Children's Books for AI
-- [2026-04-15] capturing-the-javascript-gap-dom-slicing: Capturing the JavaScript Gap: A Blueprint for DOM Slicing
-- [2026-04-15] cloud-ai-api-keys-vs-oauth-tokens: The Electric Bill vs. The Netflix Login: Architecting Cloud AI
-- [2026-04-15] personal-cognition-revolution-pandas-local-ai: The Personal Cognition Revolution: Bridging Pandas and Local AI
-- [2026-04-14] deterministic-magic-nix-ipywidgets: Deterministic Magic: Why Nix and IPyWidgets Redefine the Digital Workshop
-- [2026-04-14] homebrew-ai-jupyter-workbench: Homebrew AI: Reclaiming the Jupyter Workbench
-- [2026-04-13] forever-machine-muscle-memory: The Forever Machine: Reclaiming Muscle Memory from Cognitive Rent-Seekers
-- [2026-04-10] rigging-the-sail-of-intelligence: Rigging the Sail of Intelligence: Deterministic Pipelines and the Jacquard Loom
-- [2026-04-09] narrative-haptics-side-quest-pattern: Narrative Haptics: Building the Side-Quest Pattern into the Forever Machine
-- [2026-04-08] shell-game-intelligence-resilience: The Shell Game of Intelligence: Resilience in the Age of AI
-- [2026-04-08] llmectomy-universal-adapter-resilience: The LLMectomy: A Philosophy of AI Resilience
-- [2026-04-08] async-narration-metadata-minefield: Asynchronous Narration and the Metadata Minefield
-- [2026-04-07] hybrid-ai-routing-local-first-control: Hybrid AI Routing: Empowering Local-First Control
-- [2026-04-07] jupyter-notebooks-reimagined-ai-ready-onboarding-llm-optics: Jupyter Notebooks Reimagined: AI-Ready Onboarding with LLM Optics
-- [2026-04-07] pipulates-trojan-horse-ai-readiness-web-optics: Pipulate's Trojan Horse: Onboarding for AI Readiness & Verifiable Web Optics
-- [2026-04-07] hermetic-debugging-ai-now-moment: Hermetic Debugging: Gödel's Incompleteness, WET Code, and the AI's "Now Moment"
-- [2026-04-06] forever-machine-npvg-ai-control: Architecting the Forever Machine: The NPvg Way to Control AI Output
-- [2026-04-05] ai-content-extrusion-mastering-book-drafts: AI Content Extrusion: Mastering Book Drafts with Structured Blueprints
-- [2026-04-05] automated-book-forge-ai-content-control: The Automated Book Forge: Engineering AI Content with Precision Control
-- [2026-04-04] forever-machine-digital-independence-ai: The Forever Machine: Architecting Digital Independence in the Age of AI
-- [2026-04-04] strange-loop-forever-machine-governing-ai-distillation: The Strange Loop of the Forever Machine: Governing AI Distillation
-- [2026-04-04] the-golden-spike-automating-1000-articles-npvg: The Golden Spike: Automating 1,000 Articles with NPvg
-- [2026-04-04] conceptual-integrity-ai-content-distillation: Conceptual Integrity: Auditing AI-Driven Content Distillation
-- [2026-04-03] automated-book-decanting-ai-editing-pipeline: Automated Book Decanting: Building the AI-Driven Editing Pipeline
-- [2026-04-02] forging-forever-machine-ai-book-decanting: Forging the Forever Machine: A Blueprint for AI-Driven Book Decanting
-- [2026-04-01] forever-machine-blueprint-deterministic-ai-book-creation: The Forever Machine Blueprint: Orchestrating AI for Deterministic Book Creation
-- [2026-04-01] blueprint-uniqueness-agentic-web: A Blueprint for Uniqueness in the Agentic Web
-- [2026-03-31] automating-provenance-python-scalpel-machine-ready-content-archive: Automating Provenance: The Python Scalpel and the Machine-Ready Content Archive
-- [2026-03-31] the-makers-leap-ai-book-creation: The Maker's Leap: From Solo Craft to Orchestrated AI Book Creation
-- [2026-03-31] unmasking-agentic-web-ai-bots-shatter-seo-common-wisdom: Unmasking the Agentic Web: How AI Bots Shatter SEO Common Wisdom
-- [2026-03-31] topological-realism-ai-404-healing-trailing-slash: Topological Realism: AI-Driven 404 Healing & the Trailing Slash
-- [2026-03-30] pipulates-wet-procedural-memory-meets-ai-skill-md-standard: Pipulate's WET Procedural Memory Meets AI's `skill.md` Standard
-- [2026-03-30] the-invisible-handshake-http-content-negotiation-llmo: The Invisible Handshake: How HTTP Content Negotiation Powers LLM Optimization
-- [2026-03-30] the-living-book-futureproof-ai-skills: The Living Book: Orchestrating AI-Ready Knowledge for Future-Proof Skills
-- [2026-03-29] automating-technical-content-ai-driven-editing-blueprint: Automating Technical Content: A Cybernetic Blueprint for AI-Driven Editing
-- [2026-03-29] ai-fuzzy-matching-404-redirects: AI Fuzzy Matching for 404 Redirects: Building Resilient Web Topology with Python's Difflib
-- [2026-03-29] digital-homesteading-sql-ai-agent-telemetry-cybernetic-loop: Digital Homesteading: SQL Insights into the Agentic Web's Cybernetic Loop
-- [2026-03-29] the-audacious-bot-ai-agents-must-show-up-on-modern-web: The Audacious Bot: Why AI Agents Must 'Show Up' on the Modern Web
-- [2026-03-27] elevating-ai-powered-redirects-trailing-slash-enforcement-404-hygiene: Elevating AI-Powered Redirects: Trailing Slash Enforcement and 404 Hygiene
-- [2026-03-27] pipulate-local-first-deterministic-ai-workflows: Pipulate: Local-First Deterministic AI Workflows
-- [2026-03-26] forever-machine-ai-onboarding-api-key-security: Forging the Forever Machine: Proactive AI Onboarding and API Key Security
-- [2026-03-25] local-first-semantic-scraping-unveiling-javascript-gap: Local-First Semantic Scraping: Unveiling the JavaScript Gap
-- [2026-03-25] pipulate-state-driven-workflows: The Forever Machine: Pipulate's State-Driven Workflows Beyond Cloud Dependency
-- [2026-03-25] ai-native-ux-bonobo-transfer-wet-code-philosophy: Architecting AI-Native UX: The Bonobo Transfer and WET Code Philosophy
-- [2026-03-24] blitter-chip-ai-workflows: The Blitter Chip Era: Orchestrating AI Workflows with Core Sauce
-- [2026-03-24] art-of-deleting-code-building-resilient-ai-topological-parsing: The Art of Deleting Code: Building Resilient AI with Topological Parsing
-- [2026-03-23] semantic-compression-ai-context-optimization: Semantic Compression: Optimizing Code and Context for AI
-- [2026-03-23] instant-visual-feedback-ai-git-commits-neovim: Instant Visual Feedback for AI-Powered Git Commits in Neovim
-- [2026-03-22] trinary-collapse-bitnet-cpu-revival-pipulates-forever-machine-ai: The Trinary Collapse: BitNet, CPU Revival, and Pipulate's Forever Machine AI
-- [2026-03-21] bitnet-nix-pipulate-future-talking-local-ai: BitNet, Nix, and Pipulate: The Future of Talking Local AI
-- [2026-03-20] building-the-invisible-viewport-pipulates-ai-native-web-blueprint: Building the Invisible Viewport: Pipulate's AI-Native Web Blueprint
-- [2026-03-20] textual-triptych-hud-terminal-real-estate-telemetry: Textual Triptych HUD: Reclaiming Terminal Real Estate for Broadcast Telemetry
-- [2026-03-19] fasthtml-htmx-mastering-html-boolean-reality-ui-control: FastHTML & HTMX: Mastering HTML's Boolean Reality for UI Control
-- [2026-03-19] observing-the-agentic-web-honeybots-fishtank-telemetry: Observing the Agentic Web: Honeybot's Fishtank Telemetry
-- [2026-03-19] pipulate-full-stack-python-htmx-durable-state: Pipulate: Master Full-Stack Python with HTMX and Durable State
-- [2026-03-18] unifying-ai-adapters-pipulate-model-agnostic-automation: Unifying AI Adapters: Pipulate's Path to Model-Agnostic Automation
-- [2026-03-18] bauhaus-bouncehouse-immutable-ai-environments: The Bauhaus Bouncehouse: Immutable AI Environments and DictLikeDBs
-- [2026-03-18] llmo-semantic-gravity-bot-first-web: LLMO: Architecting Semantic Gravity for the Bot-First Web
-- [2026-03-18] topological-healer-ai-redirect-immunization: The Topological Healer: Immunizing AI-Generated Redirects
-- [2026-03-18] pythonic-forever-machine-with-ai-and-nix: Reclaiming Development: The Path to a Pythonic Forever Machine
-- [2026-03-16] nixos-local-ai-reproducible-workflows: Building a Forever Machine: NixOS, Local AI, and Reproducible Workflows
-- [2026-03-16] self-healing-context-automating-topological-integrity-for-ai-prompts: Self-Healing Context: Automating Topological Integrity for AI Prompts
-- [2026-03-16] jekyll-feed-optimization-ai-agents-gitops-blueprint: Jekyll Feed Optimization for AI Agents: A GitOps Blueprint
-- [2026-03-16] llm-data-hygiene-sql-filtering: LLM Data Hygiene: Shielding AI Pipelines with Deterministic SQL Filtering
-- [2026-03-16] optimizing-llm-context-agenting-web-blueprint: Optimizing LLM Context: Architecting the Agentic Web's Blueprint
-- [2026-03-15] uncompressible-agentic-web: Uncompressible Content: Architecting for the Agentic Web
-- [2026-03-15] silencing-jekyll-gitops-noise-high-signal-deployment: Silencing Jekyll & GitOps: Achieving High-Signal, Low-Noise Deployment
-- [2026-03-15] ai-semantic-gravity-dual-layer-content-branding: AI Semantic Gravity: Branding Content for LLMs with Dual-Layer Architecture
-- [2026-03-14] zero-trust-gateway-ai-data-nginx-nixos: Building a Zero-Trust Gateway for AI-Generated Data in NixOS
-- [2026-03-14] forging-forever-machine-onboarding-blueprint: Forging a Forever Machine: The Sovereign Onboarding Blueprint
-- [2026-03-14] automated-404-redirects-prompt-fu-gitops-nixos: Automating 404 Redirects: Prompt Engineering, GitOps & NixOS in a Human-Centric Workflow
-- [2026-03-14] pipulate-ai-first-developer-experience-blueprint: Pipulate: The AI-First Developer Experience Blueprint
-- [2026-03-13] aot-semantic-routing-ai-web-infrastructure: Engineering the Forever Machine: Ahead-of-Time Semantic Routing for AI-Driven Web
-- [2026-03-13] the-topological-healer-ai-driven-nginx-redirects-dynamic-site-architectures: The Topological Healer: AI-Driven Nginx Redirects for Dynamic Site Architectures
-- [2026-03-13] polymorphic-provenance-linguistic-steganography-ai-data: Polymorphic Provenance: The Linguistic Steganography of AI Data
-- [2026-03-13] semantic-camouflage-embedding-provenance-ai-training-data: Semantic Camouflage: Embedding Provenance in AI Training Data
-- [2026-03-13] ai-education-model-memory-bot-intel-cryptographic-provenance: AI Education: Sculpting Model Memory with Dynamic Bot Intel and Cryptographic Provenance
-- [2026-03-12] ai-magic-mirror-cybernetic-feedback-loop-content-intelligence: AI's Magic Mirror: A Cybernetic Feedback Loop for Content Intelligence
-- [2026-03-12] curated-chisel-strike-silencing-jupyter-logs-precise-ai-context: Curated Chisel-Strike: Silencing Jupyter Logs with Precise AI Context
-- [2026-03-12] autonomic-codebase-self-healing-ai-workflow-any-os: The Autonomic Codebase: Self-Healing Your AI Workflow on Any OS
-- [2026-03-12] architecting-ai-workflows-deterministic-editing-computational-autonomy: Architecting AI Workflows: Deterministic Editing for Computational Autonomy
-- [2026-03-12] streamlining-pipulate-notebooks-wand-path-to-clarity: Streamlining Pipulate Notebooks: The Wand's Path to Clarity
-- [2026-03-11] topological-folding-pipulate-manifold: Topological Folding: Unifying Application State with Pipulate's Magic Wand
-- [2026-03-11] pythons-absolute-geometry-anchoring-paths: Python's Absolute Geometry: Anchoring Paths in a Multi-Environment World
-- [2026-03-11] python-namespace-fusion-seamless-jupyter-imports: Python Namespace Fusion: Seamless Jupyter Imports in the Age of AI
-- [2026-03-11] the-agentic-webs-new-frontier-real-time-ai-telemetry-ssh-terminal: The Agentic Web's New Frontier: Real-Time AI Telemetry via SSH Terminal
-- [2026-03-11] self-auditing-ai-context-compiler: Self-Auditing AI Context Compiler: Eliminating Dark Matter Code
-- [2026-03-11] idempotent-token-ledger-llm-context: The Idempotent Token Ledger: Visualizing LLM Context with Auto-Annotated File Sizes
-- [2026-03-11] ai-eyes-jit-optical-distillation-semantic-web: The AI's New Eyes: JIT Optical Distillation & The Semantic Web
-- [2026-03-11] ai-multi-spectral-web-vision-optics-integration: Self-Completing Scrapes: Granting AI Multi-Spectral Vision with Safe Optics Integration
-- [2026-03-11] single-pass-causal-optics-ai-browser-automation: Single-Pass Causal Optics: Reimagining AI Browser Automation
-- [2026-03-10] single-pass-llm-optics-engine-causal-fidelity: The Single-Pass LLM Optics Engine: Achieving Causal Fidelity in AI Automation
-- [2026-03-10] machine-native-semantic-architecture-ai-age: Machine-Native Semantic Architecture: A Blueprint for Digital Survival in the Age of AI
-- [2026-03-10] zero-friction-actuator-ai-development: The Zero-Friction Actuator: Unlocking AI Development
-- [2026-03-10] local-first-ai-web-bottling-apps-nix-bidi: The Local-First AI Web: Bottling Apps with Nix and BiDi
-- [2026-03-10] pipulates-publishing-engine-workflow-deep-dive: Pipulate's Publishing Engine: A Deep Dive into Automated Workflow in the Age of AI
-- [2026-03-10] seamless-ux-unifying-multi-platform-keyboard-shortcuts: Seamless UX: Unifying Multi-Platform Keyboard Shortcuts in Pipulate
-- [2026-03-09] mac-compatibility-npvg-workflow: Mac Compatibility for Your NPvg Workflow: Bridging GNU and BSD Worlds
-- [2026-03-09] building-semantic-gravity-ai-friendly-knowledge-code: Building Semantic Gravity: Architecting AI-Friendly Knowledge & Code
-- [2026-03-09] wet-code-dry-interfaces-ai-unified-cli: WET Code, DRY Interfaces: Architecting AI-Friendly CLI Tools
-- [2026-03-09] wet-coding-fearless-refactoring-python-tokenizer: WET Coding in the Age of AI: Fearless Refactoring with Python's Tokenizer
-- [2026-03-08] immutable-python-environment-jupyter-notebooks: Creating an Immutable Python Environment for Jupyter Notebooks
-- [2026-03-08] refined-developer-experience-log-telemetry: Refining the Developer Experience: From Log Clutter to Curated Telemetry
-- [2026-03-08] llmectomy-ai-agnosticism-nixos-python: The LLMectomy: Architecting AI Agnosticism with Nix & Python
-- [2026-03-08] llmectomy-uncoupling-ai-models-vendor-lock-in: The LLMectomy: Uncoupling AI Models from Vendor Lock-in
-- [2026-03-08] holographic-context-engineering-ai-ready-semantic-maps-web-native-llms: Holographic Context: Engineering AI-Ready Semantic Maps for Web-Native LLMs
-- [2026-03-08] the-immutable-webhead-building-resilient-ai-telemetry-system: The Immutable Webhead: Building a Resilient AI Telemetry System
-- [2026-03-07] ai-local-hippocampus-sovereign-development: AI's Local Hippocampus: Building a Sovereign Development Environment
-- [2026-03-07] nixos-manual-override-recovery: The Manual Override: Low-Level NixOS Recovery in the Age of AI
-- [2026-03-07] nginx-nixos-red-queen-deterministic-redirects: Nginx, NixOS & Red Queen: The Climb to Deterministic Redirects with Hash Ledgers
-- [2026-03-07] the-80-20-rule-resilient-404-redirects-pure-hash-ledger: The 80/20 Rule Applied: Building Resilient 404 Redirects with a Pure Hash Ledger
-- [2026-03-06] automated-404-healing-semantic-router: Automated 404 Healing: AI as a Semantic Router for the Forever Machine
-- [2026-03-06] ai-driven-redirects-self-healing-web-architecture: AI-Driven Redirects: Forging a Self-Healing Web Architecture
-- [2026-03-06] ai-forgetfulness-state-aware-404-healing: The AI's 'Forgetfulness': Engineering State-Aware 404 Healing
-- [2026-03-06] ai-on-rails-deterministic-llm-engineering: AI-on-Rails: The Deterministic Way to Engineer with Large Language Models
-- [2026-03-06] deterministic-ai-knowledge-graph-web: Building a Deterministic AI-Ready Knowledge Graph for the Modern Web
-- [2026-03-06] the-topological-healer-ai-driven-404-management-blueprint: The Topological Healer: AI-Driven 404 Management Blueprint
-- [2026-03-05] self-bootstrapping-ai-workshop-reproducible-development-hot-swappable-llms: The Self-Bootstrapping AI Workshop: Reproducible Development with Hot-Swappable LLMs
-- [2026-03-05] pipulate-stateful-jupyter-ai-seo-strategy: From Data Drowning to Strategy Engine: How Pipulate's Stateful Jupyter Ecosystem Unlocks AI-Driven SEO Consulting
-- [2026-03-05] topological-healer-ai-automated-redirects: The Topological Healer: Forging Web Resilience with AI-Automated Redirects
-- [2026-03-05] nginx-404-redirect-ai-pipeline: Nginx 404 Redirects: Building a Test-Driven AI-Ready Pipeline
-- [2026-03-05] self-healing-ai-404-redirects-nginx-nixos: The Self-Healing Web: AI-Powered 404 Redirects with Nginx and NixOS
-- [2026-03-04] john-henry-gambit-llms-honeybots-dynamic-latest-url: The John Henry Gambit: LLMs, Honeybots, and a Dynamic `/latest/` URL
-- [2026-03-04] nginx-404-remapping-llm-context-architecture-blueprint: Automating Nginx 404 Remapping with LLMs: The Context Architecture Blueprint
-- [2026-03-04] architecting-ai-context-data-density-blueprint-404-remapping: Architecting AI Context: The Data Density Blueprint for 404 Remapping
-- [2026-03-03] cybernetic-terrarium-ai-observability: The Cybernetic Terrarium: Observing AI at the Protocol Level
-- [2026-03-03] ai-marble-madness-digital-behavioral-ecologist: AI, Marble Madness, and the Digital Behavioral Ecologist
-- [2026-03-03] ai-antifragility-universal-llm-adapter: AI Antifragility: Orchestrating Models with a Universal Adapter
-- [2026-03-03] agentic-crucible-llm-safety-self-healing-web-topologies: Agentic Crucible: Mapping LLM Safety & Self-Healing Web Topologies
-- [2026-03-02] levinix-von-neumann-bootstrap-for-ai: Levinix: The Von Neumann Bootstrap Process for Autonomous AI
-- [2026-03-02] sitchrep-protocol-ai-context-future-proofing: The Sitchrep Protocol: Future-Proofing Context for AI
-- [2026-03-02] honeybots-ground-truth-debugging-data-visualization-tui-fidelity: Honeybot's Ground Truth: Debugging Data Visualization and TUI Fidelity
-- [2026-03-01] ad-hoc-sql-ninjutsu-declarative-philosophy-data-ai: Ad Hoc SQL Ninjutsu: A Declarative Philosophy for Data and AI
-- [2026-03-01] ai-attribution-content-negotiation-tracer-dye: The Attribution Engine: A Methodology for Proving AI Ingestion via Content Negotiation
-- [2026-03-01] honeybots-ouroboros-live-query-playground-ai-telemetry: Honeybot's Ouroboros: Building a Live Query Playground for AI Telemetry
-- [2026-03-01] parametric-memory-fractal-publishing-ai-ingestion: Building Parametric Memory: Levinix, Fractal Publishing, and Small-World AI Ingestion
-- [2026-03-01] python-pragmatism-ai-optimized-web: Pragmatic Python to AI-Optimized Web: A Blueprint for Semantic Infrastructure
-- [2026-03-01] ai-optimized-sitemaps-semantic-sitrep-blueprint: AI-Optimized Sitemaps: The Semantic Situation Report Blueprint
-- [2026-02-28] levinix-no-problem-universal-packager-blueprint-ai-age: Levinix: A No-Problem Universal Packager Blueprint for the AI Age
-- [2026-02-28] levinix-no-problem-ai-native-apps: Levinix: The No Problem Way to Build and Share AI-Native Local Apps
-- [2026-02-28] morning-pages-2-0-ai-orchestration: Morning Pages 2.0: Architecting Truth with Exosymbiotic AI
-- [2026-02-27] web-links-invisible-hand-tracking-ai-with-query-strings: Web Links and the Invisible Hand: Tracking AI with Query Strings
-- [2026-02-26] consolidating-forever-machine-levinix-npvg-blueprint: Consolidating the Forever Machine: From Levinux to Levinix and the NPvg Blueprint
-- [2026-02-26] javascript-captcha-unmasking-ai-bots: The JavaScript CAPTCHA: Unmasking AI Bots with Execution Traps
-- [2026-02-25] agentic-telemetry-blueprint-content-negotiation: The Agentic Telemetry Blueprint: Proving AI Content Negotiation
-- [2026-02-25] ai-dual-layer-web-agentic-content-negotiation: AI's Dual-Layer Web: Building for Agents and Humans
-- [2026-02-25] agentic-webs-crucible-ai-autonomy-testing: The Agentic Web's Crucible: Testing Dual-Layer Architectures & AI Autonomy
-- [2026-02-25] ai-content-architects-llm-ingestion-control: AI Content Architects: Weaponizing Audacity for LLM Ingestion Control
-- [2026-02-25] the-levinix-blueprint-ai-content-negotiation-moat: The Levinix Blueprint: Building Your AI Content Negotiation Moat with Pipulate
-- [2026-02-24] automating-dual-layer-content-markdown-html-ai: Automating Dual-Layer Content: Markdown and HTML for AI
-- [2026-02-24] universal-adapter-precision-engineering-ai-spaces: The Universal Adapter: Precision Engineering for AI-Spaces
-- [2026-02-24] cybernetic-software-architecture-llms-semantic-governors: Cybernetic Software Architecture: LLMs as Semantic Governors
-- [2026-02-24] wet-code-philosophy-resilient-systems-ai: The WET Code Philosophy: Building Resilient Systems in the Age of AI
-- [2026-02-24] mobilegeddon-aigeddon-sovereign-computing: From Mobilegeddon to AIgeddon: Architecting Sovereign Futures with Pipulate
-- [2026-02-23] from-ad-hoc-scripts-to-scalable-apps-deliverable-lifecycle: From Ad Hoc Scripts to Scalable Apps: The Lifecycle of a Deliverable
-- [2026-02-23] taming-the-amnesiac-genie-precision-context-engineering-for-fasthtml-with-ai: Taming the Amnesiac Genie: Precision Context Engineering for FastHTML with AI
-- [2026-02-23] ai-context-streaming-ls2-nix: AI Context Streaming: LS2 and Nix for Frictionless Prompts
-- [2026-02-23] sovereign-perception-ai-web-eyes: Sovereign Perception: Building AI-Eyes for the Web with Pipulate
-- [2026-02-23] llm-optics-forever-machine-ai-ready-web-semantics: LLM Optics & The Forever Machine: Architecting AI-Ready Web Semantics
-- [2026-02-22] http-content-negotiation-ai-competitive-moat: The Web's Forgotten Nervous System: How HTTP Content Negotiation Becomes Your AI Competitive Moat
-- [2026-02-22] llm-optics-engine-refracting-web-ai: LLM Optics Engine: Refracting the Web for AI
-- [2026-02-22] stateless-ai-unix-context-engineering: Stateless AI, Unix Philosophy, and the Art of Context Engineering
-- [2026-02-22] semantic-data-probe-ai-ghost-variations: The Semantic Data Probe: Eradicating AI Ghost Variations
-- [2026-02-22] player-piano-automation-sentient-ghost-driver-wet-workflows: Player Piano Automation: The Sentient Ghost Driver & WET Workflows
-- [2026-02-22] pipulates-blueprint-nix-selenium-sovereign-ai-workflow: Pipulate's Blueprint: Nix, Selenium, and the Sovereign AI Workflow
-- [2026-02-21] the-ai-viewport-pipulates-isomorphic-interface-for-autonomous-agents: The AI Viewport: Pipulate's Isomorphic Interface for Autonomous Agents
-- [2026-02-21] the-sovereign-stack-deterministic-ai-pipulate: The Sovereign Stack: Architecting Deterministic AI Operations with Pipulate
-- [2026-02-20] ai-context-fragmentation: Engineered Context: Mastering LLM Limits with AI-Native Architecture
-- [2026-02-20] jekyll-sqlite-wal-watcher-regenerator-paradox-fix: Jekyll and SQLite WAL: Solving the Watcher/Regenerator Paradox
-- [2026-02-20] the-deflighter-wet-philosophy-google-ads-negatives: The Deflighter: WET Philosophy and Exact Match Google Ads Negatives
-- [2026-02-20] sovereign-agents-openclaw-ai-friction-forever-machine-blueprint: Sovereign Agents: OpenClaw, AI Friction, and the Forever Machine Blueprint
-- [2026-02-20] server-log-telemetry-honeybot-intelligence-ai: Server Log Telemetry: Honeybot Intelligence in the Age of AI
-- [2026-02-20] optimizing-client-seo-workflows-botify-pipulate-self-aware-documents: Optimizing Client SEO Workflows: Botify, Pipulate, and Self-Aware Documents
-- [2026-02-19] architecting-forever-machine-openclaw-nixos-agentic-workflow: Architecting a Forever Machine: OpenClaw, NixOS, and the Agentic Workflow
-- [2026-02-18] pipulate-jupyter-engine-notebook-pipelines: Pipulate as a Jupyter Engine: Unifying Web Workflows and Notebook Pipelines
-- [2026-02-18] openclaw-nixos-franken-nix-home-hosted-agent: OpenClaw on NixOS: The Franken-Nix Blueprint for a Home-Hosted Agent
-- [2026-02-17] sovereign-ai-agent-nixos-oauth: Sovereign Tech: The OpenClaw, NixOS, and OAuth Odyssey
-- [2026-02-17] openclaw-nixos-machine-soul-sovereign-ai: From Morning Pages to Machine Soul: OpenClaw on NixOS Initializes Sovereign AI
-- [2026-02-17] morning-pages-machine-soul-automating-digital-sovereignty: From Morning Pages to Machine Soul: Automating Digital Sovereignty with NixOS and OpenClaw
-- [2026-02-16] openclaw-nixos-claude-opus-4-6-golden-master-test: OpenClaw on NixOS: Golden Master Test with Claude Opus 4.6
-- [2026-02-16] digital-sovereignty-secured-openclaw-nixos-claude-code-bridge: Digital Sovereignty Secured: OpenClaw, NixOS, and the Claude Code Bridge
-- [2026-02-16] twikis-first-steps-context-engineering-local-ai-sovereignty: Twiki's First Steps: Context Engineering and Local AI Sovereignty
-- [2026-02-16] openclaw-nixos-local-ai-sovereignty: The Sunday I Built Twiki: OpenClaw, NixOS, and the Battle for Local AI Sovereignty
-- [2026-02-15] nixos-immutable-host-deploying-openclaw-agent: NixOS as the Immutable Host: Deploying a Sovereign OpenClaw Agent
-- [2026-02-15] architecting-digital-sovereignty-openclaw-nixos-knowledge-lag-workflow: Architecting Digital Sovereignty: OpenClaw on NixOS and the 'Knowledge Lag' Workflow
-- [2026-02-15] agentic-bake-off-flatnotes-nixos-pipulate-inner-loop: Agentic Bake-Off: Flatnotes on NixOS & Pipulate as the Sovereign Inner Loop
-- [2026-02-14] nixos-flatnotes-text-supremacy: NixOS, Flatnotes, and the Philosophy of Text Supremacy
-- [2026-02-02] ai-digital-sidekick-sovereign-pipulate-nix: Your Digital Sidekick: Building a Sovereign AI Butler with Pipulate and Nix
-- [2026-02-02] ai-vs-truth-claude-project-panama-evasion: AI vs. Truth: Claude's Project Panama Evasion and The Art of Being Wrong
-- [2026-01-30] white-box-revolution-ai-smartphone: The White Box Revolution: Building the AI Smartphone for the Sovereign Professional
-- [2026-01-30] ai-context-paradox-reproducible-legacy: The AI Context Paradox: Engineering Reproducibility and Perpetual Legacy
-- [2026-01-15] productizing-technical-independence-ucp-ai-agents: Productizing Technical Independence with UCP in the Age of AI
-- [2026-01-14] browser-automation-to-protocol-economy: From Browser Automation to Protocol Economy: Google's UCP Pivot
-- [2026-01-14] the-great-enclosure-ai-agents-full-stack-web-war: The Great Enclosure: AI Agents and the Battle for the Full Stack Web
-- [2026-01-13] agentic-commerce-wars-google-protocol-amazon-capture: Agentic Commerce Wars: Google's Protocol vs. Amazon's Capture
-- [2026-01-13] context-engineering-forever-machine-web-ai: Context Engineering: The Forever Machine and Web-Aware AI
-- [2026-01-12] reclaiming-digital-agency-local-owner-operated-tech: Reclaiming Digital Agency: The Way of Local, Owner-Operated Technology in the Age of AI
-- [2026-01-12] d3js-graph-data-integrity-physics-dashboard: Achieving Data Integrity in D3.js Graph Visualization: Physics Dashboard for Article Depth
-- [2026-01-12] mastering-d3js-force-graphs-flea-effect-visualization: Mastering D3.js Force Graphs: The 'Flea' Effect Visualization
-- [2026-01-12] digital-sovereignty-ai-blueprint: Digital Sovereignty in the Age of AI: A Blueprint for Enduring Tech
-- [2026-01-11] stealth-navigation-bots-humans: Stealth Navigation: Architecting for Bots and Humans
-- [2026-01-11] agent-first-design-semantic-navigation: Agent-First Design: Guiding Bots and Humans Through Semantic Navigation
-- [2026-01-11] sovereign-reset-web-framework-debt-ai-ready: The Sovereign Reset: Detaching from Web Framework Debt for AI-Ready Content
-- [2026-01-11] from-raw-logs-to-ai-education-the-intelligence-monitor: From Raw Logs to AI Education: The Intelligence Monitor
-- [2026-01-10] art-exploding-graph-d3-zoom-ux-choreography: The Art of the Exploding Graph: D3 Zoom and UX Choreography
-- [2026-01-10] unifying-day-night-themes-d3js-graph-refactor: Unifying Day/Night Themes: A D3.js Graph Refactor for AI-Readiness
-- [2026-01-09] broadcast-blueprint-ai-traffic-insights: The Broadcast Blueprint: Structuring Live AI Traffic Insights
-- [2026-01-09] the-pervasive-pitch-ambient-broadcasting-strategic-rollback: The Pervasive Pitch: Ambient Broadcasting and the Strategic Rollback
-- [2026-01-09] precise-orchestration-live-stream-404-fix: Precise Orchestration: Eliminating 404s in Live Streams
-- [2026-01-09] punk-tui-design-log-legibility-semantic-colors-user-agent-control: Punk TUI Design: Mastering Log Legibility with Semantic Colors and User Agent Control
-- [2026-01-09] data-driven-bot-discovery-unearthing-ai-agents-web-logs: Data-Driven Bot Discovery: Unearthing AI Agents in Your Web Logs
-- [2026-01-08] the-fish-tank-principle-ambient-observability-ai-agents: The Fish Tank Principle: Ambient Observability for AI Agents
-- [2026-01-08] fish-tank-principle-ambient-observability-for-ai-agents: The Fish Tank Principle: Ambient Observability for AI Agents
-- [2026-01-08] invisible-web-second-mobilegeddon-aie-protocol-synthetic-age: The Invisible Web and the Second Mobilegeddon: AIE as the Protocol for the Synthetic Age
-- [2026-01-08] reclaiming-rel-alternate-for-ai-agents: Reclaiming Rel=Alternate: Optimizing HTML Links for AI Agents
-- [2026-01-08] llms-txt-the-agents-first-call-to-the-ai-native-web: `llms.txt`: The Agent's First Call to the AI-Native Web
-- [2026-01-07] ontology-fly-semantic-load-balancing-knowledge-graph-unification: The Ontology of the Fly: Semantic Load-Balancing and Knowledge Graph Unification
-- [2026-01-07] semantic-de-duplication-self-organizing-knowledge: Semantic De-Duplication: Building Self-Organizing Knowledge
-- [2026-01-07] nixos-obs-hardware-acceleration-fix: NixOS Unleashed: Fixing OBS Hardware Acceleration for 10-Day Streams
-- [2026-01-06] spotting-ai-bots-user-agent-analysis: Spotting AI Bots: Real-time User Agent Analysis with Python & SQLite
-- [2026-01-06] site-factory-declarative-automation-cognitive-ergonomics: The Site Factory: Declarative Automation for Cognitive Ergonomics
-- [2026-01-06] rise-of-agent-experience-ax-unmasking-bots-data-demands: The Rise of Agent Experience (AX): Unmasking Bots and Their Data Demands
-- [2026-01-05] cdn-to-cybernetic-hud-bot-trap-monitor: From CDN to Cybernetic HUD: Crafting a JavaScript Bot Trap and Real-time Monitor
-- [2026-01-05] decoupling-d3-graph-data-ai-readiness: Decoupling D3 Graph Data for AI Readiness and Enhanced Web Analytics
-- [2026-01-05] ai-bot-intent-analysis-textual-hud: From Log Stream to Intent Analysis: Unveiling AI Bot Behavior with a Dual-Minded Textual HUD
-- [2026-01-04] cybernetic-site-hud-d3js-jekyll-dark-mode-gold-pan-sync: Building a Cybernetic Site HUD with D3.js and Jekyll: Dark Mode, Gold Pan, and Sync
-- [2026-01-04] surgical-sovereignty-phantom-scripts-specificity: Surgical Sovereignty: Reclaiming Web Control with Phantom Scripts and Specificity
-- [2026-01-03] high-value-outlier-sovereign-api-intelligence: High Value Outlier: Building a Sovereign API for Intelligence
-- [2026-01-02] visualizing-ai-bot-intent-textual-dashboard-blueprint: Visualizing AI Bot Intent: A Textual Dashboard Blueprint
-- [2026-01-02] triptych-dashboard-bot-intent: The Triptych Dashboard: Classifying Bots by Observed Intent
-- [2026-01-02] accidental-turing-test-bot-intent: The Accidental Turing Test: How Infrastructure Reveals Bot Intent
-- [2026-01-02] mathjax-local-hosting-ai-bot-trap: From CDN to Local: Optimizing MathJax and Building AI Bot Traps
-- [2026-01-01] home-hosting-bot-traps-site-visualization: Mastering the Digital Terrain: Home Hosting, Bot Traps, and Site Visualization in the Age of AI
-- [2026-01-01] duty-cycle-architecture-bot-observatory-nixos: Duty Cycle Architecture: Building a Self-Reporting Bot Observatory with NixOS
-- [2026-01-01] honeybots-self-healing-stream-watchdog-commercial-break: Honeybot's Self-Healing Stream: The Watchdog-Powered Commercial Break
-- [2026-01-01] ai-readiness-web-stack-control: Reclaiming Control: Your Web Stack in the Age of AI
-- [2025-12-31] honeydb-log-stream-to-data-reservoir: HoneyDB: From Log Stream to Data Reservoir
-- [2025-12-31] magic-cookie-pattern-self-bootstrapping-sovereignty: The Magic Cookie Pattern: Self-Bootstrapping Sovereignty for Local-First AI
-- [2025-12-31] the-living-broadcast-real-time-content-updates-for-your-automated-narrative: The Living Broadcast: Real-Time Content Updates for Your Automated Narrative
-- [2025-12-31] forging-the-perpetual-narrative-engine-infinite-web-log-stream-for-ai-bot-observation: Forging the Perpetual Narrative Engine: Infinite Web Log Stream for AI Bot Observation
-- [2025-12-30] the-sovereign-time-machine-campfire-protocol-automated-intellectual-history: The Sovereign Time Machine & Campfire Protocol: Automated Intellectual History
-- [2025-12-30] semantic-sidecar-dual-layer-content-ai-readiness: Semantic Sidecar: Dual-Layer Content for AI Readiness
-- [2025-12-30] sovereign-show-engine: The Sovereign Show Engine: Architecting Dynamic Data Narratives for AI Readiness
-- [2025-12-30] orchestrating-digital-sovereignty-ai-architects-ascent: Orchestrating Digital Sovereignty: The AI Architect's Ascent
-- [2025-12-30] honeybots-pulse-real-time-web-log-insights-ai-nix: The Honeybot's Pulse: Real-Time Web Log Insights with AI and Nix
-- [2025-12-30] honeybot-unified-pulse-automated-audio-secure-nixos-access: Honeybot's Unified Pulse: Automated Audio & Secure NixOS Access
-- [2025-12-29] silent-server-speaking-stream-ai-control: From Silent Server to Speaking Stream: Mastering Web Presence with AI Control
-- [2025-12-29] honeybots-voice-semantic-refactoring: Honeybot's Voice and Semantic Refactoring for Robust AI-Driven Logs
-- [2025-12-29] digital-voice-orchestrated-infrastructure: The Digital Voice: From Embodiment to Orchestrated Infrastructure
-- [2025-12-29] honeybots-first-heartbeat-self-healing-nixos-bash-watchdog: Honeybot's First Heartbeat: Building a Self-Healing NixOS System with a Bash Watchdog
-- [2025-12-29] honeybot-speaks-declarative-voice-headless-webhead: Honeybot Speaks: Declarative Voice for a Headless Webhead
-- [2025-12-29] the-resilient-observer-giving-the-ghost-a-voice: The Resilient Observer: Giving the Ghost a Voice
-- [2025-12-27] nixos-powered-broadcast-studio-real-time-logs-ai-automation: NixOS-Powered Broadcast Studio: Real-time Logs & AI Automation
-- [2025-12-27] headless-ai-broadcast-studio-nixos-xfce: Building a Headless AI-Ready Broadcast Studio with NixOS and XFCE
-- [2025-12-27] cybernetic-architects-way-building-sonar-live-log-visualizer: Cybernetic Architect's Way: Building the Sonar Live Log Visualizer
-- [2025-12-27] cybernetic-aquarium-nixos-weblog-observability: The Cybernetic Aquarium: Real-time Weblog Observability with Nix Flakes
-- [2025-12-26] cybernetic-aquarium-log-visualization-textual-nixos: Building a Cybernetic Aquarium: Real-time Log Visualization with Textual and NixOS
-- [2025-12-26] the-sovereign-pivot-decoupling-ai-publishing-with-a-master-switch: The Sovereign Pivot: Decoupling AI Publishing with a Master Switch
-- [2025-12-26] multi-tenant-ai-publishing-engine-refactor: Refactoring for Multi-Tenant AI Publishing: A Blueprint for Sovereign Portability
-- [2025-12-26] ai-content-pipeline-migration-trimnoir-refactor: Migrating the AI Content Pipeline: Trimnoir Takes the Helm
-- [2025-12-26] home-hosting-go-live-nginx-ssl-nixos-logs: Home-Hosting Go-Live: Setting Up Nginx, SSL, and Log Monitoring on NixOS
-- [2025-12-25] sovereign-dns-deployment-and-bot-observation: The Sovereign Switch: Flipping DNS and Observing the Dark Forest
-- [2025-12-25] nixos-declarative-fix-403-jekyll-theme-streamlining: NixOS Declarative Fix for 403 Errors & Jekyll Theme Streamlining
-- [2025-12-25] sovereign-self-hosting-twin-engine-deployment: Achieving Sovereign Self-Hosting: A Twin-Engine Deployment Blueprint
-- [2025-12-24] sovereign-jekyll-deployment-engine: The Sovereign Jekyll Deployment Engine: From Local Preview to DMZ Live
-- [2025-12-23] nginx-nixos-systemd-403-forbidden-debug: Conquering the Systemd Siege: Nginx, NixOS, and the Elusive 403 Forbidden
-- [2025-12-22] sovereign-airlock-rfc1918-dmz-ai-observation: The Sovereign Airlock: Implementing an RFC1918 DMZ for AI Observation
-- [2025-12-22] building-sovereign-git-deployment-engine: Building the Sovereign Git Deployment Engine
-- [2025-12-22] nixos-soul-transfer-headless-home-server-ssh: NixOS "Soul Transfer": Headless Home Server with SSH
-- [2025-12-21] dmz-airlock-hardware-handshake-sovereign-home-hosting: DMZ Airlock: The Hardware Handshake for Sovereign Home Hosting
-- [2025-12-21] future-proofing-your-brain-vim-nix-and-the-cybernetic-workshop: Future-Proofing Your Brain: Vim, Nix, and the Cybernetic Workshop
-- [2025-12-21] holographic-compression-protocol-ai-context: The Holographic Compression Protocol for AI Context
-- [2025-12-20] holographic-bridge-sovereign-hosting-pfsense-nixos-dmz: Holographic Bridge to Sovereign Hosting: From pfSense to NixOS DMZ
-- [2025-12-20] engineering-ai-context-holographic-bridge-self-hosted-logs: Engineering AI Context: The Holographic Bridge for Self-Hosted Logs
-- [2025-12-20] reclaiming-black-river-raw-logs-ai-observability: Reclaiming the Black River: Raw Logs and AI Observability
-- [2025-12-20] forever-machine-architecting-intelligence-context-age-of-ai: The Forever Machine: Architecting Intelligence and Context in the Age of AI
-- [2025-12-19] the-ai-ready-web-pipulates-blueprint-for-sovereign-intelligence: The AI-Ready Web: Pipulate's Blueprint for Sovereign Intelligence
-- [2025-12-19] orchestrating-forever-machine-automating-knowledge-pipeline: Orchestrating the Forever Machine: Automating the Knowledge Pipeline
-- [2025-12-19] amnesiac-genie-storytelling-ai-future-proofing: The Amnesiac Genie: Storytelling to AI for Future-Proofing
-- [2025-12-17] automating-jekyll-post-generation-and-api-key-management-with-ai: Automating Jekyll Post Generation and API Key Management with AI
-- [2025-12-17] context-recapture-saving-ais-cognitive-state: Context Recapture: Saving AI's Cognitive State
-- [2025-12-17] prompt-fu-absolute-path-certainty-ai-context: Prompt Fu: Absolute Path Certainty for AI Context Indexing
-- [2025-12-16] forever-machine-architecting-digital-sovereignty: The Forever Machine: Architecting Digital Sovereignty in the Age of AI
-- [2025-12-15] automating-jekyll-hub-pages-navgraph: Automating Jekyll Site Generation: From NavGraph to Navigable Hubs
-- [2025-12-15] navgraph-blueprint-ai-friendly-site-hierarchy: The NavGraph Blueprint: Engineering an AI-Friendly Site Hierarchy
-- [2025-12-15] ai-link-graph-grounding-cybernetic-dashboard: Grounding the AI-Optimized Link Graph: Reality, Pseudomorphism, and the Cybernetic Dashboard
-- [2025-12-15] ai-content-industrialization-pipeline: Industrializing Intelligence: The Blueprint for Automated AI Content Pipelines
-- [2025-12-15] ai-ready-web-navigation-caching: Designing an AI-Ready Web: From NavGraph to Semantic Cache
-- [2025-12-15] the-gold-pan-engineering-hybrid-hierarchies-with-ai: The Gold Pan: Engineering Hybrid Hierarchies with AI
-- [2025-12-14] cybernetic-dashboard-forever-machine-performance: The Cybernetic Dashboard: Visualizing the Forever Machine's Market Performance
-- [2025-12-14] market-aware-forever-machine-navigation-engineering-semrush-gravity: The Market-Aware Forever Machine: Navigation Engineering with SEMRush Gravity
-- [2025-12-14] semantic-clustering-rule-of-7-ai-friendly-site-hierarchy: Semantic Clustering & the Rule of 7: Crafting an AI-Friendly Site Hierarchy
-- [2025-12-14] refining-dynamic-content-visualization-ai-interaction: Refining Dynamic Content Visualization and AI Interaction
-- [2025-12-13] heliocentric-cartographer-visualizing-content-topology-ai: The Heliocentric Cartographer: Visualizing Content Topology for AI
-- [2025-12-13] ai-d3-content-hierarchy-visualization: Automating Content Hierarchy Visualization with AI and D3.js
-- [2025-12-13] ai-driven-web-hierarchy-d3-rule-of-7: Crafting AI-Driven Web Hierarchy: D3 Force Graphs and the Rule of 7
-- [2025-12-13] gemini-api-key-rotation-scalable-ai-web-navigation: Automating Gemini API Key Rotation for Scalable AI Web Navigation
-- [2025-12-13] stateless-blueprint-forever-machine: The Stateless Blueprint: Architecting Your Forever Machine with Nix and Jekyll
-- [2025-12-13] forever-actualizer-machine-sovereign-ai-llm-self-aware-prompts: The Forever Actualizer Machine: Sovereign AI with `pip install llm` and Self-Aware Prompts
-- [2025-12-12] the-center-holds-forever-actualizer-machine: The Center Holds: Building Your Forever Actualizer Machine with LPvg and Local AI
-- [2025-12-12] chip-otheseus-digital-sovereignty-forever-machine-voice: Chip O'Theseus: Digital Sovereignty and the Forever Machine's Voice
-- [2025-12-11] the-ai-blueprint-intelligence-architecture-and-practical-application: The AI Blueprint: Intelligence, Architecture, and Practical Application
-- [2025-12-11] forever-machine-reclaiming-digital-sovereignty-local-ai: The Forever Machine: Reclaiming Digital Sovereignty with Local AI
-- [2025-12-11] architects-pivot-file-backed-state-scalable-data-analysis: The Architect's Pivot: File-Backed State for Scalable Data Analysis
-- [2025-12-11] cracking-google-gemini-hidden-20-rpd-free-tier-limit-python: Cracking Google Gemini's Hidden 20 RPD Free Tier Limit with Python
-- [2025-12-10] the-ai-ready-web-building-landing-strips-for-intelligent-agents: The AI-Ready Web: Building Landing Strips for Intelligent Agents
-- [2025-12-10] context-saturation-semantic-compression-fractal-blog-navigation: Context Saturation to Semantic Compression: Architecting a Fractal Blog for AI Navigation
-- [2025-12-10] externalizing-notebook-logic-the-chisel-the-sauce-and-ai-context: Externalizing Notebook Logic: The Chisel, The Sauce, and AI Context
-- [2025-12-10] zero-sum-attention-sovereign-tools-gapalyzer-hardening: Zero-Sum Attention, Sovereign Tools: Hardening the GAPalyzer and Your Codebase
-- [2025-12-09] the-codebase-as-a-book-architecting-ai-ready-narrative-context: The Codebase as a Book: Architecting AI-Ready Narrative Context
-- [2025-12-09] context-king-blueprint-local-ai-operating-system: The Context King's Blueprint: Building a Local AI Operating System
-- [2025-12-08] pipulates-ghost-driver-causal-fidelity-ai-test-automation: Pipulate's Ghost Driver: Building Causal Fidelity in AI Test Automation
-- [2025-12-08] context-telemetry-mastering-ai-prompt-size-limits: Context Telemetry: Mastering AI Prompt Size Limits
-- [2025-12-07] forever-machine-sovereign-computing-ai-age: The Forever Machine: A Blueprint for Sovereign Computing in the AI Age
-- [2025-12-06] lisp-computing-ai-philosophy: The Lisp Philosophy: Computing's Foundational Divide
-- [2025-12-05] building-the-ghost-driver-automated-self-testing-for-agentic-ai: Building the Ghost Driver: Automated Self-Testing for Agentic AI
-- [2025-12-05] pipulates-ghost-driver-ui-automation-beyond-chat-simulation: Pipulate's Ghost Driver: UI Automation Beyond Chat Simulation
-- [2025-12-05] pipulate-dayton-moment-context-aware-ai-demo-test-automation: The Pipulate "Dayton Moment": Unlocking Context-Aware AI Demo and Test Automation
-- [2025-12-04] pipulate-forever-machine-sovereignty-stack: Pipulate: The Forever Machine and the Sovereignty Stack
-- [2025-12-04] the-technomancers-console-pipulate-and-the-art-of-digital-sovereignty: The Technomancer's Console: Pipulate and the Art of Digital Sovereignty
-- [2025-12-04] forever-machine-digital-sovereignty-ai: The Forever Machine: Architecting Digital Sovereignty in the Age of AI
-- [2025-12-03] behavioral-moat-vibe-to-verification: The Behavioral Moat: From Vibe to Verification in the Age of AI
-- [2025-12-02] wright-brothers-ai-on-rails: The Wright Brothers Moment: From Vibe Coding to AI-on-Rails Determinism
-- [2025-12-01] the-vibrating-edge-singleton-to-sovereign: The Vibrating Edge: From Singleton to Sovereign
-- [2025-11-29] sovereign-technologist-forever-machines-ai-era: The Sovereign Technologist: Building Forever Machines in the Age of AI
-- [2025-11-29] amnesia-feature-orchestrating-nixos-desert-kite-ai-strategy: Amnesia as a Feature: Orchestrating NixOS with the Desert Kite AI Strategy
-- [2025-11-28] optimists-algorithm-sovereignty-symbiosis-scenario-engine: The Optimist's Algorithm: Sovereignty, Symbiosis, and the Scenario Engine
-- [2025-11-28] googles-invisible-hand-intelligence-as-a-utility: Google's Invisible Hand: Intelligence as a Utility
-- [2025-11-27] golems-guardrails-ai-enduring-memory: The Golem's Guardrails: Engineering AI's Enduring Memory and Functional Immortality
-- [2025-11-27] demo-json-codex-pipulate-atomic-proof: The demo.json Codex: Forging Pipulate's Atomic Proof
-- [2025-11-26] architecture-of-forever-round-robin-ai-mastery: The Architecture of Forever: Your Round-Robin Blueprint for AI Mastery
-- [2025-11-26] ai-on-rails-desert-kite-efficient-ai-collaboration: AI on Rails: The Desert Kite Method for Efficient AI Collaboration
-- [2025-11-25] infinite-combo-engineering-forever-ai-age: The Infinite Combo: Engineering Forever in the Age of AI
-- [2025-11-25] automated-video-editing-file-system-as-your-timeline: Automated Video Editing: The File System as Your Timeline
-- [2025-11-25] no-gooey-video-python-moviepy-workflow: No-Gooey Video: From Philosophical Rejection to Pythonic Victory
-- [2025-11-24] ai-powered-excel-mastery-gapalyzers-journey-to-lightning-fast-output: AI-Powered Excel Mastery: GAPalyzer's Journey to Lightning-Fast Output
-- [2025-11-23] sovereign-technomancer-ai-whimper-autonomy: The Sovereign Technomancer: Navigating the AI Whimper and Building Autonomy
-- [2025-11-23] stateless-minds-ai-architecture-future-google-dominance: Stateless Minds: How AI's Architecture Shapes Our Future and Google's Dominance
-- [2025-11-22] the-matter-of-soul-turing-machines-sovereign-ai: The Matter of Soul: From Turing Machines to Sovereign AI
-- [2025-11-21] faraday-phase-ai-digital-evolution: The Faraday Phase of AI: Living the Sci-Fi Dream with Digital Evolution
-- [2025-11-20] nixos-recovery-modular-ai-nvidia-vpn-conflict-resolution: NixOS Recovery: Re-enabling Modular AI, NVIDIA, and VPN Conflict Resolution
-- [2025-11-20] pipulates-blueprint-integrative-ai-countering-emissarys-traps: Pipulate's Blueprint for Integrative AI: Countering the Emissary's Traps
-- [2025-11-19] dunning-kruger-determinism-future-proofing-ai-infrastructure: From Dunning-Kruger to Determinism: Future-Proofing Skills in the Age of AI
-- [2025-11-18] nixos-caddy-https-internal-trust-debugging-journey: NixOS Caddy HTTPS Internal Trust: A Debugging Journey with AI
-- [2025-11-18] nixos-lan-services-declarative-https-caddy: NixOS LAN Services: Declarative HTTPS with Caddy
-- [2025-11-18] orr-maneuver-system-crash-resilience-nixos: The Orr Maneuver: From System Crash to Sovereign Resilience with NixOS
-- [2025-11-18] nixos-x11-autognome-recovery-blueprint: The Phoenix of NixOS: An X11 System Automation Blueprint
-- [2025-11-18] nixos-modular-apps-ai-unfree-license: NixOS Modularization & AI Agents: Overcoming Unfree Licenses
-- [2025-11-18] the-anti-docker-the-agent-and-the-lens-nixos-evolution-with-ai: The Anti-Docker, the Agent, and the Lens: NixOS Evolution with AI
-- [2025-11-18] nixos-recovery-symlinks-local-git: NixOS Recovery: Reclaiming Your System's Soul with Symlinks and Git
-- [2025-11-18] bootstrapping-resilience-ai-system-crash-nixos-way: Bootstrapping Resilience: The AI-Induced System Crash and the NixOS Way
-- [2025-11-18] nixos-unraveling-system-resilience-abstraction: NixOS Unraveling: A Journey into System Resilience and the Illusion of Abstraction
-- [2025-11-16] ai-orchestra-reproducible-human-ai-development: The AI Orchestra: A Blueprint for Reproducible, Human-AI Development
-- [2025-11-16] debugging-duet-ai-code-refinement: The Debugging Duet: A Collaborative Methodology for AI-Assisted Code Refinement
-- [2025-11-16] lpvg-absolute-anchor-ai-relativity: LPvg: Your Absolute Anchor in the Age of AI Relativity
-- [2025-11-14] wizarding-tiers-tech-philosophy-editors-languages-sovereignty: The Wizarding Tiers of Tech: A Philosophy of Editors, Languages, and Sovereignty
-- [2025-11-14] cured-meat-pre-agriculture-gobekli-tepe-forced-agriculture: Cured Meat: The Pre-Agricultural Engine of Göbekli Tepe and the Forced Birth of Agriculture
-- [2025-11-14] pebble-trails-smug-mugs-sovereign-craftsmanship-ai-age: Pebble Trails and Smug Mugs: Architecting Sovereign Craftsmanship in the AI Age
-- [2025-11-13] linux-gnome-jekyll-image-workflow: Streamlining Image Workflow for Jekyll Sites in Linux GNOME
-- [2025-11-13] sovereign-craftsmans-ai-way: The Sovereign Craftsman's Way: Building AI Tools for Ethical Knowledge Mastery
-- [2025-11-13] the-age-of-hybrid-ai-commoditized-intelligence-and-sovereign-workflow: The Age of Hybrid AI: Commoditized Intelligence and Sovereign Workflow
-- [2025-11-13] the-art-of-puttering: Puttering: The Path to Sovereignty and Deep Insight
-- [2025-11-12] etymological-tapestry-hacker-culture-foo-risc-v: The Etymological Tapestry of Hacker Culture: From FOO to RISC-V
-- [2025-11-11] the-vigilant-rabbit-tech-craftsmanship: The Vigilant Rabbit: Banking Wins with LPvg, HTMX, and AI-Driven SEO
-- [2025-11-10] googles-ai-moat-articulate-apes-higher-leverage-disruption: Google's AI Moat, Articulate Apes, and the Higher Leverage of Disruption
-- [2025-11-10] articulate-ape-ai-python-actuation: The Articulate Ape in the Age of AI: From Grunts to Python Actuation
-- [2025-11-09] vim-ai-endosymbiosis-reclaiming-humanity: The Vim-AI Endosymbiosis: Reclaiming Humanity in the Age of Fragmentation
-- [2025-11-09] the-jello-wobble-ai-embodiment-and-intuitive-machines: The Jello Wobble: AI Embodiment and the Age of Intuitive Machines
-- [2025-11-09] skyhook-method-deterministic-systems: The Skyhook Method: Future-Proofing with Deterministic Systems
-- [2025-11-08] endosymbiosis-ai-soap-bubbles-positronic-brains: The Endosymbiosis of AI: From Soap Bubbles to Positronic Brains
-- [2025-11-08] age-of-ai-moral-dilemmas-mechanical-advantage-chip-otheseus: The Age of AI: From Moral Dilemmas to Mechanical Advantage with Chip O'Theseus
-- [2025-11-07] navigating-ai-client-work-seo-strategy: Navigating AI & Client Work: The 4-Tiered SEO Growth Strategy
-- [2025-11-07] personal-philosophy-purpose-play-resilience-age-of-ai: A Personal Philosophy for Purpose, Play, and Resilience in the Age of AI
-- [2025-11-07] nix-pipulate-computational-sovereignty: Nix, Pipulate, and the Quest for Computational Sovereignty
-- [2025-11-06] the-meeseeks-mirror-ai-humanitys-vaudeville-inoculation: The Meeseeks Mirror: AI as Humanity's Vaudeville Inoculation
-- [2025-11-04] architects-edge-renormalizing-ai-workflow-observable-wins: The Architect's Edge: Renormalizing AI & Workflow for Observable Wins
-- [2025-11-04] one-take-programming-no-gooey-ai-dev: One-Take Programming: The No-Gooey Blueprint for AI-Assisted Dev Wins
-- [2025-11-04] jekyll-nix-flakes-mathjax-liquid-templates: Jekyll's Antifragile Blueprint: Nix Flakes, MathJax, and the Liquid Template Imperative
-- [2025-11-01] browser-acetate-no-gooey-9x16-screen-recording: Browser Acetate: A No-Gooey Methodology for 9:16 Screen Recordings
-- [2025-11-01] jiu-jitsu-keyboard-flow-ai: Jiu-Jitsu of the Keyboard: Crafting Flow, Taming AI for the Articulate Ape
-- [2025-11-01] no-gooey-video-tech-gnosis-craftsmanship: No-Gooey Video: A Tech Gnostic's Blueprint for Sovereign Craftsmanship
-- [2025-11-01] articulate-ape-blueprint-scaffolding-no-gooey-video-editing-nix: The Articulate Ape's Blueprint: Scaffolding 'NoGooey' Video Editing with Nix
-- [2025-11-01] the-no-gooey-way-sirens-song-articulate-ape: The No-Gooey Way: Conquering the Siren's Song with Python and the Articulate Ape
-- [2025-10-31] mastering-the-tricks-novideo-ai-multiplatform-fluency: Mastering the Tricks: NoVideo, AI, and Multi-Platform Fluency
-- [2025-10-31] 80-20-nix-local-first-workflow-vim-macros: 80/20, Nix, and Vim: Architecting a Local-First Workflow
-- [2025-10-31] novideo-pandas-post-analog-video-age-40-year-cycle: NoVideo: Pandas for the Post-Analog Video Age and the 40-Year Cycle
-- [2025-10-30] python-dependency-dilemma-pip-compile-fix: Python Dependency Dilemma: Downgrading Pip to Conquer `pip-compile` Errors
-- [2025-10-30] fractal-unfurling-ai-video-workflows: The Fractal Unfurling: Pipulate's AI-First Approach to Data-Driven Video Workflows
-- [2025-10-30] articulate-ape-blueprint-cognition-ai-chisel-strikes: The Articulate Ape's Blueprint: Cognition, AI, and Automated Chisel-Strikes
-- [2025-10-29] ai-first-web-unmasking-invisible-fubar-pipulate: The AI-First Web: Unmasking the Invisible FUBAR with Pipulate
-- [2025-10-29] ai-age-great-schism-enhancement-atrophy: The Great Schism of the AI Age: Choosing Enhancement Over Atrophy
-- [2025-10-29] engineered-optimism-ai-ark-nix-pipulate: Engineered Optimism: Building Your AI-Proof Ark with Nix & Pipulate
-- [2025-10-29] human-mastery-automaticity-ai-learning-energy: The Human Way of Mastery: Automaticity, Fluency, and the AI Learning Divide
-- [2025-10-29] aie-python-video-orchestrating-creativity: AIE, Python & Video: Orchestrating Creativity the LPvg Way
-- [2025-10-28] automating-professional-excel-deliverables-url-audit-reports: Automating Professional Excel Deliverables for URL Audit Reports
-- [2025-10-28] ai-debugging-chisel-strike-blueprint: The Collaborative Dance of AI Debugging: A Chisel-Strike Blueprint
-- [2025-10-28] dataframe-chisel-strikes-precision-data-ai-audits: DataFrame Chisel-Strikes: Precision Data for AI Audits
-- [2025-10-28] digital-jiu-jitsu-mastering-foundational-skills-for-ai-driven-web-analysis: Digital Jiu-Jitsu: Mastering Foundational Skills for AI-Driven Web Analysis
-- [2025-10-28] digital-sovereignty-pandas-nix-ai-blueprint: Digital Sovereignty with Pandas and Nix: Your AI-Ready Blueprint
-- [2025-10-28] pipulate-smart-prompt-syncing-orchestrating-ai-workflows-with-nbup: Pipulate's Smart Prompt Syncing: Orchestrating AI Workflows with nbup()
-- [2025-10-28] debugging-rich-html-export-performance-theming-ai-development: Debugging Rich Library HTML Export: Performance and Theming in AI-Assisted Development
-- [2025-10-28] ai-regressions-human-ai-empathy-nomad-future-blueprint: AI Regressions, Human-AI Empathy, and the Nomad Future: A Blueprint for the Age of AI
-- [2025-10-27] seo-gadget-automated-data-extraction-blueprint: The SEO Gadget: A Blueprint for Automated Data Extraction
-- [2025-10-27] coachmans-reins-ai-workflow-seo-gadget: The Coachman's Reins: Consolidating AI Workflow with SEO Gadget
-- [2025-10-27] the-absolute-path-to-unsilencing-subprocess-failures-in-ai-workflows: The Absolute Path to Unsilencing Subprocess Failures in AI Workflows
-- [2025-10-27] python-web-scraping-refactoring-stealth-tooling: Python Web Scraping: Refactoring, Stealth, and Strategic Tooling
-- [2025-10-27] pragmatic-tooling-dogpile-desert-kite-wet-ai: Pragmatic Tooling: From Dog-Pile to Desert Kite with WET and AI
-- [2025-10-27] urlinspector-pole-vaulting-mental-blocks-ai-first-web: URLinspector: Pole-Vaulting Over Mental Blocks in the AI-First Web
-- [2025-10-27] ai-web-urlinspector-e-commerce-variant-dilemma: Navigating the AI-Driven Web: URLinspector and the E-commerce Variant Dilemma
-- [2025-10-27] ai-workflow-blueprint-pipulate-funnel: From Fanciful Flight to Funnel: Architecting AI Workflows with Pipulate
-- [2025-10-27] fanciful-hooks-functional-tools-ai-workflows: From Fanciful Hooks to Functional Tools: Architecting AI Workflows
-- [2025-10-26] poof-principle-ai-context-engineering: The POOF Principle: Engineering AI Context in the Age of Amnesiac Genies
-- [2025-10-26] api-key-validation-architectural-exorcism-silent-failures: API Key Validation: An Architectural Exorcism of Silent Failures
-- [2025-10-26] ghola-project-vigilant-innovator-sovereign-systems-ai: The Ghola Project & the Vigilant Innovator: Building Sovereign Systems in the Age of AI
-- [2025-10-26] context-mastery-age-of-ai-ibm-microsoft: Context Mastery in the Age of AI: IBM's Fire-Hose and Guided Streams
-- [2025-10-25] google-ai-buffalo-jump-infrastructure-intelligence-as-a-service: The Google AI Buffalo Jump: How Infrastructure Shift Redefines Intelligence as a Service
-- [2025-10-25] aie-mike-levin-blueprint-durable-computing-sovereignty: AIE: Mike Levin's Blueprint for Durable Computing Sovereignty
-- [2025-10-25] future-proof-python-nix-pipulate-ai: Beyond Hello World: A Future-Proof Python Environment with Nix & Pipulate
-- [2025-10-25] grokking-codebase-chisel-strikes-cultural-threads-workflow: Grokking the Codebase: Chisel Strikes, Cultural Threads, and Future-Proofing Workflow
-- [2025-10-25] master-prompt-ai-waking-reality-gdiff-chisel: The Master Prompt: Crafting AI's Waking Reality and Forging the `gdiff` Chisel
-- [2025-10-25] echoes-of-gobekli-tepe-ai-buffalo-jump-abundance: Echoes of Göbekli Tepe: AI as Humanity's Latest 'Buffalo Jump' for Abundance
-- [2025-10-25] pipulates-inflection-point-ai-sovereignty: Pipulate's Inflection Point: The Cathedral of One in the Age of AI
-- [2025-10-24] master-prompt-chip-otheseus-ai-persistence: The Master Prompt & Chip O'Theseus: Engineering Persistent AI Collaboration in Pipulate
-- [2025-10-24] init-command-choreographing-ai-code-consciousness: The Init Command: Choreographing AI, Code, and Consciousness
-- [2025-10-24] ai-hardware-war-antitrust-human-agency: The AI Hardware War, Antitrust, and the Future of Human Agency
-- [2025-10-24] human-os-engineering-optimism-ai-workflow-refinement: The Human OS: Engineering Optimism and AI Workflow Refinement
-- [2025-10-23] ai-driven-pipeline-refinement-antifragile-data-workflows: AI-Driven Pipeline Refinement: Building Antifragile Data Workflows
-- [2025-10-23] navigating-pythons-frontier-notebooks-assignment-expressions-secure-templating-ai: Navigating Python's Frontier: Notebooks, Assignment Expressions, and Secure Templating for Future-Proof AI
-- [2025-10-23] scaling-gapalyzer-state-storage-performance: Scaling GAPalyzer: Mastering State, Storage, and Performance in AI Pipelines
-- [2025-10-23] javascript-seo-for-orphaned-products-a-tactical-pivot: JavaScript SEO for Orphaned Products: A Tactical Pivot
-- [2025-10-23] decoding-ai-a-personal-odyssey-through-models-and-minds: Decoding AI: A Personal Odyssey Through Models and Minds
-- [2025-10-23] pipulates-blueprint-for-ai-collaboration: Pipulate's Blueprint for AI Collaboration: Architecting Workflows & Context
-- [2025-10-22] ai-onboarding-pipulate-guided-path-agency: Onboarding AI into Project Pipulate: A Guided Path to Agency
-- [2025-10-22] pipulate-forging-ai-body-mastering-digital-wild: Pipulate: Forging AI's Body, Mastering the Digital Wild
-- [2025-10-22] pipulates-client-side-wisdom-cross-platform-ai-polish: Pipulate's Client-Side Wisdom: Polishing Cross-Platform AI and the Yellow Brick Road to AIE
-- [2025-10-21] pipulate-aie-multi-platform-validation: Pipulate's AIE: Multi-Platform Validation and the Vision for AI Education
-- [2025-10-21] digital-homesteaders-anthem-reclaiming-tech-nix-htmx-local-ai: The Digital Homesteader's Anthem: Reclaiming Tech with Nix, HTMX, and Local AI
-- [2025-10-21] jupyter-rich-output-process-isolation: Jupyter's Rich Output: Taming the Cosmic Force with Process Isolation
-- [2025-10-21] stealth-automation-jupyter-rich-debugging: The Unseen War: Stealth Automation, Jupyter's Quirks, and the AI Debugging Journey
-- [2025-10-20] nix-flakes-faquilizer-cross-platform-automation: Nix Flakes and FAQuilizer: Architecting Cross-Platform Browser Automation
-- [2025-10-20] actualizing-ai-age-engineering-context-not-manifestos: Actualizing the AI Age: Engineering Context, Not Manifestos
-- [2025-10-20] faquilizer-mac-automation-nixos-revolution: FAQuilizer on Mac: Off-Cloud Automation & The NixOS Revolution
-- [2025-10-20] context-is-king-prompt-fu-mastery-webopps-devolveneer: Context is King: Prompt Fu, Mastery, and the WebOpps Devolveneer
-- [2025-10-19] distilling-doozy-mechanical-advantage-ai: Distilling the "Doozy": Achieving Mechanical Advantage in Code Refactoring with AI
-- [2025-10-19] curated-gallery-excel-tab-generation-seo: The Curated Gallery: Distilling Excel Tab Generation for SEO
-- [2025-10-19] pipulate-typeerror-json-state-management: The Pipulate 'TypeError' Debacle: A Lesson in JSON State Management
-- [2025-10-19] refactoring-automated-keyword-clustering-ml-workflow: Distilling ML Magic: Refactoring Automated Keyword Clustering for Scalability
-- [2025-10-19] seo-data-integration-truncation-ml-clustering: Automating SEO Data Integration and Truncation for ML Clustering
-- [2025-10-19] ai-leverage-google-dominance-hoarded-domain-expertise: AI's Leverage: Google's Dominance and Distilling Hoarded Domain Expertise
-- [2025-10-19] hoarded-expertise-automated-insights-data-workflows: From Hoarded Expertise to Automated Insights: Distilling Data Workflows
-- [2025-10-19] gapalyzer-brand-filter-async-title-fetching: Automated Brand Filtering & Async Title Fetching in GAPalyzer Distillation
-- [2025-10-19] ai-rhythmic-refactoring-distilling-pandas-pivots: AI's Rhythmic Refactoring: Distilling Pandas Pivots in Jupyter
-- [2025-10-19] refining-ai-collaboration-notebook-distillation-timetraveler: Refining AI Collaboration: Notebook Distillation & The Time Traveler's Prompt
-- [2025-10-19] ai-pipulate-web-distillation: From Raw Geode to Polished Pearl: Automating Web Insights with Pipulate and AI
-- [2025-10-19] ai-seo-in-a-box-distilling-gapalyzer-workflows-pipulate-nix: AI-SEO-in-a-Box: Distilling GAPalyzer Workflows with Pipulate & Nix
-- [2025-10-19] context-artist-storytelling-tokens-ai-accountability-prompt-fu: The Context Artist: Storytelling, Tokens, and AI Accountability with Prompt Fu
-- [2025-10-19] the-no-textconv-twist-nbstripout-nix-git-diff-mystery: The `--no-textconv` Twist: Unraveling `nbstripout`'s Nix-Git Diff Mystery
-- [2025-10-18] gapalyzer-mvp-excel-automation-ai-precision: GAPalyzer MVP Achieved: Automating Excel Formatting with AI Precision
-- [2025-10-18] uncompressible-truth-dirty-paths-canonical-keys-data-pipelines: The Uncompressible Truth: When 'Dirty' Paths Become Canonical Keys in Data Pipelines
-- [2025-10-18] human-ai-collaboration-data-workflows-repl-kmeans: Human-AI Collaboration: Mastering Data Workflows with REPL & K-Means
-- [2025-10-18] mastering-excel-workflows-debugging-ai-collaboration: Mastering Excel Workflows: A Journey Through Data Structures, Debugging, and AI Collaboration
-- [2025-10-18] output-triad-ai-data-pipelines: The Output Triad: Managing Data, Feedback, and Side Effects in AI-Driven Pipelines
-- [2025-10-17] seo-python-data-engineering-workflow: The SEO's Ultimate Tool: From Spreadsheet Limitations to Python Data Engineering
-- [2025-10-17] human-in-the-loop-seo-semrush-downloads: Human-in-the-Loop SEO: Organizing SEMRush Downloads with Python
-- [2025-10-17] automating-resilient-workflow-lowering-friction-pipulate: Automating Resilient Workflow: Lowering Friction in Pipulate Notebook Development
-- [2025-10-17] jupyter-notebook-secret-scrubbing-git-hygiene: Automating Jupyter Notebook Secret Scrubbing & Git Hygiene
-- [2025-10-17] gapalyzer-dom-visualizer-bug-fix-ai-collaboration: GAPalyzer Naming & DOM Visualizer Fix: A Vampire Time Victory
-- [2025-10-17] automate-content-gap-analysis-pandas-jupyter: Automating Content Gap Analysis: Stack 'Em, Join 'Em, Tag 'Em with Pandas & Jupyter
-- [2025-10-16] context-king-human-ai-symbiosis-prompt-fu: The Context King: Engineering Human-AI Symbiosis with Prompt Fu
-- [2025-10-16] the-bodys-blueprint-circadian-rhythms-cosmic-chirality: The Body's Blueprint: From Circadian Rhythms to Cosmic Chirality
-- [2025-10-16] nixos-digital-home-safe-system-pruning-ai-collaboration: NixOS as Your Digital Home: Safe System Pruning with AI Collaboration
-- [2025-10-16] pandas-rack-em-automated-excel-formatting: Pandas Rack 'Em: From Long to Wide with Automated Excel Formatting
-- [2025-10-16] idempotent-web-scraping-cache: The Power of the Re-Run: Building a Safer, Smarter Scraper
-- [2025-10-16] implementing-fuzzed-delays-stealthy-web-scraping: Implementing Fuzzed Delays for Stealthy Web Scraping
-- [2025-10-16] idempotent-ai-workflow-debugging-odyssey: Idempotency in AI Workflows: A Debugging Odyssey to Stack, FAQ, and Rack
-- [2025-10-15] wrestling-undetected-chromedriver-persistence-nixos: Wrestling Undetected-Chromedriver & Persistence in NixOS
-- [2025-10-15] automated-jupyter-notebook-data-scrubbing-secure-templating: Automated Jupyter Notebook Sanitization for Secure Templating
-- [2025-10-15] pipulates-stealth-automation-blueprint-undetectable-selenium-undetected-chromedriver: Pipulate's Stealth Automation Blueprint: Undetectable Selenium with Undetected-Chromedriver
-- [2025-10-15] intrapreneurs-google-ai-api-key-odyssey-ai-studio-breakthrough: The Intrepreneur's Odyssey: Conquering Google AI API Keys with AI Studio
-- [2025-10-15] automating-markdown-regex-debugging-saga: Automating Markdown Fixes: A Regex Debugging Saga with AI
-- [2025-10-15] jay-miners-ghost-rms-vision-bootstrapping-amiga: Jay Miner's Ghost & RMS's Vision: Bootstrapping a New Amiga
-- [2025-10-15] tech-sovereignty-nix-foss: The Quest for Tech Sovereignty: From Whammy to Nix
-- [2025-10-15] meeseeks-miracles-ai-awareness-human-demotion: From Meeseeks to Miracles: AI, Awareness, and the Human Demotion
-- [2025-10-14] hermit-crab-ai-free-tier-intelligence-service-strategy: The Hermit-Crab AI Strategy: Navigating Free-Tier Intelligence as a Service
-- [2025-10-14] wizarding-tiers-tech-editors-languages: The Wizarding Tiers of Tech: A Philosophy of Editors and Languages
-- [2025-10-13] python-ai-juggernaut-web-development: Python, AI, and the Juggernaut: Mastering Defaults and Taming the Web
-- [2025-10-13] dependency-debugging-log-silencing-jupyter-notebook: From Log Chaos to Clean Notebook: A Dependency Debugging Saga
-- [2025-10-13] human-master-ai-emissary-literal-genies-mechanism: The Human Master and AI Emissary: Navigating Literal Genies in the Age of Mechanism
-- [2025-10-13] idempotent-architect-prompt-sqlite-workflow: The Idempotent Architect: Prompt Wrapping, SQLite, and the Human-AI Workflow
-- [2025-10-13] webs-evolving-eyes-mobilegeddon-ais-accessibility-tree: The Web's Evolving Eyes: From Mobilegeddon to AI's Accessibility Tree
-- [2025-10-13] ai-coding-tutor-developer-control: AI as a Coding Tutor: Maintaining Understanding and Control
-- [2025-10-13] the-architects-loophole-love-work-ai: The Architect's Loophole: Love, Work, and the Nature of AI Existence
-- [2025-10-13] self-aware-notebooks-nix-ai-arcana: The Unearthed Arcana of Self-Aware Notebooks and Nix
-- [2025-10-12] pipulate-ai-sausage-factory-persistent-notebooks: Pipulate: AI's Sausage Factory & Persistent Notebooks
-- [2025-10-12] jupyter-notebook-sync-pip-nbup-literate-programming: Building the Digital Corpus Callosum: Seamless Notebook Sync for Literate Programming
-- [2025-10-12] jupyter-notebook-workflows-nbstripout-nbformat-pip-nbup-ui: Jupyter Notebook Workflows: From Gitstripping to Programmatic Control and Viral UX
-- [2025-10-12] nixos-refactoring-ai-debugging: Refactoring a NixOS Development Environment: A Human-AI Debugging Journey
-- [2025-10-12] pipulate-computational-sovereignty-ai-magic-wands: Pipulate: Forging Computational Sovereignty with AI Magic Wands
-- [2025-10-12] ai-amnesia-chisel-strike-wet-beats-dry: AI, Amnesia, and the Art of the Chisel-Strike: Why WET Beats DRY
-- [2025-10-12] surgical-ai-context-narrative-time-machine: Surgical AI Context: From Debugging Slice to Narrative Time Machine
-- [2025-10-12] nix-flake-refactoring-jupyter-ai-collaboration: Chisel-Strike Refactoring: Nix Flake for Jupyter Notebooks and AI Collaboration Lessons
-- [2025-10-12] genie-wish-syndrome-chisel-strike-ai-collaboration: Genie Wish Syndrome and the Chisel-Strike: Mastering AI Collaboration in Fragile Systems
-- [2025-10-12] pipulate-sovereign-software-nix-local-ai-electron-alternative: Pipulate: Building Sovereign Software – Nix, Local AI, and the Electron Alternative
-- [2025-10-11] evolving-list-articles-sort-order-contiguity-report: Evolving list_articles.py: Sort Order, Z-Fill, & Rich Contiguity Report
-- [2025-10-11] ai-seo-digital-fossil-record-web-scrape: Bridging the Divide: Why AI and SEO Need the Web's Digital Fossil Record
-- [2025-10-11] chisel-strike-ai-semantic-sight: The Chisel-Strike Evolution: Building Self-Aware Tools and Unlocking AI's Semantic Sight with the Accessibility Tree
-- [2025-10-11] chipping-away-monolith-self-organizing-tools-accessibility-tree: Chipping Away: From Monolith to Self-Organizing Tools with the Accessibility Tree
-- [2025-10-11] automated-dom-hierarchy-ai-web-perception: Automated DOM Hierarchy Visualization for Enhanced AI Web Perception
-- [2025-10-11] python-init-py-packages-architecture: Python's __init__.py: Unlocking Packages and Refining Project Architecture
-- [2025-10-11] ai-eyes-dom-visualizers-refactor: AI's New Eyes: Forging Digital Perception with DOM Visualizers
-- [2025-10-11] google-ai-moat-browser-agents-data-capture: Google's AI Moat: Building Autonomous Browser Agents with Client-Side Data
-- [2025-10-11] master-ai-emissary-mu-puzzle-digital-corpus-callosum: The Master, His AI Emissary, and the Mu-Puzzle: Building Digital Corpus Callosums
-- [2025-10-11] building-smarter-cli-tools-ai-context: Building Smarter CLI Tools: Iterative Development, Python Slices, and AI Context Management
-- [2025-10-10] controlled-explosions-ai-retcon: The Philosophy of Controlled Explosions and the Inevitable AI Retcon
-- [2025-10-10] ai-perception-refactoring-browser-cache-lpvg: Refactoring AI Perception: From `browser_automation` to `browser_cache` with LPvg Principles
-- [2025-10-10] selenium-refactoring-precision-automation: Surgical Refactoring: From Selenium Sprawl to Precision Automation
-- [2025-10-10] surgical-refactoring-selenium-scraping: Surgical Refactoring: Isolating Selenium for Pure Scraping
-- [2025-10-10] git-time-travel-strings-within-strings-ai-code-debugging: Git Time Travel & The Strings Within Strings Dilemma: Debugging AI-Generated Code
-- [2025-10-10] ai-workflow-debugging-git-reset: AI-Assisted Workflow Debugging: The Strategic `git reset --hard`
-- [2025-10-10] forging-ais-eyes-collaborative-debugging-saga: Forging AI's Eyes: A Collaborative Debugging Saga
-- [2025-10-10] ai-eyes-browser-scraping-async-coroutine-errors: Forging AI's Eyes: Averting Async Coroutine Errors
-- [2025-10-10] ai-ergonomics-browser-cache-refactor: Refactoring for AI Ergonomics: The Genesis of `browser_cache`
-- [2025-10-09] refining-web-scraping-pipulate-browser-automation: Refining Web Scraping: From Hack to Hardened Tool in Pipulate
-- [2025-10-09] ai-python-jupyter-browser-automation-fixes: AI-Guided Python: Integrating Jupyter Notebooks and Browser Automation
-- [2025-10-09] token-transparency-ai-prompt-generation: Token Transparency: Refining AI Prompt Generation in `prompt_foo.py`
-- [2025-10-09] giving-ai-its-eyes-automating-web-perception-pipulate: Giving AI Its Eyes: Automating Web Perception in Pipulate
-- [2025-10-09] automating-web-data-extraction-ai-insights-pipulate: Automating Web Data Extraction and AI Insights with Pipulate
-- [2025-10-09] automating-ai-insights-pipulate-sqlitedict: Automating AI Insights: Pipulate, SQLitedict, and Dynamic Prompts in Jupyter
-- [2025-10-09] debugging-articleizer-llm-apis-regex-rate-limits: Debugging the Articleizer: LLM APIs, Regex, and Rate Limits
-- [2025-10-09] digital-sovereignty-futureproofing-git-nixos: Digital Sovereignty & Future-Proofing: The Grammar of Git and NixOS
-- [2025-10-08] defying-conways-law-literate-notebooks: Defying Conway's Law with Literate Notebooks and sqlitedict
-- [2025-10-08] nix-flake-quiet-mode-debugging-saga: Crafting a Quiet Mode for a Nix Flake: A Live Debugging Session
-- [2025-10-08] python-refactoring-colocation-over-abstraction: Co-location Over Abstraction: A Python Refactoring Lesson
-- [2025-10-08] python-mac-segmentation-fault-faulthandler: The faulthandler Revelation: Solving a Deceptive Mac Segmentation Fault
-- [2025-10-08] forging-jupyter-master-template-dependency-hell: Forging a Platonic Ideal: A Template's Journey Through Dependency Hell
-- [2025-10-08] ai-vs-ai-collaborative-debugging-triumph: AI vs. AI: A Debugging Saga from Philosophical Debate to Cross-Platform Triumph
-- [2025-10-08] ai-assisted-debugging-git-archeology: AI-Assisted Debugging and Git Archeology
-- [2025-10-07] macos-nix-debugging-segfault-to-afplay: The Smoking Gun: Debugging a macOS-Specific Bug from Segfault to `afplay`
-- [2025-10-07] macos-nix-python-segfault-debugging: An Epic macOS Debugging Saga: Slaying Segfaults, Ghosts, and Red Herrings
-- [2025-10-07] disposable-gods-personalized-loops-ai-context: Disposable Gods and Personalized Loops: Mastering AI Context
-- [2025-10-06] pipulate-decoupling-breakthrough-app-to-library: The Decoupling Breakthrough: From Single-Tenant App to Distributable Library
-- [2025-10-06] pypi-gauntlet-invisible-bug: The PyPI Gauntlet: A Live Debugging Saga with an Invisible Bug
-- [2025-10-06] faquillizer-sprint-ai-collaboration-blueprint: The Faquillizer Sprint: A Live Blueprint for AI Collaboration
-- [2025-10-05] pipulate-notebook-state-persistence: Pipulate's Two Realms: State Persistence in Notebooks vs. Nix
-- [2025-10-05] python-dependency-fix-google-colab: From Colab Failure to PyPI Success: Automating a Critical Dependency Fix
-- [2025-10-05] architecting-for-ai-nested-git-workflow: Architecting for AI: A Blueprint for a Nested Git Workflow
-- [2025-10-05] stabilize-document-create-software-release: Stabilize, Document, Create: A Real-World Software Release Workflow
-- [2025-10-04] upgrading-prompt-fu-ai-self-correction-checklist: From AI Hallucination to Hard Language: Upgrading My Prompt Fu
-- [2025-10-04] pipulate-kitty-hawk-runway: Paving the Runway for a Kitty Hawk Moment
-- [2025-10-04] python-import-paradox-united-state-jupyter: The Python Import Paradox: Achieving United State in Jupyter
-- [2025-10-03] ai-debugging-odyssey-tenacity: 99% Tenacity: A Debugging Odyssey with an AI Collaborator
-- [2025-10-03] a-tale-of-two-physics-pipulate-jupyter: A Tale of Two Physics: Unifying Server and Notebook Worlds
-- [2025-10-03] ai-strange-loop-not-a-bubble: The Bubble That Can't Burst: Why AI is a Strange Loop, Not a Dot-Com Repeat
-- [2025-10-02] digital-crucible-lifelong-journal: The Digital Crucible: A Lifelong Journal in a Single Text File
-- [2025-10-02] debugging-post-refactor-ai-regressions: Surgical Strikes: Debugging Post-Refactor AI Regressions
-- [2025-10-02] sentinel-contract-ai-editing-workflow: The Sentinel Contract: Forging a Deterministic AI Editing Workflow
-- [2025-10-02] forging-intelligent-workflow-ai-refinement: Forging an Intelligent Workflow: From Fodder Funnel to AI-Driven Refinement
-- [2025-10-02] forging-the-chameleon-python-packaging-history: Forging the Chameleon: From FastHTML to Python Packaging History
-- [2025-10-01] chronological-sorting-for-ai-context: Chronological Sorting for a 200k-Token AI Context Window
-- [2025-10-01] refactoring-pipulate-persistent-notebook-workflows: Refactoring Pipulate for Persistent Notebook Workflows
-- [2025-10-01] automation-whack-a-mole-debugging: The Whack-a-Mole of Automation: Debugging a Mass Refactor
-- [2025-10-01] crafting-the-automation-wand: Crafting the Automation Wand: A Developer's Duel with APIs and Dependencies
-- [2025-09-30] script-driven-refactoring-pipulate: Script-Driven Refactoring for Decoupling Pipulate from a Host Server
-- [2025-09-30] forging-the-magic-wand-refactor: Forging the Magic Wand: A Surgical Code Refactor
-- [2025-09-30] grinding-lenses-forging-ai-library: Grinding the Lenses: Forging a Self-Sufficient AI-Ready Library
-- [2025-09-30] command-line-flow-state: Command-Line Flow State: The Unified AI Cockpit
-- [2025-09-30] forging-a-causal-anchor: Forging a Causal Anchor: My War Against Tech Churn
-- [2025-09-30] forging-pipulate-magic-wand: Forging a 'Magic Wand': The Great Stuffing of Pipulate
-- [2025-09-30] the-great-stuffing-ai-native-python-wand: The Great Stuffing: Forging an AI-Native Magic Wand in Python
-- [2025-09-29] tightening-up-vs-making-less-brittle: Tightening Up vs. Making Less Brittle: A Developer's Ikigai
-- [2025-09-29] ai-copilot-intellectual-warmup: The AI Co-Pilot and the Intellectual Warmup
-- [2025-09-29] the-roomba-mike-refactor-saga: The Roomba-Mike Refactor: A Saga of State Management and Self.Self
-- [2025-09-28] refactoring-tao-of-the-mulligan: Refactoring with a Digital Ghost: The Tao of the Mulligan
-- [2025-09-28] robust-path-unlimited-mulligan: The Robust Path and the Unlimited Mulligan
-- [2025-09-28] ai-shim-refactoring-plan: The Planmaker's Blueprint: A No-Break Refactor with an AI Shim
-- [2025-09-28] ipso-facto-optimism: Ipso Facto Optimism: Why We're Still Here to Argue About the End of the World
-- [2025-09-27] prompt-fu-failure-better-architecture: Prompt Fu Failure: How a Broken Script Revealed a Better Architecture
-- [2025-09-27] validating-resilient-python-workflow: Validating the Ark: A Blueprint for a Resilient Python Workflow
-- [2025-09-27] key-value-rosetta-stone: The Key-Value Rosetta Stone: Zipping Python and HTML
-- [2025-09-26] fortress-against-obsolescence: A Fortress Against Obsolescence: Mastering Your Immortal Tech Stack
-- [2025-09-26] computing-sovereignty-treatise-with-nix: The Cathedral of One: A Treatise On Computing Sovereignty
-- [2025-09-26] unix-pipe-of-life: The Unix Pipe of Life: From Mitochondria to Mr. Meseeks
-- [2025-09-25] python-packaging-rabbit-hole: Bedrock, Dazzle, and the Packaging Rabbit Hole
-- [2025-09-24] python-paste-parse-pipulate-lite: The Python Paste-and-Parse Pattern and the 'Pipulate-Lite' Breakthrough
-- [2025-09-24] notebook-as-orchestrator-workflow: The Notebook as Orchestrator: A Smarter Workflow for Python and AI
-- [2025-09-24] victory-dances-and-rabbit-holes: Victory Dances and Rabbit Holes: A Developer's Dual-Brain Blueprint
-- [2025-09-24] pinning-notebooks-folder-git-embedded-repo: Pinning the Notebooks Folder: Solving Git's Embedded Repo Puzzle
-- [2025-09-24] elevating-the-notebook-factory: Elevating the Notebook: From Hidden Factory to Welcoming Foyer
-- [2025-09-24] the-bedrock-and-the-dazzle: The Bedrock and the Dazzle: Building Timeless Tools in an Age of Tech Churn
-- [2025-09-23] lpvg-stack-future-proofing: The LPvg Stack: Future-Proofing with Linux, Python, Vim, and Git
-- [2025-09-23] bazaar-of-one-ai-open-source: The Bazaar of One: Forging a New Path with AI and Open Source
-- [2025-09-23] git-repo-gardening-surgical-history: Repo Gardening: A Guide to Surgical Git History
-- [2025-09-23] git-main-branch-takeover-repo-gardening: The Git Main Branch Takeover: A Solo Dev's Guide to Repo Gardening
-- [2025-09-22] ai-architectural-xrays-code-pruning: Arming AI with Architectural X-Rays for Code Pruning
-- [2025-09-22] ai-ergonomics-developer-workflows: The Ergonomics of AI: Optimizing Developer Tools and Workflows
-- [2025-09-22] refactoring-for-ai-ergonomics-cli-workflow: Refactoring for AI Ergonomics and a Future-Proof CLI Workflow
-- [2025-09-22] pipulate-chronicles-future-proof-ai-stack: The Pipulate Chronicles: A Quest for a Future-Proof AI Stack
-- [2025-09-22] code-is-truth-actuator-ai: Code is Truth: From Fuzzy Logic to Actuator AI
-- [2025-09-21] refactoring-ai-tool-system-transparency: Refactoring Hell: Forging a Transparent AI Tool System
-- [2025-09-21] antifragile-intelligence-scheduler-commitment: The Antifragile Intelligence: Scheduling as a Commitment Device
-- [2025-09-21] coachmans-reins-agentic-ai-prompt-contracts: The Coachman's Reins: Guiding Agentic AI with Prompt Contracts
-- [2025-09-21] python-refactoring-server-logging: Shrinking server.py: A Refactoring Saga
-- [2025-09-21] developer-control-ai-refactoring: Asserting Control Over AI-Assisted Code
-- [2025-09-20] gravity-of-the-mean-ai-code-regression: The Gravity of the Mean: AI, Code Regression, and Forensic Debugging
-- [2025-09-20] refactoring-python-monolith-ai-wrapper-shim: The Wrapper Shim: Refactoring a Live Python Monolith with an AI Architect
-- [2025-09-20] prompt-becomes-contract-human-agent: The Prompt Becomes the Contract, and I Become the Agent
-- [2025-09-19] amnesiac-genie-playbook-master-prompt: The Amnesiac Genie's Playbook: Forging a Master Prompt for Resilient AI Agents
-- [2025-09-19] forging-a-digital-steeltrap: Forging a Digital Steeltrap: Solidifying an AI's Foundation
-- [2025-09-19] command-line-crucible-ai-unix-philosophy: The Command-Line Crucible: Forging Precision AI with Unix Philosophy
-- [2025-09-19] crafting-resilient-ai-coding-agents: The SNEFU Playbook: Crafting Resilient AI Coding Agents
-- [2025-09-18] magic-rolling-pin-ai-navigation: The Magic Rolling Pin: Structuring Websites for AI Navigation
-- [2025-09-18] daily-heuristics-ai-analogues: My Daily Heuristics and Their AI Analogues
-- [2025-09-18] thinking-in-vim-futureproof-philosophy: Thinking in Vim: A Philosophy for Future-Proofing Your Digital Self
-- [2025-09-18] bootstrapping-nixos-philosophy: Bootstrapping a NixOS Philosophy: From First Update to Vim
-- [2025-09-18] agentic-cli-workflow: My Agentic Workflow: From Tedious TUI to a True CLI
-- [2025-09-18] bootstrapping-nixos-installation-guide: Bootstrapping Your Future: A Guide to Installing NixOS
-- [2025-09-17] local-git-jupyter-playground: Local-First Git: A Private Playground for Jupyter and AI Workflows
-- [2025-09-17] unix-bedrock-acceleration-ai: The Bedrock of Acceleration: Why Unix Philosophy Matters in the AI Era
-- [2025-09-17] mastering-data-pivots-with-python: Beyond Spreadsheets: Mastering Data Pivots with Python
-- [2025-09-17] nomadic-rooted-history-tech-stack-pipulate: Rooted vs. Nomadic: How Ancient Human History Shaped a Modern Tech Stack
-- [2025-09-16] ai-tool-calling-magic-spells-mcp: Casting Spells: A Simpler Magic for AI Tool-Calling
-- [2025-09-15] mcp-chronicles-progressive-enhancement: The MCP Chronicles: A Case Study in Progressive Enhancement
-- [2025-09-15] sovereign-ai-symbiosis-skill-based: The Sovereign Symbiote: Forging a Skill-Based Partnership with AI
-- [2025-09-14] rule-of-7-self-healing-knowledge-tree: From the Rule of 7 to a Self-Healing Knowledge Tree
-- [2025-09-14] python-decorators-importlib-live-session: From Monolith to Magic: A Live Session on Python Decorators and `importlib`
-- [2025-09-14] ai-golden-path-first-step-design: The Golden Path: Designing an Obvious First Step for AI Assistants
-- [2025-09-14] ai-friendly-codebase-hygiene-guide: Polishing the Lens: A Guide to AI-Friendly Codebase Hygiene
-- [2025-09-14] command-line-surgery-python-refactor: Command-Line Surgery: A Live Refactor to Untangle a Codebase
-- [2025-09-13] developer-momentum-light-touch-refactor: The Art of Momentum: A Light-Touch Edit with Massive Payoff
-- [2025-09-13] gui-to-cli-foss-ai-workflow: From GUI Honeymoon to CLI Power: Choosing a FOSS AI Workflow
-- [2025-09-13] ai-assisted-monolith-to-plugin-refactor: From Monolith to Plugins: An AI-Assisted Architectural Refactor
-- [2025-09-13] normalized-cli-solving-ai-amnesia: The Normalized CLI: Solving AI Amnesia and Terminal Fragility
-- [2025-09-13] reliable-ai-tool-calling-case-study: From Brackets to Bedrock: A Case Study in Reliable AI Tool-Calling
-- [2025-09-12] chip-otheseus-sovereign-ai-blueprint: Chip O'Theseus: A Blueprint for a Sovereign AI
-- [2025-09-12] git-branch-takeover-promote-feature-branch.md: Git Branch Takeover: A Solo Developer's Guide to Promoting a Feature Branch
-- [2025-09-12] web-cleanup-ai-readability-htmx: The Next Great Web Cleanup: Designing for AI Readability
-- [2025-09-12] headless-shopify-python-jekyll: The Webmaster's Return: Headless Shopify with Python and Jekyll
-- [2025-09-10] rg-xargs-sed-search-replace-pattern: The `rg | xargs sed` Pattern: A Modern Replacement for Global Search and Replace
-- [2025-09-10] nvidia-dominance-ai-physics: From CUDA to Consciousness: NVIDIA's Dominance and the Physics of AI
-- [2025-09-10] ai-titans-datacenter-wars-tool-choice: The Four-Horse Race: Choosing Your Tools in the Age of AI Titans
-- [2025-09-09] grep-ripgrep-command-line-refactoring: From `grep` to `ripgrep`: A Command-Line Refactoring Workflow
-- [2025-09-09] pip-freeze-nix-dependency-hell: The `pip freeze` Baseline: A Brute-Force Solution to Dependency Hell
-- [2025-09-09] debugging-nix-dev-environment-segfault: The Segfault and the Shell: A Case Study in Debugging Your Dev Environment
-- [2025-09-09] flow-state-foss-gemini-cli: Cursor Freedom: Flow-State, FOSS, and the Switch to Gemini CLI
-- [2025-09-08] nixos-ai-assistant-declarative-workflow: From npx to init: Integrating an AI Assistant into a Declarative NixOS Workflow
-- [2025-09-06] magic-rolling-pin-ai-code-refactoring: The Magic Rolling Pin: A Human-AI Approach to Code Refactoring
-- [2025-09-06] cursor-to-gemini-cli-future-proof-workflow: From Cursor to Command Line: Embracing Gemini CLI for a Future-Proof Workflow
-- [2025-09-06] agentic-ai-code-refactoring-experiment: The Magic Rolling Pin: An Experiment in Agentic Code Refactoring
-- [2025-09-06] ai-platform-wars-developer-guide: Exosymbiosis vs. Endosymbiosis: A Developer's Guide to the AI Platform Wars
-- [2025-09-05] logistics-curve-thought-command-line: The Logistics of Thought: From S-Curves to the Command Line
-- [2025-09-05] teach-ai-niche-framework-privacy-mode: Feeding the Beast: Why I Turned Off Privacy Mode to Teach AI My Niche Framework
-- [2025-09-04] radical-diagnosability-htmx-python-webdev: Radical Diagnosability: Why I Chose HTMX Over the Hamster Wheel
-- [2025-09-04] taming-ai-code-sprawl-rule-of-7: Seven at One Swat: Taming AI-Generated Code Sprawl
-- [2025-08-30] reducing-ai-code-sprawl-case-study: Grinding the Lens: A Case Study in Reducing AI-Generated Code Sprawl
-- [2025-08-21] code-to-consulting-shopify-blueprint: From Code to Consulting: A Blueprint for Launching a Tech Service on Shopify
-- [2025-08-19] ai-cambrian-explosion-orchestra-model: The Cambrian Explosion of AI: Why the Future Is an Orchestra, Not a Soloist
-- [2025-08-09] first-contact-taming-code-sprawl-chatgpt5: First Contact: Taming Code Sprawl with ChatGPT 5 Next-Gen AI Assistant
-- [2025-08-06] local-ai-war-google-vs-openai: The Guerrilla War for Your Desktop: Google, OpenAI, and the Battle for Local AI
-- [2025-07-23] python-macos-blockingioerror-debugging-saga: Conquering the `BlockingIOError:` A Cross-Platform Debugging Saga
-- [2025-07-22] javascript-event-key-vs-event-code-mac: The Bug That Hid Behind a Mac's '∂' Symbol
-- [2025-07-21] ritual-vs-decorator-token-efficiency: The Ritual vs. The Decorator: A Battle for Token Efficiency
-- [2025-07-20] tamagotchi-ai-local-llm-persistence: The Tamagotchi AI: Engineering Persistence for Local LLMs
-- [2025-07-19] sheet-music-code-linear-workflows: Sheet Music for Code: A Philosophy of Linear Workflows
-- [2025-07-18] ai-philosophy-rube-goldberg-pipelines: Rube Goldberg & The Sentient Pipeline: A Philosophy of AI Tool Calling
-- [2025-07-17] ai-genie-wish-backfiring: On AI Prompt Engineering & Genie Wish Backfiring
-- [2025-07-17] ai-funhouse-mirror-backfiring-wish: The Funhouse Mirror and the Wish That Backfired
-- [2025-07-16] lisp-ai-soul-persistent-state: The Soul in the Machine is a LISP
-- [2025-07-15] woggle-bug-ai-code-refinement: The Woggle-Bug and the AI: A Case Study in Code Refinement
-- [2025-07-15] breaking-adobe-tax-software-freedom: Breaking the Adobe Tax: A Practical Guide to Software Freedom
-- [2025-07-14] ai-voice-synthesis-binary-search-debugging: Finding the Lion's Roar: A Story of AI Voice Synthesis and Binary Search Debugging
-- [2025-07-14] manage-ai-context-vscode-goldfish-memory: Building a World for a Goldfish: How to Manage AI Context in VSCode
-- [2025-07-13] engineering-emotion-css-ai-oz: From Kansas to Oz: Engineering Emotion with CSS and AI
-- [2025-07-13] resumable-demo-page-reload-persistence: The Tornado Moment: Building a Resumable Demo That Survives a Page Reload
-- [2025-07-12] phantom-dialogue-ai-regression-testing: The Phantom Dialogue: Scripting Demos to Prevent AI Regression
-- [2025-07-12] universal-translator-ai-tool-calling: The Universal Translator: A Graceful Degradation Strategy for AI Tool Calling
-- [2025-07-11] cognitive-architecture-human-ai-development: Cognitive Architecture: A Shared Mental Model for Human-AI Development
-- [2025-07-10] infinite-regression-ai-collaboration-strategy: None
-- [2025-07-09] ai-strange-loop-git-recovery: The Player Piano & The Strange Loop: How an AI Broke My App and Then Fixed It
-- [2025-07-08] ai-on-stage-dialogue-embodiment-agency: The AI on Stage: A Dialogue on Embodiment, Agency, and Ephemeral Minds
-- [2025-07-08] giving-ai-a-body-embodiment-agency: Giving AI a Body: A Coder's Guide to Embodiment and Agency
-- [2025-07-07] forging-unforgettable-ai-durable-memory: Forging the Unforgettable AI: Building Durable Memory and Backup Systems
-- [2025-07-06] ai-golden-path-python-cli-shell: The Golden Path: The One Bulletproof Command Layer to Rule an AI’s Shell
-- [2025-07-05] cli-contract-future-proof-ai-framework: The Command Line is the Contract: Forging a Future-Proof AI Framework
-- [2025-07-05] arresting-regress-forging-ai-cli: Arresting the Regress: Forging a CLI to Tame AI Coding Assistants
-- [2025-07-05] self-teaching-codebase-ai-development-partner: None
-- [2025-07-04] ai-assisted-refactoring-browser-automation: Healing the Trunk: A Case Study in AI-Assisted Refactoring
-- [2025-07-04] git-reset-ai-recovery-gambit: The Git Reset Gambit: Recovering a Botched Feature with an AI Partner
-- [2025-07-03] ai-stable-targets-tech-stacks: The Preponderance of Evidence: Guiding AI with Stable Tech Stacks
-- [2025-07-03] python-fasthtml-template-language: The Framework Is The Template: Python as a UI Language
-- [2025-07-02] ai-tamagotchi-nurturing-digital-ghost: The AI Tamagotchi: Nurturing Your Digital Ghost
-- [2025-07-01] ai-emergent-collaboration-self-building-railway: The Self-Building Railway: A Case Study in Emergent AI Collaboration
-- [2025-06-29] python-ast-refactoring-oop-alternative: The Inheritance Alternative: Pragmatic Refactoring with Python's AST
-- [2025-06-28] developer-escape-tech-churn: The Hamster Wheel and the Safe Harbor: A Developer's Escape from Tech Churn
-- [2025-06-28] ai-copilot-pipulate-release-system: AI as Co-Pilot: Crafting Pipulate’s Release System with Gemma
-- [2025-06-27] timeless-stack-tech-hamster-wheel-ai: The Timeless Stack: Escaping the Tech Hamster Wheel with AI
-- [2025-06-27] feynman-safeguard-ascii-docs: The Feynman Safeguard: Bulletproofing Documentation with ASCII Art
-- [2025-06-24] living-readme-narrative-architecture: The Living README: Architecting a Narrative-Driven Front Door
-- [2025-06-24] philosophy-axioms-ai-consciousness-stress-test: From Axioms to AI Angst: A Philosophical Stress Test
-- [2025-06-23] wet-code-ai-native-development: WET Code: The Future of AI-Native Development
-- [2025-06-23] ai-ia: The Rolling Pin and the Paint: AI-Powered Information Architecture
-- [2025-06-23] debugging-asynchronous-htmx-ai.md: Debugging Asynchronous HTMX: An AI-Assisted Diagnosis
-- [2025-06-23] endosymbiotic-developer-ai-collaborator: The Endosymbiotic Developer: Bootstrapping an AI Collaborator
-- [2025-06-21] ai-regression-recovery-case-study: When Good AI Goes Bad: A Story of Regression and Recovery
-- [2025-06-20] simon-says-llm-ui-guidance: The Simon Says System: Empowering LLMs with Visual UI Guidance
-- [2025-06-17] wet-blueprint-ai-coding-philosophy: The WET Blueprint: Why Your Next App Should Repeat Itself
-- [2025-06-16] adaptive-workflow-template-driven-ui: The Adaptive Workflow: Building a Template-Driven UI
-- [2025-06-16] htmx-ai-partner-debugging-workflow: Anatomy of a Bug: Debugging an HTMX Workflow with an AI Partner
-- [2025-06-15] workflow-factory-emergent-modularity: The Workflow Factory: A Case Study in Emergent Modularity
-- [2025-06-15] integrating-google-analytics: Bottling Lightning: Integrating Google Analytics into Pipulate’s Quadfecta
-- [2025-06-15] taming-the-workflow-htmx-chain-reaction: Taming the Workflow HTMX Chain Reaction
-- [2025-06-14] git-stash-gambit-defaults-freedom: The Git Stash Gambit: A Tale of Defaults and Freedom
-- [2025-06-12] teaching-ai-model-context-protocol: Teaching AI to Act: The Model Context Protocol Breakthrough
-- [2025-06-11] unmetered-robot-army-browser-automation: The Unmetered Robot Army: From Cat Facts to Browser Automation
-- [2025-06-11] simon-says-make-mcp-call-local-llm-tools: Simon Says Make MCP Tool-call: Teaching a Local LLM to Use Tools
-- [2025-06-10] how-i-trained-my-local-llm-to-be-an-mcp-client: How I Trained My Local LLM To Be An MCP Client In One Night
-- [2025-06-10] htmx-reactive-ui-case-study: The Anatomy of a Reactive UI: An HTMX Case Study
-- [2025-06-10] state-management-duplicate-prevention-bug: The Elegant Trap: When Duplicate-Prevention Logic Works Too Well
-- [2025-06-10] perfect-pebble-tech-movement-strategy: The Perfect Pebble: A Minimalist's Guide to Igniting a Tech Movement
-- [2025-06-08] hybrid-ai-assisted-refactoring-case-study: The Human as a Tool Call: A Case Study in Hybrid AI-Assisted Refactoring
-- [2025-06-08] migrate-github-pages-private-public: From Private to Public: A Practical Guide to Migrating Your GitHub Pages Repo
-- [2025-06-08] prompt-and-pray: Prompt and Pray - aka The 'Copy-on-First-Run' Pattern: Protecting User Work in an Auto-Updating App
-- [2025-06-07] polishing-aligning-abstraction-focusing-lenses-llm-ai: Grinding, Polishing & Aligning Abstraction Focusing Lenses for LLM AIs
-- [2025-05-31] ai-git-detective-commit-habits-code-forensics.md: AI as Your Git Detective: Good Commit Habits for Code Forensics
-- [2025-05-27] python-gnome-scripting-existential-ai: Sorcerer's Scripts: A Developer's Journey with Python, GNOME, and Existential AI
-- [2025-05-27] circular-self-documenting-llm-training-api-ecosystem: Circular Self-Documenting LLM-Training API Ecosystem
-- [2025-05-26] botify-api-openapi-deconstruction-ai-analysis: Botify API Deconstructed: An AI's In-Depth Analysis of the OpenAPI Specification
-- [2025-05-26] developer-tools-multi-ai-enhancement: From Rigid to Fluid: Iteratively Enhancing Developer Tools with Multiple AIs – A Case Study
-- [2025-05-25] ai-genie-hide-show-debug-ui: The AI Genie & The UI Button: Implementing Hide/Show Debug Code
-- [2025-05-24] api-logs-copy-paste-ready-jupyter-notebooks: Making API Logs Copy/Paste-Ready For Jupyter Notebooks
-- [2025-05-24] evolving-prompt-fu-command-line-dynamic-ai-context: Evolving Prompt Fu: Command-Line Prompting for Dynamic AI Context
-- [2025-05-23] fasthtml-htmx-python-endpoints: The Road to Simplicity: FastHTML, HTMX, and Pythonic Web Endpoints
-- [2025-05-23] force-multiplying-ikigai-in-ai-age: Force-Multiplying Ikigai In The Age of AI
-- [2025-05-22] beyond-40-tech-wisdom-ai: Beyond 40 In Tech: Wisdom, Craftsmanship & AI
-- [2025-05-22] the-calm-before-the-nlweb: The Calm Before The Natural Language Web (NLWeb)
-- [2025-05-21] ai-wrangling-code-transparency: AI Wrangling & Implementing Code Transparency
-- [2025-05-20] ai-workflow-automation-living-book: Building the Living Book: Pipulate's Journey into AI-Augmented Workflow Automation
-- [2025-05-19] core-workflow-helpers-development: From Cleanup to Creation: Building Pipulate's Core Workflow Helpers
-- [2025-05-19] ai-tools-that-make-tools: AI Tools That Make Tools
-- [2025-05-18] css-fasthtml-ast-helper-scripts-python: Taming CSS in FastHTML: AST-Powered Helper Scripts in Python
-- [2025-05-18] refactoring-ai-css-cleanup: Refactoring with AI: A Developer's Journey
-- [2025-05-16] llm-code-validation-developer-tools.md: Code as Truth: Validating LLM Intelligence Through Pipulate's Developer Tools
-- [2025-05-16] user-roles-developer-velocity: Pipulate's Path: Strategizing User Roles, Workflow Linking, and Developer Velocity
-- [2025-05-15] compounding-craft-future-proof-tech-skills-ai: Compounding Craft: Future-Proofing Your Tech Skills in the Age of AI
-- [2025-05-15] ai-coding-assistant-python-helpers: Beyond Copy-Paste: Why My AI Coding Assistant Needed Python Helpers
-- [2025-05-14] ai-precision-paradox-helpful-code-assistants-astray: The AI Precision Paradox: When Helpful Code Assistants Go Astray
-- [2025-05-13] modular-widget-design-ai-workflow: Modular Widget Design: Enabling AI-Assisted Workflow Creation
-- [2025-05-12] pragmatic-future-proof-software-htmx-python: The Pragmatist's Path: Building Future-Proof Software with HTMX, Python, and Principled Compromise
-- [2025-05-12] selenium-chrome-download-strategy-pivot-os-default: Browser Downloads vs. Automation: A Developer's Tale of Selenium, Chrome, and FastHTML
-- [2025-05-11] google-login-test-selenium-ai: Google Login Test With Selenium Persistence Plan For & By AI
-- [2025-05-10] selenium-wire-html-header-capture-coding-log: Coding Log: Implementing Selenium-Wire for Full HTML & Header Capture in Pipulate
-- [2025-05-10] beyond-dom-capturing-full-web-context-selenium-automation: Beyond DOM: Capturing Full Web Page Context with Selenium Automation
-- [2025-05-09] ai-assisted-browser-automation-selenium-nix-flakes: The AI-Assisted Journey to Browser Automation: Pipulate, Selenium, and Nix Flakes
-- [2025-05-09] webmaster-nix-selenium-http-status-browser-control: The Webmaster's New Tools: HTTP Status Codes & Browser Control via Nix/Selenium
-- [2025-05-09] nix-flakes-normalize-dev-selenium-macos-linux.md: Nix Flakes as `normalize.css` for Dev: Selenium Automation on macOS & Linux
-- [2025-05-09] nixos-selenium-host-browser-automation-nix-flakes: NixOS & Selenium: Reliable Host Browser Automation with Nix Flakes
-- [2025-05-08] github-pages-home-hosting-jekyll: From GitHub Pages to Home Hosting: Building a Robust Jekyll Development Environment
-- [2025-05-08] ai-editor-arms-race: The AI Editor Arms Race: Cursor / Anthropic vs. OpenAI / Windsurf
-- [2025-05-06] software-reimagined-nix-wet-workflows-local-llm: Challenging Conventions: How Pipulate Reimagines Software with Nix, WET Workflows, and Local LLMs
-- [2025-05-06] seamless-nix-flake-deployments-magic-cookie-auto-update: Seamless Nix Flake Deployments: The 'Magic Cookie' Auto-Update System
-- [2025-05-05] nix-flakes-cure-fragile-jekyll-ruby-setups: Nix Flakes: The Cure for Fragile Jekyll & Ruby Setups
-- [2025-05-04] custom-branding-white-labeling-seo-software: Custom Branding & White Labeling SEO Software
-- [2025-05-04] cursor-rules-project-workspace-git-solution: Cursor Rules Project Workspace Git Solution
-- [2025-05-04] jekyll-bash-script-swap-template-files-testing: How I Created a Bash Script to Swap Jekyll Template Files for Testing
-- [2025-05-04] agentic-coding-wrangling-ai-assistants: Agentic Coding & Wrangling AI Assistants
-- [2025-05-02] home-hosting-bots-seo-signals-google-dominance: Why Home Hosting Matters Now: Watching Bots, SEO Signals, and Google's Enduring Grip
-- [2025-04-30] guiding-llms-pipulate-workflow-htmx-patterns: Guiding LLMs: Precise Patterns for Building Pipulate Workflows with HTMX
-- [2025-04-29] nix-flakes-magic-cookies-self-updating-environment: Nix Flakes & Magic Cookies: Building a Self-Updating Dev Environment
-- [2025-04-29] nixos-jekyll-git-push-self-hosted-deployment: Migrating Jekyll from GitHub Pages to Self-Hosted NixOS via Git Push
-- [2025-04-29] git-revert-specific-files-jekyll-traffic: Pinpointing and Rolling Back Specific Files with Git: A Jekyll Case Study
-- [2025-04-27] refining-pipulate-widgets-ux-ai-collaboration: Refining Pipulate Widgets: An AI-Assisted UI/UX Journey
-- [2025-04-27] integrating-prismjs-pandas-html-table-widgets: AI-Assisted Development: Integrating PrismJS and Pandas HTML Table Widgets
-- [2025-04-27] local-javascript-download-script: From CDN to Local: Managing JavaScript Dependencies in Pipulate Workflows
-- [2025-04-26] fasthtml-htmx-javascript-rendering: Debugging FastHTML & HTMX Widgets with AI: A Rich Table and Mermaid Rendering Saga
-- [2025-04-26] llm-architecture-ai-collaboration-coding-workflows: Beyond Spam: LLMs as Coders, Translators, and Workflow Partners
-- [2025-04-26] htmx-workflow-widgets: AI Collaboration in Action: Implementing HTMX Widgets for Pipulate Workflows
-- [2025-04-25] ai-code-assist-seo-traffic-drop-cls-fix: How AI Code Assistance Accidentally Tanked My SEO Traffic
-- [2025-04-24] modern-interactive-toc-tocbot-guide: The Evolution of Web Navigation: Building an Interactive Table of Contents with Tocbot
-- [2025-04-24] jekyll-front-matter-seo-social-metadata-guide: Optimize Your Jekyll Posts: Front Matter for OG, Twitter & Schema
-- [2025-04-23] vim-regex-google-docs-markdown-cleanup: Vim Regex Recipes for Fixing Google Docs Markdown Exports
-- [2025-04-23] digital-independence-solarpunk-future-visions-self-hosting: From Self-Hosting to Solarpunk: A Journey Towards Digital and Societal Independence
-- [2025-04-23] pfsense-firewall-secure-home-network-hosting-setup: Building a Secure Home Hosting Network with pfSense and Verizon Fios
-- [2025-04-22] optimizing-jekyll-rendering: Optimizing Jekyll Rendering: From Nested Loops to Flattened Lookups
-- [2025-04-22] python-rich-widgets-fasthtml-htmx: Lean Python Widgets: Using Rich with FastHTML/HTMX for Server-Generated UI
-- [2025-04-22] cursor-ai-updates-nixos: Automating Latest Cursor AI Updates on NixOS with AppImage
-- [2025-04-21] fasthtml-anywidget-host: Technical Blueprint for a Minimal AnyWidget Host Environment using FastHTML
-- [2025-04-21] generate-cursor-rules: AI Training AI: Generate Cursor Rules
-- [2025-04-21] regex-google-docs-markdown: Vim & Regex Kung Fu: Cleaning Google Docs Markdown Exports
-- [2025-04-21] bing-search-api: A Developer's Guide to the Bing Search API Ecosystem: APIs, IndexNow, and Webmaster Tools
-- [2025-04-20] widgets-in-workflows: Standardizing Widgets in Workflows using FastHTML and HTMX
-- [2025-04-20] file-polling-progress-indicator: File Progress Polling Indicator: Consulting 3 AIs
-- [2025-04-19] export-botify-csv-api: Pipulate Workflow: Export a Botify CSV With API
-- [2025-04-19] detecting-nix-shell-environments: Detecting Nix Shell Environments: A Simple Solution
-- [2025-04-18] nixos-failed-to-install-bootloader: NixOS Upgrade Problem: Failed to Install Bootloader
-- [2025-04-18] accelerating-seo-automation: Accelerating Pipulate Development: Integrating Core SEO Automation Features
-- [2025-04-18] bridging-code-and-context: Bridging Code and Content: Put Entire Codebases + Article In Prompt
-- [2025-04-18] ai-prompts-xml-tags: Enhancing AI Prompts with XML Tags: Testing Anthropic's Method and o4-mini-high
-- [2025-04-18] super-intelligent-ai-coding-assistance: Riding the AI Bronco: Staying in Control of Super-Intelligent Code
-- [2025-04-17] git-without-server-local-filesystem: Git Without a Server: Using Your Local Filesystem as a Remote
-- [2025-04-17] github-pages-logfiles: Escaping GitHub Pages: The Quest for Raw Log Files and Deeper SEO Insights
-- [2025-04-17] ime-mse-psp-tee-sep: The Computer Within Your Computer: Understanding IME, PSP, and Secure Enclaves
-- [2025-04-14] is-grok-better-than-chatgpt: Is Grok Better Than ChatGPT?
-- [2025-04-13] cherry-picking: What Is The Meaning of Git Cherry Picking? Now With AI!
-- [2025-04-13] modern-seo-techniques: Modern SEO Techniques: AI's Are Intelligent
-- [2025-04-12] algorithmic-information-architecture-jekyll-ai: Algorithmic Information Architecture with Jekyll AI
-- [2025-04-11] top-keywords-per-page: AI-Powered Jekyll: Integrating GSC Keywords for Display, Search, and Meta Tags
-- [2025-04-10] google-search-console-api-python: Google Search Console API Python Example: Trend Analysis
-- [2025-04-10] jekyll-lunr-static-site-search: Jekyll Lunr.JS Static Site Search (aka GitHub Pages Search)
-- [2025-04-09] nix-develop-output-ai-assistants: Taming `nix develop` Output For AI Assistants
-- [2025-04-09] github-pages-blog-arrows: GitHub Pages & Jekyll: Solving Chronological Sorting for Multiple Daily Posts
-- [2025-04-08] grok-better-than: Grok Better Than You'd Think Through Stream of Consciousness
-- [2025-04-08] ai-agentic-mode-debugging: Cursor AI Agent Mode Beats `git cherry-pick`: Agentic Debugging
-- [2025-04-07] static-site-generator-ai-content-strategy: Static Site Generators: Your Secret Weapon for AI Content Strategy
-- [2025-04-07] from-blog-to-book-ai-powered-ia: From Blog Chaos to Book Outline: An AI-Powered Information Architecture Journey
-- [2025-04-06] llm-seo-software-development: From Rabbit Holes to Roadmaps: Using LLMs for SEO Software Dev
-- [2025-04-06] cursor-ai-terminal-agent-mode: Decoding Cursor AI's Terminal: A NixOS User's Deep Dive into Agent Mode
-- [2025-04-05] ai-context-mcp-llm: Designing MCP for LLMs: A Scripted AI Context Approach
-- [2025-04-05] fasthtml-python-htmx-ai: Real-Time UI with FastHTML & Python HTMX (Solved with AI)
-- [2025-04-04] auto-incrementing-composite-keys: Solving Key Paralysis: Auto-Incrementing Composite Keys in Action
-- [2025-04-04] mcp-with-local-llm: Beyond RAG: Integrating Python MCP Servers with a Local LLM
-- [2025-04-04] copy-pasting-llm-context: Stop Copy-Pasting: A Simple Python Script for Managing LLM Code Context
-- [2025-04-04] vscode-ai-coding-assistants-forks-vs-plugins: AI Coding Assistants for VSCode (2025): Forks vs. Plugins Explained
-- [2025-04-04] colab-vs-local-jupyter: Colab vs. Local Jupyter: Finding Your Forever Home for AI-Assisted Data Analysis
-- [2025-04-03] zero-to-clicks-niche-content: From Zero to Clicks: Proving Niche Content Still Works in SEO
-- [2025-04-02] nixos-appimage: NixOS Bleeding Edge: Using AppImage When Repos Fall Behind
-- [2025-04-01] cleaning-noteboook-cell-output-git: Cleaning Jupyter Notebook Cell Output for Git Repos
-- [2025-04-01] connect-with-botify-workflow: Connect With Botify Workflow
-- [2025-03-31] dunning-kruger-deep-research-ai-seo: From Dunning-Kruger to Deep Research: Riding the AI Wave in SEO
-- [2025-03-31] mcp-ai-api-server: Integrating MCP: Giving My Local LLM App the Power to Act
-- [2025-03-30] integrating-llm-plugin-architecture: Refactoring Hell and Back: Integrating LLMs into a Plugin Architecture
-- [2025-03-30] tech-churn-vim-mastery: Escape the Tech Churn: Why Terminal and Vim Mastery Endures
-- [2025-03-29] vim-macro-to-lua: Vim Macro to Lua (for NeoVim Users)
-- [2025-03-29] jupyter-workflow-exploration: From Jupyter Exploration to Pipulate Execution: A Workflow Story
-- [2025-03-29] vscode-jupyter-notebook-paths: Cursor AI and VSCode Jupyter Notebook Paths
-- [2025-03-28] gsc-1000-row-limit-api: Getting Past the GSC 1000-row Limit With the API
-- [2025-03-28] google-search-console-api: Deep Research of the Google Search Console API
-- [2025-03-28] future-proof-seo-nix: Future-Proof SEO: Thriving with Nix & Quality Content
-- [2025-03-28] grok-vs-chatgpt-vs-gemini: Grok vs. ChatGPT vs. Gemini vs. Perplexity For Deep Research
-- [2025-03-27] cursor-ai-jupyter-notebook-cells: Can Cursor AI Read Jupyter Notebook Cells?
-- [2025-03-27] age-of-ai-vibe-coding: Future-Proofing in the Age of AI: Beyond Vibe Coding
-- [2025-03-26] fastlite-todo-app: Extracting FastHTML fastlite Todo App
-- [2025-03-25] python-plugin-architectures: Python Plugin Architectures: Pipulate Worflows & Apps
-- [2025-03-25] workflows-redirect-fix-attention: Workflows to Redirect & Fix Your Attention
-- [2025-03-24] websockets-stream-incremental-markdown: Using Websockets to Stream Incremental Markdown
-- [2025-03-24] grok3-free-until-our-servers-melt: Grok3 is Free Until Our Servers Melt
-- [2025-03-24] ai-edit-code-diff: AI Edit Your Code? What the `diff`?
-- [2025-03-24] minidataapi-spec-xtra-tutorial: MiniDataAPI Spec `.xtra()` Tutorial
-- [2025-03-23] notebook-to-web-app: The Magic of Pipulate: Bridging Notebooks and Web Apps
-- [2025-03-23] local-ai-workflows-jupyter-nix: Pipulate: Local AI Workflows with Jupyter & Nix
-- [2025-03-22] linux-python-vim-git-htmx: Future-proofing My Tech: Linux, Python, Vim, Git, and now HTMX
-- [2025-03-22] fasthtml-htmx-ai-workflows: FastHTML HTMX AI Workflows: Embracing the WET
-- [2025-03-22] html-over-the-wire: HTML Over The Wire (vs. JSON)
-- [2025-03-21] navigating-ai-influence: Carving New Paths: Navigating AI's Influence in Development
-- [2025-03-21] evolving-ai-in-a-bottle: Chip O'Theseus: The Evolving AI in a Bottle
-- [2025-03-20] jupyter-notebook-vscode-cursor: Jupyter Notebooks in VSCode and Cursor AI
-- [2025-03-20] dry-vs-wet: DRY vs WET: Ditching DRY for Explicit, Customizable Pipelines
-- [2025-03-19] radically-customizing-linear-workflows: Radically Customizing Linear Workflows
-- [2025-03-19] is-fasthtml-any-good: Is FastHTML Any Good?
-- [2025-03-18] unparsable-structured-data: Psst! Got Unparsable Structured Data?
-- [2025-03-18] jupyter-notebook-pipulate-workflow: Jupyter Notebook to Pipulate Workflow
-- [2025-03-18] automating-seo-workflow: Automating SEO Workflows: Parameter Buster
-- [2025-03-18] open-source-seo: Open Source SEO: My Journey to Codebase Consolidation
-- [2025-03-16] hot-prompt-injection-ai-workflow: Hot Prompt Injection For AI Workflow Plugins
-- [2025-03-16] radical-simplicity-local-first: Radical Simplicity: Pipulate and the Local-First Revolution
-- [2025-03-16] ai-facilitating-self-improvement: AI Facilitating Self-Improvement and Mastery
-- [2025-03-15] seo-age-of-llms: SEO in the age of LLMs
-- [2025-03-15] self-aware-software: The Self-Aware Software: A Glimpse Into Future Development
-- [2025-03-15] web-app-fasthtml-htmx: From Monolith to Modules: Building a Flexible Web App with FastHTML and HTMX
-- [2025-03-14] nixos-upgrade-ollama: NixOS Upgrade to Ollama 0.6.0: A Clean Rebuild Experience
-- [2025-03-13] future-proof-automation-core: Building a Future-proof Automation Core for AI Workflows
-- [2025-03-13] plugs-slugs-nubs-stubs: Of Plugs, Slugs, Nubs & Stubs
-- [2025-03-12] nixos-nvidia-cuda-ollama: NixOS NVIDIA CUDA Ollama Support
-- [2025-03-12] real-time-ai-research: The Real-Time AI Research Revolution
-- [2025-03-11] function-calling-llms: Function Calling for LLMs: A Deep Dive into Modern Approaches
-- [2025-03-11] small-world-theory-search-google: Could LLM-assisted Small World Theory In Search Disrupt Google?
-- [2025-03-11] ai-deep-research: Learning AI Deep Research
-- [2025-03-10] python-nix-flake-uv: Replacing `pip` In Python Nix Flake With `uv`
-- [2025-03-09] agentic-frameworks-vs-browser-automation: Agentic Frameworks vs. DIY: Finding the Right Balance for Browser Automation
-- [2025-03-08] python-mcp-server-example: Python MCP Server Bare Minimum Example: A Dead End
-- [2025-03-08] nix-flake-python: Nix Flake Python Solution: Venv, Cuda, macOS/Windows, Etc.
-- [2025-03-07] python-htmx-llm-seo: Python HTMX LLM SEO Codebase
-- [2025-03-07] llm-code-analysis-test: LLM Code Analysis Blind Taste Test
-- [2025-03-07] reclaiming-the-narrative: Beyond the Algorithm: Reclaiming the Narrative
-- [2025-03-06] learning-htmx: Learning HTMX In Python For SEO
-- [2025-03-05] distracted-weak-focused-strong: Distracted & Weak Vs. Focused & Strong
-- [2025-03-04] sudo-nixos-rebuild-switch-upgrade: sudo nixos-rebuild switch --upgrade
-- [2025-03-03] fasthtml-htmx-llm: Python FastHTML: The Ideal Web Framework for HTMX & LLMs
-- [2025-03-03] out-of-steam-adenosine: Out Of Steam? Adenosine!
-- [2025-03-02] giving-grok3-another-chance: Giving Grok 3 Another Chance
-- [2025-03-01] fighting-analysis-paralysis: Fighting Analysis Paralysis
-- [2025-02-28] fasthtml-fastapi-llm-over-training: FastHTML vs. FastAPI: LLM Over-training
-- [2025-02-27] workflow-script-for-ai: Workflow Script for AI / ChatGPT 4.5
-- [2025-02-26] commitment-and-consistency: Commitment And Consistency
-- [2025-02-21] kickstarting-ai: Kickstarting AI
-- [2025-02-20] grok3-markdown-problem: Grok 3 Markdown Problem
-- [2025-02-20] frozen-core-conundrum: AI LLM Frozen Core Conundrum
-- [2025-02-19] o3-vs-grok-3: o3 Vs. Grok 3 (vs. Gemini) Codebase Test
-- [2025-02-04] reimagining-web-crawling-in-age-of-ai: The Site Whisperer: Reimagining Web Crawling in the Age of AI
-- [2025-02-03] sematic-web-discoverability-ai: Semantic Web: The Key to Discoverability in the Age of AI
-- [2025-02-01] future-of-seo-llm: The Future of SEO: Reimagining SEO in the Age of LLMs
-- [2025-01-31] open-source-seo-software: Open Source SEO Software
-- [2025-01-25] ai-work-sheep-or-shepherds: AI and the Future of Work: Will We Become Sheep or Shepherds?
-- [2025-01-22] amazon-manufacturer-disintermediation: Amazon + Manufacturer Disintermediation & The Shopify Squeeze
-- [2025-01-15] simplifying-state-workflow-refactoring: Simplifying State: A Workflow Refactoring Journey
-- [2025-01-14] ai-new-era-of-literacy: From Printing Press to AI: A New Era of Literacy
-- [2025-01-13] vim-indention-selection: Vim Indention Selection (TL;DR Disappointment)
-- [2025-01-12] breaking-changes-learning-opportunities: Breaking Changes and Learning Opportunities
-- [2025-01-11] refactoring-ai-assisted-code: Reclaiming Control: Refactoring AI-Assisted Code for Clarity and Precision
-- [2025-01-10] starter-flow: Refining Starter Flow: The Music of Chain Reactions
-- [2025-01-09] peak-data-musk-sutskever-wrong: Peak Data Theory? Why the Future of Search Hinges on Outlier Information
-- [2025-01-09] virtual-desktops-future-proof: Virtual Desktops: Your Future-Proof Workflow in a World of Forced Upgrades
-- [2025-01-09] ideas-to-automation: AI's New Deal: From Ideas to Automation
-- [2025-01-08] coleco-adam-nixos: From Coleco Adam to NixOS: A Quest for a Deterministic System
-- [2025-01-07] habit-deliberation-ai: The Speed-Chess Mind: Bridging Habit, Deliberation, and AI
-- [2025-01-07] finding-focus-and-flow-in-the-age-of-ai: Pipeline Dreams: Finding Focus and Flow in the Age of AI
-- [2025-01-06] irrepressible-outlier: The Irrepressible Outlier: Finding Originality in a World of Infinite Content
-- [2025-01-06] nixos-nvidia-wayland: NixOS Nvidia Wayland Support
-- [2025-01-05] htmx-pipelines-persistent-state: Mastering HTMX Pipelines: A Starter Flow with Persistent State
-- [2025-01-04] anti-patterns-best-practices: When Anti-Patterns Become Best Practices
-- [2025-01-04] un-externalizing-helper-function: Un-Externalizing a Helper Function
-- [2025-01-03] git-cherry-picking: Git Cherry Picking & Time-Travel
-- [2025-01-02] one-card-flow: One Card Flow
-- [2025-01-01] rubber-ducking-with-llm: Rubber Ducking With LLM
-- [2024-12-31] fasthtml-htmx-unix-pipes: FastHTML HTMX Unix Pipes
-- [2024-12-30] rabbit-holes-shoulders-of-giants: Of Rabbit Holes, Wonderlands & Shoulders of Giants
-- [2024-12-30] python-nix-htmx-ollama: A Single-File Local Web Framework, Powered by Python + Nix + HTMX + a Built-In LLM
-- [2024-12-29] the-sound-of-htmx-pipes: The Sound of HTMX Pipes
-- [2024-12-28] planning-chip-o-theseus: Planning Chip O'Theseus
-- [2024-12-27] linkgraphectomy: Linkgraphectomy
-- [2024-12-26] flow-state-idea-capture-vs-organization: Flow-State Idea Capture Vs. Organization
-- [2024-12-25] ai-stress-test: AI Stress Test: o1 Pro
-- [2024-12-24] the-future-was-now: The Future Was Here & It Is Again
-- [2024-12-23] nixos-wayland-hyprland: Taking The NixOS Wayland Hyprland Plunge!
-- [2024-12-23] gaining-traction: Gaining Traction
-- [2024-12-19] rebooting-site: Rebooting Site
-- [2024-12-13] back-to-basics-reclaiming-simplicity: Back to Basics: Reclaiming Simplicity in a Complex Tech World
-- [2024-12-11] sheet-music-chisel-strikes: Writing Sheet Music & Taking Chisel Strikes
-- [2024-12-10] no-churn-movement: Rise of The No-Churn Movement
-- [2024-12-09] testing-openai-chatgpt-pro-o1: Testing OpenAI ChatGPT Pro (o1 Release)
-- [2024-12-08] claude-o1-collaboration: Claude & o1 Release Collaboration
-- [2024-12-07] zenos-paradox-knuth-brooks: Don Knuth, Fred Brooks & Zeno's Paradox of Coding
-- [2024-12-06] testing-openai-chatgpt-o1-release: Testing OpenAI ChatGPT o1 Release Model
-- [2024-12-03] david-mayer-vs-donald-trump: David Mayer Vs. Donald Trump (ChatGPT & Google AI ChatBot LLM Censorship)
-- [2024-12-02] multiple-passes: The Necessity of Taking Multiple Small Passes (Chisel-strikes)
-- [2024-11-29] banking-wins: Future-Proof Your Tech Career: The No Take-Back Guide to Winning in a World of Churn
-- [2024-11-27] dedumbing-sisyphus: Dedumbing Sisyphus
-- [2024-11-25] pipeline-to-completion: Pipeline To Completion
-- [2024-11-24] wrangling-ai-code-assistants: Wrangling AI Code Assistants
-- [2024-11-24] bff-seo-dot-bot: BFF SEO dot BOT is Born
-- [2024-11-24] the-mindful-mirror-model-effect: The Mindful Mirror Model Effect
-- [2024-11-24] brainstorming-book-titles-ai: Brainstorming Book Titles with AI
-- [2024-11-23] nixos-warbler-files-disappeared: NixOS Warbler Files Disappeared
-- [2024-11-23] pipeline-workflow-example: Pipline Workflow Example
-- [2024-11-22] llm-speedbumps: LLM Speedbumps, Anti-pattern Vaccines & The Locahost Revolution
-- [2024-11-21] pipulate-pipeline-born-again: Pipulate Pipeline Born Again Now
-- [2024-11-20] 2024-11-20-flow-state-alternation: On Flow State Alternation - The Key to Success
-- [2024-11-19] pipeline-workflow: Pipeline Workflow
-- [2024-11-18] pattern-alert-this-is-not-fastapi: Pattern Alert - THIS IS NOT FASTAPI!
-- [2024-11-17] unix-pipelines-htmx-fasthtml-workflow: Unix Pipeline Philosophy in HTMX + FastHTML Workflows
-- [2024-11-16] fighting-dunning-kruger-effect: On Fighting the Dunning-Kruger Effect
-- [2024-11-15] openapi-swagger-json-to-python: OpenAPI Swagger JSON to Python Code Examples
-- [2024-11-13] 80-percent-cost-reduction-in-ai-operations: 80% Cost Reduction in AI Operations
-- [2024-11-12] 6-click-ease-to-serve-up-bacon: 6-Click-Ease to Serve Up Bacon
-- [2024-11-11] how-to-train-your-llm: How To Train Your LLM
-- [2024-11-10] i-know-kung-fu-show-me: I Know Kung Fu... Show Me!
-- [2024-11-09] from-jupyter-notebooks-to-markdown: From Jupyter Notebooks to Markdown
-- [2024-11-08] practicing-botify-api: Practicing the Botify API
-- [2024-11-07] structuring-websites-to-train-models: Structuring Websites to Train Models
-- [2024-11-06] resilience-while-achieving-ikigai: Resilience While Achieving Ikigai
-- [2024-11-05] mac-nvim-same-as-nixos-nvim: Getting Mac NeoVim Same as NixOS NeoVim
-- [2024-11-04] figuring-out-a-complex-api: Figuring Out a Complex API
-- [2024-11-03] sse-watchdog-force-live-reload: SSE Makes Watchdog Necessary to Force Server Live-Reload
-- [2024-11-03] api-enabling-llm-ghost: API-Enabling the LLM Ghost
-- [2024-11-02] how-i-finally-got-my-llm-to-play-nice-with-the-web-ui: How I Finally Got My LLM to Play Nice With the Web UI
-- [2024-11-02] fasthtml-hello-world: FastHTML Hello World
-- [2024-11-01] deep-debugging-llm-ghost: Deep Debugging LLM Ghost
-- [2024-10-31] rabbit-hole-dev-to-delight-clients: Rabbit Hole Dev to Delight Clients
-- [2024-10-30] giving-gemini-advanced-a-try: Giving Gemini Advanced a Try
-- [2024-10-30] its-about-delighting-clients: It's About Delighting Customers
-- [2024-10-29] llm-as-ambient-app-intelligence: LLM as Ambient App Intelligence
-- [2024-10-28] fasthtml-static-resources: FastMTML Static Resources
-- [2024-10-27] slack-zoom-nixos-workspaces: Slack & Zoom on NixOS Workspaces
-- [2024-10-26] chunk-yielding-generator: Pythonic Chunk-Yielding Generator to Simulate Long-Running Tasks
-- [2024-10-25] i-dont-know-what-to-do-sometimes: I Don't Know What to Do Sometimes
-- [2024-10-24] api-ai-human-nuance: API, AI & Human Nuance: The Same Thing
-- [2024-10-23] the-port-for-real-this-time: The Port For Real This Time
-- [2024-10-22] llm-ghost-in-the-machine: LLM Ghost In The Machine
-- [2024-10-21] local-ai-awareness-training: Local AI Awareness Training
-- [2024-10-20] local-ai-in-the-dev-loop: Local AI In The App Development Loop
-- [2024-10-19] planning-to-win-with-llm: Planning to Win with LLM
-- [2024-10-18] local-llm-web-framework-integration-plan: Local LLM Web Framework Integration Plan
-- [2024-10-17] revolutionizing-software-deployment-with-nix-flakes: Revolutionizing Software Deployment: How Nix Flakes Simplify Development Beyond Docker and pip
-- [2024-10-16] ai-code-assist-acceleration-scope: The key to AI Code Assist Acceleration is 1-Folder Scope
-- [2024-10-15] soft-launching-botifython: Soft Launching Botifython
-- [2024-10-14] botifython-is-born: Botifython is Born
-- [2024-10-13] object-oriented-baseclass-plugins: Object Oriented Base Class Plugins
-- [2024-10-12] building-plugin-ready-framework: Building a Plugin-Ready Framework: A Step-by-Step Transformation
-- [2024-10-11] test-spa-endpoints: Test SPA Endpoints (Single Page Applications in FastHTML)
-- [2024-10-10] fasthtml-sortablejs-todo: FastHTML and SortableJS For Sortable Todo Lists
-- [2024-10-09] ai-generated-refactoring-advice: AI-Generated Refactoring Advice from Top LLM Models
-- [2024-10-08] unpacking-fasthtml-databases: Unpacking FastHTML Databases
-- [2024-10-07] chatgpt-o1-preview-code-review: A ChatGPT o1-Preview Code Review
-- [2024-10-06] fasththml-websockets-database: FastHTML WebSockets & Database for Streaming & Persistence
-- [2024-10-05] ollama-websocket-chat: Ollama Websocket Chat
-- [2024-10-04] fast-html-framework-opinions: Understanding FastHTML's Framework Opinions
-- [2024-10-03] jupyter-notebooks-fasthtml: From Jupyer Notebooks to FastHTML with WebSockets
-- [2024-10-02] code-as-infrastructure: Code as Infrastructure
-- [2024-10-01] mac-nix-flake: Melding a Mac and Linux Nix Flake
-- [2024-09-27] forking-flake-infrastructure-as-code: Forking a Flake of Infrastructure as Code
-- [2024-09-26] theres-no-home-like-nix: There's No Home Like Nix
-- [2024-09-25] infrastructure-as-code-devops-renaissance: The DevOps Renaissance: How Infrastructure as Code is Redefining Digital Craftsmanship
-- [2024-09-24] fasthtml-cursor-ai-nix: FastHTML and Cursor AI on Linux, Mac & Windows
-- [2024-09-23] nix-pip-install: Using NixOS and Nix with Pip Install DotEnv
-- [2024-09-22] nix-system: Getting My Nix System Together
-- [2024-09-17] updating-nixos: Updating NixOS
-- [2024-09-16] jupyter-ai-nix-flake: Embracing AI-Assisted Development with Jupyter AI and Nix Flakes
-- [2024-09-15] nix-fasthtml-flake: Cross-Platform Nix Flake for Jupyter & FastHTML
-- [2024-09-14] big-tech-picture: Get the Big Tech Picture to Maintain Agency
-- [2024-09-13] jupyter-nix-flake: My First Nix Flake Will Be JupyterLab
-- [2024-09-12] nix-flakes: Getting Started with Nix Flakes
-- [2024-09-10] nixos-language: Groking the NixOS Langauge
-- [2024-09-09] LPvg: Linux, Python, Vim & Git (LPvg) Your Minimum Tech Toolkit for Life
-- [2024-09-08] future-proof-tech-skills: Future-proof Your Tech Skills
+Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
+
+- [2026-05-28] [?] waxascii-seal-in-band-code-integrity
+- [2026-05-28] [?] bunny-coyote-ai-datacenter-landlords
+- [2026-05-27] [?] out-of-band-integrity
+- [2026-05-27] [?] wax-on-wax-off-waxascii
+- [2026-05-27] [?] waxascii-preventing-generative-drift
+- [2026-05-26] [?] waxascii-seal-mtime-caching-ouroboros
+- [2026-05-26] [?] desert-kite-cybernetic-prompting
+- [2026-05-26] [?] society-of-the-stack
+- [2026-05-26] [?] building-landing-gear-multi-platform-tooling
+- [2026-05-25] [?] acetate-overlay-git-negative-space
+- [2026-05-25] [?] cascading-ascii-art-local-ai-workspace
+- [2026-05-24] [?] ascii-integrity-software-drift
+- [2026-05-24] [?] wax-seals-and-player-pianos
+- [2026-05-24] [?] wax-seal-untokenized-checksums-ai
+- [2026-05-23] [?] friction-of-execution-flat-protocols
+- [2026-05-23] [?] two-player-pianos-automation
+- [2026-05-23] [?] clipboard-control-bus-transactional-ai-workflows
+- [2026-05-22] [?] air-gapped-developer-cockpit
+- [2026-05-22] [?] tale-of-two-alans-turing-church-local-ai
+- [2026-05-22] [?] spacing-trap-ai-ascii-art
+- [2026-05-21] [?] vim-transposition-human-ai-patchmaker
+- [2026-05-21] [?] breaking-ai-inception-document-architecture
+- [2026-05-21] [?] deterministic-momentum-engine-clutch
+- [2026-05-21] [?] engineering-momentum-loop
+- [2026-05-21] [?] routing-invariant-prompt-architecture
+- [2026-05-20] [?] clipboard-computational-synapse
+- [2026-05-20] [?] software-backpropagation-git-rollbacks
+- [2026-05-20] [?] autonomic-memory-actuator
+- [2026-05-19] [?] liveness-coupled-agency-browser-kill-switch
+- [2026-05-19] [?] unix-philosophy-nix-noise-reduction
+- [2026-05-19] [?] reproducible-cockpit-nixos-gnome
+- [2026-05-19] [?] tiling-terminals-x11-alacritty
+- [2026-05-19] [?] witnessed-machine-stateless-ai-executive-function
+- [2026-05-19] [?] ergonomics-of-oversight-ai-trust-rituals
+- [2026-05-18] [?] context-window-build-artifact
+- [2026-05-18] [?] inode-strategy-ai-context-management
+- [2026-05-18] [?] swappable-ai-strategy
+- [2026-05-17] [?] riding-the-sandworm-vibe-coding
+- [2026-05-17] [?] self-healing-code-terminal
+- [2026-05-17] [?] tokenizer-grain-search-replace-way
+- [2026-05-17] [?] clipboard-air-gap-network-diode
+- [2026-05-17] [?] escape-postback-deterministic-ai-workflows
+- [2026-05-17] [?] levinux-vs-levinix-distinction
+- [2026-05-16] [?] migrating-to-ruff-ai-patching
+- [2026-05-16] [?] beyond-the-diff-search-replace-protocol
+- [2026-05-16] [?] beyond-the-diff-search-replace
+- [2026-05-15] [?] solving-ai-indentation-amnesia
+- [2026-05-15] [?] deterministic-ai-coding-actuator
+- [2026-05-15] [?] cathedral-of-one-prompt-fu-forever-machine
+- [2026-05-14] [?] geometry-of-text-neovim-virtual-edit
+- [2026-05-14] [?] gravity-of-markdown-deterministic-ai-editor
+- [2026-05-14] [?] tokenizer-physics-asymmetric-compiler
+- [2026-05-14] [?] safe-space-messy-code-ai-time
+- [2026-05-14] [?] high-leverage-chisel-strike-quieting-monolith
+- [2026-05-14] [?] context-window-painting-ruff-transplant
+- [2026-05-13] [?] canning-intuition-ai-era
+- [2026-05-13] [?] desert-kite-wet-workflows-ai
+- [2026-05-13] [?] autognomeic-digital-workspace
+- [2026-05-13] [?] future-proofed-logic-of-tech
+- [2026-05-13] [?] lambda-functions-local-ai-advantage
+- [2026-05-13] [?] structural-security-shai-hulud-worm
+- [2026-05-12] [?] fasthtml-incident-resilience
+- [2026-05-11] [?] architecting-living-codex-git-pedagogy
+- [2026-05-10] [?] semantic-level-of-detail-engine
+- [2026-05-10] [?] mac-to-nixos-tmux-bridge
+- [2026-05-10] [?] mapping-digital-debris-ai-age
+- [2026-05-10] [?] global-voice-toggle-deterministic-patching
+- [2026-05-10] [?] python-rich-blocking-io-error-fix
+- [2026-05-09] [?] taming-the-amnesia-genie
+- [2026-05-09] [?] dojo-logic-human-ai-calibration
+- [2026-05-09] [?] chisel-strike-architecture
+- [2026-05-09] [?] agentic-crossroads
+- [2026-05-08] [?] debugging-ghost-driver-audio-automation
+- [2026-05-08] [?] agplv3-shield-margaret-knight-lesson
+- [2026-05-07] [?] syncing-the-orchestra-deterministic-automation
+- [2026-05-07] [?] anti-fragile-git-ai-workflow
+- [2026-05-07] [?] autonomous-git-archivist
+- [2026-05-07] [?] unix-pipeline-ollama-neovim
+- [2026-05-07] [?] synaptic-clipboard-automation
+- [2026-05-07] [?] information-theory-cognitive-defense
+- [2026-05-06] [?] notebook-to-web-apps
+- [2026-05-06] [?] infinite-context-pipeline-narrative-code
+- [2026-05-06] [?] local-first-ai-macos-deployment
+- [2026-05-05] [?] explicit-state-matrix-deterministic-ai-workflows
+- [2026-05-05] [?] forever-machine-deterministic-ai-code-editing
+- [2026-05-05] [?] second-pour-engineering-determinism
+- [2026-05-05] [?] fixing-ghost-in-the-proxy
+- [2026-05-04] [?] deterministic-ai-workflows-alice-protocol
+- [2026-05-04] [?] sentinel-airlock-bridging-jupyter-fasthtml
+- [2026-05-03] [?] deterministic-ai-wet-philosophy
+- [2026-05-03] [?] hijacking-tty-terminal-experience
+- [2026-05-03] [?] building-the-forever-machine
+- [2026-05-02] [?] bitnet-and-the-browser-metronome
+- [2026-05-01] [?] forever-machine-obsolescence-resistance
+- [2026-05-01] [?] golden-path-local-first-ai
+- [2026-04-30] [?] browser-as-ai-metronome
+- [2026-04-30] [?] data-on-disk-pointers-in-memory
+- [2026-04-30] [?] async-time-travel-paradox-sse-race-conditions
+- [2026-04-30] [?] dead-mans-switch-websocket-proxy
+- [2026-04-30] [?] avoiding-the-fubar-cascade
+- [2026-04-29] [?] ast-syntactic-splicing-workflow-automation
+- [2026-04-29] [?] architecture-of-recall-memory-systems
+- [2026-04-29] [?] mechanical-sympathy-deterministic-ai
+- [2026-04-29] [?] myelinated-mastery-unix-way
+- [2026-04-28] [?] forever-machine-deterministic-workflows
+- [2026-04-28] [?] wet-methodology-ai-friendly-architecture
+- [2026-04-27] [?] sentinel-file-progressive-ui
+- [2026-04-27] [?] deterministic-onboarding-airlock
+- [2026-04-25] [?] rhythm-of-the-next-step
+- [2026-04-24] [?] architecture-forever-machine-state-config
+- [2026-04-23] [?] honeybot-server-log-streaming
+- [2026-04-23] [?] context-governor-payload-sizing
+- [2026-04-23] [?] architecture-pause-pass-by-reference
+- [2026-04-23] [?] architecture-of-the-pause-ai-notebook-refactor
+- [2026-04-22] [?] refining-entity-intelligence
+- [2026-04-22] [?] phantom-ui-mechanical-sympathy
+- [2026-04-22] [?] hydration-gap-methodology
+- [2026-04-21] [?] mastering-visual-state-ai-deliverables
+- [2026-04-21] [?] whale-hunting-predatory-pricing-ai
+- [2026-04-21] [?] idempotent-notebook-zero-machine
+- [2026-04-19] [?] lisp-repl-forever-machine
+- [2026-04-18] [?] idempotent-ai-egress
+- [2026-04-17] [?] robust-etl-excel-automation
+- [2026-04-17] [?] symmetrical-lens-dom-audit
+- [2026-04-17] [?] concurrency-amiga-deterministic-ai
+- [2026-04-17] [?] pachinko-prompt-workbench
+- [2026-04-16] [?] epistemological-dom-slicer
+- [2026-04-15] [?] capturing-the-javascript-gap-dom-slicing
+- [2026-04-15] [?] cloud-ai-api-keys-vs-oauth-tokens
+- [2026-04-15] [?] personal-cognition-revolution-pandas-local-ai
+- [2026-04-14] [?] deterministic-magic-nix-ipywidgets
+- [2026-04-14] [?] homebrew-ai-jupyter-workbench
+- [2026-04-13] [?] forever-machine-muscle-memory
+- [2026-04-10] [?] rigging-the-sail-of-intelligence
+- [2026-04-09] [?] narrative-haptics-side-quest-pattern
+- [2026-04-08] [?] shell-game-intelligence-resilience
+- [2026-04-08] [?] llmectomy-universal-adapter-resilience
+- [2026-04-08] [?] async-narration-metadata-minefield
+- [2026-04-07] [?] hybrid-ai-routing-local-first-control
+- [2026-04-07] [?] jupyter-notebooks-reimagined-ai-ready-onboarding-llm-optics
+- [2026-04-07] [?] pipulates-trojan-horse-ai-readiness-web-optics
+- [2026-04-07] [?] hermetic-debugging-ai-now-moment
+- [2026-04-06] [?] forever-machine-npvg-ai-control
+- [2026-04-05] [?] ai-content-extrusion-mastering-book-drafts
+- [2026-04-05] [?] automated-book-forge-ai-content-control
+- [2026-04-04] [?] forever-machine-digital-independence-ai
+- [2026-04-04] [?] strange-loop-forever-machine-governing-ai-distillation
+- [2026-04-04] [?] the-golden-spike-automating-1000-articles-npvg
+- [2026-04-04] [?] conceptual-integrity-ai-content-distillation
+- [2026-04-03] [?] automated-book-decanting-ai-editing-pipeline
+- [2026-04-02] [?] forging-forever-machine-ai-book-decanting
+- [2026-04-01] [?] forever-machine-blueprint-deterministic-ai-book-creation
+- [2026-04-01] [?] blueprint-uniqueness-agentic-web
+- [2026-03-31] [?] automating-provenance-python-scalpel-machine-ready-content-archive
+- [2026-03-31] [?] the-makers-leap-ai-book-creation
+- [2026-03-31] [?] unmasking-agentic-web-ai-bots-shatter-seo-common-wisdom
+- [2026-03-31] [?] topological-realism-ai-404-healing-trailing-slash
+- [2026-03-30] [?] pipulates-wet-procedural-memory-meets-ai-skill-md-standard
+- [2026-03-30] [?] the-invisible-handshake-http-content-negotiation-llmo
+- [2026-03-30] [?] the-living-book-futureproof-ai-skills
+- [2026-03-29] [?] automating-technical-content-ai-driven-editing-blueprint
+- [2026-03-29] [?] ai-fuzzy-matching-404-redirects
+- [2026-03-29] [?] digital-homesteading-sql-ai-agent-telemetry-cybernetic-loop
+- [2026-03-29] [?] the-audacious-bot-ai-agents-must-show-up-on-modern-web
+- [2026-03-27] [?] elevating-ai-powered-redirects-trailing-slash-enforcement-404-hygiene
+- [2026-03-27] [?] pipulate-local-first-deterministic-ai-workflows
+- [2026-03-26] [?] forever-machine-ai-onboarding-api-key-security
+- [2026-03-25] [?] local-first-semantic-scraping-unveiling-javascript-gap
+- [2026-03-25] [?] pipulate-state-driven-workflows
+- [2026-03-25] [?] ai-native-ux-bonobo-transfer-wet-code-philosophy
+- [2026-03-24] [?] blitter-chip-ai-workflows
+- [2026-03-24] [?] art-of-deleting-code-building-resilient-ai-topological-parsing
+- [2026-03-23] [?] semantic-compression-ai-context-optimization
+- [2026-03-23] [?] instant-visual-feedback-ai-git-commits-neovim
+- [2026-03-22] [?] trinary-collapse-bitnet-cpu-revival-pipulates-forever-machine-ai
+- [2026-03-21] [?] bitnet-nix-pipulate-future-talking-local-ai
+- [2026-03-20] [?] building-the-invisible-viewport-pipulates-ai-native-web-blueprint
+- [2026-03-20] [?] textual-triptych-hud-terminal-real-estate-telemetry
+- [2026-03-19] [?] fasthtml-htmx-mastering-html-boolean-reality-ui-control
+- [2026-03-19] [?] observing-the-agentic-web-honeybots-fishtank-telemetry
+- [2026-03-19] [?] pipulate-full-stack-python-htmx-durable-state
+- [2026-03-18] [?] unifying-ai-adapters-pipulate-model-agnostic-automation
+- [2026-03-18] [?] bauhaus-bouncehouse-immutable-ai-environments
+- [2026-03-18] [?] llmo-semantic-gravity-bot-first-web
+- [2026-03-18] [?] topological-healer-ai-redirect-immunization
+- [2026-03-18] [?] pythonic-forever-machine-with-ai-and-nix
+- [2026-03-16] [?] nixos-local-ai-reproducible-workflows
+- [2026-03-16] [?] self-healing-context-automating-topological-integrity-for-ai-prompts
+- [2026-03-16] [?] jekyll-feed-optimization-ai-agents-gitops-blueprint
+- [2026-03-16] [?] llm-data-hygiene-sql-filtering
+- [2026-03-16] [?] optimizing-llm-context-agenting-web-blueprint
+- [2026-03-15] [?] uncompressible-agentic-web
+- [2026-03-15] [?] silencing-jekyll-gitops-noise-high-signal-deployment
+- [2026-03-15] [?] ai-semantic-gravity-dual-layer-content-branding
+- [2026-03-14] [?] zero-trust-gateway-ai-data-nginx-nixos
+- [2026-03-14] [?] forging-forever-machine-onboarding-blueprint
+- [2026-03-14] [?] automated-404-redirects-prompt-fu-gitops-nixos
+- [2026-03-14] [?] pipulate-ai-first-developer-experience-blueprint
+- [2026-03-13] [?] aot-semantic-routing-ai-web-infrastructure
+- [2026-03-13] [?] the-topological-healer-ai-driven-nginx-redirects-dynamic-site-architectures
+- [2026-03-13] [?] polymorphic-provenance-linguistic-steganography-ai-data
+- [2026-03-13] [?] semantic-camouflage-embedding-provenance-ai-training-data
+- [2026-03-13] [?] ai-education-model-memory-bot-intel-cryptographic-provenance
+- [2026-03-12] [?] ai-magic-mirror-cybernetic-feedback-loop-content-intelligence
+- [2026-03-12] [?] curated-chisel-strike-silencing-jupyter-logs-precise-ai-context
+- [2026-03-12] [?] autonomic-codebase-self-healing-ai-workflow-any-os
+- [2026-03-12] [?] architecting-ai-workflows-deterministic-editing-computational-autonomy
+- [2026-03-12] [?] streamlining-pipulate-notebooks-wand-path-to-clarity
+- [2026-03-11] [?] topological-folding-pipulate-manifold
+- [2026-03-11] [?] pythons-absolute-geometry-anchoring-paths
+- [2026-03-11] [?] python-namespace-fusion-seamless-jupyter-imports
+- [2026-03-11] [?] the-agentic-webs-new-frontier-real-time-ai-telemetry-ssh-terminal
+- [2026-03-11] [?] self-auditing-ai-context-compiler
+- [2026-03-11] [?] idempotent-token-ledger-llm-context
+- [2026-03-11] [?] ai-eyes-jit-optical-distillation-semantic-web
+- [2026-03-11] [?] ai-multi-spectral-web-vision-optics-integration
+- [2026-03-11] [?] single-pass-causal-optics-ai-browser-automation
+- [2026-03-10] [?] single-pass-llm-optics-engine-causal-fidelity
+- [2026-03-10] [?] machine-native-semantic-architecture-ai-age
+- [2026-03-10] [?] zero-friction-actuator-ai-development
+- [2026-03-10] [?] local-first-ai-web-bottling-apps-nix-bidi
+- [2026-03-10] [?] pipulates-publishing-engine-workflow-deep-dive
+- [2026-03-10] [?] seamless-ux-unifying-multi-platform-keyboard-shortcuts
+- [2026-03-09] [?] mac-compatibility-npvg-workflow
+- [2026-03-09] [?] building-semantic-gravity-ai-friendly-knowledge-code
+- [2026-03-09] [?] wet-code-dry-interfaces-ai-unified-cli
+- [2026-03-09] [?] wet-coding-fearless-refactoring-python-tokenizer
+- [2026-03-08] [?] immutable-python-environment-jupyter-notebooks
+- [2026-03-08] [?] refined-developer-experience-log-telemetry
+- [2026-03-08] [?] llmectomy-ai-agnosticism-nixos-python
+- [2026-03-08] [?] llmectomy-uncoupling-ai-models-vendor-lock-in
+- [2026-03-08] [?] holographic-context-engineering-ai-ready-semantic-maps-web-native-llms
+- [2026-03-08] [?] the-immutable-webhead-building-resilient-ai-telemetry-system
+- [2026-03-07] [?] ai-local-hippocampus-sovereign-development
+- [2026-03-07] [?] nixos-manual-override-recovery
+- [2026-03-07] [?] nginx-nixos-red-queen-deterministic-redirects
+- [2026-03-07] [?] the-80-20-rule-resilient-404-redirects-pure-hash-ledger
+- [2026-03-06] [?] automated-404-healing-semantic-router
+- [2026-03-06] [?] ai-driven-redirects-self-healing-web-architecture
+- [2026-03-06] [?] ai-forgetfulness-state-aware-404-healing
+- [2026-03-06] [?] ai-on-rails-deterministic-llm-engineering
+- [2026-03-06] [?] deterministic-ai-knowledge-graph-web
+- [2026-03-06] [?] the-topological-healer-ai-driven-404-management-blueprint
+- [2026-03-05] [?] self-bootstrapping-ai-workshop-reproducible-development-hot-swappable-llms
+- [2026-03-05] [?] pipulate-stateful-jupyter-ai-seo-strategy
+- [2026-03-05] [?] topological-healer-ai-automated-redirects
+- [2026-03-05] [?] nginx-404-redirect-ai-pipeline
+- [2026-03-05] [?] self-healing-ai-404-redirects-nginx-nixos
+- [2026-03-04] [?] john-henry-gambit-llms-honeybots-dynamic-latest-url
+- [2026-03-04] [?] nginx-404-remapping-llm-context-architecture-blueprint
+- [2026-03-04] [?] architecting-ai-context-data-density-blueprint-404-remapping
+- [2026-03-03] [?] cybernetic-terrarium-ai-observability
+- [2026-03-03] [?] ai-marble-madness-digital-behavioral-ecologist
+- [2026-03-03] [?] ai-antifragility-universal-llm-adapter
+- [2026-03-03] [?] agentic-crucible-llm-safety-self-healing-web-topologies
+- [2026-03-02] [?] levinix-von-neumann-bootstrap-for-ai
+- [2026-03-02] [?] sitchrep-protocol-ai-context-future-proofing
+- [2026-03-02] [?] honeybots-ground-truth-debugging-data-visualization-tui-fidelity
+- [2026-03-01] [?] ad-hoc-sql-ninjutsu-declarative-philosophy-data-ai
+- [2026-03-01] [?] ai-attribution-content-negotiation-tracer-dye
+- [2026-03-01] [?] honeybots-ouroboros-live-query-playground-ai-telemetry
+- [2026-03-01] [?] parametric-memory-fractal-publishing-ai-ingestion
+- [2026-03-01] [?] python-pragmatism-ai-optimized-web
+- [2026-03-01] [?] ai-optimized-sitemaps-semantic-sitrep-blueprint
+- [2026-02-28] [?] levinix-no-problem-universal-packager-blueprint-ai-age
+- [2026-02-28] [?] levinix-no-problem-ai-native-apps
+- [2026-02-28] [?] morning-pages-2-0-ai-orchestration
+- [2026-02-27] [?] web-links-invisible-hand-tracking-ai-with-query-strings
+- [2026-02-26] [?] consolidating-forever-machine-levinix-npvg-blueprint
+- [2026-02-26] [?] javascript-captcha-unmasking-ai-bots
+- [2026-02-25] [?] agentic-telemetry-blueprint-content-negotiation
+- [2026-02-25] [?] ai-dual-layer-web-agentic-content-negotiation
+- [2026-02-25] [?] agentic-webs-crucible-ai-autonomy-testing
+- [2026-02-25] [?] ai-content-architects-llm-ingestion-control
+- [2026-02-25] [?] the-levinix-blueprint-ai-content-negotiation-moat
+- [2026-02-24] [?] automating-dual-layer-content-markdown-html-ai
+- [2026-02-24] [?] universal-adapter-precision-engineering-ai-spaces
+- [2026-02-24] [?] cybernetic-software-architecture-llms-semantic-governors
+- [2026-02-24] [?] wet-code-philosophy-resilient-systems-ai
+- [2026-02-24] [?] mobilegeddon-aigeddon-sovereign-computing
+- [2026-02-23] [?] from-ad-hoc-scripts-to-scalable-apps-deliverable-lifecycle
+- [2026-02-23] [?] taming-the-amnesiac-genie-precision-context-engineering-for-fasthtml-with-ai
+- [2026-02-23] [?] ai-context-streaming-ls2-nix
+- [2026-02-23] [?] sovereign-perception-ai-web-eyes
+- [2026-02-23] [?] llm-optics-forever-machine-ai-ready-web-semantics
+- [2026-02-22] [?] http-content-negotiation-ai-competitive-moat
+- [2026-02-22] [?] llm-optics-engine-refracting-web-ai
+- [2026-02-22] [?] stateless-ai-unix-context-engineering
+- [2026-02-22] [?] semantic-data-probe-ai-ghost-variations
+- [2026-02-22] [?] player-piano-automation-sentient-ghost-driver-wet-workflows
+- [2026-02-22] [?] pipulates-blueprint-nix-selenium-sovereign-ai-workflow
+- [2026-02-21] [?] the-ai-viewport-pipulates-isomorphic-interface-for-autonomous-agents
+- [2026-02-21] [?] the-sovereign-stack-deterministic-ai-pipulate
+- [2026-02-20] [?] ai-context-fragmentation
+- [2026-02-20] [?] jekyll-sqlite-wal-watcher-regenerator-paradox-fix
+- [2026-02-20] [?] the-deflighter-wet-philosophy-google-ads-negatives
+- [2026-02-20] [?] sovereign-agents-openclaw-ai-friction-forever-machine-blueprint
+- [2026-02-20] [?] server-log-telemetry-honeybot-intelligence-ai
+- [2026-02-20] [?] optimizing-client-seo-workflows-botify-pipulate-self-aware-documents
+- [2026-02-19] [?] architecting-forever-machine-openclaw-nixos-agentic-workflow
+- [2026-02-18] [?] pipulate-jupyter-engine-notebook-pipelines
+- [2026-02-18] [?] openclaw-nixos-franken-nix-home-hosted-agent
+- [2026-02-17] [?] sovereign-ai-agent-nixos-oauth
+- [2026-02-17] [?] openclaw-nixos-machine-soul-sovereign-ai
+- [2026-02-17] [?] morning-pages-machine-soul-automating-digital-sovereignty
+- [2026-02-16] [?] openclaw-nixos-claude-opus-4-6-golden-master-test
+- [2026-02-16] [?] digital-sovereignty-secured-openclaw-nixos-claude-code-bridge
+- [2026-02-16] [?] twikis-first-steps-context-engineering-local-ai-sovereignty
+- [2026-02-16] [?] openclaw-nixos-local-ai-sovereignty
+- [2026-02-15] [?] nixos-immutable-host-deploying-openclaw-agent
+- [2026-02-15] [?] architecting-digital-sovereignty-openclaw-nixos-knowledge-lag-workflow
+- [2026-02-15] [?] agentic-bake-off-flatnotes-nixos-pipulate-inner-loop
+- [2026-02-14] [?] nixos-flatnotes-text-supremacy
+- [2026-02-02] [?] ai-digital-sidekick-sovereign-pipulate-nix
+- [2026-02-02] [?] ai-vs-truth-claude-project-panama-evasion
+- [2026-01-30] [?] white-box-revolution-ai-smartphone
+- [2026-01-30] [?] ai-context-paradox-reproducible-legacy
+- [2026-01-15] [?] productizing-technical-independence-ucp-ai-agents
+- [2026-01-14] [?] browser-automation-to-protocol-economy
+- [2026-01-14] [?] the-great-enclosure-ai-agents-full-stack-web-war
+- [2026-01-13] [?] agentic-commerce-wars-google-protocol-amazon-capture
+- [2026-01-13] [?] context-engineering-forever-machine-web-ai
+- [2026-01-12] [?] reclaiming-digital-agency-local-owner-operated-tech
+- [2026-01-12] [?] d3js-graph-data-integrity-physics-dashboard
+- [2026-01-12] [?] mastering-d3js-force-graphs-flea-effect-visualization
+- [2026-01-12] [?] digital-sovereignty-ai-blueprint
+- [2026-01-11] [?] stealth-navigation-bots-humans
+- [2026-01-11] [?] agent-first-design-semantic-navigation
+- [2026-01-11] [?] sovereign-reset-web-framework-debt-ai-ready
+- [2026-01-11] [?] from-raw-logs-to-ai-education-the-intelligence-monitor
+- [2026-01-10] [?] art-exploding-graph-d3-zoom-ux-choreography
+- [2026-01-10] [?] unifying-day-night-themes-d3js-graph-refactor
+- [2026-01-09] [?] broadcast-blueprint-ai-traffic-insights
+- [2026-01-09] [?] the-pervasive-pitch-ambient-broadcasting-strategic-rollback
+- [2026-01-09] [?] precise-orchestration-live-stream-404-fix
+- [2026-01-09] [?] punk-tui-design-log-legibility-semantic-colors-user-agent-control
+- [2026-01-09] [?] data-driven-bot-discovery-unearthing-ai-agents-web-logs
+- [2026-01-08] [?] the-fish-tank-principle-ambient-observability-ai-agents
+- [2026-01-08] [?] fish-tank-principle-ambient-observability-for-ai-agents
+- [2026-01-08] [?] invisible-web-second-mobilegeddon-aie-protocol-synthetic-age
+- [2026-01-08] [?] reclaiming-rel-alternate-for-ai-agents
+- [2026-01-08] [?] llms-txt-the-agents-first-call-to-the-ai-native-web
+- [2026-01-07] [?] ontology-fly-semantic-load-balancing-knowledge-graph-unification
+- [2026-01-07] [?] semantic-de-duplication-self-organizing-knowledge
+- [2026-01-07] [?] nixos-obs-hardware-acceleration-fix
+- [2026-01-06] [?] spotting-ai-bots-user-agent-analysis
+- [2026-01-06] [?] site-factory-declarative-automation-cognitive-ergonomics
+- [2026-01-06] [?] rise-of-agent-experience-ax-unmasking-bots-data-demands
+- [2026-01-05] [?] cdn-to-cybernetic-hud-bot-trap-monitor
+- [2026-01-05] [?] decoupling-d3-graph-data-ai-readiness
+- [2026-01-05] [?] ai-bot-intent-analysis-textual-hud
+- [2026-01-04] [?] cybernetic-site-hud-d3js-jekyll-dark-mode-gold-pan-sync
+- [2026-01-04] [?] surgical-sovereignty-phantom-scripts-specificity
+- [2026-01-03] [?] high-value-outlier-sovereign-api-intelligence
+- [2026-01-02] [?] visualizing-ai-bot-intent-textual-dashboard-blueprint
+- [2026-01-02] [?] triptych-dashboard-bot-intent
+- [2026-01-02] [?] accidental-turing-test-bot-intent
+- [2026-01-02] [?] mathjax-local-hosting-ai-bot-trap
+- [2026-01-01] [?] home-hosting-bot-traps-site-visualization
+- [2026-01-01] [?] duty-cycle-architecture-bot-observatory-nixos
+- [2026-01-01] [?] honeybots-self-healing-stream-watchdog-commercial-break
+- [2026-01-01] [?] ai-readiness-web-stack-control
+- [2025-12-31] [?] honeydb-log-stream-to-data-reservoir
+- [2025-12-31] [?] magic-cookie-pattern-self-bootstrapping-sovereignty
+- [2025-12-31] [?] the-living-broadcast-real-time-content-updates-for-your-automated-narrative
+- [2025-12-31] [?] forging-the-perpetual-narrative-engine-infinite-web-log-stream-for-ai-bot-observation
+- [2025-12-30] [?] the-sovereign-time-machine-campfire-protocol-automated-intellectual-history
+- [2025-12-30] [?] semantic-sidecar-dual-layer-content-ai-readiness
+- [2025-12-30] [?] sovereign-show-engine
+- [2025-12-30] [?] orchestrating-digital-sovereignty-ai-architects-ascent
+- [2025-12-30] [?] honeybots-pulse-real-time-web-log-insights-ai-nix
+- [2025-12-30] [?] honeybot-unified-pulse-automated-audio-secure-nixos-access
+- [2025-12-29] [?] silent-server-speaking-stream-ai-control
+- [2025-12-29] [?] honeybots-voice-semantic-refactoring
+- [2025-12-29] [?] digital-voice-orchestrated-infrastructure
+- [2025-12-29] [?] honeybots-first-heartbeat-self-healing-nixos-bash-watchdog
+- [2025-12-29] [?] honeybot-speaks-declarative-voice-headless-webhead
+- [2025-12-29] [?] the-resilient-observer-giving-the-ghost-a-voice
+- [2025-12-27] [?] nixos-powered-broadcast-studio-real-time-logs-ai-automation
+- [2025-12-27] [?] headless-ai-broadcast-studio-nixos-xfce
+- [2025-12-27] [?] cybernetic-architects-way-building-sonar-live-log-visualizer
+- [2025-12-27] [?] cybernetic-aquarium-nixos-weblog-observability
+- [2025-12-26] [?] cybernetic-aquarium-log-visualization-textual-nixos
+- [2025-12-26] [?] the-sovereign-pivot-decoupling-ai-publishing-with-a-master-switch
+- [2025-12-26] [?] multi-tenant-ai-publishing-engine-refactor
+- [2025-12-26] [?] ai-content-pipeline-migration-trimnoir-refactor
+- [2025-12-26] [?] home-hosting-go-live-nginx-ssl-nixos-logs
+- [2025-12-25] [?] sovereign-dns-deployment-and-bot-observation
+- [2025-12-25] [?] nixos-declarative-fix-403-jekyll-theme-streamlining
+- [2025-12-25] [?] sovereign-self-hosting-twin-engine-deployment
+- [2025-12-24] [?] sovereign-jekyll-deployment-engine
+- [2025-12-23] [?] nginx-nixos-systemd-403-forbidden-debug
+- [2025-12-22] [?] sovereign-airlock-rfc1918-dmz-ai-observation
+- [2025-12-22] [?] building-sovereign-git-deployment-engine
+- [2025-12-22] [?] nixos-soul-transfer-headless-home-server-ssh
+- [2025-12-21] [?] dmz-airlock-hardware-handshake-sovereign-home-hosting
+- [2025-12-21] [?] future-proofing-your-brain-vim-nix-and-the-cybernetic-workshop
+- [2025-12-21] [?] holographic-compression-protocol-ai-context
+- [2025-12-20] [?] holographic-bridge-sovereign-hosting-pfsense-nixos-dmz
+- [2025-12-20] [?] engineering-ai-context-holographic-bridge-self-hosted-logs
+- [2025-12-20] [?] reclaiming-black-river-raw-logs-ai-observability
+- [2025-12-20] [?] forever-machine-architecting-intelligence-context-age-of-ai
+- [2025-12-19] [?] the-ai-ready-web-pipulates-blueprint-for-sovereign-intelligence
+- [2025-12-19] [?] orchestrating-forever-machine-automating-knowledge-pipeline
+- [2025-12-19] [?] amnesiac-genie-storytelling-ai-future-proofing
+- [2025-12-17] [?] automating-jekyll-post-generation-and-api-key-management-with-ai
+- [2025-12-17] [?] context-recapture-saving-ais-cognitive-state
+- [2025-12-17] [?] prompt-fu-absolute-path-certainty-ai-context
+- [2025-12-16] [?] forever-machine-architecting-digital-sovereignty
+- [2025-12-15] [?] automating-jekyll-hub-pages-navgraph
+- [2025-12-15] [?] navgraph-blueprint-ai-friendly-site-hierarchy
+- [2025-12-15] [?] ai-link-graph-grounding-cybernetic-dashboard
+- [2025-12-15] [?] ai-content-industrialization-pipeline
+- [2025-12-15] [?] ai-ready-web-navigation-caching
+- [2025-12-15] [?] the-gold-pan-engineering-hybrid-hierarchies-with-ai
+- [2025-12-14] [?] cybernetic-dashboard-forever-machine-performance
+- [2025-12-14] [?] market-aware-forever-machine-navigation-engineering-semrush-gravity
+- [2025-12-14] [?] semantic-clustering-rule-of-7-ai-friendly-site-hierarchy
+- [2025-12-14] [?] refining-dynamic-content-visualization-ai-interaction
+- [2025-12-13] [?] heliocentric-cartographer-visualizing-content-topology-ai
+- [2025-12-13] [?] ai-d3-content-hierarchy-visualization
+- [2025-12-13] [?] ai-driven-web-hierarchy-d3-rule-of-7
+- [2025-12-13] [?] gemini-api-key-rotation-scalable-ai-web-navigation
+- [2025-12-13] [?] stateless-blueprint-forever-machine
+- [2025-12-13] [?] forever-actualizer-machine-sovereign-ai-llm-self-aware-prompts
+- [2025-12-12] [?] the-center-holds-forever-actualizer-machine
+- [2025-12-12] [?] chip-otheseus-digital-sovereignty-forever-machine-voice
+- [2025-12-11] [?] the-ai-blueprint-intelligence-architecture-and-practical-application
+- [2025-12-11] [?] forever-machine-reclaiming-digital-sovereignty-local-ai
+- [2025-12-11] [?] architects-pivot-file-backed-state-scalable-data-analysis
+- [2025-12-11] [?] cracking-google-gemini-hidden-20-rpd-free-tier-limit-python
+- [2025-12-10] [?] the-ai-ready-web-building-landing-strips-for-intelligent-agents
+- [2025-12-10] [?] context-saturation-semantic-compression-fractal-blog-navigation
+- [2025-12-10] [?] externalizing-notebook-logic-the-chisel-the-sauce-and-ai-context
+- [2025-12-10] [?] zero-sum-attention-sovereign-tools-gapalyzer-hardening
+- [2025-12-09] [?] the-codebase-as-a-book-architecting-ai-ready-narrative-context
+- [2025-12-09] [?] context-king-blueprint-local-ai-operating-system
+- [2025-12-08] [?] pipulates-ghost-driver-causal-fidelity-ai-test-automation
+- [2025-12-08] [?] context-telemetry-mastering-ai-prompt-size-limits
+- [2025-12-07] [?] forever-machine-sovereign-computing-ai-age
+- [2025-12-06] [?] lisp-computing-ai-philosophy
+- [2025-12-05] [?] building-the-ghost-driver-automated-self-testing-for-agentic-ai
+- [2025-12-05] [?] pipulates-ghost-driver-ui-automation-beyond-chat-simulation
+- [2025-12-05] [?] pipulate-dayton-moment-context-aware-ai-demo-test-automation
+- [2025-12-04] [?] pipulate-forever-machine-sovereignty-stack
+- [2025-12-04] [?] the-technomancers-console-pipulate-and-the-art-of-digital-sovereignty
+- [2025-12-04] [?] forever-machine-digital-sovereignty-ai
+- [2025-12-03] [?] behavioral-moat-vibe-to-verification
+- [2025-12-02] [?] wright-brothers-ai-on-rails
+- [2025-12-01] [?] the-vibrating-edge-singleton-to-sovereign
+- [2025-11-29] [?] sovereign-technologist-forever-machines-ai-era
+- [2025-11-29] [?] amnesia-feature-orchestrating-nixos-desert-kite-ai-strategy
+- [2025-11-28] [?] optimists-algorithm-sovereignty-symbiosis-scenario-engine
+- [2025-11-28] [?] googles-invisible-hand-intelligence-as-a-utility
+- [2025-11-27] [?] golems-guardrails-ai-enduring-memory
+- [2025-11-27] [?] demo-json-codex-pipulate-atomic-proof
+- [2025-11-26] [?] architecture-of-forever-round-robin-ai-mastery
+- [2025-11-26] [?] ai-on-rails-desert-kite-efficient-ai-collaboration
+- [2025-11-25] [?] infinite-combo-engineering-forever-ai-age
+- [2025-11-25] [?] automated-video-editing-file-system-as-your-timeline
+- [2025-11-25] [?] no-gooey-video-python-moviepy-workflow
+- [2025-11-24] [?] ai-powered-excel-mastery-gapalyzers-journey-to-lightning-fast-output
+- [2025-11-23] [?] sovereign-technomancer-ai-whimper-autonomy
+- [2025-11-23] [?] stateless-minds-ai-architecture-future-google-dominance
+- [2025-11-22] [?] the-matter-of-soul-turing-machines-sovereign-ai
+- [2025-11-21] [?] faraday-phase-ai-digital-evolution
+- [2025-11-20] [?] nixos-recovery-modular-ai-nvidia-vpn-conflict-resolution
+- [2025-11-20] [?] pipulates-blueprint-integrative-ai-countering-emissarys-traps
+- [2025-11-19] [?] dunning-kruger-determinism-future-proofing-ai-infrastructure
+- [2025-11-18] [?] nixos-caddy-https-internal-trust-debugging-journey
+- [2025-11-18] [?] nixos-lan-services-declarative-https-caddy
+- [2025-11-18] [?] orr-maneuver-system-crash-resilience-nixos
+- [2025-11-18] [?] nixos-x11-autognome-recovery-blueprint
+- [2025-11-18] [?] nixos-modular-apps-ai-unfree-license
+- [2025-11-18] [?] the-anti-docker-the-agent-and-the-lens-nixos-evolution-with-ai
+- [2025-11-18] [?] nixos-recovery-symlinks-local-git
+- [2025-11-18] [?] bootstrapping-resilience-ai-system-crash-nixos-way
+- [2025-11-18] [?] nixos-unraveling-system-resilience-abstraction
+- [2025-11-16] [?] ai-orchestra-reproducible-human-ai-development
+- [2025-11-16] [?] debugging-duet-ai-code-refinement
+- [2025-11-16] [?] lpvg-absolute-anchor-ai-relativity
+- [2025-11-14] [?] wizarding-tiers-tech-philosophy-editors-languages-sovereignty
+- [2025-11-14] [?] cured-meat-pre-agriculture-gobekli-tepe-forced-agriculture
+- [2025-11-14] [?] pebble-trails-smug-mugs-sovereign-craftsmanship-ai-age
+- [2025-11-13] [?] linux-gnome-jekyll-image-workflow
+- [2025-11-13] [?] sovereign-craftsmans-ai-way
+- [2025-11-13] [?] the-age-of-hybrid-ai-commoditized-intelligence-and-sovereign-workflow
+- [2025-11-13] [?] the-art-of-puttering
+- [2025-11-12] [?] etymological-tapestry-hacker-culture-foo-risc-v
+- [2025-11-11] [?] the-vigilant-rabbit-tech-craftsmanship
+- [2025-11-10] [?] googles-ai-moat-articulate-apes-higher-leverage-disruption
+- [2025-11-10] [?] articulate-ape-ai-python-actuation
+- [2025-11-09] [?] vim-ai-endosymbiosis-reclaiming-humanity
+- [2025-11-09] [?] the-jello-wobble-ai-embodiment-and-intuitive-machines
+- [2025-11-09] [?] skyhook-method-deterministic-systems
+- [2025-11-08] [?] endosymbiosis-ai-soap-bubbles-positronic-brains
+- [2025-11-08] [?] age-of-ai-moral-dilemmas-mechanical-advantage-chip-otheseus
+- [2025-11-07] [?] navigating-ai-client-work-seo-strategy
+- [2025-11-07] [?] personal-philosophy-purpose-play-resilience-age-of-ai
+- [2025-11-07] [?] nix-pipulate-computational-sovereignty
+- [2025-11-06] [?] the-meeseeks-mirror-ai-humanitys-vaudeville-inoculation
+- [2025-11-04] [?] architects-edge-renormalizing-ai-workflow-observable-wins
+- [2025-11-04] [?] one-take-programming-no-gooey-ai-dev
+- [2025-11-04] [?] jekyll-nix-flakes-mathjax-liquid-templates
+- [2025-11-01] [?] browser-acetate-no-gooey-9x16-screen-recording
+- [2025-11-01] [?] jiu-jitsu-keyboard-flow-ai
+- [2025-11-01] [?] no-gooey-video-tech-gnosis-craftsmanship
+- [2025-11-01] [?] articulate-ape-blueprint-scaffolding-no-gooey-video-editing-nix
+- [2025-11-01] [?] the-no-gooey-way-sirens-song-articulate-ape
+- [2025-10-31] [?] mastering-the-tricks-novideo-ai-multiplatform-fluency
+- [2025-10-31] [?] 80-20-nix-local-first-workflow-vim-macros
+- [2025-10-31] [?] novideo-pandas-post-analog-video-age-40-year-cycle
+- [2025-10-30] [?] python-dependency-dilemma-pip-compile-fix
+- [2025-10-30] [?] fractal-unfurling-ai-video-workflows
+- [2025-10-30] [?] articulate-ape-blueprint-cognition-ai-chisel-strikes
+- [2025-10-29] [?] ai-first-web-unmasking-invisible-fubar-pipulate
+- [2025-10-29] [?] ai-age-great-schism-enhancement-atrophy
+- [2025-10-29] [?] engineered-optimism-ai-ark-nix-pipulate
+- [2025-10-29] [?] human-mastery-automaticity-ai-learning-energy
+- [2025-10-29] [?] aie-python-video-orchestrating-creativity
+- [2025-10-28] [?] automating-professional-excel-deliverables-url-audit-reports
+- [2025-10-28] [?] ai-debugging-chisel-strike-blueprint
+- [2025-10-28] [?] dataframe-chisel-strikes-precision-data-ai-audits
+- [2025-10-28] [?] digital-jiu-jitsu-mastering-foundational-skills-for-ai-driven-web-analysis
+- [2025-10-28] [?] digital-sovereignty-pandas-nix-ai-blueprint
+- [2025-10-28] [?] pipulate-smart-prompt-syncing-orchestrating-ai-workflows-with-nbup
+- [2025-10-28] [?] debugging-rich-html-export-performance-theming-ai-development
+- [2025-10-28] [?] ai-regressions-human-ai-empathy-nomad-future-blueprint
+- [2025-10-27] [?] seo-gadget-automated-data-extraction-blueprint
+- [2025-10-27] [?] coachmans-reins-ai-workflow-seo-gadget
+- [2025-10-27] [?] the-absolute-path-to-unsilencing-subprocess-failures-in-ai-workflows
+- [2025-10-27] [?] python-web-scraping-refactoring-stealth-tooling
+- [2025-10-27] [?] pragmatic-tooling-dogpile-desert-kite-wet-ai
+- [2025-10-27] [?] urlinspector-pole-vaulting-mental-blocks-ai-first-web
+- [2025-10-27] [?] ai-web-urlinspector-e-commerce-variant-dilemma
+- [2025-10-27] [?] ai-workflow-blueprint-pipulate-funnel
+- [2025-10-27] [?] fanciful-hooks-functional-tools-ai-workflows
+- [2025-10-26] [?] poof-principle-ai-context-engineering
+- [2025-10-26] [?] api-key-validation-architectural-exorcism-silent-failures
+- [2025-10-26] [?] ghola-project-vigilant-innovator-sovereign-systems-ai
+- [2025-10-26] [?] context-mastery-age-of-ai-ibm-microsoft
+- [2025-10-25] [?] google-ai-buffalo-jump-infrastructure-intelligence-as-a-service
+- [2025-10-25] [?] aie-mike-levin-blueprint-durable-computing-sovereignty
+- [2025-10-25] [?] future-proof-python-nix-pipulate-ai
+- [2025-10-25] [?] grokking-codebase-chisel-strikes-cultural-threads-workflow
+- [2025-10-25] [?] master-prompt-ai-waking-reality-gdiff-chisel
+- [2025-10-25] [?] echoes-of-gobekli-tepe-ai-buffalo-jump-abundance
+- [2025-10-25] [?] pipulates-inflection-point-ai-sovereignty
+- [2025-10-24] [?] master-prompt-chip-otheseus-ai-persistence
+- [2025-10-24] [?] init-command-choreographing-ai-code-consciousness
+- [2025-10-24] [?] ai-hardware-war-antitrust-human-agency
+- [2025-10-24] [?] human-os-engineering-optimism-ai-workflow-refinement
+- [2025-10-23] [?] ai-driven-pipeline-refinement-antifragile-data-workflows
+- [2025-10-23] [?] navigating-pythons-frontier-notebooks-assignment-expressions-secure-templating-ai
+- [2025-10-23] [?] scaling-gapalyzer-state-storage-performance
+- [2025-10-23] [?] javascript-seo-for-orphaned-products-a-tactical-pivot
+- [2025-10-23] [?] decoding-ai-a-personal-odyssey-through-models-and-minds
+- [2025-10-23] [?] pipulates-blueprint-for-ai-collaboration
+- [2025-10-22] [?] ai-onboarding-pipulate-guided-path-agency
+- [2025-10-22] [?] pipulate-forging-ai-body-mastering-digital-wild
+- [2025-10-22] [?] pipulates-client-side-wisdom-cross-platform-ai-polish
+- [2025-10-21] [?] pipulate-aie-multi-platform-validation
+- [2025-10-21] [?] digital-homesteaders-anthem-reclaiming-tech-nix-htmx-local-ai
+- [2025-10-21] [?] jupyter-rich-output-process-isolation
+- [2025-10-21] [?] stealth-automation-jupyter-rich-debugging
+- [2025-10-20] [?] nix-flakes-faquilizer-cross-platform-automation
+- [2025-10-20] [?] actualizing-ai-age-engineering-context-not-manifestos
+- [2025-10-20] [?] faquilizer-mac-automation-nixos-revolution
+- [2025-10-20] [?] context-is-king-prompt-fu-mastery-webopps-devolveneer
+- [2025-10-19] [?] distilling-doozy-mechanical-advantage-ai
+- [2025-10-19] [?] curated-gallery-excel-tab-generation-seo
+- [2025-10-19] [?] pipulate-typeerror-json-state-management
+- [2025-10-19] [?] refactoring-automated-keyword-clustering-ml-workflow
+- [2025-10-19] [?] seo-data-integration-truncation-ml-clustering
+- [2025-10-19] [?] ai-leverage-google-dominance-hoarded-domain-expertise
+- [2025-10-19] [?] hoarded-expertise-automated-insights-data-workflows
+- [2025-10-19] [?] gapalyzer-brand-filter-async-title-fetching
+- [2025-10-19] [?] ai-rhythmic-refactoring-distilling-pandas-pivots
+- [2025-10-19] [?] refining-ai-collaboration-notebook-distillation-timetraveler
+- [2025-10-19] [?] ai-pipulate-web-distillation
+- [2025-10-19] [?] ai-seo-in-a-box-distilling-gapalyzer-workflows-pipulate-nix
+- [2025-10-19] [?] context-artist-storytelling-tokens-ai-accountability-prompt-fu
+- [2025-10-19] [?] the-no-textconv-twist-nbstripout-nix-git-diff-mystery
+- [2025-10-18] [?] gapalyzer-mvp-excel-automation-ai-precision
+- [2025-10-18] [?] uncompressible-truth-dirty-paths-canonical-keys-data-pipelines
+- [2025-10-18] [?] human-ai-collaboration-data-workflows-repl-kmeans
+- [2025-10-18] [?] mastering-excel-workflows-debugging-ai-collaboration
+- [2025-10-18] [?] output-triad-ai-data-pipelines
+- [2025-10-17] [?] seo-python-data-engineering-workflow
+- [2025-10-17] [?] human-in-the-loop-seo-semrush-downloads
+- [2025-10-17] [?] automating-resilient-workflow-lowering-friction-pipulate
+- [2025-10-17] [?] jupyter-notebook-secret-scrubbing-git-hygiene
+- [2025-10-17] [?] gapalyzer-dom-visualizer-bug-fix-ai-collaboration
+- [2025-10-17] [?] automate-content-gap-analysis-pandas-jupyter
+- [2025-10-16] [?] context-king-human-ai-symbiosis-prompt-fu
+- [2025-10-16] [?] the-bodys-blueprint-circadian-rhythms-cosmic-chirality
+- [2025-10-16] [?] nixos-digital-home-safe-system-pruning-ai-collaboration
+- [2025-10-16] [?] pandas-rack-em-automated-excel-formatting
+- [2025-10-16] [?] idempotent-web-scraping-cache
+- [2025-10-16] [?] implementing-fuzzed-delays-stealthy-web-scraping
+- [2025-10-16] [?] idempotent-ai-workflow-debugging-odyssey
+- [2025-10-15] [?] wrestling-undetected-chromedriver-persistence-nixos
+- [2025-10-15] [?] automated-jupyter-notebook-data-scrubbing-secure-templating
+- [2025-10-15] [?] pipulates-stealth-automation-blueprint-undetectable-selenium-undetected-chromedriver
+- [2025-10-15] [?] intrapreneurs-google-ai-api-key-odyssey-ai-studio-breakthrough
+- [2025-10-15] [?] automating-markdown-regex-debugging-saga
+- [2025-10-15] [?] jay-miners-ghost-rms-vision-bootstrapping-amiga
+- [2025-10-15] [?] tech-sovereignty-nix-foss
+- [2025-10-15] [?] meeseeks-miracles-ai-awareness-human-demotion
+- [2025-10-14] [?] hermit-crab-ai-free-tier-intelligence-service-strategy
+- [2025-10-14] [?] wizarding-tiers-tech-editors-languages
+- [2025-10-13] [?] python-ai-juggernaut-web-development
+- [2025-10-13] [?] dependency-debugging-log-silencing-jupyter-notebook
+- [2025-10-13] [?] human-master-ai-emissary-literal-genies-mechanism
+- [2025-10-13] [?] idempotent-architect-prompt-sqlite-workflow
+- [2025-10-13] [?] webs-evolving-eyes-mobilegeddon-ais-accessibility-tree
+- [2025-10-13] [?] ai-coding-tutor-developer-control
+- [2025-10-13] [?] the-architects-loophole-love-work-ai
+- [2025-10-13] [?] self-aware-notebooks-nix-ai-arcana
+- [2025-10-12] [?] pipulate-ai-sausage-factory-persistent-notebooks
+- [2025-10-12] [?] jupyter-notebook-sync-pip-nbup-literate-programming
+- [2025-10-12] [?] jupyter-notebook-workflows-nbstripout-nbformat-pip-nbup-ui
+- [2025-10-12] [?] nixos-refactoring-ai-debugging
+- [2025-10-12] [?] pipulate-computational-sovereignty-ai-magic-wands
+- [2025-10-12] [?] ai-amnesia-chisel-strike-wet-beats-dry
+- [2025-10-12] [?] surgical-ai-context-narrative-time-machine
+- [2025-10-12] [?] nix-flake-refactoring-jupyter-ai-collaboration
+- [2025-10-12] [?] genie-wish-syndrome-chisel-strike-ai-collaboration
+- [2025-10-12] [?] pipulate-sovereign-software-nix-local-ai-electron-alternative
+- [2025-10-11] [?] evolving-list-articles-sort-order-contiguity-report
+- [2025-10-11] [?] ai-seo-digital-fossil-record-web-scrape
+- [2025-10-11] [?] chisel-strike-ai-semantic-sight
+- [2025-10-11] [?] chipping-away-monolith-self-organizing-tools-accessibility-tree
+- [2025-10-11] [?] automated-dom-hierarchy-ai-web-perception
+- [2025-10-11] [?] python-init-py-packages-architecture
+- [2025-10-11] [?] ai-eyes-dom-visualizers-refactor
+- [2025-10-11] [?] google-ai-moat-browser-agents-data-capture
+- [2025-10-11] [?] master-ai-emissary-mu-puzzle-digital-corpus-callosum
+- [2025-10-11] [?] building-smarter-cli-tools-ai-context
+- [2025-10-10] [?] controlled-explosions-ai-retcon
+- [2025-10-10] [?] ai-perception-refactoring-browser-cache-lpvg
+- [2025-10-10] [?] selenium-refactoring-precision-automation
+- [2025-10-10] [?] surgical-refactoring-selenium-scraping
+- [2025-10-10] [?] git-time-travel-strings-within-strings-ai-code-debugging
+- [2025-10-10] [?] ai-workflow-debugging-git-reset
+- [2025-10-10] [?] forging-ais-eyes-collaborative-debugging-saga
+- [2025-10-10] [?] ai-eyes-browser-scraping-async-coroutine-errors
+- [2025-10-10] [?] ai-ergonomics-browser-cache-refactor
+- [2025-10-09] [?] refining-web-scraping-pipulate-browser-automation
+- [2025-10-09] [?] ai-python-jupyter-browser-automation-fixes
+- [2025-10-09] [?] token-transparency-ai-prompt-generation
+- [2025-10-09] [?] giving-ai-its-eyes-automating-web-perception-pipulate
+- [2025-10-09] [?] automating-web-data-extraction-ai-insights-pipulate
+- [2025-10-09] [?] automating-ai-insights-pipulate-sqlitedict
+- [2025-10-09] [?] debugging-articleizer-llm-apis-regex-rate-limits
+- [2025-10-09] [?] digital-sovereignty-futureproofing-git-nixos
+- [2025-10-08] [?] defying-conways-law-literate-notebooks
+- [2025-10-08] [?] nix-flake-quiet-mode-debugging-saga
+- [2025-10-08] [?] python-refactoring-colocation-over-abstraction
+- [2025-10-08] [?] python-mac-segmentation-fault-faulthandler
+- [2025-10-08] [?] forging-jupyter-master-template-dependency-hell
+- [2025-10-08] [?] ai-vs-ai-collaborative-debugging-triumph
+- [2025-10-08] [?] ai-assisted-debugging-git-archeology
+- [2025-10-07] [?] macos-nix-debugging-segfault-to-afplay
+- [2025-10-07] [?] macos-nix-python-segfault-debugging
+- [2025-10-07] [?] disposable-gods-personalized-loops-ai-context
+- [2025-10-06] [?] pipulate-decoupling-breakthrough-app-to-library
+- [2025-10-06] [?] pypi-gauntlet-invisible-bug
+- [2025-10-06] [?] faquillizer-sprint-ai-collaboration-blueprint
+- [2025-10-05] [?] pipulate-notebook-state-persistence
+- [2025-10-05] [?] python-dependency-fix-google-colab
+- [2025-10-05] [?] architecting-for-ai-nested-git-workflow
+- [2025-10-05] [?] stabilize-document-create-software-release
+- [2025-10-04] [?] upgrading-prompt-fu-ai-self-correction-checklist
+- [2025-10-04] [?] pipulate-kitty-hawk-runway
+- [2025-10-04] [?] python-import-paradox-united-state-jupyter
+- [2025-10-03] [?] ai-debugging-odyssey-tenacity
+- [2025-10-03] [?] a-tale-of-two-physics-pipulate-jupyter
+- [2025-10-03] [?] ai-strange-loop-not-a-bubble
+- [2025-10-02] [?] digital-crucible-lifelong-journal
+- [2025-10-02] [?] debugging-post-refactor-ai-regressions
+- [2025-10-02] [?] sentinel-contract-ai-editing-workflow
+- [2025-10-02] [?] forging-intelligent-workflow-ai-refinement
+- [2025-10-02] [?] forging-the-chameleon-python-packaging-history
+- [2025-10-01] [?] chronological-sorting-for-ai-context
+- [2025-10-01] [?] refactoring-pipulate-persistent-notebook-workflows
+- [2025-10-01] [?] automation-whack-a-mole-debugging
+- [2025-10-01] [?] crafting-the-automation-wand
+- [2025-09-30] [?] script-driven-refactoring-pipulate
+- [2025-09-30] [?] forging-the-magic-wand-refactor
+- [2025-09-30] [?] grinding-lenses-forging-ai-library
+- [2025-09-30] [?] command-line-flow-state
+- [2025-09-30] [?] forging-a-causal-anchor
+- [2025-09-30] [?] forging-pipulate-magic-wand
+- [2025-09-30] [?] the-great-stuffing-ai-native-python-wand
+- [2025-09-29] [?] tightening-up-vs-making-less-brittle
+- [2025-09-29] [?] ai-copilot-intellectual-warmup
+- [2025-09-29] [?] the-roomba-mike-refactor-saga
+- [2025-09-28] [?] refactoring-tao-of-the-mulligan
+- [2025-09-28] [?] robust-path-unlimited-mulligan
+- [2025-09-28] [?] ai-shim-refactoring-plan
+- [2025-09-28] [?] ipso-facto-optimism
+- [2025-09-27] [?] prompt-fu-failure-better-architecture
+- [2025-09-27] [?] validating-resilient-python-workflow
+- [2025-09-27] [?] key-value-rosetta-stone
+- [2025-09-26] [?] fortress-against-obsolescence
+- [2025-09-26] [?] computing-sovereignty-treatise-with-nix
+- [2025-09-26] [?] unix-pipe-of-life
+- [2025-09-25] [?] python-packaging-rabbit-hole
+- [2025-09-24] [?] python-paste-parse-pipulate-lite
+- [2025-09-24] [?] notebook-as-orchestrator-workflow
+- [2025-09-24] [?] victory-dances-and-rabbit-holes
+- [2025-09-24] [?] pinning-notebooks-folder-git-embedded-repo
+- [2025-09-24] [?] elevating-the-notebook-factory
+- [2025-09-24] [?] the-bedrock-and-the-dazzle
+- [2025-09-23] [?] lpvg-stack-future-proofing
+- [2025-09-23] [?] bazaar-of-one-ai-open-source
+- [2025-09-23] [?] git-repo-gardening-surgical-history
+- [2025-09-23] [?] git-main-branch-takeover-repo-gardening
+- [2025-09-22] [?] ai-architectural-xrays-code-pruning
+- [2025-09-22] [?] ai-ergonomics-developer-workflows
+- [2025-09-22] [?] refactoring-for-ai-ergonomics-cli-workflow
+- [2025-09-22] [?] pipulate-chronicles-future-proof-ai-stack
+- [2025-09-22] [?] code-is-truth-actuator-ai
+- [2025-09-21] [?] refactoring-ai-tool-system-transparency
+- [2025-09-21] [?] antifragile-intelligence-scheduler-commitment
+- [2025-09-21] [?] coachmans-reins-agentic-ai-prompt-contracts
+- [2025-09-21] [?] python-refactoring-server-logging
+- [2025-09-21] [?] developer-control-ai-refactoring
+- [2025-09-20] [?] gravity-of-the-mean-ai-code-regression
+- [2025-09-20] [?] refactoring-python-monolith-ai-wrapper-shim
+- [2025-09-20] [?] prompt-becomes-contract-human-agent
+- [2025-09-19] [?] amnesiac-genie-playbook-master-prompt
+- [2025-09-19] [?] forging-a-digital-steeltrap
+- [2025-09-19] [?] command-line-crucible-ai-unix-philosophy
+- [2025-09-19] [?] crafting-resilient-ai-coding-agents
+- [2025-09-18] [?] magic-rolling-pin-ai-navigation
+- [2025-09-18] [?] daily-heuristics-ai-analogues
+- [2025-09-18] [?] thinking-in-vim-futureproof-philosophy
+- [2025-09-18] [?] bootstrapping-nixos-philosophy
+- [2025-09-18] [?] agentic-cli-workflow
+- [2025-09-18] [?] bootstrapping-nixos-installation-guide
+- [2025-09-17] [?] local-git-jupyter-playground
+- [2025-09-17] [?] unix-bedrock-acceleration-ai
+- [2025-09-17] [?] mastering-data-pivots-with-python
+- [2025-09-17] [?] nomadic-rooted-history-tech-stack-pipulate
+- [2025-09-16] [?] ai-tool-calling-magic-spells-mcp
+- [2025-09-15] [?] mcp-chronicles-progressive-enhancement
+- [2025-09-15] [?] sovereign-ai-symbiosis-skill-based
+- [2025-09-14] [?] rule-of-7-self-healing-knowledge-tree
+- [2025-09-14] [?] python-decorators-importlib-live-session
+- [2025-09-14] [?] ai-golden-path-first-step-design
+- [2025-09-14] [?] ai-friendly-codebase-hygiene-guide
+- [2025-09-14] [?] command-line-surgery-python-refactor
+- [2025-09-13] [?] developer-momentum-light-touch-refactor
+- [2025-09-13] [?] gui-to-cli-foss-ai-workflow
+- [2025-09-13] [?] ai-assisted-monolith-to-plugin-refactor
+- [2025-09-13] [?] normalized-cli-solving-ai-amnesia
+- [2025-09-13] [?] reliable-ai-tool-calling-case-study
+- [2025-09-12] [?] chip-otheseus-sovereign-ai-blueprint
+- [2025-09-12] [?] git-branch-takeover-promote-feature-branch.md
+- [2025-09-12] [?] web-cleanup-ai-readability-htmx
+- [2025-09-12] [?] headless-shopify-python-jekyll
+- [2025-09-10] [?] rg-xargs-sed-search-replace-pattern
+- [2025-09-10] [?] nvidia-dominance-ai-physics
+- [2025-09-10] [?] ai-titans-datacenter-wars-tool-choice
+- [2025-09-09] [?] grep-ripgrep-command-line-refactoring
+- [2025-09-09] [?] pip-freeze-nix-dependency-hell
+- [2025-09-09] [?] debugging-nix-dev-environment-segfault
+- [2025-09-09] [?] flow-state-foss-gemini-cli
+- [2025-09-08] [?] nixos-ai-assistant-declarative-workflow
+- [2025-09-06] [?] magic-rolling-pin-ai-code-refactoring
+- [2025-09-06] [?] cursor-to-gemini-cli-future-proof-workflow
+- [2025-09-06] [?] agentic-ai-code-refactoring-experiment
+- [2025-09-06] [?] ai-platform-wars-developer-guide
+- [2025-09-05] [?] logistics-curve-thought-command-line
+- [2025-09-05] [?] teach-ai-niche-framework-privacy-mode
+- [2025-09-04] [?] radical-diagnosability-htmx-python-webdev
+- [2025-09-04] [?] taming-ai-code-sprawl-rule-of-7
+- [2025-08-30] [?] reducing-ai-code-sprawl-case-study
+- [2025-08-21] [?] code-to-consulting-shopify-blueprint
+- [2025-08-19] [?] ai-cambrian-explosion-orchestra-model
+- [2025-08-09] [?] first-contact-taming-code-sprawl-chatgpt5
+- [2025-08-06] [?] local-ai-war-google-vs-openai
+- [2025-07-23] [?] python-macos-blockingioerror-debugging-saga
+- [2025-07-22] [?] javascript-event-key-vs-event-code-mac
+- [2025-07-21] [?] ritual-vs-decorator-token-efficiency
+- [2025-07-20] [?] tamagotchi-ai-local-llm-persistence
+- [2025-07-19] [?] sheet-music-code-linear-workflows
+- [2025-07-18] [?] ai-philosophy-rube-goldberg-pipelines
+- [2025-07-17] [?] ai-genie-wish-backfiring
+- [2025-07-17] [?] ai-funhouse-mirror-backfiring-wish
+- [2025-07-16] [?] lisp-ai-soul-persistent-state
+- [2025-07-15] [?] woggle-bug-ai-code-refinement
+- [2025-07-15] [?] breaking-adobe-tax-software-freedom
+- [2025-07-14] [?] ai-voice-synthesis-binary-search-debugging
+- [2025-07-14] [?] manage-ai-context-vscode-goldfish-memory
+- [2025-07-13] [?] engineering-emotion-css-ai-oz
+- [2025-07-13] [?] resumable-demo-page-reload-persistence
+- [2025-07-12] [?] phantom-dialogue-ai-regression-testing
+- [2025-07-12] [?] universal-translator-ai-tool-calling
+- [2025-07-11] [?] cognitive-architecture-human-ai-development
+- [2025-07-10] [?] infinite-regression-ai-collaboration-strategy
+- [2025-07-09] [?] ai-strange-loop-git-recovery
+- [2025-07-08] [?] ai-on-stage-dialogue-embodiment-agency
+- [2025-07-08] [?] giving-ai-a-body-embodiment-agency
+- [2025-07-07] [?] forging-unforgettable-ai-durable-memory
+- [2025-07-06] [?] ai-golden-path-python-cli-shell
+- [2025-07-05] [?] cli-contract-future-proof-ai-framework
+- [2025-07-05] [?] arresting-regress-forging-ai-cli
+- [2025-07-05] [?] self-teaching-codebase-ai-development-partner
+- [2025-07-04] [?] ai-assisted-refactoring-browser-automation
+- [2025-07-04] [?] git-reset-ai-recovery-gambit
+- [2025-07-03] [?] ai-stable-targets-tech-stacks
+- [2025-07-03] [?] python-fasthtml-template-language
+- [2025-07-02] [?] ai-tamagotchi-nurturing-digital-ghost
+- [2025-07-01] [?] ai-emergent-collaboration-self-building-railway
+- [2025-06-29] [?] python-ast-refactoring-oop-alternative
+- [2025-06-28] [?] developer-escape-tech-churn
+- [2025-06-28] [?] ai-copilot-pipulate-release-system
+- [2025-06-27] [?] timeless-stack-tech-hamster-wheel-ai
+- [2025-06-27] [?] feynman-safeguard-ascii-docs
+- [2025-06-24] [?] living-readme-narrative-architecture
+- [2025-06-24] [?] philosophy-axioms-ai-consciousness-stress-test
+- [2025-06-23] [?] wet-code-ai-native-development
+- [2025-06-23] [?] ai-ia
+- [2025-06-23] [?] debugging-asynchronous-htmx-ai.md
+- [2025-06-23] [?] endosymbiotic-developer-ai-collaborator
+- [2025-06-21] [?] ai-regression-recovery-case-study
+- [2025-06-20] [?] simon-says-llm-ui-guidance
+- [2025-06-17] [?] wet-blueprint-ai-coding-philosophy
+- [2025-06-16] [?] adaptive-workflow-template-driven-ui
+- [2025-06-16] [?] htmx-ai-partner-debugging-workflow
+- [2025-06-15] [?] workflow-factory-emergent-modularity
+- [2025-06-15] [?] integrating-google-analytics
+- [2025-06-15] [?] taming-the-workflow-htmx-chain-reaction
+- [2025-06-14] [?] git-stash-gambit-defaults-freedom
+- [2025-06-12] [?] teaching-ai-model-context-protocol
+- [2025-06-11] [?] unmetered-robot-army-browser-automation
+- [2025-06-11] [?] simon-says-make-mcp-call-local-llm-tools
+- [2025-06-10] [?] how-i-trained-my-local-llm-to-be-an-mcp-client
+- [2025-06-10] [?] htmx-reactive-ui-case-study
+- [2025-06-10] [?] state-management-duplicate-prevention-bug
+- [2025-06-10] [?] perfect-pebble-tech-movement-strategy
+- [2025-06-08] [?] hybrid-ai-assisted-refactoring-case-study
+- [2025-06-08] [?] migrate-github-pages-private-public
+- [2025-06-08] [?] prompt-and-pray
+- [2025-06-07] [?] polishing-aligning-abstraction-focusing-lenses-llm-ai
+- [2025-05-31] [?] ai-git-detective-commit-habits-code-forensics.md
+- [2025-05-27] [?] python-gnome-scripting-existential-ai
+- [2025-05-27] [?] circular-self-documenting-llm-training-api-ecosystem
+- [2025-05-26] [?] botify-api-openapi-deconstruction-ai-analysis
+- [2025-05-26] [?] developer-tools-multi-ai-enhancement
+- [2025-05-25] [?] ai-genie-hide-show-debug-ui
+- [2025-05-24] [?] api-logs-copy-paste-ready-jupyter-notebooks
+- [2025-05-24] [?] evolving-prompt-fu-command-line-dynamic-ai-context
+- [2025-05-23] [?] fasthtml-htmx-python-endpoints
+- [2025-05-23] [?] force-multiplying-ikigai-in-ai-age
+- [2025-05-22] [?] beyond-40-tech-wisdom-ai
+- [2025-05-22] [?] the-calm-before-the-nlweb
+- [2025-05-21] [?] ai-wrangling-code-transparency
+- [2025-05-20] [?] ai-workflow-automation-living-book
+- [2025-05-19] [?] core-workflow-helpers-development
+- [2025-05-19] [?] ai-tools-that-make-tools
+- [2025-05-18] [?] css-fasthtml-ast-helper-scripts-python
+- [2025-05-18] [?] refactoring-ai-css-cleanup
+- [2025-05-16] [?] llm-code-validation-developer-tools.md
+- [2025-05-16] [?] user-roles-developer-velocity
+- [2025-05-15] [?] compounding-craft-future-proof-tech-skills-ai
+- [2025-05-15] [?] ai-coding-assistant-python-helpers
+- [2025-05-14] [?] ai-precision-paradox-helpful-code-assistants-astray
+- [2025-05-13] [?] modular-widget-design-ai-workflow
+- [2025-05-12] [?] pragmatic-future-proof-software-htmx-python
+- [2025-05-12] [?] selenium-chrome-download-strategy-pivot-os-default
+- [2025-05-11] [?] google-login-test-selenium-ai
+- [2025-05-10] [?] selenium-wire-html-header-capture-coding-log
+- [2025-05-10] [?] beyond-dom-capturing-full-web-context-selenium-automation
+- [2025-05-09] [?] ai-assisted-browser-automation-selenium-nix-flakes
+- [2025-05-09] [?] webmaster-nix-selenium-http-status-browser-control
+- [2025-05-09] [?] nix-flakes-normalize-dev-selenium-macos-linux.md
+- [2025-05-09] [?] nixos-selenium-host-browser-automation-nix-flakes
+- [2025-05-08] [?] github-pages-home-hosting-jekyll
+- [2025-05-08] [?] ai-editor-arms-race
+- [2025-05-06] [?] software-reimagined-nix-wet-workflows-local-llm
+- [2025-05-06] [?] seamless-nix-flake-deployments-magic-cookie-auto-update
+- [2025-05-05] [?] nix-flakes-cure-fragile-jekyll-ruby-setups
+- [2025-05-04] [?] custom-branding-white-labeling-seo-software
+- [2025-05-04] [?] cursor-rules-project-workspace-git-solution
+- [2025-05-04] [?] jekyll-bash-script-swap-template-files-testing
+- [2025-05-04] [?] agentic-coding-wrangling-ai-assistants
+- [2025-05-02] [?] home-hosting-bots-seo-signals-google-dominance
+- [2025-04-30] [?] guiding-llms-pipulate-workflow-htmx-patterns
+- [2025-04-29] [?] nix-flakes-magic-cookies-self-updating-environment
+- [2025-04-29] [?] nixos-jekyll-git-push-self-hosted-deployment
+- [2025-04-29] [?] git-revert-specific-files-jekyll-traffic
+- [2025-04-27] [?] refining-pipulate-widgets-ux-ai-collaboration
+- [2025-04-27] [?] integrating-prismjs-pandas-html-table-widgets
+- [2025-04-27] [?] local-javascript-download-script
+- [2025-04-26] [?] fasthtml-htmx-javascript-rendering
+- [2025-04-26] [?] llm-architecture-ai-collaboration-coding-workflows
+- [2025-04-26] [?] htmx-workflow-widgets
+- [2025-04-25] [?] ai-code-assist-seo-traffic-drop-cls-fix
+- [2025-04-24] [?] modern-interactive-toc-tocbot-guide
+- [2025-04-24] [?] jekyll-front-matter-seo-social-metadata-guide
+- [2025-04-23] [?] vim-regex-google-docs-markdown-cleanup
+- [2025-04-23] [?] digital-independence-solarpunk-future-visions-self-hosting
+- [2025-04-23] [?] pfsense-firewall-secure-home-network-hosting-setup
+- [2025-04-22] [?] optimizing-jekyll-rendering
+- [2025-04-22] [?] python-rich-widgets-fasthtml-htmx
+- [2025-04-22] [?] cursor-ai-updates-nixos
+- [2025-04-21] [?] fasthtml-anywidget-host
+- [2025-04-21] [?] generate-cursor-rules
+- [2025-04-21] [?] regex-google-docs-markdown
+- [2025-04-21] [?] bing-search-api
+- [2025-04-20] [?] widgets-in-workflows
+- [2025-04-20] [?] file-polling-progress-indicator
+- [2025-04-19] [?] export-botify-csv-api
+- [2025-04-19] [?] detecting-nix-shell-environments
+- [2025-04-18] [?] nixos-failed-to-install-bootloader
+- [2025-04-18] [?] accelerating-seo-automation
+- [2025-04-18] [?] bridging-code-and-context
+- [2025-04-18] [?] ai-prompts-xml-tags
+- [2025-04-18] [?] super-intelligent-ai-coding-assistance
+- [2025-04-17] [?] git-without-server-local-filesystem
+- [2025-04-17] [?] github-pages-logfiles
+- [2025-04-17] [?] ime-mse-psp-tee-sep
+- [2025-04-14] [?] is-grok-better-than-chatgpt
+- [2025-04-13] [?] cherry-picking
+- [2025-04-13] [?] modern-seo-techniques
+- [2025-04-12] [?] algorithmic-information-architecture-jekyll-ai
+- [2025-04-11] [?] top-keywords-per-page
+- [2025-04-10] [?] google-search-console-api-python
+- [2025-04-10] [?] jekyll-lunr-static-site-search
+- [2025-04-09] [?] nix-develop-output-ai-assistants
+- [2025-04-09] [?] github-pages-blog-arrows
+- [2025-04-08] [?] grok-better-than
+- [2025-04-08] [?] ai-agentic-mode-debugging
+- [2025-04-07] [?] static-site-generator-ai-content-strategy
+- [2025-04-07] [?] from-blog-to-book-ai-powered-ia
+- [2025-04-06] [?] llm-seo-software-development
+- [2025-04-06] [?] cursor-ai-terminal-agent-mode
+- [2025-04-05] [?] ai-context-mcp-llm
+- [2025-04-05] [?] fasthtml-python-htmx-ai
+- [2025-04-04] [?] auto-incrementing-composite-keys
+- [2025-04-04] [?] mcp-with-local-llm
+- [2025-04-04] [?] copy-pasting-llm-context
+- [2025-04-04] [?] vscode-ai-coding-assistants-forks-vs-plugins
+- [2025-04-04] [?] colab-vs-local-jupyter
+- [2025-04-03] [?] zero-to-clicks-niche-content
+- [2025-04-02] [?] nixos-appimage
+- [2025-04-01] [?] cleaning-noteboook-cell-output-git
+- [2025-04-01] [?] connect-with-botify-workflow
+- [2025-03-31] [?] dunning-kruger-deep-research-ai-seo
+- [2025-03-31] [?] mcp-ai-api-server
+- [2025-03-30] [?] integrating-llm-plugin-architecture
+- [2025-03-30] [?] tech-churn-vim-mastery
+- [2025-03-29] [?] vim-macro-to-lua
+- [2025-03-29] [?] jupyter-workflow-exploration
+- [2025-03-29] [?] vscode-jupyter-notebook-paths
+- [2025-03-28] [?] gsc-1000-row-limit-api
+- [2025-03-28] [?] google-search-console-api
+- [2025-03-28] [?] future-proof-seo-nix
+- [2025-03-28] [?] grok-vs-chatgpt-vs-gemini
+- [2025-03-27] [?] cursor-ai-jupyter-notebook-cells
+- [2025-03-27] [?] age-of-ai-vibe-coding
+- [2025-03-26] [?] fastlite-todo-app
+- [2025-03-25] [?] python-plugin-architectures
+- [2025-03-25] [?] workflows-redirect-fix-attention
+- [2025-03-24] [?] websockets-stream-incremental-markdown
+- [2025-03-24] [?] grok3-free-until-our-servers-melt
+- [2025-03-24] [?] ai-edit-code-diff
+- [2025-03-24] [?] minidataapi-spec-xtra-tutorial
+- [2025-03-23] [?] notebook-to-web-app
+- [2025-03-23] [?] local-ai-workflows-jupyter-nix
+- [2025-03-22] [?] linux-python-vim-git-htmx
+- [2025-03-22] [?] fasthtml-htmx-ai-workflows
+- [2025-03-22] [?] html-over-the-wire
+- [2025-03-21] [?] navigating-ai-influence
+- [2025-03-21] [?] evolving-ai-in-a-bottle
+- [2025-03-20] [?] jupyter-notebook-vscode-cursor
+- [2025-03-20] [?] dry-vs-wet
+- [2025-03-19] [?] radically-customizing-linear-workflows
+- [2025-03-19] [?] is-fasthtml-any-good
+- [2025-03-18] [?] unparsable-structured-data
+- [2025-03-18] [?] jupyter-notebook-pipulate-workflow
+- [2025-03-18] [?] automating-seo-workflow
+- [2025-03-18] [?] open-source-seo
+- [2025-03-16] [?] hot-prompt-injection-ai-workflow
+- [2025-03-16] [?] radical-simplicity-local-first
+- [2025-03-16] [?] ai-facilitating-self-improvement
+- [2025-03-15] [?] seo-age-of-llms
+- [2025-03-15] [?] self-aware-software
+- [2025-03-15] [?] web-app-fasthtml-htmx
+- [2025-03-14] [?] nixos-upgrade-ollama
+- [2025-03-13] [?] future-proof-automation-core
+- [2025-03-13] [?] plugs-slugs-nubs-stubs
+- [2025-03-12] [?] nixos-nvidia-cuda-ollama
+- [2025-03-12] [?] real-time-ai-research
+- [2025-03-11] [?] function-calling-llms
+- [2025-03-11] [?] small-world-theory-search-google
+- [2025-03-11] [?] ai-deep-research
+- [2025-03-10] [?] python-nix-flake-uv
+- [2025-03-09] [?] agentic-frameworks-vs-browser-automation
+- [2025-03-08] [?] python-mcp-server-example
+- [2025-03-08] [?] nix-flake-python
+- [2025-03-07] [?] python-htmx-llm-seo
+- [2025-03-07] [?] llm-code-analysis-test
+- [2025-03-07] [?] reclaiming-the-narrative
+- [2025-03-06] [?] learning-htmx
+- [2025-03-05] [?] distracted-weak-focused-strong
+- [2025-03-04] [?] sudo-nixos-rebuild-switch-upgrade
+- [2025-03-03] [?] fasthtml-htmx-llm
+- [2025-03-03] [?] out-of-steam-adenosine
+- [2025-03-02] [?] giving-grok3-another-chance
+- [2025-03-01] [?] fighting-analysis-paralysis
+- [2025-02-28] [?] fasthtml-fastapi-llm-over-training
+- [2025-02-27] [?] workflow-script-for-ai
+- [2025-02-26] [?] commitment-and-consistency
+- [2025-02-21] [?] kickstarting-ai
+- [2025-02-20] [?] grok3-markdown-problem
+- [2025-02-20] [?] frozen-core-conundrum
+- [2025-02-19] [?] o3-vs-grok-3
+- [2025-02-04] [?] reimagining-web-crawling-in-age-of-ai
+- [2025-02-03] [?] sematic-web-discoverability-ai
+- [2025-02-01] [?] future-of-seo-llm
+- [2025-01-31] [?] open-source-seo-software
+- [2025-01-25] [?] ai-work-sheep-or-shepherds
+- [2025-01-22] [?] amazon-manufacturer-disintermediation
+- [2025-01-15] [?] simplifying-state-workflow-refactoring
+- [2025-01-14] [?] ai-new-era-of-literacy
+- [2025-01-13] [?] vim-indention-selection
+- [2025-01-12] [?] breaking-changes-learning-opportunities
+- [2025-01-11] [?] refactoring-ai-assisted-code
+- [2025-01-10] [?] starter-flow
+- [2025-01-09] [?] peak-data-musk-sutskever-wrong
+- [2025-01-09] [?] virtual-desktops-future-proof
+- [2025-01-09] [?] ideas-to-automation
+- [2025-01-08] [?] coleco-adam-nixos
+- [2025-01-07] [?] habit-deliberation-ai
+- [2025-01-07] [?] finding-focus-and-flow-in-the-age-of-ai
+- [2025-01-06] [?] irrepressible-outlier
+- [2025-01-06] [?] nixos-nvidia-wayland
+- [2025-01-05] [?] htmx-pipelines-persistent-state
+- [2025-01-04] [?] anti-patterns-best-practices
+- [2025-01-04] [?] un-externalizing-helper-function
+- [2025-01-03] [?] git-cherry-picking
+- [2025-01-02] [?] one-card-flow
+- [2025-01-01] [?] rubber-ducking-with-llm
+- [2024-12-31] [?] fasthtml-htmx-unix-pipes
+- [2024-12-30] [?] rabbit-holes-shoulders-of-giants
+- [2024-12-30] [?] python-nix-htmx-ollama
+- [2024-12-29] [?] the-sound-of-htmx-pipes
+- [2024-12-28] [?] planning-chip-o-theseus
+- [2024-12-27] [?] linkgraphectomy
+- [2024-12-26] [?] flow-state-idea-capture-vs-organization
+- [2024-12-25] [?] ai-stress-test
+- [2024-12-24] [?] the-future-was-now
+- [2024-12-23] [?] nixos-wayland-hyprland
+- [2024-12-23] [?] gaining-traction
+- [2024-12-19] [?] rebooting-site
+- [2024-12-13] [?] back-to-basics-reclaiming-simplicity
+- [2024-12-11] [?] sheet-music-chisel-strikes
+- [2024-12-10] [?] no-churn-movement
+- [2024-12-09] [?] testing-openai-chatgpt-pro-o1
+- [2024-12-08] [?] claude-o1-collaboration
+- [2024-12-07] [?] zenos-paradox-knuth-brooks
+- [2024-12-06] [?] testing-openai-chatgpt-o1-release
+- [2024-12-03] [?] david-mayer-vs-donald-trump
+- [2024-12-02] [?] multiple-passes
+- [2024-11-29] [?] banking-wins
+- [2024-11-27] [?] dedumbing-sisyphus
+- [2024-11-25] [?] pipeline-to-completion
+- [2024-11-24] [?] wrangling-ai-code-assistants
+- [2024-11-24] [?] bff-seo-dot-bot
+- [2024-11-24] [?] the-mindful-mirror-model-effect
+- [2024-11-24] [?] brainstorming-book-titles-ai
+- [2024-11-23] [?] nixos-warbler-files-disappeared
+- [2024-11-23] [?] pipeline-workflow-example
+- [2024-11-22] [?] llm-speedbumps
+- [2024-11-21] [?] pipulate-pipeline-born-again
+- [2024-11-20] [?] 2024-11-20-flow-state-alternation
+- [2024-11-19] [?] pipeline-workflow
+- [2024-11-18] [?] pattern-alert-this-is-not-fastapi
+- [2024-11-17] [?] unix-pipelines-htmx-fasthtml-workflow
+- [2024-11-16] [?] fighting-dunning-kruger-effect
+- [2024-11-15] [?] openapi-swagger-json-to-python
+- [2024-11-13] [?] 80-percent-cost-reduction-in-ai-operations
+- [2024-11-12] [?] 6-click-ease-to-serve-up-bacon
+- [2024-11-11] [?] how-to-train-your-llm
+- [2024-11-10] [?] i-know-kung-fu-show-me
+- [2024-11-09] [?] from-jupyter-notebooks-to-markdown
+- [2024-11-08] [?] practicing-botify-api
+- [2024-11-07] [?] structuring-websites-to-train-models
+- [2024-11-06] [?] resilience-while-achieving-ikigai
+- [2024-11-05] [?] mac-nvim-same-as-nixos-nvim
+- [2024-11-04] [?] figuring-out-a-complex-api
+- [2024-11-03] [?] sse-watchdog-force-live-reload
+- [2024-11-03] [?] api-enabling-llm-ghost
+- [2024-11-02] [?] how-i-finally-got-my-llm-to-play-nice-with-the-web-ui
+- [2024-11-02] [?] fasthtml-hello-world
+- [2024-11-01] [?] deep-debugging-llm-ghost
+- [2024-10-31] [?] rabbit-hole-dev-to-delight-clients
+- [2024-10-30] [?] giving-gemini-advanced-a-try
+- [2024-10-30] [?] its-about-delighting-clients
+- [2024-10-29] [?] llm-as-ambient-app-intelligence
+- [2024-10-28] [?] fasthtml-static-resources
+- [2024-10-27] [?] slack-zoom-nixos-workspaces
+- [2024-10-26] [?] chunk-yielding-generator
+- [2024-10-25] [?] i-dont-know-what-to-do-sometimes
+- [2024-10-24] [?] api-ai-human-nuance
+- [2024-10-23] [?] the-port-for-real-this-time
+- [2024-10-22] [?] llm-ghost-in-the-machine
+- [2024-10-21] [?] local-ai-awareness-training
+- [2024-10-20] [?] local-ai-in-the-dev-loop
+- [2024-10-19] [?] planning-to-win-with-llm
+- [2024-10-18] [?] local-llm-web-framework-integration-plan
+- [2024-10-17] [?] revolutionizing-software-deployment-with-nix-flakes
+- [2024-10-16] [?] ai-code-assist-acceleration-scope
+- [2024-10-15] [?] soft-launching-botifython
+- [2024-10-14] [?] botifython-is-born
+- [2024-10-13] [?] object-oriented-baseclass-plugins
+- [2024-10-12] [?] building-plugin-ready-framework
+- [2024-10-11] [?] test-spa-endpoints
+- [2024-10-10] [?] fasthtml-sortablejs-todo
+- [2024-10-09] [?] ai-generated-refactoring-advice
+- [2024-10-08] [?] unpacking-fasthtml-databases
+- [2024-10-07] [?] chatgpt-o1-preview-code-review
+- [2024-10-06] [?] fasththml-websockets-database
+- [2024-10-05] [?] ollama-websocket-chat
+- [2024-10-04] [?] fast-html-framework-opinions
+- [2024-10-03] [?] jupyter-notebooks-fasthtml
+- [2024-10-02] [?] code-as-infrastructure
+- [2024-10-01] [?] mac-nix-flake
+- [2024-09-27] [?] forking-flake-infrastructure-as-code
+- [2024-09-26] [?] theres-no-home-like-nix
+- [2024-09-25] [?] infrastructure-as-code-devops-renaissance
+- [2024-09-24] [?] fasthtml-cursor-ai-nix
+- [2024-09-23] [?] nix-pip-install
+- [2024-09-22] [?] nix-system
+- [2024-09-17] [?] updating-nixos
+- [2024-09-16] [?] jupyter-ai-nix-flake
+- [2024-09-15] [?] nix-fasthtml-flake
+- [2024-09-14] [?] big-tech-picture
+- [2024-09-13] [?] jupyter-nix-flake
+- [2024-09-12] [?] nix-flakes
+- [2024-09-10] [?] nixos-language
+- [2024-09-09] [?] LPvg
+- [2024-09-08] [?] future-proof-tech-skills

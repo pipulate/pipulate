@@ -85,10 +85,10 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # AUDIT.md
 AI_CONTEXT.md
 
-__init__.py       #  <-- Master versioning
-release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
-pyproject.toml    #  <-- The PyPI Packaging details
-requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
+# __init__.py       #  <-- Master versioning
+# release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
+# pyproject.toml    #  <-- The PyPI Packaging details
+# requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 
 # requirements.txt  #  <-- Pip-compiled dependencies.
 # logs/server.log   #  <-- Like letting AI see your browser app state, but better! --------------------- AI server.py LOG DEBUG
@@ -155,7 +155,7 @@ config.py                   # <-- Centralize every last configuration in here
 pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
 pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
 pipulate/core.py            # <-- The Wand (spells)
-imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
+# imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # assets/styles.css           # <-- Those values often get used here for "the look"
 # server.py                   # <-- The Wizard (big!)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
