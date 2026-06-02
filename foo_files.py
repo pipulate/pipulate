@@ -138,33 +138,19 @@ apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider
 # scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 # scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
 
-tools/mcp_tools.py
-
-# AD HOC
-# config.py
-# tools/mcp_tools.py
-# pipulate/__init__.py
-# pipulate/pipulate.py
-# pipulate/core.py
-
-# apps/110_parameter_buster.py
-# apps/120_link_graph.py
-# imports/botify/true_schema_discoverer.py
-# imports/botify_code_generation.py
-
 # patch           #  <-- I know what you did last patch
 
 # ============================================================================
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-# config.py                   # <-- Centralize every last configuration in here
+config.py                   # <-- Centralize every last configuration in here
+pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
+pipulate/core.py            # <-- The Wand (spells)
+imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # assets/styles.css           # <-- Those values often get used here for "the look"
-# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-# pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
-# pipulate/core.py            # <-- The Wand (spells)
 # server.py                   # <-- The Wizard (big!)
-# imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
 # imports/server_logging.py   # <-- Drawing that ASCII art into radically transparent server logs
 
