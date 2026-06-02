@@ -371,6 +371,9 @@ FIGURATE_REGISTRY: dict = {
     "ai_stack_combo": {
         "render": _figurate_ai_stack_combo,
     },
+    "deployment_context": {
+        "render": _figurate_deployment_context,
+    },
     # === FIGURATE_REGISTRY_EXTRUDE_BOTTOM ===
     # Add new registry entries immediately above this line
 }
