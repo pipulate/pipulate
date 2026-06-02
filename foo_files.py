@@ -133,7 +133,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # IF YOU ONLY edit it one set of things besides the 3 "always" `"!" * 3` files, this clump of actuators is an excellent choice!
 
 .gitignore      #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
-# flake.nix       #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
+flake.nix       #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
 # scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 # scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
@@ -146,12 +146,11 @@ pipulate/__init__.py
 pipulate/pipulate.py
 pipulate/core.py
 
-apps/100_connect_with_botify.py
-# apps/110_parameter_buster.py
-apps/120_link_graph.py
-# imports/botify/true_schema_discoverer.py
-imports/botify_code_generation.py
-imports/botify/code_generators.py
+# apps/100_connect_with_botify.py
+apps/110_parameter_buster.py
+# apps/120_link_graph.py
+imports/botify/true_schema_discoverer.py
+# imports/botify_code_generation.py
 
 # patch           #  <-- I know what you did last patch
 
