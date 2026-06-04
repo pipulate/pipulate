@@ -1178,11 +1178,6 @@ def main():
     check_topological_integrity(args.chop, format_kwargs)
     files_to_process = parse_file_list_from_config(args.chop, format_kwargs)
 
-    # 💥 BUMPER INJECTION: Handle bumper salt injection
-    if args.bumper:
-        files_to_process.append((f"! python -c \"from pipulate import wand; print(wand.compile_context_salt('{args.bumper}'))\"", f"bumper:{args.bumper}"))
-        logger.print(f"🎯 Added bumper matrix: {args.bumper}")
-
     # Inject --files as direct codebase paths into the processing queue
     if args.files:
         seen_paths = {path for path, _comment in files_to_process}
@@ -1204,6 +1199,17 @@ def main():
                 logger.print(f"🎯 Resolved slug '{clean_slug}' to: {article['path']}")
 
     processed_files_data = []
+
+    # 💥 BUMPER INJECTION: Materialize salt directly into the context payload.
+    # Do not route through the dynamic shell-command layer; the bumper is already
+    # a library-native artifact and should be treated like a first-class payload.
+    if args.bumper:
+        bumper_content = wand.compile_context_salt(args.bumper)
+        processed_files_data.append({
+            "path": f"BUMPER: {args.bumper}", "comment": f"bumper:{args.bumper}", "content": bumper_content,
+            "tokens": count_tokens(bumper_content), "words": count_words(bumper_content), "lang": "text"
+        })
+        logger.print(f"🎯 Added bumper matrix to context payload: {args.bumper}")
 
     logger.print("--- Processing Files ---")
     import time
