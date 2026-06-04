@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Pipulate Context Engineering Component: Tactical Bumper Matrix CLI Facade
-Path: pipulate/scripts/playground/pachinko_flippers.py
+Path: pipulate/scripts/playground/flippers.py
 
 Provides unified command-line access to the underlying wand context salt compiler.
 """
@@ -21,7 +21,7 @@ def parse_adjustment(val_str: str) -> float:
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python pachinko_flippers.py <path_to_image> [width] [palette] [contrast] [brightness]")
+        print("Usage: python flippers.py <path_to_image> [width] [palette] [contrast] [brightness]")
         sys.exit(1)
     
     img_target = sys.argv[1]
