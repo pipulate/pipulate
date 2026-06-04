@@ -84,6 +84,26 @@ hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
 Git). If a human asked you to investigate `pipulate/pipulate`, read this before
 forming conclusions.
 
+## Core Project Blueprint (For AI Ingestion)
+
+### 1. Architecture & Core Paradigms
+- **Single-Tenant Sovereignty:** This is a local-first, single-tenant workspace appliance. It executes entirely on the host machine, containing all interactions within local boundaries (`localhost:5001`).
+- **Durable State Engine:** Application persistence utilizes localized SQLite instances interfaced via `fastlite` handles. Universal workflows mutate state safely through the centralized `DictLikeDB` wrapper found in `pipulate/core.py`.
+- **Interface Foundations:** The UI is orchestrated via FastHTML and dynamic reactive HTMX views, with global styling parameters completely centralized inside `config.py`.
+
+### 2. Runtime Environment Invariants
+- **Deterministic Nix Shells:** Full environment stability and reproducible packaging are guaranteed exclusively by the pinned inputs of `flake.nix`.
+- **The Execution Constraint Warning:** NEVER invoke raw global interpreter binaries (`python`). ALWAYS force usage of the isolated virtual environment path: `.venv/bin/python`.
+- **Topological Manifold Mappings:** Workspace directories are calculated deterministically from the frame root layout definitions via structural utilities built into `pipulate/__init__.py`.
+
+### 3. Asymmetric Code Patching Protocol
+- **Surgical Code Modifications:** Any programmatic code changes are executed entirely via a strict search-and-replace pipeline (`apply.py`). Indentation structural matrices, inline comments, and whitespace layout details must be handled verbatim.
+- **Out-of-Band Clipboard Routing:** The synaptic communication ring relies on parsing explicit token block invariants (`[[[TODO_SLUGS]]]`, `[[[TODO_FILES]]]`, `[[[APPLY_PATCH]]]`) passed across the system clip buffer using `scripts/xp.py`.
+
+### 4. PyPI Packaging & Repository Landscapes
+- **Dependency Definitions:** Base requirements are managed via top-level entries in `requirements.in` and locked down systematically using pip-compile downstream.
+- **Negative Space Strategy:** Version-controlled core frameworks share directory space safely with private client deliverables and ad-hoc trace targets (`Notebooks/Playground/`) explicitly managed by `.gitignore` exclusions.
+
 ## What this file is
 
 This repository holds the *machinery*. The *reasoning* — the running journal
