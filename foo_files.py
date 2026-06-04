@@ -81,9 +81,6 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
 
-scripts/flippers.py
-scripts/dial_spinner.py
-/home/mike/.config/pipulate/flippers.json
 
 # README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # AUDIT.md
@@ -91,7 +88,7 @@ scripts/dial_spinner.py
 # __init__.py       #  <-- Master versioning
 # release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
 # pyproject.toml    #  <-- The PyPI Packaging details
-# requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
+requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 
 # requirements.txt  #  <-- Pip-compiled dependencies.
 # logs/server.log   #  <-- Like letting AI see your browser app state, but better! --------------------- AI server.py LOG DEBUG
@@ -262,7 +259,7 @@ AI_CONTEXT.md
 # VII. JEKYLL PUBLISHING - Reaching out to the world
 # ============================================================================
 
-# /home/mike/.config/articleizer/targets.json  # <-- System can work against any Jekyll blog, public or private.
+/home/mike/.config/articleizer/targets.json  # <-- System can work against any Jekyll blog, public or private.
 # scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
 # scripts/articles/common.py                   # <-- Self-explanatory
 # scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
@@ -270,7 +267,7 @@ AI_CONTEXT.md
 # scripts/articles/sanitizer.py                # <-- Scrubs PII
 # scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
 # scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
-# scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
+scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
 # scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
 # scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
 # scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
@@ -807,6 +804,8 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
 # scripts/botify/botify_api_examples.md  # [21,273 tokens | 86,712 bytes]
 # scripts/botify/make_botify_docs.ipynb  # [61,006 tokens | 224,678 bytes]
+# scripts/dial_spinner.py  # [398 tokens | 1,463 bytes]
+# scripts/flippers.py  # [350 tokens | 1,309 bytes]
 # scripts/gsc/generate_categories.py  # [1,477 tokens | 6,880 bytes]
 # scripts/gsc/gsc_category_analysis.py  # [6,947 tokens | 29,085 bytes]
 # scripts/gsc/gsc_keyworder.py  # [3,410 tokens | 14,355 bytes]
