@@ -6,7 +6,7 @@ optimal feature isolation for the ASCII salt matrix.
 """
 import sys
 import numpy as np
-from flippers import compile_context_salt
+from pipulate import wand
 
 def spin_dials(image_path, width=80, c_range=(-5, 5), b_range=(-5, 5), step=2):
     # Convert ranges to step-based lists
