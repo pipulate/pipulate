@@ -14,7 +14,7 @@ import hashlib
 import numpy as np
 from PIL import Image
 
-def compile_context_salt(image_path: str, character_width: int = 80, palette: str = 'pipe', contrast_adj: float = 0.0, brightness_adj: float = 0.0) -> str:
+def compile_context_salt(image_path: str, character_width: int = 80, palette: str = 'pipe', contrast_adj: float = None, brightness_adj: float = None) -> str:
     """
     Transforms target image data into an untokenized, idempotent text bumper block.
     
@@ -25,6 +25,14 @@ def compile_context_salt(image_path: str, character_width: int = 80, palette: st
         contrast_adj: Multiplier modifier added to base contrast factor.
         brightness_adj: Fractional offset shift scaled across available pixel range.
     """
+    # Metadata Parsing Logic (Self-Healing from Filename)
+    if contrast_adj is None or brightness_adj is None:
+        fname = os.path.basename(image_path)
+        c_match = re.search(r'C(-?\d+)', fname)
+        b_match = re.search(r'B(-?\d+)', fname)
+        contrast_adj = float(c_match.group(1))/10.0 if c_match else 0.0
+        brightness_adj = float(b_match.group(1))/10.0 if b_match else 0.0
+
     if not os.path.exists(image_path):
         return f"Warning: Bumper target reference not found at '{image_path}'"
 
