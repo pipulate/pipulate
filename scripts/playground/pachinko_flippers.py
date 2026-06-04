@@ -122,8 +122,6 @@ if __name__ == "__main__":
         source_directory = os.path.expanduser("~/flippers")
         target_width = 80
         active_palette = "pipe"
-        contrast_val = 0.0
-        brightness_val = 0.0
         
         # Scan directory dynamically for local image assets
         valid_extensions = ("*.jpg", "*.jpeg", "*.png", "*.webp")
@@ -135,39 +133,25 @@ if __name__ == "__main__":
         if discovered_files:
             img_target = sorted(discovered_files)[0]
             print(f"👁️ Interactive workspace loop engaged. Siphoning asset: {img_target}\n")
+            output_buffer = compile_context_salt(img_target, character_width=target_width, palette=active_palette)
+            print(output_buffer)
         else:
-            img_target = "assets/images/ai-seo-software.svg"
-            print(f"⚠️ Directory empty or missing at '~/flippers'. Routing to repository fallback resource.\n")
+            print(f"⚠️ Directory empty or missing at '~/flippers'.")
     else:
         # Standard production execution route surface
         if len(sys.argv) < 2:
             print("Usage: python pachinko_flippers.py <path_to_image> [width] [palette] [contrast] [brightness]")
             sys.exit(1)
+        
+        # Args: path width palette contrast brightness
         img_target = sys.argv[1]
-        target_width = int(sys.argv[2]) if len(sys.argv) > 2 else 80
-        
-        active_palette = 'pipe'
-        contrast_val = 0.0
-        brightness_val = 0.0
-        contrast_seen = False
-        
-        for arg in sys.argv[3:]:
-            clean_arg = arg.lstrip('+-')
-            if clean_arg.isdigit():
-                val = parse_adjustment(arg)
-                if not contrast_seen:
-                    contrast_val = val
-                    contrast_seen = True
-                else:
-                    brightness_val = val
-            else:
-                active_palette = arg
+        width = int(sys.argv[2]) if len(sys.argv) > 2 else 80
+        palette = sys.argv[3] if len(sys.argv) > 3 else 'pipe'
+        c_adj = parse_adjustment(sys.argv[4]) if len(sys.argv) > 4 else None
+        b_adj = parse_adjustment(sys.argv[5]) if len(sys.argv) > 5 else None
 
-    output_buffer = compile_context_salt(
-        img_target, 
-        character_width=target_width, 
-        palette=active_palette, 
-        contrast_adj=contrast_val, 
-        brightness_adj=brightness_val
-    )
-    print(output_buffer)
+        output_buffer = compile_context_salt(
+            img_target, character_width=width, palette=palette, 
+            contrast_adj=c_adj, brightness_adj=b_adj
+        )
+        print(output_buffer)
