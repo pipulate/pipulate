@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "pipulate"
 # VERSION NOTE: Synced from pipulate/__init__.py.__version__ via python version_sync.py
-version = "1.96"
+version = "1.97"
 authors = [
   { name="Mike Levin", email="pipulate@gmail.com" },
 ]
@@ -98,7 +98,7 @@ exclude = [
 
 [tool.ruff]
 line-length = 120
-target-version = "1.96"
+target-version = "1.97"
 
 [tool.ruff.lint]
 # Start with a minimal, non-noisy ruleset.
