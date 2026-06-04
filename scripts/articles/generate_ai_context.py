@@ -104,6 +104,31 @@ forming conclusions.
 - **Dependency Definitions:** Base requirements are managed via top-level entries in `requirements.in` and locked down systematically using pip-compile downstream.
 - **Negative Space Strategy:** Version-controlled core frameworks share directory space safely with private client deliverables and ad-hoc trace targets (`Notebooks/Playground/`) explicitly managed by `.gitignore` exclusions.
 
+### 5. The Development Loop
+The canonical dev cycle — break it and you create drift:
+1. **Gather context:** `foo` / `fu` compiles relevant file snippets into a prompt bundle.
+2. **Consult AI:** Paste bundle to AI; receive a `[[[SEARCH]]] / [[[DIVIDER]]] / [[[REPLACE]]]` block back.
+3. **Stage the patch:** `cat patch | app` feeds the block through `apply.py`.
+4. **Apply deterministically:** `apply.py` performs exact verbatim string replacement; rejects ambiguous or multi-match cases.
+5. **Commit:** `m` auto-generates a commit message and commits locally.
+6. **Release:** `release.py` bumps the version, regenerates this file, pushes to PyPI and GitHub.
+- **What to never do:** Edit source files by hand mid-cycle, run bare `pip install`, invoke `python` directly. Each breaks reproducibility.
+
+### 6. Key File Map
+| File | Role |
+|---|---|
+| `server.py` | The Wizard — FastHTML app server, plugin loader, request router |
+| `pipulate/core.py` | The Wand — `Pipulate` class, `DictLikeDB` wrapper, shared helpers |
+| `apps/` | Workflow plugins — each file is a self-contained, discoverable workflow |
+| `config.py` | Global config — ports, paths, model names, styling constants |
+| `apply.py` | Patch applier — executes SEARCH/REPLACE; strict verbatim match only |
+| `scripts/xp.py` | Clipboard transformer — parses `[[[TOKEN]]]` block invariants from clip buffer |
+| `foo_files.py` | Context router — maps slugs to file paths for context compilation |
+| `prompt_foo.py` | Prompt compiler — assembles and formats `foo` context bundles |
+| `flake.nix` | Environment lock — only pinned Nix inputs guarantee a reproducible env |
+| `requirements.in` | Dependency declarations — upstream of pip-compile; edit here, never in `.txt` |
+| `scripts/articles/generate_ai_context.py` | This file's generator — rewrites `AI_CONTEXT.md` on every release |
+
 ## What this file is
 
 This repository holds the *machinery*. The *reasoning* — the running journal
