@@ -81,7 +81,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
 
-scripts/pachinko_flippers.py
+scripts/flippers.py
 scripts/dial_spinner.py
 /home/mike/.config/pipulate/flippers.json
 
