@@ -81,8 +81,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
 
-scripts/playground/pachinko_flippers.py
-scripts/playground/dial_spinner.py
+scripts/pachinko_flippers.py
+scripts/dial_spinner.py
 
 # README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # AUDIT.md
@@ -145,6 +145,8 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 flake.nix       #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
 scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+
+/home/mike/.config/articleizer/targets.json
 
 # patch           #  <-- I know what you did last patch
 # scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
