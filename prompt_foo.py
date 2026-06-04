@@ -1178,6 +1178,11 @@ def main():
     check_topological_integrity(args.chop, format_kwargs)
     files_to_process = parse_file_list_from_config(args.chop, format_kwargs)
 
+    # 💥 BUMPER INJECTION: Handle bumper salt injection
+    if args.bumper:
+        files_to_process.append((f"! python -c \"from pipulate import wand; print(wand.compile_context_salt('{args.bumper}'))\"", f"bumper:{args.bumper}"))
+        logger.print(f"🎯 Added bumper matrix: {args.bumper}")
+
     # Inject --files as direct codebase paths into the processing queue
     if args.files:
         seen_paths = {path for path, _comment in files_to_process}
