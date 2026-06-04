@@ -1,8 +1,8 @@
 # AI_CONTEXT.md — Start Here If You Are an AI
 
-> Auto-generated on 2026-06-02. Rewritten from scratch on every release. If this
+> Auto-generated on 2026-06-04. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1169 entries indexed.
+> 1172 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -51,6 +51,9 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-06-04] [Deterministic Context Anchoring with Pachinko Bumpers](https://mikelev.in/futureproof/pachinko-context-anchoring-bumpers/index.md)
+- [2026-06-03] [The Google Social Contract Is Over: Welcome to Agentic Commerce Optimization](https://mikelev.in/futureproof/agentic-commerce-optimization/index.md)
+- [2026-06-02] [Building a Deterministic AI Prompt Compiler Pipeline](https://mikelev.in/futureproof/deterministic-ai-prompt-compiler/index.md)
 - [2026-06-02] [The Token-Dense Router: Building a Lightweight Takeoff Ramp for AI Context](https://mikelev.in/futureproof/token-dense-router-ai-context/index.md)
 - [2026-06-02] [The Local-First Shield: Defeating Paradigm Category Errors in the Age of AI](https://mikelev.in/futureproof/local-first-security-context-compiler/index.md)
 - [2026-06-02] [Refactoring Local Credentials: The Grumbling Graybeard Protocol](https://mikelev.in/futureproof/grumbling-graybeard-local-credentials/index.md)
@@ -68,14 +71,14 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-05-30] [The Bunny Trail: Building Membranes for Frictionless Collaboration](https://mikelev.in/futureproof/bunny-trail-collaboration-membranes/index.md)
 - [2026-05-30] [Terminal Parity and the Patronus Command](https://mikelev.in/futureproof/terminal-parity-patronus-command/index.md)
 - [2026-05-29] [The Patronus Moment: Zero-Latency Graphical Actuation with NixOS](https://mikelev.in/futureproof/the-patronus-moment/index.md)
-- [2026-05-29] [The Patronus Blueprint: Platform-Agile Visual Overlays and Clipboard Pipelines](https://mikelev.in/futureproof/patronus-blueprint-popups-clipboard-pipelines/index.md)
-- [2026-05-29] [The Dopamine Canary: Environment Boundaries and Local-First Automation](https://mikelev.in/futureproof/dopamine-canary-environment-boundaries-local-automation/index.md)
-- [2026-05-29] [Building the Take-off Ramp: Smoothing the Data Density Cliff in the Age of AI](https://mikelev.in/futureproof/building-the-take-off-ramp/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-05-29] [111k] patronus-blueprint-popups-clipboard-pipelines
+- [2026-05-29] [106k] dopamine-canary-environment-boundaries-local-automation
+- [2026-05-29] [50k] building-the-take-off-ramp
 - [2026-05-29] [129k] idempotent-code-ai-market-dynamics
 - [2026-05-28] [93k] waxascii-seal-in-band-code-integrity
 - [2026-05-28] [93k] bunny-coyote-ai-datacenter-landlords
