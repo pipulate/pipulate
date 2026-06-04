@@ -83,6 +83,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 scripts/pachinko_flippers.py
 scripts/dial_spinner.py
+/home/mike/.config/pipulate/flippers.json
 
 # README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # AUDIT.md
