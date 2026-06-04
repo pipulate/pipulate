@@ -95,6 +95,16 @@ def compile_context_salt(image_path: str, character_width: int = 80, palette: st
 
     return "\n".join(compiled_payload)
 
+def parse_adjustment(val_str: str) -> float:
+    """Parses a signed integer string into a scaled float decimal adjustment."""
+    sign = -1 if val_str.startswith('-') else 1
+    clean = val_str.lstrip('+-')
+    if not clean.isdigit():
+        return 0.0
+    if clean.startswith('0'):
+        return sign * (int(clean) / 100.0)
+    return sign * (int(clean) / 10.0)
+
 if __name__ == "__main__":
     # Check for execution membrane layer (Jupyter kernel vs CLI terminal boundary)
     is_kernel_membrane = any('ipykernel' in arg for arg in sys.argv) or any('-f' == arg for arg in sys.argv)
@@ -104,6 +114,8 @@ if __name__ == "__main__":
         source_directory = os.path.expanduser("~/flippers")
         target_width = 80
         active_palette = "pipe"
+        contrast_val = 0.0
+        brightness_val = 0.0
         
         # Scan directory dynamically for local image assets
         valid_extensions = ("*.jpg", "*.jpeg", "*.png", "*.webp")
@@ -121,11 +133,33 @@ if __name__ == "__main__":
     else:
         # Standard production execution route surface
         if len(sys.argv) < 2:
-            print("Usage: python pachinko_flippers.py <path_to_image> [width] [pipe|clarified]")
+            print("Usage: python pachinko_flippers.py <path_to_image> [width] [palette] [contrast] [brightness]")
             sys.exit(1)
         img_target = sys.argv[1]
         target_width = int(sys.argv[2]) if len(sys.argv) > 2 else 80
-        active_palette = sys.argv[3] if len(sys.argv) > 3 else 'pipe'
+        
+        active_palette = 'pipe'
+        contrast_val = 0.0
+        brightness_val = 0.0
+        contrast_seen = False
+        
+        for arg in sys.argv[3:]:
+            clean_arg = arg.lstrip('+-')
+            if clean_arg.isdigit():
+                val = parse_adjustment(arg)
+                if not contrast_seen:
+                    contrast_val = val
+                    contrast_seen = True
+                else:
+                    brightness_val = val
+            else:
+                active_palette = arg
 
-    output_buffer = compile_context_salt(img_target, character_width=target_width, palette=active_palette)
+    output_buffer = compile_context_salt(
+        img_target, 
+        character_width=target_width, 
+        palette=active_palette, 
+        contrast_adj=contrast_val, 
+        brightness_adj=brightness_val
+    )
     print(output_buffer)
