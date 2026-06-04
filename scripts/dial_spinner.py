@@ -22,7 +22,7 @@ def spin_dials(image_path, width=80, c_range=(-5, 5), b_range=(-5, 5), step=2):
             b_float = float(b) / 10.0
             
             print(f"\n--- SETTINGS: Contrast={c_float:+0.2f} | Brightness={b_float:+0.2f} ---")
-            bumper = compile_context_salt(
+            bumper = wand.compile_context_salt(
                 image_path, 
                 character_width=width, 
                 palette='pipe', 
