@@ -152,11 +152,11 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-config.py                   # <-- Centralize every last configuration in here
-pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
-pipulate/core.py            # <-- The Wand (spells)
-imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
+# config.py                   # <-- Centralize every last configuration in here
+# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+# pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
+# pipulate/core.py            # <-- The Wand (spells)
+# imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # assets/styles.css           # <-- Those values often get used here for "the look"
 # server.py                   # <-- The Wizard (big!)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
