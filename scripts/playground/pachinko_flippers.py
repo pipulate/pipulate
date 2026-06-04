@@ -14,7 +14,7 @@ import hashlib
 import numpy as np
 from PIL import Image
 
-def compile_context_salt(image_path: str, character_width: int = 80, palette: str = 'pipe') -> str:
+def compile_context_salt(image_path: str, character_width: int = 80, palette: str = 'pipe', contrast_adj: float = 0.0, brightness_adj: float = 0.0) -> str:
     """
     Transforms target image data into an untokenized, idempotent text bumper block.
     
@@ -22,6 +22,8 @@ def compile_context_salt(image_path: str, character_width: int = 80, palette: st
         image_path: Path to the source graphic asset.
         character_width: Grid width constraint for horizontal terminal boundaries.
         palette: 'pipe' for structural token speedbumps, 'clarified' for human visual fidelity.
+        contrast_adj: Multiplier modifier added to base contrast factor.
+        brightness_adj: Fractional offset shift scaled across available pixel range.
     """
     if not os.path.exists(image_path):
         return f"Warning: Bumper target reference not found at '{image_path}'"
@@ -39,13 +41,22 @@ def compile_context_salt(image_path: str, character_width: int = 80, palette: st
 
     # Downsample to raw pixel structure
     img_gray = img.convert('L').resize((character_width, calculated_height), Image.Resampling.LANCZOS)
-    matrix = np.array(img_gray)
+    matrix = np.array(img_gray).astype(float)
+
+    # Apply contrast and brightness adjustments dynamically
+    if contrast_adj != 0.0 or brightness_adj != 0.0:
+        factor = 1.0 + contrast_adj
+        shift = brightness_adj * 255.0
+        matrix = 128.0 + factor * (matrix - 128.0) + shift
+        matrix = np.clip(matrix, 0, 255)
+
+    matrix = matrix.astype(np.uint8)
 
     # Centralized Paintbox Ledger (Decoupled and audit-safe)
     palettes = {
-        # The Phallic Invariant: Monospace meridian splitters maximizing vertical contiguity
+        # Monospace meridian splitters maximizing vertical contiguity
         'pipe': '|||||||| ',  
-        # The Full Photon Show: Maximum typographic density distribution for visual synthesis
+        # Maximum typographic density distribution for visual synthesis
         'clarified': '$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,"^`\'. '
     }
 
