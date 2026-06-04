@@ -1849,6 +1849,25 @@ class Pipulate:
         import numpy as np
         from PIL import Image
 
+        # Centralized Registry lookup from ~/.config/pipulate/flippers.json
+        config_dir = Path.home() / ".config" / "pipulate"
+        registry_file = config_dir / "flippers.json"
+        if registry_file.exists():
+            try:
+                with open(registry_file, 'r', encoding='utf-8') as f:
+                    registry = json.load(f)
+                if image_path in registry:
+                    entry = registry[image_path]
+                    image_path = entry.get("path", image_path)
+                    if contrast_adj is None:
+                        contrast_adj = entry.get("contrast")
+                    if brightness_adj is None:
+                        brightness_adj = entry.get("brightness")
+            except Exception as e:
+                logger.debug(f"Failed to read bumper registry: {e}")
+
+        image_path = os.path.expanduser(image_path)
+
         # Metadata Parsing Logic (Self-Healing from Filename)
         if contrast_adj is None or brightness_adj is None:
             fname = os.path.basename(image_path)
