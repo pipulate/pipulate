@@ -390,9 +390,16 @@ def perform_show(script):
                 # We check if it's been 3 minutes since the last explanation.
                 # We insert it BEFORE the next sentence to preserve flow.
                 if (time.time() - last_pitch_time) > PITCH_INTERVAL:
-                    narrator.say(PITCH_TEXT)
+                    global _station_index
+                    segment = STATION_SEGMENTS[_station_index % len(STATION_SEGMENTS)]
+                    _station_index += 1
+                    art_key = segment.get("patronus")
+                    if art_key:
+                        narrator.patronus({"key": art_key, "duration": segment.get("duration", 3.5)})
+                    spiel = segment["text"]
+                    narrator.say(spiel)
                     # We sleep to let the pitch play out before queuing the next sentence
-                    time.sleep(len(PITCH_TEXT) / 18)
+                    time.sleep(len(spiel) / 18)
                     last_pitch_time = time.time()
                 # ----------------------------------------
 
