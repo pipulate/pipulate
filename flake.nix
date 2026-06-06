@@ -683,8 +683,34 @@ print('AI:\n', r.ai)
         };
         # Get the shells for the current OS
         shells = mkShells pkgs;
+
+        # 🐋 THE CONTAINER STATE-CONTRACT ACTUATOR
+        # Materializes the dockerTools build target promised by AUDIT.md.
+        # It packages the entire declarative closure of commonPackages into an OCI-compliant 
+        # layered image. The resulting tarball can be loaded straight into any Docker engine via:
+        # 'nix build .#dockerImage && docker load < result'
+        dockerImage = pkgs.dockerTools.buildLayeredImage {
+          name = "pipulate";
+          tag = "latest";
+          contents = commonPackages ++ [ pkgs.bash pkgs.coreutils pkgs.tmux ];
+          config = {
+            Cmd = [ "${pkgs.bash}/bin/bash" "-c" "cd /workspace && .venv/bin/python server.py" ];
+            ExposedPorts = {
+              "5001/tcp" = {};
+              "8888/tcp" = {};
+            };
+            Env = [
+              "PATH=/bin:/usr/bin:.venv/bin"
+              "HOME=/workspace"
+            ];
+          };
+        };
       in {
         # Multiple devShells for different use cases
         devShells = shells;
+        packages = {
+          default = dockerImage;
+          dockerImage = dockerImage;
+        };
       });
 }
