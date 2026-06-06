@@ -330,6 +330,25 @@
       done
     '')
 
+    (writeShellScriptBin "window" ''
+      duration="30"
+      if [ "$#" -gt 0 ] && [[ "$1" =~ ^[0-9]+([.][0-9]+)?$ ]]; then
+        duration="$1"
+        shift
+      fi
+      if [ "$#" -eq 0 ]; then
+        echo "Usage: window [duration] command [args...]"
+        exit 1
+      fi
+
+      DISPLAY="''${DISPLAY:-:10.0}" python3 - "$duration" "$@" <<'PY'
+import sys
+sys.path.insert(0, "/home/mike/www/mikelev.in")
+from imports.ascii_displays import conjure_window
+conjure_window(sys.argv[2:], duration=float(sys.argv[1]))
+PY
+    '')
+
     # 🎬 THE PERFORMER (The Choreographed Scene)
     (writeShellScriptBin "perform" ''
       # --- Setup ---
