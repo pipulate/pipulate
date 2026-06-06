@@ -18,6 +18,19 @@ def apply_search_replace_patch(payload: str) -> bool:
     # Convert non-breaking spaces to regular spaces and normalize line endings
     payload = payload.replace('\xa0', ' ').replace('\r\n', '\n')
 
+    # WHOLE-FILE WRITE ESCAPE HATCH (captured BEFORE fence-stripping)
+    # A Target line immediately followed by [[[WRITE_FILE]]] ... [[[END_WRITE_FILE]]]
+    # replaces (or creates) the entire file verbatim, with no SEARCH block to
+    # reproduce. Extracted here, ahead of the fence-strip below, so files that
+    # legitimately contain their own code fences (markdown, docs) survive untouched.
+    # The Target line is REQUIRED: with no surrounding context to anchor on, the
+    # filename is the only safeguard against writing into the void.
+    write_file_pattern = re.compile(
+        r'(?:File|Target):\s*`?([^`\s*]+)`?\s*\n[\[{]{3,5}WRITE_FILE[\]}]{3,5}\n(.*?)\n[\[{]{3,5}END_WRITE_FILE[\]}]{3,5}',
+        re.DOTALL | re.IGNORECASE
+    )
+    write_matches = write_file_pattern.findall(payload)
+
     # Strip markdown code fences to bypass web UI whitespace destruction
     # (This successfully prevents the chat framework from eating our left-indentation!)
     payload = re.sub(r'^```[a-zA-Z0-9]*\s*$', '', payload, flags=re.MULTILINE)
