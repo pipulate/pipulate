@@ -178,6 +178,105 @@ def patronus(name: str, duration: float = 3.5) -> None:
         logger.error(f"🛡️ PATRONUS connection framework failure encountered: {e}")
 
 
+def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: int = 30,
+                   cwd: Optional[str] = None, title: str = "ConjureWindow",
+                   window_class: str = "conjure_window_overlay",
+                   display: Optional[str] = None) -> None:
+    """🪟 CONJURE WINDOW: Run an arbitrary command in a transient Alacritty overlay.
+
+    This is the process-flavored sibling of patronus(): patronus renders a
+    registered figurate asset; conjure_window runs a command/TUI in the same
+    borderless, force-above, auto-dismiss window shape. `command` may be a shell
+    string or a list/tuple of argv parts.
+    """
+    import os
+    import shutil
+    import time
+    import platform
+    import subprocess
+
+    try:
+        duration = max(0.75, min(600.0, float(duration)))
+    except (TypeError, ValueError):
+        duration = 30.0
+
+    if isinstance(command, str):
+        command = command.strip()
+        if not command:
+            logger.error("🪟 CONJURE_WINDOW aborted: empty command string.")
+            return
+        launch_cmd = [os.environ.get("SHELL", "/bin/sh"), "-lc", command]
+    else:
+        try:
+            launch_cmd = [str(part) for part in command if str(part)]
+        except TypeError:
+            logger.error("🪟 CONJURE_WINDOW aborted: command must be a string or argv sequence.")
+            return
+        if not launch_cmd:
+            logger.error("🪟 CONJURE_WINDOW aborted: empty argv sequence.")
+            return
+
+    sys_platform = platform.system().lower()
+    if not shutil.which("alacritty"):
+        logger.error("🪟 CONJURE_WINDOW aborted: alacritty command not found.")
+        return
+
+    safe_class = "".join(c if c.isalnum() or c in {"_", "-"} else "_" for c in str(window_class).strip())
+    if not safe_class:
+        safe_class = "conjure_window_overlay"
+
+    env = os.environ.copy()
+    if display is not None:
+        env["DISPLAY"] = str(display)
+    elif sys_platform == "linux" and not env.get("DISPLAY"):
+        env["DISPLAY"] = ":10.0"
+
+    working_dir = cwd or os.getcwd()
+    cmd = [
+        "alacritty",
+        "--title", str(title),
+        "--class", safe_class,
+        "-o", "window.decorations='none'",
+        "-o", f"window.dimensions={{columns={int(columns)}, lines={int(lines)}}}",
+        "-o", "window.position={x=200, y=150}",
+        "-e", *launch_cmd,
+    ]
+
+    proc = None
+    try:
+        logger.info(f"🪟 CONJURE_WINDOW launching overlay ({columns}x{lines}) for command: {' '.join(launch_cmd)}")
+        proc = subprocess.Popen(
+            cmd,
+            cwd=working_dir,
+            env=env,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+
+        time.sleep(0.15)
+        if sys_platform == "linux" and shutil.which("wmctrl"):
+            for _ in range(10):
+                res = subprocess.run(["wmctrl", "-x", "-r", safe_class, "-b", "add,above"], capture_output=True)
+                if res.returncode == 0:
+                    break
+                time.sleep(0.1)
+        elif sys_platform == "darwin":
+            subprocess.run(["osascript", "-e", 'tell application "Alacritty" to activate'], stdout=subprocess.DEVNULL)
+
+        try:
+            proc.wait(timeout=duration)
+        except subprocess.TimeoutExpired:
+            proc.terminate()
+    except Exception as e:
+        logger.error(f"🪟 CONJURE_WINDOW connection framework failure encountered: {e}")
+    finally:
+        if proc is not None and proc.poll() is None:
+            try:
+                proc.terminate()
+            except Exception:
+                pass
+
+
 # FIGURATE_COLOR_BITS: The color-bits player piano dictionary.
 # Maps named tokens to Rich style strings.
 # Usage in art strings: [[[TokenName]]] expands to styled text for humans,
