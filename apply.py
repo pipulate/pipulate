@@ -43,11 +43,46 @@ def apply_search_replace_patch(payload: str) -> bool:
     )
 
     matches = block_pattern.findall(payload)
-    if not matches:
-        print("❌ Error: No [[[SEARCH]]] / [[[REPLACE]]] blocks found in payload.")
+
+    if not matches and not write_matches:
+        print("❌ Error: No [[[SEARCH]]]/[[[REPLACE]]] or [[[WRITE_FILE]]] blocks found in payload.")
         return False
 
     success = True
+
+    # Process wholesale writes first so a single payload can create one file and
+    # then surgically patch another in the same turn.
+    for filename_match, file_content in write_matches:
+        filename = filename_match.strip('` \t\n')
+        if not filename:
+            print("❌ Error: Missing target filename before the WRITE_FILE block.")
+            success = False
+            continue
+
+        file_content = file_content.replace('\xa0', ' ').replace('\r\n', '\n')
+        # POSIX courtesy: guarantee exactly one trailing newline.
+        file_content = file_content.rstrip('\n') + '\n'
+
+        # AST VALIDATION AIRLOCK (same safeguard the surgical path enforces)
+        if filename.endswith('.py'):
+            import ast
+            try:
+                ast.parse(file_content)
+            except SyntaxError as e:
+                print(f"❌ Error: Whole-file write of '{filename}' aborted. Invalid Python syntax:\n   {e}")
+                success = False
+                continue
+
+        existed = os.path.exists(filename)
+        parent = os.path.dirname(filename)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write(file_content)
+
+        verb = "OVERWROTE" if existed else "CREATED"
+        print(f"✅ WHOLE-FILE WRITE: {verb} '{filename}'.")
+
     for filename_match, search_block, replace_block in matches:
         filename = filename_match.strip('` \t\n') if filename_match else None
         
