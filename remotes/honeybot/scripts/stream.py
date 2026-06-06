@@ -41,6 +41,34 @@ PITCH_TEXT = (
     ""
 )
 
+# Station-ID breaks cycle through short "installments" instead of replaying one
+# fixed spiel. Each entry is text to speak plus an optional ASCII-art key (which
+# must exist in imports.ascii_displays.FIGURATE_REGISTRY) that pops over the
+# stream in voice-order. The index resets on process restart (episodic, by
+# design): whoever tunes in starts the Pipulate story near its top.
+STATION_SEGMENTS = [
+    {"text": PITCH_TEXT, "patronus": "white_rabbit", "duration": 5.0},
+    {"text": (
+        "A quick word on how this is built. The whole stack is chosen to last a lifetime: "
+        "Normalized Linux, Python, vim and git, pinned deterministic by Nix. "
+        "No churn, no tool that morphs into something new every few months. "
+        "The substrate stays still so the work can move."
+    ), "patronus": "ai_stack_combo", "duration": 6.0},
+    {"text": (
+        "A word on what you are hearing. Everything I read is plain text, flowing through Unix style pipes. "
+        "That is what makes the context portable, and the A I a swappable subcontractor instead of a landlord. "
+        "The pipe stays. The models come and go."
+    ), "patronus": "clipboard", "duration": 5.0},
+    {"text": (
+        "Here is a trick worth knowing. When an A I edits this code, the A S C I I art is the canary in the coal mine. "
+        "If a drawing gets mangled, something drifted behind my back. "
+        "A wax seal made of pure characters, checked by simple math."
+    ), "patronus": "player_piano", "duration": 5.0},
+]
+
+# Advances on each station break; wraps with modulo over STATION_SEGMENTS.
+_station_index = 0
+
 sys.path.append(str(Path(__file__).parent))
 
 try:
