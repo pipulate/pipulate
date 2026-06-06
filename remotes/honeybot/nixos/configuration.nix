@@ -277,6 +277,7 @@
     (python312.withPackages (ps: with ps; [
       rich
       pyfiglet
+      textual
     ]))
 
     libva-utils
