@@ -494,6 +494,20 @@ def perform_show(script):
             elif command == "PATRONUS":
                 narrator.patronus(content)
 
+            elif command == "WINDOW":
+                # Pop a report TUI as a transient overlay OVER the live logs,
+                # holding the director for its duration, then auto-dismiss.
+                # content is "script.py" or "script.py:seconds".
+                parts = str(content).split(":", 1)
+                win_script = parts[0].strip()
+                win_dur = 30.0
+                if len(parts) > 1:
+                    try:
+                        win_dur = float(parts[1].strip())
+                    except ValueError:
+                        win_dur = 30.0
+                conjure_window(win_script, duration=win_dur)
+
             elif command == "WAIT":
                 try: time.sleep(int(content))
                 except: time.sleep(1)
