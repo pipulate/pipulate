@@ -325,10 +325,10 @@ def conjure_patronus(name, duration=3.5):
 def conjure_window(script_name, duration=30.0, columns=100, lines=30):
     """Process-flavored sibling to conjure_patronus.
 
-    Instead of rendering a static figurate asset, run an arbitrary TUI script
-    (e.g. report.py) in a borderless, force-above Alacritty overlay on :10.0,
-    hold it for `duration` seconds so it OCCLUDES the live log stream, then
-    auto-kill it. This turns the report boot-sequence into a transient overlay.
+    Keep the sheet-music API ("report.py" or "report.py:seconds") local to the
+    Honeybot scripts folder, but delegate the actual overlay mechanics to the
+    shared wand actuator in imports.ascii_displays. This keeps patronus and
+    arbitrary command windows in parity.
     """
     safe_script = "".join(c for c in str(script_name).strip() if c.isalnum() or c in {"_", "-", "."})
     if not safe_script:
@@ -340,51 +340,22 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30):
     if not script_path.exists():
         return
 
-    env = os.environ.copy()
-    env["DISPLAY"] = env.get("DISPLAY") or ":10.0"
+    site_root = Path(__file__).resolve().parents[1]
+    if str(site_root) not in sys.path:
+        sys.path.insert(0, str(site_root))
 
-    win_class = "conjure_window_overlay"
-    cmd = [
-        "alacritty",
-        "--title", "ConjureWindow",
-        "--class", win_class,
-        "-o", "window.decorations='none'",
-        "-o", f"window.dimensions={{columns={int(columns)}, lines={int(lines)}}}",
-        "-o", "window.position={x=200, y=150}",
-        "-e", sys.executable, "-u", str(script_path),
-    ]
+    from imports.ascii_displays import conjure_window as shared_conjure_window
 
-    proc = None
-    try:
-        proc = subprocess.Popen(
-            cmd,
-            cwd=script_dir,
-            env=env,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-        # Settle, then pin above the maximized/F11 log stream (same airlock loop as patronus).
-        time.sleep(0.15)
-        if shutil.which("wmctrl"):
-            for _ in range(10):
-                res = subprocess.run(["wmctrl", "-x", "-r", win_class, "-b", "add,above"], capture_output=True)
-                if res.returncode == 0:
-                    break
-                time.sleep(0.1)
-        # Hold the overlay for the duration, then dismiss it. A TUI never exits
-        # on its own, so the TimeoutExpired branch is the expected auto-kill.
-        try:
-            proc.wait(timeout=duration)
-        except subprocess.TimeoutExpired:
-            proc.terminate()
-    except Exception:
-        pass
-    finally:
-        if proc is not None and proc.poll() is None:
-            try:
-                proc.terminate()
-            except Exception:
-                pass
+    shared_conjure_window(
+        [sys.executable, "-u", str(script_path)],
+        duration=duration,
+        columns=columns,
+        lines=lines,
+        cwd=str(script_dir),
+        title="ConjureWindow",
+        window_class="conjure_window_overlay",
+        display=os.environ.get("DISPLAY") or ":10.0",
+    )
 
 
 def perform_show(script):
