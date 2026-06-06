@@ -31,6 +31,12 @@ def apply_search_replace_patch(payload: str) -> bool:
     )
     write_matches = write_file_pattern.findall(payload)
 
+    # Excise the WRITE_FILE regions before the surgical scan below. A whole-file
+    # body can legitimately contain a complete SEARCH/DIVIDER/REPLACE triple —
+    # most likely when rewriting the protocol files themselves — and without this
+    # the same payload would fire once as a write and again as a surgical patch.
+    payload = write_file_pattern.sub('', payload)
+
     # Strip markdown code fences to bypass web UI whitespace destruction
     # (This successfully prevents the chat framework from eating our left-indentation!)
     payload = re.sub(r'^```[a-zA-Z0-9]*\s*$', '', payload, flags=re.MULTILINE)
