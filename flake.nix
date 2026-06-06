@@ -182,6 +182,7 @@
             ruff
             nbstripout
           ]))
+          docker                       # So Pipulate can make its own docker image
           nbstripout
           figlet                       # For creating ASCII art welcome messages
           tmux                         # Terminal multiplexer for managing sessions

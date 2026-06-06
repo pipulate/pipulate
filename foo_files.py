@@ -87,7 +87,7 @@ AUDIT.md
 # __init__.py       #  <-- Master versioning
 # release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
 # pyproject.toml    #  <-- The PyPI Packaging details
-# requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
+requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 
 # requirements.txt  #  <-- Pip-compiled dependencies.
 # logs/server.log   #  <-- Like letting AI see your browser app state, but better! --------------------- AI server.py LOG DEBUG
