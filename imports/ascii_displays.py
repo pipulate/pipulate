@@ -366,12 +366,10 @@ def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: i
         )
 
         time.sleep(0.15)
-        if sys_platform == "linux" and shutil.which("wmctrl"):
-            for _ in range(10):
-                res = subprocess.run(["wmctrl", "-x", "-r", safe_class, "-b", "add,above"], capture_output=True)
-                if res.returncode == 0:
-                    break
-                time.sleep(0.1)
+        # Center + raise via the shared geometry actuator. fill=True grows the
+        # overlay to nearly full screen so the live stream behind barely shows.
+        if sys_platform == "linux":
+            _center_and_raise(safe_class, env, fill=fill)
         elif sys_platform == "darwin":
             subprocess.run(["osascript", "-e", 'tell application "Alacritty" to activate'], stdout=subprocess.DEVNULL)
 
