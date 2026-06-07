@@ -276,14 +276,11 @@ def patronus(name: str, duration: float = 3.5) -> None:
         # Settle delay for system display context registration mappings
         time.sleep(0.15)
 
-        # Handle top-level window elevation maps uniquely per running host os environment
-        if sys_platform == "linux" and shutil.which("wmctrl"):
-            # Polling retry loop to guarantee placement above maximized/F11 terminal layers
-            for _ in range(10):
-                res = subprocess.run(["wmctrl", "-x", "-r", "patronus_visual_shield", "-b", "add,above"], capture_output=True)
-                if res.returncode == 0:
-                    break
-                time.sleep(0.1)
+        # Center + raise via the shared geometry actuator, which computes the
+        # real screen size from xrandr instead of the old hardcoded offset that
+        # left the popup low and to the right.
+        if sys_platform == "linux":
+            _center_and_raise("patronus_visual_shield")
         elif sys_platform == "darwin":
             subprocess.run(["osascript", "-e", 'tell application "Alacritty" to activate'], stdout=subprocess.DEVNULL)
 
