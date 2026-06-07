@@ -91,6 +91,121 @@ def figurate(name: str, context: Optional[str] = None) -> FigurateResult:
     return FigurateResult(name=name, human=human_out, ai=ai_out, drift=drift)
 
 
+def _x11_screen_geometry(env):
+    """Return (width, height) in pixels for the active X display, or None.
+
+    Tries xrandr (the mode flagged active with '*'), then xdotool. Returns None
+    when no X tooling is available so callers keep their existing fallback
+    behavior instead of guessing wrong. (Known simplification: on a multi-head
+    display the first '*' mode wins; the stream is single-head :10.0.)
+    """
+    import re
+    import shutil
+    import subprocess
+
+    if shutil.which("xrandr"):
+        try:
+            res = subprocess.run(["xrandr"], capture_output=True, text=True, env=env)
+            for line in res.stdout.splitlines():
+                if "*" in line:
+                    m = re.search(r"(\d+)x(\d+)", line)
+                    if m:
+                        return int(m.group(1)), int(m.group(2))
+        except Exception:
+            pass
+
+    if shutil.which("xdotool"):
+        try:
+            res = subprocess.run(["xdotool", "getdisplaygeometry"], capture_output=True, text=True, env=env)
+            parts = res.stdout.split()
+            if len(parts) == 2:
+                return int(parts[0]), int(parts[1])
+        except Exception:
+            pass
+
+    return None
+
+
+def _wmctrl_window_size(window_class, env):
+    """Return (w, h) in pixels of the named window via `wmctrl -l -x -G`, or None."""
+    import shutil
+    import subprocess
+
+    if not shutil.which("wmctrl"):
+        return None
+    try:
+        res = subprocess.run(["wmctrl", "-l", "-x", "-G"], capture_output=True, text=True, env=env)
+        for line in res.stdout.splitlines():
+            # Columns: ID DESKTOP X Y W H WM_CLASS HOST TITLE
+            parts = line.split(None, 8)
+            if len(parts) >= 7 and window_class in parts[6]:
+                return int(parts[4]), int(parts[5])
+    except Exception:
+        pass
+    return None
+
+
+def _center_and_raise(window_class, env=None, fill=False, margin=40, retries=10):
+    """Raise the overlay above the F11/maximized terminal, then center it using
+    the ACTUAL display resolution (xrandr) instead of a hardcoded offset.
+
+    fill=False -> keep the window's own size, move it to screen-center (the
+                  small art-sized patronus popup).
+    fill=True  -> resize to nearly full screen (leaving `margin` px on every
+                  side) so the live stream behind it barely peeks through (the
+                  report overlay).
+
+    Degrades gracefully: with no wmctrl/xrandr the window just stays where the
+    WM placed it, identical to the pre-xrandr behavior.
+    """
+    import os
+    import shutil
+    import subprocess
+    import time
+
+    if env is None:
+        env = os.environ.copy()
+        if not env.get("DISPLAY"):
+            env["DISPLAY"] = ":10.0"
+
+    if not shutil.which("wmctrl"):
+        return
+
+    # Raise above the maximized log stream (the prior add,above retry loop).
+    for _ in range(retries):
+        res = subprocess.run(
+            ["wmctrl", "-x", "-r", window_class, "-b", "add,above"],
+            capture_output=True,
+            env=env,
+        )
+        if res.returncode == 0:
+            break
+        time.sleep(0.1)
+
+    screen = _x11_screen_geometry(env)
+    if screen is None:
+        return
+    sw, sh = screen
+
+    if fill:
+        w = max(1, sw - 2 * margin)
+        h = max(1, sh - 2 * margin)
+        x, y = margin, margin
+    else:
+        size = _wmctrl_window_size(window_class, env)
+        if size is None:
+            return
+        w, h = size
+        x = max(0, (sw - w) // 2)
+        y = max(0, (sh - h) // 2)
+
+    subprocess.run(
+        ["wmctrl", "-x", "-r", window_class, "-e", f"0,{x},{y},{w},{h}"],
+        capture_output=True,
+        env=env,
+    )
+
+
 def patronus(name: str, duration: float = 3.5) -> None:
     """🛡️ PATRONUS: Conjures an out-of-bounds visual popup window for the asset.
     
