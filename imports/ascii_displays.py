@@ -293,7 +293,7 @@ def patronus(name: str, duration: float = 3.5) -> None:
 def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: int = 30,
                    cwd: Optional[str] = None, title: str = "ConjureWindow",
                    window_class: str = "conjure_window_overlay",
-                   display: Optional[str] = None) -> None:
+                   display: Optional[str] = None, fill: bool = False) -> None:
     """🪟 CONJURE WINDOW: Run an arbitrary command in a transient Alacritty overlay.
 
     This is the process-flavored sibling of patronus(): patronus renders a
