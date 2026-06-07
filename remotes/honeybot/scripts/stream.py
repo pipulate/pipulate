@@ -557,22 +557,29 @@ def main():
 
     # --- THE SHOW SEQUENCE ---
 
-    # Scene 1: The Executive Summary
-    narrator.say("Initiating daily traffic analysis. These are the top site-surfer useragents; human, AI or otherwise.")
-    run_tui_app("report.py", duration=0.5)  # 30 seconds
-
-    # --- NEW SCENE: The Education Monitor ---
-    narrator.say("Did you know that Amazon and Meta are top content scrapers? ")
-    run_tui_app("education.py", duration=0.5) # 30 seconds
-    
-    # --- NEW SCENE: Semantic Routing ---
-    # narrator.say("Analyzing ingestion vectors. Who is using the front door, and who found the loading dock?")
-    run_tui_app("routing.py", duration=0.5) # 30 seconds
-    # ----------------------------------------
-
-    # Scene 2: The Radar (Intelligence)
-    # narrator.say("A bulletproof JavaScript captcha was just implemented. Check back for updated reports.")
-    run_tui_app("radar.py", duration=0.5)   # 30 seconds
+    # PARKED: the sequential report prelude below is being re-homed as on-demand
+    # station-break overlays, summoned via the WINDOW cue / `window` command and
+    # paired with their own narration (the JS-trapdoor story over radar, the
+    # AI-ingestion bars over education, etc). Left commented as hooks so the old
+    # boot slideshow can be restored or cherry-picked later. The "Amazon and
+    # Meta" line lives here with education.py on purpose — that's the report it
+    # was always meant to narrate over.
+    #
+    # # Scene 1: The Executive Summary
+    # narrator.say("Initiating daily traffic analysis. These are the top site-surfer useragents; human, AI or otherwise.")
+    # run_tui_app("report.py", duration=0.5)  # 30 seconds
+    #
+    # # Scene: The Education Monitor
+    # narrator.say("Did you know that Amazon and Meta are top content scrapers? ")
+    # run_tui_app("education.py", duration=0.5) # 30 seconds
+    #
+    # # Scene: Semantic Routing
+    # # narrator.say("Analyzing ingestion vectors. Who is using the front door, and who found the loading dock?")
+    # run_tui_app("routing.py", duration=0.5) # 30 seconds
+    #
+    # # Scene: The Radar (Intelligence)
+    # # narrator.say("A bulletproof JavaScript captcha was just implemented. Check back for updated reports.")
+    # run_tui_app("radar.py", duration=0.5)   # 30 seconds
 
     # Scene 3: The Deep Stream (Logs)
     NARRATOR_SAYS = (
