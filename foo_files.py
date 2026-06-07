@@ -93,7 +93,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # logs/server.log   #  <-- Like letting AI see your browser app state, but better! --------------------- AI server.py LOG DEBUG
 
 imports/ascii_displays.py
-remotes/honeybot/scripts/report.py
 
 # ============================================================================
 # II. THE MOTHERSHIP DROP-HOOK - Solving the WORA Bootstrap Paradox
@@ -223,6 +222,27 @@ remotes/honeybot/scripts/show.py            # <-- Where "Greetings Entity" slide
 remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
 remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
 remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+
+remotes/honeybot/scripts/report.py
+remotes/honeybot/scripts/bot_intel.json  # [617 tokens | 1,869 bytes]
+remotes/honeybot/scripts/build_bot_miner.py  # [510 tokens | 2,105 bytes]
+remotes/honeybot/scripts/dye_injector_v2.py  # [547 tokens | 2,362 bytes]
+remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
+remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
+remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
+
+# remotes/honeybot/queries/trapdoor_ips.sql         # <-- The SQL to see who is hydrating the DOM. The example of HOW we use it from here in the router below.
+# ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
+# remotes/honeybot/queries/format_ratio.sql
+# remotes/honeybot/queries/markdown_routing_metrics.sql
+# remotes/honeybot/queries/content_neg_agents.sql
+# remotes/honeybot/queries/md_routing_agents.sql
+
+# ! echo "--- FORMAT RATIO (Markdown vs HTML) ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # ============================================================================
 # IV. PROPRIETARY FINDINGS - Which AI bots execute JavaScript and which negotiate for Markdown?
@@ -778,13 +798,6 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
 # remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
 # remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
-# remotes/honeybot/scripts/bot_intel.json  # [617 tokens | 1,869 bytes]
-# remotes/honeybot/scripts/build_bot_miner.py  # [510 tokens | 2,105 bytes]
-# remotes/honeybot/scripts/dye_injector.py  # [271 tokens | 1,070 bytes]
-# remotes/honeybot/scripts/dye_injector_v2.py  # [547 tokens | 2,362 bytes]
-# remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
-# remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
-# remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
 # scripts/articles/bookforge_dashboard.py  # [851 tokens | 3,484 bytes]
 # scripts/articles/build_book_passes.py  # [535 tokens | 2,210 bytes]
 # scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
