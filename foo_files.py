@@ -214,6 +214,7 @@ AI_CONTEXT.md
 # VIII. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
 # ============================================================================
 
+# CORE SLIDESHOW FILES
 nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
 remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
 remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
@@ -222,22 +223,25 @@ remotes/honeybot/scripts/show.py            # <-- Where "Greetings Entity" slide
 remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
 remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
 remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
 
+# AD HOC REPORTS
+remotes/honeybot/queries/trapdoor_ips.sql   # <-- The SQL to see who is hydrating the DOM. An ultimate report example among much ad hoc .sql
+! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
+# FULLY BAKED PYTHON REPORTS
 remotes/honeybot/scripts/report.py
-remotes/honeybot/scripts/bot_intel.json  # [617 tokens | 1,869 bytes]
-remotes/honeybot/scripts/build_bot_miner.py  # [510 tokens | 2,105 bytes]
-remotes/honeybot/scripts/dye_injector_v2.py  # [547 tokens | 2,362 bytes]
-remotes/honeybot/scripts/education.py  # [542 tokens | 2,409 bytes]
-remotes/honeybot/scripts/radar.py  # [788 tokens | 3,452 bytes]
-remotes/honeybot/scripts/routing.py  # [821 tokens | 3,617 bytes]
+remotes/honeybot/scripts/build_bot_miner.py
+remotes/honeybot/scripts/dye_injector_v2.py
+remotes/honeybot/scripts/education.py
+remotes/honeybot/scripts/radar.py
+remotes/honeybot/scripts/routing.py
 
-# remotes/honeybot/queries/trapdoor_ips.sql         # <-- The SQL to see who is hydrating the DOM. The example of HOW we use it from here in the router below.
-# ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-
-# remotes/honeybot/queries/format_ratio.sql
-# remotes/honeybot/queries/markdown_routing_metrics.sql
-# remotes/honeybot/queries/content_neg_agents.sql
-# remotes/honeybot/queries/md_routing_agents.sql
+# PURE SQLite3 REPORTS
+remotes/honeybot/queries/format_ratio.sql
+remotes/honeybot/queries/markdown_routing_metrics.sql
+remotes/honeybot/queries/content_neg_agents.sql
+remotes/honeybot/queries/md_routing_agents.sql
 
 # ! echo "--- FORMAT RATIO (Markdown vs HTML) ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
