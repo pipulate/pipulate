@@ -352,6 +352,96 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None)
     )
 
 
+def dispatch_cue(command, content, env, profile_dir, pace_say=True):
+    """Play one sheet-music cue through the brush set.
+
+    Shared by the article roll (trees) and the station-break roll (forest), so
+    the forest inherits the full SAY/PATRONUS/WINDOW/VISIT/WAIT/CLOSE grammar.
+    Deliberately contains NO station-break trigger; that loop-control logic
+    stays in perform_show's main loop.
+
+    pace_say=True (trees): after queuing speech, sleep an estimate so the
+        director paces roughly with the voice. pace_say=False (forest): do NOT
+        sleep here — run_station_break brackets the bead with interrupt() and
+        queue.join() so a report WINDOW can overlap the spiel in real voice-time.
+    """
+    if command == "SAY":
+        narrator.say(content)
+        if pace_say:
+            time.sleep(len(content) / 20)
+
+    elif command == "VISIT":
+        # Ensure the page actually exists before showing it
+        wait_for_availability(content)
+        try:
+            subprocess.Popen(
+                [
+                    "firefox",
+                    "--profile", profile_dir,
+                    "--no-remote",
+                    "--new-instance",
+                    content
+                ],
+                env=env,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
+        except Exception:
+            pass
+
+    elif command == "PATRONUS":
+        narrator.patronus(content)
+
+    elif command == "WINDOW":
+        # Grammar: "script.py" | "script.py:seconds" | "script.py:seconds:arg".
+        # The optional arg (e.g. a Figlet card label) is forwarded to the script;
+        # it must not contain a colon.
+        parts = str(content).split(":", 2)
+        win_script = parts[0].strip()
+        win_dur = 30.0
+        win_args = None
+        if len(parts) > 1 and parts[1].strip():
+            try:
+                win_dur = float(parts[1].strip())
+            except ValueError:
+                win_dur = 30.0
+        if len(parts) > 2 and parts[2].strip():
+            win_args = [parts[2].strip()]
+        conjure_window(win_script, duration=win_dur, args=win_args)
+
+    elif command == "WAIT":
+        try:
+            time.sleep(int(content))
+        except Exception:
+            time.sleep(1)
+
+    elif command == "CLOSE":
+        try:
+            subprocess.run(["pkill", "firefox"], check=False)
+        except Exception:
+            pass
+
+
+def run_station_break(env, profile_dir):
+    """Play the next forest bead as an out-of-band station break.
+
+    Preempt the voice (flush the article backlog), run the bead's cue-list
+    through the shared dispatcher with queue-paced speech so the proof WINDOW
+    overlaps the spiel, then wait on the real voice clock before resuming the
+    article. No-ops gracefully if the forest module failed to import.
+    """
+    global _station_index
+    if not STATION_SEGMENTS:
+        return
+    bead = STATION_SEGMENTS[_station_index % len(STATION_SEGMENTS)]
+    _station_index += 1
+
+    narrator.interrupt()
+    for cue_command, cue_content in bead:
+        dispatch_cue(cue_command, cue_content, env, profile_dir, pace_say=False)
+    narrator.queue.join()
+
+
 def perform_show(script):
     """Reads the sheet music list and executes it."""
     # Define the environment for the browser once
