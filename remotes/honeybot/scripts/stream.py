@@ -508,113 +508,17 @@ def perform_show(script):
                 except: pass
                 return "BREAKING"
 
-            if command == "SAY":
-                # --- The Pervasive Pitch (Station ID) ---
-                # We check if it's been 3 minutes since the last explanation.
-                # We insert it BEFORE the next sentence to preserve flow.
-                if (time.time() - last_pitch_time) > PITCH_INTERVAL:
-                    global _station_index
-                    segment = STATION_SEGMENTS[_station_index % len(STATION_SEGMENTS)]
-                    _station_index += 1
+            # One dispatcher, two rolls. Loop-control (timer, standby, breaking
+            # news) stays above; the station-break trigger stays here; the brush
+            # primitives live in dispatch_cue, shared by the article roll (trees)
+            # and the forest roll (STATION_SEGMENTS beads in forest.py).
+            if command == "SAY" and (time.time() - last_pitch_time) > PITCH_INTERVAL:
+                # The Pervasive Pitch: play a forest bead as a station break
+                # BEFORE the triggering sentence, preserving the article's flow.
+                run_station_break(env, profile_dir)
+                last_pitch_time = time.time()
 
-                    # 0. PREEMPT THE VOICE: the director runs faster than Piper, so
-                    #    the narrator queue holds a backlog of article lines by now.
-                    #    interrupt() cuts the current audio and flushes that backlog
-                    #    (the same idiom the breaking-news/standby inserts use), so the
-                    #    break starts immediately and the spiel plays in sync with its
-                    #    visuals instead of staying buried as "more article."
-                    #    NOTE: this drops queued-but-unspoken article lines. Swap to
-                    #    narrator.queue.join() here for a lossless break that waits for
-                    #    the voice to catch up before cutting away.
-                    narrator.interrupt()
-
-                    # 1. THE BANNER: a Figlet title card (e.g. "THE ITCH") pops
-                    #    first and holds while the director blocks on it.
-                    card_label = segment.get("card")
-                    if card_label:
-                        card_dur = float(segment.get("card_duration", 5.0))
-                        conjure_window("card.py", duration=card_dur, args=[card_label])
-
-                    # 2. THE ART + SPIEL: queue the patronus then the spoken station
-                    #    text. With the backlog flushed they play now, in voice-order.
-                    art_key = segment.get("patronus")
-                    if art_key:
-                        narrator.patronus({"key": art_key, "duration": segment.get("duration", 3.5)})
-
-                    spiel = segment["text"]
-                    narrator.say(spiel)
-
-                    # 3. THE PROOF: a data report TUI pops OVER the live logs and
-                    #    holds while the spiel narrates in parallel (claim in voice,
-                    #    evidence on screen). A missing report script no-ops.
-                    report = segment.get("window")
-                    report_dur = 30.0
-                    if report:
-                        parts = str(report).split(":", 1)
-                        report_script = parts[0].strip()
-                        if len(parts) > 1:
-                            try:
-                                report_dur = float(parts[1].strip())
-                            except ValueError:
-                                report_dur = 30.0
-                        conjure_window(report_script, duration=report_dur)
-
-                    # 4. CLOSE THE BREAK: wait on the real voice clock (not a length
-                    #    estimate) so the spiel finishes before the article resumes.
-                    narrator.queue.join()
-                    last_pitch_time = time.time()
-                # ----------------------------------------
-
-                narrator.say(content)
-                time.sleep(len(content) / 20)
-
-            elif command == "VISIT":
-                # Ensure the page actually exists before showing it
-                wait_for_availability(content)
-
-                try:
-                    subprocess.Popen(
-                        [
-                            "firefox",
-                            "--profile", profile_dir,  # <--- MAGIC: Use temp profile
-                            "--no-remote",             # <--- Don't connect to existing instances
-                            "--new-instance",          # <--- Force new process
-                            content
-                        ],
-                        env=env,
-                        stdout=subprocess.DEVNULL,
-                        stderr=subprocess.DEVNULL
-                    )
-                except Exception:
-                    pass
-
-            elif command == "PATRONUS":
-                narrator.patronus(content)
-
-            elif command == "WINDOW":
-                # Pop a report TUI as a transient overlay OVER the live logs,
-                # holding the director for its duration, then auto-dismiss.
-                # content is "script.py" or "script.py:seconds".
-                parts = str(content).split(":", 1)
-                win_script = parts[0].strip()
-                win_dur = 30.0
-                if len(parts) > 1:
-                    try:
-                        win_dur = float(parts[1].strip())
-                    except ValueError:
-                        win_dur = 30.0
-                conjure_window(win_script, duration=win_dur)
-
-            elif command == "WAIT":
-                try: time.sleep(int(content))
-                except: time.sleep(1)
-
-            elif command == "CLOSE":
-                try:
-                    # We kill the specific firefox instance running on this profile if possible,
-                    # but pkill is safer for the kiosk mode.
-                    subprocess.run(["pkill", "firefox"], check=False)
-                except: pass
+            dispatch_cue(command, content, env, profile_dir, pace_say=True)
     finally:
         # CLEANUP: Destroy the memory of this session
         try:
