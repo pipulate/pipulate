@@ -62,10 +62,10 @@ _station_index = 0
 sys.path.append(str(Path(__file__).parent))
 
 try:
-    import show
+    import score
     from content_loader import check_for_updates, check_standby
 except ImportError:
-    show = None
+    score = None
 
 # --- Configuration ---
 MODEL_DIR = Path.home() / ".local/share/piper_voices"
@@ -533,11 +533,11 @@ def start_director_track():
 
     breaking = False
     while True:
-        if show:
+        if score:
             # Generate a fresh script. On a breaking-news restart we request a minimal
             # script that leads straight with the newest article, skipping the station-ID
             # preamble so a just-pushed piece is heard immediately.
-            current_script = show.get_script(breaking=breaking)
+            current_script = score.get_script(breaking=breaking)
 
             # perform_show returns "BREAKING" when a fresh push interrupted it (lead with
             # the new article next), False on a normal timer cycle (replay the full
