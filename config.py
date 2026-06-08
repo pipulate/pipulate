@@ -378,9 +378,25 @@ SERVER_URL = "http://localhost:5001"
 CHAT_ENDPOINT = "/chat"
 MCP_ENDPOINT = "/mcp-tool-executor"
 
-# 📁 Directory Structure (FIXED PATHS) 
-WORKSPACE_ROOT = "/home/mike/repos"
-PIPULATE_ROOT = "/home/mike/repos/pipulate"
+# 📁 Directory Structure (RUNTIME-DISCOVERED)
+# Pipulate knows where Pipulate is, no matter where the repo was cloned.
+# Resolution order: explicit PIPULATE_ROOT env override → flake.nix marker
+# walk → simple parent of this file. config.py lives at the repo root, so the
+# parent-of-__file__ fallback is correct even when the marker walk is skipped.
+def _discover_pipulate_root() -> Path:
+    env_override = os.environ.get('PIPULATE_ROOT')
+    if env_override:
+        return Path(env_override).resolve()
+    current = Path(__file__).resolve().parent
+    walker = current
+    while walker != walker.parent:
+        if (walker / 'flake.nix').exists():
+            return walker
+        walker = walker.parent
+    return current
+
+PIPULATE_ROOT = str(_discover_pipulate_root())
+WORKSPACE_ROOT = str(Path(PIPULATE_ROOT).parent)
 AI_DISCOVERY_DIR = "pipulate/ai_discovery"
 BROWSER_AUTOMATION_DIR = "pipulate/browser_cache"
 LOGS_DIR = "pipulate/logs"
