@@ -452,6 +452,17 @@ def perform_show(script):
                     segment = STATION_SEGMENTS[_station_index % len(STATION_SEGMENTS)]
                     _station_index += 1
 
+                    # 0. PREEMPT THE VOICE: the director runs faster than Piper, so
+                    #    the narrator queue holds a backlog of article lines by now.
+                    #    interrupt() cuts the current audio and flushes that backlog
+                    #    (the same idiom the breaking-news/standby inserts use), so the
+                    #    break starts immediately and the spiel plays in sync with its
+                    #    visuals instead of staying buried as "more article."
+                    #    NOTE: this drops queued-but-unspoken article lines. Swap to
+                    #    narrator.queue.join() here for a lossless break that waits for
+                    #    the voice to catch up before cutting away.
+                    narrator.interrupt()
+
                     # 1. THE BANNER: a Figlet title card (e.g. "THE ITCH") pops
                     #    first and holds while the director blocks on it.
                     card_label = segment.get("card")
@@ -459,21 +470,18 @@ def perform_show(script):
                         card_dur = float(segment.get("card_duration", 5.0))
                         conjure_window("card.py", duration=card_dur, args=[card_label])
 
-                    # 2. THE ART: the ASCII patronus, queued so it fires in
-                    #    voice-order right as the spiel begins.
+                    # 2. THE ART + SPIEL: queue the patronus then the spoken station
+                    #    text. With the backlog flushed they play now, in voice-order.
                     art_key = segment.get("patronus")
                     if art_key:
                         narrator.patronus({"key": art_key, "duration": segment.get("duration", 3.5)})
 
-                    # 3. THE SPIEL: the spoken station-ID text (the abstract concept).
                     spiel = segment["text"]
                     narrator.say(spiel)
 
-                    # 4. THE PROOF: a data report TUI pops OVER the live logs and
-                    #    holds while the narration keeps reading in parallel
-                    #    (the report duration paces the director). A missing report
-                    #    script fails gracefully (conjure_window silently no-ops),
-                    #    so we keep a fallback pacing sleep for that case.
+                    # 3. THE PROOF: a data report TUI pops OVER the live logs and
+                    #    holds while the spiel narrates in parallel (claim in voice,
+                    #    evidence on screen). A missing report script no-ops.
                     report = segment.get("window")
                     report_dur = 30.0
                     if report:
@@ -486,10 +494,9 @@ def perform_show(script):
                                 report_dur = 30.0
                         conjure_window(report_script, duration=report_dur)
 
-                    # If no report ran (none set, or script missing so the call
-                    # returned instantly), pace by the spiel length so the
-                    # director doesn't race ahead of the narrator's voice clock.
-                    time.sleep(len(spiel) / 18)
+                    # 4. CLOSE THE BREAK: wait on the real voice clock (not a length
+                    #    estimate) so the spiel finishes before the article resumes.
+                    narrator.queue.join()
                     last_pitch_time = time.time()
                 # ----------------------------------------
 
