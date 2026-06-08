@@ -322,7 +322,7 @@ def conjure_patronus(name, duration=3.5):
         pass
 
 
-def conjure_window(script_name, duration=30.0, columns=100, lines=30):
+def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None):
     """Process-flavored sibling to conjure_patronus.
 
     Keep the sheet-music API ("report.py" or "report.py:seconds") local to the
