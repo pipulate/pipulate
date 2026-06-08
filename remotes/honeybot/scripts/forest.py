@@ -29,7 +29,7 @@ must not itself contain a colon. Bare labels like "THE ITCH" are fine.
 STATION_SEGMENTS = [
     [
         ("WINDOW", "card.py:5:THE ITCH"),
-        ("PATRONUS", {"key": "ai_stack_combo", "duration": 6.0}),
+        ("PATRONUS", {"key": "player_piano", "duration": 6.0}),
         ("SAY", (
             "The Itch. Every useful tool starts with a genuine irritation. "
             "Python ships with batteries included, but not every itch has a battery yet. "
@@ -41,7 +41,7 @@ STATION_SEGMENTS = [
     ],
     [
         ("WINDOW", "card.py:5:THE LENSES"),
-        ("PATRONUS", {"key": "player_piano", "duration": 6.0}),
+        ("PATRONUS", {"key": "ai_stack_combo", "duration": 6.0}),
         ("SAY", (
             "The Lenses. Every layer in the stack is a lens that must be ground clean. "
             "Normalized Linux, Python, HTMX, FastHTML, and git. "
