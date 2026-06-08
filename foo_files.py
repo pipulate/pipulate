@@ -81,32 +81,32 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
 # README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
-# AUDIT.md
+AUDIT.md
 
-tools/dom_tools.py
-tools/scraper_tools.py
-imports/ai_dictdb.py
-scripts/audit_dye.py
-scripts/gsc/gsc_page_query.ipynb
-assets/nbs/imports/faq_writer_sauce.py
-scripts/articles/common.py
-scripts/articles/other/make_article.py
-scripts/workflow/create_workflow.py
-scripts/workflow/splice_workflow_step.py
-remotes/honeybot/hooks/post-receive
-scripts/workflow/workflow_reconstructor.py
-remotes/honeybot/nixos/configuration.nix
-remotes/honeybot/scripts/db.py
-remotes/honeybot/scripts/stream.py
-remotes/honeybot/scripts/content_loader.py
-/home/mike/repos/trimnoir/_config.yml
-/home/mike/repos/trimnoir/index.md
-/home/mike/repos/trimnoir/flake.nix
+# tools/dom_tools.py
+# tools/scraper_tools.py
+# imports/ai_dictdb.py
+# scripts/audit_dye.py
+# scripts/gsc/gsc_page_query.ipynb
+# assets/nbs/imports/faq_writer_sauce.py
+# scripts/articles/common.py
+# scripts/articles/other/make_article.py
+# scripts/workflow/create_workflow.py
+# scripts/workflow/splice_workflow_step.py
+# remotes/honeybot/hooks/post-receive
+# scripts/workflow/workflow_reconstructor.py
+# remotes/honeybot/nixos/configuration.nix
+# remotes/honeybot/scripts/db.py
+# remotes/honeybot/scripts/stream.py
+# remotes/honeybot/scripts/content_loader.py
+# /home/mike/repos/trimnoir/_config.yml
+# /home/mike/repos/trimnoir/index.md
+# /home/mike/repos/trimnoir/flake.nix
 
 
-__init__.py       #  <-- Master versioning
-release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
-pyproject.toml    #  <-- The PyPI Packaging details
+# __init__.py       #  <-- Master versioning
+# release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
+# pyproject.toml    #  <-- The PyPI Packaging details
 # requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 
 # requirements.txt  #  <-- Pip-compiled dependencies.
@@ -170,10 +170,10 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-config.py                   # <-- Centralize every last configuration in here
-pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
-pipulate/core.py            # <-- The Wand (spells)
+# config.py                   # <-- Centralize every last configuration in here
+# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+# pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
+# pipulate/core.py            # <-- The Wand (spells)
 # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
 
@@ -188,9 +188,9 @@ pipulate/core.py            # <-- The Wand (spells)
 # ============================================================================
 
 # THE ROLLING PIN
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
-# AI_CONTEXT.md
+AI_CONTEXT.md
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 
 # ============================================================================
@@ -236,14 +236,14 @@ pipulate/core.py            # <-- The Wand (spells)
 nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
 remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
 remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
-# remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
-# remotes/honeybot/scripts/show.py            # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
-# remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
-# remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
-# remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
-# remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
-# remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
-# remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
+remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
+remotes/honeybot/scripts/show.py            # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
+remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
+remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
+remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
+remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
+remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
 # 
 # # AD HOC REPORTS
 # remotes/honeybot/queries/trapdoor_ips.sql   # <-- The SQL to see who is hydrating the DOM. An ultimate report example among much ad hoc .sql
