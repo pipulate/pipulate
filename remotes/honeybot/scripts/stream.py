@@ -346,8 +346,12 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None)
 
     from imports.ascii_displays import conjure_window as shared_conjure_window
 
+    cmd = [sys.executable, "-u", str(script_path)]
+    if args:
+        cmd += [str(a) for a in args]
+
     shared_conjure_window(
-        [sys.executable, "-u", str(script_path)],
+        cmd,
         duration=duration,
         columns=columns,
         lines=lines,
