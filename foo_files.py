@@ -80,9 +80,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # ============================================================================
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
-
-# README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
-# AUDIT.md
+README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
+AUDIT.md
 
 # __init__.py       #  <-- Master versioning
 # release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
@@ -91,8 +90,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # requirements.txt  #  <-- Pip-compiled dependencies.
 # logs/server.log   #  <-- Like letting AI see your browser app state, but better! --------------------- AI server.py LOG DEBUG
-
-imports/ascii_displays.py
 
 # ============================================================================
 # II. THE MOTHERSHIP DROP-HOOK - Solving the WORA Bootstrap Paradox
@@ -156,8 +153,8 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
 # pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
 # pipulate/core.py            # <-- The Wand (spells)
-# imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
-# imports/voice_synthesis.py  # <-- The wand can talk to you
+imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
+imports/voice_synthesis.py  # <-- The wand can talk to you
 
 # assets/styles.css           # <-- Those values often get used here for "the look"
 
@@ -172,7 +169,7 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # THE ROLLING PIN
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
-AI_CONTEXT.md
+# AI_CONTEXT.md
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 
 # ============================================================================
@@ -227,7 +224,7 @@ remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known b
 
 # AD HOC REPORTS
 remotes/honeybot/queries/trapdoor_ips.sql   # <-- The SQL to see who is hydrating the DOM. An ultimate report example among much ad hoc .sql
-! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # FULLY BAKED PYTHON REPORTS
 remotes/honeybot/scripts/report.py
