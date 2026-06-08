@@ -1,8 +1,8 @@
 # AI_CONTEXT.md — Start Here If You Are an AI
 
-> Auto-generated on 2026-06-04. Rewritten from scratch on every release. If this
+> Auto-generated on 2026-06-08. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1172 entries indexed.
+> 1186 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -96,31 +96,45 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-06-08] [Slaying Hardcoded Paths for Portable AI Dev Environments](https://mikelev.in/futureproof/slaying-hardcoded-paths-portable-ai-dev/index.md)
+- [2026-06-08] [Rigging the Vibe: The Art of Autonomous Seamanship in the Age of AI](https://mikelev.in/futureproof/rigging-the-vibe-autonomous-seamanship/index.md)
+- [2026-06-08] [The Forest and the Trees: Aligning Voice and Visuals in a Cybernetic Broadcast Engine](https://mikelev.in/futureproof/forest-and-trees-cybernetic-broadcast-engine/index.md)
+- [2026-06-07] [De-cursing the Python Stack: Reclaiming Lightweight Web App Development](https://mikelev.in/futureproof/de-cursing-python-web-development/index.md)
+- [2026-06-07] [How Context Became the New Build Artifact](https://mikelev.in/futureproof/context-as-build-artifact/index.md)
+- [2026-06-06] [The Precision Interlock: Why Exact-Match Protocols Beat AI Vibe-Coding](https://mikelev.in/futureproof/precision-interlock-ai-vibe-coding/index.md)
+- [2026-06-06] [The Plain Text Control Plane: Bootstrapping Governed Agency](https://mikelev.in/futureproof/plain-text-control-plane/index.md)
+- [2026-06-06] [The Code Canary and the Unix Pipe: Achieving Mechanical Sympathy in the Age of AI](https://mikelev.in/futureproof/code-canary-unix-pipe-mechanical-sympathy/index.md)
+- [2026-06-06] [Making the Audit Truthful: Building Nix Docker Targets Without the Rabbit Holes](https://mikelev.in/futureproof/making-audit-truthful-nix-docker/index.md)
+- [2026-06-06] [Boringly Explainable: Hardening Local-First Apps for Enterprise Auditors](https://mikelev.in/futureproof/hardening-local-first-apps-for-enterprise-auditors/index.md)
+- [2026-06-05] [Structured Surprise: AGPLv3, GitOps, and the Voice of the Local Machine](https://mikelev.in/futureproof/structured-surprise-agplv3-gitops/index.md)
+- [2026-06-05] [The Johnny Appleseed Strategy: Guarding Hard Knowledge in the Age of AI](https://mikelev.in/futureproof/guarding-hard-knowledge-ai/index.md)
+- [2026-06-04] [The Modern Webmaster: Rebuilding the Stack with Nix, Git, and Python](https://mikelev.in/futureproof/modern-webmaster-git-nix/index.md)
+- [2026-06-04] [Pipulate: The Hardening Layer for the Vibe Coding Era](https://mikelev.in/futureproof/pipulate-vibe-coding-hardening-layer/index.md)
 - [2026-06-04] [Deterministic Context Anchoring with Pachinko Bumpers](https://mikelev.in/futureproof/pachinko-context-anchoring-bumpers/index.md)
 - [2026-06-03] [The Google Social Contract Is Over: Welcome to Agentic Commerce Optimization](https://mikelev.in/futureproof/agentic-commerce-optimization/index.md)
 - [2026-06-02] [Building a Deterministic AI Prompt Compiler Pipeline](https://mikelev.in/futureproof/deterministic-ai-prompt-compiler/index.md)
 - [2026-06-02] [The Token-Dense Router: Building a Lightweight Takeoff Ramp for AI Context](https://mikelev.in/futureproof/token-dense-router-ai-context/index.md)
 - [2026-06-02] [The Local-First Shield: Defeating Paradigm Category Errors in the Age of AI](https://mikelev.in/futureproof/local-first-security-context-compiler/index.md)
 - [2026-06-02] [Refactoring Local Credentials: The Grumbling Graybeard Protocol](https://mikelev.in/futureproof/grumbling-graybeard-local-credentials/index.md)
-- [2026-06-01] [Designing for Amnesia: The Deterministic AI Editing Pipeline](https://mikelev.in/futureproof/designing-for-amnesia-deterministic-ai-pipeline/index.md)
-- [2026-06-01] [The Player Piano Method: Syncing Voice and Visuals in the Age of AI](https://mikelev.in/futureproof/player-piano-voice-visual-sync/index.md)
-- [2026-06-01] [The Player Piano Method: Turning Markdown into Sheet Music for AI Narration](https://mikelev.in/futureproof/player-piano-markdown-sheet-music/index.md)
-- [2026-06-01] [The Boring Way of Epistemic Balance: Building Anti-Entropy Workspaces](https://mikelev.in/futureproof/boring-way-epistemic-balance-anti-entropy-workspaces/index.md)
-- [2026-06-01] [Player Piano 4: Structured Cues and Audio Interrupts in the Age of AI](https://mikelev.in/futureproof/player-piano-four-audio-interrupts/index.md)
-- [2026-06-01] [The Breaking News Bell: Building an AI Playback Reflex with Git Hooks](https://mikelev.in/futureproof/git-hooks-breaking-news-bell/index.md)
-- [2026-06-01] [The Repo That Talks Back: Building an Autonomic AI Context Map](https://mikelev.in/futureproof/repo-talks-back-ai-context/index.md)
-- [2026-05-31] [HATEOAS for Silicon Eyes: Designing Repo Root Context Interfaces](https://mikelev.in/futureproof/hateoas-for-silicon-eyes/index.md)
-- [2026-05-31] [The Return of the ViewState: Bending the AI Chatbot Postback](https://mikelev.in/futureproof/return-of-viewstate-ai-chatbot-postback/index.md)
-- [2026-05-31] [The Zen of Clean Cuts: Sleep, Nix, and the Human Airlock](https://mikelev.in/futureproof/zen-of-clean-cuts/index.md)
-- [2026-05-31] [The Magic User's Guide to AI Actuators and Anti-Churn Stacks](https://mikelev.in/futureproof/magic-users-guide-ai-actuators/index.md)
-- [2026-05-30] [The Bunny Trail: Building Membranes for Frictionless Collaboration](https://mikelev.in/futureproof/bunny-trail-collaboration-membranes/index.md)
-- [2026-05-30] [Terminal Parity and the Patronus Command](https://mikelev.in/futureproof/terminal-parity-patronus-command/index.md)
-- [2026-05-29] [The Patronus Moment: Zero-Latency Graphical Actuation with NixOS](https://mikelev.in/futureproof/the-patronus-moment/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-06-01] [44k] designing-for-amnesia-deterministic-ai-pipeline
+- [2026-06-01] [112k] player-piano-voice-visual-sync
+- [2026-06-01] [34k] player-piano-markdown-sheet-music
+- [2026-06-01] [145k] boring-way-epistemic-balance-anti-entropy-workspaces
+- [2026-06-01] [124k] player-piano-four-audio-interrupts
+- [2026-06-01] [90k] git-hooks-breaking-news-bell
+- [2026-06-01] [91k] repo-talks-back-ai-context
+- [2026-05-31] [18k] hateoas-for-silicon-eyes
+- [2026-05-31] [126k] return-of-viewstate-ai-chatbot-postback
+- [2026-05-31] [19k] zen-of-clean-cuts
+- [2026-05-31] [142k] magic-users-guide-ai-actuators
+- [2026-05-30] [78k] bunny-trail-collaboration-membranes
+- [2026-05-30] [75k] terminal-parity-patronus-command
+- [2026-05-29] [164k] the-patronus-moment
 - [2026-05-29] [111k] patronus-blueprint-popups-clipboard-pipelines
 - [2026-05-29] [106k] dopamine-canary-environment-boundaries-local-automation
 - [2026-05-29] [50k] building-the-take-off-ramp
