@@ -80,12 +80,33 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # ============================================================================
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
-README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
-AUDIT.md
+# README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
+# AUDIT.md
 
-# __init__.py       #  <-- Master versioning
-# release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
-# pyproject.toml    #  <-- The PyPI Packaging details
+tools/dom_tools.py
+tools/scraper_tools.py
+imports/ai_dictdb.py
+scripts/audit_dye.py
+scripts/gsc/gsc_page_query.ipynb
+assets/nbs/imports/faq_writer_sauce.py
+scripts/articles/common.py
+scripts/articles/other/make_article.py
+scripts/workflow/create_workflow.py
+scripts/workflow/splice_workflow_step.py
+remotes/honeybot/hooks/post-receive
+scripts/workflow/workflow_reconstructor.py
+remotes/honeybot/nixos/configuration.nix
+remotes/honeybot/scripts/db.py
+remotes/honeybot/scripts/stream.py
+remotes/honeybot/scripts/content_loader.py
+/home/mike/repos/trimnoir/_config.yml
+/home/mike/repos/trimnoir/index.md
+/home/mike/repos/trimnoir/flake.nix
+
+
+__init__.py       #  <-- Master versioning
+release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
+pyproject.toml    #  <-- The PyPI Packaging details
 # requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 
 # requirements.txt  #  <-- Pip-compiled dependencies.
@@ -149,12 +170,12 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-# config.py                   # <-- Centralize every last configuration in here
-# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-# pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
-# pipulate/core.py            # <-- The Wand (spells)
-imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
-imports/voice_synthesis.py  # <-- The wand can talk to you
+config.py                   # <-- Centralize every last configuration in here
+pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
+pipulate/core.py            # <-- The Wand (spells)
+# imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
+# imports/voice_synthesis.py  # <-- The wand can talk to you
 
 # assets/styles.css           # <-- Those values often get used here for "the look"
 
@@ -167,7 +188,7 @@ imports/voice_synthesis.py  # <-- The wand can talk to you
 # ============================================================================
 
 # THE ROLLING PIN
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 # AI_CONTEXT.md
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
@@ -215,31 +236,32 @@ imports/voice_synthesis.py  # <-- The wand can talk to you
 nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
 remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
 remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
-remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
-remotes/honeybot/scripts/show.py            # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
-remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
-remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
-remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
-remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
-remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
-
-# AD HOC REPORTS
-remotes/honeybot/queries/trapdoor_ips.sql   # <-- The SQL to see who is hydrating the DOM. An ultimate report example among much ad hoc .sql
-# ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-
-# FULLY BAKED PYTHON REPORTS
-remotes/honeybot/scripts/report.py
-remotes/honeybot/scripts/build_bot_miner.py
-remotes/honeybot/scripts/dye_injector_v2.py
-remotes/honeybot/scripts/education.py
-remotes/honeybot/scripts/radar.py
-remotes/honeybot/scripts/routing.py
-
-# PURE SQLite3 REPORTS
-remotes/honeybot/queries/format_ratio.sql
-remotes/honeybot/queries/markdown_routing_metrics.sql
-remotes/honeybot/queries/content_neg_agents.sql
-remotes/honeybot/queries/md_routing_agents.sql
+# remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
+# remotes/honeybot/scripts/show.py            # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
+# remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
+# remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
+# remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
+# remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
+# remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+# remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
+# 
+# # AD HOC REPORTS
+# remotes/honeybot/queries/trapdoor_ips.sql   # <-- The SQL to see who is hydrating the DOM. An ultimate report example among much ad hoc .sql
+# # ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# 
+# # FULLY BAKED PYTHON REPORTS
+# remotes/honeybot/scripts/report.py
+# remotes/honeybot/scripts/build_bot_miner.py
+# remotes/honeybot/scripts/dye_injector_v2.py
+# remotes/honeybot/scripts/education.py
+# remotes/honeybot/scripts/radar.py
+# remotes/honeybot/scripts/routing.py
+# 
+# # PURE SQLite3 REPORTS
+# remotes/honeybot/queries/format_ratio.sql
+# remotes/honeybot/queries/markdown_routing_metrics.sql
+# remotes/honeybot/queries/content_neg_agents.sql
+# remotes/honeybot/queries/md_routing_agents.sql
 
 # ! echo "--- FORMAT RATIO (Markdown vs HTML) ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
@@ -767,7 +789,6 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
 # assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [9,017 tokens | 30,164 bytes]
 # assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
-# assets/nbs/imports/faq_writer_sauce.py  # [6,006 tokens | 26,636 bytes]
 # assets/nbs/imports/gap_analyzer_sauce.py  # [27,162 tokens | 119,579 bytes]
 # assets/nbs/imports/url_inspect_sauce.py  # [3,542 tokens | 16,202 bytes]
 # assets/nbs/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
@@ -800,7 +821,6 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
 # remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
 # remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
-# remotes/honeybot/scripts/forest.py  # [633 tokens | 2,596 bytes]
 # scripts/articles/bookforge_dashboard.py  # [851 tokens | 3,484 bytes]
 # scripts/articles/build_book_passes.py  # [535 tokens | 2,210 bytes]
 # scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
@@ -815,10 +835,8 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
 # scripts/articles/link_injector.py  # [1,134 tokens | 4,394 bytes]
 # scripts/articles/list_models.py  # [102 tokens | 391 bytes]
-# scripts/articles/other/make_article.py  # [1,513 tokens | 6,559 bytes]
 # scripts/articles/scrub_tags.py  # [358 tokens | 1,587 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
-# scripts/audit_dye.py  # [256 tokens | 1,009 bytes]
 # scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
 # scripts/botify/botify_api_examples.md  # [21,273 tokens | 86,712 bytes]
 # scripts/botify/make_botify_docs.ipynb  # [61,006 tokens | 224,678 bytes]
@@ -827,7 +845,6 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # scripts/gsc/generate_categories.py  # [1,477 tokens | 6,880 bytes]
 # scripts/gsc/gsc_category_analysis.py  # [6,947 tokens | 29,085 bytes]
 # scripts/gsc/gsc_keyworder.py  # [3,410 tokens | 14,355 bytes]
-# scripts/gsc/gsc_page_query.ipynb  # [7,842 tokens | 28,465 bytes]
 # scripts/gsc/gsc_top_movers.py  # [8,003 tokens | 34,690 bytes]
 # scripts/playground/prompt_feeder.py  # [746 tokens | 3,154 bytes]
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
