@@ -35,7 +35,7 @@ STATION_SEGMENTS = [
             "Python ships with batteries included, but not every itch has a battery yet. "
             "FastAPI scratched the A P I server itch, but it smuggled in the entire JavaScript industrial complex. "
             "The itch that remained was a Python-native local web app cockpit. "
-            "FastHTML and HTMX performed the exorcism."
+            "FastHTML and HTMX performed the node-echtomy."
         )),
         ("WINDOW", "education.py:30"),
     ],
