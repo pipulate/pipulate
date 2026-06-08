@@ -49,7 +49,7 @@ TARGETS_FILE = CONFIG_DIR / "targets.json"
 DEFAULT_TARGETS = {
     "1": {
         "name": "Local Project (Default)",
-        "path": "/home/mike/repos/trimnoir/_posts" # Updated default fallback
+        "path": str(Path.home() / "repos" / "trimnoir" / "_posts")  # ~/repos convention
     }
 }
 
