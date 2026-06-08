@@ -46,40 +46,15 @@ PITCH_TEXT = (
 # must exist in imports.ascii_displays.FIGURATE_REGISTRY) that pops over the
 # stream in voice-order. The index resets on process restart (episodic, by
 # design): whoever tunes in starts the Pipulate story near its top.
-# Each station-break bead now drives the full brush set in voice-order:
-#   card    -> Figlet title-card label (WINDOW card.py "<card>")
-#   patronus-> ASCII art popup (registered FIGURATE key)
-#   text    -> the spoken station-ID spiel (the abstract concept)
-#   window  -> a data report TUI ("script.py" or "script.py:seconds") for proof
-# Two beads establishes the pattern; they alternate forever as a loop. Order is
-# priority: _station_index resets to 0 on restart, so bead 0 is highest-traffic.
-STATION_SEGMENTS = [
-    {
-        "card": "THE ITCH",
-        "patronus": "ai_stack_combo",
-        "text": (
-            "The Itch. Every useful tool starts with a genuine irritation. "
-            "Python ships with batteries included, but not every itch has a battery yet. "
-            "FastAPI scratched the A P I server itch, but it smuggled in the entire JavaScript industrial complex. "
-            "The itch that remained was a Python-native local web app cockpit. "
-            "FastHTML and HTMX performed the exorcism."
-        ),
-        "window": "education.py:30",
-        "duration": 6.0,
-    },
-    {
-        "card": "THE LENSES",
-        "patronus": "player_piano",
-        "text": (
-            "The Lenses. Every layer in the stack is a lens that must be ground clean. "
-            "Normalized Linux, Python, HTMX, FastHTML, and git. "
-            "Each one is either pre-trained into the models or small enough to fit in a single prompt. "
-            "The fewer the lenses, the sharper the focus."
-        ),
-        "window": "radar.py:30",
-        "duration": 6.0,
-    },
-]
+# The forest roll (station-break beads) now lives in its own data module so it
+# can be edited without touching this threading-heavy engine. Each bead is an
+# ordered cue-list in the same SAY/PATRONUS/WINDOW grammar the trees use, played
+# through the shared dispatch_cue (the cathedral-of-one collapse).
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+try:
+    from forest import STATION_SEGMENTS
+except ImportError:
+    STATION_SEGMENTS = []
 
 # Advances on each station break; wraps with modulo over STATION_SEGMENTS.
 _station_index = 0
