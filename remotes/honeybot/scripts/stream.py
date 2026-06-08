@@ -448,12 +448,44 @@ def perform_show(script):
                     global _station_index
                     segment = STATION_SEGMENTS[_station_index % len(STATION_SEGMENTS)]
                     _station_index += 1
+
+                    # 1. THE BANNER: a Figlet title card (e.g. "THE ITCH") pops
+                    #    first and holds while the director blocks on it.
+                    card_label = segment.get("card")
+                    if card_label:
+                        card_dur = float(segment.get("card_duration", 5.0))
+                        conjure_window("card.py", duration=card_dur, args=[card_label])
+
+                    # 2. THE ART: the ASCII patronus, queued so it fires in
+                    #    voice-order right as the spiel begins.
                     art_key = segment.get("patronus")
                     if art_key:
                         narrator.patronus({"key": art_key, "duration": segment.get("duration", 3.5)})
+
+                    # 3. THE SPIEL: the spoken station-ID text (the abstract concept).
                     spiel = segment["text"]
                     narrator.say(spiel)
-                    # We sleep to let the pitch play out before queuing the next sentence
+
+                    # 4. THE PROOF: a data report TUI pops OVER the live logs and
+                    #    holds while the narration keeps reading in parallel
+                    #    (the report duration paces the director). A missing report
+                    #    script fails gracefully (conjure_window silently no-ops),
+                    #    so we keep a fallback pacing sleep for that case.
+                    report = segment.get("window")
+                    report_dur = 30.0
+                    if report:
+                        parts = str(report).split(":", 1)
+                        report_script = parts[0].strip()
+                        if len(parts) > 1:
+                            try:
+                                report_dur = float(parts[1].strip())
+                            except ValueError:
+                                report_dur = 30.0
+                        conjure_window(report_script, duration=report_dur)
+
+                    # If no report ran (none set, or script missing so the call
+                    # returned instantly), pace by the spiel length so the
+                    # director doesn't race ahead of the narrator's voice clock.
                     time.sleep(len(spiel) / 18)
                     last_pitch_time = time.time()
                 # ----------------------------------------
