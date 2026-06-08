@@ -111,7 +111,7 @@ REPO_ROOT = find_repo_root(os.path.dirname(__file__))
 
 CONFIG = {
     "PROJECT_NAME": "pipulate",
-    "POSTS_DIRECTORY": "/home/mike/repos/trimnoir/_posts"
+    "POSTS_DIRECTORY": str(Path.home() / "repos" / "trimnoir" / "_posts")
 }
 
 # ============================================================================
