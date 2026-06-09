@@ -4822,14 +4822,13 @@ async def send_startup_environment_message():
                         # 🔧 STARTUP_DEBUG: Mark this message as coming from startup
                         startup_marked_message = f"🔧 [STARTUP] {endpoint_message}"
                         await pipulate.message_queue.add(pipulate, startup_marked_message, verbatim=True, role='system', spaces_after=2)
-                        logger.info(f"🔧 STARTUP_DEBUG: Successfully sent startup endpoint message: {message_id}")
+                        logger.info(f"🔧 STARTUP_DEBUG: Successfully sent startup environment message: {message_id}")
 
                         aa.reading_legend()
                         aa.system_diagram()
-                        aa.white_rabbit()
+                        pipulate.figurate("white_rabbit")
 
                         # Mark as sent in coordination system
-                        message_coordination['last_endpoint_message_time'][message_id] = current_time
                         message_coordination['endpoint_messages_sent'].add(message_id)
 
                         # Also mark in session system for backward compatibility
