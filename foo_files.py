@@ -737,6 +737,11 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 #
 # You are painting onto the context window. Keep your strokes deliberate.
 
+# The rebound tax is the hidden cost of stateless agency: every "next action"
+# requires re-uploading history + fresh context. Pipulate's attention prosthesis
+# exists to make staying pinned to the diff ergonomically irresistible precisely
+# when the industry is optimizing for metered amnesia.
+
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
 # ============================================================================
