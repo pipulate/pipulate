@@ -412,7 +412,8 @@ def _expand_color_bits_human(text: str) -> str:
 def _expand_color_bits_ai(text: str) -> str:
     """Strip [[[Token]]] markers to plain text for AI context and CRC hashing."""
     import re
-    return re.sub(r'\[\[\[([^\]]+)\]\]\]', r'\1', text)
+    text = re.sub(r'\[\[\[([^\]]+)\]\]\]', r'\1', text)
+    return re.sub(r'<[^>]+>', '', text)
 
 
 # FIGURATE_LEDGER: Maps art name → expected CRC32 of its raw ai string.
@@ -441,8 +442,8 @@ def _figurate_white_rabbit():
     """Render white_rabbit as (human, ai) tuple for FIGURATE_REGISTRY."""
     art = r"""
                         ( Like a canary you say? )                      
-                                           O        /)  ____            The "No Problem" Framework
->  I HEREBY WILL NOT RE-GENERATE            o /)\__//  /    \        Pipulate - Protecting Your Code 
+                                           O        /)  ____            <debug>The "No Problem" Framework</debug>
+>  I HEREBY WILL NOT RE-GENERATE            o /)\__//  /    \        <success>Pipulate</success> - Protecting Your Code 
 >  Once upon machines be smarten          ___(/_ 0 0  | [[[NPvg]]] |       just by being honest about text.
 >  ASCII sealing immutata art in        *(    ==(_T_)== WORA |           < https://pipulate.com >
 >  This here cony if it's broken          \  )   ""\  | free |                    🥕🥕🥕 
