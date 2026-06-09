@@ -103,7 +103,8 @@ for key in config_keys:
 if __name__ == '__main__' and not os.environ.get('PIPULATE_WATCHDOG_RESTART'):
     try:
         aa.figlet_banner("STARTUP", "Pipulate server starting...", font='slant', color=BANNER_COLORS['server_restart'])
-        aa.white_rabbit()
+        from pipulate import wand
+        wand.figurate("white_rabbit")
         aa.system_diagram()
     except (BlockingIOError, OSError, IOError) as e:
         # 🍎 MAC FALLBACK: If Rich banner fails during startup, use simple print
@@ -5235,7 +5236,7 @@ def run_server_with_watchdog():
     aa.figlet_banner(figlet_text, subtitle, font='standard', color='white on default')
     slog.safe_print()
     aa.chip_says("Hello! The server is restarting. I'll be right back online.", BANNER_COLORS['workshop_ready'])
-    aa.white_rabbit()
+    pipulate.figurate("white_rabbit")
     logger.info("🎨 FINDER_TOKEN: FIGURATE_CANARY - white_rabbit called from run_server_with_watchdog")
     env = get_current_environment()
     env_db = get_db_filename()  # 🚨 CRITICAL FIX: Use current environment's database file
