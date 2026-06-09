@@ -28,14 +28,38 @@ must not itself contain a colon. Bare labels like "THE ITCH" are fine.
 # break. Convention: card banner first, then art + spiel + proof report.
 STATION_SEGMENTS = [
     [
-        ("WINDOW", "card.py:5:THE ITCH"),
+        ("WINDOW", "card.py:5:HONEYBOT"),
         ("PATRONUS", {"key": "player_piano", "duration": 6.0}),
         ("SAY", (
-            "The Itch. Every useful tool starts with a genuine irritation. "
-            "Python ships with batteries included, but not every itch has a battery yet. "
-            "FastAPI scratched the A P I server itch, but it smuggled in the entire JavaScript industrial complex. "
-            "The itch that remained was a Python-native local web app cockpit. "
-            "FastHTML and HTMX performed the node-echtomy."
+            "Hello, and welcome to Future-proofing with the Honeybot."
+        )),
+        ("SAY", (
+            "You may wonder what you're looking at. This Matrix-like rain is live webserver data "
+            "from MikeLev.in. A Unix tail command pipes the access log into a Python script that "
+            "color-codes it and layers heads-up displays."
+        )),
+        ("SAY", (
+            "In the age of AI, webserver logs are a field notebook. They show who visits, what "
+            "crawlers request, which bots hydrate the DOM via JavaScript trapdoors, and which "
+            "seek raw Markdown."
+        )),
+        ("SAY", (
+            "Search is no longer just ten blue links. It is model training, retrieval, agentic "
+            "browsers, and synthetic answers. The new SEO is being legible to machines without "
+            "surrendering sovereignty."
+        )),
+        ("SAY", (
+            "Windows 10 support has ended and Secure Boot certificates enter a 2026 transition. "
+            "Many older machines are becoming interesting again as Linux home servers and "
+            "observability stations."
+        )),
+        ("SAY", (
+            "Honeybot invites the crawlers in, gives them clean HTML and Markdown, and watches. "
+            "We are writing ourselves into the parametric memory of future models. "
+            "Making sure our signal has a fighting chance."
+        )),
+        ("SAY", (
+            "That's new SEO. Making sure it does. And this is where we begin."
         )),
         ("WINDOW", "education.py:30"),
     ],
