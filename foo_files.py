@@ -189,7 +189,7 @@ pipulate/core.py            # <-- The Wand (spells)
 # THE ROLLING PIN
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
-AI_CONTEXT.md
+# AI_CONTEXT.md
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 
 # ============================================================================
@@ -202,9 +202,9 @@ AI_CONTEXT.md
 # assets/player-piano.js                            # <-- Player piano actuator #2 in Pipulate. How AIs can take control of workflows.
 # Notebooks/imports/__init__.py                     # <-- Empty file, just to show you imports relative to Notebooks are 1st-class path members. Important!
 
-assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
-assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
-assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
+# assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
+# assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
+# assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
 # apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
 
 # ============================================================================
@@ -243,24 +243,24 @@ remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `a
 remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
 remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
 remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
-# 
-# # AD HOC REPORTS
-# remotes/honeybot/queries/trapdoor_ips.sql   # <-- The SQL to see who is hydrating the DOM. An ultimate report example among much ad hoc .sql
-# # ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# 
-# # FULLY BAKED PYTHON REPORTS
-# remotes/honeybot/scripts/report.py
-# remotes/honeybot/scripts/build_bot_miner.py
-# remotes/honeybot/scripts/dye_injector_v2.py
-# remotes/honeybot/scripts/education.py
-# remotes/honeybot/scripts/radar.py
-# remotes/honeybot/scripts/routing.py
-# 
-# # PURE SQLite3 REPORTS
-# remotes/honeybot/queries/format_ratio.sql
-# remotes/honeybot/queries/markdown_routing_metrics.sql
-# remotes/honeybot/queries/content_neg_agents.sql
-# remotes/honeybot/queries/md_routing_agents.sql
+
+# AD HOC REPORTS
+remotes/honeybot/queries/trapdoor_ips.sql   # <-- The SQL to see who is hydrating the DOM. An ultimate report example among much ad hoc .sql
+! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
+# FULLY BAKED PYTHON REPORTS
+remotes/honeybot/scripts/report.py
+remotes/honeybot/scripts/build_bot_miner.py
+remotes/honeybot/scripts/dye_injector_v2.py
+remotes/honeybot/scripts/education.py
+remotes/honeybot/scripts/radar.py
+remotes/honeybot/scripts/routing.py
+
+# PURE SQLite3 REPORTS
+remotes/honeybot/queries/format_ratio.sql
+remotes/honeybot/queries/markdown_routing_metrics.sql
+remotes/honeybot/queries/content_neg_agents.sql
+remotes/honeybot/queries/md_routing_agents.sql
 
 # ! echo "--- FORMAT RATIO (Markdown vs HTML) ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
