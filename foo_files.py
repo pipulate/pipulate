@@ -80,8 +80,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # ============================================================================
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
-# README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
-# AUDIT.md
+README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
+AUDIT.md
 
 # tools/dom_tools.py
 # tools/scraper_tools.py
@@ -169,11 +169,11 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-config.py                   # <-- Centralize every last configuration in here
-pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
-pipulate/core.py            # <-- The Wand (spells)
-imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
+# config.py                   # <-- Centralize every last configuration in here
+# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+# pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
+# pipulate/core.py            # <-- The Wand (spells)
+# imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
 
 # assets/styles.css           # <-- Those values often get used here for "the look"
@@ -189,7 +189,7 @@ imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art lan
 # THE ROLLING PIN
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!!
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
-# AI_CONTEXT.md
+AI_CONTEXT.md
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 
 # ============================================================================
