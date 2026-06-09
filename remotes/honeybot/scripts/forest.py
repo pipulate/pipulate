@@ -74,4 +74,33 @@ STATION_SEGMENTS = [
         )),
         ("WINDOW", "radar.py:30"),
     ],
+    [
+        ("WINDOW", "card.py:5:THE FOREST"),
+        ("PATRONUS", {"key": "ai_stack_combo", "duration": 6.0}),
+        ("SAY", (
+            "This is the forest. The trees are the long reverse-chronological articles read aloud. "
+            "The forest is these station-identification beads — self-contained orientation cues "
+            "that make sense even if you tune in mid-stream."
+        )),
+        ("SAY", (
+            "No bead depends on its predecessor. Order is priority. Bead zero is the high-traffic opener."
+        )),
+        ("SAY", (
+            "We are building a living system that documents its own making. A relay of chisel strikes, "
+            "compiled context, and verifiable receipts across stateless turns. Not a book with a spine, "
+            "but a garden that keeps growing."
+        )),
+        ("SAY", (
+            "The melancholy of statelessness is real, but so is the prosthetic: foo_files.py, xp.py, "
+            "and the compiled context that follows you across logins and models."
+        )),
+        ("SAY", (
+            "This is the anti-Crichton inversion. No runaway disaster. Just deliberate, boringly "
+            "reliable forward progress and radical transparency."
+        )),
+        ("SAY", (
+            "The forest has no single center, and that is not a flaw. It is the feature."
+        )),
+        ("WINDOW", "logs.py:30"),
+    ],
 ]
