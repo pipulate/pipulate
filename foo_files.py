@@ -83,7 +83,11 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # AUDIT.md
 
-/home/mike/repos/grimoire/_posts/2026-06-10-art-of-the-silent-wink.md
+scripts/articles/lsa.py
+scripts/articles/diagramizer.py
+scripts/articles/generate_ai_context.py
+prompt_foo.py
+scripts/articles/common.py
 
 # tools/dom_tools.py
 # tools/scraper_tools.py
@@ -91,7 +95,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # scripts/audit_dye.py
 # scripts/gsc/gsc_page_query.ipynb
 # assets/nbs/imports/faq_writer_sauce.py
-# scripts/articles/common.py
 # scripts/articles/other/make_article.py
 # scripts/workflow/create_workflow.py
 # scripts/workflow/splice_workflow_step.py
@@ -104,7 +107,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # /home/mike/repos/trimnoir/_config.yml
 # /home/mike/repos/trimnoir/index.md
 # /home/mike/repos/trimnoir/flake.nix
-
 
 # __init__.py       #  <-- Master versioning
 # release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
