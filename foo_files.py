@@ -307,7 +307,7 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # VII. JEKYLL PUBLISHING - Reaching out to the world
 # ============================================================================
 
-/home/mike/.config/articleizer/targets.json  # <-- System can work against any Jekyll blog, public or private.
+/home/mike/.config/pipulate/blogs.json  # <-- Centralized multi-site routing manifest for N Jekyll blogs.
 # scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
 # scripts/articles/common.py                   # <-- Self-explanatory
 # scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
