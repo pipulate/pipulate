@@ -43,8 +43,8 @@ except ImportError:
     JUPYTEXT_AVAILABLE = False
 
 
-CONFIG_DIR = Path.home() / ".config" / "articleizer"
-TARGETS_FILE = CONFIG_DIR / "targets.json"
+CONFIG_DIR = Path.home() / ".config" / "pipulate"
+TARGETS_FILE = CONFIG_DIR / "blogs.json"
 
 DEFAULT_TARGETS = {
     "1": {
