@@ -38,7 +38,7 @@ try:
 except ImportError:
     RICH_AVAILABLE = False
 
-CONFIG_DIR = Path.home() / ".config" / "articleizer"
+CONFIG_DIR = Path.home() / ".config" / "pipulate"
 TARGETS_FILE = CONFIG_DIR / "blogs.json"
 
 DEFAULT_TARGETS = {
