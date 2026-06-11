@@ -11,8 +11,8 @@ KEYS_FILE = CONFIG_DIR / "keys.json"
 
 DEFAULT_TARGETS = {
     "1": {
-        "name": "Trim Noir (Default)",
-        "path": "/home/mike/repos/trimnoir/_posts",
+        "name": "Trimnoir (Personal Journal)",
+        "path": str(Path.home() / "repos" / "trimnoir" / "_posts"),
         "base_url": "https://mikelev.in",
         "permalink_style": "/futureproof/:slug/"
     }
