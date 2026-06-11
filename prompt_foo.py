@@ -84,7 +84,12 @@ def load_targets():
     if TARGETS_FILE.exists():
         try:
             with open(TARGETS_FILE, 'r') as f:
-                return json.load(f)
+                targets = json.load(f)
+            # Merge defaults for missing keys to support gradual onboarding of new sites
+            for k, v in DEFAULT_TARGETS.items():
+                if k not in targets:
+                    targets[k] = v
+            return targets
         except json.JSONDecodeError:
             logger.print(f"Warning: {TARGETS_FILE} is corrupt. Using defaults.")
     return DEFAULT_TARGETS
