@@ -1148,8 +1148,13 @@ def main():
             CONFIG["POSTS_DIRECTORY"] = selected["path"]
             active_target_config = selected  
             logger.print(f"🎯 Target set to: {selected['name']} ({selected['path']})")
+        elif target_id not in targets:
+            logger.print(f"⚠️  Target '{target_id}' not configured in blogs.json. Using default (1).")
+            active_target_config = targets.get("1", DEFAULT_TARGETS["1"])
         else:
-            logger.print(f"❌ Invalid target key: {args.target}. Using default.")
+            active_target_config = targets[target_id]
+
+
     else:
         if "1" in targets:
             active_target_config = targets["1"]
