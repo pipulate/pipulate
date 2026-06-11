@@ -39,7 +39,7 @@ except ImportError:
     RICH_AVAILABLE = False
 
 CONFIG_DIR = Path.home() / ".config" / "articleizer"
-TARGETS_FILE = CONFIG_DIR / "targets.json"
+TARGETS_FILE = CONFIG_DIR / "blogs.json"
 
 DEFAULT_TARGETS = {
     "1": {

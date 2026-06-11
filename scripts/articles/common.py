@@ -5,8 +5,8 @@ from pathlib import Path
 import sys
 
 # Standard Config Location
-CONFIG_DIR = Path.home() / ".config" / "articleizer"
-TARGETS_FILE = CONFIG_DIR / "targets.json"
+CONFIG_DIR = Path.home() / ".config" / "pipulate"
+TARGETS_FILE = CONFIG_DIR / "blogs.json"
 KEYS_FILE = CONFIG_DIR / "keys.json"
 
 DEFAULT_TARGETS = {
@@ -113,5 +113,5 @@ def get_target_path(cli_args=None):
 def add_standard_arguments(parser):
     """Unified API for all scripts."""
     # CRITICAL FIX: Inject default="1" here
-    parser.add_argument('-t', '--target', type=str, default="1", help="Target ID from targets.json (default: '1')")
+    parser.add_argument('-t', '--target', type=str, default="1", help="Target ID from blogs.json (default: '1')")
     parser.add_argument('-k', '--key', type=str, help="API key alias from keys.json (e.g., 'pipulate')")
