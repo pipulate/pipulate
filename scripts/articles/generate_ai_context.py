@@ -215,7 +215,7 @@ def build_ledger(target_config: dict, rich: bool, limit) -> tuple:
 
 def main():
     parser = argparse.ArgumentParser(description="Generate AI_CONTEXT.md repo briefing.")
-    parser.add_argument("-t", "--target", type=str, default="1", help="Target ID from targets.json (default: 1)")
+    parser.add_argument("-t", "--target", type=str, default="1", help="Target ID from blogs.json (default: 1)")
     parser.add_argument("--rich", action="store_true", help="Append holographic-shard keywords to each entry.")
     parser.add_argument("--limit", type=int, default=DEFAULT_LIMIT, help=f"Index only the N newest articles (default: {DEFAULT_LIMIT}; 0 = all).")
     args = parser.parse_args()
