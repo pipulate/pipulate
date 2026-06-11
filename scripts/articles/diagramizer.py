@@ -10,7 +10,7 @@ import google.generativeai as genai
 # --- CONFIGURATION ---
 CONFIG_DIR = Path.home() / ".config" / "articleizer" # Reuse existing config dir
 API_KEY_FILE = CONFIG_DIR / "api_key.txt"
-TARGETS_FILE = CONFIG_DIR / "targets.json"
+TARGETS_FILE = CONFIG_DIR / "blogs.json"
 
 DIAGRAM_PROMPT_FILENAME = "diagram_prompt.txt"
 PROMPT_PLACEHOLDER = "[INSERT FULL ARTICLE]"
