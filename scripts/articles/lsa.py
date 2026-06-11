@@ -159,7 +159,7 @@ def parse_slice_arg(arg_str: str):
 
 def main():
     parser = argparse.ArgumentParser(description="Unified Article Lister & Analyzer")
-    parser.add_argument('-t', '--target', type=str, help="Target ID from targets.json (e.g., '1', '3')")
+    parser.add_argument('-t', '--target', type=str, help="Target ID from blogs.json (e.g., '1', '4')")
     parser.add_argument('-g', '--gaps', action='store_true', help="Run and display the sort_order contiguity gap report")
     parser.add_argument('-r', '--reverse', action='store_true', help="Reverse the sorting order")
     parser.add_argument('-a', '--article', type=str, help="Generate a prompt_foo.py command for a slice of articles (e.g., '[-5:]')")
