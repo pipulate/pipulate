@@ -1104,7 +1104,7 @@ def main():
         action='store_true',
         help='Include matching Holographic Context JSONs for any articles listed/included.'
     )
-    parser.add_argument('-t', '--target', type=str, help="Target ID from targets.json (e.g., '1')")
+    parser.add_argument('-t', '--target', type=str, help="Target ID from blogs.json (e.g., '1', '4')")
     parser.add_argument('-k', '--key', type=str, help="API key alias from keys.json (ignored by prompt_foo, here for compatibility)")
     parser.add_argument(
         '--decanter', action='append',
