@@ -28,41 +28,7 @@ import platform
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-PROGRESSIVE_REVEAL_CONTINUATION_PROMPT = """Context verified.
-
-You now have the article and/or codebase context requested through the progressive-reveal loop.
-
-Do not re-synthesize the established philosophy, metaphors, or worldview. Treat them as already known background. Your job is to preserve momentum by choosing the next concrete action or context request.
-
-Identify the next move in two parallel tracks:
-
-1. Article slugs that would make the next turn more executable.
-2. Codebase files that would expose the implementation surface, patch target, or safety model.
-
-Prefer the smallest context bundle that enables a concrete next step. Do not request articles merely to deepen the narrative if the next useful move is a code patch, test, command, or workflow change.
-
-If a tiny deterministic patch is genuinely warranted, include an optional APPLY_PATCH block containing a normal Target-based patch payload. Keep it surgical. Prefer patching the machinery when the machinery is what caused the stall.
-
-An optional TODO_PROMPT block can be included to inject custom operator instructions or direction for the next compilation turn.
-
-End with exactly one TODO_SLUGS block, exactly one TODO_FILES block, and an optional TODO_PROMPT block in this format:
-
-[[[TODO_SLUGS]]]
-slug-one
-slug-two
-slug-three
-[[[END_SLUGS]]]
-
-[[[TODO_FILES]]]
-path/to/file.py
-another/path.py
-[[[END_FILES]]]
-
-[[[TODO_PROMPT]]]
-Custom direction or next prompt details here.
-[[[END_PROMPT]]]
-
-If there are no useful entries for one track, leave that block empty rather than inventing names. Use clean slugs in TODO_SLUGS and clean repository-relative paths in TODO_FILES. Do not include dates, token counts, markdown extensions for slugs, bullets, or commentary inside either TODO block."""
+PROGRESSIVE_REVEAL_CONTINUATION_PROMPT = "Context verified. Please address the operator instructions or steering details below."
 
 
 def get_clipboard() -> str:
