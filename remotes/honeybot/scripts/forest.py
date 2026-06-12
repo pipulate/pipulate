@@ -108,6 +108,6 @@ STATION_SEGMENTS = [
         ("SAY", (
             "The forest has no single center, and that is not a flaw. It is the feature."
         )),
-        ("WINDOW", "logs.py:30"),
+        # --- REPORT PLACEHOLDER (parked): ("WINDOW", "logs.py:30") ---
     ],
 ]
