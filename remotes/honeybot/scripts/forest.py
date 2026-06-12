@@ -101,31 +101,31 @@ STATION_SEGMENTS = [
         # --- REPORT PLACEHOLDER (parked): ("WINDOW", "radar.py:30") ---
     ],
     [
-        ("WINDOW", "card.py:5:THE FOREST"),
-        ("PATRONUS", {"key": "ai_stack_combo", "duration": 6.0}),
+        # Bead 3: Now that the viewer knows the project is Pipulate, the
+        # deployment_context table answers "why run it from a home server?".
+        # The auditor-vs-reality framing is the most inside-baseball concept of
+        # the three, so it earns its place last, once the audience is oriented.
+        ("WINDOW", "card.py:5:LOCAL FIRST"),
+        ("PATRONUS", {"key": "deployment_context", "duration": 35.0}),
+        ("WAIT", 2),
         ("SAY", (
-            "This is the forest. The trees are the long reverse-chronological articles read aloud. "
-            "The forest is these station-identification beads — self-contained orientation cues "
-            "that make sense even if you tune in mid-stream."
+            "So why does Pipulate run from a home server instead of the cloud? "
+            "The table on screen is the answer."
         )),
         ("SAY", (
-            "No bead depends on its predecessor. Order is priority. Bead zero is the high-traffic opener."
+            "What a security auditor assumes when they scan a system like this, "
+            "and what is actually running, are two very different things. "
+            "This is not a multi-tenant cloud platform. It is one machine, one operator, one box."
         )),
         ("SAY", (
-            "We are building a living system that documents its own making. A relay of chisel strikes, "
-            "compiled context, and verifiable receipts across stateless turns. Not a book with a spine, "
-            "but a garden that keeps growing."
+            "The secrets are not kept in a vault service. They live in a git-ignored file "
+            "on the local disk, by design. The data never leaves the machine "
+            "unless the operator chooses to send it."
         )),
         ("SAY", (
-            "The melancholy of statelessness is real, but so is the prosthetic: foo_files.py, xp.py, "
-            "and the compiled context that follows you across logins and models."
-        )),
-        ("SAY", (
-            "This is the anti-Crichton inversion. No runaway disaster. Just deliberate, boringly "
-            "reliable forward progress and radical transparency."
-        )),
-        ("SAY", (
-            "The forest has no single center, and that is not a flaw. It is the feature."
+            "That is what local-first means. Not a restriction, a choice. "
+            "Sovereignty over your own compute, your own data, "
+            "and your own publishing pipeline."
         )),
         # --- REPORT PLACEHOLDER (parked): ("WINDOW", "logs.py:30") ---
     ],
