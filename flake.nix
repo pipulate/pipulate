@@ -496,29 +496,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias chop='cd ~/repos/pipulate && nvim foo_files.py'
           alias wc='python scripts/webclip_2_markdown.py'
           alias forest='vim remotes/honeybot/scripts/forest.py'
-          alias story='python prompt_foo.py -l [:] --no-tree'
           alias latest='python prompt_foo.py -a [-2:] --no-tree'
-          alias momentum='python prompt_foo.py --chop TODO_MOMENTUM_CHOP --no-tree -a [-3:] -l [0:10]'
-          book() {
-            if [ "$1" = "step" ] || [ "$1" = "next" ]; then
-              shift
-              if [ "''${1:-}" = "--prompt" ]; then
-                # File base-path option: next --prompt (defaults to prompt.md or explicit file path)
-                shift
-                local prompt_target="''${1:-prompt.md}"
-                echo "📖 Ingesting context payload directly from file system: $prompt_target"
-                python prompt_foo.py "$prompt_target" --chop CHOP_NEXT_STEP -a '[-1:]'
-              elif [ -n "$*" ]; then
-                # String option fallback path
-                python prompt_foo.py @NEXT_STEP_PROMPT --chop CHOP_NEXT_STEP -a '[-1:]' --extra-prompt "$*"
-              else
-                python prompt_foo.py @NEXT_STEP_PROMPT --chop CHOP_NEXT_STEP -a '[-1:]'
-              fi
-            else
-              python prompt_foo.py @PROGRESSIVE_REVEAL_PROMPT --chop CHOP_PROGRESSIVE_REVEAL "$@"
-            fi
-          }
-          alias next='book step'
           slugs() { python scripts/articles/lsa.py -t 1 --slugs "$@" --fmt paths; }
           # slugs-ordered preserves input order for narrative control
           sluggo() { for slug in "$@"; do python scripts/articles/lsa.py -t 1 --match "$slug" --fmt paths; done; }
