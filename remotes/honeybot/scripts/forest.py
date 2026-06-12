@@ -35,7 +35,7 @@ STATION_SEGMENTS = [
         # it should outlast the spoken walkthrough so the art never blinks out
         # mid-sentence.
         ("WINDOW", "card.py:5:HONEYBOT"),
-        ("PATRONUS", {"key": "honeybot_pipeline", "duration": 40.0}),
+        ("PATRONUS", {"key": "honeybot_pipeline", "duration": 80.0}),
         ("WAIT", 3),
         ("SAY", (
             "Hello, and welcome to Future-proofing with the Honeybot. "
