@@ -79,7 +79,7 @@ STATION_SEGMENTS = [
             "Each one is either pre-trained into the models or small enough to fit in a single prompt. "
             "The fewer the lenses, the sharper the focus."
         )),
-        ("WINDOW", "radar.py:30"),
+        # --- REPORT PLACEHOLDER (parked): ("WINDOW", "radar.py:30") ---
     ],
     [
         ("WINDOW", "card.py:5:THE FOREST"),
