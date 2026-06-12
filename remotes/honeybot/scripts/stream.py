@@ -436,10 +436,22 @@ def run_station_break(env, profile_dir):
     bead = STATION_SEGMENTS[_station_index % len(STATION_SEGMENTS)]
     _station_index += 1
 
+    # --- Stage 1: The Interruption Sentinel ---
     narrator.interrupt()
+    narrator.say("We interrupt this program for a station identification break.")
+    narrator.queue.join()
+    time.sleep(1.2)
+
+    # --- Stage 2: Core Performance ---
     for cue_command, cue_content in bead:
         dispatch_cue(cue_command, cue_content, env, profile_dir, pace_say=False)
     narrator.queue.join()
+
+    # --- Stage 3: The Return Sentinel ---
+    time.sleep(1.2)
+    narrator.say("We now return to our regularly scheduled program.")
+    narrator.queue.join()
+    time.sleep(1.2)
 
 
 def perform_show(script):
