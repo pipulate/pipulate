@@ -619,6 +619,9 @@ FIGURATE_REGISTRY: dict = {
     "deployment_context": {
         "render": _figurate_deployment_context,
     },
+    "honeybot_pipeline": {
+        "render": _figurate_honeybot_pipeline,
+    },
     # === FIGURATE_REGISTRY_EXTRUDE_BOTTOM ===
     # Add new registry entries immediately above this line
 }
