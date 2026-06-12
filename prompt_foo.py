@@ -678,9 +678,7 @@ Before addressing the user's prompt, perform the following verification steps:
         if self.processed_files:
             lines.append("--- Codebase Files Included ---")
             for f in self.processed_files:
-                # Show relative path for terminal scannability
-                display_path = os.path.relpath(f['path'], REPO_ROOT) if os.path.isabs(f['path']) else f['path']
-                lines.append(f"• {display_path} ({f['tokens']:,} tokens)")
+                lines.append(f"# {f['path']}  # [{f['tokens']:,} tokens]")
             lines.append("")
 
         # 4. Article Narrative Echo
