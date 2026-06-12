@@ -423,7 +423,7 @@ def _expand_color_bits_ai(text: str) -> str:
 # This is the wax seal registry. A drift of 1 means something touched the painting.
 # To add a new entry: print(binascii.crc32(your_art_string.encode('utf-8')))
 FIGURATE_LEDGER: dict = {
-    "white_rabbit": 2735320865,
+    "white_rabbit": 3807110664, 
     "player_piano": 2962137920,
     "clipboard": 2324709982,
     "bunny_trail": 615479347,
