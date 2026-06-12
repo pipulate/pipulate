@@ -429,6 +429,7 @@ FIGURATE_LEDGER: dict = {
     "bunny_trail": 615479347,
     "ai_stack_combo": 1121129699,  
     "deployment_context": 1326657684,
+    "honeybot_pipeline": 2035836683,
     # CRC32 after _expand_color_bits_ai() + .strip()
     # === FIGURATE_LEDGER_EXTRUDE_BOTTOM ===
     # Add new artwork CRC32 entries immediately above this line
