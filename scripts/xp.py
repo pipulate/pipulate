@@ -218,13 +218,15 @@ def route(text: str) -> bool:
 
 
 def main():
+    # Read clipboard gracefully
     text = get_clipboard()
-    if not text.strip():
-        print("❌ Clipboard is empty.")
-        sys.exit(1)
-    if not route(text):
-        print("❌ No recognized token blocks found in clipboard.")
-        print("   Supported:")
+    
+    # Run the core router logic
+    did_something = route(text)
+    
+    if not did_something:
+        print("❌ No actionable blocks found in clipboard and no prompt.md steering file was detected.")
+        print("   Supported clipboard formats:")
         print("   • [[[TODO_SLUGS]]] ... [[[END_SLUGS]]]")
         print("   • [[[TODO_FILES]]] ... [[[END_FILES]]]")
         print("   • [[[APPLY_PATCH]]] ... [[[END_APPLY_PATCH]]]")
