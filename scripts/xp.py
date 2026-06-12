@@ -149,35 +149,35 @@ def route(text: str) -> bool:
         print("------------------\n")
         did_something = True
 
+
     slugs = parse_todo_slugs(text)
     files = parse_todo_files(text)
     todo_prompt = parse_todo_prompt(text)
 
-    if slugs is not None or files is not None or todo_prompt is not None:
+    # Check for local prompt.md steering file in repo root
+    prompt_md_path = os.path.join(REPO_ROOT, "prompt.md")
+    local_prompt = ""
+    if os.path.exists(prompt_md_path):
+        with open(prompt_md_path, "r", encoding="utf-8") as f:
+            local_prompt = f.read().strip()
+        if local_prompt:
+            print(f"📖 Found local prompt.md steering ({len(local_prompt)} chars)")
+    if slugs is not None or files is not None or todo_prompt is not None or local_prompt:
         slugs = slugs or []
         files = files or []
 
         if slugs:
             print(f"🎯 Found TODO_SLUGS block with {len(slugs)} slug(s):")
             for s in slugs:
-                print(f"   • {s}")
+                print(f"    • {s}")
 
         if files:
             print(f"📁 Found TODO_FILES block with {len(files)} file(s):")
             for f in files:
-                print(f"   • {f}")
+                print(f"    • {f}")
 
         if todo_prompt:
             print(f"📝 Found TODO_PROMPT block:\n   {todo_prompt}")
-
-        # Check for local prompt.md steering file in repo root
-        prompt_md_path = os.path.join(REPO_ROOT, "prompt.md")
-        local_prompt = ""
-        if os.path.exists(prompt_md_path):
-            with open(prompt_md_path, "r", encoding="utf-8") as f:
-                local_prompt = f.read().strip()
-            if local_prompt:
-                print(f"📖 Found local prompt.md steering ({len(local_prompt)} chars)")
 
         if not slugs and not files and not todo_prompt and not local_prompt:
             print("⚠ Context request blocks and prompt.md were empty; no prompt_foo.py compile was run.")
