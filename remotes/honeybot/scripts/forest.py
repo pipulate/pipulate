@@ -28,40 +28,47 @@ must not itself contain a colon. Bare labels like "THE ITCH" are fine.
 # break. Convention: card banner first, then art + spiel + proof report.
 STATION_SEGMENTS = [
     [
+        # The opening bead. The title card flashes, then the ingress-to-broadcast
+        # diagram lands and breathes (a silent WAIT) before the narration walks it
+        # left to right. No live report dashboard here yet — see the parked
+        # placeholder at the foot of the bead. Tune the PATRONUS duration by ear:
+        # it should outlast the spoken walkthrough so the art never blinks out
+        # mid-sentence.
         ("WINDOW", "card.py:5:HONEYBOT"),
-        ("PATRONUS", {"key": "player_piano", "duration": 6.0}),
+        ("PATRONUS", {"key": "honeybot_pipeline", "duration": 40.0}),
+        ("WAIT", 3),
         ("SAY", (
-            "Hello, and welcome to Future-proofing with the Honeybot."
+            "Hello, and welcome to Future-proofing with the Honeybot. "
+            "What you're looking at is the live heartbeat of a web server I host from home."
         )),
         ("SAY", (
-            "You may wonder what you're looking at. This Matrix-like rain is live webserver data "
-            "from MikeLev.in. A Unix tail command pipes the access log into a Python script that "
-            "color-codes it and layers heads-up displays."
+            "This diagram is the whole pipeline. Traffic arrives from the public internet "
+            "and hits a single Nginx engine. That engine is the only front door."
         )),
         ("SAY", (
-            "In the age of AI, webserver logs are a field notebook. They show who visits, what "
-            "crawlers request, which bots hydrate the DOM via JavaScript trapdoors, and which "
-            "seek raw Markdown."
+            "Nginx does content negotiation. A human browser is handed hydrated HTML. "
+            "An AI agent that asks for it is handed raw Markdown. One URL, two faces."
         )),
         ("SAY", (
-            "Search is no longer just ten blue links. It is model training, retrieval, agentic "
-            "browsers, and synthetic answers. The new SEO is being legible to machines without "
-            "surrendering sovereignty."
+            "Every request, human or robot, is written as a single line to a high-fidelity "
+            "access log. That log is the source of truth for everything you see."
         )),
         ("SAY", (
-            "Windows 10 support has ended and Secure Boot certificates enter a 2026 transition. "
-            "Many older machines are becoming interesting again as Linux home servers and "
-            "observability stations."
+            "A Unix pipe tails that log into a Textual heads-up display, the cascading wall "
+            "of text on your screen, and OBS streams the whole thing out live."
         )),
         ("SAY", (
-            "Honeybot invites the crawlers in, gives them clean HTML and Markdown, and watches. "
-            "We are writing ourselves into the parametric memory of future models. "
-            "Making sure our signal has a fighting chance."
+            "In the age of AI, that log is a field notebook. It shows which crawlers execute "
+            "JavaScript, and which negotiate for Markdown. That is the new SEO, and this is "
+            "where we begin."
         )),
-        ("SAY", (
-            "That's new SEO. Making sure it does. And this is where we begin."
-        )),
-        ("WINDOW", "education.py:30"),
+        # --- REPORT PLACEHOLDER (parked) ---
+        # A live Textual dashboard can pop up here as an out-of-band overlay via the
+        # WINDOW cue, e.g. ("WINDOW", "education.py:30"). Grammar is
+        # "script.py:seconds[:arg]". Parked until each report is tested on its own
+        # for clean z-order layering OVER the patronus art; today they pop UNDER it
+        # and dismiss it early, which is the bug this pass removes.
+        # ("WINDOW", "education.py:30"),
     ],
     [
         ("WINDOW", "card.py:5:THE LENSES"),
