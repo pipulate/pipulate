@@ -564,6 +564,39 @@ def _figurate_deployment_context():
     human = Panel(human_art, title="🖥️ Deployment Context — Auditor Model vs Local Reality", border_style="white")
     return human, ai_art
 
+def _figurate_honeybot_pipeline():
+    """Render the Honeybot ingress-to-broadcast pipeline.
+
+    Public traffic hits one Nginx engine that content-negotiates HTML for humans
+    and raw Markdown for AI agents; every request lands in the access log, is
+    tailed into the Textual HUD, and is streamed out live via OBS. Authored with
+    no .strip() so the top box keeps its indentation (the diagram is centered by
+    leading spaces, not by the panel).
+    """
+    art = r"""
+       [ Public Internet / DMZ Ingress ]
+                       │
+                       ▼
+           ┌───────────────────────┐
+           │     Nginx Engine      │ ───► [ High-Fidelity access.log ]
+           └───────────────────────┘                    │
+                       │                                │ (Unix Pipe)
+        (Content Negotiation / RFC 7231)                ▼
+                       │                    ┌───────────────────────┐
+         ┌─────────────┴─────────────┐      │    Textual HUD UI     │
+         ▼                           ▼      │       (logs.py)       │
+  [ Human Client ]            [ AI Agent ]  └───────────────────────┘
+  (Hydrated HTML)             (Raw Markdown)            │
+                                                        ▼
+                                            ┌───────────────────────┐
+                                            │   OBS Stream Output   │
+                                            └───────────────────────┘
+"""
+    ai_art = _expand_color_bits_ai(art)
+    human_art = _expand_color_bits_human(art)
+    human = Panel(human_art, title="🍯 Honeybot — Ingress to Broadcast Pipeline", border_style="white")
+    return human, ai_art
+
 # === FIGURATE_RENDER_EXTRUDE_BOTTOM ===
 # Add new _figurate_* render functions immediately above this line
 
