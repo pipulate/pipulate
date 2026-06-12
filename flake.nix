@@ -546,11 +546,11 @@ print('AI:\n', r.ai)
           # ---------------------------------------------------------
           # THE SUBSHELL ALIASES (Execute safely from anywhere)
           # ---------------------------------------------------------
-          posts() { (cd scripts/articles && python lsa.py -t 1 --reverse "$@"); }
-          posts2() { (cd scripts/articles && python lsa.py -t 1 "$@"); }
+          posts() { (cd scripts/articles && python lsa.py -t 1 "$@"); }
+          posts2() { (cd scripts/articles && python lsa.py -t 1 --reverse "$@"); }
           preview() { (cd scripts/articles && python publishizer.py "$@"); }
 
-          # NEW: The true 'publish' command (Atomic Cross-Domain Deployment)
+          # The true 'publish' command (Atomic Cross-Domain Deployment)
           # It requires a commit message as an argument.
           publish() {
             if [ -z "$1" ]; then
