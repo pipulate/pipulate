@@ -71,13 +71,32 @@ STATION_SEGMENTS = [
         # ("WINDOW", "education.py:30"),
     ],
     [
-        ("WINDOW", "card.py:5:THE LENSES"),
-        ("PATRONUS", {"key": "ai_stack_combo", "duration": 6.0}),
+        # Bead 2: The orienting beat. The viewer now knows this is a live home
+        # webserver log; the natural next question is "what IS this project?".
+        # white_rabbit is the Pipulate mascot and wax seal — a concrete, friendly
+        # second beat that NAMES the thing before bead 3 explains its philosophy.
+        ("WINDOW", "card.py:5:PIPULATE"),
+        ("PATRONUS", {"key": "white_rabbit", "duration": 35.0}),
+        ("WAIT", 2),
         ("SAY", (
-            "The Lenses. Every layer in the stack is a lens that must be ground clean. "
-            "Normalized Linux, Python, HTMX, FastHTML, and git. "
-            "Each one is either pre-trained into the models or small enough to fit in a single prompt. "
-            "The fewer the lenses, the sharper the focus."
+            "The project behind all of this is called Pipulate. "
+            "It runs on a stack we call NPvg."
+        )),
+        ("SAY", (
+            "N is for Nix, a package manager that makes a software environment "
+            "fully reproducible on any machine. P is for Python. The little v is for Vim. "
+            "And g is for Git."
+        )),
+        ("SAY", (
+            "The white rabbit on screen is the mascot, and also a wax seal. "
+            "It is a piece of ASCII art with a registered checksum baked into the codebase. "
+            "If the art ever drifts from what was recorded, the system raises a warning. "
+            "Drift means something touched the painting."
+        )),
+        ("SAY", (
+            "Pipulate sits where AI assistance meets local ownership. "
+            "The whole bet is that you do not need a cloud subscription to do serious work. "
+            "You need the right text files, the right habits, and a machine you actually own."
         )),
         # --- REPORT PLACEHOLDER (parked): ("WINDOW", "radar.py:30") ---
     ],
