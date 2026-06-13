@@ -239,7 +239,8 @@ def patronus(name: str, duration: float = 3.5) -> None:
     total_rows = len(raw_lines) if raw_lines else 12
     
     # Inject exact safety padding constants for the Rich panel frame boundaries
-    columns_needed = max_width + 12
+    # Expanded horizontal padding to +20 to secure an unbreakable margin against terminal cell wrapping
+    columns_needed = max_width + 20
     lines_needed = total_rows + 4
 
     # Resolve paths relative to framework root directory structures
