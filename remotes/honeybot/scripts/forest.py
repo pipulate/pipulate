@@ -39,7 +39,8 @@ STATION_SEGMENTS = [
         ("WAIT", 3),
         ("SAY", (
             "Hello, and welcome to Future-proofing with the Honeybot. "
-            "What you're looking at is the live heartbeat of a web server I host from home."
+            "What you're looking at is the live heartbeat of a web server I host from home. "
+            "I do this to invite AI bots to my doorstep, to observe and interact with them. "
         )),
         ("SAY", (
             "This diagram is the whole pipeline. Traffic arrives from the public internet "
