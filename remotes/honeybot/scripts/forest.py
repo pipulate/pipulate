@@ -100,33 +100,4 @@ STATION_SEGMENTS = [
         )),
         # --- REPORT PLACEHOLDER (parked): ("WINDOW", "radar.py:30") ---
     ],
-    [
-        # Bead 3: Now that the viewer knows the project is Pipulate, the
-        # deployment_context table answers "why run it from a home server?".
-        # The auditor-vs-reality framing is the most inside-baseball concept of
-        # the three, so it earns its place last, once the audience is oriented.
-        ("WINDOW", "card.py:5:LOCAL FIRST"),
-        ("PATRONUS", {"key": "deployment_context", "duration": 35.0}),
-        ("WAIT", 2),
-        ("SAY", (
-            "So why does Pipulate run from a home server instead of the cloud? "
-            "The table on screen is the answer."
-        )),
-        ("SAY", (
-            "What a security auditor assumes when they scan a system like this, "
-            "and what is actually running, are two very different things. "
-            "This is not a multi-tenant cloud platform. It is one machine, one operator, one box."
-        )),
-        ("SAY", (
-            "The secrets are not kept in a vault service. They live in a git-ignored file "
-            "on the local disk, by design. The data never leaves the machine "
-            "unless the operator chooses to send it."
-        )),
-        ("SAY", (
-            "That is what local-first means. Not a restriction, a choice. "
-            "Sovereignty over your own compute, your own data, "
-            "and your own publishing pipeline."
-        )),
-        # --- REPORT PLACEHOLDER (parked): ("WINDOW", "logs.py:30") ---
-    ],
 ]
