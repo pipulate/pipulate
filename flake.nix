@@ -603,6 +603,10 @@ print('AI:\n', r.ai)
                             kill -TERM "$old" || true
                         done
 
+                        # Surgical sweep to flush any orphaned UI drawing children or text tails
+                        pkill -f "/home/mike/www/mikelev[.]in/scripts/logs[.]py" || true
+                        pkill -f "tail -f /var/log/nginx/access.log" || true
+
                         sleep 12
 
                         new_pids=$(pgrep -f -- "$pattern" || true)

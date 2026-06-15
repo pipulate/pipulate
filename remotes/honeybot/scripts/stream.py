@@ -17,6 +17,7 @@ import tempfile # <--- Add this import
 import queue
 import atexit
 import fcntl
+import signal
 from pathlib import Path
 
 # --- Process Singleton ---
@@ -49,6 +50,13 @@ def acquire_singleton_lock():
             pass
 
     atexit.register(_release_lock)
+
+
+def register_signal_handlers():
+    """Convert incoming SIGTERM signals into a KeyboardInterrupt to execute try-finally blocks."""
+    def _handler(signum, frame):
+        raise KeyboardInterrupt
+    signal.signal(signal.SIGTERM, _handler)
 
 
 # --- Configuration ---
@@ -680,4 +688,5 @@ def main():
 
 if __name__ == "__main__":
     acquire_singleton_lock()
+    register_signal_handlers()
     main()
