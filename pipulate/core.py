@@ -304,6 +304,146 @@ class Pipulate:
         from imports import ascii_displays as aa
         return aa.patronus(name, duration=duration)
 
+    def _x11_screen_geometry(self, env):
+        import re
+        import shutil
+        import subprocess
+        if shutil.which("xrandr"):
+            try:
+                res = subprocess.run(["xrandr"], capture_output=True, text=True, env=env)
+                for line in res.stdout.splitlines():
+                    if "*" in line:
+                        m = re.search(r"(\d+)x(\d+)", line)
+                        if m:
+                            return int(m.group(1)), int(m.group(2))
+            except Exception:
+                pass
+        if shutil.which("xdotool"):
+            try:
+                res = subprocess.run(["xdotool", "getdisplaygeometry"], capture_output=True, text=True, env=env)
+                parts = res.stdout.split()
+                if len(parts) == 2:
+                    return int(parts[0]), int(parts[1])
+            except Exception:
+                pass
+        return None
+
+    def _wmctrl_window_size(self, window_class, env):
+        import shutil
+        import subprocess
+        if not shutil.which("wmctrl"):
+            return None
+        try:
+            res = subprocess.run(["wmctrl", "-l", "-x", "-G"], capture_output=True, text=True, env=env)
+            for line in res.stdout.splitlines():
+                parts = line.split(None, 8)
+                if len(parts) >= 7 and window_class in parts[6]:
+                    return int(parts[4]), int(parts[5])
+        except Exception:
+            pass
+        return None
+
+    def _center_and_raise(self, window_class, env=None, fill=False, margin=40, retries=10):
+        import os
+        import shutil
+        import subprocess
+        import time
+        if env is None:
+            env = os.environ.copy()
+            if not env.get("DISPLAY"):
+                env["DISPLAY"] = ":10.0"
+        if not shutil.which("wmctrl"):
+            return
+        for _ in range(retries):
+            res = subprocess.run(["wmctrl", "-x", "-r", window_class, "-b", "add,above"], capture_output=True, env=env)
+            if res.returncode == 0:
+                break
+            time.sleep(0.1)
+        screen = self._x11_screen_geometry(env)
+        if screen is None:
+            return
+        sw, sh = screen
+        if fill:
+            w = max(1, sw - 2 * margin)
+            h = max(1, sh - 2 * margin)
+            x, y = margin, margin
+        else:
+            size = self._wmctrl_window_size(window_class, env)
+            if size is None:
+                return
+            w, h = size
+            x = max(0, (sw - w) // 2)
+            y = max(0, (sh - h) // 2)
+        subprocess.run(["wmctrl", "-x", "-r", window_class, "-e", f"0,{x},{y},{w},{h}"], capture_output=True, env=env)
+
+    def conjure_window(self, command, duration: float = 30.0, columns: int = 100, lines: int = 30,
+                       cwd: Optional[str] = None, title: str = "ConjureWindow",
+                       window_class: str = "conjure_window_overlay",
+                       display: Optional[str] = None, fill: bool = False) -> None:
+        """🪟 CONJURE WINDOW: Run an arbitrary command in a transient Alacritty overlay."""
+        import os
+        import shutil
+        import time
+        import platform
+        import subprocess
+        try:
+            duration = max(0.75, min(600.0, float(duration)))
+        except (TypeError, ValueError):
+            duration = 30.0
+        if isinstance(command, str):
+            command = command.strip()
+            if not command:
+                return
+            launch_cmd = [os.environ.get("SHELL", "/bin/sh"), "-lc", command]
+        else:
+            try:
+                launch_cmd = [str(part) for part in command if str(part)]
+            except TypeError:
+                return
+            if not launch_cmd:
+                return
+        sys_platform = platform.system().lower()
+        if not shutil.which("alacritty"):
+            return
+        safe_class = "".join(c if c.isalnum() or c in {"_", "-"} else "_" for c in str(window_class).strip())
+        if not safe_class:
+            safe_class = "conjure_window_overlay"
+        env = os.environ.copy()
+        if display is not None:
+            env["DISPLAY"] = str(display)
+        elif sys_platform == "linux" and not env.get("DISPLAY"):
+            env["DISPLAY"] = ":10.0"
+        working_dir = cwd or os.getcwd()
+        cmd = [
+            "alacritty",
+            "--title", str(title),
+            "--class", safe_class,
+            "-o", "window.decorations='none'",
+            "-o", f"window.dimensions={{columns={columns}, lines={lines}}}",
+            "-o", "window.position={x=200, y=150}",
+            "-e", *launch_cmd,
+        ]
+        proc = None
+        try:
+            proc = subprocess.Popen(cmd, cwd=working_dir, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            time.sleep(0.15)
+            if sys_platform == "linux":
+                self._center_and_raise(safe_class, env, fill=fill)
+            elif sys_platform == "darwin":
+                subprocess.run(["osascript", "-e", 'tell application "Alacritty" to activate'], stdout=subprocess.DEVNULL)
+            try:
+                proc.wait(timeout=duration)
+            except subprocess.TimeoutExpired:
+                proc.terminate()
+        except Exception:
+            pass
+        finally:
+            if proc is not None and proc.poll() is None:
+                try:
+                    proc.terminate()
+                except Exception:
+                    pass
+
     def negotiate_ai_models(self, preferred_local: str = None, preferred_cloud: str = None) -> dict:
         """
         Uses the Universal Adapter (llm) to verify AI readiness using fuzzy matching
