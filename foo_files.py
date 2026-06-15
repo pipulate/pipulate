@@ -176,7 +176,7 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 config.py                   # <-- Centralize every last configuration in here
 pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
 pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
-pipulate/core.py            # <-- The Wand (spells)
+# pipulate/core.py            # <-- The Wand (spells)
 imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 imports/voice_synthesis.py  # <-- The wand can talk to you
 
@@ -831,7 +831,6 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
 # remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
 # remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
-# remotes/honeybot/scripts/test_forest.py  # [2,295 tokens | 9,109 bytes]
 # scripts/articles/bookforge_dashboard.py  # [851 tokens | 3,484 bytes]
 # scripts/articles/build_book_passes.py  # [535 tokens | 2,210 bytes]
 # scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
