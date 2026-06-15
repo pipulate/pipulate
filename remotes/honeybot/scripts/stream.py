@@ -15,6 +15,8 @@ import threading
 import shutil   # <--- Add this import
 import tempfile # <--- Add this import
 import queue
+import atexit
+import fcntl
 from pathlib import Path
 
 # --- Configuration ---
