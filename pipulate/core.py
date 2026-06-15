@@ -295,14 +295,74 @@ class Pipulate:
             aa.safe_console_print(renderable)
         return art
 
+
     def patronus(self, name: str, duration: float = 3.5) -> None:
         """🛡️ PATRONUS: Conjures an out-of-bounds visual popup window for the asset.
 
-        Facade method exposing the underlying out-of-band visual popup window
-        directly through the wand singleton wrapper.
+        Natively instantiates an isolated, borderless Alacritty terminal overlay scaled
+        precisely to match the targeted ASCII asset geometry boundaries, coordinates
+        with the display manager, and releases process resources gracefully.
         """
-        from imports import ascii_displays as aa
-        return aa.patronus(name, duration=duration)
+        import time
+        import platform
+        import subprocess
+        from imports.ascii_displays import FIGURATE_REGISTRY
+
+        entry = FIGURATE_REGISTRY.get(name)
+        if entry is None:
+            logger.error(f"🛡️ PATRONUS aborted: '{name}' is not a registered visual asset layer.")
+            return
+
+        render_fn = entry.get("render")
+        if render_fn is None:
+            logger.error(f"🛡️ PATRONUS aborted: '{name}' has no render function.")
+            return
+
+        _, ai_out = render_fn()
+        raw_lines = ai_out.splitlines()
+
+        max_width = max(len(line) for line in raw_lines) if raw_lines else 80
+        total_rows = len(raw_lines) if raw_lines else 12
+
+        columns_needed = max_width + 20
+        lines_needed = total_rows + 4
+
+        repo_root = Path(self.paths.root).as_posix()
+        sys_platform = platform.system().lower()
+
+        python_payload = (
+            f"import sys; sys.path.insert(0, '{repo_root}'); "
+            f"from imports.ascii_displays import figurate, safe_console_print; "
+            f"art_res = figurate('{name}'); "
+            f"safe_console_print(art_res.human); "
+            f"sys.stdout.flush(); "
+            f"import time; time.sleep({duration})"
+        )
+
+        cmd = [
+            "alacritty",
+            "--title", "PatronusVisualShield",
+            "--class", "patronus_visual_shield",
+            "-o", "window.decorations='none'",
+            "-o", f"window.dimensions={{columns={columns_needed}, lines={lines_needed}}}",
+            "-o", "window.position={x=350, y=250}",
+            "-e", f"{repo_root}/.venv/bin/python", "-u", "-c", python_payload
+        ]
+
+        try:
+            logger.info(f"🛡️ Conjuring Patronus shield framework window overlay ({columns_needed}x{lines_needed}) for art asset: '{name}'")
+            proc = subprocess.Popen(cmd, cwd=repo_root, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            time.sleep(0.15)
+
+            if sys_platform == "linux":
+                self._center_and_raise("patronus_visual_shield")
+            elif sys_platform == "darwin":
+                subprocess.run(["osascript", "-e", 'tell application "Alacritty" to activate'], stdout=subprocess.DEVNULL)
+
+            proc.wait()
+        except Exception as e:
+            logger.error(f"🛡️ PATRONUS connection framework failure encountered: {e}")
+
 
     def _x11_screen_geometry(self, env):
         import re
