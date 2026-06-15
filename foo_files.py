@@ -173,12 +173,12 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-# config.py                   # <-- Centralize every last configuration in here
-# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-# pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
-# pipulate/core.py            # <-- The Wand (spells)
+config.py                   # <-- Centralize every last configuration in here
+pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
+pipulate/core.py            # <-- The Wand (spells)
 imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
-# imports/voice_synthesis.py  # <-- The wand can talk to you
+imports/voice_synthesis.py  # <-- The wand can talk to you
 
 # assets/styles.css           # <-- Those values often get used here for "the look"
 
@@ -246,7 +246,7 @@ remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the n
 remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
 remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
 remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
-remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
+# remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
 
 # AD HOC REPORTS
 # remotes/honeybot/queries/trapdoor_ips.sql   # <-- The SQL to see who is hydrating the DOM. An ultimate report example among much ad hoc .sql
@@ -276,9 +276,10 @@ remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known b
 # ============================================================================
 
 # WE'VE GOT A LOT OF THESE AND I HAVE TO BUILD THIS OUT / AD HOC-ISH
-# /home/mike/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
-# /home/mike/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
-# /home/mike/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
+/home/mike/repos/trimnoir/flake.nix
+/home/mike/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
+/home/mike/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
+/home/mike/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
 # remotes/honeybot/queries/trapdoor_ips.sql         # <-- The SQL to see who is hydrating the DOM. The example of HOW we use it from here in the router below.
 # ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
