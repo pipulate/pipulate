@@ -19,6 +19,38 @@ import atexit
 import fcntl
 from pathlib import Path
 
+# --- Process Singleton ---
+STREAM_LOCK_PATH = "/tmp/honeybot-stream.py.lock"
+_stream_lock_handle = None
+
+
+def acquire_singleton_lock():
+    """Ensure only one stream.py process owns the Honeybot visual/audio surface."""
+    global _stream_lock_handle
+
+    _stream_lock_handle = open(STREAM_LOCK_PATH, "w", encoding="utf-8")
+
+    try:
+        fcntl.flock(_stream_lock_handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        print("⚠️ Another stream.py already owns the Honeybot surface. Exiting duplicate child.", flush=True)
+        sys.exit(0)
+
+    _stream_lock_handle.seek(0)
+    _stream_lock_handle.truncate()
+    _stream_lock_handle.write(str(os.getpid()))
+    _stream_lock_handle.flush()
+
+    def _release_lock():
+        try:
+            fcntl.flock(_stream_lock_handle, fcntl.LOCK_UN)
+            _stream_lock_handle.close()
+        except Exception:
+            pass
+
+    atexit.register(_release_lock)
+
+
 # --- Configuration ---
 SHOW_DURATION_MINUTES = 240  # Minutes for the big logfile stream
 PITCH_INTERVAL = 600        # Seconds between "Station Identification" (Bumped to 10 mins so it doesn't get repetitive)
