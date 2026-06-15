@@ -679,4 +679,5 @@ def main():
 
 
 if __name__ == "__main__":
+    acquire_singleton_lock()
     main()

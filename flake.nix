@@ -584,30 +584,40 @@ print('AI:\n', r.ai)
                     echo "🚀 [4/4] Stream Refresh: Restarting Honeybot slideshow child..."
                     ssh mike@192.168.10.100 '
                         pattern="/home/mike/www/mikelev[.]in/scripts/stream[.]py"
-                        count=$(pgrep -fc -- "$pattern" || true)
+                        old_pids=$(pgrep -f -- "$pattern" || true)
+                        count=$(printf "%s\n" "$old_pids" | sed "/^$/d" | wc -l)
 
                         if [ "$count" -eq 0 ]; then
-                            echo "⚠️ No stream.py process found; watchdog may already be between cycles."
+                            echo "⚠️ No stream.py child found; watchdog may already be between cycles."
                             exit 0
                         fi
 
                         if [ "$count" -gt 1 ]; then
-                            echo "⚠️ Expected exactly one stream.py process, found $count. Refusing ambiguous restart."
+                            echo "⚠️ Found $count stream.py children. Terminating all so the singleton lock can arbitrate."
                             pgrep -af -- "$pattern" || true
-                            exit 0
+                        else
+                            echo "   old=$old_pids"
                         fi
 
-                        old=$(pgrep -f -- "$pattern" | head -1)
-                        echo "   old=$old"
+                        for old in $old_pids; do
+                            kill -TERM "$old" || true
+                        done
 
-                        kill -TERM "$old"
                         sleep 12
 
-                        new=$(pgrep -f -- "$pattern" | head -1 || true)
-                        echo "   new=$new"
+                        new_pids=$(pgrep -f -- "$pattern" || true)
+                        new_count=$(printf "%s\n" "$new_pids" | sed "/^$/d" | wc -l)
 
-                        if [ -n "$new" ] && [ "$old" != "$new" ]; then
-                            echo "✅ Stream watchdog relaunched stream.py."
+                        echo "   new_count=$new_count"
+                        if [ -n "$new_pids" ]; then
+                            printf "%s\n" "$new_pids" | sed "s/^/   new=/"
+                        fi
+
+                        if [ "$new_count" -eq 1 ]; then
+                            echo "✅ Stream watchdog relaunched exactly one stream.py child."
+                        elif [ "$new_count" -gt 1 ]; then
+                            echo "⚠️ Duplicate stream.py children remain after restart:"
+                            pgrep -af -- "$pattern" || true
                         else
                             echo "⚠️ Stream restart requested, but no new PID was confirmed."
                         fi
