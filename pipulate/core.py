@@ -269,44 +269,20 @@ class Pipulate:
             self.db = db
     # END: pipulate_init
 
-    def _core_figurate(self, name: str, context: Optional[str] = None):
-        import binascii
-        from imports.ascii_displays import FIGURATE_REGISTRY, FIGURATE_LEDGER, FigurateResult, share_ascii_with_ai
-        
-        entry = FIGURATE_REGISTRY.get(name)
-        if entry is None:
-            fallback = f"[figurate: '{name}' not yet registered]"
-            return FigurateResult(name=name, human=fallback, ai=fallback, drift=0)
-        
-        render_fn = entry.get("render")
-        if render_fn is None:
-            fallback = f"[figurate: '{name}' has no render function]"
-            return FigurateResult(name=name, human=fallback, ai=fallback, drift=0)
-        
-        human_out, ai_out = render_fn()
-        
-        drift = 0
-        expected_crc = FIGURATE_LEDGER.get(name)
-        if expected_crc is not None:
-            computed_crc = binascii.crc32(ai_out.encode('utf-8'))
-            if computed_crc != expected_crc:
-                drift = 1
-                logger.warning(f"🎨 FIGURATE: DRIFT DETECTED in '{name}' — expected CRC {expected_crc}, got {computed_crc}")
-        
-        if context:
-            logger.info(f"🎨 FIGURATE: {name} | {context} | drift={drift}")
-            
-        logger.info(f"🎨 FINDER_TOKEN: ASCII_ART_FIGURATE - {name}\n{ai_out}")
-        share_ascii_with_ai(ai_out, f"figurate('{name}') called", "🎨")
-        
-        return FigurateResult(name=name, human=human_out, ai=ai_out, drift=drift)
-
     def figurate(self, name: str, context: Optional[str] = None, console_output: bool = True):
-        """Render a named visual figure through the wand."""
-        art = self._core_figurate(name, context=context)
+        """Render a named visual figure through the wand.
+
+        This is a thin facade over imports.ascii_displays.figurate().
+        It keeps the visual/acoustic sovereignty vocabulary reachable from
+        the central Pipulate object without moving the existing banner system.
+        """
+        from imports import ascii_displays as aa
+
+        art = aa.figurate(name, context=context)
         if console_output:
             renderable = art.human
             
+            # Fallback path for classic inline visual strings
             if hasattr(renderable, 'renderable') and isinstance(renderable.renderable, str):
                 text = renderable.renderable
                 for token, color in COLOR_MAP.items():
@@ -316,218 +292,17 @@ class Pipulate:
                 for token, color in COLOR_MAP.items():
                     renderable = re.sub(f'<{token}>(.*?)</{token}>', f'[{color}]\\1[/{color}]', renderable)
                     
-            from imports.ascii_displays import safe_console_print
-            safe_console_print(renderable)
+            aa.safe_console_print(renderable)
         return art
-
 
     def patronus(self, name: str, duration: float = 3.5) -> None:
         """🛡️ PATRONUS: Conjures an out-of-bounds visual popup window for the asset.
 
-        Natively instantiates an isolated, borderless Alacritty terminal overlay scaled
-        precisely to match the targeted ASCII asset geometry boundaries, coordinates
-        with the display manager, and releases process resources gracefully.
+        Facade method exposing the underlying out-of-band visual popup window
+        directly through the wand singleton wrapper.
         """
-        import time
-        import platform
-        import subprocess
-        from imports.ascii_displays import FIGURATE_REGISTRY
-
-        entry = FIGURATE_REGISTRY.get(name)
-        if entry is None:
-            logger.error(f"🛡️ PATRONUS aborted: '{name}' is not a registered visual asset layer.")
-            return
-
-        render_fn = entry.get("render")
-        if render_fn is None:
-            logger.error(f"🛡️ PATRONUS aborted: '{name}' has no render function.")
-            return
-
-        _, ai_out = render_fn()
-        raw_lines = ai_out.splitlines()
-
-        max_width = max(len(line) for line in raw_lines) if raw_lines else 80
-        total_rows = len(raw_lines) if raw_lines else 12
-
-        columns_needed = max_width + 20
-        lines_needed = total_rows + 4
-
-        repo_root = Path(self.paths.root).as_posix()
-        sys_platform = platform.system().lower()
-
-        python_payload = (
-            f"import sys; sys.path.insert(0, '{repo_root}'); "
-            f"from imports.ascii_displays import figurate, safe_console_print; "
-            f"art_res = figurate('{name}'); "
-            f"safe_console_print(art_res.human); "
-            f"sys.stdout.flush(); "
-            f"import time; time.sleep({duration})"
-        )
-
-        cmd = [
-            "alacritty",
-            "--title", "PatronusVisualShield",
-            "--class", "patronus_visual_shield",
-            "-o", "window.decorations='none'",
-            "-o", f"window.dimensions={{columns={columns_needed}, lines={lines_needed}}}",
-            "-o", "window.position={x=350, y=250}",
-            "-e", f"{repo_root}/.venv/bin/python", "-u", "-c", python_payload
-        ]
-
-        try:
-            logger.info(f"🛡️ Conjuring Patronus shield framework window overlay ({columns_needed}x{lines_needed}) for art asset: '{name}'")
-            proc = subprocess.Popen(cmd, cwd=repo_root, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            time.sleep(0.15)
-
-            if sys_platform == "linux":
-                self._center_and_raise("patronus_visual_shield")
-            elif sys_platform == "darwin":
-                subprocess.run(["osascript", "-e", 'tell application "Alacritty" to activate'], stdout=subprocess.DEVNULL)
-
-            proc.wait()
-        except Exception as e:
-            logger.error(f"🛡️ PATRONUS connection framework failure encountered: {e}")
-
-
-    def _x11_screen_geometry(self, env):
-        import re
-        import shutil
-        import subprocess
-        if shutil.which("xrandr"):
-            try:
-                res = subprocess.run(["xrandr"], capture_output=True, text=True, env=env)
-                for line in res.stdout.splitlines():
-                    if "*" in line:
-                        m = re.search(r"(\d+)x(\d+)", line)
-                        if m:
-                            return int(m.group(1)), int(m.group(2))
-            except Exception:
-                pass
-        if shutil.which("xdotool"):
-            try:
-                res = subprocess.run(["xdotool", "getdisplaygeometry"], capture_output=True, text=True, env=env)
-                parts = res.stdout.split()
-                if len(parts) == 2:
-                    return int(parts[0]), int(parts[1])
-            except Exception:
-                pass
-        return None
-
-    def _wmctrl_window_size(self, window_class, env):
-        import shutil
-        import subprocess
-        if not shutil.which("wmctrl"):
-            return None
-        try:
-            res = subprocess.run(["wmctrl", "-l", "-x", "-G"], capture_output=True, text=True, env=env)
-            for line in res.stdout.splitlines():
-                parts = line.split(None, 8)
-                if len(parts) >= 7 and window_class in parts[6]:
-                    return int(parts[4]), int(parts[5])
-        except Exception:
-            pass
-        return None
-
-    def _center_and_raise(self, window_class, env=None, fill=False, margin=40, retries=10):
-        import os
-        import shutil
-        import subprocess
-        import time
-        if env is None:
-            env = os.environ.copy()
-            if not env.get("DISPLAY"):
-                env["DISPLAY"] = ":10.0"
-        if not shutil.which("wmctrl"):
-            return
-        for _ in range(retries):
-            res = subprocess.run(["wmctrl", "-x", "-r", window_class, "-b", "add,above"], capture_output=True, env=env)
-            if res.returncode == 0:
-                break
-            time.sleep(0.1)
-        screen = self._x11_screen_geometry(env)
-        if screen is None:
-            return
-        sw, sh = screen
-        if fill:
-            w = max(1, sw - 2 * margin)
-            h = max(1, sh - 2 * margin)
-            x, y = margin, margin
-        else:
-            size = self._wmctrl_window_size(window_class, env)
-            if size is None:
-                return
-            w, h = size
-            x = max(0, (sw - w) // 2)
-            y = max(0, (sh - h) // 2)
-        subprocess.run(["wmctrl", "-x", "-r", window_class, "-e", f"0,{x},{y},{w},{h}"], capture_output=True, env=env)
-
-    def conjure_window(self, command, duration: float = 30.0, columns: int = 100, lines: int = 30,
-                       cwd: Optional[str] = None, title: str = "ConjureWindow",
-                       window_class: str = "conjure_window_overlay",
-                       display: Optional[str] = None, fill: bool = False) -> None:
-        """🪟 CONJURE WINDOW: Run an arbitrary command in a transient Alacritty overlay."""
-        import os
-        import shutil
-        import time
-        import platform
-        import subprocess
-        try:
-            duration = max(0.75, min(600.0, float(duration)))
-        except (TypeError, ValueError):
-            duration = 30.0
-        if isinstance(command, str):
-            command = command.strip()
-            if not command:
-                return
-            launch_cmd = [os.environ.get("SHELL", "/bin/sh"), "-lc", command]
-        else:
-            try:
-                launch_cmd = [str(part) for part in command if str(part)]
-            except TypeError:
-                return
-            if not launch_cmd:
-                return
-        sys_platform = platform.system().lower()
-        if not shutil.which("alacritty"):
-            return
-        safe_class = "".join(c if c.isalnum() or c in {"_", "-"} else "_" for c in str(window_class).strip())
-        if not safe_class:
-            safe_class = "conjure_window_overlay"
-        env = os.environ.copy()
-        if display is not None:
-            env["DISPLAY"] = str(display)
-        elif sys_platform == "linux" and not env.get("DISPLAY"):
-            env["DISPLAY"] = ":10.0"
-        working_dir = cwd or os.getcwd()
-        cmd = [
-            "alacritty",
-            "--title", str(title),
-            "--class", safe_class,
-            "-o", "window.decorations='none'",
-            "-o", f"window.dimensions={{columns={columns}, lines={lines}}}",
-            "-o", "window.position={x=200, y=150}",
-            "-e", *launch_cmd,
-        ]
-        proc = None
-        try:
-            proc = subprocess.Popen(cmd, cwd=working_dir, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            time.sleep(0.15)
-            if sys_platform == "linux":
-                self._center_and_raise(safe_class, env, fill=fill)
-            elif sys_platform == "darwin":
-                subprocess.run(["osascript", "-e", 'tell application "Alacritty" to activate'], stdout=subprocess.DEVNULL)
-            try:
-                proc.wait(timeout=duration)
-            except subprocess.TimeoutExpired:
-                proc.terminate()
-        except Exception:
-            pass
-        finally:
-            if proc is not None and proc.poll() is None:
-                try:
-                    proc.terminate()
-                except Exception:
-                    pass
+        from imports import ascii_displays as aa
+        return aa.patronus(name, duration=duration)
 
     def negotiate_ai_models(self, preferred_local: str = None, preferred_cloud: str = None) -> dict:
         """
