@@ -97,6 +97,12 @@ def conjure_window(*args, **kwargs) -> None:
     return wand.conjure_window(*args, **kwargs)
 
 
+def patronus(*args, **kwargs) -> None:
+    """🛡️ PATRONUS: Forwarded cleanly to the native wand core."""
+    from pipulate import wand
+    return wand.patronus(*args, **kwargs)
+
+
 # FIGURATE_COLOR_BITS: The color-bits player piano dictionary.
 # Maps named tokens to Rich style strings.
 # Usage in art strings: [[[TokenName]]] expands to styled text for humans,
