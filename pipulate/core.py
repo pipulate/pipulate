@@ -269,20 +269,44 @@ class Pipulate:
             self.db = db
     # END: pipulate_init
 
+    def _core_figurate(self, name: str, context: Optional[str] = None):
+        import binascii
+        from imports.ascii_displays import FIGURATE_REGISTRY, FIGURATE_LEDGER, FigurateResult, share_ascii_with_ai
+        
+        entry = FIGURATE_REGISTRY.get(name)
+        if entry is None:
+            fallback = f"[figurate: '{name}' not yet registered]"
+            return FigurateResult(name=name, human=fallback, ai=fallback, drift=0)
+        
+        render_fn = entry.get("render")
+        if render_fn is None:
+            fallback = f"[figurate: '{name}' has no render function]"
+            return FigurateResult(name=name, human=fallback, ai=fallback, drift=0)
+        
+        human_out, ai_out = render_fn()
+        
+        drift = 0
+        expected_crc = FIGURATE_LEDGER.get(name)
+        if expected_crc is not None:
+            computed_crc = binascii.crc32(ai_out.encode('utf-8'))
+            if computed_crc != expected_crc:
+                drift = 1
+                logger.warning(f"🎨 FIGURATE: DRIFT DETECTED in '{name}' — expected CRC {expected_crc}, got {computed_crc}")
+        
+        if context:
+            logger.info(f"🎨 FIGURATE: {name} | {context} | drift={drift}")
+            
+        logger.info(f"🎨 FINDER_TOKEN: ASCII_ART_FIGURATE - {name}\n{ai_out}")
+        share_ascii_with_ai(ai_out, f"figurate('{name}') called", "🎨")
+        
+        return FigurateResult(name=name, human=human_out, ai=ai_out, drift=drift)
+
     def figurate(self, name: str, context: Optional[str] = None, console_output: bool = True):
-        """Render a named visual figure through the wand.
-
-        This is a thin facade over imports.ascii_displays.figurate().
-        It keeps the visual/acoustic sovereignty vocabulary reachable from
-        the central Pipulate object without moving the existing banner system.
-        """
-        from imports import ascii_displays as aa
-
-        art = aa.figurate(name, context=context)
+        """Render a named visual figure through the wand."""
+        art = self._core_figurate(name, context=context)
         if console_output:
             renderable = art.human
             
-            # Fallback path for classic inline visual strings
             if hasattr(renderable, 'renderable') and isinstance(renderable.renderable, str):
                 text = renderable.renderable
                 for token, color in COLOR_MAP.items():
@@ -292,7 +316,8 @@ class Pipulate:
                 for token, color in COLOR_MAP.items():
                     renderable = re.sub(f'<{token}>(.*?)</{token}>', f'[{color}]\\1[/{color}]', renderable)
                     
-            aa.safe_console_print(renderable)
+            from imports.ascii_displays import safe_console_print
+            safe_console_print(renderable)
         return art
 
 
