@@ -182,7 +182,7 @@ imports/voice_synthesis.py  # <-- The wand can talk to you
 
 # assets/styles.css           # <-- Those values often get used here for "the look"
 
-# server.py                   # <-- The Wizard (big!)
+server.py                   # <-- The Wizard (big!)
 
 # imports/server_logging.py   # <-- Drawing that ASCII art into radically transparent server logs
 
