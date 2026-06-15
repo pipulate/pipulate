@@ -398,8 +398,21 @@ FIGURATE_COLOR_BITS: dict = {
 }
 
 
+# FIGURATE_SEMANTIC_TOKENS: local mirror of config.COLOR_MAP for <token>…</token>
+# spans (e.g. <success>Pipulate</success>). Defined HERE, not imported from
+# config.py, because nixops.sh rsyncs only this single file to Honeybot — a
+# `from config import COLOR_MAP` would be the parents[1] divergence trap one layer
+# over: green locally, ImportError on the server. The AI path still strips these
+# tags, so the wax-seal CRC is untouched. This also de-inflates the human render
+# width to match columns_needed, which is the actual cause of the popup wrap.
+FIGURATE_SEMANTIC_TOKENS: dict = {
+    "key": "yellow", "value": "white", "error": "red",
+    "warning": "yellow", "success": "green", "debug": "blue",
+}
+
+
 def _expand_color_bits_human(text: str) -> str:
-    """Expand [[[Token]]] markers into Rich markup for terminal display."""
+    """Expand [[[Token]]] and <token>…</token> markers into Rich markup."""
     import re
     def replace(m):
         token = m.group(1)
@@ -407,7 +420,10 @@ def _expand_color_bits_human(text: str) -> str:
         if style:
             return f"[{style}]{token}[/{style}]"
         return token  # Unknown token: pass through raw
-    return re.sub(r'\[\[\[([^\]]+)\]\]\]', replace, text)
+    text = re.sub(r'\[\[\[([^\]]+)\]\]\]', replace, text)
+    for token, style in FIGURATE_SEMANTIC_TOKENS.items():
+        text = re.sub(rf'<{token}>(.*?)</{token}>', rf'[{style}]\1[/{style}]', text, flags=re.DOTALL)
+    return text
 
 
 def _expand_color_bits_ai(text: str) -> str:
