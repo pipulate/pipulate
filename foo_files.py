@@ -243,6 +243,7 @@ remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streamin
 remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
 remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
 remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
+remotes/honeybot/scripts/forest_test.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
 remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
 remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
 remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
