@@ -1,3 +1,8 @@
+# ============================================================================
+# HONEYBOT-STANDALONE VISUAL ACTUATORS
+# Do not import from pipulate here. This file is rsynced alone to Honeybot.
+# ============================================================================
+
 # ASCII Art and Visual Display Functions
 # Externalized from server.py to reduce token count while preserving functionality
 # IMPORTANT: These are EXACT transcriptions of the original ASCII art - not generated substitutes!
