@@ -655,7 +655,7 @@ print('AI:\n', r.ai)
             # Linux subshell aliases
             alias article='(cd scripts/articles && xclip -selection clipboard -o >article.txt && python sanitizer.py && python articleizer.py)'
             alias grim='(cd scripts/articles && xclip -selection clipboard -o >article.txt && python sanitizer.py && python articleizer.py -t 3)'
-            alias bot='(cd scripts/articles && pbpaste >article.txt && python sanitizer.py && python articleizer.py -t 4)'
+            alias bot='(cd scripts/articles && xclip -selection clipboard -o >article.txt && python sanitizer.py && python articleizer.py -t 4)'
           fi
           # Update remote URL to use SSH if we have a key
           if [ -d .git ] && [ -f ~/.ssh/id_rsa ]; then
