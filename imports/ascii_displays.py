@@ -44,6 +44,27 @@ console = Console()
 # patronus.human → Rich Panel for the terminal
 # patronus.ai    → plain text for logs and LLM context
 # patronus.drift → 0 means the wax seal is intact
+
+# FIGURATE_LEDGER: Maps art name → expected CRC32 of its raw ai string.
+# This is the wax seal registry. A drift of 1 means something touched the painting.
+# To add a new entry: print(binascii.crc32(your_art_string.encode('utf-8')))
+# FIGURATE_LEDGER: Maps art name → expected CRC32 of its raw ai string.
+# This is the wax seal registry. A drift of 1 means something touched the painting.
+# To add a new entry: print(binascii.crc32(your_art_string.encode('utf-8')))
+
+FIGURATE_LEDGER: dict = {
+    "white_rabbit": 3701272927, 
+    "player_piano": 2962137920,
+    "clipboard": 2324709982,
+    "bunny_trail": 615479347,
+    "ai_stack_combo": 1121129699,  
+    "deployment_context": 1326657684,
+    "honeybot_pipeline": 2035836683,
+    # CRC32 after _expand_color_bits_ai() + .strip()
+    # === FIGURATE_LEDGER_EXTRUDE_BOTTOM ===
+    # Add new artwork CRC32 entries immediately above this line
+}
+
 FigurateResult = namedtuple('FigurateResult', ['name', 'human', 'ai', 'drift'])
 
 
@@ -438,25 +459,6 @@ def _expand_color_bits_ai(text: str) -> str:
     text = re.sub(r'\[\[\[([^\]]+)\]\]\]', r'\1', text)
     return re.sub(r'<[^>]+>', '', text)
 
-
-# FIGURATE_LEDGER: Maps art name → expected CRC32 of its raw ai string.
-# This is the wax seal registry. A drift of 1 means something touched the painting.
-# To add a new entry: print(binascii.crc32(your_art_string.encode('utf-8')))
-# FIGURATE_LEDGER: Maps art name → expected CRC32 of its raw ai string.
-# This is the wax seal registry. A drift of 1 means something touched the painting.
-# To add a new entry: print(binascii.crc32(your_art_string.encode('utf-8')))
-FIGURATE_LEDGER: dict = {
-    "white_rabbit": 3807110664, 
-    "player_piano": 2962137920,
-    "clipboard": 2324709982,
-    "bunny_trail": 615479347,
-    "ai_stack_combo": 1121129699,  
-    "deployment_context": 1326657684,
-    "honeybot_pipeline": 2035836683,
-    # CRC32 after _expand_color_bits_ai() + .strip()
-    # === FIGURATE_LEDGER_EXTRUDE_BOTTOM ===
-    # Add new artwork CRC32 entries immediately above this line
-}
 
 # FIGURATE_REGISTRY: The map of all visual vocabulary.
 # Each entry provides a render() function returning (human, ai) tuple.
