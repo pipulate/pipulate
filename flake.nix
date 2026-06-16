@@ -194,8 +194,9 @@
           plantuml
           graphviz
           eza                          # A tree directory visualizer that uses .gitignore
-          ripgrep		       # Like find and grep but honors .gitignore
+          ripgrep		               # Like find and grep but honors .gitignore
           xclip
+          jq
         ] ++ (with pkgs; pkgs.lib.optionals isLinux [
           espeak-ng                    # Text-to-speech, Linux only
           sox                          # Sound processing, Linux only
