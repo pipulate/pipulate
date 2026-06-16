@@ -643,9 +643,6 @@ print('AI:\n', r.ai)
             alias prompt='pbpaste >prompt.md'
             alias patch='pbpaste >patch'
             # Added macOS equivalents for article creation
-            alias article='(cd scripts/articles && pbpaste >article.txt && python sanitizer.py && python articleizer.py)'
-            alias grim='(cd scripts/articles && pbpaste >article.txt && python sanitizer.py && python articleizer.py -t 3)'
-            alias bot='(cd scripts/articles && pbpaste >article.txt && python sanitizer.py && python articleizer.py -t 4)'
             # THE BRIDGE PULL: Reach into the Z640 and suck the bridge file into the Mac clipboard
             alias pull='ssh mike@nixos.local "cat /tmp/clipboard_bridge.txt" | pbcopy && echo "✅ Z640 -> Mac Clipboard"'
           else
@@ -658,6 +655,7 @@ print('AI:\n', r.ai)
             # Linux subshell aliases
             alias article='(cd scripts/articles && xclip -selection clipboard -o >article.txt && python sanitizer.py && python articleizer.py)'
             alias grim='(cd scripts/articles && xclip -selection clipboard -o >article.txt && python sanitizer.py && python articleizer.py -t 3)'
+            alias bot='(cd scripts/articles && pbpaste >article.txt && python sanitizer.py && python articleizer.py -t 4)'
           fi
           # Update remote URL to use SSH if we have a key
           if [ -d .git ] && [ -f ~/.ssh/id_rsa ]; then
