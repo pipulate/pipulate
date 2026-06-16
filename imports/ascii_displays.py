@@ -206,89 +206,10 @@ def _center_and_raise(window_class, env=None, fill=False, margin=40, retries=10)
     )
 
 
-def patronus(name: str, duration: float = 3.5) -> None:
-    """🛡️ PATRONUS: Conjures an out-of-bounds visual popup window for the asset.
-    
-    Measures the targeted ASCII artwork bounds, opens a borderless, auto-sized
-    Alacritty micro-terminal precisely padded to prevent line-wrapping, forces
-    top-level window focus, and safely terminates after the specified timeline duration.
-    """
-    import sys
-    import shutil
-    import time
-    import platform
-    import subprocess
-    from pathlib import Path
-
-    # Gracefully lookup asset data to derive layout geometry matrix boundaries
-    entry = FIGURATE_REGISTRY.get(name)
-    if entry is None:
-        logger.error(f"🛡️ PATRONUS aborted: '{name}' is not a registered visual asset layer.")
-        return
-
-    render_fn = entry.get("render")
-    if render_fn is None:
-        logger.error(f"🛡️ PATRONUS aborted: '{name}' has no render function.")
-        return
-
-    _, ai_out = render_fn()
-    raw_lines = ai_out.splitlines()
-    
-    # Calculate exact dynamic column width and row bounds
-    max_width = max(len(line) for line in raw_lines) if raw_lines else 80
-    total_rows = len(raw_lines) if raw_lines else 12
-    
-    # Inject exact safety padding constants for the Rich panel frame boundaries
-    # Expanded horizontal padding to +20 to secure an unbreakable margin against terminal cell wrapping
-    columns_needed = max_width + 20
-    lines_needed = total_rows + 4
-
-    # Resolve paths relative to framework root directory structures
-    display_file_path = Path(__file__).resolve()
-    repo_root = str(display_file_path.parents[1])
-    sys_platform = platform.system().lower()
-
-    # Isolated subshell inline execution payload script blueprint string
-    # Using posix paths to handle multi-platform Windows backslash escaping bugs cleanly
-    python_payload = (
-        f"import sys; sys.path.insert(0, '{Path(repo_root).as_posix()}'); "
-        f"from imports.ascii_displays import figurate, safe_console_print; "
-        f"art_res = figurate('{name}'); "
-        f"safe_console_print(art_res.human); "
-        f"sys.stdout.flush(); "
-        f"import time; time.sleep({duration})"
-    )
-
-    # Base Alacritty display parameters
-    cmd = [
-        "alacritty",
-        "--title", "PatronusVisualShield",
-        "--class", "patronus_visual_shield",
-        "-o", "window.decorations='none'",
-        "-o", f"window.dimensions={{columns={columns_needed}, lines={lines_needed}}}",
-        "-o", "window.position={x=350, y=250}",
-        "-e", sys.executable, "-u", "-c", python_payload
-    ]
-
-    try:
-        logger.info(f"🛡️ Conjuring Patronus shield framework window overlay ({columns_needed}x{lines_needed}) for art asset: '{name}'")
-        proc = subprocess.Popen(cmd, cwd=repo_root, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        
-        # Settle delay for system display context registration mappings
-        time.sleep(0.15)
-
-        # Center + raise via the shared geometry actuator, which computes the
-        # real screen size from xrandr instead of the old hardcoded offset that
-        # left the popup low and to the right.
-        if sys_platform == "linux":
-            _center_and_raise("patronus_visual_shield")
-        elif sys_platform == "darwin":
-            subprocess.run(["osascript", "-e", 'tell application "Alacritty" to activate'], stdout=subprocess.DEVNULL)
-
-        # Retain execution thread lock until duration lifecycle expires cleanly
-        proc.wait()
-    except Exception as e:
-        logger.error(f"🛡️ PATRONUS connection framework failure encountered: {e}")
+def patronus(*args, **kwargs) -> None:
+    """🛡️ PATRONUS: Forwarded cleanly to the native wand core."""
+    from pipulate import wand
+    return wand.patronus(*args, **kwargs)
 
 
 def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: int = 30,
