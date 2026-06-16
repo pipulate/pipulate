@@ -497,6 +497,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias wc='python scripts/webclip_2_markdown.py'
           alias forest='vim remotes/honeybot/scripts/forest.py'
           alias art='vim imports/ascii_displays.py'
+          alias smart='python release.py --force -m "Testing rabbit documentation injection"'
           latest() { python prompt_foo.py -a "[-''${1:-2}:]" --no-tree; }
           slugs() { python scripts/articles/lsa.py -t 1 --slugs "$@" --fmt paths; }
           # slugs-ordered preserves input order for narrative control
