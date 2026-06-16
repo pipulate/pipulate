@@ -307,7 +307,7 @@ class Pipulate:
         import platform
         import subprocess
         from pathlib import Path
-        from imports.ascii_displays import FIGURATE_REGISTRY, figurate, safe_console_print
+        from imports.ascii_displays import FIGURATE_REGISTRY, figurate, safe_console_print, _center_and_raise
 
         entry = FIGURATE_REGISTRY.get(name)
         if entry is None:
@@ -356,7 +356,7 @@ class Pipulate:
             time.sleep(0.15)
 
             if sys_platform == "linux":
-                self._center_and_raise("patronus_visual_shield")
+                _center_and_raise("patronus_visual_shield")
             elif sys_platform == "darwin":
                 subprocess.run(["osascript", "-e", 'tell application "Alacritty" to activate'], stdout=subprocess.DEVNULL)
 
