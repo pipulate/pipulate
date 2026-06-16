@@ -83,7 +83,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # AUDIT.md
 
-!git --no-pager log -p -n 4
+# ! git --no-pager log -p -n 4
 
 # scripts/articles/lsa.py
 # scripts/articles/diagramizer.py
