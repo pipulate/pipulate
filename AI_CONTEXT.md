@@ -1,8 +1,8 @@
 # AI_CONTEXT.md — Start Here If You Are an AI
 
-> Auto-generated on 2026-06-08. Rewritten from scratch on every release. If this
+> Auto-generated on 2026-06-16. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1186 entries indexed.
+> 1207 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -96,31 +96,52 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
-- [2026-06-08] [Slaying Hardcoded Paths for Portable AI Dev Environments](https://mikelev.in/futureproof/slaying-hardcoded-paths-portable-ai-dev/index.md)
-- [2026-06-08] [Rigging the Vibe: The Art of Autonomous Seamanship in the Age of AI](https://mikelev.in/futureproof/rigging-the-vibe-autonomous-seamanship/index.md)
-- [2026-06-08] [The Forest and the Trees: Aligning Voice and Visuals in a Cybernetic Broadcast Engine](https://mikelev.in/futureproof/forest-and-trees-cybernetic-broadcast-engine/index.md)
-- [2026-06-07] [De-cursing the Python Stack: Reclaiming Lightweight Web App Development](https://mikelev.in/futureproof/de-cursing-python-web-development/index.md)
-- [2026-06-07] [How Context Became the New Build Artifact](https://mikelev.in/futureproof/context-as-build-artifact/index.md)
-- [2026-06-06] [The Precision Interlock: Why Exact-Match Protocols Beat AI Vibe-Coding](https://mikelev.in/futureproof/precision-interlock-ai-vibe-coding/index.md)
-- [2026-06-06] [The Plain Text Control Plane: Bootstrapping Governed Agency](https://mikelev.in/futureproof/plain-text-control-plane/index.md)
-- [2026-06-06] [The Code Canary and the Unix Pipe: Achieving Mechanical Sympathy in the Age of AI](https://mikelev.in/futureproof/code-canary-unix-pipe-mechanical-sympathy/index.md)
-- [2026-06-06] [Making the Audit Truthful: Building Nix Docker Targets Without the Rabbit Holes](https://mikelev.in/futureproof/making-audit-truthful-nix-docker/index.md)
-- [2026-06-06] [Boringly Explainable: Hardening Local-First Apps for Enterprise Auditors](https://mikelev.in/futureproof/hardening-local-first-apps-for-enterprise-auditors/index.md)
-- [2026-06-05] [Structured Surprise: AGPLv3, GitOps, and the Voice of the Local Machine](https://mikelev.in/futureproof/structured-surprise-agplv3-gitops/index.md)
-- [2026-06-05] [The Johnny Appleseed Strategy: Guarding Hard Knowledge in the Age of AI](https://mikelev.in/futureproof/guarding-hard-knowledge-ai/index.md)
-- [2026-06-04] [The Modern Webmaster: Rebuilding the Stack with Nix, Git, and Python](https://mikelev.in/futureproof/modern-webmaster-git-nix/index.md)
-- [2026-06-04] [Pipulate: The Hardening Layer for the Vibe Coding Era](https://mikelev.in/futureproof/pipulate-vibe-coding-hardening-layer/index.md)
-- [2026-06-04] [Deterministic Context Anchoring with Pachinko Bumpers](https://mikelev.in/futureproof/pachinko-context-anchoring-bumpers/index.md)
-- [2026-06-03] [The Google Social Contract Is Over: Welcome to Agentic Commerce Optimization](https://mikelev.in/futureproof/agentic-commerce-optimization/index.md)
-- [2026-06-02] [Building a Deterministic AI Prompt Compiler Pipeline](https://mikelev.in/futureproof/deterministic-ai-prompt-compiler/index.md)
-- [2026-06-02] [The Token-Dense Router: Building a Lightweight Takeoff Ramp for AI Context](https://mikelev.in/futureproof/token-dense-router-ai-context/index.md)
-- [2026-06-02] [The Local-First Shield: Defeating Paradigm Category Errors in the Age of AI](https://mikelev.in/futureproof/local-first-security-context-compiler/index.md)
-- [2026-06-02] [Refactoring Local Credentials: The Grumbling Graybeard Protocol](https://mikelev.in/futureproof/grumbling-graybeard-local-credentials/index.md)
+- [2026-06-16] [When Refactoring Fails: The Boundary of Remote Deployments](https://mikelev.in/futureproof/refactoring-remote-boundary-files/index.md)
+- [2026-06-15] [Beyond Search and Replace: Why Large AI Code Patches Fail](https://mikelev.in/futureproof/beyond-search-replace-ai-code-patches/index.md)
+- [2026-06-15] [Plain Text Epistemic Memory in the Age of AI](https://mikelev.in/futureproof/plain-text-epistemic-memory-ai/index.md)
+- [2026-06-15] [Solving Shell Amnesia: Atomic Locks for Local-First Daemons](https://mikelev.in/futureproof/atomic-locks-local-first-daemons/index.md)
+- [2026-06-15] [The Two-Turn Probe: Hardening GitOps and Watchdogs in the Age of AI](https://mikelev.in/futureproof/two-turn-probe-gitops-watchdogs/index.md)
+- [2026-06-15] [The Best Probe is the One You Delete](https://mikelev.in/futureproof/best-probe-is-deleted-dependency/index.md)
+- [2026-06-13] [The Git Ratchet and Visual-First Mocking](https://mikelev.in/futureproof/git-ratchet-visual-first-mocking/index.md)
+- [2026-06-13] [Slaying the Vibe-Coding Loop with Binary Search Probes](https://mikelev.in/futureproof/vibe-coding-binary-search-debugging/index.md)
+- [2026-06-13] [Accelerating Local-First AI Telemetry with an Isolated Test Harness](https://mikelev.in/futureproof/isolated-test-harness-ai-telemetry/index.md)
+- [2026-06-12] [The Local-First Broadcast: Building a Zero-Trust Digital Terrarium](https://mikelev.in/futureproof/local-first-broadcast-loop-automation/index.md)
+- [2026-06-12] [The Stateless Land of Function: Reclaiming Unix Simplicity in the Age of AI](https://mikelev.in/futureproof/stateless-land-of-function/index.md)
+- [2026-06-12] [The Unix Way to Guide LLMs with Surgical Precision](https://mikelev.in/futureproof/unix-way-llm-surgical-precision/index.md)
+- [2026-06-12] [Syncing the Player Piano: Queue-Interlocked Audio and Git Discipline](https://mikelev.in/futureproof/syncing-player-piano-audio-git-discipline/index.md)
+- [2026-06-11] [Local Git Repositories: The Baseline for AI-Era Writing](https://mikelev.in/futureproof/local-git-baseline-ai-workflow/index.md)
+- [2026-06-11] [Wrangling Chaos Monkeys in the Age of AI](https://mikelev.in/futureproof/wrangling-chaos-monkeys/index.md)
+- [2026-06-11] [The Great Decoupling: Building for the Post-Dependency Web](https://mikelev.in/futureproof/great-decoupling-post-dependency-web/index.md)
+- [2026-06-11] [The Plain-Text Control Plane: Multi-Site AI Workflows with Jekyll and Git](https://mikelev.in/futureproof/plain-text-control-plane-jekyll-git/index.md)
+- [2026-06-10] [Local Maxima and the Mindful Pragmatist](https://mikelev.in/futureproof/local-maxima-mindful-pragmatist/index.md)
+- [2026-06-09] [Designing an Attention Prosthesis for the Age of AI](https://mikelev.in/futureproof/attention-prosthesis-rebound-tax/index.md)
+- [2026-06-09] [Orchestrating the Multi-AI Symphony in a Stateless Forest](https://mikelev.in/futureproof/multi-ai-symphony-stateless-forest/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-06-08] [39k] player-piano-piper-tts-terminal-audio-bus
+- [2026-06-08] [75k] slaying-hardcoded-paths-portable-ai-dev
+- [2026-06-08] [79k] rigging-the-vibe-autonomous-seamanship
+- [2026-06-08] [137k] forest-and-trees-cybernetic-broadcast-engine
+- [2026-06-07] [71k] de-cursing-python-web-development
+- [2026-06-07] [72k] context-as-build-artifact
+- [2026-06-06] [63k] precision-interlock-ai-vibe-coding
+- [2026-06-06] [101k] plain-text-control-plane
+- [2026-06-06] [90k] code-canary-unix-pipe-mechanical-sympathy
+- [2026-06-06] [36k] making-audit-truthful-nix-docker
+- [2026-06-06] [98k] hardening-local-first-apps-for-enterprise-auditors
+- [2026-06-05] [44k] structured-surprise-agplv3-gitops
+- [2026-06-05] [116k] guarding-hard-knowledge-ai
+- [2026-06-04] [37k] modern-webmaster-git-nix
+- [2026-06-04] [17k] pipulate-vibe-coding-hardening-layer
+- [2026-06-04] [202k] pachinko-context-anchoring-bumpers
+- [2026-06-03] [133k] agentic-commerce-optimization
+- [2026-06-02] [66k] deterministic-ai-prompt-compiler
+- [2026-06-02] [50k] token-dense-router-ai-context
+- [2026-06-02] [41k] local-first-security-context-compiler
+- [2026-06-02] [129k] grumbling-graybeard-local-credentials
 - [2026-06-01] [44k] designing-for-amnesia-deterministic-ai-pipeline
 - [2026-06-01] [112k] player-piano-voice-visual-sync
 - [2026-06-01] [34k] player-piano-markdown-sheet-music
