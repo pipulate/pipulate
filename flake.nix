@@ -496,6 +496,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias chop='cd ~/repos/pipulate && nvim foo_files.py'
           alias wc='python scripts/webclip_2_markdown.py'
           alias forest='vim remotes/honeybot/scripts/forest.py'
+          alias art='vim imports/ascii_displays.py'
           alias latest='python prompt_foo.py -a [-2:] --no-tree'
           slugs() { python scripts/articles/lsa.py -t 1 --slugs "$@" --fmt paths; }
           # slugs-ordered preserves input order for narrative control
