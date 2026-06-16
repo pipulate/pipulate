@@ -80,7 +80,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # ============================================================================
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!!
-# README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
+README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # AUDIT.md
 
 # ! git --no-pager log -p -n 4
@@ -110,9 +110,9 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # /home/mike/repos/trimnoir/index.md
 # /home/mike/repos/trimnoir/flake.nix
 
-# __init__.py       #  <-- Master versioning
-# release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
-# pyproject.toml    #  <-- The PyPI Packaging details
+__init__.py       #  <-- Master versioning
+release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
+pyproject.toml    #  <-- The PyPI Packaging details
 # requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 # requirements.txt  #  <-- Pip-compiled dependencies.
 # logs/server.log   #  <-- Like letting AI see your browser app state, but better! --------------------- AI server.py LOG DEBUG
@@ -238,17 +238,17 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # ============================================================================
 
 # CORE SLIDESHOW FILES
-# nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
-# remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
-# remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
-# remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
-# remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
-# remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
-# remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
-# remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
-# remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
-# remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
-# remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
+remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
+remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
+remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
+remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
+remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
+remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
+remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
+remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
+remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
+remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
 # remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
 
 # AD HOC REPORTS

@@ -398,8 +398,9 @@ def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: i
 # Usage in art strings: [[[TokenName]]] expands to styled text for humans,
 # and strips to plain TokenName for AI context and CRC hashing.
 FIGURATE_COLOR_BITS: dict = {
-    "NPvg":     "bold bright_blue",
+    "NPvg": "bold bright_blue",
     "Pipulate": "bold bright_cyan",
+    "canary": "yellow",
 }
 
 
@@ -412,7 +413,7 @@ FIGURATE_COLOR_BITS: dict = {
 # width to match columns_needed, which is the actual cause of the popup wrap.
 FIGURATE_SEMANTIC_TOKENS: dict = {
     "key": "yellow", "value": "white", "error": "red",
-    "warning": "yellow", "success": "green", "debug": "blue",
+    "warning": "yellow", "success": "green", "debug": "bright_blue",
 }
 
 
@@ -464,17 +465,17 @@ FIGURATE_LEDGER: dict = {
 def _figurate_white_rabbit():
     """Render white_rabbit as (human, ai) tuple for FIGURATE_REGISTRY."""
     art = r"""
-                        ( Like a canary you say? )                      
+                        ( Like a [[[canary]]] you say? )                      
                                            O        /)  ____            <debug>The "No Problem" Framework</debug>
 >  I HEREBY WILL NOT RE-GENERATE            o /)\__//  /    \        <success>Pipulate</success> - Protecting Your Code 
->  Once upon machines be smarten          ___(/_ 0 0  | [[[NPvg]]] |       just by being honest about text.
->  ASCII sealing immutata art in        *(    ==(_T_)== WORA |           < https://pipulate.com >
->  This here cony if it's broken          \  )   ""\  | free |                    🥕🥕🥕 
->  Smokin gun drift now in token           |__>-\_>_>  \____/ 
+>  Once upon machines be smarten          ___(/_ 0 0  |      |       just by being honest about text.
+>  ASCII sealing immutata art in        *(    ==(_T_)== [[[NPvg]]] |        (If mangled, then AI drifted.)
+>  This here cony if it's broken          \  )   ""\  |      |             https://pipulate.com
+>  Smokin gun drift now in token           |__>-\_>_>  \____/                     🥕🥕🥕
     """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
-    human = Panel(human_art, title="🐰 Pipulate WaxASCII Seal (your generative-drift defense)", border_style="white")
+    human = Panel(human_art, title="🐰 ASCII Art Wax Seal (your vibe-coding safety-net)", border_style="white")
     return human, ai_art
 
 def _figurate_player_piano():
