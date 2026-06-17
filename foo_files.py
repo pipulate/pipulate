@@ -84,9 +84,8 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # AUDIT.md
 
 # ! git --no-pager log -p -n 4
-
 # ! cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-!https://www.reddit.com/r/TechSEO/comments/1m147fj/llmstxt_and_llmsfulltxt_for_more_visibility_on/
+# !https://www.reddit.com/r/TechSEO/comments/1m147fj/llmstxt_and_llmsfulltxt_for_more_visibility_on/
 
 # scripts/articles/lsa.py
 # scripts/articles/diagramizer.py
@@ -273,11 +272,6 @@ remotes/honeybot/queries/markdown_routing_metrics.sql
 remotes/honeybot/queries/content_neg_agents.sql
 remotes/honeybot/queries/md_routing_agents.sql
 
-# ! echo "--- FORMAT RATIO (Markdown vs HTML) ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-
 # Other examples (document and sort these out)
 
 remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
@@ -295,15 +289,22 @@ remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
 remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
 remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
 
+# Versions you can "edit in" to get the actual data.
+
+# ! echo "--- FORMAT RATIO (Markdown vs HTML) ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
 # ============================================================================
 # IV. PROPRIETARY FINDINGS - Which AI bots execute JavaScript and which negotiate for Markdown?
 # ============================================================================
 
 # WE'VE GOT A LOT OF THESE AND I HAVE TO BUILD THIS OUT / AD HOC-ISH
-# /home/mike/repos/trimnoir/flake.nix
-# /home/mike/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
-# /home/mike/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
-# /home/mike/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
+/home/mike/repos/trimnoir/flake.nix
+/home/mike/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
+/home/mike/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
+/home/mike/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
 # remotes/honeybot/queries/trapdoor_ips.sql         # <-- The SQL to see who is hydrating the DOM. The example of HOW we use it from here in the router below.
 # ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
@@ -840,6 +841,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
+# remotes/honeybot/queries/intel_emerging_manifests.sql  # [161 tokens | 720 bytes]
 # scripts/articles/bookforge_dashboard.py  # [851 tokens | 3,484 bytes]
 # scripts/articles/build_book_passes.py  # [535 tokens | 2,210 bytes]
 # scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
