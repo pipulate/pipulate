@@ -197,6 +197,8 @@
           ripgrep		               # Like find and grep but honors .gitignore
           xclip
           jq
+          dig
+          whois
         ] ++ (with pkgs; pkgs.lib.optionals isLinux [
           espeak-ng                    # Text-to-speech, Linux only
           sox                          # Sound processing, Linux only
