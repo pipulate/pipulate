@@ -105,7 +105,7 @@ sys.path.append(str(Path(__file__).parent))
 
 try:
     import score
-    from content_loader import check_for_updates, check_standby, trigger_is_fresh
+    from content_loader import check_for_updates, check_standby, trigger_is_fresh, trigger_is_fresh
 except ImportError:
     score = None
 
