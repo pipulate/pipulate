@@ -507,11 +507,10 @@ def perform_show(script):
     start_time = time.time()
     duration_seconds = SHOW_DURATION_MINUTES * 60
 
-    # Initialize the Pitch Timer in the past so the FIRST SAY triggers a station
-    # break immediately — the "opening commercial" before the program. This also
-    # turns a stream restart into a moments-long test loop for the bead template
-    # instead of a ten-minute wait.
-    last_pitch_time = time.time() - PITCH_INTERVAL
+    # Initialize the Pitch Timer to the current time so it doesn't force a station
+    # break immediately on a fresh restart cycle. The test_forest.py harness handles
+    # out-of-band validation now.
+    last_pitch_time = time.time()
 
     profile_dir = tempfile.mkdtemp(prefix="honeybot_fx_")
 
