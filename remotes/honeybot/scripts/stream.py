@@ -585,7 +585,14 @@ def start_director_track():
     """The Script for the Show. Runs in parallel to the Log Stream."""
     time.sleep(5)
 
-    breaking = False
+    # A publish-triggered restart (the [4/4] kill in flake.nix) births a fresh
+    # process while .reading_trigger is still warm. Lead the very first cycle with
+    # the newest article — the breaking path Probe 2 already validated end to end —
+    # instead of the cold "Greetings, entity" preamble. If content_loader failed to
+    # import, score is None and the conditional short-circuits to False before
+    # trigger_is_fresh is ever looked up; a stale or absent trigger also yields
+    # False, leaving a genuine idle cold start completely unchanged.
+    breaking = trigger_is_fresh() if score else False
     while True:
         if score:
             # Generate a fresh script. On a breaking-news restart we request a minimal
