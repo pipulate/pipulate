@@ -49,6 +49,22 @@ def check_standby():
         return True
     return False
 
+def trigger_is_fresh(max_age_seconds=900):
+    """True if the breaking-news bell (.reading_trigger) was rung within the last
+    max_age_seconds. Reads the file's mtime, so it is process-boundary safe: it
+    works for a freshly-restarted stream that has no in-memory history and cannot
+    lean on check_for_updates()'s first-run baseline absorption.
+
+    Failure-mode-safe in both directions. A miss (stale/absent trigger, or a
+    publish whose [4/4] restart lands outside the window) returns False and the
+    caller falls back to the normal cold-start preamble — no breakage. A generous
+    window only risks leading with the newest article after a near-publish crash,
+    which is an acceptable cold-start opening anyway."""
+    try:
+        return (time.time() - TRIGGER_FILE.stat().st_mtime) <= max_age_seconds
+    except (FileNotFoundError, OSError):
+        return False
+
 def check_for_updates():
     """
     Checks if the _posts directory has changed since the last playlist generation.
