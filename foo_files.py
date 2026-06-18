@@ -83,9 +83,20 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # AUDIT.md
 
+# NOTE TO SELF: Look at all this ad hoc stuff and sort it properly into the Book Outline (when appropriate) or delete.
+
 # ! git --no-pager log -p -n 4
 # ! cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # !https://www.reddit.com/r/TechSEO/comments/1m147fj/llmstxt_and_llmsfulltxt_for_more_visibility_on/
+
+# !https://support.botify.com/en/articles/9108593-creating-segments
+# /home/mike/repos/botifyml/_posts/2026-06-17-unmasking-agentic-web-scraper-telemetry.md
+# !https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/products
+# !https://www.salesforce.com/products/what-is-agentforce-360/
+# !https://www.salesforce.com/blog/playbook/agentic-ai/
+
+# /home/mike/repos/botifyml/_posts/2026-06-17-generalist-ai-seo-methodology.md
+# /home/mike/repos/trimnoir/_posts/2026-06-05-guarding-hard-knowledge-ai.md
 
 # scripts/articles/lsa.py
 # scripts/articles/diagramizer.py
@@ -112,9 +123,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # /home/mike/repos/trimnoir/index.md
 # /home/mike/repos/trimnoir/flake.nix
 
-# __init__.py       #  <-- Master versioning
-# release.py        #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
-# pyproject.toml    #  <-- The PyPI Packaging details
 # requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 # requirements.txt  #  <-- Pip-compiled dependencies.
 # logs/server.log   #  <-- Like letting AI see your browser app state, but better! --------------------- AI server.py LOG DEBUG
@@ -156,15 +164,21 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 #                       [IN VOICE OF JIMINY CRICKET:] 
 
-#  > Yes, Michael Crichton novels can come true; it can happen to you, if you fumble the art.
-#  > It seems to make sense, unintended consequence, should get cut-off at the start.
-#  > It might take awhile, but the context-compile will do the really hard part.
-#  > The AI has spied an accelerant ride. Ask it to throw dart (type `next`).
+# > Yes, Michael Crichton novels can come true; it can happen to you, if you fumble this art.  
+# > It seems to make sense — unintended consequence — should be intercepted at start.
+# > It might take awhile, but the context-compile does the hardest part.  
+# > The AI has spied an optimized ride to help you work smart.  
 
 prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!!
 
-# IF YOU ONLY edit it one set of things besides the 3 "always" `"!" * 3` files, this clump of actuators is an excellent choice!
+# The following 3 files are the first huge context reveal that pull the curtains open.
+__init__.py     #  <-- Master versioning
+release.py      #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
+pyproject.toml  #  <-- The PyPI Packaging details
 
+# scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
+
+# The following 4 files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
 .gitignore      #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
 flake.nix       #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
@@ -255,8 +269,8 @@ remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblog
 remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
 
 # AD HOC REPORTS
-remotes/honeybot/queries/trapdoor_ips.sql   # <-- The SQL to see who is hydrating the DOM. An ultimate report example among much ad hoc .sql
-! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# remotes/honeybot/queries/trapdoor_ips.sql   # <-- The SQL to see who is hydrating the DOM. An ultimate report example among much ad hoc .sql
+# ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # FULLY BAKED PYTHON REPORTS
 # remotes/honeybot/scripts/report.py
@@ -267,27 +281,27 @@ remotes/honeybot/queries/trapdoor_ips.sql   # <-- The SQL to see who is hydratin
 # remotes/honeybot/scripts/routing.py
 
 # PURE SQLite3 REPORTS
-remotes/honeybot/queries/format_ratio.sql
-remotes/honeybot/queries/markdown_routing_metrics.sql
-remotes/honeybot/queries/content_neg_agents.sql
-remotes/honeybot/queries/md_routing_agents.sql
+# remotes/honeybot/queries/format_ratio.sql
+# remotes/honeybot/queries/markdown_routing_metrics.sql
+# remotes/honeybot/queries/content_neg_agents.sql
+# remotes/honeybot/queries/md_routing_agents.sql
 
 # Other examples (document and sort these out)
 
-remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
-remotes/honeybot/queries/hot_404_remaps_top.sql  # [733 tokens | 2,888 bytes]
-remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
-remotes/honeybot/queries/intel_404_decay_curve.sql  # [170 tokens | 552 bytes]
-remotes/honeybot/queries/intel_hostile_dictionary.sql  # [403 tokens | 1,413 bytes]
-remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
-remotes/honeybot/queries/intel_noise_404s.sql  # [92 tokens | 286 bytes]
-remotes/honeybot/queries/intel_phantom_ui.sql  # [238 tokens | 874 bytes]
-remotes/honeybot/queries/intel_sovereign_bots.sql  # [160 tokens | 564 bytes]
-remotes/honeybot/queries/intel_true_404s.sql  # [104 tokens | 335 bytes]
-remotes/honeybot/queries/intel_unknown_agents.sql  # [85 tokens | 296 bytes]
-remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
-remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
-remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
+# remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
+# remotes/honeybot/queries/hot_404_remaps_top.sql  # [733 tokens | 2,888 bytes]
+# remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
+# remotes/honeybot/queries/intel_404_decay_curve.sql  # [170 tokens | 552 bytes]
+# remotes/honeybot/queries/intel_hostile_dictionary.sql  # [403 tokens | 1,413 bytes]
+# remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
+# remotes/honeybot/queries/intel_noise_404s.sql  # [92 tokens | 286 bytes]
+# remotes/honeybot/queries/intel_phantom_ui.sql  # [238 tokens | 874 bytes]
+# remotes/honeybot/queries/intel_sovereign_bots.sql  # [160 tokens | 564 bytes]
+# remotes/honeybot/queries/intel_true_404s.sql  # [104 tokens | 335 bytes]
+# remotes/honeybot/queries/intel_unknown_agents.sql  # [85 tokens | 296 bytes]
+# remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
+# remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
+# remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
 
 # Versions you can "edit in" to get the actual data.
 
@@ -301,10 +315,10 @@ remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes
 # ============================================================================
 
 # WE'VE GOT A LOT OF THESE AND I HAVE TO BUILD THIS OUT / AD HOC-ISH
-/home/mike/repos/trimnoir/flake.nix
-/home/mike/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
-/home/mike/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
-/home/mike/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
+# /home/mike/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
+# /home/mike/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
 # remotes/honeybot/queries/trapdoor_ips.sql         # <-- The SQL to see who is hydrating the DOM. The example of HOW we use it from here in the router below.
 # ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
@@ -335,19 +349,19 @@ remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes
 # VII. JEKYLL PUBLISHING - Reaching out to the world
 # ============================================================================
 
-# /home/mike/.config/pipulate/blogs.json       # <-- Centralized multi-site routing manifest for N Jekyll blogs.
-# scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
-# scripts/articles/common.py                   # <-- Self-explanatory
-# scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
-# scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
-# scripts/articles/sanitizer.py                # <-- Scrubs PII
-# scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
-# scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
-# scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
-# scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
-# scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
-# scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
-# scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
+/home/mike/.config/pipulate/blogs.json       # <-- Centralized multi-site routing manifest for N Jekyll blogs.
+scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
+scripts/articles/common.py                   # <-- Self-explanatory
+scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
+scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
+scripts/articles/sanitizer.py                # <-- Scrubs PII
+scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
+scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
+scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
+scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
+scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
+scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
+scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
 
 # ============================================================================
 # VIII. WORKFLOW WORKSHOP - WET assembly scripts. Extruders.
@@ -867,7 +881,6 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # scripts/gsc/gsc_keyworder.py  # [3,410 tokens | 14,355 bytes]
 # scripts/gsc/gsc_top_movers.py  # [8,003 tokens | 34,690 bytes]
 # scripts/playground/prompt_feeder.py  # [746 tokens | 3,154 bytes]
-# scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
 # tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
