@@ -185,7 +185,7 @@ apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider
 scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 
 # patch           #  <-- I know what you did last patch
-# scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
+scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
 
 # ============================================================================
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
