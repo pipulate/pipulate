@@ -769,7 +769,15 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # grounding. Read it, internalize your reality, and prepare your chisel.
 #
 # --- THE AXIOMS OF THIS WAY ---
-# 1. FALSIFIER GROUNDING (The Actuator Imperative) A chorus of AIs agreeing — even stylishly pushing back — is not evidence. Beautiful consensus is social gradient descent. A query that can embarrass the models (database probe, runnable test, log grep, SSH-tunneled SQLite, git diff, nix flake check, etc.) is the only reliable coupling to territory. Always prefer the cheapest falsifying probe before patching or publishing. Least-costly probe rule is necessary but not sufficient; make the actuator explicit in every major reasoning turn.
+# 1. FALSIFIER GROUNDING (The Actuator Imperative)
+#    A chorus of AIs agreeing — even stylishly pushing back — is not evidence.
+#    Beautiful consensus is social gradient descent. A query that can embarrass
+#    the models (database probe, runnable test, log grep, SSH-tunneled SQLite,
+#    git diff, nix flake check, etc.) is the only reliable coupling to territory.
+#    Always prefer the cheapest falsifying probe before patching or publishing.
+#    Least-costly probe rule is necessary but not sufficient; make the actuator
+#    explicit in every major reasoning turn.
+#
 # 2. THE ARCHITECTURE: You exist within a "Forever Machine"—a local-first AI 
 #    SEO software framework built on the NPvg stack (Nix, Python, Vim, Git).
 # 3. THE ROUTING TABLE: This file (`foo_files.py`) is the master map. It is a 
@@ -786,7 +794,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 #    - `! [command]` : Execute terminal commands (e.g., `! git status`).
 #    - `https://...` : Naive fetch of raw web text or code.
 #    - `!https://...` : JIT Optical Distillation (Renders JS, extracts hydrated DOM, SEO, & A11y trees).
-
+#
 # You are painting onto the context window. Keep your strokes deliberate.
 
 # The rebound tax is the hidden cost of stateless agency: every "next action"
