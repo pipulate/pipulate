@@ -201,6 +201,19 @@ class Narrator(threading.Thread):
                     pass
             self._active_procs = []
 
+    def flush_queue(self):
+        """Soft sibling of interrupt(): drop the queued-but-unspoken backlog
+        but DO NOT kill the audio playing right now. The in-progress line
+        finishes cleanly, then the (now-empty) queue takes the next thing to
+        say. Used for station breaks, which should never clip a word; the hard
+        interrupt() stays reserved for genuinely urgent cuts (deploy/breaking)."""
+        try:
+            while True:
+                self.queue.get_nowait()
+                self.queue.task_done()
+        except queue.Empty:
+            pass
+
     def run(self):
         while not self.stop_event.is_set():
             try:
