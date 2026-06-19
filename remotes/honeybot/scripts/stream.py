@@ -491,8 +491,12 @@ def run_station_break(env, profile_dir):
     bead = STATION_SEGMENTS[_station_index % len(STATION_SEGMENTS)]
     _station_index += 1
 
-    # --- Stage 1: The Interruption Sentinel ---
-    narrator.interrupt()
+    # --- Stage 1: The Soft Preemption ---
+    # flush_queue (not interrupt) so the article sentence playing RIGHT NOW
+    # finishes instead of being clipped mid-word — only the queued backlog is
+    # dropped. The queue.join() below then rides the real voice clock, so the
+    # lead-in lands after the current line ends, not on top of it.
+    narrator.flush_queue()
     narrator.say("We interrupt this program for a station identification break.")
     narrator.queue.join()
     time.sleep(1.2)
