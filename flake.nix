@@ -586,7 +586,7 @@ print('AI:\n', r.ai)
             (
                 cd "$TARGET_REPO" || exit 1
                 git add .
-                git commit -am "$1"
+                git commit -am "$MSG"
                 git push
             )
             
