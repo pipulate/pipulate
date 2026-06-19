@@ -600,6 +600,12 @@ print('AI:\n', r.ai)
                     echo "🚀 [3/4] The Capstone: Rebuilding Nginx Routes..."
                     ssh -t mike@192.168.10.100 'sudo cp ~/nixos-config-staged/* /etc/nixos/ && sudo nixos-rebuild switch'
 
+                    if [ "$REBOOT" -ne 1 ]; then
+                        echo "⏭️  [4/4] Skipped — stream.py left running. Pass --reboot to force the restart now."
+                        echo "✅ Atomic Deployment Complete (stream untouched)."
+                        return 0
+                    fi
+
                     echo "🚀 [4/4] Stream Refresh: Restarting Honeybot slideshow child..."
                     ssh mike@192.168.10.100 '
                         pattern="/home/mike/www/mikelev[.]in/scripts/stream[.]py"
