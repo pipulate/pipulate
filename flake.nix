@@ -558,9 +558,23 @@ print('AI:\n', r.ai)
           # The true 'publish' command (Atomic Cross-Domain Deployment)
           # It requires a commit message as an argument.
           publish() {
-            if [ -z "$1" ]; then
+            # 80/20 reboot gate: the first non-flag arg is the commit message; the
+            # optional --reboot flag opts into the [4/4] stream.py restart (the
+            # ~4-hour memory-leak hygiene purge). Without it a routine publish stops
+            # after [3/4], leaving the live stream running untouched.
+            local REBOOT=0
+            local MSG=""
+            for arg in "$@"; do
+              if [ "$arg" = "--reboot" ]; then
+                REBOOT=1
+              elif [ -z "$MSG" ]; then
+                MSG="$arg"
+              fi
+            done
+
+            if [ -z "$MSG" ]; then
               echo "❌ Error: Please provide a commit message."
-              echo "Usage: publish \"Your commit message here\""
+              echo "Usage: publish \"Your commit message here\" [--reboot]"
               return 1
             fi
             
