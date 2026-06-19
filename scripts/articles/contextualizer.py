@@ -19,8 +19,8 @@ import common
 # MODEL CONFIGURATION
 # MODEL_NAME = 'gemini-flash-lite-latest'
 MODEL_CASCADE = [
-    'gemini-flash-latest',
     'gemini-flash-lite-latest',
+    'gemini-flash-latest',
     CFG.DEFAULT_PROMPT_MODEL
 ]
 

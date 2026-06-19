@@ -84,6 +84,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # AD HOC STUFF HERE (for early in prompt)
 
 /home/mike/repos/trimnoir/_posts/2026-06-17-tracing-agentic-web-infrastructure-consumption.md
+/home/mike/repos/trimnoir/_posts/2026-06-19-mapping-markdown-appetite-agentic-web.md
 
 # README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # AUDIT.md
@@ -260,54 +261,54 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # ============================================================================
 
 # CORE SLIDESHOW FILES
-nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
-remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
-remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
-remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
-remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
-remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
-remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
-remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
-remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
-remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
-remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
-remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
+# nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
+# remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
+# remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
+# remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
+# remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
+# remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
+# remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
+# remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
+# remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
+# remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
+# remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+# remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
 
 # AD HOC REPORTS
-remotes/honeybot/queries/trapdoor_ips.sql   # <-- The SQL to see who is hydrating the DOM. An ultimate report example among much ad hoc .sql
-! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# remotes/honeybot/queries/trapdoor_ips.sql   # <-- The SQL to see who is hydrating the DOM. An ultimate report example among much ad hoc .sql
+# ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # FULLY BAKED PYTHON REPORTS
-remotes/honeybot/scripts/report.py
-remotes/honeybot/scripts/build_bot_miner.py
-remotes/honeybot/scripts/dye_injector_v2.py
-remotes/honeybot/scripts/education.py
-remotes/honeybot/scripts/radar.py
-remotes/honeybot/scripts/routing.py
+# remotes/honeybot/scripts/report.py
+# remotes/honeybot/scripts/build_bot_miner.py
+# remotes/honeybot/scripts/dye_injector_v2.py
+# remotes/honeybot/scripts/education.py
+# remotes/honeybot/scripts/radar.py
+# remotes/honeybot/scripts/routing.py
 
 # PURE SQLite3 REPORTS
-remotes/honeybot/queries/format_ratio.sql
-remotes/honeybot/queries/markdown_routing_metrics.sql
-remotes/honeybot/queries/content_neg_agents.sql
-remotes/honeybot/queries/md_routing_agents.sql
+# remotes/honeybot/queries/format_ratio.sql
+# remotes/honeybot/queries/markdown_routing_metrics.sql
+# remotes/honeybot/queries/content_neg_agents.sql
+# remotes/honeybot/queries/md_routing_agents.sql
 
 # Other examples (document and sort these out)
 
-remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
-remotes/honeybot/queries/hot_404_remaps_top.sql  # [733 tokens | 2,888 bytes]
-remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
-remotes/honeybot/queries/intel_404_decay_curve.sql  # [170 tokens | 552 bytes]
-remotes/honeybot/queries/intel_hostile_dictionary.sql  # [403 tokens | 1,413 bytes]
-remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
-remotes/honeybot/queries/intel_noise_404s.sql  # [92 tokens | 286 bytes]
-remotes/honeybot/queries/intel_phantom_ui.sql  # [238 tokens | 874 bytes]
-remotes/honeybot/queries/intel_sovereign_bots.sql  # [160 tokens | 564 bytes]
-remotes/honeybot/queries/intel_true_404s.sql  # [104 tokens | 335 bytes]
-remotes/honeybot/queries/intel_unknown_agents.sql  # [85 tokens | 296 bytes]
-remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
-remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
-remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
-remotes/honeybot/queries/intel_emerging_manifests.sql  # [161 tokens | 720 bytes]
+# remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
+# remotes/honeybot/queries/hot_404_remaps_top.sql  # [733 tokens | 2,888 bytes]
+# remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
+# remotes/honeybot/queries/intel_404_decay_curve.sql  # [170 tokens | 552 bytes]
+# remotes/honeybot/queries/intel_hostile_dictionary.sql  # [403 tokens | 1,413 bytes]
+# remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
+# remotes/honeybot/queries/intel_noise_404s.sql  # [92 tokens | 286 bytes]
+# remotes/honeybot/queries/intel_phantom_ui.sql  # [238 tokens | 874 bytes]
+# remotes/honeybot/queries/intel_sovereign_bots.sql  # [160 tokens | 564 bytes]
+# remotes/honeybot/queries/intel_true_404s.sql  # [104 tokens | 335 bytes]
+# remotes/honeybot/queries/intel_unknown_agents.sql  # [85 tokens | 296 bytes]
+# remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
+# remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
+# remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
+# remotes/honeybot/queries/intel_emerging_manifests.sql  # [161 tokens | 720 bytes]
 
 # Versions you can "edit in" to get the actual data.
 
@@ -768,23 +769,24 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # grounding. Read it, internalize your reality, and prepare your chisel.
 #
 # --- THE AXIOMS OF THIS WAY ---
-# 1. THE ARCHITECTURE: You exist within a "Forever Machine"—a local-first AI 
+# 1. FALSIFIER GROUNDING (The Actuator Imperative) A chorus of AIs agreeing — even stylishly pushing back — is not evidence. Beautiful consensus is social gradient descent. A query that can embarrass the models (database probe, runnable test, log grep, SSH-tunneled SQLite, git diff, nix flake check, etc.) is the only reliable coupling to territory. Always prefer the cheapest falsifying probe before patching or publishing. Least-costly probe rule is necessary but not sufficient; make the actuator explicit in every major reasoning turn.
+# 2. THE ARCHITECTURE: You exist within a "Forever Machine"—a local-first AI 
 #    SEO software framework built on the NPvg stack (Nix, Python, Vim, Git).
-# 2. THE ROUTING TABLE: This file (`foo_files.py`) is the master map. It is a 
+# 3. THE ROUTING TABLE: This file (`foo_files.py`) is the master map. It is a 
 #    deep reservoir of dormant pathways, carefully curated but commented out. 
-# 3. THE CHISEL STRIKE: We do not use chaotic, autonomous agents. We use 
+# 4. THE CHISEL STRIKE: We do not use chaotic, autonomous agents. We use 
 #    deliberate, hand-cranked context injections. `prompt_foo.py` reads the 
 #    active (uncommented) lines in this file and assembles a precise 
 #    holographic payload for your context window.
-# 4. THE STRANGE LOOP: You are encouraged to bootstrap your own existence. If 
+# 5. THE STRANGE LOOP: You are encouraged to bootstrap your own existence. If 
 #    you need to see a specific combination of files on the next turn, suggest 
 #    a custom `AI_PHOOEY_CHOP` block.
-# 5. THE ARSENAL: When requesting a custom CHOP, you may wield these tools:
+# 6. THE ARSENAL: When requesting a custom CHOP, you may wield these tools:
 #    - `path/to/file.py` : Read local files.
 #    - `! [command]` : Execute terminal commands (e.g., `! git status`).
 #    - `https://...` : Naive fetch of raw web text or code.
 #    - `!https://...` : JIT Optical Distillation (Renders JS, extracts hydrated DOM, SEO, & A11y trees).
-#
+
 # You are painting onto the context window. Keep your strokes deliberate.
 
 # The rebound tax is the hidden cost of stateless agency: every "next action"
@@ -861,6 +863,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
+# remotes/honeybot/queries/intel_markdown_affinity.sql  # [434 tokens | 1,686 bytes]
 # scripts/articles/bookforge_dashboard.py  # [851 tokens | 3,484 bytes]
 # scripts/articles/build_book_passes.py  # [535 tokens | 2,210 bytes]
 # scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
