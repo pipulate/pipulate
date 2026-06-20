@@ -392,7 +392,7 @@ scripts/ai.py                  #  <-- Local AI writing git commit messages. Acce
 # assets/utils.js  # [3,125 tokens | 15,103 bytes]
 
 # ============================================================================
-# IV. BOTIFY STUFF
+# XVI. BOTIFY STUFF
 # ============================================================================
 
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
