@@ -83,7 +83,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # AD HOC STUFF HERE (for early in prompt)
 
-!https://example.com/
+# !https://example.com/
 
 # /home/mike/repos/trimnoir/_posts/2026-06-11-local-git-baseline-ai-workflow.md
 # /home/mike/repos/trimnoir/_posts/2026-06-17-tracing-agentic-web-infrastructure-consumption.md
@@ -96,6 +96,8 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # !https://pypi.org/project/markdown-to-confluence/
 # https://raw.githubusercontent.com/hunyadi/md2conf/refs/heads/master/README.md
+
+deleteme.py
 
 # README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # AUDIT.md
