@@ -1279,7 +1279,14 @@ def main():
                 
                 if result.get("success"):
                     artifacts = result.get("looking_at_files", {})
-                    lenses = [('seo_md', 'SEO Metadata'), ('accessibility_tree_summary', 'Semantic Outline'), ('hierarchy_txt', 'DOM Hierarchy')]
+
+                    lenses = [
+                        ('seo_md', 'SEO Metadata'),
+                        ('headers', 'Response Headers'),
+                        ('optics_manifest', 'Optics Manifest'),
+                        ('accessibility_tree_summary', 'Semantic Outline'),
+                        ('diff_hierarchy_txt', 'DOM Change Hierarchy'),
+                    ]
                     
                     for key, title in lenses:
                         file_path = artifacts.get(key)
