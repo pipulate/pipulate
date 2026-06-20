@@ -181,8 +181,16 @@ if __name__ == "__main__":
                 filepath = project_root / filepath
             if filepath.exists() and filepath.is_file():
                 try:
+                    # Skip binaries and cap size to prevent prompt explosion
+                    if filepath.suffix.lower() in {'.png', '.jpg', '.jpeg', '.gif', '.pdf', '.bin'}:
+                        added_files_content += f"\n\n--- NEW FILE: {filename} (binary/skipped) ---"
+                        continue
                     content = filepath.read_text(encoding='utf-8')
-                    added_files_content += f"\n\n--- NEW FILE VERBATIM CONTENT: {filename} ---\n{content}"
+                    if len(content) > 15000:
+                        preview = content[:12000] + "\n\n... [truncated - full content available in working tree] ..."
+                        added_files_content += f"\n\n--- NEW FILE VERBATIM CONTENT (truncated): {filename} ---\n{preview}"
+                    else:
+                        added_files_content += f"\n\n--- NEW FILE VERBATIM CONTENT: {filename} ---\n{content}"
                 except Exception as e:
                     added_files_content += f"\n\n--- NEW FILE VERBATIM CONTENT: {filename} (Error reading: {e}) ---"
         
