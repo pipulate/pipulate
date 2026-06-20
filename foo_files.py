@@ -311,7 +311,7 @@ scripts/ai.py                  #  <-- Local AI writing git commit messages. Acce
 # ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # ============================================================================
-# V. META-COGNITION & OTHER GOLDEN PATHS - Unification of desert kite funnel-mouths
+# XI. META-COGNITION & OTHER GOLDEN PATHS - Unification of desert kite funnel-mouths
 # ============================================================================
 
 # AI_RUNME.py                     # <-- While `prompt`, `foo` is the normal way to jolt Amnesiac Genie awake, they may find this first
