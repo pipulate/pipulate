@@ -299,7 +299,7 @@ scripts/ai.py                  #  <-- Local AI writing git commit messages. Acce
 # ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # ============================================================================
-# IV. PROPRIETARY FINDINGS - Which AI bots execute JavaScript and which negotiate for Markdown?
+# X. PROPRIETARY FINDINGS - Which AI bots execute JavaScript and which negotiate for Markdown?
 # ============================================================================
 
 # WE'VE GOT A LOT OF THESE AND I HAVE TO BUILD THIS OUT / AD HOC-ISH
