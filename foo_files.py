@@ -80,68 +80,28 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # ============================================================================
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER
+# README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
+# AUDIT.md
+# patch           #  <-- I know what you did last patch
 
-# AD HOC STUFF HERE (for early in prompt)
+# NOTE TO SELF: Look at all this ad hoc stuff and sort it properly into the Book Outline (when appropriate) or delete.
 
-scripts/crawl.py  # [720 tokens | 2,949 bytes]
-
-!https://news.ycombinator.com/
-
+# !https://news.ycombinator.com/
 # !https://example.com/
 
+# CURRENT PROJECT (CONFLUENCE)
 # /home/mike/repos/trimnoir/_posts/2026-06-11-local-git-baseline-ai-workflow.md
 # /home/mike/repos/trimnoir/_posts/2026-06-17-tracing-agentic-web-infrastructure-consumption.md
 # /home/mike/repos/trimnoir/_posts/2026-06-19-ground-truth-agentic-crawlers.md
-
 # !https://developer.atlassian.com/cloud/confluence/overview-of-capabilities/
 # !https://developer.atlassian.com/cloud/confluence/rest/v2/intro/
 # !https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-blog-post/
 # !https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-page/
-
 # !https://pypi.org/project/markdown-to-confluence/
 # https://raw.githubusercontent.com/hunyadi/md2conf/refs/heads/master/README.md
 
-deleteme.py
-
-# README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
-# AUDIT.md
-
-# NOTE TO SELF: Look at all this ad hoc stuff and sort it properly into the Book Outline (when appropriate) or delete.
-
 # ! git --no-pager log -p -n 4
 # ! cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-# !https://www.reddit.com/r/TechSEO/comments/1m147fj/llmstxt_and_llmsfulltxt_for_more_visibility_on/
-
-# !https://support.botify.com/en/articles/9108593-creating-segments
-# /home/mike/repos/botifyml/_posts/2026-06-17-unmasking-agentic-web-scraper-telemetry.md
-# !https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/products
-# !https://www.salesforce.com/products/what-is-agentforce-360/
-# !https://www.salesforce.com/blog/playbook/agentic-ai/
-
-# /home/mike/repos/botifyml/_posts/2026-06-17-generalist-ai-seo-methodology.md
-# /home/mike/repos/trimnoir/_posts/2026-06-05-guarding-hard-knowledge-ai.md
-
-# scripts/articles/lsa.py
-# scripts/articles/diagramizer.py
-# scripts/articles/generate_ai_context.py
-# prompt_foo.py
-# scripts/articles/common.py
-
-# tools/dom_tools.py
-# tools/scraper_tools.py
-# imports/ai_dictdb.py
-# scripts/audit_dye.py
-# scripts/gsc/gsc_page_query.ipynb
-# assets/nbs/imports/faq_writer_sauce.py
-# scripts/articles/other/make_article.py
-# scripts/workflow/create_workflow.py
-# scripts/workflow/splice_workflow_step.py
-# remotes/honeybot/hooks/post-receive
-# scripts/workflow/workflow_reconstructor.py
-# remotes/honeybot/nixos/configuration.nix
-# remotes/honeybot/scripts/db.py
-# remotes/honeybot/scripts/stream.py
-# remotes/honeybot/scripts/content_loader.py
 
 # requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 # requirements.txt  #  <-- Pip-compiled dependencies.
@@ -197,6 +157,8 @@ flake.nix       #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java 
 apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
 scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 
+
+
 # The following 3 files are the first huge context reveal that pull the curtains open.
 # __init__.py     #  <-- Master versioning
 # release.py      #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
@@ -204,7 +166,8 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
 
-# patch           #  <-- I know what you did last patch
+# HEAVY LIFTERS
+# scripts/crawl.py  # [720 tokens | 2,949 bytes]
 # scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
 
 # ============================================================================
@@ -438,6 +401,13 @@ tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consi
 # | |_  | | '_ \ / _` |  / _` | | '_ \ / _ \| '_ ` _ \ / _ \
 # |  _| | | | | | (_| | | (_| | | | | | (_) | | | | | |  __/
 # |_|   |_|_| |_|\__,_|  \__,_| |_| |_|\___/|_| |_| |_|\___|
+
+# I NEED TO CONTINUE RESEARCHING AGENTIC COMMERCE ON THE MAJOR PLATFORMS
+# !https://support.botify.com/en/articles/9108593-creating-segments
+# /home/mike/repos/botifyml/_posts/2026-06-17-unmasking-agentic-web-scraper-telemetry.md
+# !https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/products
+# !https://www.salesforce.com/products/what-is-agentforce-360/
+# !https://www.salesforce.com/blog/playbook/agentic-ai/
 
 # apps/240_simon_mcp.py  # [8,886 tokens | 44,543 bytes]
 # apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
