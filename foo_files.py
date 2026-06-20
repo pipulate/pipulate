@@ -217,7 +217,7 @@ scripts/ai.py                  #  <-- Local AI writing git commit messages. Acce
 # apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
 
 # ============================================================================
-# VI. WET WORKFLOWS / DRY CRUD - The what's best for AIs and Humans compromise
+# VII. WET WORKFLOWS / DRY CRUD - The what's best for AIs and Humans compromise
 # ============================================================================
 
 # imports/__init__.py   # <-- Another empty init just a reminder about PyPI module packing path truths.
