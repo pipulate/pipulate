@@ -710,7 +710,7 @@ tools/llm_optics.py
 """
 
 # ============================================================================
-# X. THE ROADMAP — Trust Surfaces Before Feature Expansion
+# XVII. THE ROADMAP — Trust Surfaces Before Feature Expansion
 # ============================================================================
 # Philosophy: Make the system trustworthy, legible, local-first, and adoptable
 # before adding power. Myth inside the cockpit; plain nouns on the placard.
