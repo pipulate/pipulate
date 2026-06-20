@@ -85,6 +85,8 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 scripts/crawl.py  # [720 tokens | 2,949 bytes]
 
+!https://news.ycombinator.com/
+
 # !https://example.com/
 
 # /home/mike/repos/trimnoir/_posts/2026-06-11-local-git-baseline-ai-workflow.md
