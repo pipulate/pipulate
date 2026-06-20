@@ -84,6 +84,8 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # AUDIT.md
 # patch           #  <-- I know what you did last patch
 
+/home/mike/repos/trimnoir/_posts/2026-06-17-tracing-agentic-web-infrastructure-consumption.md
+
 # NOTE TO SELF: Look at all this ad hoc stuff and sort it properly into the Book Outline (when appropriate) or delete.
 
 # !https://news.ycombinator.com/
@@ -167,7 +169,8 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
 
 # HEAVY LIFTERS
-# scripts/crawl.py  # [720 tokens | 2,949 bytes]
+scripts/ai.py                  #  <-- Local AI writing git commit messages. Accelerator!
+# scripts/crawl.py               #  <-- Test LLM Optics before foo_files.py inclusion.
 # scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
 
 # ============================================================================
