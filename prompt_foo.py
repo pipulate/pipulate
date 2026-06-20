@@ -904,6 +904,32 @@ STORY_EXTENSIONS = {
     '.svg', '.xsd', '.sql', '.lua', '.yaml', '.yml',
 }
 
+# Vendor/static + generated artifacts that are tracked by git but are NOT
+# "unclaimed colors waiting for a chapter." Counting them as uncategorized
+# surfaces makes Codex Mapping Coverage lie. Prefixes match vendored dirs;
+# authored files directly under assets/ (styles.css, pipulate.js, etc.) are
+# deliberately NOT under these prefixes and remain counted.
+PAINTBOX_IGNORE_PREFIXES = (
+    'assets/js/',
+    'assets/css/',
+    'assets/feather/',
+    'assets/images/',
+    'assets/scenarios/',
+    '.jupyter/',
+)
+
+PAINTBOX_IGNORE_SUFFIXES = (
+    '.min.js',
+    '.woff', '.woff2', '.ttf', '.eot', '.otf',
+)
+
+
+def _is_paintbox_ignored(rel_path: str) -> bool:
+    """True for vendor/static ballast and generated artifacts that shouldn't dilute coverage."""
+    norm = rel_path.replace('\\', '/')
+    return norm.startswith(PAINTBOX_IGNORE_PREFIXES) or norm.endswith(PAINTBOX_IGNORE_SUFFIXES)
+
+
 def collect_repo_files(repo_root: str) -> set:
     """Use `git ls-files` to get only tracked, non-ignored files."""
     try:
