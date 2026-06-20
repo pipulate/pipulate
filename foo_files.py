@@ -202,7 +202,7 @@ scripts/ai.py                  #  <-- Local AI writing git commit messages. Acce
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 
 # ============================================================================
-# V. Hello World! - You think you've seen Hello Worlds? You don't know Jack.
+# VI. Hello World! - You think you've seen Hello Worlds? You don't know Jack.
 # ============================================================================
 
 # apps/040_hello_workflow.py                        # <-- The canonical Hello Workflow example under FastHTML. Number controls menu order.
