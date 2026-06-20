@@ -177,10 +177,10 @@ scripts/ai.py                  #  <-- Local AI writing git commit messages. Acce
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-config.py                   # <-- Centralize every last configuration in here
-pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
-pipulate/core.py            # <-- The Wand (spells)
+# config.py                   # <-- Centralize every last configuration in here
+# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+# pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
+# pipulate/core.py            # <-- The Wand (spells)
 # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
 
@@ -230,11 +230,11 @@ pipulate/core.py            # <-- The Wand (spells)
 # VII. LLM OPTICS - Like looking at raw HTML or the hydrated DOM? Them either.
 # ============================================================================
 
-tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
-tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
-tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
-tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
-tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
+# tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
+# tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
+# tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
+# tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
+# tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
 # ============================================================================
 # VIII. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
@@ -863,6 +863,7 @@ tools/llm_optics.py
 # assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
 # assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [9,017 tokens | 30,164 bytes]
 # assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
+# assets/nbs/imports/faq_writer_sauce.py  # [6,006 tokens | 26,636 bytes]
 # assets/nbs/imports/gap_analyzer_sauce.py  # [27,162 tokens | 119,579 bytes]
 # assets/nbs/imports/url_inspect_sauce.py  # [3,542 tokens | 16,202 bytes]
 # assets/nbs/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
@@ -895,8 +896,10 @@ tools/llm_optics.py
 # scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
 # scripts/articles/link_injector.py  # [1,134 tokens | 4,394 bytes]
 # scripts/articles/list_models.py  # [102 tokens | 391 bytes]
+# scripts/articles/other/make_article.py  # [1,513 tokens | 6,559 bytes]
 # scripts/articles/scrub_tags.py  # [358 tokens | 1,587 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
+# scripts/audit_dye.py  # [256 tokens | 1,009 bytes]
 # scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
 # scripts/botify/botify_api_examples.md  # [21,273 tokens | 86,712 bytes]
 # scripts/botify/make_botify_docs.ipynb  # [61,006 tokens | 224,678 bytes]
@@ -905,6 +908,7 @@ tools/llm_optics.py
 # scripts/gsc/generate_categories.py  # [1,477 tokens | 6,880 bytes]
 # scripts/gsc/gsc_category_analysis.py  # [6,947 tokens | 29,085 bytes]
 # scripts/gsc/gsc_keyworder.py  # [3,410 tokens | 14,355 bytes]
+# scripts/gsc/gsc_page_query.ipynb  # [7,842 tokens | 28,465 bytes]
 # scripts/gsc/gsc_top_movers.py  # [8,003 tokens | 34,690 bytes]
 # scripts/playground/prompt_feeder.py  # [746 tokens | 3,154 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
