@@ -237,7 +237,7 @@ scripts/ai.py                  #  <-- Local AI writing git commit messages. Acce
 # tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
 # ============================================================================
-# VIII. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
+# IX. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
 # ============================================================================
 
 # CORE SLIDESHOW FILES
