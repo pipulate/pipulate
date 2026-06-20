@@ -173,6 +173,22 @@ if __name__ == "__main__":
         change_analysis = get_change_analysis()
         staged_diff = get_staged_diff()
         
+        # Hydrate verbatim contents for newly added files to cure AI blindspots
+        added_files_content = ""
+        for filename in change_analysis.get('added_files', []):
+            filepath = Path(filename)
+            if not filepath.is_absolute():
+                filepath = project_root / filepath
+            if filepath.exists() and filepath.is_file():
+                try:
+                    content = filepath.read_text(encoding='utf-8')
+                    added_files_content += f"\n\n--- NEW FILE VERBATIM CONTENT: {filename} ---\n{content}"
+                except Exception as e:
+                    added_files_content += f"\n\n--- NEW FILE VERBATIM CONTENT: {filename} (Error reading: {e}) ---"
+        
+        if added_files_content:
+            staged_diff += added_files_content
+        
         analysis_text = f"""
 - Files added: {len(change_analysis['added_files'])}
 - Files deleted: {len(change_analysis['deleted_files'])}
