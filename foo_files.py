@@ -322,7 +322,7 @@ scripts/ai.py                  #  <-- Local AI writing git commit messages. Acce
 # tools/mcp_tools.py              # <-- Huge! Needs pruning. Mostly don't include.
 
 # ============================================================================
-# VI. CHIP O'THESEUS, THE HERMIT-CRAB TAMAGOTCHI - Your little robot buddy
+# XII. CHIP O'THESEUS, THE HERMIT-CRAB TAMAGOTCHI - Your little robot buddy
 # ============================================================================
 
 # imports/ai_dictdb.py                  # <-- It gets to rifle through its own keychain of message-in-a-bottle memories sent to itself
