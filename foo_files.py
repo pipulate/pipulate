@@ -813,7 +813,7 @@ tools/llm_optics.py
 # when the industry is optimizing for metered amnesia.
 
 # ============================================================================
-# VIII. THE PAINTBOX (Unused Colors)
+# XVIII. THE PAINTBOX (Unused Colors)
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
