@@ -27,6 +27,7 @@ pip-tools
 python-frontmatter
 google-api-python-client
 huggingface_hub
+markdown-to-confluence
 
 # Simon Willison's llm
 llm

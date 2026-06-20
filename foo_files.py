@@ -83,9 +83,19 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # AD HOC STUFF HERE (for early in prompt)
 
-/home/mike/repos/trimnoir/_posts/2026-06-11-local-git-baseline-ai-workflow.md
-/home/mike/repos/trimnoir/_posts/2026-06-17-tracing-agentic-web-infrastructure-consumption.md
-/home/mike/repos/trimnoir/_posts/2026-06-19-ground-truth-agentic-crawlers.md
+!https://example.com/
+
+# /home/mike/repos/trimnoir/_posts/2026-06-11-local-git-baseline-ai-workflow.md
+# /home/mike/repos/trimnoir/_posts/2026-06-17-tracing-agentic-web-infrastructure-consumption.md
+# /home/mike/repos/trimnoir/_posts/2026-06-19-ground-truth-agentic-crawlers.md
+
+# !https://developer.atlassian.com/cloud/confluence/overview-of-capabilities/
+# !https://developer.atlassian.com/cloud/confluence/rest/v2/intro/
+# !https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-blog-post/
+# !https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-page/
+
+# !https://pypi.org/project/markdown-to-confluence/
+# https://raw.githubusercontent.com/hunyadi/md2conf/refs/heads/master/README.md
 
 # README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # AUDIT.md
@@ -195,10 +205,10 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-# config.py                   # <-- Centralize every last configuration in here
-# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-# pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
-# pipulate/core.py            # <-- The Wand (spells)
+config.py                   # <-- Centralize every last configuration in here
+pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
+pipulate/core.py            # <-- The Wand (spells)
 # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
 
@@ -248,11 +258,11 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # VII. LLM OPTICS - Like looking at raw HTML or the hydrated DOM? Them either.
 # ============================================================================
 
-# tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
-# tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
-# tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
-# tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
-# tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
+tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
+tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
+tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
+tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
+tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
 # ============================================================================
 # VIII. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
@@ -702,6 +712,22 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # 3. Roadmap & Paintbox Reference
 # (The embedded roadmap + Paintbox in this file)
 # Current figurate drift state (for quick visual integrity check)
+"""
+
+CHOP_OPTICS_DEFAULT_BUNDLE = """
+# THE OPTICS DEFAULT BUNDLE PATCH
+# COMMAND: python prompt_foo.py --chop CHOP_OPTICS_DEFAULT_BUNDLE --no-tree --arg domain=reddit.com --arg slug=%2F
+
+# 1. Probe evidence (run the probe above first to populate these)
+browser_cache/{domain}/{slug}/seo.md
+browser_cache/{domain}/{slug}/headers.json
+browser_cache/{domain}/{slug}/diff_hierarchy.txt
+browser_cache/{domain}/{slug}/diff_simple_dom.txt
+
+# 2. The code surface that actually changes
+prompt_foo.py
+tools/scraper_tools.py
+tools/llm_optics.py
 """
 
 # ============================================================================
