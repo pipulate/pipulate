@@ -334,7 +334,7 @@ scripts/ai.py                  #  <-- Local AI writing git commit messages. Acce
 # apps/070_history.py                   # <-- Editing immutable history broken
 
 # ============================================================================
-# VII. JEKYLL PUBLISHING - Reaching out to the world
+# XIII. JEKYLL PUBLISHING - Reaching out to the world
 # ============================================================================
 
 # /home/mike/.config/pipulate/blogs.json       # <-- Centralized multi-site routing manifest for N Jekyll blogs.
