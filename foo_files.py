@@ -358,7 +358,7 @@ scripts/ai.py                  #  <-- Local AI writing git commit messages. Acce
 # /home/mike/repos/trimnoir/flake.nix
 
 # ============================================================================
-# VIII. WORKFLOW WORKSHOP - WET assembly scripts. Extruders.
+# XIV. WORKFLOW WORKSHOP - WET assembly scripts. Extruders.
 # ============================================================================
 
 # scripts/workflow/WORKFLOW_DEVELOPMENT_GUIDE.md    # <-- May be out of date. Update or delete.
