@@ -943,7 +943,7 @@ def collect_repo_files(repo_root: str) -> set:
             if not line:
                 continue
             ext = os.path.splitext(line)[1].lower()
-            if ext in STORY_EXTENSIONS:
+            if ext in STORY_EXTENSIONS and not _is_paintbox_ignored(line):
                 repo_files.add(line)
         return repo_files
     except (subprocess.CalledProcessError, FileNotFoundError):
