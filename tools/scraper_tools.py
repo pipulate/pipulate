@@ -458,7 +458,10 @@ async def selenium_automation(params: dict) -> dict:
                     if len(manifest) >= 15:  # prevent bloat in parent prompt
                         break
             if manifest:
-                artifacts['optics_manifest'] = "OPTICS MANIFEST (drill-down available):\n" + "\n".join(manifest)
+                manifest_content = "OPTICS MANIFEST (drill-down available):\n" + "\n".join(manifest)
+                manifest_path = output_dir / "optics_manifest.txt"
+                manifest_path.write_text(manifest_content, encoding='utf-8')
+                artifacts['optics_manifest'] = str(manifest_path)
             
             # Still populate full set for power users / notebooks
             for optic_key, filename in [
