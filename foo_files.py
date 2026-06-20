@@ -227,7 +227,7 @@ scripts/ai.py                  #  <-- Local AI writing git commit messages. Acce
 # apps/030_roles.py     # <-- The `APP` menu filter, so you have both sort-order control (app file-name numbering) and color-coded grouping.
 
 # ============================================================================
-# VII. LLM OPTICS - Like looking at raw HTML or the hydrated DOM? Them either.
+# VIII. LLM OPTICS - Like looking at raw HTML or the hydrated DOM? Them either.
 # ============================================================================
 
 # tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
