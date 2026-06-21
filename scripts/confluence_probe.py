@@ -16,7 +16,9 @@ The dangerous seam tested is code-block escaping, not plain paragraphs.
 """
 
 import os
+import re
 import sys
+import html
 import json
 import base64
 import argparse
