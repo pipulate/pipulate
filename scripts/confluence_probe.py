@@ -443,7 +443,39 @@ def main():
         if not args.parent:
             print("❌ --create-canary requires --parent PAGE_ID (the page to hang the canary under).")
             sys.exit(1)
-        ok = create_canary(domain, email, api_token, args.parent, do_write=args.yes)
+        
+        body_value = None
+        title_value = None
+        code_sentinel = None
+
+        if args.canary_from:
+            try:
+                with open(args.canary_from, "r", encoding="utf-8") as f:
+                    md_text = f.read()
+            except OSError as e:
+                print(f"❌ Could not read {args.canary_from}: {e}", file=sys.stderr)
+                sys.exit(1)
+            body_value = markdown_to_storage(md_text)
+            base_name = os.path.splitext(os.path.basename(args.canary_from))[0]
+            title_value = f"DELETE_ME_Pipulate_Canary_{base_name}"
+            
+            # Derive sentinel dynamically from markdown content
+            code_block_match = re.search(r"```[a-zA-Z0-9]*\n(.*?)\n```", md_text, re.DOTALL)
+            if code_block_match:
+                code_lines = [line.strip() for line in code_block_match.group(1).splitlines() if line.strip()]
+                if code_lines:
+                    code_sentinel = code_lines[0]
+            if not code_sentinel:
+                for line in md_text.splitlines():
+                    stripped = line.strip()
+                    if stripped and not stripped.startswith("---") and not stripped.startswith("#"):
+                        code_sentinel = stripped
+                        break
+                if not code_sentinel:
+                    code_sentinel = "Heading Sentinel"
+
+        ok = create_canary(domain, email, api_token, args.parent, do_write=args.yes,
+                           body_value=body_value, title_value=title_value, code_sentinel=code_sentinel)
     elif args.read:
         ok = read_page(domain, email, api_token, args.read)
     else:
