@@ -10,6 +10,13 @@ import sys
 import html
 import re
 import argparse
+import os
+import json
+import base64
+import urllib.request
+import urllib.error
+import urllib.parse
+from urllib.parse import urlparse
 from pathlib import Path
 import frontmatter
 import common
