@@ -90,6 +90,30 @@ def markdown_to_storage(md_text: str) -> str:
     flush_para()
     return "".join(out)
 
+def _resolve_domain() -> str:
+    raw = os.getenv("CONFLUENCE_DOMAIN") or os.getenv("CONFLUENCE_URL") or "YOUR_INSTANCE.atlassian.net"
+    if "://" in raw:
+        raw = urlparse(raw).netloc
+    return raw.strip("/")
+
+def _auth_header(email: str, api_token: str) -> str:
+    auth_str = f"{email}:{api_token}"
+    return "Basic " + base64.b64encode(auth_str.encode("utf-8")).decode("utf-8")
+
+def _request(domain: str, email: str, api_token: str, path: str,
+             method: str = "GET", payload: dict = None) -> dict:
+    url = f"https://{domain}/wiki/api/v2{path}"
+    data = None
+    req = urllib.request.Request(url, method=method)
+    req.add_header("Authorization", _auth_header(email, api_token))
+    req.add_header("Accept", "application/json")
+    if payload is not None:
+        data = json.dumps(payload).encode("utf-8")
+        req.add_header("Content-Type", "application/json")
+    with urllib.request.urlopen(req, data=data) as response:
+        raw = response.read().decode("utf-8")
+        return json.loads(raw) if raw else {}
+
 def main():
     parser = argparse.ArgumentParser(description="Publish local markdown articles to Confluence Cloud.")
     common.add_standard_arguments(parser)
