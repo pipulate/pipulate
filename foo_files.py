@@ -111,6 +111,8 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # @https://pypi.org/project/markdown-to-confluence/
 https://raw.githubusercontent.com/hunyadi/md2conf/refs/heads/master/README.md
 
+scripts/confluence_probe.py
+
 # ! git --no-pager log -p -n 4
 # ! cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
