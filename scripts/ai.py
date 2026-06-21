@@ -7,6 +7,7 @@ Consolidated tool for:
 2. Automated git commit generation with analysis (used by release.py)
 """
 import sys
+import re
 import json
 import requests
 import argparse
@@ -212,6 +213,20 @@ if __name__ == "__main__":
         
         # Pass staged_diff directly as input_text so it bypasses .format() vulnerabilities!
         result, used_model = chat_with_ollama(staged_diff, formatted_prompt, model=args.model)
+
+        # Defensive fence-stripping: the local model is non-deterministic about
+        # wrapping its reply in a Markdown code fence, and is especially prone to
+        # it when the diff is itself mostly Markdown/comment churn. A bare ```
+        # opening line is exactly what `head -1` in the m() shell alias grabbed,
+        # producing an empty/garbage commit subject. Strip leading and trailing
+        # fence lines (with optional language tag) so the real subject survives.
+        _lines = result.split('\n')
+        if _lines and re.match(r'^\s*```[a-zA-Z0-9]*\s*$', _lines[0]):
+            _lines = _lines[1:]
+        if _lines and re.match(r'^\s*```\s*$', _lines[-1]):
+            _lines = _lines[:-1]
+        result = '\n'.join(_lines).strip()
+
         append_commit_to_conversation(result, change_analysis, used_model)
         
     else:
