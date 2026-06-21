@@ -103,7 +103,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # CURRENT PROJECT (CONFLUENCE)
 # /home/mike/repos/trimnoir/_posts/2026-06-11-local-git-baseline-ai-workflow.md
 # /home/mike/repos/trimnoir/_posts/2026-06-17-tracing-agentic-web-infrastructure-consumption.md
-/home/mike/repos/trimnoir/_posts/2026-06-19-ground-truth-agentic-crawlers.md
+# /home/mike/repos/trimnoir/_posts/2026-06-19-ground-truth-agentic-crawlers.md
 @https://developer.atlassian.com/cloud/confluence/overview-of-capabilities/
 @https://developer.atlassian.com/cloud/confluence/rest/v2/intro/
 # @https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-blog-post/
