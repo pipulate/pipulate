@@ -88,6 +88,12 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # NOTE TO SELF: Look at all this ad hoc stuff and sort it properly into the Book Outline (when appropriate) or delete.
 
+/home/mike/repos/trimnoir/_posts/2025-04-29-nixos-jekyll-git-push-self-hosted-deployment.md  # [9,541 tokens]
+/home/mike/repos/trimnoir/_posts/2025-12-20-holographic-bridge-sovereign-hosting-pfsense-nixos-dmz.md  # [10,639 tokens]
+/home/mike/repos/trimnoir/_posts/2025-12-25-nixos-declarative-fix-403-jekyll-theme-streamlining.md  # [20,221 tokens]
+/home/mike/repos/trimnoir/_posts/2025-05-02-home-hosting-bots-seo-signals-google-dominance.md  # [3,451 tokens]
+/home/mike/repos/trimnoir/_posts/2026-06-05-structured-surprise-agplv3-gitops.md  # [9,550 tokens]
+
 # !https://news.ycombinator.com/
 # !https://example.com/
 
@@ -241,17 +247,17 @@ scripts/ai.py                  #  <-- Local AI writing git commit messages. Acce
 # ============================================================================
 
 # CORE SLIDESHOW FILES
-# nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
-# remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
-# remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
-# remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
-# remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
-# remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
-# remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
-# remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
-# remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
-# remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
-# remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
+remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
+remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
+remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
+remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
+remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
+remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
+remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
+remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
+remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
+remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
 
 # remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
 
@@ -303,11 +309,11 @@ scripts/ai.py                  #  <-- Local AI writing git commit messages. Acce
 # ============================================================================
 
 # WE'VE GOT A LOT OF THESE AND I HAVE TO BUILD THIS OUT / AD HOC-ISH
-# /home/mike/repos/trimnoir/flake.nix
-# /home/mike/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
-# /home/mike/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
-# /home/mike/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
-# remotes/honeybot/queries/trapdoor_ips.sql         # <-- The SQL to see who is hydrating the DOM. The example of HOW we use it from here in the router below.
+/home/mike/repos/trimnoir/flake.nix
+/home/mike/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
+/home/mike/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
+/home/mike/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
+remotes/honeybot/queries/trapdoor_ips.sql         # <-- The SQL to see who is hydrating the DOM. The example of HOW we use it from here in the router below.
 # ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # ============================================================================
@@ -715,9 +721,6 @@ tools/llm_optics.py
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
 
-# .jupyter/lab/user-settings/@jupyterlab/apputils-extension/themes.json  # [9 tokens | 29 bytes]
-# .jupyter/lab/user-settings/@jupyterlab/codemirror-extension/plugin.json  # [15 tokens | 45 bytes]
-# .jupyter/lab/user-settings/@jupyterlab/notebook-extension/tracker.json  # [21 tokens | 56 bytes]
 # Notebooks/Advanced_Notebooks/__init__.py  # [0 tokens | 0 bytes]
 # Notebooks/__init__.py  # [0 tokens | 0 bytes]
 # apps/130_gap_analysis.py  # [9,625 tokens | 48,280 bytes]
@@ -736,25 +739,6 @@ tools/llm_optics.py
 # apps/820_selenium.py  # [3,428 tokens | 15,020 bytes]
 # apps/830_pico_slider.py  # [4,364 tokens | 19,317 bytes]
 # apps/xx_link_graph_v2.py  # [63,994 tokens | 332,321 bytes]
-# assets/css/pico.css  # [27,899 tokens | 92,120 bytes]
-# assets/css/prism.css  # [5,178 tokens | 14,498 bytes]
-# assets/css/roboto.css  # [846 tokens | 3,101 bytes]
-# assets/feather/arrow-up-circle.svg  # [128 tokens | 357 bytes]
-# assets/feather/external-link.svg  # [173 tokens | 388 bytes]
-# assets/feather/feather.svg  # [151 tokens | 323 bytes]
-# assets/feather/message-circle.svg  # [243 tokens | 428 bytes]
-# assets/feather/rewind.svg  # [112 tokens | 319 bytes]
-# assets/feather/x-octagon.svg  # [177 tokens | 406 bytes]
-# assets/images/ai-seo-software.svg  # [27,518 tokens | 50,466 bytes]
-# assets/js/Sortable.js  # [29,648 tokens | 126,497 bytes]
-# assets/js/fasthtml.js  # [481 tokens | 1,836 bytes]
-# assets/js/htmx.js  # [41,256 tokens | 165,562 bytes]
-# assets/js/marked.min.js  # [14,361 tokens | 39,661 bytes]
-# assets/js/mermaid.min.js  # [1,167,164 tokens | 2,889,985 bytes]
-# assets/js/prism.js  # [38,819 tokens | 124,060 bytes]
-# assets/js/script.js  # [1,400 tokens | 6,134 bytes]
-# assets/js/split.js  # [6,166 tokens | 29,959 bytes]
-# assets/js/surreal.js  # [3,812 tokens | 13,432 bytes]
 # assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
 # assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb  # [1,852 tokens | 6,328 bytes]
 # assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
@@ -771,7 +755,6 @@ tools/llm_optics.py
 # assets/prompts/pipulate-context.xsd  # [2,286 tokens | 8,129 bytes]
 # assets/prompts/system_prompt.md  # [628 tokens | 2,618 bytes]
 # assets/rich-table.css  # [417 tokens | 1,459 bytes]
-# assets/scenarios/introduction.json  # [2,443 tokens | 9,516 bytes]
 # browser_cache/automation_recipes/README_SAVE_LOAD_AUTOMATION.md  # [1,751 tokens | 7,246 bytes]
 # browser_cache/recipe_executor.py  # [2,848 tokens | 14,661 bytes]
 # browser_cache/review_perception_history.py  # [3,208 tokens | 13,492 bytes]
