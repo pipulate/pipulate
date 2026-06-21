@@ -405,6 +405,7 @@ def main():
     parser.add_argument("--create-canary", action="store_true", help="Preflight + collision-check, then create a disposable private child (dry-run unless --yes).")
     parser.add_argument("--yes", action="store_true", help="Arm the mutation. Without it, --create-canary is dry-run only.")
     parser.add_argument("--convert", metavar="PATH", help="No-network probe: read a Markdown file, strip front matter, convert to storage format, print it. No auth, no mutation.")
+    parser.add_argument("--canary-from", metavar="PATH", help="Optional: Specify a Markdown file path to use as dynamic context payload for --create-canary.")
     args = parser.parse_args()
 
     # No-network probe gate: the converter is a pure function, so it runs
