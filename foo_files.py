@@ -89,7 +89,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # /home/mike/repos/trimnoir/_posts/2026-06-17-tracing-agentic-web-infrastructure-consumption.md
 
 # NOTE TO SELF: Look at all this ad hoc stuff and sort it properly into the Book Outline (when appropriate) or delete.
-
+scripts/articles/confluenceizer.py
 /home/mike/repos/botifyml/_posts/2026-06-21-barebones.md
 
 # FIGURE OUT DDNS
