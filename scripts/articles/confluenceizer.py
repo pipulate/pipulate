@@ -166,5 +166,23 @@ def main():
         print(f"❌ Structural load or compilation failure: {e}")
         sys.exit(1)
 
+    # 4. Network Handshake Pass (The Minimal Falsifying Probe)
+    domain = _resolve_domain()
+    email = os.getenv("CONFLUENCE_EMAIL") or os.getenv("CONFLUENCE_USER")
+    api_token = os.getenv("CONFLUENCE_TOKEN")
+
+    if not email or not api_token:
+        print("\n❌ Network Handshake Skipped: Missing authentication environment variables.")
+        print("  ↳ Set CONFLUENCE_EMAIL and CONFLUENCE_TOKEN to test wire connectivity.")
+        return
+
+    print(f"\n📡 Connecting to Atlassian Network Boundary: https://{domain}...")
+    try:
+        parent_meta = _request(domain, email, api_token, f"/pages/{parent_id}")
+        print(f"✅ Network Handshake Successful! Parent Title: '{parent_meta.get('title')}'")
+    except Exception as e:
+        print(f"❌ Network Boundary Handshake Failed: {e}")
+        sys.exit(1)
+
 if __name__ == "__main__":
     main()
