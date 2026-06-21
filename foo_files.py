@@ -88,11 +88,12 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # NOTE TO SELF: Look at all this ad hoc stuff and sort it properly into the Book Outline (when appropriate) or delete.
 
-/home/mike/repos/trimnoir/_posts/2025-04-29-nixos-jekyll-git-push-self-hosted-deployment.md  # [9,541 tokens]
-/home/mike/repos/trimnoir/_posts/2025-12-20-holographic-bridge-sovereign-hosting-pfsense-nixos-dmz.md  # [10,639 tokens]
-/home/mike/repos/trimnoir/_posts/2025-12-25-nixos-declarative-fix-403-jekyll-theme-streamlining.md  # [20,221 tokens]
-/home/mike/repos/trimnoir/_posts/2025-05-02-home-hosting-bots-seo-signals-google-dominance.md  # [3,451 tokens]
-/home/mike/repos/trimnoir/_posts/2026-06-05-structured-surprise-agplv3-gitops.md  # [9,550 tokens]
+# FIGURE OUT DDNS
+# /home/mike/repos/trimnoir/_posts/2025-04-29-nixos-jekyll-git-push-self-hosted-deployment.md  # [9,541 tokens]
+# /home/mike/repos/trimnoir/_posts/2025-12-20-holographic-bridge-sovereign-hosting-pfsense-nixos-dmz.md  # [10,639 tokens]
+# /home/mike/repos/trimnoir/_posts/2025-12-25-nixos-declarative-fix-403-jekyll-theme-streamlining.md  # [20,221 tokens]
+# /home/mike/repos/trimnoir/_posts/2025-05-02-home-hosting-bots-seo-signals-google-dominance.md  # [3,451 tokens]
+# /home/mike/repos/trimnoir/_posts/2026-06-05-structured-surprise-agplv3-gitops.md  # [9,550 tokens]
 
 # !https://news.ycombinator.com/
 # !https://example.com/
