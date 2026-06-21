@@ -334,8 +334,8 @@ def create_canary(domain, email, api_token, parent_id, do_write, body_value=None
         payload = {
             "id": str(existing_id),
             "status": "current",
-            "title": CANARY_TITLE,
-            "body": {"representation": "storage", "value": CANARY_BODY},
+            "title": title,
+            "body": {"representation": "storage", "value": body},
             "version": {"number": existing_version + 1, "message": "Pipulate canary upsert"},
         }
     else:
@@ -345,9 +345,9 @@ def create_canary(domain, email, api_token, parent_id, do_write, body_value=None
         payload = {
             "spaceId": str(space_id),
             "status": "current",
-            "title": CANARY_TITLE,
+            "title": title,
             "parentId": str(parent_id),
-            "body": {"representation": "storage", "value": CANARY_BODY},
+            "body": {"representation": "storage", "value": body},
         }
 
     if not do_write:
