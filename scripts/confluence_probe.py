@@ -290,45 +290,80 @@ def create_canary(domain, email, api_token, parent_id, do_write) -> bool:
         print(f"❌ Network Failure during collision check: {e}", file=sys.stderr)
         return False
 
+    # --- The ON CONFLICT branch: collision becomes an UPDATE, not a dead end. ---
+    # Confluence v2 has no native upsert, so we synthesize it: a title hit routes
+    # to PUT /pages/{id} (bumping version + restoring status), a miss routes to
+    # POST /pages. This keeps re-runs idempotent instead of stacking canaries.
     hits = existing.get("results", [])
+    existing_id = None
+    existing_version = None
     if hits:
-        print(f"   ⚠ Canary title already exists ({len(hits)} match):")
-        for h in hits:
-            print(f"      {h.get('id')} | {h.get('title')}")
-        print("   Delete the existing canary (or rename CANARY_TITLE) before creating a fresh one.")
-        return False
-    print("   ✅ No collision. Title is free.")
+        existing_id = hits[0].get("id")
+        print(f"   ↻ Canary title already exists (id={existing_id}); upsert will UPDATE it in place.")
+        # Read its current version + status so the PUT can bump the version and,
+        # if the page was archived, request status=current to restore it.
+        try:
+            current = _request(
+                domain, email, api_token,
+                f"/pages/{existing_id}?include-version=true"
+            )
+        except urllib.error.HTTPError as e:
+            _print_http_error(e)
+            return False
+        except Exception as e:
+            print(f"❌ Network Failure reading existing canary: {e}", file=sys.stderr)
+            return False
+        existing_version = (current.get("version") or {}).get("number")
+        print(f"   existing status:  {current.get('status')}")
+        print(f"   existing version: {existing_version}")
+        if existing_version is None:
+            print("❌ Could not read existing version number; cannot bump. Aborting.", file=sys.stderr)
+            return False
+    else:
+        print("   ✅ No collision. Title is free; upsert will CREATE.")
 
     # --- The mutation gate. ---
-    payload = {
-        "spaceId": str(space_id),
-        "status": "current",
-        "title": CANARY_TITLE,
-        "parentId": str(parent_id),
-        "body": {"representation": "storage", "value": CANARY_BODY},
-    }
+    if existing_id:
+        verb = "UPDATE"
+        method = "PUT"
+        path = f"/pages/{existing_id}"
+        payload = {
+            "id": str(existing_id),
+            "status": "current",
+            "title": CANARY_TITLE,
+            "body": {"representation": "storage", "value": CANARY_BODY},
+            "version": {"number": existing_version + 1, "message": "Pipulate canary upsert"},
+        }
+    else:
+        verb = "CREATE"
+        method = "POST"
+        path = "/pages?private=true"
+        payload = {
+            "spaceId": str(space_id),
+            "status": "current",
+            "title": CANARY_TITLE,
+            "parentId": str(parent_id),
+            "body": {"representation": "storage", "value": CANARY_BODY},
+        }
 
     if not do_write:
-        print("\n🅳🆁🆈 DRY-RUN — no page created. Would POST /pages?private=true with:")
+        print(f"\n🅳🆁🆈 DRY-RUN — no mutation. Would {method} {path} ({verb}) with:")
         print(json.dumps(payload, indent=2))
-        print("\nRe-run with --yes to actually create the canary.")
+        print("\nRe-run with --yes to actually perform the upsert.")
         return True
 
-    print("\n✍️  Creating private canary page...")
+    print(f"\n✍️  {verb}: {method} {path} ...")
     try:
-        created = _request(
-            domain, email, api_token,
-            "/pages?private=true", method="POST", payload=payload
-        )
+        result = _request(domain, email, api_token, path, method=method, payload=payload)
     except urllib.error.HTTPError as e:
         _print_http_error(e)
         return False
     except Exception as e:
-        print(f"❌ Network Failure during create: {e}", file=sys.stderr)
+        print(f"❌ Network Failure during {verb.lower()}: {e}", file=sys.stderr)
         return False
 
-    new_id = created.get("id")
-    print(f"✅ Canary created. id={new_id}  title={created.get('title')}")
+    new_id = result.get("id") or existing_id
+    print(f"✅ Canary {verb.lower()}d. id={new_id}  title={result.get('title')}")
 
     # --- The whole point: read it back and confirm the code block survived. ---
     print("🔁 Reading canary back to verify storage round-trip...")
