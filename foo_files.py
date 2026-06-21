@@ -79,7 +79,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # I. DEBUGGING CRASH COURSE - Server Cookies & Radical Transparency
 # ============================================================================
 
-foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER
+# foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER
 # README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
 # AUDIT.md
 # patch           #  <-- I know what you did last patch
@@ -206,7 +206,7 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # ============================================================================
 
 # THE ROLLING PIN (Again, if you only include one thing for overarching context of Pipulate and NPvg, include this.
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER
 
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 # AI_CONTEXT.md
