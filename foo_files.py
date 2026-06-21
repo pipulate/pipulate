@@ -84,7 +84,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # AUDIT.md
 # patch           #  <-- I know what you did last patch
 
-!https://moz.com/blog/bing-and-bard-feature-timeline
+# @https://moz.com/blog/bing-and-bard-feature-timeline
 
 # /home/mike/repos/trimnoir/_posts/2026-06-17-tracing-agentic-web-infrastructure-consumption.md
 
@@ -103,13 +103,13 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # CURRENT PROJECT (CONFLUENCE)
 # /home/mike/repos/trimnoir/_posts/2026-06-11-local-git-baseline-ai-workflow.md
 # /home/mike/repos/trimnoir/_posts/2026-06-17-tracing-agentic-web-infrastructure-consumption.md
-# /home/mike/repos/trimnoir/_posts/2026-06-19-ground-truth-agentic-crawlers.md
-# !https://developer.atlassian.com/cloud/confluence/overview-of-capabilities/
-# !https://developer.atlassian.com/cloud/confluence/rest/v2/intro/
-# !https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-blog-post/
-# !https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-page/
-# !https://pypi.org/project/markdown-to-confluence/
-# https://raw.githubusercontent.com/hunyadi/md2conf/refs/heads/master/README.md
+/home/mike/repos/trimnoir/_posts/2026-06-19-ground-truth-agentic-crawlers.md
+@https://developer.atlassian.com/cloud/confluence/overview-of-capabilities/
+@https://developer.atlassian.com/cloud/confluence/rest/v2/intro/
+# @https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-blog-post/
+@https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-page/
+# @https://pypi.org/project/markdown-to-confluence/
+https://raw.githubusercontent.com/hunyadi/md2conf/refs/heads/master/README.md
 
 # ! git --no-pager log -p -n 4
 # ! cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
@@ -186,10 +186,10 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-config.py                   # <-- Centralize every last configuration in here
-pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
-pipulate/core.py            # <-- The Wand (spells)
+# config.py                   # <-- Centralize every last configuration in here
+# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+# pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
+# pipulate/core.py            # <-- The Wand (spells)
 # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
 
@@ -239,11 +239,11 @@ pipulate/core.py            # <-- The Wand (spells)
 # VIII. LLM OPTICS - Like looking at raw HTML or the hydrated DOM? Them either.
 # ============================================================================
 
-tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
-tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
-tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
-tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
-tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
+# tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
+# tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
+# tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
+# tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
+# tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
 # ============================================================================
 # IX. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
