@@ -552,6 +552,7 @@ def perform_show(script):
             if check_standby():
                 narrator.interrupt()  # cut current audio + flush the backlog
                 narrator.say("Receiving updates. Things will go quiet for a few moments. Then I'll start reading again. Please stand by.")
+                conjure_window("card.py", duration=130.0, args=["UPDATING"])
                 try:
                     subprocess.run(["pkill", "firefox"], check=False)
                 except Exception:
@@ -563,6 +564,11 @@ def perform_show(script):
                     if check_for_updates():
                         break
                     time.sleep(2)
+                # Tear down the dead-air cover right before handing off to the newest article
+                try:
+                    subprocess.run(["pkill", "-f", "card.py.*UPDATING"], check=False)
+                except Exception:
+                    pass
                 return "BREAKING"
 
             # --- The Breaking News Interrupt ---
