@@ -3,17 +3,43 @@
 scripts/confluence_probe.py
 The Cheapest Falsifying Probe for the Atlassian Confluence REST API v2.
 
-Validates the network path, basic auth token handshake, and prints
-the titles of pages under a specified parent ID using cursor pagination.
+Three non-overlapping modes, each a progressively more dangerous falsifying shot:
+
+  (default)        List pages; optional --parent filters client-side by parentId.
+  --read PAGE_ID   Read-shape probe: prove id/spaceId/parentId/version/storage.
+  --create-canary  Preflight a parent, collision-check a canary title, and
+                   (only with --yes) create one disposable private child page,
+                   then read it back to prove the storage round-trip survived.
+
+Anti-Crichton posture: --create-canary is DRY-RUN unless --yes is passed.
+The dangerous seam tested is code-block escaping, not plain paragraphs.
 """
 
 import os
 import sys
 import json
 import base64
+import argparse
 import urllib.request
 import urllib.error
+import urllib.parse
 from urllib.parse import urlparse
+
+
+CANARY_TITLE = "DELETE_ME_Pipulate_Confluence_API_Canary"
+
+# The smallest body that exercises the part most likely to break: a code macro.
+# Plain <p> always survives; CDATA-wrapped code is where storage-format
+# escaping bugs show up first.
+CANARY_BODY = (
+    "<p>Pipulate Confluence API canary.</p>"
+    "<ac:structured-macro ac:name=\"code\">"
+    "<ac:plain-text-body><![CDATA[print(\"hello confluence\")]]></ac:plain-text-body>"
+    "</ac:structured-macro>"
+)
+
+# The substring we expect to survive the create -> read-back round trip intact.
+CANARY_CODE_SENTINEL = 'print("hello confluence")'
 
 
 def _resolve_domain() -> str:
@@ -26,81 +52,252 @@ def _resolve_domain() -> str:
     return raw.strip("/")
 
 
-def probe_confluence(domain: str, email: str, api_token: str, parent_id: str):
-    # Construct the modern v2 pages endpoint. The v2 spec doesn't expose a
-    # server-side "children of this parent" filter on GET /pages, but every
-    # Page object in the response carries its own parentId field, so we
-    # filter client-side after the fetch instead of fighting the API surface.
-    url = f"https://{domain}/wiki/api/v2/pages?limit=25"
-
-    print(f"📡 Initiating handshake against: https://{domain}/wiki/api/v2/pages")
-
+def _auth_header(email: str, api_token: str) -> str:
     auth_str = f"{email}:{api_token}"
-    base64_auth = base64.b64encode(auth_str.encode('utf-8')).decode('utf-8')
+    return "Basic " + base64.b64encode(auth_str.encode("utf-8")).decode("utf-8")
 
-    req = urllib.request.Request(url)
-    req.add_header("Authorization", f"Basic {base64_auth}")
+
+def _request(domain: str, email: str, api_token: str, path: str,
+             method: str = "GET", payload: dict = None) -> dict:
+    """Single chokepoint for v2 calls. Raises urllib.error.HTTPError upward so
+    callers can print the server's JSON error body verbatim."""
+    url = f"https://{domain}/wiki/api/v2{path}"
+    data = None
+    req = urllib.request.Request(url, method=method)
+    req.add_header("Authorization", _auth_header(email, api_token))
     req.add_header("Accept", "application/json")
+    if payload is not None:
+        data = json.dumps(payload).encode("utf-8")
+        req.add_header("Content-Type", "application/json")
+    with urllib.request.urlopen(req, data=data) as response:
+        raw = response.read().decode("utf-8")
+        return json.loads(raw) if raw else {}
 
+
+def _print_http_error(e: "urllib.error.HTTPError"):
+    print(f"❌ Handshake Aborted (HTTP {e.code}: {e.reason})", file=sys.stderr)
+    if e.code == 401:
+        print("  ↳ Check your API token and email. v2 endpoints may require a scoped token.", file=sys.stderr)
+    elif e.code == 403:
+        print("  ↳ Authenticated but not permitted. The credential lacks write capability on this parent/space.", file=sys.stderr)
+    elif e.code == 404:
+        print("  ↳ Confirm the Cloud domain and the page/parent ID exist and are visible to this user.", file=sys.stderr)
     try:
-        with urllib.request.urlopen(req) as response:
-            status_code = response.getcode()
-            print(f"✅ Connection Established (HTTP {status_code})")
+        body = e.read().decode("utf-8", errors="replace")
+        if body:
+            print(f"  ↳ Server said: {body}", file=sys.stderr)
+    except Exception:
+        pass
 
-            raw_data = response.read().decode('utf-8')
-            data = json.loads(raw_data)
 
-            results = data.get("results", [])
-            if parent_id and parent_id != "0":
-                scoped = [p for p in results if p.get("parentId") == parent_id]
-                print(f"\n--- Confluence Page Inventory (parentId={parent_id}, {len(scoped)} of {len(results)} fetched match) ---")
-                results = scoped
-            else:
-                print(f"\n--- Confluence Page Inventory (Found {len(results)} items, no parent filter applied) ---")
-
-            print(f"{'Page ID':15} | {'Page Title'}")
-            print("-" * 60)
-            for page in results:
-                print(f"{page.get('id'):15} | {page.get('title')}")
-
-            next_link = data.get("_links", {}).get("next")
-            if next_link:
-                print(f"\n🔄 Cursor token detected. Next page handle available ({next_link}).")
-            else:
-                print(f"\n🛑 End of paginated stream. No further cursors found.")
-
-            return True
-
+def list_pages(domain, email, api_token, parent_id=None) -> bool:
+    print(f"📡 Initiating handshake against: https://{domain}/wiki/api/v2/pages")
+    try:
+        data = _request(domain, email, api_token, "/pages?limit=25")
     except urllib.error.HTTPError as e:
-        print(f"❌ Handshake Aborted (HTTP {e.code}: {e.reason})", file=sys.stderr)
-        if e.code == 401:
-            print("  ↳ Check your API token and email credentials inside your local keychain configuration.", file=sys.stderr)
-        elif e.code == 404:
-            print("  ↳ Confirm your Cloud domain spelling. The v2 endpoint route may be obscured.", file=sys.stderr)
+        _print_http_error(e)
         return False
     except Exception as e:
         print(f"❌ Network Failure: {e}", file=sys.stderr)
         return False
 
+    print("✅ Connection Established (HTTP 200)")
+    results = data.get("results", [])
+    if parent_id and parent_id != "0":
+        scoped = [p for p in results if p.get("parentId") == parent_id]
+        print(f"\n--- Confluence Page Inventory (parentId={parent_id}, {len(scoped)} of {len(results)} fetched match) ---")
+        results = scoped
+    else:
+        print(f"\n--- Confluence Page Inventory (Found {len(results)} items, no parent filter applied) ---")
+
+    print(f"{'Page ID':15} | {'Page Title'}")
+    print("-" * 60)
+    for page in results:
+        print(f"{page.get('id'):15} | {page.get('title')}")
+
+    next_link = data.get("_links", {}).get("next")
+    if next_link:
+        print(f"\n🔄 Cursor token detected. Next page handle available ({next_link}).")
+    else:
+        print(f"\n🛑 End of paginated stream. No further cursors found.")
+    return True
+
+
+def read_page(domain, email, api_token, page_id) -> bool:
+    query = urllib.parse.urlencode({"body-format": "storage", "include-version": "true"})
+    print(f"📡 Reading page shape: https://{domain}/wiki/api/v2/pages/{page_id}?{query}")
+    try:
+        data = _request(domain, email, api_token, f"/pages/{page_id}?{query}")
+    except urllib.error.HTTPError as e:
+        _print_http_error(e)
+        return False
+    except Exception as e:
+        print(f"❌ Network Failure: {e}", file=sys.stderr)
+        return False
+
+    body = data.get("body") or {}
+    version = data.get("version") or {}
+    storage = body.get("storage") or {}
+    value = storage.get("value") or ""
+
+    print("✅ Page read-shape probe passed")
+    print(f"id:        {data.get('id')}")
+    print(f"title:     {data.get('title')}")
+    print(f"status:    {data.get('status')}")
+    print(f"spaceId:   {data.get('spaceId')}")
+    print(f"parentId:  {data.get('parentId')}")
+    print(f"version:   {version.get('number')}")
+    print(f"body keys: {list(body.keys())}")
+    print(f"storage representation present: {'yes' if storage else 'no'}")
+    print(f"storage chars: {len(value)}")
+    return True
+
+
+def create_canary(domain, email, api_token, parent_id, do_write) -> bool:
+    # --- Preflight 1: read the parent to harvest spaceId and sniff permissions. ---
+    print(f"🔎 Preflight: reading parent {parent_id} (with operations)...")
+    try:
+        parent = _request(
+            domain, email, api_token,
+            f"/pages/{parent_id}?include-operations=true"
+        )
+    except urllib.error.HTTPError as e:
+        _print_http_error(e)
+        return False
+    except Exception as e:
+        print(f"❌ Network Failure reading parent: {e}", file=sys.stderr)
+        return False
+
+    space_id = parent.get("spaceId")
+    print(f"   parent title:  {parent.get('title')}")
+    print(f"   parent spaceId: {space_id}")
+    if not space_id:
+        print("❌ Parent returned no spaceId; cannot place a child. Aborting.", file=sys.stderr)
+        return False
+
+    # Permission sniff: look for a create/update operation in the operations list.
+    ops = []
+    operations = parent.get("operations") or {}
+    if isinstance(operations, dict):
+        ops = [o.get("operation") for o in operations.get("results", [])]
+    elif isinstance(operations, list):
+        ops = [o.get("operation") for o in operations]
+    if ops:
+        print(f"   operations:    {', '.join(o for o in ops if o)}")
+        if "create" not in ops and "update" not in ops:
+            print("   ⚠ No 'create'/'update' in parent operations — write may 403.")
+    else:
+        print("   operations:    (none reported; create will be the real test)")
+
+    # --- Preflight 2: collision check the canary title within the space. ---
+    print(f"🔎 Preflight: checking for existing '{CANARY_TITLE}' in space {space_id}...")
+    collision_query = urllib.parse.urlencode({"title": CANARY_TITLE, "space-id": space_id, "limit": 5})
+    try:
+        existing = _request(domain, email, api_token, f"/pages?{collision_query}")
+    except urllib.error.HTTPError as e:
+        _print_http_error(e)
+        return False
+    except Exception as e:
+        print(f"❌ Network Failure during collision check: {e}", file=sys.stderr)
+        return False
+
+    hits = existing.get("results", [])
+    if hits:
+        print(f"   ⚠ Canary title already exists ({len(hits)} match):")
+        for h in hits:
+            print(f"      {h.get('id')} | {h.get('title')}")
+        print("   Delete the existing canary (or rename CANARY_TITLE) before creating a fresh one.")
+        return False
+    print("   ✅ No collision. Title is free.")
+
+    # --- The mutation gate. ---
+    payload = {
+        "spaceId": str(space_id),
+        "status": "current",
+        "title": CANARY_TITLE,
+        "parentId": str(parent_id),
+        "body": {"representation": "storage", "value": CANARY_BODY},
+    }
+
+    if not do_write:
+        print("\n🅳🆁🆈 DRY-RUN — no page created. Would POST /pages?private=true with:")
+        print(json.dumps(payload, indent=2))
+        print("\nRe-run with --yes to actually create the canary.")
+        return True
+
+    print("\n✍️  Creating private canary page...")
+    try:
+        created = _request(
+            domain, email, api_token,
+            "/pages?private=true", method="POST", payload=payload
+        )
+    except urllib.error.HTTPError as e:
+        _print_http_error(e)
+        return False
+    except Exception as e:
+        print(f"❌ Network Failure during create: {e}", file=sys.stderr)
+        return False
+
+    new_id = created.get("id")
+    print(f"✅ Canary created. id={new_id}  title={created.get('title')}")
+
+    # --- The whole point: read it back and confirm the code block survived. ---
+    print("🔁 Reading canary back to verify storage round-trip...")
+    try:
+        readback = _request(
+            domain, email, api_token,
+            f"/pages/{new_id}?body-format=storage"
+        )
+    except urllib.error.HTTPError as e:
+        _print_http_error(e)
+        return False
+    except Exception as e:
+        print(f"❌ Network Failure during read-back: {e}", file=sys.stderr)
+        return False
+
+    value = ((readback.get("body") or {}).get("storage") or {}).get("value") or ""
+    if CANARY_CODE_SENTINEL in value:
+        print(f"✅ ROUND-TRIP CLEAN: code sentinel {CANARY_CODE_SENTINEL!r} survived intact.")
+        print("   The adapter is real, not leaky. Safe to build the Markdown pipeline next.")
+    else:
+        print(f"⚠ ROUND-TRIP LEAK: sentinel {CANARY_CODE_SENTINEL!r} not found verbatim in read-back.")
+        print("   Storage-format escaping mangled the code block — fix the adapter before the pipeline.")
+        print(f"   Returned storage (first 400 chars):\n{value[:400]}")
+
+    print(f"\n🧹 Cleanup: delete this canary when done →")
+    print(f"   curl -u \"$CONFLUENCE_USER:$CONFLUENCE_TOKEN\" -X DELETE "
+          f"\"https://{domain}/wiki/api/v2/pages/{new_id}\"")
+    return True
+
 
 def main():
-    # Defensive credentials airlock: read from environment to keep repo context lossless.
-    # Accepts CONFLUENCE_EMAIL (preferred) or CONFLUENCE_USER (the name
-    # already sitting in .env from the original drop-in) so the probe
-    # doesn't fight the naming you already settled on.
+    parser = argparse.ArgumentParser(description="Cheapest falsifying probe for Confluence Cloud REST API v2.")
+    parser.add_argument("--read", metavar="PAGE_ID", help="Read-shape probe: dump id/spaceId/parentId/version/storage for one page.")
+    parser.add_argument("--parent", metavar="PAGE_ID", help="Parent page ID. Filters the listing; required for --create-canary.")
+    parser.add_argument("--create-canary", action="store_true", help="Preflight + collision-check, then create a disposable private child (dry-run unless --yes).")
+    parser.add_argument("--yes", action="store_true", help="Arm the mutation. Without it, --create-canary is dry-run only.")
+    args = parser.parse_args()
+
     domain = _resolve_domain()
     email = os.getenv("CONFLUENCE_EMAIL") or os.getenv("CONFLUENCE_USER")
     api_token = os.getenv("CONFLUENCE_TOKEN")
-
-    parent_id = sys.argv[1] if len(sys.argv) > 1 else "0"
 
     if not email or not api_token:
         print("❌ Error: Missing authentication surface variables.")
         print("   Set CONFLUENCE_EMAIL (or CONFLUENCE_USER) and CONFLUENCE_TOKEN in your shell environment before running.")
         sys.exit(1)
 
-    success = probe_confluence(domain, email, api_token, parent_id)
-    sys.exit(0 if success else 1)
+    if args.create_canary:
+        if not args.parent:
+            print("❌ --create-canary requires --parent PAGE_ID (the page to hang the canary under).")
+            sys.exit(1)
+        ok = create_canary(domain, email, api_token, args.parent, do_write=args.yes)
+    elif args.read:
+        ok = read_page(domain, email, api_token, args.read)
+    else:
+        ok = list_pages(domain, email, api_token, parent_id=args.parent)
+
+    sys.exit(0 if ok else 1)
 
 
 if __name__ == "__main__":
