@@ -365,7 +365,30 @@ def main():
     parser.add_argument("--parent", metavar="PAGE_ID", help="Parent page ID. Filters the listing; required for --create-canary.")
     parser.add_argument("--create-canary", action="store_true", help="Preflight + collision-check, then create a disposable private child (dry-run unless --yes).")
     parser.add_argument("--yes", action="store_true", help="Arm the mutation. Without it, --create-canary is dry-run only.")
+    parser.add_argument("--convert", metavar="PATH", help="No-network probe: read a Markdown file, strip front matter, convert to storage format, print it. No auth, no mutation.")
     args = parser.parse_args()
+
+    # No-network probe gate: the converter is a pure function, so it runs
+    # before the auth check. It falsifies the parse/escape logic locally
+    # without ever touching the API or arming a mutation.
+    if args.convert:
+        try:
+            with open(args.convert, "r", encoding="utf-8") as f:
+                md_text = f.read()
+        except OSError as e:
+            print(f"❌ Could not read {args.convert}: {e}", file=sys.stderr)
+            sys.exit(1)
+        storage = markdown_to_storage(md_text)
+        print(storage)
+        # Disposable fixture-coupled assertions: prove the three sentinels and
+        # the proven code macro survive the local transform.
+        print("\n--- Sentinel Survival Check (local, no network) ---", file=sys.stderr)
+        for sentinel in ("Heading Sentinel", "Paragraph sentinel", 'print("hello confluence markdown")'):
+            mark = "✅" if sentinel in storage else "❌"
+            print(f"  {mark} {sentinel!r}", file=sys.stderr)
+        in_macro = "<![CDATA[" in storage and 'ac:name="code"' in storage
+        print(f"  {'✅' if in_macro else '❌'} code block wrapped in proven CDATA macro", file=sys.stderr)
+        sys.exit(0)
 
     domain = _resolve_domain()
     email = os.getenv("CONFLUENCE_EMAIL") or os.getenv("CONFLUENCE_USER")
