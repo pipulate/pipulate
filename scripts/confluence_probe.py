@@ -242,7 +242,11 @@ def read_page(domain, email, api_token, page_id) -> bool:
     return True
 
 
-def create_canary(domain, email, api_token, parent_id, do_write) -> bool:
+def create_canary(domain, email, api_token, parent_id, do_write, body_value=None, title_value=None, code_sentinel=None) -> bool:
+    title = title_value or CANARY_TITLE
+    body = body_value or CANARY_BODY
+    sentinel = code_sentinel or CANARY_CODE_SENTINEL
+
     # --- Preflight 1: read the parent to harvest spaceId and sniff permissions. ---
     print(f"🔎 Preflight: reading parent {parent_id} (with operations)...")
     try:
