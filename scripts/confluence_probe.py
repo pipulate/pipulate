@@ -283,8 +283,8 @@ def create_canary(domain, email, api_token, parent_id, do_write, body_value=None
         print("   operations:    (none reported; create will be the real test)")
 
     # --- Preflight 2: collision check the canary title within the space. ---
-    print(f"🔎 Preflight: checking for existing '{CANARY_TITLE}' in space {space_id}...")
-    collision_query = urllib.parse.urlencode({"title": CANARY_TITLE, "space-id": space_id, "limit": 5})
+    print(f"🔎 Preflight: checking for existing '{title}' in space {space_id}...")
+    collision_query = urllib.parse.urlencode({"title": title, "space-id": space_id, "limit": 5})
     try:
         existing = _request(domain, email, api_token, f"/pages?{collision_query}")
     except urllib.error.HTTPError as e:
