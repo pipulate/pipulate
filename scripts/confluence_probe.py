@@ -28,7 +28,7 @@ import urllib.parse
 from urllib.parse import urlparse
 
 
-CANARY_TITLE = "DELETE_ME_Pipulate_Confluence_API_Canary"
+CANARY_TITLE = "DELETE_ME_Pipulate_Confluence_API_Canary_v2"
 
 # The smallest body that exercises the part most likely to break: a code macro.
 # Plain <p> always survives; CDATA-wrapped code is where storage-format
