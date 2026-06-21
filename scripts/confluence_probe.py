@@ -384,11 +384,11 @@ def create_canary(domain, email, api_token, parent_id, do_write, body_value=None
         return False
 
     value = ((readback.get("body") or {}).get("storage") or {}).get("value") or ""
-    if CANARY_CODE_SENTINEL in value:
-        print(f"✅ ROUND-TRIP CLEAN: code sentinel {CANARY_CODE_SENTINEL!r} survived intact.")
+    if sentinel in value:
+        print(f"✅ ROUND-TRIP CLEAN: code sentinel {sentinel!r} survived intact.")
         print("   The adapter is real, not leaky. Safe to build the Markdown pipeline next.")
     else:
-        print(f"⚠ ROUND-TRIP LEAK: sentinel {CANARY_CODE_SENTINEL!r} not found verbatim in read-back.")
+        print(f"⚠ ROUND-TRIP LEAK: sentinel {sentinel!r} not found verbatim in read-back.")
         print("   Storage-format escaping mangled the code block — fix the adapter before the pipeline.")
         print(f"   Returned storage (first 400 chars):\n{value[:400]}")
 
