@@ -507,6 +507,32 @@ PY
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
+  # === Declarative Namecheap DDNS Heartbeat ===
+  # Teaches systemd to run, on a timer, the exact three-parameter Namecheap
+  # update request proven by hand (ErrCount 0). The token is read at RUNTIME via
+  # $(cat ...) inside ExecStart, so only the command structure is evaluated into
+  # the Nix store — the secret string never lands there. curl uses -sS (not -s)
+  # so a non-zero ErrCount surfaces in journalctl instead of failing silently.
+  systemd.services.namecheap-ddns = {
+    description = "Update Namecheap Dynamic DNS Apex Record";
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      User = "root";
+      ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.curl}/bin/curl -sS \"https://dynamicdns.park-your-domain.com/update?host=@&domain=mikelev.in&password=$(${pkgs.coreutils}/bin/cat /etc/nixos/secrets/namecheap-ddns.token)\"'";
+    };
+  };
+
+  systemd.timers.namecheap-ddns = {
+    description = "Trigger Namecheap DDNS update every 15 minutes";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "2min";
+      OnUnitActiveSec = "15min";
+    };
+  };
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
