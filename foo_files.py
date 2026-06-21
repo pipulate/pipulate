@@ -90,6 +90,8 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # NOTE TO SELF: Look at all this ad hoc stuff and sort it properly into the Book Outline (when appropriate) or delete.
 
+/home/mike/repos/botifyml/_posts/2026-06-21-barebones.md
+
 # FIGURE OUT DDNS
 # /home/mike/repos/trimnoir/_posts/2025-04-29-nixos-jekyll-git-push-self-hosted-deployment.md  # [9,541 tokens]
 # /home/mike/repos/trimnoir/_posts/2025-12-20-holographic-bridge-sovereign-hosting-pfsense-nixos-dmz.md  # [10,639 tokens]
