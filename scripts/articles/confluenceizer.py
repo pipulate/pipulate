@@ -33,7 +33,7 @@ def _strip_front_matter(md_text: str) -> str:
 def _inline(text: str) -> str:
     """Escape HTML metacharacters first, then layer supported inline forms."""
     text = html.escape(text, quote=False)
-    text = re.sub(r"\*\.(.+?)\*\*", r"<strong>\1</strong>", text)
+    text = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", text)
     text = re.sub(r"`([^`]+)`", r"<code>\1</code>", text)
     return text
 
