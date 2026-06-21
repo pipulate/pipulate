@@ -1281,10 +1281,10 @@ def main():
             continue
 
         # HANDLE REMOTE URLS (And JIT Optical Distillation)
-        if path.startswith(('http://', 'https://', '!http://', '!https://')):
-            target_url = path[1:].strip() if path.startswith('!') else path.strip()
+        if path.startswith(('http://', 'https://', '!http://', '!https://', '@http://', '@https://')):
+            target_url = path[1:].strip() if path.startswith(('!', '@')) else path.strip()
             
-            if path.startswith('!'):
+            if path.startswith(('!', '@')):
                 # JIT OPTICAL DISTILLATION (The MST3K Balcony)
                 logger.print(f"   -> 👁️‍🗨️ Engaging LLM Optics for: {target_url}")
                 from tools.scraper_tools import selenium_automation
@@ -1297,7 +1297,7 @@ def main():
                 scrape_params = {
                     "url": target_url, "domain": domain, "url_path_slug": path_slug,
                     "take_screenshot": False, "headless": False, "is_notebook_context": True, "verbose": False,
-                    "override_cache": True  # 💥 Bust the cached Cloudflare 403 page!
+                    "override_cache": path.startswith('!')  # 💥 Bust cache with !, reuse cache with @
                 }
                 
                 import asyncio
