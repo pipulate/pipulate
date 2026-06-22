@@ -140,6 +140,41 @@ def _fetch_child_inventory(domain: str, email: str, api_token: str, parent_id: s
         path = data.get("_links", {}).get("next")
     return inventory
 
+def _metadata_value(metadata: dict, *keys):
+    """Return the first present, non-empty front-matter value for any key."""
+    for key in keys:
+        value = metadata.get(key)
+        if value is not None and str(value).strip():
+            return value
+    return None
+
+def _doc_date(md_file: Path, metadata: dict) -> str:
+    """Prefer the Jekyll filename date, then fall back to front matter."""
+    match = re.match(r"^(\d{4}-\d{2}-\d{2})-", md_file.name)
+    if match:
+        return match.group(1)
+
+    raw_date = _metadata_value(metadata, "date", "created", "published")
+    if raw_date:
+        return str(raw_date)[:10]
+
+    return "0000-00-00"
+
+def _fallback_title(md_file: Path) -> str:
+    stem = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", md_file.stem)
+    return stem.replace("-", " ").strip().title()
+
+def _target_title(md_file: Path, post) -> str:
+    """Compile the local Markdown file into the Confluence title contract."""
+    metadata = post.metadata or {}
+    title = _metadata_value(metadata, "title") or _fallback_title(md_file)
+    sort_order = _metadata_value(metadata, "sort_order", "order", "sort", "ordinal")
+    date_part = _doc_date(md_file, metadata)
+
+    if sort_order is None:
+        return f"{date_part} | {title}"
+    return f"{date_part} ({sort_order}) | {title}"
+
 def main():
     parser = argparse.ArgumentParser(description="Publish local markdown articles to Confluence Cloud.")
     common.add_standard_arguments(parser)
