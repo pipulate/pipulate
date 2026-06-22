@@ -86,9 +86,9 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # NOTE TO SELF: SORT AD HOC STUFF INTO BOOK OUTLINE
 
-# /home/mike/repos/trimnoir/_posts/2026-06-21-confluence-retargetable-output.md  # [26,877 tokens]
-# /home/mike/repos/trimnoir/_posts/2026-06-21-idempotent-confluence-automation.md  # [17,105 tokens]
-# /home/mike/repos/trimnoir/_posts/2026-06-21-architecting-private-work-journals.md  # [25,656 tokens]
+/home/mike/repos/trimnoir/_posts/2026-06-21-confluence-retargetable-output.md  # [26,877 tokens]
+/home/mike/repos/trimnoir/_posts/2026-06-21-idempotent-confluence-automation.md  # [17,105 tokens]
+/home/mike/repos/trimnoir/_posts/2026-06-21-architecting-private-work-journals.md  # [25,656 tokens]
 
 # CONFLUENCE DOCS & MARKDOWN CONVERSION
 # @https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-page/
