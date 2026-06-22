@@ -132,8 +132,8 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 #/home/mike/repos/md2conf/md2conf/uri.py
 #/home/mike/repos/md2conf/md2conf/xml.py
 
-/home/mike/repos/botifyml/_posts/2026-06-16-architecting-private-work-journals.md
-/home/mike/repos/botifyml/_posts/2026-06-19-ground-truth-agentic-crawlers.csf
+# /home/mike/repos/botifyml/_posts/2026-06-16-architecting-private-work-journals.md
+# /home/mike/repos/botifyml/_posts/2026-06-19-ground-truth-agentic-crawlers.csf
 
 # /home/mike/repos/botifyml/_posts/2026-06-16-architecting-private-work-journals.md
 # /home/mike/repos/trimnoir/_posts/2026-06-21-confluence-retargetable-output.md  # [26,877 tokens]
@@ -179,8 +179,8 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # ! git --no-pager log -p -n 4
 # ! cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
-requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
-requirements.txt  #  <-- Pip-compiled dependencies.
+# requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
+# requirements.txt  #  <-- Pip-compiled dependencies.
 # logs/server.log   #  <-- Like letting AI see your browser app state, but better! --------------------- AI server.py LOG DEBUG
 
 # ============================================================================
