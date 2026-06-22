@@ -262,6 +262,23 @@ def main():
         print(f"✅ Inventory Scan Complete. Found {len(inventory)} matching child page(s) on remote wiki.")
         for title, meta in inventory.items():
             print(f"   • [ID: {meta['id']}] {title} (Version: {meta['version']})")
+
+        print("\n🧭 Remote Match Contract:")
+        for md_file, target_title, storage_xml in local_contracts:
+            meta = inventory.get(target_title)
+            if meta:
+                print(f"   MATCH: {md_file.name} -> [ID: {meta['id']}] {target_title}")
+            else:
+                print(f"   MISS:  {md_file.name} -> {target_title}")
+
+        if not args.yes:
+            print("\n🅳🆁🆈 DRY-RUN — no mutation. Review Target Title and MATCH/MISS lines before porting the proven upsert path.")
+            print("  ↳ Next patch should lift create_canary's space-scoped collision check, private create, version bump, and read-back verification.")
+            return
+
+        print("\n❌ --yes armed, but production upsert is intentionally not implemented in this contract probe.")
+        print("  ↳ Refusing to mutate until the proven create_canary upsert path is ported behind this gate.")
+        sys.exit(1)
     except Exception as e:
         print(f"❌ Network Boundary Handshake Failed: {e}")
         sys.exit(1)
