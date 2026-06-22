@@ -132,6 +132,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 #/home/mike/repos/md2conf/md2conf/uri.py
 #/home/mike/repos/md2conf/md2conf/xml.py
 
+/home/mike/repos/botifyml/_posts/2026-06-16-architecting-private-work-journals.md
 /home/mike/repos/botifyml/_posts/2026-06-19-ground-truth-agentic-crawlers.csf
 
 # /home/mike/repos/botifyml/_posts/2026-06-16-architecting-private-work-journals.md
