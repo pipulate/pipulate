@@ -45,9 +45,41 @@ def _strip_front_matter(md_text: str) -> str:
 
     return md_text
 
+_VOID_HTML_TAG_RE = re.compile(
+    r"<(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)(\s[^<>]*?)?>",
+    re.IGNORECASE,
+)
+
+def _normalize_void_html_tag(match: re.Match) -> str:
+    """Rewrite browser-tolerated void HTML tags as XML-safe self-closing tags."""
+    tag = match.group(1).lower()
+    attrs = (match.group(2) or "").strip()
+    attrs = re.sub(r"\s*/\s*$", "", attrs).strip()
+    return f"<{tag}{' ' + attrs if attrs else ''} />"
+
+def _normalize_markdown_for_md2conf(md_text: str) -> str:
+    """Make mixed Markdown/raw-HTML safer for md2conf without touching fenced code."""
+    out = []
+    in_fence = False
+
+    for line in md_text.splitlines(keepends=True):
+        stripped = line.lstrip()
+        if stripped.startswith("```") or stripped.startswith("~~~"):
+            in_fence = not in_fence
+            out.append(line)
+            continue
+
+        if in_fence:
+            out.append(line)
+            continue
+
+        out.append(_VOID_HTML_TAG_RE.sub(_normalize_void_html_tag, line))
+
+    return "".join(out)
+
 def markdown_to_storage(md_text: str) -> str:
     """Convert Markdown to Confluence storage XML using md2conf."""
-    cleaned_md = _strip_front_matter(md_text)
+    cleaned_md = _normalize_markdown_for_md2conf(_strip_front_matter(md_text))
 
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp_path = Path(tmpdir) / "page.md"
