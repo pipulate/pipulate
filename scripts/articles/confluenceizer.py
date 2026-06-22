@@ -178,6 +178,7 @@ def _target_title(md_file: Path, post) -> str:
 def main():
     parser = argparse.ArgumentParser(description="Publish local markdown articles to Confluence Cloud.")
     common.add_standard_arguments(parser)
+    parser.add_argument("--yes", action="store_true", help="Arm Confluence mutations. Without this, only print the dry-run contract.")
     args = parser.parse_args()
 
     targets = common.load_targets()
