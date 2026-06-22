@@ -86,11 +86,13 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # NOTE TO SELF: SORT AD HOC STUFF INTO BOOK OUTLINE
 
-/home/mike/repos/botifyml/_posts/2026-06-16-architecting-private-work-journals.md
-/home/mike/repos/trimnoir/_posts/2026-06-21-confluence-retargetable-output.md  # [26,877 tokens]
-/home/mike/repos/trimnoir/_posts/2026-06-21-idempotent-confluence-automation.md  # [17,105 tokens]
-/home/mike/repos/trimnoir/_posts/2026-06-21-architecting-private-work-journals.md  # [25,656 tokens]
-/home/mike/repos/botifyml/_posts/2026-06-22-automating-knowledge-graph-confluence.md
+https://raw.githubusercontent.com/hunyadi/md2conf/refs/heads/master/README.md
+
+# /home/mike/repos/botifyml/_posts/2026-06-16-architecting-private-work-journals.md
+# /home/mike/repos/trimnoir/_posts/2026-06-21-confluence-retargetable-output.md  # [26,877 tokens]
+# /home/mike/repos/trimnoir/_posts/2026-06-21-idempotent-confluence-automation.md  # [17,105 tokens]
+# /home/mike/repos/trimnoir/_posts/2026-06-21-architecting-private-work-journals.md  # [25,656 tokens]
+# /home/mike/repos/botifyml/_posts/2026-06-22-automating-knowledge-graph-confluence.md
 
 # CONFLUENCE DOCS & MARKDOWN CONVERSION
 # @https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-page/
