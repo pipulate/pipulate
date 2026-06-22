@@ -59,14 +59,17 @@ def render(label: str):
 def main():
     label = sys.argv[1] if len(sys.argv) > 1 else "Station"
 
-    # Self-hold cap is a safety net only; the conjure_window actuator is the
-    # real source of truth for how long the card stays up.
-    hold = 60.0
+    # Self-hold cap is a LAST-RESORT safety net only; the conjure_window
+    # actuator (or an explicit external pkill tied to a real event) is the
+    # real source of truth for how long the card stays up. Keep this large —
+    # it exists purely to stop a card from hanging forever if every other
+    # teardown mechanism somehow fails, not to time the card's actual life.
+    hold = 900.0
     if len(sys.argv) > 2:
         try:
             hold = float(sys.argv[2])
         except ValueError:
-            hold = 60.0
+            hold = 900.0
 
     render(label)
     time.sleep(hold)
