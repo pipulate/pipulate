@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 import json
 import difflib
+from urllib.parse import urljoin, urlparse
 
 # --- Third-Party Imports ---
 from bs4 import BeautifulSoup
