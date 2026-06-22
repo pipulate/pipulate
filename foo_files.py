@@ -86,7 +86,53 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # NOTE TO SELF: SORT AD HOC STUFF INTO BOOK OUTLINE
 
-https://raw.githubusercontent.com/hunyadi/md2conf/refs/heads/master/README.md
+#https://raw.githubusercontent.com/hunyadi/md2conf/refs/heads/master/README.md
+#/home/mike/repos/md2conf/md2conf/api_base.py
+#/home/mike/repos/md2conf/md2conf/api.py
+#/home/mike/repos/md2conf/md2conf/api_types.py
+#/home/mike/repos/md2conf/md2conf/api_v1.py
+#/home/mike/repos/md2conf/md2conf/api_v2.py
+#/home/mike/repos/md2conf/md2conf/attachment.py
+#/home/mike/repos/md2conf/md2conf/clio.py
+#/home/mike/repos/md2conf/md2conf/coalesce.py
+#/home/mike/repos/md2conf/md2conf/collection.py
+#/home/mike/repos/md2conf/md2conf/compatibility.py
+#/home/mike/repos/md2conf/md2conf/converter.py
+#/home/mike/repos/md2conf/md2conf/csf.py
+#/home/mike/repos/md2conf/md2conf/emoticon.py
+#/home/mike/repos/md2conf/md2conf/entities.dtd
+#/home/mike/repos/md2conf/md2conf/environment.py
+#/home/mike/repos/md2conf/md2conf/extension.py
+#/home/mike/repos/md2conf/md2conf/external.py
+#/home/mike/repos/md2conf/md2conf/formatting.py
+#/home/mike/repos/md2conf/md2conf/frontmatter.py
+#/home/mike/repos/md2conf/md2conf/image.py
+#/home/mike/repos/md2conf/md2conf/__init__.py
+#/home/mike/repos/md2conf/md2conf/jpeg.py
+#/home/mike/repos/md2conf/md2conf/latex.py
+#/home/mike/repos/md2conf/md2conf/local.py
+#/home/mike/repos/md2conf/md2conf/__main__.py
+#/home/mike/repos/md2conf/md2conf/markdown.py
+#/home/mike/repos/md2conf/md2conf/matcher.py
+#/home/mike/repos/md2conf/md2conf/metadata.py
+#/home/mike/repos/md2conf/md2conf/options_api.py
+#/home/mike/repos/md2conf/md2conf/options_converter.py
+#/home/mike/repos/md2conf/md2conf/options.py
+#/home/mike/repos/md2conf/md2conf/order.py
+#/home/mike/repos/md2conf/md2conf/png.py
+#/home/mike/repos/md2conf/md2conf/processor.py
+#/home/mike/repos/md2conf/md2conf/publisher.py
+#/home/mike/repos/md2conf/md2conf/py.typed
+#/home/mike/repos/md2conf/md2conf/reflection.py
+#/home/mike/repos/md2conf/md2conf/scanner.py
+#/home/mike/repos/md2conf/md2conf/serializer.py
+#/home/mike/repos/md2conf/md2conf/svg.py
+#/home/mike/repos/md2conf/md2conf/text.py
+#/home/mike/repos/md2conf/md2conf/toc.py
+#/home/mike/repos/md2conf/md2conf/uri.py
+#/home/mike/repos/md2conf/md2conf/xml.py
+
+/home/mike/repos/botifyml/_posts/2026-06-19-ground-truth-agentic-crawlers.csf
 
 # /home/mike/repos/botifyml/_posts/2026-06-16-architecting-private-work-journals.md
 # /home/mike/repos/trimnoir/_posts/2026-06-21-confluence-retargetable-output.md  # [26,877 tokens]
