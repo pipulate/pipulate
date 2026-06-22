@@ -508,6 +508,41 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias art='vim imports/ascii_displays.py'
           alias smart='python release.py --force -m "Testing rabbit documentation injection"'
           latest() { python prompt_foo.py -a "[-''${1:-2}:]" --no-tree; }
+          latestn() {
+            # Finds largest N articles fitting in byte budget (default 1MB)
+            local max_bytes="''${1:-1048576}"
+            local n=$(python3 -c "
+import os, sys, json
+root = os.getcwd()
+env = 0
+try:
+    sys.path.insert(0, root)
+    import foo_files
+    for line in foo_files.AI_PHOOEY_CHOP.strip().splitlines():
+        s = line.strip().split('#')[0].strip()
+        if s and ('/' in s or '.' in s) and not s.startswith('!'):
+            fp = s if os.path.isabs(s) else os.path.join(root, s)
+            if os.path.isfile(fp): env += os.path.getsize(fp)
+except: env = 200000
+env += 145000  # command outputs, wrappers, diff telemetry
+pm = os.path.join(root, 'prompt.md')
+if os.path.isfile(pm): env += os.path.getsize(pm)
+try:
+    cfg = os.path.expanduser('~/.config/pipulate/blogs.json')
+    posts = json.load(open(cfg))['1']['path'] if os.path.exists(cfg) else os.path.expanduser('~/repos/trimnoir/_posts')
+except: posts = os.path.expanduser('~/repos/trimnoir/_posts')
+budget = $max_bytes - env
+files = sorted([f for f in os.listdir(posts) if f.endswith('.md') and f[:4].isdigit()], reverse=True)
+total = 0; n = 0
+for f in files:
+    sz = os.path.getsize(os.path.join(posts, f))
+    if total + sz > budget: break
+    total += sz; n += 1
+print(max(1, n))
+" 2>/dev/null || echo 5)
+            echo "📐 Auto-sized to $n most recent articles (budget: $max_bytes bytes)"
+            latest "$n"
+          }
           slugs() { python scripts/articles/lsa.py -t 1 --slugs "$@" --fmt paths; }
           # slugs-ordered preserves input order for narrative control
           sluggo() { for slug in "$@"; do python scripts/articles/lsa.py -t 1 --match "$slug" --fmt paths; done; }
