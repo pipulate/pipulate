@@ -547,6 +547,8 @@ for f in files:
     total += sz; n += 1
 print(max(1, n))
 " 2>/dev/null || echo 5)
+            n=$((n + adjust))
+            [[ $n -lt 1 ]] && n=1
             echo "📐 Auto-sized to $n most recent articles (budget: $max_bytes bytes)"
             latest "$n"
           }
