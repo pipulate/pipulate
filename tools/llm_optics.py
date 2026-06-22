@@ -165,6 +165,87 @@ def generate_diff(source_text: str, hydrated_text: str, prefix: str, results: di
     except Exception as e:
         print(f"Error generating diff for {prefix}: {e}", file=sys.stderr)
 
+def _extract_links(html_content: str, base_url: str) -> list:
+    """Extracts every anchor as an objective fact row. No nav-vs-body opinion, just what the page hands out."""
+    soup = BeautifulSoup(html_content, 'html.parser')
+    base_host = urlparse(base_url).netloc
+    rows = []
+    for a in soup.find_all('a', href=True):
+        href = a['href'].strip()
+        resolved = urljoin(base_url, href)
+        img = a.find('img')
+        if img is not None and not a.get_text(strip=True):
+            label = f"[image] alt={img.get('alt', '')!r} src={img.get('src', '')!r}"
+        else:
+            label = a.get_text(strip=True) or "(no text)"
+        rel_val = a.get('rel', [])
+        rel = " ".join(rel_val) if isinstance(rel_val, list) else str(rel_val)
+        rows.append({
+            "href_raw": href,
+            "href_resolved": resolved,
+            "label": label,
+            "rel": rel or "—",
+            "target": a.get('target', '—'),
+            "same_host": (urlparse(resolved).netloc == base_host) if base_host else False,
+        })
+    return rows
+
+
+def _format_link_rows(rows: list) -> list:
+    """Renders link rows grouped along the one objective axis: same-host vs external."""
+    first_party = [r for r in rows if r["same_host"]]
+    external = [r for r in rows if not r["same_host"]]
+
+    def render_row(r):
+        meta = []
+        if r["rel"] != "—":
+            meta.append(f"rel={r['rel']}")
+        if r["target"] != "—":
+            meta.append(f"target={r['target']}")
+        meta_str = ("  " + " ".join(meta)) if meta else ""
+        return f'    {r["href_resolved"]}    "{r["label"]}"{meta_str}'
+
+    lines = [f"  first-party (same host): {len(first_party)}"]
+    lines.extend(render_row(r) for r in first_party)
+    lines.append(f"  external: {len(external)}")
+    lines.extend(render_row(r) for r in external)
+    return lines
+
+
+def generate_link_lens(source_html: str, hydrated_html: str, base_url: str, results: dict):
+    """Builds the objective Link Lens: source anchors, hydrated anchors, and the hydration diff.
+
+    The diff is the intelligence: anchors that appear only after JavaScript runs reveal a
+    client-side-injected link graph without anyone reading a line of script. Grouping is by
+    same-host vs external only, because nav-vs-content is an editorial judgment, not an observation.
+    """
+    source_rows = _extract_links(source_html, base_url)
+    hydrated_rows = _extract_links(hydrated_html, base_url)
+
+    source_keys = {r["href_resolved"] for r in source_rows}
+    hydrated_keys = {r["href_resolved"] for r in hydrated_rows}
+    added = sorted(hydrated_keys - source_keys)
+    removed = sorted(source_keys - hydrated_keys)
+
+    md = ["# Link Lens", f"base: {base_url or '(unknown)'}", ""]
+
+    md.append(f"## SOURCE HTML — {len(source_rows)} anchors")
+    md.extend(_format_link_rows(source_rows))
+    md.append("")
+
+    md.append(f"## HYDRATED DOM — {len(hydrated_rows)} anchors")
+    md.extend(_format_link_rows(hydrated_rows))
+    md.append("")
+
+    md.append("## ADDED BY HYDRATION")
+    md.extend(added if added else ["  (none)"])
+    md.append("")
+
+    md.append("## REMOVED BY HYDRATION")
+    md.extend(removed if removed else ["  (none)"])
+
+    results['links_md_content'] = "\n".join(md)
+
 # --- Main Processing Logic ---
 def main(target_dir_path: str):
     """
