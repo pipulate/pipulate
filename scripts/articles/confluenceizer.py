@@ -254,8 +254,25 @@ def main():
 
     print(f"\n📡 Connecting to Atlassian Network Boundary: https://{domain}...")
     try:
-        parent_meta = _request(domain, email, api_token, f"/pages/{parent_id}")
-        print(f"✅ Network Handshake Successful! Parent Title: '{parent_meta.get('title')}'")
+        parent_meta = _request(domain, email, api_token, f"/pages/{parent_id}?include-operations=true")
+        space_id = parent_meta.get("spaceId")
+        print(f"✅ Network Handshake Successful! Parent Title: '{parent_meta.get('title')}' [Space ID: {space_id}]")
+        if not space_id:
+            print("❌ Parent returned no spaceId; cannot place children. Aborting.")
+            sys.exit(1)
+
+        ops = []
+        operations = parent_meta.get("operations") or {}
+        if isinstance(operations, dict):
+            ops = [o.get("operation") for o in operations.get("results", [])]
+        elif isinstance(operations, list):
+            ops = [o.get("operation") for o in operations]
+        if ops:
+            print(f"   operations: {', '.join(o for o in ops if o)}")
+            if "create" not in ops and "update" not in ops:
+                print("   ⚠ No 'create'/'update' in parent operations — write may 403.")
+        else:
+            print("   operations: (none reported; write will be the real permission test)")
         
         print(f"🔎 Scanning Remote Page Inventory under Parent ID {parent_id}...")
         inventory = _fetch_child_inventory(domain, email, api_token, parent_id)
