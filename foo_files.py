@@ -205,11 +205,11 @@ scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and includ
 # VIII. LLM OPTICS - Like looking at raw HTML or the hydrated DOM? Them either.
 # ============================================================================
 
-# tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
-# tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
-# tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
-# tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
-# tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
+tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
+tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
+tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
+tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
+tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
 # ============================================================================
 # IX. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
@@ -691,8 +691,10 @@ tools/llm_optics.py
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
 
+# AUDIT.md  # [2,011 tokens | 9,706 bytes]
 # Notebooks/Advanced_Notebooks/__init__.py  # [0 tokens | 0 bytes]
 # Notebooks/__init__.py  # [0 tokens | 0 bytes]
+# README.md  # [20,725 tokens | 104,252 bytes]
 # apps/130_gap_analysis.py  # [9,625 tokens | 48,280 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
 # apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
@@ -753,6 +755,7 @@ tools/llm_optics.py
 # scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
 # scripts/botify/botify_api_examples.md  # [21,273 tokens | 86,712 bytes]
 # scripts/botify/make_botify_docs.ipynb  # [61,006 tokens | 224,678 bytes]
+# scripts/confluence_probe.py  # [4,990 tokens | 20,668 bytes]
 # scripts/dial_spinner.py  # [398 tokens | 1,463 bytes]
 # scripts/flippers.py  # [350 tokens | 1,309 bytes]
 # scripts/gsc/generate_categories.py  # [1,477 tokens | 6,880 bytes]
