@@ -472,6 +472,12 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
         # Miscellaneous setup logic for aliases, CUDA, SSH, etc.
         miscSetupLogic = ''
           export PIPULATE_ROOT="$(pwd)" # Capture the absolute path to the project root
+          # Auto-load .env if present (keeps secrets out of the shell hook itself)
+          if [ -f "$PIPULATE_ROOT/.env" ]; then
+            set -a
+            source "$PIPULATE_ROOT/.env"
+            set +a
+          fi
           # THE ACETATE OVERLAY: Force Neovim to use the embedded cognitive blueprint
           export VIMINIT="luafile $PIPULATE_ROOT/init.lua"
           # Set up nbstripout git filter
