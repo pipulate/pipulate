@@ -114,6 +114,32 @@ def _request(domain: str, email: str, api_token: str, path: str,
         raw = response.read().decode("utf-8")
         return json.loads(raw) if raw else {}
 
+def _fetch_child_inventory(domain: str, email: str, api_token: str, parent_id: str) -> dict:
+    """Recursively traverses Confluence v2 cursor pagination links to harvest
+    all downstream children, returning a mapping of page titles to local metadata."""
+    inventory = {}
+    path = "/pages?limit=50"
+    
+    while path:
+        # Strip v2 base path if echoed back inside response links
+        if path.startswith("/wiki/api/v2"):
+            path = path[12:]
+            
+        data = _request(domain, email, api_token, path)
+        results = data.get("results", [])
+        
+        for page in results:
+            if str(page.get("parentId")) == str(parent_id):
+                title = page.get("title")
+                inventory[title] = {
+                    "id": page.get("id"),
+                    "version": page.get("version", {}).get("number"),
+                    "status": page.get("status")
+                }
+                
+        path = data.get("_links", {}).get("next")
+    return inventory
+
 def main():
     parser = argparse.ArgumentParser(description="Publish local markdown articles to Confluence Cloud.")
     common.add_standard_arguments(parser)
