@@ -50,6 +50,7 @@ OUTPUT_FILES = {
     "diff_boxes_html": "diff_boxes.html",
     "diff_simple_txt": "diff_simple_dom.txt",
     "diff_simple_html": "diff_simple_dom.html",
+    "links_md": "links.md",
 }
 CONSOLE_WIDTH = 180
 
