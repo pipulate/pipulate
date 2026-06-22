@@ -136,6 +136,7 @@ async def selenium_automation(params: dict) -> dict:
             "diff_hierarchy.html",
             "diff_simple_dom.txt",
             "diff_simple_dom.html",
+            "links.md",
             "screenshot.png", 
             "seo.md",
             "source_dom_layout_boxes.txt", 
