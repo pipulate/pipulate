@@ -32,6 +32,16 @@ def _strip_front_matter(md_text: str) -> str:
     # Strip Liquid safety wrappers — meaningful for Jekyll rendering, noise in Confluence
     md_text = re.sub(r'\{%-?\s*raw\s*-?%\}\s*\n?', '', md_text)
     md_text = re.sub(r'\{%-?\s*endraw\s*-?%\}\s*\n?', '', md_text)
+
+    # Corporate journal transformation & dialogue cleanup
+    md_text = md_text.replace("**Me**:", "**Mike Levin**:")
+    md_text = md_text.replace("Curious Book Reader", "Curious Journal Reader")
+    md_text = md_text.replace("## Book Analysis", "## Content Analysis")
+
+    # Prune public metadata blocks to prevent confusion in team wiki environments
+    md_text = re.sub(r'### 🐦 X\.com Promo Tweet\n```text\n.*?\n```\n*', '', md_text, flags=re.DOTALL)
+    md_text = re.sub(r'### Title Brainstorm\n.*?(?=\n### |\Z)', '', md_text, flags=re.DOTALL)
+
     return md_text
 
 def _inline(text: str) -> str:
