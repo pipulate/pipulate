@@ -206,6 +206,12 @@ def main():
     try:
         parent_meta = _request(domain, email, api_token, f"/pages/{parent_id}")
         print(f"✅ Network Handshake Successful! Parent Title: '{parent_meta.get('title')}'")
+        
+        print(f"🔎 Scanning Remote Page Inventory under Parent ID {parent_id}...")
+        inventory = _fetch_child_inventory(domain, email, api_token, parent_id)
+        print(f"✅ Inventory Scan Complete. Found {len(inventory)} matching child page(s) on remote wiki.")
+        for title, meta in inventory.items():
+            print(f"   • [ID: {meta['id']}] {title} (Version: {meta['version']})")
     except Exception as e:
         print(f"❌ Network Boundary Handshake Failed: {e}")
         sys.exit(1)
