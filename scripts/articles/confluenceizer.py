@@ -7,12 +7,13 @@ and sequences local Markdown posts into the wiki page tree.
 """
 
 import sys
-import html
 import re
 import argparse
 import os
 import json
 import base64
+import subprocess
+import tempfile
 import urllib.request
 import urllib.error
 import urllib.parse
