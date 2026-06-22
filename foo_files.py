@@ -86,16 +86,12 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # NOTE TO SELF: SORT AD HOC STUFF INTO BOOK OUTLINE
 
-/home/mike/.config/pipulate/blogs.json       # <-- Centralized multi-site routing manifest for N Jekyll blogs.
-/home/mike/repos/pipulate/scripts/articles/confluenceizer.py  # [1,611 tokens]
-/home/mike/repos/pipulate/scripts/confluence_probe.py  # [4,990 tokens]
-/home/mike/repos/pipulate/scripts/articles/common.py  # [960 tokens]
 # /home/mike/repos/trimnoir/_posts/2026-06-21-confluence-retargetable-output.md  # [26,877 tokens]
 # /home/mike/repos/trimnoir/_posts/2026-06-21-idempotent-confluence-automation.md  # [17,105 tokens]
 # /home/mike/repos/trimnoir/_posts/2026-06-21-architecting-private-work-journals.md  # [25,656 tokens]
 
 # CONFLUENCE DOCS & MARKDOWN CONVERSION
-@https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-page/
+# @https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-page/
 # @https://developer.atlassian.com/cloud/confluence/overview-of-capabilities/
 # @https://pypi.org/project/markdown-to-confluence/
 # @https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-blog-post/
@@ -108,7 +104,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # @https://moz.com/blog/bing-and-bard-feature-timeline
 # /home/mike/repos/trimnoir/_posts/2026-06-17-tracing-agentic-web-infrastructure-consumption.md
-# scripts/articles/confluenceizer.py
 # /home/mike/repos/botifyml/_posts/2026-06-21-barebones.md
 
 # FIGURE OUT DDNS
@@ -186,8 +181,6 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 flake.nix       #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
 scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
-
-
 
 # The following 3 files are the first huge context reveal that pull the curtains open.
 # __init__.py     #  <-- Master versioning
@@ -365,19 +358,20 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # XIII. JEKYLL PUBLISHING - Reaching out to the world
 # ============================================================================
 
-# /home/mike/.config/pipulate/blogs.json       # <-- Centralized multi-site routing manifest for N Jekyll blogs.
-# scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
-# scripts/articles/common.py                   # <-- Self-explanatory
-# scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
-# scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
-# scripts/articles/sanitizer.py                # <-- Scrubs PII
-# scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
-# scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
-# scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
-# scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
-# scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
-# scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
-# scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
+/home/mike/.config/pipulate/blogs.json       # <-- Centralized multi-site routing manifest for N Jekyll blogs.
+scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
+scripts/articles/common.py                   # <-- Self-explanatory
+scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
+scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
+scripts/articles/sanitizer.py                # <-- Scrubs PII
+scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
+scripts/articles/confluenceizer.py           # <-- Just added
+scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
+scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
+scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
+scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
+scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
+scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
 
 # The following Jekyll files pair well with the above to show how we start various forms of tracking, and as a transition into Honeybot Nginx Broadcast Studio & telemetry.
 # /home/mike/repos/trimnoir/_config.yml
