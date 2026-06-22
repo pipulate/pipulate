@@ -359,6 +359,11 @@ canonical_url: {json.dumps(canonical_url)}
         if content:
             write_output_file(output_dir, file_key, content, results)
 
+    # Save the Link Lens
+    links_content = results.get("links_md_content", "")
+    if links_content:
+        write_output_file(output_dir, "links_md", links_content, results)
+
     print(f"Successfully generated optical artifacts for {output_dir.name}")
 
 if __name__ == "__main__":
