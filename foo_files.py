@@ -205,28 +205,28 @@ scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and includ
 # VIII. LLM OPTICS - Like looking at raw HTML or the hydrated DOM? Them either.
 # ============================================================================
 
-tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
-tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
-tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
-tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
-tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
+# tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
+# tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
+# tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
+# tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
+# tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
 # ============================================================================
 # IX. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
 # ============================================================================
 
 # CORE SLIDESHOW FILES
-nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
-remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
-remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
-remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
-remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
-remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
-remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
-remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
-remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
-remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
-remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+# nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
+# remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
+# remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
+# remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
+# remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
+# remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
+# remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
+# remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
+# remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
+# remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
+# remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
 
 # remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
 
@@ -374,6 +374,10 @@ remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblog
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
+# scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
+# scripts/botify/botify_api_examples.md  # [21,273 tokens | 86,712 bytes]
+# scripts/botify/make_botify_docs.ipynb  # [61,006 tokens | 224,678 bytes]
+# tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
 
 #  _____ _           _           _                          
 # |  ___(_)_ __   __| |   __ _  | |__   ___  _ __ ___   ___ 
@@ -752,9 +756,6 @@ tools/llm_optics.py
 # scripts/articles/scrub_tags.py  # [358 tokens | 1,587 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
 # scripts/audit_dye.py  # [256 tokens | 1,009 bytes]
-# scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
-# scripts/botify/botify_api_examples.md  # [21,273 tokens | 86,712 bytes]
-# scripts/botify/make_botify_docs.ipynb  # [61,006 tokens | 224,678 bytes]
 # scripts/confluence_probe.py  # [4,990 tokens | 20,668 bytes]
 # scripts/dial_spinner.py  # [398 tokens | 1,463 bytes]
 # scripts/flippers.py  # [350 tokens | 1,309 bytes]
@@ -766,4 +767,3 @@ tools/llm_optics.py
 # scripts/playground/prompt_feeder.py  # [746 tokens | 3,154 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
-# tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
