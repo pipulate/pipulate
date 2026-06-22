@@ -565,19 +565,30 @@ def perform_show(script):
             if check_standby():
                 narrator.interrupt()  # cut current audio + flush the backlog
                 narrator.say("Receiving updates. Things will go quiet for a few moments. Then I'll start reading again. Please stand by.")
-                conjure_window("card.py", duration=130.0, args=["UPDATING"])
+                # The outer `duration` here is a generous LAST-RESORT ceiling, not
+                # the thing that's supposed to close this window. The deterministic
+                # close is the pkill below, fired the instant check_for_updates()
+                # proves the deploy is actually done — never a guessed elapsed time.
+                conjure_window("card.py", duration=270.0, args=["UPDATING"])
                 try:
                     subprocess.run(["pkill", "firefox"], check=False)
                 except Exception:
                     pass
                 # Hold narration until the deploy finishes (completion bell rings)
                 # or we time out gracefully, then lead the next cycle with the new article.
-                deadline = time.time() + 120
+                # This deadline is a fail-safe ceiling for a deploy that never finishes,
+                # not the expected case — builds vary, and check_for_updates() polling
+                # below is what actually decides when to stop waiting.
+                deadline = time.time() + 240
                 while time.time() < deadline:
                     if check_for_updates():
                         break
                     time.sleep(2)
-                # Tear down the dead-air cover right before handing off to the newest article
+                # Tear down the dead-air cover deterministically, right here, the
+                # moment we know one way or another (bell rang, or we gave up waiting).
+                # perform_show() also retries this same pkill on every future cycle
+                # (see the top of this function) as a harmless, idempotent backstop in
+                # case this particular teardown attempt ever fails to land.
                 try:
                     subprocess.run(["pkill", "-f", "card.py.*UPDATING"], check=False)
                 except Exception:
