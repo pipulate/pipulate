@@ -1311,6 +1311,7 @@ def main():
                         ('headers', 'Response Headers'),
                         ('optics_manifest', 'Optics Manifest'),
                         ('accessibility_tree_summary', 'Semantic Outline'),
+                        ('links_md', 'Link Lens'),
                         ('diff_hierarchy_txt', 'DOM Change Hierarchy'),
                     ]
                     
