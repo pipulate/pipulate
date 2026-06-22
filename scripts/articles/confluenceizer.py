@@ -22,12 +22,16 @@ import frontmatter
 import common
 
 def _strip_front_matter(md_text: str) -> str:
-    """Drop a leading --- ... --- YAML block if present; otherwise pass through."""
+    """Drop a leading --- ... --- YAML block and Liquid template tags if present; otherwise pass through."""
     lines = md_text.split("\n")
     if lines and lines[0].strip() == "---":
         for i in range(1, len(lines)):
             if lines[i].strip() == "---":
-                return "\n".join(lines[i + 1:])
+                md_text = "\n".join(lines[i + 1:])
+                break
+    # Strip Liquid safety wrappers — meaningful for Jekyll rendering, noise in Confluence
+    md_text = re.sub(r'\{%-?\s*raw\s*-?%\}\s*\n?', '', md_text)
+    md_text = re.sub(r'\{%-?\s*endraw\s*-?%\}\s*\n?', '', md_text)
     return md_text
 
 def _inline(text: str) -> str:
