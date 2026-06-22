@@ -210,6 +210,20 @@ def main():
         print("🛑 Queue empty. Nothing to parse.")
         return
 
+    local_contracts = []
+    print("\n🧾 Local Target Title Contract:")
+    try:
+        for md_file in md_files:
+            post = frontmatter.load(md_file)
+            target_title = _target_title(md_file, post)
+            storage_xml = markdown_to_storage(post.content)
+            local_contracts.append((md_file, target_title, storage_xml))
+            print(f"   Target Title: {target_title}")
+        print(f"✅ Local title contract pass complete. {len(local_contracts)} document(s) mapped.")
+    except Exception as e:
+        print(f"❌ Local title contract failure: {e}")
+        sys.exit(1)
+
     # Handshake validation pass on the first document in the queue
     first_file = md_files[0]
     print(f"\n🔍 Handshake Verification Pass: Analyzing '{first_file.name}'...")
