@@ -6,7 +6,13 @@ Renders a large Figlet banner (e.g. "THE ITCH") centered on a transient
 Alacritty overlay. Used as the leading *label* brush of a station-break bead.
 
 The shared conjure_window actuator owns teardown: it kills this process after
-its `duration`, so this script just renders and idles until dismissed.
+its `duration`, so this script just renders and idles until dismissed. The
+self-hold below is a generous LAST-RESORT safety net only — it must always be
+longer than any caller's `duration`, or this script becomes the thing that
+closes the window early instead of the actuator (this is exactly what bit
+Honeybot once: a 130s sentinel card died at the old 60s default, well before
+the real signal it was waiting on ever arrived). When in doubt, raise this
+number, never lower it.
 
 Usage:
     card.py "THE ITCH"
