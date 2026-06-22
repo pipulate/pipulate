@@ -118,7 +118,7 @@ def _fetch_child_inventory(domain: str, email: str, api_token: str, parent_id: s
     """Recursively traverses Confluence v2 cursor pagination links to harvest
     all downstream children, returning a mapping of page titles to local metadata."""
     inventory = {}
-    path = "/pages?limit=50"
+    path = f"/pages/{parent_id}/children?limit=50"
     
     while path:
         # Strip v2 base path if echoed back inside response links
@@ -129,13 +129,13 @@ def _fetch_child_inventory(domain: str, email: str, api_token: str, parent_id: s
         results = data.get("results", [])
         
         for page in results:
-            if str(page.get("parentId")) == str(parent_id):
-                title = page.get("title")
-                inventory[title] = {
-                    "id": page.get("id"),
-                    "version": page.get("version", {}).get("number"),
-                    "status": page.get("status")
-                }
+            title = page.get("title")
+            version_obj = page.get("version") or {}
+            inventory[title] = {
+                "id": page.get("id"),
+                "version": version_obj.get("number"),
+                "status": page.get("status")
+            }
                 
         path = data.get("_links", {}).get("next")
     return inventory
