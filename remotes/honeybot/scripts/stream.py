@@ -515,6 +515,19 @@ def run_station_break(env, profile_dir):
 
 def perform_show(script):
     """Reads the sheet music list and executes it."""
+    # Idempotent safety net: whenever we start performing ANY fresh script —
+    # normal playlist progression, a breaking-news restart, anything — make
+    # sure no stale "UPDATING" sentinel card is still lingering on screen.
+    # This is a no-op the vast majority of the time, since the deploy-standby
+    # handshake below already tears the card down deterministically the
+    # instant the completion bell rings. It only does real work if that
+    # earlier teardown somehow failed to land — which is exactly the failure
+    # case this exists to bound: the card cannot outlive more than one cycle.
+    try:
+        subprocess.run(["pkill", "-f", "card.py.*UPDATING"], check=False)
+    except Exception:
+        pass
+
     # Define the environment for the browser once
     env = os.environ.copy()
     env["DISPLAY"] = ":10.0"
