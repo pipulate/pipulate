@@ -293,9 +293,99 @@ def main():
             print("  ↳ Next patch should lift create_canary's space-scoped collision check, private create, version bump, and read-back verification.")
             return
 
-        print("\n❌ --yes armed, but production upsert is intentionally not implemented in this contract probe.")
-        print("  ↳ Refusing to mutate until the proven create_canary upsert path is ported behind this gate.")
-        sys.exit(1)
+        print(f"\n✍️  Mutations armed (--yes). Upserting {len(local_contracts)} document(s) into the space...")
+        created = updated = skipped = failed = 0
+        inventory_ids = {str(v.get("id")) for v in inventory.values() if v.get("id")}
+
+        for md_file, target_title, storage_xml in local_contracts:
+            meta = inventory.get(target_title)
+            try:
+                if meta:
+                    existing_id = meta["id"]
+                    current = _request(domain, email, api_token, f"/pages/{existing_id}?include-version=true")
+                    current_version = (current.get("version") or {}).get("number")
+                    if current_version is None:
+                        print(f"   ⚠ SKIP {target_title!r}: could not read existing version; refusing to guess the bump.")
+                        skipped += 1
+                        continue
+
+                    verb = "UPDATE"
+                    payload = {
+                        "id": str(existing_id),
+                        "status": "current",
+                        "title": target_title,
+                        "body": {"representation": "storage", "value": storage_xml},
+                        "version": {"number": current_version + 1, "message": "Pipulate markdown upsert"},
+                    }
+                    result = _request(domain, email, api_token, f"/pages/{existing_id}", method="PUT", payload=payload)
+                    new_id = result.get("id") or existing_id
+                    expected_version = current_version + 1
+                else:
+                    collision_query = urllib.parse.urlencode({"title": target_title, "space-id": space_id, "limit": 5})
+                    existing = _request(domain, email, api_token, f"/pages?{collision_query}")
+                    hits = existing.get("results", [])
+                    collision_ids = {str(hit.get("id")) for hit in hits if hit.get("id")}
+
+                    if collision_ids and not collision_ids.intersection(inventory_ids):
+                        print(f"   ⚠ SKIP {target_title!r}: exact title already exists elsewhere in space; refusing to create a duplicate-orphan.")
+                        skipped += 1
+                        continue
+                    if collision_ids:
+                        print(f"   ⚠ SKIP {target_title!r}: exact title collision exists but was not mapped by child inventory; inspect before mutating.")
+                        skipped += 1
+                        continue
+
+                    verb = "CREATE"
+                    payload = {
+                        "spaceId": str(space_id),
+                        "status": "current",
+                        "title": target_title,
+                        "parentId": str(parent_id),
+                        "body": {"representation": "storage", "value": storage_xml},
+                    }
+                    result = _request(domain, email, api_token, "/pages", method="POST", payload=payload)
+                    new_id = result.get("id")
+                    expected_version = (result.get("version") or {}).get("number")
+                    if not new_id:
+                        print(f"   ❌ {target_title!r} failed: Confluence returned no page id after create.")
+                        failed += 1
+                        continue
+
+                # Read-back round-trip: prove the write landed and the storage survived intact.
+                readback = _request(domain, email, api_token, f"/pages/{new_id}?body-format=storage&include-version=true")
+                rb_version = (readback.get("version") or {}).get("number")
+                rb_title = readback.get("title")
+                rb_value = ((readback.get("body") or {}).get("storage") or {}).get("value") or ""
+                sentinel_match = re.search(r">([^<>]{20,}?)<", storage_xml)
+                sentinel = sentinel_match.group(1) if sentinel_match else ""
+                version_ok = expected_version is None or rb_version == expected_version
+                title_ok = rb_title == target_title
+                sentinel_ok = not sentinel or sentinel in rb_value
+                round_trip_ok = bool(rb_value) and version_ok and title_ok and sentinel_ok
+
+                flag = "✅" if round_trip_ok else "⚠"
+                print(f"   {flag} {verb} [ID: {new_id}] v{rb_version} ({len(rb_value):,} chars) -> {target_title}")
+                if not round_trip_ok:
+                    print(f"      ⚠ Round-trip suspect (expected v{expected_version}; title ok: {title_ok}; storage {len(rb_value)} chars; sentinel survived: {sentinel_ok}). Inspect before trusting.")
+
+                if verb == "CREATE":
+                    created += 1
+                else:
+                    updated += 1
+            except urllib.error.HTTPError as http_err:
+                detail = ""
+                try:
+                    detail = http_err.read().decode("utf-8", errors="replace")[:300]
+                except Exception:
+                    pass
+                print(f"   ❌ {target_title!r} failed (HTTP {http_err.code} {http_err.reason}): {detail}")
+                failed += 1
+            except Exception as err:
+                print(f"   ❌ {target_title!r} failed: {err}")
+                failed += 1
+
+        print(f"\n🏁 Upsert complete. Created: {created}  Updated: {updated}  Skipped: {skipped}  Failed: {failed}")
+        return
     except Exception as e:
         print(f"❌ Network Boundary Handshake Failed: {e}")
         sys.exit(1)
