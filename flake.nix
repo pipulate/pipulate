@@ -509,8 +509,15 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias smart='python release.py --force -m "Testing rabbit documentation injection"'
           latest() { python prompt_foo.py -a "[-''${1:-2}:]" --no-tree; }
           latestn() {
-            # Finds largest N articles fitting in byte budget (default 1MB)
-            local max_bytes="''${1:-1048576}"
+            # Finds largest N articles fitting in byte budget (default ~950KB)
+            # Usage: latestn [-N|+N|budget_bytes]  e.g. latestn -1  latestn +2  latestn 786432
+            local max_bytes=950000
+            local adjust=0
+            case "''${1:-}" in
+              -[0-9]*) adjust="''${1}" ;;
+              +[0-9]*) adjust="''${1#+}" ;;
+               [0-9]*) max_bytes="''${1}" ;;
+            esac
             local n=$(python3 -c "
 import os, sys, json
 root = os.getcwd()
