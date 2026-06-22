@@ -80,101 +80,6 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # ============================================================================
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER
-# README.md         #  <-- Ruin the fun by just spelling it all out for the AI.
-# AUDIT.md
-# patch           #  <-- I know what you did last patch
-
-# NOTE TO SELF: SORT AD HOC STUFF INTO BOOK OUTLINE
-
-#https://raw.githubusercontent.com/hunyadi/md2conf/refs/heads/master/README.md
-#/home/mike/repos/md2conf/md2conf/api_base.py
-#/home/mike/repos/md2conf/md2conf/api.py
-#/home/mike/repos/md2conf/md2conf/api_types.py
-#/home/mike/repos/md2conf/md2conf/api_v1.py
-#/home/mike/repos/md2conf/md2conf/api_v2.py
-#/home/mike/repos/md2conf/md2conf/attachment.py
-#/home/mike/repos/md2conf/md2conf/clio.py
-#/home/mike/repos/md2conf/md2conf/coalesce.py
-#/home/mike/repos/md2conf/md2conf/collection.py
-#/home/mike/repos/md2conf/md2conf/compatibility.py
-#/home/mike/repos/md2conf/md2conf/converter.py
-#/home/mike/repos/md2conf/md2conf/csf.py
-#/home/mike/repos/md2conf/md2conf/emoticon.py
-#/home/mike/repos/md2conf/md2conf/entities.dtd
-#/home/mike/repos/md2conf/md2conf/environment.py
-#/home/mike/repos/md2conf/md2conf/extension.py
-#/home/mike/repos/md2conf/md2conf/external.py
-#/home/mike/repos/md2conf/md2conf/formatting.py
-#/home/mike/repos/md2conf/md2conf/frontmatter.py
-#/home/mike/repos/md2conf/md2conf/image.py
-#/home/mike/repos/md2conf/md2conf/__init__.py
-#/home/mike/repos/md2conf/md2conf/jpeg.py
-#/home/mike/repos/md2conf/md2conf/latex.py
-#/home/mike/repos/md2conf/md2conf/local.py
-#/home/mike/repos/md2conf/md2conf/__main__.py
-#/home/mike/repos/md2conf/md2conf/markdown.py
-#/home/mike/repos/md2conf/md2conf/matcher.py
-#/home/mike/repos/md2conf/md2conf/metadata.py
-#/home/mike/repos/md2conf/md2conf/options_api.py
-#/home/mike/repos/md2conf/md2conf/options_converter.py
-#/home/mike/repos/md2conf/md2conf/options.py
-#/home/mike/repos/md2conf/md2conf/order.py
-#/home/mike/repos/md2conf/md2conf/png.py
-#/home/mike/repos/md2conf/md2conf/processor.py
-#/home/mike/repos/md2conf/md2conf/publisher.py
-#/home/mike/repos/md2conf/md2conf/py.typed
-#/home/mike/repos/md2conf/md2conf/reflection.py
-#/home/mike/repos/md2conf/md2conf/scanner.py
-#/home/mike/repos/md2conf/md2conf/serializer.py
-#/home/mike/repos/md2conf/md2conf/svg.py
-#/home/mike/repos/md2conf/md2conf/text.py
-#/home/mike/repos/md2conf/md2conf/toc.py
-#/home/mike/repos/md2conf/md2conf/uri.py
-#/home/mike/repos/md2conf/md2conf/xml.py
-
-# /home/mike/repos/botifyml/_posts/2026-06-16-architecting-private-work-journals.md
-# /home/mike/repos/botifyml/_posts/2026-06-19-ground-truth-agentic-crawlers.csf
-
-# /home/mike/repos/botifyml/_posts/2026-06-16-architecting-private-work-journals.md
-# /home/mike/repos/trimnoir/_posts/2026-06-21-confluence-retargetable-output.md  # [26,877 tokens]
-# /home/mike/repos/trimnoir/_posts/2026-06-21-idempotent-confluence-automation.md  # [17,105 tokens]
-# /home/mike/repos/trimnoir/_posts/2026-06-21-architecting-private-work-journals.md  # [25,656 tokens]
-# /home/mike/repos/botifyml/_posts/2026-06-22-automating-knowledge-graph-confluence.md
-
-# CONFLUENCE DOCS & MARKDOWN CONVERSION
-# @https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-page/
-# @https://developer.atlassian.com/cloud/confluence/overview-of-capabilities/
-# @https://pypi.org/project/markdown-to-confluence/
-# @https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-blog-post/
-# @https://developer.atlassian.com/cloud/confluence/rest/v2/intro/
-# https://raw.githubusercontent.com/hunyadi/md2conf/refs/heads/master/README.md
-
-
-# OLD
-# scripts/confluence_probe.py
-
-# @https://moz.com/blog/bing-and-bard-feature-timeline
-# /home/mike/repos/trimnoir/_posts/2026-06-17-tracing-agentic-web-infrastructure-consumption.md
-# /home/mike/repos/botifyml/_posts/2026-06-21-barebones.md
-
-# FIGURE OUT DDNS
-# /home/mike/repos/trimnoir/_posts/2025-04-29-nixos-jekyll-git-push-self-hosted-deployment.md  # [9,541 tokens]
-# /home/mike/repos/trimnoir/_posts/2025-12-20-holographic-bridge-sovereign-hosting-pfsense-nixos-dmz.md  # [10,639 tokens]
-# /home/mike/repos/trimnoir/_posts/2025-12-25-nixos-declarative-fix-403-jekyll-theme-streamlining.md  # [20,221 tokens]
-# /home/mike/repos/trimnoir/_posts/2025-05-02-home-hosting-bots-seo-signals-google-dominance.md  # [3,451 tokens]
-# /home/mike/repos/trimnoir/_posts/2026-06-05-structured-surprise-agplv3-gitops.md  # [9,550 tokens]
-
-# !https://news.ycombinator.com/
-# !https://example.com/
-
-# CURRENT PROJECT (CONFLUENCE)
-# /home/mike/repos/trimnoir/_posts/2026-06-11-local-git-baseline-ai-workflow.md
-# /home/mike/repos/trimnoir/_posts/2026-06-17-tracing-agentic-web-infrastructure-consumption.md
-# /home/mike/repos/trimnoir/_posts/2026-06-19-ground-truth-agentic-crawlers.md
-# /home/mike/repos/trimnoir/_posts/2026-06-20-anti-crichton-orchestration.md
-# /home/mike/repos/trimnoir/_posts/2026-06-20-sharpening-the-codex-paintbox-filtering.md
-# /home/mike/repos/trimnoir/_posts/2026-06-21-nix-pinned-ai-orchestration.md
-# /home/mike/repos/trimnoir/_posts/2026-06-21-stream-standby-automation.md
 
 # ! git --no-pager log -p -n 4
 # ! cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
@@ -220,18 +125,23 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 #                       [IN VOICE OF JIMINY CRICKET:] 
 
-# > Yes, Michael Crichton novels can come true; it can happen to you, if you fumble this art.  
-# > It seems to make sense — unintended consequence — should be intercepted at start.
-# > It might take awhile, but the context-compile does the hardest part.  
-# > The AI has spied an optimized ride to help you work smart.  
+# > Yes, Michael Crichton novels can come true; it can happen to you, if you fumble the art.  
+# > It seems to make sense — unintended consequence — should be stopped at the start.
+# > It might take awhile, but the context-compile should do the hardest part.  
+# > The AI should see what falsifying will be if it's gonna work smart.  
 
 prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!! STANDARD WRAPPER
 
-# The following 4 files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
-.gitignore      #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
-flake.nix       #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
-apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
-scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+# The following 5 files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
+.gitignore        #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
+flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
+apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
+scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
+
+# OTHER HEAVY LIFTERS
+# scripts/ai.py                  #  <-- Local AI writing git commit messages. Accelerator!
+# scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
 
 # The following 3 files are the first huge context reveal that pull the curtains open.
 # __init__.py     #  <-- Master versioning
@@ -239,11 +149,6 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # pyproject.toml  #  <-- The PyPI Packaging details
 
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
-
-# HEAVY LIFTERS
-# scripts/ai.py                  #  <-- Local AI writing git commit messages. Accelerator!
-# scripts/crawl.py               #  <-- Test LLM Optics before foo_files.py inclusion.
-# scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
 
 # ============================================================================
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
@@ -253,14 +158,12 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
 # pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
 # pipulate/core.py            # <-- The Wand (spells)
-# imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
-# imports/voice_synthesis.py  # <-- The wand can talk to you
-
-# assets/styles.css           # <-- Those values often get used here for "the look"
 
 # server.py                   # <-- The Wizard (big!)
-
+# assets/styles.css           # <-- Those values often get used here for "the look"
 # imports/server_logging.py   # <-- Drawing that ASCII art into radically transparent server logs
+# imports/voice_synthesis.py  # <-- The wand can talk to you
+# imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 
 # ============================================================================
 # V. THE BOOK DISTILLER - A Choose Your Own Path Adventure, for AI! (overarching story)
@@ -410,13 +313,13 @@ scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music i
 # ============================================================================
 
 # /home/mike/.config/pipulate/blogs.json       # <-- Centralized multi-site routing manifest for N Jekyll blogs.
-scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
-scripts/articles/common.py                   # <-- Self-explanatory
-scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
-scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
-scripts/articles/sanitizer.py                # <-- Scrubs PII
-scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
-scripts/articles/confluenceizer.py           # <-- Just added
+# scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
+# scripts/articles/common.py                   # <-- Self-explanatory
+# scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
+# scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
+# scripts/articles/sanitizer.py                # <-- Scrubs PII
+# scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
+# scripts/articles/confluenceizer.py           # <-- Just added
 # scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
 # scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
 # scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests

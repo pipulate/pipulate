@@ -1353,3 +1353,91 @@ def startup_environment_warnings() -> str:
 Essential knowledge for 100% success rate"""
     
     return safe_console_capture(console, panel, fallback)
+
+
+#     _    ____   ____ ___ ___      _    ____ _____   ____  _                                             _  
+#    / \  / ___| / ___|_ _|_ _|    / \  |  _ \_   _| |  _ \| | __ _ _   _  __ _ _ __ ___  _   _ _ __   __| | 
+#   / _ \ \___ \| |    | | | |    / _ \ | |_) || |   | |_) | |/ _` | | | |/ _` | '__/ _ \| | | | '_ \ / _` | 
+#  / ___ \ ___) | |___ | | | |   / ___ \|  _ < | |   |  __/| | (_| | |_| | (_| | | | (_) | |_| | | | | (_| | 
+# /_/   \_\____/ \____|___|___| /_/   \_\_| \_\|_|   |_|   |_|\__,_|\__, |\__, |_|  \___/ \__,_|_| |_|\__,_| 
+#                                                                   |___/ |___/                              
+# 
+# > **Note**: This was done blind panel-style. Is that the right terminology? I
+# > gave the prompt above to each of the frontier LLMs on pretty high-level models
+# > under paid logins. It's not the best-available models in every case (Opus Low
+# > versus Opus High and Gemini Flash versus Gemini Thinking). But I think it's a
+# > pretty good representation. This is for the collecting opinions in parallel.
+# 
+# ```text
+#    PARALLEL FAN-OUT (the "map" — genuinely automatic)
+#    ════════════════════════════════════════════════
+# 
+#               ┌──► [Gemini]  ──► answer ──┐      three
+#       Prompt ─┼──► [ChatGPT] ──► answer ──┼──► different
+#               └──► [Opus]    ──► answer ──┘     answers
+#                           │
+#                           ▼
+#    SERIAL PIPE (the "reduce" — manual, accumulating)
+#    ════════════════════════════════════════════════
+# 
+#    [chosen answer] ──► [next model] ──► [your reply] ──► [next] ──► …
+#         history grows · context accumulates · order is a choice
+# ```
+#
+# ## Pipeline 1: The Epistemic Processing Pipeline (The Mind)
+# 
+# This is the text-industrialization line. It handles the transmutation of a raw, messy weekend journal entry into structured, machine-legible organizational memory.
+#  
+# ```text
+# [Raw article.txt] 
+#        │
+#        ▼ (sanitizer.py)
+# [Sanitized Source] 
+#        │
+#        ▼ (articleizer.py + Gemini Cascade)
+# [Jekyll Markdown + JSON Instructions]
+#        │
+#        ▼ (publishizer.py / blogs.json Matrix)
+# ┌───────────────────────┼────────────────────────┐
+# ▼                       ▼                        ▼
+# (contextualizer.py)   (build_knowledge_graph.py) (generate_llms_txt.py)
+# [Holographic Shards]  [K-Means Clustering]       [Dense llms.txt Map]
+#                         │
+#                         ▼
+#                       [navgraph.json / graph.json]
+# ```
+
+
+# ## Pipeline 2: The Honeybot Broadcast Studio (The Voice & Body)
+# 
+# This is the cybernetic theater. It is a state machine that lives on your home-hosted NixOS appliance ("Honeybot"), listening to system interrupts and turning web telemetry into performance art.
+# 
+# ```text
+# [Git Push Event] ──► [remotes/.../post-receive Hook]
+#                                │
+#             ┌──────────────────┴──────────────────┐
+#             ▼ (.deploy_standby)                   ▼ (.reading_trigger)
+#    [Narrator Interrupted]                 [Director Relaunches Loop]
+#    "Receiving updates, stand by..."       [score.py / content_loader.py]
+#                                                   │
+#                                                   ▼ (Sheet Music Cues)
+#                                          ┌────────┴────────┐
+#                                          ▼ (Audio)         ▼ (Visual X11)
+#                                       [SAY / WAIT]     [PATRONUS / WINDOW]
+#                                          │                 │
+#                                          ▼                 ▼
+#                                     (piper-tts)       (logs.py / card.py)
+# ```
+
+# ### The Retargetable Architecture
+# 
+# To prevent your documentation from becoming an enclosed tenant of a closed corporate system, the pipeline treats the wiki exactly like your D3 force graphs or your YouTube audio streams: **a handles-not-homes asset.**
+# 
+# ```text
+# [ Lossless Source text ] ──► [ Local YAML/MD Substrate ]
+#                                         │
+#              ┌──────────────────────────┴──────────────────────────┐
+#              ▼ (publishizer.py)                                    ▼ (confluence_probe.py)
+#    [ Target 1: Jekyll / Git ]                             [ Target 4: Atlassian REST API ]
+#      ↳ Static Public Web                                    ↳ Idempotent Internal Wiki
+# ```
