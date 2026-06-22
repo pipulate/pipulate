@@ -330,6 +330,18 @@ canonical_url: {json.dumps(canonical_url)}
     print(f"Generating simple HTML diff...", file=sys.stderr)
     generate_diff(simple_source_content, simple_hydrated_content, 'simple', results)
 
+    # --- 3.6 Generate Link Lens (Objective anchor accounting) ---
+    print(f"Generating link lens...", file=sys.stderr)
+    base_url = ""
+    headers_path = output_dir / "headers.json"
+    if headers_path.exists():
+        try:
+            base_url = json.loads(headers_path.read_text(encoding='utf-8')).get("url", "")
+        except Exception as e:
+            print(f"Error reading headers.json for base URL: {e}", file=sys.stderr)
+    raw_source_content = read_html_file(source_path) or ""
+    generate_link_lens(raw_source_content, hydrated_dom_content or "", base_url, results)
+
     # --- 4. Save Visualization Files ---
     # We need to handle the new 'simple' v_type specifically for the 'diff' prefix
     # Save source and hydrated visualizations
