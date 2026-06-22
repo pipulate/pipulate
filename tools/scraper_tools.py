@@ -469,6 +469,7 @@ async def selenium_automation(params: dict) -> dict:
                 ('source_hierarchy_txt', 'source_dom_hierarchy.txt'),
                 # ... (keep the rest of the original list if desired, or prune)
                 ('diff_hierarchy_txt', 'diff_hierarchy.txt'),
+                ('links_md', 'links.md'),
                 # etc.
             ]:
                 optic_path = output_dir / filename
