@@ -90,9 +90,18 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 /home/mike/repos/pipulate/scripts/articles/confluenceizer.py  # [1,611 tokens]
 /home/mike/repos/pipulate/scripts/confluence_probe.py  # [4,990 tokens]
 /home/mike/repos/pipulate/scripts/articles/common.py  # [960 tokens]
-/home/mike/repos/trimnoir/_posts/2026-06-21-confluence-retargetable-output.md  # [26,877 tokens]
-/home/mike/repos/trimnoir/_posts/2026-06-21-idempotent-confluence-automation.md  # [17,105 tokens]
-/home/mike/repos/trimnoir/_posts/2026-06-21-architecting-private-work-journals.md  # [25,656 tokens]
+# /home/mike/repos/trimnoir/_posts/2026-06-21-confluence-retargetable-output.md  # [26,877 tokens]
+# /home/mike/repos/trimnoir/_posts/2026-06-21-idempotent-confluence-automation.md  # [17,105 tokens]
+# /home/mike/repos/trimnoir/_posts/2026-06-21-architecting-private-work-journals.md  # [25,656 tokens]
+
+# CONFLUENCE DOCS & MARKDOWN CONVERSION
+@https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-page/
+# @https://developer.atlassian.com/cloud/confluence/overview-of-capabilities/
+# @https://pypi.org/project/markdown-to-confluence/
+# @https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-blog-post/
+# @https://developer.atlassian.com/cloud/confluence/rest/v2/intro/
+# https://raw.githubusercontent.com/hunyadi/md2conf/refs/heads/master/README.md
+
 
 # OLD
 # scripts/confluence_probe.py
@@ -120,13 +129,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # /home/mike/repos/trimnoir/_posts/2026-06-20-sharpening-the-codex-paintbox-filtering.md
 # /home/mike/repos/trimnoir/_posts/2026-06-21-nix-pinned-ai-orchestration.md
 # /home/mike/repos/trimnoir/_posts/2026-06-21-stream-standby-automation.md
-
-# @https://developer.atlassian.com/cloud/confluence/overview-of-capabilities/
-# @https://developer.atlassian.com/cloud/confluence/rest/v2/intro/
-# # @https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-blog-post/
-# @https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-page/
-# # @https://pypi.org/project/markdown-to-confluence/
-# https://raw.githubusercontent.com/hunyadi/md2conf/refs/heads/master/README.md
 
 # ! git --no-pager log -p -n 4
 # ! cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
