@@ -45,65 +45,42 @@ def _strip_front_matter(md_text: str) -> str:
 
     return md_text
 
-def _inline(text: str) -> str:
-    """Escape HTML metacharacters first, then layer supported inline forms."""
-    text = html.escape(text, quote=False)
-    text = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", text)
-    text = re.sub(r"`([^`]+)`", r"<code>\1</code>", text)
-    return text
-
 def markdown_to_storage(md_text: str) -> str:
-    """Convert a narrow subset of Markdown to Confluence storage XML."""
-    lines = _strip_front_matter(md_text).split("\n")
-    out = []
-    para = []
+    """Convert Markdown to Confluence storage XML using md2conf."""
+    cleaned_md = _strip_front_matter(md_text)
 
-    def flush_para():
-        if para:
-            joined = " ".join(s.strip() for s in para).strip()
-            if joined:
-                out.append(f"<p>{_inline(joined)}</p>")
-            para.clear()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp_path = Path(tmpdir) / "page.md"
+        tmp_path.write_text(cleaned_md, encoding="utf-8")
 
-    i = 0
-    while i < len(lines):
-        stripped = lines[i].strip()
+        cmd = [
+            sys.executable,
+            "-m",
+            "md2conf",
+            "--local",
+            "-d",
+            _resolve_domain(),
+            str(tmp_path),
+        ]
 
-        if stripped.startswith("```"):
-            flush_para()
-            i += 1
-            code_lines = []
-            while i < len(lines) and not lines[i].strip().startswith("```"):
-                code_lines.append(lines[i])
-                i += 1
-            i += 1  # consume the closing fence
-            code = "\n".join(code_lines)
-            code = code.replace("]]>", "]]]]><![CDATA[>")
-            out.append(
-                '<ac:structured-macro ac:name="code">'
-                "<ac:plain-text-body><![CDATA[" + code + "]]></ac:plain-text-body>"
-                "</ac:structured-macro>"
-            )
-            continue
+        try:
+            subprocess.run(cmd, check=True, capture_output=True, text=True)
+        except subprocess.CalledProcessError as err:
+            detail = (err.stderr or err.stdout or str(err)).strip()
+            raise RuntimeError(f"md2conf local conversion failed: {detail}") from err
 
-        heading = re.match(r"^(#{1,6})\s+(.*)$", stripped)
-        if heading:
-            flush_para()
-            level = len(heading.group(1))
-            out.append(f"<h{level}>{_inline(heading.group(2).strip())}</h{level}>")
-            i += 1
-            continue
+        csf_path = Path(tmpdir) / "page.csf"
+        if not csf_path.exists():
+            raise RuntimeError(f"md2conf did not create expected CSF output: {csf_path}")
 
-        if not stripped:
-            flush_para()
-            i += 1
-            continue
-
-        para.append(lines[i])
-        i += 1
-
-    flush_para()
-    return "".join(out)
+        csf_content = csf_path.read_text(encoding="utf-8")
+        csf_content = re.sub(
+            r'<ac:structured-macro ac:name="info".*?</ac:structured-macro>',
+            '',
+            csf_content,
+            flags=re.DOTALL,
+        )
+        return csf_content.strip()
 
 def _resolve_domain() -> str:
     raw = os.getenv("CONFLUENCE_DOMAIN") or os.getenv("CONFLUENCE_URL") or "YOUR_INSTANCE.atlassian.net"
