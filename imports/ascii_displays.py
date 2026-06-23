@@ -414,6 +414,37 @@ def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: i
                 pass
 
 
+def measure_figlet(label: str, font: str = "standard") -> tuple:
+    """📏 MEASURE_FIGLET: Deterministic footprint of a Figlet banner.
+
+    Returns (width, height) in terminal cells for `label` rendered in `font`,
+    so a caller can size an Alacritty box to "pull tight" around the banner the
+    same way patronus() sizes its popup around registered ASCII art. Uses
+    pyfiglet's default width (80) — exactly what card.py renders with — so the
+    measurement matches the child's output character-for-character, including
+    the wrap-to-second-block case, which simply doubles `height`.
+
+    Falls back to the raw label's geometry if pyfiglet is unavailable, matching
+    card.py's own plain-text fallback so the box is never wildly mis-sized.
+
+    FUTURE (combined card): when a card grows a Figlet banner on top AND
+    figurate ASCII art below it on one surface, the caller measures the UNION —
+    max width of the two blocks, summed heights plus a separator row — and feeds
+    that to the window. This helper stays single-purpose; composition happens
+    one layer up.
+    """
+    rendered = label
+    try:
+        from pyfiglet import Figlet
+        rendered = Figlet(font=font).renderText(label)
+    except Exception:
+        rendered = label
+    lines = rendered.splitlines() or [label]
+    width = max((len(line) for line in lines), default=len(label))
+    height = len(lines) or 1
+    return width, height
+
+
 # FIGURATE_COLOR_BITS: The color-bits player piano dictionary.
 # Maps named tokens to Rich style strings.
 # Usage in art strings: [[[TokenName]]] expands to styled text for humans,
