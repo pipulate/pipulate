@@ -81,6 +81,9 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER
 
+/home/mike/repos/trimnoir/_posts/2026-06-21-stream-standby-automation.md  # [Idx: 1224 | Order: 3 | Tokens: 14,995 | Bytes: 62,942]
+/home/mike/repos/trimnoir/_posts/2026-06-23-chiseling-digital-space-terminal-efficiency.md  # [Idx: 1232 | Order: 1 | Tokens: 6,213 | Bytes: 25,135]
+
 # ! git --no-pager log -p -n 4
 # ! cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
