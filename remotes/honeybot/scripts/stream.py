@@ -390,6 +390,35 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None)
         sys.path.insert(0, str(site_root))
 
     from imports.ascii_displays import conjure_window as shared_conjure_window
+    from imports.ascii_displays import measure_figlet
+
+    # --- 80/20 PULL-TIGHT FOR FIGLET CARDS ---
+    # card.py renders a single Figlet banner, and a Figlet footprint is fully
+    # deterministic and measurable parent-side — exactly how patronus() sizes
+    # its popup around registered ASCII art. Do the same here: measure the
+    # banner BEFORE launch and shrink the Alacritty box around it. The child
+    # cannot resize a box whose columns/lines are already baked into the launch
+    # command, so the measurement MUST happen out here in the parent.
+    #
+    # Cushion is intentionally smaller than patronus's +20: a Figlet has no
+    # internal line-length ambiguity to guard against, but a few spare cells
+    # still keep terminal cell-rounding from wrapping the widest banner row.
+    # card.py vertically centers the banner, so matching the box height to the
+    # banner (+ a little) is what makes it sit snug instead of floating in dead
+    # space.
+    #
+    # FUTURE (combined card): a card will eventually carry a Figlet banner on
+    # top AND figurate ASCII art BELOW it on the same surface — the framing is
+    # "a Figlet banner with an optional ASCII-art body," with card.py as the
+    # home that grows a body (rather than the patronus path growing a label).
+    # When that lands, render banner + art, measure the UNION of the two
+    # footprints (max width, summed heights), and size the box to that. The
+    # measure-then-fit pattern generalizes cleanly from one block to two stacked
+    # ones.
+    if safe_script == "card.py" and args:
+        fig_w, fig_h = measure_figlet(str(args[0]))
+        columns = fig_w + 8
+        lines = fig_h + 4
 
     cmd = [sys.executable, "-u", str(script_path)]
     if args:
