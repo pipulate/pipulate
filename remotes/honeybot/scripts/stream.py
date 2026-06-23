@@ -598,7 +598,20 @@ def perform_show(script):
                 # the thing that's supposed to close this window. The deterministic
                 # close is the pkill below, fired the instant check_for_updates()
                 # proves the deploy is actually done — never a guessed elapsed time.
-                conjure_window("card.py", duration=270.0, args=["UPDATING"])
+                #
+                # CRITICAL: launch on a DAEMON THREAD. conjure_window() (in
+                # imports/ascii_displays.py) is BLOCKING — it bottoms out in
+                # proc.wait(timeout=duration). Called inline, it froze this entire
+                # loop for the full duration, starving the check_for_updates() poll
+                # below and leaving the UPDATING banner stuck on screen (narration
+                # silent) until the self-cap expired — the "never resumes without
+                # --reboot" bug. Threaded, the poll keeps running and the pkill
+                # tears the card down the instant the completion bell rings: pkill
+                # ends card.py, alacritty exits, proc.wait returns, the thread dies.
+                threading.Thread(
+                    target=lambda: conjure_window("card.py", duration=270.0, args=["UPDATING"]),
+                    daemon=True,
+                ).start()
                 try:
                     subprocess.run(["pkill", "firefox"], check=False)
                 except Exception:
