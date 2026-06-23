@@ -451,44 +451,6 @@ Think of `book` as a context flake: an imperfect but practical way to pin the
 state needed for one AI-assisted development move.
 '''
 
-BEHAVIORAL_TELEMETRY_CHOP = """
-# THE COGNITIVE FEEDBACK LOOP (Behavioral Telemetry)
-# COMMAND: python prompt_foo.py --chop BEHAVIORAL_TELEMETRY_CHOP --no-tree
-# Internal user state + External Honeybot signals.
-
-! echo "--- AGENT ROUTING ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-remotes/honeybot/scripts/db.py  # [2,850 tokens | 13,221 bytes]
-remotes/honeybot/queries/md_routing_agents.sql  # [258 tokens | 1,131 bytes]
-/home/mike/repos/nixos/autognome.py  # [7,279 tokens | 34,533 bytes]
-/home/mike/repos/pipulate/scripts/ai.py  # [1,862 tokens | 8,699 bytes]
-"""
-
-STORY_ARC_CHOP = """
-# THE STORY ARC: Self-Modifying Cognitive Infrastructure
-# COMMAND: python prompt_foo.py --chop STORY_ARC_CHOP --no-tree
-
-/home/mike/repos/trimnoir/_posts/2026-02-28-levinix-no-problem-universal-packager-blueprint-ai-age.md  # [25,907 tokens | 101,215 bytes]
-/home/mike/repos/trimnoir/_posts/2026-03-08-llmectomy-uncoupling-ai-models-vendor-lock-in.md  # [19,519 tokens | 80,097 bytes]
-/home/mike/repos/trimnoir/_posts/2026-03-11-self-auditing-ai-context-compiler.md  # [30,509 tokens | 109,354 bytes]
-/home/mike/repos/trimnoir/_posts/2026-03-11-idempotent-token-ledger-llm-context.md  # [33,745 tokens | 121,068 bytes]
-/home/mike/repos/trimnoir/_posts/2026-04-13-forever-machine-muscle-memory.md  # [39,202 tokens | 156,831 bytes]
-/home/mike/repos/trimnoir/_posts/2026-05-09-taming-the-amnesia-genie.md  # [40,744 tokens | 163,832 bytes]
-/home/mike/repos/trimnoir/_posts/2026-05-15-cathedral-of-one-prompt-fu-forever-machine.md  # [30,102 tokens | 124,546 bytes]
-/home/mike/repos/trimnoir/_posts/2026-05-15-deterministic-ai-coding-actuator.md  # [38,811 tokens | 160,336 bytes]
-/home/mike/repos/trimnoir/_posts/2026-05-17-escape-postback-deterministic-ai-workflows.md  # [18,207 tokens | 83,548 bytes]
-/home/mike/repos/trimnoir/_posts/2026-05-18-swappable-ai-strategy.md  # [22,592 tokens | 92,335 bytes]
-/home/mike/repos/trimnoir/_posts/2026-05-19-ergonomics-of-oversight-ai-trust-rituals.md  # [11,313 tokens | 47,086 bytes]
-/home/mike/repos/trimnoir/_posts/2026-05-19-unix-philosophy-nix-noise-reduction.md  # [8,717 tokens | 35,345 bytes]
-/home/mike/repos/trimnoir/_posts/2026-05-19-witnessed-machine-stateless-ai-executive-function.md  # [14,371 tokens | 59,275 bytes]
-
-init.lua  # [6,395 tokens | 24,372 bytes]
-scripts/ai.py  # [1,862 tokens | 8,699 bytes]
-flake.nix  # [7,761 tokens | 33,368 bytes]
-prompt_foo.py  # [15,724 tokens | 71,739 bytes]
-foo_files.py  # [11,057 tokens | 37,588 bytes]
-apply.py  # [1,643 tokens | 7,124 bytes]
-"""
-
 CHOP_POST_MORTEM = """
 # THE POST-MORTEM (Surgical Log Extraction)
 # COMMAND: python prompt_foo.py assets/prompts/debug_crash.md --chop CHOP_POST_MORTEM --no-tree
