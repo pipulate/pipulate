@@ -81,6 +81,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER
 
+/home/mike/repos/botifyml/_posts/2026-06-24-proof-by-proxy-bot-telemetry.md
+
 # assets/nbs/Educational_Notebooks/Truth_Actually.ipynb  # [4,477 tokens | 14,722 bytes]
 
 # /home/mike/repos/trimnoir/_posts/2026-06-21-stream-standby-automation.md  # [Idx: 1224 | Order: 3 | Tokens: 14,995 | Bytes: 62,942]

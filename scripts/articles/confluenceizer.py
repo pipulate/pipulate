@@ -22,6 +22,26 @@ from pathlib import Path
 import frontmatter
 import common
 
+def _sanitize_internal_pii(text: str) -> str:
+    """Map pseudo-private client/colleague identities to roles out-of-band."""
+    if not text:
+        return text
+    
+    rules = []
+    txt_file = Path.home() / ".config" / "pipulate" / "pii_substitutions.txt"
+    if txt_file.exists():
+        for line in txt_file.read_text(encoding="utf-8").splitlines():
+            if not line.strip() or line.startswith("#"):
+                continue
+            if " === " in line:
+                pattern, repl = line.split(" === ", 1)
+                rules.append((pattern, repl))
+                
+    for pattern, replacement in rules:
+        text = re.sub(pattern, replacement, text)
+    return text
+
+
 def _strip_front_matter(md_text: str) -> str:
     """Drop a leading --- ... --- YAML block and Liquid template tags if present; otherwise pass through."""
     lines = md_text.split("\n")
@@ -38,6 +58,9 @@ def _strip_front_matter(md_text: str) -> str:
     md_text = md_text.replace("**Me**:", "**Mike Levin**:")
     md_text = md_text.replace("Curious Book Reader", "Curious Journal Reader")
     md_text = md_text.replace("## Book Analysis", "## Content Analysis")
+
+    # Internal-wiki identity scrub (client + colleague names -> roles)
+    md_text = _sanitize_internal_pii(md_text)
 
     # Prune public metadata blocks to prevent confusion in team wiki environments
     md_text = re.sub(r'### 🐦 X\.com Promo Tweet\n```text\n.*?\n```\n*', '', md_text, flags=re.DOTALL)
@@ -191,7 +214,7 @@ def _fallback_title(md_file: Path) -> str:
 def _target_title(md_file: Path, post) -> str:
     """Compile the local Markdown file into the Confluence title contract."""
     metadata = post.metadata or {}
-    title = _metadata_value(metadata, "title") or _fallback_title(md_file)
+    title = _sanitize_internal_pii(_metadata_value(metadata, "title") or _fallback_title(md_file))
     sort_order = _metadata_value(metadata, "sort_order", "order", "sort", "ordinal")
     date_part = _doc_date(md_file, metadata)
 
