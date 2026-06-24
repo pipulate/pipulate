@@ -81,6 +81,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER
 
+/home/mike/repos/pipulate/Notebooks/Playground/Truth_Actually.ipynb
+
 # /home/mike/repos/trimnoir/_posts/2026-06-21-stream-standby-automation.md  # [Idx: 1224 | Order: 3 | Tokens: 14,995 | Bytes: 62,942]
 # /home/mike/repos/trimnoir/_posts/2026-06-23-chiseling-digital-space-terminal-efficiency.md  # [Idx: 1232 | Order: 1 | Tokens: 6,213 | Bytes: 25,135]
 
@@ -374,14 +376,14 @@ scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and includ
 # XVI. JUPTYER NOTEBOOKS & JUPYTERLAB
 # ============================================================================
 
-assets/nbs/Onboarding.ipynb
-assets/nbs/imports/core_sauce.py
-assets/nbs/imports/onboard_sauce.py
-apps/015_config.py
+# assets/nbs/Onboarding.ipynb
+# assets/nbs/imports/core_sauce.py
+# assets/nbs/imports/onboard_sauce.py
+# apps/015_config.py
 
-Notebooks/__init__.py  # [0 tokens | 0 bytes]
-Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-Notebooks/Advanced_Notebooks/__init__.py  # [0 tokens | 0 bytes]
+# Notebooks/__init__.py  # [0 tokens | 0 bytes]
+# Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
+# Notebooks/Advanced_Notebooks/__init__.py  # [0 tokens | 0 bytes]
 
 # assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]                       # <-- Purge, redundant
 
