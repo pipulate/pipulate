@@ -167,6 +167,11 @@
             dest = "Notebooks/Advanced_Notebooks/04_VIDeditor.ipynb";
             desc = "a local 'NoGooey Video Editor.'";
           }
+          {
+            source = "assets/nbs/Educational_Notebooks/Truth_Actually.ipynb";
+            dest = "Notebooks/Educational_Notebooks/Truth_Actually.ipynb";
+            desc = "the Player Piano Test, an interactive actuator-literacy lesson";
+          }
         ];
 
         # Convert the Nix list to a string that Bash can loop over
