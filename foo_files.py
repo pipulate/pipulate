@@ -81,8 +81,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER
 
-/home/mike/repos/trimnoir/_posts/2026-06-21-stream-standby-automation.md  # [Idx: 1224 | Order: 3 | Tokens: 14,995 | Bytes: 62,942]
-/home/mike/repos/trimnoir/_posts/2026-06-23-chiseling-digital-space-terminal-efficiency.md  # [Idx: 1232 | Order: 1 | Tokens: 6,213 | Bytes: 25,135]
+# /home/mike/repos/trimnoir/_posts/2026-06-21-stream-standby-automation.md  # [Idx: 1224 | Order: 3 | Tokens: 14,995 | Bytes: 62,942]
+# /home/mike/repos/trimnoir/_posts/2026-06-23-chiseling-digital-space-terminal-efficiency.md  # [Idx: 1232 | Order: 1 | Tokens: 6,213 | Bytes: 25,135]
 
 # ! git --no-pager log -p -n 4
 # ! cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
@@ -157,13 +157,12 @@ scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and includ
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-config.py                   # <-- Centralize every last configuration in here
-pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
-pipulate/core.py            # <-- The Wand (spells)
+# config.py                   # <-- Centralize every last configuration in here
+# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+# pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
+# pipulate/core.py            # <-- The Wand (spells)
 
-imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
-
+# imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # server.py                   # <-- The Wizard (big!)
 # assets/styles.css           # <-- Those values often get used here for "the look"
 # imports/server_logging.py   # <-- Drawing that ASCII art into radically transparent server logs
@@ -220,17 +219,17 @@ imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art lan
 # ============================================================================
 
 # CORE SLIDESHOW FILES
-nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
-remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
-remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
-remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
-remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
-remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
-remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
-remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
-remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
-remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
-remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+# nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
+# remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
+# remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
+# remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
+# remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
+# remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
+# remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
+# remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
+# remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
+# remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
+# remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
 
 # remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
 
@@ -372,7 +371,32 @@ remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblog
 # assets/utils.js  # [3,125 tokens | 15,103 bytes]
 
 # ============================================================================
-# XVI. BOTIFY STUFF
+# XVI. JUPTYER NOTEBOOKS & JUPYTERLAB
+# ============================================================================
+
+# assets/nbs/Onboarding.ipynb
+# assets/nbs/imports/core_sauce.py
+# assets/nbs/imports/onboard_sauce.py
+# apps/015_config.py
+
+# Notebooks/__init__.py  # [0 tokens | 0 bytes]
+# Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
+# Notebooks/imports/gap_analyzer_sauce.py  # [26,420 tokens | 116,412 bytes]
+# Notebooks/Advanced_Notebooks/__init__.py  # [0 tokens | 0 bytes]
+
+# assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
+# assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb  # [1,852 tokens | 6,328 bytes]
+# assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
+# assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [9,017 tokens | 30,164 bytes]
+# Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [29,368 tokens | 97,634 bytes]  # <-- Make sure it isn't in the repo
+# assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
+# assets/nbs/imports/faq_writer_sauce.py  # [6,006 tokens | 26,636 bytes]
+# assets/nbs/imports/gap_analyzer_sauce.py  # [27,162 tokens | 119,579 bytes]
+# assets/nbs/imports/url_inspect_sauce.py  # [3,542 tokens | 16,202 bytes]
+# assets/nbs/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
+
+# ============================================================================
+# XVII. BOTIFY STUFF
 # ============================================================================
 
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
@@ -405,9 +429,6 @@ remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblog
 # apps/400_botify_trifecta.py  # [53,083 tokens | 275,728 bytes]
 # apps/110_parameter_buster.py  # [55,573 tokens | 274,005 bytes]
 # apps/120_link_graph.py  # [54,375 tokens | 272,569 bytes]
-# Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-# Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [29,368 tokens | 97,634 bytes]
-# Notebooks/imports/gap_analyzer_sauce.py  # [26,420 tokens | 116,412 bytes]
 
 """
 #   ____          _                     ____ _   _  ___  ____      
@@ -662,8 +683,6 @@ tools/llm_optics.py
 # Move these into the active chapters to paint them onto the context canvas.
 
 # AUDIT.md  # [2,011 tokens | 9,706 bytes]
-# Notebooks/Advanced_Notebooks/__init__.py  # [0 tokens | 0 bytes]
-# Notebooks/__init__.py  # [0 tokens | 0 bytes]
 # README.md  # [20,725 tokens | 104,252 bytes]
 # apps/130_gap_analysis.py  # [9,625 tokens | 48,280 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
@@ -681,15 +700,6 @@ tools/llm_optics.py
 # apps/820_selenium.py  # [3,428 tokens | 15,020 bytes]
 # apps/830_pico_slider.py  # [4,364 tokens | 19,317 bytes]
 # apps/xx_link_graph_v2.py  # [63,994 tokens | 332,321 bytes]
-# assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
-# assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb  # [1,852 tokens | 6,328 bytes]
-# assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
-# assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [9,017 tokens | 30,164 bytes]
-# assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
-# assets/nbs/imports/faq_writer_sauce.py  # [6,006 tokens | 26,636 bytes]
-# assets/nbs/imports/gap_analyzer_sauce.py  # [27,162 tokens | 119,579 bytes]
-# assets/nbs/imports/url_inspect_sauce.py  # [3,542 tokens | 16,202 bytes]
-# assets/nbs/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
 # assets/prompts/book_holographic.json  # [923 tokens | 3,726 bytes]
 # assets/prompts/find404s.md  # [459 tokens | 2,098 bytes]
