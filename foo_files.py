@@ -81,7 +81,9 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER
 
-/home/mike/repos/botifyml/_posts/2026-06-24-proof-by-proxy-bot-telemetry.md
+# deleteme_unsanitized_article.md
+# /home/mike/repos/botifyml/_posts/2026-06-24-proof-by-proxy-bot-telemetry.md
+# /home/mike/repos/trimnoir/_posts/2026-06-24-funnel-architecture-automation.md
 
 # assets/nbs/Educational_Notebooks/Truth_Actually.ipynb  # [4,477 tokens | 14,722 bytes]
 
@@ -319,26 +321,26 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 # XIII. JEKYLL PUBLISHING - Reaching out to the world
 # ============================================================================
 
-/home/mike/.config/pipulate/blogs.json       # <-- Centralized multi-site routing manifest for N Jekyll blogs.
-scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
-scripts/articles/common.py                   # <-- Self-explanatory
-scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
-scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
-scripts/articles/sanitizer.py                # <-- Scrubs PII
-scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
-scripts/articles/confluenceizer.py           # <-- Just added
-scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
-scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
-scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
-scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
-scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
-scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
+# /home/mike/.config/pipulate/blogs.json       # <-- Centralized multi-site routing manifest for N Jekyll blogs.
+# scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
+# scripts/articles/common.py                   # <-- Self-explanatory
+# scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
+# scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
+# scripts/articles/sanitizer.py                # <-- Scrubs PII
+# scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
+# scripts/articles/confluenceizer.py           # <-- Just added
+# scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
+# scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
+# scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
+# scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
+# scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
+# scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
 
 # The following Jekyll files pair well with the above to show how we start various forms of tracking, and as a transition into Honeybot Nginx Broadcast Studio & telemetry.
-/home/mike/repos/trimnoir/_config.yml
-/home/mike/repos/trimnoir/_layouts/default.html
-/home/mike/repos/trimnoir/index.md
-/home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_config.yml
+# /home/mike/repos/trimnoir/_layouts/default.html
+# /home/mike/repos/trimnoir/index.md
+# /home/mike/repos/trimnoir/flake.nix
 
 # ============================================================================
 # XIV. WORKFLOW WORKSHOP - WET assembly scripts. Extruders.
