@@ -374,25 +374,29 @@ scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and includ
 # XVI. JUPTYER NOTEBOOKS & JUPYTERLAB
 # ============================================================================
 
-# assets/nbs/Onboarding.ipynb
-# assets/nbs/imports/core_sauce.py
-# assets/nbs/imports/onboard_sauce.py
-# apps/015_config.py
+assets/nbs/Onboarding.ipynb
+assets/nbs/imports/core_sauce.py
+assets/nbs/imports/onboard_sauce.py
+apps/015_config.py
 
-# Notebooks/__init__.py  # [0 tokens | 0 bytes]
-# Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
-# Notebooks/imports/gap_analyzer_sauce.py  # [26,420 tokens | 116,412 bytes]
-# Notebooks/Advanced_Notebooks/__init__.py  # [0 tokens | 0 bytes]
+Notebooks/__init__.py  # [0 tokens | 0 bytes]
+Notebooks/imports/core_sauce.py  # [1,278 tokens | 5,505 bytes]
+Notebooks/Advanced_Notebooks/__init__.py  # [0 tokens | 0 bytes]
 
-# assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]
-# assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb  # [1,852 tokens | 6,328 bytes]
-# assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]
-# assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [9,017 tokens | 30,164 bytes]
-# Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [29,368 tokens | 97,634 bytes]  # <-- Make sure it isn't in the repo
-# assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
-# assets/nbs/imports/faq_writer_sauce.py  # [6,006 tokens | 26,636 bytes]
-# assets/nbs/imports/gap_analyzer_sauce.py  # [27,162 tokens | 119,579 bytes]
+# assets/nbs/AI_HelloWorld.ipynb  # [2,149 tokens | 6,990 bytes]                       # <-- Purge, redundant
+
+# assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb  # [1,852 tokens | 6,328 bytes]  # <-- May have become redundant, but new use case is multiple URLs, FAST (not waiting for Cloudflare captcha)
 # assets/nbs/imports/url_inspect_sauce.py  # [3,542 tokens | 16,202 bytes]
+
+# assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb  # [2,618 tokens | 7,882 bytes]    # <-- Also may have become redundant. Consolidate similar examples, or have perfect progression.
+# assets/nbs/imports/faq_writer_sauce.py  # [6,006 tokens | 26,636 bytes]
+
+# assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb  # [9,017 tokens | 30,164 bytes]
+# Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb  # [29,368 tokens | 97,634 bytes]    # <-- Make sure it isn't in the repo (only the assets version should be)
+# Notebooks/imports/gap_analyzer_sauce.py  # [26,420 tokens | 116,412 bytes]
+# assets/nbs/imports/gap_analyzer_sauce.py  # [27,162 tokens | 119,579 bytes]
+
+# assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb  # [668 tokens | 1,957 bytes]
 # assets/nbs/imports/videditor_sauce.py  # [945 tokens | 4,145 bytes]
 
 # ============================================================================
