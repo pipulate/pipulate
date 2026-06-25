@@ -221,6 +221,8 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port):
     except Exception as e:
         print(f"⚠️ Could not copy URL to clipboard: {e}")
 
+    return output_path
+
 def main():
     parser = argparse.ArgumentParser(description="Process an article with the Gemini API and format it for Jekyll.")
     parser.add_argument(
