@@ -198,7 +198,7 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 # ============================================================================
 
 # THE ROLLING PIN (Again, if you only include one thing for overarching context of Pipulate and NPvg, include this.
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER: 3
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER: 3
 
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 # AI_CONTEXT.md
@@ -428,13 +428,14 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 # XVII. BOTIFY STUFF
 # ============================================================================
 
+scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
+imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
+
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
-scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
-scripts/botify/botify_api_examples.md  # [21,273 tokens | 86,712 bytes]
-scripts/botify/make_botify_docs.ipynb  # [61,006 tokens | 224,678 bytes]
-imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
+# scripts/botify/botify_api_examples.md  # [21,273 tokens | 86,712 bytes]
+# scripts/botify/make_botify_docs.ipynb  # [61,006 tokens | 224,678 bytes]
 # tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
 # apps/400_botify_trifecta.py  # [53,083 tokens | 275,728 bytes]
 # apps/110_parameter_buster.py  # [55,573 tokens | 274,005 bytes]
