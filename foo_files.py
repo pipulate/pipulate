@@ -81,6 +81,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
+deleteme.txt
+
 @https://developers.botify.com/llms.txt
 # @https://developers.botify.com/docs/openapi-specifications
 # @https://developers.botify.com/docs/collections
