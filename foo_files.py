@@ -81,18 +81,18 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-/home/mike/repos/botifyml/_posts/2026-06-22-architecting-private-work-journals.md
+/home/mike/repos/trimnoir/_posts/2026-06-24-retargetable-publishing-nervous-system.md
 
 # I'll keep these edited-in while getting rid of the full Jekyll chapter-bloat below when I make the real implementation request.
-flake.nix
-scripts/articles/articleizer.py
-scripts/articles/confluenceizer.py
-scripts/articles/common.py
-.gitignore
-/home/mike/.config/pipulate/blogs.json
-! python scripts/articles/confluenceizer.py --help
-! rg -n "gobot\\(|alias bot=|confluenceizer\\.py|md_files = sorted|output_path|add_argument" flake.nix scripts/articles/confluenceizer.py scripts/articles/articleizer.py scripts/articles/common.py
-! git --no-pager diff -- flake.nix scripts/articles/articleizer.py scripts/articles/confluenceizer.py scripts/articles/common.py .gitignore
+# flake.nix
+# scripts/articles/articleizer.py
+# scripts/articles/confluenceizer.py
+# scripts/articles/common.py
+# .gitignore
+# /home/mike/.config/pipulate/blogs.json
+# ! python scripts/articles/confluenceizer.py --help
+# ! rg -n "gobot\\(|alias bot=|confluenceizer\\.py|md_files = sorted|output_path|add_argument" flake.nix scripts/articles/confluenceizer.py scripts/articles/articleizer.py scripts/articles/common.py
+# ! git --no-pager diff -- flake.nix scripts/articles/articleizer.py scripts/articles/confluenceizer.py scripts/articles/common.py .gitignore
 
 # /home/mike/repos/botifyml/_posts/2026-06-24-proof-by-proxy-bot-telemetry.md
 # /home/mike/repos/trimnoir/_posts/2026-06-24-funnel-architecture-automation.md
@@ -154,10 +154,10 @@ scripts/articles/common.py
 prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!! STANDARD WRAPPER: 2
 
 # The following 5 files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
-# .gitignore        #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
-# flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
-# apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
-# scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+.gitignore        #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
+flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
+apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
+scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 # scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
 
 # OTHER HEAVY LIFTERS
@@ -207,10 +207,10 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 # assets/player-piano.js                            # <-- Player piano actuator #2 in Pipulate. How AIs can take control of workflows.
 # Notebooks/imports/__init__.py                     # <-- Empty file, just to show you imports relative to Notebooks are 1st-class path members. Important!
 
-# assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
-# assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
-# assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
-# apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
+assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
+assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
+assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
+apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
 
 # ============================================================================
 # VII. WET WORKFLOWS / DRY CRUD - The what's best for AIs and Humans compromise
@@ -310,8 +310,8 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 # XI. META-COGNITION & OTHER GOLDEN PATHS - Unification of desert kite funnel-mouths
 # ============================================================================
 
-# AI_RUNME.py                     # <-- While `prompt`, `foo` is the normal way to jolt Amnesiac Genie awake, they may find this first
-# cli.py                          # <-- And if you've got a super-brain like Claude, Gemini or ChatGPT, knowing this is super-powers. Compatibility-layer for your "terminal" environment guaranteed!
+AI_RUNME.py                     # <-- While `prompt`, `foo` is the normal way to jolt Amnesiac Genie awake, they may find this first
+cli.py                          # <-- And if you've got a super-brain like Claude, Gemini or ChatGPT, knowing this is super-powers. Compatibility-layer for your "terminal" environment guaranteed!
 # imports/__init__.py             # <-- Zero bytes again, but a heavy-lifter for an AI in search of tools
 # imports/stream_orchestrator.py  # <-- Player piano actuator. Sniffs chat-stream. Does the deed. Jacquard loom. MCP.
 # imports/mcp_orchestrator.py     # <-- MCP isn't everything, but definitely needs to be there as a Conway's Law bloated safety-net compatibility layer.
@@ -424,7 +424,7 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
-# scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
+scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
 # scripts/botify/botify_api_examples.md  # [21,273 tokens | 86,712 bytes]
 # scripts/botify/make_botify_docs.ipynb  # [61,006 tokens | 224,678 bytes]
 # tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
