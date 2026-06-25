@@ -31,6 +31,52 @@ def load_targets():
     return DEFAULT_TARGETS
 
 
+def record_last_published(target_key, file_path, target_name=None):
+    """Record the article articleizer.py just wrote, keyed by target.
+
+    confluenceizer.py --latest reads this to sync ONLY the freshly published
+    file instead of sweeping the whole directory. Keying by target means a
+    public-side publish (target 1) never shadows a private-side one (target 4).
+    """
+    target_key = str(target_key)
+    data = {}
+    if LAST_PUBLISHED_FILE.exists():
+        try:
+            with open(LAST_PUBLISHED_FILE, 'r') as f:
+                data = json.load(f)
+        except (json.JSONDecodeError, OSError):
+            data = {}
+    if not isinstance(data, dict):
+        data = {}
+    data[target_key] = {
+        "path": str(Path(file_path).resolve()),
+        "name": target_name,
+        "recorded_at": datetime.now().isoformat(timespec="seconds"),
+    }
+    CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+    with open(LAST_PUBLISHED_FILE, 'w') as f:
+        json.dump(data, f, indent=2)
+
+
+def get_last_published(target_key):
+    """Return the recorded path for a target, or None if absent/stale/invalid."""
+    target_key = str(target_key)
+    if not LAST_PUBLISHED_FILE.exists():
+        return None
+    try:
+        with open(LAST_PUBLISHED_FILE, 'r') as f:
+            data = json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return None
+    entry = data.get(target_key) if isinstance(data, dict) else None
+    if not entry:
+        return None
+    path = entry.get("path") if isinstance(entry, dict) else entry
+    if path and Path(path).is_file():
+        return path
+    return None
+
+
 def load_keys_dict():
     """Loads the entire keys dictionary from keys.json."""
     if KEYS_FILE.exists():
