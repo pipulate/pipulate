@@ -336,7 +336,9 @@ def main():
             return
 
     if instructions:
-        create_jekyll_post(article_text, instructions, output_dir, preview_port)
+        saved_path = create_jekyll_post(article_text, instructions, output_dir, preview_port)
+        if saved_path:
+            common.record_last_published(args.target, saved_path, target_config.get("name"))
 
 
 if __name__ == '__main__':
