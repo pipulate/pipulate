@@ -1,6 +1,7 @@
 import json
 import argparse
 import getpass
+from datetime import datetime
 from pathlib import Path
 import sys
 
@@ -8,6 +9,7 @@ import sys
 CONFIG_DIR = Path.home() / ".config" / "pipulate"
 TARGETS_FILE = CONFIG_DIR / "blogs.json"
 KEYS_FILE = CONFIG_DIR / "keys.json"
+LAST_PUBLISHED_FILE = CONFIG_DIR / "last_published.json"
 
 DEFAULT_TARGETS = {
     "1": {
