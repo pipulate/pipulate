@@ -83,6 +83,11 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 /home/mike/repos/botifyml/_posts/2026-06-22-architecting-private-work-journals.md
 
+# I'll keep these edited-in while getting rid of the full Jekyll chapter-bloat below when I make the real implementation request.
+scripts/articles/confluenceizer.py
+scripts/articles/articleizer.py
+scripts/articles/common.py
+
 # /home/mike/repos/botifyml/_posts/2026-06-24-proof-by-proxy-bot-telemetry.md
 # /home/mike/repos/trimnoir/_posts/2026-06-24-funnel-architecture-automation.md
 
