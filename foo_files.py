@@ -81,7 +81,13 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-/home/mike/repos/trimnoir/_posts/2026-06-24-retargetable-publishing-nervous-system.md
+@https://developers.botify.com/llms.txt
+# @https://developers.botify.com/docs/openapi-specifications
+# @https://developers.botify.com/docs/collections
+
+
+# /home/mike/repos/trimnoir/_posts/2026-06-24-truth-actually-actuator-systems.md
+# /home/mike/repos/trimnoir/_posts/2026-06-24-retargetable-publishing-nervous-system.md
 
 # I'll keep these edited-in while getting rid of the full Jekyll chapter-bloat below when I make the real implementation request.
 # flake.nix
@@ -158,6 +164,7 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
 scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+# cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
 # scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
 
 # OTHER HEAVY LIFTERS
@@ -207,10 +214,10 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 # assets/player-piano.js                            # <-- Player piano actuator #2 in Pipulate. How AIs can take control of workflows.
 # Notebooks/imports/__init__.py                     # <-- Empty file, just to show you imports relative to Notebooks are 1st-class path members. Important!
 
-assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
-assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
-assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
-apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
+# assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
+# assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
+# assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
+# apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
 
 # ============================================================================
 # VII. WET WORKFLOWS / DRY CRUD - The what's best for AIs and Humans compromise
@@ -310,8 +317,8 @@ apps/015_config.py                                # <-- Carrying onboarding valu
 # XI. META-COGNITION & OTHER GOLDEN PATHS - Unification of desert kite funnel-mouths
 # ============================================================================
 
-AI_RUNME.py                     # <-- While `prompt`, `foo` is the normal way to jolt Amnesiac Genie awake, they may find this first
-cli.py                          # <-- And if you've got a super-brain like Claude, Gemini or ChatGPT, knowing this is super-powers. Compatibility-layer for your "terminal" environment guaranteed!
+# AI_RUNME.py                     # <-- While `prompt`, `foo` is the normal way to jolt Amnesiac Genie awake, they may find this first
+# cli.py                          # <-- And if you've got a super-brain like Claude, Gemini or ChatGPT, knowing this is super-powers. Compatibility-layer for your "terminal" environment guaranteed!
 # imports/__init__.py             # <-- Zero bytes again, but a heavy-lifter for an AI in search of tools
 # imports/stream_orchestrator.py  # <-- Player piano actuator. Sniffs chat-stream. Does the deed. Jacquard loom. MCP.
 # imports/mcp_orchestrator.py     # <-- MCP isn't everything, but definitely needs to be there as a Conway's Law bloated safety-net compatibility layer.
@@ -425,9 +432,13 @@ cli.py                          # <-- And if you've got a super-brain like Claud
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
 scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
-# scripts/botify/botify_api_examples.md  # [21,273 tokens | 86,712 bytes]
-# scripts/botify/make_botify_docs.ipynb  # [61,006 tokens | 224,678 bytes]
+scripts/botify/botify_api_examples.md  # [21,273 tokens | 86,712 bytes]
+scripts/botify/make_botify_docs.ipynb  # [61,006 tokens | 224,678 bytes]
+imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
 # tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
+# apps/400_botify_trifecta.py  # [53,083 tokens | 275,728 bytes]
+# apps/110_parameter_buster.py  # [55,573 tokens | 274,005 bytes]
+# apps/120_link_graph.py  # [54,375 tokens | 272,569 bytes]
 
 #  _____ _           _           _                          
 # |  ___(_)_ __   __| |   __ _  | |__   ___  _ __ ___   ___ 
@@ -437,7 +448,6 @@ scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
 
 # I NEED TO CONTINUE RESEARCHING AGENTIC COMMERCE ON THE MAJOR PLATFORMS
 # !https://support.botify.com/en/articles/9108593-creating-segments
-# /home/mike/repos/botifyml/_posts/2026-06-17-unmasking-agentic-web-scraper-telemetry.md
 # !https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/products
 # !https://www.salesforce.com/products/what-is-agentforce-360/
 # !https://www.salesforce.com/blog/playbook/agentic-ai/
@@ -447,10 +457,6 @@ scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
 # apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
 # apps/050_documentation.py  # [30,795 tokens | 143,127 bytes]
 # apps/230_dev_assistant.py  # [25,808 tokens | 124,873 bytes]
-# imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
-# apps/400_botify_trifecta.py  # [53,083 tokens | 275,728 bytes]
-# apps/110_parameter_buster.py  # [55,573 tokens | 274,005 bytes]
-# apps/120_link_graph.py  # [54,375 tokens | 272,569 bytes]
 
 """
 #   ____          _                     ____ _   _  ___  ____      
@@ -563,7 +569,7 @@ PROGRESSIVE_REVEAL_PROMPT = r"""--- SYSTEM CONTEXT CONSTRAINTS: PROGRESSIVE HIST
 You are acting as the Context Curation Engine for a stateless, local-first workspace. Your goal is to select the next logical set of articles to hydrate the conversation's narrative spine.
 
 I have provided a master chronological index of available articles via the command output of `lsa.py` above. Each entry is formatted with metadata that you must discard when constructing your request:
-Example input format: 2026-05-19 [17k] liveness-coupled-agency-browser-kill-switch
+**Example input format**: 2026-05-19 [17k] liveness-coupled-agency-browser-kill-switch
 The core semantic identifier (the key) is ONLY the final slug: `liveness-coupled-agency-browser-kill-switch`
 
 CRITICAL FORMAT INVARIANT:
