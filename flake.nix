@@ -735,14 +735,26 @@ print('AI:\n', r.ai)
             alias grim='(cd scripts/articles && xclip -selection clipboard -o >article.txt && python sanitizer.py && python articleizer.py -t 3)'
             alias bot='(cd scripts/articles && xclip -selection clipboard -o >article.txt && python sanitizer.py && python articleizer.py -t 4)'
             gobot() {
-              local msg="''${1:-Update work journal}"
+              # Routine runs sync ONLY the article 'bot' just wrote, via the
+              # marker articleizer.py records. Pass --all to force a full
+              # directory re-sweep (for global template/pipeline changes).
+              local SCOPE="--latest"
+              local msg=""
+              for arg in "$@"; do
+                if [ "$arg" = "--all" ]; then
+                  SCOPE=""
+                elif [ -z "$msg" ]; then
+                  msg="$arg"
+                fi
+              done
+              msg="''${msg:-Update work journal}"
               local BOTIFY_REPO="$HOME/repos/botifyml"
               echo "📚 [1/3] Committing source-of-truth (botifyml)..."
               (cd "$BOTIFY_REPO" && git add . && git commit -am "$msg" && git push) || return 1
               echo "🧠 [2/3] Generating holographic shards..."
               python "$PIPULATE_ROOT/scripts/articles/contextualizer.py" -t 4 || return 1
-              echo "📡 [3/3] Upserting to Confluence..."
-              python "$PIPULATE_ROOT/scripts/articles/confluenceizer.py" -t 4 --yes
+              echo "📡 [3/3] Upserting to Confluence (scope: ''${SCOPE:-full sweep})..."
+              python "$PIPULATE_ROOT/scripts/articles/confluenceizer.py" -t 4 --yes $SCOPE
             }
           fi
           # Update remote URL to use SSH if we have a key
