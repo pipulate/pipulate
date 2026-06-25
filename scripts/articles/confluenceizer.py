@@ -226,6 +226,10 @@ def main():
     parser = argparse.ArgumentParser(description="Publish local markdown articles to Confluence Cloud.")
     common.add_standard_arguments(parser)
     parser.add_argument("--yes", action="store_true", help="Arm Confluence mutations. Without this, only print the dry-run contract.")
+    parser.add_argument("--file", action="append", metavar="PATH",
+                        help="Sync only the given file(s). Repeatable. Beats both --latest and the full sweep.")
+    parser.add_argument("--latest", action="store_true",
+                        help="Sync only the article articleizer.py most recently wrote for this target (from the marker). Errors if no marker exists.")
     args = parser.parse_args()
 
     targets = common.load_targets()
