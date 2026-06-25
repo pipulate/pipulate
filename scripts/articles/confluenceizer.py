@@ -254,7 +254,32 @@ def main():
         print(f"❌ Error: Posts directory does not exist: {posts_dir}")
         sys.exit(1)
 
-    md_files = sorted(list(posts_dir.glob("*.md")))
+    # Selection precedence: explicit --file > --latest > full directory sweep.
+    # The sweep stays the default so dry-runs (no --yes) and intentional global
+    # re-syncs for template/pipeline changes keep working exactly as before.
+    if args.file:
+        md_files = []
+        for raw in args.file:
+            candidate = Path(raw).expanduser()
+            if not candidate.is_absolute():
+                candidate = posts_dir / candidate
+            candidate = candidate.resolve()
+            if candidate.is_file():
+                md_files.append(candidate)
+            else:
+                print(f"   ⚠ Skipping --file (not found): {candidate}")
+        print(f"🎯 Explicit selection via --file: {len(md_files)} document(s).")
+    elif args.latest:
+        latest_path = common.get_last_published(target_key)
+        if not latest_path:
+            print(f"❌ --latest: no recorded publish for target '{target_key}'.")
+            print("  ↳ Run 'bot' (articleizer.py) first, pass --file PATH, or drop --latest for a full sweep.")
+            sys.exit(1)
+        md_files = [Path(latest_path).resolve()]
+        print(f"🎯 Latest-only selection (from marker): {md_files[0].name}")
+    else:
+        md_files = sorted(list(posts_dir.glob("*.md")))
+
     print(f"📝 Found {len(md_files)} candidate document(s) for publishing queue.")
 
     if not md_files:
