@@ -79,11 +79,11 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # I. DEBUGGING CRASH COURSE - Server Cookies & Radical Transparency
 # ============================================================================
 
-foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
+# foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-deleteme.txt
+@https://tags.pw.adn.cloud/5PVBRL/activation.js
 
-@https://developers.botify.com/llms.txt
+# @https://developers.botify.com/llms.txt
 # @https://developers.botify.com/docs/openapi-specifications
 # @https://developers.botify.com/docs/collections
 
@@ -159,15 +159,15 @@ deleteme.txt
 # > It might take awhile, but the context-compile should do the hardest part.  
 # > The AI should see what falsifying will be if it's gonna work smart.  
 
-prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!! STANDARD WRAPPER: 2
+# prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!! STANDARD WRAPPER: 2
 
 # The following 5 files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
-.gitignore        #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
-flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
-apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
-scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
-# cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
+# .gitignore        #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
+# flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
+# apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
+# scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 # scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
+# cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
 
 # OTHER HEAVY LIFTERS
 # scripts/ai.py                  #  <-- Local AI writing git commit messages. Accelerator!
@@ -430,9 +430,8 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 # XVII. BOTIFY STUFF
 # ============================================================================
 
-scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
-imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
-
+# scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
+# imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
