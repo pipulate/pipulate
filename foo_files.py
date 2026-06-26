@@ -81,12 +81,13 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-$https://tags.pw.adn.cloud/5PVBRL/activation.js
+!https://tags.pw.adn.cloud/YICBBD/activation.js
 
-@https://support.botify.com/en/collections/8589197-botify-activation
-@https://support.botify.com/en/collections/10314812-installing-the-botify-js-snippet
-@https://support.botify.com/en/articles/9746147-tech-notes-installing-the-botify-js-snippet
-@https://support.botify.com/en/articles/9108743-adding-the-botify-js-snippet-with-google-tag-manager
+# @https://support.botify.com/en/collections/8589197-botify-activation
+# @https://support.botify.com/en/collections/10314812-installing-the-botify-js-snippet
+# @https://support.botify.com/en/articles/9746147-tech-notes-installing-the-botify-js-snippet
+# @https://support.botify.com/en/articles/9108743-adding-the-botify-js-snippet-with-google-tag-manager
+# @https://support.botify.com/en/articles/9131614-pageworkers-implementation
 
 # @https://developers.botify.com/llms.txt
 # @https://developers.botify.com/docs/openapi-specifications
@@ -205,7 +206,7 @@ apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aid
 # ============================================================================
 
 # THE ROLLING PIN (Again, if you only include one thing for overarching context of Pipulate and NPvg, include this.
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER: 3
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER: 3
 
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 # AI_CONTEXT.md
@@ -240,11 +241,11 @@ apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aid
 # VIII. LLM OPTICS - Like looking at raw HTML or the hydrated DOM? Them either.
 # ============================================================================
 
-tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
-tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
-tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
-tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
-tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
+# tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
+# tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
+# tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
+# tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
+# tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
 # ============================================================================
 # IX. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
@@ -313,10 +314,10 @@ tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consi
 # ============================================================================
 
 # WE'VE GOT A LOT OF THESE AND I HAVE TO BUILD THIS OUT / AD HOC-ISH
-# /home/mike/repos/trimnoir/flake.nix
-# /home/mike/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
-# /home/mike/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
-# /home/mike/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
+/home/mike/repos/trimnoir/flake.nix
+/home/mike/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
+/home/mike/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
+/home/mike/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
 # remotes/honeybot/queries/trapdoor_ips.sql         # <-- The SQL to see who is hydrating the DOM. The example of HOW we use it from here in the router below.
 # ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
@@ -436,7 +437,7 @@ tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consi
 # ============================================================================
 
 # scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
-imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
+# imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
