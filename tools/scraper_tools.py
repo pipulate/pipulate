@@ -154,6 +154,16 @@ async def selenium_automation(params: dict) -> dict:
             if artifact_path.exists():
                  artifacts[Path(artifact_name).stem] = str(artifact_path)
 
+        # Normalize cached artifact keys to match the fresh-scrape vocabulary.
+        # The loop above keys files by filename stem, so "source.html" lands under
+        # "source" and "headers.json" was never enumerated at all. Fresh scrapes
+        # expose 'source_html' and 'headers', so cached results must agree or the
+        # $URL route (headers + raw source only) silently finds nothing.
+        for filename, semantic_key in [("source.html", "source_html"), ("headers.json", "headers")]:
+            candidate = output_dir / filename
+            if candidate.exists():
+                artifacts[semantic_key] = str(candidate)
+
         return {"success": True, "looking_at_files": artifacts, "cached": True}
 
     # --- Fuzzed Delay Logic (only runs if not cached) ---
