@@ -81,7 +81,11 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-# !https://tags.pw.adn.cloud/YICBBD/activation.js
+# $https://tags.pw.adn.cloud/YICBBD/activation.js
+
+# @https://support.botify.com/en/collections/8589200-pageworkers
+# @https://support.botify.com/en/articles/9131625-pageworkers-technical-overview
+# @https://support.botify.com/en/articles/9108745-creating-pageworkers-optimizations
 
 # @https://support.botify.com/en/collections/8589197-botify-activation
 # @https://support.botify.com/en/collections/10314812-installing-the-botify-js-snippet
@@ -172,7 +176,7 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
 scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
-scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
+# scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
 # cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
 
 # OTHER HEAVY LIFTERS
@@ -222,10 +226,10 @@ scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and includ
 # assets/player-piano.js                            # <-- Player piano actuator #2 in Pipulate. How AIs can take control of workflows.
 # Notebooks/imports/__init__.py                     # <-- Empty file, just to show you imports relative to Notebooks are 1st-class path members. Important!
 
-# assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
-# assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
-# assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
-# apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
+assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
+assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
+assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
+apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
 
 # ============================================================================
 # VII. WET WORKFLOWS / DRY CRUD - The what's best for AIs and Humans compromise
@@ -317,7 +321,9 @@ scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and includ
 # /home/mike/repos/trimnoir/flake.nix
 # /home/mike/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
 # /home/mike/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
+# /home/mike/repos/trimnoir/about.md                # <-- A typical markdown Jekyll page
 # /home/mike/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
+
 # remotes/honeybot/queries/trapdoor_ips.sql         # <-- The SQL to see who is hydrating the DOM. The example of HOW we use it from here in the router below.
 # ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
@@ -437,7 +443,7 @@ scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and includ
 # ============================================================================
 
 # scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
-# imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
+imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
