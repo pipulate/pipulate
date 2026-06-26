@@ -81,7 +81,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-!https://tags.pw.adn.cloud/YICBBD/activation.js
+# !https://tags.pw.adn.cloud/YICBBD/activation.js
 
 # @https://support.botify.com/en/collections/8589197-botify-activation
 # @https://support.botify.com/en/collections/10314812-installing-the-botify-js-snippet
@@ -171,8 +171,8 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 .gitignore        #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
 flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
-# scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
-# scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
+scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
 # cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
 
 # OTHER HEAVY LIFTERS
@@ -314,10 +314,10 @@ apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aid
 # ============================================================================
 
 # WE'VE GOT A LOT OF THESE AND I HAVE TO BUILD THIS OUT / AD HOC-ISH
-/home/mike/repos/trimnoir/flake.nix
-/home/mike/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
-/home/mike/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
-/home/mike/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
+# /home/mike/repos/trimnoir/flake.nix
+# /home/mike/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
+# /home/mike/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
+# /home/mike/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
 # remotes/honeybot/queries/trapdoor_ips.sql         # <-- The SQL to see who is hydrating the DOM. The example of HOW we use it from here in the router below.
 # ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
