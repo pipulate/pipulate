@@ -1284,7 +1284,37 @@ def main():
         if path.startswith(('http://', 'https://', '!http://', '!https://', '@http://', '@https://', '$http://', '$https://')):
             target_url = path[1:].strip() if path.startswith(('!', '@', '$')) else path.strip()
             
-            if path.startswith(('!', '@')):
+            if path.startswith('$'):
+                # CACHE MATERIALIZATION ($URL): headers + raw source only.
+                # No cache bust, no full optics bundle. This is the "best of both
+                # worlds" turn: treat the browser-captured wire source as if it had
+                # been hand-pasted locally, and surface the response headers too.
+                from urllib.parse import urlparse, quote
+
+                parsed = urlparse(target_url)
+                domain = parsed.netloc
+                path_slug = quote(parsed.path or '/', safe='').replace('/', '_')[:100] or "%2F"
+                cache_dir = os.path.join(REPO_ROOT, "browser_cache", domain, path_slug)
+
+                headers_file = os.path.join(cache_dir, "headers.json")
+                source_file = os.path.join(cache_dir, "source.html")
+
+                if not (os.path.exists(headers_file) and os.path.exists(source_file)):
+                    logger.print(f"   -> ⚠️ $URL cache miss for {target_url}")
+                    logger.print(f"      Run the !{target_url} scrape first to populate browser_cache.")
+                else:
+                    logger.print(f"   -> 💲 Materializing cached headers + raw source for: {target_url}")
+                    for label, file_path, lang in [
+                        ('Response Headers', headers_file, 'json'),
+                        ('Raw Source', source_file, 'html'),
+                    ]:
+                        with open(file_path, 'r', encoding='utf-8') as f:
+                            content = f.read()
+                        processed_files_data.append({
+                            "path": f"OPTICS [{label}]: {target_url}", "comment": comment, "content": content,
+                            "tokens": count_tokens(content), "words": count_words(content), "lang": lang
+                        })
+            elif path.startswith(('!', '@')):
                 # JIT OPTICAL DISTILLATION (The MST3K Balcony)
                 logger.print(f"   -> 👁️‍🗨️ Engaging LLM Optics for: {target_url}")
                 from tools.scraper_tools import selenium_automation
