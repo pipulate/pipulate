@@ -81,8 +81,12 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-# @https://tags.pw.adn.cloud/5PVBRL/activation.js
-# activation.js
+$https://tags.pw.adn.cloud/5PVBRL/activation.js
+
+@https://support.botify.com/en/collections/8589197-botify-activation
+@https://support.botify.com/en/collections/10314812-installing-the-botify-js-snippet
+@https://support.botify.com/en/articles/9746147-tech-notes-installing-the-botify-js-snippet
+@https://support.botify.com/en/articles/9108743-adding-the-botify-js-snippet-with-google-tag-manager
 
 # @https://developers.botify.com/llms.txt
 # @https://developers.botify.com/docs/openapi-specifications
@@ -166,9 +170,9 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 .gitignore        #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
 flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
-scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
-scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
-cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
+# scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+# scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
+# cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
 
 # OTHER HEAVY LIFTERS
 # scripts/ai.py                  #  <-- Local AI writing git commit messages. Accelerator!
@@ -432,7 +436,7 @@ tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consi
 # ============================================================================
 
 # scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
-# imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
+imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
