@@ -257,34 +257,144 @@ class BotifySchemaDiscoverer:
         else:
             return "Other"
 
+def _extract_username(profile_json: dict) -> str:
+    """Defensively pull the username from the profile payload regardless of nesting.
+
+    The live profile endpoint shape is treated as unverified ground truth here;
+    we probe the few plausible locations rather than assuming one. Verify the
+    real shape with the cheap profile probe before trusting any single path.
+    """
+    candidates = [
+        profile_json.get("username"),
+        profile_json.get("data", {}).get("username") if isinstance(profile_json.get("data"), dict) else None,
+        profile_json.get("user", {}).get("username") if isinstance(profile_json.get("user"), dict) else None,
+        profile_json.get("login"),
+    ]
+    for c in candidates:
+        if c:
+            return c
+    return None
+
+
+async def resolve_autopilot_coordinates(client: httpx.AsyncClient, headers: dict, cli_org: str, cli_project: str, cli_analysis: str) -> tuple:
+    """Resolves operational bounds using CLI flags, environment variables, or API discovery loops.
+
+    Hierarchy per coordinate: CLI flag > session env var > interrogative discovery.
+    The only hard requirement is the token (checked in main). Org and project are
+    assumed absent and discovered, but happily honored if supplied.
+    """
+    # 1. Resolve Username
+    profile_url = "https://api.botify.com/v1/authentication/profile"
+    try:
+        profile_res = await client.get(profile_url, headers=headers)
+        if profile_res.status_code != 200:
+            print(f"❌ Authentication Rejected ({profile_res.status_code}): Verify your BOTIFY_API_TOKEN.")
+            sys.exit(1)
+        username = _extract_username(profile_res.json())
+        if not username:
+            print("❌ Could not locate 'username' in the profile payload.")
+            print("   FIX: Run the profile probe to inspect the live response shape, then adjust _extract_username.")
+            sys.exit(1)
+    except Exception as e:
+        print(f"❌ Network error during identity verification: {e}")
+        sys.exit(1)
+
+    # 2. Resolve Project & Organization with paging mitigation
+    target_project = cli_project or os.getenv("BOTIFY_PROJECT")
+    target_org = cli_org or os.getenv("BOTIFY_ORG")
+
+    if not target_project:
+        # Optional soft-preference slug (e.g. your experimental personal site).
+        # Not hardcoded: set BOTIFY_PREFERRED_PROJECT if you want autopilot to
+        # favor a specific slug when it appears in the accessible set.
+        preferred_slug = os.getenv("BOTIFY_PREFERRED_PROJECT")
+        print("📡 BOTIFY_PROJECT not declared. Scanning accessible projects matrix...")
+        projects_url = f"https://api.botify.com/v1/users/{username}/projects"
+        all_projects = []
+
+        while projects_url:
+            res = await client.get(projects_url, headers=headers)
+            if res.status_code != 200:
+                print(f"❌ Failed to fetch projects registry: {res.text}")
+                sys.exit(1)
+            data = res.json()
+            all_projects.extend(data.get("results", []))
+            projects_url = data.get("next")  # Follow pagination cursor safely
+
+        if not all_projects:
+            print("❌ Error: No accessible projects found on this account.")
+            sys.exit(1)
+
+        preferred = [p for p in all_projects if preferred_slug and p.get("slug") == preferred_slug]
+        if preferred:
+            selected_project = preferred[0]
+            print(f"🎯 Locked preferred project: {selected_project.get('slug')}")
+        else:
+            selected_project = all_projects[0]
+            print(f"ℹ️ Auto-selected first available project: {selected_project.get('slug')}")
+
+        target_project = selected_project.get("slug")
+        if not target_org:
+            target_org = (
+                (selected_project.get("user") or {}).get("login")
+                or (selected_project.get("organization") or {}).get("slug")
+            )
+
+    if not target_org:
+        target_org = os.getenv("BOTIFY_ORG") or username
+
+    # 3. Resolve Analysis Snapshot
+    target_analysis = cli_analysis or os.getenv("BOTIFY_ANALYSIS")
+    if not target_analysis:
+        print(f"📡 BOTIFY_ANALYSIS not declared. Fetching latest timeline index for {target_org}/{target_project}...")
+        light_url = f"https://api.botify.com/v1/analyses/{target_org}/{target_project}/light"
+        res = await client.get(light_url, headers=headers)
+        if res.status_code != 200 or not res.json().get("results"):
+            print(f"❌ Failed to resolve analysis snapshot index. Verify org namespace: '{target_org}'")
+            sys.exit(1)
+        target_analysis = res.json().get("results")[0].get("slug")
+        print(f"🎯 Locked latest active snapshot: {target_analysis}")
+
+    return target_org, target_project, target_analysis
+
+
 async def main():
     """Main function to run true schema discovery."""
+    parser = argparse.ArgumentParser(description="Interrogate and compile living Botify database schema shapes.")
+    parser.add_argument("--org", help="Target organization or owner account slug override.")
+    parser.add_argument("--project", help="Target project slug token override.")
+    parser.add_argument("--analysis", help="Target chronological crawl snapshot YYYYMMDD string override.")
+    args = parser.parse_args()
+
+    api_token = os.getenv("BOTIFY_API_TOKEN")
+    if not api_token:
+        print("❌ Error: BOTIFY_API_TOKEN is missing from your terminal environment.")
+        print("   FIX: Run the 'Onboarding.ipynb' cell pipeline or populate your local .env file.")
+        sys.exit(1)
+
+    auth_headers = {
+        "Authorization": f"Token {api_token}",
+        "Content-Type": "application/json"
+    }
+
     try:
-        # Load configuration
-        from config import get_botify_token
-        api_key = get_botify_token()
-        with open(CONFIG_FILE) as f:
-            config = json.load(f)
-        org, project, analysis = config['org'], config['project'], config['analysis']
-        
-        # Create discoverer instance
-        discoverer = BotifySchemaDiscoverer(org, project, analysis, api_key)
-        
-        # Discover complete schema
-        schema_results = await discoverer.discover_complete_schema()
-        
-        # Save results in script directory
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            org, project, analysis = await resolve_autopilot_coordinates(
+                client, auth_headers, args.org, args.project, args.analysis
+            )
+
+            print(f"\nLocked Coordinates -> Org: {org} | Project: {project} | Analysis: {analysis}")
+            discoverer = BotifySchemaDiscoverer(org, project, analysis, api_token)
+            schema_results = await discoverer.discover_complete_schema()
+
         script_dir = Path(__file__).parent
-        
-        # Save complete discovery results
         results_file = script_dir / f"{project}_{analysis}_true_schema_discovery.json"
         with open(results_file, 'w') as f:
             json.dump(schema_results, f, indent=2, default=str)
-        
+
         print(f"\n✅ True schema discovery results saved to:")
         print(f"   {results_file.resolve()}")
-        
-        # Save collections summary
+
         if schema_results.get("collections_discovered"):
             collections_df = pd.DataFrame([
                 {"collection": col} for col in schema_results["collections_discovered"]
@@ -292,8 +402,7 @@ async def main():
             collections_file = script_dir / f"{project}_{analysis}_discovered_collections.csv"
             collections_df.to_csv(collections_file, index=False)
             print(f"   {collections_file.resolve()}")
-        
-        # Save fields summary
+
         if schema_results.get("field_categories"):
             fields_data = []
             for category, fields in schema_results["field_categories"].items():
@@ -302,18 +411,18 @@ async def main():
                         "field": field,
                         "category": category
                     })
-            
+
             if fields_data:
                 fields_df = pd.DataFrame(fields_data)
                 fields_file = script_dir / f"{project}_{analysis}_discovered_fields.csv"
                 fields_df.to_csv(fields_file, index=False)
                 print(f"   {fields_file.resolve()}")
-        
+
         print(f"\n📊 Discovery Summary:")
         print(f"   Collections Found: {len(schema_results.get('collections_discovered', []))}")
         print(f"   Total Fields Found: {schema_results.get('total_fields_discovered', 0)}")
         print(f"   Field Categories: {len(schema_results.get('field_categories', {}))}")
-        
+
     except Exception as e:
         print(f"❌ True schema discovery failed: {e}")
         import traceback
