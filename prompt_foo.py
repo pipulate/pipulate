@@ -1281,8 +1281,8 @@ def main():
             continue
 
         # HANDLE REMOTE URLS (And JIT Optical Distillation)
-        if path.startswith(('http://', 'https://', '!http://', '!https://', '@http://', '@https://')):
-            target_url = path[1:].strip() if path.startswith(('!', '@')) else path.strip()
+        if path.startswith(('http://', 'https://', '!http://', '!https://', '@http://', '@https://', '$http://', '$https://')):
+            target_url = path[1:].strip() if path.startswith(('!', '@', '$')) else path.strip()
             
             if path.startswith(('!', '@')):
                 # JIT OPTICAL DISTILLATION (The MST3K Balcony)
