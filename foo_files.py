@@ -79,9 +79,10 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # I. DEBUGGING CRASH COURSE - Server Cookies & Radical Transparency
 # ============================================================================
 
-# foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
+foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-@https://tags.pw.adn.cloud/5PVBRL/activation.js
+# @https://tags.pw.adn.cloud/5PVBRL/activation.js
+# activation.js
 
 # @https://developers.botify.com/llms.txt
 # @https://developers.botify.com/docs/openapi-specifications
@@ -159,15 +160,15 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # > It might take awhile, but the context-compile should do the hardest part.  
 # > The AI should see what falsifying will be if it's gonna work smart.  
 
-# prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!! STANDARD WRAPPER: 2
+prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!! STANDARD WRAPPER: 2
 
 # The following 5 files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
-# .gitignore        #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
-# flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
-# apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
-# scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
-# scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
-# cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
+.gitignore        #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
+flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
+apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
+scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
+cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
 
 # OTHER HEAVY LIFTERS
 # scripts/ai.py                  #  <-- Local AI writing git commit messages. Accelerator!
@@ -235,11 +236,11 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # VIII. LLM OPTICS - Like looking at raw HTML or the hydrated DOM? Them either.
 # ============================================================================
 
-# tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
-# tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
-# tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
-# tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
-# tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
+tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
+tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
+tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
+tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
+tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
 # ============================================================================
 # IX. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
