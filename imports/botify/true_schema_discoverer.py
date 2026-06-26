@@ -8,9 +8,8 @@ from datetime import datetime, timedelta
 from typing import List, Dict, Any, Set
 import asyncio
 
-# --- Configuration ---
-TOKEN_FILE = 'botify_token.txt'
-CONFIG_FILE = Path(__file__).parent / 'config.json'
+import argparse
+import sys
 
 class BotifySchemaDiscoverer:
     """True Botify API schema discovery using official datamodel endpoints."""
