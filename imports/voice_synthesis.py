@@ -149,6 +149,26 @@ class ChipVoiceSystem:
         spoken_text = re.sub(r'<[^>]+>', '', spoken_text)  # Strip HTML tags
         
         try:
+            # Serialize speech across processes (installer vs. server vs. wand)
+            # so two voices can never talk over each other. Bounded wait: prefer a
+            # rare audible overlap over a permanent silent deadlock if a player hangs.
+            import fcntl
+            import time
+            lock_file = open("/tmp/pipulate_voice.lock", "w")
+            _deadline = time.monotonic() + 30
+            while True:
+                try:
+                    fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    break
+                except BlockingIOError:
+                    if time.monotonic() > _deadline:
+                        logger.warning("🎤 Voice lock wait exceeded 30s; proceeding (possible overlap).")
+                        break
+                    time.sleep(0.1)
+
+            # STOP any of this process's own prior audio now that we hold the lock
+            self.stop_speaking()
+
             # Use temporary file for audio output
             with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as tmp_file:
                 output_path = tmp_file.name
