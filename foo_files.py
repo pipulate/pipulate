@@ -107,7 +107,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # scripts/articles/confluenceizer.py
 # scripts/articles/common.py
 # .gitignore
-# /home/mike/.config/pipulate/blogs.json
+/home/mike/.config/pipulate/blogs.json
 # ! python scripts/articles/confluenceizer.py --help
 # ! rg -n "gobot\\(|alias bot=|confluenceizer\\.py|md_files = sorted|output_path|add_argument" flake.nix scripts/articles/confluenceizer.py scripts/articles/articleizer.py scripts/articles/common.py
 # ! git --no-pager diff -- flake.nix scripts/articles/articleizer.py scripts/articles/confluenceizer.py scripts/articles/common.py .gitignore
@@ -132,8 +132,8 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # ============================================================================
 
 # Software Von Neumann Probe IaC Kickstart
-# /home/mike/repos/Pipulate.com/index.md              #  <-- It's all gotta start somewhere.
-# assets/installer/install.sh                         #  <-- the real location
+/home/mike/repos/Pipulate.com/index.md              #  <-- It's all gotta start somewhere.
+assets/installer/install.sh                         #  <-- the real location
 # /home/mike/repos/Pipulate.com/install.sh            #  <-- Put there by release.py
 
 # /home/mike/repos/Pipulate.com/CNAME
@@ -172,10 +172,10 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!! STANDARD WRAPPER: 2
 
 # The following 5 files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
-.gitignore        #  <-- Creates "negative space" for sub-repos to share parent environment and "snap" proprietary secret features into place.
+.gitignore        #  <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
 flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
-scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+# scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 # scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
 # cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
 
@@ -194,16 +194,17 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-# config.py                   # <-- Centralize every last configuration in here
-# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-# pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
-# pipulate/core.py            # <-- The Wand (spells)
+config.py                   # <-- Centralize every last configuration in here
+pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
+pipulate/core.py            # <-- The Wand (spells)
 
 # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
+imports/voice_synthesis.py  # <-- The wand can talk to you
+
 # server.py                   # <-- The Wizard (big!)
 # assets/styles.css           # <-- Those values often get used here for "the look"
 # imports/server_logging.py   # <-- Drawing that ASCII art into radically transparent server logs
-# imports/voice_synthesis.py  # <-- The wand can talk to you
 
 # ============================================================================
 # V. THE BOOK DISTILLER - A Choose Your Own Path Adventure, for AI! (overarching story)
@@ -443,7 +444,7 @@ apps/015_config.py                                # <-- Carrying onboarding valu
 # ============================================================================
 
 # scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
-imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
+# imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
@@ -743,7 +744,6 @@ tools/llm_optics.py
 # apps/830_pico_slider.py  # [4,364 tokens | 19,317 bytes]
 # apps/xx_link_graph_v2.py  # [63,994 tokens | 332,321 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
-# assets/prompts/book_holographic.json  # [923 tokens | 3,726 bytes]
 # assets/prompts/find404s.md  # [459 tokens | 2,098 bytes]
 # assets/prompts/llms_header.md  # [1,110 tokens | 5,129 bytes]
 # assets/prompts/pipulate-context.xsd  # [2,286 tokens | 8,129 bytes]
@@ -759,7 +759,6 @@ tools/llm_optics.py
 # remotes/honeybot/queries/intel_markdown_affinity.sql  # [434 tokens | 1,686 bytes]
 # scripts/articles/bookforge_dashboard.py  # [851 tokens | 3,484 bytes]
 # scripts/articles/build_book_passes.py  # [535 tokens | 2,210 bytes]
-# scripts/articles/build_codex_manifest.py  # [1,109 tokens | 4,598 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
 # scripts/articles/conceptual_integrity.py  # [550 tokens | 2,404 bytes]
