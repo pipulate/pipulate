@@ -227,12 +227,19 @@ class ChipVoiceSystem:
         finally:
             # Clean up temporary file
             try:
-                if os.path.exists(output_path):
+                if 'output_path' in locals() and output_path and os.path.exists(output_path):
                     os.unlink(output_path)
             except:
                 pass
             # Clear process reference
             self.current_process = None
+
+            # Release the cross-process voice lock and close the handle
+            try:
+                fcntl.flock(lock_file, fcntl.LOCK_UN)
+                lock_file.close()
+            except:
+                pass
 
     def speak_text(self, text: str) -> Dict[str, Any]:
         """
