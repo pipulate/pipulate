@@ -158,10 +158,10 @@ README.md  # [20,725 tokens | 104,252 bytes]
 # ============================================================================
 
 # Software Von Neumann Probe IaC Kickstart
-# /home/mike/repos/Pipulate.com/index.md              #  <-- It's all gotta start somewhere.
-# /home/mike/repos/Pipulate.com/install.md            #  <-- Also needs to be changed when install procedure changes
-# assets/installer/install.sh                         #  <-- the real location
-# /home/mike/repos/Pipulate.com/install.sh            #  <-- Put there by release.py
+/home/mike/repos/Pipulate.com/index.md              #  <-- It's all gotta start somewhere.
+/home/mike/repos/Pipulate.com/install.md            #  <-- Also needs to be changed when install procedure changes
+assets/installer/install.sh                         #  <-- the real location
+/home/mike/repos/Pipulate.com/install.sh            #  <-- Put there by release.py
 
 /home/mike/repos/Pipulate.com/CNAME
 /home/mike/repos/Pipulate.com/_config.yml
