@@ -622,12 +622,21 @@ def perform_show(script):
                 # not the expected case — builds vary, and check_for_updates() polling
                 # below is what actually decides when to stop waiting.
                 deadline = time.time() + 240
+                bell_rang = False
                 while time.time() < deadline:
                     if check_for_updates():
+                        bell_rang = True
                         break
                     time.sleep(2)
+                # If the trigger bell rang, hold the UPDATING card up while Jekyll/dye/
+                # Nix activity fully settles. The card disappears exactly when the article
+                # starts reading, with nothing competing for CPU/disk.
+                # Tune SETTLE_SECONDS upward if nixos-rebuild switch is still thrashing.
+                SETTLE_SECONDS = 45
+                if bell_rang:
+                    time.sleep(SETTLE_SECONDS)
                 # Tear down the dead-air cover deterministically, right here, the
-                # moment we know one way or another (bell rang, or we gave up waiting).
+                # moment we know one way or another (bell rang + settled, or timed out).
                 # perform_show() also retries this same pkill on every future cycle
                 # (see the top of this function) as a harmless, idempotent backstop in
                 # case this particular teardown attempt ever fails to land.
