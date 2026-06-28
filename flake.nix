@@ -594,9 +594,9 @@ print(max(1, n))
             echo "📐 Auto-sized to $n most recent articles (budget: $max_bytes bytes)"
             latest "$n"
           }
-          slugs() { python scripts/articles/lsa.py -t 1 --slugs "$@" --fmt paths; }
+          slugs() { (cd ~/repos/pipulate && python scripts/articles/lsa.py -t 1 --slugs "$@" --fmt paths); }
           # slugs-ordered preserves input order for narrative control
-          sluggo() { for slug in "$@"; do python scripts/articles/lsa.py -t 1 --match "$slug" --fmt paths; done; }
+          sluggo() { for slug in "$@"; do (cd ~/repos/pipulate && python scripts/articles/lsa.py -t 1 --match "$slug" --fmt paths); done; }
           alias release='python release.py --release --force'
           alias g='clear && echo "$ git status" && git status'
           m() {
