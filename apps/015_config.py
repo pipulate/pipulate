@@ -954,17 +954,21 @@ You're here to make the workflow concepts accessible and help users understand t
                 )[0], # Extract just the select from the wrapper since we want custom layout
                 
                 Label("API Key", _for=f"{step_id}-api-key", style="margin-top: 1rem;"),
-                pip.wrap_with_inline_button(
+                Div(
                     Input(
                         type="password", 
                         name="api_key", 
                         value=refill_key,  # Inject the raw key securely
                         id=f"{step_id}-api-key", 
                         placeholder="Paste your API key here...", 
-                        required=True
+                        required=False
                     ),
-                    button_label="Save Cloud Config ▸",
-                    button_class="primary"
+                    Div(
+                        Button("Save Cloud Config ▸", type="submit", cls="primary", name="action", value="save"),
+                        Button("Skip ▸", type="submit", cls="secondary outline", name="action", value="skip", formnovalidate=True),
+                        style="display: flex; gap: 0.5rem; margin-top: 0.5rem;"
+                    ),
+                    cls="flex-column"
                 ),
                 hx_post=f"/{app_name}/{step_id}_submit", 
                 hx_target=f"#{step_id}"
