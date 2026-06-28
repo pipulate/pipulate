@@ -179,6 +179,22 @@ def apply_search_replace_patch(payload: str) -> bool:
         # The Surgical Strike
         new_content = content.replace(search_block, replace_block, 1)
         
+        # NIX SYNTAX AIRLOCK
+        if filename.endswith('.nix'):
+            import tempfile
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.nix', delete=False) as tmp:
+                tmp.write(new_content)
+                tmp_path = tmp.name
+            nix_check = subprocess.run(
+                ['nix-instantiate', '--parse', tmp_path],
+                capture_output=True, text=True
+            )
+            os.unlink(tmp_path)
+            if nix_check.returncode != 0:
+                print(f"❌ Error: Patching '{filename}' aborted. Invalid Nix syntax:\n   {nix_check.stderr.strip()}")
+                success = False
+                continue
+
         # AST VALIDATION AIRLOCK (The Final Safeguard)
         if filename.endswith('.py'):
             import ast
