@@ -1358,7 +1358,7 @@ create_workflow.py               │ └──────┬──────�
 cd ~/pipulate && nix develop          # Start Pipulate
 nix develop .#quiet                   # Start without auto-services
 python server.py                     # Manual server start
-git pull && ./run              # Update to latest
+git pull && nix develop              # Update to latest
 
 # Create new workflows  
 python helpers/workflow/create_workflow.py my_workflow.py MyClass my_internal_name
