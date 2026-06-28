@@ -772,7 +772,7 @@ Traditional development follows DRY principles, creating abstract, complex syste
 
 **Interactive vs. Quiet Shell:**
 
-**Standard Shell:** `./run` (same as `nix develop` or `nix develop .#default`) runs the startup script (`run-script` defined in `flake.nix`) with welcome messages and service startup. Ideal for general use.
+**Standard Shell:** `nix develop` (the same as `nix develop .#default`) runs the startup script (`run-script` defined in `flake.nix`) with welcome messages and service startup. Ideal for general use.
 
 **Quiet Shell:** `nix develop .#quiet` activates the Nix environment *without* running the full startup script or launching services automatically. It only sets up paths and installs pip requirements. Use this for:
 - Running specific commands without starting the servers (e.g., `nix develop .#quiet --command python -c "import pandas"`).
