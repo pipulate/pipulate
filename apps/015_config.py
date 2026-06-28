@@ -996,11 +996,29 @@ You're here to make the workflow concepts accessible and help users understand t
         pipeline_id = db.get("pipeline_id", "unknown")
         
         form_data = await request.form()
+        action = form_data.get("action", "save")
         selected_model = form_data.get("cloud_model", "").strip()
         raw_key = form_data.get("api_key", "").strip()
         
-        if not selected_model or not raw_key:
-            error_msg = f'{pip.get_ui_constants()["EMOJIS"]["ERROR"]} Both model and API key are required.'
+        # The Skip fork: never touch the vault, write a placeholder, keep the cascade alive
+        if action == "skip" or not raw_key:
+            payload = {"model": "None", "api_key": "Skipped"}
+            await pip.set_step_data(pipeline_id, step_id, payload, steps)
+            display_text = "Model: None\nToken: Skipped"
+            success_msg = f'{pip.get_ui_constants()["EMOJIS"]["SUCCESS"]} Cloud AI configuration skipped.'
+            await self.message_queue.add(pip, success_msg, verbatim=True)
+            pip.speak("Cloud AI skipped. You can stay fully local, or add a key later. If you are a Botify employee or Customer, please enter your Botify API key.", wait=False)
+            if pip.check_finalize_needed(step_index, steps):
+                await self.message_queue.add(pip, self.step_messages['finalize']['ready'], verbatim=True)
+            widget = Pre(display_text, cls="code-block-container")
+            return Div(
+                pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f"{step.show}: Skipped", widget=widget, steps=steps),
+                Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
+                id=step_id
+            )
+        
+        if not selected_model:
+            error_msg = f'{pip.get_ui_constants()["EMOJIS"]["ERROR"]} Please select a model or click Skip.'
             await self.message_queue.add(pip, error_msg, verbatim=True)
             return P(error_msg, cls="text-invalid")
             
