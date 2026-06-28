@@ -198,8 +198,8 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 .gitignore        #  <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
 flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
-scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
-cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
+# scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+# cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
 # scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
 
 # OTHER HEAVY LIFTERS
@@ -280,19 +280,19 @@ cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Pyt
 # ============================================================================
 
 # CORE SLIDESHOW FILES
-#nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
-#remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
-#remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
-#remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
-#remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
-#remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
-#remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
-#remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
-#remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
-#remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
-#remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
-#
-#remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
+nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
+remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
+remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
+remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
+remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
+remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
+remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
+remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
+remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
+remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
+remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+
+# remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
 
 # AD HOC REPORTS
 # remotes/honeybot/queries/trapdoor_ips.sql   # <-- The SQL to see who is hydrating the DOM. An ultimate report example among much ad hoc .sql
