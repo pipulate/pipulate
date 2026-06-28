@@ -755,7 +755,7 @@ print('AI:\n', r.ai)
             alias xc='pbcopy <'
             alias xcp='pbcopy'
             alias xv='pbpaste >'
-            alias prompt='pbpaste >prompt.md'
+            alias prompt='(cd ~/repos/pipulate && pbpaste >prompt.md)'
             alias patch='pbpaste >patch'
             # Added macOS equivalents for article creation
             # THE BRIDGE PULL: Reach into the Z640 and suck the bridge file into the Mac clipboard
@@ -765,7 +765,7 @@ print('AI:\n', r.ai)
             alias xcp='xclip -selection clipboard'
             alias xv='xclip -selection clipboard -o >'
             alias xp='python scripts/xp.py'
-            alias prompt='xclip -selection clipboard -o >prompt.md'
+            alias prompt='(cd ~/repos/pipulate && xclip -selection clipboard -o >prompt.md)'
             alias patch='xclip -selection clipboard -o >patch'
             # Linux subshell aliases
             alias article='(cd scripts/articles && xclip -selection clipboard -o >article.txt && python sanitizer.py && python articleizer.py)'
