@@ -81,6 +81,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
+README.md  # [20,725 tokens | 104,252 bytes]
+
 # pipulate.py
 # imports/crud.py
 # imports/voice_synthesis.py
@@ -139,7 +141,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 /home/mike/repos/Pipulate.com/index.md              #  <-- It's all gotta start somewhere.
 /home/mike/repos/Pipulate.com/install.md            #  <-- Also needs to be changed when install procedure changes
 assets/installer/install.sh                         #  <-- the real location
-# /home/mike/repos/Pipulate.com/install.sh            #  <-- Put there by release.py
+/home/mike/repos/Pipulate.com/install.sh            #  <-- Put there by release.py
 
 /home/mike/repos/Pipulate.com/CNAME
 /home/mike/repos/Pipulate.com/_config.yml
@@ -189,9 +191,9 @@ apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aid
 # scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
 
 # The following 3 files are the first huge context reveal that pull the curtains open.
-# __init__.py     #  <-- Master versioning
-# release.py      #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
-# pyproject.toml  #  <-- The PyPI Packaging details
+__init__.py     #  <-- Master versioning
+release.py      #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
+pyproject.toml  #  <-- The PyPI Packaging details
 
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
 
@@ -731,7 +733,6 @@ tools/llm_optics.py
 # Move these into the active chapters to paint them onto the context canvas.
 
 # AUDIT.md  # [2,011 tokens | 9,706 bytes]
-# README.md  # [20,725 tokens | 104,252 bytes]
 # apps/130_gap_analysis.py  # [9,625 tokens | 48,280 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
 # apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
