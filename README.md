@@ -517,7 +517,7 @@ cd ~/TestProject
 nix develop
 ```
 
-Wait for ***BOTH TABS*** to auto-open in your browser.
+Wait for the JupyterLab tab to auto-open, then run the Onboarding notebook to unlock the Pipulate app.
 
 ### 🚨 Installation Troubleshooting
 
