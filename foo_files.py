@@ -83,6 +83,26 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 README.md  # [20,725 tokens | 104,252 bytes]
 
+/home/mike/repos/Pipulate.com/CNAME
+/home/mike/repos/Pipulate.com/_config.yml
+/home/mike/repos/Pipulate.com/flake.nix
+/home/mike/repos/Pipulate.com/.gitignore
+/home/mike/repos/Pipulate.com/Gemfile
+/home/mike/repos/Pipulate.com/assets/css/styles.css
+/home/mike/repos/Pipulate.com/_layouts/default.html
+/home/mike/repos/Pipulate.com/_layouts/forward.html
+/home/mike/repos/Pipulate.com/_layouts/post.html
+/home/mike/repos/Pipulate.com/_includes/articles.html
+/home/mike/repos/Pipulate.com/_includes/mermaid.html
+/home/mike/repos/Pipulate.com/_includes/posts-main.html
+/home/mike/repos/Pipulate.com/_includes/subnav.html
+/home/mike/repos/Pipulate.com/_includes/youtubePlayer.html
+/home/mike/repos/Pipulate.com/index.md
+/home/mike/repos/Pipulate.com/about.md
+/home/mike/repos/Pipulate.com/guide.md
+/home/mike/repos/Pipulate.com/development.md
+/home/mike/repos/Pipulate.com/documentation.md
+
 # pipulate.py
 # imports/crud.py
 # imports/voice_synthesis.py
@@ -138,10 +158,10 @@ README.md  # [20,725 tokens | 104,252 bytes]
 # ============================================================================
 
 # Software Von Neumann Probe IaC Kickstart
-/home/mike/repos/Pipulate.com/index.md              #  <-- It's all gotta start somewhere.
-/home/mike/repos/Pipulate.com/install.md            #  <-- Also needs to be changed when install procedure changes
-assets/installer/install.sh                         #  <-- the real location
-/home/mike/repos/Pipulate.com/install.sh            #  <-- Put there by release.py
+# /home/mike/repos/Pipulate.com/index.md              #  <-- It's all gotta start somewhere.
+# /home/mike/repos/Pipulate.com/install.md            #  <-- Also needs to be changed when install procedure changes
+# assets/installer/install.sh                         #  <-- the real location
+# /home/mike/repos/Pipulate.com/install.sh            #  <-- Put there by release.py
 
 /home/mike/repos/Pipulate.com/CNAME
 /home/mike/repos/Pipulate.com/_config.yml
@@ -206,7 +226,7 @@ pyproject.toml  #  <-- The PyPI Packaging details
 # pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
 # pipulate/core.py            # <-- The Wand (spells)
 
-# imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
+imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
 
 # server.py                   # <-- The Wizard (big!)
