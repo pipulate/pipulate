@@ -275,6 +275,11 @@ def clean_markdown(text):
     # Merge any run of sentinels separated only by whitespace into a single one.
     text = re.sub(rf'(?:{CODE_SENTINEL}\s*)+{CODE_SENTINEL}', CODE_SENTINEL, text)
     text = text.replace(CODE_SENTINEL, '[See the code at MikeLev dot Eye N slash latest.]')
+    # Global cap: no article should repeat this more than once.
+    spoken = '[See the code at MikeLev dot Eye N slash latest.]'
+    if text.count(spoken) > 1:
+        idx = text.index(spoken)
+        text = text[:idx + len(spoken)] + text[idx + len(spoken):].replace(spoken, '')
 
     # Remove Inline Code
     text = re.sub(r'`([^`]+)`', r'\1', text)
