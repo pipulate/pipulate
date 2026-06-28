@@ -81,27 +81,27 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-README.md  # [20,725 tokens | 104,252 bytes]
+# README.md  # [20,725 tokens | 104,252 bytes]
 
-/home/mike/repos/Pipulate.com/CNAME
-/home/mike/repos/Pipulate.com/_config.yml
-/home/mike/repos/Pipulate.com/flake.nix
-/home/mike/repos/Pipulate.com/.gitignore
-/home/mike/repos/Pipulate.com/Gemfile
-/home/mike/repos/Pipulate.com/assets/css/styles.css
-/home/mike/repos/Pipulate.com/_layouts/default.html
-/home/mike/repos/Pipulate.com/_layouts/forward.html
-/home/mike/repos/Pipulate.com/_layouts/post.html
-/home/mike/repos/Pipulate.com/_includes/articles.html
-/home/mike/repos/Pipulate.com/_includes/mermaid.html
-/home/mike/repos/Pipulate.com/_includes/posts-main.html
-/home/mike/repos/Pipulate.com/_includes/subnav.html
-/home/mike/repos/Pipulate.com/_includes/youtubePlayer.html
-/home/mike/repos/Pipulate.com/index.md
-/home/mike/repos/Pipulate.com/about.md
-/home/mike/repos/Pipulate.com/guide.md
-/home/mike/repos/Pipulate.com/development.md
-/home/mike/repos/Pipulate.com/documentation.md
+# /home/mike/repos/Pipulate.com/CNAME
+# /home/mike/repos/Pipulate.com/_config.yml
+# /home/mike/repos/Pipulate.com/flake.nix
+# /home/mike/repos/Pipulate.com/.gitignore
+# /home/mike/repos/Pipulate.com/Gemfile
+# /home/mike/repos/Pipulate.com/assets/css/styles.css
+# /home/mike/repos/Pipulate.com/_layouts/default.html
+# /home/mike/repos/Pipulate.com/_layouts/forward.html
+# /home/mike/repos/Pipulate.com/_layouts/post.html
+# /home/mike/repos/Pipulate.com/_includes/articles.html
+# /home/mike/repos/Pipulate.com/_includes/mermaid.html
+# /home/mike/repos/Pipulate.com/_includes/posts-main.html
+# /home/mike/repos/Pipulate.com/_includes/subnav.html
+# /home/mike/repos/Pipulate.com/_includes/youtubePlayer.html
+# /home/mike/repos/Pipulate.com/index.md
+# /home/mike/repos/Pipulate.com/about.md
+# /home/mike/repos/Pipulate.com/guide.md
+# /home/mike/repos/Pipulate.com/development.md
+# /home/mike/repos/Pipulate.com/documentation.md
 
 # pipulate.py
 # imports/crud.py
@@ -158,14 +158,14 @@ README.md  # [20,725 tokens | 104,252 bytes]
 # ============================================================================
 
 # Software Von Neumann Probe IaC Kickstart
-/home/mike/repos/Pipulate.com/index.md              #  <-- It's all gotta start somewhere.
-/home/mike/repos/Pipulate.com/install.md            #  <-- Also needs to be changed when install procedure changes
-assets/installer/install.sh                         #  <-- the real location
-/home/mike/repos/Pipulate.com/install.sh            #  <-- Put there by release.py
+# /home/mike/repos/Pipulate.com/index.md              #  <-- It's all gotta start somewhere.
+# /home/mike/repos/Pipulate.com/install.md            #  <-- Also needs to be changed when install procedure changes
+# assets/installer/install.sh                         #  <-- the real location
+# /home/mike/repos/Pipulate.com/install.sh            #  <-- Put there by release.py
 
-/home/mike/repos/Pipulate.com/CNAME
-/home/mike/repos/Pipulate.com/_config.yml
-/home/mike/repos/Pipulate.com/_layouts/default.html
+# /home/mike/repos/Pipulate.com/CNAME
+# /home/mike/repos/Pipulate.com/_config.yml
+# /home/mike/repos/Pipulate.com/_layouts/default.html
 # /home/mike/repos/Pipulate.com/index.md
 
 # /home/mike/repos/nixos/configuration.nix            #  <-- "Global" IaC context (most of you won't have)
@@ -202,18 +202,18 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 .gitignore        #  <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
 flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
-# scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
 # scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
-# cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
 
 # OTHER HEAVY LIFTERS
 # scripts/ai.py                  #  <-- Local AI writing git commit messages. Accelerator!
 # scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
 
 # The following 3 files are the first huge context reveal that pull the curtains open.
-__init__.py     #  <-- Master versioning
-release.py      #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
-pyproject.toml  #  <-- The PyPI Packaging details
+# __init__.py     #  <-- Master versioning
+# release.py      #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
+# pyproject.toml  #  <-- The PyPI Packaging details
 
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
 
@@ -226,7 +226,7 @@ pyproject.toml  #  <-- The PyPI Packaging details
 # pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
 # pipulate/core.py            # <-- The Wand (spells)
 
-imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
+# imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
 
 # server.py                   # <-- The Wizard (big!)
