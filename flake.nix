@@ -494,6 +494,11 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           if [[ "$(uname -s)" == "Darwin" ]]; then export EFFECTIVE_OS="darwin"; else export EFFECTIVE_OS="linux"; fi
           # Clean up the prompt to remove Nix's redundant prefixes and Mac's long hostname
           export PS1="\[\033[1;32m\](nix)\[\033[0m\] \[\033[1;34m\]\W\[\033[0m\] $ "
+          # Let the nix CLI run even from inside an active dev shell:
+          # the shell's LD_LIBRARY_PATH front-loads python312/commonPackages
+          # libs that the nix binary itself can't load. Clearing it for just
+          # this call restores nix's own rpath without touching the shell env.
+          nix() { LD_LIBRARY_PATH="" command nix "$@"; }
           # Add aliases
           alias d='git --no-pager diff'
           alias gdiff='git --no-pager diff --no-textconv'
