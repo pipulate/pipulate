@@ -549,7 +549,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias forest='(cd ~/repos/pipulate && vim remotes/honeybot/scripts/forest.py)'
           alias art='(cd ~/repos/pipulate && vim imports/ascii_displays.py)'
           alias smart='(cd ~/repos/pipulate && python release.py --force -m "Testing rabbit documentation injection")'
-          latest() { python prompt_foo.py -a "[-''${1:-2}:]" --no-tree; }
+          latest() { (cd ~/repos/pipulate && python prompt_foo.py -a "[-''${1:-2}:]" --no-tree); }
           latestn() {
             # Finds largest N articles fitting in byte budget (default ~950KB)
             # Usage: latestn [-N|+N|budget_bytes]  e.g. latestn -1  latestn +2  latestn 786432
