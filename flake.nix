@@ -333,6 +333,14 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           for i in {1..30}; do
             if curl -s http://localhost:8888 > /dev/null 2>&1; then
               JUPYTER_STARTED=true
+              echo ""
+              echo "✅ JupyterLab is ready:"
+              echo "   http://localhost:8888/lab/tree/Notebooks/Onboarding.ipynb"
+              echo ""
+              echo "   Run the notebook top-to-bottom with Shift+Enter."
+              echo "   Completing onboarding unlocks the Pipulate app:"
+              echo "   http://localhost:5001"
+              echo ""
               break
             fi
             sleep 1
