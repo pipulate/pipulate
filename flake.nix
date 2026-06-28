@@ -371,15 +371,21 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               sleep 1
               echo -n "."
             done
-            if [ "$SERVER_STARTED" = true ] && ( [ "${autoOpenFastHTML}" = "true" ] || [ -f Notebooks/data/.onboarded ] ); then
-              if [ "${fastHtmlOpenDelay}" -gt 0 ]; then
-                echo "Delaying FastHTML tab by ${fastHtmlOpenDelay} seconds..."
-                sleep ${fastHtmlOpenDelay}
-              fi
-              if command -v xdg-open >/dev/null 2>&1; then
-                xdg-open http://localhost:5001 >/dev/null 2>&1 &
-              elif command -v open >/dev/null 2>&1; then
-                open http://localhost:5001 >/dev/null 2>&1 &
+            if [ "$SERVER_STARTED" = true ]; then
+              if [ "${autoOpenFastHTML}" = "true" ] || [ -f Notebooks/data/.onboarded ]; then
+                if [ "${fastHtmlOpenDelay}" -gt 0 ]; then
+                  echo "Delaying FastHTML tab by ${fastHtmlOpenDelay} seconds..."
+                  sleep ${fastHtmlOpenDelay}
+                fi
+                if command -v xdg-open >/dev/null 2>&1; then
+                  xdg-open http://localhost:5001 >/dev/null 2>&1 &
+                elif command -v open >/dev/null 2>&1; then
+                  open http://localhost:5001 >/dev/null 2>&1 &
+                fi
+              else
+                echo
+                echo "✅ Pipulate server is running at http://localhost:5001"
+                echo "   Finish the Onboarding notebook to unlock it automatically next time."
               fi
             else
               echo
