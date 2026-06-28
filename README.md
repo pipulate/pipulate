@@ -514,7 +514,7 @@ The installation procedures labeled "Quick Start Guide" and the main installatio
 rm -rf ~/TestProject
 curl -L https://pipulate.com/install.sh | bash -s TestProject
 cd ~/TestProject
-./run
+nix develop
 ```
 
 Wait for ***BOTH TABS*** to auto-open in your browser.
