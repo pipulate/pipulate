@@ -494,11 +494,29 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           if [[ "$(uname -s)" == "Darwin" ]]; then export EFFECTIVE_OS="darwin"; else export EFFECTIVE_OS="linux"; fi
           # Clean up the prompt to remove Nix's redundant prefixes and Mac's long hostname
           export PS1="\[\033[1;32m\](nix)\[\033[0m\] \[\033[1;34m\]\W\[\033[0m\] $ "
-          # Let the nix CLI run even from inside an active dev shell:
-          # the shell's LD_LIBRARY_PATH front-loads python312/commonPackages
-          # libs that the nix binary itself can't load. Clearing it for just
-          # this call restores nix's own rpath without touching the shell env.
-          nix() { LD_LIBRARY_PATH="" command nix "$@"; }
+          # Shadow the nix CLI for two reasons, both only relevant *inside* an
+          # active dev shell (this function simply does not exist out in (sys),
+          # so its mere presence proves we are already in the room):
+          #
+          # 1. rpath fix: the shell's LD_LIBRARY_PATH front-loads
+          #    python312/commonPackages libs that the nix binary itself can't
+          #    load. Clearing it for just this call restores nix's own rpath
+          #    without touching the shell env.
+          # 2. Gentle anti-nesting nudge: a *bare* `nix develop` typed in here is
+          #    almost always a newcomer reflexively trying to "restart" after
+          #    Ctrl+C'ing the server. They do not need a nested room — they need
+          #    `python server.py`. Redirect them kindly. Any nix call WITH args
+          #    (e.g. `nix develop .#quiet`, `nix flake check`) still passes
+          #    straight through with the rpath fix, so power use is untouched.
+          nix() {
+            if [ "$1" = "develop" ] && [ "$#" -eq 1 ]; then
+              echo "🟢 You are already inside the Pipulate Nix shell — no need to run 'nix develop' again."
+              echo "   • Restart the server after Ctrl+C:  python server.py"
+              echo "   • Leave this environment entirely:  exit"
+              return 0
+            fi
+            LD_LIBRARY_PATH="" command nix "$@"
+          }
           # Add aliases
           alias d='git --no-pager diff'
           alias gdiff='git --no-pager diff --no-textconv'
