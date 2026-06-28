@@ -667,9 +667,9 @@ Just as a chef talks about knife techniques while a diner just wants amazing pas
 **After installation succeeds, here's what to expect:**
 
 ### What You'll See
-1. **Two browser tabs open automatically:**
+1. **JupyterLab opens automatically** for onboarding. Completing the Onboarding notebook unlocks the Pipulate app, which then opens automatically on future launches:
+   - `localhost:8888` - JupyterLab for development/experimentation (opens first)
    - `localhost:5001` - Pipulate web interface with navigation menu
-   - `localhost:8888` - JupyterLab for development/experimentation
 
 2. **In the Pipulate interface:**
    - Left sidebar with workflow plugins (Introduction, Profiles, etc.)
