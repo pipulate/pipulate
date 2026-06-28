@@ -103,10 +103,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # /home/mike/repos/Pipulate.com/development.md
 # /home/mike/repos/Pipulate.com/documentation.md
 
-# pipulate.py
-# imports/crud.py
-# imports/voice_synthesis.py
-
 # $https://tags.pw.adn.cloud/YICBBD/activation.js
 
 # @https://support.botify.com/en/collections/8589200-pageworkers
