@@ -136,13 +136,14 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # ============================================================================
 
 # Software Von Neumann Probe IaC Kickstart
-# /home/mike/repos/Pipulate.com/index.md              #  <-- It's all gotta start somewhere.
-# assets/installer/install.sh                         #  <-- the real location
+/home/mike/repos/Pipulate.com/index.md              #  <-- It's all gotta start somewhere.
+/home/mike/repos/Pipulate.com/install.md            #  <-- Also needs to be changed when install procedure changes
+assets/installer/install.sh                         #  <-- the real location
 # /home/mike/repos/Pipulate.com/install.sh            #  <-- Put there by release.py
 
-# /home/mike/repos/Pipulate.com/CNAME
-# /home/mike/repos/Pipulate.com/_config.yml
-# /home/mike/repos/Pipulate.com/_layouts/default.html
+/home/mike/repos/Pipulate.com/CNAME
+/home/mike/repos/Pipulate.com/_config.yml
+/home/mike/repos/Pipulate.com/_layouts/default.html
 # /home/mike/repos/Pipulate.com/index.md
 
 # /home/mike/repos/nixos/configuration.nix            #  <-- "Global" IaC context (most of you won't have)
