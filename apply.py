@@ -188,7 +188,8 @@ def apply_search_replace_patch(payload: str) -> bool:
                 tmp_path = tmp.name
             nix_check = subprocess.run(
                 ['nix-instantiate', '--parse', tmp_path],
-                capture_output=True, text=True
+                capture_output=True, text=True,
+                env={**os.environ, 'LD_LIBRARY_PATH': ''}
             )
             os.unlink(tmp_path)
             if nix_check.returncode != 0:
