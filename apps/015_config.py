@@ -973,7 +973,9 @@ You're here to make the workflow concepts accessible and help users understand t
             return Div(
                 Card(
                     H3(f"☁️ {step.show}"),
-                    P("Select your preferred Cloud AI engine and provide the corresponding API key. This unlocks advanced capabilities and provides a fallback when the local engine needs help.", cls="text-muted"),
+                    P("Select your preferred Cloud AI engine and provide the corresponding API key. This unlocks advanced capabilities and provides a fallback when the local engine needs help. ",
+                      A("Get your Google AI Studio key here ↗", href="https://aistudio.google.com/", target="_blank"),
+                      cls="text-muted"),
                     form_content
                 ),
                 Div(id=next_step_id),
