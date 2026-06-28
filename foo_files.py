@@ -107,7 +107,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # scripts/articles/confluenceizer.py
 # scripts/articles/common.py
 # .gitignore
-/home/mike/.config/pipulate/blogs.json
+# /home/mike/.config/pipulate/blogs.json
 # ! python scripts/articles/confluenceizer.py --help
 # ! rg -n "gobot\\(|alias bot=|confluenceizer\\.py|md_files = sorted|output_path|add_argument" flake.nix scripts/articles/confluenceizer.py scripts/articles/articleizer.py scripts/articles/common.py
 # ! git --no-pager diff -- flake.nix scripts/articles/articleizer.py scripts/articles/confluenceizer.py scripts/articles/common.py .gitignore
@@ -132,8 +132,8 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # ============================================================================
 
 # Software Von Neumann Probe IaC Kickstart
-/home/mike/repos/Pipulate.com/index.md              #  <-- It's all gotta start somewhere.
-assets/installer/install.sh                         #  <-- the real location
+# /home/mike/repos/Pipulate.com/index.md              #  <-- It's all gotta start somewhere.
+# assets/installer/install.sh                         #  <-- the real location
 # /home/mike/repos/Pipulate.com/install.sh            #  <-- Put there by release.py
 
 # /home/mike/repos/Pipulate.com/CNAME
@@ -194,13 +194,13 @@ apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aid
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-config.py                   # <-- Centralize every last configuration in here
-pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
-pipulate/core.py            # <-- The Wand (spells)
+# config.py                   # <-- Centralize every last configuration in here
+# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+# pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
+# pipulate/core.py            # <-- The Wand (spells)
 
 # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
-imports/voice_synthesis.py  # <-- The wand can talk to you
+# imports/voice_synthesis.py  # <-- The wand can talk to you
 
 # server.py                   # <-- The Wizard (big!)
 # assets/styles.css           # <-- Those values often get used here for "the look"
@@ -227,10 +227,10 @@ imports/voice_synthesis.py  # <-- The wand can talk to you
 # assets/player-piano.js                            # <-- Player piano actuator #2 in Pipulate. How AIs can take control of workflows.
 # Notebooks/imports/__init__.py                     # <-- Empty file, just to show you imports relative to Notebooks are 1st-class path members. Important!
 
-assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
-assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
-assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
-apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
+# assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
+# assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
+# assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
+# apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
 
 # ============================================================================
 # VII. WET WORKFLOWS / DRY CRUD - The what's best for AIs and Humans compromise
