@@ -1355,7 +1355,7 @@ create_workflow.py               │ └──────┬──────�
 ### Essential Commands
 ```bash
 # Development workflow
-cd ~/pipulate && ./run          # Start Pipulate
+cd ~/pipulate && nix develop          # Start Pipulate
 nix develop .#quiet                   # Start without auto-services
 python server.py                     # Manual server start
 git pull && ./run              # Update to latest
