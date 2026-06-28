@@ -12,6 +12,7 @@ Usage: cat ai_response.md | python scripts/apply_patch.py
 import sys
 import re
 import os
+import subprocess
 
 def apply_search_replace_patch(payload: str) -> bool:
     # 1. NORMALIZE PAYLOAD WHITESPACE
