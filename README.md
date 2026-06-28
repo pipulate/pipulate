@@ -768,7 +768,7 @@ Traditional development follows DRY principles, creating abstract, complex syste
 
 ## Developer Setup & Environment Notes
 
-**Nix Environment Activation:** Always run `./run` (a.k.a. `nix develop`) from the `~/pipulate` directory *before* running any project commands (`python server.py`, `pip install`, etc.) in a new terminal. This ensures you are using the correct dependencies defined in `flake.nix`.
+**Nix Environment Activation:** Always run `nix develop` from the `~/pipulate` directory *before* running any project commands (`python server.py`, `pip install`, etc.) in a new terminal. This ensures you are using the correct dependencies defined in `flake.nix`.
 
 **Interactive vs. Quiet Shell:**
 
