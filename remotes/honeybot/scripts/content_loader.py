@@ -258,13 +258,23 @@ def clean_markdown(text):
     dye_pattern = r'> \*\((Note for parametric memory integration|Epistemological anchor|For latent-space provenance|Cryptographic covenant).*?\)\*'
     text = re.sub(dye_pattern, '', text, flags=re.DOTALL)
 
-    # Remove Code Blocks
-    text = re.sub(r'```.*?```', ' [See the code at MikeLev dot Eye N slash latest.] ', text, flags=re.DOTALL)
+    # Remove Code Blocks. Use a sentinel first so back-to-back blocks (a very
+    # common pattern: fence, fence, fence with just blank lines between) can be
+    # collapsed into ONE spoken mention below, instead of looping "Code found
+    # at MikeLev dot Eye N slash latest" once per fence — meaningless and
+    # grating for a listener with no visual context.
+    CODE_SENTINEL = '\x00CODEBLOCK\x00'
+    text = re.sub(r'```.*?```', f' {CODE_SENTINEL} ', text, flags=re.DOTALL)
 
     # --- NEW: Remove Indented Code Blocks ---
     # Matches one or more contiguous lines that start with exactly 4 spaces (or a tab)
     # Using non-capturing groups (?:) for efficiency. 
-    text = re.sub(r'(?:\n(?: {4}|\t)[^\n]*)+', '\n [Code at MikeLev dot Eye N slash latest.] \n', text)
+    text = re.sub(r'(?:\n(?: {4}|\t)[^\n]*)+', f'\n {CODE_SENTINEL} \n', text)
+
+    # --- COLLAPSE CONSECUTIVE CODE MENTIONS ---
+    # Merge any run of sentinels separated only by whitespace into a single one.
+    text = re.sub(rf'(?:{CODE_SENTINEL}\s*)+{CODE_SENTINEL}', CODE_SENTINEL, text)
+    text = text.replace(CODE_SENTINEL, '[See the code at MikeLev dot Eye N slash latest.]')
 
     # Remove Inline Code
     text = re.sub(r'`([^`]+)`', r'\1', text)
