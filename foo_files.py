@@ -81,7 +81,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-# /home/mike/repos/trimnoir/_posts/2026-06-27-workshop-architecture-agentic-skills.md  # [Idx: 1244 | Order: 1 | Tokens: 18,046 | Bytes: 78,604]
+/home/mike/repos/trimnoir/_posts/2026-06-27-workshop-architecture-agentic-skills.md  # [Idx: 1244 | Order: 1 | Tokens: 18,046 | Bytes: 78,604]
 # /home/mike/repos/trimnoir/_posts/2026-06-27-demoscene-compression-onboarding.md  # [Idx: 1245 | Order: 2 | Tokens: 7,288 | Bytes: 33,123]
 # /home/mike/repos/trimnoir/_posts/2026-06-27-forever-machine-robust-systems.md  # [Idx: 1246 | Order: 3 | Tokens: 16,362 | Bytes: 77,226]
 # /home/mike/repos/trimnoir/_posts/2026-06-27-engineering-the-installer-seam.md  # [Idx: 1247 | Order: 4 | Tokens: 11,889 | Bytes: 51,352]
@@ -267,7 +267,7 @@ apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aid
 # assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
 # assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
 # assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
-# apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
+apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
 
 # ============================================================================
 # VII. WET WORKFLOWS / DRY CRUD - The what's best for AIs and Humans compromise
