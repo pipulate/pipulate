@@ -1,6 +1,7 @@
 import re
 import argparse
 from pathlib import Path
+import common
 
 # Paths
 ARTICLE_FILE = Path(__file__).parent / "article.txt"
