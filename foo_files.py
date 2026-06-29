@@ -158,7 +158,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # ! git --no-pager log -p -n 4
 # ! cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
-# requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
+requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 # requirements.txt  #  <-- Pip-compiled dependencies.
 # logs/server.log   #  <-- Like letting AI see your browser app state, but better! --------------------- AI server.py LOG DEBUG
 
