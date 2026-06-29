@@ -230,7 +230,13 @@ def list_threads(service, address, max_results):
 
 
 def fetch_thread(service, thread_id):
-    """FETCH mode: full clean transcript of one thread, chronological, no attachments."""
+    """FETCH mode: full clean transcript of one thread, chronological.
+
+    Bodies are emitted in full with no truncation. Attachments are NOT pulled
+    into the prompt — instead each one is surfaced as a metadata-only hook
+    (filename, mime, size, messageId, attachmentId) so a future turn can decide
+    whether to wire up the actual fetch.
+    """
     thread = service.users().threads().get(
         userId='me', id=thread_id, format='full'
     ).execute()
@@ -249,8 +255,19 @@ def fetch_thread(service, thread_id):
         if h.get('to'):
             print(f"To: {h['to']}")
         print()
-        print(extract_body(msg.get('payload', {})))
+        payload = msg.get('payload', {})
+        print(extract_body(payload))
         print()
+        attachments = _collect_attachments(payload)
+        if attachments:
+            print(f"### Attachments ({len(attachments)}) — metadata only, bytes not fetched")
+            for a in attachments:
+                print(
+                    f"- {a['filename']} ({a['mime']}, {a['size']:,} bytes) "
+                    f"[messageId: {msg.get('id', '')} | attachmentId: {a['attachment_id']}]"
+                )
+            print("> Fetch hook (deferred): users.messages.attachments.get(userId='me', messageId=…, id=attachmentId)")
+            print()
         if i < len(messages):
             print("---\n")
 
