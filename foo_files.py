@@ -96,11 +96,11 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # README.md  # [20,725 tokens | 104,252 bytes]
 
-# /home/mike/repos/Pipulate.com/CNAME
-# /home/mike/repos/Pipulate.com/_config.yml
-# /home/mike/repos/Pipulate.com/flake.nix
-# /home/mike/repos/Pipulate.com/.gitignore
-# /home/mike/repos/Pipulate.com/Gemfile
+/home/mike/repos/Pipulate.com/CNAME
+/home/mike/repos/Pipulate.com/_config.yml
+/home/mike/repos/Pipulate.com/flake.nix
+/home/mike/repos/Pipulate.com/.gitignore
+/home/mike/repos/Pipulate.com/Gemfile
 # /home/mike/repos/Pipulate.com/assets/css/styles.css
 # /home/mike/repos/Pipulate.com/_layouts/default.html
 # /home/mike/repos/Pipulate.com/_layouts/forward.html
