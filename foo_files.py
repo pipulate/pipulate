@@ -129,7 +129,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # scripts/articles/confluenceizer.py
 # scripts/articles/common.py
 # .gitignore
-# .gitattributes
 # /home/mike/.config/pipulate/blogs.json
 # ! python scripts/articles/confluenceizer.py --help
 # ! rg -n "gobot\\(|alias bot=|confluenceizer\\.py|md_files = sorted|output_path|add_argument" flake.nix scripts/articles/confluenceizer.py scripts/articles/articleizer.py scripts/articles/common.py
@@ -156,8 +155,8 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # Software Von Neumann Probe IaC Kickstart
 
-release.py                                          #  <-- The deploy process
-assets/installer/install.sh                         #  <-- Pipulate.com installer real home in github/pipulate repo
+# release.py                                          #  <-- The deploy process
+# assets/installer/install.sh                         #  <-- Pipulate.com installer real home in github/pipulate repo
 
 # /home/mike/repos/Pipulate.com/index.md              #  <-- The public face (in addition to GitHub & PyPI)
 # /home/mike/repos/Pipulate.com/CNAME
@@ -197,6 +196,7 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 
 # The following 5 files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
 .gitignore        #  <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
+.gitattributes    #  <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
 flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
 # scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
