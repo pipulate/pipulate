@@ -82,6 +82,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
 /home/mike/repos/pipulate/scripts/gmail.py
+/home/mike/.config/pipulate/pii_substitutions.txt
 
 # /home/mike/repos/trimnoir/_posts/2026-06-27-workshop-architecture-agentic-skills.md  # [Idx: 1244 | Order: 1 | Tokens: 18,046 | Bytes: 78,604]
 # /home/mike/repos/trimnoir/_posts/2026-06-27-demoscene-compression-onboarding.md  # [Idx: 1245 | Order: 2 | Tokens: 7,288 | Bytes: 33,123]
