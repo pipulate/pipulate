@@ -6,7 +6,7 @@ patch
 Notebooks/data/.onboarded
 .env
 
-secrets.nix
+gmail_token.json
 Notebooks/Untitled.ipynb
 test.log
 llms.txt
@@ -50,7 +50,6 @@ logs/
 temp/
 .ssh/key
 *kungfu_*.py
-botify_token.txt
 flake.lock
 foo.txt
 service_account.txt
