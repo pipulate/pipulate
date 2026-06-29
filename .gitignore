@@ -7,6 +7,7 @@ Notebooks/data/.onboarded
 .env
 
 gmail_token.json
+secrets.nix
 Notebooks/Untitled.ipynb
 test.log
 llms.txt
