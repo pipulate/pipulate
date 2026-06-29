@@ -255,6 +255,29 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # Then link it to a private GitHub repository to back up your work!
           ```
           
+          ## What this folder becomes (coming soon — not active yet)
+
+          Right now this Playground is a **solo** sandbox: just you, your throwaway
+          scripts, and the shared `.venv`. None of the team features below are wired
+          up yet — this is a map of where things are headed, kept here so the intent
+          stays visible from inside the code instead of buried in notes.
+
+          The plan: this folder becomes the **`personal/`** bucket of a team-scale
+          `Notebooks/Workshop/`. Same idea you already have — a private place to break
+          things safely — just nested inside a larger structure that also holds a
+          read-only canonical area and a per-person sharing surface.
+
+          ```text
+          Notebooks/Workshop/        (future — does not exist yet)
+          ├── corporate/             read-only canon, managed for you
+          ├── personal/   ◀── THIS   your private sandbox (this Playground)
+          └── shared/<your-name>/    drop things here to share with teammates
+          ```
+
+          When it lands, the rule will be simple: **this Playground IS the `personal/`
+          bucket** — no second sandbox to learn. Until then, use it exactly as
+          described above and ignore everything in this section.
+
           Happy hacking. Throw some paint around.
           PLAYGROUND_EOF
           fi
