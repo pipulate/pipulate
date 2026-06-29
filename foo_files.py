@@ -451,6 +451,8 @@ apps/015_config.py                                # <-- Carrying onboarding valu
 # XVI. JUPTYER NOTEBOOKS & JUPYTERLAB
 # ============================================================================
 
+Notebooks/Playground/WELCOME.md
+
 # assets/nbs/Onboarding.ipynb
 # assets/nbs/imports/core_sauce.py
 # assets/nbs/imports/onboard_sauce.py
