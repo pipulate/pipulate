@@ -28,6 +28,7 @@ python-frontmatter
 google-api-python-client
 huggingface_hub
 markdown-to-confluence
+google-auth-oauthlib
 
 # Simon Willison's llm
 llm
