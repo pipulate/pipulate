@@ -506,8 +506,22 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           git config --local filter.nbstripout.clean "nbstripout"
           # Set EFFECTIVE_OS for browser automation scripts
           if [[ "$(uname -s)" == "Darwin" ]]; then export EFFECTIVE_OS="darwin"; else export EFFECTIVE_OS="linux"; fi
-          # Workshop hook: inert by default; activate by creating a workspace directory
-          if [ -d "workspace" ] || [ -d "Notebooks/Workshop" ]; then
+          # ── THE WORKSHOP HOOK (team-sync substrate) ──────────────────
+          # Inert until Notebooks/Workshop/ exists. Reads nothing, writes
+          # nothing — just exports a flag later machinery branches on.
+          #
+          # CONTRACT (migrated from the workshop-architecture article so the
+          # design lives next to the hook, not in drifting prose):
+          #   Notebooks/Workshop/
+          #   ├── corporate/        canonical, READ-ONLY (Nix /nix/store farm)
+          #   ├── personal/         === Notebooks/Playground. Do NOT build a
+          #   │                     second sandbox — Playground IS this bucket.
+          #   └── shared/<USER_ID>/ the sync surface. Per-user path partition
+          #                         makes write collisions impossible by
+          #                         construction: no merge logic, no git literacy.
+          # Promotion (shared -> corporate) is a human-gated cherry-pick that
+          # appends one line to corporate/log.md — the "Glinda moment."
+          if [ -d "Notebooks/Workshop" ]; then
             export WORKSHOP_MODE="enabled"
           fi
           # Clean up the prompt to remove Nix's redundant prefixes and Mac's long hostname
