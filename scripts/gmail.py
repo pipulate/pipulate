@@ -17,7 +17,7 @@ Disambiguation rule: if the argument contains '@' it is treated as an email
 address (LIST mode); otherwise it is treated as a Gmail thread ID (FETCH mode).
 
 Auth:
-  - App identity:  credentials.json in repo root (override: PIPULATE_GMAIL_CREDENTIALS)
+  - App identity:  ~/.config/pipulate/credentials.json (override: PIPULATE_GMAIL_CREDENTIALS)
   - User session:  ~/.config/pipulate/gmail_token.json (override: PIPULATE_GMAIL_TOKEN)
 
 The first run must happen INTERACTIVELY in a real terminal so the one-time
