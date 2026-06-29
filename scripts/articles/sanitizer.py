@@ -1,14 +1,82 @@
 import re
+import argparse
 from pathlib import Path
 
 # Paths
 ARTICLE_FILE = Path(__file__).parent / "article.txt"
+PII_FILE = Path.home() / ".config" / "pipulate" / "pii_substitutions.txt"
 
 # Safe IPs that don't need redaction (localhost, common DNS, etc.)
 SAFE_IPS = {'127.0.0.1', '0.0.0.0', '8.8.8.8', '1.1.1.1'}
 
-def sanitize_article():
-    """Reads article.txt, applies redactions, and saves back."""
+# Fence labels whose ENTIRE fenced block is dropped before publication.
+# The real content survives only at the original source (your journal / neovim
+# buffer); after a public sanitize it is gone from article.txt and never
+# reaches the AI editing pass, the generated markdown, or any blog target.
+PRIVATE_FENCE_LABELS = {'private', 'journal-only', 'redact', 'internal-only', 'no-publish'}
+
+
+def strip_prompt_boundary(content: str) -> str:
+    """Eradicate the prompt-injection artifact and collapse surrounding whitespace."""
+    return re.sub(r'\n*^--- BEGIN NEW ARTICLE ---$\n*', '\n\n', content, flags=re.MULTILINE)
+
+
+def redact_ips(content: str) -> str:
+    """Replace any non-safe IPv4 address with a redaction token (both lanes)."""
+    def ip_replacer(match):
+        ip = match.group(0)
+        return ip if ip in SAFE_IPS else "[REDACTED_IP]"
+
+    ip_pattern = re.compile(
+        r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}'
+        r'(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b'
+    )
+    return ip_pattern.sub(ip_replacer, content)
+
+
+def strip_private_fences(content: str):
+    """Remove whole ```private (etc.) fenced blocks. Returns (content, count).
+
+    Non-greedy match stops at the first closing fence, so a private block
+    should hold plain text, not nested code fences.
+    """
+    labels = '|'.join(re.escape(label) for label in sorted(PRIVATE_FENCE_LABELS))
+    pattern = re.compile(
+        rf'^[ \t]*```(?:{labels})[ \t]*\n.*?\n[ \t]*```[ \t]*$\n?',
+        flags=re.MULTILINE | re.DOTALL | re.IGNORECASE,
+    )
+    new_content, count = pattern.subn('', content)
+    new_content = re.sub(r'\n{3,}', '\n\n', new_content)  # collapse the holes
+    return new_content, count
+
+
+def load_pii_rules():
+    """Load (pattern, replacement) tuples from pii_substitutions.txt, if present."""
+    rules = []
+    if PII_FILE.exists():
+        for line in PII_FILE.read_text(encoding='utf-8').splitlines():
+            if not line.strip() or line.startswith('#'):
+                continue
+            if ' === ' in line:
+                pattern, repl = line.split(' === ', 1)
+                rules.append((pattern, repl))
+    return rules
+
+
+def apply_pii(content: str):
+    """Apply the role-based PII substitution table. Returns (content, count)."""
+    total = 0
+    for pattern, replacement in load_pii_rules():
+        try:
+            content, n = re.subn(pattern, replacement, content)
+            total += n
+        except re.error as e:
+            print(f"⚠️  Skipping bad PII pattern {pattern!r}: {e}")
+    return content, total
+
+
+def sanitize_article(public: bool):
+    """Read article.txt, scrub it for the chosen lane, and save back in place."""
     if not ARTICLE_FILE.exists():
         print(f"⚠️  {ARTICLE_FILE.name} not found.")
         return
@@ -16,27 +84,48 @@ def sanitize_article():
     content = ARTICLE_FILE.read_text()
     original_content = content
 
-    # --- STRIP PROMPT BOUNDARIES ---
-    # Eradicate the prompt injection artifact and collapse the surrounding whitespace
-    content = re.sub(r'\n*^--- BEGIN NEW ARTICLE ---$\n*', '\n\n', content, flags=re.MULTILINE)
+    # --- BOTH LANES: strip prompt boundary + loose IPs ---
+    content = strip_prompt_boundary(content)
+    content = redact_ips(content)
 
-    # --- PASS 1: Regex Safety Net (Dynamic IPs) ---
-    def ip_replacer(match):
-        ip = match.group(0)
-        if ip in SAFE_IPS:
-            return ip
-        return "[REDACTED_IP]"
+    if public:
+        # --- PUBLIC LANE: drop private fences + scrub names to roles ---
+        content, fence_count = strip_private_fences(content)
+        content, pii_count = apply_pii(content)
+        if fence_count:
+            print(f"🔒 Removed {fence_count} private fenced block(s) — kept only at source.")
+        if pii_count:
+            print(f"🪄 Applied {pii_count} PII substitution(s).")
+        if not fence_count and not pii_count:
+            print("ℹ️  Public lane: no private fences or PII matches found.")
+    else:
+        print("ℹ️  Private lane (grim): prompt boundary + IP scrub only; fences and names preserved.")
 
-    # Matches standard IPv4 addresses (e.g., 192.168.10.100)
-    ip_pattern = re.compile(r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b')
-    content = ip_pattern.sub(ip_replacer, content)
-
-    # --- CHECK AND SAVE ---
     if content != original_content:
         ARTICLE_FILE.write_text(content)
-        print(f"✅ Article sanitized! (Secrets and loose IP addresses redacted)")
+        print("✅ Article sanitized!")
     else:
-        print(f"ℹ️  No secrets or exposed IP addresses found. Article is already clean.")
+        print("ℹ️  Nothing to scrub. Article is already clean.")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Defensive pre-publish sanitizer for article.txt."
+    )
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument(
+        '--public', action='store_true',
+        help="Full defensive scrub (DEFAULT): strip private fences + apply PII substitutions."
+    )
+    group.add_argument(
+        '--private', action='store_true',
+        help="Light lane (grim): strip prompt boundary + IPs only; keep fences and names."
+    )
+    args = parser.parse_args()
+
+    # Fail closed: anything other than an explicit --private gets the safe scrub.
+    sanitize_article(public=not args.private)
+
 
 if __name__ == "__main__":
-    sanitize_article()
+    main()
