@@ -506,6 +506,10 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           git config --local filter.nbstripout.clean "nbstripout"
           # Set EFFECTIVE_OS for browser automation scripts
           if [[ "$(uname -s)" == "Darwin" ]]; then export EFFECTIVE_OS="darwin"; else export EFFECTIVE_OS="linux"; fi
+          # Workshop hook: inert by default; activate by creating a workspace directory
+          if [ -d "workspace" ] || [ -d "Notebooks/Workshop" ]; then
+            export WORKSHOP_MODE="enabled"
+          fi
           # Clean up the prompt to remove Nix's redundant prefixes and Mac's long hostname
           export PS1="\[\033[1;32m\](nix)\[\033[0m\] \[\033[1;34m\]\W\[\033[0m\] $ "
           # Shadow the nix CLI for two reasons, both only relevant *inside* an
