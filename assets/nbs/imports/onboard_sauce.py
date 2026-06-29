@@ -1329,6 +1329,66 @@ def execute_cloud_analysis(job_id: str, recovered_url: str, active_cloud_model: 
         print("⚠️ Technical Baseline Excel file not found. Did you run the Pandas cell?")
 
 
+def render_mode_selector(job_id: str = "onboarding_01"):
+    """
+    The sovereign-agent escape hatch, done as durable state instead of cell-run roulette.
+
+    The branch lives in `wand.get(job_id, 'fast_track')`, never in 'did the human
+    happen to run a particular cell.' Choosing Fast-track writes the flag, drops the
+    .onboarded sentinel (so the next `nix develop` auto-opens localhost:5001), and
+    renders the egress link. Every downstream optional cell reads is_fast_track(job_id)
+    and glides. Reset-kernel-and-run-all stays valid in either mode.
+    """
+    import ipywidgets as widgets
+    from IPython.display import display, clear_output
+    from pipulate import wand
+
+    wand.db['active_job'] = job_id
+
+    # Guarantee defaults so a fast-tracker never trips a downstream read.
+    if not wand.get(job_id, "operator_name"):
+        wand.set(job_id, "operator_name", "Alice")
+    if not wand.get(job_id, "target_url"):
+        wand.set(job_id, "target_url", "https://example.com")
+
+    existing = "fast_track" if wand.get(job_id, "fast_track") else "guided"
+
+    mode_widget = widgets.RadioButtons(
+        options=[
+            ('🚶 Guided walkthrough (recommended your first time)', 'guided'),
+            ('🏎️ Fast-track (skip ahead and unlock the app right now)', 'fast_track'),
+        ],
+        value=existing,
+        layout={'width': 'max-content'}
+    )
+    submit_btn = widgets.Button(description="Lock in Mode", button_style='primary', icon='check')
+    out = widgets.Output()
+
+    def on_submit(b):
+        with out:
+            clear_output()
+            is_fast = (mode_widget.value == 'fast_track')
+            wand.set(job_id, "fast_track", is_fast)
+            submit_btn.description = "Mode Locked"
+            submit_btn.button_style = 'success'
+            if is_fast:
+                wand.speak("Fast-track engaged. Unlocking the application now.")
+                # The selection IS the action: this drops .onboarded and shows egress.
+                render_completion_handoff()
+            else:
+                wand.speak("Guided walkthrough selected. Shift-Enter all the way down.")
+                wand.speak("You may now run the next cell.", emoji="✅")
+
+    submit_btn.on_click(on_submit)
+    display(widgets.VBox([mode_widget, submit_btn, out]))
+
+
+def is_fast_track(job_id: str = "onboarding_01") -> bool:
+    """Cheap predicate so any downstream cell can glide instead of doing heavy work."""
+    from pipulate import wand
+    return bool(wand.get(job_id, "fast_track"))
+
+
 def render_completion_handoff():
     """Renders the final success UI and sets the sentinel file to unlock the app."""
     from IPython.display import display, HTML
