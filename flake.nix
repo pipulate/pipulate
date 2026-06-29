@@ -821,9 +821,9 @@ print('AI:\n', r.ai)
             alias prompt='(cd ~/repos/pipulate && xclip -selection clipboard -o >prompt.md)'
             alias patch='xclip -selection clipboard -o >patch'
             # Linux subshell aliases
-            alias article='(cd scripts/articles && xclip -selection clipboard -o >article.txt && python sanitizer.py && python articleizer.py)'
-            alias grim='(cd scripts/articles && xclip -selection clipboard -o >article.txt && python sanitizer.py && python articleizer.py -t 3)'
-            alias bot='(cd scripts/articles && xclip -selection clipboard -o >article.txt && python sanitizer.py && python articleizer.py -t 4)'
+            alias article='(cd scripts/articles && xclip -selection clipboard -o >article.txt && python sanitizer.py --public && python articleizer.py)'
+            alias grim='(cd scripts/articles && xclip -selection clipboard -o >article.txt && python sanitizer.py --private && python articleizer.py -t 3)'
+            alias bot='(cd scripts/articles && xclip -selection clipboard -o >article.txt && python sanitizer.py --public && python articleizer.py -t 4)'
             gobot() {
               # Routine runs sync ONLY the article 'bot' just wrote, via the
               # marker articleizer.py records. Pass --all to force a full
