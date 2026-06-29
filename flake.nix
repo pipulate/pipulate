@@ -535,14 +535,25 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           #
           # CONTRACT (migrated from the workshop-architecture article so the
           # design lives next to the hook, not in drifting prose):
+          #
+          # THE HUMAN SURFACE — the only two paths anyone is ever told about.
+          # Flat siblings under Notebooks/, so there is no mental nesting and
+          # no way to get it wrong:
+          #   Notebooks/Playground/   private. NOTHING here is ever shared.
+          #   Notebooks/Share/        drag work HERE to deliberately share it.
+          #                           "Share" is a verb — YOUR outbound work.
+          #                           Not "Shared" (reads as stuff FROM others),
+          #                           not "Share_This" (clunky). Just Share/.
+          #
+          # UNDER THE HOOD — the three-bucket model the surface maps onto:
           #   Notebooks/Workshop/
           #   ├── corporate/        canonical, READ-ONLY (Nix /nix/store farm)
           #   ├── personal/         === Notebooks/Playground. Do NOT build a
           #   │                     second sandbox — Playground IS this bucket.
-          #   └── shared/<USER_ID>/ the sync surface. Per-user path partition
+          #   └── shared/<USER_ID>/ === Notebooks/Share. Per-user path partition
           #                         makes write collisions impossible by
           #                         construction: no merge logic, no git literacy.
-          # Promotion (shared -> corporate) is a human-gated cherry-pick that
+          # Promotion (Share -> corporate) is a human-gated cherry-pick that
           # appends one line to corporate/log.md — the "Glinda moment."
           if [ -d "Notebooks/Workshop" ]; then
             export WORKSHOP_MODE="enabled"
