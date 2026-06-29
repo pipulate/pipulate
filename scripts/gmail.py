@@ -166,6 +166,31 @@ def extract_body(payload):
     return '(no text body found)'
 
 
+def _collect_attachments(payload):
+    """Depth-first collect attachment metadata only — never the bytes.
+
+    Returns a list of {filename, mime, size, attachment_id} dicts. This is the
+    token-cheap 'there is more here if you want it' hook: enough to know an
+    attachment exists and to fetch it later via
+    users.messages.attachments.get(userId, messageId, id=attachment_id),
+    without ever pulling the (potentially huge, often non-text) payload into
+    the prompt. Wiring that fetch up is a deliberate future move, not this one.
+    """
+    out = []
+    filename = payload.get('filename')
+    if filename:
+        body = payload.get('body', {})
+        out.append({
+            'filename': filename,
+            'mime': payload.get('mimeType', 'application/octet-stream'),
+            'size': body.get('size', 0),
+            'attachment_id': body.get('attachmentId', ''),
+        })
+    for part in payload.get('parts', []) or []:
+        out.extend(_collect_attachments(part))
+    return out
+
+
 # ----------------------------------------------------------------------------
 # Modes
 # ----------------------------------------------------------------------------
