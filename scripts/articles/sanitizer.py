@@ -122,6 +122,7 @@ def main():
         '--private', action='store_true',
         help="Light lane (grim): strip prompt boundary + IPs only; keep fences and names."
     )
+    common.add_standard_arguments(parser)
     args = parser.parse_args()
 
     # Fail closed: anything other than an explicit --private gets the safe scrub.
