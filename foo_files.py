@@ -81,6 +81,19 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
+# /home/mike/repos/trimnoir/_posts/2026-06-27-workshop-architecture-agentic-skills.md  # [Idx: 1244 | Order: 1 | Tokens: 18,046 | Bytes: 78,604]
+# /home/mike/repos/trimnoir/_posts/2026-06-27-demoscene-compression-onboarding.md  # [Idx: 1245 | Order: 2 | Tokens: 7,288 | Bytes: 33,123]
+# /home/mike/repos/trimnoir/_posts/2026-06-27-forever-machine-robust-systems.md  # [Idx: 1246 | Order: 3 | Tokens: 16,362 | Bytes: 77,226]
+# /home/mike/repos/trimnoir/_posts/2026-06-27-engineering-the-installer-seam.md  # [Idx: 1247 | Order: 4 | Tokens: 11,889 | Bytes: 51,352]
+# /home/mike/repos/trimnoir/_posts/2026-06-28-shell-as-a-room-spatial-computing.md  # [Idx: 1248 | Order: 1 | Tokens: 13,685 | Bytes: 52,490]
+# /home/mike/repos/trimnoir/_posts/2026-06-28-closing-the-reproducibility-stack.md  # [Idx: 1249 | Order: 2 | Tokens: 6,580 | Bytes: 30,215]
+# /home/mike/repos/trimnoir/_posts/2026-06-28-terminal-telemetry-onboarding.md  # [Idx: 1250 | Order: 3 | Tokens: 38,130 | Bytes: 204,380]
+# /home/mike/repos/trimnoir/_posts/2026-06-28-pruning-public-documentation.md  # [Idx: 1251 | Order: 4 | Tokens: 43,707 | Bytes: 166,094]
+# /home/mike/repos/trimnoir/_posts/2026-06-28-defensive-layer-automation.md  # [Idx: 1252 | Order: 5 | Tokens: 11,137 | Bytes: 40,890]
+# /home/mike/repos/trimnoir/_posts/2026-06-28-optimizing-tts-markdown-pipelines.md  # [Idx: 1253 | Order: 6 | Tokens: 4,759 | Bytes: 18,421]
+# /home/mike/repos/trimnoir/_posts/2026-06-28-optimizing-pipeline-timing-in-the-age-of-ai.md  # [Idx: 1254 | Order: 7 | Tokens: 6,293 | Bytes: 25,889]
+# /home/mike/repos/trimnoir/_posts/2026-06-28-durable-onboarding-jupyter-fast-track.md  # [Idx: 1255 | Order: 8 | Tokens: 17,985 | Bytes: 73,901]
+
 # README.md  # [20,725 tokens | 104,252 bytes]
 
 # /home/mike/repos/Pipulate.com/CNAME
@@ -194,9 +207,9 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!! STANDARD WRAPPER: 2
 
-# The following 5 files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
-.gitignore        #  <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
+# The following N files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
 .gitattributes    #  <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
+.gitignore        #  <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
 flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
 # scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
@@ -251,10 +264,10 @@ apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aid
 # assets/player-piano.js                            # <-- Player piano actuator #2 in Pipulate. How AIs can take control of workflows.
 # Notebooks/imports/__init__.py                     # <-- Empty file, just to show you imports relative to Notebooks are 1st-class path members. Important!
 
-assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
-assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
-assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
-apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
+# assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
+# assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
+# assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
+# apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
 
 # ============================================================================
 # VII. WET WORKFLOWS / DRY CRUD - The what's best for AIs and Humans compromise
