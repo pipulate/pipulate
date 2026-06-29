@@ -225,7 +225,7 @@ def list_threads(service, address, max_results):
         print(f"[{date}] {t['id']}  {subject}")
         print(f"    from: {sender}  |  messages: {len(msgs)}")
         if snippet:
-            print(f"    snippet: {snippet[:80]}")
+            print(f"    snippet: {snippet}")
         print()
 
 
