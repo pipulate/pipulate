@@ -44,7 +44,9 @@ from googleapiclient.errors import HttpError
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-CREDS_PATH = os.environ.get('PIPULATE_GMAIL_CREDENTIALS') or str(REPO_ROOT / 'credentials.json')
+CREDS_PATH = os.environ.get('PIPULATE_GMAIL_CREDENTIALS') or str(
+    Path.home() / '.config' / 'pipulate' / 'credentials.json'
+)
 TOKEN_PATH = os.environ.get('PIPULATE_GMAIL_TOKEN') or str(
     Path.home() / '.config' / 'pipulate' / 'gmail_token.json'
 )
