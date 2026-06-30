@@ -210,11 +210,28 @@ def chat_with_ollama(input_text, prompt_template, model=DEFAULT_MODEL, timeout=9
         if target_model in models:
             chosen_model = target_model
         else:
-            partial_matches = [m for m in models if m.startswith(target_model)]
-            if partial_matches:
-                chosen_model = partial_matches[0]
+            # Perform case-insensitive family and variant prefix resolution
+            normalized_target = target_model.lower()
+            base_target = normalized_target.split(':')[0]
+            
+            matches = [m for m in models if m.lower() == normalized_target or m.lower().startswith(normalized_target)]
+            if not matches:
+                matches = [m for m in models if m.lower().startswith(base_target)]
+                
+            if matches:
+                latest_variants = [m for m in matches if ':latest' in m.lower()]
+                chosen_model = latest_variants[0] if latest_variants else matches[0]
             else:
-                chosen_model = get_best_llama_model(models)
+                # True cache miss: materialise the requested model immediately via standard airlock pull
+                print(f"⚠️  Model target '{target_model}' not found in local Ollama inventory.", file=sys.stderr)
+                print(f"🔄 Executing on-demand foreground pull: 'ollama pull {target_model}'...", file=sys.stderr)
+                try:
+                    subprocess.run(["ollama", "pull", target_model], check=True)
+                    chosen_model = target_model
+                except Exception as e:
+                    print(f"❌ Automatic pull failed for '{target_model}': {e}", file=sys.stderr)
+                    print("⚠️  Falling back to best available local fallback variant...", file=sys.stderr)
+                    chosen_model = get_best_llama_model(models)
         
         full_prompt = prompt_template.format(input_text=input_text)
         conversation_history.append({"role": "user", "content": full_prompt})
