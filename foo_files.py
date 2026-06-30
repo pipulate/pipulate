@@ -235,7 +235,7 @@ apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aid
 # scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 # cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
 # scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
-# ~/repos/nixos/autognome.py  #  <-- More rare to have to include, but the true "top" of the muscle memory stack for day-to-day purposes
+# /home/mike/repos/nixos/autognome.py  #  <-- More rare to have to include, but the true "top" of the muscle memory stack for day-to-day purposes
 
 # OTHER HEAVY LIFTERS
 # scripts/ai.py                  #  <-- Local AI writing git commit messages. Accelerator!
