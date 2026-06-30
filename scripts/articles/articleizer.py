@@ -81,6 +81,7 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port, 
     # Ensure proper slash formatting
     if not permalink.startswith("/"):
         permalink = f"/{permalink}"
+    base_url = (base_url or "").rstrip("/")
     canonical_url = f"{base_url}{permalink}" if base_url else ""
     # -----------------------------------------------
 
