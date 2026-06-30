@@ -337,7 +337,10 @@ def main():
             return
 
     if instructions:
-        saved_path = create_jekyll_post(article_text, instructions, output_dir, preview_port)
+        base_url = target_config.get("base_url")
+        if base_url is None:
+            base_url = target_config.get("url", "https://mikelev.in")
+        saved_path = create_jekyll_post(article_text, instructions, output_dir, preview_port, base_url)
         if saved_path:
             common.record_last_published(args.target, saved_path, target_config.get("name"))
 
