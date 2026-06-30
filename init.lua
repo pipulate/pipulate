@@ -213,9 +213,10 @@ function git_commit_push()
                   "Focus on the overarching structure from the statistics and the content of the detailed changes. " ..
                   "Respond with ONLY the commit message, nothing else:\n\n{input_text}"
 
-        -- We now pass 'hybrid_payload' instead of 'safe_diff'
-        local command = string.format('ai-commit --format plain --prompt %s',
-                                       vim.fn.shellescape(git_commit_prompt))
+        -- Pass the same dynamic context size down to scripts/ai.py so Ollama
+        -- does not silently fall back to a smaller default context window.
+        local command = string.format('ai-commit --format plain --ctx %d --prompt %s',
+                                       max_ctx, vim.fn.shellescape(git_commit_prompt))
 
         local raw_ai_output = vim.fn.system(command, hybrid_payload)
         
