@@ -778,6 +778,9 @@ tools/scraper_tools.py
 tools/llm_optics.py
 """
 
+# #todo
+# Turn the YouTube live-stream into an interactive real-time article-picking Jukebox.
+
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
 # ============================================================================
