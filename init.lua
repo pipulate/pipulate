@@ -118,7 +118,40 @@ function git_commit_push()
     -- Calculate metrics and prepare the safe slice
     local diff_bytes = string.len(git_diff)
     local safe_diff = git_diff
-    local max_diff_size = 16000 -- Tighter slice to accompany the --stat
+
+    -- Keep Neovim's frontend payload budget aligned with scripts/ai.py and Ollama.
+    -- The extra prompt reserve avoids claiming the whole context window for the diff
+    -- while the commit prompt, git stat, and generated response still need room.
+    local max_ctx = math.floor(tonumber(os.getenv("PIPULATE_OLLAMA_NUM_CTX") or "") or 131072)
+    if max_ctx < 8192 then
+        max_ctx = 8192
+    end
+
+    local output_reserve_tokens = math.floor(tonumber(os.getenv("PIPULATE_OLLAMA_OUTPUT_RESERVE_TOKENS") or "") or 4096)
+    if output_reserve_tokens < 1024 then
+        output_reserve_tokens = 4096
+    end
+
+    local prompt_reserve_tokens = math.floor(tonumber(os.getenv("PIPULATE_OLLAMA_PROMPT_RESERVE_TOKENS") or "") or 2048)
+    if prompt_reserve_tokens < 512 then
+        prompt_reserve_tokens = 2048
+    end
+
+    local chars_per_token = tonumber(os.getenv("PIPULATE_CHARS_PER_TOKEN") or "") or 4.0
+    if chars_per_token <= 0 then
+        chars_per_token = 4.0
+    end
+
+    local available_tokens = max_ctx - output_reserve_tokens - prompt_reserve_tokens
+    if available_tokens < 4000 then
+        available_tokens = 4000
+    end
+
+    local max_diff_size = math.floor(available_tokens * chars_per_token)
+    if max_diff_size < 16000 then
+        max_diff_size = 16000
+    end
+
     local diff_display = tostring(diff_bytes) .. " bytes"
 
     if diff_bytes > max_diff_size then
