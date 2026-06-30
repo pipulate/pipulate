@@ -22,7 +22,7 @@ INSTRUCTIONS_CACHE_FILE = "instructions.json"
 # DEFAULT_MODEL = 'gemini-flash-latest'
 DEFAULT_MODEL = 'gemini-flash-lite-latest'
 
-def create_jekyll_post(article_content, instructions, output_dir, preview_port):
+def create_jekyll_post(article_content, instructions, output_dir, preview_port, base_url=""):
     """
     Assembles and writes a Jekyll post file from the article content and
     structured AI-generated instructions.
