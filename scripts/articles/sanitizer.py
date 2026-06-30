@@ -51,6 +51,38 @@ def strip_private_fences(content: str):
     return new_content, count
 
 
+# Inline player-piano markers for paragraph/phrase-level privacy — the same
+# [[[token]]] bracket dialect already used for SEARCH/REPLACE and TODO_SLUGS
+# blocks elsewhere in this toolchain. The fence stripper above handles whole
+# blocks; this handles a clause or paragraph mid-sentence without forcing a
+# line break and without colliding with real code fences. `p` is shorthand
+# for `private` — either spelling works, but an opener must be closed by its
+# own spelling (the backreference below enforces that).
+INLINE_PRIVATE_PATTERN = re.compile(
+    r'\[\[\[(p|private)\]\]\](.*?)\[\[\[/\1\]\]\]',
+    flags=re.DOTALL | re.IGNORECASE,
+)
+INLINE_PRIVATE_STRAY_PATTERN = re.compile(
+    r'\[\[\[/?(?:p|private)\]\]\]',
+    flags=re.IGNORECASE,
+)
+
+
+def strip_private_inline(content: str):
+    """Remove inline [[[p]]]...[[[/p]]] / [[[private]]]...[[[/private]]] spans.
+
+    Returns (content, count). Unlike strip_private_fences this works mid-line
+    or mid-paragraph, so a single clause can poof without exiling the rest of
+    the paragraph onto its own fenced block.
+    """
+    new_content, count = INLINE_PRIVATE_PATTERN.subn('', content)
+    new_content = re.sub(r'\n{3,}', '\n\n', new_content)  # collapse the holes
+    stray = INLINE_PRIVATE_STRAY_PATTERN.findall(new_content)
+    if stray:
+        print(f"⚠️  Found {len(stray)} unmatched [[[p]]]/[[[private]]] marker(s) — check for a missing close tag.")
+    return new_content, count
+
+
 def load_pii_rules():
     """Load (pattern, replacement) tuples from pii_substitutions.txt, if present."""
     rules = []
