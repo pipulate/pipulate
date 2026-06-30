@@ -199,7 +199,7 @@ def append_commit_to_conversation(commit_message, change_analysis, model_used):
     except Exception as e:
         print(f"⚠️  Error appending to conversation history: {e}", file=sys.stderr)
 
-def chat_with_ollama(input_text, prompt_template, model=DEFAULT_MODEL, timeout=90):
+def chat_with_ollama(input_text, prompt_template, model=DEFAULT_MODEL, timeout=90, num_ctx=None):
     chosen_model = model if model else DEFAULT_MODEL
     try:
         models_response = requests.get(f"{OLLAMA_API_URL}/tags", timeout=timeout)
