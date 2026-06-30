@@ -29,6 +29,78 @@ except ImportError:
 DEFAULT_MODEL = CFG.DEFAULT_PROMPT_MODEL
 OLLAMA_API_URL = "http://localhost:11434/api"
 
+def _env_int(name, default):
+    try:
+        return int(os.environ.get(name, default))
+    except (TypeError, ValueError):
+        return default
+
+def _env_float(name, default):
+    try:
+        value = float(os.environ.get(name, default))
+        return value if value > 0 else default
+    except (TypeError, ValueError):
+        return default
+
+# Conservative default for RTX 3080-class GPUs. Gemma 3 270M/1B top out at
+# 32k, while 4B+ can go higher if VRAM allows. Override per run with --ctx or
+# globally for auto mode with PIPULATE_OLLAMA_NUM_CTX=64000 after checking
+# `ollama ps` for 100% GPU residency.
+DEFAULT_AUTO_NUM_CTX = _env_int("PIPULATE_OLLAMA_NUM_CTX", 32768)
+AUTO_OUTPUT_RESERVE_TOKENS = _env_int("PIPULATE_OLLAMA_OUTPUT_RESERVE_TOKENS", 4096)
+AUTO_CHARS_PER_TOKEN = _env_float("PIPULATE_CHARS_PER_TOKEN", 4.0)
+
+def estimate_tokens(text):
+    """Fast local estimate good enough for guarding Ollama context budgets."""
+    return max(1, int((len(text) / AUTO_CHARS_PER_TOKEN) + 0.999))
+
+def build_added_files_context(added_files, max_chars):
+    """Hydrate newly added text files inside one shared character budget."""
+    remaining = max(0, int(max_chars))
+    if remaining <= 0:
+        return ""
+
+    parts = []
+    for filename in added_files:
+        if remaining <= 0:
+            break
+
+        filepath = Path(filename)
+        if not filepath.is_absolute():
+            filepath = project_root / filepath
+        if not filepath.exists() or not filepath.is_file():
+            continue
+
+        try:
+            if filepath.suffix.lower() in {'.png', '.jpg', '.jpeg', '.gif', '.pdf', '.bin'}:
+                block = f"\n\n--- NEW FILE: {filename} (binary/skipped) ---"
+                if len(block) <= remaining:
+                    parts.append(block)
+                    remaining -= len(block)
+                continue
+
+            content = filepath.read_text(encoding='utf-8')
+            header = f"\n\n--- NEW FILE VERBATIM CONTENT: {filename} ---\n"
+            if len(header) + len(content) <= remaining:
+                block = header + content
+            else:
+                truncated_header = f"\n\n--- NEW FILE VERBATIM CONTENT (truncated to shared context budget): {filename} ---\n"
+                suffix = "\n\n... [truncated - shared added-file budget exhausted] ..."
+                available = remaining - len(truncated_header) - len(suffix)
+                if available <= 0:
+                    break
+                block = truncated_header + content[:available] + suffix
+
+            parts.append(block)
+            remaining -= len(block)
+        except Exception as e:
+            block = f"\n\n--- NEW FILE VERBATIM CONTENT: {filename} (Error reading: {e}) ---"
+            if len(block) <= remaining:
+                parts.append(block)
+                remaining -= len(block)
+
+    return "".join(parts)
+
 COMMIT_PROMPT_TEMPLATE = """
 You are an expert programmer and git contributor for the "Pipulate" project, a local-first AI SEO tool.
 Your task is to write a concise, informative, and conventional commit message.
