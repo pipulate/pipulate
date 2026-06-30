@@ -219,9 +219,13 @@ def chat_with_ollama(input_text, prompt_template, model=DEFAULT_MODEL, timeout=9
         full_prompt = prompt_template.format(input_text=input_text)
         conversation_history.append({"role": "user", "content": full_prompt})
 
+        payload = {"model": chosen_model, "messages": conversation_history, "stream": False}
+        if num_ctx:
+            payload["options"] = {"num_ctx": int(num_ctx)}
+
         chat_response = requests.post(
             f"{OLLAMA_API_URL}/chat",
-            json={"model": chosen_model, "messages": conversation_history, "stream": False},
+            json=payload,
             timeout=timeout
         )
         chat_response.raise_for_status()
@@ -238,6 +242,7 @@ if __name__ == "__main__":
     parser.add_argument("--prompt", help="Prompt template (use {input_text} as placeholder)")
     parser.add_argument("--format", choices=["markdown", "plain"], default="plain", help="Output format")
     parser.add_argument("--model", help=f"Specific model to use (default: {DEFAULT_MODEL})")
+    parser.add_argument("--ctx", type=int, help="Ollama context window for this request, e.g. 32768 or 64000")
     parser.add_argument("--auto", action="store_true", help="Automated git release commit mode")
     args = parser.parse_args()
 
@@ -245,30 +250,6 @@ if __name__ == "__main__":
         # Release workflow mode
         change_analysis = get_change_analysis()
         staged_diff = get_staged_diff()
-        
-        # Hydrate verbatim contents for newly added files to cure AI blindspots
-        added_files_content = ""
-        for filename in change_analysis.get('added_files', []):
-            filepath = Path(filename)
-            if not filepath.is_absolute():
-                filepath = project_root / filepath
-            if filepath.exists() and filepath.is_file():
-                try:
-                    # Skip binaries and cap size to prevent prompt explosion
-                    if filepath.suffix.lower() in {'.png', '.jpg', '.jpeg', '.gif', '.pdf', '.bin'}:
-                        added_files_content += f"\n\n--- NEW FILE: {filename} (binary/skipped) ---"
-                        continue
-                    content = filepath.read_text(encoding='utf-8')
-                    if len(content) > 15000:
-                        preview = content[:12000] + "\n\n... [truncated - full content available in working tree] ..."
-                        added_files_content += f"\n\n--- NEW FILE VERBATIM CONTENT (truncated): {filename} ---\n{preview}"
-                    else:
-                        added_files_content += f"\n\n--- NEW FILE VERBATIM CONTENT: {filename} ---\n{content}"
-                except Exception as e:
-                    added_files_content += f"\n\n--- NEW FILE VERBATIM CONTENT: {filename} (Error reading: {e}) ---"
-        
-        if added_files_content:
-            staged_diff += added_files_content
         
         analysis_text = f"""
 - Files added: {len(change_analysis['added_files'])}
@@ -282,6 +263,18 @@ if __name__ == "__main__":
                                                  .replace("{primary_action}", change_analysis['primary_action']) \
                                                  .replace("{is_housekeeping}", str(change_analysis['is_housekeeping'])) \
                                                  .replace("{change_summary}", change_analysis['change_summary'])
+
+        # Hydrate newly added files only inside the remaining shared context
+        # budget. This prevents one large file, or several medium files, from
+        # silently pushing the useful diff out of Ollama's active context.
+        auto_num_ctx = args.ctx or DEFAULT_AUTO_NUM_CTX
+        base_prompt_tokens = estimate_tokens(formatted_prompt.format(input_text=staged_diff))
+        added_file_budget_tokens = max(0, auto_num_ctx - AUTO_OUTPUT_RESERVE_TOKENS - base_prompt_tokens)
+        added_file_budget_chars = int(added_file_budget_tokens * AUTO_CHARS_PER_TOKEN)
+        added_files_content = build_added_files_context(change_analysis.get('added_files', []), added_file_budget_chars)
+        
+        if added_files_content:
+            staged_diff += added_files_content
         
         # Pass staged_diff directly as input_text so it bypasses .format() vulnerabilities!
         result, used_model = chat_with_ollama(staged_diff, formatted_prompt, model=args.model)
