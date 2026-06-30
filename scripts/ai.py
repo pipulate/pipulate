@@ -277,7 +277,7 @@ if __name__ == "__main__":
             staged_diff += added_files_content
         
         # Pass staged_diff directly as input_text so it bypasses .format() vulnerabilities!
-        result, used_model = chat_with_ollama(staged_diff, formatted_prompt, model=args.model)
+        result, used_model = chat_with_ollama(staged_diff, formatted_prompt, model=args.model, num_ctx=auto_num_ctx)
 
         # Defensive fence-stripping: the local model is non-deterministic about
         # wrapping its reply in a Markdown code fence, and is especially prone to
@@ -301,7 +301,7 @@ if __name__ == "__main__":
             sys.exit(1)
             
         input_text = sys.stdin.read().strip()
-        result, used_model = chat_with_ollama(input_text, args.prompt, model=args.model)
+        result, used_model = chat_with_ollama(input_text, args.prompt, model=args.model, num_ctx=args.ctx)
         
         # Ensure single line output for Neovim strictly
         result = result.replace('\n', ' ').strip()
