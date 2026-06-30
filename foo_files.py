@@ -217,6 +217,7 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 .gitignore        #  <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
 flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
+scripts/ai.py     #  <-- How I constantly use local AI to write git commit messages with `m` alias.
 # scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 # cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
 # scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
