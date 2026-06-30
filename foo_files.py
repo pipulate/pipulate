@@ -81,7 +81,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-# /home/mike/repos/pipulate/scripts/gmail.py
+/home/mike/repos/pipulate/scripts/gmail.py
 # /home/mike/.config/pipulate/pii_substitutions.txt
 # /home/mike/repos/trimnoir/_posts/2026-06-29-automating-gmail-context-extraction.md
 
