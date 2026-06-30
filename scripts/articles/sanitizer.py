@@ -124,13 +124,16 @@ def sanitize_article(public: bool):
     if public:
         # --- PUBLIC LANE: drop private fences + scrub names to roles ---
         content, fence_count = strip_private_fences(content)
+        content, inline_count = strip_private_inline(content)
         content, pii_count = apply_pii(content)
         if fence_count:
             print(f"🔒 Removed {fence_count} private fenced block(s) — kept only at source.")
+        if inline_count:
+            print(f"🔒 Removed {inline_count} inline private span(s) — kept only at source.")
         if pii_count:
             print(f"🪄 Applied {pii_count} PII substitution(s).")
-        if not fence_count and not pii_count:
-            print("ℹ️  Public lane: no private fences or PII matches found.")
+        if not fence_count and not inline_count and not pii_count:
+            print("ℹ️  Public lane: no private fences, inline spans, or PII matches found.")
     else:
         print("ℹ️  Private lane (grim): prompt boundary + IP scrub only; fences and names preserved.")
 
