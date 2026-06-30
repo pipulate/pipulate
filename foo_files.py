@@ -81,9 +81,23 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-/home/mike/repos/pipulate/scripts/gmail.py
-# /home/mike/.config/pipulate/pii_substitutions.txt
+/home/mike/repos/botifyml/_posts/2026-06-30-architecting-fall-seo-strategy.md
+
+# /home/mike/repos/pipulate/scripts/gmail.py
+
+# ! python scripts/gmail.py 19ed7896e9577340  # Performance Baseline Report
+# ! python scripts/gmail.py 19ef63ffb0dc3ff4  # Google Search Console & GMC Setup
+# ! python scripts/gmail.py 19ef61f326a3b536  # AI Visibility Tracking Transcript
+
+/home/mike/.config/pipulate/pii_substitutions.txt
+
 # /home/mike/repos/trimnoir/_posts/2026-06-29-automating-gmail-context-extraction.md
+
+# /home/mike/Downloads/store-locator.md
+# /home/mike/Downloads/sm_fall_content_gaps.csv
+# /home/mike/Downloads/sm_fall_exec_rollup.csv
+# /home/mike/Downloads/sm_fall_keyword_watchlist.csv
+# /home/mike/Downloads/sm_fall_priority_tracker.csv
 
 # /home/mike/repos/trimnoir/_posts/2026-06-27-workshop-architecture-agentic-skills.md  # [Idx: 1244 | Order: 1 | Tokens: 18,046 | Bytes: 78,604]
 # /home/mike/repos/trimnoir/_posts/2026-06-27-demoscene-compression-onboarding.md  # [Idx: 1245 | Order: 2 | Tokens: 7,288 | Bytes: 33,123]
@@ -213,8 +227,8 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 .gitignore        #  <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
 flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
-scripts/ai.py     #  <-- How I constantly use local AI to write git commit messages with `m` alias.
-init.lua          #  <-- Daily driver hot-keys that overlap with aliases in flake.nix
+# scripts/ai.py     #  <-- How I constantly use local AI to write git commit messages with `m` alias.
+# init.lua          #  <-- Daily driver hot-keys that overlap with aliases in flake.nix
 # scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 # cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
 # scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
@@ -397,20 +411,20 @@ init.lua          #  <-- Daily driver hot-keys that overlap with aliases in flak
 # XIII. JEKYLL PUBLISHING - Reaching out to the world
 # ============================================================================
 
-# /home/mike/.config/pipulate/blogs.json       # <-- Centralized multi-site routing manifest for N Jekyll blogs.
-# scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
-# scripts/articles/common.py                   # <-- Self-explanatory
-# scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
-# scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
-# scripts/articles/sanitizer.py                # <-- Scrubs PII
-# scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
-# scripts/articles/confluenceizer.py           # <-- Just added
-# scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
-# scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
-# scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
-# scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
-# scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
-# scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
+/home/mike/.config/pipulate/blogs.json       # <-- Centralized multi-site routing manifest for N Jekyll blogs.
+scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
+scripts/articles/common.py                   # <-- Self-explanatory
+scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
+scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
+scripts/articles/sanitizer.py                # <-- Scrubs PII
+scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
+scripts/articles/confluenceizer.py           # <-- Just added
+scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
+scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
+scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
+scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
+scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
+scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
 
 # The following Jekyll files pair well with the above to show how we start various forms of tracking, and as a transition into Honeybot Nginx Broadcast Studio & telemetry.
 # /home/mike/repos/trimnoir/_config.yml
@@ -657,7 +671,7 @@ reproducible-cockpit-nixos-gnome
 tiling-terminals-x11-alacritty
 [[[END_SLUGS]]]
 
-CRITICAL CONSTRAINT: Do not bite off more than you can chew. Select a maximum of 3 to 5 highly targeted slugs that directly anchor the immediate structural milestone. You will receive additional turns to request more.
+**CRITICAL CONSTRAINT**: Do not bite off more than you can chew. Select a maximum of 3 to 5 highly targeted slugs that directly anchor the immediate structural milestone. You will receive additional turns to request more.
 
 ---
 
