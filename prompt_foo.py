@@ -1211,8 +1211,18 @@ def main():
     elif os.path.exists("prompt.md"):
         with open("prompt.md", 'r', encoding='utf-8') as f: prompt_content = f.read()
 
+    extra_prompt_parts = []
     if args.extra_prompt:
-        prompt_content = f"{prompt_content}\n\n### Additional Operator Instructions:\n{args.extra_prompt}"
+        extra_prompt_parts.append(args.extra_prompt)
+    if args.extra_prompt_file:
+        with open(args.extra_prompt_file, 'r', encoding='utf-8') as f:
+            extra_prompt_parts.append(f.read())
+
+    if extra_prompt_parts:
+        prompt_content = (
+            f"{prompt_content}\n\n### Additional Operator Instructions:\n"
+            + "\n\n".join(extra_prompt_parts)
+        )
 
     # 2. Process all specified files (💥 UPDATED WITH KWARGS)
     annotate_foo_files_in_place(args.chop)
