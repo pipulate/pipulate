@@ -228,6 +228,7 @@ def main():
         print("   Supported clipboard formats:")
         print("   • [[[TODO_SLUGS]]] ... [[[END_SLUGS]]]")
         print("   • [[[TODO_FILES]]] ... [[[END_FILES]]]")
+        print("   • [[[TODO_PROMPT]]] ... [[[END_PROMPT]]]")
         print("   • [[[APPLY_PATCH]]] ... [[[END_APPLY_PATCH]]]")
         sys.exit(1)
 
