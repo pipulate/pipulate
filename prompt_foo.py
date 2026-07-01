@@ -1122,6 +1122,7 @@ def main():
     parser.add_argument('--bumper', type=str, default=None, help='Inject a pre-registered bumper matrix from flippers.json (e.g., gold, cat)')
     parser.add_argument('--line-numbers', action='store_true', help='Prefix source lines with line numbers for review/navigation only. Do not use this mode for SEARCH/REPLACE patch generation.')
     parser.add_argument('--extra-prompt', type=str, default=None, help='Extra text to append to the primary prompt content.')
+    parser.add_argument('--extra-prompt-file', type=str, default=None, help='Read extra prompt text from a file and append it to the primary prompt content.')
     
     # 💥 NEW: Dynamic argument injection
     parser.add_argument('--arg', action='append', help='Pass dynamic arguments to CHOP templates (format: key=value)')
