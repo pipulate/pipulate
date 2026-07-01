@@ -170,15 +170,27 @@ def route(text: str) -> bool:
         if local_prompt:
             prompt_parts.append(f"### Operator Steering (from prompt.md):\n{local_prompt}")
 
+        temp_prompt_path = None
         if prompt_parts:
-            cmd += ["--extra-prompt", "\n\n".join(prompt_parts)]
+            import tempfile
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False, encoding='utf-8') as tf:
+                tf.write("\n\n".join(prompt_parts))
+                temp_prompt_path = tf.name
+            cmd += ["--extra-prompt-file", temp_prompt_path]
 
         print(f"\n🚀 Running: {' '.join(cmd)}\n")
-        result = subprocess.run(cmd, cwd=REPO_ROOT)
-        if result.returncode != 0:
-            print(f"❌ prompt_foo.py failed with exit code {result.returncode}; compiled context was not completed.")
-            sys.exit(result.returncode)
-        did_something = True
+        try:
+            result = subprocess.run(cmd, cwd=REPO_ROOT)
+            if result.returncode != 0:
+                print(f"❌ prompt_foo.py failed with exit code {result.returncode}; compiled context was not completed.")
+                sys.exit(result.returncode)
+            did_something = True
+        finally:
+            if temp_prompt_path and os.path.exists(temp_prompt_path):
+                try:
+                    os.unlink(temp_prompt_path)
+                except Exception:
+                    pass
 
     return did_something
 
