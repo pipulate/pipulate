@@ -9,6 +9,7 @@ mutating files.
 Supported blocks:
   [[[TODO_SLUGS]]] ... [[[END_SLUGS]]]  -> request full article context by clean semantic slug
   [[[TODO_FILES]]] ... [[[END_FILES]]]  -> request codebase files by repo-relative path
+  [[[TODO_PROMPT]]] ... [[[END_PROMPT]]]  -> append operator steering to the next context compile
   [[[APPLY_PATCH]]] ... [[[END_APPLY_PATCH]]]  -> pipe an explicit patch payload to apply.py
 
 Flow:
@@ -17,7 +18,10 @@ Flow:
   3. Type `xp` in the terminal
   4. This script parses, acts, and leaves the compiled context in your clipboard
 
-Usage: xp
+Usage:
+  xp
+  xp --extra-prompt-file /tmp/test_extra.txt
+  xp --extra-prompt "Operator steering text"
 """
 
 import sys
