@@ -200,8 +200,25 @@ def route(text: str) -> bool:
 
 
 def main():
-    # Read clipboard gracefully
-    text = get_clipboard()
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Route clipboard/player-piano blocks into the next Prompt Fu action.")
+    parser.add_argument("--extra-prompt", action="append", default=[], help="Literal operator steering text to route as a TODO_PROMPT block.")
+    parser.add_argument("--extra-prompt-file", action="append", default=[], help="Read operator steering text from a file and route it as a TODO_PROMPT block.")
+    args = parser.parse_args()
+
+    cli_prompt_parts = []
+    cli_prompt_parts.extend(args.extra_prompt)
+
+    for prompt_file in args.extra_prompt_file:
+        with open(prompt_file, "r", encoding="utf-8") as f:
+            cli_prompt_parts.append(f.read())
+
+    if cli_prompt_parts:
+        text = "[[[TODO_PROMPT]]]\n" + "\n\n".join(cli_prompt_parts) + "\n[[[END_PROMPT]]]"
+    else:
+        # Read clipboard gracefully
+        text = get_clipboard()
     
     # Run the core router logic
     did_something = route(text)
