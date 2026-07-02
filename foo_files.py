@@ -81,11 +81,11 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-# ! rg actuator . 1 | sort
-/home/mike/repos/trimnoir/_posts/2026-05-20-autonomic-memory-actuator-anti-amnesia-workspace.md  # [23,052 tokens]
-/home/mike/repos/trimnoir/_posts/2026-05-31-magic-users-guide-ai-actuators-anti-churn.md  # [31,076 tokens]
-/home/mike/repos/trimnoir/_posts/2026-06-24-truth-actually-actuator-systems.md  # [24,935 tokens]
-/home/mike/repos/trimnoir/_posts/2026-06-26-funnel-and-actuator-context-architecture.md  # [24,042 tokens]
+! rg -l "bootcamp" . | xargs rg -l "true_schema_discoverer" | sort
+# /home/mike/repos/trimnoir/_posts/2026-05-20-autonomic-memory-actuator-anti-amnesia-workspace.md  # [23,052 tokens]
+# /home/mike/repos/trimnoir/_posts/2026-05-31-magic-users-guide-ai-actuators-anti-churn.md  # [31,076 tokens]
+# /home/mike/repos/trimnoir/_posts/2026-06-24-truth-actually-actuator-systems.md  # [24,935 tokens]
+# /home/mike/repos/trimnoir/_posts/2026-06-26-funnel-and-actuator-context-architecture.md  # [24,042 tokens]
 
 # server.py
 # nixops.sh
@@ -296,8 +296,8 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 # THE ROLLING PIN (Again, if you only include one thing for overarching context of Pipulate and NPvg, include this.
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER: 3
 # ! python scripts/articles/lsa.py -t 4 --reverse --fmt dated-slugs  # <-- BotifyML work journal
-
 scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
+
 # AI_CONTEXT.md
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 
