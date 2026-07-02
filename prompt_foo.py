@@ -1247,9 +1247,11 @@ def main():
         for article in all_articles:
             stem = os.path.splitext(os.path.basename(article['path']))[0]
             clean_slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', stem)
-            if clean_slug in target_slugs:
-                files_to_process.append((article['path'], f"slug:{clean_slug}"))
-                logger.print(f"🎯 Resolved slug '{clean_slug}' to: {article['path']}")
+            permalink_slug = article.get('permalink', '').strip('/').split('/')[-1] if article.get('permalink') else ''
+            if clean_slug in target_slugs or (permalink_slug and permalink_slug in target_slugs):
+                resolved_slug = permalink_slug if permalink_slug in target_slugs else clean_slug
+                files_to_process.append((article['path'], f"slug:{resolved_slug}"))
+                logger.print(f"🎯 Resolved slug '{resolved_slug}' to: {article['path']}")
 
     processed_files_data = []
 
