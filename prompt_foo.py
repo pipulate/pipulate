@@ -1574,9 +1574,11 @@ def main():
                 filename = os.path.basename(article['path'])
                 stem = os.path.splitext(filename)[0]
                 clean_slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', stem)
-                if clean_slug in target_slugs:
+                permalink_slug = article.get('permalink', '').strip('/').split('/')[-1] if article.get('permalink') else ''
+                if clean_slug in target_slugs or (permalink_slug and permalink_slug in target_slugs):
+                    resolved_slug = permalink_slug if permalink_slug in target_slugs else clean_slug
                     args.decanter.append(article['path'])
-                    logger.print(f"🎯 Resolved slug '{clean_slug}' to: {article['path']}")
+                    logger.print(f"🎯 Resolved slug '{resolved_slug}' to: {article['path']}")
             # Ensure article processing runs when only --slugs is passed
             if args.article is None and args.decanter:
                 args.article = "[-0:]"
