@@ -199,8 +199,27 @@ def main():
 
     metadata = []
     # --- PASS 1: FAST METADATA EXTRACTION ---
-    for filename in os.listdir(target_dir):
-        filepath = os.path.join(target_dir, filename)
+    if args.stdin:
+        source_paths = []
+        for raw_line in sys.stdin:
+            raw_path = raw_line.strip().split("  # ", 1)[0]
+            if not raw_path:
+                continue
+
+            candidate = Path(raw_path).expanduser()
+            if candidate.is_absolute():
+                resolved = candidate
+            else:
+                cwd_candidate = (Path.cwd() / candidate).resolve()
+                target_candidate = (target_dir / candidate.name).resolve()
+                resolved = cwd_candidate if cwd_candidate.exists() else target_candidate
+
+            source_paths.append(str(resolved))
+    else:
+        source_paths = [os.path.join(target_dir, filename) for filename in os.listdir(target_dir)]
+
+    for filepath in source_paths:
+        filename = os.path.basename(filepath)
         if not os.path.isfile(filepath) or not filename.endswith(('.md', '.markdown')):
             continue
             
