@@ -82,8 +82,10 @@ AI_PHOOEY_CHOP = r"""#                                                          
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
 # ! rg actuator . 1 | sort
-# /home/mike/repos/trimnoir/_posts/2026-06-24-truth-actually-actuator-systems.md  # [24,935 tokens]
-# /home/mike/repos/trimnoir/_posts/2026-06-26-funnel-and-actuator-context-architecture.md  # [24,042 tokens]
+/home/mike/repos/trimnoir/_posts/2026-05-20-autonomic-memory-actuator-anti-amnesia-workspace.md  # [23,052 tokens]
+/home/mike/repos/trimnoir/_posts/2026-05-31-magic-users-guide-ai-actuators-anti-churn.md  # [31,076 tokens]
+/home/mike/repos/trimnoir/_posts/2026-06-24-truth-actually-actuator-systems.md  # [24,935 tokens]
+/home/mike/repos/trimnoir/_posts/2026-06-26-funnel-and-actuator-context-architecture.md  # [24,042 tokens]
 
 # server.py
 # nixops.sh
@@ -821,8 +823,13 @@ tools/llm_optics.py
 """
 
 # #todo
-# Turn the YouTube live-stream into an interactive real-time article-picking Jukebox.
-# Make sure the live breaking interrupt announces the upcoming article topic
+# - Turn the YouTube live-stream into an interactive real-time article-picking Jukebox.
+# - Make sure the live breaking interrupt announces the upcoming article topic
+# - Turn Pipulate into a lead source for Botify
+# - Provide an alternative for link-builders that could spread over LinkedIn
+# - Handle TTS reading better, handling floating triple backticks
+# - Get rid of the Twitter emoji getting read
+# - A better book outliner method than K-means for "real" structure
 
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
