@@ -823,6 +823,7 @@ tools/llm_optics.py
 """
 
 # #todo
+# - Start a new YouTube live-stream for every new published article
 # - Turn the YouTube live-stream into an interactive real-time article-picking Jukebox.
 # - Make sure the live breaking interrupt announces the upcoming article topic
 # - Turn Pipulate into a lead source for Botify
