@@ -81,6 +81,10 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
+# ! rg actuator . 1 | sort
+# /home/mike/repos/trimnoir/_posts/2026-06-24-truth-actually-actuator-systems.md  # [24,935 tokens]
+# /home/mike/repos/trimnoir/_posts/2026-06-26-funnel-and-actuator-context-architecture.md  # [24,042 tokens]
+
 # server.py
 # nixops.sh
 # release.py
@@ -291,7 +295,7 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER: 3
 # ! python scripts/articles/lsa.py -t 4 --reverse --fmt dated-slugs  # <-- BotifyML work journal
 
-# scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
+scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 # AI_CONTEXT.md
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 
