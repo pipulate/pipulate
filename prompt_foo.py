@@ -333,6 +333,7 @@ def _get_article_list_data(posts_dir: str = CONFIG["POSTS_DIRECTORY"], url_confi
                 'title': item['title'],
                 'summary': item['summary'],
                 'url': full_url,
+                'permalink': item['permalink'],
                 'tokens': article_tokens,
                 'bytes': article_bytes,
                 # Pass along the newly extracted JSON Shards!
