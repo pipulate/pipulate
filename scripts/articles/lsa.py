@@ -169,6 +169,7 @@ def main():
     parser.add_argument('--fmt', type=str, default='full', choices=['full', 'paths', 'slugs', 'dated-slugs'], help="Output format: 'full' (default, with comments), 'paths' (bare absolute paths), or 'slugs' (concept slug only, no date prefix)")
     parser.add_argument('--slugs', nargs='+', default=None, metavar='SLUG', help="Select articles by exact slug match (space-separated, no date prefix needed)")
     parser.add_argument('--clear-cache', action='store_true', help="Purge the token cache file before processing")
+    parser.add_argument('--stdin', action='store_true', help="Read file paths or filenames from standard input instead of scanning the directory")
     args = parser.parse_args()
 
     targets = load_targets()
