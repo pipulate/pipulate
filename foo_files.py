@@ -81,6 +81,18 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
+# server.py
+# nixops.sh
+# release.py
+# flake.nix
+# pipulate/core.py
+# imports/ascii_displays.py
+# foo_files.py
+# imports/server_logging.py
+# remotes/honeybot/nixos/configuration.nix
+# remotes/honeybot/scripts/stream.py
+# remotes/honeybot/scripts/test_forest.py
+
 # /home/mike/repos/trimnoir/_posts/2026-06-21-nix-pinned-ai-orchestration.md
 # /home/mike/repos/trimnoir/_posts/2026-06-26-engineering-reproducible-pageworkers-optimizations.md
 # /home/mike/repos/trimnoir/_posts/2026-06-26-funnel-and-actuator-context-architecture.md
@@ -184,7 +196,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # ! git --no-pager log -p -n 4
 # ! cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
-# requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
+requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 # requirements.txt  #  <-- Pip-compiled dependencies.
 # logs/server.log   #  <-- Like letting AI see your browser app state, but better! --------------------- AI server.py LOG DEBUG
 
@@ -203,7 +215,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # /home/mike/repos/Pipulate.com/_layouts/default.html
 # /home/mike/repos/Pipulate.com/install.md            #  <-- Gets copied into place here by pipulate/release.py
 
-# /home/mike/repos/nixos/configuration.nix            #  <-- "Global" IaC context (most of you won't have)
+/home/mike/repos/nixos/configuration.nix            #  <-- "Global" IaC context (most of you won't have)
 # /home/mike/repos/nixos/packages.nix                 #  <-- Full disclosure on pre-flake IaC available apps.
 # /home/mike/repos/nixos/services.nix                 #  <-- Running Linux system services.
 # /home/mike/repos/nixos/ai-acceleration.nix          #  <-- Paid a lot for your hardware? We've got you covered.
@@ -230,28 +242,28 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!! STANDARD WRAPPER: 2
 
-# The following N files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
+# The following files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
 .gitattributes    #  <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
 .gitignore        #  <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
 flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 init.lua          #  <-- Daily driver hot-keys that overlap with aliases in flake.nix
-# /home/mike/repos/nixos/autognome.py  #  <-- More rare to have to include, but the true "top" of the muscle memory stack for day-to-day purposes
+/home/mike/repos/nixos/autognome.py  #  <-- More rare to have to include, but the true "top" of the muscle memory stack for day-to-day purposes
 
-# ACTUATORS
+# ACTUATORS (1st 2 by default)
 apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
 scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 scripts/ai.py     #  <-- How I constantly use local AI to write git commit messages with `m` alias.
 cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
-# scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
+scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
 
 # OTHER HEAVY LIFTERS
-# scripts/ai.py                  #  <-- Local AI writing git commit messages. Accelerator!
-# scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
+scripts/ai.py                  #  <-- Local AI writing git commit messages. Accelerator!
+scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
 
 # The following 3 files are the first huge context reveal that pull the curtains open.
-# __init__.py     #  <-- Master versioning
-# release.py      #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
-# pyproject.toml  #  <-- The PyPI Packaging details
+__init__.py     #  <-- Master versioning
+release.py      #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
+pyproject.toml  #  <-- The PyPI Packaging details
 
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
 
@@ -259,10 +271,10 @@ cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Pyt
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-config.py                   # <-- Centralize every last configuration in here
-pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
-pipulate/core.py            # <-- The Wand (spells)
+# config.py                   # <-- Centralize every last configuration in here
+# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+# pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
+# pipulate/core.py            # <-- The Wand (spells)
 
 # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
@@ -323,17 +335,17 @@ pipulate/core.py            # <-- The Wand (spells)
 # ============================================================================
 
 # CORE SLIDESHOW FILES
-# nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
-# remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
-# remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
-# remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
-# remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
-# remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
-# remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
-# remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
-# remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
-# remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
-# remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
+remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
+remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
+remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
+remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
+remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
+remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
+remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
+remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
+remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
+remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
 
 # remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
 
@@ -421,18 +433,18 @@ pipulate/core.py            # <-- The Wand (spells)
 # XIII. JEKYLL PUBLISHING - Reaching out to the world
 # ============================================================================
 
-# /home/mike/.config/pipulate/blogs.json       # <-- Centralized multi-site routing manifest for N Jekyll blogs.
-# scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
-# scripts/articles/common.py                   # <-- Self-explanatory
-# scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
-# scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
-# scripts/articles/sanitizer.py                # <-- Scrubs PII
-# scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
-# scripts/articles/confluenceizer.py           # <-- Just added
-# scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
-# scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
-# scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
-# scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
+/home/mike/.config/pipulate/blogs.json       # <-- Centralized multi-site routing manifest for N Jekyll blogs.
+scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
+scripts/articles/common.py                   # <-- Self-explanatory
+scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
+scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
+scripts/articles/sanitizer.py                # <-- Scrubs PII
+scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
+scripts/articles/confluenceizer.py           # <-- Just added
+scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
+scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
+scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
+scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
 # scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
 # scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
 
@@ -806,6 +818,7 @@ tools/llm_optics.py
 
 # #todo
 # Turn the YouTube live-stream into an interactive real-time article-picking Jukebox.
+# Make sure the live breaking interrupt announces the upcoming article topic
 
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)

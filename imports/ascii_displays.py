@@ -1403,16 +1403,16 @@ Essential knowledge for 100% success rate"""
 #    PARALLEL FAN-OUT (the "map" — genuinely automatic)
 #    ════════════════════════════════════════════════
 # 
-#               ┌──► [Gemini]  ──► answer ──┐      three
+#               ┌──► [Gemini]  ──► answer ──┐     several
 #       Prompt ─┼──► [ChatGPT] ──► answer ──┼──► different
-#               └──► [Opus]    ──► answer ──┘     answers
+#               └──► [Claude]  ──► answer ──┘     answers
 #                           │
 #                           ▼
 #    SERIAL PIPE (the "reduce" — manual, accumulating)
 #    ════════════════════════════════════════════════
 # 
-#    [chosen answer] ──► [next model] ──► [your reply] ──► [next] ──► …
-#         history grows · context accumulates · order is a choice
+#    [independent blind responses] ──► [human feedback] ──► [next] ──► …
+#         history grows, context accumulates, human directs
 # ```
 #
 # ## Pipeline 1: The Epistemic Processing Pipeline (The Mind)
