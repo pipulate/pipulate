@@ -1,4 +1,3 @@
-# /home/mike/repos/pipulate/tools/dom_tools.py
 #!/usr/bin/env python3
 """
 DOM Visualization Tools
