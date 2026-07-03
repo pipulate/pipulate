@@ -632,7 +632,7 @@ pm = os.path.join(root, 'prompt.md')
 if os.path.isfile(pm): env += os.path.getsize(pm)
 try:
     cfg = os.path.expanduser('~/.config/pipulate/blogs.json')
-    posts = json.load(open(cfg))['1']['path'] if os.path.exists(cfg) else os.path.expanduser('~/repos/trimnoir/_posts')
+    posts = os.path.expanduser(json.load(open(cfg))['1']['path']) if os.path.exists(cfg) else os.path.expanduser('~/repos/trimnoir/_posts')
 except: posts = os.path.expanduser('~/repos/trimnoir/_posts')
 budget = $max_bytes - env
 files = sorted([f for f in os.listdir(posts) if f.endswith('.md') and f[:4].isdigit()], reverse=True)
@@ -865,9 +865,18 @@ print('AI:\n', r.ai)
             alias prompt='(cd ~/repos/pipulate && xclip -selection clipboard -o >prompt.md)'
             alias patch='xclip -selection clipboard -o >patch'
             # Linux subshell aliases
-            alias article='(cd scripts/articles && xclip -selection clipboard -o >article.txt && python sanitizer.py --public && python articleizer.py)'
-            alias grim='(cd scripts/articles && xclip -selection clipboard -o >article.txt && python sanitizer.py --private && python articleizer.py -t 3)'
-            alias bot='(cd scripts/articles && xclip -selection clipboard -o >article.txt && python sanitizer.py --public && python articleizer.py -t 4)'
+            # write_post: unified, data-driven article intake. The privacy lane
+            # now lives in blogs.json ('lane' per target); sanitizer.py resolves
+            # it from -t, so the flake no longer hardcodes --public/--private.
+            write_post() {
+              (cd "$PIPULATE_ROOT/scripts/articles" \
+                && xclip -selection clipboard -o >article.txt \
+                && python sanitizer.py -t "$1" \
+                && python articleizer.py -t "$1")
+            }
+            alias article='write_post 1'
+            alias grim='write_post 3'
+            alias bot='write_post 4'
             gobot() {
               # Routine runs sync ONLY the article 'bot' just wrote, via the
               # marker articleizer.py records. Pass --all to force a full

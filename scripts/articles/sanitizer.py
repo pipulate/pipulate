@@ -144,6 +144,27 @@ def sanitize_article(public: bool):
         print("ℹ️  Nothing to scrub. Article is already clean.")
 
 
+def resolve_lane(args) -> bool:
+    """Returns True for the public (full-scrub) lane, False for private.
+
+    Precedence: an explicit --public/--private flag always beats blogs.json;
+    otherwise the target's 'lane' attribute decides. Fail closed: anything
+    that is not an explicit, recognized 'private' gets the full defensive
+    scrub, including a missing target, missing lane key, or typo'd value.
+    """
+    if args.private:
+        return False
+    if args.public:
+        return True
+    targets = common.load_targets()
+    target_config = targets.get(str(args.target), {})
+    lane = str(target_config.get('lane', 'public')).strip().lower()
+    if lane == 'private':
+        print(f"🎯 Lane resolved from blogs.json: private ({target_config.get('name', args.target)})")
+        return False
+    return True
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Defensive pre-publish sanitizer for article.txt."
@@ -151,17 +172,18 @@ def main():
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
         '--public', action='store_true',
-        help="Full defensive scrub (DEFAULT): strip private fences + apply PII substitutions."
+        help="Explicit override: full defensive scrub (strip private fences + apply PII substitutions)."
     )
     group.add_argument(
         '--private', action='store_true',
-        help="Light lane (grim): strip prompt boundary + IPs only; keep fences and names."
+        help="Explicit override: light lane (strip prompt boundary + IPs only; keep fences and names)."
     )
     common.add_standard_arguments(parser)
     args = parser.parse_args()
 
-    # Fail closed: anything other than an explicit --private gets the safe scrub.
-    sanitize_article(public=not args.private)
+    # Data-driven routing: the target's 'lane' in blogs.json decides,
+    # unless an explicit flag overrides. Fail closed toward public scrub.
+    sanitize_article(public=resolve_lane(args))
 
 
 if __name__ == "__main__":
