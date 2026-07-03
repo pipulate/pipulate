@@ -89,16 +89,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-# DOMAIN 1: The Local Application Code Surface (High Portability Leverage)
-scripts/gsc/gsc_page_query.ipynb
-scripts/workflow/create_workflow.py
-scripts/workflow/splice_workflow_step.py
-scripts/workflow/workflow_reconstructor.py
-scripts/articles/find_duplicates.py
-scripts/articles/other/make_article.py
-
 # README.md  # [20,725 tokens | 104,252 bytes]
-
 
 # FIND A HOME FOR THIS (TINY UNIX-LIKE COMMANDS)
 # scripts/gmail.py
