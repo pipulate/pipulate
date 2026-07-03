@@ -431,6 +431,10 @@ def main():
                 if tokens > 0:
                     order = item['sort_order']
                     print(f"{filepath}  # [Idx: {idx} | Order: {order} | Tokens: {tokens:,} | Bytes: {bytes_count:,}]", flush=True)
+                    if args.shards:
+                        print_shard_header(filepath)
+                    if args.around is not None and args.terms:
+                        print_hit_regions(filepath, args.terms, args.around)
                 else:
                     print(f"# Error processing {filepath}", file=sys.stderr)
 
