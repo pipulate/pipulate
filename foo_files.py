@@ -616,6 +616,29 @@ flake.nix  # [8,529 tokens | 36,280 bytes]
 ! git --no-pager diff HEAD~5 HEAD -- flake.nix
 """
 
+CHOP_RGX_SHARD_UPGRADE = """
+# THE RGX LOWERCASE + SHARD INTERLEAVING BLUEPRINT
+# COMMAND: python prompt_foo.py --chop CHOP_RGX_SHARD_UPGRADE --no-tree
+# Only the two files being patched, the patch harness, and live-executed
+# probes -- no 900-article narrative index, no unrelated Botify tooling.
+
+# 1. The two files actually getting patched
+flake.nix
+scripts/articles/lsa.py
+
+# 2. Patch-application harness
+apply.py
+scripts/xp.py
+
+# 3. Falsifying probes -- executed live, immune to clipboard/paste mangling
+! echo "case-sensitive dragon hits:" && rg -l -- "dragons" ~/repos/trimnoir/_posts | wc -l
+! echo "case-INsensitive dragon hits:" && rg -il -- "dragons" ~/repos/trimnoir/_posts | wc -l
+! echo "_context dir:" && ls -d ~/repos/trimnoir/_posts/_context 2>&1
+! echo "posts vs shards:" && ls ~/repos/trimnoir/_posts/*.md | wc -l && ls ~/repos/trimnoir/_posts/_context/*.json 2>/dev/null | wc -l
+! echo "sample shard shape:" && cat $(ls ~/repos/trimnoir/_posts/_context/*.json 2>/dev/null | head -1) 2>&1
+! rg -il -- "pareidolia" ~/repos/trimnoir/_posts > /tmp/pareidolia_hits.txt && wc -l /tmp/pareidolia_hits.txt && rg -i -C 2 -- "pareidolia" $(cat /tmp/pareidolia_hits.txt) | wc -c
+"""
+
 # ============================================================================
 # SPECIALIZED STRIKE PACKAGES: PROGRESSIVE REVEAL GATE
 # ============================================================================
