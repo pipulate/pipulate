@@ -623,12 +623,12 @@ CHOP_RGX_SHARD_UPGRADE = """
 # probes -- no 900-article narrative index, no unrelated Botify tooling.
 
 # 1. The two files actually getting patched
-flake.nix
-scripts/articles/lsa.py
+flake.nix  # [11,455 tokens | 48,892 bytes]
+scripts/articles/lsa.py  # [4,084 tokens | 18,245 bytes]
 
 # 2. Patch-application harness
-apply.py
-scripts/xp.py
+apply.py  # [2,504 tokens | 10,998 bytes]
+scripts/xp.py  # [1,992 tokens | 8,404 bytes]
 
 # 3. Falsifying probes -- executed live, immune to clipboard/paste mangling
 ! echo "case-sensitive dragon hits:" && rg -l -- "dragons" ~/repos/trimnoir/_posts | wc -l
@@ -784,6 +784,7 @@ tools/llm_optics.py
 """
 
 # #todo #to-do
+# - Remove holographic shard json orphans" in Jekyll `_context/` folder
 # - Monitor for the `db.py` database getting bigger on Honeybot (Textual dashboards?)
 # - Start a new YouTube live-stream for every new published article
 # - Turn the YouTube live-stream into an interactive real-time article-picking Jukebox.
