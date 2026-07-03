@@ -5,8 +5,8 @@ import re
 from datetime import datetime
 
 # --- CONFIGURATION ---
-# Set the absolute path to the directory where the final file should be saved.
-OUTPUT_DIR = "/home/mike/repos/MikeLev.in/_posts"
+# Output directory resolved relative to the user's home for portability.
+OUTPUT_DIR = os.path.join(os.path.expanduser("~"), "repos", "MikeLev.in", "_posts")
 # -------------------
 
 def format_complete_article():

@@ -23,7 +23,6 @@ def find_pipulate_root():
     possible_roots = [
         Path.cwd(),  # Current working directory
         Path.home() / "repos" / "pipulate",  # Common location
-        Path("/home/mike/repos/pipulate"),  # Hardcoded fallback
     ]
     
     for root in possible_roots:

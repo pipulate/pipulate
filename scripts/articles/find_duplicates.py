@@ -11,7 +11,17 @@ from rich import box
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 
 # --- CONFIGURATION ---
-POSTS_DIRECTORY = "/home/mike/repos/MikeLev.in/_posts"
+def _resolve_posts_directory():
+    """Blog target '1' from blogs.json, falling back to the home convention."""
+    import json
+    config_path = os.path.expanduser("~/.config/pipulate/blogs.json")
+    try:
+        with open(config_path, 'r', encoding='utf-8') as f:
+            return os.path.expanduser(json.load(f)["1"]["path"])
+    except Exception:
+        return os.path.expanduser("~/repos/MikeLev.in/_posts")
+
+POSTS_DIRECTORY = _resolve_posts_directory()
 SIMILARITY_THRESHOLD = 0.85  # Flag if body text is 85% or more similar
 
 def get_bigrams(text):
