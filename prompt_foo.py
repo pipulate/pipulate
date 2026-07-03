@@ -1057,6 +1057,60 @@ def update_paintbox_in_place():
         logger.print(f"Warning: Failed to update the Paintbox: {e}")
 
 
+def update_stats_in_place():
+    """Splices the live article count for blog target '1' into foo_files.py.
+
+    Rewrites only the text between the STATS sentinel markers:
+        # --- START STATS ---
+        # --- END STATS ---
+    Fails closed: a missing config, missing target, missing directory, or
+    absent sentinel block leaves foo_files.py untouched. Idempotent: the
+    file is only written when the rendered stats line actually changes.
+    """
+    foo_path = os.path.join(REPO_ROOT, "foo_files.py")
+    if not os.path.exists(foo_path):
+        return
+    try:
+        targets = load_targets()
+        target = targets.get("1")
+        if not target:
+            return
+        blog_name = target.get("name", "the primary blog")
+        posts_dir = os.path.expanduser(target.get("path", ""))
+        if not os.path.isdir(posts_dir):
+            return
+        count = len([
+            f for f in os.listdir(posts_dir)
+            if f.endswith('.md') and f[:4].isdigit()
+        ])
+
+        with open(foo_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        pattern = re.compile(
+            r'(# --- START STATS ---\n)(.*?)(# --- END STATS ---)',
+            re.DOTALL
+        )
+        match = pattern.search(content)
+        if not match:
+            return
+
+        stats_line = (
+            f"# There are {count:,} already-written articles about this repo "
+            f"at {blog_name}\n"
+        )
+        new_content = (
+            content[:match.start()] + match.group(1) + stats_line
+            + match.group(3) + content[match.end():]
+        )
+        if new_content != content:
+            with open(foo_path, 'w', encoding='utf-8') as f:
+                f.write(new_content)
+            logger.print(f"📊 Stats block refreshed: {count:,} articles at {blog_name}.")
+    except Exception as e:
+        logger.print(f"Warning: Failed to update stats block: {e}")
+
+
 def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs: dict = None):
     """Reports references in foo_files.py that no longer exist on disk."""
     import foo_files
@@ -1230,6 +1284,7 @@ def main():
 
     # 2. Process all specified files (💥 UPDATED WITH KWARGS)
     annotate_foo_files_in_place(args.chop)
+    update_stats_in_place()
     update_paintbox_in_place()
     check_topological_integrity(args.chop, format_kwargs)
     files_to_process = parse_file_list_from_config(args.chop, format_kwargs)
