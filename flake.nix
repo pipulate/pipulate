@@ -697,9 +697,9 @@ print('AI:\n', r.ai)
           # ---------------------------------------------------------
           # THE SUBSHELL ALIASES (Execute safely from anywhere)
           # ---------------------------------------------------------
-          posts() { (cd scripts/articles && python lsa.py -t 1 "$@"); }
-          posts2() { (cd scripts/articles && python lsa.py -t 1 --reverse "$@"); }
-          preview() { (cd scripts/articles && python publishizer.py "$@"); }
+          posts() { (cd "$PIPULATE_ROOT/scripts/articles" && python lsa.py -t 1 "$@"); }
+          posts2() { (cd "$PIPULATE_ROOT/scripts/articles" && python lsa.py -t 1 --reverse "$@"); }
+          preview() { (cd "$PIPULATE_ROOT/scripts/articles" && python publishizer.py "$@"); }
 
           # The true 'publish' command (Atomic Cross-Domain Deployment)
           # It requires a commit message as an argument.
