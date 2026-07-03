@@ -89,30 +89,29 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-tools/dom_tools.py
-tools/scraper_tools.py
-prompt_foo.py
-pipulate/__init__.py
-imports/ai_dictdb.py
-flake.nix
-scripts/botify/botify_api_bootcamp.md
-# scripts/botify/make_botify_docs.ipynb
-foo_files.py
-scripts/gsc/gsc_page_query.ipynb
-scripts/audit_dye.py
-assets/nbs/imports/faq_writer_sauce.py
-scripts/workflow/create_workflow.py
-assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb
-scripts/workflow/workflow_reconstructor.py
-scripts/articles/find_duplicates.py
-scripts/workflow/splice_workflow_step.py
-scripts/articles/other/make_article.py
-remotes/honeybot/hooks/post-receive
-remotes/honeybot/nixos/configuration.nix
-remotes/honeybot/scripts/db.py
-remotes/honeybot/scripts/stream.py
-remotes/honeybot/scripts/content_loader.py
-(nix) pipulate $ 
+# tools/dom_tools.py
+# tools/scraper_tools.py
+# prompt_foo.py
+# pipulate/__init__.py
+# imports/ai_dictdb.py
+# flake.nix
+# scripts/botify/botify_api_bootcamp.md
+# # scripts/botify/make_botify_docs.ipynb
+# foo_files.py
+# scripts/gsc/gsc_page_query.ipynb
+# scripts/audit_dye.py
+# assets/nbs/imports/faq_writer_sauce.py
+# scripts/workflow/create_workflow.py
+# assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb
+# scripts/workflow/workflow_reconstructor.py
+# scripts/articles/find_duplicates.py
+# scripts/workflow/splice_workflow_step.py
+# scripts/articles/other/make_article.py
+# remotes/honeybot/hooks/post-receive
+# remotes/honeybot/nixos/configuration.nix
+# remotes/honeybot/scripts/db.py
+# remotes/honeybot/scripts/stream.py
+# remotes/honeybot/scripts/content_loader.py
 
 # README.md  # [20,725 tokens | 104,252 bytes]
 
@@ -243,13 +242,13 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
 
 # ============================================================================
-# IV. THE WAND & THE WIZARD - Everything's actually web development these days
+# IV. THE WAND🪄 & THE WIZARD🧙‍♂️ - Everything's actually web development these days
 # ============================================================================
   
-config.py                   # <-- Centralize every last configuration in here
-pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
-pipulate/core.py            # <-- The Wand (spells)
+# config.py                   # <-- Centralize every last configuration in here
+# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+# pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
+# pipulate/core.py            # <-- The Wand (spells)
 
 # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
@@ -263,9 +262,9 @@ pipulate/core.py            # <-- The Wand (spells)
 # ============================================================================
 
 # THE ROLLING PIN (Again, if you only include one thing for overarching context of Pipulate and NPvg, include this.
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER: 3
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER: 3
 # ! python scripts/articles/lsa.py -t 4 --reverse --fmt dated-slugs  # <-- BotifyML work journal
-# scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
+scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 
 # AI_CONTEXT.md
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
