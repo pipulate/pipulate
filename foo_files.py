@@ -822,6 +822,9 @@ tools/llm_optics.py
 # - Get rid of the Twitter emoji getting read
 # - A better book-outliner method than K-means for "real" structure
 # - Only ever 301-redirect hubs to hubs. Don't put article leafs on hub-rot.
+# - Implement & superimpose Google Open Knowledge Format & Agent Skills open standard.
+# - Implement NLWeb, WebMCP, UCP and ACP.
+
 
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
