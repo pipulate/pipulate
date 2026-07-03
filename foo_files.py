@@ -38,7 +38,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are [X]-already written articles about this repo at [Y]-blog  <-- THIS IS WHERE WE WE WOULD INSERT NUMBER OF ARTICLES PUBLISHED SO FAR STATS
+# There are 1,274 already-written articles about this repo at MikeLev.in (Public)
 # --- END STATS ---
 
 # KEEP THIS RIPGREP EXAMPLE HERE FOR "AND" SEARCH THAT SHOWS TOKEN SIZES
@@ -264,7 +264,7 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 # THE ROLLING PIN (Again, if you only include one thing for overarching context of Pipulate and NPvg, include this.
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER: 3
 # ! python scripts/articles/lsa.py -t 4 --reverse --fmt dated-slugs  # <-- BotifyML work journal
-scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
+# scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 
 # AI_CONTEXT.md
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
