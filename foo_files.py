@@ -89,29 +89,13 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-# tools/dom_tools.py
-# tools/scraper_tools.py
-# prompt_foo.py
-# pipulate/__init__.py
-# imports/ai_dictdb.py
-# flake.nix
-# scripts/botify/botify_api_bootcamp.md
-# # scripts/botify/make_botify_docs.ipynb
-# foo_files.py
-# scripts/gsc/gsc_page_query.ipynb
-# scripts/audit_dye.py
-# assets/nbs/imports/faq_writer_sauce.py
-# scripts/workflow/create_workflow.py
-# assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb
-# scripts/workflow/workflow_reconstructor.py
-# scripts/articles/find_duplicates.py
-# scripts/workflow/splice_workflow_step.py
-# scripts/articles/other/make_article.py
-# remotes/honeybot/hooks/post-receive
-# remotes/honeybot/nixos/configuration.nix
-# remotes/honeybot/scripts/db.py
-# remotes/honeybot/scripts/stream.py
-# remotes/honeybot/scripts/content_loader.py
+# DOMAIN 1: The Local Application Code Surface (High Portability Leverage)
+scripts/gsc/gsc_page_query.ipynb
+scripts/workflow/create_workflow.py
+scripts/workflow/splice_workflow_step.py
+scripts/workflow/workflow_reconstructor.py
+scripts/articles/find_duplicates.py
+scripts/articles/other/make_article.py
 
 # README.md  # [20,725 tokens | 104,252 bytes]
 
