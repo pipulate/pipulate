@@ -60,7 +60,7 @@ def apply_search_replace_patch(payload: str) -> bool:
     # Process wholesale writes first so a single payload can create one file and
     # then surgically patch another in the same turn.
     for filename_match, file_content in write_matches:
-        filename = filename_match.strip('` \t\n')
+        filename = os.path.expanduser(filename_match.strip('` \t\n'))
         if not filename:
             print("❌ Error: Missing target filename before the WRITE_FILE block.")
             success = False
@@ -91,7 +91,7 @@ def apply_search_replace_patch(payload: str) -> bool:
         print(f"✅ WHOLE-FILE WRITE: {verb} '{filename}'.")
 
     for filename_match, search_block, replace_block in matches:
-        filename = filename_match.strip('` \t\n') if filename_match else None
+        filename = os.path.expanduser(filename_match.strip('` \t\n')) if filename_match else None
         
         if not filename:
             print("❌ Error: Missing target filename before the SEARCH block.")

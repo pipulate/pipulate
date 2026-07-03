@@ -281,6 +281,7 @@ def generate_uml_and_dot(target_file: str, project_name: str) -> Dict:
 
 def _get_article_list_data(posts_dir: str = CONFIG["POSTS_DIRECTORY"], url_config: dict = None) -> List[Dict]:
     posts_data = []
+    posts_dir = os.path.expanduser(posts_dir)
     if not os.path.isdir(posts_dir):
         logger.print(f"Warning: Article directory not found at {posts_dir}", file=sys.stderr)
         return []
@@ -869,7 +870,8 @@ def annotate_foo_files_in_place(chop_var: str = "AI_PHOOEY_CHOP"):
                     new_lines.append(line)
                     continue
 
-                # 3. Resolve absolute path and measure
+                # 3. Resolve absolute path and measure (tilde-aware)
+                filepath = os.path.expanduser(filepath)
                 full_path = os.path.join(REPO_ROOT, filepath) if not os.path.isabs(filepath) else filepath
                 if os.path.exists(full_path) and os.path.isfile(full_path):
                     try:
@@ -987,7 +989,7 @@ def update_paintbox_in_place():
                 clean_line.startswith("!") or clean_line.startswith("http")):
                 continue
 
-            file_path = clean_line.split()[0]
+            file_path = os.path.expanduser(clean_line.split()[0])
             ext = os.path.splitext(file_path)[1].lower()
             if ext in STORY_EXTENSIONS or ('/' in file_path and '.' in file_path):
                 if os.path.isabs(file_path):
@@ -1091,7 +1093,8 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
         if ref.startswith(('http', '!', '//', '/www/')) or '://' in ref: 
             continue
         
-        full_path = os.path.join(REPO_ROOT, ref) if not os.path.isabs(ref) else ref
+        ref_expanded = os.path.expanduser(ref)
+        full_path = os.path.join(REPO_ROOT, ref_expanded) if not os.path.isabs(ref_expanded) else ref_expanded
         if not os.path.exists(full_path):
             broken_refs.append(ref)
             
@@ -1394,7 +1397,8 @@ def main():
                     logger.print(f"Error fetching URL {target_url}: {e}")
             continue
 
-        # ABSOLUTE PATH CERTAINTY: Resolve to absolute path immediately
+        # ABSOLUTE PATH CERTAINTY: Resolve to absolute path immediately (tilde-aware)
+        path = os.path.expanduser(path)
         full_path = os.path.join(REPO_ROOT, path) if not os.path.isabs(path) else path
         
         if not os.path.exists(full_path):
@@ -1587,8 +1591,8 @@ def main():
         if args.decanter:
             for idx, decanter_path in enumerate(args.decanter, start=1):
                 try:
-                    # Resolve absolute path to be safe
-                    full_path = os.path.abspath(decanter_path)
+                    # Resolve absolute path to be safe (tilde-aware)
+                    full_path = os.path.abspath(os.path.expanduser(decanter_path))
                     if os.path.exists(full_path):
                         with open(full_path, 'r', encoding='utf-8') as f:
                             content = f.read()

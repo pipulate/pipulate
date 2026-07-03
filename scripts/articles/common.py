@@ -138,7 +138,7 @@ def get_target_path(cli_args=None):
                 print(f"🎯 Target set via CLI: {targets[key]['name']}")
             else:
                 print(f"🎯 Default target auto-selected: {targets[key]['name']}")
-            return Path(targets[key]['path'])
+            return Path(targets[key]['path']).expanduser()
         else:
             print(f"❌ Invalid target key: {key}")
             sys.exit(1)
@@ -151,7 +151,7 @@ def get_target_path(cli_args=None):
     choice = input("Enter choice (default 1): ").strip() or "1"
     
     if choice in targets:
-        path = Path(targets[choice]['path'])
+        path = Path(targets[choice]['path']).expanduser()
         print(f"✅ Active Target: {targets[choice]['name']}")
         return path
     else:

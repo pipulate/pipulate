@@ -163,7 +163,7 @@ def route(text: str) -> bool:
         ]
 
         if files:
-            cmd += ["--files"] + files
+            cmd += ["--files"] + [os.path.expanduser(f) for f in files]
         if slugs:
             cmd += ["--slugs"] + slugs
 
