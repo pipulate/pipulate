@@ -760,7 +760,8 @@ tools/scraper_tools.py
 tools/llm_optics.py
 """
 
-# #todo
+# #todo #to-do
+# - Monitor for the `db.py` database getting bigger on Honeybot (Textual dashboards?)
 # - Start a new YouTube live-stream for every new published article
 # - Turn the YouTube live-stream into an interactive real-time article-picking Jukebox.
 # - Make sure the live breaking interrupt announces the upcoming article topic
