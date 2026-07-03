@@ -1472,3 +1472,30 @@ Essential knowledge for 100% success rate"""
 #    [ Target 1: Jekyll / Git ]                             [ Target 4: Atlassian REST API ]
 #      ↳ Static Public Web                                    ↳ Idempotent Internal Wiki
 # ```
+# 
+# ```text
+# THE SOVEREIGN WORKSPACE ARCHITECTURE
+#   ====================================
+# 
+#   ┌────────────────────────────────────────────────────────┐
+#   │ LAYER 3: THE JUDGMENT LOOP (Human Actuator / Reduce)   │ -> Parallel model fan-out
+#   ├────────────────────────────────────────────────────────┤
+#   │ LAYER 2: THE CONTEXT DECK (Portable Plain-Text State)  │ -> Prompt Fu / Shards
+#   ├────────────────────────────────────────────────────────┤
+#   │ LAYER 1: THE REPRODUCIBLE MACHINE (NixOS Substrate)    │ -> Pinned Invariants
+#   └────────────────────────────────────────────────────────┘
+# ```
+# 
+# ```text
+# ALIAS-TO-DATA CENTRALIZATION FLOW
+#   =================================
+# 
+#   Current (Hardcoded Environment Blueprint):
+#   [flake.nix] ──► alias bot='cd scripts/articles && xclip... && python articleizer.py -t 4'
+#      
+#   Proposed (Declarative Data-Driven Pipeline):
+#   [blogs.json] ──► { "4": { "name": "BotifyML", "pipeline_lane": "public", "preview_port": 4004 } }
+#       │
+#       ▼
+#   [cli.py / core.py] ──► Resolves execution paths dynamically based on data config.
+# ```
