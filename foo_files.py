@@ -81,65 +81,29 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-! rg -l "bootcamp" . | xargs rg -l "true_schema_discoverer" | sort
-# /home/mike/repos/trimnoir/_posts/2026-05-20-autonomic-memory-actuator-anti-amnesia-workspace.md  # [23,052 tokens]
-# /home/mike/repos/trimnoir/_posts/2026-05-31-magic-users-guide-ai-actuators-anti-churn.md  # [31,076 tokens]
-# /home/mike/repos/trimnoir/_posts/2026-06-24-truth-actually-actuator-systems.md  # [24,935 tokens]
-# /home/mike/repos/trimnoir/_posts/2026-06-26-funnel-and-actuator-context-architecture.md  # [24,042 tokens]
+# README.md  # [20,725 tokens | 104,252 bytes]
 
-# server.py
-# nixops.sh
-# release.py
-# flake.nix
-# pipulate/core.py
-# imports/ascii_displays.py
-# foo_files.py
-# imports/server_logging.py
-# remotes/honeybot/nixos/configuration.nix
-# remotes/honeybot/scripts/stream.py
-# remotes/honeybot/scripts/test_forest.py
+# KEEP THIS RIPGREP EXAMPLE HERE FOR "AND" SEARCH THAT SHOWS TOKEN SIZES
+# ! rg -l "black swan" ~/repos/trimnoir/_posts/ | xargs rg -l "outlier" | sort | posts --stdin
 
-# /home/mike/repos/trimnoir/_posts/2026-06-21-nix-pinned-ai-orchestration.md
-# /home/mike/repos/trimnoir/_posts/2026-06-26-engineering-reproducible-pageworkers-optimizations.md
-# /home/mike/repos/trimnoir/_posts/2026-06-26-funnel-and-actuator-context-architecture.md
-# /home/mike/repos/trimnoir/_posts/2026-06-26-reproducible-api-exploration.md
-
-# /home/mike/repos/trimnoir/_posts/2026-06-30-closing-the-seam-ai-context-management.md  # [Idx: 1260 | Order: 2 | Tokens: 8,052 | Bytes: 32,495]
-# /home/mike/repos/trimnoir/_posts/2026-06-30-governance-of-abstractions.md  # [Idx: 1261 | Order: 3 | Tokens: 10,777 | Bytes: 49,653]
-# /home/mike/repos/trimnoir/_posts/2026-06-30-unix-philosophy-ai-workflows.md
-# /home/mike/repos/botifyml/_posts/2026-06-30-fall-strategy-sculpting.md
-
+# FIND A HOME FOR THIS (TINY UNIX-LIKE COMMANDS)
 # /home/mike/repos/pipulate/scripts/gmail.py
 
+# KEEP THIS AS AN EXAMPLE OF HOW TO USE GMAIL (AND CLEAR WAY FOR SAME FOR GDOCS & SHEETS EQUIVALENT)
 # ! python scripts/gmail.py 19ed7896e9577340  # Performance Baseline Report
 # ! python scripts/gmail.py 19ef63ffb0dc3ff4  # Google Search Console & GMC Setup
 # ! python scripts/gmail.py 19ef61f326a3b536  # AI Visibility Tracking Transcript
 
+# KEEP EXPANDING THIS FOR BETTER ONGOING CONFLUENCE ARTICLE SANITIZING
 # /home/mike/.config/pipulate/pii_substitutions.txt
 
-# /home/mike/repos/trimnoir/_posts/2026-06-29-automating-gmail-context-extraction.md
+# THIS IS PAGEWORKERS TAG FOR MY SITE
+# $https://tags.pw.adn.cloud/YICBBD/activation.js
 
-# /home/mike/Downloads/store-locator.md
-# /home/mike/Downloads/sm_fall_content_gaps.csv
-# /home/mike/Downloads/sm_fall_exec_rollup.csv
-# /home/mike/Downloads/sm_fall_keyword_watchlist.csv
-# /home/mike/Downloads/sm_fall_priority_tracker.csv
+# ADD MORE OF THESE PURELY EDUCATIONAL EXAMPLES
+# assets/nbs/Educational_Notebooks/Truth_Actually.ipynb  # [4,477 tokens | 14,722 bytes]
 
-# /home/mike/repos/trimnoir/_posts/2026-06-27-workshop-architecture-agentic-skills.md  # [Idx: 1244 | Order: 1 | Tokens: 18,046 | Bytes: 78,604]
-# /home/mike/repos/trimnoir/_posts/2026-06-27-demoscene-compression-onboarding.md  # [Idx: 1245 | Order: 2 | Tokens: 7,288 | Bytes: 33,123]
-# /home/mike/repos/trimnoir/_posts/2026-06-27-forever-machine-robust-systems.md  # [Idx: 1246 | Order: 3 | Tokens: 16,362 | Bytes: 77,226]
-# /home/mike/repos/trimnoir/_posts/2026-06-27-engineering-the-installer-seam.md  # [Idx: 1247 | Order: 4 | Tokens: 11,889 | Bytes: 51,352]
-# /home/mike/repos/trimnoir/_posts/2026-06-28-shell-as-a-room-spatial-computing.md  # [Idx: 1248 | Order: 1 | Tokens: 13,685 | Bytes: 52,490]
-# /home/mike/repos/trimnoir/_posts/2026-06-28-closing-the-reproducibility-stack.md  # [Idx: 1249 | Order: 2 | Tokens: 6,580 | Bytes: 30,215]
-# /home/mike/repos/trimnoir/_posts/2026-06-28-terminal-telemetry-onboarding.md  # [Idx: 1250 | Order: 3 | Tokens: 38,130 | Bytes: 204,380]
-# /home/mike/repos/trimnoir/_posts/2026-06-28-pruning-public-documentation.md  # [Idx: 1251 | Order: 4 | Tokens: 43,707 | Bytes: 166,094]
-# /home/mike/repos/trimnoir/_posts/2026-06-28-defensive-layer-automation.md  # [Idx: 1252 | Order: 5 | Tokens: 11,137 | Bytes: 40,890]
-# /home/mike/repos/trimnoir/_posts/2026-06-28-optimizing-tts-markdown-pipelines.md  # [Idx: 1253 | Order: 6 | Tokens: 4,759 | Bytes: 18,421]
-# /home/mike/repos/trimnoir/_posts/2026-06-28-optimizing-pipeline-timing-in-the-age-of-ai.md  # [Idx: 1254 | Order: 7 | Tokens: 6,293 | Bytes: 25,889]
-# /home/mike/repos/trimnoir/_posts/2026-06-28-durable-onboarding-jupyter-fast-track.md  # [Idx: 1255 | Order: 8 | Tokens: 17,985 | Bytes: 73,901]
-
-# README.md  # [20,725 tokens | 104,252 bytes]
-
+# CONSIDER LETTING CLAUDE HAVE AT IT AGENTICALLY UPDATING THIS SITE
 # /home/mike/repos/Pipulate.com/CNAME
 # /home/mike/repos/Pipulate.com/_config.yml
 # /home/mike/repos/Pipulate.com/flake.nix
@@ -160,41 +124,18 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # /home/mike/repos/Pipulate.com/development.md
 # /home/mike/repos/Pipulate.com/documentation.md
 
-# $https://tags.pw.adn.cloud/YICBBD/activation.js
-
-# @https://support.botify.com/en/collections/8589200-pageworkers
-# @https://support.botify.com/en/articles/9131625-pageworkers-technical-overview
-# @https://support.botify.com/en/articles/9108745-creating-pageworkers-optimizations
-
-# @https://support.botify.com/en/collections/8589197-botify-activation
-# @https://support.botify.com/en/collections/10314812-installing-the-botify-js-snippet
-# @https://support.botify.com/en/articles/9746147-tech-notes-installing-the-botify-js-snippet
-# @https://support.botify.com/en/articles/9108743-adding-the-botify-js-snippet-with-google-tag-manager
-# @https://support.botify.com/en/articles/9131614-pageworkers-implementation
-
-# @https://developers.botify.com/llms.txt
-# @https://developers.botify.com/docs/openapi-specifications
+# REMEMBER YOU CAN CACHE AND INCLUDE DOCUMENTATION FOR ANYTHING FROM ANYWHERE
 # @https://developers.botify.com/docs/collections
-
-
-# /home/mike/repos/trimnoir/_posts/2026-06-24-truth-actually-actuator-systems.md
-# /home/mike/repos/trimnoir/_posts/2026-06-24-retargetable-publishing-nervous-system.md
-
-# I'll keep these edited-in while getting rid of the full Jekyll chapter-bloat below when I make the real implementation request.
-# flake.nix
-# scripts/articles/articleizer.py
-# scripts/articles/confluenceizer.py
-# scripts/articles/common.py
-# .gitignore
-# /home/mike/.config/pipulate/blogs.json
-# ! python scripts/articles/confluenceizer.py --help
-# ! rg -n "gobot\\(|alias bot=|confluenceizer\\.py|md_files = sorted|output_path|add_argument" flake.nix scripts/articles/confluenceizer.py scripts/articles/articleizer.py scripts/articles/common.py
-# ! git --no-pager diff -- flake.nix scripts/articles/articleizer.py scripts/articles/confluenceizer.py scripts/articles/common.py .gitignore
-
-# /home/mike/repos/botifyml/_posts/2026-06-24-proof-by-proxy-bot-telemetry.md
-# /home/mike/repos/trimnoir/_posts/2026-06-24-funnel-architecture-automation.md
-
-# assets/nbs/Educational_Notebooks/Truth_Actually.ipynb  # [4,477 tokens | 14,722 bytes]
+# @https://developers.botify.com/docs/openapi-specifications
+# @https://developers.botify.com/llms.txt
+# @https://support.botify.com/en/articles/9108743-adding-the-botify-js-snippet-with-google-tag-manager
+# @https://support.botify.com/en/articles/9108745-creating-pageworkers-optimizations
+# @https://support.botify.com/en/articles/9131614-pageworkers-implementation
+# @https://support.botify.com/en/articles/9131625-pageworkers-technical-overview
+# @https://support.botify.com/en/articles/9746147-tech-notes-installing-the-botify-js-snippet
+# @https://support.botify.com/en/collections/10314812-installing-the-botify-js-snippet
+# @https://support.botify.com/en/collections/8589197-botify-activation
+# @https://support.botify.com/en/collections/8589200-pageworkers
 
 # /home/mike/repos/trimnoir/_posts/2026-06-21-stream-standby-automation.md  # [Idx: 1224 | Order: 3 | Tokens: 14,995 | Bytes: 62,942]
 # /home/mike/repos/trimnoir/_posts/2026-06-23-chiseling-digital-space-terminal-efficiency.md  # [Idx: 1232 | Order: 1 | Tokens: 6,213 | Bytes: 25,135]
