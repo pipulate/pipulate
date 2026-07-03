@@ -653,7 +653,8 @@ print(max(1, n))
           sluggo() { for slug in "$@"; do (cd ~/repos/pipulate && python scripts/articles/lsa.py -t 1 --match "$slug" --fmt paths); done; }
           # rgx: N-gram intersection search across the article corpus.
           # rgx TERM [TERM...] -- quote multi-word terms, unquoted for single words.
-          # Chains `rg -l` through each term, sorts, and hands the result to `posts --stdin`.
+          # Chains case-insensitive `rg -il` through each term, sorts, and hands
+          # the result to `posts --stdin`.
           rgx() {
             if [ "$#" -eq 0 ]; then
               echo "Usage: rgx TERM [TERM...]"
@@ -661,13 +662,37 @@ print(max(1, n))
             fi
             local posts_dir="$HOME/repos/trimnoir/_posts"
             local matches
-            matches=$(rg -l -- "$1" "$posts_dir")
+            matches=$(rg -il -- "$1" "$posts_dir")
             shift
             for term in "$@"; do
               [ -z "$matches" ] && break
-              matches=$(echo "$matches" | xargs rg -l -- "$term")
+              matches=$(echo "$matches" | xargs rg -il -- "$term")
             done
             echo "$matches" | sort | posts --stdin
+          }
+          # rgxc: rgx with Context. Same case-insensitive n-gram narrowing,
+          # but the final pass interleaves each file's holographic shard
+          # (keywords + summary from _context/) and the ±2-line regions
+          # around every hit. All terms are forwarded to --terms.
+          rgxc() {
+            if [ "$#" -eq 0 ]; then
+              echo "Usage: rgxc TERM [TERM...]"
+              return 1
+            fi
+            local posts_dir="$HOME/repos/trimnoir/_posts"
+            local matches
+            matches=$(rg -il -- "$1" "$posts_dir")
+            local term
+            local first=1
+            for term in "$@"; do
+              if [ "$first" -eq 1 ]; then
+                first=0
+                continue
+              fi
+              [ -z "$matches" ] && break
+              matches=$(echo "$matches" | xargs rg -il -- "$term")
+            done
+            echo "$matches" | sort | posts --stdin --shards --around 2 --terms "$@"
           }
           alias release='python release.py --release --force'
           alias g='clear && echo "$ git status" && git status'
