@@ -193,16 +193,16 @@ prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks 
 .gitattributes    #  <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
 .gitignore        #  <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
 flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
-init.lua          #  <-- Daily driver hot-keys that overlap with aliases in flake.nix
-/home/mike/repos/nixos/autognome.py  #  <-- More rare to have to include, but the true "top" of the muscle memory stack for day-to-day purposes
-
-# ACTUATORS (1st 2 by default)
 apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
 scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
-scripts/ai.py     #  <-- How I constantly use local AI to write git commit messages with `m` alias.
-cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
+
+# ACTUATORS & RELATED
+# init.lua          #  <-- Daily driver hot-keys that overlap with aliases in flake.nix
+# scripts/ai.py     #  <-- How I constantly use local AI to write git commit messages with `m` alias.
+# cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
 # scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
 # scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
+# /home/mike/repos/nixos/autognome.py  #  <-- More rare to have to include, but the true "top" of the muscle memory stack for day-to-day purposes
 
 # The following 3 files are the first huge context reveal that pull the curtains open.
 # __init__.py     #  <-- Master versioning
@@ -468,7 +468,7 @@ scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin wo
 # ============================================================================
 
 # scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
-imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
+# imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
