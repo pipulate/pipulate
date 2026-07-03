@@ -860,6 +860,7 @@ tools/llm_optics.py
 # scripts/articles/list_models.py  # [102 tokens | 391 bytes]
 # scripts/articles/scrub_tags.py  # [358 tokens | 1,587 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
+# scripts/audit_dye.py  # [256 tokens | 1,009 bytes]
 # scripts/confluence_probe.py  # [4,990 tokens | 20,668 bytes]
 # scripts/dial_spinner.py  # [398 tokens | 1,463 bytes]
 # scripts/flippers.py  # [350 tokens | 1,309 bytes]
