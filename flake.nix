@@ -651,6 +651,24 @@ print(max(1, n))
           slugs() { (cd ~/repos/pipulate && python scripts/articles/lsa.py -t 1 --slugs "$@" --fmt paths); }
           # slugs-ordered preserves input order for narrative control
           sluggo() { for slug in "$@"; do (cd ~/repos/pipulate && python scripts/articles/lsa.py -t 1 --match "$slug" --fmt paths); done; }
+          # rgx: N-gram intersection search across the article corpus.
+          # rgx TERM [TERM...] -- quote multi-word terms, unquoted for single words.
+          # Chains `rg -l` through each term, sorts, and hands the result to `posts --stdin`.
+          rgx() {
+            if [ "$#" -eq 0 ]; then
+              echo "Usage: rgx TERM [TERM...]"
+              return 1
+            fi
+            local posts_dir="$HOME/repos/trimnoir/_posts"
+            local matches
+            matches=$(rg -l -- "$1" "$posts_dir")
+            shift
+            for term in "$@"; do
+              [ -z "$matches" ] && break
+              matches=$(echo "$matches" | xargs rg -l -- "$term")
+            done
+            echo "$matches" | sort | posts --stdin
+          }
           alias release='python release.py --release --force'
           alias g='clear && echo "$ git status" && git status'
           m() {
