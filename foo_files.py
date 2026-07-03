@@ -786,6 +786,7 @@ tools/llm_optics.py
 # #todo #to-do
 # - Remove holographic shard json orphans" in Jekyll `_context/` folder
 # - Monitor for the `db.py` database getting bigger on Honeybot (Textual dashboards?)
+# - Check for file-naming collisions when articleizing.
 # - Start a new YouTube live-stream for every new published article
 # - Turn the YouTube live-stream into an interactive real-time article-picking Jukebox.
 # - Make sure the live breaking interrupt announces the upcoming article topic
@@ -793,7 +794,7 @@ tools/llm_optics.py
 # - Provide an alternative for link-builders that could spread over LinkedIn
 # - Handle TTS reading better, handling floating triple backticks
 # - Get rid of the Twitter emoji getting read
-# - A better book outliner method than K-means for "real" structure
+# - A better book-outliner method than K-means for "real" structure
 
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
