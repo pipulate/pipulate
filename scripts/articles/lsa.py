@@ -157,6 +157,67 @@ def parse_slice_arg(arg_str: str):
     return slice(None, None)
 
 
+def print_shard_header(filepath: str, prefix: str = "#   "):
+    """Interleaves the holographic shard (keywords + summary) for a post.
+
+    Looks for _context/<stem>.json beside the post. Degrades silently:
+    missing shards produce no output and no error. Orphaned shards
+    (shards whose post was renamed or deleted) are never looked up,
+    so they cannot poison this path.
+    """
+    p = Path(filepath)
+    json_path = p.parent / "_context" / f"{p.stem}.json"
+    if not json_path.exists():
+        return
+    try:
+        with open(json_path, 'r', encoding='utf-8') as jf:
+            shard = json.load(jf)
+    except Exception:
+        return
+    kw = ", ".join(shard.get('kw', []))
+    summary = (shard.get('s') or '').replace('\n', ' ').strip()
+    if kw:
+        print(f"{prefix}kw: {kw}", flush=True)
+    if summary:
+        print(f"{prefix}sum: {summary}", flush=True)
+
+
+def print_hit_regions(filepath: str, terms, around: int, max_regions: int = 5, prefix: str = "#   "):
+    """Prints ±around lines of context for case-insensitive fixed-string hits.
+
+    Overlapping windows are merged. Output is capped at max_regions per
+    file to protect the token budget; a truncation note reports the rest.
+    All output lines are prefixed as comments so downstream path-parsing
+    consumers (e.g. --stdin round-trips) skip them cleanly.
+    """
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            lines = f.read().split('\n')
+    except Exception:
+        return
+    needles = [t.lower() for t in terms if t]
+    if not needles:
+        return
+    lowered = [ln.lower() for ln in lines]
+    hits = [i for i, ln in enumerate(lowered) if any(n in ln for n in needles)]
+    if not hits:
+        return
+    windows = []
+    for i in hits:
+        start, end = max(0, i - around), min(len(lines) - 1, i + around)
+        if windows and start <= windows[-1][1] + 1:
+            windows[-1][1] = max(windows[-1][1], end)
+        else:
+            windows.append([start, end])
+    total = len(windows)
+    for w_idx, (start, end) in enumerate(windows[:max_regions]):
+        print(f"{prefix}-- region {w_idx + 1}/{total} (lines {start + 1}-{end + 1}) --", flush=True)
+        for li in range(start, end + 1):
+            print(f"{prefix}{li + 1:5d}: {lines[li]}", flush=True)
+    if total > max_regions:
+        print(f"{prefix}... {total - max_regions} more region(s) truncated", flush=True)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Unified Article Lister & Analyzer")
     parser.add_argument('-t', '--target', type=str, help="Target ID from blogs.json (e.g., '1', '4')")
