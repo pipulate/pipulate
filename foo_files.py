@@ -833,7 +833,6 @@ tools/llm_optics.py
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
 # remotes/honeybot/queries/intel_markdown_affinity.sql  # [434 tokens | 1,686 bytes]
-# scripts/articles/bookforge_dashboard.py  # [851 tokens | 3,484 bytes]
 # scripts/articles/build_book_passes.py  # [535 tokens | 2,210 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
