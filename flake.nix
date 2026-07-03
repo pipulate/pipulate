@@ -587,8 +587,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias d='git --no-pager diff'
           alias gdiff='git --no-pager diff --no-textconv'
           alias nixops='(cd ~/repos/pipulate && ./nixops.sh)'
-          alias gitops='(cd /home/mike/repos/trimnoir && git commit --allow-empty -m "retry" && git push)'
-          alias force='(cd /home/mike/repos/trimnoir && git commit --allow-empty -m "retry" && git push)'
+          alias gitops='(cd ~/repos/trimnoir && git commit --allow-empty -m "retry" && git push)'
+          alias force='(cd ~/repos/trimnoir && git commit --allow-empty -m "retry" && git push)'
           alias isnix="if [ -n \"$IN_NIX_SHELL\" ]; then echo \"✓ In Nix shell v${version}\"; else echo \"✗ Not in Nix shell\"; fi"
           alias mcp='(cd ~/repos/pipulate && .venv/bin/python cli.py call)'
           alias vim='nvim'
@@ -698,7 +698,7 @@ print(max(1, n))
           alias g='clear && echo "$ git status" && git status'
           m() {
             local msg
-            msg=$(python /home/mike/repos/pipulate/scripts/ai.py --auto --format plain 2>/dev/null | head -1)
+            msg=$(python "$PIPULATE_ROOT/scripts/ai.py" --auto --format plain 2>/dev/null | head -1)
             if [ -z "$msg" ]; then
               echo "❌ ai.py returned empty message, aborting."
               return 1
