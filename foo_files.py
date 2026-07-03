@@ -81,7 +81,6 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-(nix) pipulate $ rg '/home/mike' -l
 tools/dom_tools.py
 tools/scraper_tools.py
 prompt_foo.py
@@ -89,7 +88,7 @@ pipulate/__init__.py
 imports/ai_dictdb.py
 flake.nix
 scripts/botify/botify_api_bootcamp.md
-scripts/botify/make_botify_docs.ipynb
+# scripts/botify/make_botify_docs.ipynb
 foo_files.py
 scripts/gsc/gsc_page_query.ipynb
 scripts/audit_dye.py
@@ -241,10 +240,10 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 # IV. THE WAND & THE WIZARD - Everything's actually web development these days
 # ============================================================================
   
-# config.py                   # <-- Centralize every last configuration in here
-# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-# pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
-# pipulate/core.py            # <-- The Wand (spells)
+config.py                   # <-- Centralize every last configuration in here
+pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
+pipulate/core.py            # <-- The Wand (spells)
 
 # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
@@ -258,7 +257,7 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 # ============================================================================
 
 # THE ROLLING PIN (Again, if you only include one thing for overarching context of Pipulate and NPvg, include this.
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER: 3
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER: 3
 # ! python scripts/articles/lsa.py -t 4 --reverse --fmt dated-slugs  # <-- BotifyML work journal
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 
@@ -810,6 +809,7 @@ tools/llm_optics.py
 """
 
 # #todo #to-do
+# - Un-hardwire the Jekyll `/futureproof/` blog folder to be `blog.nix` configured
 # - Remove holographic shard json orphans" in Jekyll `_context/` folder
 # - Monitor for the `db.py` database getting bigger on Honeybot (Textual dashboards?)
 # - Check for file-naming collisions when articleizing.
@@ -824,7 +824,6 @@ tools/llm_optics.py
 # - Only ever 301-redirect hubs to hubs. Don't put article leafs on hub-rot.
 # - Implement & superimpose Google Open Knowledge Format & Agent Skills open standard.
 # - Implement NLWeb, WebMCP, UCP and ACP.
-
 
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
