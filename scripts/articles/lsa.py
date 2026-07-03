@@ -231,6 +231,9 @@ def main():
     parser.add_argument('--slugs', nargs='+', default=None, metavar='SLUG', help="Select articles by exact slug match (space-separated, no date prefix needed)")
     parser.add_argument('--clear-cache', action='store_true', help="Purge the token cache file before processing")
     parser.add_argument('--stdin', action='store_true', help="Read file paths or filenames from standard input instead of scanning the directory")
+    parser.add_argument('--shards', action='store_true', help="Interleave each article's holographic shard (keywords + summary) from _context/ beneath its listing line (full format only)")
+    parser.add_argument('--around', type=int, default=None, metavar='N', help="With --terms, print ±N lines of context around each case-insensitive hit (full format only)")
+    parser.add_argument('--terms', nargs='+', default=None, metavar='TERM', help="Search terms for --around hit-region extraction (case-insensitive fixed strings)")
     args = parser.parse_args()
 
     targets = load_targets()
