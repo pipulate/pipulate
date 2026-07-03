@@ -37,6 +37,14 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # Let's catch you up on how things work here and quite what your powers are.
 # First, the real-time book that's already written and always being written.
 
+# --- START STATS ---
+# There are [X]-already written articles about this repo at [Y]-blog  <-- THIS IS WHERE WE WE WOULD INSERT NUMBER OF ARTICLES PUBLISHED SO FAR STATS
+# --- END STATS ---
+
+# KEEP THIS RIPGREP EXAMPLE HERE FOR "AND" SEARCH THAT SHOWS TOKEN SIZES
+# ! rg -l "black swan" ~/repos/trimnoir/_posts/ | xargs rg -l "outlier" | sort | posts --stdin
+
+
 #  _____ _            ____              _                                                                      ________________________
 # |_   _| |__   ___  | __ )  ___   ___ | | __   Contrary to popular belief, it's all really just text-files    ___|___|___|___|___|___|   Tornado plop you into a strange new wonderland?
 #   | | | '_ \ / _ \ |  _ \ / _ \ / _ \| |/ /   Whose contents are arranged just-so to have special meaning,   _|___|___|___|___|___|__   What to-do, Todo? No Problem! Frame the work.
@@ -108,8 +116,6 @@ remotes/honeybot/scripts/content_loader.py
 
 # README.md  # [20,725 tokens | 104,252 bytes]
 
-# KEEP THIS RIPGREP EXAMPLE HERE FOR "AND" SEARCH THAT SHOWS TOKEN SIZES
-# ! rg -l "black swan" ~/repos/trimnoir/_posts/ | xargs rg -l "outlier" | sort | posts --stdin
 
 # FIND A HOME FOR THIS (TINY UNIX-LIKE COMMANDS)
 # /home/mike/repos/pipulate/scripts/gmail.py
