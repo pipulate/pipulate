@@ -39,6 +39,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 # --- START STATS ---
 # There are 1,276 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 33 published in the last 7 days
 # --- END STATS ---
 
 # KEEP THIS RIPGREP EXAMPLE HERE FOR "AND" SEARCH THAT SHOWS TOKEN SIZES
