@@ -1079,10 +1079,16 @@ def update_stats_in_place():
         posts_dir = os.path.expanduser(target.get("path", ""))
         if not os.path.isdir(posts_dir):
             return
-        count = len([
+        posts = [
             f for f in os.listdir(posts_dir)
             if f.endswith('.md') and f[:4].isdigit()
-        ])
+        ]
+        count = len(posts)
+        # Velocity gauge: date-prefixed filenames sort as ISO strings,
+        # so a plain string compare counts the trailing week for free.
+        from datetime import date, timedelta
+        cutoff = (date.today() - timedelta(days=7)).isoformat()
+        recent = len([f for f in posts if f[:10] >= cutoff])
 
         with open(foo_path, 'r', encoding='utf-8') as f:
             content = f.read()
@@ -1098,6 +1104,7 @@ def update_stats_in_place():
         stats_line = (
             f"# There are {count:,} already-written articles about this repo "
             f"at {blog_name}\n"
+            f"# Velocity: {recent} published in the last 7 days\n"
         )
         new_content = (
             content[:match.start()] + match.group(1) + stats_line
