@@ -43,6 +43,13 @@
   # Prevent the laptop from sleeping when you close the lid
   services.logind.lidSwitch = "ignore";
   services.logind.lidSwitchExternalPower = "ignore";
+
+  # THE JOURNAL GOVERNOR
+  # The gauge revealed journald (1G) is 6x larger than honeybot.db (160M).
+  # Bound it explicitly instead of trusting the 10%-of-disk default.
+  services.journald.extraConfig = ''
+    SystemMaxUse=512M
+  '';
   
   # Optional: Nuclear option to prevent sleep entirely (Good for servers)
   systemd.targets.sleep.enable = false;
