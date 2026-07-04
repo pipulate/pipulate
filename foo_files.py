@@ -38,7 +38,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,275 already-written articles about this repo at MikeLev.in (Public)
+# There are 1,276 already-written articles about this repo at MikeLev.in (Public)
 # --- END STATS ---
 
 # KEEP THIS RIPGREP EXAMPLE HERE FOR "AND" SEARCH THAT SHOWS TOKEN SIZES
@@ -88,6 +88,22 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # ============================================================================
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
+
+# # 1. The two files actually getting patched
+# flake.nix  # [11,455 tokens | 48,892 bytes]
+# scripts/articles/lsa.py  # [4,084 tokens | 18,245 bytes]
+# 
+# # 2. Patch-application harness
+# apply.py  # [2,504 tokens | 10,998 bytes]
+# scripts/xp.py  # [1,992 tokens | 8,404 bytes]
+# 
+# # 3. Falsifying probes -- executed live, immune to clipboard/paste mangling
+# ! echo "case-sensitive dragon hits:" && rg -l -- "dragons" ~/repos/trimnoir/_posts | wc -l
+# ! echo "case-INsensitive dragon hits:" && rg -il -- "dragons" ~/repos/trimnoir/_posts | wc -l
+# ! echo "_context dir:" && ls -d ~/repos/trimnoir/_posts/_context 2>&1
+# ! echo "posts vs shards:" && ls ~/repos/trimnoir/_posts/*.md | wc -l && ls ~/repos/trimnoir/_posts/_context/*.json 2>/dev/null | wc -l
+# ! echo "sample shard shape:" && cat $(ls ~/repos/trimnoir/_posts/_context/*.json 2>/dev/null | head -1) 2>&1
+# ! rg -il -- "pareidolia" ~/repos/trimnoir/_posts > /tmp/pareidolia_hits.txt && wc -l /tmp/pareidolia_hits.txt && rg -i -C 2 -- "pareidolia" $(cat /tmp/pareidolia_hits.txt) | wc -c
 
 # README.md  # [20,725 tokens | 104,252 bytes]
 
@@ -198,9 +214,9 @@ apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aid
 scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 
 # ACTUATORS & RELATED
-init.lua          #  <-- Daily driver hot-keys that overlap with aliases in flake.nix
-scripts/ai.py     #  <-- How I constantly use local AI to write git commit messages with `m` alias.
-cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
+# init.lua          #  <-- Daily driver hot-keys that overlap with aliases in flake.nix
+# scripts/ai.py     #  <-- How I constantly use local AI to write git commit messages with `m` alias.
+# cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
 # scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
 # scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
 # ~/repos/nixos/autognome.py  #  <-- More rare to have to include, but the true "top" of the muscle memory stack for day-to-day purposes
@@ -280,55 +296,55 @@ cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Pyt
 # ============================================================================
 
 # CORE SLIDESHOW FILES
-nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
-remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
-remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
-remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
-remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
-remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
-remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
-remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
-remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
-remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
-remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+# nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
+# remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
+# remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
+# remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
+# remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
+# remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
+# remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
+# remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
+# remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
+# remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
+# remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
 
 # remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
 
 # AD HOC REPORTS
-remotes/honeybot/queries/trapdoor_ips.sql   # <-- The SQL to see who is hydrating the DOM. An ultimate report example among much ad hoc .sql
-! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# remotes/honeybot/queries/trapdoor_ips.sql   # <-- The SQL to see who is hydrating the DOM. An ultimate report example among much ad hoc .sql
+# ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # FULLY BAKED PYTHON REPORTS
-remotes/honeybot/scripts/report.py
-remotes/honeybot/scripts/build_bot_miner.py
-remotes/honeybot/scripts/dye_injector_v2.py
-remotes/honeybot/scripts/education.py
-remotes/honeybot/scripts/radar.py
-remotes/honeybot/scripts/routing.py
+# remotes/honeybot/scripts/report.py
+# remotes/honeybot/scripts/build_bot_miner.py
+# remotes/honeybot/scripts/dye_injector_v2.py
+# remotes/honeybot/scripts/education.py
+# remotes/honeybot/scripts/radar.py
+# remotes/honeybot/scripts/routing.py
 
 # PURE SQLite3 REPORTS
-remotes/honeybot/queries/format_ratio.sql
-remotes/honeybot/queries/markdown_routing_metrics.sql
-remotes/honeybot/queries/content_neg_agents.sql
-remotes/honeybot/queries/md_routing_agents.sql
+# remotes/honeybot/queries/format_ratio.sql
+# remotes/honeybot/queries/markdown_routing_metrics.sql
+# remotes/honeybot/queries/content_neg_agents.sql
+# remotes/honeybot/queries/md_routing_agents.sql
 
 # Other examples (document and sort these out)
 
-remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
-remotes/honeybot/queries/hot_404_remaps_top.sql  # [733 tokens | 2,888 bytes]
-remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
-remotes/honeybot/queries/intel_404_decay_curve.sql  # [170 tokens | 552 bytes]
-remotes/honeybot/queries/intel_hostile_dictionary.sql  # [403 tokens | 1,413 bytes]
-remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
-remotes/honeybot/queries/intel_noise_404s.sql  # [92 tokens | 286 bytes]
-remotes/honeybot/queries/intel_phantom_ui.sql  # [238 tokens | 874 bytes]
-remotes/honeybot/queries/intel_sovereign_bots.sql  # [160 tokens | 564 bytes]
-remotes/honeybot/queries/intel_true_404s.sql  # [104 tokens | 335 bytes]
-remotes/honeybot/queries/intel_unknown_agents.sql  # [85 tokens | 296 bytes]
-remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
-remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
-remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
-remotes/honeybot/queries/intel_emerging_manifests.sql  # [161 tokens | 720 bytes]
+# remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
+# remotes/honeybot/queries/hot_404_remaps_top.sql  # [733 tokens | 2,888 bytes]
+# remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
+# remotes/honeybot/queries/intel_404_decay_curve.sql  # [170 tokens | 552 bytes]
+# remotes/honeybot/queries/intel_hostile_dictionary.sql  # [403 tokens | 1,413 bytes]
+# remotes/honeybot/queries/intel_llms_txt.sql  # [397 tokens | 1,454 bytes]
+# remotes/honeybot/queries/intel_noise_404s.sql  # [92 tokens | 286 bytes]
+# remotes/honeybot/queries/intel_phantom_ui.sql  # [238 tokens | 874 bytes]
+# remotes/honeybot/queries/intel_sovereign_bots.sql  # [160 tokens | 564 bytes]
+# remotes/honeybot/queries/intel_true_404s.sql  # [104 tokens | 335 bytes]
+# remotes/honeybot/queries/intel_unknown_agents.sql  # [85 tokens | 296 bytes]
+# remotes/honeybot/queries/md_diet.sql  # [58 tokens | 191 bytes]
+# remotes/honeybot/queries/telemetry_totals.sql  # [22 tokens | 89 bytes]
+# remotes/honeybot/queries/telemetry_trapdoor_events.sql  # [76 tokens | 249 bytes]
+# remotes/honeybot/queries/intel_emerging_manifests.sql  # [161 tokens | 720 bytes]
 
 # Versions you can "edit in" to get the actual data.
 
@@ -342,14 +358,14 @@ remotes/honeybot/queries/intel_emerging_manifests.sql  # [161 tokens | 720 bytes
 # ============================================================================
 
 # WE'VE GOT A LOT OF THESE AND I HAVE TO BUILD THIS OUT / AD HOC-ISH
-~/repos/trimnoir/flake.nix
-~/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
-~/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
-~/repos/trimnoir/about.md                # <-- A typical markdown Jekyll page
-~/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
+# ~/repos/trimnoir/flake.nix
+# ~/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
+# ~/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
+# ~/repos/trimnoir/about.md                # <-- A typical markdown Jekyll page
+# ~/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
 
-remotes/honeybot/queries/trapdoor_ips.sql         # <-- The SQL to see who is hydrating the DOM. The example of HOW we use it from here in the router below.
-! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# remotes/honeybot/queries/trapdoor_ips.sql         # <-- The SQL to see who is hydrating the DOM. The example of HOW we use it from here in the router below.
+# ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # ============================================================================
 # XI. META-COGNITION & OTHER GOLDEN PATHS - Unification of desert kite funnel-mouths
