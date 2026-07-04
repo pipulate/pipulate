@@ -648,16 +648,16 @@ CHOP_HONEYBOT_HEALTH = """
 # dimension poisoning, or a checkpoint-starved WAL file.
 
 # 1. The schema and its one long-lived writer
-remotes/honeybot/scripts/db.py
-remotes/honeybot/scripts/logs.py
+remotes/honeybot/scripts/db.py  # [2,850 tokens | 13,221 bytes]
+remotes/honeybot/scripts/logs.py  # [3,196 tokens | 14,285 bytes]
 
 # 2. Where the timer/bell will live, and how it deploys
-remotes/honeybot/nixos/configuration.nix
-nixops.sh
+remotes/honeybot/nixos/configuration.nix  # [4,804 tokens | 18,310 bytes]
+nixops.sh  # [270 tokens | 926 bytes]
 
 # 3. Patch harness
-apply.py
-scripts/xp.py
+apply.py  # [2,512 tokens | 11,038 bytes]
+scripts/xp.py  # [2,002 tokens | 8,437 bytes]
 
 # 4. Falsifying probes -- executed live, this is the whole point
 ! echo "--- DISK TRUTH ---" && ssh honeybot 'df -h /; echo ---; ls -lh ~/www/mikelev.in/honeybot.db*; echo ---; du -sh ~/www/mikelev.in 2>/dev/null; du -sh /var/log/nginx 2>/dev/null; journalctl --disk-usage 2>/dev/null; true'
@@ -863,6 +863,7 @@ tools/llm_optics.py
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
+# remotes/honeybot/queries/health_db_vitals.sql  # [465 tokens | 1,927 bytes]
 # remotes/honeybot/queries/intel_markdown_affinity.sql  # [434 tokens | 1,686 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
