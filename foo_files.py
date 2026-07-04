@@ -640,6 +640,30 @@ scripts/xp.py  # [1,992 tokens | 8,404 bytes]
 ! rg -il -- "pareidolia" ~/repos/trimnoir/_posts > /tmp/pareidolia_hits.txt && wc -l /tmp/pareidolia_hits.txt && rg -i -C 2 -- "pareidolia" $(cat /tmp/pareidolia_hits.txt) | wc -c
 """
 
+CHOP_HONEYBOT_HEALTH = """
+# THE HONEYBOT VITALS BLUEPRINT (Gauge before Governor)
+# COMMAND: python prompt_foo.py --chop CHOP_HONEYBOT_HEALTH --no-tree
+# Grounds the retention/rollup/dashboard patch turn in disk truth and DB
+# internals. Convicts one of three suspects: fact-table key blowup,
+# dimension poisoning, or a checkpoint-starved WAL file.
+
+# 1. The schema and its one long-lived writer
+remotes/honeybot/scripts/db.py
+remotes/honeybot/scripts/logs.py
+
+# 2. Where the timer/bell will live, and how it deploys
+remotes/honeybot/nixos/configuration.nix
+nixops.sh
+
+# 3. Patch harness
+apply.py
+scripts/xp.py
+
+# 4. Falsifying probes -- executed live, this is the whole point
+! echo "--- DISK TRUTH ---" && ssh honeybot 'df -h /; echo ---; ls -lh ~/www/mikelev.in/honeybot.db*; echo ---; du -sh ~/www/mikelev.in 2>/dev/null; du -sh /var/log/nginx 2>/dev/null; journalctl --disk-usage 2>/dev/null; true'
+! echo "--- HONEYBOT DB VITALS ---" && cat remotes/honeybot/queries/health_db_vitals.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+"""
+
 # ============================================================================
 # SPECIALIZED STRIKE PACKAGES: PROGRESSIVE REVEAL GATE
 # ============================================================================
