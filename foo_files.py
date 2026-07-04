@@ -801,6 +801,7 @@ tools/llm_optics.py
 # - Implement & superimpose Google Open Knowledge Format (OWF) & Agent Skills open standard.
 # - Implement NLWeb, WebMCP, UCP and ACP.
 # - I think articles get read twice on first publish
+# - Make `d` and `m` aliases support when the patch is of the `[[[WRITE_FILE]]]` kind
 
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
