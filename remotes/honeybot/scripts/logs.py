@@ -296,6 +296,15 @@ class SonarApp(App):
                         else:
                             clean_path = raw_path
 
+                        # THE PATH GOVERNOR (Dimension Hygiene)
+                        # Vitals showed a 6,513-char probe URL embalmed forever in
+                        # `paths`. Cap at ingest so hostile payloads can't mint
+                        # bloated immortal dimension rows. 200 chars preserves all
+                        # legitimate paths AND the <=150 window the 404-remap
+                        # queries already filter on.
+                        if len(clean_path) > 200:
+                            clean_path = clean_path[:200]
+
                         # THE ALCHEMICAL NORMALIZATION (Purging Ambiguity)
                         # If Nginx served markdown via Content-Negotiation, explicitly tag it
                         if data.get('md') == '1':
