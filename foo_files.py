@@ -38,8 +38,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,278 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 31 published in the last 7 days
+# There are 1,279 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 32 published in the last 7 days
 # --- END STATS ---
 
 # KEEP THIS RIPGREP EXAMPLE HERE FOR "AND" SEARCH THAT SHOWS TOKEN SIZES
@@ -173,12 +173,12 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # Software Von Neumann Probe IaC Kickstart
 
 # release.py                                          #  <-- The deploy process
-# assets/installer/install.sh                         #  <-- Pipulate.com installer real home in github/pipulate repo
-
+assets/installer/install.sh                         #  <-- Pipulate.com installer real home in github/pipulate repo
 # ~/repos/Pipulate.com/index.md              #  <-- The public face (in addition to GitHub & PyPI)
 # ~/repos/Pipulate.com/CNAME
 # ~/repos/Pipulate.com/_config.yml
 # ~/repos/Pipulate.com/_layouts/default.html
+# ~/repos/nixos/.gitignore
 # ~/repos/Pipulate.com/install.md            #  <-- Gets copied into place here by pipulate/release.py
 # ~/repos/nixos/configuration.nix            #  <-- "Global" IaC context (most of you won't have)
 # ~/repos/nixos/packages.nix                 #  <-- Full disclosure on pre-flake IaC available apps.
@@ -207,7 +207,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!! STANDARD WRAPPER: 2
 
-/home/mike/repos/nixos/.gitignore
 
 # The following files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
 .gitattributes    #  <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
@@ -235,13 +234,13 @@ scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and past
 # IV. THE WAND🪄 & THE WIZARD🧙‍♂️ - Everything's actually web development these days
 # ============================================================================
   
-# config.py                   # <-- Centralize every last configuration in here
-# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-# pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
-# pipulate/core.py            # <-- The Wand (spells)
+config.py                   # <-- Centralize every last configuration in here
+pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
+pipulate/core.py            # <-- The Wand (spells)
 
 # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
-# imports/voice_synthesis.py  # <-- The wand can talk to you
+imports/voice_synthesis.py  # <-- The wand can talk to you
 
 # server.py                   # <-- The Wizard (big!)
 # assets/styles.css           # <-- Those values often get used here for "the look"
@@ -299,17 +298,17 @@ scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and past
 # ============================================================================
 
 # CORE SLIDESHOW FILES
-# nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
-# remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
-# remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
-# remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
-# remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
-# remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
-# remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
-# remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
-# remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
-# remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
-# remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
+remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
+remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
+remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
+remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
+remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
+remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
+remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
+remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
+remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
+remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
 
 # remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
 
@@ -354,18 +353,18 @@ scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and past
 # ! echo "--- FORMAT RATIO (Markdown vs HTML) ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 # ! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+# ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # ============================================================================
 # X. PROPRIETARY FINDINGS - Which AI bots execute JavaScript and which negotiate for Markdown?
 # ============================================================================
 
 # WE'VE GOT A LOT OF THESE AND I HAVE TO BUILD THIS OUT / AD HOC-ISH
-~/repos/trimnoir/flake.nix
-~/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
-~/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
-~/repos/trimnoir/about.md                # <-- A typical markdown Jekyll page
-~/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
+# ~/repos/trimnoir/flake.nix
+# ~/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
+# ~/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
+# ~/repos/trimnoir/about.md                # <-- A typical markdown Jekyll page
+# ~/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
 
 # remotes/honeybot/queries/trapdoor_ips.sql         # <-- The SQL to see who is hydrating the DOM. The example of HOW we use it from here in the router below.
 # ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
@@ -397,28 +396,28 @@ scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and past
 # XIII. JEKYLL PUBLISHING - Reaching out to the world
 # ============================================================================
 
-~/.config/pipulate/blogs.json                # <-- CAUTION! Derived from ~/repos/nixos/blogs.nix
-scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
-scripts/articles/common.py                   # <-- Self-explanatory
-scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
-scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
-scripts/articles/sanitizer.py                # <-- Scrubs PII
-scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
-scripts/articles/confluenceizer.py           # <-- Just added
-scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
-scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
-scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
-scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
-scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
-scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
+# ~/.config/pipulate/blogs.json                # <-- CAUTION! Derived from ~/repos/nixos/blogs.nix
+# scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
+# scripts/articles/common.py                   # <-- Self-explanatory
+# scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
+# scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
+# scripts/articles/sanitizer.py                # <-- Scrubs PII
+# scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
+# scripts/articles/confluenceizer.py           # <-- Just added
+# scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
+# scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
+# scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
+# scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
+# scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
+# scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
 
 # The following Jekyll files pair well with the above to show how we start various forms of tracking, and as a transition into Honeybot Nginx Broadcast Studio & telemetry.
-release.py                                          #  <-- The deploy process
-remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
-~/repos/trimnoir/_config.yml
-~/repos/trimnoir/_layouts/default.html
-~/repos/trimnoir/index.md
-~/repos/trimnoir/flake.nix
+# release.py                                          #  <-- The deploy process
+# remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
+# ~/repos/trimnoir/_config.yml
+# ~/repos/trimnoir/_layouts/default.html
+# ~/repos/trimnoir/index.md
+# ~/repos/trimnoir/flake.nix
 
 # ============================================================================
 # XIV. WORKFLOW WORKSHOP - WET assembly scripts. Extruders.
