@@ -286,6 +286,26 @@ def readback_ok(service, file_id, expected_name):
     return True, f"{len(data):,} bytes exported"
 
 
+def ensure_anyone_reader(service, file_id):
+    """Idempotently grant 'anyone with the link can view' on one file.
+
+    Drive treats a repeated anyone/reader grant as a no-op (the permission id
+    is the fixed 'anyoneWithLink'), so calling this on every upsert — CREATE
+    and UPDATE alike — is safe and retroactively heals docs created before
+    this helper existed. Per-document on purpose: the folder itself stays
+    private inventory; each article is independently public.
+    """
+    try:
+        service.permissions().create(
+            fileId=file_id,
+            body={"type": "anyone", "role": "reader"},
+            fields="id",
+        ).execute()
+        return True
+    except HttpError:
+        return False
+
+
 def fetch_file(service, file_id):
     """FETCH mode: Doc -> server-side markdown export, Sheet -> csv, to stdout."""
     meta = service.files().get(fileId=file_id, fields="id, name, mimeType").execute()
