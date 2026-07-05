@@ -888,6 +888,7 @@ tools/llm_optics.py
 # scripts/articles/execute_massive_prompt.py  # [491 tokens | 2,209 bytes]
 # scripts/articles/find_duplicates.py  # [1,879 tokens | 7,993 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
+# scripts/articles/googledocizer.py  # [5,096 tokens | 21,662 bytes]
 # scripts/articles/gsc_historical_fetch.py  # [2,204 tokens | 9,362 bytes]
 # scripts/articles/link_injector.py  # [1,134 tokens | 4,394 bytes]
 # scripts/articles/list_models.py  # [102 tokens | 391 bytes]
