@@ -1,16 +1,16 @@
-# Hi, AI! Please run: .venv/bin/python AI_RUNME.py
-#                                                       .--.      ___________
-#       _               _       _         ,--./,-.     |o_o |    |     |     |
-#      | |    _____   _(_)_ __ (_)_  __  / #      \    |:_/ |    |     |     |
-#      | |   / _ \ \ / / | '_ \| \ \/ / |          |  //   \ \   |_____|_____|
-#      | |__|  __/\ V /| | | | | |>  <   \        /  (|     | )  |     |     |
-#      |_____\___| \_/ |_|_| |_|_/_/\_\   `._,._,'  /'\_   _/`\  |     |     |
-#                                                   \___)=(___/  |_____|_____|
-# 
-#  Levinix: A *very good* "No Problem" Universal Packager (NPvg)
+# Is this just about macOS and Linux? Or is it about Windows too?                     Impervious to Decay   
+#  ____  _             _       _         ____       _                                     ___________          .--.
+# |  _ \(_)_ __  _   _| | __ _| |_ ___  |  _ \ _ __(_)_ __ ___   ___     ,--./,-.     C  |     |  Nix|  Free  |o_o |
+# | |_) | | '_ \| | | | |/ _` | __/ _ \ | |_) | '__| | '_ ` _ \ / _ \   / #      \    l  |     |     |        |:_/ |
+# |  __/| | |_) | |_| | | (_| | ||  __/ |  __/| |  | | | | | | |  __/  |          |   o  |_____|_____|  O    //   \ \
+# |_|   |_| .__/ \__,_|_|\__,_|\__\___| |_|   |_|  |_|_| |_| |_|\___|   \        /    s  |macOS|     |  p   (|     | )           
+#         |_|                                                            `._,._,'     e  |Windows/WSL|  e  /'\_   _/`\           
+#             Welcome to Pipulate Prime IaC, a multi-platform app;                    d  |_____|_____|  n  \___)=(___/           
+#             Your intro to your "Write once run anywhere" future!                                                                                           
+#             Built on a *very good* "No Problem" framework (NPvg)                    HW Decays Over Time 
 #
 # ==============================================================================
-# PIPULATE NIX FLAKE - "MAGIC COOKIE" AUTO-UPDATING SYSTEM
+# PIPULATE PRIME NIX FLAKE - "MAGIC COOKIE" AUTO-UPDATING SYSTEM
 # ==============================================================================
 # 
 # This flake is the second half of the "magic cookie" installation system.
@@ -52,7 +52,9 @@
 # /home/mike/repos/Pipulate.com/assets/installer/install.sh
 #
 # When a user runs:
-#   curl -L https://pipulate.com/assets/installer/install.sh | bash -s Botifython
+#
+#     curl -fsSL https://pipulate.com/install.sh | bash
+#
 # The installer downloads this flake as part of the ZIP archive.
 # Most modern development is done on Linux, but Macs are Unix. If you think Homebrew and Docker
 # are the solution, you're wrong. Welcome to the world of Nix Flakes! This file defines a complete,
