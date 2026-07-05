@@ -504,8 +504,11 @@ def main():
                 'text/html', DOC_MIME, existing_id=existing
             )
             ok, detail = readback_ok(service, file_id, target_title)
+            shared = ensure_anyone_reader(service, file_id)
             flag = "✅" if ok else "⚠"
-            print(f"   {flag} {verb} [ID: {file_id}] -> {target_title} ({detail})")
+            share_note = "🌐 link-shared" if shared else "⚠ SHARE FAILED"
+            print(f"   {flag} {verb} [ID: {file_id}] -> {target_title} ({detail} | {share_note})")
+            print(f"      🔗 https://docs.google.com/document/d/{file_id}/edit?usp=sharing")
             if not ok:
                 print(f"      ⚠ Round-trip suspect: {detail}. Inspect before trusting.")
             if verb == "CREATE":
