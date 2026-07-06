@@ -255,6 +255,20 @@
           if ($new_uri) {
               return 301 $new_uri;
           }
+
+          # THE ACTUAL SWITCH: rewrite to the sibling index.md when the
+          # Accept-header sensor ($serve_markdown, from appendHttpConfig)
+          # fired. Two rewrite forms cover both permalink shapes: a trailing
+          # slash ("/some-post/") and a bare path ("/some-post").
+          if ($serve_markdown) {
+              rewrite ^(.*)/$ $1/index.md break;
+              rewrite ^(.*[^/])$ $1/index.md break;
+          }
+
+          # index.html BEFORE index.md: a normal (non-negotiated) request
+          # always falls through to html. A negotiated request has already
+          # been rewritten above so $uri hits the .md file on the first check.
+          try_files $uri $uri/index.html $uri/index.md =404;
         '';
       };
       # THE JAVASCRIPT TRAPDOOR
