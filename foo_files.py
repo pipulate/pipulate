@@ -587,7 +587,7 @@ scripts/xp.py  # [2,002 tokens | 8,437 bytes]
 """
 
 ROLLING_PIN_CHOP = """
-! python scripts/articles/lsa.py -t <sup>1</sup> --reverse --fmt dated-slugs
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 """
 
 EMPTY = r"""
@@ -612,7 +612,7 @@ flake.nix
 apply.py
 scripts/ai.py
 init.lua
-! python scripts/articles/lsa.py -t <sup>1</sup> --reverse --fmt dated-slugs
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 """
 
 CONTEXT_LANDSCAPE_PROMPT = '''
@@ -638,13 +638,13 @@ CHOP_POST_MORTEM = """
 # Pulls the most recent systemic state and the last breath of the machine.
 
 # 1. The tail end of the log (The Crash Context)
-! tail -n <sup>150</sup> logs/server.log
+! tail -n 150 logs/server.log
 
 # 2. Extracting the Radical Transparency FINDER_TOKENs (The Narrative)
-! grep -B <sup>2</sup> -A <sup>5</sup> "FINDER_TOKEN" logs/server.log | tail -n 50
+! grep -B 2 -A 5 "FINDER_TOKEN" logs/server.log | tail -n 50
 
 # 3. Any active Tracebacks
-! grep -A <sup>20</sup> "Traceback (most recent call last):" logs/server.log
+! grep -A 20 "Traceback (most recent call last):" logs/server.log
 """
 
 CHOP_404_AFFAIR = """
@@ -681,8 +681,8 @@ CHOP_FLAKE_EVOLUTION = """
 # 1. The Current State
 flake.nix  # [8,529 tokens | 36,280 bytes]
 
-# 2. The History (Last <sup>10</sup> commits affecting flake.nix)
-! git --no-pager log -n <sup>10</sup> --oneline flake.nix
+# 2. The History (Last 10 commits affecting flake.nix)
+! git --no-pager log -n 10 --oneline flake.nix
 
 # 3. The Diffs (The actual changes from the last few major updates)
 ! git --no-pager diff HEAD~5 HEAD -- flake.nix
@@ -708,7 +708,7 @@ scripts/xp.py  # [1,992 tokens | 8,404 bytes]
 ! echo "_context dir:" && ls -d ~/repos/trimnoir/_posts/_context 2>&1
 ! echo "posts vs shards:" && ls ~/repos/trimnoir/_posts/*.md | wc -l && ls ~/repos/trimnoir/_posts/_context/*.json 2>/dev/null | wc -l
 ! echo "sample shard shape:" && cat $(ls ~/repos/trimnoir/_posts/_context/*.json 2>/dev/null | head -1) 2>&1
-! rg -il -- "pareidolia" ~/repos/trimnoir/_posts > /tmp/pareidolia_hits.txt && wc -l /tmp/pareidolia_hits.txt && rg -i -C <sup>2</sup> -- "pareidolia" $(cat /tmp/pareidolia_hits.txt) | wc -c
+! rg -il -- "pareidolia" ~/repos/trimnoir/_posts > /tmp/pareidolia_hits.txt && wc -l /tmp/pareidolia_hits.txt && rg -i -C 2 -- "pareidolia" $(cat /tmp/pareidolia_hits.txt) | wc -c
 """
 
 CHOP_HONEYBOT_HEALTH = """
@@ -758,7 +758,7 @@ reproducible-cockpit-nixos-gnome
 tiling-terminals-x11-alacritty
 [[[END_SLUGS]]]
 
-**CRITICAL CONSTRAINT**: Do not bite off more than you can chew. Select a maximum of <sup>3</sup> to <sup>5</sup> highly targeted slugs that directly anchor the immediate structural milestone. You will receive additional turns to request more.
+**CRITICAL CONSTRAINT**: Do not bite off more than you can chew. Select a maximum of 3 to 5 highly targeted slugs that directly anchor the immediate structural milestone. You will receive additional turns to request more.
 
 ---
 
@@ -766,7 +766,7 @@ tiling-terminals-x11-alacritty
 
 * **Isolates the Semantic Key:** By explicitly showing the model the raw format matching line (`2026-05-19 [17k] slug-name`) and isolating the substring it actually needs, you eliminate the common failure mode where models mistakenly copy the whole line or include the `.md` extension.
 * **Enforces the `xp.py` Parser Expectations:** It frames the `[[[TODO_SLUGS]]]` and `[[[END_SLUGS]]]` markers not as conversational layout, but as code invariants. This ensures the output is pure text that can be instantly sucked into the OS clipboard ring and routed by your script.
-* **Sets an Explicit Attention Budget:** Stating a hard numerical limit (*"maximum of <sup>3</sup> to <sup>5</sup> slugs"*) forces the model to weigh the data density against its current context limits, preventing it from dumping half the repository history into your buffer simultaneously.
+* **Sets an Explicit Attention Budget:** Stating a hard numerical limit (*"maximum of 3 to 5 slugs"*) forces the model to weigh the data density against its current context limits, preventing it from dumping half the repository history into your buffer simultaneously.
 """
 
 CHOP_PROGRESSIVE_REVEAL = """
@@ -775,7 +775,7 @@ CHOP_PROGRESSIVE_REVEAL = """
 # Structural, stateless context designed for rapid article exploration using xp.py.
 
 # 1. THE NARRATIVE MAP
-! python scripts/articles/lsa.py -t <sup>1</sup> --reverse --fmt dated-slugs
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 
 # 2. SYSTEM ARCHITECTURE REFERENCE
 foo_files.py  # [12,463 tokens | 42,282 bytes]
@@ -832,7 +832,7 @@ CHOP_NEXT_STEP = """
 # Combines the most recent article with the full index for momentum-preserving next-step inference.
 
 # 1. THE NARRATIVE MAP
-! python scripts/articles/lsa.py -t <sup>1</sup> --reverse --fmt dated-slugs
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 
 # 2. SYSTEM ARCHITECTURE REFERENCE
 foo_files.py  # [13,606 tokens | 47,183 bytes]
@@ -848,8 +848,8 @@ TODO_MOMENTUM_CHOP = """
 # THE LIVING MOMENTUM LENS
 # COMMAND: python prompt_foo.py --chop TODO_MOMENTUM_CHOP --no-tree -a [-3:] -l [0:10]
 
-# 1. Recent Narrative Position (last <sup>3</sup> articles — the current edge)
-! python scripts/articles/lsa.py -t <sup>3</sup> --reverse --fmt dated-slugs
+# 1. Recent Narrative Position (last 3 articles — the current edge)
+! python scripts/articles/lsa.py -t 3 --reverse --fmt dated-slugs
 
 # 2. Active Router Surface (self-referential)
 foo_files.py  # [13,993 tokens | 54,473 bytes]
