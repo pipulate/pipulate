@@ -96,7 +96,11 @@ def _normalize_void_html_tag(match: re.Match) -> str:
 # non-fenced line whose prefix contains no brackets but continues '](url)' is
 # an orphaned tail; promote it to a well-formed single-line link. Idempotent:
 # a repaired line starts with '[', which the prefix class refuses to match.
-_ORPHAN_LINK_TAIL_RE = re.compile(r'^([^\[\]\n]+?)\]\((https?://[^)\s]+)\)')
+# End-of-line anchor: true webclip tails end immediately after the ')'.
+# Without it, prose sentences quoting '](http://...)' fragments in inline
+# code get a stray '[' prepended (cosmetic, but this journal quotes such
+# fragments constantly -- it documents its own bugs).
+_ORPHAN_LINK_TAIL_RE = re.compile(r'^([^\[\]\n]+?)\]\((https?://[^)\s]+)\)\s*$')
 
 def _normalize_markdown_for_md2conf(md_text: str) -> str:
     """Make mixed Markdown/raw-HTML safer for md2conf without touching fenced code."""
