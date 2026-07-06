@@ -190,6 +190,7 @@ def markdown_to_storage(md_text: str) -> str:
             "-m",
             "md2conf",
             "--local",
+            "--ignore-invalid-url",
             "-d",
             _resolve_domain(),
             str(tmp_path),
