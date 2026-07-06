@@ -62,6 +62,12 @@ def _strip_front_matter(md_text: str) -> str:
     # Internal-wiki identity scrub (client + colleague names -> roles)
     md_text = _sanitize_internal_pii(md_text)
 
+    # Defuse sanitizer artifacts that detonate md2conf's urlparse: a
+    # '[REDACTED_IP]' token in the URL authority position ('http://[...')
+    # parses as an invalid IPv6 literal and raises ValueError. Heals posts
+    # published before sanitizer.py became URL-aware; idempotent by nature.
+    md_text = md_text.replace("://[REDACTED_IP]", "://redacted-ip.invalid")
+
     # Prune public metadata blocks to prevent confusion in team wiki environments
     md_text = re.sub(r'### 🐦 X\.com Promo Tweet\n```text\n.*?\n```\n*', '', md_text, flags=re.DOTALL)
     md_text = re.sub(r'### Title Brainstorm\n.*?(?=\n### |\Z)', '', md_text, flags=re.DOTALL)
