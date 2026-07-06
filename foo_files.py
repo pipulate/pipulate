@@ -100,7 +100,7 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-# ~/Notebooks/Playground/content_negotiation.py
+Notebooks/Playground/content_negotiation.py
 
 # # 1. The two files actually getting patched
 # flake.nix  # [11,455 tokens | 48,892 bytes]
