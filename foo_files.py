@@ -303,6 +303,19 @@ scripts/ai.py     #  <-- How I constantly use local AI to write git commit messa
 # ============================================================================
 # IX. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
 # ============================================================================
+# 📖 CHAPTER BLURB — HONEYBOT: A retired laptop runs NixOS and Nginx from a home
+# closet, deliberately naked on the internet (no CDN), baiting AI crawlers so
+# they can be watched like a fishtank. Nginx does RFC 7231 content negotiation
+# at the origin: humans get hydrated HTML; any agent sending Accept:
+# text/markdown gets the raw source the article was born as; and every request
+# lands as one line in a high-fidelity access log that a Unix pipe tails into a
+# Textual HUD streamed live to YouTube, while Piper TTS reads the very corpus
+# the bots are crawling — content about the instrument, performed by the
+# instrument, measured by the instrument. The finding that justifies the whole
+# studio: nearly everyone burns compute hydrating SPAs and converting HTML BACK
+# into markdown that started as markdown, while the rare polite negotiator
+# (~0.2% of traffic) simply asks and gets the master for free. Small streams
+# carve the sinkholes; this chapter is the seismograph.
 
 # CORE SLIDESHOW FILES
 # nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
