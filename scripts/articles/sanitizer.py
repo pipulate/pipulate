@@ -49,6 +49,58 @@ def redact_ips(content: str) -> str:
     return content
 
 
+# THE FENCE CONTRACT (the non-arms-race, 2026-07-06): everything downstream
+# -- Gemini subheading insertion, Jekyll, md2conf, TTS -- assumes well-formed
+# fences. Instead of healing each parser's failure mode at the projection
+# boundary, refuse malformed input at the intake chokepoint. Three rules:
+#   1. A fence is recognized ONLY at column 0. Any run of 3+ backticks
+#      anywhere else on a line is neutralized to a literal token; it was
+#      never going to survive the transformation pipeline anyway.
+#   2. Every opening fence must declare a language (bash, text, python...).
+#   3. Every closing fence must be bare. A labeled fence encountered while
+#      a fence is already open means a quoted fence or a missing closer.
+# Rules 2 and 3 fail CLOSED with line numbers (mechanical vim jumps); the
+# && chain in write_post halts, so nothing malformed reaches articleizer.
+FENCE_RUN_RE = re.compile(r'`{3,}')
+NEUTRAL_FENCE_TOKEN = '[triple-backtick]'
+
+
+def enforce_fence_contract(content: str) -> str:
+    """Neutralize floating fences; hard-stop on naked or asymmetric ones."""
+    lines = content.split('\n')
+    out = []
+    problems = []
+    in_fence = False
+    neutralized = 0
+    for i, line in enumerate(lines, 1):
+        if '```' in line and not line.startswith('```'):
+            line, n = FENCE_RUN_RE.subn(NEUTRAL_FENCE_TOKEN, line)
+            neutralized += n
+        if line.startswith('```'):
+            if not in_fence:
+                if line.strip() == '```':
+                    problems.append(f"line {i}: naked opening fence (no language tag)")
+                in_fence = True
+            else:
+                if line.strip() != '```':
+                    problems.append(
+                        f"line {i}: labeled fence while a fence is already open "
+                        f"(quoted fence or missing closer above)"
+                    )
+                in_fence = False
+        out.append(line)
+    if in_fence:
+        problems.append("EOF: unclosed fence")
+    if neutralized:
+        print(f"🧯 Neutralized {neutralized} floating backtick run(s) -> {NEUTRAL_FENCE_TOKEN}")
+    if problems:
+        print("💥 FENCE CONTRACT VIOLATIONS in article.txt — refusing to proceed:")
+        for p in problems:
+            print(f"   • {p}")
+        raise SystemExit(1)
+    return '\n'.join(out)
+
+
 def strip_private_fences(content: str):
     """Remove whole ```private (etc.) fenced blocks. Returns (content, count).
 
