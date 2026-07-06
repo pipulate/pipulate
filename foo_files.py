@@ -108,8 +108,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # README.md  # [20,725 tokens | 104,252 bytes]
 
-# FIND A HOME FOR THIS (TINY UNIX-LIKE COMMANDS)
-scripts/gmail.py
 
 # KEEP THIS AS AN EXAMPLE OF HOW TO USE GMAIL (AND CLEAR WAY FOR SAME FOR GDOCS & SHEETS EQUIVALENT)
 # ! python scripts/gmail.py 19ed7896e9577340  # Performance Baseline Report
@@ -497,6 +495,12 @@ remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. 
 # apps/400_botify_trifecta.py  # [53,083 tokens | 275,728 bytes]
 # apps/110_parameter_buster.py  # [55,573 tokens | 274,005 bytes]
 # apps/120_link_graph.py  # [54,375 tokens | 272,569 bytes]
+
+# ============================================================================
+# XVIII. MISC UNIX PHILOSOPHY STYLE COMMANDS FOR COMPOSABLE PIPELINE WORKFLOWS
+# ============================================================================
+
+scripts/gmail.py
 
 #  _____ _           _           _                          
 # |  ___(_)_ __   __| |   __ _  | |__   ___  _ __ ___   ___ 
