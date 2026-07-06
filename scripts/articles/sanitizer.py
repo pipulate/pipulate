@@ -186,6 +186,7 @@ def sanitize_article(public: bool):
     # --- BOTH LANES: strip prompt boundary + loose IPs ---
     content = strip_prompt_boundary(content)
     content = redact_ips(content)
+    content = enforce_fence_contract(content)
 
     if public:
         # --- PUBLIC LANE: drop private fences + scrub names to roles ---
