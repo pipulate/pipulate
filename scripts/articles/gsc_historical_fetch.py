@@ -232,6 +232,29 @@ def main():
         total_months_processed += 1
         time.sleep(random.uniform(0.5, 1.5)) # Human jitter
 
+    # THE ANTI-GASLIGHTING LEDGER: merge months already captured in the
+    # existing gsc_velocity.json so the rolling 16-month API window can never
+    # erase the documented 'before' picture. Fresh API data wins on overlap;
+    # months Google no longer serves are preserved from the prior ledger.
+    if OUTPUT_FILE.exists():
+        try:
+            with open(OUTPUT_FILE, 'r', encoding='utf-8') as f:
+                previous = json.load(f)
+            preserved = 0
+            for slug, entry in previous.items():
+                if slug == '_meta' or not isinstance(entry, dict):
+                    continue
+                for month, clicks in entry.get('timeline', {}).items():
+                    if slug not in history_data:
+                        history_data[slug] = {'timeline': {}}
+                    if month not in history_data[slug]['timeline']:
+                        history_data[slug]['timeline'][month] = clicks
+                        preserved += 1
+            if preserved:
+                print(f"🧾 Ledger merge: preserved {preserved} slug-months from beyond the API window.")
+        except Exception as e:
+            print(f"⚠️ Could not merge previous ledger: {e}")
+
     print(f"\n🧮 Calculating Velocity and Health Scores for {len(history_data)} unique slugs...")
     
     final_output = {
