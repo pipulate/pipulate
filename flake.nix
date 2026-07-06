@@ -777,7 +777,15 @@ print('AI:\n', r.ai)
             (
                 cd "$TARGET_REPO" || exit 1
                 git add .
-                git commit -am "$MSG"
+                # THE ALWAYS-FIRES GUARANTEE: a clean tree (e.g. an infra/hook-only
+                # change made in the pipulate repo, not trimnoir) means `git commit -am`
+                # has nothing to commit and silently no-ops, which means no push, which
+                # means the post-receive hook on Honeybot never fires. Fall back to an
+                # empty commit so `publish` alone is always sufficient to trigger a deploy.
+                if ! git commit -am "$MSG"; then
+                    echo "ℹ️  Nothing to commit in $TARGET_REPO; creating empty commit to ring the deploy bell."
+                    git commit --allow-empty -m "$MSG"
+                fi
                 git push
             )
             
