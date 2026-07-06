@@ -225,6 +225,24 @@ def _target_title(md_file: Path, post) -> str:
 # ----------------------------------------------------------------------------
 # Drive primitives
 # ----------------------------------------------------------------------------
+def _remote_is_fresh(meta, md_file):
+    """True when the remote Doc is at least as new as the local markdown file.
+
+    Caveat: git checkouts reset mtimes, so a fresh clone makes every local
+    file look newer and re-opens the upload path for one sweep. That converges
+    and fails in the safe direction (re-upload, never silently stale).
+    """
+    modified = (meta or {}).get('modified')
+    if not modified:
+        return False
+    try:
+        remote = datetime.fromisoformat(modified.replace('Z', '+00:00'))
+    except ValueError:
+        return False
+    local = datetime.fromtimestamp(md_file.stat().st_mtime, tz=timezone.utc)
+    return remote >= local
+
+
 def fetch_folder_inventory(service, folder_id):
     """Scan ONE Drive folder. Returns (inventory{name: meta}, duplicates{name})."""
     inventory = {}
