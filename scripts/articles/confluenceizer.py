@@ -86,6 +86,18 @@ def _normalize_void_html_tag(match: re.Match) -> str:
     attrs = re.sub(r"\s*/\s*$", "", attrs).strip()
     return f"<{tag}{' ' + attrs if attrs else ''} />"
 
+# THE ORPHANED LINK TAIL (probe-convicted 2026-07-06): webclip citation blocks
+# paste as ONE markdown link spanning multiple paragraphs --
+# '[![](favicon)' ... blank line ... title ... blank line ... 'www.site.com](url)'.
+# Python-Markdown parses inline syntax per paragraph, so the opening '[' never
+# reaches the tail; md2conf then linkifies the bare 'www.' domain and hands
+# urlparse 'http://www.site.com](https://...' -- a ']' in the URL authority
+# with no '[', which raises ValueError('Invalid IPv6 URL'). The repair: any
+# non-fenced line whose prefix contains no brackets but continues '](url)' is
+# an orphaned tail; promote it to a well-formed single-line link. Idempotent:
+# a repaired line starts with '[', which the prefix class refuses to match.
+_ORPHAN_LINK_TAIL_RE = re.compile(r'^([^\[\]\n]+?)\]\((https?://[^)\s]+)\)')
+
 def _normalize_markdown_for_md2conf(md_text: str) -> str:
     """Make mixed Markdown/raw-HTML safer for md2conf without touching fenced code."""
     out = []
@@ -102,6 +114,7 @@ def _normalize_markdown_for_md2conf(md_text: str) -> str:
             out.append(line)
             continue
 
+        line = _ORPHAN_LINK_TAIL_RE.sub(r'[\1](\2)', line)
         out.append(_VOID_HTML_TAG_RE.sub(_normalize_void_html_tag, line))
 
     return "".join(out)
