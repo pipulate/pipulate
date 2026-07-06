@@ -30,8 +30,10 @@ def run_step(script_name, target_key, extra_args=None):
     print(f"\n--- 🚀 Step: {script_name} ---")
     start = time.time()
 
-    # We pass the target key to every script
-    cmd = [sys.executable, script_name, "-t", target_key]
+    # We pass the target key to every script. Pipeline entries may carry
+    # their own flags (e.g. "googledocizer.py --yes --latest"); shlex keeps
+    # bare "script.py" entries byte-identical in behavior.
+    cmd = [sys.executable, *shlex.split(script_name), "-t", target_key]
 
     # Now all scripts accept standard arguments, safely pass them down
     if extra_args:
