@@ -172,6 +172,7 @@ def _normalize_markdown_for_md2conf(md_text: str) -> str:
             continue
 
         line = _ORPHAN_LINK_TAIL_RE.sub(r'[\1](\2)', line)
+        line = _defuse_prose_pseudo_tags(line)
         out.append(_VOID_HTML_TAG_RE.sub(_normalize_void_html_tag, line))
 
     return "".join(out)
