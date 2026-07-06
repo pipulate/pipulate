@@ -86,6 +86,59 @@ def _normalize_void_html_tag(match: re.Match) -> str:
     attrs = re.sub(r"\s*/\s*$", "", attrs).strip()
     return f"<{tag}{' ' + attrs if attrs else ''} />"
 
+# THE PROSE PSEUDO-TAG DEFUSAL (probe-convicted 2026-07-06, round two):
+# webclip-captured dialogue arrives as single enormous prose lines that quote
+# their own trigger strings, including bare mid-line ``` runs. Python-Markdown's
+# backtick regex backtracks an unmatched triple-run into a SINGLE-backtick
+# opener, re-pairing every subsequent code span in the line off-by-one; a
+# backticked `<module>` then lands in prose as a live HTML tag, and lxml dies
+# with 'Opening and ending tag mismatch: module and p'. Sanitizing individual
+# strings is an arms race (the journal must quote its own bugs), so instead:
+# segment each non-fenced line with the SAME pairing regex md2conf's markdown
+# pass uses, and entity-escape any <tag> in the prose segments whose name is
+# not a legitimate HTML element. Real code spans pass through verbatim; when
+# pairing desyncs, we desync in lockstep, so our prose is exactly its prose.
+# Idempotent: '&lt;module&gt;' contains no '<' for _RAW_TAG_RE to match.
+_HTML_ELEMENTS = frozenset((
+    "a abbr address area article aside audio b base bdi bdo blockquote body br "
+    "button canvas caption cite code col colgroup data datalist dd del details "
+    "dfn dialog div dl dt em embed fieldset figcaption figure footer form h1 h2 "
+    "h3 h4 h5 h6 head header hr html i iframe img input ins kbd label legend li "
+    "link main map mark meta meter nav noscript object ol optgroup option output "
+    "p param picture pre progress q rp rt ruby s samp script section select "
+    "small source span strong style sub summary sup table tbody td template "
+    "textarea tfoot th thead time title tr track u ul var video wbr"
+).split())
+
+# Python-Markdown's inline backtick span pairing, replicated for segmentation.
+_BACKTICK_SPAN_RE = re.compile(r'(?<!\\)(`+)(.+?)(?<!`)\1(?!`)')
+
+_RAW_TAG_RE = re.compile(r'</?([A-Za-z][\w.-]*)[^<>]*>')
+
+def _escape_non_html_tags(segment: str) -> str:
+    """Entity-escape pseudo-tags (<module>, <string>, <frozen runpy>) in prose.
+
+    Leaves legitimate HTML elements and markdown autolinks/mail links intact.
+    """
+    def repl(m):
+        whole = m.group(0)
+        if '://' in whole or '@' in whole:
+            return whole  # markdown autolink or email — not a tag
+        if m.group(1).lower() in _HTML_ELEMENTS:
+            return whole
+        return whole.replace('<', '&lt;').replace('>', '&gt;')
+    return _RAW_TAG_RE.sub(repl, segment)
+
+def _defuse_prose_pseudo_tags(line: str) -> str:
+    """Escape non-HTML tags only in the segments md2conf will treat as prose."""
+    out, pos = [], 0
+    for m in _BACKTICK_SPAN_RE.finditer(line):
+        out.append(_escape_non_html_tags(line[pos:m.start()]))
+        out.append(m.group(0))  # code span survives verbatim
+        pos = m.end()
+    out.append(_escape_non_html_tags(line[pos:]))
+    return ''.join(out)
+
 # THE ORPHANED LINK TAIL (probe-convicted 2026-07-06): webclip citation blocks
 # paste as ONE markdown link spanning multiple paragraphs --
 # '[![](favicon)' ... blank line ... title ... blank line ... 'www.site.com](url)'.
