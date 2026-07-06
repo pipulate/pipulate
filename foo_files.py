@@ -2,9 +2,9 @@
 # |  _ \ _ __ ___  _ __ ___  _ __ | |_  |  ___|   _  Copyright 2026 by Mike Levin (https://MikeLev.in/)
 # | |_) | '__/ _ \| '_ ` _ \| '_ \| __| | |_ | | | | Pipulate's Prompt Fu Context Compiler is under
 # |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| | Creative Commons Attribution (CC BY) license.
-# |_|   |_|  \___/|_| |_| |_| .__/ \__| |_|   \__,_| Darmok and Jalad at Tanagra when JSON fell.
+# |_|   |_|  \___/|_| |_| |_| .__/ \__| |_|   \__,_| It is the missing export discussion button.
 #                           |_|
-AI_PHOOEY_CHOP = r"""#                                                                /)    _________  
+AI_PHOOEY_CHOP = r"""                                                                 /)    _________  
 # =======================================================================       /)\__//    /         \   
 # WELCOME TO THE BOOK OF FUTURE-PROOFING (Curriculum & Router)              ___(/_ 0 0    |  Chase a  |
 # **Subtitle**: Compile Your Thoughts-to-Go in the Age of AI.             *(    ==(_T_)== | what down |
