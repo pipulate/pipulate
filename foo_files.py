@@ -23,15 +23,20 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # 4. Go to `nix develop`d terminal and type `prompt` to make `prompt.md`.
 # 5. Type `foo` for simple compile or `fu` for file-tree and UML version.
 # 6. Paste in consumer-tier Web UI ChatBot frontier model of your choice.
-# 7. Enjoy the fun that ensues as Chip O'Theseus helps you gain traction.
+# 7. Enjoy the fun that ensues as whatever model helps you gain traction.
 # 8. For a full list of content distillation options, type `book --help`.
 
-#               > THERE'S SOMETHING HAPPENING HERE  
-#               > [Just in case it's not entirely clear]  
+#               > There's something happening here.  
+#               > Just in case it's not entirely clear:  
+#
 #               > We've got content. It's groovy context!  
 #               > Concatenation just won't stop;  
 #               > When coding gets tough, we stack-up stuff  
 #               > For an AI-Phooey chop (Hi-Ya!)  
+
+# Few people get this. Text won. JSON, XML and Markdown are all just text files.
+# Consequently the idea of just stacking all this text vertically with all the
+# navigation of a book: ToC, Index, Glossary and margin notes is what we need.
 
 # Hello Amnesiac Genie Lambda function Mister Meeseeks Pachinko Machine AI!
 # Let's catch you up on how things work here and quite what your powers are.
@@ -42,15 +47,16 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # Velocity: 32 published in the last 7 days
 # --- END STATS ---
 
-# KEEP THIS RIPGREP EXAMPLE HERE FOR "AND" SEARCH THAT SHOWS TOKEN SIZES
-# ! rg -l "black swan" ~/repos/trimnoir/_posts/ | xargs rg -l "outlier" | sort | posts --stdin
-
+# Most of what's below are relative paths to files in GitHub/pipulate/pipulate
+# but commands can go here to like like the `ls -la` classics to get its output
+# stacked here into the compiled context, but we also have powerful bespoke
+# search ability like `rgx "black swan" outliers` (what we are and this is).
 
 #  _____ _            ____              _                                                                      ________________________
 # |_   _| |__   ___  | __ )  ___   ___ | | __   Contrary to popular belief, it's all really just text-files    ___|___|___|___|___|___|   Tornado plop you into a strange new wonderland?
 #   | | | '_ \ / _ \ |  _ \ / _ \ / _ \| |/ /   Whose contents are arranged just-so to have special meaning,   _|___|___|___|___|___|__   What to-do, Todo? No Problem! Frame the work.
 #   | | | | | |  __/ | |_) | (_) | (_) |   <    Which when fed into specific known actuators in order to run   ___|___|___|___|___|___|   Just follow, follow, follow, follow...
-#   |_| |_| |_|\___| |____/ \___/ \___/|_|\_\   Causes a cascading reaction of doohickeys in your MacGuffin!   _|___|___|___|___|___|__   Follow the... words elude me.         
+#   |_| |_| |_|\___| |____/ \___/ \___/|_|\_\   Causes a Cascading Reaction of Doohickeys in your MacGuffins.  _|___|___|___|___|___|__   Follow the... words elude me.         
 #                                                                                                            
 
 # CHAPTER 1: THE SOFTWARE VON NEUMANN PROBE - The time has come, the Walrus says...
