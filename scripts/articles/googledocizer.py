@@ -496,20 +496,27 @@ def main():
         sys.exit(1)
 
     print("\n🧭 Remote Match Contract:")
-    for md_file, target_title, _html in local_contracts:
+    for md_file, target_title, _html, stamped_id in local_contracts:
         meta = inventory.get(target_title)
         if meta:
-            print(f"   MATCH: {md_file.name} -> [ID: {meta['id']}] {target_title}")
+            if stamped_id == meta['id']:
+                stamp_note = "stamped"
+            elif stamped_id:
+                stamp_note = "STAMP MISMATCH — frontmatter points at a different doc; --yes heals to inventory"
+            else:
+                stamp_note = "unstamped — --yes heals without re-upload if fresh"
+            print(f"   MATCH: {md_file.name} -> [ID: {meta['id']}] {target_title} [{stamp_note}]")
         else:
-            print(f"   MISS:  {md_file.name} -> {target_title}")
+            stale = " [stamped but doc missing from folder — --yes recreates and restamps]" if stamped_id else ""
+            print(f"   MISS:  {md_file.name} -> {target_title}{stale}")
 
     if not args.yes:
         print("\n🅳🆁🆈 DRY-RUN — no mutation. Review MATCH/MISS lines, then re-run with --yes.")
         return
 
     print(f"\n✍️  Mutations armed (--yes). Upserting {len(local_contracts)} document(s)...")
-    created = updated = skipped = failed = 0
-    for md_file, target_title, html_bytes in local_contracts:
+    created = updated = healed = skipped = failed = 0
+    for md_file, target_title, html_bytes, stamped_id in local_contracts:
         if target_title in duplicates:
             print(f"   ⚠ SKIP {target_title!r}: duplicate name in folder; resolve by hand first.")
             skipped += 1
@@ -520,6 +527,25 @@ def main():
             skipped += 1
             continue
         existing = meta['id'] if meta else None
+
+        # Freshness gate: an existing doc that is not older than the local
+        # file costs ZERO Drive mutations. The frontmatter stamp is still
+        # verified locally, so a MATCHed-but-unstamped post gets its ledger
+        # entry (and a share re-assert) without a re-upload. --force reopens
+        # the full re-render path for rendering-pipeline changes.
+        if existing and not args.force and _remote_is_fresh(meta, md_file):
+            stamp = common.stamp_frontmatter_value(
+                md_file, common.GDOC_URL_KEY, common.gdoc_share_url(existing))
+            if stamp == "UNCHANGED":
+                print(f"   ⏭  FRESH [ID: {existing}] -> {target_title} (no upload; --force to re-render)")
+                skipped += 1
+            else:
+                shared = ensure_anyone_reader(service, existing)
+                share_note = "🌐 link-shared" if shared else "⚠ SHARE FAILED"
+                print(f"   🩹 HEAL  [ID: {existing}] -> {target_title} (frontmatter {stamp} | {share_note})")
+                healed += 1
+            continue
+
         try:
             file_id, verb = drive_convert_upsert(
                 service, folder_id, target_title, html_bytes,
@@ -527,12 +553,16 @@ def main():
             )
             ok, detail = readback_ok(service, file_id, target_title)
             shared = ensure_anyone_reader(service, file_id)
+            stamp = common.stamp_frontmatter_value(
+                md_file, common.GDOC_URL_KEY, common.gdoc_share_url(file_id))
             flag = "✅" if ok else "⚠"
             share_note = "🌐 link-shared" if shared else "⚠ SHARE FAILED"
-            print(f"   {flag} {verb} [ID: {file_id}] -> {target_title} ({detail} | {share_note})")
-            print(f"      🔗 https://docs.google.com/document/d/{file_id}/edit?usp=sharing")
+            print(f"   {flag} {verb} [ID: {file_id}] -> {target_title} ({detail} | {share_note} | stamp: {stamp})")
+            print(f"      🔗 {common.gdoc_share_url(file_id)}")
             if not ok:
                 print(f"      ⚠ Round-trip suspect: {detail}. Inspect before trusting.")
+            if stamp == "NO_FRONTMATTER":
+                print(f"      ⚠ Could not stamp {md_file.name}: no YAML frontmatter block found.")
             if verb == "CREATE":
                 created += 1
                 inventory[target_title] = {'id': file_id, 'mime': DOC_MIME, 'modified': None}
@@ -546,7 +576,7 @@ def main():
             print(f"   ❌ {target_title!r} failed: {err}")
             failed += 1
 
-    print(f"\n🏁 Upsert complete. Created: {created}  Updated: {updated}  Skipped: {skipped}  Failed: {failed}")
+    print(f"\n🏁 Upsert complete. Created: {created}  Updated: {updated}  Healed: {healed}  Skipped: {skipped}  Failed: {failed}")
 
 
 if __name__ == "__main__":
