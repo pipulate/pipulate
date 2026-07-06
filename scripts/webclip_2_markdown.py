@@ -92,6 +92,7 @@ def set_clipboard(text: str):
 
 def transform():
     html_content = get_clipboard_html()
+    flattened = 0
     
     if not html_content:
         md_text = get_clipboard_text()
