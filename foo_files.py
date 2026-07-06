@@ -553,22 +553,22 @@ CHOP_GOOGLEDOC_LEAF = """
 # Finishing googledocizer.py: batch catch-up + pipeline hook + frontmatter ledger.
 
 # 1. The one being brought all the way, and the sibling that already arrived
-scripts/articles/googledocizer.py
-scripts/articles/confluenceizer.py
+scripts/articles/googledocizer.py  # [5,318 tokens | 22,643 bytes]
+scripts/articles/confluenceizer.py  # [4,797 tokens | 20,865 bytes]
 
 # 2. The pipeline surface the hook lands in
-scripts/articles/publishizer.py
-scripts/articles/articleizer.py
-scripts/articles/common.py
-scripts/articles/lsa.py
+scripts/articles/publishizer.py  # [1,027 tokens | 4,217 bytes]
+scripts/articles/articleizer.py  # [3,354 tokens | 15,274 bytes]
+scripts/articles/common.py  # [1,371 tokens | 5,642 bytes]
+scripts/articles/lsa.py  # [4,939 tokens | 21,601 bytes]
 
 # 3. The existing Google auth pattern + config
-scripts/gmail.py
-~/.config/pipulate/blogs.json
+scripts/gmail.py  # [2,542 tokens | 10,801 bytes]
+~/.config/pipulate/blogs.json  # [307 tokens | 1,043 bytes]
 
 # 4. Patch harness
-apply.py
-scripts/xp.py
+apply.py  # [2,512 tokens | 11,038 bytes]
+scripts/xp.py  # [2,002 tokens | 8,437 bytes]
 
 # 5. Falsifying probes -- ground truth before any cut
 ! echo "--- FRONTMATTER SHAPE (newest post) ---" && head -30 $(ls -t ~/repos/trimnoir/_posts/*.md | head -1)
