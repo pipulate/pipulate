@@ -23,16 +23,30 @@ def strip_prompt_boundary(content: str) -> str:
 
 
 def redact_ips(content: str) -> str:
-    """Replace any non-safe IPv4 address with a redaction token (both lanes)."""
-    def ip_replacer(match):
-        ip = match.group(0)
-        return ip if ip in SAFE_IPS else "[REDACTED_IP]"
+    """Replace any non-safe IPv4 address with a redaction token (both lanes).
 
-    ip_pattern = re.compile(
-        r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}'
-        r'(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b'
+    IPs in the URL authority position (immediately after '://') get a
+    bracket-free, hostname-safe token: urlparse treats '[' after '//' as an
+    IPv6 literal and raises ValueError('Invalid IPv6 URL') on
+    'http://[REDACTED_IP]/...', which detonates md2conf downstream in
+    confluenceizer.py. Prose occurrences keep the visible bracketed token.
+    """
+    ip_core = (
+        r'(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}'
+        r'(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)'
     )
-    return ip_pattern.sub(ip_replacer, content)
+
+    def make_replacer(token):
+        def replacer(match):
+            ip = match.group(0)
+            return ip if ip in SAFE_IPS else token
+        return replacer
+
+    # Pass 1: URL host position -> hostname-safe token (no brackets)
+    content = re.sub(rf'(?<=://){ip_core}\b', make_replacer("redacted-ip.invalid"), content)
+    # Pass 2: everything else -> the visible bracketed token
+    content = re.sub(rf'\b{ip_core}\b', make_replacer("[REDACTED_IP]"), content)
+    return content
 
 
 def strip_private_fences(content: str):
