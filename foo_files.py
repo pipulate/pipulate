@@ -230,7 +230,7 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 # ~/repos/nixos/autognome.py  #  <-- More rare to have to include, but the true "top" of the muscle memory stack for day-to-day purposes
 # cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
 # scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
-# scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
+scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
 
 # The following 3 files are the first huge context reveal that pull the curtains open.
 # __init__.py     #  <-- Master versioning
