@@ -39,6 +39,23 @@ nix develop .#quiet --command bash << 'EOF'
     fi
   done
 
+  # THE HOMEPAGE TWIN: root-level pages (index.md, about.md, ...) live outside
+  # _posts/, so the loop above never publishes their markdown. Without this,
+  # a negotiated Accept: text/markdown request to "/" rewrites to /index.md
+  # and 404s. index.md with no permalink frontmatter defaults to "/".
+  for page in *.md; do
+    [ -f "$page" ] || continue
+    PERMALINK=$(grep -m 1 '^permalink:' "$page" | sed -e 's/^permalink:[[:space:]]*//' -e 's/["'\''[:space:]]//g')
+    if [ -z "$PERMALINK" ] && [ "$page" = "index.md" ]; then
+      PERMALINK="/"
+    fi
+    if [ -n "$PERMALINK" ]; then
+      mkdir -p "_site$PERMALINK"
+      cp "$page" "_site${PERMALINK}index.md"
+      sed -i -e 's/{% raw %}//g' -e 's/{% endraw %}//g' "_site${PERMALINK}index.md"
+    fi
+  done
+
   # 2. Run the Batch Surgeon ONCE
   python3 /home/mike/www/mikelev.in/scripts/dye_injector_v2.py "/home/mike/www/mikelev.in/_site"
 EOF
