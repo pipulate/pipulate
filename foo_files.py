@@ -43,8 +43,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,279 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 32 published in the last 7 days
+# There are 1,280 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 25 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -546,6 +546,37 @@ scripts/gmail.py
 # XYZ, whatever X, Y and Z happen to be. And don't forget to tell them the
 # command they should execute after adding the custom CHOP here, because you
 # know humans aren't really that smart.
+
+CHOP_GOOGLEDOC_LEAF = """
+# THE GOOGLE DOC LEAF-PAGE BLUEPRINT
+# COMMAND: python prompt_foo.py --chop CHOP_GOOGLEDOC_LEAF --no-tree
+# Finishing googledocizer.py: batch catch-up + pipeline hook + frontmatter ledger.
+
+# 1. The one being brought all the way, and the sibling that already arrived
+scripts/articles/googledocizer.py
+scripts/articles/confluenceizer.py
+
+# 2. The pipeline surface the hook lands in
+scripts/articles/publishizer.py
+scripts/articles/articleizer.py
+scripts/articles/common.py
+scripts/articles/lsa.py
+
+# 3. The existing Google auth pattern + config
+scripts/gmail.py
+~/.config/pipulate/blogs.json
+
+# 4. Patch harness
+apply.py
+scripts/xp.py
+
+# 5. Falsifying probes -- ground truth before any cut
+! echo "--- FRONTMATTER SHAPE (newest post) ---" && head -30 $(ls -t ~/repos/trimnoir/_posts/*.md | head -1)
+! echo "--- EXISTING GOOGLE-DOC KEYS ---" && rg -c -i "google_doc|gdoc" ~/repos/trimnoir/_posts/*.md | wc -l
+! echo "--- GOOGLE LIBS PINNED ---" && rg -i "google" requirements.in
+! echo "--- TOKEN/CREDENTIAL FILES ---" && ls -la gmail_token.json ~/.config/pipulate/ 2>&1
+! echo "--- CONFLUENCE IDEMPOTENCY MARKER PATTERN ---" && rg -n "latest|marker" scripts/articles/confluenceizer.py | head -20
+"""
 
 ROLLING_PIN_CHOP = """
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
