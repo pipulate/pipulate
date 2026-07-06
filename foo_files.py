@@ -59,6 +59,10 @@ AI_PHOOEY_CHOP = r"""#                                                          
 #   |_| |_| |_|\___| |____/ \___/ \___/|_|\_\   Causes a Cascading Reaction of Doohickeys in your MacGuffins.  _|___|___|___|___|___|__   Follow the... words elude me.         
 #                                                                                                            
 
+# CHARACTER DEVELOPMENT
+# Yen Sid-ton: Wizened graybeard, wants to help apprentice but knows they must
+# learn for themselves. Netskopes DEM broom bit-storms proactively and happily.
+
 # CHAPTER 1: THE SOFTWARE VON NEUMANN PROBE - The time has come, the Walrus says...
 # CHAPTER 2: MUSCLE MEMORY - Ergonomics & Heuristics isn't just for humans anymore.
 # CHAPTER 3: A PERFECT ONBOARDING EXPERIENCE - A journey of 1000 miles starts here.
