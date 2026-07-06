@@ -2,7 +2,7 @@
 # |  _ \ _ __ ___  _ __ ___  _ __ | |_  |  ___|   _  Copyright 2026 by Mike Levin (https://MikeLev.in/)
 # | |_) | '__/ _ \| '_ ` _ \| '_ \| __| | |_ | | | | Pipulate's Prompt Fu Context Compiler is under
 # |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| | Creative Commons Attribution (CC BY) license.
-# |_|   |_|  \___/|_| |_| |_| .__/ \__| |_|   \__,_| It is the missing export discussion button.
+# |_|   |_|  \___/|_| |_| |_| .__/ \__| |_|   \__,_| Pin-up recursive self-improvement loops 🔎
 #                           |_|
 AI_PHOOEY_CHOP = r"""                                                                 /)    _________  
 # =======================================================================       /)\__//    /         \   
@@ -43,8 +43,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,282 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 27 published in the last 7 days
+# There are 1,281 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 26 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -99,6 +99,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # ============================================================================
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
+
+/home/mike/repos/botifyml/_posts/2026-07-06-web-built-for-ai-content-negotiation.md
 
 # # 1. The two files actually getting patched
 # flake.nix  # [11,455 tokens | 48,892 bytes]
