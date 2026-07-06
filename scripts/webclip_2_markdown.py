@@ -104,12 +104,23 @@ def transform():
         soup = BeautifulSoup(html_content, 'html.parser')
         for script in soup(["script", "style"]):
             script.extract()
+        flattened = flatten_block_anchors(soup)
         content = soup.body if soup.body else soup
         md_text = md(str(content))
 
-    # 3. Push back
+    # 3. Airlock: both lanes (HTML and plain-text passthrough) get fence hygiene
+    md_text, neutralized, labeled, closed = enforce_fence_hygiene(md_text)
+
+    # 4. Push back
     set_clipboard(md_text)
     print("✨ Clipboard transformed to Markdown.")
+    if flattened or neutralized or labeled or closed:
+        print(f"🧯 Airlock repairs: {flattened} multi-block link(s) flattened, "
+              f"{neutralized} floating backtick run(s) neutralized, "
+              f"{labeled} naked fence opener(s) labeled, "
+              f"{closed} unclosed fence(s) closed.")
+        print("   These render fine in browsers but detonate in publishing "
+              "pipelines with strict XML parser requirements (like Confluence).")
 
 if __name__ == "__main__":
     transform()
