@@ -176,6 +176,13 @@ def main():
     args = parser.parse_args()
 
     if not should_run(args.force):
+        # Fresh cache: zero API calls, but ALWAYS print the receipts so the
+        # cliff is copy-paste ready from any terminal, any day.
+        try:
+            with open(OUTPUT_FILE, 'r', encoding='utf-8') as f:
+                print_site_timeline(json.load(f))
+        except Exception as e:
+            print(f"⚠️ Could not read cached ledger: {e}")
         return
 
     print(f"🚀 Starting GSC Historical Dragnet for {SITE_URL}")
