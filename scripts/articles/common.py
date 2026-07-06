@@ -165,3 +165,68 @@ def add_standard_arguments(parser):
     # CRITICAL FIX: Inject default="1" here
     parser.add_argument('-t', '--target', type=str, default="1", help="Target ID from blogs.json (default: '1')")
     parser.add_argument('-k', '--key', type=str, help="API key alias from keys.json (e.g., 'pipulate')")
+
+
+# ----------------------------------------------------------------------------
+# Frontmatter stamping — the 1-to-1 ledger (Jekyll post <-> Google Doc)
+# ----------------------------------------------------------------------------
+GDOC_URL_KEY = "gdoc_url"
+
+
+def gdoc_share_url(file_id):
+    """Canonical anyone-with-link share URL for a Google Doc file id."""
+    return f"https://docs.google.com/document/d/{file_id}/edit?usp=sharing"
+
+
+def gdoc_id_from_frontmatter(metadata):
+    """Extract the Doc file id from a post's gdoc_url, or None if unstamped."""
+    url = str((metadata or {}).get(GDOC_URL_KEY) or "").strip()
+    match = re.search(r"/document/d/([A-Za-z0-9_-]+)", url)
+    return match.group(1) if match else None
+
+
+def stamp_frontmatter_value(md_path, key, value, preserve_mtime=True):
+    """Surgically upsert one single-line `key: value` in a post's YAML block.
+
+    Deliberately NOT a parse->mutate->dump round-trip: pushing 1,200+ posts
+    through a YAML dumper would churn quoting, folding, and key order across
+    the whole corpus. This touches exactly one line inside the leading
+    `--- ... ---` block, leaves every other byte alone, and (by default)
+    restores the file's mtime so a bookkeeping stamp never masquerades as a
+    content edit to mtime-based freshness logic.
+
+    Returns one of: "ADDED", "UPDATED", "UNCHANGED", "NO_FRONTMATTER".
+    """
+    path = Path(md_path)
+    original = path.read_text(encoding="utf-8")
+    lines = original.split("\n")
+    if not lines or lines[0].strip() != "---":
+        return "NO_FRONTMATTER"
+    end = None
+    for i in range(1, len(lines)):
+        if lines[i].strip() == "---":
+            end = i
+            break
+    if end is None:
+        return "NO_FRONTMATTER"
+
+    new_line = f"{key}: {value}"
+    key_re = re.compile(rf"^{re.escape(key)}\s*:")
+    for i in range(1, end):
+        if key_re.match(lines[i]):
+            if lines[i] == new_line:
+                return "UNCHANGED"
+            lines[i] = new_line
+            _write_text_preserving_mtime(path, "\n".join(lines), preserve_mtime)
+            return "UPDATED"
+
+    lines.insert(end, new_line)
+    _write_text_preserving_mtime(path, "\n".join(lines), preserve_mtime)
+    return "ADDED"
+
+
+def _write_text_preserving_mtime(path, text, preserve_mtime):
+    st = path.stat() if preserve_mtime else None
+    path.write_text(text, encoding="utf-8")
+    if st is not None:
+        os.utime(path, (st.st_atime, st.st_mtime))
