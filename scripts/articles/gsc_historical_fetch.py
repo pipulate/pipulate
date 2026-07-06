@@ -115,6 +115,32 @@ def fetch_month_data(service, start_date, end_date):
             
     return mapped_data
 
+def print_site_timeline(data):
+    """The Receipts: monthly site-wide click totals, always copy-paste ready.
+
+    Aggregates every slug's timeline into one chronological table with the
+    crash pivot marked, so a single terminal capture documents the cliff
+    before the rolling 16-month GSC window erases the 'before' picture.
+    """
+    monthly = {}
+    for slug, entry in data.items():
+        if slug == '_meta' or not isinstance(entry, dict):
+            continue
+        for month, clicks in entry.get('timeline', {}).items():
+            monthly[month] = monthly.get(month, 0) + clicks
+    if not monthly:
+        print("⚠️ No timeline data to display.")
+        return
+    crash_month = CRASH_DATE.strftime('%Y-%m')
+    max_clicks = max(monthly.values()) or 1
+    print("\n--- 📉 SITE CLICKS BY MONTH (GSC ledger, all pages) ---")
+    for month in sorted(monthly):
+        clicks = int(monthly[month])
+        bar = '█' * max(1, round(40 * clicks / max_clicks)) if clicks else ''
+        marker = "  <-- CRASH PIVOT (2025-04-23)" if month == crash_month else ""
+        print(f"{month}  {clicks:>8,}  {bar}{marker}")
+    print("--- END SITE CLICKS ---\n")
+
 def should_run(force=False):
     """Checks if the output file exists and was updated today."""
     if force:
