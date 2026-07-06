@@ -372,6 +372,8 @@ def main():
                         help="Sync only the given file(s). Repeatable. Beats --latest and the sweep.")
     parser.add_argument("--latest", action="store_true",
                         help="Sync only the article articleizer.py most recently wrote for this target.")
+    parser.add_argument("--force", action="store_true",
+                        help="Re-upload even docs the freshness gate would skip (e.g. after a rendering-pipeline change).")
     parser.add_argument("--list", action="store_true",
                         help="List the Drive folder inventory and exit.")
     parser.add_argument("--folder", metavar="ID",
@@ -485,7 +487,8 @@ def main():
             post = frontmatter.load(md_file)
             target_title = _target_title(md_file, post)
             html_bytes = markdown_to_html(post.content)
-            local_contracts.append((md_file, target_title, html_bytes))
+            stamped_id = common.gdoc_id_from_frontmatter(post.metadata)
+            local_contracts.append((md_file, target_title, html_bytes, stamped_id))
             print(f"   Target Title: {target_title}")
         print(f"✅ Local contract pass complete. {len(local_contracts)} document(s) mapped.")
     except Exception as e:
