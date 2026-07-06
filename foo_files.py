@@ -415,6 +415,19 @@ scripts/ai.py     #  <-- How I constantly use local AI to write git commit messa
 # ============================================================================
 # XIII. JEKYLL PUBLISHING - Reaching out to the world
 # ============================================================================
+# 📖 CHAPTER BLURB — JEKYLL PUBLISHING: One local plain-text master — markdown
+# in _posts/, written in vim, versioned in git — fans out through a data-driven
+# pipeline (blogs.json, materialized from blogs.nix, the single source of
+# truth) into every terminal that wants a projection: the public HTML site, raw
+# index.md for content-negotiating agents, llms.txt manifests, K-Means hub
+# pages, sitemaps, Nginx redirect maps, an idempotent Confluence mirror, and
+# anyone-with-link Google Docs whose share URLs are stamped surgically back
+# into each post's frontmatter (one line touched, mtime preserved, ADDED /
+# UPDATED / UNCHANGED as the ledger verbs). The chapter's law: platforms are
+# retargetable projection lanes, never the record; the ledger travels with the
+# file; dry-run contracts precede every mutation. This is the pipeline that
+# gives the Honeybot something to say — and the provenance that makes the
+# saying worth training on.
 
 # ~/.config/pipulate/blogs.json                # <-- CAUTION! Derived from ~/repos/nixos/blogs.nix
 scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
