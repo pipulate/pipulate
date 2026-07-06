@@ -332,5 +332,8 @@ def main():
     print(f"💾 Saved velocity data to {OUTPUT_FILE}")
     print(f"💎 Total Unique Content Nodes Grounded: {len(history_data)}")
 
+    # The Receipts, every run, no exceptions.
+    print_site_timeline(final_output)
+
 if __name__ == "__main__":
     main()
