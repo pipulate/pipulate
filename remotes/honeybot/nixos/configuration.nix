@@ -222,6 +222,13 @@
           "~*text/markdown" 1;
       }
 
+      # 1b. Teach Nginx that .md is text/markdown. mime.types has no entry for
+      # it, so without this the served file falls back to
+      # application/octet-stream no matter what the negotiation logic below does.
+      types {
+          text/markdown md;
+      }
+
       # 2. THE GHOST CATCHER: Load the dynamic 404 ledger into RAM
       map $uri $new_uri {
           include /home/mike/www/mikelev.in/_site/redirects.map;
