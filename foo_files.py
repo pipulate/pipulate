@@ -260,7 +260,7 @@ init.lua          #  <-- Daily driver hot-keys that overlap with aliases in flak
 # THE ROLLING PIN (Again, if you only include one thing for overarching context of Pipulate and NPvg, include this.
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER: 3
 # ! python scripts/articles/lsa.py -t 4 --reverse --fmt dated-slugs  # <-- BotifyML work journal
-scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
+# scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 
 # AI_CONTEXT.md
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
@@ -436,7 +436,7 @@ scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin wo
 # scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
 # scripts/articles/sanitizer.py                # <-- Scrubs PII
 # scripts/articles/gsc_historical_fetch.py
-scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
+# scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
 # scripts/articles/confluenceizer.py           # <-- Idempotent Jekyll-to-Confluence corporate wiki
 scripts/articles/googledocizer.py            # <-- Just added
 # scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
@@ -538,13 +538,12 @@ scripts/articles/googledocizer.py            # <-- Just added
 # ============================================================================
 
 # scripts/gmail.py
-
-#  _____ _           _           _                          
-# |  ___(_)_ __   __| |   __ _  | |__   ___  _ __ ___   ___ 
-# | |_  | | '_ \ / _` |  / _` | | '_ \ / _ \| '_ ` _ \ / _ \
-# |  _| | | | | | (_| | | (_| | | | | | (_) | | | | | |  __/
-# |_|   |_|_| |_|__,_|  __,_| |_| |_|___/|_| |_| |_|___|
-
+#  _____ _           _           _   _                      
+# |  ___(_)_ __   __| |   __ _  | | | | ___  _ __ ___   ___ 
+# | |_  | | '_ \ / _` |  / _` | | |_| |/ _ \| '_ ` _ \ / _ \
+# |  _| | | | | | (_| | | (_| | |  _  | (_) | | | | | |  __/
+# |_|   |_|_| |_|\__,_|  \__,_| |_| |_|\___/|_| |_| |_|\___|
+                                                          
 # I NEED TO CONTINUE RESEARCHING AGENTIC COMMERCE ON THE MAJOR PLATFORMS
 # !https://support.botify.com/en/articles/9108593-creating-segments
 # !https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/products
@@ -568,8 +567,8 @@ scripts/articles/googledocizer.py            # <-- Just added
 #   ____          _                     ____ _   _  ___  ____      
 #  / ___|   _ ___| |_ ___  _ __ ___    / ___| | | |/ _ \|  _ \ ___ 
 # | |  | | | / __| __/ _ \| '_ ` _ \  | |   | |_| | | | | |_) / __|
-# | |__| |_| __ \ || (_) | | | | | | | |___|  _  | |_| |  __/__ \
-#  ______,_|___/_____/|_| |_| |_|  ____|_| |_|___/|_|   |___/
+# | |__| |_| \__ \ || (_) | | | | | | | |___|  _  | |_| |  __/\__ \
+#  \____\__,_|___/\__\___/|_| |_| |_|  \____|_| |_|\___/|_|   |___/
 # ============================================================================
 # SPECIALIZED STRIKE PACKAGES
 # ============================================================================
