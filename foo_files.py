@@ -436,9 +436,9 @@ scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin wo
 # scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
 # scripts/articles/sanitizer.py                # <-- Scrubs PII
 # scripts/articles/gsc_historical_fetch.py
-# scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
+scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
 # scripts/articles/confluenceizer.py           # <-- Idempotent Jekyll-to-Confluence corporate wiki
-# scripts/articles/googledocizer.py            # <-- Just added
+scripts/articles/googledocizer.py            # <-- Just added
 # scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
 # scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
 # scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
@@ -906,6 +906,7 @@ tools/llm_optics.py
 """
 
 # #todo #to-do
+# - Add "What's dangling that should be carried forward" language in the `prompt_foo.py` instructions
 # - Swap in uv for pip for a faster install
 # - Un-hardwire the Jekyll `/futureproof/` blog folder to be `blog.nix` configured
 # - Remove holographic shard json orphans" in Jekyll `_context/` folder
