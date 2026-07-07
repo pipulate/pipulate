@@ -675,7 +675,7 @@ print(max(1, n))
               [ -z "$matches" ] && break
               matches=$(echo "$matches" | xargs rg -il -- "$term")
             done
-            echo "$matches" | sort | posts --stdin $lastn
+            echo "$matches" | sort | posts --stdin $lastn --fmt paths
           }
           # rgxc: rgx with Context. Same case-insensitive n-gram narrowing,
           # but the final pass interleaves each file's holographic shard
