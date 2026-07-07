@@ -320,6 +320,15 @@ def main():
         terms = args.match.lower().split()
         metadata = [item for item in metadata if all(t in item['path'].lower() for t in terms)]
 
+    # --last: keep only the N most recent, preserving the chosen display order.
+    # Default sort is oldest-first, so "most recent" is the tail; with
+    # --reverse (newest-first) it is the head.
+    if args.last is not None and args.last > 0:
+        if args.reverse:
+            metadata = metadata[:args.last]
+        else:
+            metadata = metadata[-args.last:]
+
     # --top: limit after sort+filter
     if args.top is not None:
         metadata = metadata[:args.top]
