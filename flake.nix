@@ -689,8 +689,10 @@ print(max(1, n))
           # around every hit. All terms are forwarded to --terms.
           rgxc() {
             local lastn=""
+            local capn=8
             if [[ "''${1:-}" =~ ^[0-9]+$ ]]; then
               lastn="--last $1"
+              [ "$1" -lt "$capn" ] && capn="$1"
               shift
             fi
             if [ "$#" -eq 0 ]; then
