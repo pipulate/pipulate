@@ -709,6 +709,10 @@ print(max(1, n))
               matches=$(echo "$matches" | xargs rg -il -- "$term")
             done
             echo "$matches" | sort | posts --stdin --shards $lastn --around 2 --terms "$@"
+            echo "$matches" | sort | posts --stdin --last 10 --fmt slugs \
+              | { echo "[[[TODO_SLUGS]]]"; cat; echo "[[[END_SLUGS]]]"; } \
+              | xclip -selection clipboard 2>/dev/null \
+              && echo "📋 TODO_SLUGS block (≤10 newest) → clipboard (type xp to compile)" >&2
           }
           alias release='python release.py --release --force'
           alias g='clear && echo "$ git status" && git status'
