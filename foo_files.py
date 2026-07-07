@@ -180,14 +180,15 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # Software Von Neumann Probe IaC Kickstart
 
-# release.py                                          #  <-- The deploy process
-# assets/installer/install.sh                         #  <-- Pipulate.com installer real home in github/pipulate repo
-# ~/repos/Pipulate.com/index.md              #  <-- The public face (in addition to GitHub & PyPI)
-# ~/repos/Pipulate.com/CNAME
-# ~/repos/Pipulate.com/_config.yml
-# ~/repos/Pipulate.com/_layouts/default.html
-# ~/repos/nixos/.gitignore
-# ~/repos/Pipulate.com/install.md            #  <-- Gets copied into place here by pipulate/release.py
+release.py                                          #  <-- The deploy process
+assets/installer/install.sh                         #  <-- Pipulate.com installer real home in github/pipulate repo
+~/repos/Pipulate.com/index.md              #  <-- The public face (in addition to GitHub & PyPI)
+~/repos/Pipulate.com/CNAME
+~/repos/Pipulate.com/_config.yml
+~/repos/Pipulate.com/_layouts/default.html
+~/repos/nixos/.gitignore
+~/repos/Pipulate.com/install.md            #  <-- Gets copied into place here by pipulate/release.py
+
 # ~/repos/nixos/configuration.nix            #  <-- "Global" IaC context (most of you won't have)
 # ~/repos/nixos/packages.nix                 #  <-- Full disclosure on pre-flake IaC available apps.
 # ~/repos/nixos/services.nix                 #  <-- Running Linux system services.
