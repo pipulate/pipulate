@@ -704,7 +704,7 @@ print(max(1, n))
               [ -z "$matches" ] && break
               matches=$(echo "$matches" | xargs rg -il -- "$term")
             done
-            echo "$matches" | sort | posts --stdin --shards --around 2 --terms "$@"
+            echo "$matches" | sort | posts --stdin --shards $lastn --around 2 --terms "$@"
           }
           alias release='python release.py --release --force'
           alias g='clear && echo "$ git status" && git status'
