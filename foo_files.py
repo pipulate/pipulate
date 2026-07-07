@@ -43,8 +43,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,284 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 26 published in the last 7 days
+# There are 1,285 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 27 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -180,14 +180,14 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # Software Von Neumann Probe IaC Kickstart
 
-release.py                                          #  <-- The deploy process
-assets/installer/install.sh                         #  <-- Pipulate.com installer real home in github/pipulate repo
-~/repos/Pipulate.com/index.md              #  <-- The public face (in addition to GitHub & PyPI)
-~/repos/Pipulate.com/CNAME
-~/repos/Pipulate.com/_config.yml
-~/repos/Pipulate.com/_layouts/default.html
-~/repos/nixos/.gitignore
-~/repos/Pipulate.com/install.md            #  <-- Gets copied into place here by pipulate/release.py
+# release.py                                          #  <-- The deploy process
+# assets/installer/install.sh                         #  <-- Pipulate.com installer real home in github/pipulate repo
+# ~/repos/Pipulate.com/index.md              #  <-- The public face (in addition to GitHub & PyPI)
+# ~/repos/Pipulate.com/CNAME
+# ~/repos/Pipulate.com/_config.yml
+# ~/repos/Pipulate.com/_layouts/default.html
+# ~/repos/nixos/.gitignore
+# ~/repos/Pipulate.com/install.md            #  <-- Gets copied into place here by pipulate/release.py
 
 # ~/repos/nixos/configuration.nix            #  <-- "Global" IaC context (most of you won't have)
 # ~/repos/nixos/packages.nix                 #  <-- Full disclosure on pre-flake IaC available apps.
@@ -224,9 +224,9 @@ apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aid
 scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 
 # ACTUATORS & RELATED
-init.lua          #  <-- Daily driver hot-keys that overlap with aliases in flake.nix
+# init.lua          #  <-- Daily driver hot-keys that overlap with aliases in flake.nix
 # scripts/ai.py     #  <-- How I constantly use local AI to write git commit messages with `m` alias.
-~/repos/nixos/autognome.py  #  <-- More rare to have to include, but the true "top" of the muscle memory stack for day-to-day purposes
+# ~/repos/nixos/autognome.py  #  <-- More rare to have to include, but the true "top" of the muscle memory stack for day-to-day purposes
 # cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
 # scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
 # scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
@@ -439,7 +439,7 @@ init.lua          #  <-- Daily driver hot-keys that overlap with aliases in flak
 # scripts/articles/gsc_historical_fetch.py
 # scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
 # scripts/articles/confluenceizer.py           # <-- Idempotent Jekyll-to-Confluence corporate wiki
-scripts/articles/googledocizer.py            # <-- Just added
+# scripts/articles/googledocizer.py            # <-- Just added
 # scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
 # scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
 # scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
@@ -523,7 +523,8 @@ scripts/articles/googledocizer.py            # <-- Just added
 # ============================================================================
 
 # scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
-# imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
+imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
+
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
 # imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
