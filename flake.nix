@@ -678,10 +678,10 @@ print(max(1, n))
               matches=$(echo "$matches" | xargs rg -il -- "$term")
             done
             echo "$matches" | sort | posts --stdin $lastn --fmt paths
-            echo "$matches" | sort | posts --stdin --last 10 --fmt slugs \
+            echo "$matches" | sort | posts --stdin --last "$capn" --fmt slugs \
               | { echo "[[[TODO_SLUGS]]]"; cat; echo "[[[END_SLUGS]]]"; } \
               | xclip -selection clipboard 2>/dev/null \
-              && echo "📋 TODO_SLUGS block (≤10 newest) → clipboard (type xp to compile)" >&2
+              && echo "📋 TODO_SLUGS block (≤$capn newest) → clipboard (type xp to compile)" >&2
           }
           # rgxc: rgx with Context. Same case-insensitive n-gram narrowing,
           # but the final pass interleaves each file's holographic shard
