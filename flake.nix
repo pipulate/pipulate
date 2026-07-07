@@ -658,8 +658,13 @@ print(max(1, n))
           # Chains case-insensitive `rg -il` through each term, sorts, and hands
           # the result to `posts --stdin`.
           rgx() {
+            local lastn=""
+            if [[ "''${1:-}" =~ ^[0-9]+$ ]]; then
+              lastn="--last $1"
+              shift
+            fi
             if [ "$#" -eq 0 ]; then
-              echo "Usage: rgx TERM [TERM...]"
+              echo "Usage: rgx [N] TERM [TERM...]   (leading N = only the N most recent matches)"
               return 1
             fi
             local posts_dir="$HOME/repos/trimnoir/_posts"
@@ -670,7 +675,7 @@ print(max(1, n))
               [ -z "$matches" ] && break
               matches=$(echo "$matches" | xargs rg -il -- "$term")
             done
-            echo "$matches" | sort | posts --stdin
+            echo "$matches" | sort | posts --stdin $lastn
           }
           # rgxc: rgx with Context. Same case-insensitive n-gram narrowing,
           # but the final pass interleaves each file's holographic shard
