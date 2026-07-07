@@ -225,6 +225,7 @@ def main():
     parser.add_argument('-r', '--reverse', action='store_true', help="Reverse the sorting order")
     parser.add_argument('-a', '--article', type=str, help="Generate a prompt_foo.py command for a slice of articles (e.g., '[-5:]')")
     parser.add_argument('--top', type=int, default=None, metavar='N', help="Limit output to the first N results (after sorting)")
+    parser.add_argument('--last', type=int, default=None, metavar='N', help="Keep only the N most recent articles (chronologically), preserving display order")
     parser.add_argument('--match', type=str, default=None, metavar='TERMS', help="Filter articles whose filename contains all whitespace-separated terms (case-insensitive)")
     parser.add_argument('--tokens-under', type=int, default=None, metavar='N', dest='tokens_under', help="Exclude articles with token count >= N (requires reading each file)")
     parser.add_argument('--fmt', type=str, default='full', choices=['full', 'paths', 'slugs', 'dated-slugs'], help="Output format: 'full' (default, with comments), 'paths' (bare absolute paths), or 'slugs' (concept slug only, no date prefix)")
