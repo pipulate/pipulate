@@ -682,8 +682,13 @@ print(max(1, n))
           # (keywords + summary from _context/) and the ±2-line regions
           # around every hit. All terms are forwarded to --terms.
           rgxc() {
+            local lastn=""
+            if [[ "''${1:-}" =~ ^[0-9]+$ ]]; then
+              lastn="--last $1"
+              shift
+            fi
             if [ "$#" -eq 0 ]; then
-              echo "Usage: rgxc TERM [TERM...]"
+              echo "Usage: rgxc [N] TERM [TERM...]   (leading N = only the N most recent matches)"
               return 1
             fi
             local posts_dir="$HOME/repos/trimnoir/_posts"
