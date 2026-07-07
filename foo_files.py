@@ -223,8 +223,8 @@ apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aid
 scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 
 # ACTUATORS & RELATED
-init.lua          #  <-- Daily driver hot-keys that overlap with aliases in flake.nix
-scripts/ai.py     #  <-- How I constantly use local AI to write git commit messages with `m` alias.
+# init.lua          #  <-- Daily driver hot-keys that overlap with aliases in flake.nix
+# scripts/ai.py     #  <-- How I constantly use local AI to write git commit messages with `m` alias.
 # ~/repos/nixos/autognome.py  #  <-- More rare to have to include, but the true "top" of the muscle memory stack for day-to-day purposes
 # cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
 # scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
@@ -430,29 +430,29 @@ scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin wo
 # saying worth training on.
 
 # ~/.config/pipulate/blogs.json                # <-- CAUTION! Derived from ~/repos/nixos/blogs.nix
-scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
-scripts/articles/common.py                   # <-- Self-explanatory
-scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
-scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
-scripts/articles/sanitizer.py                # <-- Scrubs PII
-scripts/articles/gsc_historical_fetch.py
-scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
-scripts/articles/confluenceizer.py           # <-- Idempotent Jekyll-to-Confluence corporate wiki
-scripts/articles/googledocizer.py            # <-- Just added
-scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
-scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
-scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
-scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
-scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
-scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
+# scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
+# scripts/articles/common.py                   # <-- Self-explanatory
+# scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
+# scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
+# scripts/articles/sanitizer.py                # <-- Scrubs PII
+# scripts/articles/gsc_historical_fetch.py
+# scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
+# scripts/articles/confluenceizer.py           # <-- Idempotent Jekyll-to-Confluence corporate wiki
+# scripts/articles/googledocizer.py            # <-- Just added
+# scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
+# scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
+# scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
+# scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
+# scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
+# scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
 
 # The following Jekyll files pair well with the above to show how we start various forms of tracking, and as a transition into Honeybot Nginx Broadcast Studio & telemetry.
-release.py                                          #  <-- The deploy process
-remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
-~/repos/trimnoir/_config.yml
-~/repos/trimnoir/_layouts/default.html
-~/repos/trimnoir/index.md
-~/repos/trimnoir/flake.nix
+# release.py                                          #  <-- The deploy process
+# remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
+# ~/repos/trimnoir/_config.yml
+# ~/repos/trimnoir/_layouts/default.html
+# ~/repos/trimnoir/index.md
+# ~/repos/trimnoir/flake.nix
 
 # ============================================================================
 # XIV. WORKFLOW WORKSHOP - WET assembly scripts. Extruders.
