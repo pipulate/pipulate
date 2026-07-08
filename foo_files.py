@@ -635,6 +635,19 @@ init.lua
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 """
 
+PINNED_CHOP = r"""
+# THE PINBOARD HYDRATOR (full text of currently-pinned milestone articles)
+# COMMAND: python prompt_foo.py --chop PINNED_CHOP --no-tree
+# One path line per pin in the PINBOARD section of AI_PHOOEY_CHOP.
+# When a pin graduates there, delete its path line here. Keep in lockstep.
+
+foo_files.py
+
+# --- PIN PATHS START ---
+# ~/repos/trimnoir/_posts/2026-07-08-<slug-tbd-after-articleize>.md
+# --- PIN PATHS END ---
+"""
+
 DEFAULT_CHOP = r"""
 # THE DAILY DRIVER (Stable getting-started snapshot, independent of whatever
 # AI_PHOOEY_CHOP is mid-edit for ad hoc work)
