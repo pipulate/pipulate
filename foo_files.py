@@ -584,37 +584,6 @@ imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
 # command they should execute after adding the custom CHOP here, because you
 # know humans aren't really that smart.
 
-CHOP_GOOGLEDOC_LEAF = """
-# THE GOOGLE DOC LEAF-PAGE BLUEPRINT
-# COMMAND: python prompt_foo.py --chop CHOP_GOOGLEDOC_LEAF --no-tree
-# Finishing googledocizer.py: batch catch-up + pipeline hook + frontmatter ledger.
-
-# 1. The one being brought all the way, and the sibling that already arrived
-scripts/articles/googledocizer.py  # [5,318 tokens | 22,643 bytes]
-scripts/articles/confluenceizer.py  # [4,797 tokens | 20,865 bytes]
-
-# 2. The pipeline surface the hook lands in
-scripts/articles/publishizer.py  # [1,027 tokens | 4,217 bytes]
-scripts/articles/articleizer.py  # [3,354 tokens | 15,274 bytes]
-scripts/articles/common.py  # [1,371 tokens | 5,642 bytes]
-scripts/articles/lsa.py  # [4,939 tokens | 21,601 bytes]
-
-# 3. The existing Google auth pattern + config
-scripts/gmail.py  # [2,542 tokens | 10,801 bytes]
-~/.config/pipulate/blogs.json  # [307 tokens | 1,043 bytes]
-
-# 4. Patch harness
-apply.py  # [2,512 tokens | 11,038 bytes]
-scripts/xp.py  # [2,002 tokens | 8,437 bytes]
-
-# 5. Falsifying probes -- ground truth before any cut
-! echo "--- FRONTMATTER SHAPE (newest post) ---" && head -30 $(ls -t ~/repos/trimnoir/_posts/*.md | head -1)
-! echo "--- EXISTING GOOGLE-DOC KEYS ---" && rg -c -i "google_doc|gdoc" ~/repos/trimnoir/_posts/*.md | wc -l
-! echo "--- GOOGLE LIBS PINNED ---" && rg -i "google" requirements.in
-! echo "--- TOKEN/CREDENTIAL FILES ---" && ls -la gmail_token.json ~/.config/pipulate/ 2>&1
-! echo "--- CONFLUENCE IDEMPOTENCY MARKER PATTERN ---" && rg -n "latest|marker" scripts/articles/confluenceizer.py | head -20
-"""
-
 ROLLING_PIN_CHOP = """
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 """
@@ -676,16 +645,6 @@ CHOP_POST_MORTEM = """
 ! grep -A 20 "Traceback (most recent call last):" logs/server.log
 """
 
-CHOP_404_AFFAIR = """
-# THE 404 AFFAIR (Topological Healer Blueprint)
-# COMMAND: python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree
-# ~/repos/trimnoir/_raw_map.csv  # [122,209 tokens | 431,615 bytes]
-# ~/repos/trimnoir/_redirects.map  # [151,271 tokens | 480,085 bytes]
-# scripts/articles/extract_404_ghosts.py  # [931 tokens | 4,009 bytes]
-# scripts/articles/common.py  # [952 tokens | 3,894 bytes]
-! python scripts/articles/extract_404_ghosts.py
-"""
-
 CHOP_FISHTANK = """
 # THE FISHTANK TELEMETRY BLUEPRINT
 # COMMAND: python prompt_foo.py --chop CHOP_FISHTANK -n
@@ -700,44 +659,6 @@ CHOP_FISHTANK = """
 ! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 ! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 ! echo "--- MARKDOWN DISCOVERY BY AGENT ---" && cat remotes/honeybot/queries/md_routing_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
-"""
-
-CHOP_FLAKE_EVOLUTION = """
-# THE FLAKE EVOLUTION BLUEPRINT
-# COMMAND: python prompt_foo.py --chop CHOP_FLAKE_EVOLUTION --no-tree
-# Inspecting the recent mutations of the core environment definition.
-
-# 1. The Current State
-flake.nix  # [8,529 tokens | 36,280 bytes]
-
-# 2. The History (Last 10 commits affecting flake.nix)
-! git --no-pager log -n 10 --oneline flake.nix
-
-# 3. The Diffs (The actual changes from the last few major updates)
-! git --no-pager diff HEAD~5 HEAD -- flake.nix
-"""
-
-CHOP_RGX_SHARD_UPGRADE = """
-# THE RGX LOWERCASE + SHARD INTERLEAVING BLUEPRINT
-# COMMAND: python prompt_foo.py --chop CHOP_RGX_SHARD_UPGRADE --no-tree
-# Only the two files being patched, the patch harness, and live-executed
-# probes -- no 900-article narrative index, no unrelated Botify tooling.
-
-# 1. The two files actually getting patched
-flake.nix  # [11,455 tokens | 48,892 bytes]
-scripts/articles/lsa.py  # [4,084 tokens | 18,245 bytes]
-
-# 2. Patch-application harness
-apply.py  # [2,504 tokens | 10,998 bytes]
-scripts/xp.py  # [1,992 tokens | 8,404 bytes]
-
-# 3. Falsifying probes -- executed live, immune to clipboard/paste mangling
-! echo "case-sensitive dragon hits:" && rg -l -- "dragons" ~/repos/trimnoir/_posts | wc -l
-! echo "case-INsensitive dragon hits:" && rg -il -- "dragons" ~/repos/trimnoir/_posts | wc -l
-! echo "_context dir:" && ls -d ~/repos/trimnoir/_posts/_context 2>&1
-! echo "posts vs shards:" && ls ~/repos/trimnoir/_posts/*.md | wc -l && ls ~/repos/trimnoir/_posts/_context/*.json 2>/dev/null | wc -l
-! echo "sample shard shape:" && cat $(ls ~/repos/trimnoir/_posts/_context/*.json 2>/dev/null | head -1) 2>&1
-! rg -il -- "pareidolia" ~/repos/trimnoir/_posts > /tmp/pareidolia_hits.txt && wc -l /tmp/pareidolia_hits.txt && rg -i -C 2 -- "pareidolia" $(cat /tmp/pareidolia_hits.txt) | wc -c
 """
 
 CHOP_HONEYBOT_HEALTH = """
@@ -890,22 +811,6 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # 3. Roadmap & Paintbox Reference
 # (The embedded roadmap + Paintbox in this file)
 # Current figurate drift state (for quick visual integrity check)
-"""
-
-CHOP_OPTICS_DEFAULT_BUNDLE = """
-# THE OPTICS DEFAULT BUNDLE PATCH
-# COMMAND: python prompt_foo.py --chop CHOP_OPTICS_DEFAULT_BUNDLE --no-tree --arg domain=reddit.com --arg slug=%2F
-
-# 1. Probe evidence (run the probe above first to populate these)
-browser_cache/{domain}/{slug}/seo.md
-browser_cache/{domain}/{slug}/headers.json
-browser_cache/{domain}/{slug}/diff_hierarchy.txt
-browser_cache/{domain}/{slug}/diff_simple_dom.txt
-
-# 2. The code surface that actually changes
-prompt_foo.py
-tools/scraper_tools.py
-tools/llm_optics.py
 """
 
 # #todo #to-do
