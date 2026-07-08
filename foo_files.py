@@ -43,8 +43,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,285 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 22 published in the last 7 days
+# There are 1,286 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 23 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -584,6 +584,9 @@ SCRATCH_CHOP = r"""
 # after the campaign. Everything below the slot mirrors DEFAULT_CHOP.
 
 # --- SCRATCH SLOT START ---
+
+~/repos/Pipulate.com/about.md
+
 # --- SCRATCH SLOT END ---
 
 foo_files.py
@@ -815,6 +818,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 """
 
 # #todo #to-do
+# - Do the work of purging PicoCSS "Card" references so I can unpin FastHTML in requirements.in
 # - Add "What's dangling that should be carried forward" language in the `prompt_foo.py` instructions
 # - Swap in uv for pip for a faster install
 # - Un-hardwire the Jekyll `/futureproof/` blog folder to be `blog.nix` configured
