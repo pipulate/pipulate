@@ -184,6 +184,7 @@
         # Common packages that we want available in our environment
         # regardless of the operating system
         commonPackages = with pkgs; [
+          uv                           # Fast Python package installer and resolver
           sqlite                       # Ensures correct SQLite library is linked on macOS
           (python312.withPackages (ps: with ps; [
             ruff
@@ -313,9 +314,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           if [ "$PIP_VERBOSE" = "true" ]; then
             PIP_QUIET_FLAG=""
           fi
-          if pip install --upgrade pip $PIP_QUIET_FLAG && \
-            pip install -r requirements.txt $PIP_QUIET_FLAG && \
-            pip install -e . --no-deps $PIP_QUIET_FLAG; then
+          if uv pip install -r requirements.txt $PIP_QUIET_FLAG && \
+            uv pip install -e . --no-deps $PIP_QUIET_FLAG; then
             true
           else
             false
@@ -424,12 +424,10 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
         pythonInstallLogic = ''
           # Activate the virtual environment to ensure commands run in the correct context
           source .venv/bin/activate
-          # Always upgrade pip first
-          pip install --upgrade pip --quiet
           # Install all dependencies from requirements.txt
-          pip install -r requirements.txt --quiet
+          uv pip install -r requirements.txt --quiet
           # Install the local project in editable mode so it's importable
-          pip install -e . --no-deps --quiet
+          uv pip install -e . --no-deps --quiet
         '';
         # --- REFACTORED SHELL LOGIC ---
         # Logic for setting up Python venv, PATH, etc.
