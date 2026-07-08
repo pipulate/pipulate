@@ -100,26 +100,7 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-/tmp/botify_openapi_spec.json
-
-# # 1. The two files actually getting patched
-# flake.nix  # [11,455 tokens | 48,892 bytes]
-# scripts/articles/lsa.py  # [4,084 tokens | 18,245 bytes]
-# 
-# # 2. Patch-application harness
-# apply.py  # [2,504 tokens | 10,998 bytes]
-# scripts/xp.py  # [1,992 tokens | 8,404 bytes]
-# 
-# # 3. Falsifying probes -- executed live, immune to clipboard/paste mangling
-# ! echo "case-sensitive dragon hits:" && rg -l -- "dragons" ~/repos/trimnoir/_posts | wc -l
-# ! echo "case-INsensitive dragon hits:" && rg -il -- "dragons" ~/repos/trimnoir/_posts | wc -l
-# ! echo "_context dir:" && ls -d ~/repos/trimnoir/_posts/_context 2>&1
-# ! echo "posts vs shards:" && ls ~/repos/trimnoir/_posts/*.md | wc -l && ls ~/repos/trimnoir/_posts/_context/*.json 2>/dev/null | wc -l
-# ! echo "sample shard shape:" && cat $(ls ~/repos/trimnoir/_posts/_context/*.json 2>/dev/null | head -1) 2>&1
-# ! rg -il -- "pareidolia" ~/repos/trimnoir/_posts > /tmp/pareidolia_hits.txt && wc -l /tmp/pareidolia_hits.txt && rg -i -C 2 -- "pareidolia" $(cat /tmp/pareidolia_hits.txt) | wc -c
-
 # README.md  # [20,725 tokens | 104,252 bytes]
-
 
 # KEEP THIS AS AN EXAMPLE OF HOW TO USE GMAIL (AND CLEAR WAY FOR SAME FOR GDOCS & SHEETS EQUIVALENT)
 # ! python scripts/gmail.py 19ed7896e9577340  # Performance Baseline Report
@@ -878,6 +859,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
 # scripts/articles/execute_massive_prompt.py  # [491 tokens | 2,209 bytes]
+# scripts/articles/extract_404_ghosts.py  # [931 tokens | 4,009 bytes]
 # scripts/articles/find_duplicates.py  # [1,879 tokens | 7,993 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
 # scripts/articles/link_injector.py  # [1,134 tokens | 4,394 bytes]
