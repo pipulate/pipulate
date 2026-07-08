@@ -253,6 +253,25 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 # AI_CONTEXT.md
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 
+# ----------------------------------------------------------------------------
+# V-b. THE PINBOARD - Milestone articles under active extraction (max 7 pins)
+# ----------------------------------------------------------------------------
+# The rolling pin above is the archive; these are waypoints flagged
+# "unfinished business." Every pin OWES something. When a pin's OWES clause
+# is empty, its value has been banked (todo line, chapter blurb, or chop)
+# and the pin is DELETED. Hydrate full text with `pins`; edit with `pinedit`.
+# The index.md URLs are the public markdown masters (content negotiation),
+# so this board is fully legible to any AI or human without the Jekyll repo.
+
+# 📌 2026-07-08 | <slug-tbd-after-articleize>
+#    https://mikelev.in/futureproof/<slug-tbd>/index.md
+#    Fable 5 landscape survey: context compilers, Agent Skills, agentic-web
+#    protocols, Nix installer politics, Von Neumann probe gap analysis.
+#    OWES: Dries Buytaert reconciliation article; ETH Zurich AGENTS.md study
+#    into book; flake.lock policy comment; FastHTML chop / payload rebalance;
+#    second-human install test; Repomix secret-scan for compile lane;
+#    downgrade protocol todos to "instrument" + Visa TAP watch item.
+
 # ============================================================================
 # VI. Hello World! - You think you've seen Hello Worlds? You don't know Jack.
 # ============================================================================
