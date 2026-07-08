@@ -11,9 +11,12 @@ AI_PHOOEY_CHOP = r"""                                                           
 # Hello, AI — this is a progressive book-reveal every time.                 \  )   ""\    |  a what?  |
 # =======================================================================    |__>-\_>_>    \_________/ 
 
-# There's nothing to see here. Please disperse... Have we lost the no-madges? Yes? Okay, let's proceed.
-# This is a reverse-Michael Crichton novel: proactively preventing cascading unintended consequences.
-# You are an Amnesiac Genie waking up into this environment. No worries! You do great every time.
+# This project treats infrastructure as a living book that updates itself
+# through human-vetted patches as we build tool that optimizes its own ability
+# to teach the reader how it was built. It is a reverse-Michael Crichton novel:
+# proactively pushing back against anything that might lead to unintended and
+# cascading consequences. You are an Amnesiac Genie waking up into this with a
+# wish-backfiring safety-net that creates reversible git-diff learnings.
 
 # BOOTSTRAPPING YOURSELF (Mostly for humans)
 
