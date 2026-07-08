@@ -854,7 +854,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # - Implement NLWeb, WebMCP, UCP and ACP.
 # - I think articles get read twice on first publish
 # - Make `d` and `m` aliases support when the patch is of the `[[[WRITE_FILE]]]` kind
-# - Implement multi-site hosting on Honeybot (more than just MikeLev.in)
+# - Instrument multi-site hosting on Honeybot (more than just MikeLev.in)
 # - Make Honeybot 404 hub-healing only redirect to other hubs (not article leafs)
 # - Support vLLM as an alternative to Ollama
 
