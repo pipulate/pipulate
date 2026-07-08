@@ -252,6 +252,12 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 # ============================================================================
 # VI. Hello World! - You think you've seen Hello Worlds? You don't know Jack.
 # ============================================================================
+# **Blurb:** Forget basic terminal print statements. In the Pipulate ecosystem,
+# a Hello World is a multi-layered orchestration event. This chapter introduces
+# the canonical FastHTML workflow, mapping Anthropic agent skills against active
+# UI widgets. It demonstrates the "Ghost Driver"—a state-aware scenario engine
+# that simulates user interaction to verify runtime integrity across
+# environments without manual overhead.
 
 # apps/040_hello_workflow.py                        # <-- The canonical Hello Workflow example under FastHTML. Number controls menu order.
 # Notebooks/.agents/skills/hello_workflow/SKILL.md  # <-- Agent Skills as defined by Anthropic for controlling the similarly named FastHTML workflow.
@@ -267,6 +273,12 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 # ============================================================================
 # VII. WET WORKFLOWS / DRY CRUD - The what's best for AIs and Humans compromise
 # ============================================================================
+# **Blurb:** The ultimate architectural compromise between humans and machines.
+# While software engineers chase the high of absolute abstraction (DRY), AI
+# models operate with higher causal fidelity inside explicit, procedural
+# sequences (WET). This chapter outlines how Pipulate handles database mutations
+# via rapid, standardized copy-paste CRUD blueprints that minimize cognitive
+# load for both developer and assistant.
 
 # imports/__init__.py   # <-- Another empty init just a reminder about PyPI module packing path truths.
 # imports/crud.py       # <-- While we make much ado about WET Workflows, truth is we don't want to do one wit of extra typing

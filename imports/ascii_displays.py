@@ -1499,3 +1499,14 @@ Essential knowledge for 100% success rate"""
 #       ▼
 #   [cli.py / core.py] ──► Resolves execution paths dynamically based on data config.
 # ```
+# 
+# ```text 
+# [ Master Plain-Text Ledger ]
+#                                │
+#        ┌───────────────────────┼───────────────────────┐
+#        ▼                       ▼                       ▼
+#  ┌───────────┐           ┌───────────┐           ┌───────────┐
+#  │ Hydrated  │           │ Raw Source│           │ Live TUI  │
+#  │ HTML Site │           │ Agent/MD  │           │ Feed (YT) │
+#  └───────────┘           └───────────┘           └───────────┘
+# ```
