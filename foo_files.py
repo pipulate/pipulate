@@ -577,6 +577,26 @@ EMPTY = r"""
 foo_files.py  # Just the map.
 """
 
+SCRATCH_CHOP = r"""
+# THE SCRATCHPAD (default + a disposable overlay)
+# COMMAND: python prompt_foo.py --chop SCRATCH_CHOP --no-tree
+# Add ad hoc files/commands ONLY between the SLOT markers, then wipe them
+# after the campaign. Everything below the slot mirrors DEFAULT_CHOP.
+
+# --- SCRATCH SLOT START ---
+# --- SCRATCH SLOT END ---
+
+foo_files.py
+prompt_foo.py
+.gitattributes
+.gitignore
+flake.nix
+apply.py
+scripts/ai.py
+init.lua
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
+"""
+
 DEFAULT_CHOP = r"""
 # THE DAILY DRIVER (Stable getting-started snapshot, independent of whatever
 # AI_PHOOEY_CHOP is mid-edit for ad hoc work)
