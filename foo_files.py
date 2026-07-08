@@ -44,7 +44,7 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 # --- START STATS ---
 # There are 1,285 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 27 published in the last 7 days
+# Velocity: 22 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -99,6 +99,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # ============================================================================
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
+
+/tmp/botify_openapi_spec.json
 
 # # 1. The two files actually getting patched
 # flake.nix  # [11,455 tokens | 48,892 bytes]
@@ -522,7 +524,7 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 # XVII. BOTIFY STUFF
 # ============================================================================
 
-# scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
+scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
 imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
 
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
