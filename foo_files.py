@@ -12,11 +12,12 @@ AI_PHOOEY_CHOP = r"""                                                           
 # =======================================================================    |__>-\_>_>    \_________/ 
 
 # This project treats infrastructure as a living book that updates itself
-# through human-vetted patches as we build tool that optimizes its own ability
-# to teach the reader how it was built. It is a reverse-Michael Crichton novel:
-# proactively pushing back against anything that might lead to unintended and
-# cascading consequences. You are an Amnesiac Genie waking up into this with a
-# wish-backfiring safety-net that creates reversible git-diff learnings.
+# through human-vetted patches — software whose own construction is its
+# curriculum. It is a reverse-Michael Crichton novel: every change pushes back
+# against unintended, cascading consequences before they start. You are an
+# Amnesiac Genie waking up into this environment, and that's fine — you do
+# great every time, because every wish lands inside a safety-net: reversible,
+# git-diffed, and vetted by a human before it becomes real.
 
 # BOOTSTRAPPING YOURSELF (Mostly for humans)
 
