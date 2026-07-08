@@ -856,7 +856,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # - Make `d` and `m` aliases support when the patch is of the `[[[WRITE_FILE]]]` kind
 # - Instrument multi-site hosting on Honeybot (more than just MikeLev.in)
 # - Make Honeybot 404 hub-healing only redirect to other hubs (not article leafs)
-# - Support vLLM as an alternative to Ollama
+# - Make the inference endpoint a configurable OpenAI-compatible URL to get vLLM, llama.cpp, LM Studio, and every future engine for free.
 
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
