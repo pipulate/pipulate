@@ -327,13 +327,16 @@ async def selenium_automation(params: dict) -> dict:
         # organic page load, not our own reenactments. get_log() empties the
         # buffer, so this is the one and only read. Raw events now; lenses later.
         if verbose: logger.info("🛜 Draining CDP performance log (network flight recorder)...")
+        cdp_events = []
         try:
             perf_entries = driver.get_log("performance")
             netlog_path = output_dir / "network_log.jsonl"
             with netlog_path.open("w", encoding="utf-8") as f:
                 for entry in perf_entries:
                     try:
-                        f.write(json.dumps(json.loads(entry["message"])["message"]) + "\n")
+                        ev = json.loads(entry["message"])["message"]
+                        cdp_events.append(ev)
+                        f.write(json.dumps(ev) + "\n")
                     except (KeyError, json.JSONDecodeError):
                         continue
             artifacts['network_log'] = str(netlog_path)
