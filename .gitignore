@@ -2,6 +2,7 @@
 Notebooks/Advanced_Notebooks/Whatsa_Lambda.ipynb
 patch
 *_true_schema_discovery.json
+*.wav
 # end temp
 
 Notebooks/data/.onboarded
