@@ -344,41 +344,43 @@ async def selenium_automation(params: dict) -> dict:
         except Exception as e:
             logger.warning(f"⚠️ Could not capture CDP performance log: {e}")
         
-        # 1. Native Header & TRUE Raw Source Capture (The XHR Hack Lens)
-        if verbose: logger.info("🌐 Extracting native headers and true raw source via XHR injection...")
+        # 1. Wire Truth Capture (CDP ledger + Network.getResponseBody)
+        # The organic Document response is already sitting in the drained CDP
+        # ledger. Pull its actual headers and its actual body — no reenactment,
+        # no second request from the same IP. Probe-verified 2026-07-09:
+        # body survives the buffer post-drain, headed, uc + Nix chromium.
+        if verbose: logger.info("🌐 Extracting wire-truth headers and raw source from CDP ledger...")
+        actual_headers = {}
+        true_raw_source = ""
         try:
-            # We use a single XHR call to grab both the raw headers and the untouched responseText
-            network_data_json = driver.execute_script("""
-                var req = new XMLHttpRequest();
-                req.open('GET', document.location.href, false);
-                req.send(null);
-                
-                var headers = req.getAllResponseHeaders().toLowerCase();
-                var arr = headers.trim().split(/[\\r\\n]+/);
-                var headerMap = {};
-                arr.forEach(function (line) {
-                    var parts = line.split(': ');
-                    var header = parts.shift();
-                    if (header) headerMap[header] = parts.join(': ');
-                });
-                
-                return JSON.stringify({
-                    headers: headerMap,
-                    raw_source: req.responseText
-                });
-            """)
-            network_data = json.loads(network_data_json)
-            actual_headers = network_data.get("headers", {})
-            true_raw_source = network_data.get("raw_source", "")
-            
-            # Fallback to page_source if responseText is somehow empty
+            doc_events = [
+                ev for ev in cdp_events
+                if ev.get("method") == "Network.responseReceived"
+                and ev.get("params", {}).get("type") == "Document"
+                and domain in ev.get("params", {}).get("response", {}).get("url", "")
+            ]
+            if doc_events:
+                doc_params = doc_events[-1]["params"]
+                wire_headers = doc_params.get("response", {}).get("headers", {})
+                actual_headers = {str(k).lower(): v for k, v in wire_headers.items()}
+                body_result = driver.execute_cdp_cmd(
+                    "Network.getResponseBody", {"requestId": doc_params["requestId"]}
+                )
+                true_raw_source = body_result.get("body", "")
+                if body_result.get("base64Encoded"):
+                    import base64
+                    true_raw_source = base64.b64decode(true_raw_source).decode("utf-8", errors="replace")
             if not true_raw_source.strip():
+                if verbose: logger.warning("⚠️ Wire body unavailable; falling back to page_source.")
                 true_raw_source = driver.page_source
-                
+            if not actual_headers:
+                actual_headers = {"error": "No Document response found in CDP ledger"}
         except Exception as e:
-            if verbose: logger.warning(f"⚠️ Failed to extract native network data: {e}")
-            actual_headers = {"error": "Could not extract headers without proxy"}
-            true_raw_source = driver.page_source  # Fallback to the live DOM
+            if verbose: logger.warning(f"⚠️ Failed to extract wire truth from CDP ledger: {e}")
+            if not actual_headers:
+                actual_headers = {"error": "Could not extract headers from CDP ledger"}
+            if not true_raw_source.strip():
+                true_raw_source = driver.page_source  # Fallback to the live DOM
             
         # Save True Raw Source
         source_html_path = output_dir / "source.html"
