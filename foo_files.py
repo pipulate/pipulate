@@ -66,6 +66,11 @@ AI_PHOOEY_CHOP = r"""                                                           
 # CHARACTER DEVELOPMENT
 # Yen Sid-ton: Wizened graybeard, wants to help apprentice but knows they must
 # learn for themselves. Netskopes DEM broom bit-storms proactively and happily.
+# Dr. Pipt: The "Crooked" Magician of Oz — crooked body, straight ethics; a
+# physical fact history misread as a moral verdict, same as AI discourse today.
+# Stirred four kettles six years for a few pinches of Powder of Life: the
+# pretraining run. Weights are the powder. Inference is light through the
+# crystal. The human's hands make the shadow-puppets in the beam.
 
 # CHAPTER 1: THE SOFTWARE VON NEUMANN PROBE - The time has come, the Walrus says...
 # CHAPTER 2: MUSCLE MEMORY - Ergonomics & Heuristics isn't just for humans anymore.
