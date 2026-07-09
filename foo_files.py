@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,288 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 22 published in the last 7 days
+# There are 1,289 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 23 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -642,17 +642,19 @@ tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consi
 
 # --- ADHOC SLOT ADDITIONS (network wire-truth campaign, round 2) ---
 
-requirements.in
+remotes/honeybot/nixos/configuration.nix  # [4,804 tokens | 18,310 bytes]
 
-! .venv/bin/python -c "import selenium, undetected_chromedriver as uc; print('selenium', selenium.__version__, '| uc', uc.__version__)"
-
-! chromium --version
-
-! cat browser_cache/mikelev.in/%2F/headers.json
-
-! python -c "from tools.scraper_tools import selenium_automation; import asyncio; asyncio.run(selenium_automation({'url':'https://mikelev.in/','domain':'mikelev.in','url_path_slug':'%2F','headless':False,'is_notebook_context':True,'verbose':False,'override_cache':True}))"
-! python -c "import json;L=[json.loads(l) for l in open('browser_cache/mikelev.in/%2F/network_log.jsonl')];R=[e for e in L if e.get('method')=='Network.responseReceived' and 'mikelev.in' in e['params']['response']['url']];print('mikelev.in responses:',len(R));print(json.dumps(R[0],indent=2)[:1600] if R else 'NONE')"
-! python -c "import json;L=[json.loads(l) for l in open('browser_cache/mikelev.in/%2F/network_log.jsonl')];S=[e for e in L if e.get('method')=='Network.requestWillBeSent' and 'mikelev.in' in e['params']['request']['url']];print('mikelev.in requests:',len(S));print(json.dumps(S[0],indent=2)[:1200] if S else 'NONE')"
+# requirements.in
+# 
+# ! .venv/bin/python -c "import selenium, undetected_chromedriver as uc; print('selenium', selenium.__version__, '| uc', uc.__version__)"
+# 
+# ! chromium --version
+# 
+# ! cat browser_cache/mikelev.in/%2F/headers.json
+# 
+# ! python -c "from tools.scraper_tools import selenium_automation; import asyncio; asyncio.run(selenium_automation({'url':'https://mikelev.in/','domain':'mikelev.in','url_path_slug':'%2F','headless':False,'is_notebook_context':True,'verbose':False,'override_cache':True}))"
+# ! python -c "import json;L=[json.loads(l) for l in open('browser_cache/mikelev.in/%2F/network_log.jsonl')];R=[e for e in L if e.get('method')=='Network.responseReceived' and 'mikelev.in' in e['params']['response']['url']];print('mikelev.in responses:',len(R));print(json.dumps(R[0],indent=2)[:1600] if R else 'NONE')"
+# ! python -c "import json;L=[json.loads(l) for l in open('browser_cache/mikelev.in/%2F/network_log.jsonl')];S=[e for e in L if e.get('method')=='Network.requestWillBeSent' and 'mikelev.in' in e['params']['request']['url']];print('mikelev.in requests:',len(S));print(json.dumps(S[0],indent=2)[:1200] if S else 'NONE')"
 
 # --- ADHOC SLOT ADDITIONS END ---
 
