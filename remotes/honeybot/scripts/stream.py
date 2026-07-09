@@ -593,7 +593,7 @@ def perform_show(script):
             # the completion bell rings — so the TTS doesn't thrash through the deploy.
             if check_standby():
                 narrator.interrupt()  # cut current audio + flush the backlog
-                narrator.say("Receiving updates. Things will go quiet for a few moments. Then I'll start reading again. Please stand by.")
+                narrator.say("Receiving updates. Things will go quiet for a few moments. Then I'll start reading again. Please stand by for a brand spanking new article. It'll be worth the wait.")
                 # The outer `duration` here is a generous LAST-RESORT ceiling, not
                 # the thing that's supposed to close this window. The deterministic
                 # close is the pkill below, fired the instant check_for_updates()
