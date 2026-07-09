@@ -47,8 +47,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,287 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 21 published in the last 7 days
+# There are 1,288 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 22 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -271,6 +271,9 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 #    into book; flake.lock policy comment; FastHTML chop / payload rebalance;
 #    second-human install test; Repomix secret-scan for compile lane;
 #    downgrade protocol todos to "instrument" + Visa TAP watch item.
+
+# EXTERNAL ARTICLES TO CONSTITUTIONALIZE
+# https://drucker.institute/principles/
 
 # ============================================================================
 # VI. Hello World! - You think you've seen Hello Worlds? You don't know Jack.
