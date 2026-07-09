@@ -282,6 +282,7 @@ async def selenium_automation(params: dict) -> dict:
                     logger.warning(f"⚠️ Chrome version mismatch detected. Auto-healing with version_main={fallback_version}")
                     # UC consumes the options object. We must forge a fresh one.
                     fresh_options = uc.ChromeOptions()
+                    fresh_options.set_capability("goog:loggingPrefs", {"performance": "ALL"})
                     if headless:
                         fresh_options.add_argument("--headless")
                     fresh_options.add_argument("--no-sandbox")
