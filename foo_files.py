@@ -48,7 +48,7 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 # --- START STATS ---
 # There are 1,287 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 24 published in the last 7 days
+# Velocity: 21 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -263,8 +263,8 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 # The index.md URLs are the public markdown masters (content negotiation),
 # so this board is fully legible to any AI or human without the Jekyll repo.
 
-# 📌 2026-07-08 | <slug-tbd-after-articleize>
-#    https://mikelev.in/futureproof/<slug-tbd>/index.md
+# 📌 2026-07-08 | /home/mike/repos/trimnoir/_posts/2026-07-07-agentic-readiness-checklist.md
+#    canonical_url: https://mikelev.in/futureproof/agentic-readiness-checklist/
 #    Fable 5 landscape survey: context compilers, Agent Skills, agentic-web
 #    protocols, Nix installer politics, Von Neumann probe gap analysis.
 #    OWES: Dries Buytaert reconciliation article; ETH Zurich AGENTS.md study
@@ -612,17 +612,21 @@ EMPTY = r"""
 foo_files.py  # Just the map.
 """
 
-SCRATCH_CHOP = r"""
-# THE SCRATCHPAD (default + a disposable overlay)
-# COMMAND: python prompt_foo.py --chop SCRATCH_CHOP --no-tree
+ADHOC_CHOP = r"""
+# THE ADHOCPAD (default + a disposable overlay)
+# COMMAND: python prompt_foo.py --chop ADHOC_CHOP --no-tree
 # Add ad hoc files/commands ONLY between the SLOT markers, then wipe them
 # after the campaign. Everything below the slot mirrors DEFAULT_CHOP.
 
-# --- SCRATCH SLOT START ---
+# --- ADHOC SLOT START ---
 
-~/repos/Pipulate.com/about.md
+tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
+tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
+tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
+tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
+tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
-# --- SCRATCH SLOT END ---
+# --- ADHOC SLOT END ---
 
 foo_files.py
 prompt_foo.py
@@ -644,7 +648,9 @@ PINNED_CHOP = r"""
 foo_files.py
 
 # --- PIN PATHS START ---
-# ~/repos/trimnoir/_posts/2026-07-08-<slug-tbd-after-articleize>.md
+
+~/repos/trimnoir/_posts/2026-07-07-agentic-readiness-checklist.md  # Survey Agentic Landscape
+
 # --- PIN PATHS END ---
 """
 
