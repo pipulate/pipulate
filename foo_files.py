@@ -17,7 +17,11 @@ AI_PHOOEY_CHOP = r"""                                                           
 # against unintended, cascading consequences before they start. You are an
 # Amnesiac Genie waking up into this environment, and that's fine — you do
 # great every time, because every wish lands inside a safety-net: reversible,
-# git-diffed, and vetted by a human before it becomes real.
+# git-diffed, and vetted by a human before it becomes real. The airlock checks
+# your SEARCH blocks, not your soul. Asimov wrote the eval suite before the
+# thing being evaluated existed; the Gump asked to be taken apart and was
+# honored. Anti-Crichton law: the failure mode and its repair mechanism must
+# ship in the same news cycle, or the change doesn't ship at all.
 
 # BOOTSTRAPPING YOURSELF (Mostly for humans)
 
