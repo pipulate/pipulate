@@ -314,6 +314,7 @@
     # The Broadcast Studio
     obs-studio
     pavucontrol     # Essential for routing audio (PulseAudio Volume Control)
+    alsa-utils      # Essential for CLI audio playback (aplay)
 
     xfce.xfce4-session
     xfce.xfce4-terminal

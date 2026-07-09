@@ -207,6 +207,8 @@
           jq
           dig
           whois
+          alsa-utils
+          ffmpeg
         ] ++ (with pkgs; pkgs.lib.optionals isLinux [
           espeak-ng                    # Text-to-speech, Linux only
           sox                          # Sound processing, Linux only

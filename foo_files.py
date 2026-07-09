@@ -632,11 +632,11 @@ ADHOC_CHOP = r"""
 
 # --- ADHOC SLOT START ---
 
-tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
-tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
-tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
-tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
-tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
+# tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
+# tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
+# tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
+# tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
+# tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
 # --- ADHOC SLOT END ---
 
