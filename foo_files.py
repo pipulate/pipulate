@@ -638,23 +638,9 @@ requirements.in
 
 ! cat browser_cache/mikelev.in/%2F/headers.json
 
-# ! python -c "
-# import json
-# lines = [json.loads(l)['message'] for l in open('/tmp/netlog_sample.jsonl')]
-# hits = [ev for ev in lines if ev.get('method') == 'Network.responseReceived' and 'mikelev.in' in ev['params']['response']['url']]
-# print(f'mikelev.in responses: {len(hits)}')
-# for ev in hits[:2]:
-#     print(json.dumps(ev, indent=2)[:1500])
-# "
-# 
-# ! python -c "
-# import json
-# lines = [json.loads(l)['message'] for l in open('/tmp/netlog_sample.jsonl')]
-# sent = [ev for ev in lines if ev.get('method') == 'Network.requestWillBeSent' and 'mikelev.in' in ev['params']['request']['url']]
-# print(f'mikelev.in requests: {len(sent)}')
-# for ev in sent[:1]:
-#     print(json.dumps(ev, indent=2)[:1200])
-# "
+! python -c "from tools.scraper_tools import selenium_automation; import asyncio; asyncio.run(selenium_automation({'url':'https://mikelev.in/','domain':'mikelev.in','url_path_slug':'%2F','headless':False,'is_notebook_context':True,'verbose':False,'override_cache':True}))"
+! python -c "import json;L=[json.loads(l) for l in open('browser_cache/mikelev.in/%2F/network_log.jsonl')];R=[e for e in L if e.get('method')=='Network.responseReceived' and 'mikelev.in' in e['params']['response']['url']];print('mikelev.in responses:',len(R));print(json.dumps(R[0],indent=2)[:1600] if R else 'NONE')"
+! python -c "import json;L=[json.loads(l) for l in open('browser_cache/mikelev.in/%2F/network_log.jsonl')];S=[e for e in L if e.get('method')=='Network.requestWillBeSent' and 'mikelev.in' in e['params']['request']['url']];print('mikelev.in requests:',len(S));print(json.dumps(S[0],indent=2)[:1200] if S else 'NONE')"
 
 # --- ADHOC SLOT ADDITIONS END ---
 
