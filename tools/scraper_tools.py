@@ -249,6 +249,7 @@ async def selenium_automation(params: dict) -> dict:
         if verbose: logger.info(f"💾 Saving new artifacts to: {output_dir}")
 
         options = uc.ChromeOptions()
+        options.set_capability("goog:loggingPrefs", {"performance": "ALL"})
         if headless:
             options.add_argument("--headless")
         options.add_argument("--no-sandbox")
