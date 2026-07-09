@@ -320,6 +320,25 @@ async def selenium_automation(params: dict) -> dict:
         dom_path = output_dir / "hydrated_dom.html"
         dom_path.write_text(dom_content, encoding='utf-8')
         artifacts['hydrated_dom'] = str(dom_path)
+
+        # --- Network Flight Recorder (CDP perf log -> network_log.jsonl) ---
+        # Drained BEFORE the XHR header replay below so the ledger reflects the
+        # organic page load, not our own reenactments. get_log() empties the
+        # buffer, so this is the one and only read. Raw events now; lenses later.
+        if verbose: logger.info("🛜 Draining CDP performance log (network flight recorder)...")
+        try:
+            perf_entries = driver.get_log("performance")
+            netlog_path = output_dir / "network_log.jsonl"
+            with netlog_path.open("w", encoding="utf-8") as f:
+                for entry in perf_entries:
+                    try:
+                        f.write(json.dumps(json.loads(entry["message"])["message"]) + "\n")
+                    except (KeyError, json.JSONDecodeError):
+                        continue
+            artifacts['network_log'] = str(netlog_path)
+            if verbose: logger.info(f"🛜 Captured {len(perf_entries)} raw CDP events to {netlog_path.name}")
+        except Exception as e:
+            logger.warning(f"⚠️ Could not capture CDP performance log: {e}")
         
         # 1. Native Header & TRUE Raw Source Capture (The XHR Hack Lens)
         if verbose: logger.info("🌐 Extracting native headers and true raw source via XHR injection...")
