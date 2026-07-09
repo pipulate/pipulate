@@ -399,38 +399,7 @@ async def selenium_automation(params: dict) -> dict:
             driver.save_screenshot(str(screenshot_path))
             artifacts['screenshot'] = str(screenshot_path)
 
-        # 1. Native Header Capture via Performance API (The XHR Hack Lens)
-        if verbose: logger.info("🌐 Extracting headers via XHR injection...")
-        try:
-            headers_json = driver.execute_script("""
-                var req = new XMLHttpRequest();
-                req.open('GET', document.location, false);
-                req.send(null);
-                var headers = req.getAllResponseHeaders().toLowerCase();
-                var arr = headers.trim().split(/[\\r\\n]+/);
-                var headerMap = {};
-                arr.forEach(function (line) {
-                    var parts = line.split(': ');
-                    var header = parts.shift();
-                    if (header) headerMap[header] = parts.join(': ');
-                });
-                return JSON.stringify(headerMap);
-            """)
-            actual_headers = json.loads(headers_json)
-        except Exception as e:
-            if verbose: logger.warning(f"⚠️ Failed to extract headers: {e}")
-            actual_headers = {"error": "Could not extract headers without proxy"}
-        
-        headers_data = {
-            "url": url,
-            "title": driver.title,
-            "timestamp": datetime.now().isoformat(),
-            "status": "success",
-            "headers": actual_headers
-        }
-        headers_path = output_dir / "headers.json"
-        headers_path.write_text(json.dumps(headers_data, indent=2), encoding='utf-8')
-        artifacts['headers'] = str(headers_path)
+
 
         # 2. Create LLM-Optimized Simplified DOMs (The Symmetrical Lens)
         if verbose: logger.info("🧠 Creating LLM-optimized simplified DOMs (Symmetrical Lens)...")
