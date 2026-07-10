@@ -1751,14 +1751,33 @@ def main():
         console_summary = console_summary.replace("```\n", "").replace("```", "")
 
         # THE PAYLOAD LEDGER: biggest-first, so "what do I cut to fit the
-        # attachment limit" is always answered by row one.
-        if processed_files_data:
+        # attachment limit" is always answered by row one. Auto-context
+        # sections (full articles, narrative lists, tree, UML, shards, git
+        # diff telemetry) are folded in as AUTO rows so the table gauges the
+        # whole payload, not just the Codebase section.
+        ledger_rows = []
+        for f in processed_files_data:
+            display_path = f['path']
+            if display_path.startswith(REPO_ROOT):
+                display_path = os.path.relpath(display_path, REPO_ROOT)
+            ledger_rows.append({
+                'label': display_path,
+                'tokens': f['tokens'],
+                'bytes': len(f['content'].encode('utf-8'))
+            })
+        for ac_title, ac_data in builder.auto_context.items():
+            ledger_rows.append({
+                'label': f"AUTO: {ac_title}",
+                'tokens': ac_data.get('tokens', 0),
+                'bytes': len(ac_data.get('content', '').encode('utf-8'))
+            })
+        if ledger_rows:
             try:
                 from rich.console import Console
                 from rich.table import Table
 
-                total_bytes_f = sum(len(f['content'].encode('utf-8')) for f in processed_files_data)
-                total_tokens_f = sum(f['tokens'] for f in processed_files_data)
+                total_bytes_f = sum(r['bytes'] for r in ledger_rows)
+                total_tokens_f = sum(r['tokens'] for r in ledger_rows)
 
                 ledger = Table(title="📦 Payload Ledger (biggest first)", show_footer=True)
                 ledger.add_column("File / Source", footer="TOTAL", overflow="fold")
@@ -1766,18 +1785,9 @@ def main():
                 ledger.add_column("Bytes", justify="right", footer=f"{total_bytes_f:,}")
                 ledger.add_column("% Bytes", justify="right", footer="100.0%")
 
-                ranked = sorted(
-                    processed_files_data,
-                    key=lambda f: len(f['content'].encode('utf-8')),
-                    reverse=True
-                )
-                for f in ranked:
-                    b = len(f['content'].encode('utf-8'))
-                    pct = (b / total_bytes_f * 100) if total_bytes_f else 0.0
-                    display_path = f['path']
-                    if display_path.startswith(REPO_ROOT):
-                        display_path = os.path.relpath(display_path, REPO_ROOT)
-                    ledger.add_row(display_path, f"{f['tokens']:,}", f"{b:,}", f"{pct:.1f}%")
+                for r in sorted(ledger_rows, key=lambda r: r['bytes'], reverse=True):
+                    pct = (r['bytes'] / total_bytes_f * 100) if total_bytes_f else 0.0
+                    ledger.add_row(r['label'], f"{r['tokens']:,}", f"{r['bytes']:,}", f"{pct:.1f}%")
 
                 Console().print(ledger)
             except ImportError:
