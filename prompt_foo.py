@@ -557,6 +557,58 @@ def parse_file_list_from_config(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
             parsed_files.append((file_path, comment))
     return parsed_files
 
+# ============================================================================
+# --- Compile-Lane Sanitizer (PII transform + denylist tripwire) ---
+# ============================================================================
+PII_SUBSTITUTIONS_FILE = Path.home() / ".config" / "pipulate" / "pii_substitutions.txt"
+COMMIT_DENYLIST_FILE = Path.home() / ".config" / "pipulate" / "commit_denylist.txt"
+
+
+def scrub_compile_payload(text: str):
+    """Sanitize the compiled payload before it leaves the machine.
+
+    Two stages, mirroring the repo's two protection styles:
+      1. TRANSFORM: apply ~/.config/pipulate/pii_substitutions.txt
+         ('pattern === replacement' per line, hash comments ignored) —
+         the same table sanitizer.py trusts for the article lane.
+      2. REFUSE: scan the post-scrub text against
+         ~/.config/pipulate/commit_denylist.txt (one case-insensitive
+         ERE per line, same patterns the pre-commit airlock enforces).
+         Any surviving hit is a leak the substitution table missed;
+         the caller fails closed.
+
+    Returns (scrubbed_text, substitution_count, leaks) where leaks is
+    a list of (pattern, hit_count) tuples. Missing config files are a
+    silent no-op for their stage, matching the airlock's behavior.
+    """
+    total = 0
+    if PII_SUBSTITUTIONS_FILE.exists():
+        for line in PII_SUBSTITUTIONS_FILE.read_text(encoding='utf-8').splitlines():
+            if not line.strip() or line.startswith('#'):
+                continue
+            if ' === ' in line:
+                pattern, repl = line.split(' === ', 1)
+                try:
+                    text, n = re.subn(pattern, repl, text)
+                    total += n
+                except re.error as e:
+                    print(f"⚠️  Skipping bad PII pattern {pattern!r}: {e}")
+    leaks = []
+    if COMMIT_DENYLIST_FILE.exists():
+        for line in COMMIT_DENYLIST_FILE.read_text(encoding='utf-8').splitlines():
+            pat = line.strip()
+            if not pat or pat.startswith('#'):
+                continue
+            try:
+                n = len(re.findall(pat, text, flags=re.IGNORECASE))
+            except re.error as e:
+                print(f"⚠️  Skipping bad denylist pattern {pat!r}: {e}")
+                continue
+            if n:
+                leaks.append((pat, n))
+    return text, total, leaks
+
+
 def copy_to_clipboard(text: str):
     """Copies text to the system clipboard gracefully across macOS and Linux."""
     import platform
