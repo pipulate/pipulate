@@ -1,4 +1,4 @@
-#  ____                            _     _____       
+#scripts/botify/botify_api_bootcamp.md  ____                            _     _____       
 # |  _ \ _ __ ___  _ __ ___  _ __ | |_  |  ___|   _  Copyright 2026 by Mike Levin (https://MikeLev.in/)
 # | |_) | '__/ _ \| '_ ` _ \| '_ \| __| | |_ | | | | Pipulate's Prompt Fu Context Compiler is under
 # |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| | Creative Commons Attribution (CC BY) license.
@@ -112,6 +112,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # ============================================================================
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
+
+/home/mike/.config/pipulate/pii_substitutions.txt
 
 # README.md  # [20,725 tokens | 104,252 bytes]
 
@@ -552,8 +554,8 @@ remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. 
 # XVII. BOTIFY STUFF
 # ============================================================================
 
-scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
-imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
+# scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
+# imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
 
 # imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
 # imports/botify/__init__.py  # [0 tokens | 0 bytes]
