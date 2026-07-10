@@ -530,6 +530,15 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             echo "*.ipynb filter=nbstripout" > .gitattributes
           fi
           git config --local filter.nbstripout.clean "nbstripout"
+          # THE COMMIT AIRLOCK: install the client-identity denylist guard.
+          # Hook logic is versioned in scripts/git_hooks/pre-commit; patterns
+          # live OUTSIDE the repo (~/.config/pipulate/commit_denylist.txt) so
+          # the denylist itself can never leak. No denylist file = no-op.
+          if [ -d .git ] && [ -f "$PIPULATE_ROOT/scripts/git_hooks/pre-commit" ]; then
+            mkdir -p .git/hooks
+            cp "$PIPULATE_ROOT/scripts/git_hooks/pre-commit" .git/hooks/pre-commit
+            chmod +x .git/hooks/pre-commit
+          fi
           # Set EFFECTIVE_OS for browser automation scripts
           if [[ "$(uname -s)" == "Darwin" ]]; then export EFFECTIVE_OS="darwin"; else export EFFECTIVE_OS="linux"; fi
           # ── THE WORKSHOP HOOK (team-sync substrate) ──────────────────
