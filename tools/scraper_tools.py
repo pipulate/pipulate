@@ -459,11 +459,15 @@ async def selenium_automation(params: dict) -> dict:
             # === CAPPED MANIFEST FOR DRILL-DOWN (address book) ===
             manifest = []
             for f in sorted(output_dir.glob("*.*"), key=lambda p: p.stat().st_size, reverse=True):
-                if f.suffix in ('.txt', '.html', '.json', '.md'):
+                if f.suffix in ('.txt', '.html', '.json', '.jsonl', '.md'):
                     size_kb = len(f.read_text(encoding='utf-8', errors='ignore')) // 1000
                     manifest.append(f"{f.name} (~{size_kb}k)")
-                    if len(manifest) >= 15:  # prevent bloat in parent prompt
-                        break
+                elif f.suffix == '.png':
+                    manifest.append(f"{f.name} (~{f.stat().st_size // 1000}k, image)")
+                else:
+                    continue
+                if len(manifest) >= 15:  # prevent bloat in parent prompt
+                    break
             if manifest:
                 manifest_content = "OPTICS MANIFEST (drill-down available):\n" + "\n".join(manifest)
                 manifest_path = output_dir / "optics_manifest.txt"
