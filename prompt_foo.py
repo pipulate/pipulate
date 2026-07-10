@@ -400,6 +400,109 @@ def run_static_analysis(python_files: List[str]) -> str:
     logger.print("✅ Static Analysis Complete.\n")
     return "\n\n".join(diagnostics)
 
+
+def distill_network_ledger(jsonl_path: str, target_domain: str = "") -> str:
+    """Distills a CDP performance-log flight recorder (network_log.jsonl)
+    into a per-request Markdown table plus a third-party host census.
+
+    THE WIRE-TRUTH INVARIANT: raw JSONL never enters the context window;
+    only this distillate does. Rules learned from the first live ledgers:
+      1. Drop chrome:// / about: / data: gate-chatter (the cockpit recorder
+         taping the pilots' small talk before the flight).
+      2. If a target domain is known, keep only events whose documentURL
+         belongs to it — partition by the flight actually being recorded.
+    """
+    from urllib.parse import urlparse
+    requests_by_id = {}
+    try:
+        with open(jsonl_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    entry = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                # Defensively unwrap Selenium's nested message envelopes.
+                msg = entry
+                for _ in range(2):
+                    if isinstance(msg, dict) and 'message' in msg:
+                        inner = msg['message']
+                        if isinstance(inner, str):
+                            try:
+                                inner = json.loads(inner)
+                            except json.JSONDecodeError:
+                                break
+                        if isinstance(inner, dict):
+                            msg = inner
+                        else:
+                            break
+                    else:
+                        break
+                if not isinstance(msg, dict):
+                    continue
+                method = msg.get('method', '')
+                params = msg.get('params', {})
+                rid = params.get('requestId')
+                if not method.startswith('Network.') or not rid:
+                    continue
+                rec = requests_by_id.setdefault(rid, {})
+                if method == 'Network.requestWillBeSent':
+                    req = params.get('request', {})
+                    rec['url'] = req.get('url', '')
+                    rec['method'] = req.get('method', '')
+                    rec['type'] = params.get('type', '')
+                    rec['documentURL'] = params.get('documentURL', '')
+                elif method == 'Network.responseReceived':
+                    resp = params.get('response', {})
+                    rec['status'] = resp.get('status', '')
+                    rec['mimeType'] = resp.get('mimeType', '')
+                elif method == 'Network.loadingFinished':
+                    rec['bytes'] = int(params.get('encodedDataLength', 0))
+    except Exception as e:
+        return f"# Error distilling network ledger {jsonl_path}: {e}"
+
+    rows, hosts = [], {}
+    for rec in requests_by_id.values():
+        url = rec.get('url', '')
+        doc = rec.get('documentURL', '')
+        if not url or url.startswith(('chrome://', 'chrome-extension://', 'about:', 'data:', 'blob:')):
+            continue
+        if doc.startswith(('chrome://', 'about:')):
+            continue
+        if target_domain and doc and target_domain not in doc:
+            continue
+        host = urlparse(url).netloc
+        hosts[host] = hosts.get(host, 0) + 1
+        rows.append(rec)
+
+    if not rows:
+        return "# Network ledger contained no in-scope requests after gate-chatter filtering."
+
+    rows.sort(key=lambda r: r.get('bytes', 0), reverse=True)
+    total_bytes = sum(r.get('bytes', 0) for r in rows)
+    lines = [
+        f"### Wire Truth: {len(rows)} requests | {total_bytes:,} bytes on the wire",
+        "",
+        "| Method | Status | Type | KB | URL |",
+        "|---|---|---|---|---|",
+    ]
+    for r in rows[:100]:
+        url = r.get('url', '')
+        if len(url) > 100:
+            url = url[:97] + '...'
+        kb = r.get('bytes', 0) // 1024
+        lines.append(f"| {r.get('method', '')} | {r.get('status', '')} | {r.get('type', '')} | {kb} | {url} |")
+    if len(rows) > 100:
+        lines.append(f"| ... | | | | {len(rows) - 100} more requests truncated |")
+
+    lines += ["", f"### Third-Party Host Census ({len(hosts)} hosts)", ""]
+    for host, count in sorted(hosts.items(), key=lambda kv: kv[1], reverse=True):
+        marker = " ← target" if target_domain and target_domain in host else ""
+        lines.append(f"- {host}: {count} request(s){marker}")
+    return "\n".join(lines)
+
 # ============================================================================
 # --- Helper Functions (File Parsing, Clipboard) ---
 # ============================================================================
