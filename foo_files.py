@@ -635,7 +635,10 @@ ADHOC_CHOP = r"""
 
 # --- ADHOC SLOT START ---
 
-requirements.in
+tools/scraper_tools.py
+tools/llm_optics.py
+! echo "--- LARGEST NETWORK LEDGERS ---" && find browser_cache -name network_log.jsonl -printf "%s %p\n" | sort -rn | head -5
+! echo "--- SAMPLE LEDGER HEAD ---" && f=$(find browser_cache -name network_log.jsonl | head -1) && head -c 6000 "$f"
 
 # --- ADHOC SLOT END ---
 
