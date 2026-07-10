@@ -1741,9 +1741,50 @@ def main():
         # FIX: Strip the redundant Processing Log specifically for terminal display
         # This uses DOTALL to catch everything between the header and the closing fence
         console_summary = re.sub(r'--- Processing Log ---.*?```\n\n', '', console_summary, flags=re.DOTALL)
+
+        # Strip the plain-text file manifest; the Rich Payload Ledger below
+        # replaces it with a size-sorted table (console only — the markdown
+        # artifact's Summary section is untouched).
+        console_summary = re.sub(r'--- Codebase Files Included ---\n(?:#[^\n]*\n)+\n?', '', console_summary)
         
         # Clean up the remaining fences for terminal readability
         console_summary = console_summary.replace("```\n", "").replace("```", "")
+
+        # THE PAYLOAD LEDGER: biggest-first, so "what do I cut to fit the
+        # attachment limit" is always answered by row one.
+        if processed_files_data:
+            try:
+                from rich.console import Console
+                from rich.table import Table
+
+                total_bytes_f = sum(len(f['content'].encode('utf-8')) for f in processed_files_data)
+                total_tokens_f = sum(f['tokens'] for f in processed_files_data)
+
+                ledger = Table(title="📦 Payload Ledger (biggest first)", show_footer=True)
+                ledger.add_column("File / Source", footer="TOTAL", overflow="fold")
+                ledger.add_column("Tokens", justify="right", footer=f"{total_tokens_f:,}")
+                ledger.add_column("Bytes", justify="right", footer=f"{total_bytes_f:,}")
+                ledger.add_column("% Bytes", justify="right", footer="100.0%")
+
+                ranked = sorted(
+                    processed_files_data,
+                    key=lambda f: len(f['content'].encode('utf-8')),
+                    reverse=True
+                )
+                for f in ranked:
+                    b = len(f['content'].encode('utf-8'))
+                    pct = (b / total_bytes_f * 100) if total_bytes_f else 0.0
+                    display_path = f['path']
+                    if display_path.startswith(REPO_ROOT):
+                        display_path = os.path.relpath(display_path, REPO_ROOT)
+                    ledger.add_row(display_path, f"{f['tokens']:,}", f"{b:,}", f"{pct:.1f}%")
+
+                Console().print(ledger)
+            except ImportError:
+                # Rich unavailable: fall back silently; the text summary below
+                # still carries the totals.
+                pass
+
         print(console_summary.strip())
 
     # 6. Handle output
