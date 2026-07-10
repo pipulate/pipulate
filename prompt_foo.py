@@ -1501,6 +1501,29 @@ def main():
                             "path": f"OPTICS [{label}]: {target_url}", "comment": comment, "content": content,
                             "tokens": count_tokens(content), "words": count_words(content), "lang": lang
                         })
+            elif path.startswith('%'):
+                # WIRE TRUTH DISTILLATION (%URL): The 4th sigil.
+                # Reads the cached CDP flight recorder (network_log.jsonl) and
+                # stacks the distillate: per-request table + third-party host
+                # census. The raw JSONL NEVER enters the context window.
+                from urllib.parse import urlparse, quote
+
+                parsed = urlparse(target_url)
+                domain = parsed.netloc
+                path_slug = quote(parsed.path or '/', safe='').replace('/', '_')[:100] or "%2F"
+                cache_dir = os.path.join(REPO_ROOT, "browser_cache", domain, path_slug)
+                ledger_file = os.path.join(cache_dir, "network_log.jsonl")
+
+                if not os.path.exists(ledger_file):
+                    logger.print(f"   -> ⚠️ %URL ledger miss for {target_url}")
+                    logger.print(f"      Run the !{target_url} scrape first to record the flight.")
+                else:
+                    logger.print(f"   -> 🛫 Distilling wire truth for: {target_url}")
+                    content = distill_network_ledger(ledger_file, target_domain=domain)
+                    processed_files_data.append({
+                        "path": f"OPTICS [Wire Truth]: {target_url}", "comment": comment, "content": content,
+                        "tokens": count_tokens(content), "words": count_words(content), "lang": "markdown"
+                    })
             elif path.startswith(('!', '@')):
                 # JIT OPTICAL DISTILLATION (The MST3K Balcony)
                 logger.print(f"   -> 👁️‍🗨️ Engaging LLM Optics for: {target_url}")
