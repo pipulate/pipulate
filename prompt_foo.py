@@ -1987,7 +1987,22 @@ def main():
 
         print(console_summary.strip())
 
-    # 6. Handle output
+    # 6. Compile-lane sanitizer: TRANSFORM then REFUSE, at the single
+    # chokepoint every exit (clipboard, SSH bridge, --output) passes through.
+    final_output, pii_count, leaks = scrub_compile_payload(final_output)
+    if pii_count:
+        print(f"🪄 Compile-lane scrub: {pii_count} PII substitution(s) applied to payload.")
+    if leaks and not args.allow_leaks:
+        print("🛑 PAYLOAD BLOCKED: denylisted identifier(s) survive the PII scrub:")
+        for pat, n in leaks:
+            print(f"   • pattern {pat!r}: {n} hit(s)")
+        print("   Add a substitution to ~/.config/pipulate/pii_substitutions.txt (pattern === replacement),")
+        print("   fix the source, or rerun with --allow-leaks to bypass ONCE, deliberately and with eyes open.")
+        sys.exit(1)
+    elif leaks:
+        print(f"⚠️  --allow-leaks: emitting payload with {sum(n for _, n in leaks)} denylist hit(s).")
+
+    # 7. Handle output
     if args.output:
         with open(args.output, 'w', encoding='utf-8') as f: f.write(final_output)
         print(f"\nOutput written to '{args.output}'")
