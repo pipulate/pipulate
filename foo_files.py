@@ -907,6 +907,8 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # - Instrument multi-site hosting on Honeybot (more than just MikeLev.in)
 # - Make Honeybot 404 hub-healing only redirect to other hubs (not article leafs)
 # - Make the inference endpoint a configurable OpenAI-compatible URL to get vLLM, llama.cpp, LM Studio, and every future engine for free.
+# - Rustkyll drop-in test blocked on NixOS: uvx ships a generic dynamically-linked binary (stub-ld). Retry via nix-ld, steam-run, or `cargo install rustkyll`; then `diff -r` scratch build vs fresh Jekyll _site.
+# - Constitutionalize the CDP flight recorder: distilled wire-truth lens in prompt_foo.py (per-request table, NOT raw JSONL), router comment in Ch. VIII, possible 4th URL sigil alongside ! @ $.
 
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
