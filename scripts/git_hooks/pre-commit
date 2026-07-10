@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# THE COMMIT AIRLOCK — staged-content client-identity denylist guard.
+#
+# Installed into .git/hooks/pre-commit by flake.nix on every shell entry
+# (same idempotent pattern as the nbstripout filter config). Patterns live
+# OUTSIDE the repo so the denylist itself can never leak into history:
+#
+#     ~/.config/pipulate/commit_denylist.txt
+#
+# Format: one extended-regex pattern per line; blank lines and '#' comments
+# ignored. Matching is case-insensitive, so a single 'clientname' line
+# catches ClientName, CLIENTNAME, clientname.com — closing the
+# capitalization-variant gap from the git-filter-repo post-mortem.
+#
+# Scope: scans the ENTIRE staged index (git grep --cached), not just added
+# lines. One hit anywhere blocks the commit, so latent pollution surfaces
+# on the very next commit instead of riding along for months and forcing
+# another 7,783-commit history rewrite.
+#
+# No denylist file, or an empty one, means this hook is a silent no-op —
+# fresh magic-cookie installs are completely unaffected.
+#
+# NOTE: this is deliberately a DIFFERENT file from pii_substitutions.txt.
+# That table is a rewrite ruleset for the article/wiki lanes (transform on
+# the way out); this is a refusal ruleset for the repo lane (block on the
+# way in). Its substitution patterns would false-positive as blockers.
+
+DENYLIST="$HOME/.config/pipulate/commit_denylist.txt"
+
+[ -f "$DENYLIST" ] || exit 0
+
+PATTERNS_FILE="$(mktemp)"
+trap 'rm -f "$PATTERNS_FILE"' EXIT
+grep -v '^[[:space:]]*#' "$DENYLIST" | grep -v '^[[:space:]]*$' > "$PATTERNS_FILE" || true
+
+[ -s "$PATTERNS_FILE" ] || exit 0
+
+HITS="$(git grep --cached -I -n -i -E -f "$PATTERNS_FILE" 2>/dev/null || true)"
+
+if [ -n "$HITS" ]; then
+    echo "🛑 COMMIT BLOCKED: denylisted identifier found in staged content."
+    echo "$HITS" | head -20
+    HIT_COUNT="$(printf '%s\n' "$HITS" | wc -l)"
+    if [ "$HIT_COUNT" -gt 20 ]; then
+        echo "   ... and $((HIT_COUNT - 20)) more hit(s)."
+    fi
+    echo ""
+    echo "   Patterns: $DENYLIST"
+    echo "   Scrub the string(s) above before committing. To bypass ONCE,"
+    echo "   deliberately and with eyes open: git commit --no-verify"
+    exit 1
+fi
+
+exit 0
