@@ -922,7 +922,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # - Make Honeybot 404 hub-healing only redirect to other hubs (not article leafs)
 # - Make the inference endpoint a configurable OpenAI-compatible URL to get vLLM, llama.cpp, LM Studio, and every future engine for free.
 # - Rustkyll drop-in test blocked on NixOS: uvx ships a generic dynamically-linked binary (stub-ld). Retry via nix-ld, steam-run, or `cargo install rustkyll`; then `diff -r` scratch build vs fresh Jekyll _site.
-# - CDP flight recorder REMAINS: add ('network_truth', 'Wire Truth') lens to the fresh-scrape lenses tuple in tools/scraper_tools.py (needs adhoc context — slot already staged), and secret-scan/sanitize `!` command output in the compile lane (browser_cache domain names leak client identity).
+# - Compile-lane sanitizer: pass `!` command stdout through pii_substitutions/denylist before stacking into payloads. Evidence: browser_cache paths leaked a client domain AND a product slug into a cloud-bound compile on 2026-07-10 — after the Ch. VIII caution was written. The caution is documentation; this todo is enforcement.
 
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
