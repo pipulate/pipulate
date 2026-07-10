@@ -1335,6 +1335,7 @@ def main():
     parser.add_argument('prompt', nargs='?', default=None, help='A prompt string or path to a prompt file (e.g., prompt.md).')
     parser.add_argument('-o', '--output', type=str, help='Optional: Output filename.')
     parser.add_argument('--no-clipboard', action='store_true', help='Disable copying output to clipboard.')
+    parser.add_argument('--allow-leaks', action='store_true', help='Emit the payload even if commit_denylist.txt patterns survive the PII scrub (deliberate fail-open override).')
     parser.add_argument('--check-dependencies', action='store_true', help='Verify that all required external tools are installed.')
     parser.add_argument('--context-only', action='store_true', help='Generate a context-only prompt without file contents.')
     parser.add_argument('-n', '--no-tree', action='store_true', help='Suppress file tree and UML generation.')
