@@ -334,6 +334,18 @@ tools/llm_optics.py     # <-- Some of the work we do would bring down the Jupyte
 tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
 tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
+# THE CDP FLIGHT RECORDER (Wire Truth): every scrape drains the browser's
+# performance log to browser_cache/<domain>/<slug>/network_log.jsonl — the
+# network conversation the page actually had, not a reenactment. URL sigils:
+#   !URL  scrape fresh (cache-bust) -> six lenses stacked into context
+#   @URL  scrape via cache          -> same lenses, no new flight
+#   $URL  materialize cached headers.json + source.html (wire-truth extract)
+#   %URL  distill cached network_log.jsonl -> per-request table + host census
+# The raw JSONL NEVER enters context; %URL is the only sanctioned lens on it.
+# ⚠️ COMPILE-LANE CAUTION: browser_cache dirs are NAMED BY CLIENT DOMAIN.
+# gitignore protects the repo lane, not `!` command stdout. Redact or avoid
+# `find browser_cache` output in payloads bound for cloud chat windows.
+
 # ============================================================================
 # IX. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
 # ============================================================================
