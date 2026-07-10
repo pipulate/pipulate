@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,290 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 19 published in the last 7 days
+# There are 1,291 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 20 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -413,11 +413,11 @@ remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblog
 # ============================================================================
 
 # WE'VE GOT A LOT OF THESE AND I HAVE TO BUILD THIS OUT / AD HOC-ISH
-# ~/repos/trimnoir/flake.nix
-# ~/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
-# ~/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
-# ~/repos/trimnoir/about.md                # <-- A typical markdown Jekyll page
-# ~/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
+~/repos/trimnoir/flake.nix
+~/repos/trimnoir/_layouts/default.html   # <-- Look inside here at /api/telemetry/js_confirm.gif for the JavaScript Russian nested doll trapdoor to see how we can tell who's hydrating the DOM.
+~/repos/trimnoir/_config.yml             # <-- Just the general Jekyll static site system (GitHub Pages / Liquid Templates) to see how Honeybot renders markdown.
+~/repos/trimnoir/about.md                # <-- A typical markdown Jekyll page
+~/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
 
 # remotes/honeybot/queries/trapdoor_ips.sql         # <-- The SQL to see who is hydrating the DOM. The example of HOW we use it from here in the router below.
 # ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
@@ -882,6 +882,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 """
 
 # #todo #to-do
+# - Document that the flake.lock file remains unpinned for roll-forward on Nix unstable branch. 
 # - Do the work of purging PicoCSS "Card" references so I can unpin FastHTML in requirements.in
 # - Add "What's dangling that should be carried forward" language in the `prompt_foo.py` instructions
 # - Swap in uv for pip for a faster install
