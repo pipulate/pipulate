@@ -1563,6 +1563,17 @@ def main():
                                 "path": f"OPTICS [{title}]: {target_url}", "comment": comment, "content": content,
                                 "tokens": count_tokens(content), "words": count_words(content), "lang": "markdown" if key == 'seo_md' else "text"
                             })
+
+                    # WIRE TRUTH LENS (7th lens): distill the flight recorder
+                    # whenever a ledger exists — fresh scrape or cache hit.
+                    # The raw JSONL never enters context; only this distillate.
+                    ledger_path = artifacts.get('network_log')
+                    if ledger_path and os.path.exists(ledger_path):
+                        content = distill_network_ledger(ledger_path, target_domain=domain)
+                        processed_files_data.append({
+                            "path": f"OPTICS [Wire Truth]: {target_url}", "comment": comment, "content": content,
+                            "tokens": count_tokens(content), "words": count_words(content), "lang": "markdown"
+                        })
                 else:
                     logger.print(f"      [Error] Scrape failed: {result.get('error')}")
             else:
