@@ -195,6 +195,7 @@
           tmux                         # Terminal multiplexer for managing sessions
           zlib                         # Compression library for data compression
           git                          # Version control system for tracking changes
+          git-filter-repo              # Surgical git history rewriting (scrub strings/paths across all commits)
           curl                         # Command-line tool for transferring data with URLs
           wget                         # Utility for non-interactive download of files from the web
           cmake                        # Cross-platform build system generator

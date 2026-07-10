@@ -52,7 +52,7 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 # --- START STATS ---
 # There are 1,289 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 23 published in the last 7 days
+# Velocity: 18 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -632,31 +632,9 @@ ADHOC_CHOP = r"""
 
 # --- ADHOC SLOT START ---
 
-# tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
-# tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
-# tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
-# tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
-# tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
+requirements.in
 
 # --- ADHOC SLOT END ---
-
-# --- ADHOC SLOT ADDITIONS (network wire-truth campaign, round 2) ---
-
-remotes/honeybot/nixos/configuration.nix  # [4,804 tokens | 18,310 bytes]
-
-# requirements.in
-# 
-# ! .venv/bin/python -c "import selenium, undetected_chromedriver as uc; print('selenium', selenium.__version__, '| uc', uc.__version__)"
-# 
-# ! chromium --version
-# 
-# ! cat browser_cache/mikelev.in/%2F/headers.json
-# 
-# ! python -c "from tools.scraper_tools import selenium_automation; import asyncio; asyncio.run(selenium_automation({'url':'https://mikelev.in/','domain':'mikelev.in','url_path_slug':'%2F','headless':False,'is_notebook_context':True,'verbose':False,'override_cache':True}))"
-# ! python -c "import json;L=[json.loads(l) for l in open('browser_cache/mikelev.in/%2F/network_log.jsonl')];R=[e for e in L if e.get('method')=='Network.responseReceived' and 'mikelev.in' in e['params']['response']['url']];print('mikelev.in responses:',len(R));print(json.dumps(R[0],indent=2)[:1600] if R else 'NONE')"
-# ! python -c "import json;L=[json.loads(l) for l in open('browser_cache/mikelev.in/%2F/network_log.jsonl')];S=[e for e in L if e.get('method')=='Network.requestWillBeSent' and 'mikelev.in' in e['params']['request']['url']];print('mikelev.in requests:',len(S));print(json.dumps(S[0],indent=2)[:1200] if S else 'NONE')"
-
-# --- ADHOC SLOT ADDITIONS END ---
 
 foo_files.py
 prompt_foo.py
