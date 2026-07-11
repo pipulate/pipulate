@@ -647,6 +647,7 @@ ADHOC_CHOP = r"""
 
 # --- ADHOC SLOT START ---
 
+/home/mike/repos/pipulate/.git/hooks/pre-commit
 !https://mikelev.in/
 
 # --- ADHOC SLOT END ---
