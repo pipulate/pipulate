@@ -647,8 +647,9 @@ ADHOC_CHOP = r"""
 
 # --- ADHOC SLOT START ---
 
-# scripts/git_hooks/pre-commit  <-- # GIVE A HOME DO NOT DELETE WILL NOT RE-PAINTBOX
-scripts/articles/sanitizer.py
+remotes/honeybot/scripts/stream.py
+remotes/honeybot/scripts/content_loader.py
+# imports/voice_synthesis.py
 
 # --- ADHOC SLOT END ---
 
