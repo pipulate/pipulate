@@ -599,6 +599,13 @@ def perform_show(script):
         subprocess.run(["pkill", "-f", "card.py.*UPDATING"], check=False)
     except Exception:
         pass
+    # Same idempotent backstop for the standby music loop. The marker is
+    # baked into that loop's sh -c command line, so this cannot touch the
+    # narrator's own aplay processes — it only reaps an orphaned jukebox.
+    try:
+        subprocess.run(["pkill", "-f", MUSIC_MARKER], check=False)
+    except Exception:
+        pass
 
     # Define the environment for the browser once
     env = os.environ.copy()
