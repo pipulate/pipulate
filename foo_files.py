@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,293 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 22 published in the last 7 days
+# There are 1,295 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 20 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -648,7 +648,6 @@ ADHOC_CHOP = r"""
 # --- ADHOC SLOT START ---
 
 # scripts/git_hooks/pre-commit  <-- # GIVE A HOME DO NOT DELETE WILL NOT RE-PAINTBOX
-~/.config/pipulate/commit_denylist.txt
 scripts/articles/sanitizer.py
 
 # --- ADHOC SLOT END ---
