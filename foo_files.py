@@ -649,7 +649,7 @@ ADHOC_CHOP = r"""
 
 remotes/honeybot/scripts/stream.py
 remotes/honeybot/scripts/content_loader.py
-# imports/voice_synthesis.py
+remotes/honeybot/nixos/configuration.nix
 
 # --- ADHOC SLOT END ---
 
