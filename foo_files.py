@@ -646,10 +646,9 @@ ADHOC_CHOP = r"""
 # after the campaign. Everything below the slot mirrors DEFAULT_CHOP.
 
 # --- ADHOC SLOT START ---
-
-/home/mike/repos/pipulate/.git/hooks/pre-commit
-!https://mikelev.in/
-
+# (Structurally empty in the repo. Contents are spliced in at compile
+# time from the gitignored adhoc.txt at the repo root. Edit with `ahe`.
+# Nothing typed there can enter git history, because git never sees it.)
 # --- ADHOC SLOT END ---
 
 foo_files.py
