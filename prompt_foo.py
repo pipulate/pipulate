@@ -538,6 +538,21 @@ def parse_file_list_from_config(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
         logger.print(f"ERROR: foo_files.py not found or doesn't contain '{chop_var}'.")
         sys.exit(1)
     
+    # THE ADHOC OVERLAY: splice the gitignored adhoc.txt into the slot.
+    # The tracked slot stays structurally empty; anything typed in the
+    # overlay can never enter git history, because git never sees it.
+    adhoc_overlay = os.path.join(REPO_ROOT, 'adhoc.txt')
+    if '--- ADHOC SLOT START ---' in files_raw and os.path.exists(adhoc_overlay):
+        with open(adhoc_overlay, 'r', encoding='utf-8') as f:
+            overlay_content = f.read().strip()
+        if overlay_content:
+            files_raw = re.sub(
+                r'(# --- ADHOC SLOT START ---\n).*?(# --- ADHOC SLOT END ---)',
+                lambda m: m.group(1) + '\n' + overlay_content + '\n\n' + m.group(2),
+                files_raw, flags=re.DOTALL
+            )
+            logger.print("🩹 Adhoc overlay spliced from gitignored adhoc.txt")
+
     # 💥 SAFE REPLACEMENT: Prevents crashing on bash/awk curly braces {}
     if format_kwargs:
         for key, val in format_kwargs.items():
