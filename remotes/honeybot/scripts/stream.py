@@ -695,6 +695,7 @@ def perform_show(script):
                 # perform_show() also retries this same pkill on every future cycle
                 # (see the top of this function) as a harmless, idempotent backstop in
                 # case this particular teardown attempt ever fails to land.
+                stop_updating_music(music_proc)
                 try:
                     subprocess.run(["pkill", "-f", "card.py.*UPDATING"], check=False)
                 except Exception:
