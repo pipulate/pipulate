@@ -647,9 +647,7 @@ ADHOC_CHOP = r"""
 
 # --- ADHOC SLOT START ---
 
-remotes/honeybot/scripts/stream.py
-remotes/honeybot/scripts/content_loader.py
-remotes/honeybot/nixos/configuration.nix
+!https://mikelev.in/
 
 # --- ADHOC SLOT END ---
 
