@@ -25,6 +25,31 @@
 # the way out); this is a refusal ruleset for the repo lane (block on the
 # way in). Its substitution patterns would false-positive as blockers.
 
+# --- ADHOC OVERLAY TRIPWIRE ---
+# Runs BEFORE the denylist early-exit below, so it protects fresh
+# installs that have no denylist file. Two checks, both against the
+# INDEX (the exact snapshot the impending commit records), not the
+# worktree: (1) the gitignored overlay must never be force-added;
+# (2) the tracked ADHOC socket in foo_files.py must stay structurally
+# empty (blank lines and comments only).
+if git ls-files --error-unmatch -- adhoc.txt >/dev/null 2>&1; then
+    echo "🛑 COMMIT BLOCKED: adhoc.txt is tracked in the index."
+    echo "   The adhoc overlay must never enter history."
+    echo "   Fix: git restore --staged adhoc.txt   (or git rm --cached adhoc.txt)"
+    exit 1
+fi
+if git show :foo_files.py 2>/dev/null | awk '
+    /^# --- ADHOC SLOT START ---$/ {inside=1; next}
+    /^# --- ADHOC SLOT END ---$/   {inside=0; next}
+    inside && $0 !~ /^[[:space:]]*(#.*)?$/ {found=1}
+    END {exit !found}
+'; then
+    echo "🛑 COMMIT BLOCKED: staged foo_files.py carries live payload in the ADHOC slot."
+    echo "   The tracked socket must contain only comments; contents belong in the"
+    echo "   gitignored overlay (edit with ahe)."
+    exit 1
+fi
+
 DENYLIST="$HOME/.config/pipulate/commit_denylist.txt"
 
 [ -f "$DENYLIST" ] || exit 0
