@@ -367,6 +367,49 @@ def conjure_patronus(name, duration=3.5):
         pass
 
 
+# --- The UPDATING Standby Music (Jeopardy think-music) ---
+# The wav lives in repo NEGATIVE SPACE: shipped once by hand (scp) to the
+# path below, never committed. A fresh Honeybot spun from the public repo
+# simply lacks the file and start_updating_music() no-ops — graceful
+# degradation via a single Path.exists() check. Playback rides the exact
+# path the probes proved end-to-end: aplay -D default -> PipeWire ALSA ->
+# Dummy Output sink -> OBS monitor capture -> YouTube. No hardware, no
+# audio group, no ACLs — the "speaker" is a virtual sink.
+MUSIC_FILE = Path.home() / ".local/share/honeybot/jeopardy.wav"
+MUSIC_MARKER = "honeybot-updating-music"
+
+
+def start_updating_music():
+    """Loop the standby wav in its own PROCESS GROUP. aplay does not loop,
+    and the wav (~30s) is far shorter than the standby window (up to ~4
+    minutes), hence the while-loop shell wrapper — which is exactly why the
+    group kill matters: kill only the aplay and the shell resurrects it a
+    beat later. The MUSIC_MARKER comment rides the command line so the
+    idempotent pkill backstop can target this loop and ONLY this loop,
+    never the Narrator's own Piper->aplay pipeline."""
+    if not MUSIC_FILE.exists():
+        return None
+    try:
+        return subprocess.Popen(
+            ["sh", "-c", f'while :; do aplay -q -D default "{MUSIC_FILE}"; done # {MUSIC_MARKER}'],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            preexec_fn=os.setsid,
+        )
+    except Exception:
+        return None
+
+
+def stop_updating_music(proc):
+    """Sharp cut: kill the whole process group (shell + in-flight aplay)."""
+    if proc is None:
+        return
+    try:
+        os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+    except Exception:
+        pass
+
+
 def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None):
     """Process-flavored sibling to conjure_patronus.
 
