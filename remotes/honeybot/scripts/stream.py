@@ -662,6 +662,11 @@ def perform_show(script):
                     target=lambda: conjure_window("card.py", duration=270.0, args=["UPDATING"]),
                     daemon=True,
                 ).start()
+                # Card up -> music up. Born at the same instant as the
+                # UPDATING figlet; dies at the same deterministic teardown
+                # below. PipeWire mixes it under the one-time "Receiving
+                # updates" announcement, broadcast-style.
+                music_proc = start_updating_music()
                 try:
                     subprocess.run(["pkill", "firefox"], check=False)
                 except Exception:
