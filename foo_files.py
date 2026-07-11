@@ -647,8 +647,10 @@ ADHOC_CHOP = r"""
 
 # --- ADHOC SLOT START ---
 # (Structurally empty in the repo. Contents are spliced in at compile
-# time from the gitignored adhoc.txt at the repo root. Edit with `ahe`.
-# Nothing typed there can enter git history, because git never sees it.)
+# time from the gitignored overlay file. Edit with `ahe`. Ordinary git
+# staging excludes the overlay, and the pre-commit tripwire refuses it
+# if it is ever forced into the index. For client work, point
+# PIPULATE_ADHOC_FILE outside the worktree so no git sweep can reach it.)
 # --- ADHOC SLOT END ---
 
 foo_files.py
