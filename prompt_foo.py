@@ -538,10 +538,19 @@ def parse_file_list_from_config(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
         logger.print(f"ERROR: foo_files.py not found or doesn't contain '{chop_var}'.")
         sys.exit(1)
     
-    # THE ADHOC OVERLAY: splice the gitignored adhoc.txt into the slot.
-    # The tracked slot stays structurally empty; anything typed in the
-    # overlay can never enter git history, because git never sees it.
-    adhoc_overlay = os.path.join(REPO_ROOT, 'adhoc.txt')
+    # THE ADHOC OVERLAY: splice a gitignored overlay file into the slot.
+    # The tracked slot stays structurally empty. Ordinary git staging
+    # excludes the overlay, and the pre-commit tripwire refuses it if it
+    # is ever forced into the index with `git add -f` -- exclusion is a
+    # policy, not a wall. For client work, set PIPULATE_ADHOC_FILE to a
+    # path outside the worktree (e.g. ~/.local/state/pipulate/adhoc.txt)
+    # so no git sweep, forced or not, can ever reach it: structural
+    # absence beats exclusion policy.
+    adhoc_overlay = os.environ.get(
+        'PIPULATE_ADHOC_FILE',
+        os.path.join(REPO_ROOT, 'adhoc.txt')
+    )
+    adhoc_overlay = os.path.expanduser(adhoc_overlay)
     if '--- ADHOC SLOT START ---' in files_raw and os.path.exists(adhoc_overlay):
         with open(adhoc_overlay, 'r', encoding='utf-8') as f:
             overlay_content = f.read().strip()
