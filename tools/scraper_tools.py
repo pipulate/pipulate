@@ -248,6 +248,7 @@ async def selenium_automation(params: dict) -> dict:
     driver = None
     profile_path = None
     temp_profile = False
+    music_proc = None
 
     # --- Find the browser executable path (Platform-Specific) ---
     effective_os = os.environ.get("EFFECTIVE_OS") # This is set by your flake.nix
