@@ -106,8 +106,11 @@ AI_PHOOEY_CHOP = r"""                                                           
 # into witness, broadcaster, and proof that obsolescence is often lost context.
 # The recurring enemy is manufactured forgetting — the Phoebus pattern that
 # sells convenience, amputates capability, waits for memory to fade, and repeats.
-# Exaptation is the magic: old parts and old skills recruited into new functions.
-# The model is the apparition. The book remembers. The human chooses.
+# Exaptation is the central magic: old parts, protocols, and skills recruited
+# for new functions (lens crystallins from enzymes, Windows 10 laptops into
+# live-stream fishtank observatories, ternary rediscoveries from 1958 Setun
+# to BitNet b1.58). 
+# The model is the apparition. The book remembers. The human chooses and knaps.
 
 # CHAPTER 1: THE SOFTWARE VON NEUMANN PROBE - The time has come, the Walrus says...
 # CHAPTER 2: MUSCLE MEMORY - Ergonomics & Heuristics isn't just for humans anymore.
