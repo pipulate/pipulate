@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,297 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 20 published in the last 7 days
+# There are 1,299 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 22 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -149,7 +149,9 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-/home/mike/.config/pipulate/pii_substitutions.txt
+# SORT THIS POORLY PLACED OFTEN OOB AD HOC STUFF
+# scripts/git_hooks/pre-commit
+# /home/mike/.config/pipulate/pii_substitutions.txt
 
 # README.md  # [20,725 tokens | 104,252 bytes]
 
