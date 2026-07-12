@@ -335,6 +335,7 @@ async def selenium_automation(params: dict) -> dict:
             temp_profile = True
             logger.info(f"👻 Using temporary profile: {profile_path}")
         
+        music_proc = _start_scrape_music(verbose=verbose)
         logger.info(f"🚀 Initializing undetected-chromedriver (Headless: {headless})...")
         try:
             driver = uc.Chrome(options=options, 
