@@ -160,7 +160,15 @@ async def selenium_automation(params: dict) -> dict:
         # "source" and "headers.json" was never enumerated at all. Fresh scrapes
         # expose 'source_html' and 'headers', so cached results must agree or the
         # $URL route (headers + raw source only) silently finds nothing.
-        for filename, semantic_key in [("source.html", "source_html"), ("headers.json", "headers")]:
+        for filename, semantic_key in [
+            ("source.html", "source_html"),
+            ("headers.json", "headers"),
+            ("seo.md", "seo_md"),
+            ("links.md", "links_md"),
+            ("diff_hierarchy.txt", "diff_hierarchy_txt"),
+            ("accessibility_tree_summary.txt", "accessibility_tree_summary"),
+            ("optics_manifest.txt", "optics_manifest"),
+        ]:
             candidate = output_dir / filename
             if candidate.exists():
                 artifacts[semantic_key] = str(candidate)
