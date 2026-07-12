@@ -722,6 +722,7 @@ foo_files.py
 # --- PIN PATHS START ---
 
 ~/repos/trimnoir/_posts/2026-07-07-agentic-readiness-checklist.md  # Survey Agentic Landscape
+~/repos/trimnoir/_posts/2026-07-12-computronium-gradient-scaling-intelligence.md  # Composability vs Capacity
 
 # --- PIN PATHS END ---
 """
