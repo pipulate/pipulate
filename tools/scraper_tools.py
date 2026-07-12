@@ -385,6 +385,10 @@ async def selenium_automation(params: dict) -> dict:
         except Exception as e:
             if verbose: logger.info(f"Did not detect a page reload for security challenge. Proceeding anyway.")
 
+        # The wait is over one way or the other: cut the think-music sharply.
+        _stop_scrape_music(music_proc)
+        music_proc = None
+
         # --- Capture Core Artifacts ---
         dom_content = driver.execute_script("return document.documentElement.outerHTML;")
         dom_path = output_dir / "hydrated_dom.html"
