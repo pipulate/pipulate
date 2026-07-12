@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,299 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 22 published in the last 7 days
+# There are 1,301 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 24 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -253,6 +253,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!! STANDARD WRAPPER: 2
 
 # The following files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
+init.lua          #  <-- Daily driver hot-keys that overlap with aliases in flake.nix
 .gitattributes    #  <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
 .gitignore        #  <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
 flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
@@ -260,18 +261,17 @@ apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aid
 scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 
 # ACTUATORS & RELATED
-init.lua          #  <-- Daily driver hot-keys that overlap with aliases in flake.nix
-scripts/ai.py     #  <-- How I constantly use local AI to write git commit messages with `m` alias.
-cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
-scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
+# scripts/ai.py     #  <-- How I constantly use local AI to write git commit messages with `m` alias.
+# cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP
+# scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
 
 # scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
 # ~/repos/nixos/autognome.py  #  <-- More rare to have to include, but the true "top" of the muscle memory stack for day-to-day purposes
 
 # The following 3 files are the first huge context reveal that pull the curtains open.
-__init__.py     #  <-- Master versioning
-release.py      #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
-pyproject.toml  #  <-- The PyPI Packaging details
+# __init__.py     #  <-- Master versioning
+# release.py      #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
+# pyproject.toml  #  <-- The PyPI Packaging details
 
 # scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
 
@@ -296,7 +296,7 @@ pyproject.toml  #  <-- The PyPI Packaging details
 # ============================================================================
 
 # THE ROLLING PIN (Again, if you only include one thing for overarching context of Pipulate and NPvg, include this.
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER: 3
+ python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER: 3
 # ! python scripts/articles/lsa.py -t 4 --reverse --fmt dated-slugs  # <-- BotifyML work journal
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 
@@ -366,11 +366,11 @@ pyproject.toml  #  <-- The PyPI Packaging details
 # VIII. LLM OPTICS - Like looking at raw HTML or the hydrated DOM? Them either.
 # ============================================================================
 
-tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
-tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
-tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
-tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
-tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
+# tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
+# tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
+# tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
+# tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
+# tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
 # THE CDP FLIGHT RECORDER (Wire Truth): every scrape drains the browser's
 # performance log to browser_cache/<domain>/<slug>/network_log.jsonl — the
@@ -693,12 +693,12 @@ ADHOC_CHOP = r"""
 
 foo_files.py
 prompt_foo.py
+init.lua
 .gitattributes
 .gitignore
 flake.nix
 apply.py
 scripts/ai.py
-init.lua
 # ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 """
 
