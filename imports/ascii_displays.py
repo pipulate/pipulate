@@ -60,6 +60,11 @@ FIGURATE_LEDGER: dict = {
     "ai_stack_combo": 1121129699,  
     "deployment_context": 1326657684,
     "honeybot_pipeline": 2035836683,
+    # CRC32 of raw ai string, no strip (leading newline preserved, like honeybot_pipeline)
+    "ai_pachinko": 3085409448,
+    "flyball_governor": 3239899604,
+    "canal_lock": 311868176,
+    "mechanical_man": 4142234675,
     # CRC32 after _expand_color_bits_ai() + .strip()
     # === FIGURATE_LEDGER_EXTRUDE_BOTTOM ===
     # Add new artwork CRC32 entries immediately above this line
@@ -653,6 +658,114 @@ def _figurate_honeybot_pipeline():
     human = Panel(human_art, title="🍯 Honeybot — Ingress to Broadcast Pipeline", border_style="white")
     return human, ai_art
 
+def _figurate_ai_pachinko():
+    """Render the AI Pachinko parlor — every token is a ball drop, the house is you."""
+    art = r"""
+            ╔═══════════════════════════════════╗
+            ║   🎰  A I   P A C H I N K O  🎰   ║
+            ║    "every token is a ball drop"   ║
+            ╠═══════════════════════════════════╣
+ prompt ──→  o          TEMPERATURE ──[■■■□□]   ║
+            ║   ·   ·   ·   ·   ·   ·   ·   ·   ║
+            ║ ·   ·   ·   ·   ·   ·   ·   ·   · ║
+            ║   ·   ·   ·   ·   ·   ·   ·   ·   ║  ← the pins are frozen weights:
+            ║ ·   ·   ·   \.  ·   ·   ·   ·   · ║    deterministic brass, honest
+            ║   ·   ·   ·  o  ·   ·   ·   ·     ║
+            ║ ·   ·   ·   / \ ·   ·   ·   ·   · ║  ← the ball knows nothing;
+            ║   ·   ·   ·/  ·\·   ·   ·   ·     ║    the distribution knows all
+            ║ ┌─────┬────▼──┬─▼───┬─────┬─────┐ ║
+            ║ │ the │ KA'   │ of  │ and │ Oz  │ ║  ← softmax payout trays
+            ║ └─────┴─CHING─┴─────┴─────┴─────┘ ║
+            ╠═══════════════════════════════════╣
+            ║   [y] bank it      [n] re-spin    ║  ← the governor: YOUR key,
+            ╚═══════════════════════════════════╝    hanging next to apply.py
+                      Δ         Δ
+                     ═╧═════════╧═  (legs bolted to /home/mike, not the cloud)
+"""
+    ai_art = _expand_color_bits_ai(art)
+    human_art = _expand_color_bits_human(art)
+    human = Panel(human_art, title="🎰 AI Pachinko — Bank It or Re-Spin", border_style="white")
+    return human, ai_art
+
+
+def _figurate_flyball_governor():
+    """Render Watt's flyball governor — the perception-decision-actuation loop in brass."""
+    art = r"""
+     THE FLYBALL GOVERNOR — intelligence with zero symbols (Watt, 1788)
+
+                      │ spindle — spun by the engine ITSELF
+                  ┌───┴───┐
+                 /         \
+               (O)         (O)   ← too fast: brass flies OUTWARD,
+                 \         /        collar lifts, steam CHOKES
+                  \       /      ← too slow: balls droop,
+                   \     /          valve opens, engine breathes
+                 ┌──┴───┴──┐
+                 │ sliding  │─────────→ to the steam valve
+                 │ collar   │           (the only output there is)
+                 └────┬─────┘
+                      │
+               ~~~~~~~~~~~~~~~~
+               [  B O I L E R  ]
+
+    Senses. Compares. Acts. No numbers, no memory, no representation.
+    Maxwell wrote its stability paper (1868). Wiener named a field after
+    its Greek job title. It never needed to be smarter than the steam.
+"""
+    ai_art = _expand_color_bits_ai(art)
+    human_art = _expand_color_bits_human(art)
+    human = Panel(human_art, title="⚙️ Flyball Governor — Cybernetics' Namesake", border_style="white")
+    return human, ai_art
+
+
+def _figurate_canal_lock():
+    """Render the canal lock — a bistable element; computation begins where something resists the gradient."""
+    art = r"""
+     THE CANAL LOCK — a flip-flop with a draft of six feet
+
+   upper pound ~~~~~~~~╥══╥
+                       ║  ║ gate A (check valve: sequence enforced)
+   ════════════════════╝  ║        ⛵
+                          ╚~~~~~~~~~~~~~~~╥══╥
+                            CHAMBER       ║  ║ gate B
+                            state ∈       ║  ║
+                            {HIGH, LOW}   ║  ║
+   ═══════════════════════════════════════╝  ╚~~~~ lower pound
+
+    One program, run forever: move payload ACROSS the gradient
+    without collapsing the gradient itself. History leaves a mark;
+    the pound is never lost. Computation begins where something
+    RESISTS the water running downhill.
+"""
+    ai_art = _expand_color_bits_ai(art)
+    human_art = _expand_color_bits_human(art)
+    human = Panel(human_art, title="🚦 Canal Lock — The Six-Foot Flip-Flop", border_style="white")
+    return human, ai_art
+
+
+def _figurate_mechanical_man():
+    """Render Tik-Tok's patent drawing — thought and speech wound; the action key stays on the wall."""
+    art = r"""
+     SMITH & TINKER'S PATENT MECHANICAL MAN — as deployed locally
+
+        ┌──────────────────────────────┐
+        │   ⚙  THOUGHT    [ wound ✓ ]  │ ← key #1: the context compiler
+        │   ⚙  SPEECH     [ wound ✓ ]  │ ← key #2: this very response
+        │   ⚙  ACTION     [    —    ]  │ ← key #3 not installed. See hook:
+        └──────────────────────────────┘
+                                            ┌────────────────┐
+             runs down mid-sentence;        │ 🔑  apply.py    │
+             rewound each morning by        │  AST airlock   │
+             a human with a `foo` alias     │  human  [y/n]  │
+                                            └────────────────┘
+     "Thinks, Speaks, Acts, and Does Everything But Live."
+      — and the dangerous key stays on the wall, by design.
+"""
+    ai_art = _expand_color_bits_ai(art)
+    human_art = _expand_color_bits_human(art)
+    human = Panel(human_art, title="🗝️ Tik-Tok — Two Keys Wound, One on the Wall", border_style="white")
+    return human, ai_art
+
 # === FIGURATE_RENDER_EXTRUDE_BOTTOM ===
 # Add new _figurate_* render functions immediately above this line
 
@@ -677,6 +790,18 @@ FIGURATE_REGISTRY: dict = {
     },
     "honeybot_pipeline": {
         "render": _figurate_honeybot_pipeline,
+    },
+    "ai_pachinko": {
+        "render": _figurate_ai_pachinko,
+    },
+    "flyball_governor": {
+        "render": _figurate_flyball_governor,
+    },
+    "canal_lock": {
+        "render": _figurate_canal_lock,
+    },
+    "mechanical_man": {
+        "render": _figurate_mechanical_man,
     },
     # === FIGURATE_REGISTRY_EXTRUDE_BOTTOM ===
     # Add new registry entries immediately above this line
