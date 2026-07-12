@@ -699,7 +699,7 @@ flake.nix
 apply.py
 scripts/ai.py
 init.lua
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 """
 
 PINNED_CHOP = r"""
