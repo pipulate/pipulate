@@ -1733,6 +1733,9 @@ def main():
                             "path": f"OPTICS [Wire Truth]: {target_url}", "comment": comment, "content": content,
                             "tokens": count_tokens(content), "words": count_words(content), "lang": "markdown"
                         })
+
+                    # THE TRIPTYCH RECEIPT: show the human what just landed.
+                    print_optics_receipt(artifacts, target_url, cached=result.get('cached', False))
                 else:
                     logger.print(f"      [Error] Scrape failed: {result.get('error')}")
             else:
