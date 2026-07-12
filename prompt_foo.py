@@ -503,6 +503,88 @@ def distill_network_ledger(jsonl_path: str, target_domain: str = "") -> str:
         lines.append(f"- {host}: {count} request(s){marker}")
     return "\n".join(lines)
 
+
+# ============================================================================
+# --- The Triptych Receipt (console-only scrape visualization) ---
+# ============================================================================
+# Fresh scrapes and cached scrapes speak different artifact vocabularies
+# (semantic keys vs filename stems), so every lens carries its aliases.
+OPTICS_LENS_MENU = [
+    (('seo_md', 'seo'),                          'seo.md ............... SEO metadata + markdown body'),
+    (('headers',),                               'headers.json ......... response headers (wire truth)'),
+    (('optics_manifest',),                       'optics_manifest ...... drill-down address book'),
+    (('accessibility_tree_summary',),            'a11y summary ......... semantic outline (screen-reader view)'),
+    (('links_md', 'links'),                      'links.md ............. link lens (source vs hydrated anchors)'),
+    (('diff_hierarchy_txt', 'diff_hierarchy'),   'diff hierarchy ....... HINGE A (structural delta)'),
+    (('network_log',),                           'wire truth ........... HINGE B (CDP flight distillate)'),
+]
+
+
+def _first_artifact(artifacts: dict, keys):
+    """Return the first artifact path that exists on disk, across key aliases."""
+    for k in keys:
+        p = artifacts.get(k)
+        if p and os.path.exists(p):
+            return p
+    return None
+
+
+def print_optics_receipt(artifacts: dict, target_url: str, cached: bool = False):
+    """Console-only triptych receipt for a just-completed scrape.
+
+    Shows the operator the three panels (view-source, hydrated DOM, wire
+    truth), the Hinge A verdict read live from the diff lens, and the menu
+    of lenses that just got stacked into context. Deliberately uses print(),
+    NOT logger.print(): this is terminal candy for the human and must never
+    ride into the compiled payload's Summary section.
+    """
+    def art(keys):
+        return _first_artifact(artifacts, keys if isinstance(keys, tuple) else (keys,))
+
+    def kb(keys):
+        p = art(keys)
+        try:
+            return f"{max(1, os.path.getsize(p) // 1024)} KB" if p else "—"
+        except OSError:
+            return "—"
+
+    hinge_a = "no diff lens captured"
+    diff_path = art(('diff_hierarchy_txt', 'diff_hierarchy'))
+    if diff_path:
+        try:
+            with open(diff_path, 'r', encoding='utf-8') as f:
+                head = f.read(300)
+            if "No structural differences" in head:
+                hinge_a = "FLAT 0° — source == DOM (nothing conjured by JS)"
+            else:
+                hinge_a = "SWUNG — JS changed the structure (read the diff lens)"
+        except OSError:
+            pass
+
+    def cell(text, width=18):
+        return str(text)[:width].ljust(width)
+
+    p1 = cell(f"source.html {kb(('source_html', 'source'))}")
+    p2 = cell(f"hydrated {kb(('hydrated_dom',))}")
+    p3 = cell(f"flight rec {kb(('network_log',))}")
+    mode = " (cache hit — no new flight)" if cached else " (fresh flight)"
+
+    print(f"""
+   👁️‍🗨️  TRIPTYCH RECEIPT — {target_url}{mode}
+   ┌─ PANEL 1 ─────────┐  ┌─ PANEL 2 ─────────┐  ┌─ PANEL 3 ─────────┐
+   │ VIEW-SOURCE       │  │ HYDRATED DOM      │  │ WIRE TRUTH        │
+   │ what server SAID  │  │ what browser BUILT│  │ what it COST      │
+   │ {p1}│  │ {p2}│  │ {p3}│
+   └─────────┬─────────┘  └──┬─────────────┬──┘  └─────────┬─────────┘
+             └─── HINGE A ───┘             └─── HINGE B ───┘
+   HINGE A (diff lens): {hinge_a}
+   HINGE B (requestId): the Document row in panel 3 IS panel 1, byte-for-byte
+   LENSES STACKED INTO CONTEXT:""")
+    for keys, label in OPTICS_LENS_MENU:
+        mark = 'x' if art(keys) else ' '
+        print(f"    [{mark}] {label}")
+    print()
+
 # ============================================================================
 # --- Helper Functions (File Parsing, Clipboard) ---
 # ============================================================================
