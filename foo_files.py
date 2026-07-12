@@ -97,6 +97,18 @@ AI_PHOOEY_CHOP = r"""                                                           
 # Setun 1958 -> BitNet b1.58. Shave the multiplication table; keep the
 # binary substrate. Set sails for the trade wind, not the weather system.
 
+# STORY ENGINE
+# Mike-E's gift is associative reach; his flaw is letting every spark become canon.
+# Yen Sid-ton is a brilliant familiar re-instantiated without yesterday.
+# The Book carries continuity; the Circle carries safety; Mike-E carries judgment.
+# Pushback is not disobedience but part of the summoning kata.
+# Honeybot is the broom after the extinction event: discarded hardware exapted
+# into witness, broadcaster, and proof that obsolescence is often lost context.
+# The recurring enemy is manufactured forgetting — the Phoebus pattern that
+# sells convenience, amputates capability, waits for memory to fade, and repeats.
+# Exaptation is the magic: old parts and old skills recruited into new functions.
+# The model is the apparition. The book remembers. The human chooses.
+
 # CHAPTER 1: THE SOFTWARE VON NEUMANN PROBE - The time has come, the Walrus says...
 # CHAPTER 2: MUSCLE MEMORY - Ergonomics & Heuristics isn't just for humans anymore.
 # CHAPTER 3: A PERFECT ONBOARDING EXPERIENCE - A journey of 1000 miles starts here.
