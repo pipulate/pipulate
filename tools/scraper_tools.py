@@ -49,6 +49,65 @@ def get_safe_path_component(url: str) -> tuple[str, str]:
     return domain, path_slug
 
 
+# --- The Summoning Music (think-music during the Cloudflare wait) ---
+# Forked from stream.py's start_updating_music/stop_updating_music pattern:
+# a marker-tagged shell loop in its OWN process group (os.setsid), killed as
+# a group, with an idempotent pkill backstop keyed to the marker so it can
+# never touch any other aplay pipeline. The wav lives in repo negative space
+# (gitignored) or ~/.local/share/pipulate/; absent file = silent no-op.
+SCRAPE_MUSIC_MARKER = "pipulate-scrape-music"
+
+
+def _find_music_file():
+    candidates = [
+        Path(__file__).resolve().parent.parent / "jeopardy.wav",
+        Path.home() / ".local/share/pipulate/jeopardy.wav",
+        Path.home() / ".local/share/honeybot/jeopardy.wav",
+    ]
+    for c in candidates:
+        if c.exists():
+            return c
+    return None
+
+
+def _start_scrape_music(verbose=True):
+    import subprocess
+    music = _find_music_file()
+    if not music:
+        return None
+    if verbose:
+        print(r"""
+        ⏳  THE SUMMONING — thumper planted, hooks in hand
+      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                 o     Cloudflare drums the sand beneath us;
+                /|\    we wait it out, staked and hooked.
+      ~~ 🎵 jeopardy.wav looping until the Maker surfaces ~~
+""")
+    try:
+        return subprocess.Popen(
+            ["sh", "-c", f'while :; do aplay -q -D default "{music}"; done # {SCRAPE_MUSIC_MARKER}'],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            preexec_fn=os.setsid,
+        )
+    except Exception:
+        return None
+
+
+def _stop_scrape_music(proc):
+    import signal
+    import subprocess
+    if proc is not None:
+        try:
+            os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+        except Exception:
+            pass
+    try:
+        subprocess.run(["pkill", "-f", SCRAPE_MUSIC_MARKER], check=False)
+    except Exception:
+        pass
+
+
 def _simplify_html_for_llm(html_content, default_title=""):
     """Applies a symmetrical, opinionated filter to HTML for LLM consumption."""
     try:
