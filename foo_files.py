@@ -322,7 +322,16 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 #    second-human install test; Repomix secret-scan for compile lane;
 #    downgrade protocol todos to "instrument" + Visa TAP watch item.
 
-# EXTERNAL ARTICLES TO CONSTITUTIONALIZE
+# 📌 2026-07-12 | /home/mike/repos/trimnoir/_posts/2026-07-12-computronium-gradient-scaling-intelligence.md
+#    canonical_url: https://mikelev.in/futureproof/computronium-gradient-scaling-intelligence/
+#    The composability bet: heat stays unsolved but capacity compounds anyway;
+#    systems that compose/decompose cleanly win against that backdrop,
+#    proprietary or open. Kill-switch ziggurat: anything higher in the Unix
+#    stack can pkill all the turtles below — safety by structural position.
+#    OWES: composability-under-exponential-capacity axis into the standing
+#    constitution (Wire Verdict sibling); latestn rejection bisect (size vs
+#    content tripwire); LLM Optics kata on own site (view-source vs hydrated
+#    DOM vs CDP wire truth) as the reproducible Botify-side dry run.
 # https://drucker.institute/principles/
 
 # ============================================================================
