@@ -1657,3 +1657,57 @@ Essential knowledge for 100% success rate"""
 #  └───────────┘           └───────────┘           └───────────┘
 # ```
 # 
+
+# --- BEGIN NEW STUFF ---
+# 
+# ```text
+#                           THE LLM OPTICS TRIPTYCH
+#           (three panels, two hinges — the six lenses are magnifying
+#            glasses held UP TO the panels, never panels themselves)
+# 
+#   ╔═══════════════════╗       ╔═══════════════════╗       ╔═══════════════════╗
+#   ║      PANEL 1      ║       ║      PANEL 2      ║       ║      PANEL 3      ║
+#   ║    VIEW-SOURCE    ║       ║   HYDRATED DOM    ║       ║    WIRE TRUTH     ║
+#   ║                   ║       ║                   ║       ║                   ║
+#   ║  what the server  ║       ║ what the browser  ║       ║  what it COST to  ║
+#   ║  SAID             ║       ║ BUILT             ║       ║  say it           ║
+#   ║                   ║       ║                   ║       ║                   ║
+#   ║  source.html      ║       ║ hydrated_dom.html ║       ║ network_log.jsonl ║
+#   ║  6 KB gzipped     ║       ║ same 6 anchors    ║       ║ 7 requests        ║
+#   ║  6 anchors        ║       ║ theme JS ran,     ║       ║ 84,421 bytes      ║
+#   ║  markdown-born    ║       ║ trap JS fired,    ║       ║ 43 KB = one tag   ║
+#   ║  honest HTML      ║       ║ structure: same   ║       ║  6 KB = the page  ║
+#   ╚═════════╦═════════╝       ╚═╦═══════════════╦═╝       ╚═════════╦═════════╝
+#             ║    HINGE A        ║               ║    HINGE B        ║
+#             ╚═══ diff lens ═════╝               ╚═══ requestId ═════╝
+#             "No structural                      the Document row in
+#              differences detected"              the flight recorder IS
+#              panel 1 == panel 2                 panel 1, byte-for-byte
+# ```
+# 
+# Hinge A is `diff_hierarchy.txt` — it doesn't *depict* anything; it joins panels 1 and 2 and reports how far apart they swing. On your sand: zero degrees. Hinge B is the CDP `requestId` — the Document row in panel 3's ledger is the *same bytes* as panel 1, which is what makes it a hinged triptych rather than three unrelated paintings. The wire body wasn't a reenactment; it was pulled from the organic flight.
+# 
+# And the fourth thing you sensed — the trap firing — isn't a panel either. It's the painter's reflection. Van Eyck put himself in the convex mirror of the Arnolfini Portrait; your `js_confirm.gif?cb=tmc7rk` hit is the same move: the instrument caught in the corner of its own painting, undetected-chromedriver registering itself in honeybot's JS-executor table while auditing honeybot's own page. A signature, not a quadrant.
+# 
+# Here's why the same three boards matter when you carry them to different sand:
+# 
+# ```text
+#   CONTROL GROUP (mikelev.in — this run)      TREATMENT GROUP (JS-heavy client)
+# 
+#   ┌──────┐     ┌──────┐      ┌─────────┐     ┌──────┐     ┌██████┐     ┌███████████┐
+#   │  P1  │ ══  │  P2  │  ≠   │   P3    │     │  P1  │ ≠≠≠ │  P2  │  ≠  │    P3     │
+#   └──────┘     └──────┘      └─────────┘     └──────┘     └██████┘     └───────────┘
+#    6 KB         6 KB          84 KB           skeleton     the "page"    an ocean of
+#    the page     the page      mostly one      div soup     only exists   XHRs; hinge A
+#    IS the       is STILL      third-party     + script     after JS      blown wide
+#    source       the source    tag             tags         executes      open
+#    
+#    Hinge A: flat (0°)                         Hinge A: swung to 180° —
+#    Finding: nothing to hide                   the diff IS the whole story
+# ```
+# 
+# Same kata, same five lines in `adhoc.txt`, same three boards. What changes is the hinge angle — and that angle is the finding. On the control group it proves the page is honest; on the treatment group it measures exactly how much of "the page" never existed until a browser burned compute to conjure it. The Botify-side article is just this drawing with the client's numbers filled in.
+# 
+# Three panels. Two hinges. One painter in the mirror. 🪙
+# 
+# --- END NEW STUFF ---
