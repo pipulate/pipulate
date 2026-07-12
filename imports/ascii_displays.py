@@ -475,17 +475,38 @@ FIGURATE_SEMANTIC_TOKENS: dict = {
 
 
 def _expand_color_bits_human(text: str) -> str:
-    """Expand [[[Token]]] and <token>…</token> markers into Rich markup."""
+    """Expand [[[Token]]] and <token>…</token> markers into Rich markup.
+
+    Three-phase render so Rich can't eat literal brackets like [y] or [y/n]:
+      1. STASH: swap known color-bit/semantic tokens for \x00N\x00 sentinels.
+      2. ESCAPE: rich.markup.escape() everything else, so stray [brackets]
+         in the art survive as literal glyphs inside the Panel.
+      3. REINSERT: swap the sentinels back for their real Rich markup.
+    The AI path (_expand_color_bits_ai) and thus the CRC wax seals are
+    untouched — this repairs the projection, not the master.
+    """
     import re
+    from rich.markup import escape
+    stash = []
+    def _stash(markup_text: str) -> str:
+        stash.append(markup_text)
+        return f"\x00{len(stash) - 1}\x00"
     def replace(m):
         token = m.group(1)
         style = FIGURATE_COLOR_BITS.get(token, "")
         if style:
-            return f"[{style}]{token}[/{style}]"
-        return token  # Unknown token: pass through raw
+            return _stash(f"[{style}]{token}[/{style}]")
+        return token  # Unknown token: pass through raw (escaped below)
     text = re.sub(r'\[\[\[([^\]]+)\]\]\]', replace, text)
     for token, style in FIGURATE_SEMANTIC_TOKENS.items():
-        text = re.sub(rf'<{token}>(.*?)</{token}>', rf'[{style}]\1[/{style}]', text, flags=re.DOTALL)
+        text = re.sub(
+            rf'<{token}>(.*?)</{token}>',
+            lambda m, s=style: _stash(f"[{s}]{m.group(1)}[/{s}]"),
+            text, flags=re.DOTALL
+        )
+    text = escape(text)
+    for i, markup_text in enumerate(stash):
+        text = text.replace(f"\x00{i}\x00", markup_text)
     return text
 
 
