@@ -565,6 +565,7 @@ async def selenium_automation(params: dict) -> dict:
         return {"success": True, "looking_at_files": artifacts, "cached": False}
 
     finally:
+        _stop_scrape_music(music_proc)
         if driver:
             try:
                 driver.quit()
