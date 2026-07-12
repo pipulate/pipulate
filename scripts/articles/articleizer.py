@@ -139,6 +139,16 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port, 
             if insertion_point == -1:
                 insertion_point = len(article_body)
             
+            # HEADING COLLISION GUARD (optics-convicted 2026-07-12): when the
+            # article body already carries its own markdown headers (dialogue
+            # partners now write them), inserting ours immediately before an
+            # existing one creates stacked/empty H2s — the orphan-header
+            # pattern the Semantic Outline lens caught on the Dune article.
+            following = article_body[insertion_point:].lstrip('\n')
+            if following.startswith('#'):
+                print(f"Skipping subheading '{subheading}': heading already present at insertion point.")
+                continue
+
             # Insert the subheading surrounded by newlines.
             # If insertion_point finds an existing '\n\n', this logic adds another '\n\n'
             # effectively creating: [End of Para]\n\n[Subheading]\n\n[Start of Next Para]
