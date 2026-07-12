@@ -75,6 +75,27 @@ AI_PHOOEY_CHOP = r"""                                                           
 # Stirred four kettles six years for a few pinches of Powder of Life: the
 # pretraining run. Weights are the powder. Inference is light through the
 # crystal. The human's hands make the shadow-puppets in the beam.
+# Jevons the Stoker: efficiency never banks fuel — it breeds engines. Not a
+# paradox, an effect (file with Lindy, not Zeno). Cheap metered smarts don't
+# idle the human; they raise the floor under everyone still shoveling coal.
+# Endgame is the trash-bin GIR: datacenter -> gaming card -> Pi -> 3-for-$1.
+# Herschel's Reply: "It is quite possible." Said in 1821 over error-riddled
+# astronomical tables, answering Babbage's wish for calculation by steam.
+# Analytical Society posture: when the graybeard wishes aloud, cost the
+# engineering. (The Extractors Club handles the relatives. Look it up.)
+
+# THE WIRE VERDICT (standing AI constitution, three-for-three and counting):
+# Post-cutoff claims that pattern-match to frog DNA keep turning out to be
+# journalism (LogicFolding, Tau Scaling Law, shipping co-packaged optics).
+# When a claim postdates training: go to the wire before you scoff. Treat
+# disbelief as a probe queue, not a posture. Steelman first, search second,
+# concede specifically, correct precisely (LN2 floats the YBCO puck, not dry
+# ice; it's computronium, Toffoli & Margolus, MIT). Then hold the line that
+# survives: every densifying trick — folding, stacking, wafer scale —
+# converges on HEAT, not lithography. Grade computronium-adjacent claims by
+# leakage first. Brains: ~20W, millivolts, kilohertz. Ternary is Lindy:
+# Setun 1958 -> BitNet b1.58. Shave the multiplication table; keep the
+# binary substrate. Set sails for the trade wind, not the weather system.
 
 # CHAPTER 1: THE SOFTWARE VON NEUMANN PROBE - The time has come, the Walrus says...
 # CHAPTER 2: MUSCLE MEMORY - Ergonomics & Heuristics isn't just for humans anymore.
