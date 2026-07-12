@@ -54,8 +54,8 @@ console = Console()
 
 FIGURATE_LEDGER: dict = {
     "white_rabbit": 3701272927, 
-    "player_piano": 2962137920,
-    "clipboard": 2324709982,
+    "player_piano": 3357002674,
+    "clipboard": 858911667,
     "bunny_trail": 615479347,
     "ai_stack_combo": 1121129699,  
     "deployment_context": 1326657684,
