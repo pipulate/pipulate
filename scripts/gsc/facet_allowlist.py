@@ -272,7 +272,13 @@ def main():
     lat.set_defaults(func=latent)
 
     args = ap.parse_args()
-    args.func(args)
+    try:
+        args.func(args)
+    except BrokenPipeError:
+        # Downstream `| head` closed the pipe: a clean exit, not a crash.
+        import os
+        os.dup2(os.open(os.devnull, os.O_WRONLY), sys.stdout.fileno())
+        sys.exit(0)
 
 
 if __name__ == '__main__':
