@@ -72,11 +72,13 @@ def update_pyproject_toml(version, description):
         flags=re.MULTILINE
     )
     
-    # Update description line
+    # Update description line (anchored for the same reason: only a line
+    # that BEGINS with `description` is the [project] field we own)
     content = re.sub(
-        r'description\s*=\s*["\'][^"\']+["\']',
+        r'^description\s*=\s*["\'][^"\']+["\']',
         f'description = "{description}"',
-        content
+        content,
+        flags=re.MULTILINE
     )
     
     if content != old_content:
