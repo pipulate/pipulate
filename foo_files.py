@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,301 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 24 published in the last 7 days
+# There are 1,302 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 25 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -708,7 +708,7 @@ init.lua
 flake.nix
 apply.py
 scripts/ai.py
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 """
 
 PINNED_CHOP = r"""
