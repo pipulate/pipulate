@@ -1,8 +1,8 @@
 # AI_CONTEXT.md — Start Here If You Are an AI
 
-> Auto-generated on 2026-06-16. Rewritten from scratch on every release. If this
+> Auto-generated on 2026-07-12. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1207 entries indexed.
+> 1302 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -96,31 +96,126 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
-- [2026-06-16] [When Refactoring Fails: The Boundary of Remote Deployments](https://mikelev.in/futureproof/refactoring-remote-boundary-files/index.md)
-- [2026-06-15] [Beyond Search and Replace: Why Large AI Code Patches Fail](https://mikelev.in/futureproof/beyond-search-replace-ai-code-patches/index.md)
-- [2026-06-15] [Plain Text Epistemic Memory in the Age of AI](https://mikelev.in/futureproof/plain-text-epistemic-memory-ai/index.md)
-- [2026-06-15] [Solving Shell Amnesia: Atomic Locks for Local-First Daemons](https://mikelev.in/futureproof/atomic-locks-local-first-daemons/index.md)
-- [2026-06-15] [The Two-Turn Probe: Hardening GitOps and Watchdogs in the Age of AI](https://mikelev.in/futureproof/two-turn-probe-gitops-watchdogs/index.md)
-- [2026-06-15] [The Best Probe is the One You Delete](https://mikelev.in/futureproof/best-probe-is-deleted-dependency/index.md)
-- [2026-06-13] [The Git Ratchet and Visual-First Mocking](https://mikelev.in/futureproof/git-ratchet-visual-first-mocking/index.md)
-- [2026-06-13] [Slaying the Vibe-Coding Loop with Binary Search Probes](https://mikelev.in/futureproof/vibe-coding-binary-search-debugging/index.md)
-- [2026-06-13] [Accelerating Local-First AI Telemetry with an Isolated Test Harness](https://mikelev.in/futureproof/isolated-test-harness-ai-telemetry/index.md)
-- [2026-06-12] [The Local-First Broadcast: Building a Zero-Trust Digital Terrarium](https://mikelev.in/futureproof/local-first-broadcast-loop-automation/index.md)
-- [2026-06-12] [The Stateless Land of Function: Reclaiming Unix Simplicity in the Age of AI](https://mikelev.in/futureproof/stateless-land-of-function/index.md)
-- [2026-06-12] [The Unix Way to Guide LLMs with Surgical Precision](https://mikelev.in/futureproof/unix-way-llm-surgical-precision/index.md)
-- [2026-06-12] [Syncing the Player Piano: Queue-Interlocked Audio and Git Discipline](https://mikelev.in/futureproof/syncing-player-piano-audio-git-discipline/index.md)
-- [2026-06-11] [Local Git Repositories: The Baseline for AI-Era Writing](https://mikelev.in/futureproof/local-git-baseline-ai-workflow/index.md)
-- [2026-06-11] [Wrangling Chaos Monkeys in the Age of AI](https://mikelev.in/futureproof/wrangling-chaos-monkeys/index.md)
-- [2026-06-11] [The Great Decoupling: Building for the Post-Dependency Web](https://mikelev.in/futureproof/great-decoupling-post-dependency-web/index.md)
-- [2026-06-11] [The Plain-Text Control Plane: Multi-Site AI Workflows with Jekyll and Git](https://mikelev.in/futureproof/plain-text-control-plane-jekyll-git/index.md)
-- [2026-06-10] [Local Maxima and the Mindful Pragmatist](https://mikelev.in/futureproof/local-maxima-mindful-pragmatist/index.md)
-- [2026-06-09] [Designing an Attention Prosthesis for the Age of AI](https://mikelev.in/futureproof/attention-prosthesis-rebound-tax/index.md)
-- [2026-06-09] [Orchestrating the Multi-AI Symphony in a Stateless Forest](https://mikelev.in/futureproof/multi-ai-symphony-stateless-forest/index.md)
+- [2026-07-12] [The Triptych Kata: Reproducible AI Optics](https://mikelev.in/futureproof/the-triptych-kata-reproducible-ai-optics/index.md)
+- [2026-07-12] [The Dune Protocol: Mastering AI Interlocks on Extinction Hardware](https://mikelev.in/futureproof/dune-protocol-ai-interlocks/index.md)
+- [2026-07-12] [Mapping the Latent Space: A Guide to Algorithmic Art Styles](https://mikelev.in/futureproof/mapping-latent-space-art-styles/index.md)
+- [2026-07-12] [Navigating the AI Frontier: From Linguistic Blind Spots to Technical Mastery](https://mikelev.in/futureproof/navigating-the-ai-frontier/index.md)
+- [2026-07-12] [The Computronium Gradient: Scaling Intelligence Through Mechanical Sympathy](https://mikelev.in/futureproof/computronium-gradient-scaling-intelligence/index.md)
+- [2026-07-11] [The Architecture of Anti-Fragile Publishing](https://mikelev.in/futureproof/anti-fragile-publishing-workflow/index.md)
+- [2026-07-11] [Home-Hosting in the Age of AI: Casting Digital Spells](https://mikelev.in/futureproof/nixos-home-hosting-jeopardy-automation/index.md)
+- [2026-07-11] [The Art of the Sandworm: Mastering Contextual Continuity in the Age of AI](https://mikelev.in/futureproof/mastering-contextual-continuity-ai/index.md)
+- [2026-07-10] [Engineering the Safety Airlock: A Compile-Lane Sanitizer Blueprint](https://mikelev.in/futureproof/compile-lane-sanitizer-blueprint/index.md)
+- [2026-07-10] [The Workshop and the Genie: Building a Legible Pipeline](https://mikelev.in/futureproof/workshop-and-the-genie-pipeline/index.md)
+- [2026-07-10] [The Scarcity Trap: Surviving Platform Revocation and Google Invisibility](https://mikelev.in/futureproof/scarcity-trap-ai-platform-revocation/index.md)
+- [2026-07-10] [Closing the Commit Airlock: Engineering Against Codebase Seams](https://mikelev.in/futureproof/closing-the-commit-airlock/index.md)
+- [2026-07-10] [Git Surgery: The Anatomy of a Successful Repository Scrub](https://mikelev.in/futureproof/git-repository-scrub-methodology/index.md)
+- [2026-07-09] [The Anti-Crichton Blueprint: Engineering Reality at the Edge](https://mikelev.in/futureproof/anti-crichton-blueprint/index.md)
+- [2026-07-09] [Wire Truth: Moving Beyond Dashboard Reenactments](https://mikelev.in/futureproof/wire-truth-network-capture/index.md)
+- [2026-07-08] [Installing Pipulate: Swapping the Forklift to uv](https://mikelev.in/futureproof/installing-pipulate-swapping-forklift-uv/index.md)
+- [2026-07-08] [The Unix Apprentice: Actuators, Text Files, and the Artisan Workshop](https://mikelev.in/futureproof/unix-apprentice-artisan-workshop/index.md)
+- [2026-07-07] [The Hand-Cranked Continuity Machine](https://mikelev.in/futureproof/hand-cranked-continuity-machine/index.md)
+- [2026-07-07] [Agentic Readiness: A Practitioner’s Guide to the Machine-Readable Web](https://mikelev.in/futureproof/agentic-readiness-checklist/index.md)
+- [2026-07-06] [The Honest 404: Debugging Content Negotiation with Synthetic Probes](https://mikelev.in/futureproof/honest-404-synthetic-probes/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-07-06] [122k] web-built-for-ai-honeybot-content-negotiation
+- [2026-07-06] [115k] ledger-sorcerers-apprentice-document-automation
+- [2026-07-05] [148k] immutable-cartridge-nixos-google-drive-pipeline
+- [2026-07-05] [47k] riding-the-maker
+- [2026-07-05] [76k] declarative-desktop-nix
+- [2026-07-04] [177k] velocity-of-the-living-book
+- [2026-07-04] [181k] myelin-moat-sorcerers-undo
+- [2026-07-03] [89k] self-cleaning-codebase-blueprint
+- [2026-07-03] [49k] architecting-resilient-ai-pipeline
+- [2026-07-03] [116k] engineering-replaceability-ai-workflows
+- [2026-07-03] [102k] apprentice-and-the-pipe
+- [2026-07-02] [37k] unix-pipe-ai-workflows
+- [2026-07-02] [118k] unix-pipe-of-life-ai-workflows
+- [2026-07-02] [26k] twisted-things-remember-context-casino
+- [2026-07-02] [40k] prompt-fu-claude-fable-5-context-deck
+- [2026-07-02] [113k] safe-playground-declarative-machine
+- [2026-07-01] [79k] operationalizing-the-edge-scaling-without-complexity
+- [2026-07-01] [62k] solving-os-argument-limits-ai-pipelines
+- [2026-07-01] [166k] meeting-in-the-middle-engineering-ai-workflows
+- [2026-06-30] [49k] architecting-multi-tenant-infrastructure-nixos
+- [2026-06-30] [39k] unix-philosophy-ai-workflows
+- [2026-06-30] [50k] governance-of-abstractions
+- [2026-06-30] [33k] closing-the-seam-ai-context-management
+- [2026-06-30] [68k] ai-provenance-calibration
+- [2026-06-29] [115k] automating-gmail-context-extraction
+- [2026-06-29] [130k] epistemic-cartography-insight-refinery
+- [2026-06-29] [89k] engineering-workshop-architecture-critical-path
+- [2026-06-28] [74k] durable-onboarding-jupyter-fast-track
+- [2026-06-28] [26k] optimizing-pipeline-timing-in-the-age-of-ai
+- [2026-06-28] [19k] optimizing-tts-markdown-pipelines
+- [2026-06-28] [41k] defensive-layer-automation
+- [2026-06-28] [166k] pruning-public-documentation
+- [2026-06-28] [204k] terminal-telemetry-onboarding
+- [2026-06-28] [30k] closing-the-reproducibility-stack
+- [2026-06-28] [53k] shell-as-a-room-spatial-computing
+- [2026-06-27] [51k] engineering-the-installer-seam
+- [2026-06-27] [77k] forever-machine-robust-systems
+- [2026-06-27] [33k] demoscene-compression-onboarding
+- [2026-06-27] [79k] workshop-architecture-agentic-skills
+- [2026-06-26] [75k] reproducible-api-exploration
+- [2026-06-26] [68k] engineering-reproducible-pageworkers-optimizations
+- [2026-06-26] [104k] funnel-and-actuator-context-architecture
+- [2026-06-25] [36k] context-compiler-architecture
+- [2026-06-25] [125k] field-method-for-trustworthy-api-exploration
+- [2026-06-25] [114k] stop-the-noise-publishing-pipeline
+- [2026-06-24] [51k] retargetable-publishing-nervous-system
+- [2026-06-24] [39k] funnel-architecture-automation
+- [2026-06-24] [105k] truth-actually-actuator-systems
+- [2026-06-23] [64k] thin-interface-reconstitutable-computing
+- [2026-06-23] [27k] chiseling-non-blocking-workflow
+- [2026-06-23] [25k] chiseling-digital-space-terminal-efficiency
+- [2026-06-22] [25k] deterministic-ui-teardowns
+- [2026-06-22] [51k] cheapest-lens-proves-negative
+- [2026-06-22] [81k] 1-textfile-4life-style
+- [2026-06-21] [107k] architecting-private-work-journals
+- [2026-06-21] [69k] idempotent-confluence-automation
+- [2026-06-21] [112k] confluence-retargetable-output
+- [2026-06-21] [32k] nix-pinned-ai-orchestration
+- [2026-06-21] [63k] stream-standby-automation
+- [2026-06-21] [90k] traveling-business-card-self-healing-address
+- [2026-06-21] [37k] defensive-pipelines-git-commit-reliability
+- [2026-06-20] [31k] sharpening-the-codex-paintbox-filtering
+- [2026-06-20] [303k] curing-ai-blindness-patching-ai-py
+- [2026-06-20] [140k] llm-optics-progressive-web-inspection
+- [2026-06-20] [110k] anti-crichton-orchestration
+- [2026-06-19] [13k] soft-preemption-audio-streaming
+- [2026-06-19] [59k] selective-restart-deployment-logic
+- [2026-06-19] [50k] human-reduce-step
+- [2026-06-19] [96k] ground-truth-agentic-crawlers
+- [2026-06-19] [174k] mapping-markdown-appetite-agentic-web
+- [2026-06-18] [106k] the-art-of-the-fresh-restart
+- [2026-06-18] [161k] art-of-the-fresh-restart
+- [2026-06-18] [50k] escaping-proprietary-ai-lock-in
+- [2026-06-17] [99k] tracing-agentic-web-infrastructure-consumption
+- [2026-06-16] [82k] visual-storytelling-compounding-control-loop
+- [2026-06-16] [93k] refactoring-remote-boundary-files
+- [2026-06-15] [20k] beyond-search-replace-ai-code-patches
+- [2026-06-15] [119k] plain-text-epistemic-memory-ai
+- [2026-06-15] [71k] atomic-locks-local-first-daemons
+- [2026-06-15] [27k] two-turn-probe-gitops-watchdogs
+- [2026-06-15] [84k] best-probe-is-deleted-dependency
+- [2026-06-13] [21k] git-ratchet-visual-first-mocking
+- [2026-06-13] [150k] vibe-coding-binary-search-debugging
+- [2026-06-13] [51k] isolated-test-harness-ai-telemetry
+- [2026-06-12] [98k] local-first-broadcast-loop-automation
+- [2026-06-12] [96k] stateless-land-of-function
+- [2026-06-12] [56k] unix-way-llm-surgical-precision
+- [2026-06-12] [78k] syncing-player-piano-audio-git-discipline
+- [2026-06-11] [11k] local-git-baseline-ai-workflow
+- [2026-06-11] [42k] wrangling-chaos-monkeys
+- [2026-06-11] [65k] great-decoupling-post-dependency-web
+- [2026-06-11] [101k] plain-text-control-plane-jekyll-git
+- [2026-06-10] [42k] local-maxima-mindful-pragmatist
+- [2026-06-09] [142k] attention-prosthesis-rebound-tax
+- [2026-06-09] [85k] multi-ai-symphony-stateless-forest
 - [2026-06-08] [39k] player-piano-piper-tts-terminal-audio-bus
 - [2026-06-08] [75k] slaying-hardcoded-paths-portable-ai-dev
 - [2026-06-08] [79k] rigging-the-vibe-autonomous-seamanship
@@ -139,7 +234,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-06-04] [202k] pachinko-context-anchoring-bumpers
 - [2026-06-03] [133k] agentic-commerce-optimization
 - [2026-06-02] [66k] deterministic-ai-prompt-compiler
-- [2026-06-02] [50k] token-dense-router-ai-context
+- [2026-06-02] [51k] token-dense-router-ai-context
 - [2026-06-02] [41k] local-first-security-context-compiler
 - [2026-06-02] [129k] grumbling-graybeard-local-credentials
 - [2026-06-01] [44k] designing-for-amnesia-deterministic-ai-pipeline
@@ -149,7 +244,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-06-01] [124k] player-piano-four-audio-interrupts
 - [2026-06-01] [90k] git-hooks-breaking-news-bell
 - [2026-06-01] [91k] repo-talks-back-ai-context
-- [2026-05-31] [18k] hateoas-for-silicon-eyes
+- [2026-05-31] [19k] hateoas-for-silicon-eyes
 - [2026-05-31] [126k] return-of-viewstate-ai-chatbot-postback
 - [2026-05-31] [19k] zen-of-clean-cuts
 - [2026-05-31] [142k] magic-users-guide-ai-actuators
@@ -165,7 +260,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-05-27] [178k] out-of-band-integrity
 - [2026-05-27] [63k] wax-on-wax-off-waxascii
 - [2026-05-27] [68k] waxascii-preventing-generative-drift
-- [2026-05-26] [131k] waxascii-seal-mtime-caching-ouroboros
+- [2026-05-26] [132k] waxascii-seal-mtime-caching-ouroboros
 - [2026-05-26] [38k] desert-kite-cybernetic-prompting
 - [2026-05-26] [51k] society-of-the-stack
 - [2026-05-26] [36k] building-landing-gear-multi-platform-tooling
@@ -173,31 +268,31 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-05-25] [44k] cascading-ascii-art-local-ai-workspace
 - [2026-05-24] [35k] ascii-integrity-software-drift
 - [2026-05-24] [80k] wax-seals-and-player-pianos
-- [2026-05-24] [134k] wax-seal-untokenized-checksums-ai
+- [2026-05-24] [135k] wax-seal-untokenized-checksums-ai
 - [2026-05-23] [15k] friction-of-execution-flat-protocols
 - [2026-05-23] [47k] two-player-pianos-automation
 - [2026-05-23] [53k] clipboard-control-bus-transactional-ai-workflows
 - [2026-05-22] [85k] air-gapped-developer-cockpit
-- [2026-05-22] [179k] tale-of-two-alans-turing-church-local-ai
+- [2026-05-22] [180k] tale-of-two-alans-turing-church-local-ai
 - [2026-05-22] [67k] spacing-trap-ai-ascii-art
 - [2026-05-21] [76k] vim-transposition-human-ai-patchmaker
 - [2026-05-21] [90k] breaking-ai-inception-document-architecture
 - [2026-05-21] [88k] deterministic-momentum-engine-clutch
-- [2026-05-21] [43k] engineering-momentum-loop
+- [2026-05-21] [44k] engineering-momentum-loop
 - [2026-05-21] [89k] routing-invariant-prompt-architecture
 - [2026-05-20] [34k] clipboard-computational-synapse
 - [2026-05-20] [44k] software-backpropagation-git-rollbacks
 - [2026-05-20] [100k] autonomic-memory-actuator
 - [2026-05-19] [76k] liveness-coupled-agency-browser-kill-switch
 - [2026-05-19] [35k] unix-philosophy-nix-noise-reduction
-- [2026-05-19] [83k] reproducible-cockpit-nixos-gnome
+- [2026-05-19] [84k] reproducible-cockpit-nixos-gnome
 - [2026-05-19] [37k] tiling-terminals-x11-alacritty
 - [2026-05-19] [59k] witnessed-machine-stateless-ai-executive-function
 - [2026-05-19] [47k] ergonomics-of-oversight-ai-trust-rituals
-- [2026-05-18] [77k] context-window-build-artifact
+- [2026-05-18] [78k] context-window-build-artifact
 - [2026-05-18] [132k] inode-strategy-ai-context-management
 - [2026-05-18] [92k] swappable-ai-strategy
-- [2026-05-17] [45k] riding-the-sandworm-vibe-coding
+- [2026-05-17] [46k] riding-the-sandworm-vibe-coding
 - [2026-05-17] [13k] self-healing-code-terminal
 - [2026-05-17] [163k] tokenizer-grain-search-replace-way
 - [2026-05-17] [58k] clipboard-air-gap-network-diode
@@ -223,7 +318,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-05-13] [62k] structural-security-shai-hulud-worm
 - [2026-05-12] [16k] fasthtml-incident-resilience
 - [2026-05-11] [181k] architecting-living-codex-git-pedagogy
-- [2026-05-10] [124k] semantic-level-of-detail-engine
+- [2026-05-10] [125k] semantic-level-of-detail-engine
 - [2026-05-10] [30k] mac-to-nixos-tmux-bridge
 - [2026-05-10] [30k] mapping-digital-debris-ai-age
 - [2026-05-10] [113k] global-voice-toggle-deterministic-patching
@@ -240,19 +335,19 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-05-07] [62k] unix-pipeline-ollama-neovim
 - [2026-05-07] [112k] synaptic-clipboard-automation
 - [2026-05-07] [50k] information-theory-cognitive-defense
-- [2026-05-06] [104k] notebook-to-web-apps
+- [2026-05-06] [105k] notebook-to-web-apps
 - [2026-05-06] [78k] infinite-context-pipeline-narrative-code
 - [2026-05-06] [648k] local-first-ai-macos-deployment
 - [2026-05-05] [70k] explicit-state-matrix-deterministic-ai-workflows
 - [2026-05-05] [102k] forever-machine-deterministic-ai-code-editing
-- [2026-05-05] [125k] second-pour-engineering-determinism
+- [2026-05-05] [126k] second-pour-engineering-determinism
 - [2026-05-05] [69k] fixing-ghost-in-the-proxy
 - [2026-05-04] [231k] deterministic-ai-workflows-alice-protocol
 - [2026-05-04] [114k] sentinel-airlock-bridging-jupyter-fasthtml
 - [2026-05-03] [146k] deterministic-ai-wet-philosophy
 - [2026-05-03] [181k] hijacking-tty-terminal-experience
 - [2026-05-03] [148k] building-the-forever-machine
-- [2026-05-02] [88k] bitnet-and-the-browser-metronome
+- [2026-05-02] [89k] bitnet-and-the-browser-metronome
 - [2026-05-01] [20k] forever-machine-obsolescence-resistance
 - [2026-05-01] [123k] golden-path-local-first-ai
 - [2026-04-30] [60k] browser-as-ai-metronome
@@ -269,7 +364,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-04-27] [97k] sentinel-file-progressive-ui
 - [2026-04-27] [109k] deterministic-onboarding-airlock
 - [2026-04-25] [34k] rhythm-of-the-next-step
-- [2026-04-24] [206k] architecture-forever-machine-state-config
+- [2026-04-24] [207k] architecture-forever-machine-state-config
 - [2026-04-23] [34k] honeybot-server-log-streaming
 - [2026-04-23] [47k] context-governor-payload-sizing
 - [2026-04-23] [145k] architecture-pause-pass-by-reference
@@ -283,7 +378,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-04-19] [113k] lisp-repl-forever-machine
 - [2026-04-18] [151k] idempotent-ai-egress
 - [2026-04-17] [34k] robust-etl-excel-automation
-- [2026-04-17] [101k] symmetrical-lens-dom-audit
+- [2026-04-17] [102k] symmetrical-lens-dom-audit
 - [2026-04-17] [54k] concurrency-amiga-deterministic-ai
 - [2026-04-17] [108k] pachinko-prompt-workbench
 - [2026-04-16] [116k] epistemological-dom-slicer
@@ -294,7 +389,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-04-14] [79k] homebrew-ai-jupyter-workbench
 - [2026-04-13] [157k] forever-machine-muscle-memory
 - [2026-04-10] [138k] rigging-the-sail-of-intelligence
-- [2026-04-09] [101k] narrative-haptics-side-quest-pattern
+- [2026-04-09] [102k] narrative-haptics-side-quest-pattern
 - [2026-04-08] [13k] shell-game-intelligence-resilience
 - [2026-04-08] [91k] llmectomy-universal-adapter-resilience
 - [2026-04-08] [64k] async-narration-metadata-minefield
@@ -309,13 +404,13 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-04-04] [104k] strange-loop-forever-machine-governing-ai-distillation
 - [2026-04-04] [147k] the-golden-spike-automating-1000-articles-npvg
 - [2026-04-04] [175k] conceptual-integrity-ai-content-distillation
-- [2026-04-03] [191k] automated-book-decanting-ai-editing-pipeline
+- [2026-04-03] [192k] automated-book-decanting-ai-editing-pipeline
 - [2026-04-02] [264k] forging-forever-machine-ai-book-decanting
 - [2026-04-01] [136k] forever-machine-blueprint-deterministic-ai-book-creation
-- [2026-04-01] [49k] blueprint-uniqueness-agentic-web
+- [2026-04-01] [50k] blueprint-uniqueness-agentic-web
 - [2026-03-31] [210k] automating-provenance-python-scalpel-machine-ready-content-archive
 - [2026-03-31] [47k] the-makers-leap-ai-book-creation
-- [2026-03-31] [69k] unmasking-agentic-web-ai-bots-shatter-seo-common-wisdom
+- [2026-03-31] [70k] unmasking-agentic-web-ai-bots-shatter-seo-common-wisdom
 - [2026-03-31] [94k] topological-realism-ai-404-healing-trailing-slash
 - [2026-03-30] [62k] pipulates-wet-procedural-memory-meets-ai-skill-md-standard
 - [2026-03-30] [126k] the-invisible-handshake-http-content-negotiation-llmo
@@ -343,13 +438,13 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-03-19] [110k] pipulate-full-stack-python-htmx-durable-state
 - [2026-03-18] [34k] unifying-ai-adapters-pipulate-model-agnostic-automation
 - [2026-03-18] [100k] bauhaus-bouncehouse-immutable-ai-environments
-- [2026-03-18] [87k] llmo-semantic-gravity-bot-first-web
+- [2026-03-18] [88k] llmo-semantic-gravity-bot-first-web
 - [2026-03-18] [60k] topological-healer-ai-redirect-immunization
 - [2026-03-18] [148k] pythonic-forever-machine-with-ai-and-nix
 - [2026-03-16] [92k] nixos-local-ai-reproducible-workflows
 - [2026-03-16] [69k] self-healing-context-automating-topological-integrity-for-ai-prompts
 - [2026-03-16] [71k] jekyll-feed-optimization-ai-agents-gitops-blueprint
-- [2026-03-16] [50k] llm-data-hygiene-sql-filtering
+- [2026-03-16] [51k] llm-data-hygiene-sql-filtering
 - [2026-03-16] [82k] optimizing-llm-context-agenting-web-blueprint
 - [2026-03-15] [225k] uncompressible-agentic-web
 - [2026-03-15] [47k] silencing-jekyll-gitops-noise-high-signal-deployment
@@ -380,7 +475,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-03-10] [37k] single-pass-llm-optics-engine-causal-fidelity
 - [2026-03-10] [87k] machine-native-semantic-architecture-ai-age
 - [2026-03-10] [152k] zero-friction-actuator-ai-development
-- [2026-03-10] [106k] local-first-ai-web-bottling-apps-nix-bidi
+- [2026-03-10] [107k] local-first-ai-web-bottling-apps-nix-bidi
 - [2026-03-10] [578k] pipulates-publishing-engine-workflow-deep-dive
 - [2026-03-10] [56k] seamless-ux-unifying-multi-platform-keyboard-shortcuts
 - [2026-03-09] [136k] mac-compatibility-npvg-workflow
@@ -417,26 +512,26 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-03-03] [90k] agentic-crucible-llm-safety-self-healing-web-topologies
 - [2026-03-02] [216k] levinix-von-neumann-bootstrap-for-ai
 - [2026-03-02] [117k] sitchrep-protocol-ai-context-future-proofing
-- [2026-03-02] [82k] honeybots-ground-truth-debugging-data-visualization-tui-fidelity
+- [2026-03-02] [83k] honeybots-ground-truth-debugging-data-visualization-tui-fidelity
 - [2026-03-01] [56k] ad-hoc-sql-ninjutsu-declarative-philosophy-data-ai
-- [2026-03-01] [105k] ai-attribution-content-negotiation-tracer-dye
+- [2026-03-01] [106k] ai-attribution-content-negotiation-tracer-dye
 - [2026-03-01] [113k] honeybots-ouroboros-live-query-playground-ai-telemetry
-- [2026-03-01] [39k] parametric-memory-fractal-publishing-ai-ingestion
+- [2026-03-01] [40k] parametric-memory-fractal-publishing-ai-ingestion
 - [2026-03-01] [123k] python-pragmatism-ai-optimized-web
 - [2026-03-01] [70k] ai-optimized-sitemaps-semantic-sitrep-blueprint
 - [2026-02-28] [101k] levinix-no-problem-universal-packager-blueprint-ai-age
 - [2026-02-28] [94k] levinix-no-problem-ai-native-apps
-- [2026-02-28] [121k] morning-pages-2-0-ai-orchestration
-- [2026-02-27] [70k] web-links-invisible-hand-tracking-ai-with-query-strings
+- [2026-02-28] [122k] morning-pages-2-0-ai-orchestration
+- [2026-02-27] [71k] web-links-invisible-hand-tracking-ai-with-query-strings
 - [2026-02-26] [69k] consolidating-forever-machine-levinix-npvg-blueprint
 - [2026-02-26] [102k] javascript-captcha-unmasking-ai-bots
-- [2026-02-25] [59k] agentic-telemetry-blueprint-content-negotiation
+- [2026-02-25] [60k] agentic-telemetry-blueprint-content-negotiation
 - [2026-02-25] [60k] ai-dual-layer-web-agentic-content-negotiation
 - [2026-02-25] [60k] agentic-webs-crucible-ai-autonomy-testing
 - [2026-02-25] [49k] ai-content-architects-llm-ingestion-control
 - [2026-02-25] [201k] the-levinix-blueprint-ai-content-negotiation-moat
 - [2026-02-24] [144k] automating-dual-layer-content-markdown-html-ai
-- [2026-02-24] [84k] universal-adapter-precision-engineering-ai-spaces
+- [2026-02-24] [85k] universal-adapter-precision-engineering-ai-spaces
 - [2026-02-24] [354k] cybernetic-software-architecture-llms-semantic-governors
 - [2026-02-24] [57k] wet-code-philosophy-resilient-systems-ai
 - [2026-02-24] [104k] mobilegeddon-aigeddon-sovereign-computing
@@ -445,22 +540,22 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-02-23] [55k] ai-context-streaming-ls2-nix
 - [2026-02-23] [104k] sovereign-perception-ai-web-eyes
 - [2026-02-23] [72k] llm-optics-forever-machine-ai-ready-web-semantics
-- [2026-02-22] [84k] http-content-negotiation-ai-competitive-moat
-- [2026-02-22] [75k] llm-optics-engine-refracting-web-ai
+- [2026-02-22] [85k] http-content-negotiation-ai-competitive-moat
+- [2026-02-22] [76k] llm-optics-engine-refracting-web-ai
 - [2026-02-22] [62k] stateless-ai-unix-context-engineering
 - [2026-02-22] [71k] semantic-data-probe-ai-ghost-variations
 - [2026-02-22] [70k] player-piano-automation-sentient-ghost-driver-wet-workflows
 - [2026-02-22] [175k] pipulates-blueprint-nix-selenium-sovereign-ai-workflow
 - [2026-02-21] [64k] the-ai-viewport-pipulates-isomorphic-interface-for-autonomous-agents
-- [2026-02-21] [142k] the-sovereign-stack-deterministic-ai-pipulate
+- [2026-02-21] [143k] the-sovereign-stack-deterministic-ai-pipulate
 - [2026-02-20] [195k] ai-context-fragmentation
 - [2026-02-20] [25k] jekyll-sqlite-wal-watcher-regenerator-paradox-fix
 - [2026-02-20] [56k] the-deflighter-wet-philosophy-google-ads-negatives
-- [2026-02-20] [157k] sovereign-agents-openclaw-ai-friction-forever-machine-blueprint
-- [2026-02-20] [59k] server-log-telemetry-honeybot-intelligence-ai
+- [2026-02-20] [158k] sovereign-agents-openclaw-ai-friction-forever-machine-blueprint
+- [2026-02-20] [60k] server-log-telemetry-honeybot-intelligence-ai
 - [2026-02-20] [87k] optimizing-client-seo-workflows-botify-pipulate-self-aware-documents
 - [2026-02-19] [67k] architecting-forever-machine-openclaw-nixos-agentic-workflow
-- [2026-02-18] [118k] pipulate-jupyter-engine-notebook-pipelines
+- [2026-02-18] [119k] pipulate-jupyter-engine-notebook-pipelines
 - [2026-02-18] [98k] openclaw-nixos-franken-nix-home-hosted-agent
 - [2026-02-17] [100k] sovereign-ai-agent-nixos-oauth
 - [2026-02-17] [43k] openclaw-nixos-machine-soul-sovereign-ai
@@ -473,34 +568,34 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-02-15] [60k] architecting-digital-sovereignty-openclaw-nixos-knowledge-lag-workflow
 - [2026-02-15] [67k] agentic-bake-off-flatnotes-nixos-pipulate-inner-loop
 - [2026-02-14] [249k] nixos-flatnotes-text-supremacy
-- [2026-02-02] [53k] ai-digital-sidekick-sovereign-pipulate-nix
+- [2026-02-02] [54k] ai-digital-sidekick-sovereign-pipulate-nix
 - [2026-02-02] [138k] ai-vs-truth-claude-project-panama-evasion
 - [2026-01-30] [74k] white-box-revolution-ai-smartphone
 - [2026-01-30] [318k] ai-context-paradox-reproducible-legacy
 - [2026-01-15] [29k] productizing-technical-independence-ucp-ai-agents
 - [2026-01-14] [26k] browser-automation-to-protocol-economy
 - [2026-01-14] [53k] the-great-enclosure-ai-agents-full-stack-web-war
-- [2026-01-13] [29k] agentic-commerce-wars-google-protocol-amazon-capture
+- [2026-01-13] [30k] agentic-commerce-wars-google-protocol-amazon-capture
 - [2026-01-13] [52k] context-engineering-forever-machine-web-ai
 - [2026-01-12] [38k] reclaiming-digital-agency-local-owner-operated-tech
-- [2026-01-12] [25k] d3js-graph-data-integrity-physics-dashboard
+- [2026-01-12] [26k] d3js-graph-data-integrity-physics-dashboard
 - [2026-01-12] [50k] mastering-d3js-force-graphs-flea-effect-visualization
 - [2026-01-12] [74k] digital-sovereignty-ai-blueprint
-- [2026-01-11] [40k] stealth-navigation-bots-humans
+- [2026-01-11] [41k] stealth-navigation-bots-humans
 - [2026-01-11] [40k] agent-first-design-semantic-navigation
 - [2026-01-11] [81k] sovereign-reset-web-framework-debt-ai-ready
-- [2026-01-11] [60k] from-raw-logs-to-ai-education-the-intelligence-monitor
+- [2026-01-11] [61k] from-raw-logs-to-ai-education-the-intelligence-monitor
 - [2026-01-10] [89k] art-exploding-graph-d3-zoom-ux-choreography
 - [2026-01-10] [53k] unifying-day-night-themes-d3js-graph-refactor
 - [2026-01-09] [50k] broadcast-blueprint-ai-traffic-insights
-- [2026-01-09] [42k] the-pervasive-pitch-ambient-broadcasting-strategic-rollback
+- [2026-01-09] [43k] the-pervasive-pitch-ambient-broadcasting-strategic-rollback
 - [2026-01-09] [39k] precise-orchestration-live-stream-404-fix
 - [2026-01-09] [37k] punk-tui-design-log-legibility-semantic-colors-user-agent-control
 - [2026-01-09] [75k] data-driven-bot-discovery-unearthing-ai-agents-web-logs
 - [2026-01-08] [75k] the-fish-tank-principle-ambient-observability-ai-agents
 - [2026-01-08] [75k] fish-tank-principle-ambient-observability-for-ai-agents
 - [2026-01-08] [23k] invisible-web-second-mobilegeddon-aie-protocol-synthetic-age
-- [2026-01-08] [84k] reclaiming-rel-alternate-for-ai-agents
+- [2026-01-08] [85k] reclaiming-rel-alternate-for-ai-agents
 - [2026-01-08] [115k] llms-txt-the-agents-first-call-to-the-ai-native-web
 - [2026-01-07] [113k] ontology-fly-semantic-load-balancing-knowledge-graph-unification
 - [2026-01-07] [58k] semantic-de-duplication-self-organizing-knowledge
@@ -516,11 +611,11 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-01-03] [86k] high-value-outlier-sovereign-api-intelligence
 - [2026-01-02] [39k] visualizing-ai-bot-intent-textual-dashboard-blueprint
 - [2026-01-02] [43k] triptych-dashboard-bot-intent
-- [2026-01-02] [23k] accidental-turing-test-bot-intent
+- [2026-01-02] [24k] accidental-turing-test-bot-intent
 - [2026-01-02] [80k] mathjax-local-hosting-ai-bot-trap
 - [2026-01-01] [24k] home-hosting-bot-traps-site-visualization
 - [2026-01-01] [70k] duty-cycle-architecture-bot-observatory-nixos
-- [2026-01-01] [59k] honeybots-self-healing-stream-watchdog-commercial-break
+- [2026-01-01] [60k] honeybots-self-healing-stream-watchdog-commercial-break
 - [2026-01-01] [48k] ai-readiness-web-stack-control
 - [2025-12-31] [34k] honeydb-log-stream-to-data-reservoir
 - [2025-12-31] [69k] magic-cookie-pattern-self-bootstrapping-sovereignty
@@ -539,11 +634,11 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-12-29] [51k] honeybot-speaks-declarative-voice-headless-webhead
 - [2025-12-29] [76k] the-resilient-observer-giving-the-ghost-a-voice
 - [2025-12-27] [25k] nixos-powered-broadcast-studio-real-time-logs-ai-automation
-- [2025-12-27] [45k] headless-ai-broadcast-studio-nixos-xfce
+- [2025-12-27] [46k] headless-ai-broadcast-studio-nixos-xfce
 - [2025-12-27] [133k] cybernetic-architects-way-building-sonar-live-log-visualizer
 - [2025-12-27] [33k] cybernetic-aquarium-nixos-weblog-observability
 - [2025-12-26] [94k] cybernetic-aquarium-log-visualization-textual-nixos
-- [2025-12-26] [98k] the-sovereign-pivot-decoupling-ai-publishing-with-a-master-switch
+- [2025-12-26] [99k] the-sovereign-pivot-decoupling-ai-publishing-with-a-master-switch
 - [2025-12-26] [81k] multi-tenant-ai-publishing-engine-refactor
 - [2025-12-26] [38k] ai-content-pipeline-migration-trimnoir-refactor
 - [2025-12-26] [62k] home-hosting-go-live-nginx-ssl-nixos-logs
@@ -555,14 +650,14 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-12-22] [46k] sovereign-airlock-rfc1918-dmz-ai-observation
 - [2025-12-22] [109k] building-sovereign-git-deployment-engine
 - [2025-12-22] [41k] nixos-soul-transfer-headless-home-server-ssh
-- [2025-12-21] [53k] dmz-airlock-hardware-handshake-sovereign-home-hosting
-- [2025-12-21] [63k] future-proofing-your-brain-vim-nix-and-the-cybernetic-workshop
+- [2025-12-21] [54k] dmz-airlock-hardware-handshake-sovereign-home-hosting
+- [2025-12-21] [64k] future-proofing-your-brain-vim-nix-and-the-cybernetic-workshop
 - [2025-12-21] [82k] holographic-compression-protocol-ai-context
 - [2025-12-20] [44k] holographic-bridge-sovereign-hosting-pfsense-nixos-dmz
 - [2025-12-20] [209k] engineering-ai-context-holographic-bridge-self-hosted-logs
 - [2025-12-20] [76k] reclaiming-black-river-raw-logs-ai-observability
 - [2025-12-20] [77k] forever-machine-architecting-intelligence-context-age-of-ai
-- [2025-12-19] [36k] the-ai-ready-web-pipulates-blueprint-for-sovereign-intelligence
+- [2025-12-19] [37k] the-ai-ready-web-pipulates-blueprint-for-sovereign-intelligence
 - [2025-12-19] [95k] orchestrating-forever-machine-automating-knowledge-pipeline
 - [2025-12-19] [32k] amnesiac-genie-storytelling-ai-future-proofing
 - [2025-12-17] [110k] automating-jekyll-post-generation-and-api-key-management-with-ai
@@ -579,15 +674,15 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-12-14] [83k] market-aware-forever-machine-navigation-engineering-semrush-gravity
 - [2025-12-14] [74k] semantic-clustering-rule-of-7-ai-friendly-site-hierarchy
 - [2025-12-14] [45k] refining-dynamic-content-visualization-ai-interaction
-- [2025-12-13] [33k] heliocentric-cartographer-visualizing-content-topology-ai
+- [2025-12-13] [34k] heliocentric-cartographer-visualizing-content-topology-ai
 - [2025-12-13] [537k] ai-d3-content-hierarchy-visualization
 - [2025-12-13] [28k] ai-driven-web-hierarchy-d3-rule-of-7
 - [2025-12-13] [116k] gemini-api-key-rotation-scalable-ai-web-navigation
 - [2025-12-13] [121k] stateless-blueprint-forever-machine
-- [2025-12-13] [158k] forever-actualizer-machine-sovereign-ai-llm-self-aware-prompts
+- [2025-12-13] [159k] forever-actualizer-machine-sovereign-ai-llm-self-aware-prompts
 - [2025-12-12] [35k] the-center-holds-forever-actualizer-machine
 - [2025-12-12] [113k] chip-otheseus-digital-sovereignty-forever-machine-voice
-- [2025-12-11] [18k] the-ai-blueprint-intelligence-architecture-and-practical-application
+- [2025-12-11] [19k] the-ai-blueprint-intelligence-architecture-and-practical-application
 - [2025-12-11] [158k] forever-machine-reclaiming-digital-sovereignty-local-ai
 - [2025-12-11] [72k] architects-pivot-file-backed-state-scalable-data-analysis
 - [2025-12-11] [133k] cracking-google-gemini-hidden-20-rpd-free-tier-limit-python
@@ -595,7 +690,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-12-10] [105k] context-saturation-semantic-compression-fractal-blog-navigation
 - [2025-12-10] [85k] externalizing-notebook-logic-the-chisel-the-sauce-and-ai-context
 - [2025-12-10] [70k] zero-sum-attention-sovereign-tools-gapalyzer-hardening
-- [2025-12-09] [37k] the-codebase-as-a-book-architecting-ai-ready-narrative-context
+- [2025-12-09] [38k] the-codebase-as-a-book-architecting-ai-ready-narrative-context
 - [2025-12-09] [63k] context-king-blueprint-local-ai-operating-system
 - [2025-12-08] [114k] pipulates-ghost-driver-causal-fidelity-ai-test-automation
 - [2025-12-08] [170k] context-telemetry-mastering-ai-prompt-size-limits
@@ -605,7 +700,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-12-05] [56k] pipulates-ghost-driver-ui-automation-beyond-chat-simulation
 - [2025-12-05] [77k] pipulate-dayton-moment-context-aware-ai-demo-test-automation
 - [2025-12-04] [56k] pipulate-forever-machine-sovereignty-stack
-- [2025-12-04] [45k] the-technomancers-console-pipulate-and-the-art-of-digital-sovereignty
+- [2025-12-04] [46k] the-technomancers-console-pipulate-and-the-art-of-digital-sovereignty
 - [2025-12-04] [16k] forever-machine-digital-sovereignty-ai
 - [2025-12-03] [62k] behavioral-moat-vibe-to-verification
 - [2025-12-02] [81k] wright-brothers-ai-on-rails
@@ -614,10 +709,10 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-11-29] [31k] amnesia-feature-orchestrating-nixos-desert-kite-ai-strategy
 - [2025-11-28] [59k] optimists-algorithm-sovereignty-symbiosis-scenario-engine
 - [2025-11-28] [16k] googles-invisible-hand-intelligence-as-a-utility
-- [2025-11-27] [50k] golems-guardrails-ai-enduring-memory
+- [2025-11-27] [51k] golems-guardrails-ai-enduring-memory
 - [2025-11-27] [63k] demo-json-codex-pipulate-atomic-proof
 - [2025-11-26] [26k] architecture-of-forever-round-robin-ai-mastery
-- [2025-11-26] [54k] ai-on-rails-desert-kite-efficient-ai-collaboration
+- [2025-11-26] [55k] ai-on-rails-desert-kite-efficient-ai-collaboration
 - [2025-11-25] [87k] infinite-combo-engineering-forever-ai-age
 - [2025-11-25] [41k] automated-video-editing-file-system-as-your-timeline
 - [2025-11-25] [68k] no-gooey-video-python-moviepy-workflow
@@ -627,7 +722,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-11-22] [66k] the-matter-of-soul-turing-machines-sovereign-ai
 - [2025-11-21] [65k] faraday-phase-ai-digital-evolution
 - [2025-11-20] [44k] nixos-recovery-modular-ai-nvidia-vpn-conflict-resolution
-- [2025-11-20] [12k] pipulates-blueprint-integrative-ai-countering-emissarys-traps
+- [2025-11-20] [13k] pipulates-blueprint-integrative-ai-countering-emissarys-traps
 - [2025-11-19] [61k] dunning-kruger-determinism-future-proofing-ai-infrastructure
 - [2025-11-18] [61k] nixos-caddy-https-internal-trust-debugging-journey
 - [2025-11-18] [74k] nixos-lan-services-declarative-https-caddy
@@ -641,13 +736,13 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-11-16] [108k] ai-orchestra-reproducible-human-ai-development
 - [2025-11-16] [67k] debugging-duet-ai-code-refinement
 - [2025-11-16] [39k] lpvg-absolute-anchor-ai-relativity
-- [2025-11-14] [33k] wizarding-tiers-tech-philosophy-editors-languages-sovereignty
+- [2025-11-14] [34k] wizarding-tiers-tech-philosophy-editors-languages-sovereignty
 - [2025-11-14] [42k] cured-meat-pre-agriculture-gobekli-tepe-forced-agriculture
 - [2025-11-14] [71k] pebble-trails-smug-mugs-sovereign-craftsmanship-ai-age
 - [2025-11-13] [7k] linux-gnome-jekyll-image-workflow
 - [2025-11-13] [66k] sovereign-craftsmans-ai-way
 - [2025-11-13] [76k] the-age-of-hybrid-ai-commoditized-intelligence-and-sovereign-workflow
-- [2025-11-13] [21k] the-art-of-puttering
+- [2025-11-13] [22k] the-art-of-puttering
 - [2025-11-12] [28k] etymological-tapestry-hacker-culture-foo-risc-v
 - [2025-11-11] [42k] the-vigilant-rabbit-tech-craftsmanship
 - [2025-11-10] [49k] googles-ai-moat-articulate-apes-higher-leverage-disruption
@@ -655,7 +750,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-11-09] [51k] vim-ai-endosymbiosis-reclaiming-humanity
 - [2025-11-09] [28k] the-jello-wobble-ai-embodiment-and-intuitive-machines
 - [2025-11-09] [38k] skyhook-method-deterministic-systems
-- [2025-11-08] [53k] endosymbiosis-ai-soap-bubbles-positronic-brains
+- [2025-11-08] [54k] endosymbiosis-ai-soap-bubbles-positronic-brains
 - [2025-11-08] [65k] age-of-ai-moral-dilemmas-mechanical-advantage-chip-otheseus
 - [2025-11-07] [80k] navigating-ai-client-work-seo-strategy
 - [2025-11-07] [21k] personal-philosophy-purpose-play-resilience-age-of-ai
@@ -663,11 +758,11 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-11-06] [41k] the-meeseeks-mirror-ai-humanitys-vaudeville-inoculation
 - [2025-11-04] [47k] architects-edge-renormalizing-ai-workflow-observable-wins
 - [2025-11-04] [43k] one-take-programming-no-gooey-ai-dev
-- [2025-11-04] [74k] jekyll-nix-flakes-mathjax-liquid-templates
+- [2025-11-04] [75k] jekyll-nix-flakes-mathjax-liquid-templates
 - [2025-11-01] [24k] browser-acetate-no-gooey-9x16-screen-recording
 - [2025-11-01] [46k] jiu-jitsu-keyboard-flow-ai
 - [2025-11-01] [36k] no-gooey-video-tech-gnosis-craftsmanship
-- [2025-11-01] [49k] articulate-ape-blueprint-scaffolding-no-gooey-video-editing-nix
+- [2025-11-01] [50k] articulate-ape-blueprint-scaffolding-no-gooey-video-editing-nix
 - [2025-11-01] [41k] the-no-gooey-way-sirens-song-articulate-ape
 - [2025-10-31] [50k] mastering-the-tricks-novideo-ai-multiplatform-fluency
 - [2025-10-31] [41k] 80-20-nix-local-first-workflow-vim-macros
@@ -693,8 +788,8 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-10-27] [43k] the-absolute-path-to-unsilencing-subprocess-failures-in-ai-workflows
 - [2025-10-27] [37k] python-web-scraping-refactoring-stealth-tooling
 - [2025-10-27] [56k] pragmatic-tooling-dogpile-desert-kite-wet-ai
-- [2025-10-27] [33k] urlinspector-pole-vaulting-mental-blocks-ai-first-web
-- [2025-10-27] [51k] ai-web-urlinspector-e-commerce-variant-dilemma
+- [2025-10-27] [34k] urlinspector-pole-vaulting-mental-blocks-ai-first-web
+- [2025-10-27] [52k] ai-web-urlinspector-e-commerce-variant-dilemma
 - [2025-10-27] [23k] ai-workflow-blueprint-pipulate-funnel
 - [2025-10-27] [45k] fanciful-hooks-functional-tools-ai-workflows
 - [2025-10-26] [47k] poof-principle-ai-context-engineering
@@ -713,7 +808,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-10-24] [89k] ai-hardware-war-antitrust-human-agency
 - [2025-10-24] [26k] human-os-engineering-optimism-ai-workflow-refinement
 - [2025-10-23] [86k] ai-driven-pipeline-refinement-antifragile-data-workflows
-- [2025-10-23] [23k] navigating-pythons-frontier-notebooks-assignment-expressions-secure-templating-ai
+- [2025-10-23] [24k] navigating-pythons-frontier-notebooks-assignment-expressions-secure-templating-ai
 - [2025-10-23] [79k] scaling-gapalyzer-state-storage-performance
 - [2025-10-23] [26k] javascript-seo-for-orphaned-products-a-tactical-pivot
 - [2025-10-23] [29k] decoding-ai-a-personal-odyssey-through-models-and-minds
@@ -723,13 +818,13 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-10-22] [64k] pipulates-client-side-wisdom-cross-platform-ai-polish
 - [2025-10-21] [41k] pipulate-aie-multi-platform-validation
 - [2025-10-21] [46k] digital-homesteaders-anthem-reclaiming-tech-nix-htmx-local-ai
-- [2025-10-21] [133k] jupyter-rich-output-process-isolation
+- [2025-10-21] [134k] jupyter-rich-output-process-isolation
 - [2025-10-21] [206k] stealth-automation-jupyter-rich-debugging
 - [2025-10-20] [86k] nix-flakes-faquilizer-cross-platform-automation
 - [2025-10-20] [38k] actualizing-ai-age-engineering-context-not-manifestos
 - [2025-10-20] [39k] faquilizer-mac-automation-nixos-revolution
 - [2025-10-20] [64k] context-is-king-prompt-fu-mastery-webopps-devolveneer
-- [2025-10-19] [125k] distilling-doozy-mechanical-advantage-ai
+- [2025-10-19] [126k] distilling-doozy-mechanical-advantage-ai
 - [2025-10-19] [54k] curated-gallery-excel-tab-generation-seo
 - [2025-10-19] [74k] pipulate-typeerror-json-state-management
 - [2025-10-19] [62k] refactoring-automated-keyword-clustering-ml-workflow
@@ -741,13 +836,13 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-10-19] [55k] refining-ai-collaboration-notebook-distillation-timetraveler
 - [2025-10-19] [60k] ai-pipulate-web-distillation
 - [2025-10-19] [76k] ai-seo-in-a-box-distilling-gapalyzer-workflows-pipulate-nix
-- [2025-10-19] [93k] context-artist-storytelling-tokens-ai-accountability-prompt-fu
+- [2025-10-19] [94k] context-artist-storytelling-tokens-ai-accountability-prompt-fu
 - [2025-10-19] [175k] the-no-textconv-twist-nbstripout-nix-git-diff-mystery
 - [2025-10-18] [55k] gapalyzer-mvp-excel-automation-ai-precision
 - [2025-10-18] [89k] uncompressible-truth-dirty-paths-canonical-keys-data-pipelines
 - [2025-10-18] [71k] human-ai-collaboration-data-workflows-repl-kmeans
-- [2025-10-18] [121k] mastering-excel-workflows-debugging-ai-collaboration
-- [2025-10-18] [65k] output-triad-ai-data-pipelines
+- [2025-10-18] [122k] mastering-excel-workflows-debugging-ai-collaboration
+- [2025-10-18] [66k] output-triad-ai-data-pipelines
 - [2025-10-17] [42k] seo-python-data-engineering-workflow
 - [2025-10-17] [25k] human-in-the-loop-seo-semrush-downloads
 - [2025-10-17] [33k] automating-resilient-workflow-lowering-friction-pipulate
@@ -763,14 +858,14 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-10-16] [23k] idempotent-ai-workflow-debugging-odyssey
 - [2025-10-15] [52k] wrestling-undetected-chromedriver-persistence-nixos
 - [2025-10-15] [34k] automated-jupyter-notebook-data-scrubbing-secure-templating
-- [2025-10-15] [100k] pipulates-stealth-automation-blueprint-undetectable-selenium-undetected-chromedriver
+- [2025-10-15] [101k] pipulates-stealth-automation-blueprint-undetectable-selenium-undetected-chromedriver
 - [2025-10-15] [53k] intrapreneurs-google-ai-api-key-odyssey-ai-studio-breakthrough
 - [2025-10-15] [313k] automating-markdown-regex-debugging-saga
 - [2025-10-15] [44k] jay-miners-ghost-rms-vision-bootstrapping-amiga
 - [2025-10-15] [23k] tech-sovereignty-nix-foss
 - [2025-10-15] [72k] meeseeks-miracles-ai-awareness-human-demotion
 - [2025-10-14] [42k] hermit-crab-ai-free-tier-intelligence-service-strategy
-- [2025-10-14] [24k] wizarding-tiers-tech-editors-languages
+- [2025-10-14] [25k] wizarding-tiers-tech-editors-languages
 - [2025-10-13] [25k] python-ai-juggernaut-web-development
 - [2025-10-13] [46k] dependency-debugging-log-silencing-jupyter-notebook
 - [2025-10-13] [27k] human-master-ai-emissary-literal-genies-mechanism
@@ -781,11 +876,11 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-10-13] [90k] self-aware-notebooks-nix-ai-arcana
 - [2025-10-12] [29k] pipulate-ai-sausage-factory-persistent-notebooks
 - [2025-10-12] [27k] jupyter-notebook-sync-pip-nbup-literate-programming
-- [2025-10-12] [35k] jupyter-notebook-workflows-nbstripout-nbformat-pip-nbup-ui
+- [2025-10-12] [36k] jupyter-notebook-workflows-nbstripout-nbformat-pip-nbup-ui
 - [2025-10-12] [42k] nixos-refactoring-ai-debugging
 - [2025-10-12] [33k] pipulate-computational-sovereignty-ai-magic-wands
 - [2025-10-12] [43k] ai-amnesia-chisel-strike-wet-beats-dry
-- [2025-10-12] [172k] surgical-ai-context-narrative-time-machine
+- [2025-10-12] [173k] surgical-ai-context-narrative-time-machine
 - [2025-10-12] [26k] nix-flake-refactoring-jupyter-ai-collaboration
 - [2025-10-12] [45k] genie-wish-syndrome-chisel-strike-ai-collaboration
 - [2025-10-12] [164k] pipulate-sovereign-software-nix-local-ai-electron-alternative
@@ -813,7 +908,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-10-09] [127k] token-transparency-ai-prompt-generation
 - [2025-10-09] [37k] giving-ai-its-eyes-automating-web-perception-pipulate
 - [2025-10-09] [166k] automating-web-data-extraction-ai-insights-pipulate
-- [2025-10-09] [50k] automating-ai-insights-pipulate-sqlitedict
+- [2025-10-09] [51k] automating-ai-insights-pipulate-sqlitedict
 - [2025-10-09] [73k] debugging-articleizer-llm-apis-regex-rate-limits
 - [2025-10-09] [27k] digital-sovereignty-futureproofing-git-nixos
 - [2025-10-08] [68k] defying-conways-law-literate-notebooks
@@ -825,8 +920,8 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-10-08] [80k] ai-assisted-debugging-git-archeology
 - [2025-10-07] [70k] macos-nix-debugging-segfault-to-afplay
 - [2025-10-07] [231k] macos-nix-python-segfault-debugging
-- [2025-10-07] [45k] disposable-gods-personalized-loops-ai-context
-- [2025-10-06] [36k] pipulate-decoupling-breakthrough-app-to-library
+- [2025-10-07] [46k] disposable-gods-personalized-loops-ai-context
+- [2025-10-06] [37k] pipulate-decoupling-breakthrough-app-to-library
 - [2025-10-06] [138k] pypi-gauntlet-invisible-bug
 - [2025-10-06] [44k] faquillizer-sprint-ai-collaboration-blueprint
 - [2025-10-05] [25k] pipulate-notebook-state-persistence
@@ -837,7 +932,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-10-04] [32k] pipulate-kitty-hawk-runway
 - [2025-10-04] [21k] python-import-paradox-united-state-jupyter
 - [2025-10-03] [365k] ai-debugging-odyssey-tenacity
-- [2025-10-03] [41k] a-tale-of-two-physics-pipulate-jupyter
+- [2025-10-03] [42k] a-tale-of-two-physics-pipulate-jupyter
 - [2025-10-03] [27k] ai-strange-loop-not-a-bubble
 - [2025-10-02] [26k] digital-crucible-lifelong-journal
 - [2025-10-02] [94k] debugging-post-refactor-ai-regressions
@@ -847,7 +942,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-10-01] [44k] chronological-sorting-for-ai-context
 - [2025-10-01] [51k] refactoring-pipulate-persistent-notebook-workflows
 - [2025-10-01] [59k] automation-whack-a-mole-debugging
-- [2025-10-01] [114k] crafting-the-automation-wand
+- [2025-10-01] [115k] crafting-the-automation-wand
 - [2025-09-30] [31k] script-driven-refactoring-pipulate
 - [2025-09-30] [83k] forging-the-magic-wand-refactor
 - [2025-09-30] [34k] grinding-lenses-forging-ai-library
@@ -855,7 +950,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-09-30] [35k] forging-a-causal-anchor
 - [2025-09-30] [51k] forging-pipulate-magic-wand
 - [2025-09-30] [56k] the-great-stuffing-ai-native-python-wand
-- [2025-09-29] [64k] tightening-up-vs-making-less-brittle
+- [2025-09-29] [65k] tightening-up-vs-making-less-brittle
 - [2025-09-29] [33k] ai-copilot-intellectual-warmup
 - [2025-09-29] [189k] the-roomba-mike-refactor-saga
 - [2025-09-28] [90k] refactoring-tao-of-the-mulligan
@@ -873,23 +968,23 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-09-24] [24k] notebook-as-orchestrator-workflow
 - [2025-09-24] [26k] victory-dances-and-rabbit-holes
 - [2025-09-24] [28k] pinning-notebooks-folder-git-embedded-repo
-- [2025-09-24] [12k] elevating-the-notebook-factory
+- [2025-09-24] [13k] elevating-the-notebook-factory
 - [2025-09-24] [34k] the-bedrock-and-the-dazzle
 - [2025-09-23] [20k] lpvg-stack-future-proofing
 - [2025-09-23] [56k] bazaar-of-one-ai-open-source
-- [2025-09-23] [87k] git-repo-gardening-surgical-history
-- [2025-09-23] [27k] git-main-branch-takeover-repo-gardening
+- [2025-09-23] [88k] git-repo-gardening-surgical-history
+- [2025-09-23] [28k] git-main-branch-takeover-repo-gardening
 - [2025-09-22] [106k] ai-architectural-xrays-code-pruning
 - [2025-09-22] [53k] ai-ergonomics-developer-workflows
 - [2025-09-22] [70k] refactoring-for-ai-ergonomics-cli-workflow
-- [2025-09-22] [56k] pipulate-chronicles-future-proof-ai-stack
+- [2025-09-22] [57k] pipulate-chronicles-future-proof-ai-stack
 - [2025-09-22] [94k] code-is-truth-actuator-ai
 - [2025-09-21] [41k] refactoring-ai-tool-system-transparency
 - [2025-09-21] [43k] antifragile-intelligence-scheduler-commitment
-- [2025-09-21] [40k] coachmans-reins-agentic-ai-prompt-contracts
+- [2025-09-21] [41k] coachmans-reins-agentic-ai-prompt-contracts
 - [2025-09-21] [29k] python-refactoring-server-logging
 - [2025-09-21] [46k] developer-control-ai-refactoring
-- [2025-09-20] [45k] gravity-of-the-mean-ai-code-regression
+- [2025-09-20] [46k] gravity-of-the-mean-ai-code-regression
 - [2025-09-20] [65k] refactoring-python-monolith-ai-wrapper-shim
 - [2025-09-20] [105k] prompt-becomes-contract-human-agent
 - [2025-09-19] [15k] amnesiac-genie-playbook-master-prompt
@@ -898,25 +993,25 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-09-19] [64k] crafting-resilient-ai-coding-agents
 - [2025-09-18] [33k] magic-rolling-pin-ai-navigation
 - [2025-09-18] [30k] daily-heuristics-ai-analogues
-- [2025-09-18] [19k] thinking-in-vim-futureproof-philosophy
-- [2025-09-18] [23k] bootstrapping-nixos-philosophy
+- [2025-09-18] [20k] thinking-in-vim-futureproof-philosophy
+- [2025-09-18] [24k] bootstrapping-nixos-philosophy
 - [2025-09-18] [65k] agentic-cli-workflow
 - [2025-09-18] [48k] bootstrapping-nixos-installation-guide
 - [2025-09-17] [31k] local-git-jupyter-playground
 - [2025-09-17] [17k] unix-bedrock-acceleration-ai
 - [2025-09-17] [17k] mastering-data-pivots-with-python
-- [2025-09-17] [46k] nomadic-rooted-history-tech-stack-pipulate
+- [2025-09-17] [47k] nomadic-rooted-history-tech-stack-pipulate
 - [2025-09-16] [33k] ai-tool-calling-magic-spells-mcp
 - [2025-09-15] [113k] mcp-chronicles-progressive-enhancement
 - [2025-09-15] [55k] sovereign-ai-symbiosis-skill-based
 - [2025-09-14] [60k] rule-of-7-self-healing-knowledge-tree
-- [2025-09-14] [53k] python-decorators-importlib-live-session
+- [2025-09-14] [54k] python-decorators-importlib-live-session
 - [2025-09-14] [46k] ai-golden-path-first-step-design
 - [2025-09-14] [67k] ai-friendly-codebase-hygiene-guide
 - [2025-09-14] [244k] command-line-surgery-python-refactor
 - [2025-09-13] [22k] developer-momentum-light-touch-refactor
 - [2025-09-13] [35k] gui-to-cli-foss-ai-workflow
-- [2025-09-13] [84k] ai-assisted-monolith-to-plugin-refactor
+- [2025-09-13] [85k] ai-assisted-monolith-to-plugin-refactor
 - [2025-09-13] [34k] normalized-cli-solving-ai-amnesia
 - [2025-09-13] [83k] reliable-ai-tool-calling-case-study
 - [2025-09-12] [32k] chip-otheseus-sovereign-ai-blueprint
@@ -933,12 +1028,12 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-09-08] [170k] nixos-ai-assistant-declarative-workflow
 - [2025-09-06] [134k] magic-rolling-pin-ai-code-refactoring
 - [2025-09-06] [42k] cursor-to-gemini-cli-future-proof-workflow
-- [2025-09-06] [89k] agentic-ai-code-refactoring-experiment
+- [2025-09-06] [90k] agentic-ai-code-refactoring-experiment
 - [2025-09-06] [35k] ai-platform-wars-developer-guide
-- [2025-09-05] [22k] logistics-curve-thought-command-line
+- [2025-09-05] [23k] logistics-curve-thought-command-line
 - [2025-09-05] [32k] teach-ai-niche-framework-privacy-mode
 - [2025-09-04] [38k] radical-diagnosability-htmx-python-webdev
-- [2025-09-04] [74k] taming-ai-code-sprawl-rule-of-7
+- [2025-09-04] [75k] taming-ai-code-sprawl-rule-of-7
 - [2025-08-30] [85k] reducing-ai-code-sprawl-case-study
 - [2025-08-21] [26k] code-to-consulting-shopify-blueprint
 - [2025-08-19] [41k] ai-cambrian-explosion-orchestra-model
@@ -947,13 +1042,13 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-07-23] [56k] python-macos-blockingioerror-debugging-saga
 - [2025-07-22] [48k] javascript-event-key-vs-event-code-mac
 - [2025-07-21] [55k] ritual-vs-decorator-token-efficiency
-- [2025-07-20] [37k] tamagotchi-ai-local-llm-persistence
-- [2025-07-19] [33k] sheet-music-code-linear-workflows
+- [2025-07-20] [38k] tamagotchi-ai-local-llm-persistence
+- [2025-07-19] [34k] sheet-music-code-linear-workflows
 - [2025-07-18] [100k] ai-philosophy-rube-goldberg-pipelines
 - [2025-07-17] [12k] ai-genie-wish-backfiring
 - [2025-07-17] [56k] ai-funhouse-mirror-backfiring-wish
 - [2025-07-16] [53k] lisp-ai-soul-persistent-state
-- [2025-07-15] [70k] woggle-bug-ai-code-refinement
+- [2025-07-15] [71k] woggle-bug-ai-code-refinement
 - [2025-07-15] [25k] breaking-adobe-tax-software-freedom
 - [2025-07-14] [55k] ai-voice-synthesis-binary-search-debugging
 - [2025-07-14] [64k] manage-ai-context-vscode-goldfish-memory
@@ -968,19 +1063,19 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-07-08] [50k] giving-ai-a-body-embodiment-agency
 - [2025-07-07] [31k] forging-unforgettable-ai-durable-memory
 - [2025-07-06] [92k] ai-golden-path-python-cli-shell
-- [2025-07-05] [43k] cli-contract-future-proof-ai-framework
+- [2025-07-05] [44k] cli-contract-future-proof-ai-framework
 - [2025-07-05] [81k] arresting-regress-forging-ai-cli
 - [2025-07-05] [20k] self-teaching-codebase-ai-development-partner
 - [2025-07-04] [69k] ai-assisted-refactoring-browser-automation
 - [2025-07-04] [69k] git-reset-ai-recovery-gambit
-- [2025-07-03] [21k] ai-stable-targets-tech-stacks
+- [2025-07-03] [22k] ai-stable-targets-tech-stacks
 - [2025-07-03] [87k] python-fasthtml-template-language
 - [2025-07-02] [37k] ai-tamagotchi-nurturing-digital-ghost
 - [2025-07-01] [66k] ai-emergent-collaboration-self-building-railway
 - [2025-06-29] [48k] python-ast-refactoring-oop-alternative
 - [2025-06-28] [51k] developer-escape-tech-churn
 - [2025-06-28] [71k] ai-copilot-pipulate-release-system
-- [2025-06-27] [49k] timeless-stack-tech-hamster-wheel-ai
+- [2025-06-27] [50k] timeless-stack-tech-hamster-wheel-ai
 - [2025-06-27] [32k] feynman-safeguard-ascii-docs
 - [2025-06-24] [85k] living-readme-narrative-architecture
 - [2025-06-24] [58k] philosophy-axioms-ai-consciousness-stress-test
@@ -996,7 +1091,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-06-15] [22k] workflow-factory-emergent-modularity
 - [2025-06-15] [36k] integrating-google-analytics
 - [2025-06-15] [45k] taming-the-workflow-htmx-chain-reaction
-- [2025-06-14] [14k] git-stash-gambit-defaults-freedom
+- [2025-06-14] [15k] git-stash-gambit-defaults-freedom
 - [2025-06-12] [63k] teaching-ai-model-context-protocol
 - [2025-06-11] [67k] unmetered-robot-army-browser-automation
 - [2025-06-11] [76k] simon-says-make-mcp-call-local-llm-tools
@@ -1006,7 +1101,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-06-10] [41k] perfect-pebble-tech-movement-strategy
 - [2025-06-08] [35k] hybrid-ai-assisted-refactoring-case-study
 - [2025-06-08] [37k] migrate-github-pages-private-public
-- [2025-06-08] [55k] prompt-and-pray
+- [2025-06-08] [56k] prompt-and-pray
 - [2025-06-07] [90k] polishing-aligning-abstraction-focusing-lenses-llm-ai
 - [2025-05-31] [19k] ai-git-detective-commit-habits-code-forensics.md
 - [2025-05-27] [58k] python-gnome-scripting-existential-ai
@@ -1020,13 +1115,13 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-05-23] [84k] force-multiplying-ikigai-in-ai-age
 - [2025-05-22] [22k] beyond-40-tech-wisdom-ai
 - [2025-05-22] [21k] the-calm-before-the-nlweb
-- [2025-05-21] [186k] ai-wrangling-code-transparency
+- [2025-05-21] [187k] ai-wrangling-code-transparency
 - [2025-05-20] [56k] ai-workflow-automation-living-book
 - [2025-05-19] [26k] core-workflow-helpers-development
 - [2025-05-19] [26k] ai-tools-that-make-tools
 - [2025-05-18] [103k] css-fasthtml-ast-helper-scripts-python
 - [2025-05-18] [135k] refactoring-ai-css-cleanup
-- [2025-05-16] [29k] llm-code-validation-developer-tools.md
+- [2025-05-16] [30k] llm-code-validation-developer-tools.md
 - [2025-05-16] [51k] user-roles-developer-velocity
 - [2025-05-15] [23k] compounding-craft-future-proof-tech-skills-ai
 - [2025-05-15] [50k] ai-coding-assistant-python-helpers
@@ -1038,7 +1133,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-05-10] [44k] selenium-wire-html-header-capture-coding-log
 - [2025-05-10] [112k] beyond-dom-capturing-full-web-context-selenium-automation
 - [2025-05-09] [88k] ai-assisted-browser-automation-selenium-nix-flakes
-- [2025-05-09] [84k] webmaster-nix-selenium-http-status-browser-control
+- [2025-05-09] [85k] webmaster-nix-selenium-http-status-browser-control
 - [2025-05-09] [39k] nix-flakes-normalize-dev-selenium-macos-linux.md
 - [2025-05-09] [32k] nixos-selenium-host-browser-automation-nix-flakes
 - [2025-05-08] [13k] github-pages-home-hosting-jekyll
@@ -1086,14 +1181,14 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-04-17] [19k] git-without-server-local-filesystem
 - [2025-04-17] [22k] github-pages-logfiles
 - [2025-04-17] [30k] ime-mse-psp-tee-sep
-- [2025-04-14] [178k] is-grok-better-than-chatgpt
+- [2025-04-14] [179k] is-grok-better-than-chatgpt
 - [2025-04-13] [13k] cherry-picking
 - [2025-04-13] [87k] modern-seo-techniques
 - [2025-04-12] [143k] algorithmic-information-architecture-jekyll-ai
 - [2025-04-11] [67k] top-keywords-per-page
 - [2025-04-10] [105k] google-search-console-api-python
 - [2025-04-10] [48k] jekyll-lunr-static-site-search
-- [2025-04-09] [68k] nix-develop-output-ai-assistants
+- [2025-04-09] [69k] nix-develop-output-ai-assistants
 - [2025-04-09] [35k] github-pages-blog-arrows
 - [2025-04-08] [105k] grok-better-than
 - [2025-04-08] [29k] ai-agentic-mode-debugging
@@ -1109,21 +1204,21 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-04-04] [61k] vscode-ai-coding-assistants-forks-vs-plugins
 - [2025-04-04] [118k] colab-vs-local-jupyter
 - [2025-04-03] [18k] zero-to-clicks-niche-content
-- [2025-04-02] [56k] nixos-appimage
+- [2025-04-02] [57k] nixos-appimage
 - [2025-04-01] [10k] cleaning-noteboook-cell-output-git
 - [2025-04-01] [29k] connect-with-botify-workflow
 - [2025-03-31] [93k] dunning-kruger-deep-research-ai-seo
 - [2025-03-31] [158k] mcp-ai-api-server
-- [2025-03-30] [62k] integrating-llm-plugin-architecture
+- [2025-03-30] [63k] integrating-llm-plugin-architecture
 - [2025-03-30] [10k] tech-churn-vim-mastery
 - [2025-03-29] [32k] vim-macro-to-lua
 - [2025-03-29] [15k] jupyter-workflow-exploration
-- [2025-03-29] [80k] vscode-jupyter-notebook-paths
+- [2025-03-29] [81k] vscode-jupyter-notebook-paths
 - [2025-03-28] [90k] gsc-1000-row-limit-api
 - [2025-03-28] [147k] google-search-console-api
 - [2025-03-28] [29k] future-proof-seo-nix
 - [2025-03-28] [194k] grok-vs-chatgpt-vs-gemini
-- [2025-03-27] [63k] cursor-ai-jupyter-notebook-cells
+- [2025-03-27] [64k] cursor-ai-jupyter-notebook-cells
 - [2025-03-27] [25k] age-of-ai-vibe-coding
 - [2025-03-26] [51k] fastlite-todo-app
 - [2025-03-25] [52k] python-plugin-architectures
@@ -1141,15 +1236,15 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-03-21] [59k] evolving-ai-in-a-bottle
 - [2025-03-20] [13k] jupyter-notebook-vscode-cursor
 - [2025-03-20] [23k] dry-vs-wet
-- [2025-03-19] [29k] radically-customizing-linear-workflows
+- [2025-03-19] [30k] radically-customizing-linear-workflows
 - [2025-03-19] [46k] is-fasthtml-any-good
-- [2025-03-18] [11k] unparsable-structured-data
+- [2025-03-18] [12k] unparsable-structured-data
 - [2025-03-18] [83k] jupyter-notebook-pipulate-workflow
 - [2025-03-18] [41k] automating-seo-workflow
 - [2025-03-18] [9k] open-source-seo
 - [2025-03-16] [51k] hot-prompt-injection-ai-workflow
 - [2025-03-16] [43k] radical-simplicity-local-first
-- [2025-03-16] [64k] ai-facilitating-self-improvement
+- [2025-03-16] [65k] ai-facilitating-self-improvement
 - [2025-03-15] [25k] seo-age-of-llms
 - [2025-03-15] [81k] self-aware-software
 - [2025-03-15] [141k] web-app-fasthtml-htmx
@@ -1159,7 +1254,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-03-12] [6k] nixos-nvidia-cuda-ollama
 - [2025-03-12] [63k] real-time-ai-research
 - [2025-03-11] [69k] function-calling-llms
-- [2025-03-11] [61k] small-world-theory-search-google
+- [2025-03-11] [62k] small-world-theory-search-google
 - [2025-03-11] [79k] ai-deep-research
 - [2025-03-10] [29k] python-nix-flake-uv
 - [2025-03-09] [70k] agentic-frameworks-vs-browser-automation
@@ -1167,7 +1262,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-03-08] [15k] nix-flake-python
 - [2025-03-07] [131k] python-htmx-llm-seo
 - [2025-03-07] [66k] llm-code-analysis-test
-- [2025-03-07] [28k] reclaiming-the-narrative
+- [2025-03-07] [29k] reclaiming-the-narrative
 - [2025-03-06] [31k] learning-htmx
 - [2025-03-05] [26k] distracted-weak-focused-strong
 - [2025-03-04] [20k] sudo-nixos-rebuild-switch-upgrade
@@ -1188,7 +1283,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-01-31] [48k] open-source-seo-software
 - [2025-01-25] [20k] ai-work-sheep-or-shepherds
 - [2025-01-22] [19k] amazon-manufacturer-disintermediation
-- [2025-01-15] [49k] simplifying-state-workflow-refactoring
+- [2025-01-15] [50k] simplifying-state-workflow-refactoring
 - [2025-01-14] [37k] ai-new-era-of-literacy
 - [2025-01-13] [11k] vim-indention-selection
 - [2025-01-12] [117k] breaking-changes-learning-opportunities
@@ -1207,7 +1302,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2025-01-04] [126k] un-externalizing-helper-function
 - [2025-01-03] [83k] git-cherry-picking
 - [2025-01-02] [91k] one-card-flow
-- [2025-01-01] [132k] rubber-ducking-with-llm
+- [2025-01-01] [133k] rubber-ducking-with-llm
 - [2024-12-31] [167k] fasthtml-htmx-unix-pipes
 - [2024-12-30] [42k] rabbit-holes-shoulders-of-giants
 - [2024-12-30] [102k] python-nix-htmx-ollama
@@ -1230,7 +1325,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2024-12-03] [48k] david-mayer-vs-donald-trump
 - [2024-12-02] [43k] multiple-passes
 - [2024-11-29] [108k] banking-wins
-- [2024-11-27] [29k] dedumbing-sisyphus
+- [2024-11-27] [30k] dedumbing-sisyphus
 - [2024-11-25] [26k] pipeline-to-completion
 - [2024-11-24] [5k] wrangling-ai-code-assistants
 - [2024-11-24] [38k] bff-seo-dot-bot
@@ -1238,7 +1333,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2024-11-24] [59k] brainstorming-book-titles-ai
 - [2024-11-23] [16k] nixos-warbler-files-disappeared
 - [2024-11-23] [148k] pipeline-workflow-example
-- [2024-11-22] [82k] llm-speedbumps
+- [2024-11-22] [83k] llm-speedbumps
 - [2024-11-21] [160k] pipulate-pipeline-born-again
 - [2024-11-20] [83k] 2024-11-20-flow-state-alternation
 - [2024-11-19] [161k] pipeline-workflow
@@ -1249,10 +1344,10 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2024-11-13] [163k] 80-percent-cost-reduction-in-ai-operations
 - [2024-11-12] [35k] 6-click-ease-to-serve-up-bacon
 - [2024-11-11] [67k] how-to-train-your-llm
-- [2024-11-10] [73k] i-know-kung-fu-show-me
-- [2024-11-09] [51k] from-jupyter-notebooks-to-markdown
+- [2024-11-10] [74k] i-know-kung-fu-show-me
+- [2024-11-09] [52k] from-jupyter-notebooks-to-markdown
 - [2024-11-08] [49k] practicing-botify-api
-- [2024-11-07] [19k] structuring-websites-to-train-models
+- [2024-11-07] [20k] structuring-websites-to-train-models
 - [2024-11-06] [30k] resilience-while-achieving-ikigai
 - [2024-11-05] [24k] mac-nvim-same-as-nixos-nvim
 - [2024-11-04] [216k] figuring-out-a-complex-api
@@ -1299,7 +1394,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2024-09-24] [24k] fasthtml-cursor-ai-nix
 - [2024-09-23] [22k] nix-pip-install
 - [2024-09-22] [14k] nix-system
-- [2024-09-17] [18k] updating-nixos
+- [2024-09-17] [19k] updating-nixos
 - [2024-09-16] [10k] jupyter-ai-nix-flake
 - [2024-09-15] [19k] nix-fasthtml-flake
 - [2024-09-14] [34k] big-tech-picture

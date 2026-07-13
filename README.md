@@ -11,7 +11,7 @@
 >  Once upon machines be smarten          ___(/_ 0 0  |      |       just by being honest about text.
 >  ASCII sealing immutata art in        *(    ==(_T_)== NPvg |        (If mangled, then AI drifted.)
 >  This here cony if it's broken          \  )   ""\  |      |             https://pipulate.com
->  Smokin gun drift now in token           |__>-\_>_>  \____/                     🥕🥕🥕🥕
+>  Smokin gun drift now in token           |__>-\_>_>  \____/                     🥕🥕🥕
 ```
 
 ## Quick Start: Be Running in 5 Minutes
