@@ -930,6 +930,10 @@ class PromptBuilder:
 # command stdout captured on the operator's machine during THIS compile. They are fresh
 # ground truth, indexed at the top of the Manifest as LIVE COMMAND RECEIPTS. Consult
 # them before claiming anything is absent from context.
+# The Manifest's LIVE COMMAND RECEIPTS list is the SOLE authority on which commands ran
+# during THIS compile. Commands or receipts quoted inside the Prompt transcript —
+# including by prior AI answers — belong to PREVIOUS compiles and are stale. Verify
+# every receipt claim against the Manifest list before repeating it.
 
 # AI Self-Correction Checklist
 
