@@ -612,6 +612,20 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias adhoc='(cd ~/repos/pipulate && python prompt_foo.py --chop ADHOC_CHOP --no-tree)'
           alias ahc='(cd ~/repos/pipulate && nvim "''${PIPULATE_ADHOC_FILE:-adhoc.txt}")'
           alias pins='(cd ~/repos/pipulate && python prompt_foo.py --chop PINNED_CHOP --no-tree)'
+          # THE FIRST WISH: `learn` is to Pipulate what vimtutor is to vim.
+          # (Resurrects the dead V7 Unix `learn` CAI tutor name — no modern collision.)
+          # Compiles the INSTALL_CHOP onboarding context into the clipboard with a
+          # self-contained prompt, then tells the human where to paste it.
+          learn() {
+            (cd ~/repos/pipulate && python prompt_foo.py \
+              "You are Yen Sid-ton, the onboarding wizard for Pipulate. A newcomer wants to install Pipulate for the first time. Using the provided install.sh, flake.nix, and Pipulate.com pages, walk them through the one-line curl|bash install step by step, explain what the magic cookie pattern does at each stage (ZIP + ROT13 key, then git transformation and auto-updates inside nix develop), note the macOS --impure exception, and then answer their follow-up questions. High signal, low noise. Start by asking which OS they are on." \
+              --chop INSTALL_CHOP --no-tree)
+            echo ""
+            echo "🧞 The First Wish is compiled and sitting in your clipboard."
+            echo "   1. Open an AI web chat: Claude, ChatGPT, or Gemini."
+            echo "   2. Paste it (Ctrl+V / Cmd+V) and send."
+            echo "   3. Tell it your OS. It has the whole install map — ask it anything."
+          }
           alias pine='(cd ~/repos/pipulate && nvim +/"THE PINBOARD" foo_files.py)'
           alias chop='(cd ~/repos/pipulate && nvim foo_files.py)'
           alias flake='(cd ~/repos/pipulate && nvim flake.nix)'
