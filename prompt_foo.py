@@ -710,8 +710,17 @@ def scrub_compile_payload(text: str):
             pat = line.strip()
             if not pat or pat.startswith('#'):
                 continue
+            if pat.startswith('pub:'):
+                # Publish-lane-only pattern: enforce_denylist in sanitizer.py
+                # fails closed on it before publication; the compile lane
+                # permits it so payloads can carry the identifier to the model.
+                continue
+            flags = re.IGNORECASE
+            if pat.startswith('cs:'):
+                pat = pat[3:]
+                flags = 0
             try:
-                n = len(re.findall(pat, text, flags=re.IGNORECASE))
+                n = len(re.findall(pat, text, flags=flags))
             except re.error as e:
                 print(f"⚠️  Skipping bad denylist pattern {pat!r}: {e}")
                 continue
