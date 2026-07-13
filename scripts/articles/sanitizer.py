@@ -265,6 +265,12 @@ def sanitize_article(public: bool):
     else:
         print("ℹ️  Nothing to scrub. Article is already clean.")
 
+    # PUBLISH TRAPDOOR: enforce AFTER the write so scrub progress persists
+    # in article.txt even when blocked, but raise before the && chain in
+    # write_post can reach articleizer.py. Private lane is untouched.
+    if public:
+        enforce_denylist(content)
+
 
 def resolve_lane(args) -> bool:
     """Returns True for the public (full-scrub) lane, False for private.
