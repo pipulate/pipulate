@@ -117,6 +117,15 @@ def get_current_version():
         raise RuntimeError("Could not find __version__ in __init__.py")
     return match.group(1)
 
+def pep440_normalize(version: str) -> str:
+    """PEP 440 normalization ('2.00' -> '2.0') so printed PyPI URLs match
+    the artifact twine actually uploads instead of drifting by a zero."""
+    try:
+        from packaging.version import Version
+        return str(Version(version))
+    except Exception:
+        return version
+
 def run_version_sync():
     """Runs the version synchronization script."""
     print("\n🔄 Step 1: Synchronizing versions across all files...")
