@@ -228,11 +228,15 @@
           printf '%s\n' "$sorted_matches" \
             | ${postsCommand}/bin/posts --stdin "''${last_args[@]}" --fmt paths
 
-          if command -v xclip >/dev/null 2>&1; then
+          # Clipboard is an interactive-only side effect. Under prompt_foo's
+          # captured pipe, the forked xclip daemon inherits and holds the fd
+          # open forever, deadlocking communicate(). Gate on a real tty and
+          # detach xclip's own stdout so no capture pipe can be held hostage.
+          if [ -t 1 ] && command -v xclip >/dev/null 2>&1; then
             if printf '%s\n' "$sorted_matches" \
               | ${postsCommand}/bin/posts --stdin --last "$capn" --fmt slugs \
               | { echo "[[[TODO_SLUGS]]]"; cat; echo "[[[END_SLUGS]]]"; } \
-              | xclip -selection clipboard 2>/dev/null; then
+              | xclip -selection clipboard >/dev/null 2>&1; then
               echo "📋 TODO_SLUGS block (≤$capn newest) → clipboard (type xp to compile)" >&2
             fi
           fi
