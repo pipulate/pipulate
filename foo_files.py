@@ -1002,6 +1002,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # Move these into the active chapters to paint them onto the context canvas.
 
 # AUDIT.md  # [2,011 tokens | 9,706 bytes]
+# MANIFEST.in  # [81 tokens | 313 bytes]
 # apps/130_gap_analysis.py  # [9,625 tokens | 48,280 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
 # apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
