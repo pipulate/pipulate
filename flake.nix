@@ -181,9 +181,112 @@
           map (file: "${file.source};${file.dest};${file.desc}") notebookFilesToCopy
         );
 
+        # Real commands, not shell functions, so Python-spawned `!` commands in
+        # adhoc.txt inherit them through PATH just like interactive Bash does.
+        postsCommand = pkgs.writeShellScriptBin "posts" ''
+          set -euo pipefail
+          root="''${PIPULATE_ROOT:-$PWD}"
+          python_bin="$root/.venv/bin/python"
+          if [ ! -x "$python_bin" ]; then
+            echo "posts: missing $python_bin; enter the Pipulate Nix shell first." >&2
+            exit 1
+          fi
+          cd "$root/scripts/articles"
+          exec "$python_bin" lsa.py -t 1 "$@"
+        '';
+
+        rgxCommand = pkgs.writeShellScriptBin "rgx" ''
+          set -euo pipefail
+
+          last_args=()
+          capn=8
+          if [[ "''${1:-}" =~ ^[0-9]+$ ]]; then
+            last_args=(--last "$1")
+            if [ "$1" -lt "$capn" ]; then
+              capn="$1"
+            fi
+            shift
+          fi
+          if [ "$#" -eq 0 ]; then
+            echo "Usage: rgx [N] TERM [TERM...]   (leading N = only the N most recent matches)" >&2
+            exit 1
+          fi
+
+          terms=("$@")
+          posts_dir="$HOME/repos/trimnoir/_posts"
+          matches="$(${pkgs.ripgrep}/bin/rg -il -- "''${terms[0]}" "$posts_dir" || true)"
+          for term in "''${terms[@]:1}"; do
+            [ -z "$matches" ] && break
+            matches="$(printf '%s\n' "$matches" | ${pkgs.findutils}/bin/xargs -r ${pkgs.ripgrep}/bin/rg -il -- "$term" || true)"
+          done
+          if [ -z "$matches" ]; then
+            echo "No matching articles." >&2
+            exit 0
+          fi
+
+          sorted_matches="$(printf '%s\n' "$matches" | ${pkgs.coreutils}/bin/sort)"
+          printf '%s\n' "$sorted_matches" \
+            | ${postsCommand}/bin/posts --stdin "''${last_args[@]}" --fmt paths
+
+          if command -v xclip >/dev/null 2>&1; then
+            if printf '%s\n' "$sorted_matches" \
+              | ${postsCommand}/bin/posts --stdin --last "$capn" --fmt slugs \
+              | { echo "[[[TODO_SLUGS]]]"; cat; echo "[[[END_SLUGS]]]"; } \
+              | xclip -selection clipboard 2>/dev/null; then
+              echo "📋 TODO_SLUGS block (≤$capn newest) → clipboard (type xp to compile)" >&2
+            fi
+          fi
+        '';
+
+        rgxcCommand = pkgs.writeShellScriptBin "rgxc" ''
+          set -euo pipefail
+
+          last_args=()
+          capn=8
+          if [[ "''${1:-}" =~ ^[0-9]+$ ]]; then
+            last_args=(--last "$1")
+            if [ "$1" -lt "$capn" ]; then
+              capn="$1"
+            fi
+            shift
+          fi
+          if [ "$#" -eq 0 ]; then
+            echo "Usage: rgxc [N] TERM [TERM...]   (leading N = only the N most recent matches)" >&2
+            exit 1
+          fi
+
+          terms=("$@")
+          posts_dir="$HOME/repos/trimnoir/_posts"
+          matches="$(${pkgs.ripgrep}/bin/rg -il -- "''${terms[0]}" "$posts_dir" || true)"
+          for term in "''${terms[@]:1}"; do
+            [ -z "$matches" ] && break
+            matches="$(printf '%s\n' "$matches" | ${pkgs.findutils}/bin/xargs -r ${pkgs.ripgrep}/bin/rg -il -- "$term" || true)"
+          done
+          if [ -z "$matches" ]; then
+            echo "No matching articles." >&2
+            exit 0
+          fi
+
+          sorted_matches="$(printf '%s\n' "$matches" | ${pkgs.coreutils}/bin/sort)"
+          printf '%s\n' "$sorted_matches" \
+            | ${postsCommand}/bin/posts --stdin --shards "''${last_args[@]}" --around 2 --terms "''${terms[@]}"
+
+          if command -v xclip >/dev/null 2>&1; then
+            if printf '%s\n' "$sorted_matches" \
+              | ${postsCommand}/bin/posts --stdin --last "$capn" --fmt slugs \
+              | { echo "[[[TODO_SLUGS]]]"; cat; echo "[[[END_SLUGS]]]"; } \
+              | xclip -selection clipboard 2>/dev/null; then
+              echo "📋 TODO_SLUGS block (≤$capn newest) → clipboard (type xp to compile)" >&2
+            fi
+          fi
+        '';
+
         # Common packages that we want available in our environment
         # regardless of the operating system
         commonPackages = with pkgs; [
+          postsCommand                 # Article corpus formatter usable by child shells
+          rgxCommand                   # Bounded AND-search over article files
+          rgxcCommand                  # rgx plus holographic shards and hit context
           uv                           # Fast Python package installer and resolver
           sqlite                       # Ensures correct SQLite library is linked on macOS
           (python312.withPackages (ps: with ps; [
