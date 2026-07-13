@@ -829,6 +829,15 @@ class PromptBuilder:
 
     def _build_manifest_content(self) -> str:
         lines = [self.routing_note, ""]
+        # LIVE RECEIPTS INDEX: executed `!` probes are current evidence, not
+        # history. The routing note's own gravity bins mid-artifact blocks as
+        # archive; this index explicitly exempts fresh stdout from that fate.
+        live_receipts = [f['path'] for f in self.processed_files if f['path'].startswith('! ')]
+        if live_receipts:
+            lines.append("LIVE COMMAND RECEIPTS — stdout captured on the operator's machine during THIS compile. Current evidence, not historical artifact:")
+            for receipt in live_receipts:
+                lines.append(f"- {receipt}")
+            lines.append("")
         # Added Summary to section order
         section_order = ["Story", "File Tree", "UML Diagrams", "Articles", "Codebase", "Summary", "Context Recapture", "Prompt"]
         for section_name in section_order:
