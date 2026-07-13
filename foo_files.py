@@ -700,10 +700,8 @@ ADHOC_CHOP = r"""
 # PIPULATE_ADHOC_FILE outside the worktree so no git sweep can reach it.)
 # --- ADHOC SLOT END ---
 
-init.lua
 .gitattributes
 .gitignore
-flake.nix
 apply.py
 scripts/ai.py
 """
