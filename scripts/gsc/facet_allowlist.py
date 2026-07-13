@@ -154,6 +154,11 @@ def import_demand(args):
         except (ValueError, TypeError):
             return 0 if cast is int else None
 
+    # Idempotent by window: re-importing the same window replaces its rows
+    # instead of appending duplicates (the exact failure behind the doubled
+    # 491,232-row demand_fact and the inflated 9,639-variant allowlist).
+    conn.execute('DELETE FROM demand_fact WHERE date_window = ?', (args.window,))
+    conn.commit()
     inserted = 0
     with open(args.csv, newline='', encoding='utf-8-sig') as f:
         # Excel-dialect exports (Botify) lead with a 'sep=,' hint line that
