@@ -41,10 +41,10 @@ if [ -z "${BASH_VERSION:-}" ]; then
     echo "   On Windows WSL and some Linux systems, 'sh' points to dash instead of bash."
     echo ""
     echo "   Please run the installer with bash explicitly:"
-    echo "   curl -L https://pipulate.com/assets/installer/install.sh | bash -s ${1:-pipulate}"
+    echo "   curl -fsSL https://pipulate.com/install.sh | bash -s ${1:-pipulate}"
     echo ""
     echo "   Or if you have bash installed:"
-    echo "   curl -L https://pipulate.com/assets/installer/install.sh | bash -s ${1:-pipulate}"
+    echo "   curl -fsSL https://pipulate.com/install.sh | bash -s ${1:-pipulate}"
     echo ""
     exit 1
 fi
