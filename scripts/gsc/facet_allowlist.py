@@ -156,8 +156,18 @@ def import_demand(args):
 
     inserted = 0
     with open(args.csv, newline='', encoding='utf-8-sig') as f:
-        reader = csv.DictReader(f)
+        # Excel-dialect exports (Botify) lead with a 'sep=,' hint line that
+        # would otherwise be consumed as the header row -- the exact failure
+        # behind '0 rows imported'. Honor it for the delimiter, then skip it.
+        first = f.readline()
+        delim = ','
+        if first.lower().startswith('sep='):
+            delim = first.strip()[4:] or ','
+        else:
+            f.seek(0)
+        reader = csv.DictReader(f, delimiter=delim)
         reader.fieldnames = [norm(h) for h in reader.fieldnames]
+        print('normalized headers: %s' % reader.fieldnames)
         for row in reader:
             url = row.get(norm(args.url_col), '')
             handle, variant_id = parse_page_url(url)
