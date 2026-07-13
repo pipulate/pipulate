@@ -1630,8 +1630,26 @@ def main():
             logger.print(f"   -> Executing: {raw_command:60} ... ", end='', flush=True)
             t_start = time.perf_counter()
             try:
-                result = subprocess.run(command_str, shell=True, capture_output=True, text=True, check=True)
-                content = result.stdout.strip() or "(Executed successfully, no output)"
+                # Hard deadline + process-group kill. A daemonizing grandchild
+                # (xclip and friends) that inherits the capture pipe can hold
+                # communicate() open forever; killing the whole group closes
+                # every fd holder, so EOF always arrives.
+                proc = subprocess.Popen(
+                    command_str, shell=True, stdin=subprocess.DEVNULL,
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                    text=True, start_new_session=True
+                )
+                try:
+                    cmd_stdout, cmd_stderr = proc.communicate(timeout=180)
+                except subprocess.TimeoutExpired:
+                    import signal
+                    os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+                    proc.communicate()
+                    logger.print(f"\n      [Error] Timed out after 180s; process group killed.")
+                    continue
+                if proc.returncode != 0:
+                    raise subprocess.CalledProcessError(proc.returncode, command_str, output=cmd_stdout, stderr=cmd_stderr)
+                content = cmd_stdout.strip() or "(Executed successfully, no output)"
                 
                 processed_files_data.append({
                     "path": f"COMMAND: {raw_command}", "comment": comment, "content": content,
