@@ -700,15 +700,12 @@ ADHOC_CHOP = r"""
 # PIPULATE_ADHOC_FILE outside the worktree so no git sweep can reach it.)
 # --- ADHOC SLOT END ---
 
-foo_files.py
-prompt_foo.py
 init.lua
 .gitattributes
 .gitignore
 flake.nix
 apply.py
 scripts/ai.py
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
 """
 
 PINNED_CHOP = r"""
