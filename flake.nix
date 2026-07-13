@@ -784,71 +784,8 @@ print(max(1, n))
           slugs() { (cd ~/repos/pipulate && python scripts/articles/lsa.py -t 1 --slugs "$@" --fmt paths); }
           # slugs-ordered preserves input order for narrative control
           sluggo() { for slug in "$@"; do (cd ~/repos/pipulate && python scripts/articles/lsa.py -t 1 --match "$slug" --fmt paths); done; }
-          # rgx: N-gram intersection search across the article corpus.
-          # rgx TERM [TERM...] -- quote multi-word terms, unquoted for single words.
-          # Chains case-insensitive `rg -il` through each term, sorts, and hands
-          # the result to `posts --stdin`.
-          rgx() {
-            local lastn=""
-            local capn=8
-            if [[ "''${1:-}" =~ ^[0-9]+$ ]]; then
-              lastn="--last $1"
-              [ "$1" -lt "$capn" ] && capn="$1"
-              shift
-            fi
-            if [ "$#" -eq 0 ]; then
-              echo "Usage: rgx [N] TERM [TERM...]   (leading N = only the N most recent matches)"
-              return 1
-            fi
-            local posts_dir="$HOME/repos/trimnoir/_posts"
-            local matches
-            matches=$(rg -il -- "$1" "$posts_dir")
-            shift
-            for term in "$@"; do
-              [ -z "$matches" ] && break
-              matches=$(echo "$matches" | xargs rg -il -- "$term")
-            done
-            echo "$matches" | sort | posts --stdin $lastn --fmt paths
-            echo "$matches" | sort | posts --stdin --last "$capn" --fmt slugs \
-              | { echo "[[[TODO_SLUGS]]]"; cat; echo "[[[END_SLUGS]]]"; } \
-              | xclip -selection clipboard 2>/dev/null \
-              && echo "📋 TODO_SLUGS block (≤$capn newest) → clipboard (type xp to compile)" >&2
-          }
-          # rgxc: rgx with Context. Same case-insensitive n-gram narrowing,
-          # but the final pass interleaves each file's holographic shard
-          # (keywords + summary from _context/) and the ±2-line regions
-          # around every hit. All terms are forwarded to --terms.
-          rgxc() {
-            local lastn=""
-            local capn=8
-            if [[ "''${1:-}" =~ ^[0-9]+$ ]]; then
-              lastn="--last $1"
-              [ "$1" -lt "$capn" ] && capn="$1"
-              shift
-            fi
-            if [ "$#" -eq 0 ]; then
-              echo "Usage: rgxc [N] TERM [TERM...]   (leading N = only the N most recent matches)"
-              return 1
-            fi
-            local posts_dir="$HOME/repos/trimnoir/_posts"
-            local matches
-            matches=$(rg -il -- "$1" "$posts_dir")
-            local term
-            local first=1
-            for term in "$@"; do
-              if [ "$first" -eq 1 ]; then
-                first=0
-                continue
-              fi
-              [ -z "$matches" ] && break
-              matches=$(echo "$matches" | xargs rg -il -- "$term")
-            done
-            echo "$matches" | sort | posts --stdin --shards $lastn --around 2 --terms "$@"
-            echo "$matches" | sort | posts --stdin --last "$capn" --fmt slugs \
-              | { echo "[[[TODO_SLUGS]]]"; cat; echo "[[[END_SLUGS]]]"; } \
-              | xclip -selection clipboard 2>/dev/null \
-              && echo "📋 TODO_SLUGS block (≤$capn newest) → clipboard (type xp to compile)" >&2
-          }
+          # `rgx` and `rgxc` are Nix-packaged commands above, not shell
+          # functions, so interactive use and adhoc.txt child shells share one implementation.
           alias release='python release.py --release --force'
           alias g='clear && echo "$ git status" && git status'
           m() {
