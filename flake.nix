@@ -275,11 +275,14 @@
           printf '%s\n' "$sorted_matches" \
             | ${postsCommand}/bin/posts --stdin --shards "''${last_args[@]}" --around 2 --terms "''${terms[@]}"
 
-          if command -v xclip >/dev/null 2>&1; then
+          # Same tty gate as rgx: never let a forked xclip daemon hold a
+          # captured pipe open. Interactive use keeps the clipboard magic;
+          # prompt_foo's ! executor gets clean EOF and no deadlock.
+          if [ -t 1 ] && command -v xclip >/dev/null 2>&1; then
             if printf '%s\n' "$sorted_matches" \
               | ${postsCommand}/bin/posts --stdin --last "$capn" --fmt slugs \
               | { echo "[[[TODO_SLUGS]]]"; cat; echo "[[[END_SLUGS]]]"; } \
-              | xclip -selection clipboard 2>/dev/null; then
+              | xclip -selection clipboard >/dev/null 2>&1; then
               echo "📋 TODO_SLUGS block (≤$capn newest) → clipboard (type xp to compile)" >&2
             fi
           fi
