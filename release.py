@@ -1273,7 +1273,7 @@ def main():
         print("📦 Publishing to PyPI...")
         run_command([".venv/bin/python", '-m', 'twine', 'upload', 'dist/*'])
         print(f"\n🎉 Successfully published version {current_version} to PyPI! 🎉")
-        print(f"📍 View at: https://pypi.org/project/pipulate/{current_version}/")
+        print(f"📍 View at: https://pypi.org/project/pipulate/{pep440_normalize(current_version)}/")
         published_to_pypi = True
     
     # === BEAUTIFUL SUMMARY DISPLAY ===
