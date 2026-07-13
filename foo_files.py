@@ -97,6 +97,13 @@ AI_PHOOEY_CHOP = r"""                                                           
 # Setun 1958 -> BitNet b1.58. Shave the multiplication table; keep the
 # binary substrate. Set sails for the trade wind, not the weather system.
 
+# THE PROBE ECONOMY RULE: A probe is cheap only when its output is bounded.
+# Before routing command stdout into the context ledger, measure or cap it with
+# `wc -l`, `head`, `tail`, `rg -l`, or an explicit result limit. A command that
+# floods thousands of lines is not a cheap falsifying probe; it is an accidental
+# context import. Sample first, widen deliberately, and keep bulk output out of
+# the narrative unless the bulk itself is the evidence.
+
 # STORY ENGINE
 # Mike-E's gift is associative reach; his flaw is letting every spark become canon.
 # Yen Sid-ton is a brilliant familiar re-instantiated without yesterday.
