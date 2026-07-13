@@ -157,6 +157,8 @@ def load_pii_rules():
         for line in PII_FILE.read_text(encoding='utf-8').splitlines():
             if not line.strip() or line.startswith('#'):
                 continue
+            if line.startswith('pub:'):
+                line = line[4:]  # publish-lane-only marker; this IS the publish lane
             if ' === ' in line:
                 pattern, repl = line.split(' === ', 1)
                 rules.append((pattern, repl))
