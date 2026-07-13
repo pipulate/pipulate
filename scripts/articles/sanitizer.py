@@ -194,6 +194,8 @@ def load_denylist():
             line = line.strip()
             if not line or line.startswith('#'):
                 continue
+            if line.startswith('pub:'):
+                line = line[4:].strip()  # publish-lane-only marker; this IS the publish lane
             if line.startswith('cs:'):
                 patterns.append((line[3:], 0))
             else:
