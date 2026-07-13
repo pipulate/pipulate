@@ -832,8 +832,8 @@ print('AI:\n', r.ai)
           # ---------------------------------------------------------
           # THE SUBSHELL ALIASES (Execute safely from anywhere)
           # ---------------------------------------------------------
-          posts() { (cd "$PIPULATE_ROOT/scripts/articles" && python lsa.py -t 1 "$@"); }
-          posts2() { (cd "$PIPULATE_ROOT/scripts/articles" && python lsa.py -t 1 --reverse "$@"); }
+          # `posts` is a Nix-packaged command so child shells can resolve it.
+          posts2() { posts --reverse "$@"; }
           preview() { (cd "$PIPULATE_ROOT/scripts/articles" && python publishizer.py "$@"); }
 
           # The true 'publish' command (Atomic Cross-Domain Deployment)
