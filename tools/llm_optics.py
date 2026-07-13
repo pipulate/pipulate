@@ -267,8 +267,11 @@ def generate_link_lens(source_html: str, hydrated_html: str, base_url: str, resu
     md.extend(_format_link_rows(source_rows))
     md.append("")
 
-    md.append(f"## HYDRATED DOM — {len(hydrated_rows)} anchors")
-    md.extend(_format_link_rows(hydrated_rows))
+    md.append(f"## HYDRATED DOM — {len(hydrated_rows)} anchors (delta view)")
+    hydrated_new = [r for r in hydrated_rows if r["href_resolved"] not in source_keys]
+    md.append(f"  shared with source: {len(hydrated_rows) - len(hydrated_new)} anchor(s) — listed once above")
+    md.append(f"  present only after hydration: {len(hydrated_new)} anchor(s)")
+    md.extend(_format_link_rows(hydrated_new) if hydrated_new else ["  (none)"])
     md.append("")
 
     md.append("## PARAMETER CENSUS — source anchors")
