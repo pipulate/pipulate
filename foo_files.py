@@ -747,6 +747,8 @@ init.lua
 INSTALL_CHOP = r"""
 # THE FIRST WISH (First-time install onboarding context)
 # COMMAND: python prompt_foo.py --chop INSTALL_CHOP --no-tree
+# ALIAS: `learn` (flake.nix) — compiles this chop with a built-in onboarding
+# prompt, fills the clipboard, and prints the paste-into-AI-WebChat steps.
 # Everything Yen Sid-ton needs to walk a newcomer from bare terminal to a
 # running Pipulate: the curl|bash bootstrap, the magic cookie hand-off, and
 # the flake that completes the git transformation. The one-liner:
