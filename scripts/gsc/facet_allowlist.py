@@ -168,6 +168,14 @@ def import_demand(args):
         reader = csv.DictReader(f, delimiter=delim)
         reader.fieldnames = [norm(h) for h in reader.fieldnames]
         print('normalized headers: %s' % reader.fieldnames)
+        missing = [c for c in (norm(args.url_col), norm(args.query_col))
+                   if c not in reader.fieldnames]
+        if missing:
+            print('ERROR: column(s) %s not found in headers %s.\n'
+                  'Pass the matching --url-col / --query-col (and metric-col) '
+                  'flags using the normalized names printed above.'
+                  % (missing, reader.fieldnames), file=sys.stderr)
+            sys.exit(1)
         for row in reader:
             url = row.get(norm(args.url_col), '')
             handle, variant_id = parse_page_url(url)
