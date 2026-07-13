@@ -175,6 +175,60 @@ def apply_pii(content: str):
     return content, total
 
 
+def load_denylist():
+    """Load regex patterns from the out-of-repo denylist, if present.
+
+    Same file the commit airlock reads: one pattern per line, '#' comments
+    and blanks ignored. A 'cs:' prefix makes that one pattern case-sensitive
+    (for brand names that collide with common English words); everything
+    else matches case-insensitively so prose capitalization can't sneak a
+    name past the gate. Caveat: the git pre-commit hook will treat a 'cs:'
+    line as a literal, never-matching pattern — acceptable degradation,
+    since this publish gate is the one that guards prose.
+    """
+    patterns = []
+    if DENYLIST_FILE.exists():
+        for line in DENYLIST_FILE.read_text(encoding='utf-8').splitlines():
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            if line.startswith('cs:'):
+                patterns.append((line[3:], 0))
+            else:
+                patterns.append((line, re.IGNORECASE))
+    return patterns
+
+
+def enforce_denylist(content: str):
+    """PUBLIC-LANE INTERLOCK: fail closed if a denylisted identifier survives.
+
+    Runs after the substitution pass, so pii_substitutions.txt is the
+    redaction layer and this is the proof it worked. Reports line numbers
+    for mechanical vim jumps, then halts so nothing tainted reaches
+    articleizer.py or a public repo.
+    """
+    problems = []
+    lines = content.split('\n')
+    for pattern, flags in load_denylist():
+        try:
+            rx = re.compile(pattern, flags)
+        except re.error as e:
+            print(f"⚠️  Skipping bad denylist pattern {pattern!r}: {e}")
+            continue
+        hits = [i for i, line in enumerate(lines, 1) if rx.search(line)]
+        if hits:
+            shown = ', '.join(str(h) for h in hits[:8])
+            more = f" (+{len(hits) - 8} more)" if len(hits) > 8 else ""
+            problems.append(f"pattern {pattern!r}: line(s) {shown}{more}")
+    if problems:
+        print("🛑 PUBLISH BLOCKED: denylisted identifier(s) survive the scrub:")
+        for p in problems:
+            print(f"   • {p}")
+        print(f"   Add a substitution to {PII_FILE} (pattern === replacement)")
+        print("   or fix the source. No bypass flag exists in the publish lane.")
+        raise SystemExit(1)
+
+
 def sanitize_article(public: bool):
     """Read article.txt, scrub it for the chosen lane, and save back in place."""
     if not ARTICLE_FILE.exists():
