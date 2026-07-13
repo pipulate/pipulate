@@ -1044,7 +1044,7 @@ def display_beautiful_summary(commit_message, ai_generated=False, version=None, 
     if published:
         table.add_row(
             "🚀 PyPI Release",
-            f"https://pypi.org/project/pipulate/{version}/",
+            f"https://pypi.org/project/pipulate/{pep440_normalize(version)}/",
             "✅ Live"
         )
     
