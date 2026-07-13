@@ -6,6 +6,7 @@ import common
 # Paths
 ARTICLE_FILE = Path(__file__).parent / "article.txt"
 PII_FILE = Path.home() / ".config" / "pipulate" / "pii_substitutions.txt"
+DENYLIST_FILE = Path.home() / ".config" / "pipulate" / "commit_denylist.txt"
 
 # Safe IPs that don't need redaction (localhost, common DNS, etc.)
 SAFE_IPS = {'127.0.0.1', '0.0.0.0', '8.8.8.8', '1.1.1.1'}
