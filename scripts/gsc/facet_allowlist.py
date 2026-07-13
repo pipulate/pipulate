@@ -238,9 +238,9 @@ def main():
     a.add_argument('--min-clicks', type=int, default=3)
     a.set_defaults(func=allowlist)
 
-    l = sub.add_parser('latent')
-    l.add_argument('--db', default='facets.db')
-    l.set_defaults(func=latent)
+    lat = sub.add_parser('latent')
+    lat.add_argument('--db', default='facets.db')
+    lat.set_defaults(func=latent)
 
     args = ap.parse_args()
     args.func(args)
