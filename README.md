@@ -26,7 +26,7 @@ curl -fsSL https://pipulate.com/install.sh | bash
 
 ```bash
 # 2. Launch it
-nix develop
+cd ~/pipulate && nix develop
 ```
 
 **What you get:** A local web app at `http://localhost:5001` with step-by-step workflows, integrated AI chat, and a JupyterLab instance at `http://localhost:8888`. No cloud required.
