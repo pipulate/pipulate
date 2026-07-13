@@ -1652,7 +1652,10 @@ def main():
                 content = cmd_stdout.strip() or "(Executed successfully, no output)"
                 
                 processed_files_data.append({
-                    "path": f"COMMAND: {raw_command}", "comment": comment, "content": content,
+                    # Marker parity: the payload label IS the adhoc.txt line.
+                    # `--- START: ! rgxc foo ---` greps identically to the
+                    # `! rgxc foo` that summoned it, for humans and models alike.
+                    "path": f"! {raw_command}", "comment": comment, "content": content,
                     "tokens": count_tokens(content), "words": count_words(content), "lang": "text"
                 })
                 logger.print(f"[{time.perf_counter() - t_start:.4f}s]")
