@@ -71,7 +71,7 @@ dependencies = [
 pipulate = "cli:main"
 
 [tool.setuptools]
-py-modules = ["cli", "server", "common", "config", "ai_dictdb", "__init__"]
+py-modules = ["cli", "server", "config", "__init__"]
 
 [tool.setuptools.packages.find]
 where = ["."]
