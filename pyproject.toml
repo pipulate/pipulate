@@ -98,7 +98,7 @@ exclude = [
 
 [tool.ruff]
 line-length = 120
-target-version = "2.00"
+target-version = "py312"
 
 [tool.ruff.lint]
 # Start with a minimal, non-noisy ruleset.
