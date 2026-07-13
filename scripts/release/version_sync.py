@@ -63,11 +63,13 @@ def update_pyproject_toml(version, description):
     content = pyproject_file.read_text()
     old_content = content
     
-    # Update version line
+    # Update version line (anchored to line start so [tool.ruff]'s
+    # `target-version` can never be clobbered into `target-version = "2.00"`)
     content = re.sub(
-        r'version\s*=\s*["\'][^"\']+["\']',
+        r'^version\s*=\s*["\'][^"\']+["\']',
         f'version = "{version}"',
-        content
+        content,
+        flags=re.MULTILINE
     )
     
     # Update description line
