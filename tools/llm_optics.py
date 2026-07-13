@@ -271,6 +271,14 @@ def generate_link_lens(source_html: str, hydrated_html: str, base_url: str, resu
     md.extend(_format_link_rows(hydrated_rows))
     md.append("")
 
+    md.append("## PARAMETER CENSUS — source anchors")
+    md.extend(_parameter_census(source_rows))
+    md.append("")
+
+    md.append("## PARAMETER CENSUS — hydrated anchors")
+    md.extend(_parameter_census(hydrated_rows))
+    md.append("")
+
     md.append("## ADDED BY HYDRATION")
     md.extend(added if added else ["  (none)"])
     md.append("")
