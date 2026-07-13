@@ -106,7 +106,13 @@ def build_facets(args):
     page, total = 1, 0
     while True:
         url = 'https://%s/products.json?limit=250&page=%d' % (args.domain, page)
-        with urllib.request.urlopen(url, timeout=30) as resp:
+        req = urllib.request.Request(url, headers={
+            'User-Agent': ('Mozilla/5.0 (X11; Linux x86_64) '
+                           'AppleWebKit/537.36 (KHTML, like Gecko) '
+                           'Chrome/126.0.0.0 Safari/537.36'),
+            'Accept': 'application/json',
+        })
+        with urllib.request.urlopen(req, timeout=30) as resp:
             products = json.load(resp).get('products', [])
         if not products:
             break
