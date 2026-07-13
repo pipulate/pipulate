@@ -692,6 +692,11 @@ def scrub_compile_payload(text: str):
         for line in PII_SUBSTITUTIONS_FILE.read_text(encoding='utf-8').splitlines():
             if not line.strip() or line.startswith('#'):
                 continue
+            if line.startswith('pub:'):
+                # Publish-lane-only rule: sanitizer.py applies it before
+                # anything goes public; the compile lane deliberately skips
+                # it so the model can see the unredacted identifier.
+                continue
             if ' === ' in line:
                 pattern, repl = line.split(' === ', 1)
                 try:
