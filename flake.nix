@@ -609,8 +609,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias foo='(cd ~/repos/pipulate && python prompt_foo.py --no-tree)'
           alias fu='(cd ~/repos/pipulate && python prompt_foo.py)'
           alias default='(cd ~/repos/pipulate && python prompt_foo.py --chop DEFAULT_CHOP --no-tree)'
-          alias adhoc='(cd ~/repos/pipulate && python prompt_foo.py --chop ADHOC_CHOP --no-tree)'
-          alias ahc='(cd ~/repos/pipulate && nvim "''${PIPULATE_ADHOC_FILE:-adhoc.txt}")'
+          alias ahc='(cd ~/repos/pipulate && python prompt_foo.py --chop ADHOC_CHOP --no-tree)'
+          alias ahe='(cd ~/repos/pipulate && nvim "''${PIPULATE_ADHOC_FILE:-adhoc.txt}")'
           alias pins='(cd ~/repos/pipulate && python prompt_foo.py --chop PINNED_CHOP --no-tree)'
           # THE FIRST WISH: `learn` is to Pipulate what vimtutor is to vim.
           # (Resurrects the dead V7 Unix `learn` CAI tutor name — no modern collision.)
