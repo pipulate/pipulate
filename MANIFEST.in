@@ -1,0 +1,5 @@
+# Work-in-progress plugin sketches (xx_ prefix) never ship to PyPI.
+# Runtime plugin discovery already skips xx_ files; this keeps the sdist
+# — and the wheel `python -m build` derives from it — in agreement with
+# that convention. Fix protects v2.1 forward; the 2.0 artifact is history.
+exclude apps/xx_*.py
