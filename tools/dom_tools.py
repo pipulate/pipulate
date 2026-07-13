@@ -240,6 +240,8 @@ class _AXTreeSummarizer:
                 return
 
             is_ignored = node.get("ignored", False)
+            if node.get("role", {}).get("value", "") in _AX_NOISE_ROLES:
+                is_ignored = True
 
             # Only process and print the node if it's NOT ignored.
             if not is_ignored:
