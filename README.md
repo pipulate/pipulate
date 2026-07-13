@@ -512,7 +512,7 @@ The installation procedures labeled "Quick Start Guide" and the main installatio
 
 ```bash
 rm -rf ~/TestProject
-curl -L https://pipulate.com/install.sh | bash -s TestProject
+curl -fsSL https://pipulate.com/install.sh | bash -s TestProject
 cd ~/TestProject
 nix develop
 ```
