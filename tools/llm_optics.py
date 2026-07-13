@@ -212,6 +212,40 @@ def _format_link_rows(rows: list) -> list:
     return lines
 
 
+def _parameter_census(rows: list) -> list:
+    """Tabulates the query-string grammar across anchors: parameter -> arguments.
+
+    On templated pages the query grammar IS the navigation model, so this is
+    the facet-space X-ray: every named slot (parameter), how many distinct
+    bound values (arguments) it takes, and how often each binding occurs.
+    Repeated keys on one URL (multi-select encoding) surface as extra
+    bindings. Purely objective — no judgment about which slots deserve
+    indexable URLs; that's the human's call downstream.
+    """
+    from collections import defaultdict
+    from urllib.parse import parse_qsl
+    census = defaultdict(lambda: defaultdict(int))
+    for r in rows:
+        query = urlparse(r["href_resolved"]).query
+        if not query:
+            continue
+        for key, value in parse_qsl(query, keep_blank_values=True):
+            census[key][value] += 1
+    if not census:
+        return ["  (no query parameters found)"]
+    lines = []
+    for key in sorted(census, key=lambda k: -sum(census[k].values())):
+        values = census[key]
+        total = sum(values.values())
+        lines.append(f"  {key}: {len(values)} distinct argument(s) across {total} binding(s)")
+        for v, n in sorted(values.items(), key=lambda kv: (-kv[1], kv[0]))[:12]:
+            shown = v if len(v) <= 60 else v[:57] + "..."
+            lines.append(f"    = '{shown}' x{n}")
+        if len(values) > 12:
+            lines.append(f"    ... {len(values) - 12} more argument(s)")
+    return lines
+
+
 def generate_link_lens(source_html: str, hydrated_html: str, base_url: str, results: dict):
     """Builds the objective Link Lens: source anchors, hydrated anchors, and the hydration diff.
 
