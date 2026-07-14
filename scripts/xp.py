@@ -161,6 +161,10 @@ def route(text: str, target: str = None) -> bool:
             "CHOP_PROGRESSIVE_REVEAL",
             "--no-tree",
         ]
+        if target:
+            # Forward the blog target so TODO_SLUGS can hydrate from ANY
+            # corpus, not just target 1 (prompt_foo already honors -t).
+            cmd += ["-t", target]
 
         if files:
             cmd += ["--files"] + [os.path.expanduser(f) for f in files]
