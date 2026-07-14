@@ -752,6 +752,15 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias force='(cd ~/repos/trimnoir && git commit --allow-empty -m "retry" && git push)'
           alias isnix="if [ -n \"$IN_NIX_SHELL\" ]; then echo \"✓ In Nix shell v${version}\"; else echo \"✗ Not in Nix shell\"; fi"
           alias mcp='(cd ~/repos/pipulate && .venv/bin/python cli.py call)'
+          # THE CONNECTOR GRAMMAR (idea #7 made literal): tiny Unix commands,
+          # one per API, each a self-contained file in scripts/connectors/.
+          # Args pass through: `botify org/project`, `confluence ENG`,
+          # `gmail <thread_id>`. Interactive-shell only — adhoc.txt `!` lines
+          # keep the full `python scripts/connectors/...` spelling because
+          # child shells never inherit aliases.
+          alias gmail='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/gmail.py"'
+          alias botify='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/botify.py"'
+          alias confluence='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/confluence.py"'
           alias vim='nvim'
           alias lsp='ls -d -1 "$PWD"/*'
           alias p='cd ~/repos/pipulate'
