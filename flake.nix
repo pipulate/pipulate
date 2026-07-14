@@ -844,13 +844,24 @@ print(max(1, n))
             echo "📝 Committing: $msg"
             git commit -am "$msg"
           }
-          # THE BLAST RADIUS: m + push + status in one detonation.
-          # Short-circuits: no message -> no commit -> no push. Clean tree
-          # aborts at m (ai.py exits empty), so blast is safe to spam.
+          # THE BLAST RADIUS: commit + push + status in one detonation.
+          # Three regimes: dirty tree -> m then push (empty message still
+          # aborts everything). Clean tree but AHEAD of remote -> push the
+          # accumulated commits, because the blast radius includes local
+          # work that never left the machine. Clean and level -> nothing
+          # to detonate; report calmly. Safe (and now pleasant) to spam.
           blast() {
-            m || return 1
-            echo "🚀 Pushing to remote..."
-            git push || return 1
+            if [ -n "$(git status --porcelain)" ]; then
+              m || return 1
+            fi
+            local ahead
+            ahead=$(git rev-list --count @{u}..HEAD 2>/dev/null || echo 0)
+            if [ "$ahead" -gt 0 ]; then
+              echo "🚀 Pushing $ahead commit(s) to remote..."
+              git push || return 1
+            else
+              echo "🧘 Nothing to blast: tree clean, remote current."
+            fi
             clear && echo "$ git status" && git status
           }
           alias app='cat patch | python apply.py'
