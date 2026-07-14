@@ -1664,9 +1664,16 @@ def main():
                     proc.communicate()
                     logger.print(f"\n      [Error] Timed out after 180s; process group killed.")
                     continue
-                if proc.returncode != 0:
+                if proc.returncode != 0 and not cmd_stdout.strip():
                     raise subprocess.CalledProcessError(proc.returncode, command_str, output=cmd_stdout, stderr=cmd_stderr)
                 content = cmd_stdout.strip() or "(Executed successfully, no output)"
+                if proc.returncode != 0:
+                    # Exit-code-as-data tools (grep -c, diff) signal via return
+                    # code while stdout carries the receipt. Preserve the receipt,
+                    # annotate the code, never silently drop the punch.
+                    content = f"# NON-ZERO EXIT {proc.returncode} (stdout preserved as receipt)\n{content}"
+                    if cmd_stderr.strip():
+                        content += f"\n# STDERR:\n{cmd_stderr.strip()}"
                 
                 processed_files_data.append({
                     # Marker parity: the payload label IS the adhoc.txt line.
