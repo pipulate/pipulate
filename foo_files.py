@@ -168,9 +168,9 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # README.md  # [20,725 tokens | 104,252 bytes]
 
 # KEEP THIS AS AN EXAMPLE OF HOW TO USE GMAIL (AND CLEAR WAY FOR SAME FOR GDOCS & SHEETS EQUIVALENT)
-# ! python scripts/gmail.py 19ed7896e9577340  # Performance Baseline Report
-# ! python scripts/gmail.py 19ef63ffb0dc3ff4  # Google Search Console & GMC Setup
-# ! python scripts/gmail.py 19ef61f326a3b536  # AI Visibility Tracking Transcript
+# ! python scripts/connectors/gmail.py 19ed7896e9577340  # Performance Baseline Report
+# ! python scripts/connectors/gmail.py 19ef63ffb0dc3ff4  # Google Search Console & GMC Setup
+# ! python scripts/connectors/gmail.py 19ef61f326a3b536  # AI Visibility Tracking Transcript
 
 # KEEP EXPANDING THIS FOR BETTER ONGOING CONFLUENCE ARTICLE SANITIZING
 # ~/.config/pipulate/pii_substitutions.txt
