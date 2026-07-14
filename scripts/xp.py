@@ -226,7 +226,7 @@ def main():
         text = get_clipboard()
     
     # Run the core router logic
-    did_something = route(text)
+    did_something = route(text, target=args.target)
     
     if not did_something:
         print("❌ No actionable blocks found in clipboard and no prompt.md steering file was detected.")
