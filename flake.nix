@@ -267,6 +267,15 @@
         rgxcCommand = pkgs.writeShellScriptBin "rgxc" ''
           set -euo pipefail
 
+          # Same runtime target resolution as rgx: -t KEY (first args only)
+          # reads blogs.json when the command RUNS, so the Nix store carries
+          # the mechanism, never the data.
+          target="1"
+          if [ "''${1:-}" = "-t" ] && [ "$#" -ge 2 ]; then
+            target="$2"
+            shift 2
+          fi
+
           last_args=()
           capn=8
           if [[ "''${1:-}" =~ ^[0-9]+$ ]]; then
@@ -277,12 +286,20 @@
             shift
           fi
           if [ "$#" -eq 0 ]; then
-            echo "Usage: rgxc [N] TERM [TERM...]   (leading N = only the N most recent matches)" >&2
+            echo "Usage: rgxc [-t KEY] [N] TERM [TERM...]   (leading N = only the N most recent matches)" >&2
             exit 1
           fi
 
           terms=("$@")
-          posts_dir="$HOME/repos/trimnoir/_posts"
+          blogs_json="$HOME/.config/pipulate/blogs.json"
+          posts_dir="$(${pkgs.jq}/bin/jq -r --arg t "$target" '.[$t].path // empty' "$blogs_json" 2>/dev/null || true)"
+          if [ -z "$posts_dir" ]; then
+            posts_dir="$HOME/repos/trimnoir/_posts"
+          fi
+          if [ ! -d "$posts_dir" ]; then
+            echo "rgxc: posts dir for target $target not found: $posts_dir" >&2
+            exit 1
+          fi
           matches="$(${pkgs.ripgrep}/bin/rg -il -- "''${terms[0]}" "$posts_dir" || true)"
           for term in "''${terms[@]:1}"; do
             [ -z "$matches" ] && break
