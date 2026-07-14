@@ -207,6 +207,7 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="Route clipboard/player-piano blocks into the next Prompt Fu action.")
+    parser.add_argument("-t", "--target", default=None, help="Blog target key from blogs.json to hydrate TODO_SLUGS from (forwarded to prompt_foo.py).")
     parser.add_argument("--extra-prompt", action="append", default=[], help="Literal operator steering text to route as a TODO_PROMPT block.")
     parser.add_argument("--extra-prompt-file", action="append", default=[], help="Read operator steering text from a file and route it as a TODO_PROMPT block.")
     args = parser.parse_args()
