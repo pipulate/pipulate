@@ -40,8 +40,11 @@ from pathlib import Path
 
 import httpx
 
-# Wire into the central config (same pattern as scripts/ai.py)
-project_root = Path(__file__).resolve().parent.parent
+# Wire into the central config (same pattern as scripts/ai.py).
+# NOTE: connectors/ is one level deeper than scripts/, hence three parents.
+# The editable install also exposes `config`, but the explicit path keeps
+# this file honest as a standalone, curl-able artifact.
+project_root = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(project_root))
 from config import get_botify_token
 
