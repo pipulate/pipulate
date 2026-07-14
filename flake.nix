@@ -805,6 +805,15 @@ print(max(1, n))
             echo "📝 Committing: $msg"
             git commit -am "$msg"
           }
+          # THE BLAST RADIUS: m + push + status in one detonation.
+          # Short-circuits: no message -> no commit -> no push. Clean tree
+          # aborts at m (ai.py exits empty), so blast is safe to spam.
+          blast() {
+            m || return 1
+            echo "🚀 Pushing to remote..."
+            git push || return 1
+            clear && echo "$ git status" && git status
+          }
           alias app='cat patch | python apply.py'
           figurate() {
             local name="''${1:-white_rabbit}"
