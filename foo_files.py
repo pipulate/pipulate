@@ -643,7 +643,11 @@ scripts/articles/confluenceizer.py           # <-- Idempotent Jekyll-to-Confluen
 # XVIII. MISC UNIX PHILOSOPHY STYLE COMMANDS FOR COMPOSABLE PIPELINE WORKFLOWS
 # ============================================================================
 
-# scripts/gmail.py
+# THE CONNECTORS (WET single-file API gateways; contract in the README)
+# scripts/connectors/README.md
+# scripts/connectors/gmail.py
+# scripts/connectors/botify.py
+# scripts/connectors/confluence.py
 #  _____ _           _           _   _                      
 # |  ___(_)_ __   __| |   __ _  | | | | ___  _ __ ___   ___ 
 # | |_  | | '_ \ / _` |  / _` | | |_| |/ _ \| '_ ` _ \ / _ \
