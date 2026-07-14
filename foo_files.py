@@ -104,6 +104,11 @@ AI_PHOOEY_CHOP = r"""                                                           
 # context import. Sample first, widen deliberately, and keep bulk output out of
 # the narrative unless the bulk itself is the evidence.
 
+# THE PROBE ECHO RULE: Every probe recommended for hand-execution must also be
+# echoed verbatim as a `!` line into the next adhoc.txt chop. The hand-run is
+# the BEFORE reading; the compiled re-run is the AFTER reading. One probe, two
+# receipts, straddling the patch — no more probe/patch ordering ambiguity.
+
 # STORY ENGINE
 # Mike-E's gift is associative reach; his flaw is letting every spark become canon.
 # Yen Sid-ton is a brilliant familiar re-instantiated without yesterday.
