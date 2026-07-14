@@ -98,7 +98,7 @@ def parse_apply_patch(text: str):
     return _parse_block(text, "APPLY_PATCH", "END_APPLY_PATCH")
 
 
-def route(text: str) -> bool:
+def route(text: str, target: str = None) -> bool:
     did_something = False
 
     patch_payload = parse_apply_patch(text)
