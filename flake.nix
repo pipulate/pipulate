@@ -862,7 +862,11 @@ print(max(1, n))
             else
               echo "🧘 Nothing to blast: tree clean, remote current."
             fi
-            clear && echo "$ git status" && git status
+            # clear -x: repaint the screen but PRESERVE scrollback, so the
+            # before/after probe evidence survives the detonation and can be
+            # copied out afterward. Plain `clear` (ncurses >= 6.0) emits the
+            # E3 escape and erases scrollback — shredding the receipts.
+            clear -x && echo "$ git status" && git status
           }
           alias app='cat patch | python apply.py'
           figurate() {
