@@ -102,10 +102,19 @@ def project_coordinates(project):
 
 
 def follow_pages(client, url, max_items):
-    """Drain a paginated Botify list endpoint, capped at max_items."""
+    """Drain a Botify list endpoint, capped at max_items.
+
+    Defensive against BOTH response shapes the API actually serves:
+      - paginated envelope: {"results": [...], "next": url-or-null}
+      - bare JSON array:    [...]   (e.g. /users/{username}/projects)
+    The bare-array case has no pagination cursor, so take it and stop.
+    """
     items = []
     while url and len(items) < max_items:
         data = get_json(client, url)
+        if isinstance(data, list):
+            items.extend(data)
+            break
         items.extend(data.get("results", []))
         url = data.get("next")
     return items[:max_items]
