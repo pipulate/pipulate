@@ -192,7 +192,12 @@
             exit 1
           fi
           cd "$root/scripts/articles"
-          exec "$python_bin" lsa.py -t 1 "$@"
+          # Default to target 1 ONLY when the caller supplies no -t of its
+          # own, so rgx/rgxc can retarget without lsa.py seeing two -t flags.
+          case " $* " in
+            *" -t "*|*" --target"*) exec "$python_bin" lsa.py "$@" ;;
+            *) exec "$python_bin" lsa.py -t 1 "$@" ;;
+          esac
         '';
 
         rgxCommand = pkgs.writeShellScriptBin "rgx" ''
