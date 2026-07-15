@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,312 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 27 published in the last 7 days
+# There are 1,313 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 28 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -160,6 +160,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # ============================================================================
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
+
+! rgxc 5 sandworm
 
 # SORT THIS POORLY PLACED OFTEN OOB AD HOC STUFF
 # scripts/git_hooks/pre-commit
@@ -387,11 +389,11 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 # VIII. LLM OPTICS - Like looking at raw HTML or the hydrated DOM? Them either.
 # ============================================================================
 
-tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
-tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
-tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
-tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
-tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
+# tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
+# tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
+# tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
+# tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
+# tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
 # THE CDP FLIGHT RECORDER (Wire Truth): every scrape drains the browser's
 # performance log to browser_cache/<domain>/<slug>/network_log.jsonl — the
@@ -543,13 +545,13 @@ scripts/articles/sanitizer.py                # <-- Scrubs PII
 scripts/articles/gsc_historical_fetch.py
 scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
 scripts/articles/confluenceizer.py           # <-- Idempotent Jekyll-to-Confluence corporate wiki
-# scripts/articles/googledocizer.py            # <-- Just added
-# scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
-# scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
-# scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
-# scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
-# scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
-# scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
+scripts/articles/googledocizer.py            # <-- Just added
+scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
+scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
+scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
+scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
+scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
+scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
 
 # The following Jekyll files pair well with the above to show how we start various forms of tracking, and as a transition into Honeybot Nginx Broadcast Studio & telemetry.
 # release.py                                          #  <-- The deploy process
@@ -1016,6 +1018,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 
 # AUDIT.md  # [2,011 tokens | 9,706 bytes]
 # MANIFEST.in  # [81 tokens | 313 bytes]
+# Notebooks/.agents/skills/gsc_readonly/SKILL.md  # [761 tokens | 3,503 bytes]
 # apps/130_gap_analysis.py  # [9,625 tokens | 48,280 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
 # apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
