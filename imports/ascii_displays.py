@@ -1710,4 +1710,60 @@ Essential knowledge for 100% success rate"""
 # 
 # Three panels. Two hinges. One painter in the mirror. 🪙
 # 
+# LLM Optics
+# 
+# ```text
+# RAW EVIDENCE
+#     │
+#     ├── source.html
+#     ├── hydrated_dom.html
+#     ├── headers.json
+#     ├── network_log.jsonl
+#     └── accessibility tree
+#              │
+#              ▼
+# SYMMETRIC REDUCTION
+#     │
+#     ├── simplified source
+#     ├── simplified hydrated DOM
+#     └── same reduction rules on both
+#              │
+#              ▼
+# PURPOSE-BUILT LENSES
+#     │
+#     ├── SEO metadata
+#     ├── semantic outline
+#     ├── source → DOM change hierarchy
+#     ├── source/hydrated link accounting
+#     ├── parameter census
+#     ├── response-header evidence
+#     └── distilled wire truth
+#              │
+#              ▼
+# MODEL-READABLE RECEIPT
+# ```
+# 
+# A typical capture resembles:
+# 
+# ```text
+# browser_cache/
+# └── example.com/
+#     └── page/
+#         ├── headers.json
+#         ├── source.html
+#         ├── hydrated_dom.html
+#         ├── network_log.jsonl
+#         ├── simple_source_html.html
+#         ├── simple_hydrated_dom.html
+#         ├── accessibility_tree.json
+#         ├── accessibility_tree_summary.txt
+#         ├── seo.md
+#         ├── links.md
+#         ├── source_hierarchy.txt
+#         ├── hydrated_hierarchy.txt
+#         ├── diff_hierarchy.txt
+#         └── optics manifest
+# ```
+# 
+# 
 # --- END NEW STUFF ---
