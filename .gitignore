@@ -58,6 +58,7 @@ temp/
 flake.lock
 foo.txt
 service_account.txt
+service-account-key.json
 whitelabel.txt
 
 # Mac & vendor crap
