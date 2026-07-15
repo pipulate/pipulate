@@ -779,7 +779,7 @@ def scrub_compile_payload(text: str, apply_substitutions: bool = True, scan_deny
                 except re.error as e:
                     print(f"⚠️  Skipping bad PII pattern {pattern!r}: {e}")
     leaks = []
-    if COMMIT_DENYLIST_FILE.exists():
+    if scan_denylist and COMMIT_DENYLIST_FILE.exists():
         for line in COMMIT_DENYLIST_FILE.read_text(encoding='utf-8').splitlines():
             pat = line.strip()
             if not pat or pat.startswith('#'):
