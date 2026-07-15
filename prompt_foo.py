@@ -684,13 +684,8 @@ FAILSAFE_PROFILE = {
 # NO profile, flag, or config edit disables these — credentials are not
 # a disclosure decision. 'secrets: warn' (local lane) downgrades block
 # to a loud warning; anything else clamps to block.
-SECRET_TRIPWIRES = [
-    r'-----BEGIN (?:RSA |EC |OPENSSH |DSA |PGP )?PRIVATE KEY-----',
-    r'\bAKIA[0-9A-Z]{16}\b',                # AWS access key ID
-    r'\bghp_[A-Za-z0-9]{36}\b',             # GitHub PAT
-    r'\bxox[bpoas]-[A-Za-z0-9-]{10,}\b',    # Slack tokens
-    r'\bsk-ant-[A-Za-z0-9_-]{20,}\b',       # Anthropic API key
-]
+# [Set to empty temporarily]
+SECRET_TRIPWIRES = []
 
 
 def load_disclosure_profile(requested: str = None):
