@@ -672,6 +672,20 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             source "$PIPULATE_ROOT/.env"
             set +a
           fi
+          # THE WALLET HYDRATOR: export non-secret defaults from the wallet
+          # (~/.config/pipulate/connectors.json). Names/paths/defaults only —
+          # never secret values. Precedence preserved: anything already set
+          # (real env or the .env block above) is NEVER overwritten; only
+          # genuinely unset vars hydrate from each connector's defaults block.
+          WALLET_FILE="$HOME/.config/pipulate/connectors.json"
+          if [ -f "$WALLET_FILE" ] && command -v jq >/dev/null 2>&1; then
+            while IFS='=' read -r wallet_key wallet_val; do
+              [ -n "$wallet_key" ] || continue
+              if ! printenv "$wallet_key" >/dev/null 2>&1; then
+                export "$wallet_key=$wallet_val"
+              fi
+            done < <(jq -r 'to_entries[] | select(.value|type=="object") | (.value.defaults // {}) | to_entries[] | "\(.key)=\(.value)"' "$WALLET_FILE" 2>/dev/null)
+          fi
           # THE ACETATE OVERLAY: Force Neovim to use the embedded cognitive blueprint
           export VIMINIT="luafile $PIPULATE_ROOT/init.lua"
           # Set up nbstripout git filter
