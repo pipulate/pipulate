@@ -23,8 +23,27 @@ import common
 # --- CONFIGURATION ---
 SITE_URL = "sc-domain:mikelev.in" 
 SCRIPT_DIR = Path(__file__).parent.resolve()
-# Adjust path to match your actual key location provided in context
-SERVICE_ACCOUNT_KEY_FILE = Path.home() / ".config/articleizer/service-account-key.json"
+# Key resolved from the wallet (PIPULATE_GSC_KEY env -> connectors.json
+# gsc.paths.service_account -> wallet-path default), converging with
+# scripts/connectors/gsc.py and retiring ~/.config/articleizer/ as a
+# second credential home. Duplicated deliberately (WET).
+def _resolve_gsc_key_path():
+    env = os.environ.get('PIPULATE_GSC_KEY')
+    if env:
+        return Path(env).expanduser()
+    wallet = Path.home() / '.config' / 'pipulate' / 'connectors.json'
+    if wallet.exists():
+        try:
+            data = json.loads(wallet.read_text(encoding='utf-8'))
+            p = (data.get('gsc') or {}).get('paths', {}).get('service_account')
+            if p:
+                return Path(p).expanduser()
+        except (json.JSONDecodeError, OSError):
+            pass
+    return Path.home() / '.config' / 'pipulate' / 'service-account-key.json'
+
+
+SERVICE_ACCOUNT_KEY_FILE = _resolve_gsc_key_path()
 OUTPUT_FILE = SCRIPT_DIR / 'gsc_velocity.json'
 
 # The date of the "Crash" to pivot analysis around
