@@ -27,6 +27,22 @@ has been fixed in the same helper in two files.
    client identifiers, say so, and rely on pii_substitutions.txt coverage
    before any `!` invocation rides to a cloud chat window.
 
+## The Wallet (~/.config/pipulate/connectors.json)
+
+The tracked key-val parity layer: connector name -> auth kind, required env
+var NAMES, token file PATHS, and non-secret defaults. Names and paths only —
+never secret values — which is what makes it safe to track in the (scrubbed)
+~/.config/pipulate repo. Resolution order in every connector: explicit CLI
+flag -> env var -> connectors.json default -> clean failure naming the
+missing variable. Only the `defaults` block is machine-consumed; `env`
+blocks are documentation-as-data. Eventually a connectors.nix emits this
+file blogs.nix-style: mechanism in the Nix store, data at runtime, secrets
+in neither.
+
+Auth kinds: oauth_token_file (gmail), bearer_token (botify), basic_auth
+(confluence), service_account_file (gsc, planned). Every future connector
+copies one of these four.
+
 ## Current connectors
 
 - gmail.py       LIST by address / FETCH by thread id (OAuth token file)
