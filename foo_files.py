@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,314 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 29 published in the last 7 days
+# There are 1,315 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 30 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -389,6 +389,7 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 # VIII. LLM OPTICS - Like looking at raw HTML or the hydrated DOM? Them either.
 # ============================================================================
 
+# scripts/crawl.py        # <-- Feel free to ask for something to be crawled and included in the next turn.
 # tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
 # tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
 # tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
@@ -982,6 +983,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 
 # #todo #to-do
 # - Write the "I am an Amnesiac Genie *POOF* loop. Use Ollama. Variation on coin-flip? Just to show closing tab to stop it."
+# - Put a creativity forcing function on such a loop. Demonstrate how dramatically different small differences in initial conditions can really be
 # - *make version_sync update `assets/installer/install.sh` (the source) instead of only the downstream Pipulate.com copy, breaking the release/sync ping-pong*
 # - *delete the dead `update_flake_nix()` limb, since the flake reads `__init__.py` at eval time and the matcher has nothing to match*.
 # - Document that the flake.lock file remains unpinned for roll-forward on Nix unstable branch. 
