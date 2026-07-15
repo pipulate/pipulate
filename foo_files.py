@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,311 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 28 published in the last 7 days
+# There are 1,312 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 27 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -1060,7 +1060,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
 # scripts/audit_dye.py  # [256 tokens | 1,009 bytes]
 # scripts/confluence_probe.py  # [4,990 tokens | 20,668 bytes]
-# scripts/connectors/gsc.py  # [1,980 tokens | 8,195 bytes]
+# scripts/connectors/gsc.py  # [2,063 tokens | 8,529 bytes]
 # scripts/dial_spinner.py  # [398 tokens | 1,463 bytes]
 # scripts/flippers.py  # [350 tokens | 1,309 bytes]
 # scripts/gsc/facet_allowlist.py  # [2,538 tokens | 10,602 bytes]
