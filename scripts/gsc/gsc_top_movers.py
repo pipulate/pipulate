@@ -29,10 +29,35 @@ from googleapiclient.errors import HttpError
 # Set your GSC Property URL here (e.g., "sc-domain:example.com" or "https://www.example.com/")
 SITE_URL = "sc-domain:mikelev.in"
 
-# Path to your service account key JSON file
-# Assumes the key file is in the same directory as the script. Adjust if needed.
+# Path to your service account key JSON file — resolved from the wallet, never
+# from inside this repo. The old SCRIPT_DIR expectation was a landmine: one
+# careless `git add scripts/gsc/` away from shipping a Google credential to a
+# public remote. Resolution chain (identical to scripts/connectors/gsc.py):
+#   PIPULATE_GSC_KEY env -> connectors.json gsc.paths.service_account
+#     -> wallet-path default. Duplicated deliberately (WET, per the
+#   connectors README): this file must stay a standalone artifact.
 SCRIPT_DIR = os.path.dirname(__file__)
-SERVICE_ACCOUNT_KEY_FILE = os.path.join(SCRIPT_DIR, 'service-account-key.json')
+
+
+def _resolve_gsc_key_path():
+    import json as _json
+    from pathlib import Path as _Path
+    env = os.environ.get('PIPULATE_GSC_KEY')
+    if env:
+        return os.path.expanduser(env)
+    wallet = _Path.home() / '.config' / 'pipulate' / 'connectors.json'
+    if wallet.exists():
+        try:
+            data = _json.loads(wallet.read_text(encoding='utf-8'))
+            p = (data.get('gsc') or {}).get('paths', {}).get('service_account')
+            if p:
+                return os.path.expanduser(p)
+        except (_json.JSONDecodeError, OSError):
+            pass
+    return os.path.expanduser('~/.config/pipulate/service-account-key.json')
+
+
+SERVICE_ACCOUNT_KEY_FILE = _resolve_gsc_key_path()
 
 # Required Google API scopes
 SCOPES = ['https://www.googleapis.com/auth/webmasters']
