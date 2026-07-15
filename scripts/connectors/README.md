@@ -40,14 +40,15 @@ file blogs.nix-style: mechanism in the Nix store, data at runtime, secrets
 in neither.
 
 Auth kinds: oauth_token_file (gmail), bearer_token (botify), basic_auth
-(confluence), service_account_file (gsc, planned). Every future connector
-copies one of these four.
+(confluence), service_account_file (gsc). Every future connector copies one
+of these four.
 
 ## Current connectors
 
 - gmail.py       LIST by address / FETCH by thread id (OAuth token file)
 - botify.py      identity walk / org / org/project / BQL query (BOTIFY_API_TOKEN)
 - confluence.py  spaces / space pages / page id / CQL search (CONFLUENCE_* envs)
+- gsc.py         properties / top queries / raw searchanalytics JSON (service_account_file)
 
 ## Minting a new connector
 
