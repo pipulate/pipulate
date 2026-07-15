@@ -58,8 +58,9 @@ def _resolve_gsc_key_path():
 
 SERVICE_ACCOUNT_KEY_FILE = _resolve_gsc_key_path()
 
-# Required Google API scopes
-SCOPES = ['https://www.googleapis.com/auth/webmasters']
+# Required Google API scope. This workflow only reads Search Analytics data, so
+# keep the credential at least privilege rather than granting read/write access.
+SCOPES = ['https://www.googleapis.com/auth/webmasters.readonly']
 
 # --- Data Fetching Parameters ---
 # How many days/months of data to fetch? Use relativedelta for months.
