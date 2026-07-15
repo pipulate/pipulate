@@ -2235,18 +2235,68 @@ def main():
 
     # 6. Compile-lane sanitizer: TRANSFORM then REFUSE, at the single
     # chokepoint every exit (clipboard, SSH bridge, --output) passes through.
-    final_output, pii_count, leaks = scrub_compile_payload(final_output)
+    # Behavior is now declared by a disclosure profile (disclosure.json);
+    # the default profile reproduces the original fail-closed behavior.
+    profile_name, profile = load_disclosure_profile(args.profile)
+    denylist_mode = profile.get('denylist', 'block')  # block | audit | off
+    if denylist_mode not in ('block', 'audit', 'off'):
+        print(f"⚠️  Unknown denylist mode {denylist_mode!r} in profile {profile_name!r}; clamping to 'block'.")
+        denylist_mode = 'block'
+    if args.allow_leaks and denylist_mode == 'block':
+        print("⚠️  --allow-leaks is deprecated; prefer --profile trusted (audits and receipts instead of bypassing).")
+        denylist_mode = 'audit'
+    if profile.get('require_reason') and not args.reason:
+        print(f"🛑 Profile {profile_name!r} requires --reason \"why this run is authorized\". Nothing emitted.")
+        sys.exit(1)
+
+    final_output, pii_count, leaks = scrub_compile_payload(
+        final_output,
+        apply_substitutions=profile.get('substitutions', True),
+        scan_denylist=(denylist_mode != 'off'),
+    )
     if pii_count:
         print(f"🪄 Compile-lane scrub: {pii_count} PII substitution(s) applied to payload.")
-    if leaks and not args.allow_leaks:
+
+    # Secrets tripwire: runs on every payload, under every profile. A
+    # 'warn' secrets mode (no-egress local lane only) shouts but emits;
+    # everything else fails closed. No flag reaches this decision.
+    secret_hits = scan_secrets(final_output)
+    if secret_hits:
+        total_secret_hits = sum(n for _, n in secret_hits)
+        if profile.get('secrets') == 'warn':
+            print(f"⚠️  SECRETS WARNING: {total_secret_hits} credential-shaped hit(s) in payload (local lane, emitting anyway):")
+            for pat, n in secret_hits:
+                print(f"   • pattern {pat!r}: {n} hit(s)")
+        else:
+            print(f"🛑 PAYLOAD BLOCKED: {total_secret_hits} credential-shaped hit(s). No profile overrides this:")
+            for pat, n in secret_hits:
+                print(f"   • pattern {pat!r}: {n} hit(s)")
+            print("   Rotate the credential, purge it from the source, and rerun. There is no --allow flag for secrets.")
+            sys.exit(1)
+
+    if leaks and denylist_mode == 'block':
         print("🛑 PAYLOAD BLOCKED: denylisted identifier(s) survive the PII scrub:")
         for pat, n in leaks:
             print(f"   • pattern {pat!r}: {n} hit(s)")
         print("   Add a substitution to ~/.config/pipulate/pii_substitutions.txt (pattern === replacement),")
-        print("   fix the source, or rerun with --allow-leaks to bypass ONCE, deliberately and with eyes open.")
+        print("   fix the source, or rerun with --profile trusted --reason \"...\" to audit-and-emit, deliberately.")
         sys.exit(1)
-    elif leaks:
-        print(f"⚠️  --allow-leaks: emitting payload with {sum(n for _, n in leaks)} denylist hit(s).")
+
+    # Disclosure receipt: the relaxation IS the evidence. Printed whenever
+    # the run departs from baseline, so the override lives in the transcript.
+    if not profile.get('substitutions', True) or denylist_mode != 'block' or args.profile:
+        leak_summary = f"{sum(n for _, n in leaks)} hit(s) logged" if leaks else "0 hits"
+        receipt = (f"🔓 DISCLOSURE: profile={profile_name} | "
+                   f"substitutions={'ON' if profile.get('substitutions', True) else 'OFF'} | "
+                   f"denylist={denylist_mode.upper()} ({leak_summary}) | "
+                   f"secrets={'WARN' if profile.get('secrets') == 'warn' else 'BLOCK'} (0 hits)")
+        if args.reason:
+            receipt += f"\n   reason: \"{args.reason}\""
+        if leaks:
+            receipt += "\n   audited identifiers:"
+            for pat, n in leaks:
+                receipt += f"\n   • pattern {pat!r}: {n} hit(s)"
+        print(receipt)
 
     # 7. Handle output
     if args.output:
