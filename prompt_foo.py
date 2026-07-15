@@ -762,7 +762,7 @@ def scrub_compile_payload(text: str, apply_substitutions: bool = True, scan_deny
     silent no-op for their stage, matching the airlock's behavior.
     """
     total = 0
-    if PII_SUBSTITUTIONS_FILE.exists():
+    if apply_substitutions and PII_SUBSTITUTIONS_FILE.exists():
         for line in PII_SUBSTITUTIONS_FILE.read_text(encoding='utf-8').splitlines():
             if not line.strip() or line.startswith('#'):
                 continue
