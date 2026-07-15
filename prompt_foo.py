@@ -668,9 +668,83 @@ def parse_file_list_from_config(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
 # ============================================================================
 PII_SUBSTITUTIONS_FILE = Path.home() / ".config" / "pipulate" / "pii_substitutions.txt"
 COMMIT_DENYLIST_FILE = Path.home() / ".config" / "pipulate" / "commit_denylist.txt"
+DISCLOSURE_PROFILES_FILE = Path.home() / ".config" / "pipulate" / "disclosure.json"
+
+# Fail-closed baseline: identical to the pre-profile behavior of this tool.
+# Used when disclosure.json is missing, unparseable, or names an unknown
+# profile — misconfiguration must never weaken the gate.
+FAILSAFE_PROFILE = {
+    "substitutions": True,
+    "denylist": "block",
+    "secrets": "block",
+}
+
+# Always-on secret tripwires. Deliberately high-precision (credential
+# formats, not names) so a false positive can't brick a legitimate run.
+# NO profile, flag, or config edit disables these — credentials are not
+# a disclosure decision. 'secrets: warn' (local lane) downgrades block
+# to a loud warning; anything else clamps to block.
+SECRET_TRIPWIRES = [
+    r'-----BEGIN (?:RSA |EC |OPENSSH |DSA |PGP )?PRIVATE KEY-----',
+    r'\bAKIA[0-9A-Z]{16}\b',                # AWS access key ID
+    r'\bghp_[A-Za-z0-9]{36}\b',             # GitHub PAT
+    r'\bxox[bpoas]-[A-Za-z0-9-]{10,}\b',    # Slack tokens
+    r'\bsk-ant-[A-Za-z0-9_-]{20,}\b',       # Anthropic API key
+]
 
 
-def scrub_compile_payload(text: str):
+def load_disclosure_profile(requested: str = None):
+    """Resolve a disclosure profile from ~/.config/pipulate/disclosure.json.
+
+    Returns (name, profile_dict). Resolution order:
+      1. --profile NAME from the CLI, if given.
+      2. 'default_profile' from disclosure.json, if the file exists.
+      3. FAILSAFE_PROFILE ('cloud-safe' semantics: today's behavior).
+
+    Fails CLOSED on every error path: a missing file, bad JSON, or an
+    unknown profile name all resolve to FAILSAFE_PROFILE with a printed
+    warning. A config problem may cost you a rerun; it may not cost you
+    a leak. The 'secrets' key is clamped: 'warn' survives only so the
+    no-egress local lane can breathe; every other value means 'block'.
+    """
+    profiles = {}
+    default_name = None
+    if DISCLOSURE_PROFILES_FILE.exists():
+        try:
+            config = json.loads(DISCLOSURE_PROFILES_FILE.read_text(encoding='utf-8'))
+            profiles = config.get('profiles', {})
+            default_name = config.get('default_profile')
+        except (json.JSONDecodeError, OSError) as e:
+            print(f"⚠️  disclosure.json unreadable ({e}); failing closed to baseline scrub.")
+            return ('cloud-safe(failsafe)', dict(FAILSAFE_PROFILE))
+    name = requested or default_name
+    if name is None:
+        return ('cloud-safe(failsafe)', dict(FAILSAFE_PROFILE))
+    if name not in profiles:
+        print(f"⚠️  Unknown disclosure profile {name!r}; failing closed to baseline scrub.")
+        print(f"   Known profiles: {', '.join(sorted(profiles)) or '(none — check disclosure.json)'}")
+        return ('cloud-safe(failsafe)', dict(FAILSAFE_PROFILE))
+    profile = dict(profiles[name])
+    # Clamp the secrets invariant in code, where no JSON edit can reach it.
+    if profile.get('secrets') != 'warn':
+        profile['secrets'] = 'block'
+    return (name, profile)
+
+
+def scan_secrets(text: str):
+    """Scan for credential-shaped strings. Always runs; never optional.
+
+    Returns a list of (pattern, hit_count) tuples.
+    """
+    hits = []
+    for pat in SECRET_TRIPWIRES:
+        n = len(re.findall(pat, text))
+        if n:
+            hits.append((pat, n))
+    return hits
+
+
+def scrub_compile_payload(text: str, apply_substitutions: bool = True, scan_denylist: bool = True):
     """Sanitize the compiled payload before it leaves the machine.
 
     Two stages, mirroring the repo's two protection styles:
