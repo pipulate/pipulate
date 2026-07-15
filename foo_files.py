@@ -981,6 +981,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 """
 
 # #todo #to-do
+# - Write the "I am an Amnesiac Genie *POOF* loop. Use Ollama. Variation on coin-flip? Just to show closing tab to stop it."
 # - *make version_sync update `assets/installer/install.sh` (the source) instead of only the downstream Pipulate.com copy, breaking the release/sync ping-pong*
 # - *delete the dead `update_flake_nix()` limb, since the flake reads `__init__.py` at eval time and the matcher has nothing to match*.
 # - Document that the flake.lock file remains unpinned for roll-forward on Nix unstable branch. 
