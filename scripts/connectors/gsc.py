@@ -69,7 +69,11 @@ def resolve_key_path():
                 return Path(p).expanduser()
         except (json.JSONDecodeError, OSError):
             pass
-    return None
+    # Wallet-path default (parity with scripts/gsc/gsc_top_movers.py): a
+    # corrupted or clobbered connectors.json must not strand a key sitting
+    # at the canonical wallet path. get_service()'s exists() check still
+    # fails closed if the file is genuinely absent.
+    return Path.home() / '.config' / 'pipulate' / 'service-account-key.json'
 
 
 def get_service():
