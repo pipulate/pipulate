@@ -247,8 +247,12 @@
           fi
 
           sorted_matches="$(printf '%s\n' "$matches" | ${pkgs.coreutils}/bin/sort)"
+          # Drop --fmt paths so each match carries its Tokens/Bytes annotation
+          # (the same per-article numbers `posts` shows) for context budgeting.
+          # Deliberately NOT --shards/--around: that shard + hit-region noise is
+          # rgxc's job. rgx stays the quiet, token-annotated match list.
           printf '%s\n' "$sorted_matches" \
-            | ${postsCommand}/bin/posts -t "$target" --stdin "''${last_args[@]}" --fmt paths
+            | ${postsCommand}/bin/posts -t "$target" --stdin "''${last_args[@]}"
 
           # Clipboard is an interactive-only side effect. Under prompt_foo's
           # captured pipe, the forked xclip daemon inherits and holds the fd
