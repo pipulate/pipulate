@@ -420,10 +420,17 @@ def main():
             import re
             target_config = targets[target_key]
             base_url = target_config.get('base_url', 'https://mikelev.in').rstrip('/')
+            # THE BUDGET MAP: per-article token size PLUS a running Σ cumulative.
+            # Newest-first (--reverse) means Σ answers "take the N newest -> this
+            # many tokens." Scan the Σ column top-down; cut where it crosses your
+            # context budget. Reversible: this whole block is one SEARCH/REPLACE.
+            run_tokens = 0
+            run_bytes = 0
+            shown = 0
             for item in metadata:
                 stem = os.path.splitext(os.path.basename(item['path']))[0]
                 slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', stem)
-                tokens, _ = _get_metrics(item['path'])
+                tokens, bytes_count = _get_metrics(item['path'])
                 # OPTIMIZATION: Complete hypermedia routing parity with fully qualified absolute URLs.
                 # Leverages YAML frontmatter permalinks falling back to default route structures.
                 permalink = item.get('permalink', '').rstrip('/')
@@ -431,9 +438,20 @@ def main():
                     permalink = f"/futureproof/{slug}"
                 url_target = f"{base_url}{permalink}/index.md"
                 if tokens > 0:
-                    print(f"{item['date']} [{tokens//1000}k] {url_target}", flush=True)
+                    run_tokens += tokens
+                    run_bytes += bytes_count
+                    shown += 1
+                    # .1f kills the misleading [0k]; sub-1k now reads e.g. [  0.7k].
+                    print(f"{item['date']} [{tokens/1000:5.1f}k Σ{run_tokens/1000:8.1f}k] {url_target}", flush=True)
                 else:
-                    print(f"{item['date']} [?k] {url_target}", flush=True)
+                    print(f"{item['date']} [  ?  k Σ{run_tokens/1000:8.1f}k] {url_target}", flush=True)
+            # THE FOOTER: the summed selection budget (respects --last/--match/--slugs).
+            # Comment-prefixed so downstream --stdin / path parsers skip it cleanly.
+            print(
+                f"# ── selection: {shown} articles | {run_tokens:,} tokens"
+                f" | {run_bytes:,} bytes (Σ{run_tokens/1000:.1f}k)",
+                flush=True,
+            )
         else:
             for idx, item in enumerate(metadata, start=1):
                 filepath = item['path']
