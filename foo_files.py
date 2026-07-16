@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,316 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 29 published in the last 7 days
+# There are 1,317 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 30 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
