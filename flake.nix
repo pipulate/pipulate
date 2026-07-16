@@ -810,7 +810,18 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias forest='(cd ~/repos/pipulate && vim remotes/honeybot/scripts/forest.py)'
           alias art='(cd ~/repos/pipulate && vim imports/ascii_displays.py)'
           alias smart='(cd ~/repos/pipulate && python release.py --force -m "Testing rabbit documentation injection")'
-          latest() { (cd ~/repos/pipulate && python prompt_foo.py -a "[-''${1:-2}:]" --no-tree); }
+          latest() {
+            # -t KEY (first args only) selects which blog's _posts feeds -a,
+            # mirroring the rgx/rgxc/posts idiom. Bare `latest` and `latest N`
+            # are untouched: with no -t, prompt_foo.py uses its own default
+            # target, so latestn()'s `latest "$n"` call keeps working unchanged.
+            local t_args=()
+            if [ "''${1:-}" = "-t" ] && [ "$#" -ge 2 ]; then
+              t_args=(-t "$2")
+              shift 2
+            fi
+            (cd ~/repos/pipulate && python prompt_foo.py "''${t_args[@]}" -a "[-''${1:-2}:]" --no-tree)
+          }
           latestn() {
             # Finds largest N articles fitting in byte budget (default ~950KB)
             # Usage: latestn [-N|+N|budget_bytes]  e.g. latestn -1  latestn +2  latestn 786432
