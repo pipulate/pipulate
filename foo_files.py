@@ -995,6 +995,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # - Monitor for the `db.py` database getting bigger on Honeybot (Textual dashboards?)
 # - Check for file-naming collisions when articleizing.
 # - Start a new YouTube live-stream for every new published article
+# - Automate post-outage stream recovery: OBS autostart in XFCE session + persistent YouTube stream key collapses the 8-step manual dance; keep the dead stream as canary, make the resurrection hands-free
 # - Turn the YouTube live-stream into an interactive real-time article-picking Jukebox.
 # - Make sure the live breaking interrupt announces the upcoming article topic
 # - Turn Pipulate into a lead source for Botify
