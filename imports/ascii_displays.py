@@ -1767,3 +1767,20 @@ Essential knowledge for 100% success rate"""
 # 
 # 
 # --- END NEW STUFF ---
+# 
+#       .------------------------------------------------.
+#      /  MAGIC COOKIE + NIX  —  UNEXPECTED COMBO         \
+#     |                                                    |
+#     |   [Nix Flake]  ──►  declarative env + pins         |
+#     |        │                                           |
+#     |        ▼                                           |
+#     |   [Magic Cookie]  ──►  sentinel / token            |
+#     |        │              (gitless path authorized)    |
+#     |        ▼                                           |
+#     |   Gitless / Air-gapped / Client-sanitized update   |
+#     |                                                    |
+#     |   Human kill-switch always present:                |
+#     |   close tab / sentinel commit / airlock            |
+#      \                                                  /
+#       '------------------------------------------------'
+#                  Von Neumann would nod.
