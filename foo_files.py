@@ -347,6 +347,25 @@ scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music
 #    DOM vs CDP wire truth) as the reproducible Botify-side dry run.
 # https://drucker.institute/principles/
 
+# 📌 2026-07-17 | (UNARTICLEIZED — placeholder; no filepath or canonical_url yet)
+#    working title: Mutation Trace vs. Cause — The Guy in the Chair Rides the Worm
+#    Seven movements assembled in-conversation, awaiting articleization:
+#    (1) click-path as lossy trace vs. script as serialized cause; (2) 30
+#    determinism vignettes anchored by Model 299 / Pacioli / Masoretes;
+#    (3) Cloudflare-vs-Akamai as market proof (config-by-consultant loses to
+#    config-as-text); (4) terminal-variation steelman resolved by Nix as the
+#    type certificate; (5) CDP flight recorder — every Web UI involuntarily
+#    self-documents at the wire (Botify/BQL as the worked example); (6)
+#    compounding controlled vocabulary (Locard / Grothendieck's rising sea /
+#    Laplace's bounded demon); (7) the frontmatter-sandwich format reveal —
+#    SKILL.md/AGENTS.md is 2008 Jekyll, XSLT the fallen control group.
+#    OWES: articleize this conversation and replace THIS placeholder with the
+#    real filepath + canonical_url; add the path line to PINNED_CHOP; then the
+#    chisel-strike lineage it carries — Phase 1: length-aware CommonMark fences
+#    in apply.py + sanitizer.py (consumers before emitter); Phase 2: fence_for()
+#    dynamic-length emitter in prompt_foo.py; Phase 3: post-scrub foo.zip writer
+#    (payload.md + prompt.md + manifest.json, never adhoc.txt) + .zip gitignore.
+
 # ============================================================================
 # VI. Hello World! - You think you've seen Hello Worlds? You don't know Jack.
 # ============================================================================
