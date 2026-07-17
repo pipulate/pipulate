@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,317 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 28 published in the last 7 days
+# There are 1,318 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 29 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -160,6 +160,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # ============================================================================
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
+
+/home/mike/repos/botifyml/_posts/2026-07-17-mutation-trace-vs-cause.md
 
 # SORT THIS POORLY PLACED OFTEN OOB AD HOC STUFF
 # scripts/git_hooks/pre-commit
