@@ -998,6 +998,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: "Probe, Patch, Prompt" — the alliterative kata name for the full turn cycle. Use it in article titles, section headers, and the standing constitution. (Ferreted per the earmark protocol, 2026-07-17.)
 # - NEVER put anything in the manifest that the PII system stopped from landing!
 # - Write the "I am an Amnesiac Genie *POOF* loop. Use Ollama. Variation on coin-flip? Just to show closing tab to stop it."
 # - Put a creativity forcing function on such a loop. Demonstrate how dramatically different small differences in initial conditions can really be
