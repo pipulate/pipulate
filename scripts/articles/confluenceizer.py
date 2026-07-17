@@ -127,7 +127,16 @@ def _escape_non_html_tags(segment: str) -> str:
         if m.group(1).lower() in _HTML_ELEMENTS:
             return whole
         return whole.replace('<', '&lt;').replace('>', '&gt;')
-    return _RAW_TAG_RE.sub(repl, segment)
+    segment = _RAW_TAG_RE.sub(repl, segment)
+    # THE PROSE DOLLAR DEFUSAL (traceback-convicted 2026-07-17): md2conf's
+    # inline-math pass pairs bare $...$ across prose, so two currency
+    # amounts in one paragraph ("$4.2 billion ... $2.2 billion") become a
+    # giant LaTeX span that matplotlib's mathtext parser rightly rejects.
+    # Entity-escape dollars in PROSE segments only — code spans pass through
+    # this function's caller verbatim, fenced blocks never reach it — so the
+    # rendered page still shows '$' but the math regex never fires.
+    # Idempotent: '&#36;' contains no '$' for a second pass to match.
+    return segment.replace('$', '&#36;')
 
 def _defuse_prose_pseudo_tags(line: str) -> str:
     """Escape non-HTML tags only in the segments md2conf will treat as prose."""
