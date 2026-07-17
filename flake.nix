@@ -1102,7 +1102,21 @@ print('AI:\n', r.ai)
               msg="''${msg:-Update work journal}"
               local BOTIFY_REPO="$HOME/repos/botifyml"
               echo "📚 [1/3] Committing source-of-truth (botifyml)..."
-              (cd "$BOTIFY_REPO" && git add . && git commit -am "$msg" && git push) || return 1
+              # THE ALWAYS-FIRES GUARANTEE (gobot edition, retry-convicted
+              # 2026-07-17): the commit can already be on disk from a prior
+              # run whose Confluence step then failed — the MOST common
+              # reason to re-run gobot. A clean tree made `git commit -am`
+              # exit nonzero and `|| return 1` aborted BEFORE shards and
+              # Confluence. Fall through instead: skip the commit, still
+              # push (no-op when level), and continue the pipeline.
+              (
+                cd "$BOTIFY_REPO" || exit 1
+                git add .
+                if ! git commit -am "$msg"; then
+                  echo "ℹ️  Nothing to commit in botifyml; continuing to shards + Confluence."
+                fi
+                git push
+              ) || return 1
               echo "🧠 [2/3] Generating holographic shards..."
               python "$PIPULATE_ROOT/scripts/articles/contextualizer.py" -t 4 || return 1
               echo "📡 [3/3] Upserting to Confluence (scope: ''${SCOPE:-full sweep})..."
