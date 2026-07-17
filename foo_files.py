@@ -1002,6 +1002,9 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 
 # #todo #to-do
 # - EARMARK: "Probe, Patch, Prompt" — BANKED into the constitution (see THE KATA'S NAME under the Probe Echo Rule, 2026-07-17). Remaining owes: say it in an article title and a section header, then delete this line.
+# - EARMARK: Magic Cookie + Nix for gitless / air-gapped / client-sanitized auto-updating. Sentinel file or short token authorizes non-git update path while preserving full reproducibility and the human kill-switch. Unexpected MTG combo for the Forever Machine. (User 2026-07-17)
+# - EARMARK: ASCII Art Upgrade Ouroboros — periodically scan imports/ascii_displays.py for high-quality unused art and register it for Honeybot streams, player-piano visuals, and storytelling. (User 2026-07-17)
+# - SLOGAN candidate: "Myelinated Reproducibility 4 Singularity ~/ Amnesiac Genie" — find the right home (constitution header? tagline?). (User 2026-07-17)
 # - NEVER put anything in the manifest that the PII system stopped from landing!
 # - Write the "I am an Amnesiac Genie *POOF* loop. Use Ollama. Variation on coin-flip? Just to show closing tab to stop it."
 # - Put a creativity forcing function on such a loop. Demonstrate how dramatically different small differences in initial conditions can really be
