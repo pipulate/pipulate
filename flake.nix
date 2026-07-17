@@ -875,7 +875,26 @@ print(max(1, n))
           alias g='clear && echo "$ git status" && git status'
           m() {
             local msg
-            msg=$(python "$PIPULATE_ROOT/scripts/ai.py" --auto --format plain 2>/dev/null | head -1)
+            # THE INTENT PARAMETER (router-churn edition, 2026-07-17): the
+            # alias knows WHY this commit exists, so it says so. A diff that
+            # is ONLY foo_files.py is the left-hand blast-radius boundary of
+            # a sentinel-bounded AI edit — comment lines toggled to curate
+            # the next compile's context, not features added or removed.
+            # Detection is deterministic (git diff --name-only); only the
+            # prose is delegated, and the hint outranks the model's guess.
+            local hint=""
+            local changed
+            changed=$(git diff HEAD --name-only | sort -u)
+            if [ "$changed" = "foo_files.py" ]; then
+              hint="This diff touches ONLY foo_files.py, the Prompt Fu context-compiler router. Router edits are routine, near-continuous background churn: lines are commented in and out to select which files enter the next compiled context, and this commit exists solely to set the left-hand boundary (the clean BEFORE state) of a sentinel-bounded AI edit. Do NOT interpret comment toggling, token annotation refresh, or paintbox/stats churn as adding or removing features. The correct message is essentially: chore(router): set AI-edit blast boundary (foo_files.py context curation). Deviate only if the diff plainly shows something beyond router line curation."
+            elif printf '%s\n' "$changed" | grep -qx 'foo_files.py'; then
+              hint="This diff includes foo_files.py, the context-compiler router, whose comment-toggling churn is routine AI-edit boundary noise. The OTHER changed files are the substance of this commit: describe those. Treat the foo_files.py portion as incidental router curation, never as a feature addition or removal."
+            fi
+            if [ -n "$hint" ]; then
+              msg=$(python "$PIPULATE_ROOT/scripts/ai.py" --auto --format plain --hint "$hint" 2>/dev/null | head -1)
+            else
+              msg=$(python "$PIPULATE_ROOT/scripts/ai.py" --auto --format plain 2>/dev/null | head -1)
+            fi
             if [ -z "$msg" ]; then
               echo "❌ ai.py returned empty message, aborting."
               return 1

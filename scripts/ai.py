@@ -117,6 +117,10 @@ CRITICAL INSTRUCTIONS:
 - For additions, use terms like "add", "implement", "introduce", "create"
 - For housekeeping operations, use "chore:" prefix and focus on cleanup nature
 
+OPERATOR HINT (authoritative human-supplied intent; when present it OUTRANKS
+your own inference from the diff — obey it unless the diff plainly contradicts it):
+{operator_hint}
+
 CHANGE ANALYSIS:
 {change_analysis}
 
@@ -260,6 +264,7 @@ if __name__ == "__main__":
     parser.add_argument("--format", choices=["markdown", "plain"], default="plain", help="Output format")
     parser.add_argument("--model", help=f"Specific model to use (default: {DEFAULT_MODEL})")
     parser.add_argument("--ctx", type=int, help="Ollama context window for this request, e.g. 32768 or 64000")
+    parser.add_argument("--hint", help="Operator-supplied intent injected into the commit prompt as an authoritative OPERATOR HINT block. Used by the flake's m()/blast to prevent the local model from hallucinating feature changes out of routine foo_files.py router churn.")
     parser.add_argument("--auto", action="store_true", help="Automated git release commit mode")
     args = parser.parse_args()
 
@@ -275,8 +280,15 @@ if __name__ == "__main__":
 - Lines added: +{change_analysis['lines_added']}
 - Lines deleted: -{change_analysis['lines_deleted']}
 """
+        # THE INTENT PARAMETER (hallucination-convicted 2026-07-17): a bare
+        # foo_files.py diff is comment-toggling router churn, but a small
+        # local model reads commented-out lines as deleted features. The
+        # alias that knows WHY the commit exists passes that intent down as
+        # --hint, and the hint outranks the model's own reading of the diff.
+        operator_hint = (args.hint or "").strip() or "None provided. Infer intent from the diff alone."
         # We stop replacing here, leaving {input_text} intact in the template
         formatted_prompt = COMMIT_PROMPT_TEMPLATE.replace("{change_analysis}", analysis_text) \
+                                                 .replace("{operator_hint}", operator_hint) \
                                                  .replace("{primary_action}", change_analysis['primary_action']) \
                                                  .replace("{is_housekeeping}", str(change_analysis['is_housekeeping'])) \
                                                  .replace("{change_summary}", change_analysis['change_summary'])
