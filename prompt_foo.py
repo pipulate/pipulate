@@ -25,7 +25,6 @@
 import os
 import re
 import sys
-import io
 import pydot
 import argparse
 import tiktoken
