@@ -197,7 +197,7 @@ async def visualize_dom_hierarchy(params: dict) -> dict:
         with open(file_path, 'r', encoding='utf-8') as f:
             html_content = f.read()
         visualizer = _DOMHierarchyVisualizer()
-        output = visualizer.visualize_dom_content(html_content, source_name=file_path)
+        output = visualizer.visualize_dom_content(html_content)
         return {"success": True, "output": output}
     except Exception as e:
         return {"success": False, "error": str(e)}
