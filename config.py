@@ -89,13 +89,9 @@ STEP_FRIENDLY_NAMES = {
     'step_processing': 'Processing'
 }
 
-# Default configuration values (will be overridden by server.py with instance-specific values)
-DEFAULT_ACTIVE_ROLES = {'Core', 'Botify Employee'}
-
 # Complete centralized configuration - single source of truth
 # UI & Navigation
 HOME_APP = 'introduction'
-DEFAULT_ACTIVE_ROLES = DEFAULT_ACTIVE_ROLES
 
 # Role System Configuration
 ROLES_CONFIG = {
