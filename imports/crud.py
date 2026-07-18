@@ -293,9 +293,6 @@ class BaseCrud:
             # UI appears to work but database never gets updated
             updated_item = self.table.update(update_data, item_id)
 
-            # 🎯 TRIGGER BACKUP after successful update
-            self._trigger_backup()
-
             # Track changes for logging
             changes = {}
             for field, new_value in update_data.items():
