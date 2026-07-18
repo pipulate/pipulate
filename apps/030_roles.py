@@ -490,7 +490,6 @@ class CrudUI(PluginIdentityManager):
         ollama_available = await self.check_ollama_availability()
         
         return Div(
-            Style(self.generate_role_css()),
             Card(
                 H3(self.H3_HEADER),
                 Div(
