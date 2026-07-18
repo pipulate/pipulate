@@ -6,7 +6,6 @@ from fasthtml.common import (H2, H3, H4, A, Button, Card, Container, Details,
                              Textarea, Title, Ul, to_xml)
 from server import get_db_filename
 from imports.crud import BaseCrud
-from server import db as server_db
 
 # Lazy imports to avoid circular dependencies - imported when needed
 def get_server_functions():
