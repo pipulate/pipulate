@@ -62,13 +62,19 @@ class _DOMHierarchyVisualizer:
         if info['text']: display_parts.append(f'"{info["text"]}"')
         return Text(" ".join(display_parts), style=color)
 
-    def build_tree_structure(self, element, tree_node, level=0):
+    def build_tree_structure(self, element, tree_node, level=0, max_depth=50):
+        # Recursion fuse, not a token-budget cap: 50 exceeds any sane real-world
+        # DOM (~30-40 worst case) but keeps pathological trees from hitting
+        # Python's recursion limit. Truncation is recorded, never silent.
+        if level > max_depth:
+            tree_node.add(Text("... (max depth reached)", style="dim white"))
+            return
         info = self.extract_element_info(element)
         display_text = self.format_element_display(info, level)
         current_node = tree_node.add(display_text)
         for child in element.children:
             if hasattr(child, 'name') and child.name:
-                self.build_tree_structure(child, current_node, level + 1)
+                self.build_tree_structure(child, current_node, level + 1, max_depth)
 
     def visualize_dom_content(self, html_content, source_name="DOM", verbose=True):
         soup = BeautifulSoup(html_content, 'html.parser')
