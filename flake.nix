@@ -212,17 +212,28 @@
             shift 2
           fi
 
+          # -v: THE ART WALK. Open the matches in the editor instead of
+          # printing them. Newest article lands in buffer 1 so :bn walks
+          # backward in time through each article's ASCII art.
+          vim_mode=0
+          if [ "''${1:-}" = "-v" ]; then
+            vim_mode=1
+            shift
+          fi
+
           last_args=()
           capn=8
+          lastn=""
           if [[ "''${1:-}" =~ ^[0-9]+$ ]]; then
             last_args=(--last "$1")
+            lastn="$1"
             if [ "$1" -lt "$capn" ]; then
               capn="$1"
             fi
             shift
           fi
           if [ "$#" -eq 0 ]; then
-            echo "Usage: rgx [-t KEY] [N] TERM [TERM...]   (leading N = only the N most recent matches)" >&2
+            echo "Usage: rgx [-t KEY] [-v] [N] TERM [TERM...]   (leading N = only the N most recent matches; -v opens them in vim, newest first)" >&2
             exit 1
           fi
 
