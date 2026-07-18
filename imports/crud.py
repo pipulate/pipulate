@@ -264,9 +264,6 @@ class BaseCrud:
             new_item = self.table.insert(**insert_data)
             logger.debug(f'[DEBUG] Successfully inserted item into {self.name}: {new_item}')
 
-            # 🎯 TRIGGER BACKUP after successful insert
-            self._trigger_backup()
-
             item_name = getattr(new_item, self.item_name_field, 'Item')
             action_details = f"A new {self.name} item '{item_name}' was added."
             self.safe_send_message(action_details, verbatim=True)
