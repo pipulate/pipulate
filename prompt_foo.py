@@ -32,8 +32,6 @@ import subprocess
 import tempfile
 import shutil
 import json
-import hashlib
-import zipfile
 import urllib.request
 from typing import Dict, List, Optional, Tuple
 from pathlib import Path
