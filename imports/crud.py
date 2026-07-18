@@ -130,22 +130,9 @@ class BaseCrud:
             item = self.table[item_id]
             item_name = getattr(item, self.item_name_field, f'Item {item_id}')
 
-            # 🎯 ENHANCED: Use soft delete when enabled and supported
-            soft_delete_attempted = False
-            if self.soft_delete_enabled:
-                soft_delete_attempted = self._soft_delete_item(item_id)
+            self.table.delete(item_id)
 
-            if soft_delete_attempted:
-                action_verb = "soft deleted"
-            else:
-                # Traditional hard delete as fallback
-                self.table.delete(item_id)
-                action_verb = "removed"
-
-            # 🎯 TRIGGER BACKUP after successful delete
-            self._trigger_backup()
-
-            action_details = f"The {self.name} item '{item_name}' was {action_verb}."
+            action_details = f"The {self.name} item '{item_name}' was removed."
             prompt = action_details
             self.safe_send_message(prompt, verbatim=True)
             if self.name == 'profiles':
