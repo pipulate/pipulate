@@ -26,9 +26,7 @@ class BlankPlaceholder:
         self.pipulate = pipulate
         self.app = app
         self.app_name = self.APP_NAME
-        self.pipulate = pipulate
         self.pipeline = pipeline
-        wand = self.pipulate
         wand = self.pipulate
         self.message_queue = wand.get_message_queue()
 
