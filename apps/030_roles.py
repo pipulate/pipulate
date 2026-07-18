@@ -695,14 +695,7 @@ def render_item(item, app_instance):
         hx_target=f"#{item_id}"
     )
 
-    # Prepare HTMX attributes for non-Core roles
-    htmx_attrs = {}
-    if not is_core:
-        htmx_attrs.update({
-            'hx_post': toggle_url,
-            'hx_swap': "outerHTML",
-            'hx_target': f"#{item_id}"
-        })
+    # HTMX wiring lives on the checkbox Input above; the old htmx_attrs dict was dead.
     
     # Get plugin count for this role
     plugin_list = get_plugin_list()
