@@ -4,7 +4,6 @@ from datetime import datetime
 from fasthtml.common import * # type: ignore
 from fasthtml.common import to_xml
 from loguru import logger
-import inspect
 from pathlib import Path
 import re
 import json
