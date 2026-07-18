@@ -175,15 +175,13 @@ class _DOMBoxVisualizer:
         
         return Panel(panel_content, title=title, border_style=self.get_color_for_level(level), box=self.get_box_style_for_level(level), padding=(0, 1), width=calculated_width)
 
-    def visualize_dom_content(self, html_content, source_name="DOM", verbose=True):
+    def visualize_dom_content(self, html_content, source_name="DOM"):
         soup = BeautifulSoup(html_content, 'html.parser')
         root_element = soup.find('html') or soup
         if root_element and hasattr(root_element, 'name'):
             max_depth = 6 if len(soup.find_all()) > 100 else 12
             nested_layout = self.build_nested_boxes(root_element, 0, max_depth)
-            self.console.print(nested_layout) # <-- Always print to the internal recording console
-            if verbose:
-                pass
+            self.console.print(nested_layout)  # Print to the internal recording console for export
         return self.console.export_text()
 
 
