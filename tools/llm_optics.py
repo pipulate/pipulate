@@ -305,6 +305,9 @@ def main(target_dir_path: str):
     simple_hydrated_path = output_dir / "simple_hydrated_dom.html"
 
     hydrated_dom_content = read_html_file(hydrated_dom_path)
+    if not hydrated_dom_content:
+        print("Error: hydrated_dom.html must exist in the target directory.", file=sys.stderr)
+        sys.exit(1)
 
     simple_source_content = read_html_file(simple_source_path)
     simple_hydrated_content = read_html_file(simple_hydrated_path)
