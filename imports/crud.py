@@ -257,12 +257,6 @@ class BaseCrud:
             if insert_data is None:
                 return HTMLResponse(f"<div style='color:red;'>Invalid {self.name} data</div>", status_code=400)
 
-            # 🎯 ENHANCED: Add timestamp fields for backup tracking (only if table supports it)
-            if self.backup_enabled and self._has_backup_fields():
-                current_time = datetime.now().isoformat()
-                insert_data[self.updated_field] = current_time
-                # Don't set deleted_at on insert (should be NULL for active records)
-
             logger.debug(f'[DEBUG] Attempting to insert data into {self.name}: {insert_data}')
             # 🔥 CRITICAL: MiniDataAPI requires keyword argument unpacking with **insert_data
             # ❌ NEVER CHANGE TO: self.table.insert(insert_data) - This will break!
