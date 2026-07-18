@@ -128,7 +128,10 @@ class _DOMBoxVisualizer:
         title_parts = [f"<{info['tag']}>"]
         if info['id']: title_parts.append(f"#{info['id']}")
         if info['data_testid']: title_parts.append(f"[testid={info['data_testid']}]")
-        if info['aria_label']: title_parts.append(f"[aria={info['aria_label'][:15]}...]")
+        if info['aria_label']:
+            # 15-char cap is deliberate (panel titles are narrow); ellipsis only when true
+            aria = info['aria_label'][:15] + "..." if len(info['aria_label']) > 15 else info['aria_label']
+            title_parts.append(f"[aria={aria}]")
         return Text(" ".join(title_parts), style=f"bold {color}")
 
     def format_element_content(self, info, children_count, level):
