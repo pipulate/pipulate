@@ -121,3 +121,6 @@ browser_cache/test_rotation_data/
 # Voice synthesis models - auto-downloaded as needed
 piper_models/
 Notebooks/Onboarding.ipynb
+
+# Canonical context cartridge - generated on every successful compile
+foo.zip
