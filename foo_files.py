@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,320 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 26 published in the last 7 days
+# There are 1,321 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 27 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -308,15 +308,15 @@ scripts/ai.py     #  <-- How I constantly use local AI to write git commit messa
 # IV. THE WAND🪄 & THE WIZARD🧙‍♂️ - Everything's actually web development these days
 # ============================================================================
   
-# config.py                   # <-- Centralize every last configuration in here
-# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-# pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
-# pipulate/core.py            # <-- The Wand (spells)
+config.py                   # <-- Centralize every last configuration in here
+pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+pipulate/pipulate.py        # <-- Traveling wands need to have their own special magic
+pipulate/core.py            # <-- The Wand (spells)
 
 # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
 
-# server.py                   # <-- The Wizard (big!)
+server.py                   # <-- The Wizard (big!)
 # assets/styles.css           # <-- Those values often get used here for "the look"
 # imports/server_logging.py   # <-- Drawing that ASCII art into radically transparent server logs
 
@@ -387,16 +387,16 @@ scripts/ai.py     #  <-- How I constantly use local AI to write git commit messa
 # that simulates user interaction to verify runtime integrity across
 # environments without manual overhead.
 
-# apps/040_hello_workflow.py                        # <-- The canonical Hello Workflow example under FastHTML. Number controls menu order.
-# Notebooks/.agents/skills/hello_workflow/SKILL.md  # <-- Agent Skills as defined by Anthropic for controlling the similarly named FastHTML workflow.
-# assets/scenarios/hello_workflow_test.json         # <-- The Ghost Driver for unit test coverage, feature demos, AI training, human training and to demo the agentic automation hooks
-# assets/player-piano.js                            # <-- Player piano actuator #2 in Pipulate. How AIs can take control of workflows.
-# Notebooks/imports/__init__.py                     # <-- Empty file, just to show you imports relative to Notebooks are 1st-class path members. Important!
-# 
-# assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
-# assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
-# assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
-# apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
+apps/040_hello_workflow.py                        # <-- The canonical Hello Workflow example under FastHTML. Number controls menu order.
+Notebooks/.agents/skills/hello_workflow/SKILL.md  # <-- Agent Skills as defined by Anthropic for controlling the similarly named FastHTML workflow.
+assets/scenarios/hello_workflow_test.json         # <-- The Ghost Driver for unit test coverage, feature demos, AI training, human training and to demo the agentic automation hooks
+assets/player-piano.js                            # <-- Player piano actuator #2 in Pipulate. How AIs can take control of workflows.
+Notebooks/imports/__init__.py                     # <-- Empty file, just to show you imports relative to Notebooks are 1st-class path members. Important!
+
+assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
+assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
+assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
+apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
 
 # ============================================================================
 # VII. WET WORKFLOWS / DRY CRUD - The what's best for AIs and Humans compromise
