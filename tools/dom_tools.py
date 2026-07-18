@@ -191,15 +191,13 @@ class _DOMBoxVisualizer:
 async def visualize_dom_hierarchy(params: dict) -> dict:
     """Renders the DOM from a file as a hierarchical tree."""
     file_path = params.get("file_path")
-    verbose = params.get("verbose", True)  # Check for verbose flag
     if not file_path or not os.path.exists(file_path):
         return {"success": False, "error": f"File not found: {file_path}"}
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
             html_content = f.read()
         visualizer = _DOMHierarchyVisualizer()
-        # Pass verbose flag to the internal method
-        output = visualizer.visualize_dom_content(html_content, source_name=file_path, verbose=verbose)
+        output = visualizer.visualize_dom_content(html_content, source_name=file_path)
         return {"success": True, "output": output}
     except Exception as e:
         return {"success": False, "error": str(e)}
