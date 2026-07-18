@@ -46,7 +46,7 @@ def _env_float(name, default):
 # 32k, while 4B+ can go higher if VRAM allows. Override per run with --ctx or
 # globally for auto mode with PIPULATE_OLLAMA_NUM_CTX=64000 after checking
 # `ollama ps` for 100% GPU residency.
-DEFAULT_AUTO_NUM_CTX = _env_int("PIPULATE_OLLAMA_NUM_CTX", 131072)  # 32768
+DEFAULT_AUTO_NUM_CTX = _env_int("PIPULATE_OLLAMA_NUM_CTX", 131072)
 AUTO_OUTPUT_RESERVE_TOKENS = _env_int("PIPULATE_OLLAMA_OUTPUT_RESERVE_TOKENS", 4096)
 AUTO_CHARS_PER_TOKEN = _env_float("PIPULATE_CHARS_PER_TOKEN", 4.0)
 
