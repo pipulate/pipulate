@@ -1215,11 +1215,6 @@ You're here to make the workflow concepts accessible and help users understand t
         if pip.check_finalize_needed(step_index, steps):
             await self.message_queue.add(pip, self.step_messages['finalize']['ready'], verbatim=True)
         
-        widget = Pre(display_text, cls="code-block-container")
-
-        if pip.check_finalize_needed(step_index, steps):
-            await self.message_queue.add(pip, self.step_messages['finalize']['ready'], verbatim=True)
-        
         # 🪄 LOCK THE LIMBO STATE: Broadcast that config is formally complete
         self.wand.db['config_finalized'] = 'true'
         
