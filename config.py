@@ -433,10 +433,6 @@ AVAILABLE_ROLES = {
     'Workshop': 'Experimental and workshop content'
 }
 
-# 🔑 API Token Configuration (STANDARDIZED FILE PATHS)
-BOTIFY_TOKEN_FILE = 'botify_token.txt'  # Root level token file
-BOTIFY_HELPERS_TOKEN_FILE = 'helpers/botify/botify_token.txt'  # Helper scripts token file 
-
 # --- Dynamic Configuration ---
 
 ENV_FILE = Path('data/current_environment.txt')
