@@ -882,31 +882,6 @@ def get_plugin_list_fallback():
 
     return sorted(plugins, key=lambda x: x['filename'])
 
-def get_plugin_emoji(module_name):
-    """Get the real emoji for a plugin by importing and checking its EMOJI attribute."""
-    try:
-        plugin_path = Path(__file__).parent / f"{module_name}.py"
-        if plugin_path.exists():
-            spec = importlib.util.spec_from_file_location(module_name, plugin_path)
-            if spec and spec.loader:
-                module = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(module)
-
-                # Check for EMOJI in classes first (more specific)
-                for name, obj in inspect.getmembers(module):
-                    if inspect.isclass(obj) and hasattr(obj, 'EMOJI'):
-                        emoji = getattr(obj, 'EMOJI', '')
-                        if emoji.strip():
-                            return emoji
-
-                # Fallback to module-level EMOJI
-                emoji = getattr(module, 'EMOJI', '')
-                if emoji.strip():
-                    return emoji
-    except Exception:
-        pass
-    return '⚡'  # Default emoji
-
 def create_plugin_visibility_table(role_name, ui_constants=None):
     """Create a discrete expandable list showing plugins with real emojis."""
     plugin_list = get_plugin_list()
