@@ -53,8 +53,12 @@ class _DOMHierarchyVisualizer:
         if info['class']: display_parts.append(f"class='{' '.join(info['class'])}'")
         if info['data_testid']: display_parts.append(f"data-testid='{info['data_testid']}'")
         if info['aria_label']: display_parts.append(f"aria-label='{info['aria_label']}'")
-        if info['href']: display_parts.append(f"href='{info['href'][:_TRUNCATION_LENGTH]}...'")
-        if info['src']: display_parts.append(f"src='{info['src'][:_TRUNCATION_LENGTH]}...'")
+        if info['href']:
+            href = info['href'][:_TRUNCATION_LENGTH] + "..." if len(info['href']) > _TRUNCATION_LENGTH else info['href']
+            display_parts.append(f"href='{href}'")
+        if info['src']:
+            src = info['src'][:_TRUNCATION_LENGTH] + "..." if len(info['src']) > _TRUNCATION_LENGTH else info['src']
+            display_parts.append(f"src='{src}'")
         if info['text']: display_parts.append(f'"{info["text"]}"')
         return Text(" ".join(display_parts), style=color)
 
