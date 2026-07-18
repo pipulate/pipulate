@@ -595,14 +595,6 @@ class CrudUI(PluginIdentityManager):
             data_plugin_name=self.name
         )
 
-    @classmethod
-
-    def generate_role_css(cls):
-        """Generate CSS rules from ROLE_COLORS - single source of truth approach.
-        Note: This method will be updated to use instance config in future iterations."""
-        # For now, return empty string as CSS is handled by server.py get_dynamic_role_css
-        return ""
-
     def is_in_default_state(self):
         """Check if current roles state matches the default configuration."""
         try:
