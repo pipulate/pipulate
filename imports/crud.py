@@ -50,18 +50,7 @@ class BaseCrud:
         self.sort_dict = sort_dict or {}
         self.pipulate_instance = pipulate_instance
 
-        # 🎯 DURABLE BACKUP INTEGRATION
-        self.backup_enabled = backup_manager is not None
         self.table_name = getattr(table, 'name', name.lower())
-
-        # 🎯 SOFT DELETE CONFIGURATION
-        self.soft_delete_enabled = True  # Enable soft deletes by default
-        self.deleted_field = 'deleted_at'
-        self.updated_field = 'updated_at'
-
-        if self.backup_enabled:
-            logger.info(f"🗃️ {name} CRUD initialized with durable backup support")
-            self._ensure_backup_schema()
 
         # Existing pipeline_instance method wrapper
         def safe_send_message(message, verbatim=True):
