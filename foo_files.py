@@ -112,6 +112,19 @@ AI_PHOOEY_CHOP = r"""                                                           
 # beats to every turn — hand-run receipts before, human-actuated mutation
 # during, pre-loaded compile after. Titles and section headers say it too.
 
+# THE SECOND INTERPRETER RULE (banked 2026-07-17): this file has two
+# interpreters. CPython reads the path strings; the summoned model reads
+# the prose. Comments here are therefore PROGRAM, not annotation — but a
+# program running on an UNPINNED interpreter (no Nix for the genie), so
+# execution may vary across models, versions, and days. Trust boundary:
+# only 📌 PINBOARD pins and EARMARK lines carry standing-instruction
+# authority across compiles; all other prose is context. Prose PROPOSES;
+# only the airlocked lane (apply.py exact-match, AST/Nix checks, git,
+# human clipboard actuation) ever MUTATES. Divergent execution therefore
+# costs a rerun, never a regression — the nondeterminism is typed and
+# quarantined at the proposal stage, and replay convergence is measured
+# by foo-cartridge-replay-v1 rather than trusted on manners.
+
 # STORY ENGINE
 # Mike-E's gift is associative reach; his flaw is letting every spark become canon.
 # Yen Sid-ton is a brilliant familiar re-instantiated without yesterday.
