@@ -798,95 +798,46 @@ def scrub_compile_payload(text: str, apply_substitutions: bool = True, scan_deny
     return text, total, leaks
 
 
-FOO_CARTRIDGE_MEMBERS = ("payload.md", "prompt.md", "manifest.json")
-FOO_CARTRIDGE_SOURCE_EPOCH = 1767225600
-FOO_CARTRIDGE_ZIP_TIME = (2026, 1, 1, 0, 0, 0)
-FOO_CARTRIDGE_FILE_MODE = 0o100644 << 16
+# ============================================================================
+# --- The Context Cartridge (core extracted to scripts/foo_cartridge.py) ---
+# ============================================================================
+# foo-cartridge-replay-v1, step one: the constants, writer, and verifier now
+# live in scripts/foo_cartridge.py — a stdlib-only module a clean-room
+# consumer can fetch as a single file. Loaded here by file path (no sys.path
+# pollution, no package requirement) and re-exported so every existing probe
+# of the form `from prompt_foo import verify_context_cartridge` keeps working
+# unchanged. The thin wrapper below restores the repo-lane defaults the core
+# deliberately does not carry: REPO_ROOT/foo.zip and the captured logger.
+import importlib.util as _foo_cartridge_ilu
+
+_foo_cartridge_spec = _foo_cartridge_ilu.spec_from_file_location(
+    "foo_cartridge",
+    os.path.join(REPO_ROOT, "scripts", "foo_cartridge.py"),
+)
+foo_cartridge = _foo_cartridge_ilu.module_from_spec(_foo_cartridge_spec)
+_foo_cartridge_spec.loader.exec_module(foo_cartridge)
+
+FOO_CARTRIDGE_MEMBERS = foo_cartridge.FOO_CARTRIDGE_MEMBERS
+FOO_CARTRIDGE_SOURCE_EPOCH = foo_cartridge.FOO_CARTRIDGE_SOURCE_EPOCH
+FOO_CARTRIDGE_ZIP_TIME = foo_cartridge.FOO_CARTRIDGE_ZIP_TIME
+FOO_CARTRIDGE_FILE_MODE = foo_cartridge.FOO_CARTRIDGE_FILE_MODE
+_extract_prompt_member = foo_cartridge._extract_prompt_member
+verify_context_cartridge = foo_cartridge.verify_context_cartridge
 
 
-def _sha256_hex(data: bytes) -> str:
-    """Return a lowercase SHA-256 digest for exact member bytes."""
-    return hashlib.sha256(data).hexdigest()
-
-
-def _canonical_json_bytes(value: dict) -> bytes:
-    """Serialize canonical manifest JSON: UTF-8, sorted, compact, one final LF."""
-    text = json.dumps(
-        value,
-        ensure_ascii=False,
-        sort_keys=True,
-        separators=(",", ":"),
+def write_context_cartridge(
+    final_output: str,
+    output_path: Optional[Path] = None,
+) -> Path:
+    """Repo-lane wrapper over the stdlib core: default path + captured logger."""
+    cartridge_path = (
+        Path(output_path)
+        if output_path is not None
+        else Path(REPO_ROOT) / "foo.zip"
     )
-    return (text + "\n").encode("utf-8")
-
-
-def _extract_prompt_member(final_output: str) -> bytes:
-    """Extract the final outer Prompt section from the scrubbed payload.
-
-    The last markers are intentionally selected because compiled source and
-    historical transcripts may contain earlier Prompt markers. Deriving this
-    member from final_output prevents an unsanitized secondary input path.
-    """
-    start_marker = "\n--- START: Prompt ---\n"
-    end_marker = "\n--- END: Prompt ---"
-    if start_marker not in final_output:
-        raise ValueError("Compiled payload has no final Prompt start marker.")
-
-    prompt_tail = final_output.rsplit(start_marker, 1)[1]
-    if end_marker not in prompt_tail:
-        raise ValueError("Compiled payload has no final Prompt end marker.")
-
-    prompt_text = prompt_tail.rsplit(end_marker, 1)[0]
-    return (prompt_text.rstrip("\n") + "\n").encode("utf-8")
-
-
-def _build_cartridge_manifest(
-    payload_bytes: bytes,
-    prompt_bytes: bytes,
-) -> dict:
-    """Build the complete reproducible manifest from exact member bytes."""
-    return {
-        "canonicalization": {
-            "json": "utf-8-sorted-compact-lf-v1",
-            "zip": "stored-fixed-metadata-v1",
-            "zip_file_mode": "0100644",
-            "zip_member_order": list(FOO_CARTRIDGE_MEMBERS),
-            "zip_source_epoch": FOO_CARTRIDGE_SOURCE_EPOCH,
-        },
-        "schema": "foo-cartridge-integrity-v1",
-        "sha256": {
-            "payload.md": _sha256_hex(payload_bytes),
-            "prompt.md": _sha256_hex(prompt_bytes),
-        },
-    }
-
-
-def _canonical_zip_info(member_name: str) -> zipfile.ZipInfo:
-    """Return fixed ZIP metadata for one canonical cartridge member."""
-    info = zipfile.ZipInfo(
-        member_name,
-        date_time=FOO_CARTRIDGE_ZIP_TIME,
+    return foo_cartridge.write_context_cartridge(
+        final_output, cartridge_path, log=logger.print
     )
-    info.compress_type = zipfile.ZIP_STORED
-    info.create_system = 3
-    info.create_version = 20
-    info.extract_version = 20
-    info.flag_bits = 0
-    info.internal_attr = 0
-    info.external_attr = FOO_CARTRIDGE_FILE_MODE
-    info.extra = b""
-    info.comment = b""
-    return info
-
-
-def _reject_duplicate_json_keys(pairs):
-    """Fail closed when manifest JSON repeats an object key."""
-    value = {}
-    for key, item in pairs:
-        if key in value:
-            raise ValueError(f"Duplicate manifest key: {key!r}")
-        value[key] = item
-    return value
 
 
 def verify_context_cartridge(path) -> dict:
