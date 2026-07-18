@@ -14,16 +14,6 @@ from imports.crud import BaseCrud
 # ROLES constant is now used for discovery, not for defining the roles themselves.
 ROLES = ["Core"]
 
-# Define the standard order of roles
-ROLE_ORDER = {
-    'Botify Employee': 0,
-    'Core': 1,
-    'Tutorial': 2,
-    'Developer': 3,
-    'Workshop': 4,
-    'Components': 5,
-}
-
 # Plugin visibility is now determined by actual ROLES declarations in plugin files
 
 class PluginIdentityManager:
