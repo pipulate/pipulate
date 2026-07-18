@@ -1,6 +1,5 @@
 import os
 import re
-import sys
 
 import fastlite
 from fasthtml.common import *
