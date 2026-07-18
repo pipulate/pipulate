@@ -258,6 +258,27 @@
           fi
 
           sorted_matches="$(printf '%s\n' "$matches" | ${pkgs.coreutils}/bin/sort)"
+
+          # THE ART WALK exit: sorted_matches is oldest-first (date-prefixed
+          # filenames), so the optional leading N takes the tail (the N most
+          # recent) and tac flips it newest-first before exec'ing the editor.
+          # The vim alias is interactive-only, so resolve nvim explicitly;
+          # the exported VIMINIT still loads the repo's init.lua.
+          if [ "$vim_mode" -eq 1 ]; then
+            vim_list="$sorted_matches"
+            if [ -n "$lastn" ]; then
+              vim_list="$(printf '%s\n' "$vim_list" | ${pkgs.coreutils}/bin/tail -n "$lastn")"
+            fi
+            vim_list="$(printf '%s\n' "$vim_list" | ${pkgs.coreutils}/bin/tac)"
+            editor="$(command -v nvim || command -v vim || true)"
+            if [ -z "$editor" ]; then
+              echo "rgx: no nvim or vim found on PATH" >&2
+              exit 1
+            fi
+            mapfile -t vim_files < <(printf '%s\n' "$vim_list")
+            exec "$editor" "''${vim_files[@]}"
+          fi
+
           # Drop --fmt paths so each match carries its Tokens/Bytes annotation
           # (the same per-article numbers `posts` shows) for context budgeting.
           # Deliberately NOT --shards/--around: that shard + hit-region noise is
