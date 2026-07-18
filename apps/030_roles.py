@@ -6,8 +6,6 @@ import os
 import re
 import sys
 import fastlite
-import aiohttp
-import asyncio
 from fasthtml.common import *
 from loguru import logger
 from server import get_db_filename, title_name
