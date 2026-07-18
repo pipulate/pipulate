@@ -394,16 +394,16 @@ scripts/ai.py     #  <-- How I constantly use local AI to write git commit messa
 # that simulates user interaction to verify runtime integrity across
 # environments without manual overhead.
 
-# apps/040_hello_workflow.py                        # <-- The canonical Hello Workflow example under FastHTML. Number controls menu order.
-# Notebooks/.agents/skills/hello_workflow/SKILL.md  # <-- Agent Skills as defined by Anthropic for controlling the similarly named FastHTML workflow.
-# assets/scenarios/hello_workflow_test.json         # <-- The Ghost Driver for unit test coverage, feature demos, AI training, human training and to demo the agentic automation hooks
-# assets/player-piano.js                            # <-- Player piano actuator #2 in Pipulate. How AIs can take control of workflows.
-# Notebooks/imports/__init__.py                     # <-- Empty file, just to show you imports relative to Notebooks are 1st-class path members. Important!
+apps/040_hello_workflow.py                        # <-- The canonical Hello Workflow example under FastHTML. Number controls menu order.
+Notebooks/.agents/skills/hello_workflow/SKILL.md  # <-- Agent Skills as defined by Anthropic for controlling the similarly named FastHTML workflow.
+assets/scenarios/hello_workflow_test.json         # <-- The Ghost Driver for unit test coverage, feature demos, AI training, human training and to demo the agentic automation hooks
+assets/player-piano.js                            # <-- Player piano actuator #2 in Pipulate. How AIs can take control of workflows.
+Notebooks/imports/__init__.py                     # <-- Empty file, just to show you imports relative to Notebooks are 1st-class path members. Important!
 
-# assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
-# assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
-# assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
-# apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
+assets/nbs/Onboarding.ipynb                       # <-- Where Workflows go to get born. Common `.venv` to FastHTML. Also to Cursor or VSCode too if you know how to set it up.
+assets/nbs/imports/core_sauce.py                  # <-- Make those workflows being born in Notebooks look clean by pushing the sausage factory back to code-behind Python secret sauce import modules.
+assets/nbs/imports/onboard_sauce.py               # <-- Now you're cooking!
+apps/015_config.py                                # <-- Carrying onboarding values over to FastHTML-side, especially dotenv values. New home for Botify API key!
 
 # ============================================================================
 # VII. WET WORKFLOWS / DRY CRUD - The what's best for AIs and Humans compromise
