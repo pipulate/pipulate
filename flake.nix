@@ -393,12 +393,29 @@
           fi
         '';
 
+        # ai-commit: init.lua's \g mapping shells out to this NAME. On Pipulate
+        # Prime a system-level copy also exists (/run/current-system/sw/bin via
+        # the nixos repo); this shim makes the name resolve inside ANY Pipulate
+        # dev shell (macOS, WSL, vanilla Linux) so \g never silently downgrades
+        # to the "Update <file>" fallback on machines without the system copy.
+        aiCommitCommand = pkgs.writeShellScriptBin "ai-commit" ''
+          set -euo pipefail
+          root="''${PIPULATE_ROOT:-$PWD}"
+          python_bin="$root/.venv/bin/python"
+          if [ ! -x "$python_bin" ]; then
+            echo "ai-commit: missing $python_bin; enter the Pipulate Nix shell first." >&2
+            exit 1
+          fi
+          exec "$python_bin" "$root/scripts/ai.py" "$@"
+        '';
+
         # Common packages that we want available in our environment
         # regardless of the operating system
         commonPackages = with pkgs; [
           postsCommand                 # Article corpus formatter usable by child shells
           rgxCommand                   # Bounded AND-search over article files
           rgxcCommand                  # rgx plus holographic shards and hit context
+          aiCommitCommand              # \g's commit generator resolves in-shell on every platform
           uv                           # Fast Python package installer and resolver
           sqlite                       # Ensures correct SQLite library is linked on macOS
           (python312.withPackages (ps: with ps; [
