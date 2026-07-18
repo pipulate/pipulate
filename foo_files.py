@@ -1030,6 +1030,8 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # - Remove holographic shard json orphans" in Jekyll `_context/` folder
 # - Monitor for the `db.py` database getting bigger on Honeybot (Textual dashboards?)
 # - Check for file-naming collisions when articleizing.
+# - Get a UPS for Pipulate Prime (Z640): the 2026-07-18 blackout restarted the machines; the stream survived by luck and watchdog, the box should not have to gamble
+# - EARMARK: pip install river (online/incremental ML) — design learning-between-turns into the architecture EARLY so static-model loops can adapt; feeds the coin-flip self-prompting Ouroboros whose kill-switch is the Chrome tab holding the drop-hook DOM (User 2026-07-18)
 # - Start a new YouTube live-stream for every new published article
 # - Automate post-outage stream recovery: OBS autostart in XFCE session + persistent YouTube stream key collapses the 8-step manual dance; keep the dead stream as canary, make the resurrection hands-free
 # - Turn the YouTube live-stream into an interactive real-time article-picking Jukebox.
