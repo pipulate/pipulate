@@ -26,7 +26,6 @@ try:
 except ImportError:
     # Fallback for development/testing
     VALID_ROLES = ['Core', 'Developer', 'Components', 'Botify Employee', 'Tutorial', 'Workshop']
-from datetime import datetime
 
 import aiohttp
 from fasthtml.common import A, HTMLResponse, Input, Li, to_xml
