@@ -25,7 +25,6 @@ MODEL_CASCADE = [
 HOME_MENU_ITEM = 'Home'
 DEFAULT_ACTIVE_ROLES = {'Botify Employee', 'Core'}
 DEMO_STATE_FILE = 'data/demo_state.json'
-ENV_FILE = 'data/current_environment.txt'
 DISCUSSION_DB_PATH = 'data/discussion.db'
 
 
