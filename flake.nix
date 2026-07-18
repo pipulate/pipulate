@@ -631,38 +631,67 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               echo "❌ Error: Failed to clone repository."
             fi
           fi
-          # Auto-update with robust "Stash, Pull, Pop"
+          # Auto-update with the EXACT-OBJECT STASH CONTRACT (banked 2026-07-18).
+          # THREE STATE CLASSES:
+          #   1. Upstream substrate — tracked files, replaceable only by ff-pull.
+          #   2. User overlay — .jupyter/lab/user-settings/ rides the exact-stash
+          #      lane below; durable user state (~/.config/pipulate, Playground,
+          #      .env, whitelabel.txt, .ssh) lives outside the substrate and is
+          #      never touched by this block.
+          #   3. Disposable workspace — gitignored caches/artifacts; ignored here.
           if [ -d .git ]; then
             echo "Checking for updates..."
-            if ! git diff-index --quiet HEAD --; then
-              echo "Resolving any existing conflicts..."
-              git reset --hard HEAD 2>/dev/null || true
-            fi
-            echo "Temporarily stashing local JupyterLab settings..."
-            git stash push --quiet --include-untracked --message "Auto-stash JupyterLab settings" -- .jupyter/lab/user-settings/ 2>/dev/null || true
-            git fetch origin main
-            LOCAL=$(git rev-parse HEAD)
-            REMOTE=$(git rev-parse origin/main)
-            CURRENT_BRANCH=$(git branch --show-current)
-            if [ "$LOCAL" != "$REMOTE" ]; then
-              if [ "$CURRENT_BRANCH" = "main" ]; then
-                echo "Updates found. Pulling latest changes..."
-                git pull --ff-only origin main
-                echo "Update complete!"
-              else
-                echo "Updates available on main branch."
-              fi
+            # THE HALT-DON'T-DESTROY GATE: tracked local modifications formerly
+            # met `git reset --hard HEAD` before anything was preserved. Now a
+            # dirty tree (outside the Jupyter overlay path) PAUSES the automatic
+            # update. A dirty tree costs a skipped update, never user work.
+            if ! git diff-index --quiet HEAD -- . ':!.jupyter/lab/user-settings'; then
+              echo "⚠️  Local modifications detected. Skipping automatic update to protect your work."
+              echo "   Commit, stash, or revert them, then re-enter nix develop to update."
             else
-              echo "Already up to date."
-            fi
-            echo "Restoring local JupyterLab settings..."
-            if git stash list | grep -q "Auto-stash JupyterLab settings"; then
-              if ! git stash apply --quiet 2>/dev/null; then
-                echo "⚠️ WARNING: Your local JupyterLab settings conflicted with an update."
-                git checkout HEAD -- .jupyter/lab/user-settings/ 2>/dev/null || true
-                git stash drop --quiet 2>/dev/null || true
+              echo "Temporarily stashing local JupyterLab settings..."
+              # EXACT-OBJECT CAPTURE: compare refs/stash before and after the
+              # push so we only ever act on the stash THIS run created. A no-op
+              # push leaves PIPULATE_STASH empty; pre-existing stashes are
+              # never applied, never dropped.
+              PRE_STASH=$(git rev-parse -q --verify refs/stash || true)
+              git stash push --quiet --include-untracked --message "Auto-stash JupyterLab settings" -- .jupyter/lab/user-settings/ 2>/dev/null || true
+              POST_STASH=$(git rev-parse -q --verify refs/stash || true)
+              PIPULATE_STASH=""
+              if [ -n "$POST_STASH" ] && [ "$POST_STASH" != "$PRE_STASH" ]; then
+                PIPULATE_STASH="$POST_STASH"
+              fi
+              git fetch origin main
+              LOCAL=$(git rev-parse HEAD)
+              REMOTE=$(git rev-parse origin/main)
+              CURRENT_BRANCH=$(git branch --show-current)
+              if [ "$LOCAL" != "$REMOTE" ]; then
+                if [ "$CURRENT_BRANCH" = "main" ]; then
+                  echo "Updates found. Pulling latest changes..."
+                  git pull --ff-only origin main
+                  echo "Update complete!"
+                else
+                  echo "Updates available on main branch."
+                fi
               else
-                git stash drop --quiet 2>/dev/null || true
+                echo "Already up to date."
+              fi
+              # EXACT-OBJECT RESTORATION: apply and drop ONLY the SHA captured
+              # above. On conflict the stash is KEPT and its SHA printed —
+              # there is no destruction path in this branch.
+              if [ -n "$PIPULATE_STASH" ]; then
+                echo "Restoring local JupyterLab settings..."
+                if ! git stash apply --quiet "$PIPULATE_STASH" 2>/dev/null; then
+                  echo "⚠️ WARNING: Your local JupyterLab settings conflicted with an update."
+                  echo "   They are preserved in stash $PIPULATE_STASH — recover with:"
+                  echo "   git stash apply $PIPULATE_STASH"
+                  git checkout HEAD -- .jupyter/lab/user-settings/ 2>/dev/null || true
+                else
+                  PIPULATE_STASH_NAME=$(git stash list --format='%H %gd' | awk -v sha="$PIPULATE_STASH" '$1==sha{print $2; exit}')
+                  if [ -n "$PIPULATE_STASH_NAME" ]; then
+                    git stash drop --quiet "$PIPULATE_STASH_NAME" 2>/dev/null || true
+                  fi
+                fi
               fi
             fi
           fi
