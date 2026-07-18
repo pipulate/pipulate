@@ -291,6 +291,20 @@ function toggle_line_numbers()
     vim.opt.number = not vim.opt.number._value
 end
 
+function toggle_text_width()
+    -- THE MARGIN RELEASE: flip between tw=80 (journal prose auto-wraps at
+    -- the column) and tw=0 (long lines run free for adhoc.txt masthead art
+    -- and other wide-format work). One key, no :set incantation, and the
+    -- notify always tells you which regime you are typing in.
+    if vim.opt.textwidth:get() == 0 then
+        vim.opt.textwidth = 80
+        vim.notify("textwidth = 80 (prose wraps)", vim.log.levels.INFO)
+    else
+        vim.opt.textwidth = 0
+        vim.notify("textwidth = 0 (margins released)", vim.log.levels.INFO)
+    end
+end
+
 function toggle_spell_check()
     vim.opt.spell = not vim.opt.spell._value
     if vim.opt.spell._value then
