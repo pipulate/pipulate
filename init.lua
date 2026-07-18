@@ -588,6 +588,10 @@ map('n', '<F3>', '<cmd>lua toggle_spell_check()<CR>', opts)
 -- F4: Toggle line numbers on/off (both normal and relative)
 map('n', '<F4>', '<cmd>lua toggle_line_numbers()<CR>', opts)
 
+-- F5 / <leader>t: Toggle textwidth 0 <-> 80 (the Margin Release)
+map('n', '<F5>', '<cmd>lua toggle_text_width()<CR>', opts)
+map('n', '<leader>t', '<cmd>lua toggle_text_width()<CR>', opts)
+
 -- Leader key mappings
 -- Text Processing
 map('n', '<leader>s', '<cmd>lua correct_misspelling()<CR>', opts)  -- Spell correction
