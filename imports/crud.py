@@ -32,13 +32,6 @@ import aiohttp
 from fasthtml.common import A, HTMLResponse, Input, Li, to_xml
 from loguru import logger
 
-# 🎯 Import the durable backup system
-try:
-    from imports.durable_backup_system import backup_manager
-except ImportError:
-    backup_manager = None
-    logger.warning("⚠️ Durable backup system not available")
-
 
 class BaseCrud:
     """
