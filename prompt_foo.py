@@ -969,6 +969,19 @@ def verify_context_cartridge(path) -> dict:
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise ValueError(f"Invalid manifest.json: {exc}") from exc
 
+    try:
+        payload_text = member_bytes["payload.md"].decode("utf-8")
+        expected_prompt_bytes = _extract_prompt_member(payload_text)
+    except (UnicodeDecodeError, ValueError) as exc:
+        raise ValueError(
+            f"payload.md cannot yield canonical prompt.md: {exc}"
+        ) from exc
+
+    if member_bytes["prompt.md"] != expected_prompt_bytes:
+        raise ValueError(
+            "prompt.md does not match the final Prompt section in payload.md."
+        )
+
     expected_manifest = _build_cartridge_manifest(
         member_bytes["payload.md"],
         member_bytes["prompt.md"],
@@ -985,8 +998,26 @@ def verify_context_cartridge(path) -> dict:
     ):
         raise ValueError("manifest.json is not canonical JSON.")
 
+    canonical_buffer = io.BytesIO()
+    with zipfile.ZipFile(
+        canonical_buffer,
+        "w",
+        compression=zipfile.ZIP_STORED,
+        allowZip64=False,
+    ) as canonical_archive:
+        canonical_archive.comment = b""
+        for member_name in FOO_CARTRIDGE_MEMBERS:
+            canonical_archive.writestr(
+                _canonical_zip_info(member_name),
+                member_bytes[member_name],
+            )
+
+    archive_bytes = cartridge_path.read_bytes()
+    if archive_bytes != canonical_buffer.getvalue():
+        raise ValueError("Archive bytes are not canonical.")
+
     return {
-        "archive_sha256": _sha256_hex(cartridge_path.read_bytes()),
+        "archive_sha256": _sha256_hex(archive_bytes),
         "member_sha256": expected_manifest["sha256"],
     }
 
