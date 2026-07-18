@@ -542,12 +542,6 @@ class CrudUI(PluginIdentityManager):
             
             all_roles = self.table()
     
-            for role in all_roles:
-                # Ensure we are saving a clean 0 or 1 to SQLite
-                should_be_active = 1 if (role.text == "Core" or role.text in default_active) else 0
-                role.done = should_be_active
-                self.table.update(role)
-
             logger.info(f"DEFAULT: Found {len(all_roles)} roles in database")
             
             changes_made = []
