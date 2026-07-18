@@ -1814,3 +1814,19 @@ Essential knowledge for 100% success rate"""
 #   --------> `-'                              
 # ```
 # 
+# ```text
+# THE WORM KATA — summon · ride · release   (never, ever the conga line)
+# 
+#    1. SUMMON              2. RIDE                        3. RELEASE
+# 
+#      ¡thump!                      o/ ← hooks set:            o
+#      ¡thump!                _.-._/|    patch·app·d·m        /|\
+#       [¦¦]               .-'     '-.......-._               / \
+#   ~~~~~||~~~~~~     ~~~-'  one bounded ride '-.~~~     ~~~~~~~~~~~~~~
+#    prompt.md is      between two clean git states       worm submerged;
+#    the thumper;      (blast boundary left & right),     receipts banked;
+#    the compile       then it goes back under            human dismounts
+#    is the summons                                       while it's green
+# 
+#         The Fremen keep the spice. The worm keeps going. Git keeps both.
+# ```
