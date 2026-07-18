@@ -27,7 +27,6 @@ ROLE_ORDER = {
 }
 
 # Plugin visibility is now determined by actual ROLES declarations in plugin files
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 class PluginIdentityManager:
     EMOJI = '👥'
