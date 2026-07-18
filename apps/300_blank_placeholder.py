@@ -1,10 +1,6 @@
 # File: apps/300_blank_placeholder.py
-import asyncio
-from datetime import datetime
 from fasthtml.common import * # type: ignore
 from loguru import logger
-from pathlib import Path
-import re
 from imports.crud import Step  # 🎯 STANDARDIZED: Import centralized Step definition
 
 ROLES = ['Developer'] # Defines which user roles can see this plugin
