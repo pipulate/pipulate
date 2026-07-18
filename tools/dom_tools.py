@@ -16,7 +16,6 @@ from rich.text import Text
 from rich.panel import Panel
 from rich.tree import Tree
 from rich.box import ROUNDED, DOUBLE, HEAVY, ASCII
-import re
 import json
 
 
