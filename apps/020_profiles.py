@@ -117,7 +117,6 @@ class ProfilesPlugin(ProfilesPluginIdentity):
         except Exception as e:
             logger.warning(f"Error counting tasks for profile {profile_id}: {e}")
             return 0
-        logger.debug(f'{display_name_for_init} ProfileCrudOperations instance created.')
 
     def register_routes(self, rt_decorator):
         self.crud_handler.register_routes(rt_decorator)
