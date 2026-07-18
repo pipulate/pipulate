@@ -285,10 +285,6 @@ class BaseCrud:
             if update_data is None:
                 return HTMLResponse(f"<div style='color:red;'>Invalid {self.name} data</div>", status_code=400)
 
-            # 🎯 ENHANCED: Add updated timestamp for backup tracking (only if table supports it)
-            if self.backup_enabled and self._has_backup_fields():
-                update_data[self.updated_field] = datetime.now().isoformat()
-
             original_item = self.table[item_id]
             old_values = {field: getattr(original_item, field, None) for field in update_data.keys()}
 
