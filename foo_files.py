@@ -164,7 +164,12 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-/home/mike/repos/botifyml/_posts/2026-07-17-deterministic-ai-coding-human-actuated-patches.md
+! rg -c "SECOND INTERPRETER" foo_files.py || echo 0
+! rg -n "EARMARK|📌" foo_files.py | wc -l
+! git log --format='%h %(trailers:key=Flip)' -5
+foo_files.py
+prompt_foo.py
+apply.py
 
 # SORT THIS POORLY PLACED OFTEN OOB AD HOC STUFF
 # scripts/git_hooks/pre-commit
