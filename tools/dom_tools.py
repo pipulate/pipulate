@@ -75,18 +75,13 @@ class _DOMHierarchyVisualizer:
             if hasattr(child, 'name') and child.name:
                 self.build_tree_structure(child, current_node, level + 1, max_depth)
 
-    def visualize_dom_content(self, html_content, source_name="DOM", verbose=True):
+    def visualize_dom_content(self, html_content, source_name="DOM"):
         soup = BeautifulSoup(html_content, 'html.parser')
         tree = Tree(Text("🌐 Document Root", style="bold white"), style="dim")
         root_element = soup.find('html') or soup
         if root_element and hasattr(root_element, 'name'):
             self.build_tree_structure(root_element, tree, 0)
-        self.console.print(tree) # <-- Always print to the internal recording console
-        if verbose:
-            # This block is now optional, it just provides a nice-to-have print
-            # to the *main* console if the tool is run directly, but the export
-            # will work regardless.
-            pass
+        self.console.print(tree)  # Print to the internal recording console for export
         return self.console.export_text()
 
 class _DOMBoxVisualizer:
