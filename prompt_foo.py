@@ -2582,7 +2582,11 @@ def main():
                 receipt += f"\n   • pattern {pat!r}: {n} hit(s)"
         print(receipt)
 
-    # 7. Handle output
+    # 7. Emit only after the payload has passed every disclosure,
+    # denylist, and secrets interlock.
+    write_context_cartridge(final_output)
+
+    # 8. Handle output
     if args.output:
         with open(args.output, 'w', encoding='utf-8') as f: f.write(final_output)
         print(f"\nOutput written to '{args.output}'")
