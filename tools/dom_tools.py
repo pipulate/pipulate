@@ -175,7 +175,7 @@ class _DOMBoxVisualizer:
         
         return Panel(panel_content, title=title, border_style=self.get_color_for_level(level), box=self.get_box_style_for_level(level), padding=(0, 1), width=calculated_width)
 
-    def visualize_dom_content(self, html_content, source_name="DOM"):
+    def visualize_dom_content(self, html_content):
         soup = BeautifulSoup(html_content, 'html.parser')
         root_element = soup.find('html') or soup
         if root_element and hasattr(root_element, 'name'):
