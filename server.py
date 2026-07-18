@@ -1949,11 +1949,6 @@ async def startup_event():
         from imports.durable_backup_system import DurableBackupManager
         backup_manager = DurableBackupManager()
 
-        # Get dynamic database paths
-        main_db_path = get_db_filename()
-        keychain_db_path = 'helpers/data/ai_keychain.db'
-        discussion_db_path = 'data/discussion.db'
-
         # Execute comprehensive backup
         aa.story_moment("Backup System", "Protecting critical data assets", BANNER_COLORS['workshop_ready'])
         backup_results = backup_manager.backup_all_databases()
