@@ -75,7 +75,7 @@ class _DOMHierarchyVisualizer:
             if hasattr(child, 'name') and child.name:
                 self.build_tree_structure(child, current_node, level + 1, max_depth)
 
-    def visualize_dom_content(self, html_content, source_name="DOM"):
+    def visualize_dom_content(self, html_content):
         soup = BeautifulSoup(html_content, 'html.parser')
         tree = Tree(Text("🌐 Document Root", style="bold white"), style="dim")
         root_element = soup.find('html') or soup
