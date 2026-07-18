@@ -358,6 +358,25 @@
           fi
 
           sorted_matches="$(printf '%s\n' "$matches" | ${pkgs.coreutils}/bin/sort)"
+
+          # THE ART WALK exit (mirrored from rgx): tail takes the N most
+          # recent, tac flips newest-first, nvim resolved explicitly since
+          # the vim alias is interactive-only; VIMINIT loads init.lua.
+          if [ "$vim_mode" -eq 1 ]; then
+            vim_list="$sorted_matches"
+            if [ -n "$lastn" ]; then
+              vim_list="$(printf '%s\n' "$vim_list" | ${pkgs.coreutils}/bin/tail -n "$lastn")"
+            fi
+            vim_list="$(printf '%s\n' "$vim_list" | ${pkgs.coreutils}/bin/tac)"
+            editor="$(command -v nvim || command -v vim || true)"
+            if [ -z "$editor" ]; then
+              echo "rgxc: no nvim or vim found on PATH" >&2
+              exit 1
+            fi
+            mapfile -t vim_files < <(printf '%s\n' "$vim_list")
+            exec "$editor" "''${vim_files[@]}"
+          fi
+
           printf '%s\n' "$sorted_matches" \
             | ${postsCommand}/bin/posts -t "$target" --stdin --shards "''${last_args[@]}" --around 2 --terms "''${terms[@]}"
 
