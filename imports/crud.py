@@ -37,11 +37,8 @@ class BaseCrud:
     """
     CRUD base class for all Apps. The CRUD is DRY and the Workflows are WET!
 
-    🎯 ENHANCED with Durable Backup Support:
-    - Auto-triggers backups on data changes
-    - Soft delete support (mark as deleted_at instead of hard delete)
-    - Gantt field support for task management
-    - Cross-platform data persistence
+    Durable data safety lives in imports/durable_backup_system.py
+    (whole-database daily copies to ~/.pipulate/backups/), not here.
     """
 
     def __init__(self, name, table, toggle_field=None, sort_field=None, sort_dict=None, pipulate_instance=None):
