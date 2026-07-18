@@ -1011,6 +1011,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: PROBE BLOCK FORMAT (banked 2026-07-18): probes ship as ONE paste-ready fenced block of bare commands; annotations live in prose outside the block, never inline. Rule-11 rider: PROBES are read-only — patch application is never a probe.
 # - EARMARK: foo-cartridge-replay-v1 (specified 2026-07-18): fresh instance + foo.zip alone -> one JSON replay statement (schema, cartridge_sha256, repository_position, actionable_request from the FINAL Prompt only, open_pinboard_debts, standing_rules, cheapest_next_probe, uncertainties). Scored as a VECTOR: exact-match mechanical fields, precision/recall on debts, final-Prompt selection, bounded-probe check, unsupported-assertion count, cross-run variance. Never one scalar. Owes: harness implementation; overlay relocation of .jupyter/lab/user-settings out of the worktree.
 # - EARMARK: "Probe, Patch, Prompt" — BANKED into the constitution (see THE KATA'S NAME under the Probe Echo Rule, 2026-07-17). Remaining owes: say it in an article title and a section header, then delete this line.
 # - EARMARK: Magic Cookie + Nix for gitless / air-gapped / client-sanitized auto-updating. Sentinel file or short token authorizes non-git update path while preserving full reproducibility and the human kill-switch. Unexpected MTG combo for the Forever Machine. (User 2026-07-17)
