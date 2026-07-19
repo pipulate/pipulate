@@ -375,7 +375,9 @@ def main():
             
     fm_memo.save()
     # GATED (banked 2026-07-19): silence = all-hits, and that silence is
-    # falsifiable via the warm-run timing receipt (~0.13s). Staleness
+    # falsifiable via the warm-run timing receipt (~0.27s warm floor,
+    # CPU-bound: real ≈ user+sys per the 2026-07-19 receipt; the earlier
+    # ~0.13s reading was the unreproduced outlier). Staleness
     # events self-announce with their exact recount; success says nothing.
     if fm_memo.misses:
         print(f"# fm cache: {fm_memo.hits} hits, {fm_memo.misses} misses", file=sys.stderr)
