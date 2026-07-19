@@ -16,18 +16,28 @@ from datetime import datetime
 from collections import defaultdict
 from pathlib import Path
 
-# Gracefully handle tiktoken
-try:
-    import tiktoken
-    def count_tokens(text: str, model: str = "gpt-4o") -> int:
+# Gracefully handle tiktoken — LAZILY (banked 2026-07-19). The import is
+# deferred into the first count_tokens() call, so warm all-hit runs (where
+# the fm and token memo tables answer everything) never reach it at all.
+# The import cost isn't reduced; it's made UNREACHABLE on the hot path.
+# Graceful degradation preserved: unavailable -> whitespace word count.
+_TIKTOKEN = None  # None = not yet attempted; False = attempted, unavailable
+
+def count_tokens(text: str, model: str = "gpt-4o") -> int:
+    global _TIKTOKEN
+    if _TIKTOKEN is None:
         try:
-            encoding = tiktoken.encoding_for_model(model)
+            import tiktoken as _tk
+            _TIKTOKEN = _tk
+        except ImportError:
+            _TIKTOKEN = False
+    if _TIKTOKEN:
+        try:
+            encoding = _TIKTOKEN.encoding_for_model(model)
             return len(encoding.encode(text))
         except Exception:
             return len(text.split())
-except ImportError:
-    def count_tokens(text: str, model: str = "") -> int:
-        return len(text.split())
+    return len(text.split())
 
 # Gracefully handle rich for the gaps report
 try:
