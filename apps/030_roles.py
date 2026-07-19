@@ -269,11 +269,6 @@ class CrudUI(PluginIdentityManager):
         except Exception:
             return "Pipulate"  # Fallback to default name
 
-    async def check_ollama_availability(self):
-        """Check if Ollama is running and has models available - uses centralized check."""
-        from imports.crud import check_ollama_availability
-        return await check_ollama_availability()
-
     def ensure_roles_initialized(self):
         """Ensure all roles from config are initialized in the database."""
         try:
