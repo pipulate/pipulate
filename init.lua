@@ -565,6 +565,33 @@ function sync_to_prompt()
     end
 end
 
+function mount_sandworm()
+    -- THE MOUNT: \m saddles the worm at the cursor. On a blank line, the
+    -- full ride template replaces it; on a non-blank line it inserts below,
+    -- protecting existing prose. Either way the cursor lands in insert mode
+    -- right after the speaker label — the old i**Me**: feel, full saddle.
+    local template = "**Me**: \n\n"
+        .. "Probe:\n\n"
+        .. "```bash\n\n```\n\n"
+        .. "Context:\n\n"
+        .. "```text\n\n```\n\n"
+        .. "Patches: [patch, app, d, m, patch, app, d, m...]\n\n"
+        .. "```diff\n\n```\n\n"
+        .. "Prompt:\n\n"
+        .. "🎤"
+    local row = vim.api.nvim_win_get_cursor(0)[1]
+    local cur = vim.api.nvim_buf_get_lines(0, row - 1, row, false)[1] or ""
+    local lines = vim.split(template, "\n")
+    if cur:match("^%s*$") then
+        vim.api.nvim_buf_set_lines(0, row - 1, row, false, lines)
+        vim.api.nvim_win_set_cursor(0, {row, 0})
+    else
+        vim.api.nvim_buf_set_lines(0, row, row, false, lines)
+        vim.api.nvim_win_set_cursor(0, {row + 1, 0})
+    end
+    vim.cmd('startinsert!')
+end
+
 function hop_off_sandworm()
     -- THE DISMOUNT: the fourth beat after Probe, Patch, Prompt. When a ride
     -- series reaches its stated goal, stage the canned wrap-up prompt above
