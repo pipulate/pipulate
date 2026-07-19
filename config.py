@@ -422,15 +422,9 @@ ESSENTIAL_TOOLS = [
     "conversation_history_stats"
 ]
 
-# 👥 Plugin Role System (STANDARDIZED ROLES)
-AVAILABLE_ROLES = {
-    'Core': 'Core system functionality and essential workflows',
-    'Developer': 'Development tools and debugging utilities', 
-    'Components': 'UI widget examples and form components',
-    'Botify Employee': 'Botify API workflows and data extraction',
-    'Tutorial': 'Learning materials and documentation',
-    'Workshop': 'Experimental and workshop content'
-}
+# 👥 Plugin Role System — derived view of ROLES_CONFIG (the single source of truth).
+# Sole live consumer is imports/crud.py, which uses only .keys(); descriptions ride along.
+AVAILABLE_ROLES = {role: cfg['description'] for role, cfg in ROLES_CONFIG.items()}
 
 # --- Dynamic Configuration ---
 
