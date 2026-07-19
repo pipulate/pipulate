@@ -115,6 +115,12 @@ AI_PHOOEY_CHOP = r"""                                                           
 # evidence rides stderr (`time`, cache counters, -X importtime), append
 # 2>&1 or the receipt arrives empty; the compiler's own [N.NNNNs] execution
 # annotation is the fallback timing witness of last resort.
+# STDERR MERGE AMENDMENT (banked 2026-07-19): the `!` executor now folds
+# stderr into every receipt (fenced `--- stderr ---`, tail-capped 2000).
+# The 2>&1 workaround is retired for new probes. Corollary ruling: probe
+# counters gate on the interesting case (misses>0) — meaningful silence
+# over unconditional chatter, because silence is backed by an independent
+# timing witness. A quiet system and a dead one must differ in receipts.
 # THE KATA'S NAME (earmark banked 2026-07-17): Probe, Patch, Prompt. Three
 # beats to every turn — hand-run receipts before, human-actuated mutation
 # during, pre-loaded compile after. Titles and section headers say it too.
