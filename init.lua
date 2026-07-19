@@ -573,6 +573,39 @@ function sync_to_prompt()
     end
 end
 
+function hop_off_sandworm()
+    -- THE DISMOUNT: the fourth beat after Probe, Patch, Prompt. When a ride
+    -- series reaches its stated goal, stage the canned wrap-up prompt above
+    -- the current article's !!! floor: VERIFY, BANK, DANGLING, SEED.
+    local original_pos = vim.fn.getcurpos()
+    local start_line = vim.fn.search('^--- BEGIN NEW ARTICLE ---$', 'bcW')
+    if start_line == 0 then
+        vim.notify("Not inside an article (no BEGIN marker above).", vim.log.levels.WARN)
+        vim.fn.setpos('.', original_pos)
+        return
+    end
+    vim.api.nvim_win_set_cursor(0, {start_line, 0})
+    local end_line = vim.fn.search('^!!!$', 'W')
+    if end_line == 0 then
+        vim.notify("Lower bound (!!!) not found.", vim.log.levels.WARN)
+        vim.fn.setpos('.', original_pos)
+        return
+    end
+    local dismount = "**Me**: Hop off the worm. This ride's stated goal is reached — dismount.\n"
+        .. "Answer all four beats, briefly:\n\n"
+        .. "1. VERIFY: restate the goal from the top of this article and confirm\n"
+        .. "   (or deny) it was met, citing THIS compile's receipts, not memory.\n"
+        .. "2. BANK: name everything that graduates — rule, earmark, todo, pin —\n"
+        .. "   as exact paste-ready lines, plus the exact lines to delete.\n"
+        .. "3. DANGLING: what carries forward unbanked? One line each, no essays.\n"
+        .. "4. SEED: end with the adhoc.txt lines (and TODO_SLUGS if narrative\n"
+        .. "   context is needed) for the next ride's first compile.\n"
+    vim.api.nvim_buf_set_lines(0, end_line - 1, end_line - 1, false, vim.split(dismount, "\n"))
+    vim.api.nvim_win_set_cursor(0, {end_line - 1, 0})
+    vim.cmd('normal! zz')
+    vim.notify("Dismount staged above the !!! floor.", vim.log.levels.INFO)
+end
+
 -- Map it to <leader>c (for "Clip to Bridge")
 vim.api.nvim_set_keymap('v', '<leader>c', '<cmd>lua sync_to_bridge()<CR>', { noremap = true, silent = true })
 
