@@ -121,12 +121,13 @@ AI_PHOOEY_CHOP = r"""                                                           
 # counters gate on the interesting case (misses>0) — meaningful silence
 # over unconditional chatter, because silence is backed by an independent
 # timing witness. A quiet system and a dead one must differ in receipts.
-# THE QUOTED-HASH AMENDMENT (PENDING 2026-07-19): `!` lines now treat only
-# a two-plus-space "  # " gap as an inline comment; a `#` inside a quoted
-# shell argument survives to the executor intact. Conviction: this compile's
-# pin-count canary (grep -c on '^# 📌') was decapitated at its quoted hash
-# into an unterminated-quote EOF — one twin landed, one died. Flips to
-# banked when a compiled receipt shows that same probe returning a count.
+# THE QUOTED-HASH AMENDMENT (banked 2026-07-19, witnessed same day): `!`
+# lines treat only a two-plus-space "  # " gap as an inline comment; a `#`
+# inside a quoted shell argument survives to the executor intact.
+# Conviction: the pin-count canary (grep -c on '^# 📌') was decapitated at
+# its quoted hash into an unterminated-quote EOF. Witness: the very next
+# compile carried that same probe returning 4 — and the parser-demo probe,
+# itself quoted-hash-bearing, survived to print the old splitter's stub.
 # THE PENDING AMENDMENT RULE (banked 2026-07-19, witnessed same compile):
 # an amendment that describes MECHANISM BEHAVIOR enters the constitution
 # tagged PENDING and stays PENDING until a compiled receipt witnesses the
