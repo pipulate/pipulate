@@ -5,7 +5,7 @@ from fasthtml.common import *
 from loguru import logger
 from imports.crud import Step, VALID_ROLES
 
-ROLES = ['Components']  # See config.AVAILABLE_ROLES for all valid roles
+ROLES = ['Components']  # See config.ROLES_CONFIG for all valid roles
 
 # 📚 Widget conversion guide: helpers/docs_sync/widget_conversion_guide.md
 
