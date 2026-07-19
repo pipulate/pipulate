@@ -32,7 +32,7 @@ AI_PHOOEY_CHOP = r"""                                                           
 # 5. Type `foo` for simple compile or `fu` for file-tree and UML version.
 # 6. Paste in consumer-tier Web UI ChatBot frontier model of your choice.
 # 7. Enjoy the fun that ensues as whatever model helps you gain traction.
-# 8. For a full list of content distillation options, type `book --help`.
+# 8. For a full list of content distillation options, just type "learn".
 
 #               > There's something happening here.  
 #               > Just in case it's not entirely clear:  
