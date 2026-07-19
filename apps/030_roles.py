@@ -738,7 +738,6 @@ def create_plugin_visibility_table(role_name, ui_constants=None):
         display_name = plugin['display_name']
 
         # Create navigation link - strip numeric prefix for URL
-        import re
         clean_module_name = re.sub(r'^\d+_', '', module_name)
         plugin_url = f"/redirect/{clean_module_name}"
 
