@@ -148,6 +148,19 @@ AI_PHOOEY_CHOP = r"""                                                           
 # passes, never one heroic pass; write the reduction down (article, earmark,
 # or chop) so the traversal is memoized and never re-derived from scratch.
 
+# THE AXIS-FORCING RULE (banked 2026-07-19): when novelty, bias escape,
+# or rival-model comparison matters, a flat 30-and-3 list is not enough.
+# Convert candidates into BIPOLAR AXES with concrete, mutually incompatible
+# anchors drawn deliberately from remote disciplines, cultures, scales,
+# organisms, or eras. Reduce by:
+#     orthogonality × prediction disagreement × observability ÷ probe cost.
+# An axis creates novelty by making the high-probability centroid illegal;
+# it becomes scientific only when its competing frames predict observably
+# different outcomes — charge every metaphor rent. The model supplies
+# associative reach; the human supplies the want and selects the three.
+# Bank the winning axis, anchors, predictions, and cheapest discriminating
+# probe so the surprise becomes reusable rather than re-derived.
+
 # THE SECOND INTERPRETER RULE (banked 2026-07-17): this file has two
 # interpreters. CPython reads the path strings; the summoned model reads
 # the prose. Comments here are therefore PROGRAM, not annotation — but a
