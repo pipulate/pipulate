@@ -10,7 +10,6 @@ Global UI constants can be accessed through the pipulate_instance when available
 """
 
 import asyncio
-import inspect
 import json
 import logging
 from collections import namedtuple
