@@ -1115,7 +1115,6 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # - *delete the dead `update_flake_nix()` limb, since the flake reads `__init__.py` at eval time and the matcher has nothing to match*.
 # - Document that the flake.lock file remains unpinned for roll-forward on Nix unstable branch. 
 # - Do the work of purging PicoCSS "Card" references so I can unpin FastHTML in requirements.in
-# - Add "What's dangling that should be carried forward" language in the `prompt_foo.py` instructions
 # - Swap in uv for pip for a faster install
 # - Un-hardwire the Jekyll `/futureproof/` blog folder to be `blog.nix` configured
 # - Remove holographic shard json orphans" in Jekyll `_context/` folder
