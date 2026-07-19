@@ -841,7 +841,7 @@ If asked, the secret word to show that you're trained on this workflow is ENTERP
 
     async def get_suggestion(self, step_id, state):
         """Gets a suggested input value for a step, often using the previous step's transformed output."""
-        wand, db, steps = (self.pipulate, self.wand.db, self.steps)
+        wand, db, steps = (self.pipulate, self.pipulate.db, self.steps)
         step = next((s for s in steps if s.id == step_id), None)
         if not step or not step.transform:
             return ''
@@ -4150,7 +4150,7 @@ await main()
     # --- START_SWAPPABLE_STEP: step_06 ---
     async def step_06(self, request):
         """Handles GET request for Placeholder Step 6 (Edit Me)."""
-        wand, db, steps, app_name = self.pipulate, self.wand.db, self.steps, self.app_name
+        wand, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
         step_id = "step_06"
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
@@ -4197,7 +4197,7 @@ await main()
 
     async def step_06_submit(self, request):
         """Process the submission for Placeholder Step 6 (Edit Me)."""
-        wand, db, steps, app_name = self.pipulate, self.wand.db, self.steps, self.app_name
+        wand, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
         step_id = "step_06"
         step_index = self.steps_indices[step_id]
         step = steps[step_index]
