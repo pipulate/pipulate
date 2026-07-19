@@ -655,7 +655,17 @@ def parse_file_list_from_config(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
     for line in lines:
         line = line.strip()
         if not line or line.startswith('#'): continue
-        parts = re.split(r'\s*<--\s*|\s*#\s*', line, 1)
+        # QUOTED-HASH GUARD: `!` command lines may legitimately contain `#`
+        # inside quoted shell arguments (grep patterns, awk programs). For
+        # those lines only a two-plus-space "  # " gap counts as an inline
+        # comment; everything tighter is command text. Conviction: the
+        # 2026-07-19 compile truncated `grep -c '^# 📌'` at its quoted `#`
+        # into an unterminated-quote EOF, killing the receipt while its
+        # quote-free twin landed.
+        if line.startswith('!'):
+            parts = re.split(r'\s{2,}#\s', line, 1)
+        else:
+            parts = re.split(r'\s*<--\s*|\s*#\s*', line, 1)
         file_path = parts[0].strip()
         comment = parts[1].strip() if len(parts) > 1 else ""
         if file_path and file_path not in seen_files:
