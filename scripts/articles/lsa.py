@@ -536,13 +536,7 @@ def main():
                 else:
                     print(f"# Error processing {filepath}", file=sys.stderr)
 
-    if cache_updated:
-        try:
-            CONFIG_DIR.mkdir(parents=True, exist_ok=True)
-            with open(cache_file, 'w', encoding='utf-8') as cf:
-                json.dump(token_cache, cf, indent=2)
-        except Exception:
-            pass
+    token_memo.save()
 
 
 def get_holographic_article_data(target_dir: str) -> list[dict]:
