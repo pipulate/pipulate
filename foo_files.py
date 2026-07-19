@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # First, the real-time book that's already written and always being written.
 
 # --- START STATS ---
-# There are 1,322 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 25 published in the last 7 days
+# There are 1,323 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 26 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -232,6 +232,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # ============================================================================
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
+
+scripts/foo_cartridge.py
 
 # SORT THIS POORLY PLACED OFTEN OOB AD HOC STUFF
 # scripts/git_hooks/pre-commit
@@ -1178,7 +1180,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # scripts/connectors/gsc.py  # [2,063 tokens | 8,529 bytes]
 # scripts/dial_spinner.py  # [398 tokens | 1,463 bytes]
 # scripts/flippers.py  # [350 tokens | 1,309 bytes]
-# scripts/foo_cartridge.py  # [2,394 tokens | 10,761 bytes]
+# scripts/foo_replay.py  # [3,411 tokens | 14,252 bytes]
 # scripts/gsc/facet_allowlist.py  # [2,538 tokens | 10,602 bytes]
 # scripts/playground/prompt_feeder.py  # [746 tokens | 3,154 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
