@@ -357,15 +357,12 @@ def main():
             date_str = filename[:10]
             post_date = datetime.strptime(date_str, '%Y-%m-%d').date()
             fm_mtime = os.path.getmtime(filepath)
-            cached_fm = fm_cache.get(filepath)
-            if cached_fm and cached_fm[0] == fm_mtime:
-                sort_order, permalink = cached_fm[1], cached_fm[2]
-                fm_hits += 1
+            cached_fm = fm_memo.lookup(filepath, fm_mtime)
+            if cached_fm is not None:
+                sort_order, permalink = cached_fm[0], cached_fm[1]
             else:
                 sort_order, permalink = fast_get_sort_order(filepath)
-                fm_cache[filepath] = [fm_mtime, sort_order, permalink]
-                fm_cache_updated = True
-                fm_misses += 1
+                fm_memo.store(filepath, fm_mtime, [sort_order, permalink])
             
             metadata.append({
                 'path': filepath,
