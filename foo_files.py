@@ -142,6 +142,15 @@ AI_PHOOEY_CHOP = r"""                                                           
 # THE KATA'S NAME (earmark banked 2026-07-17): Probe, Patch, Prompt. Three
 # beats to every turn — hand-run receipts before, human-actuated mutation
 # during, pre-loaded compile after. Titles and section headers say it too.
+# THE DISMOUNT (judgment banked 2026-07-19; mechanism PENDING): a ride
+# series ends with a fourth beat — the hop-off. The dismount prompt makes
+# the model (1) VERIFY the article's opening goal against THIS compile's
+# receipts, never memory; (2) BANK graduations as exact paste-ready lines
+# plus the exact lines to delete; (3) name the DANGLING carried forward
+# unbanked, one line each; (4) SEED the next ride's first compile with
+# adhoc.txt lines. Mechanism claim (PENDING until a compiled receipt shows
+# a \k-staged dismount riding a Prompt section): init.lua's <leader>k
+# inserts the canned block above the current article's !!! floor.
 
 # THE 30-AND-3 RULE (banked 2026-07-19): the standing ideation kata. When a
 # problem space needs mapping, generate THIRTY brief text vignettes — one or
