@@ -121,6 +121,17 @@ AI_PHOOEY_CHOP = r"""                                                           
 # counters gate on the interesting case (misses>0) — meaningful silence
 # over unconditional chatter, because silence is backed by an independent
 # timing witness. A quiet system and a dead one must differ in receipts.
+# THE PENDING AMENDMENT RULE (banked 2026-07-19, witnessed same compile):
+# an amendment that describes MECHANISM BEHAVIOR enters the constitution
+# tagged PENDING and stays PENDING until a compiled receipt witnesses the
+# behavior it asserts; the flip to banked is its own chisel-strike.
+# Conviction: the STDERR MERGE AMENDMENT was committed one compile before
+# its mechanism existed — the map outran the territory and only the
+# scheduled canary caught it. The constitution may PROPOSE one turn ahead
+# of the code; it may never ASSERT ahead of it. Rules of pure judgment
+# (30-and-3, Probe Economy) bank on articulation; rules claiming what the
+# machinery DOES require the machinery's receipt first. Never more than
+# one unwitnessed turn between an amendment and its evidence.
 # THE KATA'S NAME (earmark banked 2026-07-17): Probe, Patch, Prompt. Three
 # beats to every turn — hand-run receipts before, human-actuated mutation
 # during, pre-loaded compile after. Titles and section headers say it too.
