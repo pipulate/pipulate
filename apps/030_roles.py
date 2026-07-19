@@ -39,7 +39,6 @@ class PluginIdentityManager:
         return name
 
     @property
-
     def DB_TABLE_NAME(self):
         return self.name
 
