@@ -373,18 +373,12 @@ def main():
         except (ValueError, TypeError):
             continue
             
-    if fm_cache_updated:
-        try:
-            CONFIG_DIR.mkdir(parents=True, exist_ok=True)
-            with open(fm_cache_file, 'w', encoding='utf-8') as cf:
-                json.dump(fm_cache, cf, indent=2)
-        except Exception:
-            pass
+    fm_memo.save()
     # GATED (banked 2026-07-19): silence = all-hits, and that silence is
     # falsifiable via the warm-run timing receipt (~0.13s). Staleness
     # events self-announce with their exact recount; success says nothing.
-    if fm_misses:
-        print(f"# fm cache: {fm_hits} hits, {fm_misses} misses", file=sys.stderr)
+    if fm_memo.misses:
+        print(f"# fm cache: {fm_memo.hits} hits, {fm_memo.misses} misses", file=sys.stderr)
 
     # Sort first by date, then by the YAML sort_order
     metadata.sort(key=lambda p: (p['date'], p['sort_order']), reverse=args.reverse)
