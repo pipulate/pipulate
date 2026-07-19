@@ -32,7 +32,6 @@ class PluginIdentityManager:
         self.CONTAINER_ID = f"{self.name}-container"
 
     @property
-
     def DISPLAY_NAME(self):
         name = title_name(self.name)
         if self.EMOJI:
