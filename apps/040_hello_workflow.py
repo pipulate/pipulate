@@ -152,7 +152,6 @@ class HelloFlow:
     # --- END_CLASS_ATTRIBUTES_BUNDLE ---
 
     def __init__(self, app, pipulate, pipeline, db, app_name=APP_NAME):
-        self.pipulate = pipulate
         """
         Initialize the workflow, define steps, and register routes.
 
@@ -161,6 +160,7 @@ class HelloFlow:
         - step_02: Generate greeting using name
         - finalize: Lock workflow when complete
         """
+        self.pipulate = pipulate
         self.app = app
         self.app_name = app_name
         self.wand = pipulate
