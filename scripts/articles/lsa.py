@@ -58,6 +58,55 @@ DEFAULT_TARGETS = {
     }
 }
 
+class MtimeMemo:
+    """THE SENTINEL CACHE, UNIFIED (DRY car, banked 2026-07-19).
+
+    Filesystem-as-hash-table memo: {path: [mtime, *values]} in one JSON
+    file, invalidated per-entry on mtime change. A thin wrapper over the
+    EXACT on-disk shape both existing caches already use (json.dump,
+    indent=2), so adopting it invalidates nothing. Load fails soft to
+    empty; save is a no-op unless at least one entry missed — a warm
+    run never touches the file, which is the format-stability proof.
+    Validity policies (e.g. the token cache's anti-swallow guard) stay
+    at call sites: this class does mechanics, not judgment.
+    """
+
+    def __init__(self, cache_file):
+        self.cache_file = cache_file
+        self.table = {}
+        self.updated = False
+        self.hits = 0
+        self.misses = 0
+        if cache_file.exists():
+            try:
+                with open(cache_file, 'r', encoding='utf-8') as cf:
+                    self.table = json.load(cf)
+            except Exception:
+                self.table = {}
+
+    def lookup(self, path, mtime):
+        """Return cached values (list, mtime stripped) or None on staleness."""
+        entry = self.table.get(path)
+        if entry and entry[0] == mtime:
+            self.hits += 1
+            return entry[1:]
+        self.misses += 1
+        return None
+
+    def store(self, path, mtime, values):
+        self.table[path] = [mtime] + list(values)
+        self.updated = True
+
+    def save(self):
+        if not self.updated:
+            return
+        try:
+            self.cache_file.parent.mkdir(parents=True, exist_ok=True)
+            with open(self.cache_file, 'w', encoding='utf-8') as cf:
+                json.dump(self.table, cf, indent=2)
+        except Exception:
+            pass
+
 def load_targets():
     if TARGETS_FILE.exists():
         try:
