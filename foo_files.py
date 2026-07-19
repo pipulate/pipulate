@@ -185,6 +185,17 @@ AI_PHOOEY_CHOP = r"""                                                           
 # Bank the winning axis, anchors, predictions, and cheapest discriminating
 # probe so the surprise becomes reusable rather than re-derived.
 
+# THE DISAPPEARING INSTRUMENT RULE (banked 2026-07-19): The supreme design
+# goal is invisible utility. The system must fade into the background like a
+# stick bug—inert and unnoticeable until called upon as a guardian angel.
+# The outward deployment mechanisms (curl | bash bootstraps) are secondary to
+# the portability of the state itself; if the workspace only ever compiles
+# context cartridges (foo.zip) to document and deliver self-contained,
+# perfect problem resolutions, it has fulfilled its mission. The artifact
+# travels as a legible, open-standard text ledger (resembling AGENTS.md or
+# SKILL.md structures), presenting zero friction to the receiver while
+# packing a complete, verifier-enforced cognitive environment under the skin.
+
 # THE SECOND INTERPRETER RULE (banked 2026-07-17): this file has two
 # interpreters. CPython reads the path strings; the summoned model reads
 # the prose. Comments here are therefore PROGRAM, not annotation — but a
