@@ -344,7 +344,11 @@ def main():
                 json.dump(fm_cache, cf, indent=2)
         except Exception:
             pass
-    print(f"# fm cache: {fm_hits} hits, {fm_misses} misses", file=sys.stderr)
+    # GATED (banked 2026-07-19): silence = all-hits, and that silence is
+    # falsifiable via the warm-run timing receipt (~0.13s). Staleness
+    # events self-announce with their exact recount; success says nothing.
+    if fm_misses:
+        print(f"# fm cache: {fm_hits} hits, {fm_misses} misses", file=sys.stderr)
 
     # Sort first by date, then by the YAML sort_order
     metadata.sort(key=lambda p: (p['date'], p['sort_order']), reverse=args.reverse)
