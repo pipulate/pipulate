@@ -835,19 +835,65 @@ _extract_prompt_member = foo_cartridge._extract_prompt_member
 verify_context_cartridge = foo_cartridge.verify_context_cartridge
 
 
+# Rotation depth for hash-stamped cartridge snapshots. foo.zip stays the
+# canonical newest (every tool + probe that names foo.zip keeps working);
+# each compile also drops foo-<hash8>-NN.zip so a discussion leaves several
+# attachable targets behind, pruned to the newest FOO_CARTRIDGE_KEEP. The
+# number is monotonic (max existing + 1), never a logrotate shift, so a
+# snapshot's name is stable for its whole life — safe to attach to a ticket.
+FOO_CARTRIDGE_KEEP = 20
+_ROTATED_CARTRIDGE_RE = re.compile(r"^foo-[0-9a-f]{8}-(\d+)\.zip$")
+
+
 def write_context_cartridge(
     final_output: str,
     output_path: Optional[Path] = None,
 ) -> Path:
-    """Repo-lane wrapper over the stdlib core: default path + captured logger."""
-    cartridge_path = (
-        Path(output_path)
-        if output_path is not None
-        else Path(REPO_ROOT) / "foo.zip"
+    """Repo-lane wrapper over the stdlib core: default path + captured logger.
+
+    The default lane ROTATES: it writes the canonical foo.zip unchanged, then
+    archives a hash-stamped, monotonically-numbered snapshot beside it and
+    prunes to the newest FOO_CARTRIDGE_KEEP. An explicit output_path opts out
+    of rotation (single-file behavior, for tests and callers that name their
+    own target). Rotation failures never block the compile — foo.zip is
+    already written and verified before the snapshot is even attempted.
+    """
+    if output_path is not None:
+        return foo_cartridge.write_context_cartridge(
+            final_output, Path(output_path), log=logger.print
+        )
+
+    repo = Path(REPO_ROOT)
+    canonical = repo / "foo.zip"
+    result = foo_cartridge.write_context_cartridge(
+        final_output, canonical, log=logger.print
     )
-    return foo_cartridge.write_context_cartridge(
-        final_output, cartridge_path, log=logger.print
-    )
+
+    try:
+        short_hash = foo_cartridge.verify_context_cartridge(canonical)["archive_sha256"][:8]
+        seq = 0
+        for existing in repo.glob("foo-*.zip"):
+            match = _ROTATED_CARTRIDGE_RE.match(existing.name)
+            if match:
+                seq = max(seq, int(match.group(1)))
+        seq += 1
+        snapshot = repo / f"foo-{short_hash}-{seq:02d}.zip"
+        shutil.copy2(canonical, snapshot)
+
+        rotated = sorted(
+            (p for p in repo.glob("foo-*.zip") if _ROTATED_CARTRIDGE_RE.match(p.name)),
+            key=lambda p: int(_ROTATED_CARTRIDGE_RE.match(p.name).group(1)),
+        )
+        for stale in rotated[:-FOO_CARTRIDGE_KEEP]:
+            stale.unlink()
+        logger.print(
+            f"🗂️  Rotated cartridge snapshot: {snapshot.name} "
+            f"(keeping newest {min(len(rotated), FOO_CARTRIDGE_KEEP)} of {FOO_CARTRIDGE_KEEP})"
+        )
+    except Exception as exc:
+        logger.print(f"Warning: cartridge rotation skipped: {exc}")
+
+    return result
 
 
 def copy_to_clipboard(text: str):
