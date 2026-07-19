@@ -665,6 +665,7 @@ map('n', '<leader>a', '<cmd>lua jump_next_active_chop()<CR>', opts)  -- Jump to 
 
 -- Article / Workflow Selection
 map('n', '<leader>h', '<cmd>lua select_current_article()<CR>', opts)  -- Highlight (select) current article block
+map('n', '<leader>k', '<cmd>lua hop_off_sandworm()<CR>', opts)  -- Hop off: stage the dismount wrap-up above !!!
 
 -- Map it to <leader>p (for "Clip to Prompt")
 vim.api.nvim_set_keymap('v', '<leader>p', '<cmd>lua sync_to_prompt()<CR>', { noremap = true, silent = true })
