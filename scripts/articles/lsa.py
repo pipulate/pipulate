@@ -262,6 +262,22 @@ def main():
     if args.fmt not in ('paths', 'slugs', 'dated-slugs'):
         print(f"# 🎯 Target: {targets[target_key]['name']} [{sort_desc}]\n", flush=True)
 
+    # THE FRONTMATTER MEMO TABLE (30-and-3 winner #5, banked 2026-07-19):
+    # (path, mtime) -> [sort_order, permalink]. The token cache below already
+    # memoizes tokenization; this extends the same sentinel pattern to the
+    # YAML frontmatter reads, the last remaining per-file I/O on warm runs.
+    fm_cache_file = CONFIG_DIR / "fm_cache.json"
+    fm_cache = {}
+    fm_cache_updated = False
+    fm_hits = 0
+    fm_misses = 0
+    if fm_cache_file.exists():
+        try:
+            with open(fm_cache_file, 'r', encoding='utf-8') as cf:
+                fm_cache = json.load(cf)
+        except Exception:
+            fm_cache = {}
+
     metadata = []
     # --- PASS 1: FAST METADATA EXTRACTION ---
     if args.stdin:
