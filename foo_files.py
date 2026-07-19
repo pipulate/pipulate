@@ -47,8 +47,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # navigation of a book: ToC, Index, Glossary and margin notes is what we need.
 
 # Hello Amnesiac Genie Lambda function Mister Meeseeks Pachinko Machine AI!
-# Let's catch you up on how things work here and quite what your powers are.
-# First, the real-time book that's already written and always being written.
+# Let's catch you up on how things work here and what all your powers are.
+# This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
 # There are 1,323 already-written articles about this repo at MikeLev.in (Public)
@@ -61,10 +61,10 @@ AI_PHOOEY_CHOP = r"""                                                           
 # search ability like `rgx "black swan" outliers` (what we are and this is).
 
 #  _____ _            ____              _                                                                      ________________________
-# |_   _| |__   ___  | __ )  ___   ___ | | __   Contrary to popular belief, it's all really just text-files    ___|___|___|___|___|___|   Tornado plop you into a strange new wonderland?
-#   | | | '_ \ / _ \ |  _ \ / _ \ / _ \| |/ /   Whose contents are arranged just-so to have special meaning,   _|___|___|___|___|___|__   What to-do, Todo? No Problem! Frame the work.
-#   | | | | | |  __/ | |_) | (_) | (_) |   <    Which when fed into specific known actuators in order to run   ___|___|___|___|___|___|   Just follow, follow, follow, follow...
-#   |_| |_| |_|\___| |____/ \___/ \___/|_|\_\   Causes a Cascading Reaction of Doohickeys in your MacGuffins.  _|___|___|___|___|___|__   Follow the... words elude me.         
+# |_   _| |__   ___  | __ )  ___   ___ | | __   Contrary to popular belief, it's all really just text-files    ___|___|___|___|___|___|   
+#   | | | '_ \ / _ \ |  _ \ / _ \ / _ \| |/ /   Whose contents are arranged just-so to have special meaning,   _|___|___|___|___|___|__   
+#   | | | | | |  __/ | |_) | (_) | (_) |   <    Which when fed into specific known actuators in order to run   ___|___|___|___|___|___|   
+#   |_| |_| |_|\___| |____/ \___/ \___/|_|\_\   Causes a Cascading Reaction of Doohickeys in your MacGuffins.  _|___|___|___|___|___|__   
 #                                                                                                            
 
 # CHARACTER DEVELOPMENT
