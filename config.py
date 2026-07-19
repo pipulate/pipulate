@@ -403,10 +403,6 @@ ESSENTIAL_TOOLS = [
     "conversation_history_stats"
 ]
 
-# 👥 Plugin Role System — derived view of ROLES_CONFIG (the single source of truth).
-# Sole live consumer is imports/crud.py, which uses only .keys(); descriptions ride along.
-AVAILABLE_ROLES = {role: cfg['description'] for role, cfg in ROLES_CONFIG.items()}
-
 # --- Dynamic Configuration ---
 
 ENV_FILE = Path('data/current_environment.txt')
