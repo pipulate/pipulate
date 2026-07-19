@@ -1785,8 +1785,20 @@ def main():
                     # code while stdout carries the receipt. Preserve the receipt,
                     # annotate the code, never silently drop the punch.
                     content = f"# NON-ZERO EXIT {proc.returncode} (stdout preserved as receipt)\n{content}"
-                    if cmd_stderr.strip():
-                        content += f"\n# STDERR:\n{cmd_stderr.strip()}"
+                # STDERR MERGE (banked 2026-07-19; mechanism landed one compile
+                # after the amendment — the canary receipt convicted the gap).
+                # Diagnostics ride stderr by Unix design (`time`, cache
+                # counters, -X importtime); capturing stdout alone kept the
+                # payload channel and discarded the receipt channel. Fold
+                # stderr into EVERY receipt, fenced and tail-capped per the
+                # Probe Economy Rule so a runaway stream can't flood the
+                # manifest.
+                _err = cmd_stderr.strip()
+                if _err:
+                    _CAP = 2000
+                    if len(_err) > _CAP:
+                        _err = "[stderr truncated to last 2000 chars]\n" + _err[-_CAP:]
+                    content += f"\n--- stderr ---\n{_err}"
                 
                 processed_files_data.append({
                     # Marker parity: the payload label IS the adhoc.txt line.
