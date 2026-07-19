@@ -419,7 +419,6 @@ class CrudUI(PluginIdentityManager):
     async def render_roles_list(self):
         """Render just the roles list for HTMX updates."""
         items_query = self.table()
-        roles_config = getattr(self.config, 'ROLES_CONFIG', {})
         items = sorted(items_query, key=lambda item: item.priority if item.priority is not None else 99)
         
         return Ol(
