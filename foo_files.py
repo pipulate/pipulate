@@ -233,7 +233,19 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
+# ---------------------------------------------------------------------------
+# THE PORTABLE CARTRIDGE — the detachable seed of the Software Von Neumann Probe
+# ---------------------------------------------------------------------------
+# prompt_foo.py is the PRESS that mints cartridges; these two stdlib-only files
+# ARE the cartridge — the payload that crosses over to a foreign machine or model
+# and reconstitutes itself with NO repo checkout, NO pip, NO API keys. A clean-room
+# receiver needs exactly three things: foo_cartridge.py, foo_replay.py, and a foo.zip.
+# foo_cartridge.py = the seed coat (deterministic, byte-reproducible writer + verifier,
+# now rotating hash-stamped snapshots); foo_replay.py = germination on the host
+# (mech / playback / score / selftest). Chapter 4's "destined to be extracted" made
+# literal, and the replicating half of Chapter 1.
 scripts/foo_cartridge.py
+scripts/foo_replay.py
 
 # SORT THIS POORLY PLACED OFTEN OOB AD HOC STUFF
 # scripts/git_hooks/pre-commit
