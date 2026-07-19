@@ -69,25 +69,6 @@ BANNER_COLORS = {
     'ascii_box': 'ASCII'
 }
 
-# Temporary friendly_names to avoid circular imports - TODO: refactor into shared config
-STEP_FRIENDLY_NAMES = {
-    'step_01': 'Step 1',
-    'step_02': 'Step 2', 
-    'step_03': 'Step 3',
-    'step_04': 'Step 4',
-    'step_05': 'Step 5',
-    'step_06': 'Step 6',
-    'step_07': 'Step 7',
-    'step_08': 'Step 8',
-    'step_09': 'Step 9',
-    'step_10': 'Step 10',
-    'step_analysis': 'Analysis',
-    'step_visualization': 'Visualization',
-    'step_configuration': 'Configuration',
-    'step_download': 'Download',
-    'step_processing': 'Processing'
-}
-
 # Complete centralized configuration - single source of truth
 # UI & Navigation
 HOME_APP = 'introduction'
