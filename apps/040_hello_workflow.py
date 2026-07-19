@@ -166,10 +166,6 @@ class HelloFlow:
         self.wand = pipulate
         wand = self.wand
 
-        # THE FIX: Instantiate the wand!
-        self.wand = pipulate
-        wand = self.wand
-
         self.pipeline = pipeline
         self.steps_indices = {}
         self.message_queue = self.wand.get_message_queue()
