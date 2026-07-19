@@ -1081,8 +1081,6 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # - SLOGAN candidate: "Myelinated Reproducibility 4 Singularity ~/ Amnesiac Genie" — find the right home (constitution header? tagline?). (User 2026-07-17)
 # - NEVER put anything in the manifest that the PII system stopped from landing!
 # - EARMARK: PII GREEDY-NAME INCIDENT (banked 2026-07-19): bare given-name rules (\bTaylor\b et al.) mangled innocent prose ("Brave Little Taylor" -> "Brave Little Client Manager"), so pii_substitutions.txt was emptied — shield DOWN. Fix shipped same day: curated restore keeps full-name/email/domain/Slack rules, retires bare given names. Verify the next few public articles read clean AND still redact, then delete this line.
-# - Write the "I am an Amnesiac Genie *POOF* loop. Use Ollama. Variation on coin-flip? Just to show closing tab to stop it."
-# - Put a creativity forcing function on such a loop. Demonstrate how dramatically different small differences in initial conditions can really be
 # - *make version_sync update `assets/installer/install.sh` (the source) instead of only the downstream Pipulate.com copy, breaking the release/sync ping-pong*
 # - *delete the dead `update_flake_nix()` limb, since the flake reads `__init__.py` at eval time and the matcher has nothing to match*.
 # - Document that the flake.lock file remains unpinned for roll-forward on Nix unstable branch. 
