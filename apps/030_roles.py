@@ -295,10 +295,6 @@ class CrudUI(PluginIdentityManager):
         except Exception as e:
             logger.error(f"ROLES: Error during role initialization: {e}")
 
-    def initialize_roles(self):
-        """Legacy method name for backward compatibility."""
-        return self.ensure_roles_initialized()
-
     def register_plugin_routes(self):
         """Register the routes for the roles plugin."""
         prefix = self.ENDPOINT_PREFIX
