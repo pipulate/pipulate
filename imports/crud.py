@@ -19,10 +19,10 @@ from collections import namedtuple
 # Eliminates 34+ identical namedtuple definitions across plugins
 Step = namedtuple('Step', ['id', 'done', 'show', 'refill', 'transform'], defaults=(None,))
 
-# 👥 STANDARDIZED ROLES - Import from config to avoid role inconsistencies
+# 👥 STANDARDIZED ROLES - Derived from ROLES_CONFIG, the single source of truth
 try:
-    from config import AVAILABLE_ROLES
-    VALID_ROLES = list(AVAILABLE_ROLES.keys())
+    from config import ROLES_CONFIG
+    VALID_ROLES = list(ROLES_CONFIG.keys())
 except ImportError:
     # Fallback for development/testing
     VALID_ROLES = ['Core', 'Developer', 'Components', 'Botify Employee', 'Tutorial', 'Workshop']
