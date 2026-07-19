@@ -405,18 +405,6 @@ class CrudUI(PluginIdentityManager):
             response.headers['HX-Refresh'] = 'true'
             return response
 
-    async def render_roles_list(self):
-        """Render just the roles list for HTMX updates."""
-        items_query = self.table()
-        items = sorted(items_query, key=lambda item: item.priority if item.priority is not None else 99)
-        
-        return Ol(
-            *[self.app_instance.render_item(item) for item in items],
-            id=self.LIST_ID, cls="sortable pl-lg",
-            hx_post=f"{self.ENDPOINT_PREFIX}_sort", hx_swap="none",
-            data_plugin_name=self.name
-        )
-
     def is_in_default_state(self):
         """Check if current roles state matches the default configuration."""
         try:
