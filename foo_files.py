@@ -112,6 +112,18 @@ AI_PHOOEY_CHOP = r"""                                                           
 # beats to every turn — hand-run receipts before, human-actuated mutation
 # during, pre-loaded compile after. Titles and section headers say it too.
 
+# THE 30-AND-3 RULE (banked 2026-07-19): the standing ideation kata. When a
+# problem space needs mapping, generate THIRTY brief text vignettes — one or
+# two sentences each, breadth over depth, no self-censoring past the obvious
+# first octave — then select THREE favorites and justify each selection
+# explicitly. The 30 is the fan-out (cheap divergence; quantity is the
+# forcing function); the 3 is the reduce (the human-taste bottleneck that
+# banks wins per the 80/20 rule). Pairs with the 2-axis grid: axes surface
+# black-swan outliers, 30-and-3 surfaces candidates. Selections should name
+# what makes each winner load-bearing, not merely appealing. Progressive
+# passes, never one heroic pass; write the reduction down (article, earmark,
+# or chop) so the traversal is memoized and never re-derived from scratch.
+
 # THE SECOND INTERPRETER RULE (banked 2026-07-17): this file has two
 # interpreters. CPython reads the path strings; the summoned model reads
 # the prose. Comments here are therefore PROGRAM, not annotation — but a
