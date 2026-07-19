@@ -152,6 +152,13 @@ AI_PHOOEY_CHOP = r"""                                                           
 # above the current article's !!! floor. Witness: the \k-staged block rode
 # a Prompt section in the same compile whose receipt still showed PENDING —
 # flipped by patch, never by drift, one unwitnessed turn exactly as allowed.
+# THE MOUNT (banked 2026-07-19, witnessed same compile): the zeroth beat.
+# <leader>m runs mount_sandworm(): full saddle (Probe / Context / Patches /
+# Prompt / 🎤) dropped at the cursor — blank line replaced, non-blank
+# preserved with insert-below — landing in insert mode after **Me**: .
+# Witness: receipt shows def@568 + map@663, "Probe:" literal migrated to
+# 574 (once), clean headless load. \j cuts the slate, \m mounts, \k
+# dismounts: three keys bracketing Probe, Patch, Prompt.
 
 # THE 30-AND-3 RULE (banked 2026-07-19): the standing ideation kata. When a
 # problem space needs mapping, generate THIRTY brief text vignettes — one or
