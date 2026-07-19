@@ -196,6 +196,17 @@ AI_PHOOEY_CHOP = r"""                                                           
 # SKILL.md structures), presenting zero friction to the receiver while
 # packing a complete, verifier-enforced cognitive environment under the skin.
 
+# THE ARTIFACT-OF-RECORD RULE (banked 2026-07-19): A discussion may produce
+# many complete cartridge snapshots. They are successive full editions, not
+# interdependent parts or deltas. The artifact of record is the single
+# hash-stamped snapshot (foo-<hash8>-NN.zip) produced by the final deliberate
+# compile after the flat narrative, router selection, actionable Prompt,
+# sanitization, and receipts have been reviewed. Attach that one file.
+# foo.zip is the mutable working alias; older numbered snapshots remain local
+# rollback history. The ticket or receiver owns the durable copy once attached.
+# No per-ticket directories, resettable counters, nested cartridges, or
+# correlation manifests are required until a real handoff demonstrates friction.
+
 # THE SECOND INTERPRETER RULE (banked 2026-07-17): this file has two
 # interpreters. CPython reads the path strings; the summoned model reads
 # the prose. Comments here are therefore PROGRAM, not annotation — but a
