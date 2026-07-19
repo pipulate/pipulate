@@ -321,13 +321,8 @@ class CrudUI(PluginIdentityManager):
     async def landing(self, request=None):
         """Render the main roles management interface."""
         items_query = self.table()
-        roles_config = getattr(self.config, 'ROLES_CONFIG', {})
-        
         items = sorted(items_query, key=lambda item: item.priority if item.priority is not None else 99)
 
-        # Check if Ollama is available
-        ollama_available = await self.check_ollama_availability()
-        
         return Div(
             Card(
                 H3(self.H3_HEADER),
