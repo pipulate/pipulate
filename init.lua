@@ -76,6 +76,14 @@ function new_journal_entry()
     local entry = "--------------------------------------------------------------------------------\n"
                   .. "date: " .. date .. "\n---\n\n"
                   .. "--- BEGIN NEW ARTICLE ---\n\n**Me**:  \n\n"
+                  .. "Probe:\n\n"
+                  .. "```bash\n\n```\n\n"
+                  .. "Context:\n\n"
+                  .. "```text\n\n```\n\n"
+                  .. "Patches: [patch, app, d, m, patch, app, d, m...]\n\n"
+                  .. "```diff\n\n```\n\n"
+                  .. "Prompt:\n\n"
+                  .. "🎤\n\n"
                   .. "!!!"
                   .. string.rep("\n", 23)  -- Restore the psychological blank slate
 
