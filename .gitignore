@@ -124,3 +124,5 @@ Notebooks/Onboarding.ipynb
 
 # Canonical context cartridge - generated on every successful compile
 foo.zip
+# Rotated, hash-stamped cartridge snapshots (foo-<hash8>-NN.zip); pruned to newest 20
+foo-*.zip
