@@ -327,6 +327,15 @@ def main():
         except (ValueError, TypeError):
             continue
             
+    if fm_cache_updated:
+        try:
+            CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+            with open(fm_cache_file, 'w', encoding='utf-8') as cf:
+                json.dump(fm_cache, cf, indent=2)
+        except Exception:
+            pass
+    print(f"# fm cache: {fm_hits} hits, {fm_misses} misses", file=sys.stderr)
+
     # Sort first by date, then by the YAML sort_order
     metadata.sort(key=lambda p: (p['date'], p['sort_order']), reverse=args.reverse)
 
