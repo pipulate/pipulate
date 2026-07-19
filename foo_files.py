@@ -425,6 +425,18 @@ scripts/ai.py     #  <-- How I constantly use local AI to write git commit messa
 #    dynamic-length emitter in prompt_foo.py; Phase 3: post-scrub foo.zip writer
 #    (payload.md + prompt.md + manifest.json, never adhoc.txt) + .zip gitignore.
 
+# 📌 2026-07-19 | /home/mike/repos/trimnoir/_posts/2026-07-19-engineering-deterministic-ai-workflows.md
+#    canonical_url: https://mikelev.in/futureproof/engineering-deterministic-ai-workflows/
+#    Falsification as a service: prediction error at shared interfaces;
+#    30-and-3 fan-out; axis collisions; Tanagra/SOKATH; human-taste reduce;
+#    selection metric: orthogonality × prediction disagreement ×
+#    observability ÷ probe cost.
+#    OWES: one bounded executable proof that baseline and axis-forced runs
+#    produce rival, observably different predictions — not merely stranger
+#    prose. Cheapest surface wins: scripts/ai.py mode or a tiny harness; the
+#    self-feeding coin-flip loop is optional. Graduate when the rule, probe,
+#    and receipt are banked. This debt does not block cartridge replay work.
+
 # ============================================================================
 # VI. Hello World! - You think you've seen Hello Worlds? You don't know Jack.
 # ============================================================================
