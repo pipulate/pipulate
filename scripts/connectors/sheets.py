@@ -5,8 +5,9 @@ sheets.py — A Unix-philosophy gateway to Google Sheets for Prompt Fu context.
 
 Golden-path modes, auto-detected from the single positional argument:
 
-  python scripts/connectors/sheets.py                        # IDENTITY: usage + the service-account email to share Sheets with
-  python scripts/connectors/sheets.py <URL-or-ID>            # LIST: spreadsheet title + every tab with a rows x cols size gauge
+  python scripts/connectors/sheets.py                        # IDENTITY: OAuth wiring status; mints the token interactively
+  python scripts/connectors/sheets.py <URL-or-ID>            # STACK: every tab's ACTUAL data rectangle, stacked vertically with payload-grammar sentinels + clickable per-tab #gid= URLs (over --budget: true-extent gauge instead)
+  python scripts/connectors/sheets.py <URL-or-ID> --list     # LIST: metadata-only gauge (grid ALLOCATION, zero cell data fetched)
   python scripts/connectors/sheets.py <URL-or-ID> --sheet Metrics             # FETCH: first --max rows of one named tab
   python scripts/connectors/sheets.py <URL-or-ID> --range "'Metrics'!A1:F50"  # FETCH: explicit A1 range
 
@@ -21,11 +22,18 @@ spreadsheet coordinate — a full docs.google.com URL (the /d/<ID>/ segment is
 extracted; a #gid= fragment selects that tab and triggers a bounded fetch of
 it) or a bare spreadsheet ID.
 
-SIZE DEFENSE (context windows are finite): LIST mode always reports every
-tab's rows x cols x cells so an overflow is visible BEFORE fetching, and flags
-tabs too big for a bare --sheet pull. Fetches are row-bounded SERVER-side
-('{Tab}'!1:N) when only --sheet is given, and row-capped client-side by
--n/--max (default 25) in every mode, per THE PROBE ECONOMY RULE.
+SIZE DEFENSE (context windows are finite): STACK mode is governed by a TOTAL
+data-cell --budget (default 10,000); over budget nothing dumps — a true-extent
+gauge prints instead, which IS the drill-down map. --sheet fetches are
+row-bounded SERVER-side ('{Tab}'!1:N) and every --sheet/--range fetch is
+row-capped client-side by -n/--max (default 25), per THE PROBE ECONOMY RULE.
+
+GRID-VS-DATA (convicted 2026-07-20): metadata gridProperties report grid
+ALLOCATION (new tabs read 1000x26 whether they hold 3 rows or 900), while
+spreadsheets.values responses return the TRIMMED used rectangle — trailing
+empty rows/cols never cross the wire. Data extents therefore come from values
+responses (len of rows x max row width), never from metadata; and no Pandas
+is needed for acquisition — Pandas belongs downstream in measure.py.
 
 Auth (oauth_token_file — the gmail.py pattern; the human's OWN Google account):
   App identity:  ~/.config/pipulate/credentials.json
@@ -220,6 +228,65 @@ def list_tabs(service, sid, gid, max_items):
           f"--sheet \"{target}\"   (first rows, capped by --max)")
 
 
+def stack_tabs(service, sid, fmt, budget):
+    """STACK mode (the bare-ID default): every tab's ACTUAL data rectangle,
+    stacked vertically with payload-grammar sentinels and a clickable #gid=
+    URL per tab. One metadata call resolves titles/gids; one values.batchGet
+    pulls every used rectangle. Governed by a total-cell budget: over budget,
+    nothing dumps — the true-extent gauge prints instead.
+    """
+    meta = service.spreadsheets().get(
+        spreadsheetId=sid,
+        fields='properties.title,sheets.properties'
+    ).execute()
+    title = meta.get('properties', {}).get('title', '(untitled)')
+    tabs = [t.get('properties', {}) for t in meta.get('sheets', [])]
+    if not tabs:
+        print(f"# {title}  [spreadsheetId: {sid}] — no tabs")
+        return
+    resp = service.spreadsheets().values().batchGet(
+        spreadsheetId=sid,
+        ranges=["'" + p.get('title', '').replace("'", "''") + "'" for p in tabs],
+        majorDimension='ROWS'
+    ).execute()
+    value_ranges = resp.get('valueRanges', [])
+    extents = []
+    for p, vr in zip(tabs, value_ranges):
+        rows = vr.get('values', [])
+        n_rows = len(rows)
+        n_cols = max((len(r) for r in rows), default=0)
+        extents.append((p, rows, n_rows, n_cols))
+    total_cells = sum(r * c for _, _, r, c in extents)
+    base_url = f"https://docs.google.com/spreadsheets/d/{sid}/edit"
+
+    if total_cells > budget:
+        print(f"# {title}  [spreadsheetId: {sid}] — {len(extents)} tab(s), "
+              f"{total_cells:,} data cells > budget {budget:,} — STACK withheld\n")
+        print(f"{'rows':>7}  {'cols':>5}  {'cells':>9}  tab | tab URL")
+        for p, _, r, c in extents:
+            print(f"{r:>7}  {c:>5}  {r * c:>9,}  {p.get('title', '?')} | "
+                  f"{base_url}#gid={p.get('sheetId', 0)}")
+        print(f"\n# Next: python scripts/connectors/sheets.py {sid} "
+              "--sheet \"<Tab>\"   (one bounded tab)")
+        print(f"# Or raise the ceiling: python scripts/connectors/sheets.py "
+              f"{sid} --budget {total_cells}")
+        return
+
+    print(f"# {title}  [spreadsheetId: {sid}] — {len(extents)} tab(s), "
+          f"{total_cells:,} data cells (full stack)\n")
+    for p, rows, n_rows, n_cols in extents:
+        name = p.get('title', '?')
+        print(f'--- START: TAB "{name}" ({n_rows} rows x {n_cols} cols) ---')
+        print(f"# {base_url}#gid={p.get('sheetId', 0)}")
+        if rows:
+            _emit(rows, fmt)
+        else:
+            print("(empty tab)")
+        print(f'--- END: TAB "{name}" ---\n')
+    print(f"# Next: python scripts/connectors/sheets.py {sid} "
+          "--range \"'<Tab>'!A1:Z50\" --format json   (one precise slab)")
+
+
 def resolve_gid_title(service, sid, gid):
     """Map a URL's #gid= fragment to its tab title (None when not found)."""
     meta = service.spreadsheets().get(
@@ -294,6 +361,10 @@ def main():
     parser.add_argument('--format', choices=['tsv', 'json', 'markdown'],
                         default='tsv',
                         help='Output format (default: tsv — compact and diffable).')
+    parser.add_argument('--list', action='store_true',
+                        help='Metadata-only tab gauge (grid allocation; zero cell data fetched).')
+    parser.add_argument('--budget', type=int, default=10000,
+                        help='STACK-mode ceiling in TOTAL data cells (default: 10000).')
     args = parser.parse_args()
 
     if args.ref is None:
@@ -311,7 +382,10 @@ def main():
                     fetch_values(service, sid, title, None,
                                  args.format, args.max)
                     return
-            list_tabs(service, sid, gid, args.max)
+            if args.list:
+                list_tabs(service, sid, gid, args.max)
+            else:
+                stack_tabs(service, sid, args.format, args.budget)
         else:
             fetch_values(service, sid, args.sheet, args.cell_range,
                          args.format, args.max)
