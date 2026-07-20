@@ -51,6 +51,14 @@ of these four.
 - gsc.py         properties / top queries / raw searchanalytics JSON (service_account_file)
 - sheets.py      identity / bare URL-or-ID STACKS every tab's actual data rectangle with sentinel separators and per-tab #gid= URLs, budget-governed / --list metadata gauge / bounded --sheet and --range values (oauth_token_file, gmail pattern; own sheets_token.json; data extents from values responses, never gridProperties)
 
+## Downstream stages (deliberately not connectors)
+
+- `scripts/map_sheet.py` consumes timestamped, sentinel-fenced Sheets STACK
+  output and emits a draft `SheetApiMapping` JSON artifact. It exposes header
+  ambiguity, records lookup columns by index and normalized name, samples their
+  values to reject false URL matches, and proposes API correspondences for
+  human confirmation before QA or automation.
+
 ## Minting a new connector
 
 Copy the closest existing connector, keep the docstring shape, keep the
