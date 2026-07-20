@@ -318,9 +318,10 @@ def main():
     except HttpError as e:
         die(
             f"Sheets API error: {e}\n"
-            "If this is 403/404: confirm the Google Sheets API is enabled for the\n"
-            "key's Cloud project AND the spreadsheet is shared with the service\n"
-            "account's client_email (run with no argument to print it)."
+            "If this is 403 SERVICE_DISABLED: enable the Google Sheets API in the\n"
+            "OAuth client's Cloud project (run with no argument to print its\n"
+            "project_id). If 403/404 otherwise: confirm YOUR Google account can\n"
+            "open this spreadsheet in a browser — OAuth reads as you."
         )
 
 
