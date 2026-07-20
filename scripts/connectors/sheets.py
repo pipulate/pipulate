@@ -27,18 +27,26 @@ tabs too big for a bare --sheet pull. Fetches are row-bounded SERVER-side
 ('{Tab}'!1:N) when only --sheet is given, and row-capped client-side by
 -n/--max (default 25) in every mode, per THE PROBE ECONOMY RULE.
 
-Auth (service_account_file — headless by construction, no browser dance ever):
-  PIPULATE_SHEETS_KEY env var
-    -> ~/.config/pipulate/connectors.json sheets.paths.service_account
-      -> ~/.config/pipulate/connectors.json gsc.paths.service_account
-         (the SAME key JSON serves both Google APIs; only the scope differs)
-        -> ~/.config/pipulate/service-account-key.json
-Share each target spreadsheet with the service account's client_email as
-Viewer; run with no argument to print that email.
+Auth (oauth_token_file — the gmail.py pattern; the human's OWN Google account):
+  App identity:  ~/.config/pipulate/credentials.json
+                 (override: PIPULATE_SHEETS_CREDENTIALS; the same Desktop-app
+                 OAuth client gmail.py uses — Cloud project
+                 work-integrations-500916)
+  User session:  ~/.config/pipulate/sheets_token.json
+                 (override: PIPULATE_SHEETS_TOKEN — a SEPARATE token from
+                 gmail_token.json, because token files are scope-scoped and
+                 one connector must never poison another's token)
 
-Wallet-walk hardening (convicted 2026-07-20): connectors.json carries
-non-object top-level entries (a schema tag string), so every wallet descent
-type-checks with isinstance(entry, dict) before touching keys.
+The first run must happen INTERACTIVELY in a real terminal so the one-time
+browser OAuth handshake can mint the durable token (running with no argument
+does this). After that, `!` invocations in the compile lane refresh the token
+silently and never block. There is NO sharing gate in this lane: whatever
+Sheets your Google account can open, this connector can read.
+
+AUTH-KIND RESIDUE conviction (2026-07-20): v1 of this file inherited gsc's
+service_account plumbing by pattern-proximity, sending the API-enablement
+toggle to the wrong project for the wrong credential. Auth kind is a USER
+story decision: Pipulate humans own Google accounts -> OAuth.
 
 COMPILE-LANE CAUTION: LIST/FETCH output can contain spreadsheet titles, tab
 names, and cell data. This lane assumes non-training AI accounts; still, keep
