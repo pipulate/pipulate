@@ -103,49 +103,58 @@ def parse_spreadsheet_ref(ref):
     )
 
 
-def _wallet():
-    if WALLET_FILE.exists():
-        try:
-            return json.loads(WALLET_FILE.read_text(encoding='utf-8'))
-        except (json.JSONDecodeError, OSError):
-            pass
-    return {}
-
-
-def _wallet_key_path(wallet, connector):
-    entry = wallet.get(connector)
-    if isinstance(entry, dict):  # schema-tag strings ride the wallet too
-        p = (entry.get('paths') or {}).get('service_account')
-        if p:
-            return Path(p).expanduser()
-    return None
-
-
-def resolve_key_path():
-    """PIPULATE_SHEETS_KEY env -> wallet sheets -> wallet gsc -> canonical default."""
-    env = os.environ.get('PIPULATE_SHEETS_KEY')
-    if env:
-        return Path(env).expanduser()
-    wallet = _wallet()
-    for connector in ('sheets', 'gsc'):
-        p = _wallet_key_path(wallet, connector)
-        if p:
-            return p
-    return Path.home() / '.config' / 'pipulate' / 'service-account-key.json'
+def _save_token(creds):
+    """Persist the user session token to the durable, gitignored path."""
+    token_path = Path(TOKEN_PATH)
+    token_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(token_path, 'w', encoding='utf-8') as f:
+        f.write(creds.to_json())
 
 
 def get_service():
-    key_path = resolve_key_path()
-    if not key_path.exists():
+    """Authenticated Sheets service; mints/refreshes the OAuth token as needed."""
+    creds = None
+    if os.path.exists(TOKEN_PATH):
+        try:
+            creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+        except (json.JSONDecodeError, ValueError):
+            # Empty or poisoned token (the truncated-write trap). Re-auth.
+            creds = None
+
+    if creds and creds.valid:
+        return build('sheets', 'v4', credentials=creds)
+
+    # Headless refresh is safe even without a TTY.
+    if creds and creds.expired and creds.refresh_token:
+        try:
+            creds.refresh(Request())
+            _save_token(creds)
+            return build('sheets', 'v4', credentials=creds)
+        except Exception:
+            creds = None
+
+    # From here we need the interactive browser loopback flow.
+    if not sys.stdout.isatty():
         die(
-            f"Sheets service-account key not found at: {key_path}\n"
-            "Set PIPULATE_SHEETS_KEY, or add sheets.paths.service_account to\n"
-            "~/.config/pipulate/connectors.json. The same JSON key the gsc\n"
-            "connector uses works here; only the scope differs. Then share each\n"
-            "target spreadsheet with the key's client_email as Viewer."
+            "Sheets auth needs a one-time interactive login.\n"
+            "Run this directly in your terminal first to mint the token:\n"
+            "    python scripts/connectors/sheets.py\n"
+            "After that, `!` invocations inside the compile lane run silently."
         )
-    creds = service_account.Credentials.from_service_account_file(
-        str(key_path), scopes=SCOPES)
+
+    if not os.path.exists(CREDS_PATH):
+        die(
+            f"Missing credentials.json at: {CREDS_PATH}\n"
+            "Download the Desktop-app OAuth client JSON from Google Cloud\n"
+            "Console (project work-integrations-500916) — the same file\n"
+            "gmail.py uses."
+        )
+
+    print("Opening local browser window for Google OAuth negotiation...",
+          file=sys.stderr)
+    flow = InstalledAppFlow.from_client_secrets_file(CREDS_PATH, SCOPES)
+    creds = flow.run_local_server(port=0)
+    _save_token(creds)
     return build('sheets', 'v4', credentials=creds)
 
 
