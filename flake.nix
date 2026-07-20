@@ -889,6 +889,10 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias confluence='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/confluence.py"'
           alias gsc='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/gsc.py"'
           alias sheets='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/sheets.py"'
+          # weblogin <apex-domain>: pop up a visible Chrome on the house
+          # persistent profile (data/uc_profiles/default) so persistent
+          # scrapes inherit the login. Log in, close the window, done.
+          alias weblogin='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/weblogin.py"'
           alias vim='nvim'
           alias lsp='ls -d -1 "$PWD"/*'
           alias p='cd ~/repos/pipulate'
