@@ -1904,7 +1904,7 @@ def main():
                     continue
                 if proc.returncode != 0 and not cmd_stdout.strip() and not cmd_stderr.strip():
                     raise subprocess.CalledProcessError(proc.returncode, command_str, output=cmd_stdout, stderr=cmd_stderr)
-                # FAILED-PROBE RECEIPT (PENDING until canary witness): an
+                # FAILED-PROBE RECEIPT (banked 2026-07-20, canary-witnessed): an
                 # all-stderr failure is a valid receipt, not a skip. Conviction:
                 # the 2026-07-20 SERVICE_DISABLED live LISTs vanished from the
                 # Manifest twice because empty stdout raised here; only the
