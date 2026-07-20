@@ -392,18 +392,21 @@ scripts/foo_replay.py
 prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!! STANDARD WRAPPER: 2
 
 # The following files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
-~/repos/nixos/autognome.py  #  <-- Letting the AIs really understand my environment.
-init.lua          #  <-- Daily driver hot-keys that overlap with aliases in flake.nix
-.gitattributes    #  <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
-.gitignore        #  <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
-flake.nix         #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
-apply.py          #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
-scripts/xp.py     #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
-scripts/ai.py     #  <-- How I constantly use local AI to write git commit messages with `m` alias.
+
+~/repos/nixos/autognome.py  #  <-- Letting the AIs really understand my environment (the one of these which is not like the others)
+foo_files.py    #  <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops
+prompt_foo.py   #  <-- Prompt Fu compiler, makes the very README for AGENTS-like payload you're reading right now, but it needs to be more like that
+.gitattributes  #  <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
+.gitignore      #  <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
+init.lua        #  <-- Daily driver hot-keys that overlap with aliases in flake.nix
+flake.nix       #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
+apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
+scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+scripts/ai.py   #  <-- How I constantly use local AI to write git commit messages with `m` alias.
+cli.py          #  <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
 
 # ACTUATORS & RELATED
 # scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
-# cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP. Kin with **kwargs
 
 # scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
 
@@ -899,16 +902,17 @@ DEFAULT_CHOP = r"""
 # COMMAND: python prompt_foo.py --chop DEFAULT_CHOP --no-tree
 # Workflow: `prompt` (capture clipboard -> prompt.md), then `default` (compile).
 
-~/repos/nixos/autognome.py
-foo_files.py
-prompt_foo.py
-.gitattributes
-.gitignore
-flake.nix
-apply.py
-scripts/ai.py
-init.lua
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
+~/repos/nixos/autognome.py  #  <-- Letting the AIs really understand my environment (the one of these which is not like the others)
+foo_files.py    #  <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops
+prompt_foo.py   #  <-- Prompt Fu compiler, makes the very README for AGENTS-like payload you're reading right now, but it needs to be more like that
+.gitattributes  #  <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
+.gitignore      #  <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
+init.lua        #  <-- Daily driver hot-keys that overlap with aliases in flake.nix
+flake.nix       #  <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
+apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
+scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+scripts/ai.py   #  <-- How I constantly use local AI to write git commit messages with `m` alias.
+cli.py          #  <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
 """
 
 INSTALL_CHOP = r"""
