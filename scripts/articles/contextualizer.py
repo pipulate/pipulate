@@ -192,6 +192,32 @@ def generate_context_json(article_data, token_count, api_key=None):
     return None, 0, 2
 
 
+def sweep_orphan_shards(posts_dir, context_dir, dry_run=False):
+    """Delete _context/*.json shards whose source post no longer exists.
+
+    Idempotent and fail-closed: a shard is removed only when BOTH candidate
+    source files (.md and .markdown) are confirmed absent; any filesystem
+    error skips that shard rather than deleting blind.
+    """
+    if not context_dir.exists():
+        return 0
+    removed = 0
+    for shard in sorted(context_dir.glob("*.json")):
+        try:
+            if (posts_dir / f"{shard.stem}.md").exists() or \
+               (posts_dir / f"{shard.stem}.markdown").exists():
+                continue
+            if dry_run:
+                print(f"WOULD DELETE: {shard.name}")
+            else:
+                shard.unlink()
+                print(f"DELETED: {shard.name}")
+            removed += 1
+        except OSError as e:
+            print(f"⚠️ Skipping {shard.name} (fail-closed): {e}")
+    return removed
+
+
 def process_batch(batch_files, key_name, api_key, context_dir, dry_run):
     """Processes a specific list of files with a specific key."""
     
