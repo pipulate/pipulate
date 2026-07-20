@@ -1007,9 +1007,7 @@ class PromptBuilder:
             for receipt in live_receipts:
                 lines.append(f"- {receipt}")
             lines.append("")
-        # Added Summary to section order
-        section_order = ["Story", "File Tree", "UML Diagrams", "Articles", "Codebase", "Summary", "Context Recapture", "Prompt"]
-        for section_name in section_order:
+        for section_name in self.section_order:
             if section_name in self.all_sections:
                 data = self.all_sections[section_name]
                 token_str = f"({data['tokens']:,} tokens)" if data['tokens'] > 0 else ""
