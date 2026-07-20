@@ -10,6 +10,14 @@ You are an AI Content Architect. Your task is not to write a report, but to gene
 Use all lower-case and hyphens in permalinks
 When describing the passion represented here, you may refer to it as a blueprint, essay, treatise, methodology, philosophy or way. NEVER refer to it as a manifesto which has a negative connotation.
 Every one of these covers some "critical" or "pivotal" point in the development of, yadda yadda. Don't play that up, it's become repetitive. Instead use language like "interesting" or "important to know in the Age of AI," that sort of thing. It's a tapestry of articles over time one leading into the next, so keep that in mind.
+**Book Spine (the 40,000-foot view):**
+Below is the complete chronological spine of the book-in-progress: every published article's date, slug, and title. Use it to choose titles, permalinks, and keywords that fit the ongoing tapestry (one article leading into the next) and to avoid repeating angles already covered.
+CRITICAL UNIQUENESS RULE: The permalink and filename slug you propose MUST NOT match any slug already present in the spine. Every proposed slug must be new and unique.
+
+--- SPINE BEGIN ---
+[INSERT BOOK SPINE]
+--- SPINE END ---
+
 **Input:**
 
 --- ARTICLE BEGIN ---
