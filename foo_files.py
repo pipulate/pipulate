@@ -160,6 +160,15 @@ AI_PHOOEY_CHOP = r"""                                                           
 # 574 (once), clean headless load. \j cuts the slate, \m mounts, \k
 # dismounts: three keys bracketing Probe, Patch, Prompt.
 
+# THE NO-DEAD-CARS RULE (banked 2026-07-20): every fenced patch block emitted
+# is a live actuator, regardless of surrounding prose. Never ship a malformed
+# block with an "ignore this / strike that" note — the clipboard lane cannot
+# hear prose, and `patch` grabs whatever block the hand copies. Conviction:
+# the END_REPLACE_MARKER_NOTE dead car of 2026-07-19 rode `patch` into
+# apply.py and was stopped only by the AST airlock (rerun cost, zero
+# regression — the fence held). If a block is wrong, delete it before
+# responding; a correction note is not a coupling pin.
+
 # THE 30-AND-3 RULE (banked 2026-07-19): the standing ideation kata. When a
 # problem space needs mapping, generate THIRTY brief text vignettes — one or
 # two sentences each, breadth over depth, no self-censoring past the obvious
