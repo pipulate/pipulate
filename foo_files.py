@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,323 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 26 published in the last 7 days
+# There are 1,324 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 27 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -283,6 +283,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # now rotating hash-stamped snapshots); foo_replay.py = germination on the host
 # (mech / playback / score / selftest). Chapter 4's "destined to be extracted" made
 # literal, and the replicating half of Chapter 1.
+
 scripts/foo_cartridge.py
 scripts/foo_replay.py
 
@@ -391,6 +392,7 @@ scripts/foo_replay.py
 prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!! STANDARD WRAPPER: 2
 
 # The following files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
+~/repos/nixos/autognome.py  #  <-- Letting the AIs really understand my environment.
 init.lua          #  <-- Daily driver hot-keys that overlap with aliases in flake.nix
 .gitattributes    #  <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
 .gitignore        #  <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
@@ -404,7 +406,6 @@ scripts/ai.py     #  <-- How I constantly use local AI to write git commit messa
 # cli.py            #  <-- A very powerful "catch-all" actuator: command-line, Python short-cuts, formal MCP. Kin with **kwargs
 
 # scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
-# ~/repos/nixos/autognome.py  #  <-- More rare to have to include, but the true "top" of the muscle memory stack for day-to-day purposes
 
 # The following 3 files are the first huge context reveal that pull the curtains open.
 # __init__.py     #  <-- Master versioning
@@ -538,12 +539,12 @@ scripts/ai.py     #  <-- How I constantly use local AI to write git commit messa
 # VIII. LLM OPTICS - Like looking at raw HTML or the hydrated DOM? Them either.
 # ============================================================================
 
-# scripts/crawl.py        # <-- Feel free to ask for something to be crawled and included in the next turn.
-# tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
-# tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
-# tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
-# tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
-# tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
+scripts/crawl.py        # <-- Feel free to ask for something to be crawled and included in the next turn.
+tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
+tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
+tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
+tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
+tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
 # THE CDP FLIGHT RECORDER (Wire Truth): every scrape drains the browser's
 # performance log to browser_cache/<domain>/<slug>/network_log.jsonl — the
@@ -898,6 +899,7 @@ DEFAULT_CHOP = r"""
 # COMMAND: python prompt_foo.py --chop DEFAULT_CHOP --no-tree
 # Workflow: `prompt` (capture clipboard -> prompt.md), then `default` (compile).
 
+~/repos/nixos/autognome.py
 foo_files.py
 prompt_foo.py
 .gitattributes
