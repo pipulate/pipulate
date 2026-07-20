@@ -1253,7 +1253,7 @@ Before addressing the user's prompt, perform the following verification steps:
                 "license: AGPL-3.0",
                 "---",
             ])
-            parts = [frontmatter + "\n\n" + f"# KUNG FU PROMPT CONTEXT\n\nWhat you will find below is:\n\n- {self.manifest_key}\n- Story\n- File Tree\n- UML Diagrams\n- Articles\n- Codebase\n- Summary\n- Context Recapture\n- Prompt"]
+            parts = [frontmatter + "\n\n" + f"# KUNG FU PROMPT CONTEXT\n\nWhat you will find below is:\n\n- {self.manifest_key}\n- Tool Roster\n- Story\n- File Tree\n- UML Diagrams\n- Articles\n- Codebase\n- Summary\n- Context Recapture\n- Prompt"]
             
             def add(name, content, placeholder):
                 final = content.strip() if content and content.strip() else placeholder
