@@ -1260,6 +1260,7 @@ Before addressing the user's prompt, perform the following verification steps:
                 parts.append(f"--- START: {name} ---\n{final}\n--- END: {name} ---")
 
             add(self.manifest_key, manifest_txt, "# Manifest generation failed.")
+            add("Tool Roster", tool_roster_content, placeholders["Tool Roster"])
             add("Story", story_content, placeholders["Story"] if self.list_arg is None else "# No articles found for the specified slice.")
             add("File Tree", tree_content, placeholders["File Tree"])
             add("UML Diagrams", uml_content, placeholders["UML Diagrams"])
