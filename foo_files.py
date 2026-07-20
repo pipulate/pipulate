@@ -1210,6 +1210,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # - A better book-outliner method than K-means for "real" structure
 # - Only ever 301-redirect hubs to hubs. Don't put article leafs on hub-rot.
 # - OKF/Agent Skills 80/20 LANDED 2026-07-20 (AGENTS.md signpost + ContextCartridge topper, receipts banked). Remainder: OKF bundle export of trimnoir + Google's static visualizer as a free hub-structure audit.
+# - TOOL ROSTER LANDED 2026-07-20 (generated-not-authored section between Manifest and Story; count matched live_registry_count=21 receipt in the same compile). EARMARK: split tool METADATA discovery from runtime-heavy imports — imports.voice_synthesis alone costs ~3.8s of the ~5s registry import (importtime receipt 2026-07-20); enumerate names without importing engines, roster stays generated either way.
 # - Implement NLWeb, WebMCP, UCP and ACP.
 # - I think articles get read twice on first publish
 # - Make `d` and `m` aliases support when the patch is of the `[[[WRITE_FILE]]]` kind (CONVICTED 2026-07-20: AGENTS.md creation — `d` showed nothing, `m` aborted on empty diff until manual `git add`; fix is `git add -A` before the diff/measure in m())
