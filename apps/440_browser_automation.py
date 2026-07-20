@@ -56,7 +56,13 @@ def get_linux_chrome_service(chrome_options=None):
         chromium_bin = shutil.which('chromium') or shutil.which('chromium-browser')
         if chromium_bin:
             chrome_options.binary_location = chromium_bin
-    for driver_name in ('chromedriver', 'undetected_chromedriver'):
+    # scraper_tools.py resolves the Nix driver as 'undetected-chromedriver'
+    # (HYPHEN). Last turn's list checked only 'chromedriver' and the
+    # UNDERSCORE variant, both MISSING per the receipt, so the helper fell
+    # through to a bare Service() -- the exact FHS-linked 127 path it was
+    # meant to avoid. Hyphen name FIRST (proven by scraper_tools), the rest
+    # as harmless fallbacks.
+    for driver_name in ('undetected-chromedriver', 'chromedriver', 'undetected_chromedriver'):
         driver_path = shutil.which(driver_name)
         if driver_path:
             return Service(executable_path=driver_path)
