@@ -315,6 +315,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
+apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
+
 # ---------------------------------------------------------------------------
 # THE PORTABLE CARTRIDGE — the detachable seed of the Software Von Neumann Probe
 # ---------------------------------------------------------------------------
@@ -388,7 +390,7 @@ scripts/foo_replay.py
 # ! cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
-requirements.txt  #  <-- Pip-compiled dependencies.
+# requirements.txt  #  <-- Pip-compiled dependencies.
 # logs/server.log   #  <-- Like letting AI see your browser app state, but better! --------------------- AI server.py LOG DEBUG
 
 # ============================================================================
@@ -432,13 +434,11 @@ requirements.txt  #  <-- Pip-compiled dependencies.
 # > It might take awhile, but the context-compile should do the hardest part.  
 # > The AI should see what falsifying will be if it's gonna work smart.  
 
-prompt_foo.py   #  <-- The Context Compiler, itself! That takes THIS and stacks those into 1-big text-file. (Hi-Ya!) ------------------------------------ !!! STANDARD WRAPPER: 2
-
 # The following files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
 
 ~/repos/nixos/autognome.py  #  <-- Letting the AIs really understand my environment (the one of these which is not like the others)
 foo_files.py    #  <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops
-prompt_foo.py   #  <-- Prompt Fu compiler, makes the very README for AGENTS-like payload you're reading right now, but it needs to be more like that
+# prompt_foo.py   #  <-- Prompt Fu compiler, makes the very README for AGENTS-like payload you're reading right now, but it needs to be more like that
 .gitattributes  #  <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
 .gitignore      #  <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
 init.lua        #  <-- Daily driver hot-keys that overlap with aliases in flake.nix
@@ -449,7 +449,7 @@ scripts/ai.py   #  <-- How I constantly use local AI to write git commit message
 cli.py          #  <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
 
 # ACTUATORS & RELATED
-# scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
+scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and included in the next turn.
 
 # scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
 
@@ -464,14 +464,14 @@ cli.py          #  <-- Catch-all actuator for PyPI envs, Python anchoring, MCP t
 # IV. THE WAND🪄 & THE WIZARD🧙‍♂️ - Everything's actually web development these days
 # ============================================================================
   
-# config.py                   # <-- Centralize every last configuration in here
-# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-# pipulate/core.py            # <-- The Wand (spells)
+config.py                   # <-- Centralize every last configuration in here
+pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+pipulate/core.py            # <-- The Wand (spells)
 
 # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
 
-# server.py                   # <-- The Wizard (big!)
+server.py                   # <-- The Wizard (big!)
 # assets/styles.css           # <-- Those values often get used here for "the look"
 # imports/server_logging.py   # <-- Drawing that ASCII art into radically transparent server logs
 
@@ -480,7 +480,7 @@ cli.py          #  <-- Catch-all actuator for PyPI envs, Python anchoring, MCP t
 # ============================================================================
 
 # THE ROLLING PIN (Again, if you only include one thing for overarching context of Pipulate and NPvg, include this.
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER: 3
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER: 3
 # ! python scripts/articles/lsa.py -t 4 --reverse --fmt dated-slugs  # <-- BotifyML work journal
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 
@@ -590,7 +590,7 @@ cli.py          #  <-- Catch-all actuator for PyPI envs, Python anchoring, MCP t
 # tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
 # tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
 # tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
-# tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
+tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
 # THE CDP FLIGHT RECORDER (Wire Truth): every scrape drains the browser's
 # performance log to browser_cache/<domain>/<slug>/network_log.jsonl — the
@@ -843,12 +843,12 @@ cli.py          #  <-- Catch-all actuator for PyPI envs, Python anchoring, MCP t
 # ============================================================================
 
 # THE CONNECTORS (WET single-file API gateways; contract in the README)
-scripts/connectors/README.md
-scripts/connectors/gmail.py
-scripts/connectors/botify.py
-scripts/connectors/confluence.py
-scripts/connectors/gsc.py
-scripts/connectors/sheets.py
+# scripts/connectors/README.md
+# scripts/connectors/gmail.py
+# scripts/connectors/botify.py
+# scripts/connectors/confluence.py
+# scripts/connectors/gsc.py
+# scripts/connectors/sheets.py
 #  _____ _           _           _   _                      
 # |  ___(_)_ __   __| |   __ _  | | | | ___  _ __ ___   ___ 
 # | |_  | | '_ \ / _` |  / _` | | |_| |/ _ \| '_ ` _ \ / _ \
@@ -1253,7 +1253,6 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # Notebooks/.agents/skills/sheets_readonly/SKILL.md  # [455 tokens | 1,934 bytes]
 # apps/130_gap_analysis.py  # [9,622 tokens | 48,265 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
-# apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
 # apps/450_stream_simulator.py  # [1,829 tokens | 9,488 bytes]
 # apps/580_upload.py  # [5,616 tokens | 26,438 bytes]
 # apps/610_markdown.py  # [4,754 tokens | 24,960 bytes]
