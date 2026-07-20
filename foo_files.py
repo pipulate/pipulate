@@ -1198,7 +1198,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # - Get rid of the Twitter emoji getting read
 # - A better book-outliner method than K-means for "real" structure
 # - Only ever 301-redirect hubs to hubs. Don't put article leafs on hub-rot.
-# - Implement & superimpose Google Open Knowledge Format (OWF) & Agent Skills open standard.
+# - OKF/Agent Skills 80/20 LANDED 2026-07-20 (AGENTS.md signpost + ContextCartridge topper, receipts banked). Remainder: OKF bundle export of trimnoir + Google's static visualizer as a free hub-structure audit.
 # - Implement NLWeb, WebMCP, UCP and ACP.
 # - I think articles get read twice on first publish
 # - Make `d` and `m` aliases support when the patch is of the `[[[WRITE_FILE]]]` kind (CONVICTED 2026-07-20: AGENTS.md creation — `d` showed nothing, `m` aborted on empty diff until manual `git add`; fix is `git add -A` before the diff/measure in m())
