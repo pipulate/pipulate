@@ -49,7 +49,7 @@ of these four.
 - botify.py      identity walk / org / org/project / BQL query (BOTIFY_API_TOKEN)
 - confluence.py  spaces / space pages / page id / CQL search (CONFLUENCE_* envs)
 - gsc.py         properties / top queries / raw searchanalytics JSON (service_account_file)
-- sheets.py      identity / URL-or-ID tab list with size gauge / bounded --sheet and --range values (service_account_file; reuses gsc's key with the Sheets readonly scope; wallet descent type-checks non-object entries)
+- sheets.py      identity / URL-or-ID tab list with size gauge / bounded --sheet and --range values (oauth_token_file, gmail pattern; own sheets_token.json with the Sheets readonly scope; identity mode prints project_id and mints the token interactively)
 
 ## Minting a new connector
 
