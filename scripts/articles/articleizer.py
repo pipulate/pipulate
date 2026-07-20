@@ -433,9 +433,15 @@ def main():
                    ("high demand" in error_str.lower()):
                     
                     print(f"Retriable API Error: {e}")
-                    print(f"Retrying in {retry_delay} seconds... (Attempt {attempt + 1}/{max_retries})")
+                    # QUOTA WINDOW DISCIPLINE (live-fire convicted 2026-07-19):
+                    # the free tier is a per-MINUTE rolling window; retrying at
+                    # 2/4/8/16s hammers the same window the server asked us to
+                    # let drain. Honor the server's own "retry in Ns" hint.
+                    hint = re.search(r'retry in (\d+(?:\.\d+)?)s', error_str)
+                    wait = max(retry_delay, float(hint.group(1)) + 1) if hint else retry_delay
+                    print(f"Retrying in {wait:.0f} seconds... (Attempt {attempt + 1}/{max_retries})")
 
-                    time.sleep(retry_delay)
+                    time.sleep(wait)
                     retry_delay *= 2  # Exponential backoff
                 else:
                     print(f"\nAn unrecoverable error occurred while calling the API: {e}")
