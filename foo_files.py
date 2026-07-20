@@ -1147,9 +1147,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # - Do the work of purging PicoCSS "Card" references so I can unpin FastHTML in requirements.in
 # - Swap in uv for pip for a faster install
 # - Un-hardwire the Jekyll `/futureproof/` blog folder to be `blog.nix` configured
-# - Remove holographic shard json orphans" in Jekyll `_context/` folder
 # - Monitor for the `db.py` database getting bigger on Honeybot (Textual dashboards?)
-# - Check for file-naming collisions when articleizing.
 # - Get a UPS for Pipulate Prime (Z640): the 2026-07-18 blackout restarted the machines; the stream survived by luck and watchdog, the box should not have to gamble
 # - EARMARK: pip install river (online/incremental ML) — design learning-between-turns into the architecture EARLY so static-model loops can adapt; feeds the coin-flip self-prompting Ouroboros whose kill-switch is the Chrome tab holding the drop-hook DOM (User 2026-07-18)
 # - Start a new YouTube live-stream for every new published article
