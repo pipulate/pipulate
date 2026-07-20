@@ -6,7 +6,7 @@ sheets.py — A Unix-philosophy gateway to Google Sheets for Prompt Fu context.
 Golden-path modes, auto-detected from the single positional argument:
 
   python scripts/connectors/sheets.py                        # IDENTITY: OAuth wiring status; mints the token interactively
-  python scripts/connectors/sheets.py <URL-or-ID>            # STACK: every tab's ACTUAL data rectangle, stacked vertically with payload-grammar sentinels + clickable per-tab #gid= URLs (over --budget: true-extent gauge instead)
+  python scripts/connectors/sheets.py <URL-or-ID>            # STACK: every tab's ACTUAL data rectangle, timestamped and stacked vertically with payload-grammar sentinels + clickable per-tab #gid= URLs (over --budget: true-extent gauge instead)
   python scripts/connectors/sheets.py <URL-or-ID> --list     # LIST: metadata-only gauge (grid ALLOCATION, zero cell data fetched)
   python scripts/connectors/sheets.py <URL-or-ID> --sheet Metrics             # FETCH: first --max rows of one named tab
   python scripts/connectors/sheets.py <URL-or-ID> --range "'Metrics'!A1:F50"  # FETCH: explicit A1 range
@@ -67,6 +67,7 @@ import re
 import sys
 import json
 import argparse
+from datetime import datetime, timezone
 from pathlib import Path
 
 from google.auth.transport.requests import Request
@@ -258,10 +259,13 @@ def stack_tabs(service, sid, fmt, budget):
         extents.append((p, rows, n_rows, n_cols))
     total_cells = sum(r * c for _, _, r, c in extents)
     base_url = f"https://docs.google.com/spreadsheets/d/{sid}/edit"
+    acquired_at = datetime.now(timezone.utc).isoformat(
+        timespec='seconds').replace('+00:00', 'Z')
 
     if total_cells > budget:
         print(f"# {title}  [spreadsheetId: {sid}] — {len(extents)} tab(s), "
-              f"{total_cells:,} data cells > budget {budget:,} — STACK withheld\n")
+              f"{total_cells:,} data cells > budget {budget:,} — STACK withheld")
+        print(f"# acquired_at_utc: {acquired_at}\n")
         print(f"{'rows':>7}  {'cols':>5}  {'cells':>9}  tab | tab URL")
         for p, _, r, c in extents:
             print(f"{r:>7}  {c:>5}  {r * c:>9,}  {p.get('title', '?')} | "
@@ -273,7 +277,8 @@ def stack_tabs(service, sid, fmt, budget):
         return
 
     print(f"# {title}  [spreadsheetId: {sid}] — {len(extents)} tab(s), "
-          f"{total_cells:,} data cells (full stack)\n")
+          f"{total_cells:,} data cells (full stack)")
+    print(f"# acquired_at_utc: {acquired_at}\n")
     for p, rows, n_rows, n_cols in extents:
         name = p.get('title', '?')
         print(f'--- START: TAB "{name}" ({n_rows} rows x {n_cols} cols) ---')
