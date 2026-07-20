@@ -1234,7 +1234,23 @@ Before addressing the user's prompt, perform the following verification steps:
 
         # Helper to assemble text
         def assemble_text(manifest_txt, summary_txt):
-            parts = [f"# KUNG FU PROMPT CONTEXT\n\nWhat you will find below is:\n\n- {self.manifest_key}\n- Story\n- File Tree\n- UML Diagrams\n- Articles\n- Codebase\n- Summary\n- Context Recapture\n- Prompt"]
+            # THE STANDARDS TOPPER: SKILL.md-shaped YAML frontmatter
+            # (name + description per agentskills.io) carrying OKF's one
+            # required field (type). Static values only, so the convergence
+            # loop and cartridge byte-reproducibility are unaffected. The
+            # entrypoint value never matches _extract_prompt_member's
+            # newline-bounded marker, so cartridge extraction is safe.
+            frontmatter = "\n".join([
+                "---",
+                "type: ContextCartridge",
+                "name: pipulate-prompt-fu-payload",
+                "description: \"Compiled AGENTS.md-class context artifact. Read the final section labeled Prompt first; it holds the current actionable request. Everything above it is supporting evidence. Propose edits as SEARCH/REPLACE blocks applied by apply.py.\"",
+                "entrypoint: '--- START: Prompt ---'",
+                "tools: .venv/bin/python cli.py mcp-discover",
+                "license: AGPL-3.0",
+                "---",
+            ])
+            parts = [frontmatter + "\n\n" + f"# KUNG FU PROMPT CONTEXT\n\nWhat you will find below is:\n\n- {self.manifest_key}\n- Story\n- File Tree\n- UML Diagrams\n- Articles\n- Codebase\n- Summary\n- Context Recapture\n- Prompt"]
             
             def add(name, content, placeholder):
                 final = content.strip() if content and content.strip() else placeholder
