@@ -22,6 +22,60 @@ INSTRUCTIONS_CACHE_FILE = "instructions.json"
 # DEFAULT_MODEL = 'gemini-flash-latest'
 DEFAULT_MODEL = 'gemini-flash-lite-latest'
 
+SPINE_PLACEHOLDER = "[INSERT BOOK SPINE]"
+
+
+def scan_corpus(output_dir):
+    """One-pass frontmatter scan of the published corpus.
+
+    Returns (entries, errors): entries is a list of dicts with filename,
+    date, slug (date-stripped), permalink, and title; errors counts posts
+    whose frontmatter could not be read (census-incompleteness signal).
+    """
+    entries, errors = [], 0
+    target = Path(output_dir)
+    if not target.exists():
+        return entries, errors
+    for post in sorted(target.glob("*.md")):
+        stem = post.stem
+        slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', stem)
+        date = stem[:10]
+        title, permalink = "", ""
+        try:
+            content = post.read_text(encoding='utf-8')
+            if content.startswith('---'):
+                parts = content.split('---', 2)
+                if len(parts) >= 3:
+                    fm = yaml.safe_load(parts[1]) or {}
+                    title = str(fm.get('title') or "")
+                    permalink = str(fm.get('permalink') or "")
+        except Exception:
+            errors += 1
+        entries.append({'filename': post.name, 'date': date, 'slug': slug,
+                        'permalink': permalink, 'title': title})
+    return entries, errors
+
+
+def normalize_permalink(permalink):
+    """Case-insensitive, slash-agnostic identity for collision checks."""
+    return (permalink or "").strip().strip('/').lower()
+
+
+def build_taken_identities(entries):
+    """Map every taken slug and permalink identity to its owning filename."""
+    taken = {}
+    for e in entries:
+        taken.setdefault(e['slug'].lower(), e['filename'])
+        p = normalize_permalink(e['permalink'])
+        if p:
+            taken.setdefault(p, e['filename'])
+    return taken
+
+
+def build_book_spine(entries):
+    """Compact 'date slug | title' spine for the editing model's 40K view."""
+    return "\n".join(f"{e['date']} {e['slug']} | {e['title']}" for e in entries)
+
 def create_jekyll_post(article_content, instructions, output_dir, preview_port, base_url=""):
     """
     Assembles and writes a Jekyll post file from the article content and
