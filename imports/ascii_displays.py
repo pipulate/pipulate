@@ -1830,3 +1830,81 @@ Essential knowledge for 100% success rate"""
 # 
 #         The Fremen keep the spice. The worm keeps going. Git keeps both.
 # ```
+# 
+# ## The three standards, one at a time
+# 
+# **1. agents.md** — the simplest. One file, no schema, nearest-ancestor wins:
+# 
+# ```text
+# repo/
+# ├── AGENTS.md            # freeform markdown: setup, test commands, conventions, PR rules
+# └── subproject/
+#     └── AGENTS.md        # optional override; closest file to the working directory wins
+# ```
+# 
+# That's the whole spec. It deliberately has no required fields — it's a README addressed to agents instead of humans, and its main achievement was collapsing CLAUDE.md / CURSOR.md / .cursorrules / GEMINI.md into one filename everyone's tooling checks.
+# 
+# **2. Agent Skills (agentskills.io)** — a skill is a *folder* whose front door is SKILL.md with YAML frontmatter (`name` and `description` required), practicing progressive disclosure: frontmatter always loaded, body loaded on trigger, linked resources loaded on demand:
+# 
+# ```text
+# .agents/skills/                  # (Claude Code uses .claude/skills/; the shape is identical)
+# └── hello_workflow/
+#     ├── SKILL.md                 # --- / name: / description: / --- + instructions body
+#     ├── scripts/                 # optional executables the skill may run
+#     ├── references/              # optional docs pulled in only when needed
+#     └── assets/                  # optional templates and files
+# ```
+# 
+# You already have this. `Notebooks/.agents/skills/hello_workflow/SKILL.md`, `gsc_readonly`, `roles` — it's in your manifest.
+# 
+# **3. OKF** — what the v0.1 specification actually fixes is a folder layout, markdown files, YAML frontmatter, reserved filenames, and a single required field: `type`. A bundle is a directory of markdown files, each carrying a short YAML block — type, title, description — linking to its neighbors; add an index.md that lists the files so an agent can see what's there before opening everything, and that's the format. The spec fits on a single page.
+# 
+# ```text
+# okf-bundle/
+# ├── index.md                     # reserved: the table of contents an agent reads first
+# ├── some-concept.md              # --- / type: Article / title: / description: / tags: / ---
+# ├── another-concept.md           # path IS the identifier; markdown links ARE the graph
+# └── runbooks/
+#     └── deploy.md
+# ```
+# 
+# ## Superimposed on Pipulate
+# 
+# Here's the combined view — everything marked NEW is a signpost; everything else already exists and stays exactly where it is:
+# 
+# ```text
+# pipulate/
+# ├── AGENTS.md                            # NEW — the symlink-in-spirit; ~40 lines pointing at executable truth
+# ├── foo_files.py                         # = AGENTS.md at scale: the router IS the agent operating manual
+# ├── prompt_foo.py                        # = the AGENTS.md *compiler*; emits the payload + foo.zip
+# ├── foo.zip                              # = a portable AGENTS-class bundle (gets the YAML topper below)
+# ├── cli.py                               # = the `allowed-tools` surface: mcp-discover / call
+# ├── apply.py                             # = "PR instructions" made executable (SEARCH/REPLACE actuator)
+# ├── flake.nix                            # = "Dev environment setup" made executable (nix develop)
+# ├── Notebooks/.agents/skills/            # = Agent Skills, already standard-shaped
+# │   ├── hello_workflow/SKILL.md
+# │   ├── gsc_readonly/SKILL.md
+# │   └── roles/SKILL.md
+# └── (~/repos/trimnoir/_posts/)           # = an OKF bundle avant la lettre:
+#     ├── *.md                             #   markdown + YAML frontmatter, one concept per file
+#     ├── _context/*.json                  #   your holographic shards ≈ OKF's index/graph layer
+#     └── (llms.txt, hub pages)            #   generate_llms_txt.py already plays index.md's role
+# ```
+# 
+# The Rosetta mapping that makes your vocabulary click for newcomers: your **chops** are skills (named, described, progressively-disclosed context bundles — foo_files.py's chapter structure is literally Anthropic's progressive disclosure, which you call progressive reveal in cli.py's Rule of 7). Your **payload** is an AGENTS.md instance, compiled fresh instead of hand-maintained — which is precisely why yours can't drift and theirs always does. Your **shards** are OKF's index layer. Your fear of "directories stuffed with SOMETHING_LIKE_THIS.md" is solved by the compiler: the standards files in your repo are *pointers*, never *content*, so there is exactly one source of truth and it's executable.
+# 
+# ## The YAML topper
+# 
+# The right fields are the union of the two frontmatter-bearing specs: Agent Skills' required pair (`name`, `description`) plus OKF's one required field (`type`), plus the two things a cold-arriving model needs before anything else — where the entrypoint is, and how to propose edits. Static values only, so the convergence loop and cartridge byte-reproducibility are untouched:
+# 
+# ```yaml
+# ---
+# type: ContextCartridge
+# name: pipulate-prompt-fu-payload
+# description: "Compiled AGENTS.md-class context artifact. Read the final section labeled Prompt first — it holds the current actionable request. Everything above it is supporting evidence. Propose edits as SEARCH/REPLACE blocks applied by apply.py."
+# entrypoint: "--- START: Prompt ---"
+# tools: .venv/bin/python cli.py mcp-discover
+# license: AGPL-3.0
+# ---
+# ```
+

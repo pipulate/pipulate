@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,326 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 23 published in the last 7 days
+# There are 1,327 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 24 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -843,10 +843,10 @@ remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblog
 # ============================================================================
 
 # THE CONNECTORS (WET single-file API gateways; contract in the README)
-# scripts/connectors/README.md
-# scripts/connectors/gmail.py
-# scripts/connectors/botify.py
-# scripts/connectors/confluence.py
+scripts/connectors/README.md
+scripts/connectors/gmail.py
+scripts/connectors/botify.py
+scripts/connectors/confluence.py
 #  _____ _           _           _   _                      
 # |  ___(_)_ __   __| |   __ _  | | | | ___  _ __ ___   ___ 
 # | |_  | | '_ \ / _` |  / _` | | |_| |/ _ \| '_ ` _ \ / _ \
