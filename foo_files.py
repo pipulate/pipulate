@@ -315,8 +315,6 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-apps/440_browser_automation.py  # [10,220 tokens | 44,537 bytes]
-
 # ---------------------------------------------------------------------------
 # THE PORTABLE CARTRIDGE — the detachable seed of the Software Von Neumann Probe
 # ---------------------------------------------------------------------------
@@ -437,8 +435,8 @@ scripts/foo_replay.py
 # The following files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
 
 ~/repos/nixos/autognome.py  #  <-- Letting the AIs really understand my environment (the one of these which is not like the others)
-foo_files.py    #  <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops
-# prompt_foo.py   #  <-- Prompt Fu compiler, makes the very README for AGENTS-like payload you're reading right now, but it needs to be more like that
+prompt_foo.py   #  <-- Prompt Fu compiler, makes the very README for AGENTS-like payload you're reading right now, but it needs to be more like that
+foo_files.py    #  <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops ------------------------------------ !!! STANDARD WRAPPER: 2
 .gitattributes  #  <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
 .gitignore      #  <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
 init.lua        #  <-- Daily driver hot-keys that overlap with aliases in flake.nix
@@ -480,7 +478,7 @@ server.py                   # <-- The Wizard (big!)
 # ============================================================================
 
 # THE ROLLING PIN (Again, if you only include one thing for overarching context of Pipulate and NPvg, include this.
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER: 3
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER: 3
 # ! python scripts/articles/lsa.py -t 4 --reverse --fmt dated-slugs  # <-- BotifyML work journal
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 
@@ -1313,5 +1311,4 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # scripts/map_sheet.py  # [3,614 tokens | 15,613 bytes]
 # scripts/playground/prompt_feeder.py  # [746 tokens | 3,154 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
-# scripts/weblogin.py  # [1,270 tokens | 5,795 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
