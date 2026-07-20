@@ -162,20 +162,28 @@ def get_service():
 # Modes
 # ----------------------------------------------------------------------------
 def identity():
-    """No-argument mode: usage plus the service-account email to share Sheets with."""
-    key_path = resolve_key_path()
-    email = '(key file missing — any fetch attempt prints setup guidance)'
-    if key_path.exists():
+    """No-argument mode: OAuth wiring status; mints the token when interactive."""
+    creds_ok = os.path.exists(CREDS_PATH)
+    token_ok = os.path.exists(TOKEN_PATH)
+    project = '(credentials.json missing)'
+    if creds_ok:
         try:
-            email = json.loads(key_path.read_text(encoding='utf-8')).get(
-                'client_email', '(client_email absent from key file)')
+            blob = json.loads(Path(CREDS_PATH).read_text(encoding='utf-8'))
+            project = (blob.get('installed') or blob.get('web') or {}).get(
+                'project_id', '(project_id absent)')
         except (json.JSONDecodeError, OSError) as e:
-            email = f'(unreadable key file: {e})'
-    print("# sheets.py — read-only Google Sheets gateway (service account)\n")
-    print(f"key file : {key_path}")
-    print(f"identity : {email}")
-    print("\nShare each target spreadsheet with that email as Viewer, then:")
-    print('# Next: python scripts/connectors/sheets.py '
+            project = f'(unreadable credentials.json: {e})'
+    print("# sheets.py — read-only Google Sheets gateway (OAuth: your own account)\n")
+    print(f"credentials : {CREDS_PATH}  [{'present' if creds_ok else 'MISSING'}]")
+    print(f"project_id  : {project}")
+    print(f"token       : {TOKEN_PATH}  [{'minted' if token_ok else 'not yet minted'}]")
+    if not token_ok and sys.stdout.isatty():
+        print("\nMinting the token now (one-time browser handshake)...")
+        get_service()
+        print("Token minted. Headless `!` runs will work from here on.")
+    elif not token_ok:
+        print("\nRun this same command once in a real terminal to mint the token.")
+    print("\n# Next: python scripts/connectors/sheets.py "
           '"https://docs.google.com/spreadsheets/d/<ID>/edit"   (LIST tabs + sizes)')
 
 
