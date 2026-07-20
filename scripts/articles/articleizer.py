@@ -72,9 +72,26 @@ def build_taken_identities(entries):
     return taken
 
 
-def build_book_spine(entries):
-    """Compact 'date slug | title' spine for the editing model's 40K view."""
-    return "\n".join(f"{e['date']} {e['slug']} | {e['title']}" for e in entries)
+SPINE_FULL_DETAIL_COUNT = 150  # newest N entries carry date+slug+title
+
+
+def build_book_spine(entries, full_detail_count=SPINE_FULL_DETAIL_COUNT):
+    """Two-tier spine for the editing model's 40K view.
+
+    Deep archive rides as bare slugs (the uniqueness census — the slug IS
+    the identity, and the deterministic collision guard enforces it anyway);
+    the newest entries ride full 'date slug | title' (the trajectory arc).
+    Deterministic and non-generative; ~58% smaller than the all-titles spine.
+    """
+    if full_detail_count <= 0 or len(entries) <= full_detail_count:
+        older, recent = [], entries
+    else:
+        older, recent = entries[:-full_detail_count], entries[-full_detail_count:]
+    lines = [e['slug'] for e in older]
+    if older and recent:
+        lines.append("--- RECENT ENTRIES (full detail) ---")
+    lines += [f"{e['date']} {e['slug']} | {e['title']}" for e in recent]
+    return "\n".join(lines)
 
 def create_jekyll_post(article_content, instructions, output_dir, preview_port, base_url=""):
     """
