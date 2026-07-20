@@ -9,10 +9,11 @@ The executable is the specification. Run it; do not reimplement it.
 
 ## The three moves
 
-1. Identity (get the share target):
+1. Identity and mint (one-time, interactive):
    `python scripts/connectors/sheets.py`
-   Prints the service-account client_email. Share each target spreadsheet
-   with that email as Viewer.
+   Prints the OAuth wiring status (credentials.json path, its project_id,
+   token path) and, in a real terminal, mints ~/.config/pipulate/sheets_token.json
+   via the browser handshake. After that, every run is headless.
 
 2. LIST with size gauge:
    `python scripts/connectors/sheets.py "<URL-or-ID>"`
@@ -28,9 +29,12 @@ The executable is the specification. Run it; do not reimplement it.
 
 - THE PROBE ECONOMY RULE: read the LIST size gauge before any fetch.
 - Client URLs and spreadsheet IDs live in adhoc.txt, never in tracked source.
-- TWO-GATE 403 DIAGNOSIS, in order: SERVICE_DISABLED (enable the Sheets API
-  in the key's Cloud project, once per project) before PERMISSION_DENIED
-  (share the document with the client_email, once per document).
+- Auth is OAuth as YOUR account (gmail.py pattern): no sharing gate, no
+  service accounts. A separate sheets_token.json exists because token files
+  are scope-scoped — never reuse gmail's token.
+- 403 SERVICE_DISABLED means the Sheets API toggle in the OAuth client's
+  Cloud project (identity mode prints its project_id); any other 403/404
+  means your own account cannot open that sheet.
 - Errors and auth guidance ride stderr; stdout stays parseable.
 
 See scripts/connectors/README.md for the full connector contract.
