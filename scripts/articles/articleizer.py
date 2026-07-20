@@ -365,6 +365,15 @@ def main():
 
         full_prompt = prompt_template.replace(PROMPT_PLACEHOLDER, article_text)
 
+        # --- BOOK SPINE INJECTION (40K-foot view for the editing model) ---
+        if SPINE_PLACEHOLDER in full_prompt:
+            spine_entries, spine_errors = scan_corpus(output_dir)
+            if spine_errors:
+                print(f"⚠️ Spine census incomplete: {spine_errors} post(s) unreadable.")
+            spine = build_book_spine(spine_entries)
+            full_prompt = full_prompt.replace(SPINE_PLACEHOLDER, spine)
+            print(f"📚 Book spine injected: {len(spine_entries)} articles, {len(spine):,} chars.")
+
         if args.copy:
             try:
                 # We borrow the existing robust clipboard function from prompt_foo
