@@ -2115,7 +2115,14 @@ def main():
         })
 
     # 3. Build the prompt and add auto-generated context
-    builder = PromptBuilder(processed_files_data, prompt_content, context_only=args.context_only, list_arg=args.list)
+    tool_roster_content = generate_tool_roster()
+    builder = PromptBuilder(
+        processed_files_data,
+        prompt_content,
+        context_only=args.context_only,
+        list_arg=args.list,
+        tool_roster_content=tool_roster_content,
+    )
 
     # Only generate the codebase tree if .py files are explicitly included AND --no-tree is not set.
     # This avoids clutter when only .md, .nix, or .ipynb files are present, or when explicitly disabled.
