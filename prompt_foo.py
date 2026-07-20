@@ -1657,6 +1657,55 @@ def main():
     from pipulate import wand
     wand.figurate("white_rabbit")
 
+    def generate_tool_roster() -> str:
+        """Compile the live tool registry and static actuation grammar."""
+        registry_probe = (
+            "import json; "
+            "from tools import get_all_tools; "
+            "print(json.dumps(sorted(get_all_tools())))"
+        )
+        try:
+            result = subprocess.run(
+                [sys.executable, "-c", registry_probe],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=True,
+            )
+            tool_names = json.loads(result.stdout)
+            if not isinstance(tool_names, list) or not all(isinstance(name, str) for name in tool_names):
+                raise ValueError("registry probe did not return a JSON list of tool names")
+
+            marker_open = "[" * 3
+            marker_close = "]" * 3
+            lines = [
+                f"**Live registry:** {len(tool_names)} tools",
+                "",
+                "## Registered tools",
+                "",
+                *(f"- `{name}`" for name in tool_names),
+                "",
+                "## Actuation grammar",
+                "",
+                "- Discover tools — `.venv/bin/python cli.py mcp-discover`.",
+                "- Execute a tool — `.venv/bin/python cli.py call <tool_name> --json-args '{...}'`.",
+                "- `! command` — execute a bounded chisel-strike and compile stdout/stderr as a live receipt.",
+                "- `!URL` — scrape fresh (cache-bust) and stack the optics lenses.",
+                "- `@URL` — reuse the scrape cache and stack the same optics lenses.",
+                "- `$URL` — materialize cached `headers.json` and `source.html`.",
+                "- `%URL` — distill cached `network_log.jsonl` into request and host summaries.",
+                f"- Patch protocol — exact-match `{marker_open}SEARCH{marker_close}` / `{marker_open}DIVIDER{marker_close}` / `{marker_open}REPLACE{marker_close}` blocks, applied with `cat patch | python apply.py`.",
+                "- Environment guarantee — `nix develop .#quiet` enters the minimal reproducible shell for agents and scripting; invoke Python as `.venv/bin/python`.",
+            ]
+            return "\n".join(lines)
+        except subprocess.CalledProcessError as exc:
+            detail = (exc.stderr or exc.stdout or str(exc)).strip()
+            return f"# TOOL ROSTER GENERATION FAILED: registry probe exited {exc.returncode}: {detail}"
+        except Exception as exc:
+            detail = str(exc).strip() or exc.__class__.__name__
+            return f"# TOOL ROSTER GENERATION FAILED: {detail}"
+
     parser = argparse.ArgumentParser(description='Generate a Markdown context file for AI code assistance.')
     parser.add_argument('prompt', nargs='?', default=None, help='A prompt string or path to a prompt file (e.g., prompt.md).')
     parser.add_argument('-o', '--output', type=str, help='Optional: Output filename.')
