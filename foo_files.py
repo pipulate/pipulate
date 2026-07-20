@@ -847,6 +847,8 @@ scripts/connectors/README.md
 scripts/connectors/gmail.py
 scripts/connectors/botify.py
 scripts/connectors/confluence.py
+scripts/connectors/gsc.py
+scripts/connectors/sheets.py
 #  _____ _           _           _   _                      
 # |  ___(_)_ __   __| |   __ _  | | | | ___  _ __ ___   ___ 
 # | |_  | | '_ \ / _` |  / _` | | |_| |/ _ \| '_ ` _ \ / _ \
