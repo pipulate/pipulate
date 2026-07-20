@@ -887,7 +887,7 @@ foo_files.py
 ~/repos/trimnoir/_posts/2026-07-07-agentic-readiness-checklist.md  # Survey Agentic Landscape
 ~/repos/trimnoir/_posts/2026-07-12-computronium-gradient-scaling-intelligence.md  # Composability vs Capacity
 ~/repos/trimnoir/_posts/2026-07-17-mutation-trace-cause-deterministic-exoskeleton.md  # Mutation Trace vs Cause
-~/repos/trimnoir/_posts/2026-07-19-engineering-deterministic-ai-workflows.md  # Falsification / Axis Forcing Function
+~/repos/trimnoir/_posts/2026-07-17-engineering-deterministic-context-ai-workflows.md  # Falsification / Axis Forcing Function
 
 # --- PIN PATHS END ---
 """
