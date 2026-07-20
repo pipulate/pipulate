@@ -1205,6 +1205,7 @@ Before addressing the user's prompt, perform the following verification steps:
         """Assembles all parts into the final Markdown string with convergence loop for accuracy."""
         
         # 1. Build static sections
+        tool_roster_content = self.tool_roster_content.strip()
         story_content = self._build_story_content()
         tree_content = self._build_tree_content()
         uml_content = self._build_uml_content()
@@ -1215,6 +1216,7 @@ Before addressing the user's prompt, perform the following verification steps:
 
         # Placeholders
         placeholders = {
+            "Tool Roster": "# TOOL ROSTER GENERATION FAILED: no roster content was produced.",
             "Story": f"# Narrative context not requested. Use the -l or --list flag to include recent articles.",
             "File Tree": "# File tree generation failed or was skipped.",
             "UML Diagrams": "# No Python files with classes were included, or UML generation failed.",
@@ -1224,6 +1226,7 @@ Before addressing the user's prompt, perform the following verification steps:
         }
 
         # Store basic sections
+        self.all_sections["Tool Roster"] = {'content': tool_roster_content, 'tokens': count_tokens(tool_roster_content)}
         self.all_sections["Story"] = {'content': story_content, 'tokens': count_tokens(story_content)}
         self.all_sections["File Tree"] = {'content': tree_content, 'tokens': count_tokens(tree_content)}
         self.all_sections["UML Diagrams"] = {'content': uml_content, 'tokens': count_tokens(uml_content)}
