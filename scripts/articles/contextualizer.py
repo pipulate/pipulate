@@ -282,6 +282,11 @@ def main():
     if not args.dry_run:
         context_dir.mkdir(exist_ok=True)
 
+    # ORPHAN SWEEP: prune shards whose source article was renamed or deleted.
+    swept = sweep_orphan_shards(posts_dir, context_dir, dry_run=args.dry_run)
+    if swept:
+        print(f"🧹 Orphan sweep: {swept} shard(s) {'flagged' if args.dry_run else 'deleted'}.")
+
     # Key Strategy Selection
     keys_queue = []
 
