@@ -508,7 +508,16 @@ class BrowserAutomation:
             chrome_options.add_argument('--disable-blink-features=AutomationControlled')
             chrome_options.add_experimental_option('excludeSwitches', ['enable-automation'])
             chrome_options.add_experimental_option('useAutomationExtension', False)
-            driver = webdriver.Chrome(options=chrome_options)
+            # Graduated to the same Nix-driver resolution step_01/step_02 use,
+            # killing the bare-Service() status-127 that made this button
+            # silently 500 on NixOS. weblogin now owns persistent-login
+            # warming; these test steps are candidates for later retirement.
+            effective_os = os.environ.get('EFFECTIVE_OS', 'unknown')
+            if effective_os == 'darwin':
+                service = Service(ChromeDriverManager().install())
+            else:
+                service = get_linux_chrome_service(chrome_options)
+            driver = webdriver.Chrome(service=service, options=chrome_options)
             driver.execute_cdp_cmd('Page.addScriptToEvaluateOnNewDocument', {'source': "\n                    Object.defineProperty(navigator, 'webdriver', {\n                        get: () => undefined\n                    });\n                    Object.defineProperty(navigator, 'apps', {\n                        get: () => [1, 2, 3, 4, 5]\n                    });\n                    Object.defineProperty(navigator, 'languages', {\n                        get: () => ['en-US', 'en']\n                    });\n                "})
             try:
                 driver.get('https://www.google.com')
@@ -590,7 +599,16 @@ class BrowserAutomation:
             chrome_options.add_argument('--disable-blink-features=AutomationControlled')
             chrome_options.add_experimental_option('excludeSwitches', ['enable-automation'])
             chrome_options.add_experimental_option('useAutomationExtension', False)
-            driver = webdriver.Chrome(options=chrome_options)
+            # Graduated to the same Nix-driver resolution step_01/step_02 use,
+            # killing the bare-Service() status-127 that made this button
+            # silently 500 on NixOS. weblogin now owns persistent-login
+            # warming; these test steps are candidates for later retirement.
+            effective_os = os.environ.get('EFFECTIVE_OS', 'unknown')
+            if effective_os == 'darwin':
+                service = Service(ChromeDriverManager().install())
+            else:
+                service = get_linux_chrome_service(chrome_options)
+            driver = webdriver.Chrome(service=service, options=chrome_options)
             driver.execute_cdp_cmd('Page.addScriptToEvaluateOnNewDocument', {'source': "\n                    Object.defineProperty(navigator, 'webdriver', {\n                        get: () => undefined\n                    });\n                    Object.defineProperty(navigator, 'apps', {\n                        get: () => [1, 2, 3, 4, 5]\n                    });\n                    Object.defineProperty(navigator, 'languages', {\n                        get: () => ['en-US', 'en']\n                    });\n                "})
             try:
                 driver.get('https://www.google.com')
