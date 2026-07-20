@@ -68,7 +68,10 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-WALLET_FILE = Path.home() / '.config' / 'pipulate' / 'connectors.json'
+CREDS_PATH = os.environ.get('PIPULATE_SHEETS_CREDENTIALS') or str(
+    Path.home() / '.config' / 'pipulate' / 'credentials.json')
+TOKEN_PATH = os.environ.get('PIPULATE_SHEETS_TOKEN') or str(
+    Path.home() / '.config' / 'pipulate' / 'sheets_token.json')
 BIG_TAB_CELLS = 5000  # LIST-mode warning threshold: likely context overflow
 
 _URL_ID_RE = re.compile(r'/spreadsheets/d/([a-zA-Z0-9_-]+)')
