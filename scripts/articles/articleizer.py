@@ -264,6 +264,26 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port, 
         slug = os.path.splitext(title_brainstorm[0]["filename"])[0]
 
     output_filename = f"{current_date}-{slug}.md"
+
+    # --- COLLISION GUARD (deterministic, corpus-wide) ---
+    entries, scan_errors = scan_corpus(output_dir)
+    taken = build_taken_identities(entries)
+    if scan_errors:
+        print(f"⚠️ Collision census incomplete: {scan_errors} post(s) unreadable.")
+    collisions = []
+    slug_owner = taken.get(slug.lower())
+    if slug_owner and slug_owner != output_filename:
+        collisions.append(f"slug '{slug}' already owned by {slug_owner}")
+    perma_owner = taken.get(normalize_permalink(permalink))
+    if perma_owner and perma_owner != output_filename:
+        collisions.append(f"permalink '{permalink}' already owned by {perma_owner}")
+    if collisions:
+        print("🛑 COLLISION GUARD: refusing to write new article.")
+        for c in collisions:
+            print(f"   - {c}")
+        print("   Pick a new slug/permalink (edit instructions.json, rerun with --local).")
+        return None
+
     output_path = os.path.join(output_dir, output_filename)
     os.makedirs(output_dir, exist_ok=True)
 
