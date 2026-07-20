@@ -44,6 +44,25 @@ def ensure_crawl_dir(app_name, domain, date_slug):
     return base_dir
 
 
+def get_linux_chrome_service(chrome_options=None):
+    """Resolve a Nix/PATH-provided chromedriver instead of letting Selenium
+    Manager download a generic FHS-linked binary into ~/.cache/selenium,
+    which exits with status 127 on NixOS (no /lib64 dynamic linker).
+    Also pins the browser binary to the PATH-resolved chromium so driver
+    and browser versions come from the same nixpkgs pin.
+    """
+    import shutil
+    if chrome_options is not None:
+        chromium_bin = shutil.which('chromium') or shutil.which('chromium-browser')
+        if chromium_bin:
+            chrome_options.binary_location = chromium_bin
+    for driver_name in ('chromedriver', 'undetected_chromedriver'):
+        driver_path = shutil.which(driver_name)
+        if driver_path:
+            return Service(executable_path=driver_path)
+    return Service()
+
+
 class BrowserAutomation:
     """
     Browser Automation Workflow
@@ -254,8 +273,8 @@ class BrowserAutomation:
                 await self.message_queue.add(wand, 'Using webdriver-manager for macOS', verbatim=True)
                 service = Service(ChromeDriverManager().install())
             else:
-                await self.message_queue.add(wand, 'Using system Chrome for Linux', verbatim=True)
-                service = Service()
+                await self.message_queue.add(wand, 'Using PATH-resolved chromedriver for Linux', verbatim=True)
+                service = get_linux_chrome_service(chrome_options)
             await self.message_queue.add(wand, 'Initializing Chrome driver...', verbatim=True)
             driver = webdriver.Chrome(service=service, options=chrome_options)
             await self.message_queue.add(wand, f'Opening URL with Selenium: {url}', verbatim=True)
@@ -299,8 +318,8 @@ class BrowserAutomation:
                 await self.message_queue.add(wand, 'Using webdriver-manager for macOS', verbatim=True)
                 service = Service(ChromeDriverManager().install())
             else:
-                await self.message_queue.add(wand, 'Using system Chrome for Linux', verbatim=True)
-                service = Service()
+                await self.message_queue.add(wand, 'Using PATH-resolved chromedriver for Linux', verbatim=True)
+                service = get_linux_chrome_service(chrome_options)
             await self.message_queue.add(wand, 'Initializing Chrome driver...', verbatim=True)
             driver = webdriver.Chrome(service=service, options=chrome_options)
             await self.message_queue.add(wand, f'Reopening URL with Selenium: {url}', verbatim=True)
@@ -377,8 +396,8 @@ class BrowserAutomation:
                 await self.message_queue.add(wand, 'Using webdriver-manager for macOS', verbatim=True)
                 service = Service(ChromeDriverManager().install())
             else:
-                await self.message_queue.add(wand, 'Using system Chrome for Linux', verbatim=True)
-                service = Service()
+                await self.message_queue.add(wand, 'Using PATH-resolved chromedriver for Linux', verbatim=True)
+                service = get_linux_chrome_service(chrome_options)
             await self.message_queue.add(wand, 'Initializing Chrome driver...', verbatim=True)
             driver = webdriver.Chrome(service=service, options=chrome_options)
             await self.message_queue.add(wand, f'Crawling URL with Selenium: {url}', verbatim=True)
