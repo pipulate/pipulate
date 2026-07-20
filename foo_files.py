@@ -160,6 +160,29 @@ AI_PHOOEY_CHOP = r"""                                                           
 # 574 (once), clean headless load. \j cuts the slate, \m mounts, \k
 # dismounts: three keys bracketing Probe, Patch, Prompt.
 
+# THE DOUBLE-TAP RULE (banked 2026-07-20, witnessed same day): a `!` probe
+# that reads an artifact WRITTEN LATER IN THE SAME COMPILE (foo.zip and its
+# rotated snapshots — probes execute at step 2, the cartridge writes at
+# step 7, post-sanitize) photographs the N−1 compile. That stale-by-one
+# reading is a LAGGED receipt, not a failed one — but the exemption must be
+# CLAIMED, never assumed: name the mechanism (which pipeline step writes
+# the artifact) and re-fire the identical probe next compile to collect the
+# AFTER. The second tap is mandatory; a lag excuse without a closing
+# receipt is an open fence. Conviction: the ContextCartridge topper read
+# `# KUNG FU` on its first zipfile probe and frontmatter on the second,
+# one compile later, exactly as the pipeline ordering predicts.
+
+# THE RIDE CONTRACT (banked 2026-07-20): a discussion is a SERIES of worm
+# rides, and the series' shape is declared at the mount: the opening
+# article states the destination AND the arrival conditions — the receipts
+# that must exist before dismounting is permitted. Worm-hopping continues
+# while conditions are unwitnessed; the moment receipts witness them,
+# DISMOUNT (\k) instead of steamrolling the momentum into scope creep — an
+# unbanked win is a Murphy seam where catastrophe slips in. Ulysses comes
+# off the mast once the sirens are astern: bank the winnings (rules,
+# todos, pins), publish the article, seed the next ride's first compile.
+# Arrival without a dismount is not arrival.
+
 # THE NO-DEAD-CARS RULE (banked 2026-07-20): every fenced patch block emitted
 # is a live actuator, regardless of surrounding prose. Never ship a malformed
 # block with an "ignore this / strike that" note — the clipboard lane cannot
