@@ -604,6 +604,16 @@ tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consi
 # gitignore protects the repo lane, not `!` command stdout. Redact or avoid
 # `find browser_cache` output in payloads bound for cloud chat windows.
 
+# THE WEBLOGIN WARMER: sites behind auth need a live logged-in session before
+# a persistent scrape sees anything. Run `weblogin <apex-domain>` (e.g.
+# `weblogin botify.com`) to pop a VISIBLE chromium on the house persistent
+# profile at data/uc_profiles/default — the SAME profile scraper_tools.py
+# uses for persistent=True. Log in, close the window; the session persists so
+# later persistent scrapes inherit the login. Nix-pinned chromium plus
+# undetected-chromedriver (hyphen) make it cross-platform. Close the warmer
+# before scraping (Chrome locks the profile); re-run when a site expires it.
+# scripts/weblogin.py  # <-- `weblogin <apex>`: warm a persistent login for scraping
+
 # ============================================================================
 # IX. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
 # ============================================================================
