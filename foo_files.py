@@ -1178,7 +1178,8 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # - Implement & superimpose Google Open Knowledge Format (OWF) & Agent Skills open standard.
 # - Implement NLWeb, WebMCP, UCP and ACP.
 # - I think articles get read twice on first publish
-# - Make `d` and `m` aliases support when the patch is of the `[[[WRITE_FILE]]]` kind
+# - Make `d` and `m` aliases support when the patch is of the `[[[WRITE_FILE]]]` kind (CONVICTED 2026-07-20: AGENTS.md creation — `d` showed nothing, `m` aborted on empty diff until manual `git add`; fix is `git add -A` before the diff/measure in m())
+# - Add a fu-style toggle for `ahc`: a flag or sibling alias (e.g. `ahf`) that compiles ADHOC_CHOP WITH file tree + UML, so the Genie can pre-assemble its own adhoc.txt context with full repo visibility (User 2026-07-20)
 # - Instrument multi-site hosting on Honeybot (more than just MikeLev.in)
 # - Make Honeybot 404 hub-healing only redirect to other hubs (not article leafs)
 # - Make the inference endpoint a configurable OpenAI-compatible URL to get vLLM, llama.cpp, LM Studio, and every future engine for free.
