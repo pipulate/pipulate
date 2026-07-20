@@ -160,6 +160,17 @@ AI_PHOOEY_CHOP = r"""                                                           
 # 574 (once), clean headless load. \j cuts the slate, \m mounts, \k
 # dismounts: three keys bracketing Probe, Patch, Prompt.
 
+# THE GENERATED-NOT-AUTHORED RULE (banked 2026-07-20, witnessed same day):
+# any payload section that DESCRIBES live capability (tool rosters,
+# registry counts, version stats) must be produced by the compile that
+# ships it — computed from the live source in a bounded subprocess, with a
+# fail-LOUD placeholder on error — never hand-authored prose. An authored
+# capability list is drift-by-construction: the sibling-.md failure mode
+# this repo exists to refuse. Witness: the Tool Roster's "21 tools"
+# matched the same compile's live_registry_count=21 receipt name-for-name
+# on its first flight; the only stale state it can ever exhibit is a loud
+# GENERATION FAILED banner, which is a wound, not a lie.
+
 # THE DOUBLE-TAP RULE (banked 2026-07-20, witnessed same day): a `!` probe
 # that reads an artifact WRITTEN LATER IN THE SAME COMPILE (foo.zip and its
 # rotated snapshots — probes execute at step 2, the cartridge writes at
