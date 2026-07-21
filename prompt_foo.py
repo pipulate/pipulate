@@ -1461,7 +1461,7 @@ def update_paintbox_in_place():
                 continue
             if not in_story_section:
                 continue
-            if "VIII. THE PAINTBOX" in line:
+            if "XIX. THE PAINTBOX" in line:
                 break # Stop before parsing the unused tubes themselves
 
             clean_line = line.lstrip("#").strip()
@@ -1491,7 +1491,7 @@ def update_paintbox_in_place():
         with open(foo_path, "r", encoding="utf-8") as f:
             foo_content = f.read()
 
-        PAINTBOX_MARKER = "# ============================================================================\n# VIII. THE PAINTBOX (Unused Colors)\n# ============================================================================"
+        PAINTBOX_MARKER = "# ============================================================================\n# XIX. THE PAINTBOX (Unused Colors)\n# ============================================================================"
         marker_index = foo_content.find(PAINTBOX_MARKER)
         
         if marker_index != -1:
