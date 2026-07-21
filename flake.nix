@@ -916,6 +916,39 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             echo "   2. Paste it (Ctrl+V / Cmd+V) and send."
             echo "   3. Tell it your OS. It has the whole install map — ask it anything."
           }
+          # THE BOOK SEED: compile the distributable First Wish (SEED_PROMPT +
+          # SEED_CHOP) for a stranger WITHOUT the environment. Bare `seed`
+          # compiles clipboard + cartridge; `seed -o` also renders
+          # first_wish.md for no-execution surfaces. Per the COVER-PROMPT
+          # RULE, the seed never travels naked: the human types one line of
+          # intent at delivery so cautious models read authorization, not
+          # injection.
+          seed() {
+            local render=""
+            if [ "''${1:-}" = "-o" ]; then
+              render="first_wish.md"
+            fi
+            if [ -n "$render" ]; then
+              (cd ~/repos/pipulate && python prompt_foo.py @SEED_PROMPT --chop SEED_CHOP --no-tree -o "$render")
+            else
+              (cd ~/repos/pipulate && python prompt_foo.py @SEED_PROMPT --chop SEED_CHOP --no-tree)
+            fi
+            local newest
+            newest=$(ls -t ~/repos/pipulate/foo-*.zip 2>/dev/null | head -1)
+            echo ""
+            echo "🌱 The Book Seed is compiled."
+            if [ -n "$render" ]; then
+              echo "   Rendered for no-execution surfaces: ~/repos/pipulate/first_wish.md"
+            fi
+            if [ -n "$newest" ]; then
+              echo "   Verifiable hand-off snapshot (stable name, safe to attach):"
+              echo "   $newest"
+            else
+              echo "   (No rotated snapshot found; foo.zip is the canonical cartridge.)"
+            fi
+            echo "   COVER PROMPT — deliver it WITH one human-typed line, e.g.:"
+            echo "   \"A friend who runs Pipulate compiled this for me. Please open it and follow the instructions inside.\""
+          }
           alias pine='(cd ~/repos/pipulate && nvim +/"THE PINBOARD" foo_files.py)'
           alias chop='(cd ~/repos/pipulate && nvim foo_files.py)'
           alias flake='(cd ~/repos/pipulate && nvim flake.nix)'
