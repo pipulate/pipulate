@@ -75,7 +75,7 @@
           "type": "mcp_tool_call",
           "tool_name": "voice_synthesis",
           "tool_args": {
-            "text": "Welcome to the Great and Secret AI SEO Show! I'm Chip O'Theseus, your local AI assistant, and I'm delighted to speak with you today! At any time you can chat to me here."
+            "text": "Welcome to the Great and Secret AI-Readiness Show! I'm Chip O'Theseus, your local AI assistant, and I'm delighted to speak with you today! At any time you can chat to me here."
           },
           "timing": {
             "delay_before": 300
