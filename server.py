@@ -5209,7 +5209,7 @@ def run_server_with_watchdog():
     logger.warning("🤖 AI_STARTUP_BANNER: aa.figlet_banner() below will log ASCII art with triple backticks for AI visibility")
 
     # 🎨 BEAUTIFUL RESTART BANNER
-    aa.figlet_banner(APP_NAME, "Local First AI SEO Software", font='standard', color=BANNER_COLORS['workshop_ready'])
+    aa.figlet_banner(APP_NAME, "Local First AI-Readiness Software", font='standard', color=BANNER_COLORS['workshop_ready'])
 
     # 🧊 VERSION BANNER - Display Nix flake version in standard font
     nix_version_raw = get_nix_version()
