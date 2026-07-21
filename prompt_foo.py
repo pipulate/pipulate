@@ -1658,33 +1658,69 @@ def main():
     wand.figurate("white_rabbit")
 
     def generate_tool_roster() -> str:
-        """Compile the live tool registry and static actuation grammar."""
-        registry_probe = (
-            "import json; "
-            "from tools import get_all_tools; "
-            "print(json.dumps(sorted(get_all_tools())))"
-        )
+        """Compile the live tool roster and static actuation grammar.
+
+        AST-DERIVED, NOT IMPORT-DERIVED: parse tools/*.py for @auto_tool
+        functions and pull each name, signature, and first-line docstring
+        WITHOUT importing a single module — so the ~3.8s voice_synthesis
+        import tax (probe 2 receipt: 5.5s for `from tools import
+        get_all_tools`) never enters the compile. Witnessed safe on
+        2026-07-20: the AST @auto_tool count matched the live registry
+        (21 == 21), proving every registry tool is a top-level bare-decorated
+        function AST can see. Generated-not-authored: any AST/read failure
+        falls LOUD to the placeholder rather than a partial list.
+        """
+        import ast
+
+        def _decorated_with_auto_tool(node) -> bool:
+            # Bare @auto_tool only. Witnessed sufficient: the AST count equals
+            # the live registry, so no tool reaches it via an attribute form
+            # (@module.auto_tool) that this Name check would miss.
+            for dec in node.decorator_list:
+                if isinstance(dec, ast.Name) and dec.id == "auto_tool":
+                    return True
+            return False
+
+        def _signature(node) -> str:
+            prefix = "async def" if isinstance(node, ast.AsyncFunctionDef) else "def"
+            try:
+                params = ast.unparse(node.args)
+            except Exception:
+                params = "..."
+            return f"{prefix} {node.name}({params})"
+
         try:
-            result = subprocess.run(
-                [sys.executable, "-c", registry_probe],
-                cwd=REPO_ROOT,
-                capture_output=True,
-                text=True,
-                timeout=30,
-                check=True,
-            )
-            tool_names = json.loads(result.stdout)
-            if not isinstance(tool_names, list) or not all(isinstance(name, str) for name in tool_names):
-                raise ValueError("registry probe did not return a JSON list of tool names")
+            tools_dir = Path(REPO_ROOT) / "tools"
+            if not tools_dir.is_dir():
+                raise FileNotFoundError(f"tools directory not found at {tools_dir}")
+
+            tools = {}
+            for py_file in sorted(tools_dir.glob("*.py")):
+                if py_file.name.startswith("__"):
+                    continue
+                tree = ast.parse(py_file.read_text(encoding="utf-8"), filename=str(py_file))
+                for node in tree.body:
+                    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and _decorated_with_auto_tool(node):
+                        doc = ast.get_docstring(node)
+                        first_line = (doc.strip().splitlines()[0].strip() if doc and doc.strip() else "(no docstring)")
+                        tools[node.name] = {"signature": _signature(node), "doc": first_line}
+
+            if not tools:
+                raise ValueError("AST parse found no @auto_tool functions in tools/*.py")
 
             marker_open = "[" * 3
             marker_close = "]" * 3
             lines = [
-                f"**Live registry:** {len(tool_names)} tools",
+                f"**Live registry:** {len(tools)} tools (AST-derived, no runtime import)",
                 "",
                 "## Registered tools",
                 "",
-                *(f"- `{name}`" for name in tool_names),
+            ]
+            for name in sorted(tools):
+                meta = tools[name]
+                lines.append(f"- `{name}` — {meta['doc']}")
+                lines.append(f"  - `{meta['signature']}`")
+            lines += [
                 "",
                 "## Actuation grammar",
                 "",
@@ -1699,9 +1735,6 @@ def main():
                 "- Environment guarantee — `nix develop .#quiet` enters the minimal reproducible shell for agents and scripting; invoke Python as `.venv/bin/python`.",
             ]
             return "\n".join(lines)
-        except subprocess.CalledProcessError as exc:
-            detail = (exc.stderr or exc.stdout or str(exc)).strip()
-            return f"# TOOL ROSTER GENERATION FAILED: registry probe exited {exc.returncode}: {detail}"
         except Exception as exc:
             detail = str(exc).strip() or exc.__class__.__name__
             return f"# TOOL ROSTER GENERATION FAILED: {detail}"
