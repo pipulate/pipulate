@@ -17,7 +17,7 @@ __version_description__ = "Good Install Instructions"
 __email__ = "pipulate@gmail.com"
 __description__ = "A Notebook-inspired Hand-cranked Agentic Framework" 
 
-# Pipulate: A hand-cranked, local-first AI SEO software framework.
+# Pipulate: A hand-cranked, local-first AI-readiness software framework — the successor to AI SEO software.
 # Copyright (C) 2026 Michael Jay Levin
 #
 # This program is free software: you can redistribute it and/or modify
