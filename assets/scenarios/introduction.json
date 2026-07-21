@@ -85,7 +85,7 @@
         {
           "step_id": "05_ai_seo_show_intro",
           "type": "system_reply",
-          "message": "| 🎭 | **Welcome to** | 🎭 |\n|:---:|:---:|:---:|\n| 🪄 | **The Great & Secret** | 🪄 |\n| 🎩 | **AI SEO Show!** | 🎩 |",
+          "message": "| 🎭 | **Welcome to** | 🎭 |\n|:---:|:---:|:---:|\n| 🪄 | **The Great & Secret** | 🪄 |\n| 🎩 | **AI-Readiness Show!** | 🎩 |",
           "timing": {
             "delay_before": 500,
             "display_speed": 25
