@@ -9,7 +9,7 @@ version = "2.00"
 authors = [
   { name="Mike Levin", email="pipulate@gmail.com" },
 ]
-description = "A Notebook-inspired Hand-cranked Agentic Framework"
+description = "AI-readiness for the agentic web — local-first, Nix-reproducible workflows. The successor to AI SEO software."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.8"
@@ -21,7 +21,7 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
     "Topic :: Software Development :: Libraries :: Application Frameworks",
 ]
-keywords = ["seo", "ai", "llm", "automation", "local-first", "nix", "fasthtml", "htmx", "agentic"]
+keywords = ["ai-readiness", "agentic-web", "seo", "ai", "llm", "automation", "local-first", "nix", "fasthtml", "htmx", "agentic", "content-negotiation"]
 dependencies = [
     "blinker==1.6.2",
     "apsw==3.50.3.0",
