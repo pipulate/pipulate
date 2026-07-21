@@ -16,7 +16,7 @@
       {
         "step_id": "02_pipulate_intro",
         "type": "system_reply",
-        "message": "This is {app_name}, local first AI SEO automation software. Would you like a demo? Press **Ctrl+Alt+y** or **Ctrl+Alt+n** on the keyboard.",
+        "message": "This is {app_name}, local first AI-readiness automation software. Would you like a demo? Press **Ctrl+Alt+y** or **Ctrl+Alt+n** on the keyboard.",
         "timing": {
           "delay_before": 1000,
           "display_speed": 30
