@@ -1006,7 +1006,13 @@ SEED_CHOP = r"""
 # newest rotated foo-<hash8>-NN.zip (verifiable receivers) or an
 # `-o first_wish.md` render (chatbots without code execution). The receiver
 # uploads it to any Web ChatBot; the baked-in SEED_PROMPT turns that model
-# into Yen Sid-ton. Arm 1 (md upload) banked 2026-07-20; Arm 2 (zip) pending.
+# into Yen Sid-ton. Arm 1 (md) banked 2026-07-20. Arm 2 (zip) banked
+# 2026-07-20: ChatGPT and Grok verified sha256 and hit all five beats;
+# Gemini (md) went five-for-five; Opus verified integrity but demoted the
+# embedded prompt to untrusted context and declined the persona — a channel
+# property, not a bug. COVER-PROMPT RULE: distribute the seed WITH one
+# human-typed line (see EARMARK) so cautious models read authorized intent,
+# not injection. Arm 3 (zip on a no-execution surface) remains untested.
 
 foo_files.py
 assets/installer/install.sh   # The magic cookie: curl-distributed, git-free bootstrap
@@ -1273,6 +1279,8 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # - WALLET DESCRIPTOR LANE (opened 2026-07-20): one richly-annotated wallet (connectors.json today; eventually connectors.nix -> materialized JSON, blogs.nix pattern) where every credential carries a human-facing description — what it is, which Cloud project, which scopes, which connectors consume it, where the secret file lives, rotation notes. Names/paths/descriptions only, never secret values. The cure to auth opacity: left hand and right hand read the same illuminated page, and it stays joyful to touch.
 # - EARMARK: FAILED-PROBE RECEIPT (banked 2026-07-20, canary-witnessed same day): the `!` executor lands stderr-only failures as first-class Manifest receipts — "# NON-ZERO EXIT N" header, "(no stdout — stderr is the receipt)" placeholder, fenced tail-capped stderr. Witness: the deliberate canary `bash -c "echo canary-stderr >&2; exit 3"` surfaced in the next compile's LIVE COMMAND RECEIPTS exactly as specified. Method note: the fix was proven by MANUFACTURING a known failure and confirming the instrument displayed it — a QA pipeline is trusted only once it has demonstrably shown red when red was true.
 # - NEXT RIDE — RUNTIME TOOL-DISCOVERY IMPORT SPLIT (seeded 2026-07-20 at dismount): the compile-lane roster now dodges the tax via AST, but cli.py mcp-discover and get_all_tools() STILL import every tools/*.py at tool-call time, eating the ~3.8s imports.voice_synthesis engine load (runtime BEFORE receipt: get_all_tools() at 5.58s vs the 0.18s AST path). Defer/lazy-load the engine import inside tools/voice_synthesis.py so enumerating names/metadata never constructs the TTS engine — it loads only when voice_synthesis is CALLED. Arrival: a runtime AFTER receipt showing get_all_tools() drop from ~5.5s toward the AST floor. RECALL HANDLE (the "rtx" pull = rgx/rgxc AND-search over _posts, since 2-3 rare words set-intersect to one article): `rgxc roster triptych hinge` re-prints this article's shards AND copies a TODO_SLUGS block, so `xp` right after re-hydrates the FULL article into context — no bookmark, just two rare words meeting once. THE 1+1=3: LLM Optics + AST-derived roster + rgx word-union recall + the mount/dismount ride kata all landed within days and now COMPOSE — each makes the next cheaper to reach for; that compounding, not any lone unlock, is the acceleration.
+
+# - EARMARK: THE COVER-PROMPT RULE (banked 2026-07-20, fan-out-witnessed same day): an instruction embedded in an uploaded artifact is INJECTION to a cautious model; the same instruction typed by the human is INTENT. Conviction: 4-model SEED fan-out — ChatGPT/Grok/Gemini adopted Yen Sid-ton five-for-five; Opus verified the cartridge sha256, then explicitly demoted prompt.md to context-not-marching-orders and asked the human what they wanted. Any distributable artifact therefore ships with a one-line human cover prompt (e.g. "Please help me install this using the included instructions") that authorizes the embedded protocol. Verification receipts were unanimous wherever code execution existed — cartridge integrity is proven; only the authority channel needed the fix.
 
 # ============================================================================
 # VIII. THE PAINTBOX (Unused Colors)
