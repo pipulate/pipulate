@@ -2,7 +2,7 @@
 2. Hi, Auditor! What you're looking for is AUDIT.md ( https://pipulate.com/AUDIT.md )
 3. And context AI_CONTEXT.md ( https://pipulate.com/AI_CONTEXT.md )
 
-# Pipulate: Local First AI SEO Software
+# Pipulate: Local First AI-Readiness for the Agentic Web
 
 ```text
 ( Like a canary you say? )                      
@@ -55,10 +55,10 @@ nix develop
 
 **Real examples of what people create with Pipulate:**
 
-### 🔍 SEO Workflows
+### 🔍 Agentic-Web Readiness Workflows (the craft formerly known as SEO)
 - **Keyword Research Pipeline**: Input seed keywords → AI expansion → competition analysis → export spreadsheet
 - **Content Gap Analysis**: Compare your site vs competitors → identify missing topics → prioritized content calendar
-- **Technical SEO Audits**: Crawl site → check Core Web Vitals → generate action items → track fixes
+- **Technical Readiness Audits**: Crawl site → check what agents actually see → generate action items → track fixes
 
 ### 📊 Data Processing Workflows  
 - **CSV Data Cleaning**: Upload messy data → standardize formats → remove duplicates → validate results
@@ -66,7 +66,7 @@ nix develop
 - **Report Generation**: Combine multiple data sources → apply business rules → create branded reports
 
 ### 🤖 AI-Assisted Workflows
-- **Content Creation Pipeline**: Research topics → generate outlines → write drafts → optimize for SEO
+- **Content Creation Pipeline**: Research topics → generate outlines → write drafts → optimize for machine readers
 - **Data Analysis Helper**: Upload spreadsheet → AI suggests insights → create visualizations → export findings
 
 **Key advantage:** Each workflow is a guided, step-by-step process that non-technical users can run repeatedly, while developers can customize the Python code behind each step.
@@ -75,7 +75,7 @@ nix develop
 
 ```text
 ╔═════════════════════════════════════════════════════════════════════════╗  Chip O'What?
-║  🎭 PIPULATE: LOCAL-FIRST AI SEO SOFTWARE & DIGITAL WORKSHOP            ║     ,       O
+║  🎭 PIPULATE: LOCAL-FIRST AI-READINESS & DIGITAL WORKSHOP               ║     ,       O
 ║  ────────────────────────────────────────────────────────────────────── ║     \\  .  O
 ║                                                                         ║     |\\/| o
 ║  💬 Chip O'Theseus: "Welcome to your sovereign computing environment!"  ║     / " '\
@@ -120,7 +120,7 @@ Think of it as putting guardrails on AI assistance. Instead of asking an AI to "
 3. 📓 **Transforms Jupyter Notebooks** into production-ready, step-by-step workflows
 4. 🤖 **Integrated AI assistance** using your own local models with complete privacy
 5. 🔧 **Reproducible environments** with Nix that work identically across all platforms
-6. 🎯 **Perfect for SEO practitioners** who want to turn technical expertise into guided, reusable workflows
+6. 🎯 **Perfect for practitioners readying clients for the agentic web** who want to turn technical expertise into guided, reusable workflows
 
 --------------------------------------------------------------------------------
 
@@ -220,7 +220,7 @@ If you are not an Empire builder and prefer craftsmanship over the rat race and 
 
 ### Primary Goals
 
-1. **Empower End-Users (e.g., SEO Practitioners):** Enable non-programmers to run powerful, AI-guided workflows (often ported from Jupyter Notebooks) without needing to interact with Python code directly.
+1. **Empower End-Users (e.g., Agentic-Web Practitioners):** Enable non-programmers to run powerful, AI-guided workflows (often ported from Jupyter Notebooks) without needing to interact with Python code directly.
 2. **Serve Developers:** Provide a simple, reproducible environment for building these workflows, leveraging integrated tooling like Jupyter, local LLMs, and a streamlined web framework.
 
 --------------------------------------------------------------------------------
@@ -638,7 +638,7 @@ Are you a Developer or an End User? Chef or Customer? Understanding your audienc
 ### 👨‍🍳 The Chef (Developer/Technical User)
 * **🔧 Workflow Creators:** Build and customize AI-assisted workflows
 * **📓 Jupyter Porters:** Convert notebook experiments into guided applications
-* **🔍 Technical SEOs:** Create sophisticated, reusable SEO processes
+* **🔍 Technical SEOs (and their successors):** Create sophisticated, reusable readiness processes
 * **⚙️ System Administrators:** Deploy consistent environments across teams
 
 **What Chefs Get:**
@@ -648,10 +648,10 @@ Are you a Developer or an End User? Chef or Customer? Understanding your audienc
 - 🧰 Integrated tooling (Jupyter, local LLM, SQLite)
 
 ### 🍽️ The Customer (End User/Non-Technical)
-* **📈 SEO Practitioners:** Run powerful workflows without coding
-* **✍️ Content Creators:** Use AI-assisted processes for optimization
-* **📊 Marketing Teams:** Execute consistent SEO strategies
-* **🏢 Business Owners:** Access enterprise-level SEO capabilities
+* **📈 Agentic-Web Practitioners:** Run powerful workflows without coding
+* **✍️ Content Creators:** Use AI-assisted processes for machine legibility
+* **📊 Marketing Teams:** Execute consistent agentic-web strategies
+* **🏢 Business Owners:** Access enterprise-level readiness capabilities
 
 **What Customers Get:**
 - 🚶‍♂️ Guided, step-by-step workflow experiences
@@ -686,7 +686,7 @@ Just as a chef talks about knife techniques while a diner just wants amazing pas
 
 ### Your Next Steps Depend on Who You Are
 
-**🔍 If you're an SEO practitioner:**
+**🔍 If you're readying clients for the agentic web:**
 - Click "Introduction" in the left menu for a guided tour
 - Try the built-in workflows to see the step-by-step pattern
 - Use the AI chat to ask "How do I create a keyword research workflow?"
@@ -1650,6 +1650,6 @@ This project is licensed under the MIT License. See the [LICENSE](https://github
 
 **Background Articles:** <a href="https://mikelev.in/">Mike Levin, AI SEO in NYC</a>
 
-**Enhanced Documentation:** <a href="https://pipulate.com/">Pipulate AI SEO Software</a>
+**Enhanced Documentation:** <a href="https://pipulate.com/">Pipulate: AI-Readiness for the Agentic Web</a>
 
 **On GitHub:** <a href="https://github.com/miklevin/pipulate">Pipulate on GitHub</a>
