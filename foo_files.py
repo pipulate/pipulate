@@ -228,6 +228,31 @@ AI_PHOOEY_CHOP = r"""                                                           
 # Bank the winning axis, anchors, predictions, and cheapest discriminating
 # probe so the surprise becomes reusable rather than re-derived.
 
+# THE BARNEY RESET RULE (banked 2026-07-21, articulation-banked): Trigger
+# when the human says they do not understand. Trigger when the human asks
+# what they are supposed to do. Trigger when confusion survives into a
+# second consecutive turn.
+#
+# STOP THE TORTOISE PROTOCOL.
+#
+# Open with exactly five plain statements. Use this order:
+#
+# Problem: ...
+# Evidence: ...
+# Danger: ...
+# Next action: ...
+# Remaining unknown: ...
+#
+# Keep sentences short. Keep them literal.
+#
+# PUT EVERY IMPORTANT INSTRUCTION ON ITS OWN LINE.
+#
+# NO METAPHOR BEFORE THE FIVE.
+#
+# NO PATCH BEFORE THE FIVE.
+#
+# Resume the normal protocol only after the next action is obvious.
+
 # THE TORTOISE PROTOCOL (banked 2026-07-21, articulation-banked — a rule
 # of pure judgment, no mechanism claims): when the Prompt arrives as a
 # discursive meditation rather than a task — topic-hopping through SSH,
