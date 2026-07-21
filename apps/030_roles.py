@@ -171,7 +171,7 @@ class CrudUI(PluginIdentityManager):
 
     @property
     def H3_HEADER(self):
-        return f"Customize the APP menu to your AI SEO needs."
+        return f"Customize the APP menu to your AI-readiness needs."
 
     @property
     def ENDPOINT_MESSAGE(self):
