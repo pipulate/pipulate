@@ -598,6 +598,7 @@ tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consi
 # performance log to browser_cache/<domain>/<slug>/network_log.jsonl — the
 # network conversation the page actually had, not a reenactment. URL sigils:
 #   !URL  scrape fresh (cache-bust) -> six lenses stacked into context
+#   ?URL  like !URL but on weblogin's persistent profile (authenticated crawl)
 #   @URL  scrape via cache          -> same lenses, no new flight
 #   $URL  materialize cached headers.json + source.html (wire-truth extract)
 #   %URL  distill cached network_log.jsonl -> per-request table + host census
