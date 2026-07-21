@@ -15,7 +15,7 @@ Usage:
 __version__ = "2.00"
 __version_description__ = "AI-Readiness Retitle"
 __email__ = "pipulate@gmail.com"
-__description__ = "A Notebook-inspired Hand-cranked Agentic Framework" 
+__description__ = "AI-readiness for the agentic web — local-first, Nix-reproducible workflows. The successor to AI SEO software."
 
 # Pipulate: A hand-cranked, local-first AI-readiness software framework — the successor to AI SEO software.
 # Copyright (C) 2026 Michael Jay Levin
