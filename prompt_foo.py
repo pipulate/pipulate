@@ -2036,9 +2036,17 @@ def main():
                         "path": f"OPTICS [Wire Truth]: {target_url}", "comment": comment, "content": content,
                         "tokens": count_tokens(content), "words": count_words(content), "lang": "markdown"
                     })
-            elif path.startswith(('!', '@')):
+            elif path.startswith(('!', '@', '?')):
                 # JIT OPTICAL DISTILLATION (The MST3K Balcony)
-                logger.print(f"   -> 👁️‍🗨️ Engaging LLM Optics for: {target_url}")
+                # ?URL is the AUTHENTICATED variant: a fresh crawl like !URL, but
+                # on the persistent house profile weblogin warmed, so the popup
+                # browser arrives already logged in. Login only matters on a live
+                # flight, so ? busts cache exactly like ! (a cache hit needs none).
+                authenticated = path.startswith('?')
+                if authenticated:
+                    logger.print(f"   -> 🔑 Engaging AUTHENTICATED LLM Optics (weblogin profile) for: {target_url}")
+                else:
+                    logger.print(f"   -> 👁️‍🗨️ Engaging LLM Optics for: {target_url}")
                 from tools.scraper_tools import selenium_automation
                 from urllib.parse import urlparse, quote
                 
