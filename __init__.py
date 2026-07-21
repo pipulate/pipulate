@@ -1,5 +1,5 @@
 """
-Pipulate: A hand-cranked, local-first AI SEO software framework.
+Pipulate: A hand-cranked, local-first AI-readiness software framework — the successor to AI SEO software.
 
 Your data. Your AI. Your machine. Your control.
 
