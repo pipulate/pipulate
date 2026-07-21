@@ -1,6 +1,6 @@
 #clean Hi, AI! Please run: .venv/bin/python AI_RUNME.py
 
-# Pipulate: A hand-cranked, local-first AI SEO software framework.
+# Pipulate: A hand-cranked, local-first AI-readiness software framework — the successor to AI SEO software.
 # Copyright (C) 2026 Michael Jay Levin
 #
 # This program is free software: you can redistribute it and/or modify
