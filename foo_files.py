@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,330 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 27 published in the last 7 days
+# There are 1,331 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 28 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -462,14 +462,14 @@ scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and includ
 # IV. THE WAND🪄 & THE WIZARD🧙‍♂️ - Everything's actually web development these days
 # ============================================================================
   
-config.py                   # <-- Centralize every last configuration in here
-pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-pipulate/core.py            # <-- The Wand (spells)
+# config.py                   # <-- Centralize every last configuration in here
+# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+# pipulate/core.py            # <-- The Wand (spells)
 
 # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
 
-server.py                   # <-- The Wizard (big!)
+# server.py                   # <-- The Wizard (big!)
 # assets/styles.css           # <-- Those values often get used here for "the look"
 # imports/server_logging.py   # <-- Drawing that ASCII art into radically transparent server logs
 
@@ -583,11 +583,13 @@ server.py                   # <-- The Wizard (big!)
 # VIII. LLM OPTICS - Like looking at raw HTML or the hydrated DOM? Them either.
 # ============================================================================
 
-# scripts/crawl.py        # <-- Feel free to ask for something to be crawled and included in the next turn.
-# tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
-# tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
-# tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
-# tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
+cli.py                  # <-- A powerful wrapper that lets anything become an MCP tool-call, etc.
+scripts/weblogin.py     # <-- Lets the user "warm up" their logins at their leisure on a profile that persists.
+scripts/crawl.py        # <-- Feel free to ask for something to be crawled and included in the next turn.
+tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
+tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
+tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
+tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
 tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
 # THE CDP FLIGHT RECORDER (Wire Truth): every scrape drains the browser's
@@ -1263,6 +1265,7 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # Notebooks/.agents/skills/sheets_readonly/SKILL.md  # [455 tokens | 1,934 bytes]
 # apps/130_gap_analysis.py  # [9,622 tokens | 48,265 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
+# apps/440_browser_automation.py  # [10,783 tokens | 47,103 bytes]
 # apps/450_stream_simulator.py  # [1,829 tokens | 9,488 bytes]
 # apps/580_upload.py  # [5,616 tokens | 26,438 bytes]
 # apps/610_markdown.py  # [4,754 tokens | 24,960 bytes]
