@@ -592,7 +592,7 @@ tools/llm_optics.py     # <-- Some of the work we do would bring down the Jupyte
 tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
 tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
-!https://app.botify.com/michaellevin-org/mikelev.in/
+?https://app.botify.com/michaellevin-org/mikelev.in/
 
 # THE CDP FLIGHT RECORDER (Wire Truth): every scrape drains the browser's
 # performance log to browser_cache/<domain>/<slug>/network_log.jsonl — the
