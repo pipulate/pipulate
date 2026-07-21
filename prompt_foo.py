@@ -2057,7 +2057,8 @@ def main():
                 scrape_params = {
                     "url": target_url, "domain": domain, "url_path_slug": path_slug,
                     "take_screenshot": False, "headless": False, "is_notebook_context": True, "verbose": False,
-                    "override_cache": path.startswith('!')  # 💥 Bust cache with !, reuse cache with @
+                    "override_cache": path.startswith(('!', '?')),  # 💥 Bust cache with ! or ?, reuse with @
+                    "persistent": authenticated,  # 🔑 ? reuses weblogin's warmed data/uc_profiles/default
                 }
                 
                 import asyncio
