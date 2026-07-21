@@ -1384,4 +1384,3 @@ scripts/xp.py  # [1,981 tokens | 8,377 bytes]
 # scripts/playground/prompt_feeder.py  # [746 tokens | 3,154 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
-# This will get deleted\!
