@@ -1155,7 +1155,7 @@ def status_banner(mcp_count, plugin_count, env="Development"):
     
     status_content = f"""
 [bold white]🚀 PIPULATE STATUS[/bold white]
-[dim white]Local First AI SEO Software[/dim white]
+[dim white]Local First AI-Readiness Software[/dim white]
 
 [white]🌐 Server:[/white] [{server_color}]http://localhost:5001[/{server_color}]
 [white]🔧 MCP Tools:[/white] [{mcp_color}]{mcp_count} active[/{mcp_color}]
