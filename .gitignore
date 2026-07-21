@@ -55,7 +55,6 @@ logs/
 temp/
 .ssh/key
 *kungfu_*.py
-flake.lock
 foo.txt
 service_account.txt
 service-account-key.json
