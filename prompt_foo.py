@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # prompt_foo.py
 
-# Pipulate: A hand-cranked, local-first AI SEO software framework.
+# Pipulate: A hand-cranked, local-first AI-readiness framework for the agentic web.
 # Copyright (C) 2026 Michael Jay Levin
 #
 # This program is free software: you can redistribute it and/or modify

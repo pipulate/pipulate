@@ -360,7 +360,7 @@ def main():
     # --- END NEW LOGIC ---
     
     parser = argparse.ArgumentParser(
-        description="Pipulate CLI - The Local-First AI SEO & Automation Workshop.\n\n"
+        description="Pipulate CLI - The Local-First AI-Readiness & Automation Workshop.\n\n"
                    "🎯 THE GOLDEN PATH FOR AI ASSISTANTS:\n"
                    "  1. .venv/bin/python cli.py mcp-discover                     # Discover your core abilities\n"
                    "  2. .venv/bin/python cli.py call ai_capability_test_suite    # Verify your capabilities  \n"
@@ -408,7 +408,7 @@ def main():
 
     args = parser.parse_args()
 
-    console.print(Panel("🚀 [bold cyan]Pipulate :: The Local-First AI SEO & Automation Workshop[/bold cyan] 🚀", border_style="cyan"))
+    console.print(Panel("🚀 [bold cyan]Pipulate :: The Local-First AI-Readiness & Automation Workshop[/bold cyan] 🚀", border_style="cyan"))
 
     if args.command == 'install':
         if not check_nix_installed():

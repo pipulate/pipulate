@@ -102,7 +102,7 @@ def build_added_files_context(added_files, max_chars):
     return "".join(parts)
 
 COMMIT_PROMPT_TEMPLATE = """
-You are an expert programmer and git contributor for the "Pipulate" project, a local-first AI SEO tool.
+You are an expert programmer and git contributor for the "Pipulate" project, a local-first AI-readiness tool for the agentic web.
 Your task is to write a concise, informative, and conventional commit message.
 
 Analyze the following git diff and generate a commit message in the format:

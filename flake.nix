@@ -480,7 +480,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           This folder is your personal sandbox. It is intentionally **ignored** by Pipulate's main version control.
           
           ## Why does this exist?
-          As an SEO consultant, you need a place to write fast, messy, disposable Python scripts to solve immediate client problems. You shouldn't have to worry about breaking the main Pipulate architecture or accidentally committing client data to a public repository.
+          As a practitioner readying clients for the agentic web, you need a place to write fast, messy, disposable Python scripts to solve immediate client problems. You shouldn't have to worry about breaking the main Pipulate architecture or accidentally committing client data to a public repository.
           
           ## How it works:
           1. **Full Access:** Scripts here use the same `.venv` Python environment as Pipulate. You have access to `pandas`, `httpx`, `lxml`, and the Pipulate `wand` without installing anything.
