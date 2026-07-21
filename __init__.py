@@ -13,7 +13,7 @@ Usage:
 """
 
 __version__ = "2.00"
-__version_description__ = "Good Install Instructions"
+__version_description__ = "AI-Readiness Retitle"
 __email__ = "pipulate@gmail.com"
 __description__ = "A Notebook-inspired Hand-cranked Agentic Framework" 
 
