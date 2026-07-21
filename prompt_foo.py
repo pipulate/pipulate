@@ -1728,6 +1728,7 @@ def main():
                 "- Execute a tool — `.venv/bin/python cli.py call <tool_name> --json-args '{...}'`.",
                 "- `! command` — execute a bounded chisel-strike and compile stdout/stderr as a live receipt.",
                 "- `!URL` — scrape fresh (cache-bust) and stack the optics lenses.",
+                "- `?URL` — like `!URL`, but on weblogin's persistent profile (authenticated crawl).",
                 "- `@URL` — reuse the scrape cache and stack the same optics lenses.",
                 "- `$URL` — materialize cached `headers.json` and `source.html`.",
                 "- `%URL` — distill cached `network_log.jsonl` into request and host summaries.",
