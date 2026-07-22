@@ -570,7 +570,7 @@ function mount_sandworm()
     -- full ride template replaces it; on a non-blank line it inserts below,
     -- protecting existing prose. Either way the cursor lands in insert mode
     -- right after the speaker label — the old i**Me**: feel, full saddle.
-    local template = "**Me**: \n\n"
+    local template = "**Me**: [Not me] \n\n"
         .. "Probe:\n\n"
         .. "```bash\n\n```\n\n"
         .. "Context:\n\n"
