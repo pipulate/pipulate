@@ -1221,43 +1221,6 @@ prompt_foo.py  # [16,195 tokens | 73,877 bytes]
 scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
-CHOP_NEXT_STEP = """
-# THE NEXT STEP INFERENCE ENGINE
-# COMMAND: python prompt_foo.py @NEXT_STEP_PROMPT --chop CHOP_NEXT_STEP --no-tree -a [-1:]
-# Combines the most recent article with the full index for momentum-preserving next-step inference.
-
-# 1. THE NARRATIVE MAP
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs
-
-# 2. SYSTEM ARCHITECTURE REFERENCE
-foo_files.py  # [13,606 tokens | 47,183 bytes]
-prompt_foo.py  # [16,736 tokens | 76,377 bytes]
-apply.py  # [1,754 tokens | 7,664 bytes]
-scripts/xp.py  # [1,778 tokens | 7,417 bytes]
-
-# 3. GLOBAL WORKBENCH SURFACE (Optional context grounders)
-# apps/210_widget_examples.py  # [22,791 tokens | 98,590 bytes]
-"""
-
-TODO_MOMENTUM_CHOP = """
-# THE LIVING MOMENTUM LENS
-# COMMAND: python prompt_foo.py --chop TODO_MOMENTUM_CHOP --no-tree -a [-3:] -l [0:10]
-
-# 1. Recent Narrative Position (last 3 articles — the current edge)
-! python scripts/articles/lsa.py -t 3 --reverse --fmt dated-slugs
-
-# 2. Active Router Surface (self-referential)
-foo_files.py  # [13,993 tokens | 54,473 bytes]
-imports/ascii_displays.py  # [11,540 tokens | 50,746 bytes]
-prompt_foo.py  # [17,325 tokens | 79,192 bytes]
-apply.py  # [1,754 tokens | 7,664 bytes]
-scripts/xp.py  # [1,981 tokens | 8,377 bytes]
-
-# 3. Roadmap & Paintbox Reference
-# (The embedded roadmap + Paintbox in this file)
-# Current figurate drift state (for quick visual integrity check)
-"""
-
 # #todo #to-do
 # - EARMARK: DELTA-NOT-ABSOLUTE COUNTER RULE (banked 2026-07-20): a grep -c probe predicts reliably only as a DELTA straddling the patch; its absolute value requires a hand-run baseline first. Conviction: 'LANE (' predicted 0→2, ran 1→3 — the +2 delta was exact; the invisible baseline was line 1185's NIX PROBES earmark, identified by the closing grep -n receipt.
 # - EARMARK: NIX PROBES IN THE COMPILE LANE (banked 2026-07-18): "!" child shells never inherit the interactive nix() rpath shim, so any nix command destined for adhoc.txt must be written LD_LIBRARY_PATH="" nix ... or it dies on libssl version skew. Evidence: the 2026-07-18 compile's failed nix eval receipt.
