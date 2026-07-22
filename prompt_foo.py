@@ -1653,6 +1653,18 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
 # ============================================================================
 def main():
     """Main function to parse args, process files, and generate output."""
+    # THE OUROBOROS LOCK (convicted 2026-07-22, Ctrl+C receipt in-compile):
+    # a `! ... prompt_foo.py ...` line in adhoc.txt makes the compiler run a
+    # probe that runs the compiler that splices the same adhoc.txt — quine
+    # recursion until timeout cascade or human interrupt. Env vars inherit
+    # through the `!` executor's Popen, so a nested invocation sees the lock,
+    # emits a one-line receipt to stdout, and exits 0. The receipt lands in
+    # the Manifest as evidence the fence held — a wound, never a hang.
+    if os.environ.get('PIPULATE_COMPILE_LOCK'):
+        print("🔁 OUROBOROS LOCK: prompt_foo.py refused to run inside its own `!` probe executor. Remove the self-invoking line from adhoc.txt.")
+        sys.exit(0)
+    os.environ['PIPULATE_COMPILE_LOCK'] = '1'
+
     # Manifest the first bunny via the wand for context compiler validation
     from pipulate import wand
     wand.figurate("white_rabbit")
