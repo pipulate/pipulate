@@ -315,7 +315,7 @@ def main():
     else:
         die(f"Unknown command: {args.command}\n"
             "Usage: wallet.py                 (scoreboard)\n"
-            "       wallet.py login <slot>    (next slice — not wired)")
+            "       wallet.py login <slot>    (mint/re-mint one slot's token)")
 
 
 if __name__ == '__main__':
