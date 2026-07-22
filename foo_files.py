@@ -1030,6 +1030,10 @@ apply.py        #  <-- How can "Web UI" ChatBots edit your code? With this Aider
 scripts/xp.py   #  <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 scripts/ai.py   #  <-- How I constantly use local AI to write git commit messages with `m` alias.
 cli.py          #  <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
+
+# PLAYER-PIANO GRAVITY OPT-IN (salvaged from the retired TODO_MOMENTUM_CHOP):
+# uncomment to weight the 3rd player piano / Rich ASCII colorizer into context.
+# imports/ascii_displays.py
 """
 
 INSTALL_CHOP = r"""
