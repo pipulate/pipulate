@@ -119,8 +119,8 @@ def discover_tools(show_all=False, tool_name=None):
             # Show the golden path workflow
             console.print(Panel(
                 "[bold cyan]🎯 Golden Path Workflow:[/bold cyan]\n\n"
-                "1. [bold].venv/bin/python cli.py call ai_capability_test_suite[/bold] - Verify your environment\n"
-                "2. [bold].venv/bin/python cli.py call ai_self_discovery_assistant[/bold] - Understand the system\n"
+                "1. [bold].venv/bin/python cli.py call pipeline_state_inspector[/bold] - Read live system state\n"
+                "2. [bold].venv/bin/python cli.py call system_list_directory[/bold] - Look around the filesystem\n"
                 "3. [bold].venv/bin/python cli.py call [tool_name] --json-args '{\"param\": \"value\"}'[/bold] - Execute tasks",
                 title="🚀 Recommended Next Steps",
                 border_style="green"
