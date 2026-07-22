@@ -43,7 +43,6 @@ def discover_tools(show_all=False, tool_name=None):
     # DE-GHOSTED 2026-07-22: every name below exists in the live registry
     # (AST roster receipt, 21 tools). The prior list named five tools that
     # did not exist and misrouted a live model on its first discovery turn.
-    # Deeper fix (dangling): generate this list, never author it.
     essential_tools = [
         'pipeline_state_inspector',
         'browser_scrape_page',
