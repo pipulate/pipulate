@@ -899,7 +899,13 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias foo='(cd ~/repos/pipulate && python prompt_foo.py --no-tree)'
           alias fu='(cd ~/repos/pipulate && python prompt_foo.py)'
           alias default='(cd ~/repos/pipulate && python prompt_foo.py --chop DEFAULT_CHOP --no-tree)'
+          # `u`-twin convention (mirrors foo -> fu): same CHOP, tree + UML
+          # restored by dropping --no-tree. Functions (not aliases) so
+          # --profile/--reason pass straight through, e.g.
+          #   defaultu --profile trusted --reason "Confluence enterprise"
+          defaultu() { (cd ~/repos/pipulate && python prompt_foo.py --chop DEFAULT_CHOP "$@"); }
           ahc() { (cd ~/repos/pipulate && python prompt_foo.py --chop ADHOC_CHOP --no-tree "$@"); }
+          ahcu() { (cd ~/repos/pipulate && python prompt_foo.py --chop ADHOC_CHOP "$@"); }
           alias ahe='(cd ~/repos/pipulate && nvim "''${PIPULATE_ADHOC_FILE:-adhoc.txt}")'
           alias pins='(cd ~/repos/pipulate && python prompt_foo.py --chop PINNED_CHOP --no-tree)'
           # THE FIRST WISH: `learn` is to Pipulate what vimtutor is to vim.
@@ -967,6 +973,16 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               shift 2
             fi
             (cd ~/repos/pipulate && python prompt_foo.py "''${t_args[@]}" -a "[-''${1:-2}:]" --no-tree)
+          }
+          latestu() {
+            # `u`-twin of latest: tree + UML restored (no --no-tree). Same -t
+            # KEY handling and article-count positional as latest.
+            local t_args=()
+            if [ "''${1:-}" = "-t" ] && [ "$#" -ge 2 ]; then
+              t_args=(-t "$2")
+              shift 2
+            fi
+            (cd ~/repos/pipulate && python prompt_foo.py "''${t_args[@]}" -a "[-''${1:-2}:]")
           }
           latestn() {
             # Finds largest N articles fitting in byte budget (default ~950KB)
