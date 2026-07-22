@@ -296,8 +296,8 @@ def main():
     parser = argparse.ArgumentParser(
         description="Read-only scoreboard for the Pipulate connector wallet.")
     parser.add_argument('command', nargs='?', default=None,
-                        help="omit for the SCOREBOARD; 'login <slot>' is the "
-                             "next slice (not wired this turn).")
+                        help="omit for the SCOREBOARD; 'login <slot>' mints "
+                             "or re-mints that slot's OAuth token.")
     parser.add_argument('slot', nargs='?', default=None,
                         help="slot name for 'login' (e.g. gmail).")
     parser.add_argument('-n', '--max', type=int, default=25,
