@@ -57,8 +57,12 @@ from pathlib import Path
 WALLET_PATH = os.environ.get('PIPULATE_WALLET') or str(
     Path.home() / '.config' / 'pipulate' / 'connectors.json')
 
-_OAUTH_KIND = 'oauth_token_file'
-_MARK = {'filled': '[x]', 'stale': '[~]', 'empty': '[ ]', 'no-path': '[!]'}
+_OAUTH_KIND = 'oauth_token_file'   # mint + auto-refresh (gmail, sheets, gsc)
+_SECRET_KIND = 'env_secret'        # paste: API key / basic-auth (jira, confluence, gong)
+_PROFILE_KIND = 'browser_profile'  # weblogin persistent session (botify)
+_KNOWN_KINDS = (_OAUTH_KIND, _SECRET_KIND, _PROFILE_KIND)
+_MARK = {'filled': '[x]', 'stale': '[~]', 'empty': '[ ]',
+         'no-path': '[!]', 'unknown': '[?]'}
 
 
 def die(msg, code=1):
