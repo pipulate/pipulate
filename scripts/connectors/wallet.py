@@ -6,7 +6,7 @@ wallet.py — Read-only scoreboard for the Pipulate connector wallet.
 Golden-path modes, auto-detected from the leading positional argument:
 
   python scripts/connectors/wallet.py                 # SCOREBOARD: stat every oauth_token_file slot (filled / stale / empty)
-  python scripts/connectors/wallet.py login <slot>    # (NEXT SLICE — not wired) mint a slot's token interactively
+  python scripts/connectors/wallet.py login <slot>    # LOGIN: mint/re-mint that slot's token via its connector's own OAuth walk
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 
