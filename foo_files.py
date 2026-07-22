@@ -171,6 +171,13 @@ AI_PHOOEY_CHOP = r"""                                                           
 # on its first flight; the only stale state it can ever exhibit is a loud
 # GENERATION FAILED banner, which is a wound, not a lie.
 
+# THE SURFACE-FIRST ROUTING RULE (banked 2026-07-22, blind-test witnessed):
+# Pipulate has two Golden Paths because it has two execution surfaces.
+# Prompt Fu is the compile-time Unix-pipe/cartridge lane; FastHTML/MCP is the
+# runtime app-state/tool lane. Identify the active surface before recommending
+# an actuator. pipeline_state_inspector is a valid MCP/FastHTML drill-down,
+# never the default first move inside a Prompt Fu ride.
+
 # THE DOUBLE-TAP RULE (banked 2026-07-20, witnessed same day): a `!` probe
 # that reads an artifact WRITTEN LATER IN THE SAME COMPILE (foo.zip and its
 # rotated snapshots — probes execute at step 2, the cartridge writes at
@@ -1223,6 +1230,10 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: THE MODEL FOLLOWS THE MAP RULE (banked 2026-07-22, blind-test witnessed): capability prose is actuation. A summoned model that invokes a nonexistent tool named by our onboarding map is following instructions correctly; the map is defective. Every first-turn capability name must be generated from or mechanically validated against current source before shipping.
+# - TODO: CURATED RULE-OF-7 VALIDATION — keep essential_tools human-curated for pedagogy, but AST-validate every name against tools/*.py without importing runtime modules. A mismatch must print loudly and omit the ghost; git history plus human intent distinguishes a typo from a genuine deletion.
+# - TODO: NAME BOTH GOLDEN PATHS — relabel generic Golden Path prose in cli.py as the MCP/FastHTML Golden Path and give Prompt Fu an explicitly named compile-lane Golden Path so first-turn routing cannot cross the house seam.
+# - TODO: MANIFEST/FAILED-RECEIPT PARITY — a failed or zero-stdout ! command shown in the Summary processing log must also appear in Manifest LIVE COMMAND RECEIPTS, because the Manifest claims sole authority over which commands ran.
 # - FAMILIAR SWEEP (dangling, seeded 2026-07-21 at dismount): the router line "brilliant Familiar" is capitalized, but published _posts still carry lowercase role-noun "familiar" for Yen Sid-ton. Fix is rgx -v "Yen Sid" + vim hand-judgment per instance — NEVER a blind sed 'familiar'->'Familiar' (that is the PII greedy-name incident replay: "a familiar face" / "familiar pattern" are common-word, not role-noun). Probe: rg -l 'Yen Sid' _posts | xargs -r rg -n '\bfamiliar\b'.
 # - EARMARK: DELTA-NOT-ABSOLUTE COUNTER RULE (banked 2026-07-20): a grep -c probe predicts reliably only as a DELTA straddling the patch; its absolute value requires a hand-run baseline first. Conviction: 'LANE (' predicted 0→2, ran 1→3 — the +2 delta was exact; the invisible baseline was line 1185's NIX PROBES earmark, identified by the closing grep -n receipt.
 # - EARMARK: NIX PROBES IN THE COMPILE LANE (banked 2026-07-18): "!" child shells never inherit the interactive nix() rpath shim, so any nix command destined for adhoc.txt must be written LD_LIBRARY_PATH="" nix ... or it dies on libssl version skew. Evidence: the 2026-07-18 compile's failed nix eval receipt.
