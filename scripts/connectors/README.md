@@ -48,6 +48,7 @@ of these four.
 - gmail.py       LIST by address / FETCH by thread id (OAuth token file)
 - botify.py      identity walk / org / org/project / BQL query (BOTIFY_API_TOKEN)
 - confluence.py  spaces / space pages / page id / CQL search (CONFLUENCE_* envs)
+- jira.py        projects / project issues / issue key (PROJ-123) / raw JQL (basic_auth; shares CONFLUENCE_* token)
 - gsc.py         properties / top queries / raw searchanalytics JSON (service_account_file)
 - sheets.py      identity / bare URL-or-ID STACKS every tab's actual data rectangle with sentinel separators and per-tab #gid= URLs, budget-governed / --list metadata gauge / bounded --sheet and --range values (oauth_token_file, gmail pattern; own sheets_token.json; data extents from values responses, never gridProperties)
 
