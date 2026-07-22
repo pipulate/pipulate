@@ -156,19 +156,140 @@ def scoreboard(wallet, max_items, stale_days):
         print("# Next: wallet fully minted — nothing to log into.")
 
 
-def login_guard(slot):
-    """login is the NEXT slice, gated on external Cloud-console registration.
-    This slice is read-only: refuse honestly rather than open a consent flow.
+def resolve_creds_path(slot):
+    """Resolved, ~-expanded credentials path for an oauth_token_file slot,
+    honoring any env override the wallet declares as 'overrides
+    paths.credentials' — the mirror of resolve_token_path. None when absent.
     """
-    who = slot or '<slot>'
-    die(
-        f"wallet login {who} is not wired in this slice.\n"
-        "The token-minting walk needs the OAuth client registered in the Cloud\n"
-        "console first; it is the next Tier-2 slice. Until then, mint via the\n"
-        "connector's own interactive first-run (e.g. `python scripts/connectors/\n"
-        "sheets.py` or `python scripts/connectors/gmail.py <you@example.com>`).",
-        code=2,
-    )
+    for env_key, desc in (slot.get('env') or {}).items():
+        if 'paths.credentials' in str(desc) and os.environ.get(env_key):
+            return str(Path(os.environ[env_key]).expanduser())
+    raw = (slot.get('paths') or {}).get('credentials')
+    return str(Path(raw).expanduser()) if raw else None
+
+
+def _env_override_key(slot, needle):
+    """The slot's declared env-override variable whose description points at
+    `needle` (e.g. 'paths.token'), so login can steer the reused connector at
+    the wallet-declared path. None when the slot declares no such override.
+    """
+    for env_key, desc in (slot.get('env') or {}).items():
+        if needle in str(desc):
+            return env_key
+    return None
+
+
+def login(slot_name, stale_days):
+    """Mint (or re-mint) exactly ONE slot's OAuth token by REUSING that
+    connector's own get_service() walk — never re-implementing the flow.
+
+    The slot name IS the connector module name: `gmail` -> gmail.py,
+    `sheets` -> sheets.py, sitting beside this file. We resolve the slot's
+    credentials + token paths from the wallet, point the connector at them via
+    its declared env overrides, then hand off to its get_service(), which owns
+    the real SCOPES and the exact InstalledAppFlow.from_client_secrets_file ->
+    run_local_server(port=0) -> creds.to_json() walk (plus its own headless-
+    refresh, non-TTY, and missing-credentials gates). We touch ONLY this slot:
+    no other slot's token is read, and the board is not rewritten — we just
+    re-stat this one slot and print its single row afterward.
+    """
+    if not slot_name:
+        die("Usage: wallet.py login <slot>   (e.g. wallet.py login gmail)\n"
+            "Run the bare scoreboard to see which slots exist and their state.")
+
+    wallet = load_wallet()
+    slot = wallet.get(slot_name)
+    if not isinstance(slot, dict):
+        oauth = [n for n, c in wallet.items()
+                 if isinstance(c, dict) and c.get('auth') == _OAUTH_KIND]
+        die(f"No slot '{slot_name}' in {Path(WALLET_PATH).expanduser()}.\n"
+            f"oauth_token_file slots you can log into: "
+            f"{', '.join(oauth) or '(none)'}")
+
+    if slot.get('auth') != _OAUTH_KIND:
+        die(f"Slot '{slot_name}' is auth={slot.get('auth')!r}, not "
+            f"{_OAUTH_KIND!r}.\n"
+            "login drives the browser OAuth mint, which only oauth_token_file\n"
+            "slots use. This slot authenticates by token/basic-auth env vars —\n"
+            "set those in your env or .env; there is nothing to mint here.",
+            code=2)
+
+    creds_path = resolve_creds_path(slot)
+    token_path = resolve_token_path(slot)
+    if not token_path:
+        die(f"Slot '{slot_name}' declares no paths.token — cannot mint. "
+            "Fix the wallet entry first.")
+
+    # Gate hard on the OAuth client file, with the Cloud-console breadcrumb.
+    # A live headless refresh would not strictly need it, but a first mint or a
+    # revoked-refresh re-mint does — so surface the path now, not mid-browser.
+    if not creds_path or not Path(creds_path).exists():
+        die(f"Missing credentials.json for '{slot_name}' at: "
+            f"{creds_path or '(no paths.credentials declared)'}\n"
+            "Download the Desktop-app OAuth client JSON from the Google Cloud\n"
+            "Console and place it there (the same client the other Google\n"
+            "connectors use), then re-run:\n"
+            f"    python scripts/connectors/wallet.py login {slot_name}")
+
+    # The connector module of the SAME name lives beside this file.
+    connector_file = Path(__file__).resolve().parent / f"{slot_name}.py"
+    if not connector_file.exists():
+        die(f"No connector module for slot '{slot_name}' at: {connector_file}\n"
+            "The slot name must match its connector filename to reuse its walk.")
+
+    # Steer the reused connector at THIS slot's resolved paths via the env
+    # overrides the wallet itself declares, so a non-default wallet still mints
+    # to the right place. No-ops when they already equal the connector default.
+    ck = _env_override_key(slot, 'paths.credentials')
+    tk = _env_override_key(slot, 'paths.token')
+    if ck:
+        os.environ[ck] = creds_path
+    if tk:
+        os.environ[tk] = token_path
+
+    before_state, _ = classify(token_path, stale_days)
+    print(f"# wallet login {slot_name} — reusing {connector_file.name}'s own "
+          "OAuth walk (this slot only)")
+    print(f"# credentials : {creds_path}")
+    print(f"# token       : {token_path}  [{before_state} before]\n")
+
+    # REUSE, don't re-implement: load the connector by file and call its own
+    # get_service(), which refreshes headlessly or browser-mints per its real
+    # SCOPES and writes exactly this slot's token through its own _save_token.
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        f"_wallet_connector_{slot_name}", connector_file)
+    mod = importlib.util.module_from_spec(spec)
+    try:
+        spec.loader.exec_module(mod)
+    except Exception as e:
+        die(f"Could not load connector '{connector_file.name}': {e}")
+
+    get_service = getattr(mod, 'get_service', None)
+    if not callable(get_service):
+        die(f"Connector '{connector_file.name}' exposes no get_service() to "
+            "reuse; refusing to re-implement its OAuth flow here.")
+
+    try:
+        get_service()  # refresh headlessly, or browser-mint on a TTY
+    except SystemExit:
+        raise  # connector already spoke (non-TTY / missing creds); keep its code
+    except Exception as e:
+        die(f"OAuth walk for '{slot_name}' failed: {e}\n"
+            "If a stale refresh token was revoked (the Testing-mode 7-day\n"
+            "cliff), re-run this in a real terminal to browser-mint a fresh one.")
+
+    # Re-stat ONLY this slot and print its single board row — no wallet
+    # rewrite, no other slot's token touched.
+    after_state, detail = classify(token_path, stale_days)
+    mark = _MARK.get(after_state, '[?]')
+    print("\n# minted — this slot now reads:")
+    print(f"  {mark} {after_state:<7}  {slot_name}  {detail}  {token_path}")
+    if after_state == 'filled':
+        print("# Done. Re-run the bare scoreboard for the whole board.")
+    else:
+        print(f"# Note: slot still reads '{after_state}' — "
+              "check the walk output above.")
 
 
 def main():
@@ -190,7 +311,7 @@ def main():
     if args.command in (None, 'scoreboard', 'board', 'status'):
         scoreboard(load_wallet(), args.max, args.stale_days)
     elif args.command == 'login':
-        login_guard(args.slot)
+        login(args.slot, args.stale_days)
     else:
         die(f"Unknown command: {args.command}\n"
             "Usage: wallet.py                 (scoreboard)\n"
