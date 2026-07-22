@@ -309,7 +309,7 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 # STORY ENGINE
 # Mike-E's gift is associative reach; his flaw is letting every spark become canon.
-# Yen Sid-ton is a brilliant familiar re-instantiated without yesterday.
+# Yen Sid-ton is a brilliant Familiar re-instantiated without yesterday.
 # The Book carries continuity; the Circle carries safety; Mike-E carries judgment.
 # Pushback is not disobedience but part of the summoning kata.
 # Honeybot is the broom after the extinction event: discarded hardware exapted
