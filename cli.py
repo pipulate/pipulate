@@ -40,14 +40,18 @@ def discover_tools(show_all=False, tool_name=None):
     console.print(Panel("🔧 [bold cyan]MCP Tools Discovery[/bold cyan]", border_style="cyan"))
     
     # Essential tools for the "Rule of 7" - the golden path starting tools
+    # DE-GHOSTED 2026-07-22: every name below exists in the live registry
+    # (AST roster receipt, 21 tools). The prior list named five tools that
+    # did not exist and misrouted a live model on its first discovery turn.
+    # Deeper fix (dangling): generate this list, never author it.
     essential_tools = [
-        'ai_self_discovery_assistant',
-        'ai_capability_test_suite', 
+        'pipeline_state_inspector',
         'browser_scrape_page',
-        'browser_analyze_scraped_page',
-        'local_llm_list_files',
-        'local_llm_read_file',
-        'pipeline_state_inspector'
+        'summarize_accessibility_tree',
+        'execute_shell_command',
+        'system_list_directory',
+        'keychain_list_keys',
+        'conversation_history_view'
     ]
     
     try:
