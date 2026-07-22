@@ -13,8 +13,8 @@ Pipulate CLI - Beautiful installation and execution interface
 
 CLI Golden Path (Level 2 & 3):
 1. .venv/bin/python cli.py mcp-discover                     # Discover your core abilities
-2. .venv/bin/python cli.py call ai_capability_test_suite    # Verify your capabilities
-3. .venv/bin/python cli.py call ai_self_discovery_assistant # Understand current context
+2. .venv/bin/python cli.py call pipeline_state_inspector    # Read live system state
+3. .venv/bin/python cli.py call system_list_directory       # Look around the filesystem
 4. .venv/bin/python cli.py call <tool_name> --json-args '...' # Execute any task
 """
 
