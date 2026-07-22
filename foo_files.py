@@ -1221,49 +1221,6 @@ prompt_foo.py  # [16,195 tokens | 73,877 bytes]
 scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
-NEXT_STEP_PROMPT = r"""--- SYSTEM CONTEXT CONSTRAINTS: NEXT STEP INFERENCE ---
-
-You are acting as the Momentum Engine for a stateless, local-first workspace. Your goal is NOT to select more articles to read. Your goal is to identify the single highest-leverage next action.
-
-I have provided:
-1. The full content of the most recent article I just wrote (above, in the Articles section).
-2. The master chronological index of all available articles.
-
-Use the recent article as the current position on the map. Use the article index to understand the broader trajectory.
-
-Your task is to answer ONE question: **What is the most force-multiplying next step?**
-
-Apply the 80/20 rule. What single action preserves momentum, builds on the just-completed work, and advances the overall project most effectively? This could be:
-- A specific code change to implement something just described
-- A new article to write that naturally follows
-- A refinement or follow-up to the just-published piece
-- A tooling improvement that unlocks the next phase
-
-Respond with:
-1. A concise diagnosis of where things stand based on the recent article.
-2. The recommended next step with brief rationale.
-3. MANDATORY: End with both a TODO_SLUGS block and a TODO_FILES block so the next turn can hydrate the narrative context and the implementation surface needed to actually execute the recommendation.
-
-The TODO_SLUGS block must contain 2-4 article slugs that the NEXT turn will need. These are not articles for you to read now — they are pre-loaded context for the next action.
-
-The TODO_FILES block must contain 1-5 repository-relative file paths that expose the likely patch surface, command surface, or safety model for the next action. If the next step is writing rather than patching, include the files that explain the writing/publishing workflow.
-
-Always end your response with exactly these two blocks:
-
-[[[TODO_SLUGS]]]
-slug-one
-slug-two
-slug-three
-[[[END_SLUGS]]]
-
-[[[TODO_FILES]]]
-path/to/file.py
-another/path.py
-[[[END_FILES]]]
-
-Use only clean slugs in TODO_SLUGS and clean repository-relative paths in TODO_FILES. Do not include dates, token counts, markdown extensions for slugs, bullets, or commentary inside either block.
-"""
-
 CHOP_NEXT_STEP = """
 # THE NEXT STEP INFERENCE ENGINE
 # COMMAND: python prompt_foo.py @NEXT_STEP_PROMPT --chop CHOP_NEXT_STEP --no-tree -a [-1:]
