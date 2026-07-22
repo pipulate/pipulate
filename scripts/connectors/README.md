@@ -40,8 +40,9 @@ file blogs.nix-style: mechanism in the Nix store, data at runtime, secrets
 in neither.
 
 Auth kinds: oauth_token_file (gmail), bearer_token (botify), basic_auth
-(confluence), service_account_file (gsc). Every future connector copies one
-of these four.
+(confluence), service_account_file (gsc), browser_session (botify_browser,
+semrush — a persistent Chrome profile under data/uc_profiles/<name>, warmed by
+weblogin.py, not a token). Every future connector copies one of these five.
 
 ## Current connectors
 
