@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,336 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 29 published in the last 7 days
+# There are 1,337 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 30 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -431,8 +431,8 @@ scripts/foo_replay.py
 # ! git --no-pager log -p -n 4
 # ! cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
-# requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
-# requirements.txt  #  <-- Pip-compiled dependencies.
+requirements.in   #  <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
+requirements.txt  #  <-- Pip-compiled dependencies.
 # logs/server.log   #  <-- Like letting AI see your browser app state, but better! --------------------- AI server.py LOG DEBUG
 
 # ============================================================================
@@ -496,11 +496,11 @@ scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and includ
 # scripts/webclip_2_markdown.py  #  <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps)
 
 # The following 3 files are the first huge context reveal that pull the curtains open.
-# __init__.py     #  <-- Master versioning
-# release.py      #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
-# pyproject.toml  #  <-- The PyPI Packaging details
+__init__.py     #  <-- Master versioning
+release.py      #  <-- How everything ends up where it does (GitHub, PyPI, etc.)
+pyproject.toml  #  <-- The PyPI Packaging details
 
-# scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
+scripts/release/version_sync.py  # [1,730 tokens | 7,310 bytes]
 
 # ============================================================================
 # IV. THE WAND🪄 & THE WIZARD🧙‍♂️ - Everything's actually web development these days
@@ -627,16 +627,16 @@ scripts/crawl.py  #  <-- Feel free to ask for something to be crawled and includ
 # VIII. LLM OPTICS - Like looking at raw HTML or the hydrated DOM? Them either.
 # ============================================================================
 
-cli.py                  # <-- A powerful wrapper that lets anything become an MCP tool-call, etc.
-scripts/weblogin.py     # <-- Lets the user "warm up" their logins at their leisure on a profile that persists.
-scripts/crawl.py        # <-- Feel free to ask for something to be crawled and included in the next turn.
-tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
-tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
-tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
-tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
-tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
+# cli.py                  # <-- A powerful wrapper that lets anything become an MCP tool-call, etc.
+# scripts/weblogin.py     # <-- Lets the user "warm up" their logins at their leisure on a profile that persists.
+# scripts/crawl.py        # <-- Feel free to ask for something to be crawled and included in the next turn.
+# tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
+# tools/system_tools.py   # <-- A grab-bag of rudimentary tool-calling capability before the fancy stuff
+# tools/llm_optics.py     # <-- Some of the work we do would bring down the JupyterLab event-loop. Here's how it doesn't.
+# tools/dom_tools.py      # <-- Lenses with which to clarify messy DOM soup. Trees. Nested ASCII art boxes. Normalization.
+# tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
-?https://app.botify.com/michaellevin-org/mikelev.in/
+# ?https://app.botify.com/michaellevin-org/mikelev.in/
 
 # THE CDP FLIGHT RECORDER (Wire Truth): every scrape drains the browser's
 # performance log to browser_cache/<domain>/<slug>/network_log.jsonl — the
