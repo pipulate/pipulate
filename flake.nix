@@ -889,6 +889,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias confluence='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/confluence.py"'
           alias gsc='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/gsc.py"'
           alias sheets='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/sheets.py"'
+          alias jira='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/jira.py"'
           # weblogin <apex-domain>: pop up a visible Chrome on the house
           # persistent profile (data/uc_profiles/default) so persistent
           # scrapes inherit the login. Log in, close the window, done.
