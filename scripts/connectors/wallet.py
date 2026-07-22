@@ -148,7 +148,7 @@ def scoreboard(wallet, max_items, stale_days):
     print(f"\n# {filled} filled | {len(stales)} stale | {len(empties)} empty")
     if empties:
         print(f"# Next: python scripts/connectors/wallet.py login {empties[0]}"
-              "   (mint its token — interactive, one-time; NEXT slice)")
+              "   (mint its token — interactive, one-time)")
     elif stales:
         print(f"# Next: re-mint the stale slot — python "
               f"scripts/connectors/wallet.py login {stales[0]}")
