@@ -367,8 +367,8 @@ def main():
         description="Pipulate CLI - The Local-First AI-Readiness & Automation Workshop.\n\n"
                    "🎯 THE GOLDEN PATH FOR AI ASSISTANTS:\n"
                    "  1. .venv/bin/python cli.py mcp-discover                     # Discover your core abilities\n"
-                   "  2. .venv/bin/python cli.py call ai_capability_test_suite    # Verify your capabilities  \n"
-                   "  3. .venv/bin/python cli.py call ai_self_discovery_assistant # Understand current context\n"
+                   "  2. .venv/bin/python cli.py call pipeline_state_inspector    # Read live system state\n"
+                   "  3. .venv/bin/python cli.py call system_list_directory       # Look around the filesystem\n"
                    "  4. .venv/bin/python cli.py call [tool_name] --json-args '...' # Execute tasks with precision",
         formatter_class=argparse.RawTextHelpFormatter
     )
