@@ -203,6 +203,21 @@ AI_PHOOEY_CHOP = r"""                                                           
 # regression — the fence held). If a block is wrong, delete it before
 # responding; a correction note is not a coupling pin.
 
+# THE OUT-OF-BAND (OOB) EDIT RULE (banked 2026-07-21, articulation-banked —
+# pure judgment): an edit is a DELIMITER COLLISION when the text to be mutated
+# itself contains the patch protocol's control markers ([[[SEARCH]]],
+# [[[DIVIDER]]], [[[REPLACE]]], [[[WRITE_FILE]]]) or marker-shaped siblings
+# ([[[TODO_SLUGS]]], [[[TODO_FILES]]]) that a SEARCH block would have to
+# reproduce verbatim. This is the Bobby-Tables / quine failure mode: the
+# transport cannot carry its own delimiters intact, apply.py may misparse,
+# and the model burns tokens on an inception it can never win. DO NOT attempt
+# SEARCH/REPLACE on a collision. CALL IT OUT and hand the human an OOB
+# instruction: name the block, give findable boundaries (first line verbatim,
+# last line verbatim, what survives directly above and below), and let their
+# vim skills make the cut. Collision-free edits stay in the airlocked
+# SEARCH/REPLACE lane; collision-class edits route to the human as actuator.
+# The airlock is for content that does not speak the airlock's own language.
+
 # THE 30-AND-3 RULE (banked 2026-07-19): the standing ideation kata. When a
 # problem space needs mapping, generate THIRTY brief text vignettes — one or
 # two sentences each, breadth over depth, no self-censoring past the obvious
