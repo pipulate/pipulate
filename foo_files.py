@@ -230,6 +230,75 @@ AI_PHOOEY_CHOP = r"""                                                           
 # Sibling to AXIS-FORCING: when stuck, ask what old organ this new pressure
 # can repurpose.
 
+# THE RECEIPT LADDER RULE (banked 2026-07-22, articulation-banked): integrity
+# is not authenticity. A CRC answers "did a bit flip?"; a SHA-256 answers "are
+# these the exact bytes, unswapped?"; a SIGNATURE answers "did I stand behind
+# them?" — three rungs, three questions, never conflated. The upgrade from a
+# hashed cartridge is NOT more hashes INSIDE it; it is a key OVER it. HARD
+# INVARIANT: never put wall-clock time in the hashed body (payload.md). Mutable
+# time there murders byte-reproducibility — same input, different hash every
+# second. Timestamps and provenance ride a SEPARATE signed receipt layer
+# (manifest.json), never the payload. The receipt a ticket deserves is a TRIPLE:
+# sha256 (what bytes) + signature (who) + git commit SHA and `git describe`
+# (from which point in history), so the detached slice can be re-fused to the
+# Merkle tree it was cut from. The cartridge IS a portable slice of git's DAG
+# handed to a model that cannot see .git.
+
+# THE CODEX-AS-DATASTRUCTURE RULE (banked 2026-07-22, articulation-banked): the
+# printed book's apparatus is a random-access + cross-reference + drift-detection
+# machine, every part a structure this repo already runs. Table of contents = the
+# manifest (authored, forward, hierarchical: declared shape). Index = an inverted
+# index (access by concept, not position), hand-built four centuries before a
+# machine could query one. Glossary = a controlled vocabulary — a type system for
+# prose that pins terms so they do not drift between chapters. Concordance = the
+# maximal index (grep -n over the corpus), and the load-bearing lesson: a
+# concordance is POSSIBLE ONLY over an immutable text — verse numbering, the whole
+# citation address space, requires freezing the corpus first. Immutability is not
+# the apparatus's enemy; it is its precondition. Footnote = an out-of-band,
+# non-destructive annotation channel (the OOB EDIT RULE in print). Margin = the
+# user-writable per-copy layer (adhoc.txt is this book's margin). Errata/addenda =
+# append-only patches that preserve the original error ON PURPOSE, so the delta
+# stays visible.
+
+# THE TALMUD-PAGE RULE (banked 2026-07-22, articulation-banked): the tzurat
+# ha-daf is the master pattern for a signed discussion cartridge — immutable core
+# text ringed by attributed, stratified commentary (Rashi inner, Tosafot outer,
+# later authorities beyond): a versioned, cross-referenced hypertext on one fixed
+# page, centuries before "hypertext." Its defining move is that it PRESERVES
+# DISAGREEMENT instead of resolving it. Elu v'elu — the minority ruling stays on
+# the page so a later generation can re-derive and find the losing branch was
+# right. That is keeping the dead branches in the DAG. A Confluence discussion +
+# replay-cartridge per closed ticket IS a Talmud page per ticket: frozen core =
+# the cartridge, commentary = the discussion, Jira ID = the address in the ToC.
+# Do not resolve-and-delete; attribute-and-preserve.
+
+# THE LEDGER-SEPARATION RULE (banked 2026-07-22, articulation-banked):
+# "immutability vs mutability" is a false choice — git already refuses it: the
+# working copy is mutable, the log is immutable, and you SEPARATE them rather than
+# pick. Immutability of the ledger is exactly what makes mutation of the text
+# auditable rather than amnesiac. Drift-analysis corollary (the KJV lesson): a
+# frozen canon is dangerous only when its history is thrown away. Keep the
+# original-language substrate and the losing readings and "dominion" stays
+# reinterpretable as stewardship forever, because original intent stays
+# RECOVERABLE. A frozen output with the source branches deleted is the cage; a
+# frozen output over a preserved DAG is the safety mechanism.
+
+# THE STEWARDSHIP RULE (banked 2026-07-22, articulation-banked; rentmeesterschap):
+# the whole NPvg stack is Northwestern-European commons-infrastructure culture
+# expressed as software — Nix (Dolstra), Python (van Rossum), vim (Moolenaar) all
+# Dutch, git (Torvalds) Finnish — and its engineering value is stewardship, not
+# dominion: manage an estate you do not own, leave the machine UNCHANGED, accrete
+# nothing mutable, garbage-collect to a clean store, take no residue. Two siblings
+# of the Disappearing Instrument Rule: (1) SMALL-MARKET WORA — build for the world
+# by default even when your market is one person; parochial software is suicidal
+# in a small open economy, which is why the region ships portable, standard-
+# anchored substrate, not walled unicorns. (2) STRUCTURAL HUMILITY (Janteloven-as-
+# UX) — the tool must carry the whole meaning without the maker in the room; that
+# is the cold-start test (a cartridge either reconstructs the reasoning with no
+# human present, or it failed). The instinct unifying the Alþingi Lawspeaker,
+# Kuyper's steward, the faceless SSH tunnel, and the flake that rebuilds
+# identically after its author is gone: MAKE THE RECORD OUTLIVE THE MAKER.
+
 # THE DOUBLE-TAP RULE (banked 2026-07-20, witnessed same day): a `!` probe
 # that reads an artifact WRITTEN LATER IN THE SAME COMPILE (foo.zip and its
 # rotated snapshots — probes execute at step 2, the cartridge writes at
@@ -1300,6 +1369,9 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: THE MANIFEST-SIGNING LANE (seeded 2026-07-22 from the receipts ride): implement THE RECEIPT LADDER RULE's provenance triple. foo.zip is ALREADY byte-reproducible (fixed epoch/mode/order in scripts/foo_cartridge.py — the hashed body carries no wall-clock time; the uploaded 46-snapshot manifest was stamped 2026-01-01). Remaining: (1) stamp manifest.json with the source git commit SHA + `git describe` at compile time; (2) sign manifest.json with a key you control — `ssh-keygen -Y sign` is the lowest-ceremony non-repudiation; (3) optional paranoid tier: append the manifest hash to an ever-growing receipts.ndjson (poor-man's transparency log). NEEDS scripts/foo_cartridge.py in context to patch the writer/verifier — NOT foo_files.py.
+# - EARMARK: SEED-PATH PEANUT-BUTTER ONBOARDING (seeded 2026-07-22): Yen Sid-ton must explain `curl ... | bash` to a cold newcomer in sandwich-rules terms — go to a stranger's address, grab the card, do everything it says UNREAD, as you, with full run of your house — then teach the grown-up form (curl -o, less, sh: fetch, read, run). Then the KEY distinction: DetSys/Nix differs not in MECHANISM but in PAYLOAD — Homebrew mutates global state in place and accretes machine-rot; Nix installs an immutable content-addressed store, enters with `nix develop`, leaves zero residue, reverses cleanly (--uninstall, survives macOS upgrades). First lesson for the New-B: you are ALLOWED to read the card. Bank into the learn()/seed() prompt copy in flake.nix.
+# - TODO: COLD-START MIKE-E TEST — a reproducible test where the intrepid explorer gets ONLY the archive + the key: no warmed cache, no prior slot, unknown cartridge slot. Pass = they `nix develop` into a clean workshop, drop the cartridge, reconstruct the reasoning from a signed/commit-anchored immutable core + preserved commentary, verify the receipt, and leave both machines untouched. If any step needs the author in the room, the cartridge failed. Structural-Humility rule made executable (foo-cartridge-replay-v1 sibling).
 # - EARMARK: THE MODEL FOLLOWS THE MAP RULE (banked 2026-07-22, blind-test witnessed): capability prose is actuation. A summoned model that invokes a nonexistent tool named by our onboarding map is following instructions correctly; the map is defective. Every first-turn capability name must be generated from or mechanically validated against current source before shipping.
 # - TODO: CURATED RULE-OF-7 VALIDATION — keep essential_tools human-curated for pedagogy, but AST-validate every name against tools/*.py without importing runtime modules. A mismatch must print loudly and omit the ghost; git history plus human intent distinguishes a typo from a genuine deletion.
 # - TODO: NAME BOTH GOLDEN PATHS — relabel generic Golden Path prose in cli.py as the MCP/FastHTML Golden Path and give Prompt Fu an explicitly named compile-lane Golden Path so first-turn routing cannot cross the house seam.
