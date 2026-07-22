@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,339 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 27 published in the last 7 days
+# There are 1,340 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 28 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -651,6 +651,7 @@ apply.py                    # <-- How can "Web UI" ChatBots edit your code? With
 scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
 cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
+scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
 scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
 __init__.py                 # <-- Master versioning
 release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
