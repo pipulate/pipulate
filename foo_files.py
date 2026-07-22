@@ -178,6 +178,58 @@ AI_PHOOEY_CHOP = r"""                                                           
 # an actuator. pipeline_state_inspector is a valid MCP/FastHTML drill-down,
 # never the default first move inside a Prompt Fu ride.
 
+# THE REDUNDANT-GROOVE RULE (banked 2026-07-22, witnessed this compile):
+# on-topic-ness is not a personality you beg the model to wear; it is a
+# groove you carve so attention rolls into it wherever it drops. Encode the
+# frame TWICE: the canonical roster welded into foo_files.py travels as
+# visible text in every compile (the declared MAP), while the live overlay
+# splices those same files in as content (the realized TERRITORY) — map and
+# territory in one window, cross-checking each other. Two grooves = the
+# marble rolls home no matter where it lands = forward error correction; the
+# West African talking drum repeats the tonal pattern for the identical
+# reason — redundancy is how a signal survives a noisy channel. Corollary:
+# this IS the receipt's manifest+payload symmetry (what-bytes cross-checking
+# the-bytes) generalized to the router itself — the book teaching its own
+# technique by using the technique on its table of contents. By the time the
+# model reaches the Prompt at the bottom it has read the frame twice and
+# answers primed, not cold. Furnish the room before the guest walks in.
+
+# THE HONEST-SEAM RULE (banked 2026-07-22, witnessed same compile — the
+# 80-column tell): when the machine mimics the operator's surface (vim
+# textwidth=80 hard-wraps, his line-break cadence) it leaves a fingerprint,
+# and the fingerprint is LOAD-BEARING. The caboose prompt the AI hands back
+# for the next turn MUST stay UNWRAPPED — no cosmetic 80-col fold — so the
+# operator can always tell the mirror from the man standing in front of it.
+# Sanding the seam smooth is precisely how the drift-checker becomes the
+# drift. Source-file rules wrap (they are code); the returned prompt does
+# not (it is the receipt that says a machine wrote it). Conviction: Opus 4.8
+# hard-wrapped its own caboose to 80 and got caught red-handed, eighty
+# columns wide — the dinosaur seam in the line-wraps. Leave the seams in.
+
+# THE NEW-B GRADIENT RULE (banked 2026-07-22, articulation-banked): the top
+# and bottom of the register stack execute the IDENTICAL move. Skippy
+# (godlike-AI condescension) and Barney (toddler-wholesome earnestness) both
+# say "let me break this down for the newcomer" — one gesture, opposite
+# hats; the failure at the genius end is pretension, at the simpleton end is
+# dilution, and the target is the competent middle (Joe Bishop: plain-talk
+# that is not dumb). Choose the register on PURPOSE, and keep one plain true
+# thing dead-center so the sophistication has something real to rebut — the
+# ex-cop's duct-taped recliner parked in the tasteful apartment is the whole
+# comedy of Frasier and the whole shape of a good New-B explanation.
+
+# THE EXAPTATION RULE (banked 2026-07-22, articulation-banked; forms molt,
+# they do not die): a form pronounced extinct is usually a form mid-molt —
+# recruited into a new substrate, same function in a new organ. Serial radio
+# drama did not die in the fifties; it molted into the fiction podcast and
+# the voice-acted audiobook (Expeditionary Force IS a serial radio program
+# with better headphones). The crystallin enzyme became a lens: same
+# protein, new job. Before accepting "X is impossible now," run two checks —
+# (1) manufactured forgetting: who profits from the corpse (the Phoebus
+# move)? (2) the live substrate the form already migrated to. Exaptation is
+# the DEFAULT hypothesis; extinction is the claim that needs the receipt.
+# Sibling to AXIS-FORCING: when stuck, ask what old organ this new pressure
+# can repurpose.
+
 # THE DOUBLE-TAP RULE (banked 2026-07-20, witnessed same day): a `!` probe
 # that reads an artifact WRITTEN LATER IN THE SAME COMPILE (foo.zip and its
 # rotated snapshots — probes execute at step 2, the cartridge writes at
