@@ -1720,6 +1720,32 @@ def main():
                 meta = tools[name]
                 lines.append(f"- `{name}` — {meta['doc']}")
                 lines.append(f"  - `{meta['signature']}`")
+            # ENVIRONMENT DIGEST (generated-not-authored): top-level packages
+            # from requirements.in, so a summoned model never re-derives that
+            # pandas/numpy/requests/etc. are importable. Own try/except so a
+            # missing requirements.in degrades to no section, never kills the
+            # roster. Sourced from requirements.in (human intent, ~60 names),
+            # NOT requirements.txt (the 7k-token resolved closure).
+            env_names = []
+            try:
+                req_in = Path(REPO_ROOT) / "requirements.in"
+                for raw in req_in.read_text(encoding="utf-8").splitlines():
+                    s = raw.strip()
+                    if not s or s.startswith("#"):
+                        continue
+                    name = re.split(r"[<>=~!\[; ]", s)[0].strip()
+                    if name:
+                        env_names.append(name)
+            except Exception:
+                env_names = []
+            if env_names:
+                lines += [
+                    "",
+                    "## Environment (top-level packages, from requirements.in)",
+                    "",
+                    "Importable in `.venv` now — do not re-derive availability:",
+                    ", ".join(sorted(set(env_names))) + ".",
+                ]
             lines += [
                 "",
                 "## Actuation grammar",
