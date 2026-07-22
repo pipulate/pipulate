@@ -1,0 +1,266 @@
+#!/usr/bin/env python3
+# scripts/connectors/jira.py
+"""
+jira.py — A Unix-philosophy gateway to the Jira Cloud API for Prompt Fu context.
+
+Golden-path modes, auto-detected from the single positional argument:
+
+  python scripts/connectors/jira.py                 # LIST: projects you can see
+  python scripts/connectors/jira.py ENG             # LIST: recently-updated issues in project ENG
+  python scripts/connectors/jira.py ENG-123         # FETCH: full text of one issue (description + comments)
+  python scripts/connectors/jira.py 'assignee = currentUser() ORDER BY updated DESC'  # SEARCH: raw JQL
+
+Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
+
+  ! python scripts/connectors/jira.py
+  ! python scripts/connectors/jira.py ENG
+  ! python scripts/connectors/jira.py ENG-123
+
+Disambiguation rule (checked in this order):
+  - no argument                          -> LIST projects
+  - matches PROJ-123 (KEY-<digits>)      -> FETCH one issue
+  - matches a bare KEY (all caps/digits) -> LIST that project's issues
+  - anything else (spaces, lowercase, =, ~) -> raw JQL SEARCH
+
+Auth (basic_auth — the SAME Atlassian API token confluence.py uses; Jira and
+Confluence share one Atlassian identity):
+  JIRA_URL     e.g. https://yourco.atlassian.net   (NO /wiki suffix).
+               If unset, derived from CONFLUENCE_URL / CONFLUENCE_BASE_URL by
+               stripping a trailing /wiki.
+  JIRA_EMAIL   falls back to CONFLUENCE_EMAIL / CONFLUENCE_USER
+  JIRA_TOKEN   falls back to CONFLUENCE_TOKEN   (secret — env or .env only)
+
+Endpoint note (verified against Atlassian's current Cloud REST v3): the legacy
+/rest/api/3/search was fully REMOVED. This connector uses the enhanced
+/rest/api/3/search/jql (GET; jql + fields + maxResults; nextPageToken paging).
+Because THE PROBE ECONOMY RULE bounds every call to one --max page, this
+connector never needs to walk nextPageToken -- the bound IS the feature.
+
+Output is capped by -n/--max (default 25) per THE PROBE ECONOMY RULE: stdout is
+destined for compiled context payloads, so the bound is a feature.
+
+COMPILE-LANE CAUTION: project keys, issue summaries, descriptions, and comments
+are client identifiers and client content. Any `!` invocation bound for a cloud
+chat window rides through the compile-lane sanitizer -- make sure
+pii_substitutions.txt covers the relevant identifiers first. (For an
+internal-Confluence-only lane, a disclosure profile that leaves names in place
+is the intended path.)
+"""
+
+import os
+import re
+import sys
+import argparse
+
+import httpx
+
+ISSUE_KEY_RE = re.compile(r'^[A-Z][A-Z0-9]+-\d+$')
+PROJECT_KEY_RE = re.compile(r'^[A-Z][A-Z0-9]+$')
+
+
+# ----------------------------------------------------------------------------
+# Auth & transport
+# ----------------------------------------------------------------------------
+def get_env():
+    base = os.getenv("JIRA_URL")
+    if not base:
+        conf = os.getenv("CONFLUENCE_URL") or os.getenv("CONFLUENCE_BASE_URL")
+        if conf:
+            # Confluence base carries a trailing /wiki; Jira's REST base does not.
+            base = re.sub(r'/wiki/?$', '', conf.rstrip('/'))
+    email = (os.getenv("JIRA_EMAIL")
+             or os.getenv("CONFLUENCE_EMAIL") or os.getenv("CONFLUENCE_USER"))
+    token = os.getenv("JIRA_TOKEN") or os.getenv("CONFLUENCE_TOKEN")
+    missing = [name for name, val in [
+        ("JIRA_URL (or CONFLUENCE_URL to derive)", base),
+        ("JIRA_EMAIL (or CONFLUENCE_EMAIL)", email),
+        ("JIRA_TOKEN (or CONFLUENCE_TOKEN)", token),
+    ] if not val]
+    if missing:
+        sys.stderr.write(
+            "Missing environment variable(s): " + ", ".join(missing) + "\n"
+            "JIRA_URL example: https://yourco.atlassian.net  (no /wiki)\n"
+            "The token is the SAME Atlassian API token confluence.py uses.\n"
+        )
+        sys.exit(1)
+    return base.rstrip('/'), email, token
+
+
+def make_client():
+    base, email, token = get_env()
+    client = httpx.Client(auth=(email, token), timeout=60.0,
+                          headers={"Accept": "application/json"})
+    return client, base
+
+
+def get_json(client, url, params=None):
+    resp = client.get(url, params=params)
+    if resp.status_code != 200:
+        sys.stderr.write(f"HTTP {resp.status_code} for {url}\n{resp.text[:500]}\n")
+        sys.exit(1)
+    return resp.json()
+
+
+# ----------------------------------------------------------------------------
+# Atlassian Document Format (ADF) -> plain text
+# ----------------------------------------------------------------------------
+_ADF_BLOCK = {"paragraph", "heading", "blockquote", "codeBlock",
+              "listItem", "tableRow", "bulletList", "orderedList", "table",
+              "panel", "rule"}
+
+
+def adf_to_text(node):
+    """Flatten an Atlassian Document Format node (JSON) to readable text.
+
+    Jira descriptions and comments arrive as ADF, not HTML -- a nested JSON
+    doc model. This walks it depth-first, keeping paragraph/heading/list
+    breaks; deliberately crude-but-honest (same posture as confluence.py's
+    HTML strip)."""
+    if node is None:
+        return ""
+    if isinstance(node, str):
+        return node
+    if isinstance(node, list):
+        return "".join(adf_to_text(n) for n in node)
+    if not isinstance(node, dict):
+        return str(node)
+    ntype = node.get("type", "")
+    if ntype == "text":
+        return node.get("text", "")
+    if ntype == "hardBreak":
+        return "\n"
+    if ntype == "mention":
+        return "@" + ((node.get("attrs", {}).get("text", "") or "").lstrip("@") or "user")
+    if ntype == "emoji":
+        return node.get("attrs", {}).get("text", "") or ""
+    inner = adf_to_text(node.get("content", []))
+    if ntype in _ADF_BLOCK:
+        return inner + "\n"
+    return inner
+
+
+def clean_text(s):
+    return re.sub(r'\n{3,}', '\n\n', s or '').strip()
+
+
+def _name(obj):
+    if isinstance(obj, dict):
+        return obj.get("displayName") or obj.get("name") or obj.get("value") or "?"
+    return "?"
+
+
+# ----------------------------------------------------------------------------
+# Modes
+# ----------------------------------------------------------------------------
+def list_projects(client, base, max_items):
+    """LIST mode, no argument: every project visible to this account."""
+    data = get_json(client, f"{base}/rest/api/3/project/search",
+                    params={"maxResults": max_items,
+                            "orderBy": "lastIssueUpdatedTime"})
+    values = data.get("values", []) if isinstance(data, dict) else data
+    print("# Jira projects visible to this account (key | name)\n")
+    if not values:
+        print("(no projects visible)")
+        return
+    for p in values[:max_items]:
+        print(f"{p.get('key', '?')}  {p.get('name', '')}")
+    print("\n# Next: python scripts/connectors/jira.py <PROJECTKEY>   (recent issues)")
+
+
+def _search(client, base, jql, max_items):
+    data = get_json(
+        client, f"{base}/rest/api/3/search/jql",
+        params={"jql": jql, "maxResults": max_items,
+                "fields": "summary,status,issuetype,assignee,updated"})
+    return data.get("issues", []) if isinstance(data, dict) else []
+
+
+def list_project_issues(client, base, project_key, max_items):
+    """LIST mode, bare KEY: recently-updated issues in one project."""
+    jql = f'project = "{project_key}" ORDER BY updated DESC'
+    issues = _search(client, base, jql, max_items)
+    print(f"# Recent issues in project '{project_key}' (key | status | type | summary)\n")
+    if not issues:
+        print("(no issues found -- check the project key)")
+        return
+    for it in issues[:max_items]:
+        f = it.get("fields", {})
+        print(f"{it.get('key', '?')}  [{_name(f.get('status'))}]  "
+              f"[{_name(f.get('issuetype'))}]  {f.get('summary', '')}")
+    print("\n# Next: python scripts/connectors/jira.py <PROJ-123>   (full issue text)")
+
+
+def search_issues(client, base, jql, max_items):
+    """SEARCH mode: raw JQL."""
+    issues = _search(client, base, jql, max_items)
+    print(f"# Jira JQL search: {jql}  (key | status | summary)\n")
+    if not issues:
+        print("(no matches)")
+        return
+    for it in issues[:max_items]:
+        f = it.get("fields", {})
+        print(f"{it.get('key', '?')}  [{_name(f.get('status'))}]  {f.get('summary', '')}")
+    print("\n# Next: python scripts/connectors/jira.py <PROJ-123>   (full issue text)")
+
+
+def fetch_issue(client, base, issue_key):
+    """FETCH mode: one issue's full text -- fields, description, comments."""
+    data = get_json(
+        client, f"{base}/rest/api/3/issue/{issue_key}",
+        params={"fields": "summary,status,issuetype,priority,assignee,"
+                          "reporter,created,updated,description,comment"})
+    f = data.get("fields", {})
+    summary = f.get("summary", "(no summary)")
+    print(f'# Jira issue {issue_key} -- "{summary}"')
+    print(f"# status: {_name(f.get('status'))} | type: {_name(f.get('issuetype'))} "
+          f"| priority: {_name(f.get('priority'))}")
+    print(f"# assignee: {_name(f.get('assignee'))} | reporter: {_name(f.get('reporter'))}")
+    print(f"# created: {f.get('created', '?')} | updated: {f.get('updated', '?')}\n")
+
+    print("## Description")
+    print(clean_text(adf_to_text(f.get("description"))) or "(no description)")
+    print()
+
+    comment_block = f.get("comment", {}) or {}
+    comments = comment_block.get("comments", []) if isinstance(comment_block, dict) else []
+    print(f"## Comments ({len(comments)})\n")
+    if not comments:
+        print("(no comments)")
+        return
+    for c in comments:
+        print(f"### [{c.get('created', '?')}] {_name(c.get('author'))}")
+        print(clean_text(adf_to_text(c.get("body"))) or "(empty comment)")
+        print("\n---\n")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Unix-philosophy gateway to the Jira Cloud API for Prompt Fu context."
+    )
+    parser.add_argument(
+        'query', nargs='?', default=None,
+        help="Nothing (list projects), a PROJECTKEY, an issue key (PROJ-123), or a JQL string."
+    )
+    parser.add_argument('-n', '--max', type=int, default=25,
+                        help='Output cap per THE PROBE ECONOMY RULE (default: 25).')
+    args = parser.parse_args()
+
+    client, base = make_client()
+    try:
+        arg = args.query
+        if arg is None:
+            list_projects(client, base, args.max)
+        else:
+            arg = arg.strip()
+            if ISSUE_KEY_RE.match(arg):
+                fetch_issue(client, base, arg)
+            elif PROJECT_KEY_RE.match(arg):
+                list_project_issues(client, base, arg, args.max)
+            else:
+                search_issues(client, base, arg, args.max)
+    finally:
+        client.close()
+
+
+if __name__ == '__main__':
+    main()
