@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,338 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 26 published in the last 7 days
+# There are 1,339 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 27 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -393,8 +393,9 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # (mech / playback / score / selftest). Chapter 4's "destined to be extracted" made
 # literal, and the replicating half of Chapter 1.
 
-scripts/foo_cartridge.py
-scripts/foo_replay.py
+# MOVING SOMEWHERE BETTER
+# scripts/foo_cartridge.py
+# scripts/foo_replay.py
 
 # SORT THIS POORLY PLACED OFTEN OOB AD HOC STUFF
 # scripts/git_hooks/pre-commit
@@ -499,7 +500,11 @@ scripts/foo_replay.py
 
 # The following files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
 
+# MOVE LATEST `adhoc.txt` TEMPLATE HERE
+
 ~/repos/nixos/autognome.py  #  <-- Letting the AIs really understand my environment (the one of these which is not like the others)
+scripts/foo_cartridge.py
+scripts/foo_replay.py
 prompt_foo.py    #  <-- Prompt Fu compiler, makes the very README for AGENTS-like payload you're reading right now, but it needs to be more like that
 foo_files.py     #  <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops ------------------------------------ !!! STANDARD WRAPPER: 2
 .gitattributes   #  <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
