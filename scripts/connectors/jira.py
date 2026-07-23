@@ -24,8 +24,13 @@ Disambiguation rule (checked in this order):
   - matches a bare KEY (all caps/digits) -> LIST that project's issues
   - anything else (spaces, lowercase, =, ~) -> raw JQL SEARCH
 
-Auth (basic_auth — the SAME Atlassian API token confluence.py uses; Jira and
-Confluence share one Atlassian identity):
+Auth (basic_auth). The CONFLUENCE_* fallbacks below are a CONVENIENCE for the
+common case where one Atlassian identity covers both products -- they are NOT
+a guarantee that it does. Convicted 2026-07-23 by a live probe on this very
+wallet: JIRA_URL was explicit, its host DIFFERED from the Confluence host, and
+JIRA_TOKEN DIFFERED from CONFLUENCE_TOKEN. A green confluence row therefore
+established nothing about this connector, and the older wording promised a
+single shared Atlassian token -- a label lying at the moment of diagnosis:
   JIRA_URL     e.g. https://yourco.atlassian.net   (NO /wiki suffix).
                If unset, derived from CONFLUENCE_URL / CONFLUENCE_BASE_URL by
                stripping a trailing /wiki.
