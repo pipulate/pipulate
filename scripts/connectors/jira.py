@@ -145,9 +145,10 @@ def get_env():
 
 def make_client():
     base, email, token = get_env()
+    api_base, _door = resolve_base(base, os.getenv("JIRA_CLOUD_ID"))
     client = httpx.Client(auth=(email, token), timeout=60.0,
                           headers={"Accept": "application/json"})
-    return client, base
+    return client, api_base
 
 
 def get_json(client, url, params=None):
