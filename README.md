@@ -519,6 +519,13 @@ nix develop
 
 Wait for the JupyterLab tab to auto-open, then run the Onboarding notebook to unlock the Pipulate app.
 
+**Automating past the boot menu:** `nix develop` ends at a two-door prompt — start Pipulate, or drop to the shell. It fails open, so anything without a terminal (CI, a provisioning script, an SSH session with no tty) starts the app and never sees the prompt. Two environment variables cover the cases that do:
+
+| Variable | Effect |
+|----------|--------|
+| `PIPULATE_BOOT_MENU=0` | Skip the prompt entirely and start the app, e.g. `PIPULATE_BOOT_MENU=0 nix develop`. For an unattended terminal that would otherwise wait for a keypress that never comes. |
+| `PIPULATE_BOOT_MENU_TIMEOUT=10` | Keep the prompt, but start the app after N seconds if nobody chooses. Off by default — with a human provably present, the prompt waits indefinitely rather than starting something they didn't ask for. |
+
 ### 🚨 Installation Troubleshooting
 
 **Common Issues & Solutions:**
