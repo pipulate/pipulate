@@ -656,6 +656,46 @@ CHECK_WORKERS = 8       # slots are subprocesses, so this is pure I/O overlap
 _LIVE_MARK = {0: '🟢', 1: '🔴'}
 
 
+def _dotenv_pairs():
+    """NAME -> value from the vault. Quotes are stripped because _save_env
+    prefers python-dotenv's set_key, which writes them.
+
+    This function and _check_env are the ONLY places in this file that touch a
+    secret's VALUE. Nothing here prints, logs, or returns one to the renderer.
+    """
+    pairs = {}
+    try:
+        for line in DOTENV_PATH.read_text(encoding='utf-8').splitlines():
+            line = line.strip()
+            if not line or line.startswith('#') or '=' not in line:
+                continue
+            name, value = line.split('=', 1)
+            name = name.strip()
+            if name.lower().startswith('export '):
+                name = name[len('export '):].strip()
+            value = value.strip()
+            if len(value) >= 2 and value[0] == value[-1] and value[0] in ("'", '"'):
+                value = value[1:-1]
+            if name:
+                pairs[name] = value
+    except OSError:
+        pass
+    return pairs
+
+
+def _check_env():
+    """The environment each `--check` subprocess inherits: this process's env
+    with the vault layered UNDER it, so an already-exported value wins —
+    matching the flake's own precedence exactly.
+
+    Without this, a token pasted by `warm` sixty seconds ago is invisible to
+    the very board that asked for it, and you would have to exit and re-enter
+    the shell between every single credential. The whole point of the game is
+    to type one word, fix a red, and type the word again.
+    """
+    return {**_dotenv_pairs(), **os.environ}
+
+
 def check_slot(name):
     """Run one connector's `--check`. Returns (code, line).
 
