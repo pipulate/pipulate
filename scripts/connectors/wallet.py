@@ -821,6 +821,8 @@ def check_slot(name, cfg=None):
     stdin is /dev/null and the timeout is hard, so no connector can hang the
     board on a prompt or a stalled socket.
     """
+    if (cfg or {}).get('auth') == _BROWSER_KIND:
+        return check_browser_slot(name, cfg)
     script = Path(__file__).resolve().parent / f"{name}.py"
     if not script.exists():
         return 2, f"no connector module ({script.name})"
