@@ -172,10 +172,10 @@ def check():
     Gate 1 is "the three vars are set", gate 2 is "Atlassian accepts them
     right now" -- one /rest/api/user/current call, hard 15s timeout.
     """
-    base = os.getenv("CONFLUENCE_BASE_URL")
+    base = os.getenv("CONFLUENCE_BASE_URL") or os.getenv("CONFLUENCE_URL")
     email = os.getenv("CONFLUENCE_EMAIL") or os.getenv("CONFLUENCE_USER")
     token = os.getenv("CONFLUENCE_TOKEN")
-    missing = [n for n, v in [("CONFLUENCE_BASE_URL", base),
+    missing = [n for n, v in [("CONFLUENCE_BASE_URL/CONFLUENCE_URL", base),
                               ("CONFLUENCE_EMAIL", email),
                               ("CONFLUENCE_TOKEN", token)] if not v]
     if missing:
