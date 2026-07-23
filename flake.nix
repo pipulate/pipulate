@@ -921,7 +921,49 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias gitops='(cd ~/repos/trimnoir && git commit --allow-empty -m "retry" && git push)'
           alias force='(cd ~/repos/trimnoir && git commit --allow-empty -m "retry" && git push)'
           alias isnix="if [ -n \"$IN_NIX_SHELL\" ]; then echo \"✓ In Nix shell v${version}\"; else echo \"✗ Not in Nix shell\"; fi"
-          alias mcp='(cd ~/repos/pipulate && .venv/bin/python cli.py call)'
+          # THE SECOND DOOR: bare `mcp` is the roster; `mcp <tool> [args]` is
+          # unchanged and still routes to cli.py's tool-call actuator. The
+          # word is not technically accurate for the connector rows -- it is
+          # the word people already reach for, and reaching for the right
+          # word beats being right about the wrong one.
+          #
+          # FALL-THROUGH GUARANTEE: if scripts/mcp_menu.py has not landed,
+          # bare `mcp` behaves EXACTLY as it did before this function existed
+          # -- cli.py's own argparse error. A shell must never depend on a
+          # file that might not be there.
+          #
+          # Also fixes a latent white-label bug: the old alias hardcoded
+          # ~/repos/pipulate, so `mcp` cd'd into the wrong (or missing)
+          # directory for anyone whose install folder is named otherwise.
+          mcp() {
+            if [ "$#" -eq 0 ] && [ -f "$PIPULATE_ROOT/scripts/mcp_menu.py" ]; then
+              "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/mcp_menu.py"
+            else
+              (cd "$PIPULATE_ROOT" && .venv/bin/python cli.py call "$@")
+            fi
+          }
+          # THE THIRD DOOR: `pu` starts the server door 2 declined to start.
+          # Kill-then-start, so it doubles as a restart and never collides on
+          # :5001 -- the same pkill runScript has always run on shell entry.
+          pu() {
+            (
+              cd "$PIPULATE_ROOT" || exit 1
+              pkill -f "python server.py" || true
+              python server.py
+            )
+          }
+          # Bare `pipulate` is the long form of `pu`. WITH arguments it hands
+          # off to the real PyPI console script -- `command` bypasses this
+          # function -- so `pipulate install`, `pipulate run`, and
+          # `pipulate mcp-discover` keep working inside the shell instead of
+          # being silently shadowed.
+          pipulate() {
+            if [ "$#" -eq 0 ]; then
+              pu
+            else
+              command pipulate "$@"
+            fi
+          }
           # THE CONNECTOR GRAMMAR (idea #7 made literal): tiny Unix commands,
           # one per API, each a self-contained file in scripts/connectors/.
           # Args pass through: `botify org/project`, `confluence ENG`,
@@ -929,6 +971,9 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # keep the full `python scripts/connectors/...` spelling because
           # child shells never inherit aliases.
           alias gmail='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/gmail.py"'
+          # `email` is the New-B-facing name for the same connector. `gmail`
+          # stays, because the filename and the muscle memory both say gmail.
+          alias email='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/gmail.py"'
           alias botify='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/botify.py"'
           alias confluence='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/confluence.py"'
           alias gsc='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/gsc.py"'
@@ -939,6 +984,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # persistent profile (data/uc_profiles/default) so persistent
           # scrapes inherit the login. Log in, close the window, done.
           alias weblogin='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/weblogin.py"'
+          # `warm` is the New-B-facing name for weblogin: warm the login cache.
+          alias warm='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/weblogin.py"'
           alias vim='nvim'
           alias lsp='ls -d -1 "$PWD"/*'
           alias p='cd ~/repos/pipulate'
