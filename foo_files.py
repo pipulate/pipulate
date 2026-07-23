@@ -636,7 +636,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # BIG STANDARD STUFF (Optionally comment out any)
 
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
-~/repos/nixos/autognome.py  #  <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
+# ~/repos/nixos/autognome.py  #  <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
 scripts/foo_cartridge.py    # Needs description
 scripts/foo_replay.py       # Needs description
 pyproject.toml              # <-- The PyPI Packaging details
@@ -654,7 +654,7 @@ cli.py                      # <-- Catch-all actuator for PyPI envs, Python ancho
 scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
 scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
 __init__.py                 # <-- Master versioning
-release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
+# release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
 scripts/webclip_2_markdown.py    # <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps / need to shorten the name)
 scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
 
