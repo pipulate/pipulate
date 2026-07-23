@@ -73,6 +73,26 @@ import httpx
 ISSUE_KEY_RE = re.compile(r'^[A-Z][A-Z0-9]+-\d+$')
 PROJECT_KEY_RE = re.compile(r'^[A-Z][A-Z0-9]+$')
 
+# THE DOOR IS DECLARED, NEVER PROBED. Presence of JIRA_CLOUD_ID IS the
+# declaration that this credential is a SCOPED token, which authenticates
+# only at the platform gateway; absence means a CLASSIC token, which
+# authenticates only at the site host. There is deliberately NO
+# try-one-then-fall-back: Jira raises a CAPTCHA after a few consecutive
+# failed logins and then refuses REST auth outright (the tell is a header
+# reading X-Seraph-LoginReason: AUTHENTICATION_DENIED), so a connector that
+# probes its own door doubles every failed auth and can destroy the very
+# instrument it is reading with -- on a counter nobody can reset from this
+# side. Same shape as `clear` eating scrollback: a read that deletes.
+JIRA_GATEWAY = "https://api.atlassian.com/ex/jira"
+
+
+def resolve_base(site_url, cloud_id):
+    """Return (base_url, door_label) from DECLARED config only."""
+    cloud_id = (cloud_id or "").strip()
+    if cloud_id:
+        return f"{JIRA_GATEWAY}/{cloud_id}", "gateway"
+    return (site_url or "").rstrip('/'), "site host"
+
 
 # ----------------------------------------------------------------------------
 # Auth & transport
