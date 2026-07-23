@@ -154,6 +154,30 @@ AI_PHOOEY_CHOP = r"""                                                           
 # it consumes the specimen. Import the patched function, run it on the
 # real input WITHOUT writing, and assert the input is byte-identical
 # afterward. Exercises the hard half; costs no publish.
+# THE IGNITION RULE (banked 2026-07-23, lived the same day): between
+# PATCHES and PROMPT sits an act that had no name until now -- MAKING THE
+# PATCHED CODE RUN, so the AFTER tap measures something that happened. It
+# is NOT a fourth beat and must never be labeled a second experiment;
+# that road ends in experiments all the way down. Ignition COMPLETES the
+# PATCH beat, so the kata keeps its three beats (Probe, Patch, Prompt)
+# and only the saddle gains a slot. The hand-run reading taken right
+# after ignition is the AFTER tap TAKEN EARLY -- the same probe, not a
+# new one -- which the next compile's live receipt then repeats:
+# agreement is a free confirmation, disagreement is information about the
+# compile lane itself. Conviction: the vault probe read False inside a
+# compile whose flake patch had already landed, committed, and pushed,
+# because the shell running that compile predated the shellHook; one
+# `exit` + `nd` and the identical line read True. STANDING CONSEQUENCE:
+# every turn NAMES its ignition or declares "no ignition required".
+# Rule of thumb -- if the probe's own command loads the patched file at
+# call time it self-ignites; if the patched thing was read before the
+# probe existed (shellHook, daemon, cache, anything read once at entry),
+# ignite it explicitly. GRAMMAR MNEMONIC (the singulars and plurals are
+# load-bearing): PROBE is singular -- one paste, atomic, non-mutating.
+# CONTEXT is Con-TEXT -- the file section plus a little more text.
+# PATCHES is plural -- one car per commit story, applied one at a time.
+# IGNITION is singular -- one actuation, or none. PROMPT is singular --
+# the caboose under the cursor. Then Ka-POW: `ahc`.
 # THE SELF-HEALING FENCE AMENDMENT (PENDING 2026-07-23): sanitizer.py's
 # fence contract rule 2 no longer refuses a naked opening fence; it tags
 # it `text` in place, writes the heal back to article.txt, and prints a
