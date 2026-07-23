@@ -673,10 +673,13 @@ def main():
         scoreboard(load_wallet(), args.max, args.stale_days)
     elif args.command == 'login':
         login(args.slot, args.stale_days)
+    elif args.command == 'warm':
+        warm(args.slot, args.stale_days, assume_yes=args.yes, dry_run=args.dry_run)
     else:
         die(f"Unknown command: {args.command}\n"
             "Usage: wallet.py                 (scoreboard)\n"
-            "       wallet.py login <slot>    (mint an oauth slot / name the rest)")
+            "       wallet.py login <slot>    (mint one oauth slot)\n"
+            "       wallet.py warm [slot]     (warm every cold slot, per kind)")
 
 
 if __name__ == '__main__':
