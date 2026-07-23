@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # scripts/connectors/wallet.py
 """
-wallet.py — Read-only scoreboard for the Pipulate connector wallet.
+wallet.py — Score, check, and warm every credential in the Pipulate wallet.
 
 Golden-path modes, auto-detected from the leading positional argument:
 
-  python scripts/connectors/wallet.py                 # SCOREBOARD: stat EVERY slot, whatever its auth kind
+  python scripts/connectors/wallet.py                 # SCOREBOARD: stat EVERY slot, whatever its auth kind (OFFLINE)
+  python scripts/connectors/wallet.py check [<slot>]  # CHECK: the red/green game — one LIVE call per enrolled slot
+  python scripts/connectors/wallet.py warm [<slot>]   # WARM: fix whatever is cold, dispatched per auth kind
   python scripts/connectors/wallet.py login <slot>    # LOGIN: mint an oauth slot, or NAME how any other kind is warmed
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
