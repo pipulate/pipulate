@@ -310,6 +310,12 @@ def check():
     # site, which is why membership rides above licensing. The same probe
     # found this wallet's JIRA_TOKEN was not the CONFLUENCE token at all, so
     # the cross-check below is conditional on the two actually matching.
+    #
+    # ORDERING AMENDED 2026-07-23 (round two): a candidate that is FREE to
+    # falsify and needs NO other human rides above every candidate that needs
+    # an admin. A scoped token 401s at the site host byte-identically to a
+    # revoked one and to a stranger's, so this message has been ranking three
+    # expensive causes above one cheap one. THE FREE FALSIFIER RIDES FIRST.
     if resp.status_code == 401:
         shared = bool(token) and token == os.getenv("CONFLUENCE_TOKEN")
         cross = ("JIRA_TOKEN is the same string as CONFLUENCE_TOKEN, so "
