@@ -267,10 +267,24 @@ def check():
     except httpx.HTTPError as e:
         sys.stderr.write(f"jira RED gate2: transport failure: {e}\n")
         return 1
-    if resp.status_code in (401, 403):
+    # 401 and 403 are DIFFERENT failures and must not share a sentence. 401 is
+    # "not authenticated"; 403 is "authenticated, then forbidden". The old line
+    # blamed a missing Jira license for a 401 without ever having established
+    # that the token worked anywhere -- a verdict where only an observation was
+    # in hand. Report the observation; offer causes as ordered candidates.
+    if resp.status_code == 401:
         sys.stderr.write(
-            f"jira RED gate2: credentials rejected (HTTP {resp.status_code}) -- "
-            "an Atlassian token valid for Confluence still needs a Jira license\n")
+            "jira RED gate2: HTTP 401, not authenticated by this site. "
+            "Candidates in order: wrong or expired API token; email and token "
+            "belong to different accounts; JIRA_URL points at a site this "
+            "token was not minted for. (A missing Jira LICENSE reads 403, not "
+            "401 -- run confluence --check with the same token to split them.)\n")
+        return 1
+    if resp.status_code == 403:
+        sys.stderr.write(
+            "jira RED gate2: HTTP 403, authenticated but forbidden -- most "
+            "likely this account holds no Jira license or product access, "
+            "which a token valid for Confluence does not confer.\n")
         return 1
     if resp.status_code != 200:
         sys.stderr.write(f"jira RED gate2: HTTP {resp.status_code}\n")
