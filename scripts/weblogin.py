@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-weblogin.py — Warm a persistent browser login for later scraping.
+weblogin.py — Log into a site by hand once so later scrapes stay signed in.
 
 Opens a VISIBLE Chrome on the house persistent profile — the SAME profile
 tools/scraper_tools.py uses for persistent=True, profile_name="default"
