@@ -12,8 +12,8 @@ Usage:
     pipulate
 """
 
-__version__ = "2.00"
-__version_description__ = "AI-Readiness Retitle"
+__version__ = "2.01"
+__version_description__ = "CLI or Start Pipulate Menu"
 __email__ = "pipulate@gmail.com"
 __description__ = "AI-readiness for the agentic web — local-first, Nix-reproducible workflows. The successor to AI SEO software."
 

@@ -450,6 +450,49 @@ AI_PHOOEY_CHOP = r"""                                                           
 # quarantined at the proposal stage, and replay convergence is measured
 # by foo-cartridge-replay-v1 rather than trusted on manners.
 
+# THE EXIT-CODE PROTOCOL RULE (banked 2026-07-23, witnessed same day): a
+# program a shell hook invokes for a DECISION speaks through its exit code,
+# never stdout. Nothing parses it, so no forked grandchild can hold a capture
+# pipe open (the rgx/xclip deadlock is the conviction), and the renderer
+# becomes swappable without the caller learning anything. Witness: across four
+# compiles boot_menu.py's timeout policy flipped, its labels changed, and its
+# entire call site MOVED ~80 lines up runScript, while flake.nix's invocation
+# stayed byte-identical -- `python scripts/boot_menu.py`, then capture $?.
+# Corollary, THE FALL-THROUGH GUARANTEE: pair every such call with an
+# `if [ -f <script> ]` test and a pre-gate default, so the hook behaves
+# EXACTLY as it did before the gate existed when the file has not landed.
+
+# THE FAIL-OPEN THRESHOLD RULE (banked 2026-07-23, receipt-witnessed): an
+# interactive gate placed on a DEFAULT entry path must return the pre-gate
+# behavior on every path an automated caller can reach -- no tty, explicit env
+# opt-out, missing termios, unexpected exception -- because a gate that can
+# strand an unattended `nix develop` is strictly worse than no gate. Blocking
+# FOREVER is then safe, but ONLY strictly after the isatty gate: a human is
+# provably present before anything waits. Every unattended tty must DECLARE
+# intent (PIPULATE_BOOT_MENU=0) rather than race the gate -- autognome's
+# clean-entry protocol types synthetic keys into the same pty, and
+# "Environment" contains an `n`, which is a door. Witness: nontty_exit=0,
+# bypass_exit=0, and the quiet devShell (which never reaches the gate)
+# evaluating to an unchanged drv hash across the whole ride.
+
+# THE SAME-CAR LABEL RULE (banked 2026-07-23, operator's ruling; sibling of
+# GENERATED-NOT-AUTHORED): when a gate MOVES, every string describing what it
+# gates moves in the SAME car. A menu describing its old placement is not
+# stale documentation -- it is a lie told at the exact moment the user is
+# deciding, and a lying menu is worse than no menu. Applies to anything read
+# AT the decision point: labels, subtitles, confirmations, and any promise of
+# a deadline that no longer exists.
+
+# THE LIVE-PROMPT MIRAGE (banked 2026-07-23, dot-counted): a background job
+# still writing to the tty after the foreground process exits makes a WORKING
+# shell look hung. Count the emitter's cadence before diagnosing a hang -- the
+# browser-poll subshell prints one dot per second, so 22 dots, the door-2
+# message, `(nix) pipulate $`, then 8 more dots is a prompt that was live at
+# second 22 and got painted over for 8 more. The Enter that "unstuck" it only
+# redrew a prompt already accepting input. Corollary: a gate that leaves
+# noise-generating background jobs running BEHIND it has not delivered quiet.
+# Move the gate above the noise, never the noise below the gate.
+
 # STORY ENGINE
 # Mike-E's gift is associative reach; his flaw is letting every spark become canon.
 # Yen Sid-ton is a brilliant Familiar re-instantiated without yesterday.
@@ -1380,6 +1423,15 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - TODO: commit the unattended-tty guard in ~/repos/nixos (autognome.py's
+#   "Pipulate Server" tab, PIPULATE_BOOT_MENU=0 prefix). It is on disk and
+#   visible in context, but no compile receipt shows it committed;
+#   configuration.nix:273 invokes autognome.py by absolute repo path, so
+#   tomorrow's `init` runs whatever is on disk either way -- the commit is for
+#   the record, not the behavior.
+# - TODO: surface PIPULATE_BOOT_MENU and PIPULATE_BOOT_MENU_TIMEOUT somewhere
+#   a human finds them (README install section, or the door-2 message).
+#   Both are currently discoverable only by reading scripts/boot_menu.py.
 # - Make the Honeybot slideshow announce it's about to do the restart before the forced (currently set to 4-hour) loop
 # - EARMARK: THE MANIFEST-SIGNING LANE (seeded 2026-07-22 from the receipts ride): implement THE RECEIPT LADDER RULE's provenance triple. foo.zip is ALREADY byte-reproducible (fixed epoch/mode/order in scripts/foo_cartridge.py — the hashed body carries no wall-clock time; the uploaded 46-snapshot manifest was stamped 2026-01-01). Remaining: (1) stamp manifest.json with the source git commit SHA + `git describe` at compile time; (2) sign manifest.json with a key you control — `ssh-keygen -Y sign` is the lowest-ceremony non-repudiation; (3) optional paranoid tier: append the manifest hash to an ever-growing receipts.ndjson (poor-man's transparency log). NEEDS scripts/foo_cartridge.py in context to patch the writer/verifier — NOT foo_files.py.
 # - EARMARK: SEED-PATH PEANUT-BUTTER ONBOARDING (seeded 2026-07-22): Yen Sid-ton must explain `curl ... | bash` to a cold newcomer in sandwich-rules terms — go to a stranger's address, grab the card, do everything it says UNREAD, as you, with full run of your house — then teach the grown-up form (curl -o, less, sh: fetch, read, run). Then the KEY distinction: DetSys/Nix differs not in MECHANISM but in PAYLOAD — Homebrew mutates global state in place and accretes machine-rot; Nix installs an immutable content-addressed store, enters with `nix develop`, leaves zero residue, reverses cleanly (--uninstall, survives macOS upgrades). First lesson for the New-B: you are ALLOWED to read the card. Bank into the learn()/seed() prompt copy in flake.nix.
@@ -1509,7 +1561,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # scripts/articles/scrub_tags.py  # [358 tokens | 1,588 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
 # scripts/audit_dye.py  # [256 tokens | 1,009 bytes]
-# scripts/boot_menu.py  # [1,638 tokens | 6,476 bytes]
+# scripts/boot_menu.py  # [1,643 tokens | 6,508 bytes]
 # scripts/confluence_probe.py  # [4,990 tokens | 20,668 bytes]
 # scripts/connectors/gong.py  # [5,411 tokens | 21,901 bytes]
 # scripts/connectors/jira.py  # [2,659 tokens | 10,769 bytes]
