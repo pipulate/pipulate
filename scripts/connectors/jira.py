@@ -34,6 +34,15 @@ single shared Atlassian token -- a label lying at the moment of diagnosis:
   JIRA_URL     e.g. https://yourco.atlassian.net   (NO /wiki suffix).
                If unset, derived from CONFLUENCE_URL / CONFLUENCE_BASE_URL by
                stripping a trailing /wiki.
+               THE BASE URL IS A FUNCTION OF THE CREDENTIAL, NOT OF THE SITE.
+               A CLASSIC (unscoped) API token authenticates basic-auth against
+               the site host above. A SCOPED API token -- the kind Atlassian's
+               own token page now steers you toward, and the ONLY kind a
+               service account can mint -- authenticates ONLY through the
+               platform gateway at api.atlassian.com/ex/jira/<cloudId>/, and
+               answers 401 at the site host forever, no matter who grants what.
+               An OAuth 2.0 (3LO) access token rides that same gateway with a
+               Bearer header. This connector speaks ROW ONE ONLY (2026-07-23).
   JIRA_EMAIL   falls back to CONFLUENCE_EMAIL / CONFLUENCE_USER
   JIRA_TOKEN   falls back to CONFLUENCE_TOKEN   (secret — env or .env only)
 
