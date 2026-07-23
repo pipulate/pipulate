@@ -483,19 +483,28 @@ AI_PHOOEY_CHOP = r"""                                                           
 # AT the decision point: labels, subtitles, confirmations, and any promise of
 # a deadline that no longer exists.
 
-# THE DIGIT NAMESPACE RULE (banked 2026-07-23, collision caught pre-flight):
-# bare digits typed at a shell prompt are ONE global namespace, and exactly
-# one menu may own them. A numbered menu trains the hand to type numbers --
-# the operator caught himself doing it within minutes of the mcp roster
-# landing -- so the numbers must BE commands or the menu teaches a reflex it
-# then punishes. The mcp roster spends the namespace because it is the
-# highest-traffic list in the shell; every OTHER menu therefore uses words or
-# bracketed keypress affordances (boot_menu's [1]/[2] are read by getch, never
-# typed, so they do not collide -- which is why door 2's "easy as 1, 2, 3"
-# shipped as three words instead of three digits). Corollary: a digit binding
-# is GENERATED from the roster it displays, never hand-bound alongside it. A
-# second ordering is free to drift, and a drifted digit is a lying menu with
-# the user's finger already moving.
+# THE ALIAS-DISPATCH RULE (banked 2026-07-23, RETRACTING the same day's DIGIT
+# NAMESPACE RULE -- the mechanism that rule assumed does not exist): a shell
+# alias is not a callable object. Bash expands an alias only when it is the
+# literal first word a parser reads; `cmd=warm; $cmd` searches functions,
+# builtins, and PATH, finds none, and reports command-not-found. NOTHING can
+# invoke an alias on a human's behalf -- no menu, no wrapper, no dispatcher.
+# Conviction: bare `1` resolved correctly to `warm` and died as
+# `warm: command not found`, while row 8 (`pu`, a FUNCTION) would have run --
+# half a menu working for a reason invisible from the menu, the worst failure
+# shape there is. STANDING CONSEQUENCE: if a word must be reachable by
+# anything other than a human typing it, define it as a FUNCTION. Otherwise
+# let the menu print words and let the human type them; a list the eye reads
+# and the hand retypes has no second ordering to drift.
+#
+# PROBE COROLLARY -- EXERCISE THE HARD HALF (the reason this shipped at all):
+# the gating probe was `7() { _p 7 "$@"; }; 7 x y`, which proved numeric
+# function NAMING and ARGUMENT FORWARDING and then echoed instead of
+# dispatching. It never once ran an alias through a variable, which was the
+# entire mechanism under test. A probe that exercises the easy half of a
+# claim is not a weak receipt, it is a FALSE one -- it returns green for a
+# thing that was never tried. Before accepting a probe as a gate, name the
+# step most likely to fail and confirm the probe performs THAT step.
 
 # THE LIVE-PROMPT MIRAGE (banked 2026-07-23, dot-counted): a background job
 # still writing to the tty after the foreground process exits makes a WORKING
