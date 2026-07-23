@@ -192,6 +192,16 @@ def check():
         sys.stderr.write(
             f"confluence RED gate2: credentials rejected (HTTP {resp.status_code})\n")
         return 1
+    if resp.status_code == 404:
+        # The cost of accepting CONFLUENCE_URL: jira.py STRIPS a /wiki suffix
+        # because Jira's REST root has none, while Confluence Cloud REQUIRES
+        # it. A shared var can therefore reach here host-correct and
+        # path-wrong. Do not rewrite the path silently — name it instead.
+        sys.stderr.write(
+            "confluence RED gate2: HTTP 404 — the host answered but "
+            "/rest/api/user/current is not there; Confluence Cloud needs the "
+            "/wiki suffix that Jira's root does not have\n")
+        return 1
     if resp.status_code != 200:
         sys.stderr.write(f"confluence RED gate2: HTTP {resp.status_code}\n")
         return 1
