@@ -56,8 +56,15 @@ MAX_DESC = 74
 #   gsc   -- works, but it is a REPORT lane, not a bring-a-thread-into-context
 #            lane; mixing the two muddies what this roster is for.
 #   docs  -- no read connector exists yet (see the GOOGLE DOCS EARMARK).
+#   weblogin -- still a command, but `warm` is now its front door: a
+#            browser_session slot's fixer IS weblogin.py, so one word warms
+#            anything and this row would be a second door to the same room.
+#
+# `warm` used to point at weblogin.py directly. It now points at the wallet,
+# whose docstring line is read from source at display time -- so when the word
+# changed meaning, the sentence beside it could not stay behind.
 ROSTER = [
-    ("warm", "scripts/weblogin.py"),
+    ("warm", "scripts/connectors/wallet.py"),
     ("botify", "scripts/connectors/botify.py"),
     ("confluence", "scripts/connectors/confluence.py"),
     ("jira", "scripts/connectors/jira.py"),
