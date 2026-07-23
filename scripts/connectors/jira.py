@@ -394,7 +394,7 @@ def check():
     if not name:
         sys.stderr.write("jira RED gate2: authenticated but no identity returned\n")
         return 1
-    print(f"jira GREEN {name}")
+    print(f"jira GREEN {name} (via {door})")
     return 0
 
 
