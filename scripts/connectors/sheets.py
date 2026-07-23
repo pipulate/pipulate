@@ -471,7 +471,14 @@ def main():
                         help='Metadata-only tab gauge (grid allocation; zero cell data fetched).')
     parser.add_argument('--budget', type=int, default=10000,
                         help='STACK-mode ceiling in TOTAL data cells (default: 10000).')
+    parser.add_argument('--check', action='store_true',
+                        help='SELECT 1 health check: one GREEN line on stdout and '
+                             'exit 0, or one gate-named RED line on stderr and '
+                             'exit 1. Never interactive.')
     args = parser.parse_args()
+
+    if args.check:
+        sys.exit(check())
 
     if args.ref is None:
         identity()
