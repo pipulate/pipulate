@@ -176,20 +176,56 @@ def _stat_state(path, stale_days, mtime_matters):
     return ('stale' if age_days > stale_days else 'filled'), stamp
 
 
+def _dotenv_names():
+    """The env-var NAMES declared in DOTENV_PATH — names only; a value is never
+    read here. Empty set when there is no .env. Cached per process, and the
+    cache is invalidated by _save_env so the board re-reads what warm wrote."""
+    if getattr(_dotenv_names, '_cache', None) is not None:
+        return _dotenv_names._cache
+    names = set()
+    try:
+        for line in DOTENV_PATH.read_text(encoding='utf-8').splitlines():
+            line = line.strip()
+            if not line or line.startswith('#') or '=' not in line:
+                continue
+            name = line.split('=', 1)[0].strip()
+            if name.lower().startswith('export '):
+                name = name[len('export '):].strip()
+            if name:
+                names.add(name)
+    except OSError:
+        pass
+    _dotenv_names._cache = names
+    return names
+
+
+def _env_source(name):
+    """Where a required var is visible — 'env', 'dotenv', or None. Never reads
+    or returns the secret VALUE (the wallet's names-and-paths-only rule)."""
+    if os.environ.get(name):
+        return 'env'
+    if name in _dotenv_names():
+        return 'dotenv'
+    return None
+
+
 def _env_state(slot):
-    """(state, detail) for a paste kind: are the required env var NAMES set in
-    THIS process? Reads os.environ only — a var living solely in a project
-    .env reads empty here (stated in the docstring)."""
+    """(state, detail) for a paste kind: is each required env var NAME visible
+    in THIS process, or declared in DOTENV_PATH? Reading the .env is what closes
+    the old "reads emptier than it is" caveat — a secret parked in
+    ~/.config/pipulate/.env now counts, because that is where `warm` puts it."""
     req = _required_env_vars(slot)
     if not req:
         return 'no-path', 'slot declares no env vars'
-    present = [v for v in req if os.environ.get(v)]
-    missing = [v for v in req if not os.environ.get(v)]
+    seen = {v: _env_source(v) for v in req}
+    present = [v for v in req if seen[v]]
+    missing = [v for v in req if not seen[v]]
     if not present:
         return 'empty', f"unset: {', '.join(req)}"
+    where = ', '.join(f"{v} ({seen[v]})" for v in present)
     if missing:
-        return 'partial', f"set: {', '.join(present)} | unset: {', '.join(missing)}"
-    return 'filled', f"env set: {', '.join(present)}"
+        return 'partial', f"set: {where} | unset: {', '.join(missing)}"
+    return 'filled', f"set: {where}"
 
 
 def classify_slot(name, cfg, stale_days):
