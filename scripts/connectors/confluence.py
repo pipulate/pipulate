@@ -50,11 +50,15 @@ import httpx
 # Auth & transport
 # ----------------------------------------------------------------------------
 def get_env():
-    base = os.getenv("CONFLUENCE_BASE_URL")
+    # BOTH names, BASE_URL first. jira.py has accepted CONFLUENCE_URL since it
+    # shipped; this file did not, so a fully-configured wallet read as unset.
+    # Convicted 2026-07-23 by a FALSE RED on the live board: the credential was
+    # never tested, the check simply asked for the wrong variable NAME.
+    base = os.getenv("CONFLUENCE_BASE_URL") or os.getenv("CONFLUENCE_URL")
     email = os.getenv("CONFLUENCE_EMAIL") or os.getenv("CONFLUENCE_USER")
     token = os.getenv("CONFLUENCE_TOKEN")
     missing = [name for name, val in [
-        ("CONFLUENCE_BASE_URL", base),
+        ("CONFLUENCE_BASE_URL (or CONFLUENCE_URL)", base),
         ("CONFLUENCE_EMAIL (or CONFLUENCE_USER)", email),
         ("CONFLUENCE_TOKEN", token),
     ] if not val]
