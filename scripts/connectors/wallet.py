@@ -6,7 +6,7 @@ wallet.py — Score, check, and warm every credential in the Pipulate wallet.
 Golden-path modes, auto-detected from the leading positional argument:
 
   python scripts/connectors/wallet.py                 # SCOREBOARD: stat EVERY slot, whatever its auth kind (OFFLINE)
-  python scripts/connectors/wallet.py check [<slot>]  # CHECK: the red/green game — one LIVE call per enrolled slot
+  python scripts/connectors/wallet.py check [<slot>]  # CHECK: the red/green game — one bounded probe per enrolled slot
   python scripts/connectors/wallet.py warm [<slot>]   # WARM: fix whatever is cold, dispatched per auth kind
   python scripts/connectors/wallet.py login <slot>    # LOGIN: mint an oauth slot, or NAME how any other kind is warmed
 
