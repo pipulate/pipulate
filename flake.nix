@@ -652,8 +652,32 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               echo "⚠️  Server didn't start within 30 seconds, but continuing..."
             fi
           ) &
-          # Run server in foreground
-          python server.py
+          # THE THRESHOLD: two doors at the end of the boot.
+          #
+          # boot_menu.py speaks ONLY through its exit code -- 0 start the
+          # app, 10 stay in the shell. Nothing here parses its stdout, so no
+          # capture pipe can ever be held open by it (the rgx/xclip deadlock
+          # is the conviction). That also makes the renderer swappable: a
+          # Textual boot_menu.py can replace the stdlib/Rich one and this
+          # branch never learns the difference.
+          #
+          # FALL-THROUGH GUARANTEE: if scripts/boot_menu.py is absent -- an
+          # older checkout, a partial clone, a hand-deleted file -- the flake
+          # behaves EXACTLY as it did before the menu existed. The flake must
+          # never depend on a file that might not have landed.
+          #
+          # Door 2 leaves JupyterLab running in tmux and skips only the
+          # server, so the quiet workshop still has notebooks. Gating the
+          # Jupyter/TTS/browser section too is a separate, later move.
+          BOOT_CHOICE=0
+          if [ -f scripts/boot_menu.py ]; then
+            python scripts/boot_menu.py
+            BOOT_CHOICE=$?
+          fi
+          if [ "$BOOT_CHOICE" -ne 10 ]; then
+            # Run server in foreground
+            python server.py
+          fi
         '';
         # Logic for installing all Python packages
         pythonInstallLogic = ''
