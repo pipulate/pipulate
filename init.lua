@@ -616,6 +616,8 @@ function hop_off_sandworm()
         .. "Answer all four beats, briefly:\n\n"
         .. "1. VERIFY: restate the goal from the top of this article and confirm\n"
         .. "   (or deny) it was met, citing THIS compile's receipts, not memory.\n"
+        .. "   Name any ignition this ride required that never fired -- an AFTER\n"
+        .. "   tap taken without one is a stale BEFORE wearing the AFTER's label.\n"
         .. "2. BANK: name everything that graduates — rule, earmark, todo, pin —\n"
         .. "   as exact paste-ready lines, plus the exact lines to delete.\n"
         .. "3. DANGLING: what carries forward unbanked? One line each, no essays.\n"
