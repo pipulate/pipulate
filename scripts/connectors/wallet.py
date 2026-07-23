@@ -792,17 +792,20 @@ def main():
                              'read stale (default: 7 — the Testing-mode cliff).')
     args = parser.parse_args()
 
-    if args.command in (None, 'scoreboard', 'board', 'status'):
+    if args.command in (None, 'scoreboard', 'status'):
         scoreboard(load_wallet(), args.max, args.stale_days)
+    elif args.command in ('check', 'board'):
+        board(load_wallet(), args.slot)
     elif args.command == 'login':
         login(args.slot, args.stale_days)
     elif args.command == 'warm':
         warm(args.slot, args.stale_days, assume_yes=args.yes, dry_run=args.dry_run)
     else:
         die(f"Unknown command: {args.command}\n"
-            "Usage: wallet.py                 (scoreboard)\n"
-            "       wallet.py login <slot>    (mint one oauth slot)\n"
-            "       wallet.py warm [slot]     (warm every cold slot, per kind)")
+            "Usage: wallet.py                 (offline scoreboard)\n"
+            "       wallet.py check [slot]    (LIVE red/green board)\n"
+            "       wallet.py warm [slot]     (warm every cold slot, per kind)\n"
+            "       wallet.py login <slot>    (mint one oauth slot)")
 
 
 if __name__ == '__main__':
