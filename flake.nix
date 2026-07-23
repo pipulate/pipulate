@@ -822,6 +822,21 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
         # Miscellaneous setup logic for aliases, CUDA, SSH, etc.
         miscSetupLogic = ''
           export PIPULATE_ROOT="$(pwd)" # Capture the absolute path to the project root
+          # THE VAULT: where `warm` parks paste-kind secrets -- 0600, beside the
+          # wallet, outside the repo, outside git. Sourced FIRST so the per-install
+          # repo .env below still wins: global vault, then local specifics.
+          # CONVICTED 2026-07-23: warm wrote SLACK_USER_TOKEN here, the offline
+          # scoreboard read the file back and reported `filled`, and every
+          # connector's os.getenv saw nothing -- because NOTHING sourced it. Two
+          # boards, one wallet, opposite answers. The path honors PIPULATE_DOTENV
+          # exactly as wallet.py does, so the writer and the reader can never
+          # drift onto different files.
+          VAULT_ENV="''${PIPULATE_DOTENV:-$HOME/.config/pipulate/.env}"
+          if [ -f "$VAULT_ENV" ]; then
+            set -a
+            source "$VAULT_ENV"
+            set +a
+          fi
           # Auto-load .env if present (keeps secrets out of the shell hook itself)
           if [ -f "$PIPULATE_ROOT/.env" ]; then
             set -a
