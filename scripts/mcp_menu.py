@@ -25,15 +25,17 @@ sentences would cost seconds and could fail outright on absent credentials.
 ast.get_docstring reads the file as text and cares about none of that --
 the same technique prompt_foo.py's generate_tool_roster() uses on tools/*.
 
-DIGIT DISPATCH. The numbers beside each row are real commands: flake.nix
-binds bare 1..9 to a `_pick` helper that calls this file with --resolve N,
-takes the single word it prints, and runs it with whatever arguments
-followed the digit. Display and dispatch both consume _build_rows(), so a
-typed number can never point at a different row than the one the eye just
-read, and a ghost that shifts the printed list shifts the digits with it.
+NO NUMBERS, DELIBERATELY. An earlier version numbered these rows and bound
+bare 1..9 in flake.nix to dispatch them. It could not work: most roster
+words are shell ALIASES, and bash expands an alias only when it is the
+literal first word a parser reads -- never when it arrives through a
+variable, which is what any dispatcher must do. Row 8 (`pu`, a FUNCTION)
+would have run while rows 1-7 printed command-not-found, and half a menu
+working for a reason invisible from the menu is worse than no numbers at
+all. The words ARE the interface. See THE ALIAS-DISPATCH RULE in
+foo_files.py before adding any shortcut layer over this list.
 
-Exit codes: 0 for the display and for a successful --resolve; 1 only when
---resolve is handed a number no row answers to.
+Exit code is always 0. This is a display, not a decision; nothing parses it.
 """
 import ast
 import os
@@ -71,7 +73,6 @@ TAIL = [
 ]
 
 FOOTER = [
-    "Every number is a shortcut for the word beside it, arguments and all.",
     "Add  --help  to any command above for its full usage.",
     "Type  learn  to hand this whole workshop to an AI in a web chat.",
     "Type  mcp <tool_name>  to call a registered MCP tool directly.",
@@ -117,13 +118,7 @@ def _describe(script_path):
     return line, None
 
 
-def _build_rows():
-    """The single ordered truth behind BOTH the display and --resolve.
-
-    Because one function produces the list, a ghost that shifts the printed
-    numbering shifts the dispatch numbering by exactly the same amount.
-    There is no second ordering free to drift out of sync with the first.
-    """
+def main():
     rows = []
     ghosts = []
     for command, rel in ROSTER:
@@ -133,36 +128,6 @@ def _build_rows():
         else:
             rows.append((command, description))
     rows.extend(TAIL)
-    return rows, ghosts
-
-
-def resolve(token):
-    """Print one row's command word. The digit-dispatch contract.
-
-    stdout is EXACTLY one bare word on success, because the shell runs it as
-    a command name -- any decoration here becomes a syntax error in someone
-    else's terminal. Everything explanatory goes to stderr.
-    """
-    rows, _ghosts = _build_rows()
-    try:
-        index = int(token)
-    except ValueError:
-        index = 0
-    if not 1 <= index <= len(rows):
-        sys.stderr.write(
-            f"No menu row {token}. Type  mcp  for the current roster "
-            f"(rows 1-{len(rows)}).\n"
-        )
-        return 1
-    print(rows[index - 1][0])
-    return 0
-
-
-def main():
-    if len(sys.argv) == 3 and sys.argv[1] == "--resolve":
-        return resolve(sys.argv[2])
-
-    rows, ghosts = _build_rows()
 
     # Ghosts print BEFORE the panel and outside it, plainly, so they cannot
     # be mistaken for a menu row or scrolled past inside a border.
@@ -173,8 +138,8 @@ def main():
 
     width = max(len(command) for command, _ in rows)
     body = "\n".join(
-        f"{i}.  {command.ljust(width)}   {description}"
-        for i, (command, description) in enumerate(rows, start=1)
+        f"{command.ljust(width)}   {description}"
+        for command, description in rows
     )
 
     try:
@@ -185,7 +150,7 @@ def main():
             Panel(
                 body,
                 title="reach outside this machine",
-                subtitle="type the number or the word",
+                subtitle="type any of these",
                 border_style="cyan",
                 padding=(1, 2),
             )
