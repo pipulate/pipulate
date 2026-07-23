@@ -483,6 +483,20 @@ AI_PHOOEY_CHOP = r"""                                                           
 # AT the decision point: labels, subtitles, confirmations, and any promise of
 # a deadline that no longer exists.
 
+# THE DIGIT NAMESPACE RULE (banked 2026-07-23, collision caught pre-flight):
+# bare digits typed at a shell prompt are ONE global namespace, and exactly
+# one menu may own them. A numbered menu trains the hand to type numbers --
+# the operator caught himself doing it within minutes of the mcp roster
+# landing -- so the numbers must BE commands or the menu teaches a reflex it
+# then punishes. The mcp roster spends the namespace because it is the
+# highest-traffic list in the shell; every OTHER menu therefore uses words or
+# bracketed keypress affordances (boot_menu's [1]/[2] are read by getch, never
+# typed, so they do not collide -- which is why door 2's "easy as 1, 2, 3"
+# shipped as three words instead of three digits). Corollary: a digit binding
+# is GENERATED from the roster it displays, never hand-bound alongside it. A
+# second ordering is free to drift, and a drifted digit is a lying menu with
+# the user's finger already moving.
+
 # THE LIVE-PROMPT MIRAGE (banked 2026-07-23, dot-counted): a background job
 # still writing to the tty after the foreground process exits makes a WORKING
 # shell look hung. Count the emitter's cadence before diagnosing a hang -- the
@@ -1429,9 +1443,23 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   configuration.nix:273 invokes autognome.py by absolute repo path, so
 #   tomorrow's `init` runs whatever is on disk either way -- the commit is for
 #   the record, not the behavior.
-# - TODO: surface PIPULATE_BOOT_MENU and PIPULATE_BOOT_MENU_TIMEOUT somewhere
-#   a human finds them (README install section, or the door-2 message).
-#   Both are currently discoverable only by reading scripts/boot_menu.py.
+# - TODO: surface PIPULATE_BOOT_MENU and PIPULATE_BOOT_MENU_TIMEOUT in the
+#   README install section -- DECIDED 2026-07-23, not the door-2 message and
+#   not the mcp footer. These are automation knobs, and the only caller that
+#   ever needs PIPULATE_BOOT_MENU=0 is a script; a human standing at the
+#   door-2 prompt has already answered the question the variable exists to
+#   skip, and that message must stay at three items. The README is also the
+#   one surface read BEFORE the gate is ever hit, which is when someone
+#   provisioning a machine needs to know it can be turned off. Needs
+#   README.md in context to patch.
+# - TODO: scripts/connectors/gong.py opens with wallet.py's path comment AND
+#   wallet.py's module docstring (head -5 receipt, 2026-07-23) -- minting
+#   residue from copying wallet.py as the template. Harmless today ONLY
+#   because gong is deliberately held out of scripts/mcp_menu.py's ROSTER;
+#   the moment it lands it introduces itself as "Read-only scoreboard for the
+#   Pipulate connector wallet." Needs gong.py in context to fix, and the head
+#   -5 cannot tell us whether the BODY is gong code with a wrong header or an
+#   actual copy of wallet.py.
 # - EARMARK: GOOGLE DOCS CONNECTOR (seeded 2026-07-23, mcp-roster ride):
 #   scripts/articles/googledocizer.py already WRITES to Docs in the publish
 #   lane; there is no READ connector, so a Doc cannot ride into a compile the
