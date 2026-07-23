@@ -65,7 +65,6 @@ weblogin.py, not a token). Every future connector copies one of these five.
 - gsc.py         properties / top queries / raw searchanalytics JSON (service_account_file)
 - sheets.py      identity / bare URL-or-ID STACKS every tab's actual data rectangle with sentinel separators and per-tab #gid= URLs, budget-governed / --list metadata gauge / bounded --sheet and --range values (oauth_token_file, gmail pattern; own sheets_token.json; data extents from values responses, never gridProperties)
 - slack.py       identity + channels / channel id-or-#name history / message-permalink thread FETCH / whitespace=SEARCH (bearer_token; SLACK_BOT_TOKEN reads, SLACK_USER_TOKEN required for search.messages)
-- gong.py        users / recent calls / call id FETCH (metadata + transcript) / text-filter (basic_auth; GONG_ACCESS_KEY + GONG_ACCESS_KEY_SECRET)
 
 ## Downstream stages (deliberately not connectors)
 

@@ -1452,27 +1452,6 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   configuration.nix:273 invokes autognome.py by absolute repo path, so
 #   tomorrow's `init` runs whatever is on disk either way -- the commit is for
 #   the record, not the behavior.
-# - TODO: scripts/connectors/gong.py is a SUPERSEDED COPY of wallet.py --
-#   git rm is SAFE, no salvage required. SETTLED 2026-07-23 so this stops
-#   re-litigating itself every compile. Two receipts, in order: head -5
-#   showed it wearing wallet.py's path comment AND wallet.py's module
-#   docstring; the hand-run diff against wallet.py then showed WHY. Every
-#   line unique to gong.py is an OLDER wallet helper that wallet.py has
-#   since renamed (resolve_token_path / _classify_file / _classify_dir /
-#   _classify_env -> _stat_state / resolve_path / _env_state; _KIND_ABBR ->
-#   _KIND_LABEL; _how_to_warm -> _next_hint), while wallet.py carries the
-#   entire warm verb, the DOTENV_PATH persistence, and the unknown state
-#   gong.py never had. One line proves DIRECTION rather than mere
-#   difference: gong.py's browser branch guesses a hostname as f'{name}.com',
-#   which wallet.py deliberately removed ("Never guess a hostname from a slot
-#   name (botify_browser is not a domain)"). A snapshot cannot contain a
-#   correction to itself, so gong.py is BEHIND wallet.py, not beside it.
-#   ZERO occurrences of gong/calls/transcript/api.gong.io in 518 lines: there
-#   is no Gong connector to preserve and no docstring worth writing -- a
-#   truthful wallet sentence on a file named gong.py would only make the
-#   duplicate look intentional. SAME CAR as the delete: the connectors README
-#   "Current connectors" list still credits gong.py with users/calls/
-#   transcript FETCH, a map naming a file that will not exist.
 # - EARMARK: GOOGLE DOCS CONNECTOR (seeded 2026-07-23, mcp-roster ride):
 #   scripts/articles/googledocizer.py already WRITES to Docs in the publish
 #   lane; there is no READ connector, so a Doc cannot ride into a compile the
