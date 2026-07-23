@@ -67,7 +67,13 @@ ROSTER = [
 ]
 
 # Hand-written because these are shell functions in flake.nix, not scripts
-# with docstrings to read. Numbered continuously with the roster above.
+# with docstrings to read. Appended after the roster, in display order.
+#
+# `pu` is the one row the panel title does not cover -- it starts a LOCAL
+# server, the opposite of reaching outside. It stays anyway: a human who
+# just declined door 1 wants that word exactly where they are looking, and
+# a title that is right about 7 of 8 rows beats a roster missing the row
+# they came for. Recorded as a decision so nobody "fixes" it silently.
 TAIL = [
     ("pu", "start the Pipulate server (long form: pipulate)"),
 ]
