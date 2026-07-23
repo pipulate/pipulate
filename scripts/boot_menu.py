@@ -12,20 +12,26 @@ deadlock of 2026-07 is the conviction). That also makes the renderer
 swappable: a Textual version can replace this one without flake.nix
 learning anything.
 
-  0   start the app       (also: timeout, non-tty, PIPULATE_BOOT_MENU=0)
+  0   start the app       (non-tty, PIPULATE_BOOT_MENU=0, opt-in timeout)
   10  drop to the Nix CLI (also: Ctrl+C, Esc, q)
 
-FAIL-OPEN BY CONSTRUCTION. Every ambiguous path — no tty, no termios,
-unknown env value, timeout, unexpected exception — returns 0, which is
+FAIL-OPEN BY CONSTRUCTION. Every path an automated caller can reach -- no
+tty, no termios, PIPULATE_BOOT_MENU=0, unexpected exception -- returns 0,
 exactly what the shell did before this file existed. A menu that can
 strand an automated `nix develop` (autognome's Desktop 7 tab, CI, an
 SSH session without a tty) is strictly worse than no menu at all.
+
+WAITING FOREVER IS SAFE only because it happens strictly AFTER the isatty
+gate: a human is provably present before anything blocks. The one
+unattended tty in this world -- autognome's Desktop 7 "Pipulate Server"
+tab -- declares intent with PIPULATE_BOOT_MENU=0 and never reaches the
+select loop at all.
 
 Stdlib only. Rich is used when importable and never required.
 
 Env:
   PIPULATE_BOOT_MENU=0            skip the menu entirely, start the app
-  PIPULATE_BOOT_MENU_TIMEOUT=10   seconds before the default fires
+  PIPULATE_BOOT_MENU_TIMEOUT=10   opt back in to a countdown (default: none)
 """
 import os
 import select
@@ -36,10 +42,15 @@ from pathlib import Path
 EXIT_START = 0
 EXIT_SHELL = 10
 
-DEFAULT_TIMEOUT = 10.0
+# No deadline by default. A countdown here protects nothing: the only
+# unattended tty is opted out with PIPULATE_BOOT_MENU=0, so every caller
+# reaching the select loop has a human in front of it. Convicted
+# 2026-07-23 -- the panel rendered, ten seconds elapsed underneath a
+# dot-spew from the browser-poll subshell, and the server started unasked.
+DEFAULT_TIMEOUT = None
 
-# Enter and a few mnemonics all mean "go". Unlisted keys are ignored and the
-# deadline keeps running, so a fat finger never picks a door for you.
+# Enter and a few mnemonics all mean "go". Unlisted keys are ignored, so a
+# fat finger never picks a door for you.
 START_KEYS = {"1", "\r", "\n", "y", "Y", "s", "S"}
 SHELL_KEYS = {"2", "q", "Q", "n", "N", "l", "L", "\x03", "\x04"}
 
@@ -54,19 +65,32 @@ def _app_name(root: Path) -> str:
     return raw[:1].upper() + raw[1:].lower()
 
 
-def _timeout() -> float:
+def _timeout():
+    """Seconds before the default fires, or None to wait for the human.
+
+    Missing, empty, unparseable, and non-positive values all resolve to the
+    same answer -- no deadline -- so a typo can never silently install a
+    countdown nobody asked for. PIPULATE_BOOT_MENU_TIMEOUT=N opts one back in.
+    """
+    raw = os.environ.get("PIPULATE_BOOT_MENU_TIMEOUT", "").strip()
+    if not raw:
+        return DEFAULT_TIMEOUT
     try:
-        value = float(os.environ.get("PIPULATE_BOOT_MENU_TIMEOUT", DEFAULT_TIMEOUT))
+        value = float(raw)
     except (TypeError, ValueError):
         return DEFAULT_TIMEOUT
     return value if value > 0 else DEFAULT_TIMEOUT
 
 
-def _render(name: str, seconds: float) -> None:
+def _render(name, seconds) -> None:
     lines = [
         f"[1]  Start {name}   JupyterLab + server + browser tabs",
         "[2]  Just the shell   no server -- type  learn  for the guided tour",
     ]
+    if seconds is None:
+        subtitle = "waiting for your choice -- Ctrl+C also drops to the shell"
+    else:
+        subtitle = f"no keypress in {seconds:.0f}s starts {name}"
     try:
         from rich.console import Console
         from rich.panel import Panel
@@ -75,7 +99,7 @@ def _render(name: str, seconds: float) -> None:
             Panel(
                 "\n".join(lines),
                 title=f"{name} :: pick a door",
-                subtitle=f"no keypress in {seconds:.0f}s starts {name}",
+                subtitle=subtitle,
                 border_style="cyan",
                 padding=(1, 2),
             )
@@ -85,24 +109,30 @@ def _render(name: str, seconds: float) -> None:
         print(f"--- {name} :: pick a door ---")
         for line in lines:
             print("  " + line)
-        print(f"  (no keypress in {seconds:.0f}s starts {name})")
+        print(f"  ({subtitle})")
         print()
 
 
-def _read_choice(seconds: float) -> int:
-    """One raw keypress against a deadline. Restores termios unconditionally."""
+def _read_choice(seconds) -> int:
+    """One raw keypress, optionally against a deadline.
+
+    seconds=None blocks in select() until a key arrives. termios is restored
+    unconditionally either way.
+    """
     import termios
     import tty
 
     fd = sys.stdin.fileno()
     saved = termios.tcgetattr(fd)
-    deadline = time.monotonic() + seconds
+    deadline = None if seconds is None else time.monotonic() + seconds
     try:
         tty.setraw(fd)
         while True:
-            remaining = deadline - time.monotonic()
-            if remaining <= 0:
-                return EXIT_START
+            remaining = None
+            if deadline is not None:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    return EXIT_START
             ready, _, _ = select.select([fd], [], [], remaining)
             if not ready:
                 return EXIT_START
