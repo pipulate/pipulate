@@ -187,26 +187,14 @@ def _stat_state(path, stale_days, mtime_matters):
 
 
 def _dotenv_names():
-    """The env-var NAMES declared in DOTENV_PATH — names only; a value is never
-    read here. Empty set when there is no .env. Cached per process, and the
-    cache is invalidated by _save_env so the board re-reads what warm wrote."""
+    """The env-var NAMES declared in DOTENV_PATH — the names-only projection
+    of _dotenv_pairs, because the SCOREBOARD must never touch a value. Empty
+    set when there is no .env. Cached per process, and the cache is
+    invalidated by _save_env so the board re-reads what warm wrote."""
     if getattr(_dotenv_names, '_cache', None) is not None:
         return _dotenv_names._cache
-    names = set()
-    try:
-        for line in DOTENV_PATH.read_text(encoding='utf-8').splitlines():
-            line = line.strip()
-            if not line or line.startswith('#') or '=' not in line:
-                continue
-            name = line.split('=', 1)[0].strip()
-            if name.lower().startswith('export '):
-                name = name[len('export '):].strip()
-            if name:
-                names.add(name)
-    except OSError:
-        pass
-    _dotenv_names._cache = names
-    return names
+    _dotenv_names._cache = set(_dotenv_pairs())
+    return _dotenv_names._cache
 
 
 def _env_source(name):
