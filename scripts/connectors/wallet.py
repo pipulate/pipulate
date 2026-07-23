@@ -260,12 +260,11 @@ def _next_hint(name, state, kind):
         return (f"place the service-account key JSON at the path above "
                 f"(Google Cloud Console → IAM → Service Accounts)")
     if kind == _BROWSER_KIND:
-        profile = name  # profile name; connectors.json declares paths.profile
-        return (f"python scripts/weblogin.py --profile {profile} <site>   "
-                f"(log in, close window — session persists)")
+        return (f"python scripts/connectors/wallet.py warm {name}   "
+                f"(confirms, then opens this slot's own site + profile)")
     if kind in _ENV_KINDS:
-        return (f"set this slot's env vars (see its `env` block) in your shell "
-                f"or project .env — kept out of git, nothing to mint")
+        return (f"python scripts/connectors/wallet.py warm {name}   "
+                f"(prompts for each missing var, saves to {DOTENV_PATH})")
     return "unrecognized kind — check connectors.json `auth`"
 
 
