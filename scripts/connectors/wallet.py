@@ -23,9 +23,11 @@ so a glance tells you which sessions are live, which have gone stale, which
 have never been warmed, and (crucially) which the wallet genuinely CANNOT
 warm for you and why.
 
-SCOREBOARD is strictly READ-ONLY and OFFLINE. It never opens a token's bytes,
-never touches the network, never reads credentials.json / client_secret. It
-learns a slot's state from cheap, local evidence only:
+SCOREBOARD is strictly READ-ONLY and OFFLINE — the CHECK verb is the one lane
+in this file that touches the network, deliberately kept a separate verb so
+the offline board still works on a plane. SCOREBOARD never opens a token's
+bytes, never touches the network, never reads credentials.json /
+client_secret. It learns a slot's state from cheap, local evidence only:
 
   oauth_token_file      os.stat() the token file → mtime staleness
                         (gmail, sheets). Google *Testing*-mode refresh tokens
