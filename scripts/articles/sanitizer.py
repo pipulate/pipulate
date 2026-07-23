@@ -58,21 +58,27 @@ def redact_ips(content: str) -> str:
 #      anywhere else on a line is neutralized to a literal token; it was
 #      never going to survive the transformation pipeline anyway.
 #   2. Every opening fence must declare a language (bash, text, python...).
+#      A naked opener SELF-HEALS to a text-tagged fence in place. The state
+#      machine already classified it as an opener, so the repair was always
+#      mechanical; refusing the run only made the human retype what the
+#      machine already knew. The heal is written back to article.txt.
 #   3. Every closing fence must be bare. A labeled fence encountered while
 #      a fence is already open means a quoted fence or a missing closer.
-# Rules 2 and 3 fail CLOSED with line numbers (mechanical vim jumps); the
-# && chain in write_post halts, so nothing malformed reaches articleizer.
+# Rule 3 (and an unclosed fence at EOF) still fails CLOSED with line numbers
+# (mechanical vim jumps); the && chain in write_post halts, so nothing
+# genuinely ambiguous reaches articleizer.
 FENCE_RUN_RE = re.compile(r'`{3,}')
 NEUTRAL_FENCE_TOKEN = '[triple-backtick]'
 
 
 def enforce_fence_contract(content: str) -> str:
-    """Neutralize floating fences; hard-stop on naked or asymmetric ones."""
+    """Neutralize floating fences; heal naked openers; stop on asymmetry."""
     lines = content.split('\n')
     out = []
     problems = []
     in_fence = False
     neutralized = 0
+    healed = 0
     for i, line in enumerate(lines, 1):
         if '```' in line and not line.startswith('```'):
             line, n = FENCE_RUN_RE.subn(NEUTRAL_FENCE_TOKEN, line)
@@ -80,7 +86,13 @@ def enforce_fence_contract(content: str) -> str:
         if line.startswith('```'):
             if not in_fence:
                 if line.strip() == '```':
-                    problems.append(f"line {i}: naked opening fence (no language tag)")
+                    # SELF-HEALING OPENER: this branch is reached only after
+                    # the state machine has ALREADY classified the run as an
+                    # opener, so the correct repair is fully determined --
+                    # tag it text. rstrip() also eats trailing whitespace on
+                    # the fence line, which no downstream parser wanted.
+                    line = line.rstrip() + 'text'
+                    healed += 1
                 in_fence = True
             else:
                 if line.strip() != '```':
@@ -94,6 +106,8 @@ def enforce_fence_contract(content: str) -> str:
         problems.append("EOF: unclosed fence")
     if neutralized:
         print(f"🧯 Neutralized {neutralized} floating backtick run(s) -> {NEUTRAL_FENCE_TOKEN}")
+    if healed:
+        print(f"🩹 Tagged {healed} naked opening fence(s) with 'text'.")
     if problems:
         print("💥 FENCE CONTRACT VIOLATIONS in article.txt — refusing to proceed:")
         for p in problems:
