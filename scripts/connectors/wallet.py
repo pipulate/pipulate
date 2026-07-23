@@ -826,7 +826,9 @@ def main():
     if args.command in (None, 'scoreboard', 'status'):
         scoreboard(load_wallet(), args.max, args.stale_days)
     elif args.command in ('check', 'board'):
-        board(load_wallet(), args.slot)
+        # GOLD is the ONLY exit-0 condition, so "green all the way down" is a
+        # machine-checkable claim and not merely a nice-looking screen.
+        sys.exit(board(load_wallet(), args.slot))
     elif args.command == 'login':
         login(args.slot, args.stale_days)
     elif args.command == 'warm':
