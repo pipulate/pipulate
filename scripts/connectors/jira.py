@@ -278,13 +278,32 @@ def check():
     # blamed a missing Jira license for a 401 without ever having established
     # that the token worked anywhere -- a verdict where only an observation was
     # in hand. Report the observation; offer causes as ordered candidates.
+    #
+    # ORDERING CONVICTED 2026-07-23 by probe: /rest/api/3/serverInfo answered
+    # 200 ANONYMOUSLY on the same base whose /myself read 401. That pair is a
+    # HOST LIVENESS receipt and never an auth one, so "wrong site" leaves the
+    # top of the list. Atlassian Cloud returns this identical 401 both for a
+    # bad credential and for a valid one whose account is not a member of the
+    # site, which is why membership rides above licensing. The same probe
+    # found this wallet's JIRA_TOKEN was not the CONFLUENCE token at all, so
+    # the cross-check below is conditional on the two actually matching.
     if resp.status_code == 401:
+        shared = bool(token) and token == os.getenv("CONFLUENCE_TOKEN")
+        cross = ("JIRA_TOKEN is the same string as CONFLUENCE_TOKEN, so "
+                 "`confluence --check` splits credential from site access"
+                 if shared else
+                 "JIRA_TOKEN differs from CONFLUENCE_TOKEN, so a green "
+                 "confluence row establishes nothing about this one")
         sys.stderr.write(
             "jira RED gate2: HTTP 401, not authenticated by this site. "
-            "Candidates in order: wrong or expired API token; email and token "
-            "belong to different accounts; JIRA_URL points at a site this "
-            "token was not minted for. (A missing Jira LICENSE reads 403, not "
-            "401 -- run confluence --check with the same token to split them.)\n")
+            "Candidates in order: (1) the token's Atlassian account is not a "
+            "member of THIS site, which Cloud reports as 401 rather than 403; "
+            "(2) the token is expired or revoked; (3) email and token belong "
+            "to different accounts; (4) the site is Server/Data Center, which "
+            "wants a Personal Access Token in an Authorization: Bearer header "
+            "instead of basic auth -- serverInfo's deploymentType splits that "
+            "in one anonymous call. A missing Jira LICENSE reads 403, not 401. "
+            f"{cross}.\n")
         return 1
     if resp.status_code == 403:
         sys.stderr.write(
