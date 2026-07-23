@@ -1443,14 +1443,19 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   configuration.nix:273 invokes autognome.py by absolute repo path, so
 #   tomorrow's `init` runs whatever is on disk either way -- the commit is for
 #   the record, not the behavior.
-# - TODO: scripts/connectors/gong.py opens with wallet.py's path comment AND
-#   wallet.py's module docstring (head -5 receipt, 2026-07-23) -- minting
-#   residue from copying wallet.py as the template. Harmless today ONLY
-#   because gong is deliberately held out of scripts/mcp_menu.py's ROSTER;
-#   the moment it lands it introduces itself as "Read-only scoreboard for the
-#   Pipulate connector wallet." Needs gong.py in context to fix, and the head
-#   -5 cannot tell us whether the BODY is gong code with a wrong header or an
-#   actual copy of wallet.py.
+# - TODO: scripts/connectors/gong.py is NOT a Gong connector -- delete it.
+#   Full-file receipt 2026-07-23 settles the open question the head -5 could
+#   not: the BODY is wallet.py's scoreboard end to end (load_wallet,
+#   classify, scoreboard, login, connectors.json, --stale-days), argparse
+#   description "Read-only scoreboard for the Pipulate connector wallet.",
+#   and ZERO occurrences of gong/calls/transcript/api.gong.io in 518 lines.
+#   Not a wrong header on gong code; a copy of wallet.py that never got
+#   written. A docstring patch only makes the duplicate look intentional, so
+#   the fix is deletion, not wording. NEXT: diff it against wallet.py -- if
+#   identical, git rm; if drifted, the delta is wallet work that landed in
+#   the wrong file and must be salvaged into wallet.py first. Note also that
+#   scripts/connectors/README.md's "Current connectors" list credits gong.py
+#   with users/calls/transcript FETCH -- describing a file that does not exist.
 # - EARMARK: GOOGLE DOCS CONNECTOR (seeded 2026-07-23, mcp-roster ride):
 #   scripts/articles/googledocizer.py already WRITES to Docs in the publish
 #   lane; there is no READ connector, so a Doc cannot ride into a compile the
