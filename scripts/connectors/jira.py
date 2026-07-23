@@ -102,6 +102,10 @@ def get_env():
         sys.stderr.write(
             "Missing environment variable(s): " + ", ".join(missing) + "\n"
             "JIRA_URL example: https://yourco.atlassian.net  (no /wiki)\n"
+            "That host is right for a CLASSIC token only. A SCOPED token\n"
+            "authenticates at https://api.atlassian.com/ex/jira/<cloudId>/\n"
+            "and 401s at the site host forever -- same failure a stranger\n"
+            "with no account gets, so the message cannot tell you apart.\n"
             "JIRA_TOKEN MAY be the same Atlassian API token confluence.py\n"
             "uses, but it need not be: Jira and Confluence can live at\n"
             "different hosts under different tokens, and a SCOPED token\n"
