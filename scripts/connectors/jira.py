@@ -84,10 +84,20 @@ def get_env():
         ("JIRA_TOKEN (or CONFLUENCE_TOKEN)", token),
     ] if not val]
     if missing:
+        # THE THIRD OCCURRENCE. The 2026-07-23 car that retired the
+        # shared-identity claim moved the module docstring and check()'s
+        # docstring and MISSED this one -- the only one a stranger actually
+        # reads, at the exact moment they are configuring. Caught by a delta
+        # probe whose absolute prediction (1 -> 0) was wrong because the real
+        # baseline was 2. A label move is counted BEFORE it is made.
         sys.stderr.write(
             "Missing environment variable(s): " + ", ".join(missing) + "\n"
             "JIRA_URL example: https://yourco.atlassian.net  (no /wiki)\n"
-            "The token is the SAME Atlassian API token confluence.py uses.\n"
+            "JIRA_TOKEN MAY be the same Atlassian API token confluence.py\n"
+            "uses, but it need not be: Jira and Confluence can live at\n"
+            "different hosts under different tokens, and a SCOPED token\n"
+            "minted for one product does not grant the other. Set JIRA_TOKEN\n"
+            "explicitly whenever the two differ.\n"
         )
         sys.exit(1)
     return base.rstrip('/'), email, token
