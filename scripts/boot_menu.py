@@ -181,8 +181,11 @@ def main() -> int:
     print()
     if choice == EXIT_SHELL:
         print(f"Staying in the shell. Nothing started -- no {name}, no JupyterLab.")
-        print("Type  learn  to have an AI walk you through the workshop.")
-        print(f"Type  python server.py  to start {name} later.")
+        print()
+        print("Three words get you everywhere:")
+        print("  learn   hand this whole workshop to an AI in a web chat")
+        print("  mcp     see what reaches outside this machine")
+        print(f"  pu      start {name} (long form: pipulate)")
     else:
         print(f"Starting {name}...")
     return choice
