@@ -1432,6 +1432,17 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # - TODO: surface PIPULATE_BOOT_MENU and PIPULATE_BOOT_MENU_TIMEOUT somewhere
 #   a human finds them (README install section, or the door-2 message).
 #   Both are currently discoverable only by reading scripts/boot_menu.py.
+# - EARMARK: GOOGLE DOCS CONNECTOR (seeded 2026-07-23, mcp-roster ride):
+#   scripts/articles/googledocizer.py already WRITES to Docs in the publish
+#   lane; there is no READ connector, so a Doc cannot ride into a compile the
+#   way gmail/confluence/jira/slack threads do -- and Docs is where the
+#   humans actually draft. Wallet note: a Doc is a per-human artifact, so
+#   this is the oauth_token_file pattern (gmail's), NOT service_account --
+#   see the AUTH-KIND RESIDUE earmark, where pattern-proximity picked the
+#   wrong identity model and cost a console-archaeology afternoon. Lands as
+#   `docs` in ROSTER once it exists; until then it stays OUT of
+#   scripts/mcp_menu.py, because a roster naming a command the machine
+#   cannot run is the MODEL FOLLOWS THE MAP failure with a human in the seat.
 # - Make the Honeybot slideshow announce it's about to do the restart before the forced (currently set to 4-hour) loop
 # - EARMARK: THE MANIFEST-SIGNING LANE (seeded 2026-07-22 from the receipts ride): implement THE RECEIPT LADDER RULE's provenance triple. foo.zip is ALREADY byte-reproducible (fixed epoch/mode/order in scripts/foo_cartridge.py — the hashed body carries no wall-clock time; the uploaded 46-snapshot manifest was stamped 2026-01-01). Remaining: (1) stamp manifest.json with the source git commit SHA + `git describe` at compile time; (2) sign manifest.json with a key you control — `ssh-keygen -Y sign` is the lowest-ceremony non-repudiation; (3) optional paranoid tier: append the manifest hash to an ever-growing receipts.ndjson (poor-man's transparency log). NEEDS scripts/foo_cartridge.py in context to patch the writer/verifier — NOT foo_files.py.
 # - EARMARK: SEED-PATH PEANUT-BUTTER ONBOARDING (seeded 2026-07-22): Yen Sid-ton must explain `curl ... | bash` to a cold newcomer in sandwich-rules terms — go to a stranger's address, grab the card, do everything it says UNREAD, as you, with full run of your house — then teach the grown-up form (curl -o, less, sh: fetch, read, run). Then the KEY distinction: DetSys/Nix differs not in MECHANISM but in PAYLOAD — Homebrew mutates global state in place and accretes machine-rot; Nix installs an immutable content-addressed store, enters with `nix develop`, leaves zero residue, reverses cleanly (--uninstall, survives macOS upgrades). First lesson for the New-B: you are ALLOWED to read the card. Bank into the learn()/seed() prompt copy in flake.nix.
