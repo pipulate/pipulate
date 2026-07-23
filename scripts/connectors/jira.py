@@ -352,13 +352,20 @@ def check():
                  if shared else
                  "JIRA_TOKEN differs from CONFLUENCE_TOKEN, so a green "
                  "confluence row establishes nothing about this one")
+        door_line = (
+            "(1) the token is SCOPED and this is the wrong door -- a scoped "
+            "token authenticates ONLY at https://api.atlassian.com/ex/jira/"
+            "<cloudId>/rest/... and 401s at a site host forever; declare "
+            "JIRA_CLOUD_ID to route there. Costs one anonymous call to "
+            "falsify and needs no admin, so it goes first. "
+            if door == "site host" else
+            "(1) NOT the wrong door -- this call already went through the "
+            "gateway, so routing is FALSIFIED and every candidate below it "
+            "needs someone or something other than you. ")
         sys.stderr.write(
-            "jira RED gate2: HTTP 401, not authenticated by this site. "
-            "Candidates in order: (1) the token is SCOPED and this is the "
-            "wrong door -- a scoped token authenticates only at "
-            "https://api.atlassian.com/ex/jira/<cloudId>/rest/... and 401s "
-            "here forever; costs one anonymous call to falsify and needs no "
-            "admin, so it goes first; (2) the token's account is not a "
+            f"jira RED gate2: HTTP 401 via {door}, not authenticated. "
+            "Candidates in order: " + door_line +
+            "(2) the token's account is not a "
             "member of THIS site, which Cloud reports as 401 rather than 403; "
             "(3) the token is expired -- Atlassian gave every previously "
             "infinite token an expiry between 2026-03-14 and 2026-05-12, so "
