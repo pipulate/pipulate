@@ -640,9 +640,11 @@ def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
     still = [r for r in results if r[0] != 'filled']
     print(f"\n# {len(results) - len(still)} warmed | {len(still)} still cold")
     if any(r[1] in _ENV_KINDS for r in results):
-        print(f"# Note: values saved to {DOTENV_PATH} are NOT exported into this")
-        print("# shell. They read `filled` here because the wallet reads the .env;")
-        print("# a connector needs its own .env loader (or a fresh shell) to see them.")
+        print(f"# Saved to {DOTENV_PATH}. The CHECK board injects that file into")
+        print("# every connector it runs, so type `warm` again RIGHT NOW to watch")
+        print("# these go green -- no shell restart needed to play the game.")
+        print("# Typing a connector yourself (`slack`, `jira`) reads the vault at")
+        print("# shell entry instead, so that lane wants one fresh `nix develop`.")
     print("# Re-run the bare scoreboard for the whole board.")
 
 
