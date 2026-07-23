@@ -984,8 +984,23 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # persistent profile (data/uc_profiles/default) so persistent
           # scrapes inherit the login. Log in, close the window, done.
           alias weblogin='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/weblogin.py"'
-          # `warm` is the New-B-facing name for weblogin: warm the login cache.
-          alias warm='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/weblogin.py"'
+          # THE CREDENTIAL GAME: bare `warm` is the LIVE red/green board — one
+          # bounded API call per enrolled wallet slot, GOLD when every row is
+          # green. `warm <slot>` is the fixer for that one credential, and a
+          # browser_session slot's fixer IS weblogin.py, so nothing was lost
+          # when this word stopped meaning weblogin directly. `weblogin <apex>`
+          # is unchanged for anyone who wants the browser and nothing else.
+          #
+          # A FUNCTION, not an alias: THE ALIAS-DISPATCH RULE says nothing can
+          # invoke an alias on a human's behalf, and mcp_menu.py's roster names
+          # this word to a reader who may reasonably expect it to be reachable.
+          warm() {
+            if [ "$#" -eq 0 ]; then
+              "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/wallet.py" check
+            else
+              "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/wallet.py" warm "$@"
+            fi
+          }
           alias vim='nvim'
           alias lsp='ls -d -1 "$PWD"/*'
           alias p='cd ~/repos/pipulate'
