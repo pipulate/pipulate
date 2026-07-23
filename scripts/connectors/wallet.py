@@ -50,11 +50,13 @@ HONEST HEURISTICS, stated plainly (a clean caveat is a valid receipt):
     prove a session/token truly live; SCOREBOARD refuses to make that call,
     which is exactly why CHECK exists as a separate verb rather than as a
     flag that would quietly change what a familiar command does.
-  - env-var kinds read os.environ ONLY. A secret set only in a project `.env`
-    (not exported to this shell) will read `empty` here even though the
-    connector itself would find it via its own .env loader. The wallet reports
-    the DECLARED variable names, not a connector's fallback logic — so e.g.
-    jira may read emptier than it is when only CONFLUENCE_* vars are set.
+  - env-var kinds read the process environment AND the vault
+    (~/.config/pipulate/.env) by NAME. What they cannot read is a connector's
+    own fallback logic: the wallet reports each slot's DECLARED variable
+    names, so a connector that accepts CONFLUENCE_URL where the wallet
+    declares CONFLUENCE_BASE_URL reads emptier than it is. Convicted
+    2026-07-23 by a FALSE RED. When a row disagrees with reality, suspect the
+    declared NAME before you suspect the credential.
 
 States (per slot):
   filled   — warmed and fresh (or, for env kinds, all required vars present).
