@@ -45,6 +45,13 @@ single shared Atlassian token -- a label lying at the moment of diagnosis:
                Bearer header. This connector speaks ROW ONE ONLY (2026-07-23).
   JIRA_EMAIL   falls back to CONFLUENCE_EMAIL / CONFLUENCE_USER
   JIRA_TOKEN   falls back to CONFLUENCE_TOKEN   (secret — env or .env only)
+  JIRA_CLOUD_ID  OPTIONAL, and it is the DOOR SELECTOR. Set it (the site's
+               cloudId UUID; an identifier, not a secret) and EVERY call
+               routes through the gateway, which is what a SCOPED token
+               requires. Leave it unset and calls go to the site host, which
+               is what a CLASSIC token requires. Declare it to match the
+               token you actually hold: the wrong setting is 401 forever,
+               and 401 is the same answer a stranger with no account gets.
 
 Endpoint note (verified against Atlassian's current Cloud REST v3): the legacy
 /rest/api/3/search was fully REMOVED. This connector uses the enhanced
