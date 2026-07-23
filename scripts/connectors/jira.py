@@ -246,9 +246,10 @@ def fetch_issue(client, base, issue_key):
 def check():
     """SELECT 1 for the wallet board: exit 0 GREEN, exit 1 RED.
 
-    Shares Confluence's Atlassian identity but NOT its host root, which is
-    exactly why it gets its own row: the same token can be green on /wiki and
-    red on Jira when the account lacks a Jira license. Gate 2 is one
+    This row exists because Jira is a SEPARATE product at a SEPARATE host and
+    -- witnessed 2026-07-23 on a live wallet -- sometimes under a SEPARATE
+    token. The CONFLUENCE_* fallbacks make sharing easy, never certain, so
+    this check must not infer its own health from Confluence's. Gate 2 is one
     /rest/api/3/myself call, hard 15s timeout.
     """
     base = os.getenv("JIRA_URL")
