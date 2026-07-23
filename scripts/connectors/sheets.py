@@ -350,6 +350,105 @@ def fetch_values(service, sid, sheet, rng, fmt, max_rows):
           f"--range \"'{tab_hint}'!A1:Z{max_rows}\" --format json")
 
 
+# ----------------------------------------------------------------------------
+# Health check (THE EXIT-CODE PROTOCOL: the exit code IS the whole answer)
+# ----------------------------------------------------------------------------
+# A spreadsheet ID that cannot exist. Probe-witnessed 2026-07-23: a live token
+# against an enabled API answers 404 NOT_FOUND for this ID, proving the request
+# was authenticated, authorized, and routed -- it merely missed. That makes 404
+# the GREEN signal, and means sheets needs NO wallet config, no probe
+# spreadsheet, and nothing shared with anyone.
+BOGUS_SPREADSHEET_ID = 'PIPULATEBOGUSPROBE00000000000000000000'
+
+
+def _oauth_project_id():
+    """The Cloud project behind credentials.json.
+
+    Named in the SERVICE_DISABLED line because that 403 is cleared on ONE
+    console page belonging to ONE project, and picking the wrong project's
+    page once already cost an afternoon of console archaeology (the
+    2026-07-20 AUTH-KIND RESIDUE conviction).
+    """
+    try:
+        blob = json.loads(Path(CREDS_PATH).read_text(encoding='utf-8'))
+        return (blob.get('installed') or blob.get('web') or {}).get(
+            'project_id', 'unknown-project')
+    except (json.JSONDecodeError, OSError):
+        return 'unknown-project'
+
+
+def check():
+    """SELECT 1 for the wallet board: exit 0 GREEN, exit 1 RED.
+
+    Sheets grants no whoami -- the scope is spreadsheets.readonly, so there is
+    no drive/about and no userinfo to call. A tokeninfo-style check would pass
+    gate 1 and then report green for a credential that 403s on first real use:
+    exactly the two-gate conviction. So gate 2 is a lookup of a spreadsheet
+    that CANNOT EXIST, and the HTTP status discriminates all three outcomes --
+    404 live, 401 dead token, 403 SERVICE_DISABLED API off in the project.
+
+    Never calls get_service(), which may open a browser on a TTY. An unminted
+    or unrefreshable token is RED, never a popup: a check that can block is a
+    check that can hang the whole board.
+    """
+    if not os.path.exists(TOKEN_PATH):
+        sys.stderr.write(f"sheets RED gate1: no token at {TOKEN_PATH}\n")
+        return 1
+    try:
+        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+    except (json.JSONDecodeError, ValueError) as e:
+        sys.stderr.write(f"sheets RED gate1: unreadable token ({e})\n")
+        return 1
+    if not creds.valid:
+        if not (creds.expired and creds.refresh_token):
+            sys.stderr.write(
+                "sheets RED gate1: token invalid and not refreshable -- run "
+                "`python scripts/connectors/wallet.py login sheets`\n")
+            return 1
+        try:
+            creds.refresh(Request())
+            _save_token(creds)
+        except Exception as e:
+            sys.stderr.write(f"sheets RED gate1: refresh failed ({e})\n")
+            return 1
+    try:
+        resp = AuthorizedSession(creds).get(
+            "https://sheets.googleapis.com/v4/spreadsheets/"
+            f"{BOGUS_SPREADSHEET_ID}",
+            timeout=15,
+        )
+    except Exception as e:
+        sys.stderr.write(f"sheets RED gate2: transport failure: {e}\n")
+        return 1
+    try:
+        status = resp.json().get('error', {}).get('status', '')
+    except ValueError:
+        status = ''
+    if resp.status_code in (200, 404):
+        print(f"sheets GREEN token accepted (bogus-id probe HTTP "
+              f"{resp.status_code}; this scope grants no whoami)")
+        return 0
+    if resp.status_code == 401:
+        sys.stderr.write(
+            "sheets RED gate2: token rejected (HTTP 401) -- run "
+            "`python scripts/connectors/wallet.py login sheets`\n")
+        return 1
+    if resp.status_code == 403:
+        if status == 'SERVICE_DISABLED':
+            sys.stderr.write(
+                "sheets RED gate2: HTTP 403 SERVICE_DISABLED -- enable the "
+                "Google Sheets API in Cloud project "
+                f"'{_oauth_project_id()}', the OAuth client's project and "
+                "no other\n")
+        else:
+            sys.stderr.write(
+                f"sheets RED gate2: HTTP 403 {status or 'FORBIDDEN'}\n")
+        return 1
+    sys.stderr.write(
+        f"sheets RED gate2: HTTP {resp.status_code} {status or ''}\n")
+    return 1
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Unix-philosophy gateway to Google Sheets for Prompt Fu context."
