@@ -181,6 +181,48 @@ AI_PHOOEY_CHOP = r"""                                                           
 # PATCHES is plural -- one car per commit story, applied one at a time.
 # IGNITION is singular -- one actuation, or none. PROMPT is singular --
 # the caboose under the cursor. Then Ka-POW: `ahc`.
+#
+#            THE STRADDLE -- one patch car, drawn
+#
+#     tree clean                                        two taps compared
+#         |                                                     |
+#         v                                                     v
+#   [ BLAST ] --> [ PROBE ] --> [ PATCH ] --> < IGNITE? > --> [ PROBE ]
+#    left edge      BEFORE       app d m      yes: exit +      AFTER
+#    of the diff    reads,       writes,       nd or ndq       same command,
+#                   never        never        no: the probe    verbatim, no
+#                   writes       reads        loads it at      edits
+#                                             call time
+#
+#   PROBE never writes. PATCH always writes. IGNITE is the only step that
+#   is ever absent, and it is absent exactly when the probe's own command
+#   loads the patched file at the moment it runs.
+#
+#   PAIRING (the part that bites): the two taps must be ABLE to see the
+#   patch. A probe that measures a CREDENTIAL cannot witness an edit to a
+#   MESSAGE. Choose the probe that RUNS the patched code, or the AFTER is
+#   a BEFORE wearing a costume. Convicted 2026-07-23: three credential
+#   probes read byte-identical across four string patches, and the patches
+#   were witnessed only by the compile re-running a different probe.
+#
+#            THE RIDE -- the same track, both rails, two blasts
+#
+#    off-site                                                    off-site
+#    boundary                                                    boundary
+#       |                                                            |
+#       v                                                            v
+#   [ BLAST ] . [ PROBE ] . [ PATCH ] . <IGNITE?> . [ PROBE ] . [ ahc ] . [ BLAST ]
+#    push what   tap 1       mutate      make it     tap 2       tap 3      push this
+#    came before             the repo    RUN         by hand     in the     ride
+#                                                                compile
+#
+#   ahc is NOT a probe. It is the EXPERIMENT: it re-runs every echoed probe
+#   as a live receipt AND it writes (foo.zip, rotated snapshots, paintbox,
+#   stats, token annotations). Read-only instruments belong in PROBE; the
+#   mutating instrument fires ONCE, at the end, with a BLAST on either side
+#   bounding its radius. Tap 3 is why the echo invariant exists: taps 1 and
+#   2 are the operator's hands, tap 3 is the machine repeating them, and
+#   disagreement between 2 and 3 is information about the compile lane.
 # THE SELF-HEALING FENCE AMENDMENT (PENDING 2026-07-23): sanitizer.py's
 # fence contract rule 2 no longer refuses a naked opening fence; it tags
 # it `text` in place, writes the heal back to article.txt, and prints a
