@@ -719,7 +719,7 @@ def check_slot(name):
         proc = subprocess.run(
             [sys.executable, str(script), '--check'],
             stdin=subprocess.DEVNULL, capture_output=True, text=True,
-            timeout=CHECK_TIMEOUT,
+            timeout=CHECK_TIMEOUT, env=_check_env(),
         )
     except subprocess.TimeoutExpired:
         return 1, f"{name} RED gate2: no answer within {CHECK_TIMEOUT}s"
