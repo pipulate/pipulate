@@ -705,8 +705,108 @@ def _check_env():
     return {**_dotenv_pairs(), **os.environ}
 
 
-def check_slot(name):
-    """Run one connector's `--check`. Returns (code, line).
+# ---------------------------------------------------------------------------
+# browser_session — checked HERE, by auth kind, never by filename. A browser
+# profile is not a gateway, so "no connector module (semrush.py)" was a message
+# telling the human to go write a program that should not exist.
+# ---------------------------------------------------------------------------
+_CHROME_EPOCH_OFFSET = 11644473600  # seconds between 1601-01-01 and 1970-01-01
+
+
+def _apex(site):
+    """Registrable-ish apex from a slot's defaults.site. Naive on multi-part
+    TLDs (co.uk), which only ever WIDENS the match — never narrows it."""
+    host = site.split('://')[-1].split('/')[0].split(':')[0].lower()
+    if host.startswith('www.'):
+        host = host[4:]
+    labels = [part for part in host.split('.') if part]
+    return '.'.join(labels[-2:]) if len(labels) > 2 else host
+
+
+def _cookie_db(profile_dir):
+    """Chrome has relocated this file before; try every layout we have seen."""
+    for rel in ('Default/Network/Cookies', 'Default/Cookies',
+                'Network/Cookies', 'Cookies'):
+        candidate = profile_dir / rel
+        if candidate.exists():
+            return candidate
+    return None
+
+
+def check_browser_slot(name, cfg):
+    """SELECT 1 for a browser_session slot, from cookie METADATA alone.
+
+    Probe-witnessed 2026-07-23: the profile's Cookies SQLite opens read-only
+    with the browser closed, host_key and expires_utc are PLAINTEXT, and every
+    secret sits in encrypted_value while value is empty. So a login is
+    checkable without decrypting anything, without CDP, and without launching a
+    browser — which is the point, since a browser per row is the exact opposite
+    of slamming through the board.
+
+    THE HTTPONLY DISCRIMINATOR (a labeled heuristic, never a proof): that same
+    probe found the ONLY cookies present for both domains were _ga, ttcsid, and
+    kndctr_* — analytics, set by page JavaScript on a mere VISIT. Greening on
+    "any unexpired cookie" would therefore report a login that never happened,
+    the precise false-green this board exists to refuse. Page JavaScript cannot
+    set an HttpOnly cookie; it arrives in a server's Set-Cookie header. That
+    difference is readable in the same table, so GREEN requires at least one
+    LIVE HttpOnly cookie for the slot's apex, and a profile that was browsed
+    but never logged into reds with exactly that sentence.
+    """
+    profile = (cfg.get('paths') or {}).get('profile') or name
+    site = (cfg.get('defaults') or {}).get('site')
+    if not site:
+        return 1, (f"{name} RED gate1: slot declares no defaults.site, so "
+                   "there is no domain to check")
+    profile_dir = REPO_ROOT / 'data' / 'uc_profiles' / profile
+    db = _cookie_db(profile_dir)
+    if db is None:
+        return 1, (f"{name} RED gate1: no cookie store under {profile_dir} — "
+                   f"run `python scripts/connectors/wallet.py warm {name}`")
+    apex = _apex(site)
+    now = int((time.time() + _CHROME_EPOCH_OFFSET) * 1_000_000)
+    try:
+        conn = sqlite3.connect(f"file:{db}?mode=ro", uri=True, timeout=5)
+        try:
+            rows = conn.execute(
+                "SELECT host_key, is_httponly, has_expires, expires_utc "
+                "FROM cookies"
+            ).fetchall()
+        finally:
+            conn.close()
+    except sqlite3.Error as e:
+        return 1, (f"{name} RED gate2: cookie store unreadable ({e}) — close "
+                   "the browser, which locks a live profile")
+    mine = [r for r in rows if str(r[0]).lstrip('.').endswith(apex)]
+    if not mine:
+        return 1, (f"{name} RED gate2: profile '{profile}' holds no cookies "
+                   f"for {apex} at all — never visited, never logged in")
+    live = [r for r in mine if not r[2] or r[3] > now]
+    if not live:
+        return 1, (f"{name} RED gate2: all {len(mine)} cookies for {apex} have "
+                   f"expired — run `wallet.py warm {name}`")
+    session = [r for r in live if r[1]]
+    if not session:
+        return 1, (f"{name} RED gate2: {len(live)} live cookies for {apex} but "
+                   "none HttpOnly — the site was VISITED, not logged into")
+    dated = [r[3] for r in session if r[2] and r[3] > now]
+    when = ''
+    if dated:
+        days = (min(dated) / 1_000_000 - _CHROME_EPOCH_OFFSET - time.time()) / 86400
+        when = f", soonest expiry {days:.0f}d"
+    return 0, (f"{name} GREEN {len(session)} HttpOnly cookie(s) for {apex} in "
+               f"profile '{profile}' ({len(live)} live total{when})")
+
+
+def check_slot(name, cfg=None):
+    """Check one slot. Returns (code, line).
+
+    DISPATCH IS ON AUTH KIND, never on filename. A browser_session slot is a
+    Chrome profile, not a gateway, and routing it through the connector lookup
+    produced "no connector module (semrush.py)" — a message instructing the
+    human to write a program that should never exist. File and env kinds shell
+    out to a connector; browser kinds are answered here, by the file that
+    already knows where the profile lives.
 
     THE EXIT-CODE PROTOCOL, one layer out: nothing here parses a connector's
     stdout to DECIDE anything — the exit code is the whole answer. A connector
