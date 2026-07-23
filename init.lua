@@ -577,6 +577,8 @@ function mount_sandworm()
         .. "```text\n\n```\n\n"
         .. "Patches: [patch, app, d, m, patch, app, d, m...]\n\n"
         .. "```diff\n\n```\n\n"
+        .. "Ignition: [make the patched code RUN, then re-run the Probe verbatim]\n\n"
+        .. "```bash\n\n```\n\n"
         .. "Prompt:\n\n"
         .. "🎤"
     local row = vim.api.nvim_win_get_cursor(0)[1]
