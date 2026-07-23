@@ -791,12 +791,13 @@ def board(wallet, slot_name):
     print(tally)
     if total and green == total:
         print(f"# 🏆 GOLD — every enrolled credential ({green}/{total}) is live.")
-        return
+        return 0
     if red:
         print("# Fix a red:  python scripts/connectors/wallet.py warm <slot>")
     if unchecked:
         print("# An unchecked slot blocks GOLD on purpose: give it a --check, "
               'or bench it with "enrolled": false.')
+    return 1
 
 
 def main():
