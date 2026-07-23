@@ -57,6 +57,11 @@ HONEST HEURISTICS, stated plainly (a clean caveat is a valid receipt):
     declares CONFLUENCE_BASE_URL reads emptier than it is. Convicted
     2026-07-23 by a FALSE RED. When a row disagrees with reality, suspect the
     declared NAME before you suspect the credential.
+  - CHECK's browser_session rows read cookie METADATA only (never a decrypted
+    value) and green on a live HttpOnly cookie for the slot's apex domain.
+    HttpOnly is a structural stand-in for "a server set this", not proof of a
+    working session: a stale-but-unexpired session cookie still greens. It is
+    the cheapest honest discriminator that does not launch a browser.
 
 States (per slot):
   filled   — warmed and fresh (or, for env kinds, all required vars present).
