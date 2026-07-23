@@ -212,6 +212,53 @@ def run_query(client, raw_query, org, project, max_items):
         print(json.dumps(data, indent=2, default=str))
 
 
+# ----------------------------------------------------------------------------
+# Health check (THE EXIT-CODE PROTOCOL: the exit code IS the whole answer)
+# ----------------------------------------------------------------------------
+def check():
+    """SELECT 1 for the `warm` scoreboard: exit 0 GREEN, exit 1 RED.
+
+    Crosses BOTH gates of the 2026-07-20 two-gate earmark: gate 1 is
+    "credential present", gate 2 is "credential accepted by the live API".
+    A GREEN row therefore means end-to-end, never merely "a token exists".
+    The stderr line names which gate failed. Never interactive, never opens
+    a browser, hard-bounded timeout: a check that can block is a check that
+    can hang the whole scoreboard.
+    """
+    token = get_botify_token()
+    if not token:
+        sys.stderr.write(
+            "botify RED gate1: no BOTIFY_API_TOKEN in env or project .env\n")
+        return 1
+    try:
+        with httpx.Client(
+            headers={"Authorization": f"Token {token}",
+                     "Content-Type": "application/json"},
+            timeout=15.0,
+        ) as client:
+            resp = client.get(f"{API_BASE}/authentication/profile")
+    except httpx.HTTPError as e:
+        sys.stderr.write(f"botify RED gate2: transport failure: {e}\n")
+        return 1
+    if resp.status_code in (401, 403):
+        sys.stderr.write(
+            f"botify RED gate2: token rejected (HTTP {resp.status_code})\n")
+        return 1
+    if resp.status_code != 200:
+        sys.stderr.write(f"botify RED gate2: HTTP {resp.status_code}\n")
+        return 1
+    try:
+        username = extract_username(resp.json())
+    except ValueError:
+        username = None
+    if not username:
+        sys.stderr.write(
+            "botify RED gate2: authenticated but no username in profile\n")
+        return 1
+    print(f"botify GREEN {username}")
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Unix-philosophy gateway to the Botify API for Prompt Fu context."
