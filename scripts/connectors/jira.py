@@ -235,6 +235,58 @@ def fetch_issue(client, base, issue_key):
         print("\n---\n")
 
 
+# ----------------------------------------------------------------------------
+# Health check (THE EXIT-CODE PROTOCOL: the exit code IS the whole answer)
+# ----------------------------------------------------------------------------
+def check():
+    """SELECT 1 for the wallet board: exit 0 GREEN, exit 1 RED.
+
+    Shares Confluence's Atlassian identity but NOT its host root, which is
+    exactly why it gets its own row: the same token can be green on /wiki and
+    red on Jira when the account lacks a Jira license. Gate 2 is one
+    /rest/api/3/myself call, hard 15s timeout.
+    """
+    base = os.getenv("JIRA_URL")
+    if not base:
+        conf = os.getenv("CONFLUENCE_URL") or os.getenv("CONFLUENCE_BASE_URL")
+        if conf:
+            base = re.sub(r'/wiki/?$', '', conf.rstrip('/'))
+    email = (os.getenv("JIRA_EMAIL")
+             or os.getenv("CONFLUENCE_EMAIL") or os.getenv("CONFLUENCE_USER"))
+    token = os.getenv("JIRA_TOKEN") or os.getenv("CONFLUENCE_TOKEN")
+    missing = [n for n, v in [("JIRA_URL (or CONFLUENCE_URL)", base),
+                              ("JIRA_EMAIL (or CONFLUENCE_EMAIL)", email),
+                              ("JIRA_TOKEN (or CONFLUENCE_TOKEN)", token)] if not v]
+    if missing:
+        sys.stderr.write("jira RED gate1: unset " + ", ".join(missing) + "\n")
+        return 1
+    try:
+        with httpx.Client(auth=(email, token), timeout=15.0,
+                          headers={"Accept": "application/json"}) as client:
+            resp = client.get(base.rstrip('/') + "/rest/api/3/myself")
+    except httpx.HTTPError as e:
+        sys.stderr.write(f"jira RED gate2: transport failure: {e}\n")
+        return 1
+    if resp.status_code in (401, 403):
+        sys.stderr.write(
+            f"jira RED gate2: credentials rejected (HTTP {resp.status_code}) -- "
+            "an Atlassian token valid for Confluence still needs a Jira license\n")
+        return 1
+    if resp.status_code != 200:
+        sys.stderr.write(f"jira RED gate2: HTTP {resp.status_code}\n")
+        return 1
+    try:
+        who = resp.json()
+    except ValueError:
+        who = {}
+    name = who.get("displayName") or who.get("emailAddress") or who.get("accountId")
+    if not name:
+        sys.stderr.write("jira RED gate2: authenticated but no identity returned\n")
+        return 1
+    print(f"jira GREEN {name}")
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Unix-philosophy gateway to the Jira Cloud API for Prompt Fu context."
@@ -245,7 +297,14 @@ def main():
     )
     parser.add_argument('-n', '--max', type=int, default=25,
                         help='Output cap per THE PROBE ECONOMY RULE (default: 25).')
+    parser.add_argument('--check', action='store_true',
+                        help='SELECT 1 health check: one GREEN line on stdout and '
+                             'exit 0, or one gate-named RED line on stderr and '
+                             'exit 1. Never interactive.')
     args = parser.parse_args()
+
+    if args.check:
+        sys.exit(check())
 
     client, base = make_client()
     try:
