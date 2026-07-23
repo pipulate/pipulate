@@ -437,14 +437,230 @@ def login(slot_name, stale_days):
         print(f"# Note: slot still reads '{after_state}' — check the walk output above.")
 
 
+# ---------------------------------------------------------------------------
+# warm — the verb the scoreboard implies. One dispatch per auth kind, and each
+# branch DELEGATES to the mechanism that already owns that kind: oauth reuses
+# login()'s connector walk, browser shells out to weblogin.py, paste kinds
+# prompt once and persist to DOTENV_PATH. Nothing here re-implements an OAuth
+# dance or a login page. What genuinely cannot be minted is NAMED, not faked.
+# ---------------------------------------------------------------------------
+def _interactive():
+    """True only on a real terminal. A `! python .../wallet.py` chisel-strike
+    runs non-TTY inside a compile, so warm must print a PLAN there and never
+    block on input() — otherwise it would deadlock the compile that ran it."""
+    try:
+        return sys.stdin.isatty() and sys.stderr.isatty()
+    except Exception:
+        return False
+
+
+def _ask(question, secret=False):
+    """One prompt. Returns '' on EOF/Ctrl-C so a skipped answer is just a skip.
+    Secrets go through getpass so they never echo and never enter shell history."""
+    import getpass
+    try:
+        return (getpass.getpass(question) if secret else input(question)).strip()
+    except (EOFError, KeyboardInterrupt):
+        print()
+        return ''
+
+
+def _confirm(question, assume_yes=False):
+    return True if assume_yes else _ask(f"{question} [y/N] ").lower() in ('y', 'yes')
+
+
+def _looks_secret(var):
+    return any(w in var.lower() for w in ('token', 'secret', 'key', 'password', 'pass'))
+
+
+def _save_env(name, value):
+    """Upsert NAME=value into DOTENV_PATH at 0600. Prefers python-dotenv (a
+    declared dependency) for correct quoting, with a stdlib fallback so this
+    file still works outside the Nix shell — wallet.py stays import-light."""
+    DOTENV_PATH.parent.mkdir(parents=True, exist_ok=True)
+    if not DOTENV_PATH.exists():
+        DOTENV_PATH.touch(mode=0o600)
+    os.chmod(DOTENV_PATH, 0o600)
+    try:
+        from dotenv import set_key
+        set_key(str(DOTENV_PATH), name, value)
+    except ImportError:
+        lines = DOTENV_PATH.read_text(encoding='utf-8').splitlines()
+        rendered = "{}='{}'".format(name, value.replace("'", "'\\''"))
+        for i, line in enumerate(lines):
+            if line.split('=', 1)[0].strip().replace('export ', '') == name:
+                lines[i] = rendered
+                break
+        else:
+            lines.append(rendered)
+        DOTENV_PATH.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+    _dotenv_names._cache = None  # the board must re-read what we just wrote
+
+
+def _warm_oauth(name, stale_days, assume_yes):
+    """Reuse login() verbatim. SystemExit is caught so one failed slot cannot
+    abort the walk over the rest of the board."""
+    if not _confirm(f"  mint/refresh OAuth for '{name}' (may open a browser)?", assume_yes):
+        return 'skipped'
+    try:
+        login(name, stale_days)
+    except SystemExit as e:
+        return f"login aborted (exit {e.code}) — see its message above"
+    return 'oauth walk finished'
+
+
+def _warm_env(name, cfg, assume_yes):
+    """bearer/basic: prompt for each MISSING declared var and persist it. The
+    `env` block is documentation-as-data, so the prompt shows the wallet's own
+    description and any non-secret example from `defaults`."""
+    missing = [v for v in _required_env_vars(cfg) if not _env_source(v)]
+    if not missing:
+        return 'nothing missing'
+    env_doc = cfg.get('env') or {}
+    defaults = cfg.get('defaults') or {}
+    print(f"  {len(missing)} value(s) to paste — blank input skips one.")
+    saved = []
+    for var in missing:
+        desc = str(env_doc.get(var, '')).strip()
+        if desc:
+            print(f"    {var} — {desc}")
+        if defaults.get(var):
+            print(f"    example: {defaults[var]}")
+        secret = _looks_secret(var)
+        label = f"    {var}{' (hidden)' if secret else ''} = "
+        value = _ask(label, secret=secret)
+        if not value:
+            print(f"    skipped {var}")
+            continue
+        _save_env(var, value)
+        saved.append(var)
+    if not saved:
+        return 'nothing entered'
+    return f"saved {', '.join(saved)} → {DOTENV_PATH}"
+
+
+def _warm_browser(name, cfg, assume_yes):
+    """browser_session: hand off to weblogin.py, which already owns the
+    persistent-profile format. Confirm first — this pops a real window, and the
+    human must either log in or simply dismiss it."""
+    profile = (cfg.get('paths') or {}).get('profile') or name
+    site = (cfg.get('defaults') or {}).get('site')
+    if not site:
+        # Never guess a hostname from a slot name (botify_browser is not a domain).
+        site = _ask(f"  no defaults.site declared for '{name}' — site to open (blank skips): ")
+        if not site:
+            return 'skipped (no site declared)'
+    if not _confirm(f"  open {site} in profile '{profile}'?", assume_yes):
+        return 'skipped'
+    script = REPO_ROOT / 'scripts' / 'weblogin.py'
+    if not script.exists():
+        return f"weblogin.py not found at {script}"
+    print(f"  → {Path(sys.executable).name} {script.relative_to(REPO_ROOT)} {site} --profile {profile}")
+    print("    Log in (or just dismiss it), then CLOSE the window to continue.")
+    import subprocess
+    try:
+        rc = subprocess.call([sys.executable, str(script), site, '--profile', profile])
+    except OSError as e:
+        return f"could not run weblogin.py: {e}"
+    return 'weblogin finished' if rc == 0 else f"weblogin exited {rc}"
+
+
+def _warm_service(name, cfg):
+    """service_account_file: genuinely un-mintable from here. Say so, and say
+    exactly where the downloaded key must land."""
+    key = resolve_path(cfg, 'service_account', 'paths.service_account')
+    return ("cannot mint — download the service-account JSON (Google Cloud "
+            f"Console → IAM → Service Accounts) to {key or '(declare paths.service_account)'}")
+
+
+def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
+    """Walk every not-filled slot (or just one) and actually warm it."""
+    wallet = load_wallet()
+    slots = [(n, c) for n, c in wallet.items()
+             if not n.startswith('_') and isinstance(c, dict) and c.get('auth')]
+    if slot_name:
+        picked = [(n, c) for n, c in slots if n == slot_name]
+        if not picked:
+            die(f"No slot '{slot_name}' in {Path(WALLET_PATH).expanduser()}.\n"
+                f"Slots: {', '.join(n for n, _ in slots) or '(none)'}")
+        slots = picked
+
+    cold = []
+    for n, c in slots:
+        state, kind, detail, _loc = classify_slot(n, c, stale_days)
+        if state != 'filled':
+            cold.append((n, c, state, kind, detail))
+
+    print("# wallet warm — the verb the scoreboard implies")
+    print(f"# wallet:  {Path(WALLET_PATH).expanduser()}")
+    print(f"# secrets: {DOTENV_PATH}  (0600, out of git)\n")
+
+    if not cold:
+        scope = f"slot '{slot_name}'" if slot_name else 'every slot'
+        print(f"# Nothing to warm — {scope} already reads filled.")
+        return
+
+    print(f"# {len(cold)} slot(s) to warm:")
+    for n, _c, state, kind, detail in cold:
+        print(f"  {_MARK.get(state, '[?]')} {state:<7}  "
+              f"{_KIND_LABEL.get(kind, kind):<8}  {n:<14}  {detail}")
+
+    if dry_run:
+        print("\n# --dry-run: nothing prompted, opened, or written.")
+        return
+
+    if not _interactive():
+        target = f" {slot_name}" if slot_name else ''
+        print("\n# Not a TTY — refusing to prompt, because a `!` chisel-strike must")
+        print("# never block the compile that embedded it. In a real terminal:")
+        print(f"#    python scripts/connectors/wallet.py warm{target}")
+        return
+
+    results = []
+    for n, c, state, kind, _detail in cold:
+        print("\n" + "-" * 70)
+        print(f"{_MARK.get(state, '[?]')} {n}  ({_KIND_LABEL.get(kind, kind)}, was {state})")
+        if kind == _OAUTH_KIND:
+            note = _warm_oauth(n, stale_days, assume_yes)
+        elif kind in _ENV_KINDS:
+            note = _warm_env(n, c, assume_yes)
+        elif kind == _BROWSER_KIND:
+            note = _warm_browser(n, c, assume_yes)
+        elif kind == _SERVICE_KIND:
+            note = _warm_service(n, c)
+        else:
+            note = f"unrecognized auth kind {kind!r} — fix connectors.json"
+        after, akind, adetail, _al = classify_slot(n, c, stale_days)
+        results.append((after, akind, n, adetail, note))
+
+    print("\n" + "-" * 70)
+    print("# after warming:")
+    for after, akind, n, adetail, note in results:
+        print(f"  {_MARK.get(after, '[?]')} {after:<7}  "
+              f"{_KIND_LABEL.get(akind, akind):<8}  {n:<14}  {adetail}")
+        print(f"        ↳ {note}")
+    still = [r for r in results if r[0] != 'filled']
+    print(f"\n# {len(results) - len(still)} warmed | {len(still)} still cold")
+    if any(r[1] in _ENV_KINDS for r in results):
+        print(f"# Note: values saved to {DOTENV_PATH} are NOT exported into this")
+        print("# shell. They read `filled` here because the wallet reads the .env;")
+        print("# a connector needs its own .env loader (or a fresh shell) to see them.")
+    print("# Re-run the bare scoreboard for the whole board.")
+
+
 def main():
     parser = argparse.ArgumentParser(
-        description="Read-only scoreboard for the Pipulate connector wallet.")
+        description="Scoreboard (read-only) and warmer for the Pipulate wallet.")
     parser.add_argument('command', nargs='?', default=None,
-                        help="omit for the SCOREBOARD; 'login <slot>' mints an "
-                             "oauth slot or names how another kind is warmed.")
+                        help="omit for the SCOREBOARD; 'login <slot>' mints one "
+                             "oauth slot; 'warm [slot]' warms everything cold.")
     parser.add_argument('slot', nargs='?', default=None,
-                        help="slot name for 'login' (e.g. gmail).")
+                        help="slot name for 'login' / 'warm' (e.g. gmail).")
+    parser.add_argument('-y', '--yes', action='store_true',
+                        help="skip per-slot confirmations (still prompts for "
+                             "values warm cannot invent).")
+    parser.add_argument('--dry-run', action='store_true',
+                        help="'warm' lists what it WOULD do, then stops.")
     parser.add_argument('-n', '--max', type=int, default=25,
                         help='Max slots to show per THE PROBE ECONOMY RULE '
                              '(default: 25).')
