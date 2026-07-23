@@ -1443,15 +1443,6 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   configuration.nix:273 invokes autognome.py by absolute repo path, so
 #   tomorrow's `init` runs whatever is on disk either way -- the commit is for
 #   the record, not the behavior.
-# - TODO: surface PIPULATE_BOOT_MENU and PIPULATE_BOOT_MENU_TIMEOUT in the
-#   README install section -- DECIDED 2026-07-23, not the door-2 message and
-#   not the mcp footer. These are automation knobs, and the only caller that
-#   ever needs PIPULATE_BOOT_MENU=0 is a script; a human standing at the
-#   door-2 prompt has already answered the question the variable exists to
-#   skip, and that message must stay at three items. The README is also the
-#   one surface read BEFORE the gate is ever hit, which is when someone
-#   provisioning a machine needs to know it can be turned off. Needs
-#   README.md in context to patch.
 # - TODO: scripts/connectors/gong.py opens with wallet.py's path comment AND
 #   wallet.py's module docstring (head -5 receipt, 2026-07-23) -- minting
 #   residue from copying wallet.py as the template. Harmless today ONLY
