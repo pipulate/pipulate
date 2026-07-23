@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # scripts/connectors/slack.py
 """
-slack.py — A Unix-philosophy gateway to the Slack Web API for Prompt Fu context.
+slack.py — Bring a Slack channel or message thread into context.
+
+A Unix-philosophy gateway to the Slack Web API for Prompt Fu context.
 
 Golden-path modes, auto-detected from the single positional argument:
 

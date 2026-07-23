@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # scripts/connectors/sheets.py
 """
-sheets.py — A Unix-philosophy gateway to Google Sheets for Prompt Fu context.
+sheets.py — Bring a Google Sheet's tabs and cell data into context.
+
+A Unix-philosophy gateway to Google Sheets for Prompt Fu context.
 
 Golden-path modes, auto-detected from the single positional argument:
 

@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # scripts/botify.py
 """
-botify.py — A Unix-philosophy gateway to the Botify API for Prompt Fu context.
+botify.py — Bring Botify crawl data and BQL query results into context.
+
+A Unix-philosophy gateway to the Botify API for Prompt Fu context.
 
 Golden-path modes, auto-detected from the single positional argument:
 

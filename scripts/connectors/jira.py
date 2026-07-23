@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # scripts/connectors/jira.py
 """
-jira.py — A Unix-philosophy gateway to the Jira Cloud API for Prompt Fu context.
+jira.py — Bring a Jira project, issue, or JQL search into context.
+
+A Unix-philosophy gateway to the Jira Cloud API for Prompt Fu context.
 
 Golden-path modes, auto-detected from the single positional argument:
 

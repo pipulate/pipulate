@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # scripts/confluence.py
 """
-confluence.py — A Unix-philosophy gateway to the Confluence API for Prompt Fu context.
+confluence.py — Bring a Confluence space, page, or search result into context.
+
+A Unix-philosophy gateway to the Confluence API for Prompt Fu context.
 
 Golden-path modes, auto-detected from the single positional argument:
 

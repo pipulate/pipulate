@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # scripts/gmail.py
 """
-gmail.py — A Unix-philosophy gateway to the Gmail API for Prompt Fu context.
+gmail.py — Bring an email thread or a sender's recent threads into context.
+
+A Unix-philosophy gateway to the Gmail API for Prompt Fu context.
 
 Two golden-path modes, auto-detected from the single positional argument:
 
