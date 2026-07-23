@@ -47,7 +47,9 @@ client_secret. It learns a slot's state from cheap, local evidence only:
 
 HONEST HEURISTICS, stated plainly (a clean caveat is a valid receipt):
   - `stale` is an mtime guess, never a validity proof. Only a live call can
-    prove a session/token truly live; this file refuses to make that call.
+    prove a session/token truly live; SCOREBOARD refuses to make that call,
+    which is exactly why CHECK exists as a separate verb rather than as a
+    flag that would quietly change what a familiar command does.
   - env-var kinds read os.environ ONLY. A secret set only in a project `.env`
     (not exported to this shell) will read `empty` here even though the
     connector itself would find it via its own .env loader. The wallet reports
