@@ -157,6 +157,52 @@ def search_pages(client, base, text, max_items):
     print("\n# Next: python scripts/confluence.py <page_id>   (fetch full page text)")
 
 
+# ----------------------------------------------------------------------------
+# Health check (THE EXIT-CODE PROTOCOL: the exit code IS the whole answer)
+# ----------------------------------------------------------------------------
+def check():
+    """SELECT 1 for the wallet board: exit 0 GREEN, exit 1 RED.
+
+    Reads the environment directly rather than calling get_env(), because
+    get_env() exits with a generic message; the board needs the gate NAMED.
+    Gate 1 is "the three vars are set", gate 2 is "Atlassian accepts them
+    right now" -- one /rest/api/user/current call, hard 15s timeout.
+    """
+    base = os.getenv("CONFLUENCE_BASE_URL")
+    email = os.getenv("CONFLUENCE_EMAIL") or os.getenv("CONFLUENCE_USER")
+    token = os.getenv("CONFLUENCE_TOKEN")
+    missing = [n for n, v in [("CONFLUENCE_BASE_URL", base),
+                              ("CONFLUENCE_EMAIL", email),
+                              ("CONFLUENCE_TOKEN", token)] if not v]
+    if missing:
+        sys.stderr.write("confluence RED gate1: unset " + ", ".join(missing) + "\n")
+        return 1
+    try:
+        with httpx.Client(auth=(email, token), timeout=15.0,
+                          headers={"Accept": "application/json"}) as client:
+            resp = client.get(base.rstrip('/') + "/rest/api/user/current")
+    except httpx.HTTPError as e:
+        sys.stderr.write(f"confluence RED gate2: transport failure: {e}\n")
+        return 1
+    if resp.status_code in (401, 403):
+        sys.stderr.write(
+            f"confluence RED gate2: credentials rejected (HTTP {resp.status_code})\n")
+        return 1
+    if resp.status_code != 200:
+        sys.stderr.write(f"confluence RED gate2: HTTP {resp.status_code}\n")
+        return 1
+    try:
+        who = resp.json()
+    except ValueError:
+        who = {}
+    name = who.get("displayName") or who.get("email") or who.get("accountId")
+    if not name:
+        sys.stderr.write("confluence RED gate2: authenticated but no identity returned\n")
+        return 1
+    print(f"confluence GREEN {name}")
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Unix-philosophy gateway to the Confluence API for Prompt Fu context."
@@ -167,7 +213,14 @@ def main():
     )
     parser.add_argument('-n', '--max', type=int, default=25,
                         help='Output cap per THE PROBE ECONOMY RULE (default: 25).')
+    parser.add_argument('--check', action='store_true',
+                        help='SELECT 1 health check: one GREEN line on stdout and '
+                             'exit 0, or one gate-named RED line on stderr and '
+                             'exit 1. Never interactive.')
     args = parser.parse_args()
+
+    if args.check:
+        sys.exit(check())
 
     client, base = make_client()
     try:
