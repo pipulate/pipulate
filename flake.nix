@@ -964,6 +964,47 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               command pipulate "$@"
             fi
           }
+          # THE DIGIT NAMESPACE: bare 1..9 run whatever row mcp just printed.
+          # A numbered menu trains the hand to type numbers, so the numbers had
+          # better BE commands -- and they had better mean what the panel said.
+          # The ordering therefore lives in exactly one place, mcp_menu.py's
+          # ROSTER, read by --resolve at dispatch time. Hand-binding names here
+          # would be a second ordering free to drift from the first, and a
+          # drifted digit is a lying menu with the user's finger already moving
+          # (THE SAME-CAR LABEL RULE, one keystroke earlier). These nine
+          # one-liners carry no roster knowledge and so cannot lie about it.
+          #
+          # Args pass through: `2 org/project` == `botify org/project`. Dispatch
+          # is bare `$cmd "$@"` because a resolved word may itself be a shell
+          # function (`pu`), which an exec or a subshell would miss. 9 is
+          # defined against an 8-row roster on purpose: headroom for a future
+          # row, and a clean "No menu row 9" instead of command-not-found.
+          #
+          # SPENDING THE NAMESPACE: bare digits are ONE global shell namespace
+          # and this roster now owns it. Every other menu in the workshop must
+          # use words or bracketed keypresses instead -- boot_menu's [1]/[2] are
+          # read by getch and never typed, so they do not collide.
+          _pick() {
+            local menu="$PIPULATE_ROOT/scripts/mcp_menu.py"
+            if [ ! -f "$menu" ]; then
+              echo "Roster unavailable: $menu is missing. Type  mcp  for options." >&2
+              return 1
+            fi
+            local n="$1"
+            shift
+            local cmd
+            cmd=$("$PIPULATE_ROOT/.venv/bin/python" "$menu" --resolve "$n") || return 1
+            $cmd "$@"
+          }
+          1() { _pick 1 "$@"; }
+          2() { _pick 2 "$@"; }
+          3() { _pick 3 "$@"; }
+          4() { _pick 4 "$@"; }
+          5() { _pick 5 "$@"; }
+          6() { _pick 6 "$@"; }
+          7() { _pick 7 "$@"; }
+          8() { _pick 8 "$@"; }
+          9() { _pick 9 "$@"; }
           # THE CONNECTOR GRAMMAR (idea #7 made literal): tiny Unix commands,
           # one per API, each a self-contained file in scripts/connectors/.
           # Args pass through: `botify org/project`, `confluence ENG`,
