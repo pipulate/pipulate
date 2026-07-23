@@ -139,6 +139,31 @@ AI_PHOOEY_CHOP = r"""                                                           
 # (30-and-3, Probe Economy) bank on articulation; rules claiming what the
 # machinery DOES require the machinery's receipt first. Never more than
 # one unwitnessed turn between an amendment and its evidence.
+# THE ACTUATION-BOUNDARY RULE (banked 2026-07-23, receipt-witnessed): a
+# probe that measures an ARTIFACT cannot witness a patch that changes
+# CODE unless the code RUNS between the two taps. The PROBE ECHO
+# INVARIANT's straddle must bracket the EXECUTION, not the commit.
+# Conviction: the fence-heal patch landed, committed and pushed, and the
+# echoed awk probe still read naked_openers=12 -- byte-identical to
+# BEFORE -- because `article`, the only command that feeds article.txt
+# through sanitizer.py, was never invoked between taps. A code-only patch
+# paired with an artifact-only probe is an OPEN FENCE dressed as a closed
+# one, and it reports green for a thing that was never tried.
+# COROLLARY -- WITNESS WITHOUT MUTATING: when the actuator is a mutating
+# lane (publish, writers), do NOT run the lane to collect the receipt --
+# it consumes the specimen. Import the patched function, run it on the
+# real input WITHOUT writing, and assert the input is byte-identical
+# afterward. Exercises the hard half; costs no publish.
+# THE SELF-HEALING FENCE AMENDMENT (PENDING 2026-07-23): sanitizer.py's
+# fence contract rule 2 no longer refuses a naked opening fence; it tags
+# it `text` in place, writes the heal back to article.txt, and prints a
+# heal count. The state machine has ALREADY classified the run as an
+# opener before the old complaint fired, so the repair was fully
+# determined -- refusal only made the human retype what the machine
+# already knew. Rule 3 (labeled fence while one is open) and EOF-unclosed
+# still fail CLOSED. WITNESS OWED: a compiled receipt showing a nonzero
+# heal count against a file with known naked openers. The flip to banked
+# is its own chisel-strike.
 # THE KATA'S NAME (earmark banked 2026-07-17): Probe, Patch, Prompt. Three
 # beats to every turn — hand-run receipts before, human-actuated mutation
 # during, pre-loaded compile after. Titles and section headers say it too.
