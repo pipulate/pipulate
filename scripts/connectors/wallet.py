@@ -127,11 +127,30 @@ def die(msg, code=1):
 
 
 def load_wallet():
-    """Read connectors.json (names and paths only). Fail loud, never guess."""
+    """Read connectors.json (names and paths only).
+
+    ABSENT is not BROKEN. The moment boot_menu's door 2 names `warm`, this
+    function is what a stranger with zero credentials reaches first -- and a
+    terse die() there makes their first thirty seconds a crash rather than a
+    start state. No wallet prints the cold-start card and exits 0, because an
+    empty board is the beginning of the game and not a fault in it.
+
+    A wallet that EXISTS and will not parse still fails loud: that is a real
+    fault, and guessing past a malformed credential map is worse than
+    stopping. Absent gets a welcome; corrupt gets a wall.
+    """
     path = Path(WALLET_PATH).expanduser()
     if not path.exists():
-        die(f"No wallet at: {path}\n"
-            "Set PIPULATE_WALLET or create ~/.config/pipulate/connectors.json.")
+        print("# no wallet yet -- that is the start state, not an error.")
+        print(f"# A wallet is one JSON file: {path}")
+        print("# Keys are slot names. Each slot declares an `auth` kind plus the")
+        print("# env var NAMES or file paths it needs -- names only, never secrets.")
+        print("# Smallest wallet that plays:")
+        print('#   {"botify": {"auth": "bearer_token",')
+        print('#               "env": {"BOTIFY_API_TOKEN": "required; API token"}}}')
+        print("# Write that, run this again for one red row, then "
+              "`wallet.py warm botify`.")
+        sys.exit(0)
     try:
         return json.loads(path.read_text(encoding='utf-8'))
     except (json.JSONDecodeError, OSError) as e:
