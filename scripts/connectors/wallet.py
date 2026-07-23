@@ -656,12 +656,127 @@ def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
     print("# Re-run the bare scoreboard for the whole board.")
 
 
+# ---------------------------------------------------------------------------
+# check — the LIVE lane. Every other verb here is offline; this one spends
+# exactly one bounded API call per enrolled slot to answer the only question
+# a stat() cannot: does the service accept this credential RIGHT NOW.
+# ---------------------------------------------------------------------------
+CHECK_TIMEOUT = 20      # each connector budgets 15s; this is the outer fence
+CHECK_WORKERS = 8       # slots are subprocesses, so this is pure I/O overlap
+_LIVE_MARK = {0: '🟢', 1: '🔴'}
+
+
+def check_slot(name):
+    """Run one connector's `--check`. Returns (code, line).
+
+    THE EXIT-CODE PROTOCOL, one layer out: nothing here parses a connector's
+    stdout to DECIDE anything — the exit code is the whole answer. A connector
+    may reword its receipt freely, and this renderer can be swapped for Rich
+    or Textual, and neither can ever come to disagree with the other.
+
+    0 = GREEN, 1 = RED, anything else = this slot has no `--check` yet
+    (argparse exits 2). An uninstrumented slot renders UNCHECKED, never red:
+    a missing instrument is not a failing credential. It does block GOLD,
+    because surfacing exactly that gap is what the board is for.
+
+    stdin is /dev/null and the timeout is hard, so no connector can hang the
+    board on a prompt or a stalled socket.
+    """
+    script = Path(__file__).resolve().parent / f"{name}.py"
+    if not script.exists():
+        return 2, f"no connector module ({script.name})"
+    try:
+        proc = subprocess.run(
+            [sys.executable, str(script), '--check'],
+            stdin=subprocess.DEVNULL, capture_output=True, text=True,
+            timeout=CHECK_TIMEOUT,
+        )
+    except subprocess.TimeoutExpired:
+        return 1, f"{name} RED gate2: no answer within {CHECK_TIMEOUT}s"
+    except OSError as e:
+        return 2, f"could not run {script.name}: {e}"
+    out = [ln for ln in (proc.stdout or '').strip().splitlines() if ln.strip()]
+    err = [ln for ln in (proc.stderr or '').strip().splitlines() if ln.strip()]
+    if proc.returncode == 0:
+        return 0, out[-1] if out else f"{name} GREEN"
+    if proc.returncode == 1:
+        return 1, err[-1] if err else f"{name} RED (no diagnostic)"
+    return 2, 'no --check yet — this connector has no health probe'
+
+
+def board(wallet, slot_name):
+    """The red/green game: one live call per enrolled slot, GOLD at all-green.
+
+    ENROLLMENT is what keeps the game winnable. A slot nobody intends to use
+    — a service account, an untested vendor — would otherwise sit red or
+    unchecked forever, making GOLD unreachable and draining the color of all
+    meaning. Set "enrolled": false on such a slot in connectors.json and it
+    is benched: shown, never scored. An absent flag defaults to enrolled.
+
+    Slots run in parallel because the whole point is to type one word, see
+    what is red, fix it, and type the word again.
+    """
+    slots = [(n, c) for n, c in wallet.items()
+             if not n.startswith('_') and isinstance(c, dict) and c.get('auth')]
+    if slot_name:
+        slots = [(n, c) for n, c in slots if n == slot_name]
+        if not slots:
+            die(f"No slot '{slot_name}' in {Path(WALLET_PATH).expanduser()}.")
+    enrolled = [(n, c) for n, c in slots if c.get('enrolled', True)]
+    benched = [(n, c) for n, c in slots if not c.get('enrolled', True)]
+
+    print("# wallet check — LIVE credential board (one bounded call per slot)")
+    print(f"# wallet: {Path(WALLET_PATH).expanduser()}")
+    print("# green means the service accepted this credential just now, "
+          "not merely that a token exists\n")
+
+    results = {}
+    if enrolled:
+        with ThreadPoolExecutor(max_workers=CHECK_WORKERS) as pool:
+            futures = [(n, pool.submit(check_slot, n)) for n, _ in enrolled]
+            for n, fut in futures:
+                results[n] = fut.result()
+
+    width = max([len(n) for n, _ in slots] + [4])
+    green = red = unchecked = 0
+    for n, cfg in enrolled:
+        code, line = results[n]
+        kind = str(_KIND_LABEL.get(cfg.get('auth'), cfg.get('auth')))
+        print(f"  {_LIVE_MARK.get(code, '⚪')} {n.ljust(width)}  {kind:<8}  {line}")
+        if code == 0:
+            green += 1
+        elif code == 1:
+            red += 1
+        else:
+            unchecked += 1
+    for n, cfg in benched:
+        kind = str(_KIND_LABEL.get(cfg.get('auth'), cfg.get('auth')))
+        print(f"  ·  {n.ljust(width)}  {kind:<8}  benched "
+              '("enrolled": false in the wallet)')
+
+    total = len(enrolled)
+    tally = f"\n# {green} green | {red} red | {unchecked} unchecked"
+    if benched:
+        tally += f" | {len(benched)} benched"
+    print(tally)
+    if total and green == total:
+        print(f"# 🏆 GOLD — every enrolled credential ({green}/{total}) is live.")
+        return
+    if red:
+        print("# Fix a red:  python scripts/connectors/wallet.py warm <slot>")
+    if unchecked:
+        print("# An unchecked slot blocks GOLD on purpose: give it a --check, "
+              'or bench it with "enrolled": false.')
+
+
 def main():
     parser = argparse.ArgumentParser(
-        description="Scoreboard (read-only) and warmer for the Pipulate wallet.")
+        description="Scoreboard, live check, and warmer for the Pipulate wallet.")
     parser.add_argument('command', nargs='?', default=None,
-                        help="omit for the SCOREBOARD; 'login <slot>' mints one "
-                             "oauth slot; 'warm [slot]' warms everything cold.")
+                        help="omit for the OFFLINE scoreboard; 'check [slot]' "
+                             "plays the LIVE red/green game; 'warm [slot]' "
+                             "warms what is cold; 'login <slot>' mints one "
+                             "oauth slot.")
     parser.add_argument('slot', nargs='?', default=None,
                         help="slot name for 'login' / 'warm' (e.g. gmail).")
     parser.add_argument('-y', '--yes', action='store_true',
