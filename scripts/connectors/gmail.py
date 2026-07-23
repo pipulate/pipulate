@@ -274,19 +274,80 @@ def fetch_thread(service, thread_id):
             print("---\n")
 
 
+# ----------------------------------------------------------------------------
+# Health check (THE EXIT-CODE PROTOCOL: the exit code IS the whole answer)
+# ----------------------------------------------------------------------------
+def check():
+    """SELECT 1 for the wallet board: exit 0 GREEN, exit 1 RED.
+
+    Gate 1 is "a usable token exists on disk" -- present, parseable, and
+    either valid or silently refreshable. Gate 2 is "Gmail accepts it right
+    now": one users.getProfile call.
+
+    Deliberately does NOT call get_service(), because get_service() may open
+    a browser on a TTY. An unminted or unrefreshable token is RED, never a
+    popup: a check that can block is a check that can hang the whole board.
+    """
+    if not os.path.exists(TOKEN_PATH):
+        sys.stderr.write(f"gmail RED gate1: no token at {TOKEN_PATH}\n")
+        return 1
+    try:
+        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+    except (json.JSONDecodeError, ValueError) as e:
+        sys.stderr.write(f"gmail RED gate1: unreadable token ({e})\n")
+        return 1
+    if not creds.valid:
+        if not (creds.expired and creds.refresh_token):
+            sys.stderr.write(
+                "gmail RED gate1: token invalid and not refreshable -- run "
+                "`python scripts/connectors/wallet.py login gmail`\n")
+            return 1
+        try:
+            creds.refresh(Request())
+            _save_token(creds)
+        except Exception as e:
+            sys.stderr.write(f"gmail RED gate1: refresh failed ({e})\n")
+            return 1
+    try:
+        profile = build('gmail', 'v1', credentials=creds).users().getProfile(
+            userId='me').execute()
+    except HttpError as e:
+        status = getattr(getattr(e, 'resp', None), 'status', '?')
+        sys.stderr.write(f"gmail RED gate2: API rejected (HTTP {status})\n")
+        return 1
+    except Exception as e:
+        sys.stderr.write(f"gmail RED gate2: transport failure: {e}\n")
+        return 1
+    email = profile.get('emailAddress')
+    if not email:
+        sys.stderr.write("gmail RED gate2: authenticated but no emailAddress\n")
+        return 1
+    print(f"gmail GREEN {email}")
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Unix-philosophy gateway to the Gmail API for Prompt Fu context."
     )
     parser.add_argument(
-        'query',
+        'query', nargs='?', default=None,
         help='Email address (LIST mode) or Gmail thread ID (FETCH mode).'
     )
     parser.add_argument(
         '-n', '--max', type=int, default=10,
         help='Max threads to list in LIST mode (default: 10).'
     )
+    parser.add_argument('--check', action='store_true',
+                        help='SELECT 1 health check: one GREEN line on stdout and '
+                             'exit 0, or one gate-named RED line on stderr and '
+                             'exit 1. Never interactive.')
     args = parser.parse_args()
+
+    if args.check:
+        sys.exit(check())
+    if args.query is None:
+        parser.error('a query is required: an email address (LIST) or a thread ID (FETCH)')
 
     try:
         service = get_service()
