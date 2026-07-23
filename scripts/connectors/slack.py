@@ -252,6 +252,54 @@ def search_messages(client, query, max_items):
     print("\n# Next: paste one of those permalinks to FETCH its full thread.")
 
 
+# ----------------------------------------------------------------------------
+# Health check (THE EXIT-CODE PROTOCOL: the exit code IS the whole answer)
+# ----------------------------------------------------------------------------
+def check():
+    """SELECT 1 for the wallet board: exit 0 GREEN, exit 1 RED.
+
+    ONE row, not two. A bot token that cannot call search.messages is not a
+    BAD credential, it is a NARROWER one, and a red row for a working token
+    would teach the wrong thing. auth.test is the SELECT 1; the green line
+    names which token answered and what that costs, so the honesty rides in
+    the receipt instead of in an extra color.
+
+    Slack answers HTTP 200 even on failure, so the verdict is the `ok` field.
+    """
+    user = os.getenv("SLACK_USER_TOKEN")
+    bot = os.getenv("SLACK_BOT_TOKEN")
+    token, kind = (user, "user") if user else (bot, "bot")
+    if not token:
+        sys.stderr.write(
+            "slack RED gate1: neither SLACK_USER_TOKEN nor SLACK_BOT_TOKEN set\n")
+        return 1
+    try:
+        with httpx.Client(base_url=API_BASE, timeout=15.0,
+                          headers={"Authorization": f"Bearer {token}",
+                                   "Accept": "application/json"}) as client:
+            resp = client.get("/auth.test")
+    except httpx.HTTPError as e:
+        sys.stderr.write(f"slack RED gate2: transport failure: {e}\n")
+        return 1
+    if resp.status_code != 200:
+        sys.stderr.write(f"slack RED gate2: HTTP {resp.status_code}\n")
+        return 1
+    try:
+        data = resp.json()
+    except ValueError:
+        sys.stderr.write("slack RED gate2: non-JSON response from auth.test\n")
+        return 1
+    if not data.get("ok"):
+        sys.stderr.write(
+            f"slack RED gate2: {kind} token rejected "
+            f"({data.get('error', 'unknown_error')})\n")
+        return 1
+    note = "" if kind == "user" else "; SEARCH needs SLACK_USER_TOKEN"
+    print(f"slack GREEN {data.get('user', '?')} @ {data.get('team', '?')} "
+          f"({kind} token{note})")
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Unix-philosophy gateway to the Slack Web API for Prompt Fu context."
@@ -262,7 +310,14 @@ def main():
     )
     parser.add_argument('-n', '--max', type=int, default=25,
                         help='Output cap per THE PROBE ECONOMY RULE (default: 25; Slack may clamp reads to 15).')
+    parser.add_argument('--check', action='store_true',
+                        help='SELECT 1 health check: one GREEN line on stdout and '
+                             'exit 0, or one gate-named RED line on stderr and '
+                             'exit 1. Never interactive.')
     args = parser.parse_args()
+
+    if args.check:
+        sys.exit(check())
 
     arg = args.query.strip() if args.query else None
     if arg is None:
