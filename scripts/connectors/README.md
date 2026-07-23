@@ -30,8 +30,14 @@ has been fixed in the same helper in two files.
    reads it with `ast.get_docstring` (never an import) and prints it verbatim
    beside the command word in the `mcp` roster, so it must read as an
    instruction to a newcomer who has never opened the file:
-   `name.py — <verb phrase, one sentence, under ~70 chars>`, e.g. "Bring a
-   Jira project, issue, or JQL search into context." The `name.py — `
+   `name.py — <verb phrase, one sentence, 61 chars or fewer>`, e.g. "Bring a
+   Jira project, issue, or JQL search into context." The 61 is MEASURED, not
+   chosen: at 80 columns Rich leaves the panel a 74-character body (2 for
+   borders, 4 for padding), and every row spends the command column (10
+   today, the width of `confluence`) plus 3 spaces of gutter, leaving 61.
+   One character over and the row wraps, stranding a word on a line by
+   itself. A command word longer than `confluence` lowers this ceiling for
+   every row at once. The `name.py — `
    self-label is stripped before display, so the sentence must stand alone.
    Architecture notes ("a Unix-philosophy gateway to...") belong in the SECOND
    paragraph, where the reader is a developer rather than a menu. A connector

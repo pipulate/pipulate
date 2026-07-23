@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # scripts/gmail.py
 """
-gmail.py — Bring an email thread or a sender's recent threads into context.
+gmail.py — Bring an email thread or a sender's threads into context.
 
 A Unix-philosophy gateway to the Gmail API for Prompt Fu context.
 

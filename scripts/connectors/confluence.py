@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # scripts/confluence.py
 """
-confluence.py — Bring a Confluence space, page, or search result into context.
+confluence.py — Bring a Confluence space, page, or search hit into context.
 
 A Unix-philosophy gateway to the Confluence API for Prompt Fu context.
 
