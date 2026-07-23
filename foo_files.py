@@ -108,6 +108,9 @@ AI_PHOOEY_CHOP = r"""                                                           
 # echoed verbatim as a `!` line into the next adhoc.txt chop. The hand-run is
 # the BEFORE reading; the compiled re-run is the AFTER reading. One probe, two
 # receipts, straddling the patch — no more probe/patch ordering ambiguity.
+# THE KATA'S NAME (earmark banked 2026-07-17): Probe, Patch, Prompt. Three
+# beats to every turn — hand-run receipts before, human-actuated mutation
+# during, pre-loaded compile after. Titles and section headers say it too.
 # ONE-LINER COROLLARY (banked 2026-07-19): a `!` line is ONE shell command.
 # Multi-line probes shatter in the executor (unexpected-EOF, then each
 # continuation line parsed as a phantom file path — 2026-07-19 compile log
