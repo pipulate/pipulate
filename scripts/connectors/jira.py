@@ -317,10 +317,11 @@ def check():
     if missing:
         sys.stderr.write("jira RED gate1: unset " + ", ".join(missing) + "\n")
         return 1
+    api_base, door = resolve_base(base, os.getenv("JIRA_CLOUD_ID"))
     try:
         with httpx.Client(auth=(email, token), timeout=15.0,
                           headers={"Accept": "application/json"}) as client:
-            resp = client.get(base.rstrip('/') + "/rest/api/3/myself")
+            resp = client.get(api_base + "/rest/api/3/myself")
     except httpx.HTTPError as e:
         sys.stderr.write(f"jira RED gate2: transport failure: {e}\n")
         return 1
