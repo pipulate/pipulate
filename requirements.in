@@ -73,6 +73,11 @@ nbstripout
 
 # Web Scraping and Data Processing
 requests
+httpx  # DIRECT: scripts/connectors/{jira,confluence}.py import it.
+# It arrives transitively today (langchain-openai). A future pip-compile that
+# drops that edge breaks those connectors on a FRESH install only -- the worst
+# WORA shape there is, since nothing on THIS machine ever reproduces it.
+# Unpinned on purpose: this file pins only scars, and httpx has not earned one.
 beautifulsoup4
 pandas
 openpyxl
