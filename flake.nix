@@ -1157,7 +1157,13 @@ print(max(1, n))
           # `rgx` and `rgxc` are Nix-packaged commands above, not shell
           # functions, so interactive use and adhoc.txt child shells share one implementation.
           alias release='python release.py --release --force'
-          alias g='clear && echo "$ git status" && git status'
+          # clear -x: repaint the screen but PRESERVE scrollback, exactly as
+          # blast() already does. Plain `clear` (ncurses >= 6.0) emits the E3
+          # escape and erases the buffer -- convicted 2026-07-23 when a `g`
+          # typed between an ignition and its AFTER tap destroyed the receipts
+          # the tap existed to produce. A read-only status check must never be
+          # able to delete evidence.
+          alias g='clear -x && echo "$ git status" && git status'
           m() {
             local msg
             # THE INTENT PARAMETER (router-churn edition, 2026-07-17): the
