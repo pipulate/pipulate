@@ -203,6 +203,7 @@ AI_PHOOEY_CHOP = r"""                                                           
 # flipped by patch, never by drift, one unwitnessed turn exactly as allowed.
 # THE MOUNT (banked 2026-07-19, witnessed same compile): the zeroth beat.
 # <leader>m runs mount_sandworm(): full saddle (Probe / Context / Patches /
+# Ignition /
 # Prompt / 🎤) dropped at the cursor — blank line replaced, non-blank
 # preserved with insert-below — landing in insert mode after **Me**: .
 # Witness: receipt shows def@568 + map@663, "Probe:" literal migrated to
