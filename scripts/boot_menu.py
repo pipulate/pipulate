@@ -4,7 +4,7 @@ boot_menu.py — the threshold at the end of `nix develop`.
 
 Two doors, one keypress:
   [1] Start <AppName>   JupyterLab + server, browser tabs (today's behavior)
-  [2] Just the shell    no server; `learn`, `seed`, `foo`, `ahc` live here
+  [2] Just the shell    NOTHING starts; `learn`, `seed`, `foo`, `ahc` live here
 
 THE PROTOCOL IS THE EXIT CODE, never stdout. Nothing parses this program's
 output, so no capture pipe can ever be held open by it (the rgx/xclip
@@ -85,7 +85,7 @@ def _timeout():
 def _render(name, seconds) -> None:
     lines = [
         f"[1]  Start {name}   JupyterLab + server + browser tabs",
-        "[2]  Just the shell   no server -- type  learn  for the guided tour",
+        "[2]  Just the shell   nothing starts -- type  learn  for the guided tour",
     ]
     if seconds is None:
         subtitle = "waiting for your choice -- Ctrl+C also drops to the shell"
@@ -180,7 +180,7 @@ def main() -> int:
 
     print()
     if choice == EXIT_SHELL:
-        print(f"Staying in the shell. {name} is not running.")
+        print(f"Staying in the shell. Nothing started -- no {name}, no JupyterLab.")
         print("Type  learn  to have an AI walk you through the workshop.")
         print(f"Type  python server.py  to start {name} later.")
     else:

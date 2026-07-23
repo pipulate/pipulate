@@ -567,9 +567,57 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           fi
           # Add convenience scripts to PATH
           export PATH="$VIRTUAL_ENV/bin:$PATH"
+          # OUTSIDE THE THRESHOLD BY DESIGN -- these three run on BOTH sides:
+          #   copy_notebook_if_needed -- notebooks on disk are a deliverable of
+          #     the flake, not of the server. Idempotent, cheap, and a door-2
+          #     user who later runs `python server.py` should find them there.
+          #   pkill -- entering `nix develop` has ALWAYS killed a running
+          #     server. Door 2 keeps that promise instead of inventing a new
+          #     one, so a later `python server.py` finds :5001 free.
+          #   git pull -- the `dev` shell skips gitUpdateLogic entirely, so
+          #     this bare pull is dev's ONLY update path. Inside the branch, a
+          #     habitual door-2 user would silently drift from upstream and
+          #     the magic cookie's forever-forward promise would rot.
+          copy_notebook_if_needed
+          pkill -f "python server.py" || true
+          git pull --quiet
+          # THE THRESHOLD: two doors, asked BEFORE anything starts.
+          #
+          # boot_menu.py speaks ONLY through its exit code -- 0 start the
+          # app, 10 stay in the shell. Nothing here parses its stdout, so no
+          # capture pipe can ever be held open by it (the rgx/xclip deadlock
+          # is the conviction). That also makes the renderer swappable: a
+          # Textual boot_menu.py can replace the stdlib/Rich one and this
+          # branch never learns the difference.
+          #
+          # FALL-THROUGH GUARANTEE: if scripts/boot_menu.py is absent -- an
+          # older checkout, a partial clone, a hand-deleted file -- the flake
+          # behaves EXACTLY as it did before the menu existed. The flake must
+          # never depend on a file that might not have landed.
+          BOOT_CHOICE=0
+          if [ -f scripts/boot_menu.py ]; then
+            python scripts/boot_menu.py
+            BOOT_CHOICE=$?
+          fi
+          if [ "$BOOT_CHOICE" -eq 10 ]; then
+            # DOOR 2 -- nothing starts. runScript is EXECUTED (named on its
+            # own line in each shellHook), never sourced, so exiting here
+            # ends this child process and drops the parent into its
+            # interactive prompt. That is the same path door 2 already took
+            # under the tail placement, witnessed 2026-07-23 landing at
+            # `(nix) pipulate $`. Exiting BEFORE the JupyterLab launch is
+            # what makes the quiet workshop quiet: no tmux session, no TTS
+            # greeting, no 30-second readiness poll, and -- the visible bug
+            # this fixes -- no backgrounded browser subshell spraying dots
+            # over the prompt and then announcing that a server nobody
+            # authorized failed to start.
+            exit 0
+          fi
           # Automatically start JupyterLab in background and server in foreground
           # Start JupyterLab in a tmux session
-          copy_notebook_if_needed
+          # NOTE: kill and launch stay PAIRED inside the branch. Splitting
+          # them (kill outside, launch inside) would murder another
+          # terminal's JupyterLab every time someone picked door 2.
           tmux kill-session -t jupyter 2>/dev/null || true
           # Start JupyterLab with error logging
           tmux new-session -d -s jupyter "source .venv/bin/activate && jupyter lab ${jupyterStartupNotebook} ${if autoOpenJupyter == "true" then "" else "--no-browser"} --workspace=\$JUPYTER_WORKSPACE_NAME --NotebookApp.token=\"\" --NotebookApp.password=\"\" --NotebookApp.disable_check_xsrf=True 2>&1 | tee /tmp/jupyter-startup.log"
@@ -613,10 +661,6 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             echo "   tmux attach -t jupyter  # to see full logs"
             echo
           fi
-          # Kill any running server instances
-          pkill -f "python server.py" || true
-          # Always pull the latest code before starting the server
-          git pull --quiet
           # Open FastHTML in the browser
           (
             # Wait for server to be ready before opening browser
@@ -652,32 +696,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               echo "⚠️  Server didn't start within 30 seconds, but continuing..."
             fi
           ) &
-          # THE THRESHOLD: two doors at the end of the boot.
-          #
-          # boot_menu.py speaks ONLY through its exit code -- 0 start the
-          # app, 10 stay in the shell. Nothing here parses its stdout, so no
-          # capture pipe can ever be held open by it (the rgx/xclip deadlock
-          # is the conviction). That also makes the renderer swappable: a
-          # Textual boot_menu.py can replace the stdlib/Rich one and this
-          # branch never learns the difference.
-          #
-          # FALL-THROUGH GUARANTEE: if scripts/boot_menu.py is absent -- an
-          # older checkout, a partial clone, a hand-deleted file -- the flake
-          # behaves EXACTLY as it did before the menu existed. The flake must
-          # never depend on a file that might not have landed.
-          #
-          # Door 2 leaves JupyterLab running in tmux and skips only the
-          # server, so the quiet workshop still has notebooks. Gating the
-          # Jupyter/TTS/browser section too is a separate, later move.
-          BOOT_CHOICE=0
-          if [ -f scripts/boot_menu.py ]; then
-            python scripts/boot_menu.py
-            BOOT_CHOICE=$?
-          fi
-          if [ "$BOOT_CHOICE" -ne 10 ]; then
-            # Run server in foreground
-            python server.py
-          fi
+          # Run server in foreground
+          python server.py
         '';
         # Logic for installing all Python packages
         pythonInstallLogic = ''
