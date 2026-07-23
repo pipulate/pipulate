@@ -874,7 +874,7 @@ def board(wallet, slot_name):
     results = {}
     if enrolled:
         with ThreadPoolExecutor(max_workers=CHECK_WORKERS) as pool:
-            futures = [(n, pool.submit(check_slot, n)) for n, _ in enrolled]
+            futures = [(n, pool.submit(check_slot, n, c)) for n, c in enrolled]
             for n, fut in futures:
                 results[n] = fut.result()
 
