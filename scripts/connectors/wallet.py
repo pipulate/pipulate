@@ -69,6 +69,12 @@ from pathlib import Path
 WALLET_PATH = os.environ.get('PIPULATE_WALLET') or str(
     Path.home() / '.config' / 'pipulate' / 'connectors.json')
 
+# The one file where paste-kind secrets come to rest: beside the wallet, never
+# in the repo, never in git, chmod 0600 on first write. `warm` writes NAMES and
+# VALUES here; the SCOREBOARD still reads NAMES only and never opens a value.
+DOTENV_PATH = Path(os.environ.get('PIPULATE_DOTENV') or
+                   Path.home() / '.config' / 'pipulate' / '.env').expanduser()
+
 # Repo root anchors browser_session profiles (data/uc_profiles/<name>), the
 # SAME directory weblogin.py writes. weblogin honors PIPULATE_ROOT then falls
 # back to its own parent.parent; wallet.py lives one level deeper
