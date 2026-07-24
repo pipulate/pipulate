@@ -1622,8 +1622,25 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
             ref = m.group(2)
             has_ext = any(ref.endswith(ext) for ext in STORY_EXTENSIONS)
             has_dir = '/' in ref and len(ref) > 2 and any(c.isalnum() for c in ref)
-            if has_ext or has_dir:
-                potential_refs.add(ref)
+            if not (has_ext or has_dir):
+                continue
+            # PROSE GUARD: on a commented line the optional '#' group is
+            # consumed into group(1), so the leading token is a real
+            # (toggled-off) ledger pin ONLY if nothing but whitespace, a
+            # '<--' note, or a two-space '#' inline note follows it. A comment
+            # that continues with one space + words is a sentence, not a path:
+            # a MIME type (text/markdown), a protocol name (SEARCH/REPLACE), a
+            # filename cited mid-thought (index.md, SKILL.md, adhoc.txt), or a
+            # paren-glued token ((payload.md). Those minted the phantom
+            # Broken-References alert; the compiler's own parser never loads a
+            # '#' line, and now neither does this checker's prose.
+            if '#' in m.group(1):
+                rest = line[m.end():]
+                if rest.strip() and not (
+                    rest.lstrip().startswith('<--') or re.match(r'\s{2,}#', rest)
+                ):
+                    continue
+            potential_refs.add(ref)
     
     # 2. Get the reality of the disk
     repo_files = collect_repo_files(REPO_ROOT)
