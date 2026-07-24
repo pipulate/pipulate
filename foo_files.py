@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,347 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 30 published in the last 7 days
+# There are 1,348 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 31 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -1015,6 +1015,8 @@ scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and e
 # remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
 # remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
 # remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+# imports/voice_synthesis.py                  # <-- The wand can talk to you (not sure if I'm keeping it in Honeybot chapter)
+
 
 # remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
 
