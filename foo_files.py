@@ -51,7 +51,7 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,346 already-written articles about this repo at MikeLev.in (Public)
+# There are 1,347 already-written articles about this repo at MikeLev.in (Public)
 # Velocity: 30 published in the last 7 days
 # --- END STATS ---
 
@@ -663,7 +663,7 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-scripts/articles/article.txt
+scripts/connectors/wallet.py  # [11,379 tokens | 45,533 bytes]
 
 # ---------------------------------------------------------------------------
 # THE PORTABLE CARTRIDGE — the detachable seed of the Software Von Neumann Probe
@@ -1693,7 +1693,6 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # scripts/confluence_probe.py  # [4,990 tokens | 20,668 bytes]
 # scripts/connectors/jira.py  # [5,083 tokens | 20,850 bytes]
 # scripts/connectors/slack.py  # [3,622 tokens | 15,054 bytes]
-# scripts/connectors/wallet.py  # [11,379 tokens | 45,533 bytes]
 # scripts/dial_spinner.py  # [398 tokens | 1,463 bytes]
 # scripts/flippers.py  # [350 tokens | 1,309 bytes]
 # scripts/gsc/facet_allowlist.py  # [2,538 tokens | 10,602 bytes]
