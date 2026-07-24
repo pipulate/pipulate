@@ -571,16 +571,16 @@ function mount_sandworm()
     -- protecting existing prose. Either way the cursor lands in insert mode
     -- right after the speaker label — the old i**Me**: feel, full saddle.
     local template = "**Me**: \n\n"
-        .. "Probe:\n\n"
-        .. "```bash\n\n```\n\n"
-        .. "Context:\n\n"
-        .. "```text\n\n```\n\n"
-        .. "Patches: [patch, app, d, m, patch, app, d, m...]\n\n"
-        .. "```diff\n\n```\n\n"
-        .. "Ignition: [make the patched code RUN, then re-run the Probe verbatim]\n\n"
-        .. "```bash\n\n```\n\n"
-        .. "Prompt:\n\n"
-        .. "🎤"
+        .. "**1: Probe**:\n\n"
+        .. "```bash\n[Paste terminal output of running probe here]\n```\n\n"
+        .. "**2: Context**:\n\n"
+        .. "```text\n[Paste entire `adhoc.txt` here]\n```\n\n"
+        .. "**3: Patches**: [patch, app, d, m, patch, app, d, m...]\n\n"
+        .. "```diff\n[Paste all diffs drag-copied from terminal here]\n```\n\n"
+        .. "**4: Ignition**: [make the patched code RUN, then re-run the Probe verbatim]\n\n"
+        .. "```bash\n[What you paste here may vary, but often probe run again]\n```\n\n"
+        .. "**5: Prompt**: [The AI prompting itself (BEWARB the jabberwocky ouroboros dinosaurs!]\n\n"
+        .. "```text\n[Probably what the AI gives you, but BEWARB the ouroboros]\n```"
     local row = vim.api.nvim_win_get_cursor(0)[1]
     local cur = vim.api.nvim_buf_get_lines(0, row - 1, row, false)[1] or ""
     local lines = vim.split(template, "\n")
