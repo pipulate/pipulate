@@ -847,13 +847,12 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # Ad Hoc CHOP: The Not-Managed-by-Git Safe-for-Client-Data place  
                                                                   
 # The following 3 files ARE the system
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
-# prompt_foo.py               # <-- Prompt Fu compiler, makes the very README for AGENTS-like payload you're reading right now, but it needs to be more like that
-# foo_files.py                # <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
+prompt_foo.py               # <-- Prompt Fu compiler, makes the very README for AGENTS-like payload you're reading right now, but it needs to be more like that
+foo_files.py                # <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops
 
 # BIG STANDARD STUFF (Optionally comment out any)
 requirements.in             # <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
-requirements.txt
 __init__.py                 # <-- Master versioning
 release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
 pyproject.toml              # <-- The PyPI Packaging details
@@ -1393,36 +1392,37 @@ foo_files.py
 
 DEFAULT_CHOP = r"""
 # THE DAILY DRIVER (Stable getting-started snapshot, independent of whatever
-# AI_PHOOEY_CHOP is mid-edit for ad hoc work)
 # COMMAND: python prompt_foo.py --chop DEFAULT_CHOP --no-tree
 # Workflow: `prompt` (capture clipboard -> prompt.md), then `default` (compile).
 
+# The following 3 files ARE the system
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
+prompt_foo.py               # <-- Prompt Fu compiler, makes the very README for AGENTS-like payload you're reading right now, but it needs to be more like that
+foo_files.py                # <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops
+
+# BIG STANDARD STUFF (Optionally comment out any)
+requirements.in             # <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
+__init__.py                 # <-- Master versioning
+release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
+pyproject.toml              # <-- The PyPI Packaging details
+
 ~/repos/nixos/autognome.py  #  <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
 scripts/foo_cartridge.py    # Needs description
 scripts/foo_replay.py       # Needs description
-pyproject.toml              # <-- The PyPI Packaging details
-prompt_foo.py               # <-- Prompt Fu compiler, makes the very README for AGENTS-like payload you're reading right now, but it needs to be more like that
-foo_files.py                # <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops ------------------------------------ !!! STANDARD WRAPPER: 2
 .gitattributes              # <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
 .gitignore                  # <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
 init.lua                    # <-- Daily driver hot-keys that overlap with aliases in flake.nix
 flake.nix                   # <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
-requirements.in             # <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 apply.py                    # <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
 scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
 cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
 scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
 scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
-__init__.py                 # <-- Master versioning
-release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
-scripts/webclip_2_markdown.py    # <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps / need to shorten the name)
-scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
-
-# PLAYER-PIANO GRAVITY OPT-IN (salvaged from the retired TODO_MOMENTUM_CHOP):
-# uncomment to weight the 3rd player piano / Rich ASCII colorizer into context.
-# imports/ascii_displays.py
+imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
+# imports/voice_synthesis.py  # <-- The wand can talk to you
+# scripts/webclip_2_markdown.py    # <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps / need to shorten the name)
+# scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
 """
 
 INSTALL_CHOP = r"""
