@@ -1102,7 +1102,7 @@ You're here to make the workflow concepts accessible and help users understand t
             display_text = f"Status: {current_value.get('status')}\nToken: {current_value.get('api_key')}"
             pip.append_to_history(f"[WIDGET CONTENT] {step.show} (Finalized):\n{display_text}")
             return Div(
-                Card(H3(f"🔒 {step.show}: Completed"), Pre(display_text, cls="code-block-container")),
+                Article(H3(f"🔒 {step.show}: Completed"), Pre(display_text, cls="code-block-container")),
                 Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
                 id=step_id
             )
@@ -1148,7 +1148,7 @@ You're here to make the workflow concepts accessible and help users understand t
             )
             
             return Div(
-                Card(
+                Article(
                     H3(f"🕷️ {step.show}"),
                     P("If you are a Botify customer or employee, you can connect your account. ", 
                       A("Get your API key here ↗", href="https://app.botify.com/account/", target="_blank"),
