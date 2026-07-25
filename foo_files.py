@@ -532,7 +532,12 @@ AI_PHOOEY_CHOP = r"""                                                           
 # No per-ticket directories, resettable counters, nested cartridges, or
 # correlation manifests are required until a real handoff demonstrates friction.
 
-# THE MCP RECEIPT RULE (proposed 2026-07-25; transport UNWITNESSED — PENDING):
+# THE MCP RECEIPT RULE (PENDING; URL WITNESSED 2026-07-25 — an unauthenticated
+# tools/list POST returned 401, pinning the server ADDRESS and its auth gate.
+# Handshake order, protocol version, session header, tool wire-spelling, and
+# accepted credential remain INFERRED. Banking flip: the first GREEN
+# `python scripts/connectors/mcp.py <server> --check`, hand-run then
+# compile-echoed — the instrument's own success IS the witnessing receipt):
 # A model-mediated tool call enters this system as a RECEIPT or not at all. The
 # receipt is a FOUR-TUPLE the model emits verbatim and never paraphrases:
 #   (1) server — the MCP server URL
