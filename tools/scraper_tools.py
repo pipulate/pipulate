@@ -443,6 +443,12 @@ async def selenium_automation(params: dict) -> dict:
         if verbose: logger.info("🌐 Extracting wire-truth headers and raw source from CDP ledger...")
         actual_headers = {}
         true_raw_source = ""
+        # PROVENANCE: source.html is only "raw source" when it came off the
+        # wire. Every fallback below writes the HYDRATED DOM into that file
+        # under the same name, and until now the only witness was a log line
+        # that scrolls away. Stamp the artifact instead, so the mislabel cannot
+        # outlive the terminal that reported it.
+        source_provenance = "wire"
         try:
             # FRAME SELECTION: [-1] is deliberate, and it is a HEURISTIC, not a
             # guarantee.
@@ -491,6 +497,7 @@ async def selenium_automation(params: dict) -> dict:
             if not true_raw_source.strip():
                 if verbose: logger.warning("⚠️ Wire body unavailable; falling back to page_source.")
                 true_raw_source = driver.page_source
+                source_provenance = "page_source_fallback"
             if not actual_headers:
                 actual_headers = {"error": "No Document response found in CDP ledger"}
         except Exception as e:
@@ -498,7 +505,12 @@ async def selenium_automation(params: dict) -> dict:
             if not actual_headers:
                 actual_headers = {"error": "Could not extract headers from CDP ledger"}
             if not true_raw_source.strip():
+                # This path carried NO warning at all until now -- a completely
+                # silent swap of hydrated DOM for wire source, which is the
+                # worst shape this failure can take.
+                if verbose: logger.warning("⚠️ Wire extraction raised; falling back to page_source.")
                 true_raw_source = driver.page_source  # Fallback to the live DOM
+                source_provenance = "page_source_fallback"
             
         # Save True Raw Source
         source_html_path = output_dir / "source.html"
@@ -511,6 +523,12 @@ async def selenium_automation(params: dict) -> dict:
             "title": driver.title,
             "timestamp": datetime.now().isoformat(),
             "status": "success",
+            # Consumers read this to decide whether source.html may be trusted
+            # as the LEFT PANEL of the triptych. Absent on captures taken
+            # before 2026-07-24, which consumers therefore treat as UNFLAGGED,
+            # not as bad -- fail-open on purpose, because marking years of
+            # legacy captures suspect is noise wearing caution's hat.
+            "source_provenance": source_provenance,
             "headers": actual_headers
         }
         headers_path = output_dir / "headers.json"
