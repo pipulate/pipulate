@@ -396,9 +396,27 @@ async def selenium_automation(params: dict) -> dict:
         artifacts['hydrated_dom'] = str(dom_path)
 
         # --- Network Flight Recorder (CDP perf log -> network_log.jsonl) ---
-        # Drained BEFORE the XHR header replay below so the ledger reflects the
-        # organic page load, not our own reenactments. get_log() empties the
-        # buffer, so this is the one and only read. Raw events now; lenses later.
+        # ORDERING IS LOAD-BEARING, AND NOT FOR THE REASON THIS COMMENT USED TO
+        # GIVE. The old note said this drain must precede "the XHR header replay
+        # below." That replay no longer exists -- the wire-truth block below now
+        # reads this ledger instead of reissuing anything. SAME-CAR LABEL RULE
+        # conviction 2026-07-24: the guard rail named a hazard already removed,
+        # which reads as documentation and functions as archaeology.
+        #
+        # The real constraint is stronger. This drain is the PRODUCER and the
+        # getResponseBody block below is the CONSUMER: cdp_events is built here
+        # and doc_events filters nothing else. Move this drain below that block
+        # and cdp_events is empty, doc_events is empty, getResponseBody never
+        # runs, and true_raw_source falls through to driver.page_source -- the
+        # HYDRATED DOM written into source.html under the name "raw source."
+        # Hinge A then diffs the hydrated DOM against itself, reports FLAT 0
+        # degrees, and testifies that the site does nothing with JavaScript.
+        # Silent, plausible, and it inverts the one measurement the triptych
+        # exists to take.
+        #
+        # get_log() DRAINS: this is the one and only read. A second
+        # get_log("performance") anywhere returns [], so any debug drain added
+        # above this line steals the whole flight and leaves the ledger empty.
         if verbose: logger.info("🛜 Draining CDP performance log (network flight recorder)...")
         cdp_events = []
         try:
@@ -426,6 +444,33 @@ async def selenium_automation(params: dict) -> dict:
         actual_headers = {}
         true_raw_source = ""
         try:
+            # FRAME SELECTION: [-1] is deliberate, and it is a HEURISTIC, not a
+            # guarantee.
+            #
+            # RIGHT for the case this function is built around: the
+            # staleness_of() wait above exists because a security challenge
+            # serves an interstitial Document and then reloads. Two Document
+            # responses, and the LAST is the real page -- [0] would bottle the
+            # challenge screen. Redirect chains do not threaten this; CDP
+            # surfaces those as requestWillBeSent with redirectResponse, not as
+            # additional responseReceived events.
+            #
+            # WRONG whenever a same-domain subframe loads after the main frame.
+            # An iframe navigation is also type=Document, it arrives later, and
+            # "domain in url" is a SUBSTRING test that matches cdn.example.com,
+            # example.com.attacker.net, and every subdomain. Then requestId
+            # belongs to the iframe, getResponseBody returns the iframe's HTML,
+            # and source.html silently becomes a fragment nobody asked for --
+            # while Hinge B still reports byte-for-byte agreement, because it
+            # agrees about the WRONG document.
+            #
+            # The real discriminator is frameId: a navigation changes loaderId,
+            # not frameId, so the main frame's id is stable across the challenge
+            # reload while every subframe has a different one. Filter to the main
+            # frameId first, THEN take [-1]. Left unchanged pending the frameId
+            # census probe -- no receipt yet shows a cached ledger carrying more
+            # than one Document frameId, and rewriting on a hypothesis produces
+            # a fix nobody can falsify.
             doc_events = [
                 ev for ev in cdp_events
                 if ev.get("method") == "Network.responseReceived"
