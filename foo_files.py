@@ -958,6 +958,15 @@ scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and e
 #    self-feeding coin-flip loop is optional. Graduate when the rule, probe,
 #    and receipt are banked. This debt does not block cartridge replay work.
 
+# 📌 2026-07-25 | /home/mike/repos/trimnoir/_posts/2026-07-25-mcp-dayton-wind-tunnel-interoperability.md
+#    canonical_url: https://mikelev.in/futureproof/mcp-dayton-wind-tunnel-interoperability/
+#    Dayton wind-tunnel campaign: 3-tier evidence ladder (Tier 1 Mechanism 20/20,
+#    Tier 2 FastMCP Interop green, Tier 3 Botify Remote pending). Tautology trap
+#    and model context-anchoring exposed and conquered.
+#    OWES: zero-dep native PKCE OAuth 2.1 warmer (~40 lines httpx/secrets/hashlib)
+#    for Botify Tier 3 bearer token generation saved to
+#    ~/.config/pipulate/mcp_botify_token.json; final Tier-3 Botify replay receipt.
+
 # ============================================================================
 # VI. Hello World! - You think you've seen Hello Worlds? You don't know Jack.
 # ============================================================================
