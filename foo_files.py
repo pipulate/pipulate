@@ -1644,8 +1644,6 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # - EARMARK: PII GREEDY-NAME INCIDENT (banked 2026-07-19): bare given-name rules (\bTaylor\b et al.) mangled innocent prose ("Brave Little Taylor" -> "Brave Little Client Manager"), so pii_substitutions.txt was emptied — shield DOWN. Fix shipped same day: curated restore keeps full-name/email/domain/Slack rules, retires bare given names. Verify the next few public articles read clean AND still redact, then delete this line.
 # - *make version_sync update `assets/installer/install.sh` (the source) instead of only the downstream Pipulate.com copy, breaking the release/sync ping-pong*
 # - *delete the dead `update_flake_nix()` limb, since the flake reads `__init__.py` at eval time and the matcher has nothing to match*.
-# - Document that the flake.lock file remains unpinned for roll-forward on Nix unstable branch. 
-# - Do the work of purging PicoCSS "Card" references so I can unpin FastHTML in requirements.in
 # - Swap in uv for pip for a faster install
 # - Un-hardwire the Jekyll `/futureproof/` blog folder to be `blog.nix` configured
 # - EARMARK: SPINE/GUARD LIVE-FIRE (staged 2026-07-19): collision guard + book-spine injection have green code receipts but have never fired on a real `article` run. First live publish must show the "📚 Book spine injected" line and a non-colliding new slug; then delete this line.
