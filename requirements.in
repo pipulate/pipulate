@@ -84,7 +84,7 @@ openpyxl
 lxml
 
 # Web Server
-python-fasthtml==0.12.47
+python-fasthtml
 uvicorn
 
 # Automation
