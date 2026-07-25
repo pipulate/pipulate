@@ -4,26 +4,25 @@
 #
 #    pip-compile --max-rounds=500 --output-file=requirements.txt requirements.in
 #
-aiohappyeyeballs==2.6.1
+aiohappyeyeballs==2.7.1
     # via aiohttp
-aiohttp==3.13.3
-    # via
-    #   google-genai
-    #   langchain-community
+aiohttp==3.14.3
+    # via langchain-community
 aiosignal==1.4.0
     # via aiohttp
-annotated-doc==0.0.4
-    # via typer
-annotated-types==0.7.0
+altair==6.2.2
+    # via river
+annotated-types==0.8.0
     # via pydantic
-anthropic==0.83.0
+anthropic==0.120.0
     # via llm-anthropic
-anyio==4.12.1
+anyio==4.14.2
     # via
     #   anthropic
     #   google-genai
     #   httpx
     #   jupyter-server
+    #   langsmith
     #   openai
     #   starlette
     #   watchfiles
@@ -39,60 +38,59 @@ argon2-cffi-bindings==25.1.0
     # via argon2-cffi
 arrow==1.4.0
     # via isoduration
-astroid==4.0.4
-    # via pylint
-asttokens==3.0.1
+asttokens==3.0.2
     # via stack-data
 astunparse==1.6.3
     # via -r requirements.in
-async-lru==2.2.0
+async-lru==2.3.0
     # via jupyterlab
-attrs==25.4.0
+attrs==26.1.0
     # via
     #   aiohttp
+    #   cattrs
     #   jsonschema
     #   outcome
     #   referencing
     #   trio
 babel==2.18.0
     # via jupyterlab-server
-beautifulsoup4==4.14.3
+beautifulsoup4==4.15.0
     # via
     #   -r requirements.in
     #   markdownify
     #   nbconvert
     #   python-fasthtml
-bleach[css]==6.3.0
+bleach[css]==6.4.0
     # via nbconvert
-blinker==1.6.2
-    # via
-    #   -r requirements.in
-    #   selenium-wire
+blinker==1.9.0
+    # via selenium-wire
 brotli==1.2.0
     # via selenium-wire
-build==1.4.0
+build==1.5.0
     # via pip-tools
-certifi==2026.1.4
+cattrs==26.1.0
+    # via markdown-to-confluence
+certifi==2026.7.22
     # via
     #   httpcore
     #   httpx
     #   requests
     #   selenium
     #   selenium-wire
-cffi==2.0.0
+cffi==2.1.0
     # via
     #   argon2-cffi-bindings
     #   cryptography
-charset-normalizer==3.4.4
+charset-normalizer==3.4.9
     # via requests
-click==8.3.1
+click==8.4.2
     # via
     #   click-default-group
+    #   huggingface-hub
     #   llm
     #   nltk
     #   pip-tools
     #   sqlite-utils
-    #   typer
     #   uvicorn
 click-default-group==1.2.4
     # via
@@ -106,45 +104,47 @@ condense-json==0.1.3
     # via llm
 contourpy==1.3.3
     # via matplotlib
-cryptography==46.0.5
+cryptography==49.0.0
     # via
     #   google-auth
     #   pyopenssl
+    #   secretstorage
 cycler==0.12.1
     # via matplotlib
-dataclasses-json==0.6.7
-    # via langchain-community
-debugpy==1.8.20
+debugpy==1.8.21
     # via ipykernel
-decorator==5.2.1
+decorator==5.3.1
     # via
     #   ipython
     #   moviepy
 defusedxml==0.7.1
-    # via nbconvert
-dill==0.4.1
-    # via pylint
+    # via
+    #   nbconvert
+    #   nltk
 distro==1.9.0
     # via
     #   anthropic
     #   google-genai
+    #   langsmith
     #   openai
-docstring-parser==0.17.0
+docstring-parser==0.18.0
     # via anthropic
+docutils==0.23
+    # via readme-renderer
 et-xmlfile==2.0.0
     # via openpyxl
 executing==2.2.1
     # via stack-data
-fastcore==1.12.16
+fastcore==2.1.7
     # via
     #   apswutils
     #   fastlite
     #   python-fasthtml
-fastjsonschema==2.21.2
+fastjsonschema==2.22.0
     # via nbformat
 fastlite==0.2.4
     # via python-fasthtml
-filelock==3.24.3
+filelock==3.32.0
     # via
     #   huggingface-hub
     #   tldextract
@@ -152,7 +152,7 @@ filetype==1.2.0
     # via langchain-google-genai
 flatbuffers==25.12.19
     # via onnxruntime
-fonttools==4.61.1
+fonttools==4.63.0
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
@@ -160,38 +160,41 @@ frozenlist==1.8.0
     # via
     #   aiohttp
     #   aiosignal
-fsspec==2026.2.0
+fsspec==2026.6.0
     # via huggingface-hub
 google-ai-generativelanguage==0.6.15
     # via google-generativeai
-google-api-core[grpc]==2.30.0
+google-api-core[grpc]==2.33.0
     # via
     #   google-ai-generativelanguage
     #   google-api-python-client
     #   google-generativeai
-google-api-python-client==2.190.0
+google-api-python-client==2.198.0
     # via
     #   -r requirements.in
     #   google-generativeai
-google-auth[requests]==2.49.0.dev0
+google-auth[requests]==2.56.2
     # via
     #   google-ai-generativelanguage
     #   google-api-core
     #   google-api-python-client
     #   google-auth-httplib2
+    #   google-auth-oauthlib
     #   google-genai
     #   google-generativeai
-google-auth-httplib2==0.3.0
+google-auth-httplib2==0.4.0
     # via google-api-python-client
-google-genai==1.64.0
+google-auth-oauthlib==1.4.0
+    # via -r requirements.in
+google-genai==2.14.0
     # via langchain-google-genai
 google-generativeai==0.8.6
     # via -r requirements.in
-googleapis-common-protos==1.72.0
+googleapis-common-protos==1.75.0
     # via
     #   google-api-core
     #   grpcio-status
-greenlet==3.3.2
+greenlet==3.5.4
     # via sqlalchemy
 grpcio==1.60.1
     # via
@@ -205,22 +208,23 @@ h11==0.16.0
     #   httpcore
     #   uvicorn
     #   wsproto
-h2==4.3.0
+h2==4.4.0
     # via selenium-wire
-hf-xet==1.3.0
+hf-xet==1.5.2
     # via huggingface-hub
-hpack==4.1.0
+hpack==4.2.0
     # via h2
 httpcore==1.0.9
     # via httpx
-httplib2==0.31.2
+httplib2==0.32.0
     # via
     #   google-api-python-client
     #   google-auth-httplib2
-httptools==0.7.1
+httptools==0.8.0
     # via uvicorn
 httpx==0.28.1
     # via
+    #   -r requirements.in
     #   anthropic
     #   google-genai
     #   huggingface-hub
@@ -236,13 +240,15 @@ httpx-sse==0.4.3
     # via
     #   langchain-community
     #   llm-mistral
-huggingface-hub==1.4.1
+huggingface-hub==1.24.0
     # via -r requirements.in
 hyperframe==6.1.0
     # via
     #   h2
     #   selenium-wire
-idna==3.11
+id==1.6.1
+    # via twine
+idna==3.18
     # via
     #   anyio
     #   httpx
@@ -251,15 +257,15 @@ idna==3.11
     #   tldextract
     #   trio
     #   yarl
-ijson==3.5.0
+ijson==3.5.1
     # via llm-gemini
-imageio==2.37.2
+imageio==2.37.4
     # via moviepy
 imageio-ffmpeg==0.6.0
     # via moviepy
-ipykernel==7.2.0
+ipykernel==7.3.0
     # via jupyterlab
-ipython==9.10.0
+ipython==9.15.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -269,23 +275,32 @@ ipywidgets==8.1.8
     # via -r requirements.in
 isoduration==20.11.0
     # via jsonschema
-isort==8.0.0
-    # via
-    #   -r requirements.in
-    #   pylint
-itables==2.7.0
+isort==8.0.1
+    # via -r requirements.in
+itables==2.9.1
     # via -r requirements.in
 itsdangerous==2.2.0
     # via python-fasthtml
-jedi==0.19.2
+jaraco-classes==3.4.0
+    # via keyring
+jaraco-context==6.1.2
+    # via keyring
+jaraco-functools==4.6.0
+    # via keyring
+jedi==0.20.0
     # via ipython
+jeepney==0.9.0
+    # via
+    #   keyring
+    #   secretstorage
 jinja2==3.1.6
     # via
+    #   altair
     #   jupyter-server
     #   jupyterlab
     #   jupyterlab-server
     #   nbconvert
-jiter==0.13.0
+jiter==0.16.0
     # via
     #   anthropic
     #   openai
@@ -293,24 +308,25 @@ joblib==1.5.3
     # via
     #   nltk
     #   scikit-learn
-json-schema-to-pydantic==0.4.9
-    # via llm-anthropic
-json5==0.13.0
+json5==0.15.0
     # via jupyterlab-server
 jsonpatch==1.33
     # via langchain-core
-jsonpointer==3.0.0
+jsonpointer==3.1.1
     # via
     #   jsonpatch
     #   jsonschema
 jsonschema[format-nongpl]==4.26.0
     # via
+    #   altair
     #   jupyter-events
     #   jupyterlab-server
     #   nbformat
 jsonschema-specifications==2025.9.1
     # via jsonschema
-jupyter-client==8.8.0
+jupyter-builder==1.1.1
+    # via jupyterlab
+jupyter-client==8.9.1
     # via
     #   ipykernel
     #   jupyter-server
@@ -318,17 +334,18 @@ jupyter-client==8.8.0
 jupyter-core==5.9.1
     # via
     #   ipykernel
+    #   jupyter-builder
     #   jupyter-client
     #   jupyter-server
     #   jupyterlab
     #   nbclient
     #   nbconvert
     #   nbformat
-jupyter-events==0.12.0
+jupyter-events==0.12.1
     # via jupyter-server
-jupyter-lsp==2.3.0
+jupyter-lsp==2.3.1
     # via jupyterlab
-jupyter-server==2.17.0
+jupyter-server==2.20.0
     # via
     #   jupyter-lsp
     #   jupyterlab
@@ -336,7 +353,7 @@ jupyter-server==2.17.0
     #   notebook-shim
 jupyter-server-terminals==0.5.4
     # via jupyter-server
-jupyterlab==4.5.5
+jupyterlab==4.6.2
     # via -r requirements.in
 jupyterlab-pygments==0.3.0
     # via nbconvert
@@ -344,19 +361,21 @@ jupyterlab-server==2.28.0
     # via jupyterlab
 jupyterlab-widgets==3.0.16
     # via ipywidgets
-jupytext==1.19.1
+jupytext==1.19.5
     # via -r requirements.in
 kaitaistruct==0.11
     # via selenium-wire
-kiwisolver==1.4.9
+keyring==25.7.0
+    # via twine
+kiwisolver==1.5.0
     # via matplotlib
-langchain==1.2.10
+langchain==1.3.14
     # via -r requirements.in
-langchain-classic==1.0.1
+langchain-classic==1.0.8
     # via langchain-community
-langchain-community==0.4.1
+langchain-community==0.4.2
     # via -r requirements.in
-langchain-core==1.2.15
+langchain-core==1.5.1
     # via
     #   langchain
     #   langchain-classic
@@ -367,88 +386,101 @@ langchain-core==1.2.15
     #   langgraph
     #   langgraph-checkpoint
     #   langgraph-prebuilt
-langchain-google-genai==4.2.1
+    #   langgraph-sdk
+langchain-google-genai==4.3.1
     # via -r requirements.in
-langchain-openai==1.1.10
+langchain-openai==1.4.1
     # via -r requirements.in
-langchain-text-splitters==1.1.1
+langchain-protocol==0.0.18
+    # via
+    #   langchain-core
+    #   langgraph-sdk
+langchain-text-splitters==1.1.2
     # via langchain-classic
-langgraph==1.0.9
+langgraph==1.2.9
     # via langchain
-langgraph-checkpoint==4.0.0
+langgraph-checkpoint==4.1.1
     # via
     #   langgraph
     #   langgraph-prebuilt
-langgraph-prebuilt==1.0.8
+langgraph-prebuilt==1.1.0
     # via langgraph
-langgraph-sdk==0.3.9
+langgraph-sdk==0.4.2
     # via langgraph
-langsmith==0.7.6
+langsmith==0.10.10
     # via
     #   langchain-classic
     #   langchain-community
     #   langchain-core
 lark==1.3.1
     # via rfc3987-syntax
-llm==0.28
+llm==0.31.1
     # via
     #   -r requirements.in
     #   llm-anthropic
     #   llm-gemini
     #   llm-mistral
     #   llm-ollama
-llm-anthropic==0.24
+llm-anthropic==0.25.1
     # via -r requirements.in
-llm-gemini==0.29
+llm-gemini==0.32
     # via -r requirements.in
 llm-mistral==0.15
     # via -r requirements.in
-llm-ollama==0.15.1
+llm-ollama==0.16.1
     # via -r requirements.in
 loguru==0.7.3
     # via -r requirements.in
-lxml==6.0.2
-    # via -r requirements.in
-markdown-it-py==4.0.0
+lxml==6.1.1
+    # via
+    #   -r requirements.in
+    #   markdown-to-confluence
+markdown==3.10.2
+    # via
+    #   markdown-to-confluence
+    #   pymdown-extensions
+markdown-it-py==4.2.0
     # via
     #   jupytext
     #   mdit-py-plugins
     #   rich
-markdownify==1.2.2
+markdown-to-confluence==0.6.1
+    # via -r requirements.in
+markdownify==1.2.3
     # via -r requirements.in
 markupsafe==3.0.3
     # via
     #   jinja2
     #   nbconvert
-marshmallow==3.26.2
-    # via dataclasses-json
-matplotlib==3.10.8
+matplotlib==3.11.1
     # via -r requirements.in
-matplotlib-inline==0.2.1
+matplotlib-inline==0.2.2
     # via
     #   ipykernel
     #   ipython
-mccabe==0.7.0
-    # via pylint
-mdit-py-plugins==0.5.0
+mdit-py-plugins==0.6.1
     # via jupytext
 mdurl==0.1.2
     # via markdown-it-py
-mistune==3.2.0
+mistune==3.3.4
     # via nbconvert
+more-itertools==11.1.0
+    # via
+    #   jaraco-classes
+    #   jaraco-functools
 moviepy==2.2.1
     # via -r requirements.in
-mpmath==1.3.0
-    # via sympy
 multidict==6.7.1
     # via
     #   aiohttp
     #   yarl
-mypy-extensions==1.1.0
-    # via typing-inspect
-nbclient==0.10.4
+narwhals==2.24.0
+    # via
+    #   altair
+    #   scikit-learn
+nbclient==0.11.0
     # via nbconvert
-nbconvert==7.17.0
+nbconvert==7.17.1
     # via jupyter-server
 nbformat==5.10.4
     # via
@@ -459,13 +491,15 @@ nbformat==5.10.4
     #   nbstripout
 nbstripout==0.9.1
     # via -r requirements.in
-nest-asyncio==1.6.0
+nest-asyncio2==1.7.2
     # via ipykernel
-nltk==3.9.3
+nh3==0.3.6
+    # via readme-renderer
+nltk==3.10.0
     # via -r requirements.in
 notebook-shim==0.2.4
     # via jupyterlab
-numpy==2.4.2
+numpy==2.5.1
     # via
     #   -r requirements.in
     #   contourpy
@@ -475,34 +509,39 @@ numpy==2.4.2
     #   moviepy
     #   onnxruntime
     #   pandas
+    #   river
     #   scikit-learn
     #   scipy
 oauthlib==3.3.1
-    # via python-fasthtml
-ollama==0.6.1
+    # via
+    #   python-fasthtml
+    #   requests-oauthlib
+ollama==0.6.2
     # via llm-ollama
-onnxruntime==1.24.2
+onnxruntime==1.28.0
     # via
     #   -r requirements.in
     #   piper-tts
-openai==2.24.0
+openai==2.48.0
     # via
     #   langchain-openai
     #   llm
 openpyxl==3.1.5
     # via -r requirements.in
-orjson==3.11.7
+orjson==3.11.9
     # via
     #   langgraph-sdk
     #   langsmith
+    #   markdown-to-confluence
 ormsgpack==1.12.2
     # via langgraph-checkpoint
 outcome==1.3.0.post0
     # via
     #   trio
     #   trio-websocket
-packaging==26.0
+packaging==26.2
     # via
+    #   altair
     #   build
     #   huggingface-hub
     #   ipykernel
@@ -513,18 +552,20 @@ packaging==26.0
     #   jupytext
     #   langchain-core
     #   langsmith
-    #   marshmallow
     #   matplotlib
     #   nbconvert
     #   onnxruntime
+    #   twine
     #   webdriver-manager
     #   wheel
-pandas==3.0.1
+pandas==3.0.5
     # via -r requirements.in
 pandocfilters==1.5.1
     # via nbconvert
-parso==0.8.6
+parso==0.8.7
     # via jedi
+pathvalidate==3.3.1
+    # via piper-tts
 pexpect==4.9.0
     # via ipython
 pillow==11.3.0
@@ -532,14 +573,13 @@ pillow==11.3.0
     #   imageio
     #   matplotlib
     #   moviepy
-pip-tools==7.5.3
+pip-tools==7.6.0
     # via -r requirements.in
-piper-tts==1.4.1
+piper-tts==1.6.0
     # via -r requirements.in
-platformdirs==4.9.2
+platformdirs==4.11.0
     # via
     #   jupyter-core
-    #   pylint
     #   yapf
 pluggy==1.6.0
     # via
@@ -547,15 +587,15 @@ pluggy==1.6.0
     #   sqlite-utils
 proglog==0.1.12
     # via moviepy
-prometheus-client==0.24.1
+prometheus-client==0.26.0
     # via jupyter-server
 prompt-toolkit==3.0.52
     # via ipython
-propcache==0.4.1
+propcache==0.5.2
     # via
     #   aiohttp
     #   yarl
-proto-plus==1.27.1
+proto-plus==1.28.2
     # via
     #   google-ai-generativelanguage
     #   google-api-core
@@ -569,31 +609,31 @@ protobuf==5.29.6
     #   onnxruntime
     #   proto-plus
 psutil==7.2.2
-    # via ipykernel
+    # via
+    #   ipykernel
+    #   ipython
 ptyprocess==0.7.0
     # via
     #   pexpect
     #   terminado
 pure-eval==0.2.3
     # via stack-data
-puremagic==2.0.0
+puremagic==2.2.0
     # via llm
-pyasn1==0.6.2
+pyasn1==0.6.4
     # via
     #   pyasn1-modules
-    #   rsa
     #   selenium-wire
 pyasn1-modules==0.4.2
     # via google-auth
 pycparser==3.0
     # via cffi
-pydantic==2.12.5
+pydantic==2.13.4
     # via
     #   -r requirements.in
     #   anthropic
     #   google-genai
     #   google-generativeai
-    #   json-schema-to-pydantic
     #   langchain
     #   langchain-classic
     #   langchain-core
@@ -605,23 +645,24 @@ pydantic==2.12.5
     #   ollama
     #   openai
     #   pydantic-settings
-pydantic-core==2.41.5
+pydantic-core==2.46.4
     # via pydantic
-pydantic-settings==2.13.1
+pydantic-settings==2.14.2
     # via langchain-community
 pydot==4.0.1
     # via -r requirements.in
 pyfiglet==1.0.4
     # via -r requirements.in
-pygments==2.19.2
+pygments==2.20.0
     # via
     #   ipython
     #   ipython-pygments-lexers
     #   nbconvert
+    #   readme-renderer
     #   rich
-pylint==4.0.5
-    # via -r requirements.in
-pyopenssl==25.3.0
+pymdown-extensions==11.0.1
+    # via markdown-to-confluence
+pyopenssl==26.3.0
     # via selenium-wire
 pyparsing==3.3.2
     # via
@@ -645,7 +686,7 @@ python-dateutil==2.9.0.post0
     #   pandas
     #   python-fasthtml
     #   sqlite-utils
-python-dotenv==1.2.1
+python-dotenv==1.2.2
     # via
     #   -r requirements.in
     #   moviepy
@@ -654,13 +695,13 @@ python-dotenv==1.2.1
     #   webdriver-manager
 python-fasthtml==0.12.47
     # via -r requirements.in
-python-frontmatter==1.1.0
+python-frontmatter==1.3.0
     # via -r requirements.in
-python-json-logger==4.0.0
+python-json-logger==4.1.0
     # via jupyter-events
-python-multipart==0.0.22
+python-multipart==0.0.32
     # via python-fasthtml
-python-ulid==3.1.0
+python-ulid==4.0.1
     # via llm
 pyyaml==6.0.3
     # via
@@ -671,6 +712,8 @@ pyyaml==6.0.3
     #   langchain-community
     #   langchain-core
     #   llm
+    #   markdown-to-confluence
+    #   pymdown-extensions
     #   python-frontmatter
     #   uvicorn
 pyzmq==27.1.0
@@ -678,16 +721,18 @@ pyzmq==27.1.0
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
+readme-renderer==45.0
+    # via twine
 referencing==0.37.0
     # via
     #   jsonschema
     #   jsonschema-specifications
     #   jupyter-events
-regex==2026.2.19
+regex==2026.7.19
     # via
     #   nltk
     #   tiktoken
-requests==2.32.5
+requests==2.34.2
     # via
     #   -r requirements.in
     #   google-api-core
@@ -697,41 +742,57 @@ requests==2.32.5
     #   langchain-classic
     #   langchain-community
     #   langsmith
+    #   markdown-to-confluence
     #   requests-file
+    #   requests-oauthlib
     #   requests-toolbelt
     #   tiktoken
     #   tldextract
+    #   twine
     #   undetected-chromedriver
     #   webdriver-manager
 requests-file==3.0.1
     # via tldextract
+requests-oauthlib==2.0.0
+    # via google-auth-oauthlib
 requests-toolbelt==1.0.0
     # via
     #   -r requirements.in
     #   langsmith
+    #   twine
 rfc3339-validator==0.1.4
     # via
     #   jsonschema
     #   jupyter-events
+rfc3986==2.0.0
+    # via twine
 rfc3986-validator==0.1.1
     # via
     #   jsonschema
     #   jupyter-events
 rfc3987-syntax==1.1.0
     # via jsonschema
-rich==14.3.3
+rich==15.0.0
     # via
     #   -r requirements.in
-    #   typer
-rpds-py==0.30.0
+    #   twine
+river==0.25.0
+    # via -r requirements.in
+rpds-py==2026.6.3
     # via
     #   jsonschema
     #   referencing
-scikit-learn==1.8.0
+ruff==0.16.0
     # via -r requirements.in
-scipy==1.17.1
-    # via scikit-learn
-selenium==4.41.0
+scikit-learn==1.9.0
+    # via -r requirements.in
+scipy==1.18.0
+    # via
+    #   river
+    #   scikit-learn
+secretstorage==3.5.0
+    # via keyring
+selenium==4.46.0
     # via
     #   -r requirements.in
     #   selenium-stealth
@@ -743,10 +804,6 @@ selenium-wire==5.1.0
     # via -r requirements.in
 send2trash==2.1.0
     # via jupyter-server
-shellingham==1.5.4
-    # via
-    #   huggingface-hub
-    #   typer
 six==1.17.0
     # via
     #   astunparse
@@ -757,21 +814,22 @@ sniffio==1.3.1
     # via
     #   anthropic
     #   google-genai
+    #   langsmith
     #   openai
     #   trio
 sortedcontainers==2.4.0
     # via trio
-soupsieve==2.8.3
+soupsieve==2.9.1
     # via beautifulsoup4
-sqlalchemy==2.0.47
+sqlalchemy==2.0.51
     # via
     #   langchain-classic
     #   langchain-community
 sqlite-fts4==1.0.3
     # via sqlite-utils
-sqlite-migrate==0.1b0
+sqlite-migrate==0.2
     # via llm
-sqlite-utils==3.39
+sqlite-utils==4.1.1
     # via
     #   llm
     #   sqlite-migrate
@@ -779,11 +837,9 @@ sqlitedict==2.1.0
     # via -r requirements.in
 stack-data==0.6.3
     # via ipython
-starlette==0.52.1
+starlette==1.3.1
     # via python-fasthtml
-sympy==1.14.0
-    # via onnxruntime
-tabulate==0.9.0
+tabulate==0.10.0
     # via sqlite-utils
 tenacity==9.1.4
     # via
@@ -796,33 +852,32 @@ terminado==0.18.1
     #   jupyter-server-terminals
 threadpoolctl==3.6.0
     # via scikit-learn
-tiktoken==0.12.0
+tiktoken==0.13.0
     # via langchain-openai
-tinycss2==1.4.0
+tinycss2==1.5.1
     # via bleach
 tldextract==5.3.1
     # via -r requirements.in
-tomlkit==0.14.0
-    # via pylint
-tornado==6.5.4
+tornado==6.5.7
     # via
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
     #   jupyterlab
     #   terminado
-tqdm==4.67.3
+tqdm==4.69.1
     # via
     #   google-generativeai
     #   huggingface-hub
     #   nltk
     #   openai
     #   proglog
-traitlets==5.14.3
+traitlets==5.15.1
     # via
     #   ipykernel
     #   ipython
     #   ipywidgets
+    #   jupyter-builder
     #   jupyter-client
     #   jupyter-core
     #   jupyter-events
@@ -838,20 +893,26 @@ trio==0.33.0
     #   trio-websocket
 trio-websocket==0.12.2
     # via selenium
-typer==0.24.1
-    # via typer-slim
-typer-slim==0.24.0
-    # via huggingface-hub
-typing-extensions==4.15.0
+truststore==0.10.4
+    # via markdown-to-confluence
+twine==6.2.0
+    # via -r requirements.in
+typing-extensions==4.16.0
     # via
+    #   aiohttp
     #   aiosignal
+    #   altair
     #   anthropic
     #   anyio
     #   beautifulsoup4
+    #   cattrs
     #   google-genai
     #   google-generativeai
     #   huggingface-hub
+    #   jupyter-client
     #   langchain-core
+    #   langchain-protocol
+    #   langsmith
     #   openai
     #   pydantic
     #   pydantic-core
@@ -860,15 +921,12 @@ typing-extensions==4.15.0
     #   selenium
     #   sqlalchemy
     #   starlette
-    #   typing-inspect
     #   typing-inspection
-typing-inspect==0.9.0
-    # via dataclasses-json
 typing-inspection==0.4.2
     # via
     #   pydantic
     #   pydantic-settings
-tzdata==2025.3
+tzdata==2026.3
     # via arrow
 undetected-chromedriver==3.5.5
     # via -r requirements.in
@@ -876,31 +934,31 @@ uri-template==1.3.0
     # via jsonschema
 uritemplate==4.2.0
     # via google-api-python-client
-urllib3[socks]==2.6.3
+urllib3[socks]==2.7.0
     # via
+    #   id
     #   requests
     #   selenium
-uuid-utils==0.14.1
+    #   twine
+uuid-utils==0.17.0
     # via
     #   langchain-core
     #   langsmith
-uvicorn[standard]==0.41.0
+uvicorn[standard]==0.51.0
     # via
     #   -r requirements.in
     #   python-fasthtml
 uvloop==0.22.1
     # via uvicorn
-vulture==2.14
-    # via -r requirements.in
 watchdog==6.0.0
     # via -r requirements.in
-watchfiles==1.1.1
+watchfiles==1.2.0
     # via uvicorn
-wcwidth==0.6.0
+wcwidth==0.8.2
     # via prompt-toolkit
 webcolors==25.10.0
     # via jsonschema
-webdriver-manager==4.0.2
+webdriver-manager==4.1.2
     # via -r requirements.in
 webencodings==0.5.1
     # via
@@ -913,9 +971,11 @@ websocket-client==1.9.0
 websockets==15.0.1
     # via
     #   google-genai
+    #   langgraph-sdk
+    #   langsmith
     #   undetected-chromedriver
     #   uvicorn
-wheel==0.46.3
+wheel==0.47.0
     # via
     #   astunparse
     #   pip-tools
@@ -929,13 +989,13 @@ wsproto==1.3.2
     #   trio-websocket
 xlsxwriter==3.2.9
     # via -r requirements.in
-xxhash==3.6.0
+xxhash==3.8.1
     # via
     #   langgraph
     #   langsmith
 yapf==0.43.0
     # via -r requirements.in
-yarl==1.22.0
+yarl==1.24.5
     # via aiohttp
 zstandard==0.25.0
     # via
