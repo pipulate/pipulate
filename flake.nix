@@ -1141,7 +1141,13 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               (cd "$PIPULATE_ROOT" && python prompt_foo.py @SEED_PROMPT --chop SEED_CHOP --no-tree)
             fi
             local newest
-            newest=$(ls -t $PIPULATE_ROOT/foo-*.zip 2>/dev/null | head -1)
+            # Quote the VARIABLE, free the GLOB. The 2026-07-24 path sweep left
+            # $PIPULATE_ROOT bare here because the sed could not quote past the
+            # asterisk -- correct instinct, wrong placement. A white-label root
+            # containing a space then silently matches nothing and seed prints
+            # no snapshot line: a path fix that breaks on the paths it exists
+            # to serve.
+            newest=$(ls -t "$PIPULATE_ROOT"/foo-*.zip 2>/dev/null | head -1)
             echo ""
             echo "🌱 The Book Seed is compiled."
             if [ -n "$render" ]; then
@@ -1234,7 +1240,10 @@ print(max(1, n))
           sluggo() { for slug in "$@"; do (cd "$PIPULATE_ROOT" && python scripts/articles/lsa.py -t 1 --match "$slug" --fmt paths); done; }
           # `rgx` and `rgxc` are Nix-packaged commands above, not shell
           # functions, so interactive use and adhoc.txt child shells share one implementation.
-          alias release='python release.py --release --force'
+          # UNNAMED-ROOT RULE conviction: this invoked release.py through the
+          # CWD while `smart` invokes the SAME SCRIPT wrapped in
+          # cd "$PIPULATE_ROOT" -- one script, two spellings, one anchored.
+          alias release='(cd "$PIPULATE_ROOT" && python release.py --release --force)'
           # clear -x: repaint the screen but PRESERVE scrollback, exactly as
           # blast() already does. Plain `clear` (ncurses >= 6.0) emits the E3
           # escape and erases the buffer -- convicted 2026-07-23 when a `g`
@@ -1458,7 +1467,7 @@ print('AI:\n', r.ai)
             alias xc='xclip -selection clipboard <'
             alias xcp='xclip -selection clipboard'
             alias xv='xclip -selection clipboard -o >'
-            alias xp='python scripts/xp.py'
+            alias xp='(cd "$PIPULATE_ROOT" && python scripts/xp.py)'
             alias prompt='(cd "$PIPULATE_ROOT" && xclip -selection clipboard -o >prompt.md)'
             alias patch='xclip -selection clipboard -o >patch'
             # Linux subshell aliases
