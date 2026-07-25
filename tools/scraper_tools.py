@@ -139,6 +139,55 @@ def _simplify_html_for_llm(html_content, default_title=""):
 
 
 @auto_tool
+def _document_candidates(cdp_events: list, domain: str) -> list:
+    """Document responseReceived events that plausibly ARE the requested page.
+
+    Returned in ledger order; the caller takes [-1]. Pure and ledger-only on
+    purpose: no live CDP call appears here, so this selection can be REPLAYED
+    over any cached network_log.jsonl offline. A selection that needs a live
+    browser can never be audited against captures you already have.
+    """
+    from urllib.parse import urlsplit
+
+    def _norm(host: str) -> str:
+        host = (host or "").lower()
+        return host[4:] if host.startswith("www.") else host
+
+    docs = [
+        ev for ev in cdp_events
+        if ev.get("method") == "Network.responseReceived"
+        and ev.get("params", {}).get("type") == "Document"
+    ]
+    want = _norm(domain)
+    on_host = [
+        ev for ev in docs
+        if _norm(urlsplit(ev.get("params", {}).get("response", {}).get("url", "")).hostname) == want
+    ]
+    if not on_host:
+        # NEVER REGRESS. An apex->subdomain redirect can legitimately leave no
+        # host-exact Document. Falling back to the historical substring set
+        # makes the worst case identical to the behaviour shipped before this
+        # function existed -- and the source_provenance flag now makes the
+        # consequence visible if the fallback itself comes up empty.
+        return [
+            ev for ev in docs
+            if domain in ev.get("params", {}).get("response", {}).get("url", "")
+        ]
+    if len(on_host) > 1 and docs:
+        # TIEBREAKER ONLY, AND IT CAN ONLY NARROW. The browser navigates the
+        # top frame before any subframe can exist, so the FIRST Document event
+        # in the ledger carries the main frameId -- available with zero extra
+        # CDP round trips, and stable across a challenge reload because a
+        # navigation changes loaderId, not frameId. Guarded so it can never
+        # empty the set: an unrecognised frame layout degrades to host-exact
+        # selection rather than to nothing.
+        main_frame = docs[0].get("params", {}).get("frameId")
+        same_frame = [ev for ev in on_host if ev.get("params", {}).get("frameId") == main_frame]
+        if same_frame:
+            return same_frame
+    return on_host
+
+
 async def selenium_automation(params: dict) -> dict:
     """
     Performs an advanced browser automation scrape of a single URL using undetected-chromedriver.
@@ -450,39 +499,34 @@ async def selenium_automation(params: dict) -> dict:
         # outlive the terminal that reported it.
         source_provenance = "wire"
         try:
-            # FRAME SELECTION: [-1] is deliberate, and it is a HEURISTIC, not a
-            # guarantee.
+            # FRAME SELECTION, CONVICTED AND REPLACED 2026-07-24. The previous
+            # filter was `domain in url` -- a SUBSTRING test -- and a census of
+            # 18 cached ledgers found 5 in which it admitted more than one
+            # candidate. In every one of those 5, [-1] selected a THIRD-PARTY
+            # url: a consent-sync frame, a vendor SDK frame, and a conversion
+            # pixel. None was served by the site under test. The match was not
+            # the predicted cdn.<domain> subdomain case at all -- these vendors
+            # carry the target host in a QUERY PARAMETER, which is the default
+            # behaviour of most tag, consent and attribution products. So the
+            # substring test does not merely admit subdomains; it admits every
+            # third party polite enough to say who sent it.
             #
-            # RIGHT for the case this function is built around: the
+            # Selection now lives in _document_candidates() at module level:
+            # host-exact (www-normalised), with main-frameId as a tiebreaker
+            # that can only narrow, and a fallback to the historical substring
+            # set so the worst case equals the old behaviour. It is pure and
+            # ledger-only so it can be replayed offline over any cached capture.
+            #
+            # [-1] SURVIVES, and its rationale is still UNWITNESSED: the
             # staleness_of() wait above exists because a security challenge
-            # serves an interstitial Document and then reloads. Two Document
-            # responses, and the LAST is the real page -- [0] would bottle the
-            # challenge screen. Redirect chains do not threaten this; CDP
-            # surfaces those as requestWillBeSent with redirectResponse, not as
-            # additional responseReceived events.
-            #
-            # WRONG whenever a same-domain subframe loads after the main frame.
-            # An iframe navigation is also type=Document, it arrives later, and
-            # "domain in url" is a SUBSTRING test that matches cdn.example.com,
-            # example.com.attacker.net, and every subdomain. Then requestId
-            # belongs to the iframe, getResponseBody returns the iframe's HTML,
-            # and source.html silently becomes a fragment nobody asked for --
-            # while Hinge B still reports byte-for-byte agreement, because it
-            # agrees about the WRONG document.
-            #
-            # The real discriminator is frameId: a navigation changes loaderId,
-            # not frameId, so the main frame's id is stable across the challenge
-            # reload while every subframe has a different one. Filter to the main
-            # frameId first, THEN take [-1]. Left unchanged pending the frameId
-            # census probe -- no receipt yet shows a cached ledger carrying more
-            # than one Document frameId, and rewriting on a hypothesis produces
-            # a fix nobody can falsify.
-            doc_events = [
-                ev for ev in cdp_events
-                if ev.get("method") == "Network.responseReceived"
-                and ev.get("params", {}).get("type") == "Document"
-                and domain in ev.get("params", {}).get("response", {}).get("url", "")
-            ]
+            # serves an interstitial Document and then reloads, making the LAST
+            # candidate the real page. No capture on this machine has ever been
+            # challenged -- every scrape logs "Did not detect a page reload."
+            # The reasoning is sound from the code and has no receipt behind it.
+            # Redirect chains do not threaten it either way; CDP surfaces those
+            # as requestWillBeSent with redirectResponse, not as extra
+            # responseReceived events.
+            doc_events = _document_candidates(cdp_events, domain)
             if doc_events:
                 doc_params = doc_events[-1]["params"]
                 wire_headers = doc_params.get("response", {}).get("headers", {})
