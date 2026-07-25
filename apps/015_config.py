@@ -408,7 +408,7 @@ You're here to make the workflow concepts accessible and help users understand t
         finalize_data = wand.get_step_data(pipeline_id, finalize_step.id, {})
         if request.method == 'GET':
             if finalize_step.done in finalize_data:
-                return Card(
+                return Article(
                     H3(f'{self.ui["EMOJIS"]["LOCKED"]} Workflow is locked.'),
                     P('Each step can do ANYTHING. With this you can change the world — or at least show how to in a workflow.', cls='text-muted'),
                     Form(
@@ -436,7 +436,7 @@ You're here to make the workflow concepts accessible and help users understand t
             else:
                 all_steps_complete = all((wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
                 if all_steps_complete:
-                    return Card(
+                    return Article(
                         H3(f'{self.ui["EMOJIS"]["SUCCESS"]} All steps complete. Finalize?'),
                         P('At the end they get locked. Or you can go back.', cls='text-muted'),
                         Form(
