@@ -532,12 +532,23 @@ AI_PHOOEY_CHOP = r"""                                                           
 # No per-ticket directories, resettable counters, nested cartridges, or
 # correlation manifests are required until a real handoff demonstrates friction.
 
-# THE MCP RECEIPT RULE (PENDING; URL WITNESSED 2026-07-25 — an unauthenticated
-# tools/list POST returned 401, pinning the server ADDRESS and its auth gate.
-# Handshake order, protocol version, session header, tool wire-spelling, and
-# accepted credential remain INFERRED. Banking flip: the first GREEN
-# `python scripts/connectors/mcp.py <server> --check`, hand-run then
-# compile-echoed — the instrument's own success IS the witnessing receipt):
+# THE MCP RECEIPT RULE (PENDING; MECHANISM WITNESSED 2026-07-25 — the fault
+# harness scripts/mcp_dummy_server.py went 20/20 against the UNMODIFIED client:
+# handshake sequence, Mcp-Session-Id round trip (enforcement proved by a
+# raw-httpx control that posts with no session header and MUST be refused),
+# both JSON and SSE framings, all three determinism classes, and correct GATE
+# ATTRIBUTION on five manufactured reds — a JSON-RPC error riding an HTTP 200
+# at BOTH tools/list and initialize (each blamed to its own gate, not the
+# next one down), and a refused notifications/initialized httpx does not raise
+# on. That banks the client MECHANISM. But the harness SHARES mcp.py's spec
+# reading, so their agreement is a TAUTOLOGY, not a corroboration: the three
+# protocol STRINGS — "2025-06-18", "Mcp-Session-Id", the tools/* spellings —
+# remain INFERRED. ONE RECEIPT OWED to move them to OBSERVED: a GREEN
+# `python scripts/connectors/mcp.py <loopback> --check` against a
+# Streamable-HTTP server of INDEPENDENT AUTHORSHIP (the official MCP SDK's
+# FastMCP), run ephemerally so no dependency enters the closure. The full
+# vendor path stays the FINAL banking, owed a real Botify token — URL and auth
+# gate already witnessed by the 401 above):
 # A model-mediated tool call enters this system as a RECEIPT or not at all. The
 # receipt is a FOUR-TUPLE the model emits verbatim and never paraphrases:
 #   (1) server — the MCP server URL
