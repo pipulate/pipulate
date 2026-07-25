@@ -787,6 +787,9 @@ SECRET_TRIPWIRES = [
 ]
 
 
+SECRET_TRIPWIRES = []
+
+
 def load_disclosure_profile(requested: str = None):
     """Resolve a disclosure profile from ~/.config/pipulate/disclosure.json.
 
