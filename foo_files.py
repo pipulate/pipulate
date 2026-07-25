@@ -798,7 +798,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # BIG STANDARD STUFF (Optionally comment out any)
 
-! python scripts/articles/lsa.py -t 1 --reverse --amt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
 ~/repos/nixos/autognome.py  #  <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
 scripts/foo_cartridge.py    # Needs description
 scripts/foo_replay.py       # Needs description
