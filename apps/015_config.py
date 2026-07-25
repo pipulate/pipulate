@@ -892,7 +892,7 @@ You're here to make the workflow concepts accessible and help users understand t
             display_text = f"Model: {current_value.get('model')}\nToken: {current_value.get('api_key')}"
             pip.append_to_history(f"[WIDGET CONTENT] {step.show} (Finalized):\n{display_text}")
             return Div(
-                Card(H3(f"🔒 {step.show}: Completed"), Pre(display_text, cls="code-block-container")),
+                Article(H3(f"🔒 {step.show}: Completed"), Pre(display_text, cls="code-block-container")),
                 Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
                 id=step_id
             )
@@ -975,7 +975,7 @@ You're here to make the workflow concepts accessible and help users understand t
             )
             
             return Div(
-                Card(
+                Article(
                     H3(f"☁️ {step.show}"),
                     P("Select your preferred Cloud AI engine and provide the corresponding API key. This unlocks advanced capabilities and provides a fallback when the local engine needs help. ",
                       A("Get your Google AI Studio key here ↗", href="https://aistudio.google.com/", target="_blank"),
