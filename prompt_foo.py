@@ -1991,8 +1991,19 @@ def main():
                     proc.communicate()
                     logger.print(f"\n      [Error] Timed out after 180s; process group killed.")
                     continue
+                # SILENT-SUCCESS RECEIPT (convicted 2026-07-24 by this compile's
+                # own probe): a grep whose PASS condition is NO MATCH exits 1
+                # with empty stdout AND empty stderr, and this branch used to
+                # raise -- deleting the receipt for exactly those probes whose
+                # success IS silence. The Manifest, which claims sole authority
+                # over what ran, then shows a gap where a green belongs, and the
+                # straddle reads as a missing probe rather than a passing one.
+                # Land a synthetic receipt instead so meaningful silence is
+                # visible. Sibling of the FAILED-PROBE RECEIPT amendment: that
+                # one rescued stderr-only failures, this one rescues the
+                # no-output-at-all case it left behind.
                 if proc.returncode != 0 and not cmd_stdout.strip() and not cmd_stderr.strip():
-                    raise subprocess.CalledProcessError(proc.returncode, command_str, output=cmd_stdout, stderr=cmd_stderr)
+                    cmd_stdout = "(no output, no stderr -- the exit code is the whole receipt)"
                 # FAILED-PROBE RECEIPT (banked 2026-07-20, canary-witnessed): an
                 # all-stderr failure is a valid receipt, not a skip. Conviction:
                 # the 2026-07-20 SERVICE_DISABLED live LISTs vanished from the
