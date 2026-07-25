@@ -576,7 +576,29 @@ def print_optics_receipt(artifacts: dict, target_url: str, cached: bool = False)
                 hinge_a = "SWUNG — JS changed the structure (read the diff lens)"
         except OSError:
             pass
-    if provenance not in (None, 'wire'):
+    # PROVENANCE IS THREE-VALUED, NOT TWO, AND THE THIRD VALUE IS NOT A BUG.
+    #   'wire'                 -- a witnessed claim
+    #   'page_source_fallback' -- a witnessed refusal
+    #   ABSENT (None)          -- neither: the capture predates 2026-07-24 and
+    #                             nothing ever looked
+    #
+    # Rejected 2026-07-24: stamping absent captures with an 'unflagged_legacy'
+    # token, either into the returned artifacts dict (which no consumer reads
+    # -- every one of them opens headers.json from disk) or into headers.json
+    # itself on a cache hit (which would make a READ mutate an artifact whose
+    # entire value is being a record of a scrape that already happened).
+    # Absence carries identical information to the token and has no failure
+    # mode; a token can be wrong the day a stamping bug writes it onto a
+    # post-flag capture, and then a file asserts an ignorance it does not have.
+    #
+    # ARTIFACTS RECORD WHAT HAPPENED. RECEIPTS RECORD WHAT WE KNOW. The
+    # uncertainty is a property of THIS reader, so it is annotated here and
+    # nothing on disk is touched. The annotation is self-clearing: it vanishes
+    # the moment a capture is re-scraped, which is the only kind of warning
+    # that does not get trained out of the person reading it.
+    if provenance is None:
+        hinge_a += "  [provenance unwitnessed — capture predates the flag]"
+    elif provenance != 'wire':
         hinge_a = f"UNMEASURABLE — source.html is a {provenance}, not wire truth"
 
     def cell(text, width=18):
