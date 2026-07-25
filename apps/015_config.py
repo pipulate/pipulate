@@ -543,7 +543,7 @@ You're here to make the workflow concepts accessible and help users understand t
             locked_msg = f'{self.ui["EMOJIS"]["LOCKED"]} Your name is set to: {user_val}'
             await self.message_queue.add(wand, locked_msg, verbatim=True)
             return Div(
-                Card(
+                Article(
                     H3(f'{self.ui["EMOJIS"]["LOCKED"]} {step.show}: {user_val}'),
                     role='region',
                     aria_label=f'Locked step 1: {step.show}',
@@ -593,7 +593,7 @@ You're here to make the workflow concepts accessible and help users understand t
             self.wand.speak("Workflows are Notebooks without having to look at the code. Please enter your name to begin.", wait=False)
             
             return Div(
-                Card(
+                Article(
                     H3(f'{self.ui["EMOJIS"]["USER_INPUT"]} {self.wand.fmt(step.id)}: Enter {step.show}'),
                     P(explanation, cls='text-muted'),
                     Label(
