@@ -188,7 +188,10 @@ def list_tools(client, server, max_items):
                 {"jsonrpc": "2.0", "id": 1, "method": "tools/list"}, session_id)
     if resp.status_code != 200:
         die(f"mcp RED gate3: tools/list HTTP {resp.status_code}\n{resp.text[:300]}")
-    tools = ((parse_body(resp) or {}).get("result") or {}).get("tools") or []
+    parsed = parse_body(resp) or {}
+    if parsed.get("error") is not None:
+        die(f"mcp RED gate3: tools/list returned JSON-RPC error {parsed['error']}")
+    tools = (parsed.get("result") or {}).get("tools") or []
     print(f"# {server} — protocol {negotiated} | server "
           f"{sinfo.get('name', '?')} | {len(tools)} tool(s) | "
           f"session={'yes' if session_id else 'no'}\n")
