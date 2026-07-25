@@ -1030,6 +1030,84 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           ahc() { (cd ~/repos/pipulate && python prompt_foo.py --chop ADHOC_CHOP --no-tree "$@"); }
           ahcu() { (cd ~/repos/pipulate && python prompt_foo.py --chop ADHOC_CHOP "$@"); }
           alias ahe='(cd ~/repos/pipulate && nvim "''${PIPULATE_ADHOC_FILE:-adhoc.txt}")'
+          # THE SNIFF DOOR: one word at the prompt puts a wire-truth lens into
+          # the next compile. Appends a sigil line to the adhoc overlay, then
+          # fires ahc. A FUNCTION because it must call ahc(), itself a function
+          # -- ALIAS-DISPATCH RULE. Note this is a DIFFERENT reachability
+          # problem from the one postsCommand/rgxCommand solve: those are
+          # writeShellScriptBin because CHILD shells must resolve them through
+          # PATH. sniff is only ever typed by a human in this shell, so a
+          # function is correct -- and a function is also invisible to the `!`
+          # executor, which is why nothing here is ever echoed as a probe.
+          #
+          # Default sigil is % (distill the CACHED ledger). -f writes ! instead
+          # (a fresh flight, which RECORDS the ledger). % on a cold cache is a
+          # documented miss, not a bug: prompt_foo prints the ledger-miss line
+          # and names the ! scrape. So: sniff -f once, sniff freely after.
+          #
+          # Lines ACCUMULATE on purpose. adhoc.txt is a scratchpad, `ahe` is
+          # the pruner, and every sigil line re-fires on every later compile.
+          # This function only appends, and prints exactly what it wrote.
+          sniff() {
+            if [ -z "$PIPULATE_ROOT" ]; then
+              echo "sniff: PIPULATE_ROOT is unset -- enter the Pipulate Nix shell first." >&2
+              return 1
+            fi
+            local sigil="%"
+            if [ "''${1:-}" = "-f" ]; then
+              sigil="!"
+              shift
+            fi
+            if [ "$#" -eq 0 ]; then
+              echo "Usage: sniff [-f] <domain-or-url>   (% distills the cached ledger; -f flies fresh and records one)" >&2
+              return 1
+            fi
+            local url="$1"
+            case "$url" in
+              http://*|https://*) ;;
+              *) url="https://$url" ;;
+            esac
+            local adhoc="''${PIPULATE_ADHOC_FILE:-$PIPULATE_ROOT/adhoc.txt}"
+            # Seam guard: appending to a file whose last byte is not a newline
+            # fuses the sigil onto the previous line, and the compiler parses
+            # the fusion as one unrunnable path.
+            if [ -s "$adhoc" ] && [ -n "$(tail -c 1 "$adhoc")" ]; then
+              printf '\n' >> "$adhoc"
+            fi
+            printf '%s%s\n' "$sigil" "$url" >> "$adhoc"
+            echo "sniff: $adhoc <- $sigil$url"
+            ahc
+          }
+          # SNIFF COMPLETION -- INTERACTIVE-ONLY, STRUCTURALLY, AND UNPROBEABLE.
+          # A compspec lives in the shell process and has no export form (there
+          # is no `export -C`), while the `!` executor spawns a NON-interactive
+          # /bin/sh via Popen(shell=True). Any `!` probe of this spec returns
+          # the SAME answer whether the spec exists or not -- a false receipt in
+          # both directions -- so it is deliberately never echoed into
+          # adhoc.txt. The only honest witness is a human pressing Tab.
+          #
+          # Bare domains only, no scheme: COMP_WORDBREAKS contains ':', so
+          # typing "https://exa<TAB>" splits the word and completion cannot see
+          # the prefix. sniff() prepends https:// anyway, so bare is both the
+          # shorter path and the working one.
+          _sniff() {
+            local cur cache d domains
+            cur="''${COMP_WORDS[COMP_CWORD]}"
+            cache="$PIPULATE_ROOT/browser_cache"
+            [ -d "$cache" ] || return 0
+            domains=""
+            for d in "$cache"/*/; do
+              [ -d "$d" ] || continue
+              d="''${d%/}"
+              d="''${d##*/}"
+              case "$d" in
+                looking_at|automation_recipes|test_rotation_data) continue ;;
+              esac
+              domains="$domains $d"
+            done
+            mapfile -t COMPREPLY < <(compgen -W "$domains" -- "$cur")
+          }
+          complete -F _sniff sniff
           alias pins='(cd ~/repos/pipulate && python prompt_foo.py --chop PINNED_CHOP --no-tree)'
           # THE FIRST WISH: `learn` is to Pipulate what vimtutor is to vim.
           # (Resurrects the dead V7 Unix `learn` CAI tutor name — no modern collision.)
