@@ -160,13 +160,22 @@ def initialize(client, server):
     result = body.get("result") or {}
     negotiated = result.get("protocolVersion")
     session_id = resp.headers.get(SESSION_HEADER)
-    # notifications/initialized: a notification (no id). Spec expects 202;
-    # fail-soft because a server that skips it should not kill the receipt.
+    # notifications/initialized: a notification (no id), spec expects 202.
+    # Stay fail-soft on a TRANSPORT error and on a server that merely ignores
+    # the notification (any 2xx), but be LOUD on an explicit 4xx REFUSAL:
+    # httpx does not raise on 4xx, so the old bare `except: pass` swallowed a
+    # server refusing half the handshake and greened downstream. Convicted by
+    # the fault harness's red.notify-rejected scenario (19/20, the one FAIL).
+    # This CANNOT touch the Botify 401 -- that fires at the FIRST initialize
+    # POST, above, before any notification exists.
     try:
-        post(client, server, {"jsonrpc": "2.0",
-                              "method": "notifications/initialized"}, session_id)
+        ack = post(client, server, {"jsonrpc": "2.0",
+                                    "method": "notifications/initialized"}, session_id)
     except httpx.HTTPError:
-        pass
+        ack = None
+    if ack is not None and ack.status_code >= 400:
+        die(f"mcp RED gate2: server refused notifications/initialized "
+            f"(HTTP {ack.status_code}) -- the handshake is incomplete")
     return session_id, negotiated, result.get("serverInfo") or {}
 
 
