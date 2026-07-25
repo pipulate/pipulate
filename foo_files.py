@@ -52,7 +52,7 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 # --- START STATS ---
 # There are 1,350 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 33 published in the last 7 days
+# Velocity: 31 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate

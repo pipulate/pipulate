@@ -775,7 +775,15 @@ SECRET_TRIPWIRES = [
     r'\bsk-an[t]-[A-Za-z0-9_\-]{24,}',                             # Anthropic
     r'\bsk-[A-Za-z0-9]{32,}\b',                                    # OpenAI-shape; loosest here, cut this one first
     r'"(?:refresh_toke[n]|client_secre[t]|private_ke[y]|api_ke[y]|access_toke[n])"\s*:\s*"[^"]{12,}"',
-    r'(?m)^[A-Z0-9_]*(?:SECRE[T]|TOKE[N]|PASSWOR[D]|API_KE[Y])[A-Z0-9_]*\s*=\s*["\']?\S{12,}',
+    # Generic assignment tripwire, but LITERAL-ONLY. The previous spelling
+    # accepted any twelve non-space characters after "=", so executable code
+    # such as an environment lookup was indistinguishable from a hardcoded
+    # credential. Quoted literals and plausible unquoted dotenv values remain
+    # covered; calls, attribute access with parentheses, and other expressions
+    # do not.
+    r"(?m)^[A-Z0-9_]*(?:SECRE[T]|TOKE[N]|PASSWOR[D]|API_KE[Y])[A-Z0-9_]*"
+    r"\s*=\s*(?:\"[^\"\s]{12,}\"|'[^'\s]{12,}'|[A-Za-z0-9_./+=:@-]{20,})"
+    r"\s*(?:#.*)?$",
 ]
 
 
@@ -820,13 +828,43 @@ def load_disclosure_profile(requested: str = None):
 def scan_secrets(text: str):
     """Scan for credential-shaped strings. Always runs; never optional.
 
-    Returns a list of (pattern, hit_count) tuples.
+    Return one safe receipt per match:
+
+        (pattern, payload_line, search_hint)
+
+    The matched credential value is never returned or printed. When possible,
+    the hint names only the assignment variable or JSON field, which is enough
+    for the operator to find the source without echoing secret material.
     """
     hits = []
     for pat in SECRET_TRIPWIRES:
-        n = len(re.findall(pat, text))
-        if n:
-            hits.append((pat, n))
+        for match in re.finditer(pat, text):
+            line_no = text.count("\n", 0, match.start()) + 1
+
+            line_start = text.rfind("\n", 0, match.start()) + 1
+            line_end = text.find("\n", match.end())
+            if line_end == -1:
+                line_end = len(text)
+            source_line = text[line_start:line_end]
+
+            assignment = re.match(
+                r"\s*([A-Z][A-Z0-9_]*)\s*=",
+                source_line,
+            )
+            json_field = re.search(
+                r'"([A-Za-z_][A-Za-z0-9_]*)"\s*:',
+                source_line,
+            )
+
+            if assignment:
+                search_hint = f"search for {assignment.group(1)!r}"
+            elif json_field:
+                search_hint = f"search for JSON field {json_field.group(1)!r}"
+            else:
+                search_hint = "no safe literal locator; inspect this payload line"
+
+            hits.append((pat, line_no, search_hint))
+
     return hits
 
 
@@ -2669,16 +2707,19 @@ def main():
     # everything else fails closed. No flag reaches this decision.
     secret_hits = scan_secrets(final_output)
     if secret_hits:
-        total_secret_hits = sum(n for _, n in secret_hits)
+        total_secret_hits = len(secret_hits)
         if profile.get('secrets') == 'warn':
             print(f"⚠️  SECRETS WARNING: {total_secret_hits} credential-shaped hit(s) in payload (local lane, emitting anyway):")
-            for pat, n in secret_hits:
-                print(f"   • pattern {pat!r}: {n} hit(s)")
+            for pat, line_no, search_hint in secret_hits:
+                print(f"   • payload:{line_no}: {search_hint}")
+                print(f"     pattern {pat!r}")
         else:
             print(f"🛑 PAYLOAD BLOCKED: {total_secret_hits} credential-shaped hit(s). No profile overrides this:")
-            for pat, n in secret_hits:
-                print(f"   • pattern {pat!r}: {n} hit(s)")
-            print("   Rotate the credential, purge it from the source, and rerun. There is no --allow flag for secrets.")
+            for pat, line_no, search_hint in secret_hits:
+                print(f"   • payload:{line_no}: {search_hint}")
+                print(f"     pattern {pat!r}")
+            print("   Locate each item above. Rotate only confirmed credentials, then purge the source and rerun.")
+            print("   There is no --allow flag for secrets.")
             sys.exit(1)
 
     if leaks and denylist_mode == 'block':

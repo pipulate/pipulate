@@ -1108,6 +1108,63 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             mapfile -t COMPREPLY < <(compgen -W "$domains" -- "$cur")
           }
           complete -F _sniff sniff
+          # THE SCRUB DOOR: publish-time twin of sniff. When a compile is
+          # BLOCKED because a denylisted client name survived the PII scrub,
+          # the compliant fix and the bypass must cost the same keystrokes --
+          # otherwise the bypass wins every time, which is exactly how
+          # SECRET_TRIPWIRES ended up as [].
+          #
+          #   scrub                      list the substitutions in force
+          #   scrub samplebrand                samplebrand === CLIENT_1  (auto-numbered)
+          #   scrub samplebrand SAMPLE_BRAND   samplebrand === SAMPLE_BRAND
+          #
+          # THIS IS NOT THE DRAFTING LEVER. While writing, you want the real
+          # names visible in the payload: `ahc --profile trusted --reason "..."`
+          # already does that and always did. scrub is for the ONE compile you
+          # publish from.
+          #
+          # BARE TOKEN, not \b...\b: a bare token neutralises the name whether
+          # the left-hand side is treated as a regex or as a literal, and the
+          # boundary form only works under one of those. The compiler's block
+          # message reports DENYLIST patterns in regex form; no substitution
+          # rule has ever been read in a payload, so the safer spelling wins.
+          # If a name overmatches, add boundaries by hand to that one line.
+          # A FUNCTION, per ALIAS-DISPATCH RULE: it must call ahc(), and like
+          # sniff it is therefore invisible to the `!` executor and is never
+          # echoed as a probe.
+          scrub() {
+            if [ -z "$PIPULATE_ROOT" ]; then
+              echo "scrub: PIPULATE_ROOT is unset -- enter the Pipulate Nix shell first." >&2
+              return 1
+            fi
+            local subs="''${PIPULATE_PII_FILE:-$HOME/.config/pipulate/pii_substitutions.txt}"
+            mkdir -p "$(dirname "$subs")"
+            [ -f "$subs" ] || : > "$subs"
+            if [ "$#" -eq 0 ]; then
+              echo "scrub: $subs"
+              grep -v '^[[:space:]]*#' "$subs" | grep -v '^[[:space:]]*$'
+              return 0
+            fi
+            local token="$1"
+            if grep -qF "$token ===" "$subs"; then
+              echo "scrub: already present -- $token"
+            else
+              local repl="$2"
+              if [ -z "$repl" ]; then
+                local n
+                n=$(grep -c ' === ' "$subs" 2>/dev/null || true)
+                repl="CLIENT_$((n + 1))"
+              fi
+              # Seam guard, same as sniff: appending to a file whose last byte
+              # is not a newline fuses two rules into one unparseable line.
+              if [ -s "$subs" ] && [ -n "$(tail -c 1 "$subs")" ]; then
+                printf '\n' >> "$subs"
+              fi
+              printf '%s === %s\n' "$token" "$repl" >> "$subs"
+              echo "scrub: $subs <- $token === $repl"
+            fi
+            ahc
+          }
           alias pins='(cd "$PIPULATE_ROOT" && python prompt_foo.py --chop PINNED_CHOP --no-tree)'
           # THE FIRST WISH: `learn` is to Pipulate what vimtutor is to vim.
           # (Resurrects the dead V7 Unix `learn` CAI tutor name — no modern collision.)
