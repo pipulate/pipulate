@@ -701,6 +701,11 @@ AI_PHOOEY_CHOP = r"""                                                           
 # color the canvas. I do a lot of gessoing over the canvas to start fresh, but a
 # bit lumpy. That lumpiness is cruft and tech liability. Let's prune!
 
+# NARRATIVE MAP & CODE BUCKET ALIGNMENT:
+# The 22 Narrative Chapters above describe the overarching book arc.
+# The Roman Numeral sections (I - XIX) below map those chapters directly
+# to executable codebase files, connectors, scripts, and live probes.
+
 # While the above serves as a good organization spine for the book, we get a bit
 # more ad hoc and loosey goosey to actually show you the articles and codebase.
 
