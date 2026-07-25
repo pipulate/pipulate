@@ -64,12 +64,37 @@ def die(msg, code=1):
 
 
 def resolve_token(token_env=None):
-    """(env_var_name, value) for the first set var; (None, None) if cold."""
-    names = ([token_env] if token_env else []) + ["MCP_BEARER_TOKEN", "BOTIFY_API_TOKEN"]
+    """(env_var_name, value) for the first set var; (None, None) if cold.
+    If value points to a JSON token file, extracts the access_token field.
+    """
+    from pathlib import Path
+    names = ([token_env] if token_env else []) + [
+        "MCP_BEARER_TOKEN",
+        "MCP_TOKEN_FILE",
+        "BOTIFY_TOKEN_FILE",
+        "BOTIFY_API_TOKEN",
+    ]
     for name in names:
         val = os.environ.get(name)
         if val:
+            expanded = Path(val).expanduser()
+            if expanded.is_file():
+                try:
+                    data = json.loads(expanded.read_text(encoding="utf-8"))
+                    tok = data.get("access_token") or data.get("token") or val
+                    return f"{name}:{expanded.name}", tok
+                except Exception:
+                    pass
             return name, val
+    default_token_file = Path.home() / ".config" / "pipulate" / "mcp_botify_token.json"
+    if default_token_file.is_file():
+        try:
+            data = json.loads(default_token_file.read_text(encoding="utf-8"))
+            tok = data.get("access_token") or data.get("token")
+            if tok:
+                return "mcp_botify_token.json", tok
+        except Exception:
+            pass
     return None, None
 
 
