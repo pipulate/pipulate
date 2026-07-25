@@ -1907,4 +1907,17 @@ Essential knowledge for 100% success rate"""
 # license: AGPL-3.0
 # ---
 # ```
+# 
+# ```text
+# [Client (mcp.py)] ─── 1. POST /mcp (No Token) ─────────► [MCP Server]
+# [Client (mcp.py)] ◄── 2. HTTP 401 + WWW-Authenticate ── [MCP Server]
+#        │
+#        ▼ (Reads /.well-known/ OAuth Metadata)
+# [Client (mcp.py)] ─── 3. Browser Popup / PKCE Flow ─────► [Auth Server]
+# [Client (mcp.py)] ◄── 4. Access Token (Bearer) ───────── [Auth Server]
+#        │
+#        ▼
+# [Client (mcp.py)] ─── 5. POST /mcp (Authorization: Bearer <token>) ─► [MCP Server] ──► 200 OK
+# 
+# ```
 
