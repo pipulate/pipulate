@@ -505,6 +505,15 @@ async def selenium_automation(params: dict) -> dict:
         # that scrolls away. Stamp the artifact instead, so the mislabel cannot
         # outlive the terminal that reported it.
         source_provenance = "wire"
+        # Bound HERE, before the try, because headers_data below is built
+        # OUTSIDE that try and references this name on every path -- including
+        # the paths where wire extraction raised and nothing was selected. The
+        # 2026-07-24 car that introduced the reference shipped with a prose
+        # caveat saying the binding was "derivable" instead of deriving it.
+        # CONDITIONAL CAR RULE: prose does not execute. An empty string is the
+        # honest value for "no Document was selected," and it is falsy, so a
+        # reader can tell it from a real url without a sentinel.
+        doc_url = ""
         try:
             # FRAME SELECTION, CONVICTED AND REPLACED 2026-07-24. The previous
             # filter was `domain in url` -- a SUBSTRING test -- and a census of
@@ -536,6 +545,9 @@ async def selenium_automation(params: dict) -> dict:
             doc_events = _document_candidates(cdp_events, domain)
             if doc_events:
                 doc_params = doc_events[-1]["params"]
+                # The subject of the headers on the very next line. Captured
+                # from the SAME event so the two can never drift apart.
+                doc_url = doc_params.get("response", {}).get("url", "")
                 wire_headers = doc_params.get("response", {}).get("headers", {})
                 actual_headers = {str(k).lower(): v for k, v in wire_headers.items()}
                 body_result = driver.execute_cdp_cmd(
