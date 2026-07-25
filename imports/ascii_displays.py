@@ -1276,18 +1276,16 @@ def ai_breadcrumb_summary(tool_count: int) -> str:
     )
     
     # 🍎 MAC SAFE: Capture the rendered output with Mac error handling  
-    fallback = f"""🍞 AI DISCOVERY COMPLETE
+    fallback = """🚨 AI ASSISTANT GUIDELINES
 
-🧠 AI CAPABILITIES DISCOVERED:
-✅ MCP Tools: {tool_count} programmatic tools ready
-✅ Browser Eyes: Screenshot + DOM analysis
-✅ Browser Hands: Selenium automation control  
-✅ Session Hijack: Complete workflow capture
-✅ Persistent Memory: Keychain across restarts
-✅ Documentation: 14 comprehensive guides
+⚠️ ESSENTIAL KNOWLEDGE FOR 100% SUCCESS RATE:
+• Python Path Issue: NEVER use 'python' - ALWAYS use '.venv/bin/python'
+• Golden Path: cd pipulate && .venv/bin/python cli.py call <tool_name> works everywhere
+• Working Directory: MCP tools require 'cd pipulate' first - never run from workspace root
+• Browser Evidence: Check browser_cache/looking_at/ FIRST, system internals second
 
-Zero uncertainty • 100% automation success rate"""
-    
+Essential knowledge for 100% success rate"""
+
     return safe_console_capture(console, panel, fallback)
 
 
@@ -1334,7 +1332,6 @@ def startup_environment_warnings() -> str:
     fallback = f"""🍞 AI DISCOVERY COMPLETE
 
 🧠 AI CAPABILITIES DISCOVERED:
-✅ MCP Tools: {tool_count} programmatic tools ready
 ✅ Browser Eyes: Screenshot + DOM analysis
 ✅ Browser Hands: Selenium automation control  
 ✅ Session Hijack: Complete workflow capture
