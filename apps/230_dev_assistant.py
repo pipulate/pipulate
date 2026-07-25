@@ -176,7 +176,7 @@ class DevAssistant:
 
         finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data:
-            return Card(
+            return Article(
                 H3('🔒 Analysis Session Finalized'),
                 P('This development analysis session is complete.'),
                 Form(
@@ -190,7 +190,7 @@ class DevAssistant:
                 id='finalize'
             )
         else:
-            return Card(
+            return Article(
                 H3('Finalize Development Analysis'),
                 P('Complete this development analysis session.'),
                 Form(
@@ -786,7 +786,7 @@ class DevAssistant:
                 f"if 'finalized' in finalize_data:\n"
                 f"    # Return finalized view\n"
                 f"    return Div(\n"
-                f"        Card(H3(f'🔒 {{step.show}}: Complete')),\n"
+                f"        Article(H3(f'🔒 {{step.show}}: Complete')),\n"
                 f"        Div(id=next_step_id, hx_get=f'/{{app_name}}/{{next_step_id}}', hx_trigger='load'),\n"
                 f"        id=step_id\n"
                 f"    )\n"
@@ -923,7 +923,7 @@ class DevAssistant:
                             f"    \n"
                             f"    if request.method == 'GET':\n"
                             f"        # Handle GET request (show finalize form)\n"
-                            f"        return Card(H3('Ready to finalize?'), ...)\n"
+                            f"        return Article(H3('Ready to finalize?'), ...)\n"
                             f"    else:  # POST\n"
                             f"        # Handle finalization\n"
                             f"        await wand.finalize_workflow(pipeline_id)\n"
@@ -1335,7 +1335,7 @@ class DevAssistant:
 
         if 'finalized' in finalize_data:
             return Div(
-                Card(H3(f'🔒 {{step.show}}: Complete')),
+                Article(H3(f'🔒 {{step.show}}: Complete')),
                 Div(id=next_step_id, hx_get=f'/{{app_name}}/{{next_step_id}}', hx_trigger='load'),
                 id=step_id
             )
@@ -1343,7 +1343,7 @@ class DevAssistant:
             return wand.chain_reverter(step_id, step_index, steps, app_name, user_val)
         else:
             return Div(
-                Card(
+                Article(
                     H3(f'{{step.show}}'),
                     P('Step implementation needed here.'),
                     Form(
@@ -1401,7 +1401,7 @@ class DevAssistant:
                 f"    \n"
                 f"    finalize_data = wand.get_step_data(pipeline_id, 'finalize', {{}})\n"
                 f"    if 'finalized' in finalize_data:\n"
-                f"        return Card(\n"
+                f"        return Article(\n"
                 f"            H3('🔒 Workflow Finalized'),\n"
                 f"            P('This workflow is complete.'),\n"
                 f"            Form(\n"
@@ -1412,7 +1412,7 @@ class DevAssistant:
                 f"            id='finalize'\n"
                 f"        )\n"
                 f"    else:\n"
-                f"        return Card(\n"
+                f"        return Article(\n"
                 f"            H3('Finalize Workflow'),\n"
                 f"            P('Complete this workflow.'),\n"
                 f"            Form(\n"
@@ -1809,7 +1809,7 @@ class DevAssistant:
                                     style='position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; background: var(--pico-background-color); border: 1px solid var(--pico-muted-border-color); border-radius: 8px; max-height: 300px; overflow-y: auto; display: none;')
         
         return Div(
-            Card(
+            Article(
                 H3('Plugin Analysis'),
                 P('Search and select a plugin file to analyze for pattern compliance and issues:'),
                 Form(
@@ -1896,7 +1896,7 @@ class DevAssistant:
         
         # Return updated step_01 showing selection + trigger step_02 load
         return Div(
-            Card(
+            Article(
                 H3('Plugin Analysis'),
                 P(f'✅ Selected: {selected_file}', style='color: green; font-weight: bold;'),
                 Button('Analyze Different Plugin', 
@@ -1921,7 +1921,7 @@ class DevAssistant:
         # Check if we have analysis results
         if not hasattr(self, 'current_analysis') or not self.current_analysis:
             return Div(
-                Card(
+                Article(
                     H3('Analysis Results'),
                     P('No analysis available. Please select and analyze a plugin first.', style='color: orange;'),
                     Button('Go Back to Plugin Selection', 
@@ -1959,7 +1959,7 @@ class DevAssistant:
         widget_id = f"dev-assistant-analysis-results"
 
         return Div(
-            Card(
+            Article(
                 H3(f"Analysis: {filename}", cls="mb-lg"),
 
                 # WHAT NEEDS FIXING (Primary Focus)

@@ -140,11 +140,11 @@ class FileUploadWidget:
         finalize_data = wand.get_step_data(pipeline_id, finalize_step.id, {})
         if request.method == 'GET':
             if finalize_step.done in finalize_data:
-                return Card(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
+                return Article(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
             else:
                 all_steps_complete = all((wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
                 if all_steps_complete:
-                    return Card(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary'), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
+                    return Article(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary'), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
                 else:
                     return Div(id=finalize_step.id)
         else:
@@ -227,10 +227,10 @@ class FileUploadWidget:
                     cls="mr-sm outline contrast",
                     role="button"
                 )
-                return Div(Card(H3(f'🔒 {step.show}'), P('Uploaded files summary:'), Pre(file_summary, cls='upload-summary-pre'), P(open_folder_link_ui, *file_buttons, cls='upload-file-buttons')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+                return Div(Article(H3(f'🔒 {step.show}'), P('Uploaded files summary:'), Pre(file_summary, cls='upload-summary-pre'), P(open_folder_link_ui, *file_buttons, cls='upload-file-buttons')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
             except Exception as e:
                 logger.error(f'Error creating file summary in locked view: {str(e)}')
-                return Div(Card(f'🔒 {step.show}: <content locked>'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
+                return Div(Article(f'🔒 {step.show}: <content locked>'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
         elif state.get('_finalized'):
             try:
                 file_summary = wand.get_step_data(pipeline_id, step_id)
@@ -265,10 +265,10 @@ class FileUploadWidget:
                     cls="mr-sm outline contrast",
                     role="button"
                 )
-                return Div(Card(f'🔒 {step.show}', P("Uploaded files summary:"), Pre(file_summary, cls='upload-summary-pre'), P(open_folder_link_ui, *file_buttons, cls='upload-file-buttons')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
+                return Div(Article(f'🔒 {step.show}', P("Uploaded files summary:"), Pre(file_summary, cls='upload-summary-pre'), P(open_folder_link_ui, *file_buttons, cls='upload-file-buttons')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
             except Exception as e:
                 logger.error(f'Error creating file summary in locked view: {str(e)}')
-                return Div(Card(f'🔒 {step.show}: <content locked>'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
+                return Div(Article(f'🔒 {step.show}: <content locked>'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
         elif file_summary and state.get('_revert_target') != step_id:
             save_directory = PLUGIN_DOWNLOADS_BASE_DIR / app_name
             open_folder_link_ui = A(
@@ -309,7 +309,7 @@ class FileUploadWidget:
         explanation = 'Select one or more files. They will be saved to the `downloads` directory in a subfolder named after this workflow.'
         await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
         await self.message_queue.add(wand, explanation, verbatim=True)
-        return Div(Card(H3(f'{wand.fmt(step_id)}: {step.show}'), P(explanation, cls='text-secondary'), Form(Input(type='file', name='uploaded_files', multiple='true', required='true', cls='contrast', data_testid=self.UI_CONSTANTS["AUTOMATION"]["FILE_INPUT_TESTID"], aria_label='Select files to upload to the server'), Button('Upload Files ▸', type='submit', cls='primary', data_testid=self.UI_CONSTANTS["AUTOMATION"]["UPLOAD_BUTTON_TESTID"], aria_label='Upload selected files to server'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', enctype='multipart/form-data')), Div(id=next_step_id), id=step_id)
+        return Div(Article(H3(f'{wand.fmt(step_id)}: {step.show}'), P(explanation, cls='text-secondary'), Form(Input(type='file', name='uploaded_files', multiple='true', required='true', cls='contrast', data_testid=self.UI_CONSTANTS["AUTOMATION"]["FILE_INPUT_TESTID"], aria_label='Select files to upload to the server'), Button('Upload Files ▸', type='submit', cls='primary', data_testid=self.UI_CONSTANTS["AUTOMATION"]["UPLOAD_BUTTON_TESTID"], aria_label='Upload selected files to server'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', enctype='multipart/form-data')), Div(id=next_step_id), id=step_id)
 
     async def step_01_submit(self, request):
         """ Process the submission for file upload widget. """
@@ -324,7 +324,7 @@ class FileUploadWidget:
         if not uploaded_files or not uploaded_files[0].filename:
             await self.message_queue.add(wand, 'No files selected. Please try again.', verbatim=True)
             explanation = 'Select one or more files. They will be saved to the `downloads` directory.'
-            return Div(Card(H3(f'{wand.fmt(step_id)}: {step.show}'), P('No files were selected. Please try again.', cls='text-invalid'), P(explanation, cls='text-secondary'), Form(Input(type='file', name='uploaded_files', multiple='true', required='true', cls='contrast', data_testid=self.UI_CONSTANTS["AUTOMATION"]["FILE_INPUT_TESTID"], aria_label='Select files to upload to the server'), Button('Upload Files ▸', type='submit', cls='primary', data_testid=self.UI_CONSTANTS["AUTOMATION"]["UPLOAD_BUTTON_TESTID"], aria_label='Upload selected files to server'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', enctype='multipart/form-data')), Div(id=next_step_id), id=step_id)
+            return Div(Article(H3(f'{wand.fmt(step_id)}: {step.show}'), P('No files were selected. Please try again.', cls='text-invalid'), P(explanation, cls='text-secondary'), Form(Input(type='file', name='uploaded_files', multiple='true', required='true', cls='contrast', data_testid=self.UI_CONSTANTS["AUTOMATION"]["FILE_INPUT_TESTID"], aria_label='Select files to upload to the server'), Button('Upload Files ▸', type='submit', cls='primary', data_testid=self.UI_CONSTANTS["AUTOMATION"]["UPLOAD_BUTTON_TESTID"], aria_label='Upload selected files to server'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', enctype='multipart/form-data')), Div(id=next_step_id), id=step_id)
 
         # Use the same base directory as the download endpoint
         save_directory = PLUGIN_DOWNLOADS_BASE_DIR / app_name

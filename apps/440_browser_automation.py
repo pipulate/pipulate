@@ -154,11 +154,11 @@ class BrowserAutomation:
         finalize_data = wand.get_step_data(pipeline_id, finalize_step.id, {})
         if request.method == 'GET':
             if finalize_step.done in finalize_data:
-                return Card(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{finalize_step.id}'), id=finalize_step.id)
+                return Article(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{finalize_step.id}'), id=finalize_step.id)
             else:
                 all_steps_complete = all((wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
                 if all_steps_complete:
-                    return Card(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary'), hx_post=f'/{app_name}/finalize', hx_target=f'#{finalize_step.id}'), id=finalize_step.id)
+                    return Article(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary'), hx_post=f'/{app_name}/finalize', hx_target=f'#{finalize_step.id}'), id=finalize_step.id)
                 else:
                     return Div(id=finalize_step.id)
         else:
@@ -171,7 +171,7 @@ class BrowserAutomation:
             state['updated'] = datetime.now().isoformat()
             wand.write_state(pipeline_id, state)
             await self.message_queue.add(wand, self.step_messages['finalize']['complete'], verbatim=True)
-            return Card(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{finalize_step.id}'), id=finalize_step.id)
+            return Article(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{finalize_step.id}'), id=finalize_step.id)
 
     async def unfinalize(self, request):
         """Handles POST request to unlock the workflow."""
@@ -185,7 +185,7 @@ class BrowserAutomation:
                 pass
         wand.write_state(pipeline_id, state)
         await self.message_queue.add(wand, 'Workflow unfinalized! You can now revert to any step and make changes.', verbatim=True)
-        return Card(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary'), hx_post=f'/{app_name}/finalize', hx_target=f'#{steps[-1].id}'), id=steps[-1].id)
+        return Article(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary'), hx_post=f'/{app_name}/finalize', hx_target=f'#{steps[-1].id}'), id=steps[-1].id)
 
     async def get_suggestion(self, step_id, state):
         """Gets a suggested input value for a step, often using the previous step's transformed output."""
@@ -240,14 +240,14 @@ class BrowserAutomation:
         url_value = step_data.get(step.done, '')
         finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and url_value:
-            return Div(Card(H3(f'🔒 Open URL'), P(f'URL opened (and closed): ', B(url_value)), Div(id=f'{step_id}-status')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(Article(H3(f'🔒 Open URL'), P(f'URL opened (and closed): ', B(url_value)), Div(id=f'{step_id}-status')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         elif url_value and state.get('_revert_target') != step_id:
             content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'Open URL: {url_value}', widget=Div(P(f'URL opened (and closed): ', B(url_value)), Div(id=f'{step_id}-status')), steps=steps)
             return Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         else:
             await self.message_queue.add(wand, 'Enter the URL you want to open with Selenium:', verbatim=True)
             display_value = url_value if step.refill and url_value else 'https://example.com'
-            return Div(Card(H3('Open URL'), Form(Input(type='url', name='url', placeholder='https://example.com', required=True, value=display_value, cls='contrast'), Button('Open URL', type='submit', cls='primary'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+            return Div(Article(H3('Open URL'), Form(Input(type='url', name='url', placeholder='https://example.com', required=True, value=display_value, cls='contrast'), Button('Open URL', type='submit', cls='primary'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_01_submit(self, request):
         """Process the Open URL submission and open it with Selenium."""
@@ -357,7 +357,7 @@ class BrowserAutomation:
         url_value = step_data.get(step.done, '')
         finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and url_value:
-            return Div(Card(H3(f'🔒 Crawl URL'), P(f'URL crawled and saved: ', B(url_value.get('url', ''))), Div(id=f'{step_id}-status')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(Article(H3(f'🔒 Crawl URL'), P(f'URL crawled and saved: ', B(url_value.get('url', ''))), Div(id=f'{step_id}-status')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         elif url_value and state.get('_revert_target') != step_id:
             content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f"Crawl URL: {url_value.get('url', '')}", widget=Div(P(f'URL crawled and saved: ', B(url_value.get('url', ''))), P(f"Title: {url_value.get('title', '')}"), P(f"Status: {url_value.get('status', '')}"), P(f"Saved to: {url_value.get('save_path', '')}"), P(f"Reconstructed URL: {url_value.get('reconstructed_url', '')}", cls='text-secondary'), Div(id=f'{step_id}-status')), steps=steps)
             return Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
@@ -371,7 +371,7 @@ class BrowserAutomation:
                     display_value = url_value
             if not display_value:
                 display_value = 'https://example.com'
-            return Div(Card(H3('Crawl URL'), Form(Input(type='url', name='url', placeholder='https://example.com', required=True, value=display_value, cls='contrast'), Button('Crawl URL', type='submit', cls='primary'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+            return Div(Article(H3('Crawl URL'), Form(Input(type='url', name='url', placeholder='https://example.com', required=True, value=display_value, cls='contrast'), Button('Crawl URL', type='submit', cls='primary'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_02_submit(self, request):
         """Process the Crawl URL submission, open with Selenium, and save crawl data."""
@@ -485,9 +485,9 @@ class BrowserAutomation:
         if is_confirmed:
             return Div(self.pipulate.display_revert_header(step_id='step_03', app_name=self.app_name, message='Ephemeral Login Test', steps=self.steps), Div(id=next_step_id, hx_get=f'/{self.app_name}/{next_step_id}', hx_trigger='load'), id='step_03')
         elif is_completed and (not is_being_reverted):
-            return Div(Card(H3('Ephemeral Login Test'), P('✅ Test completed!'), P('Please confirm that you have successfully logged in and verified the session persistence.'), P(f'Profile directory: {user_data_dir}/{profile_dir}'), P('Note: This profile will be cleared when the server restarts.', style='color: #666; font-style: italic;'), Form(Button('Check Login Status', type='submit', cls='secondary'), hx_post=f'/{self.app_name}/step_03_submit', hx_target='#step_03'), Form(Button('Confirm Test Completion', type='submit', cls='primary'), hx_post=f'/{self.app_name}/step_03_confirm', hx_target='#step_03')), Div(id=next_step_id, hx_get=f'/{self.app_name}/{next_step_id}', hx_trigger='load'), id='step_03')
+            return Div(Article(H3('Ephemeral Login Test'), P('✅ Test completed!'), P('Please confirm that you have successfully logged in and verified the session persistence.'), P(f'Profile directory: {user_data_dir}/{profile_dir}'), P('Note: This profile will be cleared when the server restarts.', style='color: #666; font-style: italic;'), Form(Button('Check Login Status', type='submit', cls='secondary'), hx_post=f'/{self.app_name}/step_03_submit', hx_target='#step_03'), Form(Button('Confirm Test Completion', type='submit', cls='primary'), hx_post=f'/{self.app_name}/step_03_confirm', hx_target='#step_03')), Div(id=next_step_id, hx_get=f'/{self.app_name}/{next_step_id}', hx_trigger='load'), id='step_03')
         else:
-            return Div(Card(H3('Ephemeral Login Test'), P('Instructions:'), P('1. Click the button below to open Google in a new browser window'), P('2. Log in to your Google account'), P('3. Close the browser window when done'), P('4. Return here to check your session status'), P('Note: This profile will be cleared when the server restarts.', style='color: #666; font-style: italic;'), Form(Button('Open Google & Log In', type='submit', cls='primary'), hx_post=f'/{self.app_name}/step_03_submit', hx_target='#step_03')), id='step_03')
+            return Div(Article(H3('Ephemeral Login Test'), P('Instructions:'), P('1. Click the button below to open Google in a new browser window'), P('2. Log in to your Google account'), P('3. Close the browser window when done'), P('4. Return here to check your session status'), P('Note: This profile will be cleared when the server restarts.', style='color: #666; font-style: italic;'), Form(Button('Open Google & Log In', type='submit', cls='primary'), hx_post=f'/{self.app_name}/step_03_submit', hx_target='#step_03')), id='step_03')
 
     async def step_03_submit(self, request):
         """Handles POST request for Ephemeral Login Test."""
@@ -536,7 +536,7 @@ class BrowserAutomation:
                 state = self.pipulate.read_state(pipeline_id)
                 state['step_03'] = step_data
                 self.pipulate.write_state(pipeline_id, state)
-                return Div(Card(H3('Ephemeral Login Test'), P('Instructions:'), P('1. A new browser window has opened with Google'), P('2. Log in to your Google account in that window'), P('3. After logging in, close the browser window'), P('4. Return here and click the button below to confirm test completion'), P(f'Current Status: {login_status}'), Form(Button('Check Login Status', type='submit', cls='secondary'), hx_post=f'/{self.app_name}/step_03_submit', hx_target='#step_03'), Form(Button('Confirm Test Completion', type='submit', cls='primary'), hx_post=f'/{self.app_name}/step_03_confirm', hx_target='#step_03')), id='step_03')
+                return Div(Article(H3('Ephemeral Login Test'), P('Instructions:'), P('1. A new browser window has opened with Google'), P('2. Log in to your Google account in that window'), P('3. After logging in, close the browser window'), P('4. Return here and click the button below to confirm test completion'), P(f'Current Status: {login_status}'), Form(Button('Check Login Status', type='submit', cls='secondary'), hx_post=f'/{self.app_name}/step_03_submit', hx_target='#step_03'), Form(Button('Confirm Test Completion', type='submit', cls='primary'), hx_post=f'/{self.app_name}/step_03_confirm', hx_target='#step_03')), id='step_03')
             except Exception as e:
                 driver.quit()
                 raise e
@@ -576,9 +576,9 @@ class BrowserAutomation:
         if is_confirmed:
             return Div(self.pipulate.display_revert_header(step_id='step_04', app_name=self.app_name, message='Persistent Login Test', steps=self.steps), Div(id=next_step_id, hx_get=f'/{self.app_name}/{next_step_id}', hx_trigger='load'), id='step_04')
         elif is_completed and (not is_being_reverted):
-            return Div(Card(H3('Persistent Login Test'), P('✅ Test completed!'), P('Please confirm that you have successfully logged in and verified the session persistence.'), P(f'Profile directory: {user_data_dir}/{profile_dir}'), P('Note: This profile will persist across server restarts.', style='color: #666; font-style: italic;'), Form(Button('Check Login Status', type='submit', cls='secondary'), hx_post=f'/{self.app_name}/step_04_submit', hx_target='#step_04'), Form(Button('Confirm Test Completion', type='submit', cls='primary'), hx_post=f'/{self.app_name}/step_04_confirm', hx_target='#step_04')), Div(id=next_step_id, hx_get=f'/{self.app_name}/{next_step_id}', hx_trigger='load'), id='step_04')
+            return Div(Article(H3('Persistent Login Test'), P('✅ Test completed!'), P('Please confirm that you have successfully logged in and verified the session persistence.'), P(f'Profile directory: {user_data_dir}/{profile_dir}'), P('Note: This profile will persist across server restarts.', style='color: #666; font-style: italic;'), Form(Button('Check Login Status', type='submit', cls='secondary'), hx_post=f'/{self.app_name}/step_04_submit', hx_target='#step_04'), Form(Button('Confirm Test Completion', type='submit', cls='primary'), hx_post=f'/{self.app_name}/step_04_confirm', hx_target='#step_04')), Div(id=next_step_id, hx_get=f'/{self.app_name}/{next_step_id}', hx_trigger='load'), id='step_04')
         else:
-            return Div(Card(H3('Persistent Login Test'), P('Instructions:'), P('1. Click the button below to open Google in a new browser window'), P('2. Log in to your Google account'), P('3. Close the browser window when done'), P('4. Return here to check your session status'), P('Note: This profile will persist across server restarts.', style='color: #666; font-style: italic;'), Form(Button('Open Google & Log In', type='submit', cls='primary'), hx_post=f'/{self.app_name}/step_04_submit', hx_target='#step_04')), id='step_04')
+            return Div(Article(H3('Persistent Login Test'), P('Instructions:'), P('1. Click the button below to open Google in a new browser window'), P('2. Log in to your Google account'), P('3. Close the browser window when done'), P('4. Return here to check your session status'), P('Note: This profile will persist across server restarts.', style='color: #666; font-style: italic;'), Form(Button('Open Google & Log In', type='submit', cls='primary'), hx_post=f'/{self.app_name}/step_04_submit', hx_target='#step_04')), id='step_04')
 
     async def step_04_submit(self, request):
         """Handles POST request for Persistent Login Test."""
@@ -627,7 +627,7 @@ class BrowserAutomation:
                 state = self.pipulate.read_state(pipeline_id)
                 state['step_04'] = step_data
                 self.pipulate.write_state(pipeline_id, state)
-                return Div(Card(H3('Persistent Login Test'), P('Instructions:'), P('1. A new browser window has opened with Google'), P('2. Log in to your Google account in that window'), P('3. After logging in, close the browser window'), P('4. Return here and click the button below to confirm test completion'), P(f'Current Status: {login_status}'), Form(Button('Check Login Status', type='submit', cls='secondary'), hx_post=f'/{self.app_name}/step_04_submit', hx_target='#step_04'), Form(Button('Confirm Test Completion', type='submit', cls='primary'), hx_post=f'/{self.app_name}/step_04_confirm', hx_target='#step_04')), id='step_04')
+                return Div(Article(H3('Persistent Login Test'), P('Instructions:'), P('1. A new browser window has opened with Google'), P('2. Log in to your Google account in that window'), P('3. After logging in, close the browser window'), P('4. Return here and click the button below to confirm test completion'), P(f'Current Status: {login_status}'), Form(Button('Check Login Status', type='submit', cls='secondary'), hx_post=f'/{self.app_name}/step_04_submit', hx_target='#step_04'), Form(Button('Confirm Test Completion', type='submit', cls='primary'), hx_post=f'/{self.app_name}/step_04_confirm', hx_target='#step_04')), id='step_04')
             except Exception as e:
                 driver.quit()
                 raise e
@@ -665,14 +665,14 @@ class BrowserAutomation:
         finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and placeholder_value:
             wand.append_to_history(f'[WIDGET CONTENT] {step.show} (Finalized):\n{placeholder_value}')
-            return Div(Card(H3(f'🔒 {step.show}: Completed')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(Article(H3(f'🔒 {step.show}: Completed')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         if placeholder_value and state.get('_revert_target') != step_id:
             wand.append_to_history(f'[WIDGET CONTENT] {step.show} (Completed):\n{placeholder_value}')
             return Div(wand.display_revert_header(step_id=step_id, app_name=app_name, message=f'{step.show}: Complete', steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         else:
             wand.append_to_history(f'[WIDGET STATE] {step.show}: Showing input form')
             await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
-            return Div(Card(H3(f'{step.show}'), P('This is a placeholder step. Click Proceed to continue to the next step.'), Form(Button('Next ▸', type='submit', cls='primary'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+            return Div(Article(H3(f'{step.show}'), P('This is a placeholder step. Click Proceed to continue to the next step.'), Form(Button('Next ▸', type='submit', cls='primary'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_05_submit(self, request):
         """Process the submission for Step 5 placeholder."""

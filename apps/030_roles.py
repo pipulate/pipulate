@@ -313,7 +313,7 @@ class CrudUI(PluginIdentityManager):
         items = sorted(items_query, key=lambda item: item.priority if item.priority is not None else 99)
 
         return Div(
-            Card(
+            Article(
                 H3(self.H3_HEADER),
                 Div(
                     Button(Img(src='/assets/feather/rewind.svg', 

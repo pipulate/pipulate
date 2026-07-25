@@ -186,7 +186,7 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         pipeline.xtra(app_name=app_name)
         matching_records = [record.pkey for record in pipeline() if record.pkey.startswith(prefix)]
         datalist_options = [f"{prefix}{record_key.replace(prefix, '')}" for record_key in matching_records]
-        return Container(Card(H2(title), P(self.ENDPOINT_MESSAGE, cls='text-secondary'), Form(wand.wrap_with_inline_button(Input(placeholder='Existing or new 🗝 here (Enter for auto)', name='pipeline_id', list='pipeline-ids', type='search', required=False, autofocus=True, value=default_value, _onfocus='this.setSelectionRange(this.value.length, this.value.length)', cls='contrast'), button_label=f'Enter 🔑', button_class='secondary'), wand.update_datalist('pipeline-ids', options=datalist_options if datalist_options else None), hx_post=f'/{app_name}/init', hx_target=f'#{app_name}-container')), Div(id=f'{app_name}-container'))
+        return Container(Article(H2(title), P(self.ENDPOINT_MESSAGE, cls='text-secondary'), Form(wand.wrap_with_inline_button(Input(placeholder='Existing or new 🗝 here (Enter for auto)', name='pipeline_id', list='pipeline-ids', type='search', required=False, autofocus=True, value=default_value, _onfocus='this.setSelectionRange(this.value.length, this.value.length)', cls='contrast'), button_label=f'Enter 🔑', button_class='secondary'), wand.update_datalist('pipeline-ids', options=datalist_options if datalist_options else None), hx_post=f'/{app_name}/init', hx_target=f'#{app_name}-container')), Div(id=f'{app_name}-container'))
 
     async def init(self, request):
         """ Initialize the workflow state and redirect to the first step. """
@@ -240,11 +240,11 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         finalize_data = wand.get_step_data(pipeline_id, finalize_step.id, {})
         if request.method == 'GET':
             if finalize_step.done in finalize_data:
-                return Card(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
+                return Article(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
             else:
                 all_steps_complete = all((wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
                 if all_steps_complete:
-                    return Card(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary'), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
+                    return Article(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary'), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
                 else:
                     return Div(id=finalize_step.id)
         else:
@@ -306,7 +306,7 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and user_val:
             simple_widget = Pre(user_val, cls='code-block-container')
-            return Div(Card(H3(f'🔒 {step.show}'), simple_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
+            return Div(Article(H3(f'🔒 {step.show}'), simple_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
         elif user_val and state.get('_revert_target') != step_id:
             simple_widget = Pre(user_val, cls='code-block-container')
             content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show} Configured', widget=simple_widget, steps=steps)
@@ -314,7 +314,7 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         else:
             display_value = user_val if step.refill and user_val else await self.get_suggestion(step_id, state)
             await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
-            return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter text content for the simple widget. Example is pre-populated.'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter text content for the widget', required=True, rows=10, style='width: 100%; font-family: monospace;'), Div(Button('Record Text ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+            return Div(Article(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter text content for the simple widget. Example is pre-populated.'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter text content for the widget', required=True, rows=10, style='width: 100%; font-family: monospace;'), Div(Button('Record Text ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_01_submit(self, request):
         """
@@ -369,12 +369,12 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
             try:
                 widget_id = f"marked-widget-{pipeline_id.replace('-', '_')}-{step_id}"
                 marked_widget = self.create_marked_widget(user_val, widget_id)
-                response = HTMLResponse(to_xml(Div(Card(H3(f'🔒 {step.show}'), marked_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))))
+                response = HTMLResponse(to_xml(Div(Article(H3(f'🔒 {step.show}'), marked_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))))
                 response.headers['HX-Trigger'] = json.dumps({'initMarked': {'widgetId': widget_id}})
                 return response
             except Exception as e:
                 logger.error(f'Error creating Marked widget in locked view: {str(e)}')
-                return Div(Card(f'🔒 {step.show}: <content locked>'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
+                return Div(Article(f'🔒 {step.show}: <content locked>'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
         elif user_val and state.get('_revert_target') != step_id:
             try:
                 widget_id = f"marked-widget-{pipeline_id.replace('-', '_')}-{step_id}"
@@ -389,7 +389,7 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
                 wand.write_state(pipeline_id, state)
         display_value = user_val if step.refill and user_val else await self.get_suggestion(step_id, state)
         await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
-        return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter markdown content to be rendered. Example is pre-populated.'), P('The markdown will be rendered with support for headings, lists, bold/italic text, and code blocks.', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter markdown content', required=True, rows=15, style='width: 100%; font-family: monospace;'), Div(Button('Render Markdown ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+        return Div(Article(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter markdown content to be rendered. Example is pre-populated.'), P('The markdown will be rendered with support for headings, lists, bold/italic text, and code blocks.', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter markdown content', required=True, rows=15, style='width: 100%; font-family: monospace;'), Div(Button('Render Markdown ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_02_submit(self, request):
         """
@@ -436,12 +436,12 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
             try:
                 widget_id = f"mermaid-widget-{pipeline_id.replace('-', '_')}-{step_id}"
                 mermaid_widget = self.create_mermaid_widget(user_val, widget_id)
-                response = HTMLResponse(to_xml(Div(Card(H3(f'🔒 {step.show}'), mermaid_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))))
+                response = HTMLResponse(to_xml(Div(Article(H3(f'🔒 {step.show}'), mermaid_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))))
                 response.headers['HX-Trigger'] = json.dumps({'renderMermaid': {'targetId': f'{widget_id}_output', 'diagram': user_val}})
                 return response
             except Exception as e:
                 logger.error(f'Error creating mermaid widget in locked view: {str(e)}')
-                return Div(Card(f'🔒 {step.show}: <content locked>'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
+                return Div(Article(f'🔒 {step.show}: <content locked>'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
         elif user_val and state.get('_revert_target') != step_id:
             try:
                 widget_id = f"mermaid-widget-{pipeline_id.replace('-', '_')}-{step_id}"
@@ -456,7 +456,7 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
                 wand.write_state(pipeline_id, state)
         display_value = user_val if step.refill and user_val else await self.get_suggestion(step_id, state)
         await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
-        return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter Mermaid diagram syntax for the widget. Example is pre-populated.'), P('Supports flowcharts, sequence diagrams, class diagrams, etc.', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter Mermaid diagram syntax', required=True, rows=15, style='width: 100%; font-family: monospace;'), Div(Button('Create Diagram ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+        return Div(Article(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter Mermaid diagram syntax for the widget. Example is pre-populated.'), P('Supports flowcharts, sequence diagrams, class diagrams, etc.', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter Mermaid diagram syntax', required=True, rows=15, style='width: 100%; font-family: monospace;'), Div(Button('Create Diagram ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_03_submit(self, request):
         """
@@ -518,10 +518,10 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         if 'finalized' in finalize_data and user_val:
             try:
                 table_widget = self.create_pandas_table(user_val)
-                return Div(Card(H3(f'🔒 {step.show}'), table_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
+                return Div(Article(H3(f'🔒 {step.show}'), table_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
             except Exception as e:
                 logger.error(f'Error creating table widget in finalized view: {str(e)}')
-                return Div(Card(f'🔒 {step.show}: <content locked>'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
+                return Div(Article(f'🔒 {step.show}: <content locked>'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
         elif user_val and state.get('_revert_target') != step_id:
             try:
                 table_widget = self.create_pandas_table(user_val)
@@ -533,7 +533,7 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
                 wand.write_state(pipeline_id, state)
         display_value = user_val if step.refill and user_val else await self.get_suggestion(step_id, state)
         await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
-        return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter table data as JSON array of objects. Example is pre-populated.'), P('Format: [{"name": "value", "value1": number, ...}, {...}]', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter JSON array of objects for the DataFrame', required=True, rows=10, style='width: 100%; font-family: monospace;'), Div(Button('Draw Table ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+        return Div(Article(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter table data as JSON array of objects. Example is pre-populated.'), P('Format: [{"name": "value", "value1": number, ...}, {...}]', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter JSON array of objects for the DataFrame', required=True, rows=10, style='width: 100%; font-family: monospace;'), Div(Button('Draw Table ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_04_submit(self, request):
         """
@@ -607,12 +607,12 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
                         code_to_display = code_to_display.rsplit('```', 1)[0]
                 widget_id = f"prism-widget-{pipeline_id.replace('-', '_')}-{step_id}"
                 prism_widget = self.create_prism_widget(code_to_display, widget_id, language)
-                response = HTMLResponse(to_xml(Div(Card(H3(f'🔒 {step.show} ({language})'), prism_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))))
+                response = HTMLResponse(to_xml(Div(Article(H3(f'🔒 {step.show} ({language})'), prism_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))))
                 response.headers['HX-Trigger'] = json.dumps({'initializePrism': {'targetId': widget_id}})
                 return response
             except Exception as e:
                 logger.error(f'Error creating Prism widget in locked view: {str(e)}')
-                return Div(Card(f'🔒 {step.show}: <content locked>'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
+                return Div(Article(f'🔒 {step.show}: <content locked>'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
         elif user_val and state.get('_revert_target') != step_id:
             try:
                 language = 'javascript'
@@ -638,7 +638,7 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
                 wand.write_state(pipeline_id, state)
         display_value = user_val if step.refill and user_val else await self.get_suggestion(step_id, state)
         await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
-        return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter code to be highlighted with syntax coloring. JavaScript example is pre-populated.'), P('The code will be displayed with syntax highlighting and a copy button.', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter code for syntax highlighting', required=True, rows=15, style='width: 100%; font-family: monospace;'), Div(Button('Highlight Code ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+        return Div(Article(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter code to be highlighted with syntax coloring. JavaScript example is pre-populated.'), P('The code will be displayed with syntax highlighting and a copy button.', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter code for syntax highlighting', required=True, rows=15, style='width: 100%; font-family: monospace;'), Div(Button('Highlight Code ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_05_submit(self, request):
         """ Process the submission for Step 5. """
@@ -691,12 +691,12 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
                 widget_id = f'js-widget-{pipeline_id}-{step_id}'.replace('-', '_')
                 target_id = f'{widget_id}_target'
                 js_widget = Div(P('JavaScript will execute here...', id=target_id, style='padding: 1.5rem; background-color: var(--pico-card-background-color); border-radius: var(--pico-border-radius); min-height: 100px;'), Button('Re-run JavaScript', type='button', _onclick=f"runJsWidget('{widget_id}', `{user_val.replace('`', '\\`')}`, '{target_id}')", style='margin-top: 1rem; background-color: #9370DB; border-color: #9370DB;'), id=widget_id)
-                response = HTMLResponse(to_xml(Div(Card(H3(f'🔒 {step.show}'), js_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))))
+                response = HTMLResponse(to_xml(Div(Article(H3(f'🔒 {step.show}'), js_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))))
                 response.headers['HX-Trigger'] = json.dumps({'runJavaScript': {'widgetId': widget_id, 'code': user_val, 'targetId': target_id}})
                 return response
             except Exception as e:
                 logger.error(f'Error creating JS widget in locked view: {str(e)}')
-                return Div(Card(f'🔒 {step.show}: <content locked>'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
+                return Div(Article(f'🔒 {step.show}: <content locked>'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
         elif user_val and state.get('_revert_target') != step_id:
             try:
                 widget_id = f'js-widget-{pipeline_id}-{step_id}'.replace('-', '_')
@@ -712,7 +712,7 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
                 wand.write_state(pipeline_id, state)
         display_value = user_val if step.refill and user_val else await self.get_suggestion(step_id, state)
         await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
-        return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter JavaScript code for the widget. Example is pre-populated.'), P("Use the 'widget' variable to access the container element.", cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter JavaScript code', required=True, rows=12, style='width: 100%; font-family: monospace;'), Div(Button('Run JavaScript ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+        return Div(Article(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter JavaScript code for the widget. Example is pre-populated.'), P("Use the 'widget' variable to access the container element.", cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter JavaScript code', required=True, rows=12, style='width: 100%; font-family: monospace;'), Div(Button('Run JavaScript ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_06_submit(self, request):
         """ Process the submission for Step 6. """
@@ -825,10 +825,10 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         if 'finalized' in finalize_data and counter_data:
             try:
                 histogram_widget = self.create_matplotlib_histogram(counter_data)
-                return Div(Card(H3(f'🔒 {step.show}'), histogram_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
+                return Div(Article(H3(f'🔒 {step.show}'), histogram_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
             except Exception as e:
                 logger.error(f'Error creating histogram in finalized view: {str(e)}')
-                return Div(Card(f'🔒 {step.show}: <content locked>'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
+                return Div(Article(f'🔒 {step.show}: <content locked>'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
         elif counter_data and state.get('_revert_target') != step_id:
             try:
                 histogram_widget = self.create_matplotlib_histogram(counter_data)
@@ -840,7 +840,7 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
                 wand.write_state(pipeline_id, state)
         display_value = counter_data if step.refill and counter_data else await self.get_suggestion(step_id, state)
         await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
-        return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter counter data as JSON object (keys and values):'), P('Format: {"category1": count1, "category2": count2, ...}', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter JSON object for Counter data', required=True, rows=10, style='width: 100%; font-family: monospace;'), Div(Button('Create Histogram ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+        return Div(Article(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter counter data as JSON object (keys and values):'), P('Format: {"category1": count1, "category2": count2, ...}', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter JSON object for Counter data', required=True, rows=10, style='width: 100%; font-family: monospace;'), Div(Button('Create Histogram ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_07_submit(self, request):
         """
@@ -897,14 +897,14 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         url_value = step_data.get(step.done, '')
         finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and url_value:
-            return Div(Card(H3(f'🔒 {step.show}'), P(f'URL configured: ', B(url_value)), Button('Open URL Again ▸', type='button', _onclick=f"window.open('{url_value}', '_blank')", cls='secondary')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
+            return Div(Article(H3(f'🔒 {step.show}'), P(f'URL configured: ', B(url_value)), Button('Open URL Again ▸', type='button', _onclick=f"window.open('{url_value}', '_blank')", cls='secondary')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
         elif url_value and state.get('_revert_target') != step_id:
             content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {url_value}', widget=Div(P(f'URL configured: ', B(url_value)), Button('Open URL Again ▸', type='button', _onclick=f"window.open('{url_value}', '_blank')", cls='secondary')), steps=steps)
             return Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'))
         else:
             display_value = url_value if step.refill and url_value else 'https://example.com'
             await self.message_queue.add(wand, 'Enter the URL you want to open:', verbatim=True)
-            return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter a URL to open in your default browser.'), Form(Div(Input(type='url', name='url', placeholder='https://example.com', required=True, value=display_value, cls='contrast'), Div(Button('Open URL ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+            return Div(Article(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter a URL to open in your default browser.'), Form(Div(Input(type='url', name='url', placeholder='https://example.com', required=True, value=display_value, cls='contrast'), Div(Button('Open URL ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_08_submit(self, request):
         """
@@ -1004,10 +1004,10 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
             try:
                 data = json.loads(table_data)
                 table_widget = self.create_rich_table_widget(data)
-                return Div(Card(H3(f'🔒 {step.show}'), table_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+                return Div(Article(H3(f'🔒 {step.show}'), table_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
             except Exception as e:
                 logger.error(f'Error creating table widget in finalized view: {str(e)}')
-                return Div(Card(f'🔒 {step.show}: <content locked>'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+                return Div(Article(f'🔒 {step.show}: <content locked>'), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         elif table_data and state.get('_revert_target') != step_id:
             try:
                 data = json.loads(table_data)
@@ -1021,7 +1021,7 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         sample_data = [{'name': 'Parameter 1', 'value1': 1000, 'value2': 500, 'value3': 50}, {'name': 'Parameter 2', 'value1': 2000, 'value2': 1000, 'value3': 100}, {'name': 'Parameter 3', 'value1': 3000, 'value2': 1500, 'value3': 150}]
         display_value = table_data if step.refill and table_data else json.dumps(sample_data, indent=2)
         await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
-        return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter table data as JSON array of objects. Example is pre-populated.'), P('Format: [{"name": "value", "value1": number, ...}, {...}]', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter JSON array of objects for the table', required=True, rows=10, style='width: 100%; font-family: monospace;'), Div(Button('Create Table ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+        return Div(Article(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Enter table data as JSON array of objects. Example is pre-populated.'), P('Format: [{"name": "value", "value1": number, ...}, {...}]', cls='text-note'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter JSON array of objects for the table', required=True, rows=10, style='width: 100%; font-family: monospace;'), Div(Button('Create Table ▸', type='submit', cls='primary'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_09_submit(self, request):
         """Process the submission for Rich Table Widget."""
@@ -1091,14 +1091,14 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         url_value = step_data.get(step.done, '')
         finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and url_value:
-            return Div(Card(H3(f'🔒 {step.show}'), P(f'URL configured: ', B(url_value)), Form(Input(type='hidden', name='url', value=url_value), Button('Open URL Again 🪄', type='submit', cls='secondary'), hx_post=f'/{app_name}/reopen_url', hx_target=f'#{step_id}-status'), Div(id=f'{step_id}-status')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(Article(H3(f'🔒 {step.show}'), P(f'URL configured: ', B(url_value)), Form(Input(type='hidden', name='url', value=url_value), Button('Open URL Again 🪄', type='submit', cls='secondary'), hx_post=f'/{app_name}/reopen_url', hx_target=f'#{step_id}-status'), Div(id=f'{step_id}-status')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         elif url_value and state.get('_revert_target') != step_id:
             content_container = wand.display_revert_widget(step_id=step_id, app_name=app_name, message=f'{step.show}: {url_value}', widget=Div(P(f'URL configured: ', B(url_value)), Form(Input(type='hidden', name='url', value=url_value), Button('Open URL Again 🪄', type='submit', cls='secondary'), hx_post=f'/{app_name}/reopen_url', hx_target=f'#{step_id}-status'), Div(id=f'{step_id}-status')), steps=steps)
             return Div(content_container, Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         else:
             await self.message_queue.add(wand, 'Enter the URL you want to open with Selenium:', verbatim=True)
             display_value = url_value if step.refill and url_value else 'https://example.com/'
-            return Div(Card(H3(f'{step.show}'), Form(Input(type='url', name='url', placeholder='https://example.com/', required=True, value=display_value, cls='contrast'), Button('Open URL 🪄', type='submit', cls='primary'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
+            return Div(Article(H3(f'{step.show}'), Form(Input(type='url', name='url', placeholder='https://example.com/', required=True, value=display_value, cls='contrast'), Button('Open URL 🪄', type='submit', cls='primary'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}')), Div(id=next_step_id), id=step_id)
 
     async def step_10_submit(self, request):
         """Process the submission for Step 10."""
@@ -1174,14 +1174,14 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and file_summary:
             wand.append_to_history(f'[WIDGET CONTENT] {step.show} (Finalized):\n{file_summary}')
-            return Div(Card(H3(f'🔒 {step.show}: Completed')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(Article(H3(f'🔒 {step.show}: Completed')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         elif file_summary and state.get('_revert_target') != step_id:
             wand.append_to_history(f'[WIDGET CONTENT] {step.show} (Completed):\n{file_summary}')
-            return Div(Card(H3(f'{step.show}'), P('Uploaded files:'), Pre(file_summary, style='white-space: pre-wrap; font-size: 0.9em;'), wand.display_revert_header(step_id=step_id, app_name=app_name, message=f'{step.show}: Complete', steps=steps)), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(Article(H3(f'{step.show}'), P('Uploaded files:'), Pre(file_summary, style='white-space: pre-wrap; font-size: 0.9em;'), wand.display_revert_header(step_id=step_id, app_name=app_name, message=f'{step.show}: Complete', steps=steps)), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         else:
             wand.append_to_history(f'[WIDGET STATE] {step.show}: Showing upload form')
             await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
-            return Div(Card(H3(f'{step.show}'), P('Select one or more files to upload. Files will be saved automatically.'), Form(Input(type='file', name='uploaded_files', multiple='true', required='true', cls='contrast'), Button('Upload Files ▸', type='submit', cls='primary'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', enctype='multipart/form-data')), Div(id=next_step_id), id=step_id)
+            return Div(Article(H3(f'{step.show}'), P('Select one or more files to upload. Files will be saved automatically.'), Form(Input(type='file', name='uploaded_files', multiple='true', required='true', cls='contrast'), Button('Upload Files ▸', type='submit', cls='primary'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', enctype='multipart/form-data')), Div(id=next_step_id), id=step_id)
 
     async def step_11_submit(self, request):
         """Process the submission for the file upload widget."""
@@ -1195,7 +1195,7 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         uploaded_files = form_data.getlist('uploaded_files')
         if not uploaded_files:
             await self.message_queue.add(wand, 'No files selected. Please try again.', verbatim=True)
-            return Div(Card(H3(f'{step.show}'), P('No files were selected. Please try again.'), Form(Input(type='file', name='uploaded_files', multiple='true', required='true', cls='contrast'), Button('Upload Files ▸', type='submit', cls='primary'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', enctype='multipart/form-data')), id=step_id)
+            return Div(Article(H3(f'{step.show}'), P('No files were selected. Please try again.'), Form(Input(type='file', name='uploaded_files', multiple='true', required='true', cls='contrast'), Button('Upload Files ▸', type='submit', cls='primary'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', enctype='multipart/form-data')), id=step_id)
         save_directory = Path('downloads') / self.app_name / pipeline_id
         try:
             save_directory.mkdir(parents=True, exist_ok=True)
@@ -1229,7 +1229,7 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         wand.append_to_history(f'[WIDGET CONTENT] {step.show}:\n{file_summary}')
         wand.append_to_history(f'[WIDGET STATE] {step.show}: Files saved')
         await self.message_queue.add(wand, f'Successfully saved {len(uploaded_files)} files to {save_directory}', verbatim=True)
-        return Div(Card(H3(f'{step.show}'), P('Files saved successfully:'), Pre(file_summary, style='white-space: pre-wrap; font-size: 0.9em;'), wand.display_revert_header(step_id=step_id, app_name=app_name, message=f'{step.show}: Complete', steps=steps)), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+        return Div(Article(H3(f'{step.show}'), P('Files saved successfully:'), Pre(file_summary, style='white-space: pre-wrap; font-size: 0.9em;'), wand.display_revert_header(step_id=step_id, app_name=app_name, message=f'{step.show}: Complete', steps=steps)), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
 
     async def reopen_url(self, request):
         """Handle reopening a URL with Selenium."""

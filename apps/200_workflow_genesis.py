@@ -162,7 +162,7 @@ class WorkflowGenesis:
 
         if request.method == 'GET':
             if finalize_step_obj.done in finalize_data:
-                return Card(
+                return Article(
                     H3('Workflow Creation Complete'),
                     P('Your workflow commands have been generated and are ready to use.', cls='text-secondary'),
                     Form(
@@ -175,7 +175,7 @@ class WorkflowGenesis:
             else:
                 all_data_steps_complete = all(wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in self.steps if step.id != 'finalize')
                 if all_data_steps_complete:
-                    return Card(
+                    return Article(
                         H3('Ready to Finalize'),
                         P('All command sequences have been generated. Finalize to complete the workflow creation process.', cls='text-secondary'),
                         Form(
@@ -566,7 +566,7 @@ class WorkflowGenesis:
                 hx_post=f'/{app_name}/{step_id}_submit',
                 hx_target=f'#{step_id}'
             )
-            return Div(Card(H3(f'{step_obj.show}'), form_content), Div(id=next_step_id), id=step_id)
+            return Div(Article(H3(f'{step_obj.show}'), form_content), Div(id=next_step_id), id=step_id)
 
     async def step_01_submit(self, request):
         """Handle step 1 submission"""
@@ -658,7 +658,7 @@ class WorkflowGenesis:
                 hx_post=f'/{app_name}/{step_id}_submit',
                 hx_target=f'#{step_id}'
             )
-            return Div(Card(H3(f'{step_obj.show}'), form_content), Div(id=next_step_id), id=step_id)
+            return Div(Article(H3(f'{step_obj.show}'), form_content), Div(id=next_step_id), id=step_id)
 
     async def step_02_submit(self, request):
         """Handle step 2 submission"""
@@ -858,7 +858,7 @@ class WorkflowGenesis:
                 hx_post=f'/{app_name}/{step_id}_submit',
                 hx_target=f'#{step_id}'
             )
-            return Div(Card(H3(f'{step_obj.show}'), form_content), Div(id=next_step_id), id=step_id)
+            return Div(Article(H3(f'{step_obj.show}'), form_content), Div(id=next_step_id), id=step_id)
 
     async def step_03_submit(self, request):
         """Handle step 3 submission - actually execute the command sequence"""

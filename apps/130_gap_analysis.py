@@ -145,7 +145,7 @@ class ContentGapAnalysis:
 
         if request.method == 'GET':
             if finalize_step_obj.done in finalize_data:
-                return Card(
+                return Article(
                     H3(self.ui['MESSAGES']['WORKFLOW_LOCKED'], id="workflow-locked-heading"), 
                     Form(
                         Button(
@@ -171,7 +171,7 @@ class ContentGapAnalysis:
                 # Check if all data steps (all steps in self.steps *before* 'finalize') are complete
                 all_data_steps_complete = all(wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in self.steps if step.id != 'finalize')
                 if all_data_steps_complete:
-                    return Card(
+                    return Article(
                         H3(self.ui['MESSAGES']['FINALIZE_QUESTION'], id="finalize-question-heading"), 
                         P(self.ui['MESSAGES']['FINALIZE_HELP'], cls='text-secondary', id="finalize-help-text"), 
                         Form(
@@ -297,7 +297,7 @@ class ContentGapAnalysis:
             await self.message_queue.add(wand, locked_msg, verbatim=True)
             widget_id = f"content-gap-yaml-{pipeline_id.replace('-', '_')}-{step_id}-finalized"
             yaml_widget = self.create_prism_widget(user_val, widget_id, 'yaml')
-            response_content = Div(Card(H3(f'🔒 {step.show}'), yaml_widget), Div(id=next_step_id, hx_get=f'/{self.app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            response_content = Div(Article(H3(f'🔒 {step.show}'), yaml_widget), Div(id=next_step_id, hx_get=f'/{self.app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
             response = HTMLResponse(to_xml(response_content))
             response.headers['HX-Trigger'] = json.dumps({'initializePrism': {'targetId': widget_id}})
             return response
@@ -321,7 +321,7 @@ class ContentGapAnalysis:
             await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
             explanation = 'Enter competitor domains, one per line. To ADD domains to existing analysis: put new domains at the TOP. To REMOVE: delete the entire domain block from YAML. If YAML gets corrupted, paste your clean domain list and re-run.'
             await self.message_queue.add(wand, explanation, verbatim=True)
-            return Div(Card(H3(f'{wand.fmt(step.id)}: Enter {step.show}'), P(explanation, cls='text-secondary'), Form(Div(Textarea(display_value, name=step.done, placeholder=f'Enter competitor domains, one per line...', required=True, autofocus=True, cls='textarea-standard', data_testid='text-area-widget-textarea-input', aria_label='Multi-line text input area for competitor domains', aria_required='true', aria_labelledby=f'{step_id}-form-title', aria_describedby=f'{step_id}-form-instruction'), Div(Button('Analyze Domains ▸', type='submit', cls='primary', **{'hx-on:click': 'this.setAttribute("aria-busy", "true"); this.textContent = "Analyzing domains..."'}), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step.id}_submit', hx_target=f'#{step.id}')), Div(id=next_step_id), id=step.id)
+            return Div(Article(H3(f'{wand.fmt(step.id)}: Enter {step.show}'), P(explanation, cls='text-secondary'), Form(Div(Textarea(display_value, name=step.done, placeholder=f'Enter competitor domains, one per line...', required=True, autofocus=True, cls='textarea-standard', data_testid='text-area-widget-textarea-input', aria_label='Multi-line text input area for competitor domains', aria_required='true', aria_labelledby=f'{step_id}-form-title', aria_describedby=f'{step_id}-form-instruction'), Div(Button('Analyze Domains ▸', type='submit', cls='primary', **{'hx-on:click': 'this.setAttribute("aria-busy", "true"); this.textContent = "Analyzing domains..."'}), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step.id}_submit', hx_target=f'#{step.id}')), Div(id=next_step_id), id=step.id)
 
     async def step_01_submit(self, request):
         """Process competitor domains and convert to YAML with homepage analysis."""
@@ -716,7 +716,7 @@ class ContentGapAnalysis:
         if "finalized" in finalize_data and current_value:
             wand.append_to_history(f"[WIDGET CONTENT] {step.show} (Finalized):\n{current_value}")
             return Div(
-                Card(H3(f"🔒 {step.show}: Completed")),
+                Article(H3(f"🔒 {step.show}: Completed")),
                 Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
                 id=step_id
             )
@@ -731,7 +731,7 @@ class ContentGapAnalysis:
             wand.append_to_history(f"[WIDGET STATE] {step.show}: Showing input form")
             await self.message_queue.add(wand, self.step_messages[step_id]["input"], verbatim=True)
             return Div(
-                Card(
+                Article(
                     H3(f"{step.show}"),
                     P("This is a new placeholder step. Customize its input form as needed. Click Proceed to continue."),
                     Form(
@@ -792,7 +792,7 @@ class ContentGapAnalysis:
         if "finalized" in finalize_data and current_value:
             wand.append_to_history(f"[WIDGET CONTENT] {step.show} (Finalized):\n{current_value}")
             return Div(
-                Card(H3(f"🔒 {step.show}: Completed")),
+                Article(H3(f"🔒 {step.show}: Completed")),
                 Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
                 id=step_id
             )
@@ -807,7 +807,7 @@ class ContentGapAnalysis:
             wand.append_to_history(f"[WIDGET STATE] {step.show}: Showing input form")
             await self.message_queue.add(wand, self.step_messages[step_id]["input"], verbatim=True)
             return Div(
-                Card(
+                Article(
                     H3(f"{step.show}"),
                     P("This is a new placeholder step. Customize its input form as needed. Click Proceed to continue."),
                     Form(

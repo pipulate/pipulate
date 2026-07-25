@@ -110,11 +110,11 @@ class RadioButtonWorkflow:
         finalize_data = wand.get_step_data(pipeline_id, finalize_step.id, {})
         if request.method == 'GET':
             if finalize_step.done in finalize_data:
-                return Card(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline', data_testid='radio-widget-unlock-button', aria_label='Unlock radio workflow for editing'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
+                return Article(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline', data_testid='radio-widget-unlock-button', aria_label='Unlock radio workflow for editing'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
             else:
                 all_steps_complete = all((wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
                 if all_steps_complete:
-                    return Card(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary', data_testid='radio-widget-finalize-button', aria_label='Finalize radio workflow'), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
+                    return Article(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary', data_testid='radio-widget-finalize-button', aria_label='Finalize radio workflow'), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
                 else:
                     return Div(id=finalize_step.id)
         else:
@@ -211,7 +211,7 @@ class RadioButtonWorkflow:
         logger.debug(f'Selected value: {selected_value}')
         finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and selected_value:
-            return Div(Card(H3(f'🔒 {step.show}'), P(f'Selected: {selected_value}', cls='font-bold')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(Article(H3(f'🔒 {step.show}'), P(f'Selected: {selected_value}', cls='font-bold')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         elif selected_value and state.get('_revert_target') != step_id:
             return Div(wand.display_revert_header(step_id=step_id, app_name=app_name, message=f'{step.show}: {selected_value}', steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         await self.message_queue.add(wand, self.step_messages.get(step_id, {}).get('input', f'Complete {step.show}'), verbatim=True)
@@ -235,11 +235,11 @@ class RadioButtonWorkflow:
                     radio = Label(Input(type='radio', name=step.done, value=option['value'], checked=option['value'] == selected_value, title=option['description'] if option['description'] else None, data_testid='radio-widget-radio-input', aria_label=f'Radio button for {option["label"]}'), f" {option['label']}", data_testid='radio-widget-radio-label')
                     group_radios.append(radio)
                 radio_groups.append(Fieldset(Legend(group), *group_radios, data_testid='radio-widget-fieldset', aria_labelledby=f'fieldset-{group.lower().replace(" ", "-")}'))
-            return Div(Card(H3(f'{step.show}'), Form(*radio_groups, Button('Submit', type='submit', cls='primary', data_testid='radio-widget-next-button', aria_label='Submit radio button selection'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', data_testid='radio-widget-form', aria_label='Radio button selection form')), Div(id=next_step_id), id=step_id)
+            return Div(Article(H3(f'{step.show}'), Form(*radio_groups, Button('Submit', type='submit', cls='primary', data_testid='radio-widget-next-button', aria_label='Submit radio button selection'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', data_testid='radio-widget-form', aria_label='Radio button selection form')), Div(id=next_step_id), id=step_id)
         except Exception as e:
             logger.error(f'Error getting options: {str(e)}')
             logger.exception('Full traceback:')
-            return Div(Card(H3(f'{step.show}'), P(f'Error loading options: {str(e)}', cls="text-invalid")), id=step_id)
+            return Div(Article(H3(f'{step.show}'), P(f'Error loading options: {str(e)}', cls="text-invalid")), id=step_id)
 
     async def step_01_submit(self, request):
         """Handles POST request for radio button selection step."""

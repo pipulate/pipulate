@@ -121,11 +121,11 @@ class MermaidWidget:
         finalize_data = wand.get_step_data(pipeline_id, finalize_step.id, {})
         if request.method == 'GET':
             if finalize_step.done in finalize_data:
-                return Card(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline', data_testid=self.UI_CONSTANTS["AUTOMATION_ATTRIBUTES"]["UNLOCK_BUTTON"], aria_label=self.UI_CONSTANTS["ARIA_LABELS"]["UNLOCK_BUTTON"]), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
+                return Article(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline', data_testid=self.UI_CONSTANTS["AUTOMATION_ATTRIBUTES"]["UNLOCK_BUTTON"], aria_label=self.UI_CONSTANTS["ARIA_LABELS"]["UNLOCK_BUTTON"]), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
             else:
                 all_steps_complete = all((wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
                 if all_steps_complete:
-                    return Card(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary', data_testid=self.UI_CONSTANTS["AUTOMATION_ATTRIBUTES"]["FINALIZE_BUTTON"], aria_label=self.UI_CONSTANTS["ARIA_LABELS"]["FINALIZE_BUTTON"]), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
+                    return Article(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary', data_testid=self.UI_CONSTANTS["AUTOMATION_ATTRIBUTES"]["FINALIZE_BUTTON"], aria_label=self.UI_CONSTANTS["ARIA_LABELS"]["FINALIZE_BUTTON"]), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
                 else:
                     return Div(id=finalize_step.id)
         else:
@@ -198,7 +198,7 @@ class MermaidWidget:
         if 'finalized' in finalize_data and user_val:
             widget_id = f"mermaid-widget-{pipeline_id.replace('-', '_')}-{step_id}"
             mermaid_widget = self.create_mermaid_widget(user_val, widget_id)
-            response = HTMLResponse(to_xml(Div(Card(H3(f'🔒 {step.show}'), mermaid_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)))
+            response = HTMLResponse(to_xml(Div(Article(H3(f'🔒 {step.show}'), mermaid_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)))
             response.headers['HX-Trigger'] = json.dumps({'renderMermaid': {'targetId': f'{widget_id}_output', 'diagram': user_val}})
             return response
         elif user_val and state.get('_revert_target') != step_id:
@@ -213,7 +213,7 @@ class MermaidWidget:
             await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
             explanation = 'Enter Mermaid diagram syntax for the widget. Example is pre-populated. Supports flowcharts, sequence diagrams, class diagrams, etc.'
             await self.message_queue.add(wand, explanation, verbatim=True)
-            return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P(explanation, cls='text-secondary'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter Mermaid diagram syntax', required=True, rows=15, style='width: 100%; font-family: monospace;', data_testid=self.UI_CONSTANTS["AUTOMATION_ATTRIBUTES"]["MERMAID_TEXTAREA"], aria_label=self.UI_CONSTANTS["ARIA_LABELS"]["MERMAID_INPUT"], aria_describedby="mermaid-help-text"), Div(Button('Create Diagram ▸', type='submit', cls='primary', data_testid=self.UI_CONSTANTS["AUTOMATION_ATTRIBUTES"]["RENDER_BUTTON"], aria_label=self.UI_CONSTANTS["ARIA_LABELS"]["RENDER_BUTTON"]), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', role="form", aria_label="Configure Mermaid diagram syntax"), P("Supports flowcharts, sequence diagrams, class diagrams, and more", id="mermaid-help-text", cls='text-secondary')), Div(id=next_step_id), id=step_id)
+            return Div(Article(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P(explanation, cls='text-secondary'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter Mermaid diagram syntax', required=True, rows=15, style='width: 100%; font-family: monospace;', data_testid=self.UI_CONSTANTS["AUTOMATION_ATTRIBUTES"]["MERMAID_TEXTAREA"], aria_label=self.UI_CONSTANTS["ARIA_LABELS"]["MERMAID_INPUT"], aria_describedby="mermaid-help-text"), Div(Button('Create Diagram ▸', type='submit', cls='primary', data_testid=self.UI_CONSTANTS["AUTOMATION_ATTRIBUTES"]["RENDER_BUTTON"], aria_label=self.UI_CONSTANTS["ARIA_LABELS"]["RENDER_BUTTON"]), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', role="form", aria_label="Configure Mermaid diagram syntax"), P("Supports flowcharts, sequence diagrams, class diagrams, and more", id="mermaid-help-text", cls='text-secondary')), Div(id=next_step_id), id=step_id)
 
     async def step_01_submit(self, request):
         wand, steps, app_name = (self.pipulate, self.steps, self.app_name)

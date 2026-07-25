@@ -206,7 +206,7 @@ class IntroductionPlugin:
 
         return Div(
                 onload_trigger,
-                Card(
+                Article(
                     Div(
                        H2(title, style="display: inline-block; margin-bottom: 0;"),
                        encore_btn,

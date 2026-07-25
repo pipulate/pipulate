@@ -110,11 +110,11 @@ class SwitchWorkflow:
         finalize_data = wand.get_step_data(pipeline_id, finalize_step.id, {})
         if request.method == 'GET':
             if finalize_step.done in finalize_data:
-                return Card(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline', data_testid='switch-widget-unlock-button', aria_label='Unlock switch workflow for editing'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
+                return Article(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline', data_testid='switch-widget-unlock-button', aria_label='Unlock switch workflow for editing'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
             else:
                 all_steps_complete = all((wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
                 if all_steps_complete:
-                    return Card(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary', data_testid='switch-widget-finalize-button', aria_label='Finalize switch workflow'), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
+                    return Article(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary', data_testid='switch-widget-finalize-button', aria_label='Finalize switch workflow'), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
                 else:
                     return Div(id=finalize_step.id)
         else:
@@ -164,7 +164,7 @@ class SwitchWorkflow:
         for switch in self.SWITCH_CONFIG['switches']:
             current_state = switch_state.get(switch['id'], switch['default'])
             switch_inputs.append(Div(Label(Input(type='checkbox', role='switch', name=f"switch_{switch['id']}", checked=current_state, cls='contrast', data_testid='switch-widget-switch-input', aria_label=f'Toggle switch for {switch["label"]}'), Span(switch['label'], style='margin-left: 0.5rem;', data_testid='switch-widget-switch-span'), data_testid='switch-widget-switch-label'), cls='mb-4'))
-        return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Toggle the switches to configure your settings.'), Form(Div(*switch_inputs, Div(Button('Save Settings ▸', type='submit', cls='primary', data_testid='switch-widget-next-button', aria_label='Save switch settings'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', data_testid='switch-widget-form', aria_label='Switch configuration form')), Div(id=next_step_id), id=step_id)
+        return Div(Article(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P('Toggle the switches to configure your settings.'), Form(Div(*switch_inputs, Div(Button('Save Settings ▸', type='submit', cls='primary', data_testid='switch-widget-next-button', aria_label='Save switch settings'), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', data_testid='switch-widget-form', aria_label='Switch configuration form')), Div(id=next_step_id), id=step_id)
 
     async def step_01_submit(self, request):
         """Handles POST request for switch configuration step."""

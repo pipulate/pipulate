@@ -43,7 +43,7 @@ The chain is maintained by including a Div with hx_trigger="load" in the respons
 ```python
 # Explicit method:
 return Div(
-    Card(...),  # Current step content
+    Article(...),  # Current step content
     Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
     id=step_id
 )
@@ -286,7 +286,7 @@ class HelloFlow:
         finalize_data = wand.get_step_data(pipeline_id, finalize_step.id, {})
         if request.method == 'GET':
             if finalize_step.done in finalize_data:
-                return Card(
+                return Article(
                     H3(f'{self.ui["EMOJIS"]["LOCKED"]} Workflow is locked.'),
                     P('Each step can do ANYTHING. With this you can change the world — or at least show how to in a workflow.', cls='text-muted'),
                     Form(
@@ -314,7 +314,7 @@ class HelloFlow:
             else:
                 all_steps_complete = all((wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
                 if all_steps_complete:
-                    return Card(
+                    return Article(
                         H3(f'{self.ui["EMOJIS"]["SUCCESS"]} All steps complete. Finalize?'),
                         P('At the end they get locked. Or you can go back.', cls='text-muted'),
                         Form(
@@ -416,7 +416,7 @@ class HelloFlow:
             locked_msg = f'{self.ui["EMOJIS"]["LOCKED"]} Your name is set to: {user_val}'
             await self.message_queue.add(wand, locked_msg, verbatim=True)
             return Div(
-                Card(
+                Article(
                     H3(f'{self.ui["EMOJIS"]["LOCKED"]} {step.show}: {user_val}'),
                     role='region',
                     aria_label=f'Locked step 1: {step.show}',
@@ -464,7 +464,7 @@ class HelloFlow:
             self.wand.speak("Workflows are Notebooks without having to look at the code. Please enter your name to begin.", wait=False)
             
             return Div(
-                Card(
+                Article(
                     H3(f'{self.ui["EMOJIS"]["USER_INPUT"]} {self.wand.fmt(step.id)}: Enter {step.show}'),
                     P(explanation, cls='text-muted'),
                     Label(
@@ -572,7 +572,7 @@ class HelloFlow:
             locked_msg = f'{self.ui["EMOJIS"]["LOCKED"]} Greeting is locked: {user_val}'
             await self.message_queue.add(wand, locked_msg, verbatim=True)
             return Div(
-                Card(
+                Article(
                     H3(f'{self.ui["EMOJIS"]["LOCKED"]} {step.show}: {user_val}'),
                     role='region',
                     aria_label=f'Locked step 2: {step.show}',
@@ -618,7 +618,7 @@ class HelloFlow:
             self.wand.speak("That's it! Workflows just collect data, walking you from one step to the next. Unix pipes. Please enter a greeting.", wait=False)
             
             return Div(
-                Card(
+                Article(
                     H3(f'{self.ui["EMOJIS"]["GREETING"]} {self.wand.fmt(step.id)}: Enter {step.show}'),
                     P(explanation, cls='text-muted'),
                     Label(

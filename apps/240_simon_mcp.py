@@ -143,7 +143,7 @@ class SimonSaysMcpWidget:
         if request.method == 'GET':
             # STEP PHASE: Finalize (already finalized)
             if finalize_step_obj.done in finalize_data:
-                return Card(
+                return Article(
                     H3(self.ui['MESSAGES']['WORKFLOW_LOCKED']), 
                     Form(
                         Button(self.ui['BUTTON_LABELS']['UNLOCK'], type='submit', cls=self.ui['BUTTON_STYLES']['OUTLINE']), 
@@ -165,7 +165,7 @@ class SimonSaysMcpWidget:
             
             # STEP PHASE: Get Input (show finalize button when all steps complete)
             if all_data_steps_complete:
-                return Card(
+                return Article(
                     H3(self.ui['MESSAGES']['FINALIZE_QUESTION']), 
                     P(self.ui['MESSAGES']['FINALIZE_HELP'], cls='text-secondary'), 
                     Form(
@@ -177,7 +177,7 @@ class SimonSaysMcpWidget:
                 )
             else:
                 # Still waiting for steps to complete - show progress
-                return Card(
+                return Article(
                     H3("🔄 Workflow In Progress"),
                     P("Complete all steps to finalize this workflow"),
                     id=finalize_step_obj.id
@@ -512,7 +512,7 @@ Output only the MCP block above. Do not add any other text."""
         )
         
         return Div(
-            Card(
+            Article(
                 H3('🎪 Simon Says Make MCP Call'), 
                 P('🎯 Direct Execution: Click the colored button to immediately execute the selected MCP action.'),
                 P('📋 Training Mode: Click "Copy for Chat" to copy the MCP command with training envelope, then paste it in the chat to teach your local LLM how MCP tools work.'),
@@ -669,7 +669,7 @@ Output only the MCP block above. Do not add any other text."""
                 
                 # Return success message since the MCP tool probably worked
                 return Div(
-                    Card(
+                    Article(
                         H3('⏰ Operation Timeout'),
                         P('The MCP tool execution timed out after 2+ minutes, but it likely completed successfully in the background.'),
                         P('Check the server logs for MCP_SUCCESS messages to confirm completion.', cls='text-secondary'),
@@ -691,7 +691,7 @@ Output only the MCP block above. Do not add any other text."""
                  
                  # CRITICAL: Return proper div structure to preserve HTMX functionality
                  return Div(
-                     Card(
+                     Article(
                          H3('❌ Error'),
                          P(error_msg, cls='text-invalid'),
                          Button('Try Again', type='button', cls='primary', 

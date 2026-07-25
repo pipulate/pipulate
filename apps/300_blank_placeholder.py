@@ -126,7 +126,7 @@ class BlankPlaceholder:
 
         if request.method == 'GET':
             if finalize_step_obj.done in finalize_data:
-                return Card(
+                return Article(
                     H3(self.ui['MESSAGES']['WORKFLOW_LOCKED'], id="workflow-locked-heading"), 
                     Form(
                         Button(
@@ -152,7 +152,7 @@ class BlankPlaceholder:
                 # Check if all data steps (all steps in self.steps *before* 'finalize') are complete
                 all_data_steps_complete = all(wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in self.steps if step.id != 'finalize')
                 if all_data_steps_complete:
-                    return Card(
+                    return Article(
                         H3(self.ui['MESSAGES']['FINALIZE_QUESTION'], id="finalize-question-heading"), 
                         P(self.ui['MESSAGES']['FINALIZE_HELP'], cls='text-secondary', id="finalize-help-text"), 
                         Form(
@@ -241,7 +241,7 @@ class BlankPlaceholder:
         if "finalized" in finalize_data and current_value:
             wand.append_to_history(f"[WIDGET CONTENT] {step.show} (Finalized):\\n{current_value}")
             return Div(
-                Card(H3(f"🔒 {step.show}: Completed")),
+                Article(H3(f"🔒 {step.show}: Completed")),
                 Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
                 id=step_id
             )
@@ -256,7 +256,7 @@ class BlankPlaceholder:
             wand.append_to_history(f"[WIDGET STATE] {step.show}: Showing input form")
             await self.message_queue.add(wand, self.step_messages[step_id]["input"], verbatim=True)
             return Div(
-                Card(
+                Article(
                     H3(f"{step.show}", id=f"{step_id}-heading", aria_level="3"),
                     P("This is a placeholder step. Click Done to proceed.", 
                       id=f"{step_id}-description",

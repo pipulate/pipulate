@@ -119,7 +119,7 @@ class SliderPlaceholder:
 
         if request.method == 'GET':
             if finalize_step_obj.done in finalize_data:
-                return Card(
+                return Article(
                     H3(self.ui['MESSAGES']['WORKFLOW_LOCKED'], id="workflow-locked-heading"), 
                     Form(
                         Button(self.ui['BUTTON_LABELS']['UNLOCK'], type='submit', name='unlock_action', cls=self.ui['BUTTON_STYLES']['OUTLINE']), 
@@ -131,7 +131,7 @@ class SliderPlaceholder:
             else:
                 all_data_steps_complete = all(wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in self.steps if step.id != 'finalize')
                 if all_data_steps_complete:
-                    return Card(
+                    return Article(
                         H3(self.ui['MESSAGES']['FINALIZE_QUESTION']), 
                         P(self.ui['MESSAGES']['FINALIZE_HELP'], cls='text-secondary'), 
                         Form(
@@ -229,7 +229,7 @@ class SliderPlaceholder:
 
         if "finalized" in finalize_data and current_value:
             return Div(
-                Card(H3(f"🔒 {step.show}: Completed")),
+                Article(H3(f"🔒 {step.show}: Completed")),
                 Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
                 id=step_id
             )
@@ -278,7 +278,7 @@ class SliderPlaceholder:
             )
 
             return Div(
-                Card(
+                Article(
                     H3(f"Scrubbing: {target_file}"),
                     P("Drag the slider to physically scrub the timeline of the repository.", cls="text-secondary"),
                     Form(
@@ -333,7 +333,7 @@ class SliderPlaceholder:
         finalize_data = pip.get_step_data(pipeline_id, "finalize", {})
     
         if "finalized" in finalize_data and current_value:
-            return Div(Card(H3(f"🔒 {step.show}: Completed")), Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"), id=step_id)
+            return Div(Article(H3(f"🔒 {step.show}: Completed")), Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"), id=step_id)
         elif current_value and state.get("_revert_target") != step_id:
             return Div(pip.display_revert_header(step_id=step_id, app_name=app_name, message=f"Selected Target: {current_value}", steps=steps), Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"), id=step_id)
         else:
@@ -351,7 +351,7 @@ class SliderPlaceholder:
             options = [Option(f, value=f, selected=(f == target_selection)) for f in tracked_files]
 
             return Div(
-                Card(
+                Article(
                     H3("Select Target File"),
                     P("Select a file from the repository to scrub its Git history.", cls="text-secondary"),
                     Form(

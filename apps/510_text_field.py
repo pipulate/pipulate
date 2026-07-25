@@ -88,11 +88,11 @@ class TextFieldWidget:
         finalize_data = wand.get_step_data(pipeline_id, finalize_step.id, {})
         if request.method == 'GET':
             if finalize_step.done in finalize_data:
-                return Card(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline', data_testid='text-field-widget-unlock-button', aria_label='Unlock workflow'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
+                return Article(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline', data_testid='text-field-widget-unlock-button', aria_label='Unlock workflow'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
             else:
                 all_steps_complete = all((wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
                 if all_steps_complete:
-                    return Card(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary', data_testid='text-field-widget-finalize-button', aria_label='Finalize workflow'), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
+                    return Article(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary', data_testid='text-field-widget-finalize-button', aria_label='Finalize workflow'), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
                 else:
                     return Div(id=finalize_step.id)
         else:
@@ -150,7 +150,7 @@ class TextFieldWidget:
         if 'finalized' in finalize_data and user_val:
             locked_msg = f'🔒 Text input is set to: {user_val}'
             await self.message_queue.add(wand, locked_msg, verbatim=True)
-            return Div(Card(H3(f'🔒 {step.show}: {user_val}')), Div(id=next_step_id, hx_get=f'/{self.app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(Article(H3(f'🔒 {step.show}: {user_val}')), Div(id=next_step_id, hx_get=f'/{self.app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         elif user_val and state.get('_revert_target') != step_id:
             completed_msg = f'Step 1 is complete. You entered: {user_val}'
             await self.message_queue.add(wand, completed_msg, verbatim=True)
@@ -162,7 +162,7 @@ class TextFieldWidget:
             await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
             explanation = "This is a simple text input widget. Enter any text you'd like to store."
             await self.message_queue.add(wand, explanation, verbatim=True)
-            return Div(Card(H3(f'{wand.fmt(step.id)}: Enter {step.show}'), P(explanation, cls='text-secondary'), Form(wand.wrap_with_inline_button(Input(type='text', name=step.done, value=display_value, placeholder=f'Enter {step.show}', required=True, autofocus=True, _onfocus='this.setSelectionRange(this.value.length, this.value.length)', cls='textfield-standard', aria_required='true', aria_labelledby=f'{step_id}-form-title', aria_describedby=f'{step_id}-form-instruction', data_testid='text-field-widget-text-input', aria_label='Text input field'), button_label='Next ▸', button_data_testid='text-field-widget-next-button', button_aria_label='Continue to next step'), hx_post=f'/{app_name}/{step.id}_submit', hx_target=f'#{step.id}')), Div(id=next_step_id), id=step.id)
+            return Div(Article(H3(f'{wand.fmt(step.id)}: Enter {step.show}'), P(explanation, cls='text-secondary'), Form(wand.wrap_with_inline_button(Input(type='text', name=step.done, value=display_value, placeholder=f'Enter {step.show}', required=True, autofocus=True, _onfocus='this.setSelectionRange(this.value.length, this.value.length)', cls='textfield-standard', aria_required='true', aria_labelledby=f'{step_id}-form-title', aria_describedby=f'{step_id}-form-instruction', data_testid='text-field-widget-text-input', aria_label='Text input field'), button_label='Next ▸', button_data_testid='text-field-widget-next-button', button_aria_label='Continue to next step'), hx_post=f'/{app_name}/{step.id}_submit', hx_target=f'#{step.id}')), Div(id=next_step_id), id=step.id)
 
     async def step_01_submit(self, request):
         """Process the submission for Step 1."""

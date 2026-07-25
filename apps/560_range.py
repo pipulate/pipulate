@@ -110,11 +110,11 @@ class RangeSelectorWorkflow:
         finalize_data = wand.get_step_data(pipeline_id, finalize_step.id, {})
         if request.method == 'GET':
             if finalize_step.done in finalize_data:
-                return Card(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline', data_testid='range-widget-unlock-button', aria_label='Unlock range workflow for editing'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
+                return Article(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline', data_testid='range-widget-unlock-button', aria_label='Unlock range workflow for editing'), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
             else:
                 all_steps_complete = all((wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
                 if all_steps_complete:
-                    return Card(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary', data_testid='range-widget-finalize-button', aria_label='Finalize range workflow'), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
+                    return Article(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary', data_testid='range-widget-finalize-button', aria_label='Finalize range workflow'), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container'), id=finalize_step.id)
                 else:
                     return Div(id=finalize_step.id)
         else:
@@ -167,7 +167,7 @@ class RangeSelectorWorkflow:
         finalize_data = wand.get_step_data(pipeline_id, 'finalize', {})
         if 'finalized' in finalize_data and selected_value:
             wand.append_to_history(f'[WIDGET CONTENT] {step.show} (Finalized):\n{selected_value}')
-            return Div(Card(H3(f'🔒 {step.show}'), P(f'Selected value: {selected_value}', cls='font-bold')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
+            return Div(Article(H3(f'🔒 {step.show}'), P(f'Selected value: {selected_value}', cls='font-bold')), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
         elif step_data.get(step.done) and state.get('_revert_target') != step_id:
             wand.append_to_history(f'[WIDGET CONTENT] {step.show} (Completed):\n{selected_value}')
             return Div(wand.display_revert_header(step_id=step_id, app_name=app_name, message=f'{step.show}: {selected_value}', steps=steps), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)
@@ -177,11 +177,11 @@ class RangeSelectorWorkflow:
             try:
                 range_input = Input(type='range', name=f'{step.done}_slider', id=f'{step.done}_slider', min=self.RANGE_CONFIG['min'], max=self.RANGE_CONFIG['max'], step=self.RANGE_CONFIG['step'], value=selected_value, title=self.RANGE_CONFIG['description'], required=True, style='flex-grow: 1; margin: 0 10px;', _oninput=f"document.getElementById('{step.done}').value = this.value;", data_testid='range-widget-slider-input', aria_label=f'Range slider from {self.RANGE_CONFIG["min"]} to {self.RANGE_CONFIG["max"]}')
                 number_input = Input(type='number', name=step.done, id=step.done, min=self.RANGE_CONFIG['min'], max=self.RANGE_CONFIG['max'], step=self.RANGE_CONFIG['step'], value=selected_value, required=True, style='width: 100px;', _oninput=f"document.getElementById('{step.done}_slider').value = this.value;", _onkeydown="if(event.key === 'Enter') { event.preventDefault(); return false; }", data_testid='range-widget-number-input', aria_label=f'Number input for range value between {self.RANGE_CONFIG["min"]} and {self.RANGE_CONFIG["max"]}')
-                return Div(Card(H3(f'{step.show}'), P(self.RANGE_CONFIG['description'], cls='text-secondary'), Form(Div(Label(self.RANGE_CONFIG['label'], style='min-width: 180px;', data_testid='range-widget-label'), range_input, number_input, style='display: flex; align-items: center; gap: 10px; margin: 1em 0;'), Button('Submit', type='submit', cls='primary', data_testid='range-widget-next-button', aria_label='Submit range selection'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', data_testid='range-widget-form', aria_label='Range selector form')), Div(id=next_step_id), id=step_id)
+                return Div(Article(H3(f'{step.show}'), P(self.RANGE_CONFIG['description'], cls='text-secondary'), Form(Div(Label(self.RANGE_CONFIG['label'], style='min-width: 180px;', data_testid='range-widget-label'), range_input, number_input, style='display: flex; align-items: center; gap: 10px; margin: 1em 0;'), Button('Submit', type='submit', cls='primary', data_testid='range-widget-next-button', aria_label='Submit range selection'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}', data_testid='range-widget-form', aria_label='Range selector form')), Div(id=next_step_id), id=step_id)
             except Exception as e:
                 logger.error(f'Error creating range selector: {str(e)}')
                 logger.exception('Full traceback:')
-                return Div(Card(H3(f'{step.show}'), P(f'Error creating range selector: {str(e)}', cls='text-invalid')), id=step_id)
+                return Div(Article(H3(f'{step.show}'), P(f'Error creating range selector: {str(e)}', cls='text-invalid')), id=step_id)
 
     async def step_01_submit(self, request):
         """Handles POST request for range selection step."""

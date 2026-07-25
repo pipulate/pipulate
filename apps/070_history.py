@@ -241,7 +241,7 @@ class HistoryViewer:
         avg_length = total_characters / total_messages if total_messages > 0 else 0
         archived_count = stats.get('archived_messages', 0)
         
-        return Card(
+        return Article(
             H3("📊 Conversation Statistics", style=f"color: {self.UI_CONSTANTS['text_color']}; margin-bottom: 1rem;"),
             Div(
                 Div(f"📈 Total Messages: {total_messages}", style="margin-bottom: 0.5rem;"),
@@ -261,7 +261,7 @@ class HistoryViewer:
 
     def render_controls_section(self):
         """Render the filter and action controls"""
-        return Card(
+        return Article(
             H4("🎛️ Controls", style=f"color: {self.UI_CONSTANTS['text_color']}; margin-bottom: 1rem;"),
             Div(
                 # Filter controls
@@ -323,7 +323,7 @@ class HistoryViewer:
         """Render the messages section"""
         if not messages:
             return Div(
-                Card(
+                Article(
                     H4("📭 No Messages", style=f"color: {self.UI_CONSTANTS['text_color']};"),
                     P("No conversation history found.", style=f"color: {self.UI_CONSTANTS['muted_color']};"),
                     style=f"""
@@ -581,7 +581,7 @@ class HistoryViewer:
 
     def render_error_page(self, error_message):
         """Render error page"""
-        return Card(
+        return Article(
             H3("❌ Error Loading History", style=f"color: {self.UI_CONSTANTS['text_color']}; margin-bottom: 1rem;"),
             P(f"Error: {error_message}", style=f"color: {self.UI_CONSTANTS['text_color']};"),
             Button(

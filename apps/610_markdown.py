@@ -119,11 +119,11 @@ class MarkdownWidget:
         finalize_data = wand.get_step_data(pipeline_id, finalize_step.id, {})
         if request.method == 'GET':
             if finalize_step.done in finalize_data:
-                return Card(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline', data_testid=self.UI_CONSTANTS["AUTOMATION_ATTRIBUTES"]["RENDER_BUTTON"] + "-unlock", aria_label=self.UI_CONSTANTS["ARIA_LABELS"]["RENDER_BUTTON"]), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
+                return Article(H3('Workflow is locked.'), Form(Button(wand.UNLOCK_BUTTON_LABEL, type='submit', cls='secondary outline', data_testid=self.UI_CONSTANTS["AUTOMATION_ATTRIBUTES"]["RENDER_BUTTON"] + "-unlock", aria_label=self.UI_CONSTANTS["ARIA_LABELS"]["RENDER_BUTTON"]), hx_post=f'/{app_name}/unfinalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
             else:
                 all_steps_complete = all((wand.get_step_data(pipeline_id, step.id, {}).get(step.done) for step in steps[:-1]))
                 if all_steps_complete:
-                    return Card(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary', data_testid=self.UI_CONSTANTS["AUTOMATION_ATTRIBUTES"]["RENDER_BUTTON"] + "-finalize", aria_label="Finalize markdown workflow"), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
+                    return Article(H3('All steps complete. Finalize?'), P('You can revert to any step and make changes.', cls='text-secondary'), Form(Button('Finalize 🔒', type='submit', cls='primary', data_testid=self.UI_CONSTANTS["AUTOMATION_ATTRIBUTES"]["RENDER_BUTTON"] + "-finalize", aria_label="Finalize markdown workflow"), hx_post=f'/{app_name}/finalize', hx_target=f'#{app_name}-container', hx_swap='outerHTML'), id=finalize_step.id)
                 else:
                     return Div(id=finalize_step.id)
         else:
@@ -343,7 +343,7 @@ class MarkdownWidget:
         if 'finalized' in finalize_data and user_val:
             widget_id = f"marked-widget-{pipeline_id.replace('-', '_')}-{step_id}"
             marked_widget = self.create_marked_widget(user_val, widget_id)
-            response = HTMLResponse(to_xml(Div(Card(H3(f'🔒 {step.show}'), marked_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)))
+            response = HTMLResponse(to_xml(Div(Article(H3(f'🔒 {step.show}'), marked_widget), Div(id=next_step_id, hx_get=f'/{app_name}/{next_step_id}', hx_trigger='load'), id=step_id)))
             response.headers['HX-Trigger'] = json.dumps({'initMarked': {'widgetId': widget_id}})
             return response
         elif user_val and state.get('_revert_target') != step_id:
@@ -358,7 +358,7 @@ class MarkdownWidget:
             await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
             explanation = 'Enter markdown content to be rendered. Example is pre-populated. The markdown will be rendered with support for headings, lists, bold/italic text, and code blocks.'
             await self.message_queue.add(wand, explanation, verbatim=True)
-            return Div(Card(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P(explanation, cls='text-secondary'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter markdown content', required=True, rows=15, style='width: 100%; font-family: monospace;', data_testid=self.UI_CONSTANTS["AUTOMATION_ATTRIBUTES"]["MARKDOWN_TEXTAREA"], aria_label=self.UI_CONSTANTS["ARIA_LABELS"]["MARKDOWN_INPUT"], aria_describedby="markdown-help-text"), Div(Button('Render Markdown ▸', type='submit', cls='primary', data_testid=self.UI_CONSTANTS["AUTOMATION_ATTRIBUTES"]["RENDER_BUTTON"], aria_label=self.UI_CONSTANTS["ARIA_LABELS"]["RENDER_BUTTON"]), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}'), P("Supports headings, lists, bold/italic text, code blocks, and links", id="markdown-help-text", cls='text-secondary')), Div(id=next_step_id), id=step_id)
+            return Div(Article(H3(f'{wand.fmt(step_id)}: Configure {step.show}'), P(explanation, cls='text-secondary'), Form(Div(Textarea(display_value, name=step.done, placeholder='Enter markdown content', required=True, rows=15, style='width: 100%; font-family: monospace;', data_testid=self.UI_CONSTANTS["AUTOMATION_ATTRIBUTES"]["MARKDOWN_TEXTAREA"], aria_label=self.UI_CONSTANTS["ARIA_LABELS"]["MARKDOWN_INPUT"], aria_describedby="markdown-help-text"), Div(Button('Render Markdown ▸', type='submit', cls='primary', data_testid=self.UI_CONSTANTS["AUTOMATION_ATTRIBUTES"]["RENDER_BUTTON"], aria_label=self.UI_CONSTANTS["ARIA_LABELS"]["RENDER_BUTTON"]), style='margin-top: 1vh; text-align: right;'), cls='w-full'), hx_post=f'/{app_name}/{step_id}_submit', hx_target=f'#{step_id}'), P("Supports headings, lists, bold/italic text, code blocks, and links", id="markdown-help-text", cls='text-secondary')), Div(id=next_step_id), id=step_id)
 
     async def step_01_submit(self, request):
         wand, steps, app_name = (self.pipulate, self.steps, self.app_name)

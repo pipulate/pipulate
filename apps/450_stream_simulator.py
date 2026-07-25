@@ -114,7 +114,7 @@ class StreamSimulatorPlugin:
         elements = [H3("Streaming Progress"), Div(id=f"stream-progress{self.id_suffix}", cls="progress-bar")]
         if self.show_stream_content:
             elements.append(Div(id=f"stream-content{self.id_suffix}", cls="stream-content"))
-        return Card(*elements)
+        return Article(*elements)
 
     def create_simulator_button(self):
         self.logger.debug("Creating simulator button")
