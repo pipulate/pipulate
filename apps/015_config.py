@@ -45,7 +45,7 @@ The chain is maintained by including a Div with hx_trigger="load" in the respons
 ```python
 # Explicit method:
 return Div(
-    Card(...),  # Current step content
+    Article(...),  # Current step content
     Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
     id=step_id
 )
