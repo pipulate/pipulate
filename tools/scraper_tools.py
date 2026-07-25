@@ -574,6 +574,16 @@ async def selenium_automation(params: dict) -> dict:
             "title": driver.title,
             "timestamp": datetime.now().isoformat(),
             "status": "success",
+            # WHOSE HEADERS ARE THESE? "url" above is the url we REQUESTED;
+            # this is the url the headers actually came off. They differed on
+            # 5 of 18 cached captures under the pre-2026-07-24 substring
+            # selector, which stacked a third-party frame's response headers
+            # into a payload labelled as the site's. The body fell back to
+            # page_source on those captures and is merely mislabelled; the
+            # headers did not fall back and are simply someone else's. An
+            # artifact that does not record its own subject cannot be audited
+            # against the ledger sitting next to it.
+            "header_source_url": doc_url,
             # Consumers read this to decide whether source.html may be trusted
             # as the LEFT PANEL of the triptych. Absent on captures taken
             # before 2026-07-24, which consumers therefore treat as UNFLAGGED,
