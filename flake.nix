@@ -1304,10 +1304,23 @@ print(max(1, n))
             # E3 escape and erases scrollback — shredding the receipts.
             clear -x && echo "$ git status" && git status
           }
-          alias app='cat patch | python apply.py'
+          # SPLIT VERDICT, and the two halves need OPPOSITE treatment. `cat
+          # patch` is CWD-dependent BY DESIGN -- it reads the patch where you
+          # stand, matched with `patch` which writes it where you stand, so the
+          # pair agrees wherever you are. The script name is not: its location
+          # is a HIDDEN ARGUMENT. Hence a root-anchored path and NOT a cd
+          # wrapper -- a wrapper would relocate `cat patch` too and silently
+          # break the matched pair. General test: cd-wrapper when the whole
+          # command belongs to the repo, anchored path when one named file does.
+          alias app='cat patch | python "$PIPULATE_ROOT/apply.py"'
           figurate() {
             local name="''${1:-white_rabbit}"
-            .venv/bin/python -c "
+            # UNNAMED-ROOT RULE conviction 2026-07-24: this resolved the venv
+            # interpreter through the CWD and therefore worked only from the
+            # repo root. Interpreter anchored, body deliberately untouched --
+            # if the -c script also reads relative paths that is a second
+            # conviction, and it needs the body in a payload first.
+            "$PIPULATE_ROOT/.venv/bin/python" -c "
 from pipulate import wand
 r = wand.figurate('$name')
 print('Name:', r.name)
