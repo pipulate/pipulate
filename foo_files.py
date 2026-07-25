@@ -532,6 +532,37 @@ AI_PHOOEY_CHOP = r"""                                                           
 # No per-ticket directories, resettable counters, nested cartridges, or
 # correlation manifests are required until a real handoff demonstrates friction.
 
+# THE MCP RECEIPT RULE (proposed 2026-07-25; transport UNWITNESSED — PENDING):
+# A model-mediated tool call enters this system as a RECEIPT or not at all. The
+# receipt is a FOUR-TUPLE the model emits verbatim and never paraphrases:
+#   (1) server — the MCP server URL
+#   (2) verb   — the JSON-RPC method (tools/call)
+#   (3) tool   — the tool name exactly as the registry spells it
+#   (4) args   — the arguments object, byte-for-byte as submitted
+# Plus a DETERMINISM CLASS, because re-execution proves different things:
+#   D0 deterministic — same args, same bytes, forever; re-runnable by anyone.
+#   D1 stable read   — server-side state; re-runnable until mutated. A mismatch
+#                      is drift OR model error, and a timestamp discriminates.
+#   D2 time-varying  — live/recent/search. Re-execution is a NEW OBSERVATION,
+#                      never a reproduction. INADMISSIBLE as evidence; citable
+#                      only as "observed at <ts>".
+# EPISTEMIC LABELS are mandatory and PER LINE: OBSERVED (the model emitted it)
+# vs INFERRED (reasoned from docs, or joined from two of the model's own lists).
+# The envelope — handshake, session header, protocol version, wire spelling of
+# the tool name — is INFERRED until the operator's own replay client witnesses
+# it ONCE, at which point it is PINNED IN THE REPO and never inferred again.
+# THE TRANSPORT IS A CONSTANT; THE CALL IS THE VARIABLE.
+# HARD LIMIT, named so nobody hunts for it later: a REMOTE MCP server's upstream
+# REST traffic is invisible to EVERY client-side instrument, CDP included — the
+# upstream call happens on the vendor's machine, not in a browser. Only a LOCAL
+# (stdio) MCP server can be wire-recorded. For remote servers the MCP call IS
+# the deepest reproducible layer, and any deeper claim is fabrication.
+# COROLLARY — THE MANIFEST IS A MAP: the model enumerates connectors by READING
+# an injected manifest, not by probing a registry. Witnessed 2026-07-25: the
+# session carried 36 server URLs and 8 callable tool namespaces. A model cannot
+# detect its own manifest going stale. MODEL FOLLOWS THE MAP applies to the
+# wrapper's map too.
+
 # THE SECOND INTERPRETER RULE (banked 2026-07-17): this file has two
 # interpreters. CPython reads the path strings; the summoned model reads
 # the prose. Comments here are therefore PROGRAM, not annotation — but a
