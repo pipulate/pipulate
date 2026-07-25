@@ -138,7 +138,13 @@ def _simplify_html_for_llm(html_content, default_title=""):
     return final_html
 
 
-@auto_tool
+# NOT a tool, and the leading underscore always said so. The 2026-07-24 patch
+# that introduced this function anchored its SEARCH block on the `async def`
+# line below and inserted ABOVE it -- which left @auto_tool sitting where it
+# was, silently transplanting it onto this helper and stripping it from
+# selenium_automation. Nothing raised; ruff passed; the registry was simply
+# wrong. DECORATOR STRADDLE RULE: decorators bind downward, so any insertion
+# anchored on a def must include the line above it in the SEARCH.
 def _document_candidates(cdp_events: list, domain: str) -> list:
     """Document responseReceived events that plausibly ARE the requested page.
 
@@ -188,6 +194,7 @@ def _document_candidates(cdp_events: list, domain: str) -> list:
     return on_host
 
 
+@auto_tool
 async def selenium_automation(params: dict) -> dict:
     """
     Performs an advanced browser automation scrape of a single URL using undetected-chromedriver.
