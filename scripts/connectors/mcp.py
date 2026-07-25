@@ -72,7 +72,6 @@ def resolve_token(token_env=None):
         "MCP_BEARER_TOKEN",
         "MCP_TOKEN_FILE",
         "BOTIFY_TOKEN_FILE",
-        "BOTIFY_API_TOKEN",
     ]
     for name in names:
         val = os.environ.get(name)
@@ -86,6 +85,7 @@ def resolve_token(token_env=None):
                 except Exception:
                     pass
             return name, val
+
     default_token_file = Path.home() / ".config" / "pipulate" / "mcp_botify_token.json"
     if default_token_file.is_file():
         try:
@@ -95,6 +95,11 @@ def resolve_token(token_env=None):
                 return "mcp_botify_token.json", tok
         except Exception:
             pass
+
+    val = os.environ.get("BOTIFY_API_TOKEN")
+    if val:
+        return "BOTIFY_API_TOKEN", val
+
     return None, None
 
 
