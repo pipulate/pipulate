@@ -735,7 +735,48 @@ FAILSAFE_PROFILE = {
 # a disclosure decision. 'secrets: warn' (local lane) downgrades block
 # to a loud warning; anything else clamps to block.
 # [Set to empty temporarily]
-SECRET_TRIPWIRES = []
+# SECRET_TRIPWIRES -- CREDENTIALS, NOT IDENTITY. This is the opposite polarity
+# from the PII substitutions and the denylist, and conflating them is what
+# emptied this list.
+#
+#   substitutions / denylist  -> IDENTITY. Client names. Per-client, grows
+#                                forever, and LEGITIMATELY bypassable: a
+#                                Confluence payload is allowed to name clients.
+#   SECRET_TRIPWIRES          -> CREDENTIALS. Shape-based, universal, and
+#                                essentially static. NEVER bypassable by any
+#                                profile or flag, because a leaked key cannot
+#                                be redacted after the fact -- it is rotated.
+#
+# TWO PROPERTIES MAKE THIS LIST SURVIVABLE. It was blanked because an earlier
+# spelling fired on every compile, and a guard that always fires gets deleted:
+#
+#   1. REQUIRE THE VALUE, NOT THE NAME. "refresh_token" on its own is
+#      documentation -- it appears in this repo's own prose and in its vault
+#      manifest. Only "refresh_token" followed by a real-length value is a
+#      credential. Every pattern below demands the value.
+#   2. SELF-QUOTING SAFETY. prompt_foo.py is in nearly every payload, so a
+#      pattern whose own source text matches it would convict this file
+#      forever. One character of each literal is written as a single-member
+#      character class -- PRIVAT[E] matches PRIVATE and is not matched by
+#      itself. Preserve that when editing, or the scanner eats its own tail.
+#
+# DELIBERATELY ABSENT: generic high-entropy detection (base64 blobs, long hex
+# runs). It is the largest false-positive source in every scanner that ships
+# it, and false positives are the mechanism by which this list becomes []
+# again. Also absent: anything matching a client name -- that is the other
+# filter's job, and mixing them is what made this one look optional.
+SECRET_TRIPWIRES = [
+    r'-----BEGIN (?:RSA |EC |DSA |OPENSSH |PGP )?PRIVAT[E] KEY',   # PEM block
+    r'\bAKI[A][0-9A-Z]{16}\b',                                     # AWS access key id
+    r'\bGOCSPX[-][A-Za-z0-9_\-]{20,}',                             # Google OAuth client secret
+    r'\b\d{6,}-[a-z0-9]{32}\.apps\.googleuserconten[t]\.com\b',    # Google OAuth client id
+    r'\bgh[pousr]_[A-Za-z0-9]{36,}\b',                             # GitHub PAT family
+    r'\bxox[baprs]-[A-Za-z0-9-]{10,}',                             # Slack
+    r'\bsk-an[t]-[A-Za-z0-9_\-]{24,}',                             # Anthropic
+    r'\bsk-[A-Za-z0-9]{32,}\b',                                    # OpenAI-shape; loosest here, cut this one first
+    r'"(?:refresh_toke[n]|client_secre[t]|private_ke[y]|api_ke[y]|access_toke[n])"\s*:\s*"[^"]{12,}"',
+    r'(?m)^[A-Z0-9_]*(?:SECRE[T]|TOKE[N]|PASSWOR[D]|API_KE[Y])[A-Z0-9_]*\s*=\s*["\']?\S{12,}',
+]
 
 
 def load_disclosure_profile(requested: str = None):
