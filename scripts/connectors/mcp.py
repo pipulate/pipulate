@@ -154,6 +154,9 @@ def initialize(client, server):
         die(f"mcp RED gate2: initialize HTTP {resp.status_code} — handshake "
             f"inference wrong?\n{resp.text[:300]}")
     body = parse_body(resp) or {}
+    if body.get("error") is not None:
+        die(f"mcp RED gate2: initialize returned JSON-RPC error "
+            f"{body['error']} — HTTP 200 is not JSON-RPC success")
     result = body.get("result") or {}
     negotiated = result.get("protocolVersion")
     session_id = resp.headers.get(SESSION_HEADER)
