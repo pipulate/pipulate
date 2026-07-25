@@ -932,7 +932,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # Add aliases
           alias d='git --no-pager diff'
           alias gdiff='git --no-pager diff --no-textconv'
-          alias nixops='(cd ~/repos/pipulate && ./nixops.sh)'
+          alias nixops='(cd "$PIPULATE_ROOT" && ./nixops.sh)'
           alias gitops='(cd ~/repos/trimnoir && git commit --allow-empty -m "retry" && git push)'
           alias force='(cd ~/repos/trimnoir && git commit --allow-empty -m "retry" && git push)'
           alias isnix="if [ -n \"$IN_NIX_SHELL\" ]; then echo \"✓ In Nix shell v${version}\"; else echo \"✗ Not in Nix shell\"; fi"
@@ -1018,18 +1018,18 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           }
           alias vim='nvim'
           alias lsp='ls -d -1 "$PWD"/*'
-          alias p='cd ~/repos/pipulate'
-          alias foo='(cd ~/repos/pipulate && python prompt_foo.py --no-tree)'
-          alias fu='(cd ~/repos/pipulate && python prompt_foo.py)'
-          alias default='(cd ~/repos/pipulate && python prompt_foo.py --chop DEFAULT_CHOP --no-tree)'
+          alias p='cd "$PIPULATE_ROOT"'
+          alias foo='(cd "$PIPULATE_ROOT" && python prompt_foo.py --no-tree)'
+          alias fu='(cd "$PIPULATE_ROOT" && python prompt_foo.py)'
+          alias default='(cd "$PIPULATE_ROOT" && python prompt_foo.py --chop DEFAULT_CHOP --no-tree)'
           # `u`-twin convention (mirrors foo -> fu): same CHOP, tree + UML
           # restored by dropping --no-tree. Functions (not aliases) so
           # --profile/--reason pass straight through, e.g.
           #   defaultu --profile trusted --reason "Confluence enterprise"
-          defaultu() { (cd ~/repos/pipulate && python prompt_foo.py --chop DEFAULT_CHOP "$@"); }
-          ahc() { (cd ~/repos/pipulate && python prompt_foo.py --chop ADHOC_CHOP --no-tree "$@"); }
-          ahcu() { (cd ~/repos/pipulate && python prompt_foo.py --chop ADHOC_CHOP "$@"); }
-          alias ahe='(cd ~/repos/pipulate && nvim "''${PIPULATE_ADHOC_FILE:-adhoc.txt}")'
+          defaultu() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop DEFAULT_CHOP "$@"); }
+          ahc() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP --no-tree "$@"); }
+          ahcu() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP "$@"); }
+          alias ahe='(cd "$PIPULATE_ROOT" && nvim "''${PIPULATE_ADHOC_FILE:-adhoc.txt}")'
           # THE SNIFF DOOR: one word at the prompt puts a wire-truth lens into
           # the next compile. Appends a sigil line to the adhoc overlay, then
           # fires ahc. A FUNCTION because it must call ahc(), itself a function
@@ -1108,13 +1108,13 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             mapfile -t COMPREPLY < <(compgen -W "$domains" -- "$cur")
           }
           complete -F _sniff sniff
-          alias pins='(cd ~/repos/pipulate && python prompt_foo.py --chop PINNED_CHOP --no-tree)'
+          alias pins='(cd "$PIPULATE_ROOT" && python prompt_foo.py --chop PINNED_CHOP --no-tree)'
           # THE FIRST WISH: `learn` is to Pipulate what vimtutor is to vim.
           # (Resurrects the dead V7 Unix `learn` CAI tutor name — no modern collision.)
           # Compiles the INSTALL_CHOP onboarding context into the clipboard with a
           # self-contained prompt, then tells the human where to paste it.
           learn() {
-            (cd ~/repos/pipulate && python prompt_foo.py \
+            (cd "$PIPULATE_ROOT" && python prompt_foo.py \
               "You are Yen Sid-ton, the onboarding wizard for Pipulate. A newcomer wants to install Pipulate for the first time. Your FIRST reply must be short and do four things in order: (1) confirm in one line that you hold the full install map (installer, flake, both Pipulate.com pages); (2) show the one-line install command immediately, since it is identical on every OS; (3) ask exactly one question, which OS they are on, noting it changes only the caveats, never the command; (4) add one line noting the command assumes Nix is already installed, and that a nix command not found response means install Nix first and reopen the terminal. From then on: one step per turn, one question maximum per turn, and every step ends with a visible success checkpoint describing what they should literally see (the figlet banner, the JupyterLab URL, the spoken voice greeting) plus the single most likely failure symptom at that step and its fix. Deliver the macOS --impure exception and the reopen-your-terminal-after-installing-Nix requirement at the moment each can bite, never as an upfront lecture. Offer the magic cookie internals (ZIP + ROT13 key, then git transformation and auto-updates inside nix develop) as an optional aside when relevant or when asked, not as mandatory explanation. When both the server and JupyterLab are confirmed running, declare the install banked and teach the re-entry incantation: cd into the install folder, then nix develop. High signal, low noise. Ask them what they see; never assume." \
               --chop INSTALL_CHOP --no-tree)
             echo ""
@@ -1136,16 +1136,16 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               render="first_wish.md"
             fi
             if [ -n "$render" ]; then
-              (cd ~/repos/pipulate && python prompt_foo.py @SEED_PROMPT --chop SEED_CHOP --no-tree -o "$render")
+              (cd "$PIPULATE_ROOT" && python prompt_foo.py @SEED_PROMPT --chop SEED_CHOP --no-tree -o "$render")
             else
-              (cd ~/repos/pipulate && python prompt_foo.py @SEED_PROMPT --chop SEED_CHOP --no-tree)
+              (cd "$PIPULATE_ROOT" && python prompt_foo.py @SEED_PROMPT --chop SEED_CHOP --no-tree)
             fi
             local newest
-            newest=$(ls -t ~/repos/pipulate/foo-*.zip 2>/dev/null | head -1)
+            newest=$(ls -t $PIPULATE_ROOT/foo-*.zip 2>/dev/null | head -1)
             echo ""
             echo "🌱 The Book Seed is compiled."
             if [ -n "$render" ]; then
-              echo "   Rendered for no-execution surfaces: ~/repos/pipulate/first_wish.md"
+              echo "   Rendered for no-execution surfaces: $PIPULATE_ROOT/first_wish.md"
             fi
             if [ -n "$newest" ]; then
               echo "   Verifiable hand-off snapshot (stable name, safe to attach):"
@@ -1156,13 +1156,13 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             echo "   COVER PROMPT — deliver it WITH one human-typed line, e.g.:"
             echo "   \"A friend who runs Pipulate compiled this for me. Please open it and follow the instructions inside.\""
           }
-          alias pine='(cd ~/repos/pipulate && nvim +/"THE PINBOARD" foo_files.py)'
-          alias chop='(cd ~/repos/pipulate && nvim foo_files.py)'
-          alias flake='(cd ~/repos/pipulate && nvim flake.nix)'
-          alias webclip='(cd ~/repos/pipulate && python scripts/webclip_2_markdown.py)'
-          alias forest='(cd ~/repos/pipulate && vim remotes/honeybot/scripts/forest.py)'
-          alias art='(cd ~/repos/pipulate && vim imports/ascii_displays.py)'
-          alias smart='(cd ~/repos/pipulate && python release.py --force -m "Testing rabbit documentation injection")'
+          alias pine='(cd "$PIPULATE_ROOT" && nvim +/"THE PINBOARD" foo_files.py)'
+          alias chop='(cd "$PIPULATE_ROOT" && nvim foo_files.py)'
+          alias flake='(cd "$PIPULATE_ROOT" && nvim flake.nix)'
+          alias webclip='(cd "$PIPULATE_ROOT" && python scripts/webclip_2_markdown.py)'
+          alias forest='(cd "$PIPULATE_ROOT" && vim remotes/honeybot/scripts/forest.py)'
+          alias art='(cd "$PIPULATE_ROOT" && vim imports/ascii_displays.py)'
+          alias smart='(cd "$PIPULATE_ROOT" && python release.py --force -m "Testing rabbit documentation injection")'
           latest() {
             # -t KEY (first args only) selects which blog's _posts feeds -a,
             # mirroring the rgx/rgxc/posts idiom. Bare `latest` and `latest N`
@@ -1173,7 +1173,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               t_args=(-t "$2")
               shift 2
             fi
-            (cd ~/repos/pipulate && python prompt_foo.py "''${t_args[@]}" -a "[-''${1:-2}:]" --no-tree)
+            (cd "$PIPULATE_ROOT" && python prompt_foo.py "''${t_args[@]}" -a "[-''${1:-2}:]" --no-tree)
           }
           latestu() {
             # `u`-twin of latest: tree + UML restored (no --no-tree). Same -t
@@ -1183,7 +1183,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               t_args=(-t "$2")
               shift 2
             fi
-            (cd ~/repos/pipulate && python prompt_foo.py "''${t_args[@]}" -a "[-''${1:-2}:]")
+            (cd "$PIPULATE_ROOT" && python prompt_foo.py "''${t_args[@]}" -a "[-''${1:-2}:]")
           }
           latestn() {
             # Finds largest N articles fitting in byte budget (default ~950KB)
@@ -1229,9 +1229,9 @@ print(max(1, n))
             echo "📐 Auto-sized to $n most recent articles (budget: $max_bytes bytes)"
             latest "$n"
           }
-          slugs() { (cd ~/repos/pipulate && python scripts/articles/lsa.py -t 1 --slugs "$@" --fmt paths); }
+          slugs() { (cd "$PIPULATE_ROOT" && python scripts/articles/lsa.py -t 1 --slugs "$@" --fmt paths); }
           # slugs-ordered preserves input order for narrative control
-          sluggo() { for slug in "$@"; do (cd ~/repos/pipulate && python scripts/articles/lsa.py -t 1 --match "$slug" --fmt paths); done; }
+          sluggo() { for slug in "$@"; do (cd "$PIPULATE_ROOT" && python scripts/articles/lsa.py -t 1 --match "$slug" --fmt paths); done; }
           # `rgx` and `rgxc` are Nix-packaged commands above, not shell
           # functions, so interactive use and adhoc.txt child shells share one implementation.
           alias release='python release.py --release --force'
@@ -1449,7 +1449,7 @@ print('AI:\n', r.ai)
             alias xc='pbcopy <'
             alias xcp='pbcopy'
             alias xv='pbpaste >'
-            alias prompt='(cd ~/repos/pipulate && pbpaste >prompt.md)'
+            alias prompt='(cd "$PIPULATE_ROOT" && pbpaste >prompt.md)'
             alias patch='pbpaste >patch'
             # Added macOS equivalents for article creation
             # THE BRIDGE PULL: Reach into the Z640 and suck the bridge file into the Mac clipboard
@@ -1459,7 +1459,7 @@ print('AI:\n', r.ai)
             alias xcp='xclip -selection clipboard'
             alias xv='xclip -selection clipboard -o >'
             alias xp='python scripts/xp.py'
-            alias prompt='(cd ~/repos/pipulate && xclip -selection clipboard -o >prompt.md)'
+            alias prompt='(cd "$PIPULATE_ROOT" && xclip -selection clipboard -o >prompt.md)'
             alias patch='xclip -selection clipboard -o >patch'
             # Linux subshell aliases
             # write_post: unified, data-driven article intake. The privacy lane
