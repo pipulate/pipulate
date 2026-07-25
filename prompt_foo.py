@@ -548,6 +548,22 @@ def print_optics_receipt(artifacts: dict, target_url: str, cached: bool = False)
         except OSError:
             return "—"
 
+    # PROVENANCE GATE. scraper_tools.py stamps source_provenance into
+    # headers.json. When it reports a page_source fallback, source.html IS the
+    # hydrated DOM, so the diff lens compares the DOM against itself, finds no
+    # differences, and Hinge A announces FLAT 0 degrees -- a confident
+    # INVERSION of the single measurement this triptych exists to take, printed
+    # in the most-used path. Refuse the verdict rather than print a wrong one.
+    # Fail-open: captures predating the flag carry no key and proceed unchanged.
+    provenance = None
+    headers_path = art(('headers',))
+    if headers_path:
+        try:
+            with open(headers_path, 'r', encoding='utf-8') as f:
+                provenance = json.load(f).get('source_provenance')
+        except (OSError, ValueError):
+            pass
+
     hinge_a = "no diff lens captured"
     diff_path = art(('diff_hierarchy_txt', 'diff_hierarchy'))
     if diff_path:
@@ -560,6 +576,8 @@ def print_optics_receipt(artifacts: dict, target_url: str, cached: bool = False)
                 hinge_a = "SWUNG — JS changed the structure (read the diff lens)"
         except OSError:
             pass
+    if provenance not in (None, 'wire'):
+        hinge_a = f"UNMEASURABLE — source.html is a {provenance}, not wire truth"
 
     def cell(text, width=18):
         return str(text)[:width].ljust(width)
@@ -2069,11 +2087,38 @@ def main():
                     logger.print(f"   -> ⚠️ $URL cache miss for {target_url}")
                     logger.print(f"      Run the !{target_url} scrape first to populate browser_cache.")
                 else:
+                    # PARTIAL REFUSAL. headers.json stays honest even when the
+                    # body does not (and when it doesn't, it says so in its own
+                    # error key), so it always lands. source.html under a
+                    # fallback flag is the hydrated DOM wearing the "Raw Source"
+                    # label -- the one artifact here that can be silently,
+                    # confidently wrong to a model that cannot check it -- so
+                    # THAT lens is withheld and replaced by a note naming the
+                    # remedy. Refusing the whole compile would be
+                    # disproportionate; proceeding silently would ship the lie.
+                    # Withhold the liar, keep the witness.
+                    provenance = None
+                    try:
+                        with open(headers_file, 'r', encoding='utf-8') as f:
+                            provenance = json.load(f).get('source_provenance')
+                    except (OSError, ValueError):
+                        pass
                     logger.print(f"   -> 💲 Materializing cached headers + raw source for: {target_url}")
-                    for label, file_path, lang in [
-                        ('Response Headers', headers_file, 'json'),
-                        ('Raw Source', source_file, 'html'),
-                    ]:
+                    lenses = [('Response Headers', headers_file, 'json')]
+                    if provenance in (None, 'wire'):
+                        lenses.append(('Raw Source', source_file, 'html'))
+                    else:
+                        logger.print(f"      ⛔ Raw Source WITHHELD: capture is a {provenance}, not wire truth.")
+                        logger.print(f"         Re-run !{target_url} to record a real Document body.")
+                        note = (f"# WITHHELD: source.html for {target_url} carries "
+                                f"source_provenance={provenance!r}. It is the hydrated DOM, "
+                                f"not the wire body, and must NOT be read as view-source. "
+                                f"Re-scrape with !{target_url} to obtain the real Document body.")
+                        processed_files_data.append({
+                            "path": f"OPTICS [Raw Source WITHHELD]: {target_url}", "comment": comment, "content": note,
+                            "tokens": count_tokens(note), "words": count_words(note), "lang": "text"
+                        })
+                    for label, file_path, lang in lenses:
                         with open(file_path, 'r', encoding='utf-8') as f:
                             content = f.read()
                         processed_files_data.append({
