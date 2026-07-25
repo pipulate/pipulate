@@ -250,7 +250,11 @@ def check(server, token_env):
     if resp.status_code != 200:
         sys.stderr.write(f"mcp RED gate3: tools/list HTTP {resp.status_code}\n")
         return 1
-    tools = ((parse_body(resp) or {}).get("result") or {}).get("tools") or []
+    parsed = parse_body(resp) or {}
+    if parsed.get("error") is not None:
+        sys.stderr.write(f"mcp RED gate3: tools/list JSON-RPC error {parsed['error']}\n")
+        return 1
+    tools = (parsed.get("result") or {}).get("tools") or []
     print(f"mcp GREEN {server} protocol={negotiated} "
           f"session={'yes' if session_id else 'no'} tools={len(tools)} "
           f"auth={token_name}")
