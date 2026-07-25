@@ -712,7 +712,7 @@ You're here to make the workflow concepts accessible and help users understand t
             locked_msg = f'{self.ui["EMOJIS"]["LOCKED"]} Greeting is locked: {user_val}'
             await self.message_queue.add(wand, locked_msg, verbatim=True)
             return Div(
-                Card(
+                Article(
                     H3(f'{self.ui["EMOJIS"]["LOCKED"]} {step.show}: {user_val}'),
                     role='region',
                     aria_label=f'Locked step 2: {step.show}',
@@ -787,7 +787,7 @@ You're here to make the workflow concepts accessible and help users understand t
             # --- END DYNAMIC OLLAMA FETCH ---
             
             return Div(
-                Card(
+                Article(
                     H3(f'🧠 {self.wand.fmt(step.id)}: {step.show}'),
                     P(explanation, cls='text-muted'),
                     Label(
