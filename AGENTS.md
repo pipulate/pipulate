@@ -11,6 +11,17 @@ anything written here that duplicates code will drift and is a bug.
 - `nix develop .#quiet` — minimal shell for agents and scripting.
 - Python lives in `.venv/`; invoke as `.venv/bin/python`.
 
+## Workspace (the layout `nix develop` materializes under `Notebooks/`)
+
+`Notebooks/` is JupyterLab's root, not Pipulate's. The tree below is GENERATED
+between the sentinel comments by `prompt_foo.py` from the sealed `workspace_tree`
+figurate asset — do not hand-edit it; edit the asset in
+`imports/ascii_displays.py` and recompile. Empty here means the compiler has not
+run since the sentinels landed.
+
+<!-- --- START WORKSPACE TREE --- -->
+<!-- --- END WORKSPACE TREE --- -->
+
 ## Tools
 
 - Discover: `.venv/bin/python cli.py mcp-discover`
