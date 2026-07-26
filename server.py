@@ -2775,7 +2775,7 @@ def create_chat_interface(autofocus=False):
         del pipulate.db['temp_message']
     init_script = f'\n    // Set global variables for the external script\n    window.CFG = {{\n        tempMessage: {json.dumps(temp_message)},\n        clipboardSVG: {json.dumps(CFG.SVG_ICONS["CLIPBOARD"])}\n    }};\n    window.APP_NAME = {json.dumps(APP_NAME)};\n    '
     # Enter/Shift+Enter handling is now externalized in pipulate.js
-    return Div(Card(H2(f'{APP_NAME} Chatbot'), Div(id='msg-list', cls='overflow-auto', style=msg_list_height, role='log', aria_label='Chat conversation', aria_live='polite'), Form(mk_chat_input_group(value='', autofocus=autofocus), onsubmit='sendSidebarMessage(event)', role='form', aria_label='Chat input form'), Script(init_script), Script(src='/assets/player-piano.js'), Script('initializeChatInterface();')), id='chat-interface', role='complementary', aria_label='AI Assistant Chat')
+    return Div(Article(H2(f'{APP_NAME} Chatbot'), Div(id='msg-list', cls='overflow-auto', style=msg_list_height, role='log', aria_label='Chat conversation', aria_live='polite'), Form(mk_chat_input_group(value='', autofocus=autofocus), onsubmit='sendSidebarMessage(event)', role='form', aria_label='Chat input form'), Script(init_script), Script(src='/assets/player-piano.js'), Script('initializeChatInterface();')), id='chat-interface', role='complementary', aria_label='AI Assistant Chat')
 
 
 # Global variable to track streaming state
@@ -2792,14 +2792,14 @@ def mk_chat_input_group(disabled=False, value='', autofocus=True):
         autofocus (bool): Whether the input field should autofocus.
 
     Returns:
-        Group: An HTML group containing the chat textarea and buttons in a modern layout.
+        Fieldset: An HTML fieldset containing the chat textarea and buttons in a modern layout.
     """
     global is_streaming
     # Determine the icon to display based on the streaming state
     icon_src = '/assets/feather/x-octagon.svg' if is_streaming else '/assets/feather/arrow-up-circle.svg'
     icon_alt = 'Stop' if is_streaming else 'Run'
 
-    return Group(
+    return Fieldset(
         Textarea(
             value,
             id='msg',
@@ -2835,6 +2835,7 @@ def mk_chat_input_group(disabled=False, value='', autofocus=True):
             cls='button-container',
         ),
         id='input-group',
+        role='group',
         aria_label='Chat input controls'
     )
 
