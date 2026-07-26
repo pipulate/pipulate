@@ -291,6 +291,22 @@ AI_PHOOEY_CHOP = r"""                                                           
 # live component backs is drift-by-construction) and of ANCESTOR-DISCIPLINE
 # (name the thing accurately; stage the reveal instead of leading with the
 # label that oversells).
+# SCOPE AMENDMENT (2026-07-26, same-turn conviction): the rule covers every
+# UTTERANCE, spoken OR on-screen -- "voice" in the title is the origin, not the
+# boundary. Conviction: the worst offenders in the follow-up audit were TEXT.
+# "Identity confirmed" (three writes, zero checks). "Connection secured" (the
+# API key was written to disk and never once used). "Congratulations,
+# everything is configured" (spoken on the path where the user skipped both
+# cloud and Botify). "All features requiring AI or an API-key are active"
+# (unconditional, at the moment of lock-in). None of those is a capability
+# LIST, so GENERATED-NOT-AUTHORED has no hook for any of them -- which is what
+# makes this rule load-bearing rather than that rule with a microphone.
+# THE MECHANICAL TEST (use this instead of judgment): if a string names an ACT
+# -- confirmed, secured, verified, connected, validated, active -- then some
+# code must have PERFORMED that act in the same turn. If not, the verb changes
+# to what actually happened: recorded, saved, stored, set. Storing a credential
+# is not testing it, and the first real request is the earliest honest moment
+# to claim a connection.
 
 # THE SURFACE-FIRST ROUTING RULE (banked 2026-07-22, blind-test witnessed):
 # Pipulate has two Golden Paths because it has two execution surfaces.
