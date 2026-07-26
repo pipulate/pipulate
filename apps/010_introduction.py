@@ -84,30 +84,47 @@ class IntroductionPlugin:
             except Exception as e:
                 logger.warning(f"Could not verify config pipeline state: {e}")
             dynamic_app_name = self.wand.get_config().APP_NAME
-            active_model = self.wand.db.get('active_local_model', 'an external provider')
+            active_model = self.wand.db.get('active_local_model', 'not yet selected')
 
             if not operator_name:
-                # STATE 1: The Bouncer Persona (Airlock has not fired)
+                # STATE 1: The Doorway (Airlock has not fired)
+                # ATTRIBUTED VOICE: the first thing a stranger hears must say
+                # what is producing it. This is Piper reading a fixed string,
+                # so it says so, and it does not borrow a persona to do it.
                 msg = (
-                    "Halt. I am Chip O'Theseus. My speech is generated entirely on your machine, "
-                    "but you are trying to sneak into the VIP lounge through the kitchen. "
-                    "You have discovered port 5001, but the doors to the Control Room remain sealed until you complete the initiation rite. "
-                    "Return to your JupyterLab tab, execute the Golden Path, and drop the sentinel file."
+                    "One disclosure before anything else. This voice is Piper, a speech "
+                    "synthesizer running entirely on your machine, reading a fixed script. "
+                    "There is no language model behind it yet. You have found port 5001 early, "
+                    "which is fine, but this room fills in as you finish onboarding. "
+                    "Head back to your JupyterLab tab, run the Onboarding notebook top to bottom, "
+                    "and this page will have something worth saying."
                 )
-                return "Access Denied 🛑", msg, None
+                return "Onboarding Not Finished 🔒", msg, None
 
             elif not has_configured:
-                # STATE 2: The Guide Persona (Airlock fired, but Configuration is pending)
+                # STATE 2: The Guide (Airlock fired, but Configuration is pending)
+                # The demo is a scripted scenario driven by player-piano.js, so
+                # it is a tour OF THE SYSTEM, never of anyone's "capabilities."
                 msg = (
-                    f"Welcome to {dynamic_app_name}, {operator_name}. I am Chip O'Theseus. To see a demonstration of my capabilities, press ",
+                    f"Welcome to {dynamic_app_name}, {operator_name}. This voice is still a local "
+                    "speech synthesizer reading a script, not a language model. The thinking "
+                    "engines, local and cloud, get wired up next in Configuration. For a scripted "
+                    "tour of the interface, press ",
                     Strong("Ctrl+Alt+D", cls="platform-shortcut"),
                     " right now. Otherwise, we will proceed to finalize your configuration."
                 )
                 return "Welcome", msg, 'finalize'
                 
             else:
-                # STATE 3: The Veteran Persona (Config workflow is finalized)
-                msg = f"Welcome back to {dynamic_app_name}, {operator_name}. All systems are online and ready."
+                # STATE 3: The Veteran (Config workflow is finalized)
+                # Even here the narration stays scripted. The model name is a
+                # receipt, so it is spoken only about the engine, never as a
+                # claim about the speaker.
+                msg = (
+                    f"Welcome back to {dynamic_app_name}, {operator_name}. This narration is still "
+                    f"scripted speech, not inference. Your local engine is {active_model}. Anything "
+                    "a model actually generates from here on will name the model that generated it."
+                )
                 return "Dashboard Ready ✅", msg, None
                 
         elif step_id == 'finalize':
