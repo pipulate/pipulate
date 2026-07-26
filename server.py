@@ -2178,7 +2178,7 @@ def create_nav_group():
     profiles_plugin_inst = plugin_instances.get('profiles')
     if not profiles_plugin_inst:
         logger.error("Could not get 'profiles' plugin instance for nav group creation")
-        return Group(Div(H1('Error: Profiles plugin not found', cls='text-invalid'), cls='nav-error'), id='nav-group')
+        return Fieldset(Div(H1('Error: Profiles plugin not found', cls='text-invalid'), cls='nav-error'), id='nav-group', role='group')
     nav = create_nav_menu()
     refresh_listener = Div(id='profile-menu-refresh-listener', hx_get='/refresh-profile-menu', hx_trigger='refreshProfileMenu from:body', hx_target='#profile-dropdown-menu', hx_swap='outerHTML', cls='hidden')
     app_menu_refresh_listener = Div(id='app-menu-refresh-listener', hx_get='/refresh-app-menu', hx_trigger='refreshAppMenu from:body', hx_target='#app-dropdown-menu', hx_swap='outerHTML', cls='hidden')
