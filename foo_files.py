@@ -266,6 +266,32 @@ AI_PHOOEY_CHOP = r"""                                                           
 # on its first flight; the only stale state it can ever exhibit is a loud
 # GENERATION FAILED banner, which is a wound, not a lie.
 
+# THE ATTRIBUTED-VOICE RULE (banked 2026-07-26, articulation-banked): a
+# synthesized voice is not evidence of a mind. Piper TTS reading a hardcoded
+# string is a PLAYER PIANO -- deterministic, scripted, and honest only when it
+# says so. An LLM generating a response is a MODEL, and the model gets NAMED.
+# Conviction: the first sixty seconds of onboarding had the Piper narrator
+# announce "I am Chip O'Theseus" and offer "a demonstration of my
+# capabilities," where the demonstration was a Ghost Driver JSON scenario --
+# two claims of intelligence, zero inference, in the opening minute of a
+# project whose whole thesis is that you can TELL the deterministic parts from
+# the generative ones.
+# THREE CHANNELS, NEVER BLURRED:
+#   NARRATION -- scripted TTS. Discloses that it is scripted the first time it
+#                speaks; never says "I am <persona>", never claims capability.
+#   MODEL     -- inference. Names the engine that produced it ("routed to
+#                gemma3", "Model Used: gemini-2.5-pro"), because the name is a
+#                RECEIPT, not a costume. onboard_sauce.py already complies.
+#   ACTUATOR  -- deterministic automation (Ghost Driver, scenarios, wand
+#                spells). A demonstration OF THE SYSTEM, never of "my
+#                capabilities."
+# CHIP O'THESEUS IS EARNED, NOT ASSERTED: the name belongs to the persistent
+# local model plus its keychain memory, and may be spoken only once a model is
+# actually answering. Sibling of GENERATED-NOT-AUTHORED (a capability claim no
+# live component backs is drift-by-construction) and of ANCESTOR-DISCIPLINE
+# (name the thing accurately; stage the reveal instead of leading with the
+# label that oversells).
+
 # THE SURFACE-FIRST ROUTING RULE (banked 2026-07-22, blind-test witnessed):
 # Pipulate has two Golden Paths because it has two execution surfaces.
 # Prompt Fu is the compile-time Unix-pipe/cartridge lane; FastHTML/MCP is the
