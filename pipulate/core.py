@@ -1318,7 +1318,7 @@ class Pipulate:
         return {'plugin_name': display_name or plugin_name, 'internal_name': plugin_name, 'profile_id': profile_id, 'profile_name': profile_name}
 
     @pipeline_operation
-    def initialize_if_missing(self, pkey: str, initial_step_data: dict = None) -> tuple[Optional[dict], Optional[Card]]:
+    def initialize_if_missing(self, pkey: str, initial_step_data: dict = None) -> tuple[Optional[dict], Optional[Article]]:
         try:
             state = self.read_state(pkey)
             if state:
