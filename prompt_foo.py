@@ -2655,6 +2655,20 @@ def main():
                 'tokens': ac_data.get('tokens', 0),
                 'bytes': len(ac_data.get('content', '').encode('utf-8'))
             })
+        # THE PROMPT ROW: the Prompt section (AI checklist + prompt.md) is the
+        # single largest payload component sourced from NEITHER processed_files
+        # NOR auto_context, so the ledger silently undercounted the payload by
+        # roughly the size of prompt.md. all_sections["Prompt"] is already
+        # populated by build_final_prompt() at step 4, before this ledger
+        # renders at step 5, so fold it in as its own row: the TOTAL now gauges
+        # what actually ships, and "what do I cut to fit" can see the prompt too.
+        prompt_section = builder.all_sections.get("Prompt")
+        if prompt_section:
+            ledger_rows.append({
+                'label': "PROMPT (checklist + prompt.md)",
+                'tokens': prompt_section.get('tokens', 0),
+                'bytes': len(prompt_section.get('content', '').encode('utf-8'))
+            })
         if ledger_rows:
             try:
                 from rich.console import Console
