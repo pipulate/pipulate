@@ -856,6 +856,9 @@ FIGURATE_REGISTRY: dict = {
     "mechanical_man": {
         "render": _figurate_mechanical_man,
     },
+    "workspace_tree": {
+        "render": _figurate_workspace_tree,
+    },
     # === FIGURATE_REGISTRY_EXTRUDE_BOTTOM ===
     # Add new registry entries immediately above this line
 }
