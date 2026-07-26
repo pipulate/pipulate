@@ -1307,7 +1307,7 @@ print(max(1, n))
           # typed between an ignition and its AFTER tap destroyed the receipts
           # the tap existed to produce. A read-only status check must never be
           # able to delete evidence.
-          alias g='clear -x && echo "$ git status" && git status'
+          alias g='clear -x && echo "Blast Radius Check" && git status'
           m() {
             local msg
             # THE INTENT PARAMETER (router-churn edition, 2026-07-17): the
