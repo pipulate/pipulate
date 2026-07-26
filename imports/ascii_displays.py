@@ -66,6 +66,7 @@ FIGURATE_LEDGER: dict = {
     "canal_lock": 311868176,
     "mechanical_man": 4142234675,
     # CRC32 after _expand_color_bits_ai() + .strip()
+    "workspace_tree": 1744376308,  # CRC32 no-strip (leading newline preserved, like honeybot_pipeline)
     # === FIGURATE_LEDGER_EXTRUDE_BOTTOM ===
     # Add new artwork CRC32 entries immediately above this line
 }
