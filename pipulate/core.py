@@ -11,7 +11,7 @@ import asyncio
 import aiohttp
 from datetime import datetime
 from fasthtml.common import *
-from fastlite import Database  # CORRECTED: Use the Database class
+from fastlite import Database, NotFoundError  # CORRECTED: Use the Database class
 from loguru import logger
 import imports.server_logging as slog
 import config as CFG
