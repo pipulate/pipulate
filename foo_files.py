@@ -1752,7 +1752,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
 
-# AGENTS.md  # [402 tokens | 1,549 bytes]
+# AGENTS.md  # [521 tokens | 2,030 bytes]
 # AUDIT.md  # [2,011 tokens | 9,706 bytes]
 # MANIFEST.in  # [81 tokens | 313 bytes]
 # Notebooks/.agents/skills/gsc_readonly/SKILL.md  # [761 tokens | 3,503 bytes]

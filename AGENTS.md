@@ -20,6 +20,23 @@ figurate asset — do not hand-edit it; edit the asset in
 run since the sentinels landed.
 
 <!-- --- START WORKSPACE TREE --- -->
+```text
+   Notebooks/  — the JupyterLab root (NOT Pipulate's own root)
+   │            every level advertises its own AGENTS.md + OKF index.md
+   │
+   ├── Corporate/   read-only canon · auto-pulled · git wins on collision
+   │   ├── AGENTS.md
+   │   ├── .agents/skills/
+   │   └── apps/          org plugins ride in — no core commit needed
+   │
+   ├── Personal/    your sandbox · gitignored · vibe-code freely
+   │   ├── AGENTS.md
+   │   └── Playground/    NOTHING here is ever shared
+   │
+   └── Shared/      outbound exchange · one folder per name
+       ├── alice/        you write ONLY your own folder;
+       └── bob/          single-writer partitions = zero merge conflicts
+```
 <!-- --- END WORKSPACE TREE --- -->
 
 ## Tools
