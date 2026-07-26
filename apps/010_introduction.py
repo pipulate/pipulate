@@ -14,6 +14,7 @@ Features:
 
 import time
 import os
+import re
 import json
 import asyncio
 from fasthtml.common import *
@@ -148,6 +149,13 @@ class IntroductionPlugin:
             text = to_xml(content)
         else:
             text = str(content)
+
+        # THE NARRATOR READS PROSE, NOT MARKUP. to_xml() renders a full tag
+        # (<strong class="platform-shortcut">Ctrl+Alt+D</strong>) and Piper
+        # will happily pronounce the attributes. Strip tags and collapse the
+        # whitespace so the spoken line matches the line on the screen.
+        text = re.sub(r'<[^>]+>', ' ', text)
+        text = re.sub(r'\s+', ' ', text).strip()
 
         
         from imports.voice_synthesis import chip_voice_system
