@@ -1626,7 +1626,37 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   3. CONNECTOR ALIAS TRANSITION:
 #      - Rename the human connector menu alias from `mcp` to `connect` (or `pipe` / `warp`) in `scripts/mcp_menu.py` and `flake.nix` to free bare `mcp` for the native Model Context Protocol client connector (`scripts/connectors/mcp.py`).
 #   4. MULTI-DIRECTORY PLUGIN DISCOVERY:
-#      - Extend `server.py` app scanner to search `APP_SEARCH_PATHS` across `apps/`, `Notebooks/Corporate/apps/`, and `Notebooks/Personal/apps/`, sorting by numeric prefix so domain plugins (e.g. Botify Parameter Buster) cleanly decouple from core Pipulate.
+#      - Extend `server.py` app scanner to search `APP_SEARCH_PATHS` across `apps/`, `Notebooks/Corporate/apps/`, and `Notebooks/Personal/apps/`, sorting by numeric prefix so domain plugins (e.g. Botify Parameter Buster) cleanly decouple from core Pipulate. Later beat: extend the same scan to enrolled `Notebooks/Shared/<user>/apps/` so a teammate's tool rides in without a core commit.
+#   5. DIRECTORY-STRUCTURE FIGURATE ART (seeded 2026-07-25): register the
+#      Corporate/Personal/Shared tree as OFFICIAL art in
+#      imports/ascii_displays.py under the FULL figurate contract, not a bare
+#      print -- a `_figurate_workspace_tree` render fn returning (human, ai);
+#      its raw-ai CRC32 stamped into FIGURATE_LEDGER above the
+#      FIGURATE_LEDGER_EXTRUDE_BOTTOM sentinel; a FIGURATE_REGISTRY entry above
+#      its own EXTRUDE sentinel. The white_rabbit bunny was planted for exactly
+#      this moment: author the frame ONCE, wax-seal it, render it everywhere.
+#      Gotcha: the CRC cannot be known until the art string exists, so author
+#      first, then `print(binascii.crc32(art.encode('utf-8')))`, then seal.
+#   6. ART DEPLOYMENT SURFACES (the REDUNDANT-GROOVE play made literal): once
+#      registered, the workspace-tree art renders into README.md / the GitHub
+#      homepage, the `learn` LLM payload, Honeybot station-identification
+#      breaks, and prompt_foo.py's own educational output. One master, many
+#      projections -- the handles-not-homes discipline the Jekyll lane already
+#      runs on prose, now run on the onboarding frame. Registration (item 5)
+#      GATES this: do NOT hand-copy the tree into any surface before it is art.
+#   7. PROMPT_FOO AS TEACHER -- SILENT-AFTER-BANNER (Stick-Bug aesthetic):
+#      make the Prompt Fu aliases Unix-quiet (errors are signal and surface
+#      loud; routine chatter stays down) but open each with ONE context-aware
+#      figlet banner naming the chop it compiles -- `ahc` -> "Ad Hoc CHOP!".
+#      Pavlovian muscle-memory myelination: the banner IS the receipt that the
+#      right lane fired. This is THE DISAPPEARING INSTRUMENT RULE made visible
+#      -- inert until summoned, one guardian-angel banner, then quiet.
+#   8. ONBOARDING-TONE BANNER FIX (convicted 2026-07-25, "red is emotionally a
+#      turn-off"): startup_environment_warnings() wears bright_red borders +
+#      yellow letters -- danger colors that read as punishment inside a
+#      welcome. On onboarding surfaces reframe it as positive guidance (calm
+#      border, encouraging title, "here is how to win" not "here is what
+#      breaks"). A warning can be a kindness; the color must say so.
 # - TODO: commit the unattended-tty guard in ~/repos/nixos (autognome.py's
 #   "Pipulate Server" tab, PIPULATE_BOOT_MENU=0 prefix). It is on disk and
 #   visible in context, but no compile receipt shows it committed;
