@@ -2668,7 +2668,7 @@ async def create_outer_container(current_profile_id, menux, request, grayscale_e
         container_contents.insert(0, sepia_script)  # Insert at the beginning
         logger.info("🎬 Oz door sepia script injected into Container structure")
 
-    return Container(*container_contents)
+    return Main(*container_contents, cls='container')
 
 
 def get_workflow_instance(workflow_name):
