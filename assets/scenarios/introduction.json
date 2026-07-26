@@ -51,8 +51,8 @@
           },
           "ollama_check": true,
           "ollama_messages": {
-            "available": "You hit yes! Hi, I'm Chip O'Theseus the local LLM built into {app_name}. Is it okay if I speak out loud to you? **Ctrl+Alt+y** / **Ctrl+Alt+n**",
-            "not_available": "You hit yes but you still need to install Ollama with Gemma 3. Would you like to proceed anyway with limited LLM assistance and me speaking out loud to you? **Ctrl+Alt+y** / **Ctrl+Alt+n**"
+            "available": "You hit yes. One thing about what you are about to hear: this tour is a fixed script, and the voice reading it is Piper, a speech synthesizer running on your machine. A local language model IS installed and will answer you in chat later, but it is not what narrates this. Turn the voice on? **Ctrl+Alt+y** / **Ctrl+Alt+n**",
+            "not_available": "You hit yes. This tour is a fixed script read aloud by Piper, a local speech synthesizer, so it runs with or without a language model. Ollama is not installed yet, so chat replies will be limited until it is. Turn the voice on? **Ctrl+Alt+y** / **Ctrl+Alt+n**"
           }
         }
       ],
@@ -75,7 +75,7 @@
           "type": "mcp_tool_call",
           "tool_name": "voice_synthesis",
           "tool_args": {
-            "text": "Welcome to the Great and Secret AI-Readiness Show! I'm Chip O'Theseus, your local AI assistant, and I'm delighted to speak with you today! At any time you can chat to me here."
+            "text": "Welcome to the Great and Secret AI-Readiness Show. Everything in this tour is a scripted demonstration of the system, narrated by a local speech synthesizer. The chat box on the right is where a real model answers, and it will always name which model answered."
           },
           "timing": {
             "delay_before": 300
