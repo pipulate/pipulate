@@ -1173,7 +1173,7 @@ class Chat:
         self.last_message = None  # Required for broadcast functionality
         self.last_message_time = 0  # Required for broadcast functionality
         self.active_chat_tasks = {}  # Track tasks per websocket
-        self.app.websocket_route('/ws')(self.handle_websocket)
+        self.app.add_websocket_route('/ws', self.handle_websocket)
         self.logger.debug('Registered WebSocket route: /ws')
 
     async def handle_chat_message(self, websocket: WebSocket, message: str):
