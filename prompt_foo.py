@@ -2103,6 +2103,7 @@ def main():
     annotate_foo_files_in_place(args.chop)
     update_stats_in_place()
     update_paintbox_in_place()
+    update_agents_md_in_place()
     check_topological_integrity(args.chop, format_kwargs)
     files_to_process = parse_file_list_from_config(args.chop, format_kwargs)
 
