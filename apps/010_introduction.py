@@ -14,7 +14,6 @@ Features:
 
 import time
 import os
-import re
 import json
 import asyncio
 from fasthtml.common import *
@@ -150,12 +149,9 @@ class IntroductionPlugin:
         else:
             text = str(content)
 
-        # THE NARRATOR READS PROSE, NOT MARKUP. to_xml() renders a full tag
-        # (<strong class="platform-shortcut">Ctrl+Alt+D</strong>) and Piper
-        # will happily pronounce the attributes. Strip tags and collapse the
-        # whitespace so the spoken line matches the line on the screen.
-        text = re.sub(r'<[^>]+>', ' ', text)
-        text = re.sub(r'\s+', ' ', text).strip()
+        # Markup stripping lives at the voice boundary (the ACOUSTIC SANITIZER
+        # in imports/voice_synthesis.py), which every caller crosses. Duplicated
+        # here it was harmless but drift-prone, so it moved rather than doubled.
 
         
         from imports.voice_synthesis import chip_voice_system

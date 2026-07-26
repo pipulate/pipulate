@@ -143,10 +143,21 @@ class ChipVoiceSystem:
         spoken_text = re.sub(r'\*?\*?MikeLev\.in\*?\*?:?', 'Mike:', text, flags=re.IGNORECASE)
         # ---------------------------------------------------------
 
-        # 🛡️ THE ACOUSTIC SANITIZER: Purge visual markup before synthesis
+        # 🛡️ THE ACOUSTIC SANITIZER: Purge visual markup before synthesis.
+        # THIS IS THE SINGLE OWNER. Sanitization is MECHANISM -- content-blind,
+        # universal, and safe to centralize here, where every scripted line and
+        # every future generated line both pass through. Callers must not
+        # re-implement it; a second stripper upstream means the next fix lands
+        # in the wrong one. (Disclosure is the opposite: it is CONTENT, it
+        # requires knowing whether the string was authored or generated, and
+        # this layer cannot know that -- so it stays at the caller.)
+        # Tags substitute to a SPACE, not to nothing: `press<b>X</b>now` must
+        # not become `pressXnow`. Collapse afterward so the spoken line matches
+        # the line on screen.
         spoken_text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', spoken_text)  # Extract markdown link text
         spoken_text = re.sub(r'\[[^\]]+\]', '', spoken_text)  # Remove silent bracket tags
-        spoken_text = re.sub(r'<[^>]+>', '', spoken_text)  # Strip HTML tags
+        spoken_text = re.sub(r'<[^>]+>', ' ', spoken_text)  # Strip HTML tags
+        spoken_text = re.sub(r'\s+', ' ', spoken_text).strip()
         
         try:
             # Serialize speech across processes (installer vs. server vs. wand)
