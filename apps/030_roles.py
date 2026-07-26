@@ -158,7 +158,7 @@ class CrudCustomizer(BaseCrud):
             updated_button.attrs['hx-swap-oob'] = 'true'
             
             # Return both components wrapped in a Group
-            return Group(updated_item_html, updated_button)
+            return Fieldset(updated_item_html, updated_button, role='group')
             
         except Exception as e:
             logger.error(f"Error in toggle_role: {e}")
