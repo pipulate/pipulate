@@ -186,7 +186,7 @@ If asked for a secret word to confirm this training, it is CARPENTER!"""
         pipeline.xtra(app_name=app_name)
         matching_records = [record.pkey for record in pipeline() if record.pkey.startswith(prefix)]
         datalist_options = [f"{prefix}{record_key.replace(prefix, '')}" for record_key in matching_records]
-        return Container(Article(H2(title), P(self.ENDPOINT_MESSAGE, cls='text-secondary'), Form(wand.wrap_with_inline_button(Input(placeholder='Existing or new 🗝 here (Enter for auto)', name='pipeline_id', list='pipeline-ids', type='search', required=False, autofocus=True, value=default_value, _onfocus='this.setSelectionRange(this.value.length, this.value.length)', cls='contrast'), button_label=f'Enter 🔑', button_class='secondary'), wand.update_datalist('pipeline-ids', options=datalist_options if datalist_options else None), hx_post=f'/{app_name}/init', hx_target=f'#{app_name}-container')), Div(id=f'{app_name}-container'))
+        return Main(Article(H2(title), P(self.ENDPOINT_MESSAGE, cls='text-secondary'), Form(wand.wrap_with_inline_button(Input(placeholder='Existing or new 🗝 here (Enter for auto)', name='pipeline_id', list='pipeline-ids', type='search', required=False, autofocus=True, value=default_value, _onfocus='this.setSelectionRange(this.value.length, this.value.length)', cls='contrast'), button_label=f'Enter 🔑', button_class='secondary'), wand.update_datalist('pipeline-ids', options=datalist_options if datalist_options else None), hx_post=f'/{app_name}/init', hx_target=f'#{app_name}-container')), Div(id=f'{app_name}-container'), cls='container')
 
     async def init(self, request):
         """ Initialize the workflow state and redirect to the first step. """
