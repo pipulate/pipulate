@@ -1613,6 +1613,20 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: THE THREE-TIER WORKSPACE & HUMAN COMPOSITION LADDER (seeded 2026-07-25):
+#   1. 3-TIER NOTEBOOK WORKSPACE (`Notebooks/`):
+#      - `Corporate/`: Org canon & skills (Read-only, auto-pulled by git).
+#      - `Personal/`: Individual sandbox for vibe-coding (Gitignored, user-owned).
+#      - `Shared/$USERNAME/`: Outbound peer exchange with single-writer directory isolation (Alice writes `Shared/alice/`, Bob writes `Shared/bob/`) to eliminate git merge conflicts by structural construction.
+#   2. HUMAN COMPOSITION LADDER:
+#      - Level 1: CLI Append (`email <id> >> context.md`, `jira <id> >> context.md`, `botify <bql> >> context.md`).
+#      - Level 2: Shell script (`./briefing.sh`).
+#      - Level 3: Python script (`python scripts/briefing.py`).
+#      - Level 4: FastHTML app (`apps/050_briefing.py`).
+#   3. CONNECTOR ALIAS TRANSITION:
+#      - Rename the human connector menu alias from `mcp` to `connect` (or `pipe` / `warp`) in `scripts/mcp_menu.py` and `flake.nix` to free bare `mcp` for the native Model Context Protocol client connector (`scripts/connectors/mcp.py`).
+#   4. MULTI-DIRECTORY PLUGIN DISCOVERY:
+#      - Extend `server.py` app scanner to search `APP_SEARCH_PATHS` across `apps/`, `Notebooks/Corporate/apps/`, and `Notebooks/Personal/apps/`, sorting by numeric prefix so domain plugins (e.g. Botify Parameter Buster) cleanly decouple from core Pipulate.
 # - TODO: commit the unattended-tty guard in ~/repos/nixos (autognome.py's
 #   "Pipulate Server" tab, PIPULATE_BOOT_MENU=0 prefix). It is on disk and
 #   visible in context, but no compile receipt shows it committed;
