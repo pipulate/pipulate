@@ -1029,7 +1029,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           defaultu() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop DEFAULT_CHOP "$@"); }
           ahc() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP --no-tree "$@"); }
           ahcu() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP "$@"); }
-          alias ahe='(cd "$PIPULATE_ROOT" && nvim "''${PIPULATE_ADHOC_FILE:-adhoc.txt}")'
+          alias ahe='(cd "$PIPULATE_ROOT" && nvim "''${PIPULATE_ADHOC_FILE:-adhoc.txt}" foo_files.py)'
           # THE SNIFF DOOR: one word at the prompt puts a wire-truth lens into
           # the next compile. Appends a sigil line to the adhoc overlay, then
           # fires ahc. A FUNCTION because it must call ahc(), itself a function
