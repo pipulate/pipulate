@@ -469,7 +469,11 @@ You're here to make the workflow concepts accessible and help users understand t
         else:
             await wand.finalize_workflow(pipeline_id)
             await self.message_queue.add(wand, self.step_messages['finalize']['complete'], verbatim=True)
-            self.wand.speak("The workflow is now locked and finalized. You can pull it up again any time with the same key. All features requiring AI or an API-key are active. Enjoy the workflows!", wait=False)
+            # ATTRIBUTED VOICE: the old line claimed "all features requiring AI
+            # or an API-key are active" unconditionally, including for someone
+            # who pressed Skip on both cloud and Botify. Nothing here inspects
+            # which steps were filled in, so the narration must not assert it.
+            self.wand.speak("The workflow is now locked and finalized. You can pull it up again any time with the same key. Whatever you configured is now in effect, and anything you skipped can be added later by unlocking this workflow.", wait=False)
             return wand.run_all_cells(app_name, steps)
 
     async def unfinalize(self, request):
@@ -679,12 +683,16 @@ You're here to make the workflow concepts accessible and help users understand t
         except ImportError as e:
             logger.warning(f"⚠️ Could not access AI Keychain to store operator identity: {e}")
 
-        # Progressive feedback with emoji
-        success_msg = f'{self.ui["EMOJIS"]["SUCCESS"]} Operator Identity secured: {user_val}'
+        # Progressive feedback with emoji.
+        # NO VERB OF VERIFICATION WITHOUT A VERIFICATION. Three writes happened
+        # above (pipeline state, server cookie, keychain) and zero checks. The
+        # honest verb is "recorded"; "confirmed" and "secured" both describe an
+        # act no code in this method performs.
+        success_msg = f'{self.ui["EMOJIS"]["SUCCESS"]} Name recorded: {user_val}'
         await self.message_queue.add(self.wand, success_msg, verbatim=True)
 
         # Speak it into existence!
-        self.wand.speak(f"Identity confirmed. Hello {user_val}. Proceed to the next step.", wait=True)
+        self.wand.speak(f"Name recorded. Hello {user_val}. Proceed to the next step.", wait=True)
 
         # Update LLM context
         self.wand.append_to_history(f"[SYSTEM STATE] Operator identity established globally as:\n{user_val}")
@@ -1068,9 +1076,12 @@ You're here to make the workflow concepts accessible and help users understand t
         pip.append_to_history(f"[WIDGET CONTENT] {step.show}:\n{display_text}")
         pip.append_to_history(f"[WIDGET STATE] {step.show}: Step completed")
         
-        success_msg = f'{pip.get_ui_constants()["EMOJIS"]["SUCCESS"]} Cloud Engine secured: {selected_model}'
+        # "Connection secured" described a connection that was never opened:
+        # the key was written to .env and the llm keychain and not used once.
+        # Say what happened, and name the first moment it gets tested.
+        success_msg = f'{pip.get_ui_constants()["EMOJIS"]["SUCCESS"]} Cloud engine saved: {selected_model}'
         await self.message_queue.add(pip, success_msg, verbatim=True)
-        pip.speak(f"Cloud cognitive engine selected. Connection secured. If you are a Botify employee or Customer, please enter your Botify API key.", wait=False)
+        pip.speak(f"Cloud engine set to {selected_model} and the key is saved. It has not been tested yet; the first real request will confirm it. If you are a Botify employee or customer, please enter your Botify API key next.", wait=False)
         
         if pip.check_finalize_needed(step_index, steps):
             await self.message_queue.add(pip, self.step_messages['finalize']['ready'], verbatim=True)
@@ -1201,11 +1212,14 @@ You're here to make the workflow concepts accessible and help users understand t
             }
             display_text = f"Status: Configured\nToken: {masked_key}"
             
-            success_msg = f'{pip.get_ui_constants()["EMOJIS"]["SUCCESS"]} Botify token secured.'
+            # Stored, not validated. Same correction as the cloud step.
+            success_msg = f'{pip.get_ui_constants()["EMOJIS"]["SUCCESS"]} Botify token saved (not yet tested).'
             await self.message_queue.add(pip, success_msg, verbatim=True)
-            pip.speak("Botify API token secured.", wait=True)
+            pip.speak("Botify API token saved. It has not been tested yet.", wait=True)
 
-        pip.speak("Congratulations, everything is configured! Click finalize.", wait=False)
+        # Fires on every path through step_04, including double-Skip, so it
+        # cannot claim everything is configured. It CAN claim the steps are done.
+        pip.speak("Configuration steps complete. Click finalize to lock it in.", wait=False)
             
         await pip.set_step_data(pipeline_id, step_id, payload, steps)
         
