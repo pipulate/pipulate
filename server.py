@@ -2724,7 +2724,7 @@ async def create_grid_left(menux, request):
             content_to_render = await home_app_instance.landing(request)
         else:
             logger.error(f"Configured home app '{home_app_name}' not found. Please check config.py.")
-            content_to_render = Card(H3('Welcome'), P(f"Homepage app '{home_app_name}' not found."))
+            content_to_render = Article(H3('Welcome'), P(f"Homepage app '{home_app_name}' not found."))
         # --- END CHANGE ---
 
     # Fallback content if nothing was rendered
