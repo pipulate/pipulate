@@ -2606,7 +2606,7 @@ async def create_outer_container(current_profile_id, menux, request, grayscale_e
     profiles_plugin_inst = plugin_instances.get('profiles')
     if not profiles_plugin_inst:
         logger.error("Could not get 'profiles' plugin instance for container creation")
-        return Container(H1('Error: Profiles plugin not found', cls='text-invalid'))
+        return Main(H1('Error: Profiles plugin not found', cls='text-invalid'), cls='container')
 
     # Inject dynamic role CSS - single source of truth
     dynamic_css = get_dynamic_role_css()
