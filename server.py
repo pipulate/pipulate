@@ -2729,7 +2729,7 @@ async def create_grid_left(menux, request):
 
     # Fallback content if nothing was rendered
     if content_to_render is None:
-        content_to_render = Card(
+        content_to_render = Article(
             H3('Welcome'),
             P('Select an option from the menu to begin.'),
             style='min-height: 400px'
