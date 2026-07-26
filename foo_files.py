@@ -1290,6 +1290,7 @@ imports/voice_synthesis.py                  # <-- The wand can talk to you (not 
 # ============================================================================
 
 # THE CONNECTORS (WET single-file API gateways; contract in the README)
+# scripts/connectors/README.md
 # scripts/connectors/gmail.py
 # scripts/connectors/confluence.py
 # scripts/connectors/jira.py
@@ -1298,6 +1299,7 @@ imports/voice_synthesis.py                  # <-- The wand can talk to you (not 
 # scripts/connectors/gsc.py
 # scripts/connectors/sheets.py
 # scripts/connectors/wallet.py
+# scripts/connectors/mcp.py
 #  _____ _           _           _   _                      
 # |  ___(_)_ __   __| |   __ _  | | | | ___  _ __ ___   ___ 
 # | |_  | | '_ \ / _` |  / _` | | |_| |/ _ \| '_ ` _ \ / _ \
@@ -1757,8 +1759,6 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # scripts/audit_dye.py  # [256 tokens | 1,009 bytes]
 # scripts/boot_menu.py  # [1,671 tokens | 6,636 bytes]
 # scripts/confluence_probe.py  # [4,990 tokens | 20,668 bytes]
-# scripts/connectors/README.md  # [1,388 tokens | 5,864 bytes]
-# scripts/connectors/mcp.py  # [3,360 tokens | 13,600 bytes]
 # scripts/dial_spinner.py  # [398 tokens | 1,463 bytes]
 # scripts/flippers.py  # [350 tokens | 1,309 bytes]
 # scripts/gsc/facet_allowlist.py  # [2,538 tokens | 10,602 bytes]
