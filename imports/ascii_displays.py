@@ -787,6 +787,38 @@ def _figurate_mechanical_man():
     human = Panel(human_art, title="🗝️ Tik-Tok — Two Keys Wound, One on the Wall", border_style="white")
     return human, ai_art
 
+def _figurate_workspace_tree():
+    """Render the three-tier Notebooks workspace: Corporate / Personal / Shared.
+
+    Self-documenting governance: read-only canon, a private sandbox, and a
+    single-writer outbound-exchange partition per username. Authored with no
+    .strip() so the leading newline is preserved (the honeybot_pipeline
+    convention), which the FIGURATE_LEDGER seal must match. No [[[color bits]]]
+    and no <angle tags>, so _expand_color_bits_ai leaves it untouched and
+    ai_art == art.
+    """
+    art = r"""
+   Notebooks/  — the JupyterLab root (NOT Pipulate's own root)
+   │            every level advertises its own AGENTS.md + OKF index.md
+   │
+   ├── Corporate/   read-only canon · auto-pulled · git wins on collision
+   │   ├── AGENTS.md
+   │   ├── .agents/skills/
+   │   └── apps/          org plugins ride in — no core commit needed
+   │
+   ├── Personal/    your sandbox · gitignored · vibe-code freely
+   │   ├── AGENTS.md
+   │   └── Playground/    NOTHING here is ever shared
+   │
+   └── Shared/      outbound exchange · one folder per name
+       ├── alice/        you write ONLY your own folder;
+       └── bob/          single-writer partitions = zero merge conflicts
+"""
+    ai_art = _expand_color_bits_ai(art)
+    human_art = _expand_color_bits_human(art)
+    human = Panel(human_art, title="🗂️ Notebooks Workspace — Corporate / Personal / Shared", border_style="white")
+    return human, ai_art
+
 # === FIGURATE_RENDER_EXTRUDE_BOTTOM ===
 # Add new _figurate_* render functions immediately above this line
 
