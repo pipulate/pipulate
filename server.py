@@ -2705,7 +2705,7 @@ async def create_grid_left(menux, request):
             content_to_render = await profiles_instance.landing(request)
         else:
             logger.error(f"Plugin '{profiles_plugin_key}' not found in plugin_instances for create_grid_left.")
-            content_to_render = Card(H3('Error'), P(f"Plugin '{profiles_plugin_key}' not found."))
+            content_to_render = Article(H3('Error'), P(f"Plugin '{profiles_plugin_key}' not found."))
 
     # Handle workflow plugin selection
     elif menux:
