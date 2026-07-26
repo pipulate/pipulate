@@ -2752,7 +2752,18 @@ def main():
 
                 for r in sorted(ledger_rows, key=lambda r: r['bytes'], reverse=True):
                     pct = (r['bytes'] / total_bytes_f * 100) if total_bytes_f else 0.0
-                    ledger.add_row(r['label'], f"{r['tokens']:,}", f"{r['bytes']:,}", f"{pct:.1f}%")
+                    if pct >= 15.0:
+                        style = "bold red"
+                    elif pct >= 5.0:
+                        style = "yellow"
+                    else:
+                        style = "green"
+                    ledger.add_row(
+                        f"[{style}]{r['label']}[/{style}]",
+                        f"[{style}]{r['tokens']:,}[/{style}]",
+                        f"[{style}]{r['bytes']:,}[/{style}]",
+                        f"[{style}]{pct:.1f}%[/{style}]"
+                    )
 
                 Console().print(ledger)
             except ImportError:
