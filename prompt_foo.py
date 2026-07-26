@@ -1721,6 +1721,72 @@ def update_stats_in_place():
         logger.print(f"Warning: Failed to update stats block: {e}")
 
 
+def update_agents_md_in_place():
+    """Splice the sealed workspace_tree art into AGENTS.md between sentinels.
+
+    THE SIGNPOST IS A SHIM, NOT A SECOND SOURCE. AGENTS.md is a README
+    addressed to agents: its prose (setup, tools, edits, conventions) is
+    legitimately AUTHORED and lives OUTSIDE the sentinels. Only the region
+    that DESCRIBES LIVE CAPABILITY is generated -- the same
+    GENERATED-NOT-AUTHORED split the Tool Roster already runs, applied to a
+    tracked markdown file instead of a payload section.
+
+    THE MECHANISM IS DELIBERATELY NOT NEW. This is update_stats_in_place()
+    aimed at a different file with different sentinels: fails closed on a
+    missing file or missing sentinel block, and writes only when the rendered
+    bytes actually change. A third instance of a pattern already proven twice
+    (stats block, ADHOC slot) is a smaller claim than a new lane.
+
+    THE SEAL IS LOAD-BEARING HERE, NOT DECORATIVE. Splicing art whose CRC
+    reports drift would propagate a corrupted frame into the one file every
+    external agent tool reads. Refuse instead: a stale AGENTS.md is a wound,
+    a confidently wrong one is a lie.
+
+    ORDERING NOTE (why the straddle closes in ONE compile): main() calls this
+    at step 2, BEFORE the `!` executor loop runs. A probe echoed into
+    adhoc.txt therefore witnesses THIS compile's fill, not the previous one --
+    the opposite of the foo.zip DOUBLE-TAP lag, and the reason the sentinels
+    were landed EMPTY. A hand-copied frame could never prove the generator ran.
+    """
+    agents_path = os.path.join(REPO_ROOT, "AGENTS.md")
+    if not os.path.exists(agents_path):
+        return
+    try:
+        from pipulate import wand
+        result = wand.figurate("workspace_tree")
+        if getattr(result, 'drift', 0):
+            logger.print("⚠️  workspace_tree reports drift; AGENTS.md left untouched.")
+            return
+        art = result.ai.strip("\n")
+
+        with open(agents_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        pattern = re.compile(
+            r'(<!-- --- START WORKSPACE TREE --- -->\n)(.*?)(<!-- --- END WORKSPACE TREE --- -->)',
+            re.DOTALL
+        )
+        match = pattern.search(content)
+        if not match:
+            return
+
+        # Split fence literal so this source line can never be eaten by
+        # apply.py's own fence stripper, the same dodge the git diff
+        # telemetry block uses below.
+        fence = "``" + "`"
+        block = f"{fence}text\n{art}\n{fence}\n"
+        new_content = (
+            content[:match.start()] + match.group(1) + block
+            + match.group(3) + content[match.end():]
+        )
+        if new_content != content:
+            with open(agents_path, 'w', encoding='utf-8') as f:
+                f.write(new_content)
+            logger.print("🗂️  AGENTS.md workspace tree regenerated from the sealed asset.")
+    except Exception as e:
+        logger.print(f"Warning: Failed to update AGENTS.md workspace tree: {e}")
+
+
 def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs: dict = None):
     """Reports references in foo_files.py that no longer exist on disk."""
     import foo_files
