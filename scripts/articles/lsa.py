@@ -428,6 +428,24 @@ def main():
                 filtered.append(item)  # keep on error
         metadata = filtered
 
+    # THE ART WALK (-v/--vim): open the SELECTED articles in the editor
+    # instead of printing them. Buffer order == display order, so -v honors
+    # every selection flag AND the sort direction: `posts -v` (oldest-first)
+    # puts the oldest article in buffer 1; `posts2 -v` (newest-first) puts
+    # today's article in buffer 1, so :bn walks back in time exactly like
+    # `rgx -v`. Paths are absolute, so CWD is irrelevant; VIMINIT is inherited
+    # from the shell, so init.lua still loads.
+    if args.vim:
+        if not metadata:
+            print("No matching articles found to open in Vim.", file=sys.stderr)
+            sys.exit(0)
+        editor = shutil.which('nvim') or shutil.which('vim')
+        if not editor:
+            print("❌ Error: Neither nvim nor vim found on PATH.", file=sys.stderr)
+            sys.exit(1)
+        paths = [item['path'] for item in metadata]
+        os.execvp(editor, [editor] + paths)
+
     # --- PASS 2: OUTPUT GENERATION (REPORT OR COMMAND) ---
     cache_file = CONFIG_DIR / "token_cache.json"
     
