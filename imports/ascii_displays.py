@@ -67,7 +67,7 @@ FIGURATE_LEDGER: dict = {
     "mechanical_man": 4142234675,
     # CRC32 after _expand_color_bits_ai() + .strip()
     "workspace_tree": 1744376308,  # CRC32 no-strip (leading newline preserved, like honeybot_pipeline)
-    "forcing_pair": 208394658,  # CRC32 no-strip (leading newline preserved, like honeybot_pipeline)
+    "forcing_pair": 3594006631,  # CRC32 no-strip; seal re-taken 2026-07-27 — 208394658 sealed a re-typed copy of the art, not the bytes on disk; the straddle caught it (drift 1→0)
     # === FIGURATE_LEDGER_EXTRUDE_BOTTOM ===
     # Add new artwork CRC32 entries immediately above this line
 }
