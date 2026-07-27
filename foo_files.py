@@ -516,6 +516,50 @@ AI_PHOOEY_CHOP = r"""                                                           
 # Bank the winning axis, anchors, predictions, and cheapest discriminating
 # probe so the surprise becomes reusable rather than re-derived.
 
+# THE FORCING-PAIR RULE (articulation-banked 2026-07-27, four-model fan-out):
+# 30-and-3 and AXIS-FORCING are ONE instrument with two grips, and naming the
+# relationship is the win neither rule could carry alone. 30-and-3 fights
+# premature CONVERGENCE within a frame (thirty candidates exhaust the
+# high-probability centroid so taste can pick three); AXIS-FORCING fights
+# premature COMMITMENT to the frame itself (imported bipolar anchors make that
+# centroid ILLEGAL). The chicken-and-egg — "draw an axis to catch a swan the
+# sample never held?" — DISSOLVES the instant an axis is read as a COORDINATE
+# SYSTEM, not a filter: a filter needs the swan already present; a coordinate
+# system CREATES AN ADDRESS for an empty region. The loop is a RATCHET, not a
+# cycle — 30-and-3 locates the clump, the clump names the bias, the HOLE beside
+# it is now an address, and the next pass generates thirty MORE to order INTO
+# that address. Neither comes first; each pass hands the next its constraint.
+# NEGATIVE SPACE IS THE LIMITING FUNCTION: you never need the swan in hand, only
+# the region no candidate thought to occupy. Anchors must be IMPORTED (remote
+# discipline, era, scale, organism); a home-grown axis inherits the home
+# blindspot by construction. The Pi-madness escape — enumerating every possible
+# axis to the numerology ward — is the PROBE ECONOMY denominator made literal:
+# orthogonality × disagreement × observability ÷ probe cost. An axis you cannot
+# cheaply falsify is an axis you do not draw.
+#
+# HANDLE vs MECHANISM (the rename test, same banking): the animal handles —
+# Mother Cat, White Rabbit, Amnesiac Genie, sandworm — are NOT the forcing
+# function. Swap the label; if the artifact is unchanged it was a HANDLE (Mother
+# Cat → Escalator leaves the carry-don't-menu design identical). Change the
+# CONSTRAINT; if the output degrades to cliché it was the MECHANISM (30 → 5 and
+# the octave never breaks). Handles do the REDUNDANT-GROOVE job — memorable,
+# re-findable months later via two rare words — and earn rent ONLY when they
+# predict something checkable ("Mother Cat" predicted CARRY not OFFER, which is
+# why warm beat mcp as the front door; "snowball downhill" predicts nothing, it
+# is a mood). The forcing function is always the constraint that outlaws the
+# likely answer; the animal is the sticker on the constraint's box.
+#
+# THE UNBANKED-AXIS DEBT (named here, owed to pin 2026-07-19): AXIS-FORCING says
+# to bank the winning axis, and in eight days ZERO have been — there is nowhere
+# to put one. A banked axis is a RECORD, not constitution: structured fields
+# (anchors, rival predictions, cheapest discriminating probe, verdict) belong in
+# an append-only LEDGER, not this comment block. It must be TRACKED — a
+# gitignored data/ ledger cannot ride in a cartridge, which defeats
+# banking-for-reuse — so data/axis_ledger.jsonl is the WRONG home despite its
+# convenience. The smallest RIGHT surface is still owed; do NOT build a thirty.py
+# generator (that puts the model where taste belongs — the 30 is a KATA), only
+# the ledger and its naming convention.
+
 # THE BARNEY RESET RULE (banked 2026-07-21, articulation-banked): Trigger
 # when the human says they do not understand. Trigger when the human asks
 # what they are supposed to do. Trigger when confusion survives into a
