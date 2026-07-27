@@ -14,6 +14,32 @@ import re
 import os
 import subprocess
 
+# PROTOCOL MARKER AIRLOCK — the guard the 2026-07-26 player-piano.js incident
+# called for. apply.py speaks a grammar of bare delimiters: [[[SEARCH]]],
+# [[[DIVIDER]]], [[[REPLACE]]], [[[WRITE_FILE]]], [[[END_WRITE_FILE]]] (with 3-5
+# bracket tolerance and {{{ }}} variants, mirroring the parser regexes below).
+# When a malformed edit leaks one of those delimiters into a target file, the
+# file is corrupted in the parser's own language and nothing downstream shouts.
+# This regex is deliberately LINE-ANCHORED to a *bare* delimiter — a line that is
+# nothing but the marker — because that is what debris looks like and what real
+# source never is. apply.py, prompt.md, and prompt_foo.py mention the markers
+# inline, backticked, or inside regex source, so this guard never blocks the
+# tool from editing itself; the allowlist is belt-and-suspenders for docs that
+# legitimately show a bare marker inside a fenced example.
+_RESIDUAL_MARKER_RE = re.compile(
+    r'^[ \t]*[\[{]{3,5}(?:SEARCH|DIVIDER|REPLACE|WRITE_FILE|END_WRITE_FILE)[\]}]{3,5}[ \t]*$'
+)
+
+# Basenames permitted to carry bare markers (they define or document the grammar).
+PROTOCOL_GRAMMAR_FILES = frozenset({
+    'apply.py', 'prompt.md', 'prompt_foo.py', 'AGENTS.md', 'README.md',
+})
+
+def _residual_marker_lines(text: str):
+    """Return (lineno, line) for every bare protocol delimiter left in text."""
+    return [(i, line) for i, line in enumerate(text.split('\n'), start=1)
+            if _RESIDUAL_MARKER_RE.match(line)]
+
 def apply_search_replace_patch(payload: str) -> bool:
     # 1. NORMALIZE PAYLOAD WHITESPACE
     # Convert non-breaking spaces to regular spaces and normalize line endings
