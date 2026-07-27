@@ -89,6 +89,7 @@ window.adaptMessageForPlatform = function(message) {
 let tempMessageSent = false;
 
 // Match the WebSocket route from Chat
+let sidebarWs = new WebSocket('ws://' + window.location.host + '/chat-ws');
 const sidebarMsgList = document.getElementById('msg-list');
 let sidebarCurrentMessage = document.createElement('div');
 sidebarCurrentMessage.className = 'message assistant';
