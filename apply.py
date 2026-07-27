@@ -96,6 +96,17 @@ def apply_search_replace_patch(payload: str) -> bool:
         # POSIX courtesy: guarantee exactly one trailing newline.
         file_content = file_content.rstrip('\n') + '\n'
 
+        # PROTOCOL MARKER AIRLOCK (whole-file arm) — refuse to write our own grammar.
+        if os.path.basename(filename) not in PROTOCOL_GRAMMAR_FILES:
+            residue = _residual_marker_lines(file_content)
+            if residue:
+                print(f"❌ Error: Whole-file write of '{filename}' aborted. "
+                      f"Residual patch-protocol marker(s) in the body:")
+                for lineno, line in residue:
+                    print(f"    >>> {lineno:4d}: {line!r}")
+                success = False
+                continue
+
         # JSON SYNTAX AIRLOCK (whole-file arm)
         if filename.endswith('.json'):
             import json
