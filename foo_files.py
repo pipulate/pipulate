@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,362 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 37 published in the last 7 days
+# There are 1,363 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 38 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -2007,7 +2007,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # scripts/articles/link_injector.py  # [1,134 tokens | 4,394 bytes]
 # scripts/articles/list_models.py  # [102 tokens | 391 bytes]
 # scripts/articles/other/make_article.py  # [1,518 tokens | 6,587 bytes]
-# scripts/articles/scrub_tags.py  # [358 tokens | 1,588 bytes]
+# scripts/articles/scrub_tags.py  # [1,055 tokens | 4,083 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
 # scripts/audit_dye.py  # [256 tokens | 1,009 bytes]
 # scripts/boot_menu.py  # [1,671 tokens | 6,636 bytes]
@@ -2020,6 +2020,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # scripts/mcp_dummy_server.py  # [6,529 tokens | 27,647 bytes]
 # scripts/playground/prompt_feeder.py  # [746 tokens | 3,154 bytes]
 # scripts/refactor_cards.py  # [381 tokens | 1,483 bytes]
+# scripts/test_car_b.py  # [283 tokens | 1,090 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
 # scripts/walk.py  # [3,069 tokens | 13,289 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
