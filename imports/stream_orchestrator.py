@@ -78,6 +78,43 @@ async def stream_orchestrator(pipulate_instance, chat_instance, message, **kwarg
                 finally:
                     log_tool_call(command_alias, tool_name, params, is_success, tool_output)
                 return
+            else:
+                # THE CHAT LANE REFUSES WHAT IT CANNOT RUN. Before this branch
+                # existed, the `return` above lived inside the `if`, so a bracket
+                # naming nothing in ALIAS_REGISTRY fell THROUGH to
+                # _handle_llm_stream() -- the model received the tool call as
+                # conversational text and answered plausibly, narrating a file it
+                # never opened. That is fabricated tool output wearing a
+                # receipt's clothes. cli.py has refused loudly on the identical
+                # input the whole time; this is that refusal, ported.
+                #
+                # THE ALIAS LIST IS GENERATED, NEVER AUTHORED. Reading
+                # ALIAS_REGISTRY at call time means this message cannot name a
+                # command that does not run -- authoring the list would just move
+                # the same defect one layer up.
+                #
+                # DISPATCH IS DELIBERATELY UNCHANGED: aliases only, never bare
+                # registry names. The param builder above special-cases three
+                # tools and dumps everything else into params['args'], so
+                # bare-name dispatch would call real tools with wrong argument
+                # shapes. Point at cli.py instead of guessing.
+                known = ', '.join(f"`[{k}]`" for k in sorted(ALIAS_REGISTRY)) or '(none registered)'
+                if command_alias in MCP_TOOL_REGISTRY:
+                    detail = (
+                        f"`{command_alias}` is a registered tool, but this chat box dispatches "
+                        f"short aliases only. Run it from the terminal:\n\n"
+                        f"`.venv/bin/python cli.py call {command_alias} --json-args '{{...}}'`"
+                    )
+                else:
+                    detail = f"`{command_alias}` is not a command this chat box can run."
+                refusal = (
+                    f"🚫 Not executed.\n\n{detail}\n\n"
+                    f"Chat commands available right now: {known}\n\n"
+                    "If you meant that as plain text rather than a command, send it without the square brackets."
+                )
+                logger.info(f"ORCHESTRATOR: Refused unknown bracket command [{full_command_string}]")
+                await pipulate_instance.stream(refusal, role='tool', verbatim=True, simulate_typing=False)
+                return
 
     if verbatim:
         append_to_conversation(message, role)
