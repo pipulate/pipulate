@@ -1697,11 +1697,56 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #       The promise never resolves. STANDING CONSEQUENCE: no scenario may set
 #       input_type "chat" until player-piano.js grows a chat-input path; a
 #       keyboard branch or end_demo are the only two safe terminators.
-#   REMAINING (unchanged): the bracket lane in imports/stream_orchestrator.py
-#   falls THROUGH to the LLM when a name misses MCP_TOOL_REGISTRY -- silently,
-#   with no refusal -- so a dead tool call becomes a chat prompt and the model
-#   narrates a file it never opened. cli.py refuses loudly on the same input.
-#   The chat lane owes that refusal branch.
+#   REFUSAL LANDED 2026-07-26 (PENDING witness): the bracket lane in
+#   imports/stream_orchestrator.py used to fall THROUGH to _handle_llm_stream()
+#   when a name missed ALIAS_REGISTRY -- silently, no refusal -- so a dead tool
+#   call became a chat prompt and the model narrated a file it never opened.
+#   FABRICATED TOOL OUTPUT WEARING A RECEIPT'S CLOTHES: the worst
+#   ATTRIBUTED-VOICE failure this ride found, while cli.py had been refusing
+#   correctly on identical input the whole time. The else-branch now names what
+#   it cannot run and prints an alias list GENERATED from the live registry.
+#   WITNESS OWED: a compiled receipt plus one human typing [bogus_name] into
+#   chat and reading a refusal instead of an answer.
+#   DELIBERATELY NOT CHANGED: dispatch resolves aliases only, never bare
+#   registry names. The param builder special-cases three tools and dumps
+#   everything else into params['args'], so bare-name dispatch would call real
+#   tools with wrong argument shapes -- louder, still wrong. The refusal points
+#   at cli.py instead of guessing a shape.
+# - TODO: THE REAL ENDING IS HARDCODED IN JAVASCRIPT (convicted 2026-07-26, the
+#   largest defect leaving the ATTRIBUTED-VOICE ride): continueDemoFromState()
+#   in assets/player-piano.js duplicates step 08's text as a JS string literal,
+#   then searches demoScript.STEPS (top level: only 01 and 02) for a '09_' id,
+#   finds none, and lands on "REGRESSION TEST ENVIRONMENT READY". So the honest
+#   hand-off written into introduction.json as 09_handoff_to_chat IS NEVER
+#   REACHED on the ctrl+alt+y path, and the string a newcomer actually reads
+#   still says "Ready for the next trick!" -- promising a trick this ride cut.
+#   Either make continueDemoFromState search branches as well as STEPS, or move
+#   the ending into the JS and delete the JSON step. Do NOT leave two endings;
+#   two authorities for one string is the sibling-.md failure in a second
+#   language, and this instance already drifted.
+# - TODO: THE DEMO WENT SILENT (observed 2026-07-26, unexplained): the operator
+#   walked the whole Ctrl+Alt+D tour post-cut and HEARD NOTHING where Piper used
+#   to read. The cut did NOT remove the voice steps -- 04_voice_greeting and
+#   06b_voice_continue_prompt are both still voice_synthesis mcp_tool_call steps
+#   and only their `text` changed. Two suspects: (1) TRANSPORT --
+#   executeMcpToolCallStep speaks for real ONLY when the WebSocket is OPEN; any
+#   other state falls to executeCleanMcpToolCallStep, which console.logs a
+#   phantom success and produces no audio. Silence with a green console IS that
+#   path, and the Oz transition reloads the page mid-demo. (2) ENGINE -- the
+#   ACOUSTIC SANITIZER rewrite in imports/voice_synthesis.py, the only edit on
+#   the voice path this ride. DISCRIMINATING PROBE: `cli.py call voice_synthesis`
+#   bypasses the browser entirely -- audio convicts transport, silence convicts
+#   the engine.
+# - TODO: DELETE OR GENERATE get_available_tools() (gated 2026-07-26): the
+#   receipt over tools/ cli.py imports/ apps/ returned THREE hits, all inside
+#   mcp_tools.py itself (def :4259, hand-authored public_tool_names :4264, loop
+#   :4299). NO CALLER in those four trees -- but the search did NOT cover
+#   server.py, scripts/, or assets/, so deletion is GATED on widening it. If
+#   still uncalled: delete the function and its list; cli.py mcp-discover
+#   already derives from get_all_tools() and is the honest implementation. If
+#   called: replace the list body with sorted(get_all_tools()) at the call site.
+#   Either way pull ONLY `sed -n '4250,4310p' tools/mcp_tools.py` -- a 36k-token
+#   file has no business entering a payload whole for a sixty-line edit.
 # - EARMARK: THE PROMPT-FU GLOSSARY (seeded 2026-07-26): the sci-fi lexicon is
 #   nearly one-to-one with the vocabulary the agentic-web field grew on its own,
 #   so the translation is a GLOSSARY, not a rewrite -- and per the
