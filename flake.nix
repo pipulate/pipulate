@@ -1029,6 +1029,11 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           defaultu() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop DEFAULT_CHOP "$@"); }
           ahc() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP --no-tree "$@"); }
           ahcu() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP "$@"); }
+          # THE IDEATION DOOR: `idea` compiles IDEATION_CHOP (the constitution's
+          # two forcing-function rules) primed for a 30-and-3 / axis-forcing
+          # fan-out turn. A function, not an alias, so --profile/--reason pass
+          # straight through, mirroring defaultu/ahc.
+          idea() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop IDEATION_CHOP --no-tree "$@"); }
           alias ahe='(cd "$PIPULATE_ROOT" && nvim "''${PIPULATE_ADHOC_FILE:-adhoc.txt}" foo_files.py)'
           # THE SNIFF DOOR: one word at the prompt puts a wire-truth lens into
           # the next compile. Appends a sigil line to the adhoc overlay, then
