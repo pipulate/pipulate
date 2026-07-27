@@ -7,13 +7,19 @@ The harness answers one narrow question:
 
 It creates two independently witnessed lanes:
 
+[[[REPLACE]]]
 1. RAW:
-   A fresh browser-side WebSocket sends directly to /ws. This bypasses
+   A fresh browser-side WebSocket sends directly to /chat-ws. This bypasses
    sendSidebarMessage() and the existing sidebarWs object.
 
 2. UI:
    Selenium fills #msg and clicks #send-btn, exercising the production
-   pipulate.js path.
+   sidebar form and player-piano.js WebSocket path.
+
+Target: scripts/chat_route_probe.py
+[[[SEARCH]]]
+    socket = new WebSocket(`${scheme}://${window.location.host}/ws`);
+[[[DIVIDER]]]
 
 Chrome performance logging records Network.webSocket* events so the report
 contains the actual transmitted and received frame payloads. Browser console

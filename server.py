@@ -1172,9 +1172,11 @@ class Chat:
         self.first_connection_handled = False  # Track if we've sent startup messages
         self.last_message = None  # Required for broadcast functionality
         self.last_message_time = 0  # Required for broadcast functionality
+
         self.active_chat_tasks = {}  # Track tasks per websocket
-        self.app.add_websocket_route('/ws', self.handle_websocket)
-        self.logger.debug('Registered WebSocket route: /ws')
+        self.app.router.add_websocket_route('/chat-ws', self.handle_websocket)
+        self.logger.debug('Registered raw WebSocket route: /chat-ws')
+
 
     async def handle_chat_message(self, websocket: WebSocket, message: str):
         task = None
@@ -4456,7 +4458,7 @@ class DOMSkeletonMiddleware(BaseHTTPMiddleware):
         endpoint = request.url.path
         method = request.method
         is_static = endpoint.startswith('/assets/')
-        is_ws = endpoint == '/ws'
+        is_ws = endpoint == '/chat-ws'
         is_sse = endpoint == '/sse'
 
         # Enhanced labeling for network requests with correlation tracking

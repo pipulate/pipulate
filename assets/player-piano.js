@@ -89,7 +89,13 @@ window.adaptMessageForPlatform = function(message) {
 let tempMessageSent = false;
 
 // Match the WebSocket route from Chat
-let sidebarWs = new WebSocket('ws://' + window.location.host + '/ws');
+[[[REPLACE]]]
+let sidebarWs = new WebSocket('ws://' + window.location.host + '/chat-ws');
+
+Target: assets/player-piano.js
+[[[SEARCH]]]
+        const newSidebarWs = new WebSocket('ws://' + window.location.host + '/ws');
+[[[DIVIDER]]]
 const sidebarMsgList = document.getElementById('msg-list');
 let sidebarCurrentMessage = document.createElement('div');
 sidebarCurrentMessage.className = 'message assistant';
