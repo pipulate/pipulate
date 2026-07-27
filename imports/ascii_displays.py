@@ -820,6 +820,66 @@ def _figurate_workspace_tree():
     human = Panel(human_art, title="🗂️ Notebooks Workspace — Corporate / Personal / Shared", border_style="white")
     return human, ai_art
 
+def _figurate_forcing_pair():
+    """Render the two creativity forcing functions as ONE composed frame.
+
+    THE CHICKEN-AND-EGG DISSOLVES ONLY IN A SINGLE FRAME. Split 30-and-3 from
+    axis-forcing into two assets and the reader re-inherits the very question
+    the drawing exists to answer: which comes first. Composed, the answer is
+    visible -- the 30 locate the clump, the clump names the bias, the hole is
+    an ADDRESS, and pass 3 generates to that address on purpose. An axis is a
+    coordinate system, not a detector; coordinate systems create addresses for
+    things that do not exist yet.
+
+    Authored with NO .strip() so the leading newline is preserved (the
+    honeybot_pipeline / workspace_tree convention), which the FIGURATE_LEDGER
+    seal must match. No [[[color bits]]] and no <angle tags>, so
+    _expand_color_bits_ai leaves it untouched and ai_art == art. Seal deferred:
+    the CRC cannot be known until these bytes exist, so it lands next turn.
+    """
+    art = r"""
+   THE FORCING PAIR — 30-and-3 finds the clump; the AXIS outlaws it
+
+   PASS 1 — quantity is the forcing function, taste is the bottleneck
+
+       seed ──▶  · · · · · · · · · ·
+                 · · · · · · · · · ·  ──▶  ★ ★ ★
+                 · · · · · · · · · ·
+                 └──── 30, cheap ────┘     3, expensive
+                                           (the WHY is the artifact)
+
+   PASS 2 — plot the 30. The clump names your bias. The hole is an address.
+
+                          B
+                · · ·     │
+              · · · · ·   │        ( E M P T Y )
+                · · ·     │
+          A ──────────────┼─────────────────────── A'
+                          │
+                          │        ( E M P T Y )
+                          │
+                          B'
+
+          Nothing is there because nothing THOUGHT there.
+          Anchors must be IMPORTED — remote discipline, era, organism.
+          A home-grown axis inherits the home blindspot by construction.
+
+   PASS 3 — generate 30' TO ORDER into the hole    ──▶    ★  the swan
+
+   SANITY CLAUSE      orthogonality x disagreement x observability
+                      ─────────────────────────────────────────────
+                                       PROBE COST
+                      The denominator is what stops this becoming Pi.
+
+   BANK THE AXIS, not only the winner. An unbanked axis is re-derived
+   forever; a banked one becomes the next pass's constraint.
+"""
+    ai_art = _expand_color_bits_ai(art)
+    human_art = _expand_color_bits_human(art)
+    human = Panel(human_art, title="🎲 The Forcing Pair — 30-and-3 and the Black Swan Axis", border_style="white")
+    return human, ai_art
+
+
 # === FIGURATE_RENDER_EXTRUDE_BOTTOM ===
 # Add new _figurate_* render functions immediately above this line
 
