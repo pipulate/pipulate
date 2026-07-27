@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "name": "first_context",
+  "description": "Mother Cat dry-run plan for Jira, Botify, and Gmail context acquisition.",
+  "defaults": {
+    "take_screenshot": false,
+    "headless": false,
+    "is_notebook_context": false,
+    "persistent": true,
+    "profile_name": "default",
+    "verbose": true,
+    "override_cache": true,
+    "delay_range": null
+  },
+  "stops": [
+    {
+      "name": "jira",
+      "label": "Jira issue",
+      "guidance": "Set PIPULATE_TRAIL_JIRA_URL to the bookmarked Jira page and supply its issue key.",
+      "url_env": "PIPULATE_TRAIL_JIRA_URL",
+      "target_slot": "jira_issue_key",
+      "harvest_regex": "^[A-Z][A-Z0-9]+-[0-9]+$",
+      "connector": {
+        "script": "scripts/connectors/jira.py",
+        "argv": ["{harvested}", "-n", "25"],
+        "read_only": true
+      }
+    },
+    {
+      "name": "botify",
+      "label": "Botify project",
+      "guidance": "Set PIPULATE_TRAIL_BOTIFY_URL to the bookmarked Botify page and supply org/project.",
+      "url_env": "PIPULATE_TRAIL_BOTIFY_URL",
+      "target_slot": "botify_project",
+      "harvest_regex": "^[^/\\s]+/[^/\\s]+$",
+      "connector": {
+        "script": "scripts/connectors/botify.py",
+        "argv": ["{harvested}", "-n", "25"],
+        "read_only": true
+      }
+    },
+    {
+      "name": "gmail",
+      "label": "Gmail thread",
+      "guidance": "Set PIPULATE_TRAIL_GMAIL_URL to the bookmarked Gmail page and supply a non-email thread token.",
+      "url_env": "PIPULATE_TRAIL_GMAIL_URL",
+      "target_slot": "gmail_thread",
+      "harvest_regex": "^[^@\\s]+$",
+      "connector": {
+        "script": "scripts/connectors/gmail.py",
+        "argv": ["{harvested}", "-n", "10"],
+        "read_only": true
+      }
+    }
+  ]
+}
