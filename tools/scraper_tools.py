@@ -1,5 +1,6 @@
 # /home/mike/repos/pipulate/tools/scraper_tools.py
 import asyncio
+import hashlib
 import json
 import os
 import sys
@@ -47,6 +48,14 @@ def get_safe_path_component(url: str) -> tuple[str, str]:
     else:
         path_slug = quote(path, safe='').replace('/', '_')[:100]
     return domain, path_slug
+
+
+def _guided_path_component(url: str) -> tuple[str, str]:
+    """Build a final-URL-specific cache key without exposing query or fragment text."""
+    parsed = urlparse(url)
+    readable_path = quote(parsed.path or "/", safe="")[:80]
+    url_digest = hashlib.sha256(url.encode("utf-8")).hexdigest()[:16]
+    return parsed.netloc, f"{readable_path}--{url_digest}"
 
 
 # --- The Summoning Music (think-music during the Cloudflare wait) ---
@@ -194,8 +203,56 @@ def _document_candidates(cdp_events: list, domain: str) -> list:
     return on_host
 
 
-@auto_tool
-async def selenium_automation(params: dict) -> dict:
+def _capture_checkpoint(stdin=None, stdout=None) -> dict:
+    """Require an explicit CAPTURE token from an interactive stdin."""
+    input_stream = sys.stdin if stdin is None else stdin
+    output_stream = sys.stdout if stdout is None else stdout
+
+    try:
+        if not input_stream.isatty():
+            return {
+                "success": False,
+                "error": "interactive capture requires a TTY on stdin",
+            }
+    except Exception as exc:
+        return {
+            "success": False,
+            "error": f"could not verify interactive stdin: {exc}",
+        }
+
+    try:
+        output_stream.write(
+            "\nNavigate in the visible browser, then type CAPTURE and press Enter.\n"
+            "Any other response aborts without capturing artifacts.\n"
+            "CAPTURE> "
+        )
+        output_stream.flush()
+        response = input_stream.readline()
+    except KeyboardInterrupt:
+        return {
+            "success": False,
+            "error": "interactive checkpoint interrupted",
+        }
+    except Exception as exc:
+        return {
+            "success": False,
+            "error": f"interactive checkpoint read failed: {exc}",
+        }
+
+    if response == "":
+        return {
+            "success": False,
+            "error": "interactive checkpoint reached EOF",
+        }
+    if response.strip() != "CAPTURE":
+        return {
+            "success": False,
+            "error": "interactive checkpoint was not confirmed",
+        }
+    return {"success": True}
+
+
+async def _selenium_capture(params: dict, checkpoint=None) -> dict:
     """
     Performs an advanced browser automation scrape of a single URL using undetected-chromedriver.
     Checks for cached data before initiating a new scrape.
@@ -212,6 +269,7 @@ async def selenium_automation(params: dict) -> dict:
     verbose = params.get("verbose", True)
     override_cache = params.get("override_cache", False)
     delay_range = params.get("delay_range")
+    interactive = checkpoint is not None
 
     if not all([url, domain, url_path_slug is not None]):
         return {"success": False, "error": "URL, domain, and url_path_slug parameters are required."}
@@ -222,9 +280,31 @@ async def selenium_automation(params: dict) -> dict:
     
     output_dir = base_dir / domain / url_path_slug
     artifacts = {}
+    final_url = None
+
+    def failure(message):
+        return {
+            "success": False,
+            "error": str(message),
+            "looking_at_files": dict(artifacts),
+            "cached": False,
+            "requested_url": url,
+            "final_url": final_url,
+            "interactive": interactive,
+        }
+
+    if interactive and (
+        headless is not False
+        or persistent is not True
+        or override_cache is not True
+    ):
+        return failure(
+            "interactive capture requires headless=False, "
+            "persistent=True, and override_cache=True"
+        )
 
     # --- CACHE OVERRIDE LOGIC ---
-    if override_cache and output_dir.exists():
+    if not interactive and override_cache and output_dir.exists():
         if verbose:
             logger.info(f"🧹 override_cache is True. Clearing existing directory: {output_dir}")
         try:
@@ -235,7 +315,7 @@ async def selenium_automation(params: dict) -> dict:
     # --- IDEMPOTENCY CHECK ---
     # Check if the primary artifact (hydrated_dom.html) already exists.
     dom_path = output_dir / "hydrated_dom.html"
-    if dom_path.exists():
+    if not interactive and dom_path.exists():
         if verbose:
             logger.info(f"✅ Using cached data from: {output_dir}")
 
@@ -369,9 +449,11 @@ async def selenium_automation(params: dict) -> dict:
             logger.info(f"🔍 Using driver executable from webdriver-manager (uc default).")
 
     try:
-        # Create directory only if we are actually scraping
-        output_dir.mkdir(parents=True, exist_ok=True)
-        if verbose: logger.info(f"💾 Saving new artifacts to: {output_dir}")
+        # Guided capture cannot know its truthful destination until after the
+        # human checkpoint exposes the browser's final current URL.
+        if not interactive:
+            output_dir.mkdir(parents=True, exist_ok=True)
+            if verbose: logger.info(f"💾 Saving new artifacts to: {output_dir}")
 
         options = uc.ChromeOptions()
         options.set_capability("goog:loggingPrefs", {"performance": "ALL"})
@@ -444,6 +526,46 @@ async def selenium_automation(params: dict) -> dict:
         # The wait is over one way or the other: cut the think-music sharply.
         _stop_scrape_music(music_proc)
         music_proc = None
+
+        if checkpoint is not None:
+            try:
+                checkpoint_result = checkpoint()
+            except KeyboardInterrupt:
+                return failure("interactive checkpoint interrupted")
+            except Exception as exc:
+                return failure(f"interactive checkpoint failed: {exc}")
+
+            if not isinstance(checkpoint_result, dict):
+                return failure("interactive checkpoint returned a non-dict result")
+            if not checkpoint_result.get("success"):
+                return failure(
+                    checkpoint_result.get("error")
+                    or "interactive checkpoint was not confirmed"
+                )
+
+        try:
+            final_url = driver.current_url
+        except Exception as exc:
+            return failure(f"could not read browser final URL: {exc}")
+
+        final_parsed = urlparse(final_url)
+        if (
+            not isinstance(final_url, str)
+            or final_parsed.scheme not in {"http", "https"}
+            or not final_parsed.netloc
+        ):
+            return failure(f"browser final URL is not absolute http(s): {final_url!r}")
+
+        if interactive:
+            final_domain, final_slug = _guided_path_component(final_url)
+            output_dir = base_dir / final_domain / final_slug
+            if output_dir.exists():
+                shutil.rmtree(output_dir)
+            output_dir.mkdir(parents=True, exist_ok=True)
+            if verbose:
+                logger.info(
+                    f"💾 Saving guided artifacts for {final_url} to: {output_dir}"
+                )
 
         # --- Capture Core Artifacts ---
         dom_content = driver.execute_script("return document.documentElement.outerHTML;")
@@ -583,6 +705,7 @@ async def selenium_automation(params: dict) -> dict:
         # Save Headers
         headers_data = {
             "url": url,
+            "final_url": final_url,
             "title": driver.title,
             "timestamp": datetime.now().isoformat(),
             "status": "success",
@@ -698,7 +821,18 @@ async def selenium_automation(params: dict) -> dict:
             if verbose: logger.warning(f"⚠️ LLM Optics Engine partially failed: {optics_result.get('error')}")
 
         logger.success(f"✅ Scrape successful for {url}")
-        return {"success": True, "looking_at_files": artifacts, "cached": False}
+        return {
+            "success": True,
+            "looking_at_files": artifacts,
+            "cached": False,
+            "requested_url": url,
+            "final_url": final_url,
+            "interactive": interactive,
+        }
+
+    except Exception as exc:
+        logger.error(f"❌ Browser capture failed for {url}: {exc}")
+        return failure(f"browser capture failed: {exc}")
 
     finally:
         _stop_scrape_music(music_proc)
@@ -716,3 +850,63 @@ async def selenium_automation(params: dict) -> dict:
                 if verbose: logger.info(f"Cleaned up temporary profile: {profile_path}")
             except Exception as e:
                 logger.warning(f"Could not completely remove temp profile (this is normal): {e}")
+
+
+@auto_tool
+async def selenium_automation(params: dict) -> dict:
+    """Performs an advanced browser scrape with the existing non-interactive contract."""
+    return await _selenium_capture(params)
+
+
+async def guided_browser_capture(params: dict, stdin=None, stdout=None) -> dict:
+    """Capture one human-guided page through one visible persistent driver."""
+    if not isinstance(params, dict):
+        return {
+            "success": False,
+            "error": "guided browser parameters must be a dict",
+            "looking_at_files": {},
+            "cached": False,
+            "requested_url": None,
+            "final_url": None,
+            "interactive": True,
+        }
+
+    requested_url = params.get("url")
+
+    def fail(message):
+        return {
+            "success": False,
+            "error": str(message),
+            "looking_at_files": {},
+            "cached": False,
+            "requested_url": requested_url,
+            "final_url": None,
+            "interactive": True,
+        }
+
+    for key, expected in (
+        ("headless", False),
+        ("persistent", True),
+        ("override_cache", True),
+    ):
+        if params.get(key) is not expected:
+            return fail(
+                f"guided capture requires {key}={expected!r}; "
+                f"got {params.get(key)!r}"
+            )
+
+    input_stream = sys.stdin if stdin is None else stdin
+    try:
+        stdin_is_tty = input_stream.isatty()
+    except Exception as exc:
+        return fail(f"could not verify interactive stdin before browser launch: {exc}")
+    if not stdin_is_tty:
+        return fail("guided capture requires a TTY on stdin before browser launch")
+
+    return await _selenium_capture(
+        dict(params),
+        checkpoint=lambda: _capture_checkpoint(
+            stdin=input_stream,
+            stdout=stdout,
+        ),
+    )
