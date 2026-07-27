@@ -307,6 +307,14 @@ AI_PHOOEY_CHOP = r"""                                                           
 # to what actually happened: recorded, saved, stored, set. Storing a credential
 # is not testing it, and the first real request is the earliest honest moment
 # to claim a connection.
+# WITNESSED 2026-07-26 (same-ride receipts, promoting both the rule and this
+# amendment from articulation-banked to receipt-backed): the persona census
+# over assets/scenarios/*.json returned four hits and ZERO user-facing
+# narration among them; the honesty-verb census over apps/015_config.py
+# returned four hits of which three were the explanatory comments the fix
+# added and the fourth was a logger line. The mechanical test found five
+# offenders that GENERATED-NOT-AUTHORED could not see, which is the evidence
+# that this rule is load-bearing rather than that rule with a microphone.
 
 # THE SURFACE-FIRST ROUTING RULE (banked 2026-07-22, blind-test witnessed):
 # Pipulate has two Golden Paths because it has two execution surfaces.
@@ -1654,6 +1662,39 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - TODO: CUT THE GHOST-DRIVER BODY BRANCHES (seeded 2026-07-26, receipt-convicted):
+#   assets/scenarios/introduction.json's branch_llm_body_chain_reaction,
+#   branch_llm_body_test_results, and branch_dom_visualizer_intro stack THREE
+#   failures: (1) they teach a stranger to hand-type
+#   [local_llm_read_file file_path="browser_automation/looking_at/simple_dom.html"],
+#   naming a function that exists at mcp_tools.py:947 but carries no @auto_tool
+#   and is therefore absent from the live 21-tool roster; (2) browser_automation/
+#   is the RETIRED cache path -- mcp_tools.py:3302 already writes
+#   browser_cache/looking_at/; (3) "I'm going to give you a body" and "You now
+#   have a body" are persona-and-capability claims of exactly the kind the
+#   ATTRIBUTED-VOICE ride removed everywhere else. RULING: CUT, do not repoint.
+#   Repointing polishes an instruction that should not be given at minute four
+#   of a first session, and a scenario naming a REAL tool with WRONG params is
+#   worse than one naming a fake tool. The honest ending already exists at
+#   branch_dev_reset_no. ORDERING: the JSON airlock (apply.py) lands FIRST --
+#   this is the surgery that needs it. Sibling debt: mcp_tools.py:4271's
+#   hand-authored public_tool_names list names the orphan, which is
+#   GENERATED-NOT-AUTHORED wearing a different hat; replace with a generated
+#   roster or delete the orphan outright.
+# - EARMARK: THE PROMPT-FU GLOSSARY (seeded 2026-07-26): the sci-fi lexicon is
+#   nearly one-to-one with the vocabulary the agentic-web field grew on its own,
+#   so the translation is a GLOSSARY, not a rewrite -- and per the
+#   CODEX-AS-DATASTRUCTURE RULE a glossary is a controlled vocabulary, a type
+#   system for prose that stops terms drifting between chapters. Pairs: worm
+#   ride -> work session; chisel-strike -> bounded probe; Probe/Patch/Prompt ->
+#   instrument, change, hand-off; cartridge (foo.zip) -> context bundle
+#   (AGENTS.md/SKILL.md class); Prompt Fu -> context compiler; Amnesiac Genie ->
+#   stateless session; player piano / Ghost Driver -> deterministic actuator /
+#   scripted E2E scenario; Chip O'Theseus -> persistent local model + keychain;
+#   rolling pin -> corpus index; paintbox -> coverage ledger; blast radius ->
+#   commit boundary; straddle -> before/after measurement; Honeybot -> origin
+#   telemetry lab. Keep BOTH columns: the sci-fi term is the memorable handle,
+#   the common term is the searchable one, and dropping either loses a reader.
 # - EARMARK: THE THREE-TIER WORKSPACE & HUMAN COMPOSITION LADDER (seeded 2026-07-25):
 #   1. 3-TIER NOTEBOOK WORKSPACE (`Notebooks/`):
 #      - `Corporate/`: Org canon & skills (Read-only, auto-pulled by git).
