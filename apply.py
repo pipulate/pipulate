@@ -226,6 +226,23 @@ def apply_search_replace_patch(payload: str) -> bool:
             
         # The Surgical Strike
         new_content = content.replace(search_block, replace_block, 1)
+
+        # PROTOCOL MARKER AIRLOCK (surgical arm, first of the airlocks) — refuse
+        # to write a file that still carries a bare protocol delimiter. Runs
+        # ahead of the JSON/Nix/AST validators because a leaked marker also trips
+        # those, but with a symptom message that points nowhere near the cause.
+        if os.path.basename(filename) not in PROTOCOL_GRAMMAR_FILES:
+            residue = _residual_marker_lines(new_content)
+            if residue:
+                print(f"❌ Error: Patching '{filename}' aborted. "
+                      f"Residual patch-protocol marker(s) survived substitution:")
+                for lineno, line in residue:
+                    print(f"    >>> {lineno:4d}: {line!r}")
+                print("    A bare [[[SEARCH]]]/[[[DIVIDER]]]/[[[REPLACE]]]/[[[WRITE_FILE]]] "
+                      "line in the OUTPUT means the edit leaked the tool's own grammar "
+                      "into the file. Fix the block boundaries and re-run; nothing was written.")
+                success = False
+                continue
         
         # JSON SYNTAX AIRLOCK (third of three). .py gets AST, .nix gets
         # nix-instantiate, and .json got NOTHING until scenario patches
