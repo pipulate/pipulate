@@ -70,6 +70,16 @@ def apply_search_replace_patch(payload: str) -> bool:
         # POSIX courtesy: guarantee exactly one trailing newline.
         file_content = file_content.rstrip('\n') + '\n'
 
+        # JSON SYNTAX AIRLOCK (whole-file arm)
+        if filename.endswith('.json'):
+            import json
+            try:
+                json.loads(file_content)
+            except json.JSONDecodeError as e:
+                print(f"❌ Error: Whole-file write of '{filename}' aborted. Invalid JSON:\n   {e}")
+                success = False
+                continue
+
         # AST VALIDATION AIRLOCK (same safeguard the surgical path enforces)
         if filename.endswith('.py'):
             import ast
@@ -180,6 +190,32 @@ def apply_search_replace_patch(payload: str) -> bool:
         # The Surgical Strike
         new_content = content.replace(search_block, replace_block, 1)
         
+        # JSON SYNTAX AIRLOCK (third of three). .py gets AST, .nix gets
+        # nix-instantiate, and .json got NOTHING until scenario patches
+        # started landing into it -- a format where a misplaced comma
+        # produces a file that still reads as text, writes without complaint,
+        # and dies silently in the browser's fetch(). Conviction: the
+        # 2026-07-26 introduction.json edits were proven clean only by a
+        # hand-run json.load echoed as a probe, because this branch did not
+        # exist. JSONDecodeError carries lineno/colno, so the refusal names
+        # the exact character that broke.
+        if filename.endswith('.json'):
+            import json
+            try:
+                json.loads(new_content)
+            except json.JSONDecodeError as e:
+                print(f"❌ Error: Patching '{filename}' aborted. Invalid JSON:\n   {e}")
+                err_lines = new_content.split('\n')
+                start = max(0, e.lineno - 3)
+                end = min(len(err_lines), e.lineno + 2)
+                print("--- DIAGNOSTIC: Context around JSON error ---")
+                for i, ln in enumerate(err_lines[start:end], start=start + 1):
+                    marker = " >>>" if i == e.lineno else "    "
+                    print(f"{marker} {i:4d}: {ln}")
+                print("--- END DIAGNOSTIC ---")
+                success = False
+                continue
+
         # NIX SYNTAX AIRLOCK
         if filename.endswith('.nix'):
             import tempfile
