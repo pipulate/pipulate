@@ -1681,6 +1681,27 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   hand-authored public_tool_names list names the orphan, which is
 #   GENERATED-NOT-AUTHORED wearing a different hat; replace with a generated
 #   roster or delete the orphan outright.
+#   CUT LANDED 2026-07-26. Two findings banked at the cut, both from
+#   assets/player-piano.js and neither previously known:
+#   (1) THE BRANCHES WERE ALREADY UNREACHABLE, twice over. 07_first_trick's
+#       ctrl+alt+y path `return false`s out of executeStepsWithBranching before
+#       branch_dev_reset_yes runs inline; after the restart, continueDemoFromState
+#       searches demoScript.STEPS (top level: only 01 and 02) for a '09_' id,
+#       finds none, and lands on "ready for manual testing". 08's message is
+#       duplicated as a hardcoded string in that function, which is why nobody
+#       noticed. The cut therefore removed ZERO working behavior.
+#   (2) input_type "chat" IS NOT IMPLEMENTED and hangs. The dispatch is
+#       unconditional -- `if (step.wait_for_input && step.branches)` calls
+#       waitForKeyboardInput(step.valid_keys) -- so a chat step arrives with
+#       validKeys undefined and the first keystroke throws inside the listener.
+#       The promise never resolves. STANDING CONSEQUENCE: no scenario may set
+#       input_type "chat" until player-piano.js grows a chat-input path; a
+#       keyboard branch or end_demo are the only two safe terminators.
+#   REMAINING (unchanged): the bracket lane in imports/stream_orchestrator.py
+#   falls THROUGH to the LLM when a name misses MCP_TOOL_REGISTRY -- silently,
+#   with no refusal -- so a dead tool call becomes a chat prompt and the model
+#   narrates a file it never opened. cli.py refuses loudly on the same input.
+#   The chat lane owes that refusal branch.
 # - EARMARK: THE PROMPT-FU GLOSSARY (seeded 2026-07-26): the sci-fi lexicon is
 #   nearly one-to-one with the vocabulary the agentic-web field grew on its own,
 #   so the translation is a GLOSSARY, not a rewrite -- and per the
