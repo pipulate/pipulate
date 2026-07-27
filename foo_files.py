@@ -1073,6 +1073,15 @@ init.lua                    # <-- Daily driver hot-keys that overlap with aliase
 #    for Botify Tier 3 bearer token generation saved to
 #    ~/.config/pipulate/mcp_botify_token.json; final Tier-3 Botify replay receipt.
 
+# 📌 2026-07-27 | /home/mike/repos/trimnoir/_posts/2026-07-27-engineering-the-second-brain-high-signal-storytelling.md
+#    canonical_url: https://mikelev.in/futureproof/engineering-the-second-brain-high-signal-storytelling/
+#    Penrose future light-cones vs. Laplace's Demon & Superdeterminism;
+#    Broca/Trill language processors; online streaming ML (river) as Faraday's
+#    field lines over hidden mathematical dependencies.
+#    OWES: Penrose light-cone / Superdeterminism vignette integration into
+#    standing constitution; river streaming co-occurrence prototype script
+#    (`scripts/cooccurrence.py`).
+
 # ============================================================================
 # VI. Hello World! - You think you've seen Hello Worlds? You don't know Jack.
 # ============================================================================
