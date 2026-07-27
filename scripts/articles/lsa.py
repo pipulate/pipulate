@@ -299,6 +299,9 @@ def main():
     parser.add_argument('--terms', nargs='+', default=None, metavar='TERM', help="Search terms for --around hit-region extraction (case-insensitive fixed strings)")
     args = parser.parse_args()
 
+    if args.bare_last is not None and args.last is None:
+        args.last = args.bare_last
+
     targets = load_targets()
     target_key = args.target
 
