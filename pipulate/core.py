@@ -11,6 +11,7 @@ import asyncio
 import aiohttp
 from datetime import datetime
 from fasthtml.common import *
+from fasthtml.pico import Card, Container
 from fastlite import Database, NotFoundError  # CORRECTED: Use the Database class
 from loguru import logger
 import imports.server_logging as slog
