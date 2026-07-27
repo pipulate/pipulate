@@ -556,7 +556,11 @@ AI_PHOOEY_CHOP = r"""                                                           
 # an append-only LEDGER, not this comment block. It must be TRACKED — a
 # gitignored data/ ledger cannot ride in a cartridge, which defeats
 # banking-for-reuse — so data/axis_ledger.jsonl is the WRONG home despite its
-# convenience. The smallest RIGHT surface is still owed; do NOT build a thirty.py
+# convenience. RESOLVED 2026-07-27: the axis ledger lives at
+# assets/axis_ledger.jsonl (TRACKED, so it rides in every cartridge; the
+# gitignored data/ could not). One JSONL record per axis: run_date, id,
+# anchors{a,b}, rival_predictions{a,b}, probe{cmd,observes,receipt},
+# verdict{picked,why}. Append by hand; do NOT build a thirty.py
 # generator (that puts the model where taste belongs — the 30 is a KATA), only
 # the ledger and its naming convention.
 
