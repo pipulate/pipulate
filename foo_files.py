@@ -1450,6 +1450,18 @@ EMPTY = r"""
 foo_files.py  # Just the map.
 """
 
+IDEATION_CHOP = r"""
+# THE IDEATION KATA (30-and-3 + Axis-Forcing, primed for a fan-out turn)
+# COMMAND: python prompt_foo.py --chop IDEATION_CHOP --no-tree
+# ALIAS: `idea` (flake.nix). The two creativity-forcing rules live in the
+# constitution INSIDE foo_files.py, so this chop stays a single-file map that
+# carries them without duplication (GENERATED-NOT-AUTHORED: one source, no
+# drift). Pair with a prompt.md that names the problem space; the four-model
+# fan-out is the human's job, never a generator's.
+
+foo_files.py  # The map + the two forcing-function rules it already carries.
+"""
+
 ADHOC_CHOP = r"""
 # THE ADHOCPAD (default + a disposable overlay)
 # COMMAND: python prompt_foo.py --chop ADHOC_CHOP --no-tree
