@@ -920,6 +920,9 @@ FIGURATE_REGISTRY: dict = {
     "workspace_tree": {
         "render": _figurate_workspace_tree,
     },
+    "forcing_pair": {
+        "render": _figurate_forcing_pair,
+    },
     # === FIGURATE_REGISTRY_EXTRUDE_BOTTOM ===
     # Add new registry entries immediately above this line
 }
