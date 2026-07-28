@@ -223,6 +223,19 @@ AI_PHOOEY_CHOP = r"""                                                           
 #   bounding its radius. Tap 3 is why the echo invariant exists: taps 1 and
 #   2 are the operator's hands, tap 3 is the machine repeating them, and
 #   disagreement between 2 and 3 is information about the compile lane.
+# THE SADDLE AMENDMENT (banked 2026-07-28): the mount saddle (init.lua
+# mount_sandworm) no longer numbers Ignition as its own slot. Ignition
+# RIDES INSIDE the Patches car -- exactly as this rule already requires
+# ("not a fourth beat; it completes PATCH") -- so the saddle's five
+# numbered slots now match the Actionable Response Contract one-for-one:
+# 1 Probe, 2 Context, 3 Patches (patch/app/d/m THEN ignite: exit+nd, <F2>,
+# or "no ignition required"), 4 Prompt, 5 Deliverables. The earlier "only
+# the saddle gains a slot" reading is SUPERSEDED, not retconned: the slot it
+# named was Ignition-as-beat-4, and folding it into Patches is precisely the
+# alignment. Ignition stays a real singular step ("one actuation, or none");
+# it simply stops printing its own number. Same-car label discipline: this
+# note ships in the same ride as the init.lua saddle edit it describes.
+# Ref: the MCK build ride (see THE MOTHER CAT KATA above).
 # THE SELF-HEALING FENCE AMENDMENT (PENDING 2026-07-23): sanitizer.py's
 # fence contract rule 2 no longer refuses a naked opening fence; it tags
 # it `text` in place, writes the heal back to article.txt, and prints a
