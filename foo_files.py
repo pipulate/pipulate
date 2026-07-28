@@ -640,6 +640,34 @@ AI_PHOOEY_CHOP = r"""                                                           
 # SKILL.md structures), presenting zero friction to the receiver while
 # packing a complete, verifier-enforced cognitive environment under the skin.
 
+# THE MOTHER CAT KATA (MCK) (earmark-seeded 2026-07-28): the record-and-playback
+# session that carries the human by the scruff -- bookmark to bookmark, a popped
+# browser and a Piper voice -- instead of offering a menu of twelve doors. FOUR
+# primitive moves (the key `MCK` in the store points HERE):
+#   SETTLE (the punch)    -- human-only, non-deterministic. Pop the persistent
+#     profile (weblogin's data/uc_profiles/default), let the human clear the
+#     auth / CAPTCHA / 2FA gate; state lands on disk. Passive antibody transfer:
+#     the machine never synthesizes auth, it INHERITS settled state.
+#   CAPTURE (the kick)    -- machine-only, deterministic. Snapshot hydrated DOM +
+#     CDP wire ledger to browser_cache. The reproducible artifact: ground truth
+#     no model can flatter (the element is on the page or it is not).
+#   NARRATE/FENCE (block) -- Piper announces the next move and REFUSES to advance
+#     until the human's CAPTURE receipt exists. The variance-suppressor deployed
+#     FOR you: it puts the human on the hook for exactly ONE move and fences that
+#     move so it cannot be fumbled.
+#   ADVANCE (the step)    -- walk to the next bookmarked URL and repeat.
+# PREMISE, corrected: the multi-step setup is NOT a combination lock (no partial
+# credit, silent multiplicative failure). It is an assembly line with ONE manual
+# station. The odds do not stack against every step -- they concentrate at the
+# single human gate. The MCK does not cut the STEP count; it cuts the count of
+# steps the HUMAN owns to exactly one (SETTLE) and fences it. Operation Stick Bug
+# (So'wI' yIchu' -- "engage the cloaking device") is the same move seen from
+# outside: the instrument vanishes; the human sees only a browser and a voice.
+# Ref: /futureproof/dayton-wind-tunnel-auth-capture-mother-cat/. OWES: the first
+# templated, stamp-out-able MCK walkthrough (the first named entry) plus the
+# fence-vs-lean-back discrimination shared with the VARIANCE-SUPPRESSION RULE;
+# delete this OWES when the first walkthrough ships.
+
 # THE ARTIFACT-OF-RECORD RULE (banked 2026-07-19): A discussion may produce
 # many complete cartridge snapshots. They are successive full editions, not
 # interdependent parts or deltas. The artifact of record is the single
