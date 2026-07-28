@@ -1918,4 +1918,24 @@ Rich console blocked on Mac (Error: {e}), using fallback display.
 # [Client (mcp.py)] ─── 5. POST /mcp (Authorization: Bearer <token>) ─► [MCP Server] ──► 200 OK
 # 
 # ```
+# 
+# ```text
+#   INPUT MATRIX (Multi-Model Fan-Out Candidates)
+#   ═════════════════════════════════════════════════════════════════
+#   [Gemini Flash]    [Claude Fable]    [Claude Opus]    [Grok / GPT]
+#         │                 │                 │               │
+#         └─────────────────┴────────┬────────┴───────────────┘
+#                                    ▼
+#   STEP 1: ANONYMIZE & STRIP (Convert candidate outputs into raw claim vectors)
+#                                    │
+#                                    ▼
+#   STEP 2: TRIANGULATE (Identify Convergences vs. Divergences)
+#                                    │
+#                                    ▼
+#   STEP 3: FALSIFICATION FILTER (Purge prose flattery; retain executable receipts)
+#                                    │
+#                                    ▼
+#   STEP 4: SYNTHESIZE (Golden Path Checklist + Preserved Black Swan Vector)
+# 
+# ```
 

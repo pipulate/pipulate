@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,364 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 39 published in the last 7 days
+# There are 1,366 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 32 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -961,8 +961,8 @@ cli.py                      # <-- Catch-all actuator for PyPI envs, Python ancho
 
 scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
-
 init.lua                    # <-- Daily driver hot-keys that overlap with aliases in flake.nix
+
 # release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
 # ~/repos/nixos/autognome.py  #  <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
 # scripts/foo_cartridge.py    # Needs description
