@@ -999,6 +999,12 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # persistent profile (data/uc_profiles/default) so persistent
           # scrapes inherit the login. Log in, close the window, done.
           alias weblogin='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/weblogin.py"'
+          # mothercat [trail] [--dry-narrate]: ride a validated trail (Car B).
+          # Bare rides walk.DEFAULT_TRAIL; a path rides that trail; --dry-narrate
+          # speaks each stop and opens no browser. A human types it, so an alias
+          # is correct (ALIAS-DISPATCH RULE); it does NOT inherit into `!` child
+          # shells, exactly like the connector aliases above.
+          alias mothercat='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/mother_cat.py"'
           # THE CREDENTIAL GAME: bare `warm` is the LIVE red/green board — one
           # bounded API call per enrolled wallet slot, GOLD when every row is
           # green. `warm <slot>` is the fixer for that one credential, and a
