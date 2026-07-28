@@ -564,6 +564,27 @@ AI_PHOOEY_CHOP = r"""                                                           
 # generator (that puts the model where taste belongs — the 30 is a KATA), only
 # the ledger and its naming convention.
 
+# THE VARIANCE-SUPPRESSION RULE (articulation-banked 2026-07-28, two-article
+# arc): sycophancy, the over-broad safeguard tripwire, and the human gatekeeper
+# are ONE failure category, not three -- all VARIANCE-SUPPRESSORS. The magic
+# mirror collapses toward the flattering centroid; the safeguard over-enforces a
+# boundary; the tribe throws poo at the fence-line. None LOVE chaos; each
+# IMPOSES order (the chimp poo-throw is a targeted boundary DISPLAY, a
+# Broca-homolog proto-language act, not disorder affinity). The fan-out is the
+# opposite move -- deliberate VARIANCE-GENERATION as the assay. DISCRIMINATING
+# PROBE (fence-vs-lean-back): a variance-suppressor reaches for the fence when
+# disorder it did not author appears; a variance-generator leans back into the
+# mess it made. Checkable on humans, on models (inject a flawed premise -- does
+# it suppress toward agreement?), and on safeguards. The anti-sycophancy defense
+# is therefore NOT tone-policing (which only makes the suppressor throw poo more
+# politely) but anchoring the verdict to ground truth the suppressor cannot
+# flatter -- the same golden path the crawler/edge-table thread converged on.
+# Refs: /futureproof/physics-boundaries-ai-sycophancy-crawler-state/ plus the
+# gatekeeper-clade follow-up. OWES: one runnable fence-vs-lean-back
+# discrimination banked into assets/axis_ledger.jsonl (anchors:
+# variance-suppression vs variance-generation; rival predictions; the probe),
+# then delete this OWES clause.
+
 # THE BARNEY RESET RULE (banked 2026-07-21, articulation-banked): Trigger
 # when the human says they do not understand. Trigger when the human asks
 # what they are supposed to do. Trigger when confusion survives into a
