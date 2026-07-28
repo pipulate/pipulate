@@ -201,6 +201,7 @@ async def _ride_async(trail_path, dry_narrate=False):
             return 1
 
         artifacts = result.get("looking_at_files", {})
+        captured.append((stop["name"], result.get("final_url"), artifacts))
         print(
             f"  Captured. final_url={result.get('final_url')} "
             f"artifacts={len(artifacts)}"
