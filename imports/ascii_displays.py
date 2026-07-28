@@ -1920,22 +1920,21 @@ Rich console blocked on Mac (Error: {e}), using fallback display.
 # ```
 # 
 # ```text
-#   INPUT MATRIX (Multi-Model Fan-Out Candidates)
-#   ═════════════════════════════════════════════════════════════════
-#   [Gemini Flash]    [Claude Fable]    [Claude Opus]    [Grok / GPT]
-#         │                 │                 │               │
-#         └─────────────────┴────────┬────────┴───────────────┘
-#                                    ▼
-#   STEP 1: ANONYMIZE & STRIP (Convert candidate outputs into raw claim vectors)
-#                                    │
-#                                    ▼
-#   STEP 2: TRIANGULATE (Identify Convergences vs. Divergences)
-#                                    │
-#                                    ▼
-#   STEP 3: FALSIFICATION FILTER (Purge prose flattery; retain executable receipts)
-#                                    │
-#                                    ▼
-#   STEP 4: SYNTHESIZE (Golden Path Checklist + Preserved Black Swan Vector)
-# 
+# PARALLEL FAN-OUT (The Map)
+#   ┌─────────────────┬─────────────────┬─────────────────┐
+#   │  Gemini Flash   │  Claude Fable   │  Claude Opus    │ ... (Grok, ChatGPT)
+#   └────────┬────────┴────────┬────────┴────────┬────────┘
+#            │                 │                 │
+#            ▼                 ▼                 ▼
+#  ┌─────────────────────────────────────────────────────────┐
+#  │ 1. CONVERGENCE FILTER (Identify Universal Ground Truth) │
+#  ├─────────────────────────────────────────────────────────┤
+#  │ 2. DIVERGENCE MATRIX (Map Model Disagreements & Seams)  │
+#  ├─────────────────────────────────────────────────────────┤
+#  │ 3. OUTLIER / BUG EXTRACTION (Harvest Black Swans)       │
+#  ├─────────────────────────────────────────────────────────┤
+#  │ 4. FALSIFICATION GATE (Run Read-Only Probe / Apply)     │
+#  └─────────────────────────────────────────────────────────┘
 # ```
+
 
