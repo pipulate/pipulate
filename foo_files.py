@@ -681,6 +681,23 @@ AI_PHOOEY_CHOP = r"""                                                           
 # fence-vs-lean-back discrimination shared with the VARIANCE-SUPPRESSION RULE;
 # delete this OWES when the first walkthrough ships.
 
+# THE FLIGHT-RECORDER POSITIONING (earmark-seeded 2026-07-28, MCK build ride):
+# the product is NOT "compile a context payload" -- anyone concatenates files.
+# It is the human-gated, LOCAL, AUTHENTICATED wire-truth CAPTURE of proprietary
+# browser state: the one move a cloud sandbox structurally cannot inherit,
+# because SETTLE needs the operator's own logged-in profile on disk. LANGUAGE:
+# "determinism" is a retired SALES word (icon, not pitch -- no retcon); sell the
+# RECORDER, the receipt, the noun that cannot be faked, NEVER "verifiably
+# hallucination-free" (a badge that Goodharts the instant it ships without the
+# receipt). An LLM re-narrating wire truth is an UNRELIABLE NARRATOR
+# (confabulation), NOT a man-in-the-middle -- no interposition, just a lossy
+# self-report, the same variance-suppression the magic mirror commits. OWES: the
+# side-by-side WITNESS -- one live MCK Rep 2 that captures a gated client URL
+# while a sandboxed Claude Artifact fails to inherit the session. Until those two
+# runs sit side by side the moat is a CLAIM, not a measurement; delete this OWES
+# the day the receipt exists. Ref:
+# /futureproof/dayton-wind-tunnel-auth-capture-mother-cat/.
+
 # THE ARTIFACT-OF-RECORD RULE (banked 2026-07-19): A discussion may produce
 # many complete cartridge snapshots. They are successive full editions, not
 # interdependent parts or deltas. The artifact of record is the single
