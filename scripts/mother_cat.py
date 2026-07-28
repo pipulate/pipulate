@@ -167,6 +167,7 @@ async def _ride_async(trail_path, dry_narrate=False):
     print(f"Riding trail '{trail['name']}' -- {len(stops)} stop(s).\n")
 
     disclosed = False
+    captured = []
     for index, stop in enumerate(stops, 1):
         print(f"--- Stop {index}/{len(stops)}: {stop['name']} ---")
 
