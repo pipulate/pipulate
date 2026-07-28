@@ -1068,9 +1068,12 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             if [ "''${1:-}" = "-f" ]; then
               sigil="!"
               shift
+            elif [ "''${1:-}" = "-a" ]; then
+              sigil="?"
+              shift
             fi
             if [ "$#" -eq 0 ]; then
-              echo "Usage: sniff [-f] <domain-or-url>   (% distills the cached ledger; -f flies fresh and records one)" >&2
+              echo "Usage: sniff [-f|-a] <domain-or-url>   (% distills the cached ledger; -f flies fresh anonymous; -a flies fresh on weblogin's warmed profile)" >&2
               return 1
             fi
             local url="$1"
