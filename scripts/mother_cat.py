@@ -212,8 +212,15 @@ async def _ride_async(trail_path, dry_narrate=False):
 
     if dry_narrate:
         print("\nDry narration complete; no captures were attempted.")
-    else:
-        print("\nRide complete. Every stop produced a capture receipt.")
+        return 0
+
+    print("\nRide complete. Every stop produced a capture receipt.")
+    if captured:
+        payload = _decant(captured)
+        _decant_to_clipboard(payload)
+        print("\n📋 DECANT complete: capture bundle copied to your clipboard.")
+        print("   Paste it into any ChatBot (Claude, ChatGPT, Gemini) and it")
+        print("   will walk you through everything from here.")
     return 0
 
 
