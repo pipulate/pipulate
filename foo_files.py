@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,367 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 33 published in the last 7 days
+# There are 1,368 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 34 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -1618,10 +1618,10 @@ scripts/foo_cartridge.py    # Needs description
 scripts/foo_replay.py       # Needs description
 scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
 scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
-imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
-imports/voice_synthesis.py  # <-- The wand can talk to you
-scripts/webclip_2_markdown.py    # <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps / need to shorten the name)
-scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
+# imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
+# imports/voice_synthesis.py  # <-- The wand can talk to you
+# scripts/webclip_2_markdown.py    # <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps / need to shorten the name)
+# scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
 """
 
 INSTALL_CHOP = r"""
