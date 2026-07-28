@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "name": "practice",
+  "description": "Minimal single-station Mother Cat practice trail: one bookmark, one CAPTURE.",
+  "defaults": {
+    "take_screenshot": false,
+    "headless": false,
+    "is_notebook_context": false,
+    "persistent": true,
+    "profile_name": "default",
+    "verbose": true,
+    "override_cache": true,
+    "delay_range": null
+  },
+  "stops": [
+    {
+      "name": "practice_page",
+      "label": "Practice page",
+      "guidance": "Set PIPULATE_TRAIL_PRACTICE_URL to any page you can log into. When the browser pops, sign in if asked, then type CAPTURE.",
+      "url_env": "PIPULATE_TRAIL_PRACTICE_URL",
+      "target_slot": "practice_token",
+      "harvest_regex": "^.+$",
+      "connector": {
+        "script": "scripts/weblogin.py",
+        "argv": ["{harvested}"],
+        "read_only": true
+      }
+    }
+  ]
+}
