@@ -84,6 +84,70 @@ def _capture_compatible(trail):
     ]
 
 
+# --- DECANT: pour captured artifacts into one clipboard-ready payload --------
+# The bridge between "captured" and "paste this into any ChatBot." Small,
+# high-signal lenses are inlined; large ones (hydrated DOM, raw source) are
+# cited by their browser_cache path only, so a huge DOM never floods the
+# clipboard. Generic label on purpose (Stick Bug / white-label): the bundle
+# calls itself "Artifact Compiler," never "Pipulate."
+DECANT_INLINE_KEYS = (
+    "seo_md",
+    "headers",
+    "accessibility_tree_summary",
+    "links_md",
+    "diff_hierarchy_txt",
+    "optics_manifest",
+)
+DECANT_INLINE_CAP = 20000  # chars per inlined lens; the rest lives on disk
+
+
+def _decant(captured):
+    """Build one markdown capture bundle from a list of (stop, url, artifacts)."""
+    parts = [
+        "# Artifact Compiler -- Mother Cat capture bundle",
+        "",
+        "Wire-truth artifacts captured on the operator's machine. Each stop",
+        "lists the files written to browser_cache; small high-signal lenses are",
+        "inlined below, large ones (hydrated DOM, raw source) are cited by path.",
+        "",
+    ]
+    for stop_name, final_url, artifacts in captured:
+        parts.append(f"## Stop: {stop_name}")
+        parts.append(f"- final_url: {final_url}")
+        parts.append("- artifacts on disk:")
+        for key, path in sorted(artifacts.items()):
+            parts.append(f"  - {key}: {path}")
+        parts.append("")
+        for key in DECANT_INLINE_KEYS:
+            path = artifacts.get(key)
+            if not path or not os.path.exists(path):
+                continue
+            try:
+                text = Path(path).read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            if len(text) > DECANT_INLINE_CAP:
+                text = text[:DECANT_INLINE_CAP] + "\n... [truncated; full file on disk]"
+            parts.append(f"### {stop_name} -- {key}")
+            parts.append("```text")
+            parts.append(text)
+            parts.append("```")
+            parts.append("")
+    return "\n".join(parts)
+
+
+def _decant_to_clipboard(payload):
+    """Copy the bundle to the clipboard, reusing prompt_foo's cross-platform path.
+
+    Deferred import: prompt_foo drags tiktoken/pydot in at module load, so it is
+    imported HERE, on a real DECANT only -- never on module import or
+    --dry-narrate. Reuse over re-implement: copy_to_clipboard already owns the
+    SSH-bridge and the pbcopy/xclip fallbacks.
+    """
+    from prompt_foo import copy_to_clipboard
+    copy_to_clipboard(payload)
+
+
 async def _ride_async(trail_path, dry_narrate=False):
     trail_path = Path(trail_path)
     trail = walk.load_trail(trail_path)
