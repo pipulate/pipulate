@@ -821,14 +821,22 @@ AI_PHOOEY_CHOP = r"""                                                           
 # Mcp-Session-Id threads the handshake, reduced to a yes/no boolean -- and
 # PERSISTS NOTHING; even the four-tuple receipt prints to stdout and
 # evaporates. Verdict: gate-and-print instrument. Capable-of-FDR, not FDR.
-# PENDING (mechanism landed same day, receipt owed): the FDR CHANNEL in
+# BANKED 2026-07-29 (same-day flip; witness in-compile): the FDR CHANNEL in
 # scripts/connectors/mcp.py -- every exchange records http status, full
 # response headers, elapsed, sent/returned session id, body sha256/bytes;
 # atexit flushes to browser_cache/mcp/<host>/<utc>__<verb>.json so the
-# recorder survives die() (a RED check still writes a GREEN receipt). Frame:
-# mcp-receipt-v1, documented beside the code. Auth recorded by env NAME only,
-# never the value. Flip to banked on the first compiled receipt showing a
-# written receipt file; the flip is its own chisel-strike.
+# recorder survives die(). WITNESS: the channel's FIRST flight was a RED
+# gate2 die() -- HTTP 401 at initialize, the vault's BOTIFY_API_TOKEN
+# resolved by the fallback chain and rejected (mcp.botify.com wants an OAuth
+# bearer scoped mcp_read_write) -- and the recorder still flushed
+# browser_cache/mcp/mcp.botify.com/20260729T165708434023Z__check.json. The
+# recording exists BECAUSE of the crash: the defining FDR property, witnessed
+# on flight one. Frame: mcp-receipt-v1, documented beside the code. Auth
+# recorded by env NAME only, never the value. The flip condition was the
+# FILE's existence; its INTERNALS stay unnarrated until a bounded jq probe
+# reads them -- expected shape, INFERRED from source: ONE exchange
+# (initialize, 401, both session ids null), because die() fired before
+# tools/list ever posted. A shape disagreement there is a finding, not noise.
 
 # THE SECOND INTERPRETER RULE (banked 2026-07-17): this file has two
 # interpreters. CPython reads the path strings; the summoned model reads
