@@ -265,7 +265,16 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
     headless = params.get("headless", True)
     is_notebook_context = params.get("is_notebook_context", False)
     persistent = params.get("persistent", False)
-    profile_name = params.get("profile_name", "default")
+    profile_name = params.get("profile_name")
+    if not profile_name:
+        from urllib.parse import urlparse
+        _host = urlparse(params.get("url", "")).netloc.split(":")[0]
+        _labels = [l for l in _host.split(".") if l]
+        _slug = _labels[-2] if len(_labels) >= 2 else (_labels[0] if _labels else "")
+        if _slug and Path(f"data/uc_profiles/{_slug}").exists():
+            profile_name = _slug
+        else:
+            profile_name = "default"
     verbose = params.get("verbose", True)
     override_cache = params.get("override_cache", False)
     delay_range = params.get("delay_range")
