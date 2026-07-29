@@ -2440,26 +2440,48 @@ def main():
                 # browser arrives already logged in. Login only matters on a live
                 # flight, so ? busts cache exactly like ! (a cache hit needs none).
                 authenticated = path.startswith('?')
+                reuse_only = path.startswith('@')
                 if authenticated:
                     logger.print(f"   -> 🔑 Engaging AUTHENTICATED LLM Optics (weblogin profile) for: {target_url}")
                 else:
                     logger.print(f"   -> 👁️‍🗨️ Engaging LLM Optics for: {target_url}")
-                from tools.scraper_tools import selenium_automation
                 from urllib.parse import urlparse, quote
                 
                 parsed = urlparse(target_url)
                 domain = parsed.netloc
                 path_slug = quote(parsed.path or '/', safe='').replace('/', '_')[:100]
 
-                scrape_params = {
-                    "url": target_url, "domain": domain, "url_path_slug": path_slug,
-                    "take_screenshot": False, "headless": False, "is_notebook_context": True, "verbose": False,
-                    "override_cache": path.startswith(('!', '?')),  # 💥 Bust cache with ! or ?, reuse with @
-                    "persistent": authenticated,  # 🔑 ? resolves uc_profiles/<apex-label> per-domain (weblogin's warmed profile), falls back to default
-                }
-                
-                import asyncio
-                result = asyncio.run(selenium_automation(scrape_params))
+                guided_cache = (
+                    resolve_prompt_foo_cache(target_url)
+                    if reuse_only
+                    else None
+                )
+                if guided_cache and guided_cache["guided"]:
+                    logger.print(
+                        "   -> 🐈 Reusing Mother Cat guided capture from: "
+                        f"{guided_cache['cache_dir']}"
+                    )
+                    domain = guided_cache["domain"]
+                    result = {
+                        "success": True,
+                        "looking_at_files": guided_cache["artifacts"],
+                        "cached": True,
+                        "requested_url": guided_cache["requested_url"],
+                        "final_url": guided_cache["final_url"],
+                        "interactive": True,
+                    }
+                else:
+                    from tools.scraper_tools import selenium_automation
+
+                    scrape_params = {
+                        "url": target_url, "domain": domain, "url_path_slug": path_slug,
+                        "take_screenshot": False, "headless": False, "is_notebook_context": True, "verbose": False,
+                        "override_cache": path.startswith(('!', '?')),  # 💥 Bust cache with ! or ?, reuse with @
+                        "persistent": authenticated,  # 🔑 ? resolves uc_profiles/<apex-label> per-domain (weblogin's warmed profile), falls back to default
+                    }
+                    
+                    import asyncio
+                    result = asyncio.run(selenium_automation(scrape_params))
                 
                 if result.get("success"):
                     artifacts = result.get("looking_at_files", {})
