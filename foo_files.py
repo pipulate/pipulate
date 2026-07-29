@@ -1570,6 +1570,7 @@ init.lua                    # <-- Daily driver hot-keys that overlap with aliase
 # scripts/connectors/sheets.py
 # scripts/connectors/wallet.py
 # scripts/connectors/mcp.py
+# scripts/connectors/mcp_warm.py  # <-- One-shot OAuth 2.1 PKCE warmer; writes the token file mcp.py's resolve_token already reads
 #  _____ _           _           _   _                      
 # |  ___(_)_ __   __| |   __ _  | | | | ___  _ __ ___   ___ 
 # | |_  | | '_ \ / _` |  / _` | | |_| |/ _ \| '_ ` _ \ / _ \
