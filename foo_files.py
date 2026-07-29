@@ -725,7 +725,7 @@ AI_PHOOEY_CHOP = r"""                                                           
 # No per-ticket directories, resettable counters, nested cartridges, or
 # correlation manifests are required until a real handoff demonstrates friction.
 
-# THE MCP RECEIPT RULE (PENDING; MECHANISM WITNESSED 2026-07-25 — the fault
+# THE MCP RECEIPT RULE (BANKED 2026-07-29; MECHANISM WITNESSED 2026-07-25 — the fault
 # harness scripts/mcp_dummy_server.py went 20/20 against the UNMODIFIED client:
 # handshake sequence, Mcp-Session-Id round trip (enforcement proved by a
 # raw-httpx control that posts with no session header and MUST be refused),
