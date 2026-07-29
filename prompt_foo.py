@@ -847,7 +847,6 @@ FAILSAFE_PROFILE = {
 # NO profile, flag, or config edit disables these — credentials are not
 # a disclosure decision. 'secrets: warn' (local lane) downgrades block
 # to a loud warning; anything else clamps to block.
-# [Set to empty temporarily]
 # SECRET_TRIPWIRES -- CREDENTIALS, NOT IDENTITY. This is the opposite polarity
 # from the PII substitutions and the denylist, and conflating them is what
 # emptied this list.
@@ -898,9 +897,6 @@ SECRET_TRIPWIRES = [
     r"\s*=\s*(?:\"[^\"\s]{12,}\"|'[^'\s]{12,}'|[A-Za-z0-9_./+=:@-]{20,})"
     r"\s*(?:#.*)?$",
 ]
-
-
-SECRET_TRIPWIRES = []
 
 
 def load_disclosure_profile(requested: str = None):
