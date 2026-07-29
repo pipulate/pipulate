@@ -489,6 +489,22 @@ AI_PHOOEY_CHOP = r"""                                                           
 # regression — the fence held). If a block is wrong, delete it before
 # responding; a correction note is not a coupling pin.
 
+# THE CARRIED-DELIVERABLE RULE (banked 2026-07-29, operator-convicted): a
+# Car-5 external deliverable is CARRIED, NOT CITED. Car 5's actuator is the
+# human pasting into a FOREIGN system (Confluence, a CMS, a dashboard) -- by
+# definition out-of-band of the terminal choreography driving Cars 1-4, and
+# that is not a leak in the train; it IS the fifth car's identity. The car
+# therefore either contains the deliverable's COMPLETE text in one fenced
+# block labeled manual-paste, or states "no deliverables this turn"; it
+# never references cargo living only in a prior chat turn ("use the earlier
+# artifact, with two edits"). A cited-not-carried deliverable hands the
+# operator a bibliography instead of cargo, so it silently never ships --
+# three consecutive turns of an owed Confluence page are the conviction,
+# surfaced when the operator asked "am I supposed to be pasting things
+# out-of-bounds of the train?" The answer is yes, and only from Car 5.
+# Sibling of NO-DEAD-CARS (every emitted block is an actuator) and of
+# Mother Cat's carry-don't-menu.
+
 # THE OUT-OF-BAND (OOB) EDIT RULE (banked 2026-07-21, articulation-banked —
 # pure judgment): an edit is a DELIMITER COLLISION when the text to be mutated
 # itself contains the patch protocol's control markers ([[[SEARCH]]],
