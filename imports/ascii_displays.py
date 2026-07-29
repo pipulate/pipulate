@@ -1951,4 +1951,44 @@ Rich console blocked on Mac (Error: {e}), using fallback display.
 # 2. **The Actuator (`scripts/mother_cat.py` / `mothercat` alias):** Reads the trail, calls `scraper_tools.py` using your authenticated profile, saves the wire truth to `browser_cache/`, and narrates the progress.
 # 3. **The Compile Sigil (`@URL` or `%URL` in `adhoc.txt`):** Takes those captured files from `browser_cache/` and stacks them into your Prompt Fu payload for the LLM.
 # ```
+# ```text
+#             OPERATION STICK BUG (osb) — THE CAN-O-BRAINS SUPPLY LINE
+# 
+#    YOUR MACHINE                                          THEIR MACHINE
+#   ┌─────────────────┐
+#   │   prompt_foo    │  the cannery
+#   │   ┌─────────┐   │
+#   │   │ ~BRAIN~ │   │  one archive,                          \   /
+#   │   │ ((can)) │   │  sealed & labeled                    -=<🐛>=-
+#   │   └────┬────┘   │                                       /   \
+#   └────────┼────────┘                                  sways as it walks;
+#            │                                           nobody clocks the bug
+#            │  curl -fsSL …/replay.sh | bash -s -- <archive_id>
+#            ▼
+#    ~~~~~~~ the wire ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~►
+#                                                     ┌────────────────────┐
+#                                                     │     replay.sh      │
+#                                                     │         │          │
+#                                                     │         ▼          │
+#                                                     │    /\_____/\       │
+#                                                     │   (  o   o  )      │  Mother Cat
+#                                                     │    \  ^—^  /~~🐱   │  scruff-carries
+#                                                     │   full stop or     │  them through —
+#                                                     │   full success     │  no stray ducklings
+#                                                     │         │          │
+#                                                     │         ▼          │
+#                                                     │  ┌──────────────┐  │
+#                                                     │  │ 📋 CLIPBOARD │  │  kitten set down
+#                                                     │  │   pre-loaded │  │  facing the milk:
+#                                                     │  └──────────────┘  │  "just paste that
+#                                                     └────────────────────┘   first 😉"
+# ```
+# ```text
+#            [ YOUR BROWSER ]  <--- (Flashlight reaches here!)
+#                   │
+#    === THE LIGHT-CONE BOUNDARY ===
+#                   │
+#            [ THE SERVER / CLOUD ] <--- (Pitch black! Invisible to you!)
+# 
+# ```
 

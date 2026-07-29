@@ -52,7 +52,7 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 # --- START STATS ---
 # There are 1,368 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 34 published in the last 7 days
+# Velocity: 30 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -1571,7 +1571,6 @@ ADHOC_CHOP = r"""
 .gitattributes
 .gitignore
 apply.py
-scripts/ai.py
 """
 
 PINNED_CHOP = r"""
@@ -2076,6 +2075,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # assets/prompts/pipulate-context.xsd  # [2,286 tokens | 8,129 bytes]
 # assets/prompts/system_prompt.md  # [628 tokens | 2,618 bytes]
 # assets/rich-table.css  # [417 tokens | 1,459 bytes]
+# assets/trails/botify_pageworkers.yaml  # [546 tokens | 2,095 bytes]
 # assets/trails/first_context.yaml  # [521 tokens | 1,754 bytes]
 # assets/trails/practice.yaml  # [245 tokens | 864 bytes]
 # browser_cache/automation_recipes/README_SAVE_LOAD_AUTOMATION.md  # [1,751 tokens | 7,246 bytes]
@@ -2114,4 +2114,5 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
 # scripts/variance_probe.py  # [967 tokens | 3,916 bytes]
 # scripts/walk.py  # [3,069 tokens | 13,289 bytes]
+# tests/test_mck_rep2.py  # [949 tokens | 4,569 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
