@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "name": "botify_pageworkers",
+  "description": "Authenticated Mother Cat trail for PageWorkers optimization detail, monitoring, and reporting.",
+  "defaults": {
+    "take_screenshot": false,
+    "headless": false,
+    "is_notebook_context": false,
+    "persistent": true,
+    "profile_name": "botify",
+    "verbose": true,
+    "override_cache": true,
+    "delay_range": null
+  },
+  "stops": [
+    {
+      "name": "optimization_detail",
+      "label": "PageWorkers optimization detail",
+      "guidance": "Open the bookmarked Hello World Alert optimization detail page, confirm the authenticated execution and success metrics are visible, then type CAPTURE.",
+      "url_env": "PIPULATE_TRAIL_BOTIFY_OPTIMIZATION_URL",
+      "target_slot": "optimization_project",
+      "harvest_regex": "^[^/\\s]+/[^/\\s]+$",
+      "connector": {
+        "script": "scripts/connectors/botify.py",
+        "argv": ["{harvested}", "-n", "25"],
+        "read_only": true
+      }
+    },
+    {
+      "name": "pageworkers_monitoring",
+      "label": "PageWorkers monitoring",
+      "guidance": "Open the bookmarked PageWorkers monitoring page, confirm the authenticated monitoring dashboard is visible, then type CAPTURE.",
+      "url_env": "PIPULATE_TRAIL_BOTIFY_MONITORING_URL",
+      "target_slot": "monitoring_project",
+      "harvest_regex": "^[^/\\s]+/[^/\\s]+$",
+      "connector": {
+        "script": "scripts/connectors/botify.py",
+        "argv": ["{harvested}", "-n", "25"],
+        "read_only": true
+      }
+    },
+    {
+      "name": "optimization_reporting",
+      "label": "PageWorkers optimization reporting",
+      "guidance": "Open the bookmarked Reporting tab for the Hello World Alert optimization, confirm the authenticated report is visible, then type CAPTURE.",
+      "url_env": "PIPULATE_TRAIL_BOTIFY_REPORTING_URL",
+      "target_slot": "reporting_project",
+      "harvest_regex": "^[^/\\s]+/[^/\\s]+$",
+      "connector": {
+        "script": "scripts/connectors/botify.py",
+        "argv": ["{harvested}", "-n", "25"],
+        "read_only": true
+      }
+    }
+  ]
+}

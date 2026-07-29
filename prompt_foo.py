@@ -504,6 +504,119 @@ def distill_network_ledger(jsonl_path: str, target_domain: str = "") -> str:
     return "\n".join(lines)
 
 
+# Semantic vocabulary shared by $URL, %URL, and @URL when they consume an
+# existing browser-cache directory. Mother Cat's guided captures use the same
+# artifact filenames as ordinary Prompt Fu captures but live beneath the
+# collision-resistant looking_at/<domain>/<final-url-hash>/ namespace.
+PROMPT_FOO_CACHE_ARTIFACTS = (
+    ("hydrated_dom.html", "hydrated_dom"),
+    ("source.html", "source_html"),
+    ("network_log.jsonl", "network_log"),
+    ("seo.md", "seo_md"),
+    ("headers.json", "headers"),
+    ("optics_manifest.txt", "optics_manifest"),
+    ("accessibility_tree_summary.txt", "accessibility_tree_summary"),
+    ("links.md", "links_md"),
+    ("diff_hierarchy.txt", "diff_hierarchy_txt"),
+)
+
+
+def _cache_artifacts(cache_dir: Path) -> Dict[str, str]:
+    """Return Prompt Fu's semantic artifact map for one cache directory."""
+    artifacts = {}
+    for filename, semantic_key in PROMPT_FOO_CACHE_ARTIFACTS:
+        candidate = cache_dir / filename
+        if candidate.exists():
+            artifacts[semantic_key] = str(candidate)
+    return artifacts
+
+
+def resolve_prompt_foo_cache(target_url: str) -> Dict[str, object]:
+    """Resolve a URL to a guided Mother Cat capture or the legacy cache path.
+
+    Guided captures are discovered by their own receipt rather than by
+    reconstructing Mother Cat's final-URL hash. A supplied URL may be either
+    the originally requested bookmark or the browser's final redirected URL.
+    """
+    from urllib.parse import quote, urlparse
+
+    parsed = urlparse(target_url)
+    guided_root = Path(REPO_ROOT) / "browser_cache" / "looking_at"
+    matches = []
+
+    if guided_root.is_dir():
+        for headers_path in guided_root.glob("*/*/headers.json"):
+            try:
+                headers = json.loads(headers_path.read_text(encoding="utf-8"))
+            except (OSError, ValueError, TypeError):
+                continue
+            if not isinstance(headers, dict):
+                continue
+
+            requested_match = headers.get("url") == target_url
+            final_match = headers.get("final_url") == target_url
+            if not (requested_match or final_match):
+                continue
+
+            try:
+                modified = headers_path.stat().st_mtime_ns
+            except OSError:
+                modified = 0
+            matches.append((
+                1 if final_match else 0,
+                modified,
+                str(headers_path.parent),
+                headers,
+            ))
+
+    if matches:
+        _, _, cache_dir_text, headers = max(
+            matches,
+            key=lambda item: (item[0], item[1], item[2]),
+        )
+        cache_dir = Path(cache_dir_text)
+        final_url = headers.get("final_url")
+        if not isinstance(final_url, str) or not final_url:
+            final_url = target_url
+        final_domain = urlparse(final_url).netloc or parsed.netloc
+        return {
+            "cache_dir": str(cache_dir),
+            "artifacts": _cache_artifacts(cache_dir),
+            "guided": True,
+            "requested_url": headers.get("url") or target_url,
+            "final_url": final_url,
+            "domain": final_domain,
+        }
+
+    path_slug = (
+        quote(parsed.path or "/", safe="").replace("/", "_")[:100]
+        or "%2F"
+    )
+    cache_dir = Path(REPO_ROOT) / "browser_cache" / parsed.netloc / path_slug
+    artifacts = _cache_artifacts(cache_dir)
+    headers = {}
+    headers_path = cache_dir / "headers.json"
+    if headers_path.exists():
+        try:
+            loaded = json.loads(headers_path.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                headers = loaded
+        except (OSError, ValueError, TypeError):
+            pass
+
+    final_url = headers.get("final_url")
+    if not isinstance(final_url, str) or not final_url:
+        final_url = target_url
+    return {
+        "cache_dir": str(cache_dir),
+        "artifacts": artifacts,
+        "guided": False,
+        "requested_url": headers.get("url") or target_url,
+        "final_url": final_url,
+        "domain": urlparse(final_url).netloc or parsed.netloc,
+    }
+
+
 # ============================================================================
 # --- The Triptych Receipt (console-only scrape visualization) ---
 # ============================================================================
