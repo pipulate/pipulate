@@ -756,6 +756,72 @@ AI_PHOOEY_CHOP = r"""                                                           
 # detect its own manifest going stale. MODEL FOLLOWS THE MAP applies to the
 # wrapper's map too.
 
+# THE TWO-RECORDER RULE (banked 2026-07-29, receipt-convicted same day): every
+# airframe carries TWO recorders and investigators never conflate them. The FDR
+# writes machine-sampled PARAMETERS; the CVR records what the humans SAID was
+# happening. Both admissible, for different things: when they disagree the FDR
+# wins on parameters and the CVR wins on INTENT. Connectors persisting wire
+# truth to disk are the FDR-class instrument; a model narrating hosted-MCP
+# results in prose is the CVR (an UNRELIABLE NARRATOR, not a man-in-the-middle:
+# no interposition, just a lossy self-report). CONVICTION: a hosted-MCP session
+# reported "botify_config returned a permission error for this project" and
+# hypothesized "personal-tier project without those products provisioned." Six
+# parameter re-readings: botify_core SUCCEEDS; pageworkers and speedworkers
+# each fail INDEPENDENTLY; both fail IDENTICALLY on a second org -- killing the
+# project-specific story -- while botify_core itself reports has_pageworkers:
+# true. Plan flag yes, config resolver no, and the deciding layer is invisible
+# from inside that lane by construction. The narration was not fabricated; it
+# was UNDER-SPECIFIED IN A FLATTERING DIRECTION -- the variance-suppressor
+# signature -- and only a second parameter reading could catch it.
+# THREE-SURFACE AMENDMENT (same ride): the binary compresses one layer too far.
+# (1) WIRE RECEIPT -- request/response headers, status, timing, session ids,
+# body hash, persisted by OUR process. (2) TOOL TRANSCRIPT -- the structured
+# result a hosted platform hands the model. Not CVR: it is avionics telemetry
+# (an ACARS report) -- machine-structured, stronger than narration, weaker
+# than wire, because the transport/auth chain that produced it is invisible.
+# (3) NARRATIVE -- prose. Authority may only DECREASE down that ladder, and a
+# sentence may never carry more authority than the surface that fed it.
+# CAPABLE-OF-FDR IS NOT FDR: a local connector earns the FDR label only when
+# it PERSISTS the response side -- status, headers, elapsed, session id, body
+# hash -- not merely because it is local. Until a receipt proves those
+# channels, "our lane is the FDR" is a CVR sentence about our own instrument.
+# FRAME-DOC COROLLARY: an FDR is UNDECODABLE without its data-frame layout
+# document. Raw bytes plus no frame doc equals no evidence -- manifest.json is
+# not bureaucracy, and a network_log.jsonl without its distiller is unreadable
+# in two years.
+# THE EXPERIMENTAL CERTIFICATE (the routing rule): hosted MCP flies under an
+# EXPERIMENTAL airworthiness certificate -- it may fly, it gathers real data,
+# it is RESTRICTED from carrying persons for hire. Dispatch it when the cost
+# of being wrong is a rerun: breadth recon, shape-finding, cheap D1
+# discrimination (three calls closed the pageworkers question in under a
+# minute, zero setup). Dispatch the connector lane when output leaves the
+# machine with our name on it. A's job is to tell B what to build; a tool
+# roster read off an injected manifest is a FLIGHT PLAN, never a recording.
+# THE MEL (Minimum Equipment List) -- what makes "fly, placarded, restricted"
+# possible; its ABSENCE leaves only two failures: refuse to fly (forfeit the
+# breadth) or fly unplacarded (publish A-grade findings in B-grade language).
+# Hosted-MCP INOP list: request headers, response headers/status, auth
+# mechanism, session handshake -- platform-held, never in context. DEGRADED:
+# tool inventory (a map). INOP: third-party replay (no cartridge).
+# Restriction: "returned a permission error" is admissible; "because the
+# project lacks provisioning" is not.
+# THE CONSEQUENCE AXIS (DAL, orthogonal to D0/D1/D2): determinism grades the
+# CALL, provenance grades the RECORD. The load-bearing cell is D0 x
+# CATASTROPHIC -- a perfectly deterministic call whose making cannot be PROVEN
+# is still unpublishable.
+# REPORT SHAPE when called out, borrowed from the NTSB and structurally
+# separated: (1) Factual Information -- instrument-recorded only, each line
+# carrying its instrument and epistemic label, where UNKNOWN is a VALID
+# INSTRUMENT READING and disguising it as a conclusion is the offense; (2)
+# Analysis; (3) Findings; (4) Probable Cause, one paragraph, labeled
+# inference. The conviction above was purely structural: a section-4 sentence
+# printed in section-1's typeface.
+# OWES: one probe receipt showing whether scripts/connectors/mcp.py PERSISTS
+# response headers/status/session-id, or only constructs request headers.
+# Until it lands, the FDR label for our own lane stays unearned and the
+# flight-recorder positioning inherits the gap. Delete this OWES when the
+# receipt exists.
+
 # THE SECOND INTERPRETER RULE (banked 2026-07-17): this file has two
 # interpreters. CPython reads the path strings; the summoned model reads
 # the prose. Comments here are therefore PROGRAM, not annotation — but a
