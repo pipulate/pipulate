@@ -1936,5 +1936,19 @@ Rich console blocked on Mac (Error: {e}), using fallback display.
 #  │ 4. FALSIFICATION GATE (Run Read-Only Probe / Apply)     │
 #  └─────────────────────────────────────────────────────────┘
 # ```
-
+# 
+# ```text
+#  ┌────────────────────────────────────────────────────────────────────────┐
+#  │                      THE MOTHER CAT KATA (MCK)                         │
+#  └────────────────────────────────────────────────────────────────────────┘
+#     1. SETTLE (Human)    ──► Pop persistent profile (weblogin) & clear auth/CAPTCHA
+#     2. CAPTURE (Machine) ──► Headless crawl & write CDP wire-truth to browser_cache
+#     3. NARRATE (Machine) ──► Piper TTS speaks status & fences execution until receipt exists
+#     4. ADVANCE (Machine) ──► Step to the next bookmarked URL in the trail YAML
+# 
+# 
+# 1. **Trail YAML (`assets/trails/*.yaml`):** Defines the list of bookmarks (URLs), their names, and what Piper TTS speaks at each stop.
+# 2. **The Actuator (`scripts/mother_cat.py` / `mothercat` alias):** Reads the trail, calls `scraper_tools.py` using your authenticated profile, saves the wire truth to `browser_cache/`, and narrates the progress.
+# 3. **The Compile Sigil (`@URL` or `%URL` in `adhoc.txt`):** Takes those captured files from `browser_cache/` and stacks them into your Prompt Fu payload for the LLM.
+# ```
 
