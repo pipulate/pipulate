@@ -2357,15 +2357,16 @@ def main():
                 # No cache bust, no full optics bundle. This is the "best of both
                 # worlds" turn: treat the browser-captured wire source as if it had
                 # been hand-pasted locally, and surface the response headers too.
-                from urllib.parse import urlparse, quote
-
-                parsed = urlparse(target_url)
-                domain = parsed.netloc
-                path_slug = quote(parsed.path or '/', safe='').replace('/', '_')[:100] or "%2F"
-                cache_dir = os.path.join(REPO_ROOT, "browser_cache", domain, path_slug)
-
-                headers_file = os.path.join(cache_dir, "headers.json")
-                source_file = os.path.join(cache_dir, "source.html")
+                cache = resolve_prompt_foo_cache(target_url)
+                cache_dir = cache["cache_dir"]
+                headers_file = (
+                    cache["artifacts"].get("headers")
+                    or os.path.join(cache_dir, "headers.json")
+                )
+                source_file = (
+                    cache["artifacts"].get("source_html")
+                    or os.path.join(cache_dir, "source.html")
+                )
 
                 if not (os.path.exists(headers_file) and os.path.exists(source_file)):
                     logger.print(f"   -> ⚠️ $URL cache miss for {target_url}")
