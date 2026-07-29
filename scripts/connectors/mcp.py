@@ -38,8 +38,13 @@ Output is capped by --max / --max-bytes per THE PROBE ECONOMY RULE.
 import os
 import sys
 import json
+import time
+import atexit
+import hashlib
 import argparse
+from pathlib import Path
 from datetime import datetime, timezone
+from urllib.parse import urlparse
 
 import httpx
 
@@ -50,6 +55,80 @@ PROTOCOL_VERSION = "2025-06-18"      # INFERRED: spec revision string
 SESSION_HEADER = "Mcp-Session-Id"    # INFERRED: optional per spec
 CLIENT_INFO = {"name": "pipulate-mcp", "version": "0.1"}
 TIMEOUT = 30.0
+
+# ---------------------------------------------------------------------------
+# THE FDR CHANNEL (landed 2026-07-29; PENDING until a compiled receipt shows a
+# written file). Convicted same day: this client READ status codes,
+# content-type, and Mcp-Session-Id -- gated on them, printed them on RED --
+# and PERSISTED NOTHING. Gate-and-print is a CVR habit wearing an FDR label.
+# Every exchange now records the response side; the atexit hook flushes the
+# receipt, so the recorder survives die() -- a RED check still writes a GREEN
+# receipt, which is the defining FDR property: the recording exists BECAUSE
+# of the crash, not despite it.
+#
+# FRAME DOC (mcp-receipt-v1) -- an FDR is undecodable without its frame:
+#   frame, recorded_at, protocol_version_sent, client_info,
+#   server, verb, tool, args_raw (byte-for-byte, per the four-tuple),
+#   dclass, auth_env (env var NAME only; the token value NEVER touches disk),
+#   exchanges[]: jsonrpc_method, http_status, response_headers (full dict),
+#     session_id_sent, session_id_returned, elapsed_seconds,
+#     body_sha256, body_bytes.
+# Receipts land under browser_cache/mcp/<host>/ -- gitignored wire-truth
+# territory, same as every other capture lane in this repo.
+# ---------------------------------------------------------------------------
+RECEIPT_FRAME = "mcp-receipt-v1"
+_REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+_EXCHANGES = []
+_RECEIPT_META = {}
+
+
+def arm_receipt(server, verb, tool=None, raw_args=None, dclass=None,
+                auth_env=None):
+    """Arm the recorder before takeoff; the atexit hook is the flush."""
+    _RECEIPT_META.update({
+        "server": server, "verb": verb, "tool": tool,
+        "args_raw": raw_args, "dclass": dclass, "auth_env": auth_env,
+    })
+
+
+def _record_exchange(method, resp, started, sent_session_id=None):
+    body = resp.content or b""
+    _EXCHANGES.append({
+        "jsonrpc_method": method,
+        "http_status": resp.status_code,
+        "response_headers": dict(resp.headers),
+        "session_id_sent": sent_session_id,
+        "session_id_returned": resp.headers.get(SESSION_HEADER),
+        "elapsed_seconds": round(time.perf_counter() - started, 4),
+        "body_sha256": hashlib.sha256(body).hexdigest(),
+        "body_bytes": len(body),
+    })
+
+
+def _flush_receipt():
+    if not _EXCHANGES or not _RECEIPT_META.get("server"):
+        return
+    try:
+        host = urlparse(_RECEIPT_META["server"]).netloc or "unknown-host"
+        out_dir = _REPO_ROOT / "browser_cache" / "mcp" / host
+        out_dir.mkdir(parents=True, exist_ok=True)
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+        verb_slug = (_RECEIPT_META.get("verb") or "session").replace("/", "_")
+        path = out_dir / f"{stamp}__{verb_slug}.json"
+        path.write_text(json.dumps({
+            "frame": RECEIPT_FRAME,
+            "recorded_at": datetime.now(timezone.utc).isoformat(),
+            "protocol_version_sent": PROTOCOL_VERSION,
+            "client_info": CLIENT_INFO,
+            **_RECEIPT_META,
+            "exchanges": _EXCHANGES,
+        }, indent=2, default=str), encoding="utf-8")
+        sys.stderr.write(f"# FDR receipt: {path}\n")
+    except OSError as exc:
+        sys.stderr.write(f"# FDR receipt write failed: {exc}\n")
+
+
+atexit.register(_flush_receipt)
 
 DCLASS_NOTE = {
     "D0": "deterministic — same args, same bytes, forever",
@@ -134,7 +213,11 @@ def parse_body(resp):
 
 def post(client, server, payload, session_id=None):
     headers = {SESSION_HEADER: session_id} if session_id else {}
-    return client.post(server, json=payload, headers=headers)
+    started = time.perf_counter()
+    resp = client.post(server, json=payload, headers=headers)
+    _record_exchange(payload.get("method", "?"), resp, started,
+                     sent_session_id=session_id)
+    return resp
 
 
 def initialize(client, server):
@@ -235,11 +318,14 @@ def check(server, token_env):
     401/400/404 discriminates address-right / handshake-wrong / join-wrong."""
     token_name, token = resolve_token(token_env)
     if not token:
+        arm_receipt(server, "check-unauthenticated")
         try:
             with httpx.Client(timeout=15.0, headers={
                     "Accept": "application/json, text/event-stream"}) as c:
+                started = time.perf_counter()
                 resp = c.post(server, json={"jsonrpc": "2.0", "id": 1,
                                             "method": "tools/list"})
+                _record_exchange("tools/list", resp, started)
             sys.stderr.write(
                 "mcp RED gate1: no bearer token in env (tried "
                 "MCP_BEARER_TOKEN, BOTIFY_API_TOKEN); unauthenticated "
@@ -247,6 +333,7 @@ def check(server, token_env):
         except httpx.HTTPError as e:
             sys.stderr.write(f"mcp RED gate1: no token AND transport failure: {e}\n")
         return 1
+    arm_receipt(server, "check", auth_env=token_name)
     try:
         with make_client(token) as client:
             session_id, negotiated, _sinfo = initialize(client, server)
@@ -304,9 +391,13 @@ def main():
     dclass = args.dclass or "D2"
     with make_client(token) as client:
         if args.tool:
+            arm_receipt(args.server, "tools/call", tool=args.tool,
+                        raw_args=args.args_json, dclass=dclass,
+                        auth_env=token_name)
             call_tool(client, args.server, args.tool, args.args_json,
                       dclass, declared, args.max_bytes)
         else:
+            arm_receipt(args.server, "tools/list", auth_env=token_name)
             list_tools(client, args.server, args.max)
 
 
