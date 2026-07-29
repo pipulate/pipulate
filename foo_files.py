@@ -742,6 +742,17 @@ AI_PHOOEY_CHOP = r"""                                                           
 # FastMCP), run ephemerally so no dependency enters the closure. The full
 # vendor path stays the FINAL banking, owed a real Botify token — URL and auth
 # gate already witnessed by the 401 above):
+# VENDOR RECEIPT LANDED 2026-07-29 (the FINAL banking, flipping this rule):
+# mcp_warm.py minted a PKCE bearer (discovery through token write GREEN,
+# scope mcp_read_write, expires_in 300) and mcp.py ran tools/call
+# list_projects against mcp.botify.com — four-tuple receipt printed, FDR
+# flushed to browser_cache/mcp/mcp.botify.com/
+# 20260729T184552090812Z__tools_call.json. The three protocol strings
+# ("2025-06-18", "Mcp-Session-Id", the tools/* spellings) are OBSERVED
+# against independent vendor authorship, no longer inferred. CINDERELLA
+# CAVEAT: the access token half-life is 300 seconds and refresh_token
+# presence is unprobed; the perishable-cargo-vs-living-culture axis in
+# assets/axis_ledger.jsonl carries the deciding one-line jq probe.
 # A model-mediated tool call enters this system as a RECEIPT or not at all. The
 # receipt is a FOUR-TUPLE the model emits verbatim and never paraphrases:
 #   (1) server — the MCP server URL
