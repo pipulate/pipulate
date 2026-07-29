@@ -816,11 +816,19 @@ AI_PHOOEY_CHOP = r"""                                                           
 # Analysis; (3) Findings; (4) Probable Cause, one paragraph, labeled
 # inference. The conviction above was purely structural: a section-4 sentence
 # printed in section-1's typeface.
-# OWES: one probe receipt showing whether scripts/connectors/mcp.py PERSISTS
-# response headers/status/session-id, or only constructs request headers.
-# Until it lands, the FDR label for our own lane stays unearned and the
-# flight-recorder positioning inherits the gap. Delete this OWES when the
-# receipt exists.
+# RECEIPT LANDED 2026-07-29 (rg + full source, in-compile): mcp.py READS the
+# response side transiently -- status gates, content-type steers SSE parsing,
+# Mcp-Session-Id threads the handshake, reduced to a yes/no boolean -- and
+# PERSISTS NOTHING; even the four-tuple receipt prints to stdout and
+# evaporates. Verdict: gate-and-print instrument. Capable-of-FDR, not FDR.
+# PENDING (mechanism landed same day, receipt owed): the FDR CHANNEL in
+# scripts/connectors/mcp.py -- every exchange records http status, full
+# response headers, elapsed, sent/returned session id, body sha256/bytes;
+# atexit flushes to browser_cache/mcp/<host>/<utc>__<verb>.json so the
+# recorder survives die() (a RED check still writes a GREEN receipt). Frame:
+# mcp-receipt-v1, documented beside the code. Auth recorded by env NAME only,
+# never the value. Flip to banked on the first compiled receipt showing a
+# written receipt file; the flip is its own chisel-strike.
 
 # THE SECOND INTERPRETER RULE (banked 2026-07-17): this file has two
 # interpreters. CPython reads the path strings; the summoned model reads
