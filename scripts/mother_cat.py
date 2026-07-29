@@ -226,7 +226,15 @@ async def _ride_async(trail_path, dry_narrate=False):
 
 def ride(trail_path=None, dry_narrate=False):
     """Run one validated trail to completion and return a process exit code."""
-    path = walk.DEFAULT_TRAIL if trail_path is None else Path(trail_path)
+    if trail_path is None:
+        path = walk.DEFAULT_TRAIL
+    else:
+        path = Path(trail_path)
+        if not path.is_absolute():
+            # Mirror walk.main(): repo-root-anchored, never CWD-dependent.
+            # A relative trail typed through the flake's `mothercat` alias
+            # must resolve identically from any directory (UNNAMED-ROOT).
+            path = REPO_ROOT / path
     return asyncio.run(_ride_async(path, dry_narrate=dry_narrate))
 
 
