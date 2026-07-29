@@ -2415,13 +2415,13 @@ def main():
                 # Reads the cached CDP flight recorder (network_log.jsonl) and
                 # stacks the distillate: per-request table + third-party host
                 # census. The raw JSONL NEVER enters the context window.
-                from urllib.parse import urlparse, quote
-
-                parsed = urlparse(target_url)
-                domain = parsed.netloc
-                path_slug = quote(parsed.path or '/', safe='').replace('/', '_')[:100] or "%2F"
-                cache_dir = os.path.join(REPO_ROOT, "browser_cache", domain, path_slug)
-                ledger_file = os.path.join(cache_dir, "network_log.jsonl")
+                cache = resolve_prompt_foo_cache(target_url)
+                domain = cache["domain"]
+                cache_dir = cache["cache_dir"]
+                ledger_file = (
+                    cache["artifacts"].get("network_log")
+                    or os.path.join(cache_dir, "network_log.jsonl")
+                )
 
                 if not os.path.exists(ledger_file):
                     logger.print(f"   -> ⚠️ %URL ledger miss for {target_url}")
