@@ -2341,7 +2341,7 @@ def main():
                     "url": target_url, "domain": domain, "url_path_slug": path_slug,
                     "take_screenshot": False, "headless": False, "is_notebook_context": True, "verbose": False,
                     "override_cache": path.startswith(('!', '?')),  # 💥 Bust cache with ! or ?, reuse with @
-                    "persistent": authenticated,  # 🔑 ? reuses weblogin's warmed data/uc_profiles/default
+                    "persistent": authenticated,  # 🔑 ? resolves uc_profiles/<apex-label> per-domain (weblogin's warmed profile), falls back to default
                 }
                 
                 import asyncio
