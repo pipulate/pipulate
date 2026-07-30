@@ -616,10 +616,9 @@ AI_PHOOEY_CHOP = r"""                                                           
 # politely) but anchoring the verdict to ground truth the suppressor cannot
 # flatter -- the same golden path the crawler/edge-table thread converged on.
 # Refs: /futureproof/physics-boundaries-ai-sycophancy-crawler-state/ plus the
-# gatekeeper-clade follow-up. OWES: one runnable fence-vs-lean-back
-# discrimination banked into assets/axis_ledger.jsonl (anchors:
-# variance-suppression vs variance-generation; rival predictions; the probe),
-# then delete this OWES clause.
+# gatekeeper-clade follow-up. AXIS BANKED 2026-07-30: fence-vs-lean-back rides
+# assets/axis_ledger.jsonl (anchors, rival predictions, runnable probe;
+# verdict open pending the three-fresh-thread cross-domain run).
 # MOUSE-ARMY VIGNETTE (banked 2026-07-29, same-ride ledger receipt): the
 # discrimination run at narrative scale by Stephenson, n=250,001. Nell's
 # Primer carried Miranda -- one human variance-source with taste and stakes
@@ -629,9 +628,9 @@ AI_PHOOEY_CHOP = r"""                                                           
 # human-only, non-deterministic step the Mother Cat Kata fences. Rent the
 # handle pays: strip the single human gate from an otherwise identical
 # pipeline and output variance collapses toward the centroid -- competence
-# up, individuation gone. This vignette is ARTICULATION under the rule; it
-# does NOT satisfy the OWES clause above, which still demands the runnable
-# fence-vs-lean-back ledger entry.
+# up, individuation gone. This vignette is ARTICULATION under the rule; the
+# runnable fence-vs-lean-back entry landed in the ledger 2026-07-30 (verdict
+# open pending the three-fresh-thread cross-domain run).
 
 # THE BARNEY RESET RULE (banked 2026-07-21, articulation-banked): Trigger
 # when the human says they do not understand. Trigger when the human asks
