@@ -297,7 +297,14 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
     persistent = params.get("persistent", False)
     profile_name = params.get("profile_name")
     if not profile_name:
-        from urllib.parse import urlparse
+        # NO LOCAL IMPORT HERE. urlparse is imported at module level; a
+        # function-level `from urllib.parse import urlparse` inside this
+        # conditional made urlparse a LOCAL for the whole function, bound
+        # only when profile_name was falsy. Every sigil scrape omits
+        # profile_name, so the bind always ran and the shadow slept.
+        # The first caller to SUPPLY profile_name (public_walk's trail
+        # defaults, 2026-07-29) skipped the bind, and urlparse(final_url)
+        # after the CAPTURE checkpoint died with UnboundLocalError.
         _host = urlparse(params.get("url", "")).netloc.split(":")[0]
         _labels = [l for l in _host.split(".") if l]
         _slug = _labels[-2] if len(_labels) >= 2 else (_labels[0] if _labels else "")
