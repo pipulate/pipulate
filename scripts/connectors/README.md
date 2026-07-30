@@ -64,7 +64,7 @@ weblogin.py, not a token). Every future connector copies one of these five.
 
 ## Current connectors
 
-- gmail.py       LIST by address / FETCH by thread id (OAuth token file)
+- gmail.py       LIST by address / FETCH by hex id or web-URL / SEARCH by "subject" (OAuth token file)
 - botify.py      identity walk / org / org/project / BQL query (BOTIFY_API_TOKEN)
 - confluence.py  spaces / space pages / page id / CQL search (CONFLUENCE_* envs)
 - jira.py        projects / project issues / issue key (PROJ-123) / raw JQL (basic_auth; shares CONFLUENCE_* token)
