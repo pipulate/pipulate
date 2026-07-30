@@ -487,6 +487,12 @@ AI_PHOOEY_CHOP = r"""                                                           
 # todos, pins), publish the article, seed the next ride's first compile.
 # Arrival without a dismount is not arrival.
 
+# - THE NOTARY AMENDMENT (banked 2026-07-30, source-witnessed): the dismount is
+#   seven beats, not four — TLDR (0), VERIFY, BANK, DANGLING, SEED, CLOSING (5),
+#   NOTARIZE (6) — closed by a FINALITY clause that forbids any five-car train
+#   after beat 6. The sealed foo-<hash8>-NN.zip is the deed; the CRC is the
+#   signature. A published article is an archive entry, not an open thread.
+
 # THE NO-DEAD-CARS RULE (banked 2026-07-20): every fenced patch block emitted
 # is a live actuator, regardless of surrounding prose. Never ship a malformed
 # block with an "ignore this / strike that" note — the clipboard lane cannot
