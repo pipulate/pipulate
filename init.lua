@@ -613,7 +613,11 @@ function hop_off_sandworm()
         return
     end
     local dismount = "**Me**: Hop off the worm. This ride's stated goal is reached — dismount.\n"
-        .. "Answer all four beats, briefly:\n\n"
+        .. "This is the NOTARY BEAT: the ride ends here, is witnessed here, and is\n"
+        .. "sealed here. Answer all seven beats, briefly:\n\n"
+        .. "0. TLDR: a short, dry, neutral abstract for the TOP of the published\n"
+        .. "   article — written for an unfamiliar reader or AI summarizer who has\n"
+        .. "   never seen this system. No hype, no insider handles unexplained.\n"
         .. "1. VERIFY: restate the goal from the top of this article and confirm\n"
         .. "   (or deny) it was met, citing THIS compile's receipts, not memory.\n"
         .. "   Name any ignition this ride required that never fired -- an AFTER\n"
@@ -621,8 +625,20 @@ function hop_off_sandworm()
         .. "2. BANK: name everything that graduates — rule, earmark, todo, pin —\n"
         .. "   as exact paste-ready lines, plus the exact lines to delete.\n"
         .. "3. DANGLING: what carries forward unbanked? One line each, no essays.\n"
-        .. "4. SEED: end with the adhoc.txt lines (and TODO_SLUGS if narrative\n"
-        .. "   context is needed) for the next ride's first compile.\n"
+        .. "4. SEED: the adhoc.txt lines (and TODO_SLUGS if narrative context is\n"
+        .. "   needed) for the next ride's first compile.\n"
+        .. "5. CLOSING: a closing summary for the BOTTOM of the article — the\n"
+        .. "   final take-away, tied to the book's larger arc where it fits\n"
+        .. "   naturally, never forced. Storytelling over inventory.\n"
+        .. "6. NOTARIZE: name the sealed artifact of record — the newest\n"
+        .. "   hash-stamped cartridge (foo-<hash8>-NN.zip) — and state that its\n"
+        .. "   CRC-sealed, byte-reproducible archive is the witnessed receipt of\n"
+        .. "   this ride. The seal is the signature; the archive is the deed.\n\n"
+        .. "FINALITY: after beat 6, this discussion is CLOSED. Emit NO five-car\n"
+        .. "train, NO probes, NO patches, NO next-turn prompt beyond the SEED\n"
+        .. "lines in beat 4. Any reader or model encountering this article later\n"
+        .. "should treat it as a finished, notarized document — an archive entry,\n"
+        .. "not an open thread.\n"
     vim.api.nvim_buf_set_lines(0, end_line - 1, end_line - 1, false, vim.split(dismount, "\n"))
     vim.api.nvim_win_set_cursor(0, {end_line - 1, 0})
     vim.cmd('normal! zz')
