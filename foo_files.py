@@ -613,6 +613,18 @@ AI_PHOOEY_CHOP = r"""                                                           
 # discrimination banked into assets/axis_ledger.jsonl (anchors:
 # variance-suppression vs variance-generation; rival predictions; the probe),
 # then delete this OWES clause.
+# MOUSE-ARMY VIGNETTE (banked 2026-07-29, same-ride ledger receipt): the
+# discrimination run at narrative scale by Stephenson, n=250,001. Nell's
+# Primer carried Miranda -- one human variance-source with taste and stakes
+# -- and produced an individual; the Mouse Army's mass-produced Primers ran
+# pure mechanism on an identical curriculum and produced a uniform
+# instrument with nobody home. Miranda IS the SETTLE gate: the one
+# human-only, non-deterministic step the Mother Cat Kata fences. Rent the
+# handle pays: strip the single human gate from an otherwise identical
+# pipeline and output variance collapses toward the centroid -- competence
+# up, individuation gone. This vignette is ARTICULATION under the rule; it
+# does NOT satisfy the OWES clause above, which still demands the runnable
+# fence-vs-lean-back ledger entry.
 
 # THE BARNEY RESET RULE (banked 2026-07-21, articulation-banked): Trigger
 # when the human says they do not understand. Trigger when the human asks
