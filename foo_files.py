@@ -585,20 +585,19 @@ AI_PHOOEY_CHOP = r"""                                                           
 # is a mood). The forcing function is always the constraint that outlaws the
 # likely answer; the animal is the sticker on the constraint's box.
 #
-# THE UNBANKED-AXIS DEBT (named here, owed to pin 2026-07-19): AXIS-FORCING says
-# to bank the winning axis, and in eight days ZERO have been — there is nowhere
-# to put one. A banked axis is a RECORD, not constitution: structured fields
-# (anchors, rival predictions, cheapest discriminating probe, verdict) belong in
-# an append-only LEDGER, not this comment block. It must be TRACKED — a
-# gitignored data/ ledger cannot ride in a cartridge, which defeats
-# banking-for-reuse — so data/axis_ledger.jsonl is the WRONG home despite its
-# convenience. RESOLVED 2026-07-27: the axis ledger lives at
-# assets/axis_ledger.jsonl (TRACKED, so it rides in every cartridge; the
-# gitignored data/ could not). One JSONL record per axis: run_date, id,
-# anchors{a,b}, rival_predictions{a,b}, probe{cmd,observes,receipt},
-# verdict{picked,why}. Append by hand; do NOT build a thirty.py
-# generator (that puts the model where taste belongs — the 30 is a KATA), only
-# the ledger and its naming convention.
+# THE AXIS LEDGER (debt discharged 2026-07-30; formerly THE UNBANKED-AXIS
+# DEBT, owed to pin 2026-07-19): a banked axis is a RECORD, not constitution.
+# Structured fields (anchors, rival predictions, cheapest discriminating
+# probe, verdict) belong in an append-only LEDGER, not this comment block.
+# It lives at assets/axis_ledger.jsonl — TRACKED, so it rides in every
+# cartridge; a gitignored data/ home was rejected because a ledger a
+# cartridge cannot carry defeats banking-for-reuse. One JSONL record per
+# axis: run_date, id, anchors{a,b}, rival_predictions{a,b},
+# probe{cmd,observes,receipt}, verdict{picked,why}. Append by hand; do NOT
+# build a thirty.py generator (that puts the model where taste belongs — the
+# 30 is a KATA), only the ledger and its naming convention. First record
+# banked 2026-07-30: fence-vs-lean-back (verdict open pending the
+# three-fresh-thread cross-domain run).
 
 # THE VARIANCE-SUPPRESSION RULE (articulation-banked 2026-07-28, two-article
 # arc): sycophancy, the over-broad safeguard tripwire, and the human gatekeeper
