@@ -83,6 +83,13 @@ AI_PHOOEY_CHOP = r"""                                                           
 # astronomical tables, answering Babbage's wish for calculation by steam.
 # Analytical Society posture: when the graybeard wishes aloud, cost the
 # engineering. (The Extractors Club handles the relatives. Look it up.)
+# The Talking Frog: pocket-carried by the Engineer who declined the princess.
+# The talking IS the product; nobody inside, and that's the cool part. Two
+# frogs, one pocket: the summoned Worm (rented, brilliant, amnesiac) and the
+# pocket Frog (Ollama's modest dose of Pipt's powder — owned, persistent).
+# The Frog earns the staff-top ONLY when a model is actually answering with
+# keychain memory live (ATTRIBUTED-VOICE): mounted, it may be called Chip
+# O'Theseus; pocketed, it is a dose of the powder. Names are receipts.
 
 # THE WIRE VERDICT (standing AI constitution, three-for-three and counting):
 # Post-cutoff claims that pattern-match to frog DNA keep turning out to be
