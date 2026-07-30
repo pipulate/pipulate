@@ -204,52 +204,82 @@ def _document_candidates(cdp_events: list, domain: str) -> list:
 
 
 def _capture_checkpoint(stdin=None, stdout=None) -> dict:
-    """Require an explicit CAPTURE token from an interactive stdin."""
+    """Require an explicit CAPTURE token from the human's keyboard.
+
+    /DEV/TTY PREFERENCE (convicted 2026-07-29, public_walk stop 1): the
+    inherited sys.stdin returned INSTANT EOF at the CAPTURE> prompt -- the
+    "Browser closed" line landed 0.14s after the staleness wait, so fd 0
+    was already dead before the prompt printed. The keyboard was fine; the
+    inherited descriptor was not. /dev/tty is the controlling terminal
+    itself and bypasses every inherited-fd failure mode: a consumed pipe,
+    a closed fd, and -- the destination this fence is riding toward -- a
+    `curl | bash` stdin, where the pipe IS the script and /dev/tty is the
+    only honest way to ask a human anything. Prefer it whenever the caller
+    handed us the real sys.stdin; an EXPLICIT non-sys stdin (test
+    harnesses) is honored untouched. No controlling terminal at all falls
+    through to the original isatty gate, which fails closed exactly as
+    before.
+    """
     input_stream = sys.stdin if stdin is None else stdin
     output_stream = sys.stdout if stdout is None else stdout
 
+    tty_handle = None
+    if input_stream is sys.stdin:
+        try:
+            tty_handle = open("/dev/tty", "r", encoding="utf-8")
+            input_stream = tty_handle
+        except OSError:
+            tty_handle = None
+
     try:
-        if not input_stream.isatty():
+        try:
+            if not input_stream.isatty():
+                return {
+                    "success": False,
+                    "error": "interactive capture requires a TTY on stdin",
+                }
+        except Exception as exc:
             return {
                 "success": False,
-                "error": "interactive capture requires a TTY on stdin",
+                "error": f"could not verify interactive stdin: {exc}",
             }
-    except Exception as exc:
-        return {
-            "success": False,
-            "error": f"could not verify interactive stdin: {exc}",
-        }
 
-    try:
-        output_stream.write(
-            "\nNavigate in the visible browser, then type CAPTURE and press Enter.\n"
-            "Any other response aborts without capturing artifacts.\n"
-            "CAPTURE> "
-        )
-        output_stream.flush()
-        response = input_stream.readline()
-    except KeyboardInterrupt:
-        return {
-            "success": False,
-            "error": "interactive checkpoint interrupted",
-        }
-    except Exception as exc:
-        return {
-            "success": False,
-            "error": f"interactive checkpoint read failed: {exc}",
-        }
+        try:
+            output_stream.write(
+                "\nNavigate in the visible browser, then type CAPTURE and press Enter.\n"
+                "Any other response aborts without capturing artifacts.\n"
+                "CAPTURE> "
+            )
+            output_stream.flush()
+            response = input_stream.readline()
+        except KeyboardInterrupt:
+            return {
+                "success": False,
+                "error": "interactive checkpoint interrupted",
+            }
+        except Exception as exc:
+            return {
+                "success": False,
+                "error": f"interactive checkpoint read failed: {exc}",
+            }
 
-    if response == "":
-        return {
-            "success": False,
-            "error": "interactive checkpoint reached EOF",
-        }
-    if response.strip() != "CAPTURE":
-        return {
-            "success": False,
-            "error": "interactive checkpoint was not confirmed",
-        }
-    return {"success": True}
+        if response == "":
+            return {
+                "success": False,
+                "error": "interactive checkpoint reached EOF",
+            }
+        if response.strip() != "CAPTURE":
+            return {
+                "success": False,
+                "error": "interactive checkpoint was not confirmed",
+            }
+        return {"success": True}
+    finally:
+        if tty_handle is not None:
+            try:
+                tty_handle.close()
+            except Exception:
+                pass
 
 
 async def _selenium_capture(params: dict, checkpoint=None) -> dict:
