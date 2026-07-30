@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,370 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 32 published in the last 7 days
+# There are 1,371 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 33 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -2181,6 +2181,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # apps/820_selenium.py  # [3,430 tokens | 15,032 bytes]
 # apps/830_pico_slider.py  # [4,362 tokens | 19,320 bytes]
 # apps/xx_link_graph_v2.py  # [63,999 tokens | 332,384 bytes]
+# assets/installer/fdr.sh  # [3,178 tokens | 10,737 bytes]
 # assets/installer/replay.sh  # [2,331 tokens | 8,002 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
 # assets/prompts/find404s.md  # [459 tokens | 2,098 bytes]
