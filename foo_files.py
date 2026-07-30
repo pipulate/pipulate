@@ -1180,7 +1180,6 @@ cli.py                      # <-- Catch-all actuator for PyPI envs, Python ancho
 # scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
 # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
-# scripts/webclip_2_markdown.py    # <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps / need to shorten the name)
 # scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
 GLOSSARY.md
 
@@ -1741,18 +1740,18 @@ __init__.py                 # <-- Master versioning
 pyproject.toml              # <-- The PyPI Packaging details
 cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
  
-# scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
-# scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
-# init.lua                    # <-- Daily driver hot-keys that overlap with aliases in flake.nix
+scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
+init.lua                    # <-- Daily driver hot-keys that overlap with aliases in flake.nix
  
+scripts/foo_cartridge.py    # Needs description
+scripts/foo_replay.py       # Needs description
+
 # release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
-# scripts/foo_cartridge.py    # Needs description
-# scripts/foo_replay.py       # Needs description
 # scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
 # scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
 # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
-# scripts/webclip_2_markdown.py    # <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps / need to shorten the name)
 # scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
 GLOSSARY.md
 """
@@ -2241,5 +2240,6 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
 # scripts/variance_probe.py  # [967 tokens | 3,916 bytes]
 # scripts/walk.py  # [3,069 tokens | 13,289 bytes]
+# scripts/webclip_2_markdown.py  # [1,270 tokens | 5,314 bytes]
 # tests/test_mck_rep2.py  # [949 tokens | 4,569 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
