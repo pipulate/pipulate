@@ -99,14 +99,19 @@ def _normalize_void_html_tag(match: re.Match) -> str:
 # not a legitimate HTML element. Real code spans pass through verbatim; when
 # pairing desyncs, we desync in lockstep, so our prose is exactly its prose.
 # Idempotent: '&lt;module&gt;' contains no '<' for _RAW_TAG_RE to match.
+# 'details' and 'summary' are deliberately ABSENT: this journal only ever
+# MENTIONS the disclosure elements in prose (the real ones live inside fenced
+# code blocks, which are skipped upstream). A bare <summary> in prose is an
+# unclosed tag that detonates md2conf's lxml pass ("tag mismatch: summary and
+# li", convicted 2026-07-30), so mentions get entity-escaped like any pseudo-tag.
 _HTML_ELEMENTS = frozenset((
     "a abbr address area article aside audio b base bdi bdo blockquote body br "
-    "button canvas caption cite code col colgroup data datalist dd del details "
+    "button canvas caption cite code col colgroup data datalist dd del "
     "dfn dialog div dl dt em embed fieldset figcaption figure footer form h1 h2 "
     "h3 h4 h5 h6 head header hr html i iframe img input ins kbd label legend li "
     "link main map mark meta meter nav noscript object ol optgroup option output "
     "p param picture pre progress q rp rt ruby s samp script section select "
-    "small source span strong style sub summary sup table tbody td template "
+    "small source span strong style sub sup table tbody td template "
     "textarea tfoot th thead time title tr track u ul var video wbr"
 ).split())
 
