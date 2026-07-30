@@ -750,9 +750,12 @@ AI_PHOOEY_CHOP = r"""                                                           
 # 20260729T184552090812Z__tools_call.json. The three protocol strings
 # ("2025-06-18", "Mcp-Session-Id", the tools/* spellings) are OBSERVED
 # against independent vendor authorship, no longer inferred. CINDERELLA
-# CAVEAT: the access token half-life is 300 seconds and refresh_token
-# presence is unprobed; the perishable-cargo-vs-living-culture axis in
-# assets/axis_ledger.jsonl carries the deciding one-line jq probe.
+# CAVEAT RESOLVED 2026-07-29 (in-compile jq receipt: has_refresh=true):
+# the vendor DOES issue a refresh_token, so the 300-second access token
+# is living culture, not perishable cargo. The refresh FLOW remains
+# unimplemented -- mcp.py's resolve_token reads access_token only, so a
+# stale token file still dies at gate2 until a refresh path lands. Owed:
+# one chisel, refresh-on-expiry in resolve_token or mcp_warm --refresh.
 # A model-mediated tool call enters this system as a RECEIPT or not at all. The
 # receipt is a FOUR-TUPLE the model emits verbatim and never paraphrases:
 #   (1) server — the MCP server URL
