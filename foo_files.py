@@ -2025,20 +2025,11 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   called: replace the list body with sorted(get_all_tools()) at the call site.
 #   Either way pull ONLY `sed -n '4250,4310p' tools/mcp_tools.py` -- a 36k-token
 #   file has no business entering a payload whole for a sixty-line edit.
-# - EARMARK: THE PROMPT-FU GLOSSARY (seeded 2026-07-26): the sci-fi lexicon is
-#   nearly one-to-one with the vocabulary the agentic-web field grew on its own,
-#   so the translation is a GLOSSARY, not a rewrite -- and per the
-#   CODEX-AS-DATASTRUCTURE RULE a glossary is a controlled vocabulary, a type
-#   system for prose that stops terms drifting between chapters. Pairs: worm
-#   ride -> work session; chisel-strike -> bounded probe; Probe/Patch/Prompt ->
-#   instrument, change, hand-off; cartridge (foo.zip) -> context bundle
-#   (AGENTS.md/SKILL.md class); Prompt Fu -> context compiler; Amnesiac Genie ->
-#   stateless session; player piano / Ghost Driver -> deterministic actuator /
-#   scripted E2E scenario; Chip O'Theseus -> persistent local model + keychain;
-#   rolling pin -> corpus index; paintbox -> coverage ledger; blast radius ->
-#   commit boundary; straddle -> before/after measurement; Honeybot -> origin
-#   telemetry lab. Keep BOTH columns: the sci-fi term is the memorable handle,
-#   the common term is the searchable one, and dropping either loses a reader.
+# - GLOSSARY LANDED 2026-07-30 (discharges the PROMPT-FU GLOSSARY earmark,
+#   seeded 2026-07-26): GLOSSARY.md at the repo root is the controlled
+#   vocabulary, both columns kept -- sci-fi handle for memory, common term for
+#   search. New handles get their entry THERE, not a second definition here;
+#   two authorities for one term is the sibling-.md failure in costume.
 # - EARMARK: THE THREE-TIER WORKSPACE & HUMAN COMPOSITION LADDER (seeded 2026-07-25):
 #   1. 3-TIER NOTEBOOK WORKSPACE (`Notebooks/`):
 #      - `Corporate/`: Org canon & skills (Read-only, auto-pulled by git).
