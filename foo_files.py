@@ -2170,6 +2170,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 
 # AGENTS.md  # [720 tokens | 2,801 bytes]
 # AUDIT.md  # [2,011 tokens | 9,706 bytes]
+# GLOSSARY.md  # [2,983 tokens | 12,399 bytes]
 # MANIFEST.in  # [81 tokens | 313 bytes]
 # Notebooks/.agents/skills/gsc_readonly/SKILL.md  # [761 tokens | 3,503 bytes]
 # Notebooks/.agents/skills/roles/SKILL.md  # [1,767 tokens | 8,221 bytes]
