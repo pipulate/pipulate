@@ -27,6 +27,10 @@ cannot be converted and fails loud, pointing you at subject search); an argument
 containing '@' is an email address (LIST); an argument with whitespace, or any
 non-hex bare token, is a subject SEARCH; a bare hex token is a thread id (FETCH).
 
+A subject SEARCH prints the COMPLETE transcript of every matching thread — the
+same output a thread id gives, attachments included — so an exact subject drops
+the whole discussion into context. Add --list for a lighter snippet browse-list.
+
 Auth:
   - App identity:  ~/.config/pipulate/credentials.json (override: PIPULATE_GMAIL_CREDENTIALS)
   - User session:  ~/.config/pipulate/gmail_token.json (override: PIPULATE_GMAIL_TOKEN)
@@ -264,11 +268,14 @@ def list_threads(service, address, max_results):
         print()
 
 
-def search_threads(service, subject, max_results):
-    """SEARCH mode: threads whose subject matches, newest-update first.
+def search_threads(service, subject, max_results, full=True):
+    """SEARCH mode: find threads whose subject matches, newest-update first.
 
-    Uses the Gmail `subject:` operator with a quoted phrase. Each hit prints
-    its FETCH-able hex thread id, so the next drill-down is a copy-paste.
+    Default (full=True) prints the COMPLETE transcript of every matching
+    thread — bodies and attachment metadata included — by reusing
+    fetch_thread, so an exact subject drops the whole discussion into context
+    exactly as a thread id would. Pass full=False (the --list flag) for the
+    lighter snippet browse-list, which prints each hit's FETCH-able hex id.
     """
     q = 'subject:"' + subject.replace('"', '') + '"'
     resp = service.users().threads().list(
@@ -276,11 +283,21 @@ def search_threads(service, subject, max_results):
     ).execute()
     threads = resp.get('threads', [])
 
-    print(f'# Gmail threads with subject matching "{subject}" (most recent first)\n')
     if not threads:
-        print("(no threads found — try fewer or different subject words)")
+        print(f'# No Gmail threads with subject matching "{subject}"')
+        print("(try fewer or different subject words)")
         return
 
+    if full:
+        print(f'# Full transcript(s) for subject "{subject}" — '
+              f"{len(threads)} thread(s), most recent first\n")
+        for i, t in enumerate(threads):
+            fetch_thread(service, t['id'])
+            if i < len(threads) - 1:
+                print("\n" + "=" * 78 + "\n")
+        return
+
+    print(f'# Gmail threads with subject matching "{subject}" (most recent first)\n')
     for t in threads:
         meta = service.users().threads().get(
             userId='me', id=t['id'], format='metadata',
@@ -410,7 +427,12 @@ def main():
     )
     parser.add_argument(
         '-n', '--max', type=int, default=10,
-        help='Max threads to list in LIST mode (default: 10).'
+        help='Max threads to list/fetch in LIST or SEARCH mode (default: 10).'
+    )
+    parser.add_argument(
+        '--list', action='store_true',
+        help='In SEARCH mode, print the snippet browse-list instead of full '
+             'transcripts.'
     )
     parser.add_argument('--check', action='store_true',
                         help='SELECT 1 health check: one GREEN line on stdout and '
@@ -444,7 +466,7 @@ def main():
         elif '@' in query:
             list_threads(service, query, args.max)
         elif any(ch.isspace() for ch in query) or not _HEX_ID_RE.match(query):
-            search_threads(service, query, args.max)
+            search_threads(service, query, args.max, full=not args.list)
         else:
             fetch_thread(service, query)
     except HttpError as e:
