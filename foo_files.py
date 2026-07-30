@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,372 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 28 published in the last 7 days
+# There are 1,374 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 30 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -1181,6 +1181,7 @@ init.lua                    # <-- Daily driver hot-keys that overlap with aliase
 # imports/voice_synthesis.py  # <-- The wand can talk to you
 # scripts/webclip_2_markdown.py    # <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps / need to shorten the name)
 # scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
+GLOSSARY.md
 
 #                         --- Under this line is were you paste what the AI gives you ---
 #                         --- We call it context but it's really just the right-hand  ---
@@ -1751,6 +1752,7 @@ scripts/crawl.py            # <-- Feel free to ask for something to be crawled a
 # imports/voice_synthesis.py  # <-- The wand can talk to you
 # scripts/webclip_2_markdown.py    # <-- Lets you copy HTML from a browser and paste it elsewhere as Markdown (good for capturing AI thinking steps / need to shorten the name)
 # scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
+GLOSSARY.md
 """
 
 INSTALL_CHOP = r"""
@@ -2169,7 +2171,6 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 
 # AGENTS.md  # [720 tokens | 2,801 bytes]
 # AUDIT.md  # [2,011 tokens | 9,706 bytes]
-# GLOSSARY.md  # [2,983 tokens | 12,399 bytes]
 # MANIFEST.in  # [81 tokens | 313 bytes]
 # Notebooks/.agents/skills/gsc_readonly/SKILL.md  # [761 tokens | 3,503 bytes]
 # Notebooks/.agents/skills/roles/SKILL.md  # [1,767 tokens | 8,221 bytes]
