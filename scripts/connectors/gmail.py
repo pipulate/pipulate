@@ -15,8 +15,17 @@ Designed to be dropped into foo_files.py as a `!` chisel-strike, e.g.:
   ! python scripts/gmail.py michael.levin@botify.com
   ! python scripts/gmail.py 18f4ad923b1c83e2
 
-Disambiguation rule: if the argument contains '@' it is treated as an email
-address (LIST mode); otherwise it is treated as a Gmail thread ID (FETCH mode).
+A subject search and a Gmail web thread URL are also accepted:
+
+  python scripts/gmail.py 'SM Store Locator upgrade'                      # SEARCH by subject
+  python scripts/gmail.py 'https://mail.google.com/mail/u/0/#all/<hexId>'  # FETCH via URL
+
+Disambiguation rule (checked in this order): an argument starting with http(s)
+is a Gmail web URL (FETCH the hex thread id in its fragment; a legacy
+#all/<hexId> or #label/<hexId> URL carries one, while an opaque FMfcg... web id
+cannot be converted and fails loud, pointing you at subject search); an argument
+containing '@' is an email address (LIST); an argument with whitespace, or any
+non-hex bare token, is a subject SEARCH; a bare hex token is a thread id (FETCH).
 
 Auth:
   - App identity:  ~/.config/pipulate/credentials.json (override: PIPULATE_GMAIL_CREDENTIALS)
@@ -52,6 +61,30 @@ CREDS_PATH = os.environ.get('PIPULATE_GMAIL_CREDENTIALS') or str(
 TOKEN_PATH = os.environ.get('PIPULATE_GMAIL_TOKEN') or str(
     Path.home() / '.config' / 'pipulate' / 'gmail_token.json'
 )
+
+# A Gmail API thread id is lowercase hex (e.g. 18f4ad923b1c83e2). Gmail's
+# opaque web ids (FMfcg..., Ktbx..., CXKn...) carry letters outside [a-f], so
+# this regex cleanly discriminates a usable id from an unconvertible web id.
+_HEX_ID_RE = re.compile(r'^[0-9a-fA-F]{10,}$')
+
+
+def parse_gmail_url(url):
+    """Pull a thread identifier out of a Gmail web URL fragment.
+
+    Returns (kind, segment):
+      ('thread_id', '<hex>')  — a usable API hex thread id (legacy
+                                #all/<hexId> or #label/<hexId> URLs carry one).
+      ('opaque',   '<seg>')   — Gmail's opaque, per-account web id (FMfcg...).
+                                The API never returns it and it cannot be
+                                converted offline, so the caller must fail loud
+                                and steer the human to subject search.
+    The fragment is the last '/'-delimited segment after the '#'.
+    """
+    from urllib.parse import urlparse, unquote
+    parsed = urlparse(url)
+    frag = unquote(parsed.fragment)
+    seg = frag.rstrip('/').split('/')[-1] if frag else ''
+    return ('thread_id', seg) if _HEX_ID_RE.match(seg) else ('opaque', seg)
 
 
 # ----------------------------------------------------------------------------
@@ -231,6 +264,46 @@ def list_threads(service, address, max_results):
         print()
 
 
+def search_threads(service, subject, max_results):
+    """SEARCH mode: threads whose subject matches, newest-update first.
+
+    Uses the Gmail `subject:` operator with a quoted phrase. Each hit prints
+    its FETCH-able hex thread id, so the next drill-down is a copy-paste.
+    """
+    q = 'subject:"' + subject.replace('"', '') + '"'
+    resp = service.users().threads().list(
+        userId='me', q=q, maxResults=max_results
+    ).execute()
+    threads = resp.get('threads', [])
+
+    print(f'# Gmail threads with subject matching "{subject}" (most recent first)\n')
+    if not threads:
+        print("(no threads found — try fewer or different subject words)")
+        return
+
+    for t in threads:
+        meta = service.users().threads().get(
+            userId='me', id=t['id'], format='metadata',
+            metadataHeaders=['Subject', 'From', 'Date'],
+        ).execute()
+        msgs = meta.get('messages', [])
+        if not msgs:
+            continue
+        last = msgs[-1]
+        h = _headers(last)
+        subj = h.get('subject', '(no subject)')
+        sender = h.get('from', '(unknown sender)')
+        date = _message_date(last)
+        snippet = (t.get('snippet') or '').strip()
+
+        print(f"[{date}] {t['id']}  {subj}")
+        print(f"    from: {sender}  |  messages: {len(msgs)}")
+        if snippet:
+            print(f"    snippet: {snippet}")
+        print()
+    print("# Next: python scripts/connectors/gmail.py <thread_id>   (full transcript)")
+
+
 def fetch_thread(service, thread_id):
     """FETCH mode: full clean transcript of one thread, chronological.
 
@@ -332,7 +405,8 @@ def main():
     )
     parser.add_argument(
         'query', nargs='?', default=None,
-        help='Email address (LIST mode) or Gmail thread ID (FETCH mode).'
+        help='Email address (LIST), Gmail thread URL or hex id (FETCH), '
+             'or "subject words" (SEARCH).'
     )
     parser.add_argument(
         '-n', '--max', type=int, default=10,
@@ -347,14 +421,32 @@ def main():
     if args.check:
         sys.exit(check())
     if args.query is None:
-        parser.error('a query is required: an email address (LIST) or a thread ID (FETCH)')
+        parser.error(
+            'a query is required: an email address (LIST), a Gmail thread URL '
+            'or hex id (FETCH), or "subject words" (SEARCH)')
 
+    query = args.query.strip()
     try:
         service = get_service()
-        if '@' in args.query:
-            list_threads(service, args.query, args.max)
+        if query.startswith(('http://', 'https://')):
+            kind, seg = parse_gmail_url(query)
+            if kind == 'thread_id':
+                fetch_thread(service, seg)
+            else:
+                sys.stderr.write(
+                    f"That Gmail URL carries an opaque web id ({seg or '(empty)'}), "
+                    "which the Gmail\nAPI never returns and cannot convert to a "
+                    "thread id. Search by subject\ninstead and FETCH the hex thread "
+                    "id it prints:\n"
+                    '    python scripts/connectors/gmail.py "SM Store Locator upgrade"\n'
+                )
+                sys.exit(1)
+        elif '@' in query:
+            list_threads(service, query, args.max)
+        elif any(ch.isspace() for ch in query) or not _HEX_ID_RE.match(query):
+            search_threads(service, query, args.max)
         else:
-            fetch_thread(service, args.query)
+            fetch_thread(service, query)
     except HttpError as e:
         sys.stderr.write(f"Gmail API error: {e}\n")
         sys.exit(1)
