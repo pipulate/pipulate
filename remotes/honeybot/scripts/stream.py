@@ -609,7 +609,15 @@ def run_station_break(env, profile_dir):
     # finishes instead of being clipped mid-word — only the queued backlog is
     # dropped. The queue.join() below then rides the real voice clock, so the
     # lead-in lands after the current line ends, not on top of it.
-    narrator.flush_queue()
+    dropped = narrator.flush_queue()
+    if dropped:
+        # MEANINGFUL SILENCE OVER UNCONDITIONAL CHATTER: gated on the
+        # interesting case, so a healthy pipeline says nothing and an unhealthy
+        # one says exactly how unhealthy. Deliberately NOT added to interrupt()
+        # -- there, dropping the backlog is the INTENT (you are cutting to
+        # breaking news); here it is collateral.
+        print(f"📉 STATION BREAK DROPPED {dropped} unspoken item(s) — "
+              f"director ran ahead of the voice; that text was never heard.")
     narrator.say("We interrupt this program for a station identification break.")
     narrator.queue.join()
     time.sleep(1.2)
