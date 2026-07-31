@@ -644,10 +644,12 @@ def perform_show(script):
     start_time = time.time()
     duration_seconds = SHOW_DURATION_MINUTES * 60
 
-    # Initialize the Pitch Timer to the current time so it doesn't force a station
-    # break immediately on a fresh restart cycle. The test_forest.py harness handles
-    # out-of-band validation now.
-    last_pitch_time = time.time()
+    # THE PITCH GRID. Derived from start_time, which is set two lines above and
+    # never reset -- the same anchored-once pattern the cycle timer and the
+    # standby deadline already use in this file. The first slot is one full
+    # PITCH_INTERVAL out, preserving the old behavior of never forcing a break
+    # immediately on a fresh restart cycle.
+    next_pitch_time = next_slot(start_time, PITCH_INTERVAL, start_time)
 
     profile_dir = tempfile.mkdtemp(prefix="honeybot_fx_")
 
