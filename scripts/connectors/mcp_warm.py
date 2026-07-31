@@ -251,7 +251,16 @@ def main():
                         help=f"MCP server URL (default: {DEFAULT_RESOURCE})")
     parser.add_argument("--out", default=str(DEFAULT_OUT),
                         help=f"Token file to write (default: {DEFAULT_OUT})")
+    parser.add_argument("--refresh", action="store_true",
+                        help="Spend the stored refresh_token instead of "
+                             "opening a browser. No TTY required.")
     args = parser.parse_args()
+
+    # Branch ABOVE gate0: the refresh path opens no browser and blocks on
+    # nothing, so the TTY requirement that guards the interactive dance must
+    # not be inherited by a flow that has no interaction in it.
+    if args.refresh:
+        sys.exit(refresh(args.out))
 
     if not (sys.stdin.isatty() and sys.stderr.isatty()):
         die("mcp_warm RED gate0: not a TTY. This opens a browser and blocks "
