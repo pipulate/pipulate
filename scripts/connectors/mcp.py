@@ -142,6 +142,43 @@ def die(msg, code=1):
     sys.exit(code)
 
 
+def _expiry_note(data):
+    """Return a human-readable verdict on a warmed token's clock, or None
+    when the record carries none.
+
+    THE CINDERELLA RUNG, READ-ONLY HALF. mcp_warm.py stamps obtained_at
+    (ISO, UTC) and expires_in; the 2026-07-29 vendor flight minted a
+    300-second access token, which goes stale long before the operator's
+    memory of minting it does. Until a refresh actuation exists, a stale
+    token arrives disguised as an HTTP 401 at gate2 -- a symptom pointing
+    nowhere near its cause. This function only READS the clock and names
+    what it sees; refreshing is a separate actuation and this must never
+    grow into one, because a token resolver that silently re-mints is a
+    resolver whose failures stop being visible.
+
+    The token VALUE never touches this function's output.
+    """
+    obtained_at = data.get("obtained_at")
+    expires_in = data.get("expires_in")
+    if not obtained_at or not expires_in:
+        return None
+    try:
+        minted = datetime.fromisoformat(obtained_at)
+        if minted.tzinfo is None:
+            minted = minted.replace(tzinfo=timezone.utc)
+        age = (datetime.now(timezone.utc) - minted).total_seconds()
+        life = float(expires_in)
+    except (TypeError, ValueError):
+        return None
+    remaining = life - age
+    if remaining > 0:
+        return f"~{int(remaining)}s left of a {int(life)}s life"
+    has_refresh = "yes" if data.get("refresh_token") else "no"
+    return (f"EXPIRED {int(-remaining)}s ago (life was {int(life)}s); "
+            f"refresh_token present: {has_refresh}; re-mint with "
+            "python scripts/connectors/mcp_warm.py")
+
+
 def resolve_token(token_env=None):
     """(env_var_name, value) for the first set var; (None, None) if cold.
     If value points to a JSON token file, extracts the access_token field.
