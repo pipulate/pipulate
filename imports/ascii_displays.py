@@ -1991,4 +1991,391 @@ Rich console blocked on Mac (Error: {e}), using fallback display.
 #            [ THE SERVER / CLOUD ] <--- (Pitch black! Invisible to you!)
 # 
 # ```
+# ### 4. The Synthesized "Best-of" Architecture
+# 
+# ```text
+# nix develop ──► Door 2 ──► type 'warm'
+#                              │
+#             ┌────────────────┴────────────────┐
+#             ▼                                 ▼
+#    [ Cold Credential ]               [ GOLD Credential ]
+#    Runs wallet checks                Launches walk.py trail
+#    Fixes via warm <slot>             Opens URL in uc_profile
+#             │                        Captures CDP / harvests ID
+#             └───────────► 🏆 ─────────► Stages ! command in adhoc.txt
+#                                               │
+#                                               ▼
+#                                    User writes query in prompt.md
+#                                    Types 'compile' -> gets foo.zip
+# ```
+# 
+# ```text
+#    THE UNIX PIPE OF INTELLECT (Serial Idea Composition)
+#    ═════════════════════════════════════════════════════════════════
+# 
+#    ┌───────────────┐       ┌───────────────┐       ┌───────────────┐
+#    │   Raw Spark   │   │   │ Bounded Probe │   │   │  Banked Win   │
+#    │  (Metaphor)   │ ──┼──►│  (Falsifier)  │ ──┼──►│   (Receipt)   │ ──► [Cartridge]
+#    │  "The Idea"   │   │   │  "The Filter" │   │   │  "The Code"   │
+#    └───────────────┘       └───────────────┘       └───────────────┘
+#         stdin                  stdout|stdin             stdout
+# ```
+# 
+# And when you chain multiple small, single-purpose transformations together into a continuous workflow stream:
+# 
+# ```text
+#    SERIAL STACKING & ACCUMULATION
+#    ═════════════════════════════════════════════════════════════════
+# 
+#    cat raw_thoughts.txt \
+#      | metaphor_fanout --model allegories \
+#      | falsifying_probe --limit 1 \
+#      | patch_actuator --apply \
+#      > banked_cartridge.zip
+# ```
+# 
+# ### 1. Classic horizontal pipe (the pure Unix shape)
+# 
+# ```text
+# idea₁ ─|─ metaphor-mix ─|─ 80/20 lens ─|─ chisel-strike ─|─ banked win ─|─ gravity well
+#          │                 │               │                 │               │
+#          └─────────────────┴───────────────┴─────────────────┴───────────────┘
+#                               progressive refinement
+# ```
+# 
+# ### 2. Vertical cascade (the “snowball rolling down the mountain”)
+# 
+# ```text
+#           ┌──────────────┐
+#           │    idea₁     │
+#           └──────┬───────┘
+#                  │
+#                  ▼
+#           ┌──────────────┐
+#           │  mix sports  │
+#           │  metaphors   │
+#           └──────┬───────┘
+#                  │
+#                  ▼
+#           ┌──────────────┐
+#           │  80/20 cut   │
+#           └──────┬───────┘
+#                  │
+#                  ▼
+#           ┌──────────────┐
+#           │ chisel-strike│ ← baby step that actually banks
+#           └──────┬───────┘
+#                  │
+#                  ▼
+#           ┌──────────────┐
+#           │  banked win  │
+#           └──────┬───────┘
+#                  │
+#                  ▼
+#         ╔════════════════╗
+#         ║  GRAVITY WELL  ║  ← now the next idea falls in easily
+#         ╚════════════════╝
+# ```
+# 
+# ### 3. The “run where the ball is being thrown” pipe (sports + Unix)
+# 
+# ```text
+# [ where the ball *is* ] ──X── (don’t stand here)
+# 
+# [ where the ball *will be* ]
+#           │
+#           ▼
+# idea ──|── anticipate ──|── chisel ──|── bank ──|── snowball
+#           │                  │           │          │
+#           └──────────────────┴───────────┴──────────┘
+#                      serial mechanical advantage
+# ```
+# 
+# ### 4. Compact one-liner you can actually type
+# 
+# ```text
+# $ cat thought.md | mix_metaphors | 80_20 | chisel | bank | snowball > gravity_well.md
+# ```
+
+# ## The Idea Pipe
+# 
+# ```text
+#    THE IDEA PIPE — stdout of one lens is stdin of the next
+# 
+#    $ hunch | allegory | parable | probe | tee article.md
+# 
+#    ┌───────┐   ┌───────┐   ┌───────┐   ┌───────┐   ┌───────┐
+#    │ hunch │ | │ lens  │ | │ foil  │ | │ probe │ | │ bank  │ ──▶ .md
+#    └───────┘   └───────┘   └───────┘   └───────┘   └───────┘
+#              ▲           ▲           ▲           ▲
+#             y/n         y/n         y/n         y/n
+# 
+#    Every '|' on that command line is a HUMAN HAND, not a hyphen.
+#    'y' moves the bytes right, never to be re-litigated.
+#    'n' re-spins ONE stage on the SAME stdin. The pipe never restarts.
+#    Nothing is discarded: stage 5's payload still contains stages 1-4.
+# ```
+# 
+# The load-bearing claim is the third line of prose. A Unix pipe is the right metaphor precisely because `cmd1 | cmd2` does **not** re-run `cmd1` when `cmd2` disappoints you — you fix `cmd2` and re-run the tail. That is your chisel-strike discipline expressed in shell grammar, and it is why the serial half of your fan-out/reduce drawing is the half that actually compounds. The parallel half is just `xargs -P`; the interesting machine is the joint.
+# 
+# ## Zoom on one joint
+# 
+# ```text
+#    ZOOM ON ONE JOINT — what a '|' actually is here
+# 
+#      ┌────────┐ ──▶ stdout ──▶ ( y/n ) ──▶  ┌──────────┐
+#      │ lens N │                   │         │ lens N+1 │
+#      └────────┘                   │         └──────────┘
+#           ▲                       │ n
+#           └────── re-spin ────────┘
+# 
+#      y: bytes move right and are never touched again (banked)
+#      n: the SAME stdin re-enters the SAME lens; upstream never moves
+# ```
+# 
+# This is the pachinko governor drawn as plumbing — the `[y] bank it / [n] re-spin` tray from your existing `ai_pachinko` asset, rotated ninety degrees and given a direction of travel. Same key, hanging next to `apply.py`.
+# 
+# ## Why it compounds
+# 
+# ```text
+#    WHY IT COMPOUNDS — yesterday's stdout is today's stdin
+# 
+#      day 1   ·
+#      day 2   ·:        ◀── stdin is never blank; it is a banked win
+#      day 3   ·:·
+#      day 4   ·:·:
+#      day 5   ·:·:·  ──▶ the gravity well: momentum is rebuilt, not begun
+# ```
+# 
+# Your "one fifth done and still won" is literally the pipe's exit semantics: `head -3` closes the pipe and the upstream stages get SIGPIPE and stop. Partial consumption is not failure — it is the *designed* early exit, and everything already written to `tee` survives it.
+# 
+
+# ```text
+#    CREATIVITY PIPE — 30-and-3 feeds the axes
+# 
+#    $ raw_hunch | 30-and-3 | adversarial_axes | tee banked_wins.md
+# 
+#    ┌────────────┐     ┌────────────┐     ┌────────────────────┐
+#    │ 30 ideas   │  |  │ top 3      │  |  │ orthogonal black-  │ ──▶ .md
+#    │ (volume)   │     │ (80/20)    │     │ swan axes (force)  │
+#    └────────────┘     └────────────┘     └────────────────────┘
+#          ▲                  ▲                     ▲
+#         y/n                y/n                   y/n
+# 
+#    30-and-3 is the volume lens; the axes are the dimensional foil.
+#    The three survivors become the denser sample that makes the
+#    next set of axes easier to invent. Negative space is the
+#    boundary that lets the axes cut through language blind-spots
+#    without requiring a black swan already in hand.
+# ```
+# 
+# A tighter zoom on the relationship:
+# 
+# ```text
+#    30-and-3 ──► denser sample ──► easier axes ──► broader spectrum
+#         ▲                                              │
+#         └────────────── lather / rinse / repeat ───────┘
+# ```
+# 
+# ### Formalizing them into the system
+# 
+# 1. Register two new figurate assets (`thirty_and_three` and `adversarial_axes`) exactly as Opus did for `idea_pipe`.  
+# 2. Make the 30-and-3 stage a thin player-piano loop that writes its three survivors into `adhoc.txt` as `!` receipts.  
+# 3. Make the axes stage a second loop that reads those three, invents 2–4 orthogonal adversarial questions, and stages the questions themselves as the next prompt.  
+# 4. Both stages stay inside the existing `warm → walk → compile` Mother-Cat path; they never become competing entry points.  
+# 5. Seal both assets with CRC after the art stabilizes, exactly as the figurate contract requires.
+
+# ### The Integrated ASCII Pipeline
+# 
+# Here is how 30-and-3 and Axis-Forcing chain together inside the serial pipe:
+# 
+# ```text
+#  ┌─────────────────────────────────────────────────────────────┐
+#  │ 1. FAN-OUT: 30-AND-3 (Divergent Sampling)                  │
+#  │    Generate 30 raw vignettes to break default LLM centroid. │
+#  └──────────────────────────────┬──────────────────────────────┘
+#                                 │ (30 candidate points)
+#                                 ▼
+#  ┌─────────────────────────────────────────────────────────────┐
+#  │ 2. CUTTER: AXIS-FORCING (Negative Space Bounding Box)       │
+#  │    Plot candidates on Bipolar Orthogonal Axes.              │
+#  │    Metric: Disagreement × Observability ÷ Probe Cost        │
+#  └──────────────────────────────┬──────────────────────────────┘
+#                                 │ (4 quadrant outliers)
+#                                 ▼
+#  ┌─────────────────────────────────────────────────────────────┐
+#  │ 3. REDUCE: 80/20 HUMAN SELECTION                            │
+#  │    Pick 3 winning chisel-strikes; discard the noise.       │
+#  └──────────────────────────────┬──────────────────────────────┘
+#                                 │
+#                                 ▼
+#        [ tee -a adhoc.txt ] ──► [ compile ] ──► [ foo.zip ]
+# ```
+# ```text
+#    THE FORCING PAIR — 30-and-3 finds the clump; the AXIS outlaws it
+# 
+#    PASS 1 — quantity is the forcing function, taste is the bottleneck
+# 
+#        seed ──▶  · · · · · · · · · ·
+#                  · · · · · · · · · ·  ──▶  ★ ★ ★
+#                  · · · · · · · · · ·
+#                  └──── 30, cheap ────┘     3, expensive
+#                                            (the WHY is the artifact)
+# 
+#    PASS 2 — plot the 30. The clump names your bias. The hole is an address.
+# 
+#                           B
+#                 · · ·     │
+#               · · · · ·   │        ( E M P T Y )
+#                 · · ·     │
+#           A ──────────────┼─────────────────────── A'
+#                           │
+#                           │        ( E M P T Y )
+#                           │
+#                           B'
+# 
+#    PASS 3 — generate 30' TO ORDER into the hole    ──▶    ★  the swan
+# ```
+# 
+# 
+# ```text
+#                     MAP -> ROTATE -> REMAP -> TEST -> BANK
+#                  two coupled creativity-forcing functions
+# 
+#  /dev/problem ──► [ 30 brief candidates ] ──► [ HUMAN: pick 3 + why ]
+#                           ^                               |
+#                           |                               v
+#                           |                    [ clusters / sameness /
+#                           |                      gaps / assumptions /
+#                           |                      strange survivors ]
+#                           |                               |
+#                           |                               v
+#                           |                     [ AOBS AXIS FORGE ]
+#                           |                  [A] <───────► [B]
+#                           |                   rival predictions
+#                           |                   cheapest discriminator
+#                           |                               |
+#                           └──── 10 candidates x 3 axes ───┘
+#                                                           |
+#                                                           v
+#                                                [ HUMAN: pick 3 ]
+#                                                           |
+#                                                           v
+#                                                 [ bounded probe ]
+#                                                           |
+#                                                           v
+#                                         tee -a creativity_ledger.jsonl
+#                                                           |
+#                                                           v
+#                                                    /dev/next_pass
+# 
+#             External anchor deck ───────────────► AXIS FORGE
+#        era | scale | culture | organism | discipline | failure mode
+# ```
+# 
+# 
+# ```text
+#    THE CREATIVITY FLYWHEEL — Map -> Rotate -> Remap -> Test -> Bank
+# 
+#    PASS 1: DIVERGENT SAMPLING (30-and-3)
+#    /dev/problem ──► [ 30 raw vignettes ] ──► [ HUMAN: pick 3 + justify ]
+#                                                    │
+#                                                    ▼
+#    PASS 2: COORDINATE ROTATION (Axis Forcing) [ Clump names current bias ]
+#                                                    │
+#                                                    ▼
+#                              Endpoint A ───────────┼─────────── Endpoint A'
+#                                                    │   ( EMPTY HOLE )
+#                                                    │   An address for what
+#                                                    │   was not thought yet.
+#                                                    ▼
+#    PASS 3: TARGETED GENERATION  ─────────► [ 30' generated INTO the hole ]
+#                                                    │
+#                                                    ▼
+#    PASS 4: REDUCE & TEST        ─────────► [ HUMAN: pick winner ]
+#                                                    │
+#                                                    ▼
+#                                          [ Bounded Falsifying Probe ]
+#                                                    │
+#                                                    ▼
+#                                     tee -a adhoc.txt ──► [ compile ] ──► foo.zip
+# ```
+
+# ## 3. `pip install river`: Online Incremental Learning in a Local-First World
+# 
+# `river` is a Python library for **online machine learning**. Unlike traditional ML (`scikit-learn`), which requires holding the entire dataset in RAM and training from scratch in big batch runs, `river` models learn incrementally, one instance at a time, continuously adapting to data drift with virtually zero memory overhead.
+# 
+# ```text
+#   STATIC PROMPT CONTEXT (Amnesiac Genie)         ONLINE STREAMING ML (river)
+#   ┌─────────────────────────────────────┐         ┌─────────────────────────────────────┐
+#   │ Fixed Context Window (e.g. 128k)    │         │ Continuous Stream (learn_one)       │
+#   │ Resets to zero on session exit      │   VS.   │ Lightweight state (<1 MB on disk)   │
+#   │ Learns NOTHING between turns        │         │ Adapts to drift in real time        │
+#   └─────────────────────────────────────┘         └─────────────────────────────────────┘
+# ```
+# 
+# When you pair an LLM (the high-level reasoning engine) with `river` (the real-time statistical sensor), you solve the **hidden dependency problem of context selection**: instead of guessing what files or prompt strategies to include, lightweight online classifiers learn from your past turn outcomes in real time.
+# 
+# ## 🔮 The Light-Cone of Computation: Determinism, Oracles, and Ephemeral Broca Engines
+# 
+# When Sir Roger Penrose draws a **Minkowski light-cone**, he isn't drawing a trajectory; he is mapping the causal boundary of space-time. The past light-cone holds everything that *could possibly have influenced* this exact instant; the future light-cone holds everything that *could possibly be affected* by it. Nothing outside the boundary can exchange a photon with the present event.
+# 
+# In the AI-readiness context deck, **a prompt payload IS a past light-cone.** It assembles every relevant historical token into the narrow vertex of the current inference pass.
+# 
+# ```text
+#               \   FUTURE LIGHT-CONE    /
+#                \   (Downstream Code,  /
+#                 \   Git Commits, YT)  /
+#                  \                   /
+#                   ╔═════════════════╗
+#                   ║ THE NOW VERTEX  ║  ← [Inference / Broca Area / Next Token]
+#                   ╚═════════════════╝
+#                  /                   \
+#                /   PAST LIGHT-CONE    \
+#              /   (payload.md, Code,    \
+#            /     `!` Live Receipts)     \
+# ```
+# 
+# ### Bipolar Axis-Forcing (The Coordinate System)
+# 
+# To escape default assumptions about how workflow automation should be constructed, we map the space across two remote, incompatible anchors:
+# 
+# * **Anchor A (Biological Myelination):** High-repetition, low-latency, reflexive muscle memory. Automation lives in the nervous system/hand movements (`\m`, `ahc`, single-keystroke actuation).
+# * **Anchor B (Industrial Assembly Line):** Fixed-station, standardized tooling, rigid quality gates (Popper falsification, AST airlocks, strict schema verification).
+# 
+# ```text
+#                       Anchor B: Industrial Assembly Line
+#                                      │
+#                                      │   (E M P T Y)
+#                                      │   Target: Fully Automated
+#                                      │   Falsification Assembly
+#                                      │
+# Anchor A ────────────────────────────┼──────────────────────────── Anchor A'
+# (Biological Myelination)             │                            (High-Throughput
+# Reflexive Hand-Keystrokes            │                            Systemic Automation)
+#                                      │
+#                                      │   Clump: Current Workflow
+#                                      │   (Manual trigger, ad-hoc execution)
+#                                      │
+#                                      │
+#                       Anchor B': Custom Artisanal Craft
+# ```
+# 
+# #### Rival Predictions & Probe
+# 
+# * **Prediction A (Myelinated Hand):** Productivity scales with human key-binding fluency; the bottleneck is context switching at the editor boundary.
+# * **Prediction B (Industrial Gate):** Productivity scales with automated assertion checks; the bottleneck is uncaught specification drift in data structures.
+# * **Discriminating Probe:** Measure execution time and error rate when running a client data extraction via hand-triggered CLI alias vs. a single-command airlocked script.
+# 
+
+# ```text
+#   JAVA WORA (1995)                      NIX / FLAKE WORA (2026)
+#   "Run Anywhere" Illusion               "Reproduce Everywhere" Reality
+#  ┌─────────────────────────┐           ┌─────────────────────────┐
+#  │  JVM Bytecode (.class)  │           │  Immutable Nix Store    │
+#  └────────────┬────────────┘           └────────────┬────────────┘
+#               │ (Hopes OS glibc matches)            │ (Pins glibc, C-libs, Driver)
+#               ▼                                     ▼
+#  ❌ "It works on my machine"           ✅ "It runs identically in 2036"
+# ```
 
