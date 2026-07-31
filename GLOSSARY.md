@@ -57,6 +57,15 @@ Entries are alphabetical, numbers spelled as spoken.
   resistance.* From Glinda of Oz: the unclimbable barrier ringing the
   Flatheads' mountain. Auth friction, rate limits, and format pedantry push
   casual visitors back into the crowded free zone; push through and it snaps.
+- **Continuation Ladder** — *four reasons a loop keeps going.* Skyhook
+  (mechanism — `while element_exists()`, no mind anywhere, the control
+  group), Coin Flip (chance — one bit of entropy, still no mind), Will
+  (volition — the first rung where anything decides), Cinderella
+  (competence under deadline — refresh the token before it expires or the
+  ride ends). Each rung adds exactly one variance source over the rung
+  below. HARNESS INVARIANT: the check lives in deterministic code evaluated
+  each iteration, never in the agent's instructions. A prompt saying "check
+  before continuing" is a convention; a `while` guard is physics.
 - **Desert kite** — *funnel architecture.* Ancient game-herding walls; here,
   converging on-ramps that herd attention to one gate instead of twelve doors.
 - **Dismount (\k)** — *end-of-ride banking beat.* Verify against receipts,
