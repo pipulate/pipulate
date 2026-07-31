@@ -144,13 +144,21 @@ class ChipVoiceSystem:
         # ---------------------------------------------------------
 
         # 🛡️ THE ACOUSTIC SANITIZER: Purge visual markup before synthesis.
-        # THIS IS THE SINGLE OWNER. Sanitization is MECHANISM -- content-blind,
-        # universal, and safe to centralize here, where every scripted line and
-        # every future generated line both pass through. Callers must not
-        # re-implement it; a second stripper upstream means the next fix lands
-        # in the wrong one. (Disclosure is the opposite: it is CONTENT, it
-        # requires knowing whether the string was authored or generated, and
-        # this layer cannot know that -- so it stays at the caller.)
+        # OWNER OF THE LOCAL LANE ONLY. This block previously claimed to be THE
+        # SINGLE OWNER of sanitization, "where every scripted line and every
+        # future generated line both pass through." That was false the day it
+        # was written: remotes/honeybot/scripts/content_loader.py runs its own
+        # clean_markdown() on a separate machine, handling liquid tags, tracer
+        # dye, code fences, and URL humanization that this function has never
+        # seen, and the article text is fully sanitized THERE before anything
+        # could reach here. A false single-owner claim is worse than two honest
+        # strippers, because the next reader reasons from it: the 2026-07-31
+        # side-channel investigation lost a probe to exactly that premise.
+        # TWO LANES, ONE GRAMMAR. Keep the bracket rule identical in both; when
+        # it changes, change it in both, and say so in the same commit.
+        # (Disclosure remains the caller's job: it is CONTENT, it requires
+        # knowing whether the string was authored or generated, and this layer
+        # cannot know that.)
         # Tags substitute to a SPACE, not to nothing: `press<b>X</b>now` must
         # not become `pressXnow`. Collapse afterward so the spoken line matches
         # the line on screen.
