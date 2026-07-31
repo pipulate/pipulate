@@ -156,6 +156,16 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Prompt Fu** — *the context-compiler discipline.* prompt_foo.py plus the
   Book: compile thoughts-to-go as one deliberate first turn instead of a
   drifting discussion.
+- **RLHF** — *reinforcement learning from human feedback.* Collect human
+  comparisons, fit a reward model to them, optimize the policy against that
+  reward under a KL penalty leashing it to the pretrained model. NO QUANTILE
+  IS TRIMMED — the trimmed mean is a different instrument. Variance narrows
+  anyway, for three reasons: averaged preference beats idiosyncratic
+  excellence; KL-regularized optimization is mode-seeking, concentrating mass
+  rather than preserving spread; and rater guidelines become the ceiling on
+  output range. This is the training-time mechanism under the
+  VARIANCE-SUPPRESSION RULE: sycophancy is not a flaw the model picked up, it
+  is what optimizing against averaged preference on a leash produces.
 - **Rolling pin** — *corpus index.* lsa.py's dated-slug spine: the 40,000-foot
   view of the book-ore, flattening a thousand articles into one scannable list.
 - **Sandworm ride / the Worm** — *one steered multi-turn summoning / rented
