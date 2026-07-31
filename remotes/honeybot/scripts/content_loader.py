@@ -274,9 +274,13 @@ def clean_markdown(text):
     # --- COLLAPSE CONSECUTIVE CODE MENTIONS ---
     # Merge any run of sentinels separated only by whitespace into a single one.
     text = re.sub(rf'(?:{CODE_SENTINEL}\s*)+{CODE_SENTINEL}', CODE_SENTINEL, text)
-    text = text.replace(CODE_SENTINEL, '[See the code at MikeLev dot Eye N slash latest.]')
+    # DE-BRACKETED ON PURPOSE. This cue used to wear [square brackets], which
+    # was harmless while nothing stripped them -- and becomes self-deleting the
+    # instant the side-channel stripper below lands. Brackets are the notation
+    # for "do not speak this," so a cue meant to be HEARD must not wear them.
+    text = text.replace(CODE_SENTINEL, 'See the code at MikeLev dot Eye N slash latest.')
     # Global cap: no article should repeat this more than once.
-    spoken = '[See the code at MikeLev dot Eye N slash latest.]'
+    spoken = 'See the code at MikeLev dot Eye N slash latest.'
     if text.count(spoken) > 1:
         idx = text.index(spoken)
         text = text[:idx + len(spoken)] + text[idx + len(spoken):].replace(spoken, '')
