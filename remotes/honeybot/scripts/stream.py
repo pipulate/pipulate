@@ -234,13 +234,26 @@ class Narrator(threading.Thread):
         but DO NOT kill the audio playing right now. The in-progress line
         finishes cleanly, then the (now-empty) queue takes the next thing to
         say. Used for station breaks, which should never clip a word; the hard
-        interrupt() stays reserved for genuinely urgent cuts (deploy/breaking)."""
+        interrupt() stays reserved for genuinely urgent cuts (deploy/breaking).
+
+        RETURNS THE COUNT DROPPED, because that count is the only available
+        measurement of a magic number governing content loss. dispatch_cue
+        paces the director with `time.sleep(len(content) / 20)` -- an ESTIMATE
+        of Piper's speech rate -- while the Narrator takes however long Piper
+        actually takes. Two unsynchronized clocks. If 20 ch/s runs fast the
+        director outruns the voice, the queue grows, and everything in it is
+        DELETED here rather than deferred: article text the listener never
+        hears, once per station break, silently. A nonzero count is that loss,
+        in items. A persistent zero retires the question."""
+        dropped = 0
         try:
             while True:
                 self.queue.get_nowait()
                 self.queue.task_done()
+                dropped += 1
         except queue.Empty:
             pass
+        return dropped
 
     def run(self):
         while not self.stop_event.is_set():
