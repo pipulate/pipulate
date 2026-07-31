@@ -167,6 +167,83 @@ class _Catch(BaseHTTPRequestHandler):
         pass
 
 
+def refresh(out_path):
+    """THE CINDERELLA RUNG, WRITE HALF. Spend the stored refresh_token for a
+    fresh access_token without opening a browser.
+
+    ONE CAR, NOT TWO: discover() above already performs gate1 (RFC 9728) and
+    gate2 (RFC 8414 / OIDC fallback) and hands back the AS metadata carrying
+    token_endpoint. This path adds a GRANT TYPE, not a mechanism -- which is
+    precisely why the discovery round-trip does not split it in half.
+
+    UNWITNESSED UNTIL GREEN: no refresh has ever been POSTed to this vendor.
+    Public-client refusal, single-use rotation, and refresh_token expiry are
+    all live possibilities. Every one of them dies LOUD at gate6 rather than
+    leaving a half-written token file behind.
+
+    No TTY required and none requested -- there is no browser in this path.
+    """
+    out = Path(os.path.expanduser(out_path))
+    if not out.is_file():
+        die(f"mcp_warm RED gate6: no token file at {out} -- run the full "
+            "browser warm first; there is nothing to refresh.")
+    try:
+        record = json.loads(out.read_text(encoding="utf-8"))
+    except ValueError:
+        die(f"mcp_warm RED gate6: {out} is not JSON")
+    refresh_token = record.get("refresh_token")
+    if not refresh_token:
+        die("mcp_warm RED gate6: token file carries no refresh_token. Rung 4 "
+            "is UNREACHABLE for this credential -- re-run the full browser "
+            "warm and check whether the vendor issues one at all.")
+    client_id = record.get("client_id")
+    if not client_id:
+        die("mcp_warm RED gate6: token file carries no client_id")
+    resource = record.get("resource") or DEFAULT_RESOURCE
+
+    with httpx.Client(timeout=20.0, follow_redirects=True) as client:
+        meta, scopes = discover(client, resource)
+        try:
+            resp = client.post(meta["token_endpoint"], data={
+                "grant_type": "refresh_token",
+                "refresh_token": refresh_token,
+                "client_id": client_id,
+                "resource": resource,
+            })
+        except httpx.HTTPError as e:
+            die(f"mcp_warm RED gate6: refresh transport failure: {e}")
+    if resp.status_code != 200:
+        die(f"mcp_warm RED gate6: token endpoint -> HTTP {resp.status_code}\n"
+            f"{resp.text[:300]}")
+    try:
+        tok = resp.json()
+    except ValueError:
+        die("mcp_warm RED gate6: refresh response is not JSON")
+    if not tok.get("access_token"):
+        die("mcp_warm RED gate6: refresh response carries no access_token")
+
+    record["obtained_at"] = datetime.now(timezone.utc).isoformat()
+    record["access_token"] = tok["access_token"]
+    record["expires_in"] = tok.get("expires_in", record.get("expires_in"))
+    record["token_type"] = tok.get("token_type", record.get("token_type"))
+    record["scope"] = tok.get("scope") or record.get("scope") or " ".join(scopes)
+    # ROTATION-SAFE: keep the existing refresh_token unless the AS hands back
+    # a new one. An AS that rotates on every use supplies one; an AS that does
+    # not must never have its only refresh credential overwritten with None.
+    if tok.get("refresh_token"):
+        record["refresh_token"] = tok["refresh_token"]
+
+    out.write_text(json.dumps(record, indent=2), encoding="utf-8")
+    os.chmod(out, 0o600)
+
+    print(f"# gate6 GREEN: refreshed in place -> {out} (0600)")
+    print(f"#   scope: {record.get('scope') or '(none reported)'} | "
+          f"expires_in: {record.get('expires_in')}")
+    print("# Next: python scripts/connectors/mcp.py "
+          f"{resource.rstrip('/')} --check")
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="One-shot OAuth 2.1 PKCE warmer for remote MCP servers.")
