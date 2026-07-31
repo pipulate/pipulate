@@ -292,6 +292,35 @@ def clean_markdown(text):
     # Remove Links [text](url) -> text
     text = re.sub(r'\[([^\]]+)\]\(.*?\)', r'\1', text)
 
+    # --- THE SIDE-CHANNEL STRIPPER (the on-air lane's missing organ) ---
+    # A bare [square-bracket] span is a STAGE NOTE: written for the page, never
+    # for the microphone. imports/voice_synthesis.py has stripped these since
+    # the acoustic sanitizer landed, and its own comment calls itself THE SINGLE
+    # OWNER of sanitization -- but THIS is a separate lane on a separate machine
+    # that never passes through it, so every stage note in every published
+    # article has been read aloud on the stream. Two lanes, one grammar; the
+    # single-owner claim was the drift, not the code.
+    #
+    # NEWLINE-SAFE WITHOUT DOTALL: [^\]\n] is a NEGATED CLASS, not a dot, so
+    # re.DOTALL is irrelevant here and a grep for DOTALL is a probe that CANNOT
+    # answer this question -- it measures a flag this pattern never needed.
+    #
+    # PARAGRAPH-BOUNDED ON PURPOSE. An UNCLOSED '[' turns a stripper into a
+    # silent content-eater: it swallows to the next ']' anywhere later in the
+    # document, which can be several paragraphs of article. Reading a note aloud
+    # is a wound the listener HEARS; deleting three paragraphs is a wound nobody
+    # hears. The \n(?!\s*\n) branch permits soft wraps inside a note but refuses
+    # to cross a blank line, so an unbalanced bracket degrades to the OLD
+    # behavior (spoken) rather than the worse new one (vanished). The census
+    # below says so out loud either way. Runs AFTER link extraction (so
+    # [text](url) has already become text) and BEFORE the PP4 restoration at
+    # the end (so [[PATRONUS:...]] is still a bracket-free sentinel).
+    opens, closes = text.count('['), text.count(']')
+    if opens != closes:
+        print(f"⚠️  Unbalanced brackets: {opens} open, {closes} close. "
+              f"An unclosed stage note will be SPOKEN, not stripped.")
+    text = re.sub(r'\[(?:[^\]\n]|\n(?!\s*\n))*\]', '', text)
+
     # --- NEW: Humanize Raw URLs for TTS ---
     # Captures https://example.com/foo and converts to "URL from example.com"
     def simplify_url(match):
