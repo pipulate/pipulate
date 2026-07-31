@@ -749,11 +749,17 @@ def perform_show(script):
             # news) stays above; the station-break trigger stays here; the brush
             # primitives live in dispatch_cue, shared by the article roll (trees)
             # and the forest roll (STATION_SEGMENTS beads in forest.py).
-            if command == "SAY" and (time.time() - last_pitch_time) > PITCH_INTERVAL:
+            if command == "SAY" and time.time() >= next_pitch_time:
                 # The Pervasive Pitch: play a forest bead as a station break
                 # BEFORE the triggering sentence, preserving the article's flow.
                 run_station_break(env, profile_dir)
-                last_pitch_time = time.time()
+                # RE-DERIVE, NEVER ACCUMULATE. The old line reset the timer to
+                # "now" AFTER the break returned, so every cycle silently grew
+                # by the break's own duration (~90-120s of real voice time per
+                # bead) plus whatever overshoot the SAY-only check added. Over
+                # a 240-minute show that is roughly four lost breaks, each at a
+                # wandering position. next_slot() reads the grid instead.
+                next_pitch_time = next_slot(start_time, PITCH_INTERVAL, time.time())
 
             dispatch_cue(command, content, env, profile_dir, pace_say=True)
     finally:
