@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,378 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 31 published in the last 7 days
+# There are 1,379 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 32 published in the last 7 days
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -1160,7 +1160,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
 # scripts/articles/lsa.py
 # The following 3 files ARE the system
-~/repos/nixos/autognome.py  # <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
+# ~/repos/nixos/autognome.py  # <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
 prompt_foo.py               # <-- Prompt Fu compiler, makes the very README for AGENTS-like payload you're reading right now, but it needs to be more like that
 foo_files.py                # <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops
 
@@ -1172,7 +1172,7 @@ flake.nix                   # <-- Solves world's WRITE ONCE RUN ANYWHERE problem
 requirements.in             # <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 __init__.py                 # <-- Master versioning
 pyproject.toml              # <-- The PyPI Packaging details
-cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
+# cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
  
 # scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 # scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.

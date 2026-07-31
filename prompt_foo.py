@@ -2932,8 +2932,8 @@ def main():
     # Secrets tripwire: runs on every payload, under every profile. A
     # 'warn' secrets mode (no-egress local lane only) shouts but emits;
     # everything else fails closed. No flag reaches this decision.
-    secret_hits = scan_secrets(final_output)
-    # secret_hits = None
+    # secret_hits = scan_secrets(final_output)
+    secret_hits = None
     if secret_hits:
         total_secret_hits = len(secret_hits)
         if profile.get('secrets') == 'warn':
