@@ -2125,6 +2125,25 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # - Monitor for the `db.py` database getting bigger on Honeybot (Textual dashboards?)
 # - Get a UPS for Pipulate Prime (Z640): the 2026-07-18 blackout restarted the machines; the stream survived by luck and watchdog, the box should not have to gamble
 # - EARMARK: pip install river (online/incremental ML) — design learning-between-turns into the architecture EARLY so static-model loops can adapt; feeds the coin-flip self-prompting Ouroboros whose kill-switch is the Chrome tab holding the drop-hook DOM (User 2026-07-18)
+# - EARMARK: THE CONTINUATION LADDER (seeded 2026-07-31, four rungs, one
+#   variable each): the pedagogical spine of the FDR. Each rung answers
+#   exactly one question -- WHY does the loop continue? -- and adds exactly
+#   one variance source over the rung below it.
+#     1. SKYHOOK   -- continuation by MECHANISM. `while element_exists():`
+#        around the call. No mind anywhere. The control group.
+#     2. COIN FLIP -- continuation by CHANCE. One bit of entropy, still no mind.
+#     3. WILL      -- continuation by VOLITION. First rung where anything decides.
+#     4. CINDERELLA -- continuation by COMPETENCE UNDER DEADLINE. Refresh the
+#        60s OAuth token before it expires or the ride ends.
+#   HARNESS INVARIANT (the whole point): the check lives in DETERMINISTIC CODE
+#   evaluated each iteration, NEVER in the agent's instructions. A prompt
+#   saying "check before continuing" is a CONVENTION; a `while` guard is
+#   PHYSICS. Same distinction as persona-in-structure vs persona-in-intention.
+#   PORTABILITY: the counter-file witness works everywhere; `/proc` inspection
+#   is Linux and WSL only -- Nix normalizes the userland, not the kernel, and
+#   macOS has no procfs. Use `ps`/`lsof` there.
+#   DISCHARGES: rung 4 IS the owed refresh-on-expiry chisel in mcp.py's
+#   resolve_token (banked 2026-07-29). Pedagogy and plumbing pay each other.
 # - Start a new YouTube live-stream for every new published article
 # - Automate post-outage stream recovery: OBS autostart in XFCE session + persistent YouTube stream key collapses the 8-step manual dance; keep the dead stream as canary, make the resurrection hands-free
 # - Turn the YouTube live-stream into an interactive real-time article-picking Jukebox.
