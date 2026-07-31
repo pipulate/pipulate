@@ -46,6 +46,15 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Chip O'Theseus** — *persistent local model plus keychain memory.* An earned
   name, speakable only when the Two-Witness Gate holds: a model actually
   answering, keychain live.
+- **Chirality** — *frozen accident, mirror-locked.* Same formula, mirror-image
+  geometry. Life uses L-amino acids and D-sugars almost exclusively
+  (homochirality) and nobody knows why THAT hand; the mirror works equally
+  well, but the incumbent's machinery only fits one, so the loser is excluded
+  forever. THE COMPLEMENT TO CONVERGENT FORM, and the pair is a discriminator:
+  convergence says the constraint FORCED the shape, chirality says that among
+  equally good shapes one was picked ARBITRARILY and then locked out its twin.
+  Which one you are looking at decides whether to fight a standard or accept
+  it. QWERTY, the `|` glyph, and `/nix/store` are chiral, not converged.
 - **Chisel-strike** — *one bounded command or edit.* Small, reversible,
   receipt-producing; the unit of daily progress.
 - **The Circle** — *apply.py's airlocks.* Exact-match interlock plus AST, Nix,
