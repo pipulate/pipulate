@@ -208,6 +208,9 @@ def resolve_token(token_env=None):
             data = json.loads(default_token_file.read_text(encoding="utf-8"))
             tok = data.get("access_token") or data.get("token")
             if tok:
+                note = _expiry_note(data)
+                if note:
+                    sys.stderr.write(f"# mcp token clock: {note}\n")
                 return "mcp_botify_token.json", tok
         except Exception:
             pass
