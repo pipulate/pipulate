@@ -775,10 +775,9 @@ AI_PHOOEY_CHOP = r"""                                                           
 # against independent vendor authorship, no longer inferred. CINDERELLA
 # CAVEAT RESOLVED 2026-07-29 (in-compile jq receipt: has_refresh=true):
 # the vendor DOES issue a refresh_token, so the 300-second access token
-# is living culture, not perishable cargo. The refresh FLOW remains
-# unimplemented -- mcp.py's resolve_token reads access_token only, so a
-# stale token file still dies at gate2 until a refresh path lands. Owed:
-# one chisel, refresh-on-expiry in resolve_token or mcp_warm --refresh.
+# is living culture, not perishable cargo. 
+# CLOCK LEGIBLE 2026-07-31 (in-compile stderr receipt): resolve_token now emits `# mcp token clock: EXPIRED <n>s ago (life was 300s); refresh_token present: yes` before returning. A stale token still dies at gate2 -- but with cause, magnitude, and remedy named, instead of a bare 401 pointing at the wrong organ. Refresh path landed as mcp_warm.py --refresh; gate6 is
+# UNWITNESSED until one live POST prints gate6 GREEN.
 # A model-mediated tool call enters this system as a RECEIPT or not at all. The
 # receipt is a FOUR-TUPLE the model emits verbatim and never paraphrases:
 #   (1) server — the MCP server URL
@@ -2110,6 +2109,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # - FAMILIAR SWEEP (dangling, seeded 2026-07-21 at dismount): the router line "brilliant Familiar" is capitalized, but published _posts still carry lowercase role-noun "familiar" for Yen Sid-ton. Fix is rgx -v "Yen Sid" + vim hand-judgment per instance — NEVER a blind sed 'familiar'->'Familiar' (that is the PII greedy-name incident replay: "a familiar face" / "familiar pattern" are common-word, not role-noun). Probe: rg -l 'Yen Sid' _posts | xargs -r rg -n '\bfamiliar\b'.
 # - EARMARK: DELTA-NOT-ABSOLUTE COUNTER RULE (banked 2026-07-20): a grep -c probe predicts reliably only as a DELTA straddling the patch; its absolute value requires a hand-run baseline first. Conviction: 'LANE (' predicted 0→2, ran 1→3 — the +2 delta was exact; the invisible baseline was line 1185's NIX PROBES earmark, identified by the closing grep -n receipt.
 # - EARMARK: SINGLE-LINE-WITNESS COROLLARY (banked 2026-07-29): a grep -c witness phrase must survive the target's own line discipline — an 80-column comment wrap can split the phrase across lines and structurally blind a line-oriented grep. Conviction: 'witnessed on flight one' landed hard-wrapped as "witnessed / # on flight one" in the flip car; the AFTER tap read 0 (NON-ZERO EXIT preserved as receipt) against a patch verifiably landed, and only the in-compile raw source witnessed the flip. Pick witnesses from lines that cannot wrap (dated headers like 'BANKED 2026-07-29 (same-day flip'), and when the patched text is your own, confirm the phrase sits on one line before recommending the probe.
+# - EARMARK: THE CASE-BLIND WITNESS COROLLARY (banked 2026-07-31, self-convicted in-compile): a witness pattern must match the CASE the target actually uses, or the probe is structurally incapable of returning nonzero and its green is uninformative. Conviction: `rg -c 'Continuation Ladder|Skyhook|Cinderella' GLOSSARY.md foo_files.py` returned `GLOSSARY.md:2` and zero for foo_files.py -- while foo_files.py carried THE CONTINUATION LADDER, SKYHOOK, and CINDERELLA in ALL CAPS the whole time. rg is case-sensitive by default; the constitution shouts in caps and the glossary speaks in title case, so ANY probe spanning both files needs -i or two patterns. Sibling of SINGLE-LINE-WITNESS: that one is about a phrase a line-oriented tool cannot see; this one is about a phrase a case-sensitive tool cannot see. Both are the same disease -- asking a question only one answer could ever survive.
 # - EARMARK: NIX PROBES IN THE COMPILE LANE (banked 2026-07-18): "!" child shells never inherit the interactive nix() rpath shim, so any nix command destined for adhoc.txt must be written LD_LIBRARY_PATH="" nix ... or it dies on libssl version skew. Evidence: the 2026-07-18 compile's failed nix eval receipt.
 # - EARMARK: foo-cartridge-replay-v1 (specified 2026-07-18): fresh instance + foo.zip alone -> one JSON replay statement (schema, cartridge_sha256, repository_position, actionable_request from the FINAL Prompt only, open_pinboard_debts, standing_rules, cheapest_next_probe, uncertainties). Scored as a VECTOR: exact-match mechanical fields, precision/recall on debts, final-Prompt selection, bounded-probe check, unsupported-assertion count, cross-run variance. Never one scalar. Owes: harness implementation; overlay relocation of .jupyter/lab/user-settings out of the worktree.
 # - EARMARK: Magic Cookie + Nix for gitless / air-gapped / client-sanitized auto-updating. Sentinel file or short token authorizes non-git update path while preserving full reproducibility and the human kill-switch. Unexpected MTG combo for the Forever Machine. (User 2026-07-17)
@@ -2142,8 +2142,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   PORTABILITY: the counter-file witness works everywhere; `/proc` inspection
 #   is Linux and WSL only -- Nix normalizes the userland, not the kernel, and
 #   macOS has no procfs. Use `ps`/`lsof` there.
-#   DISCHARGES: rung 4 IS the owed refresh-on-expiry chisel in mcp.py's
-#   resolve_token (banked 2026-07-29). Pedagogy and plumbing pay each other.
+#   DISCHARGES (corrected 2026-07-31): rung 4 pays the refresh-on-expiry chisel owed since 2026-07-29, but NOT in resolve_token. A resolver that silently re-mints is a resolver whose failures stop being visible, so the debt splits: READ half in mcp.py::_expiry_note (landed, witnessed -- EXPIRED 155871s ago printed to stderr on the live receipt), WRITE half in mcp_warm.py --refresh (landed, gate6 UNWITNESSED). Pedagogy and plumbing pay each other; the sensor and the actuator stay in separate files.
 # - Start a new YouTube live-stream for every new published article
 # - Automate post-outage stream recovery: OBS autostart in XFCE session + persistent YouTube stream key collapses the 8-step manual dance; keep the dead stream as canary, make the resurrection hands-free
 # - Turn the YouTube live-stream into an interactive real-time article-picking Jukebox.
