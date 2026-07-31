@@ -66,6 +66,14 @@ Entries are alphabetical, numbers spelled as spoken.
   below. HARNESS INVARIANT: the check lives in deterministic code evaluated
   each iteration, never in the agent's instructions. A prompt saying "check
   before continuing" is a convention; a `while` guard is physics.
+- **Convergent form** — *independent arrival at the same shape.* Insects,
+  pterosaurs, birds, and bats each evolved powered flight from different
+  parts, because the fluid dynamics of air is a fixed constraint and fixed
+  constraints carve attractors. DISTINCT FROM EXAPTATION, and the two predict
+  different moves: convergence says if you know the constraint you can
+  ANTICIPATE the shape before anyone builds it; exaptation says if a form
+  looks extinct, go find the substrate it MIGRATED to. Feathers are both at
+  once — exapted from insulation, converged on an airfoil.
 - **Desert kite** — *funnel architecture.* Ancient game-herding walls; here,
   converging on-ramps that herd attention to one gate instead of twelve doors.
 - **Dismount (\k)** — *end-of-ride banking beat.* Verify against receipts,
