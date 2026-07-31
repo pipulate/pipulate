@@ -101,6 +101,34 @@ except ImportError:
 # Advances on each station break; wraps with modulo over STATION_SEGMENTS.
 _station_index = 0
 
+
+def next_slot(anchor, interval, now):
+    """THE COPPER LIST: the next grid slot strictly AFTER `now`, re-derived
+    from `anchor` every call.
+
+    A Copper WAIT does not mean "wait N seconds." It means "wait until the
+    beam reaches this position," which is why a Copper list cannot accumulate
+    error: it never carries a running total, it re-reads the master clock.
+    This is that, in arithmetic.
+
+    THE SLOT-SKIP IS THE POINT, NOT A ROUNDING ARTIFACT. If a station break
+    overruns and eats the slot behind it, that slot is DROPPED, never queued
+    -- the grid does not shift and the next break lands where it always would
+    have. The beam does not wait for you. Contrast the old
+    `last_pitch_time = time.time()` reset, which measured break-END to
+    break-START and therefore added the break's own duration to every cycle
+    forever.
+
+    Anchored to perform_show's start_time rather than to a fixed wall-clock
+    epoch ON PURPOSE: a global grid would fire a break within seconds of a
+    stream restart, and the old code's comment says that is exactly what it
+    was avoiding. Absolute derivation, local anchor -- both properties kept.
+    """
+    if now < anchor:
+        return anchor + interval
+    return anchor + (int((now - anchor) // interval) + 1) * interval
+
+
 sys.path.append(str(Path(__file__).parent))
 
 try:
