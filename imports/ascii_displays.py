@@ -2395,4 +2395,56 @@ Rich console blocked on Mac (Error: {e}), using fallback display.
 #                                  │
 #                     ARTISANAL (one-off, judgment-led)
 # ```
+# 
+# ```text
+# (1) THE QUIET HOST                      (2) THE LOUD SYMBIONT
+#    install.sh · flake.nix                  OAuth2 · Cinderella · skyhook
+#    Jiminy Cricket infrastructure           ouroboros · Mother Cat Kata
+#    wins by disappearing                    wins by being watched
+#           │                                          │
+#           │   one `curl | bash` launches ────────────┤
+#           │                                          │
+#           └──────────────┐            ┌──────────────┘
+#                          ▼            ▼
+#               ╔═══════════════════════════════════╗
+#               ║  (3) THE MEMBRANE                 ║
+#               ║  the wine-dark sea                ║
+#               ║                                   ║
+#               ║  not a filesystem —               ║
+#               ║  a CONVENTION OF PATHS            ║
+#               ║  walkable by algorithm,           ║
+#               ║  requiring zero intelligence      ║
+#               ║  to yield the key-value pair      ║
+#               ║  you'll need in a moment          ║
+#               ╚═══════════════════════════════════╝
+# 
+#    Endosymbiosis is right: the membrane is not the leftover
+#    space between the two organisms. The membrane is the organism.
+# ```
 
+# ```text
+# FHS NODE          WRITE-OWNER      DESTROYED BY           YOUR TREE
+# ──────────────────────────────────────────────────────────────────────────────
+# /usr              the packager     upgrade, WHOLESALE     Workshop/corporate/
+# /opt/<vendor>     ONE vendor       only that vendor       Workshop/shared/<who>/
+# /usr/local        local admin      nothing — promised     (promotion staging)
+# /home/$USER       the user         rm, and only rm        Playground/ = personal/
+# /var              running system   GC / retention policy  data/  browser_cache/
+# /etc              host admin       conffile merge         ~/.config/pipulate/
+# /tmp              anyone           boot                   foo-*.zip rotation
+# ```
+# 
+# ```text
+# ABSOLUTE (muscle memory)          RELATIVE (namespacing)
+#    the shape never varies            the root is bound late
+# 
+#         <ROOT>/                      ROOT := /usr           ← the distro's
+#         ├── bin/                     ROOT := /usr/local     ← the admin's
+#         ├── lib/                     ROOT := /nix/store/h8x…← content-addressed
+#         ├── share/                   ROOT := ~/.nix-profile ← per-user
+#         └── etc/                     ROOT := ./shared/mike/ ← per-teammate
+# 
+#    autotools said it first: --prefix=. One shape, N roots.
+#    $PATH resolves the collision by PRECEDENCE, not by renaming.
+#    /usr/local/bin BEATS /usr/bin — that IS "promotion" in FHS grammar.
+# ```
