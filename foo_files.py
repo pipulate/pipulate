@@ -51,11 +51,11 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,381 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 31 published in the last 7 days
-# Markdown negotiated: 1,952 reads (0.21% of all responses)
+# There are 1,382 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 32 published in the last 7 days
+# Markdown negotiated: 1,953 reads (0.21% of all responses)
 # DOM hydration: 2577 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-08-01T11:48Z
+# Honeybot telemetry fetched 2026-08-01T18:03Z
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -1250,16 +1250,16 @@ GLOSSARY.md
 # IV. THE WAND🪄 & THE WIZARD🧙‍♂️ - Everything's actually web development these days
 # ============================================================================
   
-config.py                   # <-- Centralize every last configuration in here
-pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-pipulate/core.py            # <-- The Wand (spells)
-
-# imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
-imports/voice_synthesis.py  # <-- The wand can talk to you
-
-server.py                   # <-- The Wizard (big!)
-assets/styles.css           # <-- Those values often get used here for "the look"
-imports/server_logging.py   # <-- Drawing that ASCII art into radically transparent server logs
+# config.py                   # <-- Centralize every last configuration in here
+# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+# pipulate/core.py            # <-- The Wand (spells)
+# 
+# # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
+# imports/voice_synthesis.py  # <-- The wand can talk to you
+# 
+# server.py                   # <-- The Wizard (big!)
+# assets/styles.css           # <-- Those values often get used here for "the look"
+# imports/server_logging.py   # <-- Drawing that ASCII art into radically transparent server logs
 
 # ============================================================================
 # V. THE BOOK DISTILLER - A Choose Your Own Path Adventure, for AI! (overarching story)
