@@ -250,7 +250,13 @@ def sync_all_versions():
         updates.append(update_pyproject_toml(version, description))
         updates.append(update_pyproject_license())
         updates.append(update_flake_nix(version))
-        updates.append(update_install_sh(version))
+        # RETIRED 2026-08-01: update_install_sh() stamped the DOWNSTREAM
+        # ../Pipulate.com/install.sh, and release.py's sync_install_sh() copied
+        # the repo source over it later in the same pipeline -- the stamp was
+        # destroyed by the very next step, every release, and the served
+        # installer read VERSION="1.0.2" against a 2.02 release. The dead
+        # assignment is removed from the source installer in this same car, so
+        # there is nothing left for this call to target.
         updates.append(update_pipulate_init(version, description))
         
         print()
