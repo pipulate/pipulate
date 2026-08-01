@@ -1162,10 +1162,10 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 #  /_/   \_\__,_| |_| |_|\___/ \___|  \____|_| |_|\___/|_|   (_)  
 # Ad Hoc CHOP: The Not-Managed-by-Git Safe-for-Client-Data place  
 
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
+python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
 # scripts/articles/lsa.py
 # The following 3 files ARE the system
-# ~/repos/nixos/autognome.py  # <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
+~/repos/nixos/autognome.py  # <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
 prompt_foo.py               # <-- Prompt Fu compiler, makes the very README for AGENTS-like payload you're reading right now, but it needs to be more like that
 foo_files.py                # <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops
 
@@ -1177,20 +1177,22 @@ flake.nix                   # <-- Solves world's WRITE ONCE RUN ANYWHERE problem
 requirements.in             # <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 __init__.py                 # <-- Master versioning
 pyproject.toml              # <-- The PyPI Packaging details
-# cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
+cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
  
-# scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
-# scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
-# init.lua                    # <-- Daily driver hot-keys that overlap with aliases in flake.nix
+scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
+init.lua                    # <-- Daily driver hot-keys that overlap with aliases in flake.nix
+
+scripts/foo_cartridge.py    # Needs description
+scripts/foo_replay.py       # Needs description
+imports/voice_synthesis.py  # <-- The wand can talk to you
  
 # release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
-# scripts/foo_cartridge.py    # Needs description
-# scripts/foo_replay.py       # Needs description
 # scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
 # scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
 # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
-# imports/voice_synthesis.py  # <-- The wand can talk to you
 # scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
+
 GLOSSARY.md
 
 #                         --- Under this line is were you paste what the AI gives you ---
@@ -1203,16 +1205,16 @@ GLOSSARY.md
 # IV. THE WAND🪄 & THE WIZARD🧙‍♂️ - Everything's actually web development these days
 # ============================================================================
   
-# config.py                   # <-- Centralize every last configuration in here
-# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-# pipulate/core.py            # <-- The Wand (spells)
+config.py                   # <-- Centralize every last configuration in here
+pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
+pipulate/core.py            # <-- The Wand (spells)
 
 # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
-# imports/voice_synthesis.py  # <-- The wand can talk to you
+imports/voice_synthesis.py  # <-- The wand can talk to you
 
-# server.py                   # <-- The Wizard (big!)
-# assets/styles.css           # <-- Those values often get used here for "the look"
-# imports/server_logging.py   # <-- Drawing that ASCII art into radically transparent server logs
+server.py                   # <-- The Wizard (big!)
+assets/styles.css           # <-- Those values often get used here for "the look"
+imports/server_logging.py   # <-- Drawing that ASCII art into radically transparent server logs
 
 # ============================================================================
 # V. THE BOOK DISTILLER - A Choose Your Own Path Adventure, for AI! (overarching story)
