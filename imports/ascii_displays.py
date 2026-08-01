@@ -1942,7 +1942,7 @@ Rich console blocked on Mac (Error: {e}), using fallback display.
 #  │                      THE MOTHER CAT KATA (MCK)                         │
 #  └────────────────────────────────────────────────────────────────────────┘
 #     1. SETTLE (Human)    ──► Pop persistent profile (weblogin) & clear auth/CAPTCHA
-#     2. CAPTURE (Machine) ──► Headless crawl & write CDP wire-truth to browser_cache
+#     2. CAPTURE (Machine) ──► VISIBLE browser (headless is REFUSED) writes CDP wire-truth
 #     3. NARRATE (Machine) ──► Piper TTS speaks status & fences execution until receipt exists
 #     4. ADVANCE (Machine) ──► Step to the next bookmarked URL in the trail YAML
 # 
