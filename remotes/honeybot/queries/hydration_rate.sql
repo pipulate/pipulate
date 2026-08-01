@@ -18,6 +18,23 @@
 -- something does not run JavaScript. An inner join deletes exactly those rows
 -- and still returns a table that looks entirely reasonable.
 --
+-- IDENTITY LIVES IN THE TAIL (conviction 2026-07-31, on this file's FIRST
+-- flight). The original SELECT rendered SUBSTR(ua.value, 1, 60), and the first
+-- sixty characters of a modern bot UA are pure boilerplate: Googlebot, GPTBot,
+-- OAI-SearchBot and ChatGPT-User all open with an identical
+-- "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; " prefix and
+-- diverge only AFTER it. Four distinct ua_ids -- including the single 8.3%
+-- hydrator, the most interesting row on the site -- collapsed into one
+-- indistinguishable label, and eight of twenty rows became unidentifiable.
+-- THE GROUP BY WAS CORRECT AND EVERY NUMBER WAS TRUE; only the RENDER
+-- destroyed what the query had already measured, which is why an auditor
+-- checking the arithmetic would have found nothing. Cut at 'compatible;'
+-- instead, so the name survives and the boilerplate does not.
+-- LOWER() is used ONLY for the search: it is length-preserving over ASCII, so
+-- the position it returns indexes the ORIGINAL string, and the match survives
+-- a "Compatible;" that a case-sensitive INSTR would miss. TRIM absorbs the
+-- optional space after the semicolon, so both spellings render identically.
+--
 -- KNOWN LIMITS, stated so nobody has to rediscover them:
 --   * telemetry carries no status column, so 404s and redirects sit in the
 --     denominator and depress every rate slightly. Direction known, uniform.
@@ -27,6 +44,10 @@
 --     ~40) fail the html_hits floor individually despite real aggregate
 --     volume. Family rollup is a SEPARATE query, modeled on the CASE ladder
 --     in db.py's get_ai_education_status(), not a patch to this one.
+--   * THIS TABLE CANNOT TELL YOU WHETHER THE INSTRUMENT WORKS. If a real
+--     browser does not hydrate at ~100%, every rate below is suspect and the
+--     denominator is contaminated. Run hydration_selftest.sql FIRST; it is
+--     the calibration control and it is cheap.
 WITH pages AS (
     SELECT t.ua_id AS ua_id, SUM(t.count) AS html_hits
     FROM telemetry t
@@ -61,9 +82,13 @@ hydrated AS (
     GROUP BY t.ua_id
 )
 SELECT
-    SUBSTR(ua.value, 1, 60)                                        AS agent,
-    pg.html_hits                                                   AS html,
-    COALESCE(hy.trapdoor_hits, 0)                                  AS triggers,
+    CASE
+        WHEN INSTR(LOWER(ua.value), 'compatible;') > 0
+            THEN TRIM(SUBSTR(ua.value, INSTR(LOWER(ua.value), 'compatible;') + 11, 45))
+        ELSE SUBSTR(ua.value, 1, 45)
+    END AS agent,
+    pg.html_hits AS html,
+    COALESCE(hy.trapdoor_hits, 0) AS triggers,
     ROUND(100.0 * COALESCE(hy.trapdoor_hits, 0) / pg.html_hits, 1) AS pct
 FROM pages pg
 JOIN user_agents ua ON pg.ua_id = ua.id
