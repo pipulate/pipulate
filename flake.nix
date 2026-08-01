@@ -1323,6 +1323,22 @@ print(max(1, n))
           # able to delete evidence.
           alias g='clear -x && echo "Blast Radius Check to establish bisection Left-hand Causal Boundary. It is a Popper-thing. Science." && git status'
           m() {
+            # THE UNTRACKED-FILE DEBT (banked TODO 2026-07-20, discharged
+            # 2026-07-31, receipt-gated): a new file is invisible to
+            # `git diff HEAD`, to `git commit -am`, AND to ai.py -- whose
+            # get_staged_diff() reads `git diff --staged` FIRST and falls
+            # back to bare `git diff`, so an untracked-only change produced
+            # an empty diff, an empty message, and an aborted commit. That
+            # is why every WRITE_FILE car has needed a hand-typed `git add`
+            # between `app` and `m`. Staging FIRST fixes all three at once:
+            # the hint detector below sees the new path, ai.py's --staged
+            # branch sees real content, and commit -am carries what is
+            # already in the index.
+            # RISK, named rather than hidden: -A sweeps unrelated work in
+            # progress into the commit. The .gitignore and the pre-commit
+            # denylist hook are the only fences, and they are the same
+            # fences `blast` has always relied on.
+            git add -A
             local msg
             # THE INTENT PARAMETER (router-churn edition, 2026-07-17): the
             # alias knows WHY this commit exists, so it says so. A diff that
