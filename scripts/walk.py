@@ -15,7 +15,15 @@ from pathlib import Path
 from urllib.parse import quote, urlparse
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_TRAIL = REPO_ROOT / "assets" / "trails" / "first_context.yaml"
+# THE DEFAULT IS THE SOFTBALL, ON PURPOSE (2026-08-01). Before this line moved,
+# the SHORTEST invocation (`mothercat`, bare) was EXPERT MODE: three
+# authenticated stops, and a newcomer's first contact was a KeyError on an
+# environment variable they had never heard of. Default to the walk that needs
+# no credential; make expert mode cost keystrokes.
+DEFAULT_TRAIL = REPO_ROOT / "assets" / "trails" / "public_walk.yaml"
+# THE EXPERT TRAIL, named here rather than implied by being the default --
+# discoverability used to rest entirely on this line pointing at it:
+#   mothercat assets/trails/first_context.yaml   (Jira + Botify + Gmail, auth)
 SCHEMA_VERSION = 1
 
 SELENIUM_DEFAULTS = {
