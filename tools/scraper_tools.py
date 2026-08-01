@@ -946,6 +946,29 @@ async def guided_browser_capture(params: dict, stdin=None, stdout=None) -> dict:
         stdin_is_tty = input_stream.isatty()
     except Exception as exc:
         return fail(f"could not verify interactive stdin before browser launch: {exc}")
+    if not stdin_is_tty and input_stream is sys.stdin:
+        # THE DOORMAN LEARNS THE DOOR'S TRICK (banked 2026-08-01, probe-convicted).
+        # _capture_checkpoint was hardened to prefer /dev/tty on 2026-07-29 and its
+        # own comment named the destination by name: a `curl | bash` stdin, where
+        # the pipe IS the script. The hardening then stopped ONE FUNCTION SHORT --
+        # this gate still tested the INHERITED descriptor and refused before the
+        # browser ever opened. The door was ready; the doorman turned people away.
+        # IDENTITY-GUARDED so the two can never disagree again: an EXPLICIT stream
+        # (a test harness passing io.StringIO) fails `is sys.stdin`, is honored
+        # untouched, and still refuses. Only the "use the terminal" case gets the
+        # second look. No controlling terminal (cron, CI, setsid) raises OSError
+        # and falls through, failing closed exactly as before. Strictly additive:
+        # this branch runs ONLY where the gate was already about to refuse.
+        # COMPILE-LANE BLINDNESS, named so nobody mistakes a green for a witness:
+        # prompt_foo's `!` executor spawns with start_new_session=True, which
+        # detaches the controlling terminal, so /dev/tty is UNOPENABLE there and an
+        # echoed probe prints the refusal whether or not this code exists. That
+        # receipt is a fail-closed guard. The only witness is a human riding.
+        try:
+            with open("/dev/tty", "r", encoding="utf-8") as probe_tty:
+                stdin_is_tty = probe_tty.isatty()
+        except OSError:
+            pass
     if not stdin_is_tty:
         return fail("guided capture requires a TTY on stdin before browser launch")
 
