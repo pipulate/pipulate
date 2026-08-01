@@ -1016,7 +1016,11 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # scrapes inherit the login. Log in, close the window, done.
           alias weblogin='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/weblogin.py"'
           # mothercat [trail] [--dry-narrate]: ride a validated trail (Car B).
-          # Bare rides walk.DEFAULT_TRAIL; a path rides that trail; --dry-narrate
+          # Bare rides walk.DEFAULT_TRAIL -- since 2026-08-01 the zero-auth
+          # public_walk softball, so the SHORTEST invocation is now the SAFEST.
+          # Expert trail, named rather than implied:
+          #   mothercat assets/trails/first_context.yaml   (Jira/Botify/Gmail)
+          # A path rides that trail; --dry-narrate
           # speaks each stop and opens no browser. A human types it, so an alias
           # is correct (ALIAS-DISPATCH RULE); it does NOT inherit into `!` child
           # shells, exactly like the connector aliases above.
