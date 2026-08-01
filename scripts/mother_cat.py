@@ -48,7 +48,8 @@ def _narrate(text, disclosed):
         if not disclosed:
             result = chip_voice_system.speak_text(
                 "This is the automated trail guide. I read each step aloud; "
-                "you handle only the login and the CAPTURE checkpoint."
+                "you handle only the CAPTURE checkpoint at each stop. Any "
+                "sign-in a stop needs is named in that stop's own guidance."
             )
             if isinstance(result, dict) and not result.get("success"):
                 print(
