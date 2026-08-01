@@ -1783,6 +1783,126 @@ def update_paintbox_in_place():
         logger.print(f"Warning: Failed to update the Paintbox: {e}")
 
 
+# ============================================================================
+# --- Honeybot Telemetry (TTL-cached, fail-soft) ---
+# ============================================================================
+# Sibling of lsa.py's MtimeMemo, with the one structural difference that
+# matters: a REMOTE SQLite file has no local mtime to invalidate against, so
+# staleness is bounded by wall clock instead of by a sentinel. TTL is the
+# correct instrument for a resource you cannot stat.
+#
+# THREE INVARIANTS, all of them about never taxing a compile:
+#   1. FAIL-SOFT. No ssh, no host, no DB, timeout, bad parse -- the STATS
+#      block renders exactly as it did before this code existed. A telemetry
+#      pull must never be able to break a payload.
+#   2. NEGATIVE CACHING. A FAILED pull is cached too. Without it, every
+#      compile on a machine with no route to honeybot (macOS, WSL, a client
+#      laptop) pays the full connect timeout forever -- the exact "slows down
+#      every call" failure the operator asked to avoid, arriving by the back
+#      door.
+#   3. STABLE TIMESTAMP. The rendered line carries the FETCH time, never
+#      now(). Two compiles served from one cache render identical bytes, which
+#      is what keeps the foo_files.py write idempotent and the cartridge
+#      byte-reproducible per THE RECEIPT LADDER RULE.
+#
+# BOTH METRICS ARE SCALARS ON PURPOSE. A number has no render surface: it
+# cannot be linkified, wrapped, or autolinked in transit. After the render-gap
+# conviction, "prefer an output class that cannot be transformed" is a design
+# rule, and a telemetry line baked into a tracked file is where to honor it.
+HONEYBOT_SSH_HOST = "honeybot"
+HONEYBOT_DB_PATH = "~/www/mikelev.in/honeybot.db"
+HONEYBOT_CACHE_FILE = CONFIG_DIR / "honeybot_stats.json"
+HONEYBOT_TTL_SECONDS = 6 * 3600
+HONEYBOT_TIMEOUT_SECONDS = 20
+_HONEYBOT_PIPE = (
+    f"ssh -o BatchMode=yes -o ConnectTimeout=5 {HONEYBOT_SSH_HOST} "
+    f"'sqlite3 {HONEYBOT_DB_PATH}'"
+)
+# The EXISTING .sql files are reused rather than cloned into scalar twins:
+# one source of truth per question, and the awk tail is the only new surface.
+# Column positions read off the live receipts of 2026-07-31.
+_HONEYBOT_MD_AWK = r"""awk -F'|' '/Markdown/{print $2 "|" $3; exit}'"""
+# SELF-TRAFFIC IS EXCLUDED HERE, not downstream: the largest single row in the
+# raw trapdoor table is 127.0.0.1 -- the operator's own browser -- and a
+# metric whose top contributor is its author measures nothing.
+_HONEYBOT_HYD_AWK = (
+    r"""awk -F'|' '$1 !~ /^127\./ && $1 !~ /^10\./ && $1 !~ /^192\.168\./ """
+    r"""{n++; t+=$3} END{print n "|" t}'"""
+)
+HONEYBOT_METRICS = {
+    "markdown": f"cat remotes/honeybot/queries/format_ratio.sql | {_HONEYBOT_PIPE} | {_HONEYBOT_MD_AWK}",
+    "hydration": f"cat remotes/honeybot/queries/trapdoor_ips.sql | {_HONEYBOT_PIPE} | {_HONEYBOT_HYD_AWK}",
+}
+def fetch_honeybot_stats() -> dict:
+    """Return cached telemetry, refreshing only past the TTL. Never raises."""
+    import time as _time
+    from datetime import datetime, timezone
+    cached = {}
+    if HONEYBOT_CACHE_FILE.exists():
+        try:
+            loaded = json.loads(HONEYBOT_CACHE_FILE.read_text(encoding='utf-8'))
+            if isinstance(loaded, dict):
+                cached = loaded
+        except (OSError, ValueError, TypeError):
+            cached = {}
+    now = _time.time()
+    age = now - cached.get('fetched_epoch', 0)
+    if cached and 0 <= age < HONEYBOT_TTL_SECONDS:
+        return cached
+    metrics = {}
+    for name, command in HONEYBOT_METRICS.items():
+        try:
+            result = subprocess.run(
+                command, shell=True, cwd=REPO_ROOT,
+                stdin=subprocess.DEVNULL, capture_output=True, text=True,
+                timeout=HONEYBOT_TIMEOUT_SECONDS,
+            )
+            value = result.stdout.strip()
+            if result.returncode == 0 and value:
+                metrics[name] = value
+        except Exception:
+            continue
+    fresh = {
+        'fetched_epoch': now,
+        'fetched_at': datetime.fromtimestamp(now, timezone.utc).strftime('%Y-%m-%dT%H:%MZ'),
+        'ok': bool(metrics),
+        'metrics': metrics,
+    }
+    try:
+        HONEYBOT_CACHE_FILE.parent.mkdir(parents=True, exist_ok=True)
+        HONEYBOT_CACHE_FILE.write_text(json.dumps(fresh, indent=2), encoding='utf-8')
+    except OSError:
+        pass
+    if not fresh['ok'] and cached.get('metrics'):
+        # Stale-but-real beats silence; the rendered timestamp says how stale.
+        return cached
+    return fresh
+def render_honeybot_stat_lines() -> str:
+    """Render telemetry as STATS comment lines, or '' on any failure."""
+    try:
+        stats = fetch_honeybot_stats()
+    except Exception:
+        return ""
+    metrics = stats.get('metrics') or {}
+    lines = []
+    md = metrics.get('markdown', '')
+    if '|' in md:
+        count, pct = (part.strip() for part in md.split('|', 1))
+        try:
+            count = f"{int(count):,}"
+        except ValueError:
+            pass
+        lines.append(f"# Markdown negotiated: {count} reads ({pct}% of all responses)")
+    hyd = metrics.get('hydration', '')
+    if '|' in hyd:
+        ips, triggers = (part.strip() for part in hyd.split('|', 1))
+        lines.append(
+            f"# DOM hydration: {triggers} trapdoor triggers from {ips} "
+            "non-local IPs (top-N sample, self excluded)"
+        )
+    if lines:
+        lines.append(f"# Honeybot telemetry fetched {stats.get('fetched_at', 'unknown')}")
+    return "".join(line + "\n" for line in lines)
 def update_stats_in_place():
     """Splices the live article count for blog target '1' into foo_files.py.
 
