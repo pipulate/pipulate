@@ -1,52 +1,51 @@
--- hydration_selftest.sql -- CALIBRATION CONTROL, and it has already earned
--- its keep: on 2026-07-31 it returned 39.8% (127.0.0.1) and 63.2%
--- (192.168.1.161) -- neither the ~100% of hypothesis A nor the ~0.6% of
--- hypothesis B. It killed BOTH hypotheses it was written to decide between
--- and named a third, which is the best outcome a control can have.
+-- hydration_selftest.sql -- CALIBRATION CONTROL, and its second flight
+-- overturned its own header. Read that as the instrument working, not as a
+-- wound: a control whose only possible output is the answer you expected is
+-- not a control.
 --
--- WHAT THE MIDDLE MEANS. The pixel fires on render, so a browser should
--- report ~100%. It reported 40%. The instrument is NOT broken: 40% is two
--- orders of magnitude above every crawler row on the site. The denominator
--- is NOT clean either. The leading explanation is HTTP CACHING --
--- js_confirm.gif is ONE FIXED URL, so a browser fetches it once and serves
--- every later page's request from memory or disk WITHOUT touching nginx.
--- The numerator is suppressed by cache hits; the denominator, made of
--- distinct page URLs, is not.
+-- WHAT IT ACTUALLY FOUND (2026-07-31, grouped by IP *and* user agent). The
+-- IP-level 39.8% at 127.0.0.1 was MIXED TRAFFIC, not caching:
+--     python-requests/2.32.5     2863 html      0 triggers    0.0%
+--     Mozilla/5.0 (X11; rv:146)  2275 html   2046 triggers   89.9%
+-- A script carried 56% of the loopback denominator and could never fire the
+-- beacon. The browser alone reads 89.9%. The LAN box reads 77.7% and 52.2%
+-- across two Chrome builds, with curl/8.18.0 at 0.0% beside them.
 --
--- STANDING CONSEQUENCE FOR EVERY RATE THIS INSTRUMENT PRODUCES, including
--- every row of hydration_rate.sql: the number is a FLOOR, never a
--- measurement.
---   * Nonzero PROVES the agent executes JavaScript.
---   * Zero, over a large denominator, is strong evidence it does not.
---   * The MAGNITUDE is NOT comparable across agents, because two clients
---     with different cache behavior report different rates for identical
---     rendering.
--- Quote the binary. Do not quote the fraction as a fraction.
+-- THE CACHING HYPOTHESIS WAS STRUCTURALLY IMPOSSIBLE and this header used to
+-- assert it. _layouts/default.html appends a random query string to the
+-- beacon URL on every page load, so no browser can ever serve it from cache.
+-- The previous header named caching as "the leading explanation" IN THE SAME
+-- COMMIT as the query written to discriminate between explanations. Do not
+-- write the verdict into the instrument; see THE VERDICT-IN-THE-INSTRUMENT
+-- RULE in foo_files.py.
 --
--- THE FORWARD FIX is Cache-Control: no-store on the pixel at the nginx
--- layer -- one location block, no JS change, no query strings, no break in
--- URL shape. It repairs nothing retroactively, so data recorded before it
--- lands stays floor-only forever.
+-- WHAT THE BEACON ACTUALLY MEASURES, and this is the part that must ride into
+-- print: default.html fires the pixel on an 800ms setTimeout, deliberately,
+-- to "dodge impatient scrapers." So a nonzero rate proves the agent EXECUTES
+-- JAVASCRIPT *AND* REMAINS ON THE PAGE FOR 800ms. That is a narrower and more
+-- defensible claim than "runs JS," and it is the leading candidate for the
+-- ~10% gap between a real browser and 100%: pages clicked through faster than
+-- the timer, plus 404s and redirects sitting in the denominator.
 --
--- WHY THIS FILE NOW GROUPS BY USER AGENT TOO. "A browser with a warm cache"
--- and "a browser PLUS a non-JS local client sharing one IP" both print
--- ~40%. That is the discrimination question failing INSIDE the control.
--- Splitting loopback by user agent separates them: one browser UA carrying
--- all the volume means caching, while a curl / python-requests / wget row
--- in the mix means mixed traffic and the browser's true rate is higher than
--- the IP-level number showed.
+-- STANDING CONSEQUENCE FOR hydration_rate.sql AND hydration_family.sql: the
+-- ceiling is ~89.9%, not 100%, and every agent rate should be read as a
+-- RATIO TO THAT CEILING rather than as an absolute percentage. GPTBot's 8.3%
+-- is ~1 page in 11; meta-externalagent's 0.76% is ~1 in 119. Both are
+-- SAMPLING, which is the finding.
 --
--- LAST-INCH NOTE, stated rather than repeated: SUBSTR(ua.value, 1, 55)
--- truncates. That is acceptable HERE and only here, because the question
--- this file asks is "browser or tool," which the first 55 characters answer
--- unambiguously (Mozilla/5.0 (X11; ... vs curl/8.7.1 vs
--- python-requests/2.31.0). It would NOT be acceptable in hydration_rate.sql,
--- where identity lives in the tail.
+-- LAST-INCH NOTE: SUBSTR(ua.value, 1, 55) truncates. Acceptable HERE and only
+-- here, because the question this file asks is "browser or tool," which the
+-- first 55 characters answer unambiguously. It would NOT be acceptable in
+-- hydration_rate.sql, where identity lives in the tail.
 --
--- Only private and loopback ranges are selected, so nothing in this output
--- is a third party. The denominator filters are kept CHARACTER-FOR-CHARACTER
--- identical to hydration_rate.sql on purpose: a control that filters
--- differently from the instrument it calibrates is not a control.
+-- FLOOR NOTE: html_hits >= 20 drops small per-UA rows, so the per-agent rows
+-- for one IP will not sum to that IP's total. That is the floor working, not
+-- a join defect.
+--
+-- Only private and loopback ranges are selected, so nothing here is a third
+-- party. Denominator filters are kept CHARACTER-FOR-CHARACTER identical to
+-- hydration_rate.sql: a control that filters differently from the instrument
+-- it calibrates is not a control.
 WITH pages AS (
     SELECT t.ip_id AS ip_id, t.ua_id AS ua_id, SUM(t.count) AS html_hits
     FROM telemetry t
