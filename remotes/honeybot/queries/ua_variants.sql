@@ -1,33 +1,55 @@
--- ua_variants.sql -- FULL user-agent strings for the families that survive
--- hydration_rate.sql's 45-character label, so the collapse is resolved by
--- READING rather than by widening a substring and hoping.
+-- ua_variants.sql -- how many distinct UA strings each family ships, and a
+-- BOUNDED SAMPLE OF EACH.
 --
--- WHY THIS EXISTS. The SUBSTR fix of 2026-07-31 resolved the four-way
--- boilerplate collapse -- bingbot, Amazonbot, ClaudeBot and GPTBot are now
--- distinct, and GPTBot/1.3 is the 8.3% hydrator -- but left TWO: three
--- meta-externalagent rows of which two render identically, and two PetalBot
--- rows that render identically. Both families differ only in the URL tail,
--- well past character 45.
+-- WHY IT IS SHAPED THIS WAY (conviction 2026-07-31, this file's first
+-- flight). The original was a single SELECT with ORDER BY value LIMIT 20. In
+-- ASCII, 'D' < 'G' < 'M' < 'P' < 'm', so the Googlebot family filled all
+-- twenty slots and the sort never reached PetalBot or meta-externalagent --
+-- the two families the query was written to resolve. It printed a clean,
+-- complete-looking table and answered none of its questions, and it would
+-- have printed the SAME table whether meta-externalagent was one crawler or
+-- three. A LIMIT is a last-inch transformation like any other.
 --
--- THE LESSON, banked in the same breath: fixing the collapse you SAW is not
--- applying THE LAST-INCH RULE. Widening the substring only moves the cut to
--- a different character and buys another turn of the same mistake. Print the
--- strings WHOLE, decide by eye whether these are one crawler or several, and
--- let the ARTICLE aggregate deliberately instead of the RENDER aggregating
--- by accident.
+-- THE FIX IS PER-FAMILY BUDGETS, not a bigger LIMIT. A shared cap lets the
+-- noisiest family starve the others; a cap per family cannot. Same instinct
+-- as the html_hits floor in hydration_rate.sql: bound each row class on its
+-- own terms.
 --
--- Googlebot is in the WHERE clause for a different reason: it is ABSENT from
--- hydration_rate.sql's top twenty entirely (its HTML volume is below 5,391)
--- while being the site's single largest markdown negotiator at 283 reads.
--- Whatever variants exist, this file names them.
+-- STATEMENT 1 IS THE ANSWER; statement 2 is the detail. "How many variants"
+-- is the discriminating question ("one crawler or three?"), and it is a
+-- COUNT -- a scalar per row, with no render surface to destroy.
 --
--- No IP, no path, no counts. This query answers exactly one question -- what
--- does this agent actually call itself -- and a query that answers one
--- question is a query whose output you can trust at a glance.
-SELECT id, value
+-- CASE NOTE, stated rather than assumed: SQLite's LIKE is case-INSENSITIVE
+-- for ASCII by default, which is why lowercase patterns catch 'GoogleBot/2.1'
+-- and 'Googlebot' alike. Relying on that silently is the CASE-BLIND trap; the
+-- patterns are written lowercase deliberately and this comment is the receipt.
+SELECT
+    CASE
+        WHEN value LIKE '%googlebot%'          THEN 'Googlebot'
+        WHEN value LIKE '%meta-externalagent%' THEN 'meta-externalagent'
+        WHEN value LIKE '%petalbot%'           THEN 'PetalBot'
+        WHEN value LIKE '%gptbot%'             THEN 'GPTBot'
+        WHEN value LIKE '%claude%'             THEN 'Claude*'
+        WHEN value LIKE '%bingbot%'            THEN 'bingbot'
+        WHEN value LIKE '%amazonbot%'          THEN 'Amazonbot'
+    END AS family,
+    COUNT(*) AS variants
 FROM user_agents
-WHERE value LIKE '%meta-externalagent%'
-   OR value LIKE '%PetalBot%'
-   OR value LIKE '%Googlebot%'
-ORDER BY value
-LIMIT 20;
+GROUP BY family
+HAVING family IS NOT NULL
+ORDER BY variants DESC;
+SELECT * FROM (
+    SELECT 'meta-externalagent' AS family, id, value FROM user_agents
+    WHERE value LIKE '%meta-externalagent%' ORDER BY value LIMIT 6
+)
+UNION ALL
+SELECT * FROM (
+    SELECT 'PetalBot' AS family, id, value FROM user_agents
+    WHERE value LIKE '%petalbot%' ORDER BY value LIMIT 6
+)
+UNION ALL
+SELECT * FROM (
+    SELECT 'GPTBot' AS family, id, value FROM user_agents
+    WHERE value LIKE '%gptbot%' ORDER BY value LIMIT 6
+)
+ORDER BY family, value;
