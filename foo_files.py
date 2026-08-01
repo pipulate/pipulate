@@ -748,6 +748,19 @@ AI_PHOOEY_CHOP = r"""                                                           
 # USUALLY ALREADY EXISTS UNDER ANOTHER NAME: the unfenced guided-capture lane
 # is selenium_automation / !URL / ?URL. A flag duplicating a shipped capability
 # is the sibling-.md failure in flag form.
+# THE REFUSAL-ONLY WITNESS (banked 2026-08-01, ride-convicted): a guard
+# observed ONLY refusing is indistinguishable from a guard that is BROKEN SHUT,
+# and no read-only probe can tell them apart -- the open state is not
+# observable without an actuation. THE DISCRIMINATION QUESTION applied to
+# fences: "what does this print in the world where the fence is stuck?" The
+# same refusal, every time. Conviction: ~10 receipts across five compiles all
+# measured _capture_checkpoint saying NO (pipe, EOF, explicit stream, no
+# controlling terminal), and the first {"success": True} it ever returned was
+# 12:54:47.912 on the first real MCK ride. STANDING CONSEQUENCE: a fence is
+# UNWITNESSED until something has been observed passing through it; count a
+# guard's greens as evidence of the closed branch only, and say which branch
+# a receipt covers. Sibling of LANE-DISAGREEMENT (that one is a probe blind to
+# the patch; this one is a probe blind to half the state machine).
 
 # THE FLIGHT-RECORDER POSITIONING (earmark-seeded 2026-07-28, MCK build ride):
 # the product is NOT "compile a context payload" -- anyone concatenates files.
