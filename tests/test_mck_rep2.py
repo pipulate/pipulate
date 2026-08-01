@@ -126,5 +126,32 @@ class MotherCatRep2Tests(unittest.TestCase):
             self.assertEqual(result["domain"], "example.com")
 
 
+    def test_guided_capture_refuses_an_explicit_non_tty_stream(self):
+        # PINS THE IDENTITY GUARD in guided_browser_capture's pre-launch gate.
+        # The gate prefers /dev/tty when it was handed the REAL sys.stdin, so a
+        # piped `curl | bash` can still reach a human at the CAPTURE prompt. An
+        # EXPLICIT stream -- this one -- must NEVER get that second look: if it
+        # did, this test on a developer's terminal would sail past the gate and
+        # then block forever waiting for someone to type CAPTURE. Refusal here
+        # is the entire contract, and it must hold in every lane.
+        # Imports are function-local on purpose: the browser stack (selenium,
+        # undetected-chromedriver, loguru) stays out of the import path for the
+        # schema and resolver tests, which are pure and should stay cheap.
+        import asyncio
+        import io
+        from tools.scraper_tools import guided_browser_capture
+        result = asyncio.run(
+            guided_browser_capture(
+                {
+                    "headless": False,
+                    "persistent": True,
+                    "override_cache": True,
+                },
+                stdin=io.StringIO(),
+            )
+        )
+        self.assertFalse(result["success"])
+        self.assertIn("TTY on stdin before browser launch", result["error"])
+        self.assertEqual(result["looking_at_files"], {})
 if __name__ == "__main__":
     unittest.main()
