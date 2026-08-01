@@ -196,6 +196,46 @@ def update_pipulate_init(version, description):
         print(f"ℹ️  {pipulate_init_file} already up to date")
         return False
 
+def get_license():
+    """Read __license__ from __init__.py, or None if not declared."""
+    project_root = Path(__file__).parent.parent.parent
+    init_file = project_root / "__init__.py"
+    if not init_file.exists():
+        return None
+    match = re.search(r'__license__\s*=\s*["\']([^"\']+)["\']', init_file.read_text())
+    return match.group(1) if match else None
+def update_pyproject_license():
+    """Sync the SPDX license expression into pyproject.toml.
+    THE DRIFT THIS CLOSES (convicted 2026-07-31): pyproject.toml declared MIT
+    while LICENSE, __init__.py's header, and prompt_foo.py's cartridge
+    frontmatter all declared AGPL -- and py-modules ships __init__.py INSIDE
+    the wheel, so ONE distribution carried TWO contradictory grants. The
+    license had been set by hand once and never re-derived from anything,
+    which is exactly the shape version and description had before this script.
+    Deliberately NOT adding a trove classifier: PEP 639 deprecates them in
+    favor of this field, and a second authority is how the first one drifted.
+    """
+    license_expr = get_license()
+    if not license_expr:
+        print("ℹ️  No __license__ in __init__.py; skipping license sync.")
+        return False
+    pyproject_file = Path("pyproject.toml")
+    if not pyproject_file.exists():
+        print(f"⚠️  {pyproject_file} not found, skipping...")
+        return False
+    content = pyproject_file.read_text()
+    new_content = re.sub(
+        r'^license\s*=\s*["\'][^"\']+["\']',
+        f'license = "{license_expr}"',
+        content,
+        flags=re.MULTILINE
+    )
+    if new_content != content:
+        pyproject_file.write_text(new_content)
+        print(f"✅ Updated {pyproject_file} (license → {license_expr})")
+        return True
+    print(f"ℹ️  {pyproject_file} license already {license_expr}")
+    return False
 def sync_all_versions():
     """Synchronize all version numbers and descriptions from the single source of truth"""
     print("🔄 Synchronizing version and description from single source of truth...")
