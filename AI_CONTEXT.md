@@ -1,8 +1,8 @@
 # AI_CONTEXT.md — Start Here If You Are an AI
 
-> Auto-generated on 2026-07-12. Rewritten from scratch on every release. If this
+> Auto-generated on 2026-08-01. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1302 entries indexed.
+> 1382 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -96,31 +96,111 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
-- [2026-07-12] [The Triptych Kata: Reproducible AI Optics](https://mikelev.in/futureproof/the-triptych-kata-reproducible-ai-optics/index.md)
-- [2026-07-12] [The Dune Protocol: Mastering AI Interlocks on Extinction Hardware](https://mikelev.in/futureproof/dune-protocol-ai-interlocks/index.md)
-- [2026-07-12] [Mapping the Latent Space: A Guide to Algorithmic Art Styles](https://mikelev.in/futureproof/mapping-latent-space-art-styles/index.md)
-- [2026-07-12] [Navigating the AI Frontier: From Linguistic Blind Spots to Technical Mastery](https://mikelev.in/futureproof/navigating-the-ai-frontier/index.md)
-- [2026-07-12] [The Computronium Gradient: Scaling Intelligence Through Mechanical Sympathy](https://mikelev.in/futureproof/computronium-gradient-scaling-intelligence/index.md)
-- [2026-07-11] [The Architecture of Anti-Fragile Publishing](https://mikelev.in/futureproof/anti-fragile-publishing-workflow/index.md)
-- [2026-07-11] [Home-Hosting in the Age of AI: Casting Digital Spells](https://mikelev.in/futureproof/nixos-home-hosting-jeopardy-automation/index.md)
-- [2026-07-11] [The Art of the Sandworm: Mastering Contextual Continuity in the Age of AI](https://mikelev.in/futureproof/mastering-contextual-continuity-ai/index.md)
-- [2026-07-10] [Engineering the Safety Airlock: A Compile-Lane Sanitizer Blueprint](https://mikelev.in/futureproof/compile-lane-sanitizer-blueprint/index.md)
-- [2026-07-10] [The Workshop and the Genie: Building a Legible Pipeline](https://mikelev.in/futureproof/workshop-and-the-genie-pipeline/index.md)
-- [2026-07-10] [The Scarcity Trap: Surviving Platform Revocation and Google Invisibility](https://mikelev.in/futureproof/scarcity-trap-ai-platform-revocation/index.md)
-- [2026-07-10] [Closing the Commit Airlock: Engineering Against Codebase Seams](https://mikelev.in/futureproof/closing-the-commit-airlock/index.md)
-- [2026-07-10] [Git Surgery: The Anatomy of a Successful Repository Scrub](https://mikelev.in/futureproof/git-repository-scrub-methodology/index.md)
-- [2026-07-09] [The Anti-Crichton Blueprint: Engineering Reality at the Edge](https://mikelev.in/futureproof/anti-crichton-blueprint/index.md)
-- [2026-07-09] [Wire Truth: Moving Beyond Dashboard Reenactments](https://mikelev.in/futureproof/wire-truth-network-capture/index.md)
-- [2026-07-08] [Installing Pipulate: Swapping the Forklift to uv](https://mikelev.in/futureproof/installing-pipulate-swapping-forklift-uv/index.md)
-- [2026-07-08] [The Unix Apprentice: Actuators, Text Files, and the Artisan Workshop](https://mikelev.in/futureproof/unix-apprentice-artisan-workshop/index.md)
-- [2026-07-07] [The Hand-Cranked Continuity Machine](https://mikelev.in/futureproof/hand-cranked-continuity-machine/index.md)
-- [2026-07-07] [Agentic Readiness: A Practitioner’s Guide to the Machine-Readable Web](https://mikelev.in/futureproof/agentic-readiness-checklist/index.md)
-- [2026-07-06] [The Honest 404: Debugging Content Negotiation with Synthetic Probes](https://mikelev.in/futureproof/honest-404-synthetic-probes/index.md)
+- [2026-08-01] [The Blub Paradox and the Mother Cat Kata: Engineering Deterministic Workflows](https://mikelev.in/futureproof/mother-cat-kata-deterministic-walk/index.md)
+- [2026-08-01] [The ASCII Canary: Engineering Visual Receipts in Git for LLM Context](https://mikelev.in/futureproof/ascii-canary-git-visual-receipts/index.md)
+- [2026-08-01] [Observing the Agentic Web: Content Negotiation and DOM Hydration Telemetry](https://mikelev.in/futureproof/agentic-web-content-negotiation-telemetry/index.md)
+- [2026-07-31] [Absolute Timing and the Side-Channel Sanitizer](https://mikelev.in/futureproof/absolute-timing-and-side-channel-sanitization/index.md)
+- [2026-07-31] [Legible Divergence: Replacing WORA with Auditability in the Age of AI](https://mikelev.in/futureproof/legible-divergence-continuation-ladder/index.md)
+- [2026-07-31] [The Continuation Ladder: Harnessing Deterministic AI Workflows](https://mikelev.in/futureproof/continuation-ladder-ai-harness/index.md)
+- [2026-07-30] [The Notary Beat: Engineering Session Finality in AI Workflows](https://mikelev.in/futureproof/notary-beat-session-finality/index.md)
+- [2026-07-30] [The Two Edges of Edge SEO: From Browser DOM to Cloudflare Workers](https://mikelev.in/futureproof/two-edges-of-edge-seo-cloudflare-workers/index.md)
+- [2026-07-30] [Shifting Gears and Fresh Compiles: The Mechanics of Flow in the Age of AI](https://mikelev.in/futureproof/shifting-gears-fresh-compiles-ai/index.md)
+- [2026-07-30] [The Talking Frog and the Two-Witness Gate: Engineering Deterministic AI Workflows](https://mikelev.in/futureproof/talking-frog-two-witness-gate/index.md)
+- [2026-07-29] [The Diamond Age Protocol: Variance Suppression and the Human Gate](https://mikelev.in/futureproof/diamond-age-primer-variance-suppression/index.md)
+- [2026-07-29] [Operation Stick Bug: Engineering the Flight Data Recorder Replay Lane](https://mikelev.in/futureproof/operation-stick-bug-flight-data-recorder/index.md)
+- [2026-07-29] [Building the Black Box: Local OAuth and the Flight Data Recorder for AI Workflows](https://mikelev.in/futureproof/building-the-black-box-oauth-fdr-ai-workflows/index.md)
+- [2026-07-29] [The Mother Cat Kata: Bounding AI Context and Harnessing Wire Truth](https://mikelev.in/futureproof/mother-cat-kata-bounding-ai-context-wire-truth/index.md)
+- [2026-07-28] [The Mother Cat Kata: Engineering a Black-Box Flight Recorder for Browser Workflows](https://mikelev.in/futureproof/mother-cat-kata-browser-flight-recorder/index.md)
+- [2026-07-28] [The Physics of Boundaries: Navigating AI Sycophancy and Crawler State](https://mikelev.in/futureproof/physics-boundaries-ai-sycophancy-crawler-state/index.md)
+- [2026-07-27] [Dayton Wind Tunnel Auth Capture and the Mother Cat Workflow](https://mikelev.in/futureproof/dayton-wind-tunnel-auth-capture-mother-cat/index.md)
+- [2026-07-27] [The Amiga Metaphor: Engineering Reproducible AI Workflows and Cognitive Myelination](https://mikelev.in/futureproof/amiga-metaphor-engineering-reproducible-ai-workflows/index.md)
+- [2026-07-27] [Engineering the Second Brain: High-Signal Storytelling and ASCII Art Distillation](https://mikelev.in/futureproof/engineering-the-second-brain-high-signal-storytelling/index.md)
+- [2026-07-27] [Bridging Browser Automation and Reproducible AI Workflows](https://mikelev.in/futureproof/bridging-browser-automation-and-reproducible-ai-workflows/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-07-27] [218k] the-forcing-pair-30-and-3-and-axis-forcing
+- [2026-07-27] [50k] mother-cat-path-consolidating-entry-points-ai-workflows
+- [2026-07-27] [45k] patch-tool-refuses-own-grammar
+- [2026-07-26] [542k] repairing-fasthtml-websocket-route
+- [2026-07-26] [212k] the-machine-that-has-to-mean-it
+- [2026-07-26] [149k] cartridge-and-codex-zero-dependency-replayability
+- [2026-07-26] [331k] falsifying-the-vibe-deterministic-codebase-upgrades
+- [2026-07-26] [378k] thermodynamics-of-computation-maxwells-demon-datacenter
+- [2026-07-25] [211k] frontmatter-sandwich-agents-md-integrity
+- [2026-07-25] [459k] fasthtml-upgrade-ast-refactoring
+- [2026-07-25] [488k] dayton-mcp-wind-tunnel-evidence-ladder
+- [2026-07-25] [104k] command-line-context-line-unix-ai
+- [2026-07-24] [144k] put-the-whole-problem-на-the-bench
+- [2026-07-24] [81k] the-root-element-engineering-deterministic-ai-context-trees
+- [2026-07-24] [42k] cartridge-and-transcript-replayable-ai-context
+- [2026-07-23] [282k] installing-claude-desktop-on-nixos
+- [2026-07-23] [308k] alias-dispatch-rule-shell-workflows
+- [2026-07-23] [176k] interactive-thresholds-deterministic-boot-menus-nix
+- [2026-07-22] [17k] what-the-cartridge-cant-sign
+- [2026-07-22] [262k] warming-the-connector-wallet
+- [2026-07-22] [14k] sorcerer-not-the-apprentice
+- [2026-07-22] [394k] endosymbiotic-loop-deterministic-ai-workflows
+- [2026-07-22] [236k] the-honest-seam-artifact-driven-continuity
+- [2026-07-22] [135k] the-map-is-not-the-territory-debugging-ai-blindness
+- [2026-07-21] [166k] delimiter-collision-and-out-of-band-edit
+- [2026-07-21] [124k] unignoring-the-lock-barney-reset-rule
+- [2026-07-21] [11k] janitors-blueprint-mastering-forever-machine
+- [2026-07-21] [11k] deterministic-chaos-ai-workflows
+- [2026-07-20] [70k] four-beat-onboarding-protocol
+- [2026-07-20] [45k] wright-brothers-principle-ai-truth
+- [2026-07-20] [73k] llm-optics-wire-truth-automation
+- [2026-07-20] [153k] nixos-chromedriver-hyphen-fix-weblogin
+- [2026-07-20] [158k] spreadsheet-audit-blueprint
+- [2026-07-20] [93k] stack-and-sentinel-sheet-acquisition
+- [2026-07-20] [197k] automating-truth-adversarial-qa-sheets
+- [2026-07-20] [60k] apprentice-machine-heart-workflow
+- [2026-07-20] [179k] mechanical-sympathy-agentic-workflows
+- [2026-07-19] [49k] apprentice-sandworm-artifact-continuity
+- [2026-07-19] [137k] closing-the-loop-orchestrating-autonomous-pipelines
+- [2026-07-19] [150k] darmok-tanagra-ai-falsification
+- [2026-07-19] [196k] popper-governance-falsification-software-architecture
+- [2026-07-18] [221k] deterministic-ai-workflows-cartridges
+- [2026-07-18] [174k] second-interpreter-rule-engineering-ai-workflows
+- [2026-07-17] [235k] engineering-deterministic-context-ai-workflows
+- [2026-07-17] [131k] mutation-trace-cause-deterministic-exoskeleton
+- [2026-07-16] [131k] constraint-as-catalyst
+- [2026-07-15] [76k] llm-optics-evidence-based-crawling
+- [2026-07-15] [109k] branding-as-indexing-vocabulary-management
+- [2026-07-15] [75k] pinned-bicycle-compounding-expertise
+- [2026-07-15] [113k] unix-inspired-ai-connectors
+- [2026-07-14] [221k] connectors-protocol-plain-text
+- [2026-07-14] [116k] anti-crichton-mantra-reproducible-truth
+- [2026-07-14] [19k] probe-economy-mobile-prompt-surface
+- [2026-07-14] [71k] textile-of-logic-weave-tech-text
+- [2026-07-14] [17k] blast-radius-automation
+- [2026-07-13] [42k] the-maker-makes-the-navigators
+- [2026-07-13] [168k] peanut-butter-test
+- [2026-07-13] [93k] hand-cranked-ouroboros-ai-optics
+- [2026-07-13] [59k] first-triptych-is-the-prompt
+- [2026-07-12] [133k] first-wish-automated-workshops
+- [2026-07-12] [149k] the-triptych-kata-reproducible-ai-optics
+- [2026-07-12] [9k] dune-protocol-ai-interlocks
+- [2026-07-12] [206k] mapping-latent-space-art-styles
+- [2026-07-12] [46k] navigating-the-ai-frontier
+- [2026-07-12] [80k] computronium-gradient-scaling-intelligence
+- [2026-07-11] [169k] anti-fragile-publishing-workflow
+- [2026-07-11] [97k] nixos-home-hosting-jeopardy-automation
+- [2026-07-11] [71k] mastering-contextual-continuity-ai
+- [2026-07-10] [52k] compile-lane-sanitizer-blueprint
+- [2026-07-10] [179k] workshop-and-the-genie-pipeline
+- [2026-07-10] [64k] scarcity-trap-ai-platform-revocation
+- [2026-07-10] [87k] closing-the-commit-airlock
+- [2026-07-10] [55k] git-repository-scrub-methodology
+- [2026-07-09] [60k] anti-crichton-blueprint
+- [2026-07-09] [174k] wire-truth-network-capture
+- [2026-07-08] [64k] installing-pipulate-swapping-forklift-uv
+- [2026-07-08] [57k] unix-apprentice-artisan-workshop
+- [2026-07-07] [187k] hand-cranked-continuity-machine
+- [2026-07-07] [133k] agentic-readiness-checklist
+- [2026-07-06] [76k] honest-404-synthetic-probes
 - [2026-07-06] [122k] web-built-for-ai-honeybot-content-negotiation
 - [2026-07-06] [115k] ledger-sorcerers-apprentice-document-automation
 - [2026-07-05] [148k] immutable-cartridge-nixos-google-drive-pipeline
