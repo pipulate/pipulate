@@ -246,10 +246,14 @@ fi
 EOL
 chmod +x "${TARGET_DIR}/run"
 
-# VERSION NOTE: This version is synced from pipulate/__init__.py.__version__
-# To update: Edit __version__ in __init__.py, then run: python version_sync.py
-# This ensures consistent versioning across all installation components
-VERSION="1.0.2"
+# VERSION LINE REMOVED 2026-08-01, receipt-convicted: this variable was
+# assigned here and dereferenced by nothing in this script, while version_sync
+# stamped the DOWNSTREAM Pipulate.com copy and release.py's sync then copied
+# this file over that copy on the same run -- so the number served to strangers
+# stayed frozen at 1.0.2 through a 2.02 release. A label no behavior consumes
+# cannot go usefully stale; it can only be wrong. The cure is deletion, not a
+# second stamping target: __init__.py holds the single version, and flake.nix
+# reads it at eval time. Do not re-add a duplicate here.
 
 # The nix flake will take over from here, handling the git repository setup
 # This is the final step of the "magic cookie" approach - letting the controlled
