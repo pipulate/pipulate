@@ -268,7 +268,19 @@ def _capture_checkpoint(stdin=None, stdout=None) -> dict:
                 "success": False,
                 "error": "interactive checkpoint reached EOF",
             }
-        if response.strip() != "CAPTURE":
+        # CASE-INSENSITIVE ON PURPOSE (banked 2026-08-01). The token's safety
+        # comes entirely from being IMPOSSIBLE TO PRODUCE BY ACCIDENT: no pipe,
+        # no EOF, no stray Enter, no dead descriptor and no automation emits
+        # these seven letters. Lowercase is exactly as impossible as uppercase,
+        # so the shift key was a tax with no revenue -- and it was collected at
+        # the newcomer's first handshake, where a refusal reads as "this thing
+        # is broken" rather than "you missed a key."
+        # DELIBERATELY NOT A RETRY LOOP. A retry gives the fence a SECOND STATE,
+        # and "nothing was written" stops being provable in one sentence. One
+        # read, one comparison, one branch, and every non-match returns before
+        # mkdir. A wrong answer still costs the ENTIRE ride, because a non-token
+        # answer is the human's ABORT, and abort must be as instant as consent.
+        if response.strip().upper() != "CAPTURE":
             return {
                 "success": False,
                 "error": "interactive checkpoint was not confirmed",
