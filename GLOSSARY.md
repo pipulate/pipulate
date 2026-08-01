@@ -218,3 +218,71 @@ Entries are alphabetical, numbers spelled as spoken.
   never pasted raw.
 - **Yen Sid-ton** — *the summoned Familiar persona.* The Worm wearing its
   helpful face: wizened, brilliant, re-instantiated without yesterday.
+
+## The Mother Cat Kata — vocabulary banked 2026-08-01
+
+### The whole ride, in six lines
+    curl -fsSL https://pipulate.com/mck.sh | bash   # a stranger, cold
+    mothercat                                       # you, bare — now the softball
+    mothercat assets/trails/first_context.yaml      # you, expert, authenticated
+    mothercat <trail> --dry-narrate                 # the rehearsal; nothing moves
+    RIDE                                            # mck.sh's one-shot go-ahead
+    CAPTURE                                         # the fence token, at every stop
+
+### The four moves (plus the fifth nobody names)
+**SETTLE** — *human-only, non-deterministic.* Look at the page; clear the auth,
+the CAPTCHA, the 2FA if the stop has one. The machine never synthesizes a
+session; it INHERITS one. Passive antibody transfer.
+
+**CAPTURE** — *machine-only, deterministic.* Hydrated DOM, CDP wire ledger,
+headers, a11y tree, LLM Optics, all to `browser_cache/`. Ground truth no model
+can flatter: the element is on the page or it is not.
+
+**NARRATE / FENCE** — *the block.* Piper speaks the stop, then execution stops
+dead until a receipt exists. The variance-suppressor deployed FOR you: it puts
+the human on the hook for exactly one move and fences that move.
+
+**ADVANCE** — *the step.* Next bookmark. Only after a receipt.
+
+**DECANT** — *the fifth move, and the one that makes it a product.* At the end
+of a clean ride, every captured lens is folded into one markdown bundle and
+copied to the clipboard. Big artifacts (hydrated DOM, raw source) are CITED BY
+PATH, never inlined, so a huge page cannot flood the paste.
+
+### The nouns
+**trail** — a walkthrough as DATA: one JSON-subset-of-YAML file in
+`assets/trails/`. A new walkthrough is a new YAML, never a new script.
+
+**rider** — the walkthrough as CODE: `scripts/mother_cat.py`. One rider, N
+trails. The split is the whole design.
+
+**stop** — one bookmark. Seven mandatory keys: `name`, `label`, `guidance`,
+`url_env`, `target_slot`, `harvest_regex`, `connector`. No optional keys
+anywhere; the validator checks set-difference in both directions.
+
+**the fence** — `_capture_checkpoint` in `tools/scraper_tools.py`. Not a prompt.
+A **WRITE BARRIER**: the output directory is not created, and `artifacts` is an
+empty dict, until the token arrives. Nothing on disk, provable in one sentence.
+
+**the doorman** — the pre-launch `isatty()` gate in `guided_browser_capture`.
+Refuses before the browser opens. Learned the door's `/dev/tty` trick on
+2026-08-01, six days after the door did.
+
+**the softball** — `public_walk.yaml`. Three public pages, zero credentials,
+zero human decisions, the one move rehearsed three times. Fewer steps the HUMAN
+OWNS, not fewer steps.
+
+**the rehearsal** — `--dry-narrate`. Speaks every stop, opens no browser, writes
+no byte, reads no credential. `mck.sh` forces it on first contact and there is
+no flag to skip it, because the failure mode ("is this thing driving my
+computer?") and its repair must ship in the same breath.
+
+### The switches
+`PIPULATE_TRAIL_*_URL` — one env var per stop, NAMED BY THE TRAIL. The trail
+declares its own; nothing guesses.
+
+`PIPULATE_ROOT` — where the workshop is, if it isn't where you're standing.
+
+`PIPULATE_MCK_ASSUME_YES=1` — **the yolo switch, already built.** It skips
+`mck.sh`'s RIDE confirmation. It does NOT and will not skip the CAPTURE fences,
+because those are the write barrier and a barrier with a bypass is a sign.
