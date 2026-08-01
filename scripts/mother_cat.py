@@ -209,6 +209,19 @@ async def _ride_async(trail_path, dry_narrate=False):
                 f"{result.get('error', 'no receipt')}"
             )
             print("  Halting -- no ADVANCE without a capture receipt.\n")
+            if captured:
+                # Work already banked is EVIDENCE, and evidence is not
+                # discarded because a later stop failed. The bundle is
+                # still withheld -- a partial ride must never be mistaken
+                # for a complete one -- but the human is told what exists
+                # and where, rather than being left to assume it vanished.
+                print("  Stops banked BEFORE this failure (artifacts are on disk):")
+                for banked_name, banked_url, banked_artifacts in captured:
+                    print(
+                        f"    - {banked_name}: {banked_url} "
+                        f"({len(banked_artifacts)} artifacts)"
+                    )
+                print("  No bundle was assembled. Re-ride to decant.\n")
             return 1
 
         artifacts = result.get("looking_at_files", {})
