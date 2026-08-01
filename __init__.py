@@ -14,6 +14,10 @@ Usage:
 
 __version__ = "2.01"
 __version_description__ = "CLI or Start Pipulate Menu"
+# SPDX expression, single source of truth, synced into pyproject.toml by
+# scripts/release/version_sync.py. "-or-later" (not bare AGPL-3.0, which is
+# deprecated SPDX) because the header below grants "any later version".
+__license__ = "AGPL-3.0-or-later"
 __email__ = "pipulate@gmail.com"
 __description__ = "AI-readiness for the agentic web — local-first, Nix-reproducible workflows. The successor to AI SEO software."
 
