@@ -101,6 +101,19 @@ if ! printf '%s' "$WHITELABEL" | grep -qE '^[A-Za-z][A-Za-z0-9_-]*$'; then
   echo "Error: whitelabel must match ^[A-Za-z][A-Za-z0-9_-]*\$ -- got '$WHITELABEL'" >&2
   exit 1
 fi
+# CASE-FOLDED IDENTITY (2026-08-01, two-writer conviction): whitelabel.txt has
+# TWO writers with TWO spellings -- install.sh writes the name it was handed
+# verbatim (lowercase by default), while the flake's runScript writes a
+# capitalized "Pipulate" for any folder whose name lacks "botify". A clone-first
+# workshop therefore carries the capital, and a case-sensitive compare against
+# the lowercase default could never match it: every discovery on this machine
+# answered from the head -n 1 fallback, which is indistinguishable from a match
+# until a second workshop exists. The READER folds case because it cannot reach
+# files already on disk that no writer patch can retroactively touch, and
+# because the display path normalizes capitalization anyway, so the capital
+# carries no information. tr, never the bash-4 lowercase expansion -- macOS
+# ships bash 3.2.
+WHITELABEL_LC="$(printf '%s' "$WHITELABEL" | tr '[:upper:]' '[:lower:]')"
 # --- MARKER DISCOVERY --------------------------------------------------
 # A workshop is identified by three TRACKED files, so a plain git clone
 # qualifies. whitelabel.txt is deliberately NOT the marker: it is gitignored
