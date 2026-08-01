@@ -1941,10 +1941,10 @@ Rich console blocked on Mac (Error: {e}), using fallback display.
 #  ┌────────────────────────────────────────────────────────────────────────┐
 #  │                      THE MOTHER CAT KATA (MCK)                         │
 #  └────────────────────────────────────────────────────────────────────────┘
-#     1. SETTLE (Human)    ──► Pop persistent profile (weblogin) & clear auth/CAPTCHA
-#     2. CAPTURE (Machine) ──► VISIBLE browser (headless is REFUSED) writes CDP wire-truth
-#     3. NARRATE (Machine) ──► Piper TTS speaks status & fences execution until receipt exists
-#     4. ADVANCE (Machine) ──► Step to the next bookmarked URL in the trail YAML
+#     1. SETTLE (Human)    ──► LOOK at the popped page; clear any auth/CAPTCHA the stop needs
+#     2. CAPTURE (Machine) ──► VISIBLE browser (headless REFUSED); the CAPTURE token is a WRITE BARRIER
+#     3. NARRATE (Machine) ──► Piper speaks each stop -- BEST-EFFORT; a dead voice never blocks a ride
+#     4. ADVANCE (Machine) ──► Only after a capture receipt; step to the next bookmarked URL
 # 
 # 
 # 1. **Trail YAML (`assets/trails/*.yaml`):** Defines the list of bookmarks (URLs), their names, and what Piper TTS speaks at each stop.
