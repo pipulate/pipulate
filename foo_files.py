@@ -808,6 +808,24 @@ AI_PHOOEY_CHOP = r"""                                                           
 # into the PROMPT that will read it. STANDING CONSEQUENCE: every conditional
 # in a caboose names its PRECONDITION first, or it states the check and leaves
 # the ruling to the turn that holds the receipt.
+# THE UNEXPORTED-SHIM RULE (banked 2026-08-01, install-lane-convicted; the
+# general form of the NIX PROBES earmark, which was one size too small): a
+# protection implemented as a SHELL FUNCTION protects exactly one process --
+# the interactive shell that defined it -- because functions are not exported.
+# Every child inherits the ENVIRONMENT the shim exists to neutralize and none
+# of them inherit the shim. The flake wraps nix to clear LD_LIBRARY_PATH before
+# calling the real binary; a shell SCRIPT invoked from that same shell calls the
+# real binary with the polluted path and dies on library skew. CONVICTION: the
+# install-only branch printed three "version not found" lines from openssl and
+# glibc and exited 1, inside a workshop, while the identical branch would have
+# succeeded for a stranger on a clean shell. THE FAILURE IS LANE-VISIBLE ONLY,
+# which is the expensive part: the audience the artifact ships to can never
+# report it, and the one person who can see it is the one most likely to blame
+# his own environment. STANDING CONSEQUENCE: any script invoking nix that might
+# be run from inside the dev shell writes the empty LD_LIBRARY_PATH assignment
+# inline; clearing it is a no-op on a clean shell, so the defensive spelling
+# costs nothing. Sibling of LANE-DISAGREEMENT -- that one is a probe blind to a
+# patch, this one is an environment blind to a shim.
 # THE LANE-DISAGREEMENT WITNESS (banked 2026-08-01, Car-A-convicted): when a
 # probe CANNOT print differently across a patch in the lane you can automate,
 # run it in BOTH lanes and let the DISAGREEMENT be the receipt. Conviction: the
