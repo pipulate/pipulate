@@ -290,7 +290,17 @@ if [ "${PIPULATE_INSTALL_ONLY:-0}" = "1" ]; then
   if [ "$(uname -s)" = "Darwin" ]; then
     IMPURE_FLAG="--impure"
   fi
-  ( cd "${TARGET_DIR}" && ${NIX_DEVELOP_CMD} ${IMPURE_FLAG} .#quiet --command bash -c 'uv pip install -r requirements.txt --quiet && uv pip install -e . --no-deps --quiet' )
+  # LD_LIBRARY_PATH="" IS LOAD-BEARING, and its absence is INVISIBLE to the
+  # audience this script ships to. The Pipulate dev shell front-loads its own
+  # python, openssl and glibc into LD_LIBRARY_PATH, and the interactive nix
+  # wrapper that neutralizes it is a shell FUNCTION -- functions do not export,
+  # so no child process inherits the protection while every child inherits the
+  # pollution. Convicted 2026-08-01: this branch printed three "version not
+  # found" lines from the nix binary and exited 1, inside a workshop, while the
+  # identical branch would have succeeded for a stranger on a clean shell.
+  # Clearing the variable is a no-op on a clean shell, so the defensive
+  # spelling costs nothing and the undefended spelling costs an entire lane.
+  ( cd "${TARGET_DIR}" && LD_LIBRARY_PATH="" ${NIX_DEVELOP_CMD} ${IMPURE_FLAG} .#quiet --command bash -c 'uv pip install -r requirements.txt --quiet && uv pip install -e . --no-deps --quiet' )
   echo "Environment hydrated at ${TARGET_DIR}."
   echo "Note: this folder becomes a git repo (and starts auto-updating) the"
   echo "      first time you run: cd ${TARGET_DIR} && ${NIX_DEVELOP_CMD}"
