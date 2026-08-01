@@ -720,10 +720,13 @@ AI_PHOOEY_CHOP = r"""                                                           
 # steps the HUMAN owns to exactly one (SETTLE) and fences it. Operation Stick Bug
 # (So'wI' yIchu' -- "engage the cloaking device") is the same move seen from
 # outside: the instrument vanishes; the human sees only a browser and a voice.
-# Ref: /futureproof/dayton-wind-tunnel-auth-capture-mother-cat/. OWES: the first
-# templated, stamp-out-able MCK walkthrough (the first named entry) plus the
-# fence-vs-lean-back discrimination shared with the VARIANCE-SUPPRESSION RULE;
-# delete this OWES when the first walkthrough ships.
+# Ref: /futureproof/dayton-wind-tunnel-auth-capture-mother-cat/.
+# FIRST WALKTHROUGH SHIPPED 2026-08-01: assets/trails/public_walk.yaml rode
+# green end to end -- three stops, three CAPTURE fences, three wire-provenance
+# captures, one DECANT bundle to the clipboard. That half of the OWES is
+# discharged. STILL OWED: (1) the fence-vs-lean-back discrimination shared with
+# the VARIANCE-SUPPRESSION RULE; (2) an AUTHENTICATED ride -- public_walk needs
+# no credential, so SETTLE was witnessed only in its trivial form.
 # THE LANE-DISAGREEMENT WITNESS (banked 2026-08-01, Car-A-convicted): when a
 # probe CANNOT print differently across a patch in the lane you can automate,
 # run it in BOTH lanes and let the DISAGREEMENT be the receipt. Conviction: the
