@@ -2104,6 +2104,22 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
     # 3. Find the Ghosts
     broken_refs = []
     for ref in potential_refs:
+        # THE PROSE-PUNCTUATION GUARD (banked 2026-08-01, log-convicted): a
+        # candidate is a path only if it is SPELLED like one. Backticks,
+        # parentheses, and a trailing "/." belong to sentences, not filenames.
+        # CONVICTION: the 2026-08-01 compile reported TWO broken references and
+        # both were phantoms, born of an 80-column comment wrap that stranded a
+        # prose token at the START of its own line -- one backtick-quoted script
+        # name inside parentheses, one site permalink ending in a period. Neither
+        # is a file reference and neither was ever loaded, because the compiler
+        # skips every commented line. An alert that fires on prose trains the
+        # reader to skip the alert, and the next reader to skip a REAL broken
+        # reference. Sibling of SINGLE-LINE-WITNESS: that one is a phrase a
+        # line-oriented tool cannot see; this one is prose a line-oriented tool
+        # mistakes for a path. High precision on purpose -- no path in this
+        # router has ever carried a backtick or a paren.
+        if '`' in ref or '(' in ref or ')' in ref or ref.endswith('/.'):
+            continue
         # Ignore HTTP, Commands, double-slashes, and server-side absolute paths
         if ref.startswith(('http', '!', '//', '/www/')) or '://' in ref: 
             continue
