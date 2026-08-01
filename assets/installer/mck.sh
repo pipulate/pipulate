@@ -168,7 +168,7 @@ resolve_checkout() {
   [ -n "$ALL_CHECKOUTS" ] || return 0
   while IFS= read -r CANDIDATE; do
     [ -n "$CANDIDATE" ] || continue
-    if [ "$(_whitelabel_of "$CANDIDATE")" = "$WHITELABEL" ]; then
+    if [ "$(_whitelabel_of "$CANDIDATE")" = "$WHITELABEL_LC" ]; then
       ROOT="$CANDIDATE"
       break
     fi
