@@ -11,7 +11,7 @@ authors = [
 ]
 description = "AI-readiness for the agentic web — local-first, Nix-reproducible workflows. The successor to AI SEO software."
 readme = "README.md"
-license = "MIT"
+license = "AGPL-3.0-or-later"
 requires-python = ">=3.8"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
