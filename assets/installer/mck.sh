@@ -198,6 +198,12 @@ run_wrapped() {
   fi
 }
 
+if [ "$YOLO" -eq 1 ]; then
+  echo "--yolo: skipping the spoken rehearsal and the RIDE confirmation."
+  echo "        NOT skipped, and not skippable by any flag: the CAPTURE fence"
+  echo "        at every stop. Nothing is written until you type the word."
+fi
+if [ "$YOLO" -eq 0 ]; then
 cat <<CARD
 
 --------------------------------------------------------------
