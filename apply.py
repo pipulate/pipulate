@@ -129,6 +129,18 @@ def apply_search_replace_patch(payload: str) -> bool:
                 success = False
                 continue
 
+        # AUTOLINK CONTAMINATION AIRLOCK (whole-file arm)
+        if not filename.endswith('.md'):
+            autolinks = _autolink_contamination(file_content)
+            if autolinks:
+                print(f"❌ Error: Whole-file write of '{filename}' aborted. "
+                      f"Self-referential markdown autolink(s) in the body:")
+                for lineno, line in autolinks:
+                    print(f"    >>> {lineno:4d}: {line.strip()!r}")
+                print("    RENDER-GAP signature. The FILE is probably correct and the")
+                print("    PAYLOAD was not. Re-read from a second channel; nothing written.")
+                success = False
+                continue
         # JSON SYNTAX AIRLOCK (whole-file arm)
         if filename.endswith('.json'):
             import json
