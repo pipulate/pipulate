@@ -2379,3 +2379,20 @@ Rich console blocked on Mac (Error: {e}), using fallback display.
 #  ❌ "It works on my machine"           ✅ "It runs identically in 2036"
 # ```
 
+# ```text
+#                     INDUSTRIAL (fixed stations, gates)
+#                                  │
+#      CNC shop; the AST airlock;  │   \m dropping the saddle; ahc;
+#      nixos-rebuild; the recipe   │   the line worker's hands after
+#      IS the authority            │   ten thousand reps
+#                                  │
+# INSCRIBED ───────────────────────┼─────────────────────── REFLEXIVE
+# (knowledge in the artifact)      │        (knowledge in the body)
+#                                  │
+#      the monk copying a          │   jazz improv; the card fan at
+#      manuscript once, carefully  │   the Magic Store on a Wednesday
+#                                  │   night in Philadelphia
+#                                  │
+#                     ARTISANAL (one-off, judgment-led)
+# ```
+
