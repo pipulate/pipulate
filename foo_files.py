@@ -758,6 +758,24 @@ AI_PHOOEY_CHOP = r"""                                                           
 # An installer that re-resolves against a moving channel is a pip; a pinned
 # lock is a graft. The lock was pinned 2026-08-01, so the distribution story is
 # grafting now and the language should say so.
+# THE SHELL-LANE FINDINGS (banked 2026-08-01, source-witnessed in-compile; all
+# three are OBSERVED from raw source, not inferred):
+#   a. the quiet shell CREATES the venv and never POPULATES it. Only the
+#      default and dev shells run runScript, which is where the uv pip lines
+#      live, and pythonInstallLogic is defined in the flake and referenced by
+#      NOTHING. So a lane entered through quiet has an empty venv unless
+#      something else hydrated it first, and any non-interactive bootstrap
+#      must run the install step explicitly.
+#   b. the quiet shell also SKIPS gitUpdateLogic, so a workshop hydrated only
+#      through that lane never undergoes the magic-cookie git transformation
+#      and never auto-updates. The transformation fires on the first plain
+#      nix develop. Name this limitation wherever a non-interactive install
+#      path is offered; never let it be discovered.
+#   c. the installer's own final hand-off omits the macOS impure exception
+#      that the run wrapper it writes DOES include. One documented exception,
+#      two spellings, and the first-run path is the one missing it. macOS is
+#      untested, so the consequence is INFERRED and the inconsistency is
+#      OBSERVED -- do not upgrade one to the other without a Darwin receipt.
 # THE LANE-DISAGREEMENT WITNESS (banked 2026-08-01, Car-A-convicted): when a
 # probe CANNOT print differently across a patch in the lane you can automate,
 # run it in BOTH lanes and let the DISAGREEMENT be the receipt. Conviction: the
