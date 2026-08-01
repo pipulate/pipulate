@@ -737,6 +737,11 @@ AI_PHOOEY_CHOP = r"""                                                           
 # expected strings: the pair discriminates where neither reading alone can.
 # STANDING CONSEQUENCE: name the LANE a receipt was taken in, or the receipt is
 # unlabeled evidence. Corollary of COMPILE-LANE BLINDNESS.
+# WITNESSED 2026-08-01, same-day flip: the identical one-liner printed "URL,
+# domain, and url_path_slug parameters are required." in the operator's
+# terminal and "guided capture requires a TTY on stdin before browser launch"
+# as a compile receipt. Two lanes, two strings, one command -- the pair
+# discriminated exactly as predicted, and neither reading alone could have.
 # CEREMONY IS SKIPPABLE; BARRIERS ARE NOT (banked 2026-08-01, the --yolo
 # ruling): a confirmation that authorizes a SEQUENCE may be skipped by flag; a
 # fence that authorizes each WRITE may not, ever, by any flag. THE TEST IS
