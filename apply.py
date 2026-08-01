@@ -34,6 +34,28 @@ _RESIDUAL_MARKER_RE = re.compile(
 PROTOCOL_GRAMMAR_FILES = frozenset({
     'apply.py', 'prompt.md', 'prompt_foo.py', 'AGENTS.md', 'README.md',
 })
+# AUTOLINK CONTAMINATION AIRLOCK (banked 2026-07-31, render-gap conviction).
+# A chat renderer between the compiler and the model wraps BARE www-prefixed
+# hosts in markdown link syntax. The model quotes the rendered form into a
+# REPLACE block, and this tool -- being a faithful actuator -- writes the
+# contamination into the file for real. The exact-match interlock catches
+# contaminated READS (the SEARCH stops matching, which is exactly what
+# happened to configuration.nix); nothing caught contaminated WRITES.
+#
+# THE SIGNATURE IS SELF-REFERENTIAL, and that is what makes it safe to enforce:
+# the link TEXT equals the link TARGET minus its scheme. That is what
+# autolinking produces and what a human essentially never types on purpose, so
+# this cannot become the kind of always-firing guard that gets deleted. Same
+# design philosophy as SECRET_TRIPWIRES: demand the exact shape, not the topic.
+# .md targets are exempt -- a markdown document may legitimately carry one.
+_AUTOLINK_CONTAMINATION_RE = re.compile(
+    r'\[(www\.[^\]\s]+)\]\(https?://\1/?\)'
+    r'|\[(https?://[^\]\s]+)\]\(\2/?\)'
+)
+def _autolink_contamination(text: str):
+    """Return (lineno, line) for every self-referential markdown autolink."""
+    return [(i, line) for i, line in enumerate(text.split('\n'), start=1)
+            if _AUTOLINK_CONTAMINATION_RE.search(line)]
 
 def _residual_marker_lines(text: str):
     """Return (lineno, line) for every bare protocol delimiter left in text."""
