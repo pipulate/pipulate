@@ -466,7 +466,7 @@ def sync_install_sh(script_name="install.sh"):
                     branch_result = run_command(['git', 'branch', '--show-current'], cwd=PIPULATE_COM_ROOT, capture=True)
                     current_branch = branch_result.stdout.strip()
                     run_command(['git', 'push', '--set-upstream', 'origin', current_branch], cwd=PIPULATE_COM_ROOT)
-                    print(f"✅ Fallback successful: Pushed install.sh update and set upstream: origin/{current_branch}")
+                    print(f"✅ Fallback successful: Pushed {script_name} update and set upstream: origin/{current_branch}")
                 except Exception as fallback_error:
                     print(f"❌ Fallback push to Pipulate.com also failed: {fallback_error}")
                     print("💡 Pipulate.com repo may need manual git remote configuration")
