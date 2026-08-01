@@ -1334,7 +1334,13 @@ print(max(1, n))
           # UNNAMED-ROOT RULE conviction: this invoked release.py through the
           # CWD while `smart` invokes the SAME SCRIPT wrapped in
           # cd "$PIPULATE_ROOT" -- one script, two spellings, one anchored.
-          alias release='(cd "$PIPULATE_ROOT" && python release.py --release --force)'
+          # A FUNCTION, not an alias (ALIAS-DISPATCH sibling, convicted
+          # 2026-08-01): the alias body ended in ')', so `release "msg"`
+          # expanded to a subshell followed by a bare word and bash reported a
+          # syntax error AT THE MESSAGE -- a failure that reads as a quoting
+          # mistake in the operator's own typing and is not one. release.py has
+          # had -m/--message the whole time and no spelling could reach it.
+          release() { (cd "$PIPULATE_ROOT" && python release.py --release --force "$@"); }
           # clear -x: repaint the screen but PRESERVE scrollback, exactly as
           # blast() already does. Plain `clear` (ncurses >= 6.0) emits the E3
           # escape and erases the buffer -- convicted 2026-07-23 when a `g`
