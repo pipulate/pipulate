@@ -826,6 +826,25 @@ AI_PHOOEY_CHOP = r"""                                                           
 # inline; clearing it is a no-op on a clean shell, so the defensive spelling
 # costs nothing. Sibling of LANE-DISAGREEMENT -- that one is a probe blind to a
 # patch, this one is an environment blind to a shim.
+# THE SINGLE-CANDIDATE BLINDNESS RULE (banked 2026-08-01, selector-convicted):
+# a SELECTOR cannot be witnessed while only one candidate exists, because
+# selection and fallback print the IDENTICAL answer -- and that answer is the
+# RIGHT one, every time, which is precisely what makes the blindness expensive.
+# CONVICTION: the launcher matched a workshop by comparing whitelabel.txt
+# against the requested label with a case-sensitive =, while whitelabel.txt has
+# TWO writers with TWO spellings (the installer writes the name it was handed,
+# lowercase by default; the flake writes a capitalized literal). The default
+# label could therefore never match a flake-hydrated checkout, so every
+# discovery on this machine answered from the head -n 1 fallback -- correctly,
+# invisibly, for the entire life of the feature, and reported GREEN on a gate
+# item written to test selection. The instant a SECOND workshop existed the
+# same code returned the WRONG workshop, silently, with no error and no clue;
+# the fix was witnessed only because the two paths SWAPPED PLACES across it.
+# STANDING CONSEQUENCE: before trusting any selector, disambiguator, router, or
+# precedence rule, CREATE THE SECOND CANDIDATE. N=1 is not a test of selection;
+# it is a test of the fallback wearing selection's label. Sibling of
+# REFUSAL-ONLY WITNESS -- that one is a state machine observed on one branch,
+# this one is a comparison observed with one operand.
 # THE LANE-DISAGREEMENT WITNESS (banked 2026-08-01, Car-A-convicted): when a
 # probe CANNOT print differently across a patch in the lane you can automate,
 # run it in BOTH lanes and let the DISAGREEMENT be the receipt. Conviction: the
