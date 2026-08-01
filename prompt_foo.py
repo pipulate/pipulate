@@ -1229,6 +1229,20 @@ class PromptBuilder:
 
     def _build_manifest_content(self) -> str:
         lines = [self.routing_note, ""]
+        # RENDER CANARY (receiver half, banked 2026-07-31). ASSEMBLED FROM
+        # FRAGMENTS ON PURPOSE: no bare www-token exists anywhere in this
+        # source file, so a patch carrying this code cannot itself be
+        # linkified in transit and land pre-broken. The compiler emits the
+        # token whole; the model reads whatever the transport delivered.
+        # .invalid is RFC 2606 reserved and can never resolve.
+        canary = "www." + "canary" + ".invalid"
+        lines.append(
+            f"RENDER CANARY — {canary} — emitted BARE by the compiler. If it reached "
+            "you wrapped in markdown link syntax, the transport rewrote this payload "
+            "and EVERY bare www-prefixed token in it is suspect, including inside "
+            "Codebase file bodies and `!` receipts. Say so before quoting one in a patch."
+        )
+        lines.append("")
         # LIVE RECEIPTS INDEX: executed `!` probes are current evidence, not
         # history. The routing note's own gravity bins mid-artifact blocks as
         # archive; this index explicitly exempts fresh stdout from that fate.
