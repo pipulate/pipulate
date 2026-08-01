@@ -1377,6 +1377,30 @@ imports/server_logging.py   # <-- Drawing that ASCII art into radically transpar
 # undetected-chromedriver (hyphen) make it cross-platform. Close the warmer
 # before scraping (Chrome locks the profile); re-run when a site expires it.
 # scripts/weblogin.py  # <-- `weblogin <apex>`: warm a persistent login for scraping
+# ============================================================================
+# VIII-b. THE MOTHER CAT KATA - Carry the human by the scruff, one gate at a time
+# ============================================================================
+# CHAPTER BLURB — THE MCK: the record-and-playback session that carries a
+# newcomer bookmark to bookmark instead of offering a menu of twelve doors.
+# Four primitive moves — SETTLE (human-only), CAPTURE (machine-only), NARRATE
+# (and FENCE: refuse to advance without a receipt), ADVANCE. The trail is DATA
+# (a YAML file), the rider is CODE, and the split is the point: a new
+# walkthrough should be a new YAML, never a new script.
+# STATUS 2026-08-01: these files EXIST and are UNREAD by any compile so far.
+# The only OBSERVED fact about them is the flake alias comment, which says
+# mothercat takes a trail path, rides walk.DEFAULT_TRAIL when bare, and that
+# --dry-narrate speaks each stop and opens no browser. Everything below is a
+# filename, not a claim. Ride the trail system into a compile before asserting
+# how it works.
+# scripts/mother_cat.py       # <-- The rider (alias: mothercat)
+# scripts/walk.py             # <-- Trail loader/validator; holds DEFAULT_TRAIL
+# assets/trails/practice.yaml         # <-- smallest trail; softball candidate A
+# assets/trails/public_walk.yaml      # <-- name implies no auth; candidate B
+# assets/trails/first_context.yaml
+# assets/trails/botify_pageworkers.yaml
+# tests/test_mck_rep2.py      # <-- Rep 2: the earmark's owed side-by-side witness
+# assets/installer/fdr.sh     # <-- routable stick-bug sibling of install.sh
+# assets/installer/replay.sh  # <-- routable stick-bug sibling of install.sh
 
 # ============================================================================
 # IX. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
