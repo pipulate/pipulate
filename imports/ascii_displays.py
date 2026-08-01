@@ -1950,6 +1950,7 @@ Rich console blocked on Mac (Error: {e}), using fallback display.
 # 1. **Trail YAML (`assets/trails/*.yaml`):** Ordered stops as DATA. Each stop names an ENVIRONMENT VARIABLE (`url_env`), never a literal URL, alongside the `guidance` Piper speaks. The schema is CLOSED -- every key required, no optionals, unknown keys refused -- and `scripts/walk.py` validates it before anything rides.
 # 2. **The Actuator (`scripts/mother_cat.py` / `mothercat` alias):** Reads the trail, calls `scraper_tools.py` in a VISIBLE browser on the persistent profile (authenticated only where a stop needs it), FENCES on the CAPTURE token before writing anything, saves the wire truth to `browser_cache/`, and narrates the progress.
 # 3. **The Compile Sigil (`@URL` or `%URL` in `adhoc.txt`):** Takes those captured files from `browser_cache/` and stacks them into your Prompt Fu payload for the LLM.
+# 4. **The DECANT (end of a clean ride):** The rider folds every small lens into one markdown bundle and copies it to the clipboard; large artifacts (hydrated DOM, raw source) are CITED BY PATH, never inlined. This is the path a stranger uses -- no `adhoc.txt`, no compile, just paste.
 # ```
 # ```text
 #             OPERATION STICK BUG (osb) — THE CAN-O-BRAINS SUPPLY LINE
