@@ -399,11 +399,23 @@ def display_ascii_art_stats(stats):
     console.print("\n")
     console.print(panel)
 
-def sync_install_sh():
-    """Copies install.sh to Pipulate.com and commits if changed."""
-    print("\n🔄 Step 3: Synchronizing install.sh to Pipulate.com...")
-    source_path = PIPULATE_ROOT / "assets/installer/install.sh"
-    dest_path = PIPULATE_COM_ROOT / "install.sh"
+INSTALLER_SCRIPTS = ("install.sh", "fdr.sh", "replay.sh", "mck.sh")
+def sync_install_sh(script_name="install.sh"):
+    """Copy ONE assets/installer/*.sh to Pipulate.com and commit if changed.
+    ONE LANE, N SCRIPTS (2026-08-01). This function used to name install.sh in
+    seven separate string literals, so fdr.sh and replay.sh could be authored,
+    committed and pushed to the pipulate repo and still never become fetchable.
+    curl -fsSL https://pipulate.com/<name> is served out of ~/repos/Pipulate.com
+    (Jekyll/GitHub Pages), and THIS FUNCTION IS THE ONLY THING THAT PUTS A FILE
+    THERE. A launcher nobody can fetch is a launcher that does not exist.
+    THE ROSTER IS EXPLICIT, NOT A GLOB, on purpose: assets/installer/ is allowed
+    to hold scripts that are not meant to be world-fetchable, and publishing by
+    glob would silently redefine "put a file in this directory" as "publish it
+    to the internet." Adding a name here is a deliberate act.
+    """
+    print(f"\n🔄 Step 3: Synchronizing {script_name} to Pipulate.com...")
+    source_path = PIPULATE_ROOT / "assets/installer" / script_name
+    dest_path = PIPULATE_COM_ROOT / script_name
 
     if not PIPULATE_COM_ROOT.exists():
         print(f"⚠️  Warning: Pipulate.com repo not found at {PIPULATE_COM_ROOT}. Skipping install.sh sync.")
