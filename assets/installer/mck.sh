@@ -1,140 +1,328 @@
 #!/usr/bin/env bash
-# Pipulate MCK Bootstrap v0.1.0 -- the Mother Cat Kata launcher
+# Pipulate MCK Bootstrap v0.2.0 -- the Mother Cat Kata launcher
 # =============================================================
 # THE COMMAND:  curl -fsSL https://pipulate.com/mck.sh | bash
 #           or  curl -fsSL https://npvg.org/mck/<trail> | bash
 #
 # The path is the flag: the npvg.org route serves THIS file with the trail
-# name stamped into the __MCK_TRAIL__ placeholder (nginx sub_filter), the
-# same trick assets/installer/fdr.sh uses. Local forms also work:
+# name stamped into the __MCK_TRAIL__ placeholder (nginx sub_filter), and a
+# whitelabel may ride the same way through __MCK_WHITELABEL__. Local forms:
 #
-#   bash mck.sh public_walk          # positional
+#   bash mck.sh public_walk
 #   MCK_TRAIL=public_walk bash mck.sh
+#   PIPULATE_WHITELABEL=clientname bash mck.sh
 #
-# WHAT THIS DOES, in order, and nothing else:
-#   1. Find an existing Pipulate checkout. If there is none, print the
-#      install card and STOP. This script never installs anything --
-#      chaining one curl|bash into another produces a bootstrap nobody
-#      can audit, and install.sh ends in an interactive nix develop that
-#      a piped script cannot cleanly resume from.
-#   2. Resolve a trail NAME (never a path) to assets/trails/<name>.yaml.
-#      The regex mirrors walk.py's own NAME_RE, so a URL path segment can
-#      never become ../../something.
-#   3. Export the trail's url_env variables. The NAMES are read from the
-#      trail itself, never from a table here -- a second table would be a
-#      second authority for one fact.
-#   4. RIDE IT DRY, unconditionally, with no flag to skip it. Piper speaks
-#      every stop; no browser opens, no file is written. The human hears
-#      the whole kata before anything on their machine moves. There is no
-#      first-run marker because this script IS the first run.
-#   5. Ask on /dev/tty. Under curl|bash, stdin IS the script.
-#   6. Ride for real with stdin redirected from /dev/tty -- see the
-#      comment at that line; the redirect is load-bearing, not cosmetic.
+# WHAT CHANGED IN v0.2.0 -- THE SEED HATCHES THE CHICKEN
 #
-# WHAT THIS NEVER DOES: install, write outside browser_cache/, read a
-# credential, or contact any host other than the trail's own stops.
+#   1. MARKER, NOT NAME. v0.1.0 searched $HOME/pipulate, so a whitelabel
+#      install was invisible to its own launcher from anywhere except inside
+#      it. Discovery now looks for the RIDER FILE -- scripts/mother_cat.py
+#      beside flake.nix and assets/trails/ -- which is path = f(marker), never
+#      path = f(guessed name). That is the DERIVED-PATH RULE pointed at the
+#      installer, and it is the precondition for whitelabel namespacing
+#      rather than a polish pass.
+#
+#   2. DETECT, OFFER, RESUME. v0.1.0 printed a card and exited 1 when no
+#      workshop existed, so first contact was a dead end and every other
+#      feature optimized a door nobody could open. The old refusal was argued
+#      from HOW to install and then applied to WHETHER, which is the wrong
+#      question. The HOW objection is answered STRUCTURALLY instead: the
+#      installer is fetched TO DISK, its path, size and SHA-256 are printed,
+#      the human is told they may read it before answering, and a NAMED FILE
+#      is executed. No stranger's pipe is chained into another.
+#
+# WHAT THIS STILL NEVER DOES: chain one curl-pipe into another, read a
+# credential, write outside the checkout's browser_cache/, or skip a fence.
 #
 # ENV OVERRIDES:
-#   PIPULATE_ROOT             checkout location (else searched)
-#   PIPULATE_MCK_ASSUME_YES   =1 skips the /dev/tty confirmation
+#   PIPULATE_ROOT             checkout location (else discovered)
+#   PIPULATE_WHITELABEL       install folder name and namespace (default: pipulate)
+#   PIPULATE_INSTALL_URL      where install.sh is fetched from
+#   PIPULATE_MCK_ASSUME_YES   =1 skips the INSTALL and RIDE confirmations
+#   PIPULATE_TRAIL_*_URL      pre-set any stop URL; built-in defaults use :=
+#                             and therefore never override you
 #
 # FLAGS:
-#   --yolo   skip the spoken rehearsal AND the RIDE confirmation. It does NOT
+#   --where  print the discovered workshop and exit. READ-ONLY: no install
+#            offer, no browser, no voice, no writes, no network. This is the
+#            probe that makes marker discovery witnessable without needing a
+#            fresh machine.
+#   --yolo   skip the spoken rehearsal AND both confirmations. It does NOT
 #            skip the CAPTURE fence at any stop, and no flag ever will.
-#            CEREMONY IS SKIPPABLE; BARRIERS ARE NOT: a confirmation authorizes
-#            a SEQUENCE, a fence authorizes each WRITE, and the unfenced lane
-#            already exists under other names (selenium_automation, !URL, ?URL).
-#   PIPULATE_TRAIL_*_URL      pre-set any stop URL; built-in defaults
-#                             use := and therefore never override you
+#            CEREMONY IS SKIPPABLE; BARRIERS ARE NOT: a confirmation
+#            authorizes a SEQUENCE, a fence authorizes each WRITE, and the
+#            unfenced capture lane already exists under other names.
 #
-# EXIT CODES: 0 rode or stopped cleanly | 1 usage/no checkout | 2 trail refusal
-
+# EXIT CODES: 0 rode or stopped cleanly | 1 usage / no workshop | 2 trail refusal
 if [ -z "${BASH_VERSION:-}" ]; then
   echo "Error: this script requires bash. Re-run with:"
   echo "   curl -fsSL https://pipulate.com/mck.sh | bash"
   exit 1
 fi
-
 set -euo pipefail
-
-# --- Resolve the trail NAME: positional > env > server-templated placeholder.
-# The split spelling of _ph is load-bearing: sub_filter replaces every
-# contiguous __MCK_TRAIL__ in the served body, and the split literal is the
-# one occurrence it can never touch, so templated-vs-untemplated stays
-# detectable after substitution.
-_tpl='__MCK_TRAIL__'
-_ph='__MCK_''TRAIL__'
-# --yolo parsing. The flag drops ceremony only. The moment a flag can skip the
-# CAPTURE fence, "nothing is written until the human types the word" stops being
-# provable in one clause and every reader has to audit the call site instead --
-# and a property that requires reading the call site is a convention, not a
-# property. Unknown options are refused rather than ignored, so a typo'd flag
-# can never be silently swallowed as a trail name.
+# --- Trail and whitelabel: positional > env > server-templated placeholder.
+# The split spelling of each _ph is load-bearing: sub_filter replaces every
+# contiguous placeholder in the served body, and the split literal is the one
+# occurrence it can never touch, so templated-vs-untemplated stays detectable
+# after substitution.
+_tpl_trail='__MCK_TRAIL__'
+_ph_trail='__MCK_''TRAIL__'
+_tpl_label='__MCK_WHITELABEL__'
+_ph_label='__MCK_''WHITELABEL__'
 YOLO=0
+WHERE_ONLY=0
 MCK_POSITIONAL=""
 for MCK_ARG in "$@"; do
   case "$MCK_ARG" in
     --yolo) YOLO=1 ;;
-    -*) echo "Error: unknown option '$MCK_ARG' (only --yolo is understood)" >&2; exit 1 ;;
+    --where) WHERE_ONLY=1 ;;
+    -*) echo "Error: unknown option '$MCK_ARG' (only --yolo and --where are understood)" >&2; exit 1 ;;
     *) [ -n "$MCK_POSITIONAL" ] || MCK_POSITIONAL="$MCK_ARG" ;;
   esac
 done
 TRAIL_NAME="${MCK_POSITIONAL:-${MCK_TRAIL:-}}"
-if [ -z "$TRAIL_NAME" ] && [ "$_tpl" != "$_ph" ]; then
-  TRAIL_NAME="$_tpl"
+if [ -z "$TRAIL_NAME" ] && [ "$_tpl_trail" != "$_ph_trail" ]; then
+  TRAIL_NAME="$_tpl_trail"
 fi
 TRAIL_NAME="${TRAIL_NAME:-public_walk}"
-
 TRAIL_NAME="$(basename "$TRAIL_NAME")"
 TRAIL_NAME="${TRAIL_NAME%.yaml}"
 if ! printf '%s' "$TRAIL_NAME" | grep -qE '^[a-z][a-z0-9_]*$'; then
   echo "Error: trail name must match ^[a-z][a-z0-9_]*\$ -- got '$TRAIL_NAME'" >&2
   exit 1
 fi
-
-# --- Find a workshop. Never build one.
-ROOT=""
-for CANDIDATE in "${PIPULATE_ROOT:-}" "$PWD" "$HOME/pipulate"; do
-  [ -n "$CANDIDATE" ] || continue
-  if [ -f "$CANDIDATE/scripts/mother_cat.py" ] && [ -x "$CANDIDATE/.venv/bin/python" ]; then
-    ROOT="$CANDIDATE"
-    break
+WHITELABEL="${PIPULATE_WHITELABEL:-}"
+if [ -z "$WHITELABEL" ] && [ "$_tpl_label" != "$_ph_label" ]; then
+  WHITELABEL="$_tpl_label"
+fi
+WHITELABEL="${WHITELABEL:-pipulate}"
+WHITELABEL="$(basename "$WHITELABEL")"
+if ! printf '%s' "$WHITELABEL" | grep -qE '^[A-Za-z][A-Za-z0-9_-]*$'; then
+  echo "Error: whitelabel must match ^[A-Za-z][A-Za-z0-9_-]*\$ -- got '$WHITELABEL'" >&2
+  exit 1
+fi
+# --- MARKER DISCOVERY --------------------------------------------------
+# A workshop is identified by three TRACKED files, so a plain git clone
+# qualifies. whitelabel.txt is deliberately NOT the marker: it is gitignored
+# and written on first shell entry, so it does not exist yet on a clone. It
+# is used only to disambiguate when several workshops are found.
+_is_checkout() {
+  [ -n "${1:-}" ] || return 1
+  [ -f "$1/scripts/mother_cat.py" ] || return 1
+  [ -f "$1/flake.nix" ] || return 1
+  [ -d "$1/assets/trails" ] || return 1
+  return 0
+}
+_whitelabel_of() {
+  if [ -f "$1/whitelabel.txt" ]; then
+    head -n 1 "$1/whitelabel.txt" | tr -d '[:space:]'
+  else
+    basename "$1"
   fi
-done
-
+}
+find_checkouts() {
+  if [ -n "${PIPULATE_ROOT:-}" ]; then
+    if _is_checkout "$PIPULATE_ROOT"; then
+      printf '%s\n' "$PIPULATE_ROOT"
+    fi
+  fi
+  # Walk UP from here, so running inside any subdirectory of a workshop works.
+  UPDIR="$PWD"
+  while [ -n "$UPDIR" ] && [ "$UPDIR" != "/" ]; do
+    if _is_checkout "$UPDIR"; then
+      printf '%s\n' "$UPDIR"
+    fi
+    UPDIR="$(dirname "$UPDIR")"
+  done
+  # ONE bounded level under the usual parents. Deliberately no find(1): a
+  # launcher must not sweep a stranger's home directory to introduce itself.
+  for PARENT in "$HOME" "$HOME/repos" "$HOME/src" "$HOME/code" "$HOME/dev" "$HOME/Projects" "$HOME/projects"; do
+    [ -d "$PARENT" ] || continue
+    for CAND in "$PARENT"/*; do
+      [ -d "$CAND" ] || continue
+      if _is_checkout "$CAND"; then
+        printf '%s\n' "$CAND"
+      fi
+    done
+  done
+  return 0
+}
+ROOT=""
+ALL_CHECKOUTS=""
+resolve_checkout() {
+  ROOT=""
+  ALL_CHECKOUTS="$(find_checkouts | awk 'NF && !seen[$0]++' || true)"
+  [ -n "$ALL_CHECKOUTS" ] || return 0
+  while IFS= read -r CANDIDATE; do
+    [ -n "$CANDIDATE" ] || continue
+    if [ "$(_whitelabel_of "$CANDIDATE")" = "$WHITELABEL" ]; then
+      ROOT="$CANDIDATE"
+      break
+    fi
+  done <<EOF
+$ALL_CHECKOUTS
+EOF
+  if [ -z "$ROOT" ]; then
+    ROOT="$(printf '%s\n' "$ALL_CHECKOUTS" | head -n 1)"
+  fi
+  return 0
+}
+resolve_checkout
+# --- --where: the read-only discovery probe ----------------------------
+if [ "$WHERE_ONLY" -eq 1 ]; then
+  if [ -z "$ROOT" ]; then
+    echo "no workshop found (marker: scripts/mother_cat.py beside flake.nix and assets/trails/)"
+    exit 1
+  fi
+  echo "$ROOT"
+  OTHERS="$(printf '%s\n' "$ALL_CHECKOUTS" | grep -vxF "$ROOT" || true)"
+  if [ -n "$OTHERS" ]; then
+    echo "other workshops found (select one with PIPULATE_WHITELABEL):"
+    printf '%s\n' "$OTHERS" | sed 's/^/  /'
+  fi
+  exit 0
+fi
+# --- No workshop: OFFER, install, resume -------------------------------
+DID_INSTALL=0
+offer_install() {
+  INSTALL_URL="${PIPULATE_INSTALL_URL:-https://pipulate.com/install.sh}"
+  TARGET="$HOME/$WHITELABEL"
+  cat <<CARD
+--------------------------------------------------------------
+   NO WORKSHOP FOUND -- and that is fixable right here
+--------------------------------------------------------------
+ Nothing is installed on this machine yet, so there is nothing
+ to ride. Here is exactly what happens if you say yes:
+   1. the installer is fetched TO DISK from
+        $INSTALL_URL
+      You may read it before you answer. It is a shell script,
+      not a binary, and the path is printed below.
+   2. it unpacks Pipulate into
+        $TARGET
+   3. Nix builds the environment there. Nothing else on your
+      machine is modified, and 'rm -rf' on that one folder is a
+      complete uninstall.
+   4. this launcher resumes and the walk begins.
+--------------------------------------------------------------
+CARD
+  if ! command -v nix >/dev/null 2>&1; then
+    echo " Note: Nix is not installed yet. The installer bootstraps it, and"
+    echo "       Nix requires a NEW terminal afterward. If that happens, just"
+    echo "       re-run this same command in the new terminal."
+    echo ""
+  fi
+  if [ -e "$TARGET" ]; then
+    echo "Refusing to install: $TARGET already exists but is not a workshop." >&2
+    echo "   Move it aside, or set PIPULATE_WHITELABEL to a different name." >&2
+    return 1
+  fi
+  if ! command -v curl >/dev/null 2>&1; then
+    echo "Refusing to install: curl is not on PATH." >&2
+    return 1
+  fi
+  TMP_INSTALLER="$(mktemp "${TMPDIR:-/tmp}/pipulate-install.XXXXXX")"
+  if ! curl -fsSL "$INSTALL_URL" -o "$TMP_INSTALLER"; then
+    echo "Could not fetch the installer from $INSTALL_URL" >&2
+    rm -f "$TMP_INSTALLER"
+    return 1
+  fi
+  INSTALLER_LINES="$(wc -l < "$TMP_INSTALLER" | tr -d ' ')"
+  INSTALLER_SUM=""
+  if command -v sha256sum >/dev/null 2>&1; then
+    INSTALLER_SUM="$(sha256sum "$TMP_INSTALLER" | cut -d' ' -f1)"
+  elif command -v shasum >/dev/null 2>&1; then
+    INSTALLER_SUM="$(shasum -a 256 "$TMP_INSTALLER" | cut -d' ' -f1)"
+  fi
+  echo " installer : $TMP_INSTALLER"
+  echo " lines     : $INSTALLER_LINES"
+  if [ -n "$INSTALLER_SUM" ]; then
+    echo " sha256    : $INSTALLER_SUM"
+  fi
+  echo ""
+  echo " To read it first, open another terminal and run:"
+  echo "   less $TMP_INSTALLER"
+  echo ""
+  if [ "$YOLO" -eq 1 ] || [ "${PIPULATE_MCK_ASSUME_YES:-0}" = "1" ]; then
+    echo "Confirmation skipped. Installing to $TARGET."
+  else
+    printf 'Type INSTALL and press Enter to proceed (anything else stops here).\nINSTALL> '
+    ANSWER=""
+    if ! IFS= read -r ANSWER </dev/tty; then
+      echo "" >&2
+      echo "No controlling terminal to confirm on (/dev/tty unavailable)." >&2
+      echo "   Nothing was installed. Run the installer yourself:" >&2
+      echo "     bash $TMP_INSTALLER $WHITELABEL" >&2
+      return 1
+    fi
+    if [ "$ANSWER" != "INSTALL" ]; then
+      echo "Stopped by human. Nothing was installed."
+      echo "   The installer is still at $TMP_INSTALLER if you want to read it."
+      return 1
+    fi
+  fi
+  # PIPULATE_INSTALL_ONLY asks the installer to hydrate and RETURN instead of
+  # opening an interactive workshop. An older served installer ignores the
+  # variable and opens the workshop as it always did; this launcher resumes
+  # when the human leaves it. Either way nothing breaks.
+  # /dev/tty is handed over because that older path needs a real terminal.
+  INSTALL_RC=0
+  if [ -c /dev/tty ]; then
+    PIPULATE_INSTALL_ONLY=1 bash "$TMP_INSTALLER" "$WHITELABEL" </dev/tty || INSTALL_RC=$?
+  else
+    PIPULATE_INSTALL_ONLY=1 bash "$TMP_INSTALLER" "$WHITELABEL" || INSTALL_RC=$?
+  fi
+  rm -f "$TMP_INSTALLER"
+  if [ "$INSTALL_RC" -ne 0 ]; then
+    echo "The installer exited $INSTALL_RC. Nothing further attempted." >&2
+    return 1
+  fi
+  DID_INSTALL=1
+  return 0
+}
 if [ -z "$ROOT" ]; then
-  cat <<'CARD'
+  if ! offer_install; then
+    exit 1
+  fi
+  resolve_checkout
+  if [ -z "$ROOT" ]; then
+    cat <<'CARD'
 --------------------------------------------------------------
-   MOTHER CAT -- but there is no workshop to ride in yet
+   INSTALL FINISHED, BUT NO WORKSHOP IS VISIBLE YET
 --------------------------------------------------------------
- This launcher rides a trail inside an existing Pipulate
- checkout. It does not install one, on purpose.
-
- 1. Install Pipulate (one line, any OS):
-      curl -fsSL https://pipulate.com/install.sh | bash
-
- 2. When it drops you into the workshop, open a second
-    terminal and enter the quiet shell:
-      cd ~/pipulate && nix develop .#quiet
-
- 3. Re-run this launcher there, or ride directly:
-      mothercat assets/trails/public_walk.yaml --dry-narrate
+ The most common reason is that Nix was just bootstrapped and
+ needs a fresh terminal before it is on your PATH.
+ Close this terminal, open a NEW one, and run the same command
+ again. Nothing needs to be undone first.
+--------------------------------------------------------------
+CARD
+    exit 1
+  fi
+fi
+cd "$ROOT"
+PY="$ROOT/.venv/bin/python"
+if [ ! -x "$PY" ]; then
+  cat <<CARD
+--------------------------------------------------------------
+   WORKSHOP FOUND, BUT NOT HYDRATED YET
+--------------------------------------------------------------
+ $ROOT
+ The Python environment has not been built there yet. Build it
+ once, the normal way, then re-run this launcher:
+   cd $ROOT
+   nix develop
+ (That first entry is also what turns the folder into a git
+ repository and starts the auto-updates.)
 --------------------------------------------------------------
 CARD
   exit 1
 fi
-
-cd "$ROOT"
-PY="$ROOT/.venv/bin/python"
 TRAIL_PATH="assets/trails/${TRAIL_NAME}.yaml"
-
 if [ ! -f "$TRAIL_PATH" ]; then
   echo "Error: no such trail: $ROOT/$TRAIL_PATH" >&2
   echo "   Available:" >&2
   ls assets/trails/*.yaml 2>/dev/null | sed 's#^#     #' >&2
   exit 1
 fi
-
 # --- Built-in URLs for the public softball ONLY. ':=' respects anything
 # already exported, so an operator override always wins.
 if [ "$TRAIL_NAME" = "public_walk" ]; then
@@ -145,15 +333,13 @@ if [ "$TRAIL_NAME" = "public_walk" ]; then
   export PIPULATE_TRAIL_WALK_TWO_URL
   export PIPULATE_TRAIL_WALK_THREE_URL
 fi
-
-# The trail declares its own url_env names; read them from the trail.
-# Trails are the JSON subset of YAML 1.2, so json.load is correct here.
+# The trail declares its own url_env names; read them from the trail. Trails
+# are the JSON subset of YAML 1.2, so json.load is correct here.
 URL_ENVS="$("$PY" -c 'import json,sys; print("\n".join(s["url_env"] for s in json.load(open(sys.argv[1]))["stops"]))' "$TRAIL_PATH" 2>/dev/null || true)"
 if [ -z "$URL_ENVS" ]; then
   echo "Error: could not read stop url_env names from $TRAIL_PATH" >&2
   exit 2
 fi
-
 MISSING=""
 for VAR in $URL_ENVS; do
   printenv "$VAR" >/dev/null 2>&1 || MISSING="$MISSING $VAR"
@@ -166,10 +352,9 @@ if [ -n "$MISSING" ]; then
   echo "   Set them and re-run. The trail names them; this script does not guess." >&2
   exit 2
 fi
-
 # --- The ride needs the pinned chromium and the shell's LD_LIBRARY_PATH.
-# We cannot re-exec THIS script under curl|bash (there is no file to
-# re-exec: $0 is 'bash'), so we wrap only the two ride commands.
+# We cannot re-exec THIS script under curl|bash (there is no file to re-exec:
+# $0 is 'bash'), so we wrap only the two ride commands.
 NIXWRAP=()
 if [ -z "${IN_NIX_SHELL:-}" ]; then
   if command -v nix >/dev/null 2>&1; then
@@ -187,7 +372,6 @@ if [ -z "${IN_NIX_SHELL:-}" ]; then
     exit 1
   fi
 fi
-
 # bash 3.2 (macOS /bin/bash) errors on "${arr[@]}" for an empty array under
 # set -u, so the empty case never expands the array at all.
 run_wrapped() {
@@ -197,7 +381,6 @@ run_wrapped() {
     "$@"
   fi
 }
-
 if [ "$YOLO" -eq 1 ]; then
   echo "--yolo: skipping the spoken rehearsal and the RIDE confirmation."
   echo "        NOT skipped, and not skippable by any flag: the CAPTURE fence"
@@ -205,26 +388,21 @@ if [ "$YOLO" -eq 1 ]; then
 fi
 if [ "$YOLO" -eq 0 ]; then
 cat <<CARD
-
 --------------------------------------------------------------
    MOTHER CAT KATA -- rehearsal first, nothing moves
 --------------------------------------------------------------
- trail : $TRAIL_NAME
- file  : $ROOT/$TRAIL_PATH
-
+ workshop : $ROOT
+ trail    : $TRAIL_NAME
+ file     : $ROOT/$TRAIL_PATH
  The next pass READS the walk aloud. During it:
    - no browser opens
    - no file is written
    - no credential is read
-
  Listen to the whole thing, then decide.
 --------------------------------------------------------------
-
 CARD
-
 run_wrapped "$PY" scripts/mother_cat.py "$TRAIL_PATH" --dry-narrate
 fi
-
 if [ "$YOLO" -eq 1 ] || [ "${PIPULATE_MCK_ASSUME_YES:-0}" = "1" ]; then
   echo "Confirmation skipped. Every CAPTURE fence still stands."
 else
@@ -241,16 +419,14 @@ else
     exit 0
   fi
 fi
-
 # THE STDIN REDIRECT IS LOAD-BEARING, NOT DECORATION. Under curl|bash this
 # script's stdin is the PIPE, and guided_browser_capture's PRE-LAUNCH gate
 # tests isatty() on the INHERITED descriptor before it opens anything. The
-# CAPTURE prompt itself already prefers /dev/tty (hardened 2026-07-29); its
-# doorman does not. Handing the ride a real terminal on fd 0 satisfies both,
-# and stays correct even after the gate is taught the same trick.
+# CAPTURE prompt itself already prefers /dev/tty; its doorman does not.
+# Handing the ride a real terminal on fd 0 satisfies both, and stays correct
+# even after the gate is taught the same trick.
 RIDE_RC=0
 run_wrapped "$PY" scripts/mother_cat.py "$TRAIL_PATH" </dev/tty || RIDE_RC=$?
-
 if [ "$RIDE_RC" -eq 0 ]; then
   cat <<'CARD'
 --------------------------------------------------------------
@@ -259,15 +435,20 @@ if [ "$RIDE_RC" -eq 0 ]; then
  1. Open any AI web chat (Claude, ChatGPT, Gemini).
  2. Paste (Cmd+V / Ctrl+V) and send.
  3. It will walk you through everything from here.
-
  The raw artifacts stayed on your machine, under
  browser_cache/. Nothing was uploaded by this script.
 --------------------------------------------------------------
 CARD
+  if [ "$DID_INSTALL" -eq 1 ]; then
+    echo " One more thing, since this machine was installed just now:"
+    echo "   cd $ROOT && nix develop"
+    echo " That first plain entry turns the folder into a git repository and"
+    echo " starts the auto-updates. The ride did not need it; the future does."
+    echo ""
+  fi
 else
   echo "The ride stopped early (exit $RIDE_RC)."
   echo "   Any stop that already captured left its artifacts under"
   echo "   browser_cache/; the rider names them above. Re-run to ride again."
 fi
-
 exit "$RIDE_RC"
