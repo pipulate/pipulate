@@ -151,11 +151,25 @@ def get_literary_perspective(word_count: int, token_word_ratio: float) -> str:
         )
     return f"📚 Equivalent in length to a **{description}**{density_warning}"
 
+# LAST-INCH AUDIT (banked 2026-07-31): this except used to swallow a
+# tokenizer failure and return a WORD COUNT wearing a token count's label.
+# Every figure in the Manifest, the Payload Ledger, foo_files.py's inline
+# annotations and the Paintbox would change UNITS simultaneously --
+# plausibly, uniformly, and in the direction of looking smaller -- while the
+# operator's context-budget decisions rode on them. Garbage announces
+# itself; a plausible wrong number does not. Shout ONCE per process, then
+# degrade exactly as before.
+_TOKENIZER_FALLBACK_WARNED = False
 def count_tokens(text: str, model: str = "gpt-4o") -> int:
+    global _TOKENIZER_FALLBACK_WARNED
     try:
         encoding = tiktoken.encoding_for_model(model)
         return len(encoding.encode(text))
-    except Exception:
+    except Exception as exc:
+        if not _TOKENIZER_FALLBACK_WARNED:
+            _TOKENIZER_FALLBACK_WARNED = True
+            print(f"⚠️  TOKENIZER UNAVAILABLE ({exc.__class__.__name__}): every "
+                  f"'token' figure in this run is a WORD COUNT, not a token count.")
         return len(text.split())
 
 def count_words(text: str) -> int:
