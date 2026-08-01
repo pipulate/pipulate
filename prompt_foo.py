@@ -1951,6 +1951,7 @@ def update_stats_in_place():
             f"# There are {count:,} already-written articles about this repo "
             f"at {blog_name}\n"
             f"# Velocity: {recent} published in the last 7 days\n"
+            + render_honeybot_stat_lines()
         )
         new_content = (
             content[:match.start()] + match.group(1) + stats_line
