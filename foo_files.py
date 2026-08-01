@@ -793,6 +793,21 @@ AI_PHOOEY_CHOP = r"""                                                           
 # seen only refusing is unwitnessed) and of NO-DEAD-CARS (every emitted
 # actuator is live regardless of surrounding prose): all three are one
 # disease -- prose beside a mechanism does not gate the mechanism.
+# THE CABOOSE-VERDICT COROLLARY (banked 2026-08-01, self-convicted one turn
+# later): a prompt written for the NEXT turn may name what to CHECK; it may
+# not pre-commit what a printout MEANS, because the caboose is written before
+# the world it will read. CONVICTION: a caboose said "if AFTER printed one
+# line, whitelabel selection is broken and that is the whole turn." The AFTER
+# printed one line -- and selection was fine. The ignition that would have
+# created the second workshop was never run, so the probe's PRECONDITION
+# failed and its one-line answer is what BOTH worlds print. A verdict welded
+# to a printout survives into a turn where its premise did not, and then it
+# convicts the wrong organ with a receipt in its hand. This is
+# VERDICT-IN-THE-INSTRUMENT aimed one turn forward: that rule forbids writing
+# the answer into the artifact that determines it; this one forbids writing it
+# into the PROMPT that will read it. STANDING CONSEQUENCE: every conditional
+# in a caboose names its PRECONDITION first, or it states the check and leaves
+# the ruling to the turn that holds the receipt.
 # THE LANE-DISAGREEMENT WITNESS (banked 2026-08-01, Car-A-convicted): when a
 # probe CANNOT print differently across a patch in the lane you can automate,
 # run it in BOTH lanes and let the DISAGREEMENT be the receipt. Conviction: the
