@@ -727,6 +727,37 @@ AI_PHOOEY_CHOP = r"""                                                           
 # discharged. STILL OWED: (1) the fence-vs-lean-back discrimination shared with
 # the VARIANCE-SUPPRESSION RULE; (2) an AUTHENTICATED ride -- public_walk needs
 # no credential, so SETTLE was witnessed only in its trivial form.
+# THE SEED REDUCTION (30-and-3 banked 2026-08-01; the fan-out lives in the
+# article, only the three survivors live here, per the rule that a reduction
+# written down is a traversal never repeated):
+#   1. THE SEED MUST HATCH THE CHICKEN. The launcher currently REFUSES when no
+#      workshop exists -- prints a card and exits 1 -- so first contact is a
+#      dead end and every other item is an optimization of a door nobody can
+#      open. The earlier refusal was argued from HOW to install (chained
+#      curl-pipes are unauditable; the installer ends interactive) and then
+#      applied to WHETHER, which is the wrong question. Fix: detect, OFFER,
+#      resume the ride.
+#   2. MARKER, NOT NAME. Discovery searches for a directory literally called
+#      pipulate, so a whitelabel install is invisible to its own launcher from
+#      anywhere but inside it. Search for the MARKER FILE instead -- the
+#      DERIVED-PATH RULE pointed at the installer: path = f(marker), never
+#      path = f(guessed name). This is the PRECONDITION for whitelabel plus
+#      routing-key namespacing, not a polish pass.
+#   3. GERMINATION RATE, NOT ONE SPROUT. A seed lot is graded by how many of N
+#      plantings sprout, never by the one that did -- a 12% lot and a 94% lot
+#      produce an IDENTICAL first sprout. "It spreads like a stick bug" is a
+#      CLAIM until fresh machines are counted, and the instrument already
+#      exists: the telemetry lab logs every fetch of the served launcher, so
+#      fetch-count against ride-completion is an install funnel measured by the
+#      same observatory that measures crawlers. Discharges the COLD-START test,
+#      and is the only instrument that can witness the CAPTURE fence PASSING
+#      under a pipe (REFUSAL-ONLY WITNESS: it has been seen refusing a dozen
+#      ways and passing exactly once, on a tty).
+# GRAFT, NOT SEED (the anchor that pays rent): seedling apples do not breed
+# true -- an orchard reproduces a cultivar by GRAFTING, never by planting pips.
+# An installer that re-resolves against a moving channel is a pip; a pinned
+# lock is a graft. The lock was pinned 2026-08-01, so the distribution story is
+# grafting now and the language should say so.
 # THE LANE-DISAGREEMENT WITNESS (banked 2026-08-01, Car-A-convicted): when a
 # probe CANNOT print differently across a patch in the lane you can automate,
 # run it in BOTH lanes and let the DISAGREEMENT be the receipt. Conviction: the
