@@ -225,8 +225,8 @@ CARD
 run_wrapped "$PY" scripts/mother_cat.py "$TRAIL_PATH" --dry-narrate
 fi
 
-if [ "${PIPULATE_MCK_ASSUME_YES:-0}" = "1" ]; then
-  echo "Confirmation skipped (PIPULATE_MCK_ASSUME_YES=1)."
+if [ "$YOLO" -eq 1 ] || [ "${PIPULATE_MCK_ASSUME_YES:-0}" = "1" ]; then
+  echo "Confirmation skipped. Every CAPTURE fence still stands."
 else
   printf '\nType RIDE and press Enter to do it for real (anything else stops here).\nRIDE> '
   ANSWER=""
