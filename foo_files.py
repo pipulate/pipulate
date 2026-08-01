@@ -1399,8 +1399,9 @@ imports/server_logging.py   # <-- Drawing that ASCII art into radically transpar
 # assets/trails/first_context.yaml
 # assets/trails/botify_pageworkers.yaml
 # tests/test_mck_rep2.py      # <-- Rep 2: the earmark's owed side-by-side witness
-# assets/installer/fdr.sh     # <-- routable stick-bug sibling of install.sh
-# assets/installer/replay.sh  # <-- routable stick-bug sibling of install.sh
+# assets/installer/mck.sh     # <-- THE LAUNCHER: curl -fsSL pipulate.com/mck.sh | bash
+# assets/installer/fdr.sh     # <-- routable sibling; in release.py's sync roster since 2026-08-01
+# assets/installer/replay.sh  # <-- routable sibling; in release.py's sync roster since 2026-08-01
 
 # ============================================================================
 # IX. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
