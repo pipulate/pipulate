@@ -270,7 +270,11 @@ def main(argv=None):
         "trail",
         nargs="?",
         default=None,
-        help="trail path (default: walk.DEFAULT_TRAIL)",
+        help=(
+            "trail path (default: walk.DEFAULT_TRAIL, the zero-auth "
+            "public_walk softball). Expert, authenticated: "
+            "assets/trails/first_context.yaml"
+        ),
     )
     parser.add_argument(
         "--dry-narrate",
