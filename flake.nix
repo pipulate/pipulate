@@ -930,7 +930,23 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             LD_LIBRARY_PATH="" command nix "$@"
           }
           # Add aliases
-          alias d='git --no-pager diff'
+          # d(): READ-ONLY, always -- a probe that mutates the index is not
+          # a probe. The diff shows tracked changes; untracked files are
+          # STRUCTURALLY INVISIBLE to git diff, so a WRITE_FILE car would
+          # land a new file and `d` printed nothing at all -- output
+          # identical to "no change landed," which is the discrimination
+          # question failing in the daily driver. List them by name instead
+          # and stage nothing.
+          d() {
+            git --no-pager diff
+            local untracked
+            untracked=$(git ls-files --others --exclude-standard)
+            if [ -n "$untracked" ]; then
+              echo ""
+              echo "--- UNTRACKED (invisible to the diff above; m will stage these) ---"
+              printf '%s\n' "$untracked" | sed 's/^/  + /'
+            fi
+          }
           alias gdiff='git --no-pager diff --no-textconv'
           alias nixops='(cd "$PIPULATE_ROOT" && ./nixops.sh)'
           alias gitops='(cd ~/repos/trimnoir && git commit --allow-empty -m "retry" && git push)'
