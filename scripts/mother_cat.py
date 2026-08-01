@@ -158,6 +158,16 @@ async def _ride_async(trail_path, dry_narrate=False):
         for problem in problems:
             print(f"  - {problem}")
         return 2
+    if problems:
+        # A rehearsal that stays silent about a refusal it can already see is
+        # a rehearsal for a flight that will not be permitted. Naming it here
+        # costs nothing; discovering it at the browser costs the newcomer's
+        # first sixty seconds. ATTRIBUTED-VOICE: narration may not imply a
+        # capability the next step will withhold.
+        print("NOTE -- a real ride of this trail would be REFUSED:")
+        for problem in problems:
+            print(f"  - {problem}")
+        print("  (--dry-narrate continues anyway; nothing will open.)")
 
     guided_browser_capture = None
     if not dry_narrate:
