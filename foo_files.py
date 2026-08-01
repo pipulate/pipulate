@@ -724,6 +724,30 @@ AI_PHOOEY_CHOP = r"""                                                           
 # templated, stamp-out-able MCK walkthrough (the first named entry) plus the
 # fence-vs-lean-back discrimination shared with the VARIANCE-SUPPRESSION RULE;
 # delete this OWES when the first walkthrough ships.
+# THE LANE-DISAGREEMENT WITNESS (banked 2026-08-01, Car-A-convicted): when a
+# probe CANNOT print differently across a patch in the lane you can automate,
+# run it in BOTH lanes and let the DISAGREEMENT be the receipt. Conviction: the
+# /dev/tty gate widening in guided_browser_capture is structurally invisible to
+# the compile lane -- prompt_foo's `!` executor spawns with
+# start_new_session=True, which detaches the controlling terminal, so /dev/tty
+# is unopenable there and the refusal prints whether or not the patch exists (a
+# ritual by THE DISCRIMINATION QUESTION). The IDENTICAL command in the
+# operator's terminal prints a different error once the branch is live, because
+# a missing-params check downstream fires instead. One command, two lanes, two
+# expected strings: the pair discriminates where neither reading alone can.
+# STANDING CONSEQUENCE: name the LANE a receipt was taken in, or the receipt is
+# unlabeled evidence. Corollary of COMPILE-LANE BLINDNESS.
+# CEREMONY IS SKIPPABLE; BARRIERS ARE NOT (banked 2026-08-01, the --yolo
+# ruling): a confirmation that authorizes a SEQUENCE may be skipped by flag; a
+# fence that authorizes each WRITE may not, ever, by any flag. THE TEST IS
+# WHETHER THE PROPERTY SURVIVES AS A SENTENCE: "nothing is written until the
+# human types the word" is provable in one clause only while the fence has
+# exactly one state. Add a bypass and it becomes "...unless the flag was set,"
+# which forces every reader to audit the call site -- and a property requiring
+# a call-site audit is a convention, not a property. COROLLARY -- THE BYPASS
+# USUALLY ALREADY EXISTS UNDER ANOTHER NAME: the unfenced guided-capture lane
+# is selenium_automation / !URL / ?URL. A flag duplicating a shipped capability
+# is the sibling-.md failure in flag form.
 
 # THE FLIGHT-RECORDER POSITIONING (earmark-seeded 2026-07-28, MCK build ride):
 # the product is NOT "compile a context payload" -- anyone concatenates files.
