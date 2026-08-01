@@ -399,7 +399,15 @@ def display_ascii_art_stats(stats):
     console.print("\n")
     console.print(panel)
 
-INSTALLER_SCRIPTS = ("install.sh", "fdr.sh", "replay.sh", "mck.sh")
+# ROSTER CUT 2026-08-01, hazard-convicted one turn after it was named: fdr.sh
+# and replay.sh sat in this tuple for a day and the first ordinary `release`
+# put both on the public internet at HTTP 200 -- neither ever ridden, neither
+# ever syntax-checked in any compile receipt. A name in this tuple is not a
+# plan; it is a live curl-pipe endpoint that fires on the next release with no
+# further decision. Re-add either one in the SAME car as its first green ride
+# receipt, never before. NOTE: cutting a name stops future SYNC; it does not
+# delete the already-published file from the Pipulate.com checkout.
+INSTALLER_SCRIPTS = ("install.sh", "mck.sh")
 def sync_install_sh(script_name="install.sh"):
     """Copy ONE assets/installer/*.sh to Pipulate.com and commit if changed.
     ONE LANE, N SCRIPTS (2026-08-01). This function used to name install.sh in
