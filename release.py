@@ -435,7 +435,7 @@ def sync_install_sh(script_name="install.sh"):
         if status_result.stdout.strip():
             print(f"📦 Changes detected in {dest_path.name}. Committing and pushing...")
             run_command(['git', 'add', str(dest_path.name)], cwd=PIPULATE_COM_ROOT)
-            commit_msg = f"chore: Update install.sh from pipulate repo v{get_current_version()}"
+            commit_msg = f"chore: Update {script_name} from pipulate repo v{get_current_version()}"
             run_command(['git', 'commit', '-m', commit_msg], cwd=PIPULATE_COM_ROOT)
             
             # Handle upstream branch setup for Pipulate.com repo
