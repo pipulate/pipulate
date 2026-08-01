@@ -1150,9 +1150,15 @@ def main():
     
     # Step 3: Install.sh Synchronization
     if not args.skip_install_sh_sync:
-        install_sh_success = sync_install_sh()
+        # EXPLICIT LOOP, NOT any(generator): any() short-circuits on the first
+        # True, so the first CHANGED script would silently cancel every sync
+        # after it -- a bug whose symptom is "sometimes mck.sh publishes."
+        install_sh_success = False
+        for _installer in INSTALLER_SCRIPTS:
+            if sync_install_sh(_installer):
+                install_sh_success = True
     else:
-        print("\n⏭️  Skipping install.sh synchronization (--skip-install-sh-sync)")
+        print("\n⏭️  Skipping installer script synchronization (--skip-install-sh-sync)")
         install_sh_success = False
 
     # Step 3.5: AUDIT.md Synchronization
