@@ -283,6 +283,12 @@ declares its own; nothing guesses.
 
 `PIPULATE_ROOT` — where the workshop is, if it isn't where you're standing.
 
-`PIPULATE_MCK_ASSUME_YES=1` — **the yolo switch, already built.** It skips
-`mck.sh`'s RIDE confirmation. It does NOT and will not skip the CAPTURE fences,
-because those are the write barrier and a barrier with a bypass is a sign.
+`PIPULATE_MCK_ASSUME_YES=1` — skips `mck.sh`'s RIDE confirmation. Nothing else.
+
+`--yolo` — **the real yolo switch, and it is deliberately modest.** Skips the
+spoken rehearsal AND the RIDE confirmation. It does NOT and will not skip the
+CAPTURE fences, because those are the write barrier. **CEREMONY IS SKIPPABLE;
+BARRIERS ARE NOT** — a confirmation authorizes a *sequence*, a fence authorizes
+each *write*. And the unfenced lane already exists under other names
+(`selenium_automation`, `!URL`, `?URL`), so a fence-skipping flag would be a
+second spelling of a shipped capability.
