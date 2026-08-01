@@ -248,6 +248,7 @@ def sync_all_versions():
         
         updates = []
         updates.append(update_pyproject_toml(version, description))
+        updates.append(update_pyproject_license())
         updates.append(update_flake_nix(version))
         updates.append(update_install_sh(version))
         updates.append(update_pipulate_init(version, description))
