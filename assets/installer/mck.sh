@@ -128,9 +128,9 @@ _is_checkout() {
 }
 _whitelabel_of() {
   if [ -f "$1/whitelabel.txt" ]; then
-    head -n 1 "$1/whitelabel.txt" | tr -d '[:space:]'
+    head -n 1 "$1/whitelabel.txt" | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]'
   else
-    basename "$1"
+    basename "$1" | tr '[:upper:]' '[:lower:]'
   fi
 }
 find_checkouts() {
