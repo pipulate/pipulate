@@ -1026,6 +1026,16 @@ def scrub_compile_payload(text: str, apply_substitutions: bool = True, scan_deny
                 try:
                     text, n = re.subn(pattern, repl, text)
                     total += n
+                    # LAST-INCH AUDIT (banked 2026-07-31): this stage rewrites
+                    # the ASSEMBLED payload -- Codebase file bodies and `!`
+                    # receipt stdout included -- and used to report a single
+                    # integer. Witnessed same day: a ClaudeBot user-agent
+                    # string arrived in a telemetry receipt with its contact
+                    # address substituted, indistinguishable from the real UA
+                    # to any reader downstream. Name every rule that fires so
+                    # the operator can grep the payload for its replacement.
+                    if n:
+                        print(f"🧼 PII rewrite: {n}x {pattern!r} -> {repl!r}")
                 except re.error as e:
                     print(f"⚠️  Skipping bad PII pattern {pattern!r}: {e}")
     leaks = []
