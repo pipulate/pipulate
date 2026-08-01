@@ -128,7 +128,12 @@ def update_flake_nix(version):
         return False
 
 def update_install_sh(version):
-    """Update version in Pipulate.com/install.sh if it exists"""
+    """RETIRED 2026-08-01 -- no longer called from sync_all_versions().
+
+    Left in place for exactly one turn so a grep can confirm no other caller
+    exists before deletion. If that grep comes back clean, delete this whole
+    function; a no-op that reports success is worse than an absent one.
+    """
     # Check for install.sh in common locations
     possible_paths = [
         Path("../Pipulate.com/install.sh"),  # If running from pipulate/ dir
