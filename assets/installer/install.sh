@@ -264,6 +264,39 @@ echo "Please wait while the Nix environment hydrates (this may take a minute)...
 # We spawn a fresh shell attached directly to the physical terminal. 
 # This prevents the macOS SIGTTIN suspension caused by the curl pipe,
 # and permanently eliminates the need for the user to type 'cd'.
+# INSTALL-ONLY MODE (added 2026-08-01 for the MCK launcher). When a caller
+# exports PIPULATE_INSTALL_ONLY=1, do the setup AND the environment hydration
+# and then RETURN, instead of opening an interactive workshop the caller
+# cannot resume from.
+#
+# GRACEFUL BY CONSTRUCTION: an older served copy of this script ignores an
+# unknown environment variable and behaves exactly as it always has, so a
+# launcher may set this unconditionally with no version detection.
+#
+# WHY .#quiet AND NOT THE DEFAULT SHELL: the default shellHook ends in
+# `python server.py` in the foreground, so `nix develop --command` would start
+# the server rather than return. .#quiet has no server, no JupyterLab and no
+# boot menu -- but it also deliberately sets the venv up WITHOUT populating it
+# (the uv lines live in runScript), so the install step is run explicitly here.
+#
+# NAMED LIMITATION, stated rather than discovered: .#quiet also skips the
+# flake's gitUpdateLogic, so a workshop hydrated only through this path is not
+# yet a git repository and does not auto-update. The magic-cookie
+# transformation fires on the first plain `nix develop` in that folder. Riding
+# a trail does not need it.
+if [ "${PIPULATE_INSTALL_ONLY:-0}" = "1" ]; then
+  echo "PIPULATE_INSTALL_ONLY=1 - hydrating the environment, not opening a workshop."
+  IMPURE_FLAG=""
+  if [ "$(uname -s)" = "Darwin" ]; then
+    IMPURE_FLAG="--impure"
+  fi
+  ( cd "${TARGET_DIR}" && ${NIX_DEVELOP_CMD} ${IMPURE_FLAG} .#quiet --command bash -c 'uv pip install -r requirements.txt --quiet && uv pip install -e . --no-deps --quiet' )
+  echo "Environment hydrated at ${TARGET_DIR}."
+  echo "Note: this folder becomes a git repo (and starts auto-updating) the"
+  echo "      first time you run: cd ${TARGET_DIR} && ${NIX_DEVELOP_CMD}"
+  exit 0
+fi
+
 if [ -c /dev/tty ]; then
     bash -c "cd '${TARGET_DIR}' && ${NIX_DEVELOP_CMD}" < /dev/tty
 else
