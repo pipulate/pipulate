@@ -278,6 +278,24 @@ def apply_search_replace_patch(payload: str) -> bool:
                 success = False
                 continue
         
+        # AUTOLINK CONTAMINATION AIRLOCK (surgical arm). Checked against the
+        # REPLACE block ALONE, never new_content: an edit must not be blamed
+        # for debris that was already in the file, and a file already carrying
+        # contamination still needs to be editable in order to be repaired.
+        if not filename.endswith('.md'):
+            autolinks = _autolink_contamination(replace_block)
+            if autolinks:
+                print(f"❌ Error: Patching '{filename}' aborted. "
+                      f"REPLACE block carries self-referential markdown autolink(s):")
+                for lineno, line in autolinks:
+                    print(f"    >>> replace:{lineno}: {line.strip()!r}")
+                print("    RENDER-GAP signature: a bare www-host that a chat renderer")
+                print("    linkified between the compiler and the model. The FILE is")
+                print("    almost certainly correct; the PAYLOAD was not. Confirm the")
+                print("    region against a second channel (git diff, a fresh compile)")
+                print("    before re-emitting. Nothing was written.")
+                success = False
+                continue
         # JSON SYNTAX AIRLOCK (third of three). .py gets AST, .nix gets
         # nix-instantiate, and .json got NOTHING until scenario patches
         # started landing into it -- a format where a misplaced comma
