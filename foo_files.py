@@ -536,6 +536,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # SEARCH/REPLACE lane; collision-class edits route to the human as actuator.
 # The airlock is for content that does not speak the airlock's own language.
 
+# **THE DERIVED-PATH RULE:** an agent's write-target must be a pure function of an identity value it reads and cannot author. If the agent *chooses* where to write, every guard downstream is etiquette. If it *computes* where to write, collision is unrepresentable — the property that makes `/opt/<vendor>`, npm scopes, and the Nix store safe without any of them trusting their writers.
+
 # THE 30-AND-3 RULE (banked 2026-07-19): the standing ideation kata. When a
 # problem space needs mapping, generate THIRTY brief text vignettes — one or
 # two sentences each, breadth over depth, no self-censoring past the obvious

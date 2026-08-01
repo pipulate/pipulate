@@ -2448,3 +2448,59 @@ Rich console blocked on Mac (Error: {e}), using fallback display.
 #    $PATH resolves the collision by PRECEDENCE, not by renaming.
 #    /usr/local/bin BEATS /usr/bin — that IS "promotion" in FHS grammar.
 # ```
+
+
+# **`AGENTS.md`'s nearest-ancestor-wins is `$PATH` precedence for prose.**
+# That's why it composes and `robots.txt` doesn't. Which brings up the prior art
+# the whole agentic ecosystem is currently ignoring:
+# 
+# 
+# ```text THE WEB ALREADY SOLVED THIS. RFC 8615.
+# 
+#    root-squatters (grandfathered, uncomposable)     the well-known way
+#    ───────────────────────────────────────────      ─────────────────────────
+#    /robots.txt          1994                        /.well-known/security.txt
+#    /sitemap.xml         2005
+#    /.well-known/acme-challenge/ /favicon.ico         1999
+#    /.well-known/host-meta /llms.txt            2024  ← repeating it
+#    /.well-known/change-password
+# 
+#    REPO EDITION: /AGENTS.md           root-squatter — SURVIVES because
+#    nearest-ancestor makes it composable anyway (one file, N depths)
+#    /.agents/skills/     the well-known directory, done right /okf-bundle/
+#    a bundle namespace, index.md as its table of contents ```
+
+# 
+# The candidates and their failure modes, since this is where it will actually go wrong:
+# 
+# 
+# ```text
+# CANDIDATE                    UNIQUE  STABLE  NON-PII  HUMAN-READABLE  VERDICT
+# ────────────────────────────────────────────────────────────────────────────
+# $USER                          ✗       ~        ✓          ✓          collides
+# git config user.email          ✓       ✓        ✗          ✓          lands PII in
+#                                                                        TRACKED PATHS
+#                                                                        and every payload
+# sha256(email)[:8]              ✓       ✓        ✓          ✗          nobody can find
+#                                                                        their own folder
+# claimed handle + registration  ✓       ✓        ✓          ✓          ← this one
+#   conflict tripwire
+# ```
+#
+# The trickle-up falls out for free, with `$PATH` precedence as the grammar:
+# 
+# Workshop/
+#    ├── corporate/                 lowerdir — read-only, replaced wholesale
+#    │   ├── AGENTS.md              org canon
+#    │   ├── .agents/skills/        org skills
+#    │   └── log.md                 ◄── the Glinda moment: one appended line
+#    │                                   per promotion, human-gated, forever
+#    ├── shared/
+#    │   ├── mike/                  ONE writer. Ever.
+#    │   │   ├── .identity          the claim. collides here or nowhere.
+#    │   │   ├── AGENTS.md          MY conventions — nearest-ancestor wins
+#    │   │   │                      INSIDE my namespace, invisible outside it
+#    │   │   └── .agents/skills/    my skills, overlaid on corporate's
+#    │   └── alice/                 ONE writer. Ever. Never me.
+#    └── personal/ ≡ Playground/    gitignored. Structurally unreachable
+#                                   by any git verb. rm is the only threat.
