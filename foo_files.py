@@ -776,6 +776,23 @@ AI_PHOOEY_CHOP = r"""                                                           
 #      two spellings, and the first-run path is the one missing it. macOS is
 #      untested, so the consequence is INFERRED and the inconsistency is
 #      OBSERVED -- do not upgrade one to the other without a Darwin receipt.
+# THE PUBLISH-ROSTER RULE (banked 2026-08-01, hazard-convicted one turn after
+# it was named): a name in a PUBLISH roster is not a plan, a note, or an
+# intention -- it is a live actuator that fires on the next ordinary release
+# with no further human decision, and for an installer roster the artifact it
+# fires is a curl-pipe endpoint a stranger runs as themselves. CONVICTION: the
+# hazard "two launchers sit in the publish roster having never been ridden;
+# the next full release publishes them by accident" was written into a fan-out
+# ONE TURN before an ordinary release put both on the internet at HTTP 200 --
+# by the publishing commits' own diffstat, 295 and 243 lines of shell that no
+# compile receipt had ever so much as syntax-checked. The warning was
+# addressed to a HUMAN; the roster is read by a MACHINE, and the machine does
+# not read warnings. STANDING CONSEQUENCE: if a thing must not ship, REMOVE IT
+# FROM THE ROSTER -- do not annotate it, do not file it, do not name the
+# hazard and leave the trigger armed. Sibling of REFUSAL-ONLY WITNESS (a guard
+# seen only refusing is unwitnessed) and of NO-DEAD-CARS (every emitted
+# actuator is live regardless of surrounding prose): all three are one
+# disease -- prose beside a mechanism does not gate the mechanism.
 # THE LANE-DISAGREEMENT WITNESS (banked 2026-08-01, Car-A-convicted): when a
 # probe CANNOT print differently across a patch in the lane you can automate,
 # run it in BOTH lanes and let the DISAGREEMENT be the receipt. Conviction: the
