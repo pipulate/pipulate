@@ -64,7 +64,22 @@ set -euo pipefail
 # detectable after substitution.
 _tpl='__MCK_TRAIL__'
 _ph='__MCK_''TRAIL__'
-TRAIL_NAME="${1:-${MCK_TRAIL:-}}"
+# --yolo parsing. The flag drops ceremony only. The moment a flag can skip the
+# CAPTURE fence, "nothing is written until the human types the word" stops being
+# provable in one clause and every reader has to audit the call site instead --
+# and a property that requires reading the call site is a convention, not a
+# property. Unknown options are refused rather than ignored, so a typo'd flag
+# can never be silently swallowed as a trail name.
+YOLO=0
+MCK_POSITIONAL=""
+for MCK_ARG in "$@"; do
+  case "$MCK_ARG" in
+    --yolo) YOLO=1 ;;
+    -*) echo "Error: unknown option '$MCK_ARG' (only --yolo is understood)" >&2; exit 1 ;;
+    *) [ -n "$MCK_POSITIONAL" ] || MCK_POSITIONAL="$MCK_ARG" ;;
+  esac
+done
+TRAIL_NAME="${MCK_POSITIONAL:-${MCK_TRAIL:-}}"
 if [ -z "$TRAIL_NAME" ] && [ "$_tpl" != "$_ph" ]; then
   TRAIL_NAME="$_tpl"
 fi
