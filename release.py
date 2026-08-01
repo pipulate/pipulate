@@ -452,11 +452,11 @@ def sync_install_sh(script_name="install.sh"):
                     # No upstream configured, set it during push
                     print(f"🔗 No upstream configured for Pipulate.com branch '{current_branch}', setting upstream...")
                     run_command(['git', 'push', '--set-upstream', 'origin', current_branch], cwd=PIPULATE_COM_ROOT)
-                    print(f"✅ Pushed install.sh update and set upstream: origin/{current_branch}")
+                    print(f"✅ Pushed {script_name} update and set upstream: origin/{current_branch}")
                 else:
                     # Upstream exists, normal push
                     run_command(['git', 'push'], cwd=PIPULATE_COM_ROOT)
-                    print("✅ Pushed install.sh update to Pipulate.com repo.")
+                    print(f"✅ Pushed {script_name} update to Pipulate.com repo.")
                     
             except Exception as e:
                 print(f"⚠️  Git push to Pipulate.com encountered an issue: {e}")
