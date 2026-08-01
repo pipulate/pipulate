@@ -2942,6 +2942,22 @@ def main():
     )
     if pii_count:
         print(f"🪄 Compile-lane scrub: {pii_count} PII substitution(s) applied to payload.")
+    # RENDER CANARY (emitter half). The transform happens AFTER emit, so the
+    # compiler can never observe it directly -- it does the one thing it can:
+    # name every token exposed to it, every compile, unprompted.
+    #
+    # THE FLOOR IS DELIBERATELY NONZERO. _build_manifest_content emits the
+    # canary bare, so this can never read 0, and a counter that could read 0
+    # forever is indistinguishable from a dead one. Same logic as the White
+    # Rabbit's CRC: a known-good artifact whose mangling IS the alarm.
+    autolink_bait = sorted(set(re.findall(
+        r'(?<![/\w.])www\.[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+', final_output
+    )))
+    if autolink_bait:
+        preview = ", ".join(autolink_bait[:5])
+        if len(autolink_bait) > 5:
+            preview += f", +{len(autolink_bait) - 5} more"
+        print(f"🔎 Render canary: {len(autolink_bait)} bare www-token(s) exposed to autolinking: {preview}")
 
     # Secrets tripwire: runs on every payload, under every profile. A
     # 'warn' secrets mode (no-egress local lane only) shouts but emits;
