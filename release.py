@@ -474,7 +474,7 @@ def sync_install_sh(script_name="install.sh"):
             
             return True
         else:
-            print("✅ install.sh is already up-to-date in Pipulate.com repo.")
+            print(f"✅ {script_name} is already up-to-date in Pipulate.com repo.")
             return False
     except Exception as e:
         print(f"⚠️  Install.sh sync failed: {e}")
