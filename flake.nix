@@ -863,7 +863,19 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           if [ ! -f .gitattributes ]; then
             echo "*.ipynb filter=nbstripout" > .gitattributes
           fi
-          git config --local filter.nbstripout.clean "nbstripout"
+          # THE .git GUARD IS FIRST-CONTACT HYGIENE, not defensiveness. A
+          # magic-cookie install is deliberately NOT a git repository yet -- the
+          # transformation fires on the first plain `nix develop` -- so this
+          # line printed a red "fatal: --local can only be used inside a git
+          # repository" in the middle of a stranger's very first install,
+          # witnessed 2026-08-01 in the install-only lane. Harmless (the
+          # shellHook does not set -e) and therefore worse than a real error:
+          # it is noise that looks like failure at the exact moment the reader
+          # has no way to judge. The pre-commit install below was already
+          # guarded; this line was missed.
+          if [ -d .git ]; then
+            git config --local filter.nbstripout.clean "nbstripout"
+          fi
           # THE COMMIT AIRLOCK: install the client-identity denylist guard.
           # Hook logic is versioned in scripts/git_hooks/pre-commit; patterns
           # live OUTSIDE the repo (~/.config/pipulate/commit_denylist.txt) so
