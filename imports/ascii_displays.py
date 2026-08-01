@@ -1948,7 +1948,7 @@ Rich console blocked on Mac (Error: {e}), using fallback display.
 # 
 # 
 # 1. **Trail YAML (`assets/trails/*.yaml`):** Defines the list of bookmarks (URLs), their names, and what Piper TTS speaks at each stop.
-# 2. **The Actuator (`scripts/mother_cat.py` / `mothercat` alias):** Reads the trail, calls `scraper_tools.py` using your authenticated profile, saves the wire truth to `browser_cache/`, and narrates the progress.
+# 2. **The Actuator (`scripts/mother_cat.py` / `mothercat` alias):** Reads the trail, calls `scraper_tools.py` in a VISIBLE browser on the persistent profile (authenticated only where a stop needs it), FENCES on the CAPTURE token before writing anything, saves the wire truth to `browser_cache/`, and narrates the progress.
 # 3. **The Compile Sigil (`@URL` or `%URL` in `adhoc.txt`):** Takes those captured files from `browser_cache/` and stacks them into your Prompt Fu payload for the LLM.
 # ```
 # ```text
