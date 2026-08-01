@@ -1495,7 +1495,7 @@ Before addressing the user's prompt, perform the following verification steps:
                 "description: \"Compiled AGENTS.md-class context artifact. Read the final section labeled Prompt first; it holds the current actionable request. Everything above it is supporting evidence. Propose edits as SEARCH/REPLACE blocks applied by apply.py.\"",
                 "entrypoint: '--- START: Prompt ---'",
                 "tools: .venv/bin/python cli.py mcp-discover",
-                "license: AGPL-3.0",
+                "license: AGPL-3.0-or-later",
                 "---",
             ])
             parts = [frontmatter + "\n\n" + f"# KUNG FU PROMPT CONTEXT\n\nWhat you will find below is:\n\n- {self.manifest_key}\n- Tool Roster\n- Story\n- File Tree\n- UML Diagrams\n- Articles\n- Codebase\n- Summary\n- Context Recapture\n- Prompt"]
