@@ -37,6 +37,13 @@
 # ENV OVERRIDES:
 #   PIPULATE_ROOT             checkout location (else searched)
 #   PIPULATE_MCK_ASSUME_YES   =1 skips the /dev/tty confirmation
+#
+# FLAGS:
+#   --yolo   skip the spoken rehearsal AND the RIDE confirmation. It does NOT
+#            skip the CAPTURE fence at any stop, and no flag ever will.
+#            CEREMONY IS SKIPPABLE; BARRIERS ARE NOT: a confirmation authorizes
+#            a SEQUENCE, a fence authorizes each WRITE, and the unfenced lane
+#            already exists under other names (selenium_automation, !URL, ?URL).
 #   PIPULATE_TRAIL_*_URL      pre-set any stop URL; built-in defaults
 #                             use := and therefore never override you
 #
