@@ -2299,7 +2299,20 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # - SLOGAN candidate: "Myelinated Reproducibility 4 Singularity ~/ Amnesiac Genie" — find the right home (constitution header? tagline?). (User 2026-07-17)
 # - NEVER put anything in the manifest that the PII system stopped from landing!
 # - EARMARK: PII GREEDY-NAME INCIDENT (banked 2026-07-19): bare given-name rules (\bTaylor\b et al.) mangled innocent prose ("Brave Little Taylor" -> "Brave Little Client Manager"), so pii_substitutions.txt was emptied — shield DOWN. Fix shipped same day: curated restore keeps full-name/email/domain/Slack rules, retires bare given names. Verify the next few public articles read clean AND still redact, then delete this line.
-# - *make version_sync update `assets/installer/install.sh` (the source) instead of only the downstream Pipulate.com copy, breaking the release/sync ping-pong*
+# - RETIRED 2026-08-01, receipt-convicted and replaced by deletion: "make
+#   version_sync update the source installer instead of only the downstream
+#   copy." The ping-pong was diagnosed correctly and the prescribed cure was
+#   wrong. That VERSION variable is ASSIGNED ONCE AND NEVER DEREFERENCED, so
+#   stamping the source would have maintained a duplicate no behavior consumes
+#   -- a label that can only ever be wrong, never useful. The line was deleted
+#   and the stamping call was unhooked from sync_all_versions() instead.
+# - TODO (direction, not yet actioned): PURGE the double-click run actuator the
+#   installer writes. Its meaning is ambiguous before and after entering the
+#   environment, and ambiguity at first contact is the one thing the launcher
+#   exists to remove. The intended surface is three doors and no others: the
+#   served one-line bootstrap, plain nix develop, and python server.py to bring
+#   the app back after Ctrl+C. Everything else is a chop -- gmail, botify, jira.
+#   Do not refactor this ahead of a turn that owns it.
 # - *delete the dead `update_flake_nix()` limb, since the flake reads `__init__.py` at eval time and the matcher has nothing to match*.
 # - Swap in uv for pip for a faster install
 # - Un-hardwire the Jekyll `/futureproof/` blog folder to be `blog.nix` configured
