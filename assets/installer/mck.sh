@@ -223,6 +223,7 @@ cat <<CARD
 CARD
 
 run_wrapped "$PY" scripts/mother_cat.py "$TRAIL_PATH" --dry-narrate
+fi
 
 if [ "${PIPULATE_MCK_ASSUME_YES:-0}" = "1" ]; then
   echo "Confirmation skipped (PIPULATE_MCK_ASSUME_YES=1)."
