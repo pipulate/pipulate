@@ -422,7 +422,7 @@ def sync_install_sh(script_name="install.sh"):
         return False
 
     if not source_path.exists():
-        print(f"⚠️  Warning: Source install.sh not found at {source_path}. Skipping install.sh sync.")
+        print(f"⚠️  Warning: Source {script_name} not found at {source_path}. Skipping {script_name} sync.")
         return False
 
     # Copy the file
