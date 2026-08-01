@@ -2504,3 +2504,51 @@ Rich console blocked on Mac (Error: {e}), using fallback display.
 #    │   └── alice/                 ONE writer. Ever. Never me.
 #    └── personal/ ≡ Playground/    gitignored. Structurally unreachable
 #                                   by any git verb. rm is the only threat.
+# 
+# ## The bracket thing is your own thesis, one layer down
+# 
+# You noticed Piper eats `[stage direction]` and only web readers are in on the joke. Look at what that glyph is actually doing across your stack:
+# 
+# ```text
+#    ONE GLYPH, THREE ROOTS
+# 
+#    [ tool_name ]   in the CHAT stream   ──►  DISPATCH   (stream_orchestrator)
+#    [ stage note ]  in the ARTICLE       ──►  ASIDE      (web reader only)
+#    [ anything ]    in the TTS channel   ──►  SILENCE    (Piper skips it)
+# 
+#    Same shape. The CHANNEL is the root.
+#    Exactly the nixops fix, one layer down.
+# ```
+# 
+# And there's a live hazard sitting in that, which is a strike and not a compliment: your corpus is *full* of prose containing real bracketed tool names. The orchestrator sniffs the model's output stream with a substring test. A model quoting your own articles back — *"you could run `[browser_scrape_page]` here"* — emits a real registry name in explanatory prose and dispatches. You banked the refusal path for *fake* names. The **UNANCHORED-WITNESS** failure is the *real* ones in prose. Cheapest discrimination: does the bracket sit alone on its own line, or inside a sentence? A dispatch is an utterance; a citation is a clause.
+
+# ## Talking drums: redundancy, and specifically not a checksum
+# 
+# You circled it — *"checksum but not checksum"* — and the answer is that those are two different instruments and you own both.
+# 
+# ```text
+#    TWO REDUNDANCIES, AND THEY ARE NOT THE SAME INSTRUMENT
+# 
+#    THE WAX SEAL (CRC32)                THE TALKING DRUM (ECC)
+#    one number beside the art           the phrase, expanded
+#    ─────────────────────────           ──────────────────────
+#    art ──► crc ──► compare             "moon"
+#             │                             │
+#             ▼                             ▼
+#         match / MANGLED              "the moon looks down at the earth"
+#                                           │
+#    answers: DID A BIT FLIP?               ▼
+#    repairs: NOTHING                   tone contour survives the channel,
+#    needs:   the original              phonemes do not; the STOCK PHRASE
+#                                       restores what the channel destroyed
+# 
+#                                       answers: WHAT WAS SENT?
+#                                       repairs: THE MESSAGE ITSELF
+#                                       needs:   only the received signal
+# ```
+# 
+# The drum languages are tonal, so the drum carries pitch contour and throws away everything else — catastrophic ambiguity. Drummers fix it not by repeating but by **elaborating into known formulae**. Carrington documented it in the forties; Gleick opens *The Information* with it.
+# 
+# Which sharpens your **REDUNDANT-GROOVE RULE** more than the rule currently states: the declared roster in `foo_files.py` and the realized file bodies in the Codebase section are not two *copies*, they are two *encodings*. Two copies would be a checksum — detects, cannot repair. Two encodings is error correction — a model that loses one can rebuild it from the other. Your wax seal detects. Your groove repairs. Different jobs, both live.
+
+
