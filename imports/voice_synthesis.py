@@ -222,7 +222,7 @@ class ChipVoiceSystem:
                 # Use Popen instead of run to allow interruption
                 self.current_process = subprocess.Popen(
                     play_cmd, 
-                    stderr=subprocess.DEVNULL,
+                    stderr=subprocess.PIPE,
                     stdout=subprocess.DEVNULL
                 )
                 
