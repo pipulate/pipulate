@@ -296,15 +296,22 @@ class ChipVoiceSystem:
                 "details": "Piper TTS model not loaded"
             }
         
+        self.last_error = None
         success = self.synthesize_and_play(text)
         
-        return {
+        result = {
             "success": success,
             "text": text,
             "text_length": len(text),
             "voice_model": "en_US-amy-low",
             "message": "Speech synthesis completed" if success else "Speech synthesis failed"
         }
+        # The failure branch MUST carry an 'error' key, because every caller
+        # reads .get("error", ...) and a missing key silently becomes a lie
+        # about how much was known.
+        if not success:
+            result["error"] = self.last_error or "synthesis or playback failed"
+        return result
 
 class MemoryToVoiceConverter:
     """
