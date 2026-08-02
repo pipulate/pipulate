@@ -253,7 +253,14 @@ class ChipVoiceSystem:
                     return False
                     
         except Exception as e:
+            # CARRY THE MESSAGE, NOT JUST THE LOG (convicted 2026-08-02): this
+            # branch returned a bare False, so speak_text's result dict had no
+            # 'error' key and mother_cat's .get("error", "unknown error") fell
+            # to the default -- printing "unknown error" one line BELOW a log
+            # line naming the exact errno and path. LAST-INCH: everything
+            # upstream knew; the surface the human reads did not.
             logger.error(f"🎤 Voice synthesis failed: {e}")
+            self.last_error = f"{type(e).__name__}: {e}"
             return False
         finally:
             # Clean up temporary file
