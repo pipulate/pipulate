@@ -44,6 +44,14 @@ def _narrate(text, disclosed):
         print(f"  (voice unavailable) {text}")
         return disclosed
 
+    # THE NARRATION VANISHED WITH ITS OWN ERROR (convicted 2026-08-02, ride
+    # five): the stop guidance reached the human ONLY inside a voice-failure
+    # message. When the per-user lock fix made speak_text stop failing, the
+    # printed text disappeared with the error that had been carrying it, and
+    # the ride delivered NEITHER audio NOR words -- the NARRATE beat of the
+    # kata became a silent no-op that reported success. Print first, then
+    # speak, so the visible channel never depends on the audible one failing.
+    print(f"  {text}")
     try:
         if not disclosed:
             result = chip_voice_system.speak_text(
