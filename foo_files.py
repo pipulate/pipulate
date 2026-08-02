@@ -1279,13 +1279,13 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # Software Von Neumann Probe IaC Kickstart
 
-release.py                                 #  <-- The deploy process
-assets/installer/install.sh                #  <-- Pipulate.com installer real home in github/pipulate repo
-~/repos/Pipulate.com/CNAME
-~/repos/Pipulate.com/_config.yml
-~/repos/Pipulate.com/_layouts/default.html
-~/repos/nixos/.gitignore
-~/repos/Pipulate.com/install.md            #  <-- Gets copied into place here by pipulate/release.py
+# release.py                                 #  <-- The deploy process
+# assets/installer/install.sh                #  <-- Pipulate.com installer real home in github/pipulate repo
+# ~/repos/Pipulate.com/CNAME
+# ~/repos/Pipulate.com/_config.yml
+# ~/repos/Pipulate.com/_layouts/default.html
+# ~/repos/nixos/.gitignore
+# ~/repos/Pipulate.com/install.md            #  <-- Gets copied into place here by pipulate/release.py
 
 # ~/repos/nixos/autognome.py                 #  <-- More rare to have to include, but the true "top" of the muscle memory stack for day-to-day purposes
 # ~/repos/nixos/configuration.nix            #  <-- "Global" IaC context (most of you won't have)
@@ -1325,14 +1325,20 @@ assets/installer/install.sh                #  <-- Pipulate.com installer real ho
 #  /_/   \_\__,_| |_| |_|\___/ \___|  \____|_| |_|\___/|_|   (_)  
 # Ad Hoc CHOP: The Not-Managed-by-Git Safe-for-Client-Data place  
 
-python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
-# scripts/articles/lsa.py
-# The following 3 files ARE the system
+# THE ROLLING PIN BOOK ORE SPINE / FODDER FOR THE BOOK
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
+GLOSSARY.md                 # <-- I think this glossary goes well with the book-ore spine to do world building.
+# scripts/articles/lsa.py     # <-- Useful for refining commands like `posts`, critical to Second Brain concept.
+
+# THE QUIRKY AMIGA-LOVING HUMAN
 ~/repos/nixos/autognome.py  # <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
+init.lua                    # <-- Daily driver hot-keys that overlap with aliases in flake.nix
+
+# THE HAND-CRANKED AGENTIC FRAMEWORK
 prompt_foo.py               # <-- Prompt Fu compiler, makes the very README for AGENTS-like payload you're reading right now, but it needs to be more like that
 foo_files.py                # <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops
 
-# BIG STANDARD STUFF (Optionally comment out any)
+# MAIN ACTUATORS, IaC & NEGATIVE SPACE
 apply.py                    # <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
 .gitattributes              # <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
 .gitignore                  # <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
@@ -1341,28 +1347,38 @@ requirements.in             # <-- All known dependencies and (necessary) version
 __init__.py                 # <-- Master versioning
 pyproject.toml              # <-- The PyPI Packaging details
 cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
- 
 scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
-init.lua                    # <-- Daily driver hot-keys that overlap with aliases in flake.nix
 
-scripts/foo_cartridge.py    # Needs description
-scripts/foo_replay.py       # Needs description
-imports/voice_synthesis.py  # <-- The wand can talk to you
- 
+# CONTEXT PORTABILITY SYSTEM
+# scripts/foo_cartridge.py    # Needs description
+# scripts/foo_replay.py       # Needs description
+
+# FREQUENTLY USEFUL TO HAVE IN CONTEXT
 # release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
 # scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
 # scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
-# imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
+# imports/voice_synthesis.py  # <-- The wand can talk to you
 # scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
-
-GLOSSARY.md
 
 #                         --- Under this line is were you paste what the AI gives you ---
 #                         --- We call it context but it's really just the right-hand  ---
 #                         --- blast-radius of the "probes" to make this all science.  ---
 
 # --- END `adhoc.txt` TEMPLATE ---
+
+
+# TRYING TO FIGURE ALL THIS OUT
+scripts/mother_cat.py       # <-- The rider (alias: mothercat)
+scripts/walk.py             # <-- Trail loader/validator; holds DEFAULT_TRAIL
+assets/trails/practice.yaml         # <-- smallest trail; softball candidate A
+assets/trails/public_walk.yaml      # <-- name implies no auth; candidate B
+assets/trails/first_context.yaml
+assets/trails/botify_pageworkers.yaml
+tests/test_mck_rep2.py      # <-- Rep 2: the earmark's owed side-by-side witness
+assets/installer/mck.sh     # <-- THE LAUNCHER: curl -fsSL pipulate.com/mck.sh | bash
+assets/installer/replay.sh  # <-- OFF the roster 2026-08-01; re-add needs syntax + one ride + a pinned verifier fetch
+
 
 # ============================================================================
 # IV. THE WAND🪄 & THE WIZARD🧙‍♂️ - Everything's actually web development these days
@@ -1562,8 +1578,8 @@ GLOSSARY.md
 # assets/trails/first_context.yaml
 # assets/trails/botify_pageworkers.yaml
 # tests/test_mck_rep2.py      # <-- Rep 2: the earmark's owed side-by-side witness
-assets/installer/mck.sh     # <-- THE LAUNCHER: curl -fsSL pipulate.com/mck.sh | bash
-assets/installer/replay.sh  # <-- OFF the roster 2026-08-01; re-add needs syntax + one ride + a pinned verifier fetch
+# assets/installer/mck.sh     # <-- THE LAUNCHER: curl -fsSL pipulate.com/mck.sh | bash
+# assets/installer/replay.sh  # <-- OFF the roster 2026-08-01; re-add needs syntax + one ride + a pinned verifier fetch
 
 # ============================================================================
 # IX. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
@@ -1595,7 +1611,6 @@ assets/installer/replay.sh  # <-- OFF the roster 2026-08-01; re-add needs syntax
 # remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
 # remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
 # imports/voice_synthesis.py                  # <-- The wand can talk to you (not sure if I'm keeping it in Honeybot chapter)
-
 
 # remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
 
