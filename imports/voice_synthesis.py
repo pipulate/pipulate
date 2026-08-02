@@ -263,7 +263,16 @@ class ChipVoiceSystem:
                             stdout=subprocess.DEVNULL
                         )
                         logger.info(f"🎤 Speaking via nix-shell (PID {self.current_process.pid}): {text[:50]}...")
-                        self.current_process.wait()
+                        rc = self.current_process.wait()
+                        if rc != 0:
+                            # Same false green as the primary path. stderr stays
+                            # DEVNULL here on purpose: this branch fires only when
+                            # `play` is missing entirely, so the exit code alone is
+                            # enough to stop it lying, and the DEVNULL line carries
+                            # trailing whitespace that the patch transport mangles.
+                            logger.error(f"🎤 Audio playback failed via nix-shell (exit {rc}).")
+                            self.last_error = f"nix-shell playback exit {rc}"
+                            return False
                         return True
                     except Exception as nix_e:
                         logger.error(f"🎤 Audio playback failed on {system} (nix fallback): {nix_e}")
