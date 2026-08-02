@@ -47,6 +47,7 @@ class ChipVoiceSystem:
         self.voice = None
         self.voice_ready = False
         self.current_process = None  # Track the running audio process
+        self.last_error = None       # Populated by synthesize_and_play on failure
         
         if VOICE_SYNTHESIS_AVAILABLE:
             self.setup_voice_model()
