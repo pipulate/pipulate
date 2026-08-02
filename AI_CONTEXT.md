@@ -2,7 +2,7 @@
 
 > Auto-generated on 2026-08-01. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1382 entries indexed.
+> 1383 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -96,6 +96,7 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-08-01] [Hatching the Seed: Deterministic Installation and the Mother Cat Kata](https://mikelev.in/futureproof/hatching-the-seed-installer-automation/index.md)
 - [2026-08-01] [The Blub Paradox and the Mother Cat Kata: Engineering Deterministic Workflows](https://mikelev.in/futureproof/mother-cat-kata-deterministic-walk/index.md)
 - [2026-08-01] [The ASCII Canary: Engineering Visual Receipts in Git for LLM Context](https://mikelev.in/futureproof/ascii-canary-git-visual-receipts/index.md)
 - [2026-08-01] [Observing the Agentic Web: Content Negotiation and DOM Hydration Telemetry](https://mikelev.in/futureproof/agentic-web-content-negotiation-telemetry/index.md)
@@ -115,12 +116,12 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-07-27] [Dayton Wind Tunnel Auth Capture and the Mother Cat Workflow](https://mikelev.in/futureproof/dayton-wind-tunnel-auth-capture-mother-cat/index.md)
 - [2026-07-27] [The Amiga Metaphor: Engineering Reproducible AI Workflows and Cognitive Myelination](https://mikelev.in/futureproof/amiga-metaphor-engineering-reproducible-ai-workflows/index.md)
 - [2026-07-27] [Engineering the Second Brain: High-Signal Storytelling and ASCII Art Distillation](https://mikelev.in/futureproof/engineering-the-second-brain-high-signal-storytelling/index.md)
-- [2026-07-27] [Bridging Browser Automation and Reproducible AI Workflows](https://mikelev.in/futureproof/bridging-browser-automation-and-reproducible-ai-workflows/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-07-27] [796k] bridging-browser-automation-and-reproducible-ai-workflows
 - [2026-07-27] [218k] the-forcing-pair-30-and-3-and-axis-forcing
 - [2026-07-27] [50k] mother-cat-path-consolidating-entry-points-ai-workflows
 - [2026-07-27] [45k] patch-tool-refuses-own-grammar
