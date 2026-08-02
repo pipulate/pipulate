@@ -229,8 +229,27 @@ class ChipVoiceSystem:
                 # Keep logging the original 'text' so the terminal output matches the Markdown
                 logger.info(f"🎤 Speaking (PID {self.current_process.pid}): {text[:50]}...")
                 
-                # Wait for the process to finish naturally
-                self.current_process.wait()
+                # THE SUCCESS-ONLY WITNESS (convicted 2026-08-02, cold-start ride
+                # five): this called wait() and DISCARDED the exit code while
+                # stderr went to DEVNULL, so a player that could not open an
+                # audio device exited nonzero, printed its reason into the void,
+                # and this function returned True anyway. speak_text reported
+                # success, mother_cat printed nothing, and the human heard
+                # silence beside a green console. Mirror image of
+                # REFUSAL-ONLY WITNESS: that rule names a guard observed only
+                # refusing; this is a claim observed only succeeding, and the
+                # two are indistinguishable from broken-shut and cannot-fail
+                # respectively. Also the missing third suspect from the
+                # 2026-07-26 THE DEMO WENT SILENT todo, which named transport
+                # and engine and never looked at the subprocess exit status.
+                _stderr = self.current_process.communicate()[1]
+                rc = self.current_process.returncode
+                if rc != 0:
+                    detail = (_stderr or b"").decode("utf-8", "replace").strip()
+                    detail = detail.splitlines()[-1] if detail else f"exit {rc}"
+                    logger.error(f"🎤 Audio playback failed (exit {rc}): {detail}")
+                    self.last_error = f"playback exit {rc}: {detail}"
+                    return False
                 
                 return True
 
