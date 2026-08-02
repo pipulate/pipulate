@@ -173,7 +173,19 @@ class ChipVoiceSystem:
             # rare audible overlap over a permanent silent deadlock if a player hangs.
             import fcntl
             import time
-            lock_file = open("/tmp/pipulate_voice.lock", "w")
+            # PER-USER LOCK PATH (convicted 2026-08-02, cold-start ride). This
+            # was a FIXED path in a shared world-readable directory, so the
+            # first user to speak created it 0644 and every OTHER user on the
+            # machine got EACCES on open(..., "w") forever. Receipt:
+            # `-rw-r--r-- 1 mike users 0 /tmp/pipulate_voice.lock` while a
+            # second account's ride printed Errno 13 at every single stop.
+            # A mode change is the WRONG fix: 0666 in /tmp is a shared-write
+            # target for anyone on the box, and the lock has no cross-user job
+            # anyway -- two users are two audio sessions. The uid suffix makes
+            # collision unrepresentable instead of merely permitted, which is
+            # THE DERIVED-PATH RULE applied to a lock file.
+            lock_path = f"/tmp/pipulate_voice.lock.{os.getuid()}"
+            lock_file = open(lock_path, "w")
             _deadline = time.monotonic() + 30
             while True:
                 try:
