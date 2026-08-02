@@ -51,11 +51,11 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,383 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 33 published in the last 7 days
-# Markdown negotiated: 1,954 reads (0.21% of all responses)
+# There are 1,385 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 31 published in the last 7 days
+# Markdown negotiated: 1,957 reads (0.21% of all responses)
 # DOM hydration: 2577 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-08-02T01:25Z
+# Honeybot telemetry fetched 2026-08-02T13:25Z
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -1355,10 +1355,12 @@ scripts/ai.py               # <-- How I constantly use local AI to write git com
 # scripts/foo_replay.py       # Needs description
 
 # FREQUENTLY USEFUL TO HAVE IN CONTEXT
+imports/voice_synthesis.py  # <-- The wand can talk to you
+tools/scraper_tools.py      # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
+
 # release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
 # scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
 # scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
-# imports/voice_synthesis.py  # <-- The wand can talk to you
 # scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
 
 #                         --- Under this line is were you paste what the AI gives you ---
