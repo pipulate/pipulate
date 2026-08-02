@@ -12,8 +12,8 @@ Usage:
     pipulate
 """
 
-__version__ = "2.02"
-__version_description__ = "Operation Stick Bug"
+__version__ = "2.03"
+__version_description__ = "Working on Mother Cat Kata"
 # SPDX expression, single source of truth, synced into pyproject.toml by
 # scripts/release/version_sync.py. "-or-later" (not bare AGPL-3.0, which is
 # deprecated SPDX) because the header below grants "any later version".
