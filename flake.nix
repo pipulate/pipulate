@@ -440,6 +440,7 @@
           jq
           dig
           whois
+          xorg.xhost                   # X access grants for cold-start / multi-user rides
           alsa-utils
           ffmpeg
         ] ++ (with pkgs; pkgs.lib.optionals isLinux [
