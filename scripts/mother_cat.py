@@ -70,7 +70,7 @@ def _narrate(text, disclosed):
         if isinstance(result, dict) and not result.get("success"):
             print(
                 "  (voice guidance failed: "
-                f"{result.get('error', 'unknown error')}) {text}"
+                f"{result.get('error', 'unknown error')})"
             )
     except Exception as exc:
         print(f"  (voice error, continuing: {exc}) {text}")
