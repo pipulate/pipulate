@@ -51,11 +51,11 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,382 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 32 published in the last 7 days
-# Markdown negotiated: 1,953 reads (0.21% of all responses)
+# There are 1,383 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 33 published in the last 7 days
+# Markdown negotiated: 1,954 reads (0.21% of all responses)
 # DOM hydration: 2577 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-08-01T18:03Z
+# Honeybot telemetry fetched 2026-08-02T01:25Z
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -1278,14 +1278,13 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # Software Von Neumann Probe IaC Kickstart
 
-# release.py                                 #  <-- The deploy process
-# assets/installer/install.sh                #  <-- Pipulate.com installer real home in github/pipulate repo
-# ~/repos/Pipulate.com/index.md              #  <-- The public face (in addition to GitHub & PyPI)
-# ~/repos/Pipulate.com/CNAME
-# ~/repos/Pipulate.com/_config.yml
-# ~/repos/Pipulate.com/_layouts/default.html
-# ~/repos/nixos/.gitignore
-# ~/repos/Pipulate.com/install.md            #  <-- Gets copied into place here by pipulate/release.py
+release.py                                 #  <-- The deploy process
+assets/installer/install.sh                #  <-- Pipulate.com installer real home in github/pipulate repo
+~/repos/Pipulate.com/CNAME
+~/repos/Pipulate.com/_config.yml
+~/repos/Pipulate.com/_layouts/default.html
+~/repos/nixos/.gitignore
+~/repos/Pipulate.com/install.md            #  <-- Gets copied into place here by pipulate/release.py
 
 # ~/repos/nixos/autognome.py                 #  <-- More rare to have to include, but the true "top" of the muscle memory stack for day-to-day purposes
 # ~/repos/nixos/configuration.nix            #  <-- "Global" IaC context (most of you won't have)
@@ -1562,8 +1561,8 @@ GLOSSARY.md
 # assets/trails/first_context.yaml
 # assets/trails/botify_pageworkers.yaml
 # tests/test_mck_rep2.py      # <-- Rep 2: the earmark's owed side-by-side witness
-# assets/installer/mck.sh     # <-- THE LAUNCHER: curl -fsSL pipulate.com/mck.sh | bash
-# assets/installer/replay.sh  # <-- OFF the roster 2026-08-01; re-add needs syntax + one ride + a pinned verifier fetch
+assets/installer/mck.sh     # <-- THE LAUNCHER: curl -fsSL pipulate.com/mck.sh | bash
+assets/installer/replay.sh  # <-- OFF the roster 2026-08-01; re-add needs syntax + one ride + a pinned verifier fetch
 
 # ============================================================================
 # IX. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)
