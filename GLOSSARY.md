@@ -55,6 +55,14 @@ Entries are alphabetical, numbers spelled as spoken.
   equally good shapes one was picked ARBITRARILY and then locked out its twin.
   Which one you are looking at decides whether to fight a standard or accept
   it. QWERTY, the `|` glyph, and `/nix/store` are chiral, not converged.
+  DATED SPECIMEN (2026-08-03): "Release the Kraken." The Kraken is Norse; the
+  sea monster in the Perseus myth is Cetus. Harryhausen and Beverley Cross put
+  a Scandinavian creature in a Greek slot in Clash of the Titans (1981) and it
+  won so completely that nobody alive says the Greek name. Most specimens are
+  undated and unauthored, which is exactly what makes them easy to misread as
+  convergence -- nobody can point to the frame where the die was cast, so the
+  standard feels inevitable. This one has a year and a credit, so reach for it
+  when someone insists an arbitrary incumbent was forced.
 - **Chisel-strike** — *one bounded command or edit.* Small, reversible,
   receipt-producing; the unit of daily progress.
 - **The Circle** — *apply.py's airlocks.* Exact-match interlock plus AST, Nix,
