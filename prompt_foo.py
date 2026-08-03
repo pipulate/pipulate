@@ -3124,7 +3124,22 @@ def main():
     # 'warn' secrets mode (no-egress local lane only) shouts but emits;
     # everything else fails closed. No flag reaches this decision.
     secret_hits = scan_secrets(final_output)
-    # secret_hits = None
+    # THE SILENT-PASS PROBLEM (self-convicted 2026-08-03; this compile's own
+    # existence was the only receipt that the gate had run at all). An ARMED
+    # gate that finds nothing prints NOTHING -- and a DISARMED gate also
+    # prints nothing. The two states are indistinguishable from the output,
+    # which is exactly how this call sat commented out long enough to become
+    # furniture. Mirror of REFUSAL-ONLY WITNESS: that rule names a guard
+    # observed only REFUSING; this is a guard whose PASSING branch has no
+    # witness at all. Same reasoning as the render canary's deliberately
+    # nonzero floor -- an instrument that could read silent forever is
+    # indistinguishable from a dead one. One line, every compile, unconditional.
+    # The emergency-disarm comment that used to sit on the next line is
+    # deleted on purpose: the DESIGNED escape is a disclosure profile with
+    # "secrets": "warn", which shouts and lands in the transcript. A
+    # commented-out disarm sitting one line under an armed gate is an
+    # invitation with no receipt attached.
+    print(f"🔐 Secrets tripwire: ARMED — {len(secret_hits)} hit(s) in payload.")
     if secret_hits:
         total_secret_hits = len(secret_hits)
         if profile.get('secrets') == 'warn':
