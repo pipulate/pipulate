@@ -504,6 +504,25 @@ AI_PHOOEY_CHOP = r"""                                                           
 # apply.py and was stopped only by the AST airlock (rerun cost, zero
 # regression — the fence held). If a block is wrong, delete it before
 # responding; a correction note is not a coupling pin.
+# THE HAND-REPAIR CLAUSE (amended 2026-08-03, SECOND conviction, same
+# failure wearing a renamed marker): a dead car is not merely inert, it is
+# BAIT. apply.py's SYNTAX refusal -- the no-blocks-found message -- reports
+# that the MARKERS are malformed and reports NOTHING about the BODY, so the
+# obvious repair is to fix the markers in vim, at which point a block the
+# emitter DISOWNED IN PROSE becomes a block the actuator applies with no
+# fence having read it. GRADE THE TWO REFUSALS: the search-block-not-found
+# message proves the exact-match interlock READ the body and rejected it;
+# the no-blocks-found message proves it never parsed one. A hand-repair
+# after the first is witnessed; after the second it is not. CONVICTION: the
+# placeholder-marker dead car of 2026-08-03 was refused correctly,
+# hand-repaired, applied, committed and PUSHED, and the live car behind it
+# then failed exact-match because the dead one had already landed. Harmless
+# ONLY because the two cars were semantically identical -- that is the
+# near-miss, not the save. Sibling of REFUSAL-ONLY WITNESS: a fence observed
+# REFUSING is not a fence observed HOLDING, and this one was walked around
+# by hand in under a minute. OPERATOR-SIDE COROLLARY: when app prints
+# no-blocks-found, do NOT edit the patch file -- delete it and ask for a
+# re-emit. The emitter is cheap; the unexamined body is not.
 
 # THE CARRIED-DELIVERABLE RULE (banked 2026-07-29, operator-convicted): a
 # Car-5 external deliverable is CARRIED, NOT CITED. Car 5's actuator is the
