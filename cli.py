@@ -478,7 +478,18 @@ def main():
             sys.exit(1)
         except Exception as e:
             console.print(f"❌ [bold red]Unexpected error:[/bold red] {e}")
-        sys.exit(1)
+            sys.exit(1)
+        # THE DISCRIMINATION QUESTION, APPLIED TO AN EXIT CODE (convicted
+        # 2026-08-03): this line sat at THIS indentation, outside every
+        # handler, so success fell through to it -- and so did failure, and
+        # interrupt, and exception. Four worlds, one printout. The console
+        # printed a green checkmark while the shell read 1, which means the
+        # EXIT-CODE PROTOCOL RULE's whole premise ("a program invoked for a
+        # decision speaks through its exit code") was unavailable here, and
+        # any `cli.py call X && echo GREEN` could never print GREEN in any
+        # world. Sibling of THE SUCCESS-ONLY WITNESS: an instrument that
+        # cannot report the outcome is the thing hiding it. Success exits 0.
+        sys.exit(0)
 
 if __name__ == "__main__":
     main()
