@@ -3168,10 +3168,17 @@ def main():
     # the run departs from baseline, so the override lives in the transcript.
     if not profile.get('substitutions', True) or denylist_mode != 'block' or args.profile:
         leak_summary = f"{sum(n for _, n in leaks)} hit(s) logged" if leaks else "0 hits"
+        # VERDICT-IN-THE-INSTRUMENT, discharged. This line hardcoded "(0 hits)"
+        # and therefore printed the identical reassuring string in the world
+        # where the scanner looked and found nothing AND in the world where
+        # the scanner was never called -- THE DISCRIMINATION QUESTION failing
+        # inside the file that enforces it on everyone else. secret_hits is
+        # always a list here: the block path exits before reaching this line.
+        secret_summary = f"{len(secret_hits)} hit(s)"
         receipt = (f"🔓 DISCLOSURE: profile={profile_name} | "
                    f"substitutions={'ON' if profile.get('substitutions', True) else 'OFF'} | "
                    f"denylist={denylist_mode.upper()} ({leak_summary}) | "
-                   f"secrets={'WARN' if profile.get('secrets') == 'warn' else 'BLOCK'} (0 hits)")
+                   f"secrets={'WARN' if profile.get('secrets') == 'warn' else 'BLOCK'} ({secret_summary})")
         if args.reason:
             receipt += f"\n   reason: \"{args.reason}\""
         if leaks:
