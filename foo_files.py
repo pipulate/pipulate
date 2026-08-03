@@ -51,11 +51,11 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,385 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 31 published in the last 7 days
-# Markdown negotiated: 1,957 reads (0.21% of all responses)
+# There are 1,387 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 28 published in the last 7 days
+# Markdown negotiated: 1,962 reads (0.21% of all responses)
 # DOM hydration: 2577 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-08-02T13:25Z
+# Honeybot telemetry fetched 2026-08-03T10:54Z
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -1601,18 +1601,18 @@ assets/installer/replay.sh  # <-- OFF the roster 2026-08-01; re-add needs syntax
 # carve the sinkholes; this chapter is the seismograph.
 
 # CORE SLIDESHOW FILES
-# nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
-# remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
-# remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
-# remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
-# remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
-# remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
-# remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
-# remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
-# remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
-# remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
-# remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
-# imports/voice_synthesis.py                  # <-- The wand can talk to you (not sure if I'm keeping it in Honeybot chapter)
+nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
+remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
+remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
+remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
+remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
+remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
+remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
+remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
+remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
+remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
+remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+imports/voice_synthesis.py                  # <-- The wand can talk to you (not sure if I'm keeping it in Honeybot chapter)
 
 # remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
 
@@ -1713,22 +1713,22 @@ assets/installer/replay.sh  # <-- OFF the roster 2026-08-01; re-add needs syntax
 # gives the Honeybot something to say — and the provenance that makes the
 # saying worth training on.
 
-# ~/.config/pipulate/blogs.json                # <-- CAUTION! Derived from ~/repos/nixos/blogs.nix
-# scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
-# scripts/articles/common.py                   # <-- Self-explanatory
-# scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
-# scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
-# scripts/articles/sanitizer.py                # <-- Scrubs PII
-# scripts/articles/gsc_historical_fetch.py
-# scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
-# scripts/articles/confluenceizer.py           # <-- Idempotent Jekyll-to-Confluence corporate wiki
-# scripts/articles/googledocizer.py            # <-- Just added
-# scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
-# scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
-# scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
-# scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
-# scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
-# scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
+~/.config/pipulate/blogs.json                # <-- CAUTION! Derived from ~/repos/nixos/blogs.nix
+scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
+scripts/articles/common.py                   # <-- Self-explanatory
+scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
+scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
+scripts/articles/sanitizer.py                # <-- Scrubs PII
+scripts/articles/gsc_historical_fetch.py
+scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
+scripts/articles/confluenceizer.py           # <-- Idempotent Jekyll-to-Confluence corporate wiki
+scripts/articles/googledocizer.py            # <-- Just added
+scripts/articles/build_knowledge_graph.py    # <-- Topically load-balances site using hierarchical K-Means keyword clustering groups
+scripts/articles/generate_ai_context.py      # <-- AIs WILL interrogate your repo. This gives epic context of article URLs for drill-down.
+scripts/articles/generate_hubs.py            # <-- Uses just-produced link-graph data to generate each of the new hubs it suggests
+scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
+scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
+scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
 
 # The following Jekyll files pair well with the above to show how we start various forms of tracking, and as a transition into Honeybot Nginx Broadcast Studio & telemetry.
 # release.py                                          #  <-- The deploy process
