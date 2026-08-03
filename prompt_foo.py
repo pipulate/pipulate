@@ -2713,6 +2713,25 @@ def main():
         # ABSOLUTE PATH CERTAINTY: Resolve to absolute path immediately (tilde-aware)
         path = os.path.expanduser(path)
         full_path = os.path.join(REPO_ROOT, path) if not os.path.isabs(path) else path
+        # THE DE-PREFIXED COMMAND HINT (convicted 2026-08-03): three probe
+        # echoes lost their leading "! " during a hand-copy into adhoc.txt, so
+        # the compiler parsed them as PATHS, printed three IDENTICAL generic
+        # warnings, and the operator's eye slid past all three -- costing the
+        # AFTER half of an exit-code straddle. THE DISCRIMINATION QUESTION,
+        # applied to a warning: the old message printed the same sentence
+        # whether a file was genuinely absent or a command had lost its sigil,
+        # so it could not tell the operator which repair to make. A router path
+        # has never carried a space or a shell metacharacter; a de-prefixed
+        # command almost always does. False positive costs one sentence in a
+        # warning that was already firing; false negative costs a straddle.
+        # THE FIRST EMISSION WAS REFUSED for ambiguity: it anchored on
+        # `if not os.path.exists(full_path):`, which occurs twice at this
+        # indentation -- here and in check_topological_integrity. That refusal
+        # is the GOOD one under the HAND-REPAIR CLAUSE: the interlock read the
+        # body, found it twice, and declined to guess.
+        if not os.path.exists(full_path) and (' ' in path or any(ch in path for ch in ';|>&$')):
+            logger.print(f"Warning: DE-PREFIXED COMMAND? Add the leading '! ' in adhoc.txt: {path} <--- !!!")
+            continue
         
         if not os.path.exists(full_path):
             logger.print(f"Warning: FILE NOT FOUND AND WILL BE SKIPPED: {full_path} <--------------------------- !!!")
