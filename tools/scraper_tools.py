@@ -804,6 +804,22 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
             # artifact that does not record its own subject cannot be audited
             # against the ledger sitting next to it.
             "header_source_url": doc_url,
+            # WHICH RULE CHOSE IT. header_source_url (2026-07-24) records the
+            # SUBJECT of these headers; this records HOW that subject was
+            # picked. The 2026-08-04 conviction cost two turns precisely
+            # because the artifact could name its subject but not its
+            # selection path. "final_url_exact" means the browser's own
+            # current URL matched a Document response; "host_fallback" means
+            # the selector guessed from host and frame order and the result
+            # did NOT match the final URL -- treat the whole triptych as
+            # suspect on that value; "none" means no Document was selected at
+            # all. One jq, not a two-turn investigation.
+            "header_selection": (
+                "none" if not doc_url
+                else "final_url_exact"
+                if final_url and doc_url.split("#", 1)[0] == final_url.split("#", 1)[0]
+                else "host_fallback"
+            ),
             # Consumers read this to decide whether source.html may be trusted
             # as the LEFT PANEL of the triptych. Absent on captures taken
             # before 2026-07-24, which consumers therefore treat as UNFLAGGED,
