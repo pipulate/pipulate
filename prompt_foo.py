@@ -727,7 +727,7 @@ def print_optics_receipt(artifacts: dict, target_url: str, cached: bool = False)
         hinge_a += "  [provenance unwitnessed — capture predates the flag]"
     elif provenance != 'wire':
         hinge_a = f"UNMEASURABLE — source.html is a {provenance}, not wire truth"
-    # THE EMPTY-PANEL REFUSAL (convicted 2026-08-04, client-l.com). The
+    # THE EMPTY-PANEL REFUSAL (convicted 2026-08-04, example.com). The
     # provenance gate above watches ONE door: a WITNESSED REFUSAL
     # (page_source_fallback). A capture that reports source_provenance='wire'
     # and lands ZERO BYTES walks through the other door, and Hinge A then
