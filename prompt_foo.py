@@ -2675,7 +2675,30 @@ def main():
                 
                 if result.get("success"):
                     artifacts = result.get("looking_at_files", {})
-
+                    # THE EMPTY-PANEL NOTE (same conviction, payload side).
+                    # print_optics_receipt is console-only by design, so its
+                    # refusal reaches the OPERATOR and never the MODEL -- which
+                    # then reads the Link Lens's "SOURCE HTML -- 0 anchors /
+                    # present only after hydration: 259" as a finding about the
+                    # SITE. Land the caveat in the payload itself, exactly the
+                    # way the $URL lane already lands its WITHHELD note.
+                    _src = _first_artifact(artifacts, ('source_html', 'source'))
+                    try:
+                        _src_bytes = os.path.getsize(_src) if _src else 0
+                    except OSError:
+                        _src_bytes = 0
+                    if _src_bytes < 1024:
+                        note = (f"# CAPTURE FAULT: source.html for {target_url} is {_src_bytes} bytes.\n"
+                                f"# Panel 1 (view-source) is EMPTY. Any 'source anchors: 0' or\n"
+                                f"# 'ADDED BY HYDRATION' reading in the Link Lens is an ARTIFACT OF\n"
+                                f"# THIS CAPTURE, not a property of the site. The hydration delta is\n"
+                                f"# UNMEASURED. Check the Document row in Wire Truth before drawing\n"
+                                f"# any conclusion about server rendering. Treat headers.json with\n"
+                                f"# equal suspicion: the same selector feeds both.")
+                        processed_files_data.append({
+                            "path": f"OPTICS [CAPTURE FAULT]: {target_url}", "comment": comment, "content": note,
+                            "tokens": count_tokens(note), "words": count_words(note), "lang": "text"
+                        })
                     lenses = [
                         ('seo_md', 'SEO Metadata'),
                         ('headers', 'Response Headers'),
