@@ -2177,6 +2177,26 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - TODO (BANKED 2026-08-03 AT OPERATOR REQUEST, DELIBERATELY NOT RIDDEN):
+#   DE-HARDWIRE THE PERSONAL PATHS. The mechanism/data split this repo already
+#   runs -- blogs.json lives outside the worktree, adhoc.txt is gitignored,
+#   foo_files.py's big string is MEANT to be rewritten by a forker -- leaks in
+#   exactly three places, and all three have receipts in this payload.
+#   (a) flake.nix publish() hardcodes $HOME/repos/trimnoir and
+#   ssh mike@192.168.10.100; gobot() hardcodes $HOME/repos/botifyml. Both sit
+#   forty lines from rgx/rgxc, which read the identical class of information
+#   out of blogs.json AT RUNTIME -- the fix pattern is already in the file.
+#   (b) prompt_foo.py's CONFIG POSTS_DIRECTORY and DEFAULT_TARGETS both name
+#   ~/repos/trimnoir/_posts as the fallback, so a forker with no blogs.json
+#   inherits the author's blog by default rather than an empty one.
+#   (c) The Jekyll /futureproof/ segment must become per-blog data. The
+#   compiler half is ALREADY done -- _get_article_list_data honors a per-blog
+#   permalink_style from blogs.json -- so the hardcode lives downstream in
+#   scripts/articles/*, and the FIRST move there is a locating probe, never a
+#   patch. ACCEPTANCE, so the work is falsifiable the day it rides: a fresh
+#   clone with an EMPTY blogs.json reaches a compiled payload without editing
+#   a single tracked file. Anything a forker must edit INSIDE the repo is
+#   personal data living in the mechanism lane.
 # - EARMARK: THE RECEIPT-PLUS-LANE TABLE (banked 2026-08-02, four-turn witnessed): the standing render for pass/fail rulings is a markdown table with FOUR columns -- Item, Colour, Receipt, Lane -- and the load-bearing part is the last two, not the glyph. Receipt forces a claim to name its evidence; Lane forces it to name its vantage (compile lane = prompt_foo's ! executor; operator lane = a hand-run terminal), because a receipt without a lane is unlabeled evidence and the two lanes routinely disagree. THREE STATES, not two: green (witnessed), red (witnessed failing), and a third for attempted-but-unverified or VOID (the probe could not see). A two-state table flattens both into a lie -- convicted twice in one ride series, once when a sudo-refused probe's `0` was read as a reading and once when a program's own "copied to clipboard" print stood in for a paste. The glyph is the HANDLE (memorable, scannable); the receipt-and-lane pair is the MECHANISM. Sibling of THE TWO-RECORDER RULE: authority may only decrease from wire receipt to tool transcript to narrative, and the Lane column is where that ladder becomes visible.
 # - EARMARK: THE TEST-RIG PROVENANCE RULE (banked 2026-08-02, cold-start ride six): a cold-start rig can be a PRISTINE PUBLISHED-ARTIFACT test or a CURRENT-CODE test, never both in one directory, and which one it is must be stated before any ruling is taken from it. Conviction: /home/coldstart/pipulate ran the published ZIP for three rides, so every repo patch was structurally invisible to it and a correct per-user-lock fix appeared to fail; the magic-cookie transformation then replaced it by `git clone --depth=1`, so the rig received code by CLONE, not by PULL, and is now frozen at clone-time HEAD with a dead update lane -- a THIRD thing that is neither property cleanly. Patches reach it only by hand-carry (sudo install), and the hand-carry is itself a receipt that the pull is broken. STANDING CONSEQUENCE: name the rig's provenance in every ruling taken from it, and prefer two rigs (one pristine, one current) over one ambiguous rig.
 # - TODO: CUT THE GHOST-DRIVER BODY BRANCHES (seeded 2026-07-26, receipt-convicted):
