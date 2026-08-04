@@ -2218,6 +2218,53 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: THE READ-WRITE PROBE (banked 2026-08-04, specimen-convicted): a
+#   probe that OPENS a database is not read-only, and the damage lands on the
+#   EVIDENCE rather than on the data. sqlite3.connect() defaults to read-write,
+#   so `cli.py db-inspect` touched data/botifython_dev.db and moved its mtime
+#   from May 3 13:26 to Aug 4 08:43 with its SIZE UNCHANGED at 503808 -- opened,
+#   not written. That mtime was the single cheapest liveness signal separating
+#   the live app database from the three-month-old fossil the backup roster was
+#   copying, and the probe sent to READ it DESTROYED it. Harmless only because
+#   the roster fix had already landed. PRESCRIPTION: inspect SQLite through the
+#   read-only URI (sqlite3.connect('file:path?mode=ro', uri=True)), or stat the
+#   file without opening it. Sibling of THE PROBE THAT ATE ITS SIBLINGS: that
+#   one bounds a probe's effect on SHELL STATE, this one bounds its effect on
+#   the MEASUREMENT.
+# - EARMARK: THE TWO-HAND TEST IS NOT A TEST (banked 2026-08-04, operator-
+#   refused): a procedure asking a human to type in terminal A, then type in
+#   terminal B while A still runs, has no receipt, no reproducibility and no
+#   defined failure mode. If a behavior needs two processes, the witness is a
+#   SCRIPT that spawns both and asserts on the output, or the behavior stays
+#   honestly UNWITNESSED. Conviction: the one-workshop echo is
+#   instantiation-green and behaviorally unwitnessed to this day, because the
+#   only test ever offered for it was a two-terminal choreography.
+# - AMENDED 2026-08-04 (MAINTAINER-INVISIBLE LANE, four-for-four, same day it
+#   was banked): the dead backup roster is the fourth specimen and the cleanest.
+#   It hardcoded data/botifython*.db while config.py derives
+#   data/{whitelabel}*.db; this box carried BOTH families from history, so
+#   os.path.exists returned True, no warning fired, and the status table printed
+#   a checkmark beside a file last written May 3. The receipt that convicted it
+#   came from a machine with no history: a fresh macOS install named BotifyML.
+# - TODO (banked 2026-08-04, first-contact receipt): a HEALTHY fresh install
+#   prints a WARNING. On the Mac's first BotifyML server start, data/discussion.db
+#   and data/botifyml.db did not exist yet -- correctly, on any first run -- so
+#   backup_all_databases logged two warnings and BACKUP_STARTUP_PARTIAL - 2/4.
+#   Same disease as the false-dirty gate and the 24 INFO lines: a warning that
+#   fires on the ORDINARY case trains the reader to skip warnings.
+#   Absent-on-first-run is not a partial backup.
+# - TODO (banked 2026-08-04, boot-menu consequence): DOOR 2 NEVER BACKS UP.
+#   Both backup_all_databases call sites are in server.py (:1956, :3696), so the
+#   backup runs only when the SERVER runs -- and door 2, the door the boot menu
+#   and `learn` steer a newcomer toward, starts nothing. Receipt: newest dated
+#   backups read 2026-08-01 after three days of door-2 living. The boot menu did
+#   not break the backup; it made the no-backup path the comfortable one.
+# - TODO (banked 2026-08-04, owed and unemitted): install.sh's banner awk keeps
+#   the tail (BotifyML -> BotifyML) while flake.nix's figlet and config.py's
+#   .capitalize() lowercase it (-> Botifyml). One Mac screen carried both,
+#   ninety seconds apart. APP_NAME is load-bearing (server.py:1418, the boot
+#   menu, every shell entry), so the BANNER lowercases to match:
+#   substr($0,2) -> tolower(substr($0,2)). One word.
 # - EARMARK: THE PROBE THAT ATE ITS SIBLINGS (banked 2026-08-04, self-convicted):
 #   a probe's CLEANUP is part of its blast radius. Probe A of the stat-cache ride
 #   ended `cd /; rm -rf "$T"` to avoid deleting a directory it was standing in --
