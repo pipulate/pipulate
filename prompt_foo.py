@@ -727,6 +727,25 @@ def print_optics_receipt(artifacts: dict, target_url: str, cached: bool = False)
         hinge_a += "  [provenance unwitnessed — capture predates the flag]"
     elif provenance != 'wire':
         hinge_a = f"UNMEASURABLE — source.html is a {provenance}, not wire truth"
+    # THE EMPTY-PANEL REFUSAL (convicted 2026-08-04, client-l.com). The
+    # provenance gate above watches ONE door: a WITNESSED REFUSAL
+    # (page_source_fallback). A capture that reports source_provenance='wire'
+    # and lands ZERO BYTES walks through the other door, and Hinge A then
+    # announces "SWUNG -- JS changed the structure" with total confidence
+    # about a panel that is empty. That is the exact confident-inversion this
+    # gate exists to prevent, arriving by the route it does not watch.
+    # Sibling of REFUSAL-ONLY WITNESS: the gate had only ever been observed
+    # catching the refusal, so nobody knew the success branch was unguarded.
+    # A real HTML document is never under 1 KB, so this cannot fire on a
+    # legitimate capture.
+    _src = art(('source_html', 'source'))
+    try:
+        _src_bytes = os.path.getsize(_src) if _src else 0
+    except OSError:
+        _src_bytes = 0
+    if _src_bytes < 1024:
+        hinge_a = (f"UNMEASURABLE — source.html captured {_src_bytes} bytes; "
+                   "panel 1 is empty and the hydration delta is unmeasured")
 
     def cell(text, width=18):
         return str(text)[:width].ljust(width)
