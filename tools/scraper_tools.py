@@ -154,7 +154,7 @@ def _simplify_html_for_llm(html_content, default_title=""):
 # selenium_automation. Nothing raised; ruff passed; the registry was simply
 # wrong. DECORATOR STRADDLE RULE: decorators bind downward, so any insertion
 # anchored on a def must include the line above it in the SEARCH.
-def _document_candidates(cdp_events: list, domain: str) -> list:
+def _document_candidates(cdp_events: list, domain: str, final_url: str = "") -> list:
     """Document responseReceived events that plausibly ARE the requested page.
 
     Returned in ledger order; the caller takes [-1]. Pure and ledger-only on
