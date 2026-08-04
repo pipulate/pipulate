@@ -13,7 +13,17 @@ Usage:
 """
 
 __version__ = "2.41"
-__version_description__ = "So wI chu"
+# APOSTROPHES RESTORED (2026-08-04). They were stripped as a workaround for
+# flake.nix's descMatch regex, whose character class excluded ' from the
+# CAPTURE and truncated the banner to "(So)". That regex was fixed in the same
+# ride, and this line is now the only thing that exercises the fix: with the
+# apostrophes gone, the old regex and the new one print an IDENTICAL string, so
+# the straddle could not discriminate between a landed patch and a missing one.
+# A convention the author has to remember ("no apostrophes in version names")
+# is not a property of the system; the regex is. Blast radius is one banner:
+# nothing but flake.nix reads this name -- version_sync.py syncs __version__
+# and __description__, never this. So'wI' chu' -- "engage the cloaking device."
+__version_description__ = "So'wI' chu'"
 # SPDX expression, single source of truth, synced into pyproject.toml by
 # scripts/release/version_sync.py. "-or-later" (not bare AGPL-3.0, which is
 # deprecated SPDX) because the header below grants "any later version".
