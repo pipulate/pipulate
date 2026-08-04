@@ -818,6 +818,19 @@ AI_PHOOEY_CHOP = r"""                                                           
 # seen only refusing is unwitnessed) and of NO-DEAD-CARS (every emitted
 # actuator is live regardless of surrounding prose): all three are one
 # disease -- prose beside a mechanism does not gate the mechanism.
+# REMOVAL WITNESSED 2026-08-04, two channels: `ls ~/repos/Pipulate.com/*.sh`
+# returns install.sh and mck.sh ONLY, and `curl -sI pipulate.com/replay.sh`
+# returns HTTP/2 404. So the roster cut on 2026-08-01 was FOLLOWED BY an
+# actual deletion from the served checkout, and the standing consequence was
+# honored rather than merely written down. Worth banking because a rule
+# convicted by a hazard and never witnessed being SATISFIED reads, six months
+# on, like an open wound -- the inverse of REFUSAL-ONLY WITNESS, where a guard
+# is seen only refusing and never holding. RESIDUE, named not ridden:
+# assets/installer/replay.sh (v0.2.0, pinned verifier) and
+# assets/installer/fdr.sh remain on disk in THIS repo, off the roster and
+# therefore unshippable. That is a STRANDED ARTIFACT, not a security gap --
+# there is no v0.1.0 in the wild for the fix to be a fix to. It costs nothing
+# today and will confuse whoever finds it later.
 # THE CABOOSE-VERDICT COROLLARY (banked 2026-08-01, self-convicted one turn
 # later): a prompt written for the NEXT turn may name what to CHECK; it may
 # not pre-commit what a printout MEANS, because the caboose is written before
