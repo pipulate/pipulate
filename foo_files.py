@@ -791,10 +791,16 @@ AI_PHOOEY_CHOP = r"""                                                           
 #      nix develop. Name this limitation wherever a non-interactive install
 #      path is offered; never let it be discovered.
 #   c. the installer's own final hand-off omits the macOS impure exception
-#      that the run wrapper it writes DOES include. One documented exception,
-#      two spellings, and the first-run path is the one missing it. macOS is
-#      untested, so the consequence is INFERRED and the inconsistency is
-#      OBSERVED -- do not upgrade one to the other without a Darwin receipt.
+#      that the run wrapper it writes DOES include. DARWIN RECEIPT LANDED
+#      2026-08-04: three consecutive `curl | bash` installs on aarch64-darwin
+#      completed through `nix develop -L` with NO --impure and no impurity
+#      error, so the INSTALLER's spelling is correct and the exception it
+#      "omits" is not needed on that path. The `run` wrapper's --impure is now
+#      the SUSPECT half and is likely vestigial -- the original refusal it
+#      worked around was the alsa-utils eval error, which the platform gate
+#      fixed. STILL UNWITNESSED: nobody has executed `./run` on macOS. Do not
+#      delete the flag until a receipt shows plain `nix develop` succeeding
+#      through that wrapper.
 # THE PUBLISH-ROSTER RULE (banked 2026-08-01, hazard-convicted one turn after
 # it was named): a name in a PUBLISH roster is not a plan, a note, or an
 # intention -- it is a live actuator that fires on the next ordinary release
@@ -1156,6 +1162,41 @@ AI_PHOOEY_CHOP = r"""                                                           
 # redrew a prompt already accepting input. Corollary: a gate that leaves
 # noise-generating background jobs running BEHIND it has not delivered quiet.
 # Move the gate above the noise, never the noise below the gate.
+
+# THE CROSS-PLATFORM EVAL RULE (banked 2026-08-04, first-contact convicted on
+# aarch64-darwin): a package list is EVALUATED before any shellHook runs, so a
+# platform-restricted entry is not a runtime failure -- it is an EVAL-TIME
+# REFUSAL, and nothing downstream of it gets a chance to report. The flake died
+# on alsa-utils, which means gitUpdateLogic never ran, which means the magic
+# cookie transformation never happened, which means a Mac install could not
+# complete AT ALL. Rank eval-time refusals above every runtime bug: a runtime
+# bug leaves a diagnosable system, an eval refusal leaves nothing.
+# THE INSTRUMENT IS FREE AND LIVES ON THE WRONG MACHINE: nix EVALUATION is
+# cross-platform (only BUILDING needs the matching system), so
+# `nix eval --raw .#devShells.aarch64-darwin.default.drvPath` reproduces a Mac's
+# exact refusal FROM LINUX, in seconds, with no second machine in the room. Any
+# flake change touching buildInputs gets both systems evaluated before it ships.
+# SHELL SELECTION IS LOAD-BEARING IN THAT PROBE: `quiet` carries neither
+# runScript nor gitUpdateLogic, so a quiet-aimed probe prints the same hash in
+# both worlds for any edit to either -- THE DISCRIMINATION QUESTION failing in
+# the probe itself. Name `default` when the edit is in a shellHook; the hash
+# CHANGING is then the ignition witness, proving the patched text is what a
+# fresh `nix develop` would instantiate, without entering one.
+
+# THE STAT-CACHE FALSE POSITIVE (banked 2026-08-04, receipt-witnessed both
+# lanes): `git diff-index --quiet` decides from the index's CACHED STAT DATA --
+# dev, inode, mtime, size -- and short-circuits before comparing content. Any
+# operation that rewrites files while carrying an index along (cp -r, rsync
+# without -a, a restored backup, a container layer) makes a byte-identical tree
+# report DIRTY. Receipt: clone -> `cp -r src/. dst/` -> after_cp=1,
+# after_refresh=0, reproduced identically in the operator and compile lanes.
+# WHY IT SURVIVES SO LONG: `git status` refreshes the index as a side effect, so
+# the false positive has ALWAYS healed by the time a human types the diagnostic.
+# The symptom is structurally unobservable by the only method anyone reaches for.
+# STANDING CONSEQUENCE: any automated dirty-tree check runs
+# `git update-index -q --refresh 2>/dev/null || true` first. It clears ONLY
+# stale entries, so a genuinely modified file still reports dirty and a
+# halt-don't-destroy gate keeps its teeth.
 
 # STORY ENGINE
 # Mike-E's gift is associative reach; his flaw is letting every spark become canon.
@@ -2177,6 +2218,39 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: THE PROBE THAT ATE ITS SIBLINGS (banked 2026-08-04, self-convicted):
+#   a probe's CLEANUP is part of its blast radius. Probe A of the stat-cache ride
+#   ended `cd /; rm -rf "$T"` to avoid deleting a directory it was standing in --
+#   correct in isolation -- and the operator pastes probes as ONE BLOCK, so the
+#   three probes after it ran from `/` and printed `No such file or directory`
+#   and `could not find a flake.nix file`. Two-thirds of a straddle's BEFORE half,
+#   destroyed by a housekeeping step. The compile lane recovered it only because
+#   the `!` executor spawns each line as its own process from REPO_ROOT -- luck,
+#   not design. STANDING CONSEQUENCE: any probe that cd's, sets a variable, or
+#   changes shell state either restores it (`cd - >/dev/null`) or runs inside a
+#   subshell `( ... )`. Sibling of THE PROBE ECONOMY RULE: that one bounds a
+#   probe's OUTPUT, this one bounds its SIDE EFFECTS.
+# - EARMARK: THE MAINTAINER-INVISIBLE LANE (banked 2026-08-04, three-for-three):
+#   every defect this ride closed was structurally unobservable from the
+#   maintainer's daily machine, and for THREE DIFFERENT REASONS. The alsa-utils
+#   refusal needs a foreign hostPlatform. The 24 INFO lines need twelve absent
+#   destination files, which exist on any machine used twice. The false-dirty
+#   gate needs a freshly cp'd index, which exists for about forty seconds once per
+#   install, a year ago on Prime. NONE is a rare edge case; each is the ONLY
+#   thing a stranger ever sees, and each is invisible to the one person who could
+#   fix it. STANDING CONSEQUENCE: when a lane's whole audience is people who
+#   cannot report bugs, budget rides for it on a schedule, not on complaint --
+#   there will never be a complaint. Sibling of THE UNEXPORTED-SHIM RULE
+#   ("lane-visible only ... the audience the artifact ships to can never report
+#   it") generalized from one mechanism to a whole class.
+# - TODO (banked 2026-08-04, predicted then witnessed): the stash line in
+#   gitUpdateLogic prints "Temporarily stashing local JupyterLab settings..."
+#   UNCONDITIONALLY, before the push that may stash nothing. On a fresh install
+#   it printed while PIPULATE_STASH came back empty -- a verb naming an act no
+#   code performed, which is the ATTRIBUTED-VOICE mechanical test failing on one
+#   line, now at the top of every first-contact transcript where the false-dirty
+#   warning used to be. Fix: move the echo inside `if [ -n "$PIPULATE_STASH" ]`,
+#   or reword to name what actually happened. One line; own ride.
 # - TODO (banked 2026-08-03, THIRD conviction in one ride series): ai.py's
 #   get_change_analysis() falls to an all-zero stub in the `m` lane, because
 #   nothing sets PIPULATE_CHANGE_ANALYSIS outside release.py -- receipt: rg
