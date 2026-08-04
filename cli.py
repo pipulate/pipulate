@@ -428,9 +428,20 @@ def main():
         uninstall_pipulate(args.app_name)
 
     elif args.command == 'db-inspect':
+        # SAME FOSSIL, SECOND FILE (2026-08-04). db-inspect opened
+        # data/botifython_dev.db -- last written May 3 -- and printed its tables
+        # under the heading "Tables in botifython_dev.db", so an inspector built
+        # to show live state was confidently reporting a dead file's contents.
+        # Derived from the same identity value as the backup roster next door.
+        try:
+            from config import APP_NAME
+            app_stem = APP_NAME.lower()
+        except Exception as e:
+            console.print(f"⚠️  Could not resolve app name from config ({e}); assuming 'pipulate'.")
+            app_stem = 'pipulate'
         db_map = {
-            'main_dev': 'data/botifython_dev.db',
-            'main_prod': 'data/botifython.db',
+            'main_dev': f'data/{app_stem}_dev.db',
+            'main_prod': f'data/{app_stem}.db',
             'discussion': 'data/discussion.db',
             'keychain': 'data/ai_keychain.db'
         }

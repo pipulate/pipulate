@@ -60,6 +60,32 @@ class DurableBackupManager:
                 logger.debug(f"Could not set backup directory permissions: {e}")
 
         logger.info(f"🗃️ Rolling backup root: {self.backup_root}")
+        # THE ROSTER IS DERIVED, NOT LITERAL (2026-08-04, fossil-convicted on
+        # the maintainer's own box). The app database filename is a pure
+        # function of whitelabel.txt: config.py builds data/{APP_NAME.lower()}.db
+        # and server.py:322 independently builds the same string. This roster
+        # hardcoded 'botifython'. whitelabel.txt here says Pipulate, so the live
+        # databases are data/pipulate*.db (mtime Jul 30) while the roster kept
+        # copying data/botifython_dev.db (mtime MAY 3) once per server start,
+        # forever. The distinct backup stems were ai_keychain / botifython /
+        # botifython_dev / discussion: the live Profiles/Tasks database had NEVER
+        # been backed up, and the two stale files are exactly what hid it --
+        # os.path.exists returned True, no warning fired, and the summary table
+        # printed a green checkmark beside a file nobody had touched in three
+        # months. A stranger with only one family at least gets a "not found"
+        # line in a log. THE DERIVED-PATH RULE: compute the target from an
+        # identity value you read and cannot author, so the mismatch becomes
+        # unrepresentable instead of merely unlikely.
+        try:
+            from config import get_app_name
+            app_stem = get_app_name().lower()
+        except Exception as e:
+            # Fail LOUD, then mirror config.py's own basename rule. A silent
+            # fallback would be the same disease this patch is curing.
+            logger.warning(f"⚠️ Could not resolve app name from config ({e}); "
+                           f"deriving the backup roster from the install directory name.")
+            root_name = Path(__file__).resolve().parent.parent.name
+            app_stem = (root_name[:-5] if root_name.endswith('-main') else root_name).lower()
 
         # 🎯 CRITICAL DATABASES TO PROTECT
         self.critical_databases = {
@@ -76,13 +102,13 @@ class DurableBackupManager:
                 'cross_cutting': True
             },
             'app_prod': {
-                'source_path': 'data/botifython.db',
+                'source_path': f'data/{app_stem}.db',
                 'description': 'Production Profiles/Tasks',
                 'critical': True,
                 'cross_cutting': False
             },
             'app_dev': {
-                'source_path': 'data/botifython_dev.db',
+                'source_path': f'data/{app_stem}_dev.db',
                 'description': 'Development Profiles/Tasks',
                 'critical': False,
                 'cross_cutting': False
