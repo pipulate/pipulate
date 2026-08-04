@@ -89,10 +89,20 @@ get_nix_develop_cmd() {
 NIX_DEVELOP_CMD=$(get_nix_develop_cmd)
 
 # --- Display Banner ---
+# WHITELABEL-AWARE AND ANCESTOR-DISCIPLINED (2026-08-04). Two defects in two
+# echo lines, both in the highest-traffic first-contact position there is.
+# (1) The name was hardcoded, so a whitelabeled install greeted a stranger with
+#     a product name that is NOT the folder they are about to own. Whitelabel
+#     is a first-class path, and the very first line printed said it was not.
+#     CUSTOM_NAME is already resolved above; use it.
+# (2) "SEO Software" is the RETIRED identity. The ancestor is named as lineage,
+#     never as identity, and this line was still leading with it to every
+#     newcomer who has ever run the installer.
+BANNER_NAME=$(printf '%s' "${CUSTOM_NAME}" | awk '{print toupper(substr($0,1,1)) substr($0,2)}')
 echo
 print_separator
-echo "   🚀 Welcome to Pipulate Installer 🚀   "
-echo "   Free and Open Source SEO Software     "
+echo "   🚀 Welcome to the ${BANNER_NAME} Installer 🚀"
+echo "   Local-first, Nix-reproducible, and yours to delete."
 print_separator
 echo
 
