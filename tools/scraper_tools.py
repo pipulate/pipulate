@@ -749,7 +749,7 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
             # Redirect chains do not threaten it either way; CDP surfaces those
             # as requestWillBeSent with redirectResponse, not as extra
             # responseReceived events.
-            doc_events = _document_candidates(cdp_events, domain)
+            doc_events = _document_candidates(cdp_events, domain, final_url)
             if doc_events:
                 doc_params = doc_events[-1]["params"]
                 # The subject of the headers on the very next line. Captured
