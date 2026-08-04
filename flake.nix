@@ -83,7 +83,19 @@
         versionMatch = builtins.match ".*__version__[[:space:]]*=[[:space:]]*[\"']([^\"']+)[\"'].*" initPyContent;
         versionNumber = if versionMatch != null then builtins.head versionMatch else "unknown";
         # Extract __version_description__ from __init__.py  
-        descMatch = builtins.match ".*__version_description__[[:space:]]*=[[:space:]]*[\"']([^\"']+)[\"'].*" initPyContent;
+        # DOUBLE-QUOTE ONLY (2026-08-04, first-contact convicted on macOS). The
+        # character class excluded the apostrophe from the CAPTURE, so a
+        # description containing one was silently TRUNCATED at it: So'wI' chu'
+        # became So, and the banner read `Version: 2.04 (So)` on every shell
+        # entry -- a wrong-but-plausible label that reads as a deliberately terse
+        # description. THE LAST-INCH RULE with a regex as the last inch: every
+        # mechanism upstream was correct and only the string nobody audits was
+        # damaged. __init__.py always writes this value in double quotes, so
+        # match double quotes only and let apostrophes through. __version__ above
+        # is left alone on purpose -- a version number cannot contain a quote, so
+        # its looser class has no failure mode to fix, and a second edit there
+        # would be change without a conviction behind it.
+        descMatch = builtins.match ".*__version_description__[[:space:]]*=[[:space:]]*\"([^\"]+)\".*" initPyContent;
         versionDesc = if descMatch != null then builtins.head descMatch else null;
         # Combine version and description
         version = if versionDesc != null then "${versionNumber} (${versionDesc})" else versionNumber;
