@@ -51,11 +51,11 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,390 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 24 published in the last 7 days
-# Markdown negotiated: 2,002 reads (0.21% of all responses)
+# There are 1,391 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 25 published in the last 7 days
+# Markdown negotiated: 2,005 reads (0.21% of all responses)
 # DOM hydration: 2577 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-08-04T08:30Z
+# Honeybot telemetry fetched 2026-08-04T16:32Z
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
