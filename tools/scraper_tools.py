@@ -173,6 +173,33 @@ def _document_candidates(cdp_events: list, domain: str, final_url: str = "") -> 
         if ev.get("method") == "Network.responseReceived"
         and ev.get("params", {}).get("type") == "Document"
     ]
+    # THE SAME-ORIGIN IFRAME DEFEAT (convicted 2026-08-04). The host-exact
+    # filter below was hardened on 2026-07-24 against THIRD-PARTY frames that
+    # carry the target host in a query parameter. It is structurally blind to a
+    # SAME-ORIGIN frame: a Shop Pay buyer-recognition callback served from the
+    # storefront's own host passes host-exactness BY DEFINITION, fires late,
+    # and the caller then takes [-1] -- the LAST Document, which is the iframe.
+    # The frame tiebreaker below is only a tiebreaker, and it is permitted to
+    # no-op, so nothing downstream can tell a witnessed choice from a guess.
+    # ANCHOR ON A VALUE THE BROWSER AUTHORED, NOT ON AN INFERENCE. final_url is
+    # driver.current_url, read before this selection runs. A sub-frame URL is
+    # NEVER the browser's current URL, so an exact match cannot be a frame --
+    # which makes this correct regardless of which inferential step below was
+    # the one that broke.
+    # PURITY PRESERVED, deliberately: the caller passes final_url IN, no live
+    # CDP call appears here, and the whole selection is still replayable
+    # offline over any cached network_log.jsonl -- which is what makes the
+    # straddle for this very patch cost zero browser flights.
+    # FAILS OPEN: no exact match degrades to the host+frame path unchanged, so
+    # the worst case equals the behaviour shipped before this block existed.
+    if final_url:
+        target = final_url.split("#", 1)[0]
+        exact = [
+            ev for ev in docs
+            if ev.get("params", {}).get("response", {}).get("url", "").split("#", 1)[0] == target
+        ]
+        if exact:
+            return exact
     want = _norm(domain)
     on_host = [
         ev for ev in docs
