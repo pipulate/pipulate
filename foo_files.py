@@ -2177,6 +2177,41 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - TODO (banked 2026-08-03, THIRD conviction in one ride series): ai.py's
+#   get_change_analysis() falls to an all-zero stub in the `m` lane, because
+#   nothing sets PIPULATE_CHANGE_ANALYSIS outside release.py -- receipt: rg
+#   found it ONLY at scripts/ai.py:169, absent from flake.nix. The prompt then
+#   shouts "BE VERY CAREFUL to distinguish ADDITIONS from DELETIONS" over
+#   "+0 / -0", so the model guesses polarity and guesses wrong: 046aba41 says
+#   "Remove" for +19/-0, f48db1aa says "Remove excessive comments" for +20/-0,
+#   and c658a5d0 carries a ~700-character subject from head -1 on a long line.
+#   FIX: when the env var is absent, derive counts from `git diff --staged
+#   --numstat` plus `--name-status`, reusing the staged-then-unstaged fallback
+#   get_staged_diff() already implements. COST: it edits the actuator that
+#   commits it, so the straddle is `git log -1 --format=%s` plus diffstat
+#   across one real commit, and it then runs on every `m` forever. Own ride.
+# - EARMARK: THE THREE-REGION ART EDIT (banked 2026-08-03, receipt-corrected):
+#   registering one piece of figurate art is a THREE-region change with an
+#   integrity coupling and NO airlock -- not two, as a prior turn asserted.
+#   Receipt (rg over imports/ascii_displays.py): a `_figurate_<name>` render fn
+#   above FIGURATE_RENDER_EXTRUDE_BOTTOM (:884), a CRC32 entry above
+#   FIGURATE_LEDGER_EXTRUDE_BOTTOM (:71), and a dict entry above
+#   FIGURATE_REGISTRY_EXTRUDE_BOTTOM (:927). apply.py has AST, Nix, JSON,
+#   protocol-marker and autolink airlocks and NOTHING that checks whether an
+#   art string still agrees with its seal, because that coupling is semantic,
+#   not syntactic. ORDERING: the CRC cannot be known until the art exists, so
+#   author first, print(binascii.crc32(art.encode('utf-8'))), then seal.
+#   MANDATORY IGNITION for every art car: `figurate <name>`, read `Drift: 0`.
+#   An art car may never declare "no ignition required".
+# - EARMARK: THE LANE-EXCLUSIVE BRANCH (banked 2026-08-03, canary-witnessed):
+#   some branches can fire in ONE lane only. prompt_foo's de-prefixed-command
+#   hint lives inside main()'s file loop, so no hand-run terminal can ever
+#   reach it. That is neither lane agreement nor LANE-DISAGREEMENT but a THIRD
+#   case, and its only possible witness is a MANUFACTURED failure planted in
+#   the lane that owns it. COROLLARY -- RETIRE THE CANARY: an instrument that
+#   fires on EVERY run is noise wearing an instrument's costume, and it
+#   recreates the trained-to-skip-warnings failure it was built to convict.
+#   Witness once, then delete the line. Sibling of REFUSAL-ONLY WITNESS.
 # - TODO (BANKED 2026-08-03 AT OPERATOR REQUEST, DELIBERATELY NOT RIDDEN):
 #   DE-HARDWIRE THE PERSONAL PATHS. The mechanism/data split this repo already
 #   runs -- blogs.json lives outside the worktree, adhoc.txt is gitignored,
