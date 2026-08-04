@@ -51,11 +51,11 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,388 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 29 published in the last 7 days
-# Markdown negotiated: 1,987 reads (0.21% of all responses)
+# There are 1,389 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 23 published in the last 7 days
+# Markdown negotiated: 2,002 reads (0.21% of all responses)
 # DOM hydration: 2577 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-08-03T23:42Z
+# Honeybot telemetry fetched 2026-08-04T08:30Z
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -1298,13 +1298,13 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # Software Von Neumann Probe IaC Kickstart
 
-# release.py                                 #  <-- The deploy process
-# assets/installer/install.sh                #  <-- Pipulate.com installer real home in github/pipulate repo
-# ~/repos/Pipulate.com/CNAME
-# ~/repos/Pipulate.com/_config.yml
-# ~/repos/Pipulate.com/_layouts/default.html
-# ~/repos/nixos/.gitignore
-# ~/repos/Pipulate.com/install.md            #  <-- Gets copied into place here by pipulate/release.py
+release.py                                 #  <-- The deploy process
+assets/installer/install.sh                #  <-- Pipulate.com installer real home in github/pipulate repo
+~/repos/Pipulate.com/CNAME
+~/repos/Pipulate.com/_config.yml
+~/repos/Pipulate.com/_layouts/default.html
+~/repos/nixos/.gitignore
+~/repos/Pipulate.com/install.md            #  <-- Gets copied into place here by pipulate/release.py
 
 # ~/repos/nixos/autognome.py                 #  <-- More rare to have to include, but the true "top" of the muscle memory stack for day-to-day purposes
 # ~/repos/nixos/configuration.nix            #  <-- "Global" IaC context (most of you won't have)
