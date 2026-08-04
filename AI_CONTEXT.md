@@ -1,8 +1,8 @@
 # AI_CONTEXT.md — Start Here If You Are an AI
 
-> Auto-generated on 2026-08-01. Rewritten from scratch on every release. If this
+> Auto-generated on 2026-08-04. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1383 entries indexed.
+> 1390 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -96,6 +96,13 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-08-04] [Fixing macOS Nix Evaluation and Git Stat-Cache False Positives](https://mikelev.in/futureproof/mac-nix-eval-stat-cache-fix/index.md)
+- [2026-08-03] [The Last Inch of the Actuator: Debugging Emitter Transport in the Age of AI](https://mikelev.in/futureproof/last-inch-actuator-transport-debugging/index.md)
+- [2026-08-03] [When the Guard Flags Itself: Debugging Self-Referential Prompt Security](https://mikelev.in/futureproof/debugging-self-referential-prompt-guards/index.md)
+- [2026-08-02] [Python, the Shepard Tone, and the Narrow Waist of Software Architecture](https://mikelev.in/futureproof/python-shepard-tone-narrow-waist/index.md)
+- [2026-08-02] [Bistable Percepts and the Unobserved-Branch Rule: Engineering Truth in the Age of AI](https://mikelev.in/futureproof/bistable-percepts-and-unobserved-branch-rules/index.md)
+- [2026-08-02] [The Anti-Crichton Laws: Engineering Truth with Local AI Receipts](https://mikelev.in/futureproof/anti-crichton-laws-ai-receipts/index.md)
+- [2026-08-01] [The Readable Seam: Bisection Debugging and the Mother Cat Kata](https://mikelev.in/futureproof/mother-cat-kata-bisection-debugging/index.md)
 - [2026-08-01] [Hatching the Seed: Deterministic Installation and the Mother Cat Kata](https://mikelev.in/futureproof/hatching-the-seed-installer-automation/index.md)
 - [2026-08-01] [The Blub Paradox and the Mother Cat Kata: Engineering Deterministic Workflows](https://mikelev.in/futureproof/mother-cat-kata-deterministic-walk/index.md)
 - [2026-08-01] [The ASCII Canary: Engineering Visual Receipts in Git for LLM Context](https://mikelev.in/futureproof/ascii-canary-git-visual-receipts/index.md)
@@ -109,18 +116,18 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-07-30] [The Talking Frog and the Two-Witness Gate: Engineering Deterministic AI Workflows](https://mikelev.in/futureproof/talking-frog-two-witness-gate/index.md)
 - [2026-07-29] [The Diamond Age Protocol: Variance Suppression and the Human Gate](https://mikelev.in/futureproof/diamond-age-primer-variance-suppression/index.md)
 - [2026-07-29] [Operation Stick Bug: Engineering the Flight Data Recorder Replay Lane](https://mikelev.in/futureproof/operation-stick-bug-flight-data-recorder/index.md)
-- [2026-07-29] [Building the Black Box: Local OAuth and the Flight Data Recorder for AI Workflows](https://mikelev.in/futureproof/building-the-black-box-oauth-fdr-ai-workflows/index.md)
-- [2026-07-29] [The Mother Cat Kata: Bounding AI Context and Harnessing Wire Truth](https://mikelev.in/futureproof/mother-cat-kata-bounding-ai-context-wire-truth/index.md)
-- [2026-07-28] [The Mother Cat Kata: Engineering a Black-Box Flight Recorder for Browser Workflows](https://mikelev.in/futureproof/mother-cat-kata-browser-flight-recorder/index.md)
-- [2026-07-28] [The Physics of Boundaries: Navigating AI Sycophancy and Crawler State](https://mikelev.in/futureproof/physics-boundaries-ai-sycophancy-crawler-state/index.md)
-- [2026-07-27] [Dayton Wind Tunnel Auth Capture and the Mother Cat Workflow](https://mikelev.in/futureproof/dayton-wind-tunnel-auth-capture-mother-cat/index.md)
-- [2026-07-27] [The Amiga Metaphor: Engineering Reproducible AI Workflows and Cognitive Myelination](https://mikelev.in/futureproof/amiga-metaphor-engineering-reproducible-ai-workflows/index.md)
-- [2026-07-27] [Engineering the Second Brain: High-Signal Storytelling and ASCII Art Distillation](https://mikelev.in/futureproof/engineering-the-second-brain-high-signal-storytelling/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-07-29] [286k] building-the-black-box-oauth-fdr-ai-workflows
+- [2026-07-29] [71k] mother-cat-kata-bounding-ai-context-wire-truth
+- [2026-07-28] [270k] mother-cat-kata-browser-flight-recorder
+- [2026-07-28] [161k] physics-boundaries-ai-sycophancy-crawler-state
+- [2026-07-27] [28k] dayton-wind-tunnel-auth-capture-mother-cat
+- [2026-07-27] [94k] amiga-metaphor-engineering-reproducible-ai-workflows
+- [2026-07-27] [49k] engineering-the-second-brain-high-signal-storytelling
 - [2026-07-27] [796k] bridging-browser-automation-and-reproducible-ai-workflows
 - [2026-07-27] [218k] the-forcing-pair-30-and-3-and-axis-forcing
 - [2026-07-27] [50k] mother-cat-path-consolidating-entry-points-ai-workflows
