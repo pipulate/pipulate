@@ -440,10 +440,24 @@
           jq
           dig
           whois
-          xorg.xhost                   # X access grants for cold-start / multi-user rides
-          alsa-utils
           ffmpeg
         ] ++ (with pkgs; pkgs.lib.optionals isLinux [
+          # PLATFORM GATE (macOS-convicted 2026-08-04, first-contact receipt):
+          # nixpkgs marks alsa-utils *-linux ONLY, so an unconditional entry in
+          # commonPackages made `nix develop` REFUSE TO EVALUATE on
+          # aarch64-darwin. The flake therefore died BEFORE the shellHook, which
+          # means gitUpdateLogic never ran, which means the magic-cookie
+          # transformation never happened and a fresh Mac install could not
+          # complete at all -- an eval-time refusal is strictly worse than a
+          # runtime failure, because nothing downstream of it gets a chance to
+          # report. xhost rides here for the same reason (X11 is a Linux
+          # concern) and its bare name also clears the `xorg.xhost` deprecation
+          # warning that the same install printed one line above the error.
+          # NOTE: xclip, dig, and whois all evaluated CLEAN on aarch64-darwin in
+          # that receipt -- they sit above alsa-utils in the list and Nix forces
+          # buildInputs in order -- so they deliberately stay unconditional.
+          xhost                        # X access grants for cold-start / multi-user rides
+          alsa-utils                   # ALSA sound tooling
           espeak-ng                    # Text-to-speech, Linux only
           sox                          # Sound processing, Linux only
           virtualenv
