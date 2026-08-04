@@ -471,19 +471,35 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           #!/usr/bin/env bash
           # Activate the virtual environment
           source .venv/bin/activate
-          # Define function to copy notebook if needed (copy-on-first-run solution)
-          # --- CORRECTED: Loop-based copy function ---
+          # SILENT-AFTER-BANNER (2026-08-04, first-contact convicted): this loop
+          # printed TWO lines per file -- twenty-four lines of INFO on a fresh
+          # install, wedged between the package count and the boot menu, at the
+          # one moment a newcomer has no way to tell signal from noise. It was
+          # also chatter about the ORDINARY case: on every entry after the first,
+          # all twelve destinations already exist and the loop is silent, so the
+          # only time it ever spoke was the time its speech was least readable.
+          # A COUNTER, NOT A GAG. THE DISCRIMINATION QUESTION applies to silence
+          # too -- what does this print in the world where the copy loop is
+          # broken? -- so one summary line survives whenever anything was
+          # actually staged, and nothing prints when nothing was. Same shape as
+          # the "packages ready" line below: meaningful silence, never silence
+          # that is indistinguishable from a dead loop. The counter increments in
+          # the CURRENT shell because a heredoc-fed while loop forks no subshell;
+          # a pipe here would zero it and report success for a loop that ran.
           copy_notebook_if_needed() {
+            local staged=0
             while IFS=';' read -r source dest desc; do
               if [ -f "$source" ] && [ ! -f "$dest" ]; then
-                echo "INFO: Creating $desc..."
-                echo "      Your work will be saved in '$dest'."
                 mkdir -p "$(dirname "$dest")"
                 cp "$source" "$dest"
+                staged=$((staged + 1))
               fi
             done <<EOF
           ${notebookFilesString}
           EOF
+            if [ "$staged" -gt 0 ]; then
+              echo "📓 $staged starter file(s) copied into Notebooks/ -- yours to edit."
+            fi
           }
           # Set up the personal playground
           if [ ! -f "Notebooks/Playground/WELCOME.md" ]; then
