@@ -795,6 +795,32 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           #   3. Disposable workspace — gitignored caches/artifacts; ignored here.
           if [ -d .git ]; then
             echo "Checking for updates..."
+            # THE STAT-CACHE REFRESH (2026-08-04, first-contact convicted on two
+            # consecutive Darwin installs). git diff-index decides from the
+            # index's CACHED STAT DATA -- dev, inode, mtime, size -- and the
+            # magic cookie's `cp -r "$TEMP_DIR/." .` above hands every tracked
+            # file a new inode, a new device, and a new mtime while carrying the
+            # clone's index along untouched. A tree byte-identical to HEAD
+            # therefore reports dirty, so this gate fired seconds after
+            # "Successfully transformed into git repository", telling a newcomer
+            # to commit or stash work they had not done.
+            # ELIMINATION, NOT GUESSWORK: `git status --porcelain` on that same
+            # Mac tree printed `?? .ssh/` and nothing else, which kills content
+            # drift, mode drift and symlink drift (all three survive a refresh)
+            # and kills the nbstripout theory twice over -- every .gitattributes
+            # line is commented out, and filter.nbstripout.clean is not
+            # configured until miscSetupLogic, which runs AFTER this block.
+            # Stale stat data is the only survivor, and status refreshes the
+            # index as a side effect, which is why the false positive had always
+            # healed by the time a human could look at it.
+            # --refresh re-stats and clears ONLY the stale entries: a genuinely
+            # modified file still reports dirty, so halt-don't-destroy is
+            # unchanged. -q continues instead of erroring when paths need
+            # updating, and the redirect makes a corrupt .git fail OPEN to the
+            # exact pre-refresh behavior. A warning firing on every first
+            # contact is the RETIRE-THE-CANARY failure: it teaches the reader to
+            # skip warnings before they have ever read a true one.
+            git update-index -q --refresh 2>/dev/null || true
             # THE HALT-DON'T-DESTROY GATE: tracked local modifications formerly
             # met `git reset --hard HEAD` before anything was preserved. Now a
             # dirty tree (outside the Jupyter overlay path) PAUSES the automatic
