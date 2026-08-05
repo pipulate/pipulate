@@ -22,20 +22,19 @@ run since the sentinels landed.
 <!-- --- START WORKSPACE TREE --- -->
 ```text
    Notebooks/  — the JupyterLab root (NOT Pipulate's own root)
-   │            every level advertises its own AGENTS.md + OKF index.md
+   │            FLAT siblings. Nothing nests. Nothing to get wrong.
    │
-   ├── Corporate/   read-only canon · auto-pulled · git wins on collision
-   │   ├── AGENTS.md
-   │   ├── .agents/skills/
-   │   └── apps/          org plugins ride in — no core commit needed
+   ├── Advanced_Notebooks/     canon · flake-delivered, copy-if-absent
+   ├── Educational_Notebooks/  canon · your edits survive, updates do not arrive
+   ├── imports/                canon · the code-behind "sauce" modules
    │
-   ├── Personal/    your sandbox · gitignored · vibe-code freely
-   │   ├── AGENTS.md
-   │   └── Playground/    NOTHING here is ever shared
+   ├── Playground/             personal · gitignored · your own git repo goes here
+   ├── Client_Work/            personal · gitignored · never leaves this machine
+   ├── Deliverables/           personal · gitignored
    │
-   └── Shared/      outbound exchange · one folder per name
-       ├── alice/        you write ONLY your own folder;
-       └── bob/          single-writer partitions = zero merge conflicts
+   └── Shared/                 the ONE folder for handing work to a teammate
+       ├── alice/              one folder per person; you write ONLY your own
+       └── bob/                single-writer partitions = zero merge conflicts
 ```
 <!-- --- END WORKSPACE TREE --- -->
 
