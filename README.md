@@ -51,6 +51,19 @@ cd ~/pipulate
 nix develop
 ```
 
+<!-- DO NOT MOVE THIS BLOCK ABOVE "## Quick Start". Two splicers own
+     parts of this file, with two different boundary schemes:
+       1. release.py run_waxascii_release_stamp() -- HEADER-BOUNDED.
+          It finds the "I HEREBY WILL NOT RE-GENERATE" line near the
+          top and replaces EVERYTHING between the "# Pipulate:" header
+          and the next header with the sealed white_rabbit art. Runs on
+          every `release`. Anything inside that region is destroyed.
+       2. prompt_foo.py update_readme_md_in_place() -- SENTINEL-BOUNDED,
+          the two HTML comments below. Runs on every compile, refuses on
+          CRC drift, writes only when the bytes change.
+     The sentinels below are safe ONLY because they sit after
+     "## Quick Start", outside splicer 1's blast radius. Verified from
+     line numbers, not from a release run. -->
 ### Where your work lives
 <!-- --- START WORKSPACE TREE --- -->
 ```text
