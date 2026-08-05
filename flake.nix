@@ -998,26 +998,6 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # scripts actually live in. That is SHELL-LANE FINDING (a) applied
           # instead of merely noted.
           mkdir -p "$PIPULATE_ROOT/Notebooks/Shared"
-          if [ ! -f "$PIPULATE_ROOT/Notebooks/Shared/README.md" ]; then
-            cat << 'SHARED_EOF' > "$PIPULATE_ROOT/Notebooks/Shared/README.md"
-          # Shared
-
-          This is the one folder you use on purpose to hand work to someone else.
-          Everything else under Notebooks/ is either yours alone or delivered to
-          you. Nothing here is private: assume a teammate will read it.
-
-          Make a folder with your own name and work inside it:
-
-              mkdir -p Notebooks/Shared/yourname
-
-          One folder per person means two people can drop work at the same moment
-          and never collide, so there is nothing to merge and no git to learn.
-
-          This folder is ignored by Pipulate's own version control. If you want it
-          backed up or synced, put your own git repository inside your own
-          subfolder -- it will not fight with anything above it.
-          SHARED_EOF
-          fi
           # Clean up the prompt to remove Nix's redundant prefixes and Mac's long hostname
           export PS1="\[\033[1;32m\](nix)\[\033[0m\] \[\033[1;34m\]\W\[\033[0m\] $ "
           # Shadow the nix CLI for two reasons, both only relevant *inside* an
