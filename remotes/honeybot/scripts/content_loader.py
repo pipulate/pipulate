@@ -211,8 +211,24 @@ def get_playlist(recent_n=10):
         print(f"Librarian Error: {e}")
         return []
 
-def clean_markdown(text):
-    """Sanitizes Markdown for the Piper TTS engine."""
+def clean_markdown(text, label=None):
+    """Sanitizes Markdown for the Piper TTS engine.
+
+    label: the article this text came from (its filename), threaded in by the
+    sole caller so the bracket census below can NAME the post it is warning
+    about. get_playlist calls this exactly once per file per playlist build
+    (rg receipt 2026-08-05: content_loader.py:179 is the only call site), so
+    N warnings has always meant N unbalanced ARTICLES -- never one article
+    read N times. The count was right the whole time; only the address was
+    missing, which is what made a real warning unactionable and therefore
+    skippable.
+
+    Defaults to None ONLY so a call site added later cannot raise TypeError
+    on a live broadcast. An unlabeled call prints a DIFFERENT message naming
+    that missing call site, never a placeholder standing in for an article:
+    a locator that always reads "unknown" is the silent-pass shape and is
+    not a locator at all.
+    """
 
     pp4_directives = []
 
