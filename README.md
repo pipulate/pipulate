@@ -51,6 +51,7 @@ cd ~/pipulate
 nix develop
 ```
 
+### Where your work lives
 <!-- --- START WORKSPACE TREE --- -->
 ```text
    Notebooks/  — the JupyterLab root (NOT Pipulate's own root)
