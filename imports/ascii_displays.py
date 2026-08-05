@@ -789,37 +789,44 @@ def _figurate_mechanical_man():
     human = Panel(human_art, title="🗝️ Tik-Tok — Two Keys Wound, One on the Wall", border_style="white")
     return human, ai_art
 
-def _figurate_workspace_tree():
-    """Render the three-tier Notebooks workspace: Corporate / Personal / Shared.
 
-    Self-documenting governance: read-only canon, a private sandbox, and a
-    single-writer outbound-exchange partition per username. Authored with no
-    .strip() so the leading newline is preserved (the honeybot_pipeline
-    convention), which the FIGURATE_LEDGER seal must match. No [[[color bits]]]
-    and no <angle tags>, so _expand_color_bits_ai leaves it untouched and
-    ai_art == art.
+def _figurate_workspace_tree():
+    """Render the Notebooks workspace as it ACTUALLY sits on disk: flat.
+    THE NESTED VERSION WAS THE ONLY AUTHORITY THAT SHIPPED, AND IT WAS WRONG.
+    update_agents_md_in_place() splices this art into AGENTS.md on every
+    compile, so it is what every external agent tool reads -- while flake.nix
+    argued for flat siblings and `ls Notebooks/` showed nine flat directories
+    and no Corporate/, Personal/, or Workshop/ at all. Three authorities, one
+    winner, and the winner disagreed with the disk. Fixed at the GENERATOR so
+    the output cannot drift back.
+    Three tiers, zero nesting: canon arrives by the flake's copy-if-absent
+    loop, personal is gitignored, and Shared/ is the single deliberate
+    outbound surface with one folder per person. Authored with no .strip() so
+    the leading newline is preserved (the honeybot_pipeline convention), which
+    the FIGURATE_LEDGER seal must match. No color-bit or angle-tag markers, so
+    _expand_color_bits_ai leaves it untouched and ai_art == art.
     """
     art = r"""
    Notebooks/  — the JupyterLab root (NOT Pipulate's own root)
-   │            every level advertises its own AGENTS.md + OKF index.md
+   │            FLAT siblings. Nothing nests. Nothing to get wrong.
    │
-   ├── Corporate/   read-only canon · auto-pulled · git wins on collision
-   │   ├── AGENTS.md
-   │   ├── .agents/skills/
-   │   └── apps/          org plugins ride in — no core commit needed
+   ├── Advanced_Notebooks/     canon · flake-delivered, copy-if-absent
+   ├── Educational_Notebooks/  canon · your edits survive, updates do not arrive
+   ├── imports/                canon · the code-behind "sauce" modules
    │
-   ├── Personal/    your sandbox · gitignored · vibe-code freely
-   │   ├── AGENTS.md
-   │   └── Playground/    NOTHING here is ever shared
+   ├── Playground/             personal · gitignored · your own git repo goes here
+   ├── Client_Work/            personal · gitignored · never leaves this machine
+   ├── Deliverables/           personal · gitignored
    │
-   └── Shared/      outbound exchange · one folder per name
-       ├── alice/        you write ONLY your own folder;
-       └── bob/          single-writer partitions = zero merge conflicts
+   └── Shared/                 the ONE folder for handing work to a teammate
+       ├── alice/              one folder per person; you write ONLY your own
+       └── bob/                single-writer partitions = zero merge conflicts
 """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
-    human = Panel(human_art, title="🗂️ Notebooks Workspace — Corporate / Personal / Shared", border_style="white")
+    human = Panel(human_art, title="🗂️ Notebooks Workspace — canon · personal · Shared", border_style="white")
     return human, ai_art
+
 
 def _figurate_forcing_pair():
     """Render the two creativity forcing functions as ONE composed frame.
