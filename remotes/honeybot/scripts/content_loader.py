@@ -176,7 +176,15 @@ def get_playlist(recent_n=10):
             url = f"{BASE_URL}/{slug}/"
             
             # 5. Clean Text
-            clean_text = clean_markdown(body_text, label=filename)
+            # 7 days is one publishing week at current velocity (24 posts in the
+            # last 7 days, per the STATS gauge), so the on-air census covers
+            # roughly the newest two dozen articles -- the ones being watched --
+            # and stays silent over the 1300-post archive. One number to tune.
+            clean_text = clean_markdown(
+                body_text,
+                label=filename,
+                census=(datetime.now().date() - post_date).days <= 7,
+            )
             
             all_articles.append({
                 'date': post_date,
