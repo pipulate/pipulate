@@ -361,7 +361,15 @@ if [ -z "$TRAIL_PATH" ]; then
   done
   echo "   Available:" >&2
   for TRAIL_DIR in $TRAIL_SEARCH_DIRS; do
-    ls "$TRAIL_DIR"/*.yaml 2>/dev/null | sed 's#^#     #' >&2
+    # set -euo pipefail + a missing lane = the script DIES HERE. An
+    # unmatched glob makes bash hand ls the literal pattern, ls exits 2,
+    # pipefail propagates it, set -e kills the run -- so the FIRST absent
+    # lane suppressed the listing for every lane after it. Convicted
+    # 2026-08-05 by the AFTER receipt: "Available:" printed with nothing
+    # under it while four YAMLs sat in assets/trails. Guard the directory
+    # AND neutralize the pipeline; either alone is enough, both is cheap.
+    [ -d "$TRAIL_DIR" ] || continue
+    ls "$TRAIL_DIR"/*.yaml 2>/dev/null | sed 's#^#     #' >&2 || true
   done
   exit 1
 fi
