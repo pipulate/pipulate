@@ -51,6 +51,9 @@ cd ~/pipulate
 nix develop
 ```
 
+<!-- --- START WORKSPACE TREE --- -->
+<!-- --- END WORKSPACE TREE --- -->
+
 ## 💡 What Can You Actually Build?
 
 **Real examples of what people create with Pipulate:**
