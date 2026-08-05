@@ -2229,6 +2229,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: THE HALF-EXECUTED HOOK (banked 2026-08-05, self-convicted): bash parses-and-executes an eval'd script ONE COMMAND AT A TIME, so a syntax error partway through a shellHook leaves everything ABOVE it applied and everything below it missing -- a half-configured environment that looks alive and is not. Conviction: an unterminated heredoc in miscSetupLogic let `mkdir -p Notebooks/Shared` land while PS1, the nix() rpath shim, and EVERY alias silently never defined; the artifact probe read GREEN off the surviving line. STANDING CONSEQUENCE: an artifact probe cannot witness a shellHook. The witness is the hook's own syntax -- `nix eval --raw .#devShells.<sys>.<shell>.shellHook | bash -n` -- or a marker exported by the LAST line of the hook. Sibling of THE SUCCESS-ONLY WITNESS: there the instrument hid a failure, here the instrument sat above it.
 # - EARMARK: THE READ-WRITE PROBE (banked 2026-08-04, specimen-convicted): a
 #   probe that OPENS a database is not read-only, and the damage lands on the
 #   EVIDENCE rather than on the data. sqlite3.connect() defaults to read-write,
