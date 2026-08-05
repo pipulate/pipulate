@@ -73,8 +73,8 @@ __pycache__/
 
 # User-facing notebooks generated on first run
 Notebooks/Client_Work/
-Notebooks/Collaborators/
 Notebooks/Deliverables/
+Notebooks/Shared/
 Notebooks/Playground/
 Notebooks/Educational_Notebooks/
 Notebooks/_config.py

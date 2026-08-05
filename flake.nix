@@ -543,21 +543,23 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           up yet — this is a map of where things are headed, kept here so the intent
           stays visible from inside the code instead of buried in notes.
 
-          The plan: this folder becomes the **`personal/`** bucket of a team-scale
-          `Notebooks/Workshop/`. Same idea you already have — a private place to break
-          things safely — just nested inside a larger structure that also holds a
-          read-only canonical area and a per-person sharing surface.
+          Nothing you put here is ever shared. When you want to hand something to a
+          teammate, drag it into `Notebooks/Shared/` and put it in a folder named
+          after you — one folder per person, so two people can never collide.
 
           ```text
-          Notebooks/Workshop/        (future — does not exist yet)
-          ├── corporate/             read-only canon, managed for you
-          ├── personal/   ◀── THIS   your private sandbox (this Playground)
-          └── shared/<your-name>/    drop things here to share with teammates
+          Notebooks/
+          ├── Advanced_Notebooks/     copied in for you; your edits stay
+          ├── Educational_Notebooks/  copied in for you
+          ├── imports/                copied in for you
+          ├── Playground/   ◀── THIS  private. NOTHING here is ever shared.
+          ├── Client_Work/            private
+          ├── Deliverables/           private
+          └── Shared/<your-name>/     drag work here to hand it to a teammate
           ```
 
-          When it lands, the rule will be simple: **this Playground IS the `personal/`
-          bucket** — no second sandbox to learn. Until then, use it exactly as
-          described above and ignore everything in this section.
+          That is the whole map. Everything except `Shared/` is either yours alone or
+          handed to you; `Shared/` is the one place you deliberately give work away.
 
           Happy hacking. Throw some paint around.
           PLAYGROUND_EOF
@@ -967,34 +969,54 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           fi
           # Set EFFECTIVE_OS for browser automation scripts
           if [[ "$(uname -s)" == "Darwin" ]]; then export EFFECTIVE_OS="darwin"; else export EFFECTIVE_OS="linux"; fi
-          # ── THE WORKSHOP HOOK (team-sync substrate) ──────────────────
-          # Inert until Notebooks/Workshop/ exists. Reads nothing, writes
-          # nothing — just exports a flag later machinery branches on.
+          # ── THE THREE BUCKETS (flat siblings under Notebooks/) ───────
+          # Named ONCE, here. Every other mention of these folders in this
+          # repo defers to this block; if one of them disagrees, this one is
+          # right and the other one is a bug.
           #
-          # CONTRACT (migrated from the workshop-architecture article so the
-          # design lives next to the hook, not in drifting prose):
+          #   canon     Advanced_Notebooks/  Educational_Notebooks/  imports/
+          #             delivered by runScript's copy-if-absent loop: your
+          #             edits survive, and upstream updates do not arrive.
+          #   personal  Playground/  Client_Work/  Deliverables/
+          #             gitignored. NOTHING here is ever shared.
+          #   shared    Shared/
+          #             gitignored. Drag work here to hand it to a teammate.
+          #             One folder per person -- Shared/<name>/ -- so two
+          #             writers can never collide and nobody needs git.
           #
-          # THE HUMAN SURFACE — the only two paths anyone is ever told about.
-          # Flat siblings under Notebooks/, so there is no mental nesting and
-          # no way to get it wrong:
-          #   Notebooks/Playground/   private. NOTHING here is ever shared.
-          #   Notebooks/Share/        drag work HERE to deliberately share it.
-          #                           "Share" is a verb — YOUR outbound work.
-          #                           Not "Shared" (reads as stuff FROM others),
-          #                           not "Share_This" (clunky). Just Share/.
+          # WHY "Shared" AND NOT "Share": the naming test is spoken, not
+          # written. "Go to the shared folder." "Which one?" "The one called
+          # Shared." Share/, Collaborators/, and a nested Workshop/ all lose
+          # that test. This is a chiral choice, not a converged one -- both
+          # spellings work and the cost is being locked out of the twin.
+          # It is locked now. Do not re-litigate it; rename it if it hurts.
           #
-          # UNDER THE HOOD — the three-bucket model the surface maps onto:
-          #   Notebooks/Workshop/
-          #   ├── corporate/        canonical, READ-ONLY (Nix /nix/store farm)
-          #   ├── personal/         === Notebooks/Playground. Do NOT build a
-          #   │                     second sandbox — Playground IS this bucket.
-          #   └── shared/<USER_ID>/ === Notebooks/Share. Per-user path partition
-          #                         makes write collisions impossible by
-          #                         construction: no merge logic, no git literacy.
-          # Promotion (Share -> corporate) is a human-gated cherry-pick that
-          # appends one line to corporate/log.md — the "Glinda moment."
-          if [ -d "Notebooks/Workshop" ]; then
-            export WORKSHOP_MODE="enabled"
+          # CREATED HERE, in miscSetupLogic, because this is the only logic
+          # that runs in ALL THREE shells. runScript -- which writes
+          # Playground's WELCOME.md -- is skipped entirely by .#quiet, so a
+          # folder created there is invisible to the one lane that agents and
+          # scripts actually live in. That is SHELL-LANE FINDING (a) applied
+          # instead of merely noted.
+          mkdir -p "$PIPULATE_ROOT/Notebooks/Shared"
+          if [ ! -f "$PIPULATE_ROOT/Notebooks/Shared/README.md" ]; then
+            cat << 'SHARED_EOF' > "$PIPULATE_ROOT/Notebooks/Shared/README.md"
+          # Shared
+
+          This is the one folder you use on purpose to hand work to someone else.
+          Everything else under Notebooks/ is either yours alone or delivered to
+          you. Nothing here is private: assume a teammate will read it.
+
+          Make a folder with your own name and work inside it:
+
+              mkdir -p Notebooks/Shared/yourname
+
+          One folder per person means two people can drop work at the same moment
+          and never collide, so there is nothing to merge and no git to learn.
+
+          This folder is ignored by Pipulate's own version control. If you want it
+          backed up or synced, put your own git repository inside your own
+          subfolder -- it will not fight with anything above it.
+          SHARED_EOF
           fi
           # Clean up the prompt to remove Nix's redundant prefixes and Mac's long hostname
           export PS1="\[\033[1;32m\](nix)\[\033[0m\] \[\033[1;34m\]\W\[\033[0m\] $ "
