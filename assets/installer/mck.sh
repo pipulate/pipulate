@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
-# Pipulate MCK Bootstrap v0.2.0 -- the Mother Cat Kata launcher
+# Pipulate MCK Bootstrap v0.3.0 -- the Mother Cat Kata launcher
 # =============================================================
+#
+# WHAT CHANGED IN v0.3.0 -- TRAILS RESOLVE FROM A SEARCH PATH
+#   v0.2.0 hardcoded assets/trails/, so every walk had to be committed to
+#   the main repo. Client walks carry client names and churn several a day;
+#   they belong in a private repo, not in a public checkout. The launcher
+#   now searches Notebooks/Playground/trails, then Notebooks/Shared/trails,
+#   then assets/trails -- local overrides canon, exactly the way PATH puts
+#   /usr/local/bin ahead of /usr/bin. A stranger who fetched this launcher
+#   has only the last lane, so public adventures resolve unchanged.
 # THE COMMAND:  curl -fsSL https://pipulate.com/mck.sh | bash
 #           or  curl -fsSL https://npvg.org/mck/<trail> | bash
 #
@@ -329,13 +338,36 @@ if [ ! -x "$PY" ]; then
 CARD
   exit 1
 fi
-TRAIL_PATH="assets/trails/${TRAIL_NAME}.yaml"
-if [ ! -f "$TRAIL_PATH" ]; then
-  echo "Error: no such trail: $ROOT/$TRAIL_PATH" >&2
+# --- TRAIL SEARCH PATH (local overrides canon) -------------------------
+# Ordered like PATH: the first lane that has the file wins. The two churn
+# lanes are gitignored, so a client walk authored there can never reach the
+# public repo -- that is a structural property, not a policy anyone has to
+# remember. `mothercat <repo-relative-path>` has always accepted these
+# lanes (mother_cat.ride anchors to REPO_ROOT); this teaches the URL
+# launcher the same thing.
+TRAIL_SEARCH_DIRS="Notebooks/Playground/trails Notebooks/Shared/trails assets/trails"
+TRAIL_PATH=""
+for TRAIL_DIR in $TRAIL_SEARCH_DIRS; do
+  if [ -f "$TRAIL_DIR/${TRAIL_NAME}.yaml" ]; then
+    TRAIL_PATH="$TRAIL_DIR/${TRAIL_NAME}.yaml"
+    break
+  fi
+done
+if [ -z "$TRAIL_PATH" ]; then
+  echo "Error: no trail named '${TRAIL_NAME}' in any search lane." >&2
+  echo "   Searched, in order:" >&2
+  for TRAIL_DIR in $TRAIL_SEARCH_DIRS; do
+    echo "     $ROOT/$TRAIL_DIR/" >&2
+  done
   echo "   Available:" >&2
-  ls assets/trails/*.yaml 2>/dev/null | sed 's#^#     #' >&2
+  for TRAIL_DIR in $TRAIL_SEARCH_DIRS; do
+    ls "$TRAIL_DIR"/*.yaml 2>/dev/null | sed 's#^#     #' >&2
+  done
   exit 1
 fi
+# Which lane won is a receipt, not chatter: a Playground trail silently
+# shadowing a tracked one is exactly the surprise this line prevents.
+echo "Trail resolved: $TRAIL_PATH"
 # --- Built-in URLs for the public softball ONLY. ':=' respects anything
 # already exported, so an operator override always wins.
 if [ "$TRAIL_NAME" = "public_walk" ]; then
