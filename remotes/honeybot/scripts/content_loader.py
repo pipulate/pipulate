@@ -176,7 +176,7 @@ def get_playlist(recent_n=10):
             url = f"{BASE_URL}/{slug}/"
             
             # 5. Clean Text
-            clean_text = clean_markdown(body_text)
+            clean_text = clean_markdown(body_text, label=filename)
             
             all_articles.append({
                 'date': post_date,
