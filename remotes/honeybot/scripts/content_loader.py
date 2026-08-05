@@ -211,7 +211,7 @@ def get_playlist(recent_n=10):
         print(f"Librarian Error: {e}")
         return []
 
-def clean_markdown(text, label=None):
+def clean_markdown(text, label=None, census=True):
     """Sanitizes Markdown for the Piper TTS engine.
 
     label: the article this text came from (its filename), threaded in by the
