@@ -1,8 +1,8 @@
 # AI_CONTEXT.md — Start Here If You Are an AI
 
-> Auto-generated on 2026-08-04. Rewritten from scratch on every release. If this
+> Auto-generated on 2026-08-05. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1390 entries indexed.
+> 1391 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -96,6 +96,7 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-08-04] [Disposable Installations and Derived Backups: Building Resilient Local-First Tools](https://mikelev.in/futureproof/disposable-installations-durable-backups/index.md)
 - [2026-08-04] [Fixing macOS Nix Evaluation and Git Stat-Cache False Positives](https://mikelev.in/futureproof/mac-nix-eval-stat-cache-fix/index.md)
 - [2026-08-03] [The Last Inch of the Actuator: Debugging Emitter Transport in the Age of AI](https://mikelev.in/futureproof/last-inch-actuator-transport-debugging/index.md)
 - [2026-08-03] [When the Guard Flags Itself: Debugging Self-Referential Prompt Security](https://mikelev.in/futureproof/debugging-self-referential-prompt-guards/index.md)
@@ -115,12 +116,12 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-07-30] [Shifting Gears and Fresh Compiles: The Mechanics of Flow in the Age of AI](https://mikelev.in/futureproof/shifting-gears-fresh-compiles-ai/index.md)
 - [2026-07-30] [The Talking Frog and the Two-Witness Gate: Engineering Deterministic AI Workflows](https://mikelev.in/futureproof/talking-frog-two-witness-gate/index.md)
 - [2026-07-29] [The Diamond Age Protocol: Variance Suppression and the Human Gate](https://mikelev.in/futureproof/diamond-age-primer-variance-suppression/index.md)
-- [2026-07-29] [Operation Stick Bug: Engineering the Flight Data Recorder Replay Lane](https://mikelev.in/futureproof/operation-stick-bug-flight-data-recorder/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-07-29] [152k] operation-stick-bug-flight-data-recorder
 - [2026-07-29] [286k] building-the-black-box-oauth-fdr-ai-workflows
 - [2026-07-29] [71k] mother-cat-kata-bounding-ai-context-wire-truth
 - [2026-07-28] [270k] mother-cat-kata-browser-flight-recorder
