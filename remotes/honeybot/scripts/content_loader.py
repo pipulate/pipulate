@@ -332,7 +332,21 @@ def clean_markdown(text, label=None, census=True):
     # [text](url) has already become text) and BEFORE the PP4 restoration at
     # the end (so [[PATRONUS:...]] is still a bracket-free sentinel).
     opens, closes = text.count('['), text.count(']')
-    if opens != closes:
+    # THE ON-AIR CENSUS GATE (2026-08-05, operator ruling, 80/20). The warning
+    # below is correct and its count is real -- but it fires once per unbalanced
+    # article during a FULL-CORPUS playlist build (1393 files, at startup AND on
+    # every breaking-news bell), and stream.py's stdout is on camera. A dozen
+    # warnings about archive posts nobody intends to fix today is
+    # RETIRE-THE-CANARY playing out live: it trains the operator to skip
+    # warnings, and it reads as a defect to every viewer.
+    #
+    # THE INSTRUMENT IS RELOCATED, NOT DELETED. On air it stays armed only for
+    # articles inside the recent window, where a warning is actionable the same
+    # day. The full-corpus sweep moves to a Z640-side probe -- the lane that can
+    # batch-fix what it finds, and the lane whose interpreter can import yaml.
+    # The flag defaults to True so a call site added later is LOUD rather than
+    # silently suppressed, the same reasoning that made label default to None.
+    if census and opens != closes:
         print(f"⚠️  Unbalanced brackets: {opens} open, {closes} close. "
               f"Article: {label or '<UNLABELED CALL SITE -- thread a label>'}. "
               f"An unclosed stage note will be SPOKEN, not stripped.")
