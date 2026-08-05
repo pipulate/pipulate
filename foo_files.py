@@ -52,10 +52,10 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 # --- START STATS ---
 # There are 1,391 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 25 published in the last 7 days
-# Markdown negotiated: 2,005 reads (0.21% of all responses)
+# Velocity: 23 published in the last 7 days
+# Markdown negotiated: 2,014 reads (0.21% of all responses)
 # DOM hydration: 2577 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-08-04T16:32Z
+# Honeybot telemetry fetched 2026-08-05T12:44Z
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -1267,6 +1267,16 @@ AI_PHOOEY_CHOP = r"""                                                           
 # ============================================================================
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
+
+! rg -n 'Notebooks/(Corporate|Personal|Shared|Share|Workshop|Playground)' -g '!foo_files.py' | head -20
+! ls -d Notebooks/*/ 2>&1 | head -20
+! ls assets/trails/ 2>&1; rg -n 'DEFAULT_TRAIL|assets/trails|PIPULATE_TRAIL' scripts/walk.py scripts/mother_cat.py | head -12
+! curl -sI https://pipulate.com/mck.sh | head -1
+scripts/mother_cat.py
+scripts/walk.py
+assets/installer/mck.sh
+assets/trails/public_walk.yaml
+flake.nix
 
 # scripts/connectors/wallet.py  #  <-- Find the Wallet / Connector path chapter
 
