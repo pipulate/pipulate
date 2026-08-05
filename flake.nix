@@ -1657,7 +1657,18 @@ print('AI:\n', r.ai)
 
                         # Surgical sweep to flush any orphaned UI drawing children or text tails
                         pkill -f "/home/mike/www/mikelev[.]in/scripts/logs[.]py" || true
-                        pkill -f "tail -f /var/log/nginx/access.log" || true
+                        # THE SUICIDAL PKILL (convicted 2026-08-05, twice in one
+                        # transcript). pkill -f matches the FULL command line, and
+                        # the remote shell running this script carries the pattern
+                        # in its own argv -- so an unescaped pattern kills the
+                        # shell that issued it. The two lines above are protected
+                        # by the [.] trick: the regex demands a literal dot that
+                        # the argv literal does not contain. This one was missed.
+                        # CONSEQUENCE: the ssh session died HERE every time, so
+                        # sleep 12, the pgrep re-count, and all three verdict
+                        # branches below have NEVER EXECUTED -- an unreachable
+                        # verification block, and orphaned tails never reaped.
+                        pkill -f "tail -f /var/log/nginx/access[.]log" || true
 
                         sleep 12
 
