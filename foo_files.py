@@ -1268,18 +1268,6 @@ AI_PHOOEY_CHOP = r"""                                                           
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-! rg -n 'Notebooks/(Corporate|Personal|Shared|Share|Workshop|Playground)' -g '!foo_files.py' | head -20
-! ls -d Notebooks/*/ 2>&1 | head -20
-! ls assets/trails/ 2>&1; rg -n 'DEFAULT_TRAIL|assets/trails|PIPULATE_TRAIL' scripts/walk.py scripts/mother_cat.py | head -12
-! curl -sI https://pipulate.com/mck.sh | head -1
-scripts/mother_cat.py
-scripts/walk.py
-assets/installer/mck.sh
-assets/trails/public_walk.yaml
-flake.nix
-
-# scripts/connectors/wallet.py  #  <-- Find the Wallet / Connector path chapter
-
 # ---------------------------------------------------------------------------
 # THE PORTABLE CARTRIDGE — the detachable seed of the Software Von Neumann Probe
 # ---------------------------------------------------------------------------
