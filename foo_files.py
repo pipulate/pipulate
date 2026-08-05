@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""                                                           
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,391 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 23 published in the last 7 days
+# There are 1,392 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 24 published in the last 7 days
 # Markdown negotiated: 2,014 reads (0.21% of all responses)
 # DOM hydration: 2577 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
 # Honeybot telemetry fetched 2026-08-05T12:44Z
@@ -1350,13 +1350,13 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # Software Von Neumann Probe IaC Kickstart
 
-release.py                                 #  <-- The deploy process
-assets/installer/install.sh                #  <-- Pipulate.com installer real home in github/pipulate repo
-~/repos/Pipulate.com/CNAME
-~/repos/Pipulate.com/_config.yml
-~/repos/Pipulate.com/_layouts/default.html
-~/repos/nixos/.gitignore
-~/repos/Pipulate.com/install.md            #  <-- Gets copied into place here by pipulate/release.py
+# release.py                                 #  <-- The deploy process
+# assets/installer/install.sh                #  <-- Pipulate.com installer real home in github/pipulate repo
+# ~/repos/Pipulate.com/CNAME
+# ~/repos/Pipulate.com/_config.yml
+# ~/repos/Pipulate.com/_layouts/default.html
+# ~/repos/nixos/.gitignore
+# ~/repos/Pipulate.com/install.md            #  <-- Gets copied into place here by pipulate/release.py
 
 # ~/repos/nixos/autognome.py                 #  <-- More rare to have to include, but the true "top" of the muscle memory stack for day-to-day purposes
 # ~/repos/nixos/configuration.nix            #  <-- "Global" IaC context (most of you won't have)
@@ -1420,6 +1420,7 @@ pyproject.toml              # <-- The PyPI Packaging details
 cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
 scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
+release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
 
 # CONTEXT PORTABILITY SYSTEM
 # scripts/foo_cartridge.py    # Needs description
@@ -1429,7 +1430,6 @@ scripts/ai.py               # <-- How I constantly use local AI to write git com
 # imports/voice_synthesis.py  # <-- The wand can talk to you
 # tools/scraper_tools.py      # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
-# release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
 # scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
 # scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
 # scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
@@ -1672,18 +1672,18 @@ scripts/ai.py               # <-- How I constantly use local AI to write git com
 # carve the sinkholes; this chapter is the seismograph.
 
 # CORE SLIDESHOW FILES
-# nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
-# remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
-# remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
-# remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
-# remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
-# remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
-# remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
-# remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
-# remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
-# remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
-# remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
-# imports/voice_synthesis.py                  # <-- The wand can talk to you (not sure if I'm keeping it in Honeybot chapter)
+nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
+remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
+remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
+remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
+remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
+remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
+remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
+remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
+remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
+remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
+remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+imports/voice_synthesis.py                  # <-- The wand can talk to you (not sure if I'm keeping it in Honeybot chapter)
 
 # remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
 
@@ -2229,6 +2229,8 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: THE HEADER-BOUNDED SCANNER (banked 2026-08-05, decoy-convicted): a program that finds its edit region by scanning for the nearest markdown heading cannot distinguish a heading from a `#` comment inside a fenced code block, so its blast radius is decided by whatever prose happens to sit nearby -- and any unrelated edit can move it silently. CONVICTION: release.py's run_waxascii_release_stamp scans for line.startswith(("# ", "## ", "### ")); Pipulate.com/index.md carries `# 2. Launch it` at line 23 and `# This is how simple Pipulate code looks` at line 162, both bash/python comments inside fences, both indistinguishable from headings to that scanner. README.md survives only because the region between its canary and `## Quick Start` happens to contain no fenced comment -- stable by luck, not by design. WITNESS OF THE SAFE CASE, which is the only reason this was ever observable: a live v2.43 release ran with the workspace-tree sentinels already in README.md and the resulting commit touched only AI_CONTEXT.md and pyproject.toml, proving the stamper's unconditional write_text produced byte-identical output. PRESCRIPTION: bound an edit region by EXPLICIT SENTINELS the author placed, never by structure the document happens to have. Sibling of THE LAST-INCH RULE: there the render destroys a correct result, here the boundary-finder does.
+# - EARMARK: THE SENTINEL WRITTEN INTO ITS OWN FILE (banked 2026-08-05, near-miss): documenting a scanner's trigger string inside the file that scanner reads is a self-referential hazard, and it is invisible until the scanner runs. CONVICTION: a guard comment explaining release.py's waxascii canary was added to README.md and CONTAINED THE CANARY PHRASE. It was safe for two independent reasons -- the real needle carries a blockquote prefix the prose lacks, and the scanner breaks on the first match, which is the real canary twelve lines above -- and both were established AFTER the write, by reading source. The fail-safe direction held by construction (if the real canary were deleted the prose still would not match, so the scanner skips rather than aiming at the wrong line), but that was luck. PRESCRIPTION: when documenting a sentinel inside its own file, refer to it by NAME and never reproduce its literal text; if the literal is unavoidable, verify the matcher's exact needle before the write, not after.
 # - EARMARK: THE PROSE-INFLATED COUNTER (banked 2026-08-05, self-convicted): a counter probe whose pattern is a NAME counts DOCUMENTATION and MECHANISM together, so any patch that also writes prose using that name moves the number by an amount the predictor cannot compute in advance -- and the gate then reads FAIL on a correct edit. Conviction: `rg -c 'update_readme_md_in_place|update_agents_md_in_place' prompt_foo.py` was predicted 1 -> 3 (one def, one call) and read 2 -> 6; the BEFORE forgot the existing call site and the AFTER included two prose lines the SAME PATCH introduced, one of which named its sibling on purpose. All six lines are enumerable from raw source, so the edit was right and the prediction was wrong. The sibling probe `rg -c 'figurate\('` moved exactly as predicted, because a call with a paren is syntax only mechanism emits. PRESCRIPTION: anchor a mechanism counter on syntax only mechanism can produce (`^def name` or `^    name\(`), or print the LINES instead of the count so the reader sees what matched. Fifth sibling of DOTFILE-BLIND / CASE-BLIND / UNANCHORED / CAP -- another way a probe answers a question other than the one on its label.
 # - EARMARK: THE DOTFILE-BLIND PROBE (banked 2026-08-05, self-convicted): ripgrep skips hidden files by default, so any rg probe hunting a name that lives in .gitignore, .gitattributes, or any other dotfile returns the SAME silence whether the name is there or not -- THE DISCRIMINATION QUESTION failing on the tool's DEFAULT rather than on the pattern. Conviction: `rg -nw 'Collaborators'` returned zero hits while .gitignore carried `Notebooks/Collaborators/` in the very same payload, and the silence was read as absence. PRESCRIPTION: --hidden plus --glob '!.git' on every rg probe whose target might live in a dotfile. Fifth sibling of SINGLE-LINE / CASE-BLIND / UNANCHORED / CONTIGUITY -- a phrase a default-configured tool cannot see.
 # - EARMARK: THE CAP THAT HID THE ANSWER (banked 2026-08-05, convicted three times in three compiles): a `head -N` cap set to bound noise silently truncates the decisive line when the noise sorts first, and the receipt LOOKS complete because a cap leaves no ellipsis. Conviction A: `rg -n 'PIPULATE_TRAIL_' | head -20` returned exactly 20 lines, ending on a COMMENT, having cut the six lines of URL-default machinery the probe existed to find. Conviction B: `figurate | head -8` cut the `drift=` line the probe was written to read, because wand.figurate prints its Rich panel BEFORE the caller's own print. PRESCRIPTION: when the discriminator's POSITION in the output is unknown, bound by CONTENT (grep -E for the exact tokens that differ between the two worlds), never by COUNT; and when a cap is hit exactly, treat the receipt as TRUNCATED rather than complete.
