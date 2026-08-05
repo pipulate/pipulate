@@ -2074,6 +2074,71 @@ def update_agents_md_in_place():
         logger.print(f"Warning: Failed to update AGENTS.md workspace tree: {e}")
 
 
+def update_readme_md_in_place():
+    """Splice the sealed workspace_tree art into README.md between sentinels.
+
+    THE SECOND PROJECTION, AND THAT IS THE ENTIRE POINT. update_agents_md_in_place
+    above is the first; this is a deliberate near-copy rather than a shared helper.
+    A mechanism proven ONCE is a coincidence and a mechanism proven TWICE is a
+    pattern -- and the diff between these two functions is the specification for
+    the helper that should absorb them when a THIRD surface arrives. Guessing that
+    signature now would bake in whatever the author imagines surface three needs;
+    reading it off two working instances costs nothing and cannot be wrong.
+
+    THE SILENT NO-OP IS THE TRAP THIS DOCSTRING EXISTS TO NAME. If README.md
+    carries no sentinels, pattern.search returns None, this returns, nothing is
+    written, and NOTHING IS PRINTED -- a green console over zero effect. The
+    sentinels are hand-placed once, out of band, because where a diagram sits on
+    a project's homepage is an editorial judgment and a guessed position looks
+    exactly like a chosen one.
+
+    THE SEAL IS LOAD-BEARING, same as its sibling: splicing art whose CRC reports
+    drift would propagate a corrupted frame into the highest-traffic surface the
+    project has. A stale README is a wound; a confidently wrong one is a lie.
+
+    ORDERING: called from main() at step 2, alongside the AGENTS.md splice and
+    BEFORE the `!` executor loop -- so a probe echoed into adhoc.txt witnesses
+    THIS compile's fill rather than the previous one's.
+    """
+    readme_path = os.path.join(REPO_ROOT, "README.md")
+    if not os.path.exists(readme_path):
+        return
+    try:
+        from pipulate import wand
+        result = wand.figurate("workspace_tree")
+        if getattr(result, 'drift', 0):
+            logger.print("⚠️  workspace_tree reports drift; README.md left untouched.")
+            return
+        art = result.ai.strip("\n")
+
+        with open(readme_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        pattern = re.compile(
+            r'(<!-- --- START WORKSPACE TREE --- -->\n)(.*?)(<!-- --- END WORKSPACE TREE --- -->)',
+            re.DOTALL
+        )
+        match = pattern.search(content)
+        if not match:
+            return
+
+        # Fence literal split so this source line can never be eaten by
+        # apply.py's own fence stripper -- the same dodge update_agents_md_in_place
+        # and the git diff telemetry block already use.
+        fence = "``" + "`"
+        block = f"{fence}text\n{art}\n{fence}\n"
+        new_content = (
+            content[:match.start()] + match.group(1) + block
+            + match.group(3) + content[match.end():]
+        )
+        if new_content != content:
+            with open(readme_path, 'w', encoding='utf-8') as f:
+                f.write(new_content)
+            logger.print("📖 README.md workspace tree regenerated from the sealed asset.")
+    except Exception as e:
+        logger.print(f"Warning: Failed to update README.md workspace tree: {e}")
+
+
 def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs: dict = None):
     """Reports references in foo_files.py that no longer exist on disk."""
     import foo_files
@@ -2407,6 +2472,7 @@ def main():
     update_stats_in_place()
     update_paintbox_in_place()
     update_agents_md_in_place()
+    update_readme_md_in_place()
     check_topological_integrity(args.chop, format_kwargs)
     files_to_process = parse_file_list_from_config(args.chop, format_kwargs)
 
