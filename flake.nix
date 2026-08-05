@@ -998,6 +998,18 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # scripts actually live in. That is SHELL-LANE FINDING (a) applied
           # instead of merely noted.
           mkdir -p "$PIPULATE_ROOT/Notebooks/Shared"
+          # ONE printf, NEVER a heredoc. A cat-heredoc here broke nix develop on
+          # main for every user on 2026-08-05: this logic is interpolated into
+          # shellHook, the terminator lost its column-0 alignment, and bash
+          # swallowed the remaining ~790 lines. printf has no terminator to lose.
+          # TWO EDITING HAZARDS, both structural: two adjacent single quotes end
+          # the Nix indented string, and a dollar-brace starts an interpolation.
+          # Neither appears below. A lone backslash passes through literally --
+          # same as the PS1 line beneath this block -- so bash printf does the
+          # newline work.
+          if [ ! -f "$PIPULATE_ROOT/Notebooks/Shared/README.md" ]; then
+            printf "%s\n" "# Shared" "" "This is the one folder you use on purpose to hand work to someone else." "Everything else under Notebooks/ is either yours alone or delivered to you." "Nothing here is private: assume a teammate will read it." "" "Make a folder with your own name, and work inside it:" "" "    mkdir -p Notebooks/Shared/yourname" "" "One folder per person means two people can drop work at the same moment and" "never collide, so there is nothing to merge and no git to learn." "" "Pipulate git ignores this whole folder. To back yours up, put your own git" "repository inside your own subfolder; it will not fight with anything above." > "$PIPULATE_ROOT/Notebooks/Shared/README.md"
+          fi
           # Clean up the prompt to remove Nix's redundant prefixes and Mac's long hostname
           export PS1="\[\033[1;32m\](nix)\[\033[0m\] \[\033[1;34m\]\W\[\033[0m\] $ "
           # Shadow the nix CLI for two reasons, both only relevant *inside* an
