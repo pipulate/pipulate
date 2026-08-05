@@ -1248,7 +1248,7 @@ class PromptBuilder:
         self.all_sections = {}
         self.command_line = " ".join(sys.argv)
         self.manifest_key = "Manifest (Table of Contents)"
-        self.section_order = ["Tool Roster", "Story", "File Tree", "UML Diagrams", "Articles", "Codebase", "Summary", "Context Recapture", "Prompt"]
+        self.section_order = ["Tool Roster", "Story", "File Tree", "UML Diagrams", "Articles", "Codebase", "Telemetry", "Summary", "Context Recapture", "Prompt"]
         self.routing_note = (
             "Routing note: This is a compiled context artifact. "
             "The actionable user request is in the final section labeled "
@@ -1357,6 +1357,40 @@ class PromptBuilder:
             lines.append("```")
             lines.append(f"--- END: {f['path']} ---\n")
         return "\n".join(lines).strip()
+
+    def _build_telemetry_content(self) -> str:
+        """Emit auto-context channels that were MEASURED but never RENDERED.
+
+        CONVICTED 2026-08-05 BY THIS COMPILER'S OWN PAYLOAD. main() registered
+        'Recent Git Diff Telemetry' and 'Static Analysis Diagnostics' into
+        auto_context; the Summary listed both under Auto-Context Metadata; the
+        Payload Ledger gave each an AUTO row; and assemble_text emitted neither,
+        because no section builder ever read those titles. The ledger therefore
+        over-reported the payload by the size of every unrendered channel -- the
+        instrument that gauges the artifact was counting a section the artifact
+        did not contain, inside the tool whose entire job is refusing that.
+        Rendering them does not merely add content; it makes the ledger TRUE.
+
+        WHY A SECTION AND NOT THE SUMMARY. main() echoes console_summary to the
+        terminal on every compile, so a diff folded into the Summary would print
+        hundreds of lines to the operator's screen. And the Summary is the
+        LEDGER: putting evidence inside the accounting is the map/territory
+        confusion this compiler exists to prevent.
+
+        SCOPE IS NARROW AND THE LABEL ALREADY SAYS SO. main() computes the diff
+        as `git diff HEAD` and falls back to `git diff HEAD~1 HEAD` on a clean
+        tree -- so after a `blast` this is ONE COMMIT, not a whole ride, and
+        diff_label reads 'Most Recent Commit Changes' rather than over-claiming.
+        Widening the range (the candidate is `git diff @{u}@{1}..@{u}`, meaning
+        everything pushed since the last push) is a separate editorial decision
+        and is deliberately NOT bundled here.
+        """
+        parts = []
+        for title in ("Static Analysis Diagnostics", "Recent Git Diff Telemetry"):
+            data = self.auto_context.get(title)
+            if data and data.get('content', '').strip():
+                parts.append(f"## {title}\n{data['content'].strip()}")
+        return "\n\n".join(parts)
 
     def _build_recapture_content(self) -> str:
         """Generates the commented-out variable block for reconstructing this context."""
@@ -1499,6 +1533,7 @@ Before addressing the user's prompt, perform the following verification steps:
         uml_content = self._build_uml_content()
         articles_content = self._build_articles_content()
         codebase_content = self._build_codebase_content()
+        telemetry_content = self._build_telemetry_content()
         recapture_content = self._build_recapture_content()
         prompt_content = self._build_prompt_content()
 
@@ -1509,6 +1544,7 @@ Before addressing the user's prompt, perform the following verification steps:
             "File Tree": "# File tree generation failed or was skipped.",
             "UML Diagrams": "# No Python files with classes were included, or UML generation failed.",
             "Articles": "# No full articles requested. Use the -a or --article flag to include full article content.",
+            "Telemetry": "# No static-analysis or git-diff telemetry was produced for this compile.",
             "Codebase": ("# No files were specified for inclusion in the codebase." if not self.processed_files 
                          else "# Running in --context-only mode. File contents are omitted."),
         }
@@ -1520,6 +1556,7 @@ Before addressing the user's prompt, perform the following verification steps:
         self.all_sections["UML Diagrams"] = {'content': uml_content, 'tokens': count_tokens(uml_content)}
         self.all_sections["Articles"] = {'content': articles_content, 'tokens': count_tokens(articles_content)}
         self.all_sections["Codebase"] = {'content': codebase_content, 'tokens': sum(f['tokens'] for f in self.processed_files) if not self.context_only else 0}
+        self.all_sections["Telemetry"] = {'content': telemetry_content, 'tokens': count_tokens(telemetry_content)}
         self.all_sections["Context Recapture"] = {'content': recapture_content, 'tokens': count_tokens(recapture_content)}
         self.all_sections["Prompt"] = {'content': prompt_content, 'tokens': count_tokens(prompt_content)}
 
@@ -1541,7 +1578,7 @@ Before addressing the user's prompt, perform the following verification steps:
                 "license: AGPL-3.0-or-later",
                 "---",
             ])
-            parts = [frontmatter + "\n\n" + f"# KUNG FU PROMPT CONTEXT\n\nWhat you will find below is:\n\n- {self.manifest_key}\n- Tool Roster\n- Story\n- File Tree\n- UML Diagrams\n- Articles\n- Codebase\n- Summary\n- Context Recapture\n- Prompt"]
+            parts = [frontmatter + "\n\n" + f"# KUNG FU PROMPT CONTEXT\n\nWhat you will find below is:\n\n- {self.manifest_key}\n- Tool Roster\n- Story\n- File Tree\n- UML Diagrams\n- Articles\n- Codebase\n- Telemetry\n- Summary\n- Context Recapture\n- Prompt"]
             
             def add(name, content, placeholder):
                 final = content.strip() if content and content.strip() else placeholder
@@ -1554,6 +1591,7 @@ Before addressing the user's prompt, perform the following verification steps:
             add("UML Diagrams", uml_content, placeholders["UML Diagrams"])
             add("Articles", articles_content, placeholders["Articles"])
             add("Codebase", codebase_content, placeholders["Codebase"])
+            add("Telemetry", telemetry_content, placeholders["Telemetry"])
             add("Summary", summary_txt, "# Summary generation failed.")
             add("Context Recapture", recapture_content, "# Context Recapture failed.")
             add("Prompt", prompt_content, "# No prompt was provided.")
