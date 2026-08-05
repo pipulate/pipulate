@@ -334,6 +334,7 @@ def clean_markdown(text, label=None):
     opens, closes = text.count('['), text.count(']')
     if opens != closes:
         print(f"⚠️  Unbalanced brackets: {opens} open, {closes} close. "
+              f"Article: {label or '<UNLABELED CALL SITE -- thread a label>'}. "
               f"An unclosed stage note will be SPOKEN, not stripped.")
     text = re.sub(r'\[(?:[^\]\n]|\n(?!\s*\n))*\]', '', text)
 
