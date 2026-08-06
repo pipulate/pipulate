@@ -3224,6 +3224,7 @@ def main():
         if ledger_rows:
             try:
                 from rich.console import Console
+                from rich.markup import escape
                 from rich.table import Table
 
                 total_bytes_f = sum(r['bytes'] for r in ledger_rows)
