@@ -2229,6 +2229,27 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: THE FILTER THAT ATE THE EVIDENCE (banked 2026-08-06,
+#   self-convicted in-payload): PromptBuilder.add_auto_context dropped any
+#   channel whose CONTENT contained "error" or "skipping" -- a guard written
+#   for GENERATOR STATUS strings ("Error: pyreverse failed", "Skipping: eza
+#   not found") applied indiscriminately to channels whose PAYLOAD
+#   legitimately carries those words. CONVICTION: a compile rendered the
+#   Telemetry placeholder while HEAD~1..HEAD demonstrably held a commit,
+#   because the earmark that commit added contained the phrase "the error
+#   names a SHELL FEATURE". The Summary's MISSING Auto-Context Metadata block
+#   is the corroborating channel: auto_context was EMPTY, not merely
+#   unrendered. THE DROP IS SILENT, so the placeholder reads IDENTICALLY in
+#   the world where no diff existed and the world where the diff was eaten --
+#   THE DISCRIMINATION QUESTION failing inside the compiler's own instrument,
+#   in the tool whose entire job is refusing that. INTERMITTENT BY
+#   CONSTRUCTION: the channel works whenever a diff happens not to say
+#   "error", which is why it looked healthy one compile earlier -- the same
+#   shape that let the render canary sit green for a dozen flights. STANDING
+#   CONSEQUENCE: a content filter may gate a channel only when that channel's
+#   content IS status; when the content is PAYLOAD, exempt the channel BY
+#   NAME. Sibling of THE VERIFIER THAT NEVER RAN -- that one is a witness
+#   never reached, this one is a witness reached and thrown away.
 # - EARMARK: THE HISTORY-EXPANSION PROBE (banked 2026-08-06, lane-convicted on
 #   the first hand-run): a `!` followed by a WORD CHARACTER inside DOUBLE quotes
 #   is a bash HISTORY EXPANSION, and histexpand is ON for interactive shells and
