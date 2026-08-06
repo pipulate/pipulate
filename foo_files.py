@@ -2229,6 +2229,26 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: THE LABEL IS NOT DATA (banked 2026-08-06, compile-killed): a
+#   string that ARRIVED as content must never be interpolated into a MARKUP
+#   language, and the Payload Ledger did exactly that -- every row wrapped the
+#   verbatim `!` command text in Rich style tags, so any square bracket inside
+#   a probe became a tag. CONVICTION: the canary midpoint probe carries a
+#   regex negative-lookbehind whose character class opens with a slash; Rich
+#   read it as a CLOSING tag with no opener, raised MarkupError inside the
+#   ledger render, and killed main() at step 5 -- AFTER the payload was fully
+#   assembled and BEFORE the cartridge was written or the clipboard filled.
+#   The whole compile was lost, and the thing that lost it was the receipt's
+#   own text. DATA-DEPENDENT AND THEREFORE SILENT FOR MONTHS: every prior
+#   probe happened to carry no brackets, so the ledger looked healthy the
+#   entire time -- the same intermittency that let the render canary sit green
+#   for a dozen flights. STANDING CONSEQUENCE: escape every dynamic string
+#   crossing into a markup, query, or shell grammar; the styling wrapper is
+#   OURS and stays live, the payload is THEIRS and gets escaped. Sibling of
+#   DELIMITER COLLISION (there the patch protocol's own markers appear in the
+#   text being patched) and of THE INSTRUMENT BECOMES BAIT (there the probe's
+#   text attracts the transform it measures) -- this is the same disease with
+#   the compiler's own console as the victim.
 # - EARMARK: THE STRADDLE IS A CONTROLLED EXPERIMENT (banked 2026-08-06,
 #   articulation-banked, operator-prompted): the BEFORE/AFTER pair is not a
 #   metaphor for science, it IS a controlled comparison -- ONE manipulated
