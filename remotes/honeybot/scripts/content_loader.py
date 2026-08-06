@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 import time
 import yaml
 import random
@@ -106,7 +107,7 @@ def check_for_updates():
                 _last_scan_time = current_mtime
                 _last_file_count = current_count
                 _last_trigger = current_trigger
-                print("🔔 Breaking-news bell rung. Resetting playlist.")
+                print("🔔 Breaking-news bell rung. Resetting playlist.", file=sys.stderr)
                 return True
             # Same deploy in progress (mtime moved, bell not yet rung): absorb it.
             _last_scan_time = current_mtime
@@ -117,13 +118,13 @@ def check_for_updates():
         if current_mtime > _last_scan_time or current_count != _last_file_count:
             _last_scan_time = current_mtime
             _last_file_count = current_count
-            print("🚀 New content detected! Resetting playlist.")
+            print("🚀 New content detected! Resetting playlist.", file=sys.stderr)
             return True
             
         return False
         
     except Exception as e:
-        print(f"Update Check Error: {e}")
+        print(f"Update Check Error: {e}", file=sys.stderr)
         return False
 
 
@@ -216,7 +217,7 @@ def get_playlist(recent_n=10):
         return recent_articles + archive_articles
 
     except Exception as e:
-        print(f"Librarian Error: {e}")
+        print(f"Librarian Error: {e}", file=sys.stderr)
         return []
 
 def clean_markdown(text, label=None, census=True):
@@ -357,7 +358,7 @@ def clean_markdown(text, label=None, census=True):
     if census and opens != closes:
         print(f"⚠️  Unbalanced brackets: {opens} open, {closes} close. "
               f"Article: {label or '<UNLABELED CALL SITE -- thread a label>'}. "
-              f"An unclosed stage note will be SPOKEN, not stripped.")
+              f"An unclosed stage note will be SPOKEN, not stripped.", file=sys.stderr)
     text = re.sub(r'\[(?:[^\]\n]|\n(?!\s*\n))*\]', '', text)
 
     # --- NEW: Humanize Raw URLs for TTS ---
