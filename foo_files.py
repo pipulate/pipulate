@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,393 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 21 published in the last 7 days
+# There are 1,394 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 22 published in the last 7 days
 # Markdown negotiated: 2,021 reads (0.21% of all responses)
 # DOM hydration: 2577 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
 # Honeybot telemetry fetched 2026-08-06T14:09Z
@@ -1446,7 +1446,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # THE ROLLING PIN BOOK ORE SPINE / FODDER FOR THE BOOK
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
 GLOSSARY.md                 # <-- I think this glossary goes well with the book-ore spine to do world building.
-# scripts/articles/lsa.py     # <-- Useful for refining commands like `posts`, critical to Second Brain concept.
+scripts/articles/lsa.py     # <-- Useful for refining commands like `posts`, critical to Second Brain concept.
 
 # THE QUIRKY AMIGA-LOVING HUMAN
 ~/repos/nixos/autognome.py  # <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
@@ -1520,7 +1520,7 @@ release.py                  # <-- How everything ends up where it does (GitHub, 
 # ============================================================================
 
 # THE ROLLING PIN (Again, if you only include one thing for overarching context of Pipulate and NPvg, include this.
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN ------------------------------------ !!! STANDARD WRAPPER: 3
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- THIS IS THE MAGIC ROLLING PIN
 # ! python scripts/articles/lsa.py -t 4 --reverse --fmt dated-slugs  # <-- BotifyML work journal
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 
