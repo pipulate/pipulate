@@ -233,6 +233,13 @@
         # print_shard_header returns quietly when the shard file is missing, so
         # a listing with no kw/sum lines means contextualizer.py has not run for
         # those articles -- NOT that this flag is broken.
+        # SECOND SILENT MODE, OBSERVED 2026-08-06: --fmt dated-slugs (and any
+        # non-full format) does not render shards at all, so `postsc --fmt
+        # dated-slugs N` prints EXACTLY what a shard-less corpus prints. Two
+        # causes, one printout -- THE DISCRIMINATION QUESTION fails on that
+        # command, and the wrong diagnosis (contextualizer never ran) is the
+        # one a reader reaches for first. Diagnose missing shards in FULL
+        # format only.
         postscCommand = pkgs.writeShellScriptBin "postsc" ''
           set -euo pipefail
           exec ${postsCommand}/bin/posts --shards "$@"
