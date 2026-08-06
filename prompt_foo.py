@@ -3245,7 +3245,7 @@ def main():
                     else:
                         style = "green"
                     ledger.add_row(
-                        f"[{style}]{r['label']}[/{style}]",
+                        f"[{style}]{escape(r['label'])}[/{style}]",
                         f"[{style}]{r['tokens']:,}[/{style}]",
                         f"[{style}]{r['bytes']:,}[/{style}]",
                         f"[{style}]{pct:.1f}%[/{style}]"
