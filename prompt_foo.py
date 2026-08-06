@@ -1258,14 +1258,27 @@ class PromptBuilder:
             "Use the Manifest, Tool Roster, Summary, File Tree, UML, Articles, and Codebase as supporting context."
         )
 
+
     def add_auto_context(self, title: str, content: str):
         is_narrative = (title == "Recent Narrative Context")
         is_article = (title == "Full Article Content")
         is_shard = (title == "Holographic Context Shards")
+        # TELEMETRY IS PAYLOAD, NOT STATUS (convicted 2026-08-06, in-payload).
+        # The substring filter below was written to catch GENERATOR STATUS
+        # strings -- "Error: pyreverse failed", "Skipping: eza not found" --
+        # emitted by the tree and UML channels when their tools are missing.
+        # Applied to a git diff or a Ruff report it eats the EVIDENCE, because
+        # a diff of this repo says "error" constantly and a lint report is made
+        # of error text. Conviction: a compile rendered the Telemetry
+        # placeholder while HEAD~1..HEAD held a commit, solely because the
+        # earmark that commit added contained the phrase "the error names a".
+        # The drop is SILENT, so the placeholder reads identically whether the
+        # channel was empty or eaten. Exempt by NAME, the same way narrative,
+        # article, and shard content already is.
+        is_telemetry = title in ("Recent Git Diff Telemetry", "Static Analysis Diagnostics")
         content_is_valid = bool(content)
         filter_passed = "error" not in content.lower() and "skipping" not in content.lower()
-
-        if content_is_valid and (is_narrative or is_article or is_shard or filter_passed):
+        if content_is_valid and (is_narrative or is_article or is_shard or is_telemetry or filter_passed):
             self.auto_context[title] = {
                 'content': content, 'tokens': count_tokens(content), 'words': count_words(content)
             }
