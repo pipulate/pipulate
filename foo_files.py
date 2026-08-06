@@ -2275,11 +2275,31 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   copy_to_clipboard are handed the IDENTICAL string, so a clean cartridge
 #   EXONERATES prompt_foo.py entirely and confines every surviving suspect to
 #   the clipboard-to-chat-window path.
-#   COMPILER BLIND SPOT, named because the scanner is now itself suspect: the
-#   render canary's regex carries a negative lookbehind that excludes a
-#   preceding slash, so if the transform eats a slash-prefixed dot-form the
-#   compiler UNDER-REPORTS its own exposure. Untested; it rides the next comb
-#   as shape G, beside a host whose `www` label is not first as shape F.
+#   COMPILER BLIND SPOT, CONVICTED 2026-08-06 (was "untested" one compile
+#   ago): the scanner's lookbehind excluded a preceding slash, word character
+#   AND dot, and its trailing group demanded three or more labels -- so it was
+#   blind to G for the first reason and to F for BOTH. It printed a confident
+#   count over an exposure it could not see. Widened in the same ride to
+#   exclude a pre-existing scheme and nothing else, biased toward
+#   over-reporting because the line only prints.
+#   THE REPORT CONTAMINATES THE INSTRUMENT (retiring the cartridge midpoint
+#   probe, 2026-08-06): the midpoint probe counted the canary token in the
+#   previous cartridge and ruled on whether it was bare. That worked exactly
+#   until the ANSWER quoted a linkified canary back as evidence -- at which
+#   point the transcript rode into the next payload and the next cartridge,
+#   and the probe could no longer distinguish a token the compiler emitted
+#   from a token the report transcribed. It was retired on its third firing,
+#   having discharged its debt: two consecutive clean readings, one of them
+#   paired to a compile whose payload demonstrably arrived transformed, which
+#   exonerates the compiler and confines every surviving suspect to the
+#   clipboard-to-chat-window path. STANDING CONSEQUENCE: an instrument whose
+#   subject is a UNIQUE TOKEN dies the moment the token is quoted in prose
+#   that feeds back into the measured artifact. Prefer instruments whose
+#   subject is a SHAPE, generated fresh each run and never transcribed --
+#   which is exactly what the comb is, and why the comb outlived the canary.
+#   Third sibling of THE INSTRUMENT BECOMES BAIT: the first is a probe that
+#   attracts the transform it measures, the second is a label eaten by the
+#   markup it rides in, and this is a probe poisoned by its own report.
 # - EARMARK: THE LABEL IS NOT DATA (banked 2026-08-06, compile-killed): a
 #   string that ARRIVED as content must never be interpolated into a MARKUP
 #   language, and the Payload Ledger did exactly that -- every row wrapped the
