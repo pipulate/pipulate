@@ -450,6 +450,7 @@
         # regardless of the operating system
         commonPackages = with pkgs; [
           postsCommand                 # Article corpus formatter usable by child shells
+          postscCommand                # posts plus holographic shards (the c-twin)
           rgxCommand                   # Bounded AND-search over article files
           rgxcCommand                  # rgx plus holographic shards and hit context
           aiCommitCommand              # \g's commit generator resolves in-shell on every platform
