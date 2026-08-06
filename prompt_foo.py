@@ -3290,8 +3290,21 @@ def main():
     # canary bare, so this can never read 0, and a counter that could read 0
     # forever is indistinguishable from a dead one. Same logic as the White
     # Rabbit's CRC: a known-good artifact whose mangling IS the alarm.
+    # LOOKBEHIND WIDENED (convicted 2026-08-06 by comb shapes F and G): the old
+    # spelling excluded a preceding slash, word character, AND dot, and it also
+    # demanded THREE or more labels. The live comb rewrote a host carrying a
+    # single leading slash (G), and rewrote the two-label host buried inside a
+    # longer dotted name (F) -- so this scanner was structurally blind to both
+    # classes and UNDER-REPORTED its own exposure while printing a confident
+    # count. F was invisible for BOTH reasons at once, which is why one
+    # receipt convicts two defects. A pre-existing scheme is the ONLY observed
+    # suppressor, so exclude exactly that and nothing else. Bias is
+    # deliberately toward OVER-reporting: this line only prints, so a false
+    # positive costs one noisy word and a false negative costs a wrong edit.
+    # UNTESTED and therefore over-reported on purpose: a word character
+    # immediately before the prefix. It rides the next comb as shape J.
     autolink_bait = sorted(set(re.findall(
-        r'(?<![/\w.])www\.[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+', final_output
+        r'(?<!http://)(?<!https://)www\.[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*', final_output
     )))
     if autolink_bait:
         preview = ", ".join(autolink_bait[:5])
