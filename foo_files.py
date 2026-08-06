@@ -2248,10 +2248,17 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   that same host in that same file -- the filesystem paths, which put a SLASH
 #   after that label instead of a dot -- arrived INTACT. The trigger is the
 #   DOT, not the label, and a code fence does not protect.
-#   THE GRAMMAR: a host token whose leading label is `www`, whose next character
-#   is a dot, and which does not already carry a scheme, is wrapped as
-#   link-text-equals-target-minus-scheme -- REGARDLESS of code spans or fenced
-#   code blocks.
+#   THE GRAMMAR, AMENDED 2026-08-06 by firing two (shapes F and G). The
+#   first-firing spelling said "leading label" and that is FALSIFIED. Correct:
+#   the transform matches the `www` prefix followed by a dot and dot-separated
+#   labels ANYWHERE IN THE TEXT, requires NO token boundary before it, wraps
+#   ONLY the matched span, and leaves surrounding characters outside the link.
+#   F_notfirst (the prefix buried after another label and a dot) came back with
+#   that leading label sitting OUTSIDE the link and the tail wrapped -- the
+#   transform split the host to do it. G_slash (a single leading slash) came
+#   back with the slash outside and the host wrapped. A pre-existing scheme
+#   remains the ONLY observed suppressor, and a code span or fenced block does
+#   not protect. Two labels after the prefix are enough; three are not required.
 #   WHY THAT KILLS GFM: the GFM autolink extension for that prefix does exist,
 #   but GFM never rewrites inside a code span or a fenced block, and both were
 #   penetrated here. The transform is therefore a TEXT-TO-TEXT REWRITE that
