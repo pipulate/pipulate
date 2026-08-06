@@ -2229,6 +2229,50 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: THE TRANSFER FUNCTION (banked 2026-08-06, comb-witnessed; this
+#   SUPERSEDES the GFM hypothesis recorded in THE RENDER-GAP RULE above, which
+#   is now FALSIFIED rather than merely unproven): the render canary FIRED in a
+#   payload that also carried the five-shape comb, so for the first time the
+#   channel is CHARACTERIZED instead of merely alarmed. A CO-LOCATED CONTROL is
+#   the entire difference between twelve compiles of alarm and one compile of
+#   measurement.
+#   READINGS, by comb label. A_bare (host whose leading label is `www`, no
+#   scheme): REWRITTEN. B_scheme (identical host carrying an https prefix):
+#   INTACT. C_nowww (same host with the leading label deleted): INTACT. D_tick
+#   (A_bare inside a markdown code span): REWRITTEN. E_path (A_bare with a
+#   trailing /x): REWRITTEN, and the path is CARRIED into both the link text
+#   and the target.
+#   TWO UNPLANNED CONTROLS, same payload, same file, same fenced nix block:
+#   configuration.nix's ONE networking.hosts entry spelling the host with a DOT
+#   after the leading label arrived REWRITTEN, while every OTHER occurrence of
+#   that same host in that same file -- the filesystem paths, which put a SLASH
+#   after that label instead of a dot -- arrived INTACT. The trigger is the
+#   DOT, not the label, and a code fence does not protect.
+#   THE GRAMMAR: a host token whose leading label is `www`, whose next character
+#   is a dot, and which does not already carry a scheme, is wrapped as
+#   link-text-equals-target-minus-scheme -- REGARDLESS of code spans or fenced
+#   code blocks.
+#   WHY THAT KILLS GFM: the GFM autolink extension for that prefix does exist,
+#   but GFM never rewrites inside a code span or a fenced block, and both were
+#   penetrated here. The transform is therefore a TEXT-TO-TEXT REWRITE that
+#   either precedes markdown parsing or ignores markdown structure entirely.
+#   Its IDENTITY stays INFERRED; only its GRAMMAR is now OBSERVED.
+#   THE TWO-FACTOR MODEL that retires the word "intermittent": a BINARY GATE
+#   (is the transform active for this payload at all) times a DETERMINISTIC
+#   GRAMMAR (which shapes it eats once active). Within this one payload the
+#   grammar held across seven independent readings with zero exceptions. What
+#   varies compile to compile is the GATE, never the rule.
+#   BISECTION, same compile: the midpoint probe read the previous cartridge and
+#   found the canary present exactly once, bare, with zero scheme-bearing
+#   copies and zero linkified copies. write_context_cartridge and
+#   copy_to_clipboard are handed the IDENTICAL string, so a clean cartridge
+#   EXONERATES prompt_foo.py entirely and confines every surviving suspect to
+#   the clipboard-to-chat-window path.
+#   COMPILER BLIND SPOT, named because the scanner is now itself suspect: the
+#   render canary's regex carries a negative lookbehind that excludes a
+#   preceding slash, so if the transform eats a slash-prefixed dot-form the
+#   compiler UNDER-REPORTS its own exposure. Untested; it rides the next comb
+#   as shape G, beside a host whose `www` label is not first as shape F.
 # - EARMARK: THE LABEL IS NOT DATA (banked 2026-08-06, compile-killed): a
 #   string that ARRIVED as content must never be interpolated into a MARKUP
 #   language, and the Payload Ledger did exactly that -- every row wrapped the
