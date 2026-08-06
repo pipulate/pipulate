@@ -212,6 +212,31 @@
           esac
         '';
 
+        # THE `c`-TWIN OF `posts` (mirrors rgx -> rgxc, same suffix grammar).
+        # Same corpus, same selection flags, plus each article's holographic
+        # shard (keywords + summary) read from _context/<stem>.json.
+        #
+        # WHY THIS IS THE ONLY LENS THAT FITS: a single recent article can run
+        # 180k+ tokens, so `posts 20` names ~1.5M tokens of work you cannot
+        # load. Twenty shards is ~1.6k. The shard is the article's own lossy
+        # compression, and this command is the only way to read three weeks of
+        # work in one context window.
+        #
+        # A COMMAND, NOT A FUNCTION, for the same reason `posts` is one: a `!`
+        # chisel-strike in adhoc.txt spawns a non-interactive child that
+        # inherits PATH and never inherits functions, so `! postsc 5` resolves
+        # and `! posts2 5` cannot. Forwarding is total, so `-t`, `--reverse`,
+        # `--match`, `--slugs` and the bare-N positional all still work, and
+        # `posts` still owns the -t default so lsa.py never sees two of them.
+        #
+        # SILENT DEGRADATION, NAMED HERE SO IT IS NEVER DIAGNOSED TWICE:
+        # print_shard_header returns quietly when the shard file is missing, so
+        # a listing with no kw/sum lines means contextualizer.py has not run for
+        # those articles -- NOT that this flag is broken.
+        postscCommand = pkgs.writeShellScriptBin "postsc" ''
+          set -euo pipefail
+          exec ${postsCommand}/bin/posts --shards "$@"
+        '';
         rgxCommand = pkgs.writeShellScriptBin "rgx" ''
           set -euo pipefail
 
