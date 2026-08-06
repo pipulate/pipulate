@@ -984,7 +984,41 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # the vendor DOES issue a refresh_token, so the 300-second access token
 # is living culture, not perishable cargo. 
 # CLOCK LEGIBLE 2026-07-31 (in-compile stderr receipt): resolve_token now emits `# mcp token clock: EXPIRED <n>s ago (life was 300s); refresh_token present: yes` before returning. A stale token still dies at gate2 -- but with cause, magnitude, and remedy named, instead of a bare 401 pointing at the wrong organ. Refresh path landed as mcp_warm.py --refresh; gate6 is
-# UNWITNESSED until one live POST prints gate6 GREEN.
+# WITNESSED 2026-08-06 (ignition receipt, operator lane): `mcp_warm.py --refresh`
+# printed `gate6 GREEN: refreshed in place`, scope mcp_read_write, expires_in
+# 300, after re-discovering the AS via RFC 8414. The token file's mtime moved
+# from Jul 29 14:59 to Aug 6 12:15 and its size from 751 to 753 bytes, so the
+# write is witnessed on the filesystem as well as in stdout. The refresh_token
+# key SURVIVED, so either the AS did not rotate or the rotation-safe branch
+# stored the replacement; the receipt cannot distinguish those without quoting a
+# value, which it never will.
+# THE 300-SECOND CREDENTIAL CANNOT SURVIVE THE HUMAN LOOP -- the finding that
+# arrived WITH the green. The very next compile-lane `--check` still printed RED
+# gate2 HTTP 401, and NOT because the refresh failed: 694 seconds elapsed between
+# the mint and the read, and the token lives 300. The arithmetic is exact -- FDR
+# receipt stamps 16:26:42Z, mint stamps 16:15Z, clock note reads EXPIRED 394s
+# ago, and 694 minus 300 is 394. STANDING CONSEQUENCE: `mcp.py --check` is
+# STRUCTURALLY INCAPABLE of printing GREEN in the compile lane, because a compile
+# always runs minutes after a human ignition. Its COLOUR is a ritual there; its
+# MAGNITUDE is not -- 394 versus 680825 discriminates cleanly between "just
+# refreshed" and "never refreshed". Witness GREEN by CHAINING in the operator's
+# terminal (refresh, then check, in one command), never by echoing the bare check
+# into adhoc.txt and hoping. Sibling of THE LANE-DISAGREEMENT WITNESS: that rule
+# names a probe blind to a patch; this names a probe whose subject expires faster
+# than the lane can reach it.
+# THE RECORDING OUTLIVES THE FLIGHT, and this is the FDR's whole thesis arriving
+# as a consequence rather than a slogan: a GREEN check cannot be RE-RUN in the
+# compile lane, but a GREEN check can be READ there, because the receipt is a
+# recording and a recording does not expire. The credential is the perishable
+# thing; the artifact is not.
+# CABOOSE-VERDICT COROLLARY, CONVICTED AGAINST ITS OWN AUTHOR (same ride): the
+# prompt written for this turn pre-committed to an exhaustive-looking three-way
+# ruling -- refused grant, rotated or expired refresh token, mismatched resource
+# indicator -- and the world produced a FOURTH cause the enumeration could not
+# see, because the caboose never named its PRECONDITION that the token be ALIVE
+# at read time. All three enumerated causes were eliminated by the gate6 green
+# itself. A verdict welded to a printout survives into a turn where its premise
+# did not.
 # A model-mediated tool call enters this system as a RECEIPT or not at all. The
 # receipt is a FOUR-TUPLE the model emits verbatim and never paraphrases:
 #   (1) server — the MCP server URL
