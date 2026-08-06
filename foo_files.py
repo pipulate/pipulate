@@ -2229,6 +2229,26 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: THE HISTORY-EXPANSION PROBE (banked 2026-08-06, lane-convicted on
+#   the first hand-run): a `!` followed by a WORD CHARACTER inside DOUBLE quotes
+#   is a bash HISTORY EXPANSION, and histexpand is ON for interactive shells and
+#   OFF for non-interactive ones -- so a probe carrying one runs CLEAN in the
+#   compile lane (prompt_foo's `!` executor spawns shell=True, non-interactive)
+#   and DIES in the operator's terminal before Python is ever reached.
+#   CONVICTION: the de-prefixed-command witness carried the tuple
+#   ("! ","http","!http",...) inside a double-quoted `python -c`; the compile
+#   receipt printed deprefixed_hits=0 while the operator's identical paste
+#   printed `bash: !http','@http',': event not found`. THE BEFORE TAP WAS
+#   STRUCTURALLY UNTAKEABLE, which breaks the PROBE ECHO INVARIANT at its root:
+#   a probe that cannot be hand-run has no BEFORE, so its compile receipt is an
+#   unstraddled reading wearing a straddle's label -- and the error names a
+#   SHELL FEATURE, not the probe's subject, so it reads like the operator
+#   fumbled the paste. `!` followed by whitespace or `=` is safe; `!` followed
+#   by a word character is not. PRESCRIPTION: single-quote the outer `-c`
+#   argument and use double quotes for the Python strings inside it. Sibling of
+#   THE LANE-DISAGREEMENT WITNESS, inverted: that rule USES a lane gap as
+#   evidence about the code; this one names a lane gap in the INSTRUMENT, where
+#   a gap is never evidence, only breakage.
 # - EARMARK: THE SELF-MATCHING PATTERN (banked 2026-08-05, twice-convicted in one transcript): pkill -f and pgrep -f match the FULL COMMAND LINE, and the shell running the script carries the pattern in its own argv -- so an unescaped pattern kills or counts the process that issued it. CONVICTION: flake.nix's publish() [4/4] block protected two patterns with the [.] trick (a regex demanding a literal dot the argv literal does not contain) and MISSED THE THIRD, so every `publish --reboot` killed its own ssh session at that line. The guard must be applied to EVERY pattern in a block, not most of them -- a partially-guarded block READS as guarded. WITNESS: after the fix, `publish force --reboot` printed `new_count=1`, `new=534841`, and the watchdog verdict line, three lines that had never once appeared in any prior transcript.
 # - EARMARK: THE VERIFIER THAT NEVER RAN (banked 2026-08-05, same conviction): a verification block placed AFTER the action it verifies is dead code if the action can kill the reporter, and its silence is indistinguishable from success. flake.nix's [4/4] block held `sleep 12`, a pgrep re-count, and three verdict branches -- none had EVER executed, while a green Atomic Deployment Complete printed underneath every time. THE DISCRIMINATION QUESTION applied to a MISSING line: what does this print in the world where the verifier died? The same checkmark. STANDING CONSEQUENCE: when a receipt block has an expected line that is ABSENT, treat the absence as the finding; do not read the surviving lines as the whole receipt. Third shape in the family -- REFUSAL-ONLY WITNESS is a branch never observed, THE SUCCESS-ONLY WITNESS is a failure never reportable, this is a witness never REACHED.
 # - EARMARK: INCOMMENSURABLE MEASUREMENTS (banked 2026-08-05, two-in-one-compile): a probe can return a CORRECT number about a DIFFERENT question, and the receipt then looks authoritative precisely BECAUSE the number is right. CONVICTION A: `rg -c "^\s*\["` over _posts returned 0 while the mechanism counts text.count('[') anywhere in TRANSFORMED text -- line-anchored raw markdown versus position-agnostic post-substitution text, and the chain unwraps inline code, so every backticked bracket reaches the census live. CONVICTION B: an rg line-count in ONE FILE versus the render-canary scanner's DEDUPED TOKEN COUNT across the WHOLE PAYLOAD. Distinct from CASE-BLIND / UNANCHORED / DOTFILE-BLIND / CONTIGUITY, which are probes that CANNOT SEE what is there; this one sees something real and irrelevant. TEST: name the exact expression the mechanism evaluates, then confirm the probe evaluates THAT expression and not a plausible neighbour.
