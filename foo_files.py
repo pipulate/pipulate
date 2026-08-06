@@ -4,7 +4,7 @@
 # |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| | Creative Commons Attribution (CC BY) license.
 # |_|   |_|  \___/|_| |_| |_| .__/ \__| |_|   \__,_| Pin-up recursive self-improvement loops 🔎🔎
 #                           |_|
-AI_PHOOEY_CHOP = r"""                                                                 /)    _________  
+AI_PHOOEY_CHOP = r"""#                                                                /)    _________  
 # =======================================================================       /)\__//    /         \   
 # WELCOME TO THE BOOK OF FUTURE-PROOFING (Curriculum & Router)              ___(/_ 0 0    |  Chase a  |
 # **Subtitle**: Compile Your Thoughts-to-Go in the Age of AI.             *(    ==(_T_)== | what down |
