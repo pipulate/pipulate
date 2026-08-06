@@ -1467,7 +1467,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # THE ROLLING PIN BOOK ORE SPINE / FODDER FOR THE BOOK
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
 GLOSSARY.md                 # <-- I think this glossary goes well with the book-ore spine to do world building.
-scripts/articles/lsa.py     # <-- Useful for refining commands like `posts`, critical to Second Brain concept.
+# scripts/articles/lsa.py     # <-- Useful for refining commands like `posts`, critical to Second Brain concept.
 
 # THE QUIRKY AMIGA-LOVING HUMAN
 ~/repos/nixos/autognome.py  # <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
