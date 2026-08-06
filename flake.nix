@@ -1598,6 +1598,10 @@ print('AI:\n', r.ai)
           # ---------------------------------------------------------
           # `posts` is a Nix-packaged command so child shells can resolve it.
           posts2() { posts --reverse "$@"; }
+          # `postsc` is likewise Nix-packaged; only the reversed twin needs a
+          # function, exactly as with posts2. The reversed twins stay
+          # interactive-only on purpose -- a `!` line spells the flag out.
+          postsc2() { postsc --reverse "$@"; }
           preview() { (cd "$PIPULATE_ROOT/scripts/articles" && python publishizer.py "$@"); }
 
           # The true 'publish' command (Atomic Cross-Domain Deployment)
