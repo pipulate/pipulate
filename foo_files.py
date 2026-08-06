@@ -977,12 +977,25 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # scope mcp_read_write, expires_in 300) and mcp.py ran tools/call
 # list_projects against mcp.botify.com — four-tuple receipt printed, FDR
 # flushed to browser_cache/mcp/mcp.botify.com/
-# 20260729T184552090812Z__tools_call.json. The three protocol strings
-# ("2025-06-18", "Mcp-Session-Id", the tools/* spellings) are OBSERVED
-# against independent vendor authorship, no longer inferred. CINDERELLA
-# CAVEAT RESOLVED 2026-07-29 (in-compile jq receipt: has_refresh=true):
-# the vendor DOES issue a refresh_token, so the 300-second access token
-# is living culture, not perishable cargo. 
+# 20260729T184552090812Z__tools_call.json. 
+# CORRECTED 2026-08-06 by the first GREEN vendor check: TWO of the three
+# protocol strings are OBSERVED against vendor authorship -- "2025-06-18"
+# (negotiated back verbatim: protocol=2025-06-18) and the tools/* spellings
+# (tools/list returned 38 tools, 56,239 bytes). The THIRD, "Mcp-Session-Id",
+# is NOT witnessed against this vendor: the FDR receipt shows sent=null and
+# ret=null on ALL THREE exchanges and the check prints session=no. The header
+# is optional per spec and this server declines it, so the round trip remains
+# witnessed ONLY by the fault harness -- which shares mcp.py's spec reading,
+# and is therefore the TAUTOLOGY the rule already warned about. The July 29
+# tools_call receipt is on disk and settles whether that flight differed.
+# RECORDER SCOPE, observed rather than inferred: the frame captures THREE
+# exchanges on a successful check, not two -- notifications/initialized rides
+# as its own record (http=202, zero bytes). The recorder is more complete than
+# the inference made from source, which is the good direction for a recorder
+# to surprise you in.
+# ALIVE-BRANCH WITNESS: _expiry_note printed "~299s left of a 300s life" for
+# the first time. Until now that function had only ever been observed reporting
+# EXPIRED -- a REFUSAL-ONLY WITNESS in its own right, now discharged.
 # CLOCK LEGIBLE 2026-07-31 (in-compile stderr receipt): resolve_token now emits `# mcp token clock: EXPIRED <n>s ago (life was 300s); refresh_token present: yes` before returning. A stale token still dies at gate2 -- but with cause, magnitude, and remedy named, instead of a bare 401 pointing at the wrong organ. Refresh path landed as mcp_warm.py --refresh; gate6 is
 # WITNESSED 2026-08-06 (ignition receipt, operator lane): `mcp_warm.py --refresh`
 # printed `gate6 GREEN: refreshed in place`, scope mcp_read_write, expires_in
@@ -1570,15 +1583,6 @@ release.py                  # <-- How everything ends up where it does (GitHub, 
 #    prose. Cheapest surface wins: scripts/ai.py mode or a tiny harness; the
 #    self-feeding coin-flip loop is optional. Graduate when the rule, probe,
 #    and receipt are banked. This debt does not block cartridge replay work.
-
-# 📌 2026-07-25 | /home/mike/repos/trimnoir/_posts/2026-07-25-mcp-dayton-wind-tunnel-interoperability.md
-#    canonical_url: https://mikelev.in/futureproof/mcp-dayton-wind-tunnel-interoperability/
-#    Dayton wind-tunnel campaign: 3-tier evidence ladder (Tier 1 Mechanism 20/20,
-#    Tier 2 FastMCP Interop green, Tier 3 Botify Remote pending). Tautology trap
-#    and model context-anchoring exposed and conquered.
-#    OWES: zero-dep native PKCE OAuth 2.1 warmer (~40 lines httpx/secrets/hashlib)
-#    for Botify Tier 3 bearer token generation saved to
-#    ~/.config/pipulate/mcp_botify_token.json; final Tier-3 Botify replay receipt.
 
 # 📌 2026-07-27 | /home/mike/repos/trimnoir/_posts/2026-07-27-engineering-the-second-brain-high-signal-storytelling.md
 #    canonical_url: https://mikelev.in/futureproof/engineering-the-second-brain-high-signal-storytelling/
@@ -2263,6 +2267,32 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: THE ELIMINATOR NEEDS A GENERATOR (banked 2026-08-06,
+#   thrice-convicted in one ride): the bisecting inward spiral CANNOT FAIL TO
+#   ELIMINATE and absolutely CAN FAIL TO CONVERGE -- silently, while looking
+#   exactly like progress. Binary search terminates only if the target is IN
+#   THE ARRAY. Popper grades hypotheses you have ENUMERATED and offers no
+#   method for generating one; Duhem-Quine sharpens it, convicting the BUNDLE
+#   without naming the member. THREE CONVICTIONS, same ride, all mine: (1) the
+#   grammar banked as "leading label" was falsified by a shape the enumeration
+#   never contained; (2) a caboose pre-committed to an exhaustive three-way
+#   ruling on a 401 and the world produced a FOURTH cause -- the clock -- that
+#   no listed cause could see; (3) a caboose pre-committed to TWO exchanges
+#   with non-null session ids and the recorder produced THREE with null ones.
+#   Every probe discriminated correctly every time. The enumerations were the
+#   defect. EARLIER AND WORSE: five payloads of a correct alarm firing with the
+#   boundary never narrowing an inch, because "read the artifact the pipeline
+#   already writes" was not in the candidate list while that artifact sat on
+#   disk the whole time. STANDING CONSEQUENCE: when probes keep discriminating
+#   and the boundary does not move, the fault is NOT the probe -- STOP PROBING
+#   AND GENERATE. Enumerate every artifact the pipeline already writes; the
+#   cheapest midpoint is almost always a byproduct nobody thought to open. And
+#   when pre-committing a ruling, ALWAYS append the branch that says "none of
+#   the above, and that is the finding". THE THREE BEATS, named so the middle
+#   one stops wearing the whole name: GENERATE (30-and-3, AXIS-FORCING, the
+#   rising sea) -> ELIMINATE (bisection, the straddle) -> WITNESS (receipts).
+#   This repo has always had all three and has been calling the middle one
+#   "science" as though it were the entire method.
 # - EARMARK: THE TRANSFER FUNCTION (banked 2026-08-06, comb-witnessed; this
 #   SUPERSEDES the GFM hypothesis recorded in THE RENDER-GAP RULE above, which
 #   is now FALSIFIED rather than merely unproven): the render canary FIRED in a
