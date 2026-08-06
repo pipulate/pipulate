@@ -2293,6 +2293,33 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   back with the slash outside and the host wrapped. A pre-existing scheme
 #   remains the ONLY observed suppressor, and a code span or fenced block does
 #   not protect. Two labels after the prefix are enough; three are not required.
+#   CLOSED 2026-08-06 by firing three (shapes H and J), which RETIRES the comb.
+#   H_prelinked -- a token already wrapped as link-text-equals-target-minus-
+#   scheme, carrying no path -- arrived BYTE-IDENTICAL. The transform does NOT
+#   re-fire on its own output, so contamination cannot compound across round
+#   trips, and an idempotence that was only ever STRUCTURALLY INFERRED (it had to
+#   hold or the regress would be unbounded) is now OBSERVED. J_wordchar -- a word
+#   character immediately before the prefix -- arrived INTACT, so a word char IS
+#   a suppressor alongside a pre-existing scheme, and the widened scanner
+#   deliberately OVER-REPORTS that one class. That over-report is the ACCEPTED
+#   bias and must not be patched back: the line only prints, so a false positive
+#   costs one noisy word and a false negative costs a wrong edit.
+#   A through E have held identically across THREE firings and F through G across
+#   TWO, which is as much agreement as a stochastic gate permits. The GRAMMAR is
+#   settled; only the GATE is unexplained, and the Manifest canary detects the
+#   gate alone at zero cost, which is why the comb comes off the roster.
+#   ONE SHAPE REMAINS UNTESTED and is NAMED rather than assumed: a prelinked
+#   token CARRYING A PATH. In an earlier round trip through the ANSWER lane (not
+#   the receipt lane) a path-bearing linkified form arrived doubly wrapped, while
+#   H in the receipt lane did not nest. Two lanes, one anomaly, and the only
+#   structural difference is the trailing path. Do not read H as covering it.
+#   FREE INSTRUMENT, discovered while retiring the hand-transcription request:
+#   the render-canary count is a bare print at step 6 over final_output, and
+#   write_context_cartridge writes that SAME string as payload.md at step 7 --
+#   so a probe running the scanner's regex over the previous cartridge returns
+#   EXACTLY the count the previous compile printed to the terminal. The console
+#   number never needs copying by hand again; it arrives as a receipt, lagged one
+#   compile, by the same DOUBLE-TAP structure that was built for something else.
 #   WHY THAT KILLS GFM: the GFM autolink extension for that prefix does exist,
 #   but GFM never rewrites inside a code span or a fenced block, and both were
 #   penetrated here. The transform is therefore a TEXT-TO-TEXT REWRITE that
