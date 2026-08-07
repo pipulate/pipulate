@@ -418,9 +418,16 @@ async def _ride_async(trail_path, dry_narrate=False):
     if captured:
         payload = _decant(captured)
         decanted = _decant_checkpoint(payload, captured)
-        print("\n📋 DECANT complete: capture bundle copied to your clipboard.")
-        print("   Paste it into any ChatBot (Claude, ChatGPT, Gemini) and it")
-        print("   will walk you through everything from here.")
+        # ATTRIBUTED-VOICE, fixed in passing because these are the exact lines
+        # being rewritten: the old text asserted "copied to your clipboard"
+        # UNCONDITIONALLY, one statement after calling a function that swallows
+        # every clipboard failure and returns None -- a verb naming an act no
+        # code in this file performed. copy_to_clipboard prints its own success
+        # or warning line; this reports only what IT witnessed, which is the
+        # human's authorization.
+        if decanted:
+            print("   Paste it into any ChatBot (Claude, ChatGPT, Gemini) and it")
+            print("   will walk you through everything from here.")
     return 0
 
 
