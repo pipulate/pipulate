@@ -42,7 +42,7 @@
     {
       "name": "walk_three",
       "label": "Pipulate.com",
-      "guidance": "Stop three of three. This is the last page. When it has loaded, return to the terminal and type the capture word. After this capture, the bundle is assembled and copied to your clipboard.",
+      "guidance": "Stop three of three. This is the last page. When it has loaded, return to the terminal and type the capture word. After this capture the bundle is assembled, and then you are asked ONE more time, with a different word, before anything leaves this machine.",
       "url_env": "PIPULATE_TRAIL_WALK_THREE_URL",
       "target_slot": "slot_three",
       "harvest_regex": ".+",
