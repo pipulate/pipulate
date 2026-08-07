@@ -1036,6 +1036,17 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # folder created there is invisible to the one lane that agents and
           # scripts actually live in. That is SHELL-LANE FINDING (a) applied
           # instead of merely noted.
+          #
+          # PLAYGROUND'S mkdir MOVED HERE 2026-08-07. It was born in runScript,
+          # so under .#quiet the folder did not exist at all -- the exact defect
+          # the paragraph above describes, sitting one directory over from the
+          # fix that names it. Two authorities for one tier, one of them blind
+          # to the lane agents and scripts actually live in.
+          # THE FILESYSTEM CANNOT WITNESS THIS on a machine that has ever
+          # entered the default shell: the folder is already there, so `test -d`
+          # prints the same answer in both worlds. The straddle reads the
+          # GENERATED HOOK TEXT instead (nix eval on devShells.<sys>.quiet).
+          mkdir -p "$PIPULATE_ROOT/Notebooks/Playground"
           mkdir -p "$PIPULATE_ROOT/Notebooks/Shared"
           # ONE printf, NEVER a heredoc. A cat-heredoc here broke nix develop on
           # main for every user on 2026-08-05: this logic is interpolated into
