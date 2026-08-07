@@ -413,7 +413,11 @@ def run_pipulate(app_name):
     if discovered is not None:
         target_dir = discovered
     if not (target_dir.exists() and (target_dir / "flake.nix").is_file()):
-        console.print(f"❌ No Pipulate installation found at [cyan]~/{app_name}[/cyan].")
+        console.print("❌ No workshop found. A workshop is a directory that CARRIES the")
+        console.print(f"   marker ({', '.join(WORKSHOP_MARKERS)}), not one merely NAMED it.")
+        console.print(f"   Searched: $PIPULATE_ROOT, upward from {Path.cwd()}, one level")
+        console.print(f"   under {Path.home()} and its repos/src/code/dev/Projects/projects,")
+        console.print(f"   then the name-derived path ~/{app_name} (which must also carry it).")
         console.print(f"To install, run: [bold]pipulate install {app_name}[/bold]")
         sys.exit(1)
 
