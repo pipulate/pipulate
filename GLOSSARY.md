@@ -147,6 +147,19 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Magic cookie** — *gitless self-bootstrapping install.* curl delivers a ZIP
   plus a ROT13 key; the flake later transforms the folder into a proper git
   repo with forever-forward auto-updates, resolving the bootstrap paradox.
+- **marker file** — *the mechanism that mints a root, and the reason there are
+  ten of them.* `.git/`, `flake.nix`, `__init__.py`, `AGENTS.md`, `SKILL.md`,
+  `index.md`, `whitelabel.txt`: one algorithm with seven names. Walk up from
+  where you stand; the nearest ancestor carrying the marker is your root.
+  `prompt_foo.find_repo_root` runs it for git, AGENTS.md's nearest-ancestor
+  rule runs it for agents, Python's import machinery runs it for packages.
+  THE DERIVED-PATH RULE aimed at DISCOVERY rather than at writing:
+  root = f(marker), never root = f(guessed name). RENT THIS PAYS — it predicts
+  which resolver is broken before you read it. A resolver searching for a
+  directory NAME cannot survive a whitelabel rename, and the failure is
+  structurally invisible to the maintainer whose own folder happens to be
+  named right (SINGLE-CANDIDATE BLINDNESS inside the MAINTAINER-INVISIBLE
+  LANE). Banked 2026-08-07, articulation-banked.
 - **Mother Cat Kata** — *carry-don't-menu onboarding.* Four moves: SETTLE
   (human clears the auth gate), CAPTURE (machine snapshots wire truth),
   NARRATE/FENCE (voice refuses to advance without the receipt), ADVANCE. The
