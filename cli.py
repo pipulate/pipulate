@@ -316,6 +316,96 @@ def run_install_script(app_name):
     console.print(f"✅ Installation complete!")
     return target_dir
 
+# --- MARKER DISCOVERY -------------------------------------------------------
+# THE DERIVED-PATH RULE, aimed at DISCOVERY instead of at writing:
+# root = f(marker), never root = f(guessed name). A directory is a workshop
+# because it CARRIES the marker, never because it is SPELLED like one.
+#
+# THE MARKER IS A TRACKED TRIPLE, NOT whitelabel.txt. whitelabel.txt is listed
+# in .gitignore and is written by the flake's runScript on first entry, so a
+# fresh `git clone` has none -- and neither does any workshop only ever entered
+# through `.#quiet`, which skips runScript entirely. A marker that is ABSENT ON
+# A LEGITIMATE WORKSHOP is worse than no marker at all: it turns a false
+# negative into a confident refusal. whitelabel.txt is therefore the
+# DISAMBIGUATOR, never the certificate -- the identical split
+# assets/installer/mck.sh made in v0.2.0, and this is deliberately its parity
+# implementation. Two readers, ONE definition of "workshop"; if these drift,
+# the launcher and the CLI disagree about what is installed, silently.
+WORKSHOP_MARKERS = ("flake.nix", "scripts/mother_cat.py", "assets/trails")
+def is_workshop(path):
+    """True when this directory CARRIES the marker, whatever it is named."""
+    try:
+        return all((path / marker).exists() for marker in WORKSHOP_MARKERS)
+    except OSError:
+        return False
+def workshop_label(path):
+    """Read the disambiguator; fall back to the directory name.
+    Case-folded because whitelabel.txt has TWO writers with TWO spellings:
+    install.sh writes the name it was handed (lowercase by default) and the
+    flake writes a capitalized literal. mck.sh records the same conviction.
+    """
+    try:
+        label_file = path / "whitelabel.txt"
+        if label_file.is_file():
+            lines = label_file.read_text(encoding="utf-8").splitlines()
+            if lines and lines[0].strip():
+                return lines[0].strip().lower()
+    except (OSError, UnicodeDecodeError):
+        pass
+    return path.name.lower()
+def find_workshops(app_name):
+    """Ordered candidates; every one must still pass is_workshop().
+    Order mirrors mck.sh's find_checkouts: explicit env, then upward from CWD,
+    then ONE bounded level under the usual parents. Deliberately no recursive
+    sweep -- a CLI must not walk a stranger's home directory to find itself.
+    The guessed path rides LAST, demoted from ANSWER to CANDIDATE: the name
+    proposes a place to LOOK, the marker alone certifies a place to USE.
+    """
+    candidates = []
+    env_root = os.environ.get("PIPULATE_ROOT")
+    if env_root:
+        candidates.append(Path(env_root).expanduser())
+    here = Path.cwd().resolve()
+    candidates.append(here)
+    candidates.extend(here.parents)
+    home = Path.home()
+    for parent in (home, home / "repos", home / "src", home / "code",
+                   home / "dev", home / "Projects", home / "projects"):
+        try:
+            candidates.extend(sorted(p for p in parent.iterdir() if p.is_dir()))
+        except OSError:
+            continue
+    candidates.append(home / app_name)
+    found, seen = [], set()
+    for candidate in candidates:
+        key = str(candidate)
+        if key in seen:
+            continue
+        seen.add(key)
+        if is_workshop(candidate):
+            found.append(candidate)
+    return found
+def resolve_workshop(app_name):
+    """Return the selected workshop, or None. Never invents a path.
+    THE FALLBACK IS VISIBLE ON PURPOSE. Selecting by label and falling back to
+    first-found used to print the IDENTICAL line, which is how a selector went
+    unwitnessed for the entire life of a feature (SINGLE-CANDIDATE BLINDNESS,
+    convicted 2026-08-01 against this same head -n 1 shape in mck.sh). When
+    more than one workshop exists and none carries the requested label, say so
+    and name the losers, so selection and fallback print DIFFERENT things.
+    """
+    found = find_workshops(app_name)
+    if not found:
+        return None
+    wanted = (os.environ.get("PIPULATE_WHITELABEL") or app_name).lower()
+    for candidate in found:
+        if workshop_label(candidate) == wanted:
+            return candidate
+    if len(found) > 1:
+        console.print(f"⚠️  No workshop labeled '{wanted}'; falling back to first found.")
+        for candidate in found:
+            console.print(f"   • {candidate} (label: {workshop_label(candidate)})")
+    return found[0]
 def run_pipulate(app_name):
     """Runs an existing Pipulate installation."""
     target_dir = Path.home() / app_name
