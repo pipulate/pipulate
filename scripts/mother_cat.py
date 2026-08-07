@@ -347,13 +347,18 @@ async def _ride_async(trail_path, dry_narrate=False):
     # duplicate a shipped, skippable confirmation -- the sibling-.md failure in
     # flag form. So the surface PRINTS, unconditionally, including under
     # --dry-narrate, which is the one pass mck.sh forces on first contact.
-    # THE DECANT IS THE PART THAT ACTUALLY DESERVES A FENCE, and it does not
-    # have one: the per-stop CAPTURE token gates each write to disk, and NOTHING
-    # gates the composite leaving the machine on the clipboard while mck.sh's
-    # closing card tells the human to paste it into a cloud chat. That fence is
-    # a separate ride (new token, new refusal path, new closing card). What this
-    # car buys is disclosure BEFORE the material exists rather than after, which
-    # costs nothing and makes the later fence a formality instead of a surprise.
+    # THE DECANT FENCE LANDED, so this comment's earlier claim that nothing
+    # gated the clipboard is RETIRED rather than merely outdated. What the call
+    # buys NOW is disclosure BEFORE the material exists: the rider learns at t=0
+    # that a second word will be asked at the end and exactly what the bundle
+    # will contain, so the fence arrives as a formality instead of a surprise.
+    # SAME-CAR LABEL RULE, PAID LATE AND THEREFORE WORTH BANKING. The fence and
+    # the strings describing it shipped in DIFFERENT rides, so for one ride this
+    # function told every rider "WITHOUT ASKING AGAIN" about a gate that does
+    # ask, and public_walk.yaml's third stop said the same thing in trail data.
+    # That is not stale documentation; it is a lie told at the exact moment the
+    # human decides, and it lied in the EXPENSIVE direction -- understating the
+    # protection and overstating the risk, to a newcomer, on the softball walk.
     _announce_consent(trail_path)
 
     disclosed = False
