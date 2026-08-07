@@ -417,7 +417,7 @@ async def _ride_async(trail_path, dry_narrate=False):
     print("\nRide complete. Every stop produced a capture receipt.")
     if captured:
         payload = _decant(captured)
-        _decant_to_clipboard(payload)
+        decanted = _decant_checkpoint(payload, captured)
         print("\n📋 DECANT complete: capture bundle copied to your clipboard.")
         print("   Paste it into any ChatBot (Claude, ChatGPT, Gemini) and it")
         print("   will walk you through everything from here.")
