@@ -198,6 +198,21 @@ Entries are alphabetical, numbers spelled as spoken.
   is what optimizing against averaged preference on a leash produces.
 - **Rolling pin** — *corpus index.* lsa.py's dated-slug spine: the 40,000-foot
   view of the book-ore, flattening a thousand articles into one scannable list.
+- **root** — *five different things, and refusing to disambiguate them is how
+  a conversation goes wrong.* (1) `/` — the filesystem root, declared by the
+  kernel's mount table. (2) `~/` — home, declared by an env var, therefore
+  DATA and not structure. (3) repo root — the nearest ancestor holding `.git/`.
+  (4) project root — whatever scope you hand an agent; convention, no
+  mechanism, which is exactly why it drifts. (5) content root —
+  `/nix/store/<hash>`, `data/walks/<sha256>/`; the path IS the identity.
+  Every root except the first two is declared by a MARKER FILE and found by
+  the same walk-up. THE STRIKE WORTH KEEPING: `/` is the most AGREED-UPON
+  root, never the most TRUE one. On NixOS the FHS is a veneer — `/bin` holds
+  `sh`, `/usr/bin` holds `env`, and everything real is content-addressed in
+  the store. A walk cartridge at `data/walks/<sha256>/` is that same
+  architecture rediscovered locally, which is why the two ideas kept arriving
+  separately: one wore "FHS" and the other wore "cartridge."
+  Banked 2026-08-07, articulation-banked.
 - **Sandworm ride / the Worm** — *one steered multi-turn summoning / rented
   frontier inference.* Enormous momentum toward its training centroid; the
   rider redirects it or gets carried to the most probable adventure.
