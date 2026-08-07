@@ -254,9 +254,16 @@ the human on the hook for exactly one move and fences that move.
 **ADVANCE** — *the step.* Next bookmark. Only after a receipt.
 
 **DECANT** — *the fifth move, and the one that makes it a product.* At the end
-of a clean ride, every captured lens is folded into one markdown bundle and
-copied to the clipboard. Big artifacts (hydrated DOM, raw source) are CITED BY
-PATH, never inlined, so a huge page cannot flood the paste.
+of a clean ride, every captured lens is folded into one markdown bundle. Big
+artifacts (hydrated DOM, raw source) are CITED BY PATH, never inlined, so a
+huge page cannot flood the paste. Then the bundle STOPS: the rider prints its
+size and asks for one more word. Type DECANT and it goes to the clipboard;
+type anything else and it stays on disk and the rider names the exact
+directories. THE SECOND FENCE, AND IT GATES A DIFFERENT ACT: CAPTURE gates
+each WRITE TO DISK on the operator's own machine, DECANT gates the composite
+LEAVING it. Two words, because a fourth identical prompt is answered by muscle
+memory rather than decision, and because a transcript of four CAPTUREs cannot
+say which one authorized the egress.
 
 ### The nouns
 **trail** — a walkthrough as DATA: one JSON-subset-of-YAML file in
