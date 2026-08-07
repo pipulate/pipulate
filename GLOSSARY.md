@@ -273,11 +273,33 @@ noun for this. The corpus already carries `assets/trails/` (directory),
 `public_walk.yaml` (filename), `trail` (this entry), and `mothercat` (alias)
 for one concept; a fifth spelling makes every rg probe return half the truth,
 which is the UNANCHORED-WITNESS failure arranged in advance. TRAIL is the noun
-for the mutable source. PROPOSED, no mechanism yet: a sealed, hash-pinned,
-content-addressed package of a trail is a WALK CARTRIDGE, and it is a
-different artifact rather than a synonym. The two words earn separation for
-one reason only, and it is the reason that matters: a trail is mutable source,
-a walk cartridge cannot change. A trail that auto-updates is not replayable.
+for the mutable source. BANKED 2026-08-07 (was PROPOSED for one ride): the
+sealed, hash-pinned, content-addressed package of a trail is a WALK CARTRIDGE
+and the mechanism now exists. The two words earn separation for one reason
+only, and it is the reason that matters: a trail is mutable source, a walk
+cartridge cannot change. A trail that auto-updates is not replayable.
+
+**walk cartridge** — the sealed form of a trail: a two-member canonical ZIP
+(`trail.yaml` byte-identical to source, `manifest.json` carrying its SHA-256
+plus the consent surface), minted by `scripts/walk_cartridge.py`, living at
+`data/walks/<archive_sha256>/walk.zip`. Fixed epoch, fixed mode, fixed member
+order, no wall-clock value anywhere in the hashed body, so identical trail
+bytes produce identical archive bytes forever. The path is a pure function of
+the content: THE DERIVED-PATH RULE made literal, collisions unrepresentable,
+re-sealing idempotent. WITNESSED both directions on 2026-08-07: the same
+trail re-sealed to the same digest, and one edited byte moved the source
+digest away from the sealed one. WHAT A HASH DOES NOT BUY is authorship; a
+malicious trail with a perfect digest verifies green forever, which is why
+the signature is a different rung and is owed separately.
+
+**consent surface** — the walk cartridge's analogue of payload-to-prompt: a
+projection a human reads BEFORE deciding to ride, recomputed by the verifier
+from `trail.yaml` and required to match exactly, so it cannot drift from the
+bytes it describes. Name; stop names ORDERED, never sorted, because sequence
+is the one property a replayable artifact exists to preserve; url_envs sorted,
+because those are a set; connector scripts sorted and unique; and the four
+browser facts including `profile_name`, which selects WHICH logged-in profile
+opens and which no other check in the system inspects.
 
 **rider** — the walkthrough as CODE: `scripts/mother_cat.py`. One rider, N
 trails. The split is the whole design.
