@@ -489,11 +489,18 @@ run_wrapped "$PY" scripts/mother_cat.py "$TRAIL_PATH" </dev/tty || RIDE_RC=$?
 if [ "$RIDE_RC" -eq 0 ]; then
   cat <<'CARD'
 --------------------------------------------------------------
-   RIDE COMPLETE -- the bundle is on your clipboard
+   RIDE COMPLETE
 --------------------------------------------------------------
- 1. Open any AI web chat (Claude, ChatGPT, Gemini).
- 2. Paste (Cmd+V / Ctrl+V) and send.
- 3. It will walk you through everything from here.
+ Every stop produced a capture receipt.
+
+ Whether the bundle LEFT this machine depends on the DECANT
+ gate you just answered. This script cannot see your clipboard,
+ so it does not claim to. Read the rider's own last line:
+
+   AUTHORIZED  it is on your clipboard. Open any AI web chat
+               (Claude, ChatGPT, Gemini), paste and send.
+   DECLINED    nothing was copied, and the rider printed the
+   REFUSED     exact directories your artifacts are sitting in.
  The raw artifacts stayed on your machine, under
  browser_cache/. Nothing was uploaded by this script.
 --------------------------------------------------------------
