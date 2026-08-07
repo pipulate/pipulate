@@ -57,7 +57,11 @@
 #            probe that makes marker discovery witnessable without needing a
 #            fresh machine.
 #   --yolo   skip the spoken rehearsal AND both confirmations. It does NOT
-#            skip the CAPTURE fence at any stop, and no flag ever will.
+#            skip the CAPTURE fence at any stop, nor the DECANT gate at the
+#            end, and no flag ever will. --yolo is typed BEFORE the ride, so
+#            it cannot consent to the disposition of material that did not
+#            exist when it was typed; and it was never unattended anyway,
+#            because the CAPTURE fences already block.
 #            CEREMONY IS SKIPPABLE; BARRIERS ARE NOT: a confirmation
 #            authorizes a SEQUENCE, a fence authorizes each WRITE, and the
 #            unfenced capture lane already exists under other names.
