@@ -548,8 +548,14 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           }
           # Set up the personal playground
           if [ ! -f "Notebooks/Playground/WELCOME.md" ]; then
+            # The mkdir moved to miscSetupLogic 2026-08-07 so .#quiet gets the
+            # folder too. This heredoc STAYS: runScript is a standalone
+            # writeShellScriptBin, never interpolated, which is the one place a
+            # heredoc is safe -- and the body below carries triple-backtick
+            # fences that would become command substitution inside a
+            # double-quoted printf. Moving the document is a content decision,
+            # not this move.
             echo "INFO: Setting up your personal Playground..."
-            mkdir -p "Notebooks/Playground"
             cat << 'PLAYGROUND_EOF' > "Notebooks/Playground/WELCOME.md"
           # 🎢 Welcome to the Playground!
           
