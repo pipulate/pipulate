@@ -260,6 +260,16 @@ PATH, never inlined, so a huge page cannot flood the paste.
 ### The nouns
 **trail** — a walkthrough as DATA: one JSON-subset-of-YAML file in
 `assets/trails/`. A new walkthrough is a new YAML, never a new script.
+NAME RULING (banked 2026-08-07, articulation-banked): "walk" is NOT a fourth
+noun for this. The corpus already carries `assets/trails/` (directory),
+`public_walk.yaml` (filename), `trail` (this entry), and `mothercat` (alias)
+for one concept; a fifth spelling makes every rg probe return half the truth,
+which is the UNANCHORED-WITNESS failure arranged in advance. TRAIL is the noun
+for the mutable source. PROPOSED, no mechanism yet: a sealed, hash-pinned,
+content-addressed package of a trail is a WALK CARTRIDGE, and it is a
+different artifact rather than a synonym. The two words earn separation for
+one reason only, and it is the reason that matters: a trail is mutable source,
+a walk cartridge cannot change. A trail that auto-updates is not replayable.
 
 **rider** — the walkthrough as CODE: `scripts/mother_cat.py`. One rider, N
 trails. The split is the whole design.
