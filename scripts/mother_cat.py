@@ -146,6 +146,107 @@ def _decant(captured):
     return "\n".join(parts)
 
 
+# --- THE EGRESS BARRIER -----------------------------------------------------
+# The per-stop CAPTURE token gates each WRITE TO DISK, on the operator's own
+# machine. This gates EGRESS: a composite of authenticated material leaving the
+# machine on the clipboard, with mck.sh then telling the human to paste it into
+# a cloud chat. Different consequence class, therefore a different word.
+#
+# WHY NOT REUSE "CAPTURE": by the time this fires the human has typed CAPTURE
+# once per stop. A fourth identical prompt is answered by MUSCLE MEMORY, not by
+# decision -- and a fence satisfied by habit is not a fence. mck.sh already runs
+# this grammar: INSTALL and RIDE are different words for different acts.
+#
+# NOT SKIPPABLE BY --yolo, and the argument is not merely that barriers are not
+# skippable. (1) --yolo is typed at t=0, before a browser opens; it cannot
+# consent to the disposition of material the consenter had not yet seen.
+# (2) --yolo already blocks at every CAPTURE fence, so no unattended capability
+# exists to lose. (3) The bypass-under-another-name corollary does NOT apply:
+# _decant is the only builder of this composite and _ride_async its only caller,
+# so a flag would not duplicate a shipped capability, it would create one.
+DECANT_TOKEN = "DECANT"
+def _print_artifact_homes(captured):
+    """Name WHERE the captured material sits, not merely that it exists.
+
+    CARGO, NOT BIBLIOGRAPHY. A refusal that says "your artifacts are safe" and
+    does not say where is a refusal the human cannot act on.
+    """
+    print("   The captured material is on disk and untouched:")
+    for stop_name, _final_url, artifacts in captured:
+        homes = sorted({os.path.dirname(p) for p in artifacts.values() if p})
+        if not homes:
+            print(f"     {stop_name}: (no artifact paths recorded)")
+        for home in homes:
+            print(f"     {stop_name}: {home}")
+def _decant_checkpoint(payload, captured):
+    """Refuse to release the bundle until a human types DECANT. Returns bool.
+
+    THE ARMED LINE IS UNCONDITIONAL AND IT IS THE POINT. An armed gate that
+    passes silently and a DISARMED gate both print nothing, so this announces
+    its own state and the payload size on every ride before asking anything --
+    the same shape prompt_foo's secrets tripwire uses for the same reason.
+
+    THREE OUTCOMES, THREE STRINGS THAT ARE NEVER INTERCHANGEABLE, so a fence
+    stuck shut is distinguishable from a fence correctly refusing:
+      AUTHORIZED   the human typed the word       -> released
+      DECLINED     the human typed anything else  -> withheld, paths printed
+      REFUSED      nowhere to ask                 -> withheld, paths printed
+
+    /dev/tty FIRST, the trick the CAPTURE prompt already learned: under
+    `curl | bash` this process's stdin is the PIPE, so isatty(0) is the wrong
+    question. mck.sh already hands the ride </dev/tty; this works either way.
+
+    FAILS CLOSED ON NO TTY, and that is not a collision with THE FAIL-OPEN
+    THRESHOLD RULE. That rule protects an ENTRY path where blocking would
+    STRAND an unattended caller. This is an EXIT path: refusing does not block,
+    it degrades, the artifacts are already durable, and the process still exits
+    0 -- and a world with no terminal to ask on is by definition a world with
+    no human waiting to paste a clipboard. Blocking on readline() is safe here
+    for a stronger reason than the boot menu's isatty gate: three CAPTURE
+    fences have already proved a human present.
+    """
+    payload_bytes = len(payload.encode("utf-8"))
+    print(
+        f"\n🔒 DECANT gate: ARMED -- {len(captured)} stop(s), "
+        f"{payload_bytes:,} bytes assembled, still ON THIS MACHINE ONLY."
+    )
+    stream = None
+    close_after = False
+    try:
+        stream = open("/dev/tty", "r", encoding="utf-8")
+        close_after = True
+    except OSError:
+        if sys.stdin is not None and sys.stdin.isatty():
+            stream = sys.stdin
+    if stream is None:
+        print("   REFUSED: nowhere to ask -- /dev/tty is unavailable and stdin")
+        print("   is not a terminal. Nothing was copied.")
+        _print_artifact_homes(captured)
+        print("   Re-ride from a terminal to decant.")
+        return False
+    answer = ""
+    try:
+        print(
+            f"   Type {DECANT_TOKEN} to copy it to your clipboard "
+            "(anything else keeps it here)."
+        )
+        print(f"   {DECANT_TOKEN}> ", end="", flush=True)
+        answer = stream.readline()
+    except (OSError, KeyboardInterrupt):
+        answer = ""
+    finally:
+        if close_after:
+            stream.close()
+    if answer.strip() != DECANT_TOKEN:
+        print(f"\n   DECLINED by human (read {answer.strip()!r}). Nothing was copied.")
+        _print_artifact_homes(captured)
+        return False
+    print(
+        f"\n   AUTHORIZED by human: handing {payload_bytes:,} bytes to the "
+        "clipboard writer."
+    )
+    _decant_to_clipboard(payload)
+    return True
 def _decant_to_clipboard(payload):
     """Copy the bundle to the clipboard, reusing prompt_foo's cross-platform path.
 
