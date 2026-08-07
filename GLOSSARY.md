@@ -335,8 +335,14 @@ declares its own; nothing guesses.
 
 `--yolo` — **the real yolo switch, and it is deliberately modest.** Skips the
 spoken rehearsal AND the RIDE confirmation. It does NOT and will not skip the
-CAPTURE fences, because those are the write barrier. **CEREMONY IS SKIPPABLE;
+CAPTURE fences, nor the DECANT gate at the end. **CEREMONY IS SKIPPABLE;
 BARRIERS ARE NOT** — a confirmation authorizes a *sequence*, a fence authorizes
-each *write*. And the unfenced lane already exists under other names
-(`selenium_automation`, `!URL`, `?URL`), so a fence-skipping flag would be a
-second spelling of a shipped capability.
+each *write*. For CAPTURE there is a second reason: the unfenced lane already
+exists under other names (`selenium_automation`, `!URL`, `?URL`), so a
+fence-skipping flag would be a second spelling of a shipped capability. For
+DECANT that reason RUNS THE OTHER WAY and the fence survives anyway — `_decant`
+has one builder and one caller, so a skip flag would CREATE a capability rather
+than duplicate one — and the decisive argument is temporal: `--yolo` is typed
+before a browser opens, and cannot consent to the disposition of a bundle that
+did not exist when it was typed. Nothing unattended is lost, because the
+CAPTURE fences already block.
