@@ -158,6 +158,57 @@ def _decant_to_clipboard(payload):
     copy_to_clipboard(payload)
 
 
+def _announce_consent(trail_path):
+    """Print what the WHOLE walk demands, before stop one, plus the DECANT.
+    IMPORTED, NEVER DUPLICATED, AND THE DIRECTION OF THE ARROW IS THE ARGUMENT.
+    walk_cartridge.py duplicates foo_cartridge.py's primitives because a
+    clean-room consumer must be able to fetch ONE file and verify a cartridge.
+    That constraint governs what walk_cartridge may IMPORT; it says nothing
+    about what may import walk_cartridge. mother_cat.py already imports walk,
+    scraper_tools, voice_synthesis and (deferred) prompt_foo -- it is in-repo by
+    construction and can never be fetched standalone -- so this import costs the
+    single-file property nothing, and walk_cartridge still imports only stdlib.
+    Duplicating here would be the actual error. A second implementation can
+    drift, and on the day it does, the surface a human CONSENTS to and the
+    surface the manifest ATTESTS to disagree, so the seal would be signing a
+    projection nobody was ever shown. One derivation, or the seal means nothing.
+    Derived from the trail's BYTES, not from walk.load_trail's validated dict,
+    so what is spoken here is provably what a sealer would hash.
+    THIS IS A DISCLOSURE, NOT A FENCE. Nothing is gated. The ruling is banked
+    beside the call site.
+    """
+    try:
+        surface = walk_cartridge._derive_consent_surface(trail_path.read_bytes())
+    except (OSError, ValueError) as exc:
+        # FAIL SOFT AND LOUD. walk.load_trail has already validated this file
+        # far more strictly than this projection does, so a refusal HERE means
+        # two authorities disagree about one file. That is information worth
+        # printing, not a reason to abort a ride the planner already blessed.
+        print(f"  (consent surface unavailable: {exc})")
+        return
+    browser = surface["browser"]
+    rule = "=" * 66
+    print(rule)
+    print(f" THIS WALK: {surface['name']} -- {len(surface['stop_names'])} stop(s)")
+    print(rule)
+    print(f" stops, in order    {', '.join(surface['stop_names'])}")
+    print(f" URLs YOU supply    {', '.join(surface['url_envs'])}")
+    print(f" names as runnable  {', '.join(surface['connector_scripts'])}")
+    print(
+        f" browser profile    {browser['profile_name']!r}"
+        f"  (persistent={browser['persistent']}, headless={browser['headless']})"
+    )
+    print(rule)
+    print(" AT THE END, WITHOUT ASKING AGAIN: every stop's captured lenses are")
+    print(" folded into one bundle and COPIED TO YOUR CLIPBOARD, and the launcher")
+    print(" then tells you to paste it into an AI web chat. Inlined lenses:")
+    print(f"   {', '.join(DECANT_INLINE_KEYS)}")
+    print(" Those come from pages you were LOGGED IN TO. Response headers and the")
+    print(" accessibility tree carry real session and account material.")
+    print(" The per-stop CAPTURE word gates the WRITE TO DISK. It does not gate")
+    print(" this. Read the bundle before you paste it anywhere.")
+    print(rule)
+    print("")
 async def _ride_async(trail_path, dry_narrate=False):
     trail_path = Path(trail_path)
     trail = walk.load_trail(trail_path)
