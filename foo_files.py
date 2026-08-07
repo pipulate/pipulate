@@ -2288,6 +2288,60 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: THE UNREACHABLE GUARD (banked 2026-08-07, traceback-witnessed): a
+#   check placed AFTER a line that can raise the same class of error is dead
+#   code, and its message is a promise the program cannot keep. CONVICTION:
+#   walk_cartridge.verify_walk_cartridge calls archive.read(info) in its member
+#   loop and archive.testzip() after it. A mid-member byte flip makes read()
+#   raise zipfile.BadZipFile from _update_crc, so testzip()'s "CRC failure in
+#   <member>" -- the ONE message written for CRC corruption -- is unreachable
+#   for CRC corruption. Worse, BadZipFile subclasses Exception and NOT OSError
+#   or ValueError, so _cmd_verify's except tuple does not catch it: the tool
+#   TRACEBACKS at rc=1 where its own docstring promises "2 refusal". FAIL-CLOSED
+#   SURVIVES -- nothing verifies -- but the exit-code contract does not, so a
+#   consumer scripting on rc==2 reads a corrupt cartridge as a different failure
+#   class than a refused one, and a human reads a stack trace as a tool bug
+#   rather than as tamper detection working. Sibling of THE VERIFIER THAT NEVER
+#   RAN: that one is a witness placed after an action that can kill the
+#   reporter; this is a witness placed after a line that raises first. TEST, and
+#   it costs one reading: for every guard, name the line ABOVE it that could
+#   raise the same error, then confirm that error's TYPE is in the caller's
+#   except tuple. Two questions, and the second is the one nobody asks.
+# - EARMARK: CONSENT CANNOT PRECEDE ITS OBJECT (banked 2026-08-07,
+#   fence-witnessed): a flag typed at t=0 cannot authorize the disposition of an
+#   artifact that does not exist until t=N, because the consenter had not seen
+#   it. This is the thing CEREMONY IS SKIPPABLE; BARRIERS ARE NOT does not
+#   state. That rule grades a gate by WHAT it authorizes (a sequence versus a
+#   write); this one grades it by WHEN, and they part company on exactly the
+#   interesting case. --yolo skipping the RIDE confirmation is legitimate: the
+#   sequence is fully described at t=0. --yolo skipping the DECANT gate is not,
+#   and the reason is not that a fence is a fence -- it is that the bundle, its
+#   size, and its contents did not exist when --yolo was typed. STANDING
+#   CONSEQUENCE, and it is cheap: put the DISCLOSURE at t=0 and the FENCE at
+#   t=N. Disclosure early costs nothing and makes the later fence a formality
+#   instead of an ambush; a fence early is consent to a thing nobody has seen.
+#   Also witnessed: the bypass-under-another-name corollary CLEARED this fence
+#   rather than excusing it -- _decant has one builder and _ride_async is its
+#   only caller, so a skip flag would CREATE a capability rather than duplicate
+#   a shipped one, which is the exact opposite of the capture case that
+#   corollary was written for. A corollary that can clear as well as excuse is
+#   a corollary rather than a loophole.
+# - EARMARK: THE PROTECTION-LAG POLARITY (banked 2026-08-07, three-file
+#   conviction): when a mechanism is REMOVED the stale strings overstate
+#   protection, which is the failure everyone expects. When a protection is
+#   ADDED the stale strings understate it -- and that direction is MORE
+#   expensive, because the string then overstates the RISK to a newcomer at the
+#   exact moment they decide whether to ride at all. CONVICTION: the DECANT
+#   fence landed in one ride; for that ride mother_cat._announce_consent told
+#   every rider "WITHOUT ASKING AGAIN" about a gate that does ask,
+#   public_walk.yaml's third stop said the same thing in trail DATA, and
+#   GLOSSARY.md said it a third and fourth time -- and the glossary instances
+#   were found only because a dismount went looking. STANDING CONSEQUENCE, the
+#   search discipline THE SAME-CAR LABEL RULE implies but never spells: when a
+#   gate lands, grep the CORPUS for every string describing that gate -- prose,
+#   trail data, glossary, launcher cards, spoken narration -- not merely the
+#   file the gate lives in. The gate's own file is the one place the author
+#   cannot forget, which is precisely why it is the one place that is fine.
 # - EARMARK: THE ELIMINATOR NEEDS A GENERATOR (banked 2026-08-06,
 #   thrice-convicted in one ride): the bisecting inward spiral CANNOT FAIL TO
 #   ELIMINATE and absolutely CAN FAIL TO CONVERGE -- silently, while looking
