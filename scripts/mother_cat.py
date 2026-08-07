@@ -236,6 +236,21 @@ async def _ride_async(trail_path, dry_narrate=False):
 
     stops = trail["stops"]
     print(f"Riding trail '{trail['name']}' -- {len(stops)} stop(s).\n")
+    # DISCLOSURE, NOT A FENCE, AND THAT IS THE RULING RATHER THAN AN OVERSIGHT.
+    # mck.sh already carries a RIDE confirmation, and CEREMONY IS SKIPPABLE;
+    # BARRIERS ARE NOT: a confirmation authorizes a SEQUENCE and may be skipped,
+    # a fence authorizes each WRITE and may not. A second pre-ride token would
+    # duplicate a shipped, skippable confirmation -- the sibling-.md failure in
+    # flag form. So the surface PRINTS, unconditionally, including under
+    # --dry-narrate, which is the one pass mck.sh forces on first contact.
+    # THE DECANT IS THE PART THAT ACTUALLY DESERVES A FENCE, and it does not
+    # have one: the per-stop CAPTURE token gates each write to disk, and NOTHING
+    # gates the composite leaving the machine on the clipboard while mck.sh's
+    # closing card tells the human to paste it into a cloud chat. That fence is
+    # a separate ride (new token, new refusal path, new closing card). What this
+    # car buys is disclosure BEFORE the material exists rather than after, which
+    # costs nothing and makes the later fence a formality instead of a surprise.
+    _announce_consent(trail_path)
 
     disclosed = False
     captured = []
