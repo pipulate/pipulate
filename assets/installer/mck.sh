@@ -442,6 +442,8 @@ if [ "$YOLO" -eq 1 ]; then
   echo "--yolo: skipping the spoken rehearsal and the RIDE confirmation."
   echo "        NOT skipped, and not skippable by any flag: the CAPTURE fence"
   echo "        at every stop. Nothing is written until you type the word."
+  echo "        Also NOT skipped: the DECANT gate at the end. Nothing leaves"
+  echo "        this machine until you type that word too."
 fi
 if [ "$YOLO" -eq 0 ]; then
 cat <<CARD
