@@ -236,6 +236,7 @@ Entries are alphabetical, numbers spelled as spoken.
     mothercat <trail> --dry-narrate                 # the rehearsal; nothing moves
     RIDE                                            # mck.sh's one-shot go-ahead
     CAPTURE                                         # the fence token, at every stop
+    DECANT                                          # the egress fence, once, at the end
 
 ### The four moves (plus the fifth nobody names)
 **SETTLE** — *human-only, non-deterministic.* Look at the page; clear the auth,
