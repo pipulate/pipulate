@@ -409,6 +409,9 @@ def resolve_workshop(app_name):
 def run_pipulate(app_name):
     """Runs an existing Pipulate installation."""
     target_dir = Path.home() / app_name
+    discovered = resolve_workshop(app_name)
+    if discovered is not None:
+        target_dir = discovered
     if not (target_dir.exists() and (target_dir / "flake.nix").is_file()):
         console.print(f"❌ No Pipulate installation found at [cyan]~/{app_name}[/cyan].")
         console.print(f"To install, run: [bold]pipulate install {app_name}[/bold]")
