@@ -756,12 +756,22 @@ AI_PHOOEY_CHOP = r"""#                                                          
 #      curl-pipes are unauditable; the installer ends interactive) and then
 #      applied to WHETHER, which is the wrong question. Fix: detect, OFFER,
 #      resume the ride.
-#   2. MARKER, NOT NAME. Discovery searches for a directory literally called
-#      pipulate, so a whitelabel install is invisible to its own launcher from
-#      anywhere but inside it. Search for the MARKER FILE instead -- the
-#      DERIVED-PATH RULE pointed at the installer: path = f(marker), never
-#      path = f(guessed name). This is the PRECONDITION for whitelabel plus
-#      routing-key namespacing, not a polish pass.
+#   2. MARKER, NOT NAME. DISCHARGED FOR mck.sh, STILL OPEN FOR cli.py --
+#      corrected 2026-08-07 after reading both installers from raw source for
+#      the first time. As written this described mck.sh v0.1.0; v0.2.0 fixed
+#      it and the earmark never moved, so for months the ledger named a defect
+#      the code had already closed. Current state, OBSERVED: mck.sh discovers
+#      by _is_checkout() -- a TRACKED TRIPLE (scripts/mother_cat.py, flake.nix,
+#      assets/trails/) -- walks up from $PWD and scans one bounded level under
+#      the usual parents; install.sh is name-based and correctly so, because it
+#      CREATES rather than discovers and is the thing that WRITES the label;
+#      cli.py is the sole remaining offender (Path.home() / app_name at three
+#      sites). AND mck.sh WENT FURTHER THAN THIS EARMARK PROPOSED: it REFUSED
+#      whitelabel.txt as the marker, because .gitignore carries it and the
+#      flake writes it only in runScript -- so a fresh clone, and any workshop
+#      only ever entered through .#quiet, has none. A marker absent on a
+#      legitimate workshop is worse than no marker. whitelabel.txt is the
+#      DISAMBIGUATOR; the tracked triple is the certificate.
 #   3. GERMINATION RATE, NOT ONE SPROUT. A seed lot is graded by how many of N
 #      plantings sprout, never by the one that did -- a 12% lot and a 94% lot
 #      produce an IDENTICAL first sprout. "It spreads like a stick bug" is a
