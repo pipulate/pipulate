@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,397 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 18 published in the last 7 days
+# There are 1,398 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 19 published in the last 7 days
 # Markdown negotiated: 2,027 reads (0.21% of all responses)
 # DOM hydration: 2583 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
 # Honeybot telemetry fetched 2026-08-08T06:32Z
@@ -3217,5 +3217,6 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
 # scripts/variance_probe.py  # [967 tokens | 3,916 bytes]
 # scripts/walk_cartridge.py  # [4,519 tokens | 20,403 bytes]
+# scripts/walk_compile.py  # [4,590 tokens | 19,025 bytes]
 # scripts/webclip_2_markdown.py  # [1,270 tokens | 5,314 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
