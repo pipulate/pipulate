@@ -2319,6 +2319,28 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: THE LABEL THAT PROMISES A SIBLING (banked 2026-08-09,
+#   transcript-witnessed): a message printed by ONE command asserting what a
+#   DIFFERENT command will do is a capability claim about code the printer
+#   does not control. It fails THE MECHANICAL TEST from the printer's side
+#   while reading like documentation, which is why nobody audits it.
+#   CONVICTION: after a whole-file-write car created an untracked
+#   scripts/bookmark_import.py, `d` printed "UNTRACKED (invisible to the diff
+#   above; m will stage these)" and `m` did NOT stage them -- it died on an
+#   empty diff with "ai.py returned empty message", and the operator had to
+#   `git add` by hand. The operator READ that label, trusted it, and ran the
+#   command it named. Cost one wasted invocation and one manual step, which
+#   is cheap; the shape is what is expensive.
+#   SECOND CONVICTION OF ONE DEFECT, and the direction is the finding: the
+#   TODO elsewhere in this list already names the missing `git add -A` in
+#   m(). Someone then fixed the VISIBILITY half in d() and wrote a sentence
+#   promising the STAGING half, which nobody wrote. That is PROTECTION-LAG
+#   INVERTED -- not a protection landing ahead of its documentation, but
+#   DOCUMENTATION LANDING AHEAD OF ITS PROTECTION, which is the direction
+#   that actually misleads, because the reader acts on it.
+#   FIX RIDES IN ONE CAR OR NOT AT ALL: either m() grows the `git add -A` the
+#   TODO already names, or d()'s label stops naming m() and says "git add
+#   these yourself". Needs flake.nix in context; not this ride.
 # - EARMARK: THE FIRST-ERROR FLOOR (banked 2026-08-09, airlock-witnessed): a
 #   parser reports the FIRST error it cannot get past, never the LAST one in
 #   the file, so a refusal's line number is a FLOOR on the defect count and
