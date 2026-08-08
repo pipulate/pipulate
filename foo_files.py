@@ -1725,14 +1725,29 @@ release.py                  # <-- How everything ends up where it does (GitHub, 
 # (and FENCE: refuse to advance without a receipt), ADVANCE. The trail is DATA
 # (a YAML file), the rider is CODE, and the split is the point: a new
 # walkthrough should be a new YAML, never a new script.
-# STATUS 2026-08-01: these files EXIST and are UNREAD by any compile so far.
-# The only OBSERVED fact about them is the flake alias comment, which says
-# mothercat takes a trail path, rides walk.DEFAULT_TRAIL when bare, and that
-# --dry-narrate speaks each stop and opens no browser. Everything below is a
-# filename, not a claim. Ride the trail system into a compile before asserting
-# how it works.
+# STATUS 2026-08-09. The 2026-08-01 line this replaces said these files were
+# "UNREAD by any compile so far" and stayed wrong for eight days while the
+# whole lane was read, ridden, patched and sealed. PROTECTION-LAG POLARITY in
+# its expensive direction: the router UNDERSTATED what exists, so a reader who
+# trusted the constitution over the source would call the lane vapor.
+# OBSERVED, each dated in the corpus: public_walk rode green end to end
+# 2026-08-01; all four trails sealed to content-addressed cartridges and
+# re-sealed to identical digests 2026-08-07; the DECANT egress fence and the
+# consent surface landed 2026-08-07; a filled authoring surface compiled to a
+# trail that walk.py loaded unmodified 2026-08-09.
+# STILL OWED: an AUTHENTICATED ride (public_walk needs no credential, so SETTLE
+# is witnessed only in its trivial form), a signature over the sealed manifest,
+# and ONE TRAIL PER AUTH KIND -- none / OAuth / API-key -- each findable by
+# name FROM THIS CHAPTER. That last one is what this chapter is for.
+# THE PATHS BELOW STAY COMMENTED ON PURPOSE: a commented path costs zero
+# payload tokens and still drops the file out of the Paintbox, because
+# update_paintbox_in_place strips the leading hash before deciding a path is
+# claimed. Findable without being loaded is the whole trick.
 # scripts/mother_cat.py       # <-- The rider (alias: mothercat)
 # scripts/walk.py             # <-- Trail loader/validator; holds DEFAULT_TRAIL
+# scripts/bookmark_import.py  # <-- bookmarks.html -> authoring surface + gitignored exports
+# scripts/walk_compile.py     # <-- authoring surface -> JSON-subset trail; refuses on every TODO
+# scripts/walk_cartridge.py   # <-- trail -> sealed walk cartridge (seal / verify / show)
 # assets/trails/practice.yaml         # <-- smallest trail; softball candidate A
 # assets/trails/public_walk.yaml      # <-- name implies no auth; candidate B
 # assets/trails/first_context.yaml
