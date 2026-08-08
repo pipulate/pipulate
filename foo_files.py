@@ -2319,6 +2319,59 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: THE FIRST-ERROR FLOOR (banked 2026-08-09, airlock-witnessed): a
+#   parser reports the FIRST error it cannot get past, never the LAST one in
+#   the file, so a refusal's line number is a FLOOR on the defect count and
+#   never a ceiling. CONVICTION: a whole-file-write car carrying ~250 lines of
+#   a new scripts/bookmark_import.py was refused by apply.py's AST airlock
+#   with "unmatched ')' (<unknown>, line 247)". The operator opened the patch
+#   in vim, looked at it, and declined to hand-repair -- which is the CORRECT
+#   move, and is why this banks as a rule instead of as a scar.
+#   THE DISTINCTION THAT MATTERS is SURGICAL versus WHOLE-FILE. A
+#   SEARCH/REPLACE block bounds its own blast radius: the exact-match
+#   interlock proves the region, so one named error IS the error. A whole-file
+#   write has no such bound -- fixing line 247 by hand says nothing about line
+#   260, because CPython stopped at 247 and never looked. DELETE AND RE-EMIT,
+#   always, for a refused whole-file write.
+#   THIRD REFUSAL CLASS, completing the ladder THE HAND-REPAIR CLAUSE opened.
+#   (1) no-blocks-found: the markers never parsed; never hand-repair. (2)
+#   search-block-not-found: the interlock READ the body and rejected it;
+#   diagnosable. (3) THIS ONE: the body parsed as a patch, was extracted, and
+#   a LANGUAGE parser refused it with a line number. Most informative of the
+#   three, and still not a hand-repair target, for the floor reason above.
+#   WHAT THE AIRLOCK ACTUALLY CAUGHT: an out.append(...) immediately
+#   overwritten by an out[-1] = ... assignment, with the stray paren riding
+#   the second -- two drafts of one line shipped together. Dead code beside a
+#   syntax error is the signature of an emitter that changed its mind mid-file
+#   and shipped both minds. Nothing downstream reads intent; only the parser
+#   does, and it refused.
+# - EARMARK: THE SILENCED CHANNEL (banked 2026-08-09, self-convicted inside
+#   one turn): a probe that DISCARDS a stream, paired with a caboose whose
+#   verdict clause READS that stream, is a verdict that can never be reached.
+#   CONVICTION: the probe ended with stdout and stderr both sent to /dev/null,
+#   and the caboose written in the SAME response said "If import_exit is 2,
+#   read the refusal and say which branch fired." There was no refusal to
+#   read. The instrument and its own verdict clause disagreed inside one
+#   emitted turn.
+#   COMPOUNDED BY EXIT-CODE INFLATION: exit 2 now means at least FOUR things
+#   on this machine -- argparse rejecting an argument, walk.py's main()
+#   returning 2 for "plan not ready", CPython's own exit 2 for "can't open
+#   file" (which is what actually fired, because the file never landed), and
+#   any refusal branch a script chooses to spell 2. A number four worlds share
+#   is not a reading.
+#   STANDING CONSEQUENCE, a DESIGN rule rather than a probe rule: a program
+#   whose outcome will be graded by a MACHINE prints that outcome as a token
+#   on stdout and never asks the grader to infer it from $?. THE EXIT-CODE
+#   PROTOCOL RULE governs a program a shell hook invokes for a DECISION, where
+#   nothing parses stdout; this governs a program invoked for a MEASUREMENT,
+#   where something does. The two do not conflict; they partition.
+#   COROLLARY -- TWO CHANNELS, TWO AUDIENCES: when the graded program also
+#   handles client data, put the machine-readable outcome on stdout and every
+#   identifying string on stderr. Then `2>/dev/null` is compile-lane-safe BY
+#   CONSTRUCTION and a probe never chooses between reading the answer and
+#   leaking a client. Sibling of VERDICT-IN-THE-INSTRUMENT: that rule forbids
+#   writing the answer into the artifact that determines it; this forbids
+#   writing a verdict that reads a channel the instrument closed.
 # - EARMARK: THE PLACEHOLDER THAT CLAIMS TO RUN (banked 2026-08-08,
 #   exit-code-witnessed): public_walk.yaml's three stops declare
 #   connector.script "scripts/walk.py" with argv ["{harvested}"], and
