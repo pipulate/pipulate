@@ -2319,6 +2319,34 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: THE DISPLACEMENT RECEIPT (banked 2026-08-08, self-convicted by
+#   under-reading a receipt already in hand): when an `rg -n` probe straddles an
+#   INSERTION, the strongest reading is NOT the inserted entry's own extent --
+#   it is the DISPLACEMENT of the UNCHANGED neighbours around it. Extent is one
+#   tap; displacement is the straddle.
+#   CONVICTION: the glossary insertion of 2026-08-08 was graded on within-file
+#   gaps (159-145=14, 272-257=15) while the before/after pair sat in the same
+#   payload and read far better -- KV-cache 142 -> 142 (0), LPvg 145 -> 159
+#   (+14), Two frogs 239 -> 253 (+14), Variance suppressor 243 -> 272 (+29).
+#   Four unchanged anchors, and 14 + 15 = 29 closes the arithmetic from a
+#   direction the extent reading cannot reach. The +14 at Two frogs is the
+#   subtle one: the SECOND insertion sits BELOW it and therefore cannot push
+#   it, so that anchor independently locates where each car landed.
+#   WHY IT IS STRONGER, in one sentence: an extent reading is consistent with a
+#   file rewritten wholesale, and a displacement reading is not.
+#   COROLLARY OF DELTA-NOT-ABSOLUTE: that rule says a `grep -c` predicts as a
+#   DELTA and not as an absolute. The same holds for `rg -n`: a line NUMBER is
+#   an absolute and means little alone; a line number's MOVEMENT across the
+#   patch is the receipt. PREDICT THE DISPLACEMENT, NOT THE POSITION -- and
+#   include at least one anchor ABOVE the edit, whose predicted displacement is
+#   zero, because an unmoved anchor is the only thing that bounds the blast
+#   radius from above.
+#   SECOND CONVICTION, SAME READING: the same turn graded this probe as
+#   "already determined before it ran" when it went from four matching lines to
+#   six. That is a real discrimination reported as a near-ritual, which is THE
+#   DISCRIMINATION QUESTION failing in the WRONG direction -- not a ritual
+#   mistaken for a probe, but a probe mistaken for a ritual. Both errors cost
+#   the same thing: a reading nobody trusts afterward.
 # - EARMARK: THE LABEL THAT PROMISES A SIBLING (banked 2026-08-09,
 #   transcript-witnessed): a message printed by ONE command asserting what a
 #   DIFFERENT command will do is a capability claim about code the printer
