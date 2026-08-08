@@ -142,6 +142,20 @@ Entries are alphabetical, numbers spelled as spoken.
 - **KV-cache** — *exact attention-tensor reuse.* Arithmetically identical to
   recomputation; NOT where long-thread rot lives. The rot is product-layer
   compaction, eviction, and plain attention dilution.
+- **Lindy** — *the Lindy effect: for non-perishables, expected remaining life
+  rises with age.* Named for Lindy's delicatessen on Broadway (Goldman, 1964),
+  formalized by Mandelbrot, popularized by Taleb. Survival IS the evidence: a
+  format that has lasted forty years is the better bet for the next forty.
+  RENT THIS PAYS -- it is a DIRECTIONAL PRIOR, never a verdict, and the
+  constitution already uses it exactly that way twice. "File with Lindy, not
+  Zeno" sorts an observed EFFECT from a dissolved PARADOX, which decides
+  whether to cost the engineering or wave it off. "Ternary is Lindy: Setun
+  1958 -> BitNet b1.58" predicts that a form pronounced dead has a live
+  substrate waiting to be found -- EXAPTATION with a clock on it. FAILURE
+  MODE, named so nobody has to rediscover it: old AND obsolete is a real
+  combination, so Lindy tells you what to LOOK for, never what is true.
+  Banked 2026-08-08, probe-convicted: two live uses in the constitution and
+  zero entry here, which is the exact gap this file exists to refuse.
 - **LPvg / NPvg** — *Linux, Python, vim, git / the Nix-pinned variant.* The
   minimal durable skill substrate; the "No Problem" framework rides on it.
 - **Magic cookie** — *gitless self-bootstrapping install.* curl delivers a ZIP
