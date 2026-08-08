@@ -1541,15 +1541,12 @@ release.py                  # <-- How everything ends up where it does (GitHub, 
 
 
 # TRYING TO FIGURE ALL THIS OUT
-# scripts/mother_cat.py       # <-- The rider (alias: mothercat)
-# scripts/walk.py             # <-- Trail loader/validator; holds DEFAULT_TRAIL
-# assets/trails/practice.yaml         # <-- smallest trail; softball candidate A
-# assets/trails/public_walk.yaml      # <-- name implies no auth; candidate B
-# assets/trails/first_context.yaml
-# assets/trails/botify_pageworkers.yaml
-# tests/test_mck_rep2.py      # <-- Rep 2: the earmark's owed side-by-side witness
-# assets/installer/mck.sh     # <-- THE LAUNCHER: curl -fsSL pipulate.com/mck.sh | bash
-# assets/installer/replay.sh  # <-- OFF the roster 2026-08-01; re-add needs syntax + one ride + a pinned verifier fetch
+# The walk-lane roster was duplicated verbatim here. Deleted 2026-08-09: two
+# copies of one roster is the sibling-.md failure standing inside the router
+# that exists to refuse it, and the copies had ALREADY drifted -- neither one
+# named walk_cartridge.py, walk_compile.py or bookmark_import.py, all three of
+# which landed and were ridden while both copies still called the lane unread.
+# ONE ROSTER, and it lives in Chapter VIII-b. Search: MOTHER CAT KATA.
 
 
 # ============================================================================
