@@ -254,6 +254,21 @@ Entries are alphabetical, numbers spelled as spoken.
   brilliant, amnesiac) gets recon and breadth; the pocket Frog (owned,
   persistent) gets receipts, memory, and anything with your name on it. Every
   misroute is a describable scene.
+- **Uncompressible** — *Kolmogorov complexity: the length of the shortest
+  program that outputs the string.* A thing is incompressible when its
+  shortest description is itself. Three independent arrivals -- Solomonoff
+  1960, Kolmogorov 1965, Chaitin 1966 -- CONVERGENT FORM landing on
+  compression itself. DISTINCT FROM SHANNON, and the pair is a discriminator:
+  Shannon grades a SOURCE by average surprise, Kolmogorov grades ONE OBJECT
+  by its shortest program, so "be uncompressible" is a Kolmogorov claim
+  wearing Shannon's vocabulary. RENT THIS PAYS, and it inverts the slogan it
+  comes from: the incompressible artifact is the PROGRAM, never the OUTPUT.
+  Measured 2026-08-08 against the rolling-pin index's corpus total: the
+  router is ~426:1 by bytes and ~401:1 by tokens, the glossary ~4,730:1 and
+  ~4,579:1, the two rulers agreeing to within tokenizer density -- so the
+  ratio is a property of the artifacts, not of the instrument. The
+  incompressible core of a thousand-article corpus is one router and one
+  type system.
 - **Variance suppressor** — *one failure clade, three costumes.* The sycophant,
   the over-broad safeguard, the human gatekeeper: each imposes order on
   disorder it did not author. The antidote is never tone-policing; it is
