@@ -2319,6 +2319,54 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: THE COMPILED TRAIL (banked 2026-08-08, source-witnessed): a trail
+#   has TWO legitimate forms, and conflating them is the whole confusion. The
+#   SEALED form -- trail.yaml inside walk.zip -- is MACHINE CARGO: hashed,
+#   content-addressed, parsed by json.loads under a duplicate-key hook. It
+#   stays the JSON subset of YAML 1.2 for three reasons read off raw source
+#   rather than taste. (1) STDLIB: there is no YAML parser in the Python
+#   standard library, and walk_cartridge.py's docstring makes single-file
+#   fetchability a STATED constraint -- it DUPLICATES foo_cartridge's
+#   primitives rather than import them, so a PyYAML dependency would spend
+#   the exact property that duplication was paid for. (2) CANONICALIZATION:
+#   the sealer hashes trail.yaml byte-identical AND recomputes the consent
+#   surface from those same bytes, so every place YAML 1.2 admits two
+#   spellings of one document is a place the surface a human CONSENTS to can
+#   drift from the bytes a manifest ATTESTS to. (3) DUPLICATE KEYS fail
+#   closed here; PyYAML does not error on them by default.
+#   THE OPERATOR'S INSTINCT IS RIGHT ANYWAY, and about a real defect: the
+#   JSON subset crams PROSE into a DATA field. `guidance` is a paragraph
+#   Piper reads ALOUD, escaped into one unbroken JSON string -- the
+#   frontmatter sandwich INVERTED, data wrapping prose instead of heading it.
+#   Every friction there (quoting, escaping, one long line) is the friction
+#   of a paragraph living inside a string literal.
+#   RULING: the sealed form is COMPILED, never authored. The AUTHORING
+#   surface is a DIFFERENT artifact and may be Markdown -- machine keys as
+#   scalars, guidance as the BODY -- which is the identical split
+#   article.txt -> articleizer.py -> _posts already runs in the publish lane.
+#   walk_cartridge.py seal is ALREADY the compiler; what is missing is a
+#   human-shaped INPUT, not a new format for the output.
+#   AND THE DEPENDENCY IS AVOIDABLE, which is the line worth banking: a head
+#   restricted to one scalar `key: value` per line parses in ten lines of
+#   stdlib. Call it the SCALAR SUBSET -- no anchors, no aliases, no block
+#   scalars, no nested maps, no lists -- and that parser stays ten lines
+#   forever. Same discipline already spelled "the JSON subset of YAML 1.2",
+#   applied a second time to a second surface.
+#   IT ALSO FORCES THE RIGHT SHAPE: because the head cannot nest, a stop
+#   cannot be a list ITEM, it must be a SECTION -- one heading per stop, its
+#   scalars directly beneath, its guidance as the prose body. That is closer
+#   to an org-mode :PROPERTIES: drawer than to a Jekyll head, and the
+#   difference is load-bearing: frontmatter is ONE head for ONE document,
+#   while a trail needs N heads for N stops.
+#   ETYMOLOGY, so the corpus owns the joke: YAML shipped in 2001 as "Yet
+#   Another Markup Language" and was renamed to the recursive "YAML Ain't
+#   Markup Language" precisely to say out loud that it is DATA, not document
+#   markup. An operator specifying his ideal format as "exactly what you
+#   don't want is yet another markup language" has recited its retired name
+#   back at it, which is convergent form with a dated receipt attached.
+#   OWES: an importer that emits the authoring surface, and a compiler that
+#   turns that surface into a JSON-subset trail walk.py accepts UNMODIFIED.
+#   Delete this OWES the day both receipts exist.
 # - EARMARK: THE UNREACHABLE GUARD (banked 2026-08-07, traceback-witnessed): a
 #   check placed AFTER a line that can raise the same class of error is dead
 #   code, and its message is a promise the program cannot keep. CONVICTION:
