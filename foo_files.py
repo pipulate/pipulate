@@ -1748,10 +1748,36 @@ release.py                  # <-- How everything ends up where it does (GitHub, 
 # scripts/bookmark_import.py  # <-- bookmarks.html -> authoring surface + gitignored exports
 # scripts/walk_compile.py     # <-- authoring surface -> JSON-subset trail; refuses on every TODO
 # scripts/walk_cartridge.py   # <-- trail -> sealed walk cartridge (seal / verify / show)
-# assets/trails/practice.yaml         # <-- smallest trail; softball candidate A
-# assets/trails/public_walk.yaml      # <-- name implies no auth; candidate B
-# assets/trails/first_context.yaml
-# assets/trails/botify_pageworkers.yaml
+# AUTH RULING (banked 2026-08-09, source-witnessed): THERE IS NO AUTH FIELD IN
+# THE TRAIL SCHEMA. walk.py's _exact() enforces set-difference in BOTH
+# directions over the root, defaults, stop and connector field sets, so a trail
+# CANNOT declare an auth kind without changing walk.py first. TWO AUTH SURFACES
+# exist and only ONE is live at ride time:
+#   BROWSER AUTH -- defaults.profile_name plus persistent, i.e. which warmed
+#     uc_profiles directory opens. Exercised on EVERY ride. This IS what SETTLE
+#     means, and it is the only auth surface a trail can select.
+#   CONNECTOR AUTH -- connector.script, i.e. the wallet kind (oauth_token_file,
+#     bearer_token, basic_auth, service_account_file). NEVER exercised by a
+#     ride: mother_cat.py's docstring puts connector execution out of scope and
+#     _ride_async never reads the connector key. walk.py BUILDS the argv for
+#     the dry-run plan and nothing runs it.
+# RULING: OAuth and API-key are NOT distinct rides at the trail level. Three
+# near-identical YAMLs differing only in an inert string would be the
+# sibling-md failure with our own hands on it. The auth-kind EXAMPLE SET
+# ALREADY EXISTS and it is scripts/connectors/README.md -- five kinds, one
+# working connector each, plus the warm red/green board that tests them live.
+# Note also that first_context declares THREE wallet kinds in one trail, so a
+# trail was never the unit of auth; a stop is, and even that is a declaration.
+# WHAT IS MISSING IS A RECEIPT, NOT A FILE: no trail on a NON-DEFAULT profile
+# has ever been ridden, so browser auth is witnessed only in its trivial form.
+# botify_pageworkers IS that shape. Trap worth naming: weblogin defaults to
+# --profile default, so warming for that trail needs --profile botify, and
+# scraper_tools mkdirs a missing profile silently -- an unwarmed name opens a
+# logged-out browser with no error anywhere.
+# assets/trails/practice.yaml            # UNREAD; label stale since 2026-08-01
+# assets/trails/public_walk.yaml         # profile default; SETTLE trivial; RIDDEN 2026-08-01
+# assets/trails/first_context.yaml       # profile default; SETTLE real; UNRIDDEN
+# assets/trails/botify_pageworkers.yaml  # profile botify; SETTLE real; UNRIDDEN
 # tests/test_mck_rep2.py      # <-- Rep 2: the earmark's owed side-by-side witness
 # assets/installer/mck.sh     # <-- THE LAUNCHER: curl -fsSL pipulate.com/mck.sh | bash
 # assets/installer/replay.sh  # <-- OFF the roster 2026-08-01; re-add needs syntax + one ride + a pinned verifier fetch
