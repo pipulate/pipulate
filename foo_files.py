@@ -756,17 +756,36 @@ AI_PHOOEY_CHOP = r"""#                                                          
 #      curl-pipes are unauditable; the installer ends interactive) and then
 #      applied to WHETHER, which is the wrong question. Fix: detect, OFFER,
 #      resume the ride.
-#   2. MARKER, NOT NAME. DISCHARGED FOR mck.sh, STILL OPEN FOR cli.py --
-#      corrected 2026-08-07 after reading both installers from raw source for
-#      the first time. As written this described mck.sh v0.1.0; v0.2.0 fixed
-#      it and the earmark never moved, so for months the ledger named a defect
-#      the code had already closed. Current state, OBSERVED: mck.sh discovers
-#      by _is_checkout() -- a TRACKED TRIPLE (scripts/mother_cat.py, flake.nix,
-#      assets/trails/) -- walks up from $PWD and scans one bounded level under
-#      the usual parents; install.sh is name-based and correctly so, because it
-#      CREATES rather than discovers and is the thing that WRITES the label;
-#      cli.py is the sole remaining offender (Path.home() / app_name at three
-#      sites). AND mck.sh WENT FURTHER THAN THIS EARMARK PROPOSED: it REFUSED
+#   2. MARKER, NOT NAME. FULLY DISCHARGED 2026-08-08, TWO-WORLD RECEIPT.
+#      Corrected TWICE, in OPPOSITE directions, which is what makes it worth
+#      keeping. Pass one (2026-08-07): it described mck.sh v0.1.0 while v0.2.0
+#      had already fixed it, so for months the ledger named a defect the code
+#      had closed. Pass two (today): that same correction called cli.py "the
+#      sole remaining offender" while cli.py had ALREADY grown
+#      WORKSHOP_MARKERS, is_workshop(), workshop_label(), find_workshops() and
+#      resolve_workshop() -- the same tracked triple mck.sh uses, plus the
+#      fallback-visible fix that cures SINGLE-CANDIDATE BLINDNESS by naming the
+#      losers when no label matches. THAT IS THE PROTECTION-LAG POLARITY
+#      CONVICTING ITS OWN AUTHOR ON THE VERY NEXT COMPILE AFTER IT WAS BANKED:
+#      a protection LANDED and the ledger kept describing the world without it,
+#      understating the guard and overstating the risk to anyone reading the
+#      constitution instead of the source.
+#      RECEIPT, both worlds in one compile: resolve_workshop("pipulate")
+#      returned /home/mike/repos/pipulate while the name-derived ~/pipulate was
+#      ABSENT and the marker triple was present in the CWD. Discovery found a
+#      workshop that name-derivation structurally could not.
+#      Current state, OBSERVED: mck.sh discovers by _is_checkout() -- a TRACKED
+#      TRIPLE (scripts/mother_cat.py, flake.nix, assets/trails/) -- walks up
+#      from $PWD and scans one bounded level under the usual parents; cli.py
+#      mirrors that walk exactly; install.sh is name-based and correctly so,
+#      because it CREATES rather than discovers and is the thing that WRITES
+#      the label. THE ONE REMAINING NAME-DERIVED SITE IS DELIBERATE AND STAYS:
+#      cli.uninstall_pipulate() is still Path.home()/app_name and must be.
+#      install and uninstall CREATE and DESTROY by label; only run DISCOVERS.
+#      A destructive command that walks up from $PWD to find its own target is
+#      a footgun, and refusing to delete a marker-discovered directory is the
+#      correct failure rather than a gap.
+#      AND mck.sh WENT FURTHER THAN THIS EARMARK PROPOSED: it REFUSED
 #      whitelabel.txt as the marker, because .gitignore carries it and the
 #      flake writes it only in runScript -- so a fresh clone, and any workshop
 #      only ever entered through .#quiet, has none. A marker absent on a
