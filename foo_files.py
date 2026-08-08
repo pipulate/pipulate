@@ -2319,6 +2319,36 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: THE PLACEHOLDER THAT CLAIMS TO RUN (banked 2026-08-08,
+#   exit-code-witnessed): public_walk.yaml's three stops declare
+#   connector.script "scripts/walk.py" with argv ["{harvested}"], and
+#   walk_cartridge._derive_consent_surface lifts that path into the sealed
+#   manifest, where mother_cat._announce_consent prints it to a human under
+#   the label "names as runnable" -- in the ONE artifact a rider reads BEFORE
+#   deciding to ride. RECEIPT: `.venv/bin/python scripts/walk.py xyz` exits 2.
+#   walk.py's parser declares --trail and --value and NO positional, so the
+#   command the trail names cannot run and never could.
+#   HARMLESS TODAY, ARMED TOMORROW: mother_cat.py's docstring puts connector
+#   execution out of scope, so nothing has ever tried. That is the
+#   PUBLISH-ROSTER shape -- a name in a live slot fires on the next ordinary
+#   change with no further human decision -- and the slot it fires in is the
+#   SOFTBALL, in front of a newcomer, three times.
+#   IT IS ALSO A LIE RIGHT NOW, which is the cheaper argument: "runnable" is a
+#   capability claim and THE MECHANICAL TEST fails it. Validation passing is
+#   not execution passing; walk.py checks the file EXISTS and that {harvested}
+#   appears once, and nothing anywhere checks that the script accepts the argv.
+#   FIX, when ridden: a real no-op connector that exists IN ORDER to be a
+#   no-op -- accepts one positional, prints what it received, exits 0 -- so
+#   the sentence becomes TRUE rather than the label becoming vaguer.
+#   CONSEQUENCE ALREADY TAKEN: scripts/bookmark_import.py refuses to guess a
+#   connector and emits TODO, because propagating a known-false runnable claim
+#   into every imported trail is worse than an empty field.
+#   PROBE DEFECT, same receipt, banked so it is not repeated: the CONTROL arm
+#   `walk.py --trail assets/trails/public_walk.yaml` ALSO printed 2, because
+#   main() returns 2 for "plan not ready" and argparse returns 2 for "bad
+#   arguments". One number, two worlds -- THE DISCRIMINATION QUESTION failing
+#   inside the instrument written to answer it. Read stderr, or read
+#   plan["ready"]; never grade this one on the exit code alone.
 # - EARMARK: THE COMPILED TRAIL (banked 2026-08-08, source-witnessed): a trail
 #   has TWO legitimate forms, and conflating them is the whole confusion. The
 #   SEALED form -- trail.yaml inside walk.zip -- is MACHINE CARGO: hashed,
