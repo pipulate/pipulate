@@ -683,6 +683,7 @@ map('n', '<leader>b', '<cmd>lua bold_dialogue_speaker()<CR>', opts)  -- Bold dia
 map('n', '<leader>m', '<cmd>lua mount_sandworm()<CR>', opts) -- the human: mount the worm (full saddle at cursor)
 map('n', '<leader>yy', 'i**Gemini 3.5 Thinking**: ', opts) -- you: Gemini 3.5 Extended
 map('n', '<leader>yc', 'i**Claude Sonnet 4.6**: ', opts) -- you: Claude
+map('n', '<leader>yo', 'i**Claude Opus 5**: ', opts) -- you: Claude Opus 5
 map('n', '<leader>yg', 'i**ChatGPT 5.5**: ', opts)           -- you: GPT
 map('n', '<leader>y1', 'i**Gemini 3.1 Pro**: ', opts)   -- fallback: Gemini 3.1 Fallback
 
