@@ -51,11 +51,11 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,401 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 4 published in the last 7 days
-# Markdown negotiated: 2,074 reads (0.21% of all responses)
+# There are 1,404 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 5 published in the last 7 days
+# Markdown negotiated: 2,201 reads (0.21% of all responses)
 # DOM hydration: 2602 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-08-15T12:06Z
+# Honeybot telemetry fetched 2026-08-20T18:15Z
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -1365,7 +1365,11 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
 
-# ! postsc 100
+# ! postsc 50
+
+/home/mike/repos/trimnoir/_posts/2026-08-13-kantian-units-biological-selves.md  # [Idx: 1401 | Order: 2 | Tokens: 4,991 | Bytes: 24,431]
+/home/mike/repos/trimnoir/_posts/2026-08-16-engineering-the-frame-evidence-based-ai-workflows.md  # [Idx: 1402 | Order: 1 | Tokens: 8,683 | Bytes: 40,173]
+/home/mike/repos/trimnoir/_posts/2026-08-19-interface-didnt-get-worse-you-got-better.md  # [Idx: 1403 | Order: 1 | Tokens: 23,569 | Bytes: 111,284]
 
 # ---------------------------------------------------------------------------
 # THE PORTABLE CARTRIDGE — the detachable seed of the Software Von Neumann Probe
@@ -1509,13 +1513,13 @@ prompt_foo.py               # <-- Prompt Fu compiler, makes the very README for 
 foo_files.py                # <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops
 
 # MAIN ACTUATORS, IaC & NEGATIVE SPACE
-apply.py                    # <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
-.gitattributes              # <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
-.gitignore                  # <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
 flake.nix                   # <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
-requirements.in             # <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
-__init__.py                 # <-- Master versioning
-pyproject.toml              # <-- The PyPI Packaging details
+apply.py                    # <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
+# .gitattributes              # <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
+# .gitignore                  # <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
+# requirements.in             # <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
+# __init__.py                 # <-- Master versioning
+# pyproject.toml              # <-- The PyPI Packaging details
 # cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
 # scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 # scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
