@@ -2487,7 +2487,6 @@ def main():
         )
 
     # 2. Process all specified files (💥 UPDATED WITH KWARGS)
-    annotate_foo_files_in_place(args.chop)
     update_stats_in_place()
     update_paintbox_in_place()
     update_agents_md_in_place()
