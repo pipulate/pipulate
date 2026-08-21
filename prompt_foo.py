@@ -2194,6 +2194,32 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
     """Reports references in foo_files.py that no longer exist on disk."""
     import foo_files
     raw_content = getattr(foo_files, chop_var, "")
+    # SCOPE PARITY (banked 2026-08-21, convicted by this counter's FIRST after
+    # tap): parse_file_list_from_config splices the gitignored adhoc overlay
+    # into the ADHOC SLOT before loading anything; this checker did not. So on
+    # every `ahc` compile it validated the TRACKED body -- which carries ONE
+    # recognizable path, apply.py, because .gitattributes and .gitignore have
+    # neither a slash nor a STORY_EXTENSION -- while the compiler loaded the
+    # SPLICED body carrying ~22. Two different strings, one green label:
+    # INCOMMENSURABLE MEASUREMENTS inside the guard whose whole job is refusing
+    # that. A DELIBERATE SECOND INSTANCE of the splice rather than a shared
+    # helper, per the house rule that a mechanism proven twice is what
+    # SPECIFIES the helper; the diff between these two call sites is that
+    # specification, and guessing the signature now would bake in an imagined
+    # third caller. Silent on purpose: parse_file_list_from_config owns the one
+    # visible splice receipt, and two identical lines would read as a bug.
+    _overlay = os.path.expanduser(os.environ.get(
+        'PIPULATE_ADHOC_FILE', os.path.join(REPO_ROOT, 'adhoc.txt')
+    ))
+    if '--- ADHOC SLOT START ---' in raw_content and os.path.exists(_overlay):
+        with open(_overlay, 'r', encoding='utf-8') as f:
+            _overlay_content = f.read().strip()
+        if _overlay_content:
+            raw_content = re.sub(
+                r'(# --- ADHOC SLOT START ---\n).*?(# --- ADHOC SLOT END ---)',
+                lambda m: m.group(1) + '\n' + _overlay_content + '\n\n' + m.group(2),
+                raw_content, flags=re.DOTALL
+            )
     
     # Inject dynamic arguments before parsing paths
     if format_kwargs:
