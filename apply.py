@@ -35,6 +35,9 @@ PROTOCOL_GRAMMAR_FILES = frozenset({
     'apply.py', 'prompt.md', 'prompt_foo.py', 'AGENTS.md', 'README.md',
 })
 # AUTOLINK CONTAMINATION AIRLOCK (banked 2026-07-31, render-gap conviction).
+# WITNESSED 2026-08-21 (tests/test_apply_airlock.py, 7/7 pass): surgical arm
+# (positive + negative), WRITE_FILE arm (positive + creation-refusal +
+# overwrite-refusal), both regex alternatives, and .md exemption all green.
 # A chat renderer between the compiler and the model wraps BARE www-prefixed
 # hosts in markdown link syntax. The model quotes the rendered form into a
 # REPLACE block, and this tool -- being a faithful actuator -- writes the
