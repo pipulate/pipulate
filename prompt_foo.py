@@ -2265,11 +2265,11 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
             broken_refs.append(ref)
             
     if broken_refs:
-        logger.print("\n⚠️  TOPOLOGICAL INTEGRITY ALERT (Broken References):")
+        logger.print(f"\n⚠️  TOPOLOGICAL INTEGRITY ALERT ({len(broken_refs)} broken of {len(potential_refs)} candidates):")
         for ghost in sorted(broken_refs):
             logger.print(f"  • {ghost}")
     else:
-        logger.print("\n✅ Topological Integrity Verified: All references exist.")
+        logger.print(f"\n✅ Topological Integrity Verified: {len(potential_refs)} candidate reference(s) scanned, all exist.")
 
 
 # ============================================================================
