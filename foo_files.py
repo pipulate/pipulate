@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,404 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 3 published in the last 7 days
+# There are 1,405 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 4 published in the last 7 days
 # Markdown negotiated: 2,205 reads (0.21% of all responses)
 # DOM hydration: 2602 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
 # Honeybot telemetry fetched 2026-08-21T06:33Z
@@ -1379,10 +1379,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # ! postsc 50
 
-/home/mike/repos/trimnoir/_posts/2026-08-13-kantian-units-biological-selves.md  # [Idx: 1401 | Order: 2 | Tokens: 4,991 | Bytes: 24,431]
-/home/mike/repos/trimnoir/_posts/2026-08-16-engineering-the-frame-evidence-based-ai-workflows.md  # [Idx: 1402 | Order: 1 | Tokens: 8,683 | Bytes: 40,173]
-/home/mike/repos/trimnoir/_posts/2026-08-19-interface-didnt-get-worse-you-got-better.md  # [Idx: 1403 | Order: 1 | Tokens: 23,569 | Bytes: 111,284]
-
 # ---------------------------------------------------------------------------
 # THE PORTABLE CARTRIDGE — the detachable seed of the Software Von Neumann Probe
 # ---------------------------------------------------------------------------
@@ -1527,27 +1523,27 @@ foo_files.py                # <-- This is the router, evolving book outline and 
 # MAIN ACTUATORS, IaC & NEGATIVE SPACE
 flake.nix                   # <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py                    # <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
-# .gitattributes              # <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
-# .gitignore                  # <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
-# requirements.in             # <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
-# __init__.py                 # <-- Master versioning
-# pyproject.toml              # <-- The PyPI Packaging details
-# cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
-# scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
-# scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
-# release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
+.gitattributes              # <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
+.gitignore                  # <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
+requirements.in             # <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
+__init__.py                 # <-- Master versioning
+pyproject.toml              # <-- The PyPI Packaging details
+cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
+scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
+release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
 
 # CONTEXT PORTABILITY SYSTEM
-# scripts/foo_cartridge.py    # Needs description
-# scripts/foo_replay.py       # Needs description
+scripts/foo_cartridge.py    # Needs description
+scripts/foo_replay.py       # Needs description
 
 # FREQUENTLY USEFUL TO HAVE IN CONTEXT
-# imports/voice_synthesis.py  # <-- The wand can talk to you
-# tools/scraper_tools.py      # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
+imports/voice_synthesis.py  # <-- The wand can talk to you
+tools/scraper_tools.py      # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
-# scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
-# scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
-# scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
+scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
+scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
+scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
 
 #                         --- Under this line is were you paste what the AI gives you ---
 #                         --- We call it context but it's really just the right-hand  ---
