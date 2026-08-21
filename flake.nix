@@ -810,6 +810,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           test -d .venv || ${pkgs.python312}/bin/python -m venv .venv --clear
           export VIRTUAL_ENV="$(pwd)/.venv"
           export PATH="$VIRTUAL_ENV/bin:$PATH"
+          # Purge wheel-installed ruff binary so native pkgs.ruff on PATH is used on NixOS
+          rm -f .venv/bin/ruff 2>/dev/null || true
           # Prioritize Python 3.12 libraries first to avoid version conflicts
           export LD_LIBRARY_PATH=${pkgs.python312}/lib:${pkgs.lib.makeLibraryPath commonPackages}:$LD_LIBRARY_PATH
           unset PYTHONPATH
