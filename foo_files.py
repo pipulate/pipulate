@@ -2416,9 +2416,17 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   INVERTED -- not a protection landing ahead of its documentation, but
 #   DOCUMENTATION LANDING AHEAD OF ITS PROTECTION, which is the direction
 #   that actually misleads, because the reader acts on it.
-#   FIX RIDES IN ONE CAR OR NOT AT ALL: either m() grows the `git add -A` the
-#   TODO already names, or d()'s label stops naming m() and says "git add
-#   these yourself". Needs flake.nix in context; not this ride.
+#   DISCHARGED 2026-08-21, SOURCE-WITNESSED: flake.nix m() opens with
+#   `git add -A`, carrying its own comment dating that fix to 2026-07-31 --
+#   ELEVEN DAYS BEFORE this earmark was banked. So the 2026-08-09 conviction
+#   was almost certainly THE IGNITION RULE wearing a bug's costume: a shell
+#   entered before the flake edit keeps the pre-fix m() forever, because a
+#   shellHook is read once at entry and never re-read. d()'s label is TRUE
+#   now and m() delivers what it promises. PROTECTION-LAG POLARITY in its
+#   expensive direction, eleven days wide: the ledger described a defect the
+#   code had already closed, and only a compile carrying flake.nix could see
+#   it. STANDING CONSEQUENCE: when a conviction concerns a SHELL FUNCTION,
+#   record which shell it was taken in, or the receipt is unlabeled evidence.
 # - EARMARK: THE FIRST-ERROR FLOOR (banked 2026-08-09, airlock-witnessed): a
 #   parser reports the FIRST error it cannot get past, never the LAST one in
 #   the file, so a refusal's line number is a FLOOR on the defect count and
