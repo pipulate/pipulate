@@ -2369,6 +2369,18 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - EARMARK: THE NIX-FILE LINT PROBE (banked 2026-08-21, receipt-witnessed):
+#   a probe that passes a non-Python file to ruff produces thousands of
+#   invalid-syntax errors that read as catastrophic repo rot. Receipt: the
+#   dismount compile's four-file statistics probe included flake.nix and
+#   printed 2,544 errors, 2,394 invalid-syntax -- ruff parsing Nix as Python.
+#   Sibling of INCOMMENSURABLE MEASUREMENTS: a correct number about the wrong
+#   question. Lint probes name .py files only.
+# - RUFF NATIVE (banked 2026-08-21, both-lane witnessed): pkgs.ruff in
+#   commonPackages + the .venv/bin/ruff purge in pythonSetupLogic; ignition
+#   ndq; AFTER receipt is the compile lane's first genuine "Ruff exit 0
+#   (clean)". The stub-ld SUCCESS-ONLY WITNESS lie is discharged in code
+#   (the RUFF DID NOT RUN branch) and in fact (the binary now runs).
 # - EARMARK: THE DISPLACEMENT RECEIPT (banked 2026-08-08, self-convicted by
 #   under-reading a receipt already in hand): when an `rg -n` probe straddles an
 #   INSERTION, the strongest reading is NOT the inserted entry's own extent --
