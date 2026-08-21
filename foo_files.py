@@ -52,10 +52,10 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 # --- START STATS ---
 # There are 1,404 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 5 published in the last 7 days
-# Markdown negotiated: 2,201 reads (0.21% of all responses)
+# Velocity: 3 published in the last 7 days
+# Markdown negotiated: 2,205 reads (0.21% of all responses)
 # DOM hydration: 2602 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-08-20T18:15Z
+# Honeybot telemetry fetched 2026-08-21T06:33Z
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -870,6 +870,18 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # failed and its one-line answer is what BOTH worlds print. A verdict welded
 # to a printout survives into a turn where its premise did not, and then it
 # convicts the wrong organ with a receipt in its hand. This is
+# TAP-AMBIGUITY AMENDMENT (banked 2026-08-09, self-convicted in one turn): a
+# caboose conditional must name not only its PRECONDITION but WHICH TAP its
+# printout comes from. A straddle produces TWO readings of ONE command, and a
+# verdict welded to "if X reads N" cannot tell the BEFORE from the AFTER.
+# CONVICTION: a caboose said "if auth_ruling is still 0, the patch did not
+# land -- stop there." The operator pasted the hand-run BEFORE tap, which read
+# 0 correctly, while the compile's live receipt read 1. A model obeying the
+# caboose literally would have halted the whole turn on a correct reading of
+# the wrong tap. Only the Manifest's sole-authority clause resolved it.
+# STANDING CONSEQUENCE: write "if the LIVE RECEIPT reads N", never "if X reads
+# N". Sibling of THE LANE-DISAGREEMENT WITNESS -- that rule names a probe blind
+# to a patch; this names a verdict blind to which side of the patch it is on.
 # VERDICT-IN-THE-INSTRUMENT aimed one turn forward: that rule forbids writing
 # the answer into the artifact that determines it; this one forbids writing it
 # into the PROMPT that will read it. STANDING CONSEQUENCE: every conditional
