@@ -189,6 +189,22 @@ Entries are alphabetical, numbers spelled as spoken.
   keep the constitution falsifiable.
 - **Paintbox** — *coverage ledger.* Files tracked by git but not yet mapped
   into the Book's chapters; unclaimed colors awaiting a canvas.
+- **Pinball machine** — *the stateless autoregressive sampler; the summoned
+  model's mechanism, as the Player piano is the actuator's.* Four layers:
+  frozen weights (the table — pretraining AND post-training both in the
+  freeze), framework text (posted rules, read as tokens like everything
+  else), the enveloped user turn (the launch, wrapped in chat-template
+  control tokens), and the replayed transcript (the whole game re-fed each
+  turn). KV-cache is exact attention reuse — a derived artifact, a pure
+  function of the prefix, never a memory. Temperature reshapes the
+  next-token distribution before each of thousands of dice rolls per
+  answer: same table, same launch, different ball. RENT: predicts the
+  stochasticity the Amnesiac Genie's amnesia doesn't — N runs diverge at
+  high T and converge, mostly, at T=0; "mostly" because floating-point
+  non-associativity denies even the sampler byte-determinism, which is why
+  D0 lives in the harness, not the model. HAZARD: the freeze-frame image
+  implies state-restore; the mechanism is replay — nothing persists but
+  the text, which is why the receipts must.
 - **Pinboard / pin** — *milestone articles under extraction, max seven.* Every
   pin OWES something; an empty OWES clause deletes the pin.
 - **Player piano** — *deterministic actuator replaying a score.* Honest only
