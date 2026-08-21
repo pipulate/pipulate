@@ -410,6 +410,25 @@ def run_static_analysis(python_files: List[str]) -> str:
                 logger.print(result.stdout.strip())  # Transparent terminal output
         except Exception as e:
             logger.print(f"      [Error running Ruff: {e}]")
+            result = None
+        # THE SUCCESS-ONLY WITNESS, discharged (convicted 2026-08-21, and in
+        # BOTH lanes at once): `ruff check` died on NixOS's stub-ld loader
+        # refusal -- exit nonzero, stdout EMPTY, stderr DISCARDED -- and the
+        # completion line below printed a checkmark anyway. A linter that never
+        # STARTED and a linter that found NOTHING wrote the identical green,
+        # which is THE DISCRIMINATION QUESTION failing inside the compiler's own
+        # telemetry. Root cause is the pip-installed manylinux binary, not this
+        # function; the cure is a nixpkgs ruff in the flake. This car fixes only
+        # the LIE, and it is self-clearing the day the binary can run.
+        if result is not None:
+            if result.returncode == 0:
+                logger.print("   -> Ruff exit 0 (clean).")
+            elif result.stdout.strip():
+                logger.print(f"   -> Ruff exit {result.returncode} (diagnostics above).")
+            else:
+                logger.print(f"   ⛔ RUFF DID NOT RUN — exit {result.returncode}, empty stdout. The completion line below is NOT a reading.")
+                for _line in (result.stderr or "").strip().splitlines()[-6:]:
+                    logger.print(f"      {_line}")
              
     logger.print("✅ Static Analysis Complete.\n")
     return "\n\n".join(diagnostics)
