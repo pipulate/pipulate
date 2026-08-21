@@ -463,8 +463,8 @@
           aiCommitCommand              # \g's commit generator resolves in-shell on every platform
           uv                           # Fast Python package installer and resolver
           sqlite                       # Ensures correct SQLite library is linked on macOS
+          ruff                         # Fast Python linter (native Nix binary)
           (python312.withPackages (ps: with ps; [
-            ruff
             nbstripout
           ]))
           nbstripout
