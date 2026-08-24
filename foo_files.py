@@ -51,11 +51,10 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,406 already-written articles about this repo at MikeLev.in (Public)
+# There are 1,407 already-written articles about this repo at MikeLev.in (Public)
 # Velocity: 5 published in the last 7 days
-# Markdown negotiated: 2,205 reads (0.21% of all responses)
-# DOM hydration: 2602 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-08-21T14:18Z
+# Markdown negotiated: 2,215 reads (0.21% of all responses)
+# Honeybot telemetry fetched 2026-08-24T11:38Z
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -2151,9 +2150,11 @@ foo_files.py
 
 DEFAULT_CHOP = r"""
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
+# ~/repos/nixos/autognome.py  # <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
+init.lua                    # <-- Daily driver hot-keys that overlap with aliases in flake.nix
+GLOSSARY.md
 # scripts/articles/lsa.py
 # The following 3 files ARE the system
-# ~/repos/nixos/autognome.py  # <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
 prompt_foo.py               # <-- Prompt Fu compiler, makes the very README for AGENTS-like payload you're reading right now, but it needs to be more like that
 foo_files.py                # <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops
 
@@ -2165,14 +2166,12 @@ flake.nix                   # <-- Solves world's WRITE ONCE RUN ANYWHERE problem
 requirements.in             # <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 __init__.py                 # <-- Master versioning
 pyproject.toml              # <-- The PyPI Packaging details
-cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
+# cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
  
-scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
-scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
-init.lua                    # <-- Daily driver hot-keys that overlap with aliases in flake.nix
- 
-scripts/foo_cartridge.py    # Needs description
-scripts/foo_replay.py       # Needs description
+# scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+# scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
+# scripts/foo_cartridge.py    # Needs description
+# scripts/foo_replay.py       # Needs description
 
 # release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
 # scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
@@ -2180,7 +2179,6 @@ scripts/foo_replay.py       # Needs description
 # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
 # imports/voice_synthesis.py  # <-- The wand can talk to you
 # scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
-GLOSSARY.md
 """
 
 INSTALL_CHOP = r"""
