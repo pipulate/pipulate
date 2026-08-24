@@ -74,6 +74,20 @@ Entries are alphabetical, numbers spelled as spoken.
   resistance.* From Glinda of Oz: the unclimbable barrier ringing the
   Flatheads' mountain. Auth friction, rate limits, and format pedantry push
   casual visitors back into the crowded free zone; push through and it snaps.
+- **Compostable** — *deliberately never-finished tooling, named by its
+  disposal story.* Born a dictation slip for "composable" and kept because
+  the slip says more: composable says tools SNAP TOGETHER; compostable says
+  tools BREAK DOWN AND FEED THE NEXT ONE. RENT THIS PAYS — it predicts what
+  death costs. A finished product dies as landfill: export deadline, dead
+  URL, ransom email (the Extractors Club's harvest). A compostable tool
+  dies as soil — its organs already live in successors before anyone calls
+  it dead. Witnessed in this repo's own lineage: rgx begat rgxc, posts
+  begat postsc, prompt_foo shed foo_cartridge, foo_cartridge was duplicated
+  INTO walk_cartridge on purpose, and the house law "a mechanism proven
+  twice is what SPECIFIES the helper" is composting stated as engineering
+  doctrine. Sibling of WET. The blue the draft could not name: not
+  UNFINISHED (a deficit) but COMPOSTABLE (a fertility).
+
 - **Continuation Ladder** — *four reasons a loop keeps going.* Skyhook
   (mechanism — `while element_exists()`, no mind anywhere, the control
   group), Coin Flip (chance — one bit of entropy, still no mind), Will
