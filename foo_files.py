@@ -3092,8 +3092,15 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #      - Level 2: Shell script (`./briefing.sh`).
 #      - Level 3: Python script (`python scripts/briefing.py`).
 #      - Level 4: FastHTML app (`apps/050_briefing.py`).
-#   3. CONNECTOR ALIAS TRANSITION:
-#      - Rename the human connector menu alias from `mcp` to `connect` (or `pipe` / `warp`) in `scripts/mcp_menu.py` and `flake.nix` to free bare `mcp` for the native Model Context Protocol client connector (`scripts/connectors/mcp.py`).
+#   3. CONNECTOR ALIAS TRANSITION -- DISCHARGED 2026-08-25, both clauses. The
+#      roster became `sources` (scripts/mcp_menu.py -> scripts/sources_menu.py),
+#      the registry dispatcher split off as `tools`, and `mcp` now aliases
+#      scripts/connectors/mcp.py -- which grew a bare-word identity walk in the
+#      SAME car, because a freed word pointed at a required positional would
+#      have answered argparse exit 2 and been a worse keypress than the roster
+#      it replaced. Kept as a dated tombstone rather than deleted: a numbering
+#      gap in a list of eight reads as a lost item, which is a more expensive
+#      confusion than six lines of receipt.
 #   4. MULTI-DIRECTORY PLUGIN DISCOVERY:
 #      - Extend `server.py` app scanner to search `APP_SEARCH_PATHS` across `apps/`, `Notebooks/Corporate/apps/`, and `Notebooks/Personal/apps/`, sorting by numeric prefix so domain plugins (e.g. Botify Parameter Buster) cleanly decouple from core Pipulate. Later beat: extend the same scan to enrolled `Notebooks/Shared/<user>/apps/` so a teammate's tool rides in without a core commit.
 #   5. DIRECTORY-STRUCTURE FIGURATE ART (seeded 2026-07-25): register the
