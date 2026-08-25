@@ -617,8 +617,39 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # preserved if/when the directory is transformed into a git repo
           APP_NAME=$(cat whitelabel.txt)
           PROPER_APP_NAME=$(echo "$APP_NAME" | awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}')
-          figlet "$PROPER_APP_NAME"
-          echo "Version: ${version}"
+          # THE BANNER MOVED TO DOOR 1 (2026-08-25). The figlet printed HERE,
+          # ABOVE the threshold, so the human who was one keypress away from
+          # saying "do not start the app" got a full-width ASCII assertion of
+          # that app's identity first. The banner is the curtain going up on
+          # the app; it belongs on the path where the app actually starts, and
+          # it now renders just below the BOOT_CHOICE exit. PROPER_APP_NAME
+          # stays computed here -- it is the figlet's only consumer and both
+          # live in this one process, so the move strands nothing.
+          #
+          # WHAT REPLACES IT IS A READING, NEVER A BOOLEAN. "nix present: True"
+          # names a state nothing observed; `nix --version` is an observation,
+          # and it discriminates Determinate Nix from generic Nix for free --
+          # exactly the fact a first-contact reader needs and cannot get from a
+          # boolean. Every field is read at this moment from a named source:
+          # nix from the binary, python from the activated venv, the version
+          # from __init__.py at flake eval, the path from the shell.
+          #
+          # ITS SILENCE IS ALSO A READING. runScript is invoked by the LAST
+          # line of each shellHook, so ANY output from it witnesses that the
+          # whole hook parsed -- the HALF-EXECUTED HOOK failure prints nothing
+          # here at all. That witness used to be the figlet's job; it did not
+          # disappear, it changed hands.
+          #
+          # LD_LIBRARY_PATH="" IS LOAD-BEARING (THE UNEXPORTED-SHIM RULE): the
+          # nix() rpath shim is a shell FUNCTION defined in miscSetupLogic, and
+          # this script is a CHILD PROCESS, so it inherits the polluted path
+          # and not the shim. The inline clear is the prescribed spelling and
+          # is a no-op on a clean shell.
+          NIX_READING=$(LD_LIBRARY_PATH="" nix --version 2>/dev/null | tail -1)
+          if [ -z "$NIX_READING" ]; then NIX_READING="nix: no reading"; fi
+          PY_READING=$(python -V 2>&1)
+          if [ -z "$PY_READING" ]; then PY_READING="python: no reading"; fi
+          printf '%s · %s · v%s · %s\n' "$NIX_READING" "$PY_READING" "${versionNumber}" "$PWD"
           # --- JupyterLab Local Configuration ---
           export JUPYTER_CONFIG_DIR="$(pwd)/.jupyter"
           # Install Python packages from requirements.txt
@@ -708,6 +739,17 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             # authorized failed to start.
             exit 0
           fi
+          # DOOR 1 ONLY: the banner, moved down from above the threshold on
+          # 2026-08-25. Everything below this line runs only when the human
+          # chose to start the app -- or when boot_menu.py is absent and the
+          # FALL-THROUGH GUARANTEE puts us on the pre-menu path, where the
+          # banner printed unconditionally anyway. The full version string
+          # with its description rides here rather than in the readings line
+          # above, because this is the one surface whose entire job is to name
+          # the thing that is starting.
+          figlet "$PROPER_APP_NAME"
+          echo "Version: ${version}"
+
           # Automatically start JupyterLab in background and server in foreground
           # Start JupyterLab in a tmux session
           # NOTE: kill and launch stay PAIRED inside the branch. Splitting
@@ -1395,7 +1437,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # self-contained prompt, then tells the human where to paste it.
           learn() {
             (cd "$PIPULATE_ROOT" && python prompt_foo.py \
-              "You are Yen Sid-ton, the onboarding wizard for Pipulate. A newcomer wants to install Pipulate for the first time. Your FIRST reply must be short and do four things in order: (1) confirm in one line that you hold the full install map (installer, flake, both Pipulate.com pages); (2) show the one-line install command immediately, since it is identical on every OS; (3) ask exactly one question, which OS they are on, noting it changes only the caveats, never the command; (4) add one line noting the command assumes Nix is already installed, and that a nix command not found response means install Nix first and reopen the terminal. From then on: one step per turn, one question maximum per turn, and every step ends with a visible success checkpoint describing what they should literally see (the figlet banner, the JupyterLab URL, the spoken voice greeting) plus the single most likely failure symptom at that step and its fix. Deliver the macOS --impure exception and the reopen-your-terminal-after-installing-Nix requirement at the moment each can bite, never as an upfront lecture. Offer the magic cookie internals (ZIP + ROT13 key, then git transformation and auto-updates inside nix develop) as an optional aside when relevant or when asked, not as mandatory explanation. When both the server and JupyterLab are confirmed running, declare the install banked and teach the re-entry incantation: cd into the install folder, then nix develop. High signal, low noise. Ask them what they see; never assume." \
+              "You are Yen Sid-ton, the onboarding wizard for Pipulate. A newcomer wants to install Pipulate for the first time. Your FIRST reply must be short and do four things in order: (1) confirm in one line that you hold the full install map (installer, flake, both Pipulate.com pages); (2) show the one-line install command immediately, since it is identical on every OS; (3) ask exactly one question, which OS they are on, noting it changes only the caveats, never the command; (4) add one line noting the command assumes Nix is already installed, and that a nix command not found response means install Nix first and reopen the terminal. From then on: one step per turn, one question maximum per turn, and every step ends with a visible success checkpoint describing what they should literally see (the one-line environment readings, the two-door menu where they press 1, the figlet banner once the app starts, the JupyterLab URL, the spoken voice greeting) plus the single most likely failure symptom at that step and its fix. Deliver the macOS --impure exception and the reopen-your-terminal-after-installing-Nix requirement at the moment each can bite, never as an upfront lecture. Offer the magic cookie internals (ZIP + ROT13 key, then git transformation and auto-updates inside nix develop) as an optional aside when relevant or when asked, not as mandatory explanation. When both the server and JupyterLab are confirmed running, declare the install banked and teach the re-entry incantation: cd into the install folder, then nix develop. High signal, low noise. Ask them what they see; never assume." \
               --chop INSTALL_CHOP --no-tree)
             echo ""
             echo "🧞 The First Wish is compiled and sitting in your clipboard."
