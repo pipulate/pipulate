@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # scripts/connectors/wallet.py
 """
-wallet.py — Score, check, and warm every credential in the Pipulate wallet.
+wallet.py — Connect your accounts and see which credentials are live.
 
 Golden-path modes, auto-detected from the leading positional argument:
 
