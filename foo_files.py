@@ -32,7 +32,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # 5. Type `foo` for simple compile or `fu` for file-tree and UML version.
 # 6. Paste in consumer-tier Web UI ChatBot frontier model of your choice.
 # 7. Enjoy the fun that ensues as whatever model helps you gain traction.
-# 8. For a full list of content distillation options, just type "learn".
+# 8. To hand this whole workshop to an AI in a web chat, type "brief".
 
 #               > There's something happening here.  
 #               > Just in case it's not entirely clear:  
@@ -2200,8 +2200,10 @@ pyproject.toml              # <-- The PyPI Packaging details
 INSTALL_CHOP = r"""
 # THE FIRST WISH (First-time install onboarding context)
 # COMMAND: python prompt_foo.py --chop INSTALL_CHOP --no-tree
-# ALIAS: `learn` (flake.nix) — compiles this chop with a built-in onboarding
+# ALIAS: `brief` (flake.nix) — compiles this chop with a built-in onboarding
 # prompt, fills the clipboard, and prints the paste-into-AI-WebChat steps.
+# Renamed from `learn` on 2026-08-25: nobody learns anything here, a payload
+# compiles and a clipboard fills, and the word now names the artifact.
 # Everything Yen Sid-ton needs to walk a newcomer from bare terminal to a
 # running Pipulate: the curl|bash bootstrap, the magic cookie hand-off, and
 # the flake that completes the git transformation. The one-liner:
@@ -2242,7 +2244,7 @@ expertise in what should happen next. Choose your 3 favorites and why."""
 SEED_CHOP = r"""
 # THE BOOK SEED (Distributable First Wish — compiled BY an owner, FOR a stranger)
 # COMMAND: python prompt_foo.py @SEED_PROMPT --chop SEED_CHOP --no-tree
-# Resolves learn()'s chicken-and-egg: `learn` requires the environment; this
+# Resolves brief()'s chicken-and-egg: `brief` requires the environment; this
 # artifact does not. An existing installer compiles once, then hands off the
 # newest rotated foo-<hash8>-NN.zip (verifiable receivers) or an
 # `-o first_wish.md` render (chatbots without code execution). The receiver
@@ -3115,7 +3117,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #      first, then `print(binascii.crc32(art.encode('utf-8')))`, then seal.
 #   6. ART DEPLOYMENT SURFACES (the REDUNDANT-GROOVE play made literal): once
 #      registered, the workspace-tree art renders into README.md / the GitHub
-#      homepage, the `learn` LLM payload, Honeybot station-identification
+#      homepage, the `brief` LLM payload, Honeybot station-identification
 #      breaks, and prompt_foo.py's own educational output. One master, many
 #      projections -- the handles-not-homes discipline the Jekyll lane already
 #      runs on prose, now run on the onboarding frame. Registration (item 5)
@@ -3152,7 +3154,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   cannot run is the MODEL FOLLOWS THE MAP failure with a human in the seat.
 # - Make the Honeybot slideshow announce it's about to do the restart before the forced (currently set to 4-hour) loop
 # - EARMARK: THE MANIFEST-SIGNING LANE (seeded 2026-07-22 from the receipts ride): implement THE RECEIPT LADDER RULE's provenance triple. foo.zip is ALREADY byte-reproducible (fixed epoch/mode/order in scripts/foo_cartridge.py — the hashed body carries no wall-clock time; the uploaded 46-snapshot manifest was stamped 2026-01-01). Remaining: (1) stamp manifest.json with the source git commit SHA + `git describe` at compile time; (2) sign manifest.json with a key you control — `ssh-keygen -Y sign` is the lowest-ceremony non-repudiation; (3) optional paranoid tier: append the manifest hash to an ever-growing receipts.ndjson (poor-man's transparency log). NEEDS scripts/foo_cartridge.py in context to patch the writer/verifier — NOT foo_files.py.
-# - EARMARK: SEED-PATH PEANUT-BUTTER ONBOARDING (seeded 2026-07-22): Yen Sid-ton must explain `curl ... | bash` to a cold newcomer in sandwich-rules terms — go to a stranger's address, grab the card, do everything it says UNREAD, as you, with full run of your house — then teach the grown-up form (curl -o, less, sh: fetch, read, run). Then the KEY distinction: DetSys/Nix differs not in MECHANISM but in PAYLOAD — Homebrew mutates global state in place and accretes machine-rot; Nix installs an immutable content-addressed store, enters with `nix develop`, leaves zero residue, reverses cleanly (--uninstall, survives macOS upgrades). First lesson for the New-B: you are ALLOWED to read the card. Bank into the learn()/seed() prompt copy in flake.nix.
+# - EARMARK: SEED-PATH PEANUT-BUTTER ONBOARDING (seeded 2026-07-22): Yen Sid-ton must explain `curl ... | bash` to a cold newcomer in sandwich-rules terms — go to a stranger's address, grab the card, do everything it says UNREAD, as you, with full run of your house — then teach the grown-up form (curl -o, less, sh: fetch, read, run). Then the KEY distinction: DetSys/Nix differs not in MECHANISM but in PAYLOAD — Homebrew mutates global state in place and accretes machine-rot; Nix installs an immutable content-addressed store, enters with `nix develop`, leaves zero residue, reverses cleanly (--uninstall, survives macOS upgrades). First lesson for the New-B: you are ALLOWED to read the card. Bank into the brief()/seed() prompt copy in flake.nix.
 # - TODO: COLD-START MIKE-E TEST — a reproducible test where the intrepid explorer gets ONLY the archive + the key: no warmed cache, no prior slot, unknown cartridge slot. Pass = they `nix develop` into a clean workshop, drop the cartridge, reconstruct the reasoning from a signed/commit-anchored immutable core + preserved commentary, verify the receipt, and leave both machines untouched. If any step needs the author in the room, the cartridge failed. Structural-Humility rule made executable (foo-cartridge-replay-v1 sibling).
 # - EARMARK: THE MODEL FOLLOWS THE MAP RULE (banked 2026-07-22, blind-test witnessed): capability prose is actuation. A summoned model that invokes a nonexistent tool named by our onboarding map is following instructions correctly; the map is defective. Every first-turn capability name must be generated from or mechanically validated against current source before shipping.
 # - TODO: CURATED RULE-OF-7 VALIDATION — keep essential_tools human-curated for pedagogy, but AST-validate every name against tools/*.py without importing runtime modules. A mismatch must print loudly and omit the ghost; git history plus human intent distinguishes a typo from a genuine deletion.

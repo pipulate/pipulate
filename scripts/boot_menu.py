@@ -85,7 +85,7 @@ def _timeout():
 def _render(name, seconds) -> None:
     lines = [
         f"[1]  Start {name}   JupyterLab + server + browser tabs",
-        "[2]  Just the shell   nothing starts -- type  learn  for the guided tour",
+        "[2]  Just the shell   nothing starts -- three words wait at the prompt",
     ]
     if seconds is None:
         subtitle = "waiting for your choice -- Ctrl+C also drops to the shell"
@@ -184,7 +184,7 @@ def main() -> int:
         print()
         print("Three words to start from:")
         print("  sources   see what this shell can reach outside this machine")
-        print("  learn     hand this whole workshop to an AI in a web chat")
+        print("  brief     compile this workshop into your clipboard for an AI")
         print(f"  pu        change your mind and start {name} after all")
     else:
         print(f"Starting {name}...")

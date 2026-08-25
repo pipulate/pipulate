@@ -1431,11 +1431,24 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             ahc
           }
           alias pins='(cd "$PIPULATE_ROOT" && python prompt_foo.py --chop PINNED_CHOP --no-tree)'
-          # THE FIRST WISH: `learn` is to Pipulate what vimtutor is to vim.
-          # (Resurrects the dead V7 Unix `learn` CAI tutor name — no modern collision.)
+          # THE FIRST WISH, RENAMED (2026-08-25). `learn` failed the
+          # ATTRIBUTED-VOICE mechanical test: it named an act no code in this
+          # pipeline performs. Nobody learns anything -- a payload compiles and
+          # a clipboard fills. `brief` names an artifact the command ACTUALLY
+          # PRODUCES, which is the whole difference. The obvious objection --
+          # that "brief" read bare sounds like "brief me" -- is survivable and
+          # `learn` was not: the recipient is under-specified by one word and
+          # the card supplies it, whereas "teach me" is wholly false and no
+          # card copy repairs it.
+          # THE ARTIFACT KEEPS ITS NAME. The command is `brief`; the thing it
+          # produces is still The First Wish, which is what INSTALL_CHOP and
+          # the seed lane call it. Renaming the artifact too would drag `seed`
+          # and SEED_PROMPT into a car that has no business touching them.
+          # NO COMPATIBILITY ALIAS: two words for one job is the sibling-.md
+          # failure, and `command not found` is a loud wound, not a quiet lie.
           # Compiles the INSTALL_CHOP onboarding context into the clipboard with a
           # self-contained prompt, then tells the human where to paste it.
-          learn() {
+          brief() {
             (cd "$PIPULATE_ROOT" && python prompt_foo.py \
               "You are Yen Sid-ton, the onboarding wizard for Pipulate. A newcomer wants to install Pipulate for the first time. Your FIRST reply must be short and do four things in order: (1) confirm in one line that you hold the full install map (installer, flake, both Pipulate.com pages); (2) show the one-line install command immediately, since it is identical on every OS; (3) ask exactly one question, which OS they are on, noting it changes only the caveats, never the command; (4) add one line noting the command assumes Nix is already installed, and that a nix command not found response means install Nix first and reopen the terminal. From then on: one step per turn, one question maximum per turn, and every step ends with a visible success checkpoint describing what they should literally see (the one-line environment readings, the two-door menu where they press 1, the figlet banner once the app starts, the JupyterLab URL, the spoken voice greeting) plus the single most likely failure symptom at that step and its fix. Deliver the macOS --impure exception and the reopen-your-terminal-after-installing-Nix requirement at the moment each can bite, never as an upfront lecture. Offer the magic cookie internals (ZIP + ROT13 key, then git transformation and auto-updates inside nix develop) as an optional aside when relevant or when asked, not as mandatory explanation. When both the server and JupyterLab are confirmed running, declare the install banked and teach the re-entry incantation: cd into the install folder, then nix develop. High signal, low noise. Ask them what they see; never assume." \
               --chop INSTALL_CHOP --no-tree --quiet)
