@@ -150,6 +150,38 @@ def main():
         print()
 
     width = max(len(command) for command, _ in rows)
+
+    # THE 80-COLUMN BUDGET, SHOUTED RATHER THAN SILENTLY TRUNCATED.
+    # Rich gives a padding=(1,2) Panel a body of console_width - 6, so at the
+    # 80 columns a fresh terminal (and every non-tty lane, including the `!`
+    # executor) defaults to, the body is 74. Each row spends the command
+    # column plus a 3-space gutter -- the same derivation
+    # connectors/README.md already documents, recomputed here from the live
+    # width so a longer command word lowers the ceiling for every row at once.
+    # MAINTAINER-INVISIBLE BY CONSTRUCTION: the author's terminal is ~180
+    # columns, so an over-budget row wraps only for strangers. Row one (warm)
+    # sat at 63 against a 61 budget for the entire life of this roster, and no
+    # one who could fix it was ever in a position to see it.
+    # WARN, NEVER TRUNCATE: MAX_DESC's silent cut is the LAST-INCH failure --
+    # a correct sentence destroyed by the transformation nearest the reader,
+    # with no tell. A loud line names its own fix, stays silent when every row
+    # fits, and the rendered panel below is the independent witness that this
+    # check ran at all. The healthy margin is thin (the longest surviving row
+    # clears by two characters), which is why the guard matters more than the
+    # single row it was written to catch.
+    budget = 74 - width - 3
+    overflows = [
+        (command, description)
+        for command, description in rows
+        if len(description) > budget
+    ]
+    for command, description in overflows:
+        print(
+            f"!!  {command} description is {len(description)} chars against a "
+            f"{budget}-char budget -- this row WILL WRAP at 80 columns."
+        )
+    if overflows:
+        print()
     body = "\n".join(
         f"{command.ljust(width)}   {description}"
         for command, description in rows
