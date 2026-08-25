@@ -1110,23 +1110,46 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias gitops='(cd ~/repos/trimnoir && git commit --allow-empty -m "retry" && git push)'
           alias force='(cd ~/repos/trimnoir && git commit --allow-empty -m "retry" && git push)'
           alias isnix="if [ -n \"$IN_NIX_SHELL\" ]; then echo \"✓ In Nix shell v${version}\"; else echo \"✗ Not in Nix shell\"; fi"
-          # THE SECOND DOOR: bare `mcp` is the roster; `mcp <tool> [args]` is
-          # unchanged and still routes to cli.py's tool-call actuator. The
-          # word is not technically accurate for the connector rows -- it is
-          # the word people already reach for, and reaching for the right
-          # word beats being right about the wrong one.
+          # THE SECOND DOOR, SPLIT IN TWO (2026-08-25). One word was doing two
+          # unrelated jobs and nothing about the word said so: bare `mcp`
+          # listed CONNECTORS that pull material IN, while `mcp <tool>`
+          # dispatched a REGISTRY TOOL. Worse, `mcp` is the NAME OF A FILE --
+          # scripts/connectors/mcp.py, the one thing here that genuinely IS
+          # MCP -- and that file could not be reached by its own name because
+          # the roster had taken it. Three words now, each of whose bare and
+          # argument forms are about the same thing:
           #
-          # FALL-THROUGH GUARANTEE: if scripts/mcp_menu.py has not landed,
-          # bare `mcp` behaves EXACTLY as it did before this function existed
-          # -- cli.py's own argparse error. A shell must never depend on a
-          # file that might not be there.
+          #   sources        the sources you can name (the roster)
+          #   tools          the registry tools you can call
+          #   tools <name>   call one
+          #   mcp <server>   the real Streamable-HTTP client (aliased below)
           #
-          # Also fixes a latent white-label bug: the old alias hardcoded
-          # ~/repos/pipulate, so `mcp` cd'd into the wrong (or missing)
-          # directory for anyone whose install folder is named otherwise.
-          mcp() {
-            if [ "$#" -eq 0 ] && [ -f "$PIPULATE_ROOT/scripts/mcp_menu.py" ]; then
-              "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/mcp_menu.py"
+          # Discharges the CONNECTOR ALIAS TRANSITION earmark, whose text asked
+          # only that the roster be renamed so `mcp` came free. `sources` beats
+          # that earmark's own `connect` / `pipe` / `warp` for one reason: it
+          # names the OUTPUT CLASS rather than an action the command does not
+          # perform. The roster connects nothing; `warm` does.
+          #
+          # FALL-THROUGH GUARANTEE, and it now REFUSES instead of substituting:
+          # if the roster file has not landed, say so in one line. The old
+          # spelling fell through to `cli.py call` with no arguments, which
+          # answered a DIFFERENT QUESTION with an argparse error. A shell must
+          # never depend on a file that might not be there, and it must never
+          # quietly answer something else when that file is missing.
+          #
+          # FUNCTIONS, NOT ALIASES (THE THREE-TIER AMENDMENT): `tools` needs a
+          # branch, and both are typed by a human and never echoed as a `!`
+          # probe, so neither needs to be a packaged derivation.
+          sources() {
+            if [ -f "$PIPULATE_ROOT/scripts/sources_menu.py" ]; then
+              "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/sources_menu.py"
+            else
+              echo "sources: scripts/sources_menu.py has not landed in this checkout."
+            fi
+          }
+          tools() {
+            if [ "$#" -eq 0 ]; then
+              (cd "$PIPULATE_ROOT" && .venv/bin/python cli.py mcp-discover)
             else
               (cd "$PIPULATE_ROOT" && .venv/bin/python cli.py call "$@")
             fi
@@ -1169,6 +1192,13 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias sheets='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/sheets.py"'
           alias jira='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/jira.py"'
           alias slack='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/slack.py"'
+          # `mcp` NOW MEANS THE CLIENT, which is what the file has always been
+          # named. Freed 2026-08-25 when the roster became `sources`, and
+          # claimed in the SAME car so the word is never a hole. An ALIAS, not
+          # a function: nothing branches here, because mcp.py's own bare mode is
+          # the branch -- and a bare `mcp` that argparse-exited 2 would have
+          # been a worse first keypress than the roster it replaced.
+          alias mcp='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/mcp.py"'
           # weblogin <apex-domain>: pop up a visible Chrome on the house
           # persistent profile (data/uc_profiles/default) so persistent
           # scrapes inherit the login. Log in, close the window, done.
@@ -1191,8 +1221,9 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # is unchanged for anyone who wants the browser and nothing else.
           #
           # A FUNCTION, not an alias: THE ALIAS-DISPATCH RULE says nothing can
-          # invoke an alias on a human's behalf, and mcp_menu.py's roster names
-          # this word to a reader who may reasonably expect it to be reachable.
+          # invoke an alias on a human's behalf, and sources_menu.py's roster
+          # names this word to a reader who may reasonably expect it to be
+          # reachable.
           warm() {
             if [ "$#" -eq 0 ]; then
               "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/wallet.py" check

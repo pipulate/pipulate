@@ -26,9 +26,9 @@ has been fixed in the same helper in two files.
 7. COMPILE-LANE CAUTION in the docstring: if LIST/FETCH output can contain
    client identifiers, say so, and rely on pii_substitutions.txt coverage
    before any `!` invocation rides to a cloud chat window.
-8. THE FIRST DOCSTRING LINE IS A LIVE DISPLAY, not prose. `scripts/mcp_menu.py`
+8. THE FIRST DOCSTRING LINE IS A LIVE DISPLAY, not prose. `scripts/sources_menu.py`
    reads it with `ast.get_docstring` (never an import) and prints it verbatim
-   beside the command word in the `mcp` roster, so it must read as an
+   beside the command word in the `sources` roster, so it must read as an
    instruction to a newcomer who has never opened the file:
    `name.py — <verb phrase, one sentence, 61 chars or fewer>`, e.g. "Bring a
    Jira project, issue, or JQL search into context." The 61 is MEASURED, not
@@ -87,5 +87,5 @@ disambiguation table, keep the breadcrumbs. If an API's paging differs,
 write that API's paging — do not generalize another connector's. Then REWRITE
 the first docstring line before anything else (contract item 8): a copied
 connector that keeps its template's first line will display the template's
-name in the `mcp` roster, which is how `gong.py` came to introduce itself as
-`wallet.py`.
+name in the `sources` roster, which is how `gong.py` came to introduce itself
+as `wallet.py`.

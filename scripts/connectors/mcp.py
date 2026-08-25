@@ -11,6 +11,7 @@ named gate; nothing here silently falls back.
 
 Golden-path modes, auto-detected from positionals:
 
+  python scripts/connectors/mcp.py                                # IDENTITY: token state + usage; opens no socket
   python scripts/connectors/mcp.py <server>                       # LIST: initialize -> tools/list
   python scripts/connectors/mcp.py <server> <tool> '<args-json>'  # CALL: initialize -> tools/call
   python scripts/connectors/mcp.py <server> --check               # CHECK: envelope health; exit code is the answer
@@ -222,6 +223,45 @@ def resolve_token(token_env=None):
     return None, None
 
 
+def identity():
+    """No-argument mode: what this client holds, and what it still needs.
+
+    THE FREED WORD ARRIVED EMPTY-HANDED (2026-08-25). `mcp` came free when the
+    human roster was renamed to `sources`, and an alias pointing at a REQUIRED
+    positional would have answered the freed word with argparse exit 2 -- a
+    worse first keypress than the roster it replaced. Every other connector
+    already has a bare-word identity walk; this is that walk, and it is why
+    freeing the word and claiming it rode in the same car.
+
+    IT REPORTS, IT NEVER ASSERTS (ATTRIBUTED-VOICE): a token RESOLVING is not a
+    token being ACCEPTED. Only --check can say accepted, because only --check
+    posts. resolve_token's own stderr clock note rides along unchanged, so an
+    expired token says so HERE instead of arriving disguised as a 401 later.
+
+    READ-ONLY BY CONSTRUCTION: no socket opens, no receipt is armed (so the
+    atexit flush returns early and writes nothing), and no token VALUE is ever
+    printed. Safe to echo as a `!` chisel-strike.
+    """
+    token_name, token = resolve_token()
+    print("# mcp.py -- replay client for remote MCP servers (Streamable HTTP)")
+    print(f"# protocol : {PROTOCOL_VERSION} (INFERRED until a GREEN --check)")
+    if token:
+        print(f"# token    : resolved from {token_name} (value never printed)")
+        print("#            resolved is not accepted -- only --check posts")
+    else:
+        print("# token    : NONE. Tried, in order: MCP_BEARER_TOKEN,")
+        print("#            MCP_TOKEN_FILE, BOTIFY_TOKEN_FILE,")
+        print("#            ~/.config/pipulate/mcp_botify_token.json,")
+        print("#            BOTIFY_API_TOKEN")
+    print("#")
+    print("# This client never guesses a server. Name one:")
+    print("#   mcp <server> --check           envelope health; exit code is the answer")
+    print("#   mcp <server>                   initialize -> tools/list")
+    print("#   mcp <server> <tool> '<json>'   initialize -> tools/call")
+    print("#")
+    print("# Mint or refresh a bearer:  python scripts/connectors/mcp_warm.py")
+
+
 def make_client(token):
     return httpx.Client(
         headers={
@@ -400,7 +440,9 @@ def check(server, token_env):
 def main():
     parser = argparse.ArgumentParser(
         description="Replay client and envelope witness for remote MCP servers.")
-    parser.add_argument("server", help="MCP server URL, e.g. https://mcp.botify.com")
+    parser.add_argument("server", nargs="?", default=None,
+                        help="MCP server URL, e.g. https://mcp.botify.com. "
+                             "Omit for the identity walk.")
     parser.add_argument("tool", nargs="?", default=None,
                         help="Tool name for CALL mode; omit for tools/list.")
     parser.add_argument("args_json", nargs="?", default="{}",
@@ -418,6 +460,10 @@ def main():
                         help="Env var holding the bearer token (default: "
                              "MCP_BEARER_TOKEN, then BOTIFY_API_TOKEN).")
     args = parser.parse_args()
+
+    if args.server is None:
+        identity()
+        return
 
     if args.check:
         sys.exit(check(args.server, args.token_env))

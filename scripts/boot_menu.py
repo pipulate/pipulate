@@ -183,9 +183,9 @@ def main() -> int:
         print(f"Staying in the shell. Nothing started -- no {name}, no JupyterLab.")
         print()
         print("Three words get you everywhere:")
-        print("  learn   hand this whole workshop to an AI in a web chat")
-        print("  mcp     see what reaches outside this machine")
-        print(f"  pu      start {name} (long form: pipulate)")
+        print("  learn     hand this whole workshop to an AI in a web chat")
+        print("  sources   see what reaches outside this machine")
+        print(f"  pu        start {name} (long form: pipulate)")
     else:
         print(f"Starting {name}...")
     return choice

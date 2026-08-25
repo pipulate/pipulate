@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-mcp_menu.py — what door 2 opens onto.
+sources_menu.py — what door 2 opens onto.
 
 boot_menu.py's door 2 drops the human into the Nix shell and tells them to
-type `mcp`. This is the roster they get: the commands that reach OUTSIDE
+type `sources`. This is the roster they get: the commands that reach OUTSIDE
 this machine, each row's description GENERATED from the target script's own
 module docstring rather than hand-authored here.
 
@@ -88,7 +88,7 @@ TAIL = [
 FOOTER = [
     "Add  --help  to any command above for its full usage.",
     "Type  learn  to hand this whole workshop to an AI in a web chat.",
-    "Type  mcp <tool_name>  to call a registered MCP tool directly.",
+    "Type  tools  to list registry tools, or  tools <name>  to call one.",
 ]
 
 
