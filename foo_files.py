@@ -2049,7 +2049,7 @@ scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and e
 # ============================================================================
 
 # THE CONNECTORS (WET single-file API gateways; contract in the README)
-# scripts/mcp_menu.py
+# scripts/sources_menu.py
 # scripts/connectors/README.md
 # scripts/connectors/gmail.py
 # scripts/connectors/confluence.py
