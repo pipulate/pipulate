@@ -645,11 +645,36 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # this script is a CHILD PROCESS, so it inherits the polluted path
           # and not the shim. The inline clear is the prescribed spelling and
           # is a no-op on a clean shell.
-          NIX_READING=$(LD_LIBRARY_PATH="" nix --version 2>/dev/null | tail -1)
+          # 89 CHARS ON ITS FIRST FLIGHT, MEASURED (2026-08-25). Two cuts, in
+          # the order that matters: BOUND THE UNBOUNDED FIELD FIRST, then
+          # remove redundancy, and never truncate a reading.
+          #   $PWD is the only field that can grow without limit -- 25 here,
+          #     but a stranger with ~/Documents/code/pipulate pushes this line
+          #     past 100. Tilde-shortening saves 9 AND bounds it structurally.
+          #   The leading "nix " is redundant with the parenthetical right
+          #     after it, and that parenthetical is the whole discriminator:
+          #     "(Nix) 2.25.0..." is generic, "(Determinate Nix 3.x) 2.x" is
+          #     DetSys. Saves 4 and destroys nothing.
+          # 89 - 9 - 4 = 76, with headroom. Truncating the prerelease build
+          # string was REFUSED: that is the LAST-INCH failure -- a correct
+          # reading destroyed by the transformation nearest the reader.
+          #
+          # THE FIRST ATTEMPT AT THIS COMMENT WAS REFUSED BY THE NIX AIRLOCK,
+          # for containing the exact sequence it warned about. A bash comment
+          # DOES NOT EXIST at Nix parse time: the whole indented string is one
+          # value, and a dollar immediately followed by an open brace starts
+          # interpolation ANYWHERE inside it, comment or not. The warning was
+          # the hazard. So: say "dollar-brace" in words and never type it. A
+          # bare dollar followed by a letter is literal and safe, which is why
+          # $PWD and $HOME below reach bash intact. Two adjacent single quotes
+          # are the other structural hazard and appear nowhere here.
+          NIX_READING=$(LD_LIBRARY_PATH="" nix --version 2>/dev/null | tail -1 | sed 's/^nix //')
           if [ -z "$NIX_READING" ]; then NIX_READING="nix: no reading"; fi
           PY_READING=$(python -V 2>&1)
           if [ -z "$PY_READING" ]; then PY_READING="python: no reading"; fi
-          printf '%s · %s · v%s · %s\n' "$NIX_READING" "$PY_READING" "${versionNumber}" "$PWD"
+          PWD_READING=$(printf '%s' "$PWD" | sed "s|^$HOME|~|")
+          if [ -z "$PWD_READING" ]; then PWD_READING="$PWD"; fi
+          printf '%s · %s · v%s · %s\n' "$NIX_READING" "$PY_READING" "${versionNumber}" "$PWD_READING"
           # --- JupyterLab Local Configuration ---
           export JUPYTER_CONFIG_DIR="$(pwd)/.jupyter"
           # Install Python packages from requirements.txt
