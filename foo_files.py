@@ -2385,6 +2385,26 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# - NIX AIRLOCK, BOTH BRANCHES WITNESSED (banked 2026-08-25): apply.py's
+#   nix-instantiate --parse gate has now been observed PASSING (every flake.nix
+#   car of this ride) and REFUSING (the dollar-brace comment above, named with
+#   file, line and column). REFUSAL-ONLY WITNESS is discharged for this guard:
+#   it is neither broken shut nor unwitnessed open. The refusal cost one
+#   re-copied paste, and THE FIRST-ERROR FLOOR was honored -- the car was
+#   dropped and re-emitted rather than hand-repaired in vim.
+# - EARMARK: THE WARNING THAT WAS THE HAZARD (banked 2026-08-25, airlock-
+#   convicted): a comment explaining a delimiter hazard must never CONTAIN the
+#   delimiter, because a comment DOES NOT EXIST at the outer parser's parse
+#   time. CONVICTION: a flake.nix comment warning that a dollar immediately
+#   followed by an open brace is eaten by Nix's interpolator was refused by
+#   apply.py's Nix airlock at the exact column of its own warning -- the whole
+#   indented string is ONE Nix value, and interpolation starts anywhere inside
+#   it, comment or not. CURE: name the sequence in words ("dollar-brace") and
+#   never type it. Third sibling of THE INSTRUMENT BECOMES BAIT -- the first is
+#   a probe that attracts the transform it measures, the second is a label
+#   eaten by the markup it rides in, this is a warning eaten by the grammar it
+#   warns about. Cousin of THE LABEL IS NOT DATA, which is the same collision
+#   with the compiler's own console as the victim.
 # - EARMARK: THE NIX-FILE LINT PROBE (banked 2026-08-21, receipt-witnessed):
 #   a probe that passes a non-Python file to ruff produces thousands of
 #   invalid-syntax errors that read as catastrophic repo rot. Receipt: the
@@ -3322,7 +3342,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # scripts/articles/scrub_tags.py  # [1,055 tokens | 4,083 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
 # scripts/audit_dye.py  # [256 tokens | 1,009 bytes]
-# scripts/boot_menu.py  # [1,669 tokens | 6,661 bytes]
+# scripts/boot_menu.py  # [1,668 tokens | 6,665 bytes]
 # scripts/chat_route_probe.py  # [2,813 tokens | 13,033 bytes]
 # scripts/confluence_probe.py  # [4,990 tokens | 20,668 bytes]
 # scripts/continuation_ladder.py  # [2,808 tokens | 11,358 bytes]
