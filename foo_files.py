@@ -522,6 +522,21 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # by hand in under a minute. OPERATOR-SIDE COROLLARY: when app prints
 # no-blocks-found, do NOT edit the patch file -- delete it and ask for a
 # re-emit. The emitter is cheap; the unexamined body is not.
+# FOURTH REFUSAL CLASS (banked 2026-08-25, emitter-convicted): the
+# MISSING-TARGET refusal, and it is the one member of this family where a
+# hand-repair IS witnessed. apply.py's block_pattern matched a complete
+# SEARCH/DIVIDER/REPLACE triple while the OPTIONAL Target group came back
+# empty, so the markers PARSED, the body was extracted INTACT, and the
+# diagnostic PRINTED that body back verbatim before refusing. Adding a
+# Target line therefore cannot touch a body the operator just read on
+# screen, and the exact-match interlock still runs on it unmodified --
+# unlike no-blocks-found, where nothing ever read the body at all.
+# THE CAUSE IS IN THE EMITTER, NOT THE OPERATOR'S VIM: a web chat UI's
+# copy button copies the fence BODY ONLY, so a Target line placed ABOVE
+# the fence is structurally uncopyable by the path the operator uses.
+# Convicted 2026-08-25 when a two-car train put both Target lines outside
+# their fences and both cars were refused. Cure: THE FENCED OUTFLOW
+# INVARIANT, which now names the copy button as the actuator.
 
 # THE CARRIED-DELIVERABLE RULE (banked 2026-07-29, operator-convicted): a
 # Car-5 external deliverable is CARRIED, NOT CITED. Car 5's actuator is the
