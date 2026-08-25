@@ -2380,6 +2380,19 @@ def main():
     parser.add_argument('--check-dependencies', action='store_true', help='Verify that all required external tools are installed.')
     parser.add_argument('--context-only', action='store_true', help='Generate a context-only prompt without file contents.')
     parser.add_argument('-n', '--no-tree', action='store_true', help='Suppress file tree and UML generation.')
+    # THE ACCOUNTING GOES QUIET; THE GATES DO NOT (2026-08-25). At minute zero
+    # of first contact, the onboarding command's answer to "teach me" was a
+    # token-budget table -- the machinery showing through at exactly the moment
+    # the Stick Bug is supposed to be invisible. This flag is read EXACTLY ONCE,
+    # on the step-5 conjunct below, and gates ONE if. The step-6 sanitizer,
+    # secrets tripwire, render canary and disclosure receipt, and the step-7
+    # cartridge write, all sit AFTER that block at main()'s own indentation and
+    # are therefore STRUCTURALLY unreachable from here -- silencing any of them
+    # would recreate THE SILENT-PASS PROBLEM, where an armed gate and a
+    # disarmed gate print identically. It does not reach steps 1-4 either:
+    # the paintbox, integrity and processing lines print through logger.print
+    # long before this. Bulk removed, receipts intact.
+    parser.add_argument('--quiet', action='store_true', help='Suppress the step-5 console echo (Payload Ledger + Summary). Cannot reach the step-6 sanitizer, secrets tripwire, render canary, or disclosure receipt.')
     parser.add_argument('--chop', type=str, default='AI_PHOOEY_CHOP', help='Specify an alternative payload variable from foo_files.py')
     parser.add_argument('--bumper', type=str, default=None, help='Inject a pre-registered bumper matrix from flippers.json (e.g., gold, cat)')
     parser.add_argument('--line-numbers', action='store_true', help='Prefix source lines with line numbers for review/navigation only. Do not use this mode for SEARCH/REPLACE patch generation.')
@@ -3138,7 +3151,10 @@ def main():
     final_output = builder.build_final_prompt()
 
     # 5. Print the Summary section to console for immediate feedback
-    if "Summary" in builder.all_sections:
+    # THE FLAG'S ENTIRE REACH IS THIS CONJUNCT. args.quiet is read here and
+    # nowhere else in this file, and the body of this if is the whole of step
+    # 5 -- ledger and summary both. See the --quiet argparse comment above.
+    if "Summary" in builder.all_sections and not args.quiet:
         console_summary = builder.all_sections["Summary"]["content"]
         
         # FIX: Strip the redundant Processing Log specifically for terminal display
