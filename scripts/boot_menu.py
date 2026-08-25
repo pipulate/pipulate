@@ -4,7 +4,7 @@ boot_menu.py — the threshold at the end of `nix develop`.
 
 Two doors, one keypress:
   [1] Start <AppName>   JupyterLab + server, browser tabs (today's behavior)
-  [2] Just the shell    NOTHING starts; `learn`, `seed`, `foo`, `ahc` live here
+  [2] Just the shell    NOTHING starts; `sources`, `brief`, `seed`, `foo` live here
 
 THE PROTOCOL IS THE EXIT CODE, never stdout. Nothing parses this program's
 output, so no capture pipe can ever be held open by it (the rgx/xclip
