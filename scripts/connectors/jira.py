@@ -102,6 +102,58 @@ def resolve_base(site_url, cloud_id):
     return (site_url or "").rstrip('/'), "site host"
 
 
+def normalize_query(arg):
+    """Turn a browser-copied Jira URL into the key this connector routes on.
+
+    THE URL IS WHAT THE HUMAN HAS. Every other accepted shape -- a bare issue
+    key, a bare project key, a JQL string -- requires already knowing the key,
+    which in practice means reading it off a URL and retyping it. The URL is
+    the one thing a browser hands you with a keystroke, so it is the shape
+    that should just work. Recognized, in order: any query value that IS an
+    issue key (?selectedIssue=PROJ-123), then any path segment that IS an
+    issue key (/browse/PROJ-123), then the segment after /projects/ or
+    /browse/ when it is a project key.
+
+    IT REFUSES RATHER THAN FALLS THROUGH. An unrecognized http(s) argument
+    used to reach search_issues as a JQL string, and Jira answers that with an
+    HTTP 400 about JQL syntax -- an error about a query language the human
+    never typed, naming nothing they can act on. Same disease as the Slack
+    channel-URL bug convicted 2026-08-26: the wrong lane's error message. A
+    JQL string never begins with http, so this refusal cannot swallow a
+    legitimate search.
+
+    CALLED BEFORE make_client() ON PURPOSE. The refusal then costs no
+    credential and no network call, which is what makes the wiring probeable
+    in the compile lane without firing a live request at a client's Jira and
+    printing that host into a payload.
+    """
+    if not arg.startswith(('http://', 'https://')):
+        return arg
+    parsed = urlparse(arg)
+    for values in parse_qs(parsed.query).values():
+        for value in values:
+            if ISSUE_KEY_RE.match(value):
+                return value
+    parts = [p for p in parsed.path.split('/') if p]
+    for part in reversed(parts):
+        if ISSUE_KEY_RE.match(part):
+            return part
+    for marker in ('projects', 'browse'):
+        if marker in parts:
+            index = parts.index(marker)
+            if index + 1 < len(parts) and PROJECT_KEY_RE.match(parts[index + 1]):
+                return parts[index + 1]
+    sys.stderr.write(
+        "Could not find an issue key or project key in that URL.\n"
+        "Recognized shapes:\n"
+        "  https://<site>.atlassian.net/browse/PROJ-123\n"
+        "  https://<site>.atlassian.net/jira/...?selectedIssue=PROJ-123\n"
+        "  https://<site>.atlassian.net/jira/software/c/projects/PROJ/boards/1\n"
+        "Pass the key itself (PROJ-123 or PROJ) for any other shape.\n"
+    )
+    sys.exit(1)
+
+
 # ----------------------------------------------------------------------------
 # Auth & transport
 # ----------------------------------------------------------------------------
