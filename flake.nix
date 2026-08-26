@@ -1280,6 +1280,27 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # is correct (ALIAS-DISPATCH RULE); it does NOT inherit into `!` child
           # shells, exactly like the connector aliases above.
           alias mothercat='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/mother_cat.py"'
+          # walk [trail]: the SHORT spelling of the ride above. Five rungs, one
+          # implementation, so the short form can never be weaker than the long:
+          #   bash assets/installer/mck.sh public_walk   implementation-revealing
+          #   bash walk public_walk                      repository-facing
+          #   bash walk                                  the default is the launcher's
+          #   walk public_walk                           this line
+          #   walk                                       the teaching surface
+          # AN ALIAS, per THE ALIAS-DISPATCH RULE and the mothercat precedent
+          # directly above: pure prefix dispatch, no branch, typed only by a
+          # human. Nothing invokes it on anyone's behalf, and it is never echoed
+          # as a probe -- a bare walk runs a ninety-second spoken rehearsal and
+          # then blocks on a terminal, which is an actuator, not a reading.
+          # THE ROOT WRAPPER IS THE ONE DELEGATOR. This points at the repo-root
+          # walk file rather than at the launcher directly, so rungs 4 and 5 run
+          # byte-identical code to rungs 2 and 3 and the launcher path lives in
+          # exactly one place. It also means `bash walk` still works for
+          # anything that cannot see a shell alias, including a child process --
+          # the file covers the tier an alias structurally cannot.
+          # NOT scripts/walk.py, which is the non-actuating dry-run PLANNER and
+          # shares nothing with this word but four letters.
+          alias walk='bash "$PIPULATE_ROOT/walk"'
           # THE CREDENTIAL GAME: bare `warm` is the LIVE red/green board — one
           # bounded API call per enrolled wallet slot, GOLD when every row is
           # green. `warm <slot>` is the fixer for that one credential, and a
