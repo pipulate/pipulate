@@ -350,7 +350,12 @@ def build_plan(trail, supplied_values):
     all_errors = []
     resolved_stops = []
     for stop in trail["stops"]:
-        url = os.environ.get(stop["url_env"], "").strip()
+        # build_plan is NOT on the ride path -- mother_cat calls load_trail
+        # and _browser_params and never this function. It still needs the
+        # branch, or `walk.py --trail X` reports a false unset-variable error
+        # for a trail that rides perfectly well.
+        url_env = stop.get("url_env")
+        url = stop.get("url") or os.environ.get(url_env or "", "").strip()
         value = supplied_values.get(stop["target_slot"])
         errors = []
         browser = None
