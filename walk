@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+# walk -- the short, stable spelling of the Mother Cat ride.
+#
+# A DELEGATOR, NEVER AN IMPLEMENTATION. Every rung below runs the SAME code,
+# which is the whole point: the short spelling can never come to mean
+# something weaker than the long one.
+#
+#   bash assets/installer/mck.sh public_walk   implementation-revealing
+#   bash walk public_walk                      repository-facing
+#   bash walk                                  the default belongs to mck.sh
+#   walk public_walk                           the Nix-shell word (flake.nix)
+#   walk                                       the teaching surface
+#
+# IT DOES NOT ROUTE TO scripts/walk.py, AND THAT COLLISION IS WHY THIS
+# PARAGRAPH EXISTS. Despite the inviting filename, scripts/walk.py is the
+# strict DRY-RUN PLANNER: it validates a trail, prints a plan, opens no
+# browser and writes nothing. The ride lives in assets/installer/mck.sh,
+# which owns workshop discovery, the install offer, the trail search path,
+# entry into nix develop when it is needed, the spoken rehearsal, the RIDE
+# confirmation, every per-stop CAPTURE fence, and the final DECANT gate. A
+# short command that skipped any of those would be a different and weaker
+# command wearing this name.
+#
+# IT DOES NOT KNOW THE DEFAULT TRAIL. mck.sh already defaults TRAIL_NAME to
+# public_walk. Repeating that rule here would mint a second authority for
+# it, and the day the two disagree the short and long spellings ride
+# different trails while both look correct.
+#
+# ARGUMENTS PASS THROUGH UNTOUCHED, so --where, --yolo, MCK_TRAIL and any
+# future flag reach mck.sh without this file ever learning what they are.
+#
+# NOT EXECUTABLE, ON PURPOSE. The ladder says `bash walk`, never `./walk`.
+# The leading dot-slash is the first Unix gotcha a newcomer trips on, and
+# naming the interpreter is the more teachable spelling. chmod +x it if you
+# want a sixth rung; nothing here depends on the bit.
+set -eu
+
+HERE="$(cd "$(dirname "$0")" && pwd)"
+MCK="$HERE/assets/installer/mck.sh"
+
+if [ ! -f "$MCK" ]; then
+  echo "walk: cannot find the launcher at $MCK" >&2
+  echo "   This wrapper locates the workshop from its OWN path, so it has to" >&2
+  echo "   sit at the repository root beside assets/. If it was moved or" >&2
+  echo "   symlinked, run the launcher directly instead:" >&2
+  echo "     bash /path/to/workshop/assets/installer/mck.sh" >&2
+  exit 1
+fi
+
+# THE WORKSHOP IS DERIVED FROM THIS FILE'S LOCATION, NOT FROM THE CURRENT
+# DIRECTORY. With PIPULATE_ROOT unset, mck.sh discovers a checkout by walking
+# UP from wherever you happen to be standing -- so `bash ~/pipulate/walk`
+# typed from inside some OTHER workshop rides that other one. You would name
+# one wrapper and a different repository would open a browser, silently and
+# correctly by its own rules. Setting it here makes the workshop a pure
+# function of the path you typed.
+# ':=' so a deliberate PIPULATE_ROOT override still wins. mck.sh documents
+# that override in its own header, and this must not quietly revoke it.
+: "${PIPULATE_ROOT:=$HERE}"
+export PIPULATE_ROOT
+
+# bash BY NAME, so the launcher gets bash even when this wrapper was itself
+# invoked as `sh walk`. exec so the exit code is mck.sh's, unmediated.
+exec bash "$MCK" "$@"
