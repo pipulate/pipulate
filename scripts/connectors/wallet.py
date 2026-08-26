@@ -661,7 +661,7 @@ def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
         if kind == _OAUTH_KIND:
             note = _warm_oauth(n, stale_days, assume_yes)
         elif kind in _ENV_KINDS:
-            note = _warm_env(n, c, assume_yes)
+            note = _warm_env(n, c, assume_yes, force=bool(slot_name))
         elif kind == _BROWSER_KIND:
             note = _warm_browser(n, c, assume_yes)
         elif kind == _SERVICE_KIND:
