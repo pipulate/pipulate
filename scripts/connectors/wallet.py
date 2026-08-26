@@ -677,8 +677,16 @@ def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
         print(f"  {_MARK.get(after, '[?]')} {after:<7}  "
               f"{_KIND_LABEL.get(akind, akind):<8}  {n:<14}  {adetail}")
         print(f"        ↳ {note}")
+    # THE TALLY COUNTS THE OFFLINE BOARD, WHICH CANNOT SEE A REVOKED TOKEN.
+    # Witnessed 2026-08-26 in the same output that first printed the SHADOWED
+    # block: this line read "1 warmed | 0 still cold" three lines above a
+    # warning saying the value just pasted would not be read by anything.
+    # "warmed" is a verb naming an act and no code here performed it --
+    # classify_slot only re-read the NAMES. Say what was counted; `check` is
+    # the verb that can say what the services accept.
     still = [r for r in results if r[0] != 'filled']
-    print(f"\n# {len(results) - len(still)} warmed | {len(still)} still cold")
+    print(f"\n# {len(results) - len(still)} filled | {len(still)} still cold "
+          "(offline board -- run `check` to see what the services accept)")
     if any(r[1] in _ENV_KINDS for r in results):
         print(f"# Saved to {DOTENV_PATH}. The CHECK board injects that file into")
         print("# every connector it runs, so type `warm` again RIGHT NOW to watch")
