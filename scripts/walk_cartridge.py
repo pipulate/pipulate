@@ -347,6 +347,33 @@ def verify_walk_cartridge(path):
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise ValueError(f"Invalid manifest.json: {exc}") from exc
 
+    # Grade the SCHEMA before grading the BYTES. Without this branch, a
+    # cartridge sealed under an older schema fails the byte comparison below
+    # and is reported as "does not match the consent surface derived from
+    # trail.yaml" -- a sentence that accuses the TRAIL of drifting when the
+    # VERIFIER is the thing that changed. Fail-closed either way; the only
+    # difference is whether the refusal names the right cause.
+    #
+    # NARROW ON PURPOSE. Only the one schema string this repo has actually
+    # shipped earns the reassuring "not corruption" wording. A missing,
+    # invented, or mangled value is neither known-stale nor known-corrupt, and
+    # a verifier that guesses is a verifier whose refusals stop meaning
+    # anything.
+    sealed_schema = manifest.get("schema")
+    if sealed_schema != WALK_CARTRIDGE_SCHEMA:
+        if sealed_schema == WALK_CARTRIDGE_SCHEMA_V1:
+            raise ValueError(
+                f"cartridge schema {sealed_schema!r} predates "
+                f"{WALK_CARTRIDGE_SCHEMA!r}. This is a schema change, not "
+                "corruption; re-seal the trail. Re-sealing writes a NEW "
+                "content-addressed cartridge; it does not upgrade this one, "
+                "which stays on disk and stays red until it is pruned."
+            )
+        raise ValueError(
+            f"cartridge schema {sealed_schema!r} is not recognized "
+            f"(expected {WALK_CARTRIDGE_SCHEMA!r}). Refusing without ruling "
+            "on whether it is stale or corrupt."
+        )
     expected_manifest = _build_manifest(member_bytes["trail.yaml"])
 
     if manifest != expected_manifest:
