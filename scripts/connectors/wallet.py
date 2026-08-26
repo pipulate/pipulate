@@ -550,7 +550,7 @@ def _warm_env(name, cfg, assume_yes, force=False):
         return 'nothing missing'
     env_doc = cfg.get('env') or {}
     defaults = cfg.get('defaults') or {}
-    print(f"  {len(missing)} value(s) to paste — blank input skips one.")
+    print(f"  {len(missing)} value(s) -- blank keeps what is there, a paste overwrites.")
     saved = []
     for var in missing:
         desc = str(env_doc.get(var, '')).strip()
