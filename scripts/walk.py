@@ -211,7 +211,13 @@ def load_trail(path):
     for index, raw_stop in enumerate(stops):
         where = f"stops[{index}]"
         stop = _mapping(raw_stop, where)
-        _exact(stop, STOP_FIELDS, where)
+        present = STOP_URL_FIELDS & set(stop)
+        if len(present) != 1:
+            raise TrailError(
+                f"{where} must carry exactly one of "
+                f"{sorted(STOP_URL_FIELDS)}; found {sorted(present)}"
+            )
+        _exact(stop, STOP_FIELDS | present, where)
         stop_name = _text(stop["name"], f"{where}.name")
         target_slot = _text(
             stop["target_slot"],
