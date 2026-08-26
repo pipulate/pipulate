@@ -345,7 +345,24 @@ def main():
     if arg is None:
         mode = "list"
     elif PERMALINK_RE.match(arg):
-        mode = "fetch"
+        # A SLACK URL CARRIES TWO DIFFERENT COORDINATES UNDER ONE SHAPE.
+        # "Copy link" on a MESSAGE yields /archives/<CID>/p<digits> -- channel
+        # plus thread ts. The same control on a CHANNEL yields /archives/<CID>
+        # alone. Both match PERMALINK_RE, so routing every match to FETCH made
+        # the channel form die on "could not parse channel + thread ts": an
+        # error about threads, shown to someone who never named one, whose only
+        # suggested remedy is a URL form they do not have. Read the ts to
+        # decide -- present means a thread was named, absent means a channel
+        # was. A parse miss falls through to fetch_thread so ONE authority owns
+        # the honest parse error instead of a second copy being written here.
+        url_channel, url_ts = parse_permalink(arg)
+        if url_ts:
+            mode = "fetch"
+        elif url_channel:
+            mode = "history"
+            arg = url_channel
+        else:
+            mode = "fetch"
     elif CHANNEL_ID_RE.match(arg) or (' ' not in arg):
         mode = "history"
     else:
