@@ -38,10 +38,17 @@ SELENIUM_DEFAULTS = {
 }
 ROOT_FIELDS = {"schema_version", "name", "description", "defaults", "stops"}
 DEFAULT_FIELDS = set(SELENIUM_DEFAULTS)
+# Every stop carries all of these.
 STOP_FIELDS = {
-    "name", "label", "guidance", "url_env", "target_slot",
+    "name", "label", "guidance", "target_slot",
     "harvest_regex", "connector",
 }
+# Exactly one of these, never both and never neither. They are kept OUT of
+# STOP_FIELDS because _exact enforces set-difference in both directions and
+# cannot express "one of two". load_trail unions the one that is present into
+# STOP_FIELDS per stop, so unknown-key rejection is unchanged: a stop is still
+# checked against a complete, exact field set, just one assembled per stop.
+STOP_URL_FIELDS = {"url", "url_env"}
 CONNECTOR_FIELDS = {"script", "argv", "read_only"}
 BOOL_DEFAULTS = {
     "take_screenshot", "headless", "is_notebook_context", "persistent",
