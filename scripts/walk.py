@@ -405,7 +405,7 @@ def build_plan(trail, supplied_values):
             "name": stop["name"],
             "label": stop["label"],
             "guidance": stop["guidance"],
-            "url_env": stop["url_env"],
+            "url_env": url_env,
             "url": url or None,
             "target_slot": stop["target_slot"],
             "harvest_regex": stop["harvest_regex"],
