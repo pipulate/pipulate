@@ -256,6 +256,11 @@ def _derive_consent_surface(trail_bytes):
             "profile_name": defaults.get("profile_name"),
         },
         "connector_scripts": sorted(connector_scripts),
+        # ORDERED, never sorted, for the same reason stop_names is ordered:
+        # a rider reads this as "where it takes me, in order". url_envs stays
+        # a sorted set because those are a checklist, not a sequence. Present
+        # unconditionally, empty list and all, so the surface has ONE shape.
+        "direct_urls": direct_urls,
         "name": name,
         "stop_names": stop_names,
         "url_envs": sorted(url_envs),
