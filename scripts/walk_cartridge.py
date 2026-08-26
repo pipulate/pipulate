@@ -106,7 +106,16 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-WALK_CARTRIDGE_SCHEMA = "walk-cartridge-integrity-v1"
+# v2 (2026-08-25): the consent surface gained direct_urls, because a stop may
+# now carry a literal `url` instead of a `url_env`. That changes manifest.json
+# bytes for EVERY trail, including trails with zero direct URLs, so every
+# cartridge sealed under v1 is invalidated. data/ is gitignored, so nothing
+# tracked or published breaks. Re-seal with
+#   .venv/bin/python scripts/walk_cartridge.py seal assets/trails/*.yaml
+# Re-sealing WRITES A NEW content-addressed cartridge under a new digest. It
+# does not upgrade the old one, which stays on disk and stays red until pruned.
+WALK_CARTRIDGE_SCHEMA_V1 = "walk-cartridge-integrity-v1"
+WALK_CARTRIDGE_SCHEMA = "walk-cartridge-integrity-v2"
 WALK_CARTRIDGE_MEMBERS = ("trail.yaml", "manifest.json")
 WALK_CARTRIDGE_SOURCE_EPOCH = 1767225600
 WALK_CARTRIDGE_ZIP_TIME = (2026, 1, 1, 0, 0, 0)
