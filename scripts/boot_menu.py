@@ -115,7 +115,7 @@ def _timeout():
 def _render(name, seconds) -> None:
     lines = [
         f"[1]  Start {name}   JupyterLab + server + browser tabs",
-        "[2]  Just the shell   nothing starts -- three words wait at the prompt",
+        f"[2]  Just the shell   nothing starts -- {_count_word(len(DOOR_TWO_WORDS))} words wait at the prompt",
     ]
     if seconds is None:
         subtitle = "waiting for your choice -- Ctrl+C also drops to the shell"
