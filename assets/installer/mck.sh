@@ -2,6 +2,17 @@
 # Pipulate MCK Bootstrap v0.4.0 -- the Mother Cat Kata launcher
 # =============================================================
 #
+# WHAT CHANGED IN v0.4.0 -- A TRAIL MAY CARRY ITS OWN URLS
+#   walk.py now accepts a literal `url` on a stop as an alternative to
+#   `url_env`. This launcher was not merely a URL SUPPLIER, it was a url_env
+#   CONSUMER: it read s["url_env"] from every stop and treated an empty result
+#   as "could not read the trail". A direct-URL trail makes that expression
+#   raise KeyError, the stderr is discarded, and the launcher exits 2 with a
+#   message describing a parse failure that never happened -- so the public
+#   curl|bash walk would have stopped working the day the exemplar flipped.
+#   The reader now prints a leading OK token, so "read the file" and "found
+#   zero variables" no longer produce the identical output.
+#
 # WHAT CHANGED IN v0.3.0 -- TRAILS RESOLVE FROM A SEARCH PATH
 #   v0.2.0 hardcoded assets/trails/, so every walk had to be committed to
 #   the main repo. Client walks carry client names and churn several a day;
