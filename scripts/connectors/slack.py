@@ -324,6 +324,33 @@ def check():
             f"slack RED gate2: {kind} token rejected "
             f"({data.get('error', 'unknown_error')})\n")
         return 1
+    # GATE 3 -- IS THIS A WORKSPACE TOKEN AT ALL? auth.test needs no scopes and
+    # succeeds for token classes that can never touch conversations.*, and it
+    # answers those with NO user field. Witnessed 2026-08-26: an app-level token
+    # (scopes connections:write, authorizations:read, app_configurations:write)
+    # printed `slack GREEN ? @ ? (user token)` and carried the board to GOLD,
+    # while every real read died on not_allowed_token_type in the same minute.
+    # The two question marks WERE the finding; the row rendered them as
+    # decoration and the tally counted the credential as live.
+    # THIS IS NOT NARROWNESS, which is why it reds where a thin bot token does
+    # not. Narrower is not worse -- see this function's docstring. A wrong CLASS
+    # is worse: no grant can ever repair it, so a green row sends the operator
+    # to the scopes page for a cycle that cannot succeed.
+    # OBSERVED, NOT INFERRED: the absent user field is read off a receipt rather
+    # than guessed from a token prefix, so a class Slack invents next year trips
+    # the same gate with no lookup table to maintain.
+    # UNWITNESSED ON SHIP: a dead token dies at gate 2 before reaching here, so
+    # this branch cannot be straddled while the credential is invalid. It needs
+    # a LIVE non-workspace token to fire, and that is a manufactured failure,
+    # not a probe.
+    if not data.get("user"):
+        sys.stderr.write(
+            "slack RED gate3: auth.test succeeded but named no user, so this "
+            "is not a workspace token -- most likely an app-level (xapp-), "
+            "configuration, or workflow token. Copy the User OAuth Token from "
+            "OAuth & Permissions instead; nothing on the Basic Information "
+            "page can read a message.\n")
+        return 1
     # THE CREDENTIAL IS NOT THE CAPABILITY. auth.test requires NO scopes, so a
     # token granted nothing at all still prints GREEN here and takes the board
     # to GOLD. Witnessed 2026-08-26: a freshly minted token greened this row
