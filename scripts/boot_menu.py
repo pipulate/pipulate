@@ -53,6 +53,36 @@ DEFAULT_TIMEOUT = None
 # fat finger never picks a door for you.
 START_KEYS = {"1", "\r", "\n", "y", "Y", "s", "S"}
 SHELL_KEYS = {"2", "q", "Q", "n", "N", "l", "L", "\x03", "\x04"}
+# THE DOOR-2 VOCABULARY, AND ITS COUNT DERIVED FROM IT (2026-08-26). Two
+# strings in this file used to claim how many words wait at this prompt --
+# the panel row and the list heading -- coupled only by somebody remembering
+# they were coupled. That coupling has ALREADY been missed by an instrument:
+# an rg probe for 'Three words to start from' found the heading and was
+# structurally blind to 'three words wait at the prompt', because the second
+# string spells the identical claim differently. A count that nothing
+# computes is a claim that drifts, so nothing computes it by hand here
+# either. Both surfaces read this tuple; the next word costs one line and
+# cannot lie. (The module docstring above still names the words in prose --
+# that one is a description for a reader, not a count, and it moves under
+# the SAME-CAR LABEL RULE like any other label.)
+# ORDER IS A SCOPE LADDER, neither alphabetical nor arbitrary: be carried
+# (walk) -> look around here yourself (sources) -> hand it to someone
+# elsewhere (brief) -> reverse the choice you just made (pu). `walk` leads
+# because it is the only row that asks nothing of you first.
+# {name} is filled at print time; the whitelabel is not known at import.
+DOOR_TWO_WORDS = (
+    ("walk", "take the guided tour -- public pages, nothing to log into"),
+    ("sources", "see what this shell can reach outside this machine"),
+    ("brief", "compile this workshop into your clipboard for an AI"),
+    ("pu", "change your mind and start {name} after all"),
+)
+# Spelled out because "four words wait" reads better than "4 words wait".
+# The digit fallback means a word count past seven degrades to something
+# true rather than to an IndexError in a menu.
+_COUNT_WORDS = ("no", "one", "two", "three", "four", "five", "six", "seven")
+def _count_word(n):
+    """Spell a small count; fall back to the digit rather than guessing."""
+    return _COUNT_WORDS[n] if 0 <= n < len(_COUNT_WORDS) else str(n)
 
 
 def _app_name(root: Path) -> str:
