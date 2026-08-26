@@ -274,7 +274,13 @@ def load_trail(path):
                 stop["guidance"],
                 f"{where}.guidance",
             ),
-            "url_env": url_env,
+            # Exactly one URL key, chosen above. Writing both -- one of them
+            # None -- would make every normalized stop carry a field the
+            # validator refuses on the next load. This does NOT make the whole
+            # normalized trail round-trip: _validate_connector adds
+            # script_path, which CONNECTOR_FIELDS does not accept. It only
+            # avoids adding a SECOND reason it would not.
+            **url_key,
             "target_slot": target_slot,
             "harvest_regex": harvest_regex,
             "connector": _validate_connector(
