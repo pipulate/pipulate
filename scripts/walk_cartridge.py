@@ -49,6 +49,11 @@ required to match exactly, so it cannot drift from the bytes it describes.
                     replayable artifact exists to preserve, and walk.py
                     already enforces uniqueness, so sorting buys no dedup and
                     costs the ride order.
+  direct_urls       ORDERED, never sorted, and present unconditionally --
+                    empty list and all -- so the surface has ONE shape a human
+                    can learn to read at a glance. A stop may carry a literal
+                    `url` instead of a `url_env`; these are those, in ride
+                    order, for the same reason stop_names is ordered.
   url_envs          SORTED. These are a SET: the walk demands all of them,
                     order-free, and mck.sh prints them as a checklist.
   connector_scripts SORTED, unique. Car B does not execute connectors today;
