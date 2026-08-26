@@ -1335,6 +1335,13 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # stale entries, so a genuinely modified file still reports dirty and a
 # halt-don't-destroy gate keeps its teeth.
 
+# THE DUAL-LANE WALK SCHEMA (banked 2026-08-25, receipt-witnessed): a trail stop
+# accepts exactly one of `url` (public, direct HTTP/HTTPS) or `url_env` (sensitive,
+# client-isolated), validated via exact set difference. Direct URLs surface
+# openly on consent cards; environment variables surface as requirements on the
+# human. Connectors declare honest execution targets, and `walk-cartridge-integrity-v2`
+# enforces ordered destination disclosure.
+
 # STORY ENGINE
 # Mike-E's gift is associative reach; his flaw is letting every spark become canon.
 # Yen Sid-ton is a brilliant Familiar re-instantiated without yesterday.
@@ -2385,29 +2392,6 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
-# - EARMARK: THE SCHEMA THAT OUTRAN THE RIDER (banked 2026-08-25,
-#   source-witnessed): walk.py's STOP_FIELDS requires SEVEN fields per stop.
-#   mother_cat._ride_async reads THREE (name, guidance, url_env) and NEVER
-#   CALLS walk.build_plan -- load_trail for validation, _browser_params for
-#   the URL, and nothing else is on the ride path. So target_slot,
-#   harvest_regex and connector.argv are consumed ONLY by a planner the ride
-#   does not execute, and label is read by nobody at ride time.
-#   connector.script is read exactly once, by _derive_consent_surface, to
-#   print "names as runnable" about a command that exits 2 -- the
-#   PLACEHOLDER THAT CLAIMS TO RUN earmark, still open.
-#   COST TO THE AUTHOR: writing "walk me to three public pages" costs three
-#   env var names, three target_slots, three regexes, three connector argv
-#   lines and eight browser defaults -- while the ONE thing a walk is about,
-#   the URL, is the one field the schema FORBIDS, because STOP_FIELDS has
-#   url_env and _exact() rejects unknown keys in BOTH directions.
-#   WHY IT HAPPENED: the schema was derived from the CLIENT lane, where a URL
-#   IS client data. walk_compile.py refuses any compiled trail containing
-#   '://' and states the reason in its own refusal; bookmark_import.py splits
-#   every import into a surface that NAMES and an exports file that HOLDS.
-#   Both are CORRECT for sealing a client walk. The error was making the
-#   redacted form the ONLY form, so the public zero-auth walk -- the demo,
-#   the first contact, the thing a stranger runs from a pipe -- wears armor
-#   built for a threat it does not have.
 #   SIBLING OF THE PENDING AMENDMENT RULE, INVERTED: that rule forbids the
 #   CONSTITUTION asserting ahead of the code. Here the SCHEMA asserted ahead
 #   of the RIDER, and every trail author has paid the assertion's rent since.
