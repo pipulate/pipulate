@@ -212,10 +212,10 @@ def main() -> int:
     if choice == EXIT_SHELL:
         print(f"Staying in the shell. Nothing started -- no {name}, no JupyterLab.")
         print()
-        print("Three words to start from:")
-        print("  sources   see what this shell can reach outside this machine")
-        print("  brief     compile this workshop into your clipboard for an AI")
-        print(f"  pu        change your mind and start {name} after all")
+        print(_count_word(len(DOOR_TWO_WORDS)).capitalize() + " words to start from:")
+        width = max(len(word) for word, _ in DOOR_TWO_WORDS)
+        for word, description in DOOR_TWO_WORDS:
+            print("  " + word.ljust(width) + "   " + description.format(name=name))
     else:
         print(f"Starting {name}...")
     return choice
