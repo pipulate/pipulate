@@ -207,6 +207,7 @@ def _derive_consent_surface(trail_bytes):
     stop_names = []
     url_envs = set()
     connector_scripts = set()
+    direct_urls = []
 
     for index, stop in enumerate(stops):
         where = f"stops[{index}]"
