@@ -391,16 +391,6 @@ fi
 # Which lane won is a receipt, not chatter: a Playground trail silently
 # shadowing a tracked one is exactly the surprise this line prevents.
 echo "Trail resolved: $TRAIL_PATH"
-# --- Built-in URLs for the public softball ONLY. ':=' respects anything
-# already exported, so an operator override always wins.
-if [ "$TRAIL_NAME" = "public_walk" ]; then
-  : "${PIPULATE_TRAIL_WALK_ONE_URL:=https://example.com/}"
-  : "${PIPULATE_TRAIL_WALK_TWO_URL:=https://mikelev.in/}"
-  : "${PIPULATE_TRAIL_WALK_THREE_URL:=https://pipulate.com/}"
-  export PIPULATE_TRAIL_WALK_ONE_URL
-  export PIPULATE_TRAIL_WALK_TWO_URL
-  export PIPULATE_TRAIL_WALK_THREE_URL
-fi
 # The trail declares its own url_env names; read them from the trail. Trails
 # are the JSON subset of YAML 1.2, so json.load is correct here.
 # ZERO VARIABLES IS A VALID ANSWER NOW. A stop may carry a literal url instead
