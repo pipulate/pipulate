@@ -74,6 +74,7 @@ import os
 import re
 import sys
 import argparse
+from urllib.parse import urlparse, parse_qs
 
 import httpx
 
