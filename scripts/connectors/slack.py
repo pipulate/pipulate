@@ -115,9 +115,39 @@ def call(client, method, params=None):
         err = data.get("error", "unknown_error")
         needed = data.get("needed", "")
         hint = ""
-        if err in ("not_allowed_token_type", "missing_scope"):
-            hint = ("\nHint: set SLACK_USER_TOKEN (xoxp-, with the read/search scopes), "
-                    "or grant the bot the named scope and re-install the app.")
+        if err == "invalid_auth":
+            # THE MOST-SEEN ERROR HAD NO HINT AT ALL until 2026-08-26, when it
+            # was hit three times across one ride while the two errors that DID
+            # carry a hint carried the WRONG one. invalid_auth means Slack does
+            # not recognize the string, which is a different repair from every
+            # other rung: not a scope to add, not a class to swap, a token to
+            # obtain. Ordered by how often each cause is the real one.
+            hint = ("\nHint: Slack does not recognize this string at all. In "
+                    "order: (1) the app was never INSTALLED, so no workspace "
+                    "token exists yet -- OAuth & Permissions shows a promise to "
+                    "generate tokens rather than tokens; (2) a later scope "
+                    "change forced a reinstall, and reinstalling REVOKES the "
+                    "previous token; (3) what was pasted is an app credential "
+                    "(Client Secret, Signing Secret) rather than an OAuth "
+                    "token -- those carry no xox prefix.")
+        elif err == "not_allowed_token_type":
+            # WRONG CLASS IS NOT A MISSING SCOPE, AND THE TWO REPAIRS DIVERGE.
+            # These errors shared one hint until 2026-08-26, when an app-level
+            # token answered not_allowed_token_type and the hint sent the
+            # operator back to the scopes page -- where no grant could ever
+            # have helped, because Slack refused the token's CLASS before it
+            # looked at a single scope.
+            hint = ("\nHint: WRONG TOKEN CLASS -- not a scope problem, and no "
+                    "grant can fix it. conversations.* needs a WORKSPACE token "
+                    "(xoxp- user, or xoxb- bot) copied from OAuth & Permissions. "
+                    "An app-level token (xapp-, minted on Basic Information), a "
+                    "configuration token, or a workflow token can never call it.")
+        elif err == "missing_scope":
+            hint = ("\nHint: right token class, insufficient grants. Add the "
+                    "scopes named above under OAuth & Permissions -> Scopes -> "
+                    "USER Token Scopes (scroll past Bot Token Scopes), click "
+                    "Reinstall, then paste the NEW token -- reinstalling "
+                    "revokes the old one.")
         elif err == "not_in_channel":
             hint = "\nHint: invite the bot to that channel, or use a user token."
         elif err == "channel_not_found":
