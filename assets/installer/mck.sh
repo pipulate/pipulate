@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Pipulate MCK Bootstrap v0.3.0 -- the Mother Cat Kata launcher
+# Pipulate MCK Bootstrap v0.4.0 -- the Mother Cat Kata launcher
 # =============================================================
 #
 # WHAT CHANGED IN v0.3.0 -- TRAILS RESOLVE FROM A SEARCH PATH
