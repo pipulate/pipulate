@@ -410,9 +410,10 @@ fi
 # get one wrong error message.
 TRAIL_READ="$("$PY" -c 'import json,sys; d=json.load(open(sys.argv[1])); print("OK"); [print(s["url_env"]) for s in d["stops"] if s.get("url_env")]' "$TRAIL_PATH" 2>/dev/null || true)"
 if [ -z "$TRAIL_READ" ]; then
-  echo "Error: could not read stop url_env names from $TRAIL_PATH" >&2
+  echo "Error: could not read $TRAIL_PATH" >&2
   exit 2
 fi
+URL_ENVS="$(printf '%s\n' "$TRAIL_READ" | tail -n +2)"
 MISSING=""
 for VAR in $URL_ENVS; do
   printenv "$VAR" >/dev/null 2>&1 || MISSING="$MISSING $VAR"
