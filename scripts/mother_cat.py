@@ -372,13 +372,18 @@ async def _ride_async(trail_path, dry_narrate=False):
             print("  (dry-narrate: browser and capture skipped)\n")
             continue
 
-        url_env = stop["url_env"]
-        try:
-            url = os.environ[url_env]
-        except KeyError as exc:
-            raise walk.TrailError(
-                f"stop {stop['name']!r} requires environment variable {url_env}"
-            ) from exc
+        # A stop carries exactly one of `url` or `url_env`. The url_env path
+        # below is byte-identical to what it always was, including the message
+        # that names the missing variable.
+        url = stop.get("url")
+        if url is None:
+            url_env = stop["url_env"]
+            try:
+                url = os.environ[url_env]
+            except KeyError as exc:
+                raise walk.TrailError(
+                    f"stop {stop['name']!r} requires environment variable {url_env}"
+                ) from exc
 
         params = walk._browser_params(url, trail["defaults"])
         result = await guided_browser_capture(
