@@ -242,8 +242,7 @@ def _derive_consent_surface(trail_bytes):
         script = connector.get("script")
         if not isinstance(script, str) or not script.strip():
             raise ValueError(f"{where}.connector.script must be a non-empty string")
-        stop_names.append(stop["name"])
-        url_envs.add(stop["url_env"])
+        stop_names.append(name_value.strip())
         connector_scripts.add(script)
 
     if len(set(stop_names)) != len(stop_names):
