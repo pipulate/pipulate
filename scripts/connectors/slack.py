@@ -294,9 +294,31 @@ def check():
             f"slack RED gate2: {kind} token rejected "
             f"({data.get('error', 'unknown_error')})\n")
         return 1
+    # THE CREDENTIAL IS NOT THE CAPABILITY. auth.test requires NO scopes, so a
+    # token granted nothing at all still prints GREEN here and takes the board
+    # to GOLD. Witnessed 2026-08-26: a freshly minted token greened this row
+    # while bare `slack` died on conversations.list with missing_scope, in the
+    # same minute -- so the board answered "is this credential live" while the
+    # human was asking "can it read anything". Slack returns the grant list in
+    # an X-OAuth-Scopes response header on this very call, so visibility costs
+    # nothing. STILL GREEN WHEN NARROW, deliberately: a narrower token is not a
+    # bad one (see this docstring), so narrowness becomes visible without
+    # becoming a failure. FAIL-SOFT: no header, no clause -- a missing header
+    # is a fact about Slack's response and must not read as zero scopes.
     note = "" if kind == "user" else "; SEARCH needs SLACK_USER_TOKEN"
+    granted = resp.headers.get("x-oauth-scopes") or ""
+    scopes = ""
+    if granted:
+        have = {s.strip() for s in granted.split(",") if s.strip()}
+        need = {"channels:read", "groups:read",
+                "channels:history", "groups:history"}
+        if kind == "user":
+            need.add("search:read")
+        gap = sorted(need - have)
+        scopes = (f" | {len(have)} scope(s), MISSING {','.join(gap)}" if gap
+                  else f" | {len(have)} scope(s), all read modes covered")
     print(f"slack GREEN {data.get('user', '?')} @ {data.get('team', '?')} "
-          f"({kind} token{note})")
+          f"({kind} token{note}){scopes}")
     return 0
 
 
