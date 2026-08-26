@@ -213,10 +213,29 @@ def _derive_consent_surface(trail_bytes):
         where = f"stops[{index}]"
         if not isinstance(stop, dict):
             raise ValueError(f"{where} must be a mapping")
-        for field in ("name", "url_env"):
-            value = stop.get(field)
-            if not isinstance(value, str) or not value.strip():
-                raise ValueError(f"{where}.{field} must be a non-empty string")
+        name_value = stop.get("name")
+        if not isinstance(name_value, str) or not name_value.strip():
+            raise ValueError(f"{where}.name must be a non-empty string")
+        # Exactly one of url / url_env, checked here too. This module is
+        # deliberately not a validator -- walk.py owns the schema -- but a
+        # projection cannot project a field it cannot find, so the shape it
+        # depends on is the one shape it insists on.
+        present = {"url", "url_env"} & set(stop)
+        if len(present) != 1:
+            raise ValueError(
+                f"{where} must carry exactly one of ['url', 'url_env']; "
+                f"found {sorted(present)}"
+            )
+        if "url" in present:
+            url_value = stop.get("url")
+            if not isinstance(url_value, str) or not url_value.strip():
+                raise ValueError(f"{where}.url must be a non-empty string")
+            direct_urls.append(url_value.strip())
+        else:
+            env_value = stop.get("url_env")
+            if not isinstance(env_value, str) or not env_value.strip():
+                raise ValueError(f"{where}.url_env must be a non-empty string")
+            url_envs.add(env_value.strip())
         connector = stop.get("connector")
         if not isinstance(connector, dict):
             raise ValueError(f"{where}.connector must be a mapping")
