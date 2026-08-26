@@ -533,11 +533,19 @@ def _warm_oauth(name, stale_days, assume_yes):
     return 'oauth walk finished'
 
 
-def _warm_env(name, cfg, assume_yes):
-    """bearer/basic: prompt for each MISSING declared var and persist it. The
+def _warm_env(name, cfg, assume_yes, force=False):
+    """bearer/basic: prompt for declared vars and persist them. The
     `env` block is documentation-as-data, so the prompt shows the wallet's own
-    description and any non-secret example from `defaults`."""
-    missing = [v for v in _required_env_vars(cfg) if not _env_source(v)]
+    description and any non-secret example from `defaults`.
+
+    FORCE (2026-08-26, receipt-convicted inside ONE compile): the offline
+    scoreboard reads NAMES ONLY, so a REVOKED token still reads `filled` and
+    warm's cold-gate skipped it -- `check slack` printed RED gate2 while
+    `warm slack --dry-run` printed "already reads filled" in the same payload.
+    Naming a slot on the command line IS the explicit act; every declared var
+    is re-offered, and blank input keeps whatever is already there."""
+    req = _required_env_vars(cfg)
+    missing = req if force else [v for v in req if not _env_source(v)]
     if not missing:
         return 'nothing missing'
     env_doc = cfg.get('env') or {}
