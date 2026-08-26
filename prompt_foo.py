@@ -939,6 +939,21 @@ SECRET_TRIPWIRES = [
     r'\bsk-an[t]-[A-Za-z0-9_\-]{24,}',                             # Anthropic
     r'\bsk-[A-Za-z0-9]{32,}\b',                                    # OpenAI-shape; loosest here, cut this one first
     r'"(?:refresh_toke[n]|client_secre[t]|private_ke[y]|api_ke[y]|access_toke[n])"\s*:\s*"[^"]{12,}"',
+    # UNQUOTED SECRET FIELD (banked 2026-08-26, payload-convicted). A Slack app
+    # Client Secret is a BARE 32-hex string carrying no prefix and no shape of
+    # its own, so every format tripwire above is structurally blind to it, and
+    # the quoted-JSON pattern directly above covers only the JSON spelling. One
+    # rode into a compiled payload inside a curl line copied off a vendor docs
+    # page -- and therefore into a chat window, into foo.zip, and into every
+    # rotated snapshot -- while the tripwire printed ARMED and zero hits.
+    # THE SHAPE IS THE FIELD NAME PLUS AN ASSIGNMENT, never entropy: generic
+    # high-entropy detection stays deliberately absent (see the note above), and
+    # rule 1 is honored because the VALUE is still required. Rule 2 is honored
+    # by the single-member class, so this line cannot convict itself. Tight
+    # enough not to fire on prose: the value must be 20+ contiguous characters
+    # with no whitespace in them.
+    r'\b(?:client_secre[t]|signing_secre[t]|app_secre[t])\b\s*[:=]\s*'
+    r'["\']?[A-Za-z0-9_\-./+=]{20,}',
     # Generic assignment tripwire, but LITERAL-ONLY. The previous spelling
     # accepted any twelve non-space characters after "=", so executable code
     # such as an environment lookup was indistinguishable from a hardcoded
