@@ -362,7 +362,7 @@ def build_plan(trail, supplied_values):
 
         if not url:
             errors.append(
-                f"unset environment variable {stop['url_env']}"
+                f"unset environment variable {url_env}"
             )
         else:
             try:
