@@ -620,7 +620,13 @@ def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
     cold = []
     for n, c in slots:
         state, kind, detail, _loc = classify_slot(n, c, stale_days)
-        if state != 'filled':
+        # An explicitly NAMED slot always enters the list. classify_slot is
+        # offline and names-only, so for an env kind it prints `filled` in the
+        # world where the token works AND in the world where the service
+        # revoked it -- the same printout in both, which makes it a ritual and
+        # not a probe for THIS decision. `check` is the instrument that can
+        # tell those worlds apart; naming a slot is how you say you ran it.
+        if state != 'filled' or slot_name:
             cold.append((n, c, state, kind, detail))
 
     print("# wallet warm — the verb the scoreboard implies")
