@@ -503,7 +503,10 @@ def _resolve(raw):
 def _print_surface(surface, indent="    "):
     print(f"{indent}name              {surface['name']}")
     print(f"{indent}stops (in order)  {', '.join(surface['stop_names'])}")
-    print(f"{indent}demands of you    {', '.join(surface['url_envs'])}")
+    if surface.get("direct_urls"):
+        print(f"{indent}opens directly    {', '.join(surface['direct_urls'])}")
+    if surface.get("url_envs"):
+        print(f"{indent}demands of you    {', '.join(surface['url_envs'])}")
     print(f"{indent}names as runnable {', '.join(surface['connector_scripts'])}")
     browser = surface["browser"]
     print(
