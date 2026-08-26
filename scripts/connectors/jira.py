@@ -470,6 +470,9 @@ def main():
     if args.check:
         sys.exit(check())
 
+    if args.query:
+        args.query = normalize_query(args.query.strip())
+
     client, base = make_client()
     try:
         arg = args.query
