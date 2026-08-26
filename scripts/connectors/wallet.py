@@ -682,9 +682,30 @@ def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
     if any(r[1] in _ENV_KINDS for r in results):
         print(f"# Saved to {DOTENV_PATH}. The CHECK board injects that file into")
         print("# every connector it runs, so type `warm` again RIGHT NOW to watch")
-        print("# these go green -- no shell restart needed to play the game.")
-        print("# Typing a connector yourself (`slack`, `jira`) reads the vault at")
-        print("# shell entry instead, so that lane wants one fresh `nix develop`.")
+        print("# a PREVIOUSLY-UNSET var go green -- no shell restart needed.")
+        print("# AN OVERWRITE IS DIFFERENT. _check_env puts os.environ LAST, and")
+        print("# the flake sources the vault ONCE at shell entry, so a stale")
+        print("# export outranks the value you just pasted. Connectors typed by")
+        print("# hand (`slack`, `jira`) read os.environ only and never see it.")
+        _by_name = dict(slots)
+        _vault_now = _dotenv_pairs()
+        _shadowed = []
+        for _after, _akind, _n, _adetail, _note in results:
+            if _akind not in _ENV_KINDS:
+                continue
+            for _var in _required_env_vars(_by_name.get(_n) or {}):
+                _live = os.environ.get(_var)
+                _stored = _vault_now.get(_var)
+                if _live and _stored and _live != _stored:
+                    _shadowed.append((_n, _var))
+        if _shadowed:
+            print("#")
+            print("# SHADOWED -- this shell exported an OLDER value than the vault")
+            print("# now holds, so `check` and every connector will keep reading")
+            print("# the credential the service already rejected:")
+            for _n, _var in _shadowed:
+                print(f"#   {_n}: {_var}")
+            print("# IGNITION:  exit   then   nix develop")
     print("# Re-run the bare scoreboard for the whole board.")
 
 
