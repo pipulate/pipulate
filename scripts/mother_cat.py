@@ -293,7 +293,16 @@ def _announce_consent(trail_path):
     print(f" THIS WALK: {surface['name']} -- {len(surface['stop_names'])} stop(s)")
     print(rule)
     print(f" stops, in order    {', '.join(surface['stop_names'])}")
-    print(f" URLs YOU supply    {', '.join(surface['url_envs'])}")
+    # SHOW the direct URLs rather than hide them. A card that will not say
+    # where it is taking you is worse than one that does, and these are the
+    # public case by construction: a trail carrying a client address never
+    # gets past walk_compile.py, which refuses any compiled trail containing
+    # a scheme separator. Each line prints only when it has content, so a
+    # single-lane trail never shows an empty row.
+    if surface.get("direct_urls"):
+        print(f" it opens directly  {', '.join(surface['direct_urls'])}")
+    if surface.get("url_envs"):
+        print(f" URLs YOU supply    {', '.join(surface['url_envs'])}")
     print(f" names as runnable  {', '.join(surface['connector_scripts'])}")
     print(
         f" browser profile    {browser['profile_name']!r}"
