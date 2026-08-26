@@ -255,7 +255,7 @@ def load_trail(path):
                 f"{where}.target_slot must be unique and match "
                 "^[a-z][a-z0-9_]*$"
             )
-        if not ENV_RE.fullmatch(url_env):
+        if url_env is not None and not ENV_RE.fullmatch(url_env):
             raise TrailError(
                 f"{where}.url_env must name an environment variable"
             )
