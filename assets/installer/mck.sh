@@ -403,7 +403,12 @@ if [ "$TRAIL_NAME" = "public_walk" ]; then
 fi
 # The trail declares its own url_env names; read them from the trail. Trails
 # are the JSON subset of YAML 1.2, so json.load is correct here.
-URL_ENVS="$("$PY" -c 'import json,sys; print("\n".join(s["url_env"] for s in json.load(open(sys.argv[1]))["stops"]))' "$TRAIL_PATH" 2>/dev/null || true)"
+# ZERO VARIABLES IS A VALID ANSWER NOW. A stop may carry a literal url instead
+# of a url_env, so a whole trail can legitimately name nothing. The leading OK
+# token is what separates "the file parsed and there were none" from "the file
+# did not parse at all" -- two worlds that used to print one empty string and
+# get one wrong error message.
+TRAIL_READ="$("$PY" -c 'import json,sys; d=json.load(open(sys.argv[1])); print("OK"); [print(s["url_env"]) for s in d["stops"] if s.get("url_env")]' "$TRAIL_PATH" 2>/dev/null || true)"
 if [ -z "$URL_ENVS" ]; then
   echo "Error: could not read stop url_env names from $TRAIL_PATH" >&2
   exit 2
