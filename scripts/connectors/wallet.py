@@ -562,7 +562,7 @@ def _warm_env(name, cfg, assume_yes, force=False):
         label = f"    {var}{' (hidden)' if secret else ''} = "
         value = _ask(label, secret=secret)
         if not value:
-            print(f"    skipped {var}")
+            print(f"    kept {var}" if _env_source(var) else f"    skipped {var}")
             continue
         _save_env(var, value)
         saved.append(var)
