@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "name": "public_walk",
-  "description": "Soft-ball Mother Cat ride: three public pages, no login, no warming. NARRATE, look at the page (SETTLE), FENCE on the CAPTURE token, full CDP + LLM Optics capture, ADVANCE. Ride: export the three PIPULATE_TRAIL_WALK_*_URL variables, then mothercat assets/trails/public_walk.yaml",
+  "description": "Soft-ball Mother Cat ride: three public pages, no login, no warming, nothing to export. NARRATE, look at the page (SETTLE), FENCE on the CAPTURE token, full CDP + LLM Optics capture, ADVANCE. Ride: mothercat assets/trails/public_walk.yaml",
   "defaults": {
     "take_screenshot": false,
     "headless": false,
@@ -17,11 +17,11 @@
       "name": "walk_one",
       "label": "Example Domain",
       "guidance": "Stop one of three. A visible browser will open on a plain placeholder page. There is nothing to log into and nothing to click. When the page has loaded, return to this terminal and type the capture word when asked.",
-      "url_env": "PIPULATE_TRAIL_WALK_ONE_URL",
+      "url": "https://example.com/",
       "target_slot": "slot_one",
       "harvest_regex": ".+",
       "connector": {
-        "script": "scripts/walk.py",
+        "script": "scripts/connectors/noop.py",
         "argv": ["{harvested}"],
         "read_only": true
       }
@@ -30,11 +30,11 @@
       "name": "walk_two",
       "label": "MikeLev.in",
       "guidance": "Stop two of three. The next page is a long-form article site. Let it finish loading, scroll if you like, then return to the terminal and type the capture word when asked.",
-      "url_env": "PIPULATE_TRAIL_WALK_TWO_URL",
+      "url": "https://mikelev.in/",
       "target_slot": "slot_two",
       "harvest_regex": ".+",
       "connector": {
-        "script": "scripts/walk.py",
+        "script": "scripts/connectors/noop.py",
         "argv": ["{harvested}"],
         "read_only": true
       }
@@ -43,11 +43,11 @@
       "name": "walk_three",
       "label": "Pipulate.com",
       "guidance": "Stop three of three. This is the last page. When it has loaded, return to the terminal and type the capture word. After this capture the bundle is assembled, and then you are asked ONE more time, with a different word, before anything leaves this machine.",
-      "url_env": "PIPULATE_TRAIL_WALK_THREE_URL",
+      "url": "https://pipulate.com/",
       "target_slot": "slot_three",
       "harvest_regex": ".+",
       "connector": {
-        "script": "scripts/walk.py",
+        "script": "scripts/connectors/noop.py",
         "argv": ["{harvested}"],
         "read_only": true
       }
