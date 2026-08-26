@@ -223,7 +223,18 @@ def load_trail(path):
             stop["target_slot"],
             f"{where}.target_slot",
         )
-        url_env = _text(stop["url_env"], f"{where}.url_env")
+        if "url" in present:
+            url = _text(stop["url"], f"{where}.url")
+            parsed = urlparse(url)
+            if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+                raise TrailError(
+                    f"{where}.url must be an absolute http(s) URL: {url!r}"
+                )
+            url_env = None
+            url_key = {"url": url}
+        else:
+            url_env = _text(stop["url_env"], f"{where}.url_env")
+            url_key = {"url_env": url_env}
         harvest_regex = _text(
             stop["harvest_regex"],
             f"{where}.harvest_regex",
