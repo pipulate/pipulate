@@ -523,6 +523,34 @@ def main():
     else:
         mode = "search"
 
+    # THE SIBLING-COMMAND HINT (convicted 2026-08-27, operator transcript).
+    # The disambiguation rule routes ANY single word to channel-history mode,
+    # so `slack check` -- a plausible typo for `slack --check` -- becomes a
+    # lookup for a channel named "check", and `slack warm` becomes a lookup
+    # for one named "warm". WITNESSED: the operator typed `slack warm` twice,
+    # once on each side of an ignition, meaning to run `warm slack` (wallet
+    # first). Both times the token-class refusal fired and printed a message
+    # about OAuth pages, so the wallet warm never ran and nothing said so.
+    # TWO MISTAKES, ONE PRINTOUT, in his own hands.
+    # A HINT, NEVER A REFUSAL, and that is the whole design. A workspace may
+    # legitimately contain a channel named #warm, so refusing would break a
+    # real invocation to protect against a typo -- the same fail-open polarity
+    # WRONG_TOKEN_CLASS uses for prefixes it does not recognize. This writes
+    # one line to stderr and falls straight through; if the channel exists it
+    # is fetched exactly as before, and the note reads as a note.
+    # LOCAL, AND USED ONCE. Module scope was rejected: nothing imports this,
+    # no probe reads it, and a module-level constant would imply a contract
+    # with a consumer that does not exist.
+    # ABOVE get_token ON PURPOSE, so the hint survives a dead credential --
+    # the exact world the transcript was recorded in. A hint that only prints
+    # once auth already works cannot fire on the day it was needed.
+    sibling = {
+        "check": "did you mean `slack --check`? (the health check is a flag)",
+        "help": "did you mean `slack --help`?",
+        "warm": "did you mean `warm slack`? (the wallet is the first word)",
+    }
+    if mode == "history" and arg in sibling:
+        sys.stderr.write(f"# note: {sibling[arg]} -- reading it as a channel name.\n")
     token, kind = get_token(mode)
     client = make_client(token)
     try:
