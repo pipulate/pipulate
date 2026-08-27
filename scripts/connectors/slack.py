@@ -62,6 +62,44 @@ API_BASE = "https://slack.com/api"
 CHANNEL_ID_RE = re.compile(r'^[CGD][A-Z0-9]{6,}$')
 PERMALINK_RE = re.compile(r'^https?://[^/]+\.slack\.com/archives/', re.I)
 
+# TOKEN CLASS, READ BEFORE THE NETWORK CALL. Slack's settings pages hand out at
+# least five credential families and only two of them can ever reach
+# conversations.*. Convicted 2026-08-27 across five cycles: a configuration
+# token (xoxe), then an app-level token (xapp-), then a bare app credential
+# were each pasted into SLACK_USER_TOKEN, and each produced a DIFFERENT
+# downstream error -- missing_scope, then not_allowed_token_type, then
+# invalid_auth -- so the symptom kept moving while the actual mistake, which is
+# WHICH PAGE the string was copied from, was never named by anything.
+# THE PREFIX IS DECISIVE AND FREE: Slack documents these prefixes, so this
+# refusal costs no round trip, reads no value, and names the remedy by page
+# instead of by scope. It is strictly earlier and more specific than check()'s
+# gate 3, which can only speak after auth.test answers.
+# FAIL-OPEN ON THE UNKNOWN, deliberately: an unrecognized prefix passes straight
+# through to the API, because a family Slack invents next year must not be
+# locally unusable. Only classes KNOWN to be incapable are refused.
+WRONG_TOKEN_CLASS = {
+    "xapp-": ("app-level", "Basic Information -> App-Level Tokens"),
+    "xoxe": ("configuration", "the app index page -> Your App Configuration Tokens"),
+    "xwfp-": ("workflow", "a workflow run"),
+}
+
+
+def refuse_wrong_class(token, var_name):
+    """Exit loudly when a prefix proves this token can never read a message."""
+    for prefix, (label, origin) in WRONG_TOKEN_CLASS.items():
+        if token.startswith(prefix):
+            sys.stderr.write(
+                f"{var_name} holds a {label} token ({prefix}...), which can "
+                "never call conversations.* no matter which scopes it carries.\n"
+                f"That string is minted on {origin}.\n"
+                "The one you want is on OAuth & Permissions, in the section "
+                "headed 'OAuth Tokens for Your Workspace', labelled User OAuth "
+                "Token, beginning xoxp-. If that section instead PROMISES to "
+                "generate tokens once you finish installing, the app is not "
+                "installed and no workspace token exists yet.\n"
+            )
+            sys.exit(1)
+
 
 # ----------------------------------------------------------------------------
 # Auth & transport
