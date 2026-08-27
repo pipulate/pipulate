@@ -327,6 +327,47 @@ def search_messages(client, query, max_items):
 # ----------------------------------------------------------------------------
 # Health check (THE EXIT-CODE PROTOCOL: the exit code IS the whole answer)
 # ----------------------------------------------------------------------------
+def scope_clause(granted):
+    """Render the scope gap for one auth.test X-OAuth-Scopes header.
+
+    SEARCH IS OPTIONAL, AND THE OLD SPELLING CALLED IT MISSING. The need set
+    added search:read for every user token, so the app manifest authored on
+    2026-08-27 -- four read scopes, search DELIBERATELY excluded because
+    workspace-wide search is the one scope an approver actually argues about
+    -- was guaranteed to print MISSING search:read on its FIRST successful
+    green. A warning that fires on the DESIGNED configuration is the
+    retire-the-canary failure with a loaded gun attached: after a week of
+    scope-chasing it would send the operator back to the scopes page for a
+    reinstall, and reinstalling REVOKES the token he just pasted.
+
+    THE GOLDEN PATH IS LIST AND FETCH. Those four scopes are required by the
+    two modes this connector is actually used for, so their absence is a real
+    MISSING. search:read enables a mode the connector supports and the
+    operator does not use, so it is reported as a CAPABILITY (+ SEARCH) and
+    never as a deficiency. The bot-token case needs no special branch: a bot
+    can never hold search:read, and the caller's note line already says so.
+
+    EXTRACTED SO IT CAN BE PROBED WITHOUT A CREDENTIAL. check()'s green branch
+    needs a LIVE token, and the workspace install sits in an admin approval
+    queue, so the change is structurally unstraddleable in situ -- the same
+    shape as gate 3, which is still unwitnessed for exactly that reason. A
+    pure function over the header string is testable from an import, in both
+    worlds, with no network and no secret. Fail-soft is preserved: no header
+    means no clause, because an absent header is a fact about Slack's response
+    and must never read as zero scopes.
+    """
+    if not granted:
+        return ""
+    have = {s.strip() for s in granted.split(",") if s.strip()}
+    need = {"channels:read", "groups:read",
+            "channels:history", "groups:history"}
+    gap = sorted(need - have)
+    if gap:
+        return f" | {len(have)} scope(s), MISSING {','.join(gap)}"
+    extra = " + SEARCH" if "search:read" in have else ""
+    return f" | {len(have)} scope(s), LIST+FETCH covered{extra}"
+
+
 def check():
     """SELECT 1 for the wallet board: exit 0 GREEN, exit 1 RED.
 
