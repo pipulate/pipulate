@@ -345,6 +345,31 @@ def check():
         sys.stderr.write(
             "slack RED gate1: neither SLACK_USER_TOKEN nor SLACK_BOT_TOKEN set\n")
         return 1
+    # GATE 1, SECOND CLAUSE -- THE BOARD COULD NOT SEE THE CLASS.
+    # get_token() gained refuse_wrong_class on 2026-08-27, but check() reads
+    # os.getenv directly and never calls it, so the wallet board kept spending
+    # a network round trip and rendering "gate2: user token rejected
+    # (invalid_auth)" for a string whose PREFIX already said app-level.
+    # WITNESSED IN THAT SAME COMPILE, two instruments disagreeing about one
+    # token: the class probe read `class: app-level` while `wallet check slack`
+    # read gate2. The board is the surface an operator actually looks at after
+    # pasting a credential, and it named the wrong organ.
+    # A LOCAL CLAUSE OF GATE 1, not a new gate number: gate1 is the pre-flight
+    # (do we hold a usable credential at all), gate2 is the network verdict,
+    # gate3 is identity. A wrong CLASS is decided before any socket opens, so
+    # it belongs to gate1 and must not consume a round trip to say so.
+    # ONE LINE ON STDERR, deliberately: wallet.check_slot renders err[-1] as
+    # the row, so a multi-line refusal arrives on the board truncated to its
+    # last sentence. refuse_wrong_class is the right message for a human at a
+    # terminal and the wrong SHAPE for a table row; this is the board's
+    # spelling of the same finding.
+    for prefix, (label, origin) in WRONG_TOKEN_CLASS.items():
+        if token.startswith(prefix):
+            sys.stderr.write(
+                f"slack RED gate1: that is a {label} token ({prefix}...), "
+                f"minted on {origin}; conversations.* needs the User OAuth "
+                "Token (xoxp-) from OAuth & Permissions\n")
+            return 1
     try:
         with httpx.Client(base_url=API_BASE, timeout=15.0,
                           headers={"Authorization": f"Bearer {token}",
