@@ -130,10 +130,37 @@ def get_token(mode):
         return user, "user"
     if bot:
         return bot, "bot"
+    # THE FRONT DOOR NAMED THE WRONG TOKEN (convicted 2026-08-27, by the whole
+    # week). This branch fires when NOTHING is set -- the earliest moment a
+    # stranger, or a fresh machine, or the operator after a revoke, meets this
+    # connector -- and it said "copy the bot token (xoxb-...)". A bot reads
+    # only channels it has been INVITED to, so for the permalink workflow this
+    # connector exists to serve, a bot token is the one credential that cannot
+    # work. The golden path settled today is a USER token carrying four read
+    # scopes and zero bot scopes. Six days of token-class confusion, and the
+    # message at the front door was pointing at the wrong page throughout.
+    # THE VARIABLE ORDER IS PART OF THE MESSAGE. get_token PREFERS the user
+    # token, check() reads it first, and the module docstring says a user
+    # token dodges the bot-token thread-read restriction -- only this string
+    # listed the bot token first. The one surface that speaks to someone
+    # holding NOTHING contradicted every surface that speaks to someone
+    # holding SOMETHING, which is the direction that misleads.
+    # THE APPROVAL SENTENCE IS NOT DECORATION. Workspace app approval is
+    # STRUCTURALLY INVISIBLE from a terminal: this connector cannot tell "no
+    # token yet" from "no token POSSIBLE until an admin acts", and those two
+    # worlds have entirely different next moves. Naming the second costs one
+    # line and stops the reader hunting a button that is not there.
     sys.stderr.write(
-        "Missing environment variable(s): SLACK_BOT_TOKEN (or SLACK_USER_TOKEN)\n"
-        "Create a Slack app at https://api.slack.com/apps, add the read scopes, "
-        "install it to the workspace, and copy the bot token (xoxb-...).\n"
+        "Missing environment variable(s): SLACK_USER_TOKEN (or SLACK_BOT_TOKEN)\n"
+        "The golden path is a USER token (xoxp-), not a bot token: a bot reads "
+        "only channels it was invited to, which cannot serve the permalink "
+        "mode. Create an app from a manifest at https://api.slack.com/apps "
+        "declaring FOUR user scopes -- channels:read, groups:read, "
+        "channels:history, groups:history -- and zero bot scopes, install it, "
+        "then copy the User OAuth Token.\n"
+        "If your workspace requires admin approval the install button reads "
+        "'Request to Install' and NO token exists until a human approves it. "
+        "That is a person, not a setting you can change.\n"
     )
     sys.exit(1)
 
