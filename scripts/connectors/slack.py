@@ -113,6 +113,10 @@ def get_token(mode):
     """
     bot = os.getenv("SLACK_BOT_TOKEN")
     user = os.getenv("SLACK_USER_TOKEN")
+    if user:
+        refuse_wrong_class(user, "SLACK_USER_TOKEN")
+    if bot:
+        refuse_wrong_class(bot, "SLACK_BOT_TOKEN")
     if mode == "search":
         if user:
             return user, "user"
