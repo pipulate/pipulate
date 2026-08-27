@@ -471,17 +471,7 @@ def check():
     # becoming a failure. FAIL-SOFT: no header, no clause -- a missing header
     # is a fact about Slack's response and must not read as zero scopes.
     note = "" if kind == "user" else "; SEARCH needs SLACK_USER_TOKEN"
-    granted = resp.headers.get("x-oauth-scopes") or ""
-    scopes = ""
-    if granted:
-        have = {s.strip() for s in granted.split(",") if s.strip()}
-        need = {"channels:read", "groups:read",
-                "channels:history", "groups:history"}
-        if kind == "user":
-            need.add("search:read")
-        gap = sorted(need - have)
-        scopes = (f" | {len(have)} scope(s), MISSING {','.join(gap)}" if gap
-                  else f" | {len(have)} scope(s), all read modes covered")
+    scopes = scope_clause(resp.headers.get("x-oauth-scopes"))
     print(f"slack GREEN {data.get('user', '?')} @ {data.get('team', '?')} "
           f"({kind} token{note}){scopes}")
     return 0
