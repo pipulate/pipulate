@@ -1538,12 +1538,12 @@ GLOSSARY.md                 # <-- I think this glossary goes well with the book-
 # ~/repos/nixos/autognome.py  # <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
 # init.lua                    # <-- Daily driver hot-keys that overlap with aliases in flake.nix
 
-# THE HAND-CRANKED AGENTIC FRAMEWORK
+# AGENTIC FRAMEWORK & FOREVER MACHINE BIG FILES
 prompt_foo.py               # <-- Prompt Fu compiler, makes the very README for AGENTS-like payload you're reading right now, but it needs to be more like that
 foo_files.py                # <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops
+flake.nix                   # <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 
 # MAIN ACTUATORS, IaC & NEGATIVE SPACE
-flake.nix                   # <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
 apply.py                    # <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
 .gitattributes              # <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
 .gitignore                  # <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
@@ -1553,19 +1553,19 @@ pyproject.toml              # <-- The PyPI Packaging details
 cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
 scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
-release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
 
 # CONTEXT PORTABILITY SYSTEM
-scripts/foo_cartridge.py    # Needs description
-scripts/foo_replay.py       # Needs description
+# scripts/foo_cartridge.py    # Needs description
+# scripts/foo_replay.py       # Needs description
+# release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
 
 # FREQUENTLY USEFUL TO HAVE IN CONTEXT
-imports/voice_synthesis.py  # <-- The wand can talk to you
-tools/scraper_tools.py      # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
+# imports/voice_synthesis.py  # <-- The wand can talk to you
+# tools/scraper_tools.py      # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 
-scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
-scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
-scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
+# scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
+# scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
+# scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
 
 #                         --- Under this line is were you paste what the AI gives you ---
 #                         --- We call it context but it's really just the right-hand  ---
