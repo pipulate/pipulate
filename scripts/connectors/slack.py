@@ -25,14 +25,36 @@ Disambiguation rule (checked in this order):
   - a channel id (C.../G.../D...) or #name   -> LIST that channel's recent messages (conversations.history)
   - anything with whitespace                 -> SEARCH (search.messages)
 
-Auth (bearer_token -- the botify.py shape):
-  SLACK_BOT_TOKEN   xoxb-... ; scopes channels:read groups:read channels:history
-                    groups:history users:read. Covers LIST and (for DMs/MPDMs, and
-                    for channels the bot is invited to) FETCH.
-  SLACK_USER_TOKEN  xoxp-... with search:read (and read scopes). REQUIRED for SEARCH
-                    (bot tokens cannot call search.messages). When present it is also
-                    PREFERRED for reads, because bot tokens are restricted from reading
-                    thread replies on public/private channels -- a user token dodges that.
+Auth (bearer_token -- the botify.py shape). THE GOLDEN PATH IS A USER TOKEN, and
+this block is the FIRST thing a reader or a model sees; it named the bot token
+first until 2026-08-27, which is the misdirection that cost a week of cycles.
+  SLACK_USER_TOKEN  xoxp-... ; FOUR user scopes and nothing else --
+                    channels:read groups:read channels:history groups:history.
+                    Those four cover LIST and FETCH, which are the only two modes
+                    this connector is actually used for. Declare them in an app
+                    manifest at https://api.slack.com/apps with ZERO bot scopes;
+                    adding a scope AFTER install forces a reinstall, and a
+                    reinstall REVOKES the token already in the vault.
+                    search:read is DELIBERATELY omitted: workspace-wide search is
+                    the one scope an approver argues about, and SEARCH is a mode
+                    this connector supports and the operator does not use. Its
+                    absence is therefore a CAPABILITY note, never a deficiency --
+                    see scope_clause().
+  SLACK_BOT_TOKEN   xoxb-... ; the NARROWER fallback, not the recommendation. A bot
+                    reads only channels it was INVITED to, so the permalink workflow
+                    would require inviting it everywhere, and a bot token cannot call
+                    search.messages at all. Preferred by nothing; supported because
+                    a narrower credential is not a bad one.
+  WORKSPACE APP APPROVAL is STRUCTURALLY INVISIBLE from a terminal (banked
+                    2026-08-27, six cycles): with org approval enabled the Install
+                    App page reads 'Request to Install' and NO token of EITHER class
+                    exists until a human approves. This connector cannot distinguish
+                    "no token yet" from "no token possible", so it says so in the
+                    missing-variable message instead of guessing. Every route
+                    terminates at that same gate, including Slack's own MCP server
+                    at mcp.slack.com, which refuses Dynamic Client Registration and
+                    demands a hardcoded pre-registered app id precisely so the
+                    standard approval workflow applies.
 
 Endpoint notes (verified against Slack's current Web API):
   - Legacy channels.list/groups.list are retired; conversations.* is canonical.
