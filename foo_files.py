@@ -52,10 +52,10 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 # --- START STATS ---
 # There are 1,412 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 10 published in the last 7 days
-# Markdown negotiated: 2,230 reads (0.21% of all responses)
+# Velocity: 9 published in the last 7 days
+# Markdown negotiated: 2,236 reads (0.21% of all responses)
 # DOM hydration: 2602 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-08-26T16:55Z
+# Honeybot telemetry fetched 2026-08-27T09:33Z
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
