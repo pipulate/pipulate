@@ -3417,6 +3417,13 @@ def main():
                 print(f"     pattern {pat!r}")
             print("   Locate each item above. Rotate only confirmed credentials, then purge the source and rerun.")
             print("   There is no --allow flag for secrets.")
+            print("   The payload:N number is an offset into a payload that was NEVER WRITTEN")
+            print("   (a blocked run exits before the cartridge); open the FILE named on each")
+            print("   hit line instead.")
+            print("   TO FINE-TUNE: the patterns live in SECRET_TRIPWIRES near the top of")
+            print("   prompt_foo.py; known-synthetic values are exempted by")
+            print("   TRIPWIRE_FIXTURE_MARKERS beside it. Paste this whole refusal plus")
+            print("   prompt_foo.py into the next compile to adjust either list.")
             sys.exit(1)
 
     if leaks and denylist_mode == 'block':
