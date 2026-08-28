@@ -1069,6 +1069,14 @@ def scan_secrets(text: str):
     hits, fixtures = [], []
     for pat in SECRET_TRIPWIRES:
         for match in re.finditer(pat, text):
+            value = match.group(0)
+            fixture = next(
+                (m for m in TRIPWIRE_FIXTURE_MARKERS if m in value.lower()),
+                None,
+            )
+            if fixture:
+                fixtures.append((fixture, _payload_source(text, match.start())))
+                continue
             line_no = text.count("\n", 0, match.start()) + 1
 
             line_start = text.rfind("\n", 0, match.start()) + 1
