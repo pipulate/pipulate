@@ -1094,12 +1094,13 @@ def scan_secrets(text: str):
                 source_line,
             )
 
+            source = _payload_source(text, match.start())
             if assignment:
-                search_hint = f"search for {assignment.group(1)!r}"
+                search_hint = f"assignment {assignment.group(1)!r} in {source}"
             elif json_field:
-                search_hint = f"search for JSON field {json_field.group(1)!r}"
+                search_hint = f"JSON field {json_field.group(1)!r} in {source}"
             else:
-                search_hint = "no safe literal locator; inspect this payload line"
+                search_hint = f"bare credential-shaped string in {source}"
 
             hits.append((pat, line_no, search_hint))
 
