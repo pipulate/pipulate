@@ -82,7 +82,22 @@ ROSTER = [
 # a title that is right about 7 of 8 rows beats a roster missing the row
 # they came for. Recorded as a decision so nobody "fixes" it silently.
 TAIL = [
-    ("pu", "start the Pipulate server (long form: pipulate)"),
+    # DE-BRANDED 2026-08-28, one car after boot_menu.py's doors. Two rosters
+    # named the same word `pu` and described it two different ways -- "the app
+    # server" there, "the Pipulate server" here -- which is drift wearing
+    # progressive reveal's coat, and it had already diverged before anyone
+    # noticed. TAIL is the only hand-authored region in this file; every
+    # ROSTER description is generated from a live docstring and therefore
+    # cannot drift. The exception is where drift lives.
+    # PLACEMENT DECIDES IT: this row sits on the DOOR-2 path, where the human
+    # has just declined to start the app, so naming the app names the thing
+    # they declined at the moment they are reading what they can do instead --
+    # the same category error as naming the SYSTEM in a row that should name
+    # the OUTCOME. The parenthetical KEEPS the reveal and improves it:
+    # `pipulate` arrives as a word you TYPE rather than a product being
+    # introduced, which is both honest and searchable. The loud reveal is
+    # still the figlet, on door 1 only.
+    ("pu", "start the app server (long form: pipulate)"),
 ]
 
 FOOTER = [
