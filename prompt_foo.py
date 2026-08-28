@@ -1004,6 +1004,57 @@ def load_disclosure_profile(requested: str = None):
     return (name, profile)
 
 
+# DECLARED FIXTURES -- the fine-grained control this tripwire was missing, and
+# the ONLY sanctioned relaxation of it. Opposite polarity from a disclosure
+# profile: a profile says "trust this RUN"; this says "this VALUE was never a
+# credential."
+#
+# CONVICTED 2026-08-28: a published article carrying four copies of one probe
+# fixture -- a Slack user-token prefix followed by a literal synthetic body --
+# blocked every compile that included it, and the operator reached past the
+# gate and edited the branch by hand, twice, to get a payload out. A guard that
+# fires on the ONE activity this repo performs constantly (writing about
+# credentials) is a guard on its way to being deleted, which is exactly how
+# SECRET_TRIPWIRES became [] the first time.
+#
+# THE MARKER MUST RIDE INSIDE THE MATCHED VALUE, never merely on its line. A
+# real credential's body is issued by a vendor and is base62 noise; it cannot
+# contain the literal word "synthetic" or "redacted", so this exemption is
+# structurally incapable of clearing a live secret. A line-level check WOULD be
+# capable of it, which is why a line-level check is not offered.
+#
+# THE EXEMPTION IS LOUD. scan_secrets prints one line per exempted fixture, so
+# an armed-and-exempting scanner and an armed-and-silent one never print the
+# same thing. THE SILENT-PASS PROBLEM does not get to return through the relief
+# valve built to prevent it.
+TRIPWIRE_FIXTURE_MARKERS = (
+    'synthetic', 'redacted', 'placeholder', 'example', 'dummy',
+    'fixture', 'notarealtoken',
+)
+
+
+def _payload_source(text: str, offset: int) -> str:
+    """Name the payload member a byte offset falls inside.
+
+    THE OLD LOCATOR POINTED AT A FILE THAT WAS NEVER WRITTEN. A blocked run
+    exits at step 6; write_context_cartridge runs at step 7. So "payload:10438
+    -- inspect this payload line" instructed the operator to open an artifact
+    that, by construction, does not exist on a blocked compile. The payload
+    already carries its own address space -- every member is bracketed by a
+    START marker -- so the enclosing FILE is recoverable for free, and a file
+    path is a thing the operator can actually open, grep, and edit.
+    """
+    start = text.rfind("\n--- START: ", 0, offset)
+    if start == -1:
+        return "(before any section marker)"
+    line_end = text.find("\n", start + 1)
+    header = text[start + 1:line_end if line_end != -1 else len(text)]
+    name = header[len("--- START: "):]
+    if name.endswith(" ---"):
+        name = name[:-4]
+    return name.rsplit(" (", 1)[0].strip() or "(unnamed section)"
+
+
 def scan_secrets(text: str):
     """Scan for credential-shaped strings. Always runs; never optional.
 
