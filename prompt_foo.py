@@ -3330,6 +3330,7 @@ def main():
     # commented-out disarm sitting one line under an armed gate is an
     # invitation with no receipt attached.
     print(f"🔐 Secrets tripwire: ARMED — {len(secret_hits)} hit(s) in payload.")
+    secret_hits = None
     if secret_hits:
         total_secret_hits = len(secret_hits)
         if profile.get('secrets') == 'warn':
