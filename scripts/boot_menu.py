@@ -231,7 +231,7 @@ def main() -> int:
 
     print()
     if choice == EXIT_SHELL:
-        print(f"Staying in the shell. Nothing started -- no {name}, no JupyterLab.")
+        print("Staying in the shell. Nothing started -- no JupyterLab, no server.")
         print()
         print(_count_word(len(DOOR_TWO_WORDS)).capitalize() + " words to start from:")
         width = max(len(word) for word, _ in DOOR_TWO_WORDS)
