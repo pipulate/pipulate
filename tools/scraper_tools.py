@@ -345,7 +345,7 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
         # defaults, 2026-07-29) skipped the bind, and urlparse(final_url)
         # after the CAPTURE checkpoint died with UnboundLocalError.
         _host = urlparse(params.get("url", "")).netloc.split(":")[0]
-        _labels = [l for l in _host.split(".") if l]
+        _labels = [label for label in _host.split(".") if label]
         _slug = _labels[-2] if len(_labels) >= 2 else (_labels[0] if _labels else "")
         if _slug and Path(f"data/uc_profiles/{_slug}").exists():
             profile_name = _slug
