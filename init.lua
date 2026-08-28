@@ -545,6 +545,85 @@ function select_current_article()
     vim.notify("Article stage selected.", vim.log.levels.INFO)
 end
 
+-- THE OAUTH SCRUB (\x in visual mode): shape-based redaction for pasted
+-- terminal output, and the deliberate OPPOSITE POLARITY of pii_substitutions.txt.
+--
+--   pii_substitutions.txt -> IDENTITY. Client names. Recurring literals, so one
+--     table entry covers every future article. Applied at publish time.
+--   scrub_oauth           -> EPHEMERA. One-time, high-entropy values minted
+--     fresh on every OAuth run. A substitution table can NEVER catch up with
+--     these -- by the time a value is in the table, it is already published.
+--     Applied at PASTE time, by shape, on the selection under the cursor.
+--
+-- THE MASK IS NOT COSMETIC. TRIPWIRE_FIXTURE_MARKERS in prompt_foo.py exempts a
+-- credential-shaped match when a marker word ("redacted" among them) rides
+-- INSIDE the matched value. So "<redacted:40>" passes the secrets tripwire by
+-- construction, and every future compile carrying the scrubbed article compiles
+-- clean. A mask spelled "XXXXXXXX" would be a landmine: a redaction that still
+-- blocks the gate is exactly the four-copies-of-a-fixture conviction.
+--
+-- THE LENGTH IS THE TEACHING CONTENT: a reader learns a dynamic-registration
+-- client_id is 40 chars and a PKCE challenge is 43, without ever seeing one.
+--
+-- IDEMPOTENT BY CONSTRUCTION: every value pattern excludes "<", so an already
+-- masked value cannot re-match. Running twice reports 0 the second time, which
+-- is an honest reading rather than a silent no-op.
+--
+-- WHAT IT DELIBERATELY DOES NOT TOUCH: home paths, hostnames, vendor slot names,
+-- and the ephemeral loopback port in redirect_uri. The first three are identity
+-- and belong to the other lane; the port is a random local listener that leaks
+-- nothing and teaches the reader how the redirect catcher works.
+function scrub_oauth()
+    local first = vim.fn.line("'<")
+    local last = vim.fn.line("'>")
+    if first == 0 or last == 0 or last < first then
+        vim.notify("scrub: no visual selection found", vim.log.levels.WARN)
+        return
+    end
+    local secret_params = {
+        "client_id", "client_secret", "code_challenge", "code_verifier",
+        "code", "state", "access_token", "refresh_token", "id_token",
+        "token", "api_key", "apikey", "signature", "nonce",
+        "assertion", "session",
+    }
+    local lines = vim.api.nvim_buf_get_lines(0, first - 1, last, false)
+    local hits = 0
+    local function mask(n)
+        return "<redacted:" .. n .. ">"
+    end
+    for i, line in ipairs(lines) do
+        for _, name in ipairs(secret_params) do
+            -- Query-string form: ?name=VALUE or &name=VALUE
+            -- The leading [?&] is what keeps "code" from eating
+            -- "code_challenge_method=S256"; the literal "=" does the rest.
+            line = line:gsub("([?&]" .. name .. "=)([^&%s\"'<>]+)", function(head, val)
+                hits = hits + 1
+                return head .. mask(#val)
+            end)
+            -- Quoted JSON form: "name": "VALUE"
+            line = line:gsub("(\"" .. name .. "\"%s*:%s*\")([^\"<]+)(\")", function(head, val, tail)
+                hits = hits + 1
+                return head .. mask(#val) .. tail
+            end)
+        end
+        -- Authorization header form: Bearer VALUE
+        line = line:gsub("([Bb]earer%s+)([%w%-%._~%+/=]+)", function(head, val)
+            hits = hits + 1
+            return head .. mask(#val)
+        end)
+        lines[i] = line
+    end
+    -- THE DISCRIMINATION QUESTION, answered: a scrub that found nothing and a
+    -- scrub that never ran must never print the same thing. Zero is reported
+    -- LOUDLY, at WARN, because "I selected the wrong lines" and "this block was
+    -- already clean" are the two worlds this line exists to separate.
+    if hits == 0 then
+        vim.notify("scrub: 0 values redacted -- selection already clean, or no known shapes in it", vim.log.levels.WARN)
+        return
+    end
+    vim.api.nvim_buf_set_lines(0, first - 1, last, false, lines)
+    vim.notify(string.format("scrub: %d value(s) redacted across %d line(s)", hits, last - first + 1), vim.log.levels.INFO)
+end
 function sync_to_prompt()
     -- Yank the visual selection
     vim.cmd('normal! gvy')
@@ -709,6 +788,13 @@ map('n', '<leader>k', '<cmd>lua hop_off_sandworm()<CR>', opts)  -- Hop off: stag
 
 -- Map it to <leader>p (for "Clip to Prompt")
 vim.api.nvim_set_keymap('v', '<leader>p', '<cmd>lua sync_to_prompt()<CR>', { noremap = true, silent = true })
+-- Map it to <leader>x (for "X out the secrets"). The ':<C-u>' idiom is load
+-- bearing and is NOT the '<cmd>' spelling used by \c and \p above: '<cmd>' keeps
+-- visual mode active, which leaves '< and '> pointing at the PREVIOUS selection.
+-- Leaving visual mode via ':' is what sets those marks to the selection the
+-- operator just made. \c and \p get away with '<cmd>' only because they call
+-- 'normal! gvy' to reselect; a line-range edit has no such escape.
+vim.api.nvim_set_keymap('v', '<leader>x', ':<C-u>lua scrub_oauth()<CR>', { noremap = true, silent = true })
 
 -- Print a message to confirm init.lua is loaded
 print("init.lua loaded successfully!")
