@@ -77,7 +77,7 @@ DOOR_TWO_WORDS = (
     ("walk", "take the guided tour -- public pages, nothing to log into"),
     ("sources", "see what this shell can reach outside this machine"),
     ("brief", "compile this workshop into your clipboard for an AI"),
-    ("pu", "change your mind and start {name} after all"),
+    ("pu", "change your mind and start the app server after all"),
 )
 # Spelled out because "four words wait" reads better than "4 words wait".
 # The digit fallback means a word count past seven degrades to something
