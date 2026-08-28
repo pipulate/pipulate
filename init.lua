@@ -611,6 +611,41 @@ function scrub_oauth()
             hits = hits + 1
             return head .. mask(#val)
         end)
+        -- VENDOR PREFIX SHAPES -- the half of prompt_foo.py's SECRET_TRIPWIRES
+        -- list that belongs one lane upstream. Safe here for the same reason it
+        -- is safe there: every rule below matches a VENDOR-ISSUED PREFIX, never
+        -- an English word. "GOCSPX-" cannot occur in prose except while quoting
+        -- a credential, so this has no false-positive surface in a journal.
+        -- DELIBERATELY ABSENT: a bare-assignment form (name = value) driven by
+        -- the secret_params list above. That list carries "code", "state",
+        -- "token" and "session" -- ordinary English AND ordinary Python
+        -- identifiers -- and a journal about writing code is full of lines like
+        -- "session = requests.Session()". Masking those is the PII GREEDY-NAME
+        -- INCIDENT in a new costume, and that incident is why the substitution
+        -- table was emptied once already. If an assignment form is ever added it
+        -- takes a SEPARATE compound-only name list (client_secret,
+        -- signing_secret, app_secret) and a 20-character floor, exactly as
+        -- prompt_foo.py already spells it.
+        -- RUNS AFTER Bearer ON PURPOSE: "Bearer ghp_..." must be masked once as
+        -- a whole value, not twice as prefix plus remainder.
+        -- IDEMPOTENT: the value class is POSITIVE and excludes "<", so an
+        -- already-masked value cannot re-match. LUA PATTERNS, NOT REGEX: there
+        -- is no {n} quantifier here, because {} are literal characters in Lua
+        -- and a rule spelled with them silently never fires.
+        local vendor_prefixes = {
+            "GOCSPX%-",                -- Google OAuth client secret
+            "xox[baprs]%-[%w%-]+%-",   -- Slack token family
+            "gh[pousr]_",              -- GitHub PAT family
+            "sk%-ant%-[%w%-_]+%-",     -- Anthropic
+            "AKIA",                    -- AWS access key id
+        }
+        for _, prefix in ipairs(vendor_prefixes) do
+            line = line:gsub("(" .. prefix .. ")([%w%-_%./+=]+)", function(head, val)
+                if #val < 8 then return head .. val end
+                hits = hits + 1
+                return head .. mask(#val)
+            end)
+        end
         lines[i] = line
     end
     -- THE DISCRIMINATION QUESTION, answered: a scrub that found nothing and a
