@@ -69,7 +69,10 @@ SHELL_KEYS = {"2", "q", "Q", "n", "N", "l", "L", "\x03", "\x04"}
 # (walk) -> look around here yourself (sources) -> hand it to someone
 # elsewhere (brief) -> reverse the choice you just made (pu). `walk` leads
 # because it is the only row that asks nothing of you first.
-# {name} is filled at print time; the whitelabel is not known at import.
+# No row spells the brand any more, so the .format(name=...) call at the print
+# site currently no-ops. It stays: a future row may need it, and a row that
+# silently printed a literal {name} would be worse than a call that does
+# nothing.
 DOOR_TWO_WORDS = (
     ("walk", "take the guided tour -- public pages, nothing to log into"),
     ("sources", "see what this shell can reach outside this machine"),
