@@ -157,7 +157,7 @@ def _render(name, seconds) -> None:
         )
     except Exception:
         print()
-        print(f"--- {name} :: pick a door ---")
+        print("--- nix develop -- a reproducible *nix shell :: pick a door ---")
         for line in lines:
             print("  " + line)
         print(f"  ({subtitle})")
