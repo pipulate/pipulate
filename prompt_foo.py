@@ -1069,7 +1069,21 @@ def scan_secrets(text: str):
     hits, fixtures = [], []
     for pat in SECRET_TRIPWIRES:
         for match in re.finditer(pat, text):
-            value = match.group(0)
+            matched = match.group(0)
+            # THE NAME IS NOT THE VALUE (banked 2026-08-28, hole found the same
+            # morning the exemption landed). Every shape-based tripwire above
+            # matches the credential ITSELF, so searching the whole match is
+            # searching the value. The generic assignment tripwire is the one
+            # exception: it captures the VARIABLE NAME too, so a marker word
+            # sitting in the NAME would exempt whatever real credential sat to
+            # the right of the equals sign -- the marker riding OUTSIDE the
+            # value, which is exactly the failure this exemption's own comment
+            # says a line-level check would have. Cut at the first assignment
+            # or field separator when the match contains one; matches with no
+            # separator (token prefixes, PEM headers, AWS ids) are searched
+            # whole, unchanged.
+            seps = [i for i in (matched.find('='), matched.find(':')) if i != -1]
+            value = matched[min(seps) + 1:] if seps else matched
             fixture = next(
                 (m for m in TRIPWIRE_FIXTURE_MARKERS if m in value.lower()),
                 None,
