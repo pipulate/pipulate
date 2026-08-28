@@ -3329,8 +3329,14 @@ def main():
     # "secrets": "warn", which shouts and lands in the transcript. A
     # commented-out disarm sitting one line under an armed gate is an
     # invitation with no receipt attached.
+    # CASHED 2026-08-28: exactly that invitation was accepted -- a live
+    # `secret_hits = None` rode the working tree for one compile, directly
+    # under this ARMED banner, so the console claimed a guard that no longer
+    # existed. Removed the same morning. The ONLY sanctioned disarm is the
+    # profile escape below ('secrets': 'warn'), which downgrades the failure
+    # while leaving a receipt; a silent None leaves none and would have been
+    # committed to the public repo by the next `m` alongside unrelated work.
     print(f"🔐 Secrets tripwire: ARMED — {len(secret_hits)} hit(s) in payload.")
-    secret_hits = None
     if secret_hits:
         total_secret_hits = len(secret_hits)
         if profile.get('secrets') == 'warn':
