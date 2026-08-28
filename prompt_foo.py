@@ -3416,7 +3416,6 @@ def main():
     # while leaving a receipt; a silent None leaves none and would have been
     # committed to the public repo by the next `m` alongside unrelated work.
     print(f"🔐 Secrets tripwire: ARMED — {len(secret_hits)} hit(s) in payload.")
-    secret_hits = None
     if secret_hits:
         total_secret_hits = len(secret_hits)
         if profile.get('secrets') == 'warn':
