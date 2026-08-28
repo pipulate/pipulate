@@ -68,7 +68,7 @@ def redact_ips(content: str) -> str:
 # (mechanical vim jumps); the && chain in write_post halts, so nothing
 # genuinely ambiguous reaches articleizer.
 FENCE_RUN_RE = re.compile(r'`{3,}')
-NEUTRAL_FENCE_TOKEN = '[triple-backtick]'
+NEUTRAL_FENCE_TKN = '[triple-backtick]'
 
 
 def enforce_fence_contract(content: str) -> str:
@@ -81,7 +81,7 @@ def enforce_fence_contract(content: str) -> str:
     healed = 0
     for i, line in enumerate(lines, 1):
         if '```' in line and not line.startswith('```'):
-            line, n = FENCE_RUN_RE.subn(NEUTRAL_FENCE_TOKEN, line)
+            line, n = FENCE_RUN_RE.subn(NEUTRAL_FENCE_TKN, line)
             neutralized += n
         if line.startswith('```'):
             if not in_fence:
@@ -105,7 +105,7 @@ def enforce_fence_contract(content: str) -> str:
     if in_fence:
         problems.append("EOF: unclosed fence")
     if neutralized:
-        print(f"🧯 Neutralized {neutralized} floating backtick run(s) -> {NEUTRAL_FENCE_TOKEN}")
+        print(f"🧯 Neutralized {neutralized} floating backtick run(s) -> {NEUTRAL_FENCE_TKN}")
     if healed:
         print(f"🩹 Tagged {healed} naked opening fence(s) with 'text'.")
     if problems:
