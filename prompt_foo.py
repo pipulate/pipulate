@@ -1066,7 +1066,7 @@ def scan_secrets(text: str):
     the hint names only the assignment variable or JSON field, which is enough
     for the operator to find the source without echoing secret material.
     """
-    hits = []
+    hits, fixtures = [], []
     for pat in SECRET_TRIPWIRES:
         for match in re.finditer(pat, text):
             line_no = text.count("\n", 0, match.start()) + 1
