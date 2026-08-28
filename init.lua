@@ -632,11 +632,14 @@ function scrub_oauth()
         -- already-masked value cannot re-match. LUA PATTERNS, NOT REGEX: there
         -- is no {n} quantifier here, because {} are literal characters in Lua
         -- and a rule spelled with them silently never fires.
+        -- Preserve only the stable family discriminator. Vendor-issued routing
+        -- segments left before <redacted:N> can still satisfy a downstream
+        -- minimum-length tripwire, which defeats the marker-inside-value rule.
         local vendor_prefixes = {
             "GOCSPX%-",                -- Google OAuth client secret
-            "xox[baprs]%-[%w%-]+%-",   -- Slack token family
+            "xox[baprs]%-",            -- Slack token family
             "gh[pousr]_",              -- GitHub PAT family
-            "sk%-ant%-[%w%-_]+%-",     -- Anthropic
+            "sk%-ant%-",               -- Anthropic
             "AKIA",                    -- AWS access key id
         }
         for _, prefix in ipairs(vendor_prefixes) do
