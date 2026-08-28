@@ -1104,6 +1104,11 @@ def scan_secrets(text: str):
 
             hits.append((pat, line_no, search_hint))
 
+    if fixtures:
+        print(f"🧪 Secrets tripwire: {len(fixtures)} credential-shaped string(s) "
+              "exempted as DECLARED FIXTURES (marker word inside the value):")
+        for fixture, source in sorted(set(fixtures)):
+            print(f"   • {fixture!r} in {source}")
     return hits
 
 
