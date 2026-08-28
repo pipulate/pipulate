@@ -1319,6 +1319,14 @@ def copy_to_clipboard(text: str):
     except Exception as e:
         logger.print(f"\nWarning: Could not copy to clipboard: {e}")
 
+def clipboard_egress_allowed(profile: dict, no_clipboard: bool) -> bool:
+    """Enforce the no-egress meaning of profiles whose secrets mode is WARN."""
+    return (
+        not no_clipboard
+        and profile.get('secrets', 'block') != 'warn'
+    )
+
+
 def check_dependencies():
     logger.print("Checking for required external dependencies...")
     dependencies = {
@@ -3478,8 +3486,11 @@ def main():
     if args.output:
         with open(args.output, 'w', encoding='utf-8') as f: f.write(final_output)
         print(f"\nOutput written to '{args.output}'")
-    if not args.no_clipboard:
+    if clipboard_egress_allowed(profile, args.no_clipboard):
         copy_to_clipboard(final_output)
+    elif not args.no_clipboard and profile.get('secrets', 'block') == 'warn':
+        print("🧱 LOCAL-LANE EGRESS FENCE: automatic clipboard/SSH-bridge copy disabled while secrets=WARN.")
+        print("   Inspect foo.zip or an explicit -o file locally. Use a blocking secrets profile before sending the payload elsewhere.")
 
 if __name__ == "__main__":
     main()
