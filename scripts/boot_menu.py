@@ -143,7 +143,13 @@ def _render(name, seconds) -> None:
         Console().print(
             Panel(
                 "\n".join(lines),
-                title=f"{name} :: pick a door",
+                # NOT "Linux": this flake is eachDefaultSystem and carries
+                # live Darwin branches, so a title claiming Linux is false on
+                # every Mac and invisible to the one person who could fix it.
+                # "*nix" is true on Linux, WSL, and certified-UNIX macOS
+                # alike, and echoing the command they just typed is the whole
+                # education this line owes a first-timer.
+                title="nix develop -- a reproducible *nix shell :: pick a door",
                 subtitle=subtitle,
                 border_style="cyan",
                 padding=(1, 2),
