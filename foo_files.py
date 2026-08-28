@@ -51,8 +51,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,414 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 10 published in the last 7 days
+# There are 1,415 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 11 published in the last 7 days
 # Markdown negotiated: 2,245 reads (0.21% of all responses)
 # DOM hydration: 2602 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
 # Honeybot telemetry fetched 2026-08-28T10:03Z
@@ -1524,26 +1524,26 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # adhoc.txt    _   _   _ to set context____ _   _  ___  ____  _   <F5> Simpson Couch Gag Here (explain anything to the audience you feel needs it explained)
 #     / \   __| | | | | | ___   ___   / ___| | | |/ _ \|  _ \| |  
-# ahe/ _ \ / _` | | |_| |/ _ \ / __| | |   | |_| | | | | |_) | |  I'm being forced to go the formal route because the 80/20-rule solutions are being thrown out of wack to 99/1-rule violations.
+# ahe/ _ \ / _` | | |_| |/ _ \ / __| | |   | |_| | | | | |_) | |  Make some unexpected connection
 # ahc ___ \ (_| | |  _  | (_) | (__  | |___|  _  | |_| |  __/|_|  
 #  /_/   \_\__,_| |_| |_|\___/ \___|  \____|_| |_|\___/|_|   (_)  
 # Ad Hoc CHOP: The Not-Managed-by-Git Safe-for-Client-Data place  
 
-# THE ROLLING PIN BOOK ORE SPINE / FODDER FOR THE BOOK
+#    # THE ROLLING PIN BOOK ORE SPINE / FODDER FOR THE BOOK
 ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
 GLOSSARY.md                 # <-- I think this glossary goes well with the book-ore spine to do world building.
-# scripts/articles/lsa.py     # <-- Useful for refining commands like `posts`, critical to Second Brain concept.
-
-# THE QUIRKY AMIGA-LOVING HUMAN
+#    scripts/articles/lsa.py     # <-- Useful for refining commands like `posts`, critical to Second Brain concept.
+#    
+#    # THE QUIRKY AMIGA-LOVING HUMAN
 ~/repos/nixos/autognome.py  # <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
 init.lua                    # <-- Daily driver hot-keys that overlap with aliases in flake.nix
-
-# AGENTIC FRAMEWORK & FOREVER MACHINE BIG FILES
+#    
+#    # AGENTIC FRAMEWORK & FOREVER MACHINE BIG FILES
 prompt_foo.py               # <-- Prompt Fu compiler, makes the very README for AGENTS-like payload you're reading right now, but it needs to be more like that
 foo_files.py                # <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops
-flake.nix                   # <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
-
-# MAIN ACTUATORS, IaC & NEGATIVE SPACE
+#    flake.nix                   # <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
+#    
+#    # MAIN ACTUATORS, IaC & NEGATIVE SPACE
 apply.py                    # <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
 .gitattributes              # <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
 .gitignore                  # <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
@@ -1553,25 +1553,24 @@ pyproject.toml              # <-- The PyPI Packaging details
 cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
 scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
- 
-# CONTEXT PORTABILITY SYSTEM
+#     
+#    # CONTEXT PORTABILITY SYSTEM
 scripts/foo_cartridge.py    # Needs description
 scripts/foo_replay.py       # Needs description
- 
-# # FREQUENTLY USEFUL TO HAVE IN CONTEXT
+#     
+#    # FREQUENTLY USEFUL TO HAVE IN CONTEXT
 release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
 scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
 scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
-
-# imports/voice_synthesis.py  # <-- The wand can talk to you
-# scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
+#    
+#    imports/voice_synthesis.py  # <-- The wand can talk to you
+#    scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
 
 #                         --- Under this line is were you paste what the AI gives you ---
 #                         --- We call it context but it's really just the right-hand  ---
 #                         --- blast-radius of the "probes" to make this all science.  ---
 
 # --- END `adhoc.txt` TEMPLATE ---
-
 
 # TRYING TO FIGURE ALL THIS OUT
 # The walk-lane roster was duplicated verbatim here. Deleted 2026-08-09: two
