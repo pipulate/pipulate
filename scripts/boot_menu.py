@@ -116,8 +116,20 @@ def _timeout():
 
 
 def _render(name, seconds) -> None:
+    # THE BRAND IS NOT THE DOOR (2026-08-28). Row one said "Start <AppName>"
+    # to a reader who has typed exactly one command in their life -- `nix
+    # develop` -- and therefore has no referent for the name. It named the
+    # SYSTEM where the reader needed the OUTCOME. JupyterLab is what visibly
+    # opens; the name is revealed after the choice, and again by the figlet
+    # runScript prints on the door-1 path only.
+    # `name` IS RETAINED AND CURRENTLY UNUSED HERE, deliberately: it keeps
+    # this signature callable as a non-blocking probe
+    # (_render("Pipulate", None) renders the panel without waiting on a
+    # keypress, which main() cannot do), and a whitelabel install that wants
+    # its own name back in the title is then a one-string edit rather than a
+    # signature change.
     lines = [
-        f"[1]  Start {name}   JupyterLab + server + browser tabs",
+        "[1]  Start JupyterLab   plus the app server and browser tabs",
         f"[2]  Just the shell   nothing starts -- {_count_word(len(DOOR_TWO_WORDS))} words wait at the prompt",
     ]
     if seconds is None:
