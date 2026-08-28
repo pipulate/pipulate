@@ -2390,6 +2390,41 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+
+# THE SOURCE-OF-SOURCE SECRET SCRUB RULE (banked 2026-08-28,
+# receipt-witnessed): move credential EPHEMERA upstream only when the match is
+# high-precision -- query/JSON/Bearer syntax or a vendor-issued prefix. Preserve
+# the smallest stable family discriminator and replace the entire issued suffix
+# with <redacted:N>. Identity and PII substitutions remain downstream, because
+# a false positive there must never rewrite journal.txt. Witness: scrub_oauth
+# masked Google, Slack, and Anthropic fixtures, left
+# `session = requests.Session()` unchanged, and scan_secrets reported
+# downstream_hits=0.
+#
+# THE WARN-MODE NO-EGRESS RULE (banked 2026-08-28, receipt-witnessed): a
+# disclosure profile with secrets=WARN is a local inspection lane, not an
+# automatic transport lane. It may write foo.zip and an explicit -o file, but
+# clipboard and SSH-bridge egress stay disabled. Witness:
+# clipboard_egress_allowed read warn=False, block=True, explicit_no=False.
+#
+# - TODO (seeded 2026-08-28, source-reviewed): the publish sanitizer protects
+#   private spans, IPs, PII substitutions, and the identity denylist, but no
+#   publish-stage credential-shape scan exists. Extract the canonical Python
+#   patterns and fixture logic into one dependency-light module consumed by
+#   prompt_foo.py and scripts/articles/sanitizer.py; keep init.lua's
+#   conservative Lua subset deliberately duplicated.
+#
+# - TODO (seeded 2026-08-28, deliberately deferred): extend scrub_oauth only
+#   for client_secret, signing_secret, and app_secret assignments carrying a
+#   contiguous literal value of at least 20 characters. Negative controls
+#   `session = requests.Session()` and `code = compile(source)` must survive.
+#
+# - TODO (seeded 2026-08-28, dismount-convicted): the NOTARIZE beat asks the
+#   model to name the newest rotated snapshot, but write_context_cartridge runs
+#   after payload assembly, so the current payload can name only N-1. Add a
+#   deterministic self-naming receipt or require a second tap; never notarize
+#   the predecessor as the final deed.
+
 #   SIBLING OF THE PENDING AMENDMENT RULE, INVERTED: that rule forbids the
 #   CONSTITUTION asserting ahead of the code. Here the SCHEMA asserted ahead
 #   of the RIDER, and every trail author has paid the assertion's rent since.
