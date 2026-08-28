@@ -65,6 +65,27 @@ Entries are alphabetical, numbers spelled as spoken.
   when someone insists an arbitrary incumbent was forced.
 - **Chisel-strike** — *one bounded command or edit.* Small, reversible,
   receipt-producing; the unit of daily progress.
+- **Cohesion-tension** — *lazy pull-based evaluation whose column breaks
+  segmentally.* A tree has no pump. Water rises because evaporation at the
+  LEAF creates negative pressure, and the pull propagates DOWN to the soil;
+  the root is a passive interface that drives nothing. The column holds only
+  because water coheres to itself and adheres to the vessel wall. Nix is the
+  same machine: nothing is built until something demands it, the demand
+  travels down the derivation graph from the thing you asked for, and content
+  addressing is the cohesion that keeps the column unbroken hash to hash.
+  TWO ROOTS AT OPPOSITE ENDS, and conflating them is how the metaphor gets
+  misused: the INTENTIONAL root (flake.nix) is a dependency-graph LEAF, and
+  the DEPENDENCY root (the bootstrap seed) is the buried thing nothing points
+  at. You start at the leaf. RENT THIS PAYS — it predicts the SHAPE OF
+  FAILURE. A pumped system fails globally and gradually; a tension column
+  CAVITATES, and one air bubble kills exactly one vessel plus everything it
+  fed. So an impurity does not degrade a build by degrees, it makes ONE
+  derivation irreproducible and marks its downstream suspect, which is why
+  bisection is the right instrument here and averaging is not. DISCRIMINATOR:
+  if you cannot name which vessel broke, you are looking at a pump.
+  SCOPE, stated so nobody over-borrows: this is the MECHANISM half of botany
+  only. Seeds do not breed true, so the reproduction half belongs to GRAFT,
+  NOT SEED and never to germination. Banked 2026-08-28, articulation-banked.
 - **The Circle** — *apply.py's airlocks.* Exact-match interlock plus AST, Nix,
   JSON, and protocol-marker validation. It checks your SEARCH blocks, not your
   soul.
