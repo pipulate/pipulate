@@ -2407,6 +2407,62 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   REPO. It does NOT gate this widening -- hand-authoring a trail in
 #   assets/trails calls neither of the two functions that carry the bug.
 #   Two gates, two rides; conflating them costs a turn.
+# - EARMARK: THE DECLARED-FIXTURE RELIEF VALVE (banked 2026-08-28,
+#   hand-edit-convicted): a guard that fires on the ONE activity this repo
+#   performs constantly -- writing about credentials -- is a guard on its way
+#   to being deleted. CONVICTION: four copies of one Slack probe fixture in a
+#   published article blocked every compile that included it, and the operator
+#   reached past the gate and hand-edited a live disarm into the working tree
+#   TWICE to get a payload out. That is precisely how SECRET_TRIPWIRES became
+#   [] the first time. THE VALVE: a marker word (TRIPWIRE_FIXTURE_MARKERS)
+#   riding INSIDE the matched value exempts it. A vendor-issued body is base62
+#   noise and cannot contain the literal word "synthetic", so the exemption is
+#   structurally incapable of clearing a live secret; a LINE-level check WOULD
+#   be capable of it, which is why one is not offered. THE VALVE IS LOUD:
+#   scan_secrets prints one line per exemption, so armed-and-exempting and
+#   armed-and-silent never print the same thing -- THE SILENT-PASS PROBLEM does
+#   not return through the valve built to prevent it. WHERE TO TUNE, because
+#   the refusal now says so itself: patterns in SECRET_TRIPWIRES, exemptions in
+#   TRIPWIRE_FIXTURE_MARKERS, both module-level in prompt_foo.py; scan_secrets
+#   is the CONSUMER and is edited only to change matching logic.
+# - EARMARK: THE NAME IS NOT THE VALUE (banked 2026-08-28, hole found the same
+#   morning the valve landed): the first spelling searched the whole match, and
+#   ten of eleven tripwires match the credential ITSELF -- but the generic
+#   assignment tripwire captures the VARIABLE NAME too, so an uppercase name
+#   carrying a marker word would have exempted whatever real credential sat to
+#   the right of the equals sign. The marker riding OUTSIDE the value is the
+#   exact failure the valve's own comment says a line-level check would have.
+#   Cured by cutting at the first "=" or ":" in the match. WITNESSED both ways
+#   in one straddle: name_marker_blocks 0 -> 1 while value_marker_exempt held
+#   at 0, the negative control that proves the cure did not break exemption.
+#   STANDING CONSEQUENCE FOR AUTHORS: spell fixture BODIES so they announce
+#   themselves; a marker word in the variable NAME buys nothing.
+# - EARMARK: THE LOCATOR THAT POINTED AT NOTHING (banked 2026-08-28): the
+#   refusal printed a payload byte offset and told the operator to inspect that
+#   payload line -- an artifact that BY CONSTRUCTION does not exist, because a
+#   blocked run exits at step 6 and write_context_cartridge runs at step 7.
+#   Four CORRECT refusals read as noise for that reason alone. Cured by
+#   scanning back to the nearest START marker, which the payload already
+#   carries, so the refusal names a FILE the operator can open and grep. Both
+#   branches witnessed: the section-naming branch against a real payload, the
+#   "(before any section marker)" fallback against raw text read off disk.
+#   Sibling of THE LAST-INCH RULE -- every upstream stage was right and the
+#   reader-facing string was the whole defect.
+# - TODO (banked 2026-08-28, census-scoped, LATENT NOT OUTAGE): 18 published
+#   articles carry 52 credential-shaped strings; NONE blocks anything until it
+#   rides in a payload. Bulk is generic-assignment config-shape prose (29 hits
+#   across 13 files) plus one 17-hit Slack cluster in
+#   2026-08-03-debugging-self-referential-prompt-guards.md -- all fixture
+#   candidates. TWO LINES NEED A HUMAN EYE, because an Anthropic-shaped value
+#   and an uppercase secret-named assignment matched the SAME line:
+#   2026-02-16-digital-sovereignty-secured-openclaw-nixos-claude-code-bridge.md
+#   line 813, and 2026-02-16-openclaw-nixos-claude-opus-4-6-golden-master-test.md
+#   line 646. Read them locally with sed; NEVER echo them into a payload, or
+#   the probe hands the gate a reason to block the compile being used to fix
+#   it. Fixture -> add a marker word inside the value BY HAND (several of these
+#   articles quote patch-protocol markers, so DELIMITER COLLISION class, vim
+#   only). Real -> sed is NOT the fix: the value is already published and in
+#   git history, so ROTATE first and edit second.
 # - NIX AIRLOCK, BOTH BRANCHES WITNESSED (banked 2026-08-25): apply.py's
 #   nix-instantiate --parse gate has now been observed PASSING (every flake.nix
 #   car of this ride) and REFUSING (the dollar-brace comment above, named with
