@@ -135,7 +135,7 @@ def _render(name, seconds) -> None:
     if seconds is None:
         subtitle = "waiting for your choice -- Ctrl+C also drops to the shell"
     else:
-        subtitle = f"no keypress in {seconds:.0f}s starts {name}"
+        subtitle = f"no keypress in {seconds:.0f}s opens door 1"
     try:
         from rich.console import Console
         from rich.panel import Panel
