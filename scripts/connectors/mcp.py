@@ -265,7 +265,7 @@ def resolve_token(token_env=None, server=None):
                 note = _expiry_note(data)
                 if note:
                     sys.stderr.write(f"# mcp token clock: {note}\n")
-                return "mcp_botify_token.json", tok
+                return default_token_file.name, tok
         except Exception:
             pass
 
