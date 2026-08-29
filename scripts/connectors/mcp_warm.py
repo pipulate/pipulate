@@ -373,7 +373,7 @@ def main():
         if not tok.get("access_token"):
             die("mcp_warm RED gate5: token response carries no access_token")
 
-    out = Path(os.path.expanduser(args.out))
+    out = Path(os.path.expanduser(args.out)) if args.out else token_path_for(resource)
     out.parent.mkdir(parents=True, exist_ok=True)
     if not out.exists():
         out.touch(mode=0o600)
