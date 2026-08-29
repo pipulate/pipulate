@@ -552,6 +552,12 @@ def main():
     parser.add_argument("--token-env", default=None,
                         help="Env var holding the bearer token (default: "
                              "MCP_BEARER_TOKEN, then BOTIFY_API_TOKEN).")
+    parser.add_argument("--auth-scheme", default="Bearer",
+                        help="Authorization grammar for THIS server (default: "
+                             "Bearer). Static-token MCP servers commonly want "
+                             "'Token'. Per-server, never per-vendor: an env var "
+                             "would be shell-global and would silently break "
+                             "the other server in the same terminal.")
     args = parser.parse_args()
 
     if args.server is None:
