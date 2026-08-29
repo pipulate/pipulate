@@ -185,8 +185,33 @@ def resolve_existing_token_file(resource):
     derived = token_path_for(resource)
     if derived.is_file():
         return derived, False
+    # THE FALLBACK IS SCOPED (convicted 2026-08-29 by this resolver's own
+    # probe, which read legacy_fallback=True for a server the legacy file was
+    # never minted for). The pre-derivation branch below used to answer for ANY
+    # server whose derived file was absent, so the mcp.botify.com OAuth bearer
+    # was offered to every other MCP server this client can name -- the exact
+    # cross-server hazard the derived path exists to remove, reintroduced by
+    # the compatibility branch that carried the migration.
+    #
+    # THE COMPARISON REUSES THE DERIVATION rather than normalizing a second
+    # time: a trailing slash must never decide who receives a credential, and
+    # two normalization rules in one file are two rules that can drift.
+    #
+    # FAIL CLOSED on every unhappy path -- unreadable file, non-dict body,
+    # missing resource field -- because a credential that cannot prove where it
+    # belongs does not get sent. The type check is the lesson connectors.json
+    # already paid for: readers descend only into objects.
     if LEGACY_TOKEN_FILE.is_file():
-        return LEGACY_TOKEN_FILE, True
+        try:
+            record = json.loads(LEGACY_TOKEN_FILE.read_text(encoding="utf-8"))
+            legacy_resource = record.get("resource") if isinstance(record, dict) else None
+        except (OSError, ValueError, TypeError):
+            legacy_resource = None
+        if legacy_resource and token_path_for(legacy_resource) == derived:
+            return LEGACY_TOKEN_FILE, True
+        sys.stderr.write(
+            f"# mcp credential: declining {LEGACY_TOKEN_FILE.name} for "
+            f"{resource} -- it was minted for a different resource\n")
     return derived, False
 
 
