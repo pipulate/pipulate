@@ -574,15 +574,16 @@ def main():
             "available via --check.")
     declared = args.dclass is not None
     dclass = args.dclass or "D2"
-    with make_client(token) as client:
+    with make_client(token, args.auth_scheme) as client:
         if args.tool:
             arm_receipt(args.server, "tools/call", tool=args.tool,
                         raw_args=args.args_json, dclass=dclass,
-                        auth_env=token_name)
+                        auth_env=token_name, auth_scheme=args.auth_scheme)
             call_tool(client, args.server, args.tool, args.args_json,
                       dclass, declared, args.max_bytes)
         else:
-            arm_receipt(args.server, "tools/list", auth_env=token_name)
+            arm_receipt(args.server, "tools/list", auth_env=token_name,
+                        auth_scheme=args.auth_scheme)
             list_tools(client, args.server, args.max)
 
 
