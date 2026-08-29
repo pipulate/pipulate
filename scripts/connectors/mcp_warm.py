@@ -199,7 +199,18 @@ def refresh(out_path, resource_hint=DEFAULT_RESOURCE):
 
     No TTY required and none requested -- there is no browser in this path.
     """
-    out = Path(os.path.expanduser(out_path))
+    if out_path:
+        out = Path(os.path.expanduser(out_path))
+    elif token_path_for(resource_hint).is_file():
+        out = token_path_for(resource_hint)
+    elif LEGACY_TOKEN_FILE.is_file():
+        out = LEGACY_TOKEN_FILE
+        sys.stderr.write(
+            f"# refreshing the pre-derivation file {LEGACY_TOKEN_FILE.name} "
+            f"IN PLACE; the next browser warm writes "
+            f"{token_path_for(resource_hint)}\n")
+    else:
+        out = token_path_for(resource_hint)
     if not out.is_file():
         die(f"mcp_warm RED gate6: no token file at {out} -- run the full "
             "browser warm first; there is nothing to refresh.")
