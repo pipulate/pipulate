@@ -180,6 +180,7 @@ def resolve_existing_token_file(resource):
     NO SILENT MOVE. Relocating a credential from inside a resolver is a
     mutation wearing a read path's label. The legacy branch is self-clearing:
     the next browser warm writes the derived path and it stops firing.
+    SCOPED: the legacy file answers ONLY for the resource it was minted for.
     """
     derived = token_path_for(resource)
     if derived.is_file():
