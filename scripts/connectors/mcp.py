@@ -565,7 +565,7 @@ def main():
         return
 
     if args.check:
-        sys.exit(check(args.server, args.token_env))
+        sys.exit(check(args.server, args.token_env, args.auth_scheme))
 
     token_name, token = resolve_token(args.token_env, args.server)
     if not token:
