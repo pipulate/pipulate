@@ -299,13 +299,25 @@ def identity():
     print("# mcp.py -- replay client for remote MCP servers (Streamable HTTP)")
     print(f"# protocol : {PROTOCOL_VERSION} (INFERRED until a GREEN --check)")
     if token:
-        print(f"# token    : resolved from {token_name} (value never printed)")
+        print(f"# token    : env lane resolved from {token_name} (value never printed)")
         print("#            resolved is not accepted -- only --check posts")
     else:
-        print("# token    : NONE. Tried, in order: MCP_BEARER_TOKEN,")
-        print("#            MCP_TOKEN_FILE, BOTIFY_TOKEN_FILE,")
-        print("#            ~/.config/pipulate/mcp_botify_token.json,")
-        print("#            BOTIFY_API_TOKEN")
+        print("# token    : no env-lane token (MCP_BEARER_TOKEN, MCP_TOKEN_FILE,")
+        print("#            BOTIFY_TOKEN_FILE, BOTIFY_API_TOKEN all unset)")
+    known = sorted(TOKEN_DIR.glob("*.json")) if TOKEN_DIR.is_dir() else []
+    if LEGACY_TOKEN_FILE.is_file():
+        known.append(LEGACY_TOKEN_FILE)
+    if known:
+        print(f"# creds    : {len(known)} warmed file(s); values never printed")
+        for path in known:
+            tag = " (pre-derivation)" if path == LEGACY_TOKEN_FILE else ""
+            try:
+                note = _expiry_note(json.loads(path.read_text(encoding="utf-8")))
+            except (OSError, ValueError):
+                note = "unreadable"
+            print(f"#            {path.stem}{tag} -- {note or 'no clock recorded'}")
+    else:
+        print(f"# creds    : none warmed yet; they land under {TOKEN_DIR}")
     print("#")
     print("# This client never guesses a server. Name one:")
     print("#   mcp <server> --check           envelope health; exit code is the answer")
