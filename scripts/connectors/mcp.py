@@ -526,7 +526,7 @@ def check(server, token_env, scheme="Bearer"):
     tools = (parsed.get("result") or {}).get("tools") or []
     print(f"mcp GREEN {server} protocol={negotiated} "
           f"session={'yes' if session_id else 'no'} tools={len(tools)} "
-          f"auth={token_name}")
+          f"auth={token_name} scheme={scheme}")
     return 0
 
 
