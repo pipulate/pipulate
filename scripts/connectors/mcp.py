@@ -29,9 +29,13 @@ cannot know a tool's class, so the CALLER declares it; an undeclared class
 clamps to D2 and says so — a possibly-time-varying result must never be
 mistaken for a reproduction.
 
-Auth: Authorization: Bearer resolved from --token-env, then MCP_BEARER_TOKEN,
-then BOTIFY_API_TOKEN. Which token a given server accepts is ITSELF
-unwitnessed until --check says so.
+Auth: Authorization: <scheme> <token>. The token is resolved from --token-env,
+then MCP_BEARER_TOKEN, then the derived warmed file, then BOTIFY_API_TOKEN. The
+SCHEME defaults to Bearer and is overridden per call with --auth-scheme, because
+it is a per-SERVER fact and not a per-vendor one: mcp.botify.com wants an OAuth
+Bearer, while a static-token MCP server under the same vendor wants "Token".
+Which token AND which scheme a given server accepts is ITSELF unwitnessed until
+--check says so.
 
 Output is capped by --max / --max-bytes per THE PROBE ECONOMY RULE.
 """
