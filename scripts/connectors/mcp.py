@@ -349,10 +349,16 @@ def identity():
     print("# Mint or refresh a bearer:  python scripts/connectors/mcp_warm.py")
 
 
-def make_client(token):
+def make_client(token, scheme="Bearer"):
+    """One HTTP client. The scheme is a PER-SERVER fact, never a per-vendor one.
+    Convicted 2026-08-29 on the wire: one vendor runs an OAuth server that wants
+    Bearer and a static-token server that wants "Token", and against the latter
+    a Bearer and NO credential at all both return 403 -- so a wrong grammar is
+    indistinguishable from being unauthenticated unless the caller names it.
+    """
     return httpx.Client(
         headers={
-            "Authorization": f"Bearer {token}",
+            "Authorization": f"{scheme} {token}",
             "Content-Type": "application/json",
             "Accept": "application/json, text/event-stream",
         },
