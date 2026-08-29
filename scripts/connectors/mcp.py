@@ -461,7 +461,7 @@ def check(server, token_env):
     """SELECT 1 for the envelope. Exit 0 GREEN, exit 1 RED, gate-named stderr.
     Tokenless runs still take the unauthenticated envelope reading, because
     401/400/404 discriminates address-right / handshake-wrong / join-wrong."""
-    token_name, token = resolve_token(token_env)
+    token_name, token = resolve_token(token_env, server)
     if not token:
         arm_receipt(server, "check-unauthenticated")
         try:
