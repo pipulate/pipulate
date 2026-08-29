@@ -62,6 +62,20 @@ Auth kinds: oauth_token_file (gmail), bearer_token (botify), basic_auth
 semrush — a persistent Chrome profile under data/uc_profiles/<name>, warmed by
 weblogin.py, not a token). Every future connector copies one of these five.
 
+Credential paths are DERIVED, never chosen. A connector that talks to more than
+one server of the same kind — MCP is the first — computes its token path from
+the server URL rather than from a constant, so the credential a client sends is
+structurally the credential that server minted. mcp.py and mcp_warm.py each
+carry an identical `token_path_for()` mapping a resource URL to
+`~/.config/pipulate/mcp/<host>.json`, appending a quoted path slug when the
+server lives under a path rather than at a host root. Collision is
+unrepresentable, an Nth server costs zero configuration lines, and a bearer
+scoped to one resource can never be handed to another. The pre-derivation file
+`mcp_botify_token.json` is read as a fallback and is never moved by a read path;
+the next browser warm writes the derived location and the fallback stops firing.
+Duplicating the derivation rather than sharing it is deliberate — each connector
+stays self-contained — so the two copies are compared by probe, not trusted.
+
 ## Current connectors
 
 - gmail.py       LIST by address / FETCH by hex id or web-URL / SEARCH by "subject" -> full thread(s), --list for snippets (OAuth token file)
