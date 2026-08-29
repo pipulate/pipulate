@@ -506,9 +506,9 @@ def check(server, token_env, scheme="Bearer"):
         except httpx.HTTPError as e:
             sys.stderr.write(f"mcp RED gate1: no token AND transport failure: {e}\n")
         return 1
-    arm_receipt(server, "check", auth_env=token_name)
+    arm_receipt(server, "check", auth_env=token_name, auth_scheme=scheme)
     try:
-        with make_client(token) as client:
+        with make_client(token, scheme) as client:
             session_id, negotiated, _sinfo = initialize(client, server)
             resp = post(client, server,
                         {"jsonrpc": "2.0", "id": 1, "method": "tools/list"},
