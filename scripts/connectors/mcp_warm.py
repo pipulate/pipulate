@@ -287,7 +287,7 @@ def main():
     # nothing, so the TTY requirement that guards the interactive dance must
     # not be inherited by a flow that has no interaction in it.
     if args.refresh:
-        sys.exit(refresh(args.out))
+        sys.exit(refresh(args.out, args.resource))
 
     if not (sys.stdin.isatty() and sys.stderr.isatty()):
         die("mcp_warm RED gate0: not a TTY. This opens a browser and blocks "
