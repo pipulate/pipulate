@@ -138,6 +138,48 @@ DCLASS_NOTE = {
 }
 
 
+# ---------------------------------------------------------------------------
+# THE DERIVED CREDENTIAL PATH. The DERIVED-PATH RULE aimed at credentials
+# rather than at writes: the file a client reads is a pure function of the
+# server it is talking to, so a bearer minted for one resource is structurally
+# incapable of being sent to another. Collision is unrepresentable because
+# quote() escapes every character a path could carry, and adding an Nth server
+# costs zero configuration lines.
+#
+# token_path_for IS DUPLICATED VERBATIM in scripts/connectors/mcp_warm.py, on
+# purpose: the connector contract makes each file self-contained (no shared
+# imports), and walk_cartridge.py already duplicates foo_cartridge's primitives
+# for the same reason. The two definitions must stay byte-identical, so the
+# straddle probe COMPARES THEIR OUTPUT instead of trusting that they agree.
+# ---------------------------------------------------------------------------
+TOKEN_DIR = Path.home() / ".config" / "pipulate" / "mcp"
+LEGACY_TOKEN_FILE = Path.home() / ".config" / "pipulate" / "mcp_botify_token.json"
+
+
+def token_path_for(resource):
+    """Credential path for one MCP server. A root path collapses to the host."""
+    parsed = urlparse(resource or "")
+    host = (parsed.netloc or "unknown-host").lower()
+    path = (parsed.path or "").strip("/")
+    stem = host if not path else f"{host}__{quote(path, safe='')}"
+    return TOKEN_DIR / f"{stem}.json"
+
+
+def resolve_existing_token_file(resource):
+    """(path, is_legacy). Derived first; the pre-derivation file second.
+
+    NO SILENT MOVE. Relocating a credential from inside a resolver is a
+    mutation wearing a read path's label. The legacy branch is self-clearing:
+    the next browser warm writes the derived path and it stops firing.
+    """
+    derived = token_path_for(resource)
+    if derived.is_file():
+        return derived, False
+    if LEGACY_TOKEN_FILE.is_file():
+        return LEGACY_TOKEN_FILE, True
+    return derived, False
+
+
 def die(msg, code=1):
     sys.stderr.write(msg.rstrip("\n") + "\n")
     sys.exit(code)
