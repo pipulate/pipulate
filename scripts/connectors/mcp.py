@@ -222,7 +222,7 @@ def _expiry_note(data):
             "python scripts/connectors/mcp_warm.py")
 
 
-def resolve_token(token_env=None):
+def resolve_token(token_env=None, server=None):
     """(env_var_name, value) for the first set var; (None, None) if cold.
     If value points to a JSON token file, extracts the access_token field.
     """
