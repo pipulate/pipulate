@@ -225,6 +225,9 @@ def _expiry_note(data):
 def resolve_token(token_env=None, server=None):
     """(env_var_name, value) for the first set var; (None, None) if cold.
     If value points to a JSON token file, extracts the access_token field.
+    When a server is named, the warmed-file rung is DERIVED from it
+    (~/.config/pipulate/mcp/<host>.json) and the pre-derivation
+    mcp_botify_token.json is read only as a fallback, with a note on stderr.
     """
     from pathlib import Path
     names = ([token_env] if token_env else []) + [
