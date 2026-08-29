@@ -75,6 +75,10 @@ TIMEOUT = 30.0
 #   frame, recorded_at, protocol_version_sent, client_info,
 #   server, verb, tool, args_raw (byte-for-byte, per the four-tuple),
 #   dclass, auth_env (env var NAME only; the token value NEVER touches disk),
+#   auth_scheme (the Authorization grammar SENT -- Bearer, Token, ... -- because
+#     a wrong scheme and no credential at all can return the identical status,
+#     observed 2026-08-29: anon=403 and bearer=403 against one server where
+#     scheme_token=200; without this field those flights record identically),
 #   exchanges[]: jsonrpc_method, http_status, response_headers (full dict),
 #     session_id_sent, session_id_returned, elapsed_seconds,
 #     body_sha256, body_bytes.
