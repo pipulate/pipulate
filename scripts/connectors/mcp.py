@@ -485,7 +485,7 @@ def call_tool(client, server, tool, raw_args, dclass, declared, max_bytes):
     print(text)
 
 
-def check(server, token_env):
+def check(server, token_env, scheme="Bearer"):
     """SELECT 1 for the envelope. Exit 0 GREEN, exit 1 RED, gate-named stderr.
     Tokenless runs still take the unauthenticated envelope reading, because
     401/400/404 discriminates address-right / handshake-wrong / join-wrong."""
