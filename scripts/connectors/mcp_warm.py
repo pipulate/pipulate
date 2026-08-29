@@ -5,7 +5,7 @@ mcp_warm.py — Mint an OAuth 2.1 (PKCE, S256) bearer token for a remote MCP
 server and park it where scripts/connectors/mcp.py already looks.
 
 THE PLUG FOR THE ALREADY-WIRED SOCKET: resolve_token() in mcp.py reads
-~/.config/pipulate/mcp_botify_token.json before falling back to
+~/.config/pipulate/mcp/<host>.json, derived from the server, before falling back to
 BOTIFY_API_TOKEN. The 2026-07-29 flight-one FDR receipt proved that fallback
 is the wrong KIND of credential for mcp.botify.com (HTTP 401 at initialize;
 the server wants a bearer scoped mcp_read_write, per its RFC 9728 document).
@@ -53,7 +53,8 @@ from urllib.parse import urlencode, urlparse, parse_qs, quote
 import httpx
 
 DEFAULT_RESOURCE = "https://mcp.botify.com/"
-DEFAULT_OUT = Path.home() / ".config" / "pipulate" / "mcp_botify_token.json"
+TOKEN_DIR = Path.home() / ".config" / "pipulate" / "mcp"
+LEGACY_TOKEN_FILE = Path.home() / ".config" / "pipulate" / "mcp_botify_token.json"
 AUTH_TIMEOUT = 300  # seconds to wait for the browser redirect
 
 
