@@ -533,7 +533,7 @@ def main():
     if args.check:
         sys.exit(check(args.server, args.token_env))
 
-    token_name, token = resolve_token(args.token_env)
+    token_name, token = resolve_token(args.token_env, args.server)
     if not token:
         die("Missing bearer token: set MCP_BEARER_TOKEN (or BOTIFY_API_TOKEN, "
             "or --token-env NAME). The unauthenticated envelope reading is "
