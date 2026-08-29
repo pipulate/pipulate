@@ -299,7 +299,20 @@ def identity():
     print("# mcp.py -- replay client for remote MCP servers (Streamable HTTP)")
     print(f"# protocol : {PROTOCOL_VERSION} (INFERRED until a GREEN --check)")
     if token:
-        print(f"# token    : env lane resolved from {token_name} (value never printed)")
+        # THE LANE IS PART OF THE CLAIM (convicted 2026-08-29 by this walk's own
+        # receipt). The prior string said "env lane resolved from
+        # mcp_botify_token.json" while every env var was unset and the FILE rung
+        # had fired -- a label naming a lane that did not run, which is the
+        # ATTRIBUTED-VOICE mechanical test failing on the first line a newcomer
+        # reads. It was also a REGRESSION: the string it replaced said only
+        # "resolved from", which was correct. resolve_token returns a bare env
+        # var NAME, or "NAME:file.json" when an env var pointed at a file, or a
+        # bare "<stem>.json" when the warmed-file rung fired; only the last of
+        # those carries a .json suffix and no colon, so the discrimination is
+        # exact rather than heuristic.
+        lane = "file lane" if (":" not in token_name
+                               and token_name.endswith(".json")) else "env lane"
+        print(f"# token    : {lane} resolved from {token_name} (value never printed)")
         print("#            resolved is not accepted -- only --check posts")
     else:
         print("# token    : no env-lane token (MCP_BEARER_TOKEN, MCP_TOKEN_FILE,")
