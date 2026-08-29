@@ -92,11 +92,12 @@ _RECEIPT_META = {}
 
 
 def arm_receipt(server, verb, tool=None, raw_args=None, dclass=None,
-                auth_env=None):
+                auth_env=None, auth_scheme=None):
     """Arm the recorder before takeoff; the atexit hook is the flush."""
     _RECEIPT_META.update({
         "server": server, "verb": verb, "tool": tool,
         "args_raw": raw_args, "dclass": dclass, "auth_env": auth_env,
+        "auth_scheme": auth_scheme,
     })
 
 
