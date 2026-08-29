@@ -276,8 +276,9 @@ def main():
         description="One-shot OAuth 2.1 PKCE warmer for remote MCP servers.")
     parser.add_argument("resource", nargs="?", default=DEFAULT_RESOURCE,
                         help=f"MCP server URL (default: {DEFAULT_RESOURCE})")
-    parser.add_argument("--out", default=str(DEFAULT_OUT),
-                        help=f"Token file to write (default: {DEFAULT_OUT})")
+    parser.add_argument("--out", default=None,
+                        help="Token file to write (default: derived from the "
+                             f"resource URL, under {TOKEN_DIR})")
     parser.add_argument("--refresh", action="store_true",
                         help="Spend the stored refresh_token instead of "
                              "opening a browser. No TTY required.")
