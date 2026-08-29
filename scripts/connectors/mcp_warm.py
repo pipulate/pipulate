@@ -226,7 +226,7 @@ def refresh(out_path, resource_hint=DEFAULT_RESOURCE):
     client_id = record.get("client_id")
     if not client_id:
         die("mcp_warm RED gate6: token file carries no client_id")
-    resource = record.get("resource") or DEFAULT_RESOURCE
+    resource = record.get("resource") or resource_hint
 
     with httpx.Client(timeout=20.0, follow_redirects=True) as client:
         meta, scopes = discover(client, resource)
