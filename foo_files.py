@@ -1066,15 +1066,31 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # gate2 HTTP 401, and NOT because the refresh failed: 694 seconds elapsed between
 # the mint and the read, and the token lives 300. The arithmetic is exact -- FDR
 # receipt stamps 16:26:42Z, mint stamps 16:15Z, clock note reads EXPIRED 394s
-# ago, and 694 minus 300 is 394. STANDING CONSEQUENCE: `mcp.py --check` is
-# STRUCTURALLY INCAPABLE of printing GREEN in the compile lane, because a compile
-# always runs minutes after a human ignition. Its COLOUR is a ritual there; its
-# MAGNITUDE is not -- 394 versus 680825 discriminates cleanly between "just
-# refreshed" and "never refreshed". Witness GREEN by CHAINING in the operator's
-# terminal (refresh, then check, in one command), never by echoing the bare check
-# into adhoc.txt and hoping. Sibling of THE LANE-DISAGREEMENT WITNESS: that rule
-# names a probe blind to a patch; this names a probe whose subject expires faster
-# than the lane can reach it.
+# ago, and 694 minus 300 is 394. STANDING CONSEQUENCE, SCOPED TO THE CREDENTIAL
+# (amended 2026-08-29, receipt-falsified): the limit belongs to the CREDENTIAL's
+# LIFE, never to the LANE. A credential shorter-lived than the human loop cannot
+# be witnessed GREEN from a compile, because a compile always runs minutes after
+# a human ignition. A STATIC credential can be, forever. The first spelling
+# generalized one 300-second bearer into a law about the lane, and a live
+# compile-lane receipt falsified it:
+#   srv2_check_exit=0
+#   mcp GREEN <second vendor MCP server> protocol=2025-06-18 session=yes
+#             tools=56 auth=BOTIFY_API_TOKEN scheme=Token
+# -- a second MCP server under the same vendor, authenticated by a static
+# pre-shared header with no clock to outrun, checked from a `!` line. THE
+# CREDENTIAL KIND IS PER-SERVER, NEVER PER-VENDOR, which is the fact that broke
+# the rule. mcp.botify.com is unchanged: its COLOUR is still a ritual in the
+# compile lane and its MAGNITUDE is not -- 394 versus 680825 discriminates
+# cleanly between "just refreshed" and "never refreshed" -- so witness THAT
+# server by CHAINING in the operator's terminal, refresh then check in one
+# command, never by echoing the bare check into adhoc.txt and hoping.
+# THE DISCRIMINATION QUESTION, asked of a RULE rather than of a probe: name the
+# property that makes the reading impossible, then check whether it belongs to
+# the INSTRUMENT or to the SUBJECT. This one belonged to the subject and was
+# written down as a property of the instrument. Sibling of THE LANE-DISAGREEMENT
+# WITNESS: that rule names a probe blind to a patch; this named a probe whose
+# subject expires faster than the lane can reach it -- true of that subject,
+# false as a law.
 # THE RECORDING OUTLIVES THE FLIGHT, and this is the FDR's whole thesis arriving
 # as a consequence rather than a slogan: a GREEN check cannot be RE-RUN in the
 # compile lane, but a GREEN check can be READ there, because the receipt is a
