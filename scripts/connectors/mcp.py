@@ -248,7 +248,15 @@ def resolve_token(token_env=None, server=None):
                     pass
             return name, val
 
-    default_token_file = Path.home() / ".config" / "pipulate" / "mcp_botify_token.json"
+    if server:
+        default_token_file, is_legacy = resolve_existing_token_file(server)
+        if is_legacy:
+            sys.stderr.write(
+                f"# mcp credential: reading the pre-derivation file "
+                f"{LEGACY_TOKEN_FILE.name}; the next browser warm writes "
+                f"{token_path_for(server)}\n")
+    else:
+        default_token_file = LEGACY_TOKEN_FILE
     if default_token_file.is_file():
         try:
             data = json.loads(default_token_file.read_text(encoding="utf-8"))
