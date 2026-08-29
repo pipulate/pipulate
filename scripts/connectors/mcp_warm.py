@@ -58,6 +58,21 @@ LEGACY_TOKEN_FILE = Path.home() / ".config" / "pipulate" / "mcp_botify_token.jso
 AUTH_TIMEOUT = 300  # seconds to wait for the browser redirect
 
 
+def token_path_for(resource):
+    """Credential path for one MCP server. A root path collapses to the host.
+
+    DUPLICATED VERBATIM from scripts/connectors/mcp.py, on purpose: each
+    connector is self-contained (no shared imports), and a shared helper would
+    make mcp.py depend on this file. The two definitions must stay
+    byte-identical; the straddle probe compares their output.
+    """
+    parsed = urlparse(resource or "")
+    host = (parsed.netloc or "unknown-host").lower()
+    path = (parsed.path or "").strip("/")
+    stem = host if not path else f"{host}__{quote(path, safe='')}"
+    return TOKEN_DIR / f"{stem}.json"
+
+
 def die(msg, code=1):
     sys.stderr.write(msg.rstrip("\n") + "\n")
     sys.exit(code)
