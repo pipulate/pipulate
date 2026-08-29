@@ -45,7 +45,7 @@ import hashlib
 import argparse
 from pathlib import Path
 from datetime import datetime, timezone
-from urllib.parse import urlparse
+from urllib.parse import urlparse, quote
 
 import httpx
 
