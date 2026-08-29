@@ -183,7 +183,7 @@ class _Catch(BaseHTTPRequestHandler):
         pass
 
 
-def refresh(out_path):
+def refresh(out_path, resource_hint=DEFAULT_RESOURCE):
     """THE CINDERELLA RUNG, WRITE HALF. Spend the stored refresh_token for a
     fresh access_token without opening a browser.
 
