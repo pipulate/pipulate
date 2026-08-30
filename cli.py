@@ -109,7 +109,13 @@ def discover_tools(show_all=False, tool_name=None):
                 border_style="cyan"
             ))
             
-            for i, tool in enumerate(essential_tools, 1):
+            # The Rule of 7 is a string-literal list, not a registry read, so
+            # a denied tool would still be NAMED here and a model told to run
+            # it would waste a call on "not found". Filter without importing
+            # the registry (that import costs seconds); denied_tools() is cheap.
+            from tools import denied_tools
+            shown = [tool for tool in essential_tools if tool not in denied_tools()]
+            for i, tool in enumerate(shown, 1):
                 console.print(f"  {i}. [bold cyan]{tool}[/bold cyan]")
             
             console.print(f"\n[italic]Use `.venv/bin/python cli.py mcp-discover --all` to see all available tools.[/italic]")
