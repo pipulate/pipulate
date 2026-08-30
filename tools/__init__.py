@@ -44,7 +44,26 @@ def get_all_tools():
             except ImportError as e:
                 print(f"Could not import tool module: {module_name} - {e}")
 
+    denied = denied_tools()
+    if denied:
+        return {name: func for name, func in AUTO_REGISTERED_TOOLS.items()
+                if name not in denied}
     return AUTO_REGISTERED_TOOLS
+
+
+def denied_tools():
+    """Names withheld from the registry by PIPULATE_TOOL_DENY (comma-separated).
+
+    THE ESCAPE HATCH, NAMED. execute_shell_command is a registry tool, so any
+    experiment that pits the registry against the shell has a registry arm that
+    can shell out and become the other arm. Withholding is an ENV VAR on
+    purpose: the registry itself never changes, the denial is visible in the
+    harness command that set it, and an empty variable is exactly today.
+    Applied at get_all_tools()'s return because every cli.py path -- call,
+    mcp-discover --all, mcp-discover --tool -- reads that one dict.
+    """
+    raw = os.environ.get("PIPULATE_TOOL_DENY", "")
+    return {name.strip() for name in raw.split(",") if name.strip()}
 # --- END NEW ---
 
 __version__ = "1.0.0"
