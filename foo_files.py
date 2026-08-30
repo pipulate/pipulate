@@ -111,9 +111,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # § THE PROBE ECONOMY RULE -- a probe is cheap only when its output is bounded: cap or measure with wc -l, head, tail, rg -l, or an explicit limit before it rides the ledger; unbounded stdout is a context import, not a probe.
 
 # § THE PROBE ECHO RULE -- every probe recommended for hand-execution is also echoed verbatim as a `!` line into the next adhoc.txt; the hand-run is BEFORE, the compiled re-run is AFTER: one probe, two receipts, straddling the patch.
-# THE KATA'S NAME (earmark banked 2026-07-17): Probe, Patch, Prompt. Three
-# beats to every turn — hand-run receipts before, human-actuated mutation
-# during, pre-loaded compile after. Titles and section headers say it too.
+# § THE KATA'S NAME (banked 2026-07-17) -- Probe, Patch, Prompt: hand-run receipts before, human-actuated mutation during, pre-loaded compile after; titles and section headers say it too. Value: the vocabulary entry Probe / Patch / Prompt in GLOSSARY.md.
 # ONE-LINER COROLLARY (banked 2026-07-19): a `!` line is ONE shell command.
 # Multi-line probes shatter in the executor (unexpected-EOF, then each
 # continuation line parsed as a phantom file path — 2026-07-19 compile log
