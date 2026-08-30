@@ -578,7 +578,8 @@ def main():
         if args.json_args:
             try:
                 params = json.loads(args.json_args)
-                console.print(f"🎯 [bold green]Golden Path: Using JSON arguments[/bold green]")
+                if not args.raw:
+                    console.print(f"🎯 [bold green]Golden Path: Using JSON arguments[/bold green]")
             except json.JSONDecodeError as e:
                 console.print(f"❌ [bold red]Error: Invalid JSON provided to --json-args.[/bold red]")
                 console.print(f"JSON Error: {e}")
