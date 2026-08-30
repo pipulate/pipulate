@@ -601,7 +601,7 @@ def main():
         
         # Execute the tool
         try:
-            success = asyncio.run(call_mcp_tool(args.tool_name, params))
+            success = asyncio.run(call_mcp_tool(args.tool_name, params, raw=args.raw))
             if not success:
                 sys.exit(1)
         except KeyboardInterrupt:
