@@ -107,6 +107,16 @@ def run_cmd(cmd, env_extra=None, timeout=CMD_TIMEOUT):
     """bash -c in the inherited environment -> (exit_code, stdout, stderr, seconds)."""
     env = dict(os.environ)
     env.update(env_extra or {})
+    # ONE TERMINAL WIDTH FOR BOTH ARMS (convicted 2026-08-30 by this file's own
+    # dry-run: shared_doc_line_present read True on S and False on R). Under
+    # no TTY both Rich and argparse default to 80 columns and re-wrap what
+    # they print; the connector's first docstring line is 85 cells wide once
+    # cli.py prefixes it with "Docstring:", so its last word landed on a new
+    # line and the same sentence stopped being the same string. An 80-column
+    # wrap is a property of the subprocess, not of either protocol -- the
+    # same class of artifact --raw removed on the call side. Fixed width, not
+    # setdefault, so the reading is the same on every machine.
+    env["COLUMNS"] = "200"
     t0 = time.monotonic()
     try:
         proc = subprocess.run(
