@@ -14,6 +14,8 @@ import re
 import os
 import subprocess
 
+# ONE TIMELINE, NO PREVIEWS: every command in the response appears exactly once, in the section where it executes, in execution order -- PROBES (read-only) first, then PATCHES as numbered cars with any dependent actuator or ignition as the LAST cars, then PROMPT. A command that depends on a patch is never quoted above that patch, not as a preview, not "for later"; if it must be mentioned early, name it ("Car 3, the smoke") and show nothing.
+
 # PROTOCOL MARKER AIRLOCK — the guard the 2026-07-26 player-piano.js incident
 # called for. apply.py speaks a grammar of bare delimiters: [[[SEARCH]]],
 # [[[DIVIDER]]], [[[REPLACE]]], [[[WRITE_FILE]]], [[[END_WRITE_FILE]]] (with 3-5
