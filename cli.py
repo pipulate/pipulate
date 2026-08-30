@@ -524,6 +524,9 @@ def main():
                             help='🎯 GOLDEN PATH: A JSON string containing all tool arguments. ' 
                                  'Use this for complex parameters to ensure perfect data transmission.')
 
+    call_parser.add_argument('--raw', action='store_true',
+                             help='Print the tool result as JSON and nothing else; '
+                                  'the exit code carries the tool\'s success field.')
     args = parser.parse_args()
 
     if not getattr(args, 'raw', False):
