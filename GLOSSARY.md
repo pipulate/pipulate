@@ -394,6 +394,14 @@ Entries are alphabetical, numbers spelled as spoken.
   nagging. FOURTH SIBLING of SINGLE-LINE / CASE-BLIND / UNANCHORED, and the
   first one that is about what the AUTHOR of a pattern cannot see rather than
   what the pattern cannot match.
+- **Delta-Not-Absolute Counter Rule** — *predict a count as a delta, never as
+  an absolute.* Banked 2026-07-20. A grep -c probe predicts reliably only as a
+  DELTA straddling the patch; its absolute value requires a hand-run baseline
+  first. Conviction: 'LANE (' predicted 0→2, ran 1→3 — the +2 delta was exact;
+  the invisible baseline was line 1185's NIX PROBES earmark, identified by the
+  closing grep -n receipt. THE DISPLACEMENT RECEIPT carries the rg -n form of
+  the same rule: a line number is an absolute, and its movement across the
+  patch is the receipt.
 - **The Discrimination Question** — *what does this print in the world where
   I am wrong?* Banked 2026-07-31, parent of the witness corollaries. Before
   typing any probe, ask exactly one question — WHAT DOES THIS PRINT IN THE
@@ -431,6 +439,46 @@ Entries are alphabetical, numbers spelled as spoken.
   on every rg probe whose target might live in a dotfile. Fifth sibling of
   SINGLE-LINE / CASE-BLIND / UNANCHORED / CONTIGUITY — a phrase a
   default-configured tool cannot see.
+- **The Epitaph Counter** — *the patch's own comment is a hit.* Banked
+  2026-08-28, self-convicted three times in two turns. A REMOVAL probe anchored
+  on the removed STRING cannot read zero when the patch documents the removal
+  by QUOTING that string. The comment is the dead string's tombstone, and the
+  probe hunting the corpse finds the grave marker. CONVICTIONS, all mine, all
+  within two turns of banking the parent rule: `rg -F '{name}'
+  scripts/boot_menu.py` predicted 1, read 2, the extra hit being a comment
+  written in that same patch; `rg -F 'Pipulate' scripts/sources_menu.py`
+  predicted 0, read 1; the cross-roster sweep predicted `Pipulate server` gone
+  entirely, found it at sources_menu.py:87 and returned 5 lines where 4 were
+  predicted. Every mechanism string WAS removed and every count said
+  otherwise. DISTINCT FROM ITS PARENT, THE PROSE-INFLATED COUNTER: that rule
+  names a probe that counts documentation and mechanism together by ACCIDENT;
+  this names the case where the PATCH ITSELF guarantees the false hit, so the
+  failure is not a risk but a CERTAINTY knowable at emit time. PRESCRIPTION,
+  in order: (1) anchor on syntax only mechanism can produce (`^\s*\("pu"`,
+  `f"`, `title=`); (2) print LINES rather than a count, so the reader watches
+  a mechanism row become a comment; (3) if neither is possible, PREDICT THE
+  EPITAPH — "1, and it will be the comment" is a correct prediction and "0" is
+  not. Applied at strike three of the KEY/VALUE ride, 2026-08-30: the receipt
+  line spells the handle kata-name so an unanchored probe keeps reading 1, and
+  the tombstone probe anchors on the `# - ` prefix so faded receipts naming the
+  same handles cannot count as survivors.
+- **Incommensurable Measurements** — *a correct number about a different
+  question.* Banked 2026-08-05, two-in-one-compile. A probe can return a
+  CORRECT number about a DIFFERENT question, and the receipt then looks
+  authoritative precisely BECAUSE the number is right. CONVICTION A:
+  `rg -c "^\s*\["` over _posts returned 0 while the mechanism counts
+  text.count('[') anywhere in TRANSFORMED text — line-anchored raw markdown
+  versus position-agnostic post-substitution text, and the chain unwraps
+  inline code, so every backticked bracket reaches the census live.
+  CONVICTION B: an rg line-count in ONE FILE versus the render-canary
+  scanner's DEDUPED TOKEN COUNT across the WHOLE PAYLOAD. Distinct from
+  CASE-BLIND / UNANCHORED / DOTFILE-BLIND / CONTIGUITY, which are probes that
+  CANNOT SEE what is there; this one sees something real and irrelevant —
+  cousin of THE DISCRIMINATION QUESTION's family, not a child. TEST: name the
+  exact expression the mechanism evaluates, then confirm the probe evaluates
+  THAT expression and not a plausible neighbour. Sibling: THE NIX-FILE LINT
+  PROBE, where ruff parsed flake.nix as Python and printed 2,544 correct
+  errors about the wrong question.
 - **The Key/Value Contract** — *the router keeps keys, the glossary keeps
   values.* Banked 2026-08-30, articulation-banked, the day foo_files.py read
   75,947 tokens and 34% of a default payload. FOUR KINDS OF LINE, FOUR FATES.
