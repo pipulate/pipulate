@@ -472,13 +472,13 @@ def sync_install_sh(script_name="install.sh"):
 
     # Copy the file
     dest_path.write_text(source_path.read_text())
-    print(f"📄 Copied {source_path.name} to {dest_path}")
+    note(f"📄 Copied {source_path.name} to {dest_path}")
 
     # Check if there are changes in the Pipulate.com repo
     try:
         status_result = run_command(['git', 'status', '--porcelain', str(dest_path.name)], cwd=PIPULATE_COM_ROOT, capture=True)
         if status_result.stdout.strip():
-            print(f"📦 Changes detected in {dest_path.name}. Committing and pushing...")
+            note(f"📦 Changes detected in {dest_path.name}. Committing and pushing...")
             run_command(['git', 'add', str(dest_path.name)], cwd=PIPULATE_COM_ROOT)
             commit_msg = f"chore: Update {script_name} from pipulate repo v{get_current_version()}"
             run_command(['git', 'commit', '-m', commit_msg], cwd=PIPULATE_COM_ROOT)
@@ -541,13 +541,13 @@ def sync_audit_md():
 
     # Copy the file
     dest_path.write_text(source_path.read_text())
-    print(f"📄 Copied {source_path.name} to {dest_path}")
+    note(f"📄 Copied {source_path.name} to {dest_path}")
 
     # Check if there are changes in the Pipulate.com repo
     try:
         status_result = run_command(['git', 'status', '--porcelain', str(dest_path.name)], cwd=PIPULATE_COM_ROOT, capture=True)
         if status_result.stdout.strip():
-            print(f"📦 Changes detected in {dest_path.name}. Committing and pushing...")
+            note(f"📦 Changes detected in {dest_path.name}. Committing and pushing...")
             run_command(['git', 'add', str(dest_path.name)], cwd=PIPULATE_COM_ROOT)
             commit_msg = f"chore: Update AUDIT.md from pipulate repo v{get_current_version()}"
             run_command(['git', 'commit', '-m', commit_msg], cwd=PIPULATE_COM_ROOT)
@@ -601,13 +601,13 @@ def sync_ai_context_md():
 
     # Copy the file
     dest_path.write_text(source_path.read_text())
-    print(f"📄 Copied {source_path.name} to {dest_path}")
+    note(f"📄 Copied {source_path.name} to {dest_path}")
 
     # Check if there are changes in the Pipulate.com repo
     try:
         status_result = run_command(['git', 'status', '--porcelain', str(dest_path.name)], cwd=PIPULATE_COM_ROOT, capture=True)
         if status_result.stdout.strip():
-            print(f"📦 Changes detected in {dest_path.name}. Committing and pushing...")
+            note(f"📦 Changes detected in {dest_path.name}. Committing and pushing...")
             run_command(['git', 'add', str(dest_path.name)], cwd=PIPULATE_COM_ROOT)
             commit_msg = f"chore: Update AI_CONTEXT.md from pipulate repo v{get_current_version()}"
             run_command(['git', 'commit', '-m', commit_msg], cwd=PIPULATE_COM_ROOT)
@@ -714,7 +714,7 @@ def sync_workspace_tree_to_com():
         if not status_result.stdout.strip():
             note("✅ index.md is already up-to-date in Pipulate.com repo.")
             return False
-        print(f"📦 Changes detected in {dest_path.name}. Committing and pushing...")
+        note(f"📦 Changes detected in {dest_path.name}. Committing and pushing...")
         run_command(['git', 'add', dest_path.name], cwd=PIPULATE_COM_ROOT)
         commit_msg = f"chore: Update index.md workspace tree from pipulate repo v{get_current_version()}"
         run_command(['git', 'commit', '-m', commit_msg], cwd=PIPULATE_COM_ROOT)
