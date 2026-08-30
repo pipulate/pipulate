@@ -57,6 +57,9 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # DOM hydration: 2884 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
 # Honeybot telemetry fetched 2026-08-30T21:30Z
 # --- END STATS ---
+# --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
+# 2026-08-30 compile KEY/VALUE strike 1: sigil keys 0 -> 4 (contract, PROBE ECONOMY, PROBE ECHO, DOTFILE-BLIND); foo_files.py 301,633 -> 301,203 B (-95 tok); GLOSSARY.md 30,594 -> 36,160 B (+1,429 tok); wc -l -7 exact; author's byte estimates ran 30-60% short.
+# --- END RECEIPTS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
 # but commands can go here to like like the `ls -la` classics to get its output
@@ -247,9 +250,6 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # still fail CLOSED. WITNESS OWED: a compiled receipt showing a nonzero
 # heal count against a file with known naked openers. The flip to banked
 # is its own chisel-strike.
-# THE KATA'S NAME (earmark banked 2026-07-17): Probe, Patch, Prompt. Three
-# beats to every turn — hand-run receipts before, human-actuated mutation
-# during, pre-loaded compile after. Titles and section headers say it too.
 # THE DISMOUNT (banked 2026-07-19, mechanism witnessed 2026-07-19): a ride
 # series ends with a fourth beat — the hop-off. The dismount prompt makes
 # the model (1) VERIFY the article's opening goal against THIS compile's
