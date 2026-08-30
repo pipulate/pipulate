@@ -14,9 +14,9 @@ Golden-path modes, auto-detected from the single positional argument:
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 
-  ! python scripts/botify.py
-  ! python scripts/botify.py my-org/my-project
-  ! python scripts/botify.py 'SELECT url FROM crawl' --org my-org --project my-project
+  ! python scripts/connectors/botify.py
+  ! python scripts/connectors/botify.py my-org/my-project
+  ! python scripts/connectors/botify.py 'SELECT url FROM crawl' --org my-org --project my-project
 
 Disambiguation rule: an argument that starts with '{' or contains whitespace is
 a query (FETCH mode); anything else is a slug path (LIST mode). No argument at
