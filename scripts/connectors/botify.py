@@ -261,7 +261,13 @@ def check():
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Unix-philosophy gateway to the Botify API for Prompt Fu context."
+        # ONE SOURCE FOR THREE SURFACES (2026-08-30): the sources roster reads
+        # this module's docstring by AST, tools/connector_tools.py installs it
+        # as the registry tool's __doc__, and --help prints it here. A
+        # description that differs by surface is a confound wearing help's
+        # coat; RawDescriptionHelpFormatter keeps the example lines intact.
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         'query', nargs='?', default=None,
