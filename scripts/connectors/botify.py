@@ -7,10 +7,10 @@ A Unix-philosophy gateway to the Botify API for Prompt Fu context.
 
 Golden-path modes, auto-detected from the single positional argument:
 
-  python scripts/botify.py                    # LIST: identity walk -> all your org/project slugs
-  python scripts/botify.py org                # LIST: projects under that org slug
-  python scripts/botify.py org/project        # LIST: analyses (crawl snapshots) for that project
-  python scripts/botify.py '<BQL or JSON>'    # FETCH: run a query (needs org/project coordinates)
+  python scripts/connectors/botify.py                    # LIST: identity walk -> all your org/project slugs
+  python scripts/connectors/botify.py org                # LIST: projects under that org slug
+  python scripts/connectors/botify.py org/project        # LIST: analyses (crawl snapshots) for that project
+  python scripts/connectors/botify.py '<BQL or JSON>'    # FETCH: run a query (needs org/project coordinates)
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 
