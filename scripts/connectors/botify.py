@@ -156,7 +156,7 @@ def list_org_projects(client, org, max_items):
     for p in projects:
         _, slug, name = project_coordinates(p)
         print(f"{org}/{slug}  {name}")
-    print("\n# Next: python scripts/botify.py " + org + "/<project>   (list analyses)")
+    print("\n# Next: python scripts/connectors/botify.py " + org + "/<project>   (list analyses)")
 
 
 def list_analyses(client, org, project, max_items):
