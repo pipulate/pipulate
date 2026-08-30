@@ -167,7 +167,7 @@ echo "📥 Downloading Pipulate source code..."
 TMP_ZIP_FILE=$(mktemp)
 # Ensure temp file is removed on exit
 trap 'rm -f "$TMP_ZIP_FILE"' EXIT
-curl -L --fail -o "${TMP_ZIP_FILE}" "${ZIP_URL}"
+curl -L --fail -# -o "${TMP_ZIP_FILE}" "${ZIP_URL}"
 echo "✅ Download complete."
 echo
 
@@ -201,12 +201,14 @@ echo
 # --- Deploy Key Setup ("Magic Cookie") ---
 # Part of the "magic cookie" is the SSH key that will allow the flake
 # to perform git operations without password prompts
-echo "🔑 Setting up deployment key..."
+echo "🔑 Fetching the shared deploy key from ${KEY_URL}..."
+echo "   (Public, ROT13-encoded, pull-only: it exists so this folder can fetch"
+echo "    updates without a GitHub account. nix develop decodes it into"
+echo "    ~/.ssh/id_rsa only if no key is there already.)"
 mkdir -p .ssh
-echo "Fetching deployment key from ${KEY_URL}..."
 # Use curl to fetch the key from the URL and save it to .ssh/rot
 if curl -L -sS --fail -o .ssh/rot "${KEY_URL}"; then
-  echo "✅ Deployment key downloaded successfully."
+  echo "✅ Deploy key downloaded."
 else
   echo "❌ Error: Failed to download deployment key from ${KEY_URL}."
   # Optional: remove potentially incomplete key file
@@ -222,16 +224,16 @@ if [ ! -s .ssh/rot ]; then
 fi
 
 chmod 600 .ssh/rot # Important: Set permissions for the raw key file
-echo "🔒 Deployment key file saved and secured."
+echo "🔒 Deploy key saved as .ssh/rot (mode 600)."
 echo
 
 # --- Trigger Initial Nix Build & Git Conversion ---
 # Now we hand over to nix develop, which will activate the flake
 # The flake will handle converting this to a proper git repository
-echo "🚀 Starting Pipulate environment..."
+echo "🚀 Starting the ${BANNER_NAME} environment..."
 print_separator
-echo "  All set! Pipulate is installed at: ${TARGET_DIR}  "
-echo "  To use Pipulate in the future, simply run:  "
+echo "  Source is in place at: ${TARGET_DIR}  "
+echo "  To come back later, run:  "
 echo "  cd ${TARGET_DIR} && ${NIX_DEVELOP_CMD}  "
 print_separator
 echo
@@ -244,7 +246,7 @@ echo "✅ Application identity set."
 echo
 
 # Creating the 'Double-Click' Actuator
-echo "Creating the universal ./run actuator..."
+echo "Creating ./run -- a one-file shortcut for the cd-and-nix-develop line above."
 cat > "${TARGET_DIR}/run" << 'EOL'
 #!/usr/bin/env bash
 cd "$(dirname "$0")" 
@@ -280,10 +282,10 @@ if [ "${PIPULATE_INSTALL_ONLY:-0}" = "1" ]; then
   echo "Hydrating the Nix environment (this may take a minute)..."
 else
   echo
-  echo "This will activate the Nix development environment and"
-  echo "complete the 'magic cookie' transformation process."
+  echo "Next, nix develop builds the environment and turns this folder into a"
+  echo "git repository (the 'magic cookie' step) so it can auto-update from now on."
   echo "🚀 Booting the Forever Machine..."
-  echo "Please wait while the Nix environment hydrates (this may take a minute)..."
+  echo "Please wait while the Nix environment hydrates (2-3 minutes on a first install)..."
 fi
 
 # The Terminal Hand-off:
