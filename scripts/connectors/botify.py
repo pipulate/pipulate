@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# scripts/botify.py
+# scripts/connectors/botify.py
 """
 botify.py — Bring Botify crawl data and BQL query results into context.
 
