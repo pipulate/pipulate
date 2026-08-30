@@ -219,7 +219,14 @@ def apply_search_replace_patch(payload: str) -> bool:
         match_count = content.count(search_block)
         
         if match_count == 0:
-            already_applied_count = content.count(replace_block)
+            # EMPTY-REPLACE DELETION (witnessed 2026-08-30, seven of eight): a
+            # deletion block's REPLACE is the empty string, and str.count('')
+            # returns len(content)+1, so an exact-match miss printed
+            # "replacement is ambiguous (found 296014 times)" -- the file's
+            # character count wearing a match count's label -- and skipped the
+            # nearest-line diagnostic below, which would have shown the em dash
+            # the SEARCH had spelled as two hyphens. Route it to not-found.
+            already_applied_count = content.count(replace_block) if replace_block else 0
             if already_applied_count == 1:
                 print(f"✅ PATCH ALREADY APPLIED: '{filename}' already contains the replacement block.")
                 continue
