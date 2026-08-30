@@ -1,8 +1,8 @@
 # AI_CONTEXT.md — Start Here If You Are an AI
 
-> Auto-generated on 2026-08-05. Rewritten from scratch on every release. If this
+> Auto-generated on 2026-08-30. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1391 entries indexed.
+> 1423 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -96,31 +96,63 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
-- [2026-08-04] [Disposable Installations and Derived Backups: Building Resilient Local-First Tools](https://mikelev.in/futureproof/disposable-installations-durable-backups/index.md)
-- [2026-08-04] [Fixing macOS Nix Evaluation and Git Stat-Cache False Positives](https://mikelev.in/futureproof/mac-nix-eval-stat-cache-fix/index.md)
-- [2026-08-03] [The Last Inch of the Actuator: Debugging Emitter Transport in the Age of AI](https://mikelev.in/futureproof/last-inch-actuator-transport-debugging/index.md)
-- [2026-08-03] [When the Guard Flags Itself: Debugging Self-Referential Prompt Security](https://mikelev.in/futureproof/debugging-self-referential-prompt-guards/index.md)
-- [2026-08-02] [Python, the Shepard Tone, and the Narrow Waist of Software Architecture](https://mikelev.in/futureproof/python-shepard-tone-narrow-waist/index.md)
-- [2026-08-02] [Bistable Percepts and the Unobserved-Branch Rule: Engineering Truth in the Age of AI](https://mikelev.in/futureproof/bistable-percepts-and-unobserved-branch-rules/index.md)
-- [2026-08-02] [The Anti-Crichton Laws: Engineering Truth with Local AI Receipts](https://mikelev.in/futureproof/anti-crichton-laws-ai-receipts/index.md)
-- [2026-08-01] [The Readable Seam: Bisection Debugging and the Mother Cat Kata](https://mikelev.in/futureproof/mother-cat-kata-bisection-debugging/index.md)
-- [2026-08-01] [Hatching the Seed: Deterministic Installation and the Mother Cat Kata](https://mikelev.in/futureproof/hatching-the-seed-installer-automation/index.md)
-- [2026-08-01] [The Blub Paradox and the Mother Cat Kata: Engineering Deterministic Workflows](https://mikelev.in/futureproof/mother-cat-kata-deterministic-walk/index.md)
-- [2026-08-01] [The ASCII Canary: Engineering Visual Receipts in Git for LLM Context](https://mikelev.in/futureproof/ascii-canary-git-visual-receipts/index.md)
-- [2026-08-01] [Observing the Agentic Web: Content Negotiation and DOM Hydration Telemetry](https://mikelev.in/futureproof/agentic-web-content-negotiation-telemetry/index.md)
-- [2026-07-31] [Absolute Timing and the Side-Channel Sanitizer](https://mikelev.in/futureproof/absolute-timing-and-side-channel-sanitization/index.md)
-- [2026-07-31] [Legible Divergence: Replacing WORA with Auditability in the Age of AI](https://mikelev.in/futureproof/legible-divergence-continuation-ladder/index.md)
-- [2026-07-31] [The Continuation Ladder: Harnessing Deterministic AI Workflows](https://mikelev.in/futureproof/continuation-ladder-ai-harness/index.md)
-- [2026-07-30] [The Notary Beat: Engineering Session Finality in AI Workflows](https://mikelev.in/futureproof/notary-beat-session-finality/index.md)
-- [2026-07-30] [The Two Edges of Edge SEO: From Browser DOM to Cloudflare Workers](https://mikelev.in/futureproof/two-edges-of-edge-seo-cloudflare-workers/index.md)
-- [2026-07-30] [Shifting Gears and Fresh Compiles: The Mechanics of Flow in the Age of AI](https://mikelev.in/futureproof/shifting-gears-fresh-compiles-ai/index.md)
-- [2026-07-30] [The Talking Frog and the Two-Witness Gate: Engineering Deterministic AI Workflows](https://mikelev.in/futureproof/talking-frog-two-witness-gate/index.md)
-- [2026-07-29] [The Diamond Age Protocol: Variance Suppression and the Human Gate](https://mikelev.in/futureproof/diamond-age-primer-variance-suppression/index.md)
+- [2026-08-29] [Terminal MCP Operational: Moving From Pipes to Application](https://mikelev.in/futureproof/terminal-mcp-operational-moving-from-pipes-to-application/index.md)
+- [2026-08-29] [Terminal-Native MCP Without the Bloat: Connecting Directly in the Age of AI](https://mikelev.in/futureproof/terminal-native-mcp-without-the-bloat/index.md)
+- [2026-08-29] [From Claude Connector to Unix Instrument: The First Human-Callable MCP Flight](https://mikelev.in/futureproof/from-claude-connector-to-unix-instrument/index.md)
+- [2026-08-29] [The Antidote to Vibe-Coding: Unix Pipes, Local Files, and Resilient AI Workflows](https://mikelev.in/futureproof/antidote-to-vibe-coding-unix-pipes-local-files/index.md)
+- [2026-08-28] [Disappearing Interfaces: De-Branding the Terminal Threshold in AI Workflows](https://mikelev.in/futureproof/disappearing-interfaces-de-branding-terminal-threshold/index.md)
+- [2026-08-28] [Defense-in-Depth Secret Sanitization for AI Workflows](https://mikelev.in/futureproof/defense-in-depth-secret-sanitization-ai-workflows/index.md)
+- [2026-08-28] [Sanitizing OAuth Terminals: Building a Neovim Credential Scrubber](https://mikelev.in/futureproof/sanitizing-oauth-terminals-neovim-credential-scrubber/index.md)
+- [2026-08-28] [Closing the Loop: Fine-Tuning Credential Tripwires and Declared Fixtures](https://mikelev.in/futureproof/closing-the-loop-credential-tripwires-fixtures/index.md)
+- [2026-08-28] [Closing the Slack Loop: Local-First Credential Mastery in the Age of AI](https://mikelev.in/futureproof/closing-the-slack-loop-credential-mastery/index.md)
+- [2026-08-27] [The Epistemic Exoskeleton: Engineering Deterministic AI Workflows Without Metaphysics](https://mikelev.in/futureproof/epistemic-exoskeleton-engineering-deterministic-ai-workflows/index.md)
+- [2026-08-27] [Navigating the Slack API Tax: Bureaucracy, Token Granularity, and the Age of AI](https://mikelev.in/futureproof/navigating-slack-api-tax-token-granularity/index.md)
+- [2026-08-26] [The Walk Ladder: Progressive Disclosure and the Art of the Short Command](https://mikelev.in/futureproof/the-walk-ladder-progressive-disclosure-and-the-art-of-the-short-command/index.md)
+- [2026-08-25] [Dual-Lane Trail Design: Widening the Stop Schema for Public Walks](https://mikelev.in/futureproof/dual-lane-trail-design-schema-widening/index.md)
+- [2026-08-25] [When Defensive Abstractions Outrun the Rider](https://mikelev.in/futureproof/defensive-abstractions-outrun-the-rider/index.md)
+- [2026-08-25] [Closing the Loop: Replacing Vibe-Coding with Deterministic AI Workflows](https://mikelev.in/futureproof/replacing-vibe-coding-deterministic-workflows/index.md)
+- [2026-08-24] [Paste What You Have: Composable Text Commands and the Art of AI Context](https://mikelev.in/futureproof/paste-what-you-have-composable-text-commands/index.md)
+- [2026-08-22] [Finding Root: From Filesystems and Amigas to LUCA](https://mikelev.in/futureproof/finding-root-from-filesystems-and-amigas-to-luca/index.md)
+- [2026-08-21] [The Ghost in the Compiler: Engineering Honest Telemetry in the Age of AI](https://mikelev.in/futureproof/ghost-in-the-compiler-honest-telemetry-ai/index.md)
+- [2026-08-21] [A Defense That Has Never Refused Anything Is a Comment with Good Pressure](https://mikelev.in/futureproof/a-defense-that-has-never-refused-anything-is-a-comment-with-good-pressure/index.md)
+- [2026-08-20] [The Artifact and the Light Cone: Epistemology in the Age of AI](https://mikelev.in/futureproof/artifact-light-cone-epistemology-ai/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-08-19] [111k] interface-didnt-get-worse-you-got-better
+- [2026-08-16] [40k] engineering-the-frame-evidence-based-ai-workflows
+- [2026-08-13] [24k] kantian-units-biological-selves
+- [2026-08-13] [15k] disposable-fine-unreproducible-trap
+- [2026-08-08] [177k] closing-the-loop-deterministic-ai-workflows
+- [2026-08-08] [430k] cartridge-and-authoring-surface-bookmark-compiler
+- [2026-08-07] [508k] ratcheting-software-architecture-egress-barriers
+- [2026-08-06] [163k] the-notary-beat-session-finality
+- [2026-08-06] [187k] three-tier-shell-reachability-ai-workflows
+- [2026-08-06] [545k] credential-expires-recording-does-not
+- [2026-08-05] [252k] debugging-terminal-noise-and-deploy-seams
+- [2026-08-05] [702k] sentinel-splices-workspace-tree-automation
+- [2026-08-04] [533k] disposable-installations-durable-backups
+- [2026-08-04] [190k] mac-nix-eval-stat-cache-fix
+- [2026-08-03] [276k] last-inch-actuator-transport-debugging
+- [2026-08-03] [510k] debugging-self-referential-prompt-guards
+- [2026-08-02] [134k] python-shepard-tone-narrow-waist
+- [2026-08-02] [186k] bistable-percepts-and-unobserved-branch-rules
+- [2026-08-02] [36k] anti-crichton-laws-ai-receipts
+- [2026-08-01] [481k] mother-cat-kata-bisection-debugging
+- [2026-08-01] [551k] hatching-the-seed-installer-automation
+- [2026-08-01] [624k] mother-cat-kata-deterministic-walk
+- [2026-08-01] [8k] ascii-canary-git-visual-receipts
+- [2026-08-01] [768k] agentic-web-content-negotiation-telemetry
+- [2026-07-31] [236k] absolute-timing-and-side-channel-sanitization
+- [2026-07-31] [196k] legible-divergence-continuation-ladder
+- [2026-07-31] [101k] continuation-ladder-ai-harness
+- [2026-07-30] [33k] notary-beat-session-finality
+- [2026-07-30] [23k] two-edges-of-edge-seo-cloudflare-workers
+- [2026-07-30] [36k] shifting-gears-fresh-compiles-ai
+- [2026-07-30] [177k] talking-frog-two-witness-gate
+- [2026-07-29] [58k] diamond-age-primer-variance-suppression
 - [2026-07-29] [152k] operation-stick-bug-flight-data-recorder
 - [2026-07-29] [286k] building-the-black-box-oauth-fdr-ai-workflows
 - [2026-07-29] [71k] mother-cat-kata-bounding-ai-context-wire-truth
