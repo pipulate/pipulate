@@ -63,6 +63,7 @@ downloads/
 logs/
 temp/
 .ssh/key
+.ssh/rot
 *kungfu_*.py
 foo.txt
 service_account.txt
