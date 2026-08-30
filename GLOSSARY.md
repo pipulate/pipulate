@@ -394,6 +394,45 @@ Entries are alphabetical, numbers spelled as spoken.
   nagging. FOURTH SIBLING of SINGLE-LINE / CASE-BLIND / UNANCHORED, and the
   first one that is about what the AUTHOR of a pattern cannot see rather than
   what the pattern cannot match.
+- **The Credential-Life Rule** — *a limit belongs to the credential, never to
+  the lane.* Banked 2026-08-06, amended 2026-08-29, receipt-falsified. THE
+  300-SECOND CREDENTIAL CANNOT SURVIVE THE HUMAN LOOP — the finding that
+  arrived WITH the green. The very next compile-lane `--check` still printed
+  RED gate2 HTTP 401, and NOT because the refresh failed: 694 seconds elapsed
+  between the mint and the read, and the token lives 300. The arithmetic is
+  exact — FDR receipt stamps 16:26:42Z, mint stamps 16:15Z, clock note reads
+  EXPIRED 394s ago, and 694 minus 300 is 394. STANDING CONSEQUENCE, SCOPED TO
+  THE CREDENTIAL: the limit belongs to the CREDENTIAL's LIFE, never to the
+  LANE. A credential shorter-lived than the human loop cannot be witnessed
+  GREEN from a compile, because a compile always runs minutes after a human
+  ignition. A STATIC credential can be, forever. The first spelling
+  generalized one 300-second bearer into a law about the lane, and a live
+  compile-lane receipt falsified it: srv2_check_exit=0 and a GREEN line
+  reading protocol=2025-06-18 session=yes tools=56 auth=BOTIFY_API_TOKEN
+  scheme=Token — a second MCP server under the same vendor, authenticated by
+  a static pre-shared header with no clock to outrun, checked from a `!`
+  line. THE CREDENTIAL KIND IS PER-SERVER, NEVER PER-VENDOR, which is the
+  fact that broke the rule. mcp.botify.com is unchanged: its COLOUR is still
+  a ritual in the compile lane and its MAGNITUDE is not — 394 versus 680825
+  discriminates cleanly between "just refreshed" and "never refreshed" — so
+  witness THAT server by CHAINING in the operator's terminal, refresh then
+  check in one command, never by echoing the bare check into adhoc.txt and
+  hoping. CHAIN THE COMBINATION LOCK: a credential shorter-lived than the
+  human loop is only ever used as `mcp_warm.py --refresh && mcp.py ...`; the
+  order lives in the command, not in the operator. Witnessed 2026-08-30:
+  three chained calls, three GREENs, ~299s on the clock each time. THE
+  DISCRIMINATION QUESTION, asked of a RULE rather than of a probe: name the
+  property that makes the reading impossible, then check whether it belongs
+  to the INSTRUMENT or to the SUBJECT. This one belonged to the subject and
+  was written down as a property of the instrument. Sibling of THE
+  LANE-DISAGREEMENT WITNESS: that rule names a probe blind to a patch; this
+  named a probe whose subject expires faster than the lane can reach it —
+  true of that subject, false as a law. THE RECORDING OUTLIVES THE FLIGHT,
+  and this is the FDR's whole thesis arriving as a consequence rather than a
+  slogan: a GREEN check cannot be RE-RUN in the compile lane, but a GREEN
+  check can be READ there, because the receipt is a recording and a
+  recording does not expire. The credential is the perishable thing; the
+  artifact is not.
 - **Delta-Not-Absolute Counter Rule** — *predict a count as a delta, never as
   an absolute.* Banked 2026-07-20. A grep -c probe predicts reliably only as a
   DELTA straddling the patch; its absolute value requires a hand-run baseline
@@ -516,6 +555,46 @@ Entries are alphabetical, numbers spelled as spoken.
   under-estimated its own emitted prose by 30% in one file and 60% in the
   other, so byte predictions are made by counting the REPLACE block after it
   is written, never before.
+- **The MCP Receipt Rule** — *a tool call is a receipt or it is nothing.*
+  Banked 2026-07-29; mechanism witnessed 2026-07-25 by the fault harness,
+  vendor-witnessed 2026-07-29 and 2026-08-06. A model-mediated tool call
+  enters this system as a RECEIPT or not at all. The receipt is a FOUR-TUPLE
+  the model emits verbatim and never paraphrases: (1) server — the MCP server
+  URL; (2) verb — the JSON-RPC method (tools/call); (3) tool — the tool name
+  exactly as the registry spells it; (4) args — the arguments object,
+  byte-for-byte as submitted. Plus a DETERMINISM CLASS, because re-execution
+  proves different things: D0 deterministic — same args, same bytes,
+  forever; re-runnable by anyone. D1 stable read — server-side state;
+  re-runnable until mutated. A mismatch is drift OR model error, and a
+  timestamp discriminates. D2 time-varying — live/recent/search.
+  Re-execution is a NEW OBSERVATION, never a reproduction. INADMISSIBLE as
+  evidence; citable only as "observed at <ts>". EPISTEMIC LABELS are
+  mandatory and PER LINE: OBSERVED (the model emitted it) vs INFERRED
+  (reasoned from docs, or joined from two of the model's own lists). The
+  envelope — handshake, session header, protocol version, wire spelling of
+  the tool name — is INFERRED until the operator's own replay client
+  witnesses it ONCE, at which point it is PINNED IN THE REPO and never
+  inferred again. THE TRANSPORT IS A CONSTANT; THE CALL IS THE VARIABLE.
+  HARD LIMIT, named so nobody hunts for it later: a REMOTE MCP server's
+  upstream REST traffic is invisible to EVERY client-side instrument, CDP
+  included — the upstream call happens on the vendor's machine, not in a
+  browser. Only a LOCAL (stdio) MCP server can be wire-recorded. For remote
+  servers the MCP call IS the deepest reproducible layer, and any deeper
+  claim is fabrication. COROLLARY — THE MANIFEST IS A MAP: the model
+  enumerates connectors by READING an injected manifest, not by probing a
+  registry. Witnessed 2026-07-25: the session carried 36 server URLs and 8
+  callable tool namespaces. A model cannot detect its own manifest going
+  stale. MODEL FOLLOWS THE MAP applies to the wrapper's map too. STATUS OF
+  THE ENVELOPE: the fault harness (scripts/mcp_dummy_server.py, 20/20
+  against the unmodified client) shares mcp.py's spec reading, so its
+  agreement is a TAUTOLOGY, not a corroboration; "2025-06-18" and the
+  tools/* spellings are OBSERVED against vendor authorship since 2026-08-06;
+  the Mcp-Session-Id round trip is declined by server one (sent=null,
+  ret=null, session=no) and witnessed only by the harness. OWES: whether
+  server two's session=yes of 2026-08-29 discharges that third string is
+  INFERRED from the pairing above and waits on a read of mcp.py's session
+  boolean; delete this clause the day the source has been read and the
+  receipt line says OBSERVED.
 - **The Probe Echo Rule** — *before/after symmetry.* Every probe recommended
   for hand-execution must also be echoed verbatim as a `!` line into the next
   adhoc.txt chop. The hand-run is the BEFORE reading; the compiled re-run is
@@ -568,6 +647,76 @@ Entries are alphabetical, numbers spelled as spoken.
   flip. Pick witnesses from lines that cannot wrap (dated headers like 'BANKED
   2026-07-29 (same-day flip'), and when the patched text is your own, confirm
   the phrase sits on one line before recommending the probe.
+- **The Two-Recorder Rule** — *the FDR wins on parameters, the CVR on
+  intent.* Banked 2026-07-29, receipt-convicted same day. Every airframe
+  carries TWO recorders and investigators never conflate them. The FDR writes
+  machine-sampled PARAMETERS; the CVR records what the humans SAID was
+  happening. Both admissible, for different things: when they disagree the
+  FDR wins on parameters and the CVR wins on INTENT. Connectors persisting
+  wire truth to disk are the FDR-class instrument; a model narrating
+  hosted-MCP results in prose is the CVR (an UNRELIABLE NARRATOR, not a
+  man-in-the-middle: no interposition, just a lossy self-report).
+  CONVICTION: a hosted-MCP session reported "botify_config returned a
+  permission error for this project" and hypothesized "personal-tier project
+  without those products provisioned." Six parameter re-readings:
+  botify_core SUCCEEDS; pageworkers and speedworkers each fail
+  INDEPENDENTLY; both fail IDENTICALLY on a second org — killing the
+  project-specific story — while botify_core itself reports has_pageworkers:
+  true. Plan flag yes, config resolver no, and the deciding layer is
+  invisible from inside that lane by construction. The narration was not
+  fabricated; it was UNDER-SPECIFIED IN A FLATTERING DIRECTION — the
+  variance-suppressor signature — and only a second parameter reading could
+  catch it. THREE-SURFACE AMENDMENT (same ride): the binary compresses one
+  layer too far. (1) WIRE RECEIPT — request/response headers, status,
+  timing, session ids, body hash, persisted by OUR process. (2) TOOL
+  TRANSCRIPT — the structured result a hosted platform hands the model. Not
+  CVR: it is avionics telemetry (an ACARS report) — machine-structured,
+  stronger than narration, weaker than wire, because the transport/auth
+  chain that produced it is invisible. (3) NARRATIVE — prose. Authority may
+  only DECREASE down that ladder, and a sentence may never carry more
+  authority than the surface that fed it. CAPABLE-OF-FDR IS NOT FDR: a local
+  connector earns the FDR label only when it PERSISTS the response side —
+  status, headers, elapsed, session id, body hash — not merely because it is
+  local. Until a receipt proves those channels, "our lane is the FDR" is a
+  CVR sentence about our own instrument. FRAME-DOC COROLLARY: an FDR is
+  UNDECODABLE without its data-frame layout document. Raw bytes plus no
+  frame doc equals no evidence — manifest.json is not bureaucracy, and a
+  network_log.jsonl without its distiller is unreadable in two years. THE
+  EXPERIMENTAL CERTIFICATE (the routing rule): hosted MCP flies under an
+  EXPERIMENTAL airworthiness certificate — it may fly, it gathers real data,
+  it is RESTRICTED from carrying persons for hire. Dispatch it when the cost
+  of being wrong is a rerun: breadth recon, shape-finding, cheap D1
+  discrimination (three calls closed the pageworkers question in under a
+  minute, zero setup). Dispatch the connector lane when output leaves the
+  machine with our name on it. A's job is to tell B what to build; a tool
+  roster read off an injected manifest is a FLIGHT PLAN, never a recording.
+  THE MEL (Minimum Equipment List) — what makes "fly, placarded, restricted"
+  possible; its ABSENCE leaves only two failures: refuse to fly (forfeit the
+  breadth) or fly unplacarded (publish A-grade findings in B-grade
+  language). Hosted-MCP INOP list: request headers, response headers/status,
+  auth mechanism, session handshake — platform-held, never in context.
+  DEGRADED: tool inventory (a map). INOP: third-party replay (no cartridge).
+  Restriction: "returned a permission error" is admissible; "because the
+  project lacks provisioning" is not. THE CONSEQUENCE AXIS (DAL, orthogonal
+  to D0/D1/D2): determinism grades the CALL, provenance grades the RECORD.
+  The load-bearing cell is D0 x CATASTROPHIC — a perfectly deterministic
+  call whose making cannot be PROVEN is still unpublishable. REPORT SHAPE
+  when called out, borrowed from the NTSB and structurally separated: (1)
+  Factual Information — instrument-recorded only, each line carrying its
+  instrument and epistemic label, where UNKNOWN is a VALID INSTRUMENT
+  READING and disguising it as a conclusion is the offense; (2) Analysis;
+  (3) Findings; (4) Probable Cause, one paragraph, labeled inference. The
+  conviction above was purely structural: a section-4 sentence printed in
+  section-1's typeface. OUR OWN FDR, witnessed 2026-07-29:
+  scripts/connectors/mcp.py had read the response side transiently and
+  persisted nothing — capable-of-FDR, not FDR — until the FDR CHANNEL landed
+  the same day: every exchange records http status, full response headers,
+  elapsed, sent and returned session id, body sha256 and bytes, and atexit
+  flushes to browser_cache/mcp/<host>/<utc>__<verb>.json so the recorder
+  survives die(). Its first flight was a RED gate2 401 that still flushed —
+  the recording exists BECAUSE of the crash, the defining FDR property.
+  Frame: mcp-receipt-v1, documented beside the code; auth recorded by env
+  NAME only, never the value.
 - **The Unanchored-Witness Corollary** — *a substring witness drowning in
   false positives.* Banked 2026-07-31, self-convicted in-compile. A witness
   pattern that is a SUBSTRING of a common word spends the probe's budget on
