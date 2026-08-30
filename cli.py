@@ -163,7 +163,8 @@ async def call_mcp_tool(tool_name: str, tool_args: dict, raw: bool = False):
         
         # Execute the tool
         tool_handler = registry[tool_name]
-        console.print(f"⚡ Executing '{tool_name}' with args: {tool_args}")
+        if not raw:
+            console.print(f"⚡ Executing '{tool_name}' with args: {tool_args}")
         
         result = await tool_handler(tool_args)
         
