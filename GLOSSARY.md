@@ -335,6 +335,85 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Yen Sid-ton** — *the summoned Familiar persona.* The Worm wearing its
   helpful face: wizened, brilliant, re-instantiated without yesterday.
 
+## The Constitution — expanded values
+
+> THE KEY/VALUE CONTRACT (banked 2026-08-30). foo_files.py keeps the KEY: one
+> router line opening with `# §` — handle, banked date, one imperative
+> sentence, one physical line, so `grep -c '^# § ' foo_files.py` counts keys
+> and no key can ever split across a line-oriented probe. This section keeps
+> the VALUE: the mechanism, the conviction that banked it, its siblings, its
+> open debts. Handles match their keys case-insensitively, so
+> `rg -in '<handle>' foo_files.py GLOSSARY.md` prints key and value in one
+> receipt. Same line grammar as the vocabulary above; alphabetical with "The"
+> ignored, because this section is read by rg while the router is read
+> top-down as a program.
+
+- **The Dotfile-Blind Probe** — *ripgrep's hidden-file default.* Banked
+  2026-08-05, self-convicted. ripgrep skips hidden files by default, so any rg
+  probe hunting a name that lives in .gitignore, .gitattributes, or any other
+  dotfile returns the SAME silence whether the name is there or not — THE
+  DISCRIMINATION QUESTION failing on the tool's DEFAULT rather than on the
+  pattern. Conviction: `rg -nw 'Collaborators'` returned zero hits while
+  .gitignore carried `Notebooks/Collaborators/` in the very same payload, and
+  the silence was read as absence. PRESCRIPTION: --hidden plus --glob '!.git'
+  on every rg probe whose target might live in a dotfile. Fifth sibling of
+  SINGLE-LINE / CASE-BLIND / UNANCHORED / CONTIGUITY — a phrase a
+  default-configured tool cannot see.
+- **The Key/Value Contract** — *the router keeps keys, the glossary keeps
+  values.* Banked 2026-08-30, articulation-banked, the day foo_files.py read
+  75,947 tokens and 34% of a default payload. FOUR KINDS OF LINE, FOUR FATES.
+  A RULE graduates: its body shrinks IN PLACE to one `# §` key and the body
+  lands here, verbatim, as the value; the key is the healed scar, the value is
+  the remedy. A RECEIPT fades: a dated event line belongs in a newest-first
+  block with a hard cap and is deleted off the bottom, never moved here — git,
+  the article, and the rolling pin already archive events, and a glossary is
+  for durable terms, not for dates. A conviction paragraph ATTACHED to a rule
+  is that rule's value, not a receipt; it moves with the rule. An EARMARK is a
+  value without a key — a named, convicted pattern not yet ranked as
+  constitution; it graduates exactly like a rule (key in place, value here) or
+  is demoted to a todo if it turns out to be work wearing a name. A TODO stays
+  one line — date, verb, gate — and is deleted when done. THE KEY TEST, the
+  rent a key pays: would this one line, read cold by a model that has never
+  seen the body, have prevented the conviction that banked the rule? If yes,
+  graduate. If no, the key is not written yet; write a better key, do not
+  restore the body. ORDER RULINGS, first pass: graduation never relocates a
+  line, so cross-references by name keep resolving and the constitution keeps
+  its pedagogical sequence, because it is read as a program; this section is
+  alphabetical because it is read by rg; and GLOSSARY.md rides ABOVE
+  foo_files.py in the default and adhoc rosters, so a linear reader meets
+  values before keys. THE INSTRUMENT: `grep -c '^# § ' foo_files.py` rises,
+  the ledger's foo_files.py row falls, and the human judges output quality
+  across the same compiles; if quality drops after a graduation, the last body
+  was load-bearing and the fix is a better key. OWES: the newest-first receipts
+  block does not exist yet; the todo region has not been pruned to one-liners;
+  and the endgame — prompt_foo.py hydrating only the glossary entries whose
+  handles appear in a payload, so the whole glossary stops riding — is a
+  mechanism claim and stays PENDING until it exists.
+- **The Probe Echo Rule** — *before/after symmetry.* Every probe recommended
+  for hand-execution must also be echoed verbatim as a `!` line into the next
+  adhoc.txt chop. The hand-run is the BEFORE reading; the compiled re-run is
+  the AFTER reading. One probe, two receipts, straddling the patch — no more
+  probe/patch ordering ambiguity. Carried mechanically by prompt_foo.py's AI
+  checklist as THE PROBE ECHO INVARIANT (item 12), which is why it graduated
+  first: the router key is a reminder and the checklist already has the
+  teeth. Corollaries that stay in the router by name: PROBE DEDUP (identical
+  `!` lines dedupe, so a re-tap must vary the text), ONE-LINER (a `!` line is
+  one shell command), THE ACTUATION-BOUNDARY RULE and THE IGNITION RULE (the
+  straddle brackets execution, not the commit).
+- **The Probe Economy Rule** — *bounded probe output.* A probe is cheap only
+  when its output is bounded. Before routing command stdout into the context
+  ledger, measure or cap it with `wc -l`, `head`, `tail`, `rg -l`, or an
+  explicit result limit. A command that floods thousands of lines is not a
+  cheap falsifying probe; it is an accidental context import. Sample first,
+  widen deliberately, and keep bulk output out of the narrative unless the
+  bulk itself is the evidence. Named by prompt_foo.py's checklist item 12 (a
+  probe too heavy to echo is too heavy to recommend) and backed by the `!`
+  executor's 2000-character stderr tail cap; the mechanism has teeth, so the
+  router needs only the key. Sibling: THE CAP THAT HID THE ANSWER — a cap set
+  to bound noise can truncate the decisive line, so bound by content (grep for
+  the discriminator) rather than by count when the discriminator's position
+  is unknown.
+
 ## The Mother Cat Kata — vocabulary banked 2026-08-01
 
 ### The whole ride, in six lines
