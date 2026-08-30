@@ -172,7 +172,7 @@ def list_analyses(client, org, project, max_items):
         finished = a.get("date_finished") or a.get("date_created") or ""
         print(f"{slug}  {status}  {finished}")
     print(
-        "\n# Next: python scripts/botify.py 'SELECT url FROM crawl' "
+        "\n# Next: python scripts/connectors/botify.py 'SELECT url FROM crawl' "
         f"--org {org} --project {project}"
     )
 
