@@ -1955,7 +1955,7 @@ print('AI:\n', r.ai)
           if [ -d .git ] && [ -f ~/.ssh/id_rsa ]; then
             REMOTE_URL=$(git remote get-url origin 2>/dev/null || echo "")
             if [[ "$REMOTE_URL" == https://* ]]; then
-              echo "Updating remote URL to use SSH..."
+              echo "Found ~/.ssh/id_rsa -- switching the git remote to SSH so auto-updates use it."
               git remote set-url origin git@github.com:pipulate/pipulate.git
             fi
           fi
