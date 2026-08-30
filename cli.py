@@ -168,6 +168,9 @@ async def call_mcp_tool(tool_name: str, tool_args: dict, raw: bool = False):
         
         result = await tool_handler(tool_args)
         
+        if raw:
+            print(json.dumps(result, indent=2, default=str))
+            return bool(result.get("success", True)) if isinstance(result, dict) else True
         # Display results
         console.print(f"✅ [bold green]Tool execution complete![/bold green]")
         
