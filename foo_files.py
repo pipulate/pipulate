@@ -2413,6 +2413,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# EARMARK 2026-08-30 REGISTRATION LINEAGE: advanced_automation_tools.py, mcp_tools.py, botify_tools.py predate @auto_tool and are unreachable from cli.py (receipt: get_all_tools serves system_tools:43; rg shows no decorator on the advanced copy). Gut or migrate to @auto_tool + config.get_botify_token; server.py's bracket path UNWITNESSED. See tools/__init__.py.
 # EARMARK release.py trim: capture `-m build` and print only 'Successfully built' (dump captured tail on failure, run_command's except branch is silent today); twine --disable-progress-bar, print only 'View at'; gate 'Running:' behind --verbose. BEFORE 2026-08-30: lines 51/1392/1394. ~340 lines -> <60.
 # EARMARK --impure removal (4 sites, 3 files): install.sh ./run heredoc + PIPULATE_INSTALL_ONLY lane; mck.sh NIXWRAP; flake.nix brief prompt "macOS --impure exception". get_nix_develop_cmd's comment describes a branch that does not exist.
 # EARMARK Car 5 witness: enter nix develop on a machine with no ~/.ssh/id_rsa and read ~/.ssh/config -- three lines, not one.
