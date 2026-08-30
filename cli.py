@@ -526,7 +526,8 @@ def main():
 
     args = parser.parse_args()
 
-    console.print(Panel("🚀 [bold cyan]Pipulate :: The Local-First AI-Readiness & Automation Workshop[/bold cyan] 🚀", border_style="cyan"))
+    if not getattr(args, 'raw', False):
+        console.print(Panel("🚀 [bold cyan]Pipulate :: The Local-First AI-Readiness & Automation Workshop[/bold cyan] 🚀", border_style="cyan"))
 
     if args.command == 'install':
         if not check_nix_installed():
