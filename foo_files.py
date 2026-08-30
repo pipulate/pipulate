@@ -1358,6 +1358,13 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # human. Connectors declare honest execution targets, and `walk-cartridge-integrity-v2`
 # enforces ordered destination disclosure.
 
+# THE PUBLISH LANE IS NOT THE PUSH: installer edits reach strangers only through release.py's sync_install_sh; `git push` is not their ignition. Publish-only lane, proven idempotent 2026-08-30: python release.py --skip-version-sync --skip-docs-sync --skip-audit-sync --skip-ai-context-sync --skip-breadcrumb-sync --skip-trifecta-rebuild
+# A BARE FENCE CANNOT RIDE SEARCH/REPLACE: apply.py strips bare fence lines from the payload before matching; a fence edit rides as a sed car spelled with \x60\x60\x60.
+# ECHO IS NOT PRINTF INSIDE A NIX STRING: bash's builtin echo leaves \n literal and a Nix indented string passes it through. Convicted 2026-08-30: bash -c 'echo "a\nb"' | cat -A -> a\nb$
+# PURITY IS A PROPERTY OF THE EVALUATION: one pure `nix develop` on a platform proves every devShell attribute evaluates pure there. Two Darwin receipts 2026-08-30; --impure is vestigial (earmark).
+# THE DOOR NUMBER IS THE KEYPRESS RECEIPT: a raw-mode menu prints the choice class it acted on, or the transcript shows a decision with no cause.
+# ARMS MUST BE SYMMETRIC: a registry that contains execute_shell_command can escape into the shell arm; the experiment withholds it and wraps each connector 1:1 from the same docstring.
+
 # STORY ENGINE
 # Mike-E's gift is associative reach; his flaw is letting every spark become canon.
 # Yen Sid-ton is a brilliant Familiar re-instantiated without yesterday.
@@ -2406,6 +2413,9 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+# EARMARK release.py trim: capture `-m build` and print only 'Successfully built' (dump captured tail on failure, run_command's except branch is silent today); twine --disable-progress-bar, print only 'View at'; gate 'Running:' behind --verbose. BEFORE 2026-08-30: lines 51/1392/1394. ~340 lines -> <60.
+# EARMARK --impure removal (4 sites, 3 files): install.sh ./run heredoc + PIPULATE_INSTALL_ONLY lane; mck.sh NIXWRAP; flake.nix brief prompt "macOS --impure exception". get_nix_develop_cmd's comment describes a branch that does not exist.
+# EARMARK Car 5 witness: enter nix develop on a machine with no ~/.ssh/id_rsa and read ~/.ssh/config -- three lines, not one.
 # - TODO (banked 2026-08-28, lint-witnessed): Ruff E741 at tools/scraper_tools.py:348 -- `l` as a comprehension variable in the profile-slug derivation. One character (`l` -> `label`). Pre-existing, unrelated to the de-branding ride, and the FIRST genuine Ruff finding since the native nixpkgs binary landed -- which makes it a receipt that the linter now runs rather than dying at the stub-ld loader. Own car.
 # - EARMARK: THE EPITAPH COUNTER (banked 2026-08-28, self-convicted three times in two turns): a REMOVAL probe anchored on the removed STRING cannot read zero when the patch documents the removal by QUOTING that string. The comment is the dead string's tombstone, and the probe hunting the corpse finds the grave marker. CONVICTIONS, all mine, all within two turns of banking the parent rule: `rg -F '{name}' scripts/boot_menu.py` predicted 1, read 2, the extra hit being a comment written in that same patch; `rg -F 'Pipulate' scripts/sources_menu.py` predicted 0, read 1; the cross-roster sweep predicted `Pipulate server` gone entirely, found it at sources_menu.py:87 and returned 5 lines where 4 were predicted. Every mechanism string WAS removed and every count said otherwise. DISTINCT FROM ITS PARENT, THE PROSE-INFLATED COUNTER: that rule names a probe that counts documentation and mechanism together by ACCIDENT; this names the case where the PATCH ITSELF guarantees the false hit, so the failure is not a risk but a CERTAINTY knowable at emit time. PRESCRIPTION, in order: (1) anchor on syntax only mechanism can produce (`^\s*\("pu"`, `f"`, `title=`); (2) print LINES rather than a count, so the reader watches a mechanism row become a comment; (3) if neither is possible, PREDICT THE EPITAPH -- "1, and it will be the comment" is a correct prediction and "0" is not.
 # THE SOURCE-OF-SOURCE SECRET SCRUB RULE (banked 2026-08-28,
