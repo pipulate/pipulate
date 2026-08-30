@@ -84,7 +84,7 @@ def run_command(cmd, cwd=PIPULATE_ROOT, capture=False, check=True, shell=False):
 
 def validate_git_remotes():
     """Validate git remote configuration and provide helpful guidance."""
-    print("🔍 Validating git remote configuration...")
+    note("🔍 Validating git remote configuration...")
     
     try:
         # Check if we're in a git repository
@@ -114,9 +114,9 @@ def validate_git_remotes():
             print("⚠️  Warning: Unable to determine current branch")
             return False
         
-        print(f"✅ Git validation passed:")
-        print(f"   📍 Current branch: {current_branch}")
-        print(f"   🔗 Remote 'origin' configured")
+        note("✅ Git validation passed:")
+        note(f"   📍 Current branch: {current_branch}")
+        note("   🔗 Remote 'origin' configured")
         
         # Check upstream status (informational only)
         upstream_result = run_command(['git', 'rev-parse', '--abbrev-ref', f'{current_branch}@{{upstream}}'], 
@@ -124,7 +124,7 @@ def validate_git_remotes():
         
         if upstream_result.returncode == 0:
             upstream_branch = upstream_result.stdout.strip()
-            print(f"   ⬆️  Upstream: {upstream_branch}")
+            note(f"   ⬆️  Upstream: {upstream_branch}")
         else:
             print(f"   🔗 No upstream configured (will be set automatically during push)")
         
@@ -154,15 +154,19 @@ def pep440_normalize(version: str) -> str:
 
 def run_version_sync():
     """Runs the version synchronization script."""
-    print("\n🔄 Step 1: Synchronizing versions across all files...")
+    note("\n🔄 Step 1: Synchronizing versions across all files...")
     version_sync_script = PIPULATE_ROOT / "scripts" / "release" / "version_sync.py"
     if not version_sync_script.exists():
         print("❌ version_sync.py not found, skipping version sync")
         return False
     
     try:
-        run_command(["python", str(version_sync_script)])
-        print("✅ Version synchronization complete")
+        result = run_command(["python", str(version_sync_script)], capture=True)
+        # Only the lines that name a CHANGE survive; "already up to date" is silence.
+        for line in (result.stdout or "").splitlines():
+            if "Updated" in line:
+                print(line)
+        note("✅ Version synchronization complete")
         return True
     except Exception as e:
         print(f"⚠️  Version sync failed: {e}")
@@ -170,7 +174,7 @@ def run_version_sync():
 
 def run_waxascii_release_stamp():
     """Programmatically stamps the canonical, text-only bunny into Markdown boundaries."""
-    print("\n🎨 Step 1.5: Executing Idempotent Waxascii Header-Bounded Stamping...")
+    note("\n🎨 Step 1.5: Executing Idempotent Waxascii Header-Bounded Stamping...")
     try:
         sys.path.insert(0, str(PIPULATE_ROOT))
         from imports.ascii_displays import figurate
@@ -194,7 +198,7 @@ def run_waxascii_release_stamp():
                 
             content = target.read_text(encoding="utf-8")
             if unique_invariant_line not in content:
-                print(f"ℹ️  No active visual canary matched inside {target.name}. Skipping injection.")
+                note(f"ℹ️  No active visual canary matched inside {target.name}. Skipping injection.")
                 continue
                 
             lines = content.splitlines()
@@ -230,8 +234,11 @@ def run_waxascii_release_stamp():
                 new_middle = ["", "```text", raw_rabbit_art, "```", ""]
                 
                 updated_content = "\n".join(before_block + new_middle + after_block) + "\n"
-                target.write_text(updated_content, encoding="utf-8")
-                print(f"✅ Idempotent visual lock secured inside: {target.name}")
+                if updated_content != content:
+                    target.write_text(updated_content, encoding="utf-8")
+                    print(f"🎨 Wax seal restamped inside {target.name}")
+                else:
+                    note(f"✅ Wax seal already current inside {target.name}")
                 
         return True
     except Exception as e:
@@ -244,7 +251,7 @@ def run_ai_context_generation():
     AI_CONTEXT.md in the Pipulate repo root from scratch, so a fresh clone always
     greets an AI with the latest narrative map. Non-fatal: skips cleanly if the
     generator or the article source is unavailable."""
-    print("\n🧭 Step 1.6: Regenerating AI_CONTEXT.md (repo talk-back briefing)...")
+    note("\n🧭 Step 1.6: Regenerating AI_CONTEXT.md (repo talk-back briefing)...")
     generator = PIPULATE_ROOT / "scripts" / "articles" / "generate_ai_context.py"
     if not generator.exists():
         print(f"ℹ️  AI_CONTEXT generator not found at {generator}. Skipping.")
@@ -261,7 +268,7 @@ def run_ai_context_generation():
     # Stage explicitly: `git commit -am` ignores untracked files, so the very
     # first (untracked) AI_CONTEXT.md must be added by hand. After that it rides -am.
     subprocess.run(["git", "add", "AI_CONTEXT.md"], cwd=str(PIPULATE_ROOT))
-    print("✅ AI_CONTEXT.md regenerated and staged.")
+    note("✅ AI_CONTEXT.md regenerated and staged.")
     return True
 
 def parse_ascii_art_stats(output):
@@ -451,7 +458,7 @@ def sync_install_sh(script_name="install.sh"):
     glob would silently redefine "put a file in this directory" as "publish it
     to the internet." Adding a name here is a deliberate act.
     """
-    print(f"\n🔄 Step 3: Synchronizing {script_name} to Pipulate.com...")
+    note(f"\n🔄 Step 3: Synchronizing {script_name} to Pipulate.com...")
     source_path = PIPULATE_ROOT / "assets/installer" / script_name
     dest_path = PIPULATE_COM_ROOT / script_name
 
@@ -512,7 +519,7 @@ def sync_install_sh(script_name="install.sh"):
             
             return True
         else:
-            print(f"✅ {script_name} is already up-to-date in Pipulate.com repo.")
+            note(f"✅ {script_name} is already up-to-date in Pipulate.com repo.")
             return False
     except Exception as e:
         print(f"⚠️  Install.sh sync failed: {e}")
@@ -520,7 +527,7 @@ def sync_install_sh(script_name="install.sh"):
 
 def sync_audit_md():
     """Copies AUDIT.md to Pipulate.com root and commits if changed."""
-    print("\n🔄 Step 3.5: Synchronizing AUDIT.md to Pipulate.com...")
+    note("\n🔄 Step 3.5: Synchronizing AUDIT.md to Pipulate.com...")
     source_path = PIPULATE_ROOT / "AUDIT.md"
     dest_path = PIPULATE_COM_ROOT / "AUDIT.md"
 
@@ -568,7 +575,7 @@ def sync_audit_md():
 
             return True
         else:
-            print("✅ AUDIT.md is already up-to-date in Pipulate.com repo.")
+            note("✅ AUDIT.md is already up-to-date in Pipulate.com repo.")
             return False
     except Exception as e:
         print(f"⚠️  AUDIT.md sync failed: {e}")
@@ -580,7 +587,7 @@ def sync_ai_context_md():
     Note: AI_CONTEXT.md is regenerated from scratch at Step 1.6
     (run_ai_context_generation), so by the time this runs the source is fresh.
     """
-    print("\n🔄 Step 3.6: Synchronizing AI_CONTEXT.md to Pipulate.com...")
+    note("\n🔄 Step 3.6: Synchronizing AI_CONTEXT.md to Pipulate.com...")
     source_path = PIPULATE_ROOT / "AI_CONTEXT.md"
     dest_path = PIPULATE_COM_ROOT / "AI_CONTEXT.md"
 
@@ -628,7 +635,7 @@ def sync_ai_context_md():
 
             return True
         else:
-            print("✅ AI_CONTEXT.md is already up-to-date in Pipulate.com repo.")
+            note("✅ AI_CONTEXT.md is already up-to-date in Pipulate.com repo.")
             return False
     except Exception as e:
         print(f"⚠️  AI_CONTEXT.md sync failed: {e}")
@@ -664,7 +671,7 @@ def sync_workspace_tree_to_com():
     and refusing there means firing almost never. Every git call below is scoped
     to index.md alone, so unrelated dirty files can never be swept in.
     """
-    print("\n🗂️  Step 3.7: Splicing workspace tree into Pipulate.com/index.md...")
+    note("\n🗂️  Step 3.7: Splicing workspace tree into Pipulate.com/index.md...")
     dest_path = PIPULATE_COM_ROOT / "index.md"
     if not PIPULATE_COM_ROOT.exists():
         print(f"⚠️  Warning: Pipulate.com repo not found at {PIPULATE_COM_ROOT}. Skipping workspace tree splice.")
@@ -699,13 +706,13 @@ def sync_workspace_tree_to_com():
             + match.group(3) + content[match.end():]
         )
         if new_content == content:
-            print("✅ index.md workspace tree is already up-to-date.")
+            note("✅ index.md workspace tree is already up-to-date.")
             return False
         dest_path.write_text(new_content, encoding="utf-8")
         print("🗂️  index.md workspace tree regenerated from the sealed asset.")
         status_result = run_command(['git', 'status', '--porcelain', dest_path.name], cwd=PIPULATE_COM_ROOT, capture=True)
         if not status_result.stdout.strip():
-            print("✅ index.md is already up-to-date in Pipulate.com repo.")
+            note("✅ index.md is already up-to-date in Pipulate.com repo.")
             return False
         print(f"📦 Changes detected in {dest_path.name}. Committing and pushing...")
         run_command(['git', 'add', dest_path.name], cwd=PIPULATE_COM_ROOT)
@@ -727,7 +734,7 @@ def sync_workspace_tree_to_com():
         return False
 def sync_breadcrumb_trail():
     """Syncs BREADCRUMB_TRAIL_DVCS.mdc to workspace root as DONT_WRITE_HERE.mdc with Cursor frontmatter."""
-    print("\n🍞 Step 4: Synchronizing breadcrumb trail to workspace root...")
+    note("\n🍞 Step 4: Synchronizing breadcrumb trail to workspace root...")
     
     # Define paths
     source_path = PIPULATE_ROOT / ".cursor" / "rules" / "BREADCRUMB_TRAIL_DVCS.mdc"
@@ -735,7 +742,10 @@ def sync_breadcrumb_trail():
     dest_path = workspace_root / ".cursor" / "rules" / "BREADCRUMB_TRAIL.mdc"
     
     if not source_path.exists():
-        print(f"⚠️  Warning: Source breadcrumb trail not found at {source_path}. Skipping breadcrumb sync.")
+        # A warning that fires on every run is not a warning. .cursor/ is
+        # gitignored, so this source never exists on a clone; the step is a
+        # Cursor-era fossil and its whole body belongs in one deletion car.
+        note(f"⚠️  Warning: Source breadcrumb trail not found at {source_path}. Skipping breadcrumb sync.")
         return False
     
     # Create destination directory if it doesn't exist
@@ -942,7 +952,7 @@ def display_trifecta_rebuild_stats(stats):
 
 def analyze_git_changes():
     """Intelligently analyze git changes to categorize additions, deletions, modifications, etc."""
-    print("🔍 Analyzing git changes for intelligent commit generation...")
+    note("🔍 Analyzing git changes for intelligent commit generation...")
     
     analysis = {
         'added_files': [],
@@ -1044,10 +1054,10 @@ def analyze_git_changes():
         if line_parts:
             analysis['change_summary'] += f" ({', '.join(line_parts)})"
         
-        print(f"📊 Change analysis: {analysis['change_summary']}")
+        note(f"📊 Change analysis: {analysis['change_summary']}")
         if analysis['is_housekeeping']:
-            print("🧹 Detected housekeeping/cleanup operations")
-        print(f"🎯 Primary action: {analysis['primary_action']}")
+            note("🧹 Detected housekeeping/cleanup operations")
+        note(f"🎯 Primary action: {analysis['primary_action']}")
         
         return analysis
         
@@ -1057,7 +1067,7 @@ def analyze_git_changes():
 
 def get_ai_commit_message():
     """Gets an AI-generated commit message from the unified local LLM script."""
-    print("🤖 Analyzing changes for AI commit message...")
+    note("🤖 Analyzing changes for AI commit message...")
     
     try:
         # FIX: Changed capture_output=True to capture=True to match your wrapper
@@ -1103,8 +1113,8 @@ def get_ai_commit_message():
             model_name = parts[1].strip() if len(parts) > 1 else "AI Model"
             
             if ai_message:
-                print(f"🤖 AI generated commit message:")
-                print(f"   {ai_message}")
+                note("🤖 AI generated commit message:")
+                note(f"   {ai_message}")
                 return ai_message, model_name
             else:
                 print("⚠️  AI commit script returned empty message")
@@ -1243,8 +1253,8 @@ def main():
     args = parser.parse_args()
     VERBOSE = args.verbose
     
-    print("🚀 Pipulate Master Release Orchestrator")
-    print("=" * 50)
+    note("🚀 Pipulate Master Release Orchestrator")
+    note("=" * 50)
     
     current_version = get_current_version()
     print(f"📋 Current version: {current_version}")
@@ -1255,7 +1265,7 @@ def main():
         sys.exit(1)
     
     # === RELEASE PIPELINE PHASE 1: PREPARATION ===
-    print("\n🔧 === RELEASE PIPELINE: PREPARATION PHASE ===")
+    note("\n🔧 === RELEASE PIPELINE: PREPARATION PHASE ===")
     
     # Step 1: Version Synchronization
     if not args.skip_version_sync:
@@ -1277,9 +1287,9 @@ def main():
     else:
         print("\n⏭️  Skipping AI_CONTEXT.md regeneration (--skip-docs-sync)")
     
-    print("\n⏭️  Skipping documentation synchronization (--skip-docs-sync)")
-    docs_sync_success = True
-    ascii_art_stats = None
+    # Docs-sync step retired. Its "Skipping (--skip-docs-sync)" line printed on
+    # EVERY run whether or not the flag was given: a false statement in the
+    # receipt, and nothing read the two variables it set.
     
     # Step 3: Install.sh Synchronization
     if not args.skip_install_sh_sync:
@@ -1329,12 +1339,12 @@ def main():
             if trifecta_rebuild_stats:
                 display_trifecta_rebuild_stats(trifecta_rebuild_stats)
         else:
-            print("\n✅ No Trifecta template changes detected - skipping derivative rebuild")
+            note("\n✅ No Trifecta template changes detected - skipping derivative rebuild")
     else:
         print("\n⏭️  Skipping Trifecta derivative rebuilding (--skip-trifecta-rebuild)")
     
     # === RELEASE PIPELINE PHASE 2: GIT OPERATIONS ===
-    print("\n📝 === RELEASE PIPELINE: GIT OPERATIONS PHASE ===")
+    note("\n📝 === RELEASE PIPELINE: GIT OPERATIONS PHASE ===")
     
     # Check for git changes unless forcing
     has_changes = run_command(['git', 'status', '--porcelain'], capture=True).stdout.strip()
@@ -1360,7 +1370,7 @@ def main():
             ai_model_name = None
         else:
             # Default behavior: Try AI commit, fallback to standard message
-            print("\n🤖 Generating AI commit message...")
+            note("\n🤖 Generating AI commit message...")
             ai_message, model_name = get_ai_commit_message()
             if ai_message:
                 commit_message = ai_message
@@ -1374,8 +1384,10 @@ def main():
     
     # Handle git operations
     if has_changes:
-        print(f"\n📝 Commit message: {commit_message}")
-        run_command(['git', 'commit', '-am', commit_message])
+        # The receipt is git's own first line: hash and subject, once.
+        committed = run_command(['git', 'commit', '-am', commit_message])
+        first = (committed.stdout or "").strip().splitlines()
+        print(first[0] if first else f"📝 Committed: {commit_message}")
         
         # Check if upstream branch exists and push accordingly
         try:
@@ -1393,9 +1405,11 @@ def main():
                 run_command(['git', 'push', '--set-upstream', 'origin', current_branch])
                 print(f"✅ Pushed changes and set upstream: origin/{current_branch}")
             else:
-                # Upstream exists, normal push
-                run_command(['git', 'push'])
-                print("✅ Pushed changes to remote repository.")
+                # Upstream exists, normal push. git push talks on stderr; its
+                # last line is the range, which is the only line worth keeping.
+                pushed = run_command(['git', 'push'])
+                tail = (pushed.stderr or "").strip().splitlines()
+                print("✅ Pushed " + (tail[-1].strip() if tail else "changes to remote repository."))
                 
         except Exception as e:
             print(f"⚠️  Git push operation encountered an issue: {e}")
@@ -1418,20 +1432,21 @@ def main():
     # === RELEASE PIPELINE PHASE 3: PYPI PUBLISHING ===
     published_to_pypi = False
     if args.release:
-        print("\n📦 === RELEASE PIPELINE: PYPI PUBLISHING PHASE ===")
-        print(f"🏗️  Building and Publishing version {current_version} to PyPI...")
-        print("🧹 Cleaning old build artifacts...")
+        note("\n📦 === RELEASE PIPELINE: PYPI PUBLISHING PHASE ===")
+        note(f"🏗️  Building and Publishing version {current_version} to PyPI...")
+        note("🧹 Cleaning old build artifacts...")
         run_command("rm -rf dist/ build/ *.egg-info", shell=True)
-        print("🛠️ Building package...")
-        run_command([".venv/bin/python", '-m', 'build'])
-        print("📦 Publishing to PyPI...")
+        note("🛠️ Building package...")
+        built = run_command([".venv/bin/python", '-m', 'build'])
+        built_tail = (built.stdout or "").strip().splitlines()
+        print(built_tail[-1] if built_tail else "🛠️ Built (run with -v for the build log)")
+        note("📦 Publishing to PyPI...")
         run_command([".venv/bin/python", '-m', 'twine', 'upload', 'dist/*'])
-        print(f"\n🎉 Successfully published version {current_version} to PyPI! 🎉")
-        print(f"📍 View at: https://pypi.org/project/pipulate/{pep440_normalize(current_version)}/")
+        print(f"🎉 Published {current_version} -> https://pypi.org/project/pipulate/{pep440_normalize(current_version)}/")
         published_to_pypi = True
     
     # === BEAUTIFUL SUMMARY DISPLAY ===
-    print("\n" + "=" * 50)
+    note("\n" + "=" * 50)
     display_beautiful_summary(
         commit_message=commit_message,
         ai_generated=ai_generated_commit,
@@ -1443,12 +1458,12 @@ def main():
     )
     
     # 🔄 Trigger server restart so user can immediately talk to Chip about the update
-    print("\n🔄 Triggering server restart for immediate Chip interaction...")
+    note("\n🔄 Triggering server restart for immediate Chip interaction...")
     server_py_path = PIPULATE_ROOT / "server.py"
     if server_py_path.exists():
         # Touch the server.py file to trigger watchdog restart
         server_py_path.touch()
-        print("✅ Server restart triggered - you can now chat with Chip about this update!")
+        print("🔄 server.py touched; the watchdog restarts the server.")
     else:
         print("⚠️  server.py not found, manual restart may be needed")
 
