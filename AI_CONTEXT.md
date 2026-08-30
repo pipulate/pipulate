@@ -2,7 +2,7 @@
 
 > Auto-generated on 2026-08-30. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1423 entries indexed.
+> 1425 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -96,6 +96,8 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-08-30] [Terminal-Native Model Context Protocol in Practice: Connecting Directly in the Age of AI](https://mikelev.in/futureproof/terminal-native-mcp-practice/index.md)
+- [2026-08-30] [Protocol vs. Prompt: Why MCP Is Becoming Unix](https://mikelev.in/futureproof/protocol-vs-prompt-why-mcp-is-becoming-unix/index.md)
 - [2026-08-29] [Terminal MCP Operational: Moving From Pipes to Application](https://mikelev.in/futureproof/terminal-mcp-operational-moving-from-pipes-to-application/index.md)
 - [2026-08-29] [Terminal-Native MCP Without the Bloat: Connecting Directly in the Age of AI](https://mikelev.in/futureproof/terminal-native-mcp-without-the-bloat/index.md)
 - [2026-08-29] [From Claude Connector to Unix Instrument: The First Human-Callable MCP Flight](https://mikelev.in/futureproof/from-claude-connector-to-unix-instrument/index.md)
@@ -114,13 +116,13 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-08-24] [Paste What You Have: Composable Text Commands and the Art of AI Context](https://mikelev.in/futureproof/paste-what-you-have-composable-text-commands/index.md)
 - [2026-08-22] [Finding Root: From Filesystems and Amigas to LUCA](https://mikelev.in/futureproof/finding-root-from-filesystems-and-amigas-to-luca/index.md)
 - [2026-08-21] [The Ghost in the Compiler: Engineering Honest Telemetry in the Age of AI](https://mikelev.in/futureproof/ghost-in-the-compiler-honest-telemetry-ai/index.md)
-- [2026-08-21] [A Defense That Has Never Refused Anything Is a Comment with Good Pressure](https://mikelev.in/futureproof/a-defense-that-has-never-refused-anything-is-a-comment-with-good-pressure/index.md)
-- [2026-08-20] [The Artifact and the Light Cone: Epistemology in the Age of AI](https://mikelev.in/futureproof/artifact-light-cone-epistemology-ai/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-08-21] [153k] a-defense-that-has-never-refused-anything-is-a-comment-with-good-pressure
+- [2026-08-20] [71k] artifact-light-cone-epistemology-ai
 - [2026-08-19] [111k] interface-didnt-get-worse-you-got-better
 - [2026-08-16] [40k] engineering-the-frame-evidence-based-ai-workflows
 - [2026-08-13] [24k] kantian-units-biological-selves
