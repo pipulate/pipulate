@@ -681,7 +681,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           FRESH_ENV=false
           if [ ! -d .venv/lib/python*/site-packages ] || [ $(find .venv/lib/python*/site-packages -name "*.dist-info" 2>/dev/null | wc -l) -lt 10 ]; then
             FRESH_ENV=true
-            echo "🔧 Fresh install detected — packages downloading (2-3 min)..."
+            echo "🔧 Fresh install detected — packages downloading..."
           fi
           # --- Pip Install Verbosity Toggle ---
           PIP_VERBOSE="false"

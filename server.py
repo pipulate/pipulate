@@ -4138,7 +4138,6 @@ async def reset_python_env(request):
                 await pipulate.stream('📝 **Next Steps Required:**', verbatim=True, role='system')
                 await pipulate.stream('   1. Type `exit` to leave the current nix shell', verbatim=True, role='system')
                 await pipulate.stream('   2. Type `nix develop` to rebuild the environment', verbatim=True, role='system')
-                await pipulate.stream('   3. The fresh environment build will take 2-3 minutes', verbatim=True, role='system')
                 await pipulate.stream('', verbatim=True, role='system')  # Empty line for spacing
                 await pipulate.stream('🚪 Server will exit in 3 seconds...', verbatim=True, role='system')
 

@@ -285,7 +285,7 @@ else
   echo "Next, nix develop builds the environment and turns this folder into a"
   echo "git repository (the 'magic cookie' step) so it can auto-update from now on."
   echo "🚀 Booting the Forever Machine..."
-  echo "Please wait while the Nix environment hydrates (2-3 minutes on a first install)..."
+  echo "Please wait while the Nix environment hydrates..."
 fi
 
 # The Terminal Hand-off:
