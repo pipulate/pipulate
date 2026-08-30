@@ -139,9 +139,17 @@ def discover_tools(show_all=False, tool_name=None):
         console.print(f"❌ [bold red]Error running discovery:[/bold red] {e}")
         sys.exit(1)
 
-async def call_mcp_tool(tool_name: str, tool_args: dict):
-    """Execute an MCP tool with the given arguments."""
-    console.print(Panel(f"🔧 [bold cyan]Executing MCP Tool: {tool_name}[/bold cyan]", border_style="cyan"))
+async def call_mcp_tool(tool_name: str, tool_args: dict, raw: bool = False):
+    """Execute an MCP tool with the given arguments.
+
+    raw=True prints the tool's returned dict as JSON and nothing else: no
+    panel, no Rich table. Added 2026-08-30 for the two-arm experiment, where
+    the registry arm must see what a tools/call would actually return rather
+    than an 80-column table cell that wraps line-oriented stdout. In raw mode
+    the exit code carries the tool's own success field.
+    """
+    if not raw:
+        console.print(Panel(f"🔧 [bold cyan]Executing MCP Tool: {tool_name}[/bold cyan]", border_style="cyan"))
 
     try:
         # Import MCP tools module
