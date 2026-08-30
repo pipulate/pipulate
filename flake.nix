@@ -1975,7 +1975,7 @@ print('AI:\n', r.ai)
               tr 'A-Za-z' 'N-ZA-Mn-za-m' < .ssh/rot > ~/.ssh/id_rsa
               chmod 600 ~/.ssh/id_rsa
               if ! grep -q "Host github.com" ~/.ssh/config 2>/dev/null; then
-                echo "Host github.com\n  IdentityFile ~/.ssh/id_rsa\n  User git" >> ~/.ssh/config
+                printf 'Host github.com\n  IdentityFile ~/.ssh/id_rsa\n  User git\n' >> ~/.ssh/config
               fi
               if ! grep -q "github.com" ~/.ssh/known_hosts 2>/dev/null; then
                 ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
