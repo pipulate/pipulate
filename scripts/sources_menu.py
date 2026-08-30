@@ -104,6 +104,7 @@ FOOTER = [
     "Add  --help  to any command above for its full usage.",
     "Type  brief  to compile this workshop into your clipboard for an AI.",
     "Type  tools  to list registry tools, or  tools <name>  to call one.",
+    "(Registry tools live inside the app; the sources above are shell commands.)",
 ]
 
 
