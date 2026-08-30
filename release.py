@@ -46,14 +46,40 @@ INIT_PY_PATH = PIPULATE_ROOT / "__init__.py"
 # Add Pipulate.com path configuration
 PIPULATE_COM_ROOT = PIPULATE_ROOT.parent / "Pipulate.com"
 
+# THE RULE OF SILENCE (2026-08-30). "When a program has nothing surprising to
+# say, it should say nothing." One release run printed ~520 lines, ~430 of
+# them `python -m build` copying files to itself and ~30 narrating which git
+# command was about to run. The receipt a human needs fits on one screen: what
+# changed, where it went, what got built, where it is. Quiet is the default;
+# -v/--verbose restores the stream; a FAILURE prints everything the child said
+# (the Rule of Repair), so silence never hides a RED.
+VERBOSE = False
+
+
+def note(msg):
+    """A progress line that exists only under --verbose."""
+    if VERBOSE:
+        print(msg)
+
+
 def run_command(cmd, cwd=PIPULATE_ROOT, capture=False, check=True, shell=False):
-    """Runs a command and handles errors."""
-    print(f"🏃 Running: {' '.join(cmd) if not shell else cmd} in {cwd}")
+    """Run a command: quiet on success, loud on failure.
+    The child's output is captured unless --verbose, so callers that pass
+    capture=True read .stdout exactly as before and callers that never did may
+    now read it too. On CalledProcessError every byte the child said goes to
+    stderr before the exit, because a captured failure with no transcript is
+    the one thing worse than 430 lines of build log.
+    """
+    shown = cmd if shell else ' '.join(cmd)
+    note(f"🏃 Running: {shown} in {cwd}")
     try:
-        result = subprocess.run(cmd, cwd=str(cwd), capture_output=capture, text=True, check=check, shell=shell)
-        return result
+        return subprocess.run(cmd, cwd=str(cwd), capture_output=(capture or not VERBOSE),
+                              text=True, check=check, shell=shell)
     except subprocess.CalledProcessError as e:
-        print(f"❌ Command failed: {' '.join(cmd) if not shell else cmd}", file=sys.stderr)
+        print(f"❌ Command failed (exit {e.returncode}): {shown}", file=sys.stderr)
+        for stream in (e.stdout, e.stderr):
+            if stream and stream.strip():
+                print(stream.rstrip(), file=sys.stderr)
         sys.exit(1)
 
 def validate_git_remotes():
@@ -224,9 +250,13 @@ def run_ai_context_generation():
         print(f"ℹ️  AI_CONTEXT generator not found at {generator}. Skipping.")
         return False
     # Direct subprocess.run (not run_command) so a failure never sys.exit()s the release.
-    result = subprocess.run([sys.executable, str(generator)], cwd=str(PIPULATE_ROOT))
+    result = subprocess.run([sys.executable, str(generator)], cwd=str(PIPULATE_ROOT),
+                            capture_output=not VERBOSE, text=True)
     if result.returncode != 0:
         print("⚠️  AI_CONTEXT generation returned non-zero; continuing release.")
+        for stream in (result.stdout, result.stderr):
+            if stream and stream.strip():
+                print(stream.rstrip(), file=sys.stderr)
         return False
     # Stage explicitly: `git commit -am` ignores untracked files, so the very
     # first (untracked) AI_CONTEXT.md must be added by hand. After that it rides -am.
@@ -1190,6 +1220,7 @@ def display_beautiful_summary(commit_message, ai_generated=False, version=None, 
     console.print(panel)
 
 def main():
+    global VERBOSE
     # Manifest the first bunny via the wand
     from pipulate import wand
     wand.figurate("white_rabbit")
@@ -1206,8 +1237,11 @@ def main():
     parser.add_argument("--skip-ai-context-sync", action="store_true", help="Skip AI_CONTEXT.md synchronization")
     parser.add_argument("--skip-breadcrumb-sync", action="store_true", help="Skip breadcrumb trail synchronization")
     parser.add_argument("--skip-trifecta-rebuild", action="store_true", help="Skip Trifecta derivative plugin rebuilding")
+    parser.add_argument("-v", "--verbose", action="store_true",
+                        help="Show every command and its full output (the Rule of Silence is the default)")
     
     args = parser.parse_args()
+    VERBOSE = args.verbose
     
     print("🚀 Pipulate Master Release Orchestrator")
     print("=" * 50)
