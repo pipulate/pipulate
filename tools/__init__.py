@@ -66,6 +66,19 @@ def denied_tools():
     return {name.strip() for name in raw.split(",") if name.strip()}
 # --- END NEW ---
 
+# EARMARK (2026-08-30): TWO REGISTRATION LINEAGES, ONE READER. get_all_tools()
+# serves only @auto_tool functions. tools/advanced_automation_tools.py still
+# defines its own execute_shell_command (undecorated -- receipt: rg -n -B2
+# '^async def execute_shell_command' shows a comment and a blank line above
+# it) and hands it to a register_mcp_tool() that feeds a registry THIS package
+# never reads; tools/mcp_tools.py (42 async defs) and tools/botify_tools.py
+# (six core functions on aiohttp and an ai_dictdb credential path, zero
+# decorators) are the same pre-@auto_tool lineage. cli.py cannot reach any of
+# them. Whether server.py's bracket-command path still can is UNWITNESSED.
+# Gut or migrate: each function either gains @auto_tool plus the current
+# credential path (config.get_botify_token, or the subprocess-the-connector
+# pattern in connector_tools.py) or is deleted, and the botify_exports import
+# below leaves with botify_tools.py. Not this ride.
 __version__ = "1.0.0"
 
 # Import shared constants to eliminate duplication
