@@ -348,6 +348,78 @@ Entries are alphabetical, numbers spelled as spoken.
 > ignored, because this section is read by rg while the router is read
 > top-down as a program.
 
+- **The Cap That Hid the Answer** — *a count-bounded probe hides the
+  discriminator.* Banked 2026-08-05, convicted three times in three compiles.
+  A `head -N` cap set to bound noise silently truncates the decisive line when
+  the noise sorts first, and the receipt LOOKS complete because a cap leaves no
+  ellipsis. Conviction A: `rg -n 'PIPULATE_TRAIL_' | head -20` returned exactly
+  20 lines, ending on a COMMENT, having cut the six lines of URL-default
+  machinery the probe existed to find. Conviction B: `figurate | head -8` cut
+  the `drift=` line the probe was written to read, because wand.figurate
+  prints its Rich panel BEFORE the caller's own print. PRESCRIPTION: when the
+  discriminator's POSITION in the output is unknown, bound by CONTENT (grep -E
+  for the exact tokens that differ between the two worlds), never by COUNT;
+  and when a cap is hit exactly, treat the receipt as TRUNCATED rather than
+  complete.
+- **The Case-Blind Witness Corollary** — *a case-sensitive probe against a
+  case-mismatched target.* Banked 2026-07-31, self-convicted in-compile. A
+  witness pattern must match the CASE the target actually uses, or the probe
+  is structurally incapable of returning nonzero and its green is
+  uninformative. Conviction:
+  `rg -c 'Continuation Ladder|Skyhook|Cinderella' GLOSSARY.md foo_files.py`
+  returned `GLOSSARY.md:2` and zero for foo_files.py — while foo_files.py
+  carried THE CONTINUATION LADDER, SKYHOOK, and CINDERELLA in ALL CAPS the
+  whole time. rg is case-sensitive by default; the constitution shouts in caps
+  and the glossary speaks in title case, so ANY probe spanning both files
+  needs -i or two patterns. Sibling of SINGLE-LINE-WITNESS: that one is about
+  a phrase a line-oriented tool cannot see; this one is about a phrase a
+  case-sensitive tool cannot see. Both are the same disease — asking a
+  question only one answer could ever survive.
+- **The Contiguity Corollary** — *the transport strips blank lines a SEARCH
+  block cannot see.* Banked 2026-07-31, receipt-witnessed. The compile
+  transport STRIPS TRULY-EMPTY LINES from Codebase bodies while PRESERVING
+  whitespace-only lines, so a model reading the payload cannot see where the
+  blank lines are. Conviction: `grep -c '^$' prompt_foo.py` read 273 on disk
+  while zero survived into the same compile's payload. STANDING CONSEQUENCE:
+  every SEARCH block must span CONTIGUOUS NON-EMPTY LINES as they appear in
+  the payload — a SEARCH spanning a blank line the model cannot see fails the
+  exact-match interlock and reports first-line-matches, which reads like an
+  indentation bug and is not one. When an insertion point straddles a probable
+  blank, anchor on a single unique line instead of a run. SECOND CONSEQUENCE,
+  and it is a relief rather than a wound: code landed through this transport
+  arrives without PEP8 blank lines between defs, and the 2026-07-31 compile's
+  Ruff run printed NOTHING against exactly such insertions in apply.py and
+  prompt_foo.py — E301-E306 are preview-gated in Ruff and absent from this
+  repo's select list, so the loss is cosmetic and silent, not cosmetic and
+  nagging. FOURTH SIBLING of SINGLE-LINE / CASE-BLIND / UNANCHORED, and the
+  first one that is about what the AUTHOR of a pattern cannot see rather than
+  what the pattern cannot match.
+- **The Discrimination Question** — *what does this print in the world where
+  I am wrong?* Banked 2026-07-31, parent of the witness corollaries. Before
+  typing any probe, ask exactly one question — WHAT DOES THIS PRINT IN THE
+  WORLD WHERE I AM WRONG? If you cannot answer it you do not understand your
+  instrument; if the answer is "the same thing" you do not have a probe, you
+  have a ritual, and its green is uninformative no matter how often it
+  coincides with the truth. CASE-BLIND, UNANCHORED and the 2026-07-31
+  recurrence detector are the SAME defect wearing three hats: each printed
+  identically under both hypotheses, so each was a ceremony that happened to
+  agree with reality. The three corollaries are retained not as separate laws
+  but as the three most common ways the answer comes back "the same thing" —
+  pattern recognition is faster than derivation. WITNESS, same compile: the
+  render canary was designed by asking the question in advance (innocent
+  transport -> bare token; guilty transport -> linkified token; different
+  printouts, therefore a probe) and it convicted the channel on its first
+  flight, while the recurrence comment planted one turn earlier failed the
+  question and was shipped anyway. COROLLARY — THE STRADDLE IS THIS QUESTION
+  APPLIED TWICE: the BEFORE/AFTER pair exists precisely to guarantee two
+  different printouts across the patch, so a probe that fails the
+  discrimination question cannot be rescued by echoing it. FAMILY ROSTER as of
+  2026-08-30, each child a way the answer comes back "the same thing":
+  SINGLE-LINE-WITNESS, CASE-BLIND, UNANCHORED, CONTIGUITY, DOTFILE-BLIND, THE
+  CAP THAT HID THE ANSWER, THE PROSE-INFLATED COUNTER, THE EPITAPH COUNTER.
+  Cousin, not child: INCOMMENSURABLE MEASUREMENTS, which answers a different
+  question rather than the same answer twice. The roster rides the parent's
+  key in the router; children carry only their imperative.
 - **The Dotfile-Blind Probe** — *ripgrep's hidden-file default.* Banked
   2026-08-05, self-convicted. ripgrep skips hidden files by default, so any rg
   probe hunting a name that lives in .gitignore, .gitattributes, or any other
@@ -388,7 +460,14 @@ Entries are alphabetical, numbers spelled as spoken.
   block does not exist yet; the todo region has not been pruned to one-liners;
   and the endgame — prompt_foo.py hydrating only the glossary entries whose
   handles appear in a payload, so the whole glossary stops riding — is a
-  mechanism claim and stays PENDING until it exists.
+  mechanism claim and stays PENDING until it exists. AMENDED 2026-08-30,
+  strike two: FAMILY ROSTERS RIDE THE PARENT KEY. A child key carries only
+  its imperative; the parent key (THE DISCRIMINATION QUESTION for the witness
+  family) names every child, so the family is one hop from any key and no
+  child pays for the list. Also witnessed at strike one: the key's author
+  under-estimated its own emitted prose by 30% in one file and 60% in the
+  other, so byte predictions are made by counting the REPLACE block after it
+  is written, never before.
 - **The Probe Echo Rule** — *before/after symmetry.* Every probe recommended
   for hand-execution must also be echoed verbatim as a `!` line into the next
   adhoc.txt chop. The hand-run is the BEFORE reading; the compiled re-run is
@@ -413,6 +492,51 @@ Entries are alphabetical, numbers spelled as spoken.
   to bound noise can truncate the decisive line, so bound by content (grep for
   the discriminator) rather than by count when the discriminator's position
   is unknown.
+- **The Prose-Inflated Counter** — *a name-anchored count includes its own
+  documentation.* Banked 2026-08-05, self-convicted. A counter probe whose
+  pattern is a NAME counts DOCUMENTATION and MECHANISM together, so any patch
+  that also writes prose using that name moves the number by an amount the
+  predictor cannot compute in advance — and the gate then reads FAIL on a
+  correct edit. Conviction:
+  `rg -c 'update_readme_md_in_place|update_agents_md_in_place' prompt_foo.py`
+  was predicted 1 -> 3 (one def, one call) and read 2 -> 6; the BEFORE forgot
+  the existing call site and the AFTER included two prose lines the SAME PATCH
+  introduced, one of which named its sibling on purpose. All six lines are
+  enumerable from raw source, so the edit was right and the prediction was
+  wrong. The sibling probe `rg -c 'figurate\('` moved exactly as predicted,
+  because a call with a paren is syntax only mechanism emits. PRESCRIPTION:
+  anchor a mechanism counter on syntax only mechanism can produce (`^def name`
+  or `^    name\(`), or print the LINES instead of the count so the reader
+  sees what matched. Fifth sibling of DOTFILE-BLIND / CASE-BLIND / UNANCHORED /
+  CAP — another way a probe answers a question other than the one on its
+  label.
+- **The Single-Line-Witness Corollary** — *a witness phrase split by a line
+  wrap.* Banked 2026-07-29. A grep -c witness phrase must survive the target's
+  own line discipline — an 80-column comment wrap can split the phrase across
+  lines and structurally blind a line-oriented grep. Conviction: 'witnessed on
+  flight one' landed hard-wrapped as "witnessed / # on flight one" in the flip
+  car; the AFTER tap read 0 (NON-ZERO EXIT preserved as receipt) against a
+  patch verifiably landed, and only the in-compile raw source witnessed the
+  flip. Pick witnesses from lines that cannot wrap (dated headers like 'BANKED
+  2026-07-29 (same-day flip'), and when the patched text is your own, confirm
+  the phrase sits on one line before recommending the probe.
+- **The Unanchored-Witness Corollary** — *a substring witness drowning in
+  false positives.* Banked 2026-07-31, self-convicted in-compile. A witness
+  pattern that is a SUBSTRING of a common word spends the probe's budget on
+  false positives, and a head -N cap then HIDES whether any true hit was
+  truncated — so the receipt is simultaneously noisy AND possibly incomplete,
+  and neither failure is visible from the output. Conviction:
+  `rg -n 'eza|exa' flake.nix | head -5` returned five lines of which FOUR were
+  'exa' inside exact/exactly/exact-stash, leaving exactly one real hit (line
+  437, eza in commonPackages). The correction it was meant to settle was
+  correct, but the receipt earned it by luck. Fix: word-anchor the pattern
+  (rg -nw, or \b...\b), and once anchored the cardinality is usually small
+  enough to drop the cap entirely — a cap exists to bound noise, so removing
+  the noise removes the reason for the cap. THIRD SIBLING: SINGLE-LINE-WITNESS
+  is a phrase a line-oriented tool CANNOT see; CASE-BLIND-WITNESS is a phrase
+  a case-sensitive tool CANNOT see; this one is a phrase a substring matcher
+  sees TOO OFTEN. All three are the same disease from three angles — asking a
+  question without first checking what shape its answer could take.
 
 ## The Mother Cat Kata — vocabulary banked 2026-08-01
 
