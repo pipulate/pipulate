@@ -2400,54 +2400,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # § THE FIRST-ERROR FLOOR (banked 2026-08-09) -- a parser reports the first error it cannot get past, so a refusal's line number is a FLOOR on the defect count and never a ceiling; a SEARCH/REPLACE refusal bounds its own region and is diagnosable, a refused WHOLE-FILE write does not, so delete and re-emit rather than hand-repair the one line the parser happened to name. Third refusal class after no-blocks-found and search-block-not-found.
 # § THE SILENCED CHANNEL (banked 2026-08-09) -- a probe that discards a stream paired with a caboose whose verdict reads that stream is a verdict that can never be reached, and an exit code four worlds share is not a reading; a program graded by a MACHINE prints its outcome as a token on stdout, and when it also handles client data the outcome goes to stdout and every identifying string to stderr, so 2>/dev/null is compile-lane-safe by construction. Partitions with THE EXIT-CODE PROTOCOL RULE: decisions speak in exit codes, measurements in tokens.
 # § THE PLACEHOLDER THAT CLAIMS TO RUN (banked 2026-08-08, discharged 2026-08-30) -- validation passing is not execution passing: walk.py checks that a connector file EXISTS and that {harvested} appears once, and nothing anywhere checks that the script accepts the argv it will be handed, so a consent surface can print "names as runnable" about a command that exits 2. Cure a false label with a TRUE sentence, never a vaguer one -- scripts/connectors/noop.py exists IN ORDER to be a no-op and public_walk.yaml names it at all three stops. And never grade a refusal on an exit code that two worlds share.
-# - EARMARK: THE COMPILED TRAIL (banked 2026-08-08, source-witnessed): a trail
-#   has TWO legitimate forms, and conflating them is the whole confusion. The
-#   SEALED form -- trail.yaml inside walk.zip -- is MACHINE CARGO: hashed,
-#   content-addressed, parsed by json.loads under a duplicate-key hook. It
-#   stays the JSON subset of YAML 1.2 for three reasons read off raw source
-#   rather than taste. (1) STDLIB: there is no YAML parser in the Python
-#   standard library, and walk_cartridge.py's docstring makes single-file
-#   fetchability a STATED constraint -- it DUPLICATES foo_cartridge's
-#   primitives rather than import them, so a PyYAML dependency would spend
-#   the exact property that duplication was paid for. (2) CANONICALIZATION:
-#   the sealer hashes trail.yaml byte-identical AND recomputes the consent
-#   surface from those same bytes, so every place YAML 1.2 admits two
-#   spellings of one document is a place the surface a human CONSENTS to can
-#   drift from the bytes a manifest ATTESTS to. (3) DUPLICATE KEYS fail
-#   closed here; PyYAML does not error on them by default.
-#   THE OPERATOR'S INSTINCT IS RIGHT ANYWAY, and about a real defect: the
-#   JSON subset crams PROSE into a DATA field. `guidance` is a paragraph
-#   Piper reads ALOUD, escaped into one unbroken JSON string -- the
-#   frontmatter sandwich INVERTED, data wrapping prose instead of heading it.
-#   Every friction there (quoting, escaping, one long line) is the friction
-#   of a paragraph living inside a string literal.
-#   RULING: the sealed form is COMPILED, never authored. The AUTHORING
-#   surface is a DIFFERENT artifact and may be Markdown -- machine keys as
-#   scalars, guidance as the BODY -- which is the identical split
-#   article.txt -> articleizer.py -> _posts already runs in the publish lane.
-#   walk_cartridge.py seal is ALREADY the compiler; what is missing is a
-#   human-shaped INPUT, not a new format for the output.
-#   AND THE DEPENDENCY IS AVOIDABLE, which is the line worth banking: a head
-#   restricted to one scalar `key: value` per line parses in ten lines of
-#   stdlib. Call it the SCALAR SUBSET -- no anchors, no aliases, no block
-#   scalars, no nested maps, no lists -- and that parser stays ten lines
-#   forever. Same discipline already spelled "the JSON subset of YAML 1.2",
-#   applied a second time to a second surface.
-#   IT ALSO FORCES THE RIGHT SHAPE: because the head cannot nest, a stop
-#   cannot be a list ITEM, it must be a SECTION -- one heading per stop, its
-#   scalars directly beneath, its guidance as the prose body. That is closer
-#   to an org-mode :PROPERTIES: drawer than to a Jekyll head, and the
-#   difference is load-bearing: frontmatter is ONE head for ONE document,
-#   while a trail needs N heads for N stops.
-#   ETYMOLOGY, so the corpus owns the joke: YAML shipped in 2001 as "Yet
-#   Another Markup Language" and was renamed to the recursive "YAML Ain't
-#   Markup Language" precisely to say out loud that it is DATA, not document
-#   markup. An operator specifying his ideal format as "exactly what you
-#   don't want is yet another markup language" has recited its retired name
-#   back at it, which is convergent form with a dated receipt attached.
-#   OWES: an importer that emits the authoring surface, and a compiler that
-#   turns that surface into a JSON-subset trail walk.py accepts UNMODIFIED.
-#   Delete this OWES the day both receipts exist.
+# § THE COMPILED TRAIL (banked 2026-08-08, OWES discharged 2026-08-09) -- a trail has two legitimate forms and conflating them is the confusion: the SEALED form is machine cargo and stays the JSON subset of YAML 1.2 because there is no stdlib YAML parser, because the sealer hashes those exact bytes and recomputes the consent surface from them, and because duplicate keys must fail closed; the AUTHORING form is a different artifact and may be prose-shaped, one SECTION per stop, parsed by a ten-line scalar subset. The seal was already the compiler; what was missing was a human-shaped input, and walk_compile.py plus bookmark_import.py landed it.
 # - EARMARK: THE UNREACHABLE GUARD (banked 2026-08-07, traceback-witnessed): a
 #   check placed AFTER a line that can raise the same class of error is dead
 #   code, and its message is a promise the program cannot keep. CONVICTION:
