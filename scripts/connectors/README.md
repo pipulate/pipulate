@@ -60,7 +60,10 @@ in neither.
 Auth kinds: oauth_token_file (gmail), bearer_token (botify), basic_auth
 (confluence), service_account_file (gsc), browser_session (botify_browser,
 semrush — a persistent Chrome profile under data/uc_profiles/<name>, warmed by
-weblogin.py, not a token). Every future connector copies one of these five.
+weblogin.py, not a token), and mcp_oauth (botify_mcp — a remote MCP bearer
+whose token file is DERIVED from the slot's defaults.resource and minted or
+refreshed by mcp_warm.py; the durable credential scored is the refresh
+token). Every future connector copies one of these six.
 
 Credential paths are DERIVED, never chosen. A connector that talks to more than
 one server of the same kind — MCP is the first — computes its token path from

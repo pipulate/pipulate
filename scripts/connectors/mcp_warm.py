@@ -192,10 +192,12 @@ def refresh(out_path, resource_hint=DEFAULT_RESOURCE):
     token_endpoint. This path adds a GRANT TYPE, not a mechanism -- which is
     precisely why the discovery round-trip does not split it in half.
 
-    UNWITNESSED UNTIL GREEN: no refresh has ever been POSTed to this vendor.
-    Public-client refusal, single-use rotation, and refresh_token expiry are
-    all live possibilities. Every one of them dies LOUD at gate6 rather than
-    leaving a half-written token file behind.
+    WITNESSED GREEN 2026-08-30: three chained --refresh runs against this
+    vendor each returned gate6 GREEN and a fresh 300s access token, so the
+    grant type is live for this credential. Single-use rotation remains
+    unobserved (no rotated refresh_token has yet come back) and
+    refresh_token expiry is still a live possibility; both die LOUD at
+    gate6 rather than leaving a half-written token file behind.
 
     No TTY required and none requested -- there is no browser in this path.
     """

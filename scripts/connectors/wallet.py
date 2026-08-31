@@ -18,7 +18,7 @@ Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 This is the GENERALIZATION of each connector's no-argument identity() walk
 lifted from ONE connector to the WHOLE wallet. It reads
 ~/.config/pipulate/connectors.json (override: PIPULATE_WALLET) and reports
-every slot at once — across all FIVE auth kinds the wallet actually holds —
+every slot at once — across all SIX auth kinds the wallet actually holds —
 so a glance tells you which sessions are live, which have gone stale, which
 have never been warmed, and (crucially) which the wallet genuinely CANNOT
 warm for you and why.
@@ -44,6 +44,13 @@ client_secret. It learns a slot's state from cheap, local evidence only:
                         data/uc_profiles/<name> that weblogin.py warms
                         (botify_browser, semrush) → mtime staleness, because
                         sites DO expire browser sessions.
+  mcp_oauth             os.stat() the DERIVED token file
+                        ~/.config/pipulate/mcp/<host>.json that mcp_warm.py
+                        writes (botify_mcp). A refresh rewrites the file, so
+                        mtime tracks "last refreshed" exactly as oauth does.
+                        The pre-derivation mcp_botify_token.json is invisible
+                        to THIS board by rule (scoping it means reading its
+                        bytes); the CHECK verb still honors it, scoped.
 
 HONEST HEURISTICS, stated plainly (a clean caveat is a valid receipt):
   - `stale` is an mtime guess, never a validity proof. Only a live call can
@@ -275,7 +282,7 @@ def _env_state(slot):
 
 def classify_slot(name, cfg, stale_days):
     """Dispatch on the slot's auth kind. Returns (state, kind, detail, locator).
-    The single place that knows how each of the five kinds proves itself."""
+    The single place that knows how each of the six kinds proves itself."""
     kind = cfg.get('auth')
     if kind == _OAUTH_KIND:
         tok = resolve_path(cfg, 'token', 'paths.token')
@@ -333,14 +340,14 @@ def _next_hint(name, state, kind):
 
 
 def scoreboard(wallet, max_items, stale_days):
-    """Print the read-only board for EVERY slot, across all five auth kinds."""
+    """Print the read-only board for EVERY slot, across all six auth kinds."""
     slots = [(name, cfg) for name, cfg in wallet.items()
              if not name.startswith('_') and isinstance(cfg, dict) and cfg.get('auth')]
 
     print("# wallet.py — connector auth scoreboard (read-only, offline)")
     print(f"# wallet: {Path(WALLET_PATH).expanduser()}")
     print(f"# repo:   {REPO_ROOT}  (anchors browser_session profiles)")
-    print(f"# stale after: {stale_days}d — mtime heuristic for oauth/browser, "
+    print(f"# stale after: {stale_days}d — mtime heuristic for oauth/browser/mcp, "
           "not a validity proof\n")
 
     if not slots:
