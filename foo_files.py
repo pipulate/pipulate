@@ -2397,32 +2397,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   code had already closed, and only a compile carrying flake.nix could see
 #   it. STANDING CONSEQUENCE: when a conviction concerns a SHELL FUNCTION,
 #   record which shell it was taken in, or the receipt is unlabeled evidence.
-# - EARMARK: THE FIRST-ERROR FLOOR (banked 2026-08-09, airlock-witnessed): a
-#   parser reports the FIRST error it cannot get past, never the LAST one in
-#   the file, so a refusal's line number is a FLOOR on the defect count and
-#   never a ceiling. CONVICTION: a whole-file-write car carrying ~250 lines of
-#   a new scripts/bookmark_import.py was refused by apply.py's AST airlock
-#   with "unmatched ')' (<unknown>, line 247)". The operator opened the patch
-#   in vim, looked at it, and declined to hand-repair -- which is the CORRECT
-#   move, and is why this banks as a rule instead of as a scar.
-#   THE DISTINCTION THAT MATTERS is SURGICAL versus WHOLE-FILE. A
-#   SEARCH/REPLACE block bounds its own blast radius: the exact-match
-#   interlock proves the region, so one named error IS the error. A whole-file
-#   write has no such bound -- fixing line 247 by hand says nothing about line
-#   260, because CPython stopped at 247 and never looked. DELETE AND RE-EMIT,
-#   always, for a refused whole-file write.
-#   THIRD REFUSAL CLASS, completing the ladder THE HAND-REPAIR CLAUSE opened.
-#   (1) no-blocks-found: the markers never parsed; never hand-repair. (2)
-#   search-block-not-found: the interlock READ the body and rejected it;
-#   diagnosable. (3) THIS ONE: the body parsed as a patch, was extracted, and
-#   a LANGUAGE parser refused it with a line number. Most informative of the
-#   three, and still not a hand-repair target, for the floor reason above.
-#   WHAT THE AIRLOCK ACTUALLY CAUGHT: an out.append(...) immediately
-#   overwritten by an out[-1] = ... assignment, with the stray paren riding
-#   the second -- two drafts of one line shipped together. Dead code beside a
-#   syntax error is the signature of an emitter that changed its mind mid-file
-#   and shipped both minds. Nothing downstream reads intent; only the parser
-#   does, and it refused.
+# § THE FIRST-ERROR FLOOR (banked 2026-08-09) -- a parser reports the first error it cannot get past, so a refusal's line number is a FLOOR on the defect count and never a ceiling; a SEARCH/REPLACE refusal bounds its own region and is diagnosable, a refused WHOLE-FILE write does not, so delete and re-emit rather than hand-repair the one line the parser happened to name. Third refusal class after no-blocks-found and search-block-not-found.
 # § THE SILENCED CHANNEL (banked 2026-08-09) -- a probe that discards a stream paired with a caboose whose verdict reads that stream is a verdict that can never be reached, and an exit code four worlds share is not a reading; a program graded by a MACHINE prints its outcome as a token on stdout, and when it also handles client data the outcome goes to stdout and every identifying string to stderr, so 2>/dev/null is compile-lane-safe by construction. Partitions with THE EXIT-CODE PROTOCOL RULE: decisions speak in exit codes, measurements in tokens.
 # - EARMARK: THE PLACEHOLDER THAT CLAIMS TO RUN (banked 2026-08-08,
 #   exit-code-witnessed): public_walk.yaml's three stops declare
