@@ -530,7 +530,8 @@ def main():
             # and there is no such future: point-of-use rendering strictly
             # dominates any pre-render. Three unpack sites move to 3-tuples.
             local_contracts.append((md_file, target_title, stamped_id))
-            print(f"   Target Title: {target_title}")
+            if verbose:
+                print(f"   Target Title: {target_title}")
         print(f"✅ Local contract pass complete. {len(local_contracts)} document(s) mapped.")
     except Exception as e:
         print(f"❌ Local contract failure: {e}")
