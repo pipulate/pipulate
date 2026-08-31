@@ -78,7 +78,6 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # 2026-07-25 harness MCP FAULT HARNESS 20/20 against the unmodified client (handshake, Mcp-Session-Id round trip with a raw-httpx no-header control, JSON and SSE framings, three determinism classes, gate attribution on five manufactured reds); the harness shares mcp.py's spec reading, so agreement was a tautology and the protocol strings stayed INFERRED; the same session read 36 server URLs and 8 tool namespaces off an injected manifest.
 # 2026-07-20 compile TOOL ROSTER LANDED between Manifest and Story, AST-derived and generated-not-authored; count matched live_registry_count=21 in the same compile.
 # 2026-07-20 OKF/Agent Skills 80/20 LANDED: AGENTS.md signpost plus the ContextCartridge topper; the remainder rides as a TODO line.
-# 2026-07-20 compile MAPPER LANE v1 BANKED: scripts/map_sheet.py 8/8 gates green across two compiles; receipts bundle in Notebooks/Client_Work/<client>/; measure.py parked until a human-confirmed mapping exists.
 # --- END RECEIPTS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
