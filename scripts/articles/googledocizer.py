@@ -382,7 +382,23 @@ def main():
                         help="Upsert a CSV file as a native Google Sheet in the folder.")
     parser.add_argument("--bootstrap-folder", metavar="NAME",
                         help="Create the Drive folder once and print its ID.")
+    parser.add_argument("-v", "--verbose", action="store_true",
+                        help="Print a line per article even on a full sweep (a sweep is quiet by default).")
     args = parser.parse_args()
+
+    # THE RULE OF SILENCE, GATED BY INTENT RATHER THAN BY COUNT (2026-08-31).
+    # A sweep printed ~2,900 lines before a single upload: one Target Title
+    # line and one MATCH line per article, both of which say only that the
+    # ORDINARY thing happened. release.py's precedent is the rule -- print the
+    # lines that name a CHANGE, plus one counter -- and the counter matters
+    # more here than there, because silence that cannot be told apart from a
+    # dead loop is worse than the noise it replaced.
+    # INTENT, NOT SIZE: --file and --latest mean the human NAMED the documents,
+    # so every line is signal and nothing is suppressed. A count-based gate
+    # ("quiet above N") would make the same command print differently on
+    # different targets, which is exactly the kind of surface that gets
+    # diagnosed twice. -v recovers the detail on a sweep, mirroring release.py.
+    verbose = args.verbose or bool(args.file or args.latest)
 
     service = get_service()
 
