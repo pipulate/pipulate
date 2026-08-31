@@ -1766,9 +1766,9 @@ print('AI:\n', r.ai)
           # It requires a commit message as an argument.
           publish() {
             # 80/20 reboot gate: the first non-flag arg is the commit message; the
-            # optional --reboot flag opts into the [4/4] stream.py restart (the
+            # optional --reboot flag opts into the [5/5] stream.py restart (the
             # ~4-hour memory-leak hygiene purge). Without it a routine publish stops
-            # after [3/4], leaving the live stream running untouched.
+            # after [4/5], leaving the live stream running untouched.
             local REBOOT=0
             local MSG=""
             for arg in "$@"; do
@@ -1788,7 +1788,7 @@ print('AI:\n', r.ai)
             # The Bounded Context of the Payload
             TARGET_REPO="$HOME/repos/trimnoir"
             
-            echo "🚀 [1/3] Payload Delivery: Committing and Pushing $TARGET_REPO..."
+            echo "🚀 [1/5] Payload Delivery: Committing and Pushing $TARGET_REPO..."
             # Execute in a subshell to avoid stranding the user's terminal
             (
                 cd "$TARGET_REPO" || exit 1
@@ -1807,7 +1807,22 @@ print('AI:\n', r.ai)
             
             # Check if the subshell push succeeded (which triggers the post-receive hook)
             if [ $? -eq 0 ]; then
-                echo "🚀 [2/3] Infrastructure: Synchronizing Server Configurations..."
+                # GOOGLE DOCS SYNC rides here, right after the git payload
+                # lands, because it depends only on the local article file(s)
+                # already on disk -- not on the Honeybot deploy below. Full
+                # sweep every time: googledocizer.py's own freshness gate
+                # (remote modified-time vs local mtime) makes an up-to-date
+                # corpus cost nothing but the inventory scan, while still
+                # catching a hand-edited OLD post, not just a brand-new one.
+                # Non-fatal by design -- a Drive hiccup (expired OAuth token,
+                # network blip) must never block the live site from shipping.
+                # Re-run `python scripts/articles/googledocizer.py -t 1 --yes`
+                # by hand to retry a failed sync.
+                echo "🚀 [2/5] Google Docs: Syncing to Drive..."
+                if ! python "$PIPULATE_ROOT/scripts/articles/googledocizer.py" -t 1 --yes; then
+                    echo "⚠️  Google Docs sync failed; continuing deployment anyway."
+                fi
+                echo "🚀 [3/5] Infrastructure: Synchronizing Server Configurations..."
                 # Back in the Pipulate root bounded context
                 if [ -f "./nixops.sh" ]; then
                     ./nixops.sh
