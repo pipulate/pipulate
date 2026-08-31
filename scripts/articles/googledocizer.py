@@ -695,7 +695,7 @@ def main():
             print(f"   ❌ {target_title!r} failed: {err}")
             failed += 1
 
-    print(f"\n🏁 Upsert complete. Created: {created}  Updated: {updated}  Healed: {healed}  Skipped: {skipped}  Failed: {failed}")
+    print(f"\n🏁 Upsert complete. Created: {created}  Updated: {updated}  Healed: {healed}  Fresh: {fresh}  Skipped: {skipped}  Failed: {failed}")
 
 
 if __name__ == "__main__":
