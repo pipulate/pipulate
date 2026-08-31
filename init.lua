@@ -692,12 +692,12 @@ function mount_sandworm()
         .. "```bash\n[Paste terminal output of running probe here]\n```\n\n"
         .. "**2: Context**:\n\n"
         .. "```text\n[Paste entire `adhoc.txt` here]\n```\n\n"
-        .. "**3: Patches**: [patch, app, d, m ... then IGNITE inside this same car]\n\n"
+        .. "**3: Patches**: \n\n"
         .. "```diff\n[Paste all diffs drag-copied from terminal here]\n```\n\n"
-        .. "```bash\n[Ignition completes the patch -- exit + nd for aliases, <F2> for init.lua, or 'no ignition required' when the probe loads the patched file at call time]\n```\n\n"
-        .. "**4: Prompt**: [The AI prompting itself (BEWARB the jabberwocky ouroboros dinosaurs!]\n\n"
-        .. "```text\n[Probably what the AI gives you, but BEWARB the ouroboros]\n```\n\n"
-        .. "**5: Deliverables**: [external artifacts -- PageWorkers JS, CMS, dashboards -- or 'None this turn']"
+        .. "Ignition, sed or post-patch-pre-`ahc` probes here.\n\n"
+        .. "**4: Prompt**: \n\n"
+        .. "```text\n[Probably what the AI gives you, but think for yourself!]\n```\n\n"
+        .. "**5: Deliverables**: [external artifacts, updates to this system or 'None this turn']"
     local row = vim.api.nvim_win_get_cursor(0)[1]
     local cur = vim.api.nvim_buf_get_lines(0, row - 1, row, false)[1] or ""
     local lines = vim.split(template, "\n")
