@@ -585,11 +585,51 @@ def main():
         # entry (and a share re-assert) without a re-upload. --force reopens
         # the full re-render path for rendering-pipeline changes.
         if existing and not args.force and _remote_is_fresh(meta, md_file):
+            # THE LEDGER SHORTCUT (2026-08-31). stamp_frontmatter_value opens
+            # the file, read_text()s ~200k bytes, splits them into a line list,
+            # scans the YAML block, finds the line already correct and returns
+            # UNCHANGED -- having allocated all of it to answer a question the
+            # contract loop already answered. stamped_id came out of THAT parse;
+            # if it equals the doc we are about to point at, the answer is
+            # UNCHANGED and no second read is needed.
+            #
+            # IN THE CALLER, NOT IN common. stamp_frontmatter_value is a GENERIC
+            # key/value upserter and its contract is "read the file, tell the
+            # truth about that line." A known_current= argument would make it
+            # trust a claim it cannot verify, and the claim available here is
+            # not the current value but an ID a regex pulled OUT of it. Domain
+            # knowledge belongs to the domain caller; the helper stays honest.
+            #
+            # STALENESS IS STRUCTURALLY EXCLUDED, not merely unlikely.
+            # stamped_id was parsed seconds ago, but this guard sits INSIDE the
+            # freshness branch, and _remote_is_fresh stats mtime LIVE. Any real
+            # write bumps mtime, fails that gate, and routes to the upload path
+            # -- which stamps from a fresh read. A concurrent edit cannot reach
+            # this line. Our own stamps preserve mtime by design, so they never
+            # disturb it either.
+            #
+            # WHAT IT CAN GET WRONG: ID equality is not STRING equality. A post
+            # whose gdoc_url carries the right ID in non-canonical text (hand
+            # edited, or written before a change to gdoc_share_url) is skipped
+            # rather than canonicalized. Remedy today is --force, which also
+            # re-uploads; a cheap --restamp that walks the stamp path without
+            # the upload is an earmark, not a promise.
+            if stamped_id == existing:
+                if verbose:
+                    print(f"   ⏭  FRESH [ID: {existing}] -> {target_title} (no upload; --force to re-render)")
+                fresh += 1
+                continue
+            # KEPT AS INSURANCE, not as dead code. If the shortcut above ever
+            # misses -- a Doc ID containing a character outside the extractor's
+            # [A-Za-z0-9_-] class would truncate stamped_id and defeat it --
+            # this branch still reads the file and still reports the truth. It
+            # costs one read on a path the shortcut has already emptied.
             stamp = common.stamp_frontmatter_value(
                 md_file, common.GDOC_URL_KEY, common.gdoc_share_url(existing))
             if stamp == "UNCHANGED":
-                print(f"   ⏭  FRESH [ID: {existing}] -> {target_title} (no upload; --force to re-render)")
-                skipped += 1
+                if verbose:
+                    print(f"   ⏭  FRESH [ID: {existing}] -> {target_title} (no upload; --force to re-render)")
+                fresh += 1
             else:
                 shared = ensure_anyone_reader(service, existing)
                 share_note = "🌐 link-shared" if shared else "⚠ SHARE FAILED"
