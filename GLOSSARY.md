@@ -870,6 +870,35 @@ Entries are alphabetical, numbers spelled as spoken.
   flip. Pick witnesses from lines that cannot wrap (dated headers like 'BANKED
   2026-07-29 (same-day flip'), and when the patched text is your own, confirm
   the phrase sits on one line before recommending the probe.
+- **The Straddle Is a Controlled Experiment** — *one manipulated variable,
+  everything else held.* Banked 2026-08-06, articulation-banked. The
+  BEFORE/AFTER pair is not a metaphor for science, it IS a controlled
+  comparison: same command verbatim, same machine, same lane, minutes apart,
+  with the patch as the only difference. Every accumulated straddle rule is a
+  CONFOUND CONTROL derived from a failure rather than from a methods text. THE
+  IGNITION RULE controls "was the treatment administered". THE PROBE ECHO
+  INVARIANT controls "did the instrument change between taps" — which is why
+  the echo must be VERBATIM and why editing a probe between taps voids it. THE
+  LANE-DISAGREEMENT WITNESS controls "did the measurement environment differ".
+  THE ACTUATION-BOUNDARY RULE controls "did the treatment reach the measured
+  surface". WITNESS: the whitelabel A/B ran two arms from a neutral CWD
+  against a byte-identical served binary, seconds apart, with one env var as
+  the only difference — a matched control and treatment, not an inference, and
+  it discharged a five-day-old debt in six lines. TWO INSTRUMENTS ALREADY WEAR
+  OTHER NAMES: the render canary is a POSITIVE CONTROL (a specimen known to
+  test positive, run to prove the assay is alive — hence its deliberately
+  nonzero floor), and a second workshop built for install testing is a CONTROL
+  ARM, exapted. STANDING CONSEQUENCE: a control arm is scarce because it costs
+  a SECOND CANDIDATE to build, never because the subject is deployed; THE
+  SINGLE-CANDIDATE BLINDNESS RULE is that demand stated without the
+  vocabulary. Add CONTROLLED-vs-OBSERVED as a THIRD axis beside determinism
+  (D0/D1/D2) and instrument (wire / transcript / narrative) — a D0 wire
+  receipt from an uncontrolled observation and a D2 narrative from a matched
+  pair are not comparable on one line. And note what buys n=1: DETERMINISM. A
+  stochastic mechanism needs replication; a reproducible one either does or
+  does not, which is why one clean straddle settles a D0 claim and why the Nix
+  pin and the byte-reproducible cartridge are not hygiene around the science —
+  they are what makes each experiment cost one paste instead of thirty trials.
 - **The Transfer Function** — *the render transform, characterized.* Banked
   2026-08-06, comb-witnessed across three firings; supersedes and FALSIFIES
   the GFM hypothesis recorded in THE RENDER-GAP RULE. The render canary FIRED
