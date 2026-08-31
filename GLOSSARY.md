@@ -663,11 +663,19 @@ Entries are alphabetical, numbers spelled as spoken.
   agreement is a TAUTOLOGY, not a corroboration; "2025-06-18" and the
   tools/* spellings are OBSERVED against vendor authorship since 2026-08-06;
   the Mcp-Session-Id round trip is declined by server one (sent=null,
-  ret=null, session=no) and witnessed only by the harness. OWES: whether
-  server two's session=yes of 2026-08-29 discharges that third string is
-  INFERRED from the pairing above and waits on a read of mcp.py's session
-  boolean; delete this clause the day the source has been read and the
-  receipt line says OBSERVED.
+  ret=null, session=no) and witnessed only by the harness. SOURCE READ
+  2026-08-30, which SPLITS that third string in two. mcp.py sets its session
+  id from resp.headers.get(SESSION_HEADER) and prints session=yes iff that
+  value is truthy, so server two's session=yes OBSERVES the SERVER RETURNING
+  the header: the header NAME is vendor-witnessed and PINNED. The client
+  sends it back only when present, so the server's ENFORCEMENT of it is
+  still INFERRED — tools=56 succeeded after initialize, which is consistent
+  with a real round trip and equally consistent with a server that ignores
+  the header, the same printout in both worlds. OWES, narrowed to one
+  command: a raw request to server two carrying NO session header, which
+  must be refused if the round trip is real. That is the no-header control
+  the fault harness already runs, aimed at vendor authorship instead of at
+  our own spec reading.
 - **The Probe Echo Rule** — *before/after symmetry.* Every probe recommended
   for hand-execution must also be echoed verbatim as a `!` line into the next
   adhoc.txt chop. The hand-run is the BEFORE reading; the compiled re-run is
