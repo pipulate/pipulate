@@ -332,8 +332,15 @@ def fetch_file(service, file_id):
     if mime == DOC_MIME:
         export_mime = 'text/markdown'
     elif mime == SHEET_MIME:
-        # NOTE: exports the first/default tab only; multi-tab needs per-gid
-        # exports — a deliberately deferred probe.
+        # EARMARK -- multi-tab Sheets fetch, SPECULATIVE, and deliberately NOT
+        # scheduled (verdict recorded 2026-08-31). This exports the first tab
+        # only; a full export needs one request per gid. It stays a caveat
+        # rather than a plan because nothing has ever asked for it: the CSV
+        # lane has one caller, and no incident names a multi-tab sheet.
+        # The comment survives so a later reader cannot mistake 'text/csv' for
+        # a COMPLETE export -- the failure mode is silent truncation, which is
+        # exactly the kind that gets diagnosed twice. Build it the first time a
+        # real second tab is missed, and let that miss be the receipt.
         export_mime = 'text/csv'
     else:
         sys.stderr.write(f"Unsupported mimeType for fetch: {mime}\n")
