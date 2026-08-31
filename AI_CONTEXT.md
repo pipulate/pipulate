@@ -1,8 +1,8 @@
 # AI_CONTEXT.md — Start Here If You Are an AI
 
-> Auto-generated on 2026-08-30. Rewritten from scratch on every release. If this
+> Auto-generated on 2026-08-31. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1425 entries indexed.
+> 1428 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -96,6 +96,9 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-08-31] [The Pachinko Mirror: Engineering Deterministic AI Workflows Through Fan-Out and Reduction](https://mikelev.in/futureproof/the-pachinko-mirror-engineering-deterministic-ai-workflows/index.md)
+- [2026-08-30] [Compiling the Forever Machine: Reducing Router Bloat with Key-Value Mappings](https://mikelev.in/futureproof/compiling-the-forever-machine-router-optimization/index.md)
+- [2026-08-30] [The Rule of Silence: Engineering Quiet AI Workflows with Unix](https://mikelev.in/futureproof/rule-of-silence-engineering-quiet-ai-workflows/index.md)
 - [2026-08-30] [Terminal-Native Model Context Protocol in Practice: Connecting Directly in the Age of AI](https://mikelev.in/futureproof/terminal-native-mcp-practice/index.md)
 - [2026-08-30] [Protocol vs. Prompt: Why MCP Is Becoming Unix](https://mikelev.in/futureproof/protocol-vs-prompt-why-mcp-is-becoming-unix/index.md)
 - [2026-08-29] [Terminal MCP Operational: Moving From Pipes to Application](https://mikelev.in/futureproof/terminal-mcp-operational-moving-from-pipes-to-application/index.md)
@@ -113,14 +116,14 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-08-25] [Dual-Lane Trail Design: Widening the Stop Schema for Public Walks](https://mikelev.in/futureproof/dual-lane-trail-design-schema-widening/index.md)
 - [2026-08-25] [When Defensive Abstractions Outrun the Rider](https://mikelev.in/futureproof/defensive-abstractions-outrun-the-rider/index.md)
 - [2026-08-25] [Closing the Loop: Replacing Vibe-Coding with Deterministic AI Workflows](https://mikelev.in/futureproof/replacing-vibe-coding-deterministic-workflows/index.md)
-- [2026-08-24] [Paste What You Have: Composable Text Commands and the Art of AI Context](https://mikelev.in/futureproof/paste-what-you-have-composable-text-commands/index.md)
-- [2026-08-22] [Finding Root: From Filesystems and Amigas to LUCA](https://mikelev.in/futureproof/finding-root-from-filesystems-and-amigas-to-luca/index.md)
-- [2026-08-21] [The Ghost in the Compiler: Engineering Honest Telemetry in the Age of AI](https://mikelev.in/futureproof/ghost-in-the-compiler-honest-telemetry-ai/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-08-24] [43k] paste-what-you-have-composable-text-commands
+- [2026-08-22] [79k] finding-root-from-filesystems-and-amigas-to-luca
+- [2026-08-21] [139k] ghost-in-the-compiler-honest-telemetry-ai
 - [2026-08-21] [153k] a-defense-that-has-never-refused-anything-is-a-comment-with-good-pressure
 - [2026-08-20] [71k] artifact-light-cone-epistemology-ai
 - [2026-08-19] [111k] interface-didnt-get-worse-you-got-better
