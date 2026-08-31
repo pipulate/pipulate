@@ -1800,7 +1800,7 @@ print('AI:\n', r.ai)
 
             if [ -z "$MSG" ]; then
               echo "❌ Error: Please provide a commit message."
-              echo "Usage: publish \"Your commit message here\" [--reboot]"
+              echo "Usage: publish \"Your commit message here\" [--reboot] [--sweep]"
               return 1
             fi
             
