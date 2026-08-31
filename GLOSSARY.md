@@ -856,6 +856,66 @@ Entries are alphabetical, numbers spelled as spoken.
   sees what matched. Fifth sibling of DOTFILE-BLIND / CASE-BLIND / UNANCHORED /
   CAP — another way a probe answers a question other than the one on its
   label.
+- **The Render-Gap Rule** — *render artifact versus file bytes.* Banked
+  2026-07-31, self-convicted — the model filed the false report. A model
+  reading a compiled payload CANNOT DISTINGUISH FILE BYTES FROM RENDER
+  ARTIFACTS, so a defect visible ONLY in the payload must be confirmed against
+  a SECOND, INDEPENDENTLY-RENDERED witness before any patch is emitted.
+  Conviction: configuration.nix's networking.hosts line arrived in a payload
+  with its bare www host wrapped in markdown link syntax; a live production
+  DNS defect was diagnosed, a patch car was written and ridden, and a "fix"
+  comment landed in the file asserting a failure that never occurred. The file
+  had been correct the entire time. Three independent channels cleared it --
+  git diff showed the line unchanged across the commit (the contaminated text
+  appears in NO diff, which is the cheapest tell), /etc/hosts read CLEAN
+  before any rebuild, and the next compile's raw source carried no markdown.
+  THE RENDER IS NOT THE FILE. This is the INVERSE of the three witness
+  corollaries and completes the set: SINGLE-LINE, CASE-BLIND and UNANCHORED
+  are probes that CANNOT SEE what is there; this is a payload that SHOWS WHAT
+  IS NOT. Leading hypothesis for the transform: GFM-style autolinking of bare
+  www-prefixed hosts, consistent with scheme-bearing URLs in the same payload
+  arriving clean -- unproven until 2026-08-01, when THE CANARY FIRED: a
+  compile emitted the canary token BARE and it arrived at the model WRAPPED IN
+  MARKDOWN LINK SYNTAX, link text equal to link target minus its scheme -- the
+  exact self-referential signature apply.py's autolink airlock refuses. The
+  TRANSFORM is now WITNESSED. The TRANSFORMER's identity (GFM, a chat client,
+  something between) stays INFERRED, and the compile lane cannot see it by
+  construction. FIRST CONSEQUENCE OF A LIVE CANARY: every bare www-prefixed
+  token in that payload is suspect -- Codebase file bodies and receipt stdout
+  included -- and no patch may be emitted whose REPLACE block carries one.
+  METHOD NOTE, because this is the corpus's cleanest specimen: the instrument
+  was designed by asking THE DISCRIMINATION QUESTION in advance (innocent
+  transport prints a bare token, guilty transport prints a linkified one --
+  different printouts, therefore a probe), it then sat green for a dozen
+  compiles, and it convicted on a later flight. A probe that stays green is
+  not a probe that is doing nothing; it is a probe waiting for the world where
+  you are wrong. ASYMMETRY AMENDMENT (banked 2026-08-02,
+  intermittency-convicted): the canary's two readings do NOT carry equal
+  weight, and the 2026-08-02 compile is why this had to be written down -- the
+  canary arrived BARE after several consecutive compiles in which it arrived
+  LINKIFIED, same emitter, same regex, same token. A LINKIFIED canary PROVES a
+  transform occurred and is decisive. A BARE canary PROVES NOTHING: it is
+  equally consistent with an innocent channel, a stochastic transform, and a
+  shape-dependent transform that this particular payload happened to dodge.
+  Run THE DISCRIMINATION QUESTION on the canary itself and the answer for the
+  bare case is "the same thing in both worlds" -- so the bare reading is a
+  RITUAL, and only the linkified reading is a PROBE. STANDING CONSEQUENCE: a
+  bare canary does NOT license quoting a bare www-prefixed token into a
+  REPLACE block; apply.py's autolink airlock stays the only real fence, and
+  the operating posture is permanently suspicious rather than per-compile.
+  INTERMITTENCY WITNESSED 2026-08-02, one compile after this amendment was
+  banked: the very next payload arrived LINKIFIED -- link text equal to link
+  target minus its scheme -- with no change to the emitter, the regex, or the
+  token between the two compiles. Bare-then-linkified across consecutive
+  compiles is the receipt that promotes stochastic-or-shape-dependent from
+  INFERRED to OBSERVED; only the TRANSFORMER's identity remains inferred. The
+  amendment was therefore written on the weak reading and confirmed by the
+  strong one within a single turn, which is the cheapest possible vindication
+  of banking a rule before its decisive branch fires. Sibling of REFUSAL-ONLY
+  WITNESS: that rule names a guard observable on one branch only; this one
+  names an instrument DECISIVE on one branch only. STANDING CONSEQUENCE: any
+  defect whose sole witness is the payload gets a second channel -- git diff,
+  the generated artifact, or a fresh compile -- BEFORE a patch is proposed.
 - **The Silenced Channel** — *a verdict that reads a stream the probe closed.*
   Banked 2026-08-09, self-convicted inside one turn. A probe that DISCARDS a
   stream, paired with a caboose whose verdict clause READS that stream, is a
