@@ -541,7 +541,7 @@ def main():
 
     print(f"\n✍️  Mutations armed (--yes). Upserting {len(local_contracts)} document(s)...")
     created = updated = healed = skipped = failed = 0
-    for md_file, target_title, html_bytes, stamped_id in local_contracts:
+    for md_file, target_title, stamped_id in local_contracts:
         if target_title in duplicates:
             print(f"   ⚠ SKIP {target_title!r}: duplicate name in folder; resolve by hand first.")
             skipped += 1
