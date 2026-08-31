@@ -566,7 +566,14 @@ def main():
         return
 
     print(f"\n✍️  Mutations armed (--yes). Upserting {len(local_contracts)} document(s)...")
-    created = updated = healed = skipped = failed = 0
+    # FRESH SPLIT OUT OF SKIPPED, forced by the silence above. `skipped` merged
+    # two unlike things: "nothing to do" (FRESH) and "I refused" (duplicate
+    # name, wrong mime). While every FRESH printed its own line you could tell
+    # them apart by eye. With those lines suppressed the 🏁 summary is the only
+    # witness left, and a merged counter there cannot answer the discrimination
+    # question. `skipped` now means refusals only -- a nonzero value is
+    # something to go look at.
+    created = updated = healed = skipped = failed = fresh = 0
     for md_file, target_title, stamped_id in local_contracts:
         if target_title in duplicates:
             print(f"   ⚠ SKIP {target_title!r}: duplicate name in folder; resolve by hand first.")
