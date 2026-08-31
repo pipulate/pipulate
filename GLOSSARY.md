@@ -761,6 +761,30 @@ Entries are alphabetical, numbers spelled as spoken.
   must be refused if the round trip is real. That is the no-header control
   the fault harness already runs, aimed at vendor authorship instead of at
   our own spec reading.
+- **The Placeholder That Claims to Run** — *validation passing is not
+  execution passing.* Banked 2026-08-08, exit-code-witnessed; discharged
+  2026-08-30. public_walk.yaml's three stops declared connector.script
+  "scripts/walk.py" with argv ["{harvested}"], and
+  walk_cartridge._derive_consent_surface lifted that path into the sealed
+  manifest, where mother_cat._announce_consent printed it to a human under the
+  label "names as runnable" — in the ONE artifact a rider reads BEFORE
+  deciding to ride. RECEIPT: `walk.py xyz` exits 2, because walk.py's parser
+  declares --trail and --value and NO positional, so the command the trail
+  named could not run and never could. HARMLESS THEN, ARMED LATER: connector
+  execution was out of scope, so nothing had ever tried — the PUBLISH-ROSTER
+  shape, a name in a live slot that fires on the next ordinary change, and the
+  slot was the SOFTBALL, in front of a newcomer, three times. IT WAS ALSO A
+  LIE AT REST, which is the cheaper argument: "runnable" is a capability claim
+  and THE MECHANICAL TEST fails it. walk.py checks that the file EXISTS and
+  that {harvested} appears once, and nothing anywhere checks that the script
+  accepts the argv it will be handed. CURE A FALSE LABEL WITH A TRUE SENTENCE,
+  NEVER A VAGUER ONE: scripts/connectors/noop.py exists IN ORDER to be a
+  no-op — one positional, prints what it received, exits 0 — and
+  public_walk.yaml names it at all three stops. PROBE DEFECT, same original
+  receipt: the CONTROL arm `walk.py --trail public_walk.yaml` ALSO printed 2,
+  because main() returns 2 for "plan not ready" and argparse returns 2 for bad
+  arguments. One number, two worlds. Read stderr or read plan["ready"]; never
+  grade that one on the exit code alone.
 - **The Probe Echo Rule** — *before/after symmetry.* Every probe recommended
   for hand-execution must also be echoed verbatim as a `!` line into the next
   adhoc.txt chop. The hand-run is the BEFORE reading; the compiled re-run is
