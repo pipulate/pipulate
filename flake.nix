@@ -1769,11 +1769,30 @@ print('AI:\n', r.ai)
             # optional --reboot flag opts into the [5/5] stream.py restart (the
             # ~4-hour memory-leak hygiene purge). Without it a routine publish stops
             # after [4/5], leaving the live stream running untouched.
+            #
+            # THE SWEEP GATE, AND WHY IDEMPOTENT IS NOT THE SAME AS CHEAP
+            # (measured 2026-08-31: ~5 minutes). googledocizer.py's freshness
+            # check IS free -- it compares an already-fetched Drive timestamp
+            # against a local mtime. What is NOT free is the Local Target Title
+            # Contract pass that runs BEFORE it, which markdown-renders every
+            # one of ~1,400 articles to HTML and then discards 1,312 of them
+            # unread. The API was never the cost; the render was, and it is
+            # paid whether or not anything uploads.
+            # So the default hands the script ONE file. --latest reads the
+            # marker articleizer.py wrote for this target and syncs exactly the
+            # post this publish is about. --sweep opts back into the whole
+            # corpus for the rare deliberate case (a rendering-pipeline change,
+            # a hand-edited OLD post), the same shape gobot's --all already
+            # uses. A missing marker is non-fatal: googledocizer exits 1, the
+            # guard below warns, and the site still ships.
             local REBOOT=0
+            local GDOCS_SCOPE="--latest"
             local MSG=""
             for arg in "$@"; do
               if [ "$arg" = "--reboot" ]; then
                 REBOOT=1
+              elif [ "$arg" = "--sweep" ]; then
+                GDOCS_SCOPE=""
               elif [ -z "$MSG" ]; then
                 MSG="$arg"
               fi
