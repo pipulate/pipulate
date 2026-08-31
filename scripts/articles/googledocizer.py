@@ -372,6 +372,19 @@ def main():
                         help="Sync only the given file(s). Repeatable. Beats --latest and the sweep.")
     parser.add_argument("--latest", action="store_true",
                         help="Sync only the article articleizer.py most recently wrote for this target.")
+    # EARMARK -- --restamp, CONTINGENT RATHER THAN SPECULATIVE (2026-08-31).
+    # --force is currently the ONLY remedy for a stale gdoc_url STRING, and it
+    # is the wrong-sized tool: it re-uploads all ~1,400 documents to repair a
+    # value the ledger shortcut could have rewritten locally. The trigger is
+    # specific and dated -- the moment anyone edits common.gdoc_share_url().
+    # On that day every post carries the right Doc ID in the wrong text, the
+    # `stamped_id == existing` shortcut skips the whole corpus, and only a full
+    # --force sweep heals it.
+    # BUILD IT AS A RIDER ON THAT CHANGE, NEVER STANDALONE. --restamp would
+    # walk the same freshness branch, skip the shortcut, call
+    # stamp_frontmatter_value unconditionally, and perform ZERO Drive
+    # mutations. Shipping it before the format change would add a flag with no
+    # users guarding a change nobody has proposed.
     parser.add_argument("--force", action="store_true",
                         help="Re-upload even docs the freshness gate would skip (e.g. after a rendering-pipeline change).")
     parser.add_argument("--list", action="store_true",
