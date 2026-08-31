@@ -521,7 +521,7 @@ def main():
         sys.exit(1)
 
     print("\n🧭 Remote Match Contract:")
-    for md_file, target_title, _html, stamped_id in local_contracts:
+    for md_file, target_title, stamped_id in local_contracts:
         meta = inventory.get(target_title)
         if meta:
             if stamped_id == meta['id']:
