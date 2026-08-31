@@ -2399,36 +2399,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   record which shell it was taken in, or the receipt is unlabeled evidence.
 # § THE FIRST-ERROR FLOOR (banked 2026-08-09) -- a parser reports the first error it cannot get past, so a refusal's line number is a FLOOR on the defect count and never a ceiling; a SEARCH/REPLACE refusal bounds its own region and is diagnosable, a refused WHOLE-FILE write does not, so delete and re-emit rather than hand-repair the one line the parser happened to name. Third refusal class after no-blocks-found and search-block-not-found.
 # § THE SILENCED CHANNEL (banked 2026-08-09) -- a probe that discards a stream paired with a caboose whose verdict reads that stream is a verdict that can never be reached, and an exit code four worlds share is not a reading; a program graded by a MACHINE prints its outcome as a token on stdout, and when it also handles client data the outcome goes to stdout and every identifying string to stderr, so 2>/dev/null is compile-lane-safe by construction. Partitions with THE EXIT-CODE PROTOCOL RULE: decisions speak in exit codes, measurements in tokens.
-# - EARMARK: THE PLACEHOLDER THAT CLAIMS TO RUN (banked 2026-08-08,
-#   exit-code-witnessed): public_walk.yaml's three stops declare
-#   connector.script "scripts/walk.py" with argv ["{harvested}"], and
-#   walk_cartridge._derive_consent_surface lifts that path into the sealed
-#   manifest, where mother_cat._announce_consent prints it to a human under
-#   the label "names as runnable" -- in the ONE artifact a rider reads BEFORE
-#   deciding to ride. RECEIPT: `.venv/bin/python scripts/walk.py xyz` exits 2.
-#   walk.py's parser declares --trail and --value and NO positional, so the
-#   command the trail names cannot run and never could.
-#   HARMLESS TODAY, ARMED TOMORROW: mother_cat.py's docstring puts connector
-#   execution out of scope, so nothing has ever tried. That is the
-#   PUBLISH-ROSTER shape -- a name in a live slot fires on the next ordinary
-#   change with no further human decision -- and the slot it fires in is the
-#   SOFTBALL, in front of a newcomer, three times.
-#   IT IS ALSO A LIE RIGHT NOW, which is the cheaper argument: "runnable" is a
-#   capability claim and THE MECHANICAL TEST fails it. Validation passing is
-#   not execution passing; walk.py checks the file EXISTS and that {harvested}
-#   appears once, and nothing anywhere checks that the script accepts the argv.
-#   FIX, when ridden: a real no-op connector that exists IN ORDER to be a
-#   no-op -- accepts one positional, prints what it received, exits 0 -- so
-#   the sentence becomes TRUE rather than the label becoming vaguer.
-#   CONSEQUENCE ALREADY TAKEN: scripts/bookmark_import.py refuses to guess a
-#   connector and emits TODO, because propagating a known-false runnable claim
-#   into every imported trail is worse than an empty field.
-#   PROBE DEFECT, same receipt, banked so it is not repeated: the CONTROL arm
-#   `walk.py --trail assets/trails/public_walk.yaml` ALSO printed 2, because
-#   main() returns 2 for "plan not ready" and argparse returns 2 for "bad
-#   arguments". One number, two worlds -- THE DISCRIMINATION QUESTION failing
-#   inside the instrument written to answer it. Read stderr, or read
-#   plan["ready"]; never grade this one on the exit code alone.
+# § THE PLACEHOLDER THAT CLAIMS TO RUN (banked 2026-08-08, discharged 2026-08-30) -- validation passing is not execution passing: walk.py checks that a connector file EXISTS and that {harvested} appears once, and nothing anywhere checks that the script accepts the argv it will be handed, so a consent surface can print "names as runnable" about a command that exits 2. Cure a false label with a TRUE sentence, never a vaguer one -- scripts/connectors/noop.py exists IN ORDER to be a no-op and public_walk.yaml names it at all three stops. And never grade a refusal on an exit code that two worlds share.
 # - EARMARK: THE COMPILED TRAIL (banked 2026-08-08, source-witnessed): a trail
 #   has TWO legitimate forms, and conflating them is the whole confusion. The
 #   SEALED form -- trail.yaml inside walk.zip -- is MACHINE CARGO: hashed,
