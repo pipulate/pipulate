@@ -53,9 +53,9 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # --- START STATS ---
 # There are 1,429 already-written articles about this repo at MikeLev.in (Public)
 # Velocity: 22 published in the last 7 days
-# Markdown negotiated: 2,263 reads (0.21% of all responses)
+# Markdown negotiated: 2,267 reads (0.21% of all responses)
 # DOM hydration: 2885 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-08-31T12:14Z
+# Honeybot telemetry fetched 2026-08-31T18:45Z
 # --- END STATS ---
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
 # 2026-08-30 compile KEY/VALUE strike 6: sigil keys 24 -> 29; EARMARK 59 -> 54; five-pattern tombstone 5 -> 0 (grep's expected NON-ZERO EXIT 1); RECEIPTS held 20; ast_ok; foo_files.py 272,536 -> 264,473 B (-2,120 tok), GLOSSARY.md 71,553 -> 82,577 B (+2,766 tok); raw byte predictions missed their bands by 323 B high and 743 B low, and both delta magnitudes were over-predicted 14-15%, so dropping the n=1 correction removed the sign flip but put neither byte side in band; wc -l 3114 -> 2958, one below prediction because the five landed diff deltas sum to -156 (-25-25-30-29-47), not -155. Five graduations landed.
