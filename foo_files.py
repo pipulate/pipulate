@@ -2553,37 +2553,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   text being patched) and of THE INSTRUMENT BECOMES BAIT (there the probe's
 #   text attracts the transform it measures) -- this is the same disease with
 #   the compiler's own console as the victim.
-# - EARMARK: THE STRADDLE IS A CONTROLLED EXPERIMENT (banked 2026-08-06,
-#   articulation-banked, operator-prompted): the BEFORE/AFTER pair is not a
-#   metaphor for science, it IS a controlled comparison -- ONE manipulated
-#   variable (the patch), everything else held: same command verbatim, same
-#   machine, same lane, minutes apart. Every accumulated straddle rule is a
-#   CONFOUND CONTROL derived from a failure rather than from a methods text.
-#   THE IGNITION RULE controls "was the treatment administered". THE PROBE
-#   ECHO INVARIANT controls "did the instrument change between taps" -- which
-#   is why the echo must be VERBATIM and why editing a probe between taps
-#   voids it. THE LANE-DISAGREEMENT WITNESS controls "did the measurement
-#   environment differ". THE ACTUATION-BOUNDARY RULE controls "did the
-#   treatment reach the measured surface". WITNESS: the whitelabel A/B ran
-#   two arms from a neutral CWD against a byte-identical served binary,
-#   seconds apart, with PIPULATE_WHITELABEL as the only difference -- a
-#   matched control and treatment, not an inference, and it discharged a
-#   five-day-old debt in six lines. TWO INSTRUMENTS ALREADY WEAR OTHER NAMES:
-#   the render canary is a POSITIVE CONTROL (a specimen known to test
-#   positive, run to prove the assay is alive -- hence its deliberately
-#   nonzero floor), and a second workshop built for install testing is a
-#   CONTROL ARM, exapted. STANDING CONSEQUENCE: a control arm is scarce
-#   because it costs a SECOND CANDIDATE to build, never because the subject
-#   is deployed; THE SINGLE-CANDIDATE BLINDNESS RULE is that demand stated
-#   without the vocabulary. Add CONTROLLED-vs-OBSERVED as a THIRD axis beside
-#   determinism (D0/D1/D2) and instrument (wire / transcript / narrative) --
-#   a D0 wire receipt from an uncontrolled observation and a D2 narrative
-#   from a matched pair are not comparable on one line. And note what buys
-#   n=1: DETERMINISM. A stochastic mechanism needs replication; a
-#   reproducible one either does or does not, which is why one clean straddle
-#   settles a D0 claim and why the Nix pin and the byte-reproducible
-#   cartridge are not hygiene around the science -- they are what makes each
-#   experiment cost one paste instead of thirty trials.
+# § THE STRADDLE IS A CONTROLLED EXPERIMENT (banked 2026-08-06) -- the before/after pair is a controlled comparison with ONE manipulated variable, and every straddle rule is a named confound control: IGNITION (was the treatment administered), PROBE ECHO (did the instrument change between taps), LANE-DISAGREEMENT (did the environment differ), ACTUATION-BOUNDARY (did the treatment reach the measured surface). Add CONTROLLED-vs-OBSERVED as a third axis beside determinism and instrument; determinism is what buys n=1, which is why the Nix pin and the byte-reproducible cartridge are the science rather than hygiene around it.
 # § THE FILTER THAT ATE THE EVIDENCE (banked 2026-08-06) -- a content filter may gate a channel only when that channel's content IS status; when the content is PAYLOAD (a git diff, a lint report), exempt the channel BY NAME, because a substring guard that eats "error" drops the evidence silently and the placeholder reads the same whether the channel was empty or eaten. Mechanism landed as is_telemetry in PromptBuilder.add_auto_context.
 # § THE HISTORY-EXPANSION PROBE (banked 2026-08-06) -- a ! followed by a word character inside double quotes is bash history expansion, ON in the operator's interactive shell and OFF in the compile lane's non-interactive one, so the probe runs clean as a receipt and dies at the hand-run with an error naming a shell feature; single-quote the outer -c argument and use double quotes for the Python strings inside it. A probe that cannot be hand-run has no BEFORE.
 # - EARMARK: THE SELF-MATCHING PATTERN (banked 2026-08-05, twice-convicted in one transcript): pkill -f and pgrep -f match the FULL COMMAND LINE, and the shell running the script carries the pattern in its own argv -- so an unescaped pattern kills or counts the process that issued it. CONVICTION: flake.nix's publish() [4/4] block protected two patterns with the [.] trick (a regex demanding a literal dot the argv literal does not contain) and MISSED THE THIRD, so every `publish --reboot` killed its own ssh session at that line. The guard must be applied to EVERY pattern in a block, not most of them -- a partially-guarded block READS as guarded. WITNESS: after the fix, `publish force --reboot` printed `new_count=1`, `new=534841`, and the watchdog verdict line, three lines that had never once appeared in any prior transcript.
