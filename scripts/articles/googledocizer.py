@@ -572,6 +572,27 @@ def main():
             continue
 
         try:
+            # THE LAZY RENDER, inside the existing per-file try. Reaching this
+            # line means the freshness gate has already decided this article
+            # WILL be uploaded, so the render is never speculative.
+            # WHY THIS IS SAFE AFTER THE MOVE, stated rather than assumed: the
+            # upsert loop was NEVER atomic. It already writes document by
+            # document and already catches HttpError per file and continues, so
+            # an HTTP 500 on number 400 has always left 399 written. Partial
+            # state is the designed-for reality here -- the freshness gate plus
+            # title matching is precisely what makes a re-run heal it. The
+            # contract loop's try/except only ever guarded ONE narrow failure
+            # class while leaving the far likelier one wide open, which is
+            # illusory atomicity, and an illusory guarantee is worse than an
+            # absent one. What this buys: one unrenderable article now costs
+            # one ❌ line and a `failed` increment instead of aborting the
+            # other 1,430.
+            # RE-READ RATHER THAN RETAIN: holding post.content for the whole
+            # corpus would trade the HTML for markdown of comparable size and
+            # give back most of the memory win. One extra read of ~119 files
+            # is cheaper than 1,431 retained bodies. Safe against the stamp
+            # writer below, which only touches the file AFTER the upload.
+            html_bytes = markdown_to_html(frontmatter.load(md_file).content)
             file_id, verb = drive_convert_upsert(
                 service, folder_id, target_title, html_bytes,
                 'text/html', DOC_MIME, existing_id=existing
