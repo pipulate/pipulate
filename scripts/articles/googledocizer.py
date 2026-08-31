@@ -480,15 +480,40 @@ def main():
         print("🛑 Queue empty. Nothing to parse.")
         return
 
+    # SORT THE FAILURE BY ITS SCOPE (2026-08-31). A missing `markdown` package
+    # is GLOBAL: it cannot fail for one article and succeed for another. Under
+    # the per-file handling the lazy render introduces below, it would print
+    # 1,431 identical RuntimeErrors instead of one legible abort -- the same
+    # RETIRE-THE-CANARY failure as a warning that fires every time. So the
+    # global condition keeps failing CLOSED, once, here, before any Drive
+    # mutation; only genuinely per-file failures get per-file tolerance.
+    if md_lib is None:
+        print("❌ The 'markdown' package is missing; every render would fail identically.")
+        print("   Add it to requirements.in and reinstall.")
+        print("   Probe: .venv/bin/python -c 'import markdown'")
+        sys.exit(1)
+
     local_contracts = []
     print("\n🧾 Local Target Title Contract:")
     try:
         for md_file in md_files:
             post = frontmatter.load(md_file)
             target_title = _target_title(md_file, post)
-            html_bytes = markdown_to_html(post.content)
             stamped_id = common.gdoc_id_from_frontmatter(post.metadata)
-            local_contracts.append((md_file, target_title, html_bytes, stamped_id))
+            # THE RENDER MOVED OUT OF THIS LOOP (measured: ~5 minutes for a
+            # 1,431-article sweep, ~119 of which actually upload). This loop
+            # exists to compute TITLES, and a title needs frontmatter, not
+            # HTML. Rendering here markdown-converted every article in the
+            # corpus and held ~215MB of HTML in memory so that the freshness
+            # gate below could discard 92% of it unread. The API was never the
+            # cost; the render was, and it was paid whether or not anything
+            # uploaded. It now happens at its one point of use, inside the
+            # upload branch of the upsert loop.
+            # THE SLOT IS GONE, NOT NULLED. A tuple position that could only
+            # ever hold None reads like a cache a later change might populate,
+            # and there is no such future: point-of-use rendering strictly
+            # dominates any pre-render. Three unpack sites move to 3-tuples.
+            local_contracts.append((md_file, target_title, stamped_id))
             print(f"   Target Title: {target_title}")
         print(f"✅ Local contract pass complete. {len(local_contracts)} document(s) mapped.")
     except Exception as e:
