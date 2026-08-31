@@ -82,6 +82,7 @@ import subprocess
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlparse, quote
 
 WALLET_PATH = os.environ.get('PIPULATE_WALLET') or str(
     Path.home() / '.config' / 'pipulate' / 'connectors.json')
@@ -104,10 +105,11 @@ _SERVICE_KIND = 'service_account_file'  # a key file on disk (gsc)
 _BEARER_KIND = 'bearer_token'          # paste: single API token (botify, slack)
 _BASIC_KIND = 'basic_auth'             # paste: user + API token (confluence, jira, gong)
 _BROWSER_KIND = 'browser_session'      # weblogin persistent profile (botify_browser, semrush)
+_MCP_KIND = 'mcp_oauth'                # remote MCP bearer; token file DERIVED from defaults.resource (botify_mcp)
 
 _FILE_KINDS = (_OAUTH_KIND, _SERVICE_KIND)
 _ENV_KINDS = (_BEARER_KIND, _BASIC_KIND)
-_MTIME_KINDS = (_OAUTH_KIND, _BROWSER_KIND)  # kinds whose freshness decays with time
+_MTIME_KINDS = (_OAUTH_KIND, _BROWSER_KIND, _MCP_KIND)  # kinds whose freshness decays with time
 
 _KIND_LABEL = {
     _OAUTH_KIND: 'oauth',
@@ -115,10 +117,29 @@ _KIND_LABEL = {
     _BEARER_KIND: 'bearer',
     _BASIC_KIND: 'basic',
     _BROWSER_KIND: 'browser',
+    _MCP_KIND: 'mcp',
 }
 
 _MARK = {'filled': '[x]', 'stale': '[~]', 'partial': '[/]', 'empty': '[ ]',
          'no-path': '[!]', 'unknown': '[?]'}
+
+# THE THIRD VERBATIM COPY. token_path_for lives in scripts/connectors/mcp.py
+# and scripts/connectors/mcp_warm.py; this leg turns the twins into triplets.
+# The WET connector contract forbids wallet.py importing mcp.py, so the
+# derivation is duplicated ON PURPOSE and the copies are COMPARED BY PROBE,
+# never trusted -- the existing twin-agreement probe simply gains a third leg.
+# TOKEN_DIR keeps mcp.py's exact constant name so the function body below can
+# stay byte-identical to its siblings.
+TOKEN_DIR = Path.home() / ".config" / "pipulate" / "mcp"
+
+
+def token_path_for(resource):
+    """Credential path for one MCP server. A root path collapses to the host."""
+    parsed = urlparse(resource or "")
+    host = (parsed.netloc or "unknown-host").lower()
+    path = (parsed.path or "").strip("/")
+    stem = host if not path else f"{host}__{quote(path, safe='')}"
+    return TOKEN_DIR / f"{stem}.json"
 
 
 def die(msg, code=1):
@@ -269,6 +290,22 @@ def classify_slot(name, cfg, stale_days):
         pdir = str(REPO_ROOT / 'data' / 'uc_profiles' / profile) if profile else None
         state, detail = _stat_state(pdir, stale_days, mtime_matters=True)
         return state, kind, detail, pdir or '(no profile declared)'
+    if kind == _MCP_KIND:
+        # THE STAT IS THE DERIVED FILE ONLY. The pre-derivation
+        # mcp_botify_token.json is invisible here BY RULE: the offline board
+        # never opens a token's bytes, and scoping the legacy file to its
+        # server requires reading its recorded resource. So a legacy-only
+        # credential reads empty on THIS board while `check` -- which shells
+        # to mcp.py and its scoped resolver -- can still read GREEN. When the
+        # two lanes disagree, the live one is truthful; warming this slot
+        # runs the browser mint, which writes the derived path and ends the
+        # split for good.
+        resource = (cfg.get('defaults') or {}).get('resource')
+        if not resource:
+            return 'no-path', kind, 'slot declares no defaults.resource', '—'
+        tok = str(token_path_for(resource))
+        state, detail = _stat_state(tok, stale_days, mtime_matters=True)
+        return state, kind, detail, tok
     if kind in _ENV_KINDS:
         state, detail = _env_state(cfg)
         return state, kind, detail, 'env / .env (out of git)'
@@ -286,6 +323,9 @@ def _next_hint(name, state, kind):
     if kind == _BROWSER_KIND:
         return (f"python scripts/connectors/wallet.py warm {name}   "
                 f"(confirms, then opens this slot's own site + profile)")
+    if kind == _MCP_KIND:
+        return (f"python scripts/connectors/wallet.py warm {name}   "
+                f"(headless refresh when the derived file can; else browser mint)")
     if kind in _ENV_KINDS:
         return (f"python scripts/connectors/wallet.py warm {name}   "
                 f"(prompts for each missing var, saves to {DOTENV_PATH})")
@@ -605,6 +645,60 @@ def _warm_service(name, cfg):
             f"Console → IAM → Service Accounts) to {key or '(declare paths.service_account)'}")
 
 
+def _warm_mcp(name, cfg, assume_yes):
+    """mcp_oauth: delegate to mcp_warm.py, which owns the OAuth 2.1 dance.
+
+    THE DECISION FILE IS THE DERIVED FILE -- the same file the offline
+    scoreboard stats -- so this verb's reader and that board's reader can
+    never drift onto different files (the VAULT_ENV conviction, applied to
+    tokens). Derived file present with a refresh_token: headless refresh
+    (the Cinderella rung). Anything else -- absent, unreadable, or
+    refresh-less -- runs the browser PKCE mint, which WRITES the derived
+    path. A credential living only in the pre-derivation
+    mcp_botify_token.json therefore migrates on its first warm here, and
+    the offline board's under-reporting of it ends. Reading the token
+    file's bytes is legal in THIS verb (warm already handles secret
+    values); the offline scoreboard still never does.
+    """
+    resource = (cfg.get('defaults') or {}).get('resource')
+    if not resource:
+        return 'skipped (no defaults.resource declared)'
+    script = Path(__file__).resolve().parent / 'mcp_warm.py'
+    if not script.exists():
+        return f"mcp_warm.py not found at {script}"
+    tok = token_path_for(resource)
+    can_refresh = False
+    if tok.is_file():
+        try:
+            record = json.loads(tok.read_text(encoding='utf-8'))
+            can_refresh = isinstance(record, dict) and bool(record.get('refresh_token'))
+        except (OSError, ValueError):
+            can_refresh = False
+    failed = None
+    if can_refresh:
+        print(f"  → {Path(sys.executable).name} {script.name} {resource} --refresh   (headless)")
+        try:
+            rc = subprocess.call([sys.executable, str(script), resource, '--refresh'])
+        except OSError as e:
+            return f"could not run mcp_warm.py: {e}"
+        if rc == 0:
+            return 'refreshed headlessly'
+        failed = rc
+    if failed is not None:
+        question = f"  refresh exited {failed} -- run the browser mint for {resource} instead?"
+    else:
+        question = f"  mint OAuth for {resource} (opens a browser)?"
+    if not _confirm(question, assume_yes):
+        return 'skipped' if failed is None else f"refresh exited {failed}; browser mint declined"
+    print(f"  → {Path(sys.executable).name} {script.name} {resource}")
+    print(f"    Authorize in the browser; the token lands at {tok}")
+    try:
+        rc = subprocess.call([sys.executable, str(script), resource])
+    except OSError as e:
+        return f"could not run mcp_warm.py: {e}"
+    return 'browser mint finished' if rc == 0 else f"mcp_warm exited {rc}"
+
+
 def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
     """Walk every not-filled slot (or just one) and actually warm it."""
     wallet = load_wallet()
@@ -664,6 +758,8 @@ def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
             note = _warm_env(n, c, assume_yes, force=bool(slot_name))
         elif kind == _BROWSER_KIND:
             note = _warm_browser(n, c, assume_yes)
+        elif kind == _MCP_KIND:
+            note = _warm_mcp(n, c, assume_yes)
         elif kind == _SERVICE_KIND:
             note = _warm_service(n, c)
         else:
@@ -860,6 +956,69 @@ def check_browser_slot(name, cfg):
                f"profile '{profile}' ({len(live)} live total{when})")
 
 
+def check_mcp_slot(name, cfg):
+    """SELECT 1 for an mcp_oauth slot: refresh, then check, both delegated.
+
+    DISPATCH BY KIND, mirroring check_browser_slot: an mcp_oauth slot is a
+    remote server plus a derived token file, not a connector module, so the
+    filename lookup would demand a botify_mcp.py that should never exist.
+
+    THE CHAIN IS THE CHECK (the combination-lock rule, banked 2026-08-30):
+    this credential class mints access tokens shorter-lived than the human
+    loop -- 300 seconds, witnessed -- so a bare `mcp.py --check` would read
+    RED gate2 (401) for a perfectly healthy credential almost every time.
+    The durable credential is the REFRESH token, and the Google oauth slots
+    already green exactly this way: their connectors' get_service() refreshes
+    transparently inside their own --check. So: best-effort
+    `mcp_warm.py <resource> --refresh` first (headless by design), then
+    `mcp.py <resource> --check`. The check's exit code is the whole verdict,
+    so a still-live token or an env-lane token can green even when the
+    refresh half fails, and a dead refresh surfaces as the check's own RED.
+
+    stderr caveat: mcp.py's atexit FDR-receipt line lands AFTER the RED gate
+    line, so the diagnostic is the last line STARTING with 'mcp RED', never
+    blindly stderr's tail.
+    """
+    resource = (cfg.get('defaults') or {}).get('resource')
+    if not resource:
+        return 1, (f"{name} RED gate1: slot declares no defaults.resource, "
+                   "so there is no server to check")
+    here = Path(__file__).resolve().parent
+    check_script = here / 'mcp.py'
+    warm_script = here / 'mcp_warm.py'
+    if not check_script.exists():
+        return 2, f"no client module ({check_script.name})"
+    env = _check_env()
+    if warm_script.exists():
+        try:
+            subprocess.run(
+                [sys.executable, str(warm_script), resource, '--refresh'],
+                stdin=subprocess.DEVNULL, capture_output=True, text=True,
+                timeout=CHECK_TIMEOUT, env=env,
+            )
+        except (subprocess.TimeoutExpired, OSError):
+            pass  # the check below is the verdict; a dead refresh reds there
+    try:
+        proc = subprocess.run(
+            [sys.executable, str(check_script), resource, '--check'],
+            stdin=subprocess.DEVNULL, capture_output=True, text=True,
+            timeout=CHECK_TIMEOUT, env=env,
+        )
+    except subprocess.TimeoutExpired:
+        return 1, f"{name} RED gate2: no answer within {CHECK_TIMEOUT}s"
+    except OSError as e:
+        return 2, f"could not run {check_script.name}: {e}"
+    if proc.returncode == 0:
+        out = [ln for ln in (proc.stdout or '').strip().splitlines()
+               if ln.strip() and not ln.lstrip().startswith('#')]
+        return 0, out[-1] if out else f"{name} GREEN"
+    gates = [ln.strip() for ln in (proc.stderr or '').strip().splitlines()
+             if ln.strip().startswith('mcp RED')]
+    if gates:
+        return 1, gates[-1]
+    return 1, f"{name} RED (exit {proc.returncode}, no gate line)"
+
+
 def check_slot(name, cfg=None):
     """Check one slot. Returns (code, line).
 
@@ -885,6 +1044,8 @@ def check_slot(name, cfg=None):
     """
     if (cfg or {}).get('auth') == _BROWSER_KIND:
         return check_browser_slot(name, cfg)
+    if (cfg or {}).get('auth') == _MCP_KIND:
+        return check_mcp_slot(name, cfg)
     script = Path(__file__).resolve().parent / f"{name}.py"
     if not script.exists():
         return 2, f"no connector module ({script.name})"
