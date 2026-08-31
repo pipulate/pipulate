@@ -130,7 +130,7 @@ def _render(name, seconds) -> None:
     # signature change.
     lines = [
         "[1]  Start JupyterLab   plus the app server and browser tabs",
-        f"[2]  Just the shell   nothing starts -- {_count_word(len(DOOR_TWO_WORDS))} words wait at the prompt",
+        f"[2]  Just the shell     nothing starts -- {_count_word(len(DOOR_TWO_WORDS))} words wait at the prompt",
     ]
     if seconds is None:
         subtitle = "waiting for your choice -- Ctrl+C also drops to the shell"
