@@ -20,10 +20,18 @@ a raw searchanalytics query body (FETCH mode; needs --site or PIPULATE_GSC_SITE)
 any other bare token is a property coordinate (LIST top queries); no argument
 at all lists properties.
 
-Auth (service_account_file — headless by construction, no browser dance ever):
-  PIPULATE_GSC_KEY env var
-    -> ~/.config/pipulate/connectors.json gsc.paths.service_account
-      -> clean failure naming the missing variable.
+Auth (oauth_token_file — the same user-OAuth walk as gmail.py and sheets.py):
+  token:       PIPULATE_GSC_TOKEN env var
+    -> ~/.config/pipulate/connectors.json gsc.paths.token
+      -> ~/.config/pipulate/gsc_token.json
+  credentials: PIPULATE_GSC_CREDENTIALS env var
+    -> ~/.config/pipulate/connectors.json gsc.paths.credentials
+      -> ~/.config/pipulate/credentials.json  (the shared Desktop-app client)
+  A valid token refreshes headlessly, and the token file is REWRITTEN on
+  every refresh so the wallet's offline mtime heuristic tracks "last
+  refreshed". A missing or dead token browser-mints ONLY on a real TTY —
+  `python scripts/connectors/wallet.py login gsc` is the one-time mint,
+  exactly as for gmail and sheets. No service account anywhere.
 
 Output is capped by -n/--max (default 25) per THE PROBE ECONOMY RULE: stdout is
 destined for compiled context payloads, so the bound is a feature.
@@ -40,7 +48,9 @@ import argparse
 from pathlib import Path
 from datetime import date, timedelta
 
-from google.oauth2 import service_account
+from google.oauth2.credentials import Credentials
+from google.auth.transport.requests import Request
+from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
@@ -56,44 +66,123 @@ def die(msg, code=1):
     sys.exit(code)
 
 
-def resolve_key_path():
-    """PIPULATE_GSC_KEY env -> wallet gsc.paths.service_account -> None."""
-    env = os.environ.get('PIPULATE_GSC_KEY')
-    if env:
-        return Path(env).expanduser()
+def _wallet_path(key):
+    """gsc.paths.<key> from the wallet, or None. Names and paths only."""
     if WALLET_FILE.exists():
         try:
             wallet = json.loads(WALLET_FILE.read_text(encoding='utf-8'))
-            p = (wallet.get('gsc') or {}).get('paths', {}).get('service_account')
+            p = (wallet.get('gsc') or {}).get('paths', {}).get(key)
             if p:
                 return Path(p).expanduser()
         except (json.JSONDecodeError, OSError):
             pass
-    # Wallet-path default (parity with scripts/gsc/gsc_top_movers.py): a
-    # corrupted or clobbered connectors.json must not strand a key sitting
-    # at the canonical wallet path. get_service()'s exists() check still
-    # fails closed if the file is genuinely absent.
-    return Path.home() / '.config' / 'pipulate' / 'service-account-key.json'
+    return None
+
+
+def resolve_token_path():
+    """PIPULATE_GSC_TOKEN env -> wallet gsc.paths.token -> canonical default."""
+    env = os.environ.get('PIPULATE_GSC_TOKEN')
+    if env:
+        return Path(env).expanduser()
+    return _wallet_path('token') or Path.home() / '.config' / 'pipulate' / 'gsc_token.json'
+
+
+def resolve_credentials_path():
+    """PIPULATE_GSC_CREDENTIALS env -> wallet gsc.paths.credentials -> the
+    shared Desktop-app OAuth client JSON the other Google connectors mint from."""
+    env = os.environ.get('PIPULATE_GSC_CREDENTIALS')
+    if env:
+        return Path(env).expanduser()
+    return _wallet_path('credentials') or Path.home() / '.config' / 'pipulate' / 'credentials.json'
+
+
+def _write_token(token_path, creds):
+    """Rewrite the token file on every mint AND refresh, 0600. The rewrite is
+    what makes the wallet's offline mtime heuristic track 'last refreshed'."""
+    token_path.parent.mkdir(parents=True, exist_ok=True)
+    token_path.write_text(creds.to_json(), encoding='utf-8')
+    os.chmod(token_path, 0o600)
+
+
+def _load_creds():
+    """(creds_or_None, reason). Headless by construction: refreshes when it
+    can, rewrites the token file when it does, and NEVER opens a browser."""
+    token_path = resolve_token_path()
+    if not token_path.exists():
+        return None, f"no OAuth token at {token_path}"
+    try:
+        creds = Credentials.from_authorized_user_file(str(token_path), SCOPES)
+    except (ValueError, OSError) as e:
+        return None, f"token unreadable ({e})"
+    if creds.valid:
+        return creds, 'live'
+    if creds.expired and creds.refresh_token:
+        try:
+            creds.refresh(Request())
+        except Exception as e:
+            return None, f"refresh rejected ({e})"
+        _write_token(token_path, creds)
+        return creds, 'refreshed'
+    return None, 'token expired and holds no refresh_token'
 
 
 def get_service():
-    key_path = resolve_key_path()
-    if not key_path:
-        die(
-            "No GSC key path configured.\n"
-            "Set PIPULATE_GSC_KEY=~/.config/pipulate/service-account-key.json\n"
-            "or add gsc.paths.service_account to ~/.config/pipulate/connectors.json."
-        )
-    if not key_path.exists():
-        die(
-            f"GSC service-account key not found at: {key_path}\n"
-            "Download the JSON key for the service account from Google Cloud Console,\n"
-            "save it at that path, and chmod 600 it. Then add the service account's\n"
-            "email as a user on each Search Console property it should read."
-        )
-    creds = service_account.Credentials.from_service_account_file(
-        str(key_path), scopes=SCOPES)
+    """Refresh headlessly, or browser-mint on a real TTY — the same walk
+    wallet.py's login verb reuses for gmail and sheets. A `!` chisel-strike
+    can never block here: no TTY means a clean die(), never a browser."""
+    creds, reason = _load_creds()
+    if creds is None:
+        creds_path = resolve_credentials_path()
+        if not creds_path.exists():
+            die(
+                f"GSC OAuth needs the Desktop-app client JSON at: {creds_path}\n"
+                "It is the same credentials.json the gmail/sheets connectors mint\n"
+                "from. Download it once from the Google Cloud Console, then run:\n"
+                "    python scripts/connectors/wallet.py login gsc"
+            )
+        if not sys.stdin.isatty():
+            die(
+                f"GSC token not usable ({reason}) and no TTY to browser-mint.\n"
+                "In a real terminal, run:\n"
+                "    python scripts/connectors/wallet.py login gsc"
+            )
+        flow = InstalledAppFlow.from_client_secrets_file(str(creds_path), SCOPES)
+        creds = flow.run_local_server(port=0)
+        _write_token(resolve_token_path(), creds)
     return build('webmasters', 'v3', credentials=creds)
+
+
+def check():
+    """SELECT 1 for the `warm` board: exit 0 GREEN, exit 1 RED (gate-named).
+
+    Modeled on botify.py's two-gate probe. gate1 is "credential present and
+    loadable" — headless refresh allowed, because the durable credential
+    scored is the refresh token, exactly as for every other oauth slot.
+    gate2 is "the live API accepted it": one bounded sites().list() call.
+    15s budget via socket default timeout, stdin-safe: this path NEVER
+    browser-mints, so it can never hang the board on a prompt.
+    """
+    import socket
+    creds, reason = _load_creds()
+    if creds is None:
+        sys.stderr.write(
+            f"gsc RED gate1: {reason} -- run "
+            "`python scripts/connectors/wallet.py login gsc`\n")
+        return 1
+    socket.setdefaulttimeout(15)
+    try:
+        service = build('webmasters', 'v3', credentials=creds)
+        resp = service.sites().list().execute()
+    except HttpError as e:
+        sys.stderr.write(f"gsc RED gate2: API rejected the call: {e}\n")
+        return 1
+    except Exception as e:
+        sys.stderr.write(f"gsc RED gate2: transport failure: {e}\n")
+        return 1
+    entries = resp.get('siteEntry', [])
+    noun = 'property' if len(entries) == 1 else 'properties'
+    print(f"gsc GREEN {len(entries)} {noun} visible ({reason})")
+    return 0
 
 
 # ----------------------------------------------------------------------------
@@ -106,8 +195,8 @@ def list_properties(service, max_items):
     print(f"# GSC properties visible to this service account "
           f"({len(entries)} total, showing up to {max_items})\n")
     if not entries:
-        print("(no properties — has the service account's email been added as a "
-              "user in Search Console?)")
+        print("(no properties — does this Google account have access to any "
+              "Search Console properties?)")
         return
     for e in sorted(entries, key=lambda x: x.get('siteUrl', ''))[:max_items]:
         print(f"{e.get('siteUrl', '?')}  [{e.get('permissionLevel', '?')}]")
@@ -183,7 +272,14 @@ def main():
                              '(default: PIPULATE_GSC_SITE env).')
     parser.add_argument('-n', '--max', type=int, default=25,
                         help='Output cap per THE PROBE ECONOMY RULE (default: 25).')
+    parser.add_argument('--check', action='store_true',
+                        help='SELECT 1 health check: one GREEN line on stdout and '
+                             'exit 0, or one gate-named RED line on stderr and '
+                             'exit 1. Never interactive.')
     args = parser.parse_args()
+
+    if args.check:
+        sys.exit(check())
 
     service = get_service()
     try:
