@@ -538,12 +538,19 @@ def main():
         sys.exit(1)
 
     print("\n🧭 Remote Match Contract:")
+    settled = 0
     for md_file, target_title, stamped_id in local_contracts:
         meta = inventory.get(target_title)
         if meta:
             if stamped_id == meta['id']:
-                stamp_note = "stamped"
-            elif stamped_id:
+                # THE ORDINARY CASE, AND THE ONLY ONE THAT IS SILENT: the post
+                # already points at the doc this run would point it at. Nothing
+                # downstream will touch it. Counted, not narrated.
+                settled += 1
+                if verbose:
+                    print(f"   MATCH: {md_file.name} -> [ID: {meta['id']}] {target_title} [stamped]")
+                continue
+            if stamped_id:
                 stamp_note = "STAMP MISMATCH — frontmatter points at a different doc; --yes heals to inventory"
             else:
                 stamp_note = "unstamped — --yes heals without re-upload if fresh"
@@ -551,6 +558,8 @@ def main():
         else:
             stale = " [stamped but doc missing from folder — --yes recreates and restamps]" if stamped_id else ""
             print(f"   MISS:  {md_file.name} -> {target_title}{stale}")
+    if settled and not verbose:
+        print(f"   ... plus {settled} already-stamped MATCH(es) with nothing to do (-v to list).")
 
     if not args.yes:
         print("\n🅳🆁🆈 DRY-RUN — no mutation. Review MATCH/MISS lines, then re-run with --yes.")
