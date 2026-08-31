@@ -375,6 +375,44 @@ Entries are alphabetical, numbers spelled as spoken.
   a phrase a line-oriented tool cannot see; this one is about a phrase a
   case-sensitive tool cannot see. Both are the same disease — asking a
   question only one answer could ever survive.
+- **The Compiled Trail** — *sealed is machine cargo, authored is not.* Banked
+  2026-08-08, source-witnessed. A trail has TWO legitimate forms, and
+  conflating them is the whole confusion. The SEALED form — trail.yaml inside
+  walk.zip — is MACHINE CARGO: hashed, content-addressed, parsed by json.loads
+  under a duplicate-key hook. It stays the JSON subset of YAML 1.2 for three
+  reasons read off raw source rather than taste. (1) STDLIB: there is no YAML
+  parser in the Python standard library, and walk_cartridge.py's docstring
+  makes single-file fetchability a STATED constraint — it DUPLICATES
+  foo_cartridge's primitives rather than import them, so a PyYAML dependency
+  would spend the exact property that duplication was paid for. (2)
+  CANONICALIZATION: the sealer hashes trail.yaml byte-identical AND recomputes
+  the consent surface from those same bytes, so every place YAML 1.2 admits
+  two spellings of one document is a place the surface a human CONSENTS to can
+  drift from the bytes a manifest ATTESTS to. (3) DUPLICATE KEYS fail closed
+  here; PyYAML does not error on them by default. THE OPERATOR'S INSTINCT IS
+  RIGHT ANYWAY, and about a real defect: the JSON subset crams PROSE into a
+  DATA field. `guidance` is a paragraph Piper reads ALOUD, escaped into one
+  unbroken JSON string — the frontmatter sandwich INVERTED, data wrapping
+  prose instead of heading it. RULING: the sealed form is COMPILED, never
+  authored. The AUTHORING surface is a DIFFERENT artifact and may be Markdown
+  — machine keys as scalars, guidance as the BODY — which is the identical
+  split article.txt -> articleizer.py -> _posts already runs in the publish
+  lane. AND THE DEPENDENCY IS AVOIDABLE, which is the line worth banking: a
+  head restricted to one scalar `key: value` per line parses in ten lines of
+  stdlib. Call it the SCALAR SUBSET — no anchors, no aliases, no block
+  scalars, no nested maps, no lists — and that parser stays ten lines forever.
+  IT ALSO FORCES THE RIGHT SHAPE: because the head cannot nest, a stop cannot
+  be a list ITEM, it must be a SECTION — one heading per stop, closer to an
+  org-mode drawer than to a Jekyll head, because frontmatter is ONE head for
+  ONE document and a trail needs N heads for N stops. ETYMOLOGY, so the corpus
+  owns the joke: YAML shipped in 2001 as "Yet Another Markup Language" and was
+  renamed to the recursive "YAML Ain't Markup Language" precisely to say out
+  loud that it is DATA, not document markup — so an operator specifying his
+  ideal format as "exactly what you don't want is yet another markup language"
+  has recited its retired name back at it. DISCHARGED 2026-08-09: the OWES
+  named an importer and a compiler, and scripts/bookmark_import.py plus
+  scripts/walk_compile.py landed both, with a filled authoring surface
+  compiling to a trail walk.py loaded unmodified.
 - **The Contiguity Corollary** — *the transport strips blank lines a SEARCH
   block cannot see.* Banked 2026-07-31, receipt-witnessed. The compile
   transport STRIPS TRULY-EMPTY LINES from Codebase bodies while PRESERVING
