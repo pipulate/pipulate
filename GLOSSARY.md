@@ -713,6 +713,35 @@ Entries are alphabetical, numbers spelled as spoken.
   under-estimated its own emitted prose by 30% in one file and 60% in the
   other, so byte predictions are made by counting the REPLACE block after it
   is written, never before.
+- **The Label That Promises a Sibling** — *cross-command capability claim.* Banked
+  2026-08-09, transcript-witnessed. A message printed by ONE command asserting
+  what a DIFFERENT command will do is a capability claim about code the
+  printer does not control. It fails THE MECHANICAL TEST from the printer's
+  side while reading like documentation, which is why nobody audits it.
+  CONVICTION: after a whole-file-write car created an untracked
+  scripts/bookmark_import.py, `d` printed "UNTRACKED (invisible to the diff
+  above; m will stage these)" and `m` did NOT stage them -- it died on an
+  empty diff with "ai.py returned empty message", and the operator had to
+  `git add` by hand. The operator READ that label, trusted it, and ran the
+  command it named. Cost one wasted invocation and one manual step, which is
+  cheap; the shape is what is expensive. SECOND CONVICTION OF ONE DEFECT, and
+  the direction is the finding: the TODO elsewhere in this list already names
+  the missing `git add -A` in m(). Someone then fixed the VISIBILITY half in
+  d() and wrote a sentence promising the STAGING half, which nobody wrote.
+  That is PROTECTION-LAG INVERTED -- not a protection landing ahead of its
+  documentation, but DOCUMENTATION LANDING AHEAD OF ITS PROTECTION, which is
+  the direction that actually misleads, because the reader acts on it.
+  DISCHARGED 2026-08-21, SOURCE-WITNESSED: flake.nix m() opens with
+  `git add -A`, carrying its own comment dating that fix to 2026-07-31 --
+  ELEVEN DAYS BEFORE this earmark was banked. So the 2026-08-09 conviction was
+  almost certainly THE IGNITION RULE wearing a bug's costume: a shell entered
+  before the flake edit keeps the pre-fix m() forever, because a shellHook is
+  read once at entry and never re-read. d()'s label is TRUE now and m()
+  delivers what it promises. PROTECTION-LAG POLARITY in its expensive
+  direction, eleven days wide: the ledger described a defect the code had
+  already closed, and only a compile carrying flake.nix could see it. STANDING
+  CONSEQUENCE: when a conviction concerns a SHELL FUNCTION, record which shell
+  it was taken in, or the receipt is unlabeled evidence.
 - **The MCP Receipt Rule** — *a tool call is a receipt or it is nothing.*
   Banked 2026-07-29; mechanism witnessed 2026-07-25 by the fault harness,
   vendor-witnessed 2026-07-29 and 2026-08-06. A model-mediated tool call

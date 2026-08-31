@@ -2367,36 +2367,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   question. Lint probes name .py files only.
 
 # § THE DISPLACEMENT RECEIPT (banked 2026-08-08) -- when an rg -n probe straddles an insertion, read the DISPLACEMENT of the unchanged neighbours, not the inserted entry's extent: predict the displacement, include one anchor ABOVE the edit whose predicted displacement is zero, and remember that an extent reading is consistent with a file rewritten wholesale and a displacement reading is not. The rg -n form of DELTA-NOT-ABSOLUTE.
-# - EARMARK: THE LABEL THAT PROMISES A SIBLING (banked 2026-08-09,
-#   transcript-witnessed): a message printed by ONE command asserting what a
-#   DIFFERENT command will do is a capability claim about code the printer
-#   does not control. It fails THE MECHANICAL TEST from the printer's side
-#   while reading like documentation, which is why nobody audits it.
-#   CONVICTION: after a whole-file-write car created an untracked
-#   scripts/bookmark_import.py, `d` printed "UNTRACKED (invisible to the diff
-#   above; m will stage these)" and `m` did NOT stage them -- it died on an
-#   empty diff with "ai.py returned empty message", and the operator had to
-#   `git add` by hand. The operator READ that label, trusted it, and ran the
-#   command it named. Cost one wasted invocation and one manual step, which
-#   is cheap; the shape is what is expensive.
-#   SECOND CONVICTION OF ONE DEFECT, and the direction is the finding: the
-#   TODO elsewhere in this list already names the missing `git add -A` in
-#   m(). Someone then fixed the VISIBILITY half in d() and wrote a sentence
-#   promising the STAGING half, which nobody wrote. That is PROTECTION-LAG
-#   INVERTED -- not a protection landing ahead of its documentation, but
-#   DOCUMENTATION LANDING AHEAD OF ITS PROTECTION, which is the direction
-#   that actually misleads, because the reader acts on it.
-#   DISCHARGED 2026-08-21, SOURCE-WITNESSED: flake.nix m() opens with
-#   `git add -A`, carrying its own comment dating that fix to 2026-07-31 --
-#   ELEVEN DAYS BEFORE this earmark was banked. So the 2026-08-09 conviction
-#   was almost certainly THE IGNITION RULE wearing a bug's costume: a shell
-#   entered before the flake edit keeps the pre-fix m() forever, because a
-#   shellHook is read once at entry and never re-read. d()'s label is TRUE
-#   now and m() delivers what it promises. PROTECTION-LAG POLARITY in its
-#   expensive direction, eleven days wide: the ledger described a defect the
-#   code had already closed, and only a compile carrying flake.nix could see
-#   it. STANDING CONSEQUENCE: when a conviction concerns a SHELL FUNCTION,
-#   record which shell it was taken in, or the receipt is unlabeled evidence.
+# § THE LABEL THAT PROMISES A SIBLING (banked 2026-08-09, discharged 2026-08-21) -- a message printed by one command about what a different command will do is a capability claim the printer does not control; mechanically check the sibling, and when it is a shell function record the shell generation, because a pre-fix shell can make code already fixed look broken.
 # § THE FIRST-ERROR FLOOR (banked 2026-08-09) -- a parser reports the first error it cannot get past, so a refusal's line number is a FLOOR on the defect count and never a ceiling; a SEARCH/REPLACE refusal bounds its own region and is diagnosable, a refused WHOLE-FILE write does not, so delete and re-emit rather than hand-repair the one line the parser happened to name. Third refusal class after no-blocks-found and search-block-not-found.
 # § THE SILENCED CHANNEL (banked 2026-08-09) -- a probe that discards a stream paired with a caboose whose verdict reads that stream is a verdict that can never be reached, and an exit code four worlds share is not a reading; a program graded by a MACHINE prints its outcome as a token on stdout, and when it also handles client data the outcome goes to stdout and every identifying string to stderr, so 2>/dev/null is compile-lane-safe by construction. Partitions with THE EXIT-CODE PROTOCOL RULE: decisions speak in exit codes, measurements in tokens.
 # § THE PLACEHOLDER THAT CLAIMS TO RUN (banked 2026-08-08, discharged 2026-08-30) -- validation passing is not execution passing: walk.py checks that a connector file EXISTS and that {harvested} appears once, and nothing anywhere checks that the script accepts the argv it will be handed, so a consent surface can print "names as runnable" about a command that exits 2. Cure a false label with a TRUE sentence, never a vaguer one -- scripts/connectors/noop.py exists IN ORDER to be a no-op and public_walk.yaml names it at all three stops. And never grade a refusal on an exit code that two worlds share.
