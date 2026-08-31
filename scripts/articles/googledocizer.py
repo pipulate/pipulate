@@ -581,6 +581,17 @@ def main():
     if settled and not verbose:
         print(f"   ... plus {settled} already-stamped MATCH(es) with nothing to do (-v to list).")
 
+    # WHAT THE DRY RUN CANNOT TELL YOU (named 2026-08-31, because the probe
+    # that measured this file's new silence could not have caught it). The
+    # freshness gate, the ledger shortcut and the lazy render ALL live below
+    # this return. A dry run therefore exercises the Local Contract and Remote
+    # Match passes and NOTHING ELSE -- it prints an identical stream whether
+    # the freshness gate is perfect or completely broken.
+    # CONSEQUENCE FOR PROBES: `googledocizer.py -t 1 | wc -l` measures the
+    # silence of the two passes above, and is a fine straddle for THEM. It is
+    # not, and cannot be made into, evidence about the upsert loop. The only
+    # honest witness for that loop is an armed run's 🏁 counters -- which is
+    # why Fresh was split out of Skipped rather than left folded in.
     if not args.yes:
         print("\n🅳🆁🆈 DRY-RUN — no mutation. Review MATCH/MISS lines, then re-run with --yes.")
         return
