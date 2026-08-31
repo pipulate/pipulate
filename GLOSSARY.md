@@ -616,6 +616,29 @@ Entries are alphabetical, numbers spelled as spoken.
   witness never reached, this one is a witness reached and thrown away. The
   mechanism landed the same day as the is_telemetry exemption in
   add_auto_context, which is why the key carries only the design rule.
+- **The First-Error Floor** — *a refusal's line number is a floor, never a
+  ceiling.* Banked 2026-08-09, airlock-witnessed. A parser reports the FIRST
+  error it cannot get past, never the LAST one in the file, so the line number
+  bounds the defect count from below only. CONVICTION: a whole-file-write car
+  carrying ~250 lines of a new scripts/bookmark_import.py was refused by
+  apply.py's AST airlock with "unmatched ')' (line 247)". The operator opened
+  the patch, looked at it, and declined to hand-repair — which is the CORRECT
+  move, and is why this banks as a rule instead of as a scar. THE DISTINCTION
+  THAT MATTERS is SURGICAL versus WHOLE-FILE. A SEARCH/REPLACE block bounds
+  its own blast radius: the exact-match interlock proves the region, so one
+  named error IS the error. A whole-file write has no such bound — fixing line
+  247 by hand says nothing about line 260, because CPython stopped at 247 and
+  never looked. DELETE AND RE-EMIT, always, for a refused whole-file write.
+  THIRD REFUSAL CLASS, completing the ladder THE HAND-REPAIR CLAUSE opened:
+  (1) no-blocks-found, the markers never parsed, never hand-repair; (2)
+  search-block-not-found, the interlock READ the body and rejected it,
+  diagnosable; (3) this one, where the body parsed as a patch, was extracted,
+  and a LANGUAGE parser refused it with a line number — most informative of
+  the three and still not a hand-repair target. WHAT THE AIRLOCK ACTUALLY
+  CAUGHT: an out.append(...) immediately overwritten by an out[-1] = ...
+  assignment, the stray paren riding the second — two drafts of one line
+  shipped together. Dead code beside a syntax error is the signature of an
+  emitter that changed its mind mid-file and shipped both minds.
 - **The History-Expansion Probe** — *a bang that dies only in the hand.*
   Banked 2026-08-06, lane-convicted on the first hand-run. A `!` followed by
   a WORD CHARACTER inside DOUBLE quotes is a bash HISTORY EXPANSION, and
