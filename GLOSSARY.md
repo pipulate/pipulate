@@ -546,6 +546,30 @@ Entries are alphabetical, numbers spelled as spoken.
   on every rg probe whose target might live in a dotfile. Fifth sibling of
   SINGLE-LINE / CASE-BLIND / UNANCHORED / CONTIGUITY — a phrase a
   default-configured tool cannot see.
+- **The Eliminator Needs a Generator** — *bisection cannot fail to eliminate
+  and can silently fail to converge.* Banked 2026-08-06, thrice-convicted in
+  one ride. Binary search terminates only if the target is IN THE ARRAY.
+  Popper grades hypotheses you have ENUMERATED and offers no method for
+  generating one; Duhem-Quine sharpens it, convicting the BUNDLE without
+  naming the member. THREE CONVICTIONS, same ride: a grammar banked as
+  "leading label" falsified by a shape the enumeration never contained; a
+  caboose pre-committed to an exhaustive three-way ruling on a 401 while the
+  world produced a FOURTH cause, the clock, that no listed cause could see;
+  and a caboose pre-committed to TWO exchanges with non-null session ids while
+  the recorder produced THREE with null ones. Every probe discriminated
+  correctly every time — the ENUMERATIONS were the defect. EARLIER AND WORSE:
+  five payloads of a correct alarm firing with the boundary never narrowing an
+  inch, because "read the artifact the pipeline already writes" was not in the
+  candidate list while that artifact sat on disk the whole time. STANDING
+  CONSEQUENCE: when probes keep discriminating and the boundary does not move,
+  the fault is NOT the probe — STOP PROBING AND GENERATE. Enumerate every
+  artifact the pipeline already writes; the cheapest midpoint is almost always
+  a byproduct nobody thought to open. And when pre-committing a ruling, ALWAYS
+  append the branch that says "none of the above, and that is the finding".
+  THE THREE BEATS, named so the middle one stops wearing the whole name:
+  GENERATE (30-and-3, AXIS-FORCING, the rising sea) -> ELIMINATE (bisection,
+  the straddle) -> WITNESS (receipts). This repo has always had all three and
+  had been calling the middle one "science" as though it were the method.
 - **The Epitaph Counter** — *the patch's own comment is a hit.* Banked
   2026-08-28, self-convicted three times in two turns. A REMOVAL probe anchored
   on the removed STRING cannot read zero when the patch documents the removal
