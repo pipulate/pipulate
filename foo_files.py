@@ -58,6 +58,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # Honeybot telemetry fetched 2026-08-30T21:30Z
 # --- END STATS ---
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
+# 2026-08-30 compile KEY/VALUE strike 4: apply.py's empty-REPLACE miss now routes to not-found (count of '' was len+1); sigil keys 15 -> 18; RECEIPTS 12 -> 18 with five MCP lines faded; MAPPER LANE v1 and CHAIN THE COMBINATION LOCK deleted; the 204-line MCP cluster still stood because the range-gate printed 1025 and 1228 (its GO shape) while the close's prose held 1 and 18, and the operator held rather than guessed; foo_files.py 293,807 -> 297,413 B (+936 tok); GLOSSARY.md 48,746 -> 59,602 B (+2,781 tok), +10,856 B against +11,950 predicted, 9% over; wc -l 3503 exact; session=yes still INFERRED, the literal-header rg reached only the constant and a comment.
 # 2026-08-30 compile KEY/VALUE strike 3: sigil keys 12 -> 15; EARMARK 67 -> 64; ten tombstones faded, nine deleted, MAPPER LANE v1 refused on exact-match (an em dash the SEARCH spelled as two hyphens); the empty-REPLACE deletion idiom WITNESSED seven times, and its exact-match refusal prints "replacement is ambiguous (found N times)" with N the file's character count plus one; foo_files.py 296,745 -> 293,807 B (-710 tok); GLOSSARY.md 45,234 -> 48,746 B (+934 tok); wc -l 3494 exact; counting both sides landed every prediction within the refused block's own size.
 # 2026-08-30 compile KEY/VALUE strike 2: sigil keys 4 -> 12; EARMARK 74 -> 67; kata-name duplicate cut by gated sed (gate read 1, close read 1); RECEIPTS block born; foo_files.py 301,203 -> 296,745 B (-1,011 tok); GLOSSARY.md 36,160 -> 45,234 B (+2,316 tok); wc -l -2 exact; glossary bytes in band, router shrink over-predicted 23% because removed text was estimated rather than counted. Operator ruling: a gate rides where it fires, in execution order.
 # 2026-08-30 compile KEY/VALUE strike 1: sigil keys 0 -> 4 (contract, PROBE ECONOMY, PROBE ECHO, DOTFILE-BLIND); foo_files.py 301,633 -> 301,203 B (-95 tok); GLOSSARY.md 30,594 -> 36,160 B (+1,429 tok); wc -l -7 exact; author's byte estimates ran 30-60% short.
@@ -65,6 +66,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # 2026-08-29 compile MCP SERVER TWO GREEN from a ! line: protocol=2025-06-18 session=yes tools=56 auth=BOTIFY_API_TOKEN scheme=Token, a static pre-shared header with no clock to outrun; falsified the lane law and banked THE CREDENTIAL-LIFE RULE. Whether session=yes discharges the Mcp-Session-Id debt is INFERRED from the 2026-08-06 pairing of session=no with sent=null ret=null; mcp.py's session boolean is owed a source read.
 # 2026-08-25 both lanes NIX AIRLOCK: apply.py's nix-instantiate gate observed PASSING (every flake.nix car) and REFUSING (a dollar-brace comment, named by file, line, column); REFUSAL-ONLY WITNESS discharged; the refused car was re-emitted, not hand-repaired.
 # 2026-08-21 both lanes RUFF NATIVE: pkgs.ruff in commonPackages, .venv/bin/ruff purged, ignition ndq; first genuine compile-lane Ruff exit 0; the stub-ld SUCCESS-ONLY WITNESS lie discharged in code and in fact.
+# 2026-08-06 chat RENDER COMB retired after three firings: A_bare, D_tick and E_path rewritten; B_scheme and C_nowww intact; F_notfirst and G_slash wrapped with the prefix split from its neighbour; H_prelinked byte-identical; J_wordchar intact; two unplanned controls in configuration.nix, a dot after the label rewritten and a slash intact; the scanner's lookbehind widened after it proved blind to F and G; the cartridge midpoint probe exonerated prompt_foo.py twice, then died of its own report.
 # 2026-08-06 both lanes MCP FIRST GREEN VENDOR CHECK: "2025-06-18" and the tools/* spellings OBSERVED against server one (tools/list 38 tools, 56,239 B); Mcp-Session-Id declined by that server (sent=null ret=null, session=no), so its round trip stayed harness-only; the recorder captured THREE exchanges, notifications/initialized riding as its own record (http=202); _expiry_note's alive branch witnessed at ~299s; gate6 GREEN refreshed in place (token mtime Jul 29 -> Aug 6, 751 -> 753 B); the very next compile-lane check read RED 401 because 694s elapsed on a 300s life -- a fourth cause the caboose's three-way ruling could not see.
 # 2026-08-02 operator lane CAPTURE FENCE OPEN BRANCH: _capture_checkpoint returned success under a curl-pipe as a second user, gating 11 artifacts; the near-miss CAPUTURE refused in the same ride; both branches witnessed.
 # 2026-08-01 install lane NIX PROBES earmark graduated into THE UNEXPORTED-SHIM RULE; the empty LD_LIBRARY_PATH on adhoc.txt lines is one instance of it.
@@ -2222,7 +2224,9 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # #todo #to-do
 # NO PLACEHOLDERS IN PASTE-READY LINES (convicted 2026-08-30, both lanes): <NAME> in a shell line is a redirection from a file called NAME -- "No such file or directory" -- silent in the compile lane, loud in the operator lane, dead in both. Write "$NAME" and put `export NAME=...` once on the line above; a variable runs verbatim, a placeholder needs an edit the human will not make.
 # THE ACTUATOR IS A CAR: anything that runs against a server (--check, tools/list, tools/call, --refresh) rides in PATCHES as its own numbered car, after the patches it depends on, never previewed above them. Sibling of ONE TIMELINE, NO PREVIEWS (apply.py, 2026-08-30).
+# § THE GATE SPEAKS A VERDICT (banked 2026-08-30) -- a gate the operator reads prints GO or STOP with its readings beside the word, never bare numbers the operator must match against prose in another paragraph; the MCP range-gate printed 1025 and 1228 (its GO shape) while the next block's prose held 1 and 18, and the operator correctly refused to guess. A gate rides where it fires and says what it found. Corollary of THE SILENCED CHANNEL: a machine-graded outcome is a token, a human-graded one is a word.
 
+# - TODO (found 2026-08-30 in a rg receipt): scripts/connectors/mcp.py:65 still calls the FDR channel PENDING a written-file receipt; the file was witnessed 2026-07-29 on the RED-401 flush. Flip the word when mcp.py rides a payload. PROTECTION-LAG POLARITY, in source.
 # EARMARK mcp.py --schema <tool>: print one tool's inputSchema from tools/list as JSON, exit 1 if unlisted. The menu shows name + 80 chars and no schema. Server one exposes tool_documentation (docs by tool id) -- try it first; server two's equivalent UNWITNESSED.
 # EARMARK server two, first tools/call: Cars E and F (2026-08-30) never fired. Menu at -n 60, pick a list_/get_ tool, call with '{}'; the JSON-RPC error is the schema.
 # EARMARK WET connector for server two, AFTER one real call: a botify.py-shaped file hardcoding --auth-scheme Token / BOTIFY_API_TOKEN and three common calls as one positional. ONE new file, with consent.
@@ -2362,34 +2366,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   Sibling of INCOMMENSURABLE MEASUREMENTS: a correct number about the wrong
 #   question. Lint probes name .py files only.
 
-# - EARMARK: THE DISPLACEMENT RECEIPT (banked 2026-08-08, self-convicted by
-#   under-reading a receipt already in hand): when an `rg -n` probe straddles an
-#   INSERTION, the strongest reading is NOT the inserted entry's own extent --
-#   it is the DISPLACEMENT of the UNCHANGED neighbours around it. Extent is one
-#   tap; displacement is the straddle.
-#   CONVICTION: the glossary insertion of 2026-08-08 was graded on within-file
-#   gaps (159-145=14, 272-257=15) while the before/after pair sat in the same
-#   payload and read far better -- KV-cache 142 -> 142 (0), LPvg 145 -> 159
-#   (+14), Two frogs 239 -> 253 (+14), Variance suppressor 243 -> 272 (+29).
-#   Four unchanged anchors, and 14 + 15 = 29 closes the arithmetic from a
-#   direction the extent reading cannot reach. The +14 at Two frogs is the
-#   subtle one: the SECOND insertion sits BELOW it and therefore cannot push
-#   it, so that anchor independently locates where each car landed.
-#   WHY IT IS STRONGER, in one sentence: an extent reading is consistent with a
-#   file rewritten wholesale, and a displacement reading is not.
-#   COROLLARY OF DELTA-NOT-ABSOLUTE: that rule says a `grep -c` predicts as a
-#   DELTA and not as an absolute. The same holds for `rg -n`: a line NUMBER is
-#   an absolute and means little alone; a line number's MOVEMENT across the
-#   patch is the receipt. PREDICT THE DISPLACEMENT, NOT THE POSITION -- and
-#   include at least one anchor ABOVE the edit, whose predicted displacement is
-#   zero, because an unmoved anchor is the only thing that bounds the blast
-#   radius from above.
-#   SECOND CONVICTION, SAME READING: the same turn graded this probe as
-#   "already determined before it ran" when it went from four matching lines to
-#   six. That is a real discrimination reported as a near-ritual, which is THE
-#   DISCRIMINATION QUESTION failing in the WRONG direction -- not a ritual
-#   mistaken for a probe, but a probe mistaken for a ritual. Both errors cost
-#   the same thing: a reading nobody trusts afterward.
+# § THE DISPLACEMENT RECEIPT (banked 2026-08-08) -- when an rg -n probe straddles an insertion, read the DISPLACEMENT of the unchanged neighbours, not the inserted entry's extent: predict the displacement, include one anchor ABOVE the edit whose predicted displacement is zero, and remember that an extent reading is consistent with a file rewritten wholesale and a displacement reading is not. The rg -n form of DELTA-NOT-ABSOLUTE.
 # - EARMARK: THE LABEL THAT PROMISES A SIBLING (banked 2026-08-09,
 #   transcript-witnessed): a message printed by ONE command asserting what a
 #   DIFFERENT command will do is a capability claim about code the printer
@@ -2446,33 +2423,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   syntax error is the signature of an emitter that changed its mind mid-file
 #   and shipped both minds. Nothing downstream reads intent; only the parser
 #   does, and it refused.
-# - EARMARK: THE SILENCED CHANNEL (banked 2026-08-09, self-convicted inside
-#   one turn): a probe that DISCARDS a stream, paired with a caboose whose
-#   verdict clause READS that stream, is a verdict that can never be reached.
-#   CONVICTION: the probe ended with stdout and stderr both sent to /dev/null,
-#   and the caboose written in the SAME response said "If import_exit is 2,
-#   read the refusal and say which branch fired." There was no refusal to
-#   read. The instrument and its own verdict clause disagreed inside one
-#   emitted turn.
-#   COMPOUNDED BY EXIT-CODE INFLATION: exit 2 now means at least FOUR things
-#   on this machine -- argparse rejecting an argument, walk.py's main()
-#   returning 2 for "plan not ready", CPython's own exit 2 for "can't open
-#   file" (which is what actually fired, because the file never landed), and
-#   any refusal branch a script chooses to spell 2. A number four worlds share
-#   is not a reading.
-#   STANDING CONSEQUENCE, a DESIGN rule rather than a probe rule: a program
-#   whose outcome will be graded by a MACHINE prints that outcome as a token
-#   on stdout and never asks the grader to infer it from $?. THE EXIT-CODE
-#   PROTOCOL RULE governs a program a shell hook invokes for a DECISION, where
-#   nothing parses stdout; this governs a program invoked for a MEASUREMENT,
-#   where something does. The two do not conflict; they partition.
-#   COROLLARY -- TWO CHANNELS, TWO AUDIENCES: when the graded program also
-#   handles client data, put the machine-readable outcome on stdout and every
-#   identifying string on stderr. Then `2>/dev/null` is compile-lane-safe BY
-#   CONSTRUCTION and a probe never chooses between reading the answer and
-#   leaking a client. Sibling of VERDICT-IN-THE-INSTRUMENT: that rule forbids
-#   writing the answer into the artifact that determines it; this forbids
-#   writing a verdict that reads a channel the instrument closed.
+# § THE SILENCED CHANNEL (banked 2026-08-09) -- a probe that discards a stream paired with a caboose whose verdict reads that stream is a verdict that can never be reached, and an exit code four worlds share is not a reading; a program graded by a MACHINE prints its outcome as a token on stdout, and when it also handles client data the outcome goes to stdout and every identifying string to stderr, so 2>/dev/null is compile-lane-safe by construction. Partitions with THE EXIT-CODE PROTOCOL RULE: decisions speak in exit codes, measurements in tokens.
 # - EARMARK: THE PLACEHOLDER THAT CLAIMS TO RUN (banked 2026-08-08,
 #   exit-code-witnessed): public_walk.yaml's three stops declare
 #   connector.script "scripts/walk.py" with argv ["{harvested}"], and
@@ -2631,104 +2582,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   rising sea) -> ELIMINATE (bisection, the straddle) -> WITNESS (receipts).
 #   This repo has always had all three and has been calling the middle one
 #   "science" as though it were the entire method.
-# - EARMARK: THE TRANSFER FUNCTION (banked 2026-08-06, comb-witnessed; this
-#   SUPERSEDES the GFM hypothesis recorded in THE RENDER-GAP RULE above, which
-#   is now FALSIFIED rather than merely unproven): the render canary FIRED in a
-#   payload that also carried the five-shape comb, so for the first time the
-#   channel is CHARACTERIZED instead of merely alarmed. A CO-LOCATED CONTROL is
-#   the entire difference between twelve compiles of alarm and one compile of
-#   measurement.
-#   READINGS, by comb label. A_bare (host whose leading label is `www`, no
-#   scheme): REWRITTEN. B_scheme (identical host carrying an https prefix):
-#   INTACT. C_nowww (same host with the leading label deleted): INTACT. D_tick
-#   (A_bare inside a markdown code span): REWRITTEN. E_path (A_bare with a
-#   trailing /x): REWRITTEN, and the path is CARRIED into both the link text
-#   and the target.
-#   TWO UNPLANNED CONTROLS, same payload, same file, same fenced nix block:
-#   configuration.nix's ONE networking.hosts entry spelling the host with a DOT
-#   after the leading label arrived REWRITTEN, while every OTHER occurrence of
-#   that same host in that same file -- the filesystem paths, which put a SLASH
-#   after that label instead of a dot -- arrived INTACT. The trigger is the
-#   DOT, not the label, and a code fence does not protect.
-#   THE GRAMMAR, AMENDED 2026-08-06 by firing two (shapes F and G). The
-#   first-firing spelling said "leading label" and that is FALSIFIED. Correct:
-#   the transform matches the `www` prefix followed by a dot and dot-separated
-#   labels ANYWHERE IN THE TEXT, requires NO token boundary before it, wraps
-#   ONLY the matched span, and leaves surrounding characters outside the link.
-#   F_notfirst (the prefix buried after another label and a dot) came back with
-#   that leading label sitting OUTSIDE the link and the tail wrapped -- the
-#   transform split the host to do it. G_slash (a single leading slash) came
-#   back with the slash outside and the host wrapped. A pre-existing scheme
-#   remains the ONLY observed suppressor, and a code span or fenced block does
-#   not protect. Two labels after the prefix are enough; three are not required.
-#   CLOSED 2026-08-06 by firing three (shapes H and J), which RETIRES the comb.
-#   H_prelinked -- a token already wrapped as link-text-equals-target-minus-
-#   scheme, carrying no path -- arrived BYTE-IDENTICAL. The transform does NOT
-#   re-fire on its own output, so contamination cannot compound across round
-#   trips, and an idempotence that was only ever STRUCTURALLY INFERRED (it had to
-#   hold or the regress would be unbounded) is now OBSERVED. J_wordchar -- a word
-#   character immediately before the prefix -- arrived INTACT, so a word char IS
-#   a suppressor alongside a pre-existing scheme, and the widened scanner
-#   deliberately OVER-REPORTS that one class. That over-report is the ACCEPTED
-#   bias and must not be patched back: the line only prints, so a false positive
-#   costs one noisy word and a false negative costs a wrong edit.
-#   A through E have held identically across THREE firings and F through G across
-#   TWO, which is as much agreement as a stochastic gate permits. The GRAMMAR is
-#   settled; only the GATE is unexplained, and the Manifest canary detects the
-#   gate alone at zero cost, which is why the comb comes off the roster.
-#   ONE SHAPE REMAINS UNTESTED and is NAMED rather than assumed: a prelinked
-#   token CARRYING A PATH. In an earlier round trip through the ANSWER lane (not
-#   the receipt lane) a path-bearing linkified form arrived doubly wrapped, while
-#   H in the receipt lane did not nest. Two lanes, one anomaly, and the only
-#   structural difference is the trailing path. Do not read H as covering it.
-#   FREE INSTRUMENT, discovered while retiring the hand-transcription request:
-#   the render-canary count is a bare print at step 6 over final_output, and
-#   write_context_cartridge writes that SAME string as payload.md at step 7 --
-#   so a probe running the scanner's regex over the previous cartridge returns
-#   EXACTLY the count the previous compile printed to the terminal. The console
-#   number never needs copying by hand again; it arrives as a receipt, lagged one
-#   compile, by the same DOUBLE-TAP structure that was built for something else.
-#   WHY THAT KILLS GFM: the GFM autolink extension for that prefix does exist,
-#   but GFM never rewrites inside a code span or a fenced block, and both were
-#   penetrated here. The transform is therefore a TEXT-TO-TEXT REWRITE that
-#   either precedes markdown parsing or ignores markdown structure entirely.
-#   Its IDENTITY stays INFERRED; only its GRAMMAR is now OBSERVED.
-#   THE TWO-FACTOR MODEL that retires the word "intermittent": a BINARY GATE
-#   (is the transform active for this payload at all) times a DETERMINISTIC
-#   GRAMMAR (which shapes it eats once active). Within this one payload the
-#   grammar held across seven independent readings with zero exceptions. What
-#   varies compile to compile is the GATE, never the rule.
-#   BISECTION, same compile: the midpoint probe read the previous cartridge and
-#   found the canary present exactly once, bare, with zero scheme-bearing
-#   copies and zero linkified copies. write_context_cartridge and
-#   copy_to_clipboard are handed the IDENTICAL string, so a clean cartridge
-#   EXONERATES prompt_foo.py entirely and confines every surviving suspect to
-#   the clipboard-to-chat-window path.
-#   COMPILER BLIND SPOT, CONVICTED 2026-08-06 (was "untested" one compile
-#   ago): the scanner's lookbehind excluded a preceding slash, word character
-#   AND dot, and its trailing group demanded three or more labels -- so it was
-#   blind to G for the first reason and to F for BOTH. It printed a confident
-#   count over an exposure it could not see. Widened in the same ride to
-#   exclude a pre-existing scheme and nothing else, biased toward
-#   over-reporting because the line only prints.
-#   THE REPORT CONTAMINATES THE INSTRUMENT (retiring the cartridge midpoint
-#   probe, 2026-08-06): the midpoint probe counted the canary token in the
-#   previous cartridge and ruled on whether it was bare. That worked exactly
-#   until the ANSWER quoted a linkified canary back as evidence -- at which
-#   point the transcript rode into the next payload and the next cartridge,
-#   and the probe could no longer distinguish a token the compiler emitted
-#   from a token the report transcribed. It was retired on its third firing,
-#   having discharged its debt: two consecutive clean readings, one of them
-#   paired to a compile whose payload demonstrably arrived transformed, which
-#   exonerates the compiler and confines every surviving suspect to the
-#   clipboard-to-chat-window path. STANDING CONSEQUENCE: an instrument whose
-#   subject is a UNIQUE TOKEN dies the moment the token is quoted in prose
-#   that feeds back into the measured artifact. Prefer instruments whose
-#   subject is a SHAPE, generated fresh each run and never transcribed --
-#   which is exactly what the comb is, and why the comb outlived the canary.
-#   Third sibling of THE INSTRUMENT BECOMES BAIT: the first is a probe that
-#   attracts the transform it measures, the second is a label eaten by the
-#   markup it rides in, and this is a probe poisoned by its own report.
+# § THE TRANSFER FUNCTION (banked 2026-08-06) -- the render transform is a binary GATE (active for this payload or not) times a deterministic GRAMMAR: it wraps a www prefix followed by a dot and one or more further labels ANYWHERE in the text, inside code spans and fences too, is suppressed only by a preceding scheme or a preceding word character, and never re-fires on its own output. Characterize a channel with a CO-LOCATED CONTROL, and prefer an instrument whose subject is a SHAPE generated fresh each run over one whose subject is a unique token, which dies the moment the report quotes it.
 # - EARMARK: THE LABEL IS NOT DATA (banked 2026-08-06, compile-killed): a
 #   string that ARRIVED as content must never be interpolated into a MARKUP
 #   language, and the Payload Ledger did exactly that -- every row wrapped the
@@ -2780,47 +2634,8 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 #   settles a D0 claim and why the Nix pin and the byte-reproducible
 #   cartridge are not hygiene around the science -- they are what makes each
 #   experiment cost one paste instead of thirty trials.
-# - EARMARK: THE FILTER THAT ATE THE EVIDENCE (banked 2026-08-06,
-#   self-convicted in-payload): PromptBuilder.add_auto_context dropped any
-#   channel whose CONTENT contained "error" or "skipping" -- a guard written
-#   for GENERATOR STATUS strings ("Error: pyreverse failed", "Skipping: eza
-#   not found") applied indiscriminately to channels whose PAYLOAD
-#   legitimately carries those words. CONVICTION: a compile rendered the
-#   Telemetry placeholder while HEAD~1..HEAD demonstrably held a commit,
-#   because the earmark that commit added contained the phrase "the error
-#   names a SHELL FEATURE". The Summary's MISSING Auto-Context Metadata block
-#   is the corroborating channel: auto_context was EMPTY, not merely
-#   unrendered. THE DROP IS SILENT, so the placeholder reads IDENTICALLY in
-#   the world where no diff existed and the world where the diff was eaten --
-#   THE DISCRIMINATION QUESTION failing inside the compiler's own instrument,
-#   in the tool whose entire job is refusing that. INTERMITTENT BY
-#   CONSTRUCTION: the channel works whenever a diff happens not to say
-#   "error", which is why it looked healthy one compile earlier -- the same
-#   shape that let the render canary sit green for a dozen flights. STANDING
-#   CONSEQUENCE: a content filter may gate a channel only when that channel's
-#   content IS status; when the content is PAYLOAD, exempt the channel BY
-#   NAME. Sibling of THE VERIFIER THAT NEVER RAN -- that one is a witness
-#   never reached, this one is a witness reached and thrown away.
-# - EARMARK: THE HISTORY-EXPANSION PROBE (banked 2026-08-06, lane-convicted on
-#   the first hand-run): a `!` followed by a WORD CHARACTER inside DOUBLE quotes
-#   is a bash HISTORY EXPANSION, and histexpand is ON for interactive shells and
-#   OFF for non-interactive ones -- so a probe carrying one runs CLEAN in the
-#   compile lane (prompt_foo's `!` executor spawns shell=True, non-interactive)
-#   and DIES in the operator's terminal before Python is ever reached.
-#   CONVICTION: the de-prefixed-command witness carried the tuple
-#   ("! ","http","!http",...) inside a double-quoted `python -c`; the compile
-#   receipt printed deprefixed_hits=0 while the operator's identical paste
-#   printed `bash: !http','@http',': event not found`. THE BEFORE TAP WAS
-#   STRUCTURALLY UNTAKEABLE, which breaks the PROBE ECHO INVARIANT at its root:
-#   a probe that cannot be hand-run has no BEFORE, so its compile receipt is an
-#   unstraddled reading wearing a straddle's label -- and the error names a
-#   SHELL FEATURE, not the probe's subject, so it reads like the operator
-#   fumbled the paste. `!` followed by whitespace or `=` is safe; `!` followed
-#   by a word character is not. PRESCRIPTION: single-quote the outer `-c`
-#   argument and use double quotes for the Python strings inside it. Sibling of
-#   THE LANE-DISAGREEMENT WITNESS, inverted: that rule USES a lane gap as
-#   evidence about the code; this one names a lane gap in the INSTRUMENT, where
-#   a gap is never evidence, only breakage.
+# § THE FILTER THAT ATE THE EVIDENCE (banked 2026-08-06) -- a content filter may gate a channel only when that channel's content IS status; when the content is PAYLOAD (a git diff, a lint report), exempt the channel BY NAME, because a substring guard that eats "error" drops the evidence silently and the placeholder reads the same whether the channel was empty or eaten. Mechanism landed as is_telemetry in PromptBuilder.add_auto_context.
+# § THE HISTORY-EXPANSION PROBE (banked 2026-08-06) -- a ! followed by a word character inside double quotes is bash history expansion, ON in the operator's interactive shell and OFF in the compile lane's non-interactive one, so the probe runs clean as a receipt and dies at the hand-run with an error naming a shell feature; single-quote the outer -c argument and use double quotes for the Python strings inside it. A probe that cannot be hand-run has no BEFORE.
 # - EARMARK: THE SELF-MATCHING PATTERN (banked 2026-08-05, twice-convicted in one transcript): pkill -f and pgrep -f match the FULL COMMAND LINE, and the shell running the script carries the pattern in its own argv -- so an unescaped pattern kills or counts the process that issued it. CONVICTION: flake.nix's publish() [4/4] block protected two patterns with the [.] trick (a regex demanding a literal dot the argv literal does not contain) and MISSED THE THIRD, so every `publish --reboot` killed its own ssh session at that line. The guard must be applied to EVERY pattern in a block, not most of them -- a partially-guarded block READS as guarded. WITNESS: after the fix, `publish force --reboot` printed `new_count=1`, `new=534841`, and the watchdog verdict line, three lines that had never once appeared in any prior transcript.
 # - EARMARK: THE VERIFIER THAT NEVER RAN (banked 2026-08-05, same conviction): a verification block placed AFTER the action it verifies is dead code if the action can kill the reporter, and its silence is indistinguishable from success. flake.nix's [4/4] block held `sleep 12`, a pgrep re-count, and three verdict branches -- none had EVER executed, while a green Atomic Deployment Complete printed underneath every time. THE DISCRIMINATION QUESTION applied to a MISSING line: what does this print in the world where the verifier died? The same checkmark. STANDING CONSEQUENCE: when a receipt block has an expected line that is ABSENT, treat the absence as the finding; do not read the surviving lines as the whole receipt. Third shape in the family -- REFUSAL-ONLY WITNESS is a branch never observed, THE SUCCESS-ONLY WITNESS is a failure never reportable, this is a witness never REACHED.
 # § INCOMMENSURABLE MEASUREMENTS (banked 2026-08-05) -- a probe can return a CORRECT number about a DIFFERENT question, and the receipt looks authoritative because the number is right; name the exact expression the mechanism evaluates, then confirm the probe evaluates THAT expression and not a plausible neighbour. Cousin of THE DISCRIMINATION QUESTION's family: it sees something real and irrelevant.

@@ -467,6 +467,36 @@ Entries are alphabetical, numbers spelled as spoken.
   Cousin, not child: INCOMMENSURABLE MEASUREMENTS, which answers a different
   question rather than the same answer twice. The roster rides the parent's
   key in the router; children carry only their imperative.
+- **The Displacement Receipt** — *read the neighbours' movement, not the
+  insertion's extent.* Banked 2026-08-08, self-convicted by under-reading a
+  receipt already in hand. When an `rg -n` probe straddles an INSERTION, the
+  strongest reading is NOT the inserted entry's own extent — it is the
+  DISPLACEMENT of the UNCHANGED neighbours around it. Extent is one tap;
+  displacement is the straddle. CONVICTION: the glossary insertion of
+  2026-08-08 was graded on within-file gaps (159-145=14, 272-257=15) while
+  the before/after pair sat in the same payload and read far better —
+  KV-cache 142 -> 142 (0), LPvg 145 -> 159 (+14), Two frogs 239 -> 253 (+14),
+  Variance suppressor 243 -> 272 (+29). Four unchanged anchors, and 14 + 15 =
+  29 closes the arithmetic from a direction the extent reading cannot reach.
+  The +14 at Two frogs is the subtle one: the SECOND insertion sits BELOW it
+  and therefore cannot push it, so that anchor independently locates where
+  each car landed. WHY IT IS STRONGER, in one sentence: an extent reading is
+  consistent with a file rewritten wholesale, and a displacement reading is
+  not. COROLLARY OF DELTA-NOT-ABSOLUTE: that rule says a `grep -c` predicts
+  as a DELTA and not as an absolute. The same holds for `rg -n`: a line
+  NUMBER is an absolute and means little alone; a line number's MOVEMENT
+  across the patch is the receipt. PREDICT THE DISPLACEMENT, NOT THE
+  POSITION — and include at least one anchor ABOVE the edit, whose predicted
+  displacement is zero, because an unmoved anchor is the only thing that
+  bounds the blast radius from above. SECOND CONVICTION, SAME READING: the
+  same turn graded this probe as "already determined before it ran" when it
+  went from four matching lines to six. That is a real discrimination
+  reported as a near-ritual, which is THE DISCRIMINATION QUESTION failing in
+  the WRONG direction — not a ritual mistaken for a probe, but a probe
+  mistaken for a ritual. Both errors cost the same thing: a reading nobody
+  trusts afterward. Witnessed unsolicited at strikes one and two of the
+  KEY/VALUE ride: git diff hunk headers displaced by exactly the top-of-file
+  delta, with no probe asked to look.
 - **The Dotfile-Blind Probe** — *ripgrep's hidden-file default.* Banked
   2026-08-05, self-convicted. ripgrep skips hidden files by default, so any rg
   probe hunting a name that lives in .gitignore, .gitattributes, or any other
@@ -501,6 +531,49 @@ Entries are alphabetical, numbers spelled as spoken.
   line spells the handle kata-name so an unanchored probe keeps reading 1, and
   the tombstone probe anchors on the `# - ` prefix so faded receipts naming the
   same handles cannot count as survivors.
+- **The Filter That Ate the Evidence** — *a status guard applied to a payload
+  channel.* Banked 2026-08-06, self-convicted in-payload.
+  PromptBuilder.add_auto_context dropped any channel whose CONTENT contained
+  "error" or "skipping" — a guard written for GENERATOR STATUS strings
+  ("Error: pyreverse failed", "Skipping: eza not found") applied
+  indiscriminately to channels whose PAYLOAD legitimately carries those
+  words. CONVICTION: a compile rendered the Telemetry placeholder while
+  HEAD~1..HEAD demonstrably held a commit, because the earmark that commit
+  added contained the phrase "the error names a SHELL FEATURE". The Summary's
+  MISSING Auto-Context Metadata block is the corroborating channel:
+  auto_context was EMPTY, not merely unrendered. THE DROP IS SILENT, so the
+  placeholder reads IDENTICALLY in the world where no diff existed and the
+  world where the diff was eaten — THE DISCRIMINATION QUESTION failing inside
+  the compiler's own instrument, in the tool whose entire job is refusing
+  that. INTERMITTENT BY CONSTRUCTION: the channel works whenever a diff
+  happens not to say "error", which is why it looked healthy one compile
+  earlier — the same shape that let the render canary sit green for a dozen
+  flights. STANDING CONSEQUENCE: a content filter may gate a channel only
+  when that channel's content IS status; when the content is PAYLOAD, exempt
+  the channel BY NAME. Sibling of THE VERIFIER THAT NEVER RAN — that one is a
+  witness never reached, this one is a witness reached and thrown away. The
+  mechanism landed the same day as the is_telemetry exemption in
+  add_auto_context, which is why the key carries only the design rule.
+- **The History-Expansion Probe** — *a bang that dies only in the hand.*
+  Banked 2026-08-06, lane-convicted on the first hand-run. A `!` followed by
+  a WORD CHARACTER inside DOUBLE quotes is a bash HISTORY EXPANSION, and
+  histexpand is ON for interactive shells and OFF for non-interactive ones —
+  so a probe carrying one runs CLEAN in the compile lane (prompt_foo's `!`
+  executor spawns shell=True, non-interactive) and DIES in the operator's
+  terminal before Python is ever reached. CONVICTION: the de-prefixed-command
+  witness carried the tuple ("! ","http","!http",...) inside a double-quoted
+  `python -c`; the compile receipt printed deprefixed_hits=0 while the
+  operator's identical paste printed `bash: !http','@http',': event not
+  found`. THE BEFORE TAP WAS STRUCTURALLY UNTAKEABLE, which breaks the PROBE
+  ECHO INVARIANT at its root: a probe that cannot be hand-run has no BEFORE,
+  so its compile receipt is an unstraddled reading wearing a straddle's label
+  — and the error names a SHELL FEATURE, not the probe's subject, so it reads
+  like the operator fumbled the paste. `!` followed by whitespace or `=` is
+  safe; `!` followed by a word character is not. PRESCRIPTION: single-quote
+  the outer `-c` argument and use double quotes for the Python strings inside
+  it. Sibling of THE LANE-DISAGREEMENT WITNESS, inverted: that rule USES a
+  lane gap as evidence about the code; this one names a lane gap in the
+  INSTRUMENT, where a gap is never evidence, only breakage.
 - **Incommensurable Measurements** — *a correct number about a different
   question.* Banked 2026-08-05, two-in-one-compile. A probe can return a
   CORRECT number about a DIFFERENT question, and the receipt then looks
@@ -637,6 +710,39 @@ Entries are alphabetical, numbers spelled as spoken.
   sees what matched. Fifth sibling of DOTFILE-BLIND / CASE-BLIND / UNANCHORED /
   CAP — another way a probe answers a question other than the one on its
   label.
+- **The Silenced Channel** — *a verdict that reads a stream the probe closed.*
+  Banked 2026-08-09, self-convicted inside one turn. A probe that DISCARDS a
+  stream, paired with a caboose whose verdict clause READS that stream, is a
+  verdict that can never be reached. CONVICTION: the probe ended with stdout
+  and stderr both sent to /dev/null, and the caboose written in the SAME
+  response said "If import_exit is 2, read the refusal and say which branch
+  fired." There was no refusal to read. The instrument and its own verdict
+  clause disagreed inside one emitted turn. COMPOUNDED BY EXIT-CODE
+  INFLATION: exit 2 now means at least FOUR things on this machine — argparse
+  rejecting an argument, walk.py's main() returning 2 for "plan not ready",
+  CPython's own exit 2 for "can't open file" (which is what actually fired,
+  because the file never landed), and any refusal branch a script chooses to
+  spell 2. A number four worlds share is not a reading. STANDING
+  CONSEQUENCE, a DESIGN rule rather than a probe rule: a program whose
+  outcome will be graded by a MACHINE prints that outcome as a token on
+  stdout and never asks the grader to infer it from $?. THE EXIT-CODE
+  PROTOCOL RULE governs a program a shell hook invokes for a DECISION, where
+  nothing parses stdout; this governs a program invoked for a MEASUREMENT,
+  where something does. The two do not conflict; they partition. COROLLARY —
+  TWO CHANNELS, TWO AUDIENCES: when the graded program also handles client
+  data, put the machine-readable outcome on stdout and every identifying
+  string on stderr. Then `2>/dev/null` is compile-lane-safe BY CONSTRUCTION
+  and a probe never chooses between reading the answer and leaking a client.
+  Sibling of VERDICT-IN-THE-INSTRUMENT: that rule forbids writing the answer
+  into the artifact that determines it; this forbids writing a verdict that
+  reads a channel the instrument closed. COROLLARY, banked 2026-08-30 as THE
+  GATE SPEAKS A VERDICT: the same rule for a gate graded by a HUMAN, who is
+  the machine when the sequence is patch, gate, sed — print GO or STOP with
+  the readings beside the word, never bare numbers the operator must match
+  against prose elsewhere. Conviction: the MCP range-gate printed 1025 and
+  1228, its GO shape, while the close's prose two blocks later held 1 and
+  18; the operator, reading by the sandwich rule, correctly refused to guess,
+  and the cut waited one turn.
 - **The Single-Line-Witness Corollary** — *a witness phrase split by a line
   wrap.* Banked 2026-07-29. A grep -c witness phrase must survive the target's
   own line discipline — an 80-column comment wrap can split the phrase across
@@ -647,6 +753,62 @@ Entries are alphabetical, numbers spelled as spoken.
   flip. Pick witnesses from lines that cannot wrap (dated headers like 'BANKED
   2026-07-29 (same-day flip'), and when the patched text is your own, confirm
   the phrase sits on one line before recommending the probe.
+- **The Transfer Function** — *the render transform, characterized.* Banked
+  2026-08-06, comb-witnessed across three firings; supersedes and FALSIFIES
+  the GFM hypothesis recorded in THE RENDER-GAP RULE. The render canary FIRED
+  in a payload that also carried a five-shape comb, so for the first time the
+  channel was CHARACTERIZED instead of merely alarmed: a CO-LOCATED CONTROL
+  is the entire difference between twelve compiles of alarm and one compile
+  of measurement. THE GRAMMAR, settled by firing two (shapes F and G) and
+  closed by firing three (H and J): the transform matches the `www` prefix
+  followed by a dot and dot-separated labels ANYWHERE IN THE TEXT, requires
+  NO token boundary before it, wraps ONLY the matched span, and leaves
+  surrounding characters outside the link — it split a host to do it. The
+  trigger is the DOT after the prefix, not the prefix: the same label
+  followed by a slash, in filesystem paths in the same fenced block, arrived
+  intact. Two labels after the prefix are enough; three are not required. A
+  code span or a fenced block does NOT protect. SUPPRESSORS, the only two
+  observed: a pre-existing scheme, and a word character immediately before
+  the prefix — and the widened scanner deliberately OVER-REPORTS that second
+  class, an ACCEPTED bias that must not be patched back, because the line
+  only prints, so a false positive costs one noisy word and a false negative
+  costs a wrong edit. IDEMPOTENCE, OBSERVED: a token already wrapped as
+  link-text-equals-target-minus-scheme, carrying no path, arrived
+  BYTE-IDENTICAL; the transform does not re-fire on its own output, so
+  contamination cannot compound across round trips. ONE SHAPE REMAINS
+  UNTESTED and is named rather than assumed: a prelinked token CARRYING A
+  PATH, which once arrived doubly wrapped through the answer lane while the
+  pathless form in the receipt lane did not nest. Do not read H as covering
+  it. WHY THAT KILLS GFM: the GFM autolink extension for that prefix exists,
+  but GFM never rewrites inside a code span or a fenced block, and both were
+  penetrated; the transform is a TEXT-TO-TEXT REWRITE that either precedes
+  markdown parsing or ignores markdown structure entirely. Its IDENTITY
+  stays INFERRED; only its GRAMMAR is OBSERVED. THE TWO-FACTOR MODEL that
+  retires the word "intermittent": a BINARY GATE (is the transform active
+  for this payload at all) times a DETERMINISTIC GRAMMAR (which shapes it
+  eats once active). Within one payload the grammar held across seven
+  independent readings with zero exceptions; what varies compile to compile
+  is the GATE, never the rule, and the Manifest canary detects the gate alone
+  at zero cost, which is why the comb came off the roster. The bisection
+  exonerated prompt_foo.py: write_context_cartridge and copy_to_clipboard
+  are handed the IDENTICAL string and the previous cartridge held the canary
+  exactly once, bare, so every surviving suspect lives on the
+  clipboard-to-chat-window path. THE REPORT CONTAMINATES THE INSTRUMENT: the
+  cartridge midpoint probe counted the canary token in the previous
+  cartridge and ruled on whether it was bare, and that worked exactly until
+  the ANSWER quoted a linkified canary back as evidence — at which point the
+  transcript rode into the next payload and the next cartridge, and the
+  probe could no longer distinguish a token the compiler emitted from a
+  token the report transcribed. STANDING CONSEQUENCE: an instrument whose
+  subject is a UNIQUE TOKEN dies the moment the token is quoted in prose
+  that feeds back into the measured artifact. Prefer instruments whose
+  subject is a SHAPE, generated fresh each run and never transcribed — which
+  is exactly what the comb was, and why the comb outlived the canary. Third
+  sibling of THE INSTRUMENT BECOMES BAIT: the first is a probe that attracts
+  the transform it measures, the second is a label eaten by the markup it
+  rides in, and this is a probe poisoned by its own report. The comb's
+  shape-by-shape readings and the scanner's blind-spot conviction fade to
+  the router's receipts block.
 - **The Two-Recorder Rule** — *the FDR wins on parameters, the CVR on
   intent.* Banked 2026-07-29, receipt-convicted same day. Every airframe
   carries TWO recorders and investigators never conflate them. The FDR writes
