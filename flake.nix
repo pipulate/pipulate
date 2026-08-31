@@ -1828,17 +1828,21 @@ print('AI:\n', r.ai)
             if [ $? -eq 0 ]; then
                 # GOOGLE DOCS SYNC rides here, right after the git payload
                 # lands, because it depends only on the local article file(s)
-                # already on disk -- not on the Honeybot deploy below. Full
-                # sweep every time: googledocizer.py's own freshness gate
-                # (remote modified-time vs local mtime) makes an up-to-date
-                # corpus cost nothing but the inventory scan, while still
-                # catching a hand-edited OLD post, not just a brand-new one.
+                # already on disk -- not on the Honeybot deploy below.
+                # SCOPE COMES FROM THE GATE ABOVE, and the echo prints the
+                # resolved value rather than a fixed word, so the receipt can
+                # never disagree with what actually ran.
                 # Non-fatal by design -- a Drive hiccup (expired OAuth token,
                 # network blip) must never block the live site from shipping.
-                # Re-run `python scripts/articles/googledocizer.py -t 1 --yes`
-                # by hand to retry a failed sync.
-                echo "🚀 [2/5] Google Docs: Syncing to Drive..."
-                if ! python "$PIPULATE_ROOT/scripts/articles/googledocizer.py" -t 1 --yes; then
+                # Retry by hand with:
+                #   python scripts/articles/googledocizer.py -t 1 --yes --latest
+                # INTERPRETER ANCHORED (UNNAMED-ROOT RULE): the bare name
+                # resolved through PATH, which is only correct while the venv
+                # is in front of it. The script path was already anchored one
+                # argument to its right; this makes both halves of the line
+                # agree.
+                echo "🚀 [2/5] Google Docs: Syncing to Drive (scope: ''${GDOCS_SCOPE:-full sweep})..."
+                if ! "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/googledocizer.py" -t 1 --yes $GDOCS_SCOPE; then
                     echo "⚠️  Google Docs sync failed; continuing deployment anyway."
                 fi
                 echo "🚀 [3/5] Infrastructure: Synchronizing Server Configurations..."
