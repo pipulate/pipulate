@@ -604,7 +604,12 @@ def main():
     parser.add_argument("-n", "--max", type=int, default=25,
                         help="LIST cap per THE PROBE ECONOMY RULE (default: 25).")
     parser.add_argument("--max-bytes", type=int, default=4000,
-                        help="CALL result cap in bytes (default: 4000).")
+                        help="CALL result cap in bytes; also caps --schema "
+                             "and server instructions (default: 4000).")
+    parser.add_argument("--schema", action="store_true",
+                        help="LIST mode: print each tool's full JSON "
+                             "(description + inputSchema) instead of the "
+                             "80-char roster. Bounded by -n and --max-bytes.")
     parser.add_argument("--token-env", default=None,
                         help="Env var holding the bearer token (default: "
                              "MCP_BEARER_TOKEN, then BOTIFY_API_TOKEN).")
