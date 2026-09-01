@@ -1,8 +1,8 @@
 # AI_CONTEXT.md — Start Here If You Are an AI
 
-> Auto-generated on 2026-08-31. Rewritten from scratch on every release. If this
+> Auto-generated on 2026-09-01. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1432 entries indexed.
+> 1435 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -96,6 +96,9 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-09-01] [The Flag Beats the Hardware: Investigating Claude Cowork, Linux VMs, and Hypervisor Gates in the Age of AI](https://mikelev.in/futureproof/claude-cowork-linux-vm-hypervisor-gates/index.md)
+- [2026-09-01] [Myelinating MCP: Terminal-Native Tooling and Session Hygiene](https://mikelev.in/futureproof/myelinating-mcp-terminal-native-tooling-and-session-hygiene/index.md)
+- [2026-08-31] [First-Cell Failures: Why Setup Ergonomics Matter in the Age of AI](https://mikelev.in/futureproof/first-cell-failures-setup-ergonomics-ai/index.md)
 - [2026-08-31] [Taking It from the Top: Designing a Frictionless Command-Line Workshop](https://mikelev.in/futureproof/taking-it-from-top-frictionless-command-line-workshop/index.md)
 - [2026-08-31] [The Notary Beat: Engineering Session Finality in AI Workflows](https://mikelev.in/futureproof/the-notary-beat-session-finality-ai-workflows/index.md)
 - [2026-08-31] [The Flat Environment: Demystifying Linux Terminal Variables and Secret Management](https://mikelev.in/futureproof/flat-environment-linux-terminal-variables-secret-management/index.md)
@@ -113,14 +116,14 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-08-28] [Defense-in-Depth Secret Sanitization for AI Workflows](https://mikelev.in/futureproof/defense-in-depth-secret-sanitization-ai-workflows/index.md)
 - [2026-08-28] [Sanitizing OAuth Terminals: Building a Neovim Credential Scrubber](https://mikelev.in/futureproof/sanitizing-oauth-terminals-neovim-credential-scrubber/index.md)
 - [2026-08-28] [Closing the Loop: Fine-Tuning Credential Tripwires and Declared Fixtures](https://mikelev.in/futureproof/closing-the-loop-credential-tripwires-fixtures/index.md)
-- [2026-08-28] [Closing the Slack Loop: Local-First Credential Mastery in the Age of AI](https://mikelev.in/futureproof/closing-the-slack-loop-credential-mastery/index.md)
-- [2026-08-27] [The Epistemic Exoskeleton: Engineering Deterministic AI Workflows Without Metaphysics](https://mikelev.in/futureproof/epistemic-exoskeleton-engineering-deterministic-ai-workflows/index.md)
-- [2026-08-27] [Navigating the Slack API Tax: Bureaucracy, Token Granularity, and the Age of AI](https://mikelev.in/futureproof/navigating-slack-api-tax-token-granularity/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-08-28] [180k] closing-the-slack-loop-credential-mastery
+- [2026-08-27] [87k] epistemic-exoskeleton-engineering-deterministic-ai-workflows
+- [2026-08-27] [307k] navigating-slack-api-tax-token-granularity
 - [2026-08-26] [110k] the-walk-ladder-progressive-disclosure-and-the-art-of-the-short-command
 - [2026-08-25] [219k] dual-lane-trail-design-schema-widening
 - [2026-08-25] [115k] defensive-abstractions-outrun-the-rider
