@@ -93,6 +93,20 @@ def _count_word(n):
     return _COUNT_WORDS[n] if 0 <= n < len(_COUNT_WORDS) else str(n)
 
 
+def print_door_two_words(name):
+    """Print the door-two list. ONE implementation, TWO call sites.
+
+    main() prints it at the moment of choice; `menu` prints it again later
+    through --recall. Both read the same tuple, so the reminder cannot drift
+    from the thing it reminds you of -- which is the whole reason
+    DOOR_TWO_WORDS is data rather than two hand-written strings.
+    """
+    print(_count_word(len(DOOR_TWO_WORDS)).capitalize() + " words to start from:")
+    width = max(len(word) for word, _ in DOOR_TWO_WORDS)
+    for word, description in DOOR_TWO_WORDS:
+        print("  " + word.ljust(width) + "   " + description.format(name=name))
+
+
 def _app_name(root: Path) -> str:
     """Mirror runScript's awk: capitalize first char, lowercase the rest."""
     try:
