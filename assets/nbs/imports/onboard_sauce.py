@@ -20,6 +20,29 @@ from openpyxl.utils import get_column_letter
 from openpyxl.styles import Alignment, Font
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
+# THE JOB ID HAS ONE HOME (convicted 2026-09-01, macOS first contact). The
+# mode-selector cell at the TOP of Onboarding.ipynb read
+# wand.db['active_job'] -- an idiom copied from cells that sit BELOW the only
+# writer, transplanted upward past its own precondition. On any machine that
+# had ever run the notebook the key was already on disk, so the crash was
+# STRUCTURALLY INVISIBLE to the maintainer and fired on the very first cell of
+# a stranger's very first install: KeyError: 'active_job'.
+# THE READ WAS ALSO CEREMONY: render_mode_selector WRITES this key as its
+# first act, so the cell was fetching a value it was about to hand to the
+# function that overwrites it. Establish the default here instead, and let the
+# notebook NAME it rather than ask the database for it.
+# TWO CELLS ALREADY KNEW. The Persona and JavaScript-Gap cells read
+# wand.db.get('active_job', 'onboarding_01') with this same literal default,
+# which means this failure class was hit and patched downstream while the
+# upstream instance was still being written. Three copies of one string is
+# what made that possible; this is the one copy.
+# REJECTED: seeding the key as an import-time side effect of this module,
+# which would have fixed the already-shipped notebook with no cell edit at
+# all. An import that writes to a database is a hidden actuation, and it would
+# have left the read-before-write in place -- still wrong, now silently
+# working, and wrong again the next time somebody moves a cell.
+DEFAULT_JOB_ID = "onboarding_01"
+
 
 def check_ai_models(preferred_local=None, preferred_cloud=None):
     """
