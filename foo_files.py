@@ -55,7 +55,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # Velocity: 24 published in the last 7 days
 # Markdown negotiated: 2,267 reads (0.21% of all responses)
 # DOM hydration: 2885 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-08-31T18:45Z
+# Honeybot telemetry fetched 2026-09-01T01:03Z
 # --- END STATS ---
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
 # 2026-08-30 compile KEY/VALUE strike 6: sigil keys 24 -> 29; EARMARK 59 -> 54; five-pattern tombstone 5 -> 0 (grep's expected NON-ZERO EXIT 1); RECEIPTS held 20; ast_ok; foo_files.py 272,536 -> 264,473 B (-2,120 tok), GLOSSARY.md 71,553 -> 82,577 B (+2,766 tok); raw byte predictions missed their bands by 323 B high and 743 B low, and both delta magnitudes were over-predicted 14-15%, so dropping the n=1 correction removed the sign flip but put neither byte side in band; wc -l 3114 -> 2958, one below prediction because the five landed diff deltas sum to -156 (-25-25-30-29-47), not -155. Five graduations landed.
@@ -2222,6 +2222,23 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do
+
+# EARMARK — CURL-PIPE TRUNCATION SAFETY. assets/installer/install.sh runs
+# top-to-bottom, so a download truncated mid-transfer executes a PARTIAL script:
+# it can mkdir the target, half-fetch a key, and exit clean. Wrap the body in
+# main() { ... } with main "$@" as the last line, so a truncation can only ever
+# fail to define main and nothing runs. Gate on `bash -n` of a truncated copy
+# exiting NONZERO -- today it exits zero, which is the whole defect. Owed before
+# npvg.org serves a one-liner to strangers.
+
+# EARMARK — CURL-PIPE TRUNCATION SAFETY. assets/installer/install.sh runs
+# top-to-bottom, so a download truncated mid-transfer executes a PARTIAL script:
+# it can mkdir the target, half-fetch a key, and exit clean. Wrap the body in
+# main() { ... } with main "$@" as the last line, so a truncation can only ever
+# fail to define main and nothing runs. Gate on `bash -n` of a truncated copy
+# exiting NONZERO -- today it exits zero, which is the whole defect. Owed before
+# npvg.org serves a one-liner to strangers.
+
 # NO PLACEHOLDERS IN PASTE-READY LINES (convicted 2026-08-30, both lanes): <NAME> in a shell line is a redirection from a file called NAME -- "No such file or directory" -- silent in the compile lane, loud in the operator lane, dead in both. Write "$NAME" and put `export NAME=...` once on the line above; a variable runs verbatim, a placeholder needs an edit the human will not make.
 # THE ACTUATOR IS A CAR: anything that runs against a server (--check, tools/list, tools/call, --refresh) rides in PATCHES as its own numbered car, after the patches it depends on, never previewed above them. Sibling of ONE TIMELINE, NO PREVIEWS (apply.py, 2026-08-30).
 # § THE GATE SPEAKS A VERDICT (banked 2026-08-30) -- a gate the operator reads prints GO or STOP with its readings beside the word, never bare numbers the operator must match against prose in another paragraph; the MCP range-gate printed 1025 and 1228 (its GO shape) while the next block's prose held 1 and 18, and the operator correctly refused to guess. A gate rides where it fires and says what it found. Corollary of THE SILENCED CHANNEL: a machine-graded outcome is a token, a human-graded one is a word.
@@ -2909,7 +2926,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # scripts/articles/scrub_tags.py  # [1,055 tokens | 4,083 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
 # scripts/audit_dye.py  # [256 tokens | 1,009 bytes]
-# scripts/boot_menu.py  # [2,537 tokens | 10,152 bytes]
+# scripts/boot_menu.py  # [3,003 tokens | 11,967 bytes]
 # scripts/chat_route_probe.py  # [2,813 tokens | 13,033 bytes]
 # scripts/confluence_probe.py  # [4,990 tokens | 20,668 bytes]
 # scripts/connectors/noop.py  # [491 tokens | 2,098 bytes]

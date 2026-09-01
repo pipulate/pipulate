@@ -1251,3 +1251,21 @@ than duplicate one — and the decisive argument is temporal: `--yolo` is typed
 before a browser opens, and cannot consent to the disposition of a bundle that
 did not exist when it was typed. Nothing unattended is lost, because the
 CAPTURE fences already block.
+
+THE HOOK-TEXT WITNESS (banked 2026-09-01, second instance). A shell FUNCTION,
+alias, or compspec defined in shellHook is STRUCTURALLY INVISIBLE to prompt_foo's
+`!` executor: functions do not export, and `nix develop --command bash -c '...'`
+execs a fresh bash that never sourced the hook. So `type <name>` prints the
+identical answer in the world where the definition landed and the world where it
+did not -- a false receipt in both directions. The only compile-lane witness is
+the GENERATED HOOK TEXT:
+    LD_LIBRARY_PATH="" nix eval --raw .#devShells.<system>.<shell>.shellHook \
+      | grep -c '<pattern>'
+LD_LIBRARY_PATH="" is LOAD-BEARING and its absence is invisible until it fires:
+the nix() rpath shim is itself a shell function, so the `!` child inherits the
+polluted path and not the protection, and the nix binary dies at the loader with
+"libssl.so.3: version OPENSSL_3.2.0 not found". Convicted 2026-08-31 by exactly
+that receipt. CHOOSE A PATTERN ONLY THE DEFINITION CAN MATCH -- grep -c counts
+LINES, so a comment mentioning `menu()` would have inflated the count to 2 and
+the probe would have read green with no function defined. Proven twice: the
+Notebooks/Shared mkdir move (2026-08-07) and the menu() recall word (2026-09-01).
