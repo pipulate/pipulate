@@ -51,6 +51,14 @@ vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
     command = "set filetype=markdown"
 })
 
+-- adhoc.txt: margins permanently released (masthead art, wide-format work)
+vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
+    pattern = "adhoc.txt",
+    callback = function()
+        vim.opt_local.textwidth = 0
+    end,
+})
+
 --  _____                 _   _                 
 -- |  ___|   _ _ __   ___| |_(_) ___  _ __  ___ 
 -- | |_ | | | | '_ \ / __| __| |/ _ \| '_ \/ __|
