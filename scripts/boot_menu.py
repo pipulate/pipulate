@@ -224,6 +224,23 @@ def _read_choice(seconds) -> int:
 
 
 def main() -> int:
+    # THE RECALL PATH, AND WHY IT SITS ABOVE EVERY GATE. The door-two list
+    # prints once and then scrolls away under whatever the human does next;
+    # flake.nix's `menu` calls this to print it again. It runs BEFORE the
+    # PIPULATE_BOOT_MENU and isatty gates deliberately: those exist to keep an
+    # unattended `nix develop` from blocking at a threshold, and a recall
+    # blocks on nothing, so inheriting their fail-open would only make the
+    # word print nothing in a pipe and nothing under PIPULATE_BOOT_MENU=0.
+    #
+    # IT EXITS 0 AS AN ORDINARY SUCCESSFUL DISPLAY, which COLLIDES with
+    # EXIT_START. No caller may branch on the exit code of a --recall run, and
+    # the flake wrapper deliberately does not: a wrapper that read 0 as "start
+    # the app" would launch a server every time `menu` ran without a tty.
+    if "--recall" in sys.argv[1:]:
+        root = Path(os.environ.get("PIPULATE_ROOT") or Path(__file__).resolve().parent.parent)
+        print()
+        print_door_two_words(_app_name(root))
+        return 0
     if os.environ.get("PIPULATE_BOOT_MENU", "1").strip().lower() in {
         "0",
         "no",
