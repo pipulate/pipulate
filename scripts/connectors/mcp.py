@@ -12,7 +12,8 @@ named gate; nothing here silently falls back.
 Golden-path modes, auto-detected from positionals:
 
   python scripts/connectors/mcp.py                                # IDENTITY: token state + usage; opens no socket
-  python scripts/connectors/mcp.py <server>                       # LIST: initialize -> tools/list
+  python scripts/connectors/mcp.py <server>                       # LIST: initialize -> tools/list (+ server instructions)
+  python scripts/connectors/mcp.py <server> --schema              # LIST: each tool's full JSON (description + inputSchema)
   python scripts/connectors/mcp.py <server> <tool> '<args-json>'  # CALL: initialize -> tools/call
   python scripts/connectors/mcp.py <server> --check               # CHECK: envelope health; exit code is the answer
 
