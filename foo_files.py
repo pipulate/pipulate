@@ -1168,6 +1168,35 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # human. Connectors declare honest execution targets, and `walk-cartridge-integrity-v2`
 # enforces ordered destination disclosure.
 
+# THE FIRST-CELL BLAST RADIUS RULE (banked 2026-09-01, two convictions in two
+# consecutive rides). Anything the FIRST executable cell of Onboarding.ipynb
+# touches -- including every module it imports at load time -- prints to a
+# stranger at the one moment they cannot tell noise from failure. Both
+# convictions were trivial in SUBSTANCE and severe in POSITION: a KeyError
+# from a read-before-write, and a SyntaxWarning from an unraw ASCII-art
+# literal. Judge a defect in that blast radius by WHERE it fires, never by how
+# small it is, and hold first-cell code to the standard of a cold install
+# rather than the standard of the maintainer's warm one.
+
+# THE ACTUATOR'S OWN DIAGNOSTIC RULE (banked 2026-09-01). apply.py's AST
+# airlock compiles candidate content before writing, so it printed
+# `<unknown>:985: SyntaxWarning: invalid escape sequence` on THREE consecutive
+# `app` runs -- correct message, correct line number -- and it read as noise
+# FROM the tool rather than a finding ABOUT the file. The `<unknown>` filename
+# is what disguised it: a diagnostic with no filename reads as the tool
+# complaining about itself. A LINE NUMBER in an actuator's output is a finding
+# about the FILE. Read it, or the instrument you built is reporting to nobody.
+
+# THE PRE-COMPILE ACTUATOR RULE (banked 2026-09-01). A straddle probe answers
+# honestly only when its two taps land on OPPOSITE sides of the actuator. The
+# `diff -q` sync probe was designed as three states (0 in sync, 1 patched-not-
+# copied, 0 after the cp) and printed 0 in BOTH receipts, because the cp ran
+# before the compile -- the same printout in both worlds, which is the
+# DISCRIMINATION QUESTION failing inside a probe written to answer it. Prefer
+# a probe that reads the PROPERTY at the destination (does the working copy
+# compile?) over one that COMPARES two files; the property probe cannot be
+# defeated by running the actuator early.
+
 # THE PUBLISH LANE IS NOT THE PUSH: installer edits reach strangers only through release.py's sync_install_sh; `git push` is not their ignition. Publish-only lane, proven idempotent 2026-08-30: python release.py --skip-version-sync --skip-docs-sync --skip-audit-sync --skip-ai-context-sync --skip-breadcrumb-sync --skip-trifecta-rebuild
 # A BARE FENCE CANNOT RIDE SEARCH/REPLACE: apply.py strips bare fence lines from the payload before matching; a fence edit rides as a sed car spelled with \x60\x60\x60.
 # ECHO IS NOT PRINTF INSIDE A NIX STRING: bash's builtin echo leaves \n literal and a Nix indented string passes it through. Convicted 2026-08-30: bash -c 'echo "a\nb"' | cat -A -> a\nb$
@@ -2222,7 +2251,17 @@ prompt_foo.py  # [16,195 tokens | 73,877 bytes]
 scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
-# #todo #to-do
+# #todo #to-do #earmarks
+
+# THE COPY-IF-ABSENT DELIVERY EARMARK (opened 2026-09-01; two hand-run `cp`
+# commands in two consecutive rides, both to the same file). flake.nix's
+# copy_notebook_if_needed stages a file only when the destination is MISSING,
+# so every fix to assets/nbs/imports/ is invisible to every existing install
+# forever. Correct for a notebook the human edits; wrong for imports/*.py,
+# which nobody is supposed to edit. OWED: split the loop -- notebooks stay
+# copy-if-absent, imports/ refresh when the asset is newer -- with a probe
+# proving a deliberately staled working copy is actually replaced, and
+# `exit` then `nix develop` named as the ignition.
 
 # EARMARK — CURL-PIPE TRUNCATION SAFETY. assets/installer/install.sh runs
 # top-to-bottom, so a download truncated mid-transfer executes a PARTIAL script:
