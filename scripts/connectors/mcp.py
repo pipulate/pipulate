@@ -479,8 +479,9 @@ def print_receipt(server, verb, tool, raw_args, dclass, declared):
     print(f"# observed_at: {now}")
 
 
-def list_tools(client, server, max_items):
-    session_id, negotiated, sinfo = initialize(client, server)
+def list_tools(client, server, max_items, schema=False, max_bytes=4000):
+    session_id, negotiated, init = initialize(client, server)
+    sinfo = init.get("serverInfo") or {}
     resp = post(client, server,
                 {"jsonrpc": "2.0", "id": 1, "method": "tools/list"}, session_id)
     if resp.status_code != 200:
@@ -492,8 +493,31 @@ def list_tools(client, server, max_items):
     print(f"# {server} — protocol {negotiated} | server "
           f"{sinfo.get('name', '?')} | {len(tools)} tool(s) | "
           f"session={'yes' if session_id else 'no'}\n")
-    for t in tools[:max_items]:
-        print(f"{t.get('name', '?')}  {str(t.get('description', ''))[:80]}")
+    # SERVER INSTRUCTIONS, VERBATIM AND ADDITIVE. Printed as `#` lines so no
+    # reader of the roster below mistakes them for a tool row; capped like
+    # everything else on stdout. Absent on most servers, decisive on a
+    # stateful one.
+    instructions = str(init.get("instructions") or "").strip()
+    if instructions:
+        if len(instructions) > max_bytes:
+            instructions = instructions[:max_bytes] + f"\n... [truncated at {max_bytes} bytes; raise --max-bytes]"
+        print("# server instructions (verbatim from initialize):")
+        for line in instructions.splitlines():
+            print(f"#   {line}")
+        print()
+    # --schema: THE 80-CHAR ROSTER CANNOT SHOW A PARAMETER NAME. A stateful
+    # or long-running server's contract -- which argument carries the session
+    # id, which tool polls the job -- lives in inputSchema, and a WET
+    # connector written without reading it is a guess wearing a filename.
+    if schema:
+        text = json.dumps(tools[:max_items], indent=2, default=str)
+        if len(text) > max_bytes:
+            text = text[:max_bytes] + (f"\n... [truncated at {max_bytes} bytes "
+                                       "per THE PROBE ECONOMY RULE]")
+        print(text)
+    else:
+        for t in tools[:max_items]:
+            print(f"{t.get('name', '?')}  {str(t.get('description', ''))[:80]}")
     if len(tools) > max_items:
         print(f"... +{len(tools) - max_items} more (raise -n/--max)")
 
