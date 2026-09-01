@@ -4,6 +4,8 @@
 walk.py remains the strict, stdlib-only dry-run planner. This module adds the
 actuating side of the Mother Cat Kata:
 
+  PRE-FLIGHT               -- every url_env the WHOLE walk needs is checked
+                              before anything opens, speaks, or writes.
   NARRATE                  -- Piper reads the stop guidance, best-effort.
   SETTLE + FENCE + CAPTURE -- guided_browser_capture opens the persistent,
                               visible browser and requires the human CAPTURE
@@ -259,6 +261,23 @@ def _decant_to_clipboard(payload):
     copy_to_clipboard(payload)
 
 
+def _missing_url_envs(stops):
+    """Every url_env the WHOLE walk needs that the environment lacks, in stop order.
+
+    Returns [(stop_name, var_name), ...], one entry per stop that is short a
+    URL, so a variable two stops share is named beside each stop that needs
+    it: the human reads what the walk will do, not a deduplicated set. An
+    exported empty or whitespace-only string counts as unset, matching
+    walk.build_plan -- an empty export opens nothing.
+    """
+    missing = []
+    for stop in stops:
+        url_env = stop.get("url_env")
+        if url_env and not os.environ.get(url_env, "").strip():
+            missing.append((stop["name"], url_env))
+    return missing
+
+
 def _announce_consent(trail_path):
     """Print what the WHOLE walk demands, before stop one, plus the DECANT.
     IMPORTED, NEVER DUPLICATED, AND THE DIRECTION OF THE ARROW IS THE ARGUMENT.
@@ -343,6 +362,42 @@ async def _ride_async(trail_path, dry_narrate=False):
             print(f"  - {problem}")
         print("  (--dry-narrate continues anyway; nothing will open.)")
 
+    # PRE-FLIGHT (2026-09-01, the ticket ride that died at stop two). A trail
+    # declares every URL it needs before it opens anything, so the rider can
+    # know at t=0 whether it can finish -- and it used to find out one stop at
+    # a time. ticket.yaml captured the Jira issue, ADVANCED, and only then
+    # discovered PIPULATE_TRAIL_BOTIFY_URL was unset; on the Mac the first
+    # refusal came AFTER a sixty-megabyte voice download and the spoken
+    # guidance for a stop that would never open. A walk that can fail at its
+    # last stop for a reason knowable at its first wastes the human's
+    # captures, and a long walk would waste many. mck.sh already runs this
+    # check in shell, but `mothercat` is the direct alias and the Mac path,
+    # and neither passes through mck.sh, so the rider owns it too: EVERY
+    # missing variable, named beside its stop, with the export line to type,
+    # before narration, before the consent card, before any browser. Under
+    # --dry-narrate it is disclosed and not enforced, same as the capture
+    # problems above: the rehearsal mck.sh forces on first contact must be
+    # able to run in a shell that has exported nothing yet.
+    missing_envs = _missing_url_envs(trail["stops"])
+    if missing_envs:
+        if dry_narrate:
+            print("NOTE -- a real ride of this trail would be REFUSED before stop one:")
+        else:
+            print("REFUSING TO RIDE -- this walk needs URLs your environment does not have:")
+        for stop_name, var_name in missing_envs:
+            print(f"  - stop {stop_name!r} needs {var_name}")
+        print("  Export each one, then ride again:")
+        seen = set()
+        for _stop_name, var_name in missing_envs:
+            if var_name in seen:
+                continue
+            seen.add(var_name)
+            print(f"    export {var_name}='https://...'")
+        if dry_narrate:
+            print("  (--dry-narrate continues anyway; nothing will open.)")
+        else:
+            print("  Nothing opened, nothing was spoken, nothing was written.")
+            return 2
     guided_browser_capture = None
     if not dry_narrate:
         from tools.scraper_tools import guided_browser_capture
@@ -401,9 +456,10 @@ async def _ride_async(trail_path, dry_narrate=False):
             print("  (dry-narrate: browser and capture skipped)\n")
             continue
 
-        # A stop carries exactly one of `url` or `url_env`. The url_env path
-        # below is byte-identical to what it always was, including the message
-        # that names the missing variable.
+        # A stop carries exactly one of `url` or `url_env`. The PRE-FLIGHT
+        # above has already checked every url_env for a real ride, so this
+        # branch is the belt to those braces: it can only fire if the
+        # environment changed under a running ride. The message is unchanged.
         url = stop.get("url")
         if url is None:
             url_env = stop["url_env"]
