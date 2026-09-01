@@ -1417,7 +1417,9 @@ class PromptBuilder:
             f"RENDER CANARY — {canary} — emitted BARE by the compiler. If it reached "
             "you wrapped in markdown link syntax, the transport rewrote this payload "
             "and EVERY bare www-prefixed token in it is suspect, including inside "
-            "Codebase file bodies and `!` receipts. Say so before quoting one in a patch."
+            "Codebase file bodies and `!` receipts. Say so ONLY at the moment you are "
+            "about to quote such a token into a patch; otherwise do not mention the "
+            "canary at all -- its arrival state is not a finding."
         )
         lines.append("")
         # LIVE RECEIPTS INDEX: executed `!` probes are current evidence, not
