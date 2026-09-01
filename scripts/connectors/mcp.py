@@ -645,7 +645,8 @@ def main():
         else:
             arm_receipt(args.server, "tools/list", auth_env=token_name,
                         auth_scheme=args.auth_scheme)
-            list_tools(client, args.server, args.max)
+            list_tools(client, args.server, args.max,
+                       schema=args.schema, max_bytes=args.max_bytes)
 
 
 if __name__ == "__main__":
