@@ -346,6 +346,26 @@ async def _ride_async(trail_path, dry_narrate=False):
     guided_browser_capture = None
     if not dry_narrate:
         from tools.scraper_tools import guided_browser_capture
+        # QUIET ON SUCCESS, LOUD ON FAILURE (2026-09-01, the first real ride).
+        # scraper_tools narrates every step through loguru at INFO, and this
+        # rider ALREADY narrates the ride in its own voice -- the spoken
+        # guidance, the CAPTURE prompt, the "Captured. final_url=" receipt --
+        # so the first jira_for_you ride printed fifteen INFO lines saying
+        # what the rider had just said. Two narrators, one story. The floor
+        # moves to WARNING for the ride only: provenance fallbacks, driver
+        # failures and CDP misses still print, because those change what the
+        # capture MEANS. PIPULATE_RIDE_LOG=INFO restores the chatter when a
+        # ride needs debugging. print() output is untouched: the summoning
+        # art and both fences ride on it, and it is the human's channel.
+        try:
+            from loguru import logger as _ride_log
+            _ride_log.remove()
+            _ride_log.add(
+                sys.stderr,
+                level=os.environ.get("PIPULATE_RIDE_LOG", "WARNING"),
+            )
+        except Exception:
+            pass
 
     stops = trail["stops"]
     print(f"Riding trail '{trail['name']}' -- {len(stops)} stop(s).\n")
