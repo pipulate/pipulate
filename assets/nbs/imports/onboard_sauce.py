@@ -977,7 +977,26 @@ def reveal_system_architecture():
     from rich.text import Text
     
     console = Console()
-    lens_art = """
+    # RAW ON PURPOSE (convicted 2026-09-01, macOS first contact). This art
+    # carries \- and backslash-space sequences, which Python 3.12 reports as
+    # SyntaxWarning: invalid escape sequence. It RENDERS CORRECTLY TODAY only
+    # because an unrecognized escape currently falls through as a literal
+    # backslash plus the next character -- a behavior scheduled to become a
+    # SyntaxError. So the art was right by accident and the file was one
+    # Python release from refusing to import.
+    # THE r PREFIX CHANGES NO BYTES. Every sequence here is already being
+    # treated literally, so the panel below is byte-identical before and
+    # after; the only thing that changes is that Python stops objecting.
+    # PLACEMENT IS WHY IT MATTERED. This module is imported by the FIRST cell
+    # of Onboarding.ipynb, so the warning printed above everything else on a
+    # stranger's very first keypress, naming a file path they had never heard
+    # of, at the one moment they cannot tell noise from failure.
+    # THE INSTRUMENT WAS ALREADY REPORTING IT. apply.py's AST airlock compiles
+    # candidate content before writing, so every `app` against this file
+    # printed `<unknown>:985: SyntaxWarning` -- correct line number, three
+    # times in one ride -- and the `<unknown>` filename made it read as the
+    # TOOL complaining about itself rather than as a finding about this file.
+    lens_art = r"""
   Idea --> Lens 1   -->   Lens 2  -->  Lens 3  -> Lens 4 -> Lens 5
 
      -----> ,--.
