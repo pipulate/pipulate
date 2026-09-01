@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "name": "jira_for_you",
+  "description": "Top of the ticket loop: one stop, your Jira For You page on the assigned tab. Sign in if asked (SETTLE), choose the ticket you will close next, CAPTURE, done. The ticket id is deliberately NOT in this URL; it is what you harvest at the stop. Ride: mothercat assets/trails/jira_for_you.yaml, or walk jira_for_you",
+  "defaults": {
+    "take_screenshot": false,
+    "headless": false,
+    "is_notebook_context": false,
+    "persistent": true,
+    "profile_name": "default",
+    "verbose": true,
+    "override_cache": true,
+    "delay_range": null
+  },
+  "stops": [
+    {
+      "name": "for_you",
+      "label": "Jira For You, assigned tab",
+      "guidance": "One stop. A visible browser opens on your Jira For You page, assigned tab. If Atlassian asks you to sign in, sign in. That session stays in this browser profile, so next time it will not ask. Look down the list and choose the ticket you are going to close next, and note its key. Then return to this terminal and type the capture word.",
+      "url": "https://botify.atlassian.net/jira/for-you?tab=assigned",
+      "target_slot": "jira_issue_key",
+      "harvest_regex": "^[A-Z][A-Z0-9]+-[0-9]+$",
+      "connector": {
+        "script": "scripts/connectors/jira.py",
+        "argv": ["{harvested}"],
+        "read_only": true
+      }
+    }
+  ]
+}
