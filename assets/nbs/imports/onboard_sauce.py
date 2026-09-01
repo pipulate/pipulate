@@ -1406,7 +1406,7 @@ def render_mode_selector(job_id: str = DEFAULT_JOB_ID):
     display(widgets.VBox([mode_widget, submit_btn, out]))
 
 
-def is_fast_track(job_id: str = "onboarding_01") -> bool:
+def is_fast_track(job_id: str = DEFAULT_JOB_ID) -> bool:
     """Cheap predicate so any downstream cell can glide instead of doing heavy work."""
     from pipulate import wand
     return bool(wand.get(job_id, "fast_track"))
