@@ -82,6 +82,7 @@ DOOR_TWO_WORDS = (
     ("sources", "see what this shell can reach outside this machine"),
     ("brief", "compile this workshop into your clipboard for an AI"),
     ("pu", "change your mind and start the app server after all"),
+    ("menu", "print this list again once it scrolls away"),
 )
 # Spelled out because "four words wait" reads better than "4 words wait".
 # The digit fallback means a word count past seven degrades to something
