@@ -696,11 +696,11 @@ function mount_sandworm()
     -- protecting existing prose. Either way the cursor lands in insert mode
     -- right after the speaker label — the old i**Me**: feel, full saddle.
     local template = "**Me**: \n\n"
-        .. "**1: Probe** (before):\n\n"
+        .. "**1: Probe** (the before \"read\"):\n\n"
         .. "```bash\n[Paste terminal output of running probe here]\n```\n\n"
-        .. "**2: Context** (after):\n\n"
+        .. "**2: Context** (the after \"read\"):\n\n"
         .. "```text\n[Paste entire `adhoc.txt` here]\n```\n\n"
-        .. "**3: Patches** (experiment): \n\n"
+        .. "**3: Patches** (the experiment between the reads): \n\n"
         .. "```diff\n[Paste all diffs drag-copied from terminal here]\n```\n\n"
         .. "Ignition, sed, `nix develop`, etc. Checks before `ahc` experiment.\n\n"
         .. "**4: Prompt**: \n\n"
