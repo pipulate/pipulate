@@ -1646,6 +1646,7 @@ pyproject.toml              # <-- The PyPI Packaging details
 # assets/trails/public_walk.yaml         # profile default; SETTLE trivial; RIDDEN 2026-08-01
 # assets/trails/first_context.yaml       # profile default; SETTLE real; UNRIDDEN
 # assets/trails/botify_pageworkers.yaml  # profile botify; SETTLE real; UNRIDDEN
+# assets/trails/jira_for_you.yaml        # profile default; SETTLE real (Atlassian sign-in); top of the ticket loop; UNRIDDEN
 # tests/test_mck_rep2.py      # <-- Rep 2: the earmark's owed side-by-side witness
 # assets/installer/mck.sh     # <-- THE LAUNCHER: curl -fsSL pipulate.com/mck.sh | bash
 # assets/installer/replay.sh  # <-- OFF the roster 2026-08-01; re-add needs syntax + one ride + a pinned verifier fetch
