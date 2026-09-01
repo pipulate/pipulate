@@ -51,11 +51,11 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,432 already-written articles about this repo at MikeLev.in (Public)
+# There are 1,433 already-written articles about this repo at MikeLev.in (Public)
 # Velocity: 25 published in the last 7 days
-# Markdown negotiated: 2,267 reads (0.21% of all responses)
-# DOM hydration: 2885 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-09-01T01:03Z
+# Markdown negotiated: 2,269 reads (0.21% of all responses)
+# DOM hydration: 2886 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
+# Honeybot telemetry fetched 2026-09-01T10:16Z
 # --- END STATS ---
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
 # 2026-09-01 menu recall car: boot_menu.py --recall + flake.nix menu(); hook-text probe 0 -> 1; recall list absent -> five words, exit 0 on BOTH sides so the printed list is the discriminator; rg 'four words|three words' 4 hits before and after, all historical prose, so the README/AGENTS stale-count follow-up is DISCHARGED UNOPENED.
@@ -1384,49 +1384,46 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # --- START `adhoc.txt` TEMPLATE ---
 
-# adhoc.txt    _   _   _ to set context____ _   _  ___  ____  _   <F5> Simpson Couch Gag Here (explain anything to the audience you feel needs it explained)
+# adhoc.txt    _   _   _ to set context____ _   _  ___  ____  _   Simpson Couch Gag Here (explain anything to the audience you feel needs it explained)
 #     / \   __| | | | | | ___   ___   / ___| | | |/ _ \|  _ \| |  
-# ahe/ _ \ / _` | | |_| |/ _ \ / __| | |   | |_| | | | | |_) | |  Make some unexpected connection
+# ahe/ _ \ / _` | | |_| |/ _ \ / __| | |   | |_| | | | | |_) | |  Adjusting the order here for rapid context-setting with storytelling
 # ahc ___ \ (_| | |  _  | (_) | (__  | |___|  _  | |_| |  __/|_|  
 #  /_/   \_\__,_| |_| |_|\___/ \___|  \____|_| |_|\___/|_|   (_)  
 # Ad Hoc CHOP: The Not-Managed-by-Git Safe-for-Client-Data place  
 
-#    # THE ROLLING PIN BOOK ORE SPINE / FODDER FOR THE BOOK
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
-GLOSSARY.md                 # <-- I think this glossary goes well with the book-ore spine to do world building.
-#    scripts/articles/lsa.py     # <-- Useful for refining commands like `posts`, critical to Second Brain concept.
-#    
-#    # THE QUIRKY AMIGA-LOVING HUMAN
-~/repos/nixos/autognome.py  # <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
-init.lua                    # <-- Daily driver hot-keys that overlap with aliases in flake.nix
-#    
-#    # AGENTIC FRAMEWORK & FOREVER MACHINE BIG FILES
-prompt_foo.py               # <-- Prompt Fu compiler, makes the very README for AGENTS-like payload you're reading right now, but it needs to be more like that
-foo_files.py                # <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops
-#    flake.nix                   # <-- Solves world's WRITE ONCE RUN ANYWHERE problem like Java never could. Also resolves the bootstrap paradox.
-#    
-#    # MAIN ACTUATORS, IaC & NEGATIVE SPACE
-apply.py                    # <-- How can "Web UI" ChatBots edit your code? With this Aider-inspired Player Piano patch applier.
+# OPTIONAL BUT BIG FOR FULL CONTEXT-WINDOW STORYTELLING
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
+# GLOSSARY.md                 # <-- I think this glossary goes well with the book-ore spine to do world building.
+# scripts/articles/lsa.py     # <-- Useful for refining commands like `posts`, critical to Second Brain concept.
+# ~/repos/nixos/autognome.py  # <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
+# init.lua                    # <-- Daily driver hot-keys that overlap with aliases in flake.nix
+ 
+# STILL BIG BUT LESS OPTIONAL (especially flake.nix)
+flake.nix                   # <-- THE ONE BIG THING TO INCLUDE Infrastructure as Code (IaC) tells LLM about your system down to the metal
+# prompt_foo.py               # <-- This very content-compiling system
+# foo_files.py                # <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops
+
+# TINY ILLUMINATING (OK to include every time)
 .gitattributes              # <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
 .gitignore                  # <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
 requirements.in             # <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 __init__.py                 # <-- Master versioning
 pyproject.toml              # <-- The PyPI Packaging details
-cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
-scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
-scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
-#     
-#    # CONTEXT PORTABILITY SYSTEM
-scripts/foo_cartridge.py    # Needs description
-scripts/foo_replay.py       # Needs description
-#     
-#    # FREQUENTLY USEFUL TO HAVE IN CONTEXT
-release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
-scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
-scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
-#    
-#    imports/voice_synthesis.py  # <-- The wand can talk to you
-#    scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
+
+# OPTIONAL ACTUATORS (cheap and good to include to expand the AI's capabilities)
+# cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
+# scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+# scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
+# scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
+# scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
+ 
+# MISCELLANEOUS (rare to include but sometimes critical)
+# scripts/foo_cartridge.py    # Needs description
+# scripts/foo_replay.py       # Needs description
+# release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
+# imports/voice_synthesis.py  # <-- The wand can talk to you
+# imports/ascii_displays.py   # <-- Where all the ASCII Art lives
+# scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
 
 #                         --- Under this line is were you paste what the AI gives you ---
 #                         --- We call it context but it's really just the right-hand  ---
@@ -1434,29 +1431,6 @@ scripts/crawl.py            # <-- Feel free to ask for something to be crawled a
 
 # --- END `adhoc.txt` TEMPLATE ---
 
-# TRYING TO FIGURE ALL THIS OUT
-# The walk-lane roster was duplicated verbatim here. Deleted 2026-08-09: two
-# copies of one roster is the sibling-.md failure standing inside the router
-# that exists to refuse it, and the copies had ALREADY drifted -- neither one
-# named walk_cartridge.py, walk_compile.py or bookmark_import.py, all three of
-# which landed and were ridden while both copies still called the lane unread.
-# ONE ROSTER, and it lives in Chapter VIII-b. Search: MOTHER CAT KATA.
-
-
-# ============================================================================
-# IV. THE WAND🪄 & THE WIZARD🧙‍♂️ - Everything's actually web development these days
-# ============================================================================
-  
-# config.py                   # <-- Centralize every last configuration in here
-# pipulate/__init__.py        # <-- Have wand will travel (between Jupyter & FastHTML via common `.venv`)
-# pipulate/core.py            # <-- The Wand (spells)
-# 
-# # imports/ascii_displays.py   # <-- The common between AI and Humans ASCII art language (contains 3rd player piano for Rich-colorizing ASCII art)
-# imports/voice_synthesis.py  # <-- The wand can talk to you
-# 
-# server.py                   # <-- The Wizard (big!)
-# assets/styles.css           # <-- Those values often get used here for "the look"
-# imports/server_logging.py   # <-- Drawing that ASCII art into radically transparent server logs
 
 # ============================================================================
 # V. THE BOOK DISTILLER - A Choose Your Own Path Adventure, for AI! (overarching story)
@@ -2943,10 +2917,14 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # browser_cache/automation_recipes/README_SAVE_LOAD_AUTOMATION.md  # [1,751 tokens | 7,246 bytes]
 # browser_cache/recipe_executor.py  # [2,848 tokens | 14,661 bytes]
 # browser_cache/review_perception_history.py  # [3,208 tokens | 13,492 bytes]
+# config.py  # [4,137 tokens | 16,212 bytes]
 # imports/ai_tool_discovery_simple_parser.py  # [1,903 tokens | 7,977 bytes]
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
+# imports/server_logging.py  # [6,659 tokens | 31,023 bytes]
+# pipulate/__init__.py  # [721 tokens | 2,998 bytes]
+# pipulate/core.py  # [32,246 tokens | 156,141 bytes]
 # remotes/honeybot/queries/health_db_vitals.sql  # [465 tokens | 1,927 bytes]
 # remotes/honeybot/queries/hydration_family.sql  # [1,736 tokens | 6,756 bytes]
 # remotes/honeybot/queries/hydration_rate.sql  # [1,331 tokens | 5,146 bytes]
@@ -2983,6 +2961,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # scripts/two_arm.py  # [4,674 tokens | 17,818 bytes]
 # scripts/variance_probe.py  # [967 tokens | 3,916 bytes]
 # scripts/webclip_2_markdown.py  # [1,270 tokens | 5,314 bytes]
+# server.py  # [56,349 tokens | 267,882 bytes]
 # tests/test_apply_airlock.py  # [1,636 tokens | 6,925 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
 # tools/connector_tools.py  # [1,041 tokens | 4,247 bytes]
