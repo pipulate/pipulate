@@ -269,10 +269,7 @@ def main() -> int:
     if choice == EXIT_SHELL:
         print("[2] Just the shell. Nothing started -- no JupyterLab, no server.")
         print()
-        print(_count_word(len(DOOR_TWO_WORDS)).capitalize() + " words to start from:")
-        width = max(len(word) for word, _ in DOOR_TWO_WORDS)
-        for word, description in DOOR_TWO_WORDS:
-            print("  " + word.ljust(width) + "   " + description.format(name=name))
+        print_door_two_words(name)
     else:
         print(f"[1] Starting {name}...")
     return choice
