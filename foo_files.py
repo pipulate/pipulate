@@ -51,11 +51,11 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,434 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 26 published in the last 7 days
-# Markdown negotiated: 2,269 reads (0.21% of all responses)
-# DOM hydration: 2886 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-09-01T10:16Z
+# There are 1,435 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 27 published in the last 7 days
+# Markdown negotiated: 2,276 reads (0.21% of all responses)
+# DOM hydration: 2887 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
+# Honeybot telemetry fetched 2026-09-01T20:53Z
 # --- END STATS ---
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
 # 2026-09-01 menu recall car: boot_menu.py --recall + flake.nix menu(); hook-text probe 0 -> 1; recall list absent -> five words, exit 0 on BOTH sides so the printed list is the discriminator; rg 'four words|three words' 4 hits before and after, all historical prose, so the README/AGENTS stale-count follow-up is DISCHARGED UNOPENED.
@@ -2961,7 +2961,7 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # scripts/two_arm.py  # [4,674 tokens | 17,818 bytes]
 # scripts/variance_probe.py  # [967 tokens | 3,916 bytes]
 # scripts/webclip_2_markdown.py  # [1,270 tokens | 5,314 bytes]
-# server.py  # [56,349 tokens | 267,882 bytes]
+# server.py  # [56,372 tokens | 267,986 bytes]
 # tests/test_apply_airlock.py  # [1,636 tokens | 6,925 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
 # tools/connector_tools.py  # [1,041 tokens | 4,247 bytes]
