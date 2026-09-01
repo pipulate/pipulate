@@ -459,7 +459,12 @@ def initialize(client, server):
     if ack is not None and ack.status_code >= 400:
         die(f"mcp RED gate2: server refused notifications/initialized "
             f"(HTTP {ack.status_code}) -- the handshake is incomplete")
-    return session_id, negotiated, result.get("serverInfo") or {}
+    # THE WHOLE RESULT, NOT A SLICE OF IT (2026-09-01). This returned only
+    # serverInfo and discarded `instructions` -- the one field the spec gives
+    # a server to tell a HUMAN how to use it. A stateful server's "call X
+    # first and carry the id it returns" lives exactly there, and the client
+    # whose job is self-discovery was throwing it away unread.
+    return session_id, negotiated, result
 
 
 def print_receipt(server, verb, tool, raw_args, dclass, declared):
