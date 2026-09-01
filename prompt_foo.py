@@ -3373,10 +3373,16 @@ def main():
     # compiler can never observe it directly -- it does the one thing it can:
     # name every token exposed to it, every compile, unprompted.
     #
-    # THE FLOOR IS DELIBERATELY NONZERO. _build_manifest_content emits the
-    # canary bare, so this can never read 0, and a counter that could read 0
-    # forever is indistinguishable from a dead one. Same logic as the White
-    # Rabbit's CRC: a known-good artifact whose mangling IS the alarm.
+    # THE FLOOR MOVED TO ZERO (2026-09-01, operator-convicted as noise). It
+    # was deliberately nonzero: _build_manifest_content plants one bare token,
+    # so this could never read 0, on the theory that a counter able to read 0
+    # forever is indistinguishable from a dead one. In practice it read 1 on
+    # every compile and printed a warning the compiler had authored itself --
+    # the same always-fires shape that got the operator's own email address
+    # pub:-prefixed the same morning. A warning that fires on every run is a
+    # warning nobody reads. The canary is untouched and still does its job:
+    # the MODEL reads it to detect transit linkification. This line now reports
+    # only tokens the compiler did NOT plant, and is silent otherwise.
     # LOOKBEHIND WIDENED (convicted 2026-08-06 by comb shapes F and G): the old
     # spelling excluded a preceding slash, word character, AND dot, and it also
     # demanded THREE or more labels. The live comb rewrote a host carrying a
