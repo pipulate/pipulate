@@ -1352,7 +1352,7 @@ def execute_cloud_analysis(job_id: str, recovered_url: str, active_cloud_model: 
         print("⚠️ Technical Baseline Excel file not found. Did you run the Pandas cell?")
 
 
-def render_mode_selector(job_id: str = "onboarding_01"):
+def render_mode_selector(job_id: str = DEFAULT_JOB_ID):
     """
     The sovereign-agent escape hatch, done as durable state instead of cell-run roulette.
 
