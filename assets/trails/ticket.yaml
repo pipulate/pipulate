@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "name": "ticket",
+  "description": "Stop two of the ticket loop: one ticket, two pages. The Jira issue, then the customer's Botify project. Both URLs come from your environment and never from this file, so the trail is tracked and the customer is not. Write the ticket's exports file, source it, then ride: mothercat assets/trails/ticket.yaml",
+  "defaults": {
+    "take_screenshot": false,
+    "headless": false,
+    "is_notebook_context": false,
+    "persistent": true,
+    "profile_name": "default",
+    "verbose": true,
+    "override_cache": true,
+    "delay_range": null
+  },
+  "stops": [
+    {
+      "name": "issue",
+      "label": "Jira issue",
+      "guidance": "Stop one of two. The ticket itself opens. Read it top to bottom, comments included, so the customer's actual ask is in your head before you look at their data. Then return to this terminal and type the capture word.",
+      "url_env": "PIPULATE_TRAIL_JIRA_URL",
+      "target_slot": "jira_issue_key",
+      "harvest_regex": "^[A-Z][A-Z0-9]+-[0-9]+$",
+      "connector": {
+        "script": "scripts/connectors/jira.py",
+        "argv": ["{harvested}"],
+        "read_only": true
+      }
+    },
+    {
+      "name": "project",
+      "label": "Botify project",
+      "guidance": "Stop two of two. The customer's Botify project opens. Sign in if asked. Land on the view the ticket is about, then return to this terminal and type the capture word. After this capture you are asked once more, with a different word, before anything leaves this machine.",
+      "url_env": "PIPULATE_TRAIL_BOTIFY_URL",
+      "target_slot": "botify_project",
+      "harvest_regex": "^[^/\\s]+/[^/\\s]+$",
+      "connector": {
+        "script": "scripts/connectors/botify.py",
+        "argv": ["{harvested}"],
+        "read_only": true
+      }
+    }
+  ]
+}
