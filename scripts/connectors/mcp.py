@@ -527,7 +527,7 @@ def call_tool(client, server, tool, raw_args, dclass, declared, max_bytes):
         args = json.loads(raw_args) if raw_args.strip() else {}
     except json.JSONDecodeError as e:
         die(f"args-json failed to parse: {e}")
-    session_id, _negotiated, _sinfo = initialize(client, server)
+    session_id, _negotiated, _init = initialize(client, server)
     print_receipt(server, "tools/call", tool, raw_args, dclass, declared)
     resp = post(client, server,
                 {"jsonrpc": "2.0", "id": 1, "method": "tools/call",
