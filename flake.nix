@@ -1221,6 +1221,36 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               (cd "$PIPULATE_ROOT" && .venv/bin/python cli.py call "$@")
             fi
           }
+          # THE RECALL WORD. The door-two list prints ONCE, at the moment of
+          # choice, and then scrolls away under whatever the human does next.
+          # `menu` prints it again from the SAME tuple (DOOR_TWO_WORDS in
+          # boot_menu.py), so the reminder can never drift from the original.
+          #
+          # A DISPLAY, NEVER A SECOND THRESHOLD, and the exit code is the whole
+          # argument. boot_menu.py FAILS OPEN by design: no tty,
+          # PIPULATE_BOOT_MENU=0, or any unexpected exception all return 0,
+          # which means START THE APP. That polarity is correct at the
+          # threshold, where blocking would strand an unattended nix develop.
+          # At a PROMPT it inverts: a menu that branched on exit 0 would start
+          # a server every time it ran without a tty -- including inside
+          # prompt_foo's `!` executor, where stdout is a pipe, and `pu` would
+          # then pkill the running server, start a new one in the foreground,
+          # and hold the compile until the 180s process-group kill. So nothing
+          # here reads the exit status, and --recall returns before the isatty
+          # gate is ever reached. Door 1 already has a word here: `pu`.
+          #
+          # A FUNCTION, not writeShellScriptBin (THE THREE-TIER AMENDMENT):
+          # only a human types this, and no child shell needs to resolve it.
+          # That also makes it structurally invisible to the `!` executor, so
+          # `type menu` can only ever be witnessed by a human at a real
+          # prompt; the straddle reads the generated hook text instead.
+          menu() {
+            if [ -f "$PIPULATE_ROOT/scripts/boot_menu.py" ]; then
+              "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/boot_menu.py" --recall
+            else
+              echo "menu: scripts/boot_menu.py has not landed in this checkout."
+            fi
+          }
           # THE THIRD DOOR: `pu` starts the server door 2 declined to start.
           # Kill-then-start, so it doubles as a restart and never collides on
           # :5001 -- the same pkill runScript has always run on shell entry.
