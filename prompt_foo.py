@@ -3396,9 +3396,12 @@ def main():
     # positive costs one noisy word and a false negative costs a wrong edit.
     # UNTESTED and therefore over-reported on purpose: a word character
     # immediately before the prefix. It rides the next comb as shape J.
+    # Assembled from fragments for the same reason the emitter is: this file
+    # must never carry a bare www-token of its own.
+    _canary = "www." + "canary" + ".invalid"
     autolink_bait = sorted(set(re.findall(
         r'(?<!http://)(?<!https://)www\.[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*', final_output
-    )))
+    )) - {_canary})
     if autolink_bait:
         preview = ", ".join(autolink_bait[:5])
         if len(autolink_bait) > 5:
