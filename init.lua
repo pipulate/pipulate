@@ -702,7 +702,7 @@ function mount_sandworm()
         .. "```text\n[Paste entire `adhoc.txt` here]\n```\n\n"
         .. "**3: Patches** (experiment): \n\n"
         .. "```diff\n[Paste all diffs drag-copied from terminal here]\n```\n\n"
-        .. "Ignition, sed or post-patch-pre-`ahc` probes here.\n\n"
+        .. "Ignition, sed, `nix develop`, etc. Checks before `ahc` experiment.\n\n"
         .. "**4: Prompt**: \n\n"
         .. "```text\n[Probably what the AI gives you, but think for yourself!]\n```\n\n"
         .. "**5: Deliverables**: [external artifacts, updates to this system or 'None this turn']"
@@ -737,7 +737,7 @@ function hop_off_sandworm()
         vim.fn.setpos('.', original_pos)
         return
     end
-    local dismount = "**Me**: Hop off the worm. This ride's stated goal is reached — dismount.\n"
+    local dismount = "Hop off the ride. This ride's stated goal is reached — dismount.\n"
         .. "This is the NOTARY BEAT: the ride ends here, is witnessed here, and is\n"
         .. "sealed here. Answer all seven beats, briefly:\n\n"
         .. "0. TLDR: a short, dry, neutral abstract for the TOP of the published\n"
