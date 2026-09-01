@@ -1652,6 +1652,7 @@ pyproject.toml              # <-- The PyPI Packaging details
 # assets/trails/first_context.yaml       # profile default; SETTLE real; UNRIDDEN
 # assets/trails/botify_pageworkers.yaml  # profile botify; SETTLE real; UNRIDDEN
 # assets/trails/jira_for_you.yaml        # profile default; SETTLE real (Atlassian sign-in); top of the ticket loop; RIDDEN 2026-09-01
+# assets/trails/ticket.yaml              # profile default; SETTLE real; url_env x2 (JIRA, BOTIFY) fed by one gitignored exports file per ticket under Notebooks/Client_Work/tickets/; stop two of the ticket loop; RIDDEN 2026-09-01 to stop 1 then REFUSED at stop 2 on an unset url_env, Linux and Mac -- the ride that bought the rider its PRE-FLIGHT. RULING: the connector does NOT run at DECANT (DECANT gates only CAPTURE-fenced material; API auth is a different wallet; the rider never harvests). The bridge to the issue text is a ! line in adhoc.txt.
 # tests/test_mck_rep2.py      # <-- Rep 2: the earmark's owed side-by-side witness
 # assets/installer/mck.sh     # <-- THE LAUNCHER: curl -fsSL pipulate.com/mck.sh | bash
 # assets/installer/replay.sh  # <-- OFF the roster 2026-08-01; re-add needs syntax + one ride + a pinned verifier fetch
