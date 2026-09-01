@@ -4819,6 +4819,7 @@ async def send_startup_environment_message():
                         aa.reading_legend()
                         aa.system_diagram()
                         pipulate.figurate("white_rabbit")
+                        logger.info(f"🌐 OPEN THIS LINK--> http://localhost:5001/ <--OPEN THIS LINK")
 
                         # Mark as sent in coordination system
                         message_coordination['endpoint_messages_sent'].add(message_id)
