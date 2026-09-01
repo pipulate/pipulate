@@ -770,8 +770,9 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # green end to end -- three stops, three CAPTURE fences, three wire-provenance
 # captures, one DECANT bundle to the clipboard. That half of the OWES is
 # discharged. STILL OWED: (1) the fence-vs-lean-back discrimination shared with
-# the VARIANCE-SUPPRESSION RULE; (2) an AUTHENTICATED ride -- public_walk needs
-# no credential, so SETTLE was witnessed only in its trivial form.
+# the VARIANCE-SUPPRESSION RULE. DISCHARGED 2026-09-01: (2) the authenticated
+# ride -- jira_for_you captured and decanted a logged-in Jira page on profile
+# default, SETTLE in its non-trivial form, sign-in moment unrecorded.
 # THE SEED REDUCTION (30-and-3 banked 2026-08-01; the fan-out lives in the
 # article, only the three survivors live here, per the rule that a reduction
 # written down is a traversal never repeated):
@@ -1603,10 +1604,14 @@ pyproject.toml              # <-- The PyPI Packaging details
 # re-sealed to identical digests 2026-08-07; the DECANT egress fence and the
 # consent surface landed 2026-08-07; a filled authoring surface compiled to a
 # trail that walk.py loaded unmodified 2026-08-09.
-# STILL OWED: an AUTHENTICATED ride (public_walk needs no credential, so SETTLE
-# is witnessed only in its trivial form), a signature over the sealed manifest,
-# and ONE TRAIL PER AUTH KIND -- none / OAuth / API-key -- each findable by
-# name FROM THIS CHAPTER. That last one is what this chapter is for.
+# THE AUTHENTICATED-RIDE DEBT IS DISCHARGED (2026-09-01): jira_for_you captured
+# a logged-in Jira page on profile default -- final_url exact, so no
+# id.atlassian.com redirect -- and DECANTED it. Whether the sign-in happened
+# inside the ride or was inherited from the warmed profile is UNRECORDED; the
+# next ride on a cold profile records it.
+# STILL OWED: a signature over the sealed manifest, and ONE TRAIL PER AUTH
+# KIND -- none / OAuth / API-key -- each findable by name FROM THIS CHAPTER.
+# That last one is what this chapter is for.
 # THE PATHS BELOW STAY COMMENTED ON PURPOSE: a commented path costs zero
 # payload tokens and still drops the file out of the Paintbox, because
 # update_paintbox_in_place strips the leading hash before deciding a path is
@@ -1646,7 +1651,7 @@ pyproject.toml              # <-- The PyPI Packaging details
 # assets/trails/public_walk.yaml         # profile default; SETTLE trivial; RIDDEN 2026-08-01
 # assets/trails/first_context.yaml       # profile default; SETTLE real; UNRIDDEN
 # assets/trails/botify_pageworkers.yaml  # profile botify; SETTLE real; UNRIDDEN
-# assets/trails/jira_for_you.yaml        # profile default; SETTLE real (Atlassian sign-in); top of the ticket loop; UNRIDDEN
+# assets/trails/jira_for_you.yaml        # profile default; SETTLE real (Atlassian sign-in); top of the ticket loop; RIDDEN 2026-09-01
 # tests/test_mck_rep2.py      # <-- Rep 2: the earmark's owed side-by-side witness
 # assets/installer/mck.sh     # <-- THE LAUNCHER: curl -fsSL pipulate.com/mck.sh | bash
 # assets/installer/replay.sh  # <-- OFF the roster 2026-08-01; re-add needs syntax + one ride + a pinned verifier fetch
