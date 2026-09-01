@@ -2,7 +2,7 @@
 
 > Auto-generated on 2026-08-31. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1428 entries indexed.
+> 1432 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -96,6 +96,10 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-08-31] [Taking It from the Top: Designing a Frictionless Command-Line Workshop](https://mikelev.in/futureproof/taking-it-from-top-frictionless-command-line-workshop/index.md)
+- [2026-08-31] [The Notary Beat: Engineering Session Finality in AI Workflows](https://mikelev.in/futureproof/the-notary-beat-session-finality-ai-workflows/index.md)
+- [2026-08-31] [The Flat Environment: Demystifying Linux Terminal Variables and Secret Management](https://mikelev.in/futureproof/flat-environment-linux-terminal-variables-secret-management/index.md)
+- [2026-08-31] [The Terminal Is the Config: Connecting Raw MCP Servers in the Age of AI](https://mikelev.in/futureproof/the-terminal-is-the-config-mcp-servers/index.md)
 - [2026-08-31] [The Pachinko Mirror: Engineering Deterministic AI Workflows Through Fan-Out and Reduction](https://mikelev.in/futureproof/the-pachinko-mirror-engineering-deterministic-ai-workflows/index.md)
 - [2026-08-30] [Compiling the Forever Machine: Reducing Router Bloat with Key-Value Mappings](https://mikelev.in/futureproof/compiling-the-forever-machine-router-optimization/index.md)
 - [2026-08-30] [The Rule of Silence: Engineering Quiet AI Workflows with Unix](https://mikelev.in/futureproof/rule-of-silence-engineering-quiet-ai-workflows/index.md)
@@ -112,25 +116,25 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-08-28] [Closing the Slack Loop: Local-First Credential Mastery in the Age of AI](https://mikelev.in/futureproof/closing-the-slack-loop-credential-mastery/index.md)
 - [2026-08-27] [The Epistemic Exoskeleton: Engineering Deterministic AI Workflows Without Metaphysics](https://mikelev.in/futureproof/epistemic-exoskeleton-engineering-deterministic-ai-workflows/index.md)
 - [2026-08-27] [Navigating the Slack API Tax: Bureaucracy, Token Granularity, and the Age of AI](https://mikelev.in/futureproof/navigating-slack-api-tax-token-granularity/index.md)
-- [2026-08-26] [The Walk Ladder: Progressive Disclosure and the Art of the Short Command](https://mikelev.in/futureproof/the-walk-ladder-progressive-disclosure-and-the-art-of-the-short-command/index.md)
-- [2026-08-25] [Dual-Lane Trail Design: Widening the Stop Schema for Public Walks](https://mikelev.in/futureproof/dual-lane-trail-design-schema-widening/index.md)
-- [2026-08-25] [When Defensive Abstractions Outrun the Rider](https://mikelev.in/futureproof/defensive-abstractions-outrun-the-rider/index.md)
-- [2026-08-25] [Closing the Loop: Replacing Vibe-Coding with Deterministic AI Workflows](https://mikelev.in/futureproof/replacing-vibe-coding-deterministic-workflows/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-08-26] [110k] the-walk-ladder-progressive-disclosure-and-the-art-of-the-short-command
+- [2026-08-25] [219k] dual-lane-trail-design-schema-widening
+- [2026-08-25] [115k] defensive-abstractions-outrun-the-rider
+- [2026-08-25] [318k] replacing-vibe-coding-deterministic-workflows
 - [2026-08-24] [43k] paste-what-you-have-composable-text-commands
 - [2026-08-22] [79k] finding-root-from-filesystems-and-amigas-to-luca
 - [2026-08-21] [139k] ghost-in-the-compiler-honest-telemetry-ai
-- [2026-08-21] [153k] a-defense-that-has-never-refused-anything-is-a-comment-with-good-pressure
+- [2026-08-21] [154k] a-defense-that-has-never-refused-anything-is-a-comment-with-good-pressure
 - [2026-08-20] [71k] artifact-light-cone-epistemology-ai
 - [2026-08-19] [111k] interface-didnt-get-worse-you-got-better
 - [2026-08-16] [40k] engineering-the-frame-evidence-based-ai-workflows
-- [2026-08-13] [24k] kantian-units-biological-selves
+- [2026-08-13] [25k] kantian-units-biological-selves
 - [2026-08-13] [15k] disposable-fine-unreproducible-trap
-- [2026-08-08] [177k] closing-the-loop-deterministic-ai-workflows
+- [2026-08-08] [178k] closing-the-loop-deterministic-ai-workflows
 - [2026-08-08] [430k] cartridge-and-authoring-surface-bookmark-compiler
 - [2026-08-07] [508k] ratcheting-software-architecture-egress-barriers
 - [2026-08-06] [163k] the-notary-beat-session-finality
@@ -158,14 +162,14 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-07-30] [36k] shifting-gears-fresh-compiles-ai
 - [2026-07-30] [177k] talking-frog-two-witness-gate
 - [2026-07-29] [58k] diamond-age-primer-variance-suppression
-- [2026-07-29] [152k] operation-stick-bug-flight-data-recorder
-- [2026-07-29] [286k] building-the-black-box-oauth-fdr-ai-workflows
+- [2026-07-29] [153k] operation-stick-bug-flight-data-recorder
+- [2026-07-29] [287k] building-the-black-box-oauth-fdr-ai-workflows
 - [2026-07-29] [71k] mother-cat-kata-bounding-ai-context-wire-truth
 - [2026-07-28] [270k] mother-cat-kata-browser-flight-recorder
 - [2026-07-28] [161k] physics-boundaries-ai-sycophancy-crawler-state
 - [2026-07-27] [28k] dayton-wind-tunnel-auth-capture-mother-cat
 - [2026-07-27] [94k] amiga-metaphor-engineering-reproducible-ai-workflows
-- [2026-07-27] [49k] engineering-the-second-brain-high-signal-storytelling
+- [2026-07-27] [50k] engineering-the-second-brain-high-signal-storytelling
 - [2026-07-27] [796k] bridging-browser-automation-and-reproducible-ai-workflows
 - [2026-07-27] [218k] the-forcing-pair-30-and-3-and-axis-forcing
 - [2026-07-27] [50k] mother-cat-path-consolidating-entry-points-ai-workflows
@@ -179,7 +183,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-07-25] [459k] fasthtml-upgrade-ast-refactoring
 - [2026-07-25] [488k] dayton-mcp-wind-tunnel-evidence-ladder
 - [2026-07-25] [104k] command-line-context-line-unix-ai
-- [2026-07-24] [144k] put-the-whole-problem-на-the-bench
+- [2026-07-24] [145k] put-the-whole-problem-на-the-bench
 - [2026-07-24] [81k] the-root-element-engineering-deterministic-ai-context-trees
 - [2026-07-24] [42k] cartridge-and-transcript-replayable-ai-context
 - [2026-07-23] [282k] installing-claude-desktop-on-nixos
@@ -187,7 +191,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-07-23] [176k] interactive-thresholds-deterministic-boot-menus-nix
 - [2026-07-22] [17k] what-the-cartridge-cant-sign
 - [2026-07-22] [262k] warming-the-connector-wallet
-- [2026-07-22] [14k] sorcerer-not-the-apprentice
+- [2026-07-22] [15k] sorcerer-not-the-apprentice
 - [2026-07-22] [394k] endosymbiotic-loop-deterministic-ai-workflows
 - [2026-07-22] [236k] the-honest-seam-artifact-driven-continuity
 - [2026-07-22] [135k] the-map-is-not-the-territory-debugging-ai-blindness
@@ -200,7 +204,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-07-20] [73k] llm-optics-wire-truth-automation
 - [2026-07-20] [153k] nixos-chromedriver-hyphen-fix-weblogin
 - [2026-07-20] [158k] spreadsheet-audit-blueprint
-- [2026-07-20] [93k] stack-and-sentinel-sheet-acquisition
+- [2026-07-20] [94k] stack-and-sentinel-sheet-acquisition
 - [2026-07-20] [197k] automating-truth-adversarial-qa-sheets
 - [2026-07-20] [60k] apprentice-machine-heart-workflow
 - [2026-07-20] [179k] mechanical-sympathy-agentic-workflows
@@ -210,7 +214,7 @@ Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futurepr
 - [2026-07-19] [196k] popper-governance-falsification-software-architecture
 - [2026-07-18] [221k] deterministic-ai-workflows-cartridges
 - [2026-07-18] [174k] second-interpreter-rule-engineering-ai-workflows
-- [2026-07-17] [235k] engineering-deterministic-context-ai-workflows
+- [2026-07-17] [236k] engineering-deterministic-context-ai-workflows
 - [2026-07-17] [131k] mutation-trace-cause-deterministic-exoskeleton
 - [2026-07-16] [131k] constraint-as-catalyst
 - [2026-07-15] [76k] llm-optics-evidence-based-crawling
