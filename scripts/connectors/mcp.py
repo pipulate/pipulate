@@ -565,7 +565,7 @@ def check(server, token_env, scheme="Bearer"):
     arm_receipt(server, "check", auth_env=token_name, auth_scheme=scheme)
     try:
         with make_client(token, scheme) as client:
-            session_id, negotiated, _sinfo = initialize(client, server)
+            session_id, negotiated, _init = initialize(client, server)
             resp = post(client, server,
                         {"jsonrpc": "2.0", "id": 1, "method": "tools/list"},
                         session_id)
