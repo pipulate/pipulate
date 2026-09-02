@@ -49,6 +49,13 @@ STOP_FIELDS = {
 # STOP_FIELDS per stop, so unknown-key rejection is unchanged: a stop is still
 # checked against a complete, exact field set, just one assembled per stop.
 STOP_URL_FIELDS = {"url", "url_env"}
+# OPTIONAL STOPS (2026-09-02). A walk is a linear pipeline and not every stop
+# carries the baton: the Jira issue is required, the customer's Botify project
+# is not. `optional: true` on a url_env stop means an unset variable SKIPS the
+# stop instead of refusing the ride. Kept out of STOP_FIELDS for the same
+# reason STOP_URL_FIELDS is: _exact demands a complete set, so the key is
+# unioned in per stop only when present, and unknown-key rejection is intact.
+STOP_OPTIONAL_FIELDS = {"optional"}
 CONNECTOR_FIELDS = {"script", "argv", "read_only"}
 BOOL_DEFAULTS = {
     "take_screenshot", "headless", "is_notebook_context", "persistent",
