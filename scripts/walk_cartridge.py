@@ -219,6 +219,7 @@ def _derive_consent_surface(trail_bytes):
 
     stop_names = []
     url_envs = set()
+    optional_url_envs = set()
     connector_scripts = set()
     direct_urls = []
 
