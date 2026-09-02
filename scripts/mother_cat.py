@@ -388,7 +388,17 @@ async def _ride_async(trail_path, dry_narrate=False):
     # --dry-narrate it is disclosed and not enforced, same as the capture
     # problems above: the rehearsal mck.sh forces on first contact must be
     # able to run in a shell that has exported nothing yet.
-    missing_envs = _missing_url_envs(trail["stops"])
+    # OPTIONAL FIRST, AS A DISCLOSURE: the skips are named before any refusal
+    # so the human reads the whole shape of the ride in one screen. A skipped
+    # stop is not a failure and does not read like one.
+    missing_envs, optional_missing = _missing_url_envs(trail["stops"])
+    skip_vars = dict(optional_missing)
+    if optional_missing:
+        print("SKIPPING optional stop(s) -- their URLs are not in your environment:")
+        for stop_name, var_name in optional_missing:
+            print(f"  - stop {stop_name!r} is optional; {var_name} is unset, so it will be SKIPPED")
+        print("  Export it and ride again to include that stop.")
+        print("")
     if missing_envs:
         if dry_narrate:
             print("NOTE -- a real ride of this trail would be REFUSED before stop one:")
