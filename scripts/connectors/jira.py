@@ -151,6 +151,19 @@ def normalize_query(arg):
         "  https://<site>.atlassian.net/jira/software/c/projects/PROJ/boards/1\n"
         "Pass the key itself (PROJ-123 or PROJ) for any other shape.\n"
     )
+    # THE AMPUTATED URL (convicted 2026-09-02). An UNQUOTED for-you URL
+    # reached here as .../for-you?tab=assigned -- bash had read the `&`
+    # as its background operator, printed a job number, and executed
+    # `selectedIssue=PS-10559` as a variable assignment nobody read. The
+    # refusal above was correct for the argv it got and wrong about the
+    # cause: the shape was fine, the shell ate half of it. The signature
+    # is a query string with NO `&` in it, which a browser-copied Jira URL
+    # almost never has; a short legitimate URL still refuses quietly.
+    if parsed.query and '&' not in parsed.query:
+        sys.stderr.write(
+            "Hint: if the shell printed a job number like [1] NNNN, it split\n"
+            "the URL at an unquoted `&`. Wrap the whole URL in single quotes.\n"
+        )
     sys.exit(1)
 
 
