@@ -431,6 +431,8 @@ def build_plan(trail, supplied_values):
             "guidance": stop["guidance"],
             "url_env": url_env,
             "url": url or None,
+            "optional": bool(stop.get("optional")),
+            "skipped": skipped,
             "target_slot": stop["target_slot"],
             "harvest_regex": stop["harvest_regex"],
             "match_mode": "fullmatch",
