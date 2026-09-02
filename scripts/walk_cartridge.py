@@ -532,6 +532,8 @@ def _print_surface(surface, indent="    "):
         print(f"{indent}opens directly    {', '.join(surface['direct_urls'])}")
     if surface.get("url_envs"):
         print(f"{indent}demands of you    {', '.join(surface['url_envs'])}")
+    if surface.get("optional_url_envs"):
+        print(f"{indent}optional, if set  {', '.join(surface['optional_url_envs'])}")
     print(f"{indent}names as runnable {', '.join(surface['connector_scripts'])}")
     browser = surface["browser"]
     print(
