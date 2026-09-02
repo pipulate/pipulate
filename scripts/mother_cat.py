@@ -344,6 +344,10 @@ def _announce_consent(trail_path):
         print(f" it opens directly  {', '.join(surface['direct_urls'])}")
     if surface.get("url_envs"):
         print(f" URLs YOU supply    {', '.join(surface['url_envs'])}")
+    # Same derivation, one more row. Unset here SKIPS a stop and says so in
+    # the PRE-FLIGHT above; unset in the row above REFUSES the ride.
+    if surface.get("optional_url_envs"):
+        print(f" optional, if set   {', '.join(surface['optional_url_envs'])}")
     print(f" names as runnable  {', '.join(surface['connector_scripts'])}")
     print(
         f" browser profile    {browser['profile_name']!r}"
