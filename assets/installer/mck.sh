@@ -502,7 +502,9 @@ if [ "$RIDE_RC" -eq 0 ]; then
 --------------------------------------------------------------
    RIDE COMPLETE
 --------------------------------------------------------------
- Every stop produced a capture receipt.
+ Every stop that OPENED produced a capture receipt. An optional
+ stop whose URL you had not exported was skipped; the rider
+ said which, above, and the bundle lists it as skipped.
 
  Whether the bundle LEFT this machine depends on the DECANT
  gate you just answered. This script cannot see your clipboard,
