@@ -6,6 +6,8 @@ actuating side of the Mother Cat Kata:
 
   PRE-FLIGHT               -- every url_env the WHOLE walk needs is checked
                               before anything opens, speaks, or writes.
+                              Required and unset REFUSES; optional and unset
+                              SKIPS that stop and says so.
   NARRATE                  -- Piper reads the stop guidance, best-effort.
   SETTLE + FENCE + CAPTURE -- guided_browser_capture opens the persistent,
                               visible browser and requires the human CAPTURE
