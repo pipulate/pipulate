@@ -1204,6 +1204,15 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # THE DOOR NUMBER IS THE KEYPRESS RECEIPT: a raw-mode menu prints the choice class it acted on, or the transcript shows a decision with no cause.
 # ARMS MUST BE SYMMETRIC: a registry that contains execute_shell_command can escape into the shell arm; the experiment withholds it and wraps each connector 1:1 from the same docstring.
 
+# THE REWRITE TAX (banked 2026-09-02). A history rewrite on a repo whose
+# installer auto-pulls --ff-only breaks the auto-update on EVERY existing
+# install until each is hand-reset (git fetch origin && git reset --hard
+# origin/main) or rebuilt (rm -rf and reinstall -- the disposable workshop is
+# the cheap path and the reason it was affordable). It also orphans every
+# commit hash from the rewrite point forward, including the ones published
+# article ledgers link to. A rewrite is a clean-up, never an un-publish: forks,
+# prior clones and host caches keep the blob. Price these BEFORE the push.
+
 # STORY ENGINE
 # Mike-E's gift is associative reach; his flaw is letting every spark become canon.
 # Yen Sid-ton is a brilliant Familiar re-instantiated without yesterday.
@@ -2241,6 +2250,24 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
 # #todo #to-do #earmarks
+
+# - TODO (2026-09-02): walk_cartridge.py line 5 docstring still says
+#   "Schema: walk-cartridge-integrity-v2"; the constant says v3. One-line fix.
+
+# - EARMARK: THE POCKETRENDER VERSE (seeded 2026-09-02). Almost no SE ticket
+#   avoids PocketRender Infinite, so it is a REQUIRED stop with a LITERAL url
+#   (app.botify.com/tools/cpap/pocketrender/index.html -- no customer in the
+#   path, so it can be tracked), placed after `project` in se_ticket.yaml.
+# - EARMARK: THE GENERATED XSD (seeded 2026-09-02, deferred by ruling). The
+#   JSON-world XSD is JSON Schema 2020-12, and here it must be GENERATED from
+#   walk.py's own constants (ROOT_FIELDS, STOP_FIELDS, STOP_URL_FIELDS,
+#   STOP_OPTIONAL_FIELDS, CONNECTOR_FIELDS, NAME_RE, ENV_RE, BOOL_DEFAULTS):
+#   _exact = required + additionalProperties:false; url/url_env = oneOf;
+#   optional-only-on-url_env = dependentSchemas. "$schema" becomes an
+#   allowed-optional root key the same day. One authority, or two drift.
+# - EARMARK: GUIDANCE COUNTS ARE HAND-TYPED. "Stop one of five" lives in trail
+#   data; the rider's N/M header is derived. Either the rider speaks the
+#   ordinal and guidance stops counting, or the sixth stop makes five liars.
 
 # THE COPY-IF-ABSENT DELIVERY EARMARK (opened 2026-09-01; two hand-run `cp`
 # commands in two consecutive rides, both to the same file). flake.nix's
