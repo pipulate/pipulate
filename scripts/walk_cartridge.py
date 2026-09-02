@@ -368,7 +368,7 @@ def verify_walk_cartridge(path):
     # anything.
     sealed_schema = manifest.get("schema")
     if sealed_schema != WALK_CARTRIDGE_SCHEMA:
-        if sealed_schema == WALK_CARTRIDGE_SCHEMA_V1:
+        if sealed_schema in (WALK_CARTRIDGE_SCHEMA_V1, WALK_CARTRIDGE_SCHEMA_V2):
             raise ValueError(
                 f"cartridge schema {sealed_schema!r} predates "
                 f"{WALK_CARTRIDGE_SCHEMA!r}. This is a schema change, not "
