@@ -545,9 +545,17 @@ async def _ride_async(trail_path, dry_narrate=False):
         print("\nDry narration complete; no captures were attempted.")
         return 0
 
-    print("\nRide complete. Every stop produced a capture receipt.")
+    # ATTRIBUTED-VOICE: "every stop produced a capture receipt" is only true
+    # when nothing was skipped, so the line says which world it is in.
+    if skipped:
+        print(
+            f"\nRide complete. {len(captured)} of {len(stops)} stop(s) captured; "
+            f"{len(skipped)} optional stop(s) skipped for an unset URL."
+        )
+    else:
+        print("\nRide complete. Every stop produced a capture receipt.")
     if captured:
-        payload = _decant(captured)
+        payload = _decant(captured, skipped)
         decanted = _decant_checkpoint(payload, captured)
         # ATTRIBUTED-VOICE, fixed in passing because these are the exact lines
         # being rewritten: the old text asserted "copied to your clipboard"
