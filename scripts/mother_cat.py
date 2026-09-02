@@ -115,8 +115,13 @@ DECANT_INLINE_KEYS = (
 DECANT_INLINE_CAP = 20000  # chars per inlined lens; the rest lives on disk
 
 
-def _decant(captured):
-    """Build one markdown capture bundle from a list of (stop, url, artifacts)."""
+def _decant(captured, skipped=()):
+    """Build one markdown capture bundle from a list of (stop, url, artifacts).
+
+    `skipped` is a list of (stop_name, var_name) for optional stops that never
+    opened. They are LISTED, not silently absent: the reader downstream must
+    be able to tell a baton that was never carried from one that was dropped.
+    """
     parts = [
         "# Artifact Compiler -- Mother Cat capture bundle",
         "",
@@ -125,6 +130,13 @@ def _decant(captured):
         "inlined below, large ones (hydrated DOM, raw source) are cited by path.",
         "",
     ]
+    if skipped:
+        parts.append("## Skipped stops (optional; URL not exported at ride time)")
+        for stop_name, var_name in skipped:
+            parts.append(
+                f"- {stop_name}: {var_name} was unset; nothing opened, nothing captured"
+            )
+        parts.append("")
     for stop_name, final_url, artifacts in captured:
         parts.append(f"## Stop: {stop_name}")
         parts.append(f"- final_url: {final_url}")
