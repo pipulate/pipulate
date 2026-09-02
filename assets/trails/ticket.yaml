@@ -31,6 +31,7 @@
       "label": "Botify project",
       "guidance": "Stop two of two. The customer's Botify project opens. Sign in if asked. Land on the view the ticket is about, then return to this terminal and type the capture word. After this capture you are asked once more, with a different word, before anything leaves this machine.",
       "url_env": "PIPULATE_TRAIL_BOTIFY_URL",
+      "optional": true,
       "target_slot": "botify_project",
       "harvest_regex": "^[^/\\s]+/[^/\\s]+$",
       "connector": {
