@@ -224,7 +224,16 @@ def load_trail(path):
                 f"{where} must carry exactly one of "
                 f"{sorted(STOP_URL_FIELDS)}; found {sorted(present)}"
             )
-        _exact(stop, STOP_FIELDS | present, where)
+        extras = STOP_OPTIONAL_FIELDS & set(stop)
+        _exact(stop, STOP_FIELDS | present | extras, where)
+        optional = stop.get("optional", False)
+        if not isinstance(optional, bool):
+            raise TrailError(f"{where}.optional must be true or false")
+        if optional and "url" in present:
+            raise TrailError(
+                f"{where}.optional is only meaningful on a url_env stop: "
+                "a literal url can never be unset"
+            )
         stop_name = _text(stop["name"], f"{where}.name")
         target_slot = _text(
             stop["target_slot"],
