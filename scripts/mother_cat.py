@@ -264,20 +264,28 @@ def _decant_to_clipboard(payload):
 
 
 def _missing_url_envs(stops):
-    """Every url_env the WHOLE walk needs that the environment lacks, in stop order.
+    """Every url_env the WHOLE walk names that the environment lacks, in stop order.
 
-    Returns [(stop_name, var_name), ...], one entry per stop that is short a
-    URL, so a variable two stops share is named beside each stop that needs
-    it: the human reads what the walk will do, not a deduplicated set. An
-    exported empty or whitespace-only string counts as unset, matching
-    walk.build_plan -- an empty export opens nothing.
+    Returns (required, optional), each [(stop_name, var_name), ...], one entry
+    per stop that is short a URL, so a variable two stops share is named
+    beside each stop that needs it: the human reads what the walk will do,
+    not a deduplicated set. An exported empty or whitespace-only string counts
+    as unset, matching walk.build_plan -- an empty export opens nothing.
+
+    TWO LISTS, TWO VERDICTS (2026-09-02). A walk is a linear pipeline and not
+    every stop carries the baton. A required stop that is unset refuses the
+    whole ride at t=0; an optional stop that is unset is SKIPPED and the ride
+    proceeds. The Jira issue is required; the customer's Botify project is
+    not, and a ticket with no project must still be walkable.
     """
-    missing = []
+    required = []
+    optional = []
     for stop in stops:
         url_env = stop.get("url_env")
         if url_env and not os.environ.get(url_env, "").strip():
-            missing.append((stop["name"], url_env))
-    return missing
+            bucket = optional if stop.get("optional") else required
+            bucket.append((stop["name"], url_env))
+    return required, optional
 
 
 def _announce_consent(trail_path):
