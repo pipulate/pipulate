@@ -136,10 +136,8 @@ function git_commit_push()
     
     -- Guard clause: If diff is empty, open split with warning and abort
     if git_diff == "" then
-        vim.cmd('botright 20split git_output')
-        vim.cmd('setlocal buftype=nofile bufhidden=hide noswapfile')
-        vim.api.nvim_buf_set_lines(0, 0, -1, false, {"⚠️  No changes detected to commit."})
-        vim.api.nvim_buf_set_keymap(0, 'n', 'q', ':q<CR>', { noremap = true, silent = true })
+        -- The split is already open (first frame above); just update it.
+        vim.api.nvim_buf_set_lines(0, 0, -1, false, {"⚠️  No changes detected to commit.", " 💡 Press 'q' or type :q to exit this panel."})
         return
     end
 
