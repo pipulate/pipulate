@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "name": "ticket",
-  "description": "Stop two of the ticket loop: one ticket, two pages. The Jira issue, then the customer's Botify project. Both URLs come from your environment and never from this file, so the trail is tracked and the customer is not. Write the ticket's exports file, source it, then ride: mothercat assets/trails/ticket.yaml",
+  "description": "Stop two of the ticket loop: one ticket, two pages. The Jira issue (required), then the customer's Botify project (optional: unset means that stop is skipped, not refused). Both URLs come from your environment and never from this file, so the trail is tracked and the customer is not. Export PIPULATE_TRAIL_JIRA_URL and, if the ticket has a project, PIPULATE_TRAIL_BOTIFY_URL, then ride: mothercat assets/trails/ticket.yaml",
   "defaults": {
     "take_screenshot": false,
     "headless": false,
