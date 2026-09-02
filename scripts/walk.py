@@ -376,8 +376,14 @@ def build_plan(trail, supplied_values):
         value = supplied_values.get(stop["target_slot"])
         errors = []
         browser = None
+        # A stop that is optional AND unset is SKIPPED: no browser, no
+        # harvest, no error. It still appears in the plan, flagged, so the
+        # reader sees the baton was never carried rather than dropped.
+        skipped = bool(stop.get("optional")) and not url
 
-        if not url:
+        if skipped:
+            pass
+        elif not url:
             errors.append(
                 f"unset environment variable {url_env}"
             )
