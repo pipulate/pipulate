@@ -398,7 +398,11 @@ echo "Trail resolved: $TRAIL_PATH"
 # token is what separates "the file parsed and there were none" from "the file
 # did not parse at all" -- two worlds that used to print one empty string and
 # get one wrong error message.
-TRAIL_READ="$("$PY" -c 'import json,sys; d=json.load(open(sys.argv[1])); print("OK"); [print(s["url_env"]) for s in d["stops"] if s.get("url_env")]' "$TRAIL_PATH" 2>/dev/null || true)"
+# REQUIRED ONLY (2026-09-02, TWO PRE-FLIGHTS, ONE OUTER). A stop marked
+# `optional: true` is skipped by the rider when its variable is unset, so this
+# shell ring must not refuse on it: the shell check may only ever be a SUBSET
+# of the rider's, names and never verdicts, and the rider prints the skips.
+TRAIL_READ="$("$PY" -c 'import json,sys; d=json.load(open(sys.argv[1])); print("OK"); [print(s["url_env"]) for s in d["stops"] if s.get("url_env") and not s.get("optional")]' "$TRAIL_PATH" 2>/dev/null || true)"
 if [ -z "$TRAIL_READ" ]; then
   echo "Error: could not read $TRAIL_PATH" >&2
   exit 2
