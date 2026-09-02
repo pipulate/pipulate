@@ -114,8 +114,15 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 #   .venv/bin/python scripts/walk_cartridge.py seal assets/trails/*.yaml
 # Re-sealing WRITES A NEW content-addressed cartridge under a new digest. It
 # does not upgrade the old one, which stays on disk and stays red until pruned.
+# v3 (2026-09-02): the consent surface gained optional_url_envs, and url_envs
+# narrowed to the REQUIRED set. Emitted unconditionally, so manifest.json bytes
+# change for EVERY trail again, including trails with no optional stop -- the
+# same invalidation v2 caused, for the same reason: ONE SHAPE beats a
+# conditional key. Byte-for-byte reproduction holds WITHIN a schema, never
+# across one. Re-seal as above; v1 and v2 cartridges stay red until pruned.
 WALK_CARTRIDGE_SCHEMA_V1 = "walk-cartridge-integrity-v1"
-WALK_CARTRIDGE_SCHEMA = "walk-cartridge-integrity-v2"
+WALK_CARTRIDGE_SCHEMA_V2 = "walk-cartridge-integrity-v2"
+WALK_CARTRIDGE_SCHEMA = "walk-cartridge-integrity-v3"
 WALK_CARTRIDGE_MEMBERS = ("trail.yaml", "manifest.json")
 WALK_CARTRIDGE_SOURCE_EPOCH = 1767225600
 WALK_CARTRIDGE_ZIP_TIME = (2026, 1, 1, 0, 0, 0)
