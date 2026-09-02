@@ -404,9 +404,10 @@ def build_plan(trail, supplied_values):
             ) is not None
         )
         if value is None:
-            errors.append(
-                f"missing --value {stop['target_slot']}=VALUE"
-            )
+            if not skipped:
+                errors.append(
+                    f"missing --value {stop['target_slot']}=VALUE"
+                )
         elif not valid_value:
             errors.append(
                 f"value for {stop['target_slot']} failed "
