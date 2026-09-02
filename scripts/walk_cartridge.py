@@ -361,8 +361,8 @@ def verify_walk_cartridge(path):
     # VERIFIER is the thing that changed. Fail-closed either way; the only
     # difference is whether the refusal names the right cause.
     #
-    # NARROW ON PURPOSE. Only the one schema string this repo has actually
-    # shipped earns the reassuring "not corruption" wording. A missing,
+    # NARROW ON PURPOSE. Only the schema strings this repo has actually
+    # shipped (v1, v2) earn the reassuring "not corruption" wording. A missing,
     # invented, or mangled value is neither known-stale nor known-corrupt, and
     # a verifier that guesses is a verifier whose refusals stop meaning
     # anything.
