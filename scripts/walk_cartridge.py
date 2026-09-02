@@ -249,7 +249,15 @@ def _derive_consent_surface(trail_bytes):
             env_value = stop.get("url_env")
             if not isinstance(env_value, str) or not env_value.strip():
                 raise ValueError(f"{where}.url_env must be a non-empty string")
-            url_envs.add(env_value.strip())
+            # The projection depends on this one flag, so its type is the one
+            # thing about it this module insists on; walk.py owns the rest.
+            optional = stop.get("optional", False)
+            if not isinstance(optional, bool):
+                raise ValueError(f"{where}.optional must be true or false")
+            if optional:
+                optional_url_envs.add(env_value.strip())
+            else:
+                url_envs.add(env_value.strip())
         connector = stop.get("connector")
         if not isinstance(connector, dict):
             raise ValueError(f"{where}.connector must be a mapping")
