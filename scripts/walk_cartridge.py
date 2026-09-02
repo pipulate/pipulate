@@ -54,8 +54,14 @@ required to match exactly, so it cannot drift from the bytes it describes.
                     can learn to read at a glance. A stop may carry a literal
                     `url` instead of a `url_env`; these are those, in ride
                     order, for the same reason stop_names is ordered.
-  url_envs          SORTED. These are a SET: the walk demands all of them,
-                    order-free, and mck.sh prints them as a checklist.
+  url_envs          SORTED. These are a SET: the walk DEMANDS all of them,
+                    order-free, and mck.sh prints them as a checklist. Since
+                    v3 this is the REQUIRED set only.
+  optional_url_envs SORTED. Present unconditionally, empty list and all. An
+                    unset one SKIPS its stop instead of refusing the ride
+                    (walk.py `optional: true`). A variable named by both a
+                    required and an optional stop is required, and is listed
+                    once, under url_envs.
   connector_scripts SORTED, unique. Car B does not execute connectors today;
                     walk.py's build_plan already constructs their argv, and a
                     consent surface omitting the executable half is not one.
