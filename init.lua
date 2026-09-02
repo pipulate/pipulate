@@ -102,11 +102,31 @@ function new_journal_entry()
 end
 
 function git_commit_push()
-    -- Automatically save the current buffer
-    vim.cmd('w')
-
-    -- Get the current buffer's file name (not full path)
+    -- Get the current buffer's file name (not full path) and remember the
+    -- source window, because the split below becomes the current window.
     local file_name = vim.fn.expand('%:t')
+    local src_win = vim.api.nvim_get_current_win()
+    -- ==========================================================
+    -- FIRST FRAME: acknowledge the keypress BEFORE any blocking work.
+    -- Every vim.fn.system() below is synchronous, and `git log` on a
+    -- long-history file can take a visible beat. The split and its
+    -- redraw come first so a mistaken \g is seen in one frame; the
+    -- rest of this function writes into this same buffer.
+    -- ==========================================================
+    vim.cmd('botright 20split git_output')
+    vim.cmd('setlocal buftype=nofile bufhidden=hide noswapfile')
+    vim.api.nvim_buf_set_keymap(0, 'n', 'q', ':q<CR>', { noremap = true, silent = true })
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, {
+        "===========================================================",
+        " 🚀 \\g received: " .. file_name,
+        "===========================================================",
+        "",
+        " ⏳ Saving and measuring the diff... (press q to close this panel afterwards)",
+    })
+    vim.cmd('redraw')
+    -- Automatically save the source buffer (not this scratch split)
+    vim.api.nvim_win_call(src_win, function() vim.cmd('w') end)
+
     -- STEP 1: Add the file FIRST so we can measure the payload.
     local git_add = vim.fn.system('git add ' .. vim.fn.shellescape(file_name))
     
