@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "name": "se_ticket",
+  "description": "The Solutions Engineer ticket walk, top to bottom, one baton passed forward per stop. Required: the Jira issue. Optional, skipped when unset: the customer's Botify project, the Slack thread, the Confluence page. Export what you know before you ride and add the rest as the walk reveals it: PIPULATE_TRAIL_JIRA_URL (required), PIPULATE_TRAIL_BOTIFY_URL, PIPULATE_TRAIL_SLACK_URL, PIPULATE_TRAIL_CONFLUENCE_URL. Ride: mothercat assets/trails/se_ticket.yaml, or walk se_ticket",
+  "defaults": {
+    "take_screenshot": false,
+    "headless": false,
+    "is_notebook_context": false,
+    "persistent": true,
+    "profile_name": "default",
+    "verbose": true,
+    "override_cache": true,
+    "delay_range": null
+  },
+  "stops": [
+    {
+      "name": "for_you",
+      "label": "Jira For You, assigned tab",
+      "guidance": "Stop one of five. Your Jira For You page opens on the assigned tab. Sign in if asked. Confirm the ticket you are closing is still the one you exported, and note anything new that arrived above it. Then type the capture word.",
+      "url": "https://botify.atlassian.net/jira/for-you?tab=assigned",
+      "target_slot": "jira_issue_key",
+      "harvest_regex": "^[A-Z][A-Z0-9]+-[0-9]+$",
+      "connector": {
+        "script": "scripts/connectors/jira.py",
+        "argv": ["{harvested}"],
+        "read_only": true
+      }
+    },
+    {
+      "name": "issue",
+      "label": "Jira issue",
+      "guidance": "Stop two of five. The ticket itself opens. Read it top to bottom, comments included, so the customer's actual ask is in your head before you look at their data. If it names a Botify project, a Slack thread, or a Confluence page you have not exported yet, note them now. Then type the capture word.",
+      "url_env": "PIPULATE_TRAIL_JIRA_URL",
+      "target_slot": "botify_project",
+      "harvest_regex": "^[^/\\s]+/[^/\\s]+$",
+      "connector": {
+        "script": "scripts/connectors/botify.py",
+        "argv": ["{harvested}"],
+        "read_only": true
+      }
+    },
+    {
+      "name": "project",
+      "label": "Botify project",
+      "guidance": "Stop three of five, optional. The customer's Botify project opens. Sign in if asked, and do not type the capture word on the sign-in page: wait until the project itself is on screen. Land on the view the ticket is about. Then type the capture word.",
+      "url_env": "PIPULATE_TRAIL_BOTIFY_URL",
+      "optional": true,
+      "target_slot": "botify_analysis",
+      "harvest_regex": "^[0-9]{8}(-[0-9]+)?$",
+      "connector": {
+        "script": "scripts/connectors/botify.py",
+        "argv": ["{harvested}"],
+        "read_only": true
+      }
+    },
+    {
+      "name": "slack",
+      "label": "Slack thread",
+      "guidance": "Stop four of five, optional. The Slack thread about this ticket opens. Read the whole thread, including anything the customer's account manager added. Then type the capture word.",
+      "url_env": "PIPULATE_TRAIL_SLACK_URL",
+      "optional": true,
+      "target_slot": "slack_channel",
+      "harvest_regex": "^[CG][A-Z0-9]+$",
+      "connector": {
+        "script": "scripts/connectors/slack.py",
+        "argv": ["{harvested}"],
+        "read_only": true
+      }
+    },
+    {
+      "name": "confluence",
+      "label": "Confluence page",
+      "guidance": "Stop five of five, optional. The Confluence page this ticket points at opens. Read it for the part that answers or contradicts the ticket. Then type the capture word. After this you are asked once more, with a different word, before anything leaves this machine.",
+      "url_env": "PIPULATE_TRAIL_CONFLUENCE_URL",
+      "optional": true,
+      "target_slot": "confluence_space",
+      "harvest_regex": "^[A-Z][A-Z0-9]*$",
+      "connector": {
+        "script": "scripts/connectors/confluence.py",
+        "argv": ["{harvested}"],
+        "read_only": true
+      }
+    }
+  ]
+}
