@@ -51,11 +51,11 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,435 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 27 published in the last 7 days
-# Markdown negotiated: 2,276 reads (0.21% of all responses)
+# There are 1,436 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 25 published in the last 7 days
+# Markdown negotiated: 2,281 reads (0.21% of all responses)
 # DOM hydration: 2887 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-09-01T20:53Z
+# Honeybot telemetry fetched 2026-09-02T09:03Z
 # --- END STATS ---
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
 # 2026-09-01 ride ticket REFUSED MID-WALK on Linux and Mac: stop 'issue' captured (11 artifacts, final_url browse/PS-10559 exact), ADVANCE, then TRAIL INVALID at 'project' for unset PIPULATE_TRAIL_BOTIFY_URL -- one capture spent for nothing, and on the Mac a 60 MB Piper voice download plus spoken guidance came BEFORE the first refusal; jira_for_you re-ride printed 0 loguru INFO lines (was 15; Car 3 witnessed); Mac fresh install green (Determinate Nix 3.19.1, v2.53, 291 packages); this block read 21 against its cap of 20 before this rotation.
@@ -2920,11 +2920,11 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # assets/prompts/pipulate-context.xsd  # [2,286 tokens | 8,129 bytes]
 # assets/prompts/system_prompt.md  # [628 tokens | 2,618 bytes]
 # assets/rich-table.css  # [417 tokens | 1,459 bytes]
-# assets/trails/ticket.yaml  # [491 tokens | 1,828 bytes]
 # browser_cache/automation_recipes/README_SAVE_LOAD_AUTOMATION.md  # [1,751 tokens | 7,246 bytes]
 # browser_cache/recipe_executor.py  # [2,848 tokens | 14,661 bytes]
 # browser_cache/review_perception_history.py  # [3,208 tokens | 13,492 bytes]
 # config.py  # [4,137 tokens | 16,212 bytes]
+# deleteme3.txt  # [8,535 tokens | 29,283 bytes]
 # imports/ai_tool_discovery_simple_parser.py  # [1,903 tokens | 7,977 bytes]
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
