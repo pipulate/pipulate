@@ -1429,6 +1429,14 @@ pyproject.toml              # <-- The PyPI Packaging details
 #                         --- We call it context but it's really just the right-hand  ---
 #                         --- blast-radius of the "probes" to make this all science.  ---
 
+--- START THIS DISCUSSION ---
+
+# CONTEXT: 1
+# stuff here from first prompt.
+
+# CONTEXT: 2
+# stuff here from 2nd turn, etc.
+
 # --- END `adhoc.txt` TEMPLATE ---
 
 
