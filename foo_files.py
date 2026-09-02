@@ -55,7 +55,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # Velocity: 27 published in the last 7 days
 # Markdown negotiated: 2,281 reads (0.21% of all responses)
 # DOM hydration: 2887 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-09-02T09:03Z
+# Honeybot telemetry fetched 2026-09-02T17:49Z
 # --- END STATS ---
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
 # 2026-09-01 ride ticket REFUSED MID-WALK on Linux and Mac: stop 'issue' captured (11 artifacts, final_url browse/PS-10559 exact), ADVANCE, then TRAIL INVALID at 'project' for unset PIPULATE_TRAIL_BOTIFY_URL -- one capture spent for nothing, and on the Mac a 60 MB Piper voice download plus spoken guidance came BEFORE the first refusal; jira_for_you re-ride printed 0 loguru INFO lines (was 15; Car 3 witnessed); Mac fresh install green (Determinate Nix 3.19.1, v2.53, 291 packages); this block read 21 against its cap of 20 before this rotation.
