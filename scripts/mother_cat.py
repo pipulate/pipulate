@@ -467,8 +467,21 @@ async def _ride_async(trail_path, dry_narrate=False):
 
     disclosed = False
     captured = []
+    skipped = []
     for index, stop in enumerate(stops, 1):
         print(f"--- Stop {index}/{len(stops)}: {stop['name']} ---")
+
+        # SKIP BEFORE NARRATE. Speaking the guidance for a stop that will not
+        # open is the Mac conviction in miniature: voice spent on nothing.
+        # Printed under --dry-narrate too, so the rehearsal has the shape of
+        # the ride it rehearses.
+        if stop["name"] in skip_vars:
+            print(
+                f"  SKIPPED -- optional stop; {skip_vars[stop['name']]} is unset. "
+                "Nothing opened.\n"
+            )
+            skipped.append((stop["name"], skip_vars[stop["name"]]))
+            continue
 
         disclosed = _narrate(stop["guidance"], disclosed)
 
