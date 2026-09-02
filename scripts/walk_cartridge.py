@@ -284,6 +284,9 @@ def _derive_consent_surface(trail_bytes):
         # unconditionally, empty list and all, so the surface has ONE shape.
         "direct_urls": direct_urls,
         "name": name,
+        # A variable a REQUIRED stop needs is required no matter how many
+        # optional stops also name it, so it is listed once, under url_envs.
+        "optional_url_envs": sorted(optional_url_envs - url_envs),
         "stop_names": stop_names,
         "url_envs": sorted(url_envs),
     }
