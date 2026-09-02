@@ -205,8 +205,7 @@ function git_commit_push()
     -- ==========================================================
     -- INSTANT DRAMATIC FEEDBACK: Open the split immediately
     -- ==========================================================
-    vim.cmd('botright 20split git_output')
-    vim.cmd('setlocal buftype=nofile bufhidden=hide noswapfile')
+    -- (Split already open since the first frame; refresh its contents.)
     
     local waiting_msg = {
         "===========================================================",
