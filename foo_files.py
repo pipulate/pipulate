@@ -58,6 +58,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # Honeybot telemetry fetched 2026-09-03T06:58Z
 # --- END STATS ---
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
+# 2026-09-03 text-commands ride: "deterministic" ban WITNESSED n=1 (0/0/0 on frontmatter/H2s/analysis, pre-rule control carries it in title+permalink); \m template gained the two-line BEFORE/AFTER key, straddle 3/3 and the paste matched; certificate halves proven extractable (bundle lines 7/8/846/847, sealed payload lines 32-34, one compile behind by design); PREDICTION FALSIFIED: rg reads foo.zip directly because members are STORED (rg -c printed 3, not 0).
 # 2026-09-01 ride ticket REFUSED MID-WALK on Linux and Mac: stop 'issue' captured (11 artifacts, final_url browse/PS-10559 exact), ADVANCE, then TRAIL INVALID at 'project' for unset PIPULATE_TRAIL_BOTIFY_URL -- one capture spent for nothing, and on the Mac a 60 MB Piper voice download plus spoken guidance came BEFORE the first refusal; jira_for_you re-ride printed 0 loguru INFO lines (was 15; Car 3 witnessed); Mac fresh install green (Determinate Nix 3.19.1, v2.53, 291 packages); this block read 21 against its cap of 20 before this rotation.
 # 2026-09-01 ride jira_for_you FIRST AUTHENTICATED RIDE: one stop, CAPTURE passed on a logged-in Jira page (final_url exact, no id.atlassian.com redirect), 11 artifacts under browser_cache/looking_at/botify.atlassian.net/, DECANT AUTHORIZED at 26,885 bytes; compile-lane straddle all five predicted (ls 4 -> 5, rg 0 -> 3, mck reader FileNotFoundError -> OK, walk.py ready false -> true, ignored=1 both sides); sign-in moment UNRECORDED; the ride printed 15 loguru INFO lines the rider had already said in its own voice.
 # 2026-09-01 menu recall car: boot_menu.py --recall + flake.nix menu(); hook-text probe 0 -> 1; recall list absent -> five words, exit 0 on BOTH sides so the printed list is the discriminator; rg 'four words|three words' 4 hits before and after, all historical prose, so the README/AGENTS stale-count follow-up is DISCHARGED UNOPENED.
@@ -1213,6 +1214,10 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # article ledgers link to. A rewrite is a clean-up, never an un-publish: forks,
 # prior clones and host caches keep the blob. Price these BEFORE the push.
 
+# THE GATE-OR-STRADDLE RULE (banked 2026-09-03). A probe that prints the same thing in both worlds (a syntax check, a load test) is a GATE: it can prove the patch broke nothing, never that it landed. Every car needs at least one probe whose reading MOVES. Label gates as gates when recommending them, so a green gate is never mistaken for a witnessed landing.
+
+# THE INDENTED QUOTE RULE (banked 2026-09-03). To quote a template that itself contains code fences, indent it four spaces instead of fencing it: an indented block has no closing delimiter, so nothing inside it can end it early. Costs the language tag; buys correctness. Fences stay for everything else.
+
 # STORY ENGINE
 # Mike-E's gift is associative reach; his flaw is letting every spark become canon.
 # Yen Sid-ton is a brilliant Familiar re-instantiated without yesterday.
@@ -2251,9 +2256,10 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 
 # #todo #to-do #earmarks
 
+# - TODO (2026-09-02, reconfirmed 09-03): walk_cartridge.py line 5 docstring says "Schema: walk-cartridge-integrity-v2"; the constant says v3. One-line fix.
+# - EARMARK: THE INSPECTION CERTIFICATE (ruled 2026-09-03, third thing, derived): the client-facing verification page is the HEAD of the DECANT bundle (stop names, final_url, artifact counts, skipped stops) stapled to the compile's LIVE COMMAND RECEIPTS list, bodies removed, plus the connector argv the trail NAMES and the re-run exports by variable name only. Never authored, never inside the bundle (the floor) or the compile (the factory). v0 is a pipe over existing markers; v1 is a `certificate` verb beside `seal` once v0 has been read by a human who is not the operator.
 # - TODO (2026-09-02): walk_cartridge.py line 5 docstring still says
 #   "Schema: walk-cartridge-integrity-v2"; the constant says v3. One-line fix.
-
 # - EARMARK: THE POCKETRENDER VERSE (seeded 2026-09-02). Almost no SE ticket
 #   avoids PocketRender Infinite, so it is a REQUIRED stop with a LITERAL url
 #   (app.botify.com/tools/cpap/pocketrender/index.html -- no customer in the
@@ -2268,7 +2274,6 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 # - EARMARK: GUIDANCE COUNTS ARE HAND-TYPED. "Stop one of five" lives in trail
 #   data; the rider's N/M header is derived. Either the rider speaks the
 #   ordinal and guidance stops counting, or the sixth stop makes five liars.
-
 # THE COPY-IF-ABSENT DELIVERY EARMARK (opened 2026-09-01; two hand-run `cp`
 # commands in two consecutive rides, both to the same file). flake.nix's
 # copy_notebook_if_needed stages a file only when the destination is MISSING,
