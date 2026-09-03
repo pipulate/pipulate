@@ -271,10 +271,27 @@ def print_hit_regions(filepath: str, terms, around: int, max_regions: int = 5, p
         else:
             windows.append([start, end])
     total = len(windows)
+    # THE VISIBLE HIT (convicted 2026-09-03). `rgxc 5 MitM` surfaced an
+    # article whose printed regions contained no "MitM" a human could see:
+    # the match was com-MITM-ent. Both stages are unanchored substring
+    # searches and they AGREED, so the region was correct and the reader
+    # could not tell it from a wrong one -- the discrimination question
+    # failing at the last inch. Fix the rendering, not the matching: a `>`
+    # gutter on every hit line and the matched span bracketed in place, so a
+    # false positive announces itself (pre-com«mitm»ent) the moment it prints.
+    # Whole-word matching stays deliberately OFF: it would cost substring
+    # hits like `googledoc` -> googledocizer, and a visible bracket makes
+    # false positives cheap to read past.
+    hit_set = set(hits)
+    marker_re = re.compile('|'.join(re.escape(n) for n in needles), re.IGNORECASE)
     for w_idx, (start, end) in enumerate(windows[:max_regions]):
         print(f"{prefix}-- region {w_idx + 1}/{total} (lines {start + 1}-{end + 1}) --", flush=True)
         for li in range(start, end + 1):
-            print(f"{prefix}{li + 1:5d}: {lines[li]}", flush=True)
+            if li in hit_set:
+                shown = marker_re.sub(lambda m: f"«{m.group(0)}»", lines[li])
+                print(f"{prefix}>{li + 1:4d}: {shown}", flush=True)
+            else:
+                print(f"{prefix} {li + 1:4d}: {lines[li]}", flush=True)
     if total > max_regions:
         print(f"{prefix}... {total - max_regions} more region(s) truncated", flush=True)
 
