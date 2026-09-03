@@ -60,6 +60,7 @@ DEFAULT_TIMEOUT = None
 # fat finger never picks a door for you.
 START_KEYS = {"1", "\r", "\n", "y", "Y", "s", "S"}
 SHELL_KEYS = {"2", "q", "Q", "n", "N", "l", "L", "\x03", "\x04"}
+PIPULATE_KEYS = {"3", "p", "P"}
 # THE DOOR-2 VOCABULARY, AND ITS COUNT DERIVED FROM IT (2026-08-26). Two
 # strings in this file used to claim how many words wait at this prompt --
 # the panel row and the list heading -- coupled only by somebody remembering
