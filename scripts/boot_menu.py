@@ -15,6 +15,7 @@ learning anything.
 
   0   start the app       (non-tty, PIPULATE_BOOT_MENU=0, opt-in timeout)
   10  drop to the Nix CLI (also: Ctrl+C, Esc, q)
+  11  start the app, Pipulate tab in front (flake maps this onto the tab shadows)
 
 FAIL-OPEN BY CONSTRUCTION. Every path an automated caller can reach -- no
 tty, no termios, PIPULATE_BOOT_MENU=0, unexpected exception -- returns 0,
