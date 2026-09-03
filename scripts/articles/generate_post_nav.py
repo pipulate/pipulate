@@ -91,3 +91,7 @@ def main():
     newest = article_url(metadata[0])
     print(f"✅ Wrote {output_file} ({len(nav)} entries).")
     print(f"   Newest: {newest} -> prev={nav[newest].get('prev', {}).get('url', '-')}")
+
+
+if __name__ == "__main__":
+    main()
