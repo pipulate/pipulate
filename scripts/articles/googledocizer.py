@@ -49,6 +49,7 @@ import sys
 import json
 import time
 import argparse
+from html import escape as html_escape
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -172,14 +173,23 @@ def _prepare_markdown(md_text: str) -> str:
     return _sanitize_internal_pii(md_text)
 
 
-def markdown_to_html(md_text: str) -> bytes:
-    """Markdown -> minimal HTML document, ready for Drive import-on-upload."""
+def markdown_to_html(md_text: str, headline: str = "") -> bytes:
+    """Markdown -> minimal HTML document, ready for Drive import-on-upload.
+    `headline` is the article title, emitted as the Doc's opening <h1>. The
+    title lives in YAML frontmatter, which frontmatter.load() strips from
+    .content, so without this the Doc body opened on the first H2 the body
+    happened to carry ("Setting the Stage: Context for the Curious Book
+    Reader") while only the Drive FILENAME knew the real title. Drive's
+    import maps <h1> to Heading 1, so it lands styled and in the outline.
+    """
     if md_lib is None:
         raise RuntimeError(
             "The 'markdown' package is required. Add it to requirements.in "
             "and reinstall (probe: .venv/bin/python -c 'import markdown')."
         )
     body = md_lib.markdown(_prepare_markdown(md_text), extensions=['extra', 'sane_lists'])
+    if headline:
+        body = f"<h1>{html_escape(headline)}</h1>\n{body}"
     html = f"<html><head><meta charset=\"utf-8\"></head><body>{body}</body></html>"
     return html.encode('utf-8')
 
@@ -210,11 +220,15 @@ def _fallback_title(md_file: Path) -> str:
     return stem.replace("-", " ").strip().title()
 
 
-def _target_title(md_file: Path, post) -> str:
+def _headline(md_file: Path, post) -> str:
+    """The bare, PII-scrubbed article title: the Doc's opening H1."""
     metadata = post.metadata or {}
-    title = _sanitize_internal_pii(
+    return _sanitize_internal_pii(
         _metadata_value(metadata, "title") or _fallback_title(md_file)
     )
+def _target_title(md_file: Path, post) -> str:
+    metadata = post.metadata or {}
+    title = _headline(md_file, post)
     sort_order = _metadata_value(metadata, "sort_order", "order", "sort", "ordinal")
     date_part = _doc_date(md_file, metadata)
     if sort_order is None:
@@ -696,7 +710,8 @@ def main():
             # give back most of the memory win. One extra read of ~119 files
             # is cheaper than 1,431 retained bodies. Safe against the stamp
             # writer below, which only touches the file AFTER the upload.
-            html_bytes = markdown_to_html(frontmatter.load(md_file).content)
+            post = frontmatter.load(md_file)
+            html_bytes = markdown_to_html(post.content, headline=_headline(md_file, post))
             file_id, verb = drive_convert_upsert(
                 service, folder_id, target_title, html_bytes,
                 'text/html', DOC_MIME, existing_id=existing
