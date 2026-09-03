@@ -278,9 +278,11 @@ def main() -> int:
 
     print()
     if choice == EXIT_SHELL:
-        print("[2] Just the shell. Nothing started -- no JupyterLab, no server.")
+        print("[2] Text Commands. Nothing started -- no JupyterLab, no server.")
         print()
         print_door_two_words(name)
+    elif choice == EXIT_PIPULATE:
+        print(f"[3] Starting {name} -- the app tab will open when the server answers.")
     else:
         print(f"[1] Starting {name}...")
     return choice
