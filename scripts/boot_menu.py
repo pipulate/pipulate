@@ -228,6 +228,8 @@ def _read_choice(seconds) -> int:
                 return EXIT_START
             if key in SHELL_KEYS:
                 return EXIT_SHELL
+            if key in PIPULATE_KEYS:
+                return EXIT_PIPULATE
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, saved)
 
