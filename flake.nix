@@ -774,7 +774,19 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # the thing that is starting.
           figlet "$PROPER_APP_NAME"
           echo "Version: ${version}"
-
+          # THE TAB KNOBS MOVE TO RUNTIME (2026-09-03, smallest possible step
+          # toward swappable front tabs). autoOpenJupyter / autoOpenFastHTML
+          # stay in Nix as the DEFAULTS; an env var typed at the prompt
+          # shadows them for one entry, so "Pipulate tab only" is
+          #   PIPULATE_OPEN_JUPYTER=false PIPULATE_OPEN_FASTHTML=true nix develop
+          # with no flake edit and no new door. Nothing else changes: both
+          # servers still start, and with no env vars set the readings are
+          # byte-identical to before. A future door 3/4 sets these two
+          # variables and nothing below needs to learn about it.
+          OPEN_JUPYTER="''${PIPULATE_OPEN_JUPYTER:-${autoOpenJupyter}}"
+          OPEN_FASTHTML="''${PIPULATE_OPEN_FASTHTML:-${autoOpenFastHTML}}"
+          JUPYTER_BROWSER_FLAG=""
+          if [ "$OPEN_JUPYTER" != "true" ]; then JUPYTER_BROWSER_FLAG="--no-browser"; fi
           # Automatically start JupyterLab in background and server in foreground
           # Start JupyterLab in a tmux session
           # NOTE: kill and launch stay PAIRED inside the branch. Splitting
@@ -782,7 +794,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # terminal's JupyterLab every time someone picked door 2.
           tmux kill-session -t jupyter 2>/dev/null || true
           # Start JupyterLab with error logging
-          tmux new-session -d -s jupyter "source .venv/bin/activate && jupyter lab ${jupyterStartupNotebook} ${if autoOpenJupyter == "true" then "" else "--no-browser"} --workspace=\$JUPYTER_WORKSPACE_NAME --NotebookApp.token=\"\" --NotebookApp.password=\"\" --NotebookApp.disable_check_xsrf=True 2>&1 | tee /tmp/jupyter-startup.log"
+          tmux new-session -d -s jupyter "source .venv/bin/activate && jupyter lab ${jupyterStartupNotebook} $JUPYTER_BROWSER_FLAG --workspace=\$JUPYTER_WORKSPACE_NAME --NotebookApp.token=\"\" --NotebookApp.password=\"\" --NotebookApp.disable_check_xsrf=True 2>&1 | tee /tmp/jupyter-startup.log"
           sleep 2
 
           # 🗣️ THE UNIFIED VOICE TRIGGER (Context-Aware)
