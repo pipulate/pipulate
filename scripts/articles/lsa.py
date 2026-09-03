@@ -8,6 +8,7 @@ Dynamically routed via targets.json.
 """
 
 import os
+import re
 import sys
 import yaml
 import json
