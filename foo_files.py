@@ -57,7 +57,9 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # DOM hydration: 2887 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
 # Honeybot telemetry fetched 2026-09-03T06:58Z
 # --- END STATS ---
+
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
+# 2026-09-03 googledocizer H1 headline: Doc body now opens with <h1> of the frontmatter title (commit 649f9b0f); straddle closed on the latest Doc's markdown export (## Setting the Stage -> # <title>); catch-up was the EXISTING --force flag, no /tmp script; full-sweep 🏁 counters NOT witnessed at dismount (n=1).
 # 2026-09-03 text-commands ride: "deterministic" ban WITNESSED n=1 (0/0/0 on frontmatter/H2s/analysis, pre-rule control carries it in title+permalink); \m template gained the two-line BEFORE/AFTER key, straddle 3/3 and the paste matched; certificate halves proven extractable (bundle lines 7/8/846/847, sealed payload lines 32-34, one compile behind by design); PREDICTION FALSIFIED: rg reads foo.zip directly because members are STORED (rg -c printed 3, not 0).
 # 2026-09-01 ride ticket REFUSED MID-WALK on Linux and Mac: stop 'issue' captured (11 artifacts, final_url browse/PS-10559 exact), ADVANCE, then TRAIL INVALID at 'project' for unset PIPULATE_TRAIL_BOTIFY_URL -- one capture spent for nothing, and on the Mac a 60 MB Piper voice download plus spoken guidance came BEFORE the first refusal; jira_for_you re-ride printed 0 loguru INFO lines (was 15; Car 3 witnessed); Mac fresh install green (Determinate Nix 3.19.1, v2.53, 291 packages); this block read 21 against its cap of 20 before this rotation.
 # 2026-09-01 ride jira_for_you FIRST AUTHENTICATED RIDE: one stop, CAPTURE passed on a logged-in Jira page (final_url exact, no id.atlassian.com redirect), 11 artifacts under browser_cache/looking_at/botify.atlassian.net/, DECANT AUTHORIZED at 26,885 bytes; compile-lane straddle all five predicted (ls 4 -> 5, rg 0 -> 3, mck reader FileNotFoundError -> OK, walk.py ready false -> true, ignored=1 both sides); sign-in moment UNRECORDED; the ride printed 15 loguru INFO lines the rider had already said in its own voice.
@@ -1147,76 +1149,21 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # CHANGING is then the ignition witness, proving the patched text is what a
 # fresh `nix develop` would instantiate, without entering one.
 
-# THE STAT-CACHE FALSE POSITIVE (banked 2026-08-04, receipt-witnessed both
-# lanes): `git diff-index --quiet` decides from the index's CACHED STAT DATA --
-# dev, inode, mtime, size -- and short-circuits before comparing content. Any
-# operation that rewrites files while carrying an index along (cp -r, rsync
-# without -a, a restored backup, a container layer) makes a byte-identical tree
-# report DIRTY. Receipt: clone -> `cp -r src/. dst/` -> after_cp=1,
-# after_refresh=0, reproduced identically in the operator and compile lanes.
-# WHY IT SURVIVES SO LONG: `git status` refreshes the index as a side effect, so
-# the false positive has ALWAYS healed by the time a human types the diagnostic.
-# The symptom is structurally unobservable by the only method anyone reaches for.
-# STANDING CONSEQUENCE: any automated dirty-tree check runs
-# `git update-index -q --refresh 2>/dev/null || true` first. It clears ONLY
-# stale entries, so a genuinely modified file still reports dirty and a
-# halt-don't-destroy gate keeps its teeth.
-
-# THE DUAL-LANE WALK SCHEMA (banked 2026-08-25, receipt-witnessed): a trail stop
-# accepts exactly one of `url` (public, direct HTTP/HTTPS) or `url_env` (sensitive,
-# client-isolated), validated via exact set difference. Direct URLs surface
-# openly on consent cards; environment variables surface as requirements on the
-# human. Connectors declare honest execution targets, and `walk-cartridge-integrity-v2`
-# enforces ordered destination disclosure.
-
-# THE FIRST-CELL BLAST RADIUS RULE (banked 2026-09-01, two convictions in two
-# consecutive rides). Anything the FIRST executable cell of Onboarding.ipynb
-# touches -- including every module it imports at load time -- prints to a
-# stranger at the one moment they cannot tell noise from failure. Both
-# convictions were trivial in SUBSTANCE and severe in POSITION: a KeyError
-# from a read-before-write, and a SyntaxWarning from an unraw ASCII-art
-# literal. Judge a defect in that blast radius by WHERE it fires, never by how
-# small it is, and hold first-cell code to the standard of a cold install
-# rather than the standard of the maintainer's warm one.
-
-# THE ACTUATOR'S OWN DIAGNOSTIC RULE (banked 2026-09-01). apply.py's AST
-# airlock compiles candidate content before writing, so it printed
-# `<unknown>:985: SyntaxWarning: invalid escape sequence` on THREE consecutive
-# `app` runs -- correct message, correct line number -- and it read as noise
-# FROM the tool rather than a finding ABOUT the file. The `<unknown>` filename
-# is what disguised it: a diagnostic with no filename reads as the tool
-# complaining about itself. A LINE NUMBER in an actuator's output is a finding
-# about the FILE. Read it, or the instrument you built is reporting to nobody.
-
-# THE PRE-COMPILE ACTUATOR RULE (banked 2026-09-01). A straddle probe answers
-# honestly only when its two taps land on OPPOSITE sides of the actuator. The
-# `diff -q` sync probe was designed as three states (0 in sync, 1 patched-not-
-# copied, 0 after the cp) and printed 0 in BOTH receipts, because the cp ran
-# before the compile -- the same printout in both worlds, which is the
-# DISCRIMINATION QUESTION failing inside a probe written to answer it. Prefer
-# a probe that reads the PROPERTY at the destination (does the working copy
-# compile?) over one that COMPARES two files; the property probe cannot be
-# defeated by running the actuator early.
-
+# THE STAT-CACHE FALSE POSITIVE (banked 2026-08-04, receipt-witnessed both lanes): `git diff-index --quiet` decides from the index's CACHED STAT DATA -- dev, inode, mtime, size -- and short-circuits before comparing content. Any operation that rewrites files while carrying an index along (cp -r, rsync without -a, a restored backup, a container layer) makes a byte-identical tree report DIRTY. Receipt: clone -> `cp -r src/. dst/` -> after_cp=1, after_refresh=0, reproduced identically in the operator and compile lanes. WHY IT SURVIVES SO LONG: `git status` refreshes the index as a side effect, so the false positive has ALWAYS healed by the time a human types the diagnostic. The symptom is structurally unobservable by the only method anyone reaches for. STANDING CONSEQUENCE: any automated dirty-tree check runs `git update-index -q --refresh 2>/dev/null || true` first. It clears ONLY stale entries, so a genuinely modified file still reports dirty and a halt-don't-destroy gate keeps its teeth.
+# THE DUAL-LANE WALK SCHEMA (banked 2026-08-25, receipt-witnessed): a trail stop accepts exactly one of `url` (public, direct HTTP/HTTPS) or `url_env` (sensitive, client-isolated), validated via exact set difference. Direct URLs surface openly on consent cards; environment variables surface as requirements on the human. Connectors declare honest execution targets, and `walk-cartridge-integrity-v2` enforces ordered destination disclosure.
+# THE FIRST-CELL BLAST RADIUS RULE (banked 2026-09-01, two convictions in two consecutive rides). Anything the FIRST executable cell of Onboarding.ipynb touches -- including every module it imports at load time -- prints to a stranger at the one moment they cannot tell noise from failure. Both convictions were trivial in SUBSTANCE and severe in POSITION: a KeyError from a read-before-write, and a SyntaxWarning from an unraw ASCII-art literal. Judge a defect in that blast radius by WHERE it fires, never by how small it is, and hold first-cell code to the standard of a cold install rather than the standard of the maintainer's warm one.
+# THE ACTUATOR'S OWN DIAGNOSTIC RULE (banked 2026-09-01). apply.py's AST airlock compiles candidate content before writing, so it printed `<unknown>:985: SyntaxWarning: invalid escape sequence` on THREE consecutive `app` runs -- correct message, correct line number -- and it read as noise FROM the tool rather than a finding ABOUT the file. The `<unknown>` filename is what disguised it: a diagnostic with no filename reads as the tool complaining about itself. A LINE NUMBER in an actuator's output is a finding about the FILE. Read it, or the instrument you built is reporting to nobody.
+# THE PRE-COMPILE ACTUATOR RULE (banked 2026-09-01). A straddle probe answers honestly only when its two taps land on OPPOSITE sides of the actuator. The `diff -q` sync probe was designed as three states (0 in sync, 1 patched-not- copied, 0 after the cp) and printed 0 in BOTH receipts, because the cp ran before the compile -- the same printout in both worlds, which is the DISCRIMINATION QUESTION failing inside a probe written to answer it. Prefer a probe that reads the PROPERTY at the destination (does the working copy compile?) over one that COMPARES two files; the property probe cannot be defeated by running the actuator early.
 # THE PUBLISH LANE IS NOT THE PUSH: installer edits reach strangers only through release.py's sync_install_sh; `git push` is not their ignition. Publish-only lane, proven idempotent 2026-08-30: python release.py --skip-version-sync --skip-docs-sync --skip-audit-sync --skip-ai-context-sync --skip-breadcrumb-sync --skip-trifecta-rebuild
 # A BARE FENCE CANNOT RIDE SEARCH/REPLACE: apply.py strips bare fence lines from the payload before matching; a fence edit rides as a sed car spelled with \x60\x60\x60.
 # ECHO IS NOT PRINTF INSIDE A NIX STRING: bash's builtin echo leaves \n literal and a Nix indented string passes it through. Convicted 2026-08-30: bash -c 'echo "a\nb"' | cat -A -> a\nb$
 # PURITY IS A PROPERTY OF THE EVALUATION: one pure `nix develop` on a platform proves every devShell attribute evaluates pure there. Two Darwin receipts 2026-08-30; --impure is vestigial (earmark).
 # THE DOOR NUMBER IS THE KEYPRESS RECEIPT: a raw-mode menu prints the choice class it acted on, or the transcript shows a decision with no cause.
 # ARMS MUST BE SYMMETRIC: a registry that contains execute_shell_command can escape into the shell arm; the experiment withholds it and wraps each connector 1:1 from the same docstring.
-
-# THE REWRITE TAX (banked 2026-09-02). A history rewrite on a repo whose
-# installer auto-pulls --ff-only breaks the auto-update on EVERY existing
-# install until each is hand-reset (git fetch origin && git reset --hard
-# origin/main) or rebuilt (rm -rf and reinstall -- the disposable workshop is
-# the cheap path and the reason it was affordable). It also orphans every
-# commit hash from the rewrite point forward, including the ones published
-# article ledgers link to. A rewrite is a clean-up, never an un-publish: forks,
-# prior clones and host caches keep the blob. Price these BEFORE the push.
-
+# THE REWRITE TAX (banked 2026-09-02). A history rewrite on a repo whose installer auto-pulls --ff-only breaks the auto-update on EVERY existing install until each is hand-reset (git fetch origin && git reset --hard origin/main) or rebuilt (rm -rf and reinstall -- the disposable workshop is the cheap path and the reason it was affordable). It also orphans every commit hash from the rewrite point forward, including the ones published article ledgers link to. A rewrite is a clean-up, never an un-publish: forks, prior clones and host caches keep the blob. Price these BEFORE the push.
 # THE GATE-OR-STRADDLE RULE (banked 2026-09-03). A probe that prints the same thing in both worlds (a syntax check, a load test) is a GATE: it can prove the patch broke nothing, never that it landed. Every car needs at least one probe whose reading MOVES. Label gates as gates when recommending them, so a green gate is never mistaken for a witnessed landing.
-
 # THE INDENTED QUOTE RULE (banked 2026-09-03). To quote a template that itself contains code fences, indent it four spaces instead of fencing it: an indented block has no closing delimiter, so nothing inside it can end it early. Costs the language tag; buys correctness. Fences stay for everything else.
+# THE ONE-FENCE-PER-HAND-STEP RULE (banked 2026-09-03). Operators paste fenced blocks whole; a smoke command and the full sweep it was meant to gate, sharing one fence, fire together and the smoke never happens. When a hand-run step exists to be INSPECTED before the next, each step gets its own fence.
 
 # STORY ENGINE
 # Mike-E's gift is associative reach; his flaw is letting every spark become canon.
