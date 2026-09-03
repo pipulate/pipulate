@@ -43,6 +43,11 @@ from pathlib import Path
 
 EXIT_START = 0
 EXIT_SHELL = 10
+# DOOR 3 (2026-09-03): same servers as door 1, opposite tab. The flake reads
+# this code and sets PIPULATE_OPEN_JUPYTER=false / PIPULATE_OPEN_FASTHTML=true
+# before its runtime tab shadows resolve. An older flake does not know 11 and
+# falls through to door-1 behavior, so this can never strand anyone.
+EXIT_PIPULATE = 11
 
 # No deadline by default. A countdown here protects nothing: the only
 # unattended tty is opted out with PIPULATE_BOOT_MENU=0, so every caller
