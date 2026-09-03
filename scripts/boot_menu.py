@@ -156,8 +156,9 @@ def _render(name, seconds) -> None:
     # its own name back in the title is then a one-string edit rather than a
     # signature change.
     lines = [
-        "[1]  Start JupyterLab   plus the app server and browser tabs",
-        f"[2]  Just the shell     nothing starts -- {_count_word(len(DOOR_TWO_WORDS))} words wait at the prompt",
+        "[1]  JupyterLab tab     both servers start; JupyterLab opens in the browser",
+        f"[2]  Text Commands      nothing starts -- {_count_word(len(DOOR_TWO_WORDS))} words wait at the prompt",
+        "[3]  Pipulate tab       both servers start; the app opens in the browser",
     ]
     if seconds is None:
         subtitle = "waiting for your choice -- Ctrl+C also drops to the shell"
