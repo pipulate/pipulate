@@ -96,3 +96,5 @@ You are an AI Content Architect. Your task is not to write a report, but to gene
 
 You didn't use the word MANIFESTO anywhere, did you? Not the article. Not the
 file-name. NOWHERE! And ease off on the word sovereign also. It's over-used.
+And no "deterministic" or "determinism" in any title, slug, subheading, or
+description either. Reproducible, checkable, replayable: those are the words.
