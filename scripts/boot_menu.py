@@ -2,9 +2,10 @@
 """
 boot_menu.py — the threshold at the end of `nix develop`.
 
-Two doors, one keypress:
-  [1] Start JupyterLab   plus the app server and browser tabs (today's behavior)
-  [2] Just the shell    NOTHING starts; `walk`, `sources`, `brief`, `pu`, `menu` wait at the prompt
+Three doors, one keypress:
+  [1] JupyterLab tab     both servers start; JupyterLab opens in the browser (today's default)
+  [2] Text Commands      NOTHING starts; `walk`, `sources`, `brief`, `pu`, `menu` wait at the prompt
+  [3] Pipulate tab       both servers start; the app opens in the browser instead of JupyterLab
 
 THE PROTOCOL IS THE EXIT CODE, never stdout. Nothing parses this program's
 output, so no capture pipe can ever be held open by it (the rgx/xclip
