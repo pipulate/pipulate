@@ -757,7 +757,7 @@ function hop_off_sandworm()
     local dismount = "Hop off the ride. This ride's stated goal is reached — dismount.\n"
         .. "This is the NOTARY BEAT: the ride ends here, is witnessed here, and is\n"
         .. "sealed here. Answer all seven beats, briefly:\n\n"
-        .. "0. TLDR: a short, dry, neutral abstract for the TOP of the published\n"
+        .. "0. **TL;DR**: a short, dry, neutral abstract for the TOP of the published\n"
         .. "   article — written for an unfamiliar reader or AI summarizer who has\n"
         .. "   never seen this system. No hype, no insider handles unexplained.\n"
         .. "1. VERIFY: restate the goal from the top of this article and confirm\n"
