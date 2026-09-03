@@ -764,6 +764,17 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             # authorized failed to start.
             exit 0
           fi
+          # DOOR 3 -- the Pipulate tab (2026-09-03). Same servers as door 1,
+          # opposite tab. It assigns the two names the runtime tab shadows
+          # below already read, so the shadows need no new branch and the
+          # .onboarded gate is simply not consulted on this path. A typed
+          # env var loses to a pressed key here, on purpose: the door is
+          # the explicit choice. If boot_menu.py predates door 3 it never
+          # returns 11, and this block is inert.
+          if [ "$BOOT_CHOICE" -eq 11 ]; then
+            PIPULATE_OPEN_JUPYTER=false
+            PIPULATE_OPEN_FASTHTML=true
+          fi
           # DOOR 1 ONLY: the banner, moved down from above the threshold on
           # 2026-08-25. Everything below this line runs only when the human
           # chose to start the app -- or when boot_menu.py is absent and the
