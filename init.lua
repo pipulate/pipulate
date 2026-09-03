@@ -713,14 +713,16 @@ function mount_sandworm()
     -- protecting existing prose. Either way the cursor lands in insert mode
     -- right after the speaker label — the old i**Me**: feel, full saddle.
     local template = "**Me**: \n\n"
-        .. "**1: Probe** (the before \"read\"):\n\n"
-        .. "```bash\n[Paste terminal output of running probe here]\n```\n\n"
-        .. "**2: Context** (the after \"read\"):\n\n"
+        .. "> Same commands, run twice, one change between them. Where the readings\n"
+        .. "> differ is what the change did; the diff in the middle is the receipt.\n\n"
+        .. "**1: Probe** (BEFORE: hand-run, nothing changed yet):\n\n"
+        .. "```bash\n[Paste the terminal output of the probes]\n```\n\n"
+        .. "**2: Context** (AFTER: the same probes re-run by the compiler as `!` lines):\n\n"
         .. "```text\n[Paste entire `adhoc.txt` here]\n```\n\n"
-        .. "**3: Patches** (the experiment between the reads): \n\n"
-        .. "```diff\n[Paste all diffs drag-copied from terminal here]\n```\n\n"
-        .. "Ignition, sed, `nix develop`, etc. Checks before `ahc` experiment.\n\n"
-        .. "**4: Prompt**: \n\n"
+        .. "**3: Patches** (the one change between the readings): \n\n"
+        .. "```diff\n[Paste the diffs: patch, app, d, m per car]\n```\n\n"
+        .. "Ignition (what makes the patched code run before the AFTER reading -- `<F2>`, `nix develop`, a re-ride -- or none required):\n\n"
+        .. "**4: Prompt** (the next question, written before the AFTER reading is in): \n\n"
         .. "```text\n[Probably what the AI gives you, but think for yourself!]\n```\n\n"
         .. "**5: Deliverables**: [external artifacts, updates to this system or 'None this turn']"
     local row = vim.api.nvim_win_get_cursor(0)[1]
