@@ -2121,7 +2121,11 @@ ONE car of each unless the human says otherwise:
    pedagogy.
 THE KEY TEST, applied before emitting: would the one-line key, read cold by a
 model that has never seen the body, have prevented the conviction that banked
-the rule? If not, write a better key; do not restore the body.
+the rule? If not, write a better key; do not restore the body. An EARMARK with
+no conviction to prevent cannot pass this test: it is work wearing a name, so
+it demotes to a one-line TODO (date, verb, gate) or waits for an operator
+ruling, and never enters the Constitution section. Skip it in the ranker and
+take the next largest.
 FAMILY ROSTERS RIDE THE PARENT KEY: a child key carries only its imperative.
 DELIMITER COLLISION: if the block to be cut contains patch-protocol markers,
 call it out and hand the human an out-of-band vim instruction instead of a
