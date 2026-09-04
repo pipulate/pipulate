@@ -1180,6 +1180,26 @@ Entries are alphabetical, numbers spelled as spoken.
   glossary's vocabulary entry both still said "exact lines" after the fix
   landed -- PROTECTION-LAG POLARITY in its expensive direction, caught by
   the corpus grep this rule prescribes.
+- **The Write-Side / Read-Side Split** — *one word, two questions, two
+  owners.* Banked 2026-09-04, found while un-hardwiring a blog's URL
+  folder. `permalink_prefix` in blogs.nix answers WHERE NEW POSTS ARE
+  WRITTEN: it reaches the editing model through a template placeholder and
+  becomes the frontmatter of every article the pipeline creates. Jekyll's
+  own `permalink:` in each site's _config.yml answers a DIFFERENT question
+  — WHERE A POST WITH NO EXPLICIT URL IS SERVED — and lives in a repo the
+  config does not own. Two consumers had quietly assumed one value covered
+  both: lsa.default_permalink guessed `/<prefix>/<slug>`, generate_post_nav
+  guessed `/<slug>/`, and neither matched grimoire, whose _config.yml
+  declares no permalink at all and therefore serves Jekyll's built-in date
+  style `/:categories/:year/:month/:day/:title:output_ext`. THE TEST: when
+  a value seems to be needed in two places, ask whether both places are
+  answering the same question. If one is a WRITE decision the system makes
+  and the other is a READ behavior some other system exhibits, they are two
+  values wearing one name, and unifying them papers a third guess over an
+  existing disagreement. RESOLUTION HERE was not to pick a winner: a census
+  proved the read-side branch unreachable (0 of 1,572 posts lack an
+  explicit permalink), so the disagreement is documented, self-reporting,
+  and costs nothing.
 - **The Transfer Function** — *the render transform, characterized.* Banked
   2026-08-06, comb-witnessed across three firings; supersedes and FALSIFIES
   the GFM hypothesis recorded in THE RENDER-GAP RULE. The render canary FIRED
