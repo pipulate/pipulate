@@ -205,8 +205,8 @@ def build_ledger(target_config: dict, rich: bool, limit) -> tuple:
         else:
             if idx == FULL_URL_THRESHOLD:
                 lines.append(
-                    f"\n## Compact slug index — pattern: {base_url}/futureproof/{{slug}}/index.md\n"
-                    f"\nFormat: `[date] [size] slug` — fetch any entry as `{base_url}/futureproof/{{slug}}/index.md`\n"
+                    f"\n## Compact slug index — pattern: {url_pattern}\n"
+                    f"\nFormat: `[date] [size] slug` — fetch any entry as `{url_pattern}`\n"
                 )
             slug = article_slug(item)
             line = f"- [{item['date']}] [{size_k}] {slug}"
