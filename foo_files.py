@@ -2108,6 +2108,7 @@ foo_files.py
 # #todo #to-do #earmarks
 
 # - TODO (2026-09-02, reconfirmed 09-03): walk_cartridge.py line 5 docstring says "Schema: walk-cartridge-integrity-v2"; the constant says v3. One-line fix.
+# - TODO (2026-09-04, dismount-seeded): the COMPACT_CHOP ranker's `^# THE ` anchor fires on wrapped continuation lines (THE TRAIL SCHEMA is an AUTH RULING line) and chapter blurbs (ROLLING PIN, PORTABLE CARTRIDGE), so three of the top five rows are not rules. Tighten to headers carrying a date, e.g. `^# (THE .*20[0-9][0-9]-|§ |- EARMARK|- TODO|CHAPTER|===)`, as its own car; it voids the ranker straddle for one compile, so take a fresh BEFORE. Gate: ROLLING PIN, PORTABLE CARTRIDGE and TRAIL SCHEMA leave the top 12 and no dated rule leaves it.
 # - EARMARK: THE INSPECTION CERTIFICATE (ruled 2026-09-03, third thing, derived): the client-facing verification page is the HEAD of the DECANT bundle (stop names, final_url, artifact counts, skipped stops) stapled to the compile's LIVE COMMAND RECEIPTS list, bodies removed, plus the connector argv the trail NAMES and the re-run exports by variable name only. Never authored, never inside the bundle (the floor) or the compile (the factory). v0 is a pipe over existing markers; v1 is a `certificate` verb beside `seal` once v0 has been read by a human who is not the operator.
 
 # - EARMARK: THE POCKETRENDER VERSE (seeded 2026-09-02). Almost no SE ticket
