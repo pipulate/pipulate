@@ -56,7 +56,7 @@ def article_markdown_url(item: dict, base_url: str, prefix: str) -> str:
     if not permalink:
         stem = Path(item["filename"]).stem
         slug = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", stem)
-        permalink = f"/futureproof/{slug}"
+        permalink = lsa.default_permalink(slug, prefix)
     return f"{base_url}{permalink}/index.md"
 
 
