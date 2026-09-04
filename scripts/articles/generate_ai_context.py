@@ -49,7 +49,7 @@ def get_base_url(target_config: dict) -> str:
     return (target_config.get("base_url") or target_config.get("url") or DEFAULT_BASE_URL).rstrip("/")
 
 
-def article_markdown_url(item: dict, base_url: str) -> str:
+def article_markdown_url(item: dict, base_url: str, prefix: str) -> str:
     """Mirror lsa.py --fmt dated-slugs routing: honor the YAML permalink, else
     fall back to /futureproof/<slug>/, always serving the raw index.md variant."""
     permalink = (item.get("permalink") or "").rstrip("/")
