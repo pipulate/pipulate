@@ -109,6 +109,43 @@ class MtimeMemo:
         except Exception:
             pass
 
+# THE BLOG FOLDER, READ AT CALL TIME (banked 2026-09-04). "futureproof" was a
+# literal in three files and a fourth disagreed with it, so a second blog could
+# not have a second folder no matter what it declared. The value now lives in
+# blogs.nix, materializes into blogs.json, and is read here.
+# LSA OWNS THE READER because it is the only module in this pipeline that BOTH
+# loads targets itself AND is imported by the standalone scripts, so a helper
+# here reaches every consumer without inventing a new import edge.
+# THE DEFAULT BELOW IS LOAD-BEARING, and it is also why a probe of these
+# helpers CANNOT witness a rebuild: a blogs.json written before the key existed
+# falls through to the default and prints exactly what a correctly-declared
+# target prints. Only a direct read of the JSON tells declared from defaulted.
+DEFAULT_PERMALINK_PREFIX = "futureproof"
+
+
+def permalink_prefix(target_config) -> str:
+    """The blog's post folder, as a bare segment carrying no slashes.
+
+    An explicitly declared empty string survives as empty -- that is a
+    root-level blog, not a missing key -- which is why this tests for None
+    rather than falsiness.
+    """
+    raw = (target_config or {}).get('permalink_prefix')
+    if raw is None:
+        raw = DEFAULT_PERMALINK_PREFIX
+    return str(raw).strip('/')
+
+
+def default_permalink(slug: str, prefix: str) -> str:
+    """The permalink a post WOULD have if its frontmatter omitted one.
+
+    No trailing slash, matching every call site, each of which appends
+    "/index.md" itself. An empty prefix yields "/<slug>" rather than
+    "//<slug>", so a root-level blog is representable, not a special case.
+    """
+    return f"/{prefix}/{slug}" if prefix else f"/{slug}"
+
+
 def load_targets():
     if TARGETS_FILE.exists():
         try:
