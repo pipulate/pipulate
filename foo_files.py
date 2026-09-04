@@ -2583,56 +2583,6 @@ foo_files.py
 #   file has no business entering a payload whole for a sixty-line edit.
 
 # - TODO (2026-09-04, demoted from the THREE-TIER WORKSPACE earmark; the tiers and the ladder are vocabulary now, rg -in 'three-tier workspace' GLOSSARY.md): extend server.py's app scanner to APP_SEARCH_PATHS across apps/, Notebooks/Corporate/apps/ and Notebooks/Personal/apps/; register the workspace tree as sealed figurate art before any surface copies it; one figlet banner per Prompt Fu alias, then silence; recolor startup_environment_warnings() off bright_red on onboarding surfaces. Gate: a tool dropped in Notebooks/Personal/apps/ appears in the APP menu with no core commit.
-#   1. 3-TIER NOTEBOOK WORKSPACE (`Notebooks/`):
-#      - `Corporate/`: Org canon & skills (Read-only, auto-pulled by git).
-#      - `Personal/`: Individual sandbox for vibe-coding (Gitignored, user-owned).
-#      - `Shared/$USERNAME/`: Outbound peer exchange with single-writer directory isolation (Alice writes `Shared/alice/`, Bob writes `Shared/bob/`) to eliminate git merge conflicts by structural construction.
-#   2. HUMAN COMPOSITION LADDER:
-#      - Level 1: CLI Append (`email <id> >> context.md`, `jira <id> >> context.md`, `botify <bql> >> context.md`).
-#      - Level 2: Shell script (`./briefing.sh`).
-#      - Level 3: Python script (`python scripts/briefing.py`).
-#      - Level 4: FastHTML app (`apps/050_briefing.py`).
-#   3. CONNECTOR ALIAS TRANSITION -- DISCHARGED 2026-08-25, both clauses. The
-#      roster became `sources` (scripts/mcp_menu.py -> scripts/sources_menu.py),
-#      the registry dispatcher split off as `tools`, and `mcp` now aliases
-#      scripts/connectors/mcp.py -- which grew a bare-word identity walk in the
-#      SAME car, because a freed word pointed at a required positional would
-#      have answered argparse exit 2 and been a worse keypress than the roster
-#      it replaced. Kept as a dated tombstone rather than deleted: a numbering
-#      gap in a list of eight reads as a lost item, which is a more expensive
-#      confusion than six lines of receipt.
-#   4. MULTI-DIRECTORY PLUGIN DISCOVERY:
-#      - Extend `server.py` app scanner to search `APP_SEARCH_PATHS` across `apps/`, `Notebooks/Corporate/apps/`, and `Notebooks/Personal/apps/`, sorting by numeric prefix so domain plugins (e.g. Botify Parameter Buster) cleanly decouple from core Pipulate. Later beat: extend the same scan to enrolled `Notebooks/Shared/<user>/apps/` so a teammate's tool rides in without a core commit.
-#   5. DIRECTORY-STRUCTURE FIGURATE ART (seeded 2026-07-25): register the
-#      Corporate/Personal/Shared tree as OFFICIAL art in
-#      imports/ascii_displays.py under the FULL figurate contract, not a bare
-#      print -- a `_figurate_workspace_tree` render fn returning (human, ai);
-#      its raw-ai CRC32 stamped into FIGURATE_LEDGER above the
-#      FIGURATE_LEDGER_EXTRUDE_BOTTOM sentinel; a FIGURATE_REGISTRY entry above
-#      its own EXTRUDE sentinel. The white_rabbit bunny was planted for exactly
-#      this moment: author the frame ONCE, wax-seal it, render it everywhere.
-#      Gotcha: the CRC cannot be known until the art string exists, so author
-#      first, then `print(binascii.crc32(art.encode('utf-8')))`, then seal.
-#   6. ART DEPLOYMENT SURFACES (the REDUNDANT-GROOVE play made literal): once
-#      registered, the workspace-tree art renders into README.md / the GitHub
-#      homepage, the `brief` LLM payload, Honeybot station-identification
-#      breaks, and prompt_foo.py's own educational output. One master, many
-#      projections -- the handles-not-homes discipline the Jekyll lane already
-#      runs on prose, now run on the onboarding frame. Registration (item 5)
-#      GATES this: do NOT hand-copy the tree into any surface before it is art.
-#   7. PROMPT_FOO AS TEACHER -- SILENT-AFTER-BANNER (Stick-Bug aesthetic):
-#      make the Prompt Fu aliases Unix-quiet (errors are signal and surface
-#      loud; routine chatter stays down) but open each with ONE context-aware
-#      figlet banner naming the chop it compiles -- `ahc` -> "Ad Hoc CHOP!".
-#      Pavlovian muscle-memory myelination: the banner IS the receipt that the
-#      right lane fired. This is THE DISAPPEARING INSTRUMENT RULE made visible
-#      -- inert until summoned, one guardian-angel banner, then quiet.
-#   8. ONBOARDING-TONE BANNER FIX (convicted 2026-07-25, "red is emotionally a
-#      turn-off"): startup_environment_warnings() wears bright_red borders +
-#      yellow letters -- danger colors that read as punishment inside a
-#      welcome. On onboarding surfaces reframe it as positive guidance (calm
-#      border, encouraging title, "here is how to win" not "here is what
-#      breaks"). A warning can be a kindness; the color must say so.
 # - TODO: commit the unattended-tty guard in ~/repos/nixos (autognome.py's
 #   "Pipulate Server" tab, PIPULATE_BOOT_MENU=0 prefix). It is on disk and
 #   visible in context, but no compile receipt shows it committed;
