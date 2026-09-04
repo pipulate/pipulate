@@ -226,7 +226,16 @@ def apply_search_replace_patch(payload: str) -> bool:
             # character count wearing a match count's label -- and skipped the
             # nearest-line diagnostic below, which would have shown the em dash
             # the SEARCH had spelled as two hyphens. Route it to not-found.
-            already_applied_count = content.count(replace_block) if replace_block else 0
+            # THE SUBSET REPLACE (convicted 2026-09-04, dedupe car): when the
+            # REPLACE block is a SUBSTRING of the SEARCH block -- every dedupe
+            # car, by construction -- it is present in the file BEFORE the
+            # patch, so this heuristic read "ambiguous (found 2 times)" for a
+            # plain not-found and skipped the nearest-line diagnostic that
+            # would have shown the invisible blank. A subset REPLACE can never
+            # mean "already applied"; fall through to the real diagnostic.
+            already_applied_count = (content.count(replace_block)
+                                     if replace_block and replace_block not in search_block
+                                     else 0)
             if already_applied_count == 1:
                 print(f"✅ PATCH ALREADY APPLIED: '{filename}' already contains the replacement block.")
                 continue
