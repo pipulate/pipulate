@@ -159,6 +159,13 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Golden Path** — *the sanctioned progressive on-ramp.* Two of them, one per
   execution surface: the Prompt Fu compile lane and the MCP/FastHTML runtime
   lane. Identify the surface before recommending the actuator.
+- **Graft, not seed** — *reproduce by pinning, never by re-resolving.*
+  Seedling apples do not breed true; an orchard reproduces a cultivar by
+  grafting. An installer that re-resolves against a moving channel is a
+  pip; a pinned flake.lock is a graft. RENT THIS PAYS: it predicts that two
+  installs from one pinned lock are the same tree, and that "it worked on
+  my machine" is a seedling claim until the lock is named. The reproduction
+  half of the botany metaphor; COHESION-TENSION owns the mechanism half.
 - **Herschel's Reply** — *"It is quite possible."* Said in 1821 over
   error-riddled astronomical tables, answering Babbage's wish for calculation
   by steam. When the graybeard wishes aloud, cost the engineering.
