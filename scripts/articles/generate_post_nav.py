@@ -78,6 +78,25 @@ def main():
         print(f"❌ No articles found under {posts_dir}", file=sys.stderr)
         sys.exit(1)
 
+    # THE FALLBACK'S REACHABILITY, SELF-REPORTING (2026-09-04). article_url
+    # above invents "/<slug>/" for a post with no frontmatter permalink, while
+    # lsa.default_permalink invents "/<prefix>/<slug>" for that same post.
+    # They disagree, and NEITHER is authoritative: what Jekyll serves comes
+    # from _config.yml's permalink: setting -- "/:slug/" for trimnoir, and the
+    # unset `date` default for grimoire, which is neither of the two guesses.
+    # permalink_prefix cannot settle it, because that value answers a
+    # different question (where articleizer WRITES new posts), and it lives in
+    # a file that does not own Jekyll's routing.
+    # So: do not pick a winner blind. Make the branch speak. Silence means
+    # every post carried its own permalink and the disagreement never fired,
+    # which is the reading that decides whether a fix is owed at all.
+    unlinked = [i["filename"] for i in metadata if not str(i.get("permalink") or "").strip()]
+    if unlinked:
+        print(f"⚠️ {len(unlinked)} post(s) have no frontmatter permalink; their nav keys are GUESSED as /<slug>/.")
+        for name in unlinked[:5]:
+            print(f"   - {name}")
+        if len(unlinked) > 5:
+            print(f"   ... and {len(unlinked) - 5} more")
     nav = build_nav(metadata)
     if len(nav) != len(metadata):
         print(f"⚠️ URL collision: {len(metadata)} posts collapsed to {len(nav)} nav keys.")
