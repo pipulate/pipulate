@@ -184,6 +184,9 @@ def build_ledger(target_config: dict, rich: bool, limit) -> tuple:
         return "", 0
 
     metadata = lsa.get_holographic_article_data(str(target_path))  # newest-first
+    prefix = lsa.permalink_prefix(target_config)
+    folder = f"/{prefix}" if prefix else ""
+    url_pattern = f"{base_url}{folder}/{{slug}}/index.md"
     if limit:
         metadata = metadata[:limit]
 
