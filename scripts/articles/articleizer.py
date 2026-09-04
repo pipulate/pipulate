@@ -9,6 +9,7 @@ import llm
 import argparse
 import time
 import common
+import lsa
 
 # --- CONFIGURATION ---
 CONFIG_DIR = Path.home() / ".config" / "articleizer"
