@@ -200,7 +200,7 @@ def build_ledger(target_config: dict, rich: bool, limit) -> tuple:
             byte_size = 0
         size_k = f"{max(1, round(byte_size / 1000))}k" if byte_size else "?"
         if idx < FULL_URL_THRESHOLD:
-            url = article_markdown_url(item, base_url)
+            url = article_markdown_url(item, base_url, prefix)
             line = f"- [{item['date']}] [{title}]({url})"
         else:
             if idx == FULL_URL_THRESHOLD:
