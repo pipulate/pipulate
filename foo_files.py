@@ -2289,13 +2289,6 @@ foo_files.py
 # exiting NONZERO -- today it exits zero, which is the whole defect. Owed before
 # npvg.org serves a one-liner to strangers.
 
-# EARMARK — CURL-PIPE TRUNCATION SAFETY. assets/installer/install.sh runs
-# top-to-bottom, so a download truncated mid-transfer executes a PARTIAL script:
-# it can mkdir the target, half-fetch a key, and exit clean. Wrap the body in
-# main() { ... } with main "$@" as the last line, so a truncation can only ever
-# fail to define main and nothing runs. Gate on `bash -n` of a truncated copy
-# exiting NONZERO -- today it exits zero, which is the whole defect. Owed before
-# npvg.org serves a one-liner to strangers.
 
 # NO PLACEHOLDERS IN PASTE-READY LINES (convicted 2026-08-30, both lanes): <NAME> in a shell line is a redirection from a file called NAME -- "No such file or directory" -- silent in the compile lane, loud in the operator lane, dead in both. Write "$NAME" and put `export NAME=...` once on the line above; a variable runs verbatim, a placeholder needs an edit the human will not make.
 # THE ACTUATOR IS A CAR: anything that runs against a server (--check, tools/list, tools/call, --refresh) rides in PATCHES as its own numbered car, after the patches it depends on, never previewed above them. Sibling of ONE TIMELINE, NO PREVIEWS (apply.py, 2026-08-30).
