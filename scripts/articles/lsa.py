@@ -571,6 +571,7 @@ def main():
             import re
             target_config = targets[target_key]
             base_url = target_config.get('base_url', 'https://mikelev.in').rstrip('/')
+            prefix = permalink_prefix(target_config)
             # THE BUDGET MAP: per-article token size PLUS a running Σ cumulative.
             # Newest-first (--reverse) means Σ answers "take the N newest -> this
             # many tokens." Scan the Σ column top-down; cut where it crosses your
