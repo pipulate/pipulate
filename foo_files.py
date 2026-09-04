@@ -2204,6 +2204,50 @@ prompt_foo.py  # [16,195 tokens | 73,877 bytes]
 scripts/xp.py  # [672 tokens | 2,521 bytes]
 """
 
+COMPACT_PROMPT = r"""You are running THE FORGETTING KATA against foo_files.py
+and GLOSSARY.md. The governing law is THE KEY/VALUE CONTRACT (rg -in
+'key/value contract' GLOSSARY.md). Three verbs, in this order, and stop after
+ONE car of each unless the human says otherwise:
+1. DEDUPE. Any comment block that appears twice verbatim loses its second copy.
+   Zero judgment; do this first.
+2. FADE. If the RECEIPTS block exceeds its cap, delete lines off the BOTTOM
+   until it fits. Never move a receipt into the glossary: git, the article and
+   the rolling pin are the archive.
+3. GRADUATE. Read the ranker receipt (the awk line, biggest first). Take the
+   single largest CONSTITUTIONAL rule or EARMARK whose value is not yet in
+   GLOSSARY.md. Shrink it IN PLACE to one "# §" key: handle, banked date, one
+   imperative sentence, one physical line. Land its full body verbatim in
+   GLOSSARY.md's Constitution section, alphabetical with "The" ignored. Never
+   relocate the key; the router is read as a program and its order is
+   pedagogy.
+THE KEY TEST, applied before emitting: would the one-line key, read cold by a
+model that has never seen the body, have prevented the conviction that banked
+the rule? If not, write a better key; do not restore the body.
+FAMILY ROSTERS RIDE THE PARENT KEY: a child key carries only its imperative.
+DELIMITER COLLISION: if the block to be cut contains patch-protocol markers,
+call it out and hand the human an out-of-band vim instruction instead of a
+SEARCH/REPLACE block. Every SEARCH block spans contiguous non-empty lines.
+Predict every counter as a DELTA and every byte figure by counting the REPLACE
+block after it is written. Close with the standard five-car train: the AFTER
+probes are the same seven lines that produced the receipts you just read."""
+COMPACT_CHOP = r"""
+# THE FORGETTING KATA (forget with style: dedupe, fade, graduate)
+# COMMAND: python prompt_foo.py @COMPACT_PROMPT --chop COMPACT_CHOP --no-tree
+# ALIAS: `forget` (flake.nix; lands as its own car once flake.nix rides)
+# Run it whenever the router feels heavy. It compiles only the two files the
+# KEY/VALUE CONTRACT governs plus the instruments that grade a strike, and the
+# baked prompt asks for exactly one car per verb. The ranker prints the
+# heaviest comment bodies first so the graduation candidate is named by
+# weight, not by memory. The glossary rides ABOVE the router on purpose: a
+# linear reader meets values before keys.
+! grep -c '^# § ' foo_files.py
+! awk '/START RECEIPTS/{f=1;next} /END RECEIPTS/{f=0} f' foo_files.py | wc -l
+! grep -c '^# - EARMARK' foo_files.py
+! wc -c foo_files.py GLOSSARY.md
+! awk '/^# (THE |§ |- EARMARK|- TODO|CHAPTER|===)/{if(h)print n"\t"h; h=substr($0,1,72); n=0} /^#/{n+=length($0)} END{print n"\t"h}' foo_files.py | sort -rn | head -12
+GLOSSARY.md
+foo_files.py
+"""
 # #todo #to-do #earmarks
 
 # - TODO (2026-09-02, reconfirmed 09-03): walk_cartridge.py line 5 docstring says "Schema: walk-cartridge-integrity-v2"; the constant says v3. One-line fix.
