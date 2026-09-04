@@ -170,7 +170,7 @@ For a guided, interactive tour of the codebase itself, run
 
 The first {FULL_URL_THRESHOLD} entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
-URL as: `{base_url}/futureproof/{{slug}}/index.md`
+URL as: `{base_url}{folder}/{{slug}}/index.md`
 """
 
 
