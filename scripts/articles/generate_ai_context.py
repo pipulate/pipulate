@@ -155,7 +155,7 @@ recompiles a fresh context payload.
 ```text
 [[[TODO_SLUGS]]]
 deterministic-ai-wet-philosophy
-https://{host}/futureproof/magic-cookie-pattern-self-bootstrapping-sovereignty/index.md
+https://{host}{folder}/magic-cookie-pattern-self-bootstrapping-sovereignty/index.md
 [[[END_SLUGS]]]
 
 [[[TODO_FILES]]]
