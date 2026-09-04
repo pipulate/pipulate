@@ -1058,6 +1058,25 @@ Entries are alphabetical, numbers spelled as spoken.
   does not, which is why one clean straddle settles a D0 claim and why the Nix
   pin and the byte-reproducible cartridge are not hygiene around the science —
   they are what makes each experiment cost one paste instead of thirty trials.
+- **The Subset Replace** — *the actuator's own heuristic finds the patch's
+  own text.* Banked 2026-09-04, convicted on the first `forget` ride. A
+  dedupe car's REPLACE is by construction a substring of its SEARCH, so it
+  is present in the file before the patch — twice. When the SEARCH failed
+  (one blank line between the copies, invisible through the transport),
+  apply.py's already-applied heuristic counted the REPLACE, read 2, printed
+  "ambiguous (found 2 times)", and skipped the nearest-line diagnostic that
+  would have named the blank. The fence held; the label pointed at the wrong
+  organ. "Found 2 times" was a correct count of the copies — INCOMMENSURABLE
+  MEASUREMENTS, a right number about a different question. Cure, landed the
+  same day: skip the heuristic when the REPLACE sits inside the SEARCH, and
+  fall through to the diagnostic. Standing consequence for dedupe cars: cut
+  the second copy by gated line range (the gate prints GO with the range or
+  STOP with the count), never by a SEARCH that spans the seam between copies,
+  because the seam is exactly where a blank line lives. Sibling of THE
+  EPITAPH COUNTER (a probe counts the patch's own comment) and THE
+  CONTIGUITY COROLLARY (the seam the author cannot see); the receipts probe
+  that read 788 one compile earlier is the same disease in a probe rather
+  than a tool.
 - **The Transfer Function** — *the render transform, characterized.* Banked
   2026-08-06, comb-witnessed across three firings; supersedes and FALSIFIES
   the GFM hypothesis recorded in THE RENDER-GAP RULE. The render canary FIRED
