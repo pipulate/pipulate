@@ -18,7 +18,7 @@ DEFAULT_TARGETS = {
         "name": "Trimnoir (Personal Journal)",
         "path": str(Path.home() / "repos" / "trimnoir" / "_posts"),
         "base_url": "https://mikelev.in",
-        "permalink_style": "/futureproof/:slug/"
+        "permalink_prefix": "futureproof"
     }
 }
 
