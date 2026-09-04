@@ -69,7 +69,7 @@ def article_slug(item: dict) -> str:
     return re.sub(r"^\d{4}-\d{2}-\d{2}-", "", stem)
 
 
-def build_header(article_count: int, base_url: str) -> str:
+def build_header(article_count: int, base_url: str, prefix: str) -> str:
     """The static framing an interrogating AI reads before the index."""
     today = datetime.now().strftime("%Y-%m-%d")
     host = base_url.replace("https://", "").replace("http://", "").rstrip("/")
