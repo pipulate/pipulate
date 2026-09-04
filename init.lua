@@ -778,7 +778,7 @@ function hop_off_sandworm()
         .. "5. CLOSING: a closing summary for the BOTTOM of the article — the\n"
         .. "   final take-away, tied to the book's larger arc where it fits\n"
         .. "   naturally, never forced. Storytelling over inventory.\n"
-        .. "6. NOTARIZE: the artifact of record is the cartridge THIS compile
+        .. "6. NOTARIZE: the artifact of record is the cartridge THIS compile\n"
         .. "   writes after this payload is assembled, so its name is not in your\n"
         .. "   context and you must not guess one. Attest the FINGERPRINT instead:\n"
         .. "   this Manifest's wc -c line, its receipt count, and the newest\n"
