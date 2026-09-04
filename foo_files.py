@@ -1199,31 +1199,29 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # --- START `adhoc.txt` TEMPLATE ---
 
-# adhoc.txt    _   _   _ to set context____ _   _  ___  ____  _   Simpson Couch Gag Here (explain anything to the audience you feel needs it explained)
+# adhoc.txt    _   _   _ to set context____ _   _  ___  ____  _   Simpson Couch Gag Here (explain anything to the audience you feel needs it explained)G
 #     / \   __| | | | | | ___   ___   / ___| | | |/ _ \|  _ \| |  
-# ahe/ _ \ / _` | | |_| |/ _ \ / __| | |   | |_| | | | | |_) | |  Adjusting the order here for rapid context-setting with storytelling
-# ahc ___ \ (_| | |  _  | (_) | (__  | |___|  _  | |_| |  __/|_|  
-#  /_/   \_\__,_| |_| |_|\___/ \___|  \____|_| |_|\___/|_|   (_)  
+# ahe/ _ \ / _` | | |_| |/ _ \ / __| | |   | |_| | | | | |_) | |  My first blind taste test fan-out
+# ahc ___ \ (_| | |  _  | (_) | (__  | |___|  _  | |_| |  __/|_|  I think the blind fan-out was a success
+#  /_/   \_\__,_| |_| |_|\___/ \___|  \____|_| |_|\___/|_|   (_)  And I may do this more often
 # Ad Hoc CHOP: The Not-Managed-by-Git Safe-for-Client-Data place  
 
 # OPTIONAL BUT BIG FOR FULL CONTEXT-WINDOW STORYTELLING
 # ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
-# GLOSSARY.md                 # <-- I think this glossary goes well with the book-ore spine to do world building.
-# scripts/articles/lsa.py     # <-- Useful for refining commands like `posts`, critical to Second Brain concept.
+# GLOSSARY.md                 # <-- Like the back of a J.R.R. Tolkien book but always growing in size as `prompt_foo.py` gets scars and shrinks.
+# scripts/articles/lsa.py     # <-- 2nd Brain query-engine for `rgx`, `rgxc` & `posts` Jekyll-inspired Memory Externalization for Hackers.
 # ~/repos/nixos/autognome.py  # <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
-# init.lua                    # <-- Daily driver hot-keys that overlap with aliases in flake.nix
+# init.lua                    # <-- Daily driver hot-keys that overlap with aliases in flake.nix. `<leader>m` makes it Science (this process)!
  
 # STILL BIG BUT LESS OPTIONAL (especially flake.nix)
-flake.nix                   # <-- THE ONE BIG THING TO INCLUDE Infrastructure as Code (IaC) tells LLM about your system down to the metal
+# flake.nix                   # <-- THE ONE BIG THING TO INCLUDE Infrastructure as Code (IaC) tells LLM about your system down to the metal
 # prompt_foo.py               # <-- This very content-compiling system
 # foo_files.py                # <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops
 
-# TINY ILLUMINATING (OK to include every time)
-.gitattributes              # <-- Model: understand that `nbstripout` and `jupytext` are both in play. Just talk the human through .ipynb patches.
-.gitignore                  # <-- Creates "negative space" for sub-rep's to share parent environment and "snap" proprietary secret features into place.
-requirements.in             # <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
-__init__.py                 # <-- Master versioning
-pyproject.toml              # <-- The PyPI Packaging details
+# TINY ILLUMINATING (OK to include every time / automatically = `apply.py`, `.gitignore`, `.gitattributes`)
+# requirements.in             # <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
+# __init__.py                 # <-- Master versioning
+# pyproject.toml              # <-- The PyPI Packaging details
 
 # OPTIONAL ACTUATORS (cheap and good to include to expand the AI's capabilities)
 # cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
@@ -1244,13 +1242,13 @@ pyproject.toml              # <-- The PyPI Packaging details
 #                         --- We call it context but it's really just the right-hand  ---
 #                         --- blast-radius of the "probes" to make this all science.  ---
 
---- START THIS DISCUSSION ---
+# Carry-over as the important work-in-progress parts of the project here just
+# like above but not as long-standing overarching to the framework but rather
+# for the current hot spots actively being worked on.
 
-# CONTEXT: 1
-# stuff here from first prompt.
+# --- START THIS DISCUSSION ---
 
-# CONTEXT: 2
-# stuff here from 2nd turn, etc.
+# Context 1 (Edit-in selections from above and add new files immediately below)
 
 # --- END `adhoc.txt` TEMPLATE ---
 
