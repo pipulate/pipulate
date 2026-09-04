@@ -24,6 +24,20 @@ DEFAULT_MODEL = 'gemini-flash-latest'
 # DEFAULT_MODEL = 'gemini-flash-lite-latest'
 
 SPINE_PLACEHOLDER = "[INSERT BOOK SPINE]"
+# THE BLOG FOLDER REACHES THE MODEL (banked 2026-09-04). editing_prompt.txt is
+# what CAUSES every post's frontmatter to say /futureproof/, so leaving it
+# hardwired meant blogs.nix could declare a folder that nothing ever wrote.
+# A PATTERN, NOT A PREFIX, and the name follows the value: what gets
+# substituted is a whole permalink shape ("/futureproof/[slug]/"), because a
+# bare segment would force the template to spell "/[PREFIX]/[slug]/" and an
+# empty prefix would then yield a doubled slash -- the exact case
+# default_permalink exists to avoid. That same function builds this string,
+# so the instruction the model receives and the fallback lsa.py uses can never
+# disagree: one function, both answers.
+# BASE URL RIDES ALONG because the tweet example hardwired the HOSTNAME too,
+# and templating only the folder would hand grimoire the public site's host.
+PERMALINK_PATTERN_PLACEHOLDER = "[INSERT PERMALINK PATTERN]"
+BASE_URL_PLACEHOLDER = "[INSERT BASE URL]"
 
 
 def scan_corpus(output_dir):
