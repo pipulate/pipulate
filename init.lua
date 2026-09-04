@@ -724,7 +724,7 @@ function mount_sandworm()
         .. "Ignition (what makes the patched code run before the AFTER reading -- `<F2>`, `nix develop`, a re-ride -- or none required):\n\n"
         .. "**4: Prompt** (the next question, written before the AFTER reading is in): \n\n"
         .. "[Probably what the AI gives you, but think for yourself!]\n\n"
-        .. "**5: Deliverables**: [external artifacts, updates to this system or 'None this turn']"
+        .. "**5: Deliverables**: [external artifacts, updates to this system or 'None this turn outside the repo']"
     local row = vim.api.nvim_win_get_cursor(0)[1]
     local cur = vim.api.nvim_buf_get_lines(0, row - 1, row, false)[1] or ""
     local lines = vim.split(template, "\n")
