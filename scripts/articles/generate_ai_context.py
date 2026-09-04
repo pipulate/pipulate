@@ -236,7 +236,7 @@ def main():
 
     print(f"🧭 Generating AI_CONTEXT.md from target: {target_config.get('name', target_key)}")
     ledger, count = build_ledger(target_config, args.rich, limit)
-    header = build_header(count, base_url)
+    header = build_header(count, base_url, prefix)
     body = ledger if ledger else "_No articles indexed (article source unavailable at generation time)._"
 
     final = header + "\n" + body + "\n"
