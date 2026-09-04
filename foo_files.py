@@ -236,7 +236,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # on its first flight; the only stale state it can ever exhibit is a loud
 # GENERATION FAILED banner, which is a wound, not a lie.
 
-# THE ATTRIBUTED-VOICE RULE (banked 2026-07-26, articulation-banked): a
+# § THE ATTRIBUTED-VOICE RULE (banked 2026-07-26) -- a synthesized voice is not evidence of a mind, and the rule covers every UTTERANCE, spoken OR on-screen: scripted narration discloses that it is scripted and never says "I am <persona>", model output NAMES its engine because a name is a receipt and not a costume, and deterministic automation demonstrates THE SYSTEM and never "my capabilities". THE MECHANICAL TEST, in place of judgment: if a string names an ACT -- confirmed, secured, verified, connected, validated, active -- then some code must have PERFORMED that act in the same turn, or the verb changes to what happened (recorded, saved, stored, set), because storing a credential is not testing it and the first real request is the earliest honest moment to claim a connection. Chip O'Theseus is EARNED, never asserted: speak the name only while a model is actually answering with keychain memory live.
 # synthesized voice is not evidence of a mind. Piper TTS reading a hardcoded
 # string is a PLAYER PIANO -- deterministic, scripted, and honest only when it
 # says so. An LLM generating a response is a MODEL, and the model gets NAMED.

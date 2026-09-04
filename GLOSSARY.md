@@ -355,6 +355,53 @@ Entries are alphabetical, numbers spelled as spoken.
 > ignored, because this section is read by rg while the router is read
 > top-down as a program.
 
+- **The Attributed-Voice Rule** — *provenance for every utterance, spoken or
+  on-screen.* Banked 2026-07-26, articulation-banked; promoted to
+  receipt-backed the same day. A synthesized voice is not evidence of a mind.
+  Piper TTS reading a hardcoded string is a PLAYER PIANO -- deterministic,
+  scripted, and honest only when it says so. An LLM generating a response is
+  a MODEL, and the model gets NAMED. CONVICTION: the first sixty seconds of
+  onboarding had the Piper narrator announce "I am Chip O'Theseus" and offer
+  "a demonstration of my capabilities," where the demonstration was a Ghost
+  Driver JSON scenario -- two claims of intelligence, zero inference, in the
+  opening minute of a project whose whole thesis is that you can TELL the
+  deterministic parts from the generative ones. THREE CHANNELS, NEVER
+  BLURRED. NARRATION -- scripted TTS; discloses that it is scripted the first
+  time it speaks, never says "I am <persona>", never claims capability.
+  MODEL -- inference; names the engine that produced it ("routed to gemma3",
+  "Model Used: gemini-2.5-pro"), because the name is a RECEIPT, not a costume,
+  and onboard_sauce.py already complies. ACTUATOR -- deterministic automation
+  (Ghost Driver, scenarios, wand spells); a demonstration OF THE SYSTEM,
+  never of "my capabilities." CHIP O'THESEUS IS EARNED, NOT ASSERTED: the
+  name belongs to the persistent local model plus its keychain memory, and
+  may be spoken only once a model is actually answering. Sibling of
+  GENERATED-NOT-AUTHORED (a capability claim no live component backs is
+  drift-by-construction) and of ANCESTOR-DISCIPLINE (name the thing
+  accurately; stage the reveal instead of leading with the label that
+  oversells). SCOPE AMENDMENT (2026-07-26, same-turn conviction): the rule
+  covers every UTTERANCE, spoken OR on-screen -- "voice" in the title is the
+  origin, not the boundary. Conviction: the worst offenders in the follow-up
+  audit were TEXT. "Identity confirmed" (three writes, zero checks).
+  "Connection secured" (the API key was written to disk and never once used).
+  "Congratulations, everything is configured" (spoken on the path where the
+  user skipped both cloud and Botify). "All features requiring AI or an
+  API-key are active" (unconditional, at the moment of lock-in). None of
+  those is a capability LIST, so GENERATED-NOT-AUTHORED has no hook for any
+  of them -- which is what makes this rule load-bearing rather than that rule
+  with a microphone. THE MECHANICAL TEST (use this instead of judgment): if a
+  string names an ACT -- confirmed, secured, verified, connected, validated,
+  active -- then some code must have PERFORMED that act in the same turn. If
+  not, the verb changes to what actually happened: recorded, saved, stored,
+  set. Storing a credential is not testing it, and the first real request is
+  the earliest honest moment to claim a connection. WITNESSED 2026-07-26
+  (same-ride receipts, promoting both the rule and this amendment from
+  articulation-banked to receipt-backed): the persona census over
+  assets/scenarios/*.json returned four hits and ZERO user-facing narration
+  among them; the honesty-verb census over apps/015_config.py returned four
+  hits of which three were the explanatory comments the fix added and the
+  fourth was a logger line. The mechanical test found five offenders that
+  GENERATED-NOT-AUTHORED could not see, which is the evidence that this rule
+  is load-bearing rather than that rule with a microphone.
 - **The Cap That Hid the Answer** — *a count-bounded probe hides the
   discriminator.* Banked 2026-08-05, convicted three times in three compiles.
   A `head -N` cap set to bound noise silently truncates the decisive line when
