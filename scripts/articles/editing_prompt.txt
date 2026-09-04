@@ -72,7 +72,7 @@ The JSON object must conform to the following schema:
   * **yaml_updates**:  
     * title: Populate with your **preferred title** from your analysis.  
     * description: Populate with the meta_description you craft. This should be 100-160 characters.  
-    * permalink: Generate the SEO-optimized filename slug (e.g., primary-keywords.md) and use it to construct the permalink string in the format /futureproof/[slug]/.  
+    * permalink: Generate the SEO-optimized filename slug (e.g., primary-keywords.md) and use it to construct the permalink string in the format [INSERT PERMALINK PATTERN] -- copy that shape verbatim, keeping its leading and trailing slashes, and put your slug where [slug] appears.  
     * keywords: Populate with the comma-separated meta_keywords string.  
   * **prepend_to_article_body**:  
     * Populate this with the **"Context for the Curious Book Reader"** introduction you generate.  
