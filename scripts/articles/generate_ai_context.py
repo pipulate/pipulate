@@ -73,6 +73,7 @@ def build_header(article_count: int, base_url: str, prefix: str) -> str:
     """The static framing an interrogating AI reads before the index."""
     today = datetime.now().strftime("%Y-%m-%d")
     host = base_url.replace("https://", "").replace("http://", "").rstrip("/")
+    folder = f"/{prefix}" if prefix else ""
     return f"""# AI_CONTEXT.md — Start Here If You Are an AI
 
 > Auto-generated on {today}. Rewritten from scratch on every release. If this
