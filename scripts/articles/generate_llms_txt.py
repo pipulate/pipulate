@@ -20,7 +20,17 @@ OUTPUT_FILE = REPO_ROOT / "scripts" / "articles" / "llms.txt"
 def build_payload(target_config: dict) -> str:
     """Generates the dense, reverse-chronological ledger using lsa.py logic."""
     target_path = Path(target_config['path']).expanduser().resolve()
-    base_url = target_config.get('url', 'https://mikelev.in') # Default fallback
+    # KEY DRIFT, convicted by reading (2026-09-04): blogs.json declares
+    # base_url and has never declared url, so this .get always fell through to
+    # the mikelev.in default and every target's llms.txt was built with target
+    # 1's hostname. generate_ai_context.get_base_url already tolerates both
+    # spellings, which is the tell that the older name existed once.
+    # WITNESSED STRUCTURALLY ONLY (the grep goes 1 -> 0). No behavioral receipt
+    # exists today because target 1 is the sole target running this script and
+    # its base_url equals the fallback, so the fix is a no-op until a second
+    # target adopts the pipeline -- which is exactly when it would have bitten.
+    base_url = (target_config.get('base_url') or target_config.get('url')
+                or 'https://mikelev.in').rstrip('/')
     
     print(f"📚 Extracting metadata from: {target_path}")
     # Leverage the Universal Semantic Extractor from lsa.py
