@@ -2582,7 +2582,7 @@ foo_files.py
 #   Either way pull ONLY `sed -n '4250,4310p' tools/mcp_tools.py` -- a 36k-token
 #   file has no business entering a payload whole for a sixty-line edit.
 
-# - EARMARK: THE THREE-TIER WORKSPACE & HUMAN COMPOSITION LADDER (seeded 2026-07-25):
+# - TODO (2026-09-04, demoted from the THREE-TIER WORKSPACE earmark; the tiers and the ladder are vocabulary now, rg -in 'three-tier workspace' GLOSSARY.md): extend server.py's app scanner to APP_SEARCH_PATHS across apps/, Notebooks/Corporate/apps/ and Notebooks/Personal/apps/; register the workspace tree as sealed figurate art before any surface copies it; one figlet banner per Prompt Fu alias, then silence; recolor startup_environment_warnings() off bright_red on onboarding surfaces. Gate: a tool dropped in Notebooks/Personal/apps/ appears in the APP menu with no core commit.
 #   1. 3-TIER NOTEBOOK WORKSPACE (`Notebooks/`):
 #      - `Corporate/`: Org canon & skills (Read-only, auto-pulled by git).
 #      - `Personal/`: Individual sandbox for vibe-coding (Gitignored, user-owned).

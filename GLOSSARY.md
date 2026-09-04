@@ -172,6 +172,13 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Honeybot** — *origin telemetry lab.* A retired laptop, deliberately naked
   on the internet, doing RFC 7231 content negotiation and streaming its own
   access log as television. The broom after the extinction event.
+- **Human composition ladder** — *four surfaces for one recurring
+  composition, cheapest first.* CLI append (`email <id> >> context.md`,
+  `jira <id> >> context.md`, `botify <bql> >> context.md`), shell script
+  (`./briefing.sh`), Python script (`python scripts/briefing.py`), FastHTML
+  app (`apps/050_briefing.py`). Each rung is built from the one below it:
+  the app calls the script, the script calls the connectors. Seeded
+  2026-07-25 inside the THREE-TIER earmark; vocabulary since 2026-09-04.
 - **Ignition** — *making patched code actually run.* Completes the Patch beat;
   an AFTER tap taken without ignition is a stale BEFORE wearing the AFTER's
   label. Either name the actuation or declare "no ignition required."
@@ -304,6 +311,15 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Thirty-and-Three (30-and-3)** — *fan-out then reduce.* Thirty brief
   vignettes, breadth over depth, then three picks with named justifications.
   The 30 is cheap divergence; the 3 is the human-taste bottleneck.
+- **Three-tier workspace** — *Notebooks/ partitioned by who may write.*
+  `Corporate/` is org canon and skills, read-only, auto-pulled by git;
+  `Personal/` is the individual sandbox, gitignored and user-owned;
+  `Shared/<user>/` is outbound peer exchange with one writer per directory
+  (Alice writes `Shared/alice/`, Bob writes `Shared/bob/`), so a merge
+  conflict is unrepresentable by construction -- THE DERIVED-PATH RULE run
+  on a directory tree. Rent: the tier of any file follows from a property
+  git can check, who is allowed to write it. Seeded 2026-07-25; vocabulary
+  since 2026-09-04, when the earmark carrying it demoted to a todo.
 - **Triptych / Hinge A / Hinge B** — *the three-panel scrape receipt.*
   View-source, hydrated DOM, wire truth; Hinge A is the structural diff
   (did JS conjure anything), Hinge B is the requestId proving panel 3's
