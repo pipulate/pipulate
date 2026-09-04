@@ -1390,6 +1390,14 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # fan-out turn. A function, not an alias, so --profile/--reason pass
           # straight through, mirroring defaultu/ahc.
           idea() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop IDEATION_CHOP --no-tree "$@"); }
+          # THE FORGETTING DOOR: `forget` compiles COMPACT_CHOP with its baked
+          # COMPACT_PROMPT -- dedupe, fade, graduate, one car per verb -- so
+          # "the router feels heavy" is one word at the prompt, the way `brief`
+          # and `idea` already are. A function, not an alias, so --profile and
+          # --reason pass straight through, mirroring idea/ahc. Typed by a
+          # human only: the compile lane witnesses it through the generated
+          # hook text, never through `type`.
+          forget() { (cd "$PIPULATE_ROOT" && python prompt_foo.py @COMPACT_PROMPT --chop COMPACT_CHOP --no-tree "$@"); }
           alias ahe='(cd "$PIPULATE_ROOT" && nvim "''${PIPULATE_ADHOC_FILE:-adhoc.txt}" foo_files.py)'
           # THE SNIFF DOOR: one word at the prompt puts a wire-truth lens into
           # the next compile. Appends a sigil line to the adhoc overlay, then
