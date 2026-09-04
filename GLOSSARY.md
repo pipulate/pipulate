@@ -1147,6 +1147,16 @@ Entries are alphabetical, numbers spelled as spoken.
   CONTIGUITY COROLLARY (the seam the author cannot see); the receipts probe
   that read 788 one compile earlier is the same disease in a probe rather
   than a tool.
+  TRAILING-BLANK AMENDMENT (witnessed 2026-09-04, three gates in one ride): a
+  cut range bounded by the NEXT HEADER minus one contains the separator blank
+  by construction, because this file separates rules with blanks. A gate that
+  expects zero blanks in that range cannot print GO on the file as it is -- a
+  refusal-only witness wearing a gate's costume, and the winner of the first
+  blind fan-out shipped two of them, STOP and STOP, with a judge grading them
+  for consistency with each other rather than asking what each prints when
+  the file is exactly as believed. Cure: trim one trailing blank before
+  counting. Receipts: Car 1 start=240 end=287 span=48 with the trim firing;
+  Cars 3 and 4 span=16 and span=50 with the trim idle. Both branches seen.
 - **The Template That Forbids What It Demands** — *two correct
   instructions in one document that cancel.* Banked 2026-09-04,
   transcript-convicted twice. A prompt template is one document with one
