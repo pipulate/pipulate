@@ -59,6 +59,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # --- END STATS ---
 
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
+# 2026-09-04 compile THE FORGETTING KATA seeded (COMPACT_PROMPT + COMPACT_CHOP, commit 61ab7829): the receipts-block probe read 23 by hand and 788 in the compile lane, because Car 1 landed the probe's own text in the file it measures and the unanchored pattern matched itself -- THE INSTRUMENT BECOMES BAIT one turn after emission, the pkill -f shape in awk. Anchored on the marker prefix; predicted 24 both lanes. Cap is 20, so the first forget ride fades four.
 # 2026-09-03 blog arrows restored: generate_post_nav.py -> trimnoir/_data/post_nav.json (1441 keys), post.html does O(1) site.data lookup; wired into blogs.nix target-1 pipeline (rebuild receipt: present in blogs.nix:40 AND materialized blogs.json). Two convictions: WRITE_FILE body shipped without __main__ guard (silent no-op, caught by 🎯-line absence); jekyll serve incremental does not re-render posts on _data change (touch a layout).
 # 2026-09-03 googledocizer H1 headline: Doc body now opens with <h1> of the frontmatter title (commit 649f9b0f); straddle closed on the latest Doc's markdown export (## Setting the Stage -> # <title>); catch-up was the EXISTING --force flag, no /tmp script; full-sweep 🏁 counters NOT witnessed at dismount (n=1).
 # 2026-09-03 text-commands ride: "deterministic" ban WITNESSED n=1 (0/0/0 on frontmatter/H2s/analysis, pre-rule control carries it in title+permalink); \m template gained the two-line BEFORE/AFTER key, straddle 3/3 and the paste matched; certificate halves proven extractable (bundle lines 7/8/846/847, sealed payload lines 32-34, one compile behind by design); PREDICTION FALSIFIED: rg reads foo.zip directly because members are STORED (rg -c printed 3, not 0).
@@ -2241,10 +2242,12 @@ COMPACT_CHOP = r"""
 # weight, not by memory. The glossary rides ABOVE the router on purpose: a
 # linear reader meets values before keys.
 ! grep -c '^# § ' foo_files.py
-! awk '/START RECEIPTS/{f=1;next} /END RECEIPTS/{f=0} f' foo_files.py | wc -l
+# Both awk probes anchor on line-start syntax because this file now carries
+# their own text: an unanchored pattern read 788 on its first compile flight.
+! awk '/^# --- START RECEIPTS/{f=1;next} /^# --- END RECEIPTS/{f=0} f' foo_files.py | wc -l
 ! grep -c '^# - EARMARK' foo_files.py
 ! wc -c foo_files.py GLOSSARY.md
-! awk '/^# (THE |§ |- EARMARK|- TODO|CHAPTER|===)/{if(h)print n"\t"h; h=substr($0,1,72); n=0} /^#/{n+=length($0)} END{print n"\t"h}' foo_files.py | sort -rn | head -12
+! awk '/^# (THE |§ |- EARMARK|- TODO|CHAPTER|===)/{if(h && h !~ /^# ==/)print n"\t"h; h=substr($0,1,72); n=0} /^#/{n+=length($0)} END{if(h !~ /^# ==/)print n"\t"h}' foo_files.py | sort -rn | head -12
 GLOSSARY.md
 foo_files.py
 """
