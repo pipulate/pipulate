@@ -129,7 +129,7 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Desert kite** — *funnel architecture.* Ancient game-herding walls; here,
   converging on-ramps that herd attention to one gate instead of twelve doors.
 - **Dismount (\k)** — *end-of-ride banking beat.* Verify against receipts,
-  bank the wins as exact lines, name the dangling debts, seed the next ride.
+  bank the wins as patch cars, name the dangling debts, seed the next ride.
 - **Dr. Pipt / the Powder** — *the pretraining lab / model weights.* Baum's
   Crooked Magician stirred four kettles six years for a few pinches; the magic
   is in the powder, inference is light through the crystal. His crooked body
@@ -1084,6 +1084,29 @@ Entries are alphabetical, numbers spelled as spoken.
   CONTIGUITY COROLLARY (the seam the author cannot see); the receipts probe
   that read 788 one compile earlier is the same disease in a probe rather
   than a tool.
+- **The Template That Forbids What It Demands** — *two correct
+  instructions in one document that cancel.* Banked 2026-09-04,
+  transcript-convicted twice. A prompt template is one document with one
+  reader, and the reader obeys all of it. The \k dismount's BANK beat asked
+  for graduations "as exact paste-ready lines," and its FINALITY clause
+  said "Emit NO patches." The model obeyed both: it wrote the lines, had no
+  lane to emit them through, and handed the operator the addresses in
+  prose ("paste between Golden Path and Herschel's Reply"), which made the
+  operator the actuator for six edits across two dismounts. Neither clause
+  was wrong on its own; the defect was the pair. Cure, landed the same day:
+  BANK demands SEARCH/REPLACE patch cars, deletions included, and FINALITY
+  exempts "the BANK cars of beat 2" by number, so the exemption and the
+  demand point at each other. STANDING CONSEQUENCE: when a template's
+  demand changes, grep that template for every clause that gates it before
+  shipping, and write the exemption to name the beat it exempts. Sibling of
+  THE SAME-CAR LABEL RULE (a gate moved and its labels did not) and THE
+  LABEL THAT PROMISES A SIBLING (a printer asserting what another command
+  will do); here the gate and the label share one file and disagree, which
+  is why nobody audits it. Also witnessed the same ride, filed as a receipt
+  and not a rule: THE DISMOUNT's own description in the router and the
+  glossary's vocabulary entry both still said "exact lines" after the fix
+  landed -- PROTECTION-LAG POLARITY in its expensive direction, caught by
+  the corpus grep this rule prescribes.
 - **The Transfer Function** — *the render transform, characterized.* Banked
   2026-08-06, comb-witnessed across three firings; supersedes and FALSIFIES
   the GFM hypothesis recorded in THE RENDER-GAP RULE. The render canary FIRED

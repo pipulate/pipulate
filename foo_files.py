@@ -208,13 +208,14 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # THE DISMOUNT (banked 2026-07-19, mechanism witnessed 2026-07-19): a ride
 # series ends with a fourth beat — the hop-off. The dismount prompt makes
 # the model (1) VERIFY the article's opening goal against THIS compile's
-# receipts, never memory; (2) BANK graduations as exact paste-ready lines
-# plus the exact lines to delete; (3) name the DANGLING carried forward
+# receipts, never memory; (2) BANK graduations as SEARCH/REPLACE patch
+# cars, deletions included; (3) name the DANGLING carried forward
 # unbanked, one line each; (4) SEED the next ride's first compile with
 # adhoc.txt lines. Mechanism: init.lua's <leader>k stages the canned block
 # above the current article's !!! floor. Witness: the \k-staged block rode
 # a Prompt section in the same compile whose receipt still showed PENDING —
 # flipped by patch, never by drift, one unwitnessed turn exactly as allowed.
+# § THE TEMPLATE THAT FORBIDS WHAT IT DEMANDS (banked 2026-09-04) -- a prompt template is one document with one reader, so a beat that demands an artifact and a clause that forbids the only lane it can ship through cancel into a hand edit the operator will not make; when a template's demand changes, grep that same template for every clause that gates it, and make the exemption name the beat by number. Conviction: \k's BANK asked for paste-ready lines while FINALITY said no patches, and two dismounts handed the operator addresses in prose. Sibling of THE SAME-CAR LABEL RULE and THE LABEL THAT PROMISES A SIBLING: this is the gate and the label in one file, contradicting each other.
 # THE MOUNT (banked 2026-07-19, witnessed same compile): the zeroth beat.
 # <leader>m runs mount_sandworm(): full saddle (Probe / Context / Patches /
 # Ignition /
