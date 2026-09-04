@@ -2186,8 +2186,7 @@ foo_files.py
 
 # - TODO (2026-09-02, reconfirmed 09-03): walk_cartridge.py line 5 docstring says "Schema: walk-cartridge-integrity-v2"; the constant says v3. One-line fix.
 # - EARMARK: THE INSPECTION CERTIFICATE (ruled 2026-09-03, third thing, derived): the client-facing verification page is the HEAD of the DECANT bundle (stop names, final_url, artifact counts, skipped stops) stapled to the compile's LIVE COMMAND RECEIPTS list, bodies removed, plus the connector argv the trail NAMES and the re-run exports by variable name only. Never authored, never inside the bundle (the floor) or the compile (the factory). v0 is a pipe over existing markers; v1 is a `certificate` verb beside `seal` once v0 has been read by a human who is not the operator.
-# - TODO (2026-09-02): walk_cartridge.py line 5 docstring still says
-#   "Schema: walk-cartridge-integrity-v2"; the constant says v3. One-line fix.
+
 # - EARMARK: THE POCKETRENDER VERSE (seeded 2026-09-02). Almost no SE ticket
 #   avoids PocketRender Infinite, so it is a REQUIRED stop with a LITERAL url
 #   (app.botify.com/tools/cpap/pocketrender/index.html -- no customer in the
