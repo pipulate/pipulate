@@ -232,6 +232,7 @@ def main():
     target_config = targets[target_key]
     base_url = get_base_url(target_config)
     limit = args.limit if (args.limit and args.limit > 0) else None
+    prefix = lsa.permalink_prefix(target_config)
 
     print(f"🧭 Generating AI_CONTEXT.md from target: {target_config.get('name', target_key)}")
     ledger, count = build_ledger(target_config, args.rich, limit)
