@@ -1,8 +1,8 @@
 # AI_CONTEXT.md — Start Here If You Are an AI
 
-> Auto-generated on 2026-09-01. Rewritten from scratch on every release. If this
+> Auto-generated on 2026-09-04. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1435 entries indexed.
+> 1446 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -96,6 +96,17 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-09-04] [The Write-Side / Read-Side Split: Un-Hardwiring Blog Paths in Declarative Pipelines](https://mikelev.in/futureproof/unhardwiring-blog-paths-write-read-split/index.md)
+- [2026-09-04] [The Blind Fan-Out: Five Models, One Judge, and the File That Refused](https://mikelev.in/futureproof/blind-fanout-model-evaluation-and-flight-recorder/index.md)
+- [2026-09-04] [Closing the Loop: Replayable AI Workflows and the End of Manual Edits](https://mikelev.in/futureproof/closing-the-loop-replayable-ai-workflows-and-manual-edits/index.md)
+- [2026-09-04] [Forgetting with Style: Building a Replayable Memory Engine for AI Workflows](https://mikelev.in/futureproof/forgetting-with-style-replayable-memory-engine/index.md)
+- [2026-09-03] [Restoring Replayable Navigation: Moving from Quadratic Overhead to O(1) Data-Driven Layouts](https://mikelev.in/futureproof/restoring-replayable-navigation-data-driven-layouts/index.md)
+- [2026-09-03] [Fixing Google Doc Titles: Automated Pipeline Repairs in the Age of AI](https://mikelev.in/futureproof/fixing-google-doc-titles-pipeline-repairs/index.md)
+- [2026-09-03] [The Scientific Method of Vibe-Coding: Engineering Replayable AI Workflows](https://mikelev.in/futureproof/scientific-method-vibe-coding-replayable-workflows/index.md)
+- [2026-09-03] [The Text Command Is the Mouse for AI: Engineering Replayable Workflows](https://mikelev.in/futureproof/text-commands-the-mouse-for-ai/index.md)
+- [2026-09-02] [Completing the Loop: Optional Stops and the SE Ticket Template](https://mikelev.in/futureproof/completing-the-loop-optional-stops-se-ticket-template/index.md)
+- [2026-09-02] [First-Frame Responsiveness: Engineering Instant UI Feedback in Vim](https://mikelev.in/futureproof/first-frame-responsiveness-vim/index.md)
+- [2026-09-01] [The Pre-Flight Principle: Engineering Deterministic AI Workflows Before the Crash](https://mikelev.in/futureproof/pre-flight-principle-deterministic-ai-workflows/index.md)
 - [2026-09-01] [The Flag Beats the Hardware: Investigating Claude Cowork, Linux VMs, and Hypervisor Gates in the Age of AI](https://mikelev.in/futureproof/claude-cowork-linux-vm-hypervisor-gates/index.md)
 - [2026-09-01] [Myelinating MCP: Terminal-Native Tooling and Session Hygiene](https://mikelev.in/futureproof/myelinating-mcp-terminal-native-tooling-and-session-hygiene/index.md)
 - [2026-08-31] [First-Cell Failures: Why Setup Ergonomics Matter in the Age of AI](https://mikelev.in/futureproof/first-cell-failures-setup-ergonomics-ai/index.md)
@@ -105,22 +116,22 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-08-31] [The Terminal Is the Config: Connecting Raw MCP Servers in the Age of AI](https://mikelev.in/futureproof/the-terminal-is-the-config-mcp-servers/index.md)
 - [2026-08-31] [The Pachinko Mirror: Engineering Deterministic AI Workflows Through Fan-Out and Reduction](https://mikelev.in/futureproof/the-pachinko-mirror-engineering-deterministic-ai-workflows/index.md)
 - [2026-08-30] [Compiling the Forever Machine: Reducing Router Bloat with Key-Value Mappings](https://mikelev.in/futureproof/compiling-the-forever-machine-router-optimization/index.md)
-- [2026-08-30] [The Rule of Silence: Engineering Quiet AI Workflows with Unix](https://mikelev.in/futureproof/rule-of-silence-engineering-quiet-ai-workflows/index.md)
-- [2026-08-30] [Terminal-Native Model Context Protocol in Practice: Connecting Directly in the Age of AI](https://mikelev.in/futureproof/terminal-native-mcp-practice/index.md)
-- [2026-08-30] [Protocol vs. Prompt: Why MCP Is Becoming Unix](https://mikelev.in/futureproof/protocol-vs-prompt-why-mcp-is-becoming-unix/index.md)
-- [2026-08-29] [Terminal MCP Operational: Moving From Pipes to Application](https://mikelev.in/futureproof/terminal-mcp-operational-moving-from-pipes-to-application/index.md)
-- [2026-08-29] [Terminal-Native MCP Without the Bloat: Connecting Directly in the Age of AI](https://mikelev.in/futureproof/terminal-native-mcp-without-the-bloat/index.md)
-- [2026-08-29] [From Claude Connector to Unix Instrument: The First Human-Callable MCP Flight](https://mikelev.in/futureproof/from-claude-connector-to-unix-instrument/index.md)
-- [2026-08-29] [The Antidote to Vibe-Coding: Unix Pipes, Local Files, and Resilient AI Workflows](https://mikelev.in/futureproof/antidote-to-vibe-coding-unix-pipes-local-files/index.md)
-- [2026-08-28] [Disappearing Interfaces: De-Branding the Terminal Threshold in AI Workflows](https://mikelev.in/futureproof/disappearing-interfaces-de-branding-terminal-threshold/index.md)
-- [2026-08-28] [Defense-in-Depth Secret Sanitization for AI Workflows](https://mikelev.in/futureproof/defense-in-depth-secret-sanitization-ai-workflows/index.md)
-- [2026-08-28] [Sanitizing OAuth Terminals: Building a Neovim Credential Scrubber](https://mikelev.in/futureproof/sanitizing-oauth-terminals-neovim-credential-scrubber/index.md)
-- [2026-08-28] [Closing the Loop: Fine-Tuning Credential Tripwires and Declared Fixtures](https://mikelev.in/futureproof/closing-the-loop-credential-tripwires-fixtures/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-08-30] [139k] rule-of-silence-engineering-quiet-ai-workflows
+- [2026-08-30] [201k] terminal-native-mcp-practice
+- [2026-08-30] [141k] protocol-vs-prompt-why-mcp-is-becoming-unix
+- [2026-08-29] [23k] terminal-mcp-operational-moving-from-pipes-to-application
+- [2026-08-29] [341k] terminal-native-mcp-without-the-bloat
+- [2026-08-29] [64k] from-claude-connector-to-unix-instrument
+- [2026-08-29] [66k] antidote-to-vibe-coding-unix-pipes-local-files
+- [2026-08-28] [92k] disappearing-interfaces-de-branding-terminal-threshold
+- [2026-08-28] [135k] defense-in-depth-secret-sanitization-ai-workflows
+- [2026-08-28] [66k] sanitizing-oauth-terminals-neovim-credential-scrubber
+- [2026-08-28] [218k] closing-the-loop-credential-tripwires-fixtures
 - [2026-08-28] [180k] closing-the-slack-loop-credential-mastery
 - [2026-08-27] [87k] epistemic-exoskeleton-engineering-deterministic-ai-workflows
 - [2026-08-27] [307k] navigating-slack-api-tax-token-granularity
