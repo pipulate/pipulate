@@ -659,6 +659,76 @@ Entries are alphabetical, numbers spelled as spoken.
   it. Sibling of THE LANE-DISAGREEMENT WITNESS, inverted: that rule USES a
   lane gap as evidence about the code; this one names a lane gap in the
   INSTRUMENT, where a gap is never evidence, only breakage.
+- **The Ignition Rule** — *the patched code must RUN before the AFTER tap.*
+  Banked 2026-07-23, lived the same day. Between PATCHES and PROMPT sits an
+  act that had no name until now -- MAKING THE PATCHED CODE RUN, so the AFTER
+  tap measures something that happened. It is NOT a fourth beat and must
+  never be labeled a second experiment; that road ends in experiments all
+  the way down. Ignition COMPLETES the PATCH beat, so the kata keeps its
+  three beats (Probe, Patch, Prompt) and only the saddle gains a slot -- a
+  slot THE SADDLE AMENDMENT (2026-07-28) later folded into the Patches car,
+  so Ignition stays a real singular step and stops printing its own number.
+  The hand-run reading taken right after ignition is the AFTER tap TAKEN
+  EARLY -- the same probe, not a new one -- which the next compile's live
+  receipt then repeats: agreement is a free confirmation, disagreement is
+  information about the compile lane itself. Conviction: the vault probe
+  read False inside a compile whose flake patch had already landed,
+  committed, and pushed, because the shell running that compile predated
+  the shellHook; one `exit` + `nd` and the identical line read True.
+  STANDING CONSEQUENCE: every turn NAMES its ignition or declares "no
+  ignition required". Rule of thumb -- if the probe's own command loads the
+  patched file at call time it self-ignites; if the patched thing was read
+  before the probe existed (shellHook, daemon, cache, anything read once at
+  entry), ignite it explicitly. GRAMMAR MNEMONIC (the singulars and plurals
+  are load-bearing): PROBE is singular -- one paste, atomic, non-mutating.
+  CONTEXT is Con-TEXT -- the file section plus a little more text. PATCHES
+  is plural -- one car per commit story, applied one at a time. IGNITION is
+  singular -- one actuation, or none. PROMPT is singular -- the caboose
+  under the cursor. Then Ka-POW: `ahc`.
+
+               THE STRADDLE -- one patch car, drawn
+
+        tree clean                                        two taps compared
+            |                                                     |
+            v                                                     v
+      [ BLAST ] --> [ PROBE ] --> [ PATCH ] --> < IGNITE? > --> [ PROBE ]
+       left edge      BEFORE       app d m      yes: exit +      AFTER
+       of the diff    reads,       writes,       nd or ndq       same command,
+                      never        never        no: the probe    verbatim, no
+                      writes       reads        loads it at      edits
+                                                call time
+
+  PROBE never writes. PATCH always writes. IGNITE is the only step that is
+  ever absent, and it is absent exactly when the probe's own command loads
+  the patched file at the moment it runs. PAIRING (the part that bites): the
+  two taps must be ABLE to see the patch. A probe that measures a CREDENTIAL
+  cannot witness an edit to a MESSAGE. Choose the probe that RUNS the
+  patched code, or the AFTER is a BEFORE wearing a costume. Convicted
+  2026-07-23: three credential probes read byte-identical across four string
+  patches, and the patches were witnessed only by the compile re-running a
+  different probe.
+
+               THE RIDE -- the same track, both rails, two blasts
+
+       off-site                                                    off-site
+       boundary                                                    boundary
+          |                                                            |
+          v                                                            v
+      [ BLAST ] . [ PROBE ] . [ PATCH ] . <IGNITE?> . [ PROBE ] . [ ahc ] . [ BLAST ]
+       push what   tap 1       mutate      make it     tap 2       tap 3      push this
+       came before             the repo    RUN         by hand     in the     ride
+                                                                   compile
+
+  ahc is NOT a probe. It is the EXPERIMENT: it re-runs every echoed probe as
+  a live receipt AND it writes (foo.zip, rotated snapshots, paintbox, stats,
+  token annotations). Read-only instruments belong in PROBE; the mutating
+  instrument fires ONCE, at the end, with a BLAST on either side bounding
+  its radius. Tap 3 is why the echo invariant exists: taps 1 and 2 are the
+  operator's hands, tap 3 is the machine repeating them, and disagreement
+  between 2 and 3 is information about the compile lane. Siblings: THE
+  ACTUATION-BOUNDARY RULE (the straddle brackets execution, not the commit)
+  and THE STRADDLE IS A CONTROLLED EXPERIMENT, which names Ignition as the
+  control for "was the treatment administered".
 - **Incommensurable Measurements** — *a correct number about a different
   question.* Banked 2026-08-05, two-in-one-compile. A probe can return a
   CORRECT number about a DIFFERENT question, and the receipt then looks
