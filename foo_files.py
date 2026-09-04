@@ -181,8 +181,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # it consumes the specimen. Import the patched function, run it on the
 # real input WITHOUT writing, and assert the input is byte-identical
 # afterward. Exercises the hard half; costs no publish.
-# THE IGNITION RULE (banked 2026-07-23, lived the same day): between
-# PATCHES and PROMPT sits an act that had no name until now -- MAKING THE
+# § THE IGNITION RULE (banked 2026-07-23) -- between PATCHES and PROMPT sits IGNITION, making the patched code RUN so the AFTER tap measures something that happened; it completes the Patch beat and is never a fourth one. If the probe's own command loads the patched file at call time it self-ignites; if the patched thing was read once at entry (shellHook, daemon, cache) ignite it explicitly -- exit then nd, or <F2> -- and every turn NAMES its ignition or declares "no ignition required". Conviction: the vault probe read False inside a compile whose flake patch had landed, committed and pushed, because that shell predated the hook. The straddle brackets EXECUTION, not the commit; ahc is the experiment, not a probe, and it writes, so it fires once, bounded by a BLAST on either side. Grammar: PROBE singular, PATCHES plural, IGNITION singular or none, PROMPT singular.
 # PATCHED CODE RUN, so the AFTER tap measures something that happened. It
 # is NOT a fourth beat and must never be labeled a second experiment;
 # that road ends in experiments all the way down. Ignition COMPLETES the
