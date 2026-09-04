@@ -587,7 +587,7 @@ def main():
                 # Leverages YAML frontmatter permalinks falling back to default route structures.
                 permalink = item.get('permalink', '').rstrip('/')
                 if not permalink:
-                    permalink = f"/futureproof/{slug}"
+                    permalink = default_permalink(slug, prefix)
                 url_target = f"{base_url}{permalink}/index.md"
                 if tokens > 0:
                     run_tokens += tokens
