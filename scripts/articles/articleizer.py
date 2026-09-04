@@ -395,6 +395,38 @@ def main():
         with open(PROMPT_FILENAME, 'r', encoding='utf-8') as f:
             prompt_template = f.read()
 
+        # SUBSTITUTE INTO THE TEMPLATE, BEFORE THE ARTICLE LANDS. The order is
+        # load-bearing for the guard below: an article ABOUT this system quotes
+        # placeholder names in its prose (the one introducing this code does),
+        # so a guard run on the ASSEMBLED prompt would refuse to publish the
+        # very article documenting the mechanism -- THE INSTRUMENT BECOMES
+        # BAIT. Scanning the template alone cannot see the article and so
+        # cannot be baited by it.
+        prompt_prefix = lsa.permalink_prefix(target_config)
+        # `is None`, never `or`: target 4 declares base_url = "" ON PURPOSE
+        # (a private wiki with no public URL), and an or-chain would hand it
+        # the public site's hostname. Mirrors this file's own canonical_url
+        # logic further down, and permalink_prefix's None-vs-falsy rule.
+        prompt_base_url = target_config.get("base_url")
+        if prompt_base_url is None:
+            prompt_base_url = target_config.get("url", "https://mikelev.in")
+        prompt_template = prompt_template.replace(
+            PERMALINK_PATTERN_PLACEHOLDER,
+            lsa.default_permalink("[slug]", prompt_prefix) + "/")
+        prompt_template = prompt_template.replace(
+            BASE_URL_PLACEHOLDER, prompt_base_url.rstrip("/"))
+        # THE UNSUBSTITUTED-PLACEHOLDER AIRLOCK: if editing_prompt.txt carries
+        # a placeholder this file does not know -- a typo, or a template
+        # patched ahead of its reader -- the literal "[INSERT ...]" reaches the
+        # model and lands verbatim in a permalink. Refuse instead. FULL ARTICLE
+        # and BOOK SPINE are exempt because they are substituted after this
+        # point, which is the only reason this guard can run here at all.
+        leftover = sorted(set(re.findall(r"\[INSERT [A-Z ]+\]", prompt_template))
+                          - {PROMPT_PLACEHOLDER, SPINE_PLACEHOLDER})
+        if leftover:
+            print(f"❌ Unsubstituted placeholder(s) in {PROMPT_FILENAME}: {leftover}")
+            print("   Refusing to call the API; the model would copy the literal text into your frontmatter.")
+            return
         full_prompt = prompt_template.replace(PROMPT_PLACEHOLDER, article_text)
 
         # --- BOOK SPINE INJECTION (40K-foot view for the editing model) ---
