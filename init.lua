@@ -767,7 +767,11 @@ function hop_off_sandworm()
         .. "   Name any ignition this ride required that never fired -- an AFTER\n"
         .. "   tap taken without one is a stale BEFORE wearing the AFTER's label.\n"
         .. "2. BANK: name everything that graduates — rule, earmark, todo, pin —\n"
-        .. "   as exact paste-ready lines, plus the exact lines to delete.\n"
+        .. "   as SEARCH/REPLACE patch cars against raw source present in THIS\n"
+        .. "   context (Target line inside the fence, one car per commit story),\n"
+        .. "   deletions included. A 'paste-ready' line with no Target and no\n"
+        .. "   SEARCH anchor is not banked; it is a hand edit the operator will\n"
+        .. "   not make. These BANK cars are the ONLY patches a dismount emits.\n"
         .. "3. DANGLING: what carries forward unbanked? One line each, no essays.\n"
         .. "4. SEED: the adhoc.txt lines (and TODO_SLUGS if narrative context is\n"
         .. "   needed) for the next ride's first compile.\n"
@@ -779,10 +783,10 @@ function hop_off_sandworm()
         .. "   CRC-sealed, byte-reproducible archive is the witnessed receipt of\n"
         .. "   this ride. The seal is the signature; the archive is the deed.\n\n"
         .. "FINALITY: after beat 6, this discussion is CLOSED. Emit NO five-car\n"
-        .. "train, NO probes, NO patches, NO next-turn prompt beyond the SEED\n"
-        .. "lines in beat 4. Any reader or model encountering this article later\n"
-        .. "should treat it as a finished, notarized document — an archive entry,\n"
-        .. "not an open thread.\n"
+        .. "train, NO probes, NO patches beyond the BANK cars of beat 2, and NO\n"
+        .. "next-turn prompt beyond the SEED lines in beat 4. Any reader or model\n"
+        .. "encountering this article later should treat it as a finished,\n"
+        .. "notarized document — an archive entry, not an open thread.\n"
     vim.api.nvim_buf_set_lines(0, end_line - 1, end_line - 1, false, vim.split(dismount, "\n"))
     vim.api.nvim_win_set_cursor(0, {end_line - 1, 0})
     vim.cmd('normal! zz')
