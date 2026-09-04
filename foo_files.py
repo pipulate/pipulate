@@ -2195,22 +2195,6 @@ foo_files.py
 #   the predecessor as the final deed.
 
 # - TODO (orphaned 2026-09-04; the url-widening plan that carried it was discharged by THE DUAL-LANE WALK SCHEMA, so only the debt survives): _ignored_or_outside returns safe on the FIRST check-ignore hit and never consults a nested repo; it gates the public catalog repo and nothing else. Own ride; gate: a nested-repo fixture whose ignore rules disagree with the outer repo's, and a receipt naming which repo answered.
-#   CONSTITUTION asserting ahead of the code. Here the SCHEMA asserted ahead
-#   of the RIDER, and every trail author has paid the assertion's rent since.
-#   A required field is a BILL; charge it only when something collects.
-#   NOT A REFACTOR: an optional direct `url` (exactly one of url or url_env
-#   per stop) touches walk.py's STOP_FIELDS and _exact, mother_cat's single
-#   os.environ read, walk_cartridge's consent surface, and public_walk.yaml.
-#   walk_compile.py and bookmark_import.py do NOT change -- they are the
-#   client lane and must keep refusing '://'. The consent surface should SHOW
-#   a public URL rather than hide it: a card that will not say where you are
-#   being taken is worse than one that does.
-#   ORDERING, corrected against a three-model consensus: the nested-git
-#   airlock (_ignored_or_outside returns safe on the FIRST check-ignore hit
-#   and may never consult a nested repo) is REAL and gates the public CATALOG
-#   REPO. It does NOT gate this widening -- hand-authoring a trail in
-#   assets/trails calls neither of the two functions that carry the bug.
-#   Two gates, two rides; conflating them costs a turn.
 # - EARMARK: THE DECLARED-FIXTURE RELIEF VALVE (banked 2026-08-28,
 #   hand-edit-convicted): a guard that fires on the ONE activity this repo
 #   performs constantly -- writing about credentials -- is a guard on its way
