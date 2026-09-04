@@ -51,7 +51,7 @@ def get_base_url(target_config: dict) -> str:
 
 def article_markdown_url(item: dict, base_url: str, prefix: str) -> str:
     """Mirror lsa.py --fmt dated-slugs routing: honor the YAML permalink, else
-    fall back to /futureproof/<slug>/, always serving the raw index.md variant."""
+    fall back to the blog's declared permalink_prefix, always serving index.md."""
     permalink = (item.get("permalink") or "").rstrip("/")
     if not permalink:
         stem = Path(item["filename"]).stem
