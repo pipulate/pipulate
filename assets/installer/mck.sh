@@ -109,6 +109,7 @@ _ph_label='__MCK_''WHITELABEL__'
 YOLO=0
 WHERE_ONLY=0
 MCK_POSITIONAL=""
+EXPORTS_OVERRIDE=""
 for MCK_ARG in "$@"; do
   case "$MCK_ARG" in
     --yolo) YOLO=1 ;;
