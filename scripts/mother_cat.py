@@ -4,6 +4,11 @@
 walk.py remains the strict, stdlib-only dry-run planner. This module adds the
 actuating side of the Mother Cat Kata:
 
+  EXPORTS                  -- the walk's exports file, when one resolves, is
+                              layered UNDER the environment: --exports PATH
+                              wins, else <trail>.exports.sh beside the trail.
+                              An exported, non-empty variable is never
+                              overwritten by the file.
   PRE-FLIGHT               -- every url_env the WHOLE walk needs is checked
                               before anything opens, speaks, or writes.
                               Required and unset REFUSES; optional and unset
