@@ -572,9 +572,17 @@ async def _ride_async(trail_path, dry_narrate=False, exports_path=None):
     # That is not stale documentation; it is a lie told at the exact moment the
     # human decides, and it lied in the EXPENSIVE direction -- understating the
     # protection and overstating the risk, to a newcomer, on the softball walk.
-    _announce_consent(trail_path)
 
-    disclosed = False
+    # THE DESCRIPTION SPEAKS FIRST (2026-09-05). walk.py has validated
+    # trail.description as non-empty since Car A, and nothing read it at
+    # ride time: not the guidance loop, not the consent card, not the
+    # sealed surface. A required field nothing collected. It is the walk's
+    # opening sentence, spoken once before the card in the same voice the
+    # stops use, and under --dry-narrate too, so the rehearsal opens the
+    # way the ride does. The return value carries the one-time disclosure
+    # forward, so the guide introduces itself exactly once.
+    disclosed = _narrate(trail["description"], False)
+    _announce_consent(trail_path)
     captured = []
     skipped = []
     for index, stop in enumerate(stops, 1):
