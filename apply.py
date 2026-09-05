@@ -84,13 +84,16 @@ def _residual_marker_lines(text: str):
 # the repair is a paste. Nothing in the compiler can restore what the
 # transport drops; the cure is on the model's side (anchor on single lines or
 # blank-free spans, per checklist item 6) and on this side (the receipt).
-# TODO (convicted 2026-09-05, same train, second refusal): when this helper
-# finds ZERO spans the branch prints nothing, and the old diagnostic below
-# shows only the FIRST line of the block, which matched -- so a block that
-# differed by one character on two regex lines (a capture-group parenthesis
-# the file never had) produced a receipt that named no line at all and was
-# repaired by hand in vim. Print the first line where the nearest window
-# diverges, both sides repr'd, so a zero-span refusal names its byte.
+# ZERO-SPAN SILENCE, DISCHARGED (convicted 2026-09-05, landed 2026-09-06).
+# When this helper found ZERO spans the branch printed nothing, and the
+# nearest-window report below showed only the block's FIRST line -- which, in
+# the refusal that convicted it, MATCHED. A block differing by one character
+# on line 13 therefore produced a receipt naming no line at all, and the
+# repair happened by hand in vim. The FIRST DIVERGENCE block further down now
+# walks the aligned pair forward and names the first differing line with both
+# sides repr'd. Witnessed by straddle: a four-line SEARCH differing only on
+# line 3, run against a throwaway file before and after, named nothing before
+# and named line 3 after, with the file unchanged in both worlds.
 def _blank_gap_spans(content: str, search_block: str):
     """0-based inclusive (start, end) spans of content matching search_block
     once every empty or whitespace-only line is dropped from both sides."""
