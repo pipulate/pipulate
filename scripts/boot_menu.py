@@ -88,7 +88,7 @@ PIPULATE_KEYS = {"3", "p", "P"}
 DOOR_TWO_WORDS = (
     ("walk", "take the guided tour -- public pages, nothing to log into"),
     ("sources", "see what this shell can reach outside this machine"),
-    ("brief", "compile this workshop into your clipboard for an AI"),
+    ("brief", "compile this workshop into your clipboard for an AI -- the context compiler's first job"),
     ("pu", "change your mind and start the app server after all"),
     ("menu", "print this list again once it scrolls away"),
 )
