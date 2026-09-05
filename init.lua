@@ -715,7 +715,7 @@ function mount_sandworm()
     local template = "**Me**: \n\n"
         .. "> Same commands, run twice, one change between them. Where the readings\n"
         .. "> differ is what the change did; the diff in the middle is the receipt.\n\n"
-        .. "**1: Probe** (BEFORE: hand-run, nothing changed yet):\n\n"
+        .. "**1: Probe**: (BEFORE: hand-run, nothing changed yet)\n\n"
         .. "```bash\n[Paste the terminal output of the probes]\n```\n\n"
         .. "**2: Context**: (AFTER: the same probes re-run by the compiler as `!` lines)\n\n"
         .. "```text\n[Paste entire `adhoc.txt` here]\n```\n\n"
