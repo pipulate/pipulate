@@ -2208,11 +2208,7 @@ foo_files.py
 #   contiguous literal value of at least 20 characters. Negative controls
 #   `session = requests.Session()` and `code = compile(source)` must survive.
 #
-# - TODO (seeded 2026-08-28, dismount-convicted): the NOTARIZE beat asks the
-#   model to name the newest rotated snapshot, but write_context_cartridge runs
-#   after payload assembly, so the current payload can name only N-1. Add a
-#   deterministic self-naming receipt or require a second tap; never notarize
-#   the predecessor as the final deed.
+# - TODO (2026-09-06; the 2026-08-28 NOTARIZE debt is discharged by cartridge_deed_footer, which names THIS compile's snapshot on the envelope under the Prompt, read by the model as a deed on 2026-09-06): init.lua's \k NOTARIZE beat still tells the model the deed's name is not in its context and must not be guessed. Reword it to read Deed: off the footer and keep the fingerprint as the cross-check. init.lua is not in this context; own car.
 
 # - TODO (orphaned 2026-09-04; the url-widening plan that carried it was discharged by THE DUAL-LANE WALK SCHEMA, so only the debt survives): _ignored_or_outside returns safe on the FIRST check-ignore hit and never consults a nested repo; it gates the public catalog repo and nothing else. Own ride; gate: a nested-repo fixture whose ignore rules disagree with the outer repo's, and a receipt naming which repo answered.
 # - EARMARK: THE DECLARED-FIXTURE RELIEF VALVE (banked 2026-08-28,
