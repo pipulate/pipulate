@@ -1283,6 +1283,17 @@ def write_context_cartridge(
             f"🗂️  Rotated cartridge snapshot: {snapshot.name} "
             f"(keeping newest {min(len(rotated), FOO_CARTRIDGE_KEEP)} of {FOO_CARTRIDGE_KEEP})"
         )
+        # THE DEED'S NAME, RETURNED AND NOT MERELY PRINTED (2026-09-06). The
+        # rotation mints this name, so the rotation is the ONE authority that
+        # hands it back; recomputing the hash and the sequence in main() would
+        # be a second authority for a single string, which is the failure this
+        # repo keeps convicting. Reassigning `result` rather than editing the
+        # return keeps the contract intact -- every path still returns a Path
+        # to a written, verified cartridge. On any rotation failure the except
+        # below logs and `result` stays foo.zip, so the caller can never name
+        # a file that was not made, and the two names discriminate the two
+        # worlds without a flag.
+        result = snapshot
     except Exception as exc:
         logger.print(f"Warning: cartridge rotation skipped: {exc}")
 
