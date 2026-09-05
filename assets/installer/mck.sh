@@ -462,6 +462,7 @@ if [ -n "$MISSING" ]; then
     echo "     export $VAR=\"https://...\"" >&2
   done
   echo "   Set them and re-run. The trail names them; this script does not guess." >&2
+  echo "   Or put them in ${TRAIL_PATH%.yaml}.exports.sh (the shape bookmark_import.py writes), or name a file with --exports=PATH." >&2
   exit 2
 fi
 # --- The ride needs the pinned chromium and the shell's LD_LIBRARY_PATH.
