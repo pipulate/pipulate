@@ -406,6 +406,33 @@ fi
 # Which lane won is a receipt, not chatter: a Playground trail silently
 # shadowing a tracked one is exactly the surprise this line prevents.
 echo "Trail resolved: $TRAIL_PATH"
+# --- EXPORTS FILE (2026-09-05): the same derivation the rider runs ---------
+# bookmark_import.py writes <name>.exports.sh beside <name>.walk.md and
+# walk_compile.py puts <name>.yaml beside both, so the file a trail needs is
+# a function of the trail's own path. Explicit --exports=PATH wins and a miss
+# is an ERROR, because the human named it; the sibling is next and a miss is
+# silence, because nothing promised it. A relative path resolves from the
+# workshop root (we cd'd there above), never from where you stood.
+# THIS SHELL LOADS NOTHING. It reads NAMES with grep -- never an eval of a
+# file that holds addresses -- so the ring below can treat a declared name as
+# satisfied. The rider loads the VALUES, environment over file, and is the
+# verdict; this ring stays a SUBSET of it, names and never verdicts, exactly
+# as the url_env ring already is. The line prints only when a file resolved.
+EXPORTS_PATH="$EXPORTS_OVERRIDE"
+if [ -z "$EXPORTS_PATH" ] && [ -f "${TRAIL_PATH%.yaml}.exports.sh" ]; then
+  EXPORTS_PATH="${TRAIL_PATH%.yaml}.exports.sh"
+fi
+EXPORTS_DECLARED=""
+if [ -n "$EXPORTS_PATH" ]; then
+  if [ ! -f "$EXPORTS_PATH" ]; then
+    echo "Error: --exports names a file that is not there: $EXPORTS_PATH" >&2
+    echo "   Relative paths resolve from the workshop root: $ROOT" >&2
+    exit 2
+  fi
+  EXPORTS_DECLARED="$(grep -oE '^[[:space:]]*(export[[:space:]]+)?[A-Z][A-Z0-9_]*=' "$EXPORTS_PATH" | sed -E 's/^[[:space:]]*(export[[:space:]]+)?//; s/=$//' || true)"
+  EXPORTS_COUNT="$(printf '%s\n' "$EXPORTS_DECLARED" | grep -c . || true)"
+  echo "Exports resolved: $EXPORTS_PATH ($EXPORTS_COUNT name(s) declared; the rider loads them, environment wins)"
+fi
 # The trail declares its own url_env names; read them from the trail. Trails
 # are the JSON subset of YAML 1.2, so json.load is correct here.
 # ZERO VARIABLES IS A VALID ANSWER NOW. A stop may carry a literal url instead
