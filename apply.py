@@ -322,6 +322,49 @@ def apply_search_replace_patch(payload: str) -> bool:
                 print(f"  ✓ Corrected first line should be: {repr(corrected)}")
             if search_lines[0].lstrip() != file_first.lstrip():
                 print(f"  ⚠ Content mismatch even after stripping: lines differ beyond whitespace.")
+            # FIRST DIVERGENCE (TODO of 2026-09-05, discharged 2026-09-06). The
+            # blank-gap finder above prints a span only when it finds exactly
+            # one; on ZERO spans it printed NOTHING, and the nearest-window
+            # report below shows only the block's FIRST line -- which, in the
+            # refusal that convicted this, MATCHED. So a block differing by one
+            # character on line 13 produced a receipt naming no divergent line
+            # at all, and the repair happened by hand in vim. This walks the
+            # aligned pair forward and names the first line that actually
+            # differs, both sides repr'd, so the operator can see the byte.
+            # ONLY ON ZERO SPANS: a real blank-line gap already has a better
+            # receipt directly above, and printing both would make the reader
+            # choose between two diagnoses of one refusal.
+            # LSTRIP-EQUAL COUNTS AS MATCHING, mirroring the scorer that chose
+            # this window, so what gets named is a CONTENT difference; pure
+            # indentation drift is already reported two lines up and does not
+            # need a second, differently-worded witness.
+            # THE NO-DIVERGENCE CASE IS SAID OUT LOUD. When every aligned line
+            # matches -- the SEARCH is a strict prefix of the window, or runs
+            # off the end of the file -- silence would read exactly like the
+            # zero-span silence this block exists to end.
+            if not gap_spans:
+                divergence = None
+                for j in range(search_len):
+                    file_idx = best_idx + j
+                    if file_idx >= len(content_lines):
+                        divergence = (j, None)
+                        break
+                    if content_lines[file_idx].lstrip() != search_lines[j].lstrip():
+                        divergence = (j, file_idx)
+                        break
+                print("\n--- FIRST DIVERGENCE (no blank-insensitive match; this is not a blank-line gap) ---")
+                if divergence is None:
+                    print("  Every aligned line matches; the SEARCH block is a prefix of the")
+                    print("  nearest window, or the window runs past the end of the file.")
+                    print("  Extend or shorten the block so it names a unique region.")
+                elif divergence[1] is None:
+                    print(f"  SEARCH line {divergence[0] + 1} has no counterpart: the block runs")
+                    print(f"  past the end of {filename} from the nearest window.")
+                else:
+                    j, file_idx = divergence
+                    print(f"  SEARCH line {j + 1}   : {search_lines[j]!r}")
+                    print(f"  FILE line {file_idx + 1}     : {content_lines[file_idx]!r}")
+                print("--- END FIRST DIVERGENCE ---")
             # Also show the full SEARCH block so the LLM can compare against the source
             print(f"--- YOUR SUBMITTED SEARCH BLOCK (verbatim) ---")
             for li, sl in enumerate(search_lines, start=1):
