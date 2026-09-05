@@ -367,6 +367,27 @@ def _announce_consent(trail_path):
     print(" Read the bundle before you paste it anywhere.")
     print(rule)
     print("")
+# THE SEAM, v0 (2026-09-05). The READ side has existed since the guided lane
+# landed: prompt_foo's resolver finds a Mother Cat capture by its own
+# headers.json under browser_cache/looking_at/, so an @<final_url> line in
+# the compile overlay stacks that stop's lenses with NO new flight. The
+# WRITE side did not exist: nothing told the human which lines to type, so
+# a ride reached the next compile by hand-typed URLs or not at all. PRINT,
+# NEVER APPEND, on purpose: the overlay is the operator's margin,
+# PIPULATE_ADHOC_FILE may point outside the worktree, and a rider that
+# wrote there would be a third writer to a file that already has two (the
+# human, sniff). These lines are cargo the human pastes; nothing leaves the
+# machine, so neither fence is touched. The first paste-and-compile is the
+# receipt that decides whether v1 appends them the way sniff does.
+def _print_next_compile(captured):
+    """Print the overlay lines that make this ride the next compile's context."""
+    if not captured:
+        return
+    print("\n📎 Next compile: paste these lines into adhoc.txt, then compile (ahc).")
+    for _stop_name, final_url, _artifacts in captured:
+        if final_url:
+            print(f"@{final_url}")
+
 async def _ride_async(trail_path, dry_narrate=False):
     trail_path = Path(trail_path)
     trail = walk.load_trail(trail_path)
@@ -583,6 +604,7 @@ async def _ride_async(trail_path, dry_narrate=False):
         if decanted:
             print("   Paste it into any ChatBot (Claude, ChatGPT, Gemini) and it")
             print("   will walk you through everything from here.")
+        _print_next_compile(captured)
     return 0
 
 
