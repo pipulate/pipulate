@@ -1336,6 +1336,48 @@ def copy_to_clipboard(text: str):
     except Exception as e:
         logger.print(f"\nWarning: Could not copy to clipboard: {e}")
 
+def cartridge_deed_footer(cartridge_path) -> str:
+    """Name the archive that seals this payload, in a line that rides outside it.
+
+    THE FIXED POINT IS AN ILLUSION, and seeing why is the whole trick. The
+    archive's name carries eight hex of its own SHA-256, so writing the name
+    into the payload changes the payload, changes the hash, and changes the
+    name. That is genuinely circular -- but only if the name has to live
+    INSIDE the sealed bytes, and it does not. The seal and the envelope are
+    different objects. write_context_cartridge finishes at step 7 and the
+    cartridge is never touched again; this footer is appended to the CLIPBOARD
+    text at step 8, so the sealed bytes stay byte-identical and canonically
+    reproducible while the operator and the model both learn which file on
+    disk holds them. The wax cools, then you write on the envelope.
+
+    DELIBERATELY NOT A PAYLOAD SECTION. The Manifest enumerates the sealed
+    sections and is itself sealed, so a `--- START: ... ---` marker down here
+    would announce a section the Manifest structurally cannot list -- a
+    discrepancy a careful reader would be RIGHT to report. A distinct rule
+    says "outside the seal" instead of "unlisted inside it".
+
+    IT EXPLAINS ITSELF because it lands in the highest-attention position in
+    the document, directly under the final Prompt. A bare filename there
+    invites exactly the spurious finding the paragraph above describes.
+
+    NOT APPLIED TO --output. A rendered file (`seed -o first_wish.md`) is a
+    distributable document, not an envelope. The clipboard lane keeps it even
+    for `seed`, where the deed names the SENDER's record: a recipient with no
+    such zip can still ask for the archive by name, which is chain of custody
+    rather than a broken instruction.
+    """
+    return (
+        "\n\n=== CARTRIDGE SEAL — outside the payload above, on purpose ===\n"
+        f"Deed: {cartridge_path.name}\n"
+        "Every byte above this line is sealed in that archive, and the archive "
+        "could not name itself: writing the name inside the bytes would change "
+        "the bytes and therefore change the name, so it rides here instead. "
+        "The Manifest above does not list this footer for the same reason. "
+        "Verify the deed with verify_context_cartridge() in "
+        "scripts/foo_cartridge.py (standard library only).\n"
+    )
+
+
 def clipboard_egress_allowed(profile: dict, no_clipboard: bool) -> bool:
     """Enforce the no-egress meaning of profiles whose secrets mode is WARN."""
     return (
