@@ -2240,7 +2240,13 @@ def update_agents_md_in_place():
         return
     try:
         from pipulate import wand
-        result = wand.figurate("workspace_tree")
+        # NO PANEL (2026-09-06, operator's ruling on the first console
+        # recording, which read this block at 18 of 88 lines -- the largest
+        # block after the ledger, repainting on every compile what a reader
+        # can open in AGENTS.md itself). Same argument the README twin
+        # passes below; the seal is still read, and the "regenerated" line
+        # is still the only witness that anything changed.
+        result = wand.figurate("workspace_tree", console_output=False)
         if getattr(result, 'drift', 0):
             logger.print("⚠️  workspace_tree reports drift; AGENTS.md left untouched.")
             return
@@ -2318,8 +2324,10 @@ def update_readme_md_in_place():
         # bytes actually change, and they are unaffected here.
         # RENDERING STAYS LIVE, only PRINTING is silenced: result.drift is
         # still read below, so the seal is still checked on this path.
-        # AGENTS.md keeps the visible panel because it splices first and is
-        # the surface every external agent tool reads. Deliberately NOT
+        # AGENTS.md went dark too on 2026-09-06: the first console recording
+        # read its panel at 18 of 88 lines, the largest block after the
+        # ledger, so neither splice paints a panel now and the two
+        # "regenerated" lines are the only witnesses. Deliberately NOT
         # factored into a shared helper -- see this function's docstring: the
         # diff between these two IS the helper's specification, and it gets
         # written when a THIRD surface arrives, not before.
