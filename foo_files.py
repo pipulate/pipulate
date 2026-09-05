@@ -2776,7 +2776,7 @@ foo_files.py
 # scripts/articles/scrub_tags.py  # [1,055 tokens | 4,083 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
 # scripts/audit_dye.py  # [256 tokens | 1,009 bytes]
-# scripts/boot_menu.py  # [3,235 tokens | 12,810 bytes]
+# scripts/boot_menu.py  # [3,242 tokens | 12,846 bytes]
 # scripts/chat_route_probe.py  # [2,813 tokens | 13,033 bytes]
 # scripts/confluence_probe.py  # [4,990 tokens | 20,668 bytes]
 # scripts/connectors/noop.py  # [491 tokens | 2,098 bytes]
