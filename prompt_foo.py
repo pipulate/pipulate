@@ -3572,7 +3572,7 @@ def main():
         with open(args.output, 'w', encoding='utf-8') as f: f.write(final_output)
         print(f"\nOutput written to '{args.output}'")
     if clipboard_egress_allowed(profile, args.no_clipboard):
-        copy_to_clipboard(final_output)
+        copy_to_clipboard(egress_text)
     elif not args.no_clipboard and profile.get('secrets', 'block') == 'warn':
         print("🧱 LOCAL-LANE EGRESS FENCE: automatic clipboard/SSH-bridge copy disabled while secrets=WARN.")
         print("   Inspect foo.zip or an explicit -o file locally. Use a blocking secrets profile before sending the payload elsewhere.")
