@@ -800,7 +800,12 @@ def print_optics_receipt(artifacts: dict, target_url: str, cached: bool = False)
         _src_bytes = os.path.getsize(_src) if _src else 0
     except OSError:
         _src_bytes = 0
-    if _src_bytes < 1024:
+    _dom = art(('hydrated_dom',))
+    try:
+        _dom_bytes = os.path.getsize(_dom) if _dom else 0
+    except OSError:
+        _dom_bytes = 0
+    if _src_bytes == 0 or (_src_bytes < 1024 and _dom_bytes >= 8 * _src_bytes):
         hinge_a = (f"UNMEASURABLE — source.html captured {_src_bytes} bytes; "
                    "panel 1 is empty and the hydration delta is unmeasured")
 
