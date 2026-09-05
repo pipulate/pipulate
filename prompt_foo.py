@@ -1541,15 +1541,30 @@ class PromptBuilder:
         return "\n\n".join(parts).strip()
 
 
-    # EARMARK (2026-09-05): EMPTY LINES DO NOT SURVIVE TRANSPORT. This method
-    # emits bodies byte-faithful (f['content'] is a raw read) and the cartridge
-    # proves it; the paste into a chat window collapses empty lines and keeps
-    # whitespace-only ones, so a model sees every function butted against the
-    # next and every docstring summary glued to its body. Candidate cure, not
-    # yet ridden: render each empty line INSIDE a Codebase body as a single
-    # space so it survives transit, and have apply.py treat a whitespace-only
-    # SEARCH line as matching an empty file line on the exact-match pass. Two
-    # cars, one ride, and the straddle is a SEARCH spanning a real blank.
+    # EMPTY LINES DO NOT SURVIVE TRANSPORT, AND THE CURE IS REFUSED (earmarked
+    # 2026-09-05, ruled 2026-09-06). This method emits bodies byte-faithful --
+    # f['content'] is a raw read -- and the paste into a chat window collapses
+    # empty lines while keeping whitespace-only ones, so a model sees every
+    # function butted against the next and every docstring summary glued to
+    # its body. The earmark proposed rendering each blank here as a single
+    # space and teaching apply.py that a whitespace-only SEARCH line matches
+    # an empty file line. BOTH HALVES ARE REFUSED.
+    # THE FIRST HALF WOULD CORRUPT THE RECORD. A transform applied here runs
+    # BEFORE write_context_cartridge, so the sealed bytes would stop being a
+    # faithful copy of the source they claim to hold -- trading the archive's
+    # fidelity for the reader's convenience, in a tool whose whole thesis is
+    # that the record must be faithful. The deed footer is the correct shape
+    # for a reader-side accommodation: it rides on egress_text, OUTSIDE the
+    # seal, and it says so. If this transform ever rides, it rides there, and
+    # the footer names it.
+    # THE SECOND HALF WOULD BLUNT THE INTERLOCK. Exact match is the one
+    # mechanism proving an edit lands where it was aimed; "whitespace-only
+    # matches empty" loosens it PERMANENTLY to fix an INTERMITTENT failure
+    # that is already detected and already receipted. Measured cost of
+    # leaving it: two refused blocks in one train and one hand repair. The
+    # right direction when that cost rises is a BETTER REFUSAL -- the
+    # zero-span diagnostic banked as a TODO in apply.py -- never a looser
+    # match.
     def _build_codebase_content(self) -> str:
         if self.context_only: return ""
         if not self.processed_files: return ""
