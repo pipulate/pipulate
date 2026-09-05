@@ -728,7 +728,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
 
     try:
-        return ride(args.trail, dry_narrate=args.dry_narrate)
+        return ride(args.trail, dry_narrate=args.dry_narrate, exports_path=args.exports)
     except walk.TrailError as exc:
         print(f"TRAIL INVALID (Car A refused): {exc}")
         return 2
