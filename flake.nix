@@ -524,6 +524,7 @@
           rgxCommand                   # Bounded AND-search over article files
           rgxcCommand                  # rgx plus holographic shards and hit context
           aiCommitCommand              # \g's commit generator resolves in-shell on every platform
+          deedCommand                  # Promote one cartridge snapshot out of rotation, verified
           uv                           # Fast Python package installer and resolver
           sqlite                       # Ensures correct SQLite library is linked on macOS
           ruff                         # Fast Python linter (native Nix binary)
