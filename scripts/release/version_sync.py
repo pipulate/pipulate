@@ -6,9 +6,7 @@ This script ensures all version numbers and descriptions across the codebase com
 source of truth: pipulate.__version__ and pipulate.__description__ in __init__.py
 
 Files updated:
-- pyproject.toml (version and description)
-- flake.nix (version only)
-- Pipulate.com/install.sh (version only)
+- pyproject.toml (version, description, license)
 
 Usage:
     python -c "from pipulate.version_sync import sync_all_versions; sync_all_versions()"
@@ -89,43 +87,7 @@ def update_pyproject_toml(version, description):
         print(f"ℹ️  {pyproject_file} already up to date")
         return False
 
-def update_flake_nix(version):
-    """Update version in flake.nix"""
-    flake_file = Path("flake.nix")
-    if not flake_file.exists():
-        print(f"⚠️  {flake_file} not found, skipping...")
-        return False
-    
-    content = flake_file.read_text()
-    old_content = content
-    
-    # Update version line in flake.nix - preserve any subtitle
-    # Pattern: version = "1.0.8 (JupyterLab Python Version Fix)";
-    version_match = re.search(r'version\s*=\s*"([^"]*?)(?:\s*\([^)]+\))?"', content)
-    if version_match:
-        # Extract any subtitle in parentheses from current version
-        current_version_line = version_match.group(0)
-        subtitle_match = re.search(r'\(([^)]+)\)', current_version_line)
-        
-        if subtitle_match:
-            # Preserve subtitle
-            new_version = f'{version} ({subtitle_match.group(1)})'
-        else:
-            new_version = version
-            
-        content = re.sub(
-            r'version\s*=\s*"[^"]*"',
-            f'version = "{new_version}"',
-            content
-        )
-    
-    if content != old_content:
-        flake_file.write_text(content)
-        print(f"✅ Updated {flake_file}")
-        return True
-    else:
-        print(f"ℹ️  {flake_file} already up to date")
-        return False
+
 
 def update_install_sh(version):
     """RETIRED 2026-08-01 -- no longer called from sync_all_versions().
@@ -134,40 +96,7 @@ def update_install_sh(version):
     exists before deletion. If that grep comes back clean, delete this whole
     function; a no-op that reports success is worse than an absent one.
     """
-    # Check for install.sh in common locations
-    possible_paths = [
-        Path("../Pipulate.com/install.sh"),  # If running from pipulate/ dir
-        Path("Pipulate.com/install.sh"),     # If running from workspace root
-        Path("assets/installer/install.sh")                   # If running from Pipulate.com dir
-    ]
-    
-    install_file = None
-    for path in possible_paths:
-        if path.exists():
-            install_file = path
-            break
-    
-    if not install_file:
-        print(f"⚠️  install.sh not found in expected locations, skipping...")
-        return False
-    
-    content = install_file.read_text()
-    old_content = content
-    
-    # Update VERSION line
-    content = re.sub(
-        r'VERSION\s*=\s*["\'][^"\']+["\']',
-        f'VERSION="{version}"',
-        content
-    )
-    
-    if content != old_content:
-        install_file.write_text(content)
-        print(f"✅ Updated {install_file}")
-        return True
-    else:
-        print(f"ℹ️  {install_file} already up to date")
-        return False
+
 
 def update_pipulate_init(version, description):
     """Update version and description in pipulate/__init__.py"""
@@ -254,15 +183,22 @@ def sync_all_versions():
         updates = []
         updates.append(update_pyproject_toml(version, description))
         updates.append(update_pyproject_license())
-        updates.append(update_flake_nix(version))
-        # RETIRED 2026-08-01: update_install_sh() stamped the DOWNSTREAM
-        # ../Pipulate.com/install.sh, and release.py's sync_install_sh() copied
-        # the repo source over it later in the same pipeline -- the stamp was
-        # destroyed by the very next step, every release, and the served
-        # installer read VERSION="1.0.2" against a 2.02 release. The dead
-        # assignment is removed from the source installer in this same car, so
-        # there is nothing left for this call to target.
-        updates.append(update_pipulate_init(version, description))
+        # TWO DEAD LIMBS CUT 2026-09-05, both source-witnessed no-ops that the
+        # Rule of Silence hid: release.py forwards only "Updated" lines, so
+        # their "already up to date" verdicts were never shown. The flake
+        # stamp searched flake.nix for a quoted version literal, and the flake
+        # derives its version from the root __init__.py at eval time and
+        # carries no such literal, so the matcher never matched. The
+        # package-init stamp aimed at pipulate/__init__.py -- the PACKAGE
+        # init, not the repo-root version source -- and that file has never
+        # declared __version__ or __version_description__, so both of its
+        # substitutions matched nothing; had the second field ever appeared
+        # there, it would have received the long PyPI description in a
+        # subtitle-named slot. The retired installer stamp went the same day,
+        # its one-turn grep clean. A no-op that reports success is worse than
+        # an absent one.
+
+
         
         print()
         if any(updates):
