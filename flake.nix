@@ -1014,7 +1014,14 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           #      never touched by this block.
           #   3. Disposable workspace — gitignored caches/artifacts; ignored here.
           if [ -d .git ]; then
-            echo "Checking for updates..."
+            # THE ANNOUNCEMENT IS NOT A READING (2026-09-05, first car of the
+            # quieting ride). The echo that stood here printed one identical
+            # line in every world -- fetch about to succeed, fetch about to
+            # fail, tree about to be found dirty -- so it discriminated
+            # nothing. The verdicts below already do: "Already up to date."
+            # and "Updates found" are readings of LOCAL against REMOTE, and a
+            # failed fetch prints its own fatal. Cut the announcement, keep
+            # the verdicts.
             # THE STAT-CACHE REFRESH (2026-08-04, first-contact convicted on two
             # consecutive Darwin installs). git diff-index decides from the
             # index's CACHED STAT DATA -- dev, inode, mtime, size -- and the
@@ -1066,7 +1073,12 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               if [ -n "$POST_STASH" ] && [ "$POST_STASH" != "$PRE_STASH" ]; then
                 PIPULATE_STASH="$POST_STASH"
               fi
-              git fetch origin main
+              # --quiet: the fetch summary (the From line and the branch
+              # arrow) narrated the ordinary case to stderr on every entry.
+              # It silences the summary and never the failure: a dead network
+              # still prints its fatal. The Rule of Silence, applied to a
+              # subprocess rather than to our own echo.
+              git fetch --quiet origin main
               LOCAL=$(git rev-parse HEAD)
               REMOTE=$(git rev-parse origin/main)
               CURRENT_BRANCH=$(git branch --show-current)
