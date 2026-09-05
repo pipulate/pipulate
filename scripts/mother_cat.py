@@ -442,7 +442,7 @@ def _print_next_compile(captured):
         if final_url:
             print(f"@{final_url}")
 
-async def _ride_async(trail_path, dry_narrate=False):
+async def _ride_async(trail_path, dry_narrate=False, exports_path=None):
     trail_path = Path(trail_path)
     trail = walk.load_trail(trail_path)
 
