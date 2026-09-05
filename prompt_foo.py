@@ -1244,6 +1244,12 @@ def write_context_cartridge(
     of rotation (single-file behavior, for tests and callers that name their
     own target). Rotation failures never block the compile — foo.zip is
     already written and verified before the snapshot is even attempted.
+
+    RETURNS the SNAPSHOT path when rotation succeeds, and the canonical
+    foo.zip when it does not or when output_path was named. Both are Paths to
+    a written, verified cartridge; the snapshot is the one whose name still
+    means THIS compile tomorrow, since foo.zip is overwritten by the next one.
+    That is why the egress footer quotes what this returns.
     """
     if output_path is not None:
         return foo_cartridge.write_context_cartridge(
