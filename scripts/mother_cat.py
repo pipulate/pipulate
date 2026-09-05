@@ -280,6 +280,55 @@ def _decant_to_clipboard(payload):
     copy_to_clipboard(payload)
 
 
+# THE EXPORTS LOADER (2026-09-05, receipt-gated). bookmark_import.py writes
+# one export line per stop into <name>.exports.sh beside <name>.walk.md and
+# refuses any path git does not ignore; walk_compile.py puts <name>.yaml
+# beside both. So the file a trail needs is a pure function of the trail's
+# own path -- THE DERIVED-PATH RULE -- and nothing had to be told. Until now
+# nothing READ it either: the human sourced it by hand, or did not, and
+# PRE-FLIGHT refused. THREE RUNGS, FIRST HIT WINS: an explicit --exports path
+# (a miss is a REFUSAL, because the human named it); the derived sibling (a
+# miss is silence, because nothing promised it); nothing.
+# ENVIRONMENT OVER FILE, the precedence wallet.py's _check_env spells for the
+# live board: an exported, non-empty variable is kept. "Non-empty" is the
+# same test _missing_url_envs applies, so the loader fills exactly the set
+# PRE-FLIGHT would otherwise refuse on, and nothing else changes hands.
+# python-dotenv reads the `export NAME='value'` shape bookmark_import writes
+# (probe-witnessed 2026-09-05: prefix stripped, value intact). Imported
+# lazily, so a ride that resolves no file pays nothing for it.
+def _resolve_exports(trail_path, explicit=None):
+    """The exports file for this ride, or None when nothing resolves.
+
+    An explicit path is returned whether or not it exists, so the caller can
+    refuse BY NAME; a derived sibling is returned only when it is a file.
+    Relative explicit paths anchor to the repository root, exactly as the
+    trail argument does (UNNAMED-ROOT RULE), never to the current directory.
+    """
+    if explicit:
+        path = Path(explicit).expanduser()
+        if not path.is_absolute():
+            path = REPO_ROOT / path
+        return path
+    sibling = trail_path.with_name(trail_path.stem + ".exports.sh")
+    return sibling if sibling.is_file() else None
+
+
+def _load_exports(path):
+    """Layer one exports file UNDER os.environ. Returns (filled, kept) names."""
+    from dotenv import dotenv_values
+    filled = []
+    kept = []
+    for name, value in dotenv_values(path).items():
+        if value is None:
+            continue
+        if os.environ.get(name, "").strip():
+            kept.append(name)
+        else:
+            os.environ[name] = value
+            filled.append(name)
+    return filled, kept
+
+
 def _missing_url_envs(stops):
     """Every url_env the WHOLE walk names that the environment lacks, in stop order.
 
