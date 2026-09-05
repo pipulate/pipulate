@@ -722,7 +722,7 @@ function mount_sandworm()
         .. "**3: Patches** (the one change between the readings): \n\n"
         .. "```diff\n[Paste the diffs: patch, app, d, m per car]\n```\n\n"
         .. "Ignition (what makes the patched code run before the AFTER reading -- `<F2>`, `nix develop`, a re-ride -- or none required):\n\n"
-        .. "**4: Prompt** (the next question, written before the AFTER reading is in): \n\n"
+        .. "**4: Prompt**: (the next question, written before the AFTER reading is in) \n\n"
         .. "[Probably what the AI gives you, but think for yourself!]\n\n"
         .. "**5: Deliverables**: [external artifacts, updates to this system or 'None this turn outside the repo']"
     local row = vim.api.nvim_win_get_cursor(0)[1]
