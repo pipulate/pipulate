@@ -67,6 +67,32 @@ def _residual_marker_lines(text: str):
     return [(i, line) for i, line in enumerate(text.split('\n'), start=1)
             if _RESIDUAL_MARKER_RE.match(line)]
 
+# BLANK-LINE GAP FINDER (convicted 2026-09-05, two blocks in one train). The
+# compiler squeezes EMPTY lines out of every Codebase body while leaving
+# whitespace-only lines in, so a model copying what it is told is raw source
+# cannot tell an absent blank from a hidden one -- THE DISCRIMINATION QUESTION
+# failing inside the payload itself. A SEARCH that spans a hidden blank fails
+# the exact-match interlock, and the nearest-window scorer below then points
+# rows off, because it rewards the longest SHIFTED run rather than the cause.
+# This helper re-runs the search with every blank dropped from both sides and
+# returns the file spans that match. It NEVER writes: the interlock stays
+# exact, and the caller only prints the span so the repair is a paste. The
+# cure for the cause is a blank-faithful rendering in the compiler; this is
+# the cure for the symptom until that lands.
+def _blank_gap_spans(content: str, search_block: str):
+    """0-based inclusive (start, end) spans of content matching search_block
+    once every empty or whitespace-only line is dropped from both sides."""
+    search_lines = [line for line in search_block.split('\n') if line.strip()]
+    if not search_lines:
+        return []
+    kept = [(i, line) for i, line in enumerate(content.split('\n')) if line.strip()]
+    width = len(search_lines)
+    spans = []
+    for k in range(len(kept) - width + 1):
+        if all(kept[k + j][1] == search_lines[j] for j in range(width)):
+            spans.append((kept[k][0], kept[k + width - 1][0]))
+    return spans
+
 def apply_search_replace_patch(payload: str) -> bool:
     # 1. NORMALIZE PAYLOAD WHITESPACE
     # Convert non-breaking spaces to regular spaces and normalize line endings
@@ -245,6 +271,23 @@ def apply_search_replace_patch(payload: str) -> bool:
                 continue
 
             print(f"❌ Warning: SEARCH block not found in '{filename}'. Skipping.")
+            # BLANK-LINE GAP: the block may match exactly EXCEPT for empty lines
+            # the payload never showed. Say so and print the file's own lines
+            # for that span, so the repair is a paste. Diagnostic only.
+            gap_spans = _blank_gap_spans(content, search_block)
+            if len(gap_spans) == 1:
+                gap_start, gap_end = gap_spans[0]
+                gap_lines = content.split('\n')[gap_start:gap_end + 1]
+                gap_blanks = sum(1 for line in gap_lines if not line.strip())
+                print(f"\n--- BLANK-LINE GAP: the block matches lines {gap_start + 1}-{gap_end + 1} "
+                      f"except for {gap_blanks} blank line(s) the payload did not show ---")
+                for i, line in enumerate(gap_lines, start=gap_start + 1):
+                    print(f"  {i:4d}: {line!r}")
+                print("  Re-emit the SEARCH block as exactly these lines, blanks included.")
+                print("--- END BLANK-LINE GAP ---\n")
+            elif len(gap_spans) > 1:
+                print(f"\n--- BLANK-LINE GAP: {len(gap_spans)} blank-insensitive matches; "
+                      "not unique even ignoring blank lines ---\n")
             # DIAGNOSTIC: Find closest matching window in target file
             search_lines = search_block.split('\n')
             content_lines = content.split('\n')
