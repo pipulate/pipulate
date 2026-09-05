@@ -56,6 +56,16 @@ DEFAULT_TARGETS = {
 # ============================================================================
 # --- Logging & Capture ---
 # ============================================================================
+# THE RULE OF SILENCE, IN release.py'S SHAPE (2026-09-06). release.py runs
+# it already: a module flag, a note() that prints only under -v, a failure
+# that prints everything. Here the split is between two READERS rather than
+# two moods. The console is read by a person, who has no sieve, so it gets
+# readings and verdicts. The Processing Log rides INSIDE the sealed payload
+# and is read by a model, which greps, so it keeps every line it ever had:
+# note() captures exactly what print() does and merely stops echoing. The
+# cartridge bytes for a given input are the same under either setting.
+# Set once in main() from --verbose.
+VERBOSE = False
 class Logger:
     """Captures stdout for inclusion in the generated prompt."""
     def __init__(self):
@@ -73,6 +83,18 @@ class Logger:
         # Actually print it to stdout
         print(*args, **kwargs)
 
+    def note(self, *args, **kwargs):
+        """Capture for the payload's Processing Log; echo to the console only
+        under --verbose. Same signature and same captured bytes as print().
+        Use it for ANNOUNCEMENTS -- a header, a flag echoed back, a step
+        about to start or just finished -- and never for a READING: a count,
+        a timing, a hash, a verdict, or any line whose text differs between
+        the world where the step worked and the world where it did not."""
+        sep = kwargs.get('sep', ' ')
+        end = kwargs.get('end', '\n')
+        self.logs.append(sep.join(map(str, args)) + end)
+        if VERBOSE:
+            print(*args, **kwargs)
     def get_captured_text(self):
         return "".join(self.logs)
 
@@ -395,19 +417,25 @@ def run_static_analysis(python_files: List[str]) -> str:
         logger.print("\n⏭️  Static Analysis skipped (ENABLE_STATIC_ANALYSIS = False).")
         return ""
         
-    logger.print("\n🔍 Running Static Analysis Telemetry...")
+    logger.note("\n🔍 Running Static Analysis Telemetry...")
     diagnostics = []
     
     # Ruff (replaces both Vulture and Pylint)
     ruff_exec = shutil.which("ruff")
     if ruff_exec:
-        logger.print("   -> Checking for errors and dead code (Ruff)...")
+        logger.note("   -> Checking for errors and dead code (Ruff)...")
         cmd = [ruff_exec, "check"] + python_files
         try:
             result = subprocess.run(cmd, capture_output=True, text=True)
             if result.stdout:
                 diagnostics.append("### Ruff\n```text\n" + result.stdout.strip() + "\n```")
-                logger.print(result.stdout.strip())  # Transparent terminal output
+                # Diagnostics are a READING and print. A clean run's
+                # "All checks passed!" is ruff's courtesy, and the exit line
+                # below already says it, so it is captured and not echoed.
+                if result.returncode:
+                    logger.print(result.stdout.strip())
+                else:
+                    logger.note(result.stdout.strip())
         except Exception as e:
             logger.print(f"      [Error running Ruff: {e}]")
             result = None
@@ -430,7 +458,12 @@ def run_static_analysis(python_files: List[str]) -> str:
                 for _line in (result.stderr or "").strip().splitlines()[-6:]:
                     logger.print(f"      {_line}")
              
-    logger.print("✅ Static Analysis Complete.\n")
+    else:
+        # The one world this function used to bookend in green with nothing
+        # between the bookends: no ruff on PATH means nothing ran, and that
+        # is a reading, not an announcement.
+        logger.print("   ⛔ ruff is not on PATH; static analysis did not run.")
+    logger.note("✅ Static Analysis Complete.\n")
     return "\n\n".join(diagnostics)
 
 
@@ -847,7 +880,7 @@ def parse_file_list_from_config(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
                 lambda m: m.group(1) + '\n' + overlay_content + '\n\n' + m.group(2),
                 files_raw, flags=re.DOTALL
             )
-            logger.print("🩹 Adhoc overlay spliced from gitignored adhoc.txt")
+            logger.note("🩹 Adhoc overlay spliced from gitignored adhoc.txt")
 
     # 💥 SAFE REPLACEMENT: Prevents crashing on bash/awk curly braces {}
     if format_kwargs:
@@ -2004,7 +2037,7 @@ def update_paintbox_in_place():
         coverage = (mapped_files / total_files) * 100 if total_files > 0 else 100
         
         logger.print(f"🗺️  Codex Mapping Coverage: {coverage:.1f}% ({mapped_files}/{total_files} tracked files).")
-        logger.print(f"📦 Appending {len(unused_tubes)} uncategorized files to the Paintbox ledger for future documentation...")
+        logger.note(f"📦 Appending {len(unused_tubes)} uncategorized files to the Paintbox ledger for future documentation...")
         for tube_path in unused_tubes:
             full_path = os.path.join(REPO_ROOT, tube_path)
             try:
@@ -2478,6 +2511,7 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
 # ============================================================================
 def main():
     """Main function to parse args, process files, and generate output."""
+    global VERBOSE
     # THE OUROBOROS LOCK (convicted 2026-07-22, Ctrl+C receipt in-compile):
     # a `! ... prompt_foo.py ...` line in adhoc.txt makes the compiler run a
     # probe that runs the compiler that splices the same adhoc.txt — quine
@@ -2626,6 +2660,10 @@ def main():
     # the paintbox, integrity and processing lines print through logger.print
     # long before this. Bulk removed, receipts intact.
     parser.add_argument('--quiet', action='store_true', help='Suppress the step-5 console echo (Payload Ledger + Summary). Cannot reach the step-6 sanitizer, secrets tripwire, render canary, or disclosure receipt.')
+    # THE OTHER POLARITY (2026-09-06). --quiet hides one block of ACCOUNTING;
+    # -v restores the ANNOUNCEMENTS that note() stopped echoing. Readings,
+    # receipts and gates print under both flags and under neither.
+    parser.add_argument('-v', '--verbose', action='store_true', help='Echo progress announcements (step headers, flags echoed back) that the Rule of Silence hides by default. Readings, receipts, and gates always print.')
     parser.add_argument('--chop', type=str, default='AI_PHOOEY_CHOP', help='Specify an alternative payload variable from foo_files.py')
     parser.add_argument('--bumper', type=str, default=None, help='Inject a pre-registered bumper matrix from flippers.json (e.g., gold, cat)')
     parser.add_argument('--line-numbers', action='store_true', help='Prefix source lines with line numbers for review/navigation only. Do not use this mode for SEARCH/REPLACE patch generation.')
@@ -2669,6 +2707,7 @@ def main():
         help='Read article paths from a file or "-" for stdin, one path per line. Equivalent to multiple --decanter args.'
     )
     args = parser.parse_args()
+    VERBOSE = args.verbose
 
     # 💥 NEW: Parse --arg into a dictionary
     format_kwargs = {}
@@ -2775,7 +2814,7 @@ def main():
         })
         logger.print(f"🎯 Added bumper matrix to context payload: {args.bumper}")
 
-    logger.print("--- Processing Files ---")
+    logger.note("--- Processing Files ---")
     import time
     for path, comment in files_to_process:
         # HANDLE DYNAMIC COMMANDS (The ! Chisel-Strike)
@@ -3176,9 +3215,9 @@ def main():
         b_count = len(tree_data.get('content', '').encode('utf-8'))
         logger.print(f" ({t_count:,} tokens | {b_count:,} bytes)")
     elif args.no_tree:
-        logger.print("Skipping codebase tree (--no-tree flag detected).")
+        logger.note("Skipping codebase tree (--no-tree flag detected).")
     else:
-        logger.print("Skipping codebase tree (no .py files included).")
+        logger.note("Skipping codebase tree (no .py files included).")
 
     if args.list is not None:
         logger.print("Adding narrative context from articles...", end='', flush=True)
