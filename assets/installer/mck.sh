@@ -526,7 +526,7 @@ cat <<CARD
  Listen to the whole thing, then decide.
 --------------------------------------------------------------
 CARD
-run_wrapped "$PY" scripts/mother_cat.py "$TRAIL_PATH" --dry-narrate
+run_rider --dry-narrate
 fi
 if [ "$YOLO" -eq 1 ] || [ "${PIPULATE_MCK_ASSUME_YES:-0}" = "1" ]; then
   echo "Confirmation skipped. Every CAPTURE fence still stands."
