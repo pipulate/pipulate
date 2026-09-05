@@ -9,7 +9,7 @@ version = "2.54"
 authors = [
   { name="Mike Levin", email="pipulate@gmail.com" },
 ]
-description = "AI-readiness for the agentic web — local-first, Nix-reproducible workflows. The successor to AI SEO software."
+description = "The context compiler that helps you prompt well — local-first, Nix-reproducible, replayable. The successor to AI SEO software."
 readme = "README.md"
 license = "AGPL-3.0-or-later"
 requires-python = ">=3.8"
@@ -21,7 +21,7 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
     "Topic :: Software Development :: Libraries :: Application Frameworks",
 ]
-keywords = ["ai-readiness", "agentic-web", "seo", "ai", "llm", "automation", "local-first", "nix", "fasthtml", "htmx", "agentic", "content-negotiation"]
+keywords = ["context-compiler", "reproducibility", "ai-readiness", "agentic-web", "seo", "ai", "llm", "automation", "local-first", "nix", "fasthtml", "htmx", "agentic", "content-negotiation"]
 dependencies = [
     "blinker==1.6.2",
     "apsw==3.50.3.0",
