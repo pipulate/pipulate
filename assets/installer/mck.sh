@@ -551,7 +551,7 @@ fi
 # Handing the ride a real terminal on fd 0 satisfies both, and stays correct
 # even after the gate is taught the same trick.
 RIDE_RC=0
-run_wrapped "$PY" scripts/mother_cat.py "$TRAIL_PATH" </dev/tty || RIDE_RC=$?
+run_rider </dev/tty || RIDE_RC=$?
 if [ "$RIDE_RC" -eq 0 ]; then
   cat <<'CARD'
 --------------------------------------------------------------
