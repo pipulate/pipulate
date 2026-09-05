@@ -1,5 +1,5 @@
 """
-Pipulate: A hand-cranked, local-first AI-readiness software framework — the successor to AI SEO software.
+Pipulate: A hand-cranked, local-first context compiler — the successor to AI SEO software.
 
 Your data. Your AI. Your machine. Your control.
 
@@ -29,9 +29,9 @@ __version_description__ = "Futureproof Options"
 # deprecated SPDX) because the header below grants "any later version".
 __license__ = "AGPL-3.0-or-later"
 __email__ = "pipulate@gmail.com"
-__description__ = "AI-readiness for the agentic web — local-first, Nix-reproducible workflows. The successor to AI SEO software."
+__description__ = "The context compiler that helps you prompt well — local-first, Nix-reproducible, replayable. The successor to AI SEO software."
 
-# Pipulate: A hand-cranked, local-first AI-readiness software framework — the successor to AI SEO software.
+# Pipulate: A hand-cranked, local-first context compiler — the successor to AI SEO software.
 # Copyright (C) 2026 Michael Jay Levin
 #
 # This program is free software: you can redistribute it and/or modify
