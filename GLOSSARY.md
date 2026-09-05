@@ -1471,7 +1471,7 @@ execs a fresh bash that never sourced the hook. So `type <name>` prints the
 identical answer in the world where the definition landed and the world where it
 did not -- a false receipt in both directions. The only compile-lane witness is
 the GENERATED HOOK TEXT:
-    LD_LIBRARY_PATH="" nix eval --raw .#devShells.<system>.<shell>.shellHook \
+    LD_LIBRARY_PATH="" nix eval --no-eval-cache --raw .#devShells.<system>.<shell>.shellHook \
       | grep -c '<pattern>'
 LD_LIBRARY_PATH="" is LOAD-BEARING and its absence is invisible until it fires:
 the nix() rpath shim is itself a shell function, so the `!` child inherits the
@@ -1481,3 +1481,18 @@ that receipt. CHOOSE A PATTERN ONLY THE DEFINITION CAN MATCH -- grep -c counts
 LINES, so a comment mentioning `menu()` would have inflated the count to 2 and
 the probe would have read green with no function defined. Proven twice: the
 Notebooks/Shared mkdir move (2026-08-07) and the menu() recall word (2026-09-01).
+--no-eval-cache IS LOAD-BEARING TOO (convicted 2026-09-05, both lanes, one
+fingerprint). At one clean-tree commit the plain spelling died in 0.17s with
+"experimental Nix feature 'dynamic-derivations' is disabled" -- first as a
+compile receipt, then by hand at the same commit -- and grep counted the
+empty stream as 0, the exact 0 the world without the patch prints. The
+--no-eval-cache arm, same shell, seconds later, read 1. One manipulated
+variable, two readings: the eval cache is CONVICTED; what poisoned the entry
+stays INFERRED. On the dirty tree both spellings read 1 at about eleven
+seconds each, consistent with a dirty tree carrying no flake fingerprint and
+therefore consulting no cache -- also INFERRED, and the executor's timing
+annotation (0.17s for the cached death, ~11s for the live evaluations) is
+the second instrument that says so. The flag costs one uncached evaluation,
+which is the price of a reading that cannot be served from a poisoned table.
+THE STDERR MERGE is why the poisoned reading was ever visible: without the
+fenced stderr the receipt would have been a bare 0 wearing a verdict.
