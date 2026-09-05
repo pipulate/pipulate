@@ -788,8 +788,13 @@ def print_optics_receipt(artifacts: dict, target_url: str, cached: bool = False)
     # gate exists to prevent, arriving by the route it does not watch.
     # Sibling of REFUSAL-ONLY WITNESS: the gate had only ever been observed
     # catching the refusal, so nobody knew the success branch was unguarded.
-    # A real HTML document is never under 1 KB, so this cannot fire on a
-    # legitimate capture.
+    # THE TINY-PAGE ACQUITTAL (convicted 2026-09-05 by example.com itself).
+    # This comment used to claim a real HTML document is never under 1 KB.
+    # The canonical test page is 474 bytes on the wire and 559 on disk, so
+    # the gate below called a faithful capture EMPTY on every compile that
+    # reused it. The signature of a capture fault is a small panel 1 UNDER A
+    # LARGE PANEL 2: the source vanished while the DOM did not. Two small
+    # panels is a small page. Zero bytes still fires unconditionally.
     _src = art(('source_html', 'source'))
     try:
         _src_bytes = os.path.getsize(_src) if _src else 0
