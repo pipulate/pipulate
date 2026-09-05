@@ -1563,8 +1563,26 @@ class PromptBuilder:
     # that is already detected and already receipted. Measured cost of
     # leaving it: two refused blocks in one train and one hand repair. The
     # right direction when that cost rises is a BETTER REFUSAL -- the
-    # zero-span diagnostic banked as a TODO in apply.py -- never a looser
-    # match.
+    # zero-span diagnostic, which landed in apply.py on 2026-09-06 -- never a
+    # looser match.
+    # WHAT IS ARGUED AND WHAT IS MEASURED, kept apart on purpose. The refusal
+    # above rests on two arguments that need no receipt: a transform here runs
+    # BEFORE the seal, and a looser interlock is permanently looser. The
+    # BYTE-FAITHFUL claim in the first paragraph is different -- it is
+    # supported by reading this method (f['content'] is a raw read) and by an
+    # rg that found no newline-run collapse, and NOT by a clean measurement.
+    # THREE INSTRUMENTS HAVE FAILED TO TAKE ONE, each in a different way and
+    # none of them touching the thing measured: a whole-payload empty-line
+    # census that scaled with payload content and so could never read a delta
+    # (2026-09-05), a per-file census whose START-marker split swept in fence
+    # and marker scaffolding and read two lines high (2026-09-06), and its
+    # fence-split replacement, whose triple-backtick literal inside a
+    # double-quoted shell -c string became command substitution and produced
+    # no reading at all (2026-09-06). The honest state is UNACQUITTED AND
+    # UNCONVICTED. Anyone reaching for this comment as evidence should build
+    # the instrument first: count empty lines in one named file on disk
+    # against the same file's body inside the sealed cartridge, with the fence
+    # literal assembled as chr(96)*3 so no backtick reaches the shell.
     def _build_codebase_content(self) -> str:
         if self.context_only: return ""
         if not self.processed_files: return ""
