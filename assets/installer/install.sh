@@ -103,6 +103,7 @@ echo
 print_separator
 echo "   🚀 Welcome to the ${BANNER_NAME} Installer 🚀"
 echo "   Local-first, Nix-reproducible, and yours to delete."
+echo "   A context compiler. Prompt well."
 print_separator
 echo
 
