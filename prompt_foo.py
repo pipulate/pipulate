@@ -2305,7 +2305,25 @@ def update_readme_md_in_place():
         return
     try:
         from pipulate import wand
-        result = wand.figurate("workspace_tree")
+        # ONE PANEL, NOT TWO (2026-09-05). Both splice functions ask for the
+        # same sealed art, and Pipulate.figurate prints its Rich panel by
+        # default, so every compile painted the identical workspace tree twice
+        # in a row -- roughly thirty console lines saying one thing, at the
+        # exact moment the console is trying to report what CHANGED.
+        # THE PANEL WAS NEVER THE RECEIPT. It renders identically whether the
+        # splice landed, was skipped for drift, or found no sentinels, so its
+        # green is uninformative -- THE DISCRIMINATION QUESTION answered "the
+        # same thing" by a thing nobody had asked it of. The honest witnesses
+        # are the two "workspace tree regenerated" lines, which fire only when
+        # bytes actually change, and they are unaffected here.
+        # RENDERING STAYS LIVE, only PRINTING is silenced: result.drift is
+        # still read below, so the seal is still checked on this path.
+        # AGENTS.md keeps the visible panel because it splices first and is
+        # the surface every external agent tool reads. Deliberately NOT
+        # factored into a shared helper -- see this function's docstring: the
+        # diff between these two IS the helper's specification, and it gets
+        # written when a THIRD surface arrives, not before.
+        result = wand.figurate("workspace_tree", console_output=False)
         if getattr(result, 'drift', 0):
             logger.print("⚠️  workspace_tree reports drift; README.md left untouched.")
             return
