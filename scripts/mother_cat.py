@@ -680,7 +680,7 @@ async def _ride_async(trail_path, dry_narrate=False, exports_path=None):
     return 0
 
 
-def ride(trail_path=None, dry_narrate=False):
+def ride(trail_path=None, dry_narrate=False, exports_path=None):
     """Run one validated trail to completion and return a process exit code."""
     if trail_path is None:
         path = walk.DEFAULT_TRAIL
