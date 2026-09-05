@@ -1373,8 +1373,10 @@ def cartridge_deed_footer(cartridge_path) -> str:
         "could not name itself: writing the name inside the bytes would change "
         "the bytes and therefore change the name, so it rides here instead. "
         "The Manifest above does not list this footer for the same reason. "
-        "Verify the deed with verify_context_cartridge() in "
-        "scripts/foo_cartridge.py (standard library only).\n"
+        "Verify it yourself with nothing but the Python standard library:\n"
+        f"    python scripts/foo_cartridge.py {cartridge_path.name}\n"
+        "which prints the archive and member SHA-256 digests and exits "
+        "nonzero on any tampering.\n"
     )
 
 
