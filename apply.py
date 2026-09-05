@@ -67,18 +67,30 @@ def _residual_marker_lines(text: str):
     return [(i, line) for i, line in enumerate(text.split('\n'), start=1)
             if _RESIDUAL_MARKER_RE.match(line)]
 
-# BLANK-LINE GAP FINDER (convicted 2026-09-05, two blocks in one train). The
-# compiler squeezes EMPTY lines out of every Codebase body while leaving
-# whitespace-only lines in, so a model copying what it is told is raw source
-# cannot tell an absent blank from a hidden one -- THE DISCRIMINATION QUESTION
-# failing inside the payload itself. A SEARCH that spans a hidden blank fails
-# the exact-match interlock, and the nearest-window scorer below then points
-# rows off, because it rewards the longest SHIFTED run rather than the cause.
-# This helper re-runs the search with every blank dropped from both sides and
-# returns the file spans that match. It NEVER writes: the interlock stays
-# exact, and the caller only prints the span so the repair is a paste. The
-# cure for the cause is a blank-faithful rendering in the compiler; this is
-# the cure for the symptom until that lands.
+# BLANK-LINE GAP FINDER (convicted 2026-09-05, two blocks in one train, and
+# the cause re-attributed the same day). EMPTY lines vanish between the
+# compiler and the model while whitespace-only lines survive. The compiler is
+# ACQUITTED by receipt: prompt_foo.py reads bodies raw, joins sections with
+# double newlines, and carries no newline-run collapse (an rg for one read
+# nothing), so the loss is in TRANSPORT, the paste into a chat window, the
+# same class the render canary exists to catch. A model copying what it is
+# told is raw source therefore cannot tell an absent blank from a hidden one,
+# THE DISCRIMINATION QUESTION failing inside the payload itself. A SEARCH that
+# spans a hidden blank fails the exact-match interlock, and the nearest-window
+# scorer below then points rows off, because it rewards the longest SHIFTED
+# run rather than the cause. This helper re-runs the search with every blank
+# dropped from both sides and returns the file spans that match. It NEVER
+# writes: the interlock stays exact, and the caller only prints the span so
+# the repair is a paste. Nothing in the compiler can restore what the
+# transport drops; the cure is on the model's side (anchor on single lines or
+# blank-free spans, per checklist item 6) and on this side (the receipt).
+# TODO (convicted 2026-09-05, same train, second refusal): when this helper
+# finds ZERO spans the branch prints nothing, and the old diagnostic below
+# shows only the FIRST line of the block, which matched -- so a block that
+# differed by one character on two regex lines (a capture-group parenthesis
+# the file never had) produced a receipt that named no line at all and was
+# repaired by hand in vim. Print the first line where the nearest window
+# diverges, both sides repr'd, so a zero-span refusal names its byte.
 def _blank_gap_spans(content: str, search_block: str):
     """0-based inclusive (start, end) spans of content matching search_block
     once every empty or whitespace-only line is dropped from both sides."""
