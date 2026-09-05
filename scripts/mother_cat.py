@@ -691,7 +691,9 @@ def ride(trail_path=None, dry_narrate=False, exports_path=None):
             # A relative trail typed through the flake's `mothercat` alias
             # must resolve identically from any directory (UNNAMED-ROOT).
             path = REPO_ROOT / path
-    return asyncio.run(_ride_async(path, dry_narrate=dry_narrate))
+    return asyncio.run(
+        _ride_async(path, dry_narrate=dry_narrate, exports_path=exports_path)
+    )
 
 
 def main(argv=None):
