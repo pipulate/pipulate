@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "name": "public_walk",
-  "description": "Soft-ball Mother Cat ride: three public pages, no login, no warming, nothing to export. NARRATE, look at the page (SETTLE), FENCE on the CAPTURE token, full CDP + LLM Optics capture, ADVANCE. Ride: mothercat assets/trails/public_walk.yaml",
+  "description": "Welcome to the public walk: three public pages, nothing to log into, nothing to export. At each stop a browser opens. Look at the page, then come back to this terminal and type the capture word when it asks.",
   "defaults": {
     "take_screenshot": false,
     "headless": false,
