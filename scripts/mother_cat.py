@@ -463,6 +463,24 @@ async def _ride_async(trail_path, dry_narrate=False, exports_path=None):
             print(f"  - {problem}")
         print("  (--dry-narrate continues anyway; nothing will open.)")
 
+    # EXPORTS, BEFORE PRE-FLIGHT, UNDER --dry-narrate TOO: the rehearsal must
+    # disclose the ride it rehearses, not a bare shell's. THE LINE PRINTS
+    # ONLY WHEN A FILE WAS READ, and it prints a path and two counts -- the
+    # names ride on the consent card and the values ride nowhere.
+    exports_file = _resolve_exports(trail_path, exports_path)
+    if exports_file is not None:
+        if not exports_file.is_file():
+            print(f"REFUSING TO RIDE -- --exports names a file that is not there: {exports_file}")
+            print("  Relative paths resolve from the repository root, never from where you stand.")
+            print("  Nothing opened, nothing was spoken, nothing was written.")
+            return 2
+        filled, kept = _load_exports(exports_file)
+        print(f"EXPORTS  {exports_file}")
+        print(
+            f"  {len(filled)} set from the file; {len(kept)} already exported "
+            "and kept (environment wins)."
+        )
+        print("")
     # PRE-FLIGHT (2026-09-01, the ticket ride that died at stop two). A trail
     # declares every URL it needs before it opens anything, so the rider can
     # know at t=0 whether it can finish -- and it used to find out one stop at
