@@ -2,6 +2,15 @@
 # Pipulate MCK Bootstrap v0.5.0 -- the Mother Cat Kata launcher
 # =============================================================
 #
+# WHAT CHANGED IN v0.5.0 -- THE EXPORTS FILE IS FOUND, NOT TYPED
+#   bookmark_import.py has written <name>.exports.sh beside every surface
+#   since 2026-08-08, and nothing read it: the human sourced it by hand or
+#   the ring refused. The launcher now resolves it the way the rider does --
+#   --exports=PATH, else the sibling beside the trail -- reads NAMES from it
+#   so the ring can pass, and hands the path to the rider, which loads the
+#   VALUES with environment-over-file precedence. This file still never
+#   evals a line of a file that holds addresses.
+#
 # WHAT CHANGED IN v0.4.0 -- A TRAIL MAY CARRY ITS OWN URLS
 #   walk.py now accepts a literal `url` on a stop as an alternative to
 #   `url_env`. This launcher was not merely a URL SUPPLIER, it was a url_env
