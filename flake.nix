@@ -1805,6 +1805,15 @@ print(max(1, n))
               echo "❌ ai.py returned empty message, aborting."
               return 1
             fi
+            # THE ERROR-AS-MESSAGE GUARD (convicted 2026-09-05 by git log:
+            # de37b466's subject is an Ollama read-timeout error). init.lua's
+            # \g already refuses a message matching ^Error:; this is parity,
+            # and blast() inherits it because blast() calls m().
+            case "$msg" in
+              Error:*)
+                echo "❌ ai.py returned an error as the message, aborting: $msg"
+                return 1 ;;
+            esac
             echo "📝 Committing: $msg"
             git commit -am "$msg"
           }
