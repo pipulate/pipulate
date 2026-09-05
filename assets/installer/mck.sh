@@ -114,7 +114,8 @@ for MCK_ARG in "$@"; do
   case "$MCK_ARG" in
     --yolo) YOLO=1 ;;
     --where) WHERE_ONLY=1 ;;
-    -*) echo "Error: unknown option '$MCK_ARG' (only --yolo and --where are understood)" >&2; exit 1 ;;
+    --exports=*) EXPORTS_OVERRIDE="${MCK_ARG#--exports=}" ;;
+    -*) echo "Error: unknown option '$MCK_ARG' (only --yolo, --where and --exports=PATH are understood)" >&2; exit 1 ;;
     *) [ -n "$MCK_POSITIONAL" ] || MCK_POSITIONAL="$MCK_ARG" ;;
   esac
 done
