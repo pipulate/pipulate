@@ -88,48 +88,6 @@ def update_pyproject_toml(version, description):
         return False
 
 
-
-def update_install_sh(version):
-    """RETIRED 2026-08-01 -- no longer called from sync_all_versions().
-
-    Left in place for exactly one turn so a grep can confirm no other caller
-    exists before deletion. If that grep comes back clean, delete this whole
-    function; a no-op that reports success is worse than an absent one.
-    """
-
-
-def update_pipulate_init(version, description):
-    """Update version and description in pipulate/__init__.py"""
-    pipulate_init_file = Path("pipulate") / "__init__.py"
-    if not pipulate_init_file.exists():
-        print(f"⚠️  {pipulate_init_file} not found, skipping...")
-        return False
-
-    content = pipulate_init_file.read_text()
-    old_content = content
-
-    # Update version line
-    content = re.sub(
-        r'__version__\s*=\s*["\'][^"\']+["\']',
-        f'__version__ = "{version}"',
-        content
-    )
-
-    # Update description line
-    content = re.sub(
-        r'__version_description__\s*=\s*["\'][^"\']+["\']',
-        f'__version_description__ = "{description}"',
-        content
-    )
-
-    if content != old_content:
-        pipulate_init_file.write_text(content)
-        print(f"✅ Updated {pipulate_init_file}")
-        return True
-    else:
-        print(f"ℹ️  {pipulate_init_file} already up to date")
-        return False
-
 def get_license():
     """Read __license__ from __init__.py, or None if not declared."""
     project_root = Path(__file__).parent.parent.parent
