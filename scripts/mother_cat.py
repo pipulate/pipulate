@@ -715,6 +715,16 @@ def main(argv=None):
         action="store_true",
         help="narrate each stop without opening a browser or capturing",
     )
+    parser.add_argument(
+        "--exports",
+        default=None,
+        metavar="PATH",
+        help=(
+            "exports file to layer UNDER the environment before PRE-FLIGHT "
+            "(default: <trail>.exports.sh beside the trail, if it exists); "
+            "a relative PATH anchors to the repository root"
+        ),
+    )
     args = parser.parse_args(argv)
 
     try:
