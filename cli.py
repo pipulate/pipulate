@@ -478,7 +478,7 @@ def main():
     # --- END NEW LOGIC ---
     
     parser = argparse.ArgumentParser(
-        description="Pipulate CLI - The Local-First AI-Readiness & Automation Workshop.\n\n"
+        description="Pipulate CLI - The Context Compiler That Helps You Prompt Well.\n\n"
                    "🎯 THE GOLDEN PATH FOR AI ASSISTANTS:\n"
                    "  1. .venv/bin/python cli.py mcp-discover                     # Discover your core abilities\n"
                    "  2. .venv/bin/python cli.py call pipeline_state_inspector    # Read live system state\n"
@@ -530,7 +530,7 @@ def main():
     args = parser.parse_args()
 
     if not getattr(args, 'raw', False):
-        console.print(Panel("🚀 [bold cyan]Pipulate :: The Local-First AI-Readiness & Automation Workshop[/bold cyan] 🚀", border_style="cyan"))
+        console.print(Panel("🚀 [bold cyan]Pipulate :: The Context Compiler That Helps You Prompt Well[/bold cyan] 🚀", border_style="cyan"))
 
     if args.command == 'install':
         if not check_nix_installed():
