@@ -2,7 +2,7 @@
 2. Hi, Auditor! What you're looking for is AUDIT.md ( https://pipulate.com/AUDIT.md )
 3. And context AI_CONTEXT.md ( https://pipulate.com/AI_CONTEXT.md )
 
-# Pipulate: Local First AI-Readiness for the Agentic Web
+# Pipulate: The Context Compiler That Helps You Prompt Well
 
 ```text
 ( Like a canary you say? )                      
@@ -13,6 +13,10 @@
 >  This here cony if it's broken          \  )   ""\  |      |             https://pipulate.com
 >  Smokin gun drift now in token           |__>-\_>_>  \____/                     🥕🥕🥕
 ```
+
+## If you can't reproduce it, it didn't happen
+
+You're about to put your name on something an AI made, and you can't say what it did to make it. **Pipulate** is a free, open-source **context compiler**: every file the AI reads and the output of every command run on its behalf, stacked into one file you can paste into any model, keep, and replay with plain text commands. What it can't see, a vendor's server-side tool calls, it leaves out on purpose, because a step you can't rerun is a step nobody checked. Local-first, Nix-reproducible, and yours to delete. **Prompt well.**
 
 ## Quick Start: Be Running in 5 Minutes
 
@@ -1690,6 +1694,6 @@ This project is licensed under the MIT License. See the [LICENSE](https://github
 
 **Background Articles:** <a href="https://mikelev.in/">Mike Levin, AI SEO in NYC</a>
 
-**Enhanced Documentation:** <a href="https://pipulate.com/">Pipulate: AI-Readiness for the Agentic Web</a>
+**Enhanced Documentation:** <a href="https://pipulate.com/">Pipulate: The Context Compiler That Helps You Prompt Well</a>
 
 **On GitHub:** <a href="https://github.com/miklevin/pipulate">Pipulate on GitHub</a>
