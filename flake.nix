@@ -453,6 +453,69 @@
           exec "$python_bin" "$root/scripts/ai.py" "$@"
         '';
 
+        # THE DEED KEEPER (2026-09-06). Rotation prunes to the newest twenty,
+        # which at this compile rate makes a snapshot's name durable for about
+        # a day -- fine for a discussion, useless for a ticket. This promotes
+        # ONE snapshot out of rotation so its name still resolves months from
+        # now, and the choice of which one is deliberately the human's: no
+        # retention policy can know which compile mattered.
+        #
+        # A PACKAGED COMMAND, NOT A SHELL FUNCTION, and the reason is receipts.
+        # Only a human types this, which by THE THREE-TIER AMENDMENT would
+        # ordinarily make a function correct -- but a function is invisible to
+        # the `!` executor, so its only possible witness is a source census
+        # proving text landed in this file, which proves nothing about whether
+        # the command runs. A writeShellScriptBin resolves through PATH in a
+        # child shell and can therefore be probed. Given two working spellings,
+        # take the one that can be measured.
+        #
+        # FOUR THINGS IT MUST NEVER DO:
+        #   1. RENAME. The name carries eight hex of the archive's own SHA-256,
+        #      so the egress footer's verify line and every ticket reference
+        #      quote it verbatim. Same name in the keep directory, or nothing.
+        #   2. REBUILD. Copy bytes. Regenerating a cartridge to refresh it
+        #      destroys the only property that makes it evidence.
+        #   3. KEEP AN UNVERIFIED FILE. The copy is verified after landing and
+        #      REMOVED on refusal -- a kept deed that does not verify is worse
+        #      than no deed, because it looks like one.
+        #   4. LIVE INSIDE THE REPO. The keep directory sits outside the
+        #      worktree so pruning structurally cannot reach it and no forced
+        #      git sweep can either. Payloads may carry client data, and
+        #      structural absence beats exclusion policy.
+        deedCommand = pkgs.writeShellScriptBin "deed" ''
+          set -euo pipefail
+          root="''${PIPULATE_ROOT:-$PWD}"
+          keep="''${PIPULATE_DEEDS_DIR:-$HOME/.local/state/pipulate/deeds}"
+          if [ "$#" -eq 0 ]; then
+            newest=$(ls -t "$root"/foo-*.zip 2>/dev/null | head -1 || true)
+            if [ -z "$newest" ]; then
+              echo "deed: no rotated snapshot in $root -- compile once first." >&2
+              exit 1
+            fi
+            echo "newest   $(basename "$newest")"
+            kept=$(ls -1 "$keep"/foo-*.zip 2>/dev/null | wc -l || true)
+            echo "kept     $kept in $keep"
+            exit 0
+          fi
+          name=$(basename "$1")
+          src="$root/$name"
+          if [ ! -f "$src" ]; then
+            echo "deed: $name is not in $root -- it may already have been pruned." >&2
+            exit 1
+          fi
+          if [ -f "$keep/$name" ]; then
+            echo "deed: already kept -- $keep/$name"
+            exit 0
+          fi
+          mkdir -p "$keep"
+          cp -p "$src" "$keep/$name"
+          if ! "$root/.venv/bin/python" "$root/scripts/foo_cartridge.py" "$keep/$name"; then
+            rm -f "$keep/$name"
+            echo "deed: REFUSED -- the copy did not verify; nothing kept." >&2
+            exit 1
+          fi
+          echo "deed: kept $keep/$name"
+        '';
         # Common packages that we want available in our environment
         # regardless of the operating system
         commonPackages = with pkgs; [
