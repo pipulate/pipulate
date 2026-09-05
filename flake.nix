@@ -1049,7 +1049,12 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               echo "⚠️  Local modifications detected. Skipping automatic update to protect your work."
               echo "   Commit, stash, or revert them, then re-enter nix develop to update."
             else
-              echo "Temporarily stashing local JupyterLab settings..."
+              # NO ANNOUNCEMENT BEFORE THE PUSH (2026-09-05, discharging the
+              # 2026-08-04 TODO): the push below may stash nothing, and a line
+              # naming an act no code performed fails the ATTRIBUTED-VOICE
+              # mechanical test at the top of every first-contact transcript.
+              # The restore branch below already speaks, and only when a stash
+              # actually happened.
               # EXACT-OBJECT CAPTURE: compare refs/stash before and after the
               # push so we only ever act on the stash THIS run created. A no-op
               # push leaves PIPULATE_STASH empty; pre-existing stashes are

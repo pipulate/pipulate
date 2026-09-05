@@ -2465,14 +2465,7 @@ foo_files.py
 #   there will never be a complaint. Sibling of THE UNEXPORTED-SHIM RULE
 #   ("lane-visible only ... the audience the artifact ships to can never report
 #   it") generalized from one mechanism to a whole class.
-# - TODO (banked 2026-08-04, predicted then witnessed): the stash line in
-#   gitUpdateLogic prints "Temporarily stashing local JupyterLab settings..."
-#   UNCONDITIONALLY, before the push that may stash nothing. On a fresh install
-#   it printed while PIPULATE_STASH came back empty -- a verb naming an act no
-#   code performed, which is the ATTRIBUTED-VOICE mechanical test failing on one
-#   line, now at the top of every first-contact transcript where the false-dirty
-#   warning used to be. Fix: move the echo inside `if [ -n "$PIPULATE_STASH" ]`,
-#   or reword to name what actually happened. One line; own ride.
+
 # - TODO (banked 2026-08-03, THIRD conviction in one ride series): ai.py's
 #   get_change_analysis() falls to an all-zero stub in the `m` lane, because
 #   nothing sets PIPULATE_CHANGE_ANALYSIS outside release.py -- receipt: rg
