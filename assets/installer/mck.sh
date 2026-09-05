@@ -494,6 +494,16 @@ run_wrapped() {
     "$@"
   fi
 }
+# ONE SPELLING FOR BOTH RIDER CALLS, so the rehearsal and the ride can never
+# read different exports files. The flag rides only when a file resolved; the
+# empty case expands no array (bash 3.2 + set -u, the trap NIXWRAP dodges).
+run_rider() {
+  if [ -n "$EXPORTS_PATH" ]; then
+    run_wrapped "$PY" scripts/mother_cat.py "$TRAIL_PATH" --exports "$EXPORTS_PATH" "$@"
+  else
+    run_wrapped "$PY" scripts/mother_cat.py "$TRAIL_PATH" "$@"
+  fi
+}
 if [ "$YOLO" -eq 1 ]; then
   echo "--yolo: skipping the spoken rehearsal and the RIDE confirmation."
   echo "        NOT skipped, and not skippable by any flag: the CAPTURE fence"
