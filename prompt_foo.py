@@ -3066,7 +3066,15 @@ def main():
                         _src_bytes = os.path.getsize(_src) if _src else 0
                     except OSError:
                         _src_bytes = 0
-                    if _src_bytes < 1024:
+                    # THE TINY-PAGE ACQUITTAL, payload side: same rule as the
+                    # console receipt above, so the two can never disagree
+                    # about one capture.
+                    _dom = _first_artifact(artifacts, ('hydrated_dom',))
+                    try:
+                        _dom_bytes = os.path.getsize(_dom) if _dom else 0
+                    except OSError:
+                        _dom_bytes = 0
+                    if _src_bytes == 0 or (_src_bytes < 1024 and _dom_bytes >= 8 * _src_bytes):
                         note = (f"# CAPTURE FAULT: source.html for {target_url} is {_src_bytes} bytes.\n"
                                 f"# Panel 1 (view-source) is EMPTY. Any 'source anchors: 0' or\n"
                                 f"# 'ADDED BY HYDRATION' reading in the Link Lens is an ARTIFACT OF\n"
