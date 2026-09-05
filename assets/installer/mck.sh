@@ -72,6 +72,10 @@
 #                             and therefore never override you
 #
 # FLAGS:
+#   --exports=PATH  the exports file for this ride when it is NOT the
+#            <trail>.exports.sh sibling bookmark_import.py writes. This
+#            launcher reads NAMES from it and nothing else; the rider loads
+#            the values. A relative PATH resolves from the workshop root.
 #   --where  print the discovered workshop and exit. READ-ONLY: no install
 #            offer, no browser, no voice, no writes, no network. This is the
 #            probe that makes marker discovery witnessable without needing a
