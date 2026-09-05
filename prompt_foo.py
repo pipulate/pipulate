@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # prompt_foo.py
 
-# Pipulate: A hand-cranked, local-first AI-readiness framework for the agentic web.
+# Pipulate: A hand-cranked, local-first context compiler — the successor to AI SEO software.
 # Copyright (C) 2026 Michael Jay Levin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -1480,6 +1480,15 @@ class PromptBuilder:
         return "\n\n".join(parts).strip()
 
 
+    # EARMARK (2026-09-05): EMPTY LINES DO NOT SURVIVE TRANSPORT. This method
+    # emits bodies byte-faithful (f['content'] is a raw read) and the cartridge
+    # proves it; the paste into a chat window collapses empty lines and keeps
+    # whitespace-only ones, so a model sees every function butted against the
+    # next and every docstring summary glued to its body. Candidate cure, not
+    # yet ridden: render each empty line INSIDE a Codebase body as a single
+    # space so it survives transit, and have apply.py treat a whitespace-only
+    # SEARCH line as matching an empty file line on the exact-match pass. Two
+    # cars, one ride, and the straddle is a SEARCH spanning a real blank.
     def _build_codebase_content(self) -> str:
         if self.context_only: return ""
         if not self.processed_files: return ""
@@ -1572,7 +1581,7 @@ Before addressing the user's prompt, perform the following verification steps:
     **CHEAPEST FALSIFYING PROBE:** Before proposing any code edit, identify the single cheapest command or inspection that could disprove your key assumption. For module moves, prefer `rg` call-site/import probes. For Nix, shell, packaging, or deployment changes, include a syntax/build probe such as `nix flake check`, `nix develop .#quiet`, or the project-specific command that would have caught the failure. If the required probe output is missing and the edit could affect another runtime, ask for the probe or the missing file context instead of patching. Spin wheels never.
 
 5.  **THE SEARCH/REPLACE PROTOCOL:** When executing a code edit, you MUST respond exclusively with one or more SEARCH/REPLACE blocks. You MUST NOT use unified diffs, `@@` hunks, or line numbers. Reproduce the SEARCH block EXACTLY as it appears in the original file, including all whitespace, blank lines, comments, string contents, and indentation. You MUST use `[[[SEARCH]]]`, `[[[DIVIDER]]]`, and `[[[REPLACE]]]` markers. Make the minimal change necessary. If multiple similar blocks exist, make the SEARCH section long enough to be uniquely identifiable.
-6.  **RAW SOURCE IS THE EDITABLE SURFACE:** By default, Codebase file bodies are emitted as raw source with no line-number prefixes. This raw source is the only safe material for SEARCH/REPLACE patching. If `--line-numbers` was passed, the context is in review mode; line prefixes such as `1: ` or `42: ` are navigation aids only and MUST NOT appear inside SEARCH or REPLACE blocks. **SANITIZED REGIONS ARE NOT RAW SOURCE:** a compile-lane substitution table rewrites this payload AFTER assembly, so a Codebase body or a `!` receipt may contain a redaction placeholder where the file on disk contains a real email, host, or client name. Those lines are UNPATCHABLE — a SEARCH block quoting one fails the exact-match interlock with a diagnostic that looks like an indentation error and is not one. Never quote a redaction placeholder into a SEARCH block, and never transcribe one into a deliverable; anchor the edit on a neighbouring line and say which line you skipped and why.
+6.  **RAW SOURCE IS THE EDITABLE SURFACE:** By default, Codebase file bodies are emitted as raw source with no line-number prefixes. This raw source is the only safe material for SEARCH/REPLACE patching. If `--line-numbers` was passed, the context is in review mode; line prefixes such as `1: ` or `42: ` are navigation aids only and MUST NOT appear inside SEARCH or REPLACE blocks. **SANITIZED REGIONS ARE NOT RAW SOURCE:** a compile-lane substitution table rewrites this payload AFTER assembly, so a Codebase body or a `!` receipt may contain a redaction placeholder where the file on disk contains a real email, host, or client name. Those lines are UNPATCHABLE — a SEARCH block quoting one fails the exact-match interlock with a diagnostic that looks like an indentation error and is not one. Never quote a redaction placeholder into a SEARCH block, and never transcribe one into a deliverable; anchor the edit on a neighbouring line and say which line you skipped and why. **EMPTY LINES MAY NOT SURVIVE TRANSPORT:** the compiler emits file bodies byte-faithful, but the paste that carries this payload into a chat window can collapse empty lines while leaving whitespace-only lines intact (convicted 2026-09-05: two deletion blocks refused, four hidden blanks in one function). A body showing two statements butted together may have a blank between them on disk, and no reading of the payload can tell. Anchor SEARCH blocks on single unique lines, or on spans that cross no boundary where a blank conventionally sits (between functions, after a docstring summary, after an early return, around a comment paragraph); never span such a boundary blind. When apply.py refuses and prints a BLANK-LINE GAP receipt, re-emit exactly the lines it lists, blanks included.
     NOTEBOOK EDITING PROTOCOL:
     When a `.ipynb` appears in Codebase, treat it as a Jupytext-rendered view for review, not an apply-safe target. Do not emit SEARCH/REPLACE blocks against `.ipynb` unless the prompt explicitly includes raw JSON or a notebook-aware write tool/protocol. Prefer:
     1. patching imported helper modules,
