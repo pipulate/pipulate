@@ -307,3 +307,53 @@ def write_context_cartridge(final_output, output_path, log=print):
         f"members={len(FOO_CARTRIDGE_MEMBERS)})"
     )
     return cartridge_path
+
+
+def _main(argv=None):
+    """Verify one cartridge from the command line. Standard library only.
+
+    THE DEED NEEDS A DOOR A STRANGER CAN TYPE. The egress footer names the
+    archive that seals a payload; until now it could only point at a FUNCTION,
+    which means the reader must already know how to import a module by file
+    path. That is not verification a stranger can perform, so the claim was
+    not really falsifiable by the person it was addressed to. One argument,
+    one command, no imports.
+
+    PATH IS REQUIRED, NEVER GUESSED. The module deliberately carries no repo
+    default -- that is the whole point of the extraction -- and a CLI that
+    fell back to ./foo.zip would smuggle the hidden argument back in through
+    the front door.
+
+    SUCCESS PRINTS DIGESTS, NOT A CHECKMARK. A run that verified and a run
+    that did nothing must not print the same thing, so the success branch
+    emits readings the caller can compare against a second channel.
+
+    manifest.json IS ABSENT from member_sha256 BY CONSTRUCTION: the manifest
+    cannot carry its own hash. That is the deed's own problem one layer down,
+    and it has the same cure -- the self-reference moves outward, into the
+    archive bytes the verifier recomputes wholesale.
+    """
+    import sys
+    argv = sys.argv[1:] if argv is None else argv
+    if len(argv) != 1:
+        print(
+            "usage: python scripts/foo_cartridge.py <cartridge.zip>",
+            file=sys.stderr,
+        )
+        return 2
+    target = Path(argv[0])
+    try:
+        result = verify_context_cartridge(target)
+    except Exception as exc:
+        print(f"REFUSED {target}: {exc}", file=sys.stderr)
+        return 1
+    print(f"archive_sha256  {result['archive_sha256']}")
+    for member_name in FOO_CARTRIDGE_MEMBERS:
+        digest = result["member_sha256"].get(member_name)
+        if digest:
+            print(f"{member_name:14s}  {digest}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(_main())
