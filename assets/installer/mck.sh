@@ -452,7 +452,9 @@ fi
 URL_ENVS="$(printf '%s\n' "$TRAIL_READ" | tail -n +2)"
 MISSING=""
 for VAR in $URL_ENVS; do
-  printenv "$VAR" >/dev/null 2>&1 || MISSING="$MISSING $VAR"
+  printenv "$VAR" >/dev/null 2>&1 && continue
+  printf '%s\n' "$EXPORTS_DECLARED" | grep -qx "$VAR" && continue
+  MISSING="$MISSING $VAR"
 done
 if [ -n "$MISSING" ]; then
   echo "This trail needs URL(s) you have not set:" >&2
