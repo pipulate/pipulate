@@ -3559,7 +3559,13 @@ def main():
 
     # 7. Emit only after the payload has passed every disclosure,
     # denylist, and secrets interlock.
-    write_context_cartridge(final_output)
+    cartridge_path = write_context_cartridge(final_output)
+    # THE ENVELOPE, NOT THE LETTER. final_output is the sealed payload and is
+    # never mutated after the interlocks above; egress_text is that payload
+    # plus one footer naming the archive that now holds it. The cartridge on
+    # disk and the text in the clipboard therefore differ by exactly this
+    # footer, which is the only difference that cannot be inside the seal.
+    egress_text = final_output + cartridge_deed_footer(cartridge_path)
 
     # 8. Handle output
     if args.output:
