@@ -881,16 +881,37 @@ def parse_file_list_from_config(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
         os.path.join(REPO_ROOT, 'adhoc.txt')
     )
     adhoc_overlay = os.path.expanduser(adhoc_overlay)
-    if '--- ADHOC SLOT START ---' in files_raw and os.path.exists(adhoc_overlay):
-        with open(adhoc_overlay, 'r', encoding='utf-8') as f:
-            overlay_content = f.read().strip()
+    has_slot = '--- ADHOC SLOT START ---' in files_raw
+    explicit_overlay = 'PIPULATE_ADHOC_FILE' in os.environ
+    # An optional default may be absent; a named router may not disappear.
+    if has_slot and explicit_overlay and not os.path.isfile(adhoc_overlay):
+        logger.print(f"ROUTER REFUSED: explicitly selected file is missing or not a regular file: {adhoc_overlay}")
+        sys.exit(1)
+    if has_slot and os.path.exists(adhoc_overlay):
+        try:
+            with open(adhoc_overlay, 'r', encoding='utf-8') as f:
+                overlay_content = f.read().strip()
+        except (OSError, UnicodeError) as exc:
+            logger.print(f"ROUTER REFUSED: cannot read {adhoc_overlay} ({type(exc).__name__})")
+            sys.exit(1)
+        active_lines = [line for line in overlay_content.splitlines()
+                        if line.strip() and not line.lstrip().startswith('#')]
+        if explicit_overlay and not active_lines:
+            logger.print(f"ROUTER REFUSED: explicitly selected file has no active lines: {adhoc_overlay}")
+            sys.exit(1)
         if overlay_content:
-            files_raw = re.sub(
+            files_raw, splices = re.subn(
                 r'(# --- ADHOC SLOT START ---\n).*?(# --- ADHOC SLOT END ---)',
                 lambda m: m.group(1) + '\n' + overlay_content + '\n\n' + m.group(2),
                 files_raw, flags=re.DOTALL
             )
-            logger.note("🩹 Adhoc overlay spliced from gitignored adhoc.txt")
+            if explicit_overlay and splices != 1:
+                logger.print(f"ROUTER REFUSED: expected one overlay slot, found {splices} in {chop_var}")
+                sys.exit(1)
+            if explicit_overlay:
+                logger.print(f"ROUTER LOADED: {adhoc_overlay} ({len(active_lines)} active line(s))")
+            else:
+                logger.note(f"Adhoc overlay spliced from {adhoc_overlay}")
 
     # 💥 SAFE REPLACEMENT: Prevents crashing on bash/awk curly braces {}
     if format_kwargs:
@@ -2786,8 +2807,8 @@ def main():
     update_paintbox_in_place()
     update_agents_md_in_place()
     update_readme_md_in_place()
-    check_topological_integrity(args.chop, format_kwargs)
     files_to_process = parse_file_list_from_config(args.chop, format_kwargs)
+    check_topological_integrity(args.chop, format_kwargs)
 
     # Inject --files as direct codebase paths into the processing queue
     if args.files:
