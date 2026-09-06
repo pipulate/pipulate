@@ -61,7 +61,8 @@
 #      is executed. No stranger's pipe is chained into another.
 #
 # WHAT THIS STILL NEVER DOES: chain one curl-pipe into another, read a
-# credential, write outside the checkout's browser_cache/, or skip a fence.
+# credential, or skip a fence. The rider writes browser_cache/ plus private
+# per-run captures.md archives under data/captures/ in the same checkout.
 #
 # ENV OVERRIDES:
 #   PIPULATE_ROOT             checkout location (else discovered)
@@ -565,12 +566,14 @@ if [ "$RIDE_RC" -eq 0 ]; then
  gate you just answered. This script cannot see your clipboard,
  so it does not claim to. Read the rider's own last line:
 
-   AUTHORIZED  it is on your clipboard. Open any AI web chat
-               (Claude, ChatGPT, Gemini), paste and send.
-   DECLINED    nothing was copied, and the rider printed the
-   REFUSED     exact directories your artifacts are sitting in.
- The raw artifacts stayed on your machine, under
- browser_cache/. Nothing was uploaded by this script.
+   AUTHORIZED  you permitted a checked preview handoff; this alone
+               does not prove a clipboard write. Read its receipt.
+   BLOCKED     the preview failed disclosure checks; nothing copied.
+   DECLINED    nothing was copied.
+   REFUSED     no terminal was available to ask; nothing copied.
+  Original cache files remain under browser_cache/. Banked bytes
+  are in data/captures/; the rider prints the exact captures.md path.
+  That local archive is UNSANITIZED. Nothing was uploaded by this script.
 --------------------------------------------------------------
 CARD
   if [ "$DID_INSTALL" -eq 1 ]; then
@@ -582,7 +585,7 @@ CARD
   fi
 else
   echo "The ride stopped early (exit $RIDE_RC)."
-  echo "   Any stop that already captured left its artifacts under"
-  echo "   browser_cache/; the rider names them above. Re-run to ride again."
+  echo "   Cache files are under browser_cache/. Successfully banked bytes"
+  echo "   are in data/captures/; the rider names the partial archive above."
 fi
 exit "$RIDE_RC"
