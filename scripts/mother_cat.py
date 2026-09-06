@@ -802,6 +802,179 @@ def ride(trail_path=None, dry_narrate=False, exports_path=None):
     )
 
 
+class CaptureDisclosureError(ValueError):
+    """A refusal carrying only fixed, content-free diagnostics."""
+
+
+# Deliberately narrower than the capture: no network, HTML, headers or binary.
+CAPTURE_DISCLOSURE_TEXT_KEYS = frozenset((
+    "seo_md", "links_md", "accessibility_tree_summary", "diff_hierarchy_txt",
+))
+
+
+def _capture_disclosure(raw, scrub, scan):
+    """Build a local review derivative, never a certificate of safe disclosure.
+
+    Verify original bytes before selecting content. Apply the existing text
+    policy to DECODED strings, then hash the disclosed strings separately.
+    Unhandled lenses remain represented by explicit omission receipts.
+    """
+    if len(raw) > 64 * 1024 * 1024:
+        raise CaptureDisclosureError("capture exceeds disclosure limit")
+    opening = "\n--- START: Capture record ---\n```json\n"
+    closing = "\n```\n--- END: Capture record ---\n"
+    header, *chunks = raw.decode("utf-8").split(opening)
+    if not header.startswith("# Local capture archive\n") or not chunks:
+        raise CaptureDisclosureError("not a capture archive")
+    records = []
+    for chunk in chunks:
+        body, marker, tail = chunk.partition(closing)
+        if not marker or tail.strip():
+            raise CaptureDisclosureError("incomplete or malformed capture frame")
+        record = json.loads(body, object_pairs_hook=walk_cartridge._reject_duplicate_json_keys)
+        if not isinstance(record, dict):
+            raise CaptureDisclosureError("capture record is not an object")
+        records.append(record)
+    if records[0].get("kind") != "run" or records[0].get("schema") != "pipulate-captures-v1":
+        raise CaptureDisclosureError("unsupported capture schema")
+    status = records[-1] if records[-1].get("kind") == "status" else None
+    captures = records[1:-1] if status else records[1:]
+    if status and (status.get("status") not in ("partial", "complete")
+                   or status.get("banked_captures") != len(captures)):
+        raise CaptureDisclosureError("inconsistent capture status")
+    known = CAPTURE_DISCLOSURE_TEXT_KEYS | set(DECANT_INLINE_KEYS) | {
+        "network_log", "source_html", "hydrated_dom", "accessibility_tree", "screenshot",
+    }
+    result = {
+        "schema": "pipulate-capture-disclosure-v1",
+        "policy": "review-text-v1",
+        "review_required": True,
+        "source_sha256": hashlib.sha256(raw).hexdigest(),
+        "source_status": status["status"] if status else "partial",
+        "source_records": len(records), "capture_count": len(captures),
+        "metadata_omitted": ["trail", "arguments", "urls", "stop_names",
+                             "source_paths", "raw_errors", "timestamps", "unknown_fields"],
+        "text_keys": sorted(CAPTURE_DISCLOSURE_TEXT_KEYS),
+        "files": [],
+    }
+    previous = 0
+    for record_index, capture in enumerate(captures, 2):
+        sequence = capture.get("sequence")
+        if (capture.get("kind") != "capture" or type(sequence) is not int
+                or sequence <= previous or not isinstance(capture.get("files"), dict)
+                or capture.get("status") not in ("banked", "incomplete")):
+            raise CaptureDisclosureError("invalid capture record")
+        previous = sequence
+        if result["source_status"] == "complete" and (
+                capture["status"] != "banked" or not capture["files"]):
+            raise CaptureDisclosureError("complete run contains incomplete capture")
+        for file_index, (key, entry) in enumerate(capture["files"].items(), 1):
+            row = {
+                "source_record": record_index, "source_file": file_index,
+                "sequence": sequence, "lens": key if key in known else "unlisted",
+                "action": "omitted", "reason": "source_unavailable",
+                "original_sha256": None, "original_bytes": None,
+                "disclosed_sha256": None, "disclosed_bytes": None,
+            }
+            result["files"].append(row)
+            if not isinstance(entry, dict) or entry.get("status") not in ("ok", "unavailable"):
+                raise CaptureDisclosureError("invalid file receipt")
+            if entry["status"] == "unavailable":
+                if capture["status"] == "banked":
+                    raise CaptureDisclosureError("banked capture contains unavailable file")
+                continue
+            content, encoding = entry.get("content"), entry.get("encoding")
+            if not isinstance(content, str) or encoding not in ("utf-8", "base64"):
+                raise CaptureDisclosureError("unsupported stored encoding")
+            original = content.encode("utf-8") if encoding == "utf-8" else base64.b64decode(content, validate=True)
+            digest = hashlib.sha256(original).hexdigest()
+            if (type(entry.get("bytes")) is not int or len(original) != entry["bytes"]
+                    or digest != entry.get("sha256")):
+                raise CaptureDisclosureError("original content failed length or digest check")
+            row.update(original_sha256=digest, original_bytes=len(original))
+            if encoding == "base64":
+                row["reason"] = "binary_not_supported"
+                continue
+            if key not in CAPTURE_DISCLOSURE_TEXT_KEYS:
+                row["reason"] = "lens_outside_policy"
+                continue
+            disclosed, substitutions, leaks = scrub(original.decode("utf-8"))
+            secret_hits = scan(disclosed)
+            row["checks"] = {"substitutions": substitutions,
+                             "denylist_hits": sum(n for _, n in leaks),
+                             "secret_hits": len(secret_hits)}
+            if leaks or secret_hits:
+                row["reason"] = "text_policy_blocked"
+                continue
+            disclosed_bytes = disclosed.encode("utf-8")
+            row.update(action="transformed" if disclosed_bytes != original else "retained",
+                       reason="baseline_text_checks", content=disclosed, encoding="utf-8",
+                       disclosed_sha256=hashlib.sha256(disclosed_bytes).hexdigest(),
+                       disclosed_bytes=len(disclosed_bytes))
+    return result
+
+
+def _disclose_capture(source):
+    """Write a separate private candidate. No ride, router edit or clipboard."""
+    import contextlib
+    import io
+    import prompt_foo as compiler
+
+    source = Path(source).expanduser()
+    if not source.is_absolute():
+        source = REPO_ROOT / source
+    if source.name != "captures.md":
+        raise CaptureDisclosureError("expected the original captures.md")
+    with source.open("rb") as stream:
+        raw = stream.read(64 * 1024 * 1024 + 1)
+    def policy_inputs():
+        paths = {"substitutions": compiler.PII_SUBSTITUTIONS_FILE,
+                 "denylist": compiler.COMMIT_DENYLIST_FILE,
+                 "compiler": Path(compiler.__file__), "discloser": Path(__file__)}
+        return {key: hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
+                for key, path in paths.items()}
+    inputs = policy_inputs()
+    diagnostics = io.StringIO()
+    with contextlib.redirect_stdout(diagnostics):
+        result = _capture_disclosure(raw, compiler.scrub_compile_payload, compiler.scan_secrets)
+    if "Skipping bad" in diagnostics.getvalue():
+        raise CaptureDisclosureError("invalid configured policy pattern")
+    if inputs != policy_inputs():
+        raise CaptureDisclosureError("policy changed during disclosure")
+    result["policy_inputs_sha256"] = inputs
+    result["policy_diagnostic_lines"] = len(diagnostics.getvalue().splitlines())
+    data = (json.dumps(result, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+    target = source.with_name("captures.disclosed.json")
+    # Stage privately, then link into place without overwriting any destination.
+    # An identical destination is reused; changed policy needs a new review.
+    with tempfile.NamedTemporaryFile(dir=source.parent, prefix=".disclosure-", delete=False) as stream:
+        temp = Path(stream.name)
+        try:
+            stream.write(data)
+            stream.flush()
+            os.fsync(stream.fileno())
+        except BaseException:
+            temp.unlink(missing_ok=True)
+            raise
+    try:
+        try:
+            os.link(temp, target)
+        except FileExistsError:
+            if (target.is_symlink() or not target.is_file()
+                    or target.stat().st_size != len(data)
+                    or target.stat().st_mode & 0o777 != 0o600
+                    or target.read_bytes() != data):
+                raise CaptureDisclosureError("disclosure destination exists with different content") from None
+    finally:
+        temp.unlink(missing_ok=True)
+    counts = {action: sum(f["action"] == action for f in result["files"])
+              for action in ("retained", "transformed", "omitted")}
+    print("DISCLOSURE_CANDIDATE " + " ".join(f"{key}={value}" for key, value in counts.items())
+          + " review_required=True sha256=" + hashlib.sha256(data).hexdigest())
+    print(f"LOCAL FILE  {target}")
+    return 0
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(
         description="Mother Cat Car B: actuate a validated trail."
@@ -831,7 +1004,21 @@ def main(argv=None):
             "a relative PATH anchors to the repository root"
         ),
     )
+    parser.add_argument("--disclose", metavar="CAPTURES_MD",
+                        help="write a private review-text disclosure; no browser or clipboard")
     args = parser.parse_args(argv)
+    if args.disclose is not None:
+        if args.trail or args.dry_narrate or args.exports:
+            parser.error("--disclose cannot be combined with ride arguments")
+        try:
+            return _disclose_capture(args.disclose)
+        except CaptureDisclosureError as exc:
+            print(f"DISCLOSURE REFUSED: {exc}. Source unchanged.")
+            return 2
+        except Exception as exc:
+            print(f"DISCLOSURE REFUSED ({type(exc).__name__}); source unchanged. "
+                  "Check local input and policy; no content printed.")
+            return 2
 
     try:
         return ride(args.trail, dry_narrate=args.dry_narrate, exports_path=args.exports)
