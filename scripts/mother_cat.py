@@ -25,8 +25,13 @@ it does not run Jira, Botify, Gmail, or shell actuators.
 
 import argparse
 import asyncio
+import base64
+import hashlib
+import json
 import os
 import sys
+import tempfile
+from datetime import datetime, timezone
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -104,11 +109,8 @@ def _capture_compatible(trail):
 
 
 # --- DECANT: pour captured artifacts into one clipboard-ready payload --------
-# The bridge between "captured" and "paste this into any ChatBot." Small,
-# high-signal lenses are inlined; large ones (hydrated DOM, raw source) are
-# cited by their browser_cache path only, so a huge DOM never floods the
-# clipboard. Generic label on purpose (Stick Bug / white-label): the bundle
-# calls itself "Artifact Compiler," never "Pipulate."
+# Preview only: these lenses are frozen from the banked bytes, then capped.
+# The full local captures.md is independent of these presentation limits.
 DECANT_INLINE_KEYS = (
     "seo_md",
     "headers",
@@ -120,19 +122,111 @@ DECANT_INLINE_KEYS = (
 DECANT_INLINE_CAP = 20000  # chars per inlined lens; the rest lives on disk
 
 
-def _decant(captured, skipped=()):
-    """Build one markdown capture bundle from a list of (stop, url, artifacts).
+def _capture_append(archive, record):
+    """Append one framed JSON record; only a closed frame is a banked record."""
+    body = json.dumps(record, ensure_ascii=True, indent=2)
+    with archive["path"].open("a", encoding="utf-8", newline="\n") as stream:
+        stream.write("\n--- START: Capture record ---\n```json\n" + body
+                     + "\n```\n--- END: Capture record ---\n")
+        stream.flush()
+        os.fsync(stream.fileno())
+
+
+def _bank_capture(archive, trail, index, stop, params, result):
+    """Freeze returned file bytes before ADVANCE. No network or clipboard here.
+
+    This is collection, not a second ZIP implementation. prompt_foo includes
+    captures.md as an ordinary file and its existing core seals the disclosure.
+    Coverage is exactly the returned file map, NOT every browser transaction.
+    """
+    if archive["path"] is None:
+        parent = REPO_ROOT / "data" / "captures"
+        parent.mkdir(parents=True, exist_ok=True)
+        home = Path(tempfile.mkdtemp(prefix="walk-", dir=parent))
+        path = home / "captures.md"
+        fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as stream:
+            stream.write(
+                "# Local capture archive\n\n"
+                "UNSANITIZED. Keep local; review before any disclosure.\n"
+                "Absent a closed complete status record, this run is PARTIAL.\n"
+                "Ignore an unclosed trailing record; earlier closed records survive.\n"
+                "This records returned files, not full HARs or all response bodies.\n"
+            )
+            stream.flush()
+            os.fsync(stream.fileno())
+        archive["path"] = path
+        _capture_append(archive, {
+            "kind": "run", "schema": "pipulate-captures-v1",
+            "run_id": home.name, "status": "partial",
+            "started_at": datetime.now(timezone.utc).isoformat(),
+            "trail": trail,
+        })
+        print(f"  LOCAL ARCHIVE  {path}  (directory 0700, file 0600)")
+    files, preview, problems = {}, {}, []
+    for key, source in sorted(result.get("looking_at_files", {}).items()):
+        entry = {"source_path": str(source), "status": "unavailable"}
+        try:
+            if not source:
+                raise ValueError("empty source path")
+            raw = Path(source).read_bytes()
+            entry.update(status="ok", bytes=len(raw),
+                         sha256=hashlib.sha256(raw).hexdigest())
+            try:
+                text = raw.decode("utf-8")
+                entry.update(encoding="utf-8", content=text)
+                if key in DECANT_INLINE_KEYS:
+                    preview[key] = text[:DECANT_INLINE_CAP]
+                    if len(text) > DECANT_INLINE_CAP:
+                        preview[key] += "\n... [preview truncated; full bytes in captures.md]"
+            except UnicodeDecodeError:
+                entry.update(encoding="base64", content=base64.b64encode(raw).decode("ascii"))
+        except (OSError, ValueError, TypeError) as exc:
+            entry["error"] = f"{type(exc).__name__}: {exc}"
+            problems.append(key)
+        files[key] = entry
+    if not files:
+        problems.append("no returned files")
+    _capture_append(archive, {
+        "kind": "capture", "sequence": index, "stop": stop["name"],
+        "banked_at": datetime.now(timezone.utc).isoformat(),
+        "tool": "guided_browser_capture", "arguments": params,
+        "requested_url": result.get("requested_url", params["url"]),
+        "final_url": result.get("final_url"),
+        "status": "incomplete" if problems else "banked",
+        "problems": problems, "files": files,
+    })
+    archive["previews"].append(preview)
+    return problems
+
+
+def _finish_capture_archive(archive, status, skipped=()):
+    if archive["path"] is None or archive["finished"]:
+        return
+    _capture_append(archive, {
+        "kind": "status", "status": status,
+        "banked_captures": len(archive["previews"]),
+        "skipped": list(skipped),
+        "finished_at": datetime.now(timezone.utc).isoformat(),
+    })
+    archive["finished"] = True
+    print(f"  ARCHIVE STATUS  {status}")
+    _print_next_compile(archive["path"])
+
+
+def _decant(captured, previews, skipped=()):
+    """Build a capped preview from bytes frozen when each capture was banked.
 
     `skipped` is a list of (stop_name, var_name) for optional stops that never
     opened. They are LISTED, not silently absent: the reader downstream must
     be able to tell a baton that was never carried from one that was dropped.
     """
     parts = [
-        "# Artifact Compiler -- Mother Cat capture bundle",
+        "# Capture preview -- not the evidence archive",
         "",
-        "Wire-truth artifacts captured on the operator's machine. Each stop",
-        "lists the files written to browser_cache; small high-signal lenses are",
-        "inlined below, large ones (hydrated DOM, raw source) are cited by path.",
+        "Selected lenses frozen before ADVANCE; long lenses are truncated here.",
+        "Original cache paths below are provenance, not preserved storage.",
+        "The local captures.md holds the full returned bytes and coverage.",
         "",
     ]
     if skipped:
@@ -142,23 +236,14 @@ def _decant(captured, skipped=()):
                 f"- {stop_name}: {var_name} was unset; nothing opened, nothing captured"
             )
         parts.append("")
-    for stop_name, final_url, artifacts in captured:
+    for (stop_name, final_url, artifacts), preview in zip(captured, previews, strict=True):
         parts.append(f"## Stop: {stop_name}")
         parts.append(f"- final_url: {final_url}")
         parts.append("- artifacts on disk:")
         for key, path in sorted(artifacts.items()):
             parts.append(f"  - {key}: {path}")
         parts.append("")
-        for key in DECANT_INLINE_KEYS:
-            path = artifacts.get(key)
-            if not path or not os.path.exists(path):
-                continue
-            try:
-                text = Path(path).read_text(encoding="utf-8", errors="replace")
-            except OSError:
-                continue
-            if len(text) > DECANT_INLINE_CAP:
-                text = text[:DECANT_INLINE_CAP] + "\n... [truncated; full file on disk]"
+        for key, text in preview.items():
             parts.append(f"### {stop_name} -- {key}")
             parts.append("```text")
             parts.append(text)
@@ -192,7 +277,7 @@ def _print_artifact_homes(captured):
     CARGO, NOT BIBLIOGRAPHY. A refusal that says "your artifacts are safe" and
     does not say where is a refusal the human cannot act on.
     """
-    print("   The captured material is on disk and untouched:")
+    print("   Full bytes are in the local archive printed above. Original cache homes:")
     for stop_name, _final_url, artifacts in captured:
         homes = sorted({os.path.dirname(p) for p in artifacts.values() if p})
         if not homes:
@@ -266,8 +351,7 @@ def _decant_checkpoint(payload, captured):
         f"\n   AUTHORIZED by human: handing {payload_bytes:,} bytes to the "
         "clipboard writer."
     )
-    _decant_to_clipboard(payload)
-    return True
+    return _decant_to_clipboard(payload)
 def _decant_to_clipboard(payload):
     """Copy the bundle to the clipboard, reusing prompt_foo's cross-platform path.
 
@@ -276,8 +360,17 @@ def _decant_to_clipboard(payload):
     --dry-narrate. Reuse over re-implement: copy_to_clipboard already owns the
     SSH-bridge and the pbcopy/xclip fallbacks.
     """
-    from prompt_foo import copy_to_clipboard
-    copy_to_clipboard(payload)
+    from prompt_foo import copy_to_clipboard, scrub_compile_payload, scan_secrets
+    # Reuse the existing baseline; DECANT has no disclosure-relaxation flags.
+    scrubbed, substitutions, leaks = scrub_compile_payload(payload)
+    secrets = scan_secrets(scrubbed)
+    print(f"   DECANT checks: substitutions={substitutions} "
+          f"denylist={sum(n for _, n in leaks)} secrets={len(secrets)}")
+    if leaks or secrets:
+        print("   BLOCKED: preview withheld; local evidence is unchanged.")
+        return False
+    copy_to_clipboard(scrubbed)
+    return True
 
 
 # THE EXPORTS LOADER (2026-09-05, receipt-gated). bookmark_import.py writes
@@ -408,8 +501,11 @@ def _announce_consent(trail_path):
         f"  (persistent={browser['persistent']}, headless={browser['headless']})"
     )
     print(rule)
-    print(" AT THE END, every stop's captured lenses are folded into ONE bundle,")
-    print(" and then you are asked ONE more time before it goes anywhere. Type")
+    print(" EACH CAPTURE banks full returned files in a private data/captures run.")
+    print(" That captures.md is UNSANITIZED and stays local; review before sharing.")
+    print(" AT THE END, selected lenses become a capped preview, not the archive.")
+    print(" DECANT applies the compiler's baseline disclosure checks before copy.")
+    print(" You are asked ONE more time before that preview goes anywhere. Type")
     print(f" {DECANT_TOKEN} and it is copied to your clipboard; type anything else")
     print(" and it stays here, and the rider prints the exact directories your")
     print(" artifacts are sitting in. Inlined lenses:")
@@ -421,28 +517,24 @@ def _announce_consent(trail_path):
     print(" Read the bundle before you paste it anywhere.")
     print(rule)
     print("")
-# THE SEAM, v0 (2026-09-05). The READ side has existed since the guided lane
-# landed: prompt_foo's resolver finds a Mother Cat capture by its own
-# headers.json under browser_cache/looking_at/, so an @<final_url> line in
-# the compile overlay stacks that stop's lenses with NO new flight. The
-# WRITE side did not exist: nothing told the human which lines to type, so
-# a ride reached the next compile by hand-typed URLs or not at all. PRINT,
-# NEVER APPEND, on purpose: the overlay is the operator's margin,
-# PIPULATE_ADHOC_FILE may point outside the worktree, and a rider that
-# wrote there would be a third writer to a file that already has two (the
-# human, sniff). These lines are cargo the human pastes; nothing leaves the
-# machine, so neither fence is touched. The first paste-and-compile is the
-# receipt that decides whether v1 appends them the way sniff does.
-def _print_next_compile(captured):
-    """Print the overlay lines that make this ride the next compile's context."""
-    if not captured:
-        return
-    print("\n📎 Next compile: paste these lines into adhoc.txt, then compile (ahc).")
-    for _stop_name, final_url, _artifacts in captured:
-        if final_url:
-            print(f"@{final_url}")
+# The router receives a stable capture file, never an @URL cache lookup.
+def _print_next_compile(archive_path):
+    """Print one self-contained file line, never mutable @URL cache selectors."""
+    print("\nLocal archive file line for context.md or adhoc.txt:")
+    print(archive_path)
+    print("Review locally before compiling; raw bytes are not a safe disclosure.")
 
 async def _ride_async(trail_path, dry_narrate=False, exports_path=None):
+    archive = {"path": None, "finished": False, "previews": []}
+    try:
+        return await _ride_steps(trail_path, archive, dry_narrate, exports_path)
+    finally:
+        # Exceptions, cancellation and capture failures cannot promote a run.
+        # Even an uncatchable kill leaves the initial PARTIAL statement intact.
+        _finish_capture_archive(archive, "partial", archive.get("skipped", ()))
+
+
+async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None):
     trail_path = Path(trail_path)
     trail = walk.load_trail(trail_path)
 
@@ -584,7 +676,7 @@ async def _ride_async(trail_path, dry_narrate=False, exports_path=None):
     disclosed = _narrate(trail["description"], False)
     _announce_consent(trail_path)
     captured = []
-    skipped = []
+    skipped = archive.setdefault("skipped", [])
     for index, stop in enumerate(stops, 1):
         print(f"--- Stop {index}/{len(stops)}: {stop['name']} ---")
 
@@ -639,17 +731,22 @@ async def _ride_async(trail_path, dry_narrate=False, exports_path=None):
                 # still withheld -- a partial ride must never be mistaken
                 # for a complete one -- but the human is told what exists
                 # and where, rather than being left to assume it vanished.
-                print("  Stops banked BEFORE this failure (artifacts are on disk):")
+                print("  Stops banked BEFORE this failure (full bytes in captures.md):")
                 for banked_name, banked_url, banked_artifacts in captured:
                     print(
                         f"    - {banked_name}: {banked_url} "
                         f"({len(banked_artifacts)} artifacts)"
                     )
-                print("  No bundle was assembled. Re-ride to decant.\n")
+                print("  No preview released. The partial archive is preserved locally.\n")
             return 1
 
         artifacts = result.get("looking_at_files", {})
+        problems = _bank_capture(archive, trail, index, stop, params, result)
         captured.append((stop["name"], result.get("final_url"), artifacts))
+        if problems:
+            print("  ARCHIVE INCOMPLETE: " + ", ".join(problems))
+            print("  Details are banked locally; halting without ADVANCE or DECANT.")
+            return 1
         print(
             f"  Captured. final_url={result.get('final_url')} "
             f"artifacts={len(artifacts)}"
@@ -662,6 +759,7 @@ async def _ride_async(trail_path, dry_narrate=False, exports_path=None):
         print("\nDry narration complete; no captures were attempted.")
         return 0
 
+    _finish_capture_archive(archive, "complete", skipped)
     # ATTRIBUTED-VOICE: "every stop produced a capture receipt" is only true
     # when nothing was skipped, so the line says which world it is in.
     if skipped:
@@ -672,7 +770,7 @@ async def _ride_async(trail_path, dry_narrate=False, exports_path=None):
     else:
         print("\nRide complete. Every stop produced a capture receipt.")
     if captured:
-        payload = _decant(captured, skipped)
+        payload = _decant(captured, archive["previews"], skipped)
         decanted = _decant_checkpoint(payload, captured)
         # ATTRIBUTED-VOICE, fixed in passing because these are the exact lines
         # being rewritten: the old text asserted "copied to your clipboard"
@@ -684,7 +782,7 @@ async def _ride_async(trail_path, dry_narrate=False, exports_path=None):
         if decanted:
             print("   Paste it into any ChatBot (Claude, ChatGPT, Gemini) and it")
             print("   will walk you through everything from here.")
-        _print_next_compile(captured)
+        # The archive file line was printed when its status was banked.
     return 0
 
 
