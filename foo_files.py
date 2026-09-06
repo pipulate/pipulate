@@ -2129,6 +2129,22 @@ GLOSSARY.md
 foo_files.py
 """
 # #todo #to-do #earmarks
+# - EARMARK: THE HIDDEN DENOMINATOR (banked 2026-09-06, articulation-banked): a
+#   result reported without its PULL COUNT is unreadable, because a green from
+#   k=1 and a green from k=40 are different claims and nothing in the receipt
+#   tells them apart. When an LLM sits in the pipeline the sampler is a SECOND
+#   variance source, and re-rolling until the assertions pass is a SEARCH OVER
+#   THE SAMPLER: it selects for answers that survive the assertions you thought
+#   to write, which is Goodhart wearing a test harness. THE INVERSE OF THE
+#   STRADDLE, and that is the whole rent: a straddle holds everything constant
+#   and changes ONE thing, while a re-roll holds everything constant and changes
+#   NOTHING, letting the sampler vary -- a legitimate variance measurement if and
+#   only if n is reported. STANDING CONSEQUENCE: an assertion harness records
+#   EVERY pull, not just the winner, and a reported green carries its k. The
+#   re-roll is free; hiding the count is not. Sibling of THE DISCRIMINATION
+#   QUESTION aimed at the SAMPLER rather than the probe: ask what the harness
+#   prints in the world where the model is wrong forty times and right once, and
+#   if the answer is "the same green", the harness is selecting, not testing.
 # - TODO (2026-09-06, dismount): NETWORK DISCLOSURE -- a distinct policy/output for banked CDP events; preserve order and repeated observations, link capture/ledger digests, and distinguish absent, omitted and transformed fields. Keep review-text-v1 and both routers unchanged; no request replay to fill missing evidence.
 # - TODO (2026-09-06, dismount): NOTARY FINGERPRINT -- reconcile the dismount template's requested wc -c and dated-receipt fields with what the compiler actually emits; this census has neither. Do not substitute reported Summary size or submission time for an unrecorded measurement.
 
