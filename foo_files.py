@@ -349,6 +349,14 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # reinterpretable as stewardship forever, because original intent stays
 # RECOVERABLE. A frozen output with the source branches deleted is the cage; a
 # frozen output over a preserved DAG is the safety mechanism.
+# CAPTURE / DISCLOSURE AMENDMENT (2026-09-06): bank observation bytes before
+# ADVANCE; a mutable URL-cache path is provenance, not historical storage.
+# Require a named router to resolve; verify selected evidence in the output,
+# since a correct checksum can seal an incomplete selection.
+# Decode before applying disclosure policy; preserve original digests and
+# give transformed content its own digest. Record omissions explicitly.
+# Check those inner digests after compilation; zero detector hits do not
+# waive human review, and event presence does not prove complete bodies.
 
 # THE STEWARDSHIP RULE (banked 2026-07-22, articulation-banked; rentmeesterschap):
 # the whole NPvg stack is Northwestern-European commons-infrastructure culture
@@ -2121,6 +2129,8 @@ GLOSSARY.md
 foo_files.py
 """
 # #todo #to-do #earmarks
+# - TODO (2026-09-06, dismount): NETWORK DISCLOSURE -- a distinct policy/output for banked CDP events; preserve order and repeated observations, link capture/ledger digests, and distinguish absent, omitted and transformed fields. Keep review-text-v1 and both routers unchanged; no request replay to fill missing evidence.
+# - TODO (2026-09-06, dismount): NOTARY FINGERPRINT -- reconcile the dismount template's requested wc -c and dated-receipt fields with what the compiler actually emits; this census has neither. Do not substitute reported Summary size or submission time for an unrecorded measurement.
 
 # - TODO (2026-09-02, reconfirmed 09-03): walk_cartridge.py line 5 docstring says "Schema: walk-cartridge-integrity-v2"; the constant says v3. One-line fix.
 # - TODO (2026-09-04, dismount-seeded): the COMPACT_CHOP ranker's `^# THE ` anchor fires on wrapped continuation lines (THE TRAIL SCHEMA is an AUTH RULING line) and chapter blurbs (ROLLING PIN, PORTABLE CARTRIDGE), so three of the top five rows are not rules. Tighten to headers carrying a date, e.g. `^# (THE .*20[0-9][0-9]-|§ |- EARMARK|- TODO|CHAPTER|===)`, as its own car; it voids the ranker straddle for one compile, so take a fresh BEFORE. Gate: ROLLING PIN, PORTABLE CARTRIDGE and TRAIL SCHEMA leave the top 12 and no dated rule leaves it.
