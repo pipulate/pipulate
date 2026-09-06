@@ -1,8 +1,8 @@
 # AI_CONTEXT.md — Start Here If You Are an AI
 
-> Auto-generated on 2026-09-04. Rewritten from scratch on every release. If this
+> Auto-generated on 2026-09-06. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1446 entries indexed.
+> 1454 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -96,6 +96,14 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-09-06] [Archive, Not Artifact: Checking What the AI Actually Did](https://mikelev.in/futureproof/archive-not-artifact-checkable-ai-receipts/index.md)
+- [2026-09-06] [The World Is Your Checklist: Visual Surveillance of Extremities in the Age of AI](https://mikelev.in/futureproof/visual-surveillance-extremities-receipts/index.md)
+- [2026-09-05] [Three Tools, One Pipeline: Connecting Walk, Router, and Context Compiler](https://mikelev.in/futureproof/three-tools-one-pipeline-walk-router-compiler/index.md)
+- [2026-09-05] [The Two-Reader Rule: Quieting the Console with Verifiable Receipts](https://mikelev.in/futureproof/two-reader-rule-console-silence/index.md)
+- [2026-09-05] [Laser Coherence and the Git Pickaxe: Recovering Vanished Code with Reproducible Receipts](https://mikelev.in/futureproof/laser-coherence-and-the-git-pickaxe/index.md)
+- [2026-09-05] [The Discrimination Test: Separating Console Furniture from Verifiable Receipts](https://mikelev.in/futureproof/console-furniture-discrimination-test-receipts/index.md)
+- [2026-09-05] [The Envelope and the Seal: Turning Ephemeral AI Prompts into Verifiable Deeds](https://mikelev.in/futureproof/cartridge-deed-outside-the-envelope/index.md)
+- [2026-09-05] [Prompt Well: How the Context Compiler Turns AI Vibes into Replayable Receipts](https://mikelev.in/futureproof/prompt-well-context-compiler-receipts/index.md)
 - [2026-09-04] [The Write-Side / Read-Side Split: Un-Hardwiring Blog Paths in Declarative Pipelines](https://mikelev.in/futureproof/unhardwiring-blog-paths-write-read-split/index.md)
 - [2026-09-04] [The Blind Fan-Out: Five Models, One Judge, and the File That Refused](https://mikelev.in/futureproof/blind-fanout-model-evaluation-and-flight-recorder/index.md)
 - [2026-09-04] [Closing the Loop: Replayable AI Workflows and the End of Manual Edits](https://mikelev.in/futureproof/closing-the-loop-replayable-ai-workflows-and-manual-edits/index.md)
@@ -108,19 +116,19 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-09-02] [First-Frame Responsiveness: Engineering Instant UI Feedback in Vim](https://mikelev.in/futureproof/first-frame-responsiveness-vim/index.md)
 - [2026-09-01] [The Pre-Flight Principle: Engineering Deterministic AI Workflows Before the Crash](https://mikelev.in/futureproof/pre-flight-principle-deterministic-ai-workflows/index.md)
 - [2026-09-01] [The Flag Beats the Hardware: Investigating Claude Cowork, Linux VMs, and Hypervisor Gates in the Age of AI](https://mikelev.in/futureproof/claude-cowork-linux-vm-hypervisor-gates/index.md)
-- [2026-09-01] [Myelinating MCP: Terminal-Native Tooling and Session Hygiene](https://mikelev.in/futureproof/myelinating-mcp-terminal-native-tooling-and-session-hygiene/index.md)
-- [2026-08-31] [First-Cell Failures: Why Setup Ergonomics Matter in the Age of AI](https://mikelev.in/futureproof/first-cell-failures-setup-ergonomics-ai/index.md)
-- [2026-08-31] [Taking It from the Top: Designing a Frictionless Command-Line Workshop](https://mikelev.in/futureproof/taking-it-from-top-frictionless-command-line-workshop/index.md)
-- [2026-08-31] [The Notary Beat: Engineering Session Finality in AI Workflows](https://mikelev.in/futureproof/the-notary-beat-session-finality-ai-workflows/index.md)
-- [2026-08-31] [The Flat Environment: Demystifying Linux Terminal Variables and Secret Management](https://mikelev.in/futureproof/flat-environment-linux-terminal-variables-secret-management/index.md)
-- [2026-08-31] [The Terminal Is the Config: Connecting Raw MCP Servers in the Age of AI](https://mikelev.in/futureproof/the-terminal-is-the-config-mcp-servers/index.md)
-- [2026-08-31] [The Pachinko Mirror: Engineering Deterministic AI Workflows Through Fan-Out and Reduction](https://mikelev.in/futureproof/the-pachinko-mirror-engineering-deterministic-ai-workflows/index.md)
-- [2026-08-30] [Compiling the Forever Machine: Reducing Router Bloat with Key-Value Mappings](https://mikelev.in/futureproof/compiling-the-forever-machine-router-optimization/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-09-01] [238k] myelinating-mcp-terminal-native-tooling-and-session-hygiene
+- [2026-08-31] [72k] first-cell-failures-setup-ergonomics-ai
+- [2026-08-31] [80k] taking-it-from-top-frictionless-command-line-workshop
+- [2026-08-31] [228k] the-notary-beat-session-finality-ai-workflows
+- [2026-08-31] [206k] flat-environment-linux-terminal-variables-secret-management
+- [2026-08-31] [179k] the-terminal-is-the-config-mcp-servers
+- [2026-08-31] [77k] the-pachinko-mirror-engineering-deterministic-ai-workflows
+- [2026-08-30] [645k] compiling-the-forever-machine-router-optimization
 - [2026-08-30] [139k] rule-of-silence-engineering-quiet-ai-workflows
 - [2026-08-30] [201k] terminal-native-mcp-practice
 - [2026-08-30] [141k] protocol-vs-prompt-why-mcp-is-becoming-unix
