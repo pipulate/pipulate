@@ -51,11 +51,11 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,455 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 28 published in the last 7 days
-# Markdown negotiated: 2,370 reads (0.21% of all responses)
-# DOM hydration: 2905 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-09-07T05:19Z
+# There are 1,456 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 29 published in the last 7 days
+# Markdown negotiated: 2,376 reads (0.21% of all responses)
+# DOM hydration: 2907 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
+# Honeybot telemetry fetched 2026-09-07T15:04Z
 # --- END STATS ---
 
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
