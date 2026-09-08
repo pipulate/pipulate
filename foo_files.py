@@ -1499,6 +1499,76 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # assets/trails/se_ticket.yaml           # profile default; SETTLE real; the SE ticket template: for_you (literal) + issue (JIRA, required) + project/slack/confluence (optional, skipped when unset); RIDDEN 2026-09-02, 3 of 5 captured, 2 skipped, 72,383 B decanted, card showed both rows; harvest regexes on optional stops are PLACEHOLDERS (botify_analysis's already fullmatched a live analysisSlug); guidance strings hand-count "of five" and go stale on the sixth stop
 # tests/test_mck_rep2.py      # <-- Rep 2: the earmark's owed side-by-side witness
 # assets/installer/mck.sh     # <-- THE LAUNCHER: curl -fsSL pipulate.com/mck.sh | bash
+#
+# ============================================================================
+# VIII-c. WALK TO CONTEXT - Instructions, evidence, selection, hand-off
+# ============================================================================
+# CHAPTER BLURB (2026-09-08): a guided browser visit and an AI context compile
+# are separate jobs joined by an ordinary text list. The human owns adhoc.txt;
+# a completed nonempty walk replaces adhocwalk.txt beside it. Both use the
+# same existing router grammar. No automatic merge, compile, or transmission
+# occurs when the walk writes its selection.
+#
+# ENTRY AND NAVIGATION
+# walk                          # <-- Repository wrapper; delegates to mck.sh, not scripts/walk.py
+# assets/installer/mck.sh       # <-- Workshop discovery, rehearsal, and ride launcher
+# scripts/boot_menu.py          # <-- Initial workshop door selection, not capture
+# scripts/sources_menu.py       # <-- Source-command roster, not a connector executor
+#
+# INSTRUCTIONS: AUTHOR, VALIDATE, SEAL
+# scripts/bookmark_import.py    # <-- Bookmarks -> editable .walk.md plus URL exports
+# scripts/walk_compile.py       # <-- Completed authoring text -> JSON-subset YAML trail
+# scripts/walk.py               # <-- Trail validation, browser parameters, dry-run plan
+# scripts/walk_cartridge.py     # <-- Seals trail instructions and derived consent, not captured results
+# assets/trails/public_walk.yaml    # <-- Public-page practice itinerary
+# assets/trails/practice.yaml       # <-- One configurable page
+# assets/trails/first_context.yaml  # <-- Authenticated Jira/Botify/Gmail itinerary
+#
+# OBSERVATION: PREPARE, CAPTURE, PRESERVE
+# scripts/weblogin.py           # <-- Warm a persistent browser login separately
+# tools/scraper_tools.py        # <-- Browser capture and returned observation files
+# imports/voice_synthesis.py    # <-- Spoken guidance; narration is not model inference
+# scripts/mother_cat.py         # <-- Guided rider, per-run capture banking, DECANT, router writer
+# scripts/connectors/noop.py    # <-- Honest non-operative connector target for the public trail
+# scripts/connectors/README.md  # <-- Separate API-source and credential contracts
+#
+# CONTEXT: SELECT, COMPILE, VERIFY
+# prompt_foo.py                 # <-- Reads the selected router and compiles its requested material
+# scripts/foo_cartridge.py      # <-- Seals/verifies payload.md, prompt.md, manifest.json
+# scripts/foo_replay.py         # <-- Context extraction/attention checks, not browser or API replay
+#
+# FOUR OUTPUTS, NOT FOUR NAMES FOR THE SAME THING
+#   Evidence: captures.md banks returned file bytes before ADVANCE; a mutable
+#   browser-cache path is not the historical record. Coverage is what the
+#   capture returned, not a guarantee of every network body.
+#   Preview: DECANT releases selected capped text, not the whole raw archive.
+#   Disclosure: captures.disclosed.json is a separately prepared derivative
+#   with omissions and review status; the router writer does not create it.
+#   Selection: adhocwalk.txt names one raw captures.md archive and labels it
+#   UNSANITIZED. The list is neither disclosure approval nor the evidence itself.
+#
+# THE HANDOFF LANDED IN 97feb327 (operator transcript; diff in this cartridge).
+# _finish_capture_archive requests an update only for complete + nonempty.
+# _write_walk_router derives the sibling of the selected human router, stages
+# one absolute archive path at mode 0600, and replaces only the generated list.
+# Partial or empty runs retain the older completed selection. An ordinary
+# router-write exception is reported after finalization, rather than replacing
+# the capture outcome. Neither compiler readers nor launcher needed changing.
+#
+# SELECTING IS NOT INCLUDING: PIPULATE_ADHOC_FILE chooses the list consumed by
+# ADHOC_CHOP. Naming adhocwalk.txt inside another list includes its text; it
+# does not recursively execute that file's entries. Keep any deliberate
+# alternate selection local to the compiler invocation, not the parent shell.
+#
+# EVIDENCE BOUNDARY: the supplied operator fixture reported GO for real
+# temporary-file creation/replacement, permissions, protected bytes, and
+# injected write failures; its archive append was mocked. This chapter does
+# not promote that fixture into a production browser-to-compiler receipt.
+# The existing COMPOSITION IS NOT THE PARTS debt owns that integration gap.
+# These commented paths document the chapter; they do not activate a CHOP.
+#
+#
+# OFF-ROSTER DISTRIBUTION RESIDUE (not a walk dependency)
 # assets/installer/replay.sh  # <-- OFF the roster 2026-08-01; re-add needs syntax + one ride + a pinned verifier fetch
 
 # ============================================================================
