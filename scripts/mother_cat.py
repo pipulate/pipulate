@@ -200,7 +200,50 @@ def _bank_capture(archive, trail, index, stop, params, result):
     return problems
 
 
+def _write_walk_router(archive_path):
+    """Replace one local selection; never read, disclose or compile its evidence."""
+    selected = os.environ.get("PIPULATE_ADHOC_FILE", str(REPO_ROOT / "adhoc.txt"))
+    if not selected.strip():
+        raise ValueError("PIPULATE_ADHOC_FILE is empty")
+    human = Path(selected).expanduser()
+    if not human.is_absolute():
+        human = REPO_ROOT / human
+    target = human.with_name("adhocwalk.txt")
+    # Derive beside the selected spelling; never follow a destination symlink.
+    if (target.is_symlink() or target.resolve() == human.resolve()
+            or (target.exists() and human.exists() and target.samefile(human))):
+        raise ValueError("walk router aliases the human router or is a symlink")
+    source = str(archive_path)
+    # The existing router grammar has no escape for these separators.
+    if (not Path(source).is_absolute() or source.splitlines() != [source]
+            or "#" in source or "<--" in source):
+        raise ValueError("capture path cannot be represented as one router file line")
+    temp = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", newline="\n", dir=target.parent,
+            prefix=".adhocwalk-", delete=False,
+        ) as stream:
+            temp = Path(stream.name)
+            os.fchmod(stream.fileno(), 0o600)
+            stream.write(
+                "# Generated: last completed nonempty capture run.\n"
+                "# Replaced on completion; partial or empty runs leave this selection unchanged.\n"
+                "# UNSANITIZED local evidence; review before disclosure or compilation.\n"
+                f"{source}\n"
+            )
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temp, target)
+        temp = None
+    finally:
+        if temp is not None:
+            temp.unlink(missing_ok=True)
+    return target
+
+
 def _finish_capture_archive(archive, status, skipped=()):
+    """Finalize evidence first; a router failure must not block the later DECANT."""
     if archive["path"] is None or archive["finished"]:
         return
     _capture_append(archive, {
@@ -212,6 +255,17 @@ def _finish_capture_archive(archive, status, skipped=()):
     archive["finished"] = True
     print(f"  ARCHIVE STATUS  {status}")
     _print_next_compile(archive["path"])
+    if status == "complete" and archive["previews"]:
+        try:
+            target = _write_walk_router(archive["path"])
+        except Exception as exc:
+            print(f"  WALK ROUTER NOT UPDATED ({type(exc).__name__}): {exc}")
+            print("  Archive preserved; any prior adhocwalk.txt still selects an earlier run.")
+        else:
+            print(f"  WALK ROUTER  {target}  (0600; UNSANITIZED; not compiled)")
+    else:
+        print("  WALK ROUTER unchanged: this run did not complete with captures.")
+        print("  Any existing adhocwalk.txt still selects an earlier completed run.")
 
 
 def _decant(captured, previews, skipped=()):
@@ -502,7 +556,9 @@ def _announce_consent(trail_path):
     )
     print(rule)
     print(" EACH CAPTURE banks full returned files in a private data/captures run.")
-    print(" That captures.md is UNSANITIZED and stays local; review before sharing.")
+    print(" That captures.md is UNSANITIZED: review locally before sharing.")
+    print(" A completed nonempty run also selects it in a local adhocwalk.txt.")
+    print(" That router write does not compile, disclose, or copy the archive.")
     print(" AT THE END, selected lenses become a capped preview, not the archive.")
     print(" DECANT applies the compiler's baseline disclosure checks before copy.")
     print(" You are asked ONE more time before that preview goes anywhere. Type")
