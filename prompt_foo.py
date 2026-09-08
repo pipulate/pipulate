@@ -1031,7 +1031,10 @@ SECRET_TRIPWIRES = [
 
 
 def load_disclosure_profile(requested: str = None):
-    """Resolve a disclosure profile from ~/.config/pipulate/disclosure.json.
+    """Resolve the built-in baseline or a configured disclosure profile.
+
+    An explicit --profile baseline returns a copy of FAILSAFE_PROFILE without
+    reading disclosure.json. Other names use ~/.config/pipulate/disclosure.json.
 
     Returns (name, profile_dict). Resolution order:
       1. --profile NAME from the CLI, if given.
@@ -1045,6 +1048,10 @@ def load_disclosure_profile(requested: str = None):
     no-egress local lane can breathe; every other value means 'block'.
     """
     profiles = {}
+    # Reserve an explicit, configuration-independent blocking lane. Local
+    # profiles keep their existing semantics, including no-egress WARN.
+    if requested == "baseline":
+        return ("baseline", dict(FAILSAFE_PROFILE))
     default_name = None
     if DISCLOSURE_PROFILES_FILE.exists():
         try:
@@ -2673,7 +2680,7 @@ def main():
     parser.add_argument('-o', '--output', type=str, help='Optional: Output filename.')
     parser.add_argument('--no-clipboard', action='store_true', help='Disable copying output to clipboard.')
     parser.add_argument('--allow-leaks', action='store_true', help='DEPRECATED: use --profile trusted. Emit the payload even if commit_denylist.txt patterns survive the PII scrub (deliberate fail-open override).')
-    parser.add_argument('-p', '--profile', type=str, default=None, help='Disclosure profile from ~/.config/pipulate/disclosure.json (e.g., cloud-safe, trusted, local). Controls substitutions and denylist mode; secrets tripwire is always on.')
+    parser.add_argument('-p', '--profile', type=str, default=None, help='Disclosure profile: baseline uses the built-in blocking policy without reading disclosure.json; other names (e.g., trusted, local) use ~/.config/pipulate/disclosure.json. Secrets tripwire is always on.')
     parser.add_argument('--reason', type=str, default=None, help='Why sanitization is being relaxed. Required by profiles with require_reason; recorded in the disclosure receipt.')
     parser.add_argument('--check-dependencies', action='store_true', help='Verify that all required external tools are installed.')
     parser.add_argument('--context-only', action='store_true', help='Generate a context-only prompt without file contents.')
@@ -3714,7 +3721,8 @@ def main():
         copy_to_clipboard(egress_text)
     elif not args.no_clipboard and profile.get('secrets', 'block') == 'warn':
         print("🧱 LOCAL-LANE EGRESS FENCE: automatic clipboard/SSH-bridge copy disabled while secrets=WARN.")
-        print("   Inspect foo.zip or an explicit -o file locally. Use a blocking secrets profile before sending the payload elsewhere.")
+        print("   Inspect foo.zip or an explicit -o file locally.")
+        print("   For sharing, rerun with --profile baseline: substitutions ON, denylist/secrets BLOCK.")
 
 if __name__ == "__main__":
     main()
