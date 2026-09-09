@@ -70,7 +70,7 @@
     {
       "name": "confluence",
       "label": "Confluence page",
-      "guidance": "Stop five of five, optional. The Confluence page this ticket points at opens. Read it for the part that answers or contradicts the ticket. Then type the capture word. After this you are asked once more, with a different word, before anything leaves this machine.",
+      "guidance": "Stop five of five, optional. The Confluence page this ticket points at opens. Read it for the part that answers or contradicts the ticket. Then type the capture word. After this you are asked once more, with a different word, before this is compiled into context.",
       "url_env": "PIPULATE_TRAIL_CONFLUENCE_URL",
       "optional": true,
       "target_slot": "confluence_space",
