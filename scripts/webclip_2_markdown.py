@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import re
 import subprocess
 import sys
@@ -69,28 +70,85 @@ def enforce_fence_hygiene(md_text):
         closed += 1
     return '\n'.join(out), neutralized, labeled, closed
 
+# THE MAC LANE (2026-09-09, first-contact convicted on aarch64-darwin): all
+# three clipboard readers below were Linux-only, so on a Mac `webclip` printed
+# "Clipboard is empty" over a full clipboard -- a plausible message, because
+# the clipboard really was invisible to this script. Three tools, one per job:
+#   pbpaste / pbcopy  plain text in and out.
+#   osascript         the HTML flavor, which pbpaste cannot reach (it speaks
+#                     txt/rtf/ps only). `the clipboard as <<class HTML>>` prints
+#                     the pasteboard's HTML as a hex literal (<<data HTML3C68...>>);
+#                     a clipboard with no HTML flavor makes osascript exit
+#                     nonzero, which maps to the same None the xclip lane returns
+#                     on empty stdout, so the caller's plain-text fallback fires
+#                     unchanged. The chevrons are spelled as \u escapes in the
+#                     code so this file stays ASCII.
+# LC_ALL IS LOAD-BEARING: pbpaste/pbcopy honor the locale, and under a C locale
+# every non-ASCII character comes back as a question mark. Forced to UTF-8 for
+# these two calls only; the shell's own locale is untouched.
+_SYSTEM = platform.system().lower()
+_MAC_ENV = {**os.environ, 'LANG': 'en_US.UTF-8', 'LC_ALL': 'en_US.UTF-8'}
+_MAC_HTML_HEX_RE = re.compile(r'data HTML([0-9A-Fa-f]+)')
+
+
+def _mac_clipboard_html():
+    """Return the pasteboard's HTML flavor as text, or None when there is none."""
+    result = subprocess.run(
+        ['osascript', '-e', 'the clipboard as \u00abclass HTML\u00bb'],
+        capture_output=True)
+    if result.returncode != 0:
+        return None
+    match = _MAC_HTML_HEX_RE.search(result.stdout.decode('utf-8', errors='replace'))
+    if not match:
+        return None
+    try:
+        html = bytes.fromhex(match.group(1)).decode('utf-8', errors='replace')
+    except ValueError:
+        return None
+    return html if html.strip() else None
+
+
+def _mac_clipboard_text():
+    result = subprocess.run(['pbpaste'], capture_output=True, env=_MAC_ENV)
+    return result.stdout.decode('utf-8', errors='replace')
+
+
+def _mac_set_clipboard(text: str):
+    subprocess.run(['pbcopy'], input=text.encode('utf-8'), env=_MAC_ENV, check=True)
+
+
 def get_clipboard_html():
-    # TODO: Expand for macOS (pbpaste) and Windows (win32clipboard).
+    # TODO: Expand for Windows (win32clipboard).
     if platform.system().lower() == "linux":
         result = subprocess.run(['xclip', '-selection', 'clipboard', '-target', 'text/html', '-o'], 
                                 capture_output=True, text=True)
         return result.stdout if result.stdout.strip() else None
+    if _SYSTEM == "darwin":
+        return _mac_clipboard_html()
     return None
 
 def get_clipboard_text():
-    # TODO: Expand for macOS (pbpaste) and Windows (win32clipboard).
+    # TODO: Expand for Windows (win32clipboard).
     if platform.system().lower() == "linux":
         result = subprocess.run(['xclip', '-selection', 'clipboard', '-o'], 
                                 capture_output=True, text=True)
         return result.stdout
+    if _SYSTEM == "darwin":
+        return _mac_clipboard_text()
     return ""
 
 def set_clipboard(text: str):
-    # TODO: Expand for macOS (pbcopy) and Windows (win32clipboard).
-    if platform.system().lower() == "linux":
+    # TODO: Expand for Windows (win32clipboard).
+    if _SYSTEM == "linux":
         subprocess.run(['xclip', '-selection', 'clipboard'], input=text.encode('utf-8'), check=True)
+    elif _SYSTEM == "darwin":
+        _mac_set_clipboard(text)
+    else:
+        sys.exit(f"❌ webclip: no clipboard writer for {platform.system()}; nothing was copied.")
 
 def transform():
+    if _SYSTEM not in ("linux", "darwin"):
+        sys.exit(f"❌ webclip: no clipboard lane for {platform.system()} yet; Linux (xclip) and macOS (pbpaste/osascript) only.")
     html_content = get_clipboard_html()
     flattened = 0
     
