@@ -1549,8 +1549,18 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 #
 # THE HANDOFF LANDED IN 97feb327 (operator transcript; diff in this cartridge).
 # _finish_capture_archive requests an update only for complete + nonempty.
-# _write_walk_router derives the sibling of the selected human router, stages
-# one absolute archive path at mode 0600, and replaces only the generated list.
+# _write_walk_router derives target = human.with_name("adhocwalk.txt") from the
+# SELECTED router and writes the WHOLE file: three comment lines plus one
+# absolute path, staged at 0600 and os.replace'd. IT REPLACES, IT NEVER MERGES.
+# Nothing hand-added to adhocwalk.txt survives a completed run, so a hand-typed
+# `!` line belongs in adhoc.txt, the file ahcw deliberately does not select;
+# the seam between the two is a COPY, which is what _print_next_compile is for.
+# with_name IS IDEMPOTENT ON THAT NAME: riding from a shell where
+# PIPULATE_ADHOC_FILE already names adhocwalk.txt makes target == human, the
+# alias guard refuses by name, and the caller reports WALK ROUTER NOT UPDATED
+# (ValueError) non-fatally with the archive preserved. This is why ahcw assigns
+# in a subshell rather than exporting. Success is not silent either:
+# WALK ROUTER <path> (0600; UNSANITIZED; not compiled).
 # Partial or empty runs retain the older completed selection. An ordinary
 # router-write exception is reported after finalization, rather than replacing
 # the capture outcome. Neither compiler readers nor launcher needed changing.
