@@ -1197,6 +1197,30 @@ def scan_secrets(text: str):
     return hits
 
 
+def _identity_table_state(path, stage_enabled: bool) -> str:
+    """Three states, never two, for one identity table on THIS machine.
+
+    THE DISCRIMINATION QUESTION, asked of the BASELINE run. Both stages below
+    gate on .exists() and a missing table is a documented silent no-op, so a
+    default compile where neither table exists is byte-identical to one where
+    both exist and match nothing. Only a count discriminates a table that
+    looked and found nothing from a table that was never read. pub:-prefixed
+    rules are excluded because the compile lane skips them: a table holding
+    nothing but publish-lane rules protects this payload not at all, and
+    would otherwise report a reassuring nonzero.
+    """
+    if not stage_enabled:
+        return "OFF"
+    if not path.exists():
+        return f"MISSING ({path})"
+    try:
+        rules = [ln for ln in path.read_text(encoding='utf-8').splitlines()
+                 if ln.strip() and not ln.startswith('#') and not ln.startswith('pub:')]
+    except OSError as e:
+        return f"UNREADABLE ({type(e).__name__})"
+    return f"{len(rules)} rule(s)"
+
+
 def scrub_compile_payload(text: str, apply_substitutions: bool = True, scan_denylist: bool = True):
     """Sanitize the compiled payload before it leaves the machine.
 
@@ -3581,6 +3605,15 @@ def main():
         apply_substitutions=profile.get('substitutions', True),
         scan_denylist=(denylist_mode != 'off'),
     )
+    # THE GATE SPEAKS A VERDICT, applied to the lane that had no line at all.
+    # The DISCLOSURE receipt below prints only when a run DEPARTS from
+    # baseline, so on the default lane silence meant both "scrubbed clean" and
+    # "no table on this machine" -- the same defect this file convicted at the
+    # hardcoded "(0 hits)" string, fixed there and left standing here. Name
+    # the STATE of each table every compile, before the count of what fired.
+    print(f"🧼 Identity scrub: "
+          f"substitutions={_identity_table_state(PII_SUBSTITUTIONS_FILE, profile.get('substitutions', True))}"
+          f" | denylist={_identity_table_state(COMMIT_DENYLIST_FILE, denylist_mode != 'off')}")
     if pii_count:
         print(f"🪄 Compile-lane scrub: {pii_count} PII substitution(s) applied to payload.")
     # RENDER CANARY (emitter half). The transform happens AFTER emit, so the
