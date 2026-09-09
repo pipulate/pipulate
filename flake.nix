@@ -1466,6 +1466,24 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           defaultu() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop DEFAULT_CHOP "$@"); }
           ahc() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP --no-tree "$@"); }
           ahcu() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP "$@"); }
+          # THE WALK-ROUTER TWIN. Chapter VIII-c says to keep an alternate
+          # router selection LOCAL to the compiler invocation and never in the
+          # parent shell. That was prose beside a mechanism with nothing
+          # gating it, which THE PUBLISH-ROSTER RULE convicts: prose beside a
+          # mechanism does not gate the mechanism. Here the selection is local
+          # BY CONSTRUCTION, because the assignment prefixes an EXTERNAL
+          # command inside a subshell, so no bash mode can leak it upward the
+          # way a prefix on a shell function can.
+          # WHY IT MATTERS: parse_file_list_from_config exits 1 with ROUTER
+          # REFUSED when PIPULATE_ADHOC_FILE is set and the named file is
+          # missing or carries no active lines. One stray export therefore
+          # breaks every ADHOC_CHOP compile in that shell, ahc and sniff and
+          # scrub included, and the walk router does not exist until a walk
+          # completes. The refusal is correct and the export is the defect.
+          # A FUNCTION, not an alias, per the release conviction of
+          # 2026-08-01: an alias body ending in a paren reports a syntax error
+          # at the trailing argument the operator typed.
+          ahcw() { (cd "$PIPULATE_ROOT" && PIPULATE_ADHOC_FILE="$PIPULATE_ROOT/adhocwalk.txt" python prompt_foo.py --chop ADHOC_CHOP --no-tree "$@"); }
           # THE IDEATION DOOR: `idea` compiles IDEATION_CHOP (the constitution's
           # two forcing-function rules) primed for a 30-and-3 / axis-forcing
           # fan-out turn. A function, not an alias, so --profile/--reason pass
