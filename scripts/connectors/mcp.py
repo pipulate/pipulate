@@ -534,11 +534,24 @@ def call_tool(client, server, tool, raw_args, dclass, declared, max_bytes):
                  "params": {"name": tool, "arguments": args}}, session_id)
     if resp.status_code != 200:
         die(f"mcp RED gate3: tools/call HTTP {resp.status_code}\n{resp.text[:300]}")
-    text = json.dumps(parse_body(resp), indent=2, default=str)
+    body = parse_body(resp) or {}
+    text = json.dumps(body, indent=2, default=str)
     if len(text) > max_bytes:
         text = text[:max_bytes] + (f"\n... [truncated at {max_bytes} bytes "
                                    "per THE PROBE ECONOMY RULE]")
     print(text)
+    # gate4: A TOOL FAILURE IS NOT AN HTTP FAILURE. check() already refuses a
+    # JSON-RPC error body at its gate3; call_tool graded the TRANSPORT only, so
+    # an {"error": ...} envelope and an {"isError": true} result both printed
+    # and exited 0 -- the same exit code as a real answer, which is the shape
+    # THE DISCRIMINATION QUESTION exists to catch, in the instrument that
+    # witnesses everything else. The body PRINTS FIRST: on a first call against
+    # an unwitnessed server the error IS the schema, and dying before printing
+    # would throw away the only thing the call was for.
+    if body.get("error") is not None:
+        die(f"mcp RED gate4: tools/call JSON-RPC error {body['error']}")
+    if (body.get("result") or {}).get("isError"):
+        die("mcp RED gate4: tools/call result carries isError=true")
 
 
 def check(server, token_env, scheme="Bearer"):
