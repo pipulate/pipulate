@@ -10,7 +10,7 @@ Golden-path modes, auto-detected from the single positional argument:
   python scripts/connectors/botify.py                    # LIST: identity walk -> all your org/project slugs
   python scripts/connectors/botify.py org                # LIST: projects under that org slug
   python scripts/connectors/botify.py org/project        # LIST: analyses (crawl snapshots) for that project
-  python scripts/connectors/botify.py org/project/analysis    # FETCH: one crawl's status + crawl statistics, running or done
+  python scripts/connectors/botify.py org/project/analysis    # FETCH: verdict (status, pages, rate, cadence ETA) + crawl statistics, running or done
   python scripts/connectors/botify.py 'https://app.botify.com/org/project/...'   # any app URL reduces to its slug path first
   python scripts/connectors/botify.py '<BQL or JSON>'    # FETCH: run a query (needs org/project coordinates)
 
@@ -45,6 +45,7 @@ import json
 import argparse
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs
+from datetime import datetime, timedelta, timezone
 
 import httpx
 
@@ -235,6 +236,89 @@ def scalar_rows(obj, cap):
     return rows
 
 
+# THE FIELD NAMES, VERBATIM FROM THE FIRST RECEIPT (2026-09-10). The analysis
+# detail carries the status and the clock; crawl_statistics carries the
+# counters. The detail's own urls_done read 0 and urls_in_queue read None in
+# the same receipt where crawl_statistics read pages_dones 10,954,595 -- the
+# obviously named pair is dead, and the verdict below never reads it.
+ANALYSIS_KEYS = ("slug", "name", "status", "crawl_launch_type", "date_created",
+                 "date_launched", "date_crawl_done", "date_finished", "url")
+
+
+def _iso(value):
+    """A tz-aware datetime from an API timestamp, or None. The API writes a
+    trailing Z, which fromisoformat accepts only from 3.11 on; spell it out."""
+    if not isinstance(value, str) or not value:
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+
+def crawl_verdict(detail, stats, siblings):
+    """The morning answer in a few lines: how far, how fast, and when.
+
+    Every number comes from the receipts' own field names; a missing field
+    drops its line rather than inventing one. Two clocks are printed and
+    labelled: the queue-drain time at the observed rate, which is a FLOOR
+    because the queue grows as deeper pages are found, and the ETA by
+    cadence -- THE CADENCE IS THE CLOCK -- the median launch-to-finish of
+    the finished siblings, which is what this crawler has actually done
+    week after week without ever needing its 25M-page cap.
+    """
+    lines = []
+    launched = _iso(detail.get("date_launched"))
+    finished = _iso(detail.get("date_finished") or detail.get("date_crawl_done"))
+    updated = _iso(stats.get("last_upd_dt")) or datetime.now(timezone.utc)
+    done, known = stats.get("pages_dones"), stats.get("pages_known")
+    counted = isinstance(done, (int, float)) and isinstance(known, (int, float))
+    lines.append(f"status: {detail.get('status', '?')}   "
+                 f"launched: {detail.get('date_launched', '?')}")
+    if counted:
+        queued = known - done
+        share = (done / known * 100) if known else 0.0
+        lines.append(f"pages: {int(done):,} done of {int(known):,} known "
+                     f"({int(queued):,} queued, {share:.1f}% of known), "
+                     f"depth {stats.get('depth_current', '?')}")
+        bad = sum(int(stats.get(k) or 0) for k in
+                  ("pages_dones_4xx", "pages_dones_5xx", "pages_dones_networkerror"))
+        lines.append(f"health: {int(stats.get('pages_dones_2xx') or 0):,} 2xx, "
+                     f"{int(stats.get('pages_dones_3xx') or 0):,} 3xx, "
+                     f"{bad:,} 4xx/5xx/network")
+    rate = None
+    if launched and counted:
+        hours = ((finished or updated) - launched).total_seconds() / 3600
+        if hours > 0:
+            rate = done / (hours * 3600)
+            lines.append(f"rate: {rate:.1f} URLs/s over {hours:.1f} h "
+                         f"(as of {stats.get('last_upd_dt', 'now')})")
+    if rate and not finished and counted:
+        drain = (known - done) / rate / 3600
+        lines.append(f"queue drain: {drain:.1f} h at this rate -- a FLOOR; the "
+                     "queue grows as deeper pages are found")
+    durations = []
+    for s in siblings or []:
+        a, b = _iso(s.get("date_launched")), _iso(s.get("date_finished"))
+        if a and b and b > a and s.get("slug") != detail.get("slug"):
+            durations.append((b - a).total_seconds())
+    if launched and not finished:
+        if durations:
+            durations.sort()
+            median = durations[len(durations) // 2]
+            eta = launched + timedelta(seconds=median)
+            lines.append(f"eta: {eta.strftime('%Y-%m-%dT%H:%MZ')} "
+                         f"({eta.astimezone().strftime('%a %b %d %H:%M %Z')}) by cadence -- "
+                         f"median of {len(durations)} finished sibling(s), "
+                         f"{median / 86400:.1f} d launch-to-finish")
+        else:
+            lines.append("eta: no cadence -- the /light siblings carry no "
+                         "date_launched/date_finished pair to time")
+    if finished:
+        lines.append(f"finished: {finished.isoformat()}")
+    return lines
+
+
 def fetch_analysis(client, org, project, slug, max_items):
     """FETCH mode, org/project/analysis: one crawl's status and live counters.
 
@@ -252,24 +336,48 @@ def fetch_analysis(client, org, project, slug, max_items):
     top-level scalar prints as key: value and every container as its size,
     so an unfamiliar payload SHOWS rather than vanishes, and the receipt
     teaches the field names for any later tightening.
+
+    TIGHTENED 2026-09-10 FROM THAT FIRST RECEIPT: the running crawl read
+    status crawling, date_launched 2026-09-07T14:00:31Z, and in
+    crawl_statistics pages_dones 10,954,595 of pages_known 11,983,866 at
+    depth_current 6 -- 37.7 URLs/s against a 40/s cap, JS rendering and all.
+    ## Verdict now leads (crawl_verdict); ## Analysis prints only
+    ANALYSIS_KEYS, with the full scalar dump as the fallback when none of
+    them exist; the crawl_statistics dump stays whole because every one of
+    its ten keys is a counter a human reads. A third bounded call reads the
+    six newest /light siblings for the cadence clock, and a failure there
+    costs the eta line, never the verdict.
     """
     base = f"{API_BASE}/analyses/{org}/{project}/{slug}"
     detail = get_json(client, base)
-    print(f"# Botify analysis {org}/{project}/{slug}\n")
-    print("## Analysis")
-    for key, value in scalar_rows(detail, max_items):
-        print(f"{key}: {value}")
+    stats, stats_note = {}, None
     resp = client.get(f"{base}/crawl_statistics")
-    print("\n## Crawl statistics")
     if resp.status_code != 200:
-        print(f"(HTTP {resp.status_code} from {base}/crawl_statistics -- {resp.text[:200]!r})")
+        stats_note = f"HTTP {resp.status_code} from {base}/crawl_statistics -- {resp.text[:200]!r}"
     else:
         try:
             stats = resp.json()
         except ValueError:
-            stats = {}
-        for key, value in scalar_rows(stats, max_items):
-            print(f"{key}: {value}")
+            stats_note = "crawl_statistics answered 200 but not JSON"
+    if not isinstance(stats, dict):
+        stats = {}
+    try:
+        siblings = follow_pages(client, f"{API_BASE}/analyses/{org}/{project}/light", 6)
+    except SystemExit:
+        siblings = []
+    print(f"# Botify analysis {org}/{project}/{slug}\n")
+    print("## Verdict")
+    for line in crawl_verdict(detail, stats, siblings):
+        print(line)
+    print("\n## Analysis")
+    curated = [(key, detail.get(key)) for key in ANALYSIS_KEYS if key in detail]
+    for key, value in curated or scalar_rows(detail, max_items):
+        print(f"{key}: {value}")
+    print("\n## Crawl statistics")
+    if stats_note:
+        print(f"({stats_note})")
+    for key, value in scalar_rows(stats, max_items):
+        print(f"{key}: {value}")
     print(f"\n# Next: python scripts/connectors/botify.py {org}/{project}   (every finished analysis)")
 
 
