@@ -65,7 +65,8 @@ connector never needs to walk nextPageToken -- the bound IS the feature.
 Output is capped by -n/--max (default 25) per THE PROBE ECONOMY RULE: stdout is
 destined for compiled context payloads, so the bound is a feature.
 
-COMPILE-LANE CAUTION: project keys, issue summaries, descriptions, and comments
+COMPILE-LANE CAUTION: project keys, issue summaries, descriptions, comments,
+custom-field values (a SalesForce ID, a Project URL), and attachment URLs
 are client identifiers and client content. Any `!` invocation bound for a cloud
 chat window rides through the compile-lane sanitizer -- make sure
 pii_substitutions.txt covers the relevant identifiers first. (For an
