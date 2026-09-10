@@ -270,6 +270,15 @@ def apply_search_replace_patch(payload: str) -> bool:
         # fewer ways to be wrong. THE COST: the refusal diagnostics below think
         # in lines, so a mid-line anchor that misses gets a poorer receipt.
         # Prefer whole lines wherever the padding CAN be counted.
+        # THE TAIL-APPEND (witnessed 2026-09-10, the wallet ride: 20 of 20
+        # blocks landed across five cars, nine of them mid-line). To insert
+        # a NEW line directly after a padded line, SEARCH that line's unpadded
+        # tail and REPLACE with the tail, a newline, and the new line: the
+        # padded line is continued, never reproduced, and the new line's
+        # padding is the model's own to choose. The same trick steps past an
+        # em dash -- anchor on the text AFTER the dash and the dash is never
+        # typed -- so the two-hyphen misspelling EMPTY-REPLACE below convicted
+        # is refused at the keyboard instead of at the interlock.
         match_count = content.count(search_block)
         
         if match_count == 0:
