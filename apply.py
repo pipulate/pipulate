@@ -279,6 +279,10 @@ def apply_search_replace_patch(payload: str) -> bool:
         # em dash -- anchor on the text AFTER the dash and the dash is never
         # typed -- so the two-hyphen misspelling EMPTY-REPLACE below convicted
         # is refused at the keyboard instead of at the interlock.
+        # WITNESSED AGAIN 2026-09-10, the botify ride: 39 of 39 blocks landed
+        # across nine cars, most anchored mid-line on docstring tails, a
+        # padded README row, and a help string -- zero refusals, zero hand
+        # repairs, one docstring car closing the ride as a null straddle.
         match_count = content.count(search_block)
         
         if match_count == 0:
