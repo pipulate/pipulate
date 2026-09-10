@@ -8,6 +8,7 @@ Golden-path modes, auto-detected from the leading positional argument:
   python scripts/connectors/wallet.py                 # SCOREBOARD: stat EVERY slot, whatever its auth kind (OFFLINE)
   python scripts/connectors/wallet.py check [<slot>]  # CHECK: the red/green game — one bounded probe per enrolled slot
   python scripts/connectors/wallet.py warm [<slot>]   # WARM: fix whatever is cold, dispatched per auth kind
+  python scripts/connectors/wallet.py warm <URL>      # WARM: log into ANY site, no slot needed; profile = apex label
   python scripts/connectors/wallet.py login <slot>    # LOGIN: mint an oauth slot, or NAME how any other kind is warmed
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
@@ -706,8 +707,85 @@ def _warm_mcp(name, cfg, assume_yes):
     return 'browser mint finished' if rc == 0 else f"mcp_warm exited {rc}"
 
 
+def _apex_label(url):
+    """The per-domain profile NAME the `?` lane resolves, derived from a URL
+    or host: app.botify.com -> botify, botify.atlassian.net -> atlassian.
+
+    DUPLICATED, NOT IMPORTED. tools/scraper_tools.py derives its own slug for
+    uc_profiles/<apex-label>, and the WET contract forbids reaching into it;
+    the two derivations are compared by probe, never trusted. Both browser
+    slots in the wallet (botify, semrush) already obey this rule, which is
+    what lets an ad-hoc URL warm land exactly where a later `?URL` looks.
+    Naive on multi-part TLDs exactly as _apex is, and for the same reason.
+    """
+    return _apex(url).split('.')[0]
+
+
+def _warm_url(url, stale_days, assume_yes=False, dry_run=False):
+    """warm <http(s)://...>: log into ANY site, no wallet slot required.
+
+    THE URL IS WHAT THE HUMAN HAS (2026-09-10; jira.py's normalize_query
+    rule, applied to logins). A Jira issue link is a login wall until the
+    per-domain profile holds an Atlassian session, and no slot in
+    connectors.json says `atlassian`, so `warm` answered "No slot" -- a
+    message telling the human to edit a config before they could log in.
+    The slot is now SYNTHESIZED from the address: profile = apex label,
+    site = the URL itself, and the browser_session machinery that already
+    exists (_warm_browser -> weblogin.py, classify_slot, check_browser_slot)
+    runs on it unchanged, so this verb and the `check` board cannot disagree
+    about where a profile lives. Nothing is written to the wallet; the
+    breadcrumb names the slot to add if the site belongs on the board.
+    """
+    if not url.startswith(('http://', 'https://')):
+        url = 'https://' + url
+    host = urlparse(url).netloc or url
+    label = _apex_label(url)
+    cfg = {'auth': _BROWSER_KIND, 'paths': {'profile': label},
+           'defaults': {'site': url}}
+    state, _kind, detail, locator = classify_slot(label, cfg, stale_days)
+    print("# wallet warm -- slot synthesized from a URL, nothing read from the wallet")
+    print(f"# url:     {url}")
+    print(f"# profile: {locator}")
+    print(f"# ? lane:  resolves uc_profiles/{label} for {_apex(url)}, so a later "
+          f"?{url} crawl inherits this login\n")
+    print(f"  {_MARK.get(state, '[?]')} {state:<7}  browser   {label:<14}  {detail}")
+    if dry_run:
+        print("\n# --dry-run: nothing prompted, opened, or written.")
+        return
+    if not _interactive():
+        print("\n# Not a TTY -- refusing to open a browser, because a `!` chisel-strike")
+        print("# must never block the compile that embedded it. In a real terminal:")
+        print(f"#    python scripts/connectors/wallet.py warm '{url}'")
+        return
+    print("\n" + "-" * 70)
+    note = _warm_browser(label, cfg, assume_yes)
+    after, _kind, adetail, _loc = classify_slot(label, cfg, stale_days)
+    print("\n" + "-" * 70)
+    print("# after warming:")
+    print(f"  {_MARK.get(after, '[?]')} {after:<7}  browser   {label:<14}  {adetail}")
+    print(f"        ↳ {note}")
+    # The cheapest honest verdict, from cookie metadata alone: a live HttpOnly
+    # cookie for the apex means a server set a session; a window that was
+    # merely opened and dismissed reds with exactly that sentence.
+    code, line = check_browser_slot(label, cfg)
+    print(f"  {_LIVE_MARK.get(code, '⚪')} {line}")
+    slot = {label: {'auth': _BROWSER_KIND, 'paths': {'profile': label},
+                    'defaults': {'site': host}}}
+    print(f"\n# Next: put   ?{url}   in adhoc.txt for an authenticated crawl.")
+    print("#       To keep this site on the check board, add to connectors.json:")
+    print(f"#       {json.dumps(slot)[1:-1]}")
+
+
 def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
-    """Walk every not-filled slot (or just one) and actually warm it."""
+    """Walk every not-filled slot (or just one) and actually warm it.
+
+    AN ADDRESS IS NOT A SLOT NAME. Anything with a scheme or a dot in it
+    routes to _warm_url, which synthesizes a browser_session slot from the
+    address; the wallet is neither consulted nor written. Checked first so
+    the "No slot" die() below cannot fire at a URL that was never a slot.
+    """
+    if slot_name and ('://' in slot_name or '.' in slot_name):
+        return _warm_url(slot_name, stale_days, assume_yes, dry_run)
     wallet = load_wallet()
     slots = [(n, c) for n, c in wallet.items()
              if not n.startswith('_') and isinstance(c, dict) and c.get('auth')]
@@ -1174,11 +1252,17 @@ def main():
         login(args.slot, args.stale_days)
     elif args.command == 'warm':
         warm(args.slot, args.stale_days, assume_yes=args.yes, dry_run=args.dry_run)
+    elif '://' in args.command or '.' in args.command:
+        # A bare address as the verb: `wallet.py https://...` is `warm <URL>`
+        # whichever shell word carries it, so a wrapper forwarding "$@" raw
+        # and a human typing the address first both land in _warm_url.
+        warm(args.command, args.stale_days, assume_yes=args.yes, dry_run=args.dry_run)
     else:
         die(f"Unknown command: {args.command}\n"
             "Usage: wallet.py                 (offline scoreboard)\n"
             "       wallet.py check [slot]    (LIVE red/green board)\n"
             "       wallet.py warm [slot]     (warm every cold slot, per kind)\n"
+            "       wallet.py warm <URL>      (log into ANY site; profile = apex label)\n"
             "       wallet.py login <slot>    (mint one oauth slot)")
 
 
