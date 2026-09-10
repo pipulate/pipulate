@@ -1269,6 +1269,18 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 #  /_/   \_\__,_| |_| |_|\___/ \___|  \____|_| |_|\___/|_|   (_)  And I may do this more often
 # Ad Hoc CHOP: The Not-Managed-by-Git Safe-for-Client-Data place  
 
+# | Reach for | When | Switch when |
+# |---|---|---|
+# | `!URL` | Public page; what a stranger or crawler sees; the BEFORE of a login-wall diagnosis | It shows a login page → `warm URL` once, then `?URL` |
+# | `?URL` | Anything behind a login, on the site's persistent profile; `check URL` first | The lenses show a shell (nav, an `[Iframe]` leaf, no content) → read the wire truth for the XHR the frame makes, then call that API with a connector |
+# | `@URL` | Every re-read of a page already scraped; no browser, no network | The cached page is stale or was a login wall → fresh `!` or `?` |
+# | `$URL` | Exact markup: meta tags, a JSON blob in a `<script>` | — (token-heavy; needs a prior scrape) |
+# | `%URL` | The network log distilled; SPA endpoint discovery | It re-serves the wire truth you already have → the API |
+# | `! cmd` | Any bounded, non-interactive command as a live receipt | — (cap it with `-n`; no aliases, no prompts) |
+# | Connector | The number you want is one GET away | LIST until the thing isn't in the list → FETCH by id → DRILL the path the app's own frame called → `--grep` to narrow a list or find a leaf |
+
+# Every step is one argument longer than the last; the moment a lens shows less than the wire does is the moment to stop scraping.
+
 # OPTIONAL BUT BIG FOR FULL CONTEXT-WINDOW STORYTELLING
 # ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
 # GLOSSARY.md                 # <-- Like the back of a J.R.R. Tolkien book but always growing in size as `prompt_foo.py` gets scars and shrinks.
