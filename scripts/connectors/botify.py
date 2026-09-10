@@ -468,7 +468,16 @@ def grep_tree(obj, needle, cap):
     cap with the uncapped total returned beside them so a cut is visible.
     Written 2026-09-10 because a collection datamodel and an analysis
     config are both one object thousands of leaves deep, and "where in
-    here is the link attribute" is a question about paths, not rows."""
+    here is the link attribute" is a question about paths, not rows.
+    EARMARK (dismount 2026-09-10): a str leaf that is itself serialized JSON
+    is opaque here. config.extra_admin_config matched 'link' somewhere past
+    the 160-char display cut and could not be descended, and that leaf is
+    the one candidate home for the custom link-attribute definitions this
+    hunt stopped short of; the `previous` subtree, the prior analysis riding
+    inside the current one, also spent 30 rows of a 40-row cap on echoes.
+    The cure is a second pass -- a str leaf that starts with '{' or '[' and
+    parses walks its parse under the same path -- plus a way to skip a
+    subtree. Neither landed; the ad hoc crawl article owns them."""
     needle = needle.lower()
     hits = []
 
