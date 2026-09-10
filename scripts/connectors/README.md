@@ -115,3 +115,25 @@ the first docstring line before anything else (contract item 8): a copied
 connector that keeps its template's first line will display the template's
 name in the `sources` roster, which is how `gong.py` came to introduce itself
 as `wallet.py`.
+
+## Drill by shape, find by needle (botify.py, 2026-09-10)
+
+Beyond its golden-path modes a connector should let the positional argument
+be a raw API path: `org/project/<resource>[/<id>]` GETs that path and renders
+the reply by SHAPE -- a list as `ident | date | name` rows with a `# Next:`
+naming the FETCH, one object as scalars plus each container's JSON -- and
+`--grep` narrows a list by substring or, on one object, prints every leaf
+whose dotted path or value matches. No object path is hardwired (the
+operator's rule): every sub-resource the app's own frame was seen calling,
+and every one it was not, is one argument away, and 667 saved explorers
+become the few about links without anyone reading 667 names. Two limits are
+known and earmarked in botify.py: a string leaf that is itself serialized
+JSON is opaque to the leaf grep, and a subtree that echoes the parent (an
+analysis carries its `previous`) can spend most of a `-n` cap.
+
+THE MOMENT TO REACH FOR A CONNECTOR is the moment a lens shows less than the
+wire does: the `?URL` optics of a logged-in page rendered a shell with an
+`[Iframe]` leaf while the wire truth showed the frame's own XHR, and that
+XHR's path became the connector's next mode. A LIST that omits the thing you
+want (a running crawl, absent from /light) is the same signal one rung
+lower: FETCH it by id, then DRILL.
