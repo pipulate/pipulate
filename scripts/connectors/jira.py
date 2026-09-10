@@ -10,7 +10,7 @@ Golden-path modes, auto-detected from the single positional argument:
   python scripts/connectors/jira.py                 # MINE: open issues assigned to you (the For You tab)
   python scripts/connectors/jira.py projects        # LIST: projects you can see
   python scripts/connectors/jira.py ENG             # LIST: recently-updated issues in project ENG
-  python scripts/connectors/jira.py ENG-123         # FETCH: full text of one issue (description + comments)
+  python scripts/connectors/jira.py ENG-123         # FETCH: full text of one issue (custom fields + description + comments)
   python scripts/connectors/jira.py 'assignee = currentUser() ORDER BY updated DESC'  # SEARCH: raw JQL
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
@@ -76,6 +76,7 @@ is the intended path.)
 import os
 import re
 import sys
+import json
 import argparse
 from urllib.parse import urlparse, parse_qs
 
@@ -256,7 +257,7 @@ def get_json(client, url, params=None):
 # ----------------------------------------------------------------------------
 _ADF_BLOCK = {"paragraph", "heading", "blockquote", "codeBlock",
               "listItem", "tableRow", "bulletList", "orderedList", "table",
-              "panel", "rule"}
+              "panel", "rule", "mediaSingle", "mediaGroup"}
 
 
 def adf_to_text(node):
@@ -276,7 +277,26 @@ def adf_to_text(node):
         return str(node)
     ntype = node.get("type", "")
     if ntype == "text":
-        return node.get("text", "")
+        # A link MARK rides on the text node, and smart cards (inlineCard,
+        # blockCard, embedCard) carry their URL in attrs with no text node
+        # at all. Convicted 2026-09-10 by a census receipt: "has some helpful
+        # documentation here:" printed followed by nothing, the Confluence
+        # link having been an inlineCard the old walk rendered as "". Keep
+        # the href beside the text unless the text already IS the href.
+        text = node.get("text", "")
+        for mark in node.get("marks") or []:
+            if isinstance(mark, dict) and mark.get("type") == "link":
+                href = (mark.get("attrs") or {}).get("href") or ""
+                if href and href != text:
+                    return f"{text} ({href})"
+        return text
+    if ntype in ("inlineCard", "blockCard", "embedCard"):
+        return (node.get("attrs") or {}).get("url") or "[card]"
+    if ntype in ("media", "mediaInline"):
+        # Screenshots and attachments are media nodes with an id and no
+        # text; "The screenshot below" used to point at nothing.
+        attrs = node.get("attrs") or {}
+        return "[media: " + str(attrs.get("alt") or attrs.get("id") or "?") + "]"
     if ntype == "hardBreak":
         return "\n"
     if ntype == "mention":
@@ -297,6 +317,53 @@ def _name(obj):
     if isinstance(obj, dict):
         return obj.get("displayName") or obj.get("name") or obj.get("value") or "?"
     return "?"
+
+
+# CUSTOM FIELDS ARE OPAQUE IDS UNTIL YOU ASK FOR THEIR NAMES (2026-09-10).
+# fetch_issue used to request a fixed field list, so "Project URL" never
+# escaped -- it was never requested. It now asks for *all with expand=names,
+# which returns a customfield_NNNNN -> label map beside the values, and every
+# populated custom field prints under ## Fields. The denylist is BY LABEL and
+# was written from a census receipt, not imagined: Rank is a lexorank string
+# ("2|i06je5:") and Development a JSON blob about branches; neither is a fact
+# a human reads. Extend it only from another receipt.
+_FIELD_DENYLIST = {"Rank", "Development"}
+
+
+def _field_empty(value):
+    """True for every shape Jira uses to say 'nothing here': null, an empty
+    string/list/dict, and the JSON-ish "{}" / "[]" strings some fields return
+    instead of null (Development, witnessed 2026-09-10)."""
+    if value is None:
+        return True
+    if isinstance(value, str):
+        return value.strip() in ("", "{}", "[]")
+    if isinstance(value, (list, dict)):
+        return len(value) == 0
+    return False
+
+
+def _field_text(value):
+    """One line of text for a custom-field value, whatever its shape: strings
+    and numbers verbatim, option/user/version dicts by their display key, an
+    ADF doc through adf_to_text, lists joined, and anything unrecognized as
+    truncated JSON so an unknown shape SHOWS rather than vanishes."""
+    if isinstance(value, bool):
+        return "yes" if value else "no"
+    if isinstance(value, (int, float)):
+        return str(value)
+    if isinstance(value, str):
+        return value.strip()
+    if isinstance(value, dict):
+        if value.get("type") == "doc":
+            return clean_text(adf_to_text(value))
+        for key in ("displayName", "name", "value", "key"):
+            if value.get(key):
+                return str(value[key])
+        return json.dumps(value)[:120]
+    if isinstance(value, list):
+        return ", ".join(_field_text(v) for v in value if not _field_empty(v))
+    return str(value)
 
 
 # ----------------------------------------------------------------------------
@@ -381,15 +448,36 @@ def fetch_issue(client, base, issue_key):
     """FETCH mode: one issue's full text -- fields, description, comments."""
     data = get_json(
         client, f"{base}/rest/api/3/issue/{issue_key}",
-        params={"fields": "summary,status,issuetype,priority,assignee,"
-                          "reporter,created,updated,description,comment"})
+        params={"fields": "*all", "expand": "names"})
     f = data.get("fields", {})
+    names = data.get("names", {}) or {}
     summary = f.get("summary", "(no summary)")
     print(f'# Jira issue {issue_key} -- "{summary}"')
     print(f"# status: {_name(f.get('status'))} | type: {_name(f.get('issuetype'))} "
           f"| priority: {_name(f.get('priority'))}")
     print(f"# assignee: {_name(f.get('assignee'))} | reporter: {_name(f.get('reporter'))}")
     print(f"# created: {f.get('created', '?')} | updated: {f.get('updated', '?')}\n")
+
+    custom = []
+    for key, value in f.items():
+        if not key.startswith("customfield_") or _field_empty(value):
+            continue
+        label = names.get(key, key)
+        if label in _FIELD_DENYLIST:
+            continue
+        custom.append((label, value))
+    if custom:
+        print("## Fields")
+        for label, value in custom:
+            print(f"{label}: {_field_text(value)}")
+        print()
+
+    attachments = f.get("attachment") or []
+    if attachments:
+        print(f"## Attachments ({len(attachments)})")
+        for a in attachments:
+            print(f"{a.get('filename', '?')}  {a.get('content', '')}")
+        print()
 
     print("## Description")
     print(clean_text(adf_to_text(f.get("description"))) or "(no description)")
