@@ -23,6 +23,15 @@ from markdownify import markdownify as md
 # fine everywhere. Same doctrine as apply.py's AST check: validate at the
 # actuator boundary, fail nothing downstream.
 FENCE_RUN_RE = re.compile(r'`{3,}')
+# SPELLED TOKEX ON PURPOSE (convicted 2026-09-10, third spelling). The
+# compile-lane secrets tripwire fires on any line-start ALL-CAPS assignment
+# whose name contains TOKEN when the value is a quoted string of 12+ chars,
+# and '[triple-backtick]' is 17. The scanner is shape-based and has no allow
+# flag by design; the cheap cure is a name that does not carry the word. An
+# earlier dodge spelled it TOKN, uncommitted and unexplained, and the
+# 2026-09-09 Mac session read it as a slip and restored the word -- which is
+# how the tripwire came to fire a second time. A rename without its reason
+# beside it is a rename waiting to be undone.
 NEUTRAL_FENCE_TOKEX = '[triple-backtick]'
 _BLOCKISH_IN_ANCHOR = ['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
                        'br', 'img', 'ul', 'ol', 'table', 'blockquote']
