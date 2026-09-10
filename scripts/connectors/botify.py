@@ -12,6 +12,9 @@ Golden-path modes, auto-detected from the single positional argument:
   python scripts/connectors/botify.py org/project        # LIST: analyses (crawl snapshots) for that project
   python scripts/connectors/botify.py org/project/analysis    # FETCH: verdict (status, pages, rate, cadence ETA) + crawl statistics, running or done
   python scripts/connectors/botify.py 'https://app.botify.com/org/project/...'   # any app URL reduces to its slug path first
+  python scripts/connectors/botify.py org/project/saved_explorers --grep facet   # DRILL: any project sub-resource, rows narrowed
+  python scripts/connectors/botify.py org/project/saved_explorers/<uuid>   # FETCH: one item in full, containers as JSON
+  python scripts/connectors/botify.py org/project/analysis/crawl_statistics   # DRILL: any analysis sub-resource; a ?k=v rides along
   python scripts/connectors/botify.py '<BQL or JSON>'    # FETCH: run a query (needs org/project coordinates)
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
@@ -22,9 +25,11 @@ Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 
 Disambiguation rule: an argument that starts with '{' or contains whitespace is
 a query (FETCH mode); an app.botify.com URL is first reduced to its slug path
-(org/project, plus ?analysisSlug= as a third segment); three segments FETCH that
-one crawl, one or two segments LIST, and a LIST never shows a crawl that is
-still running -- fetch it by slug (witnessed 2026-09-10). No argument at
+(org/project, plus ?analysisSlug= as a third segment); one or two segments LIST;
+an all-digit third segment FETCHES that crawl's verdict, and a LIST never shows
+a crawl still running -- fetch it by slug (witnessed 2026-09-10); any other
+third segment, and anything after a slug, DRILLS the raw API path under the
+project or the analysis, rendered by shape and narrowed by --grep. No argument at
 all triggers the identity walk.
 
 Auth: BOTIFY_API_TOKEN via config.get_botify_token() (env var or project .env).
@@ -44,7 +49,7 @@ import sys
 import json
 import argparse
 from pathlib import Path
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs, parse_qsl
 from datetime import datetime, timedelta, timezone
 
 import httpx
@@ -393,6 +398,98 @@ def fetch_analysis(client, org, project, slug, max_items):
     print(f"\n# Next: python scripts/connectors/botify.py {org}/{project}   (every finished analysis)")
 
 
+def row_label(item):
+    """(ident, date, name) for one list row from whichever keys it carries:
+    the ident is what the # Next: FETCH takes, the date is what a human
+    sorts by, the name is what they recognize. Generic by design."""
+    def first(keys, width=None):
+        for k in keys:
+            v = item.get(k)
+            if v not in (None, "", [], {}):
+                return str(v)[:width] if width else str(v)
+        return ""
+    return (first(("uuid", "id", "slug")) or "?",
+            first(("modified_date", "date_finished", "date", "created_date"), 10),
+            first(("name", "slug", "id")))
+
+
+def dump_item(obj, max_items):
+    """One object in full: scalars as rows, then each non-empty container as
+    its JSON on one line, capped -- the shape a saved explorer's `query` or
+    a collection's datamodel needs, with the cap visible, never silent."""
+    if not isinstance(obj, dict):
+        print(json.dumps(obj, indent=2, default=str)[:max_items * 200])
+        return
+    containers = []
+    for key, value in obj.items():
+        if isinstance(value, (dict, list)):
+            if value:
+                containers.append((key, value))
+        else:
+            print(f"{key}: {value}")
+    for key, value in containers[:max_items]:
+        text = json.dumps(value, default=str)
+        print(f"\n## {key}")
+        print(text[:2000] + (f" ... (+{len(text) - 2000} chars)" if len(text) > 2000 else ""))
+    if len(containers) > max_items:
+        print(f"\n# ... +{len(containers) - max_items} more container(s) (raise -n/--max)")
+
+
+def walk_path(client, org, project, rest, max_items, grep=None):
+    """DRILL-DOWN, generic: any path under a project or an analysis, rendered
+    by shape, never by name.
+
+    KEEP IT GENERIC (the operator's rule, 2026-09-10): no object path is
+    hardwired here. org/project/<resource> GETs
+    /projects/<org>/<project>/<resource>; org/project/<slug>/<sub> GETs
+    /analyses/<org>/<project>/<slug>/<sub>; a trailing ?k=v rides as query
+    parameters. Every sub-resource the app's own frame was seen calling
+    (saved_explorers, collections, datasources, events, jobs) and every one
+    it was not is therefore one argument away. A list renders as
+    ident | date | name rows with a # Next: that names the FETCH; a single
+    object renders through dump_item. --grep narrows a list by
+    case-insensitive substring over each row's whole JSON, which is how 667
+    saved explorers become the few about links without anyone reading 667
+    names. The cap is -n; a paginated envelope says when more pages exist.
+    """
+    joined = "/".join(rest)
+    path, _, qs = joined.partition("?")
+    params = dict(parse_qsl(qs)) if qs else None
+    segs = [p for p in path.split("/") if p]
+    if segs and segs[0].isdigit():
+        url = f"{API_BASE}/analyses/{org}/{project}/" + "/".join(segs)
+    else:
+        url = f"{API_BASE}/projects/{org}/{project}/" + "/".join(segs)
+    data = get_json(client, url, params=params)
+    print(f"# Botify {org}/{project}/{joined}\n")
+    rows = None
+    if isinstance(data, list):
+        rows = data
+    elif isinstance(data, dict) and isinstance(data.get("results"), list):
+        rows = data["results"]
+    if rows is None:
+        dump_item(data, max_items)
+        return
+    total = len(rows)
+    if grep:
+        needle = grep.lower()
+        rows = [r for r in rows if needle in json.dumps(r, default=str).lower()]
+    shown = rows[:max_items]
+    tally = f"# {len(shown)} of {len(rows)} row(s)"
+    if grep:
+        tally += f" matching {grep!r} ({total} before the grep)"
+    print(tally + "   (ident | date | name)\n")
+    for r in shown:
+        if isinstance(r, dict):
+            ident, date, name = row_label(r)
+            print(f"{ident}  {date}  {name}")
+        else:
+            print(json.dumps(r, default=str)[:200])
+    if isinstance(data, dict) and data.get("next"):
+        print("\n# (more pages exist on the server; this printed the first)")
+    print(f"\n# Next: python scripts/connectors/botify.py {org}/{project}/{'/'.join(segs)}/<ident>   (one item in full)")
+
+
 def run_query(client, raw_query, org, project, max_items):
     """FETCH mode: BQL string or full JSON payload against the query endpoint."""
     if not (org and project):
@@ -495,6 +592,9 @@ def main():
                         help='Project slug for FETCH mode (default: BOTIFY_PROJECT env).')
     parser.add_argument('-n', '--max', type=int, default=25,
                         help='Output cap per THE PROBE ECONOMY RULE (default: 25).')
+    parser.add_argument('--grep', default=None,
+                        help='DRILL lists only: keep rows whose JSON contains this '
+                             'substring, case-insensitive.')
     parser.add_argument('--check', action='store_true',
                         help='SELECT 1 health check: one GREEN line on stdout and '
                              'exit 0, or one gate-named RED line on stderr and '
@@ -520,8 +620,10 @@ def main():
                 list_org_projects(client, parts[0], args.max)
             elif len(parts) == 2:
                 list_analyses(client, parts[0], parts[1], args.max)
-            elif len(parts) >= 3:
+            elif len(parts) == 3 and parts[2].isdigit():
                 fetch_analysis(client, parts[0], parts[1], parts[2], args.max)
+            elif len(parts) >= 3:
+                walk_path(client, parts[0], parts[1], parts[2:], args.max, args.grep)
             else:
                 list_identity(client, args.max)
     finally:
