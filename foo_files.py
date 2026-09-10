@@ -2907,7 +2907,7 @@ foo_files.py
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
 # scripts/two_arm.py  # [4,674 tokens | 17,818 bytes]
 # scripts/variance_probe.py  # [967 tokens | 3,916 bytes]
-# scripts/webclip_2_markdown.py  # [1,941 tokens | 7,957 bytes]
+# scripts/webclip_2_markdown.py  # [2,112 tokens | 8,601 bytes]
 # tests/test_apply_airlock.py  # [1,636 tokens | 6,925 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
 # tools/connector_tools.py  # [1,041 tokens | 4,247 bytes]
