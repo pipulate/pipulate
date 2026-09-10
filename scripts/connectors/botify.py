@@ -15,6 +15,8 @@ Golden-path modes, auto-detected from the single positional argument:
   python scripts/connectors/botify.py org/project/saved_explorers --grep facet   # DRILL: any project sub-resource, rows narrowed
   python scripts/connectors/botify.py org/project/saved_explorers/<uuid>   # FETCH: one item in full, containers as JSON
   python scripts/connectors/botify.py org/project/analysis/crawl_statistics   # DRILL: any analysis sub-resource; a ?k=v rides along
+  python scripts/connectors/botify.py org/project/collections/crawl.<slug> --grep link   # FIND: every leaf path in one object matching
+  python scripts/connectors/botify.py org/project/analysis --grep link   # the verdict, then every leaf in the detail matching
   python scripts/connectors/botify.py '<BQL or JSON>'    # FETCH: run a query (needs org/project coordinates)
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
@@ -336,7 +338,7 @@ def crawl_verdict(detail, stats, siblings):
     return lines
 
 
-def fetch_analysis(client, org, project, slug, max_items):
+def fetch_analysis(client, org, project, slug, max_items, grep=None):
     """FETCH mode, org/project/analysis: one crawl's status and live counters.
 
     THE RUNNING CRAWL IS NOT IN THE LIST (witnessed 2026-09-10): the /light
@@ -363,7 +365,10 @@ def fetch_analysis(client, org, project, slug, max_items):
     them exist; the crawl_statistics dump stays whole because every one of
     its ten keys is a counter a human reads. A third bounded call reads the
     six newest /light siblings for the cadence clock, and a failure there
-    costs the eta line, never the verdict.
+    costs the eta line, never the verdict. The light rows carried no
+    date_crawl_done (2026-09-10), so up to three detail fetches on the newest
+    siblings supply the crawl-done clock; --grep then prints every leaf path
+    in the detail matching -- the generic "where does this config live".
     """
     base = f"{API_BASE}/analyses/{org}/{project}/{slug}"
     detail = get_json(client, base)
@@ -382,6 +387,23 @@ def fetch_analysis(client, org, project, slug, max_items):
         siblings = follow_pages(client, f"{API_BASE}/analyses/{org}/{project}/light", 6)
     except SystemExit:
         siblings = []
+    # THE LIGHT ROWS CARRY NO date_crawl_done (receipt 2026-09-10): /light
+    # timed the finished clock and left the crawl-done clock blank. Three
+    # detail fetches on the newest finished siblings supply it -- bounded,
+    # tolerant, and only when the light rows lack it, so the morning command
+    # drops back to three calls the day the light endpoint carries the field.
+    if siblings and not any(_iso(s.get("date_crawl_done")) for s in siblings):
+        for s in [x for x in siblings if x.get("slug") and x.get("slug") != slug][:3]:
+            r = client.get(f"{API_BASE}/analyses/{org}/{project}/{s['slug']}")
+            if r.status_code != 200:
+                continue
+            try:
+                full = r.json()
+            except ValueError:
+                continue
+            if isinstance(full, dict):
+                s["date_crawl_done"] = full.get("date_crawl_done")
+                s.setdefault("date_launched", full.get("date_launched"))
     print(f"# Botify analysis {org}/{project}/{slug}\n")
     print("## Verdict")
     for line in crawl_verdict(detail, stats, siblings):
@@ -395,6 +417,11 @@ def fetch_analysis(client, org, project, slug, max_items):
         print(f"({stats_note})")
     for key, value in scalar_rows(stats, max_items):
         print(f"{key}: {value}")
+    if grep:
+        hits, total = grep_tree(detail, grep, max_items)
+        print(f"\n## grep {grep!r}: {len(hits)} of {total} leaf(ves) in the analysis detail   (path: value)")
+        for path, value in hits:
+            print(f"{path}: {value}")
     print(f"\n# Next: python scripts/connectors/botify.py {org}/{project}   (every finished analysis)")
 
 
@@ -435,6 +462,32 @@ def dump_item(obj, max_items):
         print(f"\n# ... +{len(containers) - max_items} more container(s) (raise -n/--max)")
 
 
+def grep_tree(obj, needle, cap):
+    """FIND, generic: every leaf of a JSON tree whose dotted path or value
+    contains needle (case-insensitive), as (path, value) pairs, capped at
+    cap with the uncapped total returned beside them so a cut is visible.
+    Written 2026-09-10 because a collection datamodel and an analysis
+    config are both one object thousands of leaves deep, and "where in
+    here is the link attribute" is a question about paths, not rows."""
+    needle = needle.lower()
+    hits = []
+
+    def walk(node, path):
+        if isinstance(node, dict):
+            for k, v in node.items():
+                walk(v, f"{path}.{k}" if path else str(k))
+        elif isinstance(node, list):
+            for i, v in enumerate(node):
+                walk(v, f"{path}[{i}]")
+        else:
+            text = json.dumps(node, default=str)
+            if needle in path.lower() or needle in text.lower():
+                hits.append((path, text[:160]))
+
+    walk(obj, "")
+    return hits[:cap], len(hits)
+
+
 def walk_path(client, org, project, rest, max_items, grep=None):
     """DRILL-DOWN, generic: any path under a project or an analysis, rendered
     by shape, never by name.
@@ -451,6 +504,8 @@ def walk_path(client, org, project, rest, max_items, grep=None):
     case-insensitive substring over each row's whole JSON, which is how 667
     saved explorers become the few about links without anyone reading 667
     names. The cap is -n; a paginated envelope says when more pages exist.
+    On a single object --grep switches from dump to FIND: every leaf whose
+    dotted path or value contains the needle, as path: value, bounded by -n.
     """
     joined = "/".join(rest)
     path, _, qs = joined.partition("?")
@@ -468,6 +523,12 @@ def walk_path(client, org, project, rest, max_items, grep=None):
     elif isinstance(data, dict) and isinstance(data.get("results"), list):
         rows = data["results"]
     if rows is None:
+        if grep:
+            hits, total = grep_tree(data, grep, max_items)
+            print(f"# {len(hits)} of {total} leaf(ves) matching {grep!r}   (path: value)\n")
+            for path, value in hits:
+                print(f"{path}: {value}")
+            return
         dump_item(data, max_items)
         return
     total = len(rows)
@@ -621,7 +682,7 @@ def main():
             elif len(parts) == 2:
                 list_analyses(client, parts[0], parts[1], args.max)
             elif len(parts) == 3 and parts[2].isdigit():
-                fetch_analysis(client, parts[0], parts[1], parts[2], args.max)
+                fetch_analysis(client, parts[0], parts[1], parts[2], args.max, args.grep)
             elif len(parts) >= 3:
                 walk_path(client, parts[0], parts[1], parts[2:], args.max, args.grep)
             else:
