@@ -266,10 +266,18 @@ def crawl_verdict(detail, stats, siblings):
     cadence -- THE CADENCE IS THE CLOCK -- the median launch-to-finish of
     the finished siblings, which is what this crawler has actually done
     week after week without ever needing its 25M-page cap.
+    TWO ENDS, NOT ONE (three receipts 2026-09-10): an analysis has
+    date_crawl_done and then date_finished, with hours of post-crawl
+    computing between them. The drain floor and the crawl-done cadence bound
+    the first; the finished cadence bounds the second; filter links need the
+    second. Discovery was witnessed at a tenth of the crawl rate, so the
+    drain floor reads close to true near the end and hopelessly early at the
+    start -- which is why it is labelled and never promoted.
     """
     lines = []
     launched = _iso(detail.get("date_launched"))
-    finished = _iso(detail.get("date_finished") or detail.get("date_crawl_done"))
+    finished = _iso(detail.get("date_finished"))
+    crawl_done = _iso(detail.get("date_crawl_done"))
     updated = _iso(stats.get("last_upd_dt")) or datetime.now(timezone.utc)
     done, known = stats.get("pages_dones"), stats.get("pages_known")
     counted = isinstance(done, (int, float)) and isinstance(known, (int, float))
@@ -288,32 +296,36 @@ def crawl_verdict(detail, stats, siblings):
                      f"{bad:,} 4xx/5xx/network")
     rate = None
     if launched and counted:
-        hours = ((finished or updated) - launched).total_seconds() / 3600
+        hours = ((crawl_done or finished or updated) - launched).total_seconds() / 3600
         if hours > 0:
             rate = done / (hours * 3600)
             lines.append(f"rate: {rate:.1f} URLs/s over {hours:.1f} h "
                          f"(as of {stats.get('last_upd_dt', 'now')})")
-    if rate and not finished and counted:
+    if rate and not crawl_done and counted:
         drain = (known - done) / rate / 3600
-        lines.append(f"queue drain: {drain:.1f} h at this rate -- a FLOOR; the "
-                     "queue grows as deeper pages are found")
-    durations = []
-    for s in siblings or []:
-        a, b = _iso(s.get("date_launched")), _iso(s.get("date_finished"))
-        if a and b and b > a and s.get("slug") != detail.get("slug"):
-            durations.append((b - a).total_seconds())
+        lines.append(f"queue drain: {drain:.1f} h at this rate -- a FLOOR on crawl-done, "
+                     "not on finished; the queue grows as deeper pages are found")
+    def cadence(label, end_key):
+        spans = []
+        for s in siblings or []:
+            a, b = _iso(s.get("date_launched")), _iso(s.get(end_key))
+            if a and b and b > a and s.get("slug") != detail.get("slug"):
+                spans.append((b - a).total_seconds())
+        if not spans:
+            return (f"{label}: no cadence -- the /light siblings carry no "
+                    f"date_launched/{end_key} pair to time")
+        spans.sort()
+        median = spans[len(spans) // 2]
+        eta = launched + timedelta(seconds=median)
+        return (f"{label}: {eta.strftime('%Y-%m-%dT%H:%MZ')} "
+                f"({eta.astimezone().strftime('%a %b %d %H:%M %Z')}) by cadence -- "
+                f"median of {len(spans)} sibling(s), {median / 86400:.1f} d from launch")
+    if launched and not crawl_done:
+        lines.append(cadence("crawl done", "date_crawl_done"))
     if launched and not finished:
-        if durations:
-            durations.sort()
-            median = durations[len(durations) // 2]
-            eta = launched + timedelta(seconds=median)
-            lines.append(f"eta: {eta.strftime('%Y-%m-%dT%H:%MZ')} "
-                         f"({eta.astimezone().strftime('%a %b %d %H:%M %Z')}) by cadence -- "
-                         f"median of {len(durations)} finished sibling(s), "
-                         f"{median / 86400:.1f} d launch-to-finish")
-        else:
-            lines.append("eta: no cadence -- the /light siblings carry no "
-                         "date_launched/date_finished pair to time")
+        lines.append(cadence("finished", "date_finished"))
+    if crawl_done:
+        lines.append(f"crawl done: {crawl_done.isoformat()}")
     if finished:
         lines.append(f"finished: {finished.isoformat()}")
     return lines
