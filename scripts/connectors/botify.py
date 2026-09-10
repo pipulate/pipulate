@@ -10,6 +10,8 @@ Golden-path modes, auto-detected from the single positional argument:
   python scripts/connectors/botify.py                    # LIST: identity walk -> all your org/project slugs
   python scripts/connectors/botify.py org                # LIST: projects under that org slug
   python scripts/connectors/botify.py org/project        # LIST: analyses (crawl snapshots) for that project
+  python scripts/connectors/botify.py org/project/analysis    # FETCH: one crawl's status + crawl statistics, running or done
+  python scripts/connectors/botify.py 'https://app.botify.com/org/project/...'   # any app URL reduces to its slug path first
   python scripts/connectors/botify.py '<BQL or JSON>'    # FETCH: run a query (needs org/project coordinates)
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
@@ -19,7 +21,10 @@ Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
   ! python scripts/connectors/botify.py 'SELECT url FROM crawl' --org my-org --project my-project
 
 Disambiguation rule: an argument that starts with '{' or contains whitespace is
-a query (FETCH mode); anything else is a slug path (LIST mode). No argument at
+a query (FETCH mode); an app.botify.com URL is first reduced to its slug path
+(org/project, plus ?analysisSlug= as a third segment); three segments FETCH that
+one crawl, one or two segments LIST, and a LIST never shows a crawl that is
+still running -- fetch it by slug (witnessed 2026-09-10). No argument at
 all triggers the identity walk.
 
 Auth: BOTIFY_API_TOKEN via config.get_botify_token() (env var or project .env).
@@ -39,6 +44,7 @@ import sys
 import json
 import argparse
 from pathlib import Path
+from urllib.parse import urlparse, parse_qs
 
 import httpx
 
@@ -51,6 +57,36 @@ sys.path.insert(0, str(project_root))
 from config import get_botify_token
 
 API_BASE = "https://api.botify.com/v1"
+
+
+def normalize_query(arg):
+    """Turn an app.botify.com URL into the slug path this connector routes on.
+
+    THE URL IS WHAT THE HUMAN HAS (jira.py's rule, applied here 2026-09-10):
+    the Jira ticket's Project URL field and the browser's address bar both
+    hand you https://app.botify.com/<org>/<project>/..., and a
+    ?analysisSlug= query names the crawl on the live-stats page. Recognized:
+    the first two path segments as org/project, plus analysisSlug (or an
+    all-digit third segment) as the analysis. Anything that is not an
+    http(s) URL passes through untouched, so no BQL string and no bare slug
+    path can be caught by this. A URL with no org/project refuses with the
+    shape it wanted rather than falling through to a 404 about a path the
+    human never typed.
+    """
+    if not arg.startswith(('http://', 'https://')):
+        return arg
+    parsed = urlparse(arg)
+    parts = [p for p in parsed.path.split('/') if p]
+    if len(parts) < 2:
+        sys.stderr.write(
+            "Could not find <org>/<project> in that URL's path.\n"
+            "Expected https://app.botify.com/<org>/<project>/... "
+            "(optionally ?analysisSlug=<slug>).\n")
+        sys.exit(1)
+    slug = (parse_qs(parsed.query).get('analysisSlug') or [None])[0]
+    if not slug and len(parts) >= 3 and parts[2].isdigit():
+        slug = parts[2]
+    return '/'.join([parts[0], parts[1]] + ([slug] if slug else []))
 
 
 # ----------------------------------------------------------------------------
@@ -175,6 +211,66 @@ def list_analyses(client, org, project, max_items):
         "\n# Next: python scripts/connectors/botify.py 'SELECT url FROM crawl' "
         f"--org {org} --project {project}"
     )
+    print(f"#       python scripts/connectors/botify.py {org}/{project}/<analysis>   (one crawl's status + statistics;")
+    print("#       a crawl still RUNNING can be absent from the list above -- fetch it by its slug)")
+
+
+def scalar_rows(obj, cap):
+    """(key, value) rows a human can read from one JSON object: scalars
+    whole, containers as their size, capped at `cap` with a trailing tally
+    row so the truncation is visible rather than silent."""
+    items = list(obj.items()) if isinstance(obj, dict) else []
+    rows = []
+    for key, value in items[:cap]:
+        if isinstance(value, dict):
+            names = ", ".join(str(k) for k in list(value)[:6])
+            more = ", ..." if len(value) > 6 else ""
+            rows.append((key, "{" + f"{len(value)} keys: {names}{more}" + "}"))
+        elif isinstance(value, list):
+            rows.append((key, f"[{len(value)} item(s)]"))
+        else:
+            rows.append((key, value))
+    if len(items) > cap:
+        rows.append(("...", f"+{len(items) - cap} more key(s) (raise -n/--max)"))
+    return rows
+
+
+def fetch_analysis(client, org, project, slug, max_items):
+    """FETCH mode, org/project/analysis: one crawl's status and live counters.
+
+    THE RUNNING CRAWL IS NOT IN THE LIST (witnessed 2026-09-10): the /light
+    listing returned five `success` rows for a project whose app page said a
+    sixth analysis was running, so LIST cannot answer the morning question,
+    "is it done yet", and the answer needs a FETCH by slug. Two calls: the
+    analysis detail (status and dates) and its crawl_statistics -- the same
+    endpoint the live-stats page's own SPA polls, witnessed in that page's
+    wire truth as /analyses/<org>/<project>/<slug>/crawl_stati... and cut off
+    there by the lens, which is why the second call tolerates a non-200 and
+    prints it instead of dying: a wrong path is a receipt, not a crash.
+
+    SHAPE-AGNOSTIC BY DESIGN, the extract_username() posture: every
+    top-level scalar prints as key: value and every container as its size,
+    so an unfamiliar payload SHOWS rather than vanishes, and the receipt
+    teaches the field names for any later tightening.
+    """
+    base = f"{API_BASE}/analyses/{org}/{project}/{slug}"
+    detail = get_json(client, base)
+    print(f"# Botify analysis {org}/{project}/{slug}\n")
+    print("## Analysis")
+    for key, value in scalar_rows(detail, max_items):
+        print(f"{key}: {value}")
+    resp = client.get(f"{base}/crawl_statistics")
+    print("\n## Crawl statistics")
+    if resp.status_code != 200:
+        print(f"(HTTP {resp.status_code} from {base}/crawl_statistics -- {resp.text[:200]!r})")
+    else:
+        try:
+            stats = resp.json()
+        except ValueError:
+            stats = {}
+        for key, value in scalar_rows(stats, max_items):
+            print(f"{key}: {value}")
+    print(f"\n# Next: python scripts/connectors/botify.py {org}/{project}   (every finished analysis)")
 
 
 def run_query(client, raw_query, org, project, max_items):
@@ -271,7 +367,7 @@ def main():
     )
     parser.add_argument(
         'query', nargs='?', default=None,
-        help="Nothing (identity walk), 'org', 'org/project', or a BQL/JSON query string."
+        help="Nothing (identity walk), 'org', 'org/project', 'org/project/analysis', an app.botify.com URL, or a BQL/JSON query string."
     )
     parser.add_argument('--org', default=os.getenv('BOTIFY_ORG'),
                         help='Org slug for FETCH mode (default: BOTIFY_ORG env).')
@@ -288,6 +384,9 @@ def main():
     if args.check:
         sys.exit(check())
 
+    if args.query:
+        args.query = normalize_query(args.query.strip())
+
     client = make_client()
     try:
         arg = args.query
@@ -299,8 +398,10 @@ def main():
             parts = [p for p in arg.strip('/').split('/') if p]
             if len(parts) == 1:
                 list_org_projects(client, parts[0], args.max)
-            elif len(parts) >= 2:
+            elif len(parts) == 2:
                 list_analyses(client, parts[0], parts[1], args.max)
+            elif len(parts) >= 3:
+                fetch_analysis(client, parts[0], parts[1], parts[2], args.max)
             else:
                 list_identity(client, args.max)
     finally:
