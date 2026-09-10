@@ -257,6 +257,19 @@ def apply_search_replace_patch(payload: str) -> bool:
         replace_block = replace_block.replace('\xa0', ' ').replace('\r\n', '\n')
 
         # The Exact Match Invariant
+        # A SUBSTRING COUNT, NOT A LINE MATCH, and that is worth naming here
+        # because it is a technique (witnessed 2026-09-10, ten of ten blocks
+        # landed in one car). The block regex takes everything between the
+        # SEARCH marker's newline and the DIVIDER's, so a SEARCH may begin and
+        # end MID-LINE. When a target line carries alignment padding a model
+        # cannot count through transport -- a docstring's column of trailing
+        # comments, a README's padded roster -- anchor on the unpadded TAIL
+        # and the file's own padding survives untouched. The interlock is
+        # exactly as strict either way, one occurrence or refusal; what shrinks
+        # is the number of bytes the model must reproduce, and fewer bytes is
+        # fewer ways to be wrong. THE COST: the refusal diagnostics below think
+        # in lines, so a mid-line anchor that misses gets a poorer receipt.
+        # Prefer whole lines wherever the padding CAN be counted.
         match_count = content.count(search_block)
         
         if match_count == 0:
