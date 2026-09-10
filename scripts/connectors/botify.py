@@ -654,8 +654,8 @@ def main():
     parser.add_argument('-n', '--max', type=int, default=25,
                         help='Output cap per THE PROBE ECONOMY RULE (default: 25).')
     parser.add_argument('--grep', default=None,
-                        help='DRILL lists only: keep rows whose JSON contains this '
-                             'substring, case-insensitive.')
+                        help='DRILL: on a list keep rows whose JSON contains this '
+                             'substring; on one object, or after a verdict, print every leaf path matching -- case-insensitive.')
     parser.add_argument('--check', action='store_true',
                         help='SELECT 1 health check: one GREEN line on stdout and '
                              'exit 0, or one gate-named RED line on stderr and '

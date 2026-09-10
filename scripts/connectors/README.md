@@ -91,7 +91,7 @@ stays self-contained — so the two copies are compared by probe, not trusted.
 ## Current connectors
 
 - gmail.py       LIST by address / FETCH by hex id or web-URL / SEARCH by "subject" -> full thread(s), --list for snippets (OAuth token file)
-- botify.py      identity walk / org / org/project / org/project/analysis (verdict: status, pages done/known, rate, ETA by cadence, then crawl statistics; a RUNNING crawl is absent from the list and present here) / org/project/<resource>[/<id>] and org/project/<slug>/<sub> drill any raw API path, rendered by shape, --grep narrowing a list / any app.botify.com URL, reduced to its slug path / BQL query (BOTIFY_API_TOKEN)
+- botify.py      identity walk / org / org/project / org/project/analysis (verdict: status, pages done/known, rate, ETA by cadence, then crawl statistics; a RUNNING crawl is absent from the list and present here) / org/project/<resource>[/<id>] and org/project/<slug>/<sub> drill any raw API path, rendered by shape, --grep narrowing a list or printing every matching leaf path in one object / any app.botify.com URL, reduced to its slug path / BQL query (BOTIFY_API_TOKEN)
 - confluence.py  spaces / space pages / page id / CQL search (CONFLUENCE_* envs)
 - jira.py        bare = your open issues (the For You tab; any /jira/for-you URL too) / projects / project issues / issue key (PROJ-123; prints populated custom fields, link hrefs, attachments) / raw JQL (basic_auth; JIRA_* first, CONFLUENCE_* as a fallback -- a convenience, never a shared identity)
 - gsc.py         properties / top queries / raw searchanalytics JSON (service_account_file)
