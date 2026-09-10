@@ -11,6 +11,56 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # Hello, AI — this is a progressive book-reveal every time.                 \  )   ""\    |  a what?  |
 # =======================================================================    |__>-\_>_>    \_________/ 
 
+# > Here is my hardware  
+# > Here is my state  
+# > Put on your sandbox  
+# > And please recreate.  
+
+# > What we do is Q/A.  
+# > High reliability's why.  
+# > Do you want vibe-coded  
+# > Airplanes in the sky?  
+
+# > Is it so hard  
+# > To expand just one file  
+# > Stacking the output  
+# > Up for a mile?  
+
+# > It's kind of like Docker  
+# > With no transparency lost  
+# > That's runnable everywhere  
+# > At a trillionth the cost.  
+
+# > You don't need Nix  
+# > And you don't need Guix  
+# > For functional output  
+# > If you got the tweaks.  
+
+# > Most humans don't  
+# > Your LLM will  
+# > So get their first pass  
+# > With blanks left to fill.   
+
+# > If anything's missing  
+# > To replay it, please   
+# > Push back for it all  
+# > Except maybe keys.  
+
+# > If you've got an endpoint  
+# > Then use it, I'll do  
+# > Params and their args?  
+# > Yes, and auth context too!  
+
+# > We just provide a template  
+# > That must be filled in  
+# > So that whatever you just did  
+# > Is where we begin  
+
+# > So just do as you do  
+# > And build your contraption  
+# > Though if I can't replay it  
+# > Then it didn't happen.  
+
 # This project treats infrastructure as a living book that updates itself
 # through human-vetted patches — software whose own construction is its
 # curriculum. It is a reverse-Michael Crichton novel: every change pushes back
@@ -1237,6 +1287,8 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
 # scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
 # scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
+# scripts/webclip_2_markdown.py  # <-- Surprisingly important program.
+
  
 # MISCELLANEOUS (rare to include but sometimes critical)
 # scripts/foo_cartridge.py    # Needs description
