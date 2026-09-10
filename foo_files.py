@@ -105,7 +105,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # Velocity: 24 published in the last 7 days
 # Markdown negotiated: 2,405 reads (0.21% of all responses)
 # DOM hydration: 2920 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-09-10T12:32Z
+# Honeybot telemetry fetched 2026-09-10T18:36Z
 # --- END STATS ---
 
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
@@ -1240,6 +1240,11 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # ~/repos/nixos/scripts/backup-force.py      #  <-- The occasional "big sync" to get thing2 identical to thing1
 # ~/repos/nixos/scripts/backup-home.py       #  <-- The fast, easy, frequent backup for 80/20-rule data safety
 # ~/repos/nixos/scripts/backup-things.py     #  <-- rsync'ing from thing1 to thing2, can be time consuming.
+
+# ~/repos/nixos/bookmarks.nix
+# ~/repos/nixos/scripts/bookmarks_sync.py
+# ~/repos/nixos/scripts/nixos-switch.py
+
 
 # ============================================================================
 # III. FLAKE OFF THE OLD MOTHERSTONE - Normalized Linux in macOS & Windows/WSL
@@ -2959,7 +2964,6 @@ foo_files.py
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
 # scripts/two_arm.py  # [4,674 tokens | 17,818 bytes]
 # scripts/variance_probe.py  # [967 tokens | 3,916 bytes]
-# scripts/webclip_2_markdown.py  # [2,112 tokens | 8,601 bytes]
 # tests/test_apply_airlock.py  # [1,636 tokens | 6,925 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
 # tools/connector_tools.py  # [1,041 tokens | 4,247 bytes]
