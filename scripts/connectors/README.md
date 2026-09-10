@@ -65,6 +65,13 @@ whose token file is DERIVED from the slot's defaults.resource and minted or
 refreshed by mcp_warm.py; the durable credential scored is the refresh
 token). Every future connector copies one of these six.
 
+`warm <URL>` needs no slot at all: wallet.py synthesizes a browser_session
+slot from the address -- profile = the host's apex label (`botify.atlassian.net`
+-> `atlassian`), the same per-domain name the `?URL` lane resolves under
+data/uc_profiles/ -- opens it in weblogin.py, reads the cookie verdict, and
+prints the connectors.json slot to add if the site should stay on the check
+board. The wallet is neither read nor written for an ad-hoc warm.
+
 Credential paths are DERIVED, never chosen. A connector that talks to more than
 one server of the same kind — MCP is the first — computes its token path from
 the server URL rather than from a constant, so the credential a client sends is
@@ -84,7 +91,7 @@ stays self-contained — so the two copies are compared by probe, not trusted.
 - gmail.py       LIST by address / FETCH by hex id or web-URL / SEARCH by "subject" -> full thread(s), --list for snippets (OAuth token file)
 - botify.py      identity walk / org / org/project / BQL query (BOTIFY_API_TOKEN)
 - confluence.py  spaces / space pages / page id / CQL search (CONFLUENCE_* envs)
-- jira.py        bare = your open issues (the For You tab; any /jira/for-you URL too) / projects / project issues / issue key (PROJ-123) / raw JQL (basic_auth; JIRA_* first, CONFLUENCE_* as a fallback -- a convenience, never a shared identity)
+- jira.py        bare = your open issues (the For You tab; any /jira/for-you URL too) / projects / project issues / issue key (PROJ-123; prints populated custom fields, link hrefs, attachments) / raw JQL (basic_auth; JIRA_* first, CONFLUENCE_* as a fallback -- a convenience, never a shared identity)
 - gsc.py         properties / top queries / raw searchanalytics JSON (service_account_file)
 - sheets.py      identity / bare URL-or-ID STACKS every tab's actual data rectangle with sentinel separators and per-tab #gid= URLs, budget-governed / --list metadata gauge / bounded --sheet and --range values (oauth_token_file, gmail pattern; own sheets_token.json; data extents from values responses, never gridProperties)
 - slack.py       identity + channels / channel id-or-#name history / message-permalink thread FETCH / whitespace=SEARCH (bearer_token; SLACK_BOT_TOKEN reads, SLACK_USER_TOKEN required for search.messages)
