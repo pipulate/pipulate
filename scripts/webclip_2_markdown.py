@@ -23,7 +23,7 @@ from markdownify import markdownify as md
 # fine everywhere. Same doctrine as apply.py's AST check: validate at the
 # actuator boundary, fail nothing downstream.
 FENCE_RUN_RE = re.compile(r'`{3,}')
-NEUTRAL_FENCE_TOKEN = '[triple-backtick]'
+NEUTRAL_FENCE_TOKEX = '[triple-backtick]'
 _BLOCKISH_IN_ANCHOR = ['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
                        'br', 'img', 'ul', 'ol', 'table', 'blockquote']
 
@@ -54,7 +54,7 @@ def enforce_fence_hygiene(md_text):
     neutralized = labeled = closed = 0
     for line in md_text.split('\n'):
         if '```' in line and not line.startswith('```'):
-            line, n = FENCE_RUN_RE.subn(NEUTRAL_FENCE_TOKEN, line)
+            line, n = FENCE_RUN_RE.subn(NEUTRAL_FENCE_TOKEX, line)
             neutralized += n
         if line.startswith('```'):
             if not in_fence:
