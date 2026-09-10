@@ -2098,6 +2098,30 @@ print('AI:\n', r.ai)
             # Added macOS equivalents for article creation
             # THE BRIDGE PULL: Reach into the Z640 and suck the bridge file into the Mac clipboard
             alias pull='ssh mike@nixos.local "cat /tmp/clipboard_bridge.txt" | pbcopy && echo "✅ Z640 -> Mac Clipboard"'
+            # THE BOOKMARK LOOP ON THE MAC (2026-09-10). NixOS gets `bm` and
+            # `bms` from configuration.nix's environment.shellAliases; the Mac
+            # has no such thing, so its copies live here, the way `pull` does.
+            # Same chain, same script: chrome_windows.py is the DIY lane on
+            # darwin (quit refuses while Chrome runs, reopen is a reminder), so
+            # `bms` on the Mac is Cmd-Q Chrome, bms, reopen by hand. The nixos
+            # checkout is expected at ~/repos/nixos; PIPULATE_NIXOS_REPO moves
+            # it. FUNCTIONS, NOT ALIASES: both branch on a missing checkout.
+            bm() {
+              local repo="''${PIPULATE_NIXOS_REPO:-$HOME/repos/nixos}"
+              if [ ! -f "$repo/bookmarks.nix" ]; then
+                echo "bm: no bookmarks.nix at $repo (set PIPULATE_NIXOS_REPO)" >&2
+                return 1
+              fi
+              (cd "$repo" && "$(command -v nvim || command -v vim)" bookmarks.nix bookmarks_harvest.md)
+            }
+            bms() {
+              local repo="''${PIPULATE_NIXOS_REPO:-$HOME/repos/nixos}"
+              if [ ! -f "$repo/scripts/bookmarks_sync.py" ]; then
+                echo "bms: no scripts/bookmarks_sync.py at $repo (set PIPULATE_NIXOS_REPO)" >&2
+                return 1
+              fi
+              (cd "$repo" && python3 scripts/chrome_windows.py quit && { python3 scripts/bookmarks_sync.py; python3 scripts/chrome_windows.py reopen; })
+            }
           else
             alias xc='xclip -selection clipboard <'
             alias xcp='xclip -selection clipboard'
