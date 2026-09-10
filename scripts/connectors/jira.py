@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # scripts/connectors/jira.py
 """
-jira.py — Bring a Jira project, issue, or JQL search into context.
+jira.py — List your open Jira tickets, or fetch one by key.
 
 A Unix-philosophy gateway to the Jira Cloud API for Prompt Fu context.
 
 Golden-path modes, auto-detected from the single positional argument:
 
-  python scripts/connectors/jira.py                 # LIST: projects you can see
+  python scripts/connectors/jira.py                 # MINE: open issues assigned to you (the For You tab)
+  python scripts/connectors/jira.py projects        # LIST: projects you can see
   python scripts/connectors/jira.py ENG             # LIST: recently-updated issues in project ENG
   python scripts/connectors/jira.py ENG-123         # FETCH: full text of one issue (description + comments)
   python scripts/connectors/jira.py 'assignee = currentUser() ORDER BY updated DESC'  # SEARCH: raw JQL
@@ -19,7 +20,9 @@ Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
   ! python scripts/connectors/jira.py ENG-123
 
 Disambiguation rule (checked in this order):
-  - no argument                          -> LIST projects
+  - no argument                          -> MINE: open issues assigned to you
+  - any /jira/for-you URL               -> MINE, the same answer
+  - the word projects                    -> LIST projects
   - matches PROJ-123 (KEY-<digits>)      -> FETCH one issue
   - matches a bare KEY (all caps/digits) -> LIST that project's issues
   - anything else (spaces, lowercase, =, ~) -> raw JQL SEARCH
@@ -81,6 +84,20 @@ import httpx
 ISSUE_KEY_RE = re.compile(r'^[A-Z][A-Z0-9]+-\d+$')
 PROJECT_KEY_RE = re.compile(r'^[A-Z][A-Z0-9]+$')
 
+# THE EMPTY ARGUMENT ASKS THE MORNING QUESTION (2026-09-10). Bare `jira` used
+# to list every project the account could see -- a directory, when the one
+# thing a Solutions Engineer asks Jira first, every day, is "what is still
+# open with my name on it." The browser answers that at /jira/for-you on the
+# assigned tab, so the empty argument now gives the same answer, the For You
+# URL routes to it (normalize_query), and the directory keeps one plain word.
+# The JQL is INFERRED, not observed: it approximates the tab's own filter,
+# and the tab's count is the falsifier -- if the two disagree, this line is
+# the suspect, never the tickets. statusCategory rather than resolution so a
+# ticket closed without a resolution set still drops off the list.
+MINE_JQL = ('assignee = currentUser() AND statusCategory != Done '
+            'ORDER BY priority DESC, updated DESC')
+PROJECTS_WORD = 'projects'
+
 # THE DOOR IS DECLARED, NEVER PROBED. Presence of JIRA_CLOUD_ID IS the
 # declaration that this credential is a SCOPED token, which authenticates
 # only at the platform gateway; absence means a CLASSIC token, which
@@ -135,6 +152,14 @@ def normalize_query(arg):
             if ISSUE_KEY_RE.match(value):
                 return value
     parts = [p for p in parsed.path.split('/') if p]
+    # THE FOR YOU PAGE IS THE MINE MODE (2026-09-10). /jira/for-you is the
+    # one Jira URL with no key in it, and it is the one a Solutions Engineer
+    # has open all day. None here means "no argument", which main() routes
+    # to list_mine -- the same answer the empty command gives. A
+    # ?selectedIssue= on that page still wins above, because a clicked
+    # ticket is more specific than the page it was clicked on.
+    if 'for-you' in parts:
+        return None
     for part in reversed(parts):
         if ISSUE_KEY_RE.match(part):
             return part
@@ -147,6 +172,7 @@ def normalize_query(arg):
         "Could not find an issue key or project key in that URL.\n"
         "Recognized shapes:\n"
         "  https://<site>.atlassian.net/browse/PROJ-123\n"
+        "  https://<site>.atlassian.net/jira/for-you?tab=assigned\n"
         "  https://<site>.atlassian.net/jira/...?selectedIssue=PROJ-123\n"
         "  https://<site>.atlassian.net/jira/software/c/projects/PROJ/boards/1\n"
         "Pass the key itself (PROJ-123 or PROJ) for any other shape.\n"
@@ -295,7 +321,7 @@ def _search(client, base, jql, max_items):
     data = get_json(
         client, f"{base}/rest/api/3/search/jql",
         params={"jql": jql, "maxResults": max_items,
-                "fields": "summary,status,issuetype,assignee,updated"})
+                "fields": "summary,status,issuetype,priority,assignee,updated"})
     return data.get("issues", []) if isinstance(data, dict) else []
 
 
@@ -325,6 +351,30 @@ def search_issues(client, base, jql, max_items):
         f = it.get("fields", {})
         print(f"{it.get('key', '?')}  [{_name(f.get('status'))}]  {f.get('summary', '')}")
     print("\n# Next: python scripts/connectors/jira.py <PROJ-123>   (full issue text)")
+
+
+def list_mine(client, base, max_items):
+    """MINE mode, no argument: every open issue assigned to this account.
+
+    Prints the JQL it ran as the second line, so the human can copy it into
+    SEARCH mode and bend it (add a project, drop the ORDER BY) without
+    reading source -- the connector teaching its own use, contract item 3.
+    """
+    issues = _search(client, base, MINE_JQL, max_items)
+    print("# Open Jira issues assigned to you (key | status | priority | summary)")
+    print(f"# jql: {MINE_JQL}\n")
+    if not issues:
+        print("(nothing open with your name on it -- or the JQL above disagrees "
+              "with /jira/for-you?tab=assigned, in which case the JQL is wrong)")
+        return
+    for it in issues[:max_items]:
+        f = it.get("fields", {})
+        print(f"{it.get('key', '?')}  [{_name(f.get('status'))}]  "
+              f"[{_name(f.get('priority'))}]  {f.get('summary', '')}")
+    if len(issues) >= max_items:
+        print(f"\n# (capped at {max_items}; raise -n/--max to see the rest)")
+    print("\n# Next: python scripts/connectors/jira.py <PROJ-123>   (full issue text)")
+    print("#       python scripts/connectors/jira.py projects      (every project you can see)")
 
 
 def fetch_issue(client, base, issue_key):
@@ -470,7 +520,7 @@ def main():
     )
     parser.add_argument(
         'query', nargs='?', default=None,
-        help="Nothing (list projects), a PROJECTKEY, an issue key (PROJ-123), or a JQL string."
+        help="Nothing (your open issues), the word projects, a PROJECTKEY, an issue key (PROJ-123), a Jira URL, or a JQL string."
     )
     parser.add_argument('-n', '--max', type=int, default=25,
                         help='Output cap per THE PROBE ECONOMY RULE (default: 25).')
@@ -490,10 +540,12 @@ def main():
     try:
         arg = args.query
         if arg is None:
-            list_projects(client, base, args.max)
+            list_mine(client, base, args.max)
         else:
             arg = arg.strip()
-            if ISSUE_KEY_RE.match(arg):
+            if arg == PROJECTS_WORD:
+                list_projects(client, base, args.max)
+            elif ISSUE_KEY_RE.match(arg):
                 fetch_issue(client, base, arg)
             elif PROJECT_KEY_RE.match(arg):
                 list_project_issues(client, base, arg, args.max)
