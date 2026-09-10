@@ -2106,6 +2106,14 @@ print('AI:\n', r.ai)
             # `bms` on the Mac is Cmd-Q Chrome, bms, reopen by hand. The nixos
             # checkout is expected at ~/repos/nixos; PIPULATE_NIXOS_REPO moves
             # it. FUNCTIONS, NOT ALIASES: both branch on a missing checkout.
+            # TWO CHECKOUTS, TWO CLOCKS (Mac first contact, 2026-09-10): these
+            # words live in THIS flake's shell -- enter it from the pipulate
+            # checkout, never `nix develop` inside the nixos one, which has no
+            # flake and says so -- and they reach across into a sibling repo
+            # that nothing pulls for you. The first Mac `bms` found a day-stale
+            # nixos checkout: bookmarks_sync.py present, the newer
+            # chrome_windows.py not, and python3 said "can't open file". The
+            # gate below now names both scripts and the pull that fixes it.
             bm() {
               local repo="''${PIPULATE_NIXOS_REPO:-$HOME/repos/nixos}"
               if [ ! -f "$repo/bookmarks.nix" ]; then
@@ -2116,8 +2124,8 @@ print('AI:\n', r.ai)
             }
             bms() {
               local repo="''${PIPULATE_NIXOS_REPO:-$HOME/repos/nixos}"
-              if [ ! -f "$repo/scripts/bookmarks_sync.py" ]; then
-                echo "bms: no scripts/bookmarks_sync.py at $repo (set PIPULATE_NIXOS_REPO)" >&2
+              if [ ! -f "$repo/scripts/bookmarks_sync.py" ] || [ ! -f "$repo/scripts/chrome_windows.py" ]; then
+                echo "bms: scripts/bookmarks_sync.py or scripts/chrome_windows.py is missing at $repo -- git pull in that checkout, or set PIPULATE_NIXOS_REPO" >&2
                 return 1
               fi
               (cd "$repo" && python3 scripts/chrome_windows.py quit && { python3 scripts/bookmarks_sync.py; python3 scripts/chrome_windows.py reopen; })
