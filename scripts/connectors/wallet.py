@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # scripts/connectors/wallet.py
 """
-wallet.py — Connect your accounts and see which credentials are live.
+wallet.py — Connect your accounts, or any site by URL; see what's live.
 
 Golden-path modes, auto-detected from the leading positional argument:
 
   python scripts/connectors/wallet.py                 # SCOREBOARD: stat EVERY slot, whatever its auth kind (OFFLINE)
   python scripts/connectors/wallet.py check [<slot>]  # CHECK: the red/green game — one bounded probe per enrolled slot
+  python scripts/connectors/wallet.py check <URL>     # CHECK: the cookie verdict for ANY site, offline, no slot needed
   python scripts/connectors/wallet.py warm [<slot>]   # WARM: fix whatever is cold, dispatched per auth kind
   python scripts/connectors/wallet.py warm <URL>      # WARM: log into ANY site, no slot needed; profile = apex label
   python scripts/connectors/wallet.py login <slot>    # LOGIN: mint an oauth slot, or NAME how any other kind is warmed
@@ -766,8 +767,10 @@ def _warm_url(url, stale_days, assume_yes=False, dry_run=False):
     print(f"        ↳ {note}")
     # The cheapest honest verdict, from cookie metadata alone: a live HttpOnly
     # cookie for the apex means a server set a session; a window that was
-    # merely opened and dismissed reds with exactly that sentence.
-    code, line = check_browser_slot(label, cfg)
+    # merely opened and dismissed reds with exactly that sentence. THE NAME
+    # IS THE WARM ARGUMENT: a RED line ends in `warm <name>`, and for a
+    # synthesized slot the only name that command accepts is the URL.
+    code, line = check_browser_slot(url, cfg)
     print(f"  {_LIVE_MARK.get(code, '⚪')} {line}")
     slot = {label: {'auth': _BROWSER_KIND, 'paths': {'profile': label},
                     'defaults': {'site': host}}}
@@ -1164,7 +1167,25 @@ def board(wallet, slot_name):
 
     Slots run in parallel because the whole point is to type one word, see
     what is red, fix it, and type the word again.
+
+    A URL IS ITS OWN ROW (2026-09-10). `check <URL>` synthesizes the same
+    browser_session slot `warm <URL>` did and reads its cookie verdict
+    offline, so the line a warm ended with can be re-read without reopening
+    a browser and without a wallet edit -- the crawl-side pre-check before a
+    `?URL` line goes into adhoc.txt. The exit code is that row's verdict.
     """
+    if slot_name and ('://' in slot_name or '.' in slot_name):
+        url = slot_name
+        if not url.startswith(('http://', 'https://')):
+            url = 'https://' + url
+        label = _apex_label(url)
+        cfg = {'auth': _BROWSER_KIND, 'paths': {'profile': label},
+               'defaults': {'site': url}}
+        print("# wallet check -- one browser_session row synthesized from a URL")
+        print(f"# profile: {REPO_ROOT / 'data' / 'uc_profiles' / label}\n")
+        code, line = check_browser_slot(url, cfg)
+        print(f"  {_LIVE_MARK.get(code, '⚪')} browser   {line}")
+        return code
     slots = [(n, c) for n, c in wallet.items()
              if not n.startswith('_') and isinstance(c, dict) and c.get('auth')]
     if slot_name:
