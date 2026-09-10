@@ -70,7 +70,9 @@ slot from the address -- profile = the host's apex label (`botify.atlassian.net`
 -> `atlassian`), the same per-domain name the `?URL` lane resolves under
 data/uc_profiles/ -- opens it in weblogin.py, reads the cookie verdict, and
 prints the connectors.json slot to add if the site should stay on the check
-board. The wallet is neither read nor written for an ad-hoc warm.
+board. The wallet is neither read nor written for an ad-hoc warm, and
+`check <URL>` re-reads that cookie verdict offline any time after -- the
+crawl-side pre-check before a `?URL` line goes into adhoc.txt.
 
 Credential paths are DERIVED, never chosen. A connector that talks to more than
 one server of the same kind — MCP is the first — computes its token path from
