@@ -112,6 +112,12 @@ htmlcov/
 # AI Keychain persistent memory - survives application resets
 
 # Browser automation outputs - keep these local only
+# CACHE HOLDS WHAT THE PAGE HELD. A `?URL` capture of an authenticated admin
+# form lands every rendered field value on disk here, credentials included
+# (2026-09-11: a live basic-auth blob and a crawler token in one seo.md).
+# Gitignored is not scrubbed: these files are readable by anything with the
+# path, and a `!` probe that globs them can lift a value straight into a
+# payload. Grep before widening a probe's glob.
 browser_cache/
 
 # Browser automation temp scripts - disposable one-offs
