@@ -120,6 +120,59 @@ _BACKTICK_SPAN_RE = re.compile(r'(?<!\\)(`+)(.+?)(?<!`)\1(?!`)')
 
 _RAW_TAG_RE = re.compile(r'</?([A-Za-z][\w.-]*)[^<>]*>')
 
+# Void elements never carry a closer, and _VOID_HTML_TAG_RE above already
+# rewrites them self-closing, so they are EXEMPT from the balance accounting
+# below. Counting a prose <br> as an unclosed open would demote every line
+# break in the document -- a guard that breaks the ordinary case.
+_VOID_ELEMENTS = frozenset(
+    "area base br col embed hr img input link meta param source track wbr".split()
+)
+
+# THE UNBALANCED ALLOWLISTED TAG (convicted 2026-09-11: md2conf died with
+# "XML parse error: Opening and ending tag mismatch: a and p" on an article
+# about link attributes). _escape_non_html_tags passes every name in
+# _HTML_ELEMENTS through verbatim, which is right for a BALANCED raw element
+# and fatal for a MENTIONED one: prose that writes <a href="..." rel="..."> to
+# show a reader what the attribute looks like has no closer, python-markdown
+# hands it straight to lxml, and the element outlives its <p>.
+# SAME CLASS as the 2026-07-30 <summary> conviction, DIFFERENT REMEDY. 'details'
+# and 'summary' could simply leave the allowlist because this journal only ever
+# mentions them. A raw inline anchor is a legitimate thing to write, so the
+# discriminator here must be BALANCE, not name.
+# ONE PRE-PASS over the whole document, prose only: fenced blocks skipped, code
+# spans stripped with the SAME regex the defusal uses (so a line with unmatched
+# backticks desyncs in lockstep instead of disagreeing with it), self-closing
+# and void forms ignored. Any allowlisted element whose opens outnumber its
+# closes is demoted to a pseudo-tag for THIS document and escaped in prose.
+# THE COST, NAMED: the gate is per-document and per-NAME, so a file that both
+# mentions <a> and uses one real inline anchor escapes both, and that anchor
+# renders as literal text. A page showing one link as text beats a publish that
+# aborts, and a balanced document is untouched.
+def _unbalanced_prose_tags(md_text: str) -> frozenset:
+    """Allowlisted element names whose prose opens outnumber their closes."""
+    opens, closes = {}, {}
+    in_fence = False
+    for line in md_text.splitlines():
+        stripped = line.lstrip()
+        if stripped.startswith("```") or stripped.startswith("~~~"):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        prose = _BACKTICK_SPAN_RE.sub('', line)
+        for m in _RAW_TAG_RE.finditer(prose):
+            whole = m.group(0)
+            if '://' in whole or '@' in whole:
+                continue
+            name = m.group(1).lower()
+            if name not in _HTML_ELEMENTS or name in _VOID_ELEMENTS:
+                continue
+            if whole.startswith('</'):
+                closes[name] = closes.get(name, 0) + 1
+            elif not whole.rstrip('>').rstrip().endswith('/'):
+                opens[name] = opens.get(name, 0) + 1
+    return frozenset(n for n, c in opens.items() if c > closes.get(n, 0))
+
 def _escape_non_html_tags(segment: str) -> str:
     """Entity-escape pseudo-tags (<module>, <string>, <frozen runpy>) in prose.
 
