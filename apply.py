@@ -406,6 +406,21 @@ def apply_search_replace_patch(payload: str) -> bool:
             success = False
             continue
             
+        # IDEMPOTENT INSERTION (convicted 2026-09-11: `app` ran twice on one
+        # patch file). The already-applied guard above runs only on a MISS,
+        # and an insertion never misses: its SEARCH is a subset of its own
+        # REPLACE, so the anchor is still present after it lands and a second
+        # run inserts a second copy. Nine plain replacements were caught that
+        # day; the three insertions -- a tail-append, a paragraph before an
+        # anchor, a function before an anchor -- each landed twice and were
+        # committed before anyone read the diff. When SEARCH occurs once and
+        # the file already holds REPLACE verbatim, that occurrence sits inside
+        # the landed insertion: say so, and touch nothing.
+        if (search_block in replace_block and replace_block != search_block
+                and content.count(replace_block) >= 1):
+            print(f"✅ PATCH ALREADY APPLIED: '{filename}' already contains the inserted block.")
+            continue
+
         # The Surgical Strike
         new_content = content.replace(search_block, replace_block, 1)
 
