@@ -416,6 +416,11 @@ def apply_search_replace_patch(payload: str) -> bool:
         # committed before anyone read the diff. When SEARCH occurs once and
         # the file already holds REPLACE verbatim, that occurrence sits inside
         # the landed insertion: say so, and touch nothing.
+        # WITNESSED 2026-09-11 on the NEGATIVE path: the wallet.py UNCHANGED
+        # car carried two insertions through this guard on a fresh file and
+        # both landed exactly once. The positive path -- a second `app` on
+        # the same patch file printing ALREADY APPLIED for an insertion -- is
+        # still unwitnessed; a throwaway-file straddle would close it.
         if (search_block in replace_block and replace_block != search_block
                 and content.count(replace_block) >= 1):
             print(f"✅ PATCH ALREADY APPLIED: '{filename}' already contains the inserted block.")
