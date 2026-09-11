@@ -71,6 +71,20 @@ workspace. No env-var selector on purpose: a default that lived in the vault
 could point bare `slack` at one workspace while `warm slack` wrote the other,
 the two-boards-one-wallet split convicted 2026-07-23.
 
+THE APP LIST WEARS THE BROWSER'S WORKSPACE (convicted 2026-09-11, three
+pastes). The app index page (api.slack.com/apps) lists the apps of whichever
+workspace the browser is signed into, and an app created in two workspaces
+under one name is two app ids wearing one label. Three times a User OAuth
+Token was copied from "the approved app's" OAuth & Permissions page and
+pasted under the bare name; three times the bare check answered Pipulate.
+The page was the control workspace's, reached through a browser signed
+into it, and the corporate app was never approved. The receipt that ended
+it was on no Slack page: `warm slack` printed UNCHANGED because the paste
+was byte-identical to the vault. Before pasting, read which workspace the
+browser is signed into, or sign out of the control workspace first. The
+identity line of the first run after re-entry is the only proof of which
+workspace a string belongs to.
+
 Endpoint notes (verified against Slack's current Web API):
   - Legacy channels.list/groups.list are retired; conversations.* is canonical.
   - conversations.replies needs BOTH channel and the PARENT thread ts; the permalink
@@ -85,6 +99,13 @@ and client content. Any `!` invocation bound for a cloud chat window rides throu
 compile-lane sanitizer -- make sure pii_substitutions.txt covers the relevant identifiers
 first. (For an internal-Confluence-only lane, a disclosure profile that leaves names in
 place is the intended path.)
+THE WORD 'TOKEN' RIDES (convicted 2026-09-11, one restore). The compile-lane
+tripwire matches VALUE shapes -- an xoxp- string, a Bearer header, a quoted
+long value beside a name -- never the noun, and this docstring reached the
+model spelled in full in the same compile the rename was made to dodge.
+Every SLACK_*_TOKEN name was renamed to TOKEX for a conviction that had not
+happened, and restored from git the next turn. Do not rename a name to
+dodge a scrubber; if a lane trips on a bare word, fix that lane's rule file.
 """
 
 import os
