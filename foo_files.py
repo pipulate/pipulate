@@ -11,6 +11,13 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # Hello, AI — this is a progressive book-reveal every time.                 \  )   ""\    |  a what?  |
 # =======================================================================    |__>-\_>_>    \_________/ 
 
+> The reason for the AI chat discussion interface is to eliminate the need for
+> discussions by compiling the perfect context to solve whatever puzzle in that
+> one magical shot that gives the LLM everything it needs to know to do it. You
+> perfectly package reproducible perfection. Output may vary based on the model
+> you choose, but the AI will never struggle with anything it doesn't have but
+> needs. Everything it needs is there in the 1-shot prompt and that's the point.
+
 # > Here is my hardware  
 # > Here is my state  
 # > Put on your sandbox  
@@ -32,7 +39,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # > At a trillionth the cost.  
 
 # > You don't need Nix  
-# > And you don't need Guix  
+# > And you don't need Guix (rhymes with tweaks)  
 # > For functional output  
 # > If you got the tweaks.  
 
@@ -54,12 +61,24 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # > We just provide a template  
 # > That must be filled in  
 # > So that whatever you just did  
-# > Is where we begin  
+# > Is where HUMANS begin!  
 
 # > So just do as you do  
-# > And build your contraption  
+# > And build your contraption;  
 # > Though if I can't replay it  
 # > Then it didn't happen.  
+
+# Clearly tool-calls that are part of your framework that you can't relate back to a human in your response in the format:
+
+# 1. Endpoint used: 
+# 2. Authentication scheme used
+# 3. User login account used (minus secrets)
+# 4. The nearly exact parameters and arguments used with the endpoint
+#    - POST method?
+#    - GET method?
+#    - Parameters and arguments including whether anything is "hidden" or split between URL and POST payload?
+
+# ...then it didn't happen. Web-searches for your research-phase are the exception.
 
 # This project treats infrastructure as a living book that updates itself
 # through human-vetted patches — software whose own construction is its
