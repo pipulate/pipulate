@@ -96,7 +96,7 @@ stays self-contained — so the two copies are compared by probe, not trusted.
 - jira.py        bare = your open issues (the For You tab; any /jira/for-you URL too) / projects / project issues / issue key (PROJ-123; prints populated custom fields, link hrefs, attachments) / raw JQL (basic_auth; JIRA_* first, CONFLUENCE_* as a fallback -- a convenience, never a shared identity)
 - gsc.py         properties / top queries / raw searchanalytics JSON (service_account_file)
 - sheets.py      identity / bare URL-or-ID STACKS every tab's actual data rectangle with sentinel separators and per-tab #gid= URLs, budget-governed / --list metadata gauge / bounded --sheet and --range values (oauth_token_file, gmail pattern; own sheets_token.json; data extents from values responses, never gridProperties)
-- slack.py       identity + channels / channel id-or-#name history / message-permalink thread FETCH / whitespace=SEARCH (bearer_token; SLACK_BOT_TOKEN reads, SLACK_USER_TOKEN required for search.messages)
+- slack.py       identity + channels / channel id-or-#name history / message-permalink thread FETCH / whitespace=SEARCH (bearer_token; SLACK_BOT_TOKEN reads, SLACK_USER_TOKEN required for search.messages; -w NAME reads the SLACK_USER_TOKEN_NAME / SLACK_BOT_TOKEN_NAME pair instead, no fallback to the bare pair)
 
 ## Downstream stages (deliberately not connectors)
 
