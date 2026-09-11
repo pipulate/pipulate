@@ -601,6 +601,7 @@ def _warm_env(name, cfg, assume_yes, force=False):
     defaults = cfg.get('defaults') or {}
     print(f"  {len(missing)} value(s) -- blank keeps what is there, a paste overwrites.")
     saved = []
+    unchanged = []
     for var in missing:
         desc = str(env_doc.get(var, '')).strip()
         if desc:
@@ -613,9 +614,25 @@ def _warm_env(name, cfg, assume_yes, force=False):
         if not value:
             print(f"    kept {var}" if _env_source(var) else f"    skipped {var}")
             continue
+        # THE UNCHANGED PASTE (convicted 2026-09-11, twice in one sitting).
+        # A pasted value equal to the one the vault already held printed
+        # "saved", and the SHADOWED block stayed silent because the shell's
+        # export matched too -- so a paste copied from the WRONG app page (an
+        # app of the same name registered to the other workspace) produced a
+        # receipt that read as success in every world. Byte-equal is the test
+        # and the value is never printed: say the string is the one already
+        # on file, and that nothing moved.
+        if value == _dotenv_pairs().get(var):
+            print(f"    UNCHANGED {var}: the value pasted is byte-identical to what "
+                  "the vault already holds -- nothing moved. If you meant a "
+                  "different workspace, you copied from the wrong app page.")
+            unchanged.append(var)
+            continue
         _save_env(var, value)
         saved.append(var)
     if not saved:
+        if unchanged:
+            return f"unchanged {', '.join(unchanged)} (same value already on file)"
         return 'nothing entered'
     return f"saved {', '.join(saved)} → {DOTENV_PATH}"
 
