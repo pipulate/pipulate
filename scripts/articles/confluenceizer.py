@@ -173,7 +173,7 @@ def _unbalanced_prose_tags(md_text: str) -> frozenset:
                 opens[name] = opens.get(name, 0) + 1
     return frozenset(n for n, c in opens.items() if c > closes.get(n, 0))
 
-def _escape_non_html_tags(segment: str) -> str:
+def _escape_non_html_tags(segment: str, unbalanced=frozenset()) -> str:
     """Entity-escape pseudo-tags (<module>, <string>, <frozen runpy>) in prose.
 
     Leaves legitimate HTML elements and markdown autolinks/mail links intact.
