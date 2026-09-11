@@ -227,6 +227,10 @@ def _normalize_markdown_for_md2conf(md_text: str) -> str:
     """Make mixed Markdown/raw-HTML safer for md2conf without touching fenced code."""
     out = []
     in_fence = False
+    # Document-level pre-pass: which allowlisted names are unclosed in prose.
+    # Computed once here rather than per line, because balance is a property of
+    # the whole document and a raw element may legitimately span lines.
+    unbalanced = _unbalanced_prose_tags(md_text)
 
     for line in md_text.splitlines(keepends=True):
         stripped = line.lstrip()
