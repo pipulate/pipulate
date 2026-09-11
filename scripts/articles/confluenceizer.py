@@ -197,14 +197,14 @@ def _escape_non_html_tags(segment: str, unbalanced=frozenset()) -> str:
     # Idempotent: '&#36;' contains no '$' for a second pass to match.
     return segment.replace('$', '&#36;')
 
-def _defuse_prose_pseudo_tags(line: str) -> str:
+def _defuse_prose_pseudo_tags(line: str, unbalanced=frozenset()) -> str:
     """Escape non-HTML tags only in the segments md2conf will treat as prose."""
     out, pos = [], 0
     for m in _BACKTICK_SPAN_RE.finditer(line):
-        out.append(_escape_non_html_tags(line[pos:m.start()]))
+        out.append(_escape_non_html_tags(line[pos:m.start()], unbalanced))
         out.append(m.group(0))  # code span survives verbatim
         pos = m.end()
-    out.append(_escape_non_html_tags(line[pos:]))
+    out.append(_escape_non_html_tags(line[pos:], unbalanced))
     return ''.join(out)
 
 # THE ORPHANED LINK TAIL (probe-convicted 2026-07-06): webclip citation blocks
