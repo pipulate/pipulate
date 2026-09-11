@@ -182,7 +182,8 @@ def _escape_non_html_tags(segment: str, unbalanced=frozenset()) -> str:
         whole = m.group(0)
         if '://' in whole or '@' in whole:
             return whole  # markdown autolink or email — not a tag
-        if m.group(1).lower() in _HTML_ELEMENTS:
+        name = m.group(1).lower()
+        if name in _HTML_ELEMENTS and name not in unbalanced:
             return whole
         return whole.replace('<', '&lt;').replace('>', '&gt;')
     segment = _RAW_TAG_RE.sub(repl, segment)
