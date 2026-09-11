@@ -925,7 +925,18 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               echo -n "."
             done
             if [ "$SERVER_STARTED" = true ]; then
-              if [ "$OPEN_FASTHTML" = "true" ] || [ -f Notebooks/data/.onboarded ]; then
+              # EXPLICIT-FALSE WINS (2026-09-11): PIPULATE_OPEN_FASTHTML=false
+              # used to lose to the onboarded-marker fallback below, so an
+              # already-onboarded caller (autognome.py, every run) could never
+              # actually suppress this auto-open -- the marker file exists
+              # after the first successful onboarding and stays forever.
+              # Checking for the explicit "false" first lets a caller that
+              # wants to own the browser-open decision itself (see
+              # autognome.py's single-actor browser-open block) actually do so.
+              if [ "$OPEN_FASTHTML" = "false" ]; then
+                echo
+                echo "✅ Pipulate server is running at http://localhost:5001 (auto-open suppressed)"
+              elif [ "$OPEN_FASTHTML" = "true" ] || [ -f Notebooks/data/.onboarded ]; then
                 if [ "${fastHtmlOpenDelay}" -gt 0 ]; then
                   echo "Delaying FastHTML tab by ${fastHtmlOpenDelay} seconds..."
                   sleep ${fastHtmlOpenDelay}
