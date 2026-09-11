@@ -14,6 +14,7 @@ Golden-path modes, auto-detected from the single positional argument:
                                                       # FETCH: that thread's parent + all replies
   python scripts/connectors/slack.py 'deploy failed checkout'   # SEARCH: search.messages (user token)
   python scripts/connectors/slack.py -w pipulate     # ANY mode, on the workspace whose pair is SLACK_USER_TOKEN_PIPULATE
+  python scripts/connectors/slack.py -w pipulate     # ANY mode, on the workspace whose pair is SLACK_USER_TOKEN_PIPULATE
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 
@@ -56,6 +57,20 @@ first until 2026-08-27, which is the misdirection that cost a week of cycles.
                     at mcp.slack.com, which refuses Dynamic Client Registration and
                     demands a hardcoded pre-registered app id precisely so the
                     standard approval workflow applies.
+
+WORKSPACES (-w NAME). A Slack token is minted per app-install per WORKSPACE,
+so two workspaces are two strings and one variable cannot hold both. Bare
+`slack` reads SLACK_USER_TOKEN / SLACK_BOT_TOKEN, the pair the wallet warms
+and the check board scores -- keep that pair pointed at the workspace you are
+TRYING to reach. `slack -w pipulate` reads ONLY SLACK_USER_TOKEN_PIPULATE /
+SLACK_BOT_TOKEN_PIPULATE, a second pair added to the vault by hand, and never
+falls back to the bare names: a demo that quietly answered from the other
+workspace would be exactly the false green this connector exists to refuse.
+The identity line names the team that answered, so the receipt is in the
+output and not in the flag. Same code, same workflow, one word picks the
+workspace. No env-var selector on purpose: a default that lived in the vault
+could point bare `slack` at one workspace while `warm slack` wrote the other,
+the two-boards-one-wallet split convicted 2026-07-23.
 
 WORKSPACES (-w NAME). A Slack token is minted per app-install per WORKSPACE,
 so two workspaces are two strings and one variable cannot hold both. Bare
@@ -119,6 +134,22 @@ WRONG_TOKEN_CLASS = {
     "xoxe": ("configuration", "the app index page -> Your App Configuration Tokens"),
     "xwfp-": ("workflow", "a workflow run"),
 }
+
+
+def token_env_names(workspace):
+    """The env var NAMES one run reads: the bare pair, or a -w suffixed pair.
+
+    Strict by construction: the caller reads only the names returned here, so
+    `-w pipulate` with no SLACK_USER_TOKEN_PIPULATE in the environment dies in
+    get_token's missing-variable branch naming that exact variable, and never
+    answers from the bare pair. The suffix is the workspace word upper-cased
+    with every non-alphanumeric run folded to one underscore, so `-w my-team`
+    reads SLACK_USER_TOKEN_MY_TEAM.
+    """
+    suffix = re.sub(r'[^A-Za-z0-9]+', '_', workspace or '').strip('_').upper()
+    if not suffix:
+        return "SLACK_USER_TOKEN", "SLACK_BOT_TOKEN"
+    return f"SLACK_USER_TOKEN_{suffix}", f"SLACK_BOT_TOKEN_{suffix}"
 
 
 def token_env_names(workspace):
