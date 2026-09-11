@@ -622,6 +622,12 @@ def _warm_env(name, cfg, assume_yes, force=False):
         # receipt that read as success in every world. Byte-equal is the test
         # and the value is never printed: say the string is the one already
         # on file, and that nothing moved.
+        # WITNESSED the same day, first live run: the third paste printed
+        # UNCHANGED, and that line -- not any Slack page -- is what sent the
+        # operator to check which workspace the browser was signed into. The
+        # app being copied from was the control workspace's, and the
+        # corporate app was never approved. A no-op that speaks ended in one
+        # run what two silent "saved" lines had let run for an hour.
         if value == _dotenv_pairs().get(var):
             print(f"    UNCHANGED {var}: the value pasted is byte-identical to what "
                   "the vault already holds -- nothing moved. If you meant a "
