@@ -13,6 +13,7 @@ Golden-path modes, auto-detected from the single positional argument:
   python scripts/connectors/slack.py https://you.slack.com/archives/C0123ABCD/p1699999999123456
                                                       # FETCH: that thread's parent + all replies
   python scripts/connectors/slack.py 'deploy failed checkout'   # SEARCH: search.messages (user token)
+  python scripts/connectors/slack.py -w pipulate     # ANY mode, on the workspace whose pair is SLACK_USER_TOKEN_PIPULATE
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 
@@ -55,6 +56,20 @@ first until 2026-08-27, which is the misdirection that cost a week of cycles.
                     at mcp.slack.com, which refuses Dynamic Client Registration and
                     demands a hardcoded pre-registered app id precisely so the
                     standard approval workflow applies.
+
+WORKSPACES (-w NAME). A Slack token is minted per app-install per WORKSPACE,
+so two workspaces are two strings and one variable cannot hold both. Bare
+`slack` reads SLACK_USER_TOKEN / SLACK_BOT_TOKEN, the pair the wallet warms
+and the check board scores -- keep that pair pointed at the workspace you are
+TRYING to reach. `slack -w pipulate` reads ONLY SLACK_USER_TOKEN_PIPULATE /
+SLACK_BOT_TOKEN_PIPULATE, a second pair added to the vault by hand, and never
+falls back to the bare names: a demo that quietly answered from the other
+workspace would be exactly the false green this connector exists to refuse.
+The identity line names the team that answered, so the receipt is in the
+output and not in the flag. Same code, same workflow, one word picks the
+workspace. No env-var selector on purpose: a default that lived in the vault
+could point bare `slack` at one workspace while `warm slack` wrote the other,
+the two-boards-one-wallet split convicted 2026-07-23.
 
 Endpoint notes (verified against Slack's current Web API):
   - Legacy channels.list/groups.list are retired; conversations.* is canonical.
@@ -106,6 +121,22 @@ WRONG_TOKEN_CLASS = {
 }
 
 
+def token_env_names(workspace):
+    """The env var NAMES one run reads: the bare pair, or a -w suffixed pair.
+
+    Strict by construction: the caller reads only the names returned here, so
+    `-w pipulate` with no SLACK_USER_TOKEN_PIPULATE in the environment dies in
+    get_token's missing-variable branch naming that exact variable, and never
+    answers from the bare pair. The suffix is the workspace word upper-cased
+    with every non-alphanumeric run folded to one underscore, so `-w my-team`
+    reads SLACK_USER_TOKEN_MY_TEAM.
+    """
+    suffix = re.sub(r'[^A-Za-z0-9]+', '_', workspace or '').strip('_').upper()
+    if not suffix:
+        return "SLACK_USER_TOKEN", "SLACK_BOT_TOKEN"
+    return f"SLACK_USER_TOKEN_{suffix}", f"SLACK_BOT_TOKEN_{suffix}"
+
+
 def refuse_wrong_class(token, var_name):
     """Exit loudly when a prefix proves this token can never read a message."""
     for prefix, (label, origin) in WRONG_TOKEN_CLASS.items():
@@ -126,26 +157,26 @@ def refuse_wrong_class(token, var_name):
 # ----------------------------------------------------------------------------
 # Auth & transport
 # ----------------------------------------------------------------------------
-def get_token(mode):
+def get_token(mode, user_var="SLACK_USER_TOKEN", bot_var="SLACK_BOT_TOKEN"):
     """Resolve the right token for the mode, failing loud and named.
 
     SEARCH needs a user token (bot tokens cannot call search.messages). For
     LIST/FETCH a user token is PREFERRED when present (it dodges the bot-token
     channel-read restriction), else the bot token is used.
     """
-    bot = os.getenv("SLACK_BOT_TOKEN")
-    user = os.getenv("SLACK_USER_TOKEN")
+    bot = os.getenv(bot_var)
+    user = os.getenv(user_var)
     if user:
-        refuse_wrong_class(user, "SLACK_USER_TOKEN")
+        refuse_wrong_class(user, user_var)
     if bot:
-        refuse_wrong_class(bot, "SLACK_BOT_TOKEN")
+        refuse_wrong_class(bot, bot_var)
     if mode == "search":
         if user:
             return user, "user"
         sys.stderr.write(
-            "SEARCH requires SLACK_USER_TOKEN (a user token xoxp- with the "
+            f"SEARCH requires {user_var} (a user token xoxp- with the "
             "search:read scope).\nBot tokens cannot call search.messages. "
-            "LIST and FETCH still work with SLACK_BOT_TOKEN alone.\n"
+            f"LIST and FETCH still work with {bot_var} alone.\n"
         )
         sys.exit(1)
     if user:
@@ -173,7 +204,7 @@ def get_token(mode):
     # worlds have entirely different next moves. Naming the second costs one
     # line and stops the reader hunting a button that is not there.
     sys.stderr.write(
-        "Missing environment variable(s): SLACK_USER_TOKEN (or SLACK_BOT_TOKEN)\n"
+        f"Missing environment variable(s): {user_var} (or {bot_var})\n"
         "The golden path is a USER token (xoxp-), not a bot token: a bot reads "
         "only channels it was invited to, which cannot serve the permalink "
         "mode. Create an app from a manifest at https://api.slack.com/apps "
@@ -417,7 +448,7 @@ def scope_clause(granted):
     return f" | {len(have)} scope(s), LIST+FETCH covered{extra}"
 
 
-def check():
+def check(user_var="SLACK_USER_TOKEN", bot_var="SLACK_BOT_TOKEN"):
     """SELECT 1 for the wallet board: exit 0 GREEN, exit 1 RED.
 
     ONE row, not two. A bot token that cannot call search.messages is not a
@@ -428,12 +459,12 @@ def check():
 
     Slack answers HTTP 200 even on failure, so the verdict is the `ok` field.
     """
-    user = os.getenv("SLACK_USER_TOKEN")
-    bot = os.getenv("SLACK_BOT_TOKEN")
+    user = os.getenv(user_var)
+    bot = os.getenv(bot_var)
     token, kind = (user, "user") if user else (bot, "bot")
     if not token:
         sys.stderr.write(
-            "slack RED gate1: neither SLACK_USER_TOKEN nor SLACK_BOT_TOKEN set\n")
+            f"slack RED gate1: neither {user_var} nor {bot_var} set\n")
         return 1
     # GATE 1, SECOND CLAUSE -- THE BOARD COULD NOT SEE THE CLASS.
     # get_token() gained refuse_wrong_class on 2026-08-27, but check() reads
@@ -519,7 +550,7 @@ def check():
     # bad one (see this docstring), so narrowness becomes visible without
     # becoming a failure. FAIL-SOFT: no header, no clause -- a missing header
     # is a fact about Slack's response and must not read as zero scopes.
-    note = "" if kind == "user" else "; SEARCH needs SLACK_USER_TOKEN"
+    note = "" if kind == "user" else f"; SEARCH needs {user_var}"
     scopes = scope_clause(resp.headers.get("x-oauth-scopes"))
     print(f"slack GREEN {data.get('user', '?')} @ {data.get('team', '?')} "
           f"({kind} token{note}){scopes}")
@@ -540,10 +571,16 @@ def main():
                         help='SELECT 1 health check: one GREEN line on stdout and '
                              'exit 0, or one gate-named RED line on stderr and '
                              'exit 1. Never interactive.')
+    parser.add_argument('-w', '--workspace', default=None,
+                        help='Read SLACK_USER_TOKEN_<NAME> / SLACK_BOT_TOKEN_<NAME> '
+                             'instead of the bare pair, with no fallback. '
+                             '`-w pipulate` is the control workspace; bare is '
+                             'the pair the wallet warms.')
     args = parser.parse_args()
+    user_var, bot_var = token_env_names(args.workspace)
 
     if args.check:
-        sys.exit(check())
+        sys.exit(check(user_var, bot_var))
 
     arg = args.query.strip() if args.query else None
     if arg is None:
@@ -600,7 +637,7 @@ def main():
     }
     if mode == "history" and arg in sibling:
         sys.stderr.write(f"# note: {sibling[arg]} -- reading it as a channel name.\n")
-    token, kind = get_token(mode)
+    token, kind = get_token(mode, user_var, bot_var)
     client = make_client(token)
     try:
         if mode == "list":
