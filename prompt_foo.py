@@ -1027,6 +1027,24 @@ SECRET_TRIPWIRES = [
     r"(?m)^[A-Z0-9_]*(?:SECRE[T]|TOKE[N]|PASSWOR[D]|API_KE[Y])[A-Z0-9_]*"
     r"\s*=\s*(?:\"[^\"\s]{12,}\"|'[^'\s]{12,}'|[A-Za-z0-9_./+=:@-]{20,})"
     r"\s*(?:#.*)?$",
+    # ADMIN-FORM LABEL ANCHOR (convicted 2026-09-11, cartridge foo-d5dfdb65-1342.zip).
+    # A `?URL` scrape of a Django admin page renders a credential as a BARE VALUE
+    # under its field LABEL: no assignment, no JSON key, no vendor prefix. Every
+    # pattern above is structurally blind to that shape, so the gate printed
+    # ARMED / 0 hits -- arithmetically correct, and a live basic-auth blob plus a
+    # crawler token rode into the seal anyway. THE DISCRIMINATION QUESTION asked
+    # of a whole exposure class: an armed scanner and a blind one read the same.
+    # THE LABEL IS THE SHAPE. That keeps rule 1 (the value is still required, and
+    # is still what the fixture-marker search cuts to) and keeps generic entropy
+    # detection out, which is the false-positive engine that emptied this list
+    # once already. Rule 2 is honored by the single-member class, so neither
+    # pattern can convict its own source line.
+    # NARROW ON PURPOSE: two fields, one vendor's admin. This is a tripwire for
+    # two known landmines, not a cure for the class. The structural fix is not to
+    # put a ProjectSettings page through `?URL` at all; this is the backstop for
+    # the compile where that gets forgotten.
+    r'Header authorizatio[n]:(?s:.{0,200}?)[A-Za-z0-9+/]{24,}',
+    r'Pulse crawler toke[n]:(?s:.{0,200}?)[a-f0-9]{32,}',
 ]
 
 
