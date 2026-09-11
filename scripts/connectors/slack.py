@@ -3,8 +3,6 @@
 """
 slack.py — Bring a Slack channel or message thread into context.
 
-DO NOT CHANGE TOKEX to TOKE... N because the PII protection in the workflow will prevent this from being included as context in a prompt.
-
 A Unix-philosophy gateway to the Slack Web API for Prompt Fu context.
 
 Golden-path modes, auto-detected from the single positional argument:
@@ -15,8 +13,7 @@ Golden-path modes, auto-detected from the single positional argument:
   python scripts/connectors/slack.py https://you.slack.com/archives/C0123ABCD/p1699999999123456
                                                       # FETCH: that thread's parent + all replies
   python scripts/connectors/slack.py 'deploy failed checkout'   # SEARCH: search.messages (user token)
-  python scripts/connectors/slack.py -w pipulate     # ANY mode, on the workspace whose pair is SLACK_USER_TOKEX_PIPULATE
-  python scripts/connectors/slack.py -w pipulate     # ANY mode, on the workspace whose pair is SLACK_USER_TOKEX_PIPULATE
+  python scripts/connectors/slack.py -w pipulate     # ANY mode, on the workspace whose pair is SLACK_USER_TOKEN_PIPULATE
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 
@@ -29,10 +26,10 @@ Disambiguation rule (checked in this order):
   - a channel id (C.../G.../D...) or #name   -> LIST that channel's recent messages (conversations.history)
   - anything with whitespace                 -> SEARCH (search.messages)
 
-Auth (bearer_token -- the botify.py shape). THE GOLDEN PATH IS A USER TOKEX, and
+Auth (bearer_token -- the botify.py shape). THE GOLDEN PATH IS A USER TOKEN, and
 this block is the FIRST thing a reader or a model sees; it named the bot token
 first until 2026-08-27, which is the misdirection that cost a week of cycles.
-  SLACK_USER_TOKEX  xoxp-... ; FOUR user scopes and nothing else --
+  SLACK_USER_TOKEN  xoxp-... ; FOUR user scopes and nothing else --
                     channels:read groups:read channels:history groups:history.
                     Those four cover LIST and FETCH, which are the only two modes
                     this connector is actually used for. Declare them in an app
@@ -44,7 +41,7 @@ first until 2026-08-27, which is the misdirection that cost a week of cycles.
                     this connector supports and the operator does not use. Its
                     absence is therefore a CAPABILITY note, never a deficiency --
                     see scope_clause().
-  SLACK_BOT_TOKEX   xoxb-... ; the NARROWER fallback, not the recommendation. A bot
+  SLACK_BOT_TOKEN   xoxb-... ; the NARROWER fallback, not the recommendation. A bot
                     reads only channels it was INVITED to, so the permalink workflow
                     would require inviting it everywhere, and a bot token cannot call
                     search.messages at all. Preferred by nothing; supported because
@@ -62,24 +59,10 @@ first until 2026-08-27, which is the misdirection that cost a week of cycles.
 
 WORKSPACES (-w NAME). A Slack token is minted per app-install per WORKSPACE,
 so two workspaces are two strings and one variable cannot hold both. Bare
-`slack` reads SLACK_USER_TOKEX / SLACK_BOT_TOKEX, the pair the wallet warms
+`slack` reads SLACK_USER_TOKEN / SLACK_BOT_TOKEN, the pair the wallet warms
 and the check board scores -- keep that pair pointed at the workspace you are
-TRYING to reach. `slack -w pipulate` reads ONLY SLACK_USER_TOKEX_PIPULATE /
-SLACK_BOT_TOKEX_PIPULATE, a second pair added to the vault by hand, and never
-falls back to the bare names: a demo that quietly answered from the other
-workspace would be exactly the false green this connector exists to refuse.
-The identity line names the team that answered, so the receipt is in the
-output and not in the flag. Same code, same workflow, one word picks the
-workspace. No env-var selector on purpose: a default that lived in the vault
-could point bare `slack` at one workspace while `warm slack` wrote the other,
-the two-boards-one-wallet split convicted 2026-07-23.
-
-WORKSPACES (-w NAME). A Slack token is minted per app-install per WORKSPACE,
-so two workspaces are two strings and one variable cannot hold both. Bare
-`slack` reads SLACK_USER_TOKEX / SLACK_BOT_TOKEX, the pair the wallet warms
-and the check board scores -- keep that pair pointed at the workspace you are
-TRYING to reach. `slack -w pipulate` reads ONLY SLACK_USER_TOKEX_PIPULATE /
-SLACK_BOT_TOKEX_PIPULATE, a second pair added to the vault by hand, and never
+TRYING to reach. `slack -w pipulate` reads ONLY SLACK_USER_TOKEN_PIPULATE /
+SLACK_BOT_TOKEN_PIPULATE, a second pair added to the vault by hand, and never
 falls back to the bare names: a demo that quietly answered from the other
 workspace would be exactly the false green this connector exists to refuse.
 The identity line names the team that answered, so the receipt is in the
@@ -116,11 +99,11 @@ API_BASE = "https://slack.com/api"
 CHANNEL_ID_RE = re.compile(r'^[CGD][A-Z0-9]{6,}$')
 PERMALINK_RE = re.compile(r'^https?://[^/]+\.slack\.com/archives/', re.I)
 
-# TOKEX CLASS, READ BEFORE THE NETWORK CALL. Slack's settings pages hand out at
+# TOKEN CLASS, READ BEFORE THE NETWORK CALL. Slack's settings pages hand out at
 # least five credential families and only two of them can ever reach
 # conversations.*. Convicted 2026-08-27 across five cycles: a configuration
 # token (xoxe), then an app-level token (xapp-), then a bare app credential
-# were each pasted into SLACK_USER_TOKEX, and each produced a DIFFERENT
+# were each pasted into SLACK_USER_TOKEN, and each produced a DIFFERENT
 # downstream error -- missing_scope, then not_allowed_token_type, then
 # invalid_auth -- so the symptom kept moving while the actual mistake, which is
 # WHICH PAGE the string was copied from, was never named by anything.
@@ -131,7 +114,7 @@ PERMALINK_RE = re.compile(r'^https?://[^/]+\.slack\.com/archives/', re.I)
 # FAIL-OPEN ON THE UNKNOWN, deliberately: an unrecognized prefix passes straight
 # through to the API, because a family Slack invents next year must not be
 # locally unusable. Only classes KNOWN to be incapable are refused.
-WRONG_TOKEX_CLASS = {
+WRONG_TOKEN_CLASS = {
     "xapp-": ("app-level", "Basic Information -> App-Level Tokens"),
     "xoxe": ("configuration", "the app index page -> Your App Configuration Tokens"),
     "xwfp-": ("workflow", "a workflow run"),
@@ -142,37 +125,21 @@ def token_env_names(workspace):
     """The env var NAMES one run reads: the bare pair, or a -w suffixed pair.
 
     Strict by construction: the caller reads only the names returned here, so
-    `-w pipulate` with no SLACK_USER_TOKEX_PIPULATE in the environment dies in
+    `-w pipulate` with no SLACK_USER_TOKEN_PIPULATE in the environment dies in
     get_token's missing-variable branch naming that exact variable, and never
     answers from the bare pair. The suffix is the workspace word upper-cased
     with every non-alphanumeric run folded to one underscore, so `-w my-team`
-    reads SLACK_USER_TOKEX_MY_TEAM.
+    reads SLACK_USER_TOKEN_MY_TEAM.
     """
     suffix = re.sub(r'[^A-Za-z0-9]+', '_', workspace or '').strip('_').upper()
     if not suffix:
-        return "SLACK_USER_TOKEX", "SLACK_BOT_TOKEX"
-    return f"SLACK_USER_TOKEX_{suffix}", f"SLACK_BOT_TOKEX_{suffix}"
-
-
-def token_env_names(workspace):
-    """The env var NAMES one run reads: the bare pair, or a -w suffixed pair.
-
-    Strict by construction: the caller reads only the names returned here, so
-    `-w pipulate` with no SLACK_USER_TOKEX_PIPULATE in the environment dies in
-    get_token's missing-variable branch naming that exact variable, and never
-    answers from the bare pair. The suffix is the workspace word upper-cased
-    with every non-alphanumeric run folded to one underscore, so `-w my-team`
-    reads SLACK_USER_TOKEX_MY_TEAM.
-    """
-    suffix = re.sub(r'[^A-Za-z0-9]+', '_', workspace or '').strip('_').upper()
-    if not suffix:
-        return "SLACK_USER_TOKEX", "SLACK_BOT_TOKEX"
-    return f"SLACK_USER_TOKEX_{suffix}", f"SLACK_BOT_TOKEX_{suffix}"
+        return "SLACK_USER_TOKEN", "SLACK_BOT_TOKEN"
+    return f"SLACK_USER_TOKEN_{suffix}", f"SLACK_BOT_TOKEN_{suffix}"
 
 
 def refuse_wrong_class(token, var_name):
     """Exit loudly when a prefix proves this token can never read a message."""
-    for prefix, (label, origin) in WRONG_TOKEX_CLASS.items():
+    for prefix, (label, origin) in WRONG_TOKEN_CLASS.items():
         if token.startswith(prefix):
             sys.stderr.write(
                 f"{var_name} holds a {label} token ({prefix}...), which can "
@@ -190,7 +157,7 @@ def refuse_wrong_class(token, var_name):
 # ----------------------------------------------------------------------------
 # Auth & transport
 # ----------------------------------------------------------------------------
-def get_token(mode, user_var="SLACK_USER_TOKEX", bot_var="SLACK_BOT_TOKEX"):
+def get_token(mode, user_var="SLACK_USER_TOKEN", bot_var="SLACK_BOT_TOKEN"):
     """Resolve the right token for the mode, failing loud and named.
 
     SEARCH needs a user token (bot tokens cannot call search.messages). For
@@ -216,7 +183,7 @@ def get_token(mode, user_var="SLACK_USER_TOKEX", bot_var="SLACK_BOT_TOKEX"):
         return user, "user"
     if bot:
         return bot, "bot"
-    # THE FRONT DOOR NAMED THE WRONG TOKEX (convicted 2026-08-27, by the whole
+    # THE FRONT DOOR NAMED THE WRONG TOKEN (convicted 2026-08-27, by the whole
     # week). This branch fires when NOTHING is set -- the earliest moment a
     # stranger, or a fresh machine, or the operator after a revoke, meets this
     # connector -- and it said "copy the bot token (xoxb-...)". A bot reads
@@ -292,7 +259,7 @@ def call(client, method, params=None):
             # operator back to the scopes page -- where no grant could ever
             # have helped, because Slack refused the token's CLASS before it
             # looked at a single scope.
-            hint = ("\nHint: WRONG TOKEX CLASS -- not a scope problem, and no "
+            hint = ("\nHint: WRONG TOKEN CLASS -- not a scope problem, and no "
                     "grant can fix it. conversations.* needs a WORKSPACE token "
                     "(xoxp- user, or xoxb- bot) copied from OAuth & Permissions. "
                     "An app-level token (xapp-, minted on Basic Information), a "
@@ -481,7 +448,7 @@ def scope_clause(granted):
     return f" | {len(have)} scope(s), LIST+FETCH covered{extra}"
 
 
-def check(user_var="SLACK_USER_TOKEX", bot_var="SLACK_BOT_TOKEX"):
+def check(user_var="SLACK_USER_TOKEN", bot_var="SLACK_BOT_TOKEN"):
     """SELECT 1 for the wallet board: exit 0 GREEN, exit 1 RED.
 
     ONE row, not two. A bot token that cannot call search.messages is not a
@@ -517,7 +484,7 @@ def check(user_var="SLACK_USER_TOKEX", bot_var="SLACK_BOT_TOKEX"):
     # last sentence. refuse_wrong_class is the right message for a human at a
     # terminal and the wrong SHAPE for a table row; this is the board's
     # spelling of the same finding.
-    for prefix, (label, origin) in WRONG_TOKEX_CLASS.items():
+    for prefix, (label, origin) in WRONG_TOKEN_CLASS.items():
         if token.startswith(prefix):
             sys.stderr.write(
                 f"slack RED gate1: that is a {label} token ({prefix}...), "
@@ -545,7 +512,7 @@ def check(user_var="SLACK_USER_TOKEX", bot_var="SLACK_BOT_TOKEX"):
             f"slack RED gate2: {kind} token rejected "
             f"({data.get('error', 'unknown_error')})\n")
         return 1
-    # GATE 3 -- IS THIS A WORKSPACE TOKEX AT ALL? auth.test needs no scopes and
+    # GATE 3 -- IS THIS A WORKSPACE TOKEN AT ALL? auth.test needs no scopes and
     # succeeds for token classes that can never touch conversations.*, and it
     # answers those with NO user field. Witnessed 2026-08-26: an app-level token
     # (scopes connections:write, authorizations:read, app_configurations:write)
@@ -605,7 +572,7 @@ def main():
                              'exit 0, or one gate-named RED line on stderr and '
                              'exit 1. Never interactive.')
     parser.add_argument('-w', '--workspace', default=None,
-                        help='Read SLACK_USER_TOKEX_<NAME> / SLACK_BOT_TOKEX_<NAME> '
+                        help='Read SLACK_USER_TOKEN_<NAME> / SLACK_BOT_TOKEN_<NAME> '
                              'instead of the bare pair, with no fallback. '
                              '`-w pipulate` is the control workspace; bare is '
                              'the pair the wallet warms.')
@@ -654,7 +621,7 @@ def main():
     # A HINT, NEVER A REFUSAL, and that is the whole design. A workspace may
     # legitimately contain a channel named #warm, so refusing would break a
     # real invocation to protect against a typo -- the same fail-open polarity
-    # WRONG_TOKEX_CLASS uses for prefixes it does not recognize. This writes
+    # WRONG_TOKEN_CLASS uses for prefixes it does not recognize. This writes
     # one line to stderr and falls straight through; if the channel exists it
     # is fetched exactly as before, and the note reads as a note.
     # LOCAL, AND USED ONCE. Module scope was rejected: nothing imports this,
