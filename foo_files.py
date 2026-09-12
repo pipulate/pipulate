@@ -1284,39 +1284,85 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # It is also the portion that mostly comprises the "Prompt Fu" (not FastHTML) side of this system and should always be in `adhoc.txt`.
 
 # --- START `adhoc.txt` TEMPLATE ---
-
-# adhoc.txt    _   _   _ to set context____ _   _  ___  ____  _   Simpson Couch Gag Here (explain anything to the audience you feel needs it explained)G
+# AD HOC CHOP! The Not-Managed-by-Git Safe-for-Client-Data place. Insert Simpson Couch Gag in white space  below (explain anything to the audience you feel needs it explained)G
+# adhoc.txt    _   _   _               ____ _   _  ___  ____  _   
 #     / \   __| | | | | | ___   ___   / ___| | | |/ _ \|  _ \| |  
-# ahe/ _ \ / _` | | |_| |/ _ \ / __| | |   | |_| | | | | |_) | |  My first blind taste test fan-out
-# ahc ___ \ (_| | |  _  | (_) | (__  | |___|  _  | |_| |  __/|_|  I think the blind fan-out was a success
-#  /_/   \_\__,_| |_| |_|\___/ \___|  \____|_| |_|\___/|_|   (_)  And I may do this more often
-# Ad Hoc CHOP: The Not-Managed-by-Git Safe-for-Client-Data place  
+# ahe/ _ \ / _` | | |_| |/ _ \ / __| | |   | |_| | | | | |_) | |  
+# ahc ___ \ (_| | |  _  | (_) | (__  | |___|  _  | |_| |  __/|_|   
+#  /_/   \_\__,_| |_| |_|\___/ \___|  \____|_| |_|\___/|_|   (_)  
 
-# | Reach for | When | Switch when |
-# |---|---|---|
-# | `!URL` | Public page; what a stranger or crawler sees; the BEFORE of a login-wall diagnosis | It shows a login page → `warm URL` once, then `?URL` |
-# | `?URL` | Anything behind a login, on the site's persistent profile; `check URL` first | The lenses show a shell (nav, an `[Iframe]` leaf, no content) → read the wire truth for the XHR the frame makes, then call that API with a connector |
-# | `@URL` | Every re-read of a page already scraped; no browser, no network | The cached page is stale or was a login wall → fresh `!` or `?` |
-# | `$URL` | Exact markup: meta tags, a JSON blob in a `<script>` | — (token-heavy; needs a prior scrape) |
-# | `%URL` | The network log distilled; SPA endpoint discovery | It re-serves the wire truth you already have → the API |
-# | `! cmd` | Any bounded, non-interactive command as a live receipt | — (cap it with `-n`; no aliases, no prompts) |
-# | Connector | The number you want is one GET away | LIST until the thing isn't in the list → FETCH by id → DRILL the path the app's own frame called → `--grep` to narrow a list or find a leaf |
+# To Human: WELCOME TO VIM! It's really NeoVim but I say vim anyway.
+# To AI: This is an alternate 40K view to the big book-ore rolling pin spine.
+
+# The first thing you need to know here is that everything that comes after the
+# hash symbol (#) is commented out — and that's EVERYTHING in this file's default
+# state. Begin editing-in lines for inclusion as part of the context or adding
+# chunks of new context at the bottom. `Ctrl`+`v`, `j` (repeatedly), `l` (to move
+# right), `d` (to delete). Reverse that with `Ctrl`+`v`, `j` (repeatedly),
+# `Shift`+`i`, `# `, `Esc` to put the hashes back. You can just arrow-key around
+# here with `h`, `j`, `k`, `l`. Save-and-quit is a bit tricky because another
+# file is also loaded: `Esc`, `:`, `q`, `w`, `!`
+
+# If this is stressing you out and you're a quitter and want to quit, just type:
+# `Esc`, `:`, `q`, `!`, `Enter`. That will exit without saving any changes. If
+# you want to get over this hump, type: `Esc`, `:`, `T`, `u`, `t`, `o`, `r`, `Enter`.
+
+# This file is just to make it easy having options of what to edit into context.
+# You can use whatever text-file you want to stack file-names and commands to
+# build an output text-file with the identically stacked output of each file or
+# command. In this way we vertically append or "stack" a bunch of text; simple as
+# that. If you understand this concept, you're on your way to future-proofing
+# yourself in the Age of AI. Congratulations! Here is how to include web pages:
+
+#    !URL  --------------------------------------------------------------------
+#      when    Public page; what a stranger or crawler sees; the BEFORE of a
+#              login-wall diagnosis
+#      switch  It shows a login page -> `warm URL` once, then `?URL`
+#    
+#    ?URL  --------------------------------------------------------------------
+#      when    Anything behind a login, on the site's persistent profile;
+#              `check URL` first
+#      switch  The lenses show a shell (nav, an `[Iframe]` leaf, no content) ->
+#              read the wire truth for the XHR the frame makes, then call that
+#              API with a connector
+#    
+#    @URL  --------------------------------------------------------------------
+#      when    Every re-read of a page already scraped; no browser, no network
+#      switch  The cached page is stale or was a login wall -> fresh `!` or `?`
+#    
+#    $URL  --------------------------------------------------------------------
+#      when    Exact markup: meta tags, a JSON blob in a `<script>`
+#      note    Token-heavy; needs a prior scrape
+#    
+#    %URL  --------------------------------------------------------------------
+#      when    The network log distilled; SPA endpoint discovery
+#      switch  It re-serves the wire truth you already have -> the API
+#    
+#    ! cmd  -------------------------------------------------------------------
+#      when    Any bounded, non-interactive command as a live receipt
+#      note    Cap it with `-n`; no aliases, no prompts
+#    
+#    Connector  ---------------------------------------------------------------
+#      when    The number you want is one GET away
+#      switch  LIST until the thing isn't in the list -> FETCH by id -> DRILL
+#              the path the app's own frame called -> `--grep` to narrow a list
+#              or find a leaf
 
 # Every step is one argument longer than the last; the moment a lens shows less than the wire does is the moment to stop scraping.
 
-# OPTIONAL BUT BIG FOR FULL CONTEXT-WINDOW STORYTELLING
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- The "Rolling Pin" that gives the 40K foot book-spine view of book-ore.
-# GLOSSARY.md                 # <-- Like the back of a J.R.R. Tolkien book but always growing in size as `prompt_foo.py` gets scars and shrinks.
-# scripts/articles/lsa.py     # <-- 2nd Brain query-engine for `rgx`, `rgxc` & `posts` Jekyll-inspired Memory Externalization for Hackers.
+# STORYTELLING: OPTIONAL, BIG 40K-FOOT VIEW
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- ROLLING PIN that gives the 40K foot book-spine view of book-ore (only works for me because of local-only git repo)
+# GLOSSARY.md                 # <-- Terms defined like back of J.R.R. Tolkien book, grows as `prompt_foo.py` gets scars and shrinks.
+# scripts/articles/lsa.py     # <-- 2ND BRAIN: Search external memory with `rgx`, `rgxc` & `posts` Blogging for Hackers Jekyll-compatible.
 # ~/repos/nixos/autognome.py  # <-- Letting the AIs really understand my environment (The Brave Little Tailor punches above Their Weight Class proving the dunning-kruger effect the gate-keeper's (lower-case) lament.)
-# init.lua                    # <-- Daily driver hot-keys that overlap with aliases in flake.nix. `<leader>m` makes it Science (this process)!
  
 # STILL BIG BUT LESS OPTIONAL (especially flake.nix)
+# init.lua                    # <-- Daily driver hot-keys that overlap with aliases in flake.nix. `<leader>m` makes it Science (this process)!
 # flake.nix                   # <-- THE ONE BIG THING TO INCLUDE Infrastructure as Code (IaC) tells LLM about your system down to the metal
-# prompt_foo.py               # <-- This very content-compiling system
-# foo_files.py                # <-- This is the router, evolving book outline and the things you pin-up to produced the recursive self-improvement loops
+# prompt_foo.py               # <-- THIS SYSTEM
+# foo_files.py                # <-- MAIN ROUTER FILE (alternative to this one)
 
-# TINY ILLUMINATING (OK to include every time / automatically = `apply.py`, `.gitignore`, `.gitattributes`)
+# TINY BUT EXCELLENT FOR "THIS SYSTEM" CONTEXT (OK to include every time / automatically = `apply.py`, `.gitignore`, `.gitattributes`)
 # requirements.in             # <-- All known dependencies and (necessary) version pinning. WORA gotcha's exposed.
 # __init__.py                 # <-- Master versioning
 # pyproject.toml              # <-- The PyPI Packaging details
@@ -1328,7 +1374,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
 # scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
 # scripts/webclip_2_markdown.py  # <-- Surprisingly important program.
-
  
 # MISCELLANEOUS (rare to include but sometimes critical)
 # scripts/foo_cartridge.py    # Needs description
@@ -1348,7 +1393,12 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # --- START THIS DISCUSSION ---
 
+# Get things started here! Guess at what context should be included.
+# If you get it wrong, you're just wasting 1-turn because the AI will help.
+# Un-comment lines, add lines with absolute-path filenames or `! ` commands. 
+
 # Context 1 (Edit-in selections from above and add new files immediately below)
+# HINT: move cursor to this line and hit `d`, `d` in rapid succession then hit `i` and start typing.
 
 # --- END `adhoc.txt` TEMPLATE ---
 
