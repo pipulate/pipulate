@@ -92,7 +92,7 @@
 #            authorizes a SEQUENCE, a fence authorizes each WRITE, and the
 #            unfenced capture lane already exists under other names.
 #
-# EXIT CODES: 0 rode or stopped cleanly | 1 usage / no workshop | 2 trail refusal
+# EXIT CODES: 0 rode or explicit stop; nonzero usage, refusal, input or rider failure.
 if [ -z "${BASH_VERSION:-}" ]; then
   echo "Error: this script requires bash. Re-run with:"
   echo "   curl -fsSL https://pipulate.com/mck.sh | bash"
@@ -506,11 +506,15 @@ run_rider() {
     run_wrapped "$PY" scripts/mother_cat.py "$TRAIL_PATH" "$@"
   fi
 }
+# PRACTICE HAS NO INPUT CHECKPOINT (2026-09-15, deed 1417): the installed
+# player left inherited stdin nonblocking. Both rehearsals get /dev/null,
+# not the menu or caller input; fd 3 is closed in the child as well. This
+# does not change shared voice callers or the real ride's /dev/tty input.
 if [ "$YOLO" -eq 1 ]; then
   echo "--yolo: real walk; CAPTURE and DECANT are still required."
 elif [ "${PIPULATE_MCK_ASSUME_YES:-0}" = "1" ]; then
   echo "ASSUME_YES: practice, then the real walk; CAPTURE and DECANT still required."
-  run_rider --dry-narrate
+  run_rider --dry-narrate </dev/null 3<&-
 else
   if ! { exec 3</dev/tty; } 2>/dev/null; then
     echo "No controlling terminal; run walk from a terminal." >&2
@@ -522,23 +526,21 @@ else
     printf '  2  Walk the walk  - open the browser; CAPTURE and DECANT still required.\n'
     printf '  q  Exit (Enter also exits).\nChoice: '
     ANSWER=""
-    # BANKED 2026-09-15 -- THE FIXTURE STOPPED BEFORE THE INTERACTION:
-    # Ten marker-only menu cases passed; actual practice returned with
-    # "read error: Resource temporarily unavailable" before any q response.
-    # This branch then called the failure a clean stop and returned zero.
-    # TODO: reproduce across real narration and distinguish input errors
-    # from EOF. Both playback Popen calls omit stdin: a lead, not a cause
-    # established. No blind retry or success claim from marker-only tests.
-    if ! IFS= read -r ANSWER <&3; then
-      printf '\nStopped. No real walk started.\n'
+    # Preserve failure instead of converting it into a successful stop.
+    # Bash read does not expose errno here: EOF and read errors both stop
+    # nonzero; only a successfully read q/Q or blank line is a clean exit.
+    READ_RC=0
+    IFS= read -r ANSWER <&3 || READ_RC=$?
+    if [ "$READ_RC" -ne 0 ]; then
+      printf '\nMenu input ended or failed (read exit %s). No real walk started.\n' "$READ_RC" >&2
       exec 3<&-
-      exit 0
+      exit "$READ_RC"
     fi
     case "$ANSWER" in
       1)
         echo "Practice walk: no browser or page capture."
         PRACTICE_RC=0
-        run_rider --dry-narrate <&3 3<&- || PRACTICE_RC=$?
+        run_rider --dry-narrate </dev/null 3<&- || PRACTICE_RC=$?
         if [ "$PRACTICE_RC" -ne 0 ]; then
           echo "Practice stopped (exit $PRACTICE_RC). No real walk started." >&2
           exec 3<&-
