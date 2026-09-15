@@ -14,8 +14,17 @@
 </style>
 </head>
 <body>
-<p>Stop 3 of 3</p>
-<h1>This page has two versions.</h1>
+<p>Page 3 of 3</p>
+<h1>Last page.</h1>
+<p>Return to the terminal. When it shows <code>CAPTURE&gt;</code>, type:</p>
+<p class="word">CAPTURE</p>
+<p>Press Enter, then read the result in the terminal.</p>
+<p>After the checks pass, the normal walk tries to save and copy a summary. The terminal tells you what worked.</p>
+<p>A saved summary and a successful copy are separate results. Nothing is sent to a chatbot. Review the summary before sharing it.</p>
+<hr>
+<h2>Optional: after the walk</h2>
+<p>You can stop here. The rest is an extra test, not another step.</p>
+<h3>One page, two versions</h3>
 <div id="sentence" class="box"><p>The server sent this sentence. Checkword: periwinkle.</p></div>
 <script>
 var box = document.getElementById("sentence");
@@ -24,17 +33,12 @@ var added = document.createElement("p");
 added.textContent = "Your browser also added this paragraph. The server never sent it.";
 box.appendChild(added);
 </script>
-<p>The box above is not what the server sent. One small script, the only script on any stop of this walk, replaced the server's sentence and added a paragraph after the page arrived. Most of the web does this kind of thing without saying so.</p>
-<p>The server's sentence carried a <strong>checkword</strong>, one ordinary English word. You cannot see it on this page, because the script removed it before the page reached your eyes. It is not a secret: anyone who reads this page's source can find it. It is a label, so you can tell which version of the page a sentence came from.</p>
-<p>Go back to the first terminal and type:</p>
-<p class="word">CAPTURE</p>
-<p>The program will then put together a short preview of what this walk saved and ask for one more word, <strong>DECANT</strong>. Type it, and the preview goes to your clipboard. The program uploads nothing, and the preview reaches your clipboard only if you type that word.</p>
-<h2>The test</h2>
-<p>Paste the preview into the chatbot you started with and ask:</p>
+<p>A small script changed the box after this page arrived. The server's version had a checkword. The version you see does not show it.</p>
+<p>After the walk, you can give a chatbot the saved summary and ask:</p>
 <pre>What is the checkword in the sentence the server sent on stop three?</pre>
-<p>Then check the answer against a file the chatbot cannot change. The preview lists the files saved at each stop under <em>artifacts on disk</em>. Under the third stop, open the one whose path ends in <code>source.html</code>. That is the page exactly as the server sent it. Search it for the word checkword followed by a colon; the word after that is the answer. The file whose path ends in <code>hydrated_dom.html</code> is the page your browser built, and the server's sentence is not in it.</p>
-<p>The preview is trimmed, and it may not carry the server's sentence at all. If it does not, a good answer says so. If the chatbot names a word anyway, compare that word with the file. Either way, the file decides. When you check it, you have tested a machine's account against a record the machine could not edit.</p>
-<hr>
-<p>The terminal named this walk before the first stop. A walk is one small file of addresses and spoken words. Copy it, change the addresses and the words, and you have written a walk of your own.</p>
+<p>Check its answer yourself. In the summary, find the third page's file ending in <code>source.html</code>. Open it and search for <code>Checkword:</code>. The word after the colon is the answer.</p>
+<p>The summary may be trimmed. If the sentence is missing, the chatbot should say so rather than guess. Compare any answer with the saved file.</p>
+<p>This is optional. You have already finished the walk.</p>
+<p>These instructions describe starting with <code>walk</code> and choosing 2. Other ways to start the program may still ask for <code>DECANT</code>. Follow your terminal.</p>
 </body>
 </html>

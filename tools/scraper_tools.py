@@ -266,7 +266,7 @@ def _capture_checkpoint(stdin=None, stdout=None) -> dict:
 
         try:
             output_stream.write(
-                "\nNavigate in the visible browser, then type CAPTURE and press Enter.\n"
+                "\nWhen the page you want is ready, type CAPTURE and press Enter.\n"
                 "Any other response aborts without capturing artifacts.\n"
                 "CAPTURE> "
             )

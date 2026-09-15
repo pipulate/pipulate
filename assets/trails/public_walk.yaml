@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "name": "public_walk",
-  "description": "Welcome to the public walk. It has three short pages, with nothing to log in to and nothing to set up. At each stop a browser will open on one page. Read the page, then come back to this terminal and type the word CAPTURE when it asks.",
+  "description": "This walk opens three pages. You do not need to click anything. At each page, return here and wait for the CAPTURE prompt. Type CAPTURE and press Enter.",
   "defaults": {
     "take_screenshot": false,
     "headless": false,
@@ -16,7 +16,7 @@
     {
       "name": "the_word",
       "label": "The capture word",
-      "guidance": "Stop one of three. A browser will open on a plain page with no script on it. The page will explain the one word this walk asks of you. When you have read it, come back to this terminal and type CAPTURE when it asks.",
+      "guidance": "I'll open page one. When it is ready, return here. At the CAPTURE prompt, type CAPTURE and press Enter.",
       "url": "https://npvg.org/walk/1/",
       "target_slot": "slot_one",
       "harvest_regex": ".+",
@@ -28,8 +28,8 @@
     },
     {
       "name": "the_receipt",
-      "label": "The fingerprints",
-      "guidance": "Stop two of three. By the time the next page opens, the first page will have been saved, with a fingerprint for every file. The page will show you one command that counts those fingerprints, so you can check the terminal's report for yourself. When you have tried it, type CAPTURE.",
+      "label": "Page two",
+      "guidance": "I'll open page two. When it is ready, return here. At the CAPTURE prompt, type CAPTURE and press Enter.",
       "url": "https://npvg.org/walk/2/",
       "target_slot": "slot_two",
       "harvest_regex": ".+",
@@ -42,7 +42,7 @@
     {
       "name": "the_two_pages",
       "label": "Two versions of one page",
-      "guidance": "Stop three of three, the last. This page will change itself after it loads, so the page the server sends and the page your browser shows will not match. Type CAPTURE, and the program will ask for one more word, DECANT, before anything goes to your clipboard. The page will say what to do with the result.",
+      "guidance": "I'll open the last page. When it is ready, return here. At the CAPTURE prompt, type CAPTURE and press Enter. Then read the result here.",
       "url": "https://npvg.org/walk/3/",
       "target_slot": "slot_three",
       "harvest_regex": ".+",
