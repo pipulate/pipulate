@@ -376,7 +376,12 @@ fi
 # launcher the same thing.
 TRAIL_SEARCH_DIRS="Notebooks/Playground/trails Notebooks/Shared/trails assets/trails"
 TRAIL_PATH=""
+# Reserved explicit name; a missing private plan must not fall back to a demo.
+if [ "$TRAIL_NAME" = "plan" ]; then
+  TRAIL_PATH="$("$PY" scripts/mother_cat.py --plan-path)"
+fi
 for TRAIL_DIR in $TRAIL_SEARCH_DIRS; do
+  [ -z "$TRAIL_PATH" ] || break
   if [ -f "$TRAIL_DIR/${TRAIL_NAME}.yaml" ]; then
     TRAIL_PATH="$TRAIL_DIR/${TRAIL_NAME}.yaml"
     break
