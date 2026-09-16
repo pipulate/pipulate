@@ -25,15 +25,26 @@ sentences would cost seconds and could fail outright on absent credentials.
 ast.get_docstring reads the file as text and cares about none of that --
 the same technique prompt_foo.py's generate_tool_roster() uses on tools/*.
 
-NO NUMBERS, DELIBERATELY. An earlier version numbered these rows and bound
-bare 1..9 in flake.nix to dispatch them. It could not work: most roster
-words are shell ALIASES, and bash expands an alias only when it is the
-literal first word a parser reads -- never when it arrives through a
-variable, which is what any dispatcher must do. Row 8 (`pu`, a FUNCTION)
-would have run while rows 1-7 printed command-not-found, and half a menu
-working for a reason invisible from the menu is worse than no numbers at
-all. The words ARE the interface. See THE ALIAS-DISPATCH RULE in
-foo_files.py before adding any shortcut layer over this list.
+NO NUMBERS, DELIBERATELY -- AND THE PREMISE IS RETIRED 2026-09-16, THE
+CONCLUSION IS NOT. An earlier version numbered these rows and bound bare
+1..9 in flake.nix to dispatch them. It could not work: most roster words
+were shell ALIASES, and bash expands an alias only when it is the literal
+first word a parser reads -- never when it arrives through a variable,
+which is what any dispatcher must do. Row 8 (`pu`, a FUNCTION) would have
+run while rows 1-7 printed command-not-found. THAT REASON IS NOW GONE:
+botify, confluence, jira, slack, email and sheets became writeShellScriptBin
+DERIVATIONS on PATH (THE THREE-TIER AMENDMENT's third tier), and a
+derivation resolves through a variable like any other program on PATH.
+WHAT REPLACED IT IS WORSE. `pu` is still a shell FUNCTION, nothing in this
+file knows or checks a row's tier, and nothing stops a future row from
+being a function again -- so numbering would now work for MOST rows and
+fail for the rest. INTERMITTENT beats TOTAL for the person who wrote it and
+loses badly for everyone else: a total failure is diagnosed on the first
+keystroke, while a menu that dispatches most of its rows teaches a stranger
+that the numbers work, and lets them find the exception at the worst
+moment. The words ARE the interface. See THE ALIAS-DISPATCH RULE and THE
+THREE-TIER AMENDMENT in foo_files.py before adding any shortcut layer over
+this list.
 
 Exit code is always 0. This is a display, not a decision; nothing parses it.
 """
