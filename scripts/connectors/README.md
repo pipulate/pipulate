@@ -57,6 +57,19 @@ blocks are documentation-as-data. Eventually a connectors.nix emits this
 file blogs.nix-style: mechanism in the Nix store, data at runtime, secrets
 in neither.
 
+THE FLAKE IS A CONSUMER OF `defaults`, and for an env kind that changes what a
+`defaults` KEY means. flake.nix's WALLET HYDRATOR reads this file at shell
+entry and exports every slot's `defaults` entries as environment variables,
+never overwriting anything already set. So for a `bearer_token` or `basic_auth`
+slot the keys are ENV VAR NAMES -- which is also how `wallet.py`'s `warm` reads
+them, printing `defaults[var]` as the example for `var`. A connector wanting a
+non-secret default therefore adds NO reader at all: it declares the variable
+name under `defaults`, calls `os.getenv` for it, and the resolution order above
+holds unchanged. The file kinds are the other shape: `mcp_oauth`'s
+`defaults.resource` and `browser_session`'s `defaults.site` are read straight
+out of the JSON by Python, because a token path and a login URL are not things
+a shell should export. Say which shape a new slot is before adding a key to it.
+
 Auth kinds: oauth_token_file (gmail), bearer_token (botify), basic_auth
 (confluence), service_account_file (gsc), browser_session (botify_browser,
 semrush — a persistent Chrome profile under data/uc_profiles/<name>, warmed by
