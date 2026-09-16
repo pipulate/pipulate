@@ -189,6 +189,19 @@ def normalize_query(arg):
     for part in reversed(parts):
         if ISSUE_KEY_RE.match(part):
             return part
+    # THE BOARD URL WORKS, AND SILENTLY DROPS THE BOARD (named 2026-09-16).
+    # A board address is .../jira/software/c/projects/PROJ/boards/123, so
+    # `projects` is in parts and PROJ matches PROJECT_KEY_RE: this returns
+    # PROJ and main() routes to list_project_issues. That is not a failure
+    # and it is not the board either. The /boards/123 half -- the ONLY part
+    # carrying the saved filter the human meant -- is discarded without a
+    # word, and what comes back is the whole project ordered by updated
+    # DESC. THE DISCRIMINATION QUESTION, failing inside a return value: the
+    # output is byte-identical to `jira PROJ`, so nothing on screen can tell
+    # the board they asked for from the project they got, and the refusal
+    # message above even lists this URL shape as RECOGNIZED, which it is --
+    # as a project key. Whoever lands the scope slot should decide here
+    # whether a /boards/<id> segment says so out loud or resolves.
     for marker in ('projects', 'browse'):
         if marker in parts:
             index = parts.index(marker)
