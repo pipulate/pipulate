@@ -1513,10 +1513,15 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # cpr "your question" compiles the router with that question as the
           # prompt; bare cpr reads prompt.md, exactly as ahc does. FUNCTIONS, per
           # THE THREE-TIER AMENDMENT: typed by a human, never echoed as a probe;
-          # the compile lane witnesses them in the generated hook text. epr takes
-          # EDITOR, then nvim, then vim, then vi, so a machine with no nvim still
-          # opens the file.
-          epr() { (cd "$PIPULATE_ROOT" && "''${EDITOR:-$(command -v nvim || command -v vim || echo vi)}" "$(_walkrouter)"); }
+          # the compile lane witnesses them in the generated hook text. epr opens
+          # TWO files in one split, the way ahe opens two: the prompt router on
+          # top and prompt.md beneath it, the question's home, so a newcomer
+          # never needs the clipboard word `prompt`. Ctrl-W j moves down, :wqa
+          # saves both. Bare cpr reads that prompt.md exactly as bare ahc does;
+          # the positional (cpr "smoke") exists for probes and is nobody's
+          # spelling. nvim, then vim, then vi: -o is a vi-family flag, so EDITOR
+          # is not consulted here, and the flake pins no editor at all.
+          epr() { (cd "$PIPULATE_ROOT" && "$(command -v nvim || command -v vim || echo vi)" -o "$(_walkrouter)" "$PIPULATE_ROOT/prompt.md"); }
           cpr() { (cd "$PIPULATE_ROOT" && PIPULATE_ADHOC_FILE="$(_walkrouter)" python prompt_foo.py "$@" --chop ADHOC_CHOP --no-tree); }
           # THE IDEATION DOOR: `idea` compiles IDEATION_CHOP (the constitution's
           # two forcing-function rules) primed for a 30-and-3 / axis-forcing
