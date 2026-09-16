@@ -1493,7 +1493,17 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # A FUNCTION, not an alias, per the release conviction of
           # 2026-08-01: an alias body ending in a paren reports a syntax error
           # at the trailing argument the operator typed.
-          ahcw() { (cd "$PIPULATE_ROOT" && PIPULATE_ADHOC_FILE="$PIPULATE_ROOT/adhocwalk.txt" python prompt_foo.py --chop ADHOC_CHOP --no-tree "$@"); }
+          # THE WALK ROUTER LIVES BESIDE THE HUMAN ROUTER (convicted 2026-09-16,
+          # two transcripts): mother_cat._write_walk_router derives its target
+          # from PIPULATE_ADHOC_FILE -- default $PIPULATE_ROOT/adhoc.txt -- and
+          # swaps the filename, so a shell that points the variable outside
+          # the worktree gets adhocwalk.txt outside the worktree too. The old
+          # spelling here named $PIPULATE_ROOT/adhocwalk.txt outright, which is
+          # where the file lands only while the variable is UNSET: right on a
+          # fresh Mac install, ROUTER REFUSED on the machine that set it. One
+          # derivation, the writer's, spelled once and read by every word below.
+          _walkrouter() { printf '%s/adhocwalk.txt\n' "$(dirname "''${PIPULATE_ADHOC_FILE:-$PIPULATE_ROOT/adhoc.txt}")"; }
+          ahcw() { (cd "$PIPULATE_ROOT" && PIPULATE_ADHOC_FILE="$(_walkrouter)" python prompt_foo.py --chop ADHOC_CHOP --no-tree "$@"); }
           # THE IDEATION DOOR: `idea` compiles IDEATION_CHOP (the constitution's
           # two forcing-function rules) primed for a 30-and-3 / axis-forcing
           # fan-out turn. A function, not an alias, so --profile/--reason pass
