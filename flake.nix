@@ -583,7 +583,7 @@
           dig
           whois
           ffmpeg
-        ] ++ (with pkgs; pkgs.lib.optionals isLinux [
+        ] ++ connectorCommands ++ (with pkgs; pkgs.lib.optionals isLinux [
           # PLATFORM GATE (macOS-convicted 2026-08-04, first-contact receipt):
           # nixpkgs marks alsa-utils *-linux ONLY, so an unconditional entry in
           # commonPackages made `nix develop` REFUSE TO EVALUATE on
