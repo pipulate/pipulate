@@ -1423,8 +1423,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # one per API, each a self-contained file in scripts/connectors/.
           # Args pass through: `botify org/project`, `confluence ENG`,
           # `gmail <thread_id>`. Interactive-shell only — adhoc.txt `!` lines
-          # keep the full `python scripts/connectors/...` spelling because
-          # child shells never inherit aliases.
+          # ride as DERIVATIONS in commonPackages above, so the short spelling
+          # is legal everywhere -- a router line is now `! jira SWCX-1234`.
           alias gmail='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/gmail.py"'
           # `email` is the New-B-facing name for the same connector. `gmail`
           # stays, because the filename and the muscle memory both say gmail.
