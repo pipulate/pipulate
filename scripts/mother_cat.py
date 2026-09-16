@@ -875,6 +875,16 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
             print("   Read the save and copy messages above; either step can fail.")
             print("   Review the summary before sharing it. You choose what to send.")
         # The archive file line was printed when its status was banked.
+        if intro:
+            closing = (
+                "The three-page walk is finished. "
+                "Read the save and copy results in your terminal. "
+                "Review any summary before sharing it. Goodbye."
+                if decanted else
+                "The capture run is finished, but the summary was withheld. "
+                "Read the results in your terminal. Goodbye."
+            )
+            _narrate(closing, disclosed)
     return 0
 
 
