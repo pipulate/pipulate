@@ -296,8 +296,26 @@ def _bank_capture(archive, trail, index, stop, params, result):
     return problems
 
 
-def _write_walk_router(archive_path):
-    """Replace one local selection; never read, disclose or compile its evidence."""
+def _router_line(path, what):
+    """One absolute path as one router line, or refuse: the grammar has no escapes."""
+    text = str(path)
+    if (not Path(text).is_absolute() or text.splitlines() != [text]
+            or "#" in text or "<--" in text):
+        raise ValueError(f"{what} path cannot be represented as one router file line")
+    return text
+
+
+def _write_walk_router(archive_path, preview_path=None):
+    """Replace one local selection; never read, disclose or compile its evidence.
+
+    THE ROUTER IS THE NEWCOMER'S FILE (2026-09-16): `epr` opens it, so it is
+    replaced ONLY while it is a file this writer could have produced -- one
+    uncommented absolute path to an archive or a preview and nothing else. Any
+    other uncommented line is a human's; the new paths are printed for them
+    and nothing is touched. With a preview, the preview is the line that rides
+    and the archive is a commented line beneath it; without one, the archive
+    rides alone, labelled UNSANITIZED.
+    """
     selected = os.environ.get("PIPULATE_ADHOC_FILE", str(REPO_ROOT / "adhoc.txt"))
     if not selected.strip():
         raise ValueError("PIPULATE_ADHOC_FILE is empty")
@@ -309,11 +327,35 @@ def _write_walk_router(archive_path):
     if (target.is_symlink() or target.resolve() == human.resolve()
             or (target.exists() and human.exists() and target.samefile(human))):
         raise ValueError("walk router aliases the human router or is a symlink")
-    source = str(archive_path)
-    # The existing router grammar has no escape for these separators.
-    if (not Path(source).is_absolute() or source.splitlines() != [source]
-            or "#" in source or "<--" in source):
-        raise ValueError("capture path cannot be represented as one router file line")
+    source = _router_line(archive_path, "capture")
+    preview = None if preview_path is None else _router_line(preview_path, "preview")
+    # REPLACE ONLY A FILE THIS WRITER COULD HAVE WRITTEN: one uncommented
+    # absolute path to an archive or a preview, and nothing else. Any other
+    # uncommented line is a human's, so the paths are printed for them instead.
+    if target.is_file():
+        owned = [line.strip() for line in target.read_text(encoding="utf-8").splitlines()
+                 if line.strip() and not line.lstrip().startswith("#")]
+        if owned and (len(owned) != 1 or not owned[0].startswith("/")
+                      or not owned[0].endswith(("captures.md", "decant-preview.md"))):
+            raise ValueError(
+                "hand-edited router kept, nothing written; add the line(s) yourself: "
+                + " ".join(line for line in (preview, source) if line)
+                + " (or delete the file and the next walk rewrites it)")
+    head = (
+        "# Written by the last completed walk. Edit freely: an edited router is never replaced.\n"
+        "# One line per thing the AI should see: a file path, or a command after `! `.\n"
+    )
+    if preview:
+        body = (
+            "# The checked preview rides. The whole UNSANITIZED archive is the commented line beneath it.\n"
+            f"{preview}\n"
+            f"# {source}\n"
+        )
+    else:
+        body = (
+            "# No checked preview was saved, so this is the whole UNSANITIZED archive. Review before compiling.\n"
+            f"{source}\n"
+        )
     temp = None
     try:
         with tempfile.NamedTemporaryFile(
@@ -322,12 +364,7 @@ def _write_walk_router(archive_path):
         ) as stream:
             temp = Path(stream.name)
             os.fchmod(stream.fileno(), 0o600)
-            stream.write(
-                "# Generated: last completed nonempty capture run.\n"
-                "# Replaced on completion; partial or empty runs leave this selection unchanged.\n"
-                "# UNSANITIZED local evidence; review before disclosure or compilation.\n"
-                f"{source}\n"
-            )
+            stream.write(head + body)
             stream.flush()
             os.fsync(stream.fileno())
         os.replace(temp, target)
@@ -356,9 +393,9 @@ def _finish_capture_archive(archive, status, skipped=()):
             target = _write_walk_router(archive["path"])
         except Exception as exc:
             print(f"  WALK ROUTER NOT UPDATED ({type(exc).__name__}): {exc}")
-            print("  Archive preserved; any prior adhocwalk.txt still selects an earlier run.")
+            print("  Archive preserved; the router on disk is unchanged.")
         else:
-            print(f"  WALK ROUTER  {target}  (0600; UNSANITIZED; not compiled)")
+            print(f"  WALK ROUTER  {target}  (0600; names the UNSANITIZED archive until a preview is released)")
     else:
         print("  WALK ROUTER unchanged: this run did not complete with captures.")
         print("  Any existing adhocwalk.txt still selects an earlier completed run.")
@@ -424,7 +461,7 @@ def _print_artifact_homes(captured):
             print(f"     {stop_name}: (no artifact paths recorded)")
         for home in homes:
             print(f"     {stop_name}: {home}")
-def _decant_checkpoint(payload, captured):
+def _decant_checkpoint(payload, captured, archive_path=None):
     """Refuse to release the bundle until a human types DECANT. Returns bool.
 
     THE ARMED LINE IS UNCONDITIONAL AND IT IS THE POINT. An armed gate that
@@ -491,17 +528,17 @@ def _decant_checkpoint(payload, captured):
         f"\n   AUTHORIZED by human: checking {payload_bytes:,} assembled bytes "
         "before the preview-file and clipboard attempts."
     )
-    return _decant_to_clipboard(payload)
-def _complete_preview(payload, captured, intro=False):
+    return _decant_to_clipboard(payload, archive_path=archive_path)
+def _complete_preview(payload, captured, intro=False, archive_path=None):
     """Use explicit introductory authorization, or the existing manual gate."""
     if not intro:
-        return _decant_checkpoint(payload, captured)
+        return _decant_checkpoint(payload, captured, archive_path=archive_path)
     if tuple(final_url for _, final_url, _ in captured) != INTRO_URLS:
         print("   BLOCKED: the walk left its three public pages. Summary not sent.")
         print("   The local captures remain; any older summary is unchanged.")
         return False
     print("\nChecking the summary before saving it and trying the clipboard.")
-    return _decant_to_clipboard(payload)
+    return _decant_to_clipboard(payload, archive_path=archive_path)
 
 
 def _write_decant_preview(payload):
@@ -527,7 +564,7 @@ def _write_decant_preview(payload):
     return target
 
 
-def _decant_to_clipboard(payload):
+def _decant_to_clipboard(payload, archive_path=None):
     """Check once, save locally, then attempt the existing clipboard handoff.
 
     Deferred import: prompt_foo drags tiktoken/pydot in at module load, so it is
@@ -553,6 +590,15 @@ def _decant_to_clipboard(payload):
     else:
         digest = hashlib.sha256(scrubbed.encode("utf-8")).hexdigest()
         print(f"   LOCAL PREVIEW {target} (0600; sha256={digest})")
+        # The router names the preview only once the preview exists on disk:
+        # written here, after the file, never inferred from a handoff boolean.
+        if archive_path is not None:
+            try:
+                router = _write_walk_router(archive_path, preview_path=target)
+            except Exception as exc:
+                print(f"   WALK ROUTER NOT UPDATED ({type(exc).__name__}): {exc}")
+            else:
+                print(f"   WALK ROUTER  {router}  (0600; the preview rides, the archive is commented beneath it)")
     copy_to_clipboard(scrubbed)
     return True
 
@@ -930,7 +976,7 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
         print("\nRide complete. Every stop produced a capture receipt.")
     if captured:
         payload = _decant(captured, archive["previews"], skipped)
-        decanted = _complete_preview(payload, captured, intro=intro)
+        decanted = _complete_preview(payload, captured, intro=intro, archive_path=archive["path"])
         # ATTRIBUTED-VOICE, fixed in passing because these are the exact lines
         # being rewritten: the old text asserted "copied to your clipboard"
         # UNCONDITIONALLY, one statement after calling a function that swallows
