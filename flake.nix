@@ -2164,7 +2164,24 @@ print('AI:\n', r.ai)
             alias xv='pbpaste >'
             alias prompt='(cd "$PIPULATE_ROOT" && pbpaste >prompt.md)'
             alias patch='pbpaste >patch'
-            # Added macOS equivalents for article creation
+            # MAC SHADOW PUBLISHING: same sanitizer/articleizer mechanism,
+            # deliberately no synchronized blog checkout and no publish actuator.
+            # The Mac grows independent local corpora that are disposable by design.
+            export PIPULATE_BLOGS_CONFIG="$HOME/.config/pipulate/blogs.shadow.json"
+            SHADOW_BLOG_ROOT="$HOME/.local/share/pipulate/shadow-publishing"
+            mkdir -p "$SHADOW_BLOG_ROOT/article/_posts" "$SHADOW_BLOG_ROOT/grim/_posts" "$SHADOW_BLOG_ROOT/bot/_posts" "$(dirname "$PIPULATE_BLOGS_CONFIG")"
+            if [ ! -f "$PIPULATE_BLOGS_CONFIG" ]; then
+              printf '%s\n' '{"1":{"name":"Mac Shadow - MikeLev.in","path":"~/.local/share/pipulate/shadow-publishing/article/_posts","lane":"public","alias":"article","base_url":"https://mikelev.in","permalink_prefix":"futureproof","preview_port":4001},"3":{"name":"Mac Shadow - Grimoire","path":"~/.local/share/pipulate/shadow-publishing/grim/_posts","lane":"private","alias":"grim","base_url":"http://nixos.local:4003","permalink_prefix":"futureproof","preview_port":4003},"4":{"name":"Mac Shadow - BotifyML","path":"~/.local/share/pipulate/shadow-publishing/bot/_posts","lane":"public","alias":"bot","base_url":"","permalink_prefix":"futureproof","preview_port":4004}}' > "$PIPULATE_BLOGS_CONFIG"
+            fi
+            write_post() {
+              (cd "$PIPULATE_ROOT/scripts/articles" \
+                && pbpaste >article.txt \
+                && python sanitizer.py -t "$1" \
+                && python articleizer.py -t "$1")
+            }
+            alias article='write_post 1'
+            alias grim='write_post 3'
+            alias bot='write_post 4'
             # THE BRIDGE PULL: Reach into the Z640 and suck the bridge file into the Mac clipboard
             alias pull='ssh mike@nixos.local "cat /tmp/clipboard_bridge.txt" | pbcopy && echo "✅ Z640 -> Mac Clipboard"'
             # THE BOOKMARK LOOP ON THE MAC (2026-09-10). NixOS gets `bm` and
