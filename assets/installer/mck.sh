@@ -124,6 +124,7 @@ if [ -z "$TRAIL_NAME" ] && [ "$_tpl_trail" != "$_ph_trail" ]; then
 fi
 TRAIL_NAME="${TRAIL_NAME:-public_walk}"
 TRAIL_NAME="$(basename "$TRAIL_NAME")"
+TRAIL_NAME="${TRAIL_NAME%.json}"
 TRAIL_NAME="${TRAIL_NAME%.yaml}"
 if ! printf '%s' "$TRAIL_NAME" | grep -qE '^[a-z][a-z0-9_]*$'; then
   echo "Error: trail name must match ^[a-z][a-z0-9_]*\$ -- got '$TRAIL_NAME'" >&2
@@ -382,6 +383,10 @@ if [ "$TRAIL_NAME" = "plan" ]; then
 fi
 for TRAIL_DIR in $TRAIL_SEARCH_DIRS; do
   [ -z "$TRAIL_PATH" ] || break
+  if [ -f "$TRAIL_DIR/${TRAIL_NAME}.json" ]; then
+    TRAIL_PATH="$TRAIL_DIR/${TRAIL_NAME}.json"
+    break
+  fi
   if [ -f "$TRAIL_DIR/${TRAIL_NAME}.yaml" ]; then
     TRAIL_PATH="$TRAIL_DIR/${TRAIL_NAME}.yaml"
     break
@@ -403,7 +408,7 @@ if [ -z "$TRAIL_PATH" ]; then
     # under it while four YAMLs sat in assets/trails. Guard the directory
     # AND neutralize the pipeline; either alone is enough, both is cheap.
     [ -d "$TRAIL_DIR" ] || continue
-    ls "$TRAIL_DIR"/*.yaml 2>/dev/null | sed 's#^#     #' >&2 || true
+    ls "$TRAIL_DIR"/*.json "$TRAIL_DIR"/*.yaml 2>/dev/null | sed 's#^#     #' >&2 || true
   done
   exit 1
 fi
@@ -412,7 +417,7 @@ fi
 echo "Trail resolved: $TRAIL_PATH"
 # --- EXPORTS FILE (2026-09-05): the same derivation the rider runs ---------
 # bookmark_import.py writes <name>.exports.sh beside <name>.walk.md and
-# walk_compile.py puts <name>.yaml beside both, so the file a trail needs is
+# walk_compile.py puts <name>.json beside both, so the file a trail needs is
 # a function of the trail's own path. Explicit --exports=PATH wins and a miss
 # is an ERROR, because the human named it; the sibling is next and a miss is
 # silence, because nothing promised it. A relative path resolves from the
@@ -422,9 +427,11 @@ echo "Trail resolved: $TRAIL_PATH"
 # satisfied. The rider loads the VALUES, environment over file, and is the
 # verdict; this ring stays a SUBSET of it, names and never verdicts, exactly
 # as the url_env ring already is. The line prints only when a file resolved.
+TRAIL_STEM="${TRAIL_PATH%.json}"
+TRAIL_STEM="${TRAIL_STEM%.yaml}"
 EXPORTS_PATH="$EXPORTS_OVERRIDE"
-if [ -z "$EXPORTS_PATH" ] && [ -f "${TRAIL_PATH%.yaml}.exports.sh" ]; then
-  EXPORTS_PATH="${TRAIL_PATH%.yaml}.exports.sh"
+if [ -z "$EXPORTS_PATH" ] && [ -f "$TRAIL_STEM.exports.sh" ]; then
+  EXPORTS_PATH="$TRAIL_STEM.exports.sh"
 fi
 EXPORTS_DECLARED=""
 if [ -n "$EXPORTS_PATH" ]; then
@@ -438,7 +445,7 @@ if [ -n "$EXPORTS_PATH" ]; then
   echo "Exports resolved: $EXPORTS_PATH ($EXPORTS_COUNT name(s) declared; the rider loads them, environment wins)"
 fi
 # The trail declares its own url_env names; read them from the trail. Trails
-# are the JSON subset of YAML 1.2, so json.load is correct here.
+# are JSON, so json.load is the exact parser for the authoring format.
 # ZERO VARIABLES IS A VALID ANSWER NOW. A stop may carry a literal url instead
 # of a url_env, so a whole trail can legitimately name nothing. The leading OK
 # token is what separates "the file parsed and there were none" from "the file
@@ -466,7 +473,7 @@ if [ -n "$MISSING" ]; then
     echo "     export $VAR=\"https://...\"" >&2
   done
   echo "   Set them and re-run. The trail names them; this script does not guess." >&2
-  echo "   Or put them in ${TRAIL_PATH%.yaml}.exports.sh (the shape bookmark_import.py writes), or name a file with --exports=PATH." >&2
+  echo "   Or put them in $TRAIL_STEM.exports.sh (the shape bookmark_import.py writes), or name a file with --exports=PATH." >&2
   exit 2
 fi
 # --- The ride needs the pinned chromium and the shell's LD_LIBRARY_PATH.
