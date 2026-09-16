@@ -1425,16 +1425,13 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # `gmail <thread_id>`. Interactive-shell only — adhoc.txt `!` lines
           # ride as DERIVATIONS in commonPackages above, so the short spelling
           # is legal everywhere -- a router line is now `! jira SWCX-1234`.
-          alias gmail='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/gmail.py"'
-          # `email` is the New-B-facing name for the same connector. `gmail`
-          # stays, because the filename and the muscle memory both say gmail.
-          alias email='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/gmail.py"'
-          alias botify='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/botify.py"'
-          alias confluence='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/confluence.py"'
-          alias gsc='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/gsc.py"'
-          alias sheets='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/sheets.py"'
-          alias jira='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/jira.py"'
-          alias slack='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/slack.py"'
+          # THE SEVEN LEFT THIS BLOCK 2026-09-16 for connectorCommands above.
+          # `email` is still the New-B-facing name over the gmail script, and
+          # both spellings still work at the prompt exactly as before; what is
+          # new is that a child process resolves them too. `mcp` below carries
+          # the SAME defect and is deliberately untouched: the TODO named seven
+          # and this car rode exactly seven, so promoting it is one more entry
+          # in connectorCommands whenever the operator says so.
           # `mcp` NOW MEANS THE CLIENT, which is what the file has always been
           # named. Freed 2026-08-25 when the roster became `sources`, and
           # claimed in the SAME car so the word is never a hole. An ALIAS, not
