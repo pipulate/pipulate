@@ -1,8 +1,8 @@
 # AI_CONTEXT.md — Start Here If You Are an AI
 
-> Auto-generated on 2026-09-14. Rewritten from scratch on every release. If this
+> Auto-generated on 2026-09-15. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1468 entries indexed.
+> 1474 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -96,6 +96,12 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-09-15] [The Walk Says Goodbye: Engineering Verifiable AI Workflows on Rails](https://mikelev.in/futureproof/the-walk-says-goodbye-verifiable-workflows/index.md)
+- [2026-09-15] [The First Five Minutes: Engineering Verifiable Workflows Without the Noise](https://mikelev.in/futureproof/first-five-minutes-verifiable-workflows/index.md)
+- [2026-09-15] [The Walk That Teaches Walks: Building Reproducible AI Workflows](https://mikelev.in/futureproof/the-walk-that-teaches-walks/index.md)
+- [2026-09-15] [The Flight Data Recorder: Consolidating Walk Workflows and Replayable Context](https://mikelev.in/futureproof/flight-data-recorder-walk-workflows/index.md)
+- [2026-09-14] [The Quiet Installer: Engineering Replayable AI Workflows and Quiet Shells](https://mikelev.in/futureproof/quiet-installer-replayable-workflows/index.md)
+- [2026-09-14] [The Door Names the Folder: Engineering Replayable AI Workflows and Portable Environments](https://mikelev.in/futureproof/the-door-names-the-folder/index.md)
 - [2026-09-14] [The Wrong Front Door: Split DNS, DHCP Leases, and Verifiable Local Testing](https://mikelev.in/futureproof/wrong-front-door-split-dns-dhcp/index.md)
 - [2026-09-14] [The Chain of Custody: Multi-Model Review and Verifiable Script Hardening](https://mikelev.in/futureproof/chain-of-custody-multi-model-review/index.md)
 - [2026-09-13] [The ACME Airlock and the Cellular Witness: Verifying HTTPS in the Age of AI](https://mikelev.in/futureproof/acme-airlock-cellular-receipts/index.md)
@@ -110,17 +116,17 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-09-08] [Bridging Browser Capture to Context Compilers in the Age of AI](https://mikelev.in/futureproof/bridging-browser-capture-to-context-compilers/index.md)
 - [2026-09-07] [Two Years, Four Models, and One Verifiable Record](https://mikelev.in/futureproof/two-years-four-models-one-verifiable-record/index.md)
 - [2026-09-06] [The List Is the Test: When Context Compilers Grade Their Own Work](https://mikelev.in/futureproof/the-list-is-the-test/index.md)
-- [2026-09-06] [Archive, Not Artifact: Checking What the AI Actually Did](https://mikelev.in/futureproof/archive-not-artifact-checkable-ai-receipts/index.md)
-- [2026-09-06] [The World Is Your Checklist: Visual Surveillance of Extremities in the Age of AI](https://mikelev.in/futureproof/visual-surveillance-extremities-receipts/index.md)
-- [2026-09-05] [Three Tools, One Pipeline: Connecting Walk, Router, and Context Compiler](https://mikelev.in/futureproof/three-tools-one-pipeline-walk-router-compiler/index.md)
-- [2026-09-05] [The Two-Reader Rule: Quieting the Console with Verifiable Receipts](https://mikelev.in/futureproof/two-reader-rule-console-silence/index.md)
-- [2026-09-05] [Laser Coherence and the Git Pickaxe: Recovering Vanished Code with Reproducible Receipts](https://mikelev.in/futureproof/laser-coherence-and-the-git-pickaxe/index.md)
-- [2026-09-05] [The Discrimination Test: Separating Console Furniture from Verifiable Receipts](https://mikelev.in/futureproof/console-furniture-discrimination-test-receipts/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-09-06] [431k] archive-not-artifact-checkable-ai-receipts
+- [2026-09-06] [282k] visual-surveillance-extremities-receipts
+- [2026-09-05] [207k] three-tools-one-pipeline-walk-router-compiler
+- [2026-09-05] [128k] two-reader-rule-console-silence
+- [2026-09-05] [131k] laser-coherence-and-the-git-pickaxe
+- [2026-09-05] [54k] console-furniture-discrimination-test-receipts
 - [2026-09-05] [168k] cartridge-deed-outside-the-envelope
 - [2026-09-05] [259k] prompt-well-context-compiler-receipts
 - [2026-09-04] [159k] unhardwiring-blog-paths-write-read-split
