@@ -162,8 +162,11 @@ def load_wallet():
     ABSENT is not BROKEN. The moment boot_menu's door 2 names `warm`, this
     function is what a stranger with zero credentials reaches first -- and a
     terse die() there makes their first thirty seconds a crash rather than a
-    start state. No wallet prints the cold-start card and exits 0, because an
-    empty board is the beginning of the game and not a fault in it.
+    start state. No wallet SEEDS a starter connectors.json (one botify slot,
+    no token) and exits 0, so the newcomer's next `warm botify` has a slot to
+    fill instead of a blank file to hand-author. This is the one path where a
+    reader writes -- gated on absence, it never overwrites an existing wallet.
+    An empty board is the beginning of the game, not a fault in it.
 
     A wallet that EXISTS and will not parse still fails loud: that is a real
     fault, and guessing past a malformed credential map is worse than
