@@ -51,7 +51,7 @@ except ImportError:
     RICH_AVAILABLE = False
 
 CONFIG_DIR = Path.home() / ".config" / "pipulate"
-TARGETS_FILE = CONFIG_DIR / "blogs.json"
+TARGETS_FILE = Path(os.environ.get("PIPULATE_BLOGS_CONFIG", CONFIG_DIR / "blogs.json")).expanduser()
 
 DEFAULT_TARGETS = {
     "1": {
