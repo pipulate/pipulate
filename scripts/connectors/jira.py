@@ -96,6 +96,30 @@ PROJECT_KEY_RE = re.compile(r'^[A-Z][A-Z0-9]+$')
 # and the tab's count is the falsifier -- if the two disagree, this line is
 # the suspect, never the tickets. statusCategory rather than resolution so a
 # ticket closed without a resolution set still drops off the list.
+# NO SCOPE SLOT, AND NO WALLET READER (census 2026-09-16; the receipt is a
+# grep of THIS file for connectors.json, PIPULATE_WALLET, defaults,
+# JIRA_PROJECT and JIRA_JQL matching NOTHING, exit 1, on both sides of a
+# compile). Bare `jira` has exactly one behavior and no argument to narrow
+# it. A project key narrows it (`jira PROJ`); a board's saved filter cannot,
+# because there is nowhere to put one. THE BOARD IS NOT HARDWIRED HERE --
+# there is no board constant to un-hardwire -- so the defect is a MISSING
+# slot, not a CHOSEN one, and that is a different repair than the MCP
+# credential path needed before token_path_for: that one made collision
+# unrepresentable, this one must make scope REPRESENTABLE.
+# THE CURE IS AN ENV VAR, NOT A JSON READER. flake.nix's WALLET HYDRATOR
+# already exports every `defaults` key of every wallet slot as an env var at
+# shell entry, never overwriting what is already set, and for an ENV KIND --
+# jira is basic_auth -- those keys ARE env var NAMES, which is also how
+# wallet.py's _warm_env reads them when it prints defaults[var] as the
+# example for var. So a wallet slot carrying
+#   "jira": {"auth": "basic_auth", "defaults": {"JIRA_JQL": "<filter>"}}
+# arrives here as a plain os.getenv("JIRA_JQL"), with no reader added, no
+# fourth copy of any derivation, and README.md's stated order unchanged:
+# CLI flag -> env var -> connectors.json default -> clean failure. The key
+# is JQL and not `board` or `project` because a board IS a saved JQL filter
+# on the Atlassian side, a project key is already handled positionally, and
+# a raw JQL string is the one shape that can express either. Until that
+# lands, this constant is the whole of MINE mode.
 MINE_JQL = ('assignee = currentUser() AND statusCategory != Done '
             'ORDER BY priority DESC, updated DESC')
 PROJECTS_WORD = 'projects'
