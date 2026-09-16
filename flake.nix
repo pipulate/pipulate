@@ -1504,6 +1504,22 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # derivation, the writer's, spelled once and read by every word below.
           _walkrouter() { printf '%s/adhocwalk.txt\n' "$(dirname "''${PIPULATE_ADHOC_FILE:-$PIPULATE_ROOT/adhoc.txt}")"; }
           ahcw() { (cd "$PIPULATE_ROOT" && PIPULATE_ADHOC_FILE="$(_walkrouter)" python prompt_foo.py --chop ADHOC_CHOP --no-tree "$@"); }
+          # THE TWO WORDS AFTER THE WALK (proposed 2026-09-16; the names sit
+          # under the coachman's veto, the mechanism does not). walk teaches,
+          # plan edits your itinerary, walk plan rides it -- and then the rider
+          # has written the walk router and the newcomer has no plain word for
+          # what comes next. pick opens that router: pick what rides to the AI,
+          # one path or one `! command` per line. pack "your question" compiles
+          # it, question and all, into the clipboard and a sealed cartridge;
+          # bare pack reads prompt.md if one exists. ahe and ahc are the expert
+          # spellings of the same two moves against adhoc.txt. Both words pass
+          # the ATTRIBUTED-VOICE mechanical test -- a human picks lines and the
+          # compiler packs a payload -- where ask and ship do not: nothing here
+          # asks or ships, a human pastes. FUNCTIONS, per THE THREE-TIER
+          # AMENDMENT: typed by a human, never echoed as a probe; the compile
+          # lane witnesses them in the generated hook text.
+          pick() { (cd "$PIPULATE_ROOT" && nvim "$(_walkrouter)"); }
+          pack() { (cd "$PIPULATE_ROOT" && PIPULATE_ADHOC_FILE="$(_walkrouter)" python prompt_foo.py "$@" --chop ADHOC_CHOP --no-tree); }
           # THE IDEATION DOOR: `idea` compiles IDEATION_CHOP (the constitution's
           # two forcing-function rules) primed for a 30-and-3 / axis-forcing
           # fan-out turn. A function, not an alias, so --profile/--reason pass
