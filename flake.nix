@@ -453,6 +453,39 @@
           exec "$python_bin" "$root/scripts/ai.py" "$@"
         '';
 
+        # THE CONNECTORS BECOME PACKAGES (2026-09-16, discharging the TODO of
+        # the same day). THE THREE-TIER AMENDMENT names three tiers and the
+        # connectors only ever had one: a human typing the word as the literal
+        # first token. The `!` executor is a CHILD PROCESS, so a router line
+        # reading `! jira SWCX-1234` died at command-not-found while the same
+        # word worked perfectly at the prompt -- the failure invisible from the
+        # only lane the operator uses. A derivation on PATH is the third tier.
+        # ONE FUNCTION, NOT SEVEN COPIES: the body is aiCommitCommand's, which
+        # has carried this shape since it landed, so a fix to the missing-venv
+        # branch lands once rather than seven times. `name` is what the human
+        # types and `script` is the file it runs, which is why gmail and email
+        # are two names over one script rather than two scripts.
+        connectorCommand = name: script: pkgs.writeShellScriptBin name ''
+          set -euo pipefail
+          root="''${PIPULATE_ROOT:-$PWD}"
+          python_bin="$root/.venv/bin/python"
+          if [ ! -x "$python_bin" ]; then
+            echo "${name}: missing $python_bin; enter the Pipulate Nix shell first." >&2
+            exit 1
+          fi
+          exec "$python_bin" "$root/scripts/connectors/${script}.py" "$@"
+        '';
+        connectorCommands = [
+          (connectorCommand "gmail" "gmail")
+          (connectorCommand "email" "gmail")
+          (connectorCommand "botify" "botify")
+          (connectorCommand "confluence" "confluence")
+          (connectorCommand "gsc" "gsc")
+          (connectorCommand "sheets" "sheets")
+          (connectorCommand "jira" "jira")
+          (connectorCommand "slack" "slack")
+        ];
+
         # THE DEED KEEPER (2026-09-06). Rotation prunes to the newest twenty,
         # which at this compile rate makes a snapshot's name durable for about
         # a day -- fine for a discussion, useless for a ticket. This promotes
