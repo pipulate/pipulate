@@ -9,7 +9,7 @@ import sys
 
 # Standard Config Location
 CONFIG_DIR = Path.home() / ".config" / "pipulate"
-TARGETS_FILE = CONFIG_DIR / "blogs.json"
+TARGETS_FILE = Path(os.environ.get("PIPULATE_BLOGS_CONFIG", CONFIG_DIR / "blogs.json")).expanduser()
 KEYS_FILE = CONFIG_DIR / "keys.json"
 LAST_PUBLISHED_FILE = CONFIG_DIR / "last_published.json"
 
