@@ -1444,6 +1444,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # NOT scripts/walk.py, which is the non-actuating dry-run PLANNER and
           # shares nothing with this word but four letters.
           alias walk='bash "$PIPULATE_ROOT/walk"'
+          alias plan='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/mother_cat.py" --plan'
           # THE CREDENTIAL GAME: bare `warm` is the LIVE red/green board — one
           # bounded API call per enrolled wallet slot, GOLD when every row is
           # green. `warm <slot>` is the fixer for that one credential, and a
