@@ -138,6 +138,64 @@ INTRO_NOTICE = (
 )
 
 
+def _private_plan_path():
+    """One local scratch itinerary; resolution is read-only and never falls back."""
+    path = Path.home() / ".local" / "state" / "pipulate" / "plan.yaml"
+    resolved = path.resolve()
+    if path.is_symlink() or resolved.is_relative_to(REPO_ROOT.resolve()):
+        raise walk.TrailError("plan.yaml must be outside the workshop, not a symlink")
+    if any((parent / ".git").exists() for parent in resolved.parents):
+        raise walk.TrailError("plan.yaml must not live inside a Git worktree")
+    if path.exists():
+        info = path.stat()
+        if not path.is_file() or info.st_nlink != 1 or info.st_mode & 0o777 != 0o600:
+            raise walk.TrailError("plan.yaml must be a private regular file (0600), not a hard link")
+    return path
+
+
+def _edit_private_plan():
+    """Seed once from the bundled bytes, then edit. Never start a capture."""
+    import subprocess
+
+    path = _private_plan_path()
+    path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    if not path.exists():
+        raw = walk.DEFAULT_TRAIL.read_bytes()
+        with tempfile.NamedTemporaryFile(dir=path.parent, prefix=".plan-", delete=False) as stream:
+            temp = Path(stream.name)
+            try:
+                stream.write(raw)
+                stream.flush()
+                os.fsync(stream.fileno())
+            except BaseException:
+                temp.unlink(missing_ok=True)
+                raise
+        try:
+            try:
+                os.link(temp, path)
+            except FileExistsError:
+                pass
+        finally:
+            temp.unlink(missing_ok=True)
+    path = _private_plan_path()
+    print(f"Private plan: {path}", flush=True)
+    print("Edit the URLs and guidance. Save and quit with Esc, :wq, Enter.", flush=True)
+    # An isolated editor keeps plan text out of swap, backup, undo and ShaDa files.
+    # No caller CWD change; no global editor setting or clipboard handoff.
+    result = subprocess.run([
+        "nvim", "-u", "NONE", "-n", "-i", "NONE",
+        "--cmd", "set nobackup nowritebackup noundofile nomodeline",
+        "-c", "setlocal filetype=json number textwidth=0",
+        str(path),
+    ], check=False)
+    if result.returncode:
+        return result.returncode
+    walk.load_trail(_private_plan_path())
+    print("Plan valid. Type walk plan to try it; type plan to edit it again.")
+    print("Custom walks keep CAPTURE at each stop and DECANT before the summary handoff.")
+    return 0
+
+
 def _intro_eligible(trail_path, trail=None):
     """One authority for launcher disclosure and rider authorization scope."""
     path = Path(trail_path)
@@ -1113,7 +1171,26 @@ def main(argv=None):
                         help="read-only: print introductory terms if this is the bundled route; otherwise print nothing")
     parser.add_argument("--disclose", metavar="CAPTURES_MD",
                         help="write a private review-text disclosure; no browser or clipboard")
+    parser.add_argument("--plan", action="store_true",
+                        help="seed once and edit the private plan.yaml; never ride")
+    parser.add_argument("--plan-path", action="store_true",
+                        help="read-only: print the existing private plan path or refuse")
     args = parser.parse_args(argv)
+    if args.plan or args.plan_path:
+        if (args.plan and args.plan_path) or any((args.trail, args.dry_narrate,
+                args.exports, args.intro, args.intro_contract, args.disclose is not None)):
+            parser.error("plan options cannot be combined with other modes")
+        try:
+            if args.plan:
+                return _edit_private_plan()
+            path = _private_plan_path()
+            if not path.is_file():
+                raise walk.TrailError("no private plan yet; type plan first")
+            print(path)
+            return 0
+        except (walk.TrailError, OSError) as exc:
+            print(f"PLAN REFUSED: {exc}. Existing edits are not replaced.", file=sys.stderr)
+            return 2
     if args.disclose is not None:
         if args.trail or args.dry_narrate or args.exports or args.intro or args.intro_contract:
             parser.error("--disclose cannot be combined with ride arguments")
