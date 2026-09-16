@@ -1662,7 +1662,7 @@ __init__.py                 # <-- Version info
 # imports/voice_synthesis.py  # <-- Piper: scripted narration, never a model (ATTRIBUTED-VOICE)
 #
 # HAND OFF
-# prompt_foo.py               # <-- Compiles the selected router (adhocwalk.txt through `ahcw`) into a payload
+# prompt_foo.py               # <-- Compiles the selected router (adhocwalk.txt: `epr` edits it, `cpr` compiles it) into a payload
 # scripts/foo_cartridge.py    # <-- The second seal, over the EVIDENCE: payload.md, prompt.md, manifest.json
 # scripts/foo_replay.py       # <-- Context extraction and attention checks; not browser or API replay
 # tests/test_mck_rep2.py      # <-- Rep 2: the earmark's owed side-by-side witness
@@ -1691,16 +1691,21 @@ __init__.py                 # <-- Version info
 # network body. Preview: DECANT releases selected, capped text, never the raw
 # archive. Disclosure: captures.disclosed.json is a separately prepared
 # derivative with omissions and review status; nothing writes it for you.
-# Selection: adhocwalk.txt names one raw captures.md and labels it UNSANITIZED;
+# Selection: adhocwalk.txt names the checked preview and, commented beneath it, the raw captures.md;
 # the list is neither disclosure approval nor the evidence.
 #
-# THE HANDOFF (97feb327): a complete, nonempty run has the rider write
-# adhocwalk.txt WHOLE beside the selected router -- three comment lines and one
-# absolute path, 0600, os.replace'd. IT REPLACES, IT NEVER MERGES, so a
-# hand-typed `!` line belongs in adhoc.txt, the file `ahcw` deliberately does
-# not select; the seam between the two is a copy. Riding from a shell where
+# THE HANDOFF (97feb327; amended 2026-09-16): a complete, nonempty run has the
+# rider write adhocwalk.txt WHOLE beside the selected router, 0600,
+# os.replace'd -- the checked preview as the one uncommented line once DECANT
+# released it, the whole archive as a commented line beneath, and the archive
+# alone, labelled, when no preview was saved. IT REPLACES, IT NEVER MERGES, and
+# because `epr` now invites a hand-typed `!` line into this very file, it
+# REPLACES ONLY A FILE IT COULD HAVE WRITTEN: one uncommented absolute path to
+# an archive or a preview and nothing else. Any other uncommented line means a
+# human owns the file; the rider prints the new path lines and touches nothing,
+# and deleting the file lets the next walk rewrite it. Riding from a shell where
 # PIPULATE_ADHOC_FILE already names adhocwalk.txt refuses by name, non-fatally,
-# archive preserved, which is why ahcw assigns in a subshell rather than
+# archive preserved, which is why cpr assigns in a subshell rather than
 # exporting. SELECTING IS NOT INCLUDING: naming adhocwalk.txt inside another
 # list includes its text and never recurses into its entries.
 #
