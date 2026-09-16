@@ -1668,7 +1668,7 @@ __init__.py                 # <-- Version info
 # tests/test_mck_rep2.py      # <-- Rep 2: the earmark's owed side-by-side witness
 #
 # THE TRAILS (bundled; each status is the newest receipt, never a promise)
-# assets/trails/public_walk.yaml         # profile default; SETTLE trivial; three unlinked npvg.org pages (the_word, the_receipt, the_two_pages), inline script on stop three only, connector noop.py; RIDDEN 2026-09-15 on these stops, 3 of 3 at artifacts=11 each, archive complete, DECANT AUTHORIZED at 20,992 B with checks 0/0/0, and the chatbot given stop three's question said the preview does not carry the server's sentence, which is true (the diff-lens TODO); the 2026-08-01 ride walked the OLD stop set (example.com, mikelev.in, pipulate.com); what bare `walk` rides
+# assets/trails/public_walk.json         # profile default; SETTLE trivial; three unlinked npvg.org pages (the_word, the_receipt, the_two_pages), inline script on stop three only, connector noop.py; RIDDEN 2026-09-15 on these stops, 3 of 3 at artifacts=11 each, archive complete, DECANT AUTHORIZED at 20,992 B with checks 0/0/0, and the chatbot given stop three's question said the preview does not carry the server's sentence, which is true (the diff-lens TODO); the 2026-08-01 ride walked the OLD stop set (example.com, mikelev.in, pipulate.com); what bare `walk` rides
 # assets/trails/practice.yaml            # one configurable page; UNREAD, label stale since 2026-08-01
 # assets/trails/first_context.yaml       # profile default; SETTLE real; Jira/Botify/Gmail, THREE wallet kinds in one trail; UNRIDDEN
 # assets/trails/botify_pageworkers.yaml  # profile botify; SETTLE real; UNRIDDEN -- the only trail on a non-default profile, and no such ride has ever been witnessed
