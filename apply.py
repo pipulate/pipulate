@@ -53,6 +53,32 @@ import subprocess
 # read. The scrape that seals a secret cannot be unsealed; the credential is
 # rotated instead, by whoever owns it, and that conversation is owed the
 # moment it is noticed.
+
+# THE COLD-START EXIT IS A FALSE GREEN (convicted 2026-09-16, by a probe
+# written that same turn expressly to be content-free). `wallet.py check
+# jira` was echoed as `>/dev/null 2>&1; echo jira_check_exit=$?` on the
+# theory that exit 0 means the service accepted the credential just now. It
+# printed 0 on a machine with NO WALLET AT ALL. main() evaluates
+# load_wallet() BEFORE board(), and load_wallet's ABSENT-IS-NOT-BROKEN
+# branch prints the cold-start card and sys.exit(0)s -- so board() never
+# ran, no credential was checked, and the receipt read exactly like a green
+# board. GOLD IS THE ONLY EXIT-0 CONDITION is a true claim about board(),
+# and it was read as a claim about the program.
+# TWO RULES, AND THE SECOND IS THE GENERAL ONE:
+#   1. AN EXIT CODE IS A VERDICT ONLY FOR THE PATH THAT REACHES IT. Before
+#      echoing `cmd >/dev/null; echo $?` as a probe, name every earlier
+#      sys.exit(0) on that path. Prefer the narrowest program that owns the
+#      question: jira.py --check has no cold-start branch and wallet.py has
+#      one, so the connector is the honest instrument and the board is not.
+#   2. THE REDIRECT ATE THE DISCRIMINATOR. The cold-start card says in plain
+#      words that there is no wallet, on stdout, and the probe threw it away
+#      to keep a client host out of the payload. A probe that suppresses
+#      output to stay safe must first prove the exit code ALONE still
+#      answers the question; otherwise it has traded content for silence and
+#      kept neither. Two sibling misses the same day: a probe reading
+#      scripts/connectors/wallet.json, a path that has never existed, and a
+#      `jira | grep -c` whose 2>/dev/null made a dead credential and an
+#      empty ticket list print the same 0.
 # PROTOCOL MARKER AIRLOCK — the guard the 2026-07-26 player-piano.js incident
 # called for. apply.py speaks a grammar of bare delimiters: [[[SEARCH]]],
 # [[[DIVIDER]]], [[[REPLACE]]], [[[WRITE_FILE]]], [[[END_WRITE_FILE]]] (with 3-5
