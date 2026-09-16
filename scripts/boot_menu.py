@@ -4,7 +4,7 @@ boot_menu.py — the threshold at the end of `nix develop`.
 
 Three doors, one keypress:
   [1] JupyterLab tab     both servers start; JupyterLab opens in the browser (today's default)
-  [2] Text Commands      NOTHING starts; `walk`, `sources`, `brief`, `pu`, `menu` wait at the prompt
+  [2] Text Commands      NOTHING starts; `walk`, `epr`, `cpr`, `sources`, `brief`, `pu`, `menu` wait at the prompt
   [3] Pipulate tab       both servers start; the app opens in the browser instead of JupyterLab
 
 THE PROTOCOL IS THE EXIT CODE, never stdout. Nothing parses this program's
@@ -74,9 +74,10 @@ PIPULATE_KEYS = {"3", "p", "P"}
 # that one is a description for a reader, not a count, and it moves under
 # the SAME-CAR LABEL RULE like any other label.)
 # ORDER IS A SCOPE LADDER, neither alphabetical nor arbitrary: be carried
-# (walk) -> look around here yourself (sources) -> hand it to someone
-# elsewhere (brief) -> reverse the choice you just made (pu). `walk` leads
-# because it is the only row that asks nothing of you first. `menu` rides
+# (walk) -> edit what the walk wrote (epr) -> compile it for an AI (cpr) ->
+# look around here yourself (sources) -> hand it to someone elsewhere
+# (brief) -> reverse the choice you just made (pu). `walk` leads because it
+# is the only row that asks nothing of you first. `menu` rides
 # LAST and is not a rung on that ladder at all: it is not a place to go, it
 # is how you get this list back after it has scrolled away. Its row is also
 # the only thing that tells a newcomer the word exists -- a recall command
@@ -87,6 +88,10 @@ PIPULATE_KEYS = {"3", "p", "P"}
 # nothing.
 DOOR_TWO_WORDS = (
     ("walk", "take the guided tour -- public pages, nothing to log into"),
+    # epr and cpr joined 2026-09-16: the two words after the walk. Seven is
+    # the last count _COUNT_WORDS spells; an eighth word prints a digit.
+    ("epr", "edit the prompt router -- the list the walk wrote of what an AI should see, and your question"),
+    ("cpr", "compile the prompt router into your clipboard -- paste it into an AI"),
     ("sources", "see what this shell can reach outside this machine"),
     ("brief", "compile this workshop into your clipboard for an AI -- the context compiler's first job"),
     ("pu", "change your mind and start the app server after all"),
