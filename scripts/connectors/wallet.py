@@ -174,27 +174,38 @@ def load_wallet():
     """
     path = Path(WALLET_PATH).expanduser()
     if not path.exists():
-        print("# No wallet yet. That is the start state, not an error.")
+        # SEED, DON'T LECTURE (2026-09-16). The old card told a stranger to
+        # hand-author JSON in vim; this writes a starter for them instead --
+        # one botify bearer slot, no token -- so the next `warm botify` has a
+        # slot to fill. THE URL RIDES IN THE `env` DESCRIPTION, NEVER IN
+        # `defaults`: the README's flake hydrator EXPORTS an env-kind slot's
+        # `defaults` entries as environment variables, so a URL parked in
+        # defaults.BOTIFY_API_TOKEN would become the token's VALUE and poison
+        # it. The `env` block is documentation-as-data, never exported, and
+        # _warm_env already prints it under the prompt -- the safe channel.
+        seed = {"botify": {"auth": "bearer_token",
+                           "env": {"BOTIFY_API_TOKEN":
+                                   "required; get your API token at "
+                                   "https://app.botify.com/account"}}}
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(seed, indent=2) + "\n", encoding='utf-8')
+        print(f"# Starter wallet created at {path}")
         print("#")
-        print("# TWO STEPS to connect your first account:")
+        print("# It has one slot -- botify -- with no token yet. To fill it:")
         print("#")
-        print(f"#   1. Create {path} with one slot. The smallest that works:")
+        print("#   python scripts/connectors/wallet.py warm botify")
         print("#")
-        print('#      {"botify": {"auth": "bearer_token",')
-        print('#                  "env": {"BOTIFY_API_TOKEN": "required; API token"}}}')
-        print("#")
-        print("#   2. Run:  python scripts/connectors/wallet.py warm botify")
-        print("#      It prompts for the token, saves it to ~/.config/pipulate/.env")
-        print("#      (0600, never in git), and confirms.")
+        print("# That prompts for your Botify API token (get one at")
+        print("# https://app.botify.com/account), saves it to ~/.config/pipulate/.env")
+        print("# (0600, never in git), and confirms. Press Enter with no token to")
+        print("# skip -- the slot waits, empty, until you come back to warm it.")
         print("#")
         print("# Then `python scripts/connectors/wallet.py check` plays the live")
         print("# red/green board -- green means the service accepted the credential")
         print("# just now, not merely that a token exists.")
         print("#")
-        print("# The slot name is yours to choose; `auth` must be one of six kinds")
-        print("# (bearer_token shown above). See scripts/connectors/README.md for the")
-        print("# other five and what each slot declares. A slot holds NAMES and PATHS,")
-        print("# never secret values -- that is what makes the wallet safe to track.")
+        print("# The slot name is yours; `auth` is one of six kinds (bearer_token")
+        print("# here). See scripts/connectors/README.md for the other five.")
         sys.exit(0)
     try:
         return json.loads(path.read_text(encoding='utf-8'))
