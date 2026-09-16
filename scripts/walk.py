@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Mother Cat trail planner, Car A: strict dry-run and no actuation.
 
-Trail files use the JSON subset of YAML 1.2. That keeps this car stdlib-only,
-duplicate-key-checkable, and still valid YAML. There is deliberately no
+Trail files use JSON. That keeps this car stdlib-only, duplicate-key-checkable,
+and explicit about the syntax humans are editing. There is deliberately no
 browser, voice, shell, or adhoc.txt mutation path in this file.
 """
 
@@ -20,7 +20,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 # authenticated stops, and a newcomer's first contact was a KeyError on an
 # environment variable they had never heard of. Default to the walk that needs
 # no credential; make expert mode cost keystrokes.
-DEFAULT_TRAIL = REPO_ROOT / "assets" / "trails" / "public_walk.yaml"
+DEFAULT_TRAIL = REPO_ROOT / "assets" / "trails" / "public_walk.json"
 # THE EXPERT TRAIL, named here rather than implied by being the default --
 # discoverability used to rest entirely on this line pointing at it:
 #   mothercat assets/trails/first_context.yaml   (Jira + Botify + Gmail, auth)

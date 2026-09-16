@@ -31,8 +31,8 @@ is ever handed to a YAML parser, so a brace-wrapped value is simply a literal
 string, and it dies downstream at a named field check rather than being
 silently coerced into a nested map.
 
-WHAT IT WRITES: <stem>.yaml BESIDE the surface -- the JSON subset of YAML 1.2
-that walk.py accepts UNMODIFIED. The output path is a pure function of the
+WHAT IT WRITES: <stem>.json BESIDE the surface -- ordinary JSON that walk.py
+accepts UNMODIFIED. The output path is a pure function of the
 input path, so a collision is unrepresentable and re-compiling is idempotent.
 CONTENT-ADDRESSED artifacts live under data/ (data/walks/<sha256>/walk.zip,
 where the path IS the identity). NAME-ADDRESSED artifacts live beside their
@@ -418,7 +418,7 @@ def main(argv=None):
         print("frontmatter name " + repr(trail["name"]) + " does not match the "
               "file stem " + repr(stem) + ".", file=sys.stderr)
         print("One identity all the way through: <stem>" + SUFFIX
-              + " compiles to <stem>.yaml and the trail inside is named "
+              + " compiles to <stem>.json and the trail inside is named "
               "<stem>.", file=sys.stderr)
         return 2
 
@@ -447,7 +447,7 @@ def main(argv=None):
               file=sys.stderr)
         return 2
 
-    out_path = surface.parent / (stem + ".yaml")
+    out_path = surface.parent / (stem + ".json")
     problem = _ignored_or_outside(out_path)
     if problem:
         print("COMPILE REFUSED reason=not_ignored")

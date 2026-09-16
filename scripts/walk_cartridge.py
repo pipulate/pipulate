@@ -88,7 +88,7 @@ identical archive bytes, forever, which is what makes content addressing work.
 
 USAGE
 -----
-  python scripts/walk_cartridge.py seal assets/trails/*.yaml
+  python scripts/walk_cartridge.py seal assets/trails/*.json
   python scripts/walk_cartridge.py verify data/walks/<sha256>/walk.zip
   python scripts/walk_cartridge.py show   data/walks/<sha256>/walk.zip
 
@@ -117,7 +117,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 # bytes for EVERY trail, including trails with zero direct URLs, so every
 # cartridge sealed under v1 is invalidated. data/ is gitignored, so nothing
 # tracked or published breaks. Re-seal with
-#   .venv/bin/python scripts/walk_cartridge.py seal assets/trails/*.yaml
+#   .venv/bin/python scripts/walk_cartridge.py seal assets/trails/*.json
 # Re-sealing WRITES A NEW content-addressed cartridge under a new digest. It
 # does not upgrade the old one, which stays on disk and stays red until pruned.
 # v3 (2026-09-02): the consent surface gained optional_url_envs, and url_envs
