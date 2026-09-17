@@ -2049,8 +2049,6 @@ pyproject.toml              # <-- The PyPI Packaging details
 cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
 scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
 scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
-# scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
-# scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
  
 # MISCELLANEOUS (rare to include but sometimes critical)
 scripts/foo_cartridge.py    # Needs description
