@@ -136,9 +136,9 @@ class ChipVoiceSystem:
         self.current_process = None  # Track the running audio process
         self.last_error = None       # Populated by synthesize_and_play on failure
         
-        if VOICE_SYNTHESIS_AVAILABLE:
-            self.setup_voice_model()
-        else:
+        # No download and no model load here: see ensure_voice(). Importing
+        # this module must cost nothing and ask nothing.
+        if not VOICE_SYNTHESIS_AVAILABLE:
             logger.warning(f"🎤 Voice synthesis not available: {IMPORT_ERROR}")
     
     def setup_voice_model(self):
