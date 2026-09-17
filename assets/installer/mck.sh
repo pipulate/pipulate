@@ -540,7 +540,7 @@ else
   fi
   while :; do
     printf '\nChoose a walk:\n'
-    printf '  1  Practice - hear the steps; no pages open.\n'
+    printf '  1  Practice - read the steps; no pages open.\n'
     printf '  2  Start the walk - open the pages.\n'
     printf '  q  Exit (Enter also exits).\nChoice: '
     ANSWER=""
