@@ -911,7 +911,7 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
     rehearsal = "Practice only. In the real walk: " if dry_narrate else ""
     if dry_narrate:
         print("Practice only. No pages will open. You do not need to type anything.\n")
-    disclosed = _narrate(rehearsal + trail["description"], False)
+    disclosed = _narrate(rehearsal + trail["description"], False, indent="")
     _announce_consent(trail_path, intro=intro)
     captured = []
     skipped = archive.setdefault("skipped", [])
