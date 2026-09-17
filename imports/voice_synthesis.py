@@ -587,7 +587,7 @@ def test_voice_synthesis():
     # Test basic voice synthesis
     test_text = "Hello Mike, this is Chip O'Theseus speaking. I can now remember what happened before the server restart!"
     
-    if chip_voice_system and chip_voice_system.voice_ready:
+    if chip_voice_system and chip_voice_system.ensure_voice():
         result = chip_voice_system.speak_text(test_text)
         if result["success"]:
             print("✅ Voice synthesis test successful")
