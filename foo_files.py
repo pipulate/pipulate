@@ -2244,11 +2244,6 @@ CHOP_FISHTANK = """
 # COMMAND: python prompt_foo.py --chop CHOP_FISHTANK -n
 # Pumping live Honeybot observability data directly into the AI's context.
 
-# remotes/honeybot/queries/format_ratio.sql
-# remotes/honeybot/queries/markdown_routing_metrics.sql
-# remotes/honeybot/queries/content_neg_agents.sql
-# remotes/honeybot/queries/md_routing_agents.sql
-
 ! echo "--- FORMAT RATIO (Markdown vs HTML) ---" && cat remotes/honeybot/queries/format_ratio.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 ! echo "--- MARKDOWN ROUTING METRICS ---" && cat remotes/honeybot/queries/markdown_routing_metrics.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 ! echo "--- CONTENT NEGOTIATION VANGUARD ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
