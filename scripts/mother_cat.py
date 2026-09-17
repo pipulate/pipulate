@@ -72,7 +72,7 @@ def _narrate(text, disclosed, indent="  "):
     # the ride delivered NEITHER audio NOR words -- the NARRATE beat of the
     # kata became a silent no-op that reported success. Print first, then
     # speak, so the visible channel never depends on the audible one failing.
-    print(f"  {text}")
+    print(f"{indent}{text}")
     try:
         if not disclosed:
             result = chip_voice_system.speak_text(
