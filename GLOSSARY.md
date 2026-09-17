@@ -265,6 +265,30 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Prompt Fu** — *the context-compiler discipline.* prompt_foo.py plus the
   Book: compile thoughts-to-go as one deliberate first turn instead of a
   drifting discussion.
+- **Ratchet / backslide** — *banking a win so it cannot be undone, and the
+  way that fails.* A ratchet has two parts. The PAWL lets the wheel turn one
+  way and blocks the other. The CLICK is the sound that says the pawl caught.
+  Progress with no pawl is just a wheel; a pawl with no click cannot be told
+  from a pawl that slipped. Here the pawl is git, the pinned lock, the
+  content-addressed cartridge; the click is the receipt. A BACKSLIDE is a win
+  that died with its container: the project nobody hosts, the disk that
+  failed, the commit whose message called a 60-line cut "curation" (3799ffbc,
+  2026-09-01: git kept the bytes, so the pawl held, but the click came from
+  the paintbox four days later). A GAUGE IS NOT A CLICK: the compiler printed
+  the lower coverage number at every compile in between, and no line said it
+  had dropped, so a reading with no memory of the last reading is a probe and
+  not a click. DISTINCT FROM OPTIMIZATION, and the pair is a discriminator: a
+  hill-climb has slope and no memory, a ratchet has memory and no slope, so a
+  ratchet can hold a losing position on purpose, which is why dead branches
+  stay in the DAG. RENT THIS PAYS, with a bill: Muller's ratchet (1964) is a
+  population that cannot recombine, so harmful mutations pile up one click at
+  a time, and a router that only ever banks is that population, eighty-odd
+  thousand tokens of it at this writing; here the recombination is spelled
+  `forget`. WHERE A WIN OUTLIVES ITS PROJECT: on an inert, published
+  substrate. Backpropagation sat in a 1986 paper for 26 years until gaming
+  GPUs reached it (2012); the same result inside a funded project would have
+  died with the funding. Sibling of COMPOSTABLE (the organs outlive the
+  artifact) and GRAFT, NOT SEED (the pin is the pawl).
 - **RLHF** — *reinforcement learning from human feedback.* Collect human
   comparisons, fit a reward model to them, optimize the policy against that
   reward under a KL penalty leashing it to the pretrained model. NO QUANTILE
