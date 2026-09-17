@@ -79,6 +79,21 @@ import subprocess
 #      scripts/connectors/wallet.json, a path that has never existed, and a
 #      `jira | grep -c` whose 2>/dev/null made a dead credential and an
 #      empty ticket list print the same 0.
+# THE HELP TEXT IS NOT A CENSUS (convicted 2026-09-17, both halves of one
+# straddle). Two census probes were written as `rg -o -h PATTERN ... | sort
+# | uniq -c` on the belief that -h means --no-filename. In ripgrep -h is
+# --help and the no-filename switch is -I, so both probes printed ripgrep's
+# own usage screen, hand-run and echoed alike, and uniq -c counted it
+# faithfully: a leading "12" (the help screen's blank lines) over a long
+# tail of 1s, which is precisely the SHAPE a census of include names would
+# have. BEFORE and AFTER agreed perfectly because neither had searched a
+# single file. THE RULE: a receipt carrying the instrument's own usage text
+# ("Use -h for short descriptions", a flag table, a project home page) is
+# a probe that exited before it measured, and every number on it is a
+# count of the help screen. Match the shape of the answer to the shape of
+# the question before reading a number off it, and spell switches long
+# (--no-filename, --only-matching) wherever a single letter has ever meant
+# help in some other tool.
 # PROTOCOL MARKER AIRLOCK — the guard the 2026-07-26 player-piano.js incident
 # called for. apply.py speaks a grammar of bare delimiters: [[[SEARCH]]],
 # [[[DIVIDER]]], [[[REPLACE]]], [[[WRITE_FILE]]], [[[END_WRITE_FILE]]] (with 3-5
