@@ -62,7 +62,7 @@ def _narrate(text, disclosed, indent="  "):
         return disclosed
 
     if chip_voice_system is None:
-        print(f"  (voice unavailable) {text}")
+        print(f"{indent}(voice unavailable) {text}")
         return disclosed
 
     # THE NARRATION VANISHED WITH ITS OWN ERROR (convicted 2026-08-02, ride
