@@ -200,6 +200,21 @@ class ChipVoiceSystem:
         self.setup_voice_model()
         return self.voice_ready
 
+    def can_speak(self) -> bool:
+        """True only once a human has said yes AND the voice is loaded.
+
+        THE FLAG WENT COLD (2026-09-17, the census after the lazy load).
+        voice_ready read True at import on any machine with the model on disk,
+        and four files gate on it BEFORE they ever call speak_text:
+        apps/010_introduction.py, pipulate/core.py, server.py and
+        tools/mcp_tools.py. With the load deferred to first use the flag reads
+        False in every fresh process until something speaks, so none of those
+        gates opens. This is the question they meant to ask: consent first,
+        then the load, which downloads only after a yes. A status read that
+        must never download keeps reading voice_ready, which now means loaded.
+        """
+        return voice_consent() == "yes" and self.ensure_voice()
+
     def stop_speaking(self):
         """
         Silence! Kill the current audio process if it exists.
