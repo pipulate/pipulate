@@ -426,10 +426,22 @@ class ChipVoiceSystem:
         Returns:
             Dict with success status and details
         """
-        if not self.voice_ready:
+        consent = voice_consent()
+        if consent != "yes":
+            # DECLINED IS NOT FAILED. Callers read success=False either way;
+            # this key is how they tell a human's answer from a broken player.
             return {
                 "success": False,
-                "error": "Voice synthesis not available",
+                "declined": True,
+                "consent": consent,
+                "text": text,
+                "error": "voice declined" if consent == "no"
+                         else "voice not yet allowed: the voice card has not been answered",
+            }
+        if not self.ensure_voice():
+            return {
+                "success": False,
+                "error": self.last_error or "Voice synthesis not available",
                 "details": "Piper TTS model not loaded"
             }
         
