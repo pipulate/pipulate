@@ -845,40 +845,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # into the PROMPT that will read it. STANDING CONSEQUENCE: every conditional
 # in a caboose names its PRECONDITION first, or it states the check and leaves
 # the ruling to the turn that holds the receipt.
-# THE UNEXPORTED-SHIM RULE (banked 2026-08-01, install-lane-convicted; the
-# general form of the NIX PROBES earmark, which was one size too small): a
-# protection implemented as a SHELL FUNCTION protects exactly one process --
-# the interactive shell that defined it -- because functions are not exported.
-# Every child inherits the ENVIRONMENT the shim exists to neutralize and none
-# of them inherit the shim. The flake wraps nix to clear LD_LIBRARY_PATH before
-# calling the real binary; a shell SCRIPT invoked from that same shell calls the
-# real binary with the polluted path and dies on library skew. CONVICTION: the
-# install-only branch printed three "version not found" lines from openssl and
-# glibc and exited 1, inside a workshop, while the identical branch would have
-# succeeded for a stranger on a clean shell. THE FAILURE IS LANE-VISIBLE ONLY,
-# which is the expensive part: the audience the artifact ships to can never
-# report it, and the one person who can see it is the one most likely to blame
-# his own environment. STANDING CONSEQUENCE: any script invoking nix that might
-# be run from inside the dev shell writes the empty LD_LIBRARY_PATH assignment
-# inline; clearing it is a no-op on a clean shell, so the defensive spelling
-# costs nothing. Sibling of LANE-DISAGREEMENT -- that one is a probe blind to a
-# patch, this one is an environment blind to a shim.
-# SECOND CONVICTION (2026-09-14, the default hand-off lane, commit 2672812c):
-# the install-only branch got its inline clear on 2026-08-01 and the bash -c
-# hand-off below it never did, so curl|bash from INSIDE a workshop shell died
-# at the loader for six weeks while every clean-shell install passed -- one
-# script, healthy in the only lane strangers use. WITNESSED TWO WAYS. By
-# mechanism, in both lanes at once: `bash -c "nix --version"` printed the
-# libssl loader line and `bash -c "LD_LIBRARY_PATH='' nix --version"` printed
-# a version, hand-run and as a compile receipt, so the exact spelling the
-# hand-off now carries is OBSERVED neutralizing the pollution. By install:
-# curl|bash from (nix) pipulate $ reached the flake's verdict, and that
-# verdict's backup path named NESTED temp dirs
-# (/tmp/nix-shell.RAvap0/nix-shell.5muKTN/...), the lane labeling itself,
-# because a clean shell prints one level. COROLLARY: the compile lane IS the
-# failing lane in miniature -- prompt_foo's ! executor spawns children that
-# inherit the pollution and never the nix() function -- so a shim of this
-# class can be witnessed from a compile without another install.
+# § THE UNEXPORTED-SHIM RULE (banked 2026-08-01, second conviction 2026-09-14) -- a shell FUNCTION protects exactly one process, the interactive shell that defined it, because functions are not exported: every child inherits the ENVIRONMENT the shim neutralizes and none inherits the shim, so a script that invokes nix from inside the workshop shell dies at the loader on library skew while the same script passes on a stranger's clean shell, and the only person who can see it blames his own environment. Write the empty LD_LIBRARY_PATH assignment inline on EVERY branch of every script that reaches the nix binary (a no-op on a clean shell), and witness it from a compile, because prompt_foo's ! executor spawns children that inherit the pollution and never the function -- the failing lane in miniature. Sibling of LANE-DISAGREEMENT (a probe blind to a patch; this is an environment blind to a shim) and of THE THREE-TIER AMENDMENT (a name a child cannot resolve).
 # THE SINGLE-CANDIDATE BLINDNESS RULE (banked 2026-08-01, selector-convicted):
 # a SELECTOR cannot be witnessed while only one candidate exists, because
 # selection and fallback print the IDENTICAL answer -- and that answer is the
