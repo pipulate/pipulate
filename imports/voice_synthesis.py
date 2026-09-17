@@ -35,6 +35,92 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
+# ---------------------------------------------------------------------------
+# THE VOICE ASKS BEFORE IT SPEAKS (2026-09-17). Two functions, one file.
+# voice_consent() is the BARRIER: every path to sound reads it, fresh, on every
+# call. The answer comes from PIPULATE_VOICE (an unattended shell declaring
+# intent, the way PIPULATE_BOOT_MENU=0 does) or from ~/.config/pipulate/voice,
+# outside the worktree, so it survives rm -rf on the folder and is asked once
+# per machine rather than once per install.
+# ask_voice_consent() is the CEREMONY: it prints the card and reads one line
+# from /dev/tty. The two are SEPARATE on purpose. flake.nix's door-1 greeting
+# runs as a backgrounded python with stdout on /dev/null while the server holds
+# the foreground on the same terminal; a speaker that ASKED would print the
+# card into /dev/null and take the keystrokes meant for a prompt nobody can
+# see. So the speaker never asks. The rider asks at the start of a walk, and
+# the `voice` word asks again later; both own a terminal.
+# NOTHING IS DOWNLOADED BEFORE A YES: the model loads in ensure_voice(), on
+# the first speak after consent, never at import. Importing this module used
+# to fetch the voice and spend seconds before anyone had asked to speak or
+# been asked whether it may; that was also the import tax the tool roster
+# measured at ~3.8 s.
+# ---------------------------------------------------------------------------
+VOICE_CONSENT_FILE = Path.home() / ".config" / "pipulate" / "voice"
+VOICE_CARD = (
+    "\nThe steps can be read aloud.\n\n"
+    "The voice is Piper, a small text-to-speech program that runs on this\n"
+    "computer; it was made for a Raspberry Pi. It reads sentences a person\n"
+    "typed in advance. No AI writes them, and nothing you say or type is\n"
+    "sent anywhere. Answering yes downloads the voice once, about 60 MB.\n\n"
+    "Read the steps aloud? [y/N] "
+)
+
+
+def voice_consent() -> str:
+    """'yes', 'no' or 'unset': the environment first, then the recorded answer."""
+    env = os.environ.get("PIPULATE_VOICE", "").strip().lower()
+    if env in ("0", "no", "off", "false"):
+        return "no"
+    if env in ("1", "yes", "on", "true"):
+        return "yes"
+    try:
+        recorded = VOICE_CONSENT_FILE.read_text(encoding="utf-8").strip().lower()
+    except OSError:
+        return "unset"
+    if recorded in ("yes", "no"):
+        return recorded
+    return "unset"
+
+
+def ask_voice_consent(later_hint: str = "voice", force: bool = False) -> str:
+    """Ask on /dev/tty and record the answer. Returns 'yes', 'no' or 'unavailable'.
+
+    Asks only when nothing is recorded, unless force is set (the `voice` word),
+    and never when PIPULATE_VOICE decides. Without a terminal to ask on -- a
+    pipe, a compile-lane probe, a backgrounded job -- it prints nothing and
+    returns 'unavailable', so no prompt can ever block an unattended caller.
+    Enter alone means no. A Ctrl+C is not recorded, so the question returns.
+    """
+    env = os.environ.get("PIPULATE_VOICE", "").strip().lower()
+    if env in ("0", "no", "off", "false", "1", "yes", "on", "true"):
+        return voice_consent()
+    recorded = voice_consent()
+    if recorded != "unset" and not force:
+        return recorded
+    if not sys.stdout.isatty():
+        return "unavailable"
+    try:
+        tty = open("/dev/tty", "r", encoding="utf-8")
+    except OSError:
+        return "unavailable"
+    try:
+        print(VOICE_CARD, end="", flush=True)
+        answer = tty.readline()
+    except (OSError, KeyboardInterrupt):
+        print()
+        return "no"
+    finally:
+        tty.close()
+    decision = "yes" if answer.strip().lower() in ("y", "yes") else "no"
+    try:
+        VOICE_CONSENT_FILE.parent.mkdir(parents=True, exist_ok=True)
+        VOICE_CONSENT_FILE.write_text(decision + "\n", encoding="utf-8")
+    except OSError as exc:
+        print(f"(could not record the answer, so it will be asked again: {exc})")
+    if decision == "no":
+        print(f"Staying quiet. To turn the voice on later, type: {later_hint}")
+    return decision
+
 class ChipVoiceSystem:
     """
     Voice synthesis system for Chip O'Theseus
