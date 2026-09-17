@@ -890,6 +890,10 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
     # that flag retain DECANT. Practice describes terms but authorizes no
     # capture or handoff; it returns before either can occur.
 
+    # THE VOICE ASKS FIRST (2026-09-17), before the description, before the
+    # practice notice below says nothing needs typing, and in practice mode
+    # too, because the rehearsal is the first thing a newcomer hears.
+    _ask_voice()
     # THE DESCRIPTION SPEAKS FIRST (2026-09-05). walk.py has validated
     # trail.description as non-empty since Car A, and nothing read it at
     # ride time: not the guidance loop, not the consent card, not the
