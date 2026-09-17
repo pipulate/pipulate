@@ -1474,6 +1474,15 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # NOT scripts/walk.py, which is the non-actuating dry-run PLANNER and
           # shares nothing with this word but four letters.
           alias walk='bash "$PIPULATE_ROOT/walk"'
+          # THE VOICE WORD (2026-09-17). The walk asks once whether it may be
+          # read aloud and records the answer outside the worktree; this is
+          # how that answer is changed later, and it is the one word the card
+          # names, so it has to exist the same day the card does. It runs the
+          # same ask the rider runs, then speaks one sentence on yes so the
+          # audio path is heard rather than assumed. A FUNCTION: typed by a
+          # human, never echoed as a probe; the compile lane witnesses it in
+          # the generated hook text.
+          voice() { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/imports/voice_synthesis.py" ask; }
           alias plan='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/mother_cat.py" --plan'
           # THE CREDENTIAL GAME: bare `warm` is the LIVE red/green board — one
           # bounded API call per enrolled wallet slot, GOLD when every row is
