@@ -630,6 +630,23 @@ def test_memory_voice_integration():
         print("❌ No memories found to test")
         return False
 
+if __name__ == "__main__" and sys.argv[1:2] == ["ask"]:
+    # `voice`, the word the card names: re-ask and record, then speak one
+    # sentence on yes so the audio path is heard rather than assumed.
+    _env = os.environ.get("PIPULATE_VOICE", "").strip()
+    if _env:
+        print(f"voice: PIPULATE_VOICE={_env!r} decides; unset it to be asked.")
+        raise SystemExit(0)
+    _decision = ask_voice_consent(later_hint="voice", force=True)
+    if _decision == "unavailable":
+        print("voice: no terminal to ask on; run this from a terminal.")
+        raise SystemExit(1)
+    print(f"voice: {_decision}  (recorded in {VOICE_CONSENT_FILE})")
+    if _decision == "yes" and chip_voice_system is not None:
+        _result = chip_voice_system.speak_text("This is Piper, reading a script. The voice is on.")
+        if not _result.get("success"):
+            print(f"voice: nothing was heard: {_result.get('error')}")
+    raise SystemExit(0)
 if __name__ == "__main__":
     # Run tests if script is executed directly
     print("🎤🧠 Chip O'Theseus Voice System Tests")
