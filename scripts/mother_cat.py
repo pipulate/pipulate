@@ -92,6 +92,23 @@ def _narrate(text, disclosed):
     return disclosed
 
 
+def _ask_voice():
+    """Ask once whether the walk may be read aloud; the speaker enforces the answer.
+
+    THE VOICE ASKS BEFORE IT SPEAKS (2026-09-17). The card, the recorded
+    answer and the barrier all live in imports/voice_synthesis.py; this is
+    the one place on a newcomer's path that owns a terminal, so the ceremony
+    fires here, before the first spoken word and before the practice notice
+    that promises nothing needs typing. An older speaker without the card
+    means the steps are printed and never spoken.
+    """
+    try:
+        from imports.voice_synthesis import ask_voice_consent
+    except Exception:
+        return
+    ask_voice_consent(later_hint="voice")
+
+
 def _capture_compatible(trail):
     """Return violations of guided_browser_capture's checked preconditions."""
     defaults = trail.get("defaults", {})
