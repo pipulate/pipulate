@@ -85,6 +85,8 @@ def _narrate(text, disclosed):
             disclosed = True
 
         result = chip_voice_system.speak_text(text)
+        if isinstance(result, dict) and result.get("declined"):
+            return disclosed
         if isinstance(result, dict) and not result.get("success"):
             print(
                 "  (voice guidance failed: "
