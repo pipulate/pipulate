@@ -2086,10 +2086,6 @@ scripts/ai.py               # <-- How I constantly use local AI to write git com
 # MISCELLANEOUS (rare to include but sometimes critical)
 scripts/foo_cartridge.py    # Needs description
 scripts/foo_replay.py       # Needs description
-# release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
-# imports/voice_synthesis.py  # <-- The wand can talk to you
-# imports/ascii_displays.py   # <-- Where all the ASCII Art lives
-# scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
 """
 
 INSTALL_CHOP = r"""
