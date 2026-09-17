@@ -727,36 +727,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 #      fixed. STILL UNWITNESSED: nobody has executed `./run` on macOS. Do not
 #      delete the flag until a receipt shows plain `nix develop` succeeding
 #      through that wrapper.
-# THE PUBLISH-ROSTER RULE (banked 2026-08-01, hazard-convicted one turn after
-# it was named): a name in a PUBLISH roster is not a plan, a note, or an
-# intention -- it is a live actuator that fires on the next ordinary release
-# with no further human decision, and for an installer roster the artifact it
-# fires is a curl-pipe endpoint a stranger runs as themselves. CONVICTION: the
-# hazard "two launchers sit in the publish roster having never been ridden;
-# the next full release publishes them by accident" was written into a fan-out
-# ONE TURN before an ordinary release put both on the internet at HTTP 200 --
-# by the publishing commits' own diffstat, 295 and 243 lines of shell that no
-# compile receipt had ever so much as syntax-checked. The warning was
-# addressed to a HUMAN; the roster is read by a MACHINE, and the machine does
-# not read warnings. STANDING CONSEQUENCE: if a thing must not ship, REMOVE IT
-# FROM THE ROSTER -- do not annotate it, do not file it, do not name the
-# hazard and leave the trigger armed. Sibling of REFUSAL-ONLY WITNESS (a guard
-# seen only refusing is unwitnessed) and of NO-DEAD-CARS (every emitted
-# actuator is live regardless of surrounding prose): all three are one
-# disease -- prose beside a mechanism does not gate the mechanism.
-# REMOVAL WITNESSED 2026-08-04, two channels: `ls ~/repos/Pipulate.com/*.sh`
-# returns install.sh and mck.sh ONLY, and `curl -sI pipulate.com/replay.sh`
-# returns HTTP/2 404. So the roster cut on 2026-08-01 was FOLLOWED BY an
-# actual deletion from the served checkout, and the standing consequence was
-# honored rather than merely written down. Worth banking because a rule
-# convicted by a hazard and never witnessed being SATISFIED reads, six months
-# on, like an open wound -- the inverse of REFUSAL-ONLY WITNESS, where a guard
-# is seen only refusing and never holding. RESIDUE, named not ridden:
-# assets/installer/replay.sh (v0.2.0, pinned verifier) and
-# assets/installer/fdr.sh remain on disk in THIS repo, off the roster and
-# therefore unshippable. That is a STRANDED ARTIFACT, not a security gap --
-# there is no v0.1.0 in the wild for the fix to be a fix to. It costs nothing
-# today and will confuse whoever finds it later.
+# § THE PUBLISH-ROSTER RULE (banked 2026-08-01) -- treat every name in a publish roster as a live actuator: if it must not ship, REMOVE IT FROM THE ROSTER, because warnings beside a mechanism do not gate the mechanism; witness the roster cut and served-surface removal before closing the hazard, and treat off-roster residue as stranded, not shippable.
 # THE CABOOSE-VERDICT COROLLARY (banked 2026-08-01, self-convicted one turn
 # later): a prompt written for the NEXT turn may name what to CHECK; it may
 # not pre-commit what a printout MEANS, because the caboose is written before
