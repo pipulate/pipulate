@@ -809,6 +809,37 @@ Entries are alphabetical, numbers spelled as spoken.
   assignment, the stray paren riding the second — two drafts of one line
   shipped together. Dead code beside a syntax error is the signature of an
   emitter that changed its mind mid-file and shipped both minds.
+- **The Forcing-Pair Rule** — *30-and-3 and axis-forcing are one instrument
+  with two grips.* Articulation-banked 2026-07-27, four-model fan-out. Naming
+  the relationship is the win neither rule could carry alone. 30-and-3 fights
+  premature CONVERGENCE within a frame (thirty candidates exhaust the
+  high-probability centroid so taste can pick three); AXIS-FORCING fights
+  premature COMMITMENT to the frame itself (imported bipolar anchors make that
+  centroid ILLEGAL). The chicken-and-egg — "draw an axis to catch a swan the
+  sample never held?" — DISSOLVES the instant an axis is read as a COORDINATE
+  SYSTEM, not a filter: a filter needs the swan already present; a coordinate
+  system CREATES AN ADDRESS for an empty region. The loop is a RATCHET, not a
+  cycle — 30-and-3 locates the clump, the clump names the bias, the HOLE beside
+  it is now an address, and the next pass generates thirty MORE to order INTO
+  that address. Neither comes first; each pass hands the next its constraint.
+  NEGATIVE SPACE IS THE LIMITING FUNCTION: you never need the swan in hand, only
+  the region no candidate thought to occupy. Anchors must be IMPORTED (remote
+  discipline, era, scale, organism); a home-grown axis inherits the home
+  blindspot by construction. The Pi-madness escape — enumerating every possible
+  axis to the numerology ward — is the PROBE ECONOMY denominator made literal:
+  orthogonality × disagreement × observability ÷ probe cost. An axis you cannot
+  cheaply falsify is an axis you do not draw.
+  HANDLE vs MECHANISM (the rename test, same banking): the animal handles —
+  Mother Cat, White Rabbit, Amnesiac Genie, sandworm — are NOT the forcing
+  function. Swap the label; if the artifact is unchanged it was a HANDLE (Mother
+  Cat → Escalator leaves the carry-don't-menu design identical). Change the
+  CONSTRAINT; if the output degrades to cliché it was the MECHANISM (30 → 5 and
+  the octave never breaks). Handles do the REDUNDANT-GROOVE job — memorable,
+  re-findable months later via two rare words — and earn rent ONLY when they
+  predict something checkable ("Mother Cat" predicted CARRY not OFFER, which is
+  why warm beat mcp as the front door; "snowball downhill" predicts nothing, it
+  is a mood). The forcing function is always the constraint that outlaws the
+  likely answer; the animal is the sticker on the constraint's box.
 - **The History-Expansion Probe** — *a bang that dies only in the hand.*
   Banked 2026-08-06, lane-convicted on the first hand-run. A `!` followed by
   a WORD CHARACTER inside DOUBLE quotes is a bash HISTORY EXPANSION, and
