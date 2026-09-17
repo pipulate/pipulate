@@ -2114,14 +2114,37 @@ def update_paintbox_in_place():
         paintbox_lines = [
             PAINTBOX_MARKER,
             "# Files tracked by git but not yet mixed into the palette above.",
-            "# Move these into the active chapters to paint them onto the context canvas.\n"
+            "# Move these into the active chapters to paint them onto the context canvas.",
         ]
 
         total_files = len(repo_files)
         mapped_files = total_files - len(unused_tubes)
         coverage = (mapped_files / total_files) * 100 if total_files > 0 else 100
+        # A GAUGE IS NOT A CLICK (landed 2026-09-17, the day its TODO was
+        # written). This function printed the current coverage and nothing
+        # else, so when a router edit unclaimed two files on 2026-09-01 the
+        # number dropped and stayed dropped for four days, and no compile said
+        # so; the Paintbox convicted it by hand on 2026-09-05. The previous
+        # reading now lives in the Paintbox header of foo_files.py itself, in
+        # the TRACKED file rather than a machine-local cache, so the memory
+        # travels with the repo and a moved number lands as a git diff on the
+        # next blast. It is read from foo_content BEFORE the rewrite below
+        # replaces it, and the anchor is a line only this function writes.
+        prev = re.search(r'^# Coverage: (\d+)/(\d+) ', foo_content, re.MULTILINE)
+        if prev:
+            prev_mapped, prev_total = int(prev.group(1)), int(prev.group(2))
+            memory = (f" (was {prev_mapped}/{prev_total}: "
+                      f"{mapped_files - prev_mapped:+d} claimed, "
+                      f"{total_files - prev_total:+d} tracked)")
+        else:
+            memory = " (first reading; the header carried none)"
+        paintbox_lines.append(
+            f"# Coverage: {mapped_files}/{total_files} tracked files claimed. "
+            "The compiler reads this line back on the next compile and prints "
+            "the delta beside the live count, so an unclaimed file rings once.\n"
+        )
         
-        logger.print(f"🗺️  Codex Mapping Coverage: {coverage:.1f}% ({mapped_files}/{total_files} tracked files).")
+        logger.print(f"🗺️  Codex Mapping Coverage: {coverage:.1f}% ({mapped_files}/{total_files} tracked files){memory}.")
         logger.note(f"📦 Appending {len(unused_tubes)} uncategorized files to the Paintbox ledger for future documentation...")
         for tube_path in unused_tubes:
             full_path = os.path.join(REPO_ROOT, tube_path)
