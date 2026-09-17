@@ -183,6 +183,7 @@ class ChipVoiceSystem:
             
         except Exception as e:
             logger.error(f"🎤 Failed to setup voice model: {e}")
+            self.last_error = f"voice model setup failed: {e}"
             self.voice_ready = False
 
     def stop_speaking(self):
