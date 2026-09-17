@@ -12,6 +12,7 @@ import wave
 import subprocess
 import tempfile
 import signal
+import sys
 from pathlib import Path
 from typing import Optional, Dict, Any
 import logging
