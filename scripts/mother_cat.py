@@ -70,9 +70,13 @@ def _narrate(text, disclosed):
     try:
         if not disclosed:
             result = chip_voice_system.speak_text(
-                "This is an automatic voice reading written instructions. "
-                "It does not listen or answer questions."
+                "This is Piper, a small program reading written instructions "
+                "aloud. It does not listen or answer questions."
             )
+            if isinstance(result, dict) and result.get("declined"):
+                # A human said no, or nobody has been asked: not a failure,
+                # so no failure line. The printed text above is the channel.
+                return True
             if isinstance(result, dict) and not result.get("success"):
                 print(
                     "  (voice disclosure failed: "
