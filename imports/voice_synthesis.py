@@ -186,6 +186,20 @@ class ChipVoiceSystem:
             self.last_error = f"voice model setup failed: {e}"
             self.voice_ready = False
 
+    def ensure_voice(self) -> bool:
+        """Load the voice on first use, never at import. Returns readiness.
+
+        Reached only after voice_consent() read yes, so the download the card
+        announces happens after the answer and not before it.
+        """
+        if self.voice_ready:
+            return True
+        if not VOICE_SYNTHESIS_AVAILABLE:
+            self.last_error = f"voice synthesis not installed: {IMPORT_ERROR}"
+            return False
+        self.setup_voice_model()
+        return self.voice_ready
+
     def stop_speaking(self):
         """
         Silence! Kill the current audio process if it exists.
