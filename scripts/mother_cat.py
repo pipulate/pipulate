@@ -99,7 +99,7 @@ def _narrate(text, disclosed, indent="  "):
                 f"{result.get('error', 'unknown error')})"
             )
     except Exception as exc:
-        print(f"  (voice error, continuing: {exc}) {text}")
+        print(f"{indent}(voice error, continuing: {exc}) {text}")
 
     return disclosed
 
