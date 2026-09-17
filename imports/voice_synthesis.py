@@ -231,7 +231,13 @@ class ChipVoiceSystem:
         Returns:
             bool: True if successful, False otherwise
         """
-        if not self.voice_ready:
+        if voice_consent() != "yes":
+            # THE BARRIER. Every path to sound passes here, and the answer is
+            # read fresh each time, so a no recorded mid-session holds at once.
+            self.last_error = "voice not allowed"
+            logger.info("🎤 Voice not allowed; nothing spoken")
+            return False
+        if not self.ensure_voice():
             logger.warning("🎤 Voice synthesis not ready")
             return False
         
