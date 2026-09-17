@@ -58,7 +58,7 @@ def _narrate(text, disclosed, indent="  "):
     try:
         from imports.voice_synthesis import chip_voice_system
     except Exception as exc:
-        print(f"  (voice import unavailable: {exc}) {text}")
+        print(f"{indent}(voice import unavailable: {exc}) {text}")
         return disclosed
 
     if chip_voice_system is None:
