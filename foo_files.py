@@ -1170,8 +1170,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # release.py                                 #  <-- The deploy process
 # assets/installer/install.sh                #  <-- Pipulate.com installer real home in github/pipulate repo
-# ~/repos/Pipulate.com/CNAME
-# ~/repos/Pipulate.com/_config.yml
 # ~/repos/Pipulate.com/_layouts/default.html
 # ~/repos/nixos/.gitignore
 # ~/repos/Pipulate.com/install.md            #  <-- Gets copied into place here by pipulate/release.py
