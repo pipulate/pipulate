@@ -120,8 +120,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,478 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 17 published in the last 7 days
+# There are 1,479 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 18 published in the last 7 days
 # Markdown negotiated: 2,627 reads (0.22% of all responses)
 # DOM hydration: 2969 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
 # Honeybot telemetry fetched 2026-09-17T16:26Z
@@ -1889,6 +1889,9 @@ __init__.py                 # <-- Version info
 # scripts/articles/generate_llms_txt.py        # <-- Builds an llms.txt based on the auto-organized structure suggested here
 # scripts/articles/generate_redirects.py       # <-- Generates redirect map above hub-churn suggests is needed
 # scripts/articles/sanitize_redirects.py       # <-- Deals with follow-up meticulous pedantic detail required for a good Nginx redirect map
+# scripts/articles/link_injector.py
+# scripts/articles/generate_post_nav.py  # [1,174 tokens | 4,616 bytes]
+
 
 # The following Jekyll files pair well with the above to show how we start various forms of tracking, and as a transition into Honeybot Nginx Broadcast Studio & telemetry.
 # release.py                                          #  <-- The deploy process
@@ -3054,7 +3057,7 @@ foo_files.py
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 202/273 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 204/273 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
 # AGENTS.md  # [731 tokens | 2,934 bytes]
 # AUDIT.md  # [2,011 tokens | 9,706 bytes]
@@ -3103,9 +3106,7 @@ foo_files.py
 # scripts/articles/execute_massive_prompt.py  # [491 tokens | 2,209 bytes]
 # scripts/articles/extract_404_ghosts.py  # [931 tokens | 4,009 bytes]
 # scripts/articles/find_duplicates.py  # [1,879 tokens | 7,993 bytes]
-# scripts/articles/generate_post_nav.py  # [1,174 tokens | 4,616 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
-# scripts/articles/link_injector.py  # [1,134 tokens | 4,394 bytes]
 # scripts/articles/list_models.py  # [102 tokens | 391 bytes]
 # scripts/articles/other/make_article.py  # [1,518 tokens | 6,587 bytes]
 # scripts/articles/scrub_tags.py  # [1,055 tokens | 4,083 bytes]
