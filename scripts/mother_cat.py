@@ -47,8 +47,14 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 
-def _narrate(text, disclosed):
-    """Speak scripted guidance if Piper is available; never gate the ride."""
+def _narrate(text, disclosed, indent="  "):
+    """Speak scripted guidance if Piper is available; never gate the ride.
+
+    indent is the printed line's left margin. Two spaces under a stop header
+    read as nesting; the walk's opening sentence sits at the top level, wraps,
+    and an indented first line over flush continuations reads as a mistake
+    (operator, 2026-09-17), so that call passes none.
+    """
     try:
         from imports.voice_synthesis import chip_voice_system
     except Exception as exc:
