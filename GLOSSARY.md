@@ -1509,6 +1509,38 @@ Entries are alphabetical, numbers spelled as spoken.
   failing lane in miniature -- prompt_foo's ! executor spawns children that
   inherit the pollution and never the nix() function -- so a shim of this
   class can be witnessed from a compile without another install.
+- **The Variance-Suppression Rule** — *none loves chaos; each imposes order on
+  disorder it did not author.* Articulation-banked 2026-07-28, two-article
+  arc. Sycophancy, the over-broad safeguard tripwire, and the human gatekeeper
+  are ONE failure category, not three -- all VARIANCE-SUPPRESSORS. The magic
+  mirror collapses toward the flattering centroid; the safeguard over-enforces a
+  boundary; the tribe throws poo at the fence-line. None LOVE chaos; each
+  IMPOSES order (the chimp poo-throw is a targeted boundary DISPLAY, a
+  Broca-homolog proto-language act, not disorder affinity). The fan-out is the
+  opposite move -- deliberate VARIANCE-GENERATION as the assay. DISCRIMINATING
+  PROBE (fence-vs-lean-back): a variance-suppressor reaches for the fence when
+  disorder it did not author appears; a variance-generator leans back into the
+  mess it made. Checkable on humans, on models (inject a flawed premise -- does
+  it suppress toward agreement?), and on safeguards. The anti-sycophancy defense
+  is therefore NOT tone-policing (which only makes the suppressor throw poo more
+  politely) but anchoring the verdict to ground truth the suppressor cannot
+  flatter -- the same golden path the crawler/edge-table thread converged on.
+  Refs: /futureproof/physics-boundaries-ai-sycophancy-crawler-state/ plus the
+  gatekeeper-clade follow-up. AXIS BANKED 2026-07-30: fence-vs-lean-back rides
+  assets/axis_ledger.jsonl (anchors, rival predictions, runnable probe;
+  verdict open pending the three-fresh-thread cross-domain run).
+  MOUSE-ARMY VIGNETTE (banked 2026-07-29, same-ride ledger receipt): the
+  discrimination run at narrative scale by Stephenson, n=250,001. Nell's
+  Primer carried Miranda -- one human variance-source with taste and stakes
+  -- and produced an individual; the Mouse Army's mass-produced Primers ran
+  pure mechanism on an identical curriculum and produced a uniform
+  instrument with nobody home. Miranda IS the SETTLE gate: the one
+  human-only, non-deterministic step the Mother Cat Kata fences. Rent the
+  handle pays: strip the single human gate from an otherwise identical
+  pipeline and output variance collapses toward the centroid -- competence
+  up, individuation gone. This vignette is ARTICULATION under the rule; the
+  runnable fence-vs-lean-back entry landed in the ledger 2026-07-30 (verdict
+  open pending the three-fresh-thread cross-domain run).
 
 ## The Mother Cat Kata — vocabulary banked 2026-08-01
 
