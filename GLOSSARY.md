@@ -182,6 +182,22 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Ignition** — *making patched code actually run.* Completes the Patch beat;
   an AFTER tap taken without ignition is a stale BEFORE wearing the AFTER's
   label. Either name the actuation or declare "no ignition required."
+- **Inert / reactive substrate** — *whether copying a thing changes it.*
+  Measure it, copy it, measure it again. If the original reads the same,
+  the substrate is INERT: a file, a cartridge, a published paper, a ROM
+  dump, open weights, the markdown master. Copy it out of its container
+  and the win is banked. If the original moved because it was read or
+  copied, the substrate is REACTIVE: a market, a ranking, a log that
+  records its own reads. Copying decays it, and the only thing that banks
+  is the instrument that found the win, never the number it found. RENT
+  THIS PAYS: it sorts wins before you try to bank them. Emulation ratchets
+  the Amiga because a chip does not change when copied; copying Medallion's
+  trades moves the price, so only the research process was ever bankable;
+  rankings were reactive and receipts are inert, which is why one decayed
+  and the other ratchets. Both anchors have receipts in this repo (a walk
+  cartridge re-sealed to the same digest; a census that counted its own
+  visits), and the record is in the axis ledger as
+  inert-vs-reactive-substrate. Banked 2026-09-17.
 - **Jevons the Stoker** — *efficiency breeds engines.* Cheaper inference never
   banks fuel; it multiplies uses. Endgame: datacenter, gaming card, Pi,
   three-for-a-dollar in the trash bin next to GIR.
@@ -289,6 +305,19 @@ Entries are alphabetical, numbers spelled as spoken.
   GPUs reached it (2012); the same result inside a funded project would have
   died with the funding. Sibling of COMPOSTABLE (the organs outlive the
   artifact) and GRAFT, NOT SEED (the pin is the pawl).
+- **Ride / turn** — *one discussion, and one cycle inside it.* A ride is
+  one discussion, mount to dismount. A turn is one Probe, Patch, Prompt
+  cycle inside it, and every turn ends in one compile. A ride leaves three
+  things behind. The ARTICLE is prompt.md: the small, portable version, the
+  part a reader sees, carried unchanged from one model to the next. The
+  PAYLOAD is payload.md: the back room, every file and receipt the compiler
+  stacked under the article, which the reader never sees unless handed the
+  zip. The DEED is the last compile's sealed cartridge, foo-<hash8>-NN.zip,
+  named on the envelope and never in the bytes. RENT THIS PAYS: count the
+  rotated cartridges between mount and dismount and you have counted the
+  turns; a ride with no dismount has not arrived; and taste is mostly the
+  choice of where the ride stops. Sibling of SANDWORM RIDE (the steering)
+  and DISMOUNT (the stop). Banked 2026-09-17, on the ride that named it.
 - **RLHF** — *reinforcement learning from human feedback.* Collect human
   comparisons, fit a reward model to them, optimize the policy against that
   reward under a KL penalty leashing it to the pretrained model. NO QUANTILE
