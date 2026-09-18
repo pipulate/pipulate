@@ -1892,7 +1892,7 @@ prompt_foo.py               # <-- THIS system
 # connectors/botify.py     # <-- Bring Botify crawl data and BQL query results into context.
 # connectors/confluence.py # <-- Bring a Confluence space, page, or search hit into context.
 # connectors/gmail.py      # <-- Bring an email thread or a sender's threads into context.
-# connectors/gsc.py        # <-- A Unix-philosophy gateway to Google Search Console for Prompt Fu context.
+# connectors/gsc.py        # <-- Bring Search Console properties or top queries into context.
 # connectors/jira.py       # <-- List your open Jira tickets, or fetch one by key.
 # connectors/sheets.py     # <-- Bring a Google Sheet's tabs and cell data into context.
 # connectors/slack.py      # <-- Bring a Slack channel or message thread into context.
