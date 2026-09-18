@@ -2697,6 +2697,11 @@ foo_files.py
 #   publishing details" -- two commits, two diffs, one sentence. The SHADOW
 #   earmark is the context row under the todo region's head, and the model
 #   names the context row every time; numstat alone will not cure that.
+#   SPECIMEN 2026-09-18 (pipulate, same m alias): 8f49879f deleted the sigil
+#   when/switch table from the adhoc template, thirty-five comment lines
+#   holding no URL, under "refactor: remove commented-out URL definitions":
+#   the model read the sigils !URL and ?URL as URLs and a lesson as
+#   definitions.
 # - EARMARK: THE THREE-REGION ART EDIT (banked 2026-08-03, receipt-corrected):
 #   registering one piece of figurate art is a THREE-region change with an
 #   integrity coupling and NO airlock -- not two, as a prior turn asserted.
