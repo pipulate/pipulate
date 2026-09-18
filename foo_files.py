@@ -1875,13 +1875,17 @@ prompt_foo.py               # <-- THIS system
 # was read as which words exist. So ! jira PROJ-123 is a legal router line
 # today; mcp is still an alias and warm a function, and only a human types those.
 #
-# THE ROSTER. Each description below is the file's FIRST DOCSTRING LINE,
-# harvested by ast.get_docstring at deed 1469 and the same line sources_menu.py
-# prints, so a wrong sentence here is a wrong sentence in the sources panel:
-# fix the file, never this comment. Two lines break README contract 8 by
-# receipt: gsc.py's is an architecture note at 73 characters against a ceiling
-# of 61, and mcp_warm.py's wraps mid-sentence, so the panel prints a fragment;
-# one car, both files in context. README.md has no docstring; its line is authored.
+# THE ROSTER. Each connector's description below is the file's FIRST
+# DOCSTRING LINE, harvested by ast.get_docstring (deed 1469, re-read at 1472)
+# and the same line sources_menu.py prints, so a wrong sentence here is a
+# wrong sentence in the sources panel: fix the file, then this comment.
+# Contract 8 convicted two of them by receipt and one car fixed both
+# (b7f71ffe: gsc.py 73 -> 60 characters; c29eb030: mcp_warm.py a fragment ->
+# one sentence of 57). README.md, noop.py and the dummy server carry
+# authored lines. THE FOLDER LEFT scripts/ for the repo root on 2026-09-18
+# (deed 1472): one git mv, one literal sed over every file that named the
+# old path, two Path joins by hand, and exit then nix develop as the
+# ignition, because the eight words on PATH bake the folder into their derivations.
 # scripts/sources_menu.py          # <-- what door 2 opens onto.
 # connectors/README.md     # <-- the contract, the wallet, and the six auth kinds every new connector copies one of
 # connectors/wallet.py     # <-- Connect your accounts, or any site by URL; see what's live.
