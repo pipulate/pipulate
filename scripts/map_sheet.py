@@ -2,7 +2,7 @@
 """Scaffold a human-reviewable Google Sheet-to-API mapping artifact.
 
 Input is the timestamped, sentinel-fenced TSV emitted by
-scripts/connectors/sheets.py STACK mode. Suggestions are never confirmations:
+connectors/sheets.py STACK mode. Suggestions are never confirmations:
 the JSON must be reviewed before downstream automation or QA may use it.
 """
 

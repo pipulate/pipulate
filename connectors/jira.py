@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# scripts/connectors/jira.py
+# connectors/jira.py
 """
 jira.py — List your open Jira tickets, or fetch one by key.
 
@@ -7,17 +7,17 @@ A Unix-philosophy gateway to the Jira Cloud API for Prompt Fu context.
 
 Golden-path modes, auto-detected from the single positional argument:
 
-  python scripts/connectors/jira.py                 # MINE: open issues assigned to you (the For You tab)
-  python scripts/connectors/jira.py projects        # LIST: projects you can see
-  python scripts/connectors/jira.py ENG             # LIST: recently-updated issues in project ENG
-  python scripts/connectors/jira.py ENG-123         # FETCH: full text of one issue (custom fields + description + comments)
-  python scripts/connectors/jira.py 'assignee = currentUser() ORDER BY updated DESC'  # SEARCH: raw JQL
+  python connectors/jira.py                 # MINE: open issues assigned to you (the For You tab)
+  python connectors/jira.py projects        # LIST: projects you can see
+  python connectors/jira.py ENG             # LIST: recently-updated issues in project ENG
+  python connectors/jira.py ENG-123         # FETCH: full text of one issue (custom fields + description + comments)
+  python connectors/jira.py 'assignee = currentUser() ORDER BY updated DESC'  # SEARCH: raw JQL
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 
-  ! python scripts/connectors/jira.py
-  ! python scripts/connectors/jira.py ENG
-  ! python scripts/connectors/jira.py ENG-123
+  ! python connectors/jira.py
+  ! python connectors/jira.py ENG
+  ! python connectors/jira.py ENG-123
 
 Disambiguation rule (checked in this order):
   - no argument                          -> MINE: open issues assigned to you
@@ -419,7 +419,7 @@ def list_projects(client, base, max_items):
         return
     for p in values[:max_items]:
         print(f"{p.get('key', '?')}  {p.get('name', '')}")
-    print("\n# Next: python scripts/connectors/jira.py <PROJECTKEY>   (recent issues)")
+    print("\n# Next: python connectors/jira.py <PROJECTKEY>   (recent issues)")
 
 
 def _search(client, base, jql, max_items):
@@ -442,7 +442,7 @@ def list_project_issues(client, base, project_key, max_items):
         f = it.get("fields", {})
         print(f"{it.get('key', '?')}  [{_name(f.get('status'))}]  "
               f"[{_name(f.get('issuetype'))}]  {f.get('summary', '')}")
-    print("\n# Next: python scripts/connectors/jira.py <PROJ-123>   (full issue text)")
+    print("\n# Next: python connectors/jira.py <PROJ-123>   (full issue text)")
 
 
 def search_issues(client, base, jql, max_items):
@@ -455,7 +455,7 @@ def search_issues(client, base, jql, max_items):
     for it in issues[:max_items]:
         f = it.get("fields", {})
         print(f"{it.get('key', '?')}  [{_name(f.get('status'))}]  {f.get('summary', '')}")
-    print("\n# Next: python scripts/connectors/jira.py <PROJ-123>   (full issue text)")
+    print("\n# Next: python connectors/jira.py <PROJ-123>   (full issue text)")
 
 
 def list_mine(client, base, max_items):
@@ -478,8 +478,8 @@ def list_mine(client, base, max_items):
               f"[{_name(f.get('priority'))}]  {f.get('summary', '')}")
     if len(issues) >= max_items:
         print(f"\n# (capped at {max_items}; raise -n/--max to see the rest)")
-    print("\n# Next: python scripts/connectors/jira.py <PROJ-123>   (full issue text)")
-    print("#       python scripts/connectors/jira.py projects      (every project you can see)")
+    print("\n# Next: python connectors/jira.py <PROJ-123>   (full issue text)")
+    print("#       python connectors/jira.py projects      (every project you can see)")
 
 
 def fetch_issue(client, base, issue_key):

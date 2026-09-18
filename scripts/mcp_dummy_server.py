@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # scripts/mcp_dummy_server.py
 """
-mcp_dummy_server.py — a FAULT HARNESS for scripts/connectors/mcp.py.
+mcp_dummy_server.py — a FAULT HARNESS for connectors/mcp.py.
 
 NOT a conformance witness, and the distinction is the whole point. This rig
 and mcp.py were written from the SAME spec reading, so their agreement is a
@@ -493,7 +493,7 @@ def selftest():
         sys.stderr.write(f"fault harness ABORT: client not found at {CLIENT}\n")
         return 1
 
-    print("# MCP FAULT HARNESS — scripts/connectors/mcp.py, UNMODIFIED")
+    print("# MCP FAULT HARNESS — connectors/mcp.py, UNMODIFIED")
     print(f"# instrument: {CLIENT}")
     print(f"# harness:    {Path(__file__).resolve()}\n")
 
@@ -568,7 +568,7 @@ def selftest():
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Zero-auth MCP fault harness for scripts/connectors/mcp.py.")
+        description="Zero-auth MCP fault harness for connectors/mcp.py.")
     parser.add_argument("--selftest", action="store_true",
                         help="run the whole flight card and exit; the exit "
                              "code is the answer.")

@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
-# scripts/connectors/wallet.py
+# connectors/wallet.py
 """
 wallet.py — Connect your accounts, or any site by URL; see what's live.
 
 Golden-path modes, auto-detected from the leading positional argument:
 
-  python scripts/connectors/wallet.py                 # SCOREBOARD: stat EVERY slot, whatever its auth kind (OFFLINE)
-  python scripts/connectors/wallet.py check [<slot>]  # CHECK: the red/green game — one bounded probe per enrolled slot
-  python scripts/connectors/wallet.py check <URL>     # CHECK: the cookie verdict for ANY site, offline, no slot needed
-  python scripts/connectors/wallet.py warm [<slot>]   # WARM: fix whatever is cold, dispatched per auth kind
-  python scripts/connectors/wallet.py warm <URL>      # WARM: log into ANY site, no slot needed; profile = apex label
-  python scripts/connectors/wallet.py login <slot>    # LOGIN: mint an oauth slot, or NAME how any other kind is warmed
+  python connectors/wallet.py                 # SCOREBOARD: stat EVERY slot, whatever its auth kind (OFFLINE)
+  python connectors/wallet.py check [<slot>]  # CHECK: the red/green game — one bounded probe per enrolled slot
+  python connectors/wallet.py check <URL>     # CHECK: the cookie verdict for ANY site, offline, no slot needed
+  python connectors/wallet.py warm [<slot>]   # WARM: fix whatever is cold, dispatched per auth kind
+  python connectors/wallet.py warm <URL>      # WARM: log into ANY site, no slot needed; profile = apex label
+  python connectors/wallet.py login <slot>    # LOGIN: mint an oauth slot, or NAME how any other kind is warmed
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 
-  ! python scripts/connectors/wallet.py
-  ! python scripts/connectors/wallet.py -n 5
+  ! python connectors/wallet.py
+  ! python connectors/wallet.py -n 5
 
 This is the GENERALIZATION of each connector's no-argument identity() walk
 lifted from ONE connector to the WHOLE wallet. It reads
@@ -105,7 +105,7 @@ DOTENV_PATH = Path(os.environ.get('PIPULATE_DOTENV') or
 # Repo root anchors browser_session profiles (data/uc_profiles/<name>), the
 # SAME directory weblogin.py writes. weblogin honors PIPULATE_ROOT then falls
 # back to its own parent.parent; wallet.py lives one level deeper
-# (scripts/connectors/), so parents[2] is the repo root. Keep in sync.
+# (connectors/), so parents[2] is the repo root. Keep in sync.
 REPO_ROOT = Path(os.environ.get('PIPULATE_ROOT') or Path(__file__).resolve().parents[2])
 
 # Auth kinds — these strings MUST match connectors.json exactly.
@@ -132,8 +132,8 @@ _KIND_LABEL = {
 _MARK = {'filled': '[x]', 'stale': '[~]', 'partial': '[/]', 'empty': '[ ]',
          'no-path': '[!]', 'unknown': '[?]'}
 
-# THE THIRD VERBATIM COPY. token_path_for lives in scripts/connectors/mcp.py
-# and scripts/connectors/mcp_warm.py; this leg turns the twins into triplets.
+# THE THIRD VERBATIM COPY. token_path_for lives in connectors/mcp.py
+# and connectors/mcp_warm.py; this leg turns the twins into triplets.
 # The WET connector contract forbids wallet.py importing mcp.py, so the
 # derivation is duplicated ON PURPOSE and the copies are COMPARED BY PROBE,
 # never trusted -- the existing twin-agreement probe simply gains a third leg.
@@ -193,19 +193,19 @@ def load_wallet():
         print("#")
         print("# It has one slot -- botify -- with no token yet. To fill it:")
         print("#")
-        print("#   python scripts/connectors/wallet.py warm botify")
+        print("#   python connectors/wallet.py warm botify")
         print("#")
         print("# That prompts for your Botify API token (get one at")
         print("# https://app.botify.com/account), saves it to ~/.config/pipulate/.env")
         print("# (0600, never in git), and confirms. Press Enter with no token to")
         print("# skip -- the slot waits, empty, until you come back to warm it.")
         print("#")
-        print("# Then `python scripts/connectors/wallet.py check` plays the live")
+        print("# Then `python connectors/wallet.py check` plays the live")
         print("# red/green board -- green means the service accepted the credential")
         print("# just now, not merely that a token exists.")
         print("#")
         print("# The slot name is yours; `auth` is one of six kinds (bearer_token")
-        print("# here). See scripts/connectors/README.md for the other five.")
+        print("# here). See connectors/README.md for the other five.")
         sys.exit(0)
     try:
         return json.loads(path.read_text(encoding='utf-8'))
@@ -351,18 +351,18 @@ def _next_hint(name, state, kind):
     """The exact command that warms THIS slot's kind — the connector teaching
     its own use, even for kinds this wallet cannot mint itself."""
     if kind == _OAUTH_KIND:
-        return f"python scripts/connectors/wallet.py login {name}   (browser-mint, one-time)"
+        return f"python connectors/wallet.py login {name}   (browser-mint, one-time)"
     if kind == _SERVICE_KIND:
         return (f"place the service-account key JSON at the path above "
                 f"(Google Cloud Console → IAM → Service Accounts)")
     if kind == _BROWSER_KIND:
-        return (f"python scripts/connectors/wallet.py warm {name}   "
+        return (f"python connectors/wallet.py warm {name}   "
                 f"(confirms, then opens this slot's own site + profile)")
     if kind == _MCP_KIND:
-        return (f"python scripts/connectors/wallet.py warm {name}   "
+        return (f"python connectors/wallet.py warm {name}   "
                 f"(headless refresh when the derived file can; else browser mint)")
     if kind in _ENV_KINDS:
-        return (f"python scripts/connectors/wallet.py warm {name}   "
+        return (f"python connectors/wallet.py warm {name}   "
                 f"(prompts for each missing var, saves to {DOTENV_PATH})")
     return "unrecognized kind — check connectors.json `auth`"
 
@@ -483,7 +483,7 @@ def login(slot_name, stale_days):
             "Download the Desktop-app OAuth client JSON from the Google Cloud\n"
             "Console and place it there (the same client the other Google\n"
             "connectors use), then re-run:\n"
-            f"    python scripts/connectors/wallet.py login {slot_name}")
+            f"    python connectors/wallet.py login {slot_name}")
 
     connector_file = Path(__file__).resolve().parent / f"{slot_name}.py"
     if not connector_file.exists():
@@ -805,7 +805,7 @@ def _warm_url(url, stale_days, assume_yes=False, dry_run=False):
     if not _interactive():
         print("\n# Not a TTY -- refusing to open a browser, because a `!` chisel-strike")
         print("# must never block the compile that embedded it. In a real terminal:")
-        print(f"#    python scripts/connectors/wallet.py warm '{url}'")
+        print(f"#    python connectors/wallet.py warm '{url}'")
         return
     print("\n" + "-" * 70)
     note = _warm_browser(label, cfg, assume_yes)
@@ -882,7 +882,7 @@ def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
         target = f" {slot_name}" if slot_name else ''
         print("\n# Not a TTY — refusing to prompt, because a `!` chisel-strike must")
         print("# never block the compile that embedded it. In a real terminal:")
-        print(f"#    python scripts/connectors/wallet.py warm{target}")
+        print(f"#    python connectors/wallet.py warm{target}")
         return
 
     results = []
@@ -1057,7 +1057,7 @@ def check_browser_slot(name, cfg):
     db = _cookie_db(profile_dir)
     if db is None:
         return 1, (f"{name} RED gate1: no cookie store under {profile_dir} — "
-                   f"run `python scripts/connectors/wallet.py warm {name}`")
+                   f"run `python connectors/wallet.py warm {name}`")
     apex = _apex(site)
     now = int((time.time() + _CHROME_EPOCH_OFFSET) * 1_000_000)
     try:
@@ -1282,7 +1282,7 @@ def board(wallet, slot_name):
         print(f"# 🏆 GOLD — every enrolled credential ({green}/{total}) is live.")
         return 0
     if red:
-        print("# Fix a red:  python scripts/connectors/wallet.py warm <slot>")
+        print("# Fix a red:  python connectors/wallet.py warm <slot>")
     if unchecked:
         print("# An unchecked slot blocks GOLD on purpose: give it a --check, "
               'or bench it with "enrolled": false.')

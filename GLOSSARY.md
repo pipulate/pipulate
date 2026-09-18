@@ -1078,7 +1078,7 @@ Entries are alphabetical, numbers spelled as spoken.
   and THE MECHANICAL TEST fails it. walk.py checks that the file EXISTS and
   that {harvested} appears once, and nothing anywhere checks that the script
   accepts the argv it will be handed. CURE A FALSE LABEL WITH A TRUE SENTENCE,
-  NEVER A VAGUER ONE: scripts/connectors/noop.py exists IN ORDER to be a
+  NEVER A VAGUER ONE: connectors/noop.py exists IN ORDER to be a
   no-op — one positional, prints what it received, exits 0 — and
   public_walk.yaml names it at all three stops. PROBE DEFECT, same original
   receipt: the CONTROL arm `walk.py --trail public_walk.yaml` ALSO printed 2,
@@ -1479,7 +1479,7 @@ Entries are alphabetical, numbers spelled as spoken.
   (3) Findings; (4) Probable Cause, one paragraph, labeled inference. The
   conviction above was purely structural: a section-4 sentence printed in
   section-1's typeface. OUR OWN FDR, witnessed 2026-07-29:
-  scripts/connectors/mcp.py had read the response side transiently and
+  connectors/mcp.py had read the response side transiently and
   persisted nothing — capable-of-FDR, not FDR — until the FDR CHANNEL landed
   the same day: every exchange records http status, full response headers,
   elapsed, sent and returned session id, body sha256 and bytes, and atexit

@@ -31,7 +31,7 @@ failure surface; physics is not.
 THE GUARD IS A SENSOR, NOT AN ACTUATOR. No guard here changes the world.
 Rung 1 ends when someone removes the sentinel; rung 4 ends when a clock
 runs out and resumes only if something OUT OF BAND re-mints the credential
-(python scripts/connectors/mcp_warm.py --refresh). That asymmetry is
+(python connectors/mcp_warm.py --refresh). That asymmetry is
 deliberate: a guard that can repair its own precondition is a guard whose
 failures stop being visible.
 
@@ -93,7 +93,7 @@ def _read_json(path):
 def seconds_left(record):
     """Seconds remaining on a warmed credential, or None if unreadable.
 
-    WET SIBLING, DELIBERATE. scripts/connectors/mcp.py::_expiry_note is the
+    WET SIBLING, DELIBERATE. connectors/mcp.py::_expiry_note is the
     SHIPPING instrument and owns the operator-facing wording; this is the
     pedagogical mirror, kept stdlib-only so this demo needs nothing from the
     connector lane (which imports httpx). Same two fields, same arithmetic,
@@ -274,7 +274,7 @@ def main():
             else:
                 print(f"  clock: EXPIRED {int(-left)}s ago -- guard reads false "
                       "on iteration 1, by design")
-                print("  re-mint out of band: python scripts/connectors/"
+                print("  re-mint out of band: python connectors/"
                       "mcp_warm.py --refresh")
 
         run_rung(rung,

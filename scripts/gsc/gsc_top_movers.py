@@ -32,7 +32,7 @@ SITE_URL = "sc-domain:mikelev.in"
 # Path to your service account key JSON file — resolved from the wallet, never
 # from inside this repo. The old SCRIPT_DIR expectation was a landmine: one
 # careless `git add scripts/gsc/` away from shipping a Google credential to a
-# public remote. Resolution chain (identical to scripts/connectors/gsc.py):
+# public remote. Resolution chain (identical to connectors/gsc.py):
 #   PIPULATE_GSC_KEY env -> connectors.json gsc.paths.service_account
 #     -> wallet-path default. Duplicated deliberately (WET, per the
 #   connectors README): this file must stay a standalone artifact.

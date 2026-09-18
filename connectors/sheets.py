@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# scripts/connectors/sheets.py
+# connectors/sheets.py
 """
 sheets.py — Bring a Google Sheet's tabs and cell data into context.
 
@@ -7,17 +7,17 @@ A Unix-philosophy gateway to Google Sheets for Prompt Fu context.
 
 Golden-path modes, auto-detected from the single positional argument:
 
-  python scripts/connectors/sheets.py                        # IDENTITY: OAuth wiring status; mints the token interactively
-  python scripts/connectors/sheets.py <URL-or-ID>            # STACK: every tab's ACTUAL data rectangle, timestamped and stacked vertically with payload-grammar sentinels + clickable per-tab #gid= URLs (over --budget: true-extent gauge instead)
-  python scripts/connectors/sheets.py <URL-or-ID> --list     # LIST: metadata-only gauge (grid ALLOCATION, zero cell data fetched)
-  python scripts/connectors/sheets.py <URL-or-ID> --sheet Metrics             # FETCH: first --max rows of one named tab
-  python scripts/connectors/sheets.py <URL-or-ID> --range "'Metrics'!A1:F50"  # FETCH: explicit A1 range
+  python connectors/sheets.py                        # IDENTITY: OAuth wiring status; mints the token interactively
+  python connectors/sheets.py <URL-or-ID>            # STACK: every tab's ACTUAL data rectangle, timestamped and stacked vertically with payload-grammar sentinels + clickable per-tab #gid= URLs (over --budget: true-extent gauge instead)
+  python connectors/sheets.py <URL-or-ID> --list     # LIST: metadata-only gauge (grid ALLOCATION, zero cell data fetched)
+  python connectors/sheets.py <URL-or-ID> --sheet Metrics             # FETCH: first --max rows of one named tab
+  python connectors/sheets.py <URL-or-ID> --range "'Metrics'!A1:F50"  # FETCH: explicit A1 range
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 
-  ! python scripts/connectors/sheets.py "https://docs.google.com/spreadsheets/d/<ID>/edit#gid=0"
-  ! python scripts/connectors/sheets.py <ID> --sheet Metrics --max 50
-  ! python scripts/connectors/sheets.py <ID> --range "'Metrics'!A1:F50" --format json
+  ! python connectors/sheets.py "https://docs.google.com/spreadsheets/d/<ID>/edit#gid=0"
+  ! python connectors/sheets.py <ID> --sheet Metrics --max 50
+  ! python connectors/sheets.py <ID> --range "'Metrics'!A1:F50" --format json
 
 Disambiguation rule: no argument prints identity/usage; anything else is a
 spreadsheet coordinate — a full docs.google.com URL (the /d/<ID>/ segment is
@@ -149,7 +149,7 @@ def get_service():
         die(
             "Sheets auth needs a one-time interactive login.\n"
             "Run this directly in your terminal first to mint the token:\n"
-            "    python scripts/connectors/sheets.py\n"
+            "    python connectors/sheets.py\n"
             "After that, `!` invocations inside the compile lane run silently."
         )
 
@@ -194,7 +194,7 @@ def identity():
         print("Token minted. Headless `!` runs will work from here on.")
     elif not token_ok:
         print("\nRun this same command once in a real terminal to mint the token.")
-    print("\n# Next: python scripts/connectors/sheets.py "
+    print("\n# Next: python connectors/sheets.py "
           '"https://docs.google.com/spreadsheets/d/<ID>/edit"   (LIST tabs + sizes)')
 
 
@@ -227,7 +227,7 @@ def list_tabs(service, sid, gid, max_items):
     if len(tabs) > max_items:
         print(f"... +{len(tabs) - max_items} more tab(s) (raise -n/--max)")
     target = first_tab or 'Sheet1'
-    print(f"\n# Next: python scripts/connectors/sheets.py {sid} "
+    print(f"\n# Next: python connectors/sheets.py {sid} "
           f"--sheet \"{target}\"   (first rows, capped by --max)")
 
 
@@ -272,9 +272,9 @@ def stack_tabs(service, sid, fmt, budget):
         for p, _, r, c in extents:
             print(f"{r:>7}  {c:>5}  {r * c:>9,}  {p.get('title', '?')} | "
                   f"{base_url}#gid={p.get('sheetId', 0)}")
-        print(f"\n# Next: python scripts/connectors/sheets.py {sid} "
+        print(f"\n# Next: python connectors/sheets.py {sid} "
               "--sheet \"<Tab>\"   (one bounded tab)")
-        print(f"# Or raise the ceiling: python scripts/connectors/sheets.py "
+        print(f"# Or raise the ceiling: python connectors/sheets.py "
               f"{sid} --budget {total_cells}")
         return
 
@@ -290,7 +290,7 @@ def stack_tabs(service, sid, fmt, budget):
         else:
             print("(empty tab)")
         print(f'--- END: TAB "{name}" ---\n')
-    print(f"# Next: python scripts/connectors/sheets.py {sid} "
+    print(f"# Next: python connectors/sheets.py {sid} "
           "--range \"'<Tab>'!A1:Z50\" --format json   (one precise slab)")
 
 
@@ -346,7 +346,7 @@ def fetch_values(service, sid, sheet, rng, fmt, max_rows):
         return
     _emit(rows, fmt)
     tab_hint = sheet if sheet else '<Tab>'
-    print(f"\n# Next: python scripts/connectors/sheets.py {sid} "
+    print(f"\n# Next: python connectors/sheets.py {sid} "
           f"--range \"'{tab_hint}'!A1:Z{max_rows}\" --format json")
 
 
@@ -403,7 +403,7 @@ def check():
         if not (creds.expired and creds.refresh_token):
             sys.stderr.write(
                 "sheets RED gate1: token invalid and not refreshable -- run "
-                "`python scripts/connectors/wallet.py login sheets`\n")
+                "`python connectors/wallet.py login sheets`\n")
             return 1
         try:
             creds.refresh(Request())
@@ -431,7 +431,7 @@ def check():
     if resp.status_code == 401:
         sys.stderr.write(
             "sheets RED gate2: token rejected (HTTP 401) -- run "
-            "`python scripts/connectors/wallet.py login sheets`\n")
+            "`python connectors/wallet.py login sheets`\n")
         return 1
     if resp.status_code == 403:
         if status == 'SERVICE_DISABLED':

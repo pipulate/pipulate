@@ -21,7 +21,7 @@
       "target_slot": "optimization_project",
       "harvest_regex": "^[^/\\s]+/[^/\\s]+$",
       "connector": {
-        "script": "scripts/connectors/botify.py",
+        "script": "connectors/botify.py",
         "argv": ["{harvested}", "-n", "25"],
         "read_only": true
       }
@@ -34,7 +34,7 @@
       "target_slot": "monitoring_project",
       "harvest_regex": "^[^/\\s]+/[^/\\s]+$",
       "connector": {
-        "script": "scripts/connectors/botify.py",
+        "script": "connectors/botify.py",
         "argv": ["{harvested}", "-n", "25"],
         "read_only": true
       }
@@ -47,7 +47,7 @@
       "target_slot": "reporting_project",
       "harvest_regex": "^[^/\\s]+/[^/\\s]+$",
       "connector": {
-        "script": "scripts/connectors/botify.py",
+        "script": "connectors/botify.py",
         "argv": ["{harvested}", "-n", "25"],
         "read_only": true
       }

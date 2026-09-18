@@ -1080,9 +1080,9 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # README.md  # [20,725 tokens | 104,252 bytes]
 
 # KEEP THIS AS AN EXAMPLE OF HOW TO USE GMAIL (AND CLEAR WAY FOR SAME FOR GDOCS & SHEETS EQUIVALENT)
-# ! python scripts/connectors/gmail.py 19ed7896e9577340  # Performance Baseline Report
-# ! python scripts/connectors/gmail.py 19ef63ffb0dc3ff4  # Google Search Console & GMC Setup
-# ! python scripts/connectors/gmail.py 19ef61f326a3b536  # AI Visibility Tracking Transcript
+# ! python connectors/gmail.py 19ed7896e9577340  # Performance Baseline Report
+# ! python connectors/gmail.py 19ef63ffb0dc3ff4  # Google Search Console & GMC Setup
+# ! python connectors/gmail.py 19ef61f326a3b536  # AI Visibility Tracking Transcript
 
 # KEEP EXPANDING THIS FOR BETTER ONGOING CONFLUENCE ARTICLE SANITIZING
 # ~/.config/pipulate/pii_substitutions.txt
@@ -1883,18 +1883,18 @@ prompt_foo.py               # <-- THIS system
 # of 61, and mcp_warm.py's wraps mid-sentence, so the panel prints a fragment;
 # one car, both files in context. README.md has no docstring; its line is authored.
 # scripts/sources_menu.py          # <-- what door 2 opens onto.
-# scripts/connectors/README.md     # <-- the contract, the wallet, and the six auth kinds every new connector copies one of
-# scripts/connectors/wallet.py     # <-- Connect your accounts, or any site by URL; see what's live.
-# scripts/connectors/botify.py     # <-- Bring Botify crawl data and BQL query results into context.
-# scripts/connectors/confluence.py # <-- Bring a Confluence space, page, or search hit into context.
-# scripts/connectors/gmail.py      # <-- Bring an email thread or a sender's threads into context.
-# scripts/connectors/gsc.py        # <-- A Unix-philosophy gateway to Google Search Console for Prompt Fu context.
-# scripts/connectors/jira.py       # <-- List your open Jira tickets, or fetch one by key.
-# scripts/connectors/sheets.py     # <-- Bring a Google Sheet's tabs and cell data into context.
-# scripts/connectors/slack.py      # <-- Bring a Slack channel or message thread into context.
-# scripts/connectors/mcp.py        # <-- Replay client for remote MCP servers (Streamable HTTP transport).
-# scripts/connectors/mcp_warm.py  # <-- One-shot OAuth 2.1 PKCE warmer; writes the token file mcp.py's resolve_token already reads
-# scripts/connectors/noop.py      # <-- The honest non-operative connector: one positional, prints what it received, exits 0; what public_walk.yaml names at every stop, because a plan must name something that RUNS
+# connectors/README.md     # <-- the contract, the wallet, and the six auth kinds every new connector copies one of
+# connectors/wallet.py     # <-- Connect your accounts, or any site by URL; see what's live.
+# connectors/botify.py     # <-- Bring Botify crawl data and BQL query results into context.
+# connectors/confluence.py # <-- Bring a Confluence space, page, or search hit into context.
+# connectors/gmail.py      # <-- Bring an email thread or a sender's threads into context.
+# connectors/gsc.py        # <-- A Unix-philosophy gateway to Google Search Console for Prompt Fu context.
+# connectors/jira.py       # <-- List your open Jira tickets, or fetch one by key.
+# connectors/sheets.py     # <-- Bring a Google Sheet's tabs and cell data into context.
+# connectors/slack.py      # <-- Bring a Slack channel or message thread into context.
+# connectors/mcp.py        # <-- Replay client for remote MCP servers (Streamable HTTP transport).
+# connectors/mcp_warm.py  # <-- One-shot OAuth 2.1 PKCE warmer; writes the token file mcp.py's resolve_token already reads
+# connectors/noop.py      # <-- The honest non-operative connector: one positional, prints what it received, exits 0; what public_walk.yaml names at every stop, because a plan must name something that RUNS
 # scripts/mcp_dummy_server.py     # <-- The fault harness behind mcp.py (20/20 against the unmodified client); it shares mcp.py's spec reading, so its agreement is a tautology, never a vendor witness
 #  _____ _           _           _   _                      
 # |  ___(_)_ __   __| |   __ _  | | | | ___  _ __ ___   ___ 
@@ -2361,7 +2361,7 @@ foo_files.py
 # § THE GATE SPEAKS A VERDICT (banked 2026-08-30) -- a gate the operator reads prints GO or STOP with its readings beside the word, never bare numbers the operator must match against prose in another paragraph; the MCP range-gate printed 1025 and 1228 (its GO shape) while the next block's prose held 1 and 18, and the operator correctly refused to guess. A gate rides where it fires and says what it found. Corollary of THE SILENCED CHANNEL: a machine-graded outcome is a token, a human-graded one is a word.
 
 # EARMARK 2026-08-31 mcp.py isError: call_tool checks HTTP status only. Witnessed: render without session_id returned 200 with result.isError=true and exit 0, so a failed tools/call is indistinguishable from success by exit code and any && chain continues past it. list_tools and check both inspect the JSON-RPC error field; call_tool inspects neither that nor isError. One branch, when the ride is a building ride.
-# - TODO (found 2026-08-30 in a rg receipt): scripts/connectors/mcp.py:65 still calls the FDR channel PENDING a written-file receipt; the file was witnessed 2026-07-29 on the RED-401 flush. Flip the word when mcp.py rides a payload. PROTECTION-LAG POLARITY, in source.
+# - TODO (found 2026-08-30 in a rg receipt): connectors/mcp.py:65 still calls the FDR channel PENDING a written-file receipt; the file was witnessed 2026-07-29 on the RED-401 flush. Flip the word when mcp.py rides a payload. PROTECTION-LAG POLARITY, in source.
 # EARMARK mcp.py --schema <tool>: print one tool's inputSchema from tools/list as JSON, exit 1 if unlisted. The menu shows name + 80 chars and no schema. Server one exposes tool_documentation (docs by tool id) -- try it first; server two's equivalent UNWITNESSED.
 # EARMARK server two, first tools/call: Cars E and F (2026-08-30) never fired. Menu at -n 60, pick a list_/get_ tool, call with '{}'; the JSON-RPC error is the schema.
 # EARMARK WET connector for server two, AFTER one real call: a botify.py-shaped file hardcoding --auth-scheme Token / BOTIFY_API_TOKEN and three common calls as one positional. ONE new file, with consent.
@@ -2489,7 +2489,7 @@ foo_files.py
 # § THE LABEL THAT PROMISES A SIBLING (banked 2026-08-09, discharged 2026-08-21) -- a message printed by one command about what a different command will do is a capability claim the printer does not control; mechanically check the sibling, and when it is a shell function record the shell generation, because a pre-fix shell can make code already fixed look broken.
 # § THE FIRST-ERROR FLOOR (banked 2026-08-09) -- a parser reports the first error it cannot get past, so a refusal's line number is a FLOOR on the defect count and never a ceiling; a SEARCH/REPLACE refusal bounds its own region and is diagnosable, a refused WHOLE-FILE write does not, so delete and re-emit rather than hand-repair the one line the parser happened to name. Third refusal class after no-blocks-found and search-block-not-found.
 # § THE SILENCED CHANNEL (banked 2026-08-09) -- a probe that discards a stream paired with a caboose whose verdict reads that stream is a verdict that can never be reached, and an exit code four worlds share is not a reading; a program graded by a MACHINE prints its outcome as a token on stdout, and when it also handles client data the outcome goes to stdout and every identifying string to stderr, so 2>/dev/null is compile-lane-safe by construction. Partitions with THE EXIT-CODE PROTOCOL RULE: decisions speak in exit codes, measurements in tokens.
-# § THE PLACEHOLDER THAT CLAIMS TO RUN (banked 2026-08-08, discharged 2026-08-30) -- validation passing is not execution passing: walk.py checks that a connector file EXISTS and that {harvested} appears once, and nothing anywhere checks that the script accepts the argv it will be handed, so a consent surface can print "names as runnable" about a command that exits 2. Cure a false label with a TRUE sentence, never a vaguer one -- scripts/connectors/noop.py exists IN ORDER to be a no-op and public_walk.yaml names it at all three stops. And never grade a refusal on an exit code that two worlds share.
+# § THE PLACEHOLDER THAT CLAIMS TO RUN (banked 2026-08-08, discharged 2026-08-30) -- validation passing is not execution passing: walk.py checks that a connector file EXISTS and that {harvested} appears once, and nothing anywhere checks that the script accepts the argv it will be handed, so a consent surface can print "names as runnable" about a command that exits 2. Cure a false label with a TRUE sentence, never a vaguer one -- connectors/noop.py exists IN ORDER to be a no-op and public_walk.yaml names it at all three stops. And never grade a refusal on an exit code that two worlds share.
 # § THE COMPILED TRAIL (banked 2026-08-08, OWES discharged 2026-08-09) -- a trail has two legitimate forms and conflating them is the confusion: the SEALED form is machine cargo and stays the JSON subset of YAML 1.2 because there is no stdlib YAML parser, because the sealer hashes those exact bytes and recomputes the consent surface from them, and because duplicate keys must fail closed; the AUTHORING form is a different artifact and may be prose-shaped, one SECTION per stop, parsed by a ten-line scalar subset. The seal was already the compiler; what was missing was a human-shaped input, and walk_compile.py plus bookmark_import.py landed it.
 # - EARMARK: THE UNREACHABLE GUARD (banked 2026-08-07, traceback-witnessed): a
 #   check placed AFTER a line that can raise the same class of error is dead

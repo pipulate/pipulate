@@ -75,13 +75,13 @@ MAX_DESC = 74
 # whose docstring line is read from source at display time -- so when the word
 # changed meaning, the sentence beside it could not stay behind.
 ROSTER = [
-    ("warm", "scripts/connectors/wallet.py"),
-    ("botify", "scripts/connectors/botify.py"),
-    ("confluence", "scripts/connectors/confluence.py"),
-    ("jira", "scripts/connectors/jira.py"),
-    ("slack", "scripts/connectors/slack.py"),
-    ("email", "scripts/connectors/gmail.py"),
-    ("sheets", "scripts/connectors/sheets.py"),
+    ("warm", "connectors/wallet.py"),
+    ("botify", "connectors/botify.py"),
+    ("confluence", "connectors/confluence.py"),
+    ("jira", "connectors/jira.py"),
+    ("slack", "connectors/slack.py"),
+    ("email", "connectors/gmail.py"),
+    ("sheets", "connectors/sheets.py"),
 ]
 
 # Hand-written because these are shell functions in flake.nix, not scripts

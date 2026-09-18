@@ -1,5 +1,5 @@
 """
-connector_tools.py -- the registry face of scripts/connectors/*.py: one tool
+connector_tools.py -- the registry face of connectors/*.py: one tool
 per connector, SAME argument shape, SAME backend, SAME docstring.
 
 This file exists for the two-arm experiment (shell verb vs registry tool) and
@@ -52,7 +52,7 @@ def _connector_doc(name):
 
 
 async def _run_connector(name, params):
-    """Run scripts/connectors/<name>.py as a subprocess; return its three channels."""
+    """Run connectors/<name>.py as a subprocess; return its three channels."""
     if not isinstance(params, dict):
         return {"success": False, "error": "params must be a JSON object"}
     argv = [sys.executable, str(CONNECTORS / f"{name}.py")]
@@ -90,7 +90,7 @@ async def _run_connector(name, params):
 
 @auto_tool
 async def botify(params: dict) -> dict:
-    """Registry face of scripts/connectors/botify.py; __doc__ is replaced at
+    """Registry face of connectors/botify.py; __doc__ is replaced at
     import with that file's own docstring so both arms read one description."""
     return await _run_connector("botify", params)
 

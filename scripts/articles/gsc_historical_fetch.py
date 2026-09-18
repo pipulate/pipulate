@@ -25,7 +25,7 @@ SITE_URL = "sc-domain:mikelev.in"
 SCRIPT_DIR = Path(__file__).parent.resolve()
 # Key resolved from the wallet (PIPULATE_GSC_KEY env -> connectors.json
 # gsc.paths.service_account -> wallet-path default), converging with
-# scripts/connectors/gsc.py and retiring ~/.config/articleizer/ as a
+# connectors/gsc.py and retiring ~/.config/articleizer/ as a
 # second credential home. Duplicated deliberately (WET).
 def _resolve_gsc_key_path():
     env = os.environ.get('PIPULATE_GSC_KEY')

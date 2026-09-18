@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# scripts/connectors/mcp.py
+# connectors/mcp.py
 """
 mcp.py — Replay client for remote MCP servers (Streamable HTTP transport).
 
@@ -11,15 +11,15 @@ named gate; nothing here silently falls back.
 
 Golden-path modes, auto-detected from positionals:
 
-  python scripts/connectors/mcp.py                                # IDENTITY: token state + usage; opens no socket
-  python scripts/connectors/mcp.py <server>                       # LIST: initialize -> tools/list (+ server instructions)
-  python scripts/connectors/mcp.py <server> --schema              # LIST: each tool's full JSON (description + inputSchema)
-  python scripts/connectors/mcp.py <server> <tool> '<args-json>'  # CALL: initialize -> tools/call
-  python scripts/connectors/mcp.py <server> --check               # CHECK: envelope health; exit code is the answer
+  python connectors/mcp.py                                # IDENTITY: token state + usage; opens no socket
+  python connectors/mcp.py <server>                       # LIST: initialize -> tools/list (+ server instructions)
+  python connectors/mcp.py <server> --schema              # LIST: each tool's full JSON (description + inputSchema)
+  python connectors/mcp.py <server> <tool> '<args-json>'  # CALL: initialize -> tools/call
+  python connectors/mcp.py <server> --check               # CHECK: envelope health; exit code is the answer
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike:
 
-  ! python scripts/connectors/mcp.py https://mcp.botify.com --check; echo "exit=$?"
+  ! python connectors/mcp.py https://mcp.botify.com --check; echo "exit=$?"
 
 THE FOUR-TUPLE RECEIPT: every call prints (server, verb, tool, args) with args
 echoed BYTE-FOR-BYTE from argv — the raw string as submitted, never a
@@ -156,7 +156,7 @@ DCLASS_NOTE = {
 # quote() escapes every character a path could carry, and adding an Nth server
 # costs zero configuration lines.
 #
-# token_path_for IS DUPLICATED VERBATIM in scripts/connectors/mcp_warm.py, on
+# token_path_for IS DUPLICATED VERBATIM in connectors/mcp_warm.py, on
 # purpose: the connector contract makes each file self-contained (no shared
 # imports), and walk_cartridge.py already duplicates foo_cartridge's primitives
 # for the same reason. The two definitions must stay byte-identical, so the
@@ -255,7 +255,7 @@ def _expiry_note(data):
     has_refresh = "yes" if data.get("refresh_token") else "no"
     return (f"EXPIRED {int(-remaining)}s ago (life was {int(life)}s); "
             f"refresh_token present: {has_refresh}; re-mint with "
-            "python scripts/connectors/mcp_warm.py")
+            "python connectors/mcp_warm.py")
 
 
 def resolve_token(token_env=None, server=None):
@@ -373,7 +373,7 @@ def identity():
     print("#   mcp <server>                   initialize -> tools/list")
     print("#   mcp <server> <tool> '<json>'   initialize -> tools/call")
     print("#")
-    print("# Mint or refresh a bearer:  python scripts/connectors/mcp_warm.py")
+    print("# Mint or refresh a bearer:  python connectors/mcp_warm.py")
 
 
 def make_client(token, scheme="Bearer"):

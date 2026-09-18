@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# scripts/connectors/slack.py
+# connectors/slack.py
 """
 slack.py — Bring a Slack channel or message thread into context.
 
@@ -7,18 +7,18 @@ A Unix-philosophy gateway to the Slack Web API for Prompt Fu context.
 
 Golden-path modes, auto-detected from the single positional argument:
 
-  python scripts/connectors/slack.py                 # LIST: channels you can see (+ identity)
-  python scripts/connectors/slack.py C0123ABCD        # LIST: recent messages in that channel
-  python scripts/connectors/slack.py general          # LIST: same, resolving a bare #name to its id
-  python scripts/connectors/slack.py https://you.slack.com/archives/C0123ABCD/p1699999999123456
+  python connectors/slack.py                 # LIST: channels you can see (+ identity)
+  python connectors/slack.py C0123ABCD        # LIST: recent messages in that channel
+  python connectors/slack.py general          # LIST: same, resolving a bare #name to its id
+  python connectors/slack.py https://you.slack.com/archives/C0123ABCD/p1699999999123456
                                                       # FETCH: that thread's parent + all replies
-  python scripts/connectors/slack.py 'deploy failed checkout'   # SEARCH: search.messages (user token)
-  python scripts/connectors/slack.py -w pipulate     # ANY mode, on the workspace whose pair is SLACK_USER_TOKEN_PIPULATE
+  python connectors/slack.py 'deploy failed checkout'   # SEARCH: search.messages (user token)
+  python connectors/slack.py -w pipulate     # ANY mode, on the workspace whose pair is SLACK_USER_TOKEN_PIPULATE
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 
-  ! python scripts/connectors/slack.py
-  ! python scripts/connectors/slack.py C0123ABCD
+  ! python connectors/slack.py
+  ! python connectors/slack.py C0123ABCD
 
 Disambiguation rule (checked in this order):
   - no argument                              -> identity (auth.test) + LIST channels
@@ -366,7 +366,7 @@ def identity_and_list(client, max_items):
         priv = "🔒" if ch.get("is_private") else "#"
         print(f"{ch.get('id', '?')}  {priv}{ch.get('name', '')}  "
               f"[{ch.get('num_members', '?')}]  {topic}")
-    print("\n# Next: python scripts/connectors/slack.py <CHANNEL_ID>   (recent messages)")
+    print("\n# Next: python connectors/slack.py <CHANNEL_ID>   (recent messages)")
 
 
 def list_channel_history(client, channel_arg, max_items):

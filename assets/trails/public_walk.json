@@ -21,7 +21,7 @@
       "target_slot": "slot_one",
       "harvest_regex": ".+",
       "connector": {
-        "script": "scripts/connectors/noop.py",
+        "script": "connectors/noop.py",
         "argv": ["{harvested}"],
         "read_only": true
       }
@@ -34,7 +34,7 @@
       "target_slot": "slot_two",
       "harvest_regex": ".+",
       "connector": {
-        "script": "scripts/connectors/noop.py",
+        "script": "connectors/noop.py",
         "argv": ["{harvested}"],
         "read_only": true
       }
@@ -47,7 +47,7 @@
       "target_slot": "slot_three",
       "harvest_regex": ".+",
       "connector": {
-        "script": "scripts/connectors/noop.py",
+        "script": "connectors/noop.py",
         "argv": ["{harvested}"],
         "read_only": true
       }
