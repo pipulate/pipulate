@@ -66,7 +66,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-CONNECTOR_PATH = REPO_ROOT / "scripts" / "connectors" / "botify.py"
+CONNECTOR_PATH = REPO_ROOT / "connectors" / "botify.py"
 CONNECTOR = ".venv/bin/python connectors/botify.py"
 CLI = ".venv/bin/python cli.py"
 OUT_DIR = REPO_ROOT / "browser_cache" / "two_arm"
