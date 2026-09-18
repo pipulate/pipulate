@@ -1861,7 +1861,7 @@ prompt_foo.py               # <-- THIS system
 # apps/120_link_graph.py  # [54,375 tokens | 272,569 bytes]
 
 # ============================================================================
-# XVIII. MISC UNIX PHILOSOPHY STYLE COMMANDS FOR COMPOSABLE PIPELINE WORKFLOWS
+# XVIII. THE TINY UNIX COMMANDS - One word, one job, stdout is the receipt (the human-callable face)
 # ============================================================================
 
 # THE CONNECTORS (WET single-file API gateways; contract in the README)
