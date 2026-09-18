@@ -1294,7 +1294,10 @@ prompt_foo.py               # <-- THIS system
 # like above but not as long-standing overarching to the framework but rather
 # for the current hot spots actively being worked on.
 
-# STICKBUG & MOTHER CAT KATA (WORKING ON THE CHAPTER)
+# THE TINY UNIX COMMANDS live in chapter XVIII (retired from here 2026-09-18):
+# the sigils' when and switch, the connector roster with each file's own first
+# docstring line, and the words. Copy lines UP from that chapter the way the
+# Jekyll chapter is copied from; nothing that lives in a chapter is carried here.
 
 # Always include these with whatever connector
 # scripts/sources_menu.py
