@@ -1864,18 +1864,76 @@ prompt_foo.py               # <-- THIS system
 # XVIII. THE TINY UNIX COMMANDS - One word, one job, stdout is the receipt (the human-callable face)
 # ============================================================================
 
-# THE CONNECTORS (WET single-file API gateways; contract in the README)
-# scripts/sources_menu.py
-# scripts/connectors/README.md
-# scripts/connectors/gmail.py
-# scripts/connectors/confluence.py
-# scripts/connectors/jira.py
-# scripts/connectors/slack.py
-# scripts/connectors/botify.py
-# scripts/connectors/gsc.py
-# scripts/connectors/sheets.py
-# scripts/connectors/wallet.py
-# scripts/connectors/mcp.py
+# THE POLARITY, said once. Anthropic's word connector means a service the
+# MODEL calls (an MCP server or an OAuth app in the Claude directory), skill
+# means a SKILL.md folder of instructions, and plugin bundles the two. Here
+# the model-callable face is tools/*.py and this chapter is the HUMAN-callable
+# one, reaching the same services from the other side of the glass: a person
+# types the word, or the compiler runs it as a ! line, stdout rides into the
+# cartridge as a receipt, and the model reads a fact it never fetched. The
+# human pulls; the payload carries. THE CONTRACT lives in the README: one
+# positional whose SHAPE picks the mode (nothing is the identity walk, a bare
+# token LISTs, an id FETCHes, whitespace or a brace SEARCHes), a -n cap that
+# defaults to 25, a # Next: breadcrumb naming the next drill, auth from env
+# and the config folder and never from the repo, errors on stderr with a
+# nonzero exit. Every step is one argument longer than the last, and the
+# moment a lens shows less than the wire does is the moment to stop scraping.
+#
+# THE SIGILS are the same move aimed at a page instead of an API. The WHEN and
+# the SWITCH are the lesson (moved here from the adhoc header on 2026-09-18;
+# the Tool Roster's Actuation grammar stays the generated WHAT):
+#   !URL     a public page, what a stranger or crawler sees; the BEFORE of a
+#            login-wall diagnosis. It shows a login page -> warm URL once,
+#            then ?URL.
+#   ?URL     anything behind a login, on the site's persistent profile; check
+#            URL first. The lenses show a shell (nav, an Iframe leaf, no
+#            content) -> read the wire truth for the XHR the frame makes, then
+#            call that API with a connector.
+#   @URL     every re-read of a page already scraped; no browser, no network.
+#            The cache is stale or was a login wall -> a fresh ! or ?.
+#   $URL     exact markup: meta tags, a JSON blob in a script tag. Token-heavy;
+#            needs a prior scrape.
+#   %URL     the network log distilled; SPA endpoint discovery. It re-serves
+#            the wire truth you already have -> the API.
+#   ! cmd    any bounded, non-interactive command as a live receipt. Cap it
+#            with -n; no aliases, no prompts (THE THREE-TIER AMENDMENT).
+#   a word   the number you want is one GET away: LIST until the thing is not
+#            in the list -> FETCH by id -> DRILL the path the app's own frame
+#            called -> --grep to narrow a list or find a leaf.
+#
+# TWO AUDIENCES, ONE FILE (operator's ruling, 2026-09-18): the sigils and this
+# roster are the DEVELOPER's training wheels and live here; the newcomer's
+# first screen, the adhoc header in chapter III, keeps the vim lesson and a
+# one-line pointer to this chapter, nothing more.
+#
+# THE WORDS (census of alias and function definitions in flake.nix, deed 1469):
+# after the walk a newcomer's whole vocabulary is walk, plan, voice, epr, cpr
+# and sources; warm and weblogin settle a login before a ?URL; bot, mcp and
+# webclip are the operator's. THE SEVEN CONNECTOR WORDS (jira, gmail,
+# confluence, gsc, sheets, slack, botify) were ABSENT from that census, so they
+# are not spelled alias X= or X() { in the flake: minted by a loop, or defined
+# elsewhere (INFERRED; the flake carries six references to this folder, fewer
+# than seven words). Until the connectors-as-packages TODO lands, a router line
+# spells the script: ! .venv/bin/python scripts/connectors/jira.py PROJ-123
+#
+# THE ROSTER. Each description below is the file's FIRST DOCSTRING LINE,
+# harvested by ast.get_docstring at deed 1469 and the same line sources_menu.py
+# prints, so a wrong sentence here is a wrong sentence in the sources panel:
+# fix the file, never this comment. Two lines break README contract 8 by
+# receipt: gsc.py's is an architecture note at 73 characters against a ceiling
+# of 61, and mcp_warm.py's wraps mid-sentence, so the panel prints a fragment;
+# one car, both files in context. README.md has no docstring; its line is authored.
+# scripts/sources_menu.py          # <-- what door 2 opens onto.
+# scripts/connectors/README.md     # <-- the contract, the wallet, and the six auth kinds every new connector copies one of
+# scripts/connectors/wallet.py     # <-- Connect your accounts, or any site by URL; see what's live.
+# scripts/connectors/botify.py     # <-- Bring Botify crawl data and BQL query results into context.
+# scripts/connectors/confluence.py # <-- Bring a Confluence space, page, or search hit into context.
+# scripts/connectors/gmail.py      # <-- Bring an email thread or a sender's threads into context.
+# scripts/connectors/gsc.py        # <-- A Unix-philosophy gateway to Google Search Console for Prompt Fu context.
+# scripts/connectors/jira.py       # <-- List your open Jira tickets, or fetch one by key.
+# scripts/connectors/sheets.py     # <-- Bring a Google Sheet's tabs and cell data into context.
+# scripts/connectors/slack.py      # <-- Bring a Slack channel or message thread into context.
+# scripts/connectors/mcp.py        # <-- Replay client for remote MCP servers (Streamable HTTP transport).
 # scripts/connectors/mcp_warm.py  # <-- One-shot OAuth 2.1 PKCE warmer; writes the token file mcp.py's resolve_token already reads
 # scripts/connectors/noop.py      # <-- The honest non-operative connector: one positional, prints what it received, exits 0; what public_walk.yaml names at every stop, because a plan must name something that RUNS
 # scripts/mcp_dummy_server.py     # <-- The fault harness behind mcp.py (20/20 against the unmodified client); it shares mcp.py's spec reading, so its agreement is a tautology, never a vendor witness
