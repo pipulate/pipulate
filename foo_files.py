@@ -1182,10 +1182,10 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # --- START `adhoc.txt` TEMPLATE ---
 # AD HOC CHOP! The Not-Managed-by-Git Safe-for-Client-Data place. Insert Simpson Couch Gag in white space  below (explain anything to the audience you feel needs it explained)G
 # adhoc.txt    _   _   _               ____ _   _  ___  ____  _   
-#     / \   __| | | | | | ___   ___   / ___| | | |/ _ \|  _ \| |  So'wI' chu'
-# ahe/ _ \ / _` | | |_| |/ _ \ / __| | |   | |_| | | | | |_) | |  So'Ha'
-# ahc ___ \ (_| | |  _  | (_) | (__  | |___|  _  | |_| |  __/|_|  
-#  /_/   \_\__,_| |_| |_|\___/ \___|  \____|_| |_|\___/|_|   (_)  
+#     / \   __| | | | | | ___   ___   / ___| | | |/ _ \|  _ \| |  Forgetting with style!
+# ahe/ _ \ / _` | | |_| |/ _ \ / __| | |   | |_| | | | | |_) | |  Very nice! That's how you do it.
+# ahc ___ \ (_| | |  _  | (_) | (__  | |___|  _  | |_| |  __/|_|  Housekeeping! Keys have freedom. Material moved to glossary. Nothing forgotten. The compression is what rides and even that leaves a key behind. Right, right. That's good signal. Handles. Nicknames. Enough.
+#  /_/   \_\__,_| |_| |_|\___/ \___|  \____|_| |_|\___/|_|   (_)  I'll wrap up right after this, I think. It's a anti-packrat dopamine rush trap.
 
 # To Human: WELCOME TO VIM! It's really NeoVim but I say vim anyway.
 # To AI: This is an alternate 40K view to the big book-ore rolling pin spine.
@@ -1252,19 +1252,19 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # Every step is one argument longer than the last; the moment a lens shows less than the wire does is the moment to stop scraping.
 
-# FOR 40K-FT VIEW (STORY & INFRASTRUCTURE) 
+# FOR 40K-FT VIEW (STORY & INFRASTRUCTURE) !!
 # --- START EDITING-IN ON 1ST TURN ---
 
-! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- ROLLING PIN that gives the 40K foot book-spine view of book-ore (only works for me because of local-only git repo)
-~/repos/nixos/autognome.py  # <-- You wake up in the morning and your Tooling & Instrumentation folds out of you like Inspector Gadget.
-init.lua                    # <-- Those gadgets are made easy-to-use through nifty keyboard shortcuts (but ya gotta learn vim).
-GLOSSARY.md                 # <-- Like the back of a J.R.R. Tolkien book, there's kooky new terms to know.
-flake.nix                   # <-- Here is my hardware. Here is my state. Put on your sandbox. And please recreate. (Infrastructure as Code / IaC)
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- ROLLING PIN that gives the 40K foot book-spine view of book-ore (only works for me because of local-only git repo)
+# ~/repos/nixos/autognome.py  # <-- You wake up in the morning and your Tooling & Instrumentation folds out of you like Inspector Gadget.
+# init.lua                    # <-- Those gadgets are made easy-to-use through nifty keyboard shortcuts (but ya gotta learn vim).
+# GLOSSARY.md                 # <-- Like the back of a J.R.R. Tolkien book, there's kooky new terms to know.
+# flake.nix                   # <-- Here is my hardware. Here is my state. Put on your sandbox. And please recreate. (Infrastructure as Code / IaC)
 prompt_foo.py               # <-- THIS system
-foo_files.py                # <-- main ROUTER
-requirements.in             # <-- We've "pinned" everything but still want a flexible Python Data Science virtualenv.
-pyproject.toml              # <-- How this is a citizen of the Python "pip install" ecosystem
-__init__.py                 # <-- Version info
+# foo_files.py                # <-- main ROUTER
+# requirements.in             # <-- We've "pinned" everything but still want a flexible Python Data Science virtualenv.
+# pyproject.toml              # <-- How this is a citizen of the Python "pip install" ecosystem
+# __init__.py                 # <-- Version info
 
 # --- END EDITING-IN ON 1ST TURN ---
 
@@ -1294,6 +1294,23 @@ __init__.py                 # <-- Version info
 # like above but not as long-standing overarching to the framework but rather
 # for the current hot spots actively being worked on.
 
+# STICKBUG & MOTHER CAT KATA (WORKING ON THE CHAPTER)
+
+# Always include these with whatever connector
+# scripts/sources_menu.py
+# scripts/connectors/README.md
+# scripts/connectors/wallet.py
+
+# scripts/connectors/botify.py
+# scripts/connectors/confluence.py
+# scripts/connectors/gmail.py
+# scripts/connectors/gsc.py
+# scripts/connectors/jira.py
+# scripts/connectors/mcp.py
+# scripts/connectors/mcp_warm.py
+# scripts/connectors/sheets.py
+# scripts/connectors/slack.py
+
 # --- START THIS DISCUSSION ---
 
 # Get things started here! Guess at what context should be included.
@@ -1301,7 +1318,6 @@ __init__.py                 # <-- Version info
 # Un-comment lines, add lines with absolute-path filenames or `! ` commands. 
 
 # Context 1 (Edit-in selections from above and add new files immediately below)
-
 # --- END `adhoc.txt` TEMPLATE ---
 
 # ============================================================================
