@@ -1897,7 +1897,7 @@ prompt_foo.py               # <-- THIS system
 # connectors/sheets.py     # <-- Bring a Google Sheet's tabs and cell data into context.
 # connectors/slack.py      # <-- Bring a Slack channel or message thread into context.
 # connectors/mcp.py        # <-- Replay client for remote MCP servers (Streamable HTTP transport).
-# connectors/mcp_warm.py  # <-- One-shot OAuth 2.1 PKCE warmer; writes the token file mcp.py's resolve_token already reads
+# connectors/mcp_warm.py  # <-- Mint the OAuth bearer token a remote MCP server asks for.
 # connectors/noop.py      # <-- The honest non-operative connector: one positional, prints what it received, exits 0; what public_walk.yaml names at every stop, because a plan must name something that RUNS
 # scripts/mcp_dummy_server.py     # <-- The fault harness behind mcp.py (20/20 against the unmodified client); it shares mcp.py's spec reading, so its agreement is a tautology, never a vendor witness
 #  _____ _           _           _   _                      
