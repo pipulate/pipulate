@@ -1,8 +1,8 @@
 # AI_CONTEXT.md — Start Here If You Are an AI
 
-> Auto-generated on 2026-09-15. Rewritten from scratch on every release. If this
+> Auto-generated on 2026-09-18. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1474 entries indexed.
+> 1483 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -96,6 +96,15 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-09-18] [The First Ten Minutes: Engineering Reproducible AI Workflows in the Age of AI](https://mikelev.in/futureproof/the-first-ten-minutes-reproducible-ai-workflows/index.md)
+- [2026-09-17] [The Retrieval Cue: Memory Consolidation and Selective Hydration in the Age of AI](https://mikelev.in/futureproof/retrieval-cue-memory-consolidation-selective-hydration/index.md)
+- [2026-09-17] [The Voice Asks First: Engineering Verifiable Consent and Silent Defaults](https://mikelev.in/futureproof/the-voice-asks-first-verifiable-consent/index.md)
+- [2026-09-17] [The Workbench Pin and the Help Screen Census: Verifiable Receipts in the Age of AI](https://mikelev.in/futureproof/the-workbench-pin-and-the-help-screen-census/index.md)
+- [2026-09-17] [The Useless Machine: Building Replayable Workflows and OAuth Leases in the Age of AI](https://mikelev.in/futureproof/useless-machine-oauth-replayable-workflows/index.md)
+- [2026-09-17] [Escaped Monopolies and Replayable Receipts: An Important Look at Software Freedom in the Age of AI](https://mikelev.in/futureproof/escaped-monopolies-and-replayable-receipts/index.md)
+- [2026-09-17] [Ratcheting Wins in the Age of AI: Engineering Replayable Workflows Without Backsliding](https://mikelev.in/futureproof/ratcheting-wins-in-the-age-of-ai/index.md)
+- [2026-09-16] [The Prompt Router Has Two Words: Simplifying Replayable AI Workflows](https://mikelev.in/futureproof/prompt-router-two-words-replayable-ai-workflows/index.md)
+- [2026-09-16] [Walk, Plan, and Run: Designing Replayable AI Workflows](https://mikelev.in/futureproof/walk-plan-run-replayable-workflows/index.md)
 - [2026-09-15] [The Walk Says Goodbye: Engineering Verifiable AI Workflows on Rails](https://mikelev.in/futureproof/the-walk-says-goodbye-verifiable-workflows/index.md)
 - [2026-09-15] [The First Five Minutes: Engineering Verifiable Workflows Without the Noise](https://mikelev.in/futureproof/first-five-minutes-verifiable-workflows/index.md)
 - [2026-09-15] [The Walk That Teaches Walks: Building Reproducible AI Workflows](https://mikelev.in/futureproof/the-walk-that-teaches-walks/index.md)
@@ -107,20 +116,20 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-09-13] [The ACME Airlock and the Cellular Witness: Verifying HTTPS in the Age of AI](https://mikelev.in/futureproof/acme-airlock-cellular-receipts/index.md)
 - [2026-09-13] [Model Handoff and the Cellular Witness: Engineering Verifiable Deployments](https://mikelev.in/futureproof/model-handoff-and-the-cellular-witness/index.md)
 - [2026-09-12] [The Unix Way in the Age of AI: Replayable Workflows Without the Bloat](https://mikelev.in/futureproof/unix-way-ai-replayable-workflows/index.md)
-- [2026-09-11] [Navigating Slack: An Important Ergonomic Appraisal for the Age of AI](https://mikelev.in/futureproof/navigating-slack-ergonomic-appraisal-age-of-ai/index.md)
-- [2026-09-10] [Unearned Alligators and Textile Looms: A Reflection on Quality Assurance in the Age of AI](https://mikelev.in/futureproof/unearned-alligators-textile-looms-qa-ai/index.md)
-- [2026-09-09] [Taming the Unstable Throttle: Engineering Replayable NixOS Upgrades](https://mikelev.in/futureproof/taming-the-unstable-throttle-replayable-nixos-upgrades/index.md)
-- [2026-09-08] [Closing the Loop: Replayable AI Workflows and the End of Manual Edits](https://mikelev.in/futureproof/replayable-ai-workflows-and-profile-identity/index.md)
-- [2026-09-08] [The Browser Is the API: Managing Chrome Bookmarks with Nix and Python](https://mikelev.in/futureproof/browser-api-managing-chrome-bookmarks-nix-python/index.md)
-- [2026-09-08] [Reversible Endosymbiosis: Engineering Verifiable AI Workflows](https://mikelev.in/futureproof/reversible-endosymbiosis-verifiable-ai-workflows/index.md)
-- [2026-09-08] [Bridging Browser Capture to Context Compilers in the Age of AI](https://mikelev.in/futureproof/bridging-browser-capture-to-context-compilers/index.md)
-- [2026-09-07] [Two Years, Four Models, and One Verifiable Record](https://mikelev.in/futureproof/two-years-four-models-one-verifiable-record/index.md)
-- [2026-09-06] [The List Is the Test: When Context Compilers Grade Their Own Work](https://mikelev.in/futureproof/the-list-is-the-test/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-09-11] [14k] navigating-slack-ergonomic-appraisal-age-of-ai
+- [2026-09-10] [56k] unearned-alligators-textile-looms-qa-ai
+- [2026-09-09] [69k] taming-the-unstable-throttle-replayable-nixos-upgrades
+- [2026-09-08] [189k] replayable-ai-workflows-and-profile-identity
+- [2026-09-08] [164k] browser-api-managing-chrome-bookmarks-nix-python
+- [2026-09-08] [85k] reversible-endosymbiosis-verifiable-ai-workflows
+- [2026-09-08] [177k] bridging-browser-capture-to-context-compilers
+- [2026-09-07] [134k] two-years-four-models-one-verifiable-record
+- [2026-09-06] [226k] the-list-is-the-test
 - [2026-09-06] [431k] archive-not-artifact-checkable-ai-receipts
 - [2026-09-06] [282k] visual-surveillance-extremities-receipts
 - [2026-09-05] [207k] three-tools-one-pipeline-walk-router-compiler
