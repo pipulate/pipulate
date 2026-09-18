@@ -31,7 +31,7 @@ SITE_URL = "sc-domain:mikelev.in"
 BASE_URL = "https://mikelev.in"
 
 # Path to your service account key JSON file — resolved from the wallet, never
-# from inside this repo. Resolution chain (identical to scripts/connectors/gsc.py):
+# from inside this repo. Resolution chain (identical to connectors/gsc.py):
 #   PIPULATE_GSC_KEY env -> connectors.json gsc.paths.service_account
 #     -> wallet-path default. Duplicated deliberately (WET, per the
 #   connectors README): this file must stay a standalone artifact.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# scripts/connectors/botify.py
+# connectors/botify.py
 """
 botify.py — Bring Botify crawl data and BQL query results into context.
 
@@ -7,23 +7,23 @@ A Unix-philosophy gateway to the Botify API for Prompt Fu context.
 
 Golden-path modes, auto-detected from the single positional argument:
 
-  python scripts/connectors/botify.py                    # LIST: identity walk -> all your org/project slugs
-  python scripts/connectors/botify.py org                # LIST: projects under that org slug
-  python scripts/connectors/botify.py org/project        # LIST: analyses (crawl snapshots) for that project
-  python scripts/connectors/botify.py org/project/analysis    # FETCH: verdict (status, pages, rate, cadence ETA) + crawl statistics, running or done
-  python scripts/connectors/botify.py 'https://app.botify.com/org/project/...'   # any app URL reduces to its slug path first
-  python scripts/connectors/botify.py org/project/saved_explorers --grep facet   # DRILL: any project sub-resource, rows narrowed
-  python scripts/connectors/botify.py org/project/saved_explorers/<uuid>   # FETCH: one item in full, containers as JSON
-  python scripts/connectors/botify.py org/project/analysis/crawl_statistics   # DRILL: any analysis sub-resource; a ?k=v rides along
-  python scripts/connectors/botify.py org/project/collections/crawl.<slug> --grep link   # FIND: every leaf path in one object matching
-  python scripts/connectors/botify.py org/project/analysis --grep link   # the verdict, then every leaf in the detail matching
-  python scripts/connectors/botify.py '<BQL or JSON>'    # FETCH: run a query (needs org/project coordinates)
+  python connectors/botify.py                    # LIST: identity walk -> all your org/project slugs
+  python connectors/botify.py org                # LIST: projects under that org slug
+  python connectors/botify.py org/project        # LIST: analyses (crawl snapshots) for that project
+  python connectors/botify.py org/project/analysis    # FETCH: verdict (status, pages, rate, cadence ETA) + crawl statistics, running or done
+  python connectors/botify.py 'https://app.botify.com/org/project/...'   # any app URL reduces to its slug path first
+  python connectors/botify.py org/project/saved_explorers --grep facet   # DRILL: any project sub-resource, rows narrowed
+  python connectors/botify.py org/project/saved_explorers/<uuid>   # FETCH: one item in full, containers as JSON
+  python connectors/botify.py org/project/analysis/crawl_statistics   # DRILL: any analysis sub-resource; a ?k=v rides along
+  python connectors/botify.py org/project/collections/crawl.<slug> --grep link   # FIND: every leaf path in one object matching
+  python connectors/botify.py org/project/analysis --grep link   # the verdict, then every leaf in the detail matching
+  python connectors/botify.py '<BQL or JSON>'    # FETCH: run a query (needs org/project coordinates)
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 
-  ! python scripts/connectors/botify.py
-  ! python scripts/connectors/botify.py my-org/my-project
-  ! python scripts/connectors/botify.py 'SELECT url FROM crawl' --org my-org --project my-project
+  ! python connectors/botify.py
+  ! python connectors/botify.py my-org/my-project
+  ! python connectors/botify.py 'SELECT url FROM crawl' --org my-org --project my-project
 
 Disambiguation rule: an argument that starts with '{' or contains whitespace is
 a query (FETCH mode); an app.botify.com URL is first reduced to its slug path
@@ -187,7 +187,7 @@ def list_identity(client, max_items):
     for p in projects:
         org, slug, name = project_coordinates(p)
         print(f"{org}/{slug}  {name}")
-    print("\n# Next: python scripts/connectors/botify.py <org>/<project>   (list analyses)")
+    print("\n# Next: python connectors/botify.py <org>/<project>   (list analyses)")
 
 
 def list_org_projects(client, org, max_items):
@@ -200,7 +200,7 @@ def list_org_projects(client, org, max_items):
     for p in projects:
         _, slug, name = project_coordinates(p)
         print(f"{org}/{slug}  {name}")
-    print("\n# Next: python scripts/connectors/botify.py " + org + "/<project>   (list analyses)")
+    print("\n# Next: python connectors/botify.py " + org + "/<project>   (list analyses)")
 
 
 def list_analyses(client, org, project, max_items):
@@ -216,10 +216,10 @@ def list_analyses(client, org, project, max_items):
         finished = a.get("date_finished") or a.get("date_created") or ""
         print(f"{slug}  {status}  {finished}")
     print(
-        "\n# Next: python scripts/connectors/botify.py 'SELECT url FROM crawl' "
+        "\n# Next: python connectors/botify.py 'SELECT url FROM crawl' "
         f"--org {org} --project {project}"
     )
-    print(f"#       python scripts/connectors/botify.py {org}/{project}/<analysis>   (one crawl's status + statistics;")
+    print(f"#       python connectors/botify.py {org}/{project}/<analysis>   (one crawl's status + statistics;")
     print("#       a crawl still RUNNING can be absent from the list above -- fetch it by its slug)")
 
 
@@ -422,7 +422,7 @@ def fetch_analysis(client, org, project, slug, max_items, grep=None):
         print(f"\n## grep {grep!r}: {len(hits)} of {total} leaf(ves) in the analysis detail   (path: value)")
         for path, value in hits:
             print(f"{path}: {value}")
-    print(f"\n# Next: python scripts/connectors/botify.py {org}/{project}   (every finished analysis)")
+    print(f"\n# Next: python connectors/botify.py {org}/{project}   (every finished analysis)")
 
 
 def row_label(item):
@@ -557,7 +557,7 @@ def walk_path(client, org, project, rest, max_items, grep=None):
             print(json.dumps(r, default=str)[:200])
     if isinstance(data, dict) and data.get("next"):
         print("\n# (more pages exist on the server; this printed the first)")
-    print(f"\n# Next: python scripts/connectors/botify.py {org}/{project}/{'/'.join(segs)}/<ident>   (one item in full)")
+    print(f"\n# Next: python connectors/botify.py {org}/{project}/{'/'.join(segs)}/<ident>   (one item in full)")
 
 
 def run_query(client, raw_query, org, project, max_items):

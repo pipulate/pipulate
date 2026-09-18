@@ -21,7 +21,7 @@
       "target_slot": "jira_issue_key",
       "harvest_regex": "^[A-Z][A-Z0-9]+-[0-9]+$",
       "connector": {
-        "script": "scripts/connectors/jira.py",
+        "script": "connectors/jira.py",
         "argv": ["{harvested}"],
         "read_only": true
       }

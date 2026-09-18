@@ -76,7 +76,7 @@ import subprocess
 #      output to stay safe must first prove the exit code ALONE still
 #      answers the question; otherwise it has traded content for silence and
 #      kept neither. Two sibling misses the same day: a probe reading
-#      scripts/connectors/wallet.json, a path that has never existed, and a
+#      connectors/wallet.json, a path that has never existed, and a
 #      `jira | grep -c` whose 2>/dev/null made a dead credential and an
 #      empty ticket list print the same 0.
 # THE HELP TEXT IS NOT A CENSUS (convicted 2026-09-17, both halves of one

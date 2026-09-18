@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-# scripts/connectors/mcp_warm.py
+# connectors/mcp_warm.py
 """
 mcp_warm.py — Mint the OAuth bearer token a remote MCP server asks for.
 
-OAuth 2.1 with PKCE (S256), parked where scripts/connectors/mcp.py already
+OAuth 2.1 with PKCE (S256), parked where connectors/mcp.py already
 looks.
 
 THE PLUG FOR THE ALREADY-WIRED SOCKET: resolve_token() in mcp.py reads
@@ -16,8 +16,8 @@ No new dependencies: httpx (declared) plus stdlib.
 
 Golden path:
 
-  python scripts/connectors/mcp_warm.py                      # https://mcp.botify.com/
-  python scripts/connectors/mcp_warm.py https://mcp.example.com/
+  python connectors/mcp_warm.py                      # https://mcp.botify.com/
+  python connectors/mcp_warm.py https://mcp.example.com/
 
 Interactive-only BY DESIGN: it opens a browser and blocks on the redirect,
 so a `!` chisel-strike must never reach it. Non-TTY runs die at gate0.
@@ -63,7 +63,7 @@ AUTH_TIMEOUT = 300  # seconds to wait for the browser redirect
 def token_path_for(resource):
     """Credential path for one MCP server. A root path collapses to the host.
 
-    DUPLICATED VERBATIM from scripts/connectors/mcp.py, on purpose: each
+    DUPLICATED VERBATIM from connectors/mcp.py, on purpose: each
     connector is self-contained (no shared imports), and a shared helper would
     make mcp.py depend on this file. The two definitions must stay
     byte-identical; the straddle probe compares their output.
@@ -270,7 +270,7 @@ def refresh(out_path, resource_hint=DEFAULT_RESOURCE):
     print(f"# gate6 GREEN: refreshed in place -> {out} (0600)")
     print(f"#   scope: {record.get('scope') or '(none reported)'} | "
           f"expires_in: {record.get('expires_in')}")
-    print("# Next: python scripts/connectors/mcp.py "
+    print("# Next: python connectors/mcp.py "
           f"{resource.rstrip('/')} --check")
     return 0
 
@@ -399,7 +399,7 @@ def main():
     print(f"# gate5 GREEN: token written to {out} (0600)")
     print(f"#   scope: {record['scope'] or '(none reported)'} | "
           f"expires_in: {record['expires_in']}")
-    print("# Next: python scripts/connectors/mcp.py "
+    print("# Next: python connectors/mcp.py "
           f"{resource.rstrip('/')} --check")
 
 

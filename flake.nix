@@ -473,7 +473,7 @@
             echo "${name}: missing $python_bin; enter the Pipulate Nix shell first." >&2
             exit 1
           fi
-          exec "$python_bin" "$root/scripts/connectors/${script}.py" "$@"
+          exec "$python_bin" "$root/connectors/${script}.py" "$@"
         '';
         connectorCommands = [
           (connectorCommand "gmail" "gmail")
@@ -1327,7 +1327,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # unrelated jobs and nothing about the word said so: bare `mcp`
           # listed CONNECTORS that pull material IN, while `mcp <tool>`
           # dispatched a REGISTRY TOOL. Worse, `mcp` is the NAME OF A FILE --
-          # scripts/connectors/mcp.py, the one thing here that genuinely IS
+          # connectors/mcp.py, the one thing here that genuinely IS
           # MCP -- and that file could not be reached by its own name because
           # the roster had taken it. Three words now, each of whose bare and
           # argument forms are about the same thing:
@@ -1420,7 +1420,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             fi
           }
           # THE CONNECTOR GRAMMAR (idea #7 made literal): tiny Unix commands,
-          # one per API, each a self-contained file in scripts/connectors/.
+          # one per API, each a self-contained file in connectors/.
           # Args pass through: `botify org/project`, `confluence ENG`,
           # `gmail <thread_id>`. Interactive-shell only — adhoc.txt `!` lines
           # ride as DERIVATIONS in commonPackages above, so the short spelling
@@ -1438,7 +1438,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # a function: nothing branches here, because mcp.py's own bare mode is
           # the branch -- and a bare `mcp` that argparse-exited 2 would have
           # been a worse first keypress than the roster it replaced.
-          alias mcp='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/mcp.py"'
+          alias mcp='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/connectors/mcp.py"'
           # weblogin <apex-domain>: pop up a visible Chrome on the house
           # persistent profile (data/uc_profiles/default) so persistent
           # scrapes inherit the login. Log in, close the window, done.
@@ -1497,9 +1497,9 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # reachable.
           warm() {
             if [ "$#" -eq 0 ]; then
-              "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/wallet.py" check
+              "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/connectors/wallet.py" check
             else
-              "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/connectors/wallet.py" warm "$@"
+              "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/connectors/wallet.py" warm "$@"
             fi
           }
           alias vim='nvim'

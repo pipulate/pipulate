@@ -18,7 +18,7 @@ data/uc_profiles/<apex-label> FIRST (app.botify.com -> botify, x.atlassian.net
 -> atlassian) and falls back to `default` only when that dir is absent. A bare
 `weblogin botify.com` therefore warms `default`, which the crawler stops opening
 for botify.com the moment uc_profiles/botify exists -- a login that persisted
-and is never read. `warm <URL>` (scripts/connectors/wallet.py) derives the label
+and is never read. `warm <URL>` (connectors/wallet.py) derives the label
 for you and is the front door; pass --profile here only when you mean it.
 """
 import os

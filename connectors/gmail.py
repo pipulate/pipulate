@@ -318,7 +318,7 @@ def search_threads(service, subject, max_results, full=True):
         if snippet:
             print(f"    snippet: {snippet}")
         print()
-    print("# Next: python scripts/connectors/gmail.py <thread_id>   (full transcript)")
+    print("# Next: python connectors/gmail.py <thread_id>   (full transcript)")
 
 
 def fetch_thread(service, thread_id):
@@ -390,7 +390,7 @@ def check():
         if not (creds.expired and creds.refresh_token):
             sys.stderr.write(
                 "gmail RED gate1: token invalid and not refreshable -- run "
-                "`python scripts/connectors/wallet.py login gmail`\n")
+                "`python connectors/wallet.py login gmail`\n")
             return 1
         try:
             creds.refresh(Request())
@@ -460,7 +460,7 @@ def main():
                     "which the Gmail\nAPI never returns and cannot convert to a "
                     "thread id. Search by subject\ninstead and FETCH the hex thread "
                     "id it prints:\n"
-                    '    python scripts/connectors/gmail.py "SM Store Locator upgrade"\n'
+                    '    python connectors/gmail.py "SM Store Locator upgrade"\n'
                 )
                 sys.exit(1)
         elif '@' in query:

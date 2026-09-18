@@ -21,7 +21,7 @@
       "target_slot": "jira_issue_key",
       "harvest_regex": "^[A-Z][A-Z0-9]+-[0-9]+$",
       "connector": {
-        "script": "scripts/connectors/jira.py",
+        "script": "connectors/jira.py",
         "argv": ["{harvested}", "-n", "25"],
         "read_only": true
       }
@@ -34,7 +34,7 @@
       "target_slot": "botify_project",
       "harvest_regex": "^[^/\\s]+/[^/\\s]+$",
       "connector": {
-        "script": "scripts/connectors/botify.py",
+        "script": "connectors/botify.py",
         "argv": ["{harvested}", "-n", "25"],
         "read_only": true
       }
@@ -47,7 +47,7 @@
       "target_slot": "gmail_thread",
       "harvest_regex": "^[^@\\s]+$",
       "connector": {
-        "script": "scripts/connectors/gmail.py",
+        "script": "connectors/gmail.py",
         "argv": ["{harvested}", "-n", "10"],
         "read_only": true
       }

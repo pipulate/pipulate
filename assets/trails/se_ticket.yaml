@@ -21,7 +21,7 @@
       "target_slot": "jira_issue_key",
       "harvest_regex": "^[A-Z][A-Z0-9]+-[0-9]+$",
       "connector": {
-        "script": "scripts/connectors/jira.py",
+        "script": "connectors/jira.py",
         "argv": ["{harvested}"],
         "read_only": true
       }
@@ -34,7 +34,7 @@
       "target_slot": "botify_project",
       "harvest_regex": "^[^/\\s]+/[^/\\s]+$",
       "connector": {
-        "script": "scripts/connectors/botify.py",
+        "script": "connectors/botify.py",
         "argv": ["{harvested}"],
         "read_only": true
       }
@@ -48,7 +48,7 @@
       "target_slot": "botify_analysis",
       "harvest_regex": "^[0-9]{8}(-[0-9]+)?$",
       "connector": {
-        "script": "scripts/connectors/botify.py",
+        "script": "connectors/botify.py",
         "argv": ["{harvested}"],
         "read_only": true
       }
@@ -62,7 +62,7 @@
       "target_slot": "slack_channel",
       "harvest_regex": "^[CG][A-Z0-9]+$",
       "connector": {
-        "script": "scripts/connectors/slack.py",
+        "script": "connectors/slack.py",
         "argv": ["{harvested}"],
         "read_only": true
       }
@@ -76,7 +76,7 @@
       "target_slot": "confluence_space",
       "harvest_regex": "^[A-Z][A-Z0-9]*$",
       "connector": {
-        "script": "scripts/connectors/confluence.py",
+        "script": "connectors/confluence.py",
         "argv": ["{harvested}"],
         "read_only": true
       }

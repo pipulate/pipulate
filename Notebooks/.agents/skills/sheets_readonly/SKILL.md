@@ -1,22 +1,22 @@
 ---
 name: sheets_readonly
-description: Read-only Google Sheets access for bounded context pulls. Trigger when a Google Sheets URL or spreadsheet ID needs to become compiled context. Executable truth lives at scripts/connectors/sheets.py; this skill is a signpost, never a second implementation.
+description: Read-only Google Sheets access for bounded context pulls. Trigger when a Google Sheets URL or spreadsheet ID needs to become compiled context. Executable truth lives at connectors/sheets.py; this skill is a signpost, never a second implementation.
 ---
 
-# sheets_readonly — signpost to scripts/connectors/sheets.py
+# sheets_readonly — signpost to connectors/sheets.py
 
 The executable is the specification. Run it; do not reimplement it.
 
 ## The three moves
 
 1. Identity and mint (one-time, interactive):
-   `python scripts/connectors/sheets.py`
+   `python connectors/sheets.py`
    Prints the OAuth wiring status (credentials.json path, its project_id,
    token path) and, in a real terminal, mints ~/.config/pipulate/sheets_token.json
    via the browser handshake. After that, every run is headless.
 
 2. LIST with size gauge:
-   `python scripts/connectors/sheets.py "<URL-or-ID>"`
+   `python connectors/sheets.py "<URL-or-ID>"`
    Every tab's rows x cols x ~cells prints BEFORE any fetch; overflow-shaped
    tabs are flagged. A #gid= fragment in a pasted URL selects that tab and
    performs a bounded fetch of it directly.
@@ -37,4 +37,4 @@ The executable is the specification. Run it; do not reimplement it.
   means your own account cannot open that sheet.
 - Errors and auth guidance ride stderr; stdout stays parseable.
 
-See scripts/connectors/README.md for the full connector contract.
+See connectors/README.md for the full connector contract.

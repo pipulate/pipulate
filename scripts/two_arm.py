@@ -3,7 +3,7 @@
 two_arm.py -- Run the shell-verb vs registry-tool experiment against one connector.
 
 NOT A CONNECTOR. This is the harness for Experiment 1 (invocation grammar):
-Arm S runs scripts/connectors/botify.py as a command line; Arm R calls the
+Arm S runs connectors/botify.py as a command line; Arm R calls the
 same connector through cli.py's registry face (tools/connector_tools.py).
 Same backend, same docstring, same tasks, same oracle. The only variables are
 the invocation grammar and the discovery surface.
@@ -67,7 +67,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CONNECTOR_PATH = REPO_ROOT / "scripts" / "connectors" / "botify.py"
-CONNECTOR = ".venv/bin/python scripts/connectors/botify.py"
+CONNECTOR = ".venv/bin/python connectors/botify.py"
 CLI = ".venv/bin/python cli.py"
 OUT_DIR = REPO_ROOT / "browser_cache" / "two_arm"
 STDOUT_CAP = 4000

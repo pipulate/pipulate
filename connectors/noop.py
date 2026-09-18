@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# scripts/connectors/noop.py
+# connectors/noop.py
 """
 noop.py -- Accept one value, print it, exit 0. The honest placeholder.
 

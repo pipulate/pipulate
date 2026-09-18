@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# scripts/connectors/gsc.py
+# connectors/gsc.py
 """
 gsc.py — Bring Search Console properties or top queries into context.
 
@@ -7,15 +7,15 @@ A Unix-philosophy gateway to Google Search Console for Prompt Fu context.
 
 Golden-path modes, auto-detected from the single positional argument:
 
-  python scripts/connectors/gsc.py                          # LIST: properties visible to the service account
-  python scripts/connectors/gsc.py sc-domain:example.com    # LIST: top queries, last 28 days
-  python scripts/connectors/gsc.py '{"startDate": ...}'     # FETCH: raw searchanalytics JSON body
+  python connectors/gsc.py                          # LIST: properties visible to the service account
+  python connectors/gsc.py sc-domain:example.com    # LIST: top queries, last 28 days
+  python connectors/gsc.py '{"startDate": ...}'     # FETCH: raw searchanalytics JSON body
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 
-  ! python scripts/connectors/gsc.py
-  ! python scripts/connectors/gsc.py sc-domain:mikelev.in
-  ! python scripts/connectors/gsc.py '{"startDate":"2026-06-01","endDate":"2026-06-28","dimensions":["page"]}' --site sc-domain:mikelev.in
+  ! python connectors/gsc.py
+  ! python connectors/gsc.py sc-domain:mikelev.in
+  ! python connectors/gsc.py '{"startDate":"2026-06-01","endDate":"2026-06-28","dimensions":["page"]}' --site sc-domain:mikelev.in
 
 Disambiguation rule: an argument that starts with '{' or contains whitespace is
 a raw searchanalytics query body (FETCH mode; needs --site or PIPULATE_GSC_SITE);
@@ -32,7 +32,7 @@ Auth (oauth_token_file — the same user-OAuth walk as gmail.py and sheets.py):
   A valid token refreshes headlessly, and the token file is REWRITTEN on
   every refresh so the wallet's offline mtime heuristic tracks "last
   refreshed". A missing or dead token browser-mints ONLY on a real TTY —
-  `python scripts/connectors/wallet.py login gsc` is the one-time mint,
+  `python connectors/wallet.py login gsc` is the one-time mint,
   exactly as for gmail and sheets. No service account anywhere.
 
 Output is capped by -n/--max (default 25) per THE PROBE ECONOMY RULE: stdout is
@@ -140,13 +140,13 @@ def get_service():
                 f"GSC OAuth needs the Desktop-app client JSON at: {creds_path}\n"
                 "It is the same credentials.json the gmail/sheets connectors mint\n"
                 "from. Download it once from the Google Cloud Console, then run:\n"
-                "    python scripts/connectors/wallet.py login gsc"
+                "    python connectors/wallet.py login gsc"
             )
         if not sys.stdin.isatty():
             die(
                 f"GSC token not usable ({reason}) and no TTY to browser-mint.\n"
                 "In a real terminal, run:\n"
-                "    python scripts/connectors/wallet.py login gsc"
+                "    python connectors/wallet.py login gsc"
             )
         flow = InstalledAppFlow.from_client_secrets_file(str(creds_path), SCOPES)
         creds = flow.run_local_server(port=0)
@@ -169,7 +169,7 @@ def check():
     if creds is None:
         sys.stderr.write(
             f"gsc RED gate1: {reason} -- run "
-            "`python scripts/connectors/wallet.py login gsc`\n")
+            "`python connectors/wallet.py login gsc`\n")
         return 1
     socket.setdefaulttimeout(15)
     try:
@@ -202,7 +202,7 @@ def list_properties(service, max_items):
         return
     for e in sorted(entries, key=lambda x: x.get('siteUrl', ''))[:max_items]:
         print(f"{e.get('siteUrl', '?')}  [{e.get('permissionLevel', '?')}]")
-    print("\n# Next: python scripts/connectors/gsc.py sc-domain:example.com   "
+    print("\n# Next: python connectors/gsc.py sc-domain:example.com   "
           "(top queries, last 28 days)")
 
 
@@ -228,7 +228,7 @@ def list_top_queries(service, site, max_items):
         q = (r.get('keys') or ['?'])[0]
         print(f"{int(r.get('clicks', 0)):>7}  {int(r.get('impressions', 0)):>8}  "
               f"{100 * r.get('ctr', 0):>6.2f}  {r.get('position', 0):>6.1f}  {q}")
-    print("\n# Next: python scripts/connectors/gsc.py "
+    print("\n# Next: python connectors/gsc.py "
           "'{\"startDate\":\"" + start.isoformat() + "\",\"endDate\":\"" + end.isoformat() +
           "\",\"dimensions\":[\"page\"]}' --site " + site)
 
