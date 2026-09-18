@@ -1218,41 +1218,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # or a command (!URL ?URL @URL $URL %URL, a ! command, a connector word) are
 # explained in chapter XVIII of foo_files.py, THE TINY UNIX COMMANDS.
 
-#    !URL  --------------------------------------------------------------------
-#      when    Public page; what a stranger or crawler sees; the BEFORE of a
-#              login-wall diagnosis
-#      switch  It shows a login page -> `warm URL` once, then `?URL`
-#    
-#    ?URL  --------------------------------------------------------------------
-#      when    Anything behind a login, on the site's persistent profile;
-#              `check URL` first
-#      switch  The lenses show a shell (nav, an `[Iframe]` leaf, no content) ->
-#              read the wire truth for the XHR the frame makes, then call that
-#              API with a connector
-#    
-#    @URL  --------------------------------------------------------------------
-#      when    Every re-read of a page already scraped; no browser, no network
-#      switch  The cached page is stale or was a login wall -> fresh `!` or `?`
-#    
-#    $URL  --------------------------------------------------------------------
-#      when    Exact markup: meta tags, a JSON blob in a `<script>`
-#      note    Token-heavy; needs a prior scrape
-#    
-#    %URL  --------------------------------------------------------------------
-#      when    The network log distilled; SPA endpoint discovery
-#      switch  It re-serves the wire truth you already have -> the API
-#    
-#    ! cmd  -------------------------------------------------------------------
-#      when    Any bounded, non-interactive command as a live receipt
-#      note    Cap it with `-n`; no aliases, no prompts
-#    
-#    Connector  ---------------------------------------------------------------
-#      when    The number you want is one GET away
-#      switch  LIST until the thing isn't in the list -> FETCH by id -> DRILL
-#              the path the app's own frame called -> `--grep` to narrow a list
-#              or find a leaf
-
-# Every step is one argument longer than the last; the moment a lens shows less than the wire does is the moment to stop scraping.
 
 # FOR 40K-FT VIEW (STORY & INFRASTRUCTURE) !!
 # --- START EDITING-IN ON 1ST TURN ---
