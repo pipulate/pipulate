@@ -2710,6 +2710,15 @@ foo_files.py
 #   nearly verbatim, "refactor: Remove commented-out URL definitions from
 #   template": the diff quoted a wrong subject and the model read the
 #   quotation as the change.
+#   SPECIMEN 2026-09-18, the folder ride (pipulate, same m alias): 0dbd90e1
+#   changed ONE roster line (+1/-1, mcp_warm's description) under "chore:
+#   Remove unused mcp_warm.py file", a deletion that never happened; 91b9b719
+#   rewrote the roster paragraph under "docs: Update README with connector
+#   documentation details", a file the commit never touched; c3e03e06 added
+#   the specimen above and got "refactor: Remove commented-out URL definitions
+#   from template" a THIRD time. The ride's one accurate subject was
+#   efd85e1d, "Rename connector scripts to 'connectors' directory", where
+#   git's own rename lines carried the story into the diff.
 # - EARMARK: THE THREE-REGION ART EDIT (banked 2026-08-03, receipt-corrected):
 #   registering one piece of figurate art is a THREE-region change with an
 #   integrity coupling and NO airlock -- not two, as a prior turn asserted.
