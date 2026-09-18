@@ -2705,6 +2705,11 @@ foo_files.py
 #   holding no URL, under "refactor: remove commented-out URL definitions":
 #   the model read the sigils !URL and ?URL as URLs and a lesson as
 #   definitions.
+#   SPECIMEN 2026-09-18, an hour later (pipulate, same m alias): 6f09e025
+#   ADDED the five lines above (+5/-0) and received 8f49879f's subject back
+#   nearly verbatim, "refactor: Remove commented-out URL definitions from
+#   template": the diff quoted a wrong subject and the model read the
+#   quotation as the change.
 # - EARMARK: THE THREE-REGION ART EDIT (banked 2026-08-03, receipt-corrected):
 #   registering one piece of figurate art is a THREE-region change with an
 #   integrity coupling and NO airlock -- not two, as a prior turn asserted.
