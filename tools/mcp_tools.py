@@ -1464,7 +1464,7 @@ async def voice_synthesis(params: dict) -> dict:
                 "error": "Voice synthesis not available - missing dependencies"
             }
 
-        if not chip_voice_system or not chip_voice_system.voice_ready:
+        if not chip_voice_system:
             return {
                 "success": False,
                 "error": "Voice system not ready - check model initialization"
