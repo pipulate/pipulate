@@ -1318,6 +1318,7 @@ prompt_foo.py               # <-- THIS system
 # Un-comment lines, add lines with absolute-path filenames or `! ` commands. 
 
 # Context 1 (Edit-in selections from above and add new files immediately below)
+
 # --- END `adhoc.txt` TEMPLATE ---
 
 # ============================================================================
