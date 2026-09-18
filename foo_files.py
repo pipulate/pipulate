@@ -1266,20 +1266,6 @@ prompt_foo.py               # <-- THIS system
 # docstring line, and the words. Copy lines UP from that chapter the way the
 # Jekyll chapter is copied from; nothing that lives in a chapter is carried here.
 
-# Always include these with whatever connector
-# scripts/sources_menu.py
-# scripts/connectors/README.md
-# scripts/connectors/wallet.py
-
-# scripts/connectors/botify.py
-# scripts/connectors/confluence.py
-# scripts/connectors/gmail.py
-# scripts/connectors/gsc.py
-# scripts/connectors/jira.py
-# scripts/connectors/mcp.py
-# scripts/connectors/mcp_warm.py
-# scripts/connectors/sheets.py
-# scripts/connectors/slack.py
 
 # --- START THIS DISCUSSION ---
 
