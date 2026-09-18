@@ -21,6 +21,18 @@ from selenium.webdriver.common.by import By
 from tools import auto_tool
 from . import dom_tools
 
+# THE HEAL HAPPENS ONCE PER RUN (2026-09-18, Mac receipt, deed 1480). The
+# flake pins no Chrome on a Mac, so the driver is matched to the host's
+# Chrome at launch: the first uc.Chrome raises on the version mismatch, the
+# window it had opened closes, and the retry below relaunches with
+# version_main set to the browser's major version. That version was thrown
+# away after every stop, so a three-stop walk paid the close-and-reopen at
+# every stop and printed a WARNING three times for the ordinary case. It is
+# remembered here for the life of the process: the next launch passes it in
+# and never mismatches. A dict, not a bare name, so no function needs a
+# global statement to write it.
+_HEAL = {"version_main": None}
+
 async def generate_optics_subprocess(target_dir_path: str):
     """Isolated wrapper to call llm_optics.py as a subprocess, protecting the event loop."""
     script_path = Path(__file__).resolve().parent / "llm_optics.py"
@@ -560,7 +572,8 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
             driver = uc.Chrome(options=options, 
                                user_data_dir=str(profile_path), 
                                browser_executable_path=browser_path,
-                               driver_executable_path=driver_path)
+                               driver_executable_path=driver_path,
+                               version_main=_HEAL["version_main"])
         except Exception as e:
             error_msg = str(e)
             if "Current browser version is" in error_msg:
@@ -568,7 +581,10 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
                 match = re.search(r'Current browser version is (\d+)', error_msg)
                 if match:
                     fallback_version = int(match.group(1))
-                    logger.warning(f"⚠️ Chrome version mismatch detected. Auto-healing with version_main={fallback_version}")
+                    _HEAL["version_main"] = fallback_version
+                    logger.info(f"Chrome {fallback_version}: driver matched; relaunching once for this run")
+                    if verbose:
+                        print(f"Chrome closed and is reopening once while its driver is matched to Chrome {fallback_version}; that is normal.", flush=True)
                     # UC consumes the options object. We must forge a fresh one.
                     fresh_options = uc.ChromeOptions()
                     fresh_options.set_capability("goog:loggingPrefs", {"performance": "ALL"})
