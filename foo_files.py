@@ -1862,15 +1862,18 @@ prompt_foo.py               # <-- THIS system
 # first screen, the adhoc header in chapter III, keeps the vim lesson and a
 # one-line pointer to this chapter, nothing more.
 #
-# THE WORDS (census of alias and function definitions in flake.nix, deed 1469):
-# after the walk a newcomer's whole vocabulary is walk, plan, voice, epr, cpr
-# and sources; warm and weblogin settle a login before a ?URL; bot, mcp and
-# webclip are the operator's. THE SEVEN CONNECTOR WORDS (jira, gmail,
-# confluence, gsc, sheets, slack, botify) were ABSENT from that census, so they
-# are not spelled alias X= or X() { in the flake: minted by a loop, or defined
-# elsewhere (INFERRED; the flake carries six references to this folder, fewer
-# than seven words). Until the connectors-as-packages TODO lands, a router line
-# spells the script: ! .venv/bin/python scripts/connectors/jira.py PROJ-123
+# THE WORDS (census of alias and function definitions in flake.nix, deed 1469,
+# corrected at deed 1470 by the flake itself): after the walk a newcomer's
+# whole vocabulary is walk, plan, voice, epr, cpr and sources; warm and
+# weblogin settle a login before a ?URL; bot, mcp and webclip are the
+# operator's. THE SEVEN CONNECTOR WORDS (jira, gmail with email as a second
+# spelling, confluence, gsc, sheets, slack, botify) are the THIRD TIER, not
+# the first two: connectorCommand in flake.nix mints each as a
+# writeShellScriptBin on PATH (landed 2026-09-16), which is why a census of
+# alias X= and X() { could not see them. INCOMMENSURABLE MEASUREMENTS, the
+# emitter's own probe: it answered which words are aliases or functions and
+# was read as which words exist. So ! jira PROJ-123 is a legal router line
+# today; mcp is still an alias and warm a function, and only a human types those.
 #
 # THE ROSTER. Each description below is the file's FIRST DOCSTRING LINE,
 # harvested by ast.get_docstring at deed 1469 and the same line sources_menu.py
