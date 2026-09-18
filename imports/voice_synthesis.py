@@ -15,7 +15,9 @@ import signal
 import sys
 from pathlib import Path
 from typing import Optional, Dict, Any
+import contextlib
 import logging
+import warnings
 
 # Try to import voice synthesis dependencies
 try:
@@ -34,6 +36,42 @@ except ImportError:
     KEYCHAIN_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
+
+
+@contextlib.contextmanager
+def _quiet_hub():
+    """Silence the hub for the length of the one download it ever makes.
+
+    THE QUIET WALK (2026-09-18, Mac receipt, deed 1480): the first consent
+    printed a three-line deprecation notice, a token nag and three progress
+    bars between the card and the first spoken step. The hub speaks through
+    two channels, its logger and the warnings module, and draws its bars
+    through its own switch; all three are turned down here and restored on
+    the way out, so nothing outside this block changes. The download itself
+    is announced by one plain line in the caller.
+    """
+    try:
+        from huggingface_hub.utils import (
+            are_progress_bars_disabled,
+            disable_progress_bars,
+            enable_progress_bars,
+        )
+    except ImportError:
+        are_progress_bars_disabled = disable_progress_bars = enable_progress_bars = None
+    hub_logger = logging.getLogger("huggingface_hub")
+    previous_level = hub_logger.level
+    hub_logger.setLevel(logging.ERROR)
+    bars_were_disabled = True if disable_progress_bars is None else are_progress_bars_disabled()
+    if not bars_were_disabled:
+        disable_progress_bars()
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            yield
+    finally:
+        hub_logger.setLevel(previous_level)
+        if not bars_were_disabled:
+            enable_progress_bars()
 
 # ---------------------------------------------------------------------------
 # THE VOICE ASKS BEFORE IT SPEAKS (2026-09-17). Two functions, one file.
@@ -157,29 +195,35 @@ class ChipVoiceSystem:
             self.model_path = str(local_model_dir / model_path_in_repo)
             self.config_path = str(local_model_dir / config_path_in_repo)
             
+            downloaded = False
             # Download files if they don't exist
             if not os.path.exists(self.model_path):
+                print("Downloading the voice, about 60 MB, once...", flush=True)
                 logger.info(f"🎤 Downloading voice model: {model_path_in_repo}...")
-                hf_hub_download(
-                    repo_id=repo_id, 
-                    filename=model_path_in_repo, 
-                    local_dir=local_model_dir, 
-                    local_dir_use_symlinks=False
-                )
+                with _quiet_hub():
+                    hf_hub_download(
+                        repo_id=repo_id,
+                        filename=model_path_in_repo,
+                        local_dir=local_model_dir,
+                    )
+                downloaded = True
             
             if not os.path.exists(self.config_path):
                 logger.info(f"🎤 Downloading voice config: {config_path_in_repo}...")
-                hf_hub_download(
-                    repo_id=repo_id, 
-                    filename=config_path_in_repo, 
-                    local_dir=local_model_dir, 
-                    local_dir_use_symlinks=False
-                )
+                with _quiet_hub():
+                    hf_hub_download(
+                        repo_id=repo_id,
+                        filename=config_path_in_repo,
+                        local_dir=local_model_dir,
+                    )
+                downloaded = True
             
             # Load the voice model
             self.voice = PiperVoice.load(self.model_path, config_path=self.config_path)
             self.voice_ready = True
             logger.info("🎤 Voice model loaded successfully")
+            if downloaded:
+                print("Voice ready.", flush=True)
             
         except Exception as e:
             logger.error(f"🎤 Failed to setup voice model: {e}")
@@ -197,6 +241,12 @@ class ChipVoiceSystem:
         if not VOICE_SYNTHESIS_AVAILABLE:
             self.last_error = f"voice synthesis not installed: {IMPORT_ERROR}"
             return False
+        # THE PHONEME LINE (TODO of 2026-09-15, discharged 2026-09-18): piper
+        # warns, through a logger nobody configured, about one syllabic mark
+        # in the word "written", and Python's last-resort handler prints the
+        # bare message on every walk. The flake's door-1 greeting already sets
+        # this level; the speaker now sets it for every caller.
+        logging.getLogger("piper").setLevel(logging.ERROR)
         self.setup_voice_model()
         return self.voice_ready
 
