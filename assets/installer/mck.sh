@@ -594,6 +594,15 @@ if [ "$RIDE_RC" -eq 0 ]; then
  Nothing was sent to a chatbot.
 --------------------------------------------------------------
 CARD
+  # THE NEXT WORD IS THE LIST (2026-09-18, Mac receipt): the walk ended and
+  # nothing on the screen named what to type next; door 2's list had scrolled
+  # away ten minutes earlier. Print that same list from the same tuple, so
+  # the card can never drift from the menu. Shell lane only: the words are
+  # functions of the nix shell and do not exist at a plain prompt.
+  if [ -n "${IN_NIX_SHELL:-}" ] && [ -f scripts/boot_menu.py ]; then
+    "$PY" scripts/boot_menu.py --recall
+    echo ""
+  fi
   if [ "$DID_INSTALL" -eq 1 ]; then
     echo " One more thing, since this machine was installed just now:"
     echo "   cd $ROOT && nix develop"
