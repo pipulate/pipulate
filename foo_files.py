@@ -1214,7 +1214,9 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # build an output text-file with the identically stacked output of each file or
 # command. In this way we vertically append or "stack" a bunch of text; simple as
 # that. If you understand this concept, you're on your way to future-proofing
-# yourself in the Age of AI. Congratulations! Here is how to include web pages:
+# yourself in the Age of AI. Congratulations! The ways to include a web page
+# or a command (!URL ?URL @URL $URL %URL, a ! command, a connector word) are
+# explained in chapter XVIII of foo_files.py, THE TINY UNIX COMMANDS.
 
 #    !URL  --------------------------------------------------------------------
 #      when    Public page; what a stranger or crawler sees; the BEFORE of a
