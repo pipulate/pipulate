@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # scripts/connectors/gsc.py
 """
-gsc.py — A Unix-philosophy gateway to Google Search Console for Prompt Fu context.
+gsc.py — Bring Search Console properties or top queries into context.
+
+A Unix-philosophy gateway to Google Search Console for Prompt Fu context.
 
 Golden-path modes, auto-detected from the single positional argument:
 
