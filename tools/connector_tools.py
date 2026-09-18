@@ -33,7 +33,7 @@ from pathlib import Path
 from tools import auto_tool
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-CONNECTORS = REPO_ROOT / "scripts" / "connectors"
+CONNECTORS = REPO_ROOT / "connectors"
 TIMEOUT = 120
 KEY_TRAILER = (
     "\n\nRegistry form: --json-args keys mirror the connector's argument names --"
