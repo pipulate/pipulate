@@ -155,10 +155,18 @@ class IntroductionPlugin:
 
         
         from imports.voice_synthesis import chip_voice_system
-        if chip_voice_system and chip_voice_system.voice_ready:
-             chip_voice_system.stop_speaking()  # 🛑 INTERRUPT: Prevent voice overlapping on Back button
-             logger.info(f"🎤 Speaking: {step_id}")
-             asyncio.create_task(asyncio.to_thread(chip_voice_system.speak_text, text))
+        if chip_voice_system:
+            chip_voice_system.stop_speaking()  # 🛑 INTERRUPT: Prevent voice overlapping on Back button
+            def _speak():
+                # THE FLAG WENT COLD (2026-09-18): the gate moved off the event
+                # loop. can_speak() reads the consent card and loads the model
+                # on first use, seconds long, so it runs here, in the thread; a
+                # declined or unanswered card returns False with no download,
+                # and speak_text keeps its own barrier behind this one.
+                if chip_voice_system.can_speak():
+                    logger.info(f"🎤 Speaking: {step_id}")
+                    chip_voice_system.speak_text(text)
+            asyncio.create_task(asyncio.to_thread(_speak))
              
         return ""
 
