@@ -555,7 +555,7 @@ class Pipulate:
             try:
                 # Import here to avoid circular dependencies
                 from imports.voice_synthesis import chip_voice_system
-                if chip_voice_system and chip_voice_system.voice_ready:
+                if chip_voice_system and chip_voice_system.can_speak():
                      # Acoustic Sanitization (Using the voice_text so it doesn't read URLs!)
                      safe_text = voice_text.replace('\u0329', '')
                      safe_text = safe_text.replace('—', ', ').replace('–', ', ')
