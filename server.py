@@ -3156,7 +3156,7 @@ async def test_voice_synthesis_endpoint(request):
             return JSONResponse({"success": False, "error": "Voice synthesis not available"})
 
         # Check if voice system is ready
-        if not chip_voice_system.voice_ready:
+        if not chip_voice_system.can_speak():
             logger.error("🎤 Voice system not ready")
             return JSONResponse({"success": False, "error": "Voice system not ready"})
 
