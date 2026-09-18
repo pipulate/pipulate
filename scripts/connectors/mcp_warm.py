@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 # scripts/connectors/mcp_warm.py
 """
-mcp_warm.py — Mint an OAuth 2.1 (PKCE, S256) bearer token for a remote MCP
-server and park it where scripts/connectors/mcp.py already looks.
+mcp_warm.py — Mint the OAuth bearer token a remote MCP server asks for.
+
+OAuth 2.1 with PKCE (S256), parked where scripts/connectors/mcp.py already
+looks.
 
 THE PLUG FOR THE ALREADY-WIRED SOCKET: resolve_token() in mcp.py reads
 ~/.config/pipulate/mcp/<host>.json, derived from the server, before falling back to
