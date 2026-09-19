@@ -3,6 +3,7 @@ import asyncio
 import hashlib
 import json
 import os
+import shlex
 import sys
 import shutil
 import tempfile
@@ -71,35 +72,38 @@ def _guided_path_component(url: str) -> tuple[str, str]:
 
 
 # --- Optional audio during browser startup ---
-# Forked from stream.py's start_updating_music/stop_updating_music pattern:
-# a marker-tagged shell loop in its OWN process group (os.setsid), killed as
-# a group, with an idempotent pkill backstop keyed to the marker so it can
-# never touch any other aplay pipeline. The wav lives in repo negative space
-# (gitignored) or ~/.local/share/pipulate/; absent file = silent no-op.
+# Operator-owned courtesy sounds live outside the repo. tick.wav loops while
+# the browser is opening; ding.wav plays once when the page-load phase ends.
+# No file means no sound. Linux uses aplay; Darwin uses afplay.
 SCRAPE_MUSIC_MARKER = "pipulate-scrape-music"
+SOUND_DIR = Path.home() / ".local/share/pipulate"
 
 
-def _find_music_file():
-    candidates = [
-        Path(__file__).resolve().parent.parent / "jeopardy.wav",
-        Path.home() / ".local/share/pipulate/jeopardy.wav",
-        Path.home() / ".local/share/honeybot/jeopardy.wav",
-    ]
-    for c in candidates:
-        if c.exists():
-            return c
-    return None
+def _sound_file(name):
+    path = SOUND_DIR / name
+    return path if path.is_file() else None
+
+
+def _player_args(sound):
+    if sound is None:
+        return None
+    if sys.platform == "darwin":
+        player = shutil.which("afplay")
+        return [player, str(sound)] if player else None
+    player = shutil.which("aplay")
+    return [player, "-q", "-D", "default", str(sound)] if player else None
 
 
 def _start_scrape_music(verbose=True):
     import subprocess
-    music = _find_music_file()
-    if not music:
-        return None
 
+    args = _player_args(_sound_file("tick.wav"))
+    if not args:
+        return None
+    command = " ".join(shlex.quote(part) for part in args)
     try:
         return subprocess.Popen(
-            ["sh", "-c", f'while :; do aplay -q -D default "{music}"; done # {SCRAPE_MUSIC_MARKER}'],
+            ["sh", "-c", f"while :; do {command}; done # {SCRAPE_MUSIC_MARKER}"],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             preexec_fn=os.setsid,
@@ -108,18 +112,36 @@ def _start_scrape_music(verbose=True):
         return None
 
 
-def _stop_scrape_music(proc):
+def _stop_scrape_music(proc, ding=False):
     import signal
     import subprocess
+
     if proc is not None:
         try:
             os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
         except Exception:
             pass
     try:
-        subprocess.run(["pkill", "-f", SCRAPE_MUSIC_MARKER], check=False)
+        subprocess.run(
+            ["pkill", "-f", SCRAPE_MUSIC_MARKER],
+            check=False,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
     except Exception:
         pass
+    if ding:
+        args = _player_args(_sound_file("ding.wav"))
+        if args:
+            try:
+                subprocess.run(
+                    args,
+                    check=False,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
+            except Exception:
+                pass
 
 
 def _simplify_html_for_llm(html_content, default_title=""):
