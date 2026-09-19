@@ -1069,6 +1069,7 @@ Entries are alphabetical, numbers spelled as spoken.
   must be refused if the round trip is real. That is the no-header control
   the fault harness already runs, aimed at vendor authorship instead of at
   our own spec reading.
+- **The Next Action, Not the Machinery** — (banked 2026-09-15, deed 1419): newcomer guidance names the visible cue and the next action; audit exercises follow completion. The introductory run kept three CAPTURE checkpoints, private evidence and disclosure checks while dropping fingerprint homework and the final DECANT word. Consent moved before the real-walk choice for the scoped bundled route; custom walks retain DECANT. The operator reported a much better experience. Simpler instructions are not weaker evidence.
 - **The Placeholder That Claims to Run** — *validation passing is not
   execution passing.* Banked 2026-08-08, exit-code-witnessed; discharged
   2026-08-30. public_walk.yaml's three stops declared connector.script
