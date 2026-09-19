@@ -525,8 +525,11 @@ def main():
                     if 'gemini_output' in locals():
                         print("--- API Raw Output ---\n" + gemini_output)
                     return
-        else: # This block runs if the loop completes without a break
-            print("Error: Max retries exceeded. Failed to get a successful response from the API.")
+        else:  # This block runs if the loop completes without a break
+            print(
+                f"Error: {MAX_ATTEMPTS_PER_MODEL} attempts per model exhausted. "
+                "Failed to get a successful response from the API."
+            )
             return
 
     if instructions:
