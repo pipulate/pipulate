@@ -16,7 +16,7 @@
     {
       "name": "the_word",
       "label": "The capture word",
-      "guidance": "I'll open page one. When it is ready, return here. At the CAPTURE prompt, type CAPTURE and press Enter.",
+      "guidance": "Opening page one in the browser. Leave the browser open; it closes on its own after capture. When the page is ready, return here and type CAPTURE.",
       "url": "https://npvg.org/walk/1/",
       "target_slot": "slot_one",
       "harvest_regex": ".+",
@@ -29,7 +29,7 @@
     {
       "name": "the_receipt",
       "label": "Page two",
-      "guidance": "I'll open page two. When it is ready, return here. At the CAPTURE prompt, type CAPTURE and press Enter.",
+      "guidance": "Opening page two in the browser. Leave the browser open; it closes on its own after capture. When the page is ready, return here and type CAPTURE.",
       "url": "https://npvg.org/walk/2/",
       "target_slot": "slot_two",
       "harvest_regex": ".+",
@@ -42,7 +42,7 @@
     {
       "name": "the_two_pages",
       "label": "Two versions of one page",
-      "guidance": "I'll open the last page. When it is ready, return here. At the CAPTURE prompt, type CAPTURE and press Enter. Then read the result here.",
+      "guidance": "Opening the last page in the browser. Leave the browser open; it closes on its own after capture. When the page is ready, return here, type CAPTURE, and read the result.",
       "url": "https://npvg.org/walk/3/",
       "target_slot": "slot_three",
       "harvest_regex": ".+",
