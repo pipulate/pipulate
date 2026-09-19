@@ -498,17 +498,28 @@ def main():
                    ("500" in error_str) or \
                    ("high demand" in error_str.lower()):
                     
-                    print(f"Retriable API Error: {e}")
+                    print(f"Retriable API Error from {model_name}: {e}")
                     # QUOTA WINDOW DISCIPLINE (live-fire convicted 2026-07-19):
-                    # the free tier is a per-MINUTE rolling window; retrying at
-                    # 2/4/8/16s hammers the same window the server asked us to
-                    # let drain. Honor the server's own "retry in Ns" hint.
+                    # each model gets its own exponential clock. A failure on
+                    # Flash therefore falls through to Lite immediately, while
+                    # the failed model honors its own server hint before its
+                    # next turn in the alternation.
                     hint = re.search(r'retry in (\d+(?:\.\d+)?)s', error_str)
-                    wait = max(retry_delay, float(hint.group(1)) + 1) if hint else retry_delay
-                    print(f"Retrying in {wait:.0f} seconds... (Attempt {attempt + 1}/{max_retries})")
+                    hinted_delay = float(hint.group(1)) + 1 if hint else 0
+                    wait = max(retry_delays[model_name], hinted_delay)
+                    retry_after[model_name] = time.monotonic() + wait
+                    retry_delays[model_name] *= 2
 
-                    time.sleep(wait)
-                    retry_delay *= 2  # Exponential backoff
+                    if attempt + 1 < total_attempts:
+                        next_model = MODEL_CANDIDATES[(attempt + 1) % len(MODEL_CANDIDATES)]
+                        next_wait = max(0.0, retry_after[next_model] - time.monotonic())
+                        if next_wait:
+                            print(
+                                f"Switching to {next_model}; its backoff has "
+                                f"{next_wait:.0f} seconds remaining."
+                            )
+                        else:
+                            print(f"Switching to {next_model} immediately.")
                 else:
                     print(f"\nAn unrecoverable error occurred while calling the API: {e}")
                     if 'gemini_output' in locals():
