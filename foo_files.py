@@ -2307,6 +2307,21 @@ GLOSSARY.md
 foo_files.py
 apply.py
 """
+MATCHBOOK_CHOP = r"""
+# THE MATCHBOOK (keys and handles only: the pocket edition's raw material)
+# COMMAND: python prompt_foo.py --chop MATCHBOOK_CHOP --no-tree
+# Four blind 30-and-3 draws on 2026-09-19 all picked the pocket classic, so
+# this chop turns that pick into an instrument: THE KEY TEST at book scale.
+# The keys are the rules with their bodies removed; the pairs are the
+# handles with their plain terms (the Darmok rule). Hand a reader only these
+# lines: if they get the book, the contract holds; if not, a key is not
+# written yet. The two counts ride first so an entry the pair grammar drops
+# (a handle with no *plain term* after its dash) is a reading, never a silence.
+! grep -c '^# § ' foo_files.py
+! grep -c '^- \*\*' GLOSSARY.md
+! grep '^# § ' foo_files.py
+! .venv/bin/python -c 'import re;t=open("GLOSSARY.md",encoding="utf-8").read();[print(h,"—",re.sub(r"\s+"," ",p)) for h,p in re.findall(r"^- \*\*([^*]+)\*\* — \*(.+?)\*",t,flags=re.M|re.S)]'
+"""
 # #todo #to-do #earmarks
 # - TODO (2026-09-19, the header that flows back): the live router at ~/.local/state/pipulate/adhoc.txt still carries the sigil table the 2026-09-18 sed retired from the tracked template (that dismount named it: a second copy the sed never reached), and on 2026-09-19 that header was copied back over the template in the working tree -- sigil table 0 -> 35, the chapter-XVIII pointer gone, prompt_foo.py commented out of the default chop -- caught only because a displacement receipt read +29 where +1 was predicted (WALK_CHOP 1990 -> 2019), and discarded by git checkout before it rode a commit whose subject would have said documentation. Retire the table from the live router by hand in ahe (cut from the line ending "Here is how to include web pages:" through the "Every step is one argument longer" line, restore the four-line pointer), or the next sync flows it back. Two copies of one header drift; THE OPERATOR IS A VARIABLE, and this time the variable was a paste. AMENDED the same day, deed 1496: it was not discarded. The operator committed the paste before the BEFORE tap ("the easiest thing"; the parent of 6e4af6ee carries foo_files.py at blob a427fc2e, the pasted header, by the Telemetry index line), so Car 0's git checkout restored nothing and its gate printed TEMPLATE_RESTORED anyway, a false green that read git's status where it should have read the file (the sigil heading's grep -c at 0, or STOP): AN EXIT CODE IS A VERDICT ONLY FOR THE PATH THAT REACHES IT, in a gate this ride wrote. The sigil table now lives in HEAD's template, the chapter-XVIII pointer is gone, and prompt_foo.py is commented out of AI_PHOOEY_CHOP so bare foo compiles the router alone. TWO AUDIENCES, ONE FILE (2026-09-18) is reversed by action and unruled in words: either the template mirrors the live router, and the pointer and the 2026-09-18 sed are the things to retire, or the table leaves both files by hand; until ruled, the two copies will keep flowing into each other.
 # - TODO (2026-09-19, rgx's empty branch): rgx jeopardy.wav ffmpg (a typo) and a true empty intersection both print "No matching articles.", the same line in two worlds, THE DISCRIMINATION QUESTION at the search prompt; the operator retyped from memory and the tool taught nothing. On the empty branch print each term's solo count beside the zero (jeopardy.wav: 19 | ffmpg: 0 | together: 0) so a typo names itself and a real empty intersection reads as one. rgxCommand and rgxcCommand in flake.nix, one car, exit then ndq as the ignition. Unasked this ride; a TODO, never a car.
