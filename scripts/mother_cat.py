@@ -162,8 +162,8 @@ INTRO_URLS = tuple(f"https://npvg.org/walk/{i}/" for i in (1, 2, 3))
 INTRO_NOTICE = (
     "This walk opens three public pages. Nothing to sign in to.\n"
     "Return here and type CAPTURE when prompted at each page.\n"
-    "After all three captures and successful checks, it tries to save a private summary\n"
-    "and tries to replace your clipboard. Over SSH it uses a bridge file.\n"
+    "After all three captures and successful checks, it saves a private summary\n"
+    "and replaces your clipboard. Over SSH it uses a bridge file.\n"
     "Nothing is sent to a chatbot. Review the summary before sharing it."
 )
 
