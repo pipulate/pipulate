@@ -454,13 +454,26 @@ def main():
                 print(f"❌ Failed to copy to clipboard: {e}")
             return
 
-        print(f"Calling the Universal Adapter (using {DEFAULT_MODEL})...")
-        max_retries = 5
-        retry_delay = 2
-        for attempt in range(max_retries):
+        print(
+            "Calling the Universal Adapter "
+            f"(primary {MODEL_CANDIDATES[0]}, fallback {MODEL_CANDIDATES[1]})..."
+        )
+        total_attempts = MAX_ATTEMPTS_PER_MODEL * len(MODEL_CANDIDATES)
+        retry_delays = {name: INITIAL_RETRY_DELAY for name in MODEL_CANDIDATES}
+        retry_after = {name: 0.0 for name in MODEL_CANDIDATES}
+        for attempt in range(total_attempts):
+            model_name = MODEL_CANDIDATES[attempt % len(MODEL_CANDIDATES)]
+            model_attempt = (attempt // len(MODEL_CANDIDATES)) + 1
+            wait = max(0.0, retry_after[model_name] - time.monotonic())
+            if wait:
+                print(
+                    f"Waiting {wait:.0f} seconds before retrying {model_name} "
+                    f"(Attempt {model_attempt}/{MAX_ATTEMPTS_PER_MODEL})..."
+                )
+                time.sleep(wait)
+
             try:
-                # Use a free-tier compatible model.
-                model = llm.get_model(DEFAULT_MODEL)
+                model = llm.get_model(model_name)
                 model.key = api_key  # Assign the key directly to the adapter
                 response = model.prompt(full_prompt)
                 gemini_output = response.text()
