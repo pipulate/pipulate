@@ -2844,6 +2844,8 @@ foo_files.py
 #   Either way pull ONLY `sed -n '4250,4310p' tools/mcp_tools.py` -- a 36k-token
 #   file has no business entering a payload whole for a sixty-line edit.
 
+# - EARMARK (2026-09-18, publishing lane): Jekyll article navigation is asymmetric -- Previous renders, but Next is missing even when viewing an older article that does have a newer neighbor. Reproduce on localhost and live Web, then trace the template/data source that computes the forward neighbor; not part of THE ONE DOOR ride.
+# - EARMARK (2026-09-18, publishing lane): the Google Doc share link is stamped into the article only after the git-push release, so the live site trails localhost by one publish. Reorder or add a second publish boundary only after tracing googledocizer/release ownership; symptom banked here, cause not asserted.
 # - TODO (2026-09-04, demoted from the THREE-TIER WORKSPACE earmark; the tiers and the ladder are vocabulary now, rg -in 'three-tier workspace' GLOSSARY.md): extend server.py's app scanner to APP_SEARCH_PATHS across apps/, Notebooks/Corporate/apps/ and Notebooks/Personal/apps/; register the workspace tree as sealed figurate art before any surface copies it; one figlet banner per Prompt Fu alias, then silence; recolor startup_environment_warnings() off bright_red on onboarding surfaces. Gate: a tool dropped in Notebooks/Personal/apps/ appears in the APP menu with no core commit.
 # - TODO: commit the unattended-tty guard in ~/repos/nixos (autognome.py's
 #   "Pipulate Server" tab, PIPULATE_BOOT_MENU=0 prefix). It is on disk and
