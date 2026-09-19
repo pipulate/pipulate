@@ -616,20 +616,25 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
         logger.info(f"Navigating to: {url}")
         driver.get(url)
 
-        try:
-            if verbose: logger.info("Waiting for security challenge to trigger a reload (Stage 1)...")
-            initial_body = driver.find_element(By.TAG_NAME, 'body')
-            WebDriverWait(driver, 20).until(EC.staleness_of(initial_body))
-            if verbose: logger.success("✅ Page reload detected!")
-            
-            if verbose: logger.info("Waiting for main content to appear after reload (Stage 2)...")
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "body")))
-            if verbose: logger.success("✅ Main content located!")
-        except Exception as e:
-            if verbose: logger.info(f"Did not detect a page reload for security challenge. Proceeding anyway.")
+        # A human-guided ride already has the CAPTURE fence as its settle
+        # detector. The 20-second staleness wait exists for unattended sigil
+        # scrapes, where a security interstitial may reload underneath us.
+        if not interactive:
+            try:
+                if verbose: logger.info("Waiting for security challenge to trigger a reload (Stage 1)...")
+                initial_body = driver.find_element(By.TAG_NAME, 'body')
+                WebDriverWait(driver, 20).until(EC.staleness_of(initial_body))
+                if verbose: logger.success("✅ Page reload detected!")
 
-        # The wait is over one way or the other: cut the think-music sharply.
-        _stop_scrape_music(music_proc)
+                if verbose: logger.info("Waiting for main content to appear after reload (Stage 2)...")
+                WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "body")))
+                if verbose: logger.success("✅ Main content located!")
+            except Exception:
+                if verbose: logger.info("Did not detect a page reload for security challenge. Proceeding anyway.")
+
+        # The page-load phase is over: stop ticking and, if the operator
+        # supplied one, play the ready sound exactly once.
+        _stop_scrape_music(music_proc, ding=True)
         music_proc = None
 
         if checkpoint is not None:
@@ -761,8 +766,8 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
             # ledger-only so it can be replayed offline over any cached capture.
             #
             # [-1] SURVIVES, and its rationale is still UNWITNESSED: the
-            # staleness_of() wait above exists because a security challenge
-            # serves an interstitial Document and then reloads, making the LAST
+            # non-interactive staleness_of() wait above exists because a security
+            # challenge serves an interstitial Document and then reloads, making the LAST
             # candidate the real page. No capture on this machine has ever been
             # challenged -- every scrape logs "Did not detect a page reload."
             # The reasoning is sound from the code and has no receipt behind it.
