@@ -1483,8 +1483,8 @@ prompt_foo.py               # <-- THIS system
 # walk                        # <-- Repo-root wrapper; delegates to mck.sh, NOT to scripts/walk.py
 # assets/installer/mck.sh     # <-- THE LAUNCHER (curl -fsSL pipulate.com/mck.sh | bash): finds the workshop, forces the spoken rehearsal on first contact, asks for the word RIDE
 # scripts/mother_cat.py       # <-- THE RIDER (alias: mothercat), Car B: actuates walk.py's validated plan; per-run capture banking, DECANT, the adhocwalk.txt writer
-# scripts/boot_menu.py        # <-- The three-door workshop menu; walk, epr and cpr lead door 2's seven words, the count derived from the tuple
-# scripts/sources_menu.py     # <-- The roster door 2's words print; not a connector executor
+# scripts/boot_menu.py        # <-- The one-door command list; short on shell entry, expanded by `all`, both rendered from tuples in the file
+# scripts/sources_menu.py     # <-- The roster `conn` prints; filename stays descriptive, typed word is shorter
 #
 # AUTHOR
 # scripts/bookmark_import.py  # <-- One bookmark folder -> <name>.walk.md (the human surface) + <name>.exports.sh (the URL values; gitignored by pattern so they never ship)
@@ -1880,7 +1880,7 @@ prompt_foo.py               # <-- THIS system
 # THE ROSTER. Each connector's description below is the file's FIRST
 # DOCSTRING LINE, harvested by ast.get_docstring (deed 1469, re-read at 1472)
 # and the same line sources_menu.py prints, so a wrong sentence here is a
-# wrong sentence in the sources panel: fix the file, then this comment.
+# wrong sentence in the conn roster: fix the file, then this comment.
 # Contract 8 convicted two of them by receipt and one car fixed both
 # (b7f71ffe: gsc.py 73 -> 60 characters; c29eb030: mcp_warm.py a fragment ->
 # one sentence of 57). README.md, noop.py and the dummy server carry
@@ -1888,7 +1888,7 @@ prompt_foo.py               # <-- THIS system
 # (deed 1472): one git mv, one literal sed over every file that named the
 # old path, two Path joins by hand, and exit then nix develop as the
 # ignition, because the eight words on PATH bake the folder into their derivations.
-# scripts/sources_menu.py          # <-- what door 2 opens onto.
+# scripts/sources_menu.py          # <-- what `conn` prints.
 # connectors/README.md     # <-- the contract, the wallet, and the six auth kinds every new connector copies one of
 # connectors/wallet.py     # <-- Connect your accounts, or any site by URL; see what's live.
 # connectors/botify.py     # <-- Bring Botify crawl data and BQL query results into context.
@@ -1985,6 +1985,18 @@ ADHOC_CHOP = r"""
 .gitattributes
 .gitignore
 apply.py
+"""
+
+WALK_CHOP = r"""
+# THE WALK ROUTER (only the disposable overlay)
+# COMMAND: PIPULATE_ADHOC_FILE=<router> python prompt_foo.py --chop WALK_CHOP --no-tree --quiet
+# cpr points PIPULATE_ADHOC_FILE at the walk-written router. This chop carries
+# no fixed tail: every payload line between the slot markers comes from that
+# explicit overlay file.
+
+# --- ADHOC SLOT START ---
+# (Structurally empty in the repo. cpr supplies the walk router at compile time.)
+# --- ADHOC SLOT END ---
 """
 
 PINNED_CHOP = r"""
@@ -2275,7 +2287,7 @@ foo_files.py
 # - TODO (2026-09-16, shadow target scope): exporting PIPULATE_BLOGS_CONFIG for the whole Darwin shell also changes prompt_foo.py's own target-1 view. THIS compile's Recent Git Diff Telemetry rewrote foo_files.py's canonical stats from 1,475 MikeLev.in articles and real Honeybot counts to 0 Mac Shadow articles and blank hydration fields. The formatting goal is met, but compiler telemetry must not dirty shared source with shadow-local stats. Narrow the override to article/corpus commands or give stats an explicit canonical config source; do not fix this by committing the generated zeroes.
 # - TODO (2026-09-16, the walk seam): one real walk after commit 6b10c419 so `cat "$(_walkrouter)"` reads the preview uncommented and the archive commented beneath it; the writer's three branches passed the compile-lane probe, the rider handing it the preview has never run. The Mac is that witness if this machine does not get there first, and needs two nix develop entries, the first pulling these commits and the second running the hook it pulled. MAC READING 2026-09-16: the router does not exist there at all (cat: no such file), because PIPULATE_ADHOC_FILE is unset on that machine and the derivation lands $PIPULATE_ROOT/adhocwalk.txt, gitignored, never written. So the seam is unwitnessed on BOTH machines and the Mac's reading is absence, not staleness -- and `cpr` REFUSES there until a walk or an `epr` write creates the file, which is the fresh-install path a newcomer takes.
 # - TODO (2026-09-16, the question's home): bare cpr reads prompt.md and a newcomer has none; `cpr "question"` works today and costs quoting; the -o split was tried and reverted. Candidates, none chosen: the walk seeds a prompt.md at DECANT, or the router's header teaches the positional. First rule from prompt_foo.py:2843 whether bare cpr with no prompt.md refuses or proceeds (CENSUS: rg -n -A6 'elif os.path.exists\("prompt.md"\)' prompt_foo.py); CENSUS RAN 2026-09-16 (Mac compile): prompt_foo.py:2843 is an elif with NO else -- 2845 blank, 2846 dedents to extra_prompt_parts -- so bare cpr with no prompt.md PROCEEDS and no car is owed for a refusal. STILL OPEN, and six lines cannot see it: proceeds with WHAT, since prompt_content's initializer sits above the window (probe: rg -n -B8). An empty Prompt section is worse than a refusal, because nothing announces it. SEPARATE AND SHARPER: cpr refuses when the ROUTER is missing, which is every fresh install before its first walk.
-# - TODO (2026-09-16, door two): plan is absent from DOOR_TWO_WORDS because _COUNT_WORDS spells up to seven and an eighth word prints a digit; extend the tuple through ten, then add plan after cpr, and the recall probe reads Eight words.
+# - TODO (2026-09-16, command list): plan remains absent from ALL_WORDS. If it earns a newcomer-facing word, add it to the expanded list only; the short list stays the Prompt Fu loop.
 # - TODO (2026-09-16, the editor): the flake pins no editor while plan hardcodes nvim, `alias vim='nvim'` assumes it, and epr, bm, rgx -v fall back nvim, vim, vi; either pin neovim in commonPackages or make every word fall back the same way, and say which in one place.
 # - TODO (2026-09-16, first-walk noise on the Mac): the Chrome version-mismatch auto-heal WARNING prints at every stop, three times per walk, and the Hugging Face download prints six lines around the 60 MB voice model on a first walk; both fire on the ordinary case at the moment a stranger is reading. Sibling of the Missing-phoneme line above.
 # - TODO (2026-09-16, repo root, ON THE LINUX BOX): four deleteme*.txt files and a 35 MB realkeywords.csv sit in THAT repo root, gitignored and not gone (IGNORED IS NOT GONE, .gitignore's own words); delete by hand. NAMING THE MACHINE IS THE POINT: the same ls on the Mac 2026-09-16 read "No such file or directory" for both, which is true and discharges nothing, because gitignored files never travel. A debt that does not name its machine gets closed by a probe on the other one.
@@ -2296,8 +2308,7 @@ foo_files.py
 # - TODO (2026-09-15): one public_walk ride left 6 non-curl /walk/ lines in npvg.access.log, two per page; the user-agent split (deed 1408) read ONE agent, Chrome/150 on X11, with one 200 and one 304 per page, so there is no second fetcher: the same browser loaded each page twice and the second load was a conditional revalidation. Read the six lines in log order (time, status, path, no address) to rule between a double load inside one stop and a restore of the previous tab when the next stop's browser launches; count no rides until that is ruled, and filter the operator's own rides by address before reading the funnel at all.
 
 
-# - TODO (2026-09-15, operator ruling): replace jeopardy.wav under the summoning with free-licensed or public-domain audio, a ticking clock while the browser waits and an egg-timer ding at the end of the wait.
-# - TODO (2026-09-15, next door): the walk door in scripts/boot_menu.py, with its own exit code and runScript branch so exit 0 keeps meaning start the app and Enter keeps starting it, plus one label sweep across boot_menu.py, the flake's voice greeting and the brief prompt; ride it after the DECANT ride.
+# - TODO (2026-09-15, operator ruling; mechanism landed with THE ONE DOOR): supply copyright-free tick.wav and ding.wav under ~/.local/share/pipulate/. The scraper now uses them when present, afplay on Darwin/aplay elsewhere, and stays silent when absent; no wav ships in git.
 # - TODO (2026-09-13): npvg.org rides mikelev.in's public address as a STATIC A record while only mikelev.in gets the namecheap-ddns heartbeat; a second unit (domain=npvg.org, its own token) or an ALIAS record is owed before the next public-IP change, or the pad goes dark with nothing printed anywhere.
 # - TODO (2026-09-13): the pad has no favicon, so every browser visit writes a 404 line into npvg.access.log beside its 200 (the cellular witness was two lines for one visit); a locations."= /favicon.ico" returning 204 is three lines, owed before the funnel is read from that log.
 # - EARMARK: THE DIRECTORY KEY CROSSED MACHINES (banked 2026-09-08, convicted by the second machine): a shared file may not name a thing by a MACHINE-LOCAL handle, because the handle is assigned per machine and the file is not. Chrome numbers profile directories in creation order, so "Profile 2" was the Work profile on NixOS and the PERSONAL profile on the Mac (Mike, 121 synced bookmarks), and bookmarks.nix, keyed by that directory, resolved to the wrong profile the first time a second checkout ran it; only the sync_metadata fence stood between a real run and a harvest-and-wipe of a personal bar. The key had been right for the whole life of the feature on the one machine that existed, which is SINGLE-CANDIDATE BLINDNESS wearing a filename: n=1 cannot tell a stable identity from a coincidence. CURE, a grammar change rather than a value change: the key is a human name and a `match` list names IDENTITIES the machine derives and the operator cannot author (a label, an account, an account domain, read from the application's own registry); exactly one hit resolves, none skips, several refuse. THE TEST before any key rides a shared file: is this value assigned by the machine in an order the other machine never saw? Directory numbers, pids, device paths, X display numbers and "Profile N" all fail it. Sibling of THE DERIVED-PATH RULE (a write target computed from an identity the writer cannot author) and of SINGLE-CANDIDATE BLINDNESS (create the second candidate); this names the class of key the second candidate convicts.
