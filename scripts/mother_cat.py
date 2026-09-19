@@ -47,22 +47,24 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 
-def _narrate(text, disclosed, indent="  "):
+def _narrate(text, disclosed):
     """Speak scripted guidance if Piper is available; never gate the ride.
 
-    indent is the printed line's left margin. Two spaces under a stop header
-    read as nesting; the walk's opening sentence sits at the top level, wraps,
-    and an indented first line over flush continuations reads as a mistake
-    (operator, 2026-09-17), so that call passes none.
+    The visible channel always lands first, before importing or invoking Piper.
+    A blank line supplies separation without an indent that disappears when an
+    eighty-column terminal wraps the guidance.
     """
+    print()
+    print(text)
+
     try:
         from imports.voice_synthesis import chip_voice_system
     except Exception as exc:
-        print(f"{indent}(voice import unavailable: {exc}) {text}")
+        print(f"(voice import unavailable: {exc})")
         return disclosed
 
     if chip_voice_system is None:
-        print(f"{indent}(voice unavailable) {text}")
+        print("(voice unavailable)")
         return disclosed
 
     # THE NARRATION VANISHED WITH ITS OWN ERROR (convicted 2026-08-02, ride
@@ -72,7 +74,6 @@ def _narrate(text, disclosed, indent="  "):
     # the ride delivered NEITHER audio NOR words -- the NARRATE beat of the
     # kata became a silent no-op that reported success. Print first, then
     # speak, so the visible channel never depends on the audible one failing.
-    print(f"{indent}{text}")
     try:
         if not disclosed:
             result = chip_voice_system.speak_text(
@@ -99,7 +100,7 @@ def _narrate(text, disclosed, indent="  "):
                 f"{result.get('error', 'unknown error')})"
             )
     except Exception as exc:
-        print(f"{indent}(voice error, continuing: {exc}) {text}")
+        print(f"(voice error, continuing: {exc})")
 
     return disclosed
 
@@ -710,8 +711,8 @@ def _announce_consent(trail_path, intro=False):
     """Describe capture and handoff, never grant authorization here.
 
     Custom walks use the same trail projection as walk_cartridge.
-    The bundled introduction uses the shared plain-language contract;
-    --intro is validated separately before any narration or capture.
+    The launcher owns the bundled plain-language INTRO_NOTICE; --intro avoids
+    printing it a second time and adds only the local summary/check lines.
     """
     try:
         surface = walk_cartridge._derive_consent_surface(trail_path.read_bytes())
@@ -723,7 +724,7 @@ def _announce_consent(trail_path, intro=False):
         print(f"  (consent surface unavailable: {exc})")
         return
     if intro:
-        print("\n" + INTRO_NOTICE)
+        print()
         print(f"Summary file: {DECANT_PREVIEW_PATH.relative_to(REPO_ROOT)} (private; replaced on save).")
         print("Checks can miss private details. A blocked check leaves the older file alone.\n")
         return
@@ -899,6 +900,7 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
     # THE VOICE ASKS FIRST (2026-09-17), before the description, before the
     # practice notice below says nothing needs typing, and in practice mode
     # too, because the rehearsal is the first thing a newcomer hears.
+    print("Make sure your audio is turned on.\n")
     _ask_voice()
     # THE DESCRIPTION SPEAKS FIRST (2026-09-05). walk.py has validated
     # trail.description as non-empty since Car A, and nothing read it at
@@ -911,7 +913,7 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
     rehearsal = "Practice only. In the real walk: " if dry_narrate else ""
     if dry_narrate:
         print("Practice only. No pages will open. You do not need to type anything.\n")
-    disclosed = _narrate(rehearsal + trail["description"], False, indent="")
+    disclosed = _narrate(rehearsal + trail["description"], False)
     _announce_consent(trail_path, intro=intro)
     captured = []
     skipped = archive.setdefault("skipped", [])
