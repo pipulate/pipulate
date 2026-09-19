@@ -1093,6 +1093,7 @@ Entries are alphabetical, numbers spelled as spoken.
   because main() returns 2 for "plan not ready" and argparse returns 2 for bad
   arguments. One number, two worlds. Read stderr or read plan["ready"]; never
   grade that one on the exit code alone.
+- **The Probe Dedup Corollary** — (convicted 2026-07-21): identical `!` lines dedupe in parse_file_list_from_config (seen_files), so the deliberate double-tap timing probe produced ONE receipt. A re-run must vary the command text (append `; : tap2`), never merely repeat the line.
 - **The Probe Echo Rule** — *before/after symmetry.* Every probe recommended
   for hand-execution must also be echoed verbatim as a `!` line into the next
   adhoc.txt chop. The hand-run is the BEFORE reading; the compiled re-run is
