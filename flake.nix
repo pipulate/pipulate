@@ -713,12 +713,12 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # preserved if/when the directory is transformed into a git repo
           APP_NAME=$(cat whitelabel.txt)
           PROPER_APP_NAME=$(echo "$APP_NAME" | awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}')
-          # THE BANNER MOVED TO DOOR 1 (2026-08-25). The figlet printed HERE,
-          # ABOVE the threshold, so the human who was one keypress away from
-          # saying "do not start the app" got a full-width ASCII assertion of
-          # that app's identity first. The banner is the curtain going up on
-          # the app; it belongs on the path where the app actually starts, and
-          # it now renders just below the BOOT_CHOICE exit. PROPER_APP_NAME
+          # THE BANNER MOVED BELOW THE THRESHOLD (2026-08-25). The figlet
+          # printed HERE, before the human had chosen whether to start anything,
+          # so the shell-only path got a full-width assertion of the app first.
+          # The banner is the curtain going up on the app; it belongs only on
+          # the path where the app actually starts, just below the BOOT_CHOICE
+          # exit. PROPER_APP_NAME
           # stays computed here -- it is the figlet's only consumer and both
           # live in this one process, so the move strands nothing.
           #
@@ -803,16 +803,16 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           fi
           # Add convenience scripts to PATH
           export PATH="$VIRTUAL_ENV/bin:$PATH"
-          # OUTSIDE THE THRESHOLD BY DESIGN -- these three run on BOTH sides:
+          # OUTSIDE THE THRESHOLD BY DESIGN -- these three run on BOTH paths:
           #   copy_notebook_if_needed -- notebooks on disk are a deliverable of
-          #     the flake, not of the server. Idempotent, cheap, and a door-2
+          #     the flake, not of the server. Idempotent, cheap, and a shell-only
           #     user who later runs `python server.py` should find them there.
           #   pkill -- entering `nix develop` has ALWAYS killed a running
-          #     server. Door 2 keeps that promise instead of inventing a new
-          #     one, so a later `python server.py` finds :5001 free.
+          #     server. The shell-only path keeps that promise instead of
+          #     inventing a new one, so a later `python server.py` finds :5001 free.
           #   git pull -- the `dev` shell skips gitUpdateLogic entirely, so
           #     this bare pull is dev's ONLY update path. Inside the branch, a
-          #     habitual door-2 user would silently drift from upstream and
+          #     habitual shell-only user would silently drift from upstream and
           #     the magic cookie's forever-forward promise would rot.
           copy_notebook_if_needed
           # ONE WORKSHOP AT A TIME, SAID OUT LOUD (2026-08-04). This kill has
@@ -828,14 +828,11 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             echo "🛑 Stopped a Pipulate server that was already running (ports 5001/8888 are shared -- one workshop at a time)."
           fi
           git pull --quiet
-          # THE THRESHOLD: two doors, asked BEFORE anything starts.
-          #
-          # boot_menu.py speaks ONLY through its exit code -- 0 start the
-          # app, 10 stay in the shell. Nothing here parses its stdout, so no
-          # capture pipe can ever be held open by it (the rgx/xclip deadlock
-          # is the conviction). That also makes the renderer swappable: a
-          # Textual boot_menu.py can replace the stdlib/Rich one and this
-          # branch never learns the difference.
+          # THE ONE DOOR: on an interactive tty boot_menu.py prints the short
+          # command list and returns 10, so this child exits before either
+          # server starts and the parent shell prompt becomes the introduction.
+          # Automated lanes still return 0: no tty and PIPULATE_BOOT_MENU=0
+          # preserve the pre-menu behavior exactly. Nothing here parses stdout.
           #
           # FALL-THROUGH GUARANTEE: if scripts/boot_menu.py is absent -- an
           # older checkout, a partial clone, a hand-deleted file -- the flake
@@ -847,38 +844,16 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             BOOT_CHOICE=$?
           fi
           if [ "$BOOT_CHOICE" -eq 10 ]; then
-            # DOOR 2 -- nothing starts. runScript is EXECUTED (named on its
-            # own line in each shellHook), never sourced, so exiting here
-            # ends this child process and drops the parent into its
-            # interactive prompt. That is the same path door 2 already took
-            # under the tail placement, witnessed 2026-07-23 landing at
-            # `(nix) pipulate $`. Exiting BEFORE the JupyterLab launch is
-            # what makes the quiet workshop quiet: no tmux session, no TTS
-            # greeting, no 30-second readiness poll, and -- the visible bug
-            # this fixes -- no backgrounded browser subshell spraying dots
-            # over the prompt and then announcing that a server nobody
-            # authorized failed to start.
+            # Nothing starts. runScript is EXECUTED (named on its own line in
+            # each shellHook), never sourced, so exiting here ends this child
+            # process and drops the parent into its interactive prompt. No tmux
+            # session, TTS greeting, readiness poll or browser-open loop runs.
             exit 0
           fi
-          # DOOR 3 -- the Pipulate tab (2026-09-03). Same servers as door 1,
-          # opposite tab. It assigns the two names the runtime tab shadows
-          # below already read, so the shadows need no new branch and the
-          # .onboarded gate is simply not consulted on this path. A typed
-          # env var loses to a pressed key here, on purpose: the door is
-          # the explicit choice. If boot_menu.py predates door 3 it never
-          # returns 11, and this block is inert.
-          if [ "$BOOT_CHOICE" -eq 11 ]; then
-            PIPULATE_OPEN_JUPYTER=false
-            PIPULATE_OPEN_FASTHTML=true
-          fi
-          # DOOR 1 ONLY: the banner, moved down from above the threshold on
-          # 2026-08-25. Everything below this line runs only when the human
-          # chose to start the app -- or when boot_menu.py is absent and the
-          # FALL-THROUGH GUARANTEE puts us on the pre-menu path, where the
-          # banner printed unconditionally anyway. The full version string
-          # with its description rides here rather than in the readings line
-          # above, because this is the one surface whose entire job is to name
-          # the thing that is starting.
+          # THE START PATH: reached only by an unattended/fail-open entry or by
+          # a word such as `jn` that deliberately re-enters run-script with
+          # PIPULATE_BOOT_MENU=0. The full version string rides here because
+          # this is the surface whose job is to name the thing that is starting.
           figlet "$PROPER_APP_NAME"
           echo "Version: ${version}"
           # THE TAB KNOBS MOVE TO RUNTIME (2026-09-03, smallest possible step
@@ -888,8 +863,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           #   PIPULATE_OPEN_JUPYTER=false PIPULATE_OPEN_FASTHTML=true nix develop
           # with no flake edit and no new door. Nothing else changes: both
           # servers still start, and with no env vars set the readings are
-          # byte-identical to before. A future door 3/4 sets these two
-          # variables and nothing below needs to learn about it.
+          # byte-identical to before. Any explicit caller can set these two
+          # variables without teaching the startup body another branch.
           OPEN_JUPYTER="''${PIPULATE_OPEN_JUPYTER:-${autoOpenJupyter}}"
           OPEN_FASTHTML="''${PIPULATE_OPEN_FASTHTML:-${autoOpenFastHTML}}"
           JUPYTER_BROWSER_FLAG=""
@@ -898,7 +873,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # Start JupyterLab in a tmux session
           # NOTE: kill and launch stay PAIRED inside the branch. Splitting
           # them (kill outside, launch inside) would murder another
-          # terminal's JupyterLab every time someone picked door 2.
+          # terminal's JupyterLab every time someone stayed at the shell prompt.
           tmux kill-session -t jupyter 2>/dev/null || true
           # Start JupyterLab with error logging
           tmux new-session -d -s jupyter "source .venv/bin/activate && jupyter lab ${jupyterStartupNotebook} $JUPYTER_BROWSER_FLAG --workspace=\$JUPYTER_WORKSPACE_NAME --NotebookApp.token=\"\" --NotebookApp.password=\"\" --NotebookApp.disable_check_xsrf=True 2>&1 | tee /tmp/jupyter-startup.log"
@@ -1323,7 +1298,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias gitops='(cd ~/repos/trimnoir && git commit --allow-empty -m "retry" && git push)'
           alias force='(cd ~/repos/trimnoir && git commit --allow-empty -m "retry" && git push)'
           alias isnix="if [ -n \"$IN_NIX_SHELL\" ]; then echo \"✓ In Nix shell v${version}\"; else echo \"✗ Not in Nix shell\"; fi"
-          # THE SECOND DOOR, SPLIT IN TWO (2026-08-25). One word was doing two
+          # THE CONNECTOR ROSTER, SPLIT IN TWO (2026-08-25). One word was doing two
           # unrelated jobs and nothing about the word said so: bare `mcp`
           # listed CONNECTORS that pull material IN, while `mcp <tool>`
           # dispatched a REGISTRY TOOL. Worse, `mcp` is the NAME OF A FILE --
@@ -1332,16 +1307,15 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # the roster had taken it. Three words now, each of whose bare and
           # argument forms are about the same thing:
           #
-          #   sources        the sources you can name (the roster)
+          #   conn           the connector sources you can name (the roster)
           #   tools          the registry tools you can call
           #   tools <name>   call one
           #   mcp <server>   the real Streamable-HTTP client (aliased below)
           #
-          # Discharges the CONNECTOR ALIAS TRANSITION earmark, whose text asked
-          # only that the roster be renamed so `mcp` came free. `sources` beats
-          # that earmark's own `connect` / `pipe` / `warp` for one reason: it
-          # names the OUTPUT CLASS rather than an action the command does not
-          # perform. The roster connects nothing; `warm` does.
+          # The New-B surface now names the goal rather than the output class:
+          # `conn` is the short word that gets connector sources into context.
+          # The underlying roster file keeps its descriptive filename; there is
+          # deliberately no compatibility alias for the old typed word.
           #
           # FALL-THROUGH GUARANTEE, and it now REFUSES instead of substituting:
           # if the roster file has not landed, say so in one line. The old
@@ -1353,11 +1327,11 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # FUNCTIONS, NOT ALIASES (THE THREE-TIER AMENDMENT): `tools` needs a
           # branch, and both are typed by a human and never echoed as a `!`
           # probe, so neither needs to be a packaged derivation.
-          sources() {
+          conn() {
             if [ -f "$PIPULATE_ROOT/scripts/sources_menu.py" ]; then
               "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/sources_menu.py"
             else
-              echo "sources: scripts/sources_menu.py has not landed in this checkout."
+              echo "conn: scripts/sources_menu.py has not landed in this checkout."
             fi
           }
           tools() {
@@ -1367,23 +1341,18 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               (cd "$PIPULATE_ROOT" && .venv/bin/python cli.py call "$@")
             fi
           }
-          # THE RECALL WORD. The door-two list prints ONCE, at the moment of
-          # choice, and then scrolls away under whatever the human does next.
-          # `menu` prints it again from the SAME tuple (DOOR_TWO_WORDS in
-          # boot_menu.py), so the reminder can never drift from the original.
+          # THE RECALL WORDS. The short list prints once at shell entry and
+          # scrolls away under whatever the human does next. `menu` recalls the
+          # same SHORT_WORDS tuple; `all` prints the expanded ALL_WORDS tuple.
           #
           # A DISPLAY, NEVER A SECOND THRESHOLD, and the exit code is the whole
           # argument. boot_menu.py FAILS OPEN by design: no tty,
           # PIPULATE_BOOT_MENU=0, or any unexpected exception all return 0,
           # which means START THE APP. That polarity is correct at the
           # threshold, where blocking would strand an unattended nix develop.
-          # At a PROMPT it inverts: a menu that branched on exit 0 would start
-          # a server every time it ran without a tty -- including inside
-          # prompt_foo's `!` executor, where stdout is a pipe, and `pu` would
-          # then pkill the running server, start a new one in the foreground,
-          # and hold the compile until the 180s process-group kill. So nothing
-          # here reads the exit status, and --recall returns before the isatty
-          # gate is ever reached. Door 1 already has a word here: `pu`.
+          # At a PROMPT it inverts: a display wrapper must never branch on that
+          # 0 or a redirected `menu` could start a server. So neither wrapper
+          # reads the exit status; --recall returns before the tty gate.
           #
           # A FUNCTION, not writeShellScriptBin (THE THREE-TIER AMENDMENT):
           # only a human types this, and no child shell needs to resolve it.
@@ -1397,9 +1366,22 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               echo "menu: scripts/boot_menu.py has not landed in this checkout."
             fi
           }
-          # THE THIRD DOOR: `pu` starts the server door 2 declined to start.
-          # Kill-then-start, so it doubles as a restart and never collides on
-          # :5001 -- the same pkill runScript has always run on shell entry.
+          all() {
+            if [ -f "$PIPULATE_ROOT/scripts/boot_menu.py" ]; then
+              "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/boot_menu.py" --recall --all
+            else
+              echo "all: scripts/boot_menu.py has not landed in this checkout."
+            fi
+          }
+          # `jn` is the old full startup path as a word, not a second copy of
+          # that path. Re-enter run-script with the threshold explicitly
+          # declined so JupyterLab and Pipulate start exactly as they do on an
+          # unattended entry, with JupyterLab in front under the current defaults.
+          jn() {
+            (cd "$PIPULATE_ROOT" && PIPULATE_BOOT_MENU=0 ${runScript}/bin/run-script)
+          }
+          # `pu` is the server-only word. Kill-then-start, so it doubles as a
+          # restart and never collides on :5001.
           pu() {
             (
               cd "$PIPULATE_ROOT" || exit 1
@@ -1433,7 +1415,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # and this car rode exactly seven, so promoting it is one more entry
           # in connectorCommands whenever the operator says so.
           # `mcp` NOW MEANS THE CLIENT, which is what the file has always been
-          # named. Freed 2026-08-25 when the roster became `sources`, and
+          # named. Freed 2026-08-25 when the roster moved off `mcp`, and
           # claimed in the SAME car so the word is never a hole. An ALIAS, not
           # a function: nothing branches here, because mcp.py's own bare mode is
           # the branch -- and a bare `mcp` that argparse-exited 2 would have
@@ -1561,7 +1543,19 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # the dismount, not for this line; bare cpr reads prompt.md when it
           # exists, exactly as bare ahc does.
           epr() { (cd "$PIPULATE_ROOT" && "$(command -v nvim || command -v vim || echo vi)" "$(_walkrouter)"); }
-          cpr() { (cd "$PIPULATE_ROOT" && PIPULATE_ADHOC_FILE="$(_walkrouter)" python prompt_foo.py "$@" --chop ADHOC_CHOP --no-tree); }
+          cpr() {
+            local router="$(_walkrouter)"
+            (
+              cd "$PIPULATE_ROOT" || exit 1
+              PIPULATE_ADHOC_FILE="$router" python prompt_foo.py "$@" --chop WALK_CHOP --no-tree --quiet
+            ) || return $?
+            echo "Read: $router"
+            if [ -n "''${SSH_CLIENT:-}" ]; then
+              echo "Delivery lane: /tmp/clipboard_bridge.txt"
+            else
+              echo "Delivery lane: system clipboard"
+            fi
+          }
           # THE IDEATION DOOR: `idea` compiles IDEATION_CHOP (the constitution's
           # two forcing-function rules) primed for a 30-and-3 / axis-forcing
           # fan-out turn. A function, not an alias, so --profile/--reason pass
@@ -1734,7 +1728,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # self-contained prompt, then tells the human where to paste it.
           brief() {
             (cd "$PIPULATE_ROOT" && python prompt_foo.py \
-              "You are Yen Sid-ton, the onboarding wizard for Pipulate. A newcomer wants to install Pipulate for the first time. Your FIRST reply must be short and do four things in order: (1) confirm in one line that you hold the full install map (installer, flake, both Pipulate.com pages); (2) show the one-line install command immediately, since it is identical on every OS; (3) ask exactly one question, which OS they are on, noting it changes only the caveats, never the command; (4) add one line noting the command assumes Nix is already installed, and that a nix command not found response means install Nix first and reopen the terminal. From then on: one step per turn, one question maximum per turn, and every step ends with a visible success checkpoint describing what they should literally see (the one-line environment readings, the three-door menu where they press 1, the figlet banner once the app starts, the JupyterLab URL) plus the single most likely failure symptom at that step and its fix. Deliver the macOS --impure exception and the reopen-your-terminal-after-installing-Nix requirement at the moment each can bite, never as an upfront lecture. Offer the magic cookie internals (ZIP + ROT13 key, then git transformation and auto-updates inside nix develop) as an optional aside when relevant or when asked, not as mandatory explanation. When both the server and JupyterLab are confirmed running, declare the install banked and teach the re-entry incantation: cd into the install folder, then nix develop. High signal, low noise. Ask them what they see; never assume." \
+              "You are Yen Sid-ton, the onboarding wizard for Pipulate. A newcomer wants to install Pipulate for the first time. Your FIRST reply must be short and do four things in order: (1) confirm in one line that you hold the full install map (installer, flake, both Pipulate.com pages); (2) show the one-line install command immediately, since it is identical on every OS; (3) ask exactly one question, which OS they are on, noting it changes only the caveats, never the command; (4) add one line noting the command assumes Nix is already installed, and that a nix command not found response means install Nix first and reopen the terminal. From then on: one step per turn, one question maximum per turn, and every step ends with a visible success checkpoint describing what they should literally see (the one-line environment readings, the short command list at the shell prompt, the figlet banner after they type jn, the JupyterLab URL) plus the single most likely failure symptom at that step and its fix. Deliver the macOS --impure exception and the reopen-your-terminal-after-installing-Nix requirement at the moment each can bite, never as an upfront lecture. Offer the magic cookie internals (ZIP + ROT13 key, then git transformation and auto-updates inside nix develop) as an optional aside when relevant or when asked, not as mandatory explanation. When both the server and JupyterLab are confirmed running, declare the install banked and teach the re-entry incantation: cd into the install folder, then nix develop. High signal, low noise. Ask them what they see; never assume." \
               --chop INSTALL_CHOP --no-tree --quiet)
             echo ""
             echo "🧞 The First Wish is compiled and sitting in your clipboard."
