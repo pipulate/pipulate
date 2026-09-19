@@ -19,9 +19,15 @@ PROMPT_FILENAME = "editing_prompt.txt"
 PROMPT_PLACEHOLDER = "[INSERT FULL ARTICLE]"
 INSTRUCTIONS_CACHE_FILE = "instructions.json"
 
-# Model Selection - Use a stable model to avoid low quotas
-# DEFAULT_MODEL = 'gemini-flash-latest'
-DEFAULT_MODEL = 'gemini-flash-lite-latest'
+# Model Selection - Prefer Flash, then fail over to Lite immediately on a
+# retriable availability error. Each model keeps its own exponential-backoff
+# clock so alternating retries do not make one inherit the other's penalty.
+MODEL_CANDIDATES = (
+    'gemini-flash-latest',
+    'gemini-flash-lite-latest',
+)
+MAX_ATTEMPTS_PER_MODEL = 5
+INITIAL_RETRY_DELAY = 2
 
 SPINE_PLACEHOLDER = "[INSERT BOOK SPINE]"
 # THE BLOG FOLDER REACHES THE MODEL (banked 2026-09-04). editing_prompt.txt is
