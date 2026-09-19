@@ -235,7 +235,7 @@ def _document_candidates(cdp_events: list, domain: str, final_url: str = "") -> 
     return on_host
 
 
-def _capture_checkpoint(stdin=None, stdout=None) -> dict:
+def _capture_checkpoint(stdin=None, stdout=None, before_prompt=None) -> dict:
     """Require an explicit CAPTURE token from the human's keyboard.
 
     /DEV/TTY PREFERENCE (convicted 2026-07-29, public_walk stop 1): the
@@ -277,8 +277,16 @@ def _capture_checkpoint(stdin=None, stdout=None) -> dict:
             }
 
         try:
+            if before_prompt is not None:
+                try:
+                    before_prompt()
+                except Exception as exc:
+                    output_stream.write(f"\n(checkpoint narration unavailable: {exc})\n")
+            else:
+                output_stream.write(
+                    "\nWhen the page you want is ready, type CAPTURE and press Enter.\n"
+                )
             output_stream.write(
-                "\nWhen the page you want is ready, type CAPTURE and press Enter.\n"
                 "Any other response aborts without capturing artifacts.\n"
                 "CAPTURE> "
             )
@@ -972,7 +980,7 @@ async def selenium_automation(params: dict) -> dict:
     return await _selenium_capture(params)
 
 
-async def guided_browser_capture(params: dict, stdin=None, stdout=None) -> dict:
+async def guided_browser_capture(params: dict, stdin=None, stdout=None, before_prompt=None) -> dict:
     """Capture one human-guided page through one visible persistent driver."""
     if not isinstance(params, dict):
         return {
@@ -1045,5 +1053,6 @@ async def guided_browser_capture(params: dict, stdin=None, stdout=None) -> dict:
         checkpoint=lambda: _capture_checkpoint(
             stdin=input_stream,
             stdout=stdout,
+            before_prompt=before_prompt,
         ),
     )

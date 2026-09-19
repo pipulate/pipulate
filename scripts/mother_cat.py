@@ -953,10 +953,18 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
                 ) from exc
 
         params = walk._browser_params(url, trail["defaults"])
+        def checkpoint_narration():
+            nonlocal disclosed
+            disclosed = _narrate(
+                "The page is open. When it looks finished, come back to the terminal and type CAPTURE.",
+                disclosed,
+            )
+
         result = await guided_browser_capture(
             params,
             stdin=sys.stdin,
             stdout=sys.stdout,
+            before_prompt=checkpoint_narration,
         )
 
         if not result.get("success"):
