@@ -1185,10 +1185,10 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # --- START `adhoc.txt` TEMPLATE ---
 # AD HOC CHOP! The Not-Managed-by-Git Safe-for-Client-Data place. Insert Simpson Couch Gag in white space  below (explain anything to the audience you feel needs it explained)G
 # adhoc.txt    _   _   _               ____ _   _  ___  ____  _   
-#     / \   __| | | | | | ___   ___   / ___| | | |/ _ \|  _ \| |  Forgetting with style!
-# ahe/ _ \ / _` | | |_| |/ _ \ / __| | |   | |_| | | | | |_) | |  Very nice! That's how you do it.
-# ahc ___ \ (_| | |  _  | (_) | (__  | |___|  _  | |_| |  __/|_|  Housekeeping! Keys have freedom. Material moved to glossary. Nothing forgotten. The compression is what rides and even that leaves a key behind. Right, right. That's good signal. Handles. Nicknames. Enough.
-#  /_/   \_\__,_| |_| |_|\___/ \___|  \____|_| |_|\___/|_|   (_)  I'll wrap up right after this, I think. It's a anti-packrat dopamine rush trap.
+#     / \   __| | | | | | ___   ___   / ___| | | |/ _ \|  _ \| |  The Anthropic "narrate out loud" feature consistently craps out right when it gets interesting and if you just *leave it running* long enough the audio eventually comes back too late to do you any good for listening to it while filling in the template. Anthropic is always a two-edge swords in ways that are subtle and insidiously worse than OpenAI and Google shenanigans.
+# ahe/ _ \ / _` | | |_| |/ _ \ / __| | |   | |_| | | | | |_) | |  This is a step I've been putting off forever because I love the jeopardy sound but there's copyright issues and I never wrapped it into the repo so it only ever played on the Linux development machine and not the Mac I've been testing it on. And when I finally was ready to do it I decided to do it right with deep research based on the thought that if I'm not using my favorite sound I better use one whose rights to use are super solid. There's some lesson here. 
+# ahc ___ \ (_| | |  _  | (_) | (__  | |___|  _  | |_| |  __/|_|  
+#  /_/   \_\__,_| |_| |_|\___/ \___|  \____|_| |_|\___/|_|   (_)  
 
 # To Human: WELCOME TO VIM! It's really NeoVim but I say vim anyway.
 # To AI: This is an alternate 40K view to the big book-ore rolling pin spine.
@@ -1217,10 +1217,43 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # build an output text-file with the identically stacked output of each file or
 # command. In this way we vertically append or "stack" a bunch of text; simple as
 # that. If you understand this concept, you're on your way to future-proofing
-# yourself in the Age of AI. Congratulations! The ways to include a web page
-# or a command (!URL ?URL @URL $URL %URL, a ! command, a connector word) are
-# explained in chapter XVIII of foo_files.py, THE TINY UNIX COMMANDS.
+# yourself in the Age of AI. Congratulations! Here is how to include web pages:
 
+#    !URL  --------------------------------------------------------------------
+#      when    Public page; what a stranger or crawler sees; the BEFORE of a
+#              login-wall diagnosis
+#      switch  It shows a login page -> `warm URL` once, then `?URL`
+#    
+#    ?URL  --------------------------------------------------------------------
+#      when    Anything behind a login, on the site's persistent profile;
+#              `check URL` first
+#      switch  The lenses show a shell (nav, an `[Iframe]` leaf, no content) ->
+#              read the wire truth for the XHR the frame makes, then call that
+#              API with a connector
+#    
+#    @URL  --------------------------------------------------------------------
+#      when    Every re-read of a page already scraped; no browser, no network
+#      switch  The cached page is stale or was a login wall -> fresh `!` or `?`
+#    
+#    $URL  --------------------------------------------------------------------
+#      when    Exact markup: meta tags, a JSON blob in a `<script>`
+#      note    Token-heavy; needs a prior scrape
+#    
+#    %URL  --------------------------------------------------------------------
+#      when    The network log distilled; SPA endpoint discovery
+#      switch  It re-serves the wire truth you already have -> the API
+#    
+#    ! cmd  -------------------------------------------------------------------
+#      when    Any bounded, non-interactive command as a live receipt
+#      note    Cap it with `-n`; no aliases, no prompts
+#    
+#    Connector  ---------------------------------------------------------------
+#      when    The number you want is one GET away
+#      switch  LIST until the thing isn't in the list -> FETCH by id -> DRILL
+#              the path the app's own frame called -> `--grep` to narrow a list
+#              or find a leaf
+
+# Every step is one argument longer than the last; the moment a lens shows less than the wire does is the moment to stop scraping.
 
 # FOR 40K-FT VIEW (STORY & INFRASTRUCTURE) !!
 # --- START EDITING-IN ON 1ST TURN ---
@@ -1230,7 +1263,8 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # init.lua                    # <-- Those gadgets are made easy-to-use through nifty keyboard shortcuts (but ya gotta learn vim).
 # GLOSSARY.md                 # <-- Like the back of a J.R.R. Tolkien book, there's kooky new terms to know.
 # flake.nix                   # <-- Here is my hardware. Here is my state. Put on your sandbox. And please recreate. (Infrastructure as Code / IaC)
-prompt_foo.py               # <-- THIS system
+# assets/installer/install.sh # <-- Pipulate.com installer real home in github/pipulate repo
+# prompt_foo.py               # <-- THIS system
 # foo_files.py                # <-- main ROUTER
 # requirements.in             # <-- We've "pinned" everything but still want a flexible Python Data Science virtualenv.
 # pyproject.toml              # <-- How this is a citizen of the Python "pip install" ecosystem
@@ -1263,12 +1297,6 @@ prompt_foo.py               # <-- THIS system
 # Carry-over as the important work-in-progress parts of the project here just
 # like above but not as long-standing overarching to the framework but rather
 # for the current hot spots actively being worked on.
-
-# THE TINY UNIX COMMANDS live in chapter XVIII (retired from here 2026-09-18):
-# the sigils' when and switch, the connector roster with each file's own first
-# docstring line, and the words. Copy lines UP from that chapter the way the
-# Jekyll chapter is copied from; nothing that lives in a chapter is carried here.
-
 
 # --- START THIS DISCUSSION ---
 
