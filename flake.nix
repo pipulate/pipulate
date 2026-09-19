@@ -1543,11 +1543,19 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # the dismount, not for this line; bare cpr reads prompt.md when it
           # exists, exactly as bare ahc does.
           epr() { (cd "$PIPULATE_ROOT" && "$(command -v nvim || command -v vim || echo vi)" "$(_walkrouter)"); }
+          # THE FRAME RIDES WITH cpr (2026-09-19). A question asked of a walk
+          # preview wants a reading, so cpr passes --frame lean and the Prompt
+          # section carries a reading frame instead of the full checklist and
+          # its five-car train. The flag sits BEFORE "$@" so an explicit
+          # cpr --frame full still wins (argparse keeps the last spelling),
+          # and ahc, default and every other alias omit it and keep the full
+          # frame. Witness in the compile lane by the sealed prompt member:
+          # after a cpr smoke, foo.zip carries a prompt.md with no train in it.
           cpr() {
             local router="$(_walkrouter)"
             (
               cd "$PIPULATE_ROOT" || exit 1
-              PIPULATE_ADHOC_FILE="$router" python prompt_foo.py "$@" --chop WALK_CHOP --no-tree --quiet
+              PIPULATE_ADHOC_FILE="$router" python prompt_foo.py --frame lean "$@" --chop WALK_CHOP --no-tree --quiet
             ) || return $?
             echo "Read: $router"
             if [ -n "''${SSH_CLIENT:-}" ]; then
