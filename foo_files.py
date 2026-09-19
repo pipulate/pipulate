@@ -2761,6 +2761,10 @@ foo_files.py
 #   from template" a THIRD time. The ride's one accurate subject was
 #   efd85e1d, "Rename connector scripts to 'connectors' directory", where
 #   git's own rename lines carried the story into the diff.
+#   SPECIMEN 2026-09-19 (pipulate, same m alias): 6e4af6ee rewrote ONE
+#   TODO line and added another (+2/-1, foo_files.py only) under "fix: add
+#   cc0 sound files for prompt": no file was added, no sound file has ever
+#   been tracked, and the subject reads the TODO's nouns as the commit's verb.
 # - EARMARK: THE THREE-REGION ART EDIT (banked 2026-08-03, receipt-corrected):
 #   registering one piece of figurate art is a THREE-region change with an
 #   integrity coupling and NO airlock -- not two, as a prior turn asserted.
