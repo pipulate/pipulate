@@ -1615,7 +1615,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # ============================================================================
 # 📖 CHAPTER BLURB — HONEYBOT: A retired laptop runs NixOS and Nginx from a home
 # closet, deliberately naked on the internet (no CDN), baiting AI crawlers so
-# they can be watched like a fishtank. Nginx does RFC 7231 content negotiation
+# they can be watched like a fishtank. Nginx does RFC 9110 content negotiation
 # at the origin: humans get hydrated HTML; any agent sending Accept:
 # text/markdown gets the raw source the article was born as; and every request
 # lands as one line in a high-fidelity access log that a Unix pipe tails into a
