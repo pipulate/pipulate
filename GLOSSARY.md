@@ -1427,6 +1427,7 @@ Entries are alphabetical, numbers spelled as spoken.
   rides in, and this is a probe poisoned by its own report. The comb's
   shape-by-shape readings and the scanner's blind-spot conviction fade to
   the router's receipts block.
+- **The Two-Gate 403 Diagnosis** — *two independent causes that clear in order.* Banked 2026-07-20. A Google service-account 403 has two independent causes that clear IN ORDER — SERVICE_DISABLED (API toggle in the key's Cloud project; once per API per project, forever) then PERMISSION_DENIED (resource not shared with client_email; once per document). Conviction: sheets.py's first live LIST died on SERVICE_DISABLED for the key's project while sharing remained untested. Auth is never the blocker when it fits a pattern already on the shelf: four wallet auth kinds cover every connector so far, and each new OAuth is a wallet-hygiene rep, not a delay.
 - **The Two-Recorder Rule** — *the FDR wins on parameters, the CVR on
   intent.* Banked 2026-07-29, receipt-convicted same day. Every airframe
   carries TWO recorders and investigators never conflate them. The FDR writes
