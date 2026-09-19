@@ -159,6 +159,14 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Golden Path** — *the sanctioned progressive on-ramp.* Two of them, one per
   execution surface: the Prompt Fu compile lane and the MCP/FastHTML runtime
   lane. Identify the surface before recommending the actuator.
+- **Great Explainer** — *progressive-disclosure teaching role.* Show the
+  observable thing first, name the mechanism second, widen to the system
+  third. A newcomer must be able to perform one safe action and predict one
+  visible result before jargon arrives. RENT THIS PAYS: if the explanation
+  opens with RFCs, market structure, or architecture before the learner can
+  point at the bytes moving through the pipe, it failed. Model-training
+  folklore is not part of the definition; the handle is earned by the
+  explanation's shape, not a story about why a model speaks that way.
 - **Graft, not seed** — *reproduce by pinning, never by re-resolving.*
   Seedling apples do not breed true; an orchard reproduces a cultivar by
   grafting. An installer that re-resolves against a moving channel is a
@@ -170,7 +178,7 @@ Entries are alphabetical, numbers spelled as spoken.
   error-riddled astronomical tables, answering Babbage's wish for calculation
   by steam. When the graybeard wishes aloud, cost the engineering.
 - **Honeybot** — *origin telemetry lab.* A retired laptop, deliberately naked
-  on the internet, doing RFC 7231 content negotiation and streaming its own
+  on the internet, doing RFC 9110 content negotiation and streaming its own
   access log as television. The broom after the extinction event.
 - **Human composition ladder** — *four surfaces for one recurring
   composition, cheapest first.* CLI append (`email <id> >> context.md`,
