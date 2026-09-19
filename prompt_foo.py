@@ -1800,6 +1800,8 @@ class PromptBuilder:
 This payload asks for a READING, not a code edit. The Codebase above carries what a
 browser captured on a walk and what the operator chose to release; the request below
 is a question about it. Answer that question from the evidence, and from nothing else.
+Say the answer first, in one sentence, and the evidence after it, so a reader who stops
+at the first line still leaves with the verdict.
 
 1.  **ANSWER FROM THE PAYLOAD, AND SAY WHERE.** Every claim names the section that supports it: the file path or lens in its `--- START:` marker. A claim nothing above supports is labeled INFERRED, in those letters.
 2.  **SAY WHEN IT IS NOT THERE.** If the released text does not carry what the question asks for, say so plainly and name where it would be found: the page's raw source, its network log, or a fresh capture. A confident answer about text you cannot see is the wrong answer.
