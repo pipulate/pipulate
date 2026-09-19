@@ -477,7 +477,7 @@ def main():
                 model.key = api_key  # Assign the key directly to the adapter
                 response = model.prompt(full_prompt)
                 gemini_output = response.text()
-                print("Successfully received response from API.")
+                print(f"Successfully received response from API via {model_name}.")
                 
                 json_match = re.search(r'```json\s*([\s\S]*?)\s*```', gemini_output)
                 json_str = json_match.group(1) if json_match else gemini_output
