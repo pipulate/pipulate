@@ -326,6 +326,50 @@ def _bank_capture(archive, trail, index, stop, params, result):
     return problems
 
 
+# THE TRAINING WHEELS (2026-09-20, read off the first Mac epr screen). `epr`
+# is a newcomer's first vim, and the router is the one place the lesson can
+# sit where their eyes already are, so the first router a machine ever
+# writes carries it. The keys are the bridge from less: j and k are the same
+# two keys, and q grows a colon. Every lesson line is a comment, so the
+# compiler's parser and the guard below both skip it, and every line stays
+# under 79 columns because `wrap` is off in the router buffer and a hidden
+# tail is a lie. The legend names files, never ordinals: a hand-counted
+# "2nd line" goes stale the moment a line is absent.
+INTRO_PATH = REPO_ROOT / "introduction.md"
+ROUTER_LESSON = (
+    "# ATTENTION HUMAN: this is the Prompt Router. epr edits it, cpr compiles it.\n"
+    "# Welcome to vim (Neovim). This file was written by the last walk.\n"
+    "\n"
+    "# j moves the cursor down, k moves it up: the same two keys as in less.\n"
+    "# To leave: press Esc, then type  :q  and press Enter.\n"
+    "# Changed something by mistake? Esc, then  :q!  and Enter leaves it unsaved.\n"
+    "# Esc is always the way back to safety.\n"
+    "# Old joke: the best random-string generator is a beginner told to exit vi.\n"
+    "\n"
+    "# Every line below that does not start with # is one thing the AI will read:\n"
+    "# a file path, or a shell command written after `! `.\n"
+)
+ROUTER_KEYS = (
+    "# Prompt Router: epr edits it, cpr compiles it. Written by the last walk.\n"
+    "# Keys: j down, k up; Esc then :q quits, :q! discards, :wq saves and quits.\n"
+    "# One line per thing the AI reads: a file path, or a command after `! `.\n"
+)
+ROUTER_TAIL = (
+    "\n"
+    "# Next: Esc, :q, Enter, then type  cpr  at the prompt.\n"
+    "# To add a line later: i starts typing, Esc stops, :wq saves and leaves.\n"
+    "# The next walk rewrites this file (shorter notes) unless you have edited it.\n"
+)
+# THE WHEELS COME OFF BY THEMSELVES. "First" means the router did not exist
+# before this ride. The rider writes it twice per ride (after ARCHIVE STATUS,
+# then after DECANT), so the absence test runs once per process and its
+# answer is cached here; the second write must not find the file its own
+# first write made. A later walk finds the file, writes ROUTER_KEYS, and the
+# wheels are off. A human who edits the router keeps it (the guard in the
+# writer); one who deletes it gets the lesson back on the next walk.
+_ROUTER_FIRST = {"first": None}
+
+
 def _router_line(path, what):
     """One absolute path as one router line, or refuse: the grammar has no escapes."""
     text = str(path)
@@ -335,16 +379,19 @@ def _router_line(path, what):
     return text
 
 
-def _write_walk_router(archive_path, preview_path=None):
+def _write_walk_router(archive_path, preview_path=None, first=None):
     """Replace one local selection; never read, disclose or compile its evidence.
 
     THE ROUTER IS THE NEWCOMER'S FILE (2026-09-16): `epr` opens it, so it is
-    replaced ONLY while it is a file this writer could have produced -- one
-    uncommented absolute path to an archive or a preview and nothing else. Any
-    other uncommented line is a human's; the new paths are printed for them
-    and nothing is touched. With a preview, the preview is the line that rides
-    and the archive is a commented line beneath it; without one, the archive
-    rides alone, labelled UNSANITIZED.
+    replaced ONLY while it is a file this writer could have produced -- the
+    introduction line at most, plus one uncommented absolute path to an
+    archive or a preview, and nothing else. Any other uncommented line is a
+    human's; the new paths are printed for them and nothing is touched. With
+    a preview, the preview is the line that rides and the archive is a
+    commented line beneath it; without one, the archive rides alone,
+    labelled UNSANITIZED. THE FIRST ROUTER CARRIES THE VIM LESSON
+    (2026-09-20): `first` is None to decide by absence, cached per process in
+    _ROUTER_FIRST, or True/False to force it, as the probe does.
     """
     selected = os.environ.get("PIPULATE_ADHOC_FILE", str(REPO_ROOT / "adhoc.txt"))
     if not selected.strip():
@@ -359,33 +406,45 @@ def _write_walk_router(archive_path, preview_path=None):
         raise ValueError("walk router aliases the human router or is a symlink")
     source = _router_line(archive_path, "capture")
     preview = None if preview_path is None else _router_line(preview_path, "preview")
-    # REPLACE ONLY A FILE THIS WRITER COULD HAVE WRITTEN: one uncommented
-    # absolute path to an archive or a preview, and nothing else. Any other
-    # uncommented line is a human's, so the paths are printed for them instead.
+    # REPLACE ONLY A FILE THIS WRITER COULD HAVE WRITTEN: the introduction line
+    # at most, plus one uncommented absolute path to an archive or a preview,
+    # and nothing else. Any other uncommented line is a human's, so the paths
+    # are printed for them instead.
     if target.is_file():
         owned = [line.strip() for line in target.read_text(encoding="utf-8").splitlines()
                  if line.strip() and not line.lstrip().startswith("#")]
-        if owned and (len(owned) != 1 or not owned[0].startswith("/")
-                      or not owned[0].endswith(("captures.md", "decant-preview.md"))):
+        routed = [line for line in owned if line != str(INTRO_PATH)]
+        if owned and (len(routed) != 1 or not routed[0].startswith("/")
+                      or not routed[0].endswith(("captures.md", "decant-preview.md"))):
             raise ValueError(
                 "hand-edited router kept, nothing written; add the line(s) yourself: "
                 + " ".join(line for line in (preview, source) if line)
                 + " (or delete the file and the next walk rewrites it)")
-    head = (
-        "# Written by the last completed walk. Edit freely: an edited router is never replaced.\n"
-        "# One line per thing the AI should see: a file path, or a command after `! `.\n"
-    )
+    if first is None:
+        if _ROUTER_FIRST["first"] is None:
+            _ROUTER_FIRST["first"] = not target.is_file()
+        first = _ROUTER_FIRST["first"]
+    # Gated on existence: an older checkout without introduction.md writes a
+    # router that names only what is on disk, and the compiler skips nothing.
+    intro = _router_line(INTRO_PATH, "introduction") if INTRO_PATH.is_file() else None
+    head = ROUTER_LESSON if first else ROUTER_KEYS
+    legend = []
+    if intro:
+        legend.append("# introduction.md tells the AI what this system is. Keep it.")
     if preview:
-        body = (
-            "# The checked preview rides. The whole UNSANITIZED archive is the commented line beneath it.\n"
-            f"{preview}\n"
-            f"# {source}\n"
-        )
+        legend += [
+            "# decant-preview.md is the checked summary of your walk. Keep it.",
+            "# captures.md is the raw UNSANITIZED archive; it is big and may hold secrets.",
+            "# Leave the # in front of it until an AI says it needs it, then read it first.",
+        ]
+        listing = [line for line in (intro, preview, f"# {source}") if line]
     else:
-        body = (
-            "# No checked preview was saved, so this is the whole UNSANITIZED archive. Review before compiling.\n"
-            f"{source}\n"
+        legend.append(
+            "# No checked preview was saved, so this is the whole UNSANITIZED archive. Review before compiling."
         )
+        listing = [line for line in (intro, source) if line]
+    body = "\n".join(legend + ["", "# --- BEGIN LISTING FILES OR `! ` COMMANDS ---"] + listing) + "\n"
+    body += ROUTER_TAIL if first else "\n# The next walk rewrites this file unless you have edited it.\n"
     temp = None
     try:
         with tempfile.NamedTemporaryFile(
