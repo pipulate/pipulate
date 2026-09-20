@@ -1371,6 +1371,34 @@ Entries are alphabetical, numbers spelled as spoken.
   glossary's vocabulary entry both still said "exact lines" after the fix
   landed -- PROTECTION-LAG POLARITY in its expensive direction, caught by
   the corpus grep this rule prescribes.
+- **The Three-Tier Amendment** — (banked 2026-08-06, paired-lane receipt): the
+  standing consequence above stops ONE TIER SHORT and is therefore a trap for
+  any word that must be reachable by a CHILD process. There are THREE tiers,
+  not two. (1) ALIAS -- reachable only by a human typing it as the literal
+  first word. (2) FUNCTION -- reachable by other code IN THE SAME SHELL and by
+  nothing else, because functions are not exported and no child inherits one.
+  (3) DERIVATION ON PATH (writeShellScriptBin) -- reachable by children,
+  including prompt_foo's `!` executor. WITNESS, one command, two lanes, one
+  compile: `postsc2 2` printed a Newest-First listing in the operator's
+  terminal and `postsc2: command not found` at exit 127 as a compile receipt,
+  while its packaged sibling `postsc 3` ran byte-identically in BOTH lanes.
+  That pair is why postsCommand, postscCommand, rgxCommand and rgxcCommand are
+  derivations while posts2 and postsc2 are functions: the reversed twins are
+  typed by a human and never echoed as probes. CORRECTED CONSEQUENCE: a word
+  reachable by OTHER CODE needs a function; a word reachable by a CHILD
+  PROCESS needs a package. Sibling of THE UNEXPORTED-SHIM RULE, which names
+  the same physics from the security side -- that rule is about a guard a
+  child does not inherit, this one is about a name a child cannot resolve.
+  Neither rule alone states the ladder, which is how the wrong prescription
+  ended up being the one carrying the imperative verb.
+  PROBE COROLLARY -- EXERCISE THE HARD HALF (the reason this shipped at all):
+  the gating probe was `7() { _p 7 "$@"; }; 7 x y`, which proved numeric
+  function NAMING and ARGUMENT FORWARDING and then echoed instead of
+  dispatching. It never once ran an alias through a variable, which was the
+  entire mechanism under test. A probe that exercises the easy half of a
+  claim is not a weak receipt, it is a FALSE one -- it returns green for a
+  thing that was never tried. Before accepting a probe as a gate, name the
+  step most likely to fail and confirm the probe performs THAT step.
 - **The Write-Side / Read-Side Split** — *one word, two questions, two
   owners.* Banked 2026-09-04, found while un-hardwiring a blog's URL
   folder. `permalink_prefix` in blogs.nix answers WHERE NEW POSTS ARE
