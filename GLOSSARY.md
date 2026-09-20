@@ -1022,6 +1022,24 @@ Entries are alphabetical, numbers spelled as spoken.
   already closed, and only a compile carrying flake.nix could see it. STANDING
   CONSEQUENCE: when a conviction concerns a SHELL FUNCTION, record which shell
   it was taken in, or the receipt is unlabeled evidence.
+- **The Lane-Disagreement Witness** — (banked 2026-08-01, Car-A-convicted): when a
+  probe CANNOT print differently across a patch in the lane you can automate,
+  run it in BOTH lanes and let the DISAGREEMENT be the receipt. Conviction: the
+  /dev/tty gate widening in guided_browser_capture is structurally invisible to
+  the compile lane -- prompt_foo's `!` executor spawns with
+  start_new_session=True, which detaches the controlling terminal, so /dev/tty
+  is unopenable there and the refusal prints whether or not the patch exists (a
+  ritual by THE DISCRIMINATION QUESTION). The IDENTICAL command in the
+  operator's terminal prints a different error once the branch is live, because
+  a missing-params check downstream fires instead. One command, two lanes, two
+  expected strings: the pair discriminates where neither reading alone can.
+  STANDING CONSEQUENCE: name the LANE a receipt was taken in, or the receipt is
+  unlabeled evidence. Corollary of COMPILE-LANE BLINDNESS.
+  WITNESSED 2026-08-01, same-day flip: the identical one-liner printed "URL,
+  domain, and url_path_slug parameters are required." in the operator's
+  terminal and "guided capture requires a TTY on stdin before browser launch"
+  as a compile receipt. Two lanes, two strings, one command -- the pair
+  discriminated exactly as predicted, and neither reading alone could have.
 - **The MCP Receipt Rule** — *a tool call is a receipt or it is nothing.*
   Banked 2026-07-29; mechanism witnessed 2026-07-25 by the fault harness,
   vendor-witnessed 2026-07-29 and 2026-08-06. A model-mediated tool call

@@ -776,24 +776,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # REFUSAL-ONLY WITNESS -- that one is a state machine observed on one branch, this one is a comparison observed with one operand.
 
 # - EARMARK: THE SUCCESS-ONLY WITNESS (banked 2026-08-02, cold-start ride six): a claim observed ONLY succeeding is indistinguishable from a claim that CANNOT fail, exactly as a guard observed only refusing is indistinguishable from one broken shut. Conviction: synthesize_and_play called wait() and DISCARDED the exit code while stderr went to DEVNULL, so a player killed by SIGFPE printed its reason into the void and the function returned True anyway -- speak_text reported success, the rider printed nothing, and the human heard silence beside a green console. The instrument that was supposed to report the failure was the thing hiding it. DISCRIMINATING QUESTION for act-claims: what does this print in the world where the act did not happen? If the answer is "success," it is not a receipt. This is also the missing third suspect from the 2026-07-26 THE DEMO WENT SILENT todo, which named transport and engine and never once looked at the subprocess exit status. Sibling of REFUSAL-ONLY WITNESS (one branch of a state machine) and of the MECHANICAL TEST in ATTRIBUTED-VOICE (a verb naming an act that no code performed).
-# THE LANE-DISAGREEMENT WITNESS (banked 2026-08-01, Car-A-convicted): when a
-# probe CANNOT print differently across a patch in the lane you can automate,
-# run it in BOTH lanes and let the DISAGREEMENT be the receipt. Conviction: the
-# /dev/tty gate widening in guided_browser_capture is structurally invisible to
-# the compile lane -- prompt_foo's `!` executor spawns with
-# start_new_session=True, which detaches the controlling terminal, so /dev/tty
-# is unopenable there and the refusal prints whether or not the patch exists (a
-# ritual by THE DISCRIMINATION QUESTION). The IDENTICAL command in the
-# operator's terminal prints a different error once the branch is live, because
-# a missing-params check downstream fires instead. One command, two lanes, two
-# expected strings: the pair discriminates where neither reading alone can.
-# STANDING CONSEQUENCE: name the LANE a receipt was taken in, or the receipt is
-# unlabeled evidence. Corollary of COMPILE-LANE BLINDNESS.
-# WITNESSED 2026-08-01, same-day flip: the identical one-liner printed "URL,
-# domain, and url_path_slug parameters are required." in the operator's
-# terminal and "guided capture requires a TTY on stdin before browser launch"
-# as a compile receipt. Two lanes, two strings, one command -- the pair
-# discriminated exactly as predicted, and neither reading alone could have.
+# § THE LANE-DISAGREEMENT WITNESS (banked 2026-08-01) -- When one lane is structurally blind to a patch, run the identical probe in both lanes and use the expected output disagreement as the witness; label every receipt with its lane.
 # CEREMONY IS SKIPPABLE; BARRIERS ARE NOT (banked 2026-08-01, the --yolo
 # ruling): a confirmation that authorizes a SEQUENCE may be skipped by flag; a
 # fence that authorizes each WRITE may not, ever, by any flag. THE TEST IS
