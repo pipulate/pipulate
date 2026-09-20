@@ -771,6 +771,7 @@ Entries are alphabetical, numbers spelled as spoken.
   line spells the handle kata-name so an unanchored probe keeps reading 1, and
   the tombstone probe anchors on the `# - ` prefix so faded receipts naming the
   same handles cannot count as survivors.
+- **Failed-Probe Receipt** — (banked 2026-07-20, canary-witnessed same day): the `!` executor lands stderr-only failures as first-class Manifest receipts — "# NON-ZERO EXIT N" header, "(no stdout — stderr is the receipt)" placeholder, fenced tail-capped stderr. Witness: the deliberate canary `bash -c "echo canary-stderr >&2; exit 3"` surfaced in the next compile's LIVE COMMAND RECEIPTS exactly as specified. Method note: the fix was proven by MANUFACTURING a known failure and confirming the instrument displayed it — a QA pipeline is trusted only once it has demonstrably shown red when red was true.
 - **The Filter That Ate the Evidence** — *a status guard applied to a payload
   channel.* Banked 2026-08-06, self-convicted in-payload.
   PromptBuilder.add_auto_context dropped any channel whose CONTENT contained
