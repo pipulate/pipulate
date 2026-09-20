@@ -728,33 +728,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 #      delete the flag until a receipt shows plain `nix develop` succeeding
 #      through that wrapper.
 # § THE PUBLISH-ROSTER RULE (banked 2026-08-01) -- treat every name in a publish roster as a live actuator: if it must not ship, REMOVE IT FROM THE ROSTER, because warnings beside a mechanism do not gate the mechanism; witness the roster cut and served-surface removal before closing the hazard, and treat off-roster residue as stranded, not shippable.
-# THE CABOOSE-VERDICT COROLLARY (banked 2026-08-01, self-convicted one turn
-# later): a prompt written for the NEXT turn may name what to CHECK; it may
-# not pre-commit what a printout MEANS, because the caboose is written before
-# the world it will read. CONVICTION: a caboose said "if AFTER printed one
-# line, whitelabel selection is broken and that is the whole turn." The AFTER
-# printed one line -- and selection was fine. The ignition that would have
-# created the second workshop was never run, so the probe's PRECONDITION
-# failed and its one-line answer is what BOTH worlds print. A verdict welded
-# to a printout survives into a turn where its premise did not, and then it
-# convicts the wrong organ with a receipt in its hand. This is
-# TAP-AMBIGUITY AMENDMENT (banked 2026-08-09, self-convicted in one turn): a
-# caboose conditional must name not only its PRECONDITION but WHICH TAP its
-# printout comes from. A straddle produces TWO readings of ONE command, and a
-# verdict welded to "if X reads N" cannot tell the BEFORE from the AFTER.
-# CONVICTION: a caboose said "if auth_ruling is still 0, the patch did not
-# land -- stop there." The operator pasted the hand-run BEFORE tap, which read
-# 0 correctly, while the compile's live receipt read 1. A model obeying the
-# caboose literally would have halted the whole turn on a correct reading of
-# the wrong tap. Only the Manifest's sole-authority clause resolved it.
-# STANDING CONSEQUENCE: write "if the LIVE RECEIPT reads N", never "if X reads
-# N". Sibling of THE LANE-DISAGREEMENT WITNESS -- that rule names a probe blind
-# to a patch; this names a verdict blind to which side of the patch it is on.
-# VERDICT-IN-THE-INSTRUMENT aimed one turn forward: that rule forbids writing
-# the answer into the artifact that determines it; this one forbids writing it
-# into the PROMPT that will read it. STANDING CONSEQUENCE: every conditional
-# in a caboose names its PRECONDITION first, or it states the check and leaves
-# the ruling to the turn that holds the receipt.
+# § THE CABOOSE-VERDICT COROLLARY (banked 2026-08-01) -- Write every caboose conditional with its precondition and the specific LIVE RECEIPT/tap it will judge; never pre-commit a verdict to an unlabeled printout before the turn that holds the receipt.
 # § THE UNEXPORTED-SHIM RULE (banked 2026-08-01, second conviction 2026-09-14) -- a shell FUNCTION protects exactly one process, the interactive shell that defined it, because functions are not exported: every child inherits the ENVIRONMENT the shim neutralizes and none inherits the shim, so a script that invokes nix from inside the workshop shell dies at the loader on library skew while the same script passes on a stranger's clean shell, and the only person who can see it blames his own environment. Write the empty LD_LIBRARY_PATH assignment inline on EVERY branch of every script that reaches the nix binary (a no-op on a clean shell), and witness it from a compile, because prompt_foo's ! executor spawns children that inherit the pollution and never the function -- the failing lane in miniature. Sibling of LANE-DISAGREEMENT (a probe blind to a patch; this is an environment blind to a shim) and of THE THREE-TIER AMENDMENT (a name a child cannot resolve).
 # THE SINGLE-CANDIDATE BLINDNESS RULE (banked 2026-08-01, selector-convicted):
 # a SELECTOR cannot be witnessed while only one candidate exists, because
