@@ -2927,7 +2927,7 @@ MATCHBOOK_CHOP = r"""
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 204/273 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 204/274 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
 # AGENTS.md  # [731 tokens | 2,934 bytes]
 # AUDIT.md  # [2,011 tokens | 9,706 bytes]
@@ -2964,6 +2964,7 @@ MATCHBOOK_CHOP = r"""
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
+# introduction.md  # [539 tokens | 2,322 bytes]
 # remotes/honeybot/queries/health_db_vitals.sql  # [465 tokens | 1,927 bytes]
 # remotes/honeybot/queries/hydration_family.sql  # [1,736 tokens | 6,756 bytes]
 # remotes/honeybot/queries/hydration_rate.sql  # [1,331 tokens | 5,146 bytes]
