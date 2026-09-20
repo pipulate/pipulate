@@ -89,6 +89,12 @@ def _narrate(text, disclosed):
                     "  (voice disclosure failed: "
                     f"{result.get('error', 'unknown error')})"
                 )
+            elif isinstance(result, dict):
+                # THE VOLUME LINE (2026-09-20, operator's ask). "Voice ready."
+                # is printed by the speaker during this first sentence, and
+                # the ear is the only instrument that tells a muted output
+                # from a working one. Conditional on the ear; claims nothing.
+                print("  (If you did not hear that, turn your volume up.)")
             disclosed = True
 
         result = chip_voice_system.speak_text(text)
