@@ -479,6 +479,33 @@ Entries are alphabetical, numbers spelled as spoken.
   fourth was a logger line. The mechanical test found five offenders that
   GENERATED-NOT-AUTHORED could not see, which is the evidence that this rule
   is load-bearing rather than that rule with a microphone.
+- **The Caboose-Verdict Corollary** — (banked 2026-08-01, self-convicted one turn
+  later): a prompt written for the NEXT turn may name what to CHECK; it may
+  not pre-commit what a printout MEANS, because the caboose is written before
+  the world it will read. CONVICTION: a caboose said "if AFTER printed one
+  line, whitelabel selection is broken and that is the whole turn." The AFTER
+  printed one line -- and selection was fine. The ignition that would have
+  created the second workshop was never run, so the probe's PRECONDITION
+  failed and its one-line answer is what BOTH worlds print. A verdict welded
+  to a printout survives into a turn where its premise did not, and then it
+  convicts the wrong organ with a receipt in its hand. This is
+  TAP-AMBIGUITY AMENDMENT (banked 2026-08-09, self-convicted in one turn): a
+  caboose conditional must name not only its PRECONDITION but WHICH TAP its
+  printout comes from. A straddle produces TWO readings of ONE command, and a
+  verdict welded to "if X reads N" cannot tell the BEFORE from the AFTER.
+  CONVICTION: a caboose said "if auth_ruling is still 0, the patch did not
+  land -- stop there." The operator pasted the hand-run BEFORE tap, which read
+  0 correctly, while the compile's live receipt read 1. A model obeying the
+  caboose literally would have halted the whole turn on a correct reading of
+  the wrong tap. Only the Manifest's sole-authority clause resolved it.
+  STANDING CONSEQUENCE: write "if the LIVE RECEIPT reads N", never "if X reads
+  N". Sibling of THE LANE-DISAGREEMENT WITNESS -- that rule names a probe blind
+  to a patch; this names a verdict blind to which side of the patch it is on.
+  VERDICT-IN-THE-INSTRUMENT aimed one turn forward: that rule forbids writing
+  the answer into the artifact that determines it; this one forbids writing it
+  into the PROMPT that will read it. STANDING CONSEQUENCE: every conditional
+  in a caboose names its PRECONDITION first, or it states the check and leaves
+  the ruling to the turn that holds the receipt.
 - **The Cap That Hid the Answer** — *a count-bounded probe hides the
   discriminator.* Banked 2026-08-05, convicted three times in three compiles.
   A `head -N` cap set to bound noise silently truncates the decisive line when
