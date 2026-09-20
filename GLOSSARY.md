@@ -876,6 +876,40 @@ Entries are alphabetical, numbers spelled as spoken.
   why warm beat mcp as the front door; "snowball downhill" predicts nothing, it
   is a mood). The forcing function is always the constraint that outlaws the
   likely answer; the animal is the sticker on the constraint's box.
+- **The Hand-Repair Clause** — (amended 2026-08-03, SECOND conviction, same
+  failure wearing a renamed marker): a dead car is not merely inert, it is
+  BAIT. apply.py's SYNTAX refusal -- the no-blocks-found message -- reports
+  that the MARKERS are malformed and reports NOTHING about the BODY, so the
+  obvious repair is to fix the markers in vim, at which point a block the
+  emitter DISOWNED IN PROSE becomes a block the actuator applies with no
+  fence having read it. GRADE THE TWO REFUSALS: the search-block-not-found
+  message proves the exact-match interlock READ the body and rejected it;
+  the no-blocks-found message proves it never parsed one. A hand-repair
+  after the first is witnessed; after the second it is not. CONVICTION: the
+  placeholder-marker dead car of 2026-08-03 was refused correctly,
+  hand-repaired, applied, committed and PUSHED, and the live car behind it
+  then failed exact-match because the dead one had already landed. Harmless
+  ONLY because the two cars were semantically identical -- that is the
+  near-miss, not the save. Sibling of REFUSAL-ONLY WITNESS: a fence observed
+  REFUSING is not a fence observed HOLDING, and this one was walked around
+  by hand in under a minute. OPERATOR-SIDE COROLLARY: when app prints
+  no-blocks-found, do NOT edit the patch file -- delete it and ask for a
+  re-emit. The emitter is cheap; the unexamined body is not.
+  FOURTH REFUSAL CLASS (banked 2026-08-25, emitter-convicted): the
+  MISSING-TARGET refusal, and it is the one member of this family where a
+  hand-repair IS witnessed. apply.py's block_pattern matched a complete
+  SEARCH/DIVIDER/REPLACE triple while the OPTIONAL Target group came back
+  empty, so the markers PARSED, the body was extracted INTACT, and the
+  diagnostic PRINTED that body back verbatim before refusing. Adding a
+  Target line therefore cannot touch a body the operator just read on
+  screen, and the exact-match interlock still runs on it unmodified --
+  unlike no-blocks-found, where nothing ever read the body at all.
+  THE CAUSE IS IN THE EMITTER, NOT THE OPERATOR'S VIM: a web chat UI's
+  copy button copies the fence BODY ONLY, so a Target line placed ABOVE
+  the fence is structurally uncopyable by the path the operator uses.
+  Convicted 2026-08-25 when a two-car train put both Target lines outside
+  their fences and both cars were refused. Cure: THE FENCED OUTFLOW
+  INVARIANT, which now names the copy button as the actuator.
 - **The History-Expansion Probe** — *a bang that dies only in the hand.*
   Banked 2026-08-06, lane-convicted on the first hand-run. A `!` followed by
   a WORD CHARACTER inside DOUBLE quotes is a bash HISTORY EXPANSION, and
