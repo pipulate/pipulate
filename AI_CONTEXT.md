@@ -1,8 +1,8 @@
 # AI_CONTEXT.md — Start Here If You Are an AI
 
-> Auto-generated on 2026-09-18. Rewritten from scratch on every release. If this
+> Auto-generated on 2026-09-20. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1483 entries indexed.
+> 1490 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -96,6 +96,13 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-09-20] [Disciplined Forgetting: Scaling AI Context Through a Two-Tier Memory Hierarchy](https://mikelev.in/futureproof/disciplined-forgetting-and-the-memory-hierarchy/index.md)
+- [2026-09-19] [Four Models, One Matchbook: Multi-Model Consensus in the Age of AI](https://mikelev.in/futureproof/four-models-one-matchbook-prompt-fanout/index.md)
+- [2026-09-19] [Dual-Model Failover: Engineering Independent Backoff Clocks for LLM APIs](https://mikelev.in/futureproof/dual-model-failover-independent-backoff/index.md)
+- [2026-09-19] [Playing Pinball in the Age of AI: A Replayable Workflow Guide](https://mikelev.in/futureproof/playing-pinball-in-the-age-of-ai-replayable-workflow-guide/index.md)
+- [2026-09-19] [The Color Blue and the Pipe: Inspecting Code Before Execution](https://mikelev.in/futureproof/color-blue-pipe-inspecting-code/index.md)
+- [2026-09-19] [Edna Mode Rules for AI Workflows: Why Practical Tooling Beats Fragile Abstractions](https://mikelev.in/futureproof/edna-mode-rules-for-ai-workflows/index.md)
+- [2026-09-18] [The One-Door Threshold: Engineering Replayable AI Workflows and Quiet Shells](https://mikelev.in/futureproof/the-one-door-threshold-replayable-ai-workflows/index.md)
 - [2026-09-18] [The First Ten Minutes: Engineering Reproducible AI Workflows in the Age of AI](https://mikelev.in/futureproof/the-first-ten-minutes-reproducible-ai-workflows/index.md)
 - [2026-09-17] [The Retrieval Cue: Memory Consolidation and Selective Hydration in the Age of AI](https://mikelev.in/futureproof/retrieval-cue-memory-consolidation-selective-hydration/index.md)
 - [2026-09-17] [The Voice Asks First: Engineering Verifiable Consent and Silent Defaults](https://mikelev.in/futureproof/the-voice-asks-first-verifiable-consent/index.md)
@@ -109,18 +116,18 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-09-15] [The First Five Minutes: Engineering Verifiable Workflows Without the Noise](https://mikelev.in/futureproof/first-five-minutes-verifiable-workflows/index.md)
 - [2026-09-15] [The Walk That Teaches Walks: Building Reproducible AI Workflows](https://mikelev.in/futureproof/the-walk-that-teaches-walks/index.md)
 - [2026-09-15] [The Flight Data Recorder: Consolidating Walk Workflows and Replayable Context](https://mikelev.in/futureproof/flight-data-recorder-walk-workflows/index.md)
-- [2026-09-14] [The Quiet Installer: Engineering Replayable AI Workflows and Quiet Shells](https://mikelev.in/futureproof/quiet-installer-replayable-workflows/index.md)
-- [2026-09-14] [The Door Names the Folder: Engineering Replayable AI Workflows and Portable Environments](https://mikelev.in/futureproof/the-door-names-the-folder/index.md)
-- [2026-09-14] [The Wrong Front Door: Split DNS, DHCP Leases, and Verifiable Local Testing](https://mikelev.in/futureproof/wrong-front-door-split-dns-dhcp/index.md)
-- [2026-09-14] [The Chain of Custody: Multi-Model Review and Verifiable Script Hardening](https://mikelev.in/futureproof/chain-of-custody-multi-model-review/index.md)
-- [2026-09-13] [The ACME Airlock and the Cellular Witness: Verifying HTTPS in the Age of AI](https://mikelev.in/futureproof/acme-airlock-cellular-receipts/index.md)
-- [2026-09-13] [Model Handoff and the Cellular Witness: Engineering Verifiable Deployments](https://mikelev.in/futureproof/model-handoff-and-the-cellular-witness/index.md)
-- [2026-09-12] [The Unix Way in the Age of AI: Replayable Workflows Without the Bloat](https://mikelev.in/futureproof/unix-way-ai-replayable-workflows/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-09-14] [177k] quiet-installer-replayable-workflows
+- [2026-09-14] [191k] the-door-names-the-folder
+- [2026-09-14] [154k] wrong-front-door-split-dns-dhcp
+- [2026-09-14] [114k] chain-of-custody-multi-model-review
+- [2026-09-13] [151k] acme-airlock-cellular-receipts
+- [2026-09-13] [348k] model-handoff-and-the-cellular-witness
+- [2026-09-12] [72k] unix-way-ai-replayable-workflows
 - [2026-09-11] [14k] navigating-slack-ergonomic-appraisal-age-of-ai
 - [2026-09-10] [56k] unearned-alligators-textile-looms-qa-ai
 - [2026-09-09] [69k] taming-the-unstable-throttle-replayable-nixos-upgrades
