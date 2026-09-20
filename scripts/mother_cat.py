@@ -1091,10 +1091,18 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
             print("   Review the summary before sharing it. You choose what to send.")
         # The archive file line was printed when its status was banked.
         if intro:
+            # THE GOODBYE SETS EXPECTATIONS (2026-09-20, operator's ruling,
+            # reversing 2026-09-15's "no command, no lesson"): what was
+            # captured and where, the next word, what it opens, how to leave.
+            # It points at the save and copy lines rather than asserting a
+            # copy, because copy_to_clipboard swallows its own failures.
             closing = (
-                "The three-page walk is finished. "
-                "Read the save and copy results in your terminal. "
-                "Review any summary before sharing it. Goodbye."
+                "The three-page walk is finished. Everything it captured is saved on this "
+                "computer, and the lines above say whether the summary was saved and copied. "
+                "Next, type epr: the letters e, p, r. That opens a text editor called vim, "
+                "showing the list of files an AI will read. The keys j and k move the cursor. "
+                "To leave, press Escape, then type colon q, then Enter. "
+                "The notes at the top of that file say the same. Goodbye."
                 if decanted else
                 "The capture run is finished, but the summary was withheld. "
                 "Read the results in your terminal. Goodbye."
