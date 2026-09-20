@@ -1694,7 +1694,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # ~/repos/trimnoir/index.md                # <-- Where the whole story of this system is published.
 
 # remotes/honeybot/queries/trapdoor_ips.sql         # <-- The SQL to see who is hydrating the DOM. The example of HOW we use it from here in the router below.
-# ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 
 # ============================================================================
 # XI. META-COGNITION & OTHER GOLDEN PATHS - Unification of desert kite funnel-mouths
