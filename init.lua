@@ -59,6 +59,24 @@ vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
     end,
 })
 
+-- adhocwalk.txt: the router a walk writes and `epr` opens, which is a
+-- newcomer's first vim (2026-09-20, read off the first Mac epr screen).
+-- THE ROUTER IS A LIST, NOT PROSE: every line is a path or a `! ` command,
+-- so the journal defaults above are wrong here in three ways a newcomer sees
+-- at once. spell paints every path red, which reads as errors. textwidth=80
+-- hard-wraps a path or command typed past the column, turning one router
+-- line into two and breaking it. relativenumber counts distance from the
+-- cursor, which reads as 4 3 2 1 5 to someone meeting it cold. Three
+-- buffer-local resets, nothing global; adhoc.txt keeps its own release above.
+vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
+    pattern = "adhocwalk.txt",
+    callback = function()
+        vim.opt_local.textwidth = 0
+        vim.opt_local.spell = false
+        vim.opt_local.relativenumber = false
+    end,
+})
+
 --  _____                 _   _                 
 -- |  ___|   _ _ __   ___| |_(_) ___  _ __  ___ 
 -- | |_ | | | | '_ \ / __| __| |/ _ \| '_ \/ __|
