@@ -813,6 +813,19 @@ def census(q=None, profile_name="botify", fmt="json", out_dir=None, max_items=25
             if not name or name == "select-all-toggle":
                 continue
             if kind == "checkbox":
+                # A NARROWED EXPORT IS THE CHEAP DRESS REHEARSAL (2026-09-21).
+                # One row of all 28 fields was 842 bytes, so the whole table is
+                # roughly 69 MB through one synchronous request, and every one
+                # of those rows builds a marked-safe HTML cell with related
+                # lookups behind it. Exporting the id alone answers BOTH open
+                # questions -- does one request survive the whole table, and
+                # what is the true row count -- for about 1.7 MB. An unchecked
+                # box is simply not submitted, which is what `continue` does
+                # here. The names come off the LIVE form, so a --fields value
+                # matching nothing yields zero columns, and the guard below
+                # refuses rather than shipping a silent partial export.
+                if fields and name.split("projectresource_", 1)[-1] not in fields:
+                    continue
                 data[name] = el.get("value") or "on"
                 checkboxes += 1
             elif kind in ("hidden", "text"):
