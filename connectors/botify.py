@@ -939,7 +939,7 @@ def main():
 
     if args.census:
         census(q=args.q, profile_name=args.profile, fmt=args.format,
-               out_dir=args.out, max_items=args.max)
+               out_dir=args.out, max_items=args.max, headless=args.headless)
         return
 
     if args.query:
