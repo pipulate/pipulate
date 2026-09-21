@@ -120,11 +120,10 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,490 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 26 published in the last 7 days
-# Markdown negotiated: 2,655 reads (0.21% of all responses)
-# DOM hydration: 2970 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-09-20T17:42Z
+# There are 0 already-written articles about this repo at Mac Shadow - MikeLev.in
+# Velocity: 0 published in the last 7 days
+# DOM hydration:  trapdoor triggers from  non-local IPs (top-N sample, self excluded)
+# Honeybot telemetry fetched 2026-09-21T07:23Z
 # --- END STATS ---
 
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
@@ -1809,6 +1808,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # (deed 1472): one git mv, one literal sed over every file that named the
 # old path, two Path joins by hand, and exit then nix develop as the
 # ignition, because the eight words on PATH bake the folder into their derivations.
+
 # scripts/sources_menu.py          # <-- what `conn` prints.
 # connectors/README.md     # <-- the contract, the wallet, and the six auth kinds every new connector copies one of
 # connectors/wallet.py     # <-- Connect your accounts, or any site by URL; see what's live.
