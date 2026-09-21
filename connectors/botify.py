@@ -672,6 +672,22 @@ def _admin_cookies(profile_name, headless=False):
         driver.get(f"{ADMIN_PROJECTS}/")
         landed = driver.current_url
         jar = {c["name"]: c["value"] for c in driver.get_cookies()}
+        # THE HEADFUL WINDOW NOBODY COULD SEE (2026-09-21). Headful was made
+        # the default so a human could look at the page, and then driver.quit()
+        # fired one line later, so the window flashed and died. Set CENSUS_HOLD
+        # to a number of seconds to actually look at it:
+        #   CENSUS_HOLD=20 .venv/bin/python connectors/botify.py --census --q X
+        # An env var on purpose: no signature, no argparse, no call site,
+        # nothing to thread wrong. The float parse owns its own failure so a
+        # typo cannot surface as "could not read cookies" from the outer try.
+        try:
+            hold = float(os.environ.get("CENSUS_HOLD") or 0)
+        except ValueError:
+            hold = 0.0
+        if hold:
+            import time
+            sys.stderr.write(f"  holding the window open {hold}s -- look at it\n")
+            time.sleep(hold)
     except Exception as exc:
         sys.stderr.write(
             f"Could not read cookies from {profile_path}: {exc}\n"
