@@ -1012,6 +1012,16 @@ def main():
                              'was WRONG -- the guard was looking for a cookie '
                              'name Botify does not use -- but headful is still '
                              'the lane weblogin and ?URL both prove.')
+    parser.add_argument('--param', action='append', default=None, metavar='K=V',
+                        help='CENSUS: an extra changelist querystring parameter '
+                             'the export inherits, repeatable. Example: '
+                             '--param category__exact=1. A wrong key changes '
+                             'nothing, so compare row counts to prove it took.')
+    parser.add_argument('--fields', default=None,
+                        help='CENSUS: comma-separated column names to export '
+                             '(default: every field the form offers). '
+                             '--fields id is the cheap full-pull dress '
+                             'rehearsal: the true row count, a fraction of the bytes.')
     args = parser.parse_args()
 
     if args.check:
