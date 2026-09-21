@@ -748,7 +748,7 @@ def census(q=None, profile_name="botify", fmt="json", out_dir=None, max_items=25
     import lxml.html
 
     url = f"{ADMIN_PROJECTS}/export/"
-    cookies = _admin_cookies(profile_name)
+    cookies = _admin_cookies(profile_name, headless=headless)
     with httpx.Client(cookies=cookies, timeout=300.0, follow_redirects=True) as client:
         page = client.get(url, params={"q": q} if q else None)
         if page.status_code != 200:
