@@ -1095,7 +1095,8 @@ def main():
                out_dir=args.out, max_items=args.max, headless=args.headless,
                params=dict(p.split("=", 1) for p in args.param or []),
                fields={f.strip() for f in args.fields.split(",") if f.strip()}
-               if args.fields else None)
+               if args.fields else None,
+               allow_full=args.all)
         return
 
     if args.query:
