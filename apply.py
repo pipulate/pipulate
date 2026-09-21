@@ -126,6 +126,20 @@ import subprocess
 # print has an UNTESTED negative branch. Before echoing one, name the world in
 # which it fires and check that the exit status actually reaches it.
 #
+# THE A11Y OUTLINE DESCRIBES THE HYDRATED DOM (convicted 2026-09-21). Four
+# probes in a row failed at one question -- what is the querystring parameter
+# behind the Has SW filter -- because the claim being tested came from an
+# accessibility semantic outline, and that outline is generated from the page
+# AFTER JavaScript runs. `source.html` is what the server sent. They are not
+# the same document. A <select> seen in the a11y outline is not evidence of a
+# <select> in source.html, and grepping source.html for it will return 0
+# forever, which reads as "the thing does not exist" when it means "you are
+# reading the wrong file."
+#
+# THE RULE: name the capture file every DOM claim came from. If the claim came
+# from accessibility_tree_summary.txt or from a screenshot, the probe that
+# tests it must run against hydrated_dom.html, never source.html.
+#
 # THE HALT BANNER (banked 2026-09-21, at the operator's instruction). Anything
 # the human must DO that is not one of the five cars will be missed. Not might
 # be. Will be. The five cars are myelinated; everything else is invisible.
