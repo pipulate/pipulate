@@ -750,7 +750,7 @@ def _admin_cookies(profile_name, headless=False):
 
 
 def census(q=None, profile_name="botify", fmt="json", out_dir=None, max_items=25,
-           headless=False, params=None, fields=None):
+           headless=False, params=None, fields=None, allow_full=False):
     """CENSUS: the whole project table, through the Django admin's export form.
 
     WHY THE ADMIN AT ALL (witnessed 2026-09-21): the API has no org-listing
