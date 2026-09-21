@@ -2240,6 +2240,10 @@ HONEYBOT_DB_PATH = "~/www/mikelev.in/honeybot.db"
 HONEYBOT_CACHE_FILE = CONFIG_DIR / "honeybot_stats.json"
 HONEYBOT_TTL_SECONDS = 6 * 3600
 HONEYBOT_TIMEOUT_SECONDS = 20
+# A READING HAS A SHAPE (2026-09-21): both awk tails print digits|digits, and
+# anything else -- a bare "|" from an END block run over empty input -- is a
+# failed pull wearing a value's clothes. Spaces around the bar are tolerated.
+_HONEYBOT_SHAPE = re.compile(r'\d+\s*\|\s*\d+(?:\.\d+)?')
 _HONEYBOT_PIPE = (
     f"ssh -o BatchMode=yes -o ConnectTimeout=5 {HONEYBOT_SSH_HOST} "
     f"'sqlite3 {HONEYBOT_DB_PATH}'"
@@ -2272,8 +2276,14 @@ def fetch_honeybot_stats() -> dict:
         except (OSError, ValueError, TypeError):
             cached = {}
     now = _time.time()
-    age = now - cached.get('fetched_epoch', 0)
-    if cached and 0 <= age < HONEYBOT_TTL_SECONDS:
+    # THE RETRY CLOCK IS THE LAST ATTEMPT, NOT THE LAST SUCCESS (2026-09-21).
+    # A failed pull used to overwrite a real reading with an empty one, so the
+    # negative cache the next compile honoured carried no metrics and the
+    # block lost its Honeybot lines inside the TTL. The attempt clock gates
+    # retries; the fetched clock stamps the reading; a failure advances only
+    # the first, so the bytes a dark stretch renders are the bytes before it.
+    since_attempt = now - cached.get('attempted_epoch', cached.get('fetched_epoch', 0))
+    if cached and 0 <= since_attempt < HONEYBOT_TTL_SECONDS:
         return cached
     metrics = {}
     for name, command in HONEYBOT_METRICS.items():
@@ -2284,24 +2294,38 @@ def fetch_honeybot_stats() -> dict:
                 timeout=HONEYBOT_TIMEOUT_SECONDS,
             )
             value = result.stdout.strip()
-            if result.returncode == 0 and value:
+            # THE EMPTY PIPE READ AS A READING (convicted 2026-09-21, blackout).
+            # With the host dark, ssh exits 255 and prints nothing, awk's END
+            # block still prints n "|" t with both unset, and the pipeline's
+            # exit is awk's 0 because there is no pipefail. A bare "|" passed
+            # the truthy test, ok read True, and the router was written as
+            # "DOM hydration:  trapdoor triggers from  non-local IPs" under a
+            # "fetched" stamp. The shape check below is the whole cure.
+            if result.returncode == 0 and _HONEYBOT_SHAPE.fullmatch(value):
                 metrics[name] = value
         except Exception:
             continue
-    fresh = {
-        'fetched_epoch': now,
-        'fetched_at': datetime.fromtimestamp(now, timezone.utc).strftime('%Y-%m-%dT%H:%MZ'),
-        'ok': bool(metrics),
-        'metrics': metrics,
-    }
+    if metrics:
+        fresh = {
+            'fetched_epoch': now, 'attempted_epoch': now,
+            'fetched_at': datetime.fromtimestamp(now, timezone.utc).strftime('%Y-%m-%dT%H:%MZ'),
+            'ok': True, 'metrics': metrics,
+        }
+    elif cached.get('metrics'):
+        # Stale-but-real beats silence: keep the reading and its own stamp,
+        # advance only the attempt clock, and say so on the console.
+        fresh = dict(cached)
+        fresh.update(attempted_epoch=now, ok=False)
+        logger.print(f"📡 Honeybot unreachable; the stats block keeps its "
+                     f"{cached.get('fetched_at', 'earlier')} reading.")
+    else:
+        fresh = {'fetched_epoch': 0, 'attempted_epoch': now, 'fetched_at': None,
+                 'ok': False, 'metrics': {}}
     try:
         HONEYBOT_CACHE_FILE.parent.mkdir(parents=True, exist_ok=True)
         HONEYBOT_CACHE_FILE.write_text(json.dumps(fresh, indent=2), encoding='utf-8')
     except OSError:
         pass
-    if not fresh['ok'] and cached.get('metrics'):
-        # Stale-but-real beats silence; the rendered timestamp says how stale.
-        return cached
     return fresh
 def render_honeybot_stat_lines() -> str:
     """Render telemetry as STATS comment lines, or '' on any failure."""
@@ -2356,6 +2380,18 @@ def update_stats_in_place():
             if f.endswith('.md') and f[:4].isdigit()
         ]
         count = len(posts)
+        # THE ZERO-ARTICLE GATE (convicted 2026-09-21, blackout, Mac). A Darwin
+        # shell points target 1 at an empty shadow corpus, so every Mac compile,
+        # cpr included, rewrote this TRACKED file to read zero articles; the
+        # next nix develop then refused to auto-update over local modifications
+        # the human never made, and one blast later the zeros were on origin.
+        # A corpus with no dated post has no reading to offer, so the committed
+        # block, written by the machine that holds the corpus, stands. A forker
+        # with a real blog still gets their own numbers. Placed before the
+        # Honeybot call on purpose: a Mac never opens an ssh it cannot complete.
+        if count == 0:
+            logger.print(f"📊 Stats block untouched: {blog_name} holds no dated posts; the committed reading stands.")
+            return
         # Velocity gauge: date-prefixed filenames sort as ISO strings,
         # so a plain string compare counts the trailing week for free.
         from datetime import date, timedelta
