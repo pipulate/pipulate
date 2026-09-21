@@ -669,6 +669,7 @@ def _admin_cookies(profile_name):
                 raise
             driver = launch(version_main=int(found.group(1)))
         driver.get(f"{ADMIN_PROJECTS}/")
+        landed = driver.current_url
         jar = {c["name"]: c["value"] for c in driver.get_cookies()}
     except Exception as exc:
         sys.stderr.write(
