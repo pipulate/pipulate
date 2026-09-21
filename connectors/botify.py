@@ -18,6 +18,8 @@ Golden-path modes, auto-detected from the single positional argument:
   python connectors/botify.py org/project/collections/crawl.<slug> --grep link   # FIND: every leaf path in one object matching
   python connectors/botify.py org/project/analysis --grep link   # the verdict, then every leaf in the detail matching
   python connectors/botify.py '<BQL or JSON>'    # FETCH: run a query (needs org/project coordinates)
+  python connectors/botify.py --census --q mikelev.in   # CENSUS: one row, to smoke the export door
+  python connectors/botify.py --census           # CENSUS: every project, via the Django admin export form
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 
