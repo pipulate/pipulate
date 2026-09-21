@@ -684,7 +684,20 @@ def _admin_cookies(profile_name, headless=False):
             except Exception:
                 pass
 
-    if "sessionid" not in jar:
+    # THE GUARD NAMED A COOKIE IT NEVER VERIFIED (convicted 2026-09-21, by the
+    # refusal written one turn earlier expressly to be readable). "sessionid"
+    # is Django's DEFAULT session cookie name. Botify sets SESSION_COOKIE_NAME,
+    # so the jar comes back carrying botify_sid and this guard refused a
+    # session that was working. The receipt that convicted it is the refusal's
+    # own first line: the load STAYED on app.botify.com/admin/projects/project/.
+    # An anonymous Django admin request REDIRECTS to a login page. It did not
+    # redirect. Both branches of that refusal were therefore wrong, because
+    # both assumed the NAME was right and only the world was in question.
+    # THE RULE: do not assert a vendor default you have never read. Test the
+    # thing you actually want. What is wanted is a warm admin page, so test
+    # that the load is still ON the admin and the jar is not empty, and let
+    # the export form's own presence downstream be the authentication verdict.
+    if not jar or "/admin/projects/project" not in landed:
         # THE REFUSAL MUST NAME WHAT IT SAW (convicted 2026-09-21, by the very
         # first smoke this guard ever fired on). The original line said only
         # "the warm has expired", so the operator re-ran weblogin, WATCHED IT
