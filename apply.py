@@ -15,6 +15,22 @@ import os
 import subprocess
 
 # ONE TIMELINE, NO PREVIEWS: every command in the response appears exactly once, in the section where it executes, in execution order -- PROBES (read-only) first, then PATCHES as numbered cars with any dependent actuator or ignition as the LAST cars, then PROMPT. A command that depends on a patch is never quoted above that patch, not as a preview, not "for later"; if it must be mentioned early, name it ("Car 3, the smoke") and show nothing.
+# NEXT CONTEXT IS THE WHOLE LIST (banked 2026-09-20, convicted the same day,
+# and banked HERE because this file rides the fixed tail of every ADHOC
+# compile while the constitution does not): the payload a model is reading is
+# the ONLY raw source it will ever be allowed to patch, and the operator
+# comments the 40K-foot block out on turn two. A file that "is already there"
+# this compile is gone next compile. Every file a next-turn car will patch is
+# named in full in NEXT CONTEXT -- one that rode this compile, one that rides
+# every compile, one the operator knows by heart -- because "already there"
+# is a claim about the past wearing the future's label. CONVICTION: a
+# three-car caboose said init.lua, flake.nix and index.html were already
+# there; the next payload carried mother_cat.py and none of them, and two
+# cars waited a turn for raw source the list had waved at. The cost is one
+# line per file. THE GROOVE THAT HOLDS: the checklist's own NEXT CONTEXT
+# clause in prompt_foo.py is the eventual home, read at the highest-attention
+# position of every full-frame compile; this comment is the second groove,
+# and a § key in foo_files.py the third.
 
 # THE SCREENSHOT IS NOT A LOCATOR (banked 2026-09-11, two exchanges lost).
 # Botify's Confluence pages for custom link attributes say "go to the project
