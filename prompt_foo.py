@@ -997,7 +997,16 @@ SECRET_TRIPWIRES = [
     r'-----BEGIN (?:RSA |EC |DSA |OPENSSH |PGP )?PRIVAT[E] KEY',   # PEM block
     r'\bAKI[A][0-9A-Z]{16}\b',                                     # AWS access key id
     r'\bGOCSPX[-][A-Za-z0-9_\-]{20,}',                             # Google OAuth client secret
-    r'\b\d{6,}-[a-z0-9]{32}\.apps\.googleuserconten[t]\.com\b',    # Google OAuth client id
+    # GOOGLE OAUTH CLIENT ID REMOVED (convicted 2026-09-22, and by this list's
+    # own doctrine). A client id is PUBLIC by design: it ships in browser
+    # JavaScript and rides in the query string of every consent redirect, which
+    # is precisely where these three hits came from -- a ?URL scrape of a Botify
+    # admin page that bounced through Google sign-in. Zero credentials, three
+    # hits, no --allow by design, lane bricked on the first authenticated
+    # capture it was built to protect. That is the always-fires shape the note
+    # above says empties this list. The SECRET is GOCSPX-, one line up, and it
+    # stays. REQUIRE THE VALUE, NOT THE NAME cuts both ways: a value anyone can
+    # read off a login page was never the value.
     r'\bgh[pousr]_[A-Za-z0-9]{36,}\b',                             # GitHub PAT family
     r'\bxox[baprs]-[A-Za-z0-9-]{10,}',                             # Slack
     r'\bsk-an[t]-[A-Za-z0-9_\-]{24,}',                             # Anthropic
