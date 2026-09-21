@@ -599,6 +599,207 @@ def run_query(client, raw_query, org, project, max_items):
 
 
 # ----------------------------------------------------------------------------
+# Census (the admin export door)
+# ----------------------------------------------------------------------------
+ADMIN_PROJECTS = "https://app.botify.com/admin/projects/project"
+
+# Cut from the SAMPLE ROW this prints, never from the file on disk. The file is
+# the corpus and keeps everything; stdout rides into a compiled payload, so the
+# columns that name a client are shown as <cut> there and nowhere else.
+CENSUS_CUT = ("project_links", "webproperty_link", "scope",
+              "subscription_details", "automated_export_target")
+
+
+def _admin_cookies(profile_name):
+    """Session cookies from weblogin's warmed uc profile: one launch, then done.
+
+    THE EXPORT IS AN ORDINARY FORM POST, so a browser is needed for exactly one
+    thing -- the sessionid weblogin parked in data/uc_profiles/<name>. No API
+    token is involved anywhere in this lane: BOTIFY_API_TOKEN read ABSENT on the
+    machine this was written for (probe, 2026-09-21) and the census works
+    regardless, which is the whole point. The token cannot enumerate; the cookie
+    can.
+    CHROME LOCKS THE PROFILE, so a window still open from weblogin makes this
+    fail, and the error says which door to close rather than leaving the
+    operator to guess at a selenium traceback.
+    """
+    import re
+    import undetected_chromedriver as uc
+
+    profile_path = project_root / "data" / "uc_profiles" / profile_name
+    if not profile_path.exists():
+        sys.stderr.write(
+            f"No warmed profile at {profile_path}.\n"
+            f"Run: weblogin --profile {profile_name} app.botify.com\n")
+        sys.exit(1)
+
+    browser_path = None
+    if sys.platform == "darwin":
+        for candidate in (
+            "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+            "/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary",
+        ):
+            if Path(candidate).exists():
+                browser_path = candidate
+                break
+
+    def launch(version_main=None):
+        options = uc.ChromeOptions()
+        options.add_argument("--headless=new")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        return uc.Chrome(options=options, user_data_dir=str(profile_path),
+                         browser_executable_path=browser_path,
+                         version_main=version_main)
+
+    driver = None
+    try:
+        try:
+            driver = launch()
+        except Exception as exc:
+            found = re.search(r"Current browser version is (\d+)", str(exc))
+            if not found:
+                raise
+            driver = launch(version_main=int(found.group(1)))
+        driver.get(f"{ADMIN_PROJECTS}/")
+        jar = {c["name"]: c["value"] for c in driver.get_cookies()}
+    except Exception as exc:
+        sys.stderr.write(
+            f"Could not read cookies from {profile_path}: {exc}\n"
+            "Close any Chrome window still open on that profile, then retry.\n")
+        sys.exit(1)
+    finally:
+        if driver is not None:
+            try:
+                driver.quit()
+            except Exception:
+                pass
+
+    if "sessionid" not in jar:
+        sys.stderr.write(
+            "That profile carries no sessionid -- the warm has expired.\n"
+            f"Re-run: weblogin --profile {profile_name} app.botify.com\n")
+        sys.exit(1)
+    return jar
+
+
+def census(q=None, profile_name="botify", fmt="json", out_dir=None, max_items=25):
+    """CENSUS: the whole project table, through the Django admin's export form.
+
+    WHY THE ADMIN AT ALL (witnessed 2026-09-21): the API has no org-listing
+    endpoint. 46 swagger paths, and both project endpoints are per-username, so
+    a token with across-all-client READ scope still cannot ENUMERATE. The admin
+    changelist is the only enumeration surface, django-import-export sits on top
+    of it, and its export form inherits the changelist's own querystring -- which
+    turns the 859-page pager nobody wrote into one POST.
+
+    NOTHING HERE IS HARDCODED FROM A GREP. The form is fetched and parsed every
+    run, so the checkbox names, the hidden `resource` value and the format select
+    are read off the live page. That matters: the 2026-09-21 receipt read 28
+    checkboxes named projectresource_<field> and a format select whose option
+    VALUES are numeric indexes (0-4), NOT format names. Matching the option LABEL
+    instead is why a version bump that renumbers them cannot silently export the
+    wrong format -- the failure this design exists to refuse.
+
+    TWO THINGS THIS DOES NOT KNOW, stated rather than assumed. Whether all 85,790
+    rows survive one synchronous request: hence --q, to smoke it on a single row
+    first, and a 300s timeout. And whether the Project Links column arrives as
+    anchor HTML or as flattened text: the file keeps whatever came, and the slug
+    parse is a later step that is deliberately not attempted here.
+    """
+    import lxml.html
+
+    url = f"{ADMIN_PROJECTS}/export/"
+    cookies = _admin_cookies(profile_name)
+    with httpx.Client(cookies=cookies, timeout=300.0, follow_redirects=True) as client:
+        page = client.get(url, params={"q": q} if q else None)
+        if page.status_code != 200:
+            sys.stderr.write(f"HTTP {page.status_code} for {url}\n{page.text[:300]}\n")
+            sys.exit(1)
+        doc = lxml.html.fromstring(page.text)
+        form = None
+        for candidate in doc.forms:
+            if candidate.xpath('.//select[@name="format"]'):
+                form = candidate
+                break
+        if form is None:
+            sys.stderr.write(
+                f"No export form at {page.url} -- a login wall, or the admin moved.\n"
+                f"Re-run: weblogin --profile {profile_name} app.botify.com\n")
+            sys.exit(1)
+
+        data, checkboxes = {}, 0
+        for el in form.xpath('.//input'):
+            name = el.get("name")
+            kind = (el.get("type") or "text").lower()
+            if not name or name == "select-all-toggle":
+                continue
+            if kind == "checkbox":
+                data[name] = el.get("value") or "on"
+                checkboxes += 1
+            elif kind in ("hidden", "text"):
+                data[name] = el.get("value") or ""
+
+        choices = [(o.get("value"), (o.text or "").strip())
+                   for o in form.xpath('.//select[@name="format"]//option')]
+        picked = next((v for v, label in choices if label.lower() == fmt.lower()), None)
+        if picked is None:
+            sys.stderr.write(f"Format {fmt!r} is not offered here. Options: {choices}\n")
+            sys.exit(1)
+        data["format"] = picked
+
+        action = form.get("action") or ""
+        post_url = str(httpx.URL(str(page.url)).join(action)) if action else str(page.url)
+        resp = client.post(post_url, data=data, headers={"Referer": str(page.url)})
+
+    if resp.status_code != 200:
+        sys.stderr.write(f"HTTP {resp.status_code} on the export POST\n{resp.text[:300]}\n")
+        sys.exit(1)
+    ctype = resp.headers.get("content-type", "")
+    if "text/html" in ctype and fmt.lower() != "html":
+        sys.stderr.write(
+            f"The export POST answered with HTML, not a file ({ctype}).\n"
+            "That is what a login wall looks like from here; re-run weblogin.\n")
+        sys.exit(1)
+
+    target = Path(out_dir) if out_dir else (project_root / "data" / "botify_census")
+    target.mkdir(parents=True, exist_ok=True)
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    path = target / f"projects-{stamp}.{fmt}"
+    path.write_bytes(resp.content)
+
+    print(f"# Botify project census -> {path}")
+    print(f"# {len(resp.content):,} bytes | {checkboxes} field(s) requested | "
+          f"format {fmt} (option value {picked!r}) | q={q!r}")
+    if fmt.lower() != "json":
+        print("\n# Non-JSON format: the file is on disk, no row summary attempted.")
+        return
+    try:
+        rows = json.loads(path.read_text(encoding="utf-8"))
+    except ValueError as exc:
+        print(f"\n# The body is not JSON ({exc}); the bytes are on disk regardless.")
+        return
+    if not isinstance(rows, list) or not rows or not isinstance(rows[0], dict):
+        print(f"\n# Unexpected JSON shape ({type(rows).__name__}); bytes are on disk.")
+        return
+    columns = list(rows[0])
+    print(f"\n## {len(rows):,} row(s), {len(columns)} column(s)")
+    print(", ".join(str(c) for c in columns))
+    for key in columns:
+        flat = str(key).strip().lower().replace(" ", "_")
+        if flat in ("has_sw", "has_pw"):
+            on = sum(1 for r in rows
+                     if str(r.get(key)).strip().lower() in ("true", "1", "yes"))
+            print(f"{key}: {on:,} of {len(rows):,}")
+    print("\n## one row (client identifiers cut)")
+    for key, value in list(rows[0].items())[:max_items]:
+        flat = str(key).strip().lower().replace(" ", "_")
+        shown = "<cut>" if any(m in flat for m in CENSUS_CUT) else str(value)[:120]
+        print(f"{key}: {shown}")
+    print(f"\n# The corpus is at {path} and nothing about it rides into a payload.")
+
+
+# ----------------------------------------------------------------------------
 # Health check (THE EXIT-CODE PROTOCOL: the exit code IS the whole answer)
 # ----------------------------------------------------------------------------
 def check():
