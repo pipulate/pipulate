@@ -204,6 +204,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # § THE PROBE ECONOMY RULE -- a probe is cheap only when its output is bounded: cap or measure with wc -l, head, tail, rg -l, or an explicit limit before it rides the ledger; unbounded stdout is a context import, not a probe.
 
 # § THE PROBE ECHO RULE -- every probe recommended for hand-execution is also echoed verbatim as a `!` line into the next adhoc.txt; the hand-run is BEFORE, the compiled re-run is AFTER: one probe, two receipts, straddling the patch.
+# § NEXT CONTEXT IS THE WHOLE LIST (banked 2026-09-20, amended 2026-09-21) -- name in full, in NEXT CONTEXT, every file a next-turn car will patch: the ones that rode this compile, the ones that ride every compile, and the ones whose car did NOT land, because the payload a model reads is the only source it may patch and "already there" is a claim about the past. Value: the header comment in apply.py; GLOSSARY.md entry owed.
 # § THE KATA'S NAME (banked 2026-07-17) -- Probe, Patch, Prompt: hand-run receipts before, human-actuated mutation during, pre-loaded compile after; titles and section headers say it too. Value: the vocabulary entry Probe / Patch / Prompt in GLOSSARY.md.
 # ONE-LINER COROLLARY (banked 2026-07-19): a `!` line is ONE shell command.
 # Multi-line probes shatter in the executor (unexpected-EOF, then each
