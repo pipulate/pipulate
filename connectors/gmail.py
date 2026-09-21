@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# scripts/gmail.py
+# connectors/gmail.py
 """
 gmail.py — Bring an email thread or a sender's threads into context.
 
@@ -7,18 +7,18 @@ A Unix-philosophy gateway to the Gmail API for Prompt Fu context.
 
 Two golden-path modes, auto-detected from the single positional argument:
 
-  python scripts/gmail.py user@domain.com   # LIST: recent threads involving them
-  python scripts/gmail.py <thread_id>       # FETCH: full clean transcript of a thread
+  python connectors/gmail.py user@domain.com   # LIST: recent threads involving them
+  python connectors/gmail.py <thread_id>       # FETCH: full clean transcript of a thread
 
 Designed to be dropped into foo_files.py as a `!` chisel-strike, e.g.:
 
-  ! python scripts/gmail.py michael.levin@botify.com
-  ! python scripts/gmail.py 18f4ad923b1c83e2
+  ! python connectors/gmail.py michael.levin@botify.com
+  ! python connectors/gmail.py 18f4ad923b1c83e2
 
 A subject search and a Gmail web thread URL are also accepted:
 
-  python scripts/gmail.py 'SM Store Locator upgrade'                      # SEARCH by subject
-  python scripts/gmail.py 'https://mail.google.com/mail/u/0/#all/<hexId>'  # FETCH via URL
+  python connectors/gmail.py 'SM Store Locator upgrade'                      # SEARCH by subject
+  python connectors/gmail.py 'https://mail.google.com/mail/u/0/#all/<hexId>'  # FETCH via URL
 
 Disambiguation rule (checked in this order): an argument starting with http(s)
 is a Gmail web URL (FETCH the hex thread id in its fragment; a legacy
@@ -129,7 +129,7 @@ def get_service():
         sys.stderr.write(
             "Gmail auth needs a one-time interactive login.\n"
             "Run this directly in your terminal first to mint the token:\n"
-            "    python scripts/gmail.py your-email@domain.com\n"
+            "    python connectors/gmail.py your-email@domain.com\n"
             "After that, the `!` invocation inside foo_files runs silently.\n"
         )
         sys.exit(1)
