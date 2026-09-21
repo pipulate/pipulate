@@ -824,6 +824,11 @@ def census(q=None, profile_name="botify", fmt="json", out_dir=None, max_items=25
         if page.status_code != 200:
             sys.stderr.write(f"HTTP {page.status_code} for {url}\n{page.text[:300]}\n")
             sys.exit(1)
+        # PROVEN-LIVE FILTER KEYS (receipts, 2026-09-21, against production):
+        #   category__exact=1  -- accepted, no ?e=1, returned mikelev.in
+        # Everything else is a guess until it has a receipt line here. The
+        # ?e=1 guard below is what makes guessing cheap: a wrong key refuses
+        # by name instead of silently exporting the unfiltered queryset.
         # A WRONG FILTER KEY MUST REFUSE, NOT WIDEN (guard written 2026-09-21,
         # before --param was ever used in anger). Django's ChangeList raises
         # IncorrectLookupParameters for any querystring key that is not a
