@@ -724,9 +724,9 @@ def _admin_cookies(profile_name, headless=False):
                 "weblogin and ?URL both use and both prove.\n")
         else:
             sys.stderr.write(
-                "  reading   : it stayed on app.botify.com and still handed "
-                "back no session cookie, so this launch could not read the "
-                "profile's cookie store.\n")
+                "  reading   : it stayed on botify.com but never reached the "
+                "admin changelist, so this session is not authenticated for "
+                "the admin, or the admin moved.\n")
         sys.stderr.write(
             f"  if truly cold: weblogin --profile {profile_name} app.botify.com\n")
         sys.exit(1)
