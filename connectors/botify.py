@@ -873,6 +873,22 @@ def main():
                         help='SELECT 1 health check: one GREEN line on stdout and '
                              'exit 0, or one gate-named RED line on stderr and '
                              'exit 1. Never interactive.')
+    parser.add_argument('--census', action='store_true',
+                        help='CENSUS: pull the project table through the Django '
+                             'admin export form on the warmed weblogin profile. '
+                             'Uses a session cookie, never BOTIFY_API_TOKEN.')
+    parser.add_argument('--q', default=None,
+                        help='CENSUS: the changelist search term the export '
+                             'inherits (project id/slug, username, SF account id, '
+                             'or activation website id).')
+    parser.add_argument('--profile', default='botify',
+                        help='CENSUS: uc profile under data/uc_profiles (default: botify).')
+    parser.add_argument('--format', default='json',
+                        help='CENSUS: export format, matched against the option '
+                             'labels the form itself renders (default: json).')
+    parser.add_argument('--out', default=None,
+                        help='CENSUS: directory for the corpus file '
+                             '(default: data/botify_census, which is gitignored).')
     args = parser.parse_args()
 
     if args.check:
