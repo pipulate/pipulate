@@ -617,7 +617,7 @@ CENSUS_CUT = ("project_links", "webproperty_link", "scope",
               "subscription_details", "automated_export_target")
 
 
-def _admin_cookies(profile_name):
+def _admin_cookies(profile_name, headless=False):
     """Session cookies from weblogin's warmed uc profile: one launch, then done.
 
     THE EXPORT IS AN ORDINARY FORM POST, so a browser is needed for exactly one
