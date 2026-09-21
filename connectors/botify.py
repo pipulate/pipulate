@@ -779,7 +779,18 @@ def census(q=None, profile_name="botify", fmt="json", out_dir=None, max_items=25
     url = f"{ADMIN_PROJECTS}/export/"
     cookies = _admin_cookies(profile_name, headless=headless)
     with httpx.Client(cookies=cookies, timeout=300.0, follow_redirects=True) as client:
-        page = client.get(url, params={"q": q} if q else None)
+        # THE EXPORT INHERITS THE CHANGELIST QUERYSTRING, so any changelist
+        # filter rides here as an ordinary parameter. `?q=` is proven by the
+        # export link's own href. `category__exact` is a registered list_filter
+        # witnessed in a Confluence URL (_changelist_filters=q%3D...%26
+        # category__exact%3D1) and is therefore a receipt, not a guess, but no
+        # OTHER filter key has been read off anything. That is why this is a
+        # passthrough and not a menu: a wrong key changes nothing, and the row
+        # count not moving is the receipt that it did not take.
+        query = dict(params or {})
+        if q:
+            query["q"] = q
+        page = client.get(url, params=query or None)
         if page.status_code != 200:
             sys.stderr.write(f"HTTP {page.status_code} for {url}\n{page.text[:300]}\n")
             sys.exit(1)
