@@ -869,9 +869,12 @@ def census(q=None, profile_name="botify", fmt="json", out_dir=None, max_items=25
     for key in columns:
         flat = str(key).strip().lower().replace(" ", "_")
         if flat in ("has_sw", "has_pw"):
-            on = sum(1 for r in rows
-                     if str(r.get(key)).strip().lower() in ("true", "1", "yes"))
-            print(f"{key}: {on:,} of {len(rows):,}")
+            vals = [str(r.get(key) if r.get(key) is not None else "").strip()
+                    for r in rows]
+            on = sum(1 for v in vals if v.lower() in ("true", "1", "yes"))
+            blank = sum(1 for v in vals if not v)
+            print(f"{key}: {on:,} true, {blank:,} blank, "
+                  f"{len(rows) - on - blank:,} other, of {len(rows):,}")
     print("\n## one row (client identifiers cut)")
     for key, value in list(rows[0].items())[:max_items]:
         flat = str(key).strip().lower().replace(" ", "_")
