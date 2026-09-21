@@ -831,6 +831,14 @@ def census(q=None, profile_name="botify", fmt="json", out_dir=None, max_items=25
             elif kind in ("hidden", "text"):
                 data[name] = el.get("value") or ""
 
+        if fields and not checkboxes:
+            sys.stderr.write(
+                f"--fields {sorted(fields)} matched none of the form's "
+                "checkboxes, so the POST would export zero columns.\n"
+                "Run once without --fields and read the column names off the "
+                "sample row.\n")
+            sys.exit(1)
+
         choices = [(o.get("value"), (o.text or "").strip())
                    for o in form.xpath('.//select[@name="format"]//option')]
         picked = next((v for v, label in choices if label.lower() == fmt.lower()), None)
