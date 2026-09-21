@@ -713,7 +713,7 @@ def _admin_cookies(profile_name, headless=False):
         # diagnosis and a value is a credential.
         host = urlparse(landed).netloc or "(unknown)"
         sys.stderr.write(
-            "No sessionid cookie after loading the admin.\n"
+            "The admin did not open a warm session.\n"
             f"  landed on : {landed}\n"
             f"  cookies   : {', '.join(sorted(jar)) or '(none)'}\n")
         if "botify.com" not in host:
