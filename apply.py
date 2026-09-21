@@ -125,6 +125,24 @@ import subprocess
 # AND THE GENERAL FORM: a probe whose fallback marker has never been SEEN to
 # print has an UNTESTED negative branch. Before echoing one, name the world in
 # which it fires and check that the exit status actually reaches it.
+#
+# THE HALT BANNER (banked 2026-09-21, at the operator's instruction). Anything
+# the human must DO that is not one of the five cars will be missed. Not might
+# be. Will be. The five cars are myelinated; everything else is invisible.
+# Prose does not work. A polite closing sentence does not work. Asking three
+# times does not work, and that is the exact failure this bans: three turns in
+# a row ending with "say the word and I will write those four facts", each one
+# unread, because each one was a sentence.
+# THE RULE, in two halves:
+#   1. IF IT IS NOT A CAR, DO NOT ASK. Turn the ask into a car, or into a
+#      paste-ready artifact the human can move without deciding anything, or
+#      just do it yourself if you have the hands.
+#   2. IF IT TRULY CANNOT BE A CAR, it gets a full-width ASCII HALT banner at
+#      the TOP of the reply. Plain speech. Imperative. One action per line.
+#      Peanut butter sandwich rules: "open the jar" beats "ensure the vessel
+#      is accessible". No Claude-speak inside the banner. No explanation
+#      inside the banner. The explanation goes after it, where skipping it
+#      costs nothing.
 # PROTOCOL MARKER AIRLOCK — the guard the 2026-07-26 player-piano.js incident
 # called for. apply.py speaks a grammar of bare delimiters: [[[SEARCH]]],
 # [[[DIVIDER]]], [[[REPLACE]]], [[[WRITE_FILE]]], [[[END_WRITE_FILE]]] (with 3-5
