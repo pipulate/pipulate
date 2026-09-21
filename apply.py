@@ -110,6 +110,21 @@ import subprocess
 # the question before reading a number off it, and spell switches long
 # (--no-filename, --only-matching) wherever a single letter has ever meant
 # help in some other tool.
+# THE PIPELINE ATE THE FALLBACK (convicted 2026-09-21, by a probe that could
+# not fail). `ls DIR 2>/dev/null | head -5 || echo no_dir` was echoed to report
+# a missing directory. It never could: `||` binds to the whole PIPELINE, and a
+# pipeline's exit status is its LAST command's, so head's 0 masks ls's 2 and
+# the fallback is UNREACHABLE CODE. The probe printed nothing in the world
+# where the directory was missing, and the reader saw a marker sitting right
+# there in the source and assumed it would have fired. Third sibling of AN EXIT
+# CODE IS A VERDICT ONLY FOR THE PATH THAT REACHES IT: there the dead branch
+# was inside a program, here it is inside the shell.
+# THE RULE: `||` after a pipe tests the PIPE, never the thing you care about.
+# Put the question in a test that owns its own exit -- `test -d DIR && ls DIR |
+# head -5 || echo no_dir` -- or make the program itself always print a verdict.
+# AND THE GENERAL FORM: a probe whose fallback marker has never been SEEN to
+# print has an UNTESTED negative branch. Before echoing one, name the world in
+# which it fires and check that the exit status actually reaches it.
 # PROTOCOL MARKER AIRLOCK — the guard the 2026-07-26 player-piano.js incident
 # called for. apply.py speaks a grammar of bare delimiters: [[[SEARCH]]],
 # [[[DIVIDER]]], [[[REPLACE]]], [[[WRITE_FILE]]], [[[END_WRITE_FILE]]] (with 3-5
