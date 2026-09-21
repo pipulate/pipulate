@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# scripts/confluence.py
+# connectors/confluence.py
 """
 confluence.py — Bring a Confluence space, page, or search hit into context.
 
@@ -7,16 +7,16 @@ A Unix-philosophy gateway to the Confluence API for Prompt Fu context.
 
 Golden-path modes, auto-detected from the single positional argument:
 
-  python scripts/confluence.py                  # LIST: all spaces you can see
-  python scripts/confluence.py SPACEKEY         # LIST: recently modified pages in that space
-  python scripts/confluence.py 123456789        # FETCH: full page text by numeric page ID
-  python scripts/confluence.py 'search words'   # SEARCH: CQL text search across pages
+  python connectors/confluence.py                  # LIST: all spaces you can see
+  python connectors/confluence.py SPACEKEY         # LIST: recently modified pages in that space
+  python connectors/confluence.py 123456789        # FETCH: full page text by numeric page ID
+  python connectors/confluence.py 'search words'   # SEARCH: CQL text search across pages
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 
-  ! python scripts/confluence.py
-  ! python scripts/confluence.py ENG
-  ! python scripts/confluence.py 123456789
+  ! python connectors/confluence.py
+  ! python connectors/confluence.py ENG
+  ! python connectors/confluence.py 123456789
 
 Disambiguation rule: an all-digit argument is a page ID (FETCH); an argument
 containing whitespace is a search (CQL text query); any other single token is
@@ -114,7 +114,7 @@ def list_spaces(client, base, max_items):
         return
     for s in results[:max_items]:
         print(f"{s.get('key', '?')}  {s.get('name', '')}")
-    print("\n# Next: python scripts/confluence.py <SPACEKEY>   (list recent pages)")
+    print("\n# Next: python connectors/confluence.py <SPACEKEY>   (list recent pages)")
 
 
 def list_space_pages(client, base, space_key, max_items):
@@ -129,7 +129,7 @@ def list_space_pages(client, base, space_key, max_items):
         return
     for p in results[:max_items]:
         print(f"{p.get('id', '?')}  {p.get('title', '')}")
-    print("\n# Next: python scripts/confluence.py <page_id>   (fetch full page text)")
+    print("\n# Next: python connectors/confluence.py <page_id>   (fetch full page text)")
 
 
 def fetch_page(client, base, page_id):
@@ -158,7 +158,7 @@ def search_pages(client, base, text, max_items):
         return
     for p in results[:max_items]:
         print(f"{p.get('id', '?')}  {p.get('title', '')}")
-    print("\n# Next: python scripts/confluence.py <page_id>   (fetch full page text)")
+    print("\n# Next: python connectors/confluence.py <page_id>   (fetch full page text)")
 
 
 # ----------------------------------------------------------------------------
