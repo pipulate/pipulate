@@ -1,0 +1,158 @@
+# AD HOC CHOP! The Not-Managed-by-Git Safe-for-Client-Data place. Insert Simpson Couch Gag in white space  below (explain anything to the audience you feel needs it explained)G
+# adhoc.txt    _   _   _               ____ _   _  ___  ____  _   
+#     / \   __| | | | | | ___   ___   / ___| | | |/ _ \|  _ \| |  Stop! Hammer time! U Can't Touch This. U Can't Stop This. Take that, Fate! Oh, is that what you call tempting Fate?
+# ahe/ _ \ / _` | | |_| |/ _ \ / __| | |   | |_| | | | | |_) | |  Let's see what Fable 5.1 is doing. Seems like just Mac edge case handling.
+# ahc ___ \ (_| | |  _  | (_) | (__  | |___|  _  | |_| |  __/|_|  
+#  /_/   \_\__,_| |_| |_|\___/ \___|  \____|_| |_|\___/|_|   (_)  
+
+# To Human: WELCOME TO VIM! It's really NeoVim but I say vim anyway.
+# To AI: This is an alternate 40K view to the big book-ore rolling pin spine.
+
+# 1. **Probe**: Baseline Reading
+# 2. **Context**: Post-experiment *planned* reading instructions
+# 3. **Patch**: The experiment and how to make it happen
+# 4. **Prompt**: Post-experiment instructions and how to read results
+# 5. **Deliverable**: How the world is forever different moving forward
+
+# The first thing you need to know here is that everything that comes after the
+# hash symbol (#) is commented out — and that's EVERYTHING in this file's default
+# state. Begin editing-in lines for inclusion as part of the context or adding
+# chunks of new context at the bottom. `Ctrl`+`v`, `j` (repeatedly), `l` (to move
+# right), `d` (to delete). Reverse that with `Ctrl`+`v`, `j` (repeatedly),
+# `Shift`+`i`, `# `, `Esc` to put the hashes back. You can just arrow-key around
+# here with `h`, `j`, `k`, `l`. Save-and-quit is a bit tricky because another
+# file is also loaded: `Esc`, `:`, `q`, `w`, `!`
+
+# If this is stressing you out and you're a quitter and want to quit, just type:
+# `Esc`, `:`, `q`, `!`, `Enter`. That will exit without saving any changes. If
+# you want to get over this hump, type: `Esc`, `:`, `T`, `u`, `t`, `o`, `r`, `Enter`.
+
+# This file is just to make it easy having options of what to edit into context.
+# You can use whatever text-file you want to stack file-names and commands to
+# build an output text-file with the identically stacked output of each file or
+# command. In this way we vertically append or "stack" a bunch of text; simple as
+# that. If you understand this concept, you're on your way to future-proofing
+# yourself in the Age of AI. Congratulations! Here is how to include web pages:
+
+#    !URL  --------------------------------------------------------------------
+#      when    Public page; what a stranger or crawler sees; the BEFORE of a
+#              login-wall diagnosis
+#      switch  It shows a login page -> `warm URL` once, then `?URL`
+#    
+#    ?URL  --------------------------------------------------------------------
+#      when    Anything behind a login, on the site's persistent profile;
+#              `check URL` first
+#      switch  The lenses show a shell (nav, an `[Iframe]` leaf, no content) ->
+#              read the wire truth for the XHR the frame makes, then call that
+#              API with a connector
+#    
+#    @URL  --------------------------------------------------------------------
+#      when    Every re-read of a page already scraped; no browser, no network
+#      switch  The cached page is stale or was a login wall -> fresh `!` or `?`
+#    
+#    $URL  --------------------------------------------------------------------
+#      when    Exact markup: meta tags, a JSON blob in a `<script>`
+#      note    Token-heavy; needs a prior scrape
+#    
+#    %URL  --------------------------------------------------------------------
+#      when    The network log distilled; SPA endpoint discovery
+#      switch  It re-serves the wire truth you already have -> the API
+#    
+#    ! cmd  -------------------------------------------------------------------
+#      when    Any bounded, non-interactive command as a live receipt
+#      note    Cap it with `-n`; no aliases, no prompts
+#    
+#    Connector  ---------------------------------------------------------------
+#      when    The number you want is one GET away
+#      switch  LIST until the thing isn't in the list -> FETCH by id -> DRILL
+#              the path the app's own frame called -> `--grep` to narrow a list
+#              or find a leaf
+
+# Every step is one argument longer than the last; the moment a lens shows less than the wire does is the moment to stop scraping.
+
+# FOR 40K-FT VIEW (STORY & INFRASTRUCTURE) !!
+# --- START EDITING-IN ON 1ST TURN ---
+
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- ROLLING PIN that gives the 40K foot book-spine view of book-ore (only works for me because of local-only git repo)
+# ~/repos/nixos/autognome.py  # <-- You wake up in the morning and your Tooling & Instrumentation folds out of you like Inspector Gadget.
+# init.lua                    # <-- Those gadgets are made easy-to-use through nifty keyboard shortcuts (but ya gotta learn vim).
+# GLOSSARY.md                 # <-- Like the back of a J.R.R. Tolkien book, there's kooky new terms to know.
+# flake.nix                   # <-- Here is my hardware. Here is my state. Put on your sandbox. And please recreate. (Infrastructure as Code / IaC)
+# assets/installer/install.sh # <-- Pipulate.com installer real home in github/pipulate repo
+# prompt_foo.py               # <-- THIS system
+# foo_files.py                # <-- main ROUTER
+# requirements.in             # <-- We've "pinned" everything but still want a flexible Python Data Science virtualenv.
+# pyproject.toml              # <-- How this is a citizen of the Python "pip install" ecosystem
+# __init__.py                 # <-- Version info
+
+# --- END EDITING-IN ON 1ST TURN ---
+
+# scripts/articles/lsa.py     # <-- 2ND BRAIN: Search external memory with `rgx`, `rgxc` & `posts` Blogging for Hackers Jekyll-compatible.
+
+# OPTIONAL ACTUATORS (cheap and good to include to expand the AI's capabilities)
+# cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
+# scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
+# scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
+# scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
+# scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
+# scripts/webclip_2_markdown.py  # <-- Surprisingly important program.
+ 
+# MISCELLANEOUS (rare to include but sometimes critical)
+# scripts/foo_cartridge.py    # Needs description
+# scripts/foo_replay.py       # Needs description
+# release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
+# imports/voice_synthesis.py  # <-- The wand can talk to you
+# imports/ascii_displays.py   # <-- Where all the ASCII Art lives
+# scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
+
+#                         --- Under this line is were you paste what the AI gives you ---
+#                         --- We call it context but it's really just the right-hand  ---
+#                         --- blast-radius of the "probes" to make this all science.  ---
+
+# Carry-over as the important work-in-progress parts of the project here just
+# like above but not as long-standing overarching to the framework but rather
+# for the current hot spots actively being worked on.
+
+# --- START THIS DISCUSSION ---
+
+# Get things started here! Guess at what context should be included.
+# If you get it wrong, you're just wasting 1-turn because the AI will help.
+# Un-comment lines, add lines with absolute-path filenames or `! ` commands. 
+
+# Context 1 (Edit-in selections from above and add new files immediately below)
+# scripts/sources_menu.py          # <-- what `conn` prints.
+# connectors/README.md     # <-- the contract, the wallet, and the six auth kinds every new connector copies one of
+# connectors/wallet.py     # <-- Connect your accounts, or any site by URL; see what's live.
+# connectors/botify.py     # <-- Bring Botify crawl data and BQL query results into context.
+# connectors/confluence.py # <-- Bring a Confluence space, page, or search hit into context.
+# connectors/gmail.py      # <-- Bring an email thread or a sender's threads into context.
+# connectors/gsc.py        # <-- Bring Search Console properties or top queries into context.
+# connectors/jira.py       # <-- List your open Jira tickets, or fetch one by key.
+# connectors/sheets.py     # <-- Bring a Google Sheet's tabs and cell data into context.
+# connectors/slack.py      # <-- Bring a Slack channel or message thread into context.
+# connectors/mcp.py        # <-- Replay client for remote MCP servers (Streamable HTTP transport).
+# connectors/mcp_warm.py  # <-- Mint the OAuth bearer token a remote MCP server asks for.
+# connectors/noop.py      # <-- The honest non-operative connector: one positional, prints what it received, exits 0; what public_walk.yaml names at every stop, because a plan must name something that RUNS
+# scripts/mcp_dummy_server.py     # <-- The fault harness behind mcp.py (20/20 against the unmodified client); it shares mcp.py's spec reading, so its agreement is a tautology, never a vendor witness
+
+# Context 2
+# --- THE MAC'S FIRST TRAIN: connector roots, breadcrumbs, harness; the stats writer for the next car ---
+# prompt_foo.py
+# foo_files.py
+# ! git status --porcelain
+# ! grep -c 'NEXT CONTEXT IS THE WHOLE LIST' apply.py
+# ! grep -c 'scripts/confluence.py' connectors/confluence.py; grep -c 'scripts/gmail.py' connectors/gmail.py
+# ! grep -c 'connectors/confluence.py' connectors/confluence.py; grep -c 'connectors/gmail.py' connectors/gmail.py
+# ! env -u PIPULATE_ROOT .venv/bin/python -c "import sys; sys.path.insert(0, 'connectors'); import botify, wallet, mcp; print('botify', botify.project_root); print('wallet', wallet.REPO_ROOT); print('mcp', mcp._REPO_ROOT)"
+# ! .venv/bin/python scripts/mcp_dummy_server.py --selftest 2>&1 | grep -E 'ABORT|checks passed' || echo no_verdict_line
+# ! test -f "$HOME/.config/pipulate/pii_substitutions.txt"; echo pii_substitutions_exit=$?
+
+# Context 3
+git status --porcelain
+grep -c 'NEXT CONTEXT IS THE WHOLE LIST' apply.py
+grep -c '^# There are 1,490 already-written' foo_files.py
+grep -c '_HONEYBOT_SHAPE' prompt_foo.py; grep -c 'Stats block untouched' prompt_foo.py
+cat "$HOME/.config/pipulate/honeybot_stats.json"
+git -C "$HOME/repos/pipulate" log --oneline origin/main..HEAD | head -12
+git -C "$HOME/repos/pipulate" status --porcelain | head -5
+.venv/bin/python scripts/mcp_dummy_server.py --selftest 2>&1 | grep -E 'ABORT|checks passed' || echo no_verdict_line
