@@ -75,7 +75,8 @@ from pathlib import Path
 PROTOCOL_VERSION = "2025-06-18"
 SESSION_HEADER = "Mcp-Session-Id"
 SERVER_INFO = {"name": "pipulate-mcp-faultharness", "version": "1.0"}
-CLIENT = Path(__file__).resolve().parent / "connectors" / "mcp.py"
+# The client moved to the repo root with connectors/; two parents reach it (2026-09-21).
+CLIENT = Path(__file__).resolve().parent.parent / "connectors" / "mcp.py"
 LINE_CAP = 104  # THE PROBE ECONOMY RULE: bounded rows, always
 
 BASE_CONFIG = {
