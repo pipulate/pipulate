@@ -87,7 +87,11 @@ TIMEOUT = 30.0
 # territory, same as every other capture lane in this repo.
 # ---------------------------------------------------------------------------
 RECEIPT_FRAME = "mcp-receipt-v1"
-_REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+# Two parents since connectors/ moved to the repo root. Three reached $HOME
+# and parked every FDR receipt under the home directory's browser_cache
+# instead of the repo's gitignored one (INFERRED from the first Mac compile
+# after the move; the root probe is the witness).
+_REPO_ROOT = Path(__file__).resolve().parent.parent
 _EXCHANGES = []
 _RECEIPT_META = {}
 

@@ -104,9 +104,11 @@ DOTENV_PATH = Path(os.environ.get('PIPULATE_DOTENV') or
 
 # Repo root anchors browser_session profiles (data/uc_profiles/<name>), the
 # SAME directory weblogin.py writes. weblogin honors PIPULATE_ROOT then falls
-# back to its own parent.parent; wallet.py lives one level deeper
-# (connectors/), so parents[2] is the repo root. Keep in sync.
-REPO_ROOT = Path(os.environ.get('PIPULATE_ROOT') or Path(__file__).resolve().parents[2])
+# back to its own parent.parent; wallet.py lives at the same depth, in
+# connectors/ beside scripts/, so parents[1] is the repo root. parents[2]
+# reached $HOME after the move out of scripts/connectors/ and was masked
+# inside the shell by PIPULATE_ROOT. Keep in sync.
+REPO_ROOT = Path(os.environ.get('PIPULATE_ROOT') or Path(__file__).resolve().parents[1])
 
 # Auth kinds — these strings MUST match connectors.json exactly.
 _OAUTH_KIND = 'oauth_token_file'       # mint + auto-refresh (gmail, sheets)
