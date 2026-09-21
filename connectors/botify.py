@@ -1077,6 +1077,10 @@ def main():
                              '(default: every field the form offers). '
                              '--fields id is the cheap full-pull dress '
                              'rehearsal: the true row count, a fraction of the bytes.')
+    parser.add_argument('--all', action='store_true',
+                        help='CENSUS: allow an export with no --q and no '
+                             '--param. OFF by default because that exact call '
+                             'answered 502 from nginx on 2026-09-21.')
     args = parser.parse_args()
 
     if args.check:
