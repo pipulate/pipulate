@@ -652,7 +652,8 @@ def _admin_cookies(profile_name, headless=False):
 
     def launch(version_main=None):
         options = uc.ChromeOptions()
-        options.add_argument("--headless=new")
+        if headless:
+            options.add_argument("--headless=new")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         return uc.Chrome(options=options, user_data_dir=str(profile_path),
