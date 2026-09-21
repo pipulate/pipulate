@@ -894,6 +894,11 @@ def main():
     if args.check:
         sys.exit(check())
 
+    if args.census:
+        census(q=args.q, profile_name=args.profile, fmt=args.format,
+               out_dir=args.out, max_items=args.max)
+        return
+
     if args.query:
         args.query = normalize_query(args.query.strip())
 
