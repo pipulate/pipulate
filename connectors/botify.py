@@ -684,9 +684,37 @@ def _admin_cookies(profile_name):
                 pass
 
     if "sessionid" not in jar:
+        # THE REFUSAL MUST NAME WHAT IT SAW (convicted 2026-09-21, by the very
+        # first smoke this guard ever fired on). The original line said only
+        # "the warm has expired", so the operator re-ran weblogin, WATCHED IT
+        # COME UP ALREADY LOGGED IN, ran the census again, and got the identical
+        # sentence. One message for two different worlds: a genuinely cold
+        # profile, and a warm profile whose session THIS LAUNCH could not see.
+        # THE DISCRIMINATION QUESTION failing inside a guard's own error text,
+        # which is the shape this repo keeps convicting everywhere else.
+        # The LANDING URL separates them. A bounce off app.botify.com is a
+        # session that did not restore; staying on app.botify.com with no
+        # sessionid is a cookie store this launch could not read. The cookie
+        # NAMES say which jar came back. Names only, never values: a name is a
+        # diagnosis and a value is a credential.
+        host = urlparse(landed).netloc or "(unknown)"
         sys.stderr.write(
-            "That profile carries no sessionid -- the warm has expired.\n"
-            f"Re-run: weblogin --profile {profile_name} app.botify.com\n")
+            "No sessionid cookie after loading the admin.\n"
+            f"  landed on : {landed}\n"
+            f"  cookies   : {', '.join(sorted(jar)) or '(none)'}\n")
+        if "botify.com" not in host:
+            sys.stderr.write(
+                "  reading   : the load bounced OFF app.botify.com, so the "
+                "session did not restore in this launch.\n"
+                "              Retry WITHOUT --headless; headful is the lane "
+                "weblogin and ?URL both use and both prove.\n")
+        else:
+            sys.stderr.write(
+                "  reading   : it stayed on app.botify.com and still handed "
+                "back no session cookie, so this launch could not read the "
+                "profile's cookie store.\n")
+        sys.stderr.write(
+            f"  if truly cold: weblogin --profile {profile_name} app.botify.com\n")
         sys.exit(1)
     return jar
 
