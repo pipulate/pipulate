@@ -895,9 +895,19 @@ def census(q=None, profile_name="botify", fmt="json", out_dir=None, max_items=25
     # unproven, so it now prints the blanks beside the trues instead of hiding
     # them inside a denominator. THE DISCRIMINATING TEST is a row known to
     # carry SpeedWorkers: --q Z9UNVX, carrefour-espana, Has SW True on the
-    # changelist. True there means empty means no, and the corpus filter is
-    # simply has_sw == "True". Empty there means these four columns are dead
-    # in the export and the whole SpeedWorkers filter needs another source.
+    # changelist. THE TEST RAN AND THE COLUMNS LOST: project 56555 exported
+    # has_sw BLANK, identical to the DEMO project that has no SpeedWorkers at
+    # all. Two rows, one of them known True, both blank. These four columns
+    # are DEAD in the export. In those same two rows has_segmentation and
+    # has_la both moved False to True, so booleans are not broken generally;
+    # these four are. Probably list_display methods the Resource declares but
+    # cannot resolve, serializing as empty rather than raising -- labelled
+    # inference, because the receipt is only the two blanks.
+    # WHAT REPLACES THEM IS THE FILTER, NOT THE COLUMN. Has SW is a registered
+    # changelist list_filter and the export inherits the changelist QUERYSET,
+    # so a filtered export returns only SpeedWorkers rows whether or not the
+    # column admits it. Naming that filter's querystring parameter is now the
+    # one blocking question, and --param is how it gets sent.
     for key in columns:
         flat = str(key).strip().lower().replace(" ", "_")
         if flat in ("has_sw", "has_pw"):
