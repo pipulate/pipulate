@@ -1028,8 +1028,15 @@ def main():
         sys.exit(check())
 
     if args.census:
+        bad = [p for p in (args.param or []) if "=" not in p]
+        if bad:
+            sys.stderr.write(f"--param needs K=V form, got: {bad}\n")
+            sys.exit(1)
         census(q=args.q, profile_name=args.profile, fmt=args.format,
-               out_dir=args.out, max_items=args.max, headless=args.headless)
+               out_dir=args.out, max_items=args.max, headless=args.headless,
+               params=dict(p.split("=", 1) for p in args.param or []),
+               fields={f.strip() for f in args.fields.split(",") if f.strip()}
+               if args.fields else None)
         return
 
     if args.query:
