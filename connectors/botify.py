@@ -927,6 +927,11 @@ def main():
     parser.add_argument('--out', default=None,
                         help='CENSUS: directory for the corpus file '
                              '(default: data/botify_census, which is gitignored).')
+    parser.add_argument('--headless', action='store_true',
+                        help='CENSUS: run the cookie-harvest browser headless. '
+                             'OFF by default: the first smoke got no sessionid '
+                             'headless, and headful is the lane weblogin and '
+                             '?URL both use and both prove.')
     args = parser.parse_args()
 
     if args.check:
