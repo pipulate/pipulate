@@ -57,10 +57,13 @@ from datetime import datetime, timedelta, timezone
 import httpx
 
 # Wire into the central config (same pattern as scripts/ai.py).
-# NOTE: connectors/ is one level deeper than scripts/, hence three parents.
+# NOTE: connectors/ sits at the repo root, beside scripts/, since the move
+# out of scripts/connectors/ -- hence TWO parents. Three reached $HOME, read
+# off the first Mac compile after the move; the import survived only because
+# the editable install also exposes `config`.
 # The editable install also exposes `config`, but the explicit path keeps
 # this file honest as a standalone, curl-able artifact.
-project_root = Path(__file__).resolve().parent.parent.parent
+project_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(project_root))
 from config import get_botify_token
 
