@@ -824,6 +824,21 @@ def census(q=None, profile_name="botify", fmt="json", out_dir=None, max_items=25
         if page.status_code != 200:
             sys.stderr.write(f"HTTP {page.status_code} for {url}\n{page.text[:300]}\n")
             sys.exit(1)
+        # A WRONG FILTER KEY MUST REFUSE, NOT WIDEN (guard written 2026-09-21,
+        # before --param was ever used in anger). Django's ChangeList raises
+        # IncorrectLookupParameters for any querystring key that is not a
+        # registered list_filter, and the admin catches it and REDIRECTS to
+        # ?e=1 -- which is a 200, renders the export form, and would export the
+        # UNFILTERED queryset. A typo would therefore become the 502 above, or
+        # worse, a quietly complete export wearing a filter's label. The
+        # redirect is visible in page.url and nowhere else, so read it.
+        if "e=1" in str(page.url):
+            sys.stderr.write(
+                f"The admin rejected a querystring parameter: {page.url}\n"
+                "  Django redirects to ?e=1 when a key is not a registered\n"
+                "  list_filter, so one of these is not a real filter name:\n"
+                f"  {sorted(query)}\n")
+            sys.exit(1)
         doc = lxml.html.fromstring(page.text)
         form = None
         for candidate in doc.forms:
