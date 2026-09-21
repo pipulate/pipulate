@@ -768,11 +768,19 @@ def census(q=None, profile_name="botify", fmt="json", out_dir=None, max_items=25
     instead is why a version bump that renumbers them cannot silently export the
     wrong format -- the failure this design exists to refuse.
 
-    TWO THINGS THIS DOES NOT KNOW, stated rather than assumed. Whether all 85,790
-    rows survive one synchronous request: hence --q, to smoke it on a single row
-    first, and a 300s timeout. And whether the Project Links column arrives as
-    anchor HTML or as flattened text: the file keeps whatever came, and the slug
-    parse is a later step that is deliberately not attempted here.
+    BOTH OF THE THINGS THIS DID NOT KNOW ARE NOW ANSWERED (2026-09-21), and
+    both answers are receipts rather than inferences.
+    ROWS: 85,790 do NOT survive one synchronous request. The unfiltered pull
+    answered 502 from nginx, so the guard at the top of this function refuses
+    that call and the corpus gets assembled from filtered slices instead.
+    PROJECT LINKS: it arrives as FLATTENED TEXT and carries nothing but
+    "<org-slug>/<project-slug>" -- mikelev.in's row read
+    'michaellevin-org/mikelev.in'. The changelist CELL renders five anchors
+    (org, project, current settings, Botify Team, SF account id); the EXPORT
+    cell keeps only the pair. So the parse is one split on "/", the admin
+    project id is the separate `id` column, and the projectsettings id is not
+    in the export at all -- which is a relief, since that is the page
+    apply.py convicts for sealing credentials into a payload.
     """
     import lxml.html
 
