@@ -852,6 +852,20 @@ def census(q=None, profile_name="botify", fmt="json", out_dir=None, max_items=25
     columns = list(rows[0])
     print(f"\n## {len(rows):,} row(s), {len(columns)} column(s)")
     print(", ".join(str(c) for c in columns))
+    # THE EMPTY BOOLEAN (witnessed 2026-09-21, the first successful export).
+    # The columns arrive as snake_case FIELD names, not verbose labels, so this
+    # counter fires and no later join needs a name map. But has_sw, has_pw,
+    # has_smartcontent and has_smartlink all came back EMPTY on a row where
+    # has_la read False and has_rk/ab/ap/ea read True. Empty is not False and
+    # it is not None; it is a third thing, and ONE ROW CANNOT TELL "absent
+    # means no" from "this column is broken in the export". The counter below
+    # scores empty as not-true, which is arithmetically right and semantically
+    # unproven, so it now prints the blanks beside the trues instead of hiding
+    # them inside a denominator. THE DISCRIMINATING TEST is a row known to
+    # carry SpeedWorkers: --q Z9UNVX, carrefour-espana, Has SW True on the
+    # changelist. True there means empty means no, and the corpus filter is
+    # simply has_sw == "True". Empty there means these four columns are dead
+    # in the export and the whole SpeedWorkers filter needs another source.
     for key in columns:
         flat = str(key).strip().lower().replace(" ", "_")
         if flat in ("has_sw", "has_pw"):
