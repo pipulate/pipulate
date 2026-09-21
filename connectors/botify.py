@@ -784,6 +784,28 @@ def census(q=None, profile_name="botify", fmt="json", out_dir=None, max_items=25
     """
     import lxml.html
 
+    # THE UNBOUNDED EXPORT IS A 502 (convicted 2026-09-21, against production).
+    # `--census --fields id`, no q and no filter, answered "502 Bad Gateway /
+    # nginx". Not our own 300s timeout, which would have raised on this side:
+    # nginx reporting that the upstream Django worker died or blew its own
+    # gateway limit. ONE SYNCHRONOUS REQUEST DOES NOT CARRY 85,790 ROWS, and
+    # narrowing the COLUMNS cannot save it, because --fields narrows what is
+    # SERIALIZED and never what is EVALUATED. The queryset is the cost. That
+    # is exactly what the id-only dress rehearsal was built to measure, and
+    # the measurement came back no.
+    # THIS GUARD EXISTS BECAUSE THAT 502 LANDED ON SOMEONE ELSE'S PRODUCTION.
+    # An unbounded pull is opt-in from here on, so it cannot be one keystroke
+    # away by accident, and the refusal names the only two axes that narrow it.
+    if not q and not params and not allow_full:
+        sys.stderr.write(
+            "Refusing an unfiltered export of the whole project table.\n"
+            "  why  : this exact call answered 502 Bad Gateway from nginx on "
+            "2026-09-21; one request does not survive 85,790 rows.\n"
+            "  fix  : scope it with --q <term>, or narrow it with "
+            "--param <filter>=<value>.\n"
+            "  force: --all, to try the whole table anyway.\n")
+        sys.exit(1)
+
     url = f"{ADMIN_PROJECTS}/export/"
     cookies = _admin_cookies(profile_name, headless=headless)
     with httpx.Client(cookies=cookies, timeout=300.0, follow_redirects=True) as client:
