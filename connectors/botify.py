@@ -854,6 +854,13 @@ def census(q=None, profile_name="botify", fmt="json", out_dir=None, max_items=25
         # times that queryset, which is what the 502 was. 67.7s also sits
         # close to whatever gateway limit killed it, so a slice that adds
         # per-row related lookups can still die.
+        # THE SECOND MEASUREMENT WAS INTERRUPTED, NOT REFUSED (2026-09-22).
+        # The same slice with --fields id,project_links was still alive at 159s
+        # when the operator killed it: no 502, no timeout, and `time` read user
+        # 0m0.567s, so the entire wait was server-side. 2m39s therefore proves
+        # only that this call costs MORE than 67.7s. It is an open measurement,
+        # not a ceiling, and the next run of it must be allowed to finish or to
+        # time out on its own.
         # A WRONG FILTER KEY MUST REFUSE, NOT WIDEN (guard written 2026-09-21,
         # before --param was ever used in anger). Django's ChangeList raises
         # IncorrectLookupParameters for any querystring key that is not a
