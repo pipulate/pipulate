@@ -126,6 +126,22 @@ import subprocess
 # print has an UNTESTED negative branch. Before echoing one, name the world in
 # which it fires and check that the exit status actually reaches it.
 #
+# THE WRAPPER IS NOT THE MEASUREMENT (convicted 2026-09-22, by a receipt that
+# disagreed with itself and was right twice). `time` on a census run read
+# real 8m3.689s, while the program's OWN stopwatch, added the same turn, read
+# "export POST returned in 123.6s". Both numbers are true. The six minutes
+# between them were undetected-chromedriver launching a headful Chrome over
+# cafe wifi to harvest one session cookie. Reading the shell's `real` as the
+# cost of the export would have overstated it FOURFOLD and sent the next turn
+# optimizing the wrong half of the program.
+# THE RULE: `time <program>` measures the PROGRAM, never the step inside it
+# that the question is about. When a command has an expensive setup phase --
+# a browser launch, an auth handshake, an index build, a model load -- the
+# step under test carries its own stopwatch and prints it, and the wrapper's
+# number is read as the total rather than as the answer. Two clocks that
+# disagree are not a contradiction. The gap between them IS the setup cost,
+# and it is more often the larger one than anybody expects.
+#
 # THE A11Y OUTLINE DESCRIBES THE HYDRATED DOM (convicted 2026-09-21). Four
 # probes in a row failed at one question -- what is the querystring parameter
 # behind the Has SW filter -- because the claim being tested came from an
