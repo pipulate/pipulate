@@ -826,9 +826,25 @@ def census(q=None, profile_name="botify", fmt="json", out_dir=None, max_items=25
             sys.exit(1)
         # PROVEN-LIVE FILTER KEYS (receipts, 2026-09-21, against production):
         #   category__exact=1  -- accepted, no ?e=1, returned mikelev.in
-        # Everything else is a guess until it has a receipt line here. The
-        # ?e=1 guard below is what makes guessing cheap: a wrong key refuses
-        # by name instead of silently exporting the unfiltered queryset.
+        # Everything else is a guess, and THE 500 IS THE OTHER OUTCOME
+        # (convicted 2026-09-21, one turn after the ?e=1 guard was written).
+        # Four guessed keys -- has_sw__exact, has_pw__exact,
+        # has_speedworkers__exact, speedworkers__isnull -- did NOT redirect to
+        # ?e=1. Every one answered HTTP 500 with Botify's own error page on
+        # the GET. The changelist catches IncorrectLookupParameters and
+        # redirects; THIS view, django-import-export's export, does not, and
+        # an unregistered key reaches the ORM and dies there.
+        # THE CORRECTION: the ?e=1 guard makes a wrong key VISIBLE, never
+        # cheap. Each guess costs a 500 on someone else's production. Do not
+        # brute-force filter names. A key gets tried only after it has been
+        # READ off a live page, and the Has SW filter is an ARIA widget with
+        # no name attribute in source.html OR hydrated_dom.html, so no such
+        # reading exists.
+        # MEASURED CEILING (2026-09-21): category__exact=1, --fields id, no q
+        # -- 10,880 rows in 67.7s wall. The unbounded pull is about eight
+        # times that queryset, which is what the 502 was. 67.7s also sits
+        # close to whatever gateway limit killed it, so a slice that adds
+        # per-row related lookups can still die.
         # A WRONG FILTER KEY MUST REFUSE, NOT WIDEN (guard written 2026-09-21,
         # before --param was ever used in anger). Django's ChangeList raises
         # IncorrectLookupParameters for any querystring key that is not a
