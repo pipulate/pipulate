@@ -773,6 +773,15 @@ def census(q=None, profile_name="botify", fmt="json", out_dir=None, max_items=25
     ROWS: 85,790 do NOT survive one synchronous request. The unfiltered pull
     answered 502 from nginx, so the guard at the top of this function refuses
     that call and the corpus gets assembled from filtered slices instead.
+    THE SLICE THAT WORKS is category__exact, measured rather than hoped:
+    category 1 (Web Property) returned 10,880 rows of one column in 67.7
+    seconds. That is the SpeedWorkers candidate pool, not the SpeedWorkers
+    list -- Web Property is a project TYPE and SpeedWorkers is some subset of
+    it. But since SpeedWorkers only lives in Web Property, the Has SW
+    changelist filter, whose parameter five instruments failed to name, is an
+    optimization nobody needs rather than a blocker. Membership comes from
+    somewhere else: the FTL admin lists SpeedWorkers sites on one page, or
+    botify_config returns has_speedworkers at one GET per project.
     PROJECT LINKS: it arrives as FLATTENED TEXT and carries nothing but
     "<org-slug>/<project-slug>" -- mikelev.in's row read
     'michaellevin-org/mikelev.in'. The changelist CELL renders five anchors
