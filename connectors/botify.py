@@ -618,6 +618,25 @@ CENSUS_CUT = ("project_links", "webproperty_link", "scope",
 
 
 def _admin_cookies(profile_name, headless=False):
+    # THE WRAPPER IS NOT THE MEASUREMENT. The export POST prints its own
+    # elapsed; this half did not, so 6 minutes of headful Chrome hid inside
+    # a shell `real` and got misread as export cost. Second clock, same rule.
+    import time as _t
+    _t0 = _t.monotonic()
+    sys.stderr.write(
+        f"  harvesting the admin cookie: profile={profile_name!r}, "
+        f"headless={headless}\n"
+        "  undetected-chromedriver launches a real Chrome. On cafe wifi this\n"
+        "  took about 6 minutes on 2026-09-22. It is SETUP, not the export.\n"
+        "  LET IT RUN.\n")
+    try:
+        return _admin_cookies_inner(profile_name, headless=headless)
+    finally:
+        sys.stderr.write(
+            f"  cookie harvest finished in {_t.monotonic() - _t0:.1f}s\n")
+
+
+def _admin_cookies_inner(profile_name, headless=False):
     """Session cookies from weblogin's warmed uc profile: one launch, then done.
 
     THE EXPORT IS AN ORDINARY FORM POST, so a browser is needed for exactly one
