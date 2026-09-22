@@ -924,7 +924,29 @@ def census(q=None, profile_name="botify", fmt="json", out_dir=None, max_items=25
 
         action = form.get("action") or ""
         post_url = str(httpx.URL(str(page.url)).join(action)) if action else str(page.url)
+        # THE SILENT WAIT INVITES THE CTRL-C (convicted 2026-09-22, at an
+        # internet cafe on a borrowed hour). From the browser flash to the
+        # first line of output this function printed NOTHING, and the export
+        # POST is one blocking request that can run for minutes. The operator
+        # watched a dead terminal and killed a run at 2m39s. It was not
+        # failing: `time` read user 0m0.567s, so our side was idle and the
+        # server was still working, well inside the 300s client timeout. A
+        # measurement was lost to silence rather than to an error.
+        # THE RULE: a call that can outlast a human's patience says so BEFORE
+        # it blocks, names the wait it already knows about, and prints its own
+        # elapsed time when it returns. stderr, so stdout stays payload-clean.
+        import time as _time
+        _started = _time.monotonic()
+        sys.stderr.write(
+            f"  posting the export: {checkboxes} field(s), q={q!r}, "
+            f"filters={sorted(query)}\n"
+            "  ONE blocking request, server-side. 10,880 rows of one column\n"
+            "  took 67.7s on 2026-09-21; more columns cost more. The client\n"
+            "  timeout is 300s and it will fire on its own.\n"
+            "  LET IT RUN. Ctrl-C throws away the measurement.\n")
         resp = client.post(post_url, data=data, headers={"Referer": str(page.url)})
+        sys.stderr.write(
+            f"  export POST returned in {_time.monotonic() - _started:.1f}s\n")
 
     if resp.status_code != 200:
         sys.stderr.write(f"HTTP {resp.status_code} on the export POST\n{resp.text[:300]}\n")
