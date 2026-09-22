@@ -140,6 +140,18 @@ import subprocess
 # from accessibility_tree_summary.txt or from a screenshot, the probe that
 # tests it must run against hydrated_dom.html, never source.html.
 #
+# AMENDED THE SAME DAY, by running that very probe. hydrated_dom.html carried
+# NO filter select either: one named <select> (action) and four <input>s, in a
+# page whose a11y outline lists [option] "Has SW". So the outline was never
+# describing a hydrated <select>. IT WAS DESCRIBING AN ARIA ROLE. A
+# <div role="option"> reports as [option] in an accessibility tree while
+# carrying no name attribute and no form semantics at all.
+# AN ACCESSIBILITY TREE NAMES ROLES, NOT TAGS. [option], [combobox] and
+# [button] in an outline are claims about what a screen reader announces,
+# never about what element exists or what it would submit. To learn a form
+# control's name, read the markup. To learn whether a control is even a form
+# control, read the markup FIRST.
+#
 # THE HALT BANNER (banked 2026-09-21, at the operator's instruction). Anything
 # the human must DO that is not one of the five cars will be missed. Not might
 # be. Will be. The five cars are myelinated; everything else is invisible.
