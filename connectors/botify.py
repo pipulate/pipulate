@@ -20,6 +20,7 @@ Golden-path modes, auto-detected from the single positional argument:
   python connectors/botify.py '<BQL or JSON>'    # FETCH: run a query (needs org/project coordinates)
   python connectors/botify.py --census --q mikelev.in   # CENSUS: one row, to smoke the export door
   python connectors/botify.py --census           # CENSUS: every project, via the Django admin export form
+  python connectors/botify.py --pull-configs --queue data/botify_census/<file>.queue.jsonl --limit 10
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 
