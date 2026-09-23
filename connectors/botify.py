@@ -608,6 +608,23 @@ def run_query(client, raw_query, org, project, max_items):
 # ----------------------------------------------------------------------------
 # Census (the admin export door)
 # ----------------------------------------------------------------------------
+# THE NEXT RIDE: TWO PULLS PER PROJECT (earmarked 2026-09-23 at the dismount
+# of the census article; nothing below is built yet).
+#   1. site config: the JavaScript field in SiteCrawler Advanced Settings.
+#   2. SpeedWorkers behaviors: the list per project.
+# Both endpoints are UNKNOWN. Find them on rails, never by hand:
+#   - a ?URL line on a project page, then read the Wire Truth and Link Lens
+#     in the next payload. Do NOT send the operator into DevTools to copy
+#     URL shapes; that is the non-reproducible process this repo replaces
+#     (operator ruling, 2026-09-23).
+#   - never ?URL /admin/projects/projectsettings/; it carries credentials.
+# FIRST ATTEMPT FAILED: ?https://app.botify.com/kering_seo/ysl.com/ on the
+# Mac, Chrome 154, profile botify, died at "could not read browser final
+# URL: no such window: target window already closed". No capture landed;
+# browser_cache/app.botify.com still held only the two admin pages. Cause
+# unread. Diagnose that failure before guessing at a second app URL.
+# Known partial answer: the Botify MCP botify_config tool returns
+# has_speedworkers per project. That answers membership, not the list.
 ADMIN_PROJECTS = "https://app.botify.com/admin/projects/project"
 
 # Cut from the SAMPLE ROW this prints, never from the file on disk. The file is
