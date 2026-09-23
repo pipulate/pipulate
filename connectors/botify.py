@@ -618,9 +618,12 @@ def run_query(client, raw_query, org, project, max_items):
 #      ftl.websiteID. The same blob contains credential material, so the whole
 #      object must never be persisted.
 #   2. SpeedWorkers: use ftl.websiteID against Activation GraphQL. The direct
-#      productionVersion -> configs/sections optimization answered HTTP 400, so
-#      resolve productionVersion.id first, then fetch websiteVersion(id) in a
-#      second POST. One warmed Botify cookie jar authenticates both products.
+#      productionVersion -> configs/sections optimization answered HTTP 400.
+#      The receipt-proven request form is two anonymous GraphQL documents with
+#      JSON-escaped literal IDs: resolve productionVersion.id first, then fetch
+#      websiteVersion(id). One warmed Botify cookie jar authenticates both
+#      products. Do not reintroduce the hand-written variable envelope without
+#      a new receipt; it answered HTTP 400 while this literal form answered 200.
 ADMIN_PROJECTS = "https://app.botify.com/admin/projects/project"
 ACTIVATION_GRAPHQL = "https://api.activation.botify.com/graphql"
 
