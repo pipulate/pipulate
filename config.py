@@ -309,9 +309,11 @@ def get_botify_token():
         except Exception:
             pass
     if not token:
-        # THE VAULT IS THE THIRD PLACE (read off the sources 2026-09-23;
-        # PENDING until the get_botify_token probe's AFTER tap reads
-        # config=True). `warm` writes paste-kind secrets to
+        # THE VAULT IS THE THIRD PLACE (banked 2026-09-23, witnessed by the
+        # env -u BOTIFY_API_TOKEN straddle: the env var unset, no project-root
+        # .env present, dotenv importable, and get_botify_token still returned
+        # config=True -- the only source left was the vault, so the third place
+        # is what answered). `warm` writes paste-kind secrets to
         # ~/.config/pipulate/.env (PIPULATE_DOTENV wins, exactly as wallet.py
         # and the flake spell it), and the flake sources that file only at
         # shell entry. So a token warmed after the shell opened was GREEN on

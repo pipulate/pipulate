@@ -122,7 +122,9 @@ def make_client():
     # in the same shell reached get_botify_token() with only os.environ and
     # the project .env, and the flake sources the vault at shell entry alone.
     # config.get_botify_token() now reads the vault third, values-only, so
-    # both boards read one file. Receipt owed: the probe's AFTER tap.
+    # both boards read one file. Receipt paid 2026-09-23: the env -u
+    # BOTIFY_API_TOKEN straddle read config=True with the env var unset and no
+    # project .env, so the vault is the branch that answered.
     token = get_botify_token()
     if not token:
         sys.stderr.write(
