@@ -791,6 +791,357 @@ def _admin_cookies_inner(profile_name, headless=False):
     return jar
 
 
+class PullAuthError(RuntimeError):
+    """The warmed Botify session is no longer accepted."""
+
+
+class PullTransientError(RuntimeError):
+    """A retryable network/server failure; write no completion marker."""
+
+
+class PullDataError(RuntimeError):
+    """A non-auth response whose shape cannot be safely interpreted."""
+
+
+def _atomic_json(path, payload):
+    """Write one completion artifact atomically; existence means done."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    try:
+        temp.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n",
+                        encoding="utf-8")
+        os.replace(temp, path)
+    finally:
+        if temp.exists():
+            temp.unlink()
+
+
+def _pull_response(client, method, url, **kwargs):
+    """One HTTP call with Loop Contract error classes."""
+    try:
+        response = client.request(method, url, **kwargs)
+    except (httpx.TimeoutException, httpx.TransportError) as exc:
+        raise PullTransientError(str(exc)) from exc
+    if response.status_code in (401, 403):
+        raise PullAuthError(f"HTTP {response.status_code} for {url}")
+    if 300 <= response.status_code <= 399:
+        location = response.headers.get("location", "")
+        if "login" in location.lower() or "auth" in location.lower():
+            raise PullAuthError(
+                f"HTTP {response.status_code} redirect to {location!r}")
+        raise PullDataError(
+            f"HTTP {response.status_code} redirect to {location!r}")
+    if 500 <= response.status_code <= 599:
+        raise PullTransientError(f"HTTP {response.status_code} for {url}")
+    if response.status_code != 200:
+        raise PullDataError(f"HTTP {response.status_code} for {url}")
+    return response
+
+
+def _activation_data(client, query, variables):
+    response = _pull_response(
+        client, "POST", ACTIVATION_GRAPHQL,
+        headers={"Origin": "https://app.botify.com",
+                 "Referer": "https://app.botify.com/"},
+        json={"query": query, "variables": variables},
+    )
+    try:
+        body = response.json()
+    except ValueError as exc:
+        raise PullDataError("Activation GraphQL answered 200 but not JSON") from exc
+    errors = body.get("errors") if isinstance(body, dict) else None
+    if errors:
+        message = "; ".join(
+            str(e.get("message", e)) if isinstance(e, dict) else str(e)
+            for e in errors
+        )
+        lowered = message.lower()
+        if any(word in lowered for word in
+               ("auth", "forbidden", "permission", "credential", "login")):
+            raise PullAuthError(f"Activation GraphQL: {message[:300]}")
+        raise PullDataError(f"Activation GraphQL: {message[:300]}")
+    data = body.get("data") if isinstance(body, dict) else None
+    if not isinstance(data, dict):
+        raise PullDataError("Activation GraphQL returned no data object")
+    return data
+
+
+def _sitecrawler_config(client, org, project):
+    """Whitelist the two non-secret fields proved in extra_admin_config."""
+    import lxml.etree
+    import lxml.html
+
+    url = f"https://app.botify.com/spa/{org}/{project}/settings/crawler/advanced"
+    response = _pull_response(client, "GET", url)
+    try:
+        doc = lxml.html.fromstring(response.text)
+    except (ValueError, lxml.etree.ParserError) as exc:
+        raise PullDataError("SiteCrawler Advanced answered invalid HTML") from exc
+
+    fields = doc.xpath('//textarea[@name="extra_admin_config"]')
+    if len(fields) != 1:
+        raise PullDataError(
+            f"expected one extra_admin_config textarea, found {len(fields)}")
+
+    raw = fields[0].text_content().strip()
+    if not raw:
+        return {"absent": True}
+    try:
+        config = json.loads(raw)
+    except ValueError as exc:
+        raise PullDataError("extra_admin_config is not valid JSON") from exc
+    if not isinstance(config, dict):
+        raise PullDataError("extra_admin_config is not a JSON object")
+
+    safe = {}
+    beta = config.get("beta")
+    rules = beta.get("pap_mini_rules") if isinstance(beta, dict) else None
+    if rules not in (None, []) and not isinstance(rules, list):
+        raise PullDataError("beta.pap_mini_rules is not a list")
+    if rules:
+        safe["beta"] = {"pap_mini_rules": rules}
+
+    ftl = config.get("ftl")
+    website_id = ftl.get("websiteID") if isinstance(ftl, dict) else None
+    if website_id is not None and not isinstance(website_id, str):
+        raise PullDataError("ftl.websiteID is not a string")
+    if website_id:
+        safe["ftl"] = {"websiteID": website_id}
+
+    return safe or {"absent": True}
+
+
+def _speedworkers_config(client, website_id):
+    """Read the production graph in two POSTs; the one-POST shortcut is invalid."""
+    version_data = _activation_data(
+        client,
+        """query ProductionVersion($id: String!) {
+          website(id: $id) {
+            id
+            productionVersion { id version }
+          }
+        }""",
+        {"id": website_id},
+    )
+    website = version_data.get("website")
+    if not isinstance(website, dict):
+        raise PullDataError("Activation website lookup returned no website")
+    production = website.get("productionVersion")
+    if production is None:
+        return {"absent": True}
+    if not isinstance(production, dict) or not production.get("id"):
+        raise PullDataError("productionVersion has no id")
+
+    detail_data = _activation_data(
+        client,
+        """query ProductionConfig($versionId: String!) {
+          websiteVersion(id: $versionId) {
+            id
+            version
+            isProductionVersion
+            configs {
+              id
+              name
+              renderingRules
+            }
+            sections(includeDeleted: true) {
+              id
+              stableId
+              deletedAt
+              name
+              rules
+              desktopConfig { id name }
+              mobileConfig { id name }
+            }
+          }
+        }""",
+        {"versionId": production["id"]},
+    )
+    version = detail_data.get("websiteVersion")
+    if not isinstance(version, dict):
+        raise PullDataError("production websiteVersion lookup returned no version")
+    if version.get("isProductionVersion") is not True:
+        raise PullDataError(
+            f"websiteVersion {version.get('id')!r} is not marked production")
+
+    configs = [
+        {"id": item.get("id"),
+         "name": item.get("name"),
+         "renderingRules": item.get("renderingRules")}
+        for item in (version.get("configs") or [])
+        if isinstance(item, dict)
+    ]
+    sections = []
+    for item in version.get("sections") or []:
+        if not isinstance(item, dict) or item.get("deletedAt"):
+            continue
+        desktop = item.get("desktopConfig")
+        mobile = item.get("mobileConfig")
+        sections.append({
+            "id": item.get("id"),
+            "stableId": item.get("stableId"),
+            "name": item.get("name"),
+            "rules": item.get("rules"),
+            "desktopConfig": (
+                {"id": desktop.get("id"), "name": desktop.get("name")}
+                if isinstance(desktop, dict) else None
+            ),
+            "mobileConfig": (
+                {"id": mobile.get("id"), "name": mobile.get("name")}
+                if isinstance(mobile, dict) else None
+            ),
+        })
+
+    if not configs and not sections:
+        return {"absent": True}
+    return {
+        "website": {"id": website_id},
+        "productionVersion": {
+            "id": version.get("id"),
+            "version": version.get("version"),
+        },
+        "configs": configs,
+        "sections": sections,
+    }
+
+
+def _pull_summary(rows, root, written, absent, errored):
+    done = 0
+    for row in rows:
+        base = root / row["org"] / row["project"]
+        if ((base / "sitecrawler.json").exists()
+                and (base / "speedworkers.json").exists()):
+            done += 1
+    total = len(rows)
+    print(f"queue={total} done={done} written={written} absent={absent} "
+          f"errored={errored} remaining={total - done}")
+
+
+def pull_configs(queue_path, limit, profile_name="botify", headless=False):
+    """Run a bounded, resumable two-file config pull over the census queue."""
+    queue = Path(queue_path).expanduser()
+    if not queue.is_absolute():
+        queue = project_root / queue
+    if not queue.exists():
+        sys.stderr.write(f"Queue not found: {queue}\n")
+        return 1
+    if limit < 1:
+        sys.stderr.write("--limit must be at least 1\n")
+        return 1
+
+    rows = []
+    try:
+        with queue.open(encoding="utf-8") as handle:
+            for lineno, line in enumerate(handle, start=1):
+                if not line.strip():
+                    continue
+                row = json.loads(line)
+                if (not isinstance(row, dict)
+                        or not all(row.get(k) not in (None, "")
+                                   for k in ("id", "org", "project"))):
+                    raise ValueError(
+                        f"line {lineno} needs id, org, project")
+                rows.append({k: row[k] for k in ("id", "org", "project")})
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        sys.stderr.write(f"Could not read queue {queue}: {exc}\n")
+        return 1
+
+    root = project_root / "data" / "botify_pulls"
+    pending = []
+    for row in rows:
+        base = root / row["org"] / row["project"]
+        if not ((base / "sitecrawler.json").exists()
+                and (base / "speedworkers.json").exists()):
+            pending.append(row)
+            if len(pending) >= limit:
+                break
+
+    if not pending:
+        _pull_summary(rows, root, 0, 0, 0)
+        return 0
+
+    try:
+        cookies = _admin_cookies(profile_name, headless=headless)
+    except SystemExit as exc:
+        _pull_summary(rows, root, 0, 0, 0)
+        return int(exc.code or 1)
+
+    written = absent = errored = 0
+    auth_failed = False
+    with httpx.Client(cookies=cookies, timeout=60.0,
+                      follow_redirects=False) as client:
+        for row in pending:
+            base = root / row["org"] / row["project"]
+            site_path = base / "sitecrawler.json"
+            sw_path = base / "speedworkers.json"
+
+            if site_path.exists():
+                try:
+                    site = json.loads(site_path.read_text(encoding="utf-8"))
+                except (OSError, ValueError) as exc:
+                    errored += 1
+                    sys.stderr.write(
+                        f"project {row['id']}: existing SiteCrawler artifact "
+                        f"is unreadable: {exc}\n")
+                    continue
+            else:
+                try:
+                    site = _sitecrawler_config(
+                        client, row["org"], row["project"])
+                except PullAuthError as exc:
+                    sys.stderr.write(
+                        f"project {row['id']}: authentication failed: {exc}\n")
+                    auth_failed = True
+                    break
+                except (PullTransientError, PullDataError) as exc:
+                    errored += 1
+                    sys.stderr.write(
+                        f"project {row['id']}: SiteCrawler pull failed: {exc}\n")
+                    continue
+                _atomic_json(site_path, site)
+                if site.get("absent") is True:
+                    absent += 1
+                else:
+                    written += 1
+
+            if sw_path.exists():
+                continue
+
+            website_id = None
+            if isinstance(site, dict):
+                ftl = site.get("ftl")
+                if isinstance(ftl, dict):
+                    website_id = ftl.get("websiteID")
+            if not website_id:
+                errored += 1
+                sys.stderr.write(
+                    f"project {row['id']}: no ftl.websiteID; "
+                    "SpeedWorkers remains unresolved and unmarked\n")
+                continue
+
+            try:
+                speedworkers = _speedworkers_config(client, website_id)
+            except PullAuthError as exc:
+                sys.stderr.write(
+                    f"project {row['id']}: authentication failed: {exc}\n")
+                auth_failed = True
+                break
+            except (PullTransientError, PullDataError) as exc:
+                errored += 1
+                sys.stderr.write(
+                    f"project {row['id']}: SpeedWorkers pull failed: {exc}\n")
+                continue
+
+            _atomic_json(sw_path, speedworkers)
+            if speedworkers.get("absent") is True:
+                absent += 1
+            else:
+                written += 1
+
+    _pull_summary(rows, root, written, absent, errored)
+    return 1 if auth_failed else 0
+
+
 def census(q=None, profile_name="botify", fmt="json", out_dir=None, max_items=25,
            headless=False, params=None, fields=None, allow_full=False):
     """CENSUS: the whole project table, through the Django admin's export form.
