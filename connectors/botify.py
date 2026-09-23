@@ -1137,8 +1137,7 @@ def pull_configs(queue_path, limit, profile_name="botify", headless=False):
     pending = []
     for row in rows:
         base = root / row["org"] / row["project"]
-        if not ((base / "sitecrawler.json").exists()
-                and (base / "speedworkers.json").exists()):
+        if _project_pull_state(base) == "pending":
             pending.append(row)
             if len(pending) >= limit:
                 break
