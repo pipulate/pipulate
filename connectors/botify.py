@@ -838,12 +838,15 @@ def _pull_response(client, method, url, **kwargs):
     return response
 
 
-def _activation_data(client, query, variables):
+def _activation_data(client, query, variables=None):
+    payload = {"query": query}
+    if variables:
+        payload["variables"] = variables
     response = _pull_response(
         client, "POST", ACTIVATION_GRAPHQL,
         headers={"Origin": "https://app.botify.com",
                  "Referer": "https://app.botify.com/"},
-        json={"query": query, "variables": variables},
+        json=payload,
     )
     try:
         body = response.json()
