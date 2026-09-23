@@ -1339,6 +1339,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # ============================================================================
 
 # cli.py                  # <-- A powerful wrapper that lets anything become an MCP tool-call, etc.
+
 # scripts/weblogin.py     # <-- Lets the user "warm up" their logins at their leisure on a profile that persists.
 # scripts/crawl.py        # <-- Feel free to ask for something to be crawled and included in the next turn.
 # tools/__init__.py       # <-- Which one of these inits is not like the other? Small, but not empty.
