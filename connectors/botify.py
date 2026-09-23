@@ -630,6 +630,61 @@ ACTIVATION_GRAPHQL = "https://api.activation.botify.com/graphql"
 CENSUS_CUT = ("project_links", "webproperty_link", "scope",
               "subscription_details", "automated_export_target")
 
+# Same courtesy-sound convention already proved by the scraper. Keep the wavs
+# outside git under ~/.local/share/pipulate/. Missing sound is non-fatal but
+# LOUD so "file absent", "player absent", and "sound happened" are different
+# worlds. This local copy is intentional until tools/scraper_tools.py is in a
+# compile beside us and the second consumer can be factored without guessing.
+SOUND_ROOT = Path.home() / ".local" / "share" / "pipulate"
+
+
+def _sound_args(name):
+    path = SOUND_ROOT / name
+    if not path.is_file():
+        return None, f"missing {path}"
+
+    if sys.platform == "darwin":
+        player = shutil.which("afplay")
+        if player:
+            return [player, str(path)], None
+        return None, "afplay not found"
+
+    for command in ("pw-play", "paplay", "aplay"):
+        player = shutil.which(command)
+        if player:
+            return [player, str(path)], None
+    return None, "no pw-play, paplay, or aplay found"
+
+
+def _play_sound(name, wait=False):
+    args, problem = _sound_args(name)
+    if not args:
+        sys.stderr.write(f"  sound skipped: {name} ({problem})\n")
+        return None
+    sys.stderr.write(f"  sound: {name}\n")
+    try:
+        if wait:
+            subprocess.run(
+                args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                check=False)
+            return None
+        return subprocess.Popen(
+            args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except OSError as exc:
+        sys.stderr.write(f"  sound failed: {name} ({exc})\n")
+        return None
+
+
+def _stop_sound(proc):
+    if proc is None or proc.poll() is not None:
+        return
+    proc.terminate()
+    try:
+        proc.wait(timeout=0.5)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+
+
 # THE LOOP CONTRACT (operator ruling, 2026-09-23): the bulk pull over the
 # census queue is IDEMPOTENT CHUNKS, never keep-awake. No caffeinate, no
 # nohup. One file per project per pull under data/botify_pulls/ORG/PROJECT/,
