@@ -1486,6 +1486,30 @@ def census(q=None, profile_name="botify", fmt="json", out_dir=None, max_items=25
     columns = list(rows[0])
     print(f"\n## {len(rows):,} row(s), {len(columns)} column(s)")
     print(", ".join(str(c) for c in columns))
+    # THE QUEUE IS DERIVED, NEVER HAND-PARSED (2026-09-23). The first queue
+    # came from a one-off parse at the terminal, so the corpus and the queue
+    # had different authors. When the export carries both id and
+    # project_links, the queue rides out beside the corpus as
+    # <stem>.queue.jsonl, one {"id","org","project"} per line, the exact
+    # shape --pull-configs reads. project_links is flattened text carrying
+    # "<org>/<project>" and nothing else (receipt 2026-09-21), so a value
+    # that does not split into two non-empty halves is counted and skipped,
+    # never guessed. Slugs go to the file; stdout gets the counts.
+    if "id" in columns and "project_links" in columns:
+        queue_path = path.with_suffix(".queue.jsonl")
+        kept, skipped = 0, 0
+        with queue_path.open("w", encoding="utf-8") as handle:
+            for r in rows:
+                parts = str(r.get("project_links") or "").strip().split("/")
+                if len(parts) != 2 or not all(parts) or r.get("id") in (None, ""):
+                    skipped += 1
+                    continue
+                handle.write(json.dumps(
+                    {"id": str(r["id"]), "org": parts[0], "project": parts[1]}) + "\n")
+                kept += 1
+        print(f"\n## queue -> {queue_path}")
+        print(f"{kept:,} row(s) written, {skipped:,} skipped "
+              "(no id, or project_links not one org/project pair)")
     # THE EMPTY BOOLEAN (witnessed 2026-09-21, the first successful export).
     # The columns arrive as snake_case FIELD names, not verbose labels, so this
     # counter fires and no later join needs a name map. But has_sw, has_pw,
