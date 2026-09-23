@@ -1296,10 +1296,20 @@ def pull_configs(queue_path, limit, profile_name="botify", headless=False):
             _atomic_json(sw_path, speedworkers)
             if unresolved_path.exists():
                 unresolved_path.unlink()
+            # A SILENT SUCCESS IN A FLOW OF ERRORS READS AS A WALL OF FAILURES
+            # (operator ruling, 2026-09-23, stated twice). The pull narrated
+            # only misses, so 81 wins scrolled past invisibly under 146 skips
+            # and a healthy run looked like it was failing. Every terminal
+            # outcome now prints one line, so progress is legible.
             if speedworkers.get("absent") is True:
                 absent += 1
+                sys.stderr.write(
+                    f"project {row['id']}: SpeedWorkers absent "
+                    "(no production version)\n")
             else:
                 written += 1
+                sys.stderr.write(
+                    f"project {row['id']}: SpeedWorkers pulled -- DONE\n")
 
     _pull_summary(rows, root, written, absent, errored)
     return 1 if auth_failed else 0
