@@ -760,6 +760,7 @@ def _admin_cookies_inner(profile_name, headless=False):
                          version_main=version_main)
 
     driver = None
+    tick = _play_sound("tick.wav") if not headless else None
     try:
         try:
             driver = launch()
