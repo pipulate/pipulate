@@ -295,7 +295,7 @@ def get_botify_token():
     """Canonical accessor for the Botify API token.
 
     Single source of truth: reads BOTIFY_API_TOKEN from the environment,
-    falling back to loading the project-root .env vault. Replaces the legacy
+    falling back to the project-root .env, then the warm vault. Replaces the legacy
     botify_token.txt file-based system. Returns the token string or None.
     """
     token = os.environ.get('BOTIFY_API_TOKEN')
@@ -306,6 +306,26 @@ def get_botify_token():
             if env_path.exists():
                 load_dotenv(dotenv_path=env_path)
                 token = os.environ.get('BOTIFY_API_TOKEN')
+        except Exception:
+            pass
+    if not token:
+        # THE VAULT IS THE THIRD PLACE (read off the sources 2026-09-23;
+        # PENDING until the get_botify_token probe's AFTER tap reads
+        # config=True). `warm` writes paste-kind secrets to
+        # ~/.config/pipulate/.env (PIPULATE_DOTENV wins, exactly as wallet.py
+        # and the flake spell it), and the flake sources that file only at
+        # shell entry. So a token warmed after the shell opened was GREEN on
+        # the wallet's board, whose _check_env layers the vault under
+        # os.environ for its subprocess, and absent to a bare `botify` in the
+        # same shell, which reached this function with nothing but os.environ
+        # and the project .env. Same file, same precedence, no re-entry: read
+        # the one name, values-only, and export nothing else into this process.
+        try:
+            from dotenv import dotenv_values
+            vault = Path(os.environ.get('PIPULATE_DOTENV')
+                         or Path.home() / '.config' / 'pipulate' / '.env').expanduser()
+            if vault.exists():
+                token = dotenv_values(vault).get('BOTIFY_API_TOKEN') or None
         except Exception:
             pass
     return token

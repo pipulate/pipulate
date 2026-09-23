@@ -37,7 +37,8 @@ third segment, and anything after a slug, DRILLS the raw API path under the
 project or the analysis, rendered by shape and narrowed by --grep. No argument at
 all triggers the identity walk.
 
-Auth: BOTIFY_API_TOKEN via config.get_botify_token() (env var or project .env).
+Auth: BOTIFY_API_TOKEN via config.get_botify_token() (env var, project .env,
+then the warm vault at ~/.config/pipulate/.env).
 FETCH coordinates resolve from --org/--project flags, then BOTIFY_ORG /
 BOTIFY_PROJECT environment variables.
 
@@ -115,17 +116,20 @@ def normalize_query(arg):
 # Auth & transport
 # ----------------------------------------------------------------------------
 def make_client():
-    # NEXT RIDE (2026-09-23): wallet's live board reports Botify GREEN after
-    # injecting ~/.config/pipulate/.env, while a bare `botify` invocation in
-    # the same shell reaches get_botify_token() with BOTIFY_API_TOKEN missing.
-    # The credential is proved live; the unresolved question is process/env
-    # plumbing. Reconcile that contract before changing authentication logic.
+    # THE SEAM WAS THE THIRD PLACE (read off the sources 2026-09-23): the
+    # wallet's live board reported Botify GREEN because _check_env layers the
+    # vault under os.environ for its --check subprocess, while a bare `botify`
+    # in the same shell reached get_botify_token() with only os.environ and
+    # the project .env, and the flake sources the vault at shell entry alone.
+    # config.get_botify_token() now reads the vault third, values-only, so
+    # both boards read one file. Receipt owed: the probe's AFTER tap.
     token = get_botify_token()
     if not token:
         sys.stderr.write(
             "Missing BOTIFY_API_TOKEN.\n"
-            "Set it in your environment or the project-root .env file\n"
-            "(config.get_botify_token() checks both).\n"
+            "Set it in your environment, the project-root .env, or the warm\n"
+            "vault (~/.config/pipulate/.env); config.get_botify_token() checks\n"
+            "all three, in that order.\n"
         )
         sys.exit(1)
     headers = {"Authorization": f"Token {token}", "Content-Type": "application/json"}
@@ -1539,7 +1543,7 @@ def check():
     token = get_botify_token()
     if not token:
         sys.stderr.write(
-            "botify RED gate1: no BOTIFY_API_TOKEN in env or project .env\n")
+            "botify RED gate1: no BOTIFY_API_TOKEN in env, project .env, or vault\n")
         return 1
     try:
         with httpx.Client(
