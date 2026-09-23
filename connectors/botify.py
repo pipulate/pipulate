@@ -1521,7 +1521,7 @@ def main():
                         help='CENSUS: directory for the corpus file '
                              '(default: data/botify_census, which is gitignored).')
     parser.add_argument('--headless', action='store_true',
-                        help='CENSUS: run the cookie-harvest browser headless. '
+                        help='CENSUS/PULL-CONFIGS: run the cookie-harvest browser headless. '
                              'OFF by default so the window can be watched. The '
                              'headless hypothesis for the first failed smoke '
                              'was WRONG -- the guard was looking for a cookie '
