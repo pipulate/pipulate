@@ -687,14 +687,31 @@ def _stop_sound(proc):
 
 # THE LOOP CONTRACT (operator ruling, 2026-09-23): the bulk pull over the
 # census queue is IDEMPOTENT CHUNKS, never keep-awake. No caffeinate, no
-# nohup. One file per project per pull under data/botify_pulls/ORG/PROJECT/,
-# written to a temp name then renamed, so the file existing means done. A
-# clean absence (no SpeedWorkers, empty config) writes {"absent": true} and
-# is also done. A transient error (5xx, timeout, dropped wifi) writes
-# nothing and the next run retries it. An auth failure stops the run, marks
-# nothing, and exits nonzero. Every run takes a bounded --limit and ends
-# with one line: queue, done, written, absent, errored, remaining. Finished
-# is remaining 0, reached by typing the same command again.
+# nohup. Artifacts live under data/botify_pulls/ORG/PROJECT/ and are written
+# temp-then-rename. State is explicit:
+#
+#   DONE        sitecrawler.json + speedworkers.json
+#   UNRESOLVED  sitecrawler.json + speedworkers.unresolved.json
+#   PENDING     every other shape
+#
+# {"absent": true} means a pull positively proved absence. UNRESOLVED means
+# the dependency needed to ask the SpeedWorkers question (ftl.websiteID) was
+# missing; it MUST NOT be promoted to absence merely to drain the queue.
+# Transient errors write no state and retry. Auth failure stops immediately.
+# Summary prints done and unresolved separately; remaining_work excludes both
+# terminal states. Thus one unresolved row can never starve everything behind
+# it while remaining available as a named cohort for a later resolver.
+
+
+def _project_pull_state(base):
+    site = base / "sitecrawler.json"
+    speedworkers = base / "speedworkers.json"
+    unresolved = base / "speedworkers.unresolved.json"
+    if site.exists() and speedworkers.exists():
+        return "done"
+    if site.exists() and unresolved.exists():
+        return "unresolved"
+    return "pending"
 
 
 def _admin_cookies(profile_name, headless=False):
