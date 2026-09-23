@@ -1220,6 +1220,8 @@ def pull_configs(queue_path, limit, profile_name="botify", headless=False):
                 continue
 
             _atomic_json(sw_path, speedworkers)
+            if unresolved_path.exists():
+                unresolved_path.unlink()
             if speedworkers.get("absent") is True:
                 absent += 1
             else:
