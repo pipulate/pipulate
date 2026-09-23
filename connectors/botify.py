@@ -1160,6 +1160,7 @@ def pull_configs(queue_path, limit, profile_name="botify", headless=False):
             base = root / row["org"] / row["project"]
             site_path = base / "sitecrawler.json"
             sw_path = base / "speedworkers.json"
+            unresolved_path = base / "speedworkers.unresolved.json"
 
             if site_path.exists():
                 try:
