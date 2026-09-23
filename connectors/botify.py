@@ -1513,7 +1513,7 @@ def main():
                              'inherits (project id/slug, username, SF account id, '
                              'or activation website id).')
     parser.add_argument('--profile', default='botify',
-                        help='CENSUS: uc profile under data/uc_profiles (default: botify).')
+                        help='CENSUS/PULL-CONFIGS: uc profile under data/uc_profiles (default: botify).')
     parser.add_argument('--format', default='json',
                         help='CENSUS: export format, matched against the option '
                              'labels the form itself renders (default: json).')
