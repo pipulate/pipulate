@@ -1091,15 +1091,17 @@ def _speedworkers_config(client, website_id):
 
 
 def _pull_summary(rows, root, written, absent, errored):
-    done = 0
+    states = {"done": 0, "unresolved": 0, "pending": 0}
     for row in rows:
         base = root / row["org"] / row["project"]
-        if ((base / "sitecrawler.json").exists()
-                and (base / "speedworkers.json").exists()):
-            done += 1
+        states[_project_pull_state(base)] += 1
     total = len(rows)
-    print(f"queue={total} done={done} written={written} absent={absent} "
-          f"errored={errored} remaining={total - done}")
+    print(
+        f"queue={total} done={states['done']} "
+        f"unresolved={states['unresolved']} "
+        f"written={written} absent={absent} errored={errored} "
+        f"remaining_work={states['pending']}"
+    )
 
 
 def pull_configs(queue_path, limit, profile_name="botify", headless=False):
