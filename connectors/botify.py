@@ -115,6 +115,11 @@ def normalize_query(arg):
 # Auth & transport
 # ----------------------------------------------------------------------------
 def make_client():
+    # NEXT RIDE (2026-09-23): wallet's live board reports Botify GREEN after
+    # injecting ~/.config/pipulate/.env, while a bare `botify` invocation in
+    # the same shell reaches get_botify_token() with BOTIFY_API_TOKEN missing.
+    # The credential is proved live; the unresolved question is process/env
+    # plumbing. Reconcile that contract before changing authentication logic.
     token = get_botify_token()
     if not token:
         sys.stderr.write(
