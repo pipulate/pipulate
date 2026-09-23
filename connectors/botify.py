@@ -1500,6 +1500,14 @@ def main():
                         help='CENSUS: pull the project table through the Django '
                              'admin export form on the warmed weblogin profile. '
                              'Uses a session cookie, never BOTIFY_API_TOKEN.')
+    parser.add_argument('--pull-configs', action='store_true',
+                        help='PULL-CONFIGS: bounded, resumable SiteCrawler + '
+                             'SpeedWorkers extraction from a census queue.')
+    parser.add_argument('--queue', default=None,
+                        help='PULL-CONFIGS: JSONL queue with id/org/project keys.')
+    parser.add_argument('--limit', type=int, default=10,
+                        help='PULL-CONFIGS: maximum unfinished projects attempted '
+                             'this run (default: 10).')
     parser.add_argument('--q', default=None,
                         help='CENSUS: the changelist search term the export '
                              'inherits (project id/slug, username, SF account id, '
