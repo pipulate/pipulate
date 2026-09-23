@@ -633,6 +633,17 @@ ADMIN_PROJECTS = "https://app.botify.com/admin/projects/project"
 CENSUS_CUT = ("project_links", "webproperty_link", "scope",
               "subscription_details", "automated_export_target")
 
+# THE LOOP CONTRACT (operator ruling, 2026-09-23): the bulk pull over the
+# census queue is IDEMPOTENT CHUNKS, never keep-awake. No caffeinate, no
+# nohup. One file per project per pull under data/botify_pulls/ORG/PROJECT/,
+# written to a temp name then renamed, so the file existing means done. A
+# clean absence (no SpeedWorkers, empty config) writes {"absent": true} and
+# is also done. A transient error (5xx, timeout, dropped wifi) writes
+# nothing and the next run retries it. An auth failure stops the run, marks
+# nothing, and exits nonzero. Every run takes a bounded --limit and ends
+# with one line: queue, done, written, absent, errored, remaining. Finished
+# is remaining 0, reached by typing the same command again.
+
 
 def _admin_cookies(profile_name, headless=False):
     # THE WRAPPER IS NOT THE MEASUREMENT. The export POST prints its own
