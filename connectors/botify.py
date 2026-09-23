@@ -1200,10 +1200,14 @@ def pull_configs(queue_path, limit, profile_name="botify", headless=False):
                 if isinstance(ftl, dict):
                     website_id = ftl.get("websiteID")
             if not website_id:
-                errored += 1
+                _atomic_json(unresolved_path, {
+                    "unresolved": True,
+                    "stage": "speedworkers",
+                    "reason": "no_ftl.websiteID",
+                })
                 sys.stderr.write(
                     f"project {row['id']}: no ftl.websiteID; "
-                    "SpeedWorkers remains unresolved and unmarked\n")
+                    "SpeedWorkers marked unresolved\n")
                 continue
 
             try:
