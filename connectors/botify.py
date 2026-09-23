@@ -1234,6 +1234,23 @@ def pull_configs(queue_path, limit, profile_name="botify", headless=False):
                 ftl = site.get("ftl")
                 if isinstance(ftl, dict):
                     website_id = ftl.get("websiteID")
+            # THE WEBSITEID IS RECOVERABLE FROM THE TOKEN LANE (banked
+            # 2026-09-23, receipt: env probe on project 78123). A project whose
+            # SiteCrawler extra_admin_config carries no ftl.websiteID still has
+            # an activation_website_id on its plain project detail: a
+            # token-authenticated GET {API_BASE}/projects/<org>/<project>
+            # answered 200 with activation_website_id "YICBBD" for 78123, whose
+            # SiteCrawler config had none. That field is present whenever ANY
+            # Activation product is entitled (PageWorkers OR SpeedWorkers), so
+            # it is a SUPERSET key, not proof of a live SpeedWorkers production
+            # version -- 78123 runs PageWorkers, not SpeedWorkers. THE RESOLVER
+            # STAYS LOCAL: the API TOKEN reaches it (make_client()), not the
+            # cookie this loop holds and never the MCP, so the operator
+            # reproduces it with no privileged tooling. NEXT RIDE: before
+            # marking no_ftl.websiteID, open a token client, GET the project
+            # detail, read activation_website_id; on a hit feed it to
+            # _speedworkers_config and fall through to DONE; on a null, mark
+            # unresolved as now.
             if not website_id:
                 _atomic_json(unresolved_path, {
                     "unresolved": True,
