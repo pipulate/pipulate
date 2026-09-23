@@ -916,15 +916,15 @@ def _sitecrawler_config(client, org, project):
 
 def _speedworkers_config(client, website_id):
     """Read the production graph in two POSTs; the one-POST shortcut is invalid."""
+    website_literal = json.dumps(website_id)
     version_data = _activation_data(
         client,
-        """query ProductionVersion($id: String!) {
-          website(id: $id) {
+        f"""query {{
+          website(id: {website_literal}) {{
             id
-            productionVersion { id version }
-          }
-        }""",
-        {"id": website_id},
+            productionVersion {{ id version }}
+          }}
+        }}""",
     )
     website = version_data.get("website")
     if not isinstance(website, dict):
