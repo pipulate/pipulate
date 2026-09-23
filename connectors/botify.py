@@ -795,11 +795,17 @@ def _admin_cookies_inner(profile_name, headless=False):
             "Close any Chrome window still open on that profile, then retry.\n")
         sys.exit(1)
     finally:
+        _stop_sound(tick)
         if driver is not None:
             try:
                 driver.quit()
             except Exception:
                 pass
+            finally:
+                if not headless:
+                    # Synchronous on purpose: once Chrome closes, the bell is
+                    # the receipt. Do not let the surrounding Python race it.
+                    _play_sound("ding.wav", wait=True)
 
     # THE GUARD NAMED A COOKIE IT NEVER VERIFIED (convicted 2026-09-21, by the
     # refusal written one turn earlier expressly to be readable). "sessionid"
