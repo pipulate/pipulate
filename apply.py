@@ -185,6 +185,24 @@ import subprocess
 #      is accessible". No Claude-speak inside the banner. No explanation
 #      inside the banner. The explanation goes after it, where skipping it
 #      costs nothing.
+#
+# THE DIVIDER IS NOT OPTIONAL (convicted 2026-09-22, six refusals in a row and
+# a hand repair in vim). The emitter wrote the search marker, the old text,
+# the REPLACE marker where the divider belongs, the new text, and then a
+# closing slash-replace marker that does not exist in this grammar, all
+# inside a four-backtick fence. This file said "No blocks found" six times,
+# correctly, and the operator opened vim.
+# THE GRAMMAR, in words so this comment can never parse as a block:
+#   1. a Target line, INSIDE the fence, directly above the search marker
+#   2. the search marker, then the exact old text
+#   3. the divider marker, then the new text
+#   4. the replace marker, and the block ENDS. There is no closing marker.
+# The fence is exactly three backticks plus a word. The fence stripper
+# matches three backticks and an optional word, so a four-backtick fence
+# line survives into the body.
+# WHY IT KEEPS HAPPENING: most patch dialects close their blocks, and a
+# model under load reaches for the shape it has seen most often.
+# COUNT THE MARKERS BEFORE EMITTING: three, in that order, once each.
 # PROTOCOL MARKER AIRLOCK — the guard the 2026-07-26 player-piano.js incident
 # called for. apply.py speaks a grammar of bare delimiters: [[[SEARCH]]],
 # [[[DIVIDER]]], [[[REPLACE]]], [[[WRITE_FILE]]], [[[END_WRITE_FILE]]] (with 3-5
