@@ -41,10 +41,11 @@ Auth: BOTIFY_API_TOKEN via config.get_botify_token() (env var or project .env).
 FETCH coordinates resolve from --org/--project flags, then BOTIFY_ORG /
 BOTIFY_PROJECT environment variables.
 
-CENSUS mode uses NEITHER. It rides the session cookie weblogin parked in
-data/uc_profiles/<profile>, because the API cannot enumerate projects at all --
-46 swagger paths and both project endpoints per-username. The corpus lands in
-data/botify_census/ (gitignored) and only counts and column names reach stdout.
+CENSUS and PULL-CONFIGS modes use NEITHER. They ride the session cookie
+weblogin parked in data/uc_profiles/<profile>. Census needs it because the API
+cannot enumerate projects at all; config pulls need it because SiteCrawler
+settings and Activation GraphQL are authenticated by the warmed app session.
+Both write only under data/ (gitignored), and pull mode prints only its summary.
 
 Output is capped by --max (default 25) per THE PROBE ECONOMY RULE: stdout is
 destined for compiled context payloads, so the bound is a feature.
