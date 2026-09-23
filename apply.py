@@ -15,6 +15,20 @@ import os
 import subprocess
 
 # ONE TIMELINE, NO PREVIEWS: every command in the response appears exactly once, in the section where it executes, in execution order -- PROBES (read-only) first, then PATCHES as numbered cars with any dependent actuator or ignition as the LAST cars, then PROMPT. A command that depends on a patch is never quoted above that patch, not as a preview, not "for later"; if it must be mentioned early, name it ("Car 3, the smoke") and show nothing.
+# SPELL OUT THE TOOL-CALL YOU ARE MAKING OF THE HUMAN (banked 2026-09-22, at
+# the operator's instruction, after a Context car that said "same as last
+# turn" and taught nothing). The model reading this file is tool-calling a
+# PERSON, and a person cannot ask a paragraph a clarifying question. Polite,
+# indirect, erudite or compressed wording is ambiguity, and ambiguity gets
+# resolved wrong.
+# THE RULE: short words, imperative, one action per line. Never point at
+# another turn instead of restating the step: no "same as before", no "as
+# above", no "the usual". Never make the human guess which file, which
+# command, or which of two readings you meant. Write for someone in a hurry
+# on a laptop in an internet cafe who will act on the first sentence that
+# looks like an instruction. Example: "Run this in a terminal on Pipulate
+# Prime when the power returns," never "carried in full so it is not a
+# bibliography."
 # NEXT CONTEXT IS THE WHOLE LIST (banked 2026-09-20, convicted the same day,
 # and banked HERE because this file rides the fixed tail of every ADHOC
 # compile while the constitution does not): the payload a model is reading is
