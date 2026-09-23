@@ -772,18 +772,19 @@ def _admin_cookies_inner(profile_name, headless=False):
         driver.get(f"{ADMIN_PROJECTS}/")
         landed = driver.current_url
         jar = {c["name"]: c["value"] for c in driver.get_cookies()}
-        # THE HEADFUL WINDOW NOBODY COULD SEE (2026-09-21). Headful was made
-        # the default so a human could look at the page, and then driver.quit()
-        # fired one line later, so the window flashed and died. Set CENSUS_HOLD
-        # to a number of seconds to actually look at it:
-        #   CENSUS_HOLD=20 .venv/bin/python connectors/botify.py --census --q X
-        # An env var on purpose: no signature, no argparse, no call site,
-        # nothing to thread wrong. The float parse owns its own failure so a
-        # typo cannot surface as "could not read cookies" from the outer try.
+        # A HEADFUL WINDOW IS HUMAN-FACING INSTRUMENTATION. The old default of
+        # zero made a successful cookie harvest look like a browser crash: the
+        # DOM appeared and Chrome vanished before the eye could register it.
+        # Give headful 1.5 seconds by default. BOTIFY_BROWSER_LINGER is the new
+        # descriptive knob; CENSUS_HOLD remains a backwards-compatible alias.
+        raw_hold = os.environ.get("BOTIFY_BROWSER_LINGER")
+        if raw_hold is None:
+            raw_hold = os.environ.get("CENSUS_HOLD")
         try:
-            hold = float(os.environ.get("CENSUS_HOLD") or 0)
+            hold = (float(raw_hold) if raw_hold is not None
+                    else (0.0 if headless else 1.5))
         except ValueError:
-            hold = 0.0
+            hold = 0.0 if headless else 1.5
         if hold:
             import time
             sys.stderr.write(f"  holding the window open {hold}s -- look at it\n")
