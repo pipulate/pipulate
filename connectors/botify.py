@@ -935,30 +935,30 @@ def _speedworkers_config(client, website_id):
     if not isinstance(production, dict) or not production.get("id"):
         raise PullDataError("productionVersion has no id")
 
+    version_literal = json.dumps(production["id"])
     detail_data = _activation_data(
         client,
-        """query ProductionConfig($versionId: String!) {
-          websiteVersion(id: $versionId) {
+        f"""query {{
+          websiteVersion(id: {version_literal}) {{
             id
             version
             isProductionVersion
-            configs {
+            configs {{
               id
               name
               renderingRules
-            }
-            sections(includeDeleted: true) {
+            }}
+            sections(includeDeleted: true) {{
               id
               stableId
               deletedAt
               name
               rules
-              desktopConfig { id name }
-              mobileConfig { id name }
-            }
-          }
-        }""",
-        {"versionId": production["id"]},
+              desktopConfig {{ id name }}
+              mobileConfig {{ id name }}
+            }}
+          }}
+        }}""",
     )
     version = detail_data.get("websiteVersion")
     if not isinstance(version, dict):
