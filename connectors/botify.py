@@ -891,6 +891,18 @@ class PullAuthError(RuntimeError):
     """The warmed Botify session is no longer accepted."""
 
 
+class PullForbiddenError(RuntimeError):
+    """The session is VALID but not authorized for THIS resource -- a
+    per-project condition, never session death. Witnessed 2026-09-23: an
+    Activation GraphQL body error 'You do not have permission to perform this
+    action' arrived on an HTTP 200, in a run where nine earlier projects had
+    already succeeded on the same warmed cookie. HTTP-level 401/403 is still a
+    real PullAuthError upstream in _pull_response, and every project's
+    SiteCrawler GET runs before its Activation call, so a dead cookie still
+    halts at the next project -- this class only ever catches a live-session
+    authz denial."""
+
+
 class PullTransientError(RuntimeError):
     """A retryable network/server failure; write no completion marker."""
 
@@ -955,8 +967,17 @@ def _activation_data(client, query, variables=None):
             for e in errors
         )
         lowered = message.lower()
-        if any(word in lowered for word in
-               ("auth", "forbidden", "permission", "credential", "login")):
+        # AUTHZ IS NOT AUTHN (split 2026-09-23). A body error about THIS
+        # resource's permissions is per-project; a body error about the
+        # identity itself is session death. "forbidden"/"permission" name the
+        # first, "auth"/"credential"/"login" the second. HTTP 401/403 is still
+        # caught upstream in _pull_response as a real PullAuthError, and each
+        # project's SiteCrawler GET runs before its Activation call, so a dead
+        # cookie still trips that HTTP guard on the very next project -- this
+        # branch can only wave through a live-session authz denial.
+        if any(word in lowered for word in ("forbidden", "permission")):
+            raise PullForbiddenError(f"Activation GraphQL: {message[:300]}")
+        if any(word in lowered for word in ("auth", "credential", "login")):
             raise PullAuthError(f"Activation GraphQL: {message[:300]}")
         raise PullDataError(f"Activation GraphQL: {message[:300]}")
     data = body.get("data") if isinstance(body, dict) else None
@@ -1231,6 +1252,24 @@ def pull_configs(queue_path, limit, profile_name="botify", headless=False):
                     f"project {row['id']}: authentication failed: {exc}\n")
                 auth_failed = True
                 break
+            except PullForbiddenError as exc:
+                # HEAD-OF-LINE STARVATION, THE SEQUEL (fixed 2026-09-23). One
+                # project the account cannot read in Activation used to break
+                # the whole run as if the session had died, freezing the queue
+                # on it every re-run. It is now a terminal per-project
+                # UNRESOLVED with its own reason, exactly like no_ftl.websiteID,
+                # so the queue drains past it and the forbidden projects stay a
+                # named cohort for a later resolver.
+                _atomic_json(unresolved_path, {
+                    "unresolved": True,
+                    "stage": "speedworkers",
+                    "reason": "activation_forbidden",
+                })
+                sys.stderr.write(
+                    f"project {row['id']}: Activation forbidden for this "
+                    "account; SpeedWorkers marked unresolved, session still "
+                    f"live: {exc}\n")
+                continue
             except (PullTransientError, PullDataError) as exc:
                 errored += 1
                 sys.stderr.write(
