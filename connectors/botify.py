@@ -1546,6 +1546,14 @@ def main():
     if args.check:
         sys.exit(check())
 
+    if args.pull_configs:
+        if not args.queue:
+            sys.stderr.write("--pull-configs requires --queue PATH\n")
+            sys.exit(1)
+        sys.exit(pull_configs(
+            args.queue, args.limit, profile_name=args.profile,
+            headless=args.headless))
+
     if args.census:
         bad = [p for p in (args.param or []) if "=" not in p]
         if bad:
