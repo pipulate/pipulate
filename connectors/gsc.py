@@ -59,6 +59,21 @@ from googleapiclient.errors import HttpError
 SCOPES = ['https://www.googleapis.com/auth/webmasters.readonly']
 WALLET_FILE = Path.home() / '.config' / 'pipulate' / 'connectors.json'
 
+# Non-secret wallet metadata. The connector still owns resolution, refresh,
+# browser minting and the Search Console scope; wallet.py only materializes
+# this descriptor and delegates the OAuth walk back here.
+AUTH_SLOT = {
+    "auth": "oauth_token_file",
+    "paths": {
+        "credentials": "~/.config/pipulate/credentials.json",
+        "token": "~/.config/pipulate/gsc_token.json",
+    },
+    "env": {
+        "PIPULATE_GSC_CREDENTIALS": "optional override for paths.credentials",
+        "PIPULATE_GSC_TOKEN": "optional override for paths.token",
+    },
+}
+
 
 # ----------------------------------------------------------------------------
 # Auth
