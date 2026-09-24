@@ -515,6 +515,8 @@ def login(slot_name, stale_days):
     wallet = load_wallet()
     slot = wallet.get(slot_name)
     if not isinstance(slot, dict):
+        slot = _materialize_declared_slot(wallet, slot_name)
+    if not isinstance(slot, dict):
         names = [n for n, c in wallet.items()
                  if not n.startswith('_') and isinstance(c, dict) and c.get('auth')]
         die(f"No slot '{slot_name}' in {Path(WALLET_PATH).expanduser()}.\n"
@@ -902,12 +904,15 @@ def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
     if slot_name and ('://' in slot_name or '.' in slot_name):
         return _warm_url(slot_name, stale_days, assume_yes, dry_run)
     wallet = load_wallet()
+    if slot_name and not isinstance(wallet.get(slot_name), dict):
+        _materialize_declared_slot(wallet, slot_name, write=not dry_run)
     slots = [(n, c) for n, c in wallet.items()
              if not n.startswith('_') and isinstance(c, dict) and c.get('auth')]
     if slot_name:
         picked = [(n, c) for n, c in slots if n == slot_name]
         if not picked:
             die(f"No slot '{slot_name}' in {Path(WALLET_PATH).expanduser()}.\n"
+                f"No literal AUTH_SLOT was found in connectors/{slot_name}.py.\n"
                 f"Slots: {', '.join(n for n, _ in slots) or '(none)'}")
         slots = picked
 
@@ -1303,7 +1308,9 @@ def board(wallet, slot_name):
     if slot_name:
         slots = [(n, c) for n, c in slots if n == slot_name]
         if not slots:
-            die(f"No slot '{slot_name}' in {Path(WALLET_PATH).expanduser()}.")
+            die(f"No slot '{slot_name}' in {Path(WALLET_PATH).expanduser()}.\n"
+                f"Run: python connectors/wallet.py warm {slot_name}\n"
+                "If the connector declares AUTH_SLOT, warm materializes it first.")
     enrolled = [(n, c) for n, c in slots if c.get('enrolled', True)]
     benched = [(n, c) for n, c in slots if not c.get('enrolled', True)]
 
