@@ -1189,6 +1189,7 @@ def pull_configs(queue_path, limit, profile_name="botify", headless=False):
 
     written = absent = errored = 0
     auth_failed = False
+    api_client = None
     with httpx.Client(cookies=cookies, timeout=60.0,
                       follow_redirects=False) as client:
         for row in pending:
