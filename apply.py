@@ -274,6 +274,54 @@ import subprocess
 #      inside the banner. The explanation goes after it, where skipping it
 #      costs nothing.
 #
+# THE FINDING DORY RULE (banked 2026-09-24, cartridge foo-75b9c41a-94.zip, at
+# the operator's instruction). The rules above already said "one action per
+# line" and "never make the human infer the command from prose." Both were in
+# context. The same ride still produced four failures on hand steps:
+#   1. A HALT banner rode inside a code fence. The copy button took all of it
+#      and bash ran the English ("FINISH: command not found").
+#   2. `read -rs JIRA_TOKEN && export JIRA_TOKEN`, described as "waits quietly
+#      for you to paste the token." No visible prompt, and "paste" had two
+#      readings. The operator pasted the token INTO the command, then Ctrl+C.
+#   3. The fix, `export JIRA_TOKEN="$(pbpaste)"`. The copy button is how every
+#      command reaches the terminal, so at Enter the clipboard holds the
+#      COMMAND, not the token. It worked only because the operator pasted,
+#      held off on Enter, went and copied the token, came back, and pressed
+#      Enter: a CAPTCHA nobody wrote down.
+#   4. A patch anchored on a line that exists only if an earlier car, never
+#      applied, had landed. This file refused it.
+# Adjectives do not survive a model under load. This is a procedure. Run it on
+# every step the human does by hand, before emitting it:
+#   (a) READ IT AS DORY. The reader has no memory of the last line, is in a
+#       hurry, takes every ambiguous word the wrong way, and acts on the first
+#       thing that looks like an instruction. Walk the step from their chair:
+#       which window is open, what is in the clipboard, what is on the screen.
+#       Every way it can go wrong gets a sentence, or the step is redesigned.
+#   (b) THE CLIPBOARD IS ALREADY IN USE. The command travels through it, so a
+#       command never reads its input from the clipboard. A value only the
+#       human has (a token, a path) is asked for at a VISIBLE, LABELED prompt,
+#       and copying that value is its own numbered step AFTER the command is
+#       running. Bash form:
+#         read -rsp 'Paste your Jira token, then press Enter: ' JIRA_TOKEN; echo; export JIRA_TOKEN
+#       Hidden input says so: "nothing appears when you paste; that is normal."
+#       A placeholder is the other honest form, if the step names exactly
+#       which characters to replace.
+#   (c) EVERY STEP IS THREE PARTS: "Copy the block below, paste it into <which
+#       window>, press Enter." Then the fence. Then "You will see: <exact
+#       text>." A secret is checked by its length (echo ${#VAR}), never by
+#       its value.
+#   (d) EVERY FENCE IS WHAT ITS PASTE TARGET EXPECTS. A bash fence holds only
+#       lines safe to run as-is; a banner or explanation is never fenced. A
+#       fence with a Target line is a patch. A Car 2 fence is adhoc.txt lines.
+#   (e) A HALT CARRIES ONE ACTION. A hand step that needs more than one action
+#       is not a HALT: it becomes the whole turn. Its test is Car 1, other work
+#       waits, and the next compile reads the receipt. One thing done so a
+#       tired person cannot get it wrong beats five things done fast.
+#   (f) A PATCH ANCHORS ON THIS COMPILE'S RAW SOURCE. Never on a line another
+#       car would create; never "apply that one first."
+# THE TEST: a red team is fuzzing these instructions on a real operator in a
+# high-reliability shop. Every misreading they find is your defect.
+#
 # THE DIVIDER IS NOT OPTIONAL (convicted 2026-09-22, six refusals in a row and
 # a hand repair in vim). The emitter wrote the search marker, the old text,
 # the REPLACE marker where the divider belongs, the new text, and then a
