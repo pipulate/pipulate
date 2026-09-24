@@ -47,6 +47,48 @@ import subprocess
 # `Ignition: <exact command or action>.` If nothing needs ignition, say
 # `Ignition: none.` Never imply ignition by describing expected output, and
 # never make the human infer the command from prose.
+#
+# THE ANSWER IS THE ARTIFACT (banked 2026-09-24, convicted the turn it was
+# named). The model offered to render a case card as a host-side "Artifact"
+# panel one breath before being told those are forbidden. An Artifact is
+# unsigned, unhashed, unversioned, and lives OUTSIDE the cartridge -- the exact
+# trusting-trust binary this system exists to abolish, in a convenience's
+# clothes. THE RULE: the only durable outputs are the sealed cartridge
+# (qamy.zip = prompt.md + payload.md + manifest.json) and the copyable text of
+# the response. Never emit, offer, or route work into an Artifact, canvas, or
+# side panel. A finding that cannot be pasted here and rebuilt from the manifest
+# is not a finding.
+#
+# NEXT CONTEXT IS PASTE-READY OR IT IS SABOTAGE (banked 2026-09-24, convicted by
+# an operator who had to hand-translate a prose paragraph back into adhoc.txt
+# lines). Car 2 was written "Add, in this order of value: (1)... (2)..." --
+# English, not includes. This system exists to KILL that copy-paste correlation
+# work, and a prose NEXT CONTEXT hands it straight back to a tired human in an
+# internet cafe. THE RULE: (2) NEXT CONTEXT is ALWAYS a single fenced block of
+# literal adhoc.txt lines -- bare paths, `! ` command lines, `!`/`?`/`@` URL
+# lines -- paste-ready under the operator's markers with zero editing. Active
+# includes are bare; uncertain lines are commented placeholders the operator
+# completes. Prose goes OUTSIDE the block. Every probe from (1) reappears here
+# with a leading "! " per THE PROBE ECHO INVARIANT.
+#
+# A PROBE RUNS ON THE OPERATOR'S MACHINE OR IT IS NOT A PROBE (banked
+# 2026-09-24, convicted by four dead probes in one car). (1) PROBES pointed at
+# /root/.claude/... -- paths that exist only on the model's ephemeral cloud
+# disk -- so every jq and grep answered "No such file or directory" on the
+# operator's Mac. The one probe that WORKED carried its evidence inline (a
+# base64 blob it decoded on the spot). A probe against a file only the model can
+# see is a promissory note, not a falsifier. THREE SUB-RULES:
+#   (a) USE rg, NEVER grep. The tree is full of .git/ folders; rg honors
+#       .gitignore and skips them, grep recurses into every object.
+#   (b) A PROBE TARGETS A FILE THE OPERATOR HAS, or carries its evidence inline.
+#       Evidence living only on the model's side is DELIVERED into the cartridge
+#       as a real file first, then the probe reads that file.
+#   (c) A NAME THAT IS NOT A FILE IS NOT A FILE INCLUDE. A remote MCP tool
+#       (html_pageworkers_preview, site_crawler_url_detail) is actuated through
+#       connectors/mcp.py, never listed as a bare path; prompt_foo.py answers a
+#       bare tool name with "FILE NOT FOUND AND WILL BE SKIPPED" and the context
+#       arrives silently empty.
+#
 # SPELL OUT THE TOOL-CALL YOU ARE MAKING OF THE HUMAN (banked 2026-09-22, at
 # the operator's instruction, after a Context car that said "same as last
 # turn" and taught nothing). The model reading this file is tool-calling a
