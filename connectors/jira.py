@@ -442,6 +442,13 @@ def list_project_issues(client, base, project_key, max_items):
         f = it.get("fields", {})
         print(f"{it.get('key', '?')}  [{_name(f.get('status'))}]  "
               f"[{_name(f.get('issuetype'))}]  {f.get('summary', '')}")
+    # THE FULL PAGE WAS SILENT (convicted 2026-09-24, cartridge
+    # foo-9d59e535-96.zip). `jira SVB -n 100` printed exactly 100 rows and no
+    # warning, and a truncated list reads exactly like a complete one: the
+    # only tells were a row count and SVB-115 missing from it. list_mine
+    # already says so out loud; this says it the same way.
+    if len(issues) >= max_items:
+        print(f"\n# (hit the -n cap of {max_items}; there may be more -- raise -n/--max)")
     print("\n# Next: python connectors/jira.py <PROJ-123>   (full issue text)")
 
 
@@ -455,6 +462,8 @@ def search_issues(client, base, jql, max_items):
     for it in issues[:max_items]:
         f = it.get("fields", {})
         print(f"{it.get('key', '?')}  [{_name(f.get('status'))}]  {f.get('summary', '')}")
+    if len(issues) >= max_items:
+        print(f"\n# (hit the -n cap of {max_items}; there may be more -- raise -n/--max)")
     print("\n# Next: python connectors/jira.py <PROJ-123>   (full issue text)")
 
 
