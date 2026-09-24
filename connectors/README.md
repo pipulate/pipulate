@@ -82,8 +82,8 @@ holds unchanged. The file kinds are the other shape: `mcp_oauth`'s
 out of the JSON by Python, because a token path and a login URL are not things
 a shell should export. Say which shape a new slot is before adding a key to it.
 
-Auth kinds: oauth_token_file (gmail), bearer_token (botify), basic_auth
-(confluence), service_account_file (gsc), browser_session (botify_browser,
+Auth kinds: oauth_token_file (gmail, gsc), bearer_token (botify), basic_auth
+(confluence), service_account_file, browser_session (botify_browser,
 semrush — a persistent Chrome profile under data/uc_profiles/<name>, warmed by
 weblogin.py, not a token), and mcp_oauth (botify_mcp — a remote MCP bearer
 whose token file is DERIVED from the slot's defaults.resource and minted or
