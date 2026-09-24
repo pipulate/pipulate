@@ -111,8 +111,8 @@ DOTENV_PATH = Path(os.environ.get('PIPULATE_DOTENV') or
 REPO_ROOT = Path(os.environ.get('PIPULATE_ROOT') or Path(__file__).resolve().parents[1])
 
 # Auth kinds — these strings MUST match connectors.json exactly.
-_OAUTH_KIND = 'oauth_token_file'       # mint + auto-refresh (gmail, sheets)
-_SERVICE_KIND = 'service_account_file'  # a key file on disk (gsc)
+_OAUTH_KIND = 'oauth_token_file'       # mint + auto-refresh (gmail, sheets, gsc)
+_SERVICE_KIND = 'service_account_file'  # a key file on disk
 _BEARER_KIND = 'bearer_token'          # paste: single API token (botify, slack)
 _BASIC_KIND = 'basic_auth'             # paste: user + API token (confluence, jira, gong)
 _BROWSER_KIND = 'browser_session'      # weblogin persistent profile (botify_browser, semrush)
