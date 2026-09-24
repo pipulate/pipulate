@@ -1037,7 +1037,11 @@ def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
         for _after, _akind, _n, _adetail, _note in results:
             if _akind not in _ENV_KINDS:
                 continue
-            for _var in _required_env_vars(_by_name.get(_n) or {}):
+            for _group in _required_env_groups(_by_name.get(_n) or {}):
+                _selected = _env_group_source(_group)
+                if not _selected:
+                    continue
+                _var, _source = _selected
                 _live = os.environ.get(_var)
                 _stored = _vault_now.get(_var)
                 if _live and _stored and _live != _stored:
