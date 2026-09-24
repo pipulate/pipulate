@@ -58,11 +58,16 @@ Normal users therefore warm credentials — they do not hand-author
 connectors.json.
 
 Resolution order in every connector remains explicit CLI flag -> env var ->
-connectors.json default -> clean failure naming the missing variable. Only the
-`defaults` block is machine-consumed; `env` blocks are documentation-as-data.
-A future connectors.nix may still express machine-level enrollment policy, but
-the connector's authentication shape travels with the connector itself:
-mechanism in source, materialized state at runtime, secrets in neither.
+connectors.json default -> clean failure naming the missing variable. The
+`defaults` block and optional `env_aliases` mapping are machine-consumed; `env`
+keys name canonical variables while their descriptions remain
+documentation-as-data. For an env kind, `env_aliases` maps a canonical name to
+fallback spellings the connector already accepts: any visible member satisfies
+that one logical requirement, and `warm` offers the canonical name only when no
+member is already present. A future connectors.nix may still express
+machine-level enrollment policy, but the connector's authentication shape
+travels with the connector itself: mechanism in source, materialized state at
+runtime, secrets in neither.
 
 THE FLAKE IS A CONSUMER OF `defaults`, and for an env kind that changes what a
 `defaults` KEY means. flake.nix's WALLET HYDRATOR reads this file at shell
