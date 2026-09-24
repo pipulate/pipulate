@@ -81,6 +81,18 @@ from config import get_botify_token
 
 API_BASE = "https://api.botify.com/v1"
 
+# AUTH IS DECLARED WHERE IT IS CONSUMED. wallet.py reads this literal through
+# AST -- never by importing this connector -- and can materialize a missing
+# connectors.json slot from it. Names and descriptions only; never secrets.
+AUTH_SLOT = {
+    "auth": "bearer_token",
+    "env": {
+        "BOTIFY_API_TOKEN": (
+            "required; get your API token at https://app.botify.com/account"
+        ),
+    },
+}
+
 
 def normalize_query(arg):
     """Turn an app.botify.com URL into the slug path this connector routes on.
@@ -129,9 +141,9 @@ def make_client():
     if not token:
         sys.stderr.write(
             "Missing BOTIFY_API_TOKEN.\n"
-            "Set it in your environment, the project-root .env, or the warm\n"
-            "vault (~/.config/pipulate/.env); config.get_botify_token() checks\n"
-            "all three, in that order.\n"
+            "Run: python connectors/wallet.py warm botify\n"
+            "The wallet materializes Botify's declared auth slot if needed,\n"
+            "then saves the token to ~/.config/pipulate/.env (out of git).\n"
         )
         sys.exit(1)
     headers = {"Authorization": f"Token {token}", "Content-Type": "application/json"}
