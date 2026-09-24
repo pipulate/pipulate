@@ -7,7 +7,7 @@ A Unix-philosophy gateway to Google Search Console for Prompt Fu context.
 
 Golden-path modes, auto-detected from the single positional argument:
 
-  python connectors/gsc.py                          # LIST: properties visible to the service account
+  python connectors/gsc.py                          # LIST: properties visible to your Google account
   python connectors/gsc.py sc-domain:example.com    # LIST: top queries, last 28 days
   python connectors/gsc.py '{"startDate": ...}'     # FETCH: raw searchanalytics JSON body
 
