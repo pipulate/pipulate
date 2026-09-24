@@ -710,23 +710,30 @@ def _warm_env(name, cfg, assume_yes, force=False):
     scoreboard reads NAMES ONLY, so a REVOKED token still reads `filled` and
     warm's cold-gate skipped it -- `check slack` printed RED gate2 while
     `warm slack --dry-run` printed "already reads filled" in the same payload.
-    Naming a slot on the command line IS the explicit act; every declared var
-    is re-offered, and blank input keeps whatever is already there."""
-    req = _required_env_vars(cfg)
-    missing = req if force else [v for v in req if not _env_source(v)]
-    if not missing:
+    Naming a slot on the command line IS the explicit act; every logical env
+    requirement is re-offered. An already-present alias is re-offered by that
+    name; otherwise warm offers the canonical name. Blank keeps what is there."""
+    groups = _required_env_groups(cfg)
+    offered = []
+    for group in groups:
+        present = _env_group_source(group)
+        if force:
+            offered.append((present[0] if present else group[0], group[0]))
+        elif present is None:
+            offered.append((group[0], group[0]))
+    if not offered:
         return 'nothing missing'
     env_doc = cfg.get('env') or {}
     defaults = cfg.get('defaults') or {}
-    print(f"  {len(missing)} value(s) -- blank keeps what is there, a paste overwrites.")
+    print(f"  {len(offered)} value(s) -- blank keeps what is there, a paste overwrites.")
     saved = []
     unchanged = []
-    for var in missing:
-        desc = str(env_doc.get(var, '')).strip()
+    for var, canonical in offered:
+        desc = str(env_doc.get(canonical, '')).strip()
         if desc:
             print(f"    {var} — {desc}")
-        if defaults.get(var):
-            print(f"    example: {defaults[var]}")
+        if defaults.get(canonical):
+            print(f"    example: {defaults[canonical]}")
         secret = _looks_secret(var)
         label = f"    {var}{' (hidden)' if secret else ''} = "
         value = _ask(label, secret=secret)
