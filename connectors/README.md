@@ -47,15 +47,22 @@ has been fixed in the same helper in two files.
 
 ## The Wallet (~/.config/pipulate/connectors.json)
 
-The tracked key-val parity layer: connector name -> auth kind, required env
+The materialized key-val state layer: connector name -> auth kind, required env
 var NAMES, token file PATHS, and non-secret defaults. Names and paths only —
-never secret values — which is what makes it safe to track in the (scrubbed)
-~/.config/pipulate repo. Resolution order in every connector: explicit CLI
-flag -> env var -> connectors.json default -> clean failure naming the
-missing variable. Only the `defaults` block is machine-consumed; `env`
-blocks are documentation-as-data. Eventually a connectors.nix emits this
-file blogs.nix-style: mechanism in the Nix store, data at runtime, secrets
-in neither.
+never secret values. A connector that needs a durable wallet slot owns that
+shape beside its own code as a top-level literal `AUTH_SLOT = {...}`.
+`wallet.py` reads the declaration through Python's AST without importing or
+executing the connector. `warm <name>` and `login <name>` materialize a
+missing slot; an existing wallet entry always wins and is never overwritten.
+Normal users therefore warm credentials — they do not hand-author
+connectors.json.
+
+Resolution order in every connector remains explicit CLI flag -> env var ->
+connectors.json default -> clean failure naming the missing variable. Only the
+`defaults` block is machine-consumed; `env` blocks are documentation-as-data.
+A future connectors.nix may still express machine-level enrollment policy, but
+the connector's authentication shape travels with the connector itself:
+mechanism in source, materialized state at runtime, secrets in neither.
 
 THE FLAKE IS A CONSUMER OF `defaults`, and for an env kind that changes what a
 `defaults` KEY means. flake.nix's WALLET HYDRATOR reads this file at shell
