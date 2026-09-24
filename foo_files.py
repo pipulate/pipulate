@@ -604,16 +604,21 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # is inferred, never declared: rambling prose + no imperative verbs +
 # an explicit or implicit "your turn" = the Tortoise is being summoned.
 
-# THE DISAPPEARING INSTRUMENT RULE (banked 2026-07-19): The supreme design
-# goal is invisible utility. The system must fade into the background like a
-# stick bug—inert and unnoticeable until called upon as a guardian angel.
-# The outward deployment mechanisms (curl | bash bootstraps) are secondary to
-# the portability of the state itself; if the workspace only ever compiles
-# context cartridges (foo.zip) to document and deliver self-contained,
-# perfect problem resolutions, it has fulfilled its mission. The artifact
-# travels as a legible, open-standard text ledger (resembling AGENTS.md or
-# SKILL.md structures), presenting zero friction to the receiver while
-# packing a complete, verifier-enforced cognitive environment under the skin.
+# THE DISAPPEARING INSTRUMENT RULE (banked 2026-07-19; command-surface witness
+# 2026-09-24): The supreme design goal is invisible utility. The system must
+# fade into the background like a stick bug—inert and unnoticeable until called
+# upon as a guardian angel. The outward deployment mechanisms (curl | bash
+# bootstraps) are secondary to the portability of the state itself; if the
+# workspace only ever compiles context cartridges (foo.zip) to document and
+# deliver self-contained, perfect problem resolutions, it has fulfilled its
+# mission. The artifact travels as a legible, open-standard text ledger
+# (resembling AGENTS.md or SKILL.md structures), presenting zero friction to
+# the receiver while packing a complete, verifier-enforced cognitive
+# environment under the skin. Concrete command-surface witness: `ahc` remains
+# the explicit ADHOC_CHOP author/workbench compiler, while `cpr` resolves the
+# walk router and invokes the same prompt_foo.py machinery through WALK_CHOP
+# with a lean frame, no tree, quiet output, and invocation-local
+# PIPULATE_ADHOC_FILE. The user names the goal; the framework stays behind it.
 
 # THE MOTHER CAT KATA (MCK) (earmark-seeded 2026-07-28): the record-and-playback
 # session that carries the human by the scruff -- bookmark to bookmark, a popped
