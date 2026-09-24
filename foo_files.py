@@ -120,8 +120,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1 already-written articles about this repo at Mac Shadow - MikeLev.in
-# Velocity: 1 published in the last 7 days
+# There are 2 already-written articles about this repo at Mac Shadow - MikeLev.in
+# Velocity: 2 published in the last 7 days
 # DOM hydration:  trapdoor triggers from  non-local IPs (top-N sample, self excluded)
 # Honeybot telemetry fetched 2026-09-21T07:23Z
 # --- END STATS ---
