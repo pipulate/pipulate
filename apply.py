@@ -198,6 +198,18 @@ import subprocess
 # the question before reading a number off it, and spell switches long
 # (--no-filename, --only-matching) wherever a single letter has ever meant
 # help in some other tool.
+# A CENSUS CARRIES A KNOWN MEMBER (convicted 2026-09-24, cartridge
+# foo-71ecd539-97.zip). Three key-range JQL windows were forecast to add up
+# to one project's full issue count. Each printed "(no matches)": no error,
+# no count, in the same compile where the plain listing of that project
+# returned rows through the same code. Issues known to exist sat inside the
+# middle window, and that alone falsified the reading. The forecast had
+# named only one failure shape, an HTTP 400, so the empty set arrived as a
+# shape nobody had named, and it looks exactly like an answer.
+# THE RULE: every probe that enumerates or counts names one member that
+# must appear in its output, and the Car 4 forecast says which. Zero rows
+# where a known member must be is an instrument failure, never an empty
+# world. A forecast lists its failure shapes, and the empty one goes first.
 # THE PIPELINE ATE THE FALLBACK (convicted 2026-09-21, by a probe that could
 # not fail). `ls DIR 2>/dev/null | head -5 || echo no_dir` was echoed to report
 # a missing directory. It never could: `||` binds to the whole PIPELINE, and a
