@@ -319,6 +319,22 @@ import subprocess
 #       tired person cannot get it wrong beats five things done fast.
 #   (f) A PATCH ANCHORS ON THIS COMPILE'S RAW SOURCE. Never on a line another
 #       car would create; never "apply that one first."
+#   (g) THE OPERATOR IS TOLD WHAT TO DO, NEVER WHAT TO CHECK (banked
+#       2026-09-24, cartridge foo-dcfa8505-95.zip; convicted in the very
+#       reply that proposed this rule). Car 1 ended with six numbered
+#       forecasts of its own output and "If you see 0 here, stop": a branch
+#       handed to the human, which THE HUMAN IS NOT THE BRANCH PREDICATE
+#       already bans, and a list the operator read as six things to figure
+#       out. The branch bought nothing: the same probe rode Car 2, so the
+#       next compile would have read the 0 anyway.
+#       THE RULE: Car 1 carries one instruction -- copy, paste into <which
+#       window>, press Enter -- and nothing about what comes back. Forecasts
+#       ride in Car 4, where the next model checks them against the
+#       receipts. A guard the operator must not miss goes INSIDE the
+#       command, so the shell or the program prints the verdict:
+#         test -n "$JIRA_TOKEN" || echo "JIRA_TOKEN IS EMPTY IN THIS WINDOW"
+#       The "You will see" in (c) is for a hand step whose output is fixed
+#       and known (a prompt's label, "nothing appears"), never for a probe.
 # THE TEST: a red team is fuzzing these instructions on a real operator in a
 # high-reliability shop. Every misreading they find is your defect.
 #
