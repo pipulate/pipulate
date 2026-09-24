@@ -32,10 +32,10 @@ bytes, never touches the network, never reads credentials.json /
 client_secret. It learns a slot's state from cheap, local evidence only:
 
   oauth_token_file      os.stat() the token file → mtime staleness
-                        (gmail, sheets). Google *Testing*-mode refresh tokens
-                        lapse 7d after issue; connectors rewrite the file on
-                        every refresh, so mtime tracks "last refreshed".
-  service_account_file  os.stat() the key file → present/non-empty (gsc).
+                        (gmail, sheets, gsc). Google *Testing*-mode refresh
+                        tokens lapse 7d after issue; connectors rewrite the
+                        file on every refresh, so mtime tracks "last refreshed".
+  service_account_file  os.stat() the key file → present/non-empty.
                         SA keys don't hit the 7d cliff, so NO mtime staleness:
                         present is filled, missing is empty. Honest either way.
   bearer_token          is the required env var NAME set in THIS process's
