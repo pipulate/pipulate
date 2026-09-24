@@ -66,6 +66,20 @@ TOKEN_PATH = os.environ.get('PIPULATE_GMAIL_TOKEN') or str(
     Path.home() / '.config' / 'pipulate' / 'gmail_token.json'
 )
 
+# Non-secret wallet metadata. wallet.py reads this literal through AST without
+# importing Gmail; Gmail itself remains the sole owner of its OAuth mechanism.
+AUTH_SLOT = {
+    "auth": "oauth_token_file",
+    "paths": {
+        "credentials": "~/.config/pipulate/credentials.json",
+        "token": "~/.config/pipulate/gmail_token.json",
+    },
+    "env": {
+        "PIPULATE_GMAIL_CREDENTIALS": "optional override for paths.credentials",
+        "PIPULATE_GMAIL_TOKEN": "optional override for paths.token",
+    },
+}
+
 # A Gmail API thread id is lowercase hex (e.g. 18f4ad923b1c83e2). Gmail's
 # opaque web ids (FMfcg..., Ktbx..., CXKn...) carry letters outside [a-f], so
 # this regex cleanly discriminates a usable id from an unconvertible web id.
