@@ -60,12 +60,11 @@ HONEST HEURISTICS, stated plainly (a clean caveat is a valid receipt):
     which is exactly why CHECK exists as a separate verb rather than as a
     flag that would quietly change what a familiar command does.
   - env-var kinds read the process environment AND the vault
-    (~/.config/pipulate/.env) by NAME. What they cannot read is a connector's
-    own fallback logic: the wallet reports each slot's DECLARED variable
-    names, so a connector that accepts CONFLUENCE_URL where the wallet
-    declares CONFLUENCE_BASE_URL reads emptier than it is. Convicted
-    2026-07-23 by a FALSE RED. When a row disagrees with reality, suspect the
-    declared NAME before you suspect the credential.
+    (~/.config/pipulate/.env) by NAME. Canonical required names live under
+    `env`; optional `env_aliases` map each canonical name to fallback spellings
+    the connector already accepts. Any visible member satisfies that logical
+    requirement, repairing the 2026-07-23 FALSE RED where CONFLUENCE_URL was
+    live but the wallet asked only for CONFLUENCE_BASE_URL.
   - CHECK's browser_session rows read cookie METADATA only (never a decrypted
     value) and green on a live HttpOnly cookie for the slot's apex domain.
     HttpOnly is a structural stand-in for "a server set this", not proof of a
