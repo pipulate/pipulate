@@ -206,10 +206,10 @@ def check():
 # Modes
 # ----------------------------------------------------------------------------
 def list_properties(service, max_items):
-    """LIST mode, no argument: every property visible to the service account."""
+    """LIST mode, no argument: every property visible to the authenticated Google account."""
     resp = service.sites().list().execute()
     entries = resp.get('siteEntry', [])
-    print(f"# GSC properties visible to this service account "
+    print(f"# GSC properties visible to this Google account "
           f"({len(entries)} total, showing up to {max_items})\n")
     if not entries:
         print("(no properties — does this Google account have access to any "
