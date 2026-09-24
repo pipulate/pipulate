@@ -46,6 +46,24 @@ import html as html_lib
 import httpx
 
 
+# Non-secret wallet metadata. Canonical env names stay in `env`; aliases name
+# the fallback spellings this connector already accepts.
+AUTH_SLOT = {
+    "auth": "basic_auth",
+    "env": {
+        "CONFLUENCE_BASE_URL": (
+            "required; Confluence base URL, e.g. https://yourco.atlassian.net/wiki"
+        ),
+        "CONFLUENCE_EMAIL": "required; Atlassian account email",
+        "CONFLUENCE_TOKEN": "required; Atlassian API token",
+    },
+    "env_aliases": {
+        "CONFLUENCE_BASE_URL": ["CONFLUENCE_URL"],
+        "CONFLUENCE_EMAIL": ["CONFLUENCE_USER"],
+    },
+}
+
+
 # ----------------------------------------------------------------------------
 # Auth & transport
 # ----------------------------------------------------------------------------
