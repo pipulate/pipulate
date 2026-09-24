@@ -1246,21 +1246,51 @@ def pull_configs(queue_path, limit, profile_name="botify", headless=False):
             # it is a SUPERSET key, not proof of a live SpeedWorkers production
             # version -- 78123 runs PageWorkers, not SpeedWorkers. THE RESOLVER
             # STAYS LOCAL: the API TOKEN reaches it (make_client()), not the
-            # cookie this loop holds and never the MCP, so the operator
-            # reproduces it with no privileged tooling. NEXT RIDE: before
-            # marking no_ftl.websiteID, open a token client, GET the project
-            # detail, read activation_website_id; on a hit feed it to
-            # _speedworkers_config and fall through to DONE; on a null, mark
-            # unresolved as now.
+            # cookie this loop holds and never the MCP. Project detail supplies
+            # ONLY the identifier bridge; _speedworkers_config below remains
+            # the authority on whether a production SpeedWorkers config exists.
+            if not website_id:
+                if api_client is None:
+                    api_client = make_client()
+                try:
+                    response = _pull_response(
+                        api_client, "GET",
+                        f"{API_BASE}/projects/{row['org']}/{row['project']}")
+                    try:
+                        project_detail = response.json()
+                    except ValueError as exc:
+                        raise PullDataError(
+                            "project detail answered 200 but not JSON") from exc
+                    if not isinstance(project_detail, dict):
+                        raise PullDataError(
+                            "project detail is not a JSON object")
+                    website_id = project_detail.get("activation_website_id")
+                    if (website_id is not None
+                            and not isinstance(website_id, str)):
+                        raise PullDataError(
+                            "activation_website_id is not a string")
+                except PullAuthError as exc:
+                    sys.stderr.write(
+                        f"project {row['id']}: project-detail authentication "
+                        f"failed: {exc}\n")
+                    auth_failed = True
+                    break
+                except (PullTransientError, PullDataError) as exc:
+                    errored += 1
+                    sys.stderr.write(
+                        f"project {row['id']}: project-detail lookup failed: "
+                        f"{exc}\n")
+                    continue
+
             if not website_id:
                 _atomic_json(unresolved_path, {
                     "unresolved": True,
                     "stage": "speedworkers",
-                    "reason": "no_ftl.websiteID",
+                    "reason": "no_activation_website_id",
                 })
                 sys.stderr.write(
-                    f"project {row['id']}: no ftl.websiteID; "
-                    "SpeedWorkers marked unresolved\n")
+                    f"project {row['id']}: no ftl.websiteID or "
+                    "activation_website_id; SpeedWorkers marked unresolved\n")
                 continue
 
             try:
