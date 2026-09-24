@@ -367,20 +367,33 @@ def _env_source(name):
     return None
 
 
+def _env_group_source(group):
+    """First visible member of a canonical-first env alias group."""
+    for name in group:
+        source = _env_source(name)
+        if source:
+            return name, source
+    return None
+
+
 def _env_state(slot):
-    """(state, detail) for a paste kind: is each required env var NAME visible
-    in THIS process, or declared in DOTENV_PATH? Reading the .env is what closes
-    the old "reads emptier than it is" caveat — a secret parked in
-    ~/.config/pipulate/.env now counts, because that is where `warm` puts it."""
-    req = _required_env_vars(slot)
-    if not req:
+    """(state, detail) for a paste kind: is each logical env requirement visible
+    in THIS process, or declared in DOTENV_PATH? A canonical name and any names
+    in its `env_aliases` group satisfy the same requirement."""
+    groups = _required_env_groups(slot)
+    if not groups:
         return 'no-path', 'slot declares no env vars'
-    seen = {v: _env_source(v) for v in req}
-    present = [v for v in req if seen[v]]
-    missing = [v for v in req if not seen[v]]
+    present = []
+    missing = []
+    for group in groups:
+        found = _env_group_source(group)
+        if found:
+            present.append(found)
+        else:
+            missing.append('/'.join(group))
     if not present:
-        return 'empty', f"unset: {', '.join(req)}"
-    where = ', '.join(f"{v} ({seen[v]})" for v in present)
+        return 'empty', f"unset: {', '.join('/'.join(g) for g in groups)}"
+    where = ', '.join(f"{name} ({source})" for name, source in present)
     if missing:
         return 'partial', f"set: {where} | unset: {', '.join(missing)}"
     return 'filled', f"set: {where}"
