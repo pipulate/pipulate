@@ -1342,6 +1342,8 @@ def pull_configs(queue_path, limit, profile_name="botify", headless=False):
                 sys.stderr.write(
                     f"project {row['id']}: SpeedWorkers pulled -- DONE\n")
 
+    if api_client is not None:
+        api_client.close()
     _pull_summary(rows, root, written, absent, errored)
     return 1 if auth_failed else 0
 
