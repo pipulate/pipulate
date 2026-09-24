@@ -87,6 +87,7 @@ import json
 import time
 import sqlite3
 import argparse
+import ast
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
@@ -158,6 +159,65 @@ def die(msg, code=1):
     sys.exit(code)
 
 
+def _declared_auth_slot(slot_name):
+    """Read one connector's literal AUTH_SLOT without importing the connector."""
+    if not slot_name or Path(slot_name).name != slot_name:
+        return None
+    source = Path(__file__).resolve().parent / f"{slot_name}.py"
+    if not source.is_file():
+        return None
+    try:
+        tree = ast.parse(source.read_text(encoding='utf-8'), filename=str(source))
+    except (OSError, SyntaxError) as exc:
+        die(f"Could not inspect {source} for AUTH_SLOT: {exc}")
+
+    for node in tree.body:
+        if not isinstance(node, ast.Assign):
+            continue
+        if not any(isinstance(target, ast.Name) and target.id == 'AUTH_SLOT'
+                   for target in node.targets):
+            continue
+        try:
+            slot = ast.literal_eval(node.value)
+        except (ValueError, SyntaxError) as exc:
+            die(f"{source} AUTH_SLOT must be a literal dict: {exc}")
+        kind = slot.get('auth') if isinstance(slot, dict) else None
+        if kind not in _KIND_LABEL:
+            die(f"{source} AUTH_SLOT has unknown auth kind {kind!r}")
+        return slot
+    return None
+
+
+def _save_wallet(wallet):
+    """Persist wallet metadata only -- declarations contain no secret values."""
+    path = Path(WALLET_PATH).expanduser()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(wallet, indent=2) + "\n", encoding='utf-8')
+
+
+def _materialize_declared_slot(wallet, slot_name, write=True):
+    """Add one missing connector-declared slot; existing wallet state always wins."""
+    current = wallet.get(slot_name)
+    if isinstance(current, dict):
+        return current
+    if slot_name in wallet:
+        die(f"Wallet key {slot_name!r} exists but is not an object; refusing to overwrite it.")
+
+    declared = _declared_auth_slot(slot_name)
+    if declared is None:
+        return None
+
+    wallet[slot_name] = declared
+    if write:
+        _save_wallet(wallet)
+        print(f"# Materialized wallet slot '{slot_name}' from "
+              f"connectors/{slot_name}.py AUTH_SLOT")
+    else:
+        print(f"# --dry-run: would materialize wallet slot '{slot_name}' from "
+              f"connectors/{slot_name}.py AUTH_SLOT")
+    return declared
+
+
 def load_wallet():
     """Read connectors.json (names and paths only).
 
@@ -185,10 +245,11 @@ def load_wallet():
         # defaults.BOTIFY_API_TOKEN would become the token's VALUE and poison
         # it. The `env` block is documentation-as-data, never exported, and
         # _warm_env already prints it under the prompt -- the safe channel.
-        seed = {"botify": {"auth": "bearer_token",
-                           "env": {"BOTIFY_API_TOKEN":
-                                   "required; get your API token at "
-                                   "https://app.botify.com/account"}}}
+        botify_slot = _declared_auth_slot("botify")
+        if botify_slot is None:
+            die("connectors/botify.py declares no AUTH_SLOT; "
+                "cannot seed the starter wallet")
+        seed = {"botify": botify_slot}
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(seed, indent=2) + "\n", encoding='utf-8')
         print(f"# Starter wallet created at {path}")
@@ -208,7 +269,7 @@ def load_wallet():
         print("#")
         print("# The slot name is yours; `auth` is one of six kinds (bearer_token")
         print("# here). See connectors/README.md for the other five.")
-        sys.exit(0)
+        return seed
     try:
         return json.loads(path.read_text(encoding='utf-8'))
     except (json.JSONDecodeError, OSError) as e:
