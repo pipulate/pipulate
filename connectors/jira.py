@@ -134,6 +134,10 @@ PROJECTS_WORD = 'projects'
 # probes its own door doubles every failed auth and can destroy the very
 # instrument it is reading with -- on a counter nobody can reset from this
 # side. Same shape as `clear` eating scrollback: a read that deletes.
+# WITNESSED 2026-09-24: a 192-character token answered 401 at the site host
+# and GREEN at the gateway, with JIRA_CLOUD_ID set to the cloudId that
+# <site>/_edge/tenant_info returns without authentication. Two declared
+# runs, one per door, settled it; this connector never tried both itself.
 JIRA_GATEWAY = "https://api.atlassian.com/ex/jira"
 
 
@@ -202,6 +206,8 @@ def normalize_query(arg):
     # message above even lists this URL shape as RECOGNIZED, which it is --
     # as a project key. Whoever lands the scope slot should decide here
     # whether a /boards/<id> segment says so out loud or resolves.
+    # WITNESSED 2026-09-24: a board URL printed the project header and the
+    # same first three rows as the bare project key.
     for marker in ('projects', 'browse'):
         if marker in parts:
             index = parts.index(marker)
@@ -454,6 +460,14 @@ def list_project_issues(client, base, project_key, max_items):
 
 def search_issues(client, base, jql, max_items):
     """SEARCH mode: raw JQL."""
+    # THE EMPTY SET IS NOT A CENSUS (witnessed 2026-09-24). Three key-range
+    # windows over one project -- `key <= P-100`, `key > P-100 AND key <=
+    # P-200`, `key > P-200` -- each printed "(no matches)" with no HTTP
+    # error, in the compile where the plain project listing returned rows
+    # through this same _search, with issues known to exist inside the
+    # middle window. The cause is not established. "(no matches)" reports
+    # what the API returned for that JQL, never how many issues exist: trust
+    # a range query only after a key known to be inside it comes back.
     issues = _search(client, base, jql, max_items)
     print(f"# Jira JQL search: {jql}  (key | status | summary)\n")
     if not issues:
