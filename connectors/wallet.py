@@ -296,14 +296,30 @@ def resolve_path(slot, key, needle):
 
 
 def _required_env_vars(slot):
-    """The env var NAMES this slot declares as required. Heuristic: any var
-    whose description says 'required' (and not 'optional'); if none is so
-    marked, every declared var is treated as required. Documentation-as-data,
+    """The canonical env var NAMES this slot declares as required. Heuristic:
+    any var whose description says 'required' (and not 'optional'); if none is
+    so marked, every declared var is treated as required. Documentation-as-data,
     read straight from the wallet — never a hardcoded per-connector list."""
     env = slot.get('env') or {}
     req = [name for name, desc in env.items()
            if 'required' in str(desc).lower() and 'optional' not in str(desc).lower()]
     return req or list(env.keys())
+
+
+def _required_env_groups(slot):
+    """Required env names as canonical-first alias groups.
+
+    Existing declarations stay singleton groups. `env_aliases` may map one
+    canonical env name to alternate names the connector already accepts; any
+    member satisfies the same logical requirement."""
+    aliases = slot.get('env_aliases') or {}
+    groups = []
+    for name in _required_env_vars(slot):
+        extra = aliases.get(name) or []
+        if isinstance(extra, str):
+            extra = [extra]
+        groups.append(tuple(dict.fromkeys([name, *extra])))
+    return groups
 
 
 def _stat_state(path, stale_days, mtime_matters):
