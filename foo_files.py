@@ -1605,7 +1605,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # XI. META-COGNITION & OTHER GOLDEN PATHS - Unification of desert kite funnel-mouths
 # ============================================================================
 
-# AI_RUNME.py                     # <-- While `prompt`, `foo` is the normal way to jolt Amnesiac Genie awake, they may find this first
 # cli.py                          # <-- And if you've got a super-brain like Claude, Gemini or ChatGPT, knowing this is super-powers. Compatibility-layer for your "terminal" environment guaranteed!
 # imports/__init__.py             # <-- Zero bytes again, but a heavy-lifter for an AI in search of tools
 # imports/stream_orchestrator.py  # <-- Player piano actuator. Sniffs chat-stream. Does the deed. Jacquard loom. MCP.
