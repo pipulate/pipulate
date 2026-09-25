@@ -1102,8 +1102,23 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               if [ "$LOCAL" != "$REMOTE" ]; then
                 if [ "$CURRENT_BRANCH" = "main" ]; then
                   echo "Updates found. Pulling latest changes..."
-                  git pull --ff-only origin main
-                  echo "Update complete!"
+                  # THE PULL SPEAKS ITS OWN VERDICT (2026-09-24, convicted the
+                  # night the power came back). --ff-only refuses a DIVERGED
+                  # checkout with a fatal and a nonzero exit, and the line after
+                  # it printed "Update complete!" regardless: the ATTRIBUTED-VOICE
+                  # mechanical test failing in the hook every default entry runs,
+                  # "complete" naming an act no code had checked. A diverged main
+                  # is the ordinary state of a second machine after a week apart,
+                  # so the refusal names the two commands that resolve it and
+                  # chooses neither, and the halt-don't-destroy gate above keeps
+                  # its promise: a skipped update, never lost work.
+                  if git pull --ff-only origin main; then
+                    echo "Update complete!"
+                  else
+                    echo "⚠️  Update refused: this checkout's main has diverged from origin/main (local commits upstream never saw)."
+                    echo "   Read them:                        git log --oneline origin/main..HEAD"
+                    echo "   Keep upstream, set them aside:    git branch stranded-main && git reset --hard origin/main"
+                  fi
                 else
                   echo "Updates available on main branch."
                 fi
