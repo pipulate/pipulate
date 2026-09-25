@@ -44,6 +44,13 @@ ALL_WORDS = (
     ("epr", "edit prompt router (after the walk)"),
     ("cpr", "compile prompt router (paste results into chatbot)"),
     ("all", "print this expanded list again"),
+    # THE HYPER-LITERAL WORDS (2026-09-25): the working loop under names a
+    # meeting cannot call strange; ahe, prompt and ahc still work. Expanded
+    # list only, per the 2026-09-16 ruling: the short list stays the
+    # newcomer's walk, epr, cpr.
+    ("context", "edit the file list that becomes the AI's context"),
+    ("prompt", "save your clipboard as prompt.md, the question"),
+    ("compile", "compile context and prompt into one payload for a chatbot"),
     ("brief", "compile this workshop into your clipboard for an AI"),
     ("jn", "start JupyterLab and Pipulate, JupyterLab first"),
     ("pu", "start the Pipulate server"),
