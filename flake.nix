@@ -1512,6 +1512,23 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           defaultu() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop DEFAULT_CHOP "$@"); }
           ahc() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP --no-tree "$@"); }
           ahcu() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP "$@"); }
+          # THE HYPER-LITERAL WORDS (2026-09-25, the operator's ruling): the
+          # three moves of a turn under names no meeting can call strange.
+          # context edits the router (ahe), prompt captures the clipboard,
+          # compile builds the payload (ahc); con, cont, pro, com and comp
+          # are the short spellings, and every old word stays. FUNCTIONS,
+          # per THE ALIAS-DISPATCH RULE: ahe and prompt are aliases, so
+          # context and pro carry the alias bodies instead of calling them,
+          # and compile calls the ahc function so --profile and --reason
+          # pass through. pro is defined beside prompt in the platform
+          # branches below, because its body differs between pbpaste and
+          # xclip. Typed by a human only; never echoed as a probe.
+          context() { (cd "$PIPULATE_ROOT" && nvim "''${PIPULATE_ADHOC_FILE:-adhoc.txt}" foo_files.py); }
+          con() { context "$@"; }
+          cont() { context "$@"; }
+          compile() { ahc "$@"; }
+          com() { compile "$@"; }
+          comp() { compile "$@"; }
           # THE WALK-ROUTER TWIN. Chapter VIII-b says to keep an alternate
           # router selection LOCAL to the compiler invocation and never in the
           # parent shell. That was prose beside a mechanism with nothing
@@ -2201,6 +2218,7 @@ print('AI:\n', r.ai)
             alias xcp='pbcopy'
             alias xv='pbpaste >'
             alias prompt='(cd "$PIPULATE_ROOT" && pbpaste >prompt.md)'
+            pro() { (cd "$PIPULATE_ROOT" && pbpaste >prompt.md); }
             alias patch='pbpaste >patch'
             # MAC SHADOW PUBLISHING: same sanitizer/articleizer mechanism,
             # deliberately no synchronized blog checkout and no publish actuator.
@@ -2260,6 +2278,7 @@ print('AI:\n', r.ai)
             alias xv='xclip -selection clipboard -o >'
             alias xp='(cd "$PIPULATE_ROOT" && python scripts/xp.py)'
             alias prompt='(cd "$PIPULATE_ROOT" && xclip -selection clipboard -o >prompt.md)'
+            pro() { (cd "$PIPULATE_ROOT" && xclip -selection clipboard -o >prompt.md); }
             alias patch='xclip -selection clipboard -o >patch'
             # Linux subshell aliases
             # write_post: unified, data-driven article intake. The privacy lane
