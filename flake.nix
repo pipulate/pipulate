@@ -1892,7 +1892,15 @@ print(max(1, n))
           # typed between an ignition and its AFTER tap destroyed the receipts
           # the tap existed to produce. A read-only status check must never be
           # able to delete evidence.
-          alias g='clear -x && echo "Blast Radius Check to establish bisection Left-hand Causal Boundary. It is a Popper-thing. Science." && git status'
+          # A FUNCTION SINCE 2026-09-25, because blast() now calls it: THE
+          # ALIAS-DISPATCH RULE says nothing can invoke an alias on a human's
+          # behalf. The transcript that convicted the two words printed a
+          # different first line from each after the repaint, so a copy taken
+          # from the top of the screen named which one had run. One body,
+          # one first line, typed the same as before.
+          g() {
+            clear -x && echo "Blast Radius Check to establish bisection Left-hand Causal Boundary. It is a Popper-thing. Science." && git status
+          }
           m() {
             # THE UNTRACKED-FILE DEBT (banked TODO 2026-07-20, discharged
             # 2026-07-31, receipt-gated): a new file is invisible to
@@ -1969,7 +1977,11 @@ print(max(1, n))
             # before/after probe evidence survives the detonation and can be
             # copied out afterward. Plain `clear` (ncurses >= 6.0) emits the
             # E3 escape and erases scrollback — shredding the receipts.
-            clear -x && echo "$ git status" && git status
+            # THE TAIL IS g ITSELF (2026-09-25): the operator copies a
+            # transcript from the top of the repainted screen, and blast
+            # used to print a different first line from g there, so the
+            # copy said which word had run. Same body, same first line.
+            g
           }
           # SPLIT VERDICT, and the two halves need OPPOSITE treatment. `cat
           # patch` is CWD-dependent BY DESIGN -- it reads the patch where you
