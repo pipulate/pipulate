@@ -1082,133 +1082,51 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # > The AI should see what falsifying will be if it's gonna work smart.  
 
 # The following files enable any Web-based ChatBot to help you edit your code with a patch system, turning you the human into an "actuator".
-# It is also the portion that mostly comprises the "Prompt Fu" (not FastHTML) side of this system and should always be in `adhoc.txt`.
+# It is also the portion that mostly comprises the "Prompt Fu" (not FastHTML) side of this system and should always be in `context.txt`.
 
-# --- START `adhoc.txt` TEMPLATE ---
-# AD HOC CHOP! The Not-Managed-by-Git Safe-for-Client-Data place. Insert Simpson Couch Gag in white space  below (explain anything to the audience you feel needs it explained)G
-# adhoc.txt    _   _   _               ____ _   _  ___  ____  _   
-#     / \   __| | | | | | ___   ___   / ___| | | |/ _ \|  _ \| |  The Anthropic "narrate out loud" feature consistently craps out right when it gets interesting and if you just *leave it running* long enough the audio eventually comes back too late to do you any good for listening to it while filling in the template. Anthropic is always a two-edge swords in ways that are subtle and insidiously worse than OpenAI and Google shenanigans.
-# ahe/ _ \ / _` | | |_| |/ _ \ / __| | |   | |_| | | | | |_) | |  This is a step I've been putting off forever because I love the jeopardy sound but there's copyright issues and I never wrapped it into the repo so it only ever played on the Linux development machine and not the Mac I've been testing it on. And when I finally was ready to do it I decided to do it right with deep research based on the thought that if I'm not using my favorite sound I better use one whose rights to use are super solid. There's some lesson here. 
-# ahc ___ \ (_| | |  _  | (_) | (__  | |___|  _  | |_| |  __/|_|  
-#  /_/   \_\__,_| |_| |_|\___/ \___|  \____|_| |_|\___/|_|   (_)  
+# --- START `context.txt` TEMPLATE ---
+# context.txt: the list of files an AI will read. context opens it, compile builds it.
+# Keys: j down, k up; Esc then :q quits, :q! discards, :wq saves and quits.
+# One line per thing the AI reads: a file path, or a command after `! `.
+# A line that starts with # is a comment: that file is not read.
+# To add a line: i starts typing, Esc stops. Absolute paths work from anywhere.
+# Web pages, APIs and the connector words: chapter XVIII of foo_files.py.
 
-# To Human: WELCOME TO VIM! It's really NeoVim but I say vim anyway.
-# To AI: This is an alternate 40K view to the big book-ore rolling pin spine.
+# --- THE 40K-FOOT VIEW (uncomment on a first turn; comment out on the second) ---
+# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- the book's spine, one line per article, newest first
+# ~/repos/nixos/autognome.py  # <-- the machine's morning routine (this author's NixOS box only)
+# init.lua                    # <-- the editor keys that drive the day
+# assets/installer/install.sh # <-- how a stranger's machine gets this workshop
+# GLOSSARY.md                 # <-- the terms, defined
+# flake.nix                   # <-- the environment, pinned: here is my hardware, here is my state
+# prompt_foo.py               # <-- the compiler that builds the payload
+# foo_files.py                # <-- the router: which files ride, and this book's outline
+# scripts/articles/lsa.py     # <-- the second brain: the article corpus behind `rgx`, `rgxc` and `posts`
+# requirements.in             # <-- the Python packages, pinned
+# pyproject.toml              # <-- the PyPI package
+# __init__.py                 # <-- the version
 
-# 1. **Probe**: Baseline Reading
-# 2. **Context**: Post-experiment *planned* reading instructions
-# 3. **Patch**: The experiment and how to make it happen
-# 4. **Prompt**: Post-experiment instructions and how to read results
-# 5. **Deliverable**: How the world is forever different moving forward
+# --- ACTUATORS (cheap; include when the AI should be able to act, not only read) ---
+# cli.py                      # <-- tool calls from the command line
+# scripts/xp.py               # <-- turns a pasted reply into the next context
+# scripts/ai.py               # <-- a local AI writes the commit messages
+# scripts/crawl.py            # <-- crawl a site into the next turn
+# scripts/weblogin.py         # <-- warm a login on the persistent browser profile
+# scripts/webclip_2_markdown.py  # <-- a web page, clipped, as markdown
 
-# The first thing you need to know here is that everything that comes after the
-# hash symbol (#) is commented out — and that's EVERYTHING in this file's default
-# state. Begin editing-in lines for inclusion as part of the context or adding
-# chunks of new context at the bottom. `Ctrl`+`v`, `j` (repeatedly), `l` (to move
-# right), `d` (to delete). Reverse that with `Ctrl`+`v`, `j` (repeatedly),
-# `Shift`+`i`, `# `, `Esc` to put the hashes back. You can just arrow-key around
-# here with `h`, `j`, `k`, `l`. Save-and-quit is a bit tricky because another
-# file is also loaded: `Esc`, `:`, `q`, `w`, `!`
+# --- RARE ---
+# scripts/foo_cartridge.py    # <-- the sealed archive: writer and verifier
+# scripts/foo_replay.py       # <-- replay a sealed archive on another machine
+# release.py                  # <-- how a release reaches GitHub and PyPI
+# imports/voice_synthesis.py  # <-- the voice
+# imports/ascii_displays.py   # <-- the ASCII art
+# scripts/release/version_sync.py  # <-- version stamping (to be folded into release.py)
 
-# If this is stressing you out and you're a quitter and want to quit, just type:
-# `Esc`, `:`, `q`, `!`, `Enter`. That will exit without saving any changes. If
-# you want to get over this hump, type: `Esc`, `:`, `T`, `u`, `t`, `o`, `r`, `Enter`.
+# --- THIS DISCUSSION ---
+# The files and commands for the work in front of you. Paste the NEXT CONTEXT
+# block an AI hands back directly below this line; the AI will correct a guess.
 
-# This file is just to make it easy having options of what to edit into context.
-# You can use whatever text-file you want to stack file-names and commands to
-# build an output text-file with the identically stacked output of each file or
-# command. In this way we vertically append or "stack" a bunch of text; simple as
-# that. If you understand this concept, you're on your way to future-proofing
-# yourself in the Age of AI. Congratulations! Here is how to include web pages:
-
-#    !URL  --------------------------------------------------------------------
-#      when    Public page; what a stranger or crawler sees; the BEFORE of a
-#              login-wall diagnosis
-#      switch  It shows a login page -> `warm URL` once, then `?URL`
-#    
-#    ?URL  --------------------------------------------------------------------
-#      when    Anything behind a login, on the site's persistent profile;
-#              `check URL` first
-#      switch  The lenses show a shell (nav, an `[Iframe]` leaf, no content) ->
-#              read the wire truth for the XHR the frame makes, then call that
-#              API with a connector
-#    
-#    @URL  --------------------------------------------------------------------
-#      when    Every re-read of a page already scraped; no browser, no network
-#      switch  The cached page is stale or was a login wall -> fresh `!` or `?`
-#    
-#    $URL  --------------------------------------------------------------------
-#      when    Exact markup: meta tags, a JSON blob in a `<script>`
-#      note    Token-heavy; needs a prior scrape
-#    
-#    %URL  --------------------------------------------------------------------
-#      when    The network log distilled; SPA endpoint discovery
-#      switch  It re-serves the wire truth you already have -> the API
-#    
-#    ! cmd  -------------------------------------------------------------------
-#      when    Any bounded, non-interactive command as a live receipt
-#      note    Cap it with `-n`; no aliases, no prompts
-#    
-#    Connector  ---------------------------------------------------------------
-#      when    The number you want is one GET away
-#      switch  LIST until the thing isn't in the list -> FETCH by id -> DRILL
-#              the path the app's own frame called -> `--grep` to narrow a list
-#              or find a leaf
-
-# Every step is one argument longer than the last; the moment a lens shows less than the wire does is the moment to stop scraping.
-
-# FOR 40K-FT VIEW (STORY & INFRASTRUCTURE) !!
-# --- START EDITING-IN ON 1ST TURN ---
-
-# ! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- ROLLING PIN that gives the 40K foot book-spine view of book-ore (only works for me because of local-only git repo)
-# ~/repos/nixos/autognome.py  # <-- You wake up in the morning and your Tooling & Instrumentation folds out of you like Inspector Gadget.
-# init.lua                    # <-- Those gadgets are made easy-to-use through nifty keyboard shortcuts (but ya gotta learn vim).
-# GLOSSARY.md                 # <-- Like the back of a J.R.R. Tolkien book, there's kooky new terms to know.
-# flake.nix                   # <-- Here is my hardware. Here is my state. Put on your sandbox. And please recreate. (Infrastructure as Code / IaC)
-# assets/installer/install.sh # <-- Pipulate.com installer real home in github/pipulate repo
-# prompt_foo.py               # <-- THIS system
-# foo_files.py                # <-- main ROUTER
-# requirements.in             # <-- We've "pinned" everything but still want a flexible Python Data Science virtualenv.
-# pyproject.toml              # <-- How this is a citizen of the Python "pip install" ecosystem
-# __init__.py                 # <-- Version info
-
-# --- END EDITING-IN ON 1ST TURN ---
-
-# scripts/articles/lsa.py     # <-- 2ND BRAIN: Search external memory with `rgx`, `rgxc` & `posts` Blogging for Hackers Jekyll-compatible.
-
-# OPTIONAL ACTUATORS (cheap and good to include to expand the AI's capabilities)
-# cli.py                      # <-- Catch-all actuator for PyPI envs, Python anchoring, MCP tool-call (plus alternatives) and **kwargs like wrapping for CLI
-# scripts/xp.py               # <-- Transforms host OS copy-paste buffer player-piano music into context-payload.
-# scripts/ai.py               # <-- How I constantly use local AI to write git commit messages with `m` alias.
-# scripts/crawl.py            # <-- Feel free to ask for something to be crawled and included in the next turn.
-# scripts/weblogin.py         # <-- Lets the user "warm up" the cache for their web logins at their leisure on a profile that persists.
-# scripts/webclip_2_markdown.py  # <-- Surprisingly important program.
- 
-# MISCELLANEOUS (rare to include but sometimes critical)
-# scripts/foo_cartridge.py    # Needs description
-# scripts/foo_replay.py       # Needs description
-# release.py                  # <-- How everything ends up where it does (GitHub, PyPI, etc.)
-# imports/voice_synthesis.py  # <-- The wand can talk to you
-# imports/ascii_displays.py   # <-- Where all the ASCII Art lives
-# scripts/release/version_sync.py  # <-- Needs to be wrapped into release.py and eliminated, I think.
-
-#                         --- Under this line is were you paste what the AI gives you ---
-#                         --- We call it context but it's really just the right-hand  ---
-#                         --- blast-radius of the "probes" to make this all science.  ---
-
-# Carry-over as the important work-in-progress parts of the project here just
-# like above but not as long-standing overarching to the framework but rather
-# for the current hot spots actively being worked on.
-
-# --- START THIS DISCUSSION ---
-
-# Get things started here! Guess at what context should be included.
-# If you get it wrong, you're just wasting 1-turn because the AI will help.
-# Un-comment lines, add lines with absolute-path filenames or `! ` commands. 
-
-# Context 1 (Edit-in selections from above and add new files immediately below)
-
-# --- END `adhoc.txt` TEMPLATE ---
+# --- END `context.txt` TEMPLATE ---
 
 # ============================================================================
 # IV. THE WAND🪄 & THE WIZARD🧙‍♂️ - Everything's actually web development these days
