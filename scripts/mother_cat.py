@@ -368,15 +368,15 @@ ROUTER_TAIL = (
     "#   3. type  compile  to build this list and the question into one payload\n"
     "#   4. paste your clipboard into a chatbot; compile filled it\n"
     "# To add a line later: i starts typing, Esc stops, :wq saves and leaves.\n"
-    "# The next walk rewrites this file (shorter notes) unless you have edited it.\n"
+    "# Walks rewrite this file until you edit it; after that they append below.\n"
 )
 # THE WHEELS COME OFF BY THEMSELVES. "First" means the router did not exist
 # before this ride. The rider writes it twice per ride (after ARCHIVE STATUS,
 # then after DECANT), so the absence test runs once per process and its
 # answer is cached here; the second write must not find the file its own
 # first write made. A later walk finds the file, writes ROUTER_KEYS, and the
-# wheels are off. A human who edits the router keeps it (the guard in the
-# writer); one who deletes it gets the lesson back on the next walk.
+# wheels are off. A human who edits the router keeps it: later walks append
+# a marked block below their lines; deleting it brings the lesson back.
 _ROUTER_FIRST = {"first": None}
 
 
@@ -390,18 +390,21 @@ def _router_line(path, what):
 
 
 def _write_walk_router(archive_path, preview_path=None, first=None):
-    """Replace one local selection; never read, disclose or compile its evidence.
+    """Write one local selection; never read, disclose or compile its evidence.
 
     THE ROUTER IS THE NEWCOMER'S FILE (2026-09-16): `context` opens it, so it is
     replaced ONLY while it is a file this writer could have produced -- the
     introduction line at most, plus one uncommented absolute path to an
-    archive or a preview, and nothing else. Any other uncommented line is a
-    human's; the new paths are printed for them and nothing is touched. With
-    a preview, the preview is the line that rides and the archive is a
-    commented line beneath it; without one, the archive rides alone,
-    labelled UNSANITIZED. THE FIRST ROUTER CARRIES THE VIM LESSON
-    (2026-09-20): `first` is None to decide by absence, cached per process in
-    _ROUTER_FIRST, or True/False to force it, as the probe does.
+    archive or a preview, and nothing else. A HUMAN'S FILE IS APPENDED TO
+    (2026-09-25, operator's ruling): any other uncommented line means the
+    file is theirs, so this walk lands as one marked block at the bottom,
+    the lines above untouched, and a second write in the same ride replaces
+    only its own block. With a preview, the preview is the line that rides
+    and the archive is a commented line beneath it; without one, the archive
+    rides alone, labelled UNSANITIZED. THE FIRST ROUTER CARRIES THE VIM
+    LESSON (2026-09-20): `first` is None to decide by absence, cached per
+    process in _ROUTER_FIRST, or True/False to force it, as the probe does.
+    Returns (target, receipt): the path written and one sentence saying how.
     """
     selected = os.environ.get("PIPULATE_ADHOC_FILE", str(REPO_ROOT / "context.txt"))
     if not selected.strip():
@@ -418,18 +421,19 @@ def _write_walk_router(archive_path, preview_path=None, first=None):
     preview = None if preview_path is None else _router_line(preview_path, "preview")
     # REPLACE ONLY A FILE THIS WRITER COULD HAVE WRITTEN: the introduction line
     # at most, plus one uncommented absolute path to an archive or a preview,
-    # and nothing else. Any other uncommented line is a human's, so the paths
-    # are printed for them instead.
+    # and nothing else. Any other file with lines in it is a human's, and a
+    # human's file is APPENDED TO, never replaced (2026-09-25): one marked
+    # block at the bottom, this walk's own, replaced in place when the same
+    # ride writes twice, so their lines above never move.
+    existing = ""
+    appended = False
     if target.is_file():
-        owned = [line.strip() for line in target.read_text(encoding="utf-8").splitlines()
+        existing = target.read_text(encoding="utf-8")
+        owned = [line.strip() for line in existing.splitlines()
                  if line.strip() and not line.lstrip().startswith("#")]
         routed = [line for line in owned if line != str(INTRO_PATH)]
-        if owned and (len(routed) != 1 or not routed[0].startswith("/")
-                      or not routed[0].endswith(("captures.md", "decant-preview.md"))):
-            raise ValueError(
-                f"{target.name} has lines of your own, so nothing was written; add the line(s) yourself: "
-                + " ".join(line for line in (preview, source) if line)
-                + " (or delete the file and the next walk rewrites it)")
+        appended = not (owned and len(routed) == 1 and routed[0].startswith("/")
+                        and routed[0].endswith(("captures.md", "decant-preview.md")))
     if first is None:
         if _ROUTER_FIRST["first"] is None:
             _ROUTER_FIRST["first"] = not target.is_file()
@@ -454,7 +458,26 @@ def _write_walk_router(archive_path, preview_path=None, first=None):
         )
         listing = [line for line in (intro, source) if line]
     body = "\n".join(legend + ["", "# --- BEGIN LISTING FILES OR `! ` COMMANDS ---"] + listing) + "\n"
-    body += ROUTER_TAIL if first else "\n# The next walk rewrites this file unless you have edited it.\n"
+    body += ROUTER_TAIL if first else "\n# Walks rewrite this file until you edit it; after that they append below.\n"
+    if appended:
+        run_id = Path(archive_path).parent.name
+        start, end = f"# --- WALK {run_id} START ---", f"# --- WALK {run_id} END ---"
+        # The introduction describes a newcomer; the person whose lines sit
+        # above is not one, so it rides commented here, one keystroke away.
+        block_lines = [start] + legend + ["# --- BEGIN LISTING FILES OR `! ` COMMANDS ---"]
+        block_lines += [f"# {line}" if line == intro else line for line in listing]
+        block = "\n".join(block_lines + [end]) + "\n"
+        at, to = existing.find(start), existing.find(end)
+        if at != -1 and to > at:
+            text = existing[:at] + block + existing[to + len(end):].lstrip("\n")
+            receipt = "replaced this walk's own block at the bottom; your lines above are untouched"
+        else:
+            text = (existing.rstrip("\n") + "\n\n" if existing.strip() else "") + block
+            receipt = f"appended WALK {run_id} at the bottom; your lines above are untouched"
+    else:
+        text = head + body
+        receipt = ("0600; lists the summary; the archive is a commented line beneath it" if preview
+                   else "0600; lists the UNSANITIZED archive until a summary is saved")
     temp = None
     try:
         with tempfile.NamedTemporaryFile(
@@ -463,7 +486,7 @@ def _write_walk_router(archive_path, preview_path=None, first=None):
         ) as stream:
             temp = Path(stream.name)
             os.fchmod(stream.fileno(), 0o600)
-            stream.write(head + body)
+            stream.write(text)
             stream.flush()
             os.fsync(stream.fileno())
         os.replace(temp, target)
@@ -471,7 +494,7 @@ def _write_walk_router(archive_path, preview_path=None, first=None):
     finally:
         if temp is not None:
             temp.unlink(missing_ok=True)
-    return target
+    return target, receipt
 
 
 def _finish_capture_archive(archive, status, skipped=()):
@@ -489,12 +512,12 @@ def _finish_capture_archive(archive, status, skipped=()):
     _print_next_compile(archive["path"])
     if status == "complete" and archive["previews"]:
         try:
-            target = _write_walk_router(archive["path"])
+            target, receipt = _write_walk_router(archive["path"])
         except Exception as exc:
             print(f"  CONTEXT FILE NOT UPDATED ({type(exc).__name__}): {exc}")
             print("  Archive preserved; the context file on disk is unchanged.")
         else:
-            print(f"  CONTEXT FILE  {target}  (0600; lists the UNSANITIZED archive until a summary is saved)")
+            print(f"  CONTEXT FILE  {target}  ({receipt})")
     else:
         print("  CONTEXT FILE unchanged: this run did not complete with captures.")
         print("  An existing context.txt still lists an earlier completed run.")
@@ -693,11 +716,11 @@ def _decant_to_clipboard(payload, archive_path=None):
         # written here, after the file, never inferred from a handoff boolean.
         if archive_path is not None:
             try:
-                router = _write_walk_router(archive_path, preview_path=target)
+                router, receipt = _write_walk_router(archive_path, preview_path=target)
             except Exception as exc:
                 print(f"   CONTEXT FILE NOT UPDATED ({type(exc).__name__}): {exc}")
             else:
-                print(f"   CONTEXT FILE  {router}  (0600; lists the summary; the archive is a commented line beneath it)")
+                print(f"   CONTEXT FILE  {router}  ({receipt})")
     copy_to_clipboard(scrubbed)
     return True
 
