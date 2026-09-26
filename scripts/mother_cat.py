@@ -1025,7 +1025,7 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
         def checkpoint_narration():
             nonlocal disclosed
             disclosed = _narrate(
-                "The page is open. When it looks finished, come back to the terminal and type CAPTURE.",
+                "The page has settled. Come back to the terminal and type CAPTURE.",
                 disclosed,
             )
 
