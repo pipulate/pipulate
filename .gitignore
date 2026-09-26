@@ -40,6 +40,11 @@ show_graph.html
 
 prompt.md
 article.txt
+# context.txt: the list of files an AI will read. `context` edits it, the
+# walk writes it, `compile` reads it (one file since 2026-09-25). The two
+# retired names stay ignored so a stale copy in an older checkout is never
+# swept into a commit by `m`.
+context.txt
 adhoc.txt
 adhocwalk.txt
 combined_prompt.txt
