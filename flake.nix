@@ -1854,7 +1854,7 @@ print(max(1, n))
           # from the top of the screen named which one had run. One body,
           # one first line, typed the same as before.
           g() {
-            clear -x && echo "Blast Radius Check to establish bisection Left-hand Causal Boundary. It is a Popper-thing. Science." && git status
+            clear -x && echo "Left-hand causal boundary \"blast radius\" established. Make 1 change and test." && git status
           }
           m() {
             # THE UNTRACKED-FILE DEBT (banked TODO 2026-07-20, discharged
