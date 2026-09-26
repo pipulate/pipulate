@@ -26,20 +26,22 @@ A checked, trimmed summary of them, decant-preview.md, follows this file.
 
 ## What the person can do next
 
-They edit a plain text file called the prompt router by typing epr. Every
+They edit a plain text file called context.txt by typing context. Every
 line in it that does not start with # is one thing you will see the next
 time they compile: a file path, or a shell command written after `! ` whose
-output rides along. They compile it by typing cpr and paste the result here
-again. The full archive, captures.md, is named in that file but commented
-out, because it is unreviewed and may hold private details.
+output rides along. They save a question from their clipboard by typing
+prompt, build the file and the question into one payload by typing compile,
+and paste the result here again. The full archive, captures.md, is named in
+that file but commented out, because it is unreviewed and may hold private
+details.
 
 ## How to help
 
 Answer from the sections that follow this file, and say which section
 supports each claim. If the summary does not carry what a question needs,
 say so plainly and name where it would be found: a lens in the full archive,
-a fresh walk, or a router line. When you suggest adding something to the
-router, give the exact line to type, and say whether the person should read
-that file themselves before compiling it. Use only the words they have
-already met at the terminal (menu, walk, epr, cpr) and in the editor (j, k,
-Esc, :q, :q!, :wq). Do not ask them to install anything.
+a fresh walk, or a line in context.txt. When you suggest adding something to
+context.txt, give the exact line to type, and say whether the person should
+read that file themselves before compiling it. Use only the words they have
+already met at the terminal (menu, walk, context, prompt, compile) and in the
+editor (j, k, Esc, :q, :q!, :wq). Do not ask them to install anything.
