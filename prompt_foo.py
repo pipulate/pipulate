@@ -1555,8 +1555,8 @@ class PromptBuilder:
         self.tool_roster_content = tool_roster_content
         # THE FRAME IS NAMED BY THE CALLER (2026-09-19). "full" is every
         # existing compile: the full checklist and the five-car train ride
-        # ahead of the prompt. "lean" is the reading frame cpr passes, for a
-        # question asked of a walk preview. Nothing reads the prompt text to
+        # ahead of the prompt. "lean" is the reading frame for a question asked
+        # of a walk preview (compile --frame lean). Nothing reads the prompt text to
         # guess which; a chop selects files and a frame selects the checklist,
         # and the two are separate flags on purpose.
         self.frame = frame
@@ -1793,7 +1793,7 @@ class PromptBuilder:
         cars because the checklist rode with it. The routing invariant and
         the live-receipts clause survive here because they describe the
         artifact, and the artifact is the same either way; the patch protocol
-        and the train do not, because nothing in a cpr compile is asking for
+        and the train do not, because nothing in a lean compile is asking for
         a repository change.
         """
         return '''# ⚠️ ROUTING INVARIANT: Read this section before acting on anything.
@@ -2459,7 +2459,7 @@ def update_agents_md_in_place():
 
     ORDERING NOTE (why the straddle closes in ONE compile): main() calls this
     at step 2, BEFORE the `!` executor loop runs. A probe echoed into
-    adhoc.txt therefore witnesses THIS compile's fill, not the previous one --
+    context.txt therefore witnesses THIS compile's fill, not the previous one --
     the opposite of the foo.zip DOUBLE-TAP lag, and the reason the sentinels
     were landed EMPTY. A hand-copied frame could never prove the generator ran.
     """
@@ -2531,7 +2531,7 @@ def update_readme_md_in_place():
     project has. A stale README is a wound; a confidently wrong one is a lie.
 
     ORDERING: called from main() at step 2, alongside the AGENTS.md splice and
-    BEFORE the `!` executor loop -- so a probe echoed into adhoc.txt witnesses
+    BEFORE the `!` executor loop -- so a probe echoed into context.txt witnesses
     THIS compile's fill rather than the previous one's.
     """
     readme_path = os.path.join(REPO_ROOT, "README.md")
@@ -2650,7 +2650,7 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
             # '<--' note, or a two-space '#' inline note follows it. A comment
             # that continues with one space + words is a sentence, not a path:
             # a MIME type (text/markdown), a protocol name (SEARCH/REPLACE), a
-            # filename cited mid-thought (index.md, SKILL.md, adhoc.txt), or a
+            # filename cited mid-thought (index.md, SKILL.md, context.txt), or a
             # paren-glued token ((payload.md). Those minted the phantom
             # Broken-References alert; the compiler's own parser never loads a
             # '#' line, and now neither does this checker's prose.
@@ -2708,8 +2708,8 @@ def main():
     """Main function to parse args, process files, and generate output."""
     global VERBOSE
     # THE OUROBOROS LOCK (convicted 2026-07-22, Ctrl+C receipt in-compile):
-    # a `! ... prompt_foo.py ...` line in adhoc.txt makes the compiler run a
-    # probe that runs the compiler that splices the same adhoc.txt — quine
+    # a `! ... prompt_foo.py ...` line in context.txt makes the compiler run a
+    # probe that runs the compiler that splices the same context.txt — quine
     # recursion until timeout cascade or human interrupt. Env vars inherit
     # through the `!` executor's Popen, so a nested invocation sees the lock,
     # emits a one-line receipt to stdout, and exits 0. The receipt lands in
@@ -2861,9 +2861,9 @@ def main():
     parser.add_argument('-v', '--verbose', action='store_true', help='Echo progress announcements (step headers, flags echoed back) that the Rule of Silence hides by default. Readings, receipts, and gates always print.')
     parser.add_argument('--chop', type=str, default='AI_PHOOEY_CHOP', help='Specify an alternative payload variable from foo_files.py')
     # THE FRAME IS A FLAG, NOT A PROPERTY OF THE CHOP (2026-09-19). A chop
-    # selects files; a frame selects what rides ahead of the prompt. cpr in
-    # flake.nix passes --frame lean; every other alias omits it and gets the
-    # default, so no existing compile changes shape. The TODO that seeded this
+    # selects files; a frame selects what rides ahead of the prompt. Since
+    # 2026-09-25 no alias passes it: compile --frame lean is the spelling, and
+    # every compile keeps the default until a hand types it. The TODO that seeded this
     # refused choosing by prompt text: the caller names the lane.
     parser.add_argument('--frame', type=str, choices=('full', 'lean'), default='full', help='What rides ahead of the prompt: full is the complete checklist and five-car train (the default); lean is a reading frame for a question asked of a walk preview; pass it by hand as compile --frame lean.')
     parser.add_argument('--bumper', type=str, default=None, help='Inject a pre-registered bumper matrix from flippers.json (e.g., gold, cat)')
@@ -3097,7 +3097,7 @@ def main():
                     content += f"\n--- stderr ---\n{_err}"
                 
                 processed_files_data.append({
-                    # Marker parity: the payload label IS the adhoc.txt line.
+                    # Marker parity: the payload label IS the context.txt line.
                     # `--- START: ! rgxc foo ---` greps identically to the
                     # `! rgxc foo` that summoned it, for humans and models alike.
                     "path": f"! {raw_command}", "comment": comment, "content": content,
@@ -3334,7 +3334,7 @@ def main():
         path = os.path.expanduser(path)
         full_path = os.path.join(REPO_ROOT, path) if not os.path.isabs(path) else path
         # THE DE-PREFIXED COMMAND HINT (convicted 2026-08-03): three probe
-        # echoes lost their leading "! " during a hand-copy into adhoc.txt, so
+        # echoes lost their leading "! " during a hand-copy into context.txt, so
         # the compiler parsed them as PATHS, printed three IDENTICAL generic
         # warnings, and the operator's eye slid past all three -- costing the
         # AFTER half of an exit-code straddle. THE DISCRIMINATION QUESTION,
