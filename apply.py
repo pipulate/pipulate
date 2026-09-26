@@ -60,12 +60,12 @@ import subprocess
 # is not a finding.
 #
 # NEXT CONTEXT IS PASTE-READY OR IT IS SABOTAGE (banked 2026-09-24, convicted by
-# an operator who had to hand-translate a prose paragraph back into adhoc.txt
+# an operator who had to hand-translate a prose paragraph back into context.txt
 # lines). Car 2 was written "Add, in this order of value: (1)... (2)..." --
 # English, not includes. This system exists to KILL that copy-paste correlation
 # work, and a prose NEXT CONTEXT hands it straight back to a tired human in an
 # internet cafe. THE RULE: (2) NEXT CONTEXT is ALWAYS a single fenced block of
-# literal adhoc.txt lines -- bare paths, `! ` command lines, `!`/`?`/`@` URL
+# literal context.txt lines -- bare paths, `! ` command lines, `!`/`?`/`@` URL
 # lines -- paste-ready under the operator's markers with zero editing. Active
 # includes are bare; uncertain lines are commented placeholders the operator
 # completes. Prose goes OUTSIDE the block. Every probe from (1) reappears here
@@ -324,7 +324,7 @@ import subprocess
 #       its value.
 #   (d) EVERY FENCE IS WHAT ITS PASTE TARGET EXPECTS. A bash fence holds only
 #       lines safe to run as-is; a banner or explanation is never fenced. A
-#       fence with a Target line is a patch. A Car 2 fence is adhoc.txt lines.
+#       fence with a Target line is a patch. A Car 2 fence is context.txt lines.
 #   (e) A HALT CARRIES ONE ACTION. A hand step that needs more than one action
 #       is not a HALT: it becomes the whole turn. Its test is Car 1, other work
 #       waits, and the next compile reads the receipt. One thing done so a
