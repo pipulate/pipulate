@@ -1818,14 +1818,14 @@ foo_files.py  # The map + the two forcing-function rules it already carries.
 """
 
 ADHOC_CHOP = r"""
-# THE ADHOCPAD (default + a disposable overlay)
-# COMMAND: python prompt_foo.py --chop ADHOC_CHOP --no-tree
-# Add ad hoc files/commands ONLY between the SLOT markers, then wipe them
-# after the campaign. Everything below the slot mirrors DEFAULT_CHOP.
+# THE CONTEXT FILE (context.txt spliced in above a fixed tail)
+# COMMAND: compile   (python prompt_foo.py --chop ADHOC_CHOP --no-tree)
+# context edits context.txt, compile reads it: one line per file or `! `
+# command. Everything below the slot mirrors DEFAULT_CHOP.
 
 # --- ADHOC SLOT START ---
 # (Structurally empty in the repo. Contents are spliced in at compile
-# time from the gitignored overlay file. Edit with `ahe`. Ordinary git
+# time from context.txt, gitignored. Edit with `context`. Ordinary git
 # staging excludes the overlay, and the pre-commit tripwire refuses it
 # if it is ever forced into the index. For client work, point
 # PIPULATE_ADHOC_FILE outside the worktree so no git sweep can reach it.)
@@ -1837,16 +1837,17 @@ apply.py
 """
 
 WALK_CHOP = r"""
-# THE WALK ROUTER (only the disposable overlay)
-# COMMAND: PIPULATE_ADHOC_FILE=<router> python prompt_foo.py --frame lean --chop WALK_CHOP --no-tree --quiet
+# THE LEAN COMPILE (context.txt only, no fixed tail)
+# COMMAND: compile --chop WALK_CHOP --frame lean
 # The frame is a flag beside the chop, not a property of it: the chop picks
 # the files and --frame lean swaps the full checklist for a reading frame.
-# cpr points PIPULATE_ADHOC_FILE at the walk-written router. This chop carries
+# NO WORD OF ITS OWN SINCE 2026-09-25: cpr and the separate walk router are
+# gone; the walk writes context.txt and compile reads it. This chop carries
 # no fixed tail: every payload line between the slot markers comes from that
-# explicit overlay file.
+# one file, and the flags above reproduce what cpr did.
 
 # --- ADHOC SLOT START ---
-# (Structurally empty in the repo. cpr supplies the walk router at compile time.)
+# (Structurally empty in the repo. context.txt is spliced in at compile time.)
 # --- ADHOC SLOT END ---
 """
 
