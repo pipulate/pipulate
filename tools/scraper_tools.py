@@ -72,16 +72,26 @@ def _guided_path_component(url: str) -> tuple[str, str]:
 
 
 # --- Optional audio during browser startup ---
-# Operator-owned courtesy sounds live outside the repo. tick.wav loops while
-# the browser is opening; ding.wav plays once when the page-load phase ends.
-# No file means no sound. Linux uses aplay; Darwin uses afplay.
+# tick.wav loops while the browser is opening; ding.wav plays once when the
+# page-load phase ends. Both are CC0 and ship in assets/sounds/ (its README
+# names the sources) since 2026-09-26, after a week in which the Mac was
+# silent because the only copies lived under one home directory. A copy
+# under ~/.local/share/pipulate still wins, so an operator can swap in their
+# own. No file in either place means no sound. Linux uses aplay; Darwin
+# uses afplay.
 SCRAPE_MUSIC_MARKER = "pipulate-scrape-music"
-SOUND_DIR = Path.home() / ".local/share/pipulate"
+SOUND_DIRS = (
+    Path.home() / ".local/share/pipulate",
+    Path(__file__).resolve().parent.parent / "assets" / "sounds",
+)
 
 
 def _sound_file(name):
-    path = SOUND_DIR / name
-    return path if path.is_file() else None
+    for sound_dir in SOUND_DIRS:
+        path = sound_dir / name
+        if path.is_file():
+            return path
+    return None
 
 
 def _player_args(sound):
