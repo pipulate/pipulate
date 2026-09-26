@@ -51,25 +51,18 @@ vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
     command = "set filetype=markdown"
 })
 
--- adhoc.txt: margins permanently released (masthead art, wide-format work)
+-- context.txt: the list of files an AI will read. The walk writes it and
+-- `context` opens it, so it is a newcomer's first vim (2026-09-20, read off
+-- the first Mac screen; one file for the walk and the workbench since
+-- 2026-09-25). THE LIST IS NOT PROSE: every line is a path or a `! `
+-- command, so the journal defaults above are wrong here in three ways a
+-- newcomer sees at once. spell paints every path red, which reads as
+-- errors. textwidth=80 hard-wraps a path or command typed past the column,
+-- turning one line into two and breaking it. relativenumber counts distance
+-- from the cursor, which reads as 4 3 2 1 5 to someone meeting it cold.
+-- Three buffer-local resets, nothing global.
 vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
-    pattern = "adhoc.txt",
-    callback = function()
-        vim.opt_local.textwidth = 0
-    end,
-})
-
--- adhocwalk.txt: the router a walk writes and `epr` opens, which is a
--- newcomer's first vim (2026-09-20, read off the first Mac epr screen).
--- THE ROUTER IS A LIST, NOT PROSE: every line is a path or a `! ` command,
--- so the journal defaults above are wrong here in three ways a newcomer sees
--- at once. spell paints every path red, which reads as errors. textwidth=80
--- hard-wraps a path or command typed past the column, turning one router
--- line into two and breaking it. relativenumber counts distance from the
--- cursor, which reads as 4 3 2 1 5 to someone meeting it cold. Three
--- buffer-local resets, nothing global; adhoc.txt keeps its own release above.
-vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
-    pattern = "adhocwalk.txt",
+    pattern = "context.txt",
     callback = function()
         vim.opt_local.textwidth = 0
         vim.opt_local.spell = false
@@ -736,7 +729,7 @@ function mount_sandworm()
         .. "**1: Probe**: \n\n"
         .. "```bash\n[THE BEFORE READING: hand-run, nothing changed yet. Paste the terminal output of the probes here.]\n```\n\n"
         .. "**2: Context**: \n\n"
-        .. "```text\n[THE AFTER READING: the same probes re-run by the compiler as `!` lines. Paste entire `adhoc.txt` here.]\n```\n\n"
+        .. "```text\n[THE AFTER READING: the same probes re-run by the compiler as `!` lines. Paste entire `context.txt` here.]\n```\n\n"
         .. "**3: Patches**: \n\n"
         .. "```diff\n[THE EXPERIMENT: the one change (mutation) between the readings. Paste the diffs: patch, app, d, m per car]\n```\n\n"
         .. "Ignition: activate change if necessary such as Nix `exit` and `ndq`. Often \"none required\" for Python.\n\n"
