@@ -142,6 +142,13 @@ def main():
     target_path = Path(targets[target_key]['path']).expanduser().resolve()
     
     # THE JIU-JITSU SWEEP: Dynamically pull the pipeline array from the JSON config
+    # THE PRIVATE LANES HAVE NO PUBLISH WORD (banked 2026-09-26, the day
+    # the Grimoire's backlog closed at 151 posts, 151 shards). Lanes 1 and
+    # 4 are dismounted by `publish` and `gobot`, which run this pipeline
+    # and commit; lanes 2 and 3 are dismounted by nothing, so `preview -t N`
+    # IS their dismount, typed by hand, and a shard backlog on a private
+    # lane means nobody typed it. The per-lane list below is the whole of
+    # what a lane gets; the word that runs it is the whole of when.
     pipeline_scripts = targets[target_key].get('pipeline', [])
     
     print(f"\n🔒 Locked Target: {targets[target_key]['name']}")
