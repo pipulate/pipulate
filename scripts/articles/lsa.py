@@ -155,6 +155,63 @@ def load_targets():
             print(f"⚠️ Warning: {TARGETS_FILE} is corrupt. Using defaults.", file=sys.stderr)
     return DEFAULT_TARGETS
 
+def parse_target_spec(spec, targets):
+    """Resolve one -t spec into an ordered list of blogs.json keys.
+
+    PRINT-DIALOG GRAMMAR, NOT A PYTHON SLICE (2026-09-26, the night the Vault
+    became target 5 and posts, postsc, rgx and rgxc could still read one blog
+    at a time):
+      4          one key, exactly as before
+      1,3,5      a list, in the order written
+      2-4        an inclusive range over numeric keys, clipped to keys that exist
+      1-3,5      both
+      all  *  :  every key, numeric keys ascending, then the rest
+    Surrounding brackets are stripped, so a quoted '[1,3]' or '[:]' reads
+    the same as the bare spelling. A Python slice is refused on purpose:
+    keys are 1-based NAMES, so '[1:4]' would mean blogs 1-3 to one reader
+    and 2-4 to another, and a grammar that needs the reader to decide is a
+    branch handed to a tired human. A key named in a list must exist; a
+    range may reach past the roster, because a range is a span, not a name.
+    Raises ValueError with the roster in the message; callers print and exit.
+    """
+    raw = (spec or "").strip()
+    if raw.startswith('[') and raw.endswith(']'):
+        raw = raw[1:-1].strip()
+
+    def sort_key(k):
+        return (0, int(k)) if k.isdigit() else (1, k)
+
+    all_keys = sorted(targets, key=sort_key)
+    roster = ", ".join(all_keys)
+    if raw.lower() in ('all', '*', ':'):
+        return all_keys
+    if not raw:
+        raise ValueError(f"empty target spec (known: {roster}; or all)")
+    ordered = []
+    for part in raw.split(','):
+        part = part.strip()
+        if not part:
+            continue
+        span = re.fullmatch(r'(\d+)-(\d+)', part)
+        if span:
+            lo, hi = sorted(int(n) for n in span.groups())
+            found = [k for k in all_keys if k.isdigit() and lo <= int(k) <= hi]
+            if not found:
+                raise ValueError(f"Invalid target range: {part} (known: {roster})")
+            ordered.extend(found)
+        elif ':' in part:
+            raise ValueError(f"'{part}' reads two ways; write an inclusive range as 1-4, a list as 1,2,3,4, or all")
+        elif part in targets:
+            ordered.append(part)
+        else:
+            raise ValueError(f"Invalid target key: {part} (known: {roster})")
+    unique = []
+    for key in ordered:
+        if key not in unique:
+            unique.append(key)
+    return unique
+
+
 def fast_get_sort_order(filepath):
     """Reads only the YAML frontmatter to extract sort_order extremely fast."""
     try:
@@ -179,8 +236,13 @@ def analyze_sort_order_contiguity(metadata):
     anomalies = []
     posts_by_day = defaultdict(list)
 
+    # KEYED BY BLOG AND DAY (2026-09-26): two blogs each opening a day at
+    # sort_order 1 is the ordinary case, not a duplicate, so the day carries
+    # its target whenever the listing spans more than one blog.
+    multi = len({item.get('target') for item in metadata}) > 1
     for item in metadata:
-        posts_by_day[item['date']].append(item['sort_order'])
+        day = f"{item['date']} (t{item.get('target')})" if multi else item['date']
+        posts_by_day[day].append(item['sort_order'])
 
     for date, orders in sorted(posts_by_day.items()):
         unique_orders = sorted(list(set(orders)))
@@ -366,21 +428,39 @@ def main():
             print(f"  [{k}] {v['name']} ({v['path']})")
         target_key = input("Enter choice (default 1): ").strip() or "1"
 
-    if target_key not in targets:
-        print(f"❌ Invalid target key: {target_key}", file=sys.stderr)
+    try:
+        target_keys = parse_target_spec(target_key, targets)
+    except ValueError as exc:
+        print(f"❌ {exc}", file=sys.stderr)
         sys.exit(1)
 
-    target_dir = Path(targets[target_key]['path']).expanduser().resolve()
-    if not target_dir.is_dir():
-        print(f"❌ Directory not found: {target_dir}", file=sys.stderr)
+    # ONE ROSTER, MANY BLOGS (2026-09-26, the night the Vault became target
+    # 5). Every target the spec names is read; a missing directory is skipped
+    # out loud and only an empty roster is fatal, so `-t all` survives a
+    # checkout this machine does not hold. dir_to_key labels each post with
+    # the blog it was read from, which is how a mixed listing gets each
+    # blog's own host and folder in its URLs.
+    target_dirs = []
+    dir_to_key = {}
+    for key in target_keys:
+        blog_dir = Path(targets[key]['path']).expanduser().resolve()
+        if not blog_dir.is_dir():
+            print(f"❌ Directory not found: {blog_dir} (target {key} skipped)", file=sys.stderr)
+            continue
+        target_dirs.append(blog_dir)
+        dir_to_key[str(blog_dir)] = key
+    if not target_dirs:
         sys.exit(1)
+    first_key = next(iter(dir_to_key.values()))
 
     # Determine the sort description based on the reverse flag
     sort_desc = "Newest First" if args.reverse else "Oldest First"
     
     # Suppress header for machine-readable output formats
     if args.fmt not in ('paths', 'slugs', 'dated-slugs'):
-        print(f"# 🎯 Target: {targets[target_key]['name']} [{sort_desc}]\n", flush=True)
+        names = " + ".join(targets[key]['name'] for key in dir_to_key.values())
+        label = "Targets" if len(dir_to_key) > 1 else "Target"
+        print(f"# 🎯 {label}: {names} [{sort_desc}]\n", flush=True)
 
     # THE FRONTMATTER MEMO TABLE (30-and-3 winner #5, banked 2026-07-19):
     # (path, mtime) -> [sort_order, permalink]. Served by the shared
@@ -402,12 +482,17 @@ def main():
                 resolved = candidate
             else:
                 cwd_candidate = (Path.cwd() / candidate).resolve()
-                target_candidate = (target_dir / candidate.name).resolve()
-                resolved = cwd_candidate if cwd_candidate.exists() else target_candidate
+                resolved = cwd_candidate
+                if not cwd_candidate.exists():
+                    for blog_dir in target_dirs:
+                        target_candidate = (blog_dir / candidate.name).resolve()
+                        if target_candidate.exists():
+                            resolved = target_candidate
+                            break
 
             source_paths.append(str(resolved))
     else:
-        source_paths = [os.path.join(target_dir, filename) for filename in os.listdir(target_dir)]
+        source_paths = [os.path.join(blog_dir, filename) for blog_dir in target_dirs for filename in os.listdir(blog_dir)]
 
     for filepath in source_paths:
         filename = os.path.basename(filepath)
@@ -429,7 +514,8 @@ def main():
                 'path': filepath,
                 'date': post_date,
                 'sort_order': sort_order,
-                'permalink': permalink
+                'permalink': permalink,
+                'target': dir_to_key.get(str(Path(filepath).resolve().parent), first_key)
             })
         except (ValueError, TypeError):
             continue
@@ -581,9 +667,14 @@ def main():
                 print(slug, flush=True)
         elif args.fmt == 'dated-slugs':
             import re
-            target_config = targets[target_key]
-            base_url = target_config.get('base_url', 'https://mikelev.in').rstrip('/')
-            prefix = permalink_prefix(target_config)
+            # ONE HOST AND ONE FOLDER PER BLOG, looked up by the target each
+            # post was read from, so a mixed listing never wears one site's
+            # URL on another site's post.
+            url_bits = {}
+            for key in dir_to_key.values():
+                blog_cfg = targets[key]
+                url_bits[key] = (blog_cfg.get('base_url', 'https://mikelev.in').rstrip('/'),
+                                 permalink_prefix(blog_cfg))
             # THE BUDGET MAP: per-article token size PLUS a running Σ cumulative.
             # Newest-first (--reverse) means Σ answers "take the N newest -> this
             # many tokens." Scan the Σ column top-down; cut where it crosses your
@@ -597,6 +688,7 @@ def main():
                 tokens, bytes_count = _get_metrics(item['path'])
                 # OPTIMIZATION: Complete hypermedia routing parity with fully qualified absolute URLs.
                 # Leverages YAML frontmatter permalinks falling back to default route structures.
+                base_url, prefix = url_bits[item['target']]
                 permalink = item.get('permalink', '').rstrip('/')
                 if not permalink:
                     permalink = default_permalink(slug, prefix)
