@@ -166,10 +166,13 @@ def apply_search_replace_patch(payload: str) -> bool:
     # (This successfully prevents the chat framework from eating our left-indentation!)
     payload = re.sub(r'^```[a-zA-Z0-9]*\s*$', '', payload, flags=re.MULTILINE)
 
-    # Regex to find an optional 'File:' indicator followed by SEARCH/DIVIDER/REPLACE blocks
-    # A more robust regex that ignores bracket width variations and code fence lines
+    # Parse SEARCH/DIVIDER/REPLACE blocks. The replacement body is OPTIONAL:
+    # adjacent DIVIDER/REPLACE markers mean an empty replacement (deletion).
+    # This deliberately makes deletion independent of an invisible blank line
+    # that chat, clipboard, or other transports may strip. The historical
+    # blank-line spelling remains valid and produces the same empty string.
     block_pattern = re.compile(
-        r'(?:(?:File|Target):\s*`?([^`\s*]+)`?\s*\n)?[\[{]{3,5}SEARCH[\]}]{3,5}\n(.*?)\n[\[{]{3,5}DIVIDER[\]}]{3,5}\n(.*?)\n[\[{]{3,5}REPLACE[\]}]{3,5}',
+        r'(?:(?:File|Target):\s*`?([^`\s*]+)`?\s*\n)?[\[{]{3,5}SEARCH[\]}]{3,5}\n(.*?)\n[\[{]{3,5}DIVIDER[\]}]{3,5}\n(?:(.*?)\n)?[\[{]{3,5}REPLACE[\]}]{3,5}',
         re.DOTALL | re.IGNORECASE
     )
 
