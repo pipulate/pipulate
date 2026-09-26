@@ -11,6 +11,8 @@ Notebooks/Advanced_Notebooks/Whatsa_Lambda.ipynb
 patch
 *_true_schema_discovery.json
 *.wav
+# the walk's two CC0 sounds ship in the repo; assets/sounds/README.md names their sources
+!assets/sounds/*.wav
 *.tsv
 # end temp
 
