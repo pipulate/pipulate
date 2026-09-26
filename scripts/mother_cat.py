@@ -332,7 +332,7 @@ def _bank_capture(archive, trail, index, stop, params, result):
     return problems
 
 
-# THE TRAINING WHEELS (2026-09-20, read off the first Mac epr screen). `epr`
+# THE TRAINING WHEELS (2026-09-20, read off the first Mac epr screen). `context`
 # is a newcomer's first vim, and the router is the one place the lesson can
 # sit where their eyes already are, so the first router a machine ever
 # writes carries it. The keys are the bridge from less: j and k are the same
@@ -427,7 +427,7 @@ def _write_walk_router(archive_path, preview_path=None, first=None):
         if owned and (len(routed) != 1 or not routed[0].startswith("/")
                       or not routed[0].endswith(("captures.md", "decant-preview.md"))):
             raise ValueError(
-                "hand-edited router kept, nothing written; add the line(s) yourself: "
+                f"{target.name} has lines of your own, so nothing was written; add the line(s) yourself: "
                 + " ".join(line for line in (preview, source) if line)
                 + " (or delete the file and the next walk rewrites it)")
     if first is None:
@@ -459,7 +459,7 @@ def _write_walk_router(archive_path, preview_path=None, first=None):
     try:
         with tempfile.NamedTemporaryFile(
             mode="w", encoding="utf-8", newline="\n", dir=target.parent,
-            prefix=".adhocwalk-", delete=False,
+            prefix=".context-", delete=False,
         ) as stream:
             temp = Path(stream.name)
             os.fchmod(stream.fileno(), 0o600)
@@ -492,7 +492,7 @@ def _finish_capture_archive(archive, status, skipped=()):
             target = _write_walk_router(archive["path"])
         except Exception as exc:
             print(f"  CONTEXT FILE NOT UPDATED ({type(exc).__name__}): {exc}")
-            print("  Archive preserved; the router on disk is unchanged.")
+            print("  Archive preserved; the context file on disk is unchanged.")
         else:
             print(f"  CONTEXT FILE  {target}  (0600; lists the UNSANITIZED archive until a summary is saved)")
     else:
@@ -1025,7 +1025,7 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
         def checkpoint_narration():
             nonlocal disclosed
             disclosed = _narrate(
-                "The page has settled. Come back to the terminal and type CAPTURE.",
+                "The page has loaded. Come back to the terminal and type CAPTURE.",
                 disclosed,
             )
 
