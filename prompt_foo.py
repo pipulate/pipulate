@@ -873,12 +873,12 @@ def parse_file_list_from_config(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
     # excludes the overlay, and the pre-commit tripwire refuses it if it
     # is ever forced into the index with `git add -f` -- exclusion is a
     # policy, not a wall. For client work, set PIPULATE_ADHOC_FILE to a
-    # path outside the worktree (e.g. ~/.local/state/pipulate/adhoc.txt)
+    # path outside the worktree (e.g. ~/.local/state/pipulate/context.txt)
     # so no git sweep, forced or not, can ever reach it: structural
     # absence beats exclusion policy.
     adhoc_overlay = os.environ.get(
         'PIPULATE_ADHOC_FILE',
-        os.path.join(REPO_ROOT, 'adhoc.txt')
+        os.path.join(REPO_ROOT, 'context.txt')
     )
     adhoc_overlay = os.path.expanduser(adhoc_overlay)
     has_slot = '--- ADHOC SLOT START ---' in files_raw
@@ -1854,8 +1854,8 @@ Before addressing the user's prompt, perform the following verification steps:
 8.  **THE FENCED OUTFLOW INVARIANT:** You MUST enclose the `Target: filename` line and the entire SEARCH/DIVIDER/REPLACE block inside a single ` ```text ` markdown code block. This prevents web chat UIs from stripping leading whitespace, ensuring `apply.py` receives the exact indentation. All opening markdown fences must use a language specifier tag sting such as ` ```text ` so the downstream TTS reader has explicit closures. **THE COPY BUTTON IS THE ACTUATOR, AND IT CANNOT REACH OUTSIDE THE FENCE.** A web chat UI's one-click copy control copies the fence BODY and nothing else, so a `Target:` line placed above the fence is not merely bad style — it is STRUCTURALLY UNCOPYABLE by the path the operator actually uses, and `apply.py` then refuses with "Missing target filename" against a block whose body arrived perfectly intact. Convicted 2026-08-25: a two-car train put both `Target:` lines above their fences, both cars were refused, and the operator hand-repaired both in vim. The `Target:` line goes INSIDE the fence, on the line directly above `[[[SEARCH]]]`.
 9.  **THE TARGET ADJACENCY RULE:** Every `[[[SEARCH]]]` marker must be immediately preceded by `Target: filename` on the line directly above it — no blank lines, no fences, no prose between the Target line and the marker. The filename in the Target line is what `apply.py` uses to find the file; omitting it or separating it with blank lines causes a fatal "Missing target filename" error. Example: `Target: scripts/articles/lsa.py` or `Target: /home/mike/repos/pipulate/scripts/articles/lsa.py`. Both relative and absolute paths work.
 10.  **THE WHOLE-FILE WRITE ESCAPE HATCH:** For a genuine top-to-bottom rewrite of a single file (not a surgical edit), you MAY skip the SEARCH block entirely. Emit a `Target: filename` line, then on the next line a `[[[WRITE_FILE]]]` marker, then the complete new file body, then a `[[[END_WRITE_FILE]]]` marker — all wrapped in a single fenced text block exactly as the SEARCH/REPLACE protocol requires. `apply.py` writes the body verbatim, overwriting the file if it exists or creating it (and any missing parent directories) if it does not, runs the same Python AST safety check before saving, and normalizes a single trailing newline. Use this ONLY when you are replacing essentially the entire file; for every smaller change the SEARCH/REPLACE protocol with its exact-match interlock remains mandatory, because that exact match is what proves the edit is landing in the right place.
-11.  **THE ACTIONABLE RESPONSE CONTRACT (TURN SHAPE / THE PATCH TRAIN):** Every substantive answer must END with a numbered next-actions plan in this exact order: (1) PROBES — ONE paste-ready fenced block of bare, read-only commands; all annotation (what each proves or falsifies, what it gates) lives in prose outside the block, never inline. Probes are read-only: patch application is never a probe. (2) NEXT CONTEXT — the exact adhoc.txt lines and file paths for the next compile; probe echoes are copy-symmetric with (1): identical commands, each adding only the leading "! ". (3) PATCHES — SEARCH/REPLACE blocks ONLY against raw source actually present in this context (mutating shell actuators such as sed belong here, ridden as their own train car — never in PROBES); if no repo patch is needed, state "No repo patches required" explicitly rather than inventing one. (4) PROMPT — the CABOOSE COPY: the prompt.md text for the next turn, in its own fenced block, riding last so it sits under the operator's cursor when the train stops. (5) EXTERNAL DELIVERABLES — artifacts living outside this repo (PageWorkers JavaScript, CMS settings, dashboards), clearly labeled as manual-paste and never wrapped in patch markers. Actuation choreography is the train itself: patch, app, d, m per car; blast (or git push) as the caboose. Analysis that does not close with this plan is an incomplete answer.
-12.  **THE PROBE ECHO INVARIANT (Before/After Symmetry):** Every command recommended in (1) PROBES MUST also appear verbatim as a `!` chisel-strike line in (2) NEXT CONTEXT. The operator's hand-run is the BEFORE reading, taken prior to applying any patch; the identical line baked into adhoc.txt re-executes automatically at the next compile, producing the AFTER reading as a live receipt. One probe, two receipts, straddling the patch — a binary-search causal boundary that removes all probe-before-patch / patch-then-probe ordering ambiguity. A probe too heavy or unbounded to echo into the next compile (see THE PROBE ECONOMY RULE) is too heavy to recommend: cap it first, then echo it. THE STRADDLE BRACKETS EXECUTION, NOT THE COMMIT: if the patched code will not run on its own before the next compile -- a shellHook, a daemon, a cached artifact, anything read once at entry -- then (3) PATCHES MUST close by NAMING the IGNITION (the exact command that makes it run, e.g. `exit` then `nix develop`, or `<F2>` for init.lua) or by stating "no ignition required" because the probe's own command loads the patched file at call time. Ignition is not a fourth beat; it completes PATCH. An AFTER tap taken without ignition is a stale BEFORE wearing the AFTER's label.
+11.  **THE ACTIONABLE RESPONSE CONTRACT (TURN SHAPE / THE PATCH TRAIN):** Every substantive answer must END with a numbered next-actions plan in this exact order: (1) PROBES — ONE paste-ready fenced block of bare, read-only commands; all annotation (what each proves or falsifies, what it gates) lives in prose outside the block, never inline. Probes are read-only: patch application is never a probe. (2) NEXT CONTEXT — the exact context.txt lines and file paths for the next compile; probe echoes are copy-symmetric with (1): identical commands, each adding only the leading "! ". (3) PATCHES — SEARCH/REPLACE blocks ONLY against raw source actually present in this context (mutating shell actuators such as sed belong here, ridden as their own train car — never in PROBES); if no repo patch is needed, state "No repo patches required" explicitly rather than inventing one. (4) PROMPT — the CABOOSE COPY: the prompt.md text for the next turn, in its own fenced block, riding last so it sits under the operator's cursor when the train stops. (5) EXTERNAL DELIVERABLES — artifacts living outside this repo (PageWorkers JavaScript, CMS settings, dashboards), clearly labeled as manual-paste and never wrapped in patch markers. Actuation choreography is the train itself: patch, app, d, m per car; blast (or git push) as the caboose. Analysis that does not close with this plan is an incomplete answer.
+12.  **THE PROBE ECHO INVARIANT (Before/After Symmetry):** Every command recommended in (1) PROBES MUST also appear verbatim as a `!` chisel-strike line in (2) NEXT CONTEXT. The operator's hand-run is the BEFORE reading, taken prior to applying any patch; the identical line baked into context.txt re-executes automatically at the next compile, producing the AFTER reading as a live receipt. One probe, two receipts, straddling the patch — a binary-search causal boundary that removes all probe-before-patch / patch-then-probe ordering ambiguity. A probe too heavy or unbounded to echo into the next compile (see THE PROBE ECONOMY RULE) is too heavy to recommend: cap it first, then echo it. THE STRADDLE BRACKETS EXECUTION, NOT THE COMMIT: if the patched code will not run on its own before the next compile -- a shellHook, a daemon, a cached artifact, anything read once at entry -- then (3) PATCHES MUST close by NAMING the IGNITION (the exact command that makes it run, e.g. `exit` then `nix develop`, or `<F2>` for init.lua) or by stating "no ignition required" because the probe's own command loads the patched file at call time. Ignition is not a fourth beat; it completes PATCH. An AFTER tap taken without ignition is a stale BEFORE wearing the AFTER's label.
 '''
 
     def _generate_summary_content(self, verified_token_count: int) -> str:
@@ -2612,7 +2612,7 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
     # third caller. Silent on purpose: parse_file_list_from_config owns the one
     # visible splice receipt, and two identical lines would read as a bug.
     _overlay = os.path.expanduser(os.environ.get(
-        'PIPULATE_ADHOC_FILE', os.path.join(REPO_ROOT, 'adhoc.txt')
+        'PIPULATE_ADHOC_FILE', os.path.join(REPO_ROOT, 'context.txt')
     ))
     if '--- ADHOC SLOT START ---' in raw_content and os.path.exists(_overlay):
         with open(_overlay, 'r', encoding='utf-8') as f:
@@ -2715,7 +2715,7 @@ def main():
     # emits a one-line receipt to stdout, and exits 0. The receipt lands in
     # the Manifest as evidence the fence held — a wound, never a hang.
     if os.environ.get('PIPULATE_COMPILE_LOCK'):
-        print("🔁 OUROBOROS LOCK: prompt_foo.py refused to run inside its own `!` probe executor. Remove the self-invoking line from adhoc.txt.")
+        print("🔁 OUROBOROS LOCK: prompt_foo.py refused to run inside its own `!` probe executor. Remove the self-invoking line from context.txt.")
         sys.exit(0)
     os.environ['PIPULATE_COMPILE_LOCK'] = '1'
 
@@ -2865,7 +2865,7 @@ def main():
     # flake.nix passes --frame lean; every other alias omits it and gets the
     # default, so no existing compile changes shape. The TODO that seeded this
     # refused choosing by prompt text: the caller names the lane.
-    parser.add_argument('--frame', type=str, choices=('full', 'lean'), default='full', help='What rides ahead of the prompt: full is the complete checklist and five-car train (the default); lean is a reading frame for a question asked of a walk preview, which cpr passes.')
+    parser.add_argument('--frame', type=str, choices=('full', 'lean'), default='full', help='What rides ahead of the prompt: full is the complete checklist and five-car train (the default); lean is a reading frame for a question asked of a walk preview; pass it by hand as compile --frame lean.')
     parser.add_argument('--bumper', type=str, default=None, help='Inject a pre-registered bumper matrix from flippers.json (e.g., gold, cat)')
     parser.add_argument('--line-numbers', action='store_true', help='Prefix source lines with line numbers for review/navigation only. Do not use this mode for SEARCH/REPLACE patch generation.')
     parser.add_argument('--extra-prompt', type=str, default=None, help='Extra text to append to the primary prompt content.')
@@ -3350,7 +3350,7 @@ def main():
         # is the GOOD one under the HAND-REPAIR CLAUSE: the interlock read the
         # body, found it twice, and declined to guess.
         if not os.path.exists(full_path) and (' ' in path or any(ch in path for ch in ';|>&$')):
-            logger.print(f"Warning: DE-PREFIXED COMMAND? Add the leading '! ' in adhoc.txt: {path} <--- !!!")
+            logger.print(f"Warning: DE-PREFIXED COMMAND? Add the leading '! ' in context.txt: {path} <--- !!!")
             continue
         
         if not os.path.exists(full_path):
