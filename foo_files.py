@@ -121,7 +121,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 # --- START STATS ---
 # There are 1,492 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 10 published in the last 7 days
+# Velocity: 8 published in the last 7 days
 # Markdown negotiated: 2,682 reads (0.21% of all responses)
 # DOM hydration: 2972 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
 # Honeybot telemetry fetched 2026-09-26T02:48Z
@@ -2919,7 +2919,7 @@ MATCHBOOK_CHOP = r"""
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
-# introduction.md  # [539 tokens | 2,322 bytes]
+# introduction.md  # [558 tokens | 2,443 bytes]
 # remotes/honeybot/queries/health_db_vitals.sql  # [465 tokens | 1,927 bytes]
 # remotes/honeybot/queries/hydration_family.sql  # [1,736 tokens | 6,756 bytes]
 # remotes/honeybot/queries/hydration_rate.sql  # [1,331 tokens | 5,146 bytes]
