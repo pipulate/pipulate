@@ -205,7 +205,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # § THE KEY/VALUE CONTRACT (banked 2026-08-30) -- a router line opening with "# §" is a KEY: handle, date, one imperative, one physical line; its VALUE (mechanism, conviction, siblings, debts) lives in GLOSSARY.md under the same handle (rg -in '<handle>' GLOSSARY.md). Four fates: a RULE graduates to a key in place; a RECEIPT fades off the capped newest-first block; an EARMARK is a value without a key and either graduates or demotes to a todo; a TODO stays one line and dies when done. THE KEY TEST: would this line, read cold, have prevented the conviction that banked it? Family rosters ride the parent key, never every child.
 # § THE PROBE ECONOMY RULE -- a probe is cheap only when its output is bounded: cap or measure with wc -l, head, tail, rg -l, or an explicit limit before it rides the ledger; unbounded stdout is a context import, not a probe.
 
-# § THE PROBE ECHO RULE -- every probe recommended for hand-execution is also echoed verbatim as a `!` line into the next adhoc.txt; the hand-run is BEFORE, the compiled re-run is AFTER: one probe, two receipts, straddling the patch.
+# § THE PROBE ECHO RULE -- every probe recommended for hand-execution is also echoed verbatim as a `!` line into the next context.txt; the hand-run is BEFORE, the compiled re-run is AFTER: one probe, two receipts, straddling the patch.
 # § NEXT CONTEXT IS THE WHOLE LIST (banked 2026-09-20, amended 2026-09-21) -- name in full, in NEXT CONTEXT, every file a next-turn car will patch: the ones that rode this compile, the ones that ride every compile, and the ones whose car did NOT land, because the payload a model reads is the only source it may patch and "already there" is a claim about the past. Value: the header comment in apply.py; GLOSSARY.md entry owed.
 # § THE KATA'S NAME (banked 2026-07-17) -- Probe, Patch, Prompt: hand-run receipts before, human-actuated mutation during, pre-loaded compile after; titles and section headers say it too. Value: the vocabulary entry Probe / Patch / Prompt in GLOSSARY.md.
 # ONE-LINER COROLLARY (banked 2026-07-19): a `!` line is ONE shell command.
@@ -284,7 +284,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # receipts, never memory; (2) BANK graduations as SEARCH/REPLACE patch
 # cars, deletions included; (3) name the DANGLING carried forward
 # unbanked, one line each; (4) SEED the next ride's first compile with
-# adhoc.txt lines. Mechanism: init.lua's <leader>k stages the canned block
+# context.txt lines. Mechanism: init.lua's <leader>k stages the canned block
 # above the current article's !!! floor. Witness: the \k-staged block rode
 # a Prompt section in the same compile whose receipt still showed PENDING —
 # flipped by patch, never by drift, one unwitnessed turn exactly as allowed.
@@ -396,7 +396,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # citation address space, requires freezing the corpus first. Immutability is not
 # the apparatus's enemy; it is its precondition. Footnote = an out-of-band,
 # non-destructive annotation channel (the OOB EDIT RULE in print). Margin = the
-# user-writable per-copy layer (adhoc.txt is this book's margin). Errata/addenda =
+# user-writable per-copy layer (context.txt is this book's margin). Errata/addenda =
 # append-only patches that preserve the original error ON PURPOSE, so the delta
 # stays visible.
 
@@ -616,11 +616,11 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # mission. The artifact travels as a legible, open-standard text ledger
 # (resembling AGENTS.md or SKILL.md structures), presenting zero friction to
 # the receiver while packing a complete, verifier-enforced cognitive
-# environment under the skin. Concrete command-surface witness: `ahc` remains
-# the explicit ADHOC_CHOP author/workbench compiler, while `cpr` resolves the
-# walk router and invokes the same prompt_foo.py machinery through WALK_CHOP
-# with a lean frame, no tree, quiet output, and invocation-local
-# PIPULATE_ADHOC_FILE. The user names the goal; the framework stays behind it.
+# environment under the skin. Concrete command-surface witness: `compile`
+# (ahc) is the workbench compiler, the walk writes the same context.txt that
+# `compile` reads, and the reading frame is one flag on the same command,
+# compile --frame lean --chop WALK_CHOP (2026-09-25). The user names the
+# goal; the framework stays behind it.
 
 # THE MOTHER CAT KATA (MCK) (earmark-seeded 2026-07-28): the record-and-playback
 # session that carries the human by the scruff -- bookmark to bookmark, a popped
@@ -1332,7 +1332,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # LAUNCH
 # walk                        # <-- Repo-root wrapper; delegates to mck.sh, NOT to scripts/walk.py
 # assets/installer/mck.sh     # <-- THE LAUNCHER (curl -fsSL pipulate.com/mck.sh | bash): finds the workshop, forces the spoken rehearsal on first contact, asks for the word RIDE
-# scripts/mother_cat.py       # <-- THE RIDER (alias: mothercat), Car B: actuates walk.py's validated plan; per-run capture banking, DECANT, the adhocwalk.txt writer
+# scripts/mother_cat.py       # <-- THE RIDER (alias: mothercat), Car B: actuates walk.py's validated plan; per-run capture banking, DECANT, the context.txt writer
 # scripts/boot_menu.py        # <-- The one-door command list; short on shell entry, expanded by `all`, both rendered from tuples in the file
 # scripts/sources_menu.py     # <-- The roster `conn` prints; filename stays descriptive, typed word is shorter
 #
@@ -1354,7 +1354,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # imports/voice_synthesis.py  # <-- Piper: scripted narration, never a model (ATTRIBUTED-VOICE)
 #
 # HAND OFF
-# prompt_foo.py               # <-- Compiles the selected router (adhocwalk.txt: `epr` edits it, `cpr` compiles it) into a payload
+# prompt_foo.py               # <-- Compiles context.txt (`context` opens it, `compile` builds it) into a payload
 # scripts/foo_cartridge.py    # <-- The second seal, over the EVIDENCE: payload.md, prompt.md, manifest.json
 # scripts/foo_replay.py       # <-- Context extraction and attention checks; not browser or API replay
 # tests/test_mck_rep2.py      # <-- Rep 2: the earmark's owed side-by-side witness
@@ -1365,7 +1365,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # assets/trails/first_context.yaml       # profile default; SETTLE real; Jira/Botify/Gmail, THREE wallet kinds in one trail; UNRIDDEN
 # assets/trails/botify_pageworkers.yaml  # profile botify; SETTLE real; UNRIDDEN -- the only trail on a non-default profile, and no such ride has ever been witnessed
 # assets/trails/jira_for_you.yaml        # profile default; SETTLE real (Atlassian sign-in); top of the ticket loop; RIDDEN 2026-09-01 and DECANTED, the sign-in moment unrecorded (a cold profile records it)
-# assets/trails/ticket.yaml              # profile default; SETTLE real; url_env x2 (JIRA, BOTIFY) fed by one gitignored exports file per ticket under Notebooks/Client_Work/tickets/; stop two of the ticket loop; RIDDEN 2026-09-01 to stop 1 then REFUSED at stop 2 on an unset url_env, Linux and Mac -- the ride that bought the rider its PRE-FLIGHT. RULING: the connector does NOT run at DECANT (DECANT gates only CAPTURE-fenced material; API auth is a different wallet; the rider never harvests). The bridge to the issue text is a ! line in adhoc.txt.
+# assets/trails/ticket.yaml              # profile default; SETTLE real; url_env x2 (JIRA, BOTIFY) fed by one gitignored exports file per ticket under Notebooks/Client_Work/tickets/; stop two of the ticket loop; RIDDEN 2026-09-01 to stop 1 then REFUSED at stop 2 on an unset url_env, Linux and Mac -- the ride that bought the rider its PRE-FLIGHT. RULING: the connector does NOT run at DECANT (DECANT gates only CAPTURE-fenced material; API auth is a different wallet; the rider never harvests). The bridge to the issue text is a ! line in context.txt.
 # assets/trails/se_ticket.yaml           # profile default; SETTLE real; the SE ticket template: for_you (literal) + issue (JIRA, required) + project/slack/confluence (optional, skipped when unset); RIDDEN 2026-09-02, 3 of 5 captured, 2 skipped, 72,383 B decanted, card showed both rows; harvest regexes on optional stops are PLACEHOLDERS (botify_analysis's already fullmatched a live analysisSlug); guidance strings hand-count "of five" and go stale on the sixth stop
 #
 # UNLINKED PAGES (npvg.org; nothing links to them and no page links out, so a trail is the only edge; nixops.sh rsyncs them, no rebuild)
@@ -1383,23 +1383,24 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # network body. Preview: DECANT releases selected, capped text, never the raw
 # archive. Disclosure: captures.disclosed.json is a separately prepared
 # derivative with omissions and review status; nothing writes it for you.
-# Selection: adhocwalk.txt names the checked preview and, commented beneath it, the raw captures.md;
+# Selection: context.txt names the checked preview and, commented beneath it, the raw captures.md;
 # the list is neither disclosure approval nor the evidence.
 #
-# THE HANDOFF (97feb327; amended 2026-09-16): a complete, nonempty run has the
-# rider write adhocwalk.txt WHOLE beside the selected router, 0600,
-# os.replace'd -- the checked preview as the one uncommented line once DECANT
-# released it, the whole archive as a commented line beneath, and the archive
-# alone, labelled, when no preview was saved. IT REPLACES, IT NEVER MERGES, and
-# because `epr` now invites a hand-typed `!` line into this very file, it
-# REPLACES ONLY A FILE IT COULD HAVE WRITTEN: one uncommented absolute path to
-# an archive or a preview and nothing else. Any other uncommented line means a
-# human owns the file; the rider prints the new path lines and touches nothing,
-# and deleting the file lets the next walk rewrite it. Riding from a shell where
-# PIPULATE_ADHOC_FILE already names adhocwalk.txt refuses by name, non-fatally,
-# archive preserved, which is why cpr assigns in a subshell rather than
-# exporting. SELECTING IS NOT INCLUDING: naming adhocwalk.txt inside another
-# list includes its text and never recurses into its entries.
+# THE HANDOFF (97feb327; amended 2026-09-16 and 2026-09-25): a complete,
+# nonempty run has the rider write context.txt WHOLE -- the one file
+# `context` opens and `compile` reads, PIPULATE_ADHOC_FILE or the repo root
+# -- 0600, os.replace'd: the checked preview as the one uncommented line once
+# DECANT released it, the whole archive as a commented line beneath, and the
+# archive alone, labelled, when no preview was saved. IT REPLACES, IT NEVER
+# MERGES, and because `context` invites a hand-typed line into this very
+# file, it REPLACES ONLY A FILE IT COULD HAVE WRITTEN: introduction.md plus
+# one uncommented absolute path to an archive or a preview and nothing else.
+# Any other uncommented line means a human owns the file; the rider prints
+# the new path lines and touches nothing, and deleting the file lets the next
+# walk rewrite it (witnessed 2026-09-25 against the operator's own working
+# list: two refusals, two paths printed, nothing written). SELECTING IS NOT
+# INCLUDING: naming context.txt inside another list includes its text and
+# never recurses into its entries.
 #
 # AUTH RULING (banked 2026-08-09, source-witnessed): THERE IS NO AUTH FIELD IN
 # THE TRAIL SCHEMA. walk.py enforces set-difference in BOTH directions over the
@@ -1714,7 +1715,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 #
 # THE WORDS (census of alias and function definitions in flake.nix, deed 1469,
 # corrected at deed 1470 by the flake itself): after the walk a newcomer's
-# whole vocabulary is walk, plan, voice, epr, cpr and sources; warm and
+# whole vocabulary is walk, plan, voice, context, prompt, compile and conn; warm and
 # weblogin settle a login before a ?URL; bot, mcp and webclip are the
 # operator's. THE SEVEN CONNECTOR WORDS (jira, gmail with email as a second
 # spelling, confluence, gsc, sheets, slack, botify) are the THIRD TIER, not
@@ -2273,7 +2274,7 @@ MATCHBOOK_CHOP = r"""
 # § THE EPITAPH COUNTER (banked 2026-08-28) -- a removal probe anchored on the removed string cannot read zero when the patch quotes that string in a comment; the tombstone is a hit. Anchor on syntax only mechanism produces, print lines rather than counts, or predict the epitaph: "1, and it will be the comment" is correct and "0" is not.
 # § THE SURVIVING FALLBACK (banked 2026-09-04) -- sibling of THE EPITAPH COUNTER, opposite direction: a probe anchored on a string the patch DEMOTES rather than DELETES reads the same number before and after, because the survivor is the point of the change. Conviction: grep -c "get('url'" predicted 1 -> 0 against a patch that rewrote `.get('url', default)` into `base_url or url or default`, so the key it counted was deliberately kept. Ask before predicting a zero: does the patch remove this string, or demote it? If demote, the probe is unfalsifiable and the git diff is the only honest witness. RETIRE such a probe rather than repairing it; a reading that is identical in both worlds trains the operator to skip probe output. GIT FORM (2026-09-05): git log -S counts a string per commit and is blind to a commit that MOVES it, so -S 'pipulate/core.py' named an old refactor while 3799ffbc carried that path from a chapter into the paintbox; -G matches diff lines and would have named it. A moved string is a demoted string.
 # § THE CENSUS IS NOT A STRADDLE (banked 2026-09-04) -- some readings answer "is this branch reachable at all", not "did my patch land". They read IDENTICALLY before and after BY DESIGN, and their number is a RULING that decides whether a car is owed. Label them CENSUS in the probe prose so an unchanged output is never mistaken for a failed patch, and never predict a delta for one. Conviction: 0 of 1446 and 0 of 126 posts lack a frontmatter permalink, which proved two disagreeing fallbacks are both unreachable and cancelled the car that would have picked a winner between them.
-# § THE MULTI-LINE PROBE CANNOT BE ECHOED (banked 2026-09-04) -- the ! executor spawns a NON-interactive sh -c, so a probe spanning newlines inside quotes runs clean by hand and dies at "unexpected EOF" in the compile lane; adhoc.txt then reads its continuation lines as separate paths and warns about de-prefixed commands. THE PROBE ECHO INVARIANT therefore demands ONE LINE per probe: write it as a single semicolon-joined -c string, or as a real file invoked by path. A probe that cannot survive its own echo is not echoable, and the operator lane becomes its only witness.
+# § THE MULTI-LINE PROBE CANNOT BE ECHOED (banked 2026-09-04) -- the ! executor spawns a NON-interactive sh -c, so a probe spanning newlines inside quotes runs clean by hand and dies at "unexpected EOF" in the compile lane; context.txt then reads its continuation lines as separate paths and warns about de-prefixed commands. THE PROBE ECHO INVARIANT therefore demands ONE LINE per probe: write it as a single semicolon-joined -c string, or as a real file invoked by path. A probe that cannot survive its own echo is not echoable, and the operator lane becomes its only witness.
 # § THE SUBSET REPLACE (banked 2026-09-04) -- a REPLACE block that is a substring of its SEARCH block (every dedupe car, by construction) is already in the file BEFORE the patch, so an already-applied heuristic reads a plain not-found as "ambiguous (found N times)" and hides the nearest-line diagnostic; apply.py now skips that heuristic when the REPLACE sits inside the SEARCH, and a dedupe car cuts the second copy by gated line range, never by a SEARCH spanning the seam between copies, because the seam is where the blank line lives. Sibling of THE EPITAPH COUNTER (a probe finds the patch's text) and THE CONTIGUITY COROLLARY (the seam the author cannot see). A range bounded by the NEXT HEADER minus one contains the separator blank by construction, so the gate trims one trailing blank before it counts, or its GO is unreachable and the gate is a refusal-only witness in a gate's costume; ask what the gate prints when the file is exactly as believed. Witnessed 2026-09-04: three GOs, the trim firing once and idle twice.
 # THE SOURCE-OF-SOURCE SECRET SCRUB RULE (banked 2026-08-28,
 # receipt-witnessed): move credential EPHEMERA upstream only when the match is
@@ -2472,7 +2473,7 @@ MATCHBOOK_CHOP = r"""
 # - EARMARK: THE SELF-MATCHING PATTERN (banked 2026-08-05, twice-convicted in one transcript): pkill -f and pgrep -f match the FULL COMMAND LINE, and the shell running the script carries the pattern in its own argv -- so an unescaped pattern kills or counts the process that issued it. CONVICTION: flake.nix's publish() [4/4] block protected two patterns with the [.] trick (a regex demanding a literal dot the argv literal does not contain) and MISSED THE THIRD, so every `publish --reboot` killed its own ssh session at that line. The guard must be applied to EVERY pattern in a block, not most of them -- a partially-guarded block READS as guarded. WITNESS: after the fix, `publish force --reboot` printed `new_count=1`, `new=534841`, and the watchdog verdict line, three lines that had never once appeared in any prior transcript.
 # - EARMARK: THE VERIFIER THAT NEVER RAN (banked 2026-08-05, same conviction): a verification block placed AFTER the action it verifies is dead code if the action can kill the reporter, and its silence is indistinguishable from success. flake.nix's [4/4] block held `sleep 12`, a pgrep re-count, and three verdict branches -- none had EVER executed, while a green Atomic Deployment Complete printed underneath every time. THE DISCRIMINATION QUESTION applied to a MISSING line: what does this print in the world where the verifier died? The same checkmark. STANDING CONSEQUENCE: when a receipt block has an expected line that is ABSENT, treat the absence as the finding; do not read the surviving lines as the whole receipt. Third shape in the family -- REFUSAL-ONLY WITNESS is a branch never observed, THE SUCCESS-ONLY WITNESS is a failure never reportable, this is a witness never REACHED.
 # § INCOMMENSURABLE MEASUREMENTS (banked 2026-08-05) -- a probe can return a CORRECT number about a DIFFERENT question, and the receipt looks authoritative because the number is right; name the exact expression the mechanism evaluates, then confirm the probe evaluates THAT expression and not a plausible neighbour. Cousin of THE DISCRIMINATION QUESTION's family: it sees something real and irrelevant.
-# - EARMARK: THE STALE OVERLAY (banked 2026-08-05, Manifest-arbitrated): the adhoc.txt pasted into an article and the adhoc.txt the compiler READ can disagree within a single turn, and only the Manifest's LIVE COMMAND RECEIPTS can tell them apart. CONVICTION: a turn pasted three new probe lines while the compile executed the five from two compiles earlier -- the pasted context described a file the compiler never opened. STANDING CONSEQUENCE: the Manifest is the sole authority on what ran; when the pasted overlay and the receipts disagree, rule from the receipts and say so out loud. The map can outrun the territory inside one turn.
+# - EARMARK: THE STALE OVERLAY (banked 2026-08-05, Manifest-arbitrated): the context.txt pasted into an article and the context.txt the compiler READ can disagree within a single turn, and only the Manifest's LIVE COMMAND RECEIPTS can tell them apart. CONVICTION: a turn pasted three new probe lines while the compile executed the five from two compiles earlier -- the pasted context described a file the compiler never opened. STANDING CONSEQUENCE: the Manifest is the sole authority on what ran; when the pasted overlay and the receipts disagree, rule from the receipts and say so out loud. The map can outrun the territory inside one turn.
 # - TODO (banked 2026-08-05, receipt-scoped): SEVEN in-window articles are the entire residual on-air bracket noise -- 2026-07-31-absolute-timing-and-side-channel-sanitization, 2026-08-01-agentic-web-content-negotiation-telemetry, 2026-08-01-hatching-the-seed-installer-automation, 2026-08-01-mother-cat-kata-deterministic-walk, 2026-08-03-debugging-self-referential-prompt-guards, 2026-08-04-disposable-installations-durable-backups, 2026-08-05-sentinel-splices-workspace-tree-automation. They age out of the 7-day window unaided, so this backlog SHRINKS without action. HAND-EDIT ONLY: several quote the patch-protocol markers verbatim, which is a DELIMITER COLLISION under the OOB EDIT RULE -- vim, never apply.py. Full 300-article list is 20 and lives in the 2026-08-05 compile receipt.
 # - TODO (banked 2026-08-05, publish-transcript convicted): nixops.sh's rsync --delete ships the Z640's __pycache__ (cpython-312) to Honeybot and DELETES Honeybot's own (cpython-313) on every publish -- six lines of churn per deploy for zero benefit, since a 3.12 pyc can never load on 3.13. Add --exclude=__pycache__. Separately, trimnoir tracks scripts/aquarium.py and scripts/aquarium_tui.py and nothing else (receipt: git ls-files scripts/ returns exactly those two), so the post-receive checkout restores them and the rsync deletes them again, forever. Delete them from trimnoir. TWO WRITERS, ONE DIRECTORY -- cosmetic today only because content_loader.py is NOT tracked there, and a live regression path the day it is.
 # - TODO (banked 2026-08-05, two-sided receipt): stream.py's stdout is TTY-ONLY and structurally unreadable as text. Receipt: journalctl over 45 minutes returned journal_lines=761 (the journal is alive) and unbalanced=0 (the warnings are not in it), and configuration.nix defines `stream` as a writeShellScriptBin watchdog in environment.systemPackages with NO systemd unit -- so it runs in a terminal in the XFCE session and its output exists only as pixels for OBS. THE OPERATOR HAS BEEN DIAGNOSING FROM A VIDEO FEED for the whole census ride. Cheapest capture: tee the watchdog's python3 invocation to a file inside the `stream` script. That is a configuration.nix plus nixos-rebuild ride of its own.
