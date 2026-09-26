@@ -2,7 +2,7 @@
 
 > Auto-generated on 2026-09-26. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1492 entries indexed.
+> 1494 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -160,6 +160,8 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-09-26] [Closing the Loop: Fixing Patch Parser Failures and Actuator Surprises](https://mikelev.in/futureproof/fixing-patch-parser-failures-and-actuator-surprises/index.md)
+- [2026-09-26] [The Three Plain Words: Unifying Context and Building Verifiable Receipts](https://mikelev.in/futureproof/plain-words-verifiable-ai-context/index.md)
 - [2026-09-24] [When the Power Returns: Reconciling Diverged Git Branches and Single-Point Failures](https://mikelev.in/futureproof/when-the-power-returns-verifiable-git-resync/index.md)
 - [2026-09-20] [The Letting-Go Moment: Building Vim Training Wheels for the Age of AI](https://mikelev.in/futureproof/vim-training-wheels-and-the-letting-go-moment/index.md)
 - [2026-09-20] [Disciplined Forgetting: Scaling AI Context Through a Two-Tier Memory Hierarchy](https://mikelev.in/futureproof/disciplined-forgetting-and-the-memory-hierarchy/index.md)
@@ -178,13 +180,13 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-09-17] [Ratcheting Wins in the Age of AI: Engineering Replayable Workflows Without Backsliding](https://mikelev.in/futureproof/ratcheting-wins-in-the-age-of-ai/index.md)
 - [2026-09-16] [The Prompt Router Has Two Words: Simplifying Replayable AI Workflows](https://mikelev.in/futureproof/prompt-router-two-words-replayable-ai-workflows/index.md)
 - [2026-09-16] [Walk, Plan, and Run: Designing Replayable AI Workflows](https://mikelev.in/futureproof/walk-plan-run-replayable-workflows/index.md)
-- [2026-09-15] [The Walk Says Goodbye: Engineering Verifiable AI Workflows on Rails](https://mikelev.in/futureproof/the-walk-says-goodbye-verifiable-workflows/index.md)
-- [2026-09-15] [The First Five Minutes: Engineering Verifiable Workflows Without the Noise](https://mikelev.in/futureproof/first-five-minutes-verifiable-workflows/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-09-15] [235k] the-walk-says-goodbye-verifiable-workflows
+- [2026-09-15] [256k] first-five-minutes-verifiable-workflows
 - [2026-09-15] [267k] the-walk-that-teaches-walks
 - [2026-09-15] [176k] flight-data-recorder-walk-workflows
 - [2026-09-14] [177k] quiet-installer-replayable-workflows
