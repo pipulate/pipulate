@@ -53,7 +53,7 @@ console = Console()
 # To add a new entry: print(binascii.crc32(your_art_string.encode('utf-8')))
 
 FIGURATE_LEDGER: dict = {
-    "white_rabbit": 3701272927, 
+    "white_rabbit": 3309949418, 
     "player_piano": 3357002674,
     "clipboard": 858911667,
     "bunny_trail": 615479347,
