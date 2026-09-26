@@ -1,6 +1,6 @@
 # AI_CONTEXT.md — Start Here If You Are an AI
 
-> Auto-generated on 2026-09-25. Rewritten from scratch on every release. If this
+> Auto-generated on 2026-09-26. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
 > 1492 entries indexed.
 
