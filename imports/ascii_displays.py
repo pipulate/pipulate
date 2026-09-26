@@ -544,14 +544,14 @@ def _figurate_player_piano():
     # Adjusted with precise trailing spaces to secure an absolute plumb right border on substitution
     art = r"""
  ┌────────────────────────────────────────────────────────────────────────┐
- │ ✂️ PLAYER PIANO PROTOCOL — How Chatbots Edit Local Code                │
+ │ ✂️ PLAYER PIANO PROTOCOL — How Chatbots Edit Local Code               │
  ├────────────────────────────────────────────────────────────────────────┤
  │ Target: path/to/file.py                                                │
- │ ___BOX_SEARCH___                                                       │
+ │ ___BOX_SEARCH___                                                           │
  │ exact old text (character-for-character)                               │
- │ ___BOX_DIVIDER___                                                      │
+ │ ___BOX_DIVIDER___                                                          │
  │ exact new text                                                         │
- │ ___BOX_REPLACE___                                                      │
+ │ ___BOX_REPLACE___                                                          │
  │                                                                        │
  │ 1. Exact match required — no fuzzy edits.                              │
  │ 2. Preserve all whitespace and indentation.                            │
