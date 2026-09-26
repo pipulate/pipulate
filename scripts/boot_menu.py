@@ -32,8 +32,9 @@ SHORT_WORDS = (
     ("menu", "print this list again (useful once it scrolls away)"),
     ("walk", "take guided tour of context compiler (recommended)"),
     ("conn", "get mcp, jira, email, docs, etc. into context"),
-    ("epr", "edit prompt router (after the walk)"),
-    ("cpr", "compile prompt router (paste results into chatbot)"),
+    ("context", "edit the list of files an AI will read (after the walk)"),
+    ("prompt", "save your clipboard as the question for the AI"),
+    ("compile", "build the list and the question into one payload for a chatbot"),
     ("all", "expanded menu"),
 )
 
@@ -41,16 +42,13 @@ ALL_WORDS = (
     ("menu", "print the shorter list"),
     ("walk", "take guided tour of context compiler (recommended)"),
     ("conn", "get mcp, jira, email, docs, etc. into context"),
-    ("epr", "edit prompt router (after the walk)"),
-    ("cpr", "compile prompt router (paste results into chatbot)"),
+    ("context", "edit the list of files an AI will read (after the walk)"),
+    ("prompt", "save your clipboard as the question for the AI"),
+    ("compile", "build the list and the question into one payload for a chatbot"),
     ("all", "print this expanded list again"),
-    # THE HYPER-LITERAL WORDS (2026-09-25): the working loop under names a
-    # meeting cannot call strange; ahe, prompt and ahc still work. Expanded
-    # list only, per the 2026-09-16 ruling: the short list stays the
-    # newcomer's walk, epr, cpr.
-    ("context", "edit the file list that becomes the AI's context"),
-    ("prompt", "save your clipboard as prompt.md, the question"),
-    ("compile", "compile context and prompt into one payload for a chatbot"),
+    # THE THREE WORDS (2026-09-25): context, prompt, compile are the whole
+    # loop, on both lists. ahe, ahc and the short spellings still work; epr
+    # and cpr are gone with the separate walk router they edited.
     ("brief", "compile this workshop into your clipboard for an AI"),
     ("jn", "start JupyterLab and Pipulate, JupyterLab first"),
     ("pu", "start the Pipulate server"),
