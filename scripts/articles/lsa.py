@@ -487,6 +487,18 @@ def main():
                 filtered.append(item)  # keep on error
         metadata = filtered
 
+    # THE GAP REPORT, WIRED (2026-09-26). The -g flag parsed and was never
+    # read, so analyze_sort_order_contiguity and print_contiguity_report had
+    # no caller and `posts -t 1 -g` printed the ordinary listing, the same
+    # bytes as `posts -t 1`. Convicted by the collision reader the day the
+    # shadow corpus came home: 2026-09-24 held two posts at sort_order 1 and
+    # nothing in the pipeline could say so. It rides here, after the filters,
+    # so --match and --last scope the report, and it returns, so -g is a
+    # report and not a listing with one stapled on.
+    if args.gaps:
+        print_contiguity_report(analyze_sort_order_contiguity(metadata))
+        return
+
     # THE ART WALK (-v/--vim): open the SELECTED articles in the editor
     # instead of printing them. Buffer order == display order, so -v honors
     # every selection flag AND the sort direction: `posts -v` (oldest-first)
