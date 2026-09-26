@@ -343,7 +343,7 @@ def _bank_capture(archive, trail, index, stop, params, result):
 # "2nd line" goes stale the moment a line is absent.
 INTRO_PATH = REPO_ROOT / "introduction.md"
 ROUTER_LESSON = (
-    "# ATTENTION HUMAN: this is the Prompt Router. epr edits it, cpr compiles it.\n"
+    "# ATTENTION HUMAN: this is context.txt, the list of files an AI will read.\n"
     "# Welcome to vim (Neovim). This file was written by the last walk.\n"
     "\n"
     "# j moves the cursor down, k moves it up: the same two keys as in less.\n"
@@ -356,13 +356,17 @@ ROUTER_LESSON = (
     "# a file path, or a shell command written after `! `.\n"
 )
 ROUTER_KEYS = (
-    "# Prompt Router: epr edits it, cpr compiles it. Written by the last walk.\n"
+    "# context.txt: context opens it, compile builds it. Written by the last walk.\n"
     "# Keys: j down, k up; Esc then :q quits, :q! discards, :wq saves and quits.\n"
     "# One line per thing the AI reads: a file path, or a command after `! `.\n"
 )
 ROUTER_TAIL = (
     "\n"
-    "# Next: Esc, :q, Enter, then type  cpr  at the prompt.\n"
+    "# Next: Esc, :q, Enter. Then, at the prompt:\n"
+    "#   1. copy a question to your clipboard; page 3 of the walk suggests one\n"
+    "#   2. type  prompt   to save that clipboard as the question\n"
+    "#   3. type  compile  to build this list and the question into one payload\n"
+    "#   4. paste your clipboard into a chatbot; compile filled it\n"
     "# To add a line later: i starts typing, Esc stops, :wq saves and leaves.\n"
     "# The next walk rewrites this file (shorter notes) unless you have edited it.\n"
 )
@@ -388,7 +392,7 @@ def _router_line(path, what):
 def _write_walk_router(archive_path, preview_path=None, first=None):
     """Replace one local selection; never read, disclose or compile its evidence.
 
-    THE ROUTER IS THE NEWCOMER'S FILE (2026-09-16): `epr` opens it, so it is
+    THE ROUTER IS THE NEWCOMER'S FILE (2026-09-16): `context` opens it, so it is
     replaced ONLY while it is a file this writer could have produced -- the
     introduction line at most, plus one uncommented absolute path to an
     archive or a preview, and nothing else. Any other uncommented line is a
@@ -399,17 +403,17 @@ def _write_walk_router(archive_path, preview_path=None, first=None):
     (2026-09-20): `first` is None to decide by absence, cached per process in
     _ROUTER_FIRST, or True/False to force it, as the probe does.
     """
-    selected = os.environ.get("PIPULATE_ADHOC_FILE", str(REPO_ROOT / "adhoc.txt"))
+    selected = os.environ.get("PIPULATE_ADHOC_FILE", str(REPO_ROOT / "context.txt"))
     if not selected.strip():
         raise ValueError("PIPULATE_ADHOC_FILE is empty")
     human = Path(selected).expanduser()
     if not human.is_absolute():
         human = REPO_ROOT / human
-    target = human.with_name("adhocwalk.txt")
-    # Derive beside the selected spelling; never follow a destination symlink.
-    if (target.is_symlink() or target.resolve() == human.resolve()
-            or (target.exists() and human.exists() and target.samefile(human))):
-        raise ValueError("walk router aliases the human router or is a symlink")
+    # ONE FILE (2026-09-25): the walk writes the same context.txt that
+    # `context` opens and `compile` reads. Never follow a symlink.
+    target = human
+    if target.is_symlink():
+        raise ValueError("context file is a symlink; nothing written")
     source = _router_line(archive_path, "capture")
     preview = None if preview_path is None else _router_line(preview_path, "preview")
     # REPLACE ONLY A FILE THIS WRITER COULD HAVE WRITTEN: the introduction line
@@ -487,13 +491,13 @@ def _finish_capture_archive(archive, status, skipped=()):
         try:
             target = _write_walk_router(archive["path"])
         except Exception as exc:
-            print(f"  WALK ROUTER NOT UPDATED ({type(exc).__name__}): {exc}")
+            print(f"  CONTEXT FILE NOT UPDATED ({type(exc).__name__}): {exc}")
             print("  Archive preserved; the router on disk is unchanged.")
         else:
-            print(f"  WALK ROUTER  {target}  (0600; names the UNSANITIZED archive until a preview is released)")
+            print(f"  CONTEXT FILE  {target}  (0600; lists the UNSANITIZED archive until a summary is saved)")
     else:
-        print("  WALK ROUTER unchanged: this run did not complete with captures.")
-        print("  Any existing adhocwalk.txt still selects an earlier completed run.")
+        print("  CONTEXT FILE unchanged: this run did not complete with captures.")
+        print("  An existing context.txt still lists an earlier completed run.")
 
 
 def _decant(captured, previews, skipped=()):
@@ -691,9 +695,9 @@ def _decant_to_clipboard(payload, archive_path=None):
             try:
                 router = _write_walk_router(archive_path, preview_path=target)
             except Exception as exc:
-                print(f"   WALK ROUTER NOT UPDATED ({type(exc).__name__}): {exc}")
+                print(f"   CONTEXT FILE NOT UPDATED ({type(exc).__name__}): {exc}")
             else:
-                print(f"   WALK ROUTER  {router}  (0600; the preview rides, the archive is commented beneath it)")
+                print(f"   CONTEXT FILE  {router}  (0600; lists the summary; the archive is a commented line beneath it)")
     copy_to_clipboard(scrubbed)
     return True
 
@@ -830,7 +834,7 @@ def _announce_consent(trail_path, intro=False):
 # The router receives a stable capture file, never an @URL cache lookup.
 def _print_next_compile(archive_path):
     """Print one self-contained file line, never mutable @URL cache selectors."""
-    print("\nLocal archive file line for context.md or adhoc.txt:")
+    print("\nLocal archive file line for context.txt:")
     print(archive_path)
     print("Review locally before compiling; raw bytes are not a safe disclosure.")
 
@@ -1105,10 +1109,10 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
             closing = (
                 "The three-page walk is finished. Everything it captured is saved on this "
                 "computer, and the lines above say whether the summary was saved and copied. "
-                "Next, type epr: the letters e, p, r. That opens a text editor called vim, "
+                "Next, type context. That opens a text editor called vim, "
                 "showing the list of files an AI will read. The keys j and k move the cursor. "
                 "To leave, press Escape, then type colon q, then Enter. "
-                "The notes at the top of that file say the same. Goodbye."
+                "The notes at the top of that file say what to type after that. Goodbye."
                 if decanted else
                 "The capture run is finished, but the summary was withheld. "
                 "Read the results in your terminal. Goodbye."
