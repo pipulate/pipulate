@@ -210,6 +210,18 @@ import subprocess
 # must appear in its output, and the Car 4 forecast says which. Zero rows
 # where a known member must be is an instrument failure, never an empty
 # world. A forecast lists its failure shapes, and the empty one goes first.
+# A FORECAST COUNTS LINES, NOT PATTERNS (convicted 2026-09-26, twice in
+# one ride, both times by the model's own probe). rg -n prints a line
+# ONCE however many alternatives it satisfies: `def status(limit,
+# only=None):` matched both `^def status\(` and `only=` and was forecast
+# as two. And a quoted token matches everywhere it appears: `"adopted"`
+# was forecast once, for meta.get("adopted"), and matched r["adopted"]
+# twice more. Neither miss was a failure of the file; both were the
+# forecast reading its own pattern as a wish. THE RULE: forecast a census
+# by walking the file the patch will leave and counting the LINES the
+# pattern hits, or forecast only the known members and say "at least".
+# A forecast that names an exact count it did not derive by that walk is
+# a guess wearing a number.
 # THE PIPELINE ATE THE FALLBACK (convicted 2026-09-21, by a probe that could
 # not fail). `ls DIR 2>/dev/null | head -5 || echo no_dir` was echoed to report
 # a missing directory. It never could: `||` binds to the whole PIPELINE, and a
