@@ -26,6 +26,31 @@ def brand_markdown_files(target_path):
         print("✅ All files are perfectly branded.")
 
 
+def prune_orphan_shards(target_path):
+    """Delete _context/<stem>.json whose post no longer sits in _posts."""
+    # THE ORPHAN PRUNE (2026-09-26, the day a post changed lanes). A post
+    # moved to another lane, renamed or deleted leaves its shard behind, and
+    # nothing reads an orphan except a census. Runs before the pipeline in
+    # every lane, so a lane never carries a shard for a post it does not
+    # hold, and the shard for the post's new home is written by that lane's
+    # own contextualizer pass. Only dated stems are touched: anything else
+    # that may live in _context is not a shard and is left alone.
+    context_dir = target_path / "_context"
+    if not context_dir.is_dir():
+        return
+    removed = 0
+    for shard in sorted(context_dir.glob("*.json")):
+        if not (shard.stem[:4].isdigit() and shard.stem[4:5] == "-"):
+            continue
+        if any((target_path / f"{shard.stem}{ext}").exists() for ext in (".md", ".markdown")):
+            continue
+        shard.unlink()
+        print(f"🧹 Orphan shard removed: {shard.name}")
+        removed += 1
+    if removed == 0:
+        print("✅ No orphan shards.")
+
+
 def run_step(script_name, target_key, extra_args=None):
     print(f"\n--- 🚀 Step: {script_name} ---")
     start = time.time()
@@ -49,7 +74,14 @@ def run_step(script_name, target_key, extra_args=None):
     duration = time.time() - start
     print(f"✅ {script_name} complete ({duration:.2f}s).")
 
-def sync_data_to_jekyll(target_path):
+# THE ARTIFACT GUARD (2026-09-26). This copied whatever graph.json, llms.txt
+# and sitemap*.xml were lying in scripts/articles into the target's site
+# root, with no check on which lane had made them: `preview -t 3` after a
+# public preview would have dropped the public site's llms.txt and sitemaps
+# into the private repo. `since` is the run's start time; an artifact older
+# than that was made by another lane's run and stays where it is, and the
+# skip is printed so a missing sync is never silent.
+def sync_data_to_jekyll(target_path, since=0.0):
     """
     Copies the generated artifacts to the Jekyll SITE ROOT.
     """
@@ -73,6 +105,9 @@ def sync_data_to_jekyll(target_path):
         source = script_dir / filename
         dest = repo_root / dest_name
         
+        if source.exists() and source.stat().st_mtime < since:
+            print(f"⏭️  {filename} predates this run; another lane made it. Not synced.")
+            continue
         if source.exists():
             shutil.copy2(source, dest)
             print(f"✅ Synced {filename} -> {dest}")
@@ -81,6 +116,9 @@ def sync_data_to_jekyll(target_path):
 
     # Sync dynamic sitemaps (sitemap.xml, sitemap-core.xml, sitemap-branch-0.xml, etc.)
     for sitemap in script_dir.glob("sitemap*.xml"):
+        if sitemap.stat().st_mtime < since:
+            print(f"⏭️  {sitemap.name} predates this run; another lane made it. Not synced.")
+            continue
         dest = repo_root / sitemap.name
         shutil.copy2(sitemap, dest)
         print(f"✅ Synced {sitemap.name} -> {dest}")
@@ -118,6 +156,7 @@ def main():
 
     # 1.5 THE BRANDING SWEEP (Run this right before the JIU-JITSU Sweep!)
     brand_markdown_files(target_path)
+    prune_orphan_shards(target_path)
 
     # 2. Run the sequence
     total_start = time.time()
@@ -126,7 +165,7 @@ def main():
         run_step(script, target_key, extra_args)
     
     # 3. Sync Data
-    sync_data_to_jekyll(target_path)
+    sync_data_to_jekyll(target_path, since=total_start)
         
     total_duration = time.time() - total_start
     print(f"\n✨ All steps completed successfully in {total_duration:.2f}s.")
