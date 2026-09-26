@@ -526,13 +526,13 @@ def _expand_color_bits_ai(text: str) -> str:
 def _figurate_white_rabbit():
     """Render white_rabbit as (human, ai) tuple for FIGURATE_REGISTRY."""
     art = r"""
-                        ( Like a [[[canary]]] you say? )                      
-                                           O        /)  ____            <debug>The "No Problem" Framework</debug>
->  I HEREBY WILL NOT RE-GENERATE            o /)\__//  /    \        <success>Pipulate</success> - Protecting Your Code 
->  Once upon machines be smarten          ___(/_ 0 0  |      |       just by being honest about text.
->  ASCII sealing immutata art in        *(    ==(_T_)== [[[NPvg]]] |        (If mangled, then AI drifted.)
->  This here cony if it's broken          \  )   ""\  |      |             https://pipulate.com
->  Smokin gun drift now in token           |__>-\_>_>  \____/                     🥕🥕🥕
+                     ( "The AI said so" is a transcript, not a record. )
+                                           O        /)  ____     This drawing is checksummed.
+>  Same files, same words, same bytes:      o /)\__//  /    \    If it reaches you altered, the
+>  a change you can replay is a change    ___(/_ 0 0  |      |   model rewrote what it was told to
+>  you can put your name behind.        *(    ==(_T_)== NPvg |   copy, and that is the finding.
+>  One diff per turn, a reading before    \  )   ""\  |      |   Verify with nothing installed:
+>  and after, and a digest you can check.  |__>-\_>_>  \____/    python scripts/foo_cartridge.py foo.zip
     """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
@@ -544,14 +544,14 @@ def _figurate_player_piano():
     # Adjusted with precise trailing spaces to secure an absolute plumb right border on substitution
     art = r"""
  ┌────────────────────────────────────────────────────────────────────────┐
- │ ✂️ PLAYER PIANO PROTOCOL — How Chatbots Edit Local Code               │
+ │ ✂️ PLAYER PIANO PROTOCOL — How Chatbots Edit Local Code                │
  ├────────────────────────────────────────────────────────────────────────┤
  │ Target: path/to/file.py                                                │
- │ ___BOX_SEARCH___                                                           │
+ │ ___BOX_SEARCH___                                                       │
  │ exact old text (character-for-character)                               │
- │ ___BOX_DIVIDER___                                                          │
+ │ ___BOX_DIVIDER___                                                      │
  │ exact new text                                                         │
- │ ___BOX_REPLACE___                                                          │
+ │ ___BOX_REPLACE___                                                      │
  │                                                                        │
  │ 1. Exact match required — no fuzzy edits.                              │
  │ 2. Preserve all whitespace and indentation.                            │
