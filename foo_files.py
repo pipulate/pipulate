@@ -120,8 +120,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,493 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 9 published in the last 7 days
+# There are 1,494 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 10 published in the last 7 days
 # Markdown negotiated: 2,701 reads (0.22% of all responses)
 # DOM hydration: 2972 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
 # Honeybot telemetry fetched 2026-09-26T11:16Z
@@ -572,6 +572,16 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # WHY IT KEEPS HAPPENING: most patch dialects close their blocks, and a
 # model under load reaches for the shape it has seen most often.
 # COUNT THE MARKERS BEFORE EMITTING: three, in that order, once each.
+# AMENDED 2026-09-26: an empty replacement no longer depends on an invisible
+# blank physical line. Adjacent divider/replace markers now parse as the empty
+# string, while the historical blank-line spelling remains valid. Visible
+# syntax carries deletion semantics; transport-strippable whitespace does not.
+# AMENDED AGAIN THE SAME RIDE: when bare protocol markers are present but no
+# complete block parses, apply.py now says MALFORMED PROTOCOL, prints the
+# marker lines it saw, and distinguishes that world from a payload containing
+# no recognizable patch protocol at all. A refusal should expose evidence the
+# actuator already possesses instead of collapsing distinct failures into one
+# generic "no blocks found" message.
 # § THE KATA'S NAME (banked 2026-07-17) -- Probe, Patch, Prompt: hand-run receipts before, human-actuated mutation during, pre-loaded compile after; titles and section headers say it too. Value: the vocabulary entry Probe / Patch / Prompt in GLOSSARY.md.
 # ONE-LINER COROLLARY (banked 2026-07-19): a `!` line is ONE shell command.
 # Multi-line probes shatter in the executor (unexpected-EOF, then each
@@ -854,7 +864,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # apply.py and was stopped only by the AST airlock (rerun cost, zero
 # regression — the fence held). If a block is wrong, delete it before
 # responding; a correction note is not a coupling pin.
-# § THE HAND-REPAIR CLAUSE (amended 2026-08-03, missing-target class banked 2026-08-25) -- Repair a refused patch by hand only when apply.py demonstrably parsed and witnessed the body: search-block-not-found is diagnosable, missing-target may receive only its Target after the intact body is printed back, and no-blocks-found must be deleted and re-emitted because no body was parsed.
+# § THE HAND-REPAIR CLAUSE (amended 2026-08-03, missing-target class banked 2026-08-25, malformed-protocol class amended 2026-09-26) -- Repair a refused patch by hand only when apply.py demonstrably parsed and witnessed the body: search-block-not-found is diagnosable, missing-target may receive only its Target after the intact body is printed back, malformed-protocol means visible delimiters failed the grammar and the body was not parsed, and generic no-blocks-found now means no recognizable patch protocol was present; both parser-gate classes are deleted and re-emitted, never hand-repaired.
 
 # THE CARRIED-DELIVERABLE RULE (banked 2026-07-29, operator-convicted): a
 # Car-5 external deliverable is CARRIED, NOT CITED. Car 5's actuator is the
@@ -2648,7 +2658,7 @@ MATCHBOOK_CHOP = r"""
 # § THE EPITAPH COUNTER (banked 2026-08-28) -- a removal probe anchored on the removed string cannot read zero when the patch quotes that string in a comment; the tombstone is a hit. Anchor on syntax only mechanism produces, print lines rather than counts, or predict the epitaph: "1, and it will be the comment" is correct and "0" is not.
 # § THE SURVIVING FALLBACK (banked 2026-09-04) -- sibling of THE EPITAPH COUNTER, opposite direction: a probe anchored on a string the patch DEMOTES rather than DELETES reads the same number before and after, because the survivor is the point of the change. Conviction: grep -c "get('url'" predicted 1 -> 0 against a patch that rewrote `.get('url', default)` into `base_url or url or default`, so the key it counted was deliberately kept. Ask before predicting a zero: does the patch remove this string, or demote it? If demote, the probe is unfalsifiable and the git diff is the only honest witness. RETIRE such a probe rather than repairing it; a reading that is identical in both worlds trains the operator to skip probe output. GIT FORM (2026-09-05): git log -S counts a string per commit and is blind to a commit that MOVES it, so -S 'pipulate/core.py' named an old refactor while 3799ffbc carried that path from a chapter into the paintbox; -G matches diff lines and would have named it. A moved string is a demoted string.
 # § THE CENSUS IS NOT A STRADDLE (banked 2026-09-04) -- some readings answer "is this branch reachable at all", not "did my patch land". They read IDENTICALLY before and after BY DESIGN, and their number is a RULING that decides whether a car is owed. Label them CENSUS in the probe prose so an unchanged output is never mistaken for a failed patch, and never predict a delta for one. Conviction: 0 of 1446 and 0 of 126 posts lack a frontmatter permalink, which proved two disagreeing fallbacks are both unreachable and cancelled the car that would have picked a winner between them.
-# § THE MULTI-LINE PROBE CANNOT BE ECHOED (banked 2026-09-04) -- the ! executor spawns a NON-interactive sh -c, so a probe spanning newlines inside quotes runs clean by hand and dies at "unexpected EOF" in the compile lane; context.txt then reads its continuation lines as separate paths and warns about de-prefixed commands. THE PROBE ECHO INVARIANT therefore demands ONE LINE per probe: write it as a single semicolon-joined -c string, or as a real file invoked by path. A probe that cannot survive its own echo is not echoable, and the operator lane becomes its only witness.
+# § THE MULTI-LINE PROBE CANNOT BE ECHOED (banked 2026-09-04, reconvicted 2026-09-26) -- the ! executor spawns a NON-interactive sh -c, so a probe spanning newlines inside quotes runs clean by hand and dies at "unexpected EOF" in the compile lane; context.txt then reads its continuation lines as separate paths and warns about de-prefixed commands. THE PROBE ECHO INVARIANT therefore demands ONE LINE per probe: write it as a single semicolon-joined -c string, or as a real file invoked by path. The 2026-09-26 parser-hardening AFTER tried to echo a Python heredoc and reproduced the failure exactly: only the opener executed and the continuation became router debris. The fix is not a multiline context grammar; collapse the probe or put the program in a file. A probe that cannot survive its own echo is not echoable, and the operator lane becomes its only witness.
 # § THE SUBSET REPLACE (banked 2026-09-04) -- a REPLACE block that is a substring of its SEARCH block (every dedupe car, by construction) is already in the file BEFORE the patch, so an already-applied heuristic reads a plain not-found as "ambiguous (found N times)" and hides the nearest-line diagnostic; apply.py now skips that heuristic when the REPLACE sits inside the SEARCH, and a dedupe car cuts the second copy by gated line range, never by a SEARCH spanning the seam between copies, because the seam is where the blank line lives. Sibling of THE EPITAPH COUNTER (a probe finds the patch's text) and THE CONTIGUITY COROLLARY (the seam the author cannot see). A range bounded by the NEXT HEADER minus one contains the separator blank by construction, so the gate trims one trailing blank before it counts, or its GO is unreachable and the gate is a refusal-only witness in a gate's costume; ask what the gate prints when the file is exactly as believed. Witnessed 2026-09-04: three GOs, the trim firing once and idle twice.
 # THE SOURCE-OF-SOURCE SECRET SCRUB RULE (banked 2026-08-28,
 # receipt-witnessed): move credential EPHEMERA upstream only when the match is
