@@ -1853,8 +1853,17 @@ print(max(1, n))
           # different first line from each after the repaint, so a copy taken
           # from the top of the screen named which one had run. One body,
           # one first line, typed the same as before.
+          # THE FIRST LINE IS A VERDICT (2026-09-25, operator's ruling): the
+          # boundary is a commit, so a dirty tree has none yet and the line
+          # says what makes one; a clean tree has it and the line says so.
           g() {
-            clear -x && echo "Left-hand causal boundary \"blast radius\" established. Make 1 change and test." && git status
+            clear -x
+            if [ -n "$(git status --porcelain)" ]; then
+              echo "Before conducting experiment, type \"blast\" to establish left-hand causal boundary."
+            else
+              echo "Left-hand causal boundary \"blast radius\" established. Make 1 change and test."
+            fi
+            git status
           }
           m() {
             # THE UNTRACKED-FILE DEBT (banked TODO 2026-07-20, discharged
