@@ -179,7 +179,18 @@ def apply_search_replace_patch(payload: str) -> bool:
     matches = block_pattern.findall(payload)
 
     if not matches and not write_matches:
-        print("❌ Error: No [[[SEARCH]]]/[[[REPLACE]]] or [[[WRITE_FILE]]] blocks found in payload.")
+        marker_lines = _residual_marker_lines(payload)
+        if marker_lines:
+            print("❌ Error: Patch-protocol marker(s) were found, but no complete block parsed.")
+            print("    The payload contains bare delimiters, so this is malformed protocol, not an empty payload.")
+            for lineno, line in marker_lines:
+                print(f"    >>> payload:{lineno}: {line!r}")
+            print("    Expected surgical shape: Target + SEARCH/body/DIVIDER/[replacement]/REPLACE.")
+            print("    Adjacent DIVIDER/REPLACE markers are valid and mean deletion.")
+            print("    Expected whole-file shape: Target + WRITE_FILE/body/END_WRITE_FILE.")
+            print("    Nothing was written.")
+        else:
+            print("❌ Error: No [[[SEARCH]]]/[[[REPLACE]]] or [[[WRITE_FILE]]] blocks found in payload.")
         return False
 
     success = True
