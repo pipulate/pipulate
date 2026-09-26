@@ -1351,6 +1351,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # CAPTURE
 # scripts/weblogin.py         # <-- SETTLE ahead of time: warm a login on the persistent profile; --profile default unless told otherwise
 # tools/scraper_tools.py      # <-- The browser capture and the CAPTURE fence (_capture_checkpoint is a write barrier, not a prompt)
+# assets/sounds/README.md     # <-- the tick while the browser opens and the ding when the page has loaded, both CC0 with their sources named; a copy under ~/.local/share/pipulate wins
 # imports/voice_synthesis.py  # <-- Piper: scripted narration, never a model (ATTRIBUTED-VOICE)
 #
 # HAND OFF
@@ -1386,21 +1387,24 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # Selection: context.txt names the checked preview and, commented beneath it, the raw captures.md;
 # the list is neither disclosure approval nor the evidence.
 #
-# THE HANDOFF (97feb327; amended 2026-09-16 and 2026-09-25): a complete,
-# nonempty run has the rider write context.txt WHOLE -- the one file
+# THE HANDOFF (97feb327; amended 2026-09-16, 2026-09-25 and 2026-09-26): a
+# complete, nonempty run has the rider write context.txt -- the one file
 # `context` opens and `compile` reads, PIPULATE_ADHOC_FILE or the repo root
 # -- 0600, os.replace'd: the checked preview as the one uncommented line once
 # DECANT released it, the whole archive as a commented line beneath, and the
-# archive alone, labelled, when no preview was saved. IT REPLACES, IT NEVER
-# MERGES, and because `context` invites a hand-typed line into this very
-# file, it REPLACES ONLY A FILE IT COULD HAVE WRITTEN: introduction.md plus
-# one uncommented absolute path to an archive or a preview and nothing else.
-# Any other uncommented line means a human owns the file; the rider prints
-# the new path lines and touches nothing, and deleting the file lets the next
-# walk rewrite it (witnessed 2026-09-25 against the operator's own working
-# list: two refusals, two paths printed, nothing written). SELECTING IS NOT
-# INCLUDING: naming context.txt inside another list includes its text and
-# never recurses into its entries.
+# archive alone, labelled, when no preview was saved. TWO SHAPES, ONE
+# WRITER. A file this writer could have written (introduction.md plus one
+# uncommented absolute path to an archive or a preview, nothing else) is
+# REPLACED WHOLE, so a newcomer's file never piles up. Any other file with
+# lines in it is a human's and is APPENDED TO, never replaced (the operator's
+# ruling of 2026-09-25, landed 2026-09-26): one block at the bottom between
+# "# --- WALK <run_id> START ---" and its END line, the preview active, the
+# archive and the introduction commented, and the same ride's second write
+# replaces only its own block. The 2026-09-25 refusal ("has lines of your
+# own, nothing written") is gone; the fixture straddle read that refusal
+# before and blocks=1 mine=1 lines=10 after. SELECTING IS NOT INCLUDING:
+# naming context.txt inside another list includes its text and never
+# recurses into its entries.
 #
 # AUTH RULING (banked 2026-08-09, source-witnessed): THERE IS NO AUTH FIELD IN
 # THE TRAIL SCHEMA. walk.py enforces set-difference in BOTH directions over the
@@ -2196,7 +2200,7 @@ MATCHBOOK_CHOP = r"""
 # - TODO (2026-09-15): one public_walk ride left 6 non-curl /walk/ lines in npvg.access.log, two per page; the user-agent split (deed 1408) read ONE agent, Chrome/150 on X11, with one 200 and one 304 per page, so there is no second fetcher: the same browser loaded each page twice and the second load was a conditional revalidation. Read the six lines in log order (time, status, path, no address) to rule between a double load inside one stop and a restore of the previous tab when the next stop's browser launches; count no rides until that is ruled, and filter the operator's own rides by address before reading the funnel at all.
 
 
-# - TODO (2026-09-15, operator ruling; mechanism landed with THE ONE DOOR; FILES LANDED 2026-09-19 ON THE LINUX BOX, deed 1495): tick.wav is OpenGameArt node 16323 (AntumDeluge, CC0; clock-1.wav, 3.66 s) and ding.wav is Freesound 611113 (5ro4, CC0; a pet-training bell, 2.52 s), both re-encoded pcm_s16le 44100 stereo by ffmpeg into ~/.local/share/pipulate/ and heard by ear at the prompt, balanced. The scraper loops the tick in its own process group (tools/scraper_tools.py:97, setsid) from before uc.Chrome until driver.get returns, SIGKILLs the group and plays the ding once (:115, called with ding=True at :659), and stays silent when the files are absent. OWED: (1) the Mac, the same two files at the same path, because ~/.local/share never travels; (2) a ruling on whether CC0 files ride in the repo, since the 2026-09-15 ruling against wavs in git predates choosing CC0 for exactly that freedom and *.wav sits in .gitignore's temp block; (3) a ruling on whether the sounds follow the voice consent (~/.config/pipulate/voice, can_speak() in imports/voice_synthesis.py) or stay file-presence-gated as today; (4) a console line when the loop starts and when the ding fires, because the sound path prints nothing and silence is three worlds (no files, no player, a loop that died at spawn). The tick and ding on a real walk were witnessed by ear on 2026-09-19 (deed 1496, walk-wb2bqtax, three stops at artifacts=12): the tick looped from "Opening the browser" until "The page is open", one ding fired before each CAPTURE prompt, and the console printed nothing about sound, exactly the silence owed at (4). The settle was far faster than the 2026-09-15 walk because the guided lane skips the 20 s staleness timeout (tools/scraper_tools.py, the `if not interactive:` guard read at deed 1495) and the ding lands the moment driver.get returns at the page's load event; after that the human's eye is the settle detector, which is what the CAPTURE fence is for.
+# - TODO (2026-09-15, operator ruling; mechanism landed with THE ONE DOOR; FILES LANDED 2026-09-19 ON THE LINUX BOX, deed 1495): tick.wav is OpenGameArt node 16323 (AntumDeluge, CC0; clock-1.wav, 3.66 s) and ding.wav is Freesound 611113 (5ro4, CC0; a pet-training bell, 2.52 s), both re-encoded pcm_s16le 44100 stereo by ffmpeg into ~/.local/share/pipulate/ and heard by ear at the prompt, balanced. The scraper loops the tick in its own process group (tools/scraper_tools.py:97, setsid) from before uc.Chrome until driver.get returns, SIGKILLs the group and plays the ding once (:115, called with ding=True at :659), and stays silent when the files are absent. (1) and (2) DISCHARGED 2026-09-26: both files ride in assets/sounds/ beside a README naming their sources, .gitignore carries one negation under its *.wav line, and the loader reads a home copy first and the repo copy second, so the Mac hears them on its next pull (SOUNDS read None None with HOME pointed away, then both repo paths). STILL OWED: (3) a ruling on whether the sounds follow the voice consent (~/.config/pipulate/voice, can_speak() in imports/voice_synthesis.py) or stay file-presence-gated as today; (4) a console line when the loop starts and when the ding fires, because the sound path prints nothing and silence is three worlds (no files, no player, a loop that died at spawn). The tick and ding on a real walk were witnessed by ear on 2026-09-19 (deed 1496, walk-wb2bqtax, three stops at artifacts=12): the tick looped from "Opening the browser" until "The page is open", one ding fired before each CAPTURE prompt, and the console printed nothing about sound, exactly the silence owed at (4). The settle was far faster than the 2026-09-15 walk because the guided lane skips the 20 s staleness timeout (tools/scraper_tools.py, the `if not interactive:` guard read at deed 1495) and the ding lands the moment driver.get returns at the page's load event; after that the human's eye is the settle detector, which is what the CAPTURE fence is for.
 # - TODO (2026-09-13): npvg.org rides mikelev.in's public address as a STATIC A record while only mikelev.in gets the namecheap-ddns heartbeat; a second unit (domain=npvg.org, its own token) or an ALIAS record is owed before the next public-IP change, or the pad goes dark with nothing printed anywhere.
 # - TODO (2026-09-13): the pad has no favicon, so every browser visit writes a 404 line into npvg.access.log beside its 200 (the cellular witness was two lines for one visit); a locations."= /favicon.ico" returning 204 is three lines, owed before the funnel is read from that log.
 # - EARMARK: THE DIRECTORY KEY CROSSED MACHINES (banked 2026-09-08, convicted by the second machine): a shared file may not name a thing by a MACHINE-LOCAL handle, because the handle is assigned per machine and the file is not. Chrome numbers profile directories in creation order, so "Profile 2" was the Work profile on NixOS and the PERSONAL profile on the Mac (Mike, 121 synced bookmarks), and bookmarks.nix, keyed by that directory, resolved to the wrong profile the first time a second checkout ran it; only the sync_metadata fence stood between a real run and a harvest-and-wipe of a personal bar. The key had been right for the whole life of the feature on the one machine that existed, which is SINGLE-CANDIDATE BLINDNESS wearing a filename: n=1 cannot tell a stable identity from a coincidence. CURE, a grammar change rather than a value change: the key is a human name and a `match` list names IDENTITIES the machine derives and the operator cannot author (a label, an account, an account domain, read from the application's own registry); exactly one hit resolves, none skips, several refuse. THE TEST before any key rides a shared file: is this value assigned by the machine in an order the other machine never saw? Directory numbers, pids, device paths, X display numbers and "Profile N" all fail it. Sibling of THE DERIVED-PATH RULE (a write target computed from an identity the writer cannot author) and of SINGLE-CANDIDATE BLINDNESS (create the second candidate); this names the class of key the second candidate convicts.
