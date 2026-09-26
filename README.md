@@ -5,13 +5,13 @@
 # Pipulate: The Context Compiler That Helps You Prompt Well
 
 ```text
-( Like a canary you say? )                      
-                                           O        /)  ____            The "No Problem" Framework
->  I HEREBY WILL NOT RE-GENERATE            o /)\__//  /    \        Pipulate - Protecting Your Code 
->  Once upon machines be smarten          ___(/_ 0 0  |      |       just by being honest about text.
->  ASCII sealing immutata art in        *(    ==(_T_)== NPvg |        (If mangled, then AI drifted.)
->  This here cony if it's broken          \  )   ""\  |      |             https://pipulate.com
->  Smokin gun drift now in token           |__>-\_>_>  \____/                     🥕🥕🥕
+( "The AI said so" is a transcript, not a record. )
+                                           O        /)  ____     This drawing is checksummed.
+>  Same files, same words, same bytes:      o /)\__//  /    \    If it reaches you altered, the
+>  a change you can replay is a change    ___(/_ 0 0  |      |   model rewrote what it was told to
+>  you can put your name behind.        *(    ==(_T_)== NPvg |   copy, and that is the finding.
+>  One diff per turn, a reading before    \  )   ""\  |      |   Verify with nothing installed:
+>  and after, and a digest you can check.  |__>-\_>_>  \____/    python scripts/foo_cartridge.py foo.zip
 ```
 
 ## If you can't reproduce it, it didn't happen
