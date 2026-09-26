@@ -1514,16 +1514,21 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           ahcu() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP "$@"); }
           # THE HYPER-LITERAL WORDS (2026-09-25, the operator's ruling): the
           # three moves of a turn under names no meeting can call strange.
-          # context edits the router (ahe), prompt captures the clipboard,
+          # context opens context.txt, prompt captures the clipboard,
           # compile builds the payload (ahc); con, cont, pro, com and comp
           # are the short spellings, and every old word stays. FUNCTIONS,
-          # per THE ALIAS-DISPATCH RULE: ahe and prompt are aliases, so
-          # context and pro carry the alias bodies instead of calling them,
+          # per THE ALIAS-DISPATCH RULE: prompt is an alias, so
+          # pro carries the alias body instead of calling it,
           # and compile calls the ahc function so --profile and --reason
           # pass through. pro is defined beside prompt in the platform
           # branches below, because its body differs between pbpaste and
           # xclip. Typed by a human only; never echoed as a probe.
-          context() { (cd "$PIPULATE_ROOT" && nvim "''${PIPULATE_ADHOC_FILE:-adhoc.txt}" foo_files.py); }
+          # ONE FILE, ONE WINDOW (2026-09-25): context opens context.txt and
+          # nothing else. ahe below still opens foo_files.py as a second
+          # buffer for whoever already types it; a newcomer's :q meets E173
+          # ("1 more file to edit") on a second buffer they never visited,
+          # and the notes the walk writes into this file teach :q.
+          context() { (cd "$PIPULATE_ROOT" && "$(command -v nvim || command -v vim || echo vi)" "''${PIPULATE_ADHOC_FILE:-context.txt}"); }
           con() { context "$@"; }
           cont() { context "$@"; }
           compile() { ahc "$@"; }
@@ -1609,7 +1614,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # human only: the compile lane witnesses it through the generated
           # hook text, never through `type`.
           forget() { (cd "$PIPULATE_ROOT" && python prompt_foo.py @COMPACT_PROMPT --chop COMPACT_CHOP --no-tree "$@"); }
-          alias ahe='(cd "$PIPULATE_ROOT" && nvim "''${PIPULATE_ADHOC_FILE:-adhoc.txt}" foo_files.py)'
+          alias ahe='(cd "$PIPULATE_ROOT" && nvim "''${PIPULATE_ADHOC_FILE:-context.txt}" foo_files.py)'
           # THE SNIFF DOOR: one word at the prompt puts a wire-truth lens into
           # the next compile. Appends a sigil line to the adhoc overlay, then
           # fires ahc. A FUNCTION because it must call ahc(), itself a function
@@ -1650,7 +1655,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               http://*|https://*) ;;
               *) url="https://$url" ;;
             esac
-            local adhoc="''${PIPULATE_ADHOC_FILE:-$PIPULATE_ROOT/adhoc.txt}"
+            local adhoc="''${PIPULATE_ADHOC_FILE:-$PIPULATE_ROOT/context.txt}"
             # Seam guard: appending to a file whose last byte is not a newline
             # fuses the sigil onto the previous line, and the compiler parses
             # the fusion as one unrunnable path.
