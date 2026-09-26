@@ -329,7 +329,7 @@ end
 
 function toggle_text_width()
     -- THE MARGIN RELEASE: flip between tw=80 (journal prose auto-wraps at
-    -- the column) and tw=0 (long lines run free for adhoc.txt masthead art
+    -- the column) and tw=0 (long lines run free for context.txt lines
     -- and other wide-format work). One key, no :set incantation, and the
     -- notify always tells you which regime you are typing in.
     if vim.opt.textwidth:get() == 0 then
@@ -785,7 +785,7 @@ function hop_off_sandworm()
         .. "   SEARCH anchor is not banked; it is a hand edit the operator will\n"
         .. "   not make. These BANK cars are the ONLY patches a dismount emits.\n"
         .. "3. DANGLING: what carries forward unbanked? One line each, no essays.\n"
-        .. "4. SEED: the adhoc.txt lines (and TODO_SLUGS if narrative context is\n"
+        .. "4. SEED: the context.txt lines (and TODO_SLUGS if narrative context is\n"
         .. "   needed) for the next ride's first compile.\n"
         .. "5. CLOSING: a closing summary for the BOTTOM of the article — the\n"
         .. "   final take-away, tied to the book's larger arc where it fits\n"
