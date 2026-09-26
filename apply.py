@@ -65,6 +65,38 @@ def _residual_marker_lines(text: str):
     return [(i, line) for i, line in enumerate(text.split('\n'), start=1)
             if _RESIDUAL_MARKER_RE.match(line)]
 
+# THE ACTUATOR IS NOT THE LEDGER (convicted 2026-09-26, commit 7dd5d832: a
+# one-ride receipt banked into this file because this file is always in
+# context, so a patch here was known to land). This file rides the fixed
+# tail of EVERY compile, so a comment line here is read on every turn about
+# every other project, forever. Receipts, convictions and rules belong in
+# foo_files.py, where forget graduates them to GLOSSARY.md. THE GATE: a
+# patch to this file that adds comment lines and changes no code is
+# refused, on both arms. Cutting comments is always allowed. A comment that
+# explains a mechanism rides in the same car as the mechanism's code.
+SELF_BASENAME = 'apply.py'
+
+def _prose_only_growth(old: str, new: str) -> bool:
+    """True when new differs from old only by added comment lines (blank
+    lines ride free). Compared as whole-line multisets, so a mid-line anchor
+    is judged by the line it leaves, not by the fragment it quoted."""
+    from collections import Counter
+    old_lines, new_lines = old.split('\n'), new.split('\n')
+    added = list((Counter(new_lines) - Counter(old_lines)).elements())
+    removed = list((Counter(old_lines) - Counter(new_lines)).elements())
+    def prose(line):
+        return not line.strip() or line.lstrip().startswith('#')
+    return (any(line.lstrip().startswith('#') for line in added)
+            and all(prose(line) for line in added)
+            and all(prose(line) for line in removed))
+
+def _refuse_prose_growth(filename: str, verb: str) -> None:
+    print(f"❌ Error: {verb} '{filename}' aborted. The patch adds comment lines and changes no code.")
+    print("    apply.py rides the fixed tail of every compile. A receipt, a conviction or a rule")
+    print("    goes in foo_files.py (a TODO line, a rule body, or a '# §' key) and graduates to")
+    print("    GLOSSARY.md by forget. A comment rides here only beside the code it explains,")
+    print("    in the car that changes that code. Nothing was written.")
+
 # BLANK-LINE GAP FINDER (convicted 2026-09-05, two blocks in one train, and
 # the cause re-attributed the same day). EMPTY lines vanish between the
 # compiler and the model while whitespace-only lines survive. The compiler is
@@ -161,6 +193,16 @@ def apply_search_replace_patch(payload: str) -> bool:
         file_content = file_content.replace('\xa0', ' ').replace('\r\n', '\n')
         # POSIX courtesy: guarantee exactly one trailing newline.
         file_content = file_content.rstrip('\n') + '\n'
+
+        # THE ACTUATOR IS NOT THE LEDGER (whole-file arm): a rewrite of this
+        # file that only grows its comments is refused against the file on disk.
+        if os.path.basename(filename) == SELF_BASENAME and os.path.exists(filename):
+            with open(filename, 'r', encoding='utf-8') as f:
+                current = f.read().replace('\xa0', ' ').replace('\r\n', '\n')
+            if _prose_only_growth(current, file_content):
+                _refuse_prose_growth(filename, "Whole-file write of")
+                success = False
+                continue
 
         # PROTOCOL MARKER AIRLOCK (whole-file arm) — refuse to write our own grammar.
         if os.path.basename(filename) not in PROTOCOL_GRAMMAR_FILES:
@@ -444,6 +486,15 @@ def apply_search_replace_patch(payload: str) -> bool:
                 success = False
                 continue
         
+        # THE ACTUATOR IS NOT THE LEDGER (surgical arm). Judged on the whole
+        # file before and after, so a tail-append is judged by the line it
+        # leaves. Runs after the marker airlock: a leaked delimiter is the
+        # earlier and rarer fault, and its receipt names the cause.
+        if os.path.basename(filename) == SELF_BASENAME and _prose_only_growth(content, new_content):
+            _refuse_prose_growth(filename, "Patching")
+            success = False
+            continue
+
         # AUTOLINK CONTAMINATION AIRLOCK (surgical arm). Checked against the
         # REPLACE block ALONE, never new_content: an edit must not be blamed
         # for debris that was already in the file, and a file already carrying
