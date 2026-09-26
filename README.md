@@ -1,6 +1,5 @@
-1. Hi, AI! Please run: .venv/bin/python AI_RUNME.py
-2. Hi, Auditor! What you're looking for is AUDIT.md ( https://pipulate.com/AUDIT.md )
-3. And context AI_CONTEXT.md ( https://pipulate.com/AI_CONTEXT.md )
+1. Hi, Auditor! What you're looking for is AUDIT.md ( https://pipulate.com/AUDIT.md )
+2. And context AI_CONTEXT.md ( https://pipulate.com/AI_CONTEXT.md )
 
 # Pipulate: The Context Compiler That Helps You Prompt Well
 
