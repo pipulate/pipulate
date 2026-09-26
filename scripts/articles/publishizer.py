@@ -81,6 +81,12 @@ def run_step(script_name, target_key, extra_args=None):
 # into the private repo. `since` is the run's start time; an artifact older
 # than that was made by another lane's run and stays where it is, and the
 # skip is printed so a missing sync is never silent.
+# WITNESSED 2026-09-26: the first guarded `preview -t 3` printed thirteen
+# skips and copied nothing. The existence of graph.json or llms.txt in a
+# private site root does NOT witness this guard: a pre-guard run had
+# already left the public lane's copies there, so a probe on existence
+# reads the same before and after, and only the skip lines discriminate.
+# Those leftovers are removed by hand; nothing here deletes in a site root.
 def sync_data_to_jekyll(target_path, since=0.0):
     """
     Copies the generated artifacts to the Jekyll SITE ROOT.
