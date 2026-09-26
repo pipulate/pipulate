@@ -384,6 +384,11 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # (from which point in history), so the detached slice can be re-fused to the
 # Merkle tree it was cut from. The cartridge IS a portable slice of git's DAG
 # handed to a model that cannot see .git.
+# RUNG ONE NAMES NO HAND (banked 2026-09-26): the rabbit's words were changed
+# by hand, the wax seal read drift, and it would have read the same drift had
+# a model changed them; a CRC says "changed" and never "who". A caption that
+# names the author ("the model rewrote what it was told to copy") is a verdict
+# written into the instrument. Let the seal say what it measures.
 
 # THE CODEX-AS-DATASTRUCTURE RULE (banked 2026-07-22, articulation-banked): the
 # printed book's apparatus is a random-access + cross-reference + drift-detection
