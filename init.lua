@@ -724,6 +724,7 @@ function mount_sandworm()
     -- protecting existing prose. Either way the cursor lands in insert mode
     -- right after the speaker label — the old i**Me**: feel, full saddle.
     local template = "**Me**: \n\n"
+        .. "## THE PROOF STRADDLE\n\n"
         .. "> Same commands, run twice, one change between them. Where the readings\n"
         .. "> differ is what the change did; the diff in the middle is the receipt.\n\n"
         .. "**1: Probe**: \n\n"
