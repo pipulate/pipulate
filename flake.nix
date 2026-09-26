@@ -247,9 +247,10 @@
         rgxCommand = pkgs.writeShellScriptBin "rgx" ''
           set -euo pipefail
 
-          # Target selection: -t KEY (first args only) resolves the corpus
-          # path from blogs.json at RUNTIME — never baked into the Nix store —
-          # so adding a blog in blogs.nix needs no rebuild of this command.
+          # Target selection: -t SPEC (first args only), in every spelling
+          # posts reads -- 4, 1,3, 2-4, all -- resolved from blogs.json at
+          # RUNTIME by posts itself, never baked into the Nix store, so a
+          # blog added in blogs.nix needs no rebuild of this command.
           target="1"
           if [ "''${1:-}" = "-t" ] && [ "$#" -ge 2 ]; then
             target="$2"
@@ -277,21 +278,25 @@
             shift
           fi
           if [ "$#" -eq 0 ]; then
-            echo "Usage: rgx [-t KEY] [-v] [N] TERM [TERM...]   (leading N = only the N most recent matches; -v opens them in vim, newest first)" >&2
+            echo "Usage: rgx [-t SPEC] [-v] [N] TERM [TERM...]   (SPEC = 4, 1,3, 2-4 or all; leading N = only the N most recent matches; -v opens them in vim, newest first)" >&2
             exit 1
           fi
 
           terms=("$@")
-          blogs_json="$HOME/.config/pipulate/blogs.json"
-          posts_dir="$(${pkgs.jq}/bin/jq -r --arg t "$target" '.[$t].path // empty' "$blogs_json" 2>/dev/null || true)"
-          if [ -z "$posts_dir" ]; then
-            posts_dir="$HOME/repos/trimnoir/_posts"
+          # THE ROSTER IS THE SEARCH SPACE (2026-09-26, the night the Vault
+          # became target 5). posts resolves the -t spec against blogs.json
+          # in every spelling it reads (4, 1,3, 2-4, all) and prints the path
+          # of every post those blogs hold; rg then searches exactly those
+          # files, so a spec that names two blogs searches two blogs. One
+          # resolver, no jq twin of it here, and no fallback corpus: a spec
+          # that names nothing is the refusal posts prints on stderr, and
+          # set -e stops this script on it.
+          all_paths="$(${postsCommand}/bin/posts -t "$target" --fmt paths)"
+          if [ -z "$all_paths" ]; then
+            echo "rgx: no articles in target $target" >&2
+            exit 0
           fi
-          if [ ! -d "$posts_dir" ]; then
-            echo "rgx: posts dir for target $target not found: $posts_dir" >&2
-            exit 1
-          fi
-          matches="$(${pkgs.ripgrep}/bin/rg -il -- "''${terms[0]}" "$posts_dir" || true)"
+          matches="$(printf '%s\n' "$all_paths" | ${pkgs.findutils}/bin/xargs -r ${pkgs.ripgrep}/bin/rg -il -- "''${terms[0]}" || true)"
           for term in "''${terms[@]:1}"; do
             [ -z "$matches" ] && break
             matches="$(printf '%s\n' "$matches" | ${pkgs.findutils}/bin/xargs -r ${pkgs.ripgrep}/bin/rg -il -- "$term" || true)"
@@ -303,13 +308,15 @@
 
           sorted_matches="$(printf '%s\n' "$matches" | ${pkgs.coreutils}/bin/sort)"
 
-          # THE ART WALK exit: sorted_matches is oldest-first (date-prefixed
-          # filenames), so the optional leading N takes the tail (the N most
-          # recent) and tac flips it newest-first before exec'ing the editor.
-          # The vim alias is interactive-only, so resolve nvim explicitly;
-          # the exported VIMINIT still loads the repo's init.lua.
+          # THE ART WALK exit: the roster from posts is oldest-first ACROSS
+          # BLOGS (date, then sort_order) while the lexical sort above is
+          # per-repo, so the matches are re-ordered by the roster before the
+          # optional leading N takes the tail (the N most recent) and tac
+          # flips it newest-first for the editor. The vim alias is
+          # interactive-only, so resolve nvim explicitly; the exported
+          # VIMINIT still loads the repo init.lua.
           if [ "$vim_mode" -eq 1 ]; then
-            vim_list="$sorted_matches"
+            vim_list="$(printf '%s\n' "$all_paths" | ${pkgs.gnugrep}/bin/grep -Fx -f <(printf '%s\n' "$sorted_matches"))"
             if [ -n "$lastn" ]; then
               vim_list="$(printf '%s\n' "$vim_list" | ${pkgs.coreutils}/bin/tail -n "$lastn")"
             fi
@@ -347,9 +354,9 @@
         rgxcCommand = pkgs.writeShellScriptBin "rgxc" ''
           set -euo pipefail
 
-          # Same runtime target resolution as rgx: -t KEY (first args only)
-          # reads blogs.json when the command RUNS, so the Nix store carries
-          # the mechanism, never the data.
+          # Same runtime target resolution as rgx: -t SPEC (first args only),
+          # 4 or 1,3 or 2-4 or all, read by posts from blogs.json when the
+          # command RUNS, so the Nix store carries the mechanism, never the data.
           target="1"
           if [ "''${1:-}" = "-t" ] && [ "$#" -ge 2 ]; then
             target="$2"
@@ -377,21 +384,21 @@
             shift
           fi
           if [ "$#" -eq 0 ]; then
-            echo "Usage: rgxc [-t KEY] [-v] [N] TERM [TERM...]   (leading N = only the N most recent matches; -v opens them in vim, newest first)" >&2
+            echo "Usage: rgxc [-t SPEC] [-v] [N] TERM [TERM...]   (SPEC = 4, 1,3, 2-4 or all; leading N = only the N most recent matches; -v opens them in vim, newest first)" >&2
             exit 1
           fi
 
           terms=("$@")
-          blogs_json="$HOME/.config/pipulate/blogs.json"
-          posts_dir="$(${pkgs.jq}/bin/jq -r --arg t "$target" '.[$t].path // empty' "$blogs_json" 2>/dev/null || true)"
-          if [ -z "$posts_dir" ]; then
-            posts_dir="$HOME/repos/trimnoir/_posts"
+          # THE ROSTER IS THE SEARCH SPACE (mirrored from rgx, 2026-09-26):
+          # posts resolves the -t spec and prints every post those blogs
+          # hold; rg searches exactly those files. No jq twin, no fallback
+          # corpus; a spec that names nothing is the refusal posts prints.
+          all_paths="$(${postsCommand}/bin/posts -t "$target" --fmt paths)"
+          if [ -z "$all_paths" ]; then
+            echo "rgxc: no articles in target $target" >&2
+            exit 0
           fi
-          if [ ! -d "$posts_dir" ]; then
-            echo "rgxc: posts dir for target $target not found: $posts_dir" >&2
-            exit 1
-          fi
-          matches="$(${pkgs.ripgrep}/bin/rg -il -- "''${terms[0]}" "$posts_dir" || true)"
+          matches="$(printf '%s\n' "$all_paths" | ${pkgs.findutils}/bin/xargs -r ${pkgs.ripgrep}/bin/rg -il -- "''${terms[0]}" || true)"
           for term in "''${terms[@]:1}"; do
             [ -z "$matches" ] && break
             matches="$(printf '%s\n' "$matches" | ${pkgs.findutils}/bin/xargs -r ${pkgs.ripgrep}/bin/rg -il -- "$term" || true)"
@@ -403,11 +410,12 @@
 
           sorted_matches="$(printf '%s\n' "$matches" | ${pkgs.coreutils}/bin/sort)"
 
-          # THE ART WALK exit (mirrored from rgx): tail takes the N most
+          # THE ART WALK exit (mirrored from rgx): matches re-ordered by the
+          # roster so N is chronological across blogs, tail takes the N most
           # recent, tac flips newest-first, nvim resolved explicitly since
           # the vim alias is interactive-only; VIMINIT loads init.lua.
           if [ "$vim_mode" -eq 1 ]; then
-            vim_list="$sorted_matches"
+            vim_list="$(printf '%s\n' "$all_paths" | ${pkgs.gnugrep}/bin/grep -Fx -f <(printf '%s\n' "$sorted_matches"))"
             if [ -n "$lastn" ]; then
               vim_list="$(printf '%s\n' "$vim_list" | ${pkgs.coreutils}/bin/tail -n "$lastn")"
             fi
