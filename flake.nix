@@ -194,7 +194,7 @@
         );
 
         # Real commands, not shell functions, so Python-spawned `!` commands in
-        # adhoc.txt inherit them through PATH just like interactive Bash does.
+        # context.txt inherit them through PATH just like interactive Bash does.
         postsCommand = pkgs.writeShellScriptBin "posts" ''
           set -euo pipefail
           root="''${PIPULATE_ROOT:-$PWD}"
@@ -223,7 +223,7 @@
         # work in one context window.
         #
         # A COMMAND, NOT A FUNCTION, for the same reason `posts` is one: a `!`
-        # chisel-strike in adhoc.txt spawns a non-interactive child that
+        # chisel-strike in context.txt spawns a non-interactive child that
         # inherits PATH and never inherits functions, so `! postsc 5` resolves
         # and `! posts2 5` cannot. Forwarding is total, so `-t`, `--reverse`,
         # `--match`, `--slugs` and the bare-N positional all still work, and
@@ -1419,7 +1419,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # THE CONNECTOR GRAMMAR (idea #7 made literal): tiny Unix commands,
           # one per API, each a self-contained file in connectors/.
           # Args pass through: `botify org/project`, `confluence ENG`,
-          # `gmail <thread_id>`. Interactive-shell only — adhoc.txt `!` lines
+          # `gmail <thread_id>`. Interactive-shell only — context.txt `!` lines
           # ride as DERIVATIONS in commonPackages above, so the short spelling
           # is legal everywhere -- a router line is now `! jira SWCX-1234`.
           # THE SEVEN LEFT THIS BLOCK 2026-09-16 for connectorCommands above.
@@ -1563,7 +1563,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # documented miss, not a bug: prompt_foo prints the ledger-miss line
           # and names the ! scrape. So: sniff -f once, sniff freely after.
           #
-          # Lines ACCUMULATE on purpose. adhoc.txt is a scratchpad, `ahe` is
+          # Lines ACCUMULATE on purpose. context.txt is a scratchpad, `context` is
           # the pruner, and every sigil line re-fires on every later compile.
           # This function only appends, and prints exactly what it wrote.
           sniff() {
@@ -1605,7 +1605,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # /bin/sh via Popen(shell=True). Any `!` probe of this spec returns
           # the SAME answer whether the spec exists or not -- a false receipt in
           # both directions -- so it is deliberately never echoed into
-          # adhoc.txt. The only honest witness is a human pressing Tab.
+          # context.txt. The only honest witness is a human pressing Tab.
           #
           # Bare domains only, no scheme: COMP_WORDBREAKS contains ':', so
           # typing "https://exa<TAB>" splits the word and completion cannot see
@@ -1830,7 +1830,7 @@ print(max(1, n))
           # slugs-ordered preserves input order for narrative control
           sluggo() { for slug in "$@"; do (cd "$PIPULATE_ROOT" && python scripts/articles/lsa.py -t 1 --match "$slug" --fmt paths); done; }
           # `rgx` and `rgxc` are Nix-packaged commands above, not shell
-          # functions, so interactive use and adhoc.txt child shells share one implementation.
+          # functions, so interactive use and context.txt child shells share one implementation.
           # UNNAMED-ROOT RULE conviction: this invoked release.py through the
           # CWD while `smart` invokes the SAME SCRIPT wrapped in
           # cd "$PIPULATE_ROOT" -- one script, two spellings, one anchored.
