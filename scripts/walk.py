@@ -3,7 +3,7 @@
 
 Trail files use JSON. That keeps this car stdlib-only, duplicate-key-checkable,
 and explicit about the syntax humans are editing. There is deliberately no
-browser, voice, shell, or adhoc.txt mutation path in this file.
+browser, voice, shell, or context.txt mutation path in this file.
 """
 
 import argparse

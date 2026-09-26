@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-sources_menu.py — what door 2 opens onto.
+sources_menu.py — what `conn` prints.
 
-boot_menu.py's door 2 drops the human into the Nix shell and tells them to
-type `sources`. This is the roster they get: the commands that reach OUTSIDE
+boot_menu.py lists `conn` at every shell entry and the Nix shell defines it.
+This is the roster it prints: the commands that reach OUTSIDE
 this machine, each row's description GENERATED from the target script's own
 module docstring rather than hand-authored here.
 
