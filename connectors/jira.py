@@ -524,6 +524,17 @@ def _project_url_field(client, base):
     the humans typed, so one GET on /rest/api/3/field maps the label to
     this site's id. None means the site has no such field, which the
     caller says out loud rather than reading as zero tickets with a URL.
+    CONVICTED 2026-09-27 (deed 1625, by a census and not by a second
+    candidate arriving): this site carries TWO fields named Project URL,
+    customfield_12188 and customfield_12189, and this loop keeps whichever
+    the API lists first, so the board's counts line read 0 with an id
+    resolved and no note printed: SINGLE-CANDIDATE BLINDNESS in a selector
+    that never knew there were two. A JQL by the same name read rows=0
+    and raised no ambiguity error, so Jira picked one as well, unnamed.
+    The cure, once a populated issue is known: return every id under the
+    label and let the caller read whichever is filled per issue. The
+    falsifier is by id and never by name: cf[12188] is not EMPTY and
+    cf[12189] is not EMPTY, each counted.
     """
     fields = get_json(client, f"{base}/rest/api/3/field")
     for item in fields if isinstance(fields, list) else []:
@@ -551,6 +562,16 @@ def list_board_issues(client, base, board_id, max_items):
     are from the documentation and UNWITNESSED until the first receipt;
     get_json prints the HTTP code and the body on any refusal, so a wrong
     path is a reading and never a crash.
+    WITNESSED 2026-09-27 (deed 1623, the first flight): both answered 200
+    for board 453, SVB board, type simple, filter 15051, JQL project = SVB
+    ORDER BY Rank ASC, so that board is the whole project in board order,
+    Rank ASC being the top. The counts line read 0 with a Project URL
+    among 100 issues at -n 100 and again at -n 500, which returned exactly
+    100 (deed 1625): the enhanced search pages at 100 (INFERRED from 500
+    asked), the cap line below fires only when the page fills -n, so a
+    server page smaller than -n reads as a complete list -- THE FULL PAGE
+    WAS SILENT in a second shape -- and nextPageToken is never walked here
+    by design. The zero has a second cause in _project_url_field.
     """
     config = get_json(client, f"{base}/rest/agile/1.0/board/{board_id}/configuration")
     config = config if isinstance(config, dict) else {}
