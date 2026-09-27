@@ -99,7 +99,7 @@ def extract_tagged_cell(notebook_filename: str, tag: str) -> str:
     if not notebook_filename.endswith('.ipynb'):
         notebook_filename += '.ipynb'
         
-    # Cast a recursive net across the entire Notebooks/ base directory
+    # Cast a recursive net across the entire Workshop/ base directory
     nb_path = next(wand.paths.base.rglob(notebook_filename), None)
     
     if not nb_path:

@@ -277,7 +277,7 @@ def collect_semrush_downloads(job: str, download_path_str: str, file_pattern_xls
             print(f"❌ Error: Source download directory not found or is not a directory: '{source_dir}'")
             return None, []
 
-        # Destination path relative to the current working directory (assumed Notebooks/)
+        # Destination path relative to the current working directory (assumed Workshop/)
         destination_dir = wand.paths.downloads / job
         destination_dir.mkdir(parents=True, exist_ok=True)
         destination_dir_str = str(destination_dir.resolve()) # Store resolved path as string
@@ -413,7 +413,7 @@ def find_semrush_files_and_generate_summary(job: str, competitor_limit: int = No
         wand.set(job, 'collected_semrush_files', []) # Store empty list on error
         return False
 
-# In Notebooks/gap_analyzer_sauce.py
+# In Workshop/imports/gap_analyzer_sauce.py
 import pandas as pd
 from tldextract import extract
 import itertools

@@ -1,4 +1,4 @@
-# Notebooks/imports/onboard_sauce.py
+# Workshop/imports/onboard_sauce.py
 # Purpose: Bridge the 0nboard notebook to the LLM Optics engine.
 # Asserting sovereignty over perception. 👁️
 
