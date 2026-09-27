@@ -11,6 +11,7 @@ Golden-path modes, auto-detected from the single positional argument:
   python connectors/jira.py projects        # LIST: projects you can see
   python connectors/jira.py ENG             # LIST: recently-updated issues in project ENG
   python connectors/jira.py ENG-123         # FETCH: full text of one issue (custom fields + description + comments)
+  python connectors/jira.py board:453       # BOARD: the board's saved filter, its JQL, counts, then its issues (a /boards/<id> URL routes here)
   python connectors/jira.py 'assignee = currentUser() ORDER BY updated DESC'  # SEARCH: raw JQL
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
@@ -24,6 +25,7 @@ Disambiguation rule (checked in this order):
   - any /jira/for-you URL               -> MINE, the same answer
   - the word projects                    -> LIST projects
   - matches PROJ-123 (KEY-<digits>)      -> FETCH one issue
+  - board:<id> (or a /boards/<id> URL)  -> BOARD: the saved filter's JQL, counts first, then rows
   - matches a bare KEY (all caps/digits) -> LIST that project's issues
   - anything else (spaces, lowercase, =, ~) -> raw JQL SEARCH
 
@@ -85,6 +87,7 @@ import httpx
 
 ISSUE_KEY_RE = re.compile(r'^[A-Z][A-Z0-9]+-\d+$')
 PROJECT_KEY_RE = re.compile(r'^[A-Z][A-Z0-9]+$')
+BOARD_RE = re.compile(r'^board:(\d+)$')
 
 # THE EMPTY ARGUMENT ASKS THE MORNING QUESTION (2026-09-10). Bare `jira` used
 # to list every project the account could see -- a directory, when the one
@@ -208,6 +211,14 @@ def normalize_query(arg):
     # whether a /boards/<id> segment says so out loud or resolves.
     # WITNESSED 2026-09-24: a board URL printed the project header and the
     # same first three rows as the bare project key.
+    # RESOLVED 2026-09-27 (the speed-dating queue): a /boards/<id> segment
+    # now wins over the project key beside it and routes to BOARD mode as
+    # board:<id>, the spelling a hand can type without the URL. The
+    # paragraph above is the history of the branch this one replaces.
+    if 'boards' in parts:
+        index = parts.index('boards')
+        if index + 1 < len(parts) and parts[index + 1].isdigit():
+            return f"board:{parts[index + 1]}"
     for marker in ('projects', 'browse'):
         if marker in parts:
             index = parts.index(marker)
@@ -505,6 +516,101 @@ def list_mine(client, base, max_items):
     print("#       python connectors/jira.py projects      (every project you can see)")
 
 
+def _project_url_field(client, base):
+    """The id of the custom field labelled Project URL, or None.
+
+    A search returns custom fields by id (customfield_NNNNN) and never by
+    label, and the id differs from site to site while the label is what
+    the humans typed, so one GET on /rest/api/3/field maps the label to
+    this site's id. None means the site has no such field, which the
+    caller says out loud rather than reading as zero tickets with a URL.
+    """
+    fields = get_json(client, f"{base}/rest/api/3/field")
+    for item in fields if isinstance(fields, list) else []:
+        if isinstance(item, dict) and str(item.get("name") or "").strip().lower() == "project url":
+            return item.get("id")
+    return None
+
+
+def list_board_issues(client, base, board_id, max_items):
+    """BOARD mode, board:<id>: the board's saved filter, its JQL, counts, rows.
+
+    THE BOARD IS THE SCOPE (2026-09-27, the speed-dating queue; named
+    2026-09-16 when a board URL was found reducing to its project key). A
+    board is a saved filter on the Atlassian side, so the scope is three
+    GETs: the board's configuration names its filter, the filter carries
+    the JQL, the enhanced search runs it with this site's Project URL
+    field asked for by id. THE COUNTS COME BEFORE ANY ROW, because the
+    queue's shape is the question a Solutions Engineer asks first: how
+    many issues the filter returns under the -n cap, how many carry a
+    Project URL, how many of those name an app.botify.com org/project, and
+    how many of those have a local pull under data/botify_pulls, so that
+    botify --rules org/project answers for them today. Rows follow, each
+    with its org/project when it has one. The two Atlassian paths
+    (/rest/agile/1.0/board/<id>/configuration and /rest/api/3/filter/<id>)
+    are from the documentation and UNWITNESSED until the first receipt;
+    get_json prints the HTTP code and the body on any refusal, so a wrong
+    path is a reading and never a crash.
+    """
+    config = get_json(client, f"{base}/rest/agile/1.0/board/{board_id}/configuration")
+    config = config if isinstance(config, dict) else {}
+    filt = config.get("filter") if isinstance(config.get("filter"), dict) else {}
+    filter_id = filt.get("id")
+    print(f"# Jira board {board_id}: {config.get('name', '?')} "
+          f"(type {config.get('type', '?')}, filter {filter_id or '?'})")
+    if not filter_id:
+        print("(the board configuration names no filter; nothing to search)")
+        return
+    filter_data = get_json(client, f"{base}/rest/api/3/filter/{filter_id}")
+    jql = filter_data.get("jql") if isinstance(filter_data, dict) else None
+    print(f"# jql: {jql}\n")
+    if not jql:
+        print("(the filter carries no jql)")
+        return
+    url_field = _project_url_field(client, base)
+    fields = "summary,status,issuetype,priority,assignee,updated"
+    if url_field:
+        fields += "," + url_field
+    data = get_json(client, f"{base}/rest/api/3/search/jql",
+                    params={"jql": jql, "maxResults": max_items, "fields": fields})
+    issues = data.get("issues", []) if isinstance(data, dict) else []
+    pulls_root = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                              "data", "botify_pulls")
+    with_url = named = local = 0
+    rows = []
+    for it in issues:
+        f = it.get("fields", {}) or {}
+        raw = f.get(url_field) if url_field else None
+        url = "" if _field_empty(raw) else _field_text(raw)
+        slug = ""
+        if url:
+            with_url += 1
+            if url.startswith(("http://", "https://")):
+                parsed = urlparse(url)
+                parts = [p for p in parsed.path.split("/") if p]
+                if "botify.com" in parsed.netloc and len(parts) >= 2:
+                    slug = f"{parts[0]}/{parts[1]}"
+                    named += 1
+                    if os.path.exists(os.path.join(pulls_root, parts[0], parts[1], "sitecrawler.json")):
+                        local += 1
+        rows.append((it.get("key", "?"), _name(f.get("status")), f.get("summary", ""), slug))
+    print(f"# counts: {len(issues)} issue(s) under the -n cap of {max_items}; {with_url} with a Project URL; "
+          f"{named} naming an app.botify.com org/project; {local} of those with a local pull "
+          "(botify --rules org/project answers today)")
+    if url_field is None:
+        print("# (this site has no custom field labelled Project URL, so the URL counts are 0 by construction)")
+    if not issues:
+        print("(no issues match the board's filter)")
+        return
+    print()
+    for key, status, summary, slug in rows:
+        print(f"{key}  [{status}]  {summary}" + (f"  -> {slug}" if slug else ""))
+    if len(issues) >= max_items:
+        print(f"\n# (hit the -n cap of {max_items}; there may be more -- raise -n/--max)")
+    print("\n# Next: python connectors/jira.py <PROJ-123>   (full issue text)")
+    print("#       botify --rules <org/project>             (that project's deployed rules, from the local corpus)")
+
+
 def fetch_issue(client, base, issue_key):
     """FETCH mode: one issue's full text -- fields, description, comments."""
     data = get_json(
@@ -696,6 +802,8 @@ def main():
                 list_projects(client, base, args.max)
             elif ISSUE_KEY_RE.match(arg):
                 fetch_issue(client, base, arg)
+            elif BOARD_RE.match(arg):
+                list_board_issues(client, base, BOARD_RE.match(arg).group(1), args.max)
             elif PROJECT_KEY_RE.match(arg):
                 list_project_issues(client, base, arg, args.max)
             else:
