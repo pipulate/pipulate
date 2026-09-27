@@ -2146,6 +2146,34 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # connectors/mcp_warm.py  # <-- Mint the OAuth bearer token a remote MCP server asks for.
 # connectors/noop.py      # <-- The honest non-operative connector: one positional, prints what it received, exits 0; what public_walk.yaml names at every stop, because a plan must name something that RUNS
 # scripts/mcp_dummy_server.py     # <-- The fault harness behind mcp.py (20/20 against the unmodified client); it shares mcp.py's spec reading, so its agreement is a tautology, never a vendor witness
+#
+# THE BOTIFY CORPUS, DISTILLED (2026-09-27, from the Grimoire rides of
+# 09-22 through 09-24, so those seven articles never ride a payload again).
+# The API cannot enumerate projects; the Django admin export can, on the
+# cookie lane (weblogin --profile botify app.botify.com, the window closed
+# before any harvest, since Chrome locks the profile). The unfiltered export
+# is a 502; category__exact=1 (Web Property) reads 10,887 rows in a minute
+# or two; has_sw=True beside it reads the 227-row SpeedWorkers cohort in
+# 2.4 s, and has_sw is an ENTITLEMENT flag, never proof of a live production
+# version. Four commands, in order, each idempotent, each a ! line:
+#   ! botify --check                                      (the token; warm botify if RED)
+#   ! botify --census --param has_sw=True --param category__exact=1 --fields id,project_links
+#   ! botify --pull-configs --queue data/botify_census/<newest>.queue.jsonl --limit 1000
+#   ! botify --rules                                      (the local corpus; no network)
+# The census writes projects-<stamp>.json under data/botify_census and its
+# derived queue (id, org, project); the pull writes, per project under
+# data/botify_pulls, a sitecrawler.json whitelisted to beta.pap_mini_rules
+# and ftl.websiteID (the source page also carries credentials, so nothing
+# else of it is kept) and a speedworkers.json from Activation GraphQL in two
+# POSTs, the websiteID read from ftl or, failing that, from the token lane's
+# project detail (activation_website_id), with UNRESOLVED a terminal state
+# (no_activation_website_id, activation_forbidden) so one refusal never
+# starves the queue, and every terminal outcome printed. Mac reading,
+# 2026-09-24: 227 queued, 222 done, 5 forbidden, 0 pending; 227 sitecrawler
+# files, 208 with mini-rules, 1,938 rules; 222 speedworkers files, none
+# absent. data/ is gitignored, so Prime reproduces rather than copies, and
+# the compile lane's denylist refuses a payload carrying client slugs unless
+# it runs --profile trusted with a --reason.
 #  _____ _           _           _   _                      
 # |  ___(_)_ __   __| |   __ _  | | | | ___  _ __ ___   ___ 
 # | |_  | | '_ \ / _` |  / _` | | |_| |/ _ \| '_ ` _ \ / _ \
@@ -2542,6 +2570,9 @@ MATCHBOOK_CHOP = r"""
 ! .venv/bin/python -c 'import re;t=open("GLOSSARY.md",encoding="utf-8").read();[print(h,"—",re.sub(r"\s+"," ",p)) for h,p in re.findall(r"^- \*\*([^*]+)\*\* — \*(.+?)\*",t,flags=re.M|re.S)]'
 """
 # #todo #to-do #earmarks
+# - TODO (2026-09-27, THE RENDER FARM HAS A NAME; from a colleague's Slack note the same day): PocketRender opened with ?webmcp=1 (app.botify.com/tools/cpap/pocketrender/index.html) exposes pr_* tools to any MCP client through a stdio relay, npx -y @mcp-b/webmcp-local-relay@latest --widget-origin https://app.botify.com (configs given for Claude Desktop, Claude Code, Cursor and Codex; a locally served PR adds http://localhost:8642 to the origin list, comma-separated), with the Chrome flags enable-webmcp-testing on and local-network-access-check off and a logged-in PR tab open. Three gaps before Pipulate drives it, each a reading before a car: connectors/mcp.py speaks Streamable HTTP and the relay speaks stdio, so a subprocess JSON-RPC lane is owed (or the relay's HTTP port, if it has one, unread); node and npx are in neither commonPackages nor any receipt (census in the 2026-09-27 afternoon compile); the two flags on the persistent uc profile are unread (a Chromium switch, or one hand toggle in the botify profile). The PROOF STRADDLE it serves: BEFORE the page as served (?URL optics), the change a rule, AFTER the PocketRender render, the diff-hierarchy lens as the middle panel, every pr_* call reported per THE MCP RECEIPT RULE.
+# - TODO (2026-09-27, the speed-dating queue; jira.py not in this compile): a board URL reduces to its project key and /boards/<id> is dropped without a word (jira.py's own comment at its URL parser, read 2026-09-23), so the SVB board-453 queue is unbuilt; the scope is board configuration -> filter.id -> /rest/api/3/filter/<id> for its JQL, then each issue's Project URL field to botify --rules org/project, reported as counts before any listing. Gates before the car: jira --check GREEN on Prime (the Mac's slot was cold), and connectors/jira.py in context.
+# - TODO (2026-09-27, the first tree ride): annotate_tree_with_tokens in prompt_foo.py stamps a count by basename, so the three README.md lines in the File Tree (root, assets/sounds, connectors) all read connectors/README.md's 2,742 tokens; match on a path the tree's indentation can reconstruct, or stamp nothing on a basename that occurs twice. In the same car, the placeholder "generation failed or was skipped" is two worlds in one label: say which. One car when a ride owns it.
 # - TODO (2026-09-27, the m that answers on Prime; RULED by hand at the dismount: type m at a (nix) prompt read "m is aliased to" the configuration.nix line, and not-found in the compile lane by construction): inside the nix shell, `m` printed "❌ ai.py returned empty message" with no ", aborting.", which is configuration.nix's environment.shellAliases m and not flake.nix's m() function; bash expands an alias before it looks for a function of the same name, so on this machine the flake's git add -A, the router hint and the Error:* guard have never run under `m`, and the alias's label is false on a clean tree (git commit -am with nothing to commit prints "empty message"). One line either way: `unalias m` at the top of the flake's m() region, or delete the system alias; the Mac has no system alias and is unaffected. Gate: `type m` at a (nix) prompt on Prime reads "m is a function".
 # - TODO (2026-09-27, patch and app share a directory; convicted twice in one sitting): `patch` writes ./patch and `app` reads ./patch, both where you stand (flake.nix, SPLIT VERDICT), so `patch`, `n`, `app` read a stale ~/repos/nixos/patch from an earlier ride, printed six ALREADY APPLIED lines for one file, and the operator asked what he was missing. The tell was the wording: the stale run said "replacement block" six times for blogs.nix; this ride's blocks say "inserted block" for its three insertions. Cheapest cure is a reading, not a rule: `app` prints the patch file's directory and age on its first line before applying, so a days-old file names itself. flake.nix, one line, when a ride owns it.
 # - TODO (2026-09-27, deliverable.html; ruling owed before a line is written): one standalone HTML page showing one PROOF STRADDLE, before above, diff between, after below, with a copy button that copies the five-slot markdown for a Jira or Slack paste; no external resource, inline CSS, the +/- coloring done by the writer in Python, JavaScript limited to navigator.clipboard.writeText. The compiler already holds two panels (the ! receipts are the AFTER, the git diff telemetry the middle) and the BEFORE is the same command lines in the previous cartridge, so the renderer is a pass over two consecutive cartridges pairing ! lines by command text. THE RULING: inside the zip it cannot name the zip's hash (the deed footer's fixed point) and carries the member digests and the previous deed's name instead; beside the zip as foo-<hash8>-NN.html it names the deed it renders and is a second file to attach. scripts/foo_cartridge.py either way. Gate: one page rendered from two real cartridges, opened with nothing installed, the copy button pasting into a ticket. RULED 2026-09-27: inside foo.zip, a fourth member beside manifest.json, prompt.md and payload.md ("expand the definition of the final zip deliverable"), so it names the previous deed and never its own; the Jekyll live-serve site it was going to ride is dropped; remark.js was weighed and declined, an external renderer for a page whose whole point is needing none, and the +/- classes are the writer's job in Python (html.escape, one class per line, inline CSS, one line of JavaScript for the copy); the markdown the button copies is the five-slot template, which Jira and Slack show as +/- lines without color, so the HTML is for eyes and the markdown for the ticket; and the specimen comes first: one real ticket handled with the template that already exists, its cartridge on disk, before the renderer is written against it.
