@@ -3474,7 +3474,7 @@ MATCHBOOK_CHOP = r"""
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 204/274 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 204/275 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
 # AGENTS.md  # [731 tokens | 2,934 bytes]
 # AUDIT.md  # [2,011 tokens | 9,706 bytes]
@@ -3507,6 +3507,7 @@ MATCHBOOK_CHOP = r"""
 # browser_cache/automation_recipes/README_SAVE_LOAD_AUTOMATION.md  # [1,751 tokens | 7,246 bytes]
 # browser_cache/recipe_executor.py  # [2,848 tokens | 14,661 bytes]
 # browser_cache/review_perception_history.py  # [3,208 tokens | 13,492 bytes]
+# connectors/mcp_render.py  # [3,191 tokens | 12,477 bytes]
 # imports/ai_tool_discovery_simple_parser.py  # [1,903 tokens | 7,977 bytes]
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
