@@ -33,6 +33,34 @@ def load_targets():
     return DEFAULT_TARGETS
 
 
+def canonical_target(spec):
+    """argparse `type=` for -t: one key or alias in, the canonical key out.
+
+    THE NAME IS THE KEY (2026-09-27). Every publishing script reads -t
+    through add_standard_arguments below, so this one callable is where
+    `-t grim` becomes `-t 2` for all of them at once, before any script
+    looks a target up, records a marker under it, or hands it to the next
+    script in a pipeline. The resolver is lsa.parse_target_spec, the same
+    one `posts` and `rgx` read, so a name means the same thing in every
+    lane; a spec naming several blogs is refused here, because a publish
+    is one blog at a time and the many-blog spelling belongs to the
+    readers. argparse applies a type to a string default too, so the
+    default "1" passes through this as well. Raises ArgumentTypeError so
+    argparse prints the roster the resolver already spells (2=grim ...).
+    """
+    import lsa
+    targets = load_targets()
+    try:
+        keys = lsa.parse_target_spec(str(spec), targets)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(str(exc))
+    if len(keys) != 1:
+        raise argparse.ArgumentTypeError(
+            f"-t names one blog here (got {spec!r} -> {', '.join(keys)}); "
+            "posts and rgx take the many-blog spelling")
+    return keys[0]
+
+
 def record_last_published(target_key, file_path, target_name=None):
     """Record the article articleizer.py just wrote, keyed by target.
 
@@ -163,7 +191,8 @@ def get_target_path(cli_args=None):
 def add_standard_arguments(parser):
     """Unified API for all scripts."""
     # CRITICAL FIX: Inject default="1" here
-    parser.add_argument('-t', '--target', type=str, default="1", help="Target ID from blogs.json (default: '1')")
+    parser.add_argument('-t', '--target', type=canonical_target, default="1",
+                        help="Target key or alias from blogs.json: 1 or article, 2 or grim (default: '1')")
     parser.add_argument('-k', '--key', type=str, help="API key alias from keys.json (e.g., 'pipulate')")
 
 
