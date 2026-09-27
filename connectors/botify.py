@@ -794,6 +794,25 @@ def _admin_cookies_inner(profile_name, headless=False):
                 browser_path = candidate
                 break
 
+    # THE DRIVER AND ITS BROWSER ARE RESOLVED WHERE NIX PROVIDES THEM
+    # (convicted 2026-09-27 on Prime, twice, the second time after exit and
+    # ndq): with no driver path, undetected_chromedriver downloads a generic
+    # Linux chromedriver into ~/.local/share/undetected_chromedriver, and on
+    # NixOS that binary meets the stub loader and exits 127 before any
+    # window opens, the refusal uvx printed at deed 1607. This function was
+    # written on the Mac, where the download runs, so the first census on
+    # NixOS was its first failure: THE NIXOS SELENIUM 127 earmark, and the
+    # cure it names, the flake's driver by its hyphenated name and the
+    # flake's chromium beside it, the pair weblogin.py and scraper_tools.py
+    # already resolve. A machine without them keeps the download and the
+    # browser search. Both are printed so a refusal names its lane.
+    driver_path = shutil.which("undetected-chromedriver")
+    if browser_path is None and sys.platform != "darwin":
+        browser_path = shutil.which("chromium")
+    sys.stderr.write(
+        f"  driver    : {driver_path or 'downloaded by undetected_chromedriver (no undetected-chromedriver on PATH)'}\n"
+        f"  browser   : {browser_path or 'found by undetected_chromedriver'}\n")
+
     def launch(version_main=None):
         options = uc.ChromeOptions()
         if headless:
@@ -801,6 +820,7 @@ def _admin_cookies_inner(profile_name, headless=False):
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         return uc.Chrome(options=options, user_data_dir=str(profile_path),
+                         driver_executable_path=driver_path,
                          browser_executable_path=browser_path,
                          version_main=version_main)
 
@@ -835,9 +855,20 @@ def _admin_cookies_inner(profile_name, headless=False):
             sys.stderr.write(f"  holding the window open {hold}s -- look at it\n")
             time.sleep(hold)
     except Exception as exc:
-        sys.stderr.write(
-            f"Could not read cookies from {profile_path}: {exc}\n"
-            "Close any Chrome window still open on that profile, then retry.\n")
+        # TWO WORLDS, ONE SENTENCE (convicted 2026-09-27): a locked profile
+        # and a driver the loader refuses both landed here, and the line
+        # about closing a window was followed twice for a 127 it could not
+        # cure. The status code separates them.
+        sys.stderr.write(f"Could not read cookies from {profile_path}: {exc}\n")
+        if "Status code was: 127" in str(exc):
+            sys.stderr.write(
+                "  reading   : exit 127 is the LOADER refusing the chromedriver binary, not a\n"
+                "              locked profile; a downloaded driver cannot run on NixOS. Read the\n"
+                "              driver line above: enter the Pipulate shell so undetected-chromedriver\n"
+                "              is on PATH, then retry.\n")
+        else:
+            sys.stderr.write(
+                "Close any Chrome window still open on that profile, then retry.\n")
         sys.exit(1)
     finally:
         _stop_sound(tick)
