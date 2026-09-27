@@ -117,7 +117,7 @@
         jupyterWorkspaceName = "pipulate-main";
 
  		# Define the default notebook for JupyterLab to open on startup
- 		jupyterStartupNotebook = "Notebooks/Onboarding.ipynb";
+ 		jupyterStartupNotebook = "Workshop/Onboarding.ipynb";
 
         # --- 🌐 BROWSER TAB CONFIGURATION ---
         autoOpenJupyter = "true";
@@ -128,62 +128,62 @@
         notebookFilesToCopy = [
           {
             source = "assets/nbs/imports/core_sauce.py";
-            dest = "Notebooks/imports/core_sauce.py";
+            dest = "Workshop/imports/core_sauce.py";
             desc = "the unified core workflow engine";
           }
           {
             source = "assets/nbs/imports/onboard_sauce.py";
-            dest = "Notebooks/imports/onboard_sauce.py";
+            dest = "Workshop/imports/onboard_sauce.py";
             desc = "a local 'onboard_sauce.py' source of secret sauce";
           }
           {
             source = "assets/nbs/imports/url_inspect_sauce.py";
-            dest = "Notebooks/imports/url_inspect_sauce.py";
+            dest = "Workshop/imports/url_inspect_sauce.py";
             desc = "a local 'url_inspect_sauce.py' source of secret sauce";
           }
           {
             source = "assets/nbs/imports/faq_writer_sauce.py";
-            dest = "Notebooks/imports/faq_writer_sauce.py";
+            dest = "Workshop/imports/faq_writer_sauce.py";
             desc = "a local 'faq_writer_sauce.py' source of secret sauce";
           }
           {
             source = "assets/nbs/imports/gap_analyzer_sauce.py";
-            dest = "Notebooks/imports/gap_analyzer_sauce.py";
+            dest = "Workshop/imports/gap_analyzer_sauce.py";
             desc = "a local 'gap_analyzer_sauce.py' source of secret sauce";
           }
           {
             source = "assets/nbs/imports/videditor_sauce.py";
-            dest = "Notebooks/imports/videditor_sauce.py";
+            dest = "Workshop/imports/videditor_sauce.py";
             desc = "a local 'videditor_sauce.py' source of secret sauce";
           }
           {
             source = "assets/nbs/Onboarding.ipynb";
-            dest = "Notebooks/Onboarding.ipynb";
+            dest = "Workshop/Onboarding.ipynb";
             desc = "the Pipulate initiation rite and setup guide";
           }
           {
             source = "assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb";
-            dest = "Notebooks/Advanced_Notebooks/01_URLinspector.ipynb";
+            dest = "Workshop/Advanced_Notebooks/01_URLinspector.ipynb";
             desc = "a local 'URL-by-URL auditor.' derived from FAQuilizer";
           }
           {
             source = "assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb";
-            dest = "Notebooks/Advanced_Notebooks/02_FAQuilizer.ipynb";
+            dest = "Workshop/Advanced_Notebooks/02_FAQuilizer.ipynb";
             desc = "a local 'FAQuilizer' simple workflow";
           }
           {
             source = "assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb";
-            dest = "Notebooks/Advanced_Notebooks/03_GAPalyzer.ipynb";
+            dest = "Workshop/Advanced_Notebooks/03_GAPalyzer.ipynb";
             desc = "a local 'Competitor Gap Analyzer.' advanced workflow";
           }
           {
             source = "assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb";
-            dest = "Notebooks/Advanced_Notebooks/04_VIDeditor.ipynb";
+            dest = "Workshop/Advanced_Notebooks/04_VIDeditor.ipynb";
             desc = "a local 'NoGooey Video Editor.'";
           }
           {
             source = "assets/nbs/Educational_Notebooks/Truth_Actually.ipynb";
-            dest = "Notebooks/Educational_Notebooks/Truth_Actually.ipynb";
+            dest = "Workshop/Educational_Notebooks/Truth_Actually.ipynb";
             desc = "the Player Piano Test, an interactive actuator-literacy lesson";
           }
         ];
@@ -651,11 +651,11 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           ${notebookFilesString}
           EOF
             if [ "$staged" -gt 0 ]; then
-              echo "📓 $staged starter file(s) copied into Notebooks/ -- yours to edit."
+              echo "📓 $staged starter file(s) copied into Workshop/ -- yours to edit."
             fi
           }
           # Set up the personal playground
-          if [ ! -f "Notebooks/Playground/WELCOME.md" ]; then
+          if [ ! -f "Workshop/personal/WELCOME.md" ]; then
             # The mkdir moved to miscSetupLogic 2026-08-07 so .#quiet gets the
             # folder too. This heredoc STAYS: runScript is a standalone
             # writeShellScriptBin, never interpolated, which is the one place a
@@ -663,7 +663,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             # fences that would become command substitution inside a
             # double-quoted printf. Moving the document is a content decision,
             # not this move.
-            cat << 'PLAYGROUND_EOF' > "Notebooks/Playground/WELCOME.md"
+            cat << 'PLAYGROUND_EOF' > "Workshop/personal/WELCOME.md"
           # 🎢 Welcome to the Playground!
           
           This folder is your personal sandbox. It is intentionally **ignored** by Pipulate's main version control.
@@ -673,11 +673,11 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           
           ## How it works:
           1. **Full Access:** Scripts here use the same `.venv` Python environment as Pipulate. You have access to `pandas`, `httpx`, `lxml`, and the Pipulate `wand` without installing anything.
-          2. **The Sausage Factory:** Write your ad hoc "tracer bullet" scripts here. If they prove valuable across multiple clients, you can graduate them up to `Notebooks/imports/` as reusable "sauce" modules.
+          2. **The Sausage Factory:** Write your ad hoc "tracer bullet" scripts here. If they prove valuable across multiple clients, you can graduate them up to `Workshop/imports/` as reusable "sauce" modules.
           3. **Protect Your Work:** Because Pipulate ignores this folder, we highly recommend turning it into your own private repository:
           
           ```bash
-          cd Notebooks/Playground
+          cd Workshop/personal
           git init
           # Then link it to a private GitHub repository to back up your work!
           ```
@@ -690,15 +690,15 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           stays visible from inside the code instead of buried in notes.
 
           Nothing you put here is ever shared. When you want to hand something to a
-          teammate, drag it into `Notebooks/Shared/` and put it in a folder named
+          teammate, drag it into `Workshop/Shared/` and put it in a folder named
           after you — one folder per person, so two people can never collide.
 
           ```text
-          Notebooks/
+          Workshop/
           ├── Advanced_Notebooks/     copied in for you; your edits stay
           ├── Educational_Notebooks/  copied in for you
           ├── imports/                copied in for you
-          ├── Playground/   ◀── THIS  private. NOTHING here is ever shared.
+          ├── personal/     ◀── THIS  private. NOTHING here is ever shared.
           ├── Client_Work/            private
           ├── Deliverables/           private
           └── Shared/<your-name>/     drag work here to hand it to a teammate
@@ -891,7 +891,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           sleep 2
 
           # 🗣️ THE UNIFIED VOICE TRIGGER (Context-Aware)
-          if [ -f Notebooks/data/.onboarded ]; then
+          if [ -f Workshop/data/.onboarded ]; then
             python -c "import logging; logging.getLogger('piper').setLevel(logging.ERROR); from imports.voice_synthesis import chip_voice_system as cvs; cvs.speak_text('Welcome back to the workshop. JupyterLab will be waiting in the first tab.')" > /dev/null 2>&1 &
           else
             if [[ "$(uname -s)" == "Darwin" ]]; then
@@ -910,7 +910,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               JUPYTER_STARTED=true
               echo ""
               echo "✅ JupyterLab is ready:"
-              echo "   http://localhost:8888/lab/tree/Notebooks/Onboarding.ipynb"
+              echo "   http://localhost:8888/lab/tree/Workshop/Onboarding.ipynb"
               echo ""
               echo "   Run the notebook top-to-bottom with Shift+Enter."
               echo "   Completing onboarding unlocks the Pipulate app:"
@@ -954,7 +954,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               if [ "$OPEN_FASTHTML" = "false" ]; then
                 echo
                 echo "✅ Pipulate server is running at http://localhost:5001 (auto-open suppressed)"
-              elif [ "$OPEN_FASTHTML" = "true" ] || [ -f Notebooks/data/.onboarded ]; then
+              elif [ "$OPEN_FASTHTML" = "true" ] || [ -f Workshop/data/.onboarded ]; then
                 if [ "${fastHtmlOpenDelay}" -gt 0 ]; then
                   echo "Delaying FastHTML tab by ${fastHtmlOpenDelay} seconds..."
                   sleep ${fastHtmlOpenDelay}
@@ -1037,7 +1037,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # THREE STATE CLASSES:
           #   1. Upstream substrate — tracked files, replaceable only by ff-pull.
           #   2. User overlay — .jupyter/lab/user-settings/ rides the exact-stash
-          #      lane below; durable user state (~/.config/pipulate, Playground,
+          #      lane below; durable user state (~/.config/pipulate, Workshop/personal,
           #      .env, whitelabel.txt, .ssh) lives outside the substrate and is
           #      never touched by this block.
           #   3. Disposable workspace — gitignored caches/artifacts; ignored here.
@@ -1224,7 +1224,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           fi
           # Set EFFECTIVE_OS for browser automation scripts
           if [[ "$(uname -s)" == "Darwin" ]]; then export EFFECTIVE_OS="darwin"; else export EFFECTIVE_OS="linux"; fi
-          # ── THE THREE BUCKETS (flat siblings under Notebooks/) ───────
+          # ── THE THREE BUCKETS (flat siblings under Workshop/) ────────
           # Named ONCE, here. Every other mention of these folders in this
           # repo defers to this block; if one of them disagrees, this one is
           # right and the other one is a bug.
@@ -1232,12 +1232,16 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           #   canon     Advanced_Notebooks/  Educational_Notebooks/  imports/
           #             delivered by runScript's copy-if-absent loop: your
           #             edits survive, and upstream updates do not arrive.
-          #   personal  Playground/  Client_Work/  Deliverables/
+          #   personal  personal/  Client_Work/  Deliverables/
           #             gitignored. NOTHING here is ever shared.
           #   shared    Shared/
           #             gitignored. Drag work here to hand it to a teammate.
           #             One folder per person -- Shared/<name>/ -- so two
           #             writers can never collide and nobody needs git.
+          #   corporate corporate/
+          #             gitignored. The org's canon, a private repo mounted
+          #             here read-only and replaced wholesale (2026-09-27);
+          #             nothing in this file creates it, .gitignore names it.
           #
           # WHY "Shared" AND NOT "Share": the naming test is spoken, not
           # written. "Go to the shared folder." "Which one?" "The one called
@@ -1248,7 +1252,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           #
           # CREATED HERE, in miscSetupLogic, because this is the only logic
           # that runs in ALL THREE shells. runScript -- which writes
-          # Playground's WELCOME.md -- is skipped entirely by .#quiet, so a
+          # personal/WELCOME.md -- is skipped entirely by .#quiet, so a
           # folder created there is invisible to the one lane that agents and
           # scripts actually live in. That is SHELL-LANE FINDING (a) applied
           # instead of merely noted.
@@ -1262,8 +1266,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # entered the default shell: the folder is already there, so `test -d`
           # prints the same answer in both worlds. The straddle reads the
           # GENERATED HOOK TEXT instead (nix eval on devShells.<sys>.quiet).
-          mkdir -p "$PIPULATE_ROOT/Notebooks/Playground"
-          mkdir -p "$PIPULATE_ROOT/Notebooks/Shared"
+          mkdir -p "$PIPULATE_ROOT/Workshop/personal"
+          mkdir -p "$PIPULATE_ROOT/Workshop/Shared"
           # ONE printf, NEVER a heredoc. A cat-heredoc here broke nix develop on
           # main for every user on 2026-08-05: this logic is interpolated into
           # shellHook, the terminator lost its column-0 alignment, and bash
@@ -1273,8 +1277,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # Neither appears below. A lone backslash passes through literally --
           # same as the PS1 line beneath this block -- so bash printf does the
           # newline work.
-          if [ ! -f "$PIPULATE_ROOT/Notebooks/Shared/README.md" ]; then
-            printf "%s\n" "# Shared" "" "This is the one folder you use on purpose to hand work to someone else." "Everything else under Notebooks/ is either yours alone or delivered to you." "Nothing here is private: assume a teammate will read it." "" "Make a folder with your own name, and work inside it:" "" "    mkdir -p Notebooks/Shared/yourname" "" "One folder per person means two people can drop work at the same moment and" "never collide, so there is nothing to merge and no git to learn." "" "Pipulate git ignores this whole folder. To back yours up, put your own git" "repository inside your own subfolder; it will not fight with anything above." > "$PIPULATE_ROOT/Notebooks/Shared/README.md"
+          if [ ! -f "$PIPULATE_ROOT/Workshop/Shared/README.md" ]; then
+            printf "%s\n" "# Shared" "" "This is the one folder you use on purpose to hand work to someone else." "Everything else under Workshop/ is either yours alone or delivered to you." "Nothing here is private: assume a teammate will read it." "" "Make a folder with your own name, and work inside it:" "" "    mkdir -p Workshop/Shared/yourname" "" "One folder per person means two people can drop work at the same moment and" "never collide, so there is nothing to merge and no git to learn." "" "Pipulate git ignores this whole folder. To back yours up, put your own git" "repository inside your own subfolder; it will not fight with anything above." > "$PIPULATE_ROOT/Workshop/Shared/README.md"
           fi
           # Clean up the prompt to remove Nix's redundant prefixes and Mac's long hostname
           export PS1="\[\033[1;32m\](nix)\[\033[0m\] \[\033[1;34m\]\W\[\033[0m\] $ "
