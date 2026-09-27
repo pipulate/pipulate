@@ -203,6 +203,13 @@ def sweep_orphan_shards(posts_dir, context_dir, dry_run=False):
         return 0
     removed = 0
     for shard in sorted(context_dir.glob("*.json")):
+        # ONE SWEEPER (2026-09-26, deed 1595): a twin of this loop rode
+        # publishizer.py ahead of the pipeline the same day, so under
+        # preview this one never saw an orphan; the twin is cut and the
+        # guard it carried rides here. Only dated stems are shards;
+        # anything else that may live in _context is left alone.
+        if not (shard.stem[:4].isdigit() and shard.stem[4:5] == "-"):
+            continue
         try:
             if (posts_dir / f"{shard.stem}.md").exists() or \
                (posts_dir / f"{shard.stem}.markdown").exists():
