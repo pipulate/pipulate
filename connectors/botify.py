@@ -1208,6 +1208,50 @@ def _text_lines(text):
     return sum(1 for line in str(text).splitlines() if line.strip())
 
 
+def _section_match(text):
+    """A SpeedWorkers section's URL match as one readable line, or '' when
+    the text is not the query tree.
+
+    THE SECTION IS A QUERY TREE (READ 2026-09-27, deed 1629, the leaf census
+    over 1,821 of 2,007 sections): the rules string is JSON, {combinator,
+    rules, id?, not?}, and every item of rules is a leaf {field, operator,
+    value, id?, valueSource?} with no nested group anywhere (0 groups in
+    5,401 items). Fields path, url, query_string, host, protocol; operators
+    contains, regex, equals, startsWith, endsWith and their !-negations;
+    combinators and, or, or none (6 trees, read as and). So the match reads
+    as 'path regex .*/x and url contains y', wrapped in not(...) when the
+    tree says so; a nested group, should one appear, renders in parentheses.
+    The 186 texts that are not JSON (INFERRED the ones opening with a
+    comment mark) get no column. It rides as a FOURTH tab column so the awk
+    censuses over the second column and the tally read exactly as before.
+    """
+    text = str(text or "").strip()
+    if not text.startswith("{"):
+        return ""
+    try:
+        tree = json.loads(text)
+    except ValueError:
+        return ""
+    if not isinstance(tree, dict):
+        return ""
+    joiner = f" {tree.get('combinator') or 'and'} "
+    parts = []
+    for leaf in tree.get("rules") or []:
+        if not isinstance(leaf, dict):
+            continue
+        if "rules" in leaf:
+            inner = _section_match(json.dumps(leaf))
+            if inner:
+                parts.append(f"({inner})")
+            continue
+        value = str(leaf.get("value", "")).replace("\t", " ").replace("\n", " ")
+        parts.append(f"{leaf.get('field')} {leaf.get('operator')} {value}")
+    if not parts:
+        return ""
+    match = joiner.join(parts)
+    return f"not({match})" if tree.get("not") else match
+
+
 def local_rules(queue_path=None, slug=None):
     """RULES: every rule text in the local pull corpus, one per line, two kinds.
 
@@ -1236,7 +1280,11 @@ def local_rules(queue_path=None, slug=None):
     texts, and the tally counts entries and non-empty lines for each,
     because the operator counts rules by the line and the corpus stores
     them by the block. A text rides json-encoded on one line, newlines
-    escaped, so a compile reads one rule per line whatever its shape.
+    escaped, so a compile reads one rule per line whatever its shape. A
+    section line carries a FOURTH column since 2026-09-27 (deed 1629): its
+    URL match rendered from the query tree by _section_match, so the ticket
+    spelling shows which pages a section governs without anyone reading the
+    JSON; the first three columns and the tally are unchanged.
     """
     root = project_root / "data" / "botify_pulls"
     queued = None
@@ -1276,7 +1324,8 @@ def local_rules(queue_path=None, slug=None):
         return 1
     print("# Botify rules from the local corpus (org/project, tab, kind, tab, rule text as JSON)")
     print("# kinds: mini = SiteCrawler beta.pap_mini_rules, one entry each; "
-          "section:<name> = SpeedWorkers sections[].rules; config:<name> = SpeedWorkers configs[].renderingRules\n")
+          "section:<name> = SpeedWorkers sections[].rules, its URL match as a fourth column; "
+          "config:<name> = SpeedWorkers configs[].renderingRules\n")
     compact = dict(separators=(',', ':'), default=str)
     rules = lines = with_rules = absent = unreadable = 0
     sw_files = sw_texts = sw_lines = 0
@@ -1322,7 +1371,9 @@ def local_rules(queue_path=None, slug=None):
                 continue
             sw_texts += 1
             sw_lines += _text_lines(text)
-            print(f"{slug_here}\tsection:{item.get('name')}\t{json.dumps(text, **compact)}")
+            match = _section_match(text)
+            print(f"{slug_here}\tsection:{item.get('name')}\t{json.dumps(text, **compact)}"
+                  + (f"\t{match}" if match else ""))
         for item in sw.get("configs") or []:
             text = item.get("renderingRules") if isinstance(item, dict) else None
             if text in (None, ""):
