@@ -2924,6 +2924,20 @@ def main():
     targets = load_targets()
     active_target_config = None  
     if args.target:
+        # THE NAME IS THE KEY (2026-09-27): -t grim reads as -t 2. One
+        # resolver, the one posts and rgx read, imported the way
+        # _get_article_list_data already imports it; a spec naming several
+        # blogs is left as typed and refused by the branch below.
+        sys.path.insert(0, os.path.join(REPO_ROOT, 'scripts', 'articles'))
+        try:
+            import lsa as _lsa
+            _keys = _lsa.parse_target_spec(args.target, targets)
+            if len(_keys) == 1:
+                args.target = _keys[0]
+        except (ImportError, ValueError):
+            pass
+        finally:
+            sys.path.pop(0)
         if args.target in targets:
             selected = targets[args.target]
             CONFIG["POSTS_DIRECTORY"] = selected["path"]
