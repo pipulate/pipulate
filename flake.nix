@@ -1521,7 +1521,15 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # --profile/--reason pass straight through, e.g.
           #   defaultu --profile trusted --reason "Confluence enterprise"
           defaultu() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop DEFAULT_CHOP "$@"); }
-          ahc() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP --no-tree "$@"); }
+          # THE TREE RIDES BY DEFAULT (2026-09-27, ruled from the reading and
+          # not from memory): compile --tree read the tree at 3,167 tokens and
+          # the UML at 471 in a 424,863-token payload, under one percent and a
+          # tenth of flake.nix's own row, so --no-tree leaves this body and
+          # compile carries the tree whenever a .py file rides; -n turns it off
+          # for one compile, --tree is a no-op here and still the override for
+          # every alias that keeps --no-tree (foo, default, idea, forget, pins).
+          # ahcu is ahc's twin from this line on.
+          ahc() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP "$@"); }
           ahcu() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP "$@"); }
           # THE HYPER-LITERAL WORDS (2026-09-25, the operator's ruling): the
           # three moves of a turn under names no meeting can call strange.

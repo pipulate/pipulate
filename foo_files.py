@@ -2214,7 +2214,7 @@ foo_files.py  # The map + the two forcing-function rules it already carries.
 
 ADHOC_CHOP = r"""
 # THE CONTEXT FILE (context.txt spliced in above a fixed tail)
-# COMMAND: compile   (python prompt_foo.py --chop ADHOC_CHOP --no-tree)
+# COMMAND: compile   (python prompt_foo.py --chop ADHOC_CHOP; the tree rides when a .py file does, -n drops it, since 2026-09-27)
 # context edits context.txt, compile reads it: one line per file or `! `
 # command. Everything below the slot mirrors DEFAULT_CHOP.
 
