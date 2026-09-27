@@ -20,8 +20,10 @@ Golden-path modes, auto-detected from the single positional argument:
   python connectors/botify.py '<BQL or JSON>'    # FETCH: run a query (needs org/project coordinates)
   python connectors/botify.py --census --q mikelev.in   # CENSUS: one row, to smoke the export door
   python connectors/botify.py --census           # CENSUS: every project, via the Django admin export form
+  python connectors/botify.py --sw                    # CENSUS, the SpeedWorkers cohort: has_sw=True, category__exact=1, id and project_links baked in
+  python connectors/botify.py --pull-configs          # PULL-CONFIGS: SiteCrawler + SpeedWorkers per project off the newest census queue, resumable
   python connectors/botify.py --pull-configs --queue data/botify_census/<file>.queue.jsonl --limit 10
-  python connectors/botify.py --rules                 # RULES: every mini-rule in the local pull corpus, one line each; org/project narrows; no network
+  python connectors/botify.py --rules                 # RULES: every rule text in the local pull corpus, one line each, mini and SpeedWorkers kinds; org/project narrows; no network
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 
@@ -1239,8 +1241,8 @@ def local_rules(queue_path=None, slug=None):
         sys.stderr.write(
             f"No local corpus: no sitecrawler.json under {root}.\n"
             "Make one on the cookie lane (weblogin --profile botify app.botify.com first, window closed):\n"
-            "  botify --census --param has_sw=True --param category__exact=1 --fields id,project_links\n"
-            "  botify --pull-configs --queue data/botify_census/<newest>.queue.jsonl --limit 1000\n")
+            "  botify --sw             (the SpeedWorkers census)\n"
+            "  botify --pull-configs   (SiteCrawler + SpeedWorkers off the newest queue)\n")
         return 1
     print("# Botify SiteCrawler mini-rules from the local corpus (org/project, tab, rule as JSON)\n")
     rules = with_rules = absent = unreadable = 0
@@ -1871,11 +1873,18 @@ def main():
                              'rule, no network and no cap; an org/project positional '
                              'narrows to one project, --queue to one queue. Needs a '
                              'corpus: --census, then --pull-configs.')
+    parser.add_argument('--sw', action='store_true',
+                        help='CENSUS, the SpeedWorkers cohort in one word: --census with '
+                             '--param has_sw=True --param category__exact=1 and '
+                             '--fields id,project_links baked in (229 rows in 2.3 s on '
+                             '2026-09-27). Then botify --pull-configs, then botify --rules.')
     parser.add_argument('--queue', default=None,
-                        help='PULL-CONFIGS / RULES: JSONL queue with id/org/project keys.')
-    parser.add_argument('--limit', type=int, default=10,
+                        help='PULL-CONFIGS / RULES: JSONL queue with id/org/project keys; '
+                             'PULL-CONFIGS takes the newest under data/botify_census when omitted.')
+    parser.add_argument('--limit', type=int, default=1000,
                         help='PULL-CONFIGS: maximum unfinished projects attempted '
-                             'this run (default: 10).')
+                             'this run (default: 1000, the SpeedWorkers cohort in one '
+                             'pass; the loop resumes, so a smaller chunk is never wrong).')
     parser.add_argument('--q', default=None,
                         help='CENSUS: the changelist search term the export '
                              'inherits (project id/slug, username, SF account id, '
@@ -1916,12 +1925,34 @@ def main():
 
     if args.pull_configs:
         if not args.queue:
-            sys.stderr.write("--pull-configs requires --queue PATH\n")
-            sys.exit(1)
+            # THE QUEUE IS THE NEWEST CENSUS BY DEFAULT (2026-09-27; the
+            # operator's spelling after the first Prime pull: "this is how
+            # we grab the SpeedWorkers rules", one word and no path). The
+            # stamp is in the file name, so the newest sorts last by name
+            # and mtime never decides.
+            queues = sorted((project_root / "data" / "botify_census").glob("*.queue.jsonl"))
+            if not queues:
+                sys.stderr.write(
+                    "--pull-configs found no queue under data/botify_census.\n"
+                    "Run: botify --sw   (the SpeedWorkers census writes one), or pass --queue PATH\n")
+                sys.exit(1)
+            args.queue = str(queues[-1])
+            sys.stderr.write(f"  queue     : {args.queue} (newest under data/botify_census)\n")
         sys.exit(pull_configs(
             args.queue, args.limit, profile_name=args.profile,
             headless=args.headless))
 
+    if args.sw:
+        # THE THREE WORDS (2026-09-27, the operator's spelling after the
+        # first Prime census: "this is how we grab the SpeedWorkers
+        # accounts"). --sw is --census with the cohort's filter and the two
+        # columns the queue needs baked in; an explicit --param or --fields
+        # still rides beside them, and an explicit --param wins on a
+        # repeated key because it comes later in the list.
+        args.census = True
+        args.param = ["has_sw=True", "category__exact=1"] + list(args.param or [])
+        if not args.fields:
+            args.fields = "id,project_links"
     if args.census:
         bad = [p for p in (args.param or []) if "=" not in p]
         if bad:
