@@ -26,7 +26,7 @@
 #   v0.2.0 hardcoded assets/trails/, so every walk had to be committed to
 #   the main repo. Client walks carry client names and churn several a day;
 #   they belong in a private repo, not in a public checkout. The launcher
-#   now searches Notebooks/Playground/trails, then Notebooks/Shared/trails,
+#   now searches Workshop/personal/trails, then Workshop/Shared/trails,
 #   then assets/trails -- local overrides canon, exactly the way PATH puts
 #   /usr/local/bin ahead of /usr/bin. A stranger who fetched this launcher
 #   has only the last lane, so public adventures resolve unchanged.
@@ -375,7 +375,7 @@ fi
 # remember. `mothercat <repo-relative-path>` has always accepted these
 # lanes (mother_cat.ride anchors to REPO_ROOT); this teaches the URL
 # launcher the same thing.
-TRAIL_SEARCH_DIRS="Notebooks/Playground/trails Notebooks/Shared/trails assets/trails"
+TRAIL_SEARCH_DIRS="Workshop/personal/trails Workshop/Shared/trails assets/trails"
 TRAIL_PATH=""
 # Reserved explicit name; a missing private plan must not fall back to a demo.
 if [ "$TRAIL_NAME" = "plan" ]; then
