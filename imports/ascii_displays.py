@@ -66,7 +66,7 @@ FIGURATE_LEDGER: dict = {
     "canal_lock": 311868176,
     "mechanical_man": 4142234675,
     # CRC32 after _expand_color_bits_ai() + .strip()
-    "workspace_tree": 2408173560,  # CRC32 no-strip (leading newline preserved, like honeybot_pipeline)
+    "workspace_tree": 545211116,  # CRC32 no-strip (leading newline preserved, like honeybot_pipeline); resealed 2026-09-27 for the Workshop rename, was 2408173560
     "forcing_pair": 3594006631,  # CRC32 no-strip; seal re-taken 2026-07-27 — 208394658 sealed a re-typed copy of the art, not the bytes on disk; the straddle caught it (drift 1→0)
     # === FIGURATE_LEDGER_EXTRUDE_BOTTOM ===
     # Add new artwork CRC32 entries immediately above this line
@@ -791,7 +791,7 @@ def _figurate_mechanical_man():
 
 
 def _figurate_workspace_tree():
-    """Render the Notebooks workspace as it ACTUALLY sits on disk: flat.
+    """Render the Workshop as it ACTUALLY sits on disk: flat.
     THE NESTED VERSION WAS THE ONLY AUTHORITY THAT SHIPPED, AND IT WAS WRONG.
     update_agents_md_in_place() splices this art into AGENTS.md on every
     compile, so it is what every external agent tool reads -- while flake.nix
@@ -807,16 +807,18 @@ def _figurate_workspace_tree():
     _expand_color_bits_ai leaves it untouched and ai_art == art.
     """
     art = r"""
-   Notebooks/  — the JupyterLab root (NOT Pipulate's own root)
+   Workshop/   — the JupyterLab root (NOT Pipulate's own root)
    │            FLAT siblings. Nothing nests. Nothing to get wrong.
    │
    ├── Advanced_Notebooks/     canon · flake-delivered, copy-if-absent
    ├── Educational_Notebooks/  canon · your edits survive, updates do not arrive
    ├── imports/                canon · the code-behind "sauce" modules
    │
-   ├── Playground/             personal · gitignored · your own git repo goes here
+   ├── personal/               personal · gitignored · your own git repo goes here
    ├── Client_Work/            personal · gitignored · never leaves this machine
    ├── Deliverables/           personal · gitignored
+   │
+   ├── corporate/              the org's canon · gitignored · its own private repo
    │
    └── Shared/                 the ONE folder for handing work to a teammate
        ├── alice/              one folder per person; you write ONLY your own
@@ -824,7 +826,7 @@ def _figurate_workspace_tree():
 """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
-    human = Panel(human_art, title="🗂️ Notebooks Workspace — canon · personal · Shared", border_style="white")
+    human = Panel(human_art, title="🗂️ Workshop — canon · personal · corporate · Shared", border_style="white")
     return human, ai_art
 
 
@@ -1860,7 +1862,7 @@ Rich console blocked on Mac (Error: {e}), using fallback display.
 #     └── assets/                  # optional templates and files
 # ```
 # 
-# You already have this. `Notebooks/.agents/skills/hello_workflow/SKILL.md`, `gsc_readonly`, `roles` — it's in your manifest.
+# You already have this. `Workshop/.agents/skills/hello_workflow/SKILL.md`, `gsc_readonly`, `roles` — it's in your manifest.
 # 
 # **3. OKF** — what the v0.1 specification actually fixes is a folder layout, markdown files, YAML frontmatter, reserved filenames, and a single required field: `type`. A bundle is a directory of markdown files, each carrying a short YAML block — type, title, description — linking to its neighbors; add an index.md that lists the files so an agent can see what's there before opening everything, and that's the format. The spec fits on a single page.
 # 
@@ -1886,7 +1888,7 @@ Rich console blocked on Mac (Error: {e}), using fallback display.
 # ├── cli.py                               # = the `allowed-tools` surface: mcp-discover / call
 # ├── apply.py                             # = "PR instructions" made executable (SEARCH/REPLACE actuator)
 # ├── flake.nix                            # = "Dev environment setup" made executable (nix develop)
-# ├── Notebooks/.agents/skills/            # = Agent Skills, already standard-shaped
+# ├── Workshop/.agents/skills/             # = Agent Skills, already standard-shaped
 # │   ├── hello_workflow/SKILL.md
 # │   ├── gsc_readonly/SKILL.md
 # │   └── roles/SKILL.md
