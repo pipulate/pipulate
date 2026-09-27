@@ -574,7 +574,7 @@ def _open_folder(path_str: str = "."):
         print(f"❌ Failed to open folder. Please navigate to it manually. Error: {e}")
 
 
-# Replacement function for Notebooks/secretsauce.py
+# Replacement function for Workshop/secretsauce.py
 
 async def generate_visualizations_post_scrape(job: str, verbose: bool = False):
     """
@@ -602,16 +602,16 @@ async def generate_visualizations_post_scrape(job: str, verbose: bool = False):
     fail_count = 0
     tasks = []
 
-    script_location = Path(__file__).resolve().parent # /home/mike/.../Notebooks/imports
-    project_root_notebooks = script_location.parent  # /home/mike/.../Notebooks
-    base_dir = project_root_notebooks / "browser_cache" # /home/mike/.../Notebooks/browser_cache
+    script_location = Path(__file__).resolve().parent # /home/mike/.../Workshop/imports
+    project_root_notebooks = script_location.parent  # /home/mike/.../Workshop
+    base_dir = project_root_notebooks / "browser_cache" # /home/mike/.../Workshop/browser_cache
     logger.info(f"Using absolute base_dir: {base_dir}") # Log confirmation
 
     script_path = (Path(__file__).parent / "seo_gadget.py").resolve()
 
     if not script_path.exists():
          logger.error(f"❌ Cannot find visualization script at: {script_path}")
-         logger.error("   Please ensure seo_gadget.py is in the Notebooks/imports/ directory.")
+         logger.error("   Please ensure seo_gadget.py is in the Workshop/imports/ directory.")
          return
 
     python_executable = sys.executable # Use the same python that runs the notebook

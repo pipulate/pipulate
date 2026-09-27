@@ -211,7 +211,7 @@ async def fetch_http_info(job: str, delay_range: tuple = (2, 5)):
     print(f"✅ HTTP info fetching complete. Success: {success_count}, Failures: {fail_count}")
 
 
-# Replacement function for Notebooks/secretsauce.py
+# Replacement function for Workshop/secretsauce.py
 async def ai_audit_em(job: str, seo_df: pd.DataFrame, debug: bool = False, limit: int = None) -> pd.DataFrame:
     """
     Enriches the DataFrame with AI-generated SEO audits, row by row.
