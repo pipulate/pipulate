@@ -727,6 +727,8 @@ def _stop_sound(proc):
 # {"absent": true} means a pull positively proved absence. UNRESOLVED means
 # the dependency needed to ask the SpeedWorkers question (ftl.websiteID) was
 # missing; it MUST NOT be promoted to absence merely to drain the queue.
+# A body error naming a missing activation app IS a positive answer of
+# absence (READ 2026-09-27, deed 1629): it lands as absent with its reason.
 # Transient errors write no state and retry. Auth failure stops immediately.
 # Summary prints done and unresolved separately; remaining_work excludes both
 # terminal states. Thus one unresolved row can never starve everything behind
@@ -950,6 +952,19 @@ class PullForbiddenError(RuntimeError):
     authz denial."""
 
 
+class PullAbsentError(RuntimeError):
+    """The session is live, the website is known, and Activation answered
+    that it carries no SpeedWorkers app -- a positive answer of absence,
+    never a refusal. Witnessed 2026-09-27 (deed 1629) on project 85746, the
+    specimen ticket's site: 'Missing required activation apps:
+    ['speedworkers']' on an HTTP 200, after its SiteCrawler pull had
+    written. It fell through to PullDataError, counted as errored, wrote no
+    state, and came back pending on every run -- head-of-line starvation in
+    a third shape, one project at a time. It now lands as speedworkers.json
+    with absent true and its reason, so the pull is idle and --rules reads
+    the project as absent."""
+
+
 class PullTransientError(RuntimeError):
     """A retryable network/server failure; write no completion marker."""
 
@@ -1022,6 +1037,8 @@ def _activation_data(client, query, variables=None):
         # project's SiteCrawler GET runs before its Activation call, so a dead
         # cookie still trips that HTTP guard on the very next project -- this
         # branch can only wave through a live-session authz denial.
+        if "missing required activation app" in lowered:
+            raise PullAbsentError(f"Activation GraphQL: {message[:300]}")
         if any(word in lowered for word in ("forbidden", "permission")):
             raise PullForbiddenError(f"Activation GraphQL: {message[:300]}")
         if any(word in lowered for word in ("auth", "credential", "login")):
@@ -1503,6 +1520,13 @@ def pull_configs(queue_path, limit, profile_name="botify", headless=False):
                     "account; SpeedWorkers marked unresolved, session still "
                     f"live: {exc}\n")
                 continue
+            except PullAbsentError as exc:
+                # ABSENCE IS AN ANSWER (READ 2026-09-27, deed 1629): the
+                # question was asked and the server said no app; that is
+                # DONE with absent true, never UNRESOLVED, and the reason
+                # rides in the file so a later reader can re-rule it.
+                speedworkers = {"absent": True, "reason": "missing_activation_app",
+                                "detail": str(exc)[:300]}
             except (PullTransientError, PullDataError) as exc:
                 errored += 1
                 sys.stderr.write(
@@ -1521,7 +1545,7 @@ def pull_configs(queue_path, limit, profile_name="botify", headless=False):
                 absent += 1
                 sys.stderr.write(
                     f"project {row['id']}: SpeedWorkers absent "
-                    "(no production version)\n")
+                    f"({speedworkers.get('reason') or 'no production version'})\n")
             else:
                 written += 1
                 sys.stderr.write(
