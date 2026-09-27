@@ -1186,8 +1186,13 @@ def _pull_summary(rows, root, written, absent, errored):
     )
 
 
+def _text_lines(text):
+    """Non-empty lines in one rule text: the unit the operator counts by."""
+    return sum(1 for line in str(text).splitlines() if line.strip())
+
+
 def local_rules(queue_path=None, slug=None):
-    """RULES: every SiteCrawler mini-rule in the local pull corpus, one per line.
+    """RULES: every rule text in the local pull corpus, one per line, two kinds.
 
     THE CORPUS IS THE LOCAL PULL (2026-09-27; the operator's spelling was
     "just type botify --rules"). No network, no cookie, no token: this walks
@@ -1205,8 +1210,16 @@ def local_rules(queue_path=None, slug=None):
     --queue narrows to that queue's projects and counts the rows never
     pulled; with neither the walk is every project directory present. The
     second kind of rule, sections[].rules and configs[].renderingRules in
-    speedworkers.json, waits on a first reading of its shape and is
-    deliberately not printed here.
+    speedworkers.json, was RULED the same word on 2026-09-27 from its
+    first reading (deed 1622: both are strings, 266 and 186 characters on
+    the first file read, one opening with a brace and one with a comment
+    mark, the same shape as a mini-rule entry, which read as a string too
+    and never a dict): every line carries a KIND column, mini for a
+    SiteCrawler entry, section:<name> and config:<name> for the SpeedWorkers
+    texts, and the tally counts entries and non-empty lines for each,
+    because the operator counts rules by the line and the corpus stores
+    them by the block. A text rides json-encoded on one line, newlines
+    escaped, so a compile reads one rule per line whatever its shape.
     """
     root = project_root / "data" / "botify_pulls"
     queued = None
@@ -1244,32 +1257,70 @@ def local_rules(queue_path=None, slug=None):
             "  botify --sw             (the SpeedWorkers census)\n"
             "  botify --pull-configs   (SiteCrawler + SpeedWorkers off the newest queue)\n")
         return 1
-    print("# Botify SiteCrawler mini-rules from the local corpus (org/project, tab, rule as JSON)\n")
-    rules = with_rules = absent = unreadable = 0
+    print("# Botify rules from the local corpus (org/project, tab, kind, tab, rule text as JSON)")
+    print("# kinds: mini = SiteCrawler beta.pap_mini_rules, one entry each; "
+          "section:<name> = SpeedWorkers sections[].rules; config:<name> = SpeedWorkers configs[].renderingRules\n")
+    compact = dict(separators=(',', ':'), default=str)
+    rules = lines = with_rules = absent = unreadable = 0
+    sw_files = sw_texts = sw_lines = 0
     for path in sites:
         slug_here = f"{path.parent.parent.name}/{path.parent.name}"
         try:
             site = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, ValueError):
             unreadable += 1
-            continue
-        if not isinstance(site, dict) or site.get("absent") is True:
+            site = None
+        if site is None:
+            pass
+        elif not isinstance(site, dict) or site.get("absent") is True:
             absent += 1
+        else:
+            beta = site.get("beta")
+            mini = beta.get("pap_mini_rules") if isinstance(beta, dict) else None
+            if isinstance(mini, list) and mini:
+                with_rules += 1
+                for rule in mini:
+                    rules += 1
+                    lines += _text_lines(rule)
+                    print(f"{slug_here}\tmini\t{json.dumps(rule, **compact)}")
+        # THE SECOND KIND rides beside the first (RULED 2026-09-27, see the
+        # docstring): a project whose SiteCrawler config is absent can still
+        # carry a SpeedWorkers production version (19 absent configs beside
+        # 224 speedworkers files on Prime), so this read never waits on the
+        # branch above.
+        sw_path = path.with_name("speedworkers.json")
+        if not sw_path.exists():
             continue
-        beta = site.get("beta")
-        mini = beta.get("pap_mini_rules") if isinstance(beta, dict) else None
-        if not isinstance(mini, list) or not mini:
+        try:
+            sw = json.loads(sw_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            unreadable += 1
             continue
-        with_rules += 1
-        for rule in mini:
-            rules += 1
-            print(f"{slug_here}\t{json.dumps(rule, separators=(',', ':'), default=str)}")
-    tally = (f"\n# {rules:,} rule(s) across {with_rules:,} of {len(sites):,} project(s); "
-             f"{absent:,} with no config, {unreadable:,} unreadable")
+        if not isinstance(sw, dict) or sw.get("absent") is True:
+            continue
+        sw_files += 1
+        for item in sw.get("sections") or []:
+            text = item.get("rules") if isinstance(item, dict) else None
+            if text in (None, ""):
+                continue
+            sw_texts += 1
+            sw_lines += _text_lines(text)
+            print(f"{slug_here}\tsection:{item.get('name')}\t{json.dumps(text, **compact)}")
+        for item in sw.get("configs") or []:
+            text = item.get("renderingRules") if isinstance(item, dict) else None
+            if text in (None, ""):
+                continue
+            sw_texts += 1
+            sw_lines += _text_lines(text)
+            print(f"{slug_here}\tconfig:{item.get('name')}\t{json.dumps(text, **compact)}")
+    tally = (f"\n# mini: {rules:,} entr{'y' if rules == 1 else 'ies'}, {lines:,} non-empty line(s), "
+             f"across {with_rules:,} of {len(sites):,} project(s); {absent:,} with no SiteCrawler config, "
+             f"{unreadable:,} unreadable | speedworkers: {sw_texts:,} rule text(s), {sw_lines:,} non-empty line(s), "
+             f"across {sw_files:,} project(s)")
     if queued is not None:
-        tally += f"; {len(queued) - len(sites):,} queued but never pulled"
+        tally += f" | {len(queued) - len(sites):,} queued but never pulled"
     print(tally)
-    print("# Next: botify --pull-configs --queue <queue> --limit 1000   (fills what was never pulled)")
+    print("# Next: botify --pull-configs   (fills what was never pulled, off the newest queue); botify --rules <org/project>   (one project, both kinds)")
     return 0
 
 
