@@ -115,6 +115,35 @@ Notebooks/imports/faq_writer_sauce.py
 Notebooks/imports/url_inspect_sauce.py
 Notebooks/imports/gap_analyzer_sauce.py
 Notebooks/imports/videditor_sauce.py
+# THE WORKSHOP (2026-09-27, deed 1630): Notebooks/ became Workshop/ and
+# Playground/ became personal/. Every Notebooks/ line above STAYS, on
+# purpose: git renames tracked files only, so a checkout that pulls the
+# rename keeps its ignored tiers under Notebooks/ until a hand mv, and a
+# sweeping git add -A must not reach them there; and during the move
+# itself both trees are ignored. The lines below are the same rules under
+# the new name.
+Workshop/data/.onboarded
+Workshop/Untitled.ipynb
+Workshop/Client_Work/
+Workshop/Deliverables/
+Workshop/Shared/
+Workshop/personal/
+Workshop/Playground/
+Workshop/Educational_Notebooks/
+Workshop/corporate/
+Workshop/_config.py
+Workshop/Onboarding.ipynb
+Workshop/Advanced_Notebooks/Whatsa_Lambda.ipynb
+Workshop/Advanced_Notebooks/01_URLinspector.ipynb
+Workshop/Advanced_Notebooks/02_FAQuilizer.ipynb
+Workshop/Advanced_Notebooks/03_GAPalyzer.ipynb
+Workshop/Advanced_Notebooks/04_VIDeditor.ipynb
+Workshop/imports/core_sauce.py
+Workshop/imports/onboard_sauce.py
+Workshop/imports/faq_writer_sauce.py
+Workshop/imports/url_inspect_sauce.py
+Workshop/imports/gap_analyzer_sauce.py
+Workshop/imports/videditor_sauce.py
 
 # Python packaging and build artifacts
 build/
