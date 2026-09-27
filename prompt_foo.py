@@ -2842,6 +2842,20 @@ def main():
     parser.add_argument('--check-dependencies', action='store_true', help='Verify that all required external tools are installed.')
     parser.add_argument('--context-only', action='store_true', help='Generate a context-only prompt without file contents.')
     parser.add_argument('-n', '--no-tree', action='store_true', help='Suppress file tree and UML generation.')
+    # THE TREE WORD (2026-09-27, the operator's own reading: "maybe the
+    # parameter is the option"). It is, and compile could not reach it.
+    # Every alias bakes --no-tree in, and a store_true flag has no
+    # opposite, so the tree rode only the u-twins (fu, ahcu, defaultu)
+    # that nobody types since compile became the word; the checklist then
+    # sends every model looking for a tree the placeholder says failed.
+    # Same destination, last flag wins: an alias keeps its baked default
+    # and one typed word overrides it, compile --tree. argparse takes the
+    # namespace default from the FIRST action on a shared destination, so
+    # a bare fu still reads the tree; SUPPRESS says the same thing out
+    # loud instead of leaning on the order. Whether compile carries the
+    # tree by default is a one-word ruling in flake.nix (drop --no-tree
+    # from ahc), made after a compile --tree has read the tree's cost.
+    parser.add_argument('--tree', action='store_false', dest='no_tree', default=argparse.SUPPRESS, help='Include the file tree and UML diagrams even when the alias passed --no-tree; the last of the two flags wins.')
     # THE ACCOUNTING GOES QUIET; THE GATES DO NOT (2026-08-25). At minute zero
     # of first contact, the onboarding command's answer to "teach me" was a
     # token-budget table -- the machinery showing through at exactly the moment
