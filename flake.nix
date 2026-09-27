@@ -248,9 +248,11 @@
           set -euo pipefail
 
           # Target selection: -t SPEC (first args only), in every spelling
-          # posts reads -- 4, 1,3, 2-4, all -- resolved from blogs.json at
-          # RUNTIME by posts itself, never baked into the Nix store, so a
-          # blog added in blogs.nix needs no rebuild of this command.
+          # posts reads -- 4, grim, 1,3, grim,vault, 2-4, all -- resolved
+          # from blogs.json at RUNTIME by posts itself, never baked into the
+          # Nix store, so a blog added or renumbered in blogs.nix needs no
+          # rebuild of this command, and a name follows its blog across a
+          # renumber where a number does not.
           target="1"
           if [ "''${1:-}" = "-t" ] && [ "$#" -ge 2 ]; then
             target="$2"
@@ -278,7 +280,7 @@
             shift
           fi
           if [ "$#" -eq 0 ]; then
-            echo "Usage: rgx [-t SPEC] [-v] [N] TERM [TERM...]   (SPEC = 4, 1,3, 2-4 or all; leading N = only the N most recent matches; -v opens them in vim, newest first)" >&2
+            echo "Usage: rgx [-t SPEC] [-v] [N] TERM [TERM...]   (SPEC = 4, grim, 1,3, grim,vault, 2-4 or all; leading N = only the N most recent matches; -v opens them in vim, newest first)" >&2
             exit 1
           fi
 
@@ -355,8 +357,9 @@
           set -euo pipefail
 
           # Same runtime target resolution as rgx: -t SPEC (first args only),
-          # 4 or 1,3 or 2-4 or all, read by posts from blogs.json when the
-          # command RUNS, so the Nix store carries the mechanism, never the data.
+          # 4 or grim or 1,3 or grim,vault or 2-4 or all, read by posts from
+          # blogs.json when the command RUNS, so the Nix store carries the
+          # mechanism, never the data.
           target="1"
           if [ "''${1:-}" = "-t" ] && [ "$#" -ge 2 ]; then
             target="$2"
@@ -384,7 +387,7 @@
             shift
           fi
           if [ "$#" -eq 0 ]; then
-            echo "Usage: rgxc [-t SPEC] [-v] [N] TERM [TERM...]   (SPEC = 4, 1,3, 2-4 or all; leading N = only the N most recent matches; -v opens them in vim, newest first)" >&2
+            echo "Usage: rgxc [-t SPEC] [-v] [N] TERM [TERM...]   (SPEC = 4, grim, 1,3, grim,vault, 2-4 or all; leading N = only the N most recent matches; -v opens them in vim, newest first)" >&2
             exit 1
           fi
 
@@ -2190,9 +2193,15 @@ print('AI:\n', r.ai)
                 && python sanitizer.py -t "$1" \
                 && python articleizer.py -t "$1")
             }
-            alias article='write_post 1'
-            alias grim='write_post 3'
-            alias bot='write_post 4'
+            # Names, never numbers: each word hands its own name to -t and
+            # common.canonical_target reads the number off blogs.json at
+            # call time. The conviction is on the Linux twin below. The Mac
+            # shadow json carries no vault lane yet, so that word refuses
+            # here with the roster until the template above grows one.
+            alias article='write_post article'
+            alias grim='write_post grim'
+            alias vault='write_post vault'
+            alias bot='write_post bot'
             # THE BRIDGE PULL: Reach into the Z640 and suck the bridge file into the Mac clipboard
             alias pull='ssh mike@nixos.local "cat /tmp/clipboard_bridge.txt" | pbcopy && echo "✅ Z640 -> Mac Clipboard"'
             # THE BOOKMARK LOOP ON THE MAC (2026-09-10). NixOS gets `bm` and
@@ -2245,9 +2254,19 @@ print('AI:\n', r.ai)
                 && python sanitizer.py -t "$1" \
                 && python articleizer.py -t "$1")
             }
-            alias article='write_post 1'
-            alias grim='write_post 3'
-            alias bot='write_post 4'
+            # THE WORD IS THE KEY (2026-09-27). These read write_post 1, 3
+            # and 4 until this morning, and the morning the Grimoire became
+            # target 2, `grim` was still spelled 3, which had become the
+            # Vault: one word, sending an article to the wrong repo, with no
+            # error anywhere. A number here is a position that moves under
+            # the word; a name follows the blog. Each alias now hands its own
+            # name to -t and common.canonical_target turns it into whatever
+            # number blogs.json gives it today, so a renumber in blogs.nix
+            # touches nothing in this file.
+            alias article='write_post article'
+            alias grim='write_post grim'
+            alias vault='write_post vault'
+            alias bot='write_post bot'
             gobot() {
               # Routine runs sync ONLY the article 'bot' just wrote, via the
               # marker articleizer.py records. Pass --all to force a full
