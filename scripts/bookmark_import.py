@@ -77,11 +77,11 @@ NAME_RE = re.compile(r"^[a-z][a-z0-9_]*$")
 ENV_RE = re.compile(r"^[A-Z][A-Z0-9_]*$")
 
 # Default landing zone. Receipt 2026-08-08: .gitignore carries
-# Notebooks/Client_Work/ and data/ wholesale, so both are negative space. This
+# Workshop/Client_Work/ and data/ wholesale, so both are negative space. This
 # one is chosen because a human has to OPEN the surface and edit it, and a
 # human-authored document belongs beside the other human-authored ones rather
 # than in the machine-state directory next to databases and browser profiles.
-DEFAULT_OUT = REPO_ROOT / "Notebooks" / "Client_Work"
+DEFAULT_OUT = REPO_ROOT / "Workshop" / "Client_Work"
 
 TODO = "TODO"
 TODO_GUIDANCE = (

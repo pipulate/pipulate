@@ -225,7 +225,7 @@ class Pipulate:
         class WorkspaceManifold:
             def __init__(self, root: Path, is_notebook: bool):
                 self.root = root
-                self.base = root / "Notebooks" if is_notebook else root
+                self.base = root / "Workshop" if is_notebook else root
                 self.data = self.base / "data"
                 self.logs = self.data / "logs"
                 self.temp = self.data / "temp"
@@ -2437,7 +2437,7 @@ class Pipulate:
     def nbup(self, notebook_filename: str, modules: tuple = None):
         """
         Cleans and syncs a notebook and optionally its associated Python modules
-        from the working 'Notebooks/' directory back to the version-controlled
+        from the working 'Workshop/' directory back to the version-controlled
         'assets/nbs/' template directory.
         """
         # Import necessary libraries inside the function
@@ -2536,7 +2536,7 @@ class Pipulate:
 
         # --- Notebook Sync Logic ---
         print(f"🔄 Syncing notebook '{notebook_filename}'...")
-        notebook_source_path = project_root / "Notebooks" / notebook_filename
+        notebook_source_path = project_root / "Workshop" / notebook_filename
         notebook_dest_path = project_root / "assets" / "nbs" / notebook_filename
 
         if not notebook_source_path.exists():
@@ -2622,7 +2622,7 @@ class Pipulate:
             if isinstance(modules, str): modules = (modules,)
             for module_name in modules:
                 module_filename = f"{module_name}.py"
-                module_source_path = project_root / "Notebooks" / "imports" / module_filename # Look inside imports/
+                module_source_path = project_root / "Workshop" / "imports" / module_filename # Look inside imports/
                 module_dest_path = project_root / "assets" / "nbs" / "imports" / module_filename # Sync back to imports/
                 if module_source_path.exists():
                     try:
@@ -3224,8 +3224,8 @@ class Pipulate:
         import json
 
         # 1. Explicitly define the path to the Jupyter chrysalis (ignoring current context)
-        jupyter_db_path = self.paths.root / "Notebooks" / "data" / "pipeline.sqlite"
-        sentinel_path = self.paths.root / "Notebooks" / "data" / ".onboarded"
+        jupyter_db_path = self.paths.root / "Workshop" / "data" / "pipeline.sqlite"
+        sentinel_path = self.paths.root / "Workshop" / "data" / ".onboarded"
         
         # 2. Safety Check: Only proceed if the chrysalis exists
         if not jupyter_db_path.exists():
