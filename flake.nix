@@ -1531,6 +1531,14 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # ahcu is ahc's twin from this line on.
           ahc() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP "$@"); }
           ahcu() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP "$@"); }
+          # THE WORD BJJ (2026-09-27, the operator's ruling: "because Brazilian
+          # Jiu Jitsu is objectively the best Kung Fu"). compile with the
+          # trusted profile and a fixed reason baked in, for the compile that
+          # must carry client slugs (a botify --rules tail, a jira board) and
+          # was three flags typed by hand until today; --tree is not spelled
+          # because the flip of 0bce3aae made it a no-op here. A FUNCTION,
+          # typed by a human; -n and any later flag still ride through "$@".
+          bjj() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP --profile trusted --reason "bjj: a trusted compile from the workbench" "$@"); }
           # THE HYPER-LITERAL WORDS (2026-09-25, the operator's ruling): the
           # three moves of a turn under names no meeting can call strange.
           # context opens context.txt, prompt captures the clipboard,
