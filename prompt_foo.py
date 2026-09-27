@@ -401,8 +401,18 @@ def run_tree_command() -> str:
     if not eza_exec: return "Skipping: `eza` command not found."
     try:
         # Added --level 3 to keep the tree from exploding if the repo grows deeper
+        # THE PATH IS SPELLED (2026-09-27, convicted in the compile lane and
+        # not by reading eza's source): the identical eza line read 310 lines
+        # from a terminal and 0 as a ! probe with no stderr, while the same
+        # line with a dot read 310 in both lanes. eza given no path and a
+        # stdin that is not a terminal reads its paths off stdin, and
+        # /dev/null hands it EOF. This subprocess inherits the compiler's
+        # stdin, so every tree to date rode because a person sat at the
+        # keyboard; a compile driven from a pipe, a rider or a timer would
+        # have carried the placeholder instead. One token. The witness is a
+        # call with stdin redirected, never a compile, which has a terminal.
         result = subprocess.run(
-            [eza_exec, '--tree', '--level', '3', '--git-ignore', '--color=never'],
+            [eza_exec, '--tree', '--level', '3', '--git-ignore', '--color=never', '.'],
             capture_output=True, text=True, cwd=REPO_ROOT, check=True
         )
         return result.stdout
