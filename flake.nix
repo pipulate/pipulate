@@ -495,6 +495,10 @@
           (connectorCommand "sheets" "sheets")
           (connectorCommand "jira" "jira")
           (connectorCommand "slack" "slack")
+          # THE RENDER WORD (2026-09-27, deed 1630): the file keeps the
+          # operator's mcp_ name so the MCP files stay a family; the word a
+          # human types and a ! line runs is the short one.
+          (connectorCommand "render" "mcp_render")
         ];
 
         # THE DEED KEEPER (2026-09-06). Rotation prunes to the newest twenty,
