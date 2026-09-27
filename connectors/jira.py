@@ -84,6 +84,7 @@ import re
 import sys
 import json
 import argparse
+import glob
 from urllib.parse import urlparse, parse_qs
 
 import httpx
@@ -107,6 +108,56 @@ def _botify_project_link(text):
         if match.group(1).lower() not in _NOT_AN_ORG:
             return match.group(0)
     return ""
+
+
+def _slug_from_url(url):
+    """org/project from an app.botify.com URL, or ''."""
+    if not str(url or "").startswith(("http://", "https://")):
+        return ""
+    parsed = urlparse(url)
+    parts = [p for p in parsed.path.split("/") if p]
+    if "botify.com" in parsed.netloc and len(parts) >= 2 and parts[0].lower() not in _NOT_AN_ORG:
+        return f"{parts[0]}/{parts[1]}"
+    return ""
+
+
+# THE JOIN IS THE HOSTNAME (READ 2026-09-27, deed 1627): 185 board rows, one
+# app.botify.com link among them, and every open row naming its site in the
+# summary ("JS settings QA - music.amazon.com"), while a Botify project slug
+# is usually the hostname itself (mikelev.in, tw.coupang.com). A populated
+# field labelled Project-slug on the specimen ticket is the cleaner join and
+# rides first; the summary's hostname is the fallback, resolved against the
+# local corpus so a slug is printed only when botify --rules can answer it.
+HOSTNAME_RE = re.compile(r'\b((?:[a-z0-9-]+\.)+[a-z]{2,})\b', re.IGNORECASE)
+
+
+def _hostname_in(text):
+    """The first hostname-shaped token in text, lowercased, or ''."""
+    match = HOSTNAME_RE.search(text or "")
+    return match.group(1).lower() if match else ""
+
+
+def _slug_for_host(host, pulls_root):
+    """org/project when a local pull carries this hostname as its project slug, with or without a leading www., else ''."""
+    candidates = [host, host[4:] if host.startswith("www.") else "www." + host]
+    for candidate in candidates:
+        hits = sorted(glob.glob(os.path.join(pulls_root, "*", candidate, "sitecrawler.json")))
+        if hits:
+            org = os.path.basename(os.path.dirname(os.path.dirname(hits[0])))
+            return f"{org}/{candidate}"
+    return ""
+
+
+def _slug_from_text(text, pulls_root):
+    """org/project from a Project-slug value: an app URL parses, a slashed value is taken as given, a bare slug resolves like a hostname; '' when unresolved."""
+    text = str(text or "").strip().strip("/")
+    if not text:
+        return ""
+    if text.startswith(("http://", "https://")):
+        return _slug_from_url(text)
+    if "/" in text:
+        return text
+    return _slug_for_host(text.lower(), pulls_root)
 
 # THE EMPTY ARGUMENT ASKS THE MORNING QUESTION (2026-09-10). Bare `jira` used
 # to list every project the account could see -- a directory, when the one
@@ -561,8 +612,8 @@ def list_mine(client, base, max_items):
     print("#       python connectors/jira.py projects      (every project you can see)")
 
 
-def _project_url_fields(client, base):
-    """Every id of a custom field labelled Project URL, in the API's order, or [].
+def _custom_field_ids(client, base, labels):
+    """{label: [ids]} for every custom field whose folded label is one of labels, in the API's order.
 
     A search returns custom fields by id (customfield_NNNNN) and never by
     label, and the id differs from site to site while the label is what
@@ -582,11 +633,19 @@ def _project_url_fields(client, base):
     cf[12189] is not EMPTY, each counted. READ 2026-09-27 (deed 1626): both
     counted 0 on SVB, so every id rides, the caller reads whichever is
     filled, and a link in the summary or description stands in for both.
+    READ 2026-09-27 (deed 1627): the specimen ticket carries a populated
+    field labelled Project-slug, so this lookup takes a set of labels and
+    folds case, whitespace and hyphens before comparing, returning every id
+    under each label; the board reads Project URL, then Project-slug.
     """
+    def fold(name):
+        return re.sub(r"[\s_-]+", " ", str(name or "")).strip().lower()
+    found = {fold(label): [] for label in labels}
     fields = get_json(client, f"{base}/rest/api/3/field")
-    return [item.get("id") for item in (fields if isinstance(fields, list) else [])
-            if isinstance(item, dict) and item.get("id")
-            and str(item.get("name") or "").strip().lower() == "project url"]
+    for item in (fields if isinstance(fields, list) else []):
+        if isinstance(item, dict) and item.get("id") and fold(item.get("name")) in found:
+            found[fold(item.get("name"))].append(item.get("id"))
+    return found
 
 
 def list_board_issues(client, base, board_id, max_items):
@@ -617,13 +676,19 @@ def list_board_issues(client, base, board_id, max_items):
     asked), the cap line below fires only when the page fills -n, so a
     server page smaller than -n reads as a complete list -- THE FULL PAGE
     WAS SILENT in a second shape -- and nextPageToken is never walked here
-    by design. The zero has a second cause in _project_url_fields.
+    by design. The zero has a second cause in _custom_field_ids.
     RESOLVED 2026-09-27 (deed 1626): _search_pages walks the pages up to
     -n and says whether the filter was exhausted, every Project URL id is
     read, a link in the summary or description stands in when the fields
     are empty (both read 0 on SVB), and the counts carry a by-status line so
     the board's own column numbers (To Do 13, In Progress 1, In Review 11,
     Done 137 on 2026-09-27) are the known members of the census.
+    READ 2026-09-27 (deed 1627): the filter returns 185 where the board's
+    face shows 162, the 23 INFERRED epics and sub-tasks a column never
+    counts, so a by-type line rides beside by-status; one row in 185 carried
+    an app.botify.com link and none a Project URL, so the join is the
+    Project-slug field first and the summary's hostname second, resolved
+    against data/botify_pulls, and each row says whether a pull exists.
     """
     config = get_json(client, f"{base}/rest/agile/1.0/board/{board_id}/configuration")
     config = config if isinstance(config, dict) else {}
@@ -640,59 +705,81 @@ def list_board_issues(client, base, board_id, max_items):
     if not jql:
         print("(the filter carries no jql)")
         return
-    url_fields = _project_url_fields(client, base)
+    ids = _custom_field_ids(client, base, ("project url", "project slug"))
+    url_fields, slug_fields = ids["project url"], ids["project slug"]
     fields = SEARCH_FIELDS + ",description"
-    if url_fields:
-        fields += "," + ",".join(url_fields)
+    if url_fields or slug_fields:
+        fields += "," + ",".join(url_fields + slug_fields)
     issues, pages, exhausted = _search_pages(client, base, jql, max_items, fields)
-    by_status = {}
-    from_field = from_text = 0
+    by_status, by_type = {}, {}
+    source_counts = {"Project URL": 0, "Project-slug": 0, "link": 0, "hostname": 0}
     pulls_root = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                               "data", "botify_pulls")
-    with_url = named = local = 0
+    with_project = local = 0
     rows = []
     for it in issues:
         f = it.get("fields", {}) or {}
         status = _name(f.get("status"))
         by_status[status] = by_status.get(status, 0) + 1
-        url = ""
+        itype = _name(f.get("issuetype"))
+        by_type[itype] = by_type.get(itype, 0) + 1
+        summary = f.get("summary") or ""
+        slug = host = source = ""
         for field_id in url_fields:
             raw = f.get(field_id)
             if not _field_empty(raw):
-                url = _field_text(raw)
-                from_field += 1
-                break
-        if not url:
-            text = f"{f.get('summary') or ''}\n{adf_to_text(f.get('description'))}"
-            found = _botify_project_link(text)
-            if found:
-                url = found
-                from_text += 1
-        slug = ""
-        if url:
-            with_url += 1
-            if url.startswith(("http://", "https://")):
-                parsed = urlparse(url)
-                parts = [p for p in parsed.path.split("/") if p]
-                if "botify.com" in parsed.netloc and len(parts) >= 2:
-                    slug = f"{parts[0]}/{parts[1]}"
-                    named += 1
-                    if os.path.exists(os.path.join(pulls_root, parts[0], parts[1], "sitecrawler.json")):
-                        local += 1
-        rows.append((it.get("key", "?"), _name(f.get("status")), f.get("summary", ""), slug))
+                slug = _slug_from_url(_field_text(raw))
+                if slug:
+                    source = "Project URL"
+                    break
+        if not slug:
+            for field_id in slug_fields:
+                raw = f.get(field_id)
+                if _field_empty(raw):
+                    continue
+                value = _field_text(raw)
+                slug = _slug_from_text(value, pulls_root)
+                if slug:
+                    source = "Project-slug"
+                    break
+                host = host or _hostname_in(value)
+        if not slug:
+            link = _botify_project_link(f"{summary}\n{adf_to_text(f.get('description'))}")
+            slug = _slug_from_url(link) if link else ""
+            if slug:
+                source = "link"
+        if not slug:
+            host = host or _hostname_in(summary)
+            slug = _slug_for_host(host, pulls_root) if host else ""
+            if slug:
+                source = "hostname"
+        pulled = False
+        if slug:
+            with_project += 1
+            source_counts[source] += 1
+            org, _, project = slug.partition("/")
+            pulled = os.path.exists(os.path.join(pulls_root, org, project, "sitecrawler.json"))
+            local += 1 if pulled else 0
+        rows.append((it.get("key", "?"), status, summary, slug, host, pulled))
+    sources = ", ".join(f"{n} from {label}" for label, n in source_counts.items())
     print(f"# counts: {len(issues)} issue(s) under the -n cap of {max_items} "
           f"({pages} page(s); {'the filter is exhausted' if exhausted else 'more remain above the cap'}); "
-          f"{with_url} with a Project URL ({from_field} from a field, {from_text} from a link in the summary or description); "
-          f"{named} naming an app.botify.com org/project; {local} of those with a local pull "
+          f"{with_project} naming a Botify org/project ({sources}); {local} of those with a local pull "
           "(botify --rules org/project answers today)")
     print("# by status: " + (" | ".join(f"{s} {n}" for s, n in sorted(by_status.items(), key=lambda kv: -kv[1])) or "none"))
-    print(f"# Project URL field id(s): {', '.join(url_fields) if url_fields else 'none on this site, so field hits are 0 by construction'}")
+    print("# by type: " + (" | ".join(f"{t} {n}" for t, n in sorted(by_type.items(), key=lambda kv: -kv[1])) or "none"))
+    print(f"# field id(s): Project URL {', '.join(url_fields) or 'none'}; Project-slug {', '.join(slug_fields) or 'none'}")
     if not issues:
         print("(no issues match the board's filter)")
         return
     print()
-    for key, status, summary, slug in rows:
-        print(f"{key}  [{status}]  {summary}" + (f"  -> {slug}" if slug else ""))
+    for key, status, summary, slug, host, pulled in rows:
+        tail = ""
+        if slug:
+            tail = f"  -> {slug}" + ("  (pulled)" if pulled else "  (no local pull)")
+        elif host:
+            tail = f"  -> {host}  (no local pull; no org known)"
+        print(f"{key}  [{status}]  {summary}{tail}")
     if len(issues) >= max_items:
         print(f"\n# (hit the -n cap of {max_items}; there may be more -- raise -n/--max)")
     print("\n# Next: python connectors/jira.py <PROJ-123>   (full issue text)")
