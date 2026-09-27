@@ -21,6 +21,7 @@ Golden-path modes, auto-detected from the single positional argument:
   python connectors/botify.py --census --q mikelev.in   # CENSUS: one row, to smoke the export door
   python connectors/botify.py --census           # CENSUS: every project, via the Django admin export form
   python connectors/botify.py --pull-configs --queue data/botify_census/<file>.queue.jsonl --limit 10
+  python connectors/botify.py --rules                 # RULES: every mini-rule in the local pull corpus, one line each; org/project narrows; no network
 
 Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 
@@ -47,6 +48,7 @@ weblogin parked in data/uc_profiles/<profile>. Census needs it because the API
 cannot enumerate projects at all; config pulls need it because SiteCrawler
 settings and Activation GraphQL are authenticated by the warmed app session.
 Both write only under data/ (gitignored), and pull mode prints only its summary.
+RULES reads that data/ back and touches nothing else: no cookie, no token.
 
 Output is capped by --max (default 25) per THE PROBE ECONOMY RULE: stdout is
 destined for compiled context payloads, so the bound is a feature.
@@ -1151,6 +1153,93 @@ def _pull_summary(rows, root, written, absent, errored):
     )
 
 
+def local_rules(queue_path=None, slug=None):
+    """RULES: every SiteCrawler mini-rule in the local pull corpus, one per line.
+
+    THE CORPUS IS THE LOCAL PULL (2026-09-27; the operator's spelling was
+    "just type botify --rules"). No network, no cookie, no token: this walks
+    data/botify_pulls/<org>/<project>/sitecrawler.json, the whitelisted
+    artifacts --pull-configs wrote, and prints beta.pap_mini_rules one rule
+    per line as <org>/<project>, a tab, and the rule as compact JSON, so the
+    whole deployed set rides into a compile as one ! line. Shape-agnostic on
+    purpose: no rule body was ever printed in the Mac ride (counts decided
+    everything there), so json.dumps carries whatever a rule is and the first
+    reading teaches the keys. UNCAPPED, and the tally says so: -n is the LIST
+    cap and this is the corpus, printed in one pass with the counts last. A
+    missing corpus is a reading, not a crash: stderr names the two commands
+    that make one and the exit is 1. The positional narrows to one project
+    (org/project, or an app.botify.com URL, since main() normalizes it first);
+    --queue narrows to that queue's projects and counts the rows never
+    pulled; with neither the walk is every project directory present. The
+    second kind of rule, sections[].rules and configs[].renderingRules in
+    speedworkers.json, waits on a first reading of its shape and is
+    deliberately not printed here.
+    """
+    root = project_root / "data" / "botify_pulls"
+    queued = None
+    if slug:
+        parts = [p for p in slug.strip("/").split("/") if p]
+        if len(parts) < 2:
+            sys.stderr.write("--rules narrows by org/project (or an app.botify.com URL); "
+                             f"got {slug!r}.\n")
+            return 1
+        one = root / parts[0] / parts[1] / "sitecrawler.json"
+        if not one.exists():
+            sys.stderr.write(f"No pull for {parts[0]}/{parts[1]} under {root}; "
+                             "run --pull-configs with a queue that names it.\n")
+            return 1
+        sites = [one]
+    elif queue_path:
+        queue = Path(queue_path).expanduser()
+        if not queue.is_absolute():
+            queue = project_root / queue
+        try:
+            rows = [json.loads(line) for line in
+                    queue.read_text(encoding="utf-8").splitlines() if line.strip()]
+        except (OSError, ValueError) as exc:
+            sys.stderr.write(f"Could not read queue {queue}: {exc}\n")
+            return 1
+        queued = [root / r["org"] / r["project"] / "sitecrawler.json" for r in rows
+                  if isinstance(r, dict) and r.get("org") and r.get("project")]
+        sites = [path for path in queued if path.exists()]
+    else:
+        sites = sorted(root.glob("*/*/sitecrawler.json"))
+    if not sites:
+        sys.stderr.write(
+            f"No local corpus: no sitecrawler.json under {root}.\n"
+            "Make one on the cookie lane (weblogin --profile botify app.botify.com first, window closed):\n"
+            "  botify --census --param has_sw=True --param category__exact=1 --fields id,project_links\n"
+            "  botify --pull-configs --queue data/botify_census/<newest>.queue.jsonl --limit 1000\n")
+        return 1
+    print("# Botify SiteCrawler mini-rules from the local corpus (org/project, tab, rule as JSON)\n")
+    rules = with_rules = absent = unreadable = 0
+    for path in sites:
+        slug_here = f"{path.parent.parent.name}/{path.parent.name}"
+        try:
+            site = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            unreadable += 1
+            continue
+        if not isinstance(site, dict) or site.get("absent") is True:
+            absent += 1
+            continue
+        beta = site.get("beta")
+        mini = beta.get("pap_mini_rules") if isinstance(beta, dict) else None
+        if not isinstance(mini, list) or not mini:
+            continue
+        with_rules += 1
+        for rule in mini:
+            rules += 1
+            print(f"{slug_here}\t{json.dumps(rule, separators=(',', ':'), default=str)}")
+    tally = (f"\n# {rules:,} rule(s) across {with_rules:,} of {len(sites):,} project(s); "
+             f"{absent:,} with no config, {unreadable:,} unreadable")
+    if queued is not None:
+        tally += f"; {len(queued) - len(sites):,} queued but never pulled"
+    print(tally)
+    print("# Next: botify --pull-configs --queue <queue> --limit 1000   (fills what was never pulled)")
+    return 0
+
+
 def pull_configs(queue_path, limit, profile_name="botify", headless=False):
     """Run a bounded, resumable two-file config pull over the census queue."""
     queue = Path(queue_path).expanduser()
@@ -1745,8 +1834,14 @@ def main():
     parser.add_argument('--pull-configs', action='store_true',
                         help='PULL-CONFIGS: bounded, resumable SiteCrawler + '
                              'SpeedWorkers extraction from a census queue.')
+    parser.add_argument('--rules', action='store_true',
+                        help='RULES: print every SiteCrawler mini-rule in the '
+                             'local pull corpus (data/botify_pulls), one line per '
+                             'rule, no network and no cap; an org/project positional '
+                             'narrows to one project, --queue to one queue. Needs a '
+                             'corpus: --census, then --pull-configs.')
     parser.add_argument('--queue', default=None,
-                        help='PULL-CONFIGS: JSONL queue with id/org/project keys.')
+                        help='PULL-CONFIGS / RULES: JSONL queue with id/org/project keys.')
     parser.add_argument('--limit', type=int, default=10,
                         help='PULL-CONFIGS: maximum unfinished projects attempted '
                              'this run (default: 10).')
@@ -1812,6 +1907,8 @@ def main():
     if args.query:
         args.query = normalize_query(args.query.strip())
 
+    if args.rules:
+        sys.exit(local_rules(args.queue, args.query))
     client = make_client()
     try:
         arg = args.query
