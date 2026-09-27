@@ -122,9 +122,9 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # --- START STATS ---
 # There are 1,496 already-written articles about this repo at MikeLev.in (Public)
 # Velocity: 7 published in the last 7 days
-# Markdown negotiated: 2,771 reads (0.22% of all responses)
-# DOM hydration: 2977 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-09-27T16:58Z
+# Markdown negotiated: 2,774 reads (0.22% of all responses)
+# DOM hydration: 2978 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
+# Honeybot telemetry fetched 2026-09-27T23:25Z
 # --- END STATS ---
 
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
@@ -3488,12 +3488,12 @@ MATCHBOOK_CHOP = r"""
 # Move these into the active chapters to paint them onto the context canvas.
 # Coverage: 204/275 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
-# AGENTS.md  # [731 tokens | 2,934 bytes]
+# AGENTS.md  # [728 tokens | 2,931 bytes]
 # AUDIT.md  # [2,011 tokens | 9,706 bytes]
 # MANIFEST.in  # [81 tokens | 313 bytes]
-# Notebooks/.agents/skills/gsc_readonly/SKILL.md  # [748 tokens | 3,439 bytes]
-# Notebooks/.agents/skills/roles/SKILL.md  # [1,767 tokens | 8,221 bytes]
-# Notebooks/.agents/skills/sheets_readonly/SKILL.md  # [445 tokens | 1,894 bytes]
+# Workshop/.agents/skills/gsc_readonly/SKILL.md  # [748 tokens | 3,439 bytes]
+# Workshop/.agents/skills/roles/SKILL.md  # [1,767 tokens | 8,221 bytes]
+# Workshop/.agents/skills/sheets_readonly/SKILL.md  # [445 tokens | 1,894 bytes]
 # apps/130_gap_analysis.py  # [9,624 tokens | 48,289 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
 # apps/440_browser_automation.py  # [10,795 tokens | 47,151 bytes]
