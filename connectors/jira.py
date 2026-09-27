@@ -61,8 +61,11 @@ single shared Atlassian token -- a label lying at the moment of diagnosis:
 Endpoint note (verified against Atlassian's current Cloud REST v3): the legacy
 /rest/api/3/search was fully REMOVED. This connector uses the enhanced
 /rest/api/3/search/jql (GET; jql + fields + maxResults; nextPageToken paging).
-Because THE PROBE ECONOMY RULE bounds every call to one --max page, this
-connector never needs to walk nextPageToken -- the bound IS the feature.
+THE PROBE ECONOMY RULE still bounds every search to -n, and since 2026-09-27
+the walk goes page by page up to it (_search_pages): the server pages at 100
+whatever maxResults asks (READ when -n 500 on board 453 returned exactly 100
+of the 162 the board shows), so one page under a larger -n read as a complete
+list. The bound IS still the feature; the pages are how it is reached.
 
 Output is capped by -n/--max (default 25) per THE PROBE ECONOMY RULE: stdout is
 destined for compiled context payloads, so the bound is a feature.
@@ -88,6 +91,22 @@ import httpx
 ISSUE_KEY_RE = re.compile(r'^[A-Z][A-Z0-9]+-\d+$')
 PROJECT_KEY_RE = re.compile(r'^[A-Z][A-Z0-9]+$')
 BOARD_RE = re.compile(r'^board:(\d+)$')
+SEARCH_FIELDS = "summary,status,issuetype,priority,assignee,updated"
+# THE LINK LIVES IN THE TEXT (READ 2026-09-27, deed 1626): both custom fields
+# named Project URL counted 0 on SVB (cf[12188] and cf[12189], each is not
+# EMPTY), so a ticket's Botify project, when it names one, is a link in the
+# summary or the description. The first two path segments are org/project;
+# app.botify.com/tools/... is a product page and never an org.
+BOTIFY_PROJECT_RE = re.compile(r'https?://app\.botify\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)')
+_NOT_AN_ORG = frozenset({"tools", "admin", "api", "login", "static", "settings"})
+
+
+def _botify_project_link(text):
+    """The first app.botify.com/<org>/<project> URL in text, or ''."""
+    for match in BOTIFY_PROJECT_RE.finditer(text or ""):
+        if match.group(1).lower() not in _NOT_AN_ORG:
+            return match.group(0)
+    return ""
 
 # THE EMPTY ARGUMENT ASKS THE MORNING QUESTION (2026-09-10). Bare `jira` used
 # to list every project the account could see -- a directory, when the one
@@ -439,12 +458,38 @@ def list_projects(client, base, max_items):
     print("\n# Next: python connectors/jira.py <PROJECTKEY>   (recent issues)")
 
 
+def _search_pages(client, base, jql, max_items, fields=SEARCH_FIELDS):
+    """Walk the enhanced search page by page, up to max_items.
+
+    THE FULL PAGE WAS SILENT, second shape (READ 2026-09-27, deeds 1625 and
+    1626): the server pages at 100 whatever maxResults asks, INFERRED from
+    -n 500 on board 453 returning exactly 100 of the 162 the board shows, so
+    a single page under a bigger -n read as a complete list and the cap line
+    never fired. -n is still the bound: the walk stops at it, at the server's
+    isLast, at a missing nextPageToken, or at 50 pages. Returns
+    (issues, pages, exhausted); exhausted is True when the server said the
+    last page was reached, so a caller can tell 'all of them' from 'the
+    first N', which is the difference between a census and a sample.
+    """
+    issues, token, pages, exhausted = [], None, 0, False
+    while len(issues) < max_items and pages < 50:
+        params = {"jql": jql, "maxResults": max_items - len(issues), "fields": fields}
+        if token:
+            params["nextPageToken"] = token
+        data = get_json(client, f"{base}/rest/api/3/search/jql", params=params)
+        data = data if isinstance(data, dict) else {}
+        page = data.get("issues") or []
+        pages += 1
+        issues.extend(page)
+        token = data.get("nextPageToken")
+        exhausted = bool(data.get("isLast")) or not token or not page
+        if exhausted:
+            break
+    return issues[:max_items], pages, exhausted
+
+
 def _search(client, base, jql, max_items):
-    data = get_json(
-        client, f"{base}/rest/api/3/search/jql",
-        params={"jql": jql, "maxResults": max_items,
-                "fields": "summary,status,issuetype,priority,assignee,updated"})
-    return data.get("issues", []) if isinstance(data, dict) else []
+    return _search_pages(client, base, jql, max_items)[0]
 
 
 def list_project_issues(client, base, project_key, max_items):
@@ -516,8 +561,8 @@ def list_mine(client, base, max_items):
     print("#       python connectors/jira.py projects      (every project you can see)")
 
 
-def _project_url_field(client, base):
-    """The id of the custom field labelled Project URL, or None.
+def _project_url_fields(client, base):
+    """Every id of a custom field labelled Project URL, in the API's order, or [].
 
     A search returns custom fields by id (customfield_NNNNN) and never by
     label, and the id differs from site to site while the label is what
@@ -534,13 +579,14 @@ def _project_url_field(client, base):
     The cure, once a populated issue is known: return every id under the
     label and let the caller read whichever is filled per issue. The
     falsifier is by id and never by name: cf[12188] is not EMPTY and
-    cf[12189] is not EMPTY, each counted.
+    cf[12189] is not EMPTY, each counted. READ 2026-09-27 (deed 1626): both
+    counted 0 on SVB, so every id rides, the caller reads whichever is
+    filled, and a link in the summary or description stands in for both.
     """
     fields = get_json(client, f"{base}/rest/api/3/field")
-    for item in fields if isinstance(fields, list) else []:
-        if isinstance(item, dict) and str(item.get("name") or "").strip().lower() == "project url":
-            return item.get("id")
-    return None
+    return [item.get("id") for item in (fields if isinstance(fields, list) else [])
+            if isinstance(item, dict) and item.get("id")
+            and str(item.get("name") or "").strip().lower() == "project url"]
 
 
 def list_board_issues(client, base, board_id, max_items):
@@ -571,7 +617,13 @@ def list_board_issues(client, base, board_id, max_items):
     asked), the cap line below fires only when the page fills -n, so a
     server page smaller than -n reads as a complete list -- THE FULL PAGE
     WAS SILENT in a second shape -- and nextPageToken is never walked here
-    by design. The zero has a second cause in _project_url_field.
+    by design. The zero has a second cause in _project_url_fields.
+    RESOLVED 2026-09-27 (deed 1626): _search_pages walks the pages up to
+    -n and says whether the filter was exhausted, every Project URL id is
+    read, a link in the summary or description stands in when the fields
+    are empty (both read 0 on SVB), and the counts carry a by-status line so
+    the board's own column numbers (To Do 13, In Progress 1, In Review 11,
+    Done 137 on 2026-09-27) are the known members of the census.
     """
     config = get_json(client, f"{base}/rest/agile/1.0/board/{board_id}/configuration")
     config = config if isinstance(config, dict) else {}
@@ -588,21 +640,34 @@ def list_board_issues(client, base, board_id, max_items):
     if not jql:
         print("(the filter carries no jql)")
         return
-    url_field = _project_url_field(client, base)
-    fields = "summary,status,issuetype,priority,assignee,updated"
-    if url_field:
-        fields += "," + url_field
-    data = get_json(client, f"{base}/rest/api/3/search/jql",
-                    params={"jql": jql, "maxResults": max_items, "fields": fields})
-    issues = data.get("issues", []) if isinstance(data, dict) else []
+    url_fields = _project_url_fields(client, base)
+    fields = SEARCH_FIELDS + ",description"
+    if url_fields:
+        fields += "," + ",".join(url_fields)
+    issues, pages, exhausted = _search_pages(client, base, jql, max_items, fields)
+    by_status = {}
+    from_field = from_text = 0
     pulls_root = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                               "data", "botify_pulls")
     with_url = named = local = 0
     rows = []
     for it in issues:
         f = it.get("fields", {}) or {}
-        raw = f.get(url_field) if url_field else None
-        url = "" if _field_empty(raw) else _field_text(raw)
+        status = _name(f.get("status"))
+        by_status[status] = by_status.get(status, 0) + 1
+        url = ""
+        for field_id in url_fields:
+            raw = f.get(field_id)
+            if not _field_empty(raw):
+                url = _field_text(raw)
+                from_field += 1
+                break
+        if not url:
+            text = f"{f.get('summary') or ''}\n{adf_to_text(f.get('description'))}"
+            found = _botify_project_link(text)
+            if found:
+                url = found
+                from_text += 1
         slug = ""
         if url:
             with_url += 1
@@ -615,11 +680,13 @@ def list_board_issues(client, base, board_id, max_items):
                     if os.path.exists(os.path.join(pulls_root, parts[0], parts[1], "sitecrawler.json")):
                         local += 1
         rows.append((it.get("key", "?"), _name(f.get("status")), f.get("summary", ""), slug))
-    print(f"# counts: {len(issues)} issue(s) under the -n cap of {max_items}; {with_url} with a Project URL; "
+    print(f"# counts: {len(issues)} issue(s) under the -n cap of {max_items} "
+          f"({pages} page(s); {'the filter is exhausted' if exhausted else 'more remain above the cap'}); "
+          f"{with_url} with a Project URL ({from_field} from a field, {from_text} from a link in the summary or description); "
           f"{named} naming an app.botify.com org/project; {local} of those with a local pull "
           "(botify --rules org/project answers today)")
-    if url_field is None:
-        print("# (this site has no custom field labelled Project URL, so the URL counts are 0 by construction)")
+    print("# by status: " + (" | ".join(f"{s} {n}" for s, n in sorted(by_status.items(), key=lambda kv: -kv[1])) or "none"))
+    print(f"# Project URL field id(s): {', '.join(url_fields) if url_fields else 'none on this site, so field hits are 0 by construction'}")
     if not issues:
         print("(no issues match the board's filter)")
         return
