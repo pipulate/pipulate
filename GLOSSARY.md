@@ -1150,6 +1150,28 @@ Entries are alphabetical, numbers spelled as spoken.
   must be refused if the round trip is real. That is the no-header control
   the fault harness already runs, aimed at vendor authorship instead of at
   our own spec reading.
+  ADMISSIBILITY AMENDMENT (banked 2026-09-27, the operator's ruling of the
+  same day, first applied in the reply to deed 1602): a model-mediated call
+  is admissible only with (1) the ENDPOINT; (2) every parameter and its
+  argument, the HTTP method, the encoding that carried the arguments (query
+  string, JSON body, form, path segment) and the order where the API is
+  order-sensitive; (3) every value known without its parameter name spelled
+  "value known, parameter unknown", because positional arguments hide the
+  pairing; (4) one line for what the harness may have added and the model
+  cannot see (timestamps, locale, headers), stated as unknowns rather than
+  omitted, because an unstated unknown reads as a claim of completeness. Web
+  searches for research are exempt. A reply that made no call says "Tool
+  calls this turn: none", so a turn with nothing to enumerate and a turn
+  that hid its calls never print the same thing; a reply that cannot spell
+  its calls out this way says so, and its readings are confabulation until
+  reproduced. THE RENT: a request you can write down is a request someone
+  else can send, and one you cannot is a sentence about a request, which
+  the CVR column of THE TWO-RECORDER RULE already grades; the four points
+  are the FDR frame doc for a tool call, and ATTRIBUTED-VOICE's mechanical
+  test applied to "I looked it up". OWES: the first reply that carries a
+  nonzero enumeration in this shape, and a fixed rendering for it (one
+  line per call, the four points in order) so the enumeration is grep-able
+  across cartridges.
 - **The Next Action, Not the Machinery** — (banked 2026-09-15, deed 1419): newcomer guidance names the visible cue and the next action; audit exercises follow completion. The introductory run kept three CAPTURE checkpoints, private evidence and disclosure checks while dropping fingerprint homework and the final DECANT word. Consent moved before the real-walk choice for the scoped bundled route; custom walks retain DECANT. The operator reported a much better experience. Simpler instructions are not weaker evidence.
 - **The Placeholder That Claims to Run** — *validation passing is not
   execution passing.* Banked 2026-08-08, exit-code-witnessed; discharged
