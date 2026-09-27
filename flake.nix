@@ -1526,9 +1526,10 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # THE HYPER-LITERAL WORDS (2026-09-25, the operator's ruling): the
           # three moves of a turn under names no meeting can call strange.
           # context opens context.txt, prompt captures the clipboard,
-          # compile builds the payload (ahc); con, cont, pro, com and comp
-          # are the short spellings, and every old word stays. FUNCTIONS,
-          # per THE ALIAS-DISPATCH RULE: prompt is an alias, so
+          # compile builds the payload (ahc); con, cont, pro, prom, com and
+          # comp are the short spellings (cont, prom, comp is one rhythm and
+          # con, pro, com another, 2026-09-27), and every old word stays.
+          # FUNCTIONS, per THE ALIAS-DISPATCH RULE: prompt is an alias, so
           # pro carries the alias body instead of calling it,
           # and compile calls the ahc function so --profile and --reason
           # pass through. pro is defined beside prompt in the platform
@@ -2177,6 +2178,7 @@ print('AI:\n', r.ai)
             alias xv='pbpaste >'
             alias prompt='(cd "$PIPULATE_ROOT" && pbpaste >prompt.md)'
             pro() { (cd "$PIPULATE_ROOT" && pbpaste >prompt.md); }
+            prom() { pro "$@"; }
             alias patch='pbpaste >patch'
             # MAC SHADOW PUBLISHING: same sanitizer/articleizer mechanism,
             # deliberately no synchronized blog checkout and no publish actuator.
@@ -2243,6 +2245,7 @@ print('AI:\n', r.ai)
             alias xp='(cd "$PIPULATE_ROOT" && python scripts/xp.py)'
             alias prompt='(cd "$PIPULATE_ROOT" && xclip -selection clipboard -o >prompt.md)'
             pro() { (cd "$PIPULATE_ROOT" && xclip -selection clipboard -o >prompt.md); }
+            prom() { pro "$@"; }
             alias patch='xclip -selection clipboard -o >patch'
             # Linux subshell aliases
             # write_post: unified, data-driven article intake. The privacy lane
