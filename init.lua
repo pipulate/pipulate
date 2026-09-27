@@ -847,7 +847,7 @@ map('n', '<leader>r', '<cmd>lua add_liquid_raw_tags()<CR>', opts)  -- Add Liquid
 map('n', '<leader>b', '<cmd>lua bold_dialogue_speaker()<CR>', opts)  -- Bold dialogue speaker
 map('n', '<leader>x', '<cmd>lua mount_sandworm()<CR>', opts) -- the human: mount the worm (full saddle at cursor) x for eXperiment
 map('n', '<leader>m', 'i**Me**: ', opts) -- You
-map('n', '<leader>n', 'i> **Note**: ', opts) -- You
+map('n', '<leader>n', 'i**Note**: ', opts) -- You
 
 -- Git Operations
 map('n', '<leader>g', '<cmd>lua git_commit_push()<CR>', opts)  -- Git commit and push
