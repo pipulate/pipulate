@@ -82,7 +82,7 @@ exclude = [
     "downloads*", 
     "scripts*", 
     "browser_cache*",
-    "Notebooks*",
+    "Workshop*",
     ".venv*"
 ]
 
@@ -126,7 +126,7 @@ ignore = [
 # Never flag these directories
 exclude = [
     ".venv",
-    "Notebooks",
+    "Workshop",
     "scripts",
     "browser_cache",
     "data",
