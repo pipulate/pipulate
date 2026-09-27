@@ -98,6 +98,11 @@ Notebooks/Deliverables/
 Notebooks/Shared/
 Notebooks/Playground/
 Notebooks/Educational_Notebooks/
+# THE THREE TIERS (2026-09-27). Notebooks/corporate/ is the org's canon, a
+# private repo mounted here and replaced wholesale; Notebooks/Shared/ and
+# Notebooks/Playground/ above are the shared and personal tiers. None of the
+# three is ever tracked here: the mechanism is public, the data is not.
+Notebooks/corporate/
 Notebooks/_config.py
 Notebooks/Advanced_Notebooks/01_URLinspector.ipynb
 Notebooks/Advanced_Notebooks/02_FAQuilizer.ipynb
