@@ -166,6 +166,8 @@ def parse_target_spec(spec, targets):
       2-4        an inclusive range over numeric keys, clipped to keys that exist
       1-3,5      both
       all  *  :  every key, numeric keys ascending, then the rest
+      grim       a NAME: the blog whose alias in blogs.json reads grim
+      grim,vault names and numbers mix freely; a refusal prints both
     Surrounding brackets are stripped, so a quoted '[1,3]' or '[:]' reads
     the same as the bare spelling. A Python slice is refused on purpose:
     keys are 1-based NAMES, so '[1:4]' would mean blogs 1-3 to one reader
@@ -182,7 +184,20 @@ def parse_target_spec(spec, targets):
         return (0, int(k)) if k.isdigit() else (1, k)
 
     all_keys = sorted(targets, key=sort_key)
-    roster = ", ".join(all_keys)
+    # THE NAME IS THE KEY (2026-09-27, the morning the Grimoire became 2 and
+    # the Linux `grim` word, spelled `write_post 3`, wrote into the Vault).
+    # A number is a position, and positions move when a blog is added,
+    # retired or renumbered; the alias each blog declares in blogs.nix is
+    # the one spelling that follows the blog. Every refusal prints both, so
+    # a wrong guess teaches the map instead of hiding it.
+    key_to_alias = {}
+    for key in all_keys:
+        alias = str((targets[key] or {}).get('alias') or '').strip().lower()
+        if alias and alias not in key_to_alias.values():
+            key_to_alias[key] = alias
+    alias_to_key = {alias: key for key, alias in key_to_alias.items()}
+    roster = ", ".join(f"{k}={key_to_alias[k]}" if k in key_to_alias else k
+                       for k in all_keys)
     if raw.lower() in ('all', '*', ':'):
         return all_keys
     if not raw:
@@ -203,6 +218,8 @@ def parse_target_spec(spec, targets):
             raise ValueError(f"'{part}' reads two ways; write an inclusive range as 1-4, a list as 1,2,3,4, or all")
         elif part in targets:
             ordered.append(part)
+        elif part.lower() in alias_to_key:
+            ordered.append(alias_to_key[part.lower()])
         else:
             raise ValueError(f"Invalid target key: {part} (known: {roster})")
     unique = []
@@ -458,7 +475,12 @@ def main():
     
     # Suppress header for machine-readable output formats
     if args.fmt not in ('paths', 'slugs', 'dated-slugs'):
-        names = " + ".join(targets[key]['name'] for key in dir_to_key.values())
+        # KEY=ALIAS RIDES THE HEADER: the number is read off every listing
+        # and never has to be remembered.
+        def label_of(key):
+            alias = str(targets[key].get('alias') or '').strip()
+            return f"{key}={alias} {targets[key]['name']}" if alias else f"{key} {targets[key]['name']}"
+        names = " + ".join(label_of(key) for key in dir_to_key.values())
         label = "Targets" if len(dir_to_key) > 1 else "Target"
         print(f"# 🎯 {label}: {names} [{sort_desc}]\n", flush=True)
 
