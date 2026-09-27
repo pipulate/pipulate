@@ -372,7 +372,7 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Thirty-and-Three (30-and-3)** — *fan-out then reduce.* Thirty brief
   vignettes, breadth over depth, then three picks with named justifications.
   The 30 is cheap divergence; the 3 is the human-taste bottleneck.
-- **Three-tier workspace** — *Notebooks/ partitioned by who may write.*
+- **Three-tier workspace** — *Workshop/ partitioned by who may write.*
   `Corporate/` is org canon and skills, read-only, auto-pulled by git;
   `Personal/` is the individual sandbox, gitignored and user-owned;
   `Shared/<user>/` is outbound peer exchange with one writer per directory
