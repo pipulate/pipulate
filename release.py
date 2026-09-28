@@ -602,7 +602,7 @@ def sync_ai_context_md():
         return False
 
     if not source_path.exists():
-        print(f"⚠️  Warning: Source AI_CONTEXT.md not found at {source_path}. Skipping AI_CONTEXT.md sync.")
+        print(f"⚠️  Warning: Source journal index not found at {source_path}. Skipping AI_CONTEXT.md sync.")
         return False
 
     # Copy the file
