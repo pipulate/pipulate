@@ -1592,7 +1592,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # environments without manual overhead.
 
 # apps/040_hello_workflow.py                        # <-- The canonical Hello Workflow example under FastHTML. Number controls menu order.
-# .agents/skills/hello_workflow/SKILL.md            # <-- Agent Skills as defined by Anthropic for controlling the similarly named FastHTML workflow.
+# .agents/skills/hello-workflow/SKILL.md            # <-- Agent Skills as defined by Anthropic for controlling the similarly named FastHTML workflow.
 # assets/scenarios/hello_workflow_test.json         # <-- The Ghost Driver for unit test coverage, feature demos, AI training, human training and to demo the agentic automation hooks
 # assets/player-piano.js                            # <-- Player piano actuator #2 in Pipulate. How AIs can take control of workflows.
 # Workshop/personal/Notebooks/imports/__init__.py                      # <-- The package marker the flake creates beside the notebooks, never tracked: their `from imports import ...` resolves from their own folder.
@@ -1848,10 +1848,10 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # Other examples (document and sort these out)
 
 # THE SKILL.md FILES
-# .agents/skills/gsc_readonly/SKILL.md
-# .agents/skills/hello_workflow/SKILL.md
+# .agents/skills/gsc-readonly/SKILL.md
+# .agents/skills/hello-workflow/SKILL.md
 # .agents/skills/roles/SKILL.md
-# .agents/skills/sheets_readonly/SKILL.md
+# .agents/skills/sheets-readonly/SKILL.md
 
 # remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
 # remotes/honeybot/queries/hot_404_remaps_top.sql  # [733 tokens | 2,888 bytes]
