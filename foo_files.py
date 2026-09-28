@@ -1512,7 +1512,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # ! python scripts/articles/lsa.py -t 4 --reverse --fmt dated-slugs  # <-- BotifyML work journal
 # scripts/articles/lsa.py   # <-- You can show the AI how the magic rolling pin works
 
-# AI_CONTEXT.md
+# .agents/skills/journal/references/index.md
 # scripts/takeover_main.sh  # <-- Successful branch experiments rapidly take-over main when successful
 
 # ----------------------------------------------------------------------------
