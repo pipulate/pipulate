@@ -85,6 +85,77 @@ def strip_fences(text):
     return FENCE_BLOCK_RE.subn(stand_in, text)
 
 
+def clipboard_copy(text):
+    """Put text on the system clipboard: pbcopy on a Mac, xclip elsewhere."""
+    import subprocess
+    cmd = ['pbcopy'] if sys.platform == 'darwin' else ['xclip', '-selection', 'clipboard']
+    subprocess.run(cmd, input=text.encode('utf-8'), check=True)
+
+
+def clipboard_paste():
+    """Read the system clipboard as text: pbpaste on a Mac, xclip elsewhere."""
+    import subprocess
+    cmd = ['pbpaste'] if sys.platform == 'darwin' else ['xclip', '-selection', 'clipboard', '-o']
+    return subprocess.run(cmd, capture_output=True, check=True).stdout.decode('utf-8', errors='replace')
+
+
+def parse_instructions(reply):
+    """The editing JSON in a model's reply: a ```json fence first, else the
+    outermost braces. Raises ValueError (JSONDecodeError is one) on anything
+    else, including the prompt's own schema pasted back unanswered, which is
+    told by its placeholder title."""
+    fenced = re.search(r'```json\s*([\s\S]*?)\s*```', reply)
+    text = fenced.group(1) if fenced else reply[reply.find('{'):reply.rfind('}') + 1]
+    instructions = json.loads(text)
+    if not isinstance(instructions, dict) or 'editing_instructions' not in instructions:
+        raise ValueError("no editing_instructions object in the reply")
+    if instructions['editing_instructions'].get('yaml_updates', {}).get('title') == 'string':
+        raise ValueError("this is the prompt's own schema, not a model's reply")
+    return instructions
+
+
+def web_round_trip(full_prompt):
+    """THE WEB LANE (2026-09-28, deed 1650; the operator: "the correlating and
+    complex commands are scary, can we make it super simple?"). One run and no
+    second command: the prompt goes to the clipboard, the operator pastes it
+    into any AI chat in a browser, copies the reply and presses Enter here,
+    and the JSON is read off the clipboard, cached, and the post built exactly
+    as after an API answer. article.txt is never touched, which the old lane
+    (--copy, then --local through the publish word) could not promise, since
+    the word rewrites article.txt from the clipboard before this script runs.
+    Returns the parsed instructions, or None when the operator gives up."""
+    try:
+        clipboard_copy(full_prompt)
+    except Exception as e:
+        print(f"❌ Could not put the prompt on the clipboard: {e}")
+        return None
+    print()
+    print(f"🌐 THE WEB LANE. The editing prompt is on your clipboard ({len(full_prompt):,} chars).")
+    print("   1. In a browser, start a new chat at gemini.google.com, claude.ai or chatgpt.com.")
+    print("   2. Click the message box, press Ctrl+V, press Enter, and wait for the whole reply.")
+    print("   3. Copy the whole reply: the copy button under it, or select it all and Ctrl+C.")
+    print("   4. Come back here and press Enter. (q then Enter gives up; nothing is written.)")
+    while True:
+        try:
+            answer = input("   Reply on the clipboard? [Enter / q] ").strip().lower()
+        except (KeyboardInterrupt, EOFError):
+            print("\nWeb lane closed; nothing written.")
+            return None
+        if answer.startswith('q'):
+            print("Web lane closed; nothing written.")
+            return None
+        try:
+            instructions = parse_instructions(clipboard_paste())
+        except Exception as e:
+            print(f"   ✗ The clipboard does not hold the reply's JSON: {e}")
+            print("     Copy the reply again, the whole thing or just its json block, and press Enter.")
+            continue
+        with open(INSTRUCTIONS_CACHE_FILE, 'w', encoding='utf-8') as f:
+            json.dump(instructions, f, indent=4)
+        print(f"✅ Instructions read off the clipboard and saved to '{INSTRUCTIONS_CACHE_FILE}'.")
+        return instructions
+
+
 def scan_corpus(output_dir):
     """One-pass frontmatter scan of the published corpus.
 
@@ -413,6 +484,11 @@ def main():
         help="Leave fenced code blocks out of the editor's copy (done unasked when the prompt "
              "exceeds a free key's minute); the published article keeps them."
     )
+    parser.add_argument(
+        '--web', action='store_true',
+        help="Skip the API: the editing prompt goes to the clipboard, you paste it into any AI "
+             "chat in a browser, copy the reply, press Enter here, and the post is built from it."
+    )
     args = parser.parse_args()
 
     # Use common to securely lock target
@@ -558,9 +634,7 @@ def main():
                   "or --model <id> -k <alias> onto a larger window.")
         if args.copy:
             try:
-                # We borrow the existing robust clipboard function from prompt_foo
-                import subprocess
-                subprocess.run(['pbcopy'] if sys.platform == 'darwin' else ['xclip', '-selection', 'clipboard'], input=full_prompt.encode('utf-8'), check=True)
+                clipboard_copy(full_prompt)
                 print("📋 Prompt copied to clipboard! You can now paste it into any web UI.")
             except Exception as e:
                 print(f"❌ Failed to copy to clipboard: {e}")
@@ -568,21 +642,33 @@ def main():
 
         models = (args.model,) if args.model else MODEL_CANDIDATES
         fallback = f", fallback {models[1]}" if len(models) > 1 else ", no fallback"
-        print(f"Calling the Universal Adapter (primary {models[0]}{fallback})...")
-        total_attempts = MAX_ATTEMPTS_PER_MODEL * len(models) * (1 + len(keys_queue))
+        if args.web:
+            total_attempts = 0
+        else:
+            print(f"Calling the Universal Adapter (primary {models[0]}{fallback})...")
+            total_attempts = MAX_ATTEMPTS_PER_MODEL * len(models) * (1 + len(keys_queue))
         retry_delays = {name: INITIAL_RETRY_DELAY for name in models}
         retry_after = {name: 0.0 for name in models}
-        quota_hit = set()
+        # THE KEY'S OWN LEDGER (2026-09-28, deed 1650): which models have said
+        # quota on the key drawn, which have failed at all, and how many tries
+        # it has had; the ring reads these, not the global attempt count.
+        quota_hit, failed_on_key, attempts_on_key = set(), set(), 0
+        verdict = "--web asked for the browser"
         for attempt in range(total_attempts):
             model_name = models[attempt % len(models)]
-            model_attempt = (attempt // len(models)) % MAX_ATTEMPTS_PER_MODEL + 1
+            model_attempt = attempts_on_key // len(models) + 1
             wait = max(0.0, retry_after[model_name] - time.monotonic())
             if wait:
                 print(
                     f"Waiting {wait:.0f} seconds before retrying {model_name} "
                     f"(Attempt {model_attempt}/{MAX_ATTEMPTS_PER_MODEL})..."
                 )
-                time.sleep(wait)
+                try:
+                    time.sleep(wait)
+                except KeyboardInterrupt:
+                    verdict = "cut by hand during the wait"
+                    print(f"\n{verdict.capitalize()}; the web lane is next.")
+                    break
 
             try:
                 model = llm.get_model(model_name)
@@ -592,9 +678,7 @@ def main():
                 gemini_output = response.text()
                 print(f"Successfully received response from API via {model_name}.")
                 
-                json_match = re.search(r'```json\s*([\s\S]*?)\s*```', gemini_output)
-                json_str = json_match.group(1) if json_match else gemini_output
-                instructions = json.loads(json_str)
+                instructions = parse_instructions(gemini_output)
                 print("Successfully parsed JSON instructions.")
                 
                 with open(INSTRUCTIONS_CACHE_FILE, 'w', encoding='utf-8') as f:
@@ -617,7 +701,7 @@ def main():
                 # had read the lowercase word all along. A quota is named by
                 # the word; a bad JSON body is retried on the other model rather
                 # than ending the run with the output printed and nothing saved.
-                is_parse = isinstance(e, json.JSONDecodeError)
+                is_parse = isinstance(e, ValueError)  # JSONDecodeError is one; the schema echoed back is another
                 is_quota = (not is_parse) and (
                     "quota" in lowered or "resource_exhausted" in lowered
                     or "429" in error_str)
@@ -625,6 +709,7 @@ def main():
                    ("504" in error_str and "timed out" in error_str) or \
                    ("503" in error_str) or \
                    ("500" in error_str) or \
+                   ("unavailable" in lowered) or ("overloaded" in lowered) or \
                    ("high demand" in lowered):
                     
                     # THE MINUTE IS THE CEILING (2026-09-28, the grim receipt):
@@ -650,7 +735,8 @@ def main():
                         else:
                             print("   Escapes: --lean (the fenced blocks leave the editor's copy; the estimate read "
                                   "under and the API read over), --model <id> -k <alias>, or a shorter article.")
-                        return
+                        verdict = "the free minute cannot hold this prompt (SIZE)"
+                        break
                     kind = "QUOTA" if is_quota else ("PARSE" if is_parse else "TRANSIENT")
                     print(f"Retriable API Error [{kind}] from {model_name}: {e}")
                     if is_parse and 'gemini_output' in locals():
@@ -665,23 +751,36 @@ def main():
                     wait = max(retry_delays[model_name], hinted_delay)
                     retry_after[model_name] = time.monotonic() + wait
                     retry_delays[model_name] *= 2
+                    failed_on_key.add(model_name)
+                    attempts_on_key += 1
                     if is_quota:
                         quota_hit.add(model_name)
-                    # THE KEY RING TURNS (2026-09-28). A quota is per key and per
-                    # model, so a key is spent only when every model on it has
-                    # said quota; then the next key on the ring is drawn with
-                    # fresh clocks and no wait, because a spent key's retry hint
-                    # names the minute and not the day. With one key on the ring
-                    # the hint is honored exactly as before.
-                    if is_quota and quota_hit >= set(models) and keys_queue:
+                    # THE KEY RING TURNS (2026-09-28; loosened the same day at
+                    # deed 1650, when a spent key's Lite said "high demand"
+                    # eleven times and never quota, so a ring of 26 never turned
+                    # and the operator cut it at the fourth wait). A key is left
+                    # once a quota has been reported on it and every model on it
+                    # has failed at least once since it was drawn, or once its
+                    # attempts are spent; the next key is drawn with fresh clocks
+                    # and no wait. The last key on the ring is left the same way,
+                    # for the web lane below, instead of honoring a hint that may
+                    # be naming a day.
+                    spent = bool(quota_hit) and failed_on_key >= set(models)
+                    tired = attempts_on_key >= MAX_ATTEMPTS_PER_MODEL * len(models)
+                    if (spent or tired) and keys_queue:
                         key_name, api_key = keys_queue.pop(0)
                         quota_hit.clear()
+                        failed_on_key.clear()
+                        attempts_on_key = 0
                         retry_after = {name: 0.0 for name in models}
                         retry_delays = {name: INITIAL_RETRY_DELAY for name in models}
-                        print(f"🔑 Every model on the current key reports quota; "
+                        print(f"🔑 {'a quota and every model failed on this key' if spent else 'attempts spent on this key'}; "
                               f"rotating to '{key_name}' ({len(keys_queue)} more waiting).")
                         continue
 
+                    if spent or tired:
+                        verdict = "the only key left reports quota" if spent else "attempts spent on every key"
+                        break
                     if attempt + 1 < total_attempts:
                         next_model = models[(attempt + 1) % len(models)]
                         next_wait = max(0.0, retry_after[next_model] - time.monotonic())
@@ -696,16 +795,24 @@ def main():
                     print(f"\nAn unrecoverable error occurred while calling the API: {e}")
                     if 'gemini_output' in locals():
                         print("--- API Raw Output ---\n" + gemini_output)
-                    print(f"Manual lane: --copy, paste into a web UI, save its JSON as "
-                          f"{INSTRUCTIONS_CACHE_FILE}, rerun with --local.")
-                    return
+                    verdict = "an unrecoverable API error"
+                    break
         else:  # This block runs if the loop completes without a break
-            print(
-                f"Error: {MAX_ATTEMPTS_PER_MODEL} attempts per model on every key exhausted. "
-                "Failed to get a successful response from the API.\n"
-                f"Manual lane: --copy, paste into a web UI, save its JSON as {INSTRUCTIONS_CACHE_FILE}, rerun with --local."
-            )
-            return
+            if not args.web:
+                verdict = f"{MAX_ATTEMPTS_PER_MODEL} attempts per model on every key exhausted"
+        # THE WEB LANE OPENS ON EVERY FAILED EXIT (2026-09-28, deed 1650). Two
+        # grim runs on the lean prompt still ended with nothing written: one on
+        # "The service is currently unavailable", which carried no status code
+        # and read as unrecoverable, one on attempts exhausted. Every exit that
+        # leaves instructions empty lands here, the prompt that was built goes
+        # to the clipboard, and the operator's browser becomes the model;
+        # --web comes here without calling the API at all.
+        if instructions is None:
+            if not args.web:
+                print(f"\nNo instructions from the API: {verdict}.")
+            instructions = web_round_trip(full_prompt)
+            if instructions is None:
+                return
 
     if instructions:
         base_url = target_config.get("base_url")
