@@ -373,14 +373,18 @@ Entries are alphabetical, numbers spelled as spoken.
   vignettes, breadth over depth, then three picks with named justifications.
   The 30 is cheap divergence; the 3 is the human-taste bottleneck.
 - **Three-tier workspace** — *Workshop/ partitioned by who may write.*
-  `Corporate/` is org canon and skills, read-only, auto-pulled by git;
-  `Personal/` is the individual sandbox, gitignored and user-owned;
-  `Shared/<user>/` is outbound peer exchange with one writer per directory
-  (Alice writes `Shared/alice/`, Bob writes `Shared/bob/`), so a merge
+  `corporate/` is org canon and skills, read-only, auto-pulled by git;
+  `personal/` is the individual sandbox, gitignored and user-owned;
+  `shared/<user>/` is outbound peer exchange with one writer per directory
+  (Alice writes `shared/alice/`, Bob writes `shared/bob/`), so a merge
   conflict is unrepresentable by construction -- THE DERIVED-PATH RULE run
   on a directory tree. Rent: the tier of any file follows from a property
   git can check, who is allowed to write it. Seeded 2026-07-25; vocabulary
-  since 2026-09-04, when the earmark carrying it demoted to a todo.
+  since 2026-09-04, when the earmark carrying it demoted to a todo. On disk
+  since 2026-09-28: the three are the whole of Workshop/, lowercase so they
+  sort as the menu reads them, git tracks nothing under any of them, and the
+  starter notebooks, their imports/ and the notebook-side data/ live under
+  personal/Notebooks/.
 - **Triptych / Hinge A / Hinge B** — *the three-panel scrape receipt.*
   View-source, hydrated DOM, wire truth; Hinge A is the structural diff
   (did JS conjure anything), Hinge B is the requestId proving panel 3's
