@@ -873,7 +873,7 @@ def _figurate_mechanical_man():
 
 
 def _figurate_workspace_tree():
-    """Render the Workshop as it ACTUALLY sits on disk: flat.
+    """Render the Workshop as it sits on disk: three tiers and nothing else.
     THE NESTED VERSION WAS THE ONLY AUTHORITY THAT SHIPPED, AND IT WAS WRONG.
     update_agents_md_in_place() splices this art into AGENTS.md on every
     compile, so it is what every external agent tool reads -- while flake.nix
@@ -881,9 +881,11 @@ def _figurate_workspace_tree():
     and no Corporate/, Personal/, or Workshop/ at all. Three authorities, one
     winner, and the winner disagreed with the disk. Fixed at the GENERATOR so
     the output cannot drift back.
-    Three tiers, zero nesting: canon arrives by the flake's copy-if-absent
-    loop, personal is gitignored, and Shared/ is the single deliberate
-    outbound surface with one folder per person. Authored with no .strip() so
+    Three tiers and nothing else (2026-09-28): corporate/ is the org's,
+    personal/ is the person's (the starter notebooks land in
+    personal/Notebooks/), shared/ is the single deliberate outbound surface
+    with one folder per person; flake.nix's THE THREE TIERS block rules and
+    this drawing follows it. Authored with no .strip() so
     the leading newline is preserved (the honeybot_pipeline convention), which
     the FIGURATE_LEDGER seal must match. No color-bit or angle-tag markers, so
     _expand_color_bits_ai leaves it untouched and ai_art == art.
@@ -892,23 +894,15 @@ def _figurate_workspace_tree():
    Workshop/   — the JupyterLab root (NOT Pipulate's own root)
    │            FLAT siblings. Nothing nests. Nothing to get wrong.
    │
-   ├── Advanced_Notebooks/     canon · flake-delivered, copy-if-absent
-   ├── Educational_Notebooks/  canon · your edits survive, updates do not arrive
-   ├── imports/                canon · the code-behind "sauce" modules
-   │
-   ├── personal/               personal · gitignored · your own git repo goes here
-   ├── Client_Work/            personal · gitignored · never leaves this machine
-   ├── Deliverables/           personal · gitignored
-   │
    ├── corporate/              the org's canon · gitignored · its own private repo
-   │
-   └── Shared/                 the ONE folder for handing work to a teammate
+   ├── personal/               personal · gitignored · your own git repo goes here
+   └── shared/                 the ONE folder for handing work to a teammate
        ├── alice/              one folder per person; you write ONLY your own
        └── bob/                single-writer partitions = zero merge conflicts
 """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
-    human = Panel(human_art, title="🗂️ Workshop — canon · personal · corporate · Shared", border_style="white")
+    human = Panel(human_art, title="🗂️ Workshop — corporate · personal · shared", border_style="white")
     return human, ai_art
 
 
@@ -1948,7 +1942,7 @@ if __name__ == "__main__":
 #     └── assets/                  # optional templates and files
 # ```
 # 
-# You already have this. `Workshop/.agents/skills/hello_workflow/SKILL.md`, `gsc_readonly`, `roles` — it's in your manifest.
+# You already have this. `.agents/skills/hello_workflow/SKILL.md`, `gsc_readonly`, `roles` — it's in your manifest.
 # 
 # **3. OKF** — what the v0.1 specification actually fixes is a folder layout, markdown files, YAML frontmatter, reserved filenames, and a single required field: `type`. A bundle is a directory of markdown files, each carrying a short YAML block — type, title, description — linking to its neighbors; add an index.md that lists the files so an agent can see what's there before opening everything, and that's the format. The spec fits on a single page.
 # 
@@ -1974,7 +1968,7 @@ if __name__ == "__main__":
 # ├── cli.py                               # = the `allowed-tools` surface: mcp-discover / call
 # ├── apply.py                             # = "PR instructions" made executable (SEARCH/REPLACE actuator)
 # ├── flake.nix                            # = "Dev environment setup" made executable (nix develop)
-# ├── Workshop/.agents/skills/             # = Agent Skills, already standard-shaped
+# ├── .agents/skills/                      # = Agent Skills, already standard-shaped
 # │   ├── hello_workflow/SKILL.md
 # │   ├── gsc_readonly/SKILL.md
 # │   └── roles/SKILL.md
