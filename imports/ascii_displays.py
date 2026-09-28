@@ -124,6 +124,88 @@ def figurate(name: str, context: Optional[str] = None) -> FigurateResult:
     return FigurateResult(name=name, human=human_out, ai=ai_out, drift=drift)
 
 
+def seal_readings():
+    """One (name, sealed, computed) per registered art: the FIGURATE_LEDGER
+    value (None when the art has no seal) beside the CRC32 of the ai string
+    rendered right now, computed exactly as figurate() computes drift."""
+    rows = []
+    for name, entry in FIGURATE_REGISTRY.items():
+        render_fn = entry.get("render")
+        if render_fn is None:
+            continue
+        _, ai_out = render_fn()
+        rows.append((name, FIGURATE_LEDGER.get(name), binascii.crc32(ai_out.encode('utf-8'))))
+    return rows
+
+
+def reseal_ledger(write=False):
+    """THE RESEAL (2026-09-28, the operator's ruling: pragmatism over paranoia
+    while the art is redrawn). Rewrite the drifted FIGURATE_LEDGER lines of THIS
+    file in place, each line's trailing comment kept, and give an unsealed art a
+    line above the EXTRUDE_BOTTOM marker. write=False prints the same readings
+    and touches nothing. Returns (changed, missing). The seal still detects:
+    figurate() and --check read drift exactly as before, and only a hand typing
+    --reseal moves a number. THE THREE-REGION ART EDIT keeps its three regions;
+    its ordering becomes author, --reseal, figurate reads Drift: 0.
+    """
+    import re
+    from pathlib import Path
+    path = Path(__file__).resolve()
+    text = path.read_text(encoding='utf-8')
+    head = "FIGURATE_LEDGER: dict = {"
+    start = text.index(head) + len(head)
+    stop = text.index("# === FIGURATE_LEDGER_EXTRUDE_BOTTOM ===", start)
+    line_re = re.compile(r'^(?P<head>\s*"(?P<name>[^"]+)":\s*)(?P<crc>\d+)(?P<tail>,.*)$')
+    computed = {name: crc for name, _, crc in seal_readings()}
+    lines = text[start:stop].split('\n')
+    changed, seen = [], set()
+    for i, line in enumerate(lines):
+        m = line_re.match(line)
+        if not m or m.group('name') not in computed:
+            continue
+        name = m.group('name')
+        seen.add(name)
+        old, new = int(m.group('crc')), computed[name]
+        if old != new:
+            changed.append((name, old, new))
+            lines[i] = f"{m.group('head')}{new}{m.group('tail')}"
+    missing = [name for name in computed if name not in seen]
+    for name in missing:
+        lines.insert(len(lines) - 1, f'    "{name}": {computed[name]},  # sealed by --reseal')
+    verb = "RESEALED" if write else "DRIFT"
+    for name, old, new in changed:
+        print(f"{name:22s} {old:>11d} -> {new:<11d} {verb}")
+    for name in missing:
+        print(f"{name:22s} {'(none)':>11s} -> {computed[name]:<11d} {'SEALED' if write else 'UNSEALED'}")
+    if write and (changed or missing):
+        path.write_text(text[:start] + '\n'.join(lines) + text[stop:], encoding='utf-8')
+    return changed, missing
+
+
+def _main(argv=None):
+    """python imports/ascii_displays.py --check | --reseal
+    --check prints every art's seal beside its live CRC32 and exits 1 on any
+    drift or unsealed art; --reseal prints the same table, then rewrites the
+    ledger and exits 0. Plain print on purpose: the readings land in a `!`
+    receipt and on Honeybot, where this file is rsynced alone."""
+    import sys
+    argv = sys.argv[1:] if argv is None else argv
+    if argv not in (["--check"], ["--reseal"]):
+        print("usage: python imports/ascii_displays.py --check | --reseal", file=sys.stderr)
+        return 2
+    rows = seal_readings()
+    bad = [name for name, sealed, computed in rows if sealed != computed]
+    for name, sealed, computed in rows:
+        state = "ok" if sealed == computed else ("UNSEALED" if sealed is None else "DRIFT")
+        print(f"{name:22s} sealed={str(sealed if sealed is not None else '-'):<11} computed={computed:<11d} {state}")
+    print(f"{len(rows)} art(s), {len(bad)} to reseal")
+    if argv == ["--reseal"] and bad:
+        changed, missing = reseal_ledger(write=True)
+        print(f"resealed {len(changed)} line(s), sealed {len(missing)} new line(s); figurate reads Drift: 0 from here")
+        return 0
+    return 1 if bad else 0
+
+
 def _x11_screen_geometry(env):
     """Return (width, height) in pixels for the active X display, or None.
 
