@@ -91,7 +91,6 @@ exclude = [
     "assets/installer/install.sh", 
     "flake.nix",
     "README.md",
-    "AI_CONTEXT.md",
     "LICENSE",
     "CHANGELOG.md"
 ]
