@@ -255,7 +255,7 @@ def run_ai_context_generation():
     note("\n🧭 Step 1.6: Regenerating the journal index (.agents/skills/journal/references/index.md)...")
     generator = PIPULATE_ROOT / "scripts" / "articles" / "generate_ai_context.py"
     if not generator.exists():
-        print(f"ℹ️  AI_CONTEXT generator not found at {generator}. Skipping.")
+        print(f"ℹ️  journal index generator not found at {generator}. Skipping.")
         return False
     # Direct subprocess.run (not run_command) so a failure never sys.exit()s the release.
     result = subprocess.run([sys.executable, str(generator)], cwd=str(PIPULATE_ROOT),
