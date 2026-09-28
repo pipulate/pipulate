@@ -1,3 +1,8 @@
+---
+name: roles
+description: Explains the Roles plugin, the homepage and APP-menu control center of Pipulate, including which roles show which plugins, the ROLES and EMOJI declarations a plugin must carry, drag-to-reorder, and the Default, Select ALL and Deselect ALL controls. Use when a question concerns the homepage, the APP menu, or why a plugin is missing from it.
+---
+
 # Pipulate Roles System: Homepage & Menu Control Center
 
 ## Overview: The Heart of Pipulate's UX
