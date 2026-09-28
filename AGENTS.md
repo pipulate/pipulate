@@ -13,7 +13,7 @@ anything written here that duplicates code will drift and is a bug.
 
 ## Workspace (the layout `nix develop` materializes under `Workshop/`)
 
-`Workshop/` is JupyterLab's root, not Pipulate's. The tree below is GENERATED
+`Workshop/` is JupyterLab's root, not Pipulate's: three folders, corporate/, personal/ and shared/, and nothing else, with the starter notebooks under personal/Notebooks/. The tree below is GENERATED
 between the sentinel comments by `prompt_foo.py` from the sealed `workspace_tree`
 figurate asset — do not hand-edit it; edit the asset in
 `imports/ascii_displays.py` and recompile. Empty here means the compiler has not
@@ -44,7 +44,7 @@ run since the sentinels landed.
 
 - Discover: `.venv/bin/python cli.py mcp-discover`
 - Execute:  `.venv/bin/python cli.py call <tool_name> --json-args '{...}'`
-- Skills (Agent Skills spec): `Workshop/.agents/skills/*/SKILL.md`
+- Skills (Agent Skills spec): `.agents/skills/*/SKILL.md`, at the repo root beside this file
 
 ## Context (how this repo talks to AI)
 

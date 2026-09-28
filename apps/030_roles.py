@@ -44,15 +44,15 @@ class PluginIdentityManager:
 
     @property
     def TRAINING_PROMPT(self):
-        """Load the roles skill from Workshop/.agents/skills/roles/SKILL.md (graceful fallback)."""
-        skill_path = os.path.join(os.path.dirname(__file__), '..', 'Workshop', '.agents', 'skills', 'roles', 'SKILL.md')
+        """Load the roles skill from .agents/skills/roles/SKILL.md at the repo root (graceful fallback)."""
+        skill_path = os.path.join(os.path.dirname(__file__), '..', '.agents', 'skills', 'roles', 'SKILL.md')
         try:
             with open(skill_path, 'r', encoding='utf-8') as f:
                 return f.read()
         except Exception:
             return (
                 '# Pipulate Roles System\n\n'
-                'SKILL.md not found at Workshop/.agents/skills/roles/SKILL.md. '
+                'SKILL.md not found at .agents/skills/roles/SKILL.md. '
                 'The Roles app is the homepage and APP-menu control center: checkboxes toggle roles, '
                 'drag reorders the APP menu, Core is always on. Secret word: ORCHESTRATOR.'
             )
