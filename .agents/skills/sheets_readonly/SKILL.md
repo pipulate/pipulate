@@ -1,5 +1,5 @@
 ---
-name: sheets_readonly
+name: sheets-readonly
 description: Read-only Google Sheets access for bounded context pulls. Trigger when a Google Sheets URL or spreadsheet ID needs to become compiled context. Executable truth lives at connectors/sheets.py; this skill is a signpost, never a second implementation.
 ---
 
