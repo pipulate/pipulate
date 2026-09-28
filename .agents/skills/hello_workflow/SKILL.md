@@ -1,3 +1,8 @@
+---
+name: hello-workflow
+description: Explains how a Pipulate workflow turns Jupyter Notebook cells into HTMX steps, from the Step namedtuple and the step_xx and step_xx_submit pair to landing, init and finalize and the state that flows between steps. Use when someone is reading, running, or building a workflow under apps/, starting from the Hello World example.
+---
+
 # Workflow Template Assistant Guide
 
 ## Your Role
