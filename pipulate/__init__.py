@@ -28,13 +28,13 @@ project_root = find_project_root(os.getcwd()) or Path.cwd()
 
 # ... after project_root is defined ...
 if project_root:
-    notebooks_path = str(project_root / "Workshop")
+    notebooks_path = str(project_root / "Workshop" / "personal" / "Notebooks")
     if notebooks_path not in sys.path:
         sys.path.append(notebooks_path)
         
     # 🪄 THE FUSION DANCE: Merge core imports with user imports
     import imports
-    notebook_imports_path = project_root / "Workshop" / "imports"
+    notebook_imports_path = project_root / "Workshop" / "personal" / "Notebooks" / "imports"
     if notebook_imports_path.exists() and str(notebook_imports_path) not in imports.__path__:
         imports.__path__.append(str(notebook_imports_path))
 
@@ -44,7 +44,7 @@ logger.remove()
 logger.add(sys.stderr, level="WARNING", colorize=True, format="<level>{level: <8}</level> | <cyan>{name}:{function}:{line}</cyan> - <level>{message}</level>")
 
 # 2. Instantiate the wand so we can use its Topological Manifold for paths
-DB_PATH = project_root / "Workshop" / "data" / "pipeline.sqlite"
+DB_PATH = project_root / "Workshop" / "personal" / "Notebooks" / "data" / "pipeline.sqlite"
 DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 wand = Pipulate(db_path=str(DB_PATH))
 

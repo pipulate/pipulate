@@ -2095,7 +2095,7 @@ async def home(request):
     logger.debug(f'Selected explore item: {menux}')
 
     # ---> THE NEW AIRLOCK TRIGGER <---
-    sentinel_path = Path("Workshop/data/.onboarded")
+    sentinel_path = Path("Workshop/personal/Notebooks/data/.onboarded")
     # Add the database flag check here:
     if sentinel_path.exists() and pipulate.db.get('airlock_sealed') != 'true':
         logger.info("🚨 Sentinel detected and airlock unsealed. Triggering Airlock.")
@@ -3723,7 +3723,7 @@ async def reset_config_onboarding(request):
     # 1. Wipe the File System Sentinel
     try:
         project_root = Path(os.getcwd())
-        sentinel_path = project_root / "Workshop" / "data" / ".onboarded"
+        sentinel_path = project_root / "Workshop" / "personal" / "Notebooks" / "data" / ".onboarded"
         if sentinel_path.exists():
             sentinel_path.unlink()
             logger.info(f"🗑️ Deleted sentinel file: {sentinel_path}")
