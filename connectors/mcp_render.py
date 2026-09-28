@@ -98,9 +98,10 @@ def decode_fragment(b64):
 
 
 def encode_conf(conf):
-    """The #conf= fragment for a conf: compact JSON, zlib, standard base64."""
+    """The #conf= fragment for a conf: compact JSON, zlib at level 6 (PocketRender's own,
+    read by sweep at deed 1632, so a mint is byte-identical to the vendor's), standard base64."""
     raw = json.dumps(conf, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
-    return base64.b64encode(zlib.compress(raw, 9)).decode("ascii")
+    return base64.b64encode(zlib.compress(raw, 6)).decode("ascii")
 
 
 def rule_lines(conf):
