@@ -1,3 +1,8 @@
+---
+name: gsc-readonly
+description: Read-only Google Search Console access through connectors/gsc.py. Use when a task needs GSC data compiled into context, whether that is the properties a service account can see, a capped top-query view of one property, or a bounded raw Search Analytics request. Never widens scope past webmasters.readonly and never opens the credential file.
+---
+
 # GSC Read-Only Connector Guide
 
 ## Your Role
