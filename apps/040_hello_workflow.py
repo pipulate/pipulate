@@ -173,7 +173,7 @@ class HelloFlow:
         self.ui = self.wand.get_ui_constants()
 
         # Dynamically load the AI's instruction manual
-        skill_path = self.wand.paths.base / ".agents" / "skills" / "hello_workflow" / "SKILL.md"
+        skill_path = self.wand.paths.base / ".agents" / "skills" / "hello-workflow" / "SKILL.md"
         if skill_path.exists():
             self.TRAINING_PROMPT = skill_path.read_text(encoding='utf-8')
         else:
