@@ -117,7 +117,7 @@
         jupyterWorkspaceName = "pipulate-main";
 
  		# Define the default notebook for JupyterLab to open on startup
- 		jupyterStartupNotebook = "Workshop/Onboarding.ipynb";
+ 		jupyterStartupNotebook = "Workshop/personal/Notebooks/Onboarding.ipynb";
 
         # --- 🌐 BROWSER TAB CONFIGURATION ---
         autoOpenJupyter = "true";
@@ -128,62 +128,62 @@
         notebookFilesToCopy = [
           {
             source = "assets/nbs/imports/core_sauce.py";
-            dest = "Workshop/imports/core_sauce.py";
+            dest = "Workshop/personal/Notebooks/imports/core_sauce.py";
             desc = "the unified core workflow engine";
           }
           {
             source = "assets/nbs/imports/onboard_sauce.py";
-            dest = "Workshop/imports/onboard_sauce.py";
+            dest = "Workshop/personal/Notebooks/imports/onboard_sauce.py";
             desc = "a local 'onboard_sauce.py' source of secret sauce";
           }
           {
             source = "assets/nbs/imports/url_inspect_sauce.py";
-            dest = "Workshop/imports/url_inspect_sauce.py";
+            dest = "Workshop/personal/Notebooks/imports/url_inspect_sauce.py";
             desc = "a local 'url_inspect_sauce.py' source of secret sauce";
           }
           {
             source = "assets/nbs/imports/faq_writer_sauce.py";
-            dest = "Workshop/imports/faq_writer_sauce.py";
+            dest = "Workshop/personal/Notebooks/imports/faq_writer_sauce.py";
             desc = "a local 'faq_writer_sauce.py' source of secret sauce";
           }
           {
             source = "assets/nbs/imports/gap_analyzer_sauce.py";
-            dest = "Workshop/imports/gap_analyzer_sauce.py";
+            dest = "Workshop/personal/Notebooks/imports/gap_analyzer_sauce.py";
             desc = "a local 'gap_analyzer_sauce.py' source of secret sauce";
           }
           {
             source = "assets/nbs/imports/videditor_sauce.py";
-            dest = "Workshop/imports/videditor_sauce.py";
+            dest = "Workshop/personal/Notebooks/imports/videditor_sauce.py";
             desc = "a local 'videditor_sauce.py' source of secret sauce";
           }
           {
             source = "assets/nbs/Onboarding.ipynb";
-            dest = "Workshop/Onboarding.ipynb";
+            dest = "Workshop/personal/Notebooks/Onboarding.ipynb";
             desc = "the Pipulate initiation rite and setup guide";
           }
           {
             source = "assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb";
-            dest = "Workshop/Advanced_Notebooks/01_URLinspector.ipynb";
+            dest = "Workshop/personal/Notebooks/01_URLinspector.ipynb";
             desc = "a local 'URL-by-URL auditor.' derived from FAQuilizer";
           }
           {
             source = "assets/nbs/Advanced_Notebooks/02_FAQuilizer.ipynb";
-            dest = "Workshop/Advanced_Notebooks/02_FAQuilizer.ipynb";
+            dest = "Workshop/personal/Notebooks/02_FAQuilizer.ipynb";
             desc = "a local 'FAQuilizer' simple workflow";
           }
           {
             source = "assets/nbs/Advanced_Notebooks/03_GAPalyzer.ipynb";
-            dest = "Workshop/Advanced_Notebooks/03_GAPalyzer.ipynb";
+            dest = "Workshop/personal/Notebooks/03_GAPalyzer.ipynb";
             desc = "a local 'Competitor Gap Analyzer.' advanced workflow";
           }
           {
             source = "assets/nbs/Advanced_Notebooks/04_VIDeditor.ipynb";
-            dest = "Workshop/Advanced_Notebooks/04_VIDeditor.ipynb";
+            dest = "Workshop/personal/Notebooks/04_VIDeditor.ipynb";
             desc = "a local 'NoGooey Video Editor.'";
           }
           {
             source = "assets/nbs/Educational_Notebooks/Truth_Actually.ipynb";
-            dest = "Workshop/Educational_Notebooks/Truth_Actually.ipynb";
+            dest = "Workshop/personal/Notebooks/Truth_Actually.ipynb";
             desc = "the Player Piano Test, an interactive actuator-literacy lesson";
           }
         ];
@@ -655,7 +655,16 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           ${notebookFilesString}
           EOF
             if [ "$staged" -gt 0 ]; then
-              echo "📓 $staged starter file(s) copied into Workshop/ -- yours to edit."
+              echo "📓 $staged starter file(s) copied into Workshop/personal/Notebooks/ -- yours to edit."
+            fi
+            # THE PACKAGE MARKER (2026-09-28): a notebook imports its sauce as
+            # from imports import ..., with its own folder as cwd, so imports/
+            # beside the notebooks is a package. The marker was a tracked empty
+            # file inside the tier until the tiers became wholly the person's;
+            # now this creates it, on every entry, and git never sees it.
+            if [ ! -f "Workshop/personal/Notebooks/imports/__init__.py" ]; then
+              mkdir -p "Workshop/personal/Notebooks/imports"
+              : > "Workshop/personal/Notebooks/imports/__init__.py"
             fi
           }
           # Set up the personal playground
@@ -677,7 +686,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           
           ## How it works:
           1. **Full Access:** Scripts here use the same `.venv` Python environment as Pipulate. You have access to `pandas`, `httpx`, `lxml`, and the Pipulate `wand` without installing anything.
-          2. **The Sausage Factory:** Write your ad hoc "tracer bullet" scripts here. If they prove valuable across multiple clients, you can graduate them up to `Workshop/imports/` as reusable "sauce" modules.
+          2. **The Sausage Factory:** Write your ad hoc "tracer bullet" scripts here. If they prove valuable across multiple clients, copy them into your own `Workshop/shared/<your-name>/` folder; corporate takes them from there when corporate says so.
           3. **Protect Your Work:** Because Pipulate ignores this folder, we highly recommend turning it into your own private repository:
           
           ```bash
@@ -694,22 +703,21 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           stays visible from inside the code instead of buried in notes.
 
           Nothing you put here is ever shared. When you want to hand something to a
-          teammate, drag it into `Workshop/Shared/` and put it in a folder named
+          teammate, drag it into `Workshop/shared/` and put it in a folder named
           after you — one folder per person, so two people can never collide.
 
           ```text
           Workshop/
-          ├── Advanced_Notebooks/     copied in for you; your edits stay
-          ├── Educational_Notebooks/  copied in for you
-          ├── imports/                copied in for you
-          ├── personal/     ◀── THIS  private. NOTHING here is ever shared.
-          ├── Client_Work/            private
-          ├── Deliverables/           private
-          └── Shared/<your-name>/     drag work here to hand it to a teammate
+          ├── corporate/              the org's canon; corporate manages corporate
+          ├── personal/     ◀── THIS  yours. NOTHING here is ever shared.
+          │   ├── Notebooks/          the starter notebooks and their imports/, copied in for you
+          │   ├── Client_Work/        private
+          │   └── Deliverables/       private
+          └── shared/<your-name>/     drag work here to hand it to a teammate
           ```
 
-          That is the whole map. Everything except `Shared/` is either yours alone or
-          handed to you; `Shared/` is the one place you deliberately give work away.
+          That is the whole map. Everything except `shared/` is either yours alone or
+          handed to you; `shared/` is the one place you deliberately give work away.
 
           Happy hacking. Throw some paint around.
           PLAYGROUND_EOF
@@ -890,12 +898,18 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # them (kill outside, launch inside) would murder another
           # terminal's JupyterLab every time someone stayed at the shell prompt.
           tmux kill-session -t jupyter 2>/dev/null || true
+          # THE ROOT IS SAID OUT LOUD (2026-09-28): jupyter sets root_dir to the
+          # startup notebook's folder when nothing says otherwise, and that folder
+          # is two levels down in personal/Notebooks/ now. root_dir=Workshop keeps
+          # the file browser on the three tiers and opens the notebook by its
+          # relative path; a server started before a folder moves keeps the old
+          # root and answers 404 on it (convicted 2026-09-28, the AFTER read 200).
           # Start JupyterLab with error logging
-          tmux new-session -d -s jupyter "source .venv/bin/activate && jupyter lab ${jupyterStartupNotebook} $JUPYTER_BROWSER_FLAG --workspace=\$JUPYTER_WORKSPACE_NAME --NotebookApp.token=\"\" --NotebookApp.password=\"\" --NotebookApp.disable_check_xsrf=True 2>&1 | tee /tmp/jupyter-startup.log"
+          tmux new-session -d -s jupyter "source .venv/bin/activate && jupyter lab ${jupyterStartupNotebook} --ServerApp.root_dir=Workshop $JUPYTER_BROWSER_FLAG --workspace=\$JUPYTER_WORKSPACE_NAME --NotebookApp.token=\"\" --NotebookApp.password=\"\" --NotebookApp.disable_check_xsrf=True 2>&1 | tee /tmp/jupyter-startup.log"
           sleep 2
 
           # 🗣️ THE UNIFIED VOICE TRIGGER (Context-Aware)
-          if [ -f Workshop/data/.onboarded ]; then
+          if [ -f Workshop/personal/Notebooks/data/.onboarded ]; then
             python -c "import logging; logging.getLogger('piper').setLevel(logging.ERROR); from imports.voice_synthesis import chip_voice_system as cvs; cvs.speak_text('Welcome back to the workshop. JupyterLab will be waiting in the first tab.')" > /dev/null 2>&1 &
           else
             if [[ "$(uname -s)" == "Darwin" ]]; then
@@ -914,7 +928,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               JUPYTER_STARTED=true
               echo ""
               echo "✅ JupyterLab is ready:"
-              echo "   http://localhost:8888/lab/tree/Workshop/Onboarding.ipynb"
+              echo "   http://localhost:8888/lab/tree/personal/Notebooks/Onboarding.ipynb"
               echo ""
               echo "   Run the notebook top-to-bottom with Shift+Enter."
               echo "   Completing onboarding unlocks the Pipulate app:"
@@ -958,7 +972,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               if [ "$OPEN_FASTHTML" = "false" ]; then
                 echo
                 echo "✅ Pipulate server is running at http://localhost:5001 (auto-open suppressed)"
-              elif [ "$OPEN_FASTHTML" = "true" ] || [ -f Workshop/data/.onboarded ]; then
+              elif [ "$OPEN_FASTHTML" = "true" ] || [ -f Workshop/personal/Notebooks/data/.onboarded ]; then
                 if [ "${fastHtmlOpenDelay}" -gt 0 ]; then
                   echo "Delaying FastHTML tab by ${fastHtmlOpenDelay} seconds..."
                   sleep ${fastHtmlOpenDelay}
@@ -1228,31 +1242,39 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           fi
           # Set EFFECTIVE_OS for browser automation scripts
           if [[ "$(uname -s)" == "Darwin" ]]; then export EFFECTIVE_OS="darwin"; else export EFFECTIVE_OS="linux"; fi
-          # ── THE THREE BUCKETS (flat siblings under Workshop/) ────────
+          # ── THE THREE TIERS (the only three folders under Workshop/) ────────
           # Named ONCE, here. Every other mention of these folders in this
           # repo defers to this block; if one of them disagrees, this one is
           # right and the other one is a bug.
           #
-          #   canon     Advanced_Notebooks/  Educational_Notebooks/  imports/
-          #             delivered by runScript's copy-if-absent loop: your
-          #             edits survive, and upstream updates do not arrive.
-          #   personal  personal/  Client_Work/  Deliverables/
-          #             gitignored. NOTHING here is ever shared.
-          #   shared    Shared/
-          #             gitignored. Drag work here to hand it to a teammate.
-          #             One folder per person -- Shared/<name>/ -- so two
-          #             writers can never collide and nobody needs git.
-          #   corporate corporate/
-          #             gitignored. The org's canon, a private repo mounted
-          #             here read-only and replaced wholesale (2026-09-27);
-          #             nothing in this file creates it, .gitignore names it.
+          #   corporate corporate/   the org's canon. gitignored; its own
+          #             private repo, replaced wholesale. corporate manages
+          #             corporate. Created empty here (2026-09-28) so the
+          #             JupyterLab file browser shows the same three choices
+          #             on every machine; the org's repo lands over it.
+          #   personal  personal/    yours. gitignored; your own git repo.
+          #             Notebooks/ holds the starter files runScript's
+          #             copy-if-absent loop delivers (your edits survive,
+          #             updates do not arrive) beside imports/, data/ and
+          #             browser_cache/; Client_Work/ and Deliverables/ sit
+          #             beside Notebooks/. NOTHING here leaves this machine
+          #             unless you copy it into YOUR shared folder.
+          #   shared    shared/      the ONE folder for handing work to a
+          #             teammate. gitignored. One folder per person --
+          #             shared/<name>/ -- so two writers never collide and
+          #             nobody needs git. personal -> shared when the person
+          #             says so; shared -> corporate when corporate says so.
           #
-          # WHY "Shared" AND NOT "Share": the naming test is spoken, not
+          # GIT TRACKS NOTHING UNDER Workshop/ (2026-09-28): the tiers are the
+          # person's and the org's, and the one file the notebooks need there,
+          # imports/__init__.py, is created by the copy loop, never committed.
+          #
+          # WHY "shared" AND NOT "Share": the naming test is spoken, not
           # written. "Go to the shared folder." "Which one?" "The one called
-          # Shared." Share/, Collaborators/, and a nested Workshop/ all lose
-          # that test. This is a chiral choice, not a converged one -- both
-          # spellings work and the cost is being locked out of the twin.
-          # It is locked now. Do not re-litigate it; rename it if it hurts.
+          # shared." Share/, Collaborators/, and a nested Workshop/ all lose
+          # that test. LOWERCASE SINCE 2026-09-28 so the three sort as the
+          # menu reads them: corporate, personal, shared. Locked; rename it
+          # if it hurts, never re-litigate it.
           #
           # CREATED HERE, in miscSetupLogic, because this is the only logic
           # that runs in ALL THREE shells. runScript -- which writes
@@ -1270,8 +1292,9 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # entered the default shell: the folder is already there, so `test -d`
           # prints the same answer in both worlds. The straddle reads the
           # GENERATED HOOK TEXT instead (nix eval on devShells.<sys>.quiet).
+          mkdir -p "$PIPULATE_ROOT/Workshop/corporate"
           mkdir -p "$PIPULATE_ROOT/Workshop/personal"
-          mkdir -p "$PIPULATE_ROOT/Workshop/Shared"
+          mkdir -p "$PIPULATE_ROOT/Workshop/shared"
           # ONE printf, NEVER a heredoc. A cat-heredoc here broke nix develop on
           # main for every user on 2026-08-05: this logic is interpolated into
           # shellHook, the terminator lost its column-0 alignment, and bash
@@ -1281,8 +1304,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # Neither appears below. A lone backslash passes through literally --
           # same as the PS1 line beneath this block -- so bash printf does the
           # newline work.
-          if [ ! -f "$PIPULATE_ROOT/Workshop/Shared/README.md" ]; then
-            printf "%s\n" "# Shared" "" "This is the one folder you use on purpose to hand work to someone else." "Everything else under Workshop/ is either yours alone or delivered to you." "Nothing here is private: assume a teammate will read it." "" "Make a folder with your own name, and work inside it:" "" "    mkdir -p Workshop/Shared/yourname" "" "One folder per person means two people can drop work at the same moment and" "never collide, so there is nothing to merge and no git to learn." "" "Pipulate git ignores this whole folder. To back yours up, put your own git" "repository inside your own subfolder; it will not fight with anything above." > "$PIPULATE_ROOT/Workshop/Shared/README.md"
+          if [ ! -f "$PIPULATE_ROOT/Workshop/shared/README.md" ]; then
+            printf "%s\n" "# shared" "" "This is the one folder you use on purpose to hand work to someone else." "Everything else under Workshop/ is either yours alone (personal/) or the org's (corporate/)." "Nothing here is private: assume a teammate will read it." "" "Make a folder with your own name, and work inside it:" "" "    mkdir -p Workshop/shared/yourname" "" "One folder per person means two people can drop work at the same moment and" "never collide, so there is nothing to merge and no git to learn." "" "Pipulate git ignores this whole folder. To back yours up, put your own git" "repository inside your own subfolder; it will not fight with anything above." > "$PIPULATE_ROOT/Workshop/shared/README.md"
           fi
           # Clean up the prompt to remove Nix's redundant prefixes and Mac's long hostname
           export PS1="\[\033[1;32m\](nix)\[\033[0m\] \[\033[1;34m\]\W\[\033[0m\] $ "
@@ -1341,13 +1364,13 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # the roster had taken it. Three words now, each of whose bare and
           # argument forms are about the same thing:
           #
-          #   conn           the connector sources you can name (the roster)
+          #   connect        the connector sources you can name (the roster); conn is the short spelling
           #   tools          the registry tools you can call
           #   tools <name>   call one
           #   mcp <server>   the real Streamable-HTTP client (aliased below)
           #
           # The New-B surface now names the goal rather than the output class:
-          # `conn` is the short word that gets connector sources into context.
+          # `connect` is the word that gets connector sources into context; `conn` is its short spelling.
           # The underlying roster file keeps its descriptive filename; there is
           # deliberately no compatibility alias for the old typed word.
           #
@@ -1361,13 +1384,28 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # FUNCTIONS, NOT ALIASES (THE THREE-TIER AMENDMENT): `tools` needs a
           # branch, and both are typed by a human and never echoed as a `!`
           # probe, so neither needs to be a packaged derivation.
-          conn() {
+          # THE BLANK STARE RULE (2026-09-28): the word the menu prints is the
+          # plain name of the thing, connect; conn is the abbreviation behind
+          # it. about prints the sealed workspace tree and the three tier
+          # sentences. reseal rewrites the art ledger after a hand edits the
+          # art (imports/ascii_displays.py --reseal). FUNCTIONS, all three:
+          # typed by a human, witnessed in the generated hook text.
+          connect() {
             if [ -f "$PIPULATE_ROOT/scripts/sources_menu.py" ]; then
               "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/sources_menu.py"
             else
-              echo "conn: scripts/sources_menu.py has not landed in this checkout."
+              echo "connect: scripts/sources_menu.py has not landed in this checkout."
             fi
           }
+          conn() { connect "$@"; }
+          about() {
+            if [ -f "$PIPULATE_ROOT/scripts/boot_menu.py" ]; then
+              "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/boot_menu.py" --about
+            else
+              echo "about: scripts/boot_menu.py has not landed in this checkout."
+            fi
+          }
+          reseal() { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/imports/ascii_displays.py" --reseal; }
           tools() {
             if [ "$#" -eq 0 ]; then
               (cd "$PIPULATE_ROOT" && .venv/bin/python cli.py mcp-discover)
