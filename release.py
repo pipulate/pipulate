@@ -588,8 +588,13 @@ def sync_ai_context_md():
     Note: the index is regenerated from scratch at Step 1.6
     (run_ai_context_generation), so by the time this runs the source is fresh.
     """
-    note("\n🔄 Step 3.6: Synchronizing AI_CONTEXT.md to Pipulate.com...")
-    source_path = PIPULATE_ROOT / "AI_CONTEXT.md"
+    note("\n🔄 Step 3.6: Synchronizing the journal index to Pipulate.com as AI_CONTEXT.md...")
+    source_path = PIPULATE_ROOT / ".agents" / "skills" / "journal" / "references" / "index.md"
+    # THE URL IS A PROMISE (2026-09-28): the source moved into the journal
+    # skill and the public copy keeps its old name, because
+    # https://pipulate.com/AI_CONTEXT.md is linked from README.md and from
+    # Pipulate.com's own, and may be bookmarked. Renaming it is a Jekyll
+    # redirect ride, never a rename here.
     dest_path = PIPULATE_COM_ROOT / "AI_CONTEXT.md"
 
     if not PIPULATE_COM_ROOT.exists():
