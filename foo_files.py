@@ -121,10 +121,10 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 # --- START STATS ---
 # There are 1,496 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 7 published in the last 7 days
-# Markdown negotiated: 2,774 reads (0.22% of all responses)
+# Velocity: 5 published in the last 7 days
+# Markdown negotiated: 2,776 reads (0.22% of all responses)
 # DOM hydration: 2978 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-09-27T23:25Z
+# Honeybot telemetry fetched 2026-09-28T06:07Z
 # --- END STATS ---
 
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
@@ -3535,9 +3535,8 @@ MATCHBOOK_CHOP = r"""
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 204/274 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 205/274 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
-# AGENTS.md  # [728 tokens | 2,931 bytes]
 # AUDIT.md  # [2,011 tokens | 9,706 bytes]
 # MANIFEST.in  # [81 tokens | 313 bytes]
 # Workshop/.agents/skills/gsc_readonly/SKILL.md  # [748 tokens | 3,439 bytes]
