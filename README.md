@@ -73,17 +73,9 @@ nix develop
    Workshop/   — the JupyterLab root (NOT Pipulate's own root)
    │            FLAT siblings. Nothing nests. Nothing to get wrong.
    │
-   ├── Advanced_Notebooks/     canon · flake-delivered, copy-if-absent
-   ├── Educational_Notebooks/  canon · your edits survive, updates do not arrive
-   ├── imports/                canon · the code-behind "sauce" modules
-   │
-   ├── personal/               personal · gitignored · your own git repo goes here
-   ├── Client_Work/            personal · gitignored · never leaves this machine
-   ├── Deliverables/           personal · gitignored
-   │
    ├── corporate/              the org's canon · gitignored · its own private repo
-   │
-   └── Shared/                 the ONE folder for handing work to a teammate
+   ├── personal/               personal · gitignored · your own git repo goes here
+   └── shared/                 the ONE folder for handing work to a teammate
        ├── alice/              one folder per person; you write ONLY your own
        └── bob/                single-writer partitions = zero merge conflicts
 ```
