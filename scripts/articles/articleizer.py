@@ -30,10 +30,17 @@ MODEL_CANDIDATES = (
 )
 MAX_ATTEMPTS_PER_MODEL = 5
 INITIAL_RETRY_DELAY = 2
-# "Too big" on a free Gemini key is the per-minute input-token quota, not the
-# context window: 250,000 TPM is the 2.5-generation free figure, the estimate
-# in main is chars/4, and the cap sits under it with room to spare.
-PROMPT_TOKEN_SOFT_CAP = 200_000
+# THE MINUTE IS THE CEILING (read 2026-09-28 off the API's own refusal:
+# "generate_content_free_tier_input_token_count, limit: 250000", both
+# models). A free Gemini key admits 250,000 input tokens a minute, and one
+# request larger than the whole minute can never be served by waiting; the
+# day's request count is a separate bucket the key ring turns past, this one
+# no free key clears. The estimate divides by 3.5, not 4: a 915,721-char
+# prompt read 228,930 at chars/4 and the API counted past 250,000, so 4
+# undercounts this corpus by more than a tenth, and an estimate whose job is
+# to catch a ceiling errs high on purpose.
+FREE_TIER_INPUT_TPM = 250_000
+CHARS_PER_TOKEN = 3.5
 
 SPINE_PLACEHOLDER = "[INSERT BOOK SPINE]"
 # THE BLOG FOLDER REACHES THE MODEL (banked 2026-09-04). editing_prompt.txt is
@@ -484,15 +491,17 @@ def main():
         # THE SIZE READING (2026-09-28). "Too big" on a free Gemini key is the
         # per-minute input-token quota and it wears the same quota message as a
         # spent day; the ring cannot turn its way past it, since every free key
-        # has the same minute. chars/4 is the estimate; it is printed on every
-        # run so the number is read before the call, and past the soft cap the
-        # escape is named: --model onto a provider whose key is paid, or a
-        # local ollama tag, with `llm models` for the spelling.
-        est_tokens = len(full_prompt) // 4
-        print(f"📏 Prompt: {len(full_prompt):,} chars, about {est_tokens:,} tokens.")
-        if est_tokens > PROMPT_TOKEN_SOFT_CAP:
-            print(f"⚠️  Above the {PROMPT_TOKEN_SOFT_CAP:,}-token soft cap for a free key's minute: "
-                  "a quota refusal here is size, not count. Escape: --model <paid or local id>.")
+        # has the same minute. The estimate is printed on every run so the
+        # number is read before the call; past the free minute the escape is
+        # named and the run continues on the key that was named, because a
+        # paid key on the same alias grammar is exactly how the ceiling is
+        # cleared, and this script cannot tell a paid key from a free one.
+        est_tokens = int(len(full_prompt) / CHARS_PER_TOKEN)
+        print(f"📏 Prompt: {len(full_prompt):,} chars, about {est_tokens:,} tokens (chars/{CHARS_PER_TOKEN}, an estimate that errs high).")
+        if est_tokens > FREE_TIER_INPUT_TPM:
+            print(f"⚠️  Larger than a free Gemini key's whole minute ({FREE_TIER_INPUT_TPM:,} input tokens): "
+                  "no free key and no wait can serve it; continuing on the key named, in case it is paid. "
+                  "Escapes: a paid key (-k <alias>), another provider (--model <id> -k <alias>), or a smaller article.")
         if args.copy:
             try:
                 # We borrow the existing robust clipboard function from prompt_foo
@@ -564,6 +573,26 @@ def main():
                    ("500" in error_str) or \
                    ("high demand" in lowered):
                     
+                    # THE MINUTE IS THE CEILING (2026-09-28, the grim receipt):
+                    # a quota on the input-token metric whose limit sits below
+                    # this prompt's own estimate is not a window that reopens.
+                    # The loop waited 57 seconds for one before the operator
+                    # cut it; every free key carries the same limit and every
+                    # retry spends one of the day's twenty requests, so it stops
+                    # here with the verdict instead of turning the ring or
+                    # honoring a hint that names a minute the request cannot fit
+                    # in. A paid key or another provider is named by hand.
+                    limit_match = re.search(r'limit:\s*(\d+)', error_str)
+                    is_size = (is_quota and 'input_token' in lowered and limit_match is not None
+                               and est_tokens > int(limit_match.group(1)))
+                    if is_size:
+                        limit = int(limit_match.group(1))
+                        print(f"API Error [SIZE] from {model_name}: {e}")
+                        print(f"⛔ SIZE: this key admits {limit:,} input tokens a minute and the prompt "
+                              f"is about {est_tokens:,}; no wait and no other free key can serve it.")
+                        print("   Escapes: a paid key (-k <alias>), another provider (--model <id> -k <alias>), "
+                              "or a smaller article. --copy still pastes it into a web UI.")
+                        return
                     kind = "QUOTA" if is_quota else ("PARSE" if is_parse else "TRANSIENT")
                     print(f"Retriable API Error [{kind}] from {model_name}: {e}")
                     if is_parse and 'gemini_output' in locals():
