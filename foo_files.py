@@ -399,6 +399,17 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # the question before reading a number off it, and spell switches long
 # (--no-filename, --only-matching) wherever a single letter has ever meant
 # help in some other tool.
+# THE SWITCH THAT MEANT ANOTHER THING (convicted 2026-09-27, deed 1630; the
+# closing clause's second conviction). A twelve-file census was spelled
+# `rg -cE PATTERN` on the belief that -E is extended-regex, as in grep. In
+# ripgrep -E is --encoding, so the pattern was eaten as an encoding name,
+# rg exited 2 before it opened a file, `2>/dev/null` hid the complaint and
+# `|| echo 0` printed a zero for every file -- in the same payload whose
+# AGENTS.md still read Notebooks/. Ten zeros with no exit status beside
+# them are ten help screens. THE RULE, restated for the counter: print rc
+# beside every count (n=$(rg -c -e PAT f 2>&1); printf '%s=%s rc=%s' f
+# "$n" "$?"); rc=1 is a true zero, rc=2 is a dead instrument and the count
+# beside it is void. Deed 1632's fixed probe read rc=1 under every 0.
 # A CENSUS CARRIES A KNOWN MEMBER (convicted 2026-09-24, cartridge
 # foo-71ecd539-97.zip). Three key-range JQL windows were forecast to add up
 # to one project's full issue count. Each printed "(no matches)": no error,
@@ -438,6 +449,15 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # AND THE GENERAL FORM: a probe whose fallback marker has never been SEEN to
 # print has an UNTESTED negative branch. Before echoing one, name the world in
 # which it fires and check that the exit status actually reaches it.
+# THE FALLBACK PRINTED THE SUCCESS TOKEN (convicted 2026-09-27, deed 1630;
+# the same probe as THE SWITCH THAT MEANT ANOTHER THING). `rg -c ...
+# 2>/dev/null || echo 0` chose, as its failure marker, the exact string a
+# healthy run prints for a file with no match. This time the fallback DID
+# fire, twelve times, and nobody could tell: a marker that is also a legal
+# answer is no marker. THE RULE: the negative branch prints a word no
+# success can print (VOID, DEAD, rc=2), or it prints the exit status beside
+# the value; `|| echo 0` is this rule's mirror -- the branch reachable and
+# its message indistinguishable.
 #
 # THE WRAPPER IS NOT THE MEASUREMENT (convicted 2026-09-22, by a receipt that
 # disagreed with itself and was right twice). `time` on a census run read
