@@ -128,7 +128,7 @@ def get_api_key(key_name=None):
 
     # Interactive fallback
     print(f"⚠️ API Key '{key_name}' not found in {KEYS_FILE}.")
-    new_key = getpass.getpass(f"Enter Google API Key for '{key_name}': ").strip()
+    new_key = getpass.getpass(f"Enter the API key for '{key_name}' (any provider; --model names which): ").strip()
 
     if new_key:
         save = input(f"Save key '{key_name}' to config? (y/n): ").lower()
