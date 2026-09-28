@@ -2536,8 +2536,21 @@ class Pipulate:
 
         # --- Notebook Sync Logic ---
         print(f"🔄 Syncing notebook '{notebook_filename}'...")
-        notebook_source_path = project_root / "Workshop" / "personal" / "Notebooks" / notebook_filename
-        notebook_dest_path = project_root / "assets" / "nbs" / notebook_filename
+        # THE FLAT NAME FINDS ITS FOLDER (2026-09-28): the working copies sit
+        # flat under personal/Notebooks/ while assets/nbs/ keeps its
+        # Advanced_Notebooks/ and Educational_Notebooks/ subfolders. A folder
+        # in the given name is dropped on the source side and honored on the
+        # asset side; a bare name is looked up among the assets by filename,
+        # and a name no asset carries lands at the top beside Onboarding.ipynb.
+        given = Path(notebook_filename)
+        assets_nbs = project_root / "assets" / "nbs"
+        notebook_source_path = project_root / "Workshop" / "personal" / "Notebooks" / given.name
+        notebook_dest_path = assets_nbs / given
+        if given.parent == Path(".") and not notebook_dest_path.exists():
+            found = sorted(p for p in assets_nbs.rglob(given.name)
+                           if p.is_file() and ".ipynb_checkpoints" not in p.parts)
+            if found:
+                notebook_dest_path = found[0]
 
         if not notebook_source_path.exists():
             print(f"❌ Error: Source notebook not found at '{notebook_source_path}'")
