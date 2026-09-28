@@ -3614,7 +3614,7 @@ MATCHBOOK_CHOP = r"""
 # browser_cache/automation_recipes/README_SAVE_LOAD_AUTOMATION.md  # [1,751 tokens | 7,246 bytes]
 # browser_cache/recipe_executor.py  # [2,848 tokens | 14,661 bytes]
 # browser_cache/review_perception_history.py  # [3,208 tokens | 13,492 bytes]
-# connectors/mcp_render.py  # [6,210 tokens | 24,891 bytes]
+# connectors/mcp_render.py  # [6,315 tokens | 25,271 bytes]
 # imports/ai_tool_discovery_simple_parser.py  # [1,903 tokens | 7,977 bytes]
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
