@@ -59,6 +59,32 @@ PERMALINK_PATTERN_PLACEHOLDER = "[INSERT PERMALINK PATTERN]"
 BASE_URL_PLACEHOLDER = "[INSERT BASE URL]"
 
 
+# THE FENCES LEAVE FIRST (2026-09-28, the operator's 80/20 after a Workspace
+# key read free_tier too: "not gonna pay", "I don't think chunking is good").
+# The sanitizer's fence contract runs in both lanes before this script reads
+# article.txt: a fence opens at column 0 with a language and closes with a
+# bare ``` at column 0, and every other backtick run is neutralized. So one
+# regex names every fenced block exactly as the sanitizer's state machine
+# does, and link_injector.py already walks the same shape. The stand-in
+# keeps the language and the line count so the editing model knows what
+# stood there, in square brackets so it reads as nothing the article said.
+FENCE_BLOCK_RE = re.compile(r'^```([^\n]*)\n(.*?)^```[ \t]*$\n?', re.MULTILINE | re.DOTALL)
+LEAN_NOTE = (
+    "\n\n[EDITOR'S NOTE: {n} fenced code blocks were left out of this copy so it fits "
+    "the model's window; each stands in as one bracketed line. The published article "
+    "carries them in full. Never take an after_text_snippet from a stand-in line.]"
+)
+
+
+def strip_fences(text):
+    """Replace every fenced block with a one-line stand-in. Returns (text, count)."""
+    def stand_in(match):
+        lang = match.group(1).strip() or 'text'
+        lines = match.group(2).count('\n')
+        return f"[fenced {lang} block, {lines} lines, left out of this copy]\n"
+    return FENCE_BLOCK_RE.subn(stand_in, text)
+
+
 def scan_corpus(output_dir):
     """One-pass frontmatter scan of the published corpus.
 
@@ -382,6 +408,11 @@ def main():
         help="One llm model id to use instead of the Gemini pair (any installed llm plugin; "
              "`llm models` lists them). With no -k/-m, llm resolves that provider's own key."
     )
+    parser.add_argument(
+        '--lean', action='store_true',
+        help="Leave fenced code blocks out of the editor's copy (done unasked when the prompt "
+             "exceeds a free key's minute); the published article keeps them."
+    )
     args = parser.parse_args()
 
     # Use common to securely lock target
@@ -477,17 +508,21 @@ def main():
             print(f"❌ Unsubstituted placeholder(s) in {PROMPT_FILENAME}: {leftover}")
             print("   Refusing to call the API; the model would copy the literal text into your frontmatter.")
             return
-        full_prompt = prompt_template.replace(PROMPT_PLACEHOLDER, article_text)
+        # THE ARTICLE LANDS LAST (2026-09-28): the spine is substituted into
+        # the template below and the article after it, so an article that
+        # quotes the spine placeholder's text is never rewritten, and the lean
+        # copy can take the article's place by one substitution.
 
         # --- BOOK SPINE INJECTION (40K-foot view for the editing model) ---
-        if SPINE_PLACEHOLDER in full_prompt:
+        if SPINE_PLACEHOLDER in prompt_template:
             spine_entries, spine_errors = scan_corpus(output_dir)
             if spine_errors:
                 print(f"⚠️ Spine census incomplete: {spine_errors} post(s) unreadable.")
             spine = build_book_spine(spine_entries)
-            full_prompt = full_prompt.replace(SPINE_PLACEHOLDER, spine)
+            prompt_template = prompt_template.replace(SPINE_PLACEHOLDER, spine)
             print(f"📚 Book spine injected: {len(spine_entries)} articles, {len(spine):,} chars.")
 
+        full_prompt = prompt_template.replace(PROMPT_PLACEHOLDER, article_text)
         # THE SIZE READING (2026-09-28). "Too big" on a free Gemini key is the
         # per-minute input-token quota and it wears the same quota message as a
         # spent day; the ring cannot turn its way past it, since every free key
@@ -497,11 +532,30 @@ def main():
         # paid key on the same alias grammar is exactly how the ceiling is
         # cleared, and this script cannot tell a paid key from a free one.
         est_tokens = int(len(full_prompt) / CHARS_PER_TOKEN)
+        # THE FENCES LEAVE FIRST (2026-09-28): a journal entry that carries its
+        # own receipts is mostly fenced blocks, and the editing model wants
+        # none of them; it names a title, writes a paragraph and places each
+        # subheading by quoting the END of a prose paragraph, and every quote
+        # is matched against the ORIGINAL article in create_jekyll_post, which
+        # never sees this copy. So past the free minute, or on --lean, every
+        # fenced block leaves the editor's copy for a stand-in, the copy ends
+        # with a note saying so, the prompt is rebuilt and the size read again.
+        fences_out = 0
+        if args.lean or est_tokens > FREE_TIER_INPUT_TPM:
+            lean_article, fences_out = strip_fences(article_text)
+            if fences_out:
+                full_prompt = prompt_template.replace(
+                    PROMPT_PLACEHOLDER, lean_article + LEAN_NOTE.format(n=fences_out))
+                lean_tokens = int(len(full_prompt) / CHARS_PER_TOKEN)
+                print(f"✂️  {fences_out} fenced block(s) left out of the editor's copy: "
+                      f"about {est_tokens:,} tokens -> about {lean_tokens:,}; the published article keeps them.")
+                est_tokens = lean_tokens
         print(f"📏 Prompt: {len(full_prompt):,} chars, about {est_tokens:,} tokens (chars/{CHARS_PER_TOKEN}, an estimate that errs high).")
         if est_tokens > FREE_TIER_INPUT_TPM:
             print(f"⚠️  Larger than a free Gemini key's whole minute ({FREE_TIER_INPUT_TPM:,} input tokens): "
-                  "no free key and no wait can serve it; continuing on the key named, in case it is paid. "
-                  "Escapes: a paid key (-k <alias>), another provider (--model <id> -k <alias>), or a smaller article.")
+                  "no free key and no wait can serve it, and the fenced blocks are already out or there were none, "
+                  "so what remains is prose. Continuing on the key named; the escapes are a shorter article, "
+                  "or --model <id> -k <alias> onto a larger window.")
         if args.copy:
             try:
                 # We borrow the existing robust clipboard function from prompt_foo
@@ -590,8 +644,12 @@ def main():
                         print(f"API Error [SIZE] from {model_name}: {e}")
                         print(f"⛔ SIZE: this key admits {limit:,} input tokens a minute and the prompt "
                               f"is about {est_tokens:,}; no wait and no other free key can serve it.")
-                        print("   Escapes: a paid key (-k <alias>), another provider (--model <id> -k <alias>), "
-                              "or a smaller article. --copy still pastes it into a web UI.")
+                        if fences_out:
+                            print("   The fenced blocks are already out; what remains is prose. Escapes: a shorter "
+                                  "article, or --model <id> -k <alias> onto a larger window. --copy still pastes it.")
+                        else:
+                            print("   Escapes: --lean (the fenced blocks leave the editor's copy; the estimate read "
+                                  "under and the API read over), --model <id> -k <alias>, or a shorter article.")
                         return
                     kind = "QUOTA" if is_quota else ("PARSE" if is_parse else "TRANSIENT")
                     print(f"Retriable API Error [{kind}] from {model_name}: {e}")
