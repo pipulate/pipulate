@@ -3546,10 +3546,10 @@ MATCHBOOK_CHOP = r"""
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 205/271 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 206/272 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
-# AUDIT.md  # [2,011 tokens | 9,706 bytes]
-# MANIFEST.in  # [81 tokens | 313 bytes]
+# AUDIT.md  # [2,993 tokens | 13,904 bytes]
+# MANIFEST.in  # [204 tokens | 808 bytes]
 # apps/130_gap_analysis.py  # [9,624 tokens | 48,289 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
 # apps/440_browser_automation.py  # [10,795 tokens | 47,151 bytes]
