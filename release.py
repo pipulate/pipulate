@@ -246,12 +246,13 @@ def run_waxascii_release_stamp():
         return False
 
 def run_ai_context_generation():
-    """Regenerate AI_CONTEXT.md — the repo's self-describing briefing for any AI
-    that clones and inspects it. Reads the (separate) blog archive and rewrites
-    AI_CONTEXT.md in the Pipulate repo root from scratch, so a fresh clone always
-    greets an AI with the latest narrative map. Non-fatal: skips cleanly if the
+    """Regenerate the journal index, .agents/skills/journal/references/index.md,
+    the repo's self-describing map for any AI that clones and inspects it.
+    Reads the (separate) blog archive and rewrites the index from scratch, so a
+    fresh clone always carries the latest narrative map. Until 2026-09-28 this
+    file was AI_CONTEXT.md at the repo root. Non-fatal: skips cleanly if the
     generator or the article source is unavailable."""
-    note("\n🧭 Step 1.6: Regenerating AI_CONTEXT.md (repo talk-back briefing)...")
+    note("\n🧭 Step 1.6: Regenerating the journal index (.agents/skills/journal/references/index.md)...")
     generator = PIPULATE_ROOT / "scripts" / "articles" / "generate_ai_context.py"
     if not generator.exists():
         print(f"ℹ️  AI_CONTEXT generator not found at {generator}. Skipping.")
