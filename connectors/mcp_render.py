@@ -39,8 +39,8 @@ names the page origin it admits) with LD_LIBRARY_PATH cleared, the loader
 lesson of 2026-09-27, and speaks newline-delimited JSON-RPC on the relay's
 stdin and stdout: initialize, notifications/initialized, then one request and
 its reply by id. The WebSocket on 127.0.0.1:9333 the help names is the relay's
-face toward the PocketRender tab (opened once with ?webmcp=1, the two
-chrome://flags set, logged in), never ours. Every request prints one MCP
+face toward the PocketRender tab (opened once with ?webmcp=1 in a browser that
+carries WebMCP, logged in), never ours. Every request prints one MCP
 RECEIPT line (method, id, the bytes sent) per THE MCP RECEIPT RULE, and a
 verdict token closes each lane: RELAY_INIT_OK, RELAY_TOOLS n=, RELAY_CALL_OK on
 the way through; RELAY_INIT_NO_REPLY, RELAY_TOOLS_NO_REPLY, RELAY_CALL_ERROR
@@ -421,8 +421,12 @@ def cmd_tools(args):
         desc = " ".join(str(tool.get("description", "")).split())
         print(f"{tool.get('name')}\t{desc[:100]}")
     if not any(str(tool.get("name", "")).startswith("pr_") for tool in tools):
-        print("# no pr_* tool listed: is a PocketRender tab open with ?webmcp=1, the two chrome://flags"
-              " set, its origin the --widget-origin, and --settle long enough for it to connect?")
+        # THE BROWSER IS NOT A CONFIG FILE (ruled 2026-09-28): the vendor's prerequisite is a
+        # chrome://flags toggle; per-profile toggles are refused, so a WebMCP tab comes from a
+        # switch on the flake's Chromium or not at all. Read at deed 1642 with no tab: n=3, 0 sources.
+        print("# no pr_* tool listed: a PocketRender tab with ?webmcp=1 must be open in a browser that"
+              " carries WebMCP (a switch on the flake's Chromium, never a hand toggle), its origin the"
+              " --widget-origin, with --settle long enough for it to connect")
     print("\n# Next: render schema <tool>      (one tool's inputSchema)")
     print("#       render call <tool> '{}'   (tools/call; a JSON-RPC error names the schema)")
     return 0
