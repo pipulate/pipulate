@@ -1291,7 +1291,7 @@ def main():
     if not args.skip_docs_sync:
         run_ai_context_generation()
     else:
-        print("\n⏭️  Skipping AI_CONTEXT.md regeneration (--skip-docs-sync)")
+        print("\n⏭️  Skipping journal index regeneration (--skip-docs-sync)")
     
     # Docs-sync step retired. Its "Skipping (--skip-docs-sync)" line printed on
     # EVERY run whether or not the flag was given: a false statement in the
