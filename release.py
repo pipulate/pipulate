@@ -267,9 +267,9 @@ def run_ai_context_generation():
                 print(stream.rstrip(), file=sys.stderr)
         return False
     # Stage explicitly: `git commit -am` ignores untracked files, so the very
-    # first (untracked) AI_CONTEXT.md must be added by hand. After that it rides -am.
-    subprocess.run(["git", "add", "AI_CONTEXT.md"], cwd=str(PIPULATE_ROOT))
-    note("✅ AI_CONTEXT.md regenerated and staged.")
+    # first (untracked) index must be added by hand. After that it rides -am.
+    subprocess.run(["git", "add", ".agents/skills/journal/references/index.md"], cwd=str(PIPULATE_ROOT))
+    note("✅ journal index regenerated and staged.")
     return True
 
 def parse_ascii_art_stats(output):
