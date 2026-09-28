@@ -283,6 +283,24 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Player piano** — *deterministic actuator replaying a score.* Honest only
   when it says it is scripted; the opposite pole from a model, per
   ATTRIBUTED-VOICE.
+- **Price list** — *the cache-versus-probe partition, by the cost of a
+  probe.* Hume's problem is not solved here; it is priced. Every cache is an
+  induction with a TTL (MtimeMemo trusts an mtime, the Honeybot block a
+  six-hour horizon, the ratchet that the world does not un-happen), and every
+  `!` line is a Popperian probe, re-executed because nothing trusts that the
+  last reading survived the night. The partition is by cost: induce where a
+  probe is dear, falsify where a probe is cheap, and move a thing from one
+  column to the other the day its bill arrives. The RECEIPTS block is the
+  ledger of where the induction bill came due (the stat-cache false dirty of
+  2026-08-04, the bare pipe stamped fetched on 2026-09-21, the coverage gauge
+  with no memory of 2026-09-05), and every cure was a discriminating check
+  bolted onto the induction. RENT THIS PAYS: a cache's TTL is a decision
+  about probe cost and never about truth, so the ratchet interval you choose
+  is the amount of Hume you swallow per compile; and a cache that has been
+  convicted is a probe waiting to be written. Sibling of THE DISCRIMINATION
+  QUESTION (the probe half) and RATCHET / BACKSLIDE (the cache half). Banked
+  2026-09-28, articulation-banked, on the ride that ran the first forgetting
+  kata under Fable 5.1.
 - **Probe / Patch / Prompt** — *instrument, change, hand-off.* The three-beat
   kata of every turn: read-only receipts before, human-actuated mutation
   during, pre-loaded compile after.
