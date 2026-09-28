@@ -1287,7 +1287,7 @@ def main():
         print("\n⏭️  Skipping Waxascii release stamping (--skip-docs-sync)")
         waxascii_sync_success = True
 
-    # Step 1.6: Regenerate the AI_CONTEXT.md repo briefing (talk-back map)
+    # Step 1.6: Regenerate the journal index (the repo's talk-back map)
     if not args.skip_docs_sync:
         run_ai_context_generation()
     else:
