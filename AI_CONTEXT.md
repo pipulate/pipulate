@@ -1,8 +1,8 @@
 # AI_CONTEXT.md — Start Here If You Are an AI
 
-> Auto-generated on 2026-09-26. Rewritten from scratch on every release. If this
+> Auto-generated on 2026-09-28. Rewritten from scratch on every release. If this
 > date looks stale, assume the rest of the repo is newer than this map.
-> 1494 entries indexed.
+> 1496 entries indexed.
 
 You are reading the orientation file for **Pipulate**, a local-first,
 hand-cranked AI/SEO automation framework (the NPvg stack: Nix, Python, Vim,
@@ -163,6 +163,8 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-09-26] [Closing the Loop: Fixing Patch Parser Failures and Actuator Surprises](https://mikelev.in/futureproof/fixing-patch-parser-failures-and-actuator-surprises/index.md)
 - [2026-09-26] [The Three Plain Words: Unifying Context and Building Verifiable Receipts](https://mikelev.in/futureproof/plain-words-verifiable-ai-context/index.md)
 - [2026-09-24] [When the Power Returns: Reconciling Diverged Git Branches and Single-Point Failures](https://mikelev.in/futureproof/when-the-power-returns-verifiable-git-resync/index.md)
+- [2026-09-24] [Local Chrome Profile Inventory and Typed Matrix Resolution](https://mikelev.in/futureproof/local-chrome-profile-inventory-and-typed-matrix-resolution/index.md)
+- [2026-09-21] [Local-First Development and Resilience in the Age of AI](https://mikelev.in/futureproof/local-first-resilience-age-of-ai/index.md)
 - [2026-09-20] [The Letting-Go Moment: Building Vim Training Wheels for the Age of AI](https://mikelev.in/futureproof/vim-training-wheels-and-the-letting-go-moment/index.md)
 - [2026-09-20] [Disciplined Forgetting: Scaling AI Context Through a Two-Tier Memory Hierarchy](https://mikelev.in/futureproof/disciplined-forgetting-and-the-memory-hierarchy/index.md)
 - [2026-09-19] [Four Models, One Matchbook: Multi-Model Consensus in the Age of AI](https://mikelev.in/futureproof/four-models-one-matchbook-prompt-fanout/index.md)
@@ -178,13 +180,13 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-09-17] [The Useless Machine: Building Replayable Workflows and OAuth Leases in the Age of AI](https://mikelev.in/futureproof/useless-machine-oauth-replayable-workflows/index.md)
 - [2026-09-17] [Escaped Monopolies and Replayable Receipts: An Important Look at Software Freedom in the Age of AI](https://mikelev.in/futureproof/escaped-monopolies-and-replayable-receipts/index.md)
 - [2026-09-17] [Ratcheting Wins in the Age of AI: Engineering Replayable Workflows Without Backsliding](https://mikelev.in/futureproof/ratcheting-wins-in-the-age-of-ai/index.md)
-- [2026-09-16] [The Prompt Router Has Two Words: Simplifying Replayable AI Workflows](https://mikelev.in/futureproof/prompt-router-two-words-replayable-ai-workflows/index.md)
-- [2026-09-16] [Walk, Plan, and Run: Designing Replayable AI Workflows](https://mikelev.in/futureproof/walk-plan-run-replayable-workflows/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-09-16] [215k] prompt-router-two-words-replayable-ai-workflows
+- [2026-09-16] [167k] walk-plan-run-replayable-workflows
 - [2026-09-15] [235k] the-walk-says-goodbye-verifiable-workflows
 - [2026-09-15] [256k] first-five-minutes-verifiable-workflows
 - [2026-09-15] [267k] the-walk-that-teaches-walks
