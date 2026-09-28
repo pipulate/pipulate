@@ -122,9 +122,9 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # --- START STATS ---
 # There are 1,498 already-written articles about this repo at MikeLev.in (Public)
 # Velocity: 7 published in the last 7 days
-# Markdown negotiated: 2,776 reads (0.22% of all responses)
-# DOM hydration: 2978 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-09-28T06:07Z
+# Markdown negotiated: 2,778 reads (0.22% of all responses)
+# DOM hydration: 2979 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
+# Honeybot telemetry fetched 2026-09-28T12:36Z
 # --- END STATS ---
 
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
@@ -3603,7 +3603,7 @@ MATCHBOOK_CHOP = r"""
 # browser_cache/automation_recipes/README_SAVE_LOAD_AUTOMATION.md  # [1,751 tokens | 7,246 bytes]
 # browser_cache/recipe_executor.py  # [2,848 tokens | 14,661 bytes]
 # browser_cache/review_perception_history.py  # [3,208 tokens | 13,492 bytes]
-# connectors/mcp_render.py  # [5,896 tokens | 23,746 bytes]
+# connectors/mcp_render.py  # [6,210 tokens | 24,891 bytes]
 # imports/ai_tool_discovery_simple_parser.py  # [1,903 tokens | 7,977 bytes]
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]

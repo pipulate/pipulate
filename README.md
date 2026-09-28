@@ -1,7 +1,7 @@
-1. Hi, Auditor! What you're looking for is AUDIT.md ( https://pipulate.com/AUDIT.md )
-2. And context AI_CONTEXT.md ( https://pipulate.com/AI_CONTEXT.md )
-
 # Pipulate: The Context Compiler That Helps You Prompt Well
+
+1. For Auditors: AUDIT.md ( https://pipulate.com/AUDIT.md )
+2. For Context: AI_CONTEXT.md ( https://pipulate.com/AI_CONTEXT.md )
 
 ```text
 ( "The AI said so" is a transcript, not a record. )
