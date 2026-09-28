@@ -2,7 +2,7 @@
 
 1. For Auditors: AUDIT.md ( https://pipulate.com/AUDIT.md )
 2. For Agents: AGENTS.md (a README for agents) and `.agents/skills/*/SKILL.md` (Agent Skills)
-3. For Context: AI_CONTEXT.md ( https://pipulate.com/AI_CONTEXT.md )
+3. For the Why: `.agents/skills/journal/` (the journal index, an Agent Skills reference; served at https://pipulate.com/AI_CONTEXT.md )
 
 ```text
 ( "The AI said so" is a transcript, not a record. )
