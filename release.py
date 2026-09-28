@@ -585,7 +585,7 @@ def sync_audit_md():
 def sync_ai_context_md():
     """Copies the journal index to Pipulate.com root, as AI_CONTEXT.md, and commits if changed.
 
-    Note: AI_CONTEXT.md is regenerated from scratch at Step 1.6
+    Note: the index is regenerated from scratch at Step 1.6
     (run_ai_context_generation), so by the time this runs the source is fresh.
     """
     note("\n🔄 Step 3.6: Synchronizing AI_CONTEXT.md to Pipulate.com...")
