@@ -3538,17 +3538,13 @@ MATCHBOOK_CHOP = r"""
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 201/274 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 202/271 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
+# .agents/skills/gsc_readonly/SKILL.md  # [748 tokens | 3,439 bytes]
+# .agents/skills/roles/SKILL.md  # [1,767 tokens | 8,221 bytes]
+# .agents/skills/sheets_readonly/SKILL.md  # [445 tokens | 1,894 bytes]
 # AUDIT.md  # [2,011 tokens | 9,706 bytes]
 # MANIFEST.in  # [81 tokens | 313 bytes]
-# Workshop/.agents/skills/gsc_readonly/SKILL.md  # [748 tokens | 3,439 bytes]
-# Workshop/.agents/skills/hello_workflow/SKILL.md  # [912 tokens | 3,990 bytes]
-# Workshop/.agents/skills/roles/SKILL.md  # [1,767 tokens | 8,221 bytes]
-# Workshop/.agents/skills/sheets_readonly/SKILL.md  # [445 tokens | 1,894 bytes]
-# Workshop/Advanced_Notebooks/__init__.py  # [0 tokens | 0 bytes]
-# Workshop/__init__.py  # [0 tokens | 0 bytes]
-# Workshop/imports/__init__.py  # [0 tokens | 0 bytes]
 # apps/130_gap_analysis.py  # [9,624 tokens | 48,289 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
 # apps/440_browser_automation.py  # [10,795 tokens | 47,151 bytes]
