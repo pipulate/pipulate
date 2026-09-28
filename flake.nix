@@ -710,9 +710,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           Workshop/
           ├── corporate/              the org's canon; corporate manages corporate
           ├── personal/     ◀── THIS  yours. NOTHING here is ever shared.
-          │   ├── Notebooks/          the starter notebooks and their imports/, copied in for you
-          │   ├── Client_Work/        private
-          │   └── Deliverables/       private
+          │   ├── Notebooks/          the starter notebooks, their imports/, data/ and Deliverables/
+          │   └── Client_Work/        private
           └── shared/<your-name>/     drag work here to hand it to a teammate
           ```
 
@@ -1255,9 +1254,11 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           #   personal  personal/    yours. gitignored; your own git repo.
           #             Notebooks/ holds the starter files runScript's
           #             copy-if-absent loop delivers (your edits survive,
-          #             updates do not arrive) beside imports/, data/ and
-          #             browser_cache/; Client_Work/ and Deliverables/ sit
-          #             beside Notebooks/. NOTHING here leaves this machine
+          #             updates do not arrive) beside imports/, data/,
+          #             browser_cache/ and Deliverables/, all four derived
+          #             from the notebooks' folder by pipulate/core.py;
+          #             Client_Work/ sits beside Notebooks/ (2026-09-28,
+          #             read off core.py:234). NOTHING here leaves this machine
           #             unless you copy it into YOUR shared folder.
           #   shared    shared/      the ONE folder for handing work to a
           #             teammate. gitignored. One folder per person --
