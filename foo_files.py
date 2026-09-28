@@ -120,8 +120,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,498 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 7 published in the last 7 days
+# There are 1,499 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 8 published in the last 7 days
 # Markdown negotiated: 2,786 reads (0.22% of all responses)
 # DOM hydration: 2979 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
 # Honeybot telemetry fetched 2026-09-28T20:05Z
@@ -1847,6 +1847,12 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # Other examples (document and sort these out)
 
+# THE SKILL.md FILES
+# .agents/skills/gsc_readonly/SKILL.md
+# .agents/skills/hello_workflow/SKILL.md
+# .agents/skills/roles/SKILL.md
+# .agents/skills/sheets_readonly/SKILL.md
+
 # remotes/honeybot/queries/all_time_popular_paths.sql  # [177 tokens | 760 bytes]
 # remotes/honeybot/queries/hot_404_remaps_top.sql  # [733 tokens | 2,888 bytes]
 # remotes/honeybot/queries/hub_candidates.sql  # [143 tokens | 618 bytes]
@@ -1941,10 +1947,10 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # scripts/articles/link_injector.py
 # scripts/articles/generate_post_nav.py  # [1,174 tokens | 4,616 bytes]
 
-
 # The following Jekyll files pair well with the above to show how we start various forms of tracking, and as a transition into Honeybot Nginx Broadcast Studio & telemetry.
-# release.py                                          #  <-- The deploy process
-# remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
+# ~/repos/nixos/blogs.nix
+# release.py
+# remotes/honeybot/nixos/configuration.nix
 # ~/repos/trimnoir/_config.yml
 # ~/repos/trimnoir/_layouts/default.html
 # ~/repos/trimnoir/index.md
