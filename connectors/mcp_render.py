@@ -13,8 +13,8 @@ ticket decode offline with the standard library, and the three rule-text
 diffs a ticket needs (original|vendor, original|ours, vendor|ours) need no
 render at all. The render farm is for the metrics only.
 
-The typed word is `render`; the flake.nix connectorCommand line that mints it
-is owed, so until it lands the spelling is the interpreter's:
+The typed word is `render` (a flake.nix connectorCommand line since 2026-09-27);
+the interpreter's spelling works anywhere the word is not on PATH:
 
   .venv/bin/python connectors/mcp_render.py decode LINK                # the other keys as a header, then the rules, one per line
   .venv/bin/python connectors/mcp_render.py decode - --nth 2           # the second #conf= on stdin (jira KEY | ... decode -)
@@ -28,11 +28,26 @@ Designed for context.txt as a `!` line, e.g.:
 
   ! jira SVB-123 2>&1 | .venv/bin/python connectors/mcp_render.py diff - --labels existing suggested
 
-LATER, over the stdio relay (npx -y @mcp-b/webmcp-local-relay@latest
---widget-origin https://app.botify.com, a logged-in PocketRender tab opened
-once with ?webmcp=1): tools, schema pr_x, call pr_x '{}', one subprocess
-speaking JSON-RPC on its stdin and stdout, every call a receipt per THE MCP
-RECEIPT RULE. Not built; the relay's --help is a hand step first.
+THE RELAY LANES (landed 2026-09-28, the relay's --help read by hand first):
+
+  .venv/bin/python connectors/mcp_render.py tools                  # spawn the relay, initialize, tools/list: one line per tool
+  .venv/bin/python connectors/mcp_render.py schema pr_x            # one tool's inputSchema as JSON
+  .venv/bin/python connectors/mcp_render.py call pr_x '{"k":"v"}'  # tools/call; exit 1 on a JSON-RPC error or isError
+
+Each lane spawns the relay (RELAY_CMD; --relay overrides it, --widget-origin
+names the page origin it admits) with LD_LIBRARY_PATH cleared, the loader
+lesson of 2026-09-27, and speaks newline-delimited JSON-RPC on the relay's
+stdin and stdout: initialize, notifications/initialized, then one request and
+its reply by id. The WebSocket on 127.0.0.1:9333 the help names is the relay's
+face toward the PocketRender tab (opened once with ?webmcp=1, the two
+chrome://flags set, logged in), never ours. Every request prints one MCP
+RECEIPT line (method, id, the bytes sent) per THE MCP RECEIPT RULE, and a
+verdict token closes each lane: RELAY_INIT_OK, RELAY_TOOLS n=, RELAY_CALL_OK on
+the way through; RELAY_INIT_NO_REPLY, RELAY_TOOLS_NO_REPLY, RELAY_CALL_ERROR
+with the relay's stderr tail under them. With no tab open the list reads n=0 or
+times out, and the initialize reply alone witnesses that stdio is the
+transport; until it has, stdio is INFERRED from the client configs that launch
+the relay as a command.
 
 THE ROUND TRIP IS THE RECEIPT: encode decodes what it just minted and refuses
 with exit 1 when the two confs differ, so a minted link that prints is a link
@@ -55,10 +70,24 @@ import zlib
 import base64
 import difflib
 import argparse
+import os
+import time
+import queue
+import shlex
+import threading
+import subprocess
+import collections
 
 PR_URL = "https://app.botify.com/tools/cpap/pocketrender/index.html"
 CONF_RE = re.compile(r'#conf=([A-Za-z0-9+/=_-]+)')
 RULES_KEY = "renderingRules"
+# THE RELAY (its --help read by hand, 2026-09-28): a local WebSocket on 127.0.0.1:9333
+# faces the PocketRender tab; the face toward this client is stdio, INFERRED from the
+# client configs until a reply on stdout witnesses it. npx re-resolves @latest on every
+# run and needs node on PATH; a pinned version, then a Nix derivation, is the graft.
+RELAY_CMD = "npx -y @mcp-b/webmcp-local-relay@latest"
+WIDGET_ORIGIN = "https://app.botify.com"
+PROTOCOL_VERSION = "2025-06-18"
 
 
 def read_source(arg):
@@ -225,6 +254,222 @@ def cmd_encode(args):
     return 0
 
 
+def _relay_argv(relay, widget_origin):
+    """The relay's argv: the --relay string split the way a shell would, plus the origin it admits."""
+    return shlex.split(relay) + ["--widget-origin", widget_origin]
+
+
+def _spawn_relay(argv):
+    """Spawn the relay on stdio pipes; one thread per output stream feeds a queue of (tag, line)."""
+    env = {**os.environ, "LD_LIBRARY_PATH": ""}
+    proc = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE, text=True, bufsize=1, env=env)
+    lines = queue.Queue()
+
+    def pump(stream, tag):
+        for line in iter(stream.readline, ""):
+            lines.put((tag, line.rstrip("\n")))
+        lines.put((tag, None))
+
+    for stream, tag in ((proc.stdout, "out"), (proc.stderr, "err")):
+        threading.Thread(target=pump, args=(stream, tag), daemon=True).start()
+    return proc, lines
+
+
+class RelaySession:
+    """One relay process: initialize once, then one request and its reply by id, on stdio."""
+
+    def __init__(self, relay, widget_origin, timeout):
+        self.argv = _relay_argv(relay, widget_origin)
+        self.timeout = timeout
+        self.noise = []
+        self.stderr_tail = collections.deque(maxlen=20)
+        self.next_id = 1
+        self.proc, self.lines = _spawn_relay(self.argv)
+
+    def send(self, obj):
+        line = json.dumps(obj, separators=(",", ":"))
+        self.proc.stdin.write(line + "\n")
+        self.proc.stdin.flush()
+        return line
+
+    def await_reply(self, want_id):
+        """The JSON-RPC message carrying want_id, or None when the timeout passes or stdout closes."""
+        deadline = time.monotonic() + self.timeout
+        while True:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                return None
+            try:
+                tag, line = self.lines.get(timeout=remaining)
+            except queue.Empty:
+                return None
+            if line is None:
+                if tag == "out":
+                    return None
+                continue
+            if tag == "err":
+                self.stderr_tail.append(line)
+                continue
+            try:
+                msg = json.loads(line)
+            except ValueError:
+                self.noise.append(line)
+                continue
+            if isinstance(msg, dict) and msg.get("id") == want_id:
+                return msg
+            self.noise.append(line)
+
+    def request(self, method, params):
+        """Send one request, print its receipt, wait for its reply; None when none came."""
+        rid = self.next_id
+        self.next_id += 1
+        sent = self.send({"jsonrpc": "2.0", "id": rid, "method": method, "params": params})
+        print(f"# MCP RECEIPT [OBSERVED, D1]: transport=stdio server={' '.join(self.argv)} "
+              f"method={method} id={rid} sent={sent}")
+        return self.await_reply(rid)
+
+    def initialize(self):
+        reply = self.request("initialize", {
+            "protocolVersion": PROTOCOL_VERSION, "capabilities": {},
+            "clientInfo": {"name": "pipulate-render", "version": "0.1"}})
+        if reply is not None and "error" not in reply:
+            self.send({"jsonrpc": "2.0", "method": "notifications/initialized"})
+        return reply
+
+    def diagnostics(self):
+        """What the relay said outside the protocol: stdout that was not JSON-RPC, the stderr tail."""
+        for line in self.noise[-20:]:
+            print(f"# relay stdout, not JSON-RPC: {line}")
+        for line in self.stderr_tail:
+            print(f"# relay stderr: {line}")
+
+    def close(self):
+        try:
+            self.proc.stdin.close()
+        except OSError:
+            pass
+        try:
+            self.proc.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            self.proc.kill()
+
+
+def _open_relay(args):
+    """Spawn and initialize: the session on RELAY_INIT_OK, None after a printed verdict otherwise."""
+    session = RelaySession(args.relay, args.widget_origin, args.timeout)
+    reply = session.initialize()
+    if reply is None:
+        print(f"RELAY_INIT_NO_REPLY: no JSON-RPC reply to id 1 on stdout within {args.timeout:.0f}s"
+              " (stdio is not the transport, or the relay wants something before it answers)")
+        session.diagnostics()
+        session.close()
+        return None
+    if "error" in reply:
+        print(f"RELAY_INIT_ERROR {json.dumps(reply['error'], ensure_ascii=False)[:300]}")
+        session.diagnostics()
+        session.close()
+        return None
+    result = reply.get("result", {})
+    info = result.get("serverInfo", {})
+    print(f"RELAY_INIT_OK protocol={result.get('protocolVersion')} "
+          f"server={info.get('name')} {info.get('version')}")
+    return session
+
+
+def _list_tools(session, timeout):
+    """The tools/list result, or None after a printed verdict."""
+    reply = session.request("tools/list", {})
+    if reply is None:
+        print(f"RELAY_TOOLS_NO_REPLY: initialize answered, tools/list did not within {timeout:.0f}s"
+              " (the relay may hold the list until a PocketRender tab connects)")
+        session.diagnostics()
+        return None
+    if "error" in reply:
+        print(f"RELAY_TOOLS_ERROR {json.dumps(reply['error'], ensure_ascii=False)[:300]}")
+        session.diagnostics()
+        return None
+    return reply.get("result", {}).get("tools", [])
+
+
+def cmd_tools(args):
+    session = _open_relay(args)
+    if session is None:
+        return 1
+    try:
+        tools = _list_tools(session, args.timeout)
+    finally:
+        session.close()
+    if tools is None:
+        return 1
+    print(f"RELAY_TOOLS n={len(tools)}")
+    if args.json:
+        print(json.dumps(tools, indent=2, ensure_ascii=False))
+        return 0
+    for tool in tools:
+        desc = " ".join(str(tool.get("description", "")).split())
+        print(f"{tool.get('name')}\t{desc[:100]}")
+    if not tools:
+        print("# 0 tools: is a PocketRender tab open with ?webmcp=1, the two chrome://flags set,"
+              " and its origin the --widget-origin?")
+    print("\n# Next: render schema <tool>      (one tool's inputSchema)")
+    print("#       render call <tool> '{}'   (tools/call; a JSON-RPC error names the schema)")
+    return 0
+
+
+def cmd_schema(args):
+    session = _open_relay(args)
+    if session is None:
+        return 1
+    try:
+        tools = _list_tools(session, args.timeout)
+    finally:
+        session.close()
+    if tools is None:
+        return 1
+    for tool in tools:
+        if tool.get("name") == args.tool:
+            print(json.dumps(tool.get("inputSchema", {}), indent=2, ensure_ascii=False))
+            return 0
+    names = ", ".join(str(tool.get("name")) for tool in tools) or "(none listed)"
+    print(f"RELAY_SCHEMA_UNLISTED {args.tool}: the relay lists {names}")
+    return 1
+
+
+def cmd_call(args):
+    arguments = json.loads(args.arguments)
+    if not isinstance(arguments, dict):
+        raise ValueError("the arguments must be one JSON object")
+    session = _open_relay(args)
+    if session is None:
+        return 1
+    try:
+        reply = session.request("tools/call", {"name": args.tool, "arguments": arguments})
+        if reply is None:
+            print(f"RELAY_CALL_NO_REPLY within {args.timeout:.0f}s")
+            session.diagnostics()
+            return 1
+    finally:
+        session.close()
+    if "error" in reply:
+        print(f"RELAY_CALL_ERROR {json.dumps(reply['error'], ensure_ascii=False)[:2000]}")
+        return 1
+    result = reply.get("result", {})
+    if args.json:
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+    else:
+        for item in result.get("content", []):
+            if item.get("type") == "text":
+                print(item.get("text", ""))
+            else:
+                print(json.dumps(item, ensure_ascii=False)[:2000])
+    if result.get("isError"):
+        print("RELAY_CALL_ERROR isError=true: the tool ran and refused; its reason is the text above")
+        return 1
+    print("RELAY_CALL_OK")
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(
         # ONE SOURCE FOR THREE SURFACES: the sources roster reads this
@@ -258,6 +503,31 @@ def main():
     encode.add_argument("--url", help="replace the conf's single url")
     encode.add_argument("--user-agent", help="replace the conf's userAgent")
     encode.set_defaults(func=cmd_encode)
+
+    def relay_options(sub, timeout):
+        sub.add_argument("--relay", default=RELAY_CMD,
+                         help="the relay command, split like a shell would (default: %(default)s)")
+        sub.add_argument("--widget-origin", default=WIDGET_ORIGIN,
+                         help="the PocketRender origin the relay admits (default: %(default)s)")
+        sub.add_argument("--timeout", type=float, default=timeout,
+                         help="seconds to wait for each reply (default: %(default)s)")
+
+    tools = modes.add_parser("tools", help="spawn the relay, initialize, tools/list: one line per tool")
+    relay_options(tools, 20)
+    tools.add_argument("--json", action="store_true", help="the whole tools list as JSON")
+    tools.set_defaults(func=cmd_tools)
+
+    schema = modes.add_parser("schema", help="one tool's inputSchema as JSON, read off tools/list")
+    schema.add_argument("tool", help="the tool's name as tools/list prints it")
+    relay_options(schema, 20)
+    schema.set_defaults(func=cmd_schema)
+
+    call = modes.add_parser("call", help="tools/call one tool with a JSON object of arguments")
+    call.add_argument("tool", help="the tool's name as tools/list prints it")
+    call.add_argument("arguments", nargs="?", default="{}", help="one JSON object (default: an empty one)")
+    relay_options(call, 90)
+    call.add_argument("--json", action="store_true", help="the whole result as JSON")
+    call.set_defaults(func=cmd_call)
 
     args = parser.parse_args()
     try:
