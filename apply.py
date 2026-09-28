@@ -597,6 +597,18 @@ def apply_search_replace_patch(payload: str) -> bool:
     return success
 
 def main():
+    # THE TARGET IS ROOT-RELATIVE (convicted 2026-09-28, deed 1641: `app` typed
+    # inside Workshop/corporate/ answered "Target file not found" for a Target
+    # that exists at the repo root, and a WRITE_FILE typed there would have
+    # created its path UNDER corporate/ without a word). A Target line names a
+    # path from the repo root wherever `app` is typed: when the shell exports
+    # PIPULATE_ROOT, apply.py works from there; otherwise from the cwd, the old
+    # behaviour exactly. The patch file is read by the shell before this runs,
+    # so `cat patch | ...` still finds the patch where `patch` wrote it.
+    root = os.environ.get('PIPULATE_ROOT')
+    if root and os.path.isdir(root) and os.path.realpath(root) != os.path.realpath(os.getcwd()):
+        os.chdir(root)
+        print(f"↪ Targets resolved from {root} (PIPULATE_ROOT), not from the folder app was typed in.")
     # Read the raw Markdown payload from the Unix pipe
     payload = sys.stdin.read()
     success = apply_search_replace_patch(payload)
