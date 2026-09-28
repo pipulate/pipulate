@@ -44,10 +44,15 @@ chrome://flags set, logged in), never ours. Every request prints one MCP
 RECEIPT line (method, id, the bytes sent) per THE MCP RECEIPT RULE, and a
 verdict token closes each lane: RELAY_INIT_OK, RELAY_TOOLS n=, RELAY_CALL_OK on
 the way through; RELAY_INIT_NO_REPLY, RELAY_TOOLS_NO_REPLY, RELAY_CALL_ERROR
-with the relay's stderr tail under them. With no tab open the list reads n=0 or
-times out, and the initialize reply alone witnesses that stdio is the
-transport; until it has, stdio is INFERRED from the client configs that launch
-the relay as a command.
+with the relay's stderr tail under them. READ 2026-09-28 (deed 1641, no tab):
+RELAY_INIT_OK protocol=2025-06-18 server=webmcp-local-relay 0.0.0, then
+RELAY_TOOLS n=3, the relay's own tools (webmcp_list_sources, webmcp_list_tools,
+webmcp_open_page); stdio is OBSERVED. The pr_* tools sit behind a connected
+tab, reached through webmcp_list_tools or a tools/list that grows on
+connection, unread which. --settle N sleeps N seconds after initialize so a tab
+can connect to this short-lived relay before the first request; each lane
+spawns its own relay and closes it seconds later, so no persistent relay runs
+beside it (it would take the port, and the tab with it).
 
 THE ROUND TRIP IS THE RECEIPT: encode decodes what it just minted and refuses
 with exit 1 when the two confs differ, so a minted link that prints is a link
@@ -82,8 +87,8 @@ PR_URL = "https://app.botify.com/tools/cpap/pocketrender/index.html"
 CONF_RE = re.compile(r'#conf=([A-Za-z0-9+/=_-]+)')
 RULES_KEY = "renderingRules"
 # THE RELAY (its --help read by hand, 2026-09-28): a local WebSocket on 127.0.0.1:9333
-# faces the PocketRender tab; the face toward this client is stdio, INFERRED from the
-# client configs until a reply on stdout witnesses it. npx re-resolves @latest on every
+# faces the PocketRender tab; the face toward this client is stdio, OBSERVED at deed 1641
+# (an initialize reply on stdout with no tab open). npx re-resolves @latest on every
 # run and needs node on PATH; a pinned version, then a Nix derivation, is the graft.
 RELAY_CMD = "npx -y @mcp-b/webmcp-local-relay@latest"
 WIDGET_ORIGIN = "https://app.botify.com"
@@ -374,6 +379,12 @@ def _open_relay(args):
     info = result.get("serverInfo", {})
     print(f"RELAY_INIT_OK protocol={result.get('protocolVersion')} "
           f"server={info.get('name')} {info.get('version')}")
+    settle = getattr(args, "settle", 0) or 0
+    if settle > 0:
+        # THE RELAY IS SHORT-LIVED (INFERRED, deed 1641): this relay lives for one lane and
+        # the tab connects to 127.0.0.1:9333 on its own schedule; a settle gives it a window.
+        # --settle 0 reads what an instant relay sees, the other half of the straddle.
+        time.sleep(settle)
     return session
 
 
@@ -409,9 +420,9 @@ def cmd_tools(args):
     for tool in tools:
         desc = " ".join(str(tool.get("description", "")).split())
         print(f"{tool.get('name')}\t{desc[:100]}")
-    if not tools:
-        print("# 0 tools: is a PocketRender tab open with ?webmcp=1, the two chrome://flags set,"
-              " and its origin the --widget-origin?")
+    if not any(str(tool.get("name", "")).startswith("pr_") for tool in tools):
+        print("# no pr_* tool listed: is a PocketRender tab open with ?webmcp=1, the two chrome://flags"
+              " set, its origin the --widget-origin, and --settle long enough for it to connect?")
     print("\n# Next: render schema <tool>      (one tool's inputSchema)")
     print("#       render call <tool> '{}'   (tools/call; a JSON-RPC error names the schema)")
     return 0
@@ -511,6 +522,9 @@ def main():
                          help="the PocketRender origin the relay admits (default: %(default)s)")
         sub.add_argument("--timeout", type=float, default=timeout,
                          help="seconds to wait for each reply (default: %(default)s)")
+        sub.add_argument("--settle", type=float, default=0,
+                         help="seconds to wait after initialize before the first request, so a"
+                              " PocketRender tab can connect to this relay (default: %(default)s)")
 
     tools = modes.add_parser("tools", help="spawn the relay, initialize, tools/list: one line per tool")
     relay_options(tools, 20)
