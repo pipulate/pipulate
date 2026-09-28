@@ -131,6 +131,13 @@ Workshop/personal/
 Workshop/Playground/
 Workshop/Educational_Notebooks/
 Workshop/corporate/
+# THE THREE TIERS ARE THE WHOLE OF Workshop/ (2026-09-28): corporate/,
+# personal/ and shared/, each ignored whole, and nothing else lives there;
+# the starter notebooks, imports/, data/ and browser_cache/ sit under
+# personal/Notebooks/. Every other Workshop/ line in this file STAYS one
+# more release, for a checkout that pulls the move with its old tree in
+# place. shared/ is the lowercase twin of Shared/ above.
+Workshop/shared/
 Workshop/_config.py
 Workshop/Onboarding.ipynb
 Workshop/Advanced_Notebooks/Whatsa_Lambda.ipynb
