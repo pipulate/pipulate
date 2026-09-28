@@ -827,6 +827,74 @@ Entries are alphabetical, numbers spelled as spoken.
   witness never reached, this one is a witness reached and thrown away. The
   mechanism landed the same day as the is_telemetry exemption in
   add_auto_context, which is why the key carries only the design rule.
+- **The Finding Dory Rule** — *the procedure every hand step runs through
+  before it is emitted.* Banked 2026-09-24, cartridge foo-75b9c41a-94.zip, at
+  the operator's instruction. SPELL OUT THE TOOL-CALL YOU ARE MAKING OF THE
+  HUMAN and THE HALT BANNER already said "one action per line" and "never make
+  the human infer the command from prose." Both were in context. The same ride
+  still produced four failures on hand steps:
+    1. A HALT banner rode inside a code fence. The copy button took all of it
+       and bash ran the English ("FINISH: command not found").
+    2. `read -rs JIRA_TOKEN && export JIRA_TOKEN`, described as "waits quietly
+       for you to paste the token." No visible prompt, and "paste" had two
+       readings. The operator pasted the token INTO the command, then Ctrl+C.
+    3. The fix, `export JIRA_TOKEN="$(pbpaste)"`. The copy button is how every
+       command reaches the terminal, so at Enter the clipboard holds the
+       COMMAND, not the token. It worked only because the operator pasted,
+       held off on Enter, went and copied the token, came back, and pressed
+       Enter: a CAPTCHA nobody wrote down.
+    4. A patch anchored on a line that exists only if an earlier car, never
+       applied, had landed. apply.py refused it.
+  Adjectives do not survive a model under load. This is a procedure. Run it on
+  every step the human does by hand, before emitting it:
+    (a) READ IT AS DORY. The reader has no memory of the last line, is in a
+        hurry, takes every ambiguous word the wrong way, and acts on the first
+        thing that looks like an instruction. Walk the step from their chair:
+        which window is open, what is in the clipboard, what is on the screen.
+        Every way it can go wrong gets a sentence, or the step is redesigned.
+    (b) THE CLIPBOARD IS ALREADY IN USE. The command travels through it, so a
+        command never reads its input from the clipboard. A value only the
+        human has (a token, a path) is asked for at a VISIBLE, LABELED prompt,
+        and copying that value is its own numbered step AFTER the command is
+        running. Bash form:
+          read -rsp 'Paste your Jira token, then press Enter: ' JIRA_TOKEN; echo; export JIRA_TOKEN
+        Hidden input says so: "nothing appears when you paste; that is normal."
+        A placeholder is the other honest form, if the step names exactly
+        which characters to replace.
+    (c) EVERY STEP IS THREE PARTS: "Copy the block below, paste it into <which
+        window>, press Enter." Then the fence. Then "You will see: <exact
+        text>." A secret is checked by its length (echo ${#VAR}), never by
+        its value.
+    (d) EVERY FENCE IS WHAT ITS PASTE TARGET EXPECTS. A bash fence holds only
+        lines safe to run as-is; a banner or explanation is never fenced. A
+        fence with a Target line is a patch. A Car 2 fence is context.txt lines.
+    (e) A HALT CARRIES ONE ACTION. A hand step that needs more than one action
+        is not a HALT: it becomes the whole turn. Its test is Car 1, other work
+        waits, and the next compile reads the receipt. One thing done so a
+        tired person cannot get it wrong beats five things done fast.
+    (f) A PATCH ANCHORS ON THIS COMPILE'S RAW SOURCE. Never on a line another
+        car would create; never "apply that one first."
+    (g) THE OPERATOR IS TOLD WHAT TO DO, NEVER WHAT TO CHECK (banked
+        2026-09-24, cartridge foo-dcfa8505-95.zip; convicted in the very
+        reply that proposed this rule). Car 1 ended with six numbered
+        forecasts of its own output and "If you see 0 here, stop": a branch
+        handed to the human, which THE HUMAN IS NOT THE BRANCH PREDICATE
+        already bans, and a list the operator read as six things to figure
+        out. The branch bought nothing: the same probe rode Car 2, so the
+        next compile would have read the 0 anyway.
+        THE RULE: Car 1 carries one instruction -- copy, paste into <which
+        window>, press Enter -- and nothing about what comes back. Forecasts
+        ride in Car 4, where the next model checks them against the
+        receipts. A guard the operator must not miss goes INSIDE the
+        command, so the shell or the program prints the verdict:
+          test -n "$JIRA_TOKEN" || echo "JIRA_TOKEN IS EMPTY IN THIS WINDOW"
+        The "You will see" in (c) is for a hand step whose output is fixed
+        and known (a prompt's label, "nothing appears"), never for a probe.
+  THE TEST: a red team is fuzzing these instructions on a real operator in a
+  high-reliability shop. Every misreading they find is your defect. Rode
+  apply.py's fixed tail from 2026-09-24 until THE ACTUATOR IS NOT THE LEDGER
+  moved it to the router on 2026-09-26; graduated here 2026-09-28, the first
+  of the moved rules to leave the router.
 - **The First-Error Floor** — *a refusal's line number is a floor, never a
   ceiling.* Banked 2026-08-09, airlock-witnessed. A parser reports the FIRST
   error it cannot get past, never the LAST one in the file, so the line number
