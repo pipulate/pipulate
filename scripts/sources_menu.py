@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-sources_menu.py — what `conn` prints.
+sources_menu.py — what `connect` prints (conn is the short spelling).
 
-boot_menu.py lists `conn` at every shell entry and the Nix shell defines it.
+boot_menu.py lists `connect` at every shell entry and the Nix shell defines it.
 This is the roster it prints: the commands that reach OUTSIDE
 this machine, each row's description GENERATED from the target script's own
 module docstring rather than hand-authored here.
