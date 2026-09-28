@@ -411,6 +411,15 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # beside every count (n=$(rg -c -e PAT f 2>&1); printf '%s=%s rc=%s' f
 # "$n" "$?"); rc=1 is a true zero, rc=2 is a dead instrument and the count
 # beside it is void. Deed 1632's fixed probe read rc=1 under every 0.
+# THE SWITCH THAT DOES NOT EXIST (convicted 2026-09-28, deed 1635; the
+# same family's third member): a move fence opened with `git mv -q`, and
+# git mv has no -q (git rm does), so the subshell died on its third line
+# under set -e with nothing moved, and `nix develop` then built the new
+# tree EMPTY beside the old one, so the AFTER read both trees at once.
+# THE RULE: check a hand fence's first commands against each tool's own
+# usage line, because under set -e the first bad switch is the whole
+# fence; and print git status --short before GO, so a staged rename is
+# visible where d prints nothing.
 # A CENSUS CARRIES A KNOWN MEMBER (convicted 2026-09-24, cartridge
 # foo-71ecd539-97.zip). Three key-range JQL windows were forecast to add up
 # to one project's full issue count. Each printed "(no matches)": no error,
@@ -1305,7 +1314,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # THE REWRITE TAX (banked 2026-09-02). A history rewrite on a repo whose installer auto-pulls --ff-only breaks the auto-update on EVERY existing install until each is hand-reset (git fetch origin && git reset --hard origin/main) or rebuilt (rm -rf and reinstall -- the disposable workshop is the cheap path and the reason it was affordable). It also orphans every commit hash from the rewrite point forward, including the ones published article ledgers link to. A rewrite is a clean-up, never an un-publish: forks, prior clones and host caches keep the blob. Price these BEFORE the push.
 # THE GATE-OR-STRADDLE RULE (banked 2026-09-03). A probe that prints the same thing in both worlds (a syntax check, a load test) is a GATE: it can prove the patch broke nothing, never that it landed. Every car needs at least one probe whose reading MOVES. Label gates as gates when recommending them, so a green gate is never mistaken for a witnessed landing.
 # THE INDENTED QUOTE RULE (banked 2026-09-03). To quote a template that itself contains code fences, indent it four spaces instead of fencing it: an indented block has no closing delimiter, so nothing inside it can end it early. Costs the language tag; buys correctness. Fences stay for everything else.
-# THE ONE-FENCE-PER-HAND-STEP RULE (banked 2026-09-03). Operators paste fenced blocks whole; a smoke command and the full sweep it was meant to gate, sharing one fence, fire together and the smoke never happens. When a hand-run step exists to be INSPECTED before the next, each step gets its own fence.
+# THE ONE-FENCE-PER-HAND-STEP RULE (banked 2026-09-03). Operators paste fenced blocks whole; a smoke command and the full sweep it was meant to gate, sharing one fence, fire together and the smoke never happens. When a hand-run step exists to be INSPECTED before the next, each step gets its own fence. Second conviction 2026-09-28 (deed 1635): a reseal named in Car 11's prose, between app and d, was never typed, and the drifted art shipped through the 2.65 release with index.md left untouched; the same step as its own numbered car (deed 1636's Car 5) was typed before the train even started. A hand step is a car or it is missed, the operator's words.
 # THE ENTRY-POINT CHECK (banked 2026-09-03). Every WRITE_FILE of a runnable .py script MUST end with the __main__ guard, and the first probe after ignition MUST be one that can only print if main() actually ran (a target line, a wrote-N line). A script that imports cleanly and exits 0 is indistinguishable from success by exit code alone.
 # THE DATA-FILE RE-RENDER RULE (banked 2026-09-03). When a layout gains a site.data.* lookup, jekyll serve's incremental mode will not re-render existing pages when only the data file changes. Local preview needs `touch _layouts/default.html`; production `jekyll build` needs nothing.
 # § THE OUT-OF-BAND STEP RULE (banked 2026-09-13) -- a hand step the terminal cannot take (a phone, a vendor console, a registrar) rides at the TOP of PROBES under a capitalized label, lettered, with its one address in its own fence and the expected screen stated in words; the compile's ! line reads a tag minted in the caboose and never repeats the visit. Conviction: three cellular witnesses across two articles, all caught because the block could not be scrolled past; a step folded into prose is a step the muscle memory rolls over. Sibling of ONE-FENCE-PER-HAND-STEP.
