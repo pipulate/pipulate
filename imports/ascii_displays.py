@@ -1621,6 +1621,10 @@ Rich console blocked on Mac (Error: {e}), using fallback display.
         return fallback_summary.strip()
 
 
+if __name__ == "__main__":
+    raise SystemExit(_main())
+
+
 #     _    ____   ____ ___ ___      _    ____ _____   ____  _                                             _  
 #    / \  / ___| / ___|_ _|_ _|    / \  |  _ \_   _| |  _ \| | __ _ _   _  __ _ _ __ ___  _   _ _ __   __| | 
 #   / _ \ \___ \| |    | | | |    / _ \ | |_) || |   | |_) | |/ _` | | | |/ _` | '__/ _ \| | | | '_ \ / _` | 
