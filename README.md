@@ -18,6 +18,15 @@
 
 You're about to put your name on something an AI made, and you can't say what it did to make it. **Pipulate** is a free, open-source **context compiler**: every file the AI reads and the output of every command run on its behalf, stacked into one file you can paste into any model, keep, and replay with plain text commands. What it can't see, a vendor's server-side tool calls, it leaves out on purpose, because a step you can't rerun is a step nobody checked. Local-first, Nix-reproducible, and yours to delete. **Prompt well.**
 
+## The files an agent reads first
+
+Two open conventions, two lineages, and this repo carries both at the root beside the human's README:
+
+- **`AGENTS.md`** is the README-for-agents convention: plain Markdown, no YAML head, read at the start of a session. It came out of OpenAI Codex, Amp, Google's Jules, Cursor and Factory in August 2025 and was contributed to the Linux Foundation's Agentic AI Foundation on December 9, 2025, alongside MCP and goose. Here it is a signpost that points at executable truth (`flake.nix`, `cli.py`, `apply.py`) rather than a second copy of it.
+- **`.agents/skills/*/SKILL.md`** is the Agent Skills convention: a YAML head (`name`, `description`) over a Markdown body, loaded only when the description matches the task at hand. Anthropic published it as an open specification at agentskills.io on December 18, 2025. The file shape is older than the standard; it is the frontmatter sandwich Jekyll gave blog posts in 2008, put to a new use.
+
+Under both sits `flake.nix` with its `flake.lock`: the dependency inventory an SBOM enumerates, and an environment a second machine evaluates to the same result. That is not exotic. Anduril packages and deploys its embedded systems with Nix, Google's Firebase Studio (formerly Project IDX) configures every workspace from a `.idx/dev.nix`, and GNU Guix, the GNU project's own package manager, was built on Nix's model in 2012. For the reviewer who arrives with NIST 800-53 CM-2/CM-3, SOC 2 CC8.1 or PCI DSS 6.5 on a checklist, `AUDIT.md` maps each question to the artifact in this repo that answers it.
+
 ## Quick Start: Be Running in 5 Minutes
 
 **Want to skip the philosophy and just see what this does? Paste this into your terminal:**
