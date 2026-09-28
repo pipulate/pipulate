@@ -3,3 +3,12 @@
 # — and the wheel `python -m build` derives from it — in agreement with
 # that convention. Fix protects v2.1 forward; the 2.0 artifact is history.
 exclude apps/xx_*.py
+
+# THE AGENT-FACING FILES SHIP WITH THE SOURCE (2026-09-28). setuptools' sdist
+# takes package modules, README, LICENSE and pyproject.toml on its own and no
+# other root file, so the two files an agent reads first and the skills folder
+# were absent from every sdist an auditor could download. The package-data
+# block in pyproject.toml does not reach them either: its patterns resolve
+# inside package directories, and none of these files lives in one.
+include AGENTS.md AUDIT.md
+graft .agents
