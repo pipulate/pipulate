@@ -2256,7 +2256,7 @@ print('AI:\n', r.ai)
               (cd "$PIPULATE_ROOT/scripts/articles" \
                 && pbpaste >article.txt \
                 && python sanitizer.py -t "$1" \
-                && python articleizer.py -t "$1")
+                && python articleizer.py -t "$1" "''${@:2}")
             }
             # Names, never numbers: each word hands its own name to -t and
             # common.canonical_target reads the number off blogs.json at
@@ -2314,11 +2314,15 @@ print('AI:\n', r.ai)
             # write_post: unified, data-driven article intake. The privacy lane
             # now lives in blogs.json ('lane' per target); sanitizer.py resolves
             # it from -t, so the flake no longer hardcodes --public/--private.
+            # THE WORDS FORWARD THEIR ARGUMENTS (2026-09-28, both platform
+            # branches): everything after the blog's name rides to the editing
+            # script alone, so grim -k paid and bot -m all reach it, while
+            # sanitizer.py keeps its bare -t, because it refuses -m.
             write_post() {
               (cd "$PIPULATE_ROOT/scripts/articles" \
                 && xclip -selection clipboard -o >article.txt \
                 && python sanitizer.py -t "$1" \
-                && python articleizer.py -t "$1")
+                && python articleizer.py -t "$1" "''${@:2}")
             }
             # THE WORD IS THE KEY (2026-09-27). These read write_post 1, 3
             # and 4 until this morning, and the morning the Grimoire became
