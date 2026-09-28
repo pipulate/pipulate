@@ -12,7 +12,9 @@ import common
 import lsa
 
 # --- CONFIGURATION ---
-CONFIG_DIR = Path.home() / ".config" / "articleizer"
+# ~/.config/articleizer/ is retired (2026-09-28): the keys live in
+# common.KEYS_FILE under ~/.config/pipulate/, and nothing in this file ever
+# read the old folder's path; the constant was the last mention of it.
 
 ARTICLE_FILENAME = "article.txt"
 PROMPT_FILENAME = "editing_prompt.txt"
@@ -28,6 +30,10 @@ MODEL_CANDIDATES = (
 )
 MAX_ATTEMPTS_PER_MODEL = 5
 INITIAL_RETRY_DELAY = 2
+# "Too big" on a free Gemini key is the per-minute input-token quota, not the
+# context window: 250,000 TPM is the 2.5-generation free figure, the estimate
+# in main is chars/4, and the cap sits under it with room to spare.
+PROMPT_TOKEN_SOFT_CAP = 200_000
 
 SPINE_PLACEHOLDER = "[INSERT BOOK SPINE]"
 # THE BLOG FOLDER REACHES THE MODEL (banked 2026-09-04). editing_prompt.txt is
@@ -359,6 +365,16 @@ def main():
         help="Copy the generated prompt to the clipboard and exit without calling the API."
     )
     common.add_standard_arguments(parser)
+    parser.add_argument(
+        '-m', '--keys', type=str,
+        help="Comma-separated key aliases from keys.json to rotate through when a key's "
+             "quota is spent, or 'all' for every alias in file order (same -m as publishizer)."
+    )
+    parser.add_argument(
+        '--model', type=str,
+        help="One llm model id to use instead of the Gemini pair (any installed llm plugin; "
+             "`llm models` lists them). With no -k/-m, llm resolves that provider's own key."
+    )
     args = parser.parse_args()
 
     # Use common to securely lock target
@@ -390,10 +406,31 @@ def main():
             print("Error: Could not parse the local instructions cache file. It may be corrupt.")
             return
     else:
-        api_key = common.get_api_key(args.key)
-        if not api_key:
+        # THE KEY RING (2026-09-28). -m names a ring of keys.json aliases, or
+        # `all` for every alias in file order, the same -m contextualizer.py
+        # already turns; -k names one key; neither names "default". --model
+        # with no key at all hands the credential to llm itself (its own key
+        # store or the provider's env var), so a non-Gemini model is never
+        # handed a Gemini key. The first key is drawn here and the rest wait
+        # on the ring for the quota branch below. get_api_key exits on a
+        # missing alias, so every key drawn is a real one.
+        if args.keys:
+            requested = [k.strip() for k in args.keys.split(',') if k.strip()]
+            if requested == ['all']:
+                requested = list(common.load_keys_dict().keys())
+            keys_queue = [(k, common.get_api_key(k)) for k in requested]
+        elif args.model and not args.key:
+            keys_queue = [(None, None)]
+        else:
+            keys_queue = [(args.key or "default", common.get_api_key(args.key))]
+        if not keys_queue:
             print("API Key not provided. Exiting.")
             return
+        key_name, api_key = keys_queue.pop(0)
+        if key_name:
+            print(f"🔑 Key ring: '{key_name}' drawn, {len(keys_queue)} more waiting.")
+        else:
+            print("🔑 No keys.json key drawn; llm resolves the model's own credential.")
 
         if not os.path.exists(PROMPT_FILENAME):
             print(f"Error: Prompt file '{PROMPT_FILENAME}' not found.")
@@ -444,6 +481,18 @@ def main():
             full_prompt = full_prompt.replace(SPINE_PLACEHOLDER, spine)
             print(f"📚 Book spine injected: {len(spine_entries)} articles, {len(spine):,} chars.")
 
+        # THE SIZE READING (2026-09-28). "Too big" on a free Gemini key is the
+        # per-minute input-token quota and it wears the same quota message as a
+        # spent day; the ring cannot turn its way past it, since every free key
+        # has the same minute. chars/4 is the estimate; it is printed on every
+        # run so the number is read before the call, and past the soft cap the
+        # escape is named: --model onto a provider whose key is paid, or a
+        # local ollama tag, with `llm models` for the spelling.
+        est_tokens = len(full_prompt) // 4
+        print(f"📏 Prompt: {len(full_prompt):,} chars, about {est_tokens:,} tokens.")
+        if est_tokens > PROMPT_TOKEN_SOFT_CAP:
+            print(f"⚠️  Above the {PROMPT_TOKEN_SOFT_CAP:,}-token soft cap for a free key's minute: "
+                  "a quota refusal here is size, not count. Escape: --model <paid or local id>.")
         if args.copy:
             try:
                 # We borrow the existing robust clipboard function from prompt_foo
@@ -454,16 +503,16 @@ def main():
                 print(f"❌ Failed to copy to clipboard: {e}")
             return
 
-        print(
-            "Calling the Universal Adapter "
-            f"(primary {MODEL_CANDIDATES[0]}, fallback {MODEL_CANDIDATES[1]})..."
-        )
-        total_attempts = MAX_ATTEMPTS_PER_MODEL * len(MODEL_CANDIDATES)
-        retry_delays = {name: INITIAL_RETRY_DELAY for name in MODEL_CANDIDATES}
-        retry_after = {name: 0.0 for name in MODEL_CANDIDATES}
+        models = (args.model,) if args.model else MODEL_CANDIDATES
+        fallback = f", fallback {models[1]}" if len(models) > 1 else ", no fallback"
+        print(f"Calling the Universal Adapter (primary {models[0]}{fallback})...")
+        total_attempts = MAX_ATTEMPTS_PER_MODEL * len(models) * (1 + len(keys_queue))
+        retry_delays = {name: INITIAL_RETRY_DELAY for name in models}
+        retry_after = {name: 0.0 for name in models}
+        quota_hit = set()
         for attempt in range(total_attempts):
-            model_name = MODEL_CANDIDATES[attempt % len(MODEL_CANDIDATES)]
-            model_attempt = (attempt // len(MODEL_CANDIDATES)) + 1
+            model_name = models[attempt % len(models)]
+            model_attempt = (attempt // len(models)) % MAX_ATTEMPTS_PER_MODEL + 1
             wait = max(0.0, retry_after[model_name] - time.monotonic())
             if wait:
                 print(
@@ -474,7 +523,8 @@ def main():
 
             try:
                 model = llm.get_model(model_name)
-                model.key = api_key  # Assign the key directly to the adapter
+                if api_key:
+                    model.key = api_key  # a keys.json key; else llm's own store
                 response = model.prompt(full_prompt)
                 gemini_output = response.text()
                 print(f"Successfully received response from API via {model_name}.")
@@ -492,13 +542,32 @@ def main():
             except Exception as e:
                 # Check for retriable server-side or rate-limit errors
                 error_str = str(e)
-                if ("429" in error_str and "Quota" in error_str) or \
+                lowered = error_str.lower()
+                # THE CLASSIFIER ASKED FOR THE WRONG WORD (convicted 2026-09-28
+                # by the receipt that mounted this ride): it demanded "429" AND
+                # "Quota" in one message, and the Gemini plugin's quota text
+                # carries neither the status code nor the capital ("You exceeded
+                # your current quota ... Quota exceeded for metric: ...
+                # free_tier_requests, limit: 20"), so the commonest failure this
+                # script has fell through to the UNRECOVERABLE branch with the
+                # fallback model never tried. contextualizer.py's sibling check
+                # had read the lowercase word all along. A quota is named by
+                # the word; a bad JSON body is retried on the other model rather
+                # than ending the run with the output printed and nothing saved.
+                is_parse = isinstance(e, json.JSONDecodeError)
+                is_quota = (not is_parse) and (
+                    "quota" in lowered or "resource_exhausted" in lowered
+                    or "429" in error_str)
+                if is_quota or is_parse or \
                    ("504" in error_str and "timed out" in error_str) or \
                    ("503" in error_str) or \
                    ("500" in error_str) or \
-                   ("high demand" in error_str.lower()):
+                   ("high demand" in lowered):
                     
-                    print(f"Retriable API Error from {model_name}: {e}")
+                    kind = "QUOTA" if is_quota else ("PARSE" if is_parse else "TRANSIENT")
+                    print(f"Retriable API Error [{kind}] from {model_name}: {e}")
+                    if is_parse and 'gemini_output' in locals():
+                        print("--- API Raw Output (head) ---\n" + gemini_output[:400])
                     # QUOTA WINDOW DISCIPLINE (live-fire convicted 2026-07-19):
                     # each model gets its own exponential clock. A failure on
                     # Flash therefore falls through to Lite immediately, while
@@ -509,9 +578,25 @@ def main():
                     wait = max(retry_delays[model_name], hinted_delay)
                     retry_after[model_name] = time.monotonic() + wait
                     retry_delays[model_name] *= 2
+                    if is_quota:
+                        quota_hit.add(model_name)
+                    # THE KEY RING TURNS (2026-09-28). A quota is per key and per
+                    # model, so a key is spent only when every model on it has
+                    # said quota; then the next key on the ring is drawn with
+                    # fresh clocks and no wait, because a spent key's retry hint
+                    # names the minute and not the day. With one key on the ring
+                    # the hint is honored exactly as before.
+                    if is_quota and quota_hit >= set(models) and keys_queue:
+                        key_name, api_key = keys_queue.pop(0)
+                        quota_hit.clear()
+                        retry_after = {name: 0.0 for name in models}
+                        retry_delays = {name: INITIAL_RETRY_DELAY for name in models}
+                        print(f"🔑 Every model on the current key reports quota; "
+                              f"rotating to '{key_name}' ({len(keys_queue)} more waiting).")
+                        continue
 
                     if attempt + 1 < total_attempts:
-                        next_model = MODEL_CANDIDATES[(attempt + 1) % len(MODEL_CANDIDATES)]
+                        next_model = models[(attempt + 1) % len(models)]
                         next_wait = max(0.0, retry_after[next_model] - time.monotonic())
                         if next_wait:
                             print(
@@ -524,11 +609,14 @@ def main():
                     print(f"\nAn unrecoverable error occurred while calling the API: {e}")
                     if 'gemini_output' in locals():
                         print("--- API Raw Output ---\n" + gemini_output)
+                    print(f"Manual lane: --copy, paste into a web UI, save its JSON as "
+                          f"{INSTRUCTIONS_CACHE_FILE}, rerun with --local.")
                     return
         else:  # This block runs if the loop completes without a break
             print(
-                f"Error: {MAX_ATTEMPTS_PER_MODEL} attempts per model exhausted. "
-                "Failed to get a successful response from the API."
+                f"Error: {MAX_ATTEMPTS_PER_MODEL} attempts per model on every key exhausted. "
+                "Failed to get a successful response from the API.\n"
+                f"Manual lane: --copy, paste into a web UI, save its JSON as {INSTRUCTIONS_CACHE_FILE}, rerun with --local."
             )
             return
 
