@@ -261,7 +261,7 @@ def run_ai_context_generation():
     result = subprocess.run([sys.executable, str(generator)], cwd=str(PIPULATE_ROOT),
                             capture_output=not VERBOSE, text=True)
     if result.returncode != 0:
-        print("⚠️  AI_CONTEXT generation returned non-zero; continuing release.")
+        print("⚠️  journal index generation returned non-zero; continuing release.")
         for stream in (result.stdout, result.stderr):
             if stream and stream.strip():
                 print(stream.rstrip(), file=sys.stderr)
