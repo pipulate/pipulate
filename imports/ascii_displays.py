@@ -902,7 +902,7 @@ def _figurate_workspace_tree():
 """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
-    human = Panel(human_art, title="🗂️ Workshop — corporate · personal · shared", border_style="white")
+    human = Panel(human_art, title="Workshop — corporate · personal · shared", border_style="white")
     return human, ai_art
 
 
