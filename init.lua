@@ -797,7 +797,7 @@ function hop_off_sandworm()
         .. "   this Manifest's wc -c line, its receipt count, and the newest\n"
         .. "   receipt's date -- pure functions of the bytes the cartridge seals.\n"
         .. "   Close with one line the operator completes after the compile:\n"
-        .. "   Deed: foo-________.zip   (ls -t foo-*.zip | head -1)\n"
+        .. "   Deed: qamy.ai_NNNN-hhhhhhhh.zip   (ls -t qamy.ai_*.zip | head -1)\n"
         .. "   The seal is the signature; the fingerprint is how the deed is found.\n\n"
         .. "FINALITY: after beat 6, this discussion is CLOSED. Emit NO five-car\n"
         .. "train, NO probes, NO patches beyond the BANK cars of beat 2, and NO\n"
