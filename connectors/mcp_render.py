@@ -33,6 +33,7 @@ THE RELAY LANES (landed 2026-09-28, the relay's --help read by hand first):
   .venv/bin/python connectors/mcp_render.py tools                  # spawn the relay, initialize, tools/list: one line per tool
   .venv/bin/python connectors/mcp_render.py schema pr_x            # one tool's inputSchema as JSON
   .venv/bin/python connectors/mcp_render.py call pr_x '{"k":"v"}'  # tools/call; exit 1 on a JSON-RPC error or isError
+  .venv/bin/python connectors/mcp_render.py switch                 # which switch turns WebMCP on in the flake's Chromium: headless, no tab, no login
 
 Each lane spawns the relay (RELAY_CMD; --relay overrides it, --widget-origin
 names the page origin it admits) with LD_LIBRARY_PATH cleared, the loader
@@ -485,6 +486,76 @@ def cmd_call(args):
     return 0
 
 
+# THE SWITCH IS READ OFF THE BROWSER, NEVER GUESSED INTO A RENDER (2026-09-29,
+# the first game). The flake's Chromium carries WebMCP in its binary (deed 1643)
+# and its feature names are INFERRED from mangled accessor strings (deed 1644);
+# which command-line switch turns the feature on is unread. The cheapest reading
+# needs no tab, no login and no relay: launch the pinned Chromium headless on a
+# throwaway profile with each candidate switch, open about:blank, and ask the
+# page whether navigator carries the WebMCP surface (navigator.modelContext in
+# the explainer, INFERRED; beside it a census of every navigator property naming
+# model or mcp, so another spelling still shows). The run with no switch is the
+# control and must read undefined; a candidate that reads object is the switch
+# the render lane launches with. THE BROWSER IS NOT A CONFIG FILE: this reads
+# switches and toggles nothing.
+SWITCH_CANDIDATES = (
+    "",
+    "--enable-blink-features=WebMCPTesting,WebMCP",
+    "--enable-features=WebMCPTesting,WebMCP",
+)
+SWITCH_JS_TYPE = "return typeof navigator.modelContext"
+SWITCH_JS_KEYS = ("return (function(){var r=[];for(var k in navigator){"
+                  "if(/model|mcp/i.test(k)){r.push(k)}}return r})()")
+
+
+def cmd_switch(args):
+    import shutil
+    try:
+        import undetected_chromedriver as uc
+    except ImportError as exc:
+        print(f"SWITCH_NO_DRIVER: {exc}")
+        return 1
+    browser = shutil.which("chromium") or shutil.which("chromium-browser")
+    driver_path = shutil.which("undetected-chromedriver")
+    if not browser or not driver_path:
+        print(f"SWITCH_NO_BROWSER: chromium={browser} driver={driver_path}"
+              " (the flake's pair is on PATH inside the Pipulate Nix shell on Linux)")
+        return 1
+    print(f"# browser={browser}")
+    live = []
+    for switch in SWITCH_CANDIDATES:
+        label = switch or "(none)"
+        options = uc.ChromeOptions()
+        for argument in ("--headless=new", "--no-sandbox", "--disable-dev-shm-usage", switch):
+            if argument:
+                options.add_argument(argument)
+        try:
+            driver = uc.Chrome(options=options, browser_executable_path=browser,
+                               driver_executable_path=driver_path)
+        except Exception as exc:
+            print(f"switch={label} SWITCH_LAUNCH_FAILED {type(exc).__name__}: {str(exc)[:200]}")
+            continue
+        try:
+            driver.get("about:blank")
+            kind = driver.execute_script(SWITCH_JS_TYPE)
+            keys = driver.execute_script(SWITCH_JS_KEYS)
+        except Exception as exc:
+            kind, keys = f"read failed: {type(exc).__name__}", []
+        finally:
+            driver.quit()
+        print(f"switch={label} modelContext={kind} navigator_keys={keys}")
+        if kind == "object":
+            live.append(label)
+    if "(none)" in live:
+        print("SWITCH_CONTROL_FAILED: the run with no switch already reads object, so this census cannot tell the switches apart")
+        return 1
+    if live:
+        print("SWITCH_LIVE " + " | ".join(live))
+        return 0
+    print("SWITCH_NONE: no candidate exposed navigator.modelContext; the feature name or the switch spelling is still unread")
+    return 1
+
+
 def main():
     parser = argparse.ArgumentParser(
         # ONE SOURCE FOR THREE SURFACES: the sources roster reads this
@@ -546,6 +617,10 @@ def main():
     relay_options(call, 90)
     call.add_argument("--json", action="store_true", help="the whole result as JSON")
     call.set_defaults(func=cmd_call)
+
+    switch = modes.add_parser("switch", help="which command-line switch turns WebMCP on in the flake's Chromium:"
+                              " three headless launches on a throwaway profile, no tab, no login, no relay")
+    switch.set_defaults(func=cmd_switch)
 
     args = parser.parse_args()
     try:
