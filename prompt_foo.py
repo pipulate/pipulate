@@ -1336,7 +1336,7 @@ def scrub_compile_payload(text: str, apply_substitutions: bool = True, scan_deny
 # pollution, no package requirement) and re-exported so every existing probe
 # of the form `from prompt_foo import verify_context_cartridge` keeps working
 # unchanged. The thin wrapper below restores the repo-lane defaults the core
-# deliberately does not carry: REPO_ROOT/foo.zip and the captured logger.
+# deliberately does not carry: REPO_ROOT/<CARTRIDGE_STEM>.zip and the captured logger.
 import importlib.util as _foo_cartridge_ilu
 
 _foo_cartridge_spec = _foo_cartridge_ilu.spec_from_file_location(
@@ -1354,14 +1354,26 @@ _extract_prompt_member = foo_cartridge._extract_prompt_member
 verify_context_cartridge = foo_cartridge.verify_context_cartridge
 
 
-# Rotation depth for hash-stamped cartridge snapshots. foo.zip stays the
-# canonical newest (every tool + probe that names foo.zip keeps working);
-# each compile also drops foo-<hash8>-NN.zip so a discussion leaves several
-# attachable targets behind, pruned to the newest FOO_CARTRIDGE_KEEP. The
+# THE DEED IS NAMED FOR THE DOOR (2026-09-29). The archive is named for the
+# address that explains it: <CARTRIDGE_STEM>.zip is the canonical newest, and
+# each compile drops <CARTRIDGE_STEM>_<deed>-<hash8>.zip beside it, the deed
+# number FIRST so a plain sort reads chronologically, pruned to the newest
+# FOO_CARTRIDGE_KEEP. Snapshots minted before the rename keep their foo-
+# names (an archive is never renamed; the articles cite them), so the
+# counter takes its maximum over BOTH spellings and the prune sorts both in
+# one roster by deed number: otherwise the deeds restart at 1 and the old
+# twenty never age out. One stem, one line to change for a fork. The
 # number is monotonic (max existing + 1), never a logrotate shift, so a
 # snapshot's name is stable for its whole life — safe to attach to a ticket.
+CARTRIDGE_STEM = "qamy.ai"
 FOO_CARTRIDGE_KEEP = 20
-_ROTATED_CARTRIDGE_RE = re.compile(r"^foo-[0-9a-f]{8}-(\d+)\.zip$")
+_ROTATED_CARTRIDGE_RE = re.compile(rf"^{re.escape(CARTRIDGE_STEM)}_(\d+)-[0-9a-f]{{8}}\.zip$")
+_LEGACY_CARTRIDGE_RE = re.compile(r"^foo-[0-9a-f]{8}-(\d+)\.zip$")
+
+def _snapshot_seq(path: Path):
+    """The deed number of a rotated snapshot in either spelling, else None."""
+    match = _ROTATED_CARTRIDGE_RE.match(path.name) or _LEGACY_CARTRIDGE_RE.match(path.name)
+    return int(match.group(1)) if match else None
 
 
 def write_context_cartridge(
@@ -1370,17 +1382,17 @@ def write_context_cartridge(
 ) -> Path:
     """Repo-lane wrapper over the stdlib core: default path + captured logger.
 
-    The default lane ROTATES: it writes the canonical foo.zip unchanged, then
+    The default lane ROTATES: it writes the canonical <CARTRIDGE_STEM>.zip unchanged, then
     archives a hash-stamped, monotonically-numbered snapshot beside it and
     prunes to the newest FOO_CARTRIDGE_KEEP. An explicit output_path opts out
     of rotation (single-file behavior, for tests and callers that name their
-    own target). Rotation failures never block the compile — foo.zip is
+    own target). Rotation failures never block the compile — the canonical zip is
     already written and verified before the snapshot is even attempted.
 
     RETURNS the SNAPSHOT path when rotation succeeds, and the canonical
-    foo.zip when it does not or when output_path was named. Both are Paths to
+    <CARTRIDGE_STEM>.zip when it does not or when output_path was named. Both are Paths to
     a written, verified cartridge; the snapshot is the one whose name still
-    means THIS compile tomorrow, since foo.zip is overwritten by the next one.
+    means THIS compile tomorrow, since the canonical zip is overwritten by the next one.
     That is why the egress footer quotes what this returns.
     """
     if output_path is not None:
@@ -1389,25 +1401,23 @@ def write_context_cartridge(
         )
 
     repo = Path(REPO_ROOT)
-    canonical = repo / "foo.zip"
+    canonical = repo / f"{CARTRIDGE_STEM}.zip"
     result = foo_cartridge.write_context_cartridge(
         final_output, canonical, log=logger.print
     )
 
     try:
         short_hash = foo_cartridge.verify_context_cartridge(canonical)["archive_sha256"][:8]
-        seq = 0
-        for existing in repo.glob("foo-*.zip"):
-            match = _ROTATED_CARTRIDGE_RE.match(existing.name)
-            if match:
-                seq = max(seq, int(match.group(1)))
-        seq += 1
-        snapshot = repo / f"foo-{short_hash}-{seq:02d}.zip"
+        seq = 1 + max(
+            (n for n in map(_snapshot_seq, repo.glob("*.zip")) if n is not None),
+            default=0,
+        )
+        snapshot = repo / f"{CARTRIDGE_STEM}_{seq}-{short_hash}.zip"
         shutil.copy2(canonical, snapshot)
 
         rotated = sorted(
-            (p for p in repo.glob("foo-*.zip") if _ROTATED_CARTRIDGE_RE.match(p.name)),
-            key=lambda p: int(_ROTATED_CARTRIDGE_RE.match(p.name).group(1)),
+            (p for p in repo.glob("*.zip") if _snapshot_seq(p) is not None),
+            key=_snapshot_seq,
         )
         for stale in rotated[:-FOO_CARTRIDGE_KEEP]:
             stale.unlink()
@@ -3934,7 +3944,7 @@ def main():
         copy_to_clipboard(egress_text)
     elif not args.no_clipboard and profile.get('secrets', 'block') == 'warn':
         print("🧱 LOCAL-LANE EGRESS FENCE: automatic clipboard/SSH-bridge copy disabled while secrets=WARN.")
-        print("   Inspect foo.zip or an explicit -o file locally.")
+        print(f"   Inspect {CARTRIDGE_STEM}.zip or an explicit -o file locally.")
         print("   For sharing, rerun with --profile baseline: substitutions ON, denylist/secrets BLOCK.")
 
 if __name__ == "__main__":
