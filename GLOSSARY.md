@@ -1252,6 +1252,41 @@ Entries are alphabetical, numbers spelled as spoken.
   terminal and "guided capture requires a TTY on stdin before browser launch"
   as a compile receipt. Two lanes, two strings, one command -- the pair
   discriminated exactly as predicted, and neither reading alone could have.
+- **The Machine Is Named by Its Prompt** — *every command block is headed
+  by the prompt string of the terminal it runs in.* Banked 2026-09-29,
+  convicted at deed 1682; its checklist line landed at deed 1685 as item 13
+  of prompt_foo.py's AI Self-Correction Checklist and rode deed 1686's own
+  Prompt section as the witness. THE CONVICTION: a reply said "Run on the
+  desk, before touching the router", a nickname carried over from the 09-14
+  article, and the operator ran the block on the Linux workbench, then
+  again on the Mac, and could not tell which one the reply had meant; the
+  router step it gated had not been done, so both readings were the BEFORE
+  and neither was a miss of the operator's. THE MECHANISM, three parts.
+  (1) Every fenced command block is preceded by one line naming its
+  terminal by the prompt string the operator sees there, `(nix) pipulate $`
+  on the workbench and the Mac's own user@host prompt on the Mac, never a
+  nickname ("the desk", "the box", "locally"), repeated on every block of
+  every turn and never abbreviated after first use, because the reader is
+  Dory (THE FINDING DORY RULE): no memory of the last line. (2) PROBES
+  always run where `compile` runs, by construction: only that machine
+  executes `!` lines, so a command for any other machine is a WITNESS,
+  rides in (5) EXTERNAL DELIVERABLES under that machine's own prompt, comes
+  back as a paste, and is never echoed. (3) A step in a web console (a
+  router, a registrar, a vendor's admin) is a numbered list in the shape the
+  operator drew the same day: the address to open, the menu path, each field
+  with the value to type, the Save and Apply clicks, and a picture of what
+  the screen shows when it is done; the pfSense Host Overrides table with
+  its three rows and two www aliases was the first such picture. RENT THIS
+  PAYS: a block with no prompt line above it is a block the reply has not
+  decided where to run, and the reader will decide for it. THE LOCATOR IS
+  STRUCTURAL, not remembered: item 13 sits beside item 12 (THE PROBE ECHO
+  INVARIANT) because the two are one fact seen from two sides, the `!` line
+  runs on the compile machine and so does everything in (1). Where it does
+  NOT live, ruled the same day: apply.py, which runs no probe and refuses
+  comment-only growth (THE ACTUATOR IS NOT THE LEDGER). Sibling of THE
+  OUT-OF-BAND STEP RULE (a hand step the terminal cannot take rides at the
+  top, lettered) and THE FINDING DORY RULE (walk every hand step from the
+  operator's chair); this one names WHICH chair.
 - **The MCP Receipt Rule** — *a tool call is a receipt or it is nothing.*
   Banked 2026-07-29; mechanism witnessed 2026-07-25 by the fault harness,
   vendor-witnessed 2026-07-29 and 2026-08-06. A model-mediated tool call
