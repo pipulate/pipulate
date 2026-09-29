@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
-# Pipulate MCK Bootstrap v0.5.0 -- the Mother Cat Kata launcher
+# Pipulate MCK Bootstrap v0.6.0 -- the Mother Cat Kata launcher
 # =============================================================
+#
+# WHAT CHANGED IN v0.6.0 -- A WORD ROUTES (2026-09-29)
+#   walk svb SVB-133: the first word is looked up as an executable under a
+#   private tier's walks/ folder (personal, then corporate) and run with
+#   everything after the word, untouched; no tier holds it, the word is a
+#   trail, as before. Options before the word are the launcher's; options
+#   after it belong to the walk, or reach the launcher only after the lookup
+#   says trail (so --yolo after a trail name governs the ride and not the
+#   install offer, which asks; PIPULATE_MCK_ASSUME_YES=1 skips it). --where
+#   is the launcher's wherever it sits. This file names no walk: a
+#   proprietary walk is a name in a private repo, never a word in the flake.
 #
 # WHAT CHANGED IN v0.5.0 -- THE EXPORTS FILE IS FOUND, NOT TYPED
 #   bookmark_import.py has written <name>.exports.sh beside every surface
@@ -109,14 +120,29 @@ YOLO=0
 WHERE_ONLY=0
 MCK_POSITIONAL=""
 EXPORTS_OVERRIDE=""
-for MCK_ARG in "$@"; do
-  case "$MCK_ARG" in
+# THE ROUTE IS THE FIRST WORD (v0.6.0). Everything after the first positional is
+# held back, untouched, until the workshop is found and the word is looked up:
+# a routed walk owns its own arguments (a ticket key, -n, --fresh, a bare -), so
+# this loop must not refuse them; a trail gets them parsed by the same case,
+# exactly as before, once the lookup says the word is a trail. --where is the
+# launcher's wherever it sits, because it asks about the workshop and never
+# about a walk. Options before the word are parsed here as they always were.
+HELD_ARGS=()
+mck_option() {
+  case "$1" in
     --yolo) YOLO=1 ;;
     --where) WHERE_ONLY=1 ;;
-    --exports=*) EXPORTS_OVERRIDE="${MCK_ARG#--exports=}" ;;
-    -*) echo "Error: unknown option '$MCK_ARG' (only --yolo, --where and --exports=PATH are understood)" >&2; exit 1 ;;
-    *) [ -n "$MCK_POSITIONAL" ] || MCK_POSITIONAL="$MCK_ARG" ;;
+    --exports=*) EXPORTS_OVERRIDE="${1#--exports=}" ;;
+    -*) echo "Error: unknown option '$1' (only --yolo, --where and --exports=PATH are understood)" >&2; exit 1 ;;
+    *) [ -n "$MCK_POSITIONAL" ] || MCK_POSITIONAL="$1" ;;
   esac
+}
+for MCK_ARG in "$@"; do
+  if [ -n "$MCK_POSITIONAL" ] && [ "$MCK_ARG" != "--where" ]; then
+    HELD_ARGS+=("$MCK_ARG")
+  else
+    mck_option "$MCK_ARG"
+  fi
 done
 TRAIL_NAME="${MCK_POSITIONAL:-${MCK_TRAIL:-}}"
 if [ -z "$TRAIL_NAME" ] && [ "$_tpl_trail" != "$_ph_trail" ]; then
@@ -367,6 +393,36 @@ if [ ! -x "$PY" ]; then
 --------------------------------------------------------------
 CARD
   exit 1
+fi
+# --- THE WALK ROUTER (v0.6.0): a word routes; a flag does not ---------------
+# `walk svb SVB-133`: the first word is looked up as an executable under the
+# private tiers' walks/ folders, local overriding canon the way the trail lanes
+# below do, and when one is found it runs with everything held back after the
+# word; a walk writes context.txt itself, the way the rider does, and its exit
+# code is this launcher's. No tier holds it: the word is a trail, and the held
+# arguments are parsed as launcher options exactly as they were before this
+# block existed. The tiers are gitignored, so the names live in private repos
+# and this public launcher knows none of them; a checkout with no walks/ folder
+# routes nothing and behaves as it always did. shared/ is not a lane: its
+# grammar is shared/<name>/, and a walk handed to a teammate is copied into
+# their personal tier or promoted to corporate. NAMED LIMITATION: a routed walk
+# runs in the shell this launcher was typed in, so from outside the workshop
+# shell a walk that needs a connector word (jira, botify) refuses by that
+# word's name; the .#quiet wrap the rider gets below is not yet extended here.
+WALK_SEARCH_DIRS="Workshop/personal/walks Workshop/corporate/walks"
+for WALK_DIR in $WALK_SEARCH_DIRS; do
+  if [ -f "$WALK_DIR/$TRAIL_NAME" ] && [ -x "$WALK_DIR/$TRAIL_NAME" ]; then
+    echo "Walk resolved: $WALK_DIR/$TRAIL_NAME" >&2
+    if [ ${#HELD_ARGS[@]} -gt 0 ]; then
+      exec "$WALK_DIR/$TRAIL_NAME" "${HELD_ARGS[@]}"
+    fi
+    exec "$WALK_DIR/$TRAIL_NAME"
+  fi
+done
+if [ ${#HELD_ARGS[@]} -gt 0 ]; then
+  for MCK_ARG in "${HELD_ARGS[@]}"; do
+    mck_option "$MCK_ARG"
+  done
 fi
 # --- TRAIL SEARCH PATH (local overrides canon) -------------------------
 # Ordered like PATH: the first lane that has the file wins. The two churn
