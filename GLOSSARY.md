@@ -943,6 +943,32 @@ Entries are alphabetical, numbers spelled as spoken.
   assignment, the stray paren riding the second — two drafts of one line
   shipped together. Dead code beside a syntax error is the signature of an
   emitter that changed its mind mid-file and shipped both minds.
+- **The Folder Is a Variable** — *a hand fence runs where the prompt stands,
+  and only app resolves the root.* Banked 2026-09-29, convicted twice in one
+  paste at deed 1677; graduated at the dismount of the same ride, deed 1679.
+  apply.py has resolved Targets from PIPULATE_ROOT since deed 1642, so patch
+  cars land from any folder and the operator now types from any folder, while
+  every other line of a hand fence still runs where the prompt stands. The
+  rename ride's BEFORE tap was typed in remotes/honeybot/www/qamy.ai/: six of
+  seven probes printed No such file, the ls pair printed 0 0 through its own
+  2>/dev/null (a legal reading from the wrong folder, THE FALLBACK PRINTED THE
+  SUCCESS TOKEN), and command -v deed, which reads PATH and never the disk,
+  took the ride's only real BEFORE. Car 6's rm -f foo.zip ran in the same
+  folder, removed nothing and printed nothing, which its instruction had
+  promised ("You will see nothing"), so the step's success and its failure
+  printed the same thing and the miss surfaced only in the article's own ls
+  of the root; the compile lane can see neither fault, because bff cd's to
+  the root before the executor runs. THE RULE: a hand fence opens with
+  cd "$PIPULATE_ROOT" && pwd, so its first receipt names the folder every
+  later line ran in; and a hand step prints a different thing in the world
+  where it did nothing (rm -v and never rm -f, mv -v, a verdict token), so
+  that a "You will see" can never be true in both worlds. WITNESSED at deed
+  1679, the next hand fence: the cd printed the root first, rm -v printed
+  the path it removed, and STALE_ALIAS_PRESENT read STALE_ALIAS_GONE one
+  compile later. Sibling of THE OPERATOR IS A VARIABLE (the folder is the
+  variable this time), of THE FINDING DORY RULE at (c) and (g), and of THE
+  LANE-DISAGREEMENT WITNESS (the hand lane is the one a wrong folder can
+  blind).
 - **The Forcing-Pair Rule** — *30-and-3 and axis-forcing are one instrument
   with two grips.* Articulation-banked 2026-07-27, four-model fan-out. Naming
   the relationship is the win neither rule could carry alone. 30-and-3 fights
