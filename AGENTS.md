@@ -1,9 +1,18 @@
 # AGENTS.md — Pipulate
 
-This repo predates the AGENTS.md / Agent Skills / OKF conventions and complies
-with them by *pointing*, not duplicating. The sources of truth here are
-executable, so this file is a signpost. Do not add sibling status .md files;
-anything written here that duplicates code will drift and is a bug.
+This repository carries Agent Skills under https://agentskills.io/specification
+(`.agents/skills/*/SKILL.md`, a YAML head over a Markdown body, loaded on
+demand), with this file as the nearest-ancestor signpost that points at
+executable truth instead of duplicating it. Every tool call taught here runs
+on localhost under the POSIX conventions of a command, stdin, stdout and an
+exit code, so that its output lands in the sealed compile (`foo.zip`) as a
+receipt; a cloud-side tool call that cannot be reconstructed here is
+non-reproducible, non-portable, cannot be compiled into a cartridge, and is
+out of scope by that rule, not by taste.
+
+This repo predates those conventions and complies with them by *pointing*,
+not duplicating. Do not add sibling status .md files; anything written here
+that duplicates code will drift and is a bug.
 
 ## Setup (the executable version of "Dev environment tips")
 
