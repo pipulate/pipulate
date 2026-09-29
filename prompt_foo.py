@@ -1988,8 +1988,8 @@ Before addressing the user's prompt, perform the following verification steps:
             # newline-bounded marker, so cartridge extraction is safe.
             frontmatter = "\n".join([
                 "---",
-                "type: ContextCartridge",
-                "name: pipulate-prompt-fu-payload",
+                "type: qa-zip-archive",
+                "name: Instant Portable Drop-in Context for AI",
                 "description: \"Compiled AGENTS.md-class context artifact. Read the final section labeled Prompt first; it holds the current actionable request. Everything above it is supporting evidence. Propose edits as SEARCH/REPLACE blocks applied by apply.py.\"",
                 "entrypoint: '--- START: Prompt ---'",
                 "tools: .venv/bin/python cli.py mcp-discover",
