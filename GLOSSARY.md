@@ -549,6 +549,33 @@ Entries are alphabetical, numbers spelled as spoken.
   for the exact tokens that differ between the two worlds), never by COUNT;
   and when a cap is hit exactly, treat the receipt as TRUNCATED rather than
   complete.
+- **The Car Mints Its Own Twin** — *a SEARCH must be unique in the file the
+  earlier blocks of the same car leave behind.* Banked 2026-09-29, convicted
+  at deed 1685 by apply.py's own interlock. Car 1 of the three-door ride
+  carried three blocks against nixops.sh: block 1 wrote a sync_installer
+  function whose body carries the rsync line that copies the installer to
+  the qamy.ai pad; block 3 searched for exactly that line, to replace the
+  bare rsync at the bottom of the full sync with a call. By the time block
+  3 ran the file held two copies, apply.py printed "Ambiguous match (found
+  2 times)" and wrote nothing, correctly. The emitter had checked every
+  SEARCH for uniqueness against the file the PAYLOAD showed and never
+  against the file its own earlier blocks would leave. WHAT IT LEFT: the
+  --installer lane complete, the full sync moving one pad's installer and
+  not the other's for one commit (08b27a2a), and the function's own comment
+  ("the full sync calls it below") false until the re-anchored block landed
+  one car late (062d679d, anchored on the qamy.ai tree rsync, which occurs
+  once). No full sync ran in the window, so no door drifted, and forging
+  forward was right: the interlock lands nothing halfway, and the next tap
+  named the gap to the line. THE RULE: before emitting a car, walk its
+  blocks in order and, for each SEARCH, count its occurrences in the file as
+  the blocks ABOVE it will leave that file; a block that inserts a line a
+  later block will search for goes LAST, or the later block anchors on a
+  neighbour the insertion cannot reproduce. SINGLE-CANDIDATE BLINDNESS from
+  the other side: there a selector was never shown a second candidate; here
+  the car created the second candidate itself, and the interlock, which is a
+  selector, refused. Sibling of THE SUBSET REPLACE (the patch's own text
+  already in the file) and THE EPITAPH COUNTER (the patch's own comment as a
+  hit): in all three the emitter's own output is what the instrument finds.
 - **The Case-Blind Witness Corollary** — *a case-sensitive probe against a
   case-mismatched target.* Banked 2026-07-31, self-convicted in-compile. A
   witness pattern must match the CASE the target actually uses, or the probe
