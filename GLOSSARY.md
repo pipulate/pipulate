@@ -1516,6 +1516,35 @@ Entries are alphabetical, numbers spelled as spoken.
   names an instrument DECISIVE on one branch only. STANDING CONSEQUENCE: any
   defect whose sole witness is the payload gets a second channel -- git diff,
   the generated artifact, or a fresh compile -- BEFORE a patch is proposed.
+- **A Sed Range with No End Runs to EOF** — *a range delete whose end anchor
+  never matches, and a guard that reports after the write.* Banked 2026-09-29,
+  convicted at deed 1693's Car 3, read at 1695 and 1696. A sed address range
+  `/start/,/end/` is a state machine: it switches on at the first line matching
+  start and off at the next line matching end, and when no later line matches
+  end it stays on to the last line of the file. Under `-i` the file is already
+  rewritten by the time any guard after it prints, so a guard that says
+  "nothing was cut" is not a reading of what the sed did. CONVICTION: a hand
+  fence deleting from `# # Context 1` to the live board's START line in
+  context.txt ran after the operator had, by habit, commented that board out
+  ahead of the train (THE OPERATOR IS A VARIABLE), so the end pattern matched
+  nothing, the range ate Contexts 1 through 4 and both commented boards, the
+  guard printed `STOP_blocks=0` beside the words "nothing was cut", a later car
+  appended a fresh board over the wreck, and the next compile read no Context
+  4; the `.bak` written before the sed held what was eaten. PRESCRIPTION, in
+  order: (1) count the end anchor BEFORE the sed, with the pattern the sed will
+  use, and stop on any count but one (test, then sed, never sed then test);
+  (2) write the `.bak` before either; (3) on every branch print what happened
+  (`deleted N lines`, `cut nothing`) and the restore line, so the STOP world and
+  the GO world never share a sentence; (4) when the operator's own hand can
+  move the anchor between the reply and the run, the fence is no candidate for
+  a range delete at all, and the cure is a block a program writes and replaces
+  by marker, the way svb --write already does. RENT THIS PAYS: it predicts the
+  shape of the failure, a file truncated at the range's start with a green
+  guard under it, and it says which half of the fence to write first. Sibling
+  of THE GATE SPEAKS A VERDICT (the guard prints a verdict, never a number) and
+  THE SILENCED CHANNEL (a verdict that reads a channel the instrument closed);
+  cousin of THE FOLDER IS A VARIABLE (a hand step that prints the same thing in
+  both worlds).
 - **The Silenced Channel** — *a verdict that reads a stream the probe closed.*
   Banked 2026-08-09, self-convicted inside one turn. A probe that DISCARDS a
   stream, paired with a caboose whose verdict clause READS that stream, is a
