@@ -26,9 +26,14 @@ rsync -av imports/ascii_displays.py $TARGET:~/www/mikelev.in/imports/
 echo "🚀 Syncing NPvg pad (one address, two bodies)..."
 ssh $TARGET "mkdir -p ~/www/npvg.org"
 rsync -av remotes/honeybot/www/npvg.org/ $TARGET:~/www/npvg.org/
-# ONE SOURCE, TWO PROJECTIONS: the installer lives at assets/installer/install.sh.
-# release.py projects it to Pipulate.com; this line projects it to the pad.
+# ONE SOURCE, THREE PROJECTIONS: the installer lives at assets/installer/install.sh.
+# release.py projects it to Pipulate.com; the lines below project it to both pads.
 rsync -av assets/installer/install.sh $TARGET:~/www/npvg.org/install.sh
+
+echo "🚀 Syncing qamy.ai door (npvg.org's shape, its own tree)..."
+ssh $TARGET "mkdir -p ~/www/qamy.ai"
+rsync -av remotes/honeybot/www/qamy.ai/ $TARGET:~/www/qamy.ai/
+rsync -av assets/installer/install.sh $TARGET:~/www/qamy.ai/install.sh
 
 echo "🚀 Syncing NixOS Config..."
 rsync --delete -av remotes/honeybot/nixos/ $TARGET:~/nixos-config-staged/
