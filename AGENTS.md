@@ -16,7 +16,10 @@ that duplicates code will drift and is a bug.
 
 ## Setup (the executable version of "Dev environment tips")
 
-- `nix develop` — full environment (server + JupyterLab). See `flake.nix`.
+- `nix develop` — the full environment. On a terminal it stops at a short
+  list of words and a `(nix)` prompt with nothing started; `jn` starts
+  JupyterLab and the server. Without a terminal it starts the app, so an
+  agent takes the quiet shell below. See `flake.nix`.
 - `nix develop .#quiet` — minimal shell for agents and scripting.
 - Python lives in `.venv/`; invoke as `.venv/bin/python`.
 
