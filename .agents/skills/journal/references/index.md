@@ -1,8 +1,8 @@
 # The Pipulate journal, indexed
 
-> Auto-generated on 2026-09-28 by `scripts/articles/generate_ai_context.py` and
+> Auto-generated on 2026-09-29 by `scripts/articles/generate_ai_context.py` and
 > rewritten from scratch on every release. If this date looks stale, assume
-> the rest of the repo is newer than this map. 1500 entries indexed.
+> the rest of the repo is newer than this map. 1503 entries indexed.
 
 This repository holds the *machinery*. The *reasoning*, the running journal
 that explains why every piece exists, lives on a separate website and not in
@@ -27,6 +27,9 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-09-29] [The Deed Is Named for the Door: Engineering Replayable QA Archives for AI](https://mikelev.in/futureproof/the-deed-is-named-for-the-door-qa-archive-zip/index.md)
+- [2026-09-29] [The Qamy Door and the Cellular Witness: Launching a Third Domain with Replayable Receipts](https://mikelev.in/futureproof/qamy-door-cellular-witness-replayable-receipts/index.md)
+- [2026-09-28] [The Forward-Slash Test: Bridging Agent Skills to Claude Code with Verifiable Receipts](https://mikelev.in/futureproof/the-forward-slash-test-claude-skills-bridge/index.md)
 - [2026-09-28] [AGENTS.md and Agent Skills: Refactoring Pipulate for a Checkable PyPI Release](https://mikelev.in/futureproof/agents-md-agent-skills-pypi-receipts/index.md)
 - [2026-09-28] [The Cost of Forgetting: The Epistemic Price List and the Art of the Lean Codebase](https://mikelev.in/futureproof/the-forgetting-kata-and-the-epistemic-price-list/index.md)
 - [2026-09-28] [Pinball, Pachinko, and the Art of Replayable AI Workflows](https://mikelev.in/futureproof/pinball-pachinko-replayable-ai-workflows/index.md)
@@ -44,14 +47,14 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-09-19] [The Color Blue and the Pipe: Inspecting Code Before Execution](https://mikelev.in/futureproof/color-blue-pipe-inspecting-code/index.md)
 - [2026-09-19] [Edna Mode Rules for AI Workflows: Why Practical Tooling Beats Fragile Abstractions](https://mikelev.in/futureproof/edna-mode-rules-for-ai-workflows/index.md)
 - [2026-09-18] [The One-Door Threshold: Engineering Replayable AI Workflows and Quiet Shells](https://mikelev.in/futureproof/the-one-door-threshold-replayable-ai-workflows/index.md)
-- [2026-09-18] [The First Ten Minutes: Engineering Reproducible AI Workflows in the Age of AI](https://mikelev.in/futureproof/the-first-ten-minutes-reproducible-ai-workflows/index.md)
-- [2026-09-17] [The Retrieval Cue: Memory Consolidation and Selective Hydration in the Age of AI](https://mikelev.in/futureproof/retrieval-cue-memory-consolidation-selective-hydration/index.md)
-- [2026-09-17] [The Voice Asks First: Engineering Verifiable Consent and Silent Defaults](https://mikelev.in/futureproof/the-voice-asks-first-verifiable-consent/index.md)
 
 ## Compact slug index — pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` — fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-09-18] [292k] the-first-ten-minutes-reproducible-ai-workflows
+- [2026-09-17] [184k] retrieval-cue-memory-consolidation-selective-hydration
+- [2026-09-17] [239k] the-voice-asks-first-verifiable-consent
 - [2026-09-17] [122k] the-workbench-pin-and-the-help-screen-census
 - [2026-09-17] [54k] useless-machine-oauth-replayable-workflows
 - [2026-09-17] [89k] escaped-monopolies-and-replayable-receipts
