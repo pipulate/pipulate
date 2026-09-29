@@ -44,7 +44,7 @@ cd ~/pipulate && nix develop
 
 **What you get:** A local web app at `http://localhost:5001` with step-by-step workflows, integrated AI chat, and a JupyterLab instance at `http://localhost:8888`. No cloud required.
 
-**Success looks like:** A one-line environment reading, then a three-door menu. Press `1` to start JupyterLab and the app server (`2` gives you a bare shell with nothing running; `3` starts both but opens the Pipulate app tab instead). The JupyterLab tab opens in your browser; run the Onboarding notebook top-to-bottom to unlock the Pipulate app (it opens automatically on future launches).
+**Success looks like:** A one-line environment reading, then a short list of words and a `(nix)` prompt. Nothing has started yet. Type `walk` for the guided tour, or `jn` to start JupyterLab and the app server; the JupyterLab tab opens in your browser with the Onboarding notebook, and running it top-to-bottom unlocks the Pipulate app (it opens automatically on future launches).
 
 These few commands:
 - ✅ Updates to the latest version automatically
@@ -557,14 +557,13 @@ cd ~/TestProject
 nix develop
 ```
 
-Press `1` at the three-door menu, wait for the JupyterLab tab to open, then run the Onboarding notebook to unlock the Pipulate app.
+Type `jn` at the `(nix)` prompt, wait for the JupyterLab tab to open, then run the Onboarding notebook to unlock the Pipulate app.
 
-**Automating past the boot menu:** `nix develop` ends at a three-door prompt — start with the JupyterLab tab, drop to the shell, or start with the Pipulate tab in front. It fails open, so anything without a terminal (CI, a provisioning script, an SSH session with no tty) starts the app and never sees the prompt. Two environment variables cover the cases that do:
+**Automating past the command list:** on a terminal, `nix develop` ends at a short list of words and a `(nix)` prompt with nothing started; `scripts/boot_menu.py` prints the list, speaks through its exit code and reads no keys. It fails open, so anything without a terminal (CI, a provisioning script, an SSH session with no tty) starts the app and never sees the list. One environment variable covers a terminal that should do the same:
 
 | Variable | Effect |
 |----------|--------|
-| `PIPULATE_BOOT_MENU=0` | Skip the prompt entirely and start the app, e.g. `PIPULATE_BOOT_MENU=0 nix develop`. For an unattended terminal that would otherwise wait for a keypress that never comes. |
-| `PIPULATE_BOOT_MENU_TIMEOUT=10` | Keep the prompt, but start the app after N seconds if nobody chooses. Off by default — with a human provably present, the prompt waits indefinitely rather than starting something they didn't ask for. |
+| `PIPULATE_BOOT_MENU=0` | Skip the list and start the app, e.g. `PIPULATE_BOOT_MENU=0 nix develop`. For an unattended terminal (one a script types into) that should behave as if it had no tty. |
 
 ### 🚨 Installation Troubleshooting
 
