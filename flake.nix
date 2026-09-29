@@ -535,13 +535,13 @@
           root="''${PIPULATE_ROOT:-$PWD}"
           keep="''${PIPULATE_DEEDS_DIR:-$HOME/.local/state/pipulate/deeds}"
           if [ "$#" -eq 0 ]; then
-            newest=$(ls -t "$root"/foo-*.zip 2>/dev/null | head -1 || true)
+            newest=$(ls -t "$root"/qamy.ai_*.zip "$root"/foo-*.zip 2>/dev/null | head -1 || true)
             if [ -z "$newest" ]; then
               echo "deed: no rotated snapshot in $root -- compile once first." >&2
               exit 1
             fi
             echo "newest   $(basename "$newest")"
-            kept=$(ls -1 "$keep"/foo-*.zip 2>/dev/null | wc -l || true)
+            kept=$(ls -1 "$keep"/qamy.ai_*.zip "$keep"/foo-*.zip 2>/dev/null | wc -l || true)
             echo "kept     $kept in $keep"
             exit 0
           fi
@@ -1813,7 +1813,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             # containing a space then silently matches nothing and seed prints
             # no snapshot line: a path fix that breaks on the paths it exists
             # to serve.
-            newest=$(ls -t "$PIPULATE_ROOT"/foo-*.zip 2>/dev/null | head -1)
+            newest=$(ls -t "$PIPULATE_ROOT"/qamy.ai_*.zip "$PIPULATE_ROOT"/foo-*.zip 2>/dev/null | head -1)
             echo ""
             echo "🌱 The Book Seed is compiled."
             if [ -n "$render" ]; then
@@ -1823,7 +1823,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               echo "   Verifiable hand-off snapshot (stable name, safe to attach):"
               echo "   $newest"
             else
-              echo "   (No rotated snapshot found; foo.zip is the canonical cartridge.)"
+              echo "   (No rotated snapshot found; qamy.ai.zip is the canonical archive.)"
             fi
             echo "   COVER PROMPT — deliver it WITH one human-typed line, e.g.:"
             echo "   \"A friend who runs Pipulate compiled this for me. Please open it and follow the instructions inside.\""
