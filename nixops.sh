@@ -55,7 +55,7 @@ rsync -av remotes/honeybot/www/npvg.org/ $TARGET:~/www/npvg.org/
 echo "🚀 Syncing qamy.ai door (npvg.org's shape, its own tree)..."
 ssh $TARGET "mkdir -p ~/www/qamy.ai"
 rsync -av remotes/honeybot/www/qamy.ai/ $TARGET:~/www/qamy.ai/
-rsync -av assets/installer/install.sh $TARGET:~/www/qamy.ai/install.sh
+sync_installer
 
 echo "🚀 Syncing NixOS Config..."
 rsync --delete -av remotes/honeybot/nixos/ $TARGET:~/nixos-config-staged/
