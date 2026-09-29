@@ -193,7 +193,12 @@ browser_cache/test_rotation_data/
 piper_models/
 Notebooks/Onboarding.ipynb
 
-# Canonical context cartridge - generated on every successful compile
+# THE QA ARCHIVE ZIP (2026-09-29): the canonical newest, generated on every
+# successful compile and named for the door that explains it
+qamy.ai.zip
+# Rotated snapshots (qamy.ai_<deed>-<hash8>.zip); pruned to newest 20
+qamy.ai_*.zip
+# The two names before 2026-09-29. The old snapshots age out of the same
+# rotation and foo.zip is removed by hand once; neither is ever committed.
 foo.zip
-# Rotated, hash-stamped cartridge snapshots (foo-<hash8>-NN.zip); pruned to newest 20
 foo-*.zip
