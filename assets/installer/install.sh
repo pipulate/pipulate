@@ -1,6 +1,35 @@
 #!/usr/bin/env bash
-# Pipulate Installer v1.1.0
-# =========================
+# The installer behind pipulate.com, npvg.org and qamy.ai
+# =======================================================
+#
+# You are reading this because you piped it to cat or less instead of
+# bash. That is the first QA step: a Unix pipe can be read before it is
+# run, and nothing here runs until you swap cat for bash.
+#
+# What it does, in order:
+#   1. downloads a zip of the repository from github.com;
+#   2. unpacks it into ONE folder under your home, named by the door you
+#      came through (or by the argument after bash -s);
+#   3. saves a read-only deploy key into that folder as .ssh/rot;
+#   4. hands off to nix develop, which builds the environment and turns
+#      the folder into a git repository that keeps itself updated.
+#
+# What it touches: that folder; ~/.ssh/id_rsa only if no key is there
+# (the flake decodes the deploy key into it on first entry); and, only
+# if Nix is missing, the Determinate Systems Nix installer, which is a
+# system-level change and says so when it runs.
+#
+# What it reaches: github.com for the zip, pipulate.com for the key, the
+# Nix binary cache for the environment, and install.determinate.systems
+# only if Nix is missing.
+#
+# The deploy key is scoped to one repository and read-only. Its ROT13
+# wrapper is packaging, not secrecy.
+#
+# In the folder it installs: AGENTS.md is the map, AUDIT.md answers a
+# reviewer's questions about what runs and what leaves the machine, and
+# .agents/skills/journal/references/index.md indexes the journal that
+# explains why every piece exists.
 # 
 # This installer uses a "magic cookie" approach to setup a git-based nix flake without 
 # requiring git to be available on the host system initially.
@@ -44,11 +73,11 @@ if [ -z "${BASH_VERSION:-}" ]; then
     echo "❌ Error: This script requires bash but is being run with a different shell."
     echo "   On Windows WSL and some Linux systems, 'sh' points to dash instead of bash."
     echo ""
-    echo "   Please run the installer with bash explicitly:"
-    echo "   curl -fsSL https://pipulate.com/install.sh | bash -s ${1:-pipulate}"
-    echo ""
-    echo "   Or if you have bash installed:"
-    echo "   curl -fsSL https://pipulate.com/install.sh | bash -s ${1:-pipulate}"
+    # THE MESSAGE NAMES NO DOOR (2026-09-29): three doors serve this file, and
+    # a printed pipulate.com line was wrong at two of them. The line the
+    # stranger ran is the only one that is right everywhere.
+    echo "   Run the same install line again with bash, not sh, at the end of the pipe:"
+    echo "   curl -fsSL <the address you used> | bash${1:+ -s $1}"
     echo ""
     exit 1
 fi
@@ -57,9 +86,10 @@ fi
 set -euo pipefail
 
 # At the beginning, add argument handling
-# THE DOOR NAMES THE FOLDER (2026-09-14). One installer file, two addresses:
-# pipulate.com serves this file as-is, and npvg.org's nginx stamps the
-# placeholder below to "npvg" at the door, the way mck.sh's header already
+# THE DOOR NAMES THE FOLDER (2026-09-14). One installer file, three addresses
+# (qamy.ai joined 2026-09-29): pipulate.com serves this file as-is, and the
+# nginx at npvg.org and qamy.ai stamps the placeholder below to "npvg" or
+# "qamy" at the door, the way mck.sh's header already
 # describes for its trail name. The split spelling of _ph_name is the one
 # occurrence a stamp can never touch, so stamped and unstamped copies stay
 # distinguishable after substitution. An explicit argument still wins, and
@@ -132,11 +162,8 @@ if ! command -v nix &> /dev/null; then
   echo "Nix is installed, but this terminal was opened before it was."
   echo "Close this terminal, open a new one, and run the install line again:"
   
-  if [ "$CUSTOM_NAME" = "pipulate" ]; then
-    echo "curl -fsSL https://pipulate.com/install.sh | bash"
-  else
-    echo "curl -fsSL https://pipulate.com/install.sh | bash -s ${CUSTOM_NAME}"
-  fi
+  # THE MESSAGE NAMES NO DOOR (2026-09-29): see the bash check above.
+  echo "(the same curl line you ran, ending in | bash${1:+ -s $1})"
   
   echo "=================================================================="
   exit 0
@@ -152,7 +179,7 @@ if [ -d "${TARGET_DIR}" ]; then
   echo "   This prevents accidental overwrites of existing data."
   echo
   echo "   To resolve this, you can:"
-  echo "   1. Choose a different name: curl -fsSL https://pipulate.com/install.sh | bash -s your-custom-name"
+  echo "   1. Choose a different name: run the same install line ending in | bash -s your-custom-name"
   echo "   2. Remove the existing directory: rm -rf ${TARGET_DIR}"
   echo "   3. Rename the existing directory: mv ${TARGET_DIR} ${TARGET_DIR}.backup"
   echo
@@ -221,7 +248,7 @@ chmod 600 .ssh/rot # Important: Set permissions for the raw key file
 # disk is an act worth one plain sentence, and the flake decodes it into
 # ~/.ssh/id_rsa on first entry if no key is there. Four lines of mechanism
 # became one line of fact; the failure branch above keeps its full message.
-echo "Deploy key saved to .ssh/rot (public, pull-only: it lets this folder fetch updates without a GitHub account)."
+echo "Deploy key saved to .ssh/rot (read-only, scoped to this one repository: it lets this folder fetch updates without a GitHub account)."
 
 # --- Trigger Initial Nix Build & Git Conversion ---
 # Now we hand over to nix develop, which will activate the flake
