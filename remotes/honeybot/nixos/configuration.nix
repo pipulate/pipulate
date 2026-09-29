@@ -231,7 +231,7 @@
 
       # 1c. THE NPVG DOOR: one URL, two bodies. A terminal client (curl,
       # wget) gets the installer; every other agent gets the page. Read by
-      # virtualHosts."npvg.org" locations."= /" and nowhere else.
+      # the "= /" location of virtualHosts."npvg.org" and virtualHosts."qamy.ai", nowhere else.
       map $http_user_agent $npvg_index {
           default    /index.html;
           "~*^curl"  /install.sh;
@@ -300,6 +300,44 @@
           sub_filter_types text/x-shellscript;
           sub_filter_once off;
           sub_filter '__INSTALL_DEFAULT_NAME__' 'npvg';
+          try_files $npvg_index =404;
+        '';
+      };
+
+      locations."/" = {
+        extraConfig = ''
+          try_files $uri $uri/index.html =404;
+        '';
+      };
+    };
+
+    # THE QAMY DOOR (2026-09-29). npvg.org's door with its name and alias,
+    # its log, its root and its stamp changed, nothing else: the same
+    # $npvg_index map (a function of the client, not the host), the same
+    # shared acme-challenge webroot, its own certificate and its own log.
+    # The body is its own tree under /home/mike/www so the two doors
+    # diverge by rsync alone, never by rebuild. THE DOOR NAMES THE FOLDER
+    # (2026-09-14): the one-liner from this door lands in ~/qamy. The
+    # stamp mechanics are documented once, on npvg.org's door above.
+    virtualHosts."qamy.ai" = {
+      forceSSL = true;
+      enableACME = true;
+      serverAliases = [ "www.qamy.ai" ];
+      root = "/home/mike/www/qamy.ai";
+      extraConfig = ''
+        access_log /var/log/nginx/qamy.access.log ai_tracker;
+      '';
+
+      locations."= /" = {
+        extraConfig = ''
+          add_header Vary "User-Agent" always;
+          types {
+              text/html          html;
+              text/x-shellscript sh;
+          }
+          sub_filter_types text/x-shellscript;
+          sub_filter_once off;
+          sub_filter '__INSTALL_DEFAULT_NAME__' 'qamy';
           try_files $npvg_index =404;
         '';
       };
