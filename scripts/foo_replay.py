@@ -3,8 +3,10 @@
 foo_replay.py — replay harness for the foo-cartridge-replay-v1 spec.
 
 Sibling to foo_cartridge.py; stdlib only. A clean-room receiver needs
-exactly three things: this file, foo_cartridge.py, and a foo.zip.
-No repo checkout, no pip installs, no API keys.
+exactly three things: this file, foo_cartridge.py, and one QA archive zip
+(qamy.ai.zip, or a rotated qamy.ai_<deed>-<hash8>.zip; a foo-*.zip minted
+before 2026-09-29 verifies the same way). No repo checkout, no pip installs,
+no API keys.
 
 Subcommands:
   mech PATH             Canonically verify the cartridge and emit the
@@ -61,7 +63,7 @@ MUTATING_TOKENS = (
 )
 
 PLAYBACK_PREAMBLE = """\
-You are receiving a compiled context cartridge (payload.md) forwarded from
+You are receiving payload.md, the body of a QA archive zip, forwarded from
 another operator's machine. Read it fully, then reply with EXACTLY ONE JSON
 object and nothing else — no prose before or after, no markdown fence.
 
