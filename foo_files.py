@@ -1853,6 +1853,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # .agents/skills/hello-workflow/SKILL.md
 # .agents/skills/journal/SKILL.md
 # .agents/skills/journal/references/index.md
+# .agents/skills/pipulate/SKILL.md
 # .agents/skills/roles/SKILL.md
 # .agents/skills/sheets-readonly/SKILL.md
 
