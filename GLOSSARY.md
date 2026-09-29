@@ -40,9 +40,16 @@ Entries are alphabetical, numbers spelled as spoken.
   the left edge, `blast` detonates commit+push+status.
 - **The Book** — *foo_files.py.* Router, curriculum, and standing constitution
   in one file; program for two interpreters at once.
-- **Cartridge (foo.zip)** — *byte-reproducible context bundle.* AGENTS.md-class
+- **Cartridge (qamy.ai.zip, the QA archive zip)** — *byte-reproducible context bundle.* AGENTS.md-class
   artifact minted by the compiler; a portable slice of git's DAG handed to a
-  model that cannot see .git.
+  model that cannot see .git. Named foo.zip until 2026-09-29; the rotated
+  snapshots beside it are qamy.ai_<deed>-<hash8>.zip, the deed number first
+  so a listing reads in order and the door's name on the file so a stranger
+  who receives one knows where it is explained. Cartridge is the internal
+  name (scripts/foo_cartridge.py, write_context_cartridge, the walk
+  cartridge) and the reader-facing name is the QA archive zip; the seal
+  footer under every prompt spells the verify command with the real filename,
+  so no art or document has to.
 - **Chip O'Theseus** — *persistent local model plus keychain memory.* An earned
   name, speakable only when the Two-Witness Gate holds: a model actually
   answering, keychain live.
@@ -338,7 +345,7 @@ Entries are alphabetical, numbers spelled as spoken.
   part a reader sees, carried unchanged from one model to the next. The
   PAYLOAD is payload.md: the back room, every file and receipt the compiler
   stacked under the article, which the reader never sees unless handed the
-  zip. The DEED is the last compile's sealed cartridge, foo-<hash8>-NN.zip,
+  zip. The DEED is the last compile's sealed archive, qamy.ai_<deed>-<hash8>.zip (foo-<hash8>-NN.zip before 2026-09-29),
   named on the envelope and never in the bytes. RENT THIS PAYS: count the
   rotated cartridges between mount and dismount and you have counted the
   turns; a ride with no dismount has not arrived; and taste is mostly the
