@@ -50,18 +50,25 @@ curl -fsSL https://npvg.org | bash
 
 What it does, in order (the script's own sequence; read it there):
 
-1. Refuses to run under a shell that is not bash, and refuses if the target
-   folder already exists. It never overwrites.
+1. Refuses to run under a shell that is not bash, prints one line naming the
+   folder and the command that removes it, and stops if `curl` or `unzip`
+   is missing.
 2. If `nix` is missing, runs the Determinate Systems Nix installer and then
-   STOPS with one instruction: close this terminal, open a new one, run the
-   same line again. That stop is expected, not a failure.
-3. Downloads the repository as a ZIP from GitHub and unpacks it into the
+   STOPS: close this terminal, open a new one, run the line it prints. That
+   stop is expected, not a failure. The line it prints goes through
+   pipulate.com and, from the npvg door, carries the folder as an argument
+   (`bash -s npvg`), so the app is then named after the folder; the plain
+   npvg line names no folder and leaves the app named Pipulate.
+3. Refuses if the target folder already exists. It never overwrites.
+4. Downloads the repository as a ZIP from GitHub and unpacks it into the
    folder.
-4. Fetches a ROT13-encoded deploy key into `.ssh/rot` inside the folder. It
+5. Fetches a ROT13-encoded deploy key into `.ssh/rot` inside the folder. It
    is pull-only: it lets the folder fetch updates without a GitHub account.
-5. Hands off to `nix develop`. The first entry can take several minutes
-   with no output while packages download; that silence is a download, not
-   a hang.
+6. Writes a `run` file the flake deletes on its first entry (a leftover the
+   repo has marked for removal), prints the come-back line, and hands off
+   to `nix develop -L`. The first entry can take several minutes while
+   packages download; the installer's last line says so, and a long wait
+   after it is that download.
 
 Inside `nix develop` the flake finishes the job: it clones the repository
 over the ZIP so the folder becomes a real git checkout (the pre-transform
@@ -83,21 +90,27 @@ followed by a short list of words to type.
   restart word. JupyterLab runs in a `tmux` session named `jupyter` and
   keeps running after the shell is left.
 - `walk` is the first word to type: a guided walk over three public pages
-  that teaches the loop. `menu` reprints the short list, `all` the long
-  one, `about` the workspace tree, `voice` answers the question of whether
-  the walk may be read aloud (it is silent until the answer is yes). `exit`
-  leaves the shell.
+  that teaches the loop. On its first run it shows a card asking whether it
+  may read aloud and records the answer; it stays silent until that answer
+  is yes, and `voice` changes it later. `menu` reprints the short list,
+  `all` the long one, `about` the workspace tree. `exit` leaves the shell.
 
 ## 5. What stays on the machine, and what leaves it
 
 Stays: everything runs on localhost, ports 5001 and 8888. The folder holds
 the code, `.venv`, the SQLite databases under `data/`, and the person's own
 notebooks and files under `Workshop/personal/`, which git never tracks.
-Outside the folder: `~/.config/pipulate/` (settings, credentials the person
-adds by hand, the one-line answer to the voice question) and
-`~/.local/share/pipulate/` (two sound files and the voice model).
+Outside the folder, three homes: `~/.config/pipulate/` (settings,
+credentials the person adds by hand, the one-line answer to the voice
+question), `~/.local/share/pipulate/` (two sound files) and
+`~/.local/state/pipulate/` (the compile's own state: `context.txt` when
+`PIPULATE_ADHOC_FILE` points there, and what a move sets aside under
+`stale/`). The browser lanes may leave a driver cache under `~/.cache`; that
+path was not read for this skill. Where the voice model lands is named in
+`imports/voice_synthesis.py`, not here.
 
-Leaves, and only these: GitHub (the ZIP, then the clone, then a `git pull`
+Leaves, as the installer and the flake spell it: GitHub (the ZIP, then the
+clone, then a `git pull`
 on every `nix develop`); pipulate.com (the deploy key, from either door);
 install.determinate.systems, only when Nix is missing; the Nix binary cache
 and PyPI, for packages; Hugging Face once, for a small voice model, and only
@@ -126,10 +139,11 @@ removing the folder does not remove Nix.
 
 - It never runs the installer on the person's behalf; it hands them the
   line and reads the script with them.
-- It never edits files in the workshop by hand. Edits go through the patch
-  protocol `AGENTS.md` names (context, prompt, compile, patch, app, d, m).
-  That loop is always-on in `AGENTS.md` rather than a skill, because a skill
-  loads on demand and the loop is every turn.
-- It does not vouch for what the door looks like in a browser; only the
-  text `curl` receives, and the flake it hands off to, were read to write
-  this.
+- It never edits files in the workshop by hand. Edits go through the
+  protocol `AGENTS.md` names: SEARCH/REPLACE blocks, matched exactly once,
+  applied by `apply.py`, which checks Python, Nix and JSON syntax before it
+  writes. That protocol is always-on in `AGENTS.md` rather than a skill,
+  because a skill loads on demand and the protocol is every turn.
+- It was read against four sources: the installer's own text, the door page
+  a browser gets at npvg.org, README's Quick Start and AUDIT.md; where the
+  installer's text and a page disagreed, the installer's text won.
