@@ -526,6 +526,35 @@ def sync_install_sh(script_name="install.sh"):
         print(f"⚠️  Install.sh sync failed: {e}")
         return False
 
+def sync_installer_to_pads():
+    """Move the installer to the two home-hosted doors, npvg.org and qamy.ai.
+    THE THIRD TRUCK (2026-09-29, convicted by release 2.70). Three doors serve
+    assets/installer/install.sh: pipulate.com out of the Pipulate.com checkout,
+    which sync_install_sh above moves, and npvg.org and qamy.ai out of
+    Honeybot's ~/www, which only nixops.sh reaches. That release moved one door
+    and the Mac read the old header from the other two. nixops.sh --installer
+    is that file's body-only lane (no rebuild), called here rather than copying
+    its rsync lines, so the pad list lives in one place. Non-fatal on purpose:
+    Honeybot dark must never block a PyPI release, and the receipt names the
+    doors that did not move.
+    """
+    note("\n🔄 Step 3.1: Syncing the installer to npvg.org and qamy.ai via nixops.sh --installer...")
+    truck = PIPULATE_ROOT / "nixops.sh"
+    if not truck.exists():
+        print(f"ℹ️  nixops.sh not found at {truck}; npvg.org and qamy.ai were not synced.")
+        return False
+    # Direct subprocess.run (not run_command) so a dark Honeybot never sys.exit()s the release.
+    result = subprocess.run(["bash", str(truck), "--installer"], cwd=str(PIPULATE_ROOT),
+                            capture_output=not VERBOSE, text=True)
+    if result.returncode != 0:
+        print("⚠️  nixops.sh --installer failed; npvg.org and qamy.ai still serve the previous installer.")
+        for stream in (result.stdout, result.stderr):
+            if stream and stream.strip():
+                print(stream.rstrip(), file=sys.stderr)
+        return False
+    print("✅ Synced install.sh to npvg.org and qamy.ai (nixops.sh --installer).")
+    return True
+
 def sync_audit_md():
     """Copies AUDIT.md to Pipulate.com root and commits if changed."""
     note("\n🔄 Step 3.5: Synchronizing AUDIT.md to Pipulate.com...")
@@ -1309,6 +1338,11 @@ def main():
     else:
         print("\n⏭️  Skipping installer script synchronization (--skip-install-sh-sync)")
         install_sh_success = False
+
+    # Step 3.1: the two home-hosted doors, through nixops.sh's installer lane.
+    # Same flag as Step 3: one switch covers every door the installer has.
+    if not args.skip_install_sh_sync:
+        sync_installer_to_pads()
 
     # Step 3.5: AUDIT.md Synchronization
     if not args.skip_audit_sync:
