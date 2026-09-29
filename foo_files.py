@@ -124,7 +124,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # Velocity: 12 published in the last 7 days
 # Markdown negotiated: 2,794 reads (0.22% of all responses)
 # DOM hydration: 2979 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-09-29T16:06Z
+# Honeybot telemetry fetched 2026-09-29T22:16Z
 # --- END STATS ---
 
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
