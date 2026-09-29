@@ -53,7 +53,7 @@ console = Console()
 # To add a new entry: print(binascii.crc32(your_art_string.encode('utf-8')))
 
 FIGURATE_LEDGER: dict = {
-    "white_rabbit": 3309949418, 
+    "white_rabbit": 509925915, 
     "player_piano": 3357002674,
     "clipboard": 858911667,
     "bunny_trail": 615479347,
@@ -608,17 +608,17 @@ def _expand_color_bits_ai(text: str) -> str:
 def _figurate_white_rabbit():
     """Render white_rabbit as (human, ai) tuple for FIGURATE_REGISTRY."""
     art = r"""
-                     ( "The AI said so" is a transcript, not a record. )
-                                           O        /)  ____     This drawing is checksummed.
->  Same files, same words, same bytes:      o /)\__//  /    \    If it reaches you altered, the
->  a change you can replay is a change    ___(/_ 0 0  |      |   model rewrote what it was told to
->  you can put your name behind.        *(    ==(_T_)== NPvg |   copy, and that is the finding.
->  One diff per turn, a reading before    \  )   ""\  |      |   Verify with nothing installed:
->  and after, and a digest you can check.  |__>-\_>_>  \____/    python scripts/foo_cartridge.py foo.zip
+                    ( Do you put your name on it because Claude said so? )
+                                          O        /)  __     
+>  Do you think the Aviation industry      o /)\__//  /  \   "What Claude said" is a Cockpit
+>  vibe-codes without checking for       ___(/_ 0 0  |    |  Voice Recorder (CVR) hear-say of a
+>  confident hallucinations? So then   *(    ==(_T_)== QA |  subcontractor. This tool is a Flight
+>  why should you? If anyone relies on   \  )   ""\  |    |  Data Recorder (FDR) for High Reliability
+>  your work then you should Q/A it.      |__>-\_>_>  \__/   Organizations (HROs). Use when it matters.
     """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
-    human = Panel(human_art, title="LLM Response Quality Assurance", border_style="white")
+    human = Panel(human_art, title="QA My AI: Is what Claude said True?", border_style="white")
     return human, ai_art
 
 def _figurate_player_piano():
