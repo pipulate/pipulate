@@ -93,7 +93,9 @@ followed by a short list of words to type.
   that teaches the loop. On its first run it shows a card asking whether it
   may read aloud and records the answer; it stays silent until that answer
   is yes, and `voice` changes it later. `menu` reprints the short list,
-  `all` the long one, `about` the workspace tree. `exit` leaves the shell.
+  `all` the long one, `about` the workspace tree, the three tiers and how
+  to check what an AI said against what it was handed. `exit` leaves the
+  shell.
 
 ## 5. What stays on the machine, and what leaves it
 
@@ -106,12 +108,13 @@ question), `~/.local/share/pipulate/` (two sound files) and
 `~/.local/state/pipulate/` (the compile's own state: `context.txt` when
 `PIPULATE_ADHOC_FILE` points there, and what a move sets aside under
 `stale/`). The browser lanes may leave a driver cache under `~/.cache`; that
-path was not read for this skill. Where the voice model lands is named in
-`imports/voice_synthesis.py`, not here.
+path was not read for this skill. The voice model lands inside the folder,
+under `assets/piper_models/` (gitignored, so removing the folder removes
+it), fetched on the first spoken line after the yes at the voice card.
 
 Leaves, as the installer and the flake spell it: GitHub (the ZIP, then the
-clone, then a `git pull`
-on every `nix develop`); pipulate.com (the deploy key, from either door);
+clone, then a `git pull` on every `nix develop`); pipulate.com (the deploy
+key, from either door);
 install.determinate.systems, only when Nix is missing; the Nix binary cache
 and PyPI, for packages; Hugging Face once, for a small voice model, and only
 after the person has answered yes at the voice card. No connector calls any
@@ -130,8 +133,9 @@ removing the folder does not remove Nix.
 - Reset the Python environment and nothing else: `rm -rf ~/npvg/.venv`, then
   `nix develop` rebuilds it.
 - Remove: `rm -rf ~/npvg` (the installer prints this line itself), then
-  `rm -rf ~/.config/pipulate ~/.local/share/pipulate` for the two homes
-  outside the folder. If the flake wrote `~/.ssh/id_rsa` (the person had
+  `rm -rf ~/.config/pipulate ~/.local/share/pipulate ~/.local/state/pipulate`
+  for the three homes outside the folder. If the flake wrote `~/.ssh/id_rsa`
+  (the person had
   none before), that key and the `github.com` block in `~/.ssh/config` are
   theirs to remove. Nix stays unless its own uninstaller is run.
 
