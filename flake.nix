@@ -1585,7 +1585,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # was three flags typed by hand until today; --tree is not spelled
           # because the flip of 0bce3aae made it a no-op here. A FUNCTION,
           # typed by a human; -n and any later flag still ride through "$@".
-          bjj() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP --profile trusted --reason "bjj: a trusted compile from the workbench" "$@"); }
+          # BFF (2026-09-29) because it's friendlier.
+          bff() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP --profile trusted --reason "bjj: a trusted compile from the workbench" "$@"); }
           # THE HYPER-LITERAL WORDS (2026-09-25, the operator's ruling): the
           # three moves of a turn under names no meeting can call strange.
           # context opens context.txt, prompt captures the clipboard,
