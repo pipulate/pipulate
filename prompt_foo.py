@@ -1422,7 +1422,7 @@ def write_context_cartridge(
         for stale in rotated[:-FOO_CARTRIDGE_KEEP]:
             stale.unlink()
         logger.print(
-            f"🗂️  Rotated cartridge snapshot: {snapshot.name} "
+            f"🗂️  Rotated archive snapshot: {snapshot.name} "
             f"(keeping newest {min(len(rotated), FOO_CARTRIDGE_KEEP)} of {FOO_CARTRIDGE_KEEP})"
         )
         # THE DEED'S NAME, RETURNED AND NOT MERELY PRINTED (2026-09-06). The
@@ -1514,7 +1514,7 @@ def cartridge_deed_footer(cartridge_path) -> str:
     rather than a broken instruction.
     """
     return (
-        "\n\n=== CARTRIDGE SEAL — outside the payload above, on purpose ===\n"
+        "\n\n=== QA ARCHIVE SEAL — outside the payload above, on purpose ===\n"
         f"Deed: {cartridge_path.name}\n"
         "Every byte above this line is sealed in that archive, and the archive "
         "could not name itself: writing the name inside the bytes would change "
