@@ -5,10 +5,10 @@ This repository carries Agent Skills under https://agentskills.io/specification
 demand), with this file as the nearest-ancestor signpost that points at
 executable truth instead of duplicating it. Every tool call taught here runs
 on localhost under the POSIX conventions of a command, stdin, stdout and an
-exit code, so that its output lands in the sealed compile (`foo.zip`) as a
-receipt; a cloud-side tool call that cannot be reconstructed here is
-non-reproducible, non-portable, cannot be compiled into a cartridge, and is
-out of scope by that rule, not by taste.
+exit code, so that its output lands in the sealed compile (`qamy.ai.zip`, the
+QA archive zip) as a receipt; a cloud-side tool call that cannot be
+reconstructed here is non-reproducible, non-portable, cannot be compiled into
+that archive, and is out of scope by that rule, not by taste.
 
 This repo predates those conventions and complies with them by *pointing*,
 not duplicating. Do not add sibling status .md files; anything written here
@@ -54,9 +54,15 @@ run since the sentinels landed.
 ## Context (how this repo talks to AI)
 
 - `prompt_foo.py` compiles context payloads; `foo_files.py` is its router.
-- Each compile emits `foo.zip`, a portable AGENTS-class cartridge whose YAML
-  frontmatter names its entrypoint. The actionable request is always in the
-  final section labeled `--- START: Prompt ---`.
+- Each compile emits `qamy.ai.zip`, the QA archive zip: a portable
+  AGENTS-class archive holding `payload.md`, `prompt.md` and `manifest.json`,
+  whose YAML frontmatter (`type: qa-zip-archive`) names its entrypoint. The
+  actionable request is always in the final section labeled
+  `--- START: Prompt ---`. A rotated copy, `qamy.ai_<deed>-<hash8>.zip`, is
+  minted beside it, the deed number first so a listing reads in order and the
+  domain on the file so a recipient knows where it is explained;
+  `python scripts/foo_cartridge.py <that zip>` verifies one with the standard
+  library alone.
 
 ## Edits (the executable version of "PR instructions")
 
