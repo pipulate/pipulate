@@ -3557,7 +3557,7 @@ MATCHBOOK_CHOP = r"""
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 207/273 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 207/277 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
 # AUDIT.md  # [2,993 tokens | 13,904 bytes]
 # MANIFEST.in  # [204 tokens | 808 bytes]
@@ -3598,6 +3598,10 @@ MATCHBOOK_CHOP = r"""
 # remotes/honeybot/queries/hydration_selftest.sql  # [1,204 tokens | 4,235 bytes]
 # remotes/honeybot/queries/intel_markdown_affinity.sql  # [434 tokens | 1,686 bytes]
 # remotes/honeybot/queries/ua_variants.sql  # [645 tokens | 2,535 bytes]
+# remotes/honeybot/www/qamy.ai/index.html  # [331 tokens | 1,126 bytes]
+# remotes/honeybot/www/qamy.ai/walk/1/index.html  # [292 tokens | 961 bytes]
+# remotes/honeybot/www/qamy.ai/walk/2/index.html  # [281 tokens | 847 bytes]
+# remotes/honeybot/www/qamy.ai/walk/3/index.html  # [688 tokens | 2,504 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
 # scripts/articles/execute_massive_prompt.py  # [491 tokens | 2,209 bytes]
