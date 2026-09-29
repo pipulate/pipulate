@@ -3,10 +3,14 @@
 foo_cartridge.py — stdlib-only core of the canonical context cartridge.
 
 foo-cartridge-replay-v1, step one: the constants, writer, and verifier for
-the three-member foo.zip (payload.md, prompt.md, manifest.json), extracted
+the three-member QA archive zip (payload.md, prompt.md, manifest.json), extracted
 from prompt_foo.py into a module with ZERO third-party imports. A clean-room
 consumer can fetch this single file and verify or rebuild a cartridge with
-nothing but the Python standard library.
+nothing but the Python standard library. The archive's reader-facing name is
+the QA archive zip: qamy.ai.zip, and the rotated qamy.ai_<deed>-<hash8>.zip
+snapshots beside it, explained at https://qamy.ai. Cartridge stays this
+module's internal name, in its identifiers, which prompt_foo.py, foo_replay.py,
+the seal footer's verify command and the published record all spell.
 
 Schema: foo-cartridge-integrity-v1 — unchanged. This extraction is a
 refactor, not a schema bump; byte-identical archive output with the
@@ -14,7 +18,7 @@ pre-extraction code is the flip's TRUE condition.
 
 Deliberate deltas from the in-prompt_foo original:
   * write_context_cartridge requires output_path — the stdlib core has no
-    repo to default into. Repo-lane defaulting (REPO_ROOT/foo.zip) lives in
+    repo to default into. Repo-lane defaulting (REPO_ROOT/qamy.ai.zip) lives in
     prompt_foo's thin wrapper.
   * A log=print callable replaces the captured logger, so this module never
     imports anything from the compiler it serves.
@@ -249,7 +253,7 @@ def verify_context_cartridge(path) -> dict:
 
 
 def write_context_cartridge(final_output, output_path, log=print):
-    """Atomically emit and self-verify the canonical three-member foo.zip.
+    """Atomically emit and self-verify the canonical three-member QA archive zip.
 
     Canonical reproducibility means identical scrubbed final_output bytes
     produce identical archive bytes. No wall-clock value enters the archive.
@@ -302,7 +306,7 @@ def write_context_cartridge(final_output, output_path, log=print):
         raise
 
     log(
-        f"📦 Canonical context cartridge written to {cartridge_path} "
+        f"📦 Canonical QA archive written to {cartridge_path} "
         f"(sha256={verification['archive_sha256'][:12]}…, "
         f"members={len(FOO_CARTRIDGE_MEMBERS)})"
     )
@@ -321,7 +325,7 @@ def _main(argv=None):
 
     PATH IS REQUIRED, NEVER GUESSED. The module deliberately carries no repo
     default -- that is the whole point of the extraction -- and a CLI that
-    fell back to ./foo.zip would smuggle the hidden argument back in through
+    fell back to ./qamy.ai.zip would smuggle the hidden argument back in through
     the front door.
 
     SUCCESS PRINTS DIGESTS, NOT A CHECKMARK. A run that verified and a run
