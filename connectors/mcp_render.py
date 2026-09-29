@@ -495,9 +495,12 @@ def cmd_call(args):
 # page whether navigator carries the WebMCP surface (navigator.modelContext in
 # the explainer, INFERRED; beside it a census of every navigator property naming
 # model or mcp, so another spelling still shows). The run with no switch is the
-# control and must read undefined; a candidate that reads object is the switch
-# the render lane launches with. THE BROWSER IS NOT A CONFIG FILE: this reads
-# switches and toggles nothing.
+# control and must read undefined; a candidate that adds a navigator property
+# the control lacks is the switch the render lane launches with. READ 2026-09-29
+# (deed 1692): both candidates read navigator.modelContextTesting and the
+# control read nothing, so the explainer's name was the wrong one and the census
+# was the judge. THE BROWSER IS NOT A CONFIG FILE: this reads switches and
+# toggles nothing.
 SWITCH_CANDIDATES = (
     "",
     "--enable-blink-features=WebMCPTesting,WebMCP",
@@ -522,7 +525,7 @@ def cmd_switch(args):
               " (the flake's pair is on PATH inside the Pipulate Nix shell on Linux)")
         return 1
     print(f"# browser={browser}")
-    live = []
+    live, control = [], None
     for switch in SWITCH_CANDIDATES:
         label = switch or "(none)"
         options = uc.ChromeOptions()
@@ -544,15 +547,27 @@ def cmd_switch(args):
         finally:
             driver.quit()
         print(f"switch={label} modelContext={kind} navigator_keys={keys}")
-        if kind == "object":
-            live.append(label)
-    if "(none)" in live:
-        print("SWITCH_CONTROL_FAILED: the run with no switch already reads object, so this census cannot tell the switches apart")
+        # THE CENSUS OUTRANKS THE TOKEN (read 2026-09-29, deed 1692): the control read
+        # navigator_keys=[] and both candidates read ['modelContextTesting'] while the
+        # typeof probe read undefined on all three, so the token said SWITCH_NONE about
+        # a feature that was on. A candidate is live when it adds a navigator property
+        # the control lacks, whatever that property is called, and the verdict names it.
+        if label == "(none)":
+            control = set(keys)
+            if keys:
+                print(f"SWITCH_CONTROL_FAILED: the run with no switch already exposes {keys}, so this census cannot tell the switches apart")
+                return 1
+            continue
+        gained = sorted(set(keys) - control) if control is not None else []
+        if gained:
+            live.append(f"{label} -> navigator.{','.join(gained)}")
+    if control is None:
+        print("SWITCH_NO_CONTROL: the run with no switch did not launch, so no candidate can be judged against it")
         return 1
     if live:
         print("SWITCH_LIVE " + " | ".join(live))
         return 0
-    print("SWITCH_NONE: no candidate exposed navigator.modelContext; the feature name or the switch spelling is still unread")
+    print("SWITCH_NONE: no candidate added a navigator property the control lacks; the feature name or the switch spelling is still unread")
     return 1
 
 
