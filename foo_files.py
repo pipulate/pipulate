@@ -1738,6 +1738,12 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # remotes/honeybot/www/npvg.org/walk/2/index.html   # <-- stop two: count the archive's fingerprints against the terminal's artifacts= number
 # remotes/honeybot/www/npvg.org/walk/3/index.html   # <-- stop three: the walk's only script rewrites the server's sentence and appends a paragraph; the DECANT test lives here
 #
+# THE SECOND DOOR (qamy.ai; landed 2026-09-29): npvg.org's tree copied, its own vhost, certificate and log in configuration.nix, four lines in nixops.sh; only the two command lines differ until the divergence ride, and no trail names these stops yet
+# remotes/honeybot/www/qamy.ai/index.html           # <-- the door: the same negotiation as npvg.org's, the stamp qamy, so the one-liner lands in ~/qamy
+# remotes/honeybot/www/qamy.ai/walk/1/index.html    # <-- npvg.org's stop one, copied
+# remotes/honeybot/www/qamy.ai/walk/2/index.html    # <-- stop two, copied; its ls path still spells npvg.org
+# remotes/honeybot/www/qamy.ai/walk/3/index.html    # <-- stop three, copied
+#
 # OFF-ROSTER DISTRIBUTION RESIDUE (not a walk dependency)
 # assets/installer/replay.sh  # <-- OFF the roster 2026-08-01, stranded; re-add needs syntax + one ride + a pinned verifier fetch
 #
