@@ -1849,6 +1849,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # Other examples (document and sort these out)
 
 # THE SKILL.md FILES
+# .claude/skills  # <-- a tracked symlink to .agents/skills, so Claude Code's project-skills path finds the same skills (THE CLAUDE CODE PATH, deed 1663)
 # .agents/skills/gsc-readonly/SKILL.md
 # .agents/skills/hello-workflow/SKILL.md
 # .agents/skills/journal/SKILL.md
