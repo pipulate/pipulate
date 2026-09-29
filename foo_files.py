@@ -437,7 +437,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # forecast reading its own pattern as a wish. THE RULE: forecast a census
 # by walking the file the patch will leave and counting the LINES the
 # pattern hits, or forecast only the known members and say "at least".
-# A forecast that names an exact count it did not derive by that walk is
+# A forecast that names an exact count it did not derive by that walk is a guess wearing a number.
+# Third conviction 2026-09-28 (deed 1665): grep -c 'deed 1663' forecast 4 and read 3, because RULED and LANDED sat on one TODO line; grep -c counts lines, and a line carrying the pattern twice counts once.
 # a guess wearing a number.
 # THE PIPELINE ATE THE FALLBACK (convicted 2026-09-21, by a probe that could
 # not fail). `ls DIR 2>/dev/null | head -5 || echo no_dir` was echoed to report
