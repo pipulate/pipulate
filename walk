@@ -10,12 +10,19 @@
 #   bash walk                                  the default belongs to mck.sh
 #   walk public_walk                           the Nix-shell word (flake.nix)
 #   walk                                       the teaching surface
+#   walk svb SVB-133                           a routed walk (2026-09-29): the first word
+#                                              names an executable under a private tier's
+#                                              walks/ folder, and the rest of the line is
+#                                              that walk's own; mck.sh does the lookup
 #
 # IT DOES NOT ROUTE TO scripts/walk.py, AND THAT COLLISION IS WHY THIS
 # PARAGRAPH EXISTS. Despite the inviting filename, scripts/walk.py is the
 # strict DRY-RUN PLANNER: it validates a trail, prints a plan, opens no
 # browser and writes nothing. The ride lives in assets/installer/mck.sh,
-# which owns workshop discovery, the install offer, the trail search path,
+# which owns workshop discovery, the install offer, the walk router (since
+# 2026-09-29: a first word that names an executable under a private tier's
+# walks/ folder runs it with the rest of the line; any other word is a
+# trail; this wrapper knows no walk's name), the trail search path,
 # entry into nix develop when it is needed, the practice/real-walk choice,
 # every per-stop CAPTURE fence, and the handoff policy: checked completion
 # for the bundled introduction, DECANT for other trails. This wrapper never
