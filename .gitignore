@@ -84,6 +84,10 @@ whitelabel.txt
 # Mac & vendor crap
 .cursor/
 .DS_Store
+# THE CLAUDE CODE PATH (2026-09-28): .claude/skills is a tracked symlink to
+# .agents/skills, so a Claude Code session opened here offers the same
+# skills behind /; the per-machine file its /skills menu writes is not.
+.claude/settings.local.json
 
 # Python, Jupyter Notebook & FastHTML stuff
 .ipynb_checkpoints/

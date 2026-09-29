@@ -48,7 +48,7 @@ run since the sentinels landed.
 
 - Discover: `.venv/bin/python cli.py mcp-discover`
 - Execute:  `.venv/bin/python cli.py call <tool_name> --json-args '{...}'`
-- Skills (Agent Skills spec, https://agentskills.io/specification): `.agents/skills/*/SKILL.md`, at the repo root beside this file
+- Skills (Agent Skills spec, https://agentskills.io/specification): `.agents/skills/*/SKILL.md`, at the repo root beside this file; `.claude/skills` is a symlink to the same folder, so Claude Code's project-skills path offers the same skills
 - The reasoning behind any piece of the machinery: the `journal` skill, whose `references/index.md` lists every journal entry newest first with a fetchable URL
 
 ## Context (how this repo talks to AI)
