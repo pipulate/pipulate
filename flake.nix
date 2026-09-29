@@ -501,31 +501,12 @@
           (connectorCommand "render" "mcp_render")
         ];
 
-        # THE CORPORATE WORD (2026-09-29, the first game, SVB-133). svb is the
-        # ticket walk's one word, and its script lives in the corporate tier,
-        # which a public checkout does not carry. The body is connectorCommand's
-        # with one folder changed and one refusal added: a checkout without the
-        # tier prints a line naming it, never a Python traceback about a missing
-        # file. Not on boot_menu's lists: a corporate word is the org's, not a
-        # newcomer's.
-        corporateCommand = name: script: pkgs.writeShellScriptBin name ''
-          set -euo pipefail
-          root="''${PIPULATE_ROOT:-$PWD}"
-          python_bin="$root/.venv/bin/python"
-          target="$root/Workshop/corporate/connectors/${script}.py"
-          if [ ! -x "$python_bin" ]; then
-            echo "${name}: missing $python_bin; enter the Pipulate Nix shell first." >&2
-            exit 1
-          fi
-          if [ ! -f "$target" ]; then
-            echo "${name}: this word lives in the corporate tier (Workshop/corporate/connectors/${script}.py), and this checkout does not carry it." >&2
-            exit 1
-          fi
-          exec "$python_bin" "$target" "$@"
-        '';
-        corporateCommands = [
-          (corporateCommand "svb" "svb")
-        ];
+        # THE CORPORATE WORD LEFT (2026-09-29, deed 1704). svb rode here as a
+        # packaged word from deed 1692, one org's ticket walk on every Pipulate
+        # user's PATH; it is a route of walk now (walk svb KEY: mck.sh v0.6.0
+        # looks the word up under a private tier's walks/ folder), a name in the
+        # corporate repo and in no public file. WALK ROUTES, IT DOES NOT GROW
+        # WORDS: a proprietary walk is never a word in this flake and never a flag.
 
         # THE DEED KEEPER (2026-09-06). Rotation prunes to the newest twenty,
         # which at this compile rate makes a snapshot's name durable for about
@@ -624,7 +605,7 @@
           dig
           whois
           ffmpeg
-        ] ++ connectorCommands ++ corporateCommands ++ (with pkgs; pkgs.lib.optionals isLinux [
+        ] ++ connectorCommands ++ (with pkgs; pkgs.lib.optionals isLinux [
           # PLATFORM GATE (macOS-convicted 2026-08-04, first-contact receipt):
           # nixpkgs marks alsa-utils *-linux ONLY, so an unconditional entry in
           # commonPackages made `nix develop` REFUSE TO EVALUATE on
