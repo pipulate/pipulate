@@ -1027,6 +1027,54 @@ Entries are alphabetical, numbers spelled as spoken.
   why warm beat mcp as the front door; "snowball downhill" predicts nothing, it
   is a mood). The forcing function is always the constraint that outlaws the
   likely answer; the animal is the sticker on the constraint's box.
+- **HALT Only Out of Bounds** — *an attention banner reserved for the one
+  step outside the turn's train, and forbidden inside it.* Banked 2026-09-29,
+  deed 1703, the operator's ruling in the operator's words: "NEVER use HALT
+  inside the 5-Car Train. ALWAYS use HALT for OOB things that need my
+  attention outside the 5-Car Train." THE MECHANISM: the five-car train
+  (probes, context, patches, prompt, deliverables) is where the operator's
+  eyes already go, so inside it a hand step the train needs (a git mv, a walk
+  typed by hand, a reseal) is a plain numbered car with one fenced command
+  under its prompt line and no banner; the operator's reflexes (patch, app,
+  d, m, git push, the paste into context.txt, prompt, bff) are never written
+  at all, because a written habit costs a re-read to learn whether something
+  changed; and the banner rides ABOVE the train, once, only for the one step
+  no terminal can take (a web console, a phone, a registrar, the other
+  machine when the turn cannot proceed without it). THE BANNER IS THE GLYPH,
+  five lines of block characters in a text fence and never the word in
+  capitals, because the capitals were what the eye skipped when the
+  2026-09-13 OUT-OF-BAND STEP RULE tried the same thing:
+  ██   ██  █████  ██   █████
+  ██   ██ ██   ██ ██     ██
+  ███████ ███████ ██     ██
+  ██   ██ ██   ██ ██     ██
+  ██   ██ ██   ██ █████  ██
+  CONVICTION: THE HALT BANNER (2026-09-21) put the glyph at the top of the
+  reply; deed 1695's amendment, in the operator's words ("it sure as hell be
+  in the 5-Car Train or I'm liable to miss it"), moved it inside; the model
+  read that amendment by the letter, every hand step in the train got a
+  banner, deed 1701's train carried two, and the car under its second banner
+  was the one not run. The same reading hit THE FINDING DORY RULE, which was
+  applied to reflexes ("copy the block, paste it, press Enter, you will see"
+  on prompt and bff) until deed 1703 narrowed it to the step Dory has never
+  met. The boy who cried wolf: a signal repeated where the eyes already go is
+  a signal the eyes learn to skip, so it fails at the one place it exists
+  for. THE LESSON UNDER THE RULE, which the operator had to say because a
+  pattern-predictor does not reach it on its own: a rule that ADDS an
+  attention signal names, in the same sentence, where it must NOT fire, or
+  the model reads "always X" as "X everywhere X-shaped" and grants the wish
+  by the letter (the genie's backfire, the operator's name for it); every
+  future rule that adds a banner, a colour, a sound or a repeated
+  instruction carries its exclusion zone beside it. RENT THIS PAYS: it
+  predicts that a reply with two banners has none, and it names the one
+  question to ask of any attention rule before banking it, where must this
+  not fire. Every-compile home: prompt_foo.py's checklist item 14, landed at
+  deed 1704 with the glyph under it and witnessed riding deed 1705's own
+  Prompt section. Sibling of THE OUT-OF-BAND STEP RULE (the step that earns
+  the banner), THE FINDING DORY RULE (the step that earns the walk-through),
+  THE MACHINE IS NAMED BY ITS PROMPT (the prompt line that heads every car)
+  and THE TEMPLATE THAT FORBIDS WHAT IT DEMANDS (two clauses in one document
+  that cancel; here two amendments to one rule that reversed).
 - **The Hand-Repair Clause** — (amended 2026-08-03, SECOND conviction, same
   failure wearing a renamed marker): a dead car is not merely inert, it is
   BAIT. apply.py's SYNTAX refusal -- the no-blocks-found message -- reports
