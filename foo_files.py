@@ -368,31 +368,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # A forecast that names an exact count it did not derive by that walk is a guess wearing a number.
 # Third conviction 2026-09-28 (deed 1665): grep -c 'deed 1663' forecast 4 and read 3, because RULED and LANDED sat on one TODO line; grep -c counts lines, and a line carrying the pattern twice counts once.
 # a guess wearing a number.
-# THE PIPELINE ATE THE FALLBACK (convicted 2026-09-21, by a probe that could
-# not fail). `ls DIR 2>/dev/null | head -5 || echo no_dir` was echoed to report
-# a missing directory. It never could: `||` binds to the whole PIPELINE, and a
-# pipeline's exit status is its LAST command's, so head's 0 masks ls's 2 and
-# the fallback is UNREACHABLE CODE. The probe printed nothing in the world
-# where the directory was missing, and the reader saw a marker sitting right
-# there in the source and assumed it would have fired. Third sibling of AN EXIT
-# CODE IS A VERDICT ONLY FOR THE PATH THAT REACHES IT: there the dead branch
-# was inside a program, here it is inside the shell.
-# THE RULE: `||` after a pipe tests the PIPE, never the thing you care about.
-# Put the question in a test that owns its own exit -- `test -d DIR && ls DIR |
-# head -5 || echo no_dir` -- or make the program itself always print a verdict.
-# AND THE GENERAL FORM: a probe whose fallback marker has never been SEEN to
-# print has an UNTESTED negative branch. Before echoing one, name the world in
-# which it fires and check that the exit status actually reaches it.
-# THE FALLBACK PRINTED THE SUCCESS TOKEN (convicted 2026-09-27, deed 1630;
-# the same probe as THE SWITCH THAT MEANT ANOTHER THING). `rg -c ...
-# 2>/dev/null || echo 0` chose, as its failure marker, the exact string a
-# healthy run prints for a file with no match. This time the fallback DID
-# fire, twelve times, and nobody could tell: a marker that is also a legal
-# answer is no marker. THE RULE: the negative branch prints a word no
-# success can print (VOID, DEAD, rc=2), or it prints the exit status beside
-# the value; `|| echo 0` is this rule's mirror -- the branch reachable and
-# its message indistinguishable.
-#
+# § THE PIPELINE ATE THE FALLBACK (banked 2026-09-21) -- Make every fallback probe test the exit status of the command that owns the question and print a negative token no successful path can produce; a fallback hidden behind a pipeline or spelled as a legal success value is not a discriminator.
 # THE WRAPPER IS NOT THE MEASUREMENT (convicted 2026-09-22, by a receipt that
 # disagreed with itself and was right twice). `time` on a census run read
 # real 8m3.689s, while the program's OWN stopwatch, added the same turn, read

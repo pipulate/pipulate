@@ -1556,6 +1556,30 @@ Entries are alphabetical, numbers spelled as spoken.
   the END line, all eight of its lines rode).
 - **NixOS Selenium 127** -- (banked 2026-07-20, receipt-witnessed same day): Selenium Manager auto-downloads an FHS-linked chromedriver into ~/.cache/selenium that dies status-127 on NixOS -- no /lib64 dynamic linker (ldd convicted it: libnss3/libnspr4/libglib "not found"). Fix: resolve the Nix driver via shutil.which('undetected-chromedriver') -- HYPHEN, the exact name scraper_tools.py already uses; bare 'chromedriver' and the UNDERSCORE variant are both MISSING on PATH. Conviction: a helper checking the wrong names is a silent no-op that STILL commits green ("refactor: implement PATH-resolved chromedriver" landed, changed only the log line, and the 127 survived until the hyphen name landed). Same disease as the uvx/Rustkyll stub-ld earmark; browser + driver stay paired because both track one nixpkgs pin (chromium 150 == undetected-chromedriver 150). weblogin.py and all five apps/440 Chrome instantiations now route through this resolution. SECOND CONVICTION 2026-09-27, the lanes swapped: connectors/botify.py's _admin_cookies_inner was written on the Mac during the blackout ride and passed uc.Chrome no driver path, so the first census ever run on Prime died at the downloaded driver's exit 127 in 1.2 s, twice, the second time after exit and ndq, and the refusal blamed a locked profile; the car emitted at deed 1621 resolves the hyphenated driver and the flake's chromium there, prints both before the launch, and makes a 127 name the loader. WITNESSED 2026-09-27 (deed 1622): the compile-lane census read the pair at 150.0.7871.128 both and the downloaded driver at exit 127 with the stub loader's own sentence, and the operator's census printed both store paths and harvested in 7.8 s.
 - **One Timeline, No Previews** -- every command in the response appears exactly once, in the section where it executes, in execution order -- PROBES (read-only) first, then PATCHES as numbered cars with any dependent actuator or ignition as the LAST cars, then PROMPT. A command that depends on a patch is never quoted above that patch, not as a preview, not "for later"; if it must be mentioned early, name it ("Car 3, the smoke") and show nothing. Convicted 2026-09-28 (deed 1662): the git add for a file a WRITE_FILE car creates rode in its own fence ABOVE that car's fence; the operator pasted in reading order, git answered fatal: pathspec, and the line ran again after app; a hand fence that depends on a car sits below it, in the order the hand will meet them. A CAR OUTSIDE THE TRAIN DID NOT RUN (second conviction 2026-09-29, deed 1693; the operator's words: "instructions to do-this or do-that outside where I'm expecting you to tell me is tantamount to sabotage"): the WRITE_FILE car for SVB-133's deliverable and its git add fence rode in the reply's kata section, above the train, the operator ran the train and never them, the next compile read TICKET_DIR_ABSENT, and the compaction summary said WRITTEN. Every car and every hand step the train needs (a git mv, a walk typed by hand) is a numbered car in (3) PATCHES, a plain fenced command under its prompt line and never a banner; the operator's own habits (patch, app, d, m, git push, the paste into context.txt, prompt, bff) are never written, because the operator does them unasked and a written one costs a re-read to learn whether something changed; a repo step written outside the train is a step that did not happen, and the one step no terminal can take rides above the train under THE HALT BANNER, below. RULED 2026-09-29 (deed 1703, the operator's words): "NEVER use HALT inside the 5-Car Train. ALWAYS use HALT for OOB things that need my attention outside the 5-Car Train."
+- **The Pipeline Ate the Fallback** -- (convicted 2026-09-21, by a probe that could
+  not fail). `ls DIR 2>/dev/null | head -5 || echo no_dir` was echoed to report
+  a missing directory. It never could: `||` binds to the whole PIPELINE, and a
+  pipeline's exit status is its LAST command's, so head's 0 masks ls's 2 and
+  the fallback is UNREACHABLE CODE. The probe printed nothing in the world
+  where the directory was missing, and the reader saw a marker sitting right
+  there in the source and assumed it would have fired. Third sibling of AN EXIT
+  CODE IS A VERDICT ONLY FOR THE PATH THAT REACHES IT: there the dead branch
+  was inside a program, here it is inside the shell.
+  THE RULE: `||` after a pipe tests the PIPE, never the thing you care about.
+  Put the question in a test that owns its own exit -- `test -d DIR && ls DIR |
+  head -5 || echo no_dir` -- or make the program itself always print a verdict.
+  AND THE GENERAL FORM: a probe whose fallback marker has never been SEEN to
+  print has an UNTESTED negative branch. Before echoing one, name the world in
+  which it fires and check that the exit status actually reaches it.
+  THE FALLBACK PRINTED THE SUCCESS TOKEN (convicted 2026-09-27, deed 1630;
+  the same probe as THE SWITCH THAT MEANT ANOTHER THING). `rg -c ...
+  2>/dev/null || echo 0` chose, as its failure marker, the exact string a
+  healthy run prints for a file with no match. This time the fallback DID
+  fire, twelve times, and nobody could tell: a marker that is also a legal
+  answer is no marker. THE RULE: the negative branch prints a word no
+  success can print (VOID, DEAD, rc=2), or it prints the exit status beside
+  the value; `|| echo 0` is this rule's mirror -- the branch reachable and
+  its message indistinguishable.
 - **The Placeholder That Claims to Run** -- *validation passing is not
   execution passing.* Banked 2026-08-08, exit-code-witnessed; discharged
   2026-08-30. public_walk.yaml's three stops declared connector.script
