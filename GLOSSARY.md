@@ -1864,6 +1864,30 @@ Entries are alphabetical, numbers spelled as spoken.
   An installer that re-resolves against a moving channel is a pip; a pinned
   lock is a graft. The lock was pinned 2026-08-01, so the distribution story is
   grafting now and the language should say so.
+- **The Shell-Lane Findings** -- (banked 2026-08-01, source-witnessed in-compile; all
+  three are OBSERVED from raw source, not inferred):
+  a. the quiet shell CREATES the venv and never POPULATES it. Only the
+     default and dev shells run runScript, which is where the uv pip lines
+     live, and pythonInstallLogic is defined in the flake and referenced by
+     NOTHING. So a lane entered through quiet has an empty venv unless
+     something else hydrated it first, and any non-interactive bootstrap
+     must run the install step explicitly.
+  b. the quiet shell also SKIPS gitUpdateLogic, so a workshop hydrated only
+     through that lane never undergoes the magic-cookie git transformation
+     and never auto-updates. The transformation fires on the first plain
+     nix develop. Name this limitation wherever a non-interactive install
+     path is offered; never let it be discovered.
+  c. the installer's own final hand-off omits the macOS impure exception
+     that the run wrapper it writes DOES include. DARWIN RECEIPT LANDED
+     2026-08-04: three consecutive `curl | bash` installs on aarch64-darwin
+     completed through `nix develop -L` with NO --impure and no impurity
+     error, so the INSTALLER's spelling is correct and the exception it
+     "omits" is not needed on that path. The `run` wrapper's --impure is now
+     the SUSPECT half and is likely vestigial -- the original refusal it
+     worked around was the alsa-utils eval error, which the platform gate
+     fixed. STILL UNWITNESSED: nobody has executed `./run` on macOS. Do not
+     delete the flag until a receipt shows plain `nix develop` succeeding
+     through that wrapper.
 - **The Silenced Channel** -- *a verdict that reads a stream the probe closed.*
   Banked 2026-08-09, self-convicted inside one turn. A probe that DISCARDS a
   stream, paired with a caboose whose verdict clause READS that stream, is a
