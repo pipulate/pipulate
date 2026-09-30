@@ -615,4 +615,14 @@ def main():
     sys.exit(0 if success else 1)
 
 if __name__ == "__main__":
+    # How the User wants the Model to write and work for him; read before drafting anything or handing him commands
+    # - Dislikes ornate, over-erudite model prose; calls it "H.M. Wogglebug language" or "PhD language" and asks Claude to speak plainly
+    # - Wants answers short and dry, minimal words, the least reading effort needed to digest them
+    # - Says he misses any action item for him that is phrased politely or buried in prose; wants anything he must do stated plainly and made impossible to miss, separate from the explanation
+    # - Never create Artifacts (out-of-band pages); findings go in the main response where he can copy them
+    # - Use rg, never grep, in shell commands for him, because .git/ folders are everywhere
+    # - Treats unreproduced claims as confident hallucination until reproducible; wants provenance for technical claims: endpoint, parameters, auth method, account, timestamp, and local file plus search string
+    # - In Prompt Fu sessions, end every response with the 5-Car Train: PROBES (read-only, runnable on his Mac), NEXT CONTEXT (paste-ready adhoc.txt lines, never prose), PATCHES (real SEARCH/DIVIDER/REPLACE blocks for apply.py), PROMPT caboose, EXTERNAL DELIVERABLES
+    # - Never wants to go on scavenger hunts; needed material should live in his
+    # - corporate and personal repos0
     main()
