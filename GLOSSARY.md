@@ -1838,6 +1838,32 @@ Entries are alphabetical, numbers spelled as spoken.
   answers from the doc's prose will send the operator to the sidebar decoy, and
   the operator -- who cannot see the doc's screenshot either -- has no way to
   tell a wrong answer from a right one until they have read every textarea twice.
+- **The Seed Reduction** -- (30-and-3 banked 2026-08-01; the fan-out lives in the
+  article, only the three survivors live here, per the rule that a reduction
+  written down is a traversal never repeated):
+  1. THE SEED MUST HATCH THE CHICKEN. The launcher currently REFUSES when no
+     workshop exists -- prints a card and exits 1 -- so first contact is a
+     dead end and every other item is an optimization of a door nobody can
+     open. The earlier refusal was argued from HOW to install (chained
+     curl-pipes are unauditable; the installer ends interactive) and then
+     applied to WHETHER, which is the wrong question. Fix: detect, OFFER,
+     resume the ride.
+  2. MARKER, NOT NAME. DISCHARGED 2026-08-08, two-world receipt: resolve_workshop found the checkout while the name-derived ~/pipulate was absent; mck.sh and cli.py discover by the tracked triple, install and uninstall stay name-based on purpose, whitelabel.txt is the disambiguator and never the marker.
+  3. GERMINATION RATE, NOT ONE SPROUT. A seed lot is graded by how many of N
+     plantings sprout, never by the one that did -- a 12% lot and a 94% lot
+     produce an IDENTICAL first sprout. "It spreads like a stick bug" is a
+     CLAIM until fresh machines are counted, and the instrument already
+     exists: the telemetry lab logs every fetch of the served launcher, so
+     fetch-count against ride-completion is an install funnel measured by the
+     same observatory that measures crawlers. Discharges the COLD-START test,
+     and is the only instrument that can witness the CAPTURE fence PASSING
+     under a pipe (REFUSAL-ONLY WITNESS: it has been seen refusing a dozen
+     ways and passing exactly once, on a tty).
+  GRAFT, NOT SEED (the anchor that pays rent): seedling apples do not breed
+  true -- an orchard reproduces a cultivar by GRAFTING, never by planting pips.
+  An installer that re-resolves against a moving channel is a pip; a pinned
+  lock is a graft. The lock was pinned 2026-08-01, so the distribution story is
+  grafting now and the language should say so.
 - **The Silenced Channel** -- *a verdict that reads a stream the probe closed.*
   Banked 2026-08-09, self-convicted inside one turn. A probe that DISCARDS a
   stream, paired with a caboose whose verdict clause READS that stream, is a
