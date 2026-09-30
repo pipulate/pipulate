@@ -1708,14 +1708,17 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # the generated hook text.
           voice() { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/imports/voice_synthesis.py" ask; }
           # THE TALK WORD (2026-09-30): the menu lists talk under walk, so a
-          # newcomer can walk the walk and talk the talk. Until
-          # imports/voice_synthesis.py grows a flip, it is a second spelling
-          # of voice: the same card, the same recorded answer, y or n. The
-          # card still names voice, so both words stay. A FUNCTION, typed by
-          # a human only; inside this shell it shadows the old BSD chat
-          # program of the same name, and the compile lane witnesses it in
-          # the generated hook text, never through type.
-          talk() { voice; }
+          # newcomer can walk the walk and talk the talk. Bare talk flips the
+          # recorded answer and prints the new state; talk on and talk off set
+          # it; with nothing recorded it runs the card first, because the card
+          # carries the download disclosure. PIPULATE_VOICE, set to a word the
+          # speaker reads, outranks the file: talk says so and writes nothing.
+          # The card's hint names talk from this day; voice stays the word that
+          # re-asks the whole card. A FUNCTION, typed by a human only; inside
+          # this shell it shadows the old BSD chat program of the same name,
+          # and the compile lane witnesses it in the generated hook text, never
+          # through type.
+          talk() { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/imports/voice_synthesis.py" talk "$@"; }
           alias plan='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/mother_cat.py" --plan'
           # THE CREDENTIAL GAME: bare `warm` is the LIVE red/green board -- one
           # bounded API call per enrolled wallet slot, GOLD when every row is

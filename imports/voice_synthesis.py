@@ -120,7 +120,7 @@ def voice_consent() -> str:
     return "unset"
 
 
-def ask_voice_consent(later_hint: str = "voice", force: bool = False) -> str:
+def ask_voice_consent(later_hint: str = "talk", force: bool = False) -> str:
     """Ask on /dev/tty and record the answer. Returns 'yes', 'no' or 'unavailable'.
 
     Asks only when nothing is recorded, unless force is set (the `voice` word),
@@ -150,14 +150,87 @@ def ask_voice_consent(later_hint: str = "voice", force: bool = False) -> str:
     finally:
         tty.close()
     decision = "yes" if answer.strip().lower() in ("y", "yes") else "no"
+    error = _record_voice_answer(decision)
+    if error is not None:
+        print(f"(could not record the answer, so it will be asked again: {error})")
+    if decision == "no":
+        print(f"Staying quiet. To turn the voice on later, type: {later_hint}")
+    return decision
+
+TALK_ON_WORDS = ("on", "yes", "y", "1", "true")
+TALK_OFF_WORDS = ("off", "no", "n", "0", "false")
+
+
+def _record_voice_answer(decision: str):
+    """Write 'yes' or 'no' as the recorded answer. Returns None, or the OSError.
+
+    THE ONE WRITER (2026-09-30): the card and `talk` both record here, so the
+    format voice_consent() reads has one spelling, the word and a newline.
+    """
     try:
         VOICE_CONSENT_FILE.parent.mkdir(parents=True, exist_ok=True)
         VOICE_CONSENT_FILE.write_text(decision + "\n", encoding="utf-8")
     except OSError as exc:
-        print(f"(could not record the answer, so it will be asked again: {exc})")
-    if decision == "no":
-        print(f"Staying quiet. To turn the voice on later, type: {later_hint}")
-    return decision
+        return exc
+    return None
+
+
+def talk_command(args) -> int:
+    """`talk` flips narration; `talk on` and `talk off` set it. Returns an exit code.
+
+    THE TALK FLIP (2026-09-30). The recorded answer is one word, yes or no,
+    in VOICE_CONSENT_FILE, and voice_consent() reads it fresh on every call,
+    so a flip holds at the next spoken line in every process, a running
+    server included, with nothing restarted. Nothing recorded runs the card
+    first, whatever the argument: the card carries the download disclosure,
+    and talk writes only over an answer the card has recorded, so a flip to
+    on never downloads the voice undisclosed. PIPULATE_VOICE set to a word
+    voice_consent() reads outranks the file, so talk names it and writes
+    nothing. The state printed is read back through the barrier after the
+    write, never inferred from the request. Exit 0 when a state was
+    printed, 1 when nothing could be recorded, 2 for a word talk does not
+    know.
+    """
+    words = [arg.strip().lower() for arg in args]
+    if len(words) > 1 or (words and words[0] not in TALK_ON_WORDS + TALK_OFF_WORDS):
+        print("usage: talk [on|off]   (bare talk flips narration)")
+        return 2
+    want = None
+    if words:
+        want = "yes" if words[0] in TALK_ON_WORDS else "no"
+    raw = os.environ.get("PIPULATE_VOICE", "").strip()
+    if raw.lower() in ("0", "no", "off", "false", "1", "yes", "on", "true"):
+        state = "on" if voice_consent() == "yes" else "off"
+        print(f"narration: {state}  (PIPULATE_VOICE={raw!r} decides in this shell, so the "
+              "recorded answer was not read or changed; unset it to use talk)")
+        return 0
+    if raw:
+        print(f"(PIPULATE_VOICE={raw!r} is not a word the speaker reads; the recorded answer decides)")
+    error = None
+    recorded = voice_consent()
+    if recorded == "unset":
+        if ask_voice_consent(later_hint="talk") == "unavailable":
+            print("talk: nothing is recorded yet and there is no terminal to ask on; run talk in a terminal.")
+            return 1
+    else:
+        decision = want or ("no" if recorded == "yes" else "yes")
+        if decision != recorded:
+            error = _record_voice_answer(decision)
+            if error is not None:
+                print(f"talk: could not record the answer: {error}")
+    after = voice_consent()
+    if after == "unset":
+        print("talk: no answer is recorded, so narration stays off.")
+        return 1
+    state = "on" if after == "yes" else "off"
+    note = ", unchanged" if after == recorded else ""
+    print(f"narration: {state}{note}  (recorded in {VOICE_CONSENT_FILE})")
+    if after == "yes" and chip_voice_system is not None:
+        result = chip_voice_system.speak_text("This is Piper, reading a script. Narration is on.")
+        if not result.get("success"):
+            print(f"talk: nothing was heard: {result.get('error')}")
+    return 1 if error is not None else 0
+
 
 class ChipVoiceSystem:
     """
@@ -695,14 +768,17 @@ def test_memory_voice_integration():
         print("❌ No memories found to test")
         return False
 
+if __name__ == "__main__" and sys.argv[1:2] == ["talk"]:
+    # `talk`, the word the menu lists under walk: flip, or set with on/off.
+    raise SystemExit(talk_command(sys.argv[2:]))
 if __name__ == "__main__" and sys.argv[1:2] == ["ask"]:
-    # `voice`, the word the card names: re-ask and record, then speak one
+    # `voice`: re-ask the whole card and record the answer, then speak one
     # sentence on yes so the audio path is heard rather than assumed.
     _env = os.environ.get("PIPULATE_VOICE", "").strip()
     if _env:
         print(f"voice: PIPULATE_VOICE={_env!r} decides; unset it to be asked.")
         raise SystemExit(0)
-    _decision = ask_voice_consent(later_hint="voice", force=True)
+    _decision = ask_voice_consent(later_hint="talk", force=True)
     if _decision == "unavailable":
         print("voice: no terminal to ask on; run this from a terminal.")
         raise SystemExit(1)
