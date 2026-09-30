@@ -1407,6 +1407,26 @@ Entries are alphabetical, numbers spelled as spoken.
   under-estimated its own emitted prose by 30% in one file and 60% in the
   other, so byte predictions are made by counting the REPLACE block after it
   is written, never before.
+- **The Label Is Not Data** -- (banked 2026-08-06, compile-killed): a
+  string that ARRIVED as content must never be interpolated into a MARKUP
+  language, and the Payload Ledger did exactly that -- every row wrapped the
+  verbatim `!` command text in Rich style tags, so any square bracket inside
+  a probe became a tag. CONVICTION: the canary midpoint probe carries a
+  regex negative-lookbehind whose character class opens with a slash; Rich
+  read it as a CLOSING tag with no opener, raised MarkupError inside the
+  ledger render, and killed main() at step 5 -- AFTER the payload was fully
+  assembled and BEFORE the cartridge was written or the clipboard filled.
+  The whole compile was lost, and the thing that lost it was the receipt's
+  own text. DATA-DEPENDENT AND THEREFORE SILENT FOR MONTHS: every prior
+  probe happened to carry no brackets, so the ledger looked healthy the
+  entire time -- the same intermittency that let the render canary sit green
+  for a dozen flights. STANDING CONSEQUENCE: escape every dynamic string
+  crossing into a markup, query, or shell grammar; the styling wrapper is
+  OURS and stays live, the payload is THEIRS and gets escaped. Sibling of
+  DELIMITER COLLISION (there the patch protocol's own markers appear in the
+  text being patched) and of THE INSTRUMENT BECOMES BAIT (there the probe's
+  text attracts the transform it measures) -- this is the same disease with
+  the compiler's own console as the victim.
 - **The Label That Promises a Sibling** -- *cross-command capability claim.* Banked
   2026-08-09, transcript-witnessed. A message printed by ONE command asserting
   what a DIFFERENT command will do is a capability claim about code the
