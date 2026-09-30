@@ -122,9 +122,9 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # --- START STATS ---
 # There are 1,505 already-written articles about this repo at MikeLev.in (Public)
 # Velocity: 13 published in the last 7 days
-# Markdown negotiated: 2,794 reads (0.22% of all responses)
+# Markdown negotiated: 2,798 reads (0.22% of all responses)
 # DOM hydration: 2979 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-09-29T22:16Z
+# Honeybot telemetry fetched 2026-09-30T08:58Z
 # --- END STATS ---
 
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
@@ -317,31 +317,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # rotated instead, by whoever owns it, and that conversation is owed the
 # moment it is noticed.
 
-# THE COLD-START EXIT IS A FALSE GREEN (convicted 2026-09-16, by a probe
-# written that same turn expressly to be content-free). `wallet.py check
-# jira` was echoed as `>/dev/null 2>&1; echo jira_check_exit=$?` on the
-# theory that exit 0 means the service accepted the credential just now. It
-# printed 0 on a machine with NO WALLET AT ALL. main() evaluates
-# load_wallet() BEFORE board(), and load_wallet's ABSENT-IS-NOT-BROKEN
-# branch prints the cold-start card and sys.exit(0)s -- so board() never
-# ran, no credential was checked, and the receipt read exactly like a green
-# board. GOLD IS THE ONLY EXIT-0 CONDITION is a true claim about board(),
-# and it was read as a claim about the program.
-# TWO RULES, AND THE SECOND IS THE GENERAL ONE:
-#   1. AN EXIT CODE IS A VERDICT ONLY FOR THE PATH THAT REACHES IT. Before
-#      echoing `cmd >/dev/null; echo $?` as a probe, name every earlier
-#      sys.exit(0) on that path. Prefer the narrowest program that owns the
-#      question: jira.py --check has no cold-start branch and wallet.py has
-#      one, so the connector is the honest instrument and the board is not.
-#   2. THE REDIRECT ATE THE DISCRIMINATOR. The cold-start card says in plain
-#      words that there is no wallet, on stdout, and the probe threw it away
-#      to keep a client host out of the payload. A probe that suppresses
-#      output to stay safe must first prove the exit code ALONE still
-#      answers the question; otherwise it has traded content for silence and
-#      kept neither. Two sibling misses the same day: a probe reading
-#      connectors/wallet.json, a path that has never existed, and a
-#      `jira | grep -c` whose 2>/dev/null made a dead credential and an
-#      empty ticket list print the same 0.
+# § THE COLD-START EXIT IS A FALSE GREEN (banked 2026-09-16) -- Before treating exit 0 as a probe verdict, enumerate every earlier success exit on the path and keep the discriminator visible so a cold-start branch cannot masquerade as the code path you meant to test.
 # § THE HELP TEXT IS NOT A CENSUS (banked 2026-09-17; convictions 2026-09-17, 2026-09-27, 2026-09-28) -- Verify every switch against the exact tool's own semantics before trusting a probe's numbers, keep stderr and exit status visible, and treat usage text or rc=2 as a dead instrument rather than data.
 # A CENSUS CARRIES A KNOWN MEMBER (convicted 2026-09-24, cartridge
 # foo-71ecd539-97.zip). Three key-range JQL windows were forecast to add up
