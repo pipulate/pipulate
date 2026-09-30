@@ -509,6 +509,7 @@ Entries are alphabetical, numbers spelled as spoken.
   fourth was a logger line. The mechanical test found five offenders that
   GENERATED-NOT-AUTHORED could not see, which is the evidence that this rule
   is load-bearing rather than that rule with a microphone.
+- **The Blank Stare Rule** -- (banked 2026-09-28, the operator's words): every word a newcomer types is the plain name of the thing it does (walk, connect, context, prompt, compile, about, menu), and an abbreviation is an alias behind it, never the word the menu prints. The answer to "your system is unusual" is the objector's own word, typed into a text file, and a blank stare: which part is difficult, the word connect, or that a word can be written down where a hand-motion in a browser cannot? Operation Stick Bug's rule for names: the instrument vanishes when it is called what it is. Sibling of THE NEXT ACTION, NOT THE MACHINERY.
 - **The Caboose-Verdict Corollary** -- (banked 2026-08-01, self-convicted one turn
   later): a prompt written for the NEXT turn may name what to CHECK; it may
   not pre-commit what a printout MEANS, because the caboose is written before
