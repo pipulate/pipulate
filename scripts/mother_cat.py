@@ -125,7 +125,7 @@ def _ask_voice():
         from imports.voice_synthesis import ask_voice_consent
     except Exception:
         return
-    ask_voice_consent(later_hint="voice")
+    ask_voice_consent(later_hint="talk")
 
 
 def _capture_compatible(trail):
