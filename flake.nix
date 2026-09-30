@@ -573,13 +573,16 @@
         '';
         # THE TAPE LEAVES THE HOUSE (2026-09-30). backup-home (b2: the
         # midnight timer and the alias alike) commits and pushes every blog
-        # into a bare repo under ~/git-repos on Prime, then rsyncs that
-        # folder to an SSD in the same box, on the same circuit, which is
-        # why a four-day blackout took every copy dark at once. This word is
-        # the copy that leaves: run on the Mac, it lists every *.git under
-        # the source machine's ~/git-repos over SSH and keeps a bare mirror
-        # of each under the same path here, cloning what is new and fetching
-        # what is not, one line per repo naming its newest commit.
+        # but trimnoir into a bare repo under ~/git-repos on Prime (trimnoir
+        # declares backup_commit = false, its push being the Honeybot
+        # deploy, so its tape moves by hand until b2 learns a tape remote),
+        # then rsyncs that folder to an SSD in the same box, on the same
+        # circuit, which is why a four-day blackout took every copy dark at
+        # once. This word is the copy that leaves: run on the Mac, it lists
+        # the *.git under the source machine's ~/git-repos over SSH and
+        # keeps a bare mirror of each one THE WHITELIST below names, under
+        # the same path here, cloning what is new and fetching what is not,
+        # one line per repo naming its newest commit.
         # PULL, NEVER PUSH: the Mac needs no sshd, only the login its `pull`
         # alias already uses on mike@nixos.local. A MIRROR IS READ-ONLY
         # TAPE: --mirror fetches with a forced refs/* refspec, so a commit
@@ -590,7 +593,14 @@
         # there IS the source) and on any host it cannot list, before it
         # writes a byte. PIPULATE_MIRROR_FROM, _PATH and _DIR move the
         # source host, the source folder under its home, and the
-        # destination; arguments name a subset (mirror grimoire vault).
+        # destination. THE WHITELIST (2026-09-30, the operator's ruling):
+        # only the repos named leave the house, five by default, three blogs
+        # (botifyml, grimoire, trimnoir), the corporate tier and the client
+        # repo; PIPULATE_MIRROR_REPOS replaces the list and arguments replace
+        # it for one run (mirror grimoire); a name the source does not hold
+        # prints ABSENT and the source's roster, never a silent skip. The
+        # names are this author's and the mechanism is anyone's: filesystem
+        # git remotes and one SSH login, with no git server anywhere.
         # A PACKAGE, NOT A FUNCTION, for the deed's reason: a child shell
         # resolves it, so a ! line can witness it. LD_LIBRARY_PATH is
         # cleared because this runs the system ssh from inside the dev shell
@@ -601,8 +611,10 @@
           src="''${PIPULATE_MIRROR_FROM:-mike@nixos.local}"
           srcdir="''${PIPULATE_MIRROR_PATH:-git-repos}"
           dest="''${PIPULATE_MIRROR_DIR:-$HOME/git-repos}"
+          repos="''${PIPULATE_MIRROR_REPOS:-botifyml clients corporate grimoire trimnoir}"
+          if [ "$#" -gt 0 ]; then repos="$*"; fi
           export GIT_SSH_COMMAND="ssh -o ControlMaster=auto -o ControlPath=/tmp/pipulate-mirror-%C -o ControlPersist=60 -o ConnectTimeout=10"
-          echo "mirror: $src:$srcdir -> $dest"
+          echo "mirror: $src:$srcdir -> $dest ($repos)"
           if ! listing=$($GIT_SSH_COMMAND "$src" "uname -n; cd ~/$srcdir && ls -d *.git"); then
             echo "mirror: STOP -- could not list ~/$srcdir on $src (unreachable from here, login refused, or no *.git there)" >&2
             exit 1
@@ -613,17 +625,21 @@
             exit 1
           fi
           mkdir -p "$dest"
+          roster=" $(printf '%s\n' "$listing" | tail -n +2 | tr '\n' ' ')"
           tried=0
           mirrored=0
-          for name in $(printf '%s\n' "$listing" | tail -n +2); do
-            if [ "$#" -gt 0 ]; then
-              want=0
-              for arg in "$@"; do
-                if [ "''${arg%.git}.git" = "$name" ]; then want=1; fi
-              done
-              if [ "$want" -eq 0 ]; then continue; fi
-            fi
+          absent=0
+          for want in $repos; do
+            name="''${want%.git}.git"
             tried=$((tried + 1))
+            case "$roster" in
+              *" $name "*) ;;
+              *)
+                absent=$((absent + 1))
+                printf '  %-24s ABSENT   not in ~/%s on %s\n' "$name" "$srcdir" "$src"
+                continue
+                ;;
+            esac
             if [ -d "$dest/$name" ]; then
               verb=fetched
               ${pkgs.git}/bin/git -C "$dest/$name" fetch --prune --quiet
@@ -641,13 +657,16 @@
             fi
           done
           if [ "$tried" -eq 0 ]; then
-            echo "mirror: STOP -- no repo matched; $src holds: $(printf '%s\n' "$listing" | tail -n +2 | tr '\n' ' ')" >&2
+            echo "mirror: STOP -- no repo named; $src holds:$roster" >&2
             exit 1
+          fi
+          if [ "$absent" -gt 0 ]; then
+            echo "mirror: $src holds:$roster" >&2
           fi
           if [ "$mirrored" -eq "$tried" ]; then
             echo "mirror: DONE -- $mirrored of $tried repo(s) mirrored into $dest"
           else
-            echo "mirror: INCOMPLETE -- $mirrored of $tried repo(s); the FAILED lines above name the rest" >&2
+            echo "mirror: INCOMPLETE -- $mirrored of $tried repo(s); the FAILED and ABSENT lines above name the rest" >&2
             exit 1
           fi
         '';
@@ -660,7 +679,7 @@
           rgxcCommand                  # rgx plus holographic shards and hit context
           aiCommitCommand              # \g's commit generator resolves in-shell on every platform
           deedCommand                  # Promote one cartridge snapshot out of rotation, verified
-          mirrorCommand                # Keep a bare mirror of another machine's ~/git-repos here
+          mirrorCommand                # Bare mirrors of the named repos in another machine's ~/git-repos
           uv                           # Fast Python package installer and resolver
           sqlite                       # Ensures correct SQLite library is linked on macOS
           ruff                         # Fast Python linter (native Nix binary)
