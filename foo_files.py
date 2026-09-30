@@ -209,16 +209,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # § THE JOIN IS THE FIELD, THE HOSTNAME ITS FALLBACK (banked 2026-09-27, read at deed 1627 over 185 board rows) -- join two systems on the field made for the join (Jira's Project-slug to Botify's org/project), derive it from a hostname only when the field is empty, and print which lane each row took beside the row; a join on the derived key alone counts its own guesses as matches. Value: the speed-dating TODO below; GLOSSARY.md entry owed.
 # MOVED FROM apply.py ON 2026-09-26 (commit 7dd5d832, lines 17-381: 22 rules, 365 lines, 25,192 bytes) by THE ACTUATOR IS NOT THE LEDGER. This is the constitution that grew inside the actuator because the actuator rides every compile. forget graduates each rule below to one § key here and its body in GLOSSARY.md, heaviest first; nothing below goes back to apply.py.
 # § ONE TIMELINE, NO PREVIEWS (banked 2026-09-28; second conviction 2026-09-29) -- Show each command you provide exactly once, only where it executes and in execution order: never preview a command above a patch it depends on; put every non-routine repo or hand step inside (3) PATCHES; do not write the operator's patch/app/d/m/git-push/context/prompt/bff reflexes; reserve HALT above the train only for a step no terminal can take.
-# THE HUMAN IS NOT THE BRANCH PREDICATE (banked 2026-09-24, after the Chrome
-# profile census ride made the operator decide whether Car 1's output licensed
-# Car 2, then whether Car 2 licensed Car 3). A patch train is compiled control
-# flow. The human actuates cars; the human does not evaluate branches between
-# them. If patch B is justified only by evidence that patch A will create, B
-# DOES NOT RIDE THIS TURN. End the turn after A, collect its AFTER receipt in
-# the next compile, and decide about B there. Multiple patch cars may share one
-# turn only when every car is already justified by evidence present when the
-# answer is written. Never say "if this prints X, apply the next patch." That is
-# an uncompiled conditional handed to a tired person.
+# § THE HUMAN IS NOT THE BRANCH PREDICATE (banked 2026-09-24) -- Never make the operator evaluate a conditional between patch cars: if a later car depends on evidence an earlier car will create, stop after the earlier car and let the next compile decide.
 #
 # ONE OPERATOR INTERFACE (banked 2026-09-24, same conviction). For this
 # operator, each patch car already has four controls: patch, app, d, m. Emit the

@@ -1219,6 +1219,16 @@ Entries are alphabetical, numbers spelled as spoken.
   it. Sibling of THE LANE-DISAGREEMENT WITNESS, inverted: that rule USES a
   lane gap as evidence about the code; this one names a lane gap in the
   INSTRUMENT, where a gap is never evidence, only breakage.
+- **The Human Is Not the Branch Predicate** -- (banked 2026-09-24, after the Chrome
+  profile census ride made the operator decide whether Car 1's output licensed
+  Car 2, then whether Car 2 licensed Car 3). A patch train is compiled control
+  flow. The human actuates cars; the human does not evaluate branches between
+  them. If patch B is justified only by evidence that patch A will create, B
+  DOES NOT RIDE THIS TURN. End the turn after A, collect its AFTER receipt in
+  the next compile, and decide about B there. Multiple patch cars may share one
+  turn only when every car is already justified by evidence present when the
+  answer is written. Never say "if this prints X, apply the next patch." That is
+  an uncompiled conditional handed to a tired person.
 - **The Ignition Rule** -- *the patched code must RUN before the AFTER tap.*
   Banked 2026-07-23, lived the same day. Between PATCHES and PROMPT sits an
   act that had no name until now -- MAKING THE PATCHED CODE RUN, so the AFTER
