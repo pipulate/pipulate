@@ -367,41 +367,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 #      connectors/wallet.json, a path that has never existed, and a
 #      `jira | grep -c` whose 2>/dev/null made a dead credential and an
 #      empty ticket list print the same 0.
-# THE HELP TEXT IS NOT A CENSUS (convicted 2026-09-17, both halves of one
-# straddle). Two census probes were written as `rg -o -h PATTERN ... | sort
-# | uniq -c` on the belief that -h means --no-filename. In ripgrep -h is
-# --help and the no-filename switch is -I, so both probes printed ripgrep's
-# own usage screen, hand-run and echoed alike, and uniq -c counted it
-# faithfully: a leading "12" (the help screen's blank lines) over a long
-# tail of 1s, which is precisely the SHAPE a census of include names would
-# have. BEFORE and AFTER agreed perfectly because neither had searched a
-# single file. THE RULE: a receipt carrying the instrument's own usage text
-# ("Use -h for short descriptions", a flag table, a project home page) is
-# a probe that exited before it measured, and every number on it is a
-# count of the help screen. Match the shape of the answer to the shape of
-# the question before reading a number off it, and spell switches long
-# (--no-filename, --only-matching) wherever a single letter has ever meant
-# help in some other tool.
-# THE SWITCH THAT MEANT ANOTHER THING (convicted 2026-09-27, deed 1630; the
-# closing clause's second conviction). A twelve-file census was spelled
-# `rg -cE PATTERN` on the belief that -E is extended-regex, as in grep. In
-# ripgrep -E is --encoding, so the pattern was eaten as an encoding name,
-# rg exited 2 before it opened a file, `2>/dev/null` hid the complaint and
-# `|| echo 0` printed a zero for every file -- in the same payload whose
-# AGENTS.md still read Notebooks/. Ten zeros with no exit status beside
-# them are ten help screens. THE RULE, restated for the counter: print rc
-# beside every count (n=$(rg -c -e PAT f 2>&1); printf '%s=%s rc=%s' f
-# "$n" "$?"); rc=1 is a true zero, rc=2 is a dead instrument and the count
-# beside it is void. Deed 1632's fixed probe read rc=1 under every 0.
-# THE SWITCH THAT DOES NOT EXIST (convicted 2026-09-28, deed 1635; the
-# same family's third member): a move fence opened with `git mv -q`, and
-# git mv has no -q (git rm does), so the subshell died on its third line
-# under set -e with nothing moved, and `nix develop` then built the new
-# tree EMPTY beside the old one, so the AFTER read both trees at once.
-# THE RULE: check a hand fence's first commands against each tool's own
-# usage line, because under set -e the first bad switch is the whole
-# fence; and print git status --short before GO, so a staged rename is
-# visible where d prints nothing.
+# § THE HELP TEXT IS NOT A CENSUS (banked 2026-09-17; convictions 2026-09-17, 2026-09-27, 2026-09-28) -- Verify every switch against the exact tool's own semantics before trusting a probe's numbers, keep stderr and exit status visible, and treat usage text or rc=2 as a dead instrument rather than data.
 # A CENSUS CARRIES A KNOWN MEMBER (convicted 2026-09-24, cartridge
 # foo-71ecd539-97.zip). Three key-range JQL windows were forecast to add up
 # to one project's full issue count. Each printed "(no matches)": no error,
