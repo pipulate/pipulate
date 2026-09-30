@@ -1711,6 +1711,23 @@ Entries are alphabetical, numbers spelled as spoken.
   THE SILENCED CHANNEL (a verdict that reads a channel the instrument closed);
   cousin of THE FOLDER IS A VARIABLE (a hand step that prints the same thing in
   both worlds).
+- **The Screenshot Is Not a Locator** -- (banked 2026-09-11, two exchanges lost).
+  Botify's Confluence pages for custom link attributes say "go to the project
+  page on django admin" and show the field ONLY as a screenshot. Two admin
+  models sit one click apart and both answer to that phrase:
+    /admin/projects/projectsettings/<id>/change/  -- the crawl config. WRONG.
+      Carries a "Links" heading in the RIGHT SIDEBAR that is Django's
+      related-objects nav (one item: a filtered HTML-extracts list). It appears
+      only when the project HAS html extracts, so it comes and goes and reads
+      exactly like a config section that is sometimes empty.
+    /admin/projects/project/<id>/change/         -- RIGHT. Fieldset "Links" in
+      the FORM BODY, between "Google Cloud" and "Pocket Crawler". The field is
+      labeled "Extract Links Attributes" and takes a JSON array of {"name": ...}.
+  WHEN THE DOC'S EVIDENCE IS AN IMAGE, the enumeration is the only locator: walk
+  every field label in the fieldset and say which ones are NOT it. A model that
+  answers from the doc's prose will send the operator to the sidebar decoy, and
+  the operator -- who cannot see the doc's screenshot either -- has no way to
+  tell a wrong answer from a right one until they have read every textarea twice.
 - **The Silenced Channel** -- *a verdict that reads a stream the probe closed.*
   Banked 2026-08-09, self-convicted inside one turn. A probe that DISCARDS a
   stream, paired with a caboose whose verdict clause READS that stream, is a
