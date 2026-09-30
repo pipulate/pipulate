@@ -253,31 +253,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # side panel. A finding that cannot be pasted here and rebuilt from the manifest
 # is not a finding.
 #
-# NEXT CONTEXT IS PASTE-READY OR IT IS SABOTAGE (banked 2026-09-24, convicted by
-# an operator who had to hand-translate a prose paragraph back into context.txt
-# lines). Car 2 was written "Add, in this order of value: (1)... (2)..." --
-# English, not includes. This system exists to KILL that copy-paste correlation
-# work, and a prose NEXT CONTEXT hands it straight back to a tired human in an
-# internet cafe. THE RULE: (2) NEXT CONTEXT is ALWAYS a single fenced block of
-# literal context.txt lines -- bare paths, `! ` command lines, `!`/`?`/`@` URL
-# lines -- paste-ready under the operator's markers with zero editing. Active
-# includes are bare; uncertain lines are commented placeholders the operator
-# completes. Prose goes OUTSIDE the block. Every probe from (1) reappears here
-# with a leading "! " per THE PROBE ECHO INVARIANT.
-# CONVICTED AGAIN 2026-09-29 (deeds 1693 and 1695; the operator: "What? There
-# was no Context 4?"): the NEXT CONTEXT block said "after Car 3 has run, open
-# context, type /SVB-133 START and Enter, press O, paste". The operator's
-# straddle template runs BEFORE, then context.txt, then PATCHES, so the block
-# was pasted BEFORE the train, above a live board the operator had commented
-# out by habit; Car 3's sed then found no end anchor, ran to EOF and ate
-# Context 4 with the rest, and Car 4 appended a fresh board over the wreck.
-# THE RULE, two halves: (a) the block is pasted at the BOTTOM of context.txt
-# and never assumes a car has run, because the paste happens first; (b) a vim
-# keystroke (/pattern, O, Esc, :wq) is not a paste-ready line, and the
-# operator read one as a context.txt entry: the only vim the block asks for
-# is `context`, paste at the end, `:wq`. svb --write replaces its own block
-# wherever it sits, so the bottom is always right (deed 1696: Context 5 below
-# the END line, all eight of its lines rode).
+# § NEXT CONTEXT IS PASTE-READY OR IT IS SABOTAGE (banked 2026-09-24; convicted again 2026-09-29) -- Emit NEXT CONTEXT as one fenced block of literal context.txt lines pasted at the bottom before the train runs: include the whole next-turn file list and every PROBES command verbatim with only the leading "! " added, and never put prose, vim keystrokes, or assumptions about a car's future output inside it.
 #
 # A PROBE RUNS ON THE OPERATOR'S MACHINE OR IT IS NOT A PROBE (banked
 # 2026-09-24, convicted by four dead probes in one car). (1) PROBES pointed at
