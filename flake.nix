@@ -571,6 +571,86 @@
           fi
           echo "deed: kept $keep/$name"
         '';
+        # THE TAPE LEAVES THE HOUSE (2026-09-30). backup-home (b2: the
+        # midnight timer and the alias alike) commits and pushes every blog
+        # into a bare repo under ~/git-repos on Prime, then rsyncs that
+        # folder to an SSD in the same box, on the same circuit, which is
+        # why a four-day blackout took every copy dark at once. This word is
+        # the copy that leaves: run on the Mac, it lists every *.git under
+        # the source machine's ~/git-repos over SSH and keeps a bare mirror
+        # of each under the same path here, cloning what is new and fetching
+        # what is not, one line per repo naming its newest commit.
+        # PULL, NEVER PUSH: the Mac needs no sshd, only the login its `pull`
+        # alias already uses on mike@nixos.local. A MIRROR IS READ-ONLY
+        # TAPE: --mirror fetches with a forced refs/* refspec, so a commit
+        # pushed INTO one of these copies is erased by the next run; Prime
+        # stays the one writer. ONE PASSWORD AT MOST: every ssh rides one
+        # ControlMaster socket, so a password login is typed once, not once
+        # per repo. REFUSES on the source machine itself (the destination
+        # there IS the source) and on any host it cannot list, before it
+        # writes a byte. PIPULATE_MIRROR_FROM, _PATH and _DIR move the
+        # source host, the source folder under its home, and the
+        # destination; arguments name a subset (mirror grimoire vault).
+        # A PACKAGE, NOT A FUNCTION, for the deed's reason: a child shell
+        # resolves it, so a ! line can witness it. LD_LIBRARY_PATH is
+        # cleared because this runs the system ssh from inside the dev shell
+        # (THE UNEXPORTED-SHIM RULE).
+        mirrorCommand = pkgs.writeShellScriptBin "mirror" ''
+          set -uo pipefail
+          export LD_LIBRARY_PATH=""
+          src="''${PIPULATE_MIRROR_FROM:-mike@nixos.local}"
+          srcdir="''${PIPULATE_MIRROR_PATH:-git-repos}"
+          dest="''${PIPULATE_MIRROR_DIR:-$HOME/git-repos}"
+          export GIT_SSH_COMMAND="ssh -o ControlMaster=auto -o ControlPath=/tmp/pipulate-mirror-%C -o ControlPersist=60 -o ConnectTimeout=10"
+          echo "mirror: $src:$srcdir -> $dest"
+          if ! listing=$($GIT_SSH_COMMAND "$src" "uname -n; cd ~/$srcdir && ls -d *.git"); then
+            echo "mirror: STOP -- could not list ~/$srcdir on $src (unreachable from here, login refused, or no *.git there)" >&2
+            exit 1
+          fi
+          there=$(printf '%s\n' "$listing" | head -n 1)
+          if [ "$there" = "$(uname -n)" ]; then
+            echo "mirror: STOP -- $src is this machine ($there), where the destination is the source; run mirror on the Mac" >&2
+            exit 1
+          fi
+          mkdir -p "$dest"
+          tried=0
+          mirrored=0
+          for name in $(printf '%s\n' "$listing" | tail -n +2); do
+            if [ "$#" -gt 0 ]; then
+              want=0
+              for arg in "$@"; do
+                if [ "''${arg%.git}.git" = "$name" ]; then want=1; fi
+              done
+              if [ "$want" -eq 0 ]; then continue; fi
+            fi
+            tried=$((tried + 1))
+            if [ -d "$dest/$name" ]; then
+              verb=fetched
+              ${pkgs.git}/bin/git -C "$dest/$name" fetch --prune --quiet
+            else
+              verb=cloned
+              ${pkgs.git}/bin/git clone --quiet --mirror "$src:$srcdir/$name" "$dest/$name"
+            fi
+            rc=$?
+            if [ "$rc" -eq 0 ]; then
+              mirrored=$((mirrored + 1))
+              newest=$(${pkgs.git}/bin/git -C "$dest/$name" log -1 --all --format=%ci 2>/dev/null)
+              printf '  %-24s %-8s newest commit %s\n' "$name" "$verb" "''${newest:-none}"
+            else
+              printf '  %-24s FAILED   rc=%s\n' "$name" "$rc"
+            fi
+          done
+          if [ "$tried" -eq 0 ]; then
+            echo "mirror: STOP -- no repo matched; $src holds: $(printf '%s\n' "$listing" | tail -n +2 | tr '\n' ' ')" >&2
+            exit 1
+          fi
+          if [ "$mirrored" -eq "$tried" ]; then
+            echo "mirror: DONE -- $mirrored of $tried repo(s) mirrored into $dest"
+          else
+            echo "mirror: INCOMPLETE -- $mirrored of $tried repo(s); the FAILED lines above name the rest" >&2
+            exit 1
+          fi
+        '';
         # Common packages that we want available in our environment
         # regardless of the operating system
         commonPackages = with pkgs; [
@@ -580,6 +660,7 @@
           rgxcCommand                  # rgx plus holographic shards and hit context
           aiCommitCommand              # \g's commit generator resolves in-shell on every platform
           deedCommand                  # Promote one cartridge snapshot out of rotation, verified
+          mirrorCommand                # Keep a bare mirror of another machine's ~/git-repos here
           uv                           # Fast Python package installer and resolver
           sqlite                       # Ensures correct SQLite library is linked on macOS
           ruff                         # Fast Python linter (native Nix binary)
