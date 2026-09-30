@@ -528,7 +528,9 @@ def main():
         # handed a Gemini key. The first key is drawn here and the rest wait
         # on the ring for the quota branch below. get_api_key exits on a
         # missing alias, so every key drawn is a real one.
-        if args.keys:
+        if args.web:
+            keys_queue = [(None, None)]
+        elif args.keys:
             requested = [k.strip() for k in args.keys.split(',') if k.strip()]
             if requested == ['all']:
                 requested = list(common.load_keys_dict().keys())
