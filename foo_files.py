@@ -2240,11 +2240,6 @@ SEED_CHOP = r"""
 # human-typed line (see EARMARK) so cautious models read authorized intent,
 # not injection. Arm 3 (zip on a no-execution surface) remains untested.
 
-foo_files.py
-assets/installer/install.sh   # The magic cookie: curl-distributed, git-free bootstrap
-flake.nix                     # Second half: git transformation + auto-update + dev shells
-~/repos/Pipulate.com/index.md    # Public face: the 5-minute quick start
-~/repos/Pipulate.com/install.md  # Install page: universal path + pipx alternative
 """
 
 CONTEXT_LANDSCAPE_PROMPT = '''
