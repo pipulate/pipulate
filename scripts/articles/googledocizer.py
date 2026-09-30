@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # scripts/articles/googledocizer.py
 """
-googledocizer.py — The Idempotent Google Docs Publishing Adapter.
+googledocizer.py -- The Idempotent Google Docs Publishing Adapter.
 
 A WET fork of confluenceizer.py aimed at Google Drive/Docs. Same contract:
 read local Jekyll markdown, compute a deterministic Target Title, scan ONE
@@ -25,7 +25,7 @@ MODES
   CSV -> native Google Sheet (same conversion trick, different mimetype pair):
       python googledocizer.py -t 1 --yes --csv data.csv
 
-AUTH (the ~/repos/nixos wallet convention — composite filenames, one flat dir)
+AUTH (the ~/repos/nixos wallet convention -- composite filenames, one flat dir)
   App identity:  ~/repos/nixos/credentials/pipulate_credentials.json
                  (override: PIPULATE_GDRIVE_CREDENTIALS)
   User session:  ~/repos/nixos/credentials/pipulate_gdrive_token.json
@@ -291,7 +291,7 @@ def drive_convert_upsert(service, folder_id, name, payload_bytes,
 
     CREATE: files.create with target google-apps mimeType + convertible media.
     UPDATE: files.update replaces content in place; Drive revision history is
-    the version ledger — no version arithmetic like the Confluence adapter.
+    the version ledger -- no version arithmetic like the Confluence adapter.
     """
     media = MediaInMemoryUpload(payload_bytes, mimetype=source_mime, resumable=False)
     if existing_id:
@@ -323,8 +323,8 @@ def ensure_anyone_reader(service, file_id):
     """Idempotently grant 'anyone with the link can view' on one file.
 
     Drive treats a repeated anyone/reader grant as a no-op (the permission id
-    is the fixed 'anyoneWithLink'), so calling this on every upsert — CREATE
-    and UPDATE alike — is safe and retroactively heals docs created before
+    is the fixed 'anyoneWithLink'), so calling this on every upsert -- CREATE
+    and UPDATE alike -- is safe and retroactively heals docs created before
     this helper existed. Per-document on purpose: the folder itself stays
     private inventory; each article is independently public.
     """
@@ -464,7 +464,7 @@ def main():
     inventory, duplicates = fetch_folder_inventory(service, folder_id)
     print(f"✅ Inventory scan complete. {len(inventory)} child file(s).")
     if duplicates:
-        print(f"⚠ {len(duplicates)} duplicate name(s) in folder — those titles will be skipped.")
+        print(f"⚠ {len(duplicates)} duplicate name(s) in folder -- those titles will be skipped.")
 
     if args.list:
         for name, meta in sorted(inventory.items()):
@@ -484,7 +484,7 @@ def main():
         existing = meta['id'] if meta and meta['mime'] == SHEET_MIME else None
         if not args.yes:
             verb = "UPDATE" if existing else "CREATE"
-            print(f"🅳🆁🆈 DRY-RUN — would {verb} Sheet {sheet_name!r} from {csv_path.name}. Add --yes to arm.")
+            print(f"🅳🆁🆈 DRY-RUN -- would {verb} Sheet {sheet_name!r} from {csv_path.name}. Add --yes to arm.")
             return
         file_id, verb = drive_convert_upsert(
             service, folder_id, sheet_name, csv_path.read_bytes(),
@@ -585,12 +585,12 @@ def main():
                     print(f"   MATCH: {md_file.name} -> [ID: {meta['id']}] {target_title} [stamped]")
                 continue
             if stamped_id:
-                stamp_note = "STAMP MISMATCH — frontmatter points at a different doc; --yes heals to inventory"
+                stamp_note = "STAMP MISMATCH -- frontmatter points at a different doc; --yes heals to inventory"
             else:
-                stamp_note = "unstamped — --yes heals without re-upload if fresh"
+                stamp_note = "unstamped -- --yes heals without re-upload if fresh"
             print(f"   MATCH: {md_file.name} -> [ID: {meta['id']}] {target_title} [{stamp_note}]")
         else:
-            stale = " [stamped but doc missing from folder — --yes recreates and restamps]" if stamped_id else ""
+            stale = " [stamped but doc missing from folder -- --yes recreates and restamps]" if stamped_id else ""
             print(f"   MISS:  {md_file.name} -> {target_title}{stale}")
     if settled and not verbose:
         print(f"   ... plus {settled} already-stamped MATCH(es) with nothing to do (-v to list).")
@@ -607,7 +607,7 @@ def main():
     # honest witness for that loop is an armed run's 🏁 counters -- which is
     # why Fresh was split out of Skipped rather than left folded in.
     if not args.yes:
-        print("\n🅳🆁🆈 DRY-RUN — no mutation. Review MATCH/MISS lines, then re-run with --yes.")
+        print("\n🅳🆁🆈 DRY-RUN -- no mutation. Review MATCH/MISS lines, then re-run with --yes.")
         return
 
     print(f"\n✍️  Mutations armed (--yes). Upserting {len(local_contracts)} document(s)...")

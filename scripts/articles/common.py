@@ -197,7 +197,7 @@ def add_standard_arguments(parser):
 
 
 # ----------------------------------------------------------------------------
-# Frontmatter stamping — the 1-to-1 ledger (Jekyll post <-> Google Doc)
+# Frontmatter stamping -- the 1-to-1 ledger (Jekyll post <-> Google Doc)
 # ----------------------------------------------------------------------------
 GDOC_URL_KEY = "gdoc_url"
 

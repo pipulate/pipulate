@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # connectors/confluence.py
 """
-confluence.py — Bring a Confluence space, page, or search hit into context.
+confluence.py -- Bring a Confluence space, page, or search hit into context.
 
 A Unix-philosophy gateway to the Confluence API for Prompt Fu context.
 
@@ -32,7 +32,7 @@ destined for compiled context payloads, so the bound is a feature.
 
 COMPILE-LANE CAUTION: space keys, page titles, and page bodies are client
 identifiers and client content. Any `!` invocation bound for a cloud chat
-window rides through the compile-lane sanitizer — make sure
+window rides through the compile-lane sanitizer -- make sure
 pii_substitutions.txt covers the relevant identifiers first.
 """
 
@@ -143,7 +143,7 @@ def list_space_pages(client, base, space_key, max_items):
     results = data.get("results", []) if isinstance(data, dict) else data
     print(f"# Recent pages in space '{space_key}' (id | title)\n")
     if not results:
-        print("(no pages found — check the space key)")
+        print("(no pages found -- check the space key)")
         return
     for p in results[:max_items]:
         print(f"{p.get('id', '?')}  {p.get('title', '')}")
@@ -158,7 +158,7 @@ def fetch_page(client, base, page_id):
     space = (data.get("space") or {}).get("key", "?")
     version = (data.get("version") or {}).get("number", "?")
     body_html = ((data.get("body") or {}).get("storage") or {}).get("value", "")
-    print(f'# Confluence page {page_id} — "{title}"')
+    print(f'# Confluence page {page_id} -- "{title}"')
     print(f"# space: {space} | version: {version}\n")
     print(strip_html(body_html) or "(empty body)")
 
@@ -214,9 +214,9 @@ def check():
         # The cost of accepting CONFLUENCE_URL: jira.py STRIPS a /wiki suffix
         # because Jira's REST root has none, while Confluence Cloud REQUIRES
         # it. A shared var can therefore reach here host-correct and
-        # path-wrong. Do not rewrite the path silently — name it instead.
+        # path-wrong. Do not rewrite the path silently -- name it instead.
         sys.stderr.write(
-            "confluence RED gate2: HTTP 404 — the host answered but "
+            "confluence RED gate2: HTTP 404 -- the host answered but "
             "/rest/api/user/current is not there; Confluence Cloud needs the "
             "/wiki suffix that Jira's root does not have\n")
         return 1

@@ -58,7 +58,7 @@ def trigger_is_fresh(max_age_seconds=900):
 
     Failure-mode-safe in both directions. A miss (stale/absent trigger, or a
     publish whose [4/4] restart lands outside the window) returns False and the
-    caller falls back to the normal cold-start preamble — no breakage. A generous
+    caller falls back to the normal cold-start preamble -- no breakage. A generous
     window only risks leading with the newest article after a near-publish crash,
     which is an acceptable cold-start opening anyway."""
     try:
@@ -98,7 +98,7 @@ def check_for_updates():
 
         # Detection logic. When the trigger bell exists it is the SOLE authority:
         # one push rings it exactly once, so detection fires exactly once per deploy.
-        # This kills the double-fire that made the narrator thrash — the checkout
+        # This kills the double-fire that made the narrator thrash -- the checkout
         # bumps _posts mtime early while the bell rings late, so acting on both made
         # the stream interrupt itself twice for a single push. We absorb the early
         # mtime/count change (refresh the baselines, return False) and await the bell.
@@ -286,7 +286,7 @@ def clean_markdown(text, label=None, census=True):
     # Remove Code Blocks. Use a sentinel first so back-to-back blocks (a very
     # common pattern: fence, fence, fence with just blank lines between) can be
     # collapsed into ONE spoken mention below, instead of looping "Code found
-    # at MikeLev dot Eye N slash latest" once per fence — meaningless and
+    # at MikeLev dot Eye N slash latest" once per fence -- meaningless and
     # grating for a listener with no visual context.
     CODE_SENTINEL = '\x00CODEBLOCK\x00'
     text = re.sub(r'```.*?```', f' {CODE_SENTINEL} ', text, flags=re.DOTALL)

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-🪧 card.py — Station-break Figlet title card.
+🪧 card.py -- Station-break Figlet title card.
 
 Renders a large Figlet banner (e.g. "THE ITCH") centered on a transient
 Alacritty overlay. Used as the leading *label* brush of a station-break bead.
 
 The shared conjure_window actuator owns teardown: it kills this process after
 its `duration`, so this script just renders and idles until dismissed. The
-self-hold below is a generous LAST-RESORT safety net only — it must always be
+self-hold below is a generous LAST-RESORT safety net only -- it must always be
 longer than any caller's `duration`, or this script becomes the thing that
 closes the window early instead of the actuator (this is exactly what bit
 Honeybot once: a 130s sentinel card died at the old 60s default, well before
@@ -61,7 +61,7 @@ def main():
 
     # Self-hold cap is a LAST-RESORT safety net only; the conjure_window
     # actuator (or an explicit external pkill tied to a real event) is the
-    # real source of truth for how long the card stays up. Keep this large —
+    # real source of truth for how long the card stays up. Keep this large --
     # it exists purely to stop a card from hanging forever if every other
     # teardown mechanism somehow fails, not to time the card's actual life.
     hold = 900.0

@@ -722,7 +722,7 @@ function mount_sandworm()
     -- THE MOUNT: \m saddles the worm at the cursor. On a blank line, the
     -- full ride template replaces it; on a non-blank line it inserts below,
     -- protecting existing prose. Either way the cursor lands in insert mode
-    -- right after the speaker label — the old i**Me**: feel, full saddle.
+    -- right after the speaker label -- the old i**Me**: feel, full saddle.
     local template = "**Me**: \n\n"
         .. "## THE PROOF STRADDLE\n\n"
         .. "> Same commands, run twice, one change between them. Where the readings\n"
@@ -769,17 +769,17 @@ function hop_off_sandworm()
         vim.fn.setpos('.', original_pos)
         return
     end
-    local dismount = "Hop off the ride. This ride's stated goal is reached — dismount.\n"
+    local dismount = "Hop off the ride. This ride's stated goal is reached -- dismount.\n"
         .. "This is the NOTARY BEAT: the ride ends here, is witnessed here, and is\n"
         .. "sealed here. Answer all seven beats, briefly:\n\n"
         .. "0. **TL;DR**: a short, dry, neutral abstract for the TOP of the published\n"
-        .. "   article — written for an unfamiliar reader or AI summarizer who has\n"
+        .. "   article -- written for an unfamiliar reader or AI summarizer who has\n"
         .. "   never seen this system. No hype, no insider handles unexplained.\n"
         .. "1. VERIFY: restate the goal from the top of this article and confirm\n"
         .. "   (or deny) it was met, citing THIS compile's receipts, not memory.\n"
         .. "   Name any ignition this ride required that never fired -- an AFTER\n"
         .. "   tap taken without one is a stale BEFORE wearing the AFTER's label.\n"
-        .. "2. BANK: name everything that graduates — rule, earmark, todo, pin —\n"
+        .. "2. BANK: name everything that graduates -- rule, earmark, todo, pin --\n"
         .. "   as SEARCH/REPLACE patch cars against raw source present in THIS\n"
         .. "   context (Target line inside the fence, one car per commit story),\n"
         .. "   deletions included. A 'paste-ready' line with no Target and no\n"
@@ -788,7 +788,7 @@ function hop_off_sandworm()
         .. "3. DANGLING: what carries forward unbanked? One line each, no essays.\n"
         .. "4. SEED: the context.txt lines (and TODO_SLUGS if narrative context is\n"
         .. "   needed) for the next ride's first compile.\n"
-        .. "5. CLOSING: a closing summary for the BOTTOM of the article — the\n"
+        .. "5. CLOSING: a closing summary for the BOTTOM of the article -- the\n"
         .. "   final take-away, tied to the book's larger arc where it fits\n"
         .. "   naturally, never forced. Storytelling over inventory.\n"
         .. "6. NOTARIZE: the artifact of record is the cartridge THIS compile\n"
@@ -803,7 +803,7 @@ function hop_off_sandworm()
         .. "train, NO probes, NO patches beyond the BANK cars of beat 2, and NO\n"
         .. "next-turn prompt beyond the SEED lines in beat 4. Any reader or model\n"
         .. "encountering this article later should treat it as a finished,\n"
-        .. "notarized document — an archive entry, not an open thread.\n"
+        .. "notarized document -- an archive entry, not an open thread.\n"
     vim.api.nvim_buf_set_lines(0, end_line - 1, end_line - 1, false, vim.split(dismount, "\n"))
     vim.api.nvim_win_set_cursor(0, {end_line - 1, 0})
     vim.cmd('normal! zz')

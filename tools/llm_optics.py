@@ -184,8 +184,8 @@ def _extract_links(html_content: str, base_url: str) -> list:
             "href_raw": href,
             "href_resolved": resolved,
             "label": label,
-            "rel": rel or "—",
-            "target": a.get('target', '—'),
+            "rel": rel or "--",
+            "target": a.get('target', '--'),
             "same_host": (urlparse(resolved).netloc == base_host) if base_host else False,
         })
     return rows
@@ -198,9 +198,9 @@ def _format_link_rows(rows: list) -> list:
 
     def render_row(r):
         meta = []
-        if r["rel"] != "—":
+        if r["rel"] != "--":
             meta.append(f"rel={r['rel']}")
-        if r["target"] != "—":
+        if r["target"] != "--":
             meta.append(f"target={r['target']}")
         meta_str = ("  " + " ".join(meta)) if meta else ""
         return f'    {r["href_resolved"]}    "{r["label"]}"{meta_str}'
@@ -219,7 +219,7 @@ def _parameter_census(rows: list) -> list:
     the facet-space X-ray: every named slot (parameter), how many distinct
     bound values (arguments) it takes, and how often each binding occurs.
     Repeated keys on one URL (multi-select encoding) surface as extra
-    bindings. Purely objective — no judgment about which slots deserve
+    bindings. Purely objective -- no judgment about which slots deserve
     indexable URLs; that's the human's call downstream.
     """
     from collections import defaultdict
@@ -263,22 +263,22 @@ def generate_link_lens(source_html: str, hydrated_html: str, base_url: str, resu
 
     md = ["# Link Lens", f"base: {base_url or '(unknown)'}", ""]
 
-    md.append(f"## SOURCE HTML — {len(source_rows)} anchors")
+    md.append(f"## SOURCE HTML -- {len(source_rows)} anchors")
     md.extend(_format_link_rows(source_rows))
     md.append("")
 
-    md.append(f"## HYDRATED DOM — {len(hydrated_rows)} anchors (delta view)")
+    md.append(f"## HYDRATED DOM -- {len(hydrated_rows)} anchors (delta view)")
     hydrated_new = [r for r in hydrated_rows if r["href_resolved"] not in source_keys]
-    md.append(f"  shared with source: {len(hydrated_rows) - len(hydrated_new)} anchor(s) — listed once above")
+    md.append(f"  shared with source: {len(hydrated_rows) - len(hydrated_new)} anchor(s) -- listed once above")
     md.append(f"  present only after hydration: {len(hydrated_new)} anchor(s)")
     md.extend(_format_link_rows(hydrated_new) if hydrated_new else ["  (none)"])
     md.append("")
 
-    md.append("## PARAMETER CENSUS — source anchors")
+    md.append("## PARAMETER CENSUS -- source anchors")
     md.extend(_parameter_census(source_rows))
     md.append("")
 
-    md.append("## PARAMETER CENSUS — hydrated anchors")
+    md.append("## PARAMETER CENSUS -- hydrated anchors")
     md.extend(_parameter_census(hydrated_rows))
     md.append("")
 

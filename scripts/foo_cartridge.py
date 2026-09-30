@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-foo_cartridge.py — stdlib-only core of the canonical context cartridge.
+foo_cartridge.py -- stdlib-only core of the canonical context cartridge.
 
 foo-cartridge-replay-v1, step one: the constants, writer, and verifier for
 the three-member QA archive zip (payload.md, prompt.md, manifest.json), extracted
@@ -12,12 +12,12 @@ snapshots beside it, explained at https://qamy.ai. Cartridge stays this
 module's internal name, in its identifiers, which prompt_foo.py, foo_replay.py,
 the seal footer's verify command and the published record all spell.
 
-Schema: foo-cartridge-integrity-v1 — unchanged. This extraction is a
+Schema: foo-cartridge-integrity-v1 -- unchanged. This extraction is a
 refactor, not a schema bump; byte-identical archive output with the
 pre-extraction code is the flip's TRUE condition.
 
 Deliberate deltas from the in-prompt_foo original:
-  * write_context_cartridge requires output_path — the stdlib core has no
+  * write_context_cartridge requires output_path -- the stdlib core has no
     repo to default into. Repo-lane defaulting (REPO_ROOT/qamy.ai.zip) lives in
     prompt_foo's thin wrapper.
   * A log=print callable replaces the captured logger, so this module never

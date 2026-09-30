@@ -1,4 +1,4 @@
-# Connectors — Unix-philosophy API gateways for Prompt Fu context
+# Connectors -- Unix-philosophy API gateways for Prompt Fu context
 
 Each connector is ONE self-contained `.py` file. That is the point. No shared
 imports, no package coupling: a connector must survive being curl'd, gisted,
@@ -30,14 +30,14 @@ has been fixed in the same helper in two files.
    reads it with `ast.get_docstring` (never an import) and prints it verbatim
    beside the command word in the `sources` roster, so it must read as an
    instruction to a newcomer who has never opened the file:
-   `name.py — <verb phrase, one sentence, 61 chars or fewer>`, e.g. "List your
+   `name.py -- <verb phrase, one sentence, 61 chars or fewer>`, e.g. "List your
    open Jira tickets, or fetch one by key." The 61 is MEASURED, not
    chosen: at 80 columns Rich leaves the panel a 74-character body (2 for
    borders, 4 for padding), and every row spends the command column (10
    today, the width of `confluence`) plus 3 spaces of gutter, leaving 61.
    One character over and the row wraps, stranding a word on a line by
    itself. A command word longer than `confluence` lowers this ceiling for
-   every row at once. The `name.py — `
+   every row at once. The `name.py -- `
    self-label is stripped before display, so the sentence must stand alone.
    Architecture notes ("a Unix-philosophy gateway to...") belong in the SECOND
    paragraph, where the reader is a developer rather than a menu. A connector
@@ -48,13 +48,13 @@ has been fixed in the same helper in two files.
 ## The Wallet (~/.config/pipulate/connectors.json)
 
 The materialized key-val state layer: connector name -> auth kind, required env
-var NAMES, token file PATHS, and non-secret defaults. Names and paths only —
+var NAMES, token file PATHS, and non-secret defaults. Names and paths only --
 never secret values. A connector that needs a durable wallet slot owns that
 shape beside its own code as a top-level literal `AUTH_SLOT = {...}`.
 `wallet.py` reads the declaration through Python's AST without importing or
 executing the connector. `warm <name>` and `login <name>` materialize a
 missing slot; an existing wallet entry always wins and is never overwritten.
-Normal users therefore warm credentials — they do not hand-author
+Normal users therefore warm credentials -- they do not hand-author
 connectors.json.
 
 Resolution order in every connector remains explicit CLI flag -> env var ->
@@ -84,8 +84,8 @@ a shell should export. Say which shape a new slot is before adding a key to it.
 
 Auth kinds: oauth_token_file (gmail, gsc), bearer_token (botify), basic_auth
 (confluence), service_account_file, browser_session (botify_browser,
-semrush — a persistent Chrome profile under data/uc_profiles/<name>, warmed by
-weblogin.py, not a token), and mcp_oauth (botify_mcp — a remote MCP bearer
+semrush -- a persistent Chrome profile under data/uc_profiles/<name>, warmed by
+weblogin.py, not a token), and mcp_oauth (botify_mcp -- a remote MCP bearer
 whose token file is DERIVED from the slot's defaults.resource and minted or
 refreshed by mcp_warm.py; the durable credential scored is the refresh
 token). Every future connector copies one of these six.
@@ -100,7 +100,7 @@ board. The wallet is neither read nor written for an ad-hoc warm, and
 crawl-side pre-check before a `?URL` line goes into adhoc.txt.
 
 Credential paths are DERIVED, never chosen. A connector that talks to more than
-one server of the same kind — MCP is the first — computes its token path from
+one server of the same kind -- MCP is the first -- computes its token path from
 the server URL rather than from a constant, so the credential a client sends is
 structurally the credential that server minted. mcp.py and mcp_warm.py each
 carry an identical `token_path_for()` mapping a resource URL to
@@ -110,8 +110,8 @@ unrepresentable, an Nth server costs zero configuration lines, and a bearer
 scoped to one resource can never be handed to another. The pre-derivation file
 `mcp_botify_token.json` is read as a fallback and is never moved by a read path;
 the next browser warm writes the derived location and the fallback stops firing.
-Duplicating the derivation rather than sharing it is deliberate — each connector
-stays self-contained — so the two copies are compared by probe, not trusted.
+Duplicating the derivation rather than sharing it is deliberate -- each connector
+stays self-contained -- so the two copies are compared by probe, not trusted.
 
 ## Current connectors
 
@@ -135,7 +135,7 @@ stays self-contained — so the two copies are compared by probe, not trusted.
 
 Copy the closest existing connector, keep the docstring shape, keep the
 disambiguation table, keep the breadcrumbs. If an API's paging differs,
-write that API's paging — do not generalize another connector's. Then REWRITE
+write that API's paging -- do not generalize another connector's. Then REWRITE
 the first docstring line before anything else (contract item 8): a copied
 connector that keeps its template's first line will display the template's
 name in the `sources` roster, which is how `gong.py` came to introduce itself

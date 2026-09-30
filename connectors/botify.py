@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # connectors/botify.py
 """
-botify.py — Bring Botify crawl data and BQL query results into context.
+botify.py -- Bring Botify crawl data and BQL query results into context.
 
 A Unix-philosophy gateway to the Botify API for Prompt Fu context.
 
@@ -57,7 +57,7 @@ destined for compiled context payloads, so the bound is a feature.
 
 COMPILE-LANE CAUTION: LIST output contains client org/project slugs. Any `!`
 invocation bound for a cloud chat window rides through the compile-lane
-sanitizer — make sure pii_substitutions.txt covers client identifiers first.
+sanitizer -- make sure pii_substitutions.txt covers client identifiers first.
 """
 
 import os
@@ -236,7 +236,7 @@ def list_org_projects(client, org, max_items):
     print(f"# Botify projects under '{org}' (org/project | name)\n")
     projects = follow_pages(client, f"{API_BASE}/projects/{org}", max_items)
     if not projects:
-        print("(no projects found — check the org slug)")
+        print("(no projects found -- check the org slug)")
         return
     for p in projects:
         _, slug, name = project_coordinates(p)

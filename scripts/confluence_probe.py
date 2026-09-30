@@ -46,7 +46,7 @@ CANARY_CODE_SENTINEL = 'print("hello confluence")'
 
 # ---------------------------------------------------------------------------
 # Markdown -> Confluence storage-format converter (deliberately narrow).
-# The dangerous seam — fenced code blocks — reuses the EXACT ac:structured-macro
+# The dangerous seam -- fenced code blocks -- reuses the EXACT ac:structured-macro
 # CDATA shape that create_canary already round-tripped intact, so this adds no
 # new network assumption. Only the local parse/escape logic is unproven, and
 # --convert falsifies that with zero network and zero mutation.
@@ -75,7 +75,7 @@ def markdown_to_storage(md_text: str) -> str:
 
     Supported: ATX headings (# .. ######), blank-line-delimited paragraphs,
     **bold**, `inline code`, and fenced ``` code blocks. Tables, images, and
-    nested lists are intentionally out of scope — they are the swamp, and the
+    nested lists are intentionally out of scope -- they are the swamp, and the
     contract proves out without them.
     """
     lines = _strip_front_matter(md_text).split("\n")
@@ -278,7 +278,7 @@ def create_canary(domain, email, api_token, parent_id, do_write, body_value=None
     if ops:
         print(f"   operations:    {', '.join(o for o in ops if o)}")
         if "create" not in ops and "update" not in ops:
-            print("   ⚠ No 'create'/'update' in parent operations — write may 403.")
+            print("   ⚠ No 'create'/'update' in parent operations -- write may 403.")
     else:
         print("   operations:    (none reported; create will be the real test)")
 
@@ -351,7 +351,7 @@ def create_canary(domain, email, api_token, parent_id, do_write, body_value=None
         }
 
     if not do_write:
-        print(f"\n🅳🆁🆈 DRY-RUN — no mutation. Would {method} {path} ({verb}) with:")
+        print(f"\n🅳🆁🆈 DRY-RUN -- no mutation. Would {method} {path} ({verb}) with:")
         print(json.dumps(payload, indent=2))
         print("\nRe-run with --yes to actually perform the upsert.")
         return True
@@ -389,7 +389,7 @@ def create_canary(domain, email, api_token, parent_id, do_write, body_value=None
         print("   The adapter is real, not leaky. Safe to build the Markdown pipeline next.")
     else:
         print(f"⚠ ROUND-TRIP LEAK: sentinel {sentinel!r} not found verbatim in read-back.")
-        print("   Storage-format escaping mangled the code block — fix the adapter before the pipeline.")
+        print("   Storage-format escaping mangled the code block -- fix the adapter before the pipeline.")
         print(f"   Returned storage (first 400 chars):\n{value[:400]}")
 
     print(f"\n🧹 Cleanup: delete this canary when done →")

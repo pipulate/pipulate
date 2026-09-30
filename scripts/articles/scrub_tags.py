@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-scrub_tags.py — Generic Tag & Credential Scrubber for Pipulate.
+scrub_tags.py -- Generic Tag & Credential Scrubber for Pipulate.
 
 Sweeps articles and text files for Liquid template tags ({% raw %}, {% endraw %})
 and potential private credential leaks (Bearer tokens, AWS keys, GitHub PATs,

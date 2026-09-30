@@ -80,7 +80,7 @@ nix develop
 ### Where your work lives
 <!-- --- START WORKSPACE TREE --- -->
 ```text
-   Workshop/   — the JupyterLab root (NOT Pipulate's own root)
+   Workshop/   -- the JupyterLab root (NOT Pipulate's own root)
    │            FLAT siblings. Nothing nests. Nothing to get wrong.
    │
    ├── corporate/              the org's canon · gitignored · its own private repo
@@ -128,13 +128,13 @@ nix develop
 
 ## AI On Rails: Structured Workflows for Any AI
 
-**The Challenge with Agentic AI:** Powerful but unpredictable—you never know what you're gonna get.
+**The Challenge with Agentic AI:** Powerful but unpredictable--you never know what you're gonna get.
 
-**The Pipulate Approach:** Structured workflows that can leverage **any AI**—local, cloud, or hybrid—while maintaining complete visibility and control.
+**The Pipulate Approach:** Structured workflows that can leverage **any AI**--local, cloud, or hybrid--while maintaining complete visibility and control.
 
 Think of it as putting guardrails on AI assistance. Instead of asking an AI to "figure it out," domain experts create step-by-step workflows that guide AI through proven processes. The AI gets structure, you get predictable results.
 
-**Pipulate: Your AI Swiss Army Knife:** Whether you prefer local privacy, cloud power, or hybrid approaches, Pipulate provides the framework. Use local models for sensitive work, cloud APIs for heavy lifting, or both in the same workflow—your choice, your control.
+**Pipulate: Your AI Swiss Army Knife:** Whether you prefer local privacy, cloud power, or hybrid approaches, Pipulate provides the framework. Use local models for sensitive work, cloud APIs for heavy lifting, or both in the same workflow--your choice, your control.
 
 ```text
       🤖 AGENTIC MODE (Chaos)           🚂 AI ON RAILS (Pipulate)
@@ -215,9 +215,9 @@ Pipulate is a **local-first, single-tenant desktop app framework** featuring AI-
 
 ### The Magnum Opus: Computing Sovereignty
 
-This isn't just another framework — it's a **deliberate culmination** of decades of tech evolution insights. Pipulate represents the "third act" approach to development (3rd time's the charm): choosing the **most durable and lovable** parts of the modern tech stack while rejecting the exhausting hamster wheel of framework churn.
+This isn't just another framework -- it's a **deliberate culmination** of decades of tech evolution insights. Pipulate represents the "third act" approach to development (3rd time's the charm): choosing the **most durable and lovable** parts of the modern tech stack while rejecting the exhausting hamster wheel of framework churn.
 
-If you are not an Empire builder and prefer craftsmanship over the rat race and want to build tools that last, then Pipulate may be for you. Pipulate embodies that philosophy — maximum creative freedom with minimum technical debt, recapturing *that old Webmaster feeling.*
+If you are not an Empire builder and prefer craftsmanship over the rat race and want to build tools that last, then Pipulate may be for you. Pipulate embodies that philosophy -- maximum creative freedom with minimum technical debt, recapturing *that old Webmaster feeling.*
 
 ### Core Philosophy: Local-First, WET, and AI-Augmented
 
@@ -250,8 +250,8 @@ If you are not an Empire builder and prefer craftsmanship over the rat race and 
                                                
 ```
 
-- **Local-First Sovereignty:** Your data, code, and AI run on your hardware by default—extending to cloud services when you choose. This guarantees privacy, eliminates surprise costs, and gives you complete control over when and how to scale.
-- **WET Workflows, DRY Framework:** Workflows are intentionally "WET" (explicit & step-by-step) for maximum clarity and customizability—perfectly mirroring Jupyter Notebooks. The underlying framework is "DRY" for efficiency.
+- **Local-First Sovereignty:** Your data, code, and AI run on your hardware by default--extending to cloud services when you choose. This guarantees privacy, eliminates surprise costs, and gives you complete control over when and how to scale.
+- **WET Workflows, DRY Framework:** Workflows are intentionally "WET" (explicit & step-by-step) for maximum clarity and customizability--perfectly mirroring Jupyter Notebooks. The underlying framework is "DRY" for efficiency.
 
 - **The AI Advantage:** AI makes WET practical. Tedious code maintenance and refactoring, once a weakness of WET, is now an area where AI excels, turning repetition into a strength for rapid, context-aware development. Our breakthrough **Workflow Reconstruction System** exemplifies this: intelligent AST-based transplantation of workflow components eliminates traditional OOP inheritance complexity while maintaining perfect code precision.
 - **Radical Transparency ("Know EVERYTHING!"):** We reject opaque enterprise patterns in favor of complete observability. State is managed in transparent SQLite tables and JSON blobs, making the entire system intuitive and debuggable. No black boxes, ever.
@@ -344,7 +344,7 @@ Pipulate integrates a carefully selected set of tools aligned with its philosoph
        part of the system                         the entire system
 ```
 
-The original LAMP stack was beautiful in its simplicity — one person could understand and manage the whole stack. But it got bloated with enterprise patterns, microservices, and distributed complexity.
+The original LAMP stack was beautiful in its simplicity -- one person could understand and manage the whole stack. But it got bloated with enterprise patterns, microservices, and distributed complexity.
 
 Pipulate brings back that **"one person, full stack"** philosophy with modern tools:
 
@@ -353,7 +353,7 @@ Pipulate brings back that **"one person, full stack"** philosophy with modern to
 - **M**iniDataAPI: Universal SQL simplifier close to Python's core data structures
 - **P**ython + FastHTML + HTMX: The new web development paradigm
 
-This stack isn't just simpler—it's optimized for AI-assisted development. Here's why:
+This stack isn't just simpler--it's optimized for AI-assisted development. Here's why:
 
 * **Minimal Surface Area**: The AI doesn't waste time guessing about complex, out-of-context dependencies. More of the relevant code is directly readable and fits into a single prompt.
 * **Bedrock Dependencies**: The core components (Python, HTML, HTMX) change at a glacial pace, so they are already well-understood by base AI models, requiring no extra context.
@@ -383,7 +383,7 @@ Pipulate's technology choices form **aligned lenses** that focus ideas from abst
           AI Help
 ```
 
-We keep lenses minimal, their material either thoroughly pre-trained into the model (Python 3.x, HTMX, etc.) or able to be included in the prompt and easily held in the context window. We've trimmed the cruft — the lens flashes and burrs, and all unnecessary extra lenses (Angular, React, Vue, etc.)
+We keep lenses minimal, their material either thoroughly pre-trained into the model (Python 3.x, HTMX, etc.) or able to be included in the prompt and easily held in the context window. We've trimmed the cruft -- the lens flashes and burrs, and all unnecessary extra lenses (Angular, React, Vue, etc.)
 
 ```yaml
 HARDWARE:
@@ -406,7 +406,7 @@ APP:
 
 ### Grinding Off the Burrs and Flashes
 
-In lens manufacturing, "flashes" are excess material that squeeze out of molds — unwanted projections that must be ground off. Steve Jobs famously did this twice: adopting Gorilla Glass (grinding off plastic flashes) and rejecting Flash Player (grinding off software bloat).
+In lens manufacturing, "flashes" are excess material that squeeze out of molds -- unwanted projections that must be ground off. Steve Jobs famously did this twice: adopting Gorilla Glass (grinding off plastic flashes) and rejecting Flash Player (grinding off software bloat).
 
 **Pipulate continues this tradition:**
 - **FastHTML**: Grinds off Jinja2 template complexity
@@ -420,11 +420,11 @@ The result: clean, focused tools that do their job without unnecessary cruft.
 
 ## From Flask to FastAPI to FastHTML
 
-This is not your father's Python web framework. HTMX changes everything — a marriage made in heaven between Python and the Web, finally turning Python into a first-class citizen for web development. In many use cases such as this one, Python is even preferable to JavaScript in the way it blends Python's formidable ecosystem of packages with workflows.
+This is not your father's Python web framework. HTMX changes everything -- a marriage made in heaven between Python and the Web, finally turning Python into a first-class citizen for web development. In many use cases such as this one, Python is even preferable to JavaScript in the way it blends Python's formidable ecosystem of packages with workflows.
 
 ### The Evolution: Flask → FastAPI → FastHTML
 
-The revolution isn't just another framework — it's eliminating the template layer entirely:
+The revolution isn't just another framework -- it's eliminating the template layer entirely:
 
 ```text
     🍶 FLASK ERA              🚀 FASTAPI ERA            🌐 FASTHTML ERA
@@ -458,15 +458,15 @@ The revolution isn't just another framework — it's eliminating the template la
 
 **The FastHTML Breakthrough:** Python function names directly become HTML elements, eliminating templates and making the server the single source of truth for UI state.
 
-* **HTMX:** Enables dynamic, interactive UIs directly in HTML via attributes, minimizing the need for custom JavaScript. Pipulate uses it for server-rendered HTML updates — *over the wire HTML*-fragments targeting elements of the DOM directly instead of fragile, performance-reducing, framework-dependent JSON. *THIS* is where you *jump off the tech-churn hamsterwheel* and future-proof yourself.
+* **HTMX:** Enables dynamic, interactive UIs directly in HTML via attributes, minimizing the need for custom JavaScript. Pipulate uses it for server-rendered HTML updates -- *over the wire HTML*-fragments targeting elements of the DOM directly instead of fragile, performance-reducing, framework-dependent JSON. *THIS* is where you *jump off the tech-churn hamsterwheel* and future-proof yourself.
 
-* **MiniDataAPI:** A lightweight layer for interacting with SQLite and other databases. Uses Python dictionaries for schema definition, promoting type safety without the complexity of traditional ORMs — effectively future-proofing your SQL. You lose fancy *join* capabilities but in exchange get the *Python dict interface* as your main persistent database API forever-forward, enabiling instant swapability between SQLite and PostgreSQL (for example).
+* **MiniDataAPI:** A lightweight layer for interacting with SQLite and other databases. Uses Python dictionaries for schema definition, promoting type safety without the complexity of traditional ORMs -- effectively future-proofing your SQL. You lose fancy *join* capabilities but in exchange get the *Python dict interface* as your main persistent database API forever-forward, enabiling instant swapability between SQLite and PostgreSQL (for example).
 
-* **Ollama:** Facilitates running LLMs locally, enabling in-app chat, workflow guidance, and future automation capabilities while ensuring privacy and avoiding API costs. Your local AI (Chip O'Theseus) learns & grows with you, hopping from hardware to hardware as you upgrade — like a genie in a hermitcrab shell. And if that weren't kooky enough — it knows how to make MCP-calls!!! That's right, your friendly localhost AI Chip O'Theseus is also an *MCP client!* Your linear workflows ain't so linear anymore when a single-step can be: "Go out and do whatever."
+* **Ollama:** Facilitates running LLMs locally, enabling in-app chat, workflow guidance, and future automation capabilities while ensuring privacy and avoiding API costs. Your local AI (Chip O'Theseus) learns & grows with you, hopping from hardware to hardware as you upgrade -- like a genie in a hermitcrab shell. And if that weren't kooky enough -- it knows how to make MCP-calls!!! That's right, your friendly localhost AI Chip O'Theseus is also an *MCP client!* Your linear workflows ain't so linear anymore when a single-step can be: "Go out and do whatever."
 
 ### The Hybrid Advantage: Best of Both Worlds
 
-**Pipulate isn't anti-cloud—it's pro-choice.** Each workflow step can choose the best tool for the job:
+**Pipulate isn't anti-cloud--it's pro-choice.** Each workflow step can choose the best tool for the job:
 
 - **Step 1**: Use local AI for sensitive data analysis (privacy-first)
 - **Step 2**: Call OpenAI's API for advanced reasoning (cloud power)  
@@ -475,7 +475,7 @@ The revolution isn't just another framework — it's eliminating the template la
 
 **This is the Swiss Army knife approach:** Local by default, cloud by choice, with complete visibility into what's happening at each step. Whether you're processing confidential client data (local) or need cutting-edge AI capabilities (cloud), Pipulate gives you the framework to do both seamlessly.
 
-* **SQLite & Jupyter Notebooks:** Foundational tools for data persistence and the workflow development process (porting from notebooks to Pipulate workflows). SQLite is built into Python and really all things — the *get-out-of-tech-liability free card* you didn't know you had. And a full JupyterLab instance is installed side-by-side with Pipulate sharing the same Python `.venv` virtual environment, which is also shared with your preferred AI code editor (Cursor, Windsurf, VSCode, Zed) so... well... uhm, there are no words for when 3 different portals-to-Python share the same environment. You can do such stupid AI-tricks as letting your local LLM and a frontier cloud model *inhabit* the same body (Pipulate) — controlling web browsers together and stuff.
+* **SQLite & Jupyter Notebooks:** Foundational tools for data persistence and the workflow development process (porting from notebooks to Pipulate workflows). SQLite is built into Python and really all things -- the *get-out-of-tech-liability free card* you didn't know you had. And a full JupyterLab instance is installed side-by-side with Pipulate sharing the same Python `.venv` virtual environment, which is also shared with your preferred AI code editor (Cursor, Windsurf, VSCode, Zed) so... well... uhm, there are no words for when 3 different portals-to-Python share the same environment. You can do such stupid AI-tricks as letting your local LLM and a frontier cloud model *inhabit* the same body (Pipulate) -- controlling web browsers together and stuff.
 
 --------------------------------------------------------------------------------
 
@@ -517,7 +517,7 @@ We offer two installation paths that lead to the exact same robust, Nix-managed 
                                       Result)
 ```
 
-### PATH 1: Quick Start — Universal Installation (Recommended)
+### PATH 1: Quick Start -- Universal Installation (Recommended)
 
 This is the fastest and most universal way to install Pipulate. It has the fewest dependencies and works on any modern Mac, Linux system, or Windows with WSL.
 
@@ -758,13 +758,13 @@ Pipulate is built on a radical philosophy that challenges programming orthodoxy:
 
 ### The Universal API Pattern: From Quarks to Code
 
-At every scale of reality, we see the same pattern: **"lumps of stuff" with APIs** that enable interaction. Quarks combine into atoms, atoms into molecules, cells into organisms, individuals into societies. Each level requires the right **granularity** of interface — not so abstract that you lose control, not so granular that you drown in complexity.
+At every scale of reality, we see the same pattern: **"lumps of stuff" with APIs** that enable interaction. Quarks combine into atoms, atoms into molecules, cells into organisms, individuals into societies. Each level requires the right **granularity** of interface -- not so abstract that you lose control, not so granular that you drown in complexity.
 
 **This is the 80/20 rule of existence:** Handle 80% of interactions gracefully with 20% of the API surface, then handle edge cases as needed. Pipulate applies this principle to code architecture.
 
 ### Durable vs. Ephemeral: Building on Bedrock
 
-The tech industry suffers from "hamster wheel syndrome" — constantly breaking APIs that force migration cycles. React (20+ versions), Node (frequent breaking changes), Angular (complete rewrites). This isn't progress; it's planned obsolescence.
+The tech industry suffers from "hamster wheel syndrome" -- constantly breaking APIs that force migration cycles. React (20+ versions), Node (frequent breaking changes), Angular (complete rewrites). This isn't progress; it's planned obsolescence.
 
 **Pipulate chooses durable foundations:**
 - **Linux Kernel**: Version 6 in 30 years
@@ -772,7 +772,7 @@ The tech industry suffers from "hamster wheel syndrome" — constantly breaking 
 - **HTML**: Version 5 and stable
 - **HTTP**: Version 3 and backward compatible
 
-These are the "laws of physics" for software — stable APIs that enable compound growth rather than constant rebuilding.
+These are the "laws of physics" for software -- stable APIs that enable compound growth rather than constant rebuilding.
 
 ### Why WET Works Now
 
@@ -966,7 +966,7 @@ The UI is constructed primarily with server-rendered HTML fragments delivered vi
                              └─────────┴───────────┘  - No virtual DOM, JSX, Redux, etc.
 ```
 
-With such *minimal surface area* the AI code assistant *knows everything.* LLMs are either pre-trained on the stable, infrequently revved libraries used (Python 3.12, HTMX, or it's all small enough to fit in a 1-shot prompt — yes, the whole core code-base fits in one Gemini Web UI form submit.
+With such *minimal surface area* the AI code assistant *knows everything.* LLMs are either pre-trained on the stable, infrequently revved libraries used (Python 3.12, HTMX, or it's all small enough to fit in a 1-shot prompt -- yes, the whole core code-base fits in one Gemini Web UI form submit.
 
 --------------------------------------------------------------------------------
 
@@ -991,7 +991,7 @@ Designed for porting notebook-style processes, workflows are sequences of steps 
 
 ### Run All Cells Pattern
 
-**The key insight**: Pipulate workflows use a `run_all_cells()` pattern that directly mirrors Jupyter's "Run All Cells" command. This creates an immediate mental model — each workflow step is like a notebook cell, and the system automatically progresses through them top-to-bottom, just like running all cells in a notebook.
+**The key insight**: Pipulate workflows use a `run_all_cells()` pattern that directly mirrors Jupyter's "Run All Cells" command. This creates an immediate mental model -- each workflow step is like a notebook cell, and the system automatically progresses through them top-to-bottom, just like running all cells in a notebook.
 
 ```text
     📓 JUPYTER NOTEBOOK               🌐 PIPULATE WORKFLOW
@@ -1206,7 +1206,7 @@ When a user hits Enter on an empty key field, this specific sequence occurs:
 Pipulate uses HTMX-driven step progression powered by the brilliantly named `run_all_cells()` method:
 
 1. **Initial Trigger**: After `init`, the `run_all_cells()` method initializes the workflow just like Jupyter's "Run All Cells"
-2. **Perfect Mental Model**: The method name creates immediate understanding — workflows execute top-to-bottom like notebook cells
+2. **Perfect Mental Model**: The method name creates immediate understanding -- workflows execute top-to-bottom like notebook cells
 3. **Step Handlers**: Each step has GET (display) and POST (submit) handlers
 4. **Automatic Progression**: Completed steps trigger next step with `hx_trigger="load"`
 5. **State Persistence**: Each step stores data in pipeline state
@@ -1222,7 +1222,7 @@ async def init(self, request):
 
 # ❌ ANTI-PATTERN: Manual placeholder creation
 async def init(self, request):
-    """Manual approach — harder to understand and maintain"""
+    """Manual approach -- harder to understand and maintain"""
     first_step_id = steps[0].id
     return Div(
         Div(id=first_step_id, hx_get=f'/{app_name}/{first_step_id}', hx_trigger='load'),
@@ -1535,11 +1535,11 @@ The system provides comprehensive debugging and state inspection capabilities th
 
 ## The Deeper Philosophy: Why This Matters
 
-Pipulate represents more than technology choices — it's a statement about **computing sovereignty** and the future of human-AI collaboration.
+Pipulate represents more than technology choices -- it's a statement about **computing sovereignty** and the future of human-AI collaboration.
 
 ### The Inevitable Retcon
 
-In a few years, the industry will pivot away from mutable containers and claim they invented "AI-Native Infrastructure"—declarative, reproducible environments that allow AI agents to write code without breaking dependencies. They will package it in slick UIs and hide the math.
+In a few years, the industry will pivot away from mutable containers and claim they invented "AI-Native Infrastructure"--declarative, reproducible environments that allow AI agents to write code without breaking dependencies. They will package it in slick UIs and hide the math.
 
 When that happens, remember that **Pipulate was here first.**
 
@@ -1551,11 +1551,11 @@ While others fight to keep their containers from drifting, you will be standing 
 
 How do you "lift yourself up by your bootstraps"? The answer: **you're not a closed system**. Humans interact with reality through interfaces, just like software components. We are "human apps with reality APIs."
 
-This pattern repeats at every scale — from quantum fields to societies. The art lies in choosing the **right granularity** for these interfaces. Too abstract, and you lose control. Too granular, and you drown in complexity.
+This pattern repeats at every scale -- from quantum fields to societies. The art lies in choosing the **right granularity** for these interfaces. Too abstract, and you lose control. Too granular, and you drown in complexity.
 
 ### Every API is a Compromise
 
-The most successful APIs are **durable** — they become the "laws of physics" for their domain. In reality: the laws of physics, chemistry, biology. In tech: logic gates, operating systems, protocols like HTTP and HTML.
+The most successful APIs are **durable** -- they become the "laws of physics" for their domain. In reality: the laws of physics, chemistry, biology. In tech: logic gates, operating systems, protocols like HTTP and HTML.
 
 Pipulate chooses these durable APIs deliberately, creating a **future-proof foundation** for AI-assisted development that will outlast the current framework churn.
 
@@ -1573,9 +1573,9 @@ Remember the guiding principles:
 2.  **Support local-first with cloud integration options.**
 3.  **Embrace the unconventional while remaining practical.**
 4.  **Choose durable foundations that work with any approach.**
-5.  **Build for both human creativity and AI collaboration—local or cloud.**
+5.  **Build for both human creativity and AI collaboration--local or cloud.**
 
-**The Bottom Line:** Pipulate doesn't reject the modern AI ecosystem—it provides a structured foundation that works with any AI service. Whether you're using Claude via API, ChatGPT for reasoning, or local models for privacy, Pipulate gives you the workflow framework to orchestrate them all effectively. It's not about choosing sides in the AI wars—it's about having the right tool for any job.
+**The Bottom Line:** Pipulate doesn't reject the modern AI ecosystem--it provides a structured foundation that works with any AI service. Whether you're using Claude via API, ChatGPT for reasoning, or local models for privacy, Pipulate gives you the workflow framework to orchestrate them all effectively. It's not about choosing sides in the AI wars--it's about having the right tool for any job.
 
 -----
 

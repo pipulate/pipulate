@@ -131,7 +131,7 @@ def build_ledger(target_config: dict, rich: bool, limit) -> tuple:
     lines = []
     for idx, item in enumerate(metadata):
         title = item.get("title", "Untitled")
-        # File size via stat — cheap metadata syscall, no full read needed
+        # File size via stat -- cheap metadata syscall, no full read needed
         try:
             byte_size = Path(item["path"]).stat().st_size if item.get("path") else 0
         except OSError:
@@ -143,13 +143,13 @@ def build_ledger(target_config: dict, rich: bool, limit) -> tuple:
         else:
             if idx == FULL_URL_THRESHOLD:
                 lines.append(
-                    f"\n## Compact slug index — pattern: {url_pattern}\n"
-                    f"\nFormat: `[date] [size] slug` — fetch any entry as `{url_pattern}`\n"
+                    f"\n## Compact slug index -- pattern: {url_pattern}\n"
+                    f"\nFormat: `[date] [size] slug` -- fetch any entry as `{url_pattern}`\n"
                 )
             slug = article_slug(item)
             line = f"- [{item['date']}] [{size_k}] {slug}"
         if rich and item.get("shard_kw"):
-            line += f" — {item['shard_kw']}"
+            line += f" -- {item['shard_kw']}"
         lines.append(line)
 
     return "\n".join(lines), len(metadata)

@@ -3,7 +3,7 @@
 -- MARKDOWN AFFINITY RATIO
 -- Raw hit counts favor whoever crawls most often, not whoever wants markdown
 -- most. This normalizes for that: each agent's markdown-serving requests
--- (anything tagged with the ?src= tracer dye — manifest follow, hyperlink,
+-- (anything tagged with the ?src= tracer dye -- manifest follow, hyperlink,
 -- <link rel>, or content negotiation) as a SHARE of its total traffic.
 -- ============================================================================
 

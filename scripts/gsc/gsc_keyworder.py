@@ -30,7 +30,7 @@ SITE_URL = "sc-domain:mikelev.in"
 # Base URL of your website (used to convert absolute GSC URLs to relative paths)
 BASE_URL = "https://mikelev.in"
 
-# Path to your service account key JSON file — resolved from the wallet, never
+# Path to your service account key JSON file -- resolved from the wallet, never
 # from inside this repo. Resolution chain (identical to connectors/gsc.py):
 #   PIPULATE_GSC_KEY env -> connectors.json gsc.paths.service_account
 #     -> wallet-path default. Duplicated deliberately (WET, per the

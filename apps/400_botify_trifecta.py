@@ -41,7 +41,7 @@ class Trifecta:
     """
     APP_NAME = 'trifecta'
     DISPLAY_NAME = 'Trifecta 🏇'
-    ENDPOINT_MESSAGE = 'Download one CSV of each kind: LogAnalyzer (Web Logs), SiteCrawler (Crawl Analysis), RealKeywords (Search Console) — the Trifecta!'
+    ENDPOINT_MESSAGE = 'Download one CSV of each kind: LogAnalyzer (Web Logs), SiteCrawler (Crawl Analysis), RealKeywords (Search Console) -- the Trifecta!'
     TRAINING_PROMPT = '''
     🚀 BOTIFY API MASTERY: Core Workflow for Multi-Source Data Collection
     ====================================================================

@@ -411,11 +411,11 @@ def conjure_patronus(name, duration=3.5):
 # --- The UPDATING Standby Music (Jeopardy think-music) ---
 # The wav lives in repo NEGATIVE SPACE: shipped once by hand (scp) to the
 # path below, never committed. A fresh Honeybot spun from the public repo
-# simply lacks the file and start_updating_music() no-ops — graceful
+# simply lacks the file and start_updating_music() no-ops -- graceful
 # degradation via a single Path.exists() check. Playback rides the exact
 # path the probes proved end-to-end: aplay -D default -> PipeWire ALSA ->
 # Dummy Output sink -> OBS monitor capture -> YouTube. No hardware, no
-# audio group, no ACLs — the "speaker" is a virtual sink.
+# audio group, no ACLs -- the "speaker" is a virtual sink.
 MUSIC_FILE = Path.home() / ".local/share/honeybot/jeopardy.wav"
 MUSIC_MARKER = "honeybot-updating-music"
 
@@ -423,7 +423,7 @@ MUSIC_MARKER = "honeybot-updating-music"
 def start_updating_music():
     """Loop the standby wav in its own PROCESS GROUP. aplay does not loop,
     and the wav (~30s) is far shorter than the standby window (up to ~4
-    minutes), hence the while-loop shell wrapper — which is exactly why the
+    minutes), hence the while-loop shell wrapper -- which is exactly why the
     group kill matters: kill only the aplay and the shell resurrects it a
     beat later. The MUSIC_MARKER comment rides the command line so the
     idempotent pkill backstop can target this loop and ONLY this loop,
@@ -478,7 +478,7 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None)
 
     # --- 80/20 PULL-TIGHT FOR FIGLET CARDS ---
     # card.py renders a single Figlet banner, and a Figlet footprint is fully
-    # deterministic and measurable parent-side — exactly how patronus() sizes
+    # deterministic and measurable parent-side -- exactly how patronus() sizes
     # its popup around registered ASCII art. Do the same here: measure the
     # banner BEFORE launch and shrink the Alacritty box around it. The child
     # cannot resize a box whose columns/lines are already baked into the launch
@@ -492,7 +492,7 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None)
     # space.
     #
     # FUTURE (combined card): a card will eventually carry a Figlet banner on
-    # top AND figurate ASCII art BELOW it on the same surface — the framing is
+    # top AND figurate ASCII art BELOW it on the same surface -- the framing is
     # "a Figlet banner with an optional ASCII-art body," with card.py as the
     # home that grows a body (rather than the patronus path growing a label).
     # When that lands, render banner + art, measure the UNION of the two
@@ -530,7 +530,7 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
 
     pace_say=True (trees): after queuing speech, sleep an estimate so the
         director paces roughly with the voice. pace_say=False (forest): do NOT
-        sleep here — run_station_break brackets the bead with interrupt() and
+        sleep here -- run_station_break brackets the bead with interrupt() and
         queue.join() so a report WINDOW can overlap the spiel in real voice-time.
     """
     if command == "SAY":
@@ -606,7 +606,7 @@ def run_station_break(env, profile_dir):
 
     # --- Stage 1: The Soft Preemption ---
     # flush_queue (not interrupt) so the article sentence playing RIGHT NOW
-    # finishes instead of being clipped mid-word — only the queued backlog is
+    # finishes instead of being clipped mid-word -- only the queued backlog is
     # dropped. The queue.join() below then rides the real voice clock, so the
     # lead-in lands after the current line ends, not on top of it.
     dropped = narrator.flush_queue()
@@ -616,7 +616,7 @@ def run_station_break(env, profile_dir):
         # one says exactly how unhealthy. Deliberately NOT added to interrupt()
         # -- there, dropping the backlog is the INTENT (you are cutting to
         # breaking news); here it is collateral.
-        print(f"📉 STATION BREAK DROPPED {dropped} unspoken item(s) — "
+        print(f"📉 STATION BREAK DROPPED {dropped} unspoken item(s) -- "
               f"director ran ahead of the voice; that text was never heard.")
     narrator.say("We interrupt this program for a station identification break.")
     narrator.queue.join()
@@ -636,13 +636,13 @@ def run_station_break(env, profile_dir):
 
 def perform_show(script):
     """Reads the sheet music list and executes it."""
-    # Idempotent safety net: whenever we start performing ANY fresh script —
-    # normal playlist progression, a breaking-news restart, anything — make
+    # Idempotent safety net: whenever we start performing ANY fresh script --
+    # normal playlist progression, a breaking-news restart, anything -- make
     # sure no stale "UPDATING" sentinel card is still lingering on screen.
     # This is a no-op the vast majority of the time, since the deploy-standby
     # handshake below already tears the card down deterministically the
     # instant the completion bell rings. It only does real work if that
-    # earlier teardown somehow failed to land — which is exactly the failure
+    # earlier teardown somehow failed to land -- which is exactly the failure
     # case this exists to bound: the card cannot outlive more than one cycle.
     try:
         subprocess.run(["pkill", "-f", "card.py.*UPDATING"], check=False)
@@ -650,7 +650,7 @@ def perform_show(script):
         pass
     # Same idempotent backstop for the standby music loop. The marker is
     # baked into that loop's sh -c command line, so this cannot touch the
-    # narrator's own aplay processes — it only reaps an orphaned jukebox.
+    # narrator's own aplay processes -- it only reaps an orphaned jukebox.
     try:
         subprocess.run(["pkill", "-f", MUSIC_MARKER], check=False)
     except Exception:
@@ -691,21 +691,21 @@ def perform_show(script):
             # --- The Deploy Stand-By Handshake ---
             # A fresh push rings the standby bell BEFORE the multi-second build.
             # Announce calmly ONCE, cut the current narration, and HOLD (silent) until
-            # the completion bell rings — so the TTS doesn't thrash through the deploy.
+            # the completion bell rings -- so the TTS doesn't thrash through the deploy.
             if check_standby():
                 narrator.interrupt()  # cut current audio + flush the backlog
                 narrator.say("Receiving updates. Things will go quiet for a few moments. Then I'll start reading again. Please stand by for a brand spanking new article. It'll be worth the wait.")
                 # The outer `duration` here is a generous LAST-RESORT ceiling, not
                 # the thing that's supposed to close this window. The deterministic
                 # close is the pkill below, fired the instant check_for_updates()
-                # proves the deploy is actually done — never a guessed elapsed time.
+                # proves the deploy is actually done -- never a guessed elapsed time.
                 #
                 # CRITICAL: launch on a DAEMON THREAD. conjure_window() (in
-                # imports/ascii_displays.py) is BLOCKING — it bottoms out in
+                # imports/ascii_displays.py) is BLOCKING -- it bottoms out in
                 # proc.wait(timeout=duration). Called inline, it froze this entire
                 # loop for the full duration, starving the check_for_updates() poll
                 # below and leaving the UPDATING banner stuck on screen (narration
-                # silent) until the self-cap expired — the "never resumes without
+                # silent) until the self-cap expired -- the "never resumes without
                 # --reboot" bug. Threaded, the poll keeps running and the pkill
                 # tears the card down the instant the completion bell rings: pkill
                 # ends card.py, alacritty exits, proc.wait returns, the thread dies.
@@ -725,7 +725,7 @@ def perform_show(script):
                 # Hold narration until the deploy finishes (completion bell rings)
                 # or we time out gracefully, then lead the next cycle with the new article.
                 # This deadline is a fail-safe ceiling for a deploy that never finishes,
-                # not the expected case — builds vary, and check_for_updates() polling
+                # not the expected case -- builds vary, and check_for_updates() polling
                 # below is what actually decides when to stop waiting.
                 deadline = time.time() + 240
                 bell_rang = False
@@ -797,7 +797,7 @@ def start_director_track():
 
     # A publish-triggered restart (the [4/4] kill in flake.nix) births a fresh
     # process while .reading_trigger is still warm. Lead the very first cycle with
-    # the newest article — the breaking path Probe 2 already validated end to end —
+    # the newest article -- the breaking path Probe 2 already validated end to end --
     # instead of the cold "Greetings, entity" preamble. If content_loader failed to
     # import, score is None and the conditional short-circuits to False before
     # trigger_is_fresh is ever looked up; a stale or absent trigger also yields
@@ -863,7 +863,7 @@ def main():
     # paired with their own narration (the JS-trapdoor story over radar, the
     # AI-ingestion bars over education, etc). Left commented as hooks so the old
     # boot slideshow can be restored or cherry-picked later. The "Amazon and
-    # Meta" line lives here with education.py on purpose — that's the report it
+    # Meta" line lives here with education.py on purpose -- that's the report it
     # was always meant to narrate over.
     #
     # # Scene 1: The Executive Summary

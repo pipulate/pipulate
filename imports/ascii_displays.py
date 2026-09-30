@@ -54,20 +54,20 @@ console = Console()
 
 FIGURATE_LEDGER: dict = {
     "white_rabbit": 509925915, 
-    "player_piano": 3357002674,
+    "player_piano": 999890149,
     "clipboard": 858911667,
-    "bunny_trail": 615479347,
+    "bunny_trail": 1958157130,
     "ai_stack_combo": 1121129699,  
     "deployment_context": 1326657684,
     "honeybot_pipeline": 2035836683,
     # CRC32 of raw ai string, no strip (leading newline preserved, like honeybot_pipeline)
     "ai_pachinko": 3085409448,
-    "flyball_governor": 3239899604,
-    "canal_lock": 311868176,
-    "mechanical_man": 4142234675,
+    "flyball_governor": 7987512,
+    "canal_lock": 2614078993,
+    "mechanical_man": 2838219927,
     # CRC32 after _expand_color_bits_ai() + .strip()
-    "workspace_tree": 2337471735,  # CRC32 no-strip (leading newline preserved, like honeybot_pipeline); resealed 2026-09-27 for the Workshop rename, was 2408173560
-    "forcing_pair": 3594006631,  # CRC32 no-strip; seal re-taken 2026-07-27 — 208394658 sealed a re-typed copy of the art, not the bytes on disk; the straddle caught it (drift 1→0)
+    "workspace_tree": 2161361735,  # CRC32 no-strip (leading newline preserved, like honeybot_pipeline); resealed 2026-09-27 for the Workshop rename, was 2408173560
+    "forcing_pair": 2922857824,  # CRC32 no-strip; seal re-taken 2026-07-27 -- 208394658 sealed a re-typed copy of the art, not the bytes on disk; the straddle caught it (drift 1→0)
     # === FIGURATE_LEDGER_EXTRUDE_BOTTOM ===
     # Add new artwork CRC32 entries immediately above this line
 }
@@ -103,14 +103,14 @@ def figurate(name: str, context: Optional[str] = None) -> FigurateResult:
     # render_fn must return (human_renderable, ai_plain_str)
     human_out, ai_out = render_fn()
     
-    # Drift detection: CRC32 values are not ordered, so drift is binary — 0 or 1.
+    # Drift detection: CRC32 values are not ordered, so drift is binary -- 0 or 1.
     drift = 0
     expected_crc = FIGURATE_LEDGER.get(name)
     if expected_crc is not None:
         computed_crc = binascii.crc32(ai_out.encode('utf-8'))
         if computed_crc != expected_crc:
             drift = 1
-            logger.warning(f"🎨 FIGURATE: DRIFT DETECTED in '{name}' — expected CRC {expected_crc}, got {computed_crc}")
+            logger.warning(f"🎨 FIGURATE: DRIFT DETECTED in '{name}' -- expected CRC {expected_crc}, got {computed_crc}")
     
     if context:
         logger.info(f"🎨 FIGURATE: {name} | {context} | drift={drift}")
@@ -509,7 +509,7 @@ def measure_figlet(label: str, font: str = "standard") -> tuple:
     Returns (width, height) in terminal cells for `label` rendered in `font`,
     so a caller can size an Alacritty box to "pull tight" around the banner the
     same way patronus() sizes its popup around registered ASCII art. Uses
-    pyfiglet's default width (80) — exactly what card.py renders with — so the
+    pyfiglet's default width (80) -- exactly what card.py renders with -- so the
     measurement matches the child's output character-for-character, including
     the wrap-to-second-block case, which simply doubles `height`.
 
@@ -517,8 +517,8 @@ def measure_figlet(label: str, font: str = "standard") -> tuple:
     card.py's own plain-text fallback so the box is never wildly mis-sized.
 
     FUTURE (combined card): when a card grows a Figlet banner on top AND
-    figurate ASCII art below it on one surface, the caller measures the UNION —
-    max width of the two blocks, summed heights plus a separator row — and feeds
+    figurate ASCII art below it on one surface, the caller measures the UNION --
+    max width of the two blocks, summed heights plus a separator row -- and feeds
     that to the window. This helper stays single-purpose; composition happens
     one layer up.
     """
@@ -547,7 +547,7 @@ FIGURATE_COLOR_BITS: dict = {
 
 # FIGURATE_SEMANTIC_TOKENS: local mirror of config.COLOR_MAP for <token>…</token>
 # spans (e.g. <success>Pipulate</success>). Defined HERE, not imported from
-# config.py, because nixops.sh rsyncs only this single file to Honeybot — a
+# config.py, because nixops.sh rsyncs only this single file to Honeybot -- a
 # `from config import COLOR_MAP` would be the parents[1] divergence trap one layer
 # over: green locally, ImportError on the server. The AI path still strips these
 # tags, so the wax-seal CRC is untouched. This also de-inflates the human render
@@ -567,7 +567,7 @@ def _expand_color_bits_human(text: str) -> str:
          in the art survive as literal glyphs inside the Panel.
       3. REINSERT: swap the sentinels back for their real Rich markup.
     The AI path (_expand_color_bits_ai) and thus the CRC wax seals are
-    untouched — this repairs the projection, not the master.
+    untouched -- this repairs the projection, not the master.
     """
     import re
     from rich.markup import escape
@@ -604,7 +604,7 @@ def _expand_color_bits_ai(text: str) -> str:
 # FIGURATE_REGISTRY: The map of all visual vocabulary.
 # Each entry provides a render() function returning (human, ai) tuple.
 # Art goes here as a data asset; rendering logic stays separate from content.
-# Populate incrementally — add entries as existing functions are migrated.
+# Populate incrementally -- add entries as existing functions are migrated.
 def _figurate_white_rabbit():
     """Render white_rabbit as (human, ai) tuple for FIGURATE_REGISTRY."""
     art = r"""
@@ -626,7 +626,7 @@ def _figurate_player_piano():
     # Adjusted with precise trailing spaces to secure an absolute plumb right border on substitution
     art = r"""
  ┌────────────────────────────────────────────────────────────────────────┐
- │ ✂️ PLAYER PIANO PROTOCOL — How Chatbots Edit Local Code               │
+ │ ✂️ PLAYER PIANO PROTOCOL -- How Chatbots Edit Local Code               │
  ├────────────────────────────────────────────────────────────────────────┤
  │ Target: path/to/file.py                                                │
  │ ___BOX_SEARCH___                                                           │
@@ -635,7 +635,7 @@ def _figurate_player_piano():
  │ exact new text                                                         │
  │ ___BOX_REPLACE___                                                          │
  │                                                                        │
- │ 1. Exact match required — no fuzzy edits.                              │
+ │ 1. Exact match required -- no fuzzy edits.                              │
  │ 2. Preserve all whitespace and indentation.                            │
  │ 3. Wrap entire patch in a single ```text block.                        │
  │ 4. Human reviews Git diff before commit.                               │
@@ -652,7 +652,7 @@ def _figurate_player_piano():
     ai_art = inject_brackets(ai_art)
     human_art = inject_brackets(human_art)
     
-    human = Panel(human_art, title="✂️ Player Piano — Safe Code Editing", border_style="white")
+    human = Panel(human_art, title="✂️ Player Piano -- Safe Code Editing", border_style="white")
     return human, ai_art
 
 def _figurate_clipboard():
@@ -669,14 +669,14 @@ def _figurate_clipboard():
     """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
-    human = Panel(human_art, title="📋 Clipboard Bus — Local OS Data Highway", border_style="white")
+    human = Panel(human_art, title="📋 Clipboard Bus -- Local OS Data Highway", border_style="white")
     return human, ai_art
 
 def _figurate_bunny_trail():
     """Render the morning continuation tale as a tiny boot micro-narrative."""
     art = r"""
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ 🐇 THE BUNNY TRAIL — Continuation Tail / Continuation Tale                  │
+│ 🐇 THE BUNNY TRAIL -- Continuation Tail / Continuation Tale                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │ 1. Anchor  → where I left off.                                              │
 │ 2. Pulse   → what edge is vibrating.                                        │
@@ -686,7 +686,7 @@ def _figurate_bunny_trail():
     """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
-    human = Panel(human_art, title="🐇 The Bunny Trail — Morning Continuation Tale", border_style="white")
+    human = Panel(human_art, title="🐇 The Bunny Trail -- Morning Continuation Tale", border_style="white")
     return human, ai_art
 
 
@@ -705,7 +705,7 @@ def _figurate_ai_stack_combo():
 """
     ai_art = _expand_color_bits_ai(art).strip()
     human_art = _expand_color_bits_human(art).strip()
-    human = Panel(human_art, title="🃏 Stack Combo — Local-First Agency Pipeline", border_style="white")
+    human = Panel(human_art, title="🃏 Stack Combo -- Local-First Agency Pipeline", border_style="white")
     return human, ai_art
 
 
@@ -727,7 +727,7 @@ def _figurate_deployment_context():
 
     ai_art = _expand_color_bits_ai(art).strip()
     human_art = _expand_color_bits_human(art).strip()
-    human = Panel(human_art, title="🖥️ Deployment Context — Auditor Model vs Local Reality", border_style="white")
+    human = Panel(human_art, title="🖥️ Deployment Context -- Auditor Model vs Local Reality", border_style="white")
     return human, ai_art
 
 def _figurate_honeybot_pipeline():
@@ -760,11 +760,11 @@ def _figurate_honeybot_pipeline():
 """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
-    human = Panel(human_art, title="🍯 Honeybot — Ingress to Broadcast Pipeline", border_style="white")
+    human = Panel(human_art, title="🍯 Honeybot -- Ingress to Broadcast Pipeline", border_style="white")
     return human, ai_art
 
 def _figurate_ai_pachinko():
-    """Render the AI Pachinko parlor — every token is a ball drop, the house is you."""
+    """Render the AI Pachinko parlor -- every token is a ball drop, the house is you."""
     art = r"""
             ╔═══════════════════════════════════╗
             ║   🎰  A I   P A C H I N K O  🎰   ║
@@ -789,16 +789,16 @@ def _figurate_ai_pachinko():
 """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
-    human = Panel(human_art, title="🎰 AI Pachinko — Bank It or Re-Spin", border_style="white")
+    human = Panel(human_art, title="🎰 AI Pachinko -- Bank It or Re-Spin", border_style="white")
     return human, ai_art
 
 
 def _figurate_flyball_governor():
-    """Render Watt's flyball governor — the perception-decision-actuation loop in brass."""
+    """Render Watt's flyball governor -- the perception-decision-actuation loop in brass."""
     art = r"""
-     THE FLYBALL GOVERNOR — intelligence with zero symbols (Watt, 1788)
+     THE FLYBALL GOVERNOR -- intelligence with zero symbols (Watt, 1788)
 
-                      │ spindle — spun by the engine ITSELF
+                      │ spindle -- spun by the engine ITSELF
                   ┌───┴───┐
                  /         \
                (O)         (O)   ← too fast: brass flies OUTWARD,
@@ -819,14 +819,14 @@ def _figurate_flyball_governor():
 """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
-    human = Panel(human_art, title="⚙️ Flyball Governor — Cybernetics' Namesake", border_style="white")
+    human = Panel(human_art, title="⚙️ Flyball Governor -- Cybernetics' Namesake", border_style="white")
     return human, ai_art
 
 
 def _figurate_canal_lock():
-    """Render the canal lock — a bistable element; computation begins where something resists the gradient."""
+    """Render the canal lock -- a bistable element; computation begins where something resists the gradient."""
     art = r"""
-     THE CANAL LOCK — a flip-flop with a draft of six feet
+     THE CANAL LOCK -- a flip-flop with a draft of six feet
 
    upper pound ~~~~~~~~╥══╥
                        ║  ║ gate A (check valve: sequence enforced)
@@ -844,19 +844,19 @@ def _figurate_canal_lock():
 """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
-    human = Panel(human_art, title="🚦 Canal Lock — The Six-Foot Flip-Flop", border_style="white")
+    human = Panel(human_art, title="🚦 Canal Lock -- The Six-Foot Flip-Flop", border_style="white")
     return human, ai_art
 
 
 def _figurate_mechanical_man():
-    """Render Tik-Tok's patent drawing — thought and speech wound; the action key stays on the wall."""
+    """Render Tik-Tok's patent drawing -- thought and speech wound; the action key stays on the wall."""
     art = r"""
-     SMITH & TINKER'S PATENT MECHANICAL MAN — as deployed locally
+     SMITH & TINKER'S PATENT MECHANICAL MAN -- as deployed locally
 
         ┌──────────────────────────────┐
         │   ⚙  THOUGHT    [ wound ✓ ]  │ ← key #1: the context compiler
         │   ⚙  SPEECH     [ wound ✓ ]  │ ← key #2: this very response
-        │   ⚙  ACTION     [    —    ]  │ ← key #3 not installed. See hook:
+        │   ⚙  ACTION     [    --    ]  │ ← key #3 not installed. See hook:
         └──────────────────────────────┘
                                             ┌────────────────┐
              runs down mid-sentence;        │ 🔑  apply.py    │
@@ -864,11 +864,11 @@ def _figurate_mechanical_man():
              a human with a `foo` alias     │  human  [y/n]  │
                                             └────────────────┘
      "Thinks, Speaks, Acts, and Does Everything But Live."
-      — and the dangerous key stays on the wall, by design.
+      -- and the dangerous key stays on the wall, by design.
 """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
-    human = Panel(human_art, title="🗝️ Tik-Tok — Two Keys Wound, One on the Wall", border_style="white")
+    human = Panel(human_art, title="🗝️ Tik-Tok -- Two Keys Wound, One on the Wall", border_style="white")
     return human, ai_art
 
 
@@ -891,7 +891,7 @@ def _figurate_workspace_tree():
     _expand_color_bits_ai leaves it untouched and ai_art == art.
     """
     art = r"""
-   Workshop/   — the JupyterLab root (NOT Pipulate's own root)
+   Workshop/   -- the JupyterLab root (NOT Pipulate's own root)
    │            FLAT siblings. Nothing nests. Nothing to get wrong.
    │
    ├── corporate/              the org's canon · gitignored · its own private repo
@@ -902,7 +902,7 @@ def _figurate_workspace_tree():
 """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
-    human = Panel(human_art, title="Workshop — corporate · personal · shared", border_style="white")
+    human = Panel(human_art, title="Workshop -- corporate · personal · shared", border_style="white")
     return human, ai_art
 
 
@@ -924,9 +924,9 @@ def _figurate_forcing_pair():
     the CRC cannot be known until these bytes exist, so it lands next turn.
     """
     art = r"""
-   THE FORCING PAIR — 30-and-3 finds the clump; the AXIS outlaws it
+   THE FORCING PAIR -- 30-and-3 finds the clump; the AXIS outlaws it
 
-   PASS 1 — quantity is the forcing function, taste is the bottleneck
+   PASS 1 -- quantity is the forcing function, taste is the bottleneck
 
        seed ──▶  · · · · · · · · · ·
                  · · · · · · · · · ·  ──▶  ★ ★ ★
@@ -934,7 +934,7 @@ def _figurate_forcing_pair():
                  └──── 30, cheap ────┘     3, expensive
                                            (the WHY is the artifact)
 
-   PASS 2 — plot the 30. The clump names your bias. The hole is an address.
+   PASS 2 -- plot the 30. The clump names your bias. The hole is an address.
 
                           B
                 · · ·     │
@@ -947,10 +947,10 @@ def _figurate_forcing_pair():
                           B'
 
           Nothing is there because nothing THOUGHT there.
-          Anchors must be IMPORTED — remote discipline, era, organism.
+          Anchors must be IMPORTED -- remote discipline, era, organism.
           A home-grown axis inherits the home blindspot by construction.
 
-   PASS 3 — generate 30' TO ORDER into the hole    ──▶    ★  the swan
+   PASS 3 -- generate 30' TO ORDER into the hole    ──▶    ★  the swan
 
    SANITY CLAUSE      orthogonality x disagreement x observability
                       ─────────────────────────────────────────────
@@ -962,7 +962,7 @@ def _figurate_forcing_pair():
 """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
-    human = Panel(human_art, title="🎲 The Forcing Pair — 30-and-3 and the Black Swan Axis", border_style="white")
+    human = Panel(human_art, title="🎲 The Forcing Pair -- 30-and-3 and the Black Swan Axis", border_style="white")
     return human, ai_art
 
 
@@ -1633,7 +1633,7 @@ if __name__ == "__main__":
 # > pretty good representation. This is for the collecting opinions in parallel.
 # 
 # ```text
-#    PARALLEL FAN-OUT (the "map" — genuinely automatic)
+#    PARALLEL FAN-OUT (the "map" -- genuinely automatic)
 #    ════════════════════════════════════════════════
 # 
 #               ┌──► [Gemini]  ──► answer ──┐     several
@@ -1641,7 +1641,7 @@ if __name__ == "__main__":
 #               └──► [Claude]  ──► answer ──┘     answers
 #                           │
 #                           ▼
-#    SERIAL PIPE (the "reduce" — manual, accumulating)
+#    SERIAL PIPE (the "reduce" -- manual, accumulating)
 #    ════════════════════════════════════════════════
 # 
 #    [independent blind responses] ──► [human feedback] ──► [next] ──► …
@@ -1749,7 +1749,7 @@ if __name__ == "__main__":
 # 
 # ```text
 #                           THE LLM OPTICS TRIPTYCH
-#           (three panels, two hinges — the six lenses are magnifying
+#           (three panels, two hinges -- the six lenses are magnifying
 #            glasses held UP TO the panels, never panels themselves)
 # 
 #   ╔═══════════════════╗       ╔═══════════════════╗       ╔═══════════════════╗
@@ -1772,14 +1772,14 @@ if __name__ == "__main__":
 #              panel 1 == panel 2                 panel 1, byte-for-byte
 # ```
 # 
-# Hinge A is `diff_hierarchy.txt` — it doesn't *depict* anything; it joins panels 1 and 2 and reports how far apart they swing. On your sand: zero degrees. Hinge B is the CDP `requestId` — the Document row in panel 3's ledger is the *same bytes* as panel 1, which is what makes it a hinged triptych rather than three unrelated paintings. The wire body wasn't a reenactment; it was pulled from the organic flight.
+# Hinge A is `diff_hierarchy.txt` -- it doesn't *depict* anything; it joins panels 1 and 2 and reports how far apart they swing. On your sand: zero degrees. Hinge B is the CDP `requestId` -- the Document row in panel 3's ledger is the *same bytes* as panel 1, which is what makes it a hinged triptych rather than three unrelated paintings. The wire body wasn't a reenactment; it was pulled from the organic flight.
 # 
-# And the fourth thing you sensed — the trap firing — isn't a panel either. It's the painter's reflection. Van Eyck put himself in the convex mirror of the Arnolfini Portrait; your `js_confirm.gif?cb=tmc7rk` hit is the same move: the instrument caught in the corner of its own painting, undetected-chromedriver registering itself in honeybot's JS-executor table while auditing honeybot's own page. A signature, not a quadrant.
+# And the fourth thing you sensed -- the trap firing -- isn't a panel either. It's the painter's reflection. Van Eyck put himself in the convex mirror of the Arnolfini Portrait; your `js_confirm.gif?cb=tmc7rk` hit is the same move: the instrument caught in the corner of its own painting, undetected-chromedriver registering itself in honeybot's JS-executor table while auditing honeybot's own page. A signature, not a quadrant.
 # 
 # Here's why the same three boards matter when you carry them to different sand:
 # 
 # ```text
-#   CONTROL GROUP (mikelev.in — this run)      TREATMENT GROUP (JS-heavy client)
+#   CONTROL GROUP (mikelev.in -- this run)      TREATMENT GROUP (JS-heavy client)
 # 
 #   ┌──────┐     ┌──────┐      ┌─────────┐     ┌──────┐     ┌██████┐     ┌███████████┐
 #   │  P1  │ ══  │  P2  │  ≠   │   P3    │     │  P1  │ ≠≠≠ │  P2  │  ≠  │    P3     │
@@ -1789,11 +1789,11 @@ if __name__ == "__main__":
 #    IS the       is STILL      third-party     + script     after JS      blown wide
 #    source       the source    tag             tags         executes      open
 #    
-#    Hinge A: flat (0°)                         Hinge A: swung to 180° —
+#    Hinge A: flat (0°)                         Hinge A: swung to 180° --
 #    Finding: nothing to hide                   the diff IS the whole story
 # ```
 # 
-# Same kata, same five lines in `adhoc.txt`, same three boards. What changes is the hinge angle — and that angle is the finding. On the control group it proves the page is honest; on the treatment group it measures exactly how much of "the page" never existed until a browser burned compute to conjure it. The Botify-side article is just this drawing with the client's numbers filled in.
+# Same kata, same five lines in `adhoc.txt`, same three boards. What changes is the hinge angle -- and that angle is the finding. On the control group it proves the page is honest; on the treatment group it measures exactly how much of "the page" never existed until a browser burned compute to conjure it. The Botify-side article is just this drawing with the client's numbers filled in.
 # 
 # Three panels. Two hinges. One painter in the mirror. 🪙
 # 
@@ -1856,7 +1856,7 @@ if __name__ == "__main__":
 # --- END NEW STUFF ---
 # 
 #       .------------------------------------------------.
-#      /  MAGIC COOKIE + NIX  —  UNEXPECTED COMBO         \
+#      /  MAGIC COOKIE + NIX  --  UNEXPECTED COMBO         \
 #     |                                                    |
 #     |   [Nix Flake]  ──►  declarative env + pins         |
 #     |        │                                           |
@@ -1902,7 +1902,7 @@ if __name__ == "__main__":
 # ```
 # 
 # ```text
-# THE WORM KATA — summon · ride · release   (never, ever the conga line)
+# THE WORM KATA -- summon · ride · release   (never, ever the conga line)
 # 
 #    1. SUMMON              2. RIDE                        3. RELEASE
 # 
@@ -1920,7 +1920,7 @@ if __name__ == "__main__":
 # 
 # ## The three standards, one at a time
 # 
-# **1. agents.md** — the simplest. One file, no schema, nearest-ancestor wins:
+# **1. agents.md** -- the simplest. One file, no schema, nearest-ancestor wins:
 # 
 # ```text
 # repo/
@@ -1929,9 +1929,9 @@ if __name__ == "__main__":
 #     └── AGENTS.md        # optional override; closest file to the working directory wins
 # ```
 # 
-# That's the whole spec. It deliberately has no required fields — it's a README addressed to agents instead of humans, and its main achievement was collapsing CLAUDE.md / CURSOR.md / .cursorrules / GEMINI.md into one filename everyone's tooling checks.
+# That's the whole spec. It deliberately has no required fields -- it's a README addressed to agents instead of humans, and its main achievement was collapsing CLAUDE.md / CURSOR.md / .cursorrules / GEMINI.md into one filename everyone's tooling checks.
 # 
-# **2. Agent Skills (agentskills.io)** — a skill is a *folder* whose front door is SKILL.md with YAML frontmatter (`name` and `description` required), practicing progressive disclosure: frontmatter always loaded, body loaded on trigger, linked resources loaded on demand:
+# **2. Agent Skills (agentskills.io)** -- a skill is a *folder* whose front door is SKILL.md with YAML frontmatter (`name` and `description` required), practicing progressive disclosure: frontmatter always loaded, body loaded on trigger, linked resources loaded on demand:
 # 
 # ```text
 # .agents/skills/                  # (Claude Code uses .claude/skills/; the shape is identical)
@@ -1942,9 +1942,9 @@ if __name__ == "__main__":
 #     └── assets/                  # optional templates and files
 # ```
 # 
-# You already have this. `.agents/skills/hello_workflow/SKILL.md`, `gsc_readonly`, `roles` — it's in your manifest.
+# You already have this. `.agents/skills/hello_workflow/SKILL.md`, `gsc_readonly`, `roles` -- it's in your manifest.
 # 
-# **3. OKF** — what the v0.1 specification actually fixes is a folder layout, markdown files, YAML frontmatter, reserved filenames, and a single required field: `type`. A bundle is a directory of markdown files, each carrying a short YAML block — type, title, description — linking to its neighbors; add an index.md that lists the files so an agent can see what's there before opening everything, and that's the format. The spec fits on a single page.
+# **3. OKF** -- what the v0.1 specification actually fixes is a folder layout, markdown files, YAML frontmatter, reserved filenames, and a single required field: `type`. A bundle is a directory of markdown files, each carrying a short YAML block -- type, title, description -- linking to its neighbors; add an index.md that lists the files so an agent can see what's there before opening everything, and that's the format. The spec fits on a single page.
 # 
 # ```text
 # okf-bundle/
@@ -1957,11 +1957,11 @@ if __name__ == "__main__":
 # 
 # ## Superimposed on Pipulate
 # 
-# Here's the combined view — everything marked NEW is a signpost; everything else already exists and stays exactly where it is:
+# Here's the combined view -- everything marked NEW is a signpost; everything else already exists and stays exactly where it is:
 # 
 # ```text
 # pipulate/
-# ├── AGENTS.md                            # NEW — the symlink-in-spirit; ~40 lines pointing at executable truth
+# ├── AGENTS.md                            # NEW -- the symlink-in-spirit; ~40 lines pointing at executable truth
 # ├── foo_files.py                         # = AGENTS.md at scale: the router IS the agent operating manual
 # ├── prompt_foo.py                        # = the AGENTS.md *compiler*; emits the payload + foo.zip
 # ├── foo.zip                              # = a portable AGENTS-class bundle (gets the YAML topper below)
@@ -1978,17 +1978,17 @@ if __name__ == "__main__":
 #     └── (llms.txt, hub pages)            #   generate_llms_txt.py already plays index.md's role
 # ```
 # 
-# The Rosetta mapping that makes your vocabulary click for newcomers: your **chops** are skills (named, described, progressively-disclosed context bundles — foo_files.py's chapter structure is literally Anthropic's progressive disclosure, which you call progressive reveal in cli.py's Rule of 7). Your **payload** is an AGENTS.md instance, compiled fresh instead of hand-maintained — which is precisely why yours can't drift and theirs always does. Your **shards** are OKF's index layer. Your fear of "directories stuffed with SOMETHING_LIKE_THIS.md" is solved by the compiler: the standards files in your repo are *pointers*, never *content*, so there is exactly one source of truth and it's executable.
+# The Rosetta mapping that makes your vocabulary click for newcomers: your **chops** are skills (named, described, progressively-disclosed context bundles -- foo_files.py's chapter structure is literally Anthropic's progressive disclosure, which you call progressive reveal in cli.py's Rule of 7). Your **payload** is an AGENTS.md instance, compiled fresh instead of hand-maintained -- which is precisely why yours can't drift and theirs always does. Your **shards** are OKF's index layer. Your fear of "directories stuffed with SOMETHING_LIKE_THIS.md" is solved by the compiler: the standards files in your repo are *pointers*, never *content*, so there is exactly one source of truth and it's executable.
 # 
 # ## The YAML topper
 # 
-# The right fields are the union of the two frontmatter-bearing specs: Agent Skills' required pair (`name`, `description`) plus OKF's one required field (`type`), plus the two things a cold-arriving model needs before anything else — where the entrypoint is, and how to propose edits. Static values only, so the convergence loop and cartridge byte-reproducibility are untouched:
+# The right fields are the union of the two frontmatter-bearing specs: Agent Skills' required pair (`name`, `description`) plus OKF's one required field (`type`), plus the two things a cold-arriving model needs before anything else -- where the entrypoint is, and how to propose edits. Static values only, so the convergence loop and cartridge byte-reproducibility are untouched:
 # 
 # ```yaml
 # ---
 # type: ContextCartridge
 # name: pipulate-prompt-fu-payload
-# description: "Compiled AGENTS.md-class context artifact. Read the final section labeled Prompt first — it holds the current actionable request. Everything above it is supporting evidence. Propose edits as SEARCH/REPLACE blocks applied by apply.py."
+# description: "Compiled AGENTS.md-class context artifact. Read the final section labeled Prompt first -- it holds the current actionable request. Everything above it is supporting evidence. Propose edits as SEARCH/REPLACE blocks applied by apply.py."
 # entrypoint: "--- START: Prompt ---"
 # tools: .venv/bin/python cli.py mcp-discover
 # license: AGPL-3.0
@@ -2042,7 +2042,7 @@ if __name__ == "__main__":
 # 4. **The DECANT (end of a clean ride):** The rider folds every small lens into one markdown bundle and copies it to the clipboard; large artifacts (hydrated DOM, raw source) are CITED BY PATH, never inlined. This is the path a stranger uses -- no `adhoc.txt`, no compile, just paste.
 # ```
 # ```text
-#             OPERATION STICK BUG (osb) — THE CAN-O-BRAINS SUPPLY LINE
+#             OPERATION STICK BUG (osb) -- THE CAN-O-BRAINS SUPPLY LINE
 # 
 #    YOUR MACHINE                                          THEIR MACHINE
 #   ┌─────────────────┐
@@ -2062,8 +2062,8 @@ if __name__ == "__main__":
 #                                                     │         ▼          │
 #                                                     │    /\_____/\       │
 #                                                     │   (  o   o  )      │  Mother Cat
-#                                                     │    \  ^—^  /~~🐱   │  scruff-carries
-#                                                     │   full stop or     │  them through —
+#                                                     │    \  ^--^  /~~🐱   │  scruff-carries
+#                                                     │   full stop or     │  them through --
 #                                                     │   full success     │  no stray ducklings
 #                                                     │         │          │
 #                                                     │         ▼          │
@@ -2190,7 +2190,7 @@ if __name__ == "__main__":
 # ## The Idea Pipe
 # 
 # ```text
-#    THE IDEA PIPE — stdout of one lens is stdin of the next
+#    THE IDEA PIPE -- stdout of one lens is stdin of the next
 # 
 #    $ hunch | allegory | parable | probe | tee article.md
 # 
@@ -2206,12 +2206,12 @@ if __name__ == "__main__":
 #    Nothing is discarded: stage 5's payload still contains stages 1-4.
 # ```
 # 
-# The load-bearing claim is the third line of prose. A Unix pipe is the right metaphor precisely because `cmd1 | cmd2` does **not** re-run `cmd1` when `cmd2` disappoints you — you fix `cmd2` and re-run the tail. That is your chisel-strike discipline expressed in shell grammar, and it is why the serial half of your fan-out/reduce drawing is the half that actually compounds. The parallel half is just `xargs -P`; the interesting machine is the joint.
+# The load-bearing claim is the third line of prose. A Unix pipe is the right metaphor precisely because `cmd1 | cmd2` does **not** re-run `cmd1` when `cmd2` disappoints you -- you fix `cmd2` and re-run the tail. That is your chisel-strike discipline expressed in shell grammar, and it is why the serial half of your fan-out/reduce drawing is the half that actually compounds. The parallel half is just `xargs -P`; the interesting machine is the joint.
 # 
 # ## Zoom on one joint
 # 
 # ```text
-#    ZOOM ON ONE JOINT — what a '|' actually is here
+#    ZOOM ON ONE JOINT -- what a '|' actually is here
 # 
 #      ┌────────┐ ──▶ stdout ──▶ ( y/n ) ──▶  ┌──────────┐
 #      │ lens N │                   │         │ lens N+1 │
@@ -2223,12 +2223,12 @@ if __name__ == "__main__":
 #      n: the SAME stdin re-enters the SAME lens; upstream never moves
 # ```
 # 
-# This is the pachinko governor drawn as plumbing — the `[y] bank it / [n] re-spin` tray from your existing `ai_pachinko` asset, rotated ninety degrees and given a direction of travel. Same key, hanging next to `apply.py`.
+# This is the pachinko governor drawn as plumbing -- the `[y] bank it / [n] re-spin` tray from your existing `ai_pachinko` asset, rotated ninety degrees and given a direction of travel. Same key, hanging next to `apply.py`.
 # 
 # ## Why it compounds
 # 
 # ```text
-#    WHY IT COMPOUNDS — yesterday's stdout is today's stdin
+#    WHY IT COMPOUNDS -- yesterday's stdout is today's stdin
 # 
 #      day 1   ·
 #      day 2   ·:        ◀── stdin is never blank; it is a banked win
@@ -2237,11 +2237,11 @@ if __name__ == "__main__":
 #      day 5   ·:·:·  ──▶ the gravity well: momentum is rebuilt, not begun
 # ```
 # 
-# Your "one fifth done and still won" is literally the pipe's exit semantics: `head -3` closes the pipe and the upstream stages get SIGPIPE and stop. Partial consumption is not failure — it is the *designed* early exit, and everything already written to `tee` survives it.
+# Your "one fifth done and still won" is literally the pipe's exit semantics: `head -3` closes the pipe and the upstream stages get SIGPIPE and stop. Partial consumption is not failure -- it is the *designed* early exit, and everything already written to `tee` survives it.
 # 
 
 # ```text
-#    CREATIVITY PIPE — 30-and-3 feeds the axes
+#    CREATIVITY PIPE -- 30-and-3 feeds the axes
 # 
 #    $ raw_hunch | 30-and-3 | adversarial_axes | tee banked_wins.md
 # 
@@ -2302,9 +2302,9 @@ if __name__ == "__main__":
 #        [ tee -a adhoc.txt ] ──► [ compile ] ──► [ foo.zip ]
 # ```
 # ```text
-#    THE FORCING PAIR — 30-and-3 finds the clump; the AXIS outlaws it
+#    THE FORCING PAIR -- 30-and-3 finds the clump; the AXIS outlaws it
 # 
-#    PASS 1 — quantity is the forcing function, taste is the bottleneck
+#    PASS 1 -- quantity is the forcing function, taste is the bottleneck
 # 
 #        seed ──▶  · · · · · · · · · ·
 #                  · · · · · · · · · ·  ──▶  ★ ★ ★
@@ -2312,7 +2312,7 @@ if __name__ == "__main__":
 #                  └──── 30, cheap ────┘     3, expensive
 #                                            (the WHY is the artifact)
 # 
-#    PASS 2 — plot the 30. The clump names your bias. The hole is an address.
+#    PASS 2 -- plot the 30. The clump names your bias. The hole is an address.
 # 
 #                           B
 #                 · · ·     │
@@ -2324,7 +2324,7 @@ if __name__ == "__main__":
 #                           │
 #                           B'
 # 
-#    PASS 3 — generate 30' TO ORDER into the hole    ──▶    ★  the swan
+#    PASS 3 -- generate 30' TO ORDER into the hole    ──▶    ★  the swan
 # ```
 # 
 # 
@@ -2365,7 +2365,7 @@ if __name__ == "__main__":
 # 
 # 
 # ```text
-#    THE CREATIVITY FLYWHEEL — Map -> Rotate -> Remap -> Test -> Bank
+#    THE CREATIVITY FLYWHEEL -- Map -> Rotate -> Remap -> Test -> Bank
 # 
 #    PASS 1: DIVERGENT SAMPLING (30-and-3)
 #    /dev/problem ──► [ 30 raw vignettes ] ──► [ HUMAN: pick 3 + justify ]
@@ -2500,7 +2500,7 @@ if __name__ == "__main__":
 #               ║  (3) THE MEMBRANE                 ║
 #               ║  the wine-dark sea                ║
 #               ║                                   ║
-#               ║  not a filesystem —               ║
+#               ║  not a filesystem --               ║
 #               ║  a CONVENTION OF PATHS            ║
 #               ║  walkable by algorithm,           ║
 #               ║  requiring zero intelligence      ║
@@ -2517,7 +2517,7 @@ if __name__ == "__main__":
 # ──────────────────────────────────────────────────────────────────────────────
 # /usr              the packager     upgrade, WHOLESALE     Workshop/corporate/
 # /opt/<vendor>     ONE vendor       only that vendor       Workshop/shared/<who>/
-# /usr/local        local admin      nothing — promised     (promotion staging)
+# /usr/local        local admin      nothing -- promised     (promotion staging)
 # /home/$USER       the user         rm, and only rm        Playground/ = personal/
 # /var              running system   GC / retention policy  data/  browser_cache/
 # /etc              host admin       conffile merge         ~/.config/pipulate/
@@ -2536,7 +2536,7 @@ if __name__ == "__main__":
 # 
 #    autotools said it first: --prefix=. One shape, N roots.
 #    $PATH resolves the collision by PRECEDENCE, not by renaming.
-#    /usr/local/bin BEATS /usr/bin — that IS "promotion" in FHS grammar.
+#    /usr/local/bin BEATS /usr/bin -- that IS "promotion" in FHS grammar.
 # ```
 
 
@@ -2555,7 +2555,7 @@ if __name__ == "__main__":
 #    /.well-known/host-meta /llms.txt            2024  ← repeating it
 #    /.well-known/change-password
 # 
-#    REPO EDITION: /AGENTS.md           root-squatter — SURVIVES because
+#    REPO EDITION: /AGENTS.md           root-squatter -- SURVIVES because
 #    nearest-ancestor makes it composable anyway (one file, N depths)
 #    /.agents/skills/     the well-known directory, done right /okf-bundle/
 #    a bundle namespace, index.md as its table of contents ```
@@ -2580,7 +2580,7 @@ if __name__ == "__main__":
 # The trickle-up falls out for free, with `$PATH` precedence as the grammar:
 # 
 # Workshop/
-#    ├── corporate/                 lowerdir — read-only, replaced wholesale
+#    ├── corporate/                 lowerdir -- read-only, replaced wholesale
 #    │   ├── AGENTS.md              org canon
 #    │   ├── .agents/skills/        org skills
 #    │   └── log.md                 ◄── the Glinda moment: one appended line
@@ -2588,7 +2588,7 @@ if __name__ == "__main__":
 #    ├── shared/
 #    │   ├── mike/                  ONE writer. Ever.
 #    │   │   ├── .identity          the claim. collides here or nowhere.
-#    │   │   ├── AGENTS.md          MY conventions — nearest-ancestor wins
+#    │   │   ├── AGENTS.md          MY conventions -- nearest-ancestor wins
 #    │   │   │                      INSIDE my namespace, invisible outside it
 #    │   │   └── .agents/skills/    my skills, overlaid on corporate's
 #    │   └── alice/                 ONE writer. Ever. Never me.
@@ -2610,11 +2610,11 @@ if __name__ == "__main__":
 #    Exactly the nixops fix, one layer down.
 # ```
 # 
-# And there's a live hazard sitting in that, which is a strike and not a compliment: your corpus is *full* of prose containing real bracketed tool names. The orchestrator sniffs the model's output stream with a substring test. A model quoting your own articles back — *"you could run `[browser_scrape_page]` here"* — emits a real registry name in explanatory prose and dispatches. You banked the refusal path for *fake* names. The **UNANCHORED-WITNESS** failure is the *real* ones in prose. Cheapest discrimination: does the bracket sit alone on its own line, or inside a sentence? A dispatch is an utterance; a citation is a clause.
+# And there's a live hazard sitting in that, which is a strike and not a compliment: your corpus is *full* of prose containing real bracketed tool names. The orchestrator sniffs the model's output stream with a substring test. A model quoting your own articles back -- *"you could run `[browser_scrape_page]` here"* -- emits a real registry name in explanatory prose and dispatches. You banked the refusal path for *fake* names. The **UNANCHORED-WITNESS** failure is the *real* ones in prose. Cheapest discrimination: does the bracket sit alone on its own line, or inside a sentence? A dispatch is an utterance; a citation is a clause.
 
 # ## Talking drums: redundancy, and specifically not a checksum
 # 
-# You circled it — *"checksum but not checksum"* — and the answer is that those are two different instruments and you own both.
+# You circled it -- *"checksum but not checksum"* -- and the answer is that those are two different instruments and you own both.
 # 
 # ```text
 #    TWO REDUNDANCIES, AND THEY ARE NOT THE SAME INSTRUMENT
@@ -2637,8 +2637,8 @@ if __name__ == "__main__":
 #                                       needs:   only the received signal
 # ```
 # 
-# The drum languages are tonal, so the drum carries pitch contour and throws away everything else — catastrophic ambiguity. Drummers fix it not by repeating but by **elaborating into known formulae**. Carrington documented it in the forties; Gleick opens *The Information* with it.
+# The drum languages are tonal, so the drum carries pitch contour and throws away everything else -- catastrophic ambiguity. Drummers fix it not by repeating but by **elaborating into known formulae**. Carrington documented it in the forties; Gleick opens *The Information* with it.
 # 
-# Which sharpens your **REDUNDANT-GROOVE RULE** more than the rule currently states: the declared roster in `foo_files.py` and the realized file bodies in the Codebase section are not two *copies*, they are two *encodings*. Two copies would be a checksum — detects, cannot repair. Two encodings is error correction — a model that loses one can rebuild it from the other. Your wax seal detects. Your groove repairs. Different jobs, both live.
+# Which sharpens your **REDUNDANT-GROOVE RULE** more than the rule currently states: the declared roster in `foo_files.py` and the realized file bodies in the Codebase section are not two *copies*, they are two *encodings*. Two copies would be a checksum -- detects, cannot repair. Two encodings is error correction -- a model that loses one can rebuild it from the other. Your wax seal detects. Your groove repairs. Different jobs, both live.
 
 

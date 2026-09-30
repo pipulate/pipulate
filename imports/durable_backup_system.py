@@ -14,7 +14,7 @@ Key Features:
 History note (2026-07-18): the former per-table merge/restore/soft-delete
 lane (backup_table, restore_table, _merge_table_data, auto_backup_all,
 auto_restore_all, keychain restore, count methods) was removed. It was dead
-by construction — imports/crud.py's _has_backup_fields() always returned
+by construction -- imports/crud.py's _has_backup_fields() always returned
 False, so no code path ever exercised it. Recover it from git history only
 as reference if a per-record recoverability design is ever undertaken
 deliberately, with its own migration probe.

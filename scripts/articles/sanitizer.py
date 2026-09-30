@@ -109,7 +109,7 @@ def enforce_fence_contract(content: str) -> str:
     if healed:
         print(f"🩹 Tagged {healed} naked opening fence(s) with 'text'.")
     if problems:
-        print("💥 FENCE CONTRACT VIOLATIONS in article.txt — refusing to proceed:")
+        print("💥 FENCE CONTRACT VIOLATIONS in article.txt -- refusing to proceed:")
         for p in problems:
             print(f"   • {p}")
         raise SystemExit(1)
@@ -132,12 +132,12 @@ def strip_private_fences(content: str):
     return new_content, count
 
 
-# Inline player-piano markers for paragraph/phrase-level privacy — the same
+# Inline player-piano markers for paragraph/phrase-level privacy -- the same
 # [[[token]]] bracket dialect already used for SEARCH/REPLACE and TODO_SLUGS
 # blocks elsewhere in this toolchain. The fence stripper above handles whole
 # blocks; this handles a clause or paragraph mid-sentence without forcing a
 # line break and without colliding with real code fences. `p` is shorthand
-# for `private` — either spelling works, but an opener must be closed by its
+# for `private` -- either spelling works, but an opener must be closed by its
 # own spelling (the backreference below enforces that).
 INLINE_PRIVATE_PATTERN = re.compile(
     r'\[\[\[(p|private)\]\]\](.*?)\[\[\[/\1\]\]\]',
@@ -160,7 +160,7 @@ def strip_private_inline(content: str):
     new_content = re.sub(r'\n{3,}', '\n\n', new_content)  # collapse the holes
     stray = INLINE_PRIVATE_STRAY_PATTERN.findall(new_content)
     if stray:
-        print(f"⚠️  Found {len(stray)} unmatched [[[p]]]/[[[private]]] marker(s) — check for a missing close tag.")
+        print(f"⚠️  Found {len(stray)} unmatched [[[p]]]/[[[private]]] marker(s) -- check for a missing close tag.")
     return new_content, count
 
 
@@ -199,7 +199,7 @@ def load_denylist():
     (for brand names that collide with common English words); everything
     else matches case-insensitively so prose capitalization can't sneak a
     name past the gate. Caveat: the git pre-commit hook will treat a 'cs:'
-    line as a literal, never-matching pattern — acceptable degradation,
+    line as a literal, never-matching pattern -- acceptable degradation,
     since this publish gate is the one that guards prose.
     """
     patterns = []
@@ -267,9 +267,9 @@ def sanitize_article(public: bool):
         content, inline_count = strip_private_inline(content)
         content, pii_count = apply_pii(content)
         if fence_count:
-            print(f"🔒 Removed {fence_count} private fenced block(s) — kept only at source.")
+            print(f"🔒 Removed {fence_count} private fenced block(s) -- kept only at source.")
         if inline_count:
-            print(f"🔒 Removed {inline_count} inline private span(s) — kept only at source.")
+            print(f"🔒 Removed {inline_count} inline private span(s) -- kept only at source.")
         if pii_count:
             print(f"🪄 Applied {pii_count} PII substitution(s).")
         if not fence_count and not inline_count and not pii_count:

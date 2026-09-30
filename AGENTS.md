@@ -1,4 +1,4 @@
-# AGENTS.md — Pipulate
+# AGENTS.md -- Pipulate
 
 This repository carries Agent Skills under https://agentskills.io/specification
 (`.agents/skills/*/SKILL.md`, a YAML head over a Markdown body, loaded on
@@ -16,24 +16,24 @@ that duplicates code will drift and is a bug.
 
 ## Setup (the executable version of "Dev environment tips")
 
-- `nix develop` — the full environment. On a terminal it stops at a short
+- `nix develop` -- the full environment. On a terminal it stops at a short
   list of words and a `(nix)` prompt with nothing started; `jn` starts
   JupyterLab and the server. Without a terminal it starts the app, so an
   agent takes the quiet shell below. See `flake.nix`.
-- `nix develop .#quiet` — minimal shell for agents and scripting.
+- `nix develop .#quiet` -- minimal shell for agents and scripting.
 - Python lives in `.venv/`; invoke as `.venv/bin/python`.
 
 ## Workspace (the layout `nix develop` materializes under `Workshop/`)
 
 `Workshop/` is JupyterLab's root, not Pipulate's: three folders, corporate/, personal/ and shared/, and nothing else, with the starter notebooks under personal/Notebooks/. The tree below is GENERATED
 between the sentinel comments by `prompt_foo.py` from the sealed `workspace_tree`
-figurate asset — do not hand-edit it; edit the asset in
+figurate asset -- do not hand-edit it; edit the asset in
 `imports/ascii_displays.py` and recompile. Empty here means the compiler has not
 run since the sentinels landed.
 
 <!-- --- START WORKSPACE TREE --- -->
 ```text
-   Workshop/   — the JupyterLab root (NOT Pipulate's own root)
+   Workshop/   -- the JupyterLab root (NOT Pipulate's own root)
    │            FLAT siblings. Nothing nests. Nothing to get wrong.
    │
    ├── corporate/              the org's canon · gitignored · its own private repo
@@ -69,5 +69,5 @@ run since the sentinels landed.
 - Propose changes as SEARCH/REPLACE blocks (exact-match, `[[[SEARCH]]]` /
   `[[[DIVIDER]]]` / `[[[REPLACE]]]`) applied via `cat patch | python apply.py`.
 - Never patch `.ipynb` directly; `nbstripout` and `jupytext` are in play
-  (see `.gitattributes`) — patch helper modules or give cell instructions.
+  (see `.gitattributes`) -- patch helper modules or give cell instructions.
 - Python edits are AST-checked and Nix edits are syntax-checked before write.

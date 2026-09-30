@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # connectors/jira.py
 """
-jira.py — List your open Jira tickets, or fetch one by key.
+jira.py -- List your open Jira tickets, or fetch one by key.
 
 A Unix-philosophy gateway to the Jira Cloud API for Prompt Fu context.
 
@@ -49,7 +49,7 @@ single shared Atlassian token -- a label lying at the moment of diagnosis:
                An OAuth 2.0 (3LO) access token rides that same gateway with a
                Bearer header. This connector speaks ROW ONE ONLY (2026-07-23).
   JIRA_EMAIL   falls back to CONFLUENCE_EMAIL / CONFLUENCE_USER
-  JIRA_TOKEN   falls back to CONFLUENCE_TOKEN   (secret — env or .env only)
+  JIRA_TOKEN   falls back to CONFLUENCE_TOKEN   (secret -- env or .env only)
   JIRA_CLOUD_ID  OPTIONAL, and it is the DOOR SELECTOR. Set it (the site's
                cloudId UUID; an identifier, not a secret) and EVERY call
                routes through the gateway, which is what a SCOPED token

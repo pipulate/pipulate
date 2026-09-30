@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-boot_menu.py — the one-door threshold at the end of `nix develop`.
+boot_menu.py -- the one-door threshold at the end of `nix develop`.
 
 An interactive terminal no longer asks the newcomer to choose a numbered door.
 It prints the short command list and returns 10, which tells flake.nix to stop

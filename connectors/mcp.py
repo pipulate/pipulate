@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # connectors/mcp.py
 """
-mcp.py — Replay client for remote MCP servers (Streamable HTTP transport).
+mcp.py -- Replay client for remote MCP servers (Streamable HTTP transport).
 
 THE INSTRUMENT THAT WITNESSES THE ENVELOPE. Every handshake constant below is
 INFERRED from the MCP spec (2025-06-18 revision) until this file's own --check
@@ -22,12 +22,12 @@ Designed to be dropped into adhoc.txt as a `!` chisel-strike:
   ! python connectors/mcp.py https://mcp.botify.com --check; echo "exit=$?"
 
 THE FOUR-TUPLE RECEIPT: every call prints (server, verb, tool, args) with args
-echoed BYTE-FOR-BYTE from argv — the raw string as submitted, never a
+echoed BYTE-FOR-BYTE from argv -- the raw string as submitted, never a
 re-serialized parse. A paraphrased receipt is not a receipt.
 
 DETERMINISM CLASS rides every receipt (--dclass D0|D1|D2). The connector
 cannot know a tool's class, so the CALLER declares it; an undeclared class
-clamps to D2 and says so — a possibly-time-varying result must never be
+clamps to D2 and says so -- a possibly-time-varying result must never be
 mistaken for a reproduction.
 
 Auth: Authorization: <scheme> <token>. The token is resolved from --token-env,
@@ -55,7 +55,7 @@ from urllib.parse import urlparse, quote
 import httpx
 
 # ---------------------------------------------------------------------------
-# THE ENVELOPE — INFERRED until witnessed by a GREEN --check. Marked per line.
+# THE ENVELOPE -- INFERRED until witnessed by a GREEN --check. Marked per line.
 # ---------------------------------------------------------------------------
 PROTOCOL_VERSION = "2025-06-18"      # INFERRED: spec revision string
 SESSION_HEADER = "Mcp-Session-Id"    # INFERRED: optional per spec
@@ -146,9 +146,9 @@ def _flush_receipt():
 atexit.register(_flush_receipt)
 
 DCLASS_NOTE = {
-    "D0": "deterministic — same args, same bytes, forever",
-    "D1": "stable read — reproducible until server-side state mutates",
-    "D2": "time-varying — a NEW OBSERVATION, never a reproduction",
+    "D0": "deterministic -- same args, same bytes, forever",
+    "D1": "stable read -- reproducible until server-side state mutates",
+    "D2": "time-varying -- a NEW OBSERVATION, never a reproduction",
 }
 
 
@@ -438,12 +438,12 @@ def initialize(client, server):
     if resp.status_code in (401, 403):
         die(f"mcp RED gate2: token rejected at initialize (HTTP {resp.status_code})")
     if resp.status_code != 200:
-        die(f"mcp RED gate2: initialize HTTP {resp.status_code} — handshake "
+        die(f"mcp RED gate2: initialize HTTP {resp.status_code} -- handshake "
             f"inference wrong?\n{resp.text[:300]}")
     body = parse_body(resp) or {}
     if body.get("error") is not None:
         die(f"mcp RED gate2: initialize returned JSON-RPC error "
-            f"{body['error']} — HTTP 200 is not JSON-RPC success")
+            f"{body['error']} -- HTTP 200 is not JSON-RPC success")
     result = body.get("result") or {}
     negotiated = result.get("protocolVersion")
     session_id = resp.headers.get(SESSION_HEADER)
@@ -473,13 +473,13 @@ def initialize(client, server):
 
 def print_receipt(server, verb, tool, raw_args, dclass, declared):
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    tag = "declared" if declared else "UNDECLARED — clamped to D2"
+    tag = "declared" if declared else "UNDECLARED -- clamped to D2"
     print("# MCP RECEIPT (four-tuple; args byte-for-byte as submitted)")
     print(f"# server: {server}")
     print(f"# verb:   {verb}")
     print(f"# tool:   {tool or '-'}")
     print(f"# args:   {raw_args if raw_args is not None else '-'}")
-    print(f"# determinism: {dclass} ({tag}) — {DCLASS_NOTE[dclass]}")
+    print(f"# determinism: {dclass} ({tag}) -- {DCLASS_NOTE[dclass]}")
     print(f"# observed_at: {now}")
 
 
@@ -494,7 +494,7 @@ def list_tools(client, server, max_items, schema=False, max_bytes=4000):
     if parsed.get("error") is not None:
         die(f"mcp RED gate3: tools/list returned JSON-RPC error {parsed['error']}")
     tools = (parsed.get("result") or {}).get("tools") or []
-    print(f"# {server} — protocol {negotiated} | server "
+    print(f"# {server} -- protocol {negotiated} | server "
           f"{sinfo.get('name', '?')} | {len(tools)} tool(s) | "
           f"session={'yes' if session_id else 'no'}\n")
     # SERVER INSTRUCTIONS, VERBATIM AND ADDITIVE. Printed as `#` lines so no
