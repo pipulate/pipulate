@@ -2944,26 +2944,7 @@ MATCHBOOK_CHOP = r"""
 #   cannot forget, which is precisely why it is the one place that is fine.
 # § THE ELIMINATOR NEEDS A GENERATOR (banked 2026-08-06) -- bisection cannot fail to eliminate and CAN silently fail to converge, because binary search terminates only if the target is in the array; when probes keep discriminating and the boundary does not move, the fault is the ENUMERATION, so stop probing and GENERATE -- list every artifact the pipeline already writes, because the cheapest midpoint is usually a byproduct nobody thought to open. Append "none of the above, and that is the finding" to every pre-committed ruling. Three beats, not one: GENERATE, ELIMINATE, WITNESS.
 # § THE TRANSFER FUNCTION (banked 2026-08-06) -- the render transform is a binary GATE (active for this payload or not) times a deterministic GRAMMAR: it wraps a www prefix followed by a dot and one or more further labels ANYWHERE in the text, inside code spans and fences too, is suppressed only by a preceding scheme or a preceding word character, and never re-fires on its own output. Characterize a channel with a CO-LOCATED CONTROL, and prefer an instrument whose subject is a SHAPE generated fresh each run over one whose subject is a unique token, which dies the moment the report quotes it.
-# - EARMARK: THE LABEL IS NOT DATA (banked 2026-08-06, compile-killed): a
-#   string that ARRIVED as content must never be interpolated into a MARKUP
-#   language, and the Payload Ledger did exactly that -- every row wrapped the
-#   verbatim `!` command text in Rich style tags, so any square bracket inside
-#   a probe became a tag. CONVICTION: the canary midpoint probe carries a
-#   regex negative-lookbehind whose character class opens with a slash; Rich
-#   read it as a CLOSING tag with no opener, raised MarkupError inside the
-#   ledger render, and killed main() at step 5 -- AFTER the payload was fully
-#   assembled and BEFORE the cartridge was written or the clipboard filled.
-#   The whole compile was lost, and the thing that lost it was the receipt's
-#   own text. DATA-DEPENDENT AND THEREFORE SILENT FOR MONTHS: every prior
-#   probe happened to carry no brackets, so the ledger looked healthy the
-#   entire time -- the same intermittency that let the render canary sit green
-#   for a dozen flights. STANDING CONSEQUENCE: escape every dynamic string
-#   crossing into a markup, query, or shell grammar; the styling wrapper is
-#   OURS and stays live, the payload is THEIRS and gets escaped. Sibling of
-#   DELIMITER COLLISION (there the patch protocol's own markers appear in the
-#   text being patched) and of THE INSTRUMENT BECOMES BAIT (there the probe's
-#   text attracts the transform it measures) -- this is the same disease with
-#   the compiler's own console as the victim.
+# § THE LABEL IS NOT DATA (banked 2026-08-06) -- Escape every dynamic string that arrived as content before interpolating it into markup, query, or shell grammar; style the trusted wrapper, never the payload.
 # § THE STRADDLE IS A CONTROLLED EXPERIMENT (banked 2026-08-06) -- the before/after pair is a controlled comparison with ONE manipulated variable, and every straddle rule is a named confound control: IGNITION (was the treatment administered), PROBE ECHO (did the instrument change between taps), LANE-DISAGREEMENT (did the environment differ), ACTUATION-BOUNDARY (did the treatment reach the measured surface). Add CONTROLLED-vs-OBSERVED as a third axis beside determinism and instrument; determinism is what buys n=1, which is why the Nix pin and the byte-reproducible cartridge are the science rather than hygiene around it.
 # § THE FILTER THAT ATE THE EVIDENCE (banked 2026-08-06) -- a content filter may gate a channel only when that channel's content IS status; when the content is PAYLOAD (a git diff, a lint report), exempt the channel BY NAME, because a substring guard that eats "error" drops the evidence silently and the placeholder reads the same whether the channel was empty or eaten. Mechanism landed as is_telemetry in PromptBuilder.add_auto_context.
 # § THE HISTORY-EXPANSION PROBE (banked 2026-08-06) -- a ! followed by a word character inside double quotes is bash history expansion, ON in the operator's interactive shell and OFF in the compile lane's non-interactive one, so the probe runs clean as a receipt and dies at the hand-run with an error naming a shell feature; single-quote the outer -c argument and use double quotes for the Python strings inside it. A probe that cannot be hand-run has no BEFORE. Second conviction 2026-09-28 (deed 1641), in a hand fence and not a probe: a corporate commit message carried "the !scroll row" inside double quotes, bash answered "bash: !scroll: event not found" and the whole ( cd && git add && git commit && git push ) line died before its first command, with this rule in the same payload (THE CITED RULE IS NOT AN APPLIED RULE); the compile lane would have run the identical line clean. A hand fence's quoted strings are single-quoted, or the ! is kept out of them.
