@@ -120,8 +120,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,504 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 12 published in the last 7 days
+# There are 1,505 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 13 published in the last 7 days
 # Markdown negotiated: 2,794 reads (0.22% of all responses)
 # DOM hydration: 2979 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
 # Honeybot telemetry fetched 2026-09-29T22:16Z
@@ -3536,8 +3536,9 @@ MATCHBOOK_CHOP = r"""
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 211/277 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 210/277 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
+# AGENTS.md  # [1,039 tokens | 4,223 bytes]
 # AUDIT.md  # [2,993 tokens | 13,897 bytes]
 # MANIFEST.in  # [204 tokens | 806 bytes]
 # apps/130_gap_analysis.py  # [9,624 tokens | 48,289 bytes]
