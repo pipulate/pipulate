@@ -591,6 +591,31 @@ Entries are alphabetical, numbers spelled as spoken.
   a phrase a line-oriented tool cannot see; this one is about a phrase a
   case-sensitive tool cannot see. Both are the same disease -- asking a
   question only one answer could ever survive.
+- **The Cold-Start Exit Is a False Green** -- *exit-code path validity.* (convicted 2026-09-16, by a probe
+  written that same turn expressly to be content-free). `wallet.py check
+  jira` was echoed as `>/dev/null 2>&1; echo jira_check_exit=$?` on the
+  theory that exit 0 means the service accepted the credential just now. It
+  printed 0 on a machine with NO WALLET AT ALL. main() evaluates
+  load_wallet() BEFORE board(), and load_wallet's ABSENT-IS-NOT-BROKEN
+  branch prints the cold-start card and sys.exit(0)s -- so board() never
+  ran, no credential was checked, and the receipt read exactly like a green
+  board. GOLD IS THE ONLY EXIT-0 CONDITION is a true claim about board(),
+  and it was read as a claim about the program.
+  TWO RULES, AND THE SECOND IS THE GENERAL ONE:
+    1. AN EXIT CODE IS A VERDICT ONLY FOR THE PATH THAT REACHES IT. Before
+       echoing `cmd >/dev/null; echo $?` as a probe, name every earlier
+       sys.exit(0) on that path. Prefer the narrowest program that owns the
+       question: jira.py --check has no cold-start branch and wallet.py has
+       one, so the connector is the honest instrument and the board is not.
+    2. THE REDIRECT ATE THE DISCRIMINATOR. The cold-start card says in plain
+       words that there is no wallet, on stdout, and the probe threw it away
+       to keep a client host out of the payload. A probe that suppresses
+       output to stay safe must first prove the exit code ALONE still
+       answers the question; otherwise it has traded content for silence and
+       kept neither. Two sibling misses the same day: a probe reading
+       connectors/wallet.json, a path that has never existed, and a
+       `jira | grep -c` whose 2>/dev/null made a dead credential and an
+       empty ticket list print the same 0.
 - **The Compiled Trail** -- *sealed is machine cargo, authored is not.* Banked
   2026-08-08, source-witnessed. A trail has TWO legitimate forms, and
   conflating them is the whole confusion. The SEALED form -- trail.yaml inside
