@@ -14,14 +14,14 @@ import re
 import os
 import subprocess
 
-# PROTOCOL MARKER AIRLOCK — the guard the 2026-07-26 player-piano.js incident
+# PROTOCOL MARKER AIRLOCK -- the guard the 2026-07-26 player-piano.js incident
 # called for. apply.py speaks a grammar of bare delimiters: [[[SEARCH]]],
 # [[[DIVIDER]]], [[[REPLACE]]], [[[WRITE_FILE]]], [[[END_WRITE_FILE]]] (with 3-5
 # bracket tolerance and {{{ }}} variants, mirroring the parser regexes below).
 # When a malformed edit leaks one of those delimiters into a target file, the
 # file is corrupted in the parser's own language and nothing downstream shouts.
-# This regex is deliberately LINE-ANCHORED to a *bare* delimiter — a line that is
-# nothing but the marker — because that is what debris looks like and what real
+# This regex is deliberately LINE-ANCHORED to a *bare* delimiter -- a line that is
+# nothing but the marker -- because that is what debris looks like and what real
 # source never is. apply.py, prompt.md, and prompt_foo.py mention the markers
 # inline, backticked, or inside regex source, so this guard never blocks the
 # tool from editing itself; the allowlist is belt-and-suspenders for docs that
@@ -157,8 +157,8 @@ def apply_search_replace_patch(payload: str) -> bool:
     write_matches = write_file_pattern.findall(payload)
 
     # Excise the WRITE_FILE regions before the surgical scan below. A whole-file
-    # body can legitimately contain a complete SEARCH/DIVIDER/REPLACE triple —
-    # most likely when rewriting the protocol files themselves — and without this
+    # body can legitimately contain a complete SEARCH/DIVIDER/REPLACE triple --
+    # most likely when rewriting the protocol files themselves -- and without this
     # the same payload would fire once as a write and again as a surgical patch.
     payload = write_file_pattern.sub('', payload)
 
@@ -218,7 +218,7 @@ def apply_search_replace_patch(payload: str) -> bool:
                 success = False
                 continue
 
-        # PROTOCOL MARKER AIRLOCK (whole-file arm) — refuse to write our own grammar.
+        # PROTOCOL MARKER AIRLOCK (whole-file arm) -- refuse to write our own grammar.
         if os.path.basename(filename) not in PROTOCOL_GRAMMAR_FILES:
             residue = _residual_marker_lines(file_content)
             if residue:
@@ -483,7 +483,7 @@ def apply_search_replace_patch(payload: str) -> bool:
         # The Surgical Strike
         new_content = content.replace(search_block, replace_block, 1)
 
-        # PROTOCOL MARKER AIRLOCK (surgical arm, first of the airlocks) — refuse
+        # PROTOCOL MARKER AIRLOCK (surgical arm, first of the airlocks) -- refuse
         # to write a file that still carries a bare protocol delimiter. Runs
         # ahead of the JSON/Nix/AST validators because a leaked marker also trips
         # those, but with a symptom message that points nowhere near the cause.

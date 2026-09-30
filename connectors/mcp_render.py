@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # connectors/mcp_render.py
 """
-mcp_render.py — Decode, diff or mint a PocketRender share link.
+mcp_render.py -- Decode, diff or mint a PocketRender share link.
 
 THE CONF IS IN THE LINK (READ 2026-09-27, deed 1629, off the two PocketRender
 links on one SVB ticket): a share link's #conf= fragment is standard base64 of

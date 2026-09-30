@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🌲 test_forest.py — Visual-First, Inline, Hardware-Free Forest Tester.
+🌲 test_forest.py -- Visual-First, Inline, Hardware-Free Forest Tester.
 
 WHAT THIS IS
     A local sandbox for iterating on forest.py (the station-break "beads")
@@ -9,21 +9,21 @@ WHAT THIS IS
 THE DISCIPLINE THIS FILE ENCODES (read before "fixing" it)
     1. PROBE BEFORE PATCH. This file exists because one cheap probe
        (`ls remotes/honeybot/imports/`) returned MISSING, proving the
-       obvious approach — borrowing conjure_patronus/conjure_window from
-       stream.py — would silently no-op locally (those resolve assets via
+       obvious approach -- borrowing conjure_patronus/conjure_window from
+       stream.py -- would silently no-op locally (those resolve assets via
        stream.py's parents[1], a Honeybot-only directory layout).
     2. DELETE THE ASSUMPTION, DON'T VERIFY IT. Every popup path
        (patronus, conjure_window) bottoms out in alacritty + X11, which the
        local pipulate flake does not ship. Rather than probe for alacritty,
-       this harness renders the art INLINE via figurate() — the pure Rich
-       primitive both patronus() and the live stream wrap — so the question
+       this harness renders the art INLINE via figurate() -- the pure Rich
+       primitive both patronus() and the live stream wrap -- so the question
        "is alacritty here?" becomes irrelevant.
     3. IMPORT DATA, NOT ENGINES. We import forest.STATION_SEGMENTS (inert
        data) and ascii_displays.figurate (pure rendering). We do NOT import
        stream.py, which would drag in requests, threading, and an
        instantiated Narrator just to scrounge two functions.
     4. NO SILENT FAILURES. There are zero subprocesses below. If you ever add
-       one, point its stderr at THIS terminal, never at DEVNULL — a swallowed
+       one, point its stderr at THIS terminal, never at DEVNULL -- a swallowed
        stderr is exactly what turned a one-line path bug into a lost Saturday.
 
 WHAT IT VALIDATES
@@ -32,7 +32,7 @@ WHAT IT VALIDATES
 
 WHAT IT DOES NOT VALIDATE
     X11 popup geometry, window centering, borderless rendering, z-order. Those
-    are Honeybot-only truths — verify them on the server, not here.
+    are Honeybot-only truths -- verify them on the server, not here.
 
 Usage:
     python remotes/honeybot/scripts/test_forest.py          # real-time pacing
@@ -106,7 +106,7 @@ def _render_patronus_inline(key: str) -> None:
     """Render a registered figurate asset inline, surfacing CRC drift loudly."""
     art = figurate(key)
     if art.drift:
-        print(f"  ⚠️  DRIFT DETECTED in '{key}': wax-seal CRC mismatch — "
+        print(f"  ⚠️  DRIFT DETECTED in '{key}': wax-seal CRC mismatch -- "
               f"the art changed but FIGURATE_LEDGER was not updated.")
     safe_console_print(art.human)
 
@@ -150,7 +150,7 @@ def mock_dispatch_cue(command, content, fast_mode=False) -> None:
             # Report dashboards (education.py, radar.py, ...) are Textual TUIs;
             # they cannot meaningfully render inline in a non-interactive harness.
             print(f"🪟 WINDOW: would launch '{content}' as an X11 overlay "
-                  f"(TUI/geometry — verify on Honeybot, skipped locally)")
+                  f"(TUI/geometry -- verify on Honeybot, skipped locally)")
 
     elif command == "VISIT":
         # Never launch a real browser from a test harness: that is blast radius
@@ -178,7 +178,7 @@ def mock_dispatch_cue(command, content, fast_mode=False) -> None:
 def _validate_beads() -> None:
     """Cheap structural check so a malformed bead fails loudly, not weirdly."""
     if not STATION_SEGMENTS:
-        print("⚠️  STATION_SEGMENTS is empty — nothing to test.", file=sys.stderr)
+        print("⚠️  STATION_SEGMENTS is empty -- nothing to test.", file=sys.stderr)
         return
     for i, bead in enumerate(STATION_SEGMENTS):
         for j, cue in enumerate(bead):
@@ -190,7 +190,7 @@ def _validate_beads() -> None:
 def main() -> None:
     fast_mode = "--fast" in sys.argv
     print("=" * 64)
-    print("🌲 HONEYBOT FOREST TESTER — inline, audio-free, hardware-free 🌲")
+    print("🌲 HONEYBOT FOREST TESTER -- inline, audio-free, hardware-free 🌲")
     print(f"   repo root : {REPO_ROOT}")
     print(f"   mode      : {'⚡ FAST REVIEW' if fast_mode else '⏱️  REAL-TIME PACING'}")
     print(f"   beads     : {len(STATION_SEGMENTS)}")
@@ -205,7 +205,7 @@ def main() -> None:
             for command, content in bead:
                 mock_dispatch_cue(command, content, fast_mode=fast_mode)
             buffer_time = 1.0 if fast_mode else 3.0
-            print(f"\n— inter-bead buffer {buffer_time:g}s —")
+            print(f"\n-- inter-bead buffer {buffer_time:g}s --")
             time.sleep(buffer_time)
         print("\n✅ All beads reviewed. Content fidelity checked; "
               "popup geometry still owed to Honeybot.")

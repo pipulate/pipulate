@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # connectors/mcp_warm.py
 """
-mcp_warm.py — Mint the OAuth bearer token a remote MCP server asks for.
+mcp_warm.py -- Mint the OAuth bearer token a remote MCP server asks for.
 
 OAuth 2.1 with PKCE (S256), parked where connectors/mcp.py already
 looks.

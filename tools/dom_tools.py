@@ -218,7 +218,7 @@ async def visualize_dom_boxes(params: dict) -> dict:
         return {"success": False, "error": str(e)}
 
 
-# A11Y NOISE FILTER: InlineTextBox nodes are line-wrap rendering artifacts —
+# A11Y NOISE FILTER: InlineTextBox nodes are line-wrap rendering artifacts --
 # they duplicate the StaticText directly above them, chopped at whatever
 # viewport width the scrape happened to run at. They carry zero structural,
 # facet, or selector signal and can account for half the outline's tokens on

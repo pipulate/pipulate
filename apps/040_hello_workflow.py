@@ -288,7 +288,7 @@ class HelloFlow:
             if finalize_step.done in finalize_data:
                 return Article(
                     H3(f'{self.ui["EMOJIS"]["LOCKED"]} Workflow is locked.'),
-                    P('Each step can do ANYTHING. With this you can change the world — or at least show how to in a workflow.', cls='text-muted'),
+                    P('Each step can do ANYTHING. With this you can change the world -- or at least show how to in a workflow.', cls='text-muted'),
                     Form(
                         Button(
                             self.ui['BUTTON_LABELS']['UNLOCK'], 
@@ -613,7 +613,7 @@ class HelloFlow:
         else:
             display_value = user_val if step.refill and user_val else await self.get_suggestion(step_id, state)
             await self.message_queue.add(wand, self.step_messages[step_id]['input'], verbatim=True)
-            explanation = f"That's it! Workflows just collect data — walking you from one Step to the Next Step ▸"
+            explanation = f"That's it! Workflows just collect data -- walking you from one Step to the Next Step ▸"
             await self.message_queue.add(wand, explanation, verbatim=True)
             self.wand.speak("That's it! Workflows just collect data, walking you from one step to the next. Unix pipes. Please enter a greeting.", wait=False)
             

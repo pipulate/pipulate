@@ -18,7 +18,7 @@ from datetime import datetime
 from collections import defaultdict
 from pathlib import Path
 
-# Gracefully handle tiktoken — LAZILY (banked 2026-07-19). The import is
+# Gracefully handle tiktoken -- LAZILY (banked 2026-07-19). The import is
 # deferred into the first count_tokens() call, so warm all-hit runs (where
 # the fm and token memo tables answer everything) never reach it at all.
 # The import cost isn't reduced; it's made UNREACHABLE on the hot path.
@@ -67,7 +67,7 @@ class MtimeMemo:
     file, invalidated per-entry on mtime change. A thin wrapper over the
     EXACT on-disk shape both existing caches already use (json.dump,
     indent=2), so adopting it invalidates nothing. Load fails soft to
-    empty; save is a no-op unless at least one entry missed — a warm
+    empty; save is a no-op unless at least one entry missed -- a warm
     run never touches the file, which is the format-stability proof.
     Validity policies (e.g. the token cache's anti-swallow guard) stay
     at call sites: this class does mechanics, not judgment.

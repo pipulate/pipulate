@@ -209,7 +209,7 @@ SPINE_FULL_DETAIL_COUNT = 150  # newest N entries carry date+slug+title
 def build_book_spine(entries, full_detail_count=SPINE_FULL_DETAIL_COUNT):
     """Two-tier spine for the editing model's 40K view.
 
-    Deep archive rides as bare slugs (the uniqueness census — the slug IS
+    Deep archive rides as bare slugs (the uniqueness census -- the slug IS
     the identity, and the deterministic collision guard enforces it anyway);
     the newest entries ride full 'date slug | title' (the trajectory arc).
     Deterministic and non-generative; ~58% smaller than the all-titles spine.
@@ -344,7 +344,7 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port, 
             # HEADING COLLISION GUARD (optics-convicted 2026-07-12): when the
             # article body already carries its own markdown headers (dialogue
             # partners now write them), inserting ours immediately before an
-            # existing one creates stacked/empty H2s — the orphan-header
+            # existing one creates stacked/empty H2s -- the orphan-header
             # pattern the Semantic Outline lens caught on the Dune article.
             following = article_body[insertion_point:].lstrip('\n')
             if following.startswith('#'):

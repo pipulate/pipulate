@@ -29,7 +29,7 @@ from googleapiclient.errors import HttpError
 # Set your GSC Property URL here (e.g., "sc-domain:example.com" or "https://www.example.com/")
 SITE_URL = "sc-domain:mikelev.in"
 
-# Path to your service account key JSON file — resolved from the wallet, never
+# Path to your service account key JSON file -- resolved from the wallet, never
 # from inside this repo. The old SCRIPT_DIR expectation was a landmine: one
 # careless `git add scripts/gsc/` away from shipping a Google credential to a
 # public remote. Resolution chain (identical to connectors/gsc.py):

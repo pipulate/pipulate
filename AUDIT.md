@@ -62,8 +62,8 @@ any local desktop application:
 
 These borrow vocabulary from formal control catalogs without pretending to
 implement them. NIST SP 800-53 and the CIS Benchmarks are valuable here as a
-shared language — assets, trust boundaries, least privilege, auditability,
-credential lifecycle, update path, logging, recovery, configuration management —
+shared language -- assets, trust boundaries, least privilege, auditability,
+credential lifecycle, update path, logging, recovery, configuration management --
 not as a compliance checklist that a single-user desktop tool is obligated to
 satisfy line by line. This is an 80/20 hardening posture: make the obvious
 low-cost failures impossible, make the unavoidable risks visible, and make the
@@ -85,8 +85,8 @@ Every path in the system should belong to one of four classes:
 - Operator-configured paths, supplied explicitly and documented as host-specific.
 
 Human-facing examples may use `~/repos/...` for readability. Executable logic must
-resolve paths through a named accessor — repo root discovery, the workspace
-manifold, `$PIPULATE_ROOT`, or an explicit config value — rather than embedding
+resolve paths through a named accessor -- repo root discovery, the workspace
+manifold, `$PIPULATE_ROOT`, or an explicit config value -- rather than embedding
 `/home/<user>/...`. References to a separate local repository (for example a
 sibling publishing repo) are operator-configured paths and should be named as
 such, not treated as portable defaults.
@@ -147,7 +147,7 @@ explicit. A container's writable layer is ephemeral and does not survive the
 container being destroyed, so the following must be provided as mounted volumes or
 bind mounts for the tool to behave correctly: local database state, downloads,
 logs, notebooks, and any operator workspace and `.env`. The container story is
-therefore a state contract — these paths must be writable and persistent, these
+therefore a state contract -- these paths must be writable and persistent, these
 ports are exposed, these capabilities are not required, and these features degrade
 or disable when run in a constrained container context. Stated that way, "can I
 just use Docker?" becomes a supported compatibility output rather than an
@@ -235,8 +235,8 @@ to the review function on the same terms it is used here.
 
 The correct review of Pipulate is the review of a local-first, single-tenant,
 reproducible desktop-class tool with a browser-rendered UI. Audit it for its real
-risks — local port exposure, credential lifecycle, update provenance, filesystem
-writes, dependency freshness, cloud opt-ins, and recovery — and the hardening work
+risks -- local port exposure, credential lifecycle, update provenance, filesystem
+writes, dependency freshness, cloud opt-ins, and recovery -- and the hardening work
 described here is a translation layer between sovereign local computing and
 institutional risk language.
 

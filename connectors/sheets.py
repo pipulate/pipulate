@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # connectors/sheets.py
 """
-sheets.py — Bring a Google Sheet's tabs and cell data into context.
+sheets.py -- Bring a Google Sheet's tabs and cell data into context.
 
 A Unix-philosophy gateway to Google Sheets for Prompt Fu context.
 
@@ -20,30 +20,30 @@ Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
   ! python connectors/sheets.py <ID> --range "'Metrics'!A1:F50" --format json
 
 Disambiguation rule: no argument prints identity/usage; anything else is a
-spreadsheet coordinate — a full docs.google.com URL (the /d/<ID>/ segment is
+spreadsheet coordinate -- a full docs.google.com URL (the /d/<ID>/ segment is
 extracted; a #gid= fragment selects that tab and triggers a bounded fetch of
 it) or a bare spreadsheet ID.
 
 SIZE DEFENSE (context windows are finite): STACK mode is governed by a TOTAL
-data-cell --budget (default 10,000); over budget nothing dumps — a true-extent
+data-cell --budget (default 10,000); over budget nothing dumps -- a true-extent
 gauge prints instead, which IS the drill-down map. --sheet fetches are
 row-bounded SERVER-side ('{Tab}'!1:N) and every --sheet/--range fetch is
 row-capped client-side by -n/--max (default 25), per THE PROBE ECONOMY RULE.
 
 GRID-VS-DATA (convicted 2026-07-20): metadata gridProperties report grid
 ALLOCATION (new tabs read 1000x26 whether they hold 3 rows or 900), while
-spreadsheets.values responses return the TRIMMED used rectangle — trailing
+spreadsheets.values responses return the TRIMMED used rectangle -- trailing
 empty rows/cols never cross the wire. Data extents therefore come from values
 responses (len of rows x max row width), never from metadata; and no Pandas
-is needed for acquisition — Pandas belongs downstream in measure.py.
+is needed for acquisition -- Pandas belongs downstream in measure.py.
 
-Auth (oauth_token_file — the gmail.py pattern; the human's OWN Google account):
+Auth (oauth_token_file -- the gmail.py pattern; the human's OWN Google account):
   App identity:  ~/.config/pipulate/credentials.json
                  (override: PIPULATE_SHEETS_CREDENTIALS; the same Desktop-app
-                 OAuth client gmail.py uses — Cloud project
+                 OAuth client gmail.py uses -- Cloud project
                  work-integrations-500916)
   User session:  ~/.config/pipulate/sheets_token.json
-                 (override: PIPULATE_SHEETS_TOKEN — a SEPARATE token from
+                 (override: PIPULATE_SHEETS_TOKEN -- a SEPARATE token from
                  gmail_token.json, because token files are scope-scoped and
                  one connector must never poison another's token)
 
@@ -157,7 +157,7 @@ def get_service():
         die(
             f"Missing credentials.json at: {CREDS_PATH}\n"
             "Download the Desktop-app OAuth client JSON from Google Cloud\n"
-            "Console (project work-integrations-500916) — the same file\n"
+            "Console (project work-integrations-500916) -- the same file\n"
             "gmail.py uses."
         )
 
@@ -184,7 +184,7 @@ def identity():
                 'project_id', '(project_id absent)')
         except (json.JSONDecodeError, OSError) as e:
             project = f'(unreadable credentials.json: {e})'
-    print("# sheets.py — read-only Google Sheets gateway (OAuth: your own account)\n")
+    print("# sheets.py -- read-only Google Sheets gateway (OAuth: your own account)\n")
     print(f"credentials : {CREDS_PATH}  [{'present' if creds_ok else 'MISSING'}]")
     print(f"project_id  : {project}")
     print(f"token       : {TOKEN_PATH}  [{'minted' if token_ok else 'not yet minted'}]")
@@ -206,7 +206,7 @@ def list_tabs(service, sid, gid, max_items):
     ).execute()
     title = meta.get('properties', {}).get('title', '(untitled)')
     tabs = meta.get('sheets', [])
-    print(f"# {title}  [spreadsheetId: {sid}] — {len(tabs)} tab(s)\n")
+    print(f"# {title}  [spreadsheetId: {sid}] -- {len(tabs)} tab(s)\n")
     print(f"{'rows':>7}  {'cols':>5}  {'~cells':>9}  tab")
     first_tab = None
     for t in tabs[:max_items]:
@@ -221,7 +221,7 @@ def list_tabs(service, sid, gid, max_items):
         if gid is not None and p.get('sheetId') == gid:
             marks.append('<- gid in URL')
         if cells > BIG_TAB_CELLS:
-            marks.append('WARNING: big — fetch with an explicit --range, not a bare --sheet')
+            marks.append('WARNING: big -- fetch with an explicit --range, not a bare --sheet')
         mark = ('  ' + ' | '.join(marks)) if marks else ''
         print(f"{rows:>7}  {cols:>5}  {cells:>9,}  {name}{mark}")
     if len(tabs) > max_items:
@@ -236,7 +236,7 @@ def stack_tabs(service, sid, fmt, budget):
     stacked vertically with payload-grammar sentinels and a clickable #gid=
     URL per tab. One metadata call resolves titles/gids; one values.batchGet
     pulls every used rectangle. Governed by a total-cell budget: over budget,
-    nothing dumps — the true-extent gauge prints instead.
+    nothing dumps -- the true-extent gauge prints instead.
     """
     meta = service.spreadsheets().get(
         spreadsheetId=sid,
@@ -245,7 +245,7 @@ def stack_tabs(service, sid, fmt, budget):
     title = meta.get('properties', {}).get('title', '(untitled)')
     tabs = [t.get('properties', {}) for t in meta.get('sheets', [])]
     if not tabs:
-        print(f"# {title}  [spreadsheetId: {sid}] — no tabs")
+        print(f"# {title}  [spreadsheetId: {sid}] -- no tabs")
         return
     resp = service.spreadsheets().values().batchGet(
         spreadsheetId=sid,
@@ -265,8 +265,8 @@ def stack_tabs(service, sid, fmt, budget):
         timespec='seconds').replace('+00:00', 'Z')
 
     if total_cells > budget:
-        print(f"# {title}  [spreadsheetId: {sid}] — {len(extents)} tab(s), "
-              f"{total_cells:,} data cells > budget {budget:,} — STACK withheld")
+        print(f"# {title}  [spreadsheetId: {sid}] -- {len(extents)} tab(s), "
+              f"{total_cells:,} data cells > budget {budget:,} -- STACK withheld")
         print(f"# acquired_at_utc: {acquired_at}\n")
         print(f"{'rows':>7}  {'cols':>5}  {'cells':>9}  tab | tab URL")
         for p, _, r, c in extents:
@@ -278,7 +278,7 @@ def stack_tabs(service, sid, fmt, budget):
               f"{sid} --budget {total_cells}")
         return
 
-    print(f"# {title}  [spreadsheetId: {sid}] — {len(extents)} tab(s), "
+    print(f"# {title}  [spreadsheetId: {sid}] -- {len(extents)} tab(s), "
           f"{total_cells:,} data cells (full stack)")
     print(f"# acquired_at_utc: {acquired_at}\n")
     for p, rows, n_rows, n_cols in extents:
@@ -339,10 +339,10 @@ def fetch_values(service, sid, sheet, rng, fmt, max_rows):
     truncated = len(rows) > max_rows
     rows = rows[:max_rows]
     note = ' (truncated by --max)' if truncated else ''
-    print(f"# {resp.get('range', a1)}  [spreadsheetId: {sid}] — "
+    print(f"# {resp.get('range', a1)}  [spreadsheetId: {sid}] -- "
           f"{len(rows)} row(s) shown{note}\n")
     if not rows:
-        print("(no values — empty range, or check the tab name / A1 spelling)")
+        print("(no values -- empty range, or check the tab name / A1 spelling)")
         return
     _emit(rows, fmt)
     tab_hint = sheet if sheet else '<Tab>'
@@ -466,7 +466,7 @@ def main():
                         help='Row/tab cap per THE PROBE ECONOMY RULE (default: 25).')
     parser.add_argument('--format', choices=['tsv', 'json', 'markdown'],
                         default='tsv',
-                        help='Output format (default: tsv — compact and diffable).')
+                        help='Output format (default: tsv -- compact and diffable).')
     parser.add_argument('--list', action='store_true',
                         help='Metadata-only tab gauge (grid allocation; zero cell data fetched).')
     parser.add_argument('--budget', type=int, default=10000,
@@ -508,7 +508,7 @@ def main():
             "If this is 403 SERVICE_DISABLED: enable the Google Sheets API in the\n"
             "OAuth client's Cloud project (run with no argument to print its\n"
             "project_id). If 403/404 otherwise: confirm YOUR Google account can\n"
-            "open this spreadsheet in a browser — OAuth reads as you."
+            "open this spreadsheet in a browser -- OAuth reads as you."
         )
 
 

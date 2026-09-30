@@ -702,16 +702,16 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # Then link it to a private GitHub repository to back up your work!
           ```
           
-          ## What this folder becomes (coming soon — not active yet)
+          ## What this folder becomes (coming soon -- not active yet)
 
           Right now this Playground is a **solo** sandbox: just you, your throwaway
           scripts, and the shared `.venv`. None of the team features below are wired
-          up yet — this is a map of where things are headed, kept here so the intent
+          up yet -- this is a map of where things are headed, kept here so the intent
           stays visible from inside the code instead of buried in notes.
 
           Nothing you put here is ever shared. When you want to hand something to a
           teammate, drag it into `Workshop/shared/` and put it in a folder named
-          after you — one folder per person, so two people can never collide.
+          after you -- one folder per person, so two people can never collide.
 
           ```text
           Workshop/
@@ -806,7 +806,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           FRESH_ENV=false
           if [ ! -d .venv/lib/python*/site-packages ] || [ $(find .venv/lib/python*/site-packages -name "*.dist-info" 2>/dev/null | wc -l) -lt 10 ]; then
             FRESH_ENV=true
-            echo "🔧 Fresh install detected — packages downloading..."
+            echo "🔧 Fresh install detected -- packages downloading..."
           fi
           # --- Pip Install Verbosity Toggle ---
           PIP_VERBOSE="false"
@@ -1059,12 +1059,12 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           fi
           # Auto-update with the EXACT-OBJECT STASH CONTRACT (banked 2026-07-18).
           # THREE STATE CLASSES:
-          #   1. Upstream substrate — tracked files, replaceable only by ff-pull.
-          #   2. User overlay — .jupyter/lab/user-settings/ rides the exact-stash
+          #   1. Upstream substrate -- tracked files, replaceable only by ff-pull.
+          #   2. User overlay -- .jupyter/lab/user-settings/ rides the exact-stash
           #      lane below; durable user state (~/.config/pipulate, Workshop/personal,
           #      .env, whitelabel.txt, .ssh) lives outside the substrate and is
           #      never touched by this block.
-          #   3. Disposable workspace — gitignored caches/artifacts; ignored here.
+          #   3. Disposable workspace -- gitignored caches/artifacts; ignored here.
           if [ -d .git ]; then
             # THE ANNOUNCEMENT IS NOT A READING (2026-09-05, first car of the
             # quieting ride). The echo that stood here printed one identical
@@ -1161,13 +1161,13 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
                 echo "Already up to date."
               fi
               # EXACT-OBJECT RESTORATION: apply and drop ONLY the SHA captured
-              # above. On conflict the stash is KEPT and its SHA printed —
+              # above. On conflict the stash is KEPT and its SHA printed --
               # there is no destruction path in this branch.
               if [ -n "$PIPULATE_STASH" ]; then
                 echo "Restoring local JupyterLab settings..."
                 if ! git stash apply --quiet "$PIPULATE_STASH" 2>/dev/null; then
                   echo "⚠️ WARNING: Your local JupyterLab settings conflicted with an update."
-                  echo "   They are preserved in stash $PIPULATE_STASH — recover with:"
+                  echo "   They are preserved in stash $PIPULATE_STASH -- recover with:"
                   echo "   git stash apply $PIPULATE_STASH"
                   git checkout HEAD -- .jupyter/lab/user-settings/ 2>/dev/null || true
                 else
@@ -1205,7 +1205,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             set +a
           fi
           # THE WALLET HYDRATOR: export non-secret defaults from the wallet
-          # (~/.config/pipulate/connectors.json). Names/paths/defaults only —
+          # (~/.config/pipulate/connectors.json). Names/paths/defaults only --
           # never secret values. Precedence preserved: anything already set
           # (real env or the .env block above) is NEVER overwritten; only
           # genuinely unset vars hydrate from each connector's defaults block.
@@ -1327,13 +1327,13 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           #    without touching the shell env.
           # 2. Gentle anti-nesting nudge: a *bare* `nix develop` typed in here is
           #    almost always a newcomer reflexively trying to "restart" after
-          #    Ctrl+C'ing the server. They do not need a nested room — they need
+          #    Ctrl+C'ing the server. They do not need a nested room -- they need
           #    `python server.py`. Redirect them kindly. Any nix call WITH args
           #    (e.g. `nix develop .#quiet`, `nix flake check`) still passes
           #    straight through with the rpath fix, so power use is untouched.
           nix() {
             if [ "$1" = "develop" ] && [ "$#" -eq 1 ]; then
-              echo "🟢 You are already inside the Pipulate Nix shell — no need to run 'nix develop' again."
+              echo "🟢 You are already inside the Pipulate Nix shell -- no need to run 'nix develop' again."
               echo "   • Restart the server after Ctrl+C:  python server.py"
               echo "   • Leave this environment entirely:  exit"
               return 0
@@ -1484,7 +1484,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # THE CONNECTOR GRAMMAR (idea #7 made literal): tiny Unix commands,
           # one per API, each a self-contained file in connectors/.
           # Args pass through: `botify org/project`, `confluence ENG`,
-          # `gmail <thread_id>`. Interactive-shell only — context.txt `!` lines
+          # `gmail <thread_id>`. Interactive-shell only -- context.txt `!` lines
           # ride as DERIVATIONS in commonPackages above, so the short spelling
           # is legal everywhere -- a router line is now `! jira SWCX-1234`.
           # THE SEVEN LEFT THIS BLOCK 2026-09-16 for connectorCommands above.
@@ -1546,7 +1546,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # the generated hook text.
           voice() { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/imports/voice_synthesis.py" ask; }
           alias plan='"$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/mother_cat.py" --plan'
-          # THE CREDENTIAL GAME: bare `warm` is the LIVE red/green board — one
+          # THE CREDENTIAL GAME: bare `warm` is the LIVE red/green board -- one
           # bounded API call per enrolled wallet slot, GOLD when every row is
           # green. `warm <slot>` is the fixer for that one credential, and a
           # browser_session slot's fixer IS weblogin.py, so nothing was lost
@@ -1795,7 +1795,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             echo "🧞 The First Wish is compiled and sitting in your clipboard."
             echo "   1. Open an AI web chat: Claude, ChatGPT, or Gemini."
             echo "   2. Paste it (Ctrl+V / Cmd+V) and send."
-            echo "   3. Tell it your OS. It has the whole install map — ask it anything."
+            echo "   3. Tell it your OS. It has the whole install map -- ask it anything."
           }
           # THE BOOK SEED: compile the distributable First Wish (SEED_PROMPT +
           # SEED_CHOP) for a stranger WITHOUT the environment. Bare `seed`
@@ -1833,7 +1833,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             else
               echo "   (No rotated snapshot found; qamy.ai.zip is the canonical archive.)"
             fi
-            echo "   COVER PROMPT — deliver it WITH one human-typed line, e.g.:"
+            echo "   COVER PROMPT -- deliver it WITH one human-typed line, e.g.:"
             echo "   \"A friend who runs Pipulate compiled this for me. Please open it and follow the instructions inside.\""
           }
           alias pine='(cd "$PIPULATE_ROOT" && nvim +/"THE PINBOARD" foo_files.py)'
@@ -1969,7 +1969,7 @@ print(max(1, n))
             # THE INTENT PARAMETER (router-churn edition, 2026-07-17): the
             # alias knows WHY this commit exists, so it says so. A diff that
             # is ONLY foo_files.py is the left-hand blast-radius boundary of
-            # a sentinel-bounded AI edit — comment lines toggled to curate
+            # a sentinel-bounded AI edit -- comment lines toggled to curate
             # the next compile's context, not features added or removed.
             # Detection is deterministic (git diff --name-only); only the
             # prose is delegated, and the hint outranks the model's guess.
@@ -2023,7 +2023,7 @@ print(max(1, n))
             # clear -x: repaint the screen but PRESERVE scrollback, so the
             # before/after probe evidence survives the detonation and can be
             # copied out afterward. Plain `clear` (ncurses >= 6.0) emits the
-            # E3 escape and erases scrollback — shredding the receipts.
+            # E3 escape and erases scrollback -- shredding the receipts.
             # THE TAIL IS g ITSELF (2026-09-25): the operator copies a
             # transcript from the top of the repainted screen, and blast
             # used to print a different first line from g there, so the
@@ -2175,7 +2175,7 @@ print('AI:\n', r.ai)
                     echo "🚀 [4/5] The Capstone: Rebuilding Nginx Routes..."
                     ssh -t mike@192.168.10.100 'sudo cp ~/nixos-config-staged/* /etc/nixos/ && sudo nixos-rebuild switch'
                     if [ "$REBOOT" -ne 1 ]; then
-                        echo "⏭️  [5/5] Skipped — stream.py left running. Pass --reboot to force the restart now."
+                        echo "⏭️  [5/5] Skipped -- stream.py left running. Pass --reboot to force the restart now."
                         echo "✅ Atomic Deployment Complete (stream untouched)."
                         return 0
                     fi
@@ -2363,7 +2363,7 @@ print('AI:\n', r.ai)
               echo "📚 [1/3] Committing source-of-truth (botifyml)..."
               # THE ALWAYS-FIRES GUARANTEE (gobot edition, retry-convicted
               # 2026-07-17): the commit can already be on disk from a prior
-              # run whose Confluence step then failed — the MOST common
+              # run whose Confluence step then failed -- the MOST common
               # reason to re-run gobot. A clean tree made `git commit -am`
               # exit nonzero and `|| return 1` aborted BEFORE shards and
               # Confluence. Fall through instead: skip the commit, still

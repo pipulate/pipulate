@@ -77,7 +77,7 @@ def generate_context_json(article_data, token_count, api_key=None):
     """
     
     prompt = f"""
-    You are a Knowledge Graph Architect. Your goal is to compress the provided technical article into a 'Holographic Shard'—a minimal JSON object.
+    You are a Knowledge Graph Architect. Your goal is to compress the provided technical article into a 'Holographic Shard'--a minimal JSON object.
 
     **Goal:** Fit maximum semantic meaning into approximately 200 tokens.
 

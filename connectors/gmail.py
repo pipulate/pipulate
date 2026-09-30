@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # connectors/gmail.py
 """
-gmail.py — Bring an email thread or a sender's threads into context.
+gmail.py -- Bring an email thread or a sender's threads into context.
 
 A Unix-philosophy gateway to the Gmail API for Prompt Fu context.
 
@@ -27,8 +27,8 @@ cannot be converted and fails loud, pointing you at subject search); an argument
 containing '@' is an email address (LIST); an argument with whitespace, or any
 non-hex bare token, is a subject SEARCH; a bare hex token is a thread id (FETCH).
 
-A subject SEARCH prints the COMPLETE transcript of every matching thread — the
-same output a thread id gives, attachments included — so an exact subject drops
+A subject SEARCH prints the COMPLETE transcript of every matching thread -- the
+same output a thread id gives, attachments included -- so an exact subject drops
 the whole discussion into context. Add --list for a lighter snippet browse-list.
 
 Auth:
@@ -90,9 +90,9 @@ def parse_gmail_url(url):
     """Pull a thread identifier out of a Gmail web URL fragment.
 
     Returns (kind, segment):
-      ('thread_id', '<hex>')  — a usable API hex thread id (legacy
+      ('thread_id', '<hex>')  -- a usable API hex thread id (legacy
                                 #all/<hexId> or #label/<hexId> URLs carry one).
-      ('opaque',   '<seg>')   — Gmail's opaque, per-account web id (FMfcg...).
+      ('opaque',   '<seg>')   -- Gmail's opaque, per-account web id (FMfcg...).
                                 The API never returns it and it cannot be
                                 converted offline, so the caller must fail loud
                                 and steer the human to subject search.
@@ -197,7 +197,7 @@ def _strip_html(s):
 def _collect_mime(payload, target):
     """Depth-first collect bodies matching `target` mime, skipping attachments."""
     out = []
-    if payload.get('filename'):  # an attachment or inline file part — skip it
+    if payload.get('filename'):  # an attachment or inline file part -- skip it
         return out
     if payload.get('mimeType', '') == target:
         data = payload.get('body', {}).get('data')
@@ -220,7 +220,7 @@ def extract_body(payload):
 
 
 def _collect_attachments(payload):
-    """Depth-first collect attachment metadata only — never the bytes.
+    """Depth-first collect attachment metadata only -- never the bytes.
 
     Returns a list of {filename, mime, size, attachment_id} dicts. This is the
     token-cheap 'there is more here if you want it' hook: enough to know an
@@ -286,7 +286,7 @@ def search_threads(service, subject, max_results, full=True):
     """SEARCH mode: find threads whose subject matches, newest-update first.
 
     Default (full=True) prints the COMPLETE transcript of every matching
-    thread — bodies and attachment metadata included — by reusing
+    thread -- bodies and attachment metadata included -- by reusing
     fetch_thread, so an exact subject drops the whole discussion into context
     exactly as a thread id would. Pass full=False (the --list flag) for the
     lighter snippet browse-list, which prints each hit's FETCH-able hex id.
@@ -303,7 +303,7 @@ def search_threads(service, subject, max_results, full=True):
         return
 
     if full:
-        print(f'# Full transcript(s) for subject "{subject}" — '
+        print(f'# Full transcript(s) for subject "{subject}" -- '
               f"{len(threads)} thread(s), most recent first\n")
         for i, t in enumerate(threads):
             fetch_thread(service, t['id'])
@@ -339,7 +339,7 @@ def fetch_thread(service, thread_id):
     """FETCH mode: full clean transcript of one thread, chronological.
 
     Bodies are emitted in full with no truncation. Attachments are NOT pulled
-    into the prompt — instead each one is surfaced as a metadata-only hook
+    into the prompt -- instead each one is surfaced as a metadata-only hook
     (filename, mime, size, messageId, attachmentId) so a future turn can decide
     whether to wire up the actual fetch.
     """
@@ -352,11 +352,11 @@ def fetch_thread(service, thread_id):
         return
 
     subject = _headers(messages[0]).get('subject', '(no subject)')
-    print(f'# Gmail thread {thread_id} — "{subject}"\n')
+    print(f'# Gmail thread {thread_id} -- "{subject}"\n')
 
     for i, msg in enumerate(messages, start=1):
         h = _headers(msg)
-        print(f"## Message {i} — {_message_date(msg)}")
+        print(f"## Message {i} -- {_message_date(msg)}")
         print(f"From: {h.get('from', '(unknown)')}")
         if h.get('to'):
             print(f"To: {h['to']}")
@@ -366,7 +366,7 @@ def fetch_thread(service, thread_id):
         print()
         attachments = _collect_attachments(payload)
         if attachments:
-            print(f"### Attachments ({len(attachments)}) — metadata only, bytes not fetched")
+            print(f"### Attachments ({len(attachments)}) -- metadata only, bytes not fetched")
             for a in attachments:
                 print(
                     f"- {a['filename']} ({a['mime']}, {a['size']:,} bytes) "

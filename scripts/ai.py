@@ -118,7 +118,7 @@ CRITICAL INSTRUCTIONS:
 - For housekeeping operations, use "chore:" prefix and focus on cleanup nature
 
 OPERATOR HINT (authoritative human-supplied intent; when present it OUTRANKS
-your own inference from the diff — obey it unless the diff plainly contradicts it):
+your own inference from the diff -- obey it unless the diff plainly contradicts it):
 {operator_hint}
 
 CHANGE ANALYSIS:

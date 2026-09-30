@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-weblogin.py — Log into a site by hand once so later scrapes stay signed in.
+weblogin.py -- Log into a site by hand once so later scrapes stay signed in.
 
-Opens a VISIBLE Chrome on the house persistent profile — the SAME profile
+Opens a VISIBLE Chrome on the house persistent profile -- the SAME profile
 tools/scraper_tools.py uses for persistent=True, profile_name="default"
-(data/uc_profiles/<profile>) — navigates to the given site, and waits for
+(data/uc_profiles/<profile>) -- navigates to the given site, and waits for
 the human to close the window. Whatever session cookies accumulate persist
 in that profile, so subsequent scrapes with persistent=True inherit the login.
 

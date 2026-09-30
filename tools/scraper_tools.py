@@ -757,7 +757,7 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
         
         # 1. Wire Truth Capture (CDP ledger + Network.getResponseBody)
         # The organic Document response is already sitting in the drained CDP
-        # ledger. Pull its actual headers and its actual body — no reenactment,
+        # ledger. Pull its actual headers and its actual body -- no reenactment,
         # no second request from the same IP. Probe-verified 2026-07-09:
         # body survives the buffer post-drain, headed, uc + Nix chromium.
         if verbose: logger.info("🌐 Extracting wire-truth headers and raw source from CDP ledger...")

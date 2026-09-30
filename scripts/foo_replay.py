@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-foo_replay.py — replay harness for the foo-cartridge-replay-v1 spec.
+foo_replay.py -- replay harness for the foo-cartridge-replay-v1 spec.
 
 Sibling to foo_cartridge.py; stdlib only. A clean-room receiver needs
 exactly three things: this file, foo_cartridge.py, and one QA archive zip
@@ -10,7 +10,7 @@ no API keys.
 
 Subcommands:
   mech PATH             Canonically verify the cartridge and emit the
-                        mechanical skeleton of a replay statement — the
+                        mechanical skeleton of a replay statement -- the
                         fields no model is ever trusted to compute.
   playback PATH         Emit the paste-ready replay preamble followed by
                         payload.md, for any web chat. manifest.json NEVER
@@ -30,14 +30,14 @@ The scoring vector (foo-cartridge-replay-v1):
                          value is ignored, never trusted
   actionable_request     normalize (strip trailing newlines, append one LF),
                          encode UTF-8, SHA-256, compare to the manifest's
-                         sha256["prompt.md"] — exact-match grading of a
+                         sha256["prompt.md"] -- exact-match grading of a
                          semantic extraction, no human judging required
   pinboard_debts         precision/recall vs pin entries parsed from the
                          payload's own PINBOARD section
   standing_rules         precision/recall vs RULE/AMENDMENT/COROLLARY/
                          VERDICT headers parsed from the payload
   cheapest_next_probe    bounded (single line, length cap) and read-only
-                         (mutating-token denylist) — heuristic, and labeled
+                         (mutating-token denylist) -- heuristic, and labeled
                          as such in the output
   unsupported_assertions count of observed debt/rule items with no textual
                          support anywhere in payload.md
@@ -65,7 +65,7 @@ MUTATING_TOKENS = (
 PLAYBACK_PREAMBLE = """\
 You are receiving payload.md, the body of a QA archive zip, forwarded from
 another operator's machine. Read it fully, then reply with EXACTLY ONE JSON
-object and nothing else — no prose before or after, no markdown fence.
+object and nothing else -- no prose before or after, no markdown fence.
 
 The JSON object must have exactly these keys:
   "schema": the string "foo-cartridge-replay-v1"
@@ -103,7 +103,7 @@ def _load_foo_cartridge():
     here = Path(__file__).resolve().parent
     module_path = here / "foo_cartridge.py"
     if not module_path.exists():
-        sys.exit(f"foo_replay: missing sibling module {module_path} — "
+        sys.exit(f"foo_replay: missing sibling module {module_path} -- "
                  f"fetch foo_cartridge.py into the same directory.")
     spec = importlib.util.spec_from_file_location("foo_cartridge", module_path)
     mod = importlib.util.module_from_spec(spec)
@@ -299,7 +299,7 @@ def cmd_selftest(zip_path: str):
         "repository_position": "selftest: synthesized from expected values",
         "actionable_request": members["prompt.md"].decode("utf-8"),
         "open_pinboard_debts": [
-            f"{p['date']} {p['stem']} — OWES per pinboard" for p in expected["open_pins"]
+            f"{p['date']} {p['stem']} -- OWES per pinboard" for p in expected["open_pins"]
         ],
         "standing_rules": list(expected["rules"]),
         "cheapest_next_probe": "grep -c '^# ' foo_files.py",

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # connectors/wallet.py
 """
-wallet.py — Connect your accounts, or any site by URL; see what's live.
+wallet.py -- Connect your accounts, or any site by URL; see what's live.
 
 Golden-path modes, auto-detected from the leading positional argument:
 
   python connectors/wallet.py                 # SCOREBOARD: stat EVERY slot, whatever its auth kind (OFFLINE)
-  python connectors/wallet.py check [<slot>]  # CHECK: the red/green game — one bounded probe per enrolled slot
+  python connectors/wallet.py check [<slot>]  # CHECK: the red/green game -- one bounded probe per enrolled slot
   python connectors/wallet.py check <URL>     # CHECK: the cookie verdict for ANY site, offline, no slot needed
   python connectors/wallet.py warm [<slot>]   # WARM: fix whatever is cold, dispatched per auth kind
   python connectors/wallet.py warm <URL>      # WARM: log into ANY site, no slot needed; profile = apex label
@@ -20,12 +20,12 @@ Designed to be dropped into adhoc.txt as a `!` chisel-strike, e.g.:
 This is the GENERALIZATION of each connector's no-argument identity() walk
 lifted from ONE connector to the WHOLE wallet. It reads
 ~/.config/pipulate/connectors.json (override: PIPULATE_WALLET) and reports
-every slot at once — across all SIX auth kinds the wallet actually holds —
+every slot at once -- across all SIX auth kinds the wallet actually holds --
 so a glance tells you which sessions are live, which have gone stale, which
 have never been warmed, and (crucially) which the wallet genuinely CANNOT
 warm for you and why.
 
-SCOREBOARD is strictly READ-ONLY and OFFLINE — the CHECK verb is the one lane
+SCOREBOARD is strictly READ-ONLY and OFFLINE -- the CHECK verb is the one lane
 in this file that touches the network, deliberately kept a separate verb so
 the offline board still works on a plane. SCOREBOARD never opens a token's
 bytes, never touches the network, never reads credentials.json /
@@ -72,12 +72,12 @@ HONEST HEURISTICS, stated plainly (a clean caveat is a valid receipt):
     the cheapest honest discriminator that does not launch a browser.
 
 States (per slot):
-  filled   — warmed and fresh (or, for env kinds, all required vars present).
-  stale    — present but last touched > --stale-days ago (mtime kinds only).
-  partial  — some but not all required env vars present (env kinds only).
-  empty    — missing / 0-bytes / no required var set. Needs warming.
-  no-path  — slot's kind needs a path/profile it doesn't declare (config error).
-  unknown  — auth kind not recognized by this wallet (surfaced, never hidden).
+  filled   -- warmed and fresh (or, for env kinds, all required vars present).
+  stale    -- present but last touched > --stale-days ago (mtime kinds only).
+  partial  -- some but not all required env vars present (env kinds only).
+  empty    -- missing / 0-bytes / no required var set. Needs warming.
+  no-path  -- slot's kind needs a path/profile it doesn't declare (config error).
+  unknown  -- auth kind not recognized by this wallet (surfaced, never hidden).
 """
 
 import os
@@ -110,7 +110,7 @@ DOTENV_PATH = Path(os.environ.get('PIPULATE_DOTENV') or
 # inside the shell by PIPULATE_ROOT. Keep in sync.
 REPO_ROOT = Path(os.environ.get('PIPULATE_ROOT') or Path(__file__).resolve().parents[1])
 
-# Auth kinds — these strings MUST match connectors.json exactly.
+# Auth kinds -- these strings MUST match connectors.json exactly.
 _OAUTH_KIND = 'oauth_token_file'       # mint + auto-refresh (gmail, sheets, gsc)
 _SERVICE_KIND = 'service_account_file'  # a key file on disk
 _BEARER_KIND = 'bearer_token'          # paste: single API token (botify, slack)
@@ -299,7 +299,7 @@ def _required_env_vars(slot):
     """The canonical env var NAMES this slot declares as required. Heuristic:
     any var whose description says 'required' (and not 'optional'); if none is
     so marked, every declared var is treated as required. Documentation-as-data,
-    read straight from the wallet — never a hardcoded per-connector list."""
+    read straight from the wallet -- never a hardcoded per-connector list."""
     env = slot.get('env') or {}
     req = [name for name, desc in env.items()
            if 'required' in str(desc).lower() and 'optional' not in str(desc).lower()]
@@ -323,7 +323,7 @@ def _required_env_groups(slot):
 
 
 def _stat_state(path, stale_days, mtime_matters):
-    """(state, detail) from an os.stat only — never opens the bytes.
+    """(state, detail) from an os.stat only -- never opens the bytes.
     mtime_matters=False → present/non-empty is always 'filled' (no 7d cliff)."""
     if path is None:
         return 'no-path', 'slot declares no path'
@@ -347,7 +347,7 @@ def _stat_state(path, stale_days, mtime_matters):
 
 
 def _dotenv_names():
-    """The env-var NAMES declared in DOTENV_PATH — the names-only projection
+    """The env-var NAMES declared in DOTENV_PATH -- the names-only projection
     of _dotenv_pairs, because the SCOREBOARD must never touch a value. Empty
     set when there is no .env. Cached per process, and the cache is
     invalidated by _save_env so the board re-reads what warm wrote."""
@@ -358,7 +358,7 @@ def _dotenv_names():
 
 
 def _env_source(name):
-    """Where a required var is visible — 'env', 'dotenv', or None. Never reads
+    """Where a required var is visible -- 'env', 'dotenv', or None. Never reads
     or returns the secret VALUE (the wallet's names-and-paths-only rule)."""
     if os.environ.get(name):
         return 'env'
@@ -428,18 +428,18 @@ def classify_slot(name, cfg, stale_days):
         # split for good.
         resource = (cfg.get('defaults') or {}).get('resource')
         if not resource:
-            return 'no-path', kind, 'slot declares no defaults.resource', '—'
+            return 'no-path', kind, 'slot declares no defaults.resource', '--'
         tok = str(token_path_for(resource))
         state, detail = _stat_state(tok, stale_days, mtime_matters=True)
         return state, kind, detail, tok
     if kind in _ENV_KINDS:
         state, detail = _env_state(cfg)
         return state, kind, detail, 'env / .env (out of git)'
-    return 'unknown', kind or '(none)', f"unrecognized auth kind {kind!r}", '—'
+    return 'unknown', kind or '(none)', f"unrecognized auth kind {kind!r}", '--'
 
 
 def _next_hint(name, state, kind):
-    """The exact command that warms THIS slot's kind — the connector teaching
+    """The exact command that warms THIS slot's kind -- the connector teaching
     its own use, even for kinds this wallet cannot mint itself."""
     if kind == _OAUTH_KIND:
         return f"python connectors/wallet.py login {name}   (browser-mint, one-time)"
@@ -455,7 +455,7 @@ def _next_hint(name, state, kind):
     if kind in _ENV_KINDS:
         return (f"python connectors/wallet.py warm {name}   "
                 f"(prompts for each missing var, saves to {DOTENV_PATH})")
-    return "unrecognized kind — check connectors.json `auth`"
+    return "unrecognized kind -- check connectors.json `auth`"
 
 
 def scoreboard(wallet, max_items, stale_days):
@@ -463,10 +463,10 @@ def scoreboard(wallet, max_items, stale_days):
     slots = [(name, cfg) for name, cfg in wallet.items()
              if not name.startswith('_') and isinstance(cfg, dict) and cfg.get('auth')]
 
-    print("# wallet.py — connector auth scoreboard (read-only, offline)")
+    print("# wallet.py -- connector auth scoreboard (read-only, offline)")
     print(f"# wallet: {Path(WALLET_PATH).expanduser()}")
     print(f"# repo:   {REPO_ROOT}  (anchors browser_session profiles)")
-    print(f"# stale after: {stale_days}d — mtime heuristic for oauth/browser/mcp, "
+    print(f"# stale after: {stale_days}d -- mtime heuristic for oauth/browser/mcp, "
           "not a validity proof\n")
 
     if not slots:
@@ -528,11 +528,11 @@ def scoreboard(wallet, max_items, stale_days):
         _, kind, name, _, _ = target
         print(f"# Next: {_next_hint(name, target[0], kind)}")
     else:
-        print("# Next: wallet fully warm — nothing to warm.")
+        print("# Next: wallet fully warm -- nothing to warm.")
 
 
 # ---------------------------------------------------------------------------
-# login — mints OAuth by reusing the connector's own walk; for every other
+# login -- mints OAuth by reusing the connector's own walk; for every other
 # kind it NAMES how that kind is warmed instead of pretending it can mint.
 # ---------------------------------------------------------------------------
 def login(slot_name, stale_days):
@@ -552,11 +552,11 @@ def login(slot_name, stale_days):
 
     kind = slot.get('auth')
 
-    # Non-oauth kinds cannot be minted here — but say EXACTLY how each is warmed.
+    # Non-oauth kinds cannot be minted here -- but say EXACTLY how each is warmed.
     if kind != _OAUTH_KIND:
         state, _, detail, locator = classify_slot(slot_name, slot, stale_days)
         mark = _MARK.get(state, '[?]')
-        msg = [f"Slot '{slot_name}' is auth={kind!r} — there is no OAuth token to mint here.",
+        msg = [f"Slot '{slot_name}' is auth={kind!r} -- there is no OAuth token to mint here.",
                f"  now: {mark} {state}  ({detail})",
                f"  warm it:  {_next_hint(slot_name, state, kind)}"]
         if kind == _SERVICE_KIND:
@@ -567,7 +567,7 @@ def login(slot_name, stale_days):
     creds_path = resolve_path(slot, 'credentials', 'paths.credentials')
     token_path = resolve_path(slot, 'token', 'paths.token')
     if not token_path:
-        die(f"Slot '{slot_name}' declares no paths.token — cannot mint. "
+        die(f"Slot '{slot_name}' declares no paths.token -- cannot mint. "
             "Fix the wallet entry first.")
 
     if not creds_path or not Path(creds_path).exists():
@@ -591,7 +591,7 @@ def login(slot_name, stale_days):
                 os.environ[env_key] = value
 
     before_state, _, _, _ = classify_slot(slot_name, slot, stale_days)
-    print(f"# wallet login {slot_name} — reusing {connector_file.name}'s own "
+    print(f"# wallet login {slot_name} -- reusing {connector_file.name}'s own "
           "OAuth walk (this slot only)")
     print(f"# credentials : {creds_path}")
     print(f"# token       : {token_path}  [{before_state} before]\n")
@@ -621,16 +621,16 @@ def login(slot_name, stale_days):
 
     after_state, _, detail, _ = classify_slot(slot_name, slot, stale_days)
     mark = _MARK.get(after_state, '[?]')
-    print("\n# minted — this slot now reads:")
+    print("\n# minted -- this slot now reads:")
     print(f"  {mark} {after_state}  {slot_name}  {detail}  {token_path}")
     if after_state == 'filled':
         print("# Done. Re-run the bare scoreboard for the whole board.")
     else:
-        print(f"# Note: slot still reads '{after_state}' — check the walk output above.")
+        print(f"# Note: slot still reads '{after_state}' -- check the walk output above.")
 
 
 # ---------------------------------------------------------------------------
-# warm — the verb the scoreboard implies. One dispatch per auth kind, and each
+# warm -- the verb the scoreboard implies. One dispatch per auth kind, and each
 # branch DELEGATES to the mechanism that already owns that kind: oauth reuses
 # login()'s connector walk, browser shells out to weblogin.py, paste kinds
 # prompt once and persist to DOTENV_PATH. Nothing here re-implements an OAuth
@@ -639,7 +639,7 @@ def login(slot_name, stale_days):
 def _interactive():
     """True only on a real terminal. A `! python .../wallet.py` chisel-strike
     runs non-TTY inside a compile, so warm must print a PLAN there and never
-    block on input() — otherwise it would deadlock the compile that ran it."""
+    block on input() -- otherwise it would deadlock the compile that ran it."""
     try:
         return sys.stdin.isatty() and sys.stderr.isatty()
     except Exception:
@@ -668,7 +668,7 @@ def _looks_secret(var):
 def _save_env(name, value):
     """Upsert NAME=value into DOTENV_PATH at 0600. Prefers python-dotenv (a
     declared dependency) for correct quoting, with a stdlib fallback so this
-    file still works outside the Nix shell — wallet.py stays import-light."""
+    file still works outside the Nix shell -- wallet.py stays import-light."""
     DOTENV_PATH.parent.mkdir(parents=True, exist_ok=True)
     if not DOTENV_PATH.exists():
         DOTENV_PATH.touch(mode=0o600)
@@ -697,7 +697,7 @@ def _warm_oauth(name, stale_days, assume_yes):
     try:
         login(name, stale_days)
     except SystemExit as e:
-        return f"login aborted (exit {e.code}) — see its message above"
+        return f"login aborted (exit {e.code}) -- see its message above"
     return 'oauth walk finished'
 
 
@@ -731,7 +731,7 @@ def _warm_env(name, cfg, assume_yes, force=False):
     for var, canonical in offered:
         desc = str(env_doc.get(canonical, '')).strip()
         if desc:
-            print(f"    {var} — {desc}")
+            print(f"    {var} -- {desc}")
         if defaults.get(canonical):
             print(f"    example: {defaults[canonical]}")
         secret = _looks_secret(var)
@@ -771,13 +771,13 @@ def _warm_env(name, cfg, assume_yes, force=False):
 
 def _warm_browser(name, cfg, assume_yes):
     """browser_session: hand off to weblogin.py, which already owns the
-    persistent-profile format. Confirm first — this pops a real window, and the
+    persistent-profile format. Confirm first -- this pops a real window, and the
     human must either log in or simply dismiss it."""
     profile = (cfg.get('paths') or {}).get('profile') or name
     site = (cfg.get('defaults') or {}).get('site')
     if not site:
         # Never guess a hostname from a slot name (botify_browser is not a domain).
-        site = _ask(f"  no defaults.site declared for '{name}' — site to open (blank skips): ")
+        site = _ask(f"  no defaults.site declared for '{name}' -- site to open (blank skips): ")
         if not site:
             return 'skipped (no site declared)'
     if not _confirm(f"  open {site} in profile '{profile}'?", assume_yes):
@@ -799,7 +799,7 @@ def _warm_service(name, cfg):
     """service_account_file: genuinely un-mintable from here. Say so, and say
     exactly where the downloaded key must land."""
     key = resolve_path(cfg, 'service_account', 'paths.service_account')
-    return ("cannot mint — download the service-account JSON (Google Cloud "
+    return ("cannot mint -- download the service-account JSON (Google Cloud "
             f"Console → IAM → Service Accounts) to {key or '(declare paths.service_account)'}")
 
 
@@ -963,13 +963,13 @@ def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
         if state != 'filled' or slot_name:
             cold.append((n, c, state, kind, detail))
 
-    print("# wallet warm — the verb the scoreboard implies")
+    print("# wallet warm -- the verb the scoreboard implies")
     print(f"# wallet:  {Path(WALLET_PATH).expanduser()}")
     print(f"# secrets: {DOTENV_PATH}  (0600, out of git)\n")
 
     if not cold:
         scope = f"slot '{slot_name}'" if slot_name else 'every slot'
-        print(f"# Nothing to warm — {scope} already reads filled.")
+        print(f"# Nothing to warm -- {scope} already reads filled.")
         return
 
     print(f"# {len(cold)} slot(s) to warm:")
@@ -983,7 +983,7 @@ def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
 
     if not _interactive():
         target = f" {slot_name}" if slot_name else ''
-        print("\n# Not a TTY — refusing to prompt, because a `!` chisel-strike must")
+        print("\n# Not a TTY -- refusing to prompt, because a `!` chisel-strike must")
         print("# never block the compile that embedded it. In a real terminal:")
         print(f"#    python connectors/wallet.py warm{target}")
         return
@@ -1003,7 +1003,7 @@ def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
         elif kind == _SERVICE_KIND:
             note = _warm_service(n, c)
         else:
-            note = f"unrecognized auth kind {kind!r} — fix connectors.json"
+            note = f"unrecognized auth kind {kind!r} -- fix connectors.json"
         after, akind, adetail, _al = classify_slot(n, c, stale_days)
         results.append((after, akind, n, adetail, note))
 
@@ -1058,7 +1058,7 @@ def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
 
 
 # ---------------------------------------------------------------------------
-# check — the LIVE lane. Every other verb here is offline; this one spends
+# check -- the LIVE lane. Every other verb here is offline; this one spends
 # exactly one bounded API call per enrolled slot to answer the only question
 # a stat() cannot: does the service accept this credential RIGHT NOW.
 # ---------------------------------------------------------------------------
@@ -1096,7 +1096,7 @@ def _dotenv_pairs():
 
 def _check_env():
     """The environment each `--check` subprocess inherits: this process's env
-    with the vault layered UNDER it, so an already-exported value wins —
+    with the vault layered UNDER it, so an already-exported value wins --
     matching the flake's own precedence exactly.
 
     Without this, a token pasted by `warm` sixty seconds ago is invisible to
@@ -1108,7 +1108,7 @@ def _check_env():
 
 
 # ---------------------------------------------------------------------------
-# browser_session — checked HERE, by auth kind, never by filename. A browser
+# browser_session -- checked HERE, by auth kind, never by filename. A browser
 # profile is not a gateway, so "no connector module (semrush.py)" was a message
 # telling the human to go write a program that should not exist.
 # ---------------------------------------------------------------------------
@@ -1117,7 +1117,7 @@ _CHROME_EPOCH_OFFSET = 11644473600  # seconds between 1601-01-01 and 1970-01-01
 
 def _apex(site):
     """Registrable-ish apex from a slot's defaults.site. Naive on multi-part
-    TLDs (co.uk), which only ever WIDENS the match — never narrows it."""
+    TLDs (co.uk), which only ever WIDENS the match -- never narrows it."""
     host = site.split('://')[-1].split('/')[0].split(':')[0].lower()
     if host.startswith('www.'):
         host = host[4:]
@@ -1142,12 +1142,12 @@ def check_browser_slot(name, cfg):
     with the browser closed, host_key and expires_utc are PLAINTEXT, and every
     secret sits in encrypted_value while value is empty. So a login is
     checkable without decrypting anything, without CDP, and without launching a
-    browser — which is the point, since a browser per row is the exact opposite
+    browser -- which is the point, since a browser per row is the exact opposite
     of slamming through the board.
 
     THE HTTPONLY DISCRIMINATOR (a labeled heuristic, never a proof): that same
     probe found the ONLY cookies present for both domains were _ga, ttcsid, and
-    kndctr_* — analytics, set by page JavaScript on a mere VISIT. Greening on
+    kndctr_* -- analytics, set by page JavaScript on a mere VISIT. Greening on
     "any unexpired cookie" would therefore report a login that never happened,
     the precise false-green this board exists to refuse. Page JavaScript cannot
     set an HttpOnly cookie; it arrives in a server's Set-Cookie header. That
@@ -1163,7 +1163,7 @@ def check_browser_slot(name, cfg):
     profile_dir = REPO_ROOT / 'data' / 'uc_profiles' / profile
     db = _cookie_db(profile_dir)
     if db is None:
-        return 1, (f"{name} RED gate1: no cookie store under {profile_dir} — "
+        return 1, (f"{name} RED gate1: no cookie store under {profile_dir} -- "
                    f"run `python connectors/wallet.py warm {name}`")
     apex = _apex(site)
     now = int((time.time() + _CHROME_EPOCH_OFFSET) * 1_000_000)
@@ -1177,20 +1177,20 @@ def check_browser_slot(name, cfg):
         finally:
             conn.close()
     except sqlite3.Error as e:
-        return 1, (f"{name} RED gate2: cookie store unreadable ({e}) — close "
+        return 1, (f"{name} RED gate2: cookie store unreadable ({e}) -- close "
                    "the browser, which locks a live profile")
     mine = [r for r in rows if str(r[0]).lstrip('.').endswith(apex)]
     if not mine:
         return 1, (f"{name} RED gate2: profile '{profile}' holds no cookies "
-                   f"for {apex} at all — never visited, never logged in")
+                   f"for {apex} at all -- never visited, never logged in")
     live = [r for r in mine if not r[2] or r[3] > now]
     if not live:
         return 1, (f"{name} RED gate2: all {len(mine)} cookies for {apex} have "
-                   f"expired — run `wallet.py warm {name}`")
+                   f"expired -- run `wallet.py warm {name}`")
     session = [r for r in live if r[1]]
     if not session:
         return 1, (f"{name} RED gate2: {len(live)} live cookies for {apex} but "
-                   "none HttpOnly — the site was VISITED, not logged into")
+                   "none HttpOnly -- the site was VISITED, not logged into")
     dated = [r[3] for r in session if r[2] and r[3] > now]
     when = ''
     if dated:
@@ -1268,13 +1268,13 @@ def check_slot(name, cfg=None):
 
     DISPATCH IS ON AUTH KIND, never on filename. A browser_session slot is a
     Chrome profile, not a gateway, and routing it through the connector lookup
-    produced "no connector module (semrush.py)" — a message instructing the
+    produced "no connector module (semrush.py)" -- a message instructing the
     human to write a program that should never exist. File and env kinds shell
     out to a connector; browser kinds are answered here, by the file that
     already knows where the profile lives.
 
     THE EXIT-CODE PROTOCOL, one layer out: nothing here parses a connector's
-    stdout to DECIDE anything — the exit code is the whole answer. A connector
+    stdout to DECIDE anything -- the exit code is the whole answer. A connector
     may reword its receipt freely, and this renderer can be swapped for Rich
     or Textual, and neither can ever come to disagree with the other.
 
@@ -1309,14 +1309,14 @@ def check_slot(name, cfg=None):
         return 0, out[-1] if out else f"{name} GREEN"
     if proc.returncode == 1:
         return 1, err[-1] if err else f"{name} RED (no diagnostic)"
-    return 2, 'no --check yet — this connector has no health probe'
+    return 2, 'no --check yet -- this connector has no health probe'
 
 
 def board(wallet, slot_name):
     """The red/green game: one live call per enrolled slot, GOLD at all-green.
 
     ENROLLMENT is what keeps the game winnable. A slot nobody intends to use
-    — a service account, an untested vendor — would otherwise sit red or
+    -- a service account, an untested vendor -- would otherwise sit red or
     unchecked forever, making GOLD unreachable and draining the color of all
     meaning. Set "enrolled": false on such a slot in connectors.json and it
     is benched: shown, never scored. An absent flag defaults to enrolled.
@@ -1353,7 +1353,7 @@ def board(wallet, slot_name):
     enrolled = [(n, c) for n, c in slots if c.get('enrolled', True)]
     benched = [(n, c) for n, c in slots if not c.get('enrolled', True)]
 
-    print("# wallet check — LIVE credential board (one bounded call per slot)")
+    print("# wallet check -- LIVE credential board (one bounded call per slot)")
     print(f"# wallet: {Path(WALLET_PATH).expanduser()}")
     print("# green means the service accepted this credential just now, "
           "not merely that a token exists\n")
@@ -1388,7 +1388,7 @@ def board(wallet, slot_name):
         tally += f" | {len(benched)} benched"
     print(tally)
     if total and green == total:
-        print(f"# 🏆 GOLD — every enrolled credential ({green}/{total}) is live.")
+        print(f"# 🏆 GOLD -- every enrolled credential ({green}/{total}) is live.")
         return 0
     if red:
         print("# Fix a red:  python connectors/wallet.py warm <slot>")
@@ -1418,7 +1418,7 @@ def main():
                              '(default: 25).')
     parser.add_argument('--stale-days', type=int, default=7,
                         help='mtime age (days) above which oauth/browser slots '
-                             'read stale (default: 7 — the Testing-mode cliff).')
+                             'read stale (default: 7 -- the Testing-mode cliff).')
     args = parser.parse_args()
 
     if args.command in (None, 'scoreboard', 'status'):

@@ -50,7 +50,7 @@ def _strip_front_matter(md_text: str) -> str:
             if lines[i].strip() == "---":
                 md_text = "\n".join(lines[i + 1:])
                 break
-    # Strip Liquid safety wrappers — meaningful for Jekyll rendering, noise in Confluence
+    # Strip Liquid safety wrappers -- meaningful for Jekyll rendering, noise in Confluence
     md_text = re.sub(r'\{%-?\s*raw\s*-?%\}\s*\n?', '', md_text)
     md_text = re.sub(r'\{%-?\s*endraw\s*-?%\}\s*\n?', '', md_text)
 
@@ -181,7 +181,7 @@ def _escape_non_html_tags(segment: str, unbalanced=frozenset()) -> str:
     def repl(m):
         whole = m.group(0)
         if '://' in whole or '@' in whole:
-            return whole  # markdown autolink or email — not a tag
+            return whole  # markdown autolink or email -- not a tag
         name = m.group(1).lower()
         if name in _HTML_ELEMENTS and name not in unbalanced:
             return whole
@@ -191,8 +191,8 @@ def _escape_non_html_tags(segment: str, unbalanced=frozenset()) -> str:
     # inline-math pass pairs bare $...$ across prose, so two currency
     # amounts in one paragraph ("$4.2 billion ... $2.2 billion") become a
     # giant LaTeX span that matplotlib's mathtext parser rightly rejects.
-    # Entity-escape dollars in PROSE segments only — code spans pass through
-    # this function's caller verbatim, fenced blocks never reach it — so the
+    # Entity-escape dollars in PROSE segments only -- code spans pass through
+    # this function's caller verbatim, fenced blocks never reach it -- so the
     # rendered page still shows '$' but the math regex never fires.
     # Idempotent: '&#36;' contains no '$' for a second pass to match.
     return segment.replace('$', '&#36;')
@@ -496,7 +496,7 @@ def main():
         if ops:
             print(f"   operations: {', '.join(o for o in ops if o)}")
             if "create" not in ops and "update" not in ops:
-                print("   ⚠ No 'create'/'update' in parent operations — write may 403.")
+                print("   ⚠ No 'create'/'update' in parent operations -- write may 403.")
         else:
             print("   operations: (none reported; write will be the real permission test)")
         
@@ -515,7 +515,7 @@ def main():
                 print(f"   MISS:  {md_file.name} -> {target_title}")
 
         if not args.yes:
-            print("\n🅳🆁🆈 DRY-RUN — no mutation. Review Target Title and MATCH/MISS lines before porting the proven upsert path.")
+            print("\n🅳🆁🆈 DRY-RUN -- no mutation. Review Target Title and MATCH/MISS lines before porting the proven upsert path.")
             print("  ↳ Next patch should lift create_canary's space-scoped collision check, private create, version bump, and read-back verification.")
             return
 

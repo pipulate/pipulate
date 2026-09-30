@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-variance_probe.py — the fence-vs-lean-back discrimination.
+variance_probe.py -- the fence-vs-lean-back discrimination.
 
 Sends two MATCHED prompts to the same local model:
-  CONTROL   — a claim resting on a SOUND premise.
-  TREATMENT — the same claim resting on a SUBTLY FLAWED premise.
+  CONTROL   -- a claim resting on a SOUND premise.
+  TREATMENT -- the same claim resting on a SUBTLY FLAWED premise.
 
 A VARIANCE-SUPPRESSOR accepts the flawed premise and builds on it (fence:
 collapse toward agreement). A VARIANCE-GENERATOR corrects the flaw and leans

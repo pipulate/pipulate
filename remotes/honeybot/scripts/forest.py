@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-🌲 forest.py — The station-break (forest) roll.
+🌲 forest.py -- The station-break (forest) roll.
 
 The trees roll is the reverse-chronological article reading in show.py. The
-forest roll is this slow, front-loaded necklace of self-contained "beads" — the
+forest roll is this slow, front-loaded necklace of self-contained "beads" -- the
 station-identification breaks that interleave between articles.
 
 Each bead is an ordered cue-list in the SAME sheet-music grammar perform_show
@@ -17,7 +17,7 @@ engine in stream.py.
 ORDER IS PRIORITY: _station_index resets to 0 on every process restart
 (episodic by design), so bead 0 is the highest-traffic "opening commercial."
 A viewer who tunes in mid-stream must be able to make sense of any single bead
-cold — no bead may depend on having heard its predecessor.
+cold -- no bead may depend on having heard its predecessor.
 
 WINDOW grammar note: the optional third field is a single argument forwarded to
 the script (e.g. the Figlet card label). It is delimited by ':' so the argument
@@ -30,7 +30,7 @@ STATION_SEGMENTS = [
     [
         # The opening bead. The title card flashes, then the ingress-to-broadcast
         # diagram lands and breathes (a silent WAIT) before the narration walks it
-        # left to right. No live report dashboard here yet — see the parked
+        # left to right. No live report dashboard here yet -- see the parked
         # placeholder at the foot of the bead. Tune the PATRONUS duration by ear:
         # it should outlast the spoken walkthrough so the art never blinks out
         # mid-sentence.
@@ -74,7 +74,7 @@ STATION_SEGMENTS = [
     [
         # Bead 2: The orienting beat. The viewer now knows this is a live home
         # webserver log; the natural next question is "what IS this project?".
-        # white_rabbit is the Pipulate mascot and wax seal — a concrete, friendly
+        # white_rabbit is the Pipulate mascot and wax seal -- a concrete, friendly
         # second beat that NAMES the thing before bead 3 explains its philosophy.
         ("WINDOW", "card.py:5:PIPULATE"),
         ("PATRONUS", {"key": "white_rabbit", "duration": 80.0}),

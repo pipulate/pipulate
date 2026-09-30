@@ -410,7 +410,7 @@ You're here to make the workflow concepts accessible and help users understand t
             if finalize_step.done in finalize_data:
                 return Article(
                     H3(f'{self.ui["EMOJIS"]["LOCKED"]} Workflow is locked.'),
-                    P('Each step can do ANYTHING. With this you can change the world — or at least show how to in a workflow.', cls='text-muted'),
+                    P('Each step can do ANYTHING. With this you can change the world -- or at least show how to in a workflow.', cls='text-muted'),
                     Form(
                         Button(
                             self.ui['BUTTON_LABELS']['UNLOCK'], 

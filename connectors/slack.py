@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # connectors/slack.py
 """
-slack.py — Bring a Slack channel or message thread into context.
+slack.py -- Bring a Slack channel or message thread into context.
 
 A Unix-philosophy gateway to the Slack Web API for Prompt Fu context.
 

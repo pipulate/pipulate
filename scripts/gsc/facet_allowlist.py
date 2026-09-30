@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-facet_allowlist.py — strategic uncanonicalization pipeline.
+facet_allowlist.py -- strategic uncanonicalization pipeline.
 
 build-facets   : crawl {domain}/products.json (paginated) into facet_dim
 import-demand  : load a GSC / Botify RealKeywords CSV into demand_fact,
                  parsing handle and variant_id out of the page URL
 allowlist      : variant_ids whose demand clears thresholds (the paste-ready
                  selective-canonical list)
-latent         : size/color-token queries landing on BASE urls — demand the
+latent         : size/color-token queries landing on BASE urls -- demand the
                  variant URLs haven't captured yet
 
 Stdlib only. Facet parsing mirrors the PageWorkers v2.1 buildSuffix policy:

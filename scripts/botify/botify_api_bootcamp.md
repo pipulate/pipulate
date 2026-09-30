@@ -13,7 +13,7 @@ The first 2 scripts in this series (immediately below) set you up.
 
 > When you run the scripts in cells 2 & 3, they will appear to *"lock up"*. It's not. Input fields are waiting for you. Type/paste into the field and *Hit Enter*.  
 > If you get confused, hit `Esc` + `0` + `0` + `Enter` and that will *restart the kernel.*  
-> Yes, that's **Esc, Zero, Zero, Enter** — *it's a Notebook thing.*  
+> Yes, that's **Esc, Zero, Zero, Enter** -- *it's a Notebook thing.*  
 
 Good luck!
 
@@ -777,7 +777,7 @@ if __name__ == "__main__":
 
 # Introduction to BQL (Botify Query Language)
 
-Botify API interactions come in many shapes and forms. The example shown below is the most popular: BQLv2 (Botify Query Language V2), but there are others — not just BQLv1 but also a vast array of *specialized endpoints* for custom reports and analysis. Of all the variations you will find, two "endpoints" (URLs that you make requests to) rise above all the others in their utility and frequency you'll encounter them. And they are:
+Botify API interactions come in many shapes and forms. The example shown below is the most popular: BQLv2 (Botify Query Language V2), but there are others -- not just BQLv1 but also a vast array of *specialized endpoints* for custom reports and analysis. Of all the variations you will find, two "endpoints" (URLs that you make requests to) rise above all the others in their utility and frequency you'll encounter them. And they are:
 
 1. The `/query` endpoint
 2. The `/jobs` endpoint
@@ -1113,7 +1113,7 @@ for i, url in enumerate(list_of_urls):
 
 - `enumerate()` exposes the internal counter index.
 - Python uses zero-based indexes, thus the `+1` for humans and `>= 9` to cut off at 10.
-- The `print()` function takes multiple (un-labeled) inputs—counter & url in this case.
+- The `print()` function takes multiple (un-labeled) inputs--counter & url in this case.
 - The other way to use the counter & url together is ***f-strings***: `f"{i+1} {url}"`, which would also work.
 
 You're welcome.
@@ -1308,7 +1308,7 @@ df.head()
 |2| https://example.com/baz           | Baz Page Title    | 980         | 25     |
 
 
-**Rationale**: So that I can jump up and down screaming that BQL is not SQL and tell the LLMs to stop showing me SQL examples for BQL. Surely SQL is down there somewhere, but it's ***API-wrapped***. Though this does not spare us from some SQL methodology. For example, table-joins across Collections are a thing—demonstrated here as `search_console` joined with `crawl.YYMMDD`, left-outer if I'm reading it correctly (I may have to amend that). If you really wanna know, Collections are table aliases that help with the API-wrapping.
+**Rationale**: So that I can jump up and down screaming that BQL is not SQL and tell the LLMs to stop showing me SQL examples for BQL. Surely SQL is down there somewhere, but it's ***API-wrapped***. Though this does not spare us from some SQL methodology. For example, table-joins across Collections are a thing--demonstrated here as `search_console` joined with `crawl.YYMMDD`, left-outer if I'm reading it correctly (I may have to amend that). If you really wanna know, Collections are table aliases that help with the API-wrapping.
 
 --------------------------------------------------------------------------------
 
@@ -1454,7 +1454,7 @@ ID: crawl.20240715, Name: 2024 July 15th
 ID: search_engines_orphans.20240715, Name: Search Engines Orphans
 ```
 
-**Rationale**: To let you know how tough Collections are once you start digging in. The first challenge is simply knowing what collections you have and what you can do with them—though 9 out of 10 times it's `crawl.YYYYMMDD` and `search_console`. If not, come talk to me, I wanna pick your brain.
+**Rationale**: To let you know how tough Collections are once you start digging in. The first challenge is simply knowing what collections you have and what you can do with them--though 9 out of 10 times it's `crawl.YYYYMMDD` and `search_console`. If not, come talk to me, I wanna pick your brain.
 
 --------------------------------------------------------------------------------
 
@@ -1700,7 +1700,7 @@ df.head(10)
 
 ...
 
-**Rationale**: Ahh, ***title tags***. They show in browser bookmarks, tabs and SERPs—the only relevancy factor that will remain standing after SEO Armageddon. You could ditch every other factor but ***anchor text***, set your uber-crawler go off-site, use a click-depth of 4—and harvest yourself a pretty good link-graph of the entire Internet... were it not for spammers.
+**Rationale**: Ahh, ***title tags***. They show in browser bookmarks, tabs and SERPs--the only relevancy factor that will remain standing after SEO Armageddon. You could ditch every other factor but ***anchor text***, set your uber-crawler go off-site, use a click-depth of 4--and harvest yourself a pretty good link-graph of the entire Internet... were it not for spammers.
 
 --------------------------------------------------------------------------------
 
@@ -1771,7 +1771,7 @@ else:
 
     Number of URLs with short titles: 675,080
 
-**Rationale**: Sometimes ya gotta count what you're trying to get before you go try and download it. Plus, learn ***filtering*** in the Botify API! But I think really I just wanted to show you how easy it is to format `f"{big_numbers:,}"` with commas using ***f-strings*** (I'm talking to you humans—because the LLMs *already know*).
+**Rationale**: Sometimes ya gotta count what you're trying to get before you go try and download it. Plus, learn ***filtering*** in the Botify API! But I think really I just wanted to show you how easy it is to format `f"{big_numbers:,}"` with commas using ***f-strings*** (I'm talking to you humans--because the LLMs *already know*).
 
 --------------------------------------------------------------------------------
 
@@ -2636,7 +2636,7 @@ File downloaded as 'downloads/org_project_analysis_linkgraph_depth-3.csv'
 Link graph saved to: downloads/org_project_analysis_linkgraph_depth-3.csv
 ```
 
-**Rationale**: And now, the moment you’ve all been waiting for—the elusive, hard-to-visualize link-graph of your website. Think Admiral Ackbar scrutinizing a hologram of the Death Star, examining every strength and vulnerability, now superimposed with Google Search Console Clicks and Impressions. The Rebels lean in, studying surprise hot spots and patches of dead wood. Every faceted search site ends up looking like the Death Star. But if you’ve done it right, with solid topical clustering, you’ll have something that resembles broccoli or cauliflower... are those called nodules? Florets? Either way, it’s a good look.
+**Rationale**: And now, the moment you’ve all been waiting for--the elusive, hard-to-visualize link-graph of your website. Think Admiral Ackbar scrutinizing a hologram of the Death Star, examining every strength and vulnerability, now superimposed with Google Search Console Clicks and Impressions. The Rebels lean in, studying surprise hot spots and patches of dead wood. Every faceted search site ends up looking like the Death Star. But if you’ve done it right, with solid topical clustering, you’ll have something that resembles broccoli or cauliflower... are those called nodules? Florets? Either way, it’s a good look.
 
 --------------------------------------------------------------------------------
 
@@ -3051,7 +3051,7 @@ if __name__ == "__main__":
     
     Data saved to downloads/example_retail-division_20241108_metadata.csv
 
-**Rationale**: Just because you happen to work at an enterprise SEO company and possess this peculiar intersection of skills—like crafting prompts that give LLMs instant deep-knowledge (think Neo suddenly knowing kung fu)—doesn't mean you actually understand BQL. In fact, needing to write this prompt rather proves the opposite... wait, did I just create a paradox? Anyway, there's a very subtle chicken-and-egg problem that this file in general and this example in particular helps address: ***validation of collection fields*** so you can template automations without them being too fragile.
+**Rationale**: Just because you happen to work at an enterprise SEO company and possess this peculiar intersection of skills--like crafting prompts that give LLMs instant deep-knowledge (think Neo suddenly knowing kung fu)--doesn't mean you actually understand BQL. In fact, needing to write this prompt rather proves the opposite... wait, did I just create a paradox? Anyway, there's a very subtle chicken-and-egg problem that this file in general and this example in particular helps address: ***validation of collection fields*** so you can template automations without them being too fragile.
 
 --------------------------------------------------------------------------------
 

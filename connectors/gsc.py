@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # connectors/gsc.py
 """
-gsc.py — Bring Search Console properties or top queries into context.
+gsc.py -- Bring Search Console properties or top queries into context.
 
 A Unix-philosophy gateway to Google Search Console for Prompt Fu context.
 
@@ -22,7 +22,7 @@ a raw searchanalytics query body (FETCH mode; needs --site or PIPULATE_GSC_SITE)
 any other bare token is a property coordinate (LIST top queries); no argument
 at all lists properties.
 
-Auth (oauth_token_file — the same user-OAuth walk as gmail.py and sheets.py):
+Auth (oauth_token_file -- the same user-OAuth walk as gmail.py and sheets.py):
   token:       PIPULATE_GSC_TOKEN env var
     -> ~/.config/pipulate/connectors.json gsc.paths.token
       -> ~/.config/pipulate/gsc_token.json
@@ -31,14 +31,14 @@ Auth (oauth_token_file — the same user-OAuth walk as gmail.py and sheets.py):
       -> ~/.config/pipulate/credentials.json  (the shared Desktop-app client)
   A valid token refreshes headlessly, and the token file is REWRITTEN on
   every refresh so the wallet's offline mtime heuristic tracks "last
-  refreshed". A missing or dead token browser-mints ONLY on a real TTY —
+  refreshed". A missing or dead token browser-mints ONLY on a real TTY --
   `python connectors/wallet.py login gsc` is the one-time mint,
   exactly as for gmail and sheets. No service account anywhere.
 
 Output is capped by -n/--max (default 25) per THE PROBE ECONOMY RULE: stdout is
 destined for compiled context payloads, so the bound is a feature.
 
-COMPILE-LANE CAUTION: LIST output contains property URLs, which are domains —
+COMPILE-LANE CAUTION: LIST output contains property URLs, which are domains --
 potentially client domains. Make sure pii_substitutions.txt covers any real
 client identifiers before a `!` invocation rides to a cloud chat window.
 """
@@ -144,7 +144,7 @@ def _load_creds():
 
 
 def get_service():
-    """Refresh headlessly, or browser-mint on a real TTY — the same walk
+    """Refresh headlessly, or browser-mint on a real TTY -- the same walk
     wallet.py's login verb reuses for gmail and sheets. A `!` chisel-strike
     can never block here: no TTY means a clean die(), never a browser."""
     creds, reason = _load_creds()
@@ -173,7 +173,7 @@ def check():
     """SELECT 1 for the `warm` board: exit 0 GREEN, exit 1 RED (gate-named).
 
     Modeled on botify.py's two-gate probe. gate1 is "credential present and
-    loadable" — headless refresh allowed, because the durable credential
+    loadable" -- headless refresh allowed, because the durable credential
     scored is the refresh token, exactly as for every other oauth slot.
     gate2 is "the live API accepted it": one bounded sites().list() call.
     15s budget via socket default timeout, stdin-safe: this path NEVER
@@ -212,7 +212,7 @@ def list_properties(service, max_items):
     print(f"# GSC properties visible to this Google account "
           f"({len(entries)} total, showing up to {max_items})\n")
     if not entries:
-        print("(no properties — does this Google account have access to any "
+        print("(no properties -- does this Google account have access to any "
               "Search Console properties?)")
         return
     for e in sorted(entries, key=lambda x: x.get('siteUrl', ''))[:max_items]:
@@ -235,7 +235,7 @@ def list_top_queries(service, site, max_items):
     rows = resp.get('rows', [])
     print(f"# GSC top queries for {site} ({start} .. {end}, cap {max_items})\n")
     if not rows:
-        print("(no rows — check the property token: 'sc-domain:example.com' "
+        print("(no rows -- check the property token: 'sc-domain:example.com' "
               "or 'https://example.com/')")
         return
     print(f"{'clicks':>7}  {'impr':>8}  {'ctr%':>6}  {'pos':>6}  query")

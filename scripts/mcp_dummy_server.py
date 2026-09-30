@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # scripts/mcp_dummy_server.py
 """
-mcp_dummy_server.py — a FAULT HARNESS for connectors/mcp.py.
+mcp_dummy_server.py -- a FAULT HARNESS for connectors/mcp.py.
 
 NOT a conformance witness, and the distinction is the whole point. This rig
 and mcp.py were written from the SAME spec reading, so their agreement is a
@@ -100,7 +100,7 @@ _OPEN_SCHEMA = {"type": "object", "properties": {}, "additionalProperties": True
 
 
 # ---------------------------------------------------------------------------
-# Tools — one per determinism class, so --dclass becomes falsifiable
+# Tools -- one per determinism class, so --dclass becomes falsifiable
 # ---------------------------------------------------------------------------
 def _echo(args):
     return json.dumps(args, sort_keys=True, separators=(",", ":"))
@@ -118,11 +118,11 @@ def _now(args):
 
 
 TOOLS = {
-    "echo": {"description": "D0 deterministic — arguments as canonical JSON.",
+    "echo": {"description": "D0 deterministic -- arguments as canonical JSON.",
              "inputSchema": _OPEN_SCHEMA, "handler": _echo},
-    "counter": {"description": "D1 stable read — advances on every call.",
+    "counter": {"description": "D1 stable read -- advances on every call.",
                 "inputSchema": _OPEN_SCHEMA, "handler": _counter},
-    "now": {"description": "D2 time-varying — current UTC timestamp.",
+    "now": {"description": "D2 time-varying -- current UTC timestamp.",
             "inputSchema": _OPEN_SCHEMA, "handler": _now},
 }
 
@@ -132,7 +132,7 @@ TOOLS = {
 # ---------------------------------------------------------------------------
 class MCPHandler(BaseHTTPRequestHandler):
     # HTTP/1.1 so httpx keeps the connection alive across the three-call
-    # handshake — which makes an accurate Content-Length mandatory on EVERY
+    # handshake -- which makes an accurate Content-Length mandatory on EVERY
     # response, including the empty ones. _send is the only writer.
     protocol_version = "HTTP/1.1"
 
@@ -177,13 +177,13 @@ class MCPHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         # The spec's server-initiated SSE stream. mcp.py never opens one, and
         # pretending to support it would be the map outrunning the territory.
-        self._say("GET — server-initiated stream not implemented (405)")
+        self._say("GET -- server-initiated stream not implemented (405)")
         self._send(405)
 
     def do_DELETE(self):
         sid = self.headers.get(SESSION_HEADER)
         SESSIONS.pop(sid, None)
-        self._say(f"DELETE — session {(sid or '-')[:8]} terminated")
+        self._say(f"DELETE -- session {(sid or '-')[:8]} terminated")
         self._send(200)
 
     def do_POST(self):
@@ -192,7 +192,7 @@ class MCPHandler(BaseHTTPRequestHandler):
         try:
             msg = json.loads(raw or b"{}")
         except (json.JSONDecodeError, UnicodeDecodeError):
-            self._say("PARSE ERROR — body was not JSON")
+            self._say("PARSE ERROR -- body was not JSON")
             return self._err(-32700, "Parse error")
 
         if isinstance(msg, list):
@@ -212,11 +212,11 @@ class MCPHandler(BaseHTTPRequestHandler):
                   f"session={(sid or '-')[:8]} "
                   f"auth={'Bearer' if auth.lower().startswith('bearer ') else 'none'}")
 
-        # GATE A — Accept must offer both media types (Streamable HTTP).
+        # GATE A -- Accept must offer both media types (Streamable HTTP).
         accept = (self.headers.get("Accept") or "").lower()
         if not ("application/json" in accept and "text/event-stream" in accept):
             if CONFIG["strict_accept"]:
-                self._say("GATE A FAILED — Accept lacks a required media type")
+                self._say("GATE A FAILED -- Accept lacks a required media type")
                 return self._err(
                     -32600,
                     "Accept must offer application/json AND text/event-stream")
@@ -236,14 +236,14 @@ class MCPHandler(BaseHTTPRequestHandler):
         if method == "initialize":
             return self._initialize(msg, rid)
 
-        # GATE B — everything after the handshake must carry the session.
+        # GATE B -- everything after the handshake must carry the session.
         if CONFIG["session"]:
             if not sid:
-                self._say("GATE B FAILED — no session header")
+                self._say("GATE B FAILED -- no session header")
                 return self._err(
                     -32600, f"Missing {SESSION_HEADER}; initialize issued one")
             if sid not in SESSIONS:
-                self._say("GATE B FAILED — unknown session id")
+                self._say("GATE B FAILED -- unknown session id")
                 return self._err(-32600, "Unknown session id", status=404, rid=rid)
 
         # PROTOCOL NOTE, deliberately not a gate. See the module docstring:
@@ -299,7 +299,7 @@ class MCPHandler(BaseHTTPRequestHandler):
                 "result": {"isError": False,
                            "content": [{"type": "text", "text": text}]}})
 
-        self._say(f"METHOD NOT FOUND — {method!r}")
+        self._say(f"METHOD NOT FOUND -- {method!r}")
         return self._err(-32601, f"Method not found: {method}", status=404, rid=rid)
 
     def _initialize(self, msg, rid):
@@ -320,7 +320,7 @@ class MCPHandler(BaseHTTPRequestHandler):
                                                    "refused at the RPC layer"}})
 
         if requested not in CONFIG["protocol_versions"]:
-            self._say(f"400 initialize — {requested!r} unsupported "
+            self._say(f"400 initialize -- {requested!r} unsupported "
                       f"(rig speaks {CONFIG['protocol_versions']})")
             return self._rpc(
                 {"jsonrpc": "2.0", "id": rid,
@@ -354,13 +354,13 @@ def _start(host="127.0.0.1", port=0):
 
 
 # ---------------------------------------------------------------------------
-# Client invocation — hermetic, so a rig run can never touch a real credential
+# Client invocation -- hermetic, so a rig run can never touch a real credential
 # ---------------------------------------------------------------------------
 def _hermetic_env():
     """Strip every MCP_* and BOTIFY_* name before injecting the stand-in.
 
     Without this, mcp.py's resolve_token fallback chain could reach a real
-    token file and a harness run could authenticate somewhere real — or pass
+    token file and a harness run could authenticate somewhere real -- or pass
     BECAUSE it did, which is the worse of the two.
     """
     env = {k: v for k, v in os.environ.items()
@@ -413,7 +413,7 @@ def _green_battery(url):
     same = _payload(a.stdout) == _payload(b.stdout) and _payload(a.stdout) != ""
     rows.append((same, "D0-repeat",
                  "identical bytes across two calls" if same
-                 else "D0 tool was NOT byte-stable — the class label is a lie",
+                 else "D0 tool was NOT byte-stable -- the class label is a lie",
                  "D0 must be reproducible or the receipt overclaims"))
 
     c = _run_client(url, ["counter", "{}", "--dclass", "D1"])
@@ -422,7 +422,7 @@ def _green_battery(url):
              and _payload(c.stdout) != _payload(d.stdout))
     rows.append((moved, "D1-differ",
                  "counter advanced between calls" if moved
-                 else "D1 tool did not advance — state is not exercised",
+                 else "D1 tool did not advance -- state is not exercised",
                  "D1 must be able to change or the class is untested"))
 
     e = _run_client(url, ["now", "{}"])
@@ -483,7 +483,7 @@ def _control_session():
         except ValueError:
             message = ""
         ok = resp.status_code == 400 and SESSION_HEADER in message
-        return ok, f"HTTP {resp.status_code} — {message or '(no message)'}"
+        return ok, f"HTTP {resp.status_code} -- {message or '(no message)'}"
     finally:
         httpd.shutdown()
         httpd.server_close()
@@ -494,7 +494,7 @@ def selftest():
         sys.stderr.write(f"fault harness ABORT: client not found at {CLIENT}\n")
         return 1
 
-    print("# MCP FAULT HARNESS — connectors/mcp.py, UNMODIFIED")
+    print("# MCP FAULT HARNESS -- connectors/mcp.py, UNMODIFIED")
     print(f"# instrument: {CLIENT}")
     print(f"# harness:    {Path(__file__).resolve()}\n")
 
@@ -526,7 +526,7 @@ def selftest():
             ok = p.returncode == want_code and want_text in combined
             rows.append((ok, name,
                          f"want exit {want_code}/{want_text}, got "
-                         f"{p.returncode} — {_last(p)}", why))
+                         f"{p.returncode} -- {_last(p)}", why))
         except subprocess.TimeoutExpired:
             rows.append((False, name, "timed out after 30s", why))
         finally:
@@ -546,7 +546,7 @@ def selftest():
             print(f"         \u21b3 {why}")
 
     if NOTES:
-        print("\n# PROTOCOL NOTES — client behaviours a stricter server may reject:")
+        print("\n# PROTOCOL NOTES -- client behaviours a stricter server may reject:")
         for note in NOTES:
             print(f"  - {note}")
 
@@ -556,11 +556,11 @@ def selftest():
     if passed != total:
         print("# failed: " + ", ".join(r[1] for r in rows if not r[0]))
         return 1
-    print("# MECHANISM WITNESSED — handshake sequence, session round trip")
+    print("# MECHANISM WITNESSED -- handshake sequence, session round trip")
     print("#   (enforcement proved by control), both framings, all three")
     print("#   determinism classes, and correct GATE ATTRIBUTION on five")
     print("#   manufactured failures.")
-    print("# STILL INFERRED — that \"2025-06-18\", \"Mcp-Session-Id\", and the")
+    print("# STILL INFERRED -- that \"2025-06-18\", \"Mcp-Session-Id\", and the")
     print("#   tools/* spellings are what a REAL server wants. This harness")
     print("#   shares mcp.py's spec reading; agreement is tautology. Only a")
     print("#   server of INDEPENDENT AUTHORSHIP promotes those three.")
@@ -576,7 +576,7 @@ def main():
     parser.add_argument("--serve", action="store_true",
                         help="hold a server open for hand-driving.")
     parser.add_argument("--host", default="127.0.0.1",
-                        help="bind host (default 127.0.0.1 — do not widen).")
+                        help="bind host (default 127.0.0.1 -- do not widen).")
     parser.add_argument("--port", type=int, default=8765,
                         help="bind port (default 8765; 0 picks ephemeral).")
     parser.add_argument("--sse", action="store_true",

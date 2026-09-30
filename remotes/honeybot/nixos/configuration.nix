@@ -651,7 +651,7 @@ PY
   # Teaches systemd to run, on a timer, the exact three-parameter Namecheap
   # update request proven by hand (ErrCount 0). The token is read at RUNTIME via
   # $(cat ...) inside ExecStart, so only the command structure is evaluated into
-  # the Nix store — the secret string never lands there. curl uses -sS (not -s)
+  # the Nix store -- the secret string never lands there. curl uses -sS (not -s)
   # so a non-zero ErrCount surfaces in journalctl instead of failing silently.
   systemd.services.namecheap-ddns = {
     description = "Update Namecheap Dynamic DNS Apex Record";
