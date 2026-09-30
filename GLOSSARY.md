@@ -461,6 +461,32 @@ Entries are alphabetical, numbers spelled as spoken.
 > ignored, because this section is read by rg while the router is read
 > top-down as a program.
 
+- **The A11Y Outline Describes the Hydrated DOM** -- (convicted 2026-09-21). Four
+  probes in a row failed at one question -- what is the querystring parameter
+  behind the Has SW filter -- because the claim being tested came from an
+  accessibility semantic outline, and that outline is generated from the page
+  AFTER JavaScript runs. `source.html` is what the server sent. They are not
+  the same document. A <select> seen in the a11y outline is not evidence of a
+  <select> in source.html, and grepping source.html for it will return 0
+  forever, which reads as "the thing does not exist" when it means "you are
+  reading the wrong file."
+
+  THE RULE: name the capture file every DOM claim came from. If the claim came
+  from accessibility_tree_summary.txt or from a screenshot, the probe that
+  tests it must run against hydrated_dom.html, never source.html.
+
+  AMENDED THE SAME DAY, by running that very probe. hydrated_dom.html carried
+  NO filter select either: one named <select> (action) and four <input>s, in a
+  page whose a11y outline lists [option] "Has SW". So the outline was never
+  describing a hydrated <select>. IT WAS DESCRIBING AN ARIA ROLE. A
+  <div role="option"> reports as [option] in an accessibility tree while
+  carrying no name attribute and no form semantics at all.
+  AN ACCESSIBILITY TREE NAMES ROLES, NOT TAGS. [option], [combobox] and
+  [button] in an outline are claims about what a screen reader announces,
+  never about what element exists or what it would submit. To learn a form
+  control's name, read the markup. To learn whether a control is even a form
+  control, read the markup FIRST.
+
 - **The Ancestor-Discipline Rule** -- (banked 2026-07-21; first landing attempt convicted missing by the same day's rg receipts -- this is the ratification): "SEO" is named as lineage, never as identity -- the same sequencing move as hiding "science" behind the wizard's hat: true thing, wrong first impression, stage the reveal instead of leading with the label that kills the spell. Goodhart conviction: rankings were the proxy for being-found-and-correctly-read; optimizing the proxy decoupled it from the goal until the word itself signals proxy-gaming even when the work is honest. The surviving invariant: LEGIBLE, VERIFIABLE, NEGOTIABLE to machine visitors -- exactly what Honeybot measures (content-negotiation vanguard ~0.2%, markdown masters served free, DOM-hydration trapdoor, llms.txt fetches), so the positioning rests on telemetry the product itself generates. Mechanics: ranking title-tails carry "(formerly AI SEO Software)" -- a 301 for language; sunset gated on GSC evidence (baseline annotated 2026-07-21, +28d AFTER read), never vibes. Founder-bio anchors KEEP the ancestor name (a biography IS lineage). Permalinks, asset URLs (ai-seo-software.svg stays live), START_ASCII_ART sync keys, and the article fossil record are never touched. Standing guard: "AI-readiness" Goodharts too the day anyone sells it as a score -- sell the INSTRUMENT (receipts), never the number. Remaining residue after the 2026-07-21 residue sweep: in-app strings (__init__.py __version_description__ feeds the flake banner; server.py; imports/ascii_displays.py AS THE SUSPECTED START_ASCII_ART INJECTION MASTER -- fix the master before trusting any banner patch to survive a release; apps/030_roles.py; assets/scenarios/introduction.json), the SVG logo pair (new asset + reference swap, old URL stays live), and ~/repos/Pipulate.com/README.md (probe whether release.py syncs it before hand-patching the twin).
 - **The Attributed-Voice Rule** -- *provenance for every utterance, spoken or
   on-screen.* Banked 2026-07-26, articulation-banked; promoted to
