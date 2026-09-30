@@ -362,31 +362,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # disagree are not a contradiction. The gap between them IS the setup cost,
 # and it is more often the larger one than anybody expects.
 #
-# THE A11Y OUTLINE DESCRIBES THE HYDRATED DOM (convicted 2026-09-21). Four
-# probes in a row failed at one question -- what is the querystring parameter
-# behind the Has SW filter -- because the claim being tested came from an
-# accessibility semantic outline, and that outline is generated from the page
-# AFTER JavaScript runs. `source.html` is what the server sent. They are not
-# the same document. A <select> seen in the a11y outline is not evidence of a
-# <select> in source.html, and grepping source.html for it will return 0
-# forever, which reads as "the thing does not exist" when it means "you are
-# reading the wrong file."
-#
-# THE RULE: name the capture file every DOM claim came from. If the claim came
-# from accessibility_tree_summary.txt or from a screenshot, the probe that
-# tests it must run against hydrated_dom.html, never source.html.
-#
-# AMENDED THE SAME DAY, by running that very probe. hydrated_dom.html carried
-# NO filter select either: one named <select> (action) and four <input>s, in a
-# page whose a11y outline lists [option] "Has SW". So the outline was never
-# describing a hydrated <select>. IT WAS DESCRIBING AN ARIA ROLE. A
-# <div role="option"> reports as [option] in an accessibility tree while
-# carrying no name attribute and no form semantics at all.
-# AN ACCESSIBILITY TREE NAMES ROLES, NOT TAGS. [option], [combobox] and
-# [button] in an outline are claims about what a screen reader announces,
-# never about what element exists or what it would submit. To learn a form
-# control's name, read the markup. To learn whether a control is even a form
-# control, read the markup FIRST.
+# § THE A11Y OUTLINE DESCRIBES THE HYDRATED DOM (banked 2026-09-21) -- Treat accessibility-tree roles as hydrated semantic claims, not HTML tags or form semantics: trace every DOM claim to its capture file, test a11y or screenshot claims against hydrated_dom.html rather than source.html, and read markup to learn the actual element and submitted name.
 #
 # THE HALT BANNER (banked 2026-09-21, at the operator's instruction). Anything
 # the human must DO that is not one of the five cars will be missed. Not might
