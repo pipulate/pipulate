@@ -593,14 +593,33 @@
         # there IS the source) and on any host it cannot list, before it
         # writes a byte. PIPULATE_MIRROR_FROM, _PATH and _DIR move the
         # source host, the source folder under its home, and the
-        # destination. THE WHITELIST (2026-09-30, the operator's ruling):
-        # only the repos named leave the house, five by default, three blogs
-        # (botifyml, grimoire, trimnoir), the corporate tier and the client
-        # repo; PIPULATE_MIRROR_REPOS replaces the list and arguments replace
+        # destination. THE WHITELIST (2026-09-30, the operator's ruling,
+        # widened by one the same day): only the repos named leave the house,
+        # six by default, three blogs (botifyml, grimoire, trimnoir), the
+        # corporate and personal tiers and the client repo;
+        # PIPULATE_MIRROR_REPOS replaces the list and arguments replace
         # it for one run (mirror grimoire); a name the source does not hold
         # prints ABSENT and the source's roster, never a silent skip. The
         # names are this author's and the mechanism is anyone's: filesystem
         # git remotes and one SSH login, with no git server anywhere.
+        # THE COPIES (2026-09-30, the operator's ask: one mental model on both
+        # machines). Every repo the tape holds is also checked out at
+        # ~/repos/<name> (PIPULATE_MIRROR_WORK moves the folder), cloned from
+        # the tape here and never from the source, its push URL disabled, and
+        # refreshed by pull --ff-only, so a local edit or commit halts that
+        # copy with a HELD line and is never overwritten; a folder already
+        # there that is not a copy of the tape is named and left alone. The
+        # blogs land where Prime keeps them; corporate and personal live
+        # under Workshop/ on Prime and beside the blogs here, because this
+        # machine's own Workshop holds this machine's own tiers.
+        # THE SECOND BRAIN READS THE COPIES: the source's blogs.json rides the
+        # same socket into ~/.config/pipulate/blogs.mirror.json, each path
+        # moved to its copy, keys and aliases unchanged (grim is 2 on both
+        # machines), only blogs with a copy here, the write lanes cut
+        # (pipeline empty, no Drive or Confluence id); the Darwin branch of
+        # miscSetupLogic reads it at shell entry. Nothing here depends on
+        # which Pipulate checkout runs the word: tape, copies and config all
+        # hang off HOME.
         # A PACKAGE, NOT A FUNCTION, for the deed's reason: a child shell
         # resolves it, so a ! line can witness it. LD_LIBRARY_PATH is
         # cleared because this runs the system ssh from inside the dev shell
@@ -611,10 +630,12 @@
           src="''${PIPULATE_MIRROR_FROM:-mike@nixos.local}"
           srcdir="''${PIPULATE_MIRROR_PATH:-git-repos}"
           dest="''${PIPULATE_MIRROR_DIR:-$HOME/git-repos}"
-          repos="''${PIPULATE_MIRROR_REPOS:-botifyml clients corporate grimoire trimnoir}"
+          work="''${PIPULATE_MIRROR_WORK:-$HOME/repos}"
+          cfg="$HOME/.config/pipulate/blogs.mirror.json"
+          repos="''${PIPULATE_MIRROR_REPOS:-botifyml clients corporate grimoire personal trimnoir}"
           if [ "$#" -gt 0 ]; then repos="$*"; fi
           export GIT_SSH_COMMAND="ssh -o ControlMaster=auto -o ControlPath=/tmp/pipulate-mirror-%C -o ControlPersist=60 -o ConnectTimeout=10"
-          echo "mirror: $src:$srcdir -> $dest ($repos)"
+          echo "mirror: $src:$srcdir -> $dest, copies in $work ($repos)"
           if ! listing=$($GIT_SSH_COMMAND "$src" "uname -n; cd ~/$srcdir && ls -d *.git"); then
             echo "mirror: STOP -- could not list ~/$srcdir on $src (unreachable from here, login refused, or no *.git there)" >&2
             exit 1
@@ -624,11 +645,13 @@
             echo "mirror: STOP -- $src is this machine ($there), where the destination is the source; run mirror on the Mac" >&2
             exit 1
           fi
-          mkdir -p "$dest"
+          mkdir -p "$dest" "$work" "$(dirname "$cfg")"
+          srcblogs=$($GIT_SSH_COMMAND "$src" "cat ~/.config/pipulate/blogs.json" 2>/dev/null || true)
           roster=" $(printf '%s\n' "$listing" | tail -n +2 | tr '\n' ' ')"
           tried=0
           mirrored=0
           absent=0
+          held=0
           for want in $repos; do
             name="''${want%.git}.git"
             tried=$((tried + 1))
@@ -651,7 +674,28 @@
             if [ "$rc" -eq 0 ]; then
               mirrored=$((mirrored + 1))
               newest=$(${pkgs.git}/bin/git -C "$dest/$name" log -1 --all --format=%ci 2>/dev/null)
-              printf '  %-24s %-8s newest commit %s\n' "$name" "$verb" "''${newest:-none}"
+              copy="$work/''${name%.git}"
+              if [ ! -e "$copy" ]; then
+                if ${pkgs.git}/bin/git clone --quiet "$dest/$name" "$copy" \
+                  && ${pkgs.git}/bin/git -C "$copy" rev-parse --verify -q HEAD >/dev/null; then
+                  ${pkgs.git}/bin/git -C "$copy" remote set-url --push origin READ-ONLY-mirror-copy
+                  cverb=cloned
+                else
+                  cverb="HELD (no checkout: the tape HEAD names no branch)"
+                fi
+              elif [ "$(${pkgs.git}/bin/git -C "$copy" remote get-url origin 2>/dev/null)" != "$dest/$name" ]; then
+                cverb="HELD (not a copy of the tape; left untouched)"
+              else
+                before=$(${pkgs.git}/bin/git -C "$copy" rev-parse --verify -q HEAD)
+                if ${pkgs.git}/bin/git -C "$copy" pull --ff-only --quiet; then
+                  after=$(${pkgs.git}/bin/git -C "$copy" rev-parse --verify -q HEAD)
+                  if [ "$before" = "$after" ]; then cverb=current; else cverb=pulled; fi
+                else
+                  cverb="HELD (pull --ff-only refused: git -C $copy status)"
+                fi
+              fi
+              case "$cverb" in HELD*) held=$((held + 1)) ;; esac
+              printf '  %-24s %-8s newest commit %s  copy %s\n' "$name" "$verb" "''${newest:-none}" "$cverb"
             else
               printf '  %-24s FAILED   rc=%s\n' "$name" "$rc"
             fi
@@ -663,10 +707,28 @@
           if [ "$absent" -gt 0 ]; then
             echo "mirror: $src holds:$roster" >&2
           fi
-          if [ "$mirrored" -eq "$tried" ]; then
-            echo "mirror: DONE -- $mirrored of $tried repo(s) mirrored into $dest"
+          have=" "
+          for copy in "$work"/*; do
+            base="''${copy##*/}"
+            if [ "$(${pkgs.git}/bin/git -C "$copy" remote get-url origin 2>/dev/null)" = "$dest/$base.git" ]; then
+              have="$have$base "
+            fi
+          done
+          if [ -z "$srcblogs" ]; then
+            echo "mirror: no blogs.json read from $src; $cfg unchanged" >&2
+          elif printf '%s\n' "$srcblogs" | ${pkgs.jq}/bin/jq --arg root "$work" --arg have "$have" 'with_entries(select(.value | type == "object") | select(.value.path | type == "string") | (.value.path | rtrimstr("/") | split("/")) as $p | select($have | contains(" " + $p[-2] + " ")) | .value.path = ($root + "/" + $p[-2] + "/" + $p[-1]) | .value.pipeline = [] | del(.value.gdrive_folder_id, .value.confluence_parent_id))' > "$cfg.tmp" && mv "$cfg.tmp" "$cfg"; then
+            echo "mirror: posts and rgx read $cfg ($(${pkgs.jq}/bin/jq -r 'to_entries | map(.key + "=" + (.value.alias // "?")) | join(" ")' "$cfg"))"
+            if [ "''${PIPULATE_BLOGS_CONFIG:-}" != "$cfg" ]; then
+              echo "mirror: this shell reads ''${PIPULATE_BLOGS_CONFIG:-the default blogs.json}; exit and nix develop again to read the copies"
+            fi
           else
-            echo "mirror: INCOMPLETE -- $mirrored of $tried repo(s); the FAILED and ABSENT lines above name the rest" >&2
+            rm -f "$cfg.tmp"
+            echo "mirror: the blogs.json from $src did not parse; $cfg unchanged" >&2
+          fi
+          if [ "$mirrored" -eq "$tried" ] && [ "$held" -eq 0 ]; then
+            echo "mirror: DONE -- $mirrored of $tried repo(s) mirrored into $dest, every copy current in $work"
+          else
+            echo "mirror: INCOMPLETE -- $mirrored of $tried repo(s) mirrored, $held copy(ies) held; the FAILED, ABSENT and HELD lines above name the rest" >&2
             exit 1
           fi
         '';
@@ -679,7 +741,7 @@
           rgxcCommand                  # rgx plus holographic shards and hit context
           aiCommitCommand              # \g's commit generator resolves in-shell on every platform
           deedCommand                  # Promote one cartridge snapshot out of rotation, verified
-          mirrorCommand                # Bare mirrors of the named repos in another machine's ~/git-repos
+          mirrorCommand                # Bare mirrors of the named repos, and read-only copies under ~/repos
           uv                           # Fast Python package installer and resolver
           sqlite                       # Ensures correct SQLite library is linked on macOS
           ruff                         # Fast Python linter (native Nix binary)
@@ -2188,6 +2250,13 @@ print('AI:\n', r.ai)
           # The true 'publish' command (Atomic Cross-Domain Deployment)
           # It requires a commit message as an argument.
           publish() {
+            # THE MAC COPY IS NOT THE BOOK (2026-09-30): mirror keeps a read-only
+            # copy at ~/repos/trimnoir on the Mac, the path TARGET_REPO names
+            # below, so publish would commit into it; refuse before git add.
+            if [ "$EFFECTIVE_OS" = "darwin" ]; then
+              echo "❌ publish runs on Prime. ~/repos/trimnoir on this Mac is a copy mirror refreshes; nothing was committed."
+              return 1
+            fi
             # 80/20 reboot gate: the first non-flag arg is the commit message; the
             # optional --reboot flag opts into the [5/5] stream.py restart (the
             # ~4-hour memory-leak hygiene purge). Without it a routine publish stops
@@ -2352,16 +2421,27 @@ print('AI:\n', r.ai)
             prom() { pro "$@"; }
             alias patch='pbpaste >patch'
             # MAC SHADOW PUBLISHING: same sanitizer/articleizer mechanism,
-            # deliberately no synchronized blog checkout and no publish actuator.
-            # The Mac grows independent local corpora that are disposable by design.
+            # deliberately no publish actuator: the Mac writes posts only into
+            # independent local corpora that are disposable by design. The
+            # copies mirror keeps under ~/repos are read, never written (below).
             export PIPULATE_BLOGS_CONFIG="$HOME/.config/pipulate/blogs.shadow.json"
             SHADOW_BLOG_ROOT="$HOME/.local/share/pipulate/shadow-publishing"
             mkdir -p "$SHADOW_BLOG_ROOT/article/_posts" "$SHADOW_BLOG_ROOT/grim/_posts" "$SHADOW_BLOG_ROOT/bot/_posts" "$(dirname "$PIPULATE_BLOGS_CONFIG")"
             if [ ! -f "$PIPULATE_BLOGS_CONFIG" ]; then
               printf '%s\n' '{"1":{"name":"Mac Shadow - MikeLev.in","path":"~/.local/share/pipulate/shadow-publishing/article/_posts","lane":"public","alias":"article","base_url":"https://mikelev.in","permalink_prefix":"futureproof","preview_port":4001},"3":{"name":"Mac Shadow - Grimoire","path":"~/.local/share/pipulate/shadow-publishing/grim/_posts","lane":"private","alias":"grim","base_url":"http://nixos.local:4003","permalink_prefix":"futureproof","preview_port":4003},"4":{"name":"Mac Shadow - BotifyML","path":"~/.local/share/pipulate/shadow-publishing/bot/_posts","lane":"public","alias":"bot","base_url":"","permalink_prefix":"futureproof","preview_port":4004}}' > "$PIPULATE_BLOGS_CONFIG"
             fi
+            # THE MIRROR IS READ, THE SHADOW IS WRITTEN (2026-09-30). Once
+            # mirror has written blogs.mirror.json, posts, postsc, rgx, rgxc
+            # and the compiler read the ~/repos copies under the keys and
+            # aliases Prime uses, and write_post pins the shadow inside its own
+            # subshell, so article, grim and bot never write into a copy. Read
+            # at shell entry, which is why the first mirror says to re-enter.
+            if [ -f "$HOME/.config/pipulate/blogs.mirror.json" ]; then
+              export PIPULATE_BLOGS_CONFIG="$HOME/.config/pipulate/blogs.mirror.json"
+            fi
             write_post() {
               (cd "$PIPULATE_ROOT/scripts/articles" \
+                && export PIPULATE_BLOGS_CONFIG="$HOME/.config/pipulate/blogs.shadow.json" \
                 && pbpaste >article.txt \
                 && python sanitizer.py -t "$1" \
                 && python articleizer.py -t "$1" "''${@:2}")
