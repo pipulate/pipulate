@@ -647,6 +647,24 @@ Entries are alphabetical, numbers spelled as spoken.
   nagging. FOURTH SIBLING of SINGLE-LINE / CASE-BLIND / UNANCHORED, and the
   first one that is about what the AUTHOR of a pattern cannot see rather than
   what the pattern cannot match.
+- **The Continuation Ladder** -- (seeded 2026-07-31, four rungs, one
+  variable each): the pedagogical spine of the FDR. Each rung answers
+  exactly one question -- WHY does the loop continue? -- and adds exactly
+  one variance source over the rung below it.
+    1. SKYHOOK   -- continuation by MECHANISM. `while element_exists():`
+       around the call. No mind anywhere. The control group.
+    2. COIN FLIP -- continuation by CHANCE. One bit of entropy, still no mind.
+    3. WILL      -- continuation by VOLITION. First rung where anything decides.
+    4. CINDERELLA -- continuation by COMPETENCE UNDER DEADLINE. Refresh the
+       60s OAuth token before it expires or the ride ends.
+  HARNESS INVARIANT (the whole point): the check lives in DETERMINISTIC CODE
+  evaluated each iteration, NEVER in the agent's instructions. A prompt
+  saying "check before continuing" is a CONVENTION; a `while` guard is
+  PHYSICS. Same distinction as persona-in-structure vs persona-in-intention.
+  PORTABILITY: the counter-file witness works everywhere; `/proc` inspection
+  is Linux and WSL only -- Nix normalizes the userland, not the kernel, and
+  macOS has no procfs. Use `ps`/`lsof` there.
+  DISCHARGES (corrected 2026-07-31): rung 4 pays the refresh-on-expiry chisel owed since 2026-07-29, but NOT in resolve_token. A resolver that silently re-mints is a resolver whose failures stop being visible, so the debt splits: READ half in mcp.py::_expiry_note (landed, witnessed -- EXPIRED 155871s ago printed to stderr on the live receipt), WRITE half in mcp_warm.py --refresh (landed, gate6 UNWITNESSED). Pedagogy and plumbing pay each other; the sensor and the actuator stay in separate files.
 - **The Credential-Life Rule** -- *a limit belongs to the credential, never to
   the lane.* Banked 2026-08-06, amended 2026-08-29, receipt-falsified. THE
   300-SECOND CREDENTIAL CANNOT SURVIVE THE HUMAN LOOP -- the finding that
