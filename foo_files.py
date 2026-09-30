@@ -873,30 +873,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # ride -- jira_for_you captured and decanted a logged-in Jira page on profile
 # default, SETTLE in its non-trivial form, sign-in moment unrecorded.
 # § THE SEED REDUCTION (banked 2026-08-01) -- Make a bootstrap survive all four cold-start tests: OFFER and resume on first contact instead of refusing, resolve by tracked marker not folder name, grade germination by N fresh-machine completions not one sprout, and reproduce by pinned graft not moving-channel seed.
-# THE SHELL-LANE FINDINGS (banked 2026-08-01, source-witnessed in-compile; all
-# three are OBSERVED from raw source, not inferred):
-#   a. the quiet shell CREATES the venv and never POPULATES it. Only the
-#      default and dev shells run runScript, which is where the uv pip lines
-#      live, and pythonInstallLogic is defined in the flake and referenced by
-#      NOTHING. So a lane entered through quiet has an empty venv unless
-#      something else hydrated it first, and any non-interactive bootstrap
-#      must run the install step explicitly.
-#   b. the quiet shell also SKIPS gitUpdateLogic, so a workshop hydrated only
-#      through that lane never undergoes the magic-cookie git transformation
-#      and never auto-updates. The transformation fires on the first plain
-#      nix develop. Name this limitation wherever a non-interactive install
-#      path is offered; never let it be discovered.
-#   c. the installer's own final hand-off omits the macOS impure exception
-#      that the run wrapper it writes DOES include. DARWIN RECEIPT LANDED
-#      2026-08-04: three consecutive `curl | bash` installs on aarch64-darwin
-#      completed through `nix develop -L` with NO --impure and no impurity
-#      error, so the INSTALLER's spelling is correct and the exception it
-#      "omits" is not needed on that path. The `run` wrapper's --impure is now
-#      the SUSPECT half and is likely vestigial -- the original refusal it
-#      worked around was the alsa-utils eval error, which the platform gate
-#      fixed. STILL UNWITNESSED: nobody has executed `./run` on macOS. Do not
-#      delete the flag until a receipt shows plain `nix develop` succeeding
-#      through that wrapper.
+# § THE SHELL-LANE FINDINGS (banked 2026-08-01) -- Treat the quiet shell as a partial bootstrap: populate its venv explicitly, require one plain `nix develop` before relying on magic-cookie git transformation or auto-update, and change Darwin `--impure` only after a receipt from the exact launcher lane.
 # § THE PUBLISH-ROSTER RULE (banked 2026-08-01) -- treat every name in a publish roster as a live actuator: if it must not ship, REMOVE IT FROM THE ROSTER, because warnings beside a mechanism do not gate the mechanism; witness the roster cut and served-surface removal before closing the hazard, and treat off-roster residue as stranded, not shippable.
 # § THE CABOOSE-VERDICT COROLLARY (banked 2026-08-01) -- Write every caboose conditional with its precondition and the specific LIVE RECEIPT/tap it will judge; never pre-commit a verdict to an unlabeled printout before the turn that holds the receipt.
 # § THE UNEXPORTED-SHIM RULE (banked 2026-08-01, second conviction 2026-09-14) -- a shell FUNCTION protects exactly one process, the interactive shell that defined it, because functions are not exported: every child inherits the ENVIRONMENT the shim neutralizes and none inherits the shim, so a script that invokes nix from inside the workshop shell dies at the loader on library skew while the same script passes on a stranger's clean shell, and the only person who can see it blames his own environment. Write the empty LD_LIBRARY_PATH assignment inline on EVERY branch of every script that reaches the nix binary (a no-op on a clean shell), and witness it from a compile, because prompt_foo's ! executor spawns children that inherit the pollution and never the function -- the failing lane in miniature. Sibling of LANE-DISAGREEMENT (a probe blind to a patch; this is an environment blind to a shim) and of THE THREE-TIER AMENDMENT (a name a child cannot resolve).
