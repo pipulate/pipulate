@@ -1769,6 +1769,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # gives the Honeybot something to say -- and the provenance that makes the
 # saying worth training on.
 
+# ~/repos/nixos/blogs.nix
 # ~/.config/pipulate/blogs.json                # <-- CAUTION! Derived from ~/repos/nixos/blogs.nix
 # scripts/articles/publishizer.py              # <-- Orchestrates different publishing workflows per target blog.
 # scripts/articles/common.py                   # <-- Self-explanatory
@@ -1789,7 +1790,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # scripts/articles/generate_post_nav.py  # [1,174 tokens | 4,616 bytes]
 
 # The following Jekyll files pair well with the above to show how we start various forms of tracking, and as a transition into Honeybot Nginx Broadcast Studio & telemetry.
-# ~/repos/nixos/blogs.nix
 # release.py
 # remotes/honeybot/nixos/configuration.nix
 # ~/repos/trimnoir/_config.yml
