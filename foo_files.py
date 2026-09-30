@@ -2889,25 +2889,7 @@ MATCHBOOK_CHOP = r"""
 # § THE SILENCED CHANNEL (banked 2026-08-09) -- a probe that discards a stream paired with a caboose whose verdict reads that stream is a verdict that can never be reached, and an exit code four worlds share is not a reading; a program graded by a MACHINE prints its outcome as a token on stdout, and when it also handles client data the outcome goes to stdout and every identifying string to stderr, so 2>/dev/null is compile-lane-safe by construction. Partitions with THE EXIT-CODE PROTOCOL RULE: decisions speak in exit codes, measurements in tokens.
 # § THE PLACEHOLDER THAT CLAIMS TO RUN (banked 2026-08-08, discharged 2026-08-30) -- validation passing is not execution passing: walk.py checks that a connector file EXISTS and that {harvested} appears once, and nothing anywhere checks that the script accepts the argv it will be handed, so a consent surface can print "names as runnable" about a command that exits 2. Cure a false label with a TRUE sentence, never a vaguer one -- connectors/noop.py exists IN ORDER to be a no-op and public_walk.yaml names it at all three stops. And never grade a refusal on an exit code that two worlds share.
 # § THE COMPILED TRAIL (banked 2026-08-08, OWES discharged 2026-08-09) -- a trail has two legitimate forms and conflating them is the confusion: the SEALED form is machine cargo and stays the JSON subset of YAML 1.2 because there is no stdlib YAML parser, because the sealer hashes those exact bytes and recomputes the consent surface from them, and because duplicate keys must fail closed; the AUTHORING form is a different artifact and may be prose-shaped, one SECTION per stop, parsed by a ten-line scalar subset. The seal was already the compiler; what was missing was a human-shaped input, and walk_compile.py plus bookmark_import.py landed it.
-# - EARMARK: THE UNREACHABLE GUARD (banked 2026-08-07, traceback-witnessed): a
-#   check placed AFTER a line that can raise the same class of error is dead
-#   code, and its message is a promise the program cannot keep. CONVICTION:
-#   walk_cartridge.verify_walk_cartridge calls archive.read(info) in its member
-#   loop and archive.testzip() after it. A mid-member byte flip makes read()
-#   raise zipfile.BadZipFile from _update_crc, so testzip()'s "CRC failure in
-#   <member>" -- the ONE message written for CRC corruption -- is unreachable
-#   for CRC corruption. Worse, BadZipFile subclasses Exception and NOT OSError
-#   or ValueError, so _cmd_verify's except tuple does not catch it: the tool
-#   TRACEBACKS at rc=1 where its own docstring promises "2 refusal". FAIL-CLOSED
-#   SURVIVES -- nothing verifies -- but the exit-code contract does not, so a
-#   consumer scripting on rc==2 reads a corrupt cartridge as a different failure
-#   class than a refused one, and a human reads a stack trace as a tool bug
-#   rather than as tamper detection working. Sibling of THE VERIFIER THAT NEVER
-#   RAN: that one is a witness placed after an action that can kill the
-#   reporter; this is a witness placed after a line that raises first. TEST, and
-#   it costs one reading: for every guard, name the line ABOVE it that could
-#   raise the same error, then confirm that error's TYPE is in the caller's
-#   except tuple. Two questions, and the second is the one nobody asks.
+# § THE UNREACHABLE GUARD (banked 2026-08-07) -- Put every guard before any line that can raise the error it is meant to report, and make the caller catch that error type.
 # - EARMARK: CONSENT CANNOT PRECEDE ITS OBJECT (banked 2026-08-07,
 #   fence-witnessed): a flag typed at t=0 cannot authorize the disposition of an
 #   artifact that does not exist until t=N, because the consenter had not seen

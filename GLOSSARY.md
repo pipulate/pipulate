@@ -2287,6 +2287,25 @@ Entries are alphabetical, numbers spelled as spoken.
   failing lane in miniature -- prompt_foo's ! executor spawns children that
   inherit the pollution and never the nix() function -- so a shim of this
   class can be witnessed from a compile without another install.
+- **The Unreachable Guard** -- (banked 2026-08-07, traceback-witnessed): a
+  check placed AFTER a line that can raise the same class of error is dead
+  code, and its message is a promise the program cannot keep. CONVICTION:
+  walk_cartridge.verify_walk_cartridge calls archive.read(info) in its member
+  loop and archive.testzip() after it. A mid-member byte flip makes read()
+  raise zipfile.BadZipFile from _update_crc, so testzip()'s "CRC failure in
+  <member>" -- the ONE message written for CRC corruption -- is unreachable
+  for CRC corruption. Worse, BadZipFile subclasses Exception and NOT OSError
+  or ValueError, so _cmd_verify's except tuple does not catch it: the tool
+  TRACEBACKS at rc=1 where its own docstring promises "2 refusal". FAIL-CLOSED
+  SURVIVES -- nothing verifies -- but the exit-code contract does not, so a
+  consumer scripting on rc==2 reads a corrupt cartridge as a different failure
+  class than a refused one, and a human reads a stack trace as a tool bug
+  rather than as tamper detection working. Sibling of THE VERIFIER THAT NEVER
+  RAN: that one is a witness placed after an action that can kill the
+  reporter; this is a witness placed after a line that raises first. TEST, and
+  it costs one reading: for every guard, name the line ABOVE it that could
+  raise the same error, then confirm that error's TYPE is in the caller's
+  except tuple. Two questions, and the second is the one nobody asks.
 - **The Variance-Suppression Rule** -- *none loves chaos; each imposes order on
   disorder it did not author.* Articulation-banked 2026-07-28, two-article
   arc. Sycophancy, the over-broad safeguard tripwire, and the human gatekeeper
