@@ -347,7 +347,10 @@ def get_env():
         # reads, at the exact moment they are configuring. Caught by a delta
         # probe whose absolute prediction (1 -> 0) was wrong because the real
         # baseline was 2. A label move is counted BEFORE it is made.
-        sys.stderr.write(
+        names = " ".join(m.split(" ")[0] for m in missing)
+        sys.stderr.write(f"🛑 jira: {names} not set\n   fix: connect   (JIRA_VERBOSE=1 for the long reason)\n")
+        if os.getenv("JIRA_VERBOSE"):
+            sys.stderr.write(
             "Missing environment variable(s): " + ", ".join(missing) + "\n"
             "JIRA_URL example: https://yourco.atlassian.net  (no /wiki)\n"
             "That host is right for a CLASSIC token only. A SCOPED token\n"
