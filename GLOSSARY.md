@@ -768,6 +768,43 @@ Entries are alphabetical, numbers spelled as spoken.
   trusts afterward. Witnessed unsolicited at strikes one and two of the
   KEY/VALUE ride: git diff hunk headers displaced by exactly the top-of-file
   delta, with no probe asked to look.
+- **The Divider Is Not Optional** -- *exact patch-block grammar.* (convicted 2026-09-22, six refusals in a row and
+  a hand repair in vim). The emitter wrote the search marker, the old text,
+  the REPLACE marker where the divider belongs, the new text, and then a
+  closing slash-replace marker that does not exist in this grammar, all
+  inside a four-backtick fence. This file said "No blocks found" six times,
+  correctly, and the operator opened vim.
+  THE GRAMMAR, in words so this comment can never parse as a block:
+    1. a Target line, INSIDE the fence, directly above the search marker
+    2. the search marker, then the exact old text
+    3. the divider marker, then the new text
+    4. the replace marker, and the block ENDS. There is no closing marker.
+  The fence is exactly three backticks plus a word. The fence stripper
+  matches three backticks and an optional word, so a four-backtick fence
+  line survives into the body.
+  WHY IT KEEPS HAPPENING: most patch dialects close their blocks, and a
+  model under load reaches for the shape it has seen most often.
+  COUNT THE MARKERS BEFORE EMITTING: three, in that order, once each.
+  AMENDED 2026-09-26: an empty replacement no longer depends on an invisible
+  blank physical line. Adjacent divider/replace markers now parse as the empty
+  string, while the historical blank-line spelling remains valid. Visible
+  syntax carries deletion semantics; transport-strippable whitespace does not.
+  CONVICTED 2026-09-26 (deed 1596): that sentence is true of the LAST block
+  in a payload and false of every other. The optional body is greedy-optional,
+  so a deletion block with another block behind it swallows that block to its
+  REPLACE marker; the residual-marker airlock refused the write and nothing
+  was written. One character, the group made lazy-optional, is the cure and
+  rides the next ride; until it lands, a deletion block goes LAST in its fence.
+  AMENDED AGAIN THE SAME RIDE: when bare protocol markers are present but no
+  complete block parses, apply.py now says MALFORMED PROTOCOL, prints the
+  marker lines it saw, and distinguishes that world from a payload containing
+  no recognizable patch protocol at all. A refusal should expose evidence the
+  actuator already possesses instead of collapsing distinct failures into one
+  generic "no blocks found" message.
+  WITNESSED 2026-09-28 (deed 1641), live: a reply cut inside Car 6's
+  whole-file body was pasted as the fragment it was, apply.py printed the
+  bare WRITE_FILE marker line it saw, named the malformed world and wrote
+  nothing; the car re-emitted whole landed on the next app.
 - **The Door Names the Folder** -- *serve-time placeholder substitution with a
   substitution-proof sentinel.* Banked 2026-09-14, receipt-witnessed across
   four compiles. THE ASK: one installer that lands in ~/npvg from npvg.org

@@ -574,43 +574,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 #
 # § THE FINDING DORY RULE (banked 2026-09-24, four hand-step failures in one ride) -- before emitting any step the human does by hand and does not yet do by reflex (the reflexes, patch, app, d, m, git push, the paste into context.txt, prompt and bff, are never written at all, deed 1703; the rule is for the step Dory has never met), walk it from the operator's chair with no memory of the last line: the command travels through the clipboard, so a command never reads its input from the clipboard and a value only the human has is asked for at a visible, labeled prompt as its own numbered step after the command is running; every step is "copy the block below, paste it into <which window>, press Enter", then the fence, then "You will see: <exact text>"; a fence holds only what its paste target can run as-is; a HALT carries one action or it becomes the whole turn; a patch anchors on this compile's raw source, never on a line another car would create; and the operator is told what to do, never what to check (forecasts ride Car 4, a guard rides inside the command and prints its own verdict). Value: GLOSSARY.md.
 #
-# THE DIVIDER IS NOT OPTIONAL (convicted 2026-09-22, six refusals in a row and
-# a hand repair in vim). The emitter wrote the search marker, the old text,
-# the REPLACE marker where the divider belongs, the new text, and then a
-# closing slash-replace marker that does not exist in this grammar, all
-# inside a four-backtick fence. This file said "No blocks found" six times,
-# correctly, and the operator opened vim.
-# THE GRAMMAR, in words so this comment can never parse as a block:
-#   1. a Target line, INSIDE the fence, directly above the search marker
-#   2. the search marker, then the exact old text
-#   3. the divider marker, then the new text
-#   4. the replace marker, and the block ENDS. There is no closing marker.
-# The fence is exactly three backticks plus a word. The fence stripper
-# matches three backticks and an optional word, so a four-backtick fence
-# line survives into the body.
-# WHY IT KEEPS HAPPENING: most patch dialects close their blocks, and a
-# model under load reaches for the shape it has seen most often.
-# COUNT THE MARKERS BEFORE EMITTING: three, in that order, once each.
-# AMENDED 2026-09-26: an empty replacement no longer depends on an invisible
-# blank physical line. Adjacent divider/replace markers now parse as the empty
-# string, while the historical blank-line spelling remains valid. Visible
-# syntax carries deletion semantics; transport-strippable whitespace does not.
-# CONVICTED 2026-09-26 (deed 1596): that sentence is true of the LAST block
-# in a payload and false of every other. The optional body is greedy-optional,
-# so a deletion block with another block behind it swallows that block to its
-# REPLACE marker; the residual-marker airlock refused the write and nothing
-# was written. One character, the group made lazy-optional, is the cure and
-# rides the next ride; until it lands, a deletion block goes LAST in its fence.
-# AMENDED AGAIN THE SAME RIDE: when bare protocol markers are present but no
-# complete block parses, apply.py now says MALFORMED PROTOCOL, prints the
-# marker lines it saw, and distinguishes that world from a payload containing
-# no recognizable patch protocol at all. A refusal should expose evidence the
-# actuator already possesses instead of collapsing distinct failures into one
-# generic "no blocks found" message.
-# WITNESSED 2026-09-28 (deed 1641), live: a reply cut inside Car 6's
-# whole-file body was pasted as the fragment it was, apply.py printed the
-# bare WRITE_FILE marker line it saw, named the malformed world and wrote
-# nothing; the car re-emitted whole landed on the next app.
+# § THE DIVIDER IS NOT OPTIONAL (banked 2026-09-22) -- Emit every patch block as a Target line immediately followed by SEARCH, DIVIDER, and REPLACE in that order, never invent a closing marker or a four-backtick fence, and count those three protocol markers before handing the block to the actuator.
 # § THE KATA'S NAME (banked 2026-07-17) -- Probe, Patch, Prompt: hand-run receipts before, human-actuated mutation during, pre-loaded compile after; titles and section headers say it too. Value: the vocabulary entry Probe / Patch / Prompt in GLOSSARY.md.
 # ONE-LINER COROLLARY (banked 2026-07-19): a `!` line is ONE shell command.
 # Multi-line probes shatter in the executor (unexpected-EOF, then each
