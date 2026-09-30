@@ -113,6 +113,37 @@ def print_words(words) -> None:
         print("  " + word.ljust(width) + "  " + description)
 
 
+MENU_HINT = "Type menu on the command line at any time to see this menu again."
+
+
+def speak_menu_hint() -> None:
+    """Say MENU_HINT if narration is on. Never waits, never raises.
+
+    voice_consent() decides, inside speak_text(), in a detached child, so this
+    process stays stdlib-only and the menu never waits on audio. Narration
+    off, no terminal, or any failure: silent.
+    """
+    if not sys.stdout.isatty():
+        return
+    try:
+        import subprocess
+        root = str(Path(__file__).resolve().parent.parent)
+        code = (
+            "import sys; sys.path.insert(0, sys.argv[1]); "
+            "from imports.voice_synthesis import chip_voice_system as v; "
+            "v and v.speak_text(sys.argv[2])"
+        )
+        subprocess.Popen(
+            [sys.executable, "-c", code, root, MENU_HINT],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+        )
+    except Exception:
+        pass
+
+
 def main() -> int:
     args = set(sys.argv[1:])
     # about is a display, like recall: it runs before the unattended gates.
@@ -126,6 +157,7 @@ def main() -> int:
     if "--recall" in args:
         print()
         print_words(ALL_WORDS if "--all" in args else SHORT_WORDS)
+        speak_menu_hint()
         return 0
 
     if os.environ.get("PIPULATE_BOOT_MENU", "1").strip().lower() in {
@@ -142,6 +174,7 @@ def main() -> int:
     try:
         print()
         print_words(SHORT_WORDS)
+        speak_menu_hint()
     except Exception:
         return EXIT_START
     return EXIT_SHELL
