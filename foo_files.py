@@ -2518,7 +2518,7 @@ call it out and hand the human an out-of-band vim instruction instead of a
 SEARCH/REPLACE block. Every SEARCH block spans contiguous non-empty lines.
 Predict every counter as a DELTA and every byte figure by counting the REPLACE
 block after it is written. Close with the standard five-car train: the AFTER
-probes are the same seven lines that produced the receipts you just read."""
+probes are the same five lines that produced the receipts you just read."""
 COMPACT_CHOP = r"""
 # THE FORGETTING KATA (forget with style: dedupe, fade, graduate)
 # COMMAND: python prompt_foo.py @COMPACT_PROMPT --chop COMPACT_CHOP --no-tree
