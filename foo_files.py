@@ -3351,7 +3351,7 @@ MATCHBOOK_CHOP = r"""
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 210/277 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 210/278 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
 # AGENTS.md  # [1,039 tokens | 4,223 bytes]
 # AUDIT.md  # [2,993 tokens | 13,897 bytes]
@@ -3408,6 +3408,7 @@ MATCHBOOK_CHOP = r"""
 # scripts/confluence_probe.py  # [4,990 tokens | 20,662 bytes]
 # scripts/continuation_ladder.py  # [2,802 tokens | 11,334 bytes]
 # scripts/dial_spinner.py  # [398 tokens | 1,463 bytes]
+# scripts/ferry.py  # [2,322 tokens | 8,733 bytes]
 # scripts/flippers.py  # [350 tokens | 1,309 bytes]
 # scripts/gsc/facet_allowlist.py  # [2,538 tokens | 10,600 bytes]
 # scripts/map_sheet.py  # [3,613 tokens | 15,605 bytes]
