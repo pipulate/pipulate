@@ -1390,6 +1390,28 @@ Entries are alphabetical, numbers spelled as spoken.
   terminal and "guided capture requires a TTY on stdin before browser launch"
   as a compile receipt. Two lanes, two strings, one command -- the pair
   discriminated exactly as predicted, and neither reading alone could have.
+- **The Last-Inch Rule** -- (banked 2026-07-31, two convictions in two days):
+  the transformation NEAREST THE READER is the one nobody audits, and it can
+  destroy a result that every upstream stage computed correctly. CONVICTION A
+  (foreign render): a compiled payload linkified a bare www host in
+  configuration.nix, a live DNS defect was diagnosed, and the file had been
+  correct on disk the whole time -- the render FABRICATED something that was
+  not there. CONVICTION B (our own render, one compile after the rule that
+  should have caught it): hydration_rate.sql grouped correctly by ua_id and
+  summed correctly, then displayed SUBSTR(ua.value, 1, 60) -- and sixty
+  characters is exactly one character short of where a modern bot UA states
+  its name, so four distinct agents including the single 8.3% hydrator
+  collapsed into one label and eight of twenty rows became unidentifiable. The
+  render ERASED something that was there. DIAGNOSTIC ASYMMETRY, and it is why
+  this class is so expensive: every NUMBER in that table was true, so an
+  auditor checking the arithmetic finds nothing, and the damage is visible
+  only in the LABELS -- the column nobody checks. STANDING CONSEQUENCE: when a
+  result looks wrong, instinct sends you UPSTREAM toward the computation;
+  check the LAST INCH FIRST -- the formatter, the truncation, the column
+  width, the transport, the display. Parent of THE RENDER-GAP RULE (which is
+  this rule's foreign-transport instance) and an instance of THE
+  DISCRIMINATION QUESTION (a label that cannot distinguish two agents prints
+  identically in both worlds).
 - **The Machine Is Named by Its Prompt** -- *every command block is headed
   by the prompt string of the terminal it runs in.* Banked 2026-09-29,
   convicted at deed 1682; its checklist line landed at deed 1685 as item 13
