@@ -714,6 +714,25 @@ Entries are alphabetical, numbers spelled as spoken.
   named an importer and a compiler, and scripts/bookmark_import.py plus
   scripts/walk_compile.py landed both, with a filled authoring surface
   compiling to a trail walk.py loaded unmodified.
+- **Consent Cannot Precede Its Object** -- (banked 2026-08-07,
+  fence-witnessed): a flag typed at t=0 cannot authorize the disposition of an
+  artifact that does not exist until t=N, because the consenter had not seen
+  it. This is the thing CEREMONY IS SKIPPABLE; BARRIERS ARE NOT does not
+  state. That rule grades a gate by WHAT it authorizes (a sequence versus a
+  write); this one grades it by WHEN, and they part company on exactly the
+  interesting case. --yolo skipping the RIDE confirmation is legitimate: the
+  sequence is fully described at t=0. --yolo skipping the DECANT gate is not,
+  and the reason is not that a fence is a fence -- it is that the bundle, its
+  size, and its contents did not exist when --yolo was typed. STANDING
+  CONSEQUENCE, and it is cheap: put the DISCLOSURE at t=0 and the FENCE at
+  t=N. Disclosure early costs nothing and makes the later fence a formality
+  instead of an ambush; a fence early is consent to a thing nobody has seen.
+  Also witnessed: the bypass-under-another-name corollary CLEARED this fence
+  rather than excusing it -- _decant has one builder and _ride_async is its
+  only caller, so a skip flag would CREATE a capability rather than duplicate
+  a shipped one, which is the exact opposite of the capture case that
+  corollary was written for. A corollary that can clear as well as excuse is
+  a corollary rather than a loophole.
 - **The Contiguity Corollary** -- *the transport strips blank lines a SEARCH
   block cannot see.* Banked 2026-07-31, receipt-witnessed. The compile
   transport STRIPS TRULY-EMPTY LINES from Codebase bodies while PRESERVING

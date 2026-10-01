@@ -2843,25 +2843,7 @@ MATCHBOOK_CHOP = r"""
 # § THE PLACEHOLDER THAT CLAIMS TO RUN (banked 2026-08-08, discharged 2026-08-30) -- validation passing is not execution passing: walk.py checks that a connector file EXISTS and that {harvested} appears once, and nothing anywhere checks that the script accepts the argv it will be handed, so a consent surface can print "names as runnable" about a command that exits 2. Cure a false label with a TRUE sentence, never a vaguer one -- connectors/noop.py exists IN ORDER to be a no-op and public_walk.yaml names it at all three stops. And never grade a refusal on an exit code that two worlds share.
 # § THE COMPILED TRAIL (banked 2026-08-08, OWES discharged 2026-08-09) -- a trail has two legitimate forms and conflating them is the confusion: the SEALED form is machine cargo and stays the JSON subset of YAML 1.2 because there is no stdlib YAML parser, because the sealer hashes those exact bytes and recomputes the consent surface from them, and because duplicate keys must fail closed; the AUTHORING form is a different artifact and may be prose-shaped, one SECTION per stop, parsed by a ten-line scalar subset. The seal was already the compiler; what was missing was a human-shaped input, and walk_compile.py plus bookmark_import.py landed it.
 # § THE UNREACHABLE GUARD (banked 2026-08-07) -- Put every guard before any line that can raise the error it is meant to report, and make the caller catch that error type.
-# - EARMARK: CONSENT CANNOT PRECEDE ITS OBJECT (banked 2026-08-07,
-#   fence-witnessed): a flag typed at t=0 cannot authorize the disposition of an
-#   artifact that does not exist until t=N, because the consenter had not seen
-#   it. This is the thing CEREMONY IS SKIPPABLE; BARRIERS ARE NOT does not
-#   state. That rule grades a gate by WHAT it authorizes (a sequence versus a
-#   write); this one grades it by WHEN, and they part company on exactly the
-#   interesting case. --yolo skipping the RIDE confirmation is legitimate: the
-#   sequence is fully described at t=0. --yolo skipping the DECANT gate is not,
-#   and the reason is not that a fence is a fence -- it is that the bundle, its
-#   size, and its contents did not exist when --yolo was typed. STANDING
-#   CONSEQUENCE, and it is cheap: put the DISCLOSURE at t=0 and the FENCE at
-#   t=N. Disclosure early costs nothing and makes the later fence a formality
-#   instead of an ambush; a fence early is consent to a thing nobody has seen.
-#   Also witnessed: the bypass-under-another-name corollary CLEARED this fence
-#   rather than excusing it -- _decant has one builder and _ride_async is its
-#   only caller, so a skip flag would CREATE a capability rather than duplicate
-#   a shipped one, which is the exact opposite of the capture case that
-#   corollary was written for. A corollary that can clear as well as excuse is
-#   a corollary rather than a loophole.
+# § CONSENT CANNOT PRECEDE ITS OBJECT (banked 2026-08-07, fence-witnessed) -- Put disclosure at t=0 and consent at t=N for any artifact created after the initial choice: an early flag may authorize a fully described sequence, but it cannot authorize the later disposition of a bundle whose size and contents did not yet exist.
 # - EARMARK: THE PROTECTION-LAG POLARITY (banked 2026-08-07, three-file
 #   conviction): when a mechanism is REMOVED the stale strings overstate
 #   protection, which is the failure everyone expects. When a protection is
