@@ -1771,7 +1771,9 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           }
           alias vim='nvim'
           alias lsp='ls -d -1 "$PWD"/*'
-          alias p='cd "$PIPULATE_ROOT"'
+          # h goes home: cd to the Pipulate root, whatever the install folder
+          # is called. It was p until 2026-10-01; p is prompt now (THE LADDERS).
+          alias h='cd "$PIPULATE_ROOT"'
           alias foo='(cd "$PIPULATE_ROOT" && python prompt_foo.py --no-tree)'
           alias fu='(cd "$PIPULATE_ROOT" && python prompt_foo.py)'
           alias default='(cd "$PIPULATE_ROOT" && python prompt_foo.py --chop DEFAULT_CHOP --no-tree)'
@@ -1802,26 +1804,47 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # THE HYPER-LITERAL WORDS (2026-09-25, the operator's ruling): the
           # three moves of a turn under names no meeting can call strange.
           # context opens context.txt, prompt captures the clipboard,
-          # compile builds the payload (ahc); con, cont, pro, prom, com and
-          # comp are the short spellings (cont, prom, comp is one rhythm and
-          # con, pro, com another, 2026-09-27), and every old word stays.
-          # FUNCTIONS, per THE ALIAS-DISPATCH RULE: prompt is an alias, so
-          # pro carries the alias body instead of calling it,
-          # and compile calls the ahc function so --profile and --reason
-          # pass through. pro is defined beside prompt in the platform
-          # branches below, because its body differs between pbpaste and
-          # xclip. Typed by a human only; never echoed as a probe.
+          # compile builds the payload (ahc). Every prefix of each is the word
+          # too (THE LADDERS, below), and every old word stays.
+          # FUNCTIONS, per THE ALIAS-DISPATCH RULE: prompt was an alias until
+          # 2026-10-01, which made pro copy its body; now it is a function in
+          # each platform branch below (pbpaste or xclip), and compile calls
+          # the ahc function so --profile and --reason pass through. Typed by
+          # a human only; never echoed as a probe.
           # ONE FILE, ONE WINDOW (2026-09-25): context opens context.txt and
           # nothing else. ahe below still opens foo_files.py as a second
           # buffer for whoever already types it; a newcomer's :q meets E173
           # ("1 more file to edit") on a second buffer they never visited,
           # and the notes the walk writes into this file teach :q.
           context() { (cd "$PIPULATE_ROOT" && "$(command -v nvim || command -v vim || echo vi)" "''${PIPULATE_ADHOC_FILE:-context.txt}"); }
-          con() { context "$@"; }
-          cont() { context "$@"; }
           compile() { ahc "$@"; }
-          com() { compile "$@"; }
-          comp() { compile "$@"; }
+          # THE LADDERS (2026-10-01): every prefix of the three words is the
+          # word, so typing can stop at any letter and still land.
+          #   prompt   p  pr   pro   prom   promp   promt  (the typo, kept)
+          #   context  x  con  cont  conte  contex          (x: c is compile)
+          #   compile  c  com  comp  compi  compil
+          # Each rung calls the word, so each body lives once. pr shadows the
+          # coreutils paginator in this shell only (command pr still reaches
+          # it). The unalias clears any same-named alias from ~/.bashrc or
+          # /etc/bashrc first: bash expands an alias inside a function
+          # definition, and one stray alias p would stop the hook halfway.
+          unalias p pr pro prom promp promt prompt x con cont conte contex c com comp compi compil 2>/dev/null || true
+          p()      { prompt  "$@"; }
+          pr()     { prompt  "$@"; }
+          pro()    { prompt  "$@"; }
+          prom()   { prompt  "$@"; }
+          promp()  { prompt  "$@"; }
+          promt()  { prompt  "$@"; }
+          x()      { context "$@"; }
+          con()    { context "$@"; }
+          cont()   { context "$@"; }
+          conte()  { context "$@"; }
+          contex() { context "$@"; }
+          c()      { compile "$@"; }
+          com()    { compile "$@"; }
+          comp()   { compile "$@"; }
+          compi()  { compile "$@"; }
+          compil() { compile "$@"; }
           # THE IDEATION DOOR: `idea` compiles IDEATION_CHOP (the constitution's
           # two forcing-function rules) primed for a 30-and-3 / axis-forcing
           # fan-out turn. A function, not an alias, so --profile/--reason pass
@@ -2464,9 +2487,7 @@ print('AI:\n', r.ai)
             alias xc='pbcopy <'
             alias xcp='pbcopy'
             alias xv='pbpaste >'
-            alias prompt='(cd "$PIPULATE_ROOT" && pbpaste >prompt.md)'
-            pro() { (cd "$PIPULATE_ROOT" && pbpaste >prompt.md); }
-            prom() { pro "$@"; }
+            prompt() { (cd "$PIPULATE_ROOT" && pbpaste >prompt.md); }
             alias patch='pbpaste >patch'
             # MAC SHADOW PUBLISHING: same sanitizer/articleizer mechanism,
             # deliberately no publish actuator: the Mac writes posts only into
@@ -2542,9 +2563,7 @@ print('AI:\n', r.ai)
             alias xcp='xclip -selection clipboard'
             alias xv='xclip -selection clipboard -o >'
             alias xp='(cd "$PIPULATE_ROOT" && python scripts/xp.py)'
-            alias prompt='(cd "$PIPULATE_ROOT" && xclip -selection clipboard -o >prompt.md)'
-            pro() { (cd "$PIPULATE_ROOT" && xclip -selection clipboard -o >prompt.md); }
-            prom() { pro "$@"; }
+            prompt() { (cd "$PIPULATE_ROOT" && xclip -selection clipboard -o >prompt.md); }
             alias patch='xclip -selection clipboard -o >patch'
             # Linux subshell aliases
             # write_post: unified, data-driven article intake. The privacy lane
