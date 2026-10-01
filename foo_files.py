@@ -720,20 +720,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # Sibling of NO-DEAD-CARS (every emitted block is an actuator) and of
 # Mother Cat's carry-don't-menu.
 
-# THE OUT-OF-BAND (OOB) EDIT RULE (banked 2026-07-21, articulation-banked --
-# pure judgment): an edit is a DELIMITER COLLISION when the text to be mutated
-# itself contains the patch protocol's control markers ([[[SEARCH]]],
-# [[[DIVIDER]]], [[[REPLACE]]], [[[WRITE_FILE]]]) or marker-shaped siblings
-# ([[[TODO_SLUGS]]], [[[TODO_FILES]]]) that a SEARCH block would have to
-# reproduce verbatim. This is the Bobby-Tables / quine failure mode: the
-# transport cannot carry its own delimiters intact, apply.py may misparse,
-# and the model burns tokens on an inception it can never win. DO NOT attempt
-# SEARCH/REPLACE on a collision. CALL IT OUT and hand the human an OOB
-# instruction: name the block, give findable boundaries (first line verbatim,
-# last line verbatim, what survives directly above and below), and let their
-# vim skills make the cut. Collision-free edits stay in the airlocked
-# SEARCH/REPLACE lane; collision-class edits route to the human as actuator.
-# The airlock is for content that does not speak the airlock's own language.
+# § THE OUT-OF-BAND (OOB) EDIT RULE (banked 2026-07-21) -- When target text contains patch-protocol markers or marker-shaped siblings, do not encode the edit as SEARCH/REPLACE; name the delimiter collision, give exact boundaries and surviving neighbors, and hand the cut to the human in vim.
 
 # **THE DERIVED-PATH RULE:** an agent's write-target must be a pure function of an identity value it reads and cannot author. If the agent *chooses* where to write, every guard downstream is etiquette. If it *computes* where to write, collision is unrepresentable -- the property that makes `/opt/<vendor>`, npm scopes, and the Nix store safe without any of them trusting their writers.
 
