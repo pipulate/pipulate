@@ -29,7 +29,7 @@ Under both sits `flake.nix` with its `flake.lock`: the dependency inventory an S
 
 ## Quick Start: Be Running in 5 Minutes
 
-**Want to skip the philosophy and just see what this does? Paste this into your terminal:**
+**Want to skip the philosophy and just see what this does? Open the command line (on a Mac, the app called Terminal) and paste this:**
 
 ```bash
 curl -fsSL https://pipulate.com/install.sh | bash
@@ -56,8 +56,8 @@ These few commands:
 
 ### 4. Run It Again!
 
-1. You can just forcibly exit out of that Terminal it's running from.
-2. Open a new Terminal, and once again:
+1. You can just close the window it's running in.
+2. Open a new one, and once again:
 
 ```bash
 cd ~/pipulate
@@ -185,7 +185,7 @@ Pipulate is a **local-first, single-tenant desktop app framework** featuring AI-
                 │                                  │
                 ▼                                  ▼
     ┌─────────────────────────┐        ┌─────────────────────────┐  This is new.
-    │   📱 Native Window      │        │ 🖥️ Terminal Console     │    ,       O
+    │   📱 Native Window      │        │ 🖥️ The Command Line     │    ,       O
     │  ┌─────────────────┐    │        │ ┌─────────────────────┐ │    \\  .  O
     │  │  Web Browser    │    │        │ │ nix develop (./run) │ │    |\\/| o
     │  │  (Bundled)      │    │        │ │ Starting servers... │ │    / " '\
@@ -571,7 +571,7 @@ Type `jn` at the `(nix)` prompt, wait for the JupyterLab tab to open, then run t
 
 | Problem | Solution |
 |---------|----------|
-| `nix: command not found` | You didn't restart your terminal after Nix installation |
+| `nix: command not found` | Close the window and open a new one; Nix needs a fresh window after it installs |
 | Browser doesn't open automatically | Manually visit `http://localhost:5001` and `http://localhost:8888` |
 | `Permission denied` errors | Make sure you can write to `~/pipulate` directory |
 | Port conflicts | Kill processes on ports 5001/8888: `lsof -ti:5001 \| xargs kill -9` |
@@ -599,7 +599,7 @@ If you are a developer comfortable with tools like Homebrew and `pipx`, you can 
 brew install pipx
 ```
 
-**Step 2: Install the Pipulate CLI**
+**Step 2: Install the `pipulate` command**
 
 Use `pipx` to install the `pipulate` command-line tool. This will not cause conflicts with your system Python.
 
@@ -814,7 +814,7 @@ Traditional development follows DRY principles, creating abstract, complex syste
 
 ## Developer Setup & Environment Notes
 
-**Nix Environment Activation:** Always run `nix develop` from the `~/pipulate` directory *before* running any project commands (`python server.py`, `pip install`, etc.) in a new terminal. This ensures you are using the correct dependencies defined in `flake.nix`.
+**Nix Environment Activation:** Always run `nix develop` from the `~/pipulate` directory *before* running any project commands (`python server.py`, `pip install`, etc.) in a new window. This ensures you are using the correct dependencies defined in `flake.nix`.
 
 **Interactive vs. Quiet Shell:**
 
