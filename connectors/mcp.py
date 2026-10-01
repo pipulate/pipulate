@@ -61,6 +61,15 @@ PROTOCOL_VERSION = "2025-06-18"      # INFERRED: spec revision string
 SESSION_HEADER = "Mcp-Session-Id"    # INFERRED: optional per spec
 CLIENT_INFO = {"name": "pipulate-mcp", "version": "0.1"}
 TIMEOUT = 30.0
+# Named servers: a name on the command line stands for URL + token env + scheme.
+# A flag given on the command line still wins.
+SERVERS = {
+    "botify-render": {
+        "url": "https://irf.production.botify.com:3615/mcp",
+        "token_env": "BOTIFY_API_TOKEN",
+        "scheme": "Token",
+    },
+}
 
 # ---------------------------------------------------------------------------
 # THE FDR CHANNEL (landed 2026-07-29; PENDING until a compiled receipt shows a
@@ -630,13 +639,18 @@ def main():
     parser.add_argument("--token-env", default=None,
                         help="Env var holding the bearer token (default: "
                              "MCP_BEARER_TOKEN, then BOTIFY_API_TOKEN).")
-    parser.add_argument("--auth-scheme", default="Bearer",
+    parser.add_argument("--auth-scheme", default=None,
                         help="Authorization grammar for THIS server (default: "
                              "Bearer). Static-token MCP servers commonly want "
                              "'Token'. Per-server, never per-vendor: an env var "
                              "would be shell-global and would silently break "
                              "the other server in the same terminal.")
     args = parser.parse_args()
+    alias = SERVERS.get(args.server) if args.server else None
+    if alias:
+        args.server = alias["url"]
+        args.token_env = args.token_env or alias["token_env"]
+    args.auth_scheme = args.auth_scheme or (alias or {}).get("scheme", "Bearer")
 
     if args.server is None:
         identity()
