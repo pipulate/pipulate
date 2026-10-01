@@ -732,6 +732,18 @@
             exit 1
           fi
         '';
+        # THE FERRY (2026-09-30). The Mac writes articles only into its shadow
+        # corpora; ferry carries them to Prime without overwriting anything.
+        ferryCommand = pkgs.writeShellScriptBin "ferry" ''
+          set -euo pipefail
+          root="''${PIPULATE_ROOT:-$PWD}"
+          python_bin="$root/.venv/bin/python"
+          if [ ! -x "$python_bin" ]; then
+            echo "ferry: missing $python_bin; enter the Pipulate Nix shell first." >&2
+            exit 1
+          fi
+          exec "$python_bin" "$root/scripts/ferry.py" "$@"
+        '';
         # Common packages that we want available in our environment
         # regardless of the operating system
         commonPackages = with pkgs; [
@@ -742,6 +754,7 @@
           aiCommitCommand              # \g's commit generator resolves in-shell on every platform
           deedCommand                  # Promote one cartridge snapshot out of rotation, verified
           mirrorCommand                # Bare mirrors of the named repos, and read-only copies under ~/repos
+          ferryCommand                 # Carry the Mac's shadow posts to Prime, overwriting nothing
           uv                           # Fast Python package installer and resolver
           sqlite                       # Ensures correct SQLite library is linked on macOS
           ruff                         # Fast Python linter (native Nix binary)

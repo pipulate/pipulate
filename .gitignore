@@ -135,6 +135,7 @@ Workshop/personal/
 Workshop/Playground/
 Workshop/Educational_Notebooks/
 Workshop/corporate/
+Workshop/corporate
 # THE THREE TIERS ARE THE WHOLE OF Workshop/ (2026-09-28): corporate/,
 # personal/ and shared/, each ignored whole, and nothing else lives there;
 # the starter notebooks, imports/, data/ and browser_cache/ sit under

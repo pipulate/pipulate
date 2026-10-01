@@ -597,7 +597,8 @@ else
   while :; do
     printf '\nChoose a walk:\n'
     printf '  1  Practice - read the steps; no pages open.\n'
-    printf '  2  Start the walk - open the pages.\n'
+    printf '  2  Sample walk - pops pages open.\n'
+    printf '  3  Select a walk.\n'
     printf '  q  Exit (Enter also exits).\nChoice: '
     ANSWER=""
     # Preserve failure instead of converting it into a successful stop.
@@ -621,13 +622,62 @@ else
           exit "$PRACTICE_RC"
         fi
         ;;
+      3)
+        WALK_NAMES=()
+        WALK_PATHS=()
+        for WALK_DIR in $WALK_SEARCH_DIRS; do
+          [ -d "$WALK_DIR" ] || continue
+          for WALK_FILE in "$WALK_DIR"/*; do
+            [ -f "$WALK_FILE" ] && [ -x "$WALK_FILE" ] || continue
+            WALK_NAME="$(basename "$WALK_FILE")"
+            WALK_SEEN=0
+            WALK_I=0
+            while [ "$WALK_I" -lt "${#WALK_NAMES[@]}" ]; do
+              [ "${WALK_NAMES[$WALK_I]}" = "$WALK_NAME" ] && WALK_SEEN=1
+              WALK_I=$((WALK_I + 1))
+            done
+            [ "$WALK_SEEN" -eq 0 ] || continue
+            WALK_NAMES+=("$WALK_NAME")
+            WALK_PATHS+=("$WALK_FILE")
+          done
+        done
+        printf '\nInstalled walks:\n'
+        printf '  1  Sample walk - pops pages open.\n'
+        WALK_I=0
+        while [ "$WALK_I" -lt "${#WALK_NAMES[@]}" ]; do
+          printf '  %s  %s\n' "$((WALK_I + 2))" "${WALK_NAMES[$WALK_I]}"
+          WALK_I=$((WALK_I + 1))
+        done
+        printf '  q  Back (Enter also goes back).\nChoice: '
+        PICK=""
+        READ_RC=0
+        IFS= read -r PICK <&3 || READ_RC=$?
+        if [ "$READ_RC" -ne 0 ]; then
+          printf '\nMenu input ended or failed (read exit %s). No walk started.\n' "$READ_RC" >&2
+          exec 3<&-
+          exit "$READ_RC"
+        fi
+        case "$PICK" in
+          1) break ;;
+          ""|q|Q) ;;
+          *[!0-9]*) echo "Choose a number, q or Enter." ;;
+          *)
+            WALK_I=$((10#$PICK - 2))
+            if [ "$WALK_I" -ge 0 ] && [ "$WALK_I" -lt "${#WALK_NAMES[@]}" ]; then
+              exec 3<&-
+              echo "Walk resolved: ${WALK_PATHS[$WALK_I]}" >&2
+              exec "${WALK_PATHS[$WALK_I]}"
+            fi
+            echo "Choose a number from the list, q or Enter." ;;
+        esac
+        ;;
       2|RIDE) break ;;
       q|Q|"")
         echo "Stopped. No real walk started."
         exec 3<&-
         exit 0
         ;;
-      *) echo "Choose 1, 2 or q; Enter exits." ;;
+      *) echo "Choose 1, 2, 3 or q; Enter exits." ;;
     esac
   done
   exec 3<&-
