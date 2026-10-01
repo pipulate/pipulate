@@ -285,8 +285,8 @@ offer_install() {
 CARD
   if ! command -v nix >/dev/null 2>&1; then
     echo " Note: Nix is not installed yet. The installer bootstraps it, and"
-    echo "       Nix requires a NEW terminal afterward. If that happens, just"
-    echo "       re-run this same command in the new terminal."
+    echo "       Nix requires a NEW window afterward. If that happens, just"
+    echo "       re-run this same command in the new window."
     echo ""
   fi
   if [ -e "$TARGET" ]; then
@@ -317,7 +317,7 @@ CARD
     echo " sha256    : $INSTALLER_SUM"
   fi
   echo ""
-  echo " To read it first, open another terminal and run:"
+  echo " To read it first, open another window and run:"
   echo "   less $TMP_INSTALLER"
   echo ""
   if [ "$YOLO" -eq 1 ] || [ "${PIPULATE_MCK_ASSUME_YES:-0}" = "1" ]; then
@@ -327,7 +327,7 @@ CARD
     ANSWER=""
     if ! IFS= read -r ANSWER </dev/tty; then
       echo "" >&2
-      echo "No controlling terminal to confirm on (/dev/tty unavailable)." >&2
+      echo "No keyboard to confirm on (/dev/tty is unavailable)." >&2
       echo "   Nothing was installed. Run the installer yourself:" >&2
       echo "     bash $TMP_INSTALLER $WHITELABEL" >&2
       return 1
@@ -368,8 +368,8 @@ if [ -z "$ROOT" ]; then
    INSTALL FINISHED, BUT NO WORKSHOP IS VISIBLE YET
 --------------------------------------------------------------
  The most common reason is that Nix was just bootstrapped and
- needs a fresh terminal before it is on your PATH.
- Close this terminal, open a NEW one, and run the same command
+ needs a fresh window before it is on your PATH.
+ Close this window, open a NEW one, and run the same command
  again. Nothing needs to be undone first.
 --------------------------------------------------------------
 CARD
@@ -543,10 +543,10 @@ if [ -z "${IN_NIX_SHELL:-}" ]; then
     else
       NIXWRAP=(nix develop .#quiet --command)
     fi
-    echo "Not inside a Pipulate shell; entering nix develop .#quiet for the ride."
+    echo "Not inside the workshop yet; entering nix develop .#quiet for the ride."
     echo "   (First entry can take several seconds.)"
   else
-    echo "Not inside a Pipulate shell and 'nix' is not on PATH." >&2
+    echo "Not inside the workshop, and 'nix' is not on PATH." >&2
     echo "   Enter the workshop first:" >&2
     echo "     cd $ROOT && nix develop .#quiet" >&2
     exit 1
@@ -591,7 +591,7 @@ elif [ "${PIPULATE_MCK_ASSUME_YES:-0}" = "1" ]; then
   run_rider --dry-narrate </dev/null 3<&-
 else
   if ! { exec 3</dev/tty; } 2>/dev/null; then
-    echo "No controlling terminal; run walk from a terminal." >&2
+    echo "No keyboard to read here; type walk at the command line." >&2
     exit 1
   fi
   while :; do
