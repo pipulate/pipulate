@@ -1831,7 +1831,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # WITNESSED 2026-10-01: on Prime, bash -ic alias read alias p (cd to
           # the repo) and alias c (cd to Client_Work) before this hook, and c
           # typed after re-entry ran compile. Load-bearing; never delete it as
-          # paranoia. Outside the dev shell those two letters still mean cd.
+          # paranoia: any user's bashrc can carry a one-letter alias, so the
+          # guard stays whatever Prime's own system config holds.
           unalias p pr pro prom promp promt prompt x con cont conte contex c com comp compi compil 2>/dev/null || true
           p()      { prompt  "$@"; }
           pr()     { prompt  "$@"; }
