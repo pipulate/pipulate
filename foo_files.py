@@ -297,25 +297,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 
 # § THE SCREENSHOT IS NOT A LOCATOR (banked 2026-09-11) -- When documentation's evidence is an image, enumerate the target UI's actual field labels and rule out same-named decoys before directing the operator; prose that says only "go to the project page" is not a locator.
 
-# ADMIN FORMS ARE CREDENTIAL SURFACES (banked 2026-09-11, cartridge
-# foo-d5dfdb65-1342.zip). A `?URL` scrape of a vendor's Django admin renders a
-# live secret as a BARE VALUE under its human-readable field label -- no
-# assignment, no JSON key, no vendor prefix -- which is the one shape every
-# pattern in SECRET_TRIPWIRES was structurally blind to. The gate printed
-# "ARMED / 0 hits" and the 0 was ARITHMETICALLY CORRECT for its pattern set,
-# so an armed scanner and a blind one wrote the identical line: THE
-# DISCRIMINATION QUESTION failing inside the guard itself. Two label-anchored
-# patterns landed as a backstop (commit 12e04711) and each covers exactly ONE
-# field on ONE vendor's admin; the class is uncovered and generic entropy
-# detection is refused on purpose, being the false-positive engine that
-# emptied that list once already.
-# THE FIX IS THE ROUTING, NOT THE REGEX: send the NARROWEST admin page that
-# answers the question. Here, /admin/projects/project/<id>/ carried the field
-# the ride needed and no credentials, while /admin/projects/projectsettings/
-# <id>/ carried a basic-auth blob and a crawler token in a form nobody had
-# read. The scrape that seals a secret cannot be unsealed; the credential is
-# rotated instead, by whoever owns it, and that conversation is owed the
-# moment it is noticed.
+# § ADMIN FORMS ARE CREDENTIAL SURFACES (banked 2026-09-11) -- Treat every authenticated admin form as secret-bearing even when credentials render as bare values under labels: scrape the narrowest page that answers the question, and rotate any credential a capture seals instead of trying to unseal the artifact.
 
 # § THE COLD-START EXIT IS A FALSE GREEN (banked 2026-09-16) -- Before treating exit 0 as a probe verdict, enumerate every earlier success exit on the path and keep the discriminator visible so a cold-start branch cannot masquerade as the code path you meant to test.
 # § THE HELP TEXT IS NOT A CENSUS (banked 2026-09-17; convictions 2026-09-17, 2026-09-27, 2026-09-28) -- Verify every switch against the exact tool's own semantics before trusting a probe's numbers, keep stderr and exit status visible, and treat usage text or rc=2 as a dead instrument rather than data.
