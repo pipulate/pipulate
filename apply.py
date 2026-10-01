@@ -171,8 +171,11 @@ def apply_search_replace_patch(payload: str) -> bool:
     # This deliberately makes deletion independent of an invisible blank line
     # that chat, clipboard, or other transports may strip. The historical
     # blank-line spelling remains valid and produces the same empty string.
+    # ?? AND NOT ? (2026-10-01, the 2026-09-26 TODO): the empty replacement is
+    # tried first, so a deletion block with another block behind it no longer
+    # takes that block's text, markers and all, as its replacement.
     block_pattern = re.compile(
-        r'(?:(?:File|Target):\s*`?([^`\s*]+)`?\s*\n)?[\[{]{3,5}SEARCH[\]}]{3,5}\n(.*?)\n[\[{]{3,5}DIVIDER[\]}]{3,5}\n(?:(.*?)\n)?[\[{]{3,5}REPLACE[\]}]{3,5}',
+        r'(?:(?:File|Target):\s*`?([^`\s*]+)`?\s*\n)?[\[{]{3,5}SEARCH[\]}]{3,5}\n(.*?)\n[\[{]{3,5}DIVIDER[\]}]{3,5}\n(?:(.*?)\n)??[\[{]{3,5}REPLACE[\]}]{3,5}',
         re.DOTALL | re.IGNORECASE
     )
 
