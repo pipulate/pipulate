@@ -1,0 +1,40 @@
+# context.txt: the list of files an AI will read. context opens it, compile builds it.
+# Keys: j down, k up; Esc then :q quits, :q! discards, :wq saves and quits.
+# One line per thing the AI reads: a file path, or a command after `! `.
+# A line that starts with # is a comment: that file is not read.
+# To add a line: i starts typing, Esc stops. Absolute paths work from anywhere.
+# Web pages, APIs and the connector words: chapter XVIII of foo_files.py.
+
+# --- THE 40K-FOOT VIEW (uncomment on a first turn; comment out on the second) ---
+! python scripts/articles/lsa.py -t 1 --reverse --fmt dated-slugs  # <-- the book's spine, one line per article, newest first
+~/repos/nixos/autognome.py  # <-- the machine's morning routine (this author's NixOS box only)
+init.lua                    # <-- the editor keys that drive the day
+assets/installer/install.sh # <-- how a stranger's machine gets this workshop
+GLOSSARY.md                 # <-- the terms, defined
+flake.nix                   # <-- the environment, pinned: here is my hardware, here is my state
+prompt_foo.py               # <-- the compiler that builds the payload
+foo_files.py                # <-- the router: which files ride, and this book's outline
+scripts/articles/lsa.py     # <-- the second brain: the article corpus behind `rgx`, `rgxc` and `posts`
+requirements.in             # <-- the Python packages, pinned
+pyproject.toml              # <-- the PyPI package
+__init__.py                 # <-- the version
+
+# --- ACTUATORS (cheap; include when the AI should be able to act, not only read) ---
+# cli.py                      # <-- tool calls from the command line
+# scripts/xp.py               # <-- turns a pasted reply into the next context
+# scripts/ai.py               # <-- a local AI writes the commit messages
+# scripts/crawl.py            # <-- crawl a site into the next turn
+# scripts/weblogin.py         # <-- warm a login on the persistent browser profile
+# scripts/webclip_2_markdown.py  # <-- a web page, clipped, as markdown
+
+# --- RARE ---
+# scripts/foo_cartridge.py    # <-- the sealed archive: writer and verifier
+# scripts/foo_replay.py       # <-- replay a sealed archive on another machine
+# release.py                  # <-- how a release reaches GitHub and PyPI
+# imports/voice_synthesis.py  # <-- the voice
+# imports/ascii_displays.py   # <-- the ASCII art
+# scripts/release/version_sync.py  # <-- version stamping (to be folded into release.py)
+
+# --- THIS DISCUSSION ---
+# The files and commands for the work in front of you. Paste the NEXT CONTEXT
+# block an AI hands back directly below this line; the AI will correct a guess.
