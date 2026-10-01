@@ -643,6 +643,18 @@ Entries are alphabetical, numbers spelled as spoken.
        connectors/wallet.json, a path that has never existed, and a
        `jira | grep -c` whose 2>/dev/null made a dead credential and an
        empty ticket list print the same 0.
+- **The Command Line** -- (banked 2026-10-01, the operator's words: "You type
+  commands on a line. It's the command line. It couldn't be simpler.") -- in
+  anything a newcomer reads or hears (a printed line, a spoken line, a card,
+  the menu, the installer's header read through less), the place you type is
+  the command line and the thing on screen is a window; command-line interface
+  or CLI only when cornered, and terminal or shell only as what geeks call it,
+  or when a step must name the app a Mac ships as Terminal; code names are
+  exempt in the same sentence (shellHook, nix develop, nix-shell, /dev/tty,
+  file, function and variable names, comments a developer reads), because no
+  newcomer reads them and a model that purges the word by the letter breaks
+  the flake. Sibling of THE BLANK STARE RULE (the word is the plain name) and
+  HALT ONLY OUT OF BOUNDS (a rule names where it must not fire).
 - **The Compiled Trail** -- *sealed is machine cargo, authored is not.* Banked
   2026-08-08, source-witnessed. A trail has TWO legitimate forms, and
   conflating them is the whole confusion. The SEALED form -- trail.yaml inside
