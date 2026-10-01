@@ -1828,6 +1828,10 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # it). The unalias clears any same-named alias from ~/.bashrc or
           # /etc/bashrc first: bash expands an alias inside a function
           # definition, and one stray alias p would stop the hook halfway.
+          # WITNESSED 2026-10-01: on Prime, bash -ic alias read alias p (cd to
+          # the repo) and alias c (cd to Client_Work) before this hook, and c
+          # typed after re-entry ran compile. Load-bearing; never delete it as
+          # paranoia. Outside the dev shell those two letters still mean cd.
           unalias p pr pro prom promp promt prompt x con cont conte contex c com comp compi compil 2>/dev/null || true
           p()      { prompt  "$@"; }
           pr()     { prompt  "$@"; }
