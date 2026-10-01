@@ -92,6 +92,13 @@ def _quiet_hub():
 # to fetch the voice and spend seconds before anyone had asked to speak or
 # been asked whether it may; that was also the import tax the tool roster
 # measured at ~3.8 s.
+# AMENDED 2026-10-01 (THE VOICE ASKS ONCE, OUT LOUD): first_contact() below,
+# run once per machine right before the first menu, prints what the voice is,
+# fetches the model with setup_voice_model's own one-line disclosure, and lets
+# the voice ask the question itself, because a voice nobody has heard is a
+# voice nobody can answer for (CONSENT CANNOT PRECEDE ITS OBJECT). The download
+# is disclosed, never asked, and still never at import. The walk's card asks
+# before it downloads, as before, and stays quiet once any answer is recorded.
 # ---------------------------------------------------------------------------
 VOICE_CONSENT_FILE = Path.home() / ".config" / "pipulate" / "voice"
 VOICE_CARD = (
@@ -306,8 +313,9 @@ class ChipVoiceSystem:
     def ensure_voice(self) -> bool:
         """Load the voice on first use, never at import. Returns readiness.
 
-        Reached only after voice_consent() read yes, so the download the card
-        announces happens after the answer and not before it.
+        Reached after voice_consent() read yes, or from first_contact() after
+        its printed line, where the download comes before the question so the
+        question can be heard.
         """
         if self.voice_ready:
             return True
@@ -359,7 +367,7 @@ class ChipVoiceSystem:
 
 
 
-    def synthesize_and_play(self, text: str) -> bool:
+    def synthesize_and_play(self, text: str, ceremony: bool = False) -> bool:
         """
         Synthesize text and play audio (Mike's tested approach)
         
