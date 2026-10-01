@@ -4,7 +4,7 @@ ferry.py -- carry the Mac's shadow posts to Pipulate Prime, overwriting nothing.
 
 The Mac writes articles only into its shadow corpora (blogs.shadow.json);
 Prime owns the real repos. This reads both sides, refuses any file whose slug,
-permalink, or date+sort_order is already taken on Prime, and copies the rest
+permalink is already taken on Prime, renumbers a taken date+sort_order upward on the copy, and copies the rest
 over one SSH login. Dry run by default; --yes copies. It never commits on
 Prime: copied files show up untracked in `git status` there.
 
@@ -114,6 +114,24 @@ def prime_inventory(path):
     return inv, ""
 
 
+def order_key(path):
+    date, _ = split_name(path.name)
+    n = to_int(local_fields(path.read_text(encoding="utf-8", errors="replace")).get("sort_order"))
+    return (date, n if n is not None else 0, path.name)
+
+
+def set_sort_order(data, n):
+    lines = data.decode("utf-8", errors="surrogateescape").split("\n")
+    if lines and lines[0].strip() == "---":
+        for i in range(1, len(lines)):
+            if lines[i].strip() == "---":
+                break
+            if re.match(r"sort_order\s*:", lines[i]):
+                lines[i] = "sort_order: " + str(n)
+                break
+    return "\n".join(lines).encode("utf-8", errors="surrogateescape")
+
+
 def copy_remote(dest_dir, name, data):
     final = dest_dir + "/" + name
     script = ("d=" + shlex.quote(dest_dir) + "; t=$(mktemp -p \"$d\" .ferry.XXXXXX) || exit 1; "
@@ -155,7 +173,7 @@ def main():
     print("ferry: " + SHADOW_CFG.name + " -> " + HOST + (" (armed)" if args.yes else " (dry run; --yes copies)"))
 
     def say(verdict, name, why=""):
-        print("    " + verdict.ljust(10) + name + ((" -- " + why) if why else ""))
+        print("    " + verdict.ljust(11) + name + ((" -- " + why) if why else ""))
 
     for alias in aliases:
         src, dest = shadow.get(alias), prime.get(alias)
@@ -169,7 +187,7 @@ def main():
             counts["failed"] += 1
             print("  " + alias + ": FAILED, could not list " + dest + " on " + HOST + ": " + err)
             continue
-        files = sorted(src.glob("*.md")) if src.is_dir() else []
+        files = sorted(src.glob("*.md"), key=order_key) if src.is_dir() else []
         print("  " + alias + ": " + str(len(files)) + " shadow post(s), " + str(len(inv.names)) +
               " on Prime (" + dest + ")")
         for f in files:
@@ -188,9 +206,12 @@ def main():
             if p and p in inv.permas:
                 why.append("permalink " + fl["permalink"] + " already on Prime as " + inv.permas[p])
             n = to_int(fl.get("sort_order"))
+            note = ""
             if date and n is not None and (date, n) in inv.sorts:
-                why.append("sort_order " + str(n) + " on " + date + " taken by " +
-                           inv.sorts[(date, n)] + " (next free: " + str(inv.next_sort(date)) + ")")
+                new_n = inv.next_sort(date)
+                note = "sort_order " + str(n) + " -> " + str(new_n) + " (" + str(n) + " taken by " + inv.sorts[(date, n)] + ")"
+                data = set_sort_order(data, new_n)
+                fl["sort_order"] = str(new_n)
             if why:
                 counts["refused"] += 1
                 say("REFUSED", name, "; ".join(why))
@@ -201,11 +222,11 @@ def main():
                     counts["failed"] += 1
                     say("FAILED", name, msg or "copy returned nonzero")
                     continue
-                say("COPIED", name)
+                say("COPIED", name, note)
                 if dest not in landed:
                     landed.append(dest)
             else:
-                say("WOULD COPY", name)
+                say("WOULD COPY", name, note)
             counts["copy"] += 1
             inv.add(name, fl.get("permalink"), fl.get("sort_order"))
 
