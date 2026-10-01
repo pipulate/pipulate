@@ -2177,6 +2177,10 @@ print(max(1, n))
           # difference. A tree with changes has no clean starting point yet,
           # and its line names the word that makes one.
           g() {
+            # THE DIVIDER (2026-10-01): one full-width rule, printed BEFORE the
+            # repaint so clear -x carries it into scrollback under the prompt
+            # line; blast gets it too, because its tail is g. Width is COLUMNS.
+            printf '%*s\n' "''${COLUMNS:-$(tput cols 2>/dev/null || echo 80)}" "" | tr ' ' '_'
             clear -x
             git status
             echo ""
