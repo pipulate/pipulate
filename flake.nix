@@ -1526,7 +1526,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           #    straight through with the rpath fix, so power use is untouched.
           nix() {
             if [ "$1" = "develop" ] && [ "$#" -eq 1 ]; then
-              echo "🟢 You are already inside the Pipulate Nix shell -- no need to run 'nix develop' again."
+              echo "🟢 You are already inside the Pipulate workshop -- no need to run 'nix develop' again."
               echo "   • Restart the server after Ctrl+C:  python server.py"
               echo "   • Leave this environment entirely:  exit"
               return 0
