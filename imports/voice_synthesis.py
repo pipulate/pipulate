@@ -217,7 +217,7 @@ def talk_command(args) -> int:
     recorded = voice_consent()
     if recorded == "unset":
         if ask_voice_consent(later_hint="talk") == "unavailable":
-            print("talk: nothing is recorded yet and there is no terminal to ask on; run talk in a terminal.")
+            print("talk: nothing is recorded yet and there is no keyboard to ask on; type talk at the command line.")
             return 1
     else:
         decision = want or ("no" if recorded == "yes" else "yes")
@@ -865,7 +865,7 @@ if __name__ == "__main__" and sys.argv[1:2] == ["ask"]:
         raise SystemExit(0)
     _decision = ask_voice_consent(later_hint="talk", force=True)
     if _decision == "unavailable":
-        print("voice: no terminal to ask on; run this from a terminal.")
+        print("voice: no keyboard to ask on; type voice at the command line.")
         raise SystemExit(1)
     print(f"voice: {_decision}  (recorded in {VOICE_CONSENT_FILE})")
     if _decision == "yes" and chip_voice_system is not None:

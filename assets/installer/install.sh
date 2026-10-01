@@ -70,7 +70,7 @@
 main() {
 # Detect shell compatibility - pipefail is bash-specific
 if [ -z "${BASH_VERSION:-}" ]; then
-    echo "❌ Error: This script requires bash but is being run with a different shell."
+    echo "❌ Error: This script needs bash, and something other than bash is running it."
     echo "   On Windows WSL and some Linux systems, 'sh' points to dash instead of bash."
     echo ""
     # THE MESSAGE NAMES NO DOOR (2026-09-29): three doors serve this file, and
@@ -159,8 +159,8 @@ if ! command -v nix &> /dev/null; then
   echo "Nix is not installed. Installing it now with the Determinate Systems installer..."
   curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
   echo "=================================================================="
-  echo "Nix is installed, but this terminal was opened before it was."
-  echo "Close this terminal, open a new one, and run the install line again:"
+  echo "Nix is installed, but this window was opened before it was."
+  echo "Close this window, open a new one, and run the install line again:"
   
   # THE MESSAGE NAMES NO DOOR (2026-09-29): see the bash check above.
   echo "(the same curl line you ran, ending in | bash${1:+ -s $1})"
