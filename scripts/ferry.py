@@ -4,7 +4,7 @@ ferry.py -- carry the Mac's shadow posts to Pipulate Prime, overwriting nothing.
 
 The Mac writes articles only into its shadow corpora (blogs.shadow.json);
 Prime owns the real repos. This reads both sides, refuses any file whose slug,
-permalink is already taken on Prime, renumbers a taken date+sort_order upward on the copy, and copies the rest
+or permalink is already taken on Prime, and copies the rest. A date+sort_order already taken there is renumbered upward on the copy only (Mac posts are assumed newer than Prime's). A filename already on Prime is SKIPPED, never compared by content, so reruns are idempotent.
 over one SSH login. Dry run by default; --yes copies. It never commits on
 Prime: copied files show up untracked in `git status` there.
 
