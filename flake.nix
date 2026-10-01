@@ -2141,17 +2141,22 @@ print(max(1, n))
           # different first line from each after the repaint, so a copy taken
           # from the top of the screen named which one had run. One body,
           # one first line, typed the same as before.
-          # THE FIRST LINE IS A VERDICT (2026-09-25, operator's ruling): the
-          # boundary is a commit, so a dirty tree has none yet and the line
-          # says what makes one; a clean tree has it and the line says so.
+          # THE VERDICT MOVED TO THE BOTTOM (2026-10-01, the operator's words:
+          # GIT repo clean. Take BEFORE reading, make CHANGE, record AFTER
+          # diff.): git status prints first and the verdict under it, beside
+          # the prompt where the eye lands, in words a newcomer can say back:
+          # your repo is clean, so take a reading, make a change, record the
+          # difference. A tree with changes has no clean starting point yet,
+          # and its line names the word that makes one.
           g() {
             clear -x
-            if [ -n "$(git status --porcelain)" ]; then
-              echo "Before conducting experiment, type \"blast\" to establish left-hand causal boundary."
-            else
-              echo "Left-hand causal boundary \"blast radius\" established. Make 1 change and test."
-            fi
             git status
+            echo ""
+            if [ -n "$(git status --porcelain)" ]; then
+              echo "GIT repo has changes. Type blast to commit them, then take the BEFORE reading."
+            else
+              echo "GIT repo clean. Take BEFORE reading, make CHANGE, record AFTER diff."
+            fi
           }
           m() {
             # THE UNTRACKED-FILE DEBT (banked TODO 2026-07-20, discharged
