@@ -479,43 +479,6 @@ function add_liquid_raw_tags()
     vim.notify("Added raw tags around liquid syntax", vim.log.levels.INFO)
 end
 
-function clean_gemini_markdown()
-    -- Automatically enable wrap for visibility during the cleanup
-    vim.opt.wrap = true
-    
-    -- Save the starting cursor position so we can return to it for each step
-    local start_pos = vim.fn.getcurpos()
-    
-    -- Helper function to reset cursor, pause for the user, and execute
-    local function execute_step(step_num, desc, cmd)
-        -- Break the 'y' spam momentum and allow skipping
-        local prompt = "\nReady for Step " .. step_num .. "/4: " .. desc .. " [Press <Enter> to start, 's' to skip, or 'q' to abort] "
-        local user_input = vim.fn.input(prompt)
-        
-        if user_input:lower() == 'q' then
-            print("\nAborted cleanup sequence.")
-            return false
-        elseif user_input:lower() == 's' then
-            print("\nSkipped Step " .. step_num .. ".")
-            return true -- Return true to continue to the next step without executing the regex
-        end
-        
-        -- Return to the original starting line so '.,$' searches the same text block
-        vim.fn.setpos('.', start_pos)
-        
-        -- Execute the replacement safely
-        pcall(function() vim.cmd(cmd) end)
-        return true
-    end
-
-    if not execute_step(1, "Remove excessive backslashes", [[.,$s/\\\([\-+\[\]_#\*.]\)/\1/gc]]) then return end
-    if not execute_step(2, "Escape pipes in citations", [[.,$g/^\d\+\. /s/|/\\|/gc]]) then return end
-    if not execute_step(3, "Tag ambiguous inline footnotes", [[.,$s/\s\+\zs\(1\d\d\|[1-9]\d\|[1-9]\)\ze\s\+/<sup>&<\/sup>/gc]]) then return end
-    if not execute_step(4, "Wrap footnote numbers", [[.,$s/\([.):]\)\zs\(1\d\d\|[1-9]\d\|[1-9]\)\>\|\<\(1\d\d\|[1-9]\d\|[1-9]\)\ze[:,]\|\s\zs\(1\d\d\|[1-9]\d\|[1-9]\)\ze\s*$/<sup>&<\/sup>/gc]]) then return end
-
-    print("\nGemini Deep Research cleanup complete!")
-end
-
 function jump_next_active_chop()
     -- Search forward for the next line that is not purely blank 
     -- and does not start with a comment hash.
@@ -859,15 +822,12 @@ map('n', '<leader>j', '<cmd>lua new_journal_entry()<CR>', opts)  -- New journal 
 map('n', '<leader>w', '<cmd>%s/\\s\\+$//e<CR>', opts)  -- Remove trailing whitespace
 map('n', '<leader>e', '<cmd>g/^\\n\\{4,}/d<CR>', opts)  -- Remove excessive blank lines (4+)
 
--- Clean up Gemini Deep Research Markdown
-map('n', '<leader>z', '<cmd>lua clean_gemini_markdown()<CR>', opts)
-
 -- Navigation
 map('n', '<leader>a', '<cmd>lua jump_next_active_chop()<CR>', opts)  -- Jump to next Active line (non-comment)
 
 -- Article / Workflow Selection
 map('n', '<leader>h', '<cmd>lua select_current_article()<CR>', opts)  -- Highlight (select) current article block
-map('n', '<leader>k', '<cmd>lua hop_off_sandworm()<CR>', opts)  -- Hop off: stage the dismount wrap-up above !!!
+map('n', '<leader>z', '<cmd>lua hop_off_sandworm()<CR>', opts)  -- Hop off: stage the dismount wrap-up above !!!
 
 -- Map it to <leader>p (for "Clip to Prompt")
 vim.api.nvim_set_keymap('v', '<leader>p', '<cmd>lua sync_to_prompt()<CR>', { noremap = true, silent = true })
