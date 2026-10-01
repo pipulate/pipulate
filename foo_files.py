@@ -845,24 +845,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # § THE PUBLISH-ROSTER RULE (banked 2026-08-01) -- treat every name in a publish roster as a live actuator: if it must not ship, REMOVE IT FROM THE ROSTER, because warnings beside a mechanism do not gate the mechanism; witness the roster cut and served-surface removal before closing the hazard, and treat off-roster residue as stranded, not shippable.
 # § THE CABOOSE-VERDICT COROLLARY (banked 2026-08-01) -- Write every caboose conditional with its precondition and the specific LIVE RECEIPT/tap it will judge; never pre-commit a verdict to an unlabeled printout before the turn that holds the receipt.
 # § THE UNEXPORTED-SHIM RULE (banked 2026-08-01, second conviction 2026-09-14) -- a shell FUNCTION protects exactly one process, the interactive shell that defined it, because functions are not exported: every child inherits the ENVIRONMENT the shim neutralizes and none inherits the shim, so a script that invokes nix from inside the workshop shell dies at the loader on library skew while the same script passes on a stranger's clean shell, and the only person who can see it blames his own environment. Write the empty LD_LIBRARY_PATH assignment inline on EVERY branch of every script that reaches the nix binary (a no-op on a clean shell), and witness it from a compile, because prompt_foo's ! executor spawns children that inherit the pollution and never the function -- the failing lane in miniature. Sibling of LANE-DISAGREEMENT (a probe blind to a patch; this is an environment blind to a shim) and of THE THREE-TIER AMENDMENT (a name a child cannot resolve).
-# THE SINGLE-CANDIDATE BLINDNESS RULE (banked 2026-08-01, selector-convicted):
-# a SELECTOR cannot be witnessed while only one candidate exists, because
-# selection and fallback print the IDENTICAL answer -- and that answer is the
-# RIGHT one, every time, which is precisely what makes the blindness expensive.
-# CONVICTION: the launcher matched a workshop by comparing whitelabel.txt
-# against the requested label with a case-sensitive =, while whitelabel.txt has
-# TWO writers with TWO spellings (the installer writes the name it was handed,
-# lowercase by default; the flake writes a capitalized literal). The default
-# label could therefore never match a flake-hydrated checkout, so every
-# discovery on this machine answered from the head -n 1 fallback -- correctly,
-# invisibly, for the entire life of the feature, and reported GREEN on a gate
-# item written to test selection. The instant a SECOND workshop existed the
-# same code returned the WRONG workshop, silently, with no error and no clue;
-# the fix was witnessed only because the two paths SWAPPED PLACES across it.
-# STANDING CONSEQUENCE: before trusting any selector, disambiguator, router, or
-# precedence rule, CREATE THE SECOND CANDIDATE. N=1 is not a test of selection;
-# it is a test of the fallback wearing selection's label. Sibling of
-# REFUSAL-ONLY WITNESS -- that one is a state machine observed on one branch, this one is a comparison observed with one operand.
+# § THE SINGLE-CANDIDATE BLINDNESS RULE (banked 2026-08-01) -- Before trusting any selector, disambiguator, router, or precedence rule, create a second distinguishable candidate and witness selection across both; N=1 can only test fallback because correct selection and fallback may print the same answer.
 
 # - EARMARK: THE SUCCESS-ONLY WITNESS (banked 2026-08-02, cold-start ride six): a claim observed ONLY succeeding is indistinguishable from a claim that CANNOT fail, exactly as a guard observed only refusing is indistinguishable from one broken shut. Conviction: synthesize_and_play called wait() and DISCARDED the exit code while stderr went to DEVNULL, so a player killed by SIGFPE printed its reason into the void and the function returned True anyway -- speak_text reported success, the rider printed nothing, and the human heard silence beside a green console. The instrument that was supposed to report the failure was the thing hiding it. DISCRIMINATING QUESTION for act-claims: what does this print in the world where the act did not happen? If the answer is "success," it is not a receipt. This is also the missing third suspect from the 2026-07-26 THE DEMO WENT SILENT todo, which named transport and engine and never once looked at the subprocess exit status. Sibling of REFUSAL-ONLY WITNESS (one branch of a state machine) and of the MECHANICAL TEST in ATTRIBUTED-VOICE (a verb naming an act that no code performed).
 # § THE LANE-DISAGREEMENT WITNESS (banked 2026-08-01) -- When one lane is structurally blind to a patch, run the identical probe in both lanes and use the expected output disagreement as the witness; label every receipt with its lane.
