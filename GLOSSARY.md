@@ -487,6 +487,26 @@ Entries are alphabetical, numbers spelled as spoken.
   control's name, read the markup. To learn whether a control is even a form
   control, read the markup FIRST.
 
+- **Admin Forms Are Credential Surfaces** -- (banked 2026-09-11, cartridge
+  foo-d5dfdb65-1342.zip). A `?URL` scrape of a vendor's Django admin renders a
+  live secret as a BARE VALUE under its human-readable field label -- no
+  assignment, no JSON key, no vendor prefix -- which is the one shape every
+  pattern in SECRET_TRIPWIRES was structurally blind to. The gate printed
+  "ARMED / 0 hits" and the 0 was ARITHMETICALLY CORRECT for its pattern set,
+  so an armed scanner and a blind one wrote the identical line: THE
+  DISCRIMINATION QUESTION failing inside the guard itself. Two label-anchored
+  patterns landed as a backstop (commit 12e04711) and each covers exactly ONE
+  field on ONE vendor's admin; the class is uncovered and generic entropy
+  detection is refused on purpose, being the false-positive engine that
+  emptied that list once already.
+  THE FIX IS THE ROUTING, NOT THE REGEX: send the NARROWEST admin page that
+  answers the question. Here, /admin/projects/project/<id>/ carried the field
+  the ride needed and no credentials, while /admin/projects/projectsettings/
+  <id>/ carried a basic-auth blob and a crawler token in a form nobody had
+  read. The scrape that seals a secret cannot be unsealed; the credential is
+  rotated instead, by whoever owns it, and that conversation is owed the
+  moment it is noticed.
+
 - **The Ancestor-Discipline Rule** -- (banked 2026-07-21; first landing attempt convicted missing by the same day's rg receipts -- this is the ratification): "SEO" is named as lineage, never as identity -- the same sequencing move as hiding "science" behind the wizard's hat: true thing, wrong first impression, stage the reveal instead of leading with the label that kills the spell. Goodhart conviction: rankings were the proxy for being-found-and-correctly-read; optimizing the proxy decoupled it from the goal until the word itself signals proxy-gaming even when the work is honest. The surviving invariant: LEGIBLE, VERIFIABLE, NEGOTIABLE to machine visitors -- exactly what Honeybot measures (content-negotiation vanguard ~0.2%, markdown masters served free, DOM-hydration trapdoor, llms.txt fetches), so the positioning rests on telemetry the product itself generates. Mechanics: ranking title-tails carry "(formerly AI SEO Software)" -- a 301 for language; sunset gated on GSC evidence (baseline annotated 2026-07-21, +28d AFTER read), never vibes. Founder-bio anchors KEEP the ancestor name (a biography IS lineage). Permalinks, asset URLs (ai-seo-software.svg stays live), START_ASCII_ART sync keys, and the article fossil record are never touched. Standing guard: "AI-readiness" Goodharts too the day anyone sells it as a score -- sell the INSTRUMENT (receipts), never the number. Remaining residue after the 2026-07-21 residue sweep: in-app strings (__init__.py __version_description__ feeds the flake banner; server.py; imports/ascii_displays.py AS THE SUSPECTED START_ASCII_ART INJECTION MASTER -- fix the master before trusting any banner patch to survive a release; apps/030_roles.py; assets/scenarios/introduction.json), the SVG logo pair (new asset + reference swap, old URL stays live), and ~/repos/Pipulate.com/README.md (probe whether release.py syncs it before hand-patching the twin).
 - **The Attributed-Voice Rule** -- *provenance for every utterance, spoken or
   on-screen.* Banked 2026-07-26, articulation-banked; promoted to
