@@ -120,8 +120,11 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,505 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 13 published in the last 7 days
+# There are 1,506 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 14 published in the last 7 days
+# Markdown negotiated: 2,812 reads (0.22% of all responses)
+# DOM hydration: 3611 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
+# Honeybot telemetry fetched 2026-10-01T06:36Z
 # --- END STATS ---
 
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
@@ -3352,8 +3355,9 @@ MATCHBOOK_CHOP = r"""
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 210/278 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 210/279 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
+# 40k.txt  # [632 tokens | 2,626 bytes]
 # AGENTS.md  # [1,039 tokens | 4,223 bytes]
 # AUDIT.md  # [2,993 tokens | 13,897 bytes]
 # MANIFEST.in  # [204 tokens | 806 bytes]
@@ -3409,7 +3413,7 @@ MATCHBOOK_CHOP = r"""
 # scripts/confluence_probe.py  # [4,990 tokens | 20,662 bytes]
 # scripts/continuation_ladder.py  # [2,802 tokens | 11,334 bytes]
 # scripts/dial_spinner.py  # [398 tokens | 1,463 bytes]
-# scripts/ferry.py  # [2,543 tokens | 9,562 bytes]
+# scripts/ferry.py  # [2,580 tokens | 9,725 bytes]
 # scripts/flippers.py  # [350 tokens | 1,309 bytes]
 # scripts/gsc/facet_allowlist.py  # [2,538 tokens | 10,600 bytes]
 # scripts/map_sheet.py  # [3,613 tokens | 15,605 bytes]
