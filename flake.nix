@@ -1032,6 +1032,24 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             echo "🛑 Stopped a Pipulate server that was already running (ports 5001/8888 are shared -- one workshop at a time)."
           fi
           git pull --quiet
+          # THE VOICE ASKS ONCE, OUT LOUD (2026-10-01, the operator's ask: the
+          # voice is heard before the first menu, so the menu's spoken hint is
+          # the second thing it says). Only where no answer is recorded, at a
+          # keyboard, with PIPULATE_VOICE unset and the menu not declined: the
+          # voice module's first_contact() prints what the voice is, fetches
+          # the model if it is absent (its own line names the 60 MB first),
+          # and lets the voice ask; Enter keeps it, n turns it off, and a voice
+          # that cannot play records off and says why in one line. Any answer
+          # is recorded, so this block and the walk's card stay quiet on every
+          # later entry. The file test spares later entries an import; the
+          # module rereads the answer and decides, so a drift between the two
+          # costs a second, never a second question.
+          if [ ! -f "$HOME/.config/pipulate/voice" ] && [ -z "''${PIPULATE_VOICE:-}" ] && [ -t 0 ] && [ -t 1 ]; then
+            case "''${PIPULATE_BOOT_MENU:-1}" in
+              0|no|off|false) ;;
+              *) python imports/voice_synthesis.py first || true ;;
+            esac
+          fi
           # THE ONE DOOR: on an interactive tty boot_menu.py prints the short
           # command list and returns 10, so this child exits before either
           # server starts and the parent shell prompt becomes the introduction.

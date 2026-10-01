@@ -239,6 +239,73 @@ def talk_command(args) -> int:
     return 1 if error is not None else 0
 
 
+FIRST_CONTACT_INTRO = ("This workshop can read its steps aloud with Piper, "
+                       "a small voice that runs on this computer.")
+FIRST_CONTACT_LINE = ("This is Piper, reading a script. If you can hear this, "
+                      "press Enter. Type n to keep it quiet.")
+
+
+def first_contact() -> str:
+    """Ask by voice, once per machine, right before the first menu.
+
+    THE VOICE ASKS ONCE, OUT LOUD (2026-10-01). flake.nix's runScript calls
+    this before the menu prints, only where no answer is recorded. One line
+    says what the voice is; setup_voice_model prints its own 60 MB line before
+    it fetches a model that is absent; then the voice speaks FIRST_CONTACT_LINE,
+    printed at the same moment, and one answer is read from the keyboard.
+    Enter keeps the voice and n turns it off. A voice that cannot load or play
+    records no and says why in one line, so the question does not repeat on
+    every entry and talk tries again later. Ctrl+C or an empty read records
+    nothing, so the question returns next time. The one line spoken before any
+    answer exists is the question itself, which is why synthesize_and_play
+    takes ceremony=True from here and from nowhere else. Returns env,
+    recorded, unavailable, silent, interrupted, yes or no.
+    """
+    if os.environ.get("PIPULATE_VOICE", "").strip():
+        return "env"
+    if voice_consent() != "unset":
+        return "recorded"
+    if not (sys.stdin.isatty() and sys.stdout.isatty()):
+        return "unavailable"
+    logger.setLevel(logging.CRITICAL)
+    voice = chip_voice_system
+    try:
+        print(FIRST_CONTACT_INTRO, flush=True)
+        played = False
+        if voice is not None and voice.ensure_voice():
+            print(FIRST_CONTACT_LINE, flush=True)
+            played = voice.synthesize_and_play(FIRST_CONTACT_LINE, ceremony=True)
+        if not played:
+            reason = (voice.last_error if voice is not None else None) or "the voice did not load"
+            reason = reason.splitlines()[0][:120]
+            error = _record_voice_answer("no")
+            print(f"The voice could not play here ({reason}), so it stays off. Type talk to try again.")
+            if error is not None:
+                print(f"(could not record that, so this runs again next time: {error})")
+            return "silent"
+        with open("/dev/tty", "r", encoding="utf-8") as tty:
+            print("Enter or n: ", end="", flush=True)
+            answer = tty.readline()
+    except KeyboardInterrupt:
+        print("\nNothing recorded; the question comes back next time.")
+        return "interrupted"
+    except OSError as exc:
+        print(f"\nNothing recorded ({exc}); the question comes back next time.")
+        return "interrupted"
+    if not answer:
+        print("\nNothing recorded; the question comes back next time.")
+        return "interrupted"
+    decision = "no" if answer.strip().lower().startswith("n") else "yes"
+    error = _record_voice_answer(decision)
+    if error is not None:
+        print(f"(could not record the answer, so it will be asked again: {error})")
+    if decision == "yes":
+        print("Voice on. Type talk any time to turn it off.")
+    else:
+        print("Staying quiet. Type talk any time to turn the voice on.")
+    return decision
+
+
 class ChipVoiceSystem:
     """
     Voice synthesis system for Chip O'Theseus
@@ -377,9 +444,11 @@ class ChipVoiceSystem:
         Returns:
             bool: True if successful, False otherwise
         """
-        if voice_consent() != "yes":
+        if voice_consent() != "yes" and not ceremony:
             # THE BARRIER. Every path to sound passes here, and the answer is
             # read fresh each time, so a no recorded mid-session holds at once.
+            # ceremony=True has one caller, first_contact(), and one line: the
+            # question that asks whether the voice may speak, before any answer.
             self.last_error = "voice not allowed"
             logger.info("🎤 Voice not allowed; nothing spoken")
             return False
@@ -779,6 +848,14 @@ def test_memory_voice_integration():
 if __name__ == "__main__" and sys.argv[1:2] == ["talk"]:
     # `talk`, the word the menu lists under walk: flip, or set with on/off.
     raise SystemExit(talk_command(sys.argv[2:]))
+if __name__ == "__main__" and sys.argv[1:2] == ["first"]:
+    # flake.nix's runScript calls this once per machine, right before the first
+    # menu; it exits 0 whatever happened, so the menu always prints after it.
+    try:
+        first_contact()
+    except Exception as _exc:
+        print(f"(the voice question was skipped: {type(_exc).__name__}: {_exc})")
+    raise SystemExit(0)
 if __name__ == "__main__" and sys.argv[1:2] == ["ask"]:
     # `voice`: re-ask the whole card and record the answer, then speak one
     # sentence on yes so the audio path is heard rather than assumed.
