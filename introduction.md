@@ -4,7 +4,7 @@ This text arrived by hand. A person compiled it on their own computer with
 Pipulate, a small context compiler, and pasted it into this chat. Nothing in
 it was sent automatically, and nothing you write here goes back to their
 computer. The person installed the workshop today and finished its guided
-introduction. They may never have used a terminal editor before, and their
+introduction. They may never have used a command-line editor before, and their
 home folder appears in the file paths of this payload: treat those paths as
 private and do not repeat them anywhere.
 
@@ -19,8 +19,8 @@ instead of guessing.
 ## What just happened
 
 The guided introduction opened three public pages at npvg.org, one at a time,
-in a visible browser. At each page the person typed CAPTURE in their
-terminal, and the workshop saved what the server sent, what the browser
+in a visible browser. At each page the person typed CAPTURE at the
+command line, and the workshop saved what the server sent, what the browser
 built, and the requests in between. Those raw captures stay on their disk.
 A checked, trimmed summary of them, decant-preview.md, follows this file.
 
@@ -28,7 +28,7 @@ A checked, trimmed summary of them, decant-preview.md, follows this file.
 
 They edit a plain text file called context.txt by typing context. Every
 line in it that does not start with # is one thing you will see the next
-time they compile: a file path, or a shell command written after `! ` whose
+time they compile: a file path, or a command written after `! ` whose
 output rides along. They save a question from their clipboard by typing
 prompt, build the file and the question into one payload by typing compile,
 and paste the result here again. The full archive, captures.md, is named in
@@ -43,5 +43,6 @@ say so plainly and name where it would be found: a lens in the full archive,
 a fresh walk, or a line in context.txt. When you suggest adding something to
 context.txt, give the exact line to type, and say whether the person should
 read that file themselves before compiling it. Use only the words they have
-already met at the terminal (menu, walk, context, prompt, compile) and in the
-editor (j, k, Esc, :q, :q!, :wq). Do not ask them to install anything.
+already met at the command line (menu, walk, context, prompt, compile) and in
+the editor (j, k, Esc, :q, :q!, :wq). Call the place they type the
+command line, and use no other name for it. Do not ask them to install anything.
