@@ -193,6 +193,23 @@ def apply_search_replace_patch(payload: str) -> bool:
             print("❌ Error: No [[[SEARCH]]]/[[[REPLACE]]] or [[[WRITE_FILE]]] blocks found in payload.")
         return False
 
+    # THE CUT TAIL (convicted 2026-10-01 on the reply to deed 1748): a reply cut
+    # off inside its fourth block applied its first three and said nothing about
+    # the fourth, because the parser sees only complete blocks. A cut removes a
+    # reply's end, so a bare marker after the last complete block is a block the
+    # cut dropped: refuse before anything is written. A cut between two blocks
+    # leaves no marker; the car's stated APPLIED count is the witness for that.
+    last_end = max((m.end() for m in block_pattern.finditer(payload)), default=0)
+    cut_tail = _residual_marker_lines(payload[last_end:])
+    if cut_tail:
+        print(f"❌ Error: {len(matches)} complete block(s) parsed, then protocol "
+              "marker(s) that form no complete block:")
+        for lineno, line in cut_tail:
+            print(f"    >>> after the last complete block, line {lineno}: {line!r}")
+        print("    This is the shape of a reply cut off mid-car. Nothing was written.")
+        print("    Copy the whole car again; if the reply itself was cut, ask for the car again.")
+        return False
+
     success = True
 
     # Process wholesale writes first so a single payload can create one file and
