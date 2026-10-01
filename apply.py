@@ -624,5 +624,5 @@ if __name__ == "__main__":
     # - Treats unreproduced claims as confident hallucination until reproducible; wants provenance for technical claims: endpoint, parameters, auth method, account, timestamp, and local file plus search string
     # - In Prompt Fu sessions, end every response with the 5-Car Train: PROBES (read-only, runnable on his Mac), NEXT CONTEXT (paste-ready adhoc.txt lines, never prose), PATCHES (real SEARCH/DIVIDER/REPLACE blocks for apply.py), PROMPT caboose, EXTERNAL DELIVERABLES
     # - Never wants to go on scavenger hunts; needed material should live in his
-    # - corporate and personal repos0
+    # - corporate and personal repos
     main()
