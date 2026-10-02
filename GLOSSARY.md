@@ -1841,6 +1841,24 @@ Entries are alphabetical, numbers spelled as spoken.
   therefore unshippable. That is a STRANDED ARTIFACT, not a security gap --
   there is no v0.1.0 in the wild for the fix to be a fix to. It costs nothing
   today and will confuse whoever finds it later.
+- **The Receipt Ladder Rule** -- (banked 2026-07-22, articulation-banked): integrity
+  is not authenticity. A CRC answers "did a bit flip?"; a SHA-256 answers "are
+  these the exact bytes, unswapped?"; a SIGNATURE answers "did I stand behind
+  them?" -- three rungs, three questions, never conflated. The upgrade from a
+  hashed cartridge is NOT more hashes INSIDE it; it is a key OVER it. HARD
+  INVARIANT: never put wall-clock time in the hashed body (payload.md). Mutable
+  time there murders byte-reproducibility -- same input, different hash every
+  second. Timestamps and provenance ride a SEPARATE signed receipt layer
+  (manifest.json), never the payload. The receipt a ticket deserves is a TRIPLE:
+  sha256 (what bytes) + signature (who) + git commit SHA and `git describe`
+  (from which point in history), so the detached slice can be re-fused to the
+  Merkle tree it was cut from. The cartridge IS a portable slice of git's DAG
+  handed to a model that cannot see .git.
+  RUNG ONE NAMES NO HAND (banked 2026-09-26): the rabbit's words were changed
+  by hand, the wax seal read drift, and it would have read the same drift had
+  a model changed them; a CRC says "changed" and never "who". A caption that
+  names the author ("the model rewrote what it was told to copy") is a verdict
+  written into the instrument. Let the seal say what it measures.
 - **The Render-Gap Rule** -- *render artifact versus file bytes.* Banked
   2026-07-31, self-convicted -- the model filed the false report. A model
   reading a compiled payload CANNOT DISTINGUISH FILE BYTES FROM RENDER

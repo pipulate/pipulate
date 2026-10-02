@@ -565,24 +565,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # Sibling to AXIS-FORCING: when stuck, ask what old organ this new pressure
 # can repurpose.
 
-# THE RECEIPT LADDER RULE (banked 2026-07-22, articulation-banked): integrity
-# is not authenticity. A CRC answers "did a bit flip?"; a SHA-256 answers "are
-# these the exact bytes, unswapped?"; a SIGNATURE answers "did I stand behind
-# them?" -- three rungs, three questions, never conflated. The upgrade from a
-# hashed cartridge is NOT more hashes INSIDE it; it is a key OVER it. HARD
-# INVARIANT: never put wall-clock time in the hashed body (payload.md). Mutable
-# time there murders byte-reproducibility -- same input, different hash every
-# second. Timestamps and provenance ride a SEPARATE signed receipt layer
-# (manifest.json), never the payload. The receipt a ticket deserves is a TRIPLE:
-# sha256 (what bytes) + signature (who) + git commit SHA and `git describe`
-# (from which point in history), so the detached slice can be re-fused to the
-# Merkle tree it was cut from. The cartridge IS a portable slice of git's DAG
-# handed to a model that cannot see .git.
-# RUNG ONE NAMES NO HAND (banked 2026-09-26): the rabbit's words were changed
-# by hand, the wax seal read drift, and it would have read the same drift had
-# a model changed them; a CRC says "changed" and never "who". A caption that
-# names the author ("the model rewrote what it was told to copy") is a verdict
-# written into the instrument. Let the seal say what it measures.
+# § THE RECEIPT LADDER RULE (banked 2026-07-22; amended 2026-09-26) -- Match each receipt to the question it can prove: CRC detects change, SHA-256 fixes exact bytes, signatures name a signer, mutable time stays outside hashed bodies, and no integrity rung may infer who caused a change.
 
 # THE CODEX-AS-DATASTRUCTURE RULE (banked 2026-07-22, articulation-banked): the
 # printed book's apparatus is a random-access + cross-reference + drift-detection
