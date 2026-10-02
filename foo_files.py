@@ -26,7 +26,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # > Put on your sandbox  
 # > And please recreate.  
 
-# > What we do is Q/A.  
+# > What we do is QA.  
 # > High reliability's why.  
 # > Do you want vibe-coded  
 # > Airplanes in the sky?  
@@ -42,14 +42,14 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # > At a trillionth the cost.  
 
 # > You don't need Nix  
-# > And you don't need Guix (rhymes with tweaks)  
+# > And you don't need Guix
 # > For functional output  
-# > If you got the tweaks.  
+# > If you know the tweaks.  
 
 # > Most humans don't  
-# > Your LLM will  
+# > But your LLM will  
 # > So get their first pass  
-# > With blanks left to fill.   
+# > With blanks left-in to fill.   
 
 # > If anything's missing  
 # > To replay it, please   
@@ -61,17 +61,17 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # > Params and their args?  
 # > Yes, and auth context too!  
 
-# > We just provide a template  
+# > We're providing a template  
 # > That must be filled in  
-# > So that whatever you just did  
-# > Is where HUMANS begin!  
+# > Whatever you just did  
+# > Is where we humans begin!  
 
 # > So just do as you do  
 # > And build your contraption;  
 # > Though if I can't replay it  
-# > Then it didn't happen.  
+# > Then it just didn't happen.  
 
-# Clearly tool-calls that are part of your framework that you can't relate back to a human in your response in the format:
+# Clearly explain the tool-calls that are part of your framework that you can't relate back to a human in your response in the format:
 
 # 1. Endpoint used: 
 # 2. Authentication scheme used

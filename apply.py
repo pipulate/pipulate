@@ -635,6 +635,15 @@ def main():
     sys.exit(0 if success else 1)
 
 if __name__ == "__main__":
+    # Clearly explain the tool-calls you used in the format:
+
+    # 1. Endpoint used
+    # 2. Authentication scheme used
+    # 3. User login account used (minus secrets)
+    # 4. As close to exact parameters and arguments as possible
+    #    - POST or GET method
+    #    - Call out the unexpected. For example are there required parameter-values on the URL even when POST method is used?
+
     # How the User wants the Model to write and work for him; read before drafting anything or handing him commands
     # - Dislikes ornate, over-erudite model prose; calls it "H.M. Wogglebug language" or "PhD language" and asks Claude to speak plainly
     # - Wants answers short and dry, minimal words, the least reading effort needed to digest them
