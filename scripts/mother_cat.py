@@ -161,8 +161,9 @@ DECANT_PREVIEW_PATH = REPO_ROOT / "data" / "decant-preview.md"
 # (2026-10-02, the operator's ruling): the bell, Enter, Ctrl+C, the browser
 # is the walk's to close, and the handoff at the end.
 WALK_RULES = (
-    "When you hear the bell, the page has loaded: look it over, come back here, "
-    "and press Enter. Leave the browser open; Enter saves the page and closes it. "
+    "When you hear the bell, the page has loaded: look it over, come back to the "
+    "command line and press Enter. Leave the browser open; Enter saves the page "
+    "and closes it. "
     "Ctrl+C stops the walk.\n"
     "At the end a checked summary is saved on this computer and copied to your "
     "clipboard. Nothing is sent anywhere."
@@ -581,6 +582,7 @@ def _decant_to_clipboard(payload, archive_path=None):
               f"private name(s) and {len(secrets)} secret(s), so nothing was copied.")
         return False
     # AFTER the baseline checks: one string, two destinations.
+    target = None
     try:
         target = _write_decant_preview(scrubbed)
     except OSError as exc:
@@ -594,7 +596,19 @@ def _decant_to_clipboard(payload, archive_path=None):
                 _write_walk_router(archive_path, preview_path=target)
             except Exception as exc:
                 print(f"context.txt was not updated ({type(exc).__name__}: {exc}).")
-    copy_to_clipboard(scrubbed)
+    # ONE LINE FOR THE COPY (2026-10-02): copy_to_clipboard prints nothing
+    # here and returns what happened, so the walk says it in its own words.
+    # A bridge file over SSH is not the clipboard on the computer you type
+    # on; pull, a word in the Mac's workshop, fetches it.
+    copied = copy_to_clipboard(scrubbed, quiet=True)
+    if copied == "copied":
+        print("Copied to your clipboard. Read it before you share it.")
+    elif copied == "bridge":
+        print("Over SSH it went to /tmp/clipboard_bridge.txt; on your Mac, pull copies it to the clipboard. Read it before you share it.")
+    elif target is not None:
+        print(f"Not copied to your clipboard ({copied}); the saved summary has the same text.")
+    else:
+        print(f"Not copied to your clipboard either ({copied}); type walk to try again.")
     return True
 
 
