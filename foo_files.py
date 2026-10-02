@@ -34,6 +34,8 @@ AI_PHOOEY_CHOP = r"""#
 
 # It doesn't hurt helping you think clearly about context, either.
 
+# The commands are prompt, context, compile or p, x, c respectively.
+
 # 1. You don't have to edit this file so anymore. Use the p,x,c commands.
 # 2. Write prompt in NeoVim between "--- BEGIN NEW ARTICLE ---" and "!!!"
 # 3. Type `\h`, `y` to put article in your OS copy-paste buffer (Hi-Ya!).
