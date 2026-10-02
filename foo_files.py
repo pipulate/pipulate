@@ -1139,7 +1139,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # nixops.sh                                  #  <-- the truck to Honeybot: hooks, scripts, both pads, staged config; --installer for the pads alone
 # remotes/honeybot/nixos/configuration.nix   #  <-- the three vhosts and the door stamps; a nixos-rebuild on Honeybot to change
 # assets/installer/mck.sh                    #  <-- the launcher; pipulate.com only, by INSTALLER_SCRIPTS
-# ~/repos/Pipulate.com/_layouts/default.html
 # ~/repos/nixos/.gitignore
 # ~/repos/Pipulate.com/install.md            #  <-- Gets copied into place here by pipulate/release.py
 
