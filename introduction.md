@@ -18,8 +18,8 @@ instead of guessing.
 
 ## What just happened
 
-The guided introduction opened three public pages at npvg.org, one at a time,
-in a visible browser. At each page the person typed CAPTURE at the
+The guided introduction opened three public pages at qamy.ai, one at a time,
+in a visible browser. At each page the person pressed Enter at the
 command line, and the workshop saved what the server sent, what the browser
 built, and the requests in between. Those raw captures stay on their disk.
 A checked, trimmed summary of them, decant-preview.md, follows this file.
