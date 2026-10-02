@@ -43,8 +43,23 @@ except FileNotFoundError:
     sys.exit(1)
 
 INIT_PY_PATH = PIPULATE_ROOT / "__init__.py"
-# Add Pipulate.com path configuration
-PIPULATE_COM_ROOT = PIPULATE_ROOT.parent / "Pipulate.com"
+# THE SITE IS FOUND FROM ANY CHECKOUT (2026-10-02): a release from ~/qamyai
+# looked for ~/Pipulate.com, found nothing, and published to PyPI without
+# pushing the installers to pipulate.com. PIPULATE_COM_ROOT names the site
+# repo; otherwise the checkout's sibling, then ~/repos/Pipulate.com.
+def _site_root():
+    import os
+    named = os.environ.get("PIPULATE_COM_ROOT")
+    if named:
+        return Path(named).expanduser()
+    candidates = (PIPULATE_ROOT.parent / "Pipulate.com", Path.home() / "repos" / "Pipulate.com")
+    for candidate in candidates:
+        if candidate.is_dir():
+            return candidate
+    return candidates[0]
+
+
+PIPULATE_COM_ROOT = _site_root()
 
 # THE RULE OF SILENCE (2026-08-30). "When a program has nothing surprising to
 # say, it should say nothing." One release run printed ~520 lines, ~430 of
@@ -134,6 +149,17 @@ def validate_git_remotes():
         print(f"⚠️  Git validation failed: {e}")
         print("💡 Make sure you're in a git repository with proper remote configuration")
         return False
+
+def commits_behind_origin(fetch=True):
+    """Commits origin has that this checkout lacks: 0 when level or ahead,
+    offline, or without an upstream, so only a known gap stops a release."""
+    if fetch:
+        run_command(['git', 'fetch', '--quiet'], check=False)
+    counted = run_command(['git', 'rev-list', '--count', 'HEAD..@{u}'], capture=True, check=False)
+    try:
+        return int(counted.stdout.strip()) if counted.returncode == 0 else 0
+    except ValueError:
+        return 0
 
 def get_current_version():
     """Gets the version from pipulate/__init__.py."""
@@ -464,7 +490,7 @@ def sync_install_sh(script_name="install.sh"):
     dest_path = PIPULATE_COM_ROOT / script_name
 
     if not PIPULATE_COM_ROOT.exists():
-        print(f"⚠️  Warning: Pipulate.com repo not found at {PIPULATE_COM_ROOT}. Skipping install.sh sync.")
+        print(f"⚠️  Warning: Pipulate.com repo not found at {PIPULATE_COM_ROOT}. Skipping {script_name} sync.")
         return False
 
     if not source_path.exists():
@@ -523,7 +549,7 @@ def sync_install_sh(script_name="install.sh"):
             note(f"✅ {script_name} is already up-to-date in Pipulate.com repo.")
             return False
     except Exception as e:
-        print(f"⚠️  Install.sh sync failed: {e}")
+        print(f"⚠️  {script_name} sync failed: {e}")
         return False
 
 def sync_installer_to_pads():
@@ -1297,6 +1323,13 @@ def main():
     # Early validation of git configuration
     if not validate_git_remotes():
         print("\n❌ Git remote validation failed. Please fix git configuration before proceeding.")
+        sys.exit(1)
+    # A CHECKOUT BEHIND ORIGIN WOULD PUBLISH OLD FILES (2026-10-02): any
+    # checkout finds the site now, and the site syncs below copy this
+    # checkout's installers over pipulate.com's, so a stale one stops here.
+    behind = commits_behind_origin()
+    if behind:
+        print(f"❌ This checkout is {behind} commit(s) behind origin, so nothing was published. Type git pull, then release again.")
         sys.exit(1)
     
     # === RELEASE PIPELINE PHASE 1: PREPARATION ===
