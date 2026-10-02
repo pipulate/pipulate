@@ -178,6 +178,16 @@ def pep440_normalize(version: str) -> str:
     except Exception:
         return version
 
+def pypi_has_version(version):
+    """True when PyPI already has this version of pipulate, False when it does
+    not, None when PyPI did not answer (the upload then runs as it always has)."""
+    url = f"https://pypi.org/pypi/pipulate/{pep440_normalize(version)}/json"
+    try:
+        status = requests.get(url, timeout=10).status_code
+    except requests.RequestException:
+        return None
+    return {200: True, 404: False}.get(status)
+
 def run_version_sync():
     """Runs the version synchronization script."""
     note("\n🔄 Step 1: Synchronizing versions across all files...")
@@ -1504,7 +1514,14 @@ def main():
     
     # === RELEASE PIPELINE PHASE 3: PYPI PUBLISHING ===
     published_to_pypi = False
-    if args.release:
+    # ONE VERSION, ONE UPLOAD (2026-10-02): PyPI refuses a different file under
+    # a name it already has, so releasing 2.75 a second time built both files
+    # and ended on twine's 400. A version PyPI already has is said in one line;
+    # nothing is built or uploaded, and the commit, push and site syncs stand.
+    on_pypi = pypi_has_version(current_version) if args.release else None
+    if on_pypi:
+        print(f"⏭️  PyPI already has pipulate {pep440_normalize(current_version)}, so nothing was uploaded. To publish, set a higher __version__ in __init__.py and run release again.")
+    elif args.release:
         note("\n📦 === RELEASE PIPELINE: PYPI PUBLISHING PHASE ===")
         note(f"🏗️  Building and Publishing version {current_version} to PyPI...")
         note("🧹 Cleaning old build artifacts...")
