@@ -10,8 +10,10 @@
 #   1. downloads a zip of the repository from github.com;
 #   2. unpacks it into ONE folder under your home, named by the door you
 #      came through (or by the argument after bash -s);
-#   3. saves a read-only deploy key into that folder as .ssh/rot;
-#   4. hands off to nix develop, which builds the environment and turns
+#   3. writes .door into that folder: the door's name and its words,
+#      copied from the table in door_row below;
+#   4. saves a read-only deploy key into that folder as .ssh/rot;
+#   5. hands off to nix develop, which builds the environment and turns
 #      the folder into a git repository that keeps itself updated.
 #
 # What it touches: that folder; ~/.ssh/id_rsa only if no key is there
@@ -64,6 +66,42 @@
 # The more robust approach is to let nix ensure git is available before attempting any
 # git operations in the controlled nix environment.
 
+# THE DOOR TABLE (2026-10-02). One row per door: the folder it installs
+# into and the words it uses. A stamped copy of this file picks its row by
+# the stamp; an unstamped copy (pipulate.com, or a copy saved and run by
+# hand) is the pipulate row. A stamp with no row keeps the old behavior:
+# the stamp is the folder, and there are no words. The words are written
+# into .door in the new folder; nothing in this script says them out loud.
+# A new door is a row here plus a vhost that stamps its name.
+door_row() {
+  DOOR_FOLDER="$1"
+  DOOR_WORKSHOP=""
+  DOOR_WELCOME1=""
+  DOOR_WELCOME2=""
+  DOOR_TAGLINE=""
+  case "$1" in
+    pipulate)
+      DOOR_WORKSHOP="This Local-AI Experimental workshop talks you through steps."
+      DOOR_WELCOME1="Welcome. Ready to raise Chip O'Theseus, your Local AI Hermit Crab"
+      DOOR_WELCOME2="That moves with you from hardware to hardware without the Cloud."
+      DOOR_TAGLINE="Assume models guess at homepages and crawl it from there."
+      ;;
+    npvg)
+      DOOR_WORKSHOP="This Future-Proofing workshop talks you through steps."
+      DOOR_WELCOME1="Welcome. Ready to teach you battle-hardened timeless tech"
+      DOOR_WELCOME2="Helping you stay relevant and a valuable voice at the table."
+      DOOR_TAGLINE="Reproduce it with recipes or the system rots; no in-between."
+      ;;
+    qamy)
+      DOOR_FOLDER="qamyai"
+      DOOR_WORKSHOP="This LLM Quality Assurance workshop talks you through steps."
+      DOOR_WELCOME1="Welcome. Ready to Q/A your AI with the Flight Data Recorder (FDR)"
+      DOOR_WELCOME2='Different from Cockpit Voice Recorder (CVR) or "what Claude said".'
+      DOOR_TAGLINE="Treat claims as confident hallucination until reproduced."
+      ;;
+  esac
+}
+
 # Wait for the complete function body before starting installation.
 # A stream cut inside this body cannot execute a partial install.
 # Leave the body indentation unchanged, including the embedded ./run heredoc.
@@ -95,13 +133,20 @@ set -euo pipefail
 # distinguishable after substitution. An explicit argument still wins, and
 # an unstamped copy falls back to the folder name this script has always
 # used, so publishing this before the door exists changes nothing.
+# THE DOOR NAMES THE ROW (2026-10-02). The stamp now picks a row in
+# door_row, above, and the row names the folder, so a door's folder no
+# longer has to be its stamp: qamy.ai still stamps qamy, the word nginx
+# writes, and its row installs into qamyai, which said aloud is "QA my
+# AI". The two lines below are unchanged.
 _tpl_name='__INSTALL_DEFAULT_NAME__'
 _ph_name='__INSTALL_DEFAULT_''NAME__'
 if [ "$_tpl_name" != "$_ph_name" ]; then
-  DEFAULT_NAME="$_tpl_name"
+  DOOR="$_tpl_name"
 else
-  DEFAULT_NAME="pipulate"
+  DOOR="pipulate"
 fi
+door_row "$DOOR"
+DEFAULT_NAME="$DOOR_FOLDER"
 CUSTOM_NAME="${1:-$DEFAULT_NAME}"  # An argument names the folder; the door names the default
 
 # --- Configuration ---
@@ -223,6 +268,19 @@ rm -f "$TMP_ZIP_FILE"
 
 # --- Navigate Into Project ---
 cd "${TARGET_DIR}"
+
+# --- The Door's Row ---
+# A dotfile, so the flake's first-entry sweep, which deletes top-level
+# names that do not start with a dot, leaves it in place; .gitignore keeps
+# it out of git status. Every field is written, empty or not, so a reader
+# never has to guess whether a line was skipped.
+printf '%s\n' \
+  "# Written by the installer: the door this folder came through, and its words. Safe to delete." \
+  "door=${DOOR}" \
+  "workshop=${DOOR_WORKSHOP}" \
+  "welcome=${DOOR_WELCOME1}" \
+  "welcome=${DOOR_WELCOME2}" \
+  "tagline=${DOOR_TAGLINE}" > .door
 
 # --- Deploy Key Setup ("Magic Cookie") ---
 # Part of the "magic cookie" is the SSH key that will allow the flake
