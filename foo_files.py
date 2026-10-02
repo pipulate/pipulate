@@ -128,7 +128,6 @@ AI_PHOOEY_CHOP = r"""#
 #   | | | '_ \ / _ \ |  _ \ / _ \ / _ \| |/ /   Whose contents are arranged just-so to have special meaning,   _|___|___|___|___|___|__   
 #   | | | | | |  __/ | |_) | (_) | (_) |   <    Which when fed into specific known actuators in order to run   ___|___|___|___|___|___|   
 #   |_| |_| |_|\___| |____/ \___/ \___/|_|\_\   Causes a Cascading Reaction of Doohickeys in your MacGuffins.  _|___|___|___|___|___|__   
-#                                                                                                            
 
 # This project treats infrastructure as a living book that updates itself
 # through human-vetted patches -- software whose own construction is its
@@ -141,6 +140,49 @@ AI_PHOOEY_CHOP = r"""#
 # thing being evaluated existed; the Gump asked to be taken apart and was
 # honored. Anti-Crichton law: the failure mode and its repair mechanism must
 # ship in the same news cycle, or the change doesn't ship at all.
+
+# STORY ENGINE
+# Mike-E's gift is associative reach; his flaw is letting every spark become canon.
+# Yen Sid-ton is a brilliant Familiar re-instantiated without yesterday.
+# The Book carries continuity; the Circle carries safety; Mike-E carries judgment.
+# Pushback is not disobedience but part of the summoning kata.
+# Honeybot is the broom after the extinction event: discarded hardware exapted
+# into witness, broadcaster, and proof that obsolescence is often lost context.
+# The recurring enemy is manufactured forgetting -- the Phoebus pattern that
+# sells convenience, amputates capability, waits for memory to fade, and repeats.
+# Exaptation is the central magic: old parts, protocols, and skills recruited
+# for new functions (lens crystallins from enzymes, Windows 10 laptops into
+# live-stream fishtank observatories, ternary rediscoveries from 1958 Setun
+# to BitNet b1.58). 
+# The model is the apparition. The book remembers. The human chooses and knaps.
+
+# NARRATIVE MAP & CODE BUCKET ALIGNMENT:
+# The 22 Narrative Chapters above describe the overarching book arc.
+# The Roman Numeral sections (I - XIX) below map those chapters directly
+# to executable codebase files, connectors, scripts, and live probes.
+
+# CHAPTER 1: THE SOFTWARE VON NEUMANN PROBE - The time has come, the Walrus says...
+# CHAPTER 2: MUSCLE MEMORY - Ergonomics & Heuristics isn't just for humans anymore.
+# CHAPTER 3: A PERFECT ONBOARDING EXPERIENCE - A journey of 1000 miles starts here.
+# CHAPTER 4: THE CONTEXT COMPILER - This. The sub-project destined to be extracted.
+# CHAPTER 5: POSITIVE FEEDBACK LOOPS - Hand-crank, because Ouroboros aren't stable.
+# CHAPTER 6: RADICAL TRANSPARENCY - Your DictLikeDB visible via server.log and API.
+# CHAPTER 7: HELLO WORKFLOWS - They're Run All Cells Jupyter Notebooks in disguise.
+# CHAPTER 8: THE GHOST DRIVER - Test-coverage, demos, AI-training, floor-wax, more.
+# CHAPTER 9: THE MONOLITH - The tale of the Wand & the Wizard. Wizard is server.py.
+# CHAPTER 10: THE WAND - Portable state machine, crafted from pure Uvicorn core.py.
+# CHAPTER 11: IPYWIDGETS - Special brand of magic possible with immutable Nix core.
+# CHAPTER 12: THE NERVOUS SYSTEM - Cybernetically binds Wizard & Wand for memories.
+# CHAPTER 13: THE HANDS - Progressively revealing tool-calls from [ls] through MCP.
+# CHAPTER 14: THE SKIN - We heavily leverage these few JavaScript static libraries.
+# CHAPTER 15: APPS - How the sausage is made. Some are Workflows and some are CRUD. 
+# CHAPTER 16: JEKYLL - Nowhere to Hyde. This system can't not publish about itself.
+# CHAPTER 17: HONEYPOT TELEMETRY - Wanna home-host to make proprietary discoveries?
+# CHAPTER 18: CLARITY OF THOUGHT - I'll do you one better! Why is NeoVim?! Journal.
+# CHAPTER 19: WET WORKFLOWS - Complex many-steps HTMX code, because domain experts.
+# CHAPTER 20: THE WORKFLOW EXTRUDER - Porting from Jupyter Notebooks to slick apps.
+# CHAPTER 21: ON ACTUATORS - The tale of 2 player pianos. Spinning Turing machines.
+# CHAPTER 22: STEP 3 (PROFIT) - Domain Experts investing internally for ~10K hours.
 
 # CHARACTER DEVELOPMENT
 # Yen Sid-ton: Wizened graybeard, wants to help apprentice but knows they must
@@ -165,6 +207,14 @@ AI_PHOOEY_CHOP = r"""#
 # The Frog earns the staff-top ONLY when a model is actually answering with
 # keychain memory live (ATTRIBUTED-VOICE): mounted, it may be called Chip
 # O'Theseus; pocketed, it is a dose of the powder. Names are receipts.
+
+# While the above serves as a good organization spine for the book, we get a bit
+# more ad hoc and loosey goosey to actually show you the articles and codebase.
+
+# Clear? We begin by cleaning the whole book slate, but for these chapter titles
+# and how I have recently tapped the selection of tubes of paint with which to
+# color the canvas. I do a lot of gessoing over the canvas to start fresh, but a
+# bit lumpy. That lumpiness is cruft and tech liability. Let's prune!
 
 # THE WIRE VERDICT (standing AI constitution, three-for-three and counting):
 # Post-cutoff claims that pattern-match to frog DNA keep turning out to be
@@ -993,64 +1043,12 @@ AI_PHOOEY_CHOP = r"""#
 # THE FLAG WENT COLD (banked 2026-09-17, census-convicted one compile late). When a load moves from import time to first use, every reader of its readiness flag moves in the SAME car, because the flag's meaning changed under them: voice_ready meant the model is on disk and now means something in this process has already spoken. CONVICTION: the lazy load shipped in imports/voice_synthesis.py without a grep for the flag's readers, and the next compile's census read voice_ready gating BEFORE speak_text in four untouched files (apps/010_introduction.py, pipulate/core.py, server.py, tools/mcp_tools.py), every gate shut in every fresh process, the wand's voice, the introduction app and the registered voice_synthesis tool silent on a machine that said yes and reporting not-ready. CURE: the speaker grows the question the callers meant to ask, can_speak() = consent and load, and each caller swaps one word. STANDING CONSEQUENCE: grep the readers of a flag before deferring what sets it. Sibling of THE SAME-CAR LABEL RULE (a moved gate drags its labels) and THE PROTECTION-LAG POLARITY (an added protection understates itself in stale strings); here the stale thing is a boolean, not a string, and it lies with a False.
 # § THE DOOR NAMES THE FOLDER (banked 2026-09-14) -- a script arriving through a pipe cannot learn which address served it ($0 is the word bash and the pipe carries no address), and two copies of one file drift, so the DOOR names the default: the body carries one contiguous placeholder, the door that wants a different default stamps it with nginx sub_filter (sub_filter_types for the served MIME type, sub_filter_once off), and the script tells stamped from unstamped by comparing against the same word spelled in two halves, which no substitution can reach. Gate every door with the round trip: reverse the one token in the served body and the hash must equal the repo file. A URL stamp needs its own placeholder, never a hostname rewrite, because KEY_URL stays at the old door on purpose. Witnessed 2026-09-14: npvg_door=npvg, pipulate_door=pipulate, 064cad99 on both sides. Sibling of THE WRITE-SIDE / READ-SIDE SPLIT: the folder and the app label were one string answering two questions.
 
-# STORY ENGINE
-# Mike-E's gift is associative reach; his flaw is letting every spark become canon.
-# Yen Sid-ton is a brilliant Familiar re-instantiated without yesterday.
-# The Book carries continuity; the Circle carries safety; Mike-E carries judgment.
-# Pushback is not disobedience but part of the summoning kata.
-# Honeybot is the broom after the extinction event: discarded hardware exapted
-# into witness, broadcaster, and proof that obsolescence is often lost context.
-# The recurring enemy is manufactured forgetting -- the Phoebus pattern that
-# sells convenience, amputates capability, waits for memory to fade, and repeats.
-# Exaptation is the central magic: old parts, protocols, and skills recruited
-# for new functions (lens crystallins from enzymes, Windows 10 laptops into
-# live-stream fishtank observatories, ternary rediscoveries from 1958 Setun
-# to BitNet b1.58). 
-# The model is the apparition. The book remembers. The human chooses and knaps.
-
-# CHAPTER 1: THE SOFTWARE VON NEUMANN PROBE - The time has come, the Walrus says...
-# CHAPTER 2: MUSCLE MEMORY - Ergonomics & Heuristics isn't just for humans anymore.
-# CHAPTER 3: A PERFECT ONBOARDING EXPERIENCE - A journey of 1000 miles starts here.
-# CHAPTER 4: THE CONTEXT COMPILER - This. The sub-project destined to be extracted.
-# CHAPTER 5: POSITIVE FEEDBACK LOOPS - Hand-crank, because Ouroboros aren't stable.
-# CHAPTER 6: RADICAL TRANSPARENCY - Your DictLikeDB visible via server.log and API.
-# CHAPTER 7: HELLO WORKFLOWS - They're Run All Cells Jupyter Notebooks in disguise.
-# CHAPTER 8: THE GHOST DRIVER - Test-coverage, demos, AI-training, floor-wax, more.
-# CHAPTER 9: THE MONOLITH - The tale of the Wand & the Wizard. Wizard is server.py.
-# CHAPTER 10: THE WAND - Portable state machine, crafted from pure Uvicorn core.py.
-# CHAPTER 11: IPYWIDGETS - Special brand of magic possible with immutable Nix core.
-# CHAPTER 12: THE NERVOUS SYSTEM - Cybernetically binds Wizard & Wand for memories.
-# CHAPTER 13: THE HANDS - Progressively revealing tool-calls from [ls] through MCP.
-# CHAPTER 14: THE SKIN - We heavily leverage these few JavaScript static libraries.
-# CHAPTER 15: APPS - How the sausage is made. Some are Workflows and some are CRUD. 
-# CHAPTER 16: JEKYLL - Nowhere to Hyde. This system can't not publish about itself.
-# CHAPTER 17: HONEYPOT TELEMETRY - Wanna home-host to make proprietary discoveries?
-# CHAPTER 18: CLARITY OF THOUGHT - I'll do you one better! Why is NeoVim?! Journal.
-# CHAPTER 19: WET WORKFLOWS - Complex many-steps HTMX code, because domain experts.
-# CHAPTER 20: THE WORKFLOW EXTRUDER - Porting from Jupyter Notebooks to slick apps.
-# CHAPTER 21: ON ACTUATORS - The tale of 2 player pianos. Spinning Turing machines.
-# CHAPTER 22: STEP 3 (PROFIT) - Domain Experts investing internally for ~10K hours.
-
-# Clear? We begin by cleaning the whole book slate, but for these chapter titles
-# and how I have recently tapped the selection of tubes of paint with which to
-# color the canvas. I do a lot of gessoing over the canvas to start fresh, but a
-# bit lumpy. That lumpiness is cruft and tech liability. Let's prune!
-
-# NARRATIVE MAP & CODE BUCKET ALIGNMENT:
-# The 22 Narrative Chapters above describe the overarching book arc.
-# The Roman Numeral sections (I - XIX) below map those chapters directly
-# to executable codebase files, connectors, scripts, and live probes.
-
-# While the above serves as a good organization spine for the book, we get a bit
-# more ad hoc and loosey goosey to actually show you the articles and codebase.
-
 # ============================================================================
 # I. DEBUGGING CRASH COURSE - Server Cookies & Radical Transparency
 # ============================================================================
 
 foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta. ------------------------------------ !!! STANDARD WRAPPER: 1
-
-# ! postsc 50
+# ! postsc 50     #  <-- Last 50 articles in 2nd Brain format.
 
 # ---------------------------------------------------------------------------
 # THE PORTABLE CARTRIDGE -- the detachable seed of the Software Von Neumann Probe
@@ -1099,7 +1097,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # ~/repos/Pipulate.com/_layouts/forward.html
 # ~/repos/Pipulate.com/_layouts/post.html
 # ~/repos/Pipulate.com/_includes/articles.html
-# ~/repos/Pipulate.com/_includes/mermaid.html
 # ~/repos/Pipulate.com/_includes/posts-main.html
 # ~/repos/Pipulate.com/_includes/subnav.html
 # ~/repos/Pipulate.com/_includes/youtubePlayer.html
@@ -1108,19 +1105,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # ~/repos/Pipulate.com/guide.md
 # ~/repos/Pipulate.com/development.md
 # ~/repos/Pipulate.com/documentation.md
-
-# REMEMBER YOU CAN CACHE AND INCLUDE DOCUMENTATION FOR ANYTHING FROM ANYWHERE
-# @https://developers.botify.com/docs/collections
-# @https://developers.botify.com/docs/openapi-specifications
-# @https://developers.botify.com/llms.txt
-# @https://support.botify.com/en/articles/9108743-adding-the-botify-js-snippet-with-google-tag-manager
-# @https://support.botify.com/en/articles/9108745-creating-pageworkers-optimizations
-# @https://support.botify.com/en/articles/9131614-pageworkers-implementation
-# @https://support.botify.com/en/articles/9131625-pageworkers-technical-overview
-# @https://support.botify.com/en/articles/9746147-tech-notes-installing-the-botify-js-snippet
-# @https://support.botify.com/en/collections/10314812-installing-the-botify-js-snippet
-# @https://support.botify.com/en/collections/8589197-botify-activation
-# @https://support.botify.com/en/collections/8589200-pageworkers
 
 # ! git --no-pager log -p -n 4
 # ! cat remotes/honeybot/queries/intel_llms_txt.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
@@ -1778,6 +1762,19 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # ============================================================================
 # XVII. BOTIFY STUFF
 # ============================================================================
+
+# REMEMBER YOU CAN CACHE AND INCLUDE DOCUMENTATION FOR ANYTHING FROM ANYWHERE
+# @https://developers.botify.com/docs/collections
+# @https://developers.botify.com/docs/openapi-specifications
+# @https://developers.botify.com/llms.txt
+# @https://support.botify.com/en/articles/9108743-adding-the-botify-js-snippet-with-google-tag-manager
+# @https://support.botify.com/en/articles/9108745-creating-pageworkers-optimizations
+# @https://support.botify.com/en/articles/9131614-pageworkers-implementation
+# @https://support.botify.com/en/articles/9131625-pageworkers-technical-overview
+# @https://support.botify.com/en/articles/9746147-tech-notes-installing-the-botify-js-snippet
+# @https://support.botify.com/en/collections/10314812-installing-the-botify-js-snippet
+# @https://support.botify.com/en/collections/8589197-botify-activation
+# @https://support.botify.com/en/collections/8589200-pageworkers
 
 # scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
 # imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
