@@ -1,8 +1,8 @@
 # The Pipulate journal, indexed
 
-> Auto-generated on 2026-09-29 by `scripts/articles/generate_ai_context.py` and
+> Auto-generated on 2026-10-01 by `scripts/articles/generate_ai_context.py` and
 > rewritten from scratch on every release. If this date looks stale, assume
-> the rest of the repo is newer than this map. 1505 entries indexed.
+> the rest of the repo is newer than this map. 1508 entries indexed.
 
 This repository holds the *machinery*. The *reasoning*, the running journal
 that explains why every piece exists, lives on a separate website and not in
@@ -27,6 +27,9 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-10-01] [The Scrollback Rule: Engineering Full-Width Terminal Dividers for Replayable Logs](https://mikelev.in/futureproof/scrollback-rule-clear-x-receipts/index.md)
+- [2026-10-01] [The Prefix Ladder and the Unalias Guard: Replayable Shell Ergonomics in the Age of AI](https://mikelev.in/futureproof/prefix-ladders-and-the-unalias-guard/index.md)
+- [2026-09-30] [Forever-Commands and the Talk Toggle: Replayable CLI Habits in the Age of AI](https://mikelev.in/futureproof/forever-commands-and-the-talk-toggle/index.md)
 - [2026-09-29] [Layered Reality and Operator Overloading: Reading the Physics of CPython in the Age of AI](https://mikelev.in/futureproof/layered-reality-operator-overloading-cpython/index.md)
 - [2026-09-29] [The Three-Door Installer: Named Prompts, Split DNS, and Verifiable Releases](https://mikelev.in/futureproof/the-three-door-installer-and-named-prompts/index.md)
 - [2026-09-29] [The Deed Is Named for the Door: Engineering Replayable QA Archives for AI](https://mikelev.in/futureproof/the-deed-is-named-for-the-door-qa-archive-zip/index.md)
@@ -44,14 +47,14 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-09-20] [The Letting-Go Moment: Building Vim Training Wheels for the Age of AI](https://mikelev.in/futureproof/vim-training-wheels-and-the-letting-go-moment/index.md)
 - [2026-09-20] [Disciplined Forgetting: Scaling AI Context Through a Two-Tier Memory Hierarchy](https://mikelev.in/futureproof/disciplined-forgetting-and-the-memory-hierarchy/index.md)
 - [2026-09-19] [Four Models, One Matchbook: Multi-Model Consensus in the Age of AI](https://mikelev.in/futureproof/four-models-one-matchbook-prompt-fanout/index.md)
-- [2026-09-19] [Dual-Model Failover: Engineering Independent Backoff Clocks for LLM APIs](https://mikelev.in/futureproof/dual-model-failover-independent-backoff/index.md)
-- [2026-09-19] [Playing Pinball in the Age of AI: A Replayable Workflow Guide](https://mikelev.in/futureproof/playing-pinball-in-the-age-of-ai-replayable-workflow-guide/index.md)
-- [2026-09-19] [The Color Blue and the Pipe: Inspecting Code Before Execution](https://mikelev.in/futureproof/color-blue-pipe-inspecting-code/index.md)
 
 ## Compact slug index -- pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` -- fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-09-19] [48k] dual-model-failover-independent-backoff
+- [2026-09-19] [193k] playing-pinball-in-the-age-of-ai-replayable-workflow-guide
+- [2026-09-19] [72k] color-blue-pipe-inspecting-code
 - [2026-09-19] [294k] edna-mode-rules-for-ai-workflows
 - [2026-09-18] [207k] the-one-door-threshold-replayable-ai-workflows
 - [2026-09-18] [292k] the-first-ten-minutes-reproducible-ai-workflows
