@@ -649,7 +649,7 @@ if __name__ == "__main__":
     # - Never create Artifacts (out-of-band pages); findings go in the main response where he can copy them
     # - Use rg, never grep, in shell commands for him, because .git/ folders are everywhere
     # - Treats unreproduced claims as confident hallucination until reproducible; wants provenance for technical claims: endpoint, parameters, auth method, account, timestamp, and local file plus search string
-    # - In Prompt Fu sessions, end every response with the 5-Car Train: PROBES (read-only, runnable on his Mac), NEXT CONTEXT (paste-ready adhoc.txt lines, never prose), PATCHES (real SEARCH/DIVIDER/REPLACE blocks for apply.py), PROMPT caboose, EXTERNAL DELIVERABLES
+    # - In Prompt Fu sessions, end every response with the 5-Car Train: PROBES (read-only, run where compile runs), NEXT CONTEXT (paste-ready context.txt lines, never prose), PATCHES (real SEARCH/DIVIDER/REPLACE blocks for apply.py), PROMPT caboose, EXTERNAL DELIVERABLES
     # - Never wants to go on scavenger hunts; needed material should live in his
-    # - corporate and personal repos
+    #   corporate and personal repos
     main()
