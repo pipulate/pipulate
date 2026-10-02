@@ -114,7 +114,8 @@ def print_words(words) -> None:
     print("type one:")
     width = max(len(word) for word, _ in words)
     for word, description in words:
-        print("  " + word.ljust(width) + "  " + description)
+        # No indent (2026-10-02): a narrow window wraps to column 0 anyway.
+        print(word.ljust(width) + "  " + description)
 
 
 MENU_HINT = "Type menu on the command line at any time to see this menu again."
